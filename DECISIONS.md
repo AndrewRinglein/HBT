@@ -1997,6 +1997,55 @@ art findings (`hero-has-a-partial-level-set`, `declared-art-file-does-not-exist`
 `art-path-does-not-resolve`) may report but may not count against `expect.mjs`'s
 total that decides whether the pack is written.
 
+## 2026-09-04 — The Proving's first pass: kits, level 1, initiative, no AIs yet
+
+Angela, verbatim, ruling on session 9's draft test plan (`9-PROVING-NOTES.md` §6):
+
+> "Control hero's kits — heroes should not exist without kits. They're punching
+> people. We will eventually be changing the items of the heroes, but we can start
+> with just their default kits. We will eventually change level, but we'll start
+> with level 1. I don't know what you mean by 'one what you need,' but I want to
+> measure initiative. If there's deathbed fighting, that will change the hero side,
+> and the hero side has the limitation of stamina. So, can we just field enemies
+> against enemies? Let's just get this working for pass one and question six. AI
+> subjects. Eventually, we're going to do all of both, but this cannot be in the
+> first plan. First, let's power rank everything, and then we can start to change
+> AIs and see if that moves power ranking."
+
+Consequences, as read by session 9:
+
+- **Every hero in the Proving fights in its start kit** — the control heroes and every
+  substituted hero alike. A bare hero is not a subject. This does not reopen the
+  2026-09-04 "never a default kit" ruling: the plan file still ASSIGNS each seat its
+  items explicitly; the row's `defaultItems` is what it assigns. Item rotation is a
+  later pass.
+- **Level 1 for every unit in pass one.** `grow` is a later pass.
+- **Initiative is measured with enemies against enemies** — the hero-side rules
+  (Deathbed Fighting, stamina) are exactly what she wants kept out of it. Today a
+  zombie fielded on the west side FOLLOWS THE HERO RULES (`SWITCHES.md
+  mirrorSideRules`, default `fielded`), so "enemies against enemies" does not yet
+  give her the clean measurement; the `row` arm (a zombie stays a zombie wherever it
+  stands) is what does. Engine work, filed by session 9.
+- **Saturation (question six): pass one has no rung ladder.** A subject that wins all
+  five is top of its ladder; a subject that loses all five is bottom. Read from
+  "let's just get this working for pass one" — a reading, not her words.
+- **AI subjects are not in the first plan.** Power rank everything first; AI changes
+  are then measured against those rankings.
+
+## 2026-09-04 — The Proving's pass two: second controls and levels first, then AIs; items wait on the AI
+
+Angela, verbatim, on session 9's proposed order for pass two (second controls ·
+levels · items · AI modes):
+
+> "I don't know that we have sophisticated enough AI to correctly use items, so I
+> think we need a plan for 1 and 2. Then plan for 4. Yeah, go ahead and write the next
+> plans so they're waiting when the engine gets there."
+
+Consequences: pass two is **a second control per side** and **levels**; pass three is
+**AI modes as subjects**; **items as subjects wait** until the AI can use them — an
+item ladder run by an AI that cannot use the item measures the AI, not the item. The
+plan files are written ahead of the engine and sit in `content/proving/` until it
+arrives (`9-PROVING-SETTLED.md` §7).
 ## 2026-09-05 — The Proving's score is the VICTORY RATE, not the flip rate
 
 Angela, verbatim, on opening the first `PROVING.html`:
@@ -2016,3 +2065,37 @@ needle's direction is the difference), swing is the tiebreak (from the subject's
 side, signed), then id. The flip count stays on the page as a column — it still
 says the unit mattered — but it is not the score. `proving.rank` re-sorts;
 `PROVING.html` re-renders; no battle re-runs.
+## 2026-09-10 — V2 migration authorized; standalone combat and expedition consequences
+
+User, verbatim, on the playable target:
+
+> In V2, we should have the ability to simulate a battle in a different way, where we have all of the UI elements, the ability to press buttons, and the ability to have me play as the heroes against the enemies. We don't need to have this flow entirely from the game state, but it does need to consume a game state where I can maybe just set the heroes that are playing. We're using some standard kits and heroes. It doesn't even need phases. It can just have the enemies there.
+
+The follow-up confirmed that the sandbox skips campaign/preparation screens; hero/enemy combat turns and activations remain. The kingdom outcome picker remains a fast flow-testing adapter. Runtime assets are 3D terrain with existing 2D hero/monster artwork. Preserve the current Battle Atlas maps and user edits.
+
+User, verbatim, answering the seven preflight questions:
+
+> One, yes.  2, yes.  3 no-supplies every week   there is starvation without conquest.   But also, there'll be quests that can give you supplies.   Dungeon fatigue not available happens only after the expedition ends. Yes. Even though there are all these non-combat phases, we only get combat resolution, we only get rewards, and we only get exhaustion (all of that) when you're done with the dungeon, by either winning or retreating.  Rest takes 1 week and clears both fatigue and exhaustion, yes.   Yes, exhausted they can receive recovery assignments.   No, we don't really need to save anything from V1. It's fine. We're not going back to V1.  Seven. No, this is the only chat working on this.  Okay, again, any questions before you begin?
+
+Consequences of those answers:
+
+- Migration includes the standalone playable battle sandbox and all V2 combat, viewer, content, kingdom and dungeon adaptations. Full kingdom-to-combat launch wiring is not required for the sandbox milestone.
+- Unspecified mechanics and tuning may be resolved with documented provisional decisions; explicit authored rulings win. Implement clearly authored but nonfunctional content without pretending unwritten content is authored.
+- No weekly Supplies income. Conquest and authored quest rewards supply the purse; lack of conquest can cause starvation.
+- Dungeon combat consequences, reward presentation, XP/level-up and fatigue/unavailability are deferred until expedition completion or retreat (wipe also terminates the expedition under the existing dungeon rule). Intermediate battles still settle local damage, casualties and persistent run-state changes.
+- Rest takes one Week and clears Fatigued and Exhausted. Exhausted heroes may receive recovery assignments.
+- No V1 save compatibility is required; no V1 runtime fallback is needed.
+- This is the sole active development chat. Work item by item through verification and commits without routine clarification pauses.
+
+### Sweep
+
+The root V2 combat, kingdom, dungeon and impact-map documents own the corresponding design and migration details. Older V1 documents describe the old executable baseline only and cannot veto the authorized V2 changes. New map dimensions/authoring intent come from assets/battle-atlas/MAP_DESIGN_RULES.md; renderer meshes never substitute for authored combat footprints.
+## 2026-09-10 — The first two quests
+
+User, verbatim:
+
+> We can have the two first quests that are going to happen in the game that are available:
+>
+> 1. Rescue a civilian, and it requires you to send three people.  And the second one is recover supplies.   And you have to send one hero.   The one hero quest will give 5 experience points, take 1 week, and get 10 supplies.   Rescue a civilian gives everybody 3 experience points, and you get a random civilian that you rescue.   The supplies have a 5% chance of turning into a combat encounter unless you send two other units along with the hero.
+
+Implementation reading: Rescue a Civilian sends three roster people and grants each participant 3 XP plus one randomly selected civilian on success. Recover Supplies requires a hero, lasts one Week, awards that hero 5 XP and the campaign 10 Supplies on success. Zero or one escort retains the 5% combat chance; two additional units remove that risk. Quest encounters use exactly the dispatched party. Provisional defaults: rescue also lasts one Week; rescue has no encounter roll; supply escorts receive no additional fixed XP unless another authored reward grants it; a supply encounter must be won to receive the successful quest payout. The kingdom's data/switches own these defaults, not engine combat rules.

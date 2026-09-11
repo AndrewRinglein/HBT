@@ -1378,7 +1378,9 @@ export const UNIT_PACK = {
       "maxStamina": 0,
       "staminaRegen": 0,
       "ai": "dumb-melee",
-      "attacks": [],
+      "attacks": [
+        "attack.basic.melee"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -2861,6 +2863,16 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0
     },
+    "attack.basic.melee": {
+      "id": "attack.basic.melee",
+      "name": "Basic Attack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
     "attack.lieutenant-demon.ranged": {
       "id": "attack.lieutenant-demon.ranged",
       "name": "Hurl",
@@ -3102,7 +3114,6 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
-      "crit": -5,
       "accuracy": -5
     },
     "attack.longsword.slash": {
@@ -6383,7 +6394,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6420,7 +6433,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6433,7 +6448,8 @@ export const UNIT_PACK = {
       "levelTable": "civilian.farmer",
       "triggers": [],
       "defaultItems": [
-        "item.lumberjack-axe"
+        "item.lumberjack-axe",
+        "item.pitchfork"
       ]
     },
     {
@@ -6458,7 +6474,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6496,7 +6514,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6508,7 +6528,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.scholar",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.dagger"
+      ]
     },
     {
       "typeId": "hero.fixed.school-children",
@@ -6532,7 +6554,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6569,7 +6593,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6581,7 +6607,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.scholar",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.dagger"
+      ]
     },
     {
       "typeId": "hero.fixed.cook",
@@ -6604,7 +6632,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6616,7 +6646,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.crafter",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.dagger"
+      ]
     },
     {
       "typeId": "hero.fixed.fishermans-wife",
@@ -6639,7 +6671,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6651,7 +6685,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.sailor",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.dagger"
+      ]
     },
     {
       "typeId": "hero.fixed.fisherman",
@@ -6674,7 +6710,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6686,7 +6724,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.sailor",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.dagger"
+      ]
     },
     {
       "typeId": "hero.fixed.old-wise-man",
@@ -6709,7 +6749,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6721,7 +6763,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.scholar",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.dagger"
+      ]
     },
     {
       "typeId": "hero.fixed.blacksmith",
@@ -6744,7 +6788,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6756,7 +6802,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.crafter",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.dagger"
+      ]
     },
     {
       "typeId": "hero.fixed.group-of-farmers",
@@ -6779,7 +6827,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6816,7 +6866,9 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6828,7 +6880,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.farmer",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.pitchfork"
+      ]
     },
     {
       "typeId": "hero.fixed.scary-kid",
@@ -6845,13 +6899,15 @@ export const UNIT_PACK = {
       "precision": 5,
       "magic": 0,
       "spirit": 0,
-      "role": "melee",
+      "role": "ranged",
       "movement": 5,
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
-      "attacks": [],
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -6863,7 +6919,9 @@ export const UNIT_PACK = {
       ],
       "levelTable": "civilian.child",
       "triggers": [],
-      "defaultItems": []
+      "defaultItems": [
+        "item.pile-of-rocks"
+      ]
     }
   ],
   "alphaTeam": [

@@ -3,6 +3,10 @@
 Ambiguity gets exposed, not decided. Each row is a question the simulation can
 answer; the default is what runs today.
 
+**A tooling ambiguity does not belong here** — how a tool reads a file, prints a line
+or decides a shape goes in `../../GBH/SWITCHES.md`. Ruled 2026-09-06, Angela: *"tooling
+ambiguity should go into GBH."* This file is for questions a battle can answer.
+
 **Answered switches keep their code path** so the alternative stays sweepable, but
 the default freezes and the baseline uses it. Without recording the answers,
 "baseline" stops meaning anything by month three.
