@@ -380,9 +380,12 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): void {
     // The key is structural and includes the SLOT. Without it, two 20% triggers on
     // the same hit draw the same key, get a bit-identical value, and always fire
     // together — the correlated-stream bug this RNG exists to prevent.
-    const roll = fc.keyTag === undefined
-      ? roll100(ctx.rng, 'trigger', owner.uid, fc.targetId ?? 0, fc.ordinal, slot)
-      : roll100(ctx.rng, 'trigger', owner.uid, fc.targetId ?? 0, fc.ordinal, slot, fc.keyTag)
+    // Array positions are not identities. The presence field distinguishes
+    // no target from UID zero without stealing any unsigned 32-bit identity.
+    const targetUid = fc.targetId == null ? 0 : unit(ctx, fc.targetId).uid
+    const keys = [owner.uid, targetUid, fc.targetId == null ? 0 : 1, fc.ordinal, slot]
+    if (fc.keyTag !== undefined) keys.push(fc.keyTag)
+    const roll = roll100(ctx.rng, 'trigger', ...keys)
     const fired = roll <= chance.value
 
     emit(ctx, 'trigger.rolled', t.id, {

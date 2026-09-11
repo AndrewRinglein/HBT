@@ -1,0 +1,20 @@
+
+gate: fix.unit-identities   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 5 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:21 · ..\CODEX.md:981
+  PASS  typecheck
+  PASS  full test suite  — 975 passed
+  PASS  gate 1 — the id appears in a real battle  — unit.test-warrior: 30 log lines, 30 fired, 11 changed state · unit.test-zombie: 18 log lines, 18 fired, 6 changed state
+  PASS  brought its own tests  — test/afflictions.test.ts, test/battle-cursor.test.ts, test/fixtures/battle-cursor-identities.json, test/unit-identities.test.ts
+  WARN  existing tests untouched  — DELETED LINES in test/afflictions.test.ts (-8), test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged  — will re-bless at commit — this item DECLARED it changes the control battles: map.open 311e0749->12fac800, map.ridge a2ef3cde->c8f01175, map.flanks 48c48c01->03546300, map.highlands 12e2f563->b12ac275, map.field 8964941b->990d1d41, map.thicket 32a8daea->b8f528c5, map.proving.open 7ad2b3dc->9bc49d5a, map.proving.ridge cb345b97->14a91b17, map.proving.ford 3ad481a2->c150da1d, map.proving.copse b7595da5->ce3df8f1, map.proving.ruin 6923b209->92613e3e, map.courtyard abdd6433->843e32bf, map.floodplain de6e330b->376caf09, test.map.embers b170a0e2->85cae70b, test.map.showcase 6363c4ab->6b16a486, test.map.duel-8 bf9eba8a->08a2ea43, test.map.dungeon-16x8 f9613eb9->817b9720, test.map.horde-24 68183c0f->2dc8ea77
+  PASS  content has a published source  — 29 ids without a published source (19 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — unit.test-warrior live · unit.test-zombie live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without unit.test-warrior,unit.test-zombie — they genuinely test it
+
+All gates pass. Run with --land to commit.
+

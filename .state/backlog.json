@@ -3138,5 +3138,30 @@
   "status": "done-needs-review",
   "sha": "d6484cf",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "fix.unit-identities",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Every fielded or arriving unit has a unique unsigned 32-bit RNG identity. Caller identities survive roster ordering and reload; automatic allocation reserves them first and never reuses a dead unit's identity. Trigger dice use target identity and an explicit target-presence domain.",
+  "expect": "Both setup paths reject invalid identities and allocate uniquely. Restored arrivals, ownership, attack and trigger dice follow stable identities. Trigger key correction deliberately changes baselines, measured against the preceding commit.",
+  "needs": [
+   "plumbing.battle-snapshot",
+   "plumbing.battle-commands"
+  ],
+  "probeIds": [
+   "unit.test-warrior",
+   "unit.test-zombie"
+  ],
+  "variants": [
+   "unit.test-warrior",
+   "unit.test-zombie"
+  ],
+  "changesBaseline": true,
+  "note": "Independent review reproduced trigger target array-index dependence and no-target/index-zero aliasing. Four additional regression cases failed before the trigger correction; baseline changes are declared before implementing that correction. The allocator alone already passed 971 tests with unchanged controls.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "72d461b",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

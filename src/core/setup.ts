@@ -10,6 +10,7 @@ import { triggersFrom } from './trigger.js'
 import { emit, gainPower } from './mutate.js'
 import { arrive, heroDeployHexes, placeSetup } from './encounter.js'
 import { rulesSideOf } from './side.js'
+import { rosterUids, type UnitIdentityOptions } from './identity.js'
 
 export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
   const actions = [...def.attacks, ...def.abilities, ...def.moves]
@@ -46,7 +47,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
   }
 }
 
-export type BattleOptions = {
+export type BattleOptions = UnitIdentityOptions & {
   replicate: number
   variantId?: number
   cfg?: Partial<Config>
@@ -204,6 +205,7 @@ export function createBattle(opts: BattleOptions): Ctx {
     ? [...opts.enemies]
     : opts.encounter ? []
     : Array.from({ length: enemyCount }, (_, i) => FIRST_BATTLE.enemies[i % FIRST_BATTLE.enemies.length]!)
+  const identities = rosterUids(heroes.length, enemies.length, opts)
 
   /**
    * Positions named from outside are checked, loudly (Law 9).
@@ -340,7 +342,7 @@ export function createBattle(opts: BattleOptions): Ctx {
     seen[t] = (seen[t] ?? 0)
     const nm = `${d.name ?? label(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
     seen[t]!++
-    state.units.push(makeUnit(id, 100 + i, nm, d, hex))
+    state.units.push(makeUnit(id, identities.heroes[i]!, nm, d, hex))
     equipped.push({ unitId: id, worn })
     if (progress) {
       // progression.level-table-by-type (2026-09-03), Law 12: the log says
@@ -364,7 +366,7 @@ export function createBattle(opts: BattleOptions): Ctx {
     const row = onSide(def(t), 'enemy')
     const d = (row.badges?.length ? applyBadges(row, row.badges, BADGES, where).def : row)
     seenEnemy[t] = (seenEnemy[t] ?? 0) + 1
-    state.units.push(makeUnit(id, 200 + i, `${d.name ?? label(t)} ${seenEnemy[t]}`, d, hex))
+    state.units.push(makeUnit(id, identities.enemies[i]!, `${d.name ?? label(t)} ${seenEnemy[t]}`, d, hex))
     id++
   })
 
@@ -421,8 +423,9 @@ export function createBattle(opts: BattleOptions): Ctx {
 export function createCustomBattle(
   heroes: { type: string; hex: number }[],
   enemies: { type: string; hex: number }[],
-  opts: { replicate?: number; cfg?: Partial<Config>; strict?: boolean; mapId?: string } = {},
+  opts: UnitIdentityOptions & { replicate?: number; cfg?: Partial<Config>; strict?: boolean; mapId?: string } = {},
 ): Ctx {
+  const identities = rosterUids(heroes.length, enemies.length, opts)
   const cfg: Config = {
     ...DEFAULT_CONFIG, ...opts.cfg,
     switches: { ...DEFAULT_CONFIG.switches, ...(opts.cfg?.switches ?? {}) },
@@ -436,8 +439,8 @@ export function createCustomBattle(
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —
   // a fixture hero is the same hero as a scenario hero.
-  heroes.forEach((h, i) => { state.units.push(makeUnit(id, 100 + i, `H${i}`, applyItems(UNITS[h.type]!, UNITS[h.type]!.defaultItems ?? [], ITEMS, ATTACKS, 'custom battle').def, h.hex)); id++ })
-  enemies.forEach((e, i) => { const d = UNITS[e.type]!; state.units.push(makeUnit(id, 200 + i, `E${i}`, d.badges?.length ? applyBadges(d, d.badges, BADGES, 'custom battle').def : d, e.hex)); id++ })
+  heroes.forEach((h, i) => { state.units.push(makeUnit(id, identities.heroes[i]!, `H${i}`, applyItems(UNITS[h.type]!, UNITS[h.type]!.defaultItems ?? [], ITEMS, ATTACKS, 'custom battle').def, h.hex)); id++ })
+  enemies.forEach((e, i) => { const d = UNITS[e.type]!; state.units.push(makeUnit(id, identities.enemies[i]!, `E${i}`, d.badges?.length ? applyBadges(d, d.badges, BADGES, 'custom battle').def : d, e.hex)); id++ })
   for (const u of state.units) {
     // A dotted typeId is already a full Codex id and names itself; bare
     // typeIds keep the historic prefix. (2026-08-26 — keeps the prefix from

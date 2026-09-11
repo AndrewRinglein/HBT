@@ -1,0 +1,292 @@
+
+> test
+> vitest run
+
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+C:\Users\aring\AppData\Local\Temp\replay-test.html — seed 1 map.thicket · engine f1b1ca2 · 693 events · heroClear in 5 turns
+C:\Users\aring\AppData\Local\Temp\replay-showcase.html — seed 0 test.map.showcase · engine f1b1ca2 · 979 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-a.html — seed 0 test.map.showcase · engine f1b1ca2 · 979 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-b.html — seed 0 test.map.showcase · engine f1b1ca2 · 979 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-a.html — seed 1 map.thicket · engine f1b1ca2 · 693 events · heroClear in 5 turns
+C:\Users\aring\AppData\Local\Temp\replay-b.html — seed 1 map.thicket · engine f1b1ca2 · 693 events · heroClear in 5 turns
+ ❯ test/battle-cursor.test.ts (36 tests | 15 failed) 649ms
+     × preserves historical events/state/RNG/result: showcase.alpha-team 47ms
+     × preserves historical events/state/RNG/result: showcase.arc-variant 6ms
+     × preserves historical events/state/RNG/result: showcase.civilians 7ms
+     × preserves historical events/state/RNG/result: showcase.eve-24-a 13ms
+     × preserves historical events/state/RNG/result: showcase.eve-24-b 10ms
+     × preserves historical events/state/RNG/result: showcase.gash-variant 13ms
+     × preserves historical events/state/RNG/result: showcase.item-powers 4ms
+     × preserves historical events/state/RNG/result: showcase.kiln 24ms
+     × preserves historical events/state/RNG/result: showcase.knockback-two 2ms
+     × preserves historical events/state/RNG/result: showcase.mirror-zombies 3ms
+     × preserves historical events/state/RNG/result: showcase.ordered-power-preview 2ms
+     × preserves historical events/state/RNG/result: showcase.prologue-enemies 50ms
+     × preserves historical events/state/RNG/result: showcase.prologue-party 4ms
+     × preserves historical events/state/RNG/result: showcase.wounded-entry 1ms
+     × preserves historical events/state/RNG/result: progression-surge-2 15ms
+ ❯ test/afflictions.test.ts (4 tests | 1 failed) 139ms
+     × live — a zombie afflicts a hero somewhere in the standard battle's first seeds 124ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/afflictions.test.ts > an affliction lands > live — a zombie afflicts a hero somewhere in the standard battle's first seeds
+AssertionError: expected 0 to be greater than 0
+ ❯ test/afflictions.test.ts:78:18
+     76|       seen += ctx.events.filter((e) => e.type === 'badge.gained' && e[…
+     77|     }
+     78|     expect(seen).toBeGreaterThan(0)
+       |                  ^
+     79|   })
+     80| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.alpha-team
+AssertionError: events: expected '2a813f797fe6385988c9c0af607a2c9663f2b…' to be '96eef2bcacef969a490c82a7ad3a62381eb19…' // Object.is equality
+
+Expected: "96eef2bcacef969a490c82a7ad3a62381eb1923fcef9b5b2e5fce51eee73a581"
+Received: "2a813f797fe6385988c9c0af607a2c9663f2bfda5ccf3530ef848c471193bae0"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.arc-variant
+AssertionError: events: expected '21a50bdfdcdf8dede384d31fe647266ac804f…' to be '43c51311c99fbca835869a3c407d234760d41…' // Object.is equality
+
+Expected: "43c51311c99fbca835869a3c407d234760d41b0cdf8c53b7b4821b68a471584f"
+Received: "21a50bdfdcdf8dede384d31fe647266ac804faa48f3093ba5b55f9043b8e4144"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.civilians
+AssertionError: events: expected '94e85dcec8ab099ce9cbe91ae389c0483ca8f…' to be 'd33603f551d75f3b1dd2df8516cddb1f81f84…' // Object.is equality
+
+Expected: "d33603f551d75f3b1dd2df8516cddb1f81f84afaf77842245eed4d6f6b53eac3"
+Received: "94e85dcec8ab099ce9cbe91ae389c0483ca8fc8cfde4eb57c363118a7fc88e67"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.eve-24-a
+AssertionError: events: expected 'b6fe3bdff830dd69f9e25b189924eeec407e1…' to be '4573c94534aed9b2e791ec9fe157db1751de8…' // Object.is equality
+
+Expected: "4573c94534aed9b2e791ec9fe157db1751de88b557046fa23e5f03c5f9f857be"
+Received: "b6fe3bdff830dd69f9e25b189924eeec407e12f01c780b6db9c5baa0d5074c73"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.eve-24-b
+AssertionError: events: expected 'bc4f8a5db6450c7f7438614cba1a14ab5c782…' to be 'b3e5525e85aee51b1838ab8f7157e0a369eeb…' // Object.is equality
+
+Expected: "b3e5525e85aee51b1838ab8f7157e0a369eeb9448cd57f37799958420f79b21d"
+Received: "bc4f8a5db6450c7f7438614cba1a14ab5c782f135bb5ddf45bd083027ee014b3"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.gash-variant
+AssertionError: events: expected '5b62ec0cb5427a6d936d712e43fd47a936e2f…' to be '749502fa20e1d7b253842635db5e002a9f8ea…' // Object.is equality
+
+Expected: "749502fa20e1d7b253842635db5e002a9f8ea0e3af24a160e9f21f13180c55dd"
+Received: "5b62ec0cb5427a6d936d712e43fd47a936e2f6176e1dc07bc55ddef663f0607f"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.item-powers
+AssertionError: events: expected '2b06dd7044e7d5713c3d7cdc7add94be736c1…' to be '8a2da651ccbb2a0dd6c802669ee26f12e1b4c…' // Object.is equality
+
+Expected: "8a2da651ccbb2a0dd6c802669ee26f12e1b4c7ab9a4f6e554891da0729e67b9c"
+Received: "2b06dd7044e7d5713c3d7cdc7add94be736c1c61713611e139791ea570290a7b"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.kiln
+AssertionError: events: expected '8500b6e9646a27df9972a3cd66fb71ef55278…' to be 'b69ddfbf61134c52af2c4ca3dd59a18349365…' // Object.is equality
+
+Expected: "b69ddfbf61134c52af2c4ca3dd59a183493657025ee69e65a5388aa0e0645fa6"
+Received: "8500b6e9646a27df9972a3cd66fb71ef55278afe4c92fd1ee6acaa2cb2945520"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.knockback-two
+AssertionError: events: expected 'd58f39208f145163f3701c5654c9569962742…' to be '51e35040baa2f5609a2a2d93a45bbbbda054e…' // Object.is equality
+
+Expected: "51e35040baa2f5609a2a2d93a45bbbbda054ec2ee3d3ceef0ddb463621014d09"
+Received: "d58f39208f145163f3701c5654c956996274226bba8bdffd723a1fad5baf5716"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.mirror-zombies
+AssertionError: events: expected 'a332a14b2f6f9fcae08f51454e91dd52ddc9b…' to be '165b94d9ba3a4847f0fa021fe7d0dcfc35ea9…' // Object.is equality
+
+Expected: "165b94d9ba3a4847f0fa021fe7d0dcfc35ea903b99433d1e383639d9c38ce724"
+Received: "a332a14b2f6f9fcae08f51454e91dd52ddc9b8dc542e4109a5cecdc8047d7ccb"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.ordered-power-preview
+AssertionError: events: expected '36bbac50ac9107d7e5845d8fe34d7c00cba7d…' to be '0a9369324fa1e87100fef0d3a261581a282b3…' // Object.is equality
+
+Expected: "0a9369324fa1e87100fef0d3a261581a282b3df602eea9c249b8557cc30e6472"
+Received: "36bbac50ac9107d7e5845d8fe34d7c00cba7ddba7a66ac9e959ad575f806fd88"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.prologue-enemies
+AssertionError: events: expected 'bdee767f7a2cb9d8627a3abb2becb0a0c0fa9…' to be '32f0f6ed598599f03cf632ce7dd64b0249135…' // Object.is equality
+
+Expected: "32f0f6ed598599f03cf632ce7dd64b02491351c937d104db43b792fa316dbb00"
+Received: "bdee767f7a2cb9d8627a3abb2becb0a0c0fa92349059348a0d0c707a8dcda223"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.prologue-party
+AssertionError: events: expected '941d5f9432850847b20c9a25de58a9f260d05…' to be 'b7778ce72a18154f69ff3d6ca13737ed17c03…' // Object.is equality
+
+Expected: "b7778ce72a18154f69ff3d6ca13737ed17c03386c84cb90932fcc23e7c9126d4"
+Received: "941d5f9432850847b20c9a25de58a9f260d05da3dbc81c26789812e1d824b695"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.wounded-entry
+AssertionError: events: expected 'f803d66406cfa1bc19dd0986a4d63b10ebc59…' to be '3d1bfeaf5f4491199d368a50535b0e1617d6c…' // Object.is equality
+
+Expected: "3d1bfeaf5f4491199d368a50535b0e1617d6c4ddad634d51221205047e389465"
+Received: "f803d66406cfa1bc19dd0986a4d63b10ebc592d50e41d3d6a3b4757520a6d946"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/16]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: progression-surge-2
+AssertionError: events: expected '2ca45399477eabb5e9313b80129688ff5c745…' to be '8bc996c55afb448067e0cca6dd62f3a3fe195…' // Object.is equality
+
+Expected: "8bc996c55afb448067e0cca6dd62f3a3fe195c8ffa981afe615c9238ffbe9649"
+Received: "2ca45399477eabb5e9313b80129688ff5c74564c2f6f3c4d05a4947a5089ac1b"
+
+ ❯ test/battle-cursor.test.ts:112:44
+    110|         } else result = battle.runBattle(ctx)
+    111|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    112|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    113|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    114|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/16]⎯
+
+
+ Test Files  2 failed | 114 passed (116)
+      Tests  16 failed | 959 passed | 1 todo (976)
+   Start at  02:32:24
+   Duration  31.19s (transform 2.61s, setup 0ms, import 15.94s, tests 85.60s, environment 8ms)
+

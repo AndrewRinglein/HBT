@@ -1,0 +1,100 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/unit-identities.test.ts (30 tests | 4 failed | 26 skipped) 13ms
+     × keeps trigger dice attached to the target identity, keyTag=undefined 8ms
+     × keeps trigger dice attached to the target identity, keyTag=7 1ms
+     × distinguishes target UID0 from no target in the trigger cup 1ms
+     × distinguishes target UID4294967295 from no target in the trigger cup 1ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 26 skipped (30)
+   Start at  02:36:13
+   Duration  630ms (transform 390ms, setup 0ms, import 497ms, tests 13ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/unit-identities.test.ts > unit identity at setup and continuation > keeps trigger dice attached to the target identity, keyTag=undefined
+AssertionError: expected [ { stream: 'trigger', …(2) } ] to deeply equal [ { stream: 'trigger', …(2) } ]
+
+- Expected
++ Received
+
+  [
+    {
+      "keys": [
+        900,
+-       1,
++       0,
+        0,
+        0,
+      ],
+      "stream": "trigger",
+-     "value": 3657409429,
++     "value": 3774885594,
+    },
+  ]
+
+ ❯ test/unit-identities.test.ts:123:23
+    121|     }
+    122|     expect(a.rng.log).toHaveLength(1)
+    123|     expect(a.rng.log).toEqual(b.rng.log)
+       |                       ^
+    124|     expect(a.state.units[0]!.statuses).toContainEqual(expect.objectCon…
+    125|     expect(a.state.units[0]!.statuses).toEqual(b.state.units[1]!.statu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/unit-identities.test.ts > unit identity at setup and continuation > keeps trigger dice attached to the target identity, keyTag=7
+AssertionError: expected [ { stream: 'trigger', …(2) } ] to deeply equal [ { stream: 'trigger', …(2) } ]
+
+- Expected
++ Received
+
+  [
+    {
+      "keys": [
+        900,
+-       1,
++       0,
+        0,
+        0,
+        7,
+      ],
+      "stream": "trigger",
+-     "value": 3156336581,
++     "value": 4096418155,
+    },
+  ]
+
+ ❯ test/unit-identities.test.ts:123:23
+    121|     }
+    122|     expect(a.rng.log).toHaveLength(1)
+    123|     expect(a.rng.log).toEqual(b.rng.log)
+       |                       ^
+    124|     expect(a.state.units[0]!.statuses).toContainEqual(expect.objectCon…
+    125|     expect(a.state.units[0]!.statuses).toEqual(b.state.units[1]!.statu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/unit-identities.test.ts > unit identity at setup and continuation > distinguishes target UID0 from no target in the trigger cup
+ FAIL  test/unit-identities.test.ts > unit identity at setup and continuation > distinguishes target UID4294967295 from no target in the trigger cup
+AssertionError: expected [Function] to not throw an error but 'Error: RNG key collision: trigger|900…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: RNG key collision: trigger|900,0,0,0 was drawn twice. A repeated key returns a bit-identical value, which silently turns a random mechanic deterministic. Add an ordinal to the key."
+
+ ❯ test/unit-identities.test.ts:133:109
+    131|       select: 'self', effect: { kind: 'status.apply', statusId: 'statu…
+    132|     fireTriggers(c, 'onHit', { ownerId: 2, targetId: 0, ordinal: 0, ca…
+    133|     expect(() => fireTriggers(c, 'onHit', { ownerId: 2, targetId: null…
+       |                                                                                                             ^
+    134|     expect(c.rng.log).toHaveLength(2)
+    135|     expect(c.rng.log[0]!.keys).not.toEqual(c.rng.log[1]!.keys)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+

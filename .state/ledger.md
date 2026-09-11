@@ -11108,3 +11108,114 @@ effect of power.focus,power.leap — 25 paired battles per map, WITH vs WITHOUT
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
 MEASURABLE
 ```
+
+## fix.unit-identities — LANDED `72d461b` **NEEDS REVIEW**
+2026-09-11 09:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:21 · ..\CODEX.md:981
+  PASS  typecheck
+  PASS  full test suite — 975 passed
+  PASS  gate 1 — the id appears in a real battle — unit.test-warrior: 30 log lines, 30 fired, 11 changed state · unit.test-zombie: 18 log lines, 18 fired, 6 changed state
+  PASS  brought its own tests — test/afflictions.test.ts, test/battle-cursor.test.ts, test/fixtures/battle-cursor-identities.json, test/unit-identities.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/afflictions.test.ts (-8), test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 311e0749->12fac800, map.ridge a2ef3cde->c8f01175, map.flanks 48c48c01->03546300, map.highlands 12e2f563->b12ac275, map.field 8964941b->990d1d41, map.thicket 32a8daea->b8f528c5, map.proving.open 7ad2b3dc->9bc49d5a, map.proving.ridge cb345b97->14a91b17, map.proving.ford 3ad481a2->c150da1d, map.proving.copse b7595da5->ce3df8f1, map.proving.ruin 6923b209->92613e3e, map.courtyard abdd6433->843e32bf, map.floodplain de6e330b->376caf09, test.map.embers b170a0e2->85cae70b, test.map.showcase 6363c4ab->6b16a486, test.map.duel-8 bf9eba8a->08a2ea43, test.map.dungeon-16x8 f9613eb9->817b9720, test.map.horde-24 68183c0f->2dc8ea77
+  PASS  content has a published source — 29 ids without a published source (19 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — unit.test-warrior live · unit.test-zombie live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.test-warrior,unit.test-zombie — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/afflictions.test.ts b/test/afflictions.test.ts
+index e8f0614..72a3a6b 100644
+--- a/test/afflictions.test.ts
++++ b/test/afflictions.test.ts
+@@ -69,12 +69,17 @@ describe('an affliction lands', () => {
+   })
+ 
+-  it('live — a zombie afflicts a hero somewhere in the standard battle\'s first seeds', () => {
+-    let seen = 0
+-    for (let r = 0; r < 12 && !seen; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.open' })
+-      runBattle(ctx)
+-      seen += ctx.events.filter((e) => e.type === 'badge.gained' && e['badgeId'] === 'badge.rotting-flesh').length
+-    }
+-    expect(seen).toBeGreaterThan(0)
++  it('live — an authored 2% zombie trigger grants Rotting Flesh when its roll succeeds', () => {
++    // Law 10, fix.unit-identities: trigger rolls now key on stable target UID.
++    // The first twelve standard seeds no longer happen to include a 2% success.
++    // Keep a real-battle fixture with a measured success; assert the roll and
++    // resulting grant together instead of treating twelve seeds as a guarantee.
++    const ctx = createBattle({ replicate: 29, enemyCount: 8, mapId: 'map.open' })
++    runBattle(ctx)
++    const fired = ctx.events.filter(e => e.type === 'trigger.rolled' && e.causeId === ROT && e['fired'])
++    expect(fired).toHaveLength(1)
++    expect(fired[0]).toMatchObject({ roll: 1, chance: 2 })
++    const gained = ctx.events.filter(e => e.type === 'badge.gained' && e['badgeId'] === 'badge.rotting-flesh')
++    expect(gained).toHaveLength(1)
++    expect(gained[0]!.seq).toBeGreaterThan(fired[0]!.seq)
+   })
+ })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 9e3858e..08a4046 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -10,4 +10,5 @@ import { battleCursorCases } from './battle-cursor-cases.js'
+ 
+ const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
++const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -20,4 +21,9 @@ const surgeChanged = new Set(['showcase.assembled-party', 'showcase.badged', 'sh
+ // recorded 476-battle transition explains these three additional old hashes.
+ const aiChanged = new Set(['showcase.horrors', 'showcase.rime', 'showcase.waystation'])
++// Law 10, fix.unit-identities: these fifteen remaining historical streams used
++// target array indices in trigger keys. Measured before/after first differences
++// are trigger.rolled. Preserve the original file, add separate frozen migration
++// expectations, and continue checking BOTH drivers against all four hashes/results.
++const identityChanged = new Set(['showcase.alpha-team', 'showcase.arc-variant', 'showcase.civilians', 'showcase.eve-24-a', 'showcase.eve-24-b', 'showcase.gash-variant', 'showcase.item-powers', 'showcase.kiln', 'showcase.knockback-two', 'showcase.mirror-zombies', 'showcase.ordered-power-preview', 'showcase.prologue-enemies', 'showcase.prologue-party', 'showcase.wounded-entry', 'progression-surge-2'])
+ 
+ describe('resumable battle cursor', () => {
+@@ -91,9 +97,9 @@ describe('resumable battle cursor', () => {
+ 
+   for (const fixture of battleCursorCases()) {
+-    const historical = surgeChanged.has(fixture.id) || aiChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
++    const historical = surgeChanged.has(fixture.id) || aiChanged.has(fixture.id) || identityChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
+     it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
+       // Newly authored scenarios have no pre-extraction history. Keep every old
+       // golden intact, and compare both current drivers for additions to the corpus.
+-      let expected = historical
++      let expected = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of unit.test-warrior,unit.test-zombie — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.3->4.3
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.2->5.2
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.proving.ruin: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.2->3.2
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 5.6->5.6
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.7->4.7
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 5.7->5.7
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

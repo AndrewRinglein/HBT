@@ -2176,3 +2176,67 @@ tests (three multi-battle audits and three multi-process exports) receive explic
 statistical thresholds, byte equality and all assertions are unchanged. Failed-run
 evidence remains in `scratch/ai-full-suite.log`,
 `scratch/ai-suite-four-workers.log` and `scratch/ai-isolated-expensive.log`.
+
+## 2026-09-11 — V2 unit identities (implementation decision)
+
+Unit array indices identify positions in the battle record; `uid` identifies the
+unit for named random streams and trusted controller ownership. Both setup paths
+accept aligned `heroUids` and `enemyUids` lists. An absent list or undefined entry
+requests automatic allocation. Reserve every explicit identity before allocating
+either roster. Duplicates across either side, mismatched lists and invalid values
+are errors, never silent renumbering. Inputs remain unchanged.
+
+Identity values are unsigned 32-bit integers, including zero: `rng.ts` hashes four
+bytes per numeric key, so a larger safe integer would alias after truncation.
+Snapshots validate the same bound. Ordinary automatic identities retain their
+100/200 starting ranges; a collision advances to an unused value. Arrivals search
+from 300 against the current units and corpses, including dead units, rather than
+inferring identity from an arrival count or capturing a counter across reloads.
+Snapshot rules advance to `v2-migration.5` for the changed allocation behavior.
+
+The pre-change 102-unit setup reproduced 101 distinct identities (duplicate 200).
+All 26 new regression cases failed before implementation, for the intended
+identity, validation and ownership assertions, then passed afterward. Coverage
+includes both setup paths, unsigned boundaries, frozen inputs, later explicit
+reservations, sparse/dead arrivals, restored arrival parity, public controller
+ownership and unchanged attack RNG when the same roster is reordered with stable
+identities. `scratch/unit-identities-red.log` preserves the red run. This
+allocator-only implementation passed its first full gate (971 tests) with
+unchanged control hashes.
+
+Independent review then reproduced a related pre-existing violation: trigger
+rolls used the target's array index rather than its identity. Four further
+regressions failed for reordered targets and the absent-target/index-zero alias.
+Trigger keys now contain owner UID, target UID, an explicit target-presence
+field, invocation ordinal, trigger slot and optional key tag. The presence field
+keeps both UID zero and UID 4294967295 distinct from no target; null and undefined
+both mean no target. The existing death-trigger tests caught the null case
+during the correction, and remain unchanged. All 62 identity/trigger tests pass.
+The stage now explicitly declares changed baselines before gate verification;
+before/after battle comparisons record their impact. This corrects deterministic
+identity, not a balance tuning decision.
+
+The expanded transition comparison covers 479 battles (450 controls, 26 authored
+scenarios and three progression cases). 478 event streams differ; every first
+difference is a trigger roll with the same cause. 34 complete result records
+differ; this is not a count of victory flips or a balance claim. The unchanged
+case retains exact events, state and RNG. Evidence is in
+`scratch/identity-transition-comparison.json` and its reproducible script.
+
+The first expanded full suite found 15 historical cursor hashes and one rare-roll
+fixture stale (959 passed, 16 failed). The original historical fixture remains
+byte-identical. A separate `battle-cursor-identities.json` freezes all 30 current
+cases, and both automatic and suspended drivers must match those expectations.
+The old affliction smoke assumed a 2% success in the first twelve standard seeds;
+the corrected keys produce none there. Replicate 29 is now an explicit live
+fixture asserting roll 1 at chance 2 and its single subsequent badge grant.
+No trigger chances, battle inputs or mechanics were tuned to preserve old rolls.
+All 70 focused identity, affliction and cursor regressions pass before full gate.
+
+The expanded gate passed all 975 tests but rejected three type errors in the new
+trigger probes: `target` instead of `select`, and an omitted required nullable
+target. Corrected the test API usage, made the target effect guaranteed and
+asserted its actual status grant. Typecheck and all 30 identity tests pass. A
+fresh counterfactual restores only the old trigger keys temporarily: all four
+typed identity probes fail, then the corrected source is restored. Evidence:
+`scratch/unit-identities-trigger-counterfactual-red.log`. No check was skipped.

@@ -9,6 +9,7 @@ import { applyStatus } from '../src/core/status.js'
 import { battleCursorCases } from './battle-cursor-cases.js'
 
 const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
+const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -19,6 +20,11 @@ const surgeChanged = new Set(['showcase.assembled-party', 'showcase.badged', 'sh
 // illegal lowest-health candidates cannot hide another legal target. The
 // recorded 476-battle transition explains these three additional old hashes.
 const aiChanged = new Set(['showcase.horrors', 'showcase.rime', 'showcase.waystation'])
+// Law 10, fix.unit-identities: these fifteen remaining historical streams used
+// target array indices in trigger keys. Measured before/after first differences
+// are trigger.rolled. Preserve the original file, add separate frozen migration
+// expectations, and continue checking BOTH drivers against all four hashes/results.
+const identityChanged = new Set(['showcase.alpha-team', 'showcase.arc-variant', 'showcase.civilians', 'showcase.eve-24-a', 'showcase.eve-24-b', 'showcase.gash-variant', 'showcase.item-powers', 'showcase.kiln', 'showcase.knockback-two', 'showcase.mirror-zombies', 'showcase.ordered-power-preview', 'showcase.prologue-enemies', 'showcase.prologue-party', 'showcase.wounded-entry', 'progression-surge-2'])
 
 describe('resumable battle cursor', () => {
   it('blocked actors run their end ladder without yielding an action cycle', () => {
@@ -90,11 +96,11 @@ describe('resumable battle cursor', () => {
   })
 
   for (const fixture of battleCursorCases()) {
-    const historical = surgeChanged.has(fixture.id) || aiChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
+    const historical = surgeChanged.has(fixture.id) || aiChanged.has(fixture.id) || identityChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
     it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
       // Newly authored scenarios have no pre-extraction history. Keep every old
       // golden intact, and compare both current drivers for additions to the corpus.
-      let expected = historical
+      let expected = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result

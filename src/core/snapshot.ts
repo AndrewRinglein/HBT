@@ -1,4 +1,5 @@
 import { geometryOf } from './hex.js'
+import { isUnitUid } from './identity.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
 import { validateTrigger, type Trigger } from './trigger.js'
@@ -7,7 +8,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, type BattleCursor, type Ctx } from '.
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.4' // Shared AI legality and exact movement choices.
+const RULES_VERSION = 'v2-migration.5' // Collision-free caller and arrival identities.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -96,7 +97,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   const uids = new Set<number>()
   for (const [i, u] of st.units.entries()) {
     record(u)
-    requireThat(u.id === i && integer(u.uid, 0) && !uids.has(u.uid), 'unit identity'); uids.add(u.uid)
+    requireThat(u.id === i && isUnitUid(u.uid) && !uids.has(u.uid), 'unit identity'); uids.add(u.uid)
     requireThat(integer(u.hex, 0, cells - 1), 'unit hex')
     for (const k of ['hp', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'movement', 'reach', 'stamina', 'maxStamina', 'staminaRegen', 'bleedOut', 'toughness', 'surge', 'surgeChance', 'vision', 'movePointsLeft', 'activationOrdinal', 'attackOrdinal', 'deathbedOrdinal']) requireThat(integer(u[k]), `unit ${k}`)
     requireThat(phases.includes(u.side) && phases.includes(u.rowSide) && ['standing', 'downed', 'dead'].includes(u.lifeState), 'unit side/life')
@@ -192,7 +193,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(Array.isArray(st.corpses), 'corpses')
     for (const corpse of st.corpses) {
       record(corpse)
-      requireThat(integer(corpse.id, 0) && integer(corpse.uid, 0) && integer(corpse.hex, 0, cells - 1) && phases.includes(corpse.side) && typeof corpse.typeId === 'string', 'corpse')
+      requireThat(integer(corpse.id, 0) && isUnitUid(corpse.uid) && integer(corpse.hex, 0, cells - 1) && phases.includes(corpse.side) && typeof corpse.typeId === 'string', 'corpse')
     }
   }
   requireThat(st.power === undefined || integer(st.power, 0), 'power pool')

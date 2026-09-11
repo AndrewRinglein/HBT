@@ -22,6 +22,7 @@
 
 import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './types.js'
 import type { HexId } from './hex.js'
+import { arrivalUid } from './identity.js'
 import { applyBadges } from './items.js'
 import { emit, gainPower, paintLayer, setOutcome } from './mutate.js'
 import { applyStatus } from './status.js'
@@ -88,10 +89,9 @@ export function arrive(ctx: Ctx, def: UnitDef, want: HexId, causeId: string, nam
   const id = ctx.state.units.length
   names[def.typeId] = (names[def.typeId] ?? 0) + 1
   const label = def.typeId.split('.').pop()!.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
-  // uid is the RNG identity (Law 4): 300 + this battle's arrival count, read
-  // off the state — a module counter here made the same seed roll differently
-  // on the second battle of a process (found by the determinism test).
-  const uid = 300 + ctx.state.units.filter((x) => x.uid >= 300).length
+  // Sparse caller identities and dead units remain reserved. Read state, not
+  // a process counter, so restoring a battle cannot reuse an identity.
+  const uid = arrivalUid(ctx.state)
   // badge.mechanism: a row's own badges fold on arrival as at fielding
   const folded = def.badges?.length ? applyBadges(def, def.badges, ctx.badges, causeId).def : def
   const u = makeUnit(id, uid, `${def.name ?? label} ${names[def.typeId]}`, folded, hex)

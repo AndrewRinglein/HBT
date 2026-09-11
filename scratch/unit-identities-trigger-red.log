@@ -1,0 +1,79 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+··························xxxx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/unit-identities.test.ts > unit identity at setup and continuation > keeps trigger dice attached to the target identity, keyTag=undefined
+TypeError: Cannot read properties of undefined (reading 'select')
+ ❯ selectOf src/core/trigger.ts:317:34
+    315|     // An area measures from its stated origin — default self. `unit` …
+    316|     // hook's target. TRIGGER-NOTES.md Q2, answered explicitly.
+    317|     const wantsTarget = t.select.select === 'unit' ||
+       |                                  ^
+    318|       (t.select.select === 'area' && t.select.origin === 'target')
+    319|     const aim = wantsTarget ? (fc.targetId ?? -1) : fc.ownerId
+ ❯ fireTriggers src/core/trigger.ts:394:22
+ ❯ test/unit-identities.test.ts:120:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/unit-identities.test.ts > unit identity at setup and continuation > keeps trigger dice attached to the target identity, keyTag=7
+AssertionError: expected [ { stream: 'trigger', …(2) } ] to deeply equal [ { stream: 'trigger', …(2) } ]
+
+- Expected
++ Received
+
+  [
+    {
+      "keys": [
+        900,
+-       1,
++       0,
+        0,
+        0,
+        7,
+      ],
+      "stream": "trigger",
+-     "value": 3156336581,
++     "value": 4096418155,
+    },
+  ]
+
+ ❯ test/unit-identities.test.ts:123:23
+    121|     }
+    122|     expect(a.rng.log).toHaveLength(1)
+    123|     expect(a.rng.log).toEqual(b.rng.log)
+       |                       ^
+    124|     expect(a.state.units[0]!.statuses).toEqual(b.state.units[1]!.statu…
+    125|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/unit-identities.test.ts > unit identity at setup and continuation > distinguishes target UID0 from no target in the trigger cup
+ FAIL  test/unit-identities.test.ts > unit identity at setup and continuation > distinguishes target UID4294967295 from no target in the trigger cup
+AssertionError: expected [Function] to not throw an error but 'Error: RNG key collision: trigger|900…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: RNG key collision: trigger|900,0,0,0 was drawn twice. A repeated key returns a bit-identical value, which silently turns a random mechanic deterministic. Add an ordinal to the key."
+
+ ❯ test/unit-identities.test.ts:132:93
+    130|       target: 'self', effect: { kind: 'status.apply', statusId: 'statu…
+    131|     fireTriggers(c, 'onHit', { ownerId: 2, targetId: 0, ordinal: 0, ca…
+    132|     expect(() => fireTriggers(c, 'onHit', { ownerId: 2, ordinal: 0, ca…
+       |                                                                                             ^
+    133|     expect(c.rng.log).toHaveLength(2)
+    134|     expect(c.rng.log[0]!.keys).not.toEqual(c.rng.log[1]!.keys)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 26 passed (30)
+   Start at  00:57:00
+   Duration  686ms (transform 378ms, setup 0ms, import 482ms, tests 78ms, environment 0ms)
+

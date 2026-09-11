@@ -68,13 +68,18 @@ describe('an affliction lands', () => {
     expect(ctx.events.filter((e) => e.type === 'badge.gained').length).toBeLessThanOrEqual(1)
   })
 
-  it('live — a zombie afflicts a hero somewhere in the standard battle\'s first seeds', () => {
-    let seen = 0
-    for (let r = 0; r < 12 && !seen; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.open' })
-      runBattle(ctx)
-      seen += ctx.events.filter((e) => e.type === 'badge.gained' && e['badgeId'] === 'badge.rotting-flesh').length
-    }
-    expect(seen).toBeGreaterThan(0)
+  it('live — an authored 2% zombie trigger grants Rotting Flesh when its roll succeeds', () => {
+    // Law 10, fix.unit-identities: trigger rolls now key on stable target UID.
+    // The first twelve standard seeds no longer happen to include a 2% success.
+    // Keep a real-battle fixture with a measured success; assert the roll and
+    // resulting grant together instead of treating twelve seeds as a guarantee.
+    const ctx = createBattle({ replicate: 29, enemyCount: 8, mapId: 'map.open' })
+    runBattle(ctx)
+    const fired = ctx.events.filter(e => e.type === 'trigger.rolled' && e.causeId === ROT && e['fired'])
+    expect(fired).toHaveLength(1)
+    expect(fired[0]).toMatchObject({ roll: 1, chance: 2 })
+    const gained = ctx.events.filter(e => e.type === 'badge.gained' && e['badgeId'] === 'badge.rotting-flesh')
+    expect(gained).toHaveLength(1)
+    expect(gained[0]!.seq).toBeGreaterThan(fired[0]!.seq)
   })
 })
