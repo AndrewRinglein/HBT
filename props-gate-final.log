@@ -1,0 +1,30 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+maps: 22 in the engine, all in both dumps
+OK — 23 battles fold end to end · pure fold == pumped fold · icons 4 used · rows damaging=645 plain=3651
+built C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\BATTLE-VIEWER.html · 12.9 MB · viewer b47728a* · engine d872c34 · sheets d872c34 · fields d872c34 · 23 battles · * = from a dirty tree
+fresh: Horde 24×24 — the river — byte-identical events (d872c34 → d872c34)
+fresh: Supper (seed 5) — byte-identical events (d872c34 → d872c34)
+fresh: Embers — byte-identical events (d872c34 → d872c34)
+fresh: Showcase — byte-identical events (d872c34 → d872c34)
+fresh: Flanks — byte-identical events (d872c34 → d872c34)
+fresh: Thicket — byte-identical events (d872c34 → d872c34)
+fresh: Field — byte-identical events (d872c34 → d872c34)
+fresh: Highlands — byte-identical events (d872c34 → d872c34)
+fresh: Civilians — byte-identical events (d872c34 → d872c34)
+fresh: Hunter Alone — byte-identical events (d872c34 → d872c34)
+fresh: Prologue Bestiary — byte-identical events (d872c34 → d872c34)
+fresh: Beasts — byte-identical events (d872c34 → d872c34)
+fresh: Alpha Team — byte-identical events (d872c34 → d872c34)
+fresh: Item Powers — byte-identical events (d872c34 → d872c34)
+fresh: Arc Golem — byte-identical events (d872c34 → d872c34)
+fresh: The Kiln — byte-identical events (d872c34 → d872c34)
+fresh: Horrors of the Night — byte-identical events (d872c34 → d872c34)
+fresh: Surrounded (seed 3) — byte-identical events (d872c34 → d872c34)
+fresh: Assembled Party — byte-identical events (d872c34 → d872c34)
+fresh: Dungeon 16×8 (heroes west) — byte-identical events (d872c34 → d872c34)
+fresh: Duel 8×8 — byte-identical events (d872c34 → d872c34)
+fresh: Rime — repeated affliction — byte-identical events (d872c34 → d872c34)
+fresh: Ranged-only reaction — no melee attack — byte-identical events (d872c34 → d872c34)
+GATE OK
