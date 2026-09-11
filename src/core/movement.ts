@@ -415,7 +415,7 @@ export function executeFlight(ctx: Ctx, unitId: number, to: HexId, power: MoveDe
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to, hexes: d })
   // Points drawn from the unit's own store; the power's modifier covers the
   // rest (swift can jump one hex past the store without sending it negative).
-  const paid = u.movePointsLeft - Math.max(0, u.movePointsLeft + power.move.budgetMod - d)
+  const paid = Math.max(0, d - power.move.budgetMod)
   moveUnit(ctx, unitId, to, paid, power.id, terrainIdOf(terrainThere))
   return true
 }

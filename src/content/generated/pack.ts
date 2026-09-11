@@ -13739,6 +13739,124 @@ export const UNIT_PACK = {
             "source": "unit.test-ordered-strip"
           }
         ]
+      },
+      {
+        "typeId": "test-flight-plus-three",
+        "name": "Long flier (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 2,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.test-flight-plus-three"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-flight-plus-three"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-flight-plus-three"
+          }
+        ]
+      },
+      {
+        "typeId": "test-flight-plus-five",
+        "name": "Longer flier (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 2,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.test-flight-plus-five"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-flight-plus-five"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-flight-plus-five"
+          }
+        ]
       }
     ],
     "attacks": {
@@ -14048,6 +14166,22 @@ export const UNIT_PACK = {
         "shape": "path",
         "staminaCost": 0,
         "budgetMod": 3,
+        "cooldown": 0
+      },
+      "power.test-flight-plus-three": {
+        "id": "power.test-flight-plus-three",
+        "name": "Long flight (TEST)",
+        "shape": "flight",
+        "staminaCost": 0,
+        "budgetMod": 3,
+        "cooldown": 0
+      },
+      "power.test-flight-plus-five": {
+        "id": "power.test-flight-plus-five",
+        "name": "Longer flight (TEST)",
+        "shape": "flight",
+        "staminaCost": 0,
+        "budgetMod": 5,
         "cooldown": 0
       }
     }

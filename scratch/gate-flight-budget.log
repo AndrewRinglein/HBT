@@ -1,0 +1,20 @@
+
+gate: fix.flight-budget   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 5 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\STATE.md:18
+  PASS  typecheck
+  PASS  full test suite  — 998 passed
+  PASS  gate 1 — the id appears in a real battle  — power.test-flight-plus-three: 20 log lines, 20 fired, 10 changed state · power.test-flight-plus-five: 16 log lines, 16 fired, 8 changed state
+  PASS  brought its own tests  — test/flight-budget.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source  — 30 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — power.test-flight-plus-three live · power.test-flight-plus-five live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without power.test-flight-plus-three,power.test-flight-plus-five — they genuinely test it
+
+All gates pass. Run with --land to commit.
+

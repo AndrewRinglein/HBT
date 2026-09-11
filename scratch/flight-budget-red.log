@@ -1,0 +1,119 @@
+
+> test
+> vitest run test/flight-budget.test.ts
+
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/flight-budget.test.ts (17 tests | 6 failed) 404ms
+     × power.test-flight-plus-three pays the exact own-store cost over 1 hexes 20ms
+     × power.test-flight-plus-three keeps every planned destination executable after reload with no negative payment 171ms
+     × power.test-flight-plus-three preserves the short-jump balance through reload then reopens only the sampled Surge allowance 8ms
+     × power.test-flight-plus-five pays the exact own-store cost over 1 hexes 8ms
+     × power.test-flight-plus-five keeps every planned destination executable after reload with no negative payment 75ms
+     × power.test-flight-plus-five preserves the short-jump balance through reload then reopens only the sampled Surge allowance 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/flight-budget.test.ts > flight spends its local bonus without replenishing activation movement > power.test-flight-plus-three pays the exact own-store cost over 1 hexes
+AssertionError: expected 7 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 7
+
+ ❯ test/flight-budget.test.ts:32:50
+     30|       expect(executeAction(ctx, request)).toEqual({ ok: true })
+     31|       const payment = Math.max(0, distance - bonus)
+     32|       expect(ctx.state.units[0]!.movePointsLeft).toBe(5 - payment)
+       |                                                  ^
+     33|       expect(ctx.state.units[0]!.moveUsed).toBe(true)
+     34|       expect(ctx.state.units[0]!.hex).toBe(destination)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/flight-budget.test.ts > flight spends its local bonus without replenishing activation movement > power.test-flight-plus-three keeps every planned destination executable after reload with no negative payment
+ FAIL  test/flight-budget.test.ts > flight spends its local bonus without replenishing activation movement > power.test-flight-plus-five keeps every planned destination executable after reload with no negative payment
+AssertionError: expected 6 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 6
+
+ ❯ test/flight-budget.test.ts:49:57
+     47|         const distance = ctx.geo.distance(85, plan.destination)
+     48|         expect(executeAction(restored, { actor: 0, actionId, destinati…
+     49|         expect(restored.state.units[0]!.movePointsLeft).toBe(5 - Math.…
+       |                                                         ^
+     50|       }
+     51|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/flight-budget.test.ts > flight spends its local bonus without replenishing activation movement > power.test-flight-plus-three preserves the short-jump balance through reload then reopens only the sampled Surge allowance
+AssertionError: expected 7 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 7
+
+ ❯ test/flight-budget.test.ts:57:50
+     55|       expect(executeAction(ctx, { actor: 0, actionId, destination: 86 …
+     56|       ctx = restoreBattle(saveBattle(ctx), ctx)
+     57|       expect(ctx.state.units[0]!.movePointsLeft).toBe(5)
+       |                                                  ^
+     58|       completeActionCycle(ctx)
+     59|       expect(advanceBattle(ctx)).toEqual({ kind: 'acting', actor: 0 })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/flight-budget.test.ts > flight spends its local bonus without replenishing activation movement > power.test-flight-plus-five pays the exact own-store cost over 1 hexes
+AssertionError: expected 9 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 9
+
+ ❯ test/flight-budget.test.ts:32:50
+     30|       expect(executeAction(ctx, request)).toEqual({ ok: true })
+     31|       const payment = Math.max(0, distance - bonus)
+     32|       expect(ctx.state.units[0]!.movePointsLeft).toBe(5 - payment)
+       |                                                  ^
+     33|       expect(ctx.state.units[0]!.moveUsed).toBe(true)
+     34|       expect(ctx.state.units[0]!.hex).toBe(destination)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/flight-budget.test.ts > flight spends its local bonus without replenishing activation movement > power.test-flight-plus-five preserves the short-jump balance through reload then reopens only the sampled Surge allowance
+AssertionError: expected 9 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 9
+
+ ❯ test/flight-budget.test.ts:57:50
+     55|       expect(executeAction(ctx, { actor: 0, actionId, destination: 86 …
+     56|       ctx = restoreBattle(saveBattle(ctx), ctx)
+     57|       expect(ctx.state.units[0]!.movePointsLeft).toBe(5)
+       |                                                  ^
+     58|       completeActionCycle(ctx)
+     59|       expect(advanceBattle(ctx)).toEqual({ kind: 'acting', actor: 0 })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 11 passed (17)
+   Start at  02:57:18
+   Duration  986ms (transform 368ms, setup 0ms, import 470ms, tests 404ms, environment 0ms)
+

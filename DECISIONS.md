@@ -2255,3 +2255,23 @@ including FAILED, and use the marker timestamp when there are no runs. No
 ledger history or human read/review state is rewritten. This offline renderer
 cannot be exercised or disabled by a battle content ID; its two structural
 exemptions are recorded on the item, and its seal must remain withheld.
+
+## 2026-09-11 — Flight bonus payment (V2 correctness repair)
+
+The authorized movement contract spends a power's positive allowance locally,
+before drawing activation movement. A one-hex jump with a +3 bonus instead
+increased the store from 5 to 7; the old subtraction produced negative payment.
+The same defect with +5 increased it to 9. Payment is now the nonnegative excess
+of flight distance over the power modifier. Negative modifiers remain penalties;
+the existing -1/0/+1 flight ladder has identical accounting. No gameplay tuning
+changed. Two new TEST-only authored carriers use +3/+5 bonuses through the normal
+content publisher and registered battle scenario (`showcase.flight-bonuses`).
+
+Six of 17 initial probes failed on actual resource accounting, including reload
+and every-destination checks. All 17 pass after correction: short jumps, bonus
+boundaries, full range, occupied destination refusal, once-only movement slot,
+saved state, Surge reset and the existing ladder. The first standalone typecheck
+caught use of ES2023 `findLast` in the new test; the test now uses supported array
+methods, with its assertions unchanged. Snapshot rules advance to v2-migration.6
+because the executable resource semantics changed. Evidence is retained in
+`scratch/flight-budget-red.log` and `scratch/flight-budget-green.log`.

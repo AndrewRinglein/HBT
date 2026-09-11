@@ -3176,5 +3176,29 @@
   "status": "done-needs-review",
   "sha": "e5b79a5",
   "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
+ },
+ {
+  "id": "fix.flight-budget",
+  "kind": "movement",
+  "shape": "rule",
+  "needs": [
+   "fix.movement-plans",
+   "fix.surge-cycle"
+  ],
+  "spec": "Flight spends its positive power allowance before activation movement, never increasing the activation balance on a short jump. Negative modifiers remain a movement penalty. Shared controller and simulation resolution must agree through save/restore and Surge.",
+  "expect": "Two data-authored flight bonuses demonstrate short, bonus-boundary, beyond-bonus and full-range costs. Every advertised landing executes with nonnegative payment and never adds movement; invalid landing attempts spend nothing. Existing flight ladder and control hashes are unchanged.",
+  "probeIds": [
+   "power.test-flight-plus-three",
+   "power.test-flight-plus-five"
+  ],
+  "variants": [
+   "power.test-flight-plus-three",
+   "power.test-flight-plus-five"
+  ],
+  "changesBaseline": false,
+  "note": "Reproduced before implementation: a +3 flight bonus over one hex raised movePointsLeft from 5 to 7. Test powers are test-lane fixtures, not new gameplay tuning. Advance snapshot rules version because the corrected resource accounting changes semantics.",
+  "status": "done",
+  "sha": "b68e480",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

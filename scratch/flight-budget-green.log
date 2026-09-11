@@ -1,0 +1,13 @@
+
+> test
+> vitest run test/flight-budget.test.ts
+
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  02:57:29
+   Duration  2.30s (transform 372ms, setup 0ms, import 473ms, tests 1.72s, environment 0ms)
+
