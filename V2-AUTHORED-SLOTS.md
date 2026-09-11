@@ -71,4 +71,11 @@ The first gate's extra source warning classified its new `showcase.*` fixture as
 unpublished gameplay content. The fixture is TEST-only; its name is now
 `test.authored-slots`, the existing testing lane. The original warning remains in
 the gate log. Historical-test/ruling warnings remain for human review.
-Committed checks and the batch audit will be recorded after they run.
+The source landed as `9de978b` (the gate printed its pre-amend `c5d2861`).
+The committed-tree test suite and all control hashes passed before the gate
+finalized the landing. The required `v2-authored-slots` batch audit also passed:
+1,070 tests, typecheck, all control hashes and whole-core hardcode/source checks.
+See `scratch/land-authored-slots.log` and `scratch/audit-authored-slots.log`.
+No exemption was taken. Two review flags remain (candidate prior rulings and the
+documented historical-test edits); the landing stands and the Iron Gauntlet seal
+is withheld. No human visual acceptance is claimed.
