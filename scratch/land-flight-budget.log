@@ -15,3 +15,8 @@ gate: fix.flight-budget   [land]
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content  — tests fail without power.test-flight-plus-three,power.test-flight-plus-five — they genuinely test it
+
+⛓  IRON GAUNTLET: NOT PASSED — 2 flag(s) warned. The landing stands; the seal is withheld.
+
+LANDED as b68e480
+
