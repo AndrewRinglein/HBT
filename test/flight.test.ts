@@ -149,6 +149,8 @@ describe('landing is real', () => {
     // power's, not the store's.
     const dest = flightLandings(ctx, d, MOVES['power.flight-swift']!)
       .filter((h) => distance(h, d.hex) === 6).sort((a, b) => a - b)[0]!
+    // V2 direct executor validates grants; the drake normally has standard flight.
+    d.actions.push('power.flight-swift')
     executeFlight(ctx, d.id, dest, MOVES['power.flight-swift']!)
     expect(d.stamina, 'swift is free').toBe(stam)
     expect(d.moveUsed).toBe(true)

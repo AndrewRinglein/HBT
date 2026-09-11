@@ -28,6 +28,11 @@ import { omitDisabled } from './disable.js'
 import { ENCOUNTERS, UNITS } from './index.js'
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
+  'test.authored-slots': {
+    id: 'test.authored-slots', note: 'A movement-slot attack then an either-slot attack through normal AI combat.',
+    mapId: 'map.open', heroes: ['test-slot-striker'], heroHexes: [85],
+    enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 102], replicate: 0,
+  },
   'showcase.flight-bonuses': {
     id: 'showcase.flight-bonuses',
     note: 'Two authored flight allowances exercise the same payment mechanism through automatic combat.',

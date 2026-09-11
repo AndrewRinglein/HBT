@@ -4,11 +4,15 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { AbilityDef, AttackDef, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
+import type { ActionDef, AbilityDef, AttackDef, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
 import { formatOf } from '../core/hex.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
 const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat', 'stamina.gain']
+export function validateActionMetadata(row: { readonly id: string; readonly slot?: unknown; readonly free?: unknown }): void {
+  if (row.slot !== undefined && !['movement', 'primary', 'either'].includes(row.slot as string)) throw new Error(`unit pack: invalid action slot '${String(row.slot)}' on '${row.id}'`)
+  if (row.free !== undefined && typeof row.free !== 'boolean') throw new Error(`unit pack: invalid free action flag on '${row.id}'`)
+}
 import { statusDamage, statusHeal } from '../core/status.js'
 
 const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge',
@@ -78,6 +82,7 @@ export const UNIT_PACK_NOTE = UNIT_PACK.note
 export function packAbilities(): Readonly<Record<string, AbilityDef>> {
   const raw = (UNIT_PACK as { authoredAbilities?: Readonly<Record<string, AbilityDef>> }).authoredAbilities ?? {}
   for (const [k, a] of Object.entries(raw)) {
+    validateActionMetadata(a)
     if (k !== a.id) throw new Error(`unit pack: ability key '${k}' names id '${a.id}'`)
     // an effect-list power (ability.effects) is validated by its list, not the three legacy shapes
     if (a.effects) { for (const e of a.effects) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`); continue }
@@ -160,6 +165,7 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
 
 /** An attack row as the pack writes it. */
 export type PackAttackRow = {
+  readonly slot?: ActionDef['slot']
   readonly id: string; readonly name: string; readonly kind: 'melee' | 'ranged'; readonly damageType: import('../core/types.js').DamageType
   readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly reach: number; readonly staminaCost: number
   readonly applies?: { readonly statusId: string; readonly value: number }; readonly area?: 'arc' | 'blast1'
@@ -168,16 +174,18 @@ export type PackAttackRow = {
 }
 /** A movement row as the pack writes it. */
 export type PackMoveRow = {
+  readonly slot?: ActionDef['slot']; readonly free?: boolean
   readonly id: string; readonly name: string; readonly shape: 'path' | 'sidestep' | 'flight'; readonly stepRange?: number
   readonly effects?: readonly import('../core/types.js').MoveEffect[]; readonly staminaCost: number; readonly budgetMod: number
   readonly cooldown: number; readonly warmup?: number; readonly uses?: number
 }
 
 export function liftAttack(r: PackAttackRow): AttackDef {
+  validateActionMetadata(r)
   const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, area, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free } = r
   return {
-    id, name, source: 'weapon', staminaCost, cooldown: cooldown ?? 0, range: reach,
-    ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(free ? { free } : {}), ...(area ? { area } : {}),
+    id, name, source: 'weapon', staminaCost, cooldown: cooldown ?? 0, range: reach, ...(r.slot !== undefined ? { slot: r.slot } : {}),
+    ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(free !== undefined ? { free } : {}), ...(area ? { area } : {}),
     attack: {
       kind, damageType, bonus, stat,
       ...(applies ? { applies } : {}), ...(crit !== undefined ? { crit } : {}), ...(hits !== undefined ? { hits } : {}),
@@ -186,9 +194,10 @@ export function liftAttack(r: PackAttackRow): AttackDef {
   }
 }
 export function liftMove(r: PackMoveRow): MoveDef {
+  validateActionMetadata(r)
   const { id, name, shape, stepRange, effects, staminaCost, budgetMod, cooldown, warmup, uses } = r
   return {
-    id, name, source: 'movement', slot: 'movement', staminaCost, cooldown, range: stepRange ?? 1,
+    id, name, source: 'movement', staminaCost, cooldown, range: stepRange ?? 1, ...(r.slot !== undefined ? { slot: r.slot } : {}), ...(r.free !== undefined ? { free: r.free } : {}),
     ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(effects ? { effects } : {}),
     move: { shape, budgetMod, ...(stepRange !== undefined ? { stepRange } : {}) },
   }
@@ -231,6 +240,7 @@ export function packMoves(): Readonly<Record<string, MoveDef>> {
 export function packTestAttacks(): Readonly<Record<string, AttackDef>> {
   const raw = (UNIT_PACK as { test?: { attacks?: Readonly<Record<string, PackAttackRow>> } }).test?.attacks ?? {}
   for (const [k, a] of Object.entries(raw)) {
+    validateActionMetadata(a)
     if (k !== a.id) throw new Error(`test receptacle: attack key '${k}' names id '${a.id}'`)
     if (!k.startsWith('attack.test-')) throw new Error(`test receptacle: '${k}' is not attack.test-*`)
     for (const f of ['kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost'] as const) {
@@ -242,6 +252,7 @@ export function packTestAttacks(): Readonly<Record<string, AttackDef>> {
 export function packTestAbilities(): Readonly<Record<string, AbilityDef>> {
   const raw = (UNIT_PACK as { test?: { abilities?: Readonly<Record<string, AbilityDef>> } }).test?.abilities ?? {}
   for (const [k, a] of Object.entries(raw)) {
+    validateActionMetadata(a)
     if (k !== a.id) throw new Error(`test receptacle: ability key '${k}' names id '${a.id}'`)
     if (!k.startsWith('power.test-')) throw new Error(`test receptacle: '${k}' is not power.test-*`)
   }
@@ -285,6 +296,7 @@ export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilitie
 export function packAttacks(): Readonly<Record<string, AttackDef>> {
   const raw = (UNIT_PACK as { authoredAttacks?: Readonly<Record<string, PackAttackRow>> }).authoredAttacks ?? {}
   for (const [k, a] of Object.entries(raw)) {
+    validateActionMetadata(a)
     if (k !== a.id) throw new Error(`unit pack: attack key '${k}' names id '${a.id}'`)
     if (!['melee', 'ranged'].includes(a.kind) || typeof a.reach !== 'number' || a.reach < 1) {
       throw new Error(`unit pack: attack '${k}' has no usable kind/reach — regenerate the pack`)
@@ -305,6 +317,7 @@ export function packAttacks(): Readonly<Record<string, AttackDef>> {
 export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
   const raw = (UNIT_PACK as unknown as { classPowers?: Readonly<Record<string, AbilityDef>> }).classPowers ?? {}
   for (const [k, a] of Object.entries(raw)) {
+    validateActionMetadata(a)
     if (k !== a.id) throw new Error(`class powers: key '${k}' names id '${a.id}'`)
     if (!k.startsWith('power.')) throw new Error(`class powers: '${k}' is not a power.* id`)
     if (!Array.isArray(a.effects)) throw new Error(`class powers: '${k}' carries no effects list — regenerate the pack`)

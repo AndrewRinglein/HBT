@@ -35,7 +35,8 @@ describe('flight spends its local bonus without replenishing activation movement
       const moved = [...ctx.events].reverse().find(e => e.type === 'moved' && e.causeId === actionId)!
       expect(moved.cost).toBe(payment)
       const after = saveBattle(ctx)
-      expect(executeAction(ctx, { actor: 0, actionId, destination: 85 }).ok).toBe(false)
+      // V2 can spend primary on movement too; the already-spent movement slot cannot repeat.
+      expect(executeAction(ctx, { actor: 0, actionId, destination: 85, slot: 'movement' }).ok).toBe(false)
       expect(saveBattle(ctx)).toEqual(after)
     })
 

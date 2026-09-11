@@ -1,0 +1,84 @@
+
+> test
+> vitest run
+
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+C:\Users\aring\AppData\Local\Temp\replay-test.html — seed 1 map.thicket · engine 9ac8e22 · 693 events · heroClear in 5 turns
+C:\Users\aring\AppData\Local\Temp\replay-showcase.html — seed 0 test.map.showcase · engine 9ac8e22 · 979 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-a.html — seed 0 test.map.showcase · engine 9ac8e22 · 979 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-b.html — seed 0 test.map.showcase · engine 9ac8e22 · 979 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-a.html — seed 1 map.thicket · engine 9ac8e22 · 693 events · heroClear in 5 turns
+C:\Users\aring\AppData\Local\Temp\replay-b.html — seed 1 map.thicket · engine 9ac8e22 · 693 events · heroClear in 5 turns
+ ❯ test/movement-bonus.test.ts (9 tests | 2 failed) 639ms
+     × pays its 2 Stamina and is refused when the pool cannot cover it 4ms
+     × Devotion trades 1 Stamina Max for 2 Stamina, floor 1, for the rest of the battle 1ms
+ ❯ test/flight.test.ts (9 tests | 1 failed) 146ms
+     × flight costs its stamina and one movement slot, and the point store never goes negative 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/flight.test.ts > landing is real > flight costs its stamina and one movement slot, and the point store never goes negative
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/flight.test.ts:154:24
+    152|     executeFlight(ctx, d.id, dest, MOVES['power.flight-swift']!)
+    153|     expect(d.stamina, 'swift is free').toBe(stam)
+    154|     expect(d.moveUsed).toBe(true)
+       |                        ^
+    155|     expect(d.movePointsLeft).toBe(0)
+    156|     const mv = ctx.events.find((e) => e.type === 'moved' && e.causeId …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/movement-bonus.test.ts > leap — exactly 2 hexes, and the rider rides the swing > pays its 2 Stamina and is refused when the pool cannot cover it
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/movement-bonus.test.ts:58:93
+     56|     beginActivation(ctx, w.id, 'test')
+     57|     expect(executeSidestep(ctx, w.id, hexId(6, 8), MOVES['power.leap']…
+     58|     expect(ctx.events.some((e) => e.type === 'move.refused' && e.cause…
+       |                                                                                             ^
+     59|   })
+     60|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/movement-bonus.test.ts > the zero-hex bonus moves — you stand still on purpose > Devotion trades 1 Stamina Max for 2 Stamina, floor 1, for the rest of the battle
+AssertionError: expected 3 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 3
+
+ ❯ test/movement-bonus.test.ts:127:26
+    125|     // the floor: docking cannot take max below 1 (the wounds preceden…
+    126|     for (let i = 0; i < 12; i++) executeSidestep(ctx, p.id, p.hex, MOV…
+    127|     expect(p.maxStamina).toBe(1)
+       |                          ^
+    128|   })
+    129|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 118 passed (120)
+      Tests  3 failed | 1050 passed | 1 todo (1054)
+   Start at  07:02:12
+   Duration  31.62s (transform 2.07s, setup 0ms, import 13.71s, tests 84.28s, environment 7ms)
+

@@ -3200,5 +3200,29 @@
   "status": "done",
   "sha": "b68e480",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "capability.authored-slots",
+  "kind": "rule",
+  "shape": "rule",
+  "needs": [
+   "refactor.one-action-type",
+   "fix.flight-budget"
+  ],
+  "spec": "Actions use authored movement, primary or either slots in any mode, shared by commands, simulation and AI; primary closes the earlier opportunity while free actions and reactions preserve their distinct timing and costs.",
+  "expect": "Real compiler and loader preserve valid slots and reject invalid values. Two TEST attacks and movement/power variants prove ordered spending, bounded AI continuation, resources, reactions, multihit and save/Surge parity without changing byProfile controls.",
+  "probeIds": [
+   "attack.test-slot-movement",
+   "attack.test-slot-either"
+  ],
+  "variants": [
+   "attack.test-slot-movement",
+   "attack.test-slot-either"
+  ],
+  "changesBaseline": false,
+  "note": "V2 authorized defaults: any honors authored slot (absent=either), optional command movement|primary selects a compatible open slot; omitted chooses earliest. Primary closes movement. Free actions consume no slot and occur before primary; reactions ignore activation slots but pay costs. AI considers each free action ID once per cycle, then continues the existing mode while actions progress. byProfile remains the control configuration. Replaces the historical assertion that any must be rejected; record its review flag.",
+  "status": "done-needs-review",
+  "sha": "c5d2861",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

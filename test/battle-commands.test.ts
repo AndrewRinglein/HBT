@@ -51,10 +51,11 @@ describe('plumbing.battle-commands', () => {
     expect(validateBattleCommand(ctx, policy, command)).toEqual({ ok: true })
     expect(saveBattle(ctx)).toBe(before)
     performAttack(direct, 0, 1, id); settle(direct, id)
+    completeActionCycle(direct) // V2: a public paid primary closes the driver cycle.
     expect(executeBattleCommand(ctx, policy, command)).toEqual({ ok: true })
     expect(saveBattle(ctx)).toBe(saveBattle(direct))
-    rejected(ctx, command, 'stale-sequence')
-    rejected(ctx, action(ctx, { actionId: id, target: 1 }), 'illegal-target-or-action')
+    rejected(ctx, command, 'not-acting')
+    rejected(ctx, action(ctx, { actionId: id, target: 1 }), 'not-acting')
   })
 
   it('uses the same power effects, costs and settle', () => {
@@ -64,6 +65,7 @@ describe('plumbing.battle-commands', () => {
     grant(ctx, id); ctx.state.units[0]!.hp -= 6
     const direct = fullFork(ctx)
     usePower(direct, 0, 0, id); settle(direct, id)
+    completeActionCycle(direct) // Driver-neutral usePower does not advance the cursor.
     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: id, target: 0 }))).toEqual({ ok: true })
     expect(saveBattle(ctx)).toBe(saveBattle(direct))
     expect(ctx.state.units[0]!.hp).toBe(ctx.state.units[0]!.maxHp - 2)
@@ -79,7 +81,8 @@ describe('plumbing.battle-commands', () => {
     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: id, destination }))).toEqual({ ok: true })
     expect(ctx.state.units[0]!.hex).toBe(destination)
     expect(saveBattle(ctx)).toBe(saveBattle(direct))
-    rejected(ctx, action(ctx, { actionId: id, destination: 87 }))
+    // V2 profiles no longer imply restrictions: this reuses the SAME slot.
+    rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))
   })
 
   it('validates the full walk and permits flight across an impassable barrier', () => {
@@ -120,7 +123,7 @@ describe('plumbing.battle-commands', () => {
     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: attack(ctx), target: 1 }))).toEqual({ ok: true })
     const other = fixture()
     expect(executeBattleCommand(other, policy, action(other, { actionId: attack(other), target: 1 }))).toEqual({ ok: true })
-    rejected(other, action(other, { actionId: 'power.move', destination: 84 }), 'movement-slot-closed')
+    rejected(other, action(other, { actionId: 'power.move', destination: 84 }), 'not-acting')
   })
 
   it('does not close slots for a free attack', () => {
@@ -203,13 +206,16 @@ describe('plumbing.battle-commands', () => {
     expect(saveBattle(resumed)).toBe(saveBattle(ctx))
   })
 
-  it('rejects complete/unstarted sessions and unsupported slot policy', () => {
+  it('rejects complete/unstarted sessions and accepts the implemented any slot policy', () => {
     const unstarted = createCustomBattle([{ type: 'test-warrior', hex: 85 }], [{ type: 'test-zombie', hex: 86 }])
     rejected(unstarted, end(unstarted), 'not-acting')
     const ctx = fixture(); ctx.state.outcome = 'heroClear'
     rejected(ctx, end(ctx), 'battle-complete')
     ctx.state.outcome = null; ctx.cfg.switches.actionSlots = 'any'
-    rejected(ctx, action(ctx, { actionId: attack(ctx), target: 1 }), 'unsupported-action-slots')
+    // capability.authored-slots replaces the explicit not-yet-built rejection.
+    expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: attack(ctx), target: 1 }))).toEqual({ ok: true })
+    expect(ctx.state.units[0]!.moveUsed).toBe(true)
+    expect(ctx.state.units[0]!.primaryUsed).toBe(false)
   })
 
   it('keeps the internal validated action path usable without a session cursor', () => {

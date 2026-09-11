@@ -4865,6 +4865,7 @@ export const UNIT_PACK = {
     "power.knight-shield.block": {
       "id": "power.knight-shield.block",
       "name": "Block",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -4878,6 +4879,7 @@ export const UNIT_PACK = {
     "power.holy-symbol.heal": {
       "id": "power.holy-symbol.heal",
       "name": "Heal",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 0,
       "range": 6,
@@ -4891,6 +4893,7 @@ export const UNIT_PACK = {
     "power.lightning-staff.storm": {
       "id": "power.lightning-staff.storm",
       "name": "Storm",
+      "free": false,
       "staminaCost": 3,
       "cooldown": 0,
       "range": 4,
@@ -4903,9 +4906,9 @@ export const UNIT_PACK = {
     "power.loaded-dice-of-mirran.use": {
       "id": "power.loaded-dice-of-mirran.use",
       "name": "Loaded Dice of Mirran",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -4924,9 +4927,9 @@ export const UNIT_PACK = {
     "power.mug-of-endless-dregs.use": {
       "id": "power.mug-of-endless-dregs.use",
       "name": "Mug of Endless Dregs",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 4,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -4954,6 +4957,7 @@ export const UNIT_PACK = {
     "power.aether-crystal.use": {
       "id": "power.aether-crystal.use",
       "name": "Aether Crystal",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -4972,6 +4976,7 @@ export const UNIT_PACK = {
     "power.saints-fingerbone.use": {
       "id": "power.saints-fingerbone.use",
       "name": "Saint's Fingerbone",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 2,
@@ -5000,6 +5005,7 @@ export const UNIT_PACK = {
     "power.medicine-belt.use": {
       "id": "power.medicine-belt.use",
       "name": "Medicine Belt",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "range": 1,
@@ -5022,6 +5028,7 @@ export const UNIT_PACK = {
     "power.holy-chalice.use": {
       "id": "power.holy-chalice.use",
       "name": "Holy Chalice",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "range": 0,
@@ -5045,9 +5052,9 @@ export const UNIT_PACK = {
     "power.eye-of-the-oracle.use": {
       "id": "power.eye-of-the-oracle.use",
       "name": "Eye of the Oracle",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 6,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -5073,10 +5080,10 @@ export const UNIT_PACK = {
     "power.cure-poison.use": {
       "id": "power.cure-poison.use",
       "name": "Cure Poison",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 0,
       "uses": 1,
-      "free": true,
       "range": 1,
       "target": {
         "select": "unit",
@@ -5093,6 +5100,7 @@ export const UNIT_PACK = {
     "power.rations.use": {
       "id": "power.rations.use",
       "name": "Rations",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 0,
       "uses": 1,
@@ -5111,10 +5119,10 @@ export const UNIT_PACK = {
     "power.healing-potion.use": {
       "id": "power.healing-potion.use",
       "name": "Healing Potion",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 0,
       "uses": 1,
-      "free": true,
       "range": 1,
       "target": {
         "select": "unit",
@@ -5130,6 +5138,7 @@ export const UNIT_PACK = {
     "power.poison-flask.use": {
       "id": "power.poison-flask.use",
       "name": "Poison Flask",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 0,
       "uses": 1,
@@ -5149,6 +5158,7 @@ export const UNIT_PACK = {
     "power.burning-oil.use": {
       "id": "power.burning-oil.use",
       "name": "Burning Oil",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 0,
       "uses": 1,
@@ -5171,6 +5181,7 @@ export const UNIT_PACK = {
     "power.greater-healing-potion.use": {
       "id": "power.greater-healing-potion.use",
       "name": "Greater Healing Potion",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 0,
       "uses": 1,
@@ -5189,10 +5200,10 @@ export const UNIT_PACK = {
     "power.frenzy-potion.use": {
       "id": "power.frenzy-potion.use",
       "name": "Frenzy Potion",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 0,
       "uses": 1,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -5228,6 +5239,7 @@ export const UNIT_PACK = {
     "power.strength-potion.use": {
       "id": "power.strength-potion.use",
       "name": "Strength Potion",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 0,
       "uses": 1,
@@ -5256,6 +5268,7 @@ export const UNIT_PACK = {
     "power.free-movement-potion.use": {
       "id": "power.free-movement-potion.use",
       "name": "Potion of Free Movement",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 0,
       "uses": 1,
@@ -5286,6 +5299,7 @@ export const UNIT_PACK = {
     "power.divine-ward.use": {
       "id": "power.divine-ward.use",
       "name": "Divine Ward",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 2,
@@ -5308,9 +5322,9 @@ export const UNIT_PACK = {
     "power.bracer-of-courage.use": {
       "id": "power.bracer-of-courage.use",
       "name": "Bracer of Courage",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 4,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -5332,6 +5346,7 @@ export const UNIT_PACK = {
     "power.banner-of-resolve.use": {
       "id": "power.banner-of-resolve.use",
       "name": "Banner of Resolve",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "range": 0,
@@ -7580,6 +7595,7 @@ export const UNIT_PACK = {
     "power.move": {
       "id": "power.move",
       "name": "Move",
+      "free": false,
       "shape": "path",
       "budgetMod": 0,
       "staminaCost": 1,
@@ -7588,6 +7604,7 @@ export const UNIT_PACK = {
     "power.sidestep": {
       "id": "power.sidestep",
       "name": "Sidestep",
+      "free": false,
       "shape": "sidestep",
       "stepRange": 1,
       "budgetMod": 0,
@@ -7597,6 +7614,7 @@ export const UNIT_PACK = {
     "power.side-roll": {
       "id": "power.side-roll",
       "name": "Side Roll",
+      "free": false,
       "shape": "sidestep",
       "stepRange": 1,
       "budgetMod": 0,
@@ -7606,6 +7624,7 @@ export const UNIT_PACK = {
     "power.leap": {
       "id": "power.leap",
       "name": "Leap",
+      "free": false,
       "shape": "sidestep",
       "stepRange": 2,
       "budgetMod": 0,
@@ -7623,6 +7642,7 @@ export const UNIT_PACK = {
     "power.focus": {
       "id": "power.focus",
       "name": "Focus",
+      "free": false,
       "shape": "sidestep",
       "stepRange": 0,
       "budgetMod": 0,
@@ -7638,6 +7658,7 @@ export const UNIT_PACK = {
     "power.devotion": {
       "id": "power.devotion",
       "name": "Devotion",
+      "free": false,
       "shape": "sidestep",
       "stepRange": 0,
       "budgetMod": 0,
@@ -7657,6 +7678,7 @@ export const UNIT_PACK = {
     "power.flight": {
       "id": "power.flight",
       "name": "Flight",
+      "free": false,
       "shape": "flight",
       "budgetMod": 0,
       "staminaCost": 1,
@@ -7665,6 +7687,7 @@ export const UNIT_PACK = {
     "power.flight-swift": {
       "id": "power.flight-swift",
       "name": "Flight (Swift)",
+      "free": false,
       "shape": "flight",
       "budgetMod": 1,
       "staminaCost": 0,
@@ -7673,6 +7696,7 @@ export const UNIT_PACK = {
     "power.flight-labored": {
       "id": "power.flight-labored",
       "name": "Flight (Labored)",
+      "free": false,
       "shape": "flight",
       "budgetMod": -1,
       "staminaCost": 2,
@@ -13857,6 +13881,141 @@ export const UNIT_PACK = {
             "source": "unit.test-flight-plus-five"
           }
         ]
+      },
+      {
+        "typeId": "test-slot-striker",
+        "name": "Slot striker (TEST)",
+        "side": "hero",
+        "maxHp": 15,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 5,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-slot-movement",
+          "attack.test-slot-either"
+        ],
+        "abilities": [
+          "power.test-slot-guard",
+          "power.test-slot-free"
+        ],
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
+        "moves": [
+          "power.test-slot-flight",
+          "power.test-slot-step"
+        ],
+        "triggers": [
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-slot-striker"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-slot-striker"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-slot-striker"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-slot-striker"
+          },
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-slot-striker"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-slot-striker"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-slot-striker"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-slot-striker"
+          }
+        ]
       }
     ],
     "attacks": {
@@ -13968,6 +14127,28 @@ export const UNIT_PACK = {
         "reach": 1,
         "staminaCost": 0,
         "uses": 1
+      },
+      "attack.test-slot-movement": {
+        "id": "attack.test-slot-movement",
+        "name": "Early strike (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 0,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "slot": "movement"
+      },
+      "attack.test-slot-either": {
+        "id": "attack.test-slot-either",
+        "name": "Flexible strike (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 1,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "slot": "either"
       }
     },
     "abilities": {
@@ -14044,6 +14225,44 @@ export const UNIT_PACK = {
             "stat": "magic",
             "bonus": 7,
             "damageType": "magic"
+          }
+        ]
+      },
+      "power.test-slot-guard": {
+        "id": "power.test-slot-guard",
+        "name": "Early guard (TEST)",
+        "slot": "movement",
+        "range": 0,
+        "staminaCost": 1,
+        "cooldown": 0,
+        "target": {
+          "select": "self",
+          "side": "any"
+        },
+        "effects": [
+          {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 2
+          }
+        ]
+      },
+      "power.test-slot-free": {
+        "id": "power.test-slot-free",
+        "name": "Free recovery (TEST)",
+        "slot": "primary",
+        "free": true,
+        "range": 0,
+        "staminaCost": 0,
+        "cooldown": 0,
+        "target": {
+          "select": "self",
+          "side": "any"
+        },
+        "effects": [
+          {
+            "kind": "stamina.gain",
+            "value": 1
           }
         ]
       }
@@ -14183,6 +14402,25 @@ export const UNIT_PACK = {
         "staminaCost": 0,
         "budgetMod": 5,
         "cooldown": 0
+      },
+      "power.test-slot-flight": {
+        "id": "power.test-slot-flight",
+        "name": "Late flight (TEST)",
+        "slot": "primary",
+        "shape": "flight",
+        "staminaCost": 1,
+        "budgetMod": 0,
+        "cooldown": 0
+      },
+      "power.test-slot-step": {
+        "id": "power.test-slot-step",
+        "name": "Flexible step (TEST)",
+        "slot": "either",
+        "shape": "sidestep",
+        "stepRange": 1,
+        "staminaCost": 0,
+        "budgetMod": 0,
+        "cooldown": 0
       }
     }
   },
@@ -14190,9 +14428,9 @@ export const UNIT_PACK = {
     "power.berserker.fast-fury": {
       "id": "power.berserker.fast-fury",
       "name": "Fast Fury",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 2,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -14219,6 +14457,7 @@ export const UNIT_PACK = {
     "power.shieldbearer.unbreakable": {
       "id": "power.shieldbearer.unbreakable",
       "name": "Unbreakable",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 6,
       "warmup": 6,
@@ -14237,6 +14476,7 @@ export const UNIT_PACK = {
     "power.leader.titans-inspiration": {
       "id": "power.leader.titans-inspiration",
       "name": "Titan's Inspiration",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "range": 1,
@@ -14254,6 +14494,7 @@ export const UNIT_PACK = {
     "power.reaver.rend": {
       "id": "power.reaver.rend",
       "name": "Rend",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -14271,6 +14512,7 @@ export const UNIT_PACK = {
     "power.reaver.cleave": {
       "id": "power.reaver.cleave",
       "name": "Red Harvest",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -14290,6 +14532,7 @@ export const UNIT_PACK = {
     "power.reaver.gore": {
       "id": "power.reaver.gore",
       "name": "Gore",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -14308,9 +14551,9 @@ export const UNIT_PACK = {
     "power.reaver.blood-price": {
       "id": "power.reaver.blood-price",
       "name": "Blood Price",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 1,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -14325,6 +14568,7 @@ export const UNIT_PACK = {
     "power.warchief.war-cry": {
       "id": "power.warchief.war-cry",
       "name": "War Cry",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -14345,6 +14589,7 @@ export const UNIT_PACK = {
     "power.warchief.intimidate": {
       "id": "power.warchief.intimidate",
       "name": "Intimidate",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -14364,6 +14609,7 @@ export const UNIT_PACK = {
     "power.warchief.blood-oath": {
       "id": "power.warchief.blood-oath",
       "name": "Blood Oath",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -14383,6 +14629,7 @@ export const UNIT_PACK = {
     "power.warchief.lead-from-front": {
       "id": "power.warchief.lead-from-front",
       "name": "Lead From Front",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -14401,6 +14648,7 @@ export const UNIT_PACK = {
     "power.bloodrage.frenzy": {
       "id": "power.bloodrage.frenzy",
       "name": "Frenzy",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 2,
@@ -14417,6 +14665,7 @@ export const UNIT_PACK = {
     "power.bloodrage.bloodlust": {
       "id": "power.bloodrage.bloodlust",
       "name": "Bloodlust",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "range": 0,
@@ -14447,6 +14696,7 @@ export const UNIT_PACK = {
     "power.bloodrage.unstoppable": {
       "id": "power.bloodrage.unstoppable",
       "name": "Unstoppable",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 6,
       "warmup": 3,
@@ -14475,9 +14725,9 @@ export const UNIT_PACK = {
     "power.bloodrage.death-feeds": {
       "id": "power.bloodrage.death-feeds",
       "name": "Death Feeds the Rage",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 4,
-      "free": true,
       "range": 1,
       "target": {
         "select": "unit",
@@ -14493,6 +14743,7 @@ export const UNIT_PACK = {
     "power.champion.challenge": {
       "id": "power.champion.challenge",
       "name": "Challenge",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "warmup": 1,
@@ -14510,6 +14761,7 @@ export const UNIT_PACK = {
     "power.champion.righteous-blow": {
       "id": "power.champion.righteous-blow",
       "name": "Righteous Blow",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 2,
       "range": 0,
@@ -14533,6 +14785,7 @@ export const UNIT_PACK = {
     "power.champion.heroic-charge": {
       "id": "power.champion.heroic-charge",
       "name": "Heroic Charge",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -14550,9 +14803,9 @@ export const UNIT_PACK = {
     "power.champion.prove-yourself": {
       "id": "power.champion.prove-yourself",
       "name": "Prove Yourself",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 4,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -14567,6 +14820,7 @@ export const UNIT_PACK = {
     "power.guardian.iron-wall": {
       "id": "power.guardian.iron-wall",
       "name": "Iron Wall",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "warmup": 2,
@@ -14595,6 +14849,7 @@ export const UNIT_PACK = {
     "power.guardian.hold-the-line": {
       "id": "power.guardian.hold-the-line",
       "name": "Hold the Line",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -14612,9 +14867,9 @@ export const UNIT_PACK = {
     "power.guardian.stalwart": {
       "id": "power.guardian.stalwart",
       "name": "Stalwart",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -14629,6 +14884,7 @@ export const UNIT_PACK = {
     "power.guardian.no-way-past": {
       "id": "power.guardian.no-way-past",
       "name": "No Way Past",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -14648,6 +14904,7 @@ export const UNIT_PACK = {
     "power.crusader.holy-charge": {
       "id": "power.crusader.holy-charge",
       "name": "Holy Charge",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 2,
@@ -14666,6 +14923,7 @@ export const UNIT_PACK = {
     "power.crusader.flaming-smite": {
       "id": "power.crusader.flaming-smite",
       "name": "Flaming Smite",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -14682,6 +14940,7 @@ export const UNIT_PACK = {
     "power.crusader.oathbound": {
       "id": "power.crusader.oathbound",
       "name": "Oathbound",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "range": 0,
@@ -14698,6 +14957,7 @@ export const UNIT_PACK = {
     "power.crusader.holy-fire": {
       "id": "power.crusader.holy-fire",
       "name": "Holy Fire",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -14717,6 +14977,7 @@ export const UNIT_PACK = {
     "power.shieldbearer.bramble-guard": {
       "id": "power.shieldbearer.bramble-guard",
       "name": "Bramble Guard",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -14735,6 +14996,7 @@ export const UNIT_PACK = {
     "power.bowmaster.careful-aim": {
       "id": "power.bowmaster.careful-aim",
       "name": "Careful Aim",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "range": 0,
@@ -14772,6 +15034,7 @@ export const UNIT_PACK = {
     "power.bowmaster.sniper": {
       "id": "power.bowmaster.sniper",
       "name": "Sniper",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 2,
       "range": 0,
@@ -14809,6 +15072,7 @@ export const UNIT_PACK = {
     "power.bowmaster.rain-of-arrows": {
       "id": "power.bowmaster.rain-of-arrows",
       "name": "Rain of Arrows",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -14835,6 +15099,7 @@ export const UNIT_PACK = {
     "power.bowmaster.extra-shot": {
       "id": "power.bowmaster.extra-shot",
       "name": "Extra Shot",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -14850,6 +15115,7 @@ export const UNIT_PACK = {
     "power.winged-assassin.poison-shot": {
       "id": "power.winged-assassin.poison-shot",
       "name": "Poison Shot",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 1,
@@ -14867,6 +15133,7 @@ export const UNIT_PACK = {
     "power.winged-assassin.rapid-fire": {
       "id": "power.winged-assassin.rapid-fire",
       "name": "Rapid Fire",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -14883,6 +15150,7 @@ export const UNIT_PACK = {
     "power.winged-assassin.leaping-shot": {
       "id": "power.winged-assassin.leaping-shot",
       "name": "Leaping Shot",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 1,
@@ -14899,6 +15167,7 @@ export const UNIT_PACK = {
     "power.winged-assassin.poisoning": {
       "id": "power.winged-assassin.poisoning",
       "name": "Poisoning",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "range": 0,
@@ -14915,6 +15184,7 @@ export const UNIT_PACK = {
     "power.wayfinder.stunning-arrow": {
       "id": "power.wayfinder.stunning-arrow",
       "name": "Stunning Arrow",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "range": 1,
@@ -14932,9 +15202,9 @@ export const UNIT_PACK = {
     "power.wayfinder.quick-evasion": {
       "id": "power.wayfinder.quick-evasion",
       "name": "Quick Evasion",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -14949,6 +15219,7 @@ export const UNIT_PACK = {
     "power.wayfinder.switch-to-melee": {
       "id": "power.wayfinder.switch-to-melee",
       "name": "Switch to Melee",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "range": 0,
@@ -14967,6 +15238,7 @@ export const UNIT_PACK = {
     "power.wayfinder.guide-the-party": {
       "id": "power.wayfinder.guide-the-party",
       "name": "Guide the Party",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 1,
@@ -14987,6 +15259,7 @@ export const UNIT_PACK = {
     "power.sentinel.overwatch": {
       "id": "power.sentinel.overwatch",
       "name": "Overwatch",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -15004,6 +15277,7 @@ export const UNIT_PACK = {
     "power.sentinel.sting-of-the-watch": {
       "id": "power.sentinel.sting-of-the-watch",
       "name": "Sting of the Watch",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "range": 0,
@@ -15020,9 +15294,9 @@ export const UNIT_PACK = {
     "power.sentinel.take-root": {
       "id": "power.sentinel.take-root",
       "name": "Take Root",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 0,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -15040,6 +15314,7 @@ export const UNIT_PACK = {
     "power.sentinel.far-watch": {
       "id": "power.sentinel.far-watch",
       "name": "Range the Field",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "range": 0,
@@ -15066,6 +15341,7 @@ export const UNIT_PACK = {
     "power.trapper.poison-trap": {
       "id": "power.trapper.poison-trap",
       "name": "Poison Trap",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -15081,6 +15357,7 @@ export const UNIT_PACK = {
     "power.trapper.bear-trap": {
       "id": "power.trapper.bear-trap",
       "name": "Bear Trap",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -15096,6 +15373,7 @@ export const UNIT_PACK = {
     "power.trapper.entangle": {
       "id": "power.trapper.entangle",
       "name": "Entangle",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -15118,9 +15396,9 @@ export const UNIT_PACK = {
     "power.trapper.spring-the-trap": {
       "id": "power.trapper.spring-the-trap",
       "name": "Spring the Trap",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 2,
-      "free": true,
       "range": 0,
       "effects": [],
       "target": {
@@ -15134,6 +15412,7 @@ export const UNIT_PACK = {
     "power.protector.wall-of-thorns": {
       "id": "power.protector.wall-of-thorns",
       "name": "Wall of Thorns",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 1,
@@ -15150,6 +15429,7 @@ export const UNIT_PACK = {
     "power.protector.sanctuary": {
       "id": "power.protector.sanctuary",
       "name": "Sanctuary",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 1,
@@ -15169,6 +15449,7 @@ export const UNIT_PACK = {
     "power.protector.take-the-blow": {
       "id": "power.protector.take-the-blow",
       "name": "Take the Blow",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 3,
@@ -15185,6 +15466,7 @@ export const UNIT_PACK = {
     "power.protector.harmony": {
       "id": "power.protector.harmony",
       "name": "Harmony",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -15204,6 +15486,7 @@ export const UNIT_PACK = {
     "power.magical-friend.succor": {
       "id": "power.magical-friend.succor",
       "name": "Succor",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 2,
@@ -15221,6 +15504,7 @@ export const UNIT_PACK = {
     "power.magical-friend.cuddle": {
       "id": "power.magical-friend.cuddle",
       "name": "Cuddle",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 1,
@@ -15237,6 +15521,7 @@ export const UNIT_PACK = {
     "power.magical-friend.mystic-wrath": {
       "id": "power.magical-friend.mystic-wrath",
       "name": "Mystic Wrath",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 2,
@@ -15255,9 +15540,9 @@ export const UNIT_PACK = {
     "power.magical-friend.share-senses": {
       "id": "power.magical-friend.share-senses",
       "name": "Share Senses",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -15272,6 +15557,7 @@ export const UNIT_PACK = {
     "power.feral.pounce": {
       "id": "power.feral.pounce",
       "name": "Pounce",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "range": 1,
@@ -15288,6 +15574,7 @@ export const UNIT_PACK = {
     "power.feral.ravage": {
       "id": "power.feral.ravage",
       "name": "Ravage",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "range": 1,
@@ -15305,6 +15592,7 @@ export const UNIT_PACK = {
     "power.feral.ignore-wounds": {
       "id": "power.feral.ignore-wounds",
       "name": "Ignore Wounds",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "warmup": 2,
@@ -15322,9 +15610,9 @@ export const UNIT_PACK = {
     "power.feral.run-down": {
       "id": "power.feral.run-down",
       "name": "Run Down",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -15339,6 +15627,7 @@ export const UNIT_PACK = {
     "power.beastward.protect": {
       "id": "power.beastward.protect",
       "name": "Protect",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 3,
@@ -15356,6 +15645,7 @@ export const UNIT_PACK = {
     "power.beastward.conduct-life": {
       "id": "power.beastward.conduct-life",
       "name": "Conduct Life",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 2,
@@ -15377,6 +15667,7 @@ export const UNIT_PACK = {
     "power.beastward.sacrifice": {
       "id": "power.beastward.sacrifice",
       "name": "Sacrifice",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -15406,9 +15697,9 @@ export const UNIT_PACK = {
     "power.beastward.usher-away": {
       "id": "power.beastward.usher-away",
       "name": "Usher Away",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 4,
-      "free": true,
       "range": 3,
       "target": {
         "select": "unit",
@@ -15423,6 +15714,7 @@ export const UNIT_PACK = {
     "power.bowmaster.long-shot": {
       "id": "power.bowmaster.long-shot",
       "name": "Range Finder",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 8,
       "warmup": 3,
@@ -15455,6 +15747,7 @@ export const UNIT_PACK = {
     "power.sentinel.flush-them-out": {
       "id": "power.sentinel.flush-them-out",
       "name": "Flush Them Out",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -15474,6 +15767,7 @@ export const UNIT_PACK = {
     "power.poison-master.poison-cloud": {
       "id": "power.poison-master.poison-cloud",
       "name": "Poison Cloud",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -15496,6 +15790,7 @@ export const UNIT_PACK = {
     "power.poison-master.hail-of-poison-knives": {
       "id": "power.poison-master.hail-of-poison-knives",
       "name": "Hail of Poison Knives",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "range": 0,
@@ -15511,6 +15806,7 @@ export const UNIT_PACK = {
     "power.poison-master.antidote": {
       "id": "power.poison-master.antidote",
       "name": "Antidote",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -15530,6 +15826,7 @@ export const UNIT_PACK = {
     "power.poison-master.creeping-dose": {
       "id": "power.poison-master.creeping-dose",
       "name": "Creeping Dose",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "warmup": 1,
@@ -15548,6 +15845,7 @@ export const UNIT_PACK = {
     "power.assassin.knife-in-the-back": {
       "id": "power.assassin.knife-in-the-back",
       "name": "Knife in the Back",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -15579,6 +15877,7 @@ export const UNIT_PACK = {
     "power.assassin.deep-cut": {
       "id": "power.assassin.deep-cut",
       "name": "Deep Cut",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -15602,6 +15901,7 @@ export const UNIT_PACK = {
     "power.assassin.double-strike": {
       "id": "power.assassin.double-strike",
       "name": "Double Strike",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 2,
       "range": 1,
@@ -15618,9 +15918,9 @@ export const UNIT_PACK = {
     "power.assassin.dodge-behind": {
       "id": "power.assassin.dodge-behind",
       "name": "Dodge Behind",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -15636,9 +15936,9 @@ export const UNIT_PACK = {
     "power.shadowdancer.vanish-in-shadow": {
       "id": "power.shadowdancer.vanish-in-shadow",
       "name": "Vanish in Shadow",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 4,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -15655,10 +15955,10 @@ export const UNIT_PACK = {
     "power.shadowdancer.blink": {
       "id": "power.shadowdancer.blink",
       "name": "Blink",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 3,
       "warmup": 1,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -15674,6 +15974,7 @@ export const UNIT_PACK = {
     "power.shadowdancer.assassination-strike": {
       "id": "power.shadowdancer.assassination-strike",
       "name": "Assassination Strike",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -15691,6 +15992,7 @@ export const UNIT_PACK = {
     "power.shadowdancer.shadow-dance": {
       "id": "power.shadowdancer.shadow-dance",
       "name": "Shadow Dance",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -15707,9 +16009,9 @@ export const UNIT_PACK = {
     "power.shadowbound.shadow-step": {
       "id": "power.shadowbound.shadow-step",
       "name": "Shadow Step",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "effects": [],
       "target": {
@@ -15723,6 +16025,7 @@ export const UNIT_PACK = {
     "power.shadowbound.dark-veil": {
       "id": "power.shadowbound.dark-veil",
       "name": "Dark Veil",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -15742,6 +16045,7 @@ export const UNIT_PACK = {
     "power.shadowbound.void-strike": {
       "id": "power.shadowbound.void-strike",
       "name": "Void Strike",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -15766,6 +16070,7 @@ export const UNIT_PACK = {
     "power.shadowbound.gathering-dark": {
       "id": "power.shadowbound.gathering-dark",
       "name": "Gathering Dark",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -15782,6 +16087,7 @@ export const UNIT_PACK = {
     "power.contractbound.blood-contract": {
       "id": "power.contractbound.blood-contract",
       "name": "Blood Contract",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -15814,6 +16120,7 @@ export const UNIT_PACK = {
     "power.contractbound.infernal-bargain": {
       "id": "power.contractbound.infernal-bargain",
       "name": "Infernal Bargain",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 6,
       "warmup": 2,
@@ -15832,6 +16139,7 @@ export const UNIT_PACK = {
     "power.contractbound.collect-the-debt": {
       "id": "power.contractbound.collect-the-debt",
       "name": "Collect the Debt",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 1,
@@ -15848,9 +16156,9 @@ export const UNIT_PACK = {
     "power.contractbound.paid-in-full": {
       "id": "power.contractbound.paid-in-full",
       "name": "Paid in Full",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 5,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -15865,6 +16173,7 @@ export const UNIT_PACK = {
     "power.nightblade.silent-cut": {
       "id": "power.nightblade.silent-cut",
       "name": "Silent Cut",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 1,
@@ -15882,6 +16191,7 @@ export const UNIT_PACK = {
     "power.nightblade.fan-of-knives": {
       "id": "power.nightblade.fan-of-knives",
       "name": "Fan of Knives",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -15901,6 +16211,7 @@ export const UNIT_PACK = {
     "power.nightblade.exsanguinate": {
       "id": "power.nightblade.exsanguinate",
       "name": "Exsanguinate",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -15919,6 +16230,7 @@ export const UNIT_PACK = {
     "power.nightblade.long-knife": {
       "id": "power.nightblade.long-knife",
       "name": "Long Knife",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 1,
@@ -15936,6 +16248,7 @@ export const UNIT_PACK = {
     "power.havoc.blade-dance": {
       "id": "power.havoc.blade-dance",
       "name": "Blade Dance",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -15952,6 +16265,7 @@ export const UNIT_PACK = {
     "power.havoc.fel-rush": {
       "id": "power.havoc.fel-rush",
       "name": "Fel Rush",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 2,
@@ -15973,6 +16287,7 @@ export const UNIT_PACK = {
     "power.havoc.fel-fury": {
       "id": "power.havoc.fel-fury",
       "name": "Fel Fury",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 3,
@@ -15989,9 +16304,9 @@ export const UNIT_PACK = {
     "power.havoc.momentum": {
       "id": "power.havoc.momentum",
       "name": "Momentum",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 1,
       "target": {
         "select": "unit",
@@ -16021,6 +16336,7 @@ export const UNIT_PACK = {
     "power.demonic-ward.soul-barrier": {
       "id": "power.demonic-ward.soul-barrier",
       "name": "Soul Barrier",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -16040,6 +16356,7 @@ export const UNIT_PACK = {
     "power.demonic-ward.spectral-sight": {
       "id": "power.demonic-ward.spectral-sight",
       "name": "Spectral Sight",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -16057,9 +16374,9 @@ export const UNIT_PACK = {
     "power.demonic-ward.consume-magic": {
       "id": "power.demonic-ward.consume-magic",
       "name": "Consume Magic",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 3,
-      "free": true,
       "range": 2,
       "target": {
         "select": "unit",
@@ -16074,6 +16391,7 @@ export const UNIT_PACK = {
     "power.demonic-ward.warded-ground": {
       "id": "power.demonic-ward.warded-ground",
       "name": "Warded Ground",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -16093,6 +16411,7 @@ export const UNIT_PACK = {
     "power.vengeance.crossbow-shot": {
       "id": "power.vengeance.crossbow-shot",
       "name": "Crossbow Shot",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -16116,6 +16435,7 @@ export const UNIT_PACK = {
     "power.vengeance.demon-hunting": {
       "id": "power.vengeance.demon-hunting",
       "name": "Demon Hunting",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "range": 0,
@@ -16133,9 +16453,9 @@ export const UNIT_PACK = {
     "power.vengeance.repay-in-kind": {
       "id": "power.vengeance.repay-in-kind",
       "name": "Repay in Kind",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -16150,6 +16470,7 @@ export const UNIT_PACK = {
     "power.vengeance.every-wound-remembered": {
       "id": "power.vengeance.every-wound-remembered",
       "name": "Every Wound Remembered",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -16167,6 +16488,7 @@ export const UNIT_PACK = {
     "power.shadowdancer.slip-away": {
       "id": "power.shadowdancer.slip-away",
       "name": "Slip Away",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -16184,6 +16506,7 @@ export const UNIT_PACK = {
     "power.fire-master.fireball": {
       "id": "power.fire-master.fireball",
       "name": "Fireball",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -16211,6 +16534,7 @@ export const UNIT_PACK = {
     "power.fire-master.fire-shield": {
       "id": "power.fire-master.fire-shield",
       "name": "Fire Shield",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 4,
@@ -16227,6 +16551,7 @@ export const UNIT_PACK = {
     "power.fire-master.eldritch-might": {
       "id": "power.fire-master.eldritch-might",
       "name": "Eldritch Might",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "range": 0,
@@ -16252,9 +16577,9 @@ export const UNIT_PACK = {
     "power.fire-master.wake-of-cinders": {
       "id": "power.fire-master.wake-of-cinders",
       "name": "Wake of Cinders",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 3,
-      "free": true,
       "range": 3,
       "target": {
         "select": "area",
@@ -16274,6 +16599,7 @@ export const UNIT_PACK = {
     "power.soul-stealer.dark-bolt": {
       "id": "power.soul-stealer.dark-bolt",
       "name": "Dark Bolt",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 6,
@@ -16292,6 +16618,7 @@ export const UNIT_PACK = {
     "power.soul-stealer.life-drain": {
       "id": "power.soul-stealer.life-drain",
       "name": "Life Drain",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "range": 5,
@@ -16309,6 +16636,7 @@ export const UNIT_PACK = {
     "power.soul-stealer.soul-thief": {
       "id": "power.soul-stealer.soul-thief",
       "name": "Soul Thief",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "warmup": 1,
@@ -16327,6 +16655,7 @@ export const UNIT_PACK = {
     "power.soul-stealer.eldritch-sacrifice": {
       "id": "power.soul-stealer.eldritch-sacrifice",
       "name": "Eldritch Sacrifice",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 3,
@@ -16349,6 +16678,7 @@ export const UNIT_PACK = {
     "power.mystic.divination": {
       "id": "power.mystic.divination",
       "name": "Divination",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -16364,6 +16694,7 @@ export const UNIT_PACK = {
     "power.mystic.guidance": {
       "id": "power.mystic.guidance",
       "name": "Guidance",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 4,
@@ -16382,6 +16713,7 @@ export const UNIT_PACK = {
     "power.mystic.second-sight": {
       "id": "power.mystic.second-sight",
       "name": "Second Sight",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -16412,6 +16744,7 @@ export const UNIT_PACK = {
     "power.mystic.hex": {
       "id": "power.mystic.hex",
       "name": "Hex",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -16430,6 +16763,7 @@ export const UNIT_PACK = {
     "power.storm-caller.lightning-bolt": {
       "id": "power.storm-caller.lightning-bolt",
       "name": "Lightning Bolt",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 6,
@@ -16449,6 +16783,7 @@ export const UNIT_PACK = {
     "power.storm-caller.chain-lightning": {
       "id": "power.storm-caller.chain-lightning",
       "name": "Chain Lightning",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -16465,6 +16800,7 @@ export const UNIT_PACK = {
     "power.storm-caller.storm-surge": {
       "id": "power.storm-caller.storm-surge",
       "name": "Storm Surge",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -16486,6 +16822,7 @@ export const UNIT_PACK = {
     "power.storm-caller.ethereal-form": {
       "id": "power.storm-caller.ethereal-form",
       "name": "Ethereal Form",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -16503,6 +16840,7 @@ export const UNIT_PACK = {
     "power.totem-master.totem-of-healing": {
       "id": "power.totem-master.totem-of-healing",
       "name": "Totem of Healing",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -16521,6 +16859,7 @@ export const UNIT_PACK = {
     "power.totem-master.totem-of-wrath": {
       "id": "power.totem-master.totem-of-wrath",
       "name": "Totem of Wrath",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -16541,6 +16880,7 @@ export const UNIT_PACK = {
     "power.totem-master.totem-of-protection": {
       "id": "power.totem-master.totem-of-protection",
       "name": "Totem of Protection",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -16560,6 +16900,7 @@ export const UNIT_PACK = {
     "power.totem-master.ancestral-anchor": {
       "id": "power.totem-master.ancestral-anchor",
       "name": "Ancestral Anchor",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -16576,6 +16917,7 @@ export const UNIT_PACK = {
     "power.spirit-walker.spirit-link": {
       "id": "power.spirit-walker.spirit-link",
       "name": "Spirit Link",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "range": 0,
@@ -16591,6 +16933,7 @@ export const UNIT_PACK = {
     "power.spirit-walker.ancestors-call": {
       "id": "power.spirit-walker.ancestors-call",
       "name": "Ancestor's Call",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -16611,9 +16954,9 @@ export const UNIT_PACK = {
     "power.spirit-walker.ghost-walk": {
       "id": "power.spirit-walker.ghost-walk",
       "name": "Ghost Walk",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 4,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -16629,6 +16972,7 @@ export const UNIT_PACK = {
     "power.spirit-walker.mend-the-thread": {
       "id": "power.spirit-walker.mend-the-thread",
       "name": "Mend the Thread",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 6,
@@ -16646,6 +16990,7 @@ export const UNIT_PACK = {
     "power.blightcaller.poison-roots": {
       "id": "power.blightcaller.poison-roots",
       "name": "Poison Roots",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -16664,6 +17009,7 @@ export const UNIT_PACK = {
     "power.blightcaller.wither": {
       "id": "power.blightcaller.wither",
       "name": "Wither",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 5,
@@ -16681,6 +17027,7 @@ export const UNIT_PACK = {
     "power.blightcaller.regrowth": {
       "id": "power.blightcaller.regrowth",
       "name": "Regrowth",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 4,
@@ -16697,6 +17044,7 @@ export const UNIT_PACK = {
     "power.blightcaller.creeping-blight": {
       "id": "power.blightcaller.creeping-blight",
       "name": "Creeping Blight",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -16719,6 +17067,7 @@ export const UNIT_PACK = {
     "power.wild-shaper.wild-growth": {
       "id": "power.wild-shaper.wild-growth",
       "name": "Wild Growth",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -16744,6 +17093,7 @@ export const UNIT_PACK = {
     "power.wild-shaper.primal-roar": {
       "id": "power.wild-shaper.primal-roar",
       "name": "Primal Roar",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 2,
@@ -16764,6 +17114,7 @@ export const UNIT_PACK = {
     "power.wild-shaper.claw": {
       "id": "power.wild-shaper.claw",
       "name": "Claw",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -16788,6 +17139,7 @@ export const UNIT_PACK = {
     "power.grove-keeper.life-bloom": {
       "id": "power.grove-keeper.life-bloom",
       "name": "Life Bloom",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 5,
@@ -16804,6 +17156,7 @@ export const UNIT_PACK = {
     "power.grove-keeper.rejuvenation": {
       "id": "power.grove-keeper.rejuvenation",
       "name": "Rejuvenation",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 3,
@@ -16825,6 +17178,7 @@ export const UNIT_PACK = {
     "power.grove-keeper.quench": {
       "id": "power.grove-keeper.quench",
       "name": "Quench",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 4,
@@ -16846,6 +17200,7 @@ export const UNIT_PACK = {
     "power.grove-keeper.grove-ward": {
       "id": "power.grove-keeper.grove-ward",
       "name": "Grove Ward",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -16865,6 +17220,7 @@ export const UNIT_PACK = {
     "power.war-priest.restoration": {
       "id": "power.war-priest.restoration",
       "name": "Restoration",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 3,
@@ -16899,6 +17255,7 @@ export const UNIT_PACK = {
     "power.war-priest.holy-flames": {
       "id": "power.war-priest.holy-flames",
       "name": "Holy Flames",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -16922,6 +17279,7 @@ export const UNIT_PACK = {
     "power.war-priest.smite-evil": {
       "id": "power.war-priest.smite-evil",
       "name": "Smite Evil",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -16939,6 +17297,7 @@ export const UNIT_PACK = {
     "power.war-priest.shield-of-faith": {
       "id": "power.war-priest.shield-of-faith",
       "name": "Shield of Faith",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -16955,6 +17314,7 @@ export const UNIT_PACK = {
     "power.shepherd.circle-of-healing": {
       "id": "power.shepherd.circle-of-healing",
       "name": "Circle of Healing",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -16979,6 +17339,7 @@ export const UNIT_PACK = {
     "power.shepherd.close-wounds": {
       "id": "power.shepherd.close-wounds",
       "name": "Close Wounds",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 1,
       "range": 3,
@@ -17005,9 +17366,9 @@ export const UNIT_PACK = {
     "power.shepherd.prayer": {
       "id": "power.shepherd.prayer",
       "name": "Prayer",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 4,
       "target": {
         "select": "unit",
@@ -17023,6 +17384,7 @@ export const UNIT_PACK = {
     "power.shepherd.call-them-back": {
       "id": "power.shepherd.call-them-back",
       "name": "Call Them Back",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 1,
@@ -17039,6 +17401,7 @@ export const UNIT_PACK = {
     "power.divine-light.total-healing": {
       "id": "power.divine-light.total-healing",
       "name": "Total Healing",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -17060,6 +17423,7 @@ export const UNIT_PACK = {
     "power.divine-light.hallowed-ground": {
       "id": "power.divine-light.hallowed-ground",
       "name": "Hallowed Ground",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 1,
@@ -17080,6 +17444,7 @@ export const UNIT_PACK = {
     "power.divine-light.beacon": {
       "id": "power.divine-light.beacon",
       "name": "Beacon",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "warmup": 1,
@@ -17103,6 +17468,7 @@ export const UNIT_PACK = {
     "power.divine-light.searing-light": {
       "id": "power.divine-light.searing-light",
       "name": "Searing Light",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 2,
@@ -17123,6 +17489,7 @@ export const UNIT_PACK = {
     "power.redeemer.true-sacrifice": {
       "id": "power.redeemer.true-sacrifice",
       "name": "True Sacrifice",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 3,
@@ -17140,6 +17507,7 @@ export const UNIT_PACK = {
     "power.redeemer.holy-retribution": {
       "id": "power.redeemer.holy-retribution",
       "name": "Holy Retribution",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -17157,6 +17525,7 @@ export const UNIT_PACK = {
     "power.redeemer.uncorrupted": {
       "id": "power.redeemer.uncorrupted",
       "name": "Uncorrupted",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -17177,9 +17546,9 @@ export const UNIT_PACK = {
     "power.redeemer.bear-the-flame": {
       "id": "power.redeemer.bear-the-flame",
       "name": "Bear the Flame",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 3,
       "target": {
         "select": "unit",
@@ -17195,6 +17564,7 @@ export const UNIT_PACK = {
     "power.blessed-sufferer.unbent": {
       "id": "power.blessed-sufferer.unbent",
       "name": "Unbent",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "warmup": 3,
@@ -17213,6 +17583,7 @@ export const UNIT_PACK = {
     "power.blessed-sufferer.instant-healing": {
       "id": "power.blessed-sufferer.instant-healing",
       "name": "Instant Healing",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 2,
@@ -17231,6 +17602,7 @@ export const UNIT_PACK = {
     "power.blessed-sufferer.shield-of-flesh": {
       "id": "power.blessed-sufferer.shield-of-flesh",
       "name": "Shield of Flesh",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "warmup": 1,
@@ -17253,10 +17625,10 @@ export const UNIT_PACK = {
     "power.blessed-sufferer.power-of-the-divine": {
       "id": "power.blessed-sufferer.power-of-the-divine",
       "name": "Power of the Divine",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 1,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -17272,6 +17644,7 @@ export const UNIT_PACK = {
     "power.martyred-saint.inner-light": {
       "id": "power.martyred-saint.inner-light",
       "name": "Inner Light",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -17292,6 +17665,7 @@ export const UNIT_PACK = {
     "power.martyred-saint.oblation": {
       "id": "power.martyred-saint.oblation",
       "name": "Oblation",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -17310,6 +17684,7 @@ export const UNIT_PACK = {
     "power.martyred-saint.last-rites": {
       "id": "power.martyred-saint.last-rites",
       "name": "Last Rites",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -17328,10 +17703,10 @@ export const UNIT_PACK = {
     "power.martyred-saint.the-last-word": {
       "id": "power.martyred-saint.the-last-word",
       "name": "The Last Word",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 8,
       "warmup": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -17352,6 +17727,7 @@ export const UNIT_PACK = {
     "power.oracle.prophecy-of-light": {
       "id": "power.oracle.prophecy-of-light",
       "name": "Prophecy of Light",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 1,
@@ -17377,6 +17753,7 @@ export const UNIT_PACK = {
     "power.oracle.predict": {
       "id": "power.oracle.predict",
       "name": "Predict",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 4,
@@ -17393,6 +17770,7 @@ export const UNIT_PACK = {
     "power.oracle.read-the-signs": {
       "id": "power.oracle.read-the-signs",
       "name": "Read the Signs",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -17409,6 +17787,7 @@ export const UNIT_PACK = {
     "power.oracle.the-hour-of-your-death": {
       "id": "power.oracle.the-hour-of-your-death",
       "name": "The Hour of Your Death",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 2,
@@ -17426,9 +17805,9 @@ export const UNIT_PACK = {
     "power.seer.foresee-the-blow": {
       "id": "power.seer.foresee-the-blow",
       "name": "Foresee the Blow",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 3,
       "target": {
         "select": "unit",
@@ -17444,6 +17823,7 @@ export const UNIT_PACK = {
     "power.seer.study-weakness": {
       "id": "power.seer.study-weakness",
       "name": "Study Weakness",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "warmup": 1,
@@ -17460,6 +17840,7 @@ export const UNIT_PACK = {
     "power.seer.certainty": {
       "id": "power.seer.certainty",
       "name": "Certainty",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -17477,6 +17858,7 @@ export const UNIT_PACK = {
     "power.seer.inevitable": {
       "id": "power.seer.inevitable",
       "name": "Inevitable",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -17494,6 +17876,7 @@ export const UNIT_PACK = {
     "power.diviner.the-path": {
       "id": "power.diviner.the-path",
       "name": "The Path",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 4,
@@ -17510,10 +17893,10 @@ export const UNIT_PACK = {
     "power.diviner.quicken": {
       "id": "power.diviner.quicken",
       "name": "Quicken",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 1,
-      "free": true,
       "range": 4,
       "target": {
         "select": "unit",
@@ -17529,6 +17912,7 @@ export const UNIT_PACK = {
     "power.diviner.last-vision": {
       "id": "power.diviner.last-vision",
       "name": "Last Vision",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "range": 0,
@@ -17547,6 +17931,7 @@ export const UNIT_PACK = {
     "power.diviner.act-now": {
       "id": "power.diviner.act-now",
       "name": "Act Now",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "range": 0,
@@ -17565,6 +17950,7 @@ export const UNIT_PACK = {
     "power.vigil.holy-protection": {
       "id": "power.vigil.holy-protection",
       "name": "Holy Protection",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -17582,6 +17968,7 @@ export const UNIT_PACK = {
     "power.vigil.bravery": {
       "id": "power.vigil.bravery",
       "name": "Bravery",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -17601,6 +17988,7 @@ export const UNIT_PACK = {
     "power.vigil.protect-and-shield": {
       "id": "power.vigil.protect-and-shield",
       "name": "Protect and Shield",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -17619,9 +18007,9 @@ export const UNIT_PACK = {
     "power.vigil.keep-the-watch": {
       "id": "power.vigil.keep-the-watch",
       "name": "Keep the Watch",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 5,
-      "free": true,
       "range": 0,
       "effects": [],
       "target": {
@@ -17635,6 +18023,7 @@ export const UNIT_PACK = {
     "power.deathknight.righteous-fury": {
       "id": "power.deathknight.righteous-fury",
       "name": "Righteous Fury",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -17653,6 +18042,7 @@ export const UNIT_PACK = {
     "power.deathknight.unholy-shield": {
       "id": "power.deathknight.unholy-shield",
       "name": "Unholy Shield",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -17671,6 +18061,7 @@ export const UNIT_PACK = {
     "power.deathknight.unholy-wrath": {
       "id": "power.deathknight.unholy-wrath",
       "name": "Unholy Wrath",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -17688,6 +18079,7 @@ export const UNIT_PACK = {
     "power.deathknight.consume-the-living": {
       "id": "power.deathknight.consume-the-living",
       "name": "Consume the Living",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 1,
@@ -17706,6 +18098,7 @@ export const UNIT_PACK = {
     "power.holy-avenger.strike-at-evil": {
       "id": "power.holy-avenger.strike-at-evil",
       "name": "Strike at Evil",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -17722,6 +18115,7 @@ export const UNIT_PACK = {
     "power.holy-avenger.lay-on-hands": {
       "id": "power.holy-avenger.lay-on-hands",
       "name": "Lay on Hands",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 1,
@@ -17743,9 +18137,9 @@ export const UNIT_PACK = {
     "power.holy-avenger.succor-of-the-faithful": {
       "id": "power.holy-avenger.succor-of-the-faithful",
       "name": "Succor of the Faithful",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -17762,6 +18156,7 @@ export const UNIT_PACK = {
     "power.holy-avenger.reckoning": {
       "id": "power.holy-avenger.reckoning",
       "name": "Reckoning",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -17793,6 +18188,7 @@ export const UNIT_PACK = {
     "power.holy-champion.holy-radiance": {
       "id": "power.holy-champion.holy-radiance",
       "name": "Holy Radiance",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -17813,6 +18209,7 @@ export const UNIT_PACK = {
     "power.holy-champion.fervor": {
       "id": "power.holy-champion.fervor",
       "name": "Fervor",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 2,
@@ -17830,6 +18227,7 @@ export const UNIT_PACK = {
     "power.holy-champion.sacred-flame": {
       "id": "power.holy-champion.sacred-flame",
       "name": "Sacred Flame",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 3,
@@ -17847,6 +18245,7 @@ export const UNIT_PACK = {
     "power.holy-champion.bound-by-the-flesh": {
       "id": "power.holy-champion.bound-by-the-flesh",
       "name": "Bound by the Flesh",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "warmup": 2,
@@ -17872,6 +18271,7 @@ export const UNIT_PACK = {
     "power.sacred-shield.aegis": {
       "id": "power.sacred-shield.aegis",
       "name": "Aegis",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 3,
@@ -17894,6 +18294,7 @@ export const UNIT_PACK = {
     "power.sacred-shield.fortify": {
       "id": "power.sacred-shield.fortify",
       "name": "Fortify",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 3,
@@ -17923,6 +18324,7 @@ export const UNIT_PACK = {
     "power.sacred-shield.guardian-angel": {
       "id": "power.sacred-shield.guardian-angel",
       "name": "Guardian Angel",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 1,
@@ -17942,6 +18344,7 @@ export const UNIT_PACK = {
     "power.sacred-shield.exemplify": {
       "id": "power.sacred-shield.exemplify",
       "name": "Exemplify",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 3,
@@ -17958,6 +18361,7 @@ export const UNIT_PACK = {
     "power.grand-master.close-ranks": {
       "id": "power.grand-master.close-ranks",
       "name": "Close Ranks",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 1,
@@ -17978,9 +18382,9 @@ export const UNIT_PACK = {
     "power.grand-master.muster": {
       "id": "power.grand-master.muster",
       "name": "Muster",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 4,
       "target": {
         "select": "unit",
@@ -17996,6 +18400,7 @@ export const UNIT_PACK = {
     "power.grand-master.grand-charge": {
       "id": "power.grand-master.grand-charge",
       "name": "Grand Charge",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 2,
@@ -18015,6 +18420,7 @@ export const UNIT_PACK = {
     "power.grand-master.unyielding": {
       "id": "power.grand-master.unyielding",
       "name": "Unyielding",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -18034,6 +18440,7 @@ export const UNIT_PACK = {
     "power.purifier.purify": {
       "id": "power.purifier.purify",
       "name": "Purify",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 3,
@@ -18060,6 +18467,7 @@ export const UNIT_PACK = {
     "power.purifier.cleanse": {
       "id": "power.purifier.cleanse",
       "name": "Cleanse",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -18079,6 +18487,7 @@ export const UNIT_PACK = {
     "power.purifier.blessing": {
       "id": "power.purifier.blessing",
       "name": "Blessing",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "warmup": 1,
@@ -18096,6 +18505,7 @@ export const UNIT_PACK = {
     "power.purifier.sanctified-ward": {
       "id": "power.purifier.sanctified-ward",
       "name": "Sanctified Ward",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -18119,6 +18529,7 @@ export const UNIT_PACK = {
     "power.exorcist.banish": {
       "id": "power.exorcist.banish",
       "name": "Banish",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 6,
       "warmup": 3,
@@ -18137,6 +18548,7 @@ export const UNIT_PACK = {
     "power.exorcist.holy-shield": {
       "id": "power.exorcist.holy-shield",
       "name": "Name the Enemy",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "warmup": 1,
@@ -18155,6 +18567,7 @@ export const UNIT_PACK = {
     "power.exorcist.exorcism": {
       "id": "power.exorcist.exorcism",
       "name": "Exorcism",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 3,
@@ -18175,6 +18588,7 @@ export const UNIT_PACK = {
     "power.exorcist.sever-the-channel": {
       "id": "power.exorcist.sever-the-channel",
       "name": "Sever the Channel",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -18192,6 +18606,7 @@ export const UNIT_PACK = {
     "power.witch-hunter.hunt": {
       "id": "power.witch-hunter.hunt",
       "name": "Hunt",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -18207,6 +18622,7 @@ export const UNIT_PACK = {
     "power.witch-hunter.judgment": {
       "id": "power.witch-hunter.judgment",
       "name": "The Verdict",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 2,
@@ -18226,6 +18642,7 @@ export const UNIT_PACK = {
     "power.witch-hunter.iron-and-salt": {
       "id": "power.witch-hunter.iron-and-salt",
       "name": "Iron and Salt",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "warmup": 1,
@@ -18244,6 +18661,7 @@ export const UNIT_PACK = {
     "power.witch-hunter.burn-the-guilty": {
       "id": "power.witch-hunter.burn-the-guilty",
       "name": "Burn the Guilty",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -18264,6 +18682,7 @@ export const UNIT_PACK = {
     "power.sacred-shield.crown-of-thorns": {
       "id": "power.sacred-shield.crown-of-thorns",
       "name": "Crown of Thorns",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 2,
@@ -18283,6 +18702,7 @@ export const UNIT_PACK = {
     "power.apothecary.healing-potion": {
       "id": "power.apothecary.healing-potion",
       "name": "Poultice",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 2,
       "range": 1,
@@ -18300,6 +18720,7 @@ export const UNIT_PACK = {
     "power.apothecary.stretcher-run": {
       "id": "power.apothecary.stretcher-run",
       "name": "Stretcher Run",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 4,
       "range": 0,
@@ -18315,6 +18736,7 @@ export const UNIT_PACK = {
     "power.apothecary.smoke-bomb": {
       "id": "power.apothecary.smoke-bomb",
       "name": "Smoke Bomb",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 3,
       "warmup": 1,
@@ -18334,6 +18756,7 @@ export const UNIT_PACK = {
     "power.apothecary.fire-bomb": {
       "id": "power.apothecary.fire-bomb",
       "name": "Fire Bomb",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 3,
       "warmup": 1,
@@ -18354,6 +18777,7 @@ export const UNIT_PACK = {
     "power.torchbearer.raise-the-torch": {
       "id": "power.torchbearer.raise-the-torch",
       "name": "Raise the Torch",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 0,
       "range": 0,
@@ -18373,6 +18797,7 @@ export const UNIT_PACK = {
     "power.torchbearer.flare": {
       "id": "power.torchbearer.flare",
       "name": "Flare",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 4,
       "range": 0,
@@ -18388,9 +18813,9 @@ export const UNIT_PACK = {
     "power.torchbearer.hold-the-light": {
       "id": "power.torchbearer.hold-the-light",
       "name": "Hold the Light",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "area",
@@ -18407,6 +18832,7 @@ export const UNIT_PACK = {
     "power.torchbearer.burn-it-out": {
       "id": "power.torchbearer.burn-it-out",
       "name": "Burn It Out",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 2,
@@ -18431,6 +18857,7 @@ export const UNIT_PACK = {
     "power.porter.drop-the-pack": {
       "id": "power.porter.drop-the-pack",
       "name": "Drop the Pack",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 1,
@@ -18447,6 +18874,7 @@ export const UNIT_PACK = {
     "power.porter.shoulder-the-load": {
       "id": "power.porter.shoulder-the-load",
       "name": "Shoulder the Load",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 4,
       "range": 1,
@@ -18463,6 +18891,7 @@ export const UNIT_PACK = {
     "power.militia.fall-in": {
       "id": "power.militia.fall-in",
       "name": "Fall In",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 4,
       "range": 0,
@@ -18490,6 +18919,7 @@ export const UNIT_PACK = {
     "power.militia.ready": {
       "id": "power.militia.ready",
       "name": "Ready!",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 3,
       "range": 0,
@@ -18506,6 +18936,7 @@ export const UNIT_PACK = {
     "power.militia.aim": {
       "id": "power.militia.aim",
       "name": "Aim!",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 2,
       "range": 0,
@@ -18521,6 +18952,7 @@ export const UNIT_PACK = {
     "power.militia.take-the-wall": {
       "id": "power.militia.take-the-wall",
       "name": "Take the Wall",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 2,
@@ -18537,6 +18969,7 @@ export const UNIT_PACK = {
     "power.trickster.armor-gap": {
       "id": "power.trickster.armor-gap",
       "name": "Armor Gap",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 2,
       "range": 3,
@@ -18554,6 +18987,7 @@ export const UNIT_PACK = {
     "power.trickster.poison-nick": {
       "id": "power.trickster.poison-nick",
       "name": "Poison Nick",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 2,
       "range": 1,
@@ -18571,6 +19005,7 @@ export const UNIT_PACK = {
     "power.trickster.escape": {
       "id": "power.trickster.escape",
       "name": "Escape",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "range": 0,
@@ -18588,6 +19023,7 @@ export const UNIT_PACK = {
     "power.trickster.impersonation": {
       "id": "power.trickster.impersonation",
       "name": "Impersonation",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 8,
       "warmup": 3,
@@ -18605,6 +19041,7 @@ export const UNIT_PACK = {
     "power.archer.dedication": {
       "id": "power.archer.dedication",
       "name": "Dedication",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 4,
       "range": 0,
@@ -18621,6 +19058,7 @@ export const UNIT_PACK = {
     "power.archer.flurry-of-arrows": {
       "id": "power.archer.flurry-of-arrows",
       "name": "Flurry of Arrows",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 3,
       "warmup": 1,
@@ -18637,6 +19075,7 @@ export const UNIT_PACK = {
     "power.archer.small-bandage": {
       "id": "power.archer.small-bandage",
       "name": "Small Bandage",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 3,
       "range": 1,
@@ -18653,6 +19092,7 @@ export const UNIT_PACK = {
     "power.archer.take-the-shot": {
       "id": "power.archer.take-the-shot",
       "name": "Take the Shot",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 2,
       "range": 6,
@@ -18670,6 +19110,7 @@ export const UNIT_PACK = {
     "power.archivist.identify": {
       "id": "power.archivist.identify",
       "name": "Identify",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 2,
       "range": 0,
@@ -18685,6 +19126,7 @@ export const UNIT_PACK = {
     "power.archivist.scroll-of-power": {
       "id": "power.archivist.scroll-of-power",
       "name": "Scroll of Power",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 1,
@@ -18705,6 +19147,7 @@ export const UNIT_PACK = {
     "power.archivist.forbidden-tome": {
       "id": "power.archivist.forbidden-tome",
       "name": "Forbidden Tome",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "warmup": 2,
@@ -18722,6 +19165,7 @@ export const UNIT_PACK = {
     "power.archivist.cross-reference": {
       "id": "power.archivist.cross-reference",
       "name": "Cross-Reference",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 4,
       "range": 0,
@@ -18740,6 +19184,7 @@ export const UNIT_PACK = {
     "power.sage.wisdom": {
       "id": "power.sage.wisdom",
       "name": "Wisdom",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "warmup": 1,
@@ -18760,6 +19205,7 @@ export const UNIT_PACK = {
     "power.sage.enlighten": {
       "id": "power.sage.enlighten",
       "name": "Enlighten",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 3,
       "range": 3,
@@ -18776,6 +19222,7 @@ export const UNIT_PACK = {
     "power.sage.ancient-knowledge": {
       "id": "power.sage.ancient-knowledge",
       "name": "Ancient Knowledge",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "warmup": 2,
@@ -18795,6 +19242,7 @@ export const UNIT_PACK = {
     "power.sage.meditation": {
       "id": "power.sage.meditation",
       "name": "Meditation",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 4,
       "range": 0,
@@ -18812,6 +19260,7 @@ export const UNIT_PACK = {
     "power.remembrancer.take-down-the-name": {
       "id": "power.remembrancer.take-down-the-name",
       "name": "Take Down the Name",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 3,
       "range": 0,
@@ -18830,6 +19279,7 @@ export const UNIT_PACK = {
     "power.remembrancer.story-of-heroes": {
       "id": "power.remembrancer.story-of-heroes",
       "name": "Story of Heroes",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 6,
       "warmup": 2,
@@ -18849,6 +19299,7 @@ export const UNIT_PACK = {
     "power.remembrancer.read-the-field": {
       "id": "power.remembrancer.read-the-field",
       "name": "Read the Field",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 3,
       "range": 0,
@@ -18865,6 +19316,7 @@ export const UNIT_PACK = {
     "power.remembrancer.close-the-ledger": {
       "id": "power.remembrancer.close-the-ledger",
       "name": "Close the Ledger",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 8,
       "warmup": 3,
@@ -18884,6 +19336,7 @@ export const UNIT_PACK = {
     "power.porter.brace-the-line": {
       "id": "power.porter.brace-the-line",
       "name": "Brace the Line",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -18899,9 +19352,9 @@ export const UNIT_PACK = {
     "power.porter.set-it-down": {
       "id": "power.porter.set-it-down",
       "name": "Set It Down",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 4,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -18916,6 +19369,7 @@ export const UNIT_PACK = {
     "power.hound.run-them-down": {
       "id": "power.hound.run-them-down",
       "name": "Run Them Down",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -18933,6 +19387,7 @@ export const UNIT_PACK = {
     "power.hound.worry-the-wound": {
       "id": "power.hound.worry-the-wound",
       "name": "Worry the Wound",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -18948,6 +19403,7 @@ export const UNIT_PACK = {
     "power.hound.bay": {
       "id": "power.hound.bay",
       "name": "Bay",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -18967,9 +19423,9 @@ export const UNIT_PACK = {
     "power.hound.loose-rein": {
       "id": "power.hound.loose-rein",
       "name": "Loose Rein",
+      "free": true,
       "staminaCost": 0,
       "cooldown": 3,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -18984,6 +19440,7 @@ export const UNIT_PACK = {
     "power.serpent.venom-spit": {
       "id": "power.serpent.venom-spit",
       "name": "Venom Spit",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 4,
@@ -19000,6 +19457,7 @@ export const UNIT_PACK = {
     "power.serpent.coil": {
       "id": "power.serpent.coil",
       "name": "Coil",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -19015,6 +19473,7 @@ export const UNIT_PACK = {
     "power.serpent.constrict": {
       "id": "power.serpent.constrict",
       "name": "Constrict",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -19032,6 +19491,7 @@ export const UNIT_PACK = {
     "power.serpent.shed": {
       "id": "power.serpent.shed",
       "name": "Shed",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -19048,6 +19508,7 @@ export const UNIT_PACK = {
     "power.drake.stoop": {
       "id": "power.drake.stoop",
       "name": "Stoop",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -19065,6 +19526,7 @@ export const UNIT_PACK = {
     "power.drake.wing-buffet": {
       "id": "power.drake.wing-buffet",
       "name": "Wing Buffet",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "range": 0,
@@ -19084,6 +19546,7 @@ export const UNIT_PACK = {
     "power.drake.scale-and-bone": {
       "id": "power.drake.scale-and-bone",
       "name": "Scale and Bone",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -19100,6 +19563,7 @@ export const UNIT_PACK = {
     "power.drake.roost": {
       "id": "power.drake.roost",
       "name": "Roost",
+      "free": false,
       "staminaCost": 0,
       "cooldown": 5,
       "range": 0,
@@ -19116,6 +19580,7 @@ export const UNIT_PACK = {
     "power.direbeast.maul": {
       "id": "power.direbeast.maul",
       "name": "Maul",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "range": 1,
@@ -19132,6 +19597,7 @@ export const UNIT_PACK = {
     "power.direbeast.trample": {
       "id": "power.direbeast.trample",
       "name": "Trample",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -19151,6 +19617,7 @@ export const UNIT_PACK = {
     "power.direbeast.bellow": {
       "id": "power.direbeast.bellow",
       "name": "Bellow",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -19170,6 +19637,7 @@ export const UNIT_PACK = {
     "power.direbeast.thick-pelt": {
       "id": "power.direbeast.thick-pelt",
       "name": "Thick Pelt",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "range": 0,
@@ -19186,6 +19654,7 @@ export const UNIT_PACK = {
     "power.stalker.from-the-grass": {
       "id": "power.stalker.from-the-grass",
       "name": "From the Grass",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 1,
@@ -19202,6 +19671,7 @@ export const UNIT_PACK = {
     "power.stalker.throat-hold": {
       "id": "power.stalker.throat-hold",
       "name": "Throat Hold",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -19220,9 +19690,9 @@ export const UNIT_PACK = {
     "power.stalker.melt-away": {
       "id": "power.stalker.melt-away",
       "name": "Melt Away",
+      "free": true,
       "staminaCost": 1,
       "cooldown": 4,
-      "free": true,
       "range": 0,
       "target": {
         "select": "self",
@@ -19239,6 +19709,7 @@ export const UNIT_PACK = {
     "power.stalker.patience": {
       "id": "power.stalker.patience",
       "name": "Patience",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -19254,6 +19725,7 @@ export const UNIT_PACK = {
     "power.broodmother.hatch": {
       "id": "power.broodmother.hatch",
       "name": "Hatch",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "warmup": 1,
@@ -19272,6 +19744,7 @@ export const UNIT_PACK = {
     "power.broodmother.screen": {
       "id": "power.broodmother.screen",
       "name": "Screen",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -19290,6 +19763,7 @@ export const UNIT_PACK = {
     "power.broodmother.feed-the-brood": {
       "id": "power.broodmother.feed-the-brood",
       "name": "Feed the Brood",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 3,
@@ -19306,6 +19780,7 @@ export const UNIT_PACK = {
     "power.broodmother.nest": {
       "id": "power.broodmother.nest",
       "name": "Nest",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "warmup": 1,
@@ -19326,6 +19801,7 @@ export const UNIT_PACK = {
     "power.carrion.gorge": {
       "id": "power.carrion.gorge",
       "name": "Gorge",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
@@ -19342,6 +19818,7 @@ export const UNIT_PACK = {
     "power.carrion.reek": {
       "id": "power.carrion.reek",
       "name": "Reek",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -19361,6 +19838,7 @@ export const UNIT_PACK = {
     "power.carrion.pick-the-bones": {
       "id": "power.carrion.pick-the-bones",
       "name": "Pick the Bones",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -19376,6 +19854,7 @@ export const UNIT_PACK = {
     "power.carrion.carrion-song": {
       "id": "power.carrion.carrion-song",
       "name": "Carrion Song",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 5,
       "warmup": 1,
@@ -19393,6 +19872,7 @@ export const UNIT_PACK = {
     "power.warbeast.charge-together": {
       "id": "power.warbeast.charge-together",
       "name": "Charge Together",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 4,
       "range": 0,
@@ -19411,6 +19891,7 @@ export const UNIT_PACK = {
     "power.warbeast.stand-over": {
       "id": "power.warbeast.stand-over",
       "name": "Stand Over",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 1,
@@ -19427,6 +19908,7 @@ export const UNIT_PACK = {
     "power.warbeast.harness": {
       "id": "power.warbeast.harness",
       "name": "Harness",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 5,
       "range": 0,
@@ -19445,6 +19927,7 @@ export const UNIT_PACK = {
     "power.warbeast.warcry": {
       "id": "power.warbeast.warcry",
       "name": "Warcry",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -19464,6 +19947,7 @@ export const UNIT_PACK = {
     "power.wyrmling.kindle": {
       "id": "power.wyrmling.kindle",
       "name": "Kindle",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 2,
       "range": 0,
@@ -19479,6 +19963,7 @@ export const UNIT_PACK = {
     "power.wyrmling.scorch": {
       "id": "power.wyrmling.scorch",
       "name": "Scorch",
+      "free": false,
       "staminaCost": 2,
       "cooldown": 3,
       "warmup": 1,
@@ -19505,6 +19990,7 @@ export const UNIT_PACK = {
     "power.wyrmling.molten-scales": {
       "id": "power.wyrmling.molten-scales",
       "name": "Molten Scales",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,
@@ -19521,6 +20007,7 @@ export const UNIT_PACK = {
     "power.wyrmling.take-wing": {
       "id": "power.wyrmling.take-wing",
       "name": "Take Wing",
+      "free": false,
       "staminaCost": 1,
       "cooldown": 4,
       "range": 0,

@@ -1,0 +1,280 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/authored-slot-pack.test.ts (22 tests | 21 failed) 16ms
+     × attack.test-slot-movement retains its authored restriction 4ms
+     × attack.test-slot-either retains its authored restriction 0ms
+     × power.test-slot-flight retains its authored restriction 1ms
+     × power.test-slot-step retains its authored restriction 0ms
+     × the second data variant spends primary after the first spends movement 5ms
+     × absence remains either on a movement row; free survives its lift 0ms
+     × both profile lifts preserve movement 0ms
+     × both profile lifts preserve primary 0ms
+     × both profile lifts preserve either 0ms
+     × both lifts reject invalid slot reaction 1ms
+     × both lifts reject invalid slot both 0ms
+     × both lifts reject invalid slot  0ms
+     × both lifts reject invalid slot null 0ms
+     × both lifts reject invalid slot 1 0ms
+     × all action loaders reject malformed free flag no 0ms
+     × all action loaders reject malformed free flag 1 0ms
+     × all action loaders reject malformed free flag null 0ms
+     × explicit free false and absence remain distinct authored metadata 0ms
+     × authoredAbilities loader rejects malformed power slots before returning rows 0ms
+     × classPowers loader rejects malformed power slots before returning rows 0ms
+     × test loader rejects malformed power slots before returning rows 0ms
+
+ Test Files  1 failed (1)
+      Tests  21 failed | 1 passed (22)
+   Start at  07:07:53
+   Duration  613ms (transform 374ms, setup 0ms, import 476ms, tests 16ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 21 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > attack.test-slot-movement retains its authored restriction
+AssertionError: expected undefined to be 'movement' // Object.is equality
+
+- Expected:
+"movement"
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:15:31
+     13|   ] as const)('%s retains its authored restriction', (id, slot) => {
+     14|     expect(ACTIONS[id]).toBeDefined()
+     15|     expect(ACTIONS[id]!.slot).toBe(slot)
+       |                               ^
+     16|   })
+     17|   it('the second data variant spends primary after the first spends mo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > attack.test-slot-either retains its authored restriction
+AssertionError: expected undefined to be 'either' // Object.is equality
+
+- Expected:
+"either"
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:15:31
+     13|   ] as const)('%s retains its authored restriction', (id, slot) => {
+     14|     expect(ACTIONS[id]).toBeDefined()
+     15|     expect(ACTIONS[id]!.slot).toBe(slot)
+       |                               ^
+     16|   })
+     17|   it('the second data variant spends primary after the first spends mo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > power.test-slot-flight retains its authored restriction
+AssertionError: expected 'movement' to be 'primary' // Object.is equality
+
+Expected: "primary"
+Received: "movement"
+
+ ❯ test/authored-slot-pack.test.ts:15:31
+     13|   ] as const)('%s retains its authored restriction', (id, slot) => {
+     14|     expect(ACTIONS[id]).toBeDefined()
+     15|     expect(ACTIONS[id]!.slot).toBe(slot)
+       |                               ^
+     16|   })
+     17|   it('the second data variant spends primary after the first spends mo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > power.test-slot-step retains its authored restriction
+AssertionError: expected 'movement' to be 'either' // Object.is equality
+
+Expected: "either"
+Received: "movement"
+
+ ❯ test/authored-slot-pack.test.ts:15:31
+     13|   ] as const)('%s retains its authored restriction', (id, slot) => {
+     14|     expect(ACTIONS[id]).toBeDefined()
+     15|     expect(ACTIONS[id]!.slot).toBe(slot)
+       |                               ^
+     16|   })
+     17|   it('the second data variant spends primary after the first spends mo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > the second data variant spends primary after the first spends movement
+AssertionError: expected [ false, true ] to deeply equal [ true, false ]
+
+- Expected
++ Received
+
+  [
+-   true,
+    false,
++   true,
+  ]
+
+ ❯ test/authored-slot-pack.test.ts:22:77
+     20|     expect(advanceBattle(ctx)).toEqual({ kind: 'acting', actor: 0 })
+     21|     expect(executeAction(ctx, { actor: 0, actionId: 'attack.test-slot-…
+     22|     expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryU…
+       |                                                                             ^
+     23|     expect(executeAction(ctx, { actor: 0, actionId: 'attack.test-slot-…
+     24|     expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryU…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > absence remains either on a movement row; free survives its lift
+AssertionError: expected 'movement' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+"movement"
+
+ ❯ test/authored-slot-pack.test.ts:28:32
+     26|   it('absence remains either on a movement row; free survives its lift…
+     27|     const row: PackMoveRow = { id: 'power.test-slot-lift', name: 'Lift…
+     28|     expect(liftMove(row).slot).toBeUndefined()
+       |                                ^
+     29|     expect(liftMove(row).free).toBe(true)
+     30|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > both profile lifts preserve movement
+AssertionError: expected undefined to be 'movement' // Object.is equality
+
+- Expected:
+"movement"
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:35:37
+     33|     const attack: PackAttackRow = { id: 'attack.test-slot-lift', name:…
+     34|     expect(liftMove(move).slot).toBe(slot)
+     35|     expect(liftAttack(attack).slot).toBe(slot)
+       |                                     ^
+     36|   })
+     37|   it.each(['reaction', 'both', '', null, 1])('both lifts reject invali…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > both profile lifts preserve primary
+AssertionError: expected 'movement' to be 'primary' // Object.is equality
+
+Expected: "primary"
+Received: "movement"
+
+ ❯ test/authored-slot-pack.test.ts:34:33
+     32|     const move: PackMoveRow = { id: 'power.test-slot-lift', name: 'Lif…
+     33|     const attack: PackAttackRow = { id: 'attack.test-slot-lift', name:…
+     34|     expect(liftMove(move).slot).toBe(slot)
+       |                                 ^
+     35|     expect(liftAttack(attack).slot).toBe(slot)
+     36|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > both profile lifts preserve either
+AssertionError: expected 'movement' to be 'either' // Object.is equality
+
+Expected: "either"
+Received: "movement"
+
+ ❯ test/authored-slot-pack.test.ts:34:33
+     32|     const move: PackMoveRow = { id: 'power.test-slot-lift', name: 'Lif…
+     33|     const attack: PackAttackRow = { id: 'attack.test-slot-lift', name:…
+     34|     expect(liftMove(move).slot).toBe(slot)
+       |                                 ^
+     35|     expect(liftAttack(attack).slot).toBe(slot)
+     36|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > both lifts reject invalid slot reaction
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > both lifts reject invalid slot both
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > both lifts reject invalid slot 
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > both lifts reject invalid slot null
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > both lifts reject invalid slot 1
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:38:91
+     36|   })
+     37|   it.each(['reaction', 'both', '', null, 1])('both lifts reject invali…
+     38|     expect(() => liftMove({ id: 'power.test-slot-bad', slot } as unkno…
+       |                                                                                           ^
+     39|     expect(() => liftAttack({ id: 'attack.test-slot-bad', slot } as un…
+     40|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > all action loaders reject malformed free flag no
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > all action loaders reject malformed free flag 1
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > all action loaders reject malformed free flag null
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:42:91
+     40|   })
+     41|   it.each(['no', 1, null])('all action loaders reject malformed free f…
+     42|     expect(() => liftMove({ id: 'power.test-slot-bad', free } as unkno…
+       |                                                                                           ^
+     43|     expect(() => liftAttack({ id: 'attack.test-slot-bad', free } as un…
+     44|     const pack = UNIT_PACK as unknown as Record<string, any>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > explicit free false and absence remain distinct authored metadata
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:53:53
+     51|     const base: PackMoveRow = { id: 'power.test-slot-lift', name: 'Lif…
+     52|     expect(liftMove(base).free).toBeUndefined()
+     53|     expect(liftMove({ ...base, free: false }).free).toBe(false)
+       |                                                     ^
+     54|   })
+     55|   it.each([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > authoredAbilities loader rejects malformed power slots before returning rows
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > classPowers loader rejects malformed power slots before returning rows
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > test loader rejects malformed power slots before returning rows
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:62:55
+     60|     const row = Object.values(rows)[0] as Record<string, unknown>
+     61|     const original = Object.getOwnPropertyDescriptor(row, 'slot')
+     62|     try { row.slot = 'reaction'; expect(() => load()).toThrow(/slot/) }
+       |                                                       ^
+     63|     finally { if (original) Object.defineProperty(row, 'slot', origina…
+     64|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯
+

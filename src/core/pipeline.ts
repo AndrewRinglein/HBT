@@ -12,7 +12,7 @@ import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoi
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { accelerateBleedOut, applyDamage, emit, unit } from './mutate.js'
-import { actionReady, isAttack, spendAction } from './action.js'
+import { actionReady, isAttack, spendAction , resolveActionSlot } from './action.js'
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
 import { rulesSideOf } from './side.js'
@@ -234,9 +234,9 @@ export function attackDef(ctx: Ctx, attackId: string): AttackDef {
  * per round"); every other gate — stamina, cooldown, uses, reach, sight — is the
  * same one, because the ruling says legal "means what it always means".
  */
-export type AttackMode = 'primary' | 'reaction'
+export type AttackMode = 'movement' | 'primary' | 'reaction'
 
-export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode: AttackMode = 'primary'): boolean {
+export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): boolean {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = ctx.actions[attackId]
@@ -249,7 +249,7 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   if (at.side === tg.side) return false
   // capability.vision (2026-09-03): you cannot target what you cannot see (SWITCHES.md targetUnseen)
   if (!ctx.cfg.switches.targetUnseen && !canSee(ctx, at, tg)) return false
-  if (mode === 'primary' && at.primaryUsed && !a.free) return false
+  if (mode !== 'reaction' && resolveActionSlot(ctx, at, a, mode) === null) return false
   // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses
   if (!actionReady(ctx, at, a)) return false
   const d = ctx.geo.distance(at.hex, tg.hex)
@@ -349,7 +349,7 @@ function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, 
 }
 
 /** One Hit. Damage resolves completely; triggers would fire after (none yet). */
-export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode: AttackMode = 'primary'): AttackResult {
+export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): AttackResult {
   const a0 = attackDef(ctx, attackId)
   const hits = Math.max(1, a0.attack.hits ?? 1)
   if (hits === 1) return performHit(ctx, attackerId, targetId, attackId, 1, 1, mode)
@@ -371,7 +371,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
 }
 
 /** One hit of an attack — the whole of performAttack before multihit. `hit`/`of` name the swing in the log. */
-function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number, mode: AttackMode): AttackResult {
+function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number, mode: AttackMode | undefined): AttackResult {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = attackDef(ctx, attackId)
@@ -389,7 +389,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   const pv = preview(ctx, attackerId, targetId, attackId)
 
   // refactor.one-action-type: THE ONE SPEND — stamina, the primary, the cooldown, a use
-  if (hitNo === 1) spendAction(ctx, attackerId, a, mode)
+  if (hitNo === 1) spendAction(ctx, attackerId, a, mode === 'reaction' ? mode : resolveActionSlot(ctx, at, a, mode)!)
 
   // Area attacks name every struck unit on the declaration, so a renderer can
   // sweep the whole shape from the one event.

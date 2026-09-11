@@ -114,6 +114,8 @@ describe('AI uses the player action contract', () => {
   it('resuming after a spent movement slot cannot repeat a zero-range recovery', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: 85 }], [{ type: 'test-zombie', hex: 150 }])
     const u = ctx.state.units[0]!
+    // V2: the restriction is authored; a profile alone no longer restricts its slot.
+    ctx.actions = { ...ctx.actions, 'power.focus': { ...ctx.actions['power.focus']!, slot: 'movement' } }
     u.actions = [attacksOf(ctx, u)[0]!.id, 'power.focus']
     u.stamina = 0
     beginActivation(ctx, 0, 'test')

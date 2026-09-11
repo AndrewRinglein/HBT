@@ -6,7 +6,7 @@ import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, isPassable, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, unit } from './mutate.js'
-import { actionReady, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
+import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
 import { forcedTargetOf, applyStatus, isBlocked, isRooted, reduceStatus } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { settle } from './settle.js'
@@ -116,27 +116,27 @@ export function pathTo(reach: Reach, from: HexId, dest: HexId): HexId[] {
 
 export type StepHook = (ctx: Ctx, unitId: number, entered: HexId) => boolean
 
-export type MovementPlan = { kind: 'move'; actor: number; power: MoveDef; destination: number; path: number[] }
+export type MovementPlan = { kind: 'move'; actor: number; power: MoveDef; destination: number; path: number[]; slot: import('./types.js').ActionSlot }
 type MovementRejection = { ok: false; reason: string }
 const refused = (reason: string): MovementRejection => ({ ok: false, reason })
 
-function movementReason(ctx: Ctx, u: Unit, power: MoveDef): string | null {
+function movementReason(ctx: Ctx, u: Unit, power: MoveDef, slot?: import('./types.js').ActionSlot): string | null {
   if (ctx.state.outcome) return 'battle-complete'
   if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return 'actor-cannot-act'
   if (!actionReady(ctx, u, power)) return 'action-not-ready'
-  if ((!power.free && u.moveUsed) || u.primaryUsed) return 'movement-slot-closed'
+  if (resolveActionSlot(ctx, u, power, slot) === null) return 'movement-slot-closed'
   return null
 }
 
 /** One pure destination planner for controls and AI; never spends or predicts RNG. */
-export function planMovement(ctx: Ctx, actor: number, actionId: string, destination: number): MovementPlan | MovementRejection {
+export function planMovement(ctx: Ctx, actor: number, actionId: string, destination: number, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
   const u = ctx.state.units[actor]
   const power = ctx.actions[actionId]
   if (!u || !Number.isSafeInteger(actor) || !power || !isMove(power)) return refused('action-not-ready')
-  const reason = movementReason(ctx, u, power)
+  const reason = movementReason(ctx, u, power, slot)
   if (reason) return refused(reason)
   if (!Number.isSafeInteger(destination) || destination < 0 || destination >= ctx.state.terrain.length) return refused('malformed-destination')
-  const plan: MovementPlan = { kind: 'move', actor, power, destination, path: [] }
+  const plan: MovementPlan = { kind: 'move', actor, power, destination, path: [], slot: resolveActionSlot(ctx, u, power, slot)! }
   if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return destination === u.hex ? plan : refused('unreachable-destination')
   if (isRooted(ctx, u)) return refused('actor-rooted')
   if (!isPassable(ctx.state.terrain[destination]!) || occupancy(ctx).has(destination)) return refused('unreachable-destination')
@@ -149,19 +149,19 @@ export function planMovement(ctx: Ctx, actor: number, actionId: string, destinat
 }
 
 /** Stable destination order. Callers keep their own scoring and tie breakers. */
-export function movementOptions(ctx: Ctx, actor: number, actionId: string): MovementPlan[] {
+export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?: import('./types.js').ActionSlot): MovementPlan[] {
   const u = ctx.state.units[actor], power = ctx.actions[actionId]
-  if (!u || !power || !isMove(power) || movementReason(ctx, u, power)) return []
-  if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return [{ kind: 'move', actor, power, destination: u.hex, path: [] }]
+  if (!u || !power || !isMove(power) || movementReason(ctx, u, power, slot)) return []
+  if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return [{ kind: 'move', actor, power, destination: u.hex, path: [], slot: resolveActionSlot(ctx, u, power, slot)! }]
   if (isRooted(ctx, u)) return []
   if (power.move.shape === 'path') {
     const reach = reachable(ctx, u, power.move.budgetMod)
-    return [...reach.keys()].sort((a, b) => a - b).map(destination => ({ kind: 'move', actor, power, destination, path: pathTo(reach, u.hex, destination) }))
+    return [...reach.keys()].sort((a, b) => a - b).map(destination => ({ kind: 'move', actor, power, destination, path: pathTo(reach, u.hex, destination), slot: resolveActionSlot(ctx, u, power, slot)! }))
   }
-  if (power.move.shape === 'flight') return flightLandings(ctx, u, power).map(destination => ({ kind: 'move', actor, power, destination, path: [] }))
+  if (power.move.shape === 'flight') return flightLandings(ctx, u, power).map(destination => ({ kind: 'move', actor, power, destination, path: [], slot: resolveActionSlot(ctx, u, power, slot)! }))
   const out: MovementPlan[] = []
   for (let destination = 0; destination < ctx.state.terrain.length; destination++) {
-    const plan = planMovement(ctx, actor, actionId, destination)
+    const plan = planMovement(ctx, actor, actionId, destination, slot)
     if (!('ok' in plan)) out.push(plan)
   }
   return out
@@ -174,10 +174,10 @@ export function movementOptions(ctx: Ctx, actor: number, actionId: string): Move
  * Every move event names the POWER as its cause (Law 12) — the log says not
  * just that the unit moved, but which choice moved it.
  */
-export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: MoveDef, onStep?: StepHook): number {
+export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: MoveDef, onStep?: StepHook, slot?: import('./types.js').ActionSlot): number {
   if (path.length === 0) return 0
   const u = unit(ctx, unitId)
-  if (power.move.shape !== 'path' || movementReason(ctx, u, power) || isRooted(ctx, u)) return 0
+  if (power.move.shape !== 'path' || movementReason(ctx, u, power, slot) || isRooted(ctx, u)) return 0
   let allowance = Math.max(0, u.movePointsLeft + power.move.budgetMod)
   const occupied = occupancy(ctx)
   let from = u.hex, asked = 0
@@ -188,7 +188,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   }
   if (asked > allowance) return 0
 
-  spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND (refactor.one-action-type)
+  spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: path[path.length - 1], hexes: path.length })
 
   let moved = 0
@@ -331,18 +331,15 @@ function applyMoveEffects(ctx: Ctx, unitId: number, power: MoveDef): void {
   }
 }
 
-export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: MoveDef): boolean {
+export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: MoveDef, slot?: import('./types.js').ActionSlot): boolean {
   const u = unit(ctx, unitId)
-  if (u.stamina < moveStaminaCost(u, power)) {
-    emit(ctx, 'move.refused', power.id, { actor: unitId, reason: 'stamina' })
-    return false
-  }
+  if (movementReason(ctx, u, power, slot) || (isRooted(ctx, u) && stepRangeOf(power) !== 0)) return false
   const range = stepRangeOf(power)
   if (range === 0) {
     // "It moves you zero hexes on purpose" (Focus / Devotion). Still a bonus
     // move: pays, spends the move slot, cooldowns, fires its riders. No Step
     // occurs, so no ground entry beat — you never left your hex.
-    spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND
+    spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND
     emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: u.hex, hexes: 0 })
     applyMoveEffects(ctx, unitId, power)
     return true
@@ -354,7 +351,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
   if (!isPassable(terrainHere) || occupancy(ctx).has(to)) {
     throw new Error(`sidestep destination ${to} is not open`)
   }
-  spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND (refactor.one-action-type)
+  spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to, hexes: 1 })
   moveUnit(ctx, unitId, to, 0, power.id, terrainIdOf(terrainHere))
   for (const sid of stripsOnEnterOf(terrainHere)) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
@@ -399,19 +396,16 @@ export function flightLandings(ctx: Ctx, u: Unit, power: MoveDef): HexId[] {
  * normally later in the turn, and that is the ONLY ground the flier touches.
  * Returns true if the unit flew.
  */
-export function executeFlight(ctx: Ctx, unitId: number, to: HexId, power: MoveDef): boolean {
+export function executeFlight(ctx: Ctx, unitId: number, to: HexId, power: MoveDef, slot?: import('./types.js').ActionSlot): boolean {
   const u = unit(ctx, unitId)
-  if (u.stamina < moveStaminaCost(u, power)) {
-    emit(ctx, 'move.refused', power.id, { actor: unitId, reason: 'stamina' })
-    return false
-  }
+  if (movementReason(ctx, u, power, slot) || isRooted(ctx, u)) return false
   const d = ctx.geo.distance(u.hex, to)
   if (d < 1 || d > flightRange(u, power)) throw new Error(`flight to ${to} is out of range (${d} > ${flightRange(u, power)})`)
   const terrainThere = ctx.state.terrain[to] ?? 0
   if (!isPassable(terrainThere) || occupancy(ctx).has(to)) {
     throw new Error(`flight landing ${to} is not open`)
   }
-  spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND (refactor.one-action-type)
+  spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to, hexes: d })
   // Points drawn from the unit's own store; the power's modifier covers the
   // rest (swift can jump one hex past the store without sending it negative).

@@ -1,0 +1,60 @@
+✔ compiler preserves movement through all TEST action families and authored movement (133.6524ms)
+✔ compiler preserves primary through all TEST action families and authored movement (124.7186ms)
+✔ compiler preserves either through all TEST action families and authored movement (124.7563ms)
+✖ authored movement preserves free without weakening slot transport (122.5965ms)
+✖ authored movement rejects a nonboolean free flag (122.3245ms)
+✔ compiler rejects invalid attacks slot before producing output (113.7649ms)
+✔ compiler rejects invalid abilities slot before producing output (116.8193ms)
+✔ compiler rejects invalid moves slot before producing output (108.9182ms)
+✔ compiler rejects invalid settled slot before producing output (81.3523ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 7
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1101.7652
+
+✖ failing tests:
+
+test at test\action-slots.test.mjs:46:1
+✖ authored movement preserves free without weakening slot transport (122.5965ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - true
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/action-slots.test.mjs:49:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\action-slots.test.mjs:52:1
+✖ authored movement rejects a nonboolean free flag (122.3245ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/action-slots.test.mjs:54:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

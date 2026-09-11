@@ -1,0 +1,230 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/authored-slots.test.ts (34 tests | 17 failed) 69ms
+     × an attack honors slot movement 8ms
+     × an attack honors slot primary 1ms
+     × an attack honors slot either 1ms
+     × an attack honors slot undefined 1ms
+     × either permits exactly two attacks and distinct strict RNG rolls 1ms
+     × explicit primary spends primary first and closes movement 1ms
+     × movement profile power.flight can spend primary 0ms
+     × movement profile power.sidestep can spend primary 0ms
+     × movement profile power.move can spend primary 0ms
+     × effect powers use movement then leave primary available 0ms
+     × free attacks consume resources but no slot, and primary closes them 0ms
+     × resource limit {"cooldown":1} prevents the second slot use 0ms
+     × resource limit {"uses":1} prevents the second slot use 0ms
+     × resource limit {"staminaCost":100} prevents the second slot use 0ms
+     × multi-hit pays once and spends one authored slot 0ms
+     × reload after movement preserves second action and Surge continuation exactly 0ms
+     × AI continues to the second compatible attack 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > an attack honors slot movement
+ FAIL  test/authored-slots.test.ts > authored action slots > an attack honors slot primary
+ FAIL  test/authored-slots.test.ts > authored action slots > an attack honors slot either
+ FAIL  test/authored-slots.test.ts > authored action slots > an attack honors slot undefined
+AssertionError: expected { ok: false, …(1) } to deeply equal { ok: true }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
++   "reason": "unsupported-action-slots",
+  }
+
+ ❯ test/authored-slots.test.ts:40:71
+     38|   it.each(['movement', 'primary', 'either', undefined] as const)('an a…
+     39|     const ctx = fixture(), id = grant(ctx, { slot })
+     40|     expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 })).…
+       |                                                                       ^
+     41|     expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryU…
+     42|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > either permits exactly two attacks and distinct strict RNG rolls
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/authored-slots.test.ts:46:40
+     44|     const ctx = fixture(), id = grant(ctx, { slot: 'either', staminaCo…
+     45|     const req = { actor: 0, actionId: id, target: 1 }
+     46|     expect(executeAction(ctx, req).ok).toBe(true)
+       |                                        ^
+     47|     expect(executeAction(ctx, req).ok).toBe(true)
+     48|     expect(ctx.state.units[0]!.stamina).toBe(96)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > explicit primary spends primary first and closes movement
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/authored-slots.test.ts:55:150
+     53|     const ctx = fixture(), id = grant(ctx, { slot: 'either' })
+     54|     const policy = { humanUnitUids: [ctx.state.units[0]!.uid] }
+     55|     expect(executeBattleCommand(ctx, policy, { kind: 'action', actor: …
+       |                                                                                                                                                      ^
+     56|     expect(ctx.state.units[0]!.moveUsed).toBe(false)
+     57|     rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1, slot: 'm…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > movement profile power.flight can spend primary
+ FAIL  test/authored-slots.test.ts > authored action slots > movement profile power.sidestep can spend primary
+ FAIL  test/authored-slots.test.ts > authored action slots > movement profile power.move can spend primary
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/authored-slots.test.ts:70:80
+     68|     const ctx = fixture(), id = grant(ctx, { slot: 'primary' }, base)
+     69|     expect(ctx.actions[id]!.move).toBeDefined()
+     70|     expect(executeAction(ctx, { actor: 0, actionId: id, destination: 8…
+       |                                                                                ^
+     71|     expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryU…
+     72|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > effect powers use movement then leave primary available
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/authored-slots.test.ts:75:74
+     73|   it('effect powers use movement then leave primary available', () => {
+     74|     const ctx = fixture(), id = grant(ctx, { attack: undefined, slot: …
+     75|     expect(executeAction(ctx, { actor: 0, actionId: id, target: 0 }).o…
+       |                                                                          ^
+     76|     expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryU…
+     77|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > free attacks consume resources but no slot, and primary closes them
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/authored-slots.test.ts:80:74
+     78|   it('free attacks consume resources but no slot, and primary closes t…
+     79|     const ctx = fixture(), id = grant(ctx, { slot: 'primary', free: tr…
+     80|     expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).o…
+       |                                                                          ^
+     81|     expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryU…
+     82|     ctx.state.units[0]!.primaryUsed = true
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > resource limit {"cooldown":1} prevents the second slot use
+ FAIL  test/authored-slots.test.ts > authored action slots > resource limit {"uses":1} prevents the second slot use
+ FAIL  test/authored-slots.test.ts > authored action slots > resource limit {"staminaCost":100} prevents the second slot use
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/authored-slots.test.ts:95:40
+     93|     const ctx = fixture(), id = grant(ctx, { slot: 'either', ...patch …
+     94|     const req = { actor: 0, actionId: id, target: 1 }
+     95|     expect(executeAction(ctx, req).ok).toBe(true)
+       |                                        ^
+     96|     rejectUnchanged(ctx, req)
+     97|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > multi-hit pays once and spends one authored slot
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/authored-slots.test.ts:101:74
+     99|     const ctx = fixture(), id = grant(ctx, { slot: 'movement', stamina…
+    100|     ctx.actions = { ...ctx.actions, [id]: { ...ctx.actions[id]!, attac…
+    101|     expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).o…
+       |                                                                          ^
+    102|     expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[…
+    103|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > reload after movement preserves second action and Surge continuation exactly
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/authored-slots.test.ts:107:74
+    105|     const ctx = fixture(), id = grant(ctx, { slot: 'either' })
+    106|     ctx.state.units[0]!.surge = 100
+    107|     expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).o…
+       |                                                                          ^
+    108|     const restored = restoreBattle(saveBattle(ctx), ctx)
+    109|     for (const c of [ctx, restored]) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/17]⎯
+
+ FAIL  test/authored-slots.test.ts > authored action slots > AI continues to the second compatible attack
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ test/authored-slots.test.ts:122:47
+    120|     ctx.state.units[0]!.ai = 'dumb-melee'
+    121|     runActivation(ctx, 0)
+    122|     expect(ctx.state.units[0]!.attackOrdinal).toBe(2)
+       |                                               ^
+    123|   })
+    124|   it.each(AI_MODES)('AI mode %s terminates with free choices and respe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/17]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  17 failed | 17 passed (34)
+   Start at  03:03:10
+   Duration  666ms (transform 371ms, setup 0ms, import 474ms, tests 69ms, environment 0ms)
+

@@ -1,0 +1,31 @@
+
+> hobat-content@1.0.0 test
+> node --test test/*.test.mjs
+
+✔ compiler preserves movement through all TEST action families and authored movement (138.7413ms)
+✔ compiler preserves primary through all TEST action families and authored movement (130.366ms)
+✔ compiler preserves either through all TEST action families and authored movement (147.8293ms)
+✔ authored movement preserves free without weakening slot transport (133.5356ms)
+✔ authored movement rejects a nonboolean free flag (85.0568ms)
+✔ compiler rejects invalid attacks slot before producing output (114.4582ms)
+✔ compiler rejects invalid abilities slot before producing output (110.8555ms)
+✔ compiler rejects invalid moves slot before producing output (120.7196ms)
+✔ compiler rejects invalid settled slot before producing output (88.096ms)
+✔ invalid assembly fails and preserves the last assembled content (633.3616ms)
+✔ dry publication builds and validates without changing live outputs (8607.7147ms)
+✔ dry publication rejects an artifact that the actual engine cannot load (9212.2572ms)
+✔ failed publication preserves every output, including the stamp (2390.6935ms)
+✔ dry publication rejects a successful no-op mkenginepack.mjs (8751.8439ms)
+✔ dry publication rejects a successful no-op mkcodexmd.mjs (8605.9763ms)
+✔ candidate rejects cohort hero without plain movement (8427.1704ms)
+✔ candidate rejects unknown badge on a non-default unit (8931.7643ms)
+✔ late replacement failure restores old bytes and removes newly created outputs (629.6279ms)
+✔ successful publication writes a candidate that can itself pass another dry run (16273.3678ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 72525.4311

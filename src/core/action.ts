@@ -12,7 +12,7 @@
 // what they no longer do is each keep their own copy of what an action MAY.
 
 import { emit, markMoveUsed, markPrimaryUsed, spendStamina } from './mutate.js'
-import type { ActionDef, AttackDef, Ctx, MoveDef, Unit } from './types.js'
+import type { ActionDef, ActionSlot, AttackDef, Ctx, MoveDef, Unit } from './types.js'
 
 /** The row for an action id, or null — a granted id whose row is absent is indistinguishable from content never authored (the kill-switch seam relies on this). */
 export function actionOf(ctx: Ctx, id: string): ActionDef | null {
@@ -87,6 +87,20 @@ export function actionReady(ctx: Ctx, u: Unit, a: ActionDef): boolean {
   if (!isReady(ctx, u, a.id)) return false
   if (a.uses && (u.usesLeft[a.id] ?? 0) <= 0) return false
   return true
+}
+
+/** Authored restrictions are rules; actionSlots only chooses a default preference.
+ * Free actions have no slot cost, but still precede primary. Reactions never
+ * consult this activation-only planner. No state or RNG is touched here. */
+export function resolveActionSlot(ctx: Ctx, u: Unit, a: ActionDef, requested?: ActionSlot): ActionSlot | null {
+  if (a.slot !== undefined && !['movement', 'primary', 'either'].includes(a.slot)) throw new Error(`invalid action slot on '${a.id}'`)
+  if (u.primaryUsed) return null
+  const authored = a.slot ?? 'either'
+  const compatible = (slot: ActionSlot) => (authored === 'either' || authored === slot) && (a.free || slot === 'primary' || !u.moveUsed)
+  if (requested !== undefined) return compatible(requested) ? requested : null
+  const preferred: ActionSlot = ctx.cfg.switches.actionSlots === 'byProfile' && !isMove(a) ? 'primary' : 'movement'
+  const other = preferred === 'movement' ? 'primary' : 'movement'
+  return compatible(preferred) ? preferred : compatible(other) ? other : null
 }
 
 /**

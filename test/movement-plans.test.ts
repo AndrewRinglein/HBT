@@ -43,7 +43,8 @@ describe('shared movement budgets', () => {
     const { ctx, u, power } = fixture(3)
     expect(executeMove(ctx, 0, [86], power)).toBe(1)
     const before = saveBattle(ctx)
-    expect(executeMove(ctx, 0, [87], power)).toBe(0)
+    // V2: the repeated request is for the same spent slot, not a new primary move.
+    expect(executeMove(ctx, 0, [87], power, undefined, 'movement')).toBe(0)
     expect(saveBattle(ctx)).toBe(before)
     expect(u.hex).toBe(86)
   })
@@ -104,7 +105,7 @@ describe('shared movement budgets', () => {
     expect(u.hex).toBe(85)
     expect(u.movePointsLeft).toBe(0)
     const before = saveBattle(ctx)
-    expect(executeMove(ctx, 0, [84], power)).toBe(0)
+    expect(executeMove(ctx, 0, [84], power, undefined, 'movement')).toBe(0)
     expect(saveBattle(ctx)).toBe(before)
   })
 

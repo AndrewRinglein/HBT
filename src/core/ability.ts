@@ -19,7 +19,7 @@
 
 import type { AbilityDef, ActionEffect, Ctx, Unit } from './types.js'
 import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, loseMaxStamina, removeCorpse, removeStatus, reduceStatus, unit } from './mutate.js'
-import { actionReady, isPower, spendAction } from './action.js'
+import { actionReady, isPower, spendAction , resolveActionSlot } from './action.js'
 export { readyOn, isReady } from './action.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
 import { executeKnockback } from './movement.js'
@@ -52,7 +52,7 @@ function damageSourceOf(a: AbilityDef): DamageSource {
 }
 
 /** The one legality answer for powers (Law 2). Target side depends on the effect kind. */
-export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityId: string): boolean {
+export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityId: string, slot?: import('./types.js').ActionSlot): boolean {
   const u = unit(ctx, userId)
   const tg = unit(ctx, targetId)
   const a = ctx.actions[abilityId]
@@ -86,7 +86,7 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
       const aim = (t.origin ?? 'self') === 'target' ? targetId : userId
       if (resolveTargets(ctx, u, t, aim).length === 0) return false
     }
-    if (!a.free && u.primaryUsed) return false
+    if (resolveActionSlot(ctx, u, a, slot) === null) return false
     return (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self')) ? true : ctx.geo.distance(u.hex, tg.hex) <= a.range
   }
   switch (effectOf(a)) {
@@ -103,7 +103,7 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
       if (targetId !== userId) return false
       break
   }
-  if (!a.free && u.primaryUsed) return false
+  if (resolveActionSlot(ctx, u, a, slot) === null) return false
   return ctx.geo.distance(u.hex, tg.hex) <= a.range
 }
 
@@ -186,17 +186,17 @@ export function previewPower(ctx: Ctx, userId: number, targetId: number, ability
   }
 }
 
-export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: string): { damage: number } {
+export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: string, slot?: import('./types.js').ActionSlot): { damage: number } {
   const u = unit(ctx, userId)
   const tg = unit(ctx, targetId)
   const a = abilityDef(ctx, abilityId)
-  if (!canUsePower(ctx, userId, targetId, abilityId)) {
+  if (!canUsePower(ctx, userId, targetId, abilityId, slot)) {
     throw new Error(`illegal power: ${u.name} -> ${tg.name} with ${abilityId}`)
   }
 
   // refactor.one-action-type: THE ONE SPEND — stamina, the primary (unless free), the cooldown, a use.
   // Before this the cooldown was written after the effects and one Turn short (see action.ts).
-  spendAction(ctx, userId, a, 'primary')
+  spendAction(ctx, userId, a, resolveActionSlot(ctx, u, a, slot)!)
 
   let total = 0
   if (a.effects) {

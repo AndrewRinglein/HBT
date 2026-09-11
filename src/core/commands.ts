@@ -1,7 +1,7 @@
 // The session boundary owns whose input is accepted. Resolution stays in the
 // same attack, power and movement functions used by automatic battles.
 import type { Ctx } from './types.js'
-import { actionReady, isAttack, isMove } from './action.js'
+import { actionReady, isAttack, isMove, resolveActionSlot } from './action.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { canUsePower, usePower } from './ability.js'
 import { executeFlight, executeMove, executeSidestep, planMovement, type MovementPlan } from './movement.js'
@@ -11,12 +11,12 @@ import { completeActionCycle } from './battle.js'
 
 /** Trusted host configuration, supplied separately from client command data. */
 export type ControlPolicy = { readonly humanUnitUids: readonly number[] }
-export type ActionRequest = { actor: number; actionId: string } & ({ target: number } | { destination: number })
+export type ActionRequest = { actor: number; actionId: string; slot?: import('./types.js').ActionSlot } & ({ target: number } | { destination: number })
 export type BattleCommand = (ActionRequest & { kind: 'action'; expectedSeq: number }) | { kind: 'end-cycle'; actor: number; expectedSeq: number }
 export type CommandResult = { ok: true } | { ok: false; reason: string }
 type Rejection = Extract<CommandResult, { ok: false }>
-type Plan = { kind: 'attack'; actor: number; actionId: string; target: number }
-  | { kind: 'power'; actor: number; actionId: string; target: number }
+type Plan = { kind: 'attack'; actor: number; actionId: string; target: number; slot: import('./types.js').ActionSlot }
+  | { kind: 'power'; actor: number; actionId: string; target: number; slot: import('./types.js').ActionSlot }
   | MovementPlan
 const reject = (reason: string): Rejection => ({ ok: false, reason })
 const integer = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0
@@ -40,25 +40,27 @@ export function controllerOf(ctx: Ctx, actor: number, policy: ControlPolicy): 'h
 function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   if (!record(request)) return reject('malformed-action')
   const aimed = Object.hasOwn(request, 'target')
-  if (!keys(request, ['actor', 'actionId', aimed ? 'target' : 'destination'])) return reject('malformed-action')
+  if (!keys(request, ['actor', 'actionId', aimed ? 'target' : 'destination', ...(Object.hasOwn(request, 'slot') ? ['slot'] : [])])) return reject('malformed-action')
+  if (request.slot !== undefined && request.slot !== 'movement' && request.slot !== 'primary') return reject('malformed-action')
   const { actor, actionId } = request
   if (!integer(actor) || !ctx.state.units[actor] || typeof actionId !== 'string') return reject('malformed-action')
   const u = ctx.state.units[actor]
   if (ctx.state.outcome) return reject('battle-complete')
-  if (ctx.cfg.switches.actionSlots !== 'byProfile') return reject('unsupported-action-slots')
   if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return reject('actor-cannot-act')
   const a = Object.hasOwn(ctx.actions, actionId) ? ctx.actions[actionId] : undefined
   if (!a || !actionReady(ctx, u, a)) return reject('action-not-ready')
+  const slot = resolveActionSlot(ctx, u, a, request.slot)
+  if (slot === null) return reject('action-slot-closed')
   if (isMove(a)) {
     if (aimed || !integer(request.destination) || request.destination >= ctx.state.terrain.length) return reject('malformed-destination')
-    return planMovement(ctx, actor, actionId, request.destination)
+    return planMovement(ctx, actor, actionId, request.destination, slot)
   }
   if (!aimed || !integer(request.target) || !ctx.state.units[request.target]) return reject('malformed-target')
   const target = request.target
   const forced = forcedTargetOf(ctx, u)
   if (ctx.state.units[target]!.side !== u.side && forced !== null && target !== forced) return reject('forced-target')
-  if (isAttack(a)) return canAttack(ctx, actor, target, actionId) ? { kind: 'attack', actor, target, actionId } : reject('illegal-target-or-action')
-  return canUsePower(ctx, actor, target, actionId) ? { kind: 'power', actor, target, actionId } : reject('illegal-target-or-action')
+  if (isAttack(a)) return canAttack(ctx, actor, target, actionId, slot) ? { kind: 'attack', actor, target, actionId, slot } : reject('illegal-target-or-action')
+  return canUsePower(ctx, actor, target, actionId, slot) ? { kind: 'power', actor, target, actionId, slot } : reject('illegal-target-or-action')
 }
 
 /** Pure legality for internal callers. No cursor or controller policy is required. */
@@ -67,11 +69,11 @@ export function validateAction(ctx: Ctx, request: unknown): CommandResult {
   return 'ok' in plan ? plan : { ok: true }
 }
 function resolvePlan(ctx: Ctx, plan: Plan): void {
-  if (plan.kind === 'attack') { performAttack(ctx, plan.actor, plan.target, plan.actionId); settle(ctx, plan.actionId) }
-  else if (plan.kind === 'power') { usePower(ctx, plan.actor, plan.target, plan.actionId); settle(ctx, plan.actionId) }
-  else if (plan.power.move.shape === 'path') executeMove(ctx, plan.actor, plan.path, plan.power)
-  else if (plan.power.move.shape === 'sidestep') executeSidestep(ctx, plan.actor, plan.destination, plan.power)
-  else executeFlight(ctx, plan.actor, plan.destination, plan.power)
+  if (plan.kind === 'attack') { performAttack(ctx, plan.actor, plan.target, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
+  else if (plan.kind === 'power') { usePower(ctx, plan.actor, plan.target, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
+  else if (plan.power.move.shape === 'path') executeMove(ctx, plan.actor, plan.path, plan.power, undefined, plan.slot)
+  else if (plan.power.move.shape === 'sidestep') executeSidestep(ctx, plan.actor, plan.destination, plan.power, plan.slot)
+  else executeFlight(ctx, plan.actor, plan.destination, plan.power, plan.slot)
 }
 /** Revalidates immediately before resolution. Rejections emit nothing and draw nothing. */
 export function executeAction(ctx: Ctx, request: unknown): CommandResult {
@@ -90,15 +92,15 @@ function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): Session
   const { kind, actor, expectedSeq } = command
   if (kind !== 'action' && kind !== 'end-cycle') return reject('malformed-command')
   const fields = kind === 'end-cycle' ? ['kind', 'actor', 'expectedSeq'] : ['kind', 'actor', 'expectedSeq', 'actionId', Object.hasOwn(command, 'target') ? 'target' : 'destination']
+  if (kind === 'action' && Object.hasOwn(command, 'slot')) fields.push('slot')
   if (!keys(command, fields) || !integer(actor) || !ctx.state.units[actor] || !integer(expectedSeq)) return reject('malformed-command')
   if (ctx.state.outcome) return reject('battle-complete')
   if (ctx.battleCursor?.at !== 'acting') return reject('not-acting')
   if (ctx.battleCursor.actor !== actor) return reject('not-current-actor')
   if (expectedSeq !== ctx.state.seq) return reject('stale-sequence')
   if (controllerOf(ctx, actor, policy) !== 'human') return reject('not-human-controlled')
-  if (ctx.cfg.switches.actionSlots !== 'byProfile') return reject('unsupported-action-slots')
   if (kind === 'end-cycle') return { kind, actor }
-  return planAction(ctx, { actor, actionId: command.actionId, ...(Object.hasOwn(command, 'target') ? { target: command.target } : { destination: command.destination }) })
+  return planAction(ctx, { actor, actionId: command.actionId, ...(Object.hasOwn(command, 'target') ? { target: command.target } : { destination: command.destination }), ...(Object.hasOwn(command, 'slot') ? { slot: command.slot } : {}) })
 }
 
 /** A public UI may ask legality, then use pipeline previews for numbers; no future roll is exposed. */
@@ -112,9 +114,9 @@ export function executeBattleCommand(ctx: Ctx, policy: ControlPolicy, command: u
   if (plan.kind === 'end-cycle') completeActionCycle(ctx)
   else {
     resolvePlan(ctx, plan)
-    // Winning or falling to a reaction leaves no further human action to ask
-    // for. Close the cycle now so advanceBattle can finish its lifecycle.
-    if (ctx.state.outcome || ctx.state.units[plan.actor]!.lifeState !== 'standing') completeActionCycle(ctx)
+    // A paid primary, victory or falling leaves no further human action.
+    // The driver closes the cycle so advanceBattle can finish its lifecycle.
+    if (ctx.state.outcome || ctx.state.units[plan.actor]!.lifeState !== 'standing' || ctx.state.units[plan.actor]!.primaryUsed) completeActionCycle(ctx)
   }
   return { ok: true }
 }

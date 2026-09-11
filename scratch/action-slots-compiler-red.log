@@ -1,0 +1,132 @@
+✖ compiler preserves movement through all TEST action families and authored movement (116.8116ms)
+✖ compiler preserves primary through all TEST action families and authored movement (108.295ms)
+✖ compiler preserves either through all TEST action families and authored movement (106.9391ms)
+✔ compiler rejects invalid attacks slot before producing output (105.4767ms)
+✔ compiler rejects invalid abilities slot before producing output (103.803ms)
+✔ compiler rejects invalid moves slot before producing output (106.4446ms)
+✖ compiler rejects invalid settled slot before producing output (121.6043ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 3
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 821.8679
+
+✖ failing tests:
+
+test at test\action-slots.test.mjs:31:55
+✖ compiler preserves movement through all TEST action families and authored movement (116.8116ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-oak4p4/content/mkenginepack.mjs:1434
+      for (const k of Object.keys(a)) if (!ATTACK_FIELDS.has(k)) throw new Error(`content/test/attacks.json: '${row.id}' carries unknown field '${k}'`);
+                                                                       ^
+  
+  Error: content/test/attacks.json: 'attack.test-ram.slam' carries unknown field 'slot'
+      at testAttacks (file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-oak4p4/content/mkenginepack.mjs:1434:70)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-oak4p4/content/mkenginepack.mjs:1487:24
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/action-slots.test.mjs:36:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\action-slots.test.mjs:31:55
+✖ compiler preserves primary through all TEST action families and authored movement (108.295ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-YyzdtR/content/mkenginepack.mjs:1434
+      for (const k of Object.keys(a)) if (!ATTACK_FIELDS.has(k)) throw new Error(`content/test/attacks.json: '${row.id}' carries unknown field '${k}'`);
+                                                                       ^
+  
+  Error: content/test/attacks.json: 'attack.test-ram.slam' carries unknown field 'slot'
+      at testAttacks (file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-YyzdtR/content/mkenginepack.mjs:1434:70)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-YyzdtR/content/mkenginepack.mjs:1487:24
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/action-slots.test.mjs:36:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\action-slots.test.mjs:31:55
+✖ compiler preserves either through all TEST action families and authored movement (106.9391ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-Xj2QlE/content/mkenginepack.mjs:1434
+      for (const k of Object.keys(a)) if (!ATTACK_FIELDS.has(k)) throw new Error(`content/test/attacks.json: '${row.id}' carries unknown field '${k}'`);
+                                                                       ^
+  
+  Error: content/test/attacks.json: 'attack.test-ram.slam' carries unknown field 'slot'
+      at testAttacks (file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-Xj2QlE/content/mkenginepack.mjs:1434:70)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-slots-Xj2QlE/content/mkenginepack.mjs:1487:24
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/action-slots.test.mjs:36:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\action-slots.test.mjs:40:66
+✖ compiler rejects invalid settled slot before producing output (121.6043ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/action-slots.test.mjs:45:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

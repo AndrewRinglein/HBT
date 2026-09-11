@@ -150,6 +150,7 @@ export type AbilityEffect =
  * path and the movement path each read the fields they resolve. "An item power
  * can't do that because it's an item power" is no longer a valid answer.
  */
+export type ActionSlot = 'movement' | 'primary'
 export type ActionDef = {
   readonly id: string
   readonly name: string
@@ -159,7 +160,7 @@ export type ActionDef = {
    * Which of the Activation's two actions may spend it. Ruled 2026-09-04:
    * "structurally, movement and primary are identical. They can both do any
    * of the same things." Absent = `either`. SWITCHES.md `actionSlots` says how
-   * the AI reads it until the AI is designed (system.ai-modes).
+   * default selection differs by policy; explicit restrictions always apply.
    */
   readonly slot?: 'movement' | 'primary' | 'either'
   // ── the limits — one set, on every action (ruled 2026-09-04) ──
@@ -732,7 +733,7 @@ export type Config = {
     frostBeforeProtection: boolean
     /** Zones of control and attacks of opportunity live? SWITCHES.md, 2026-09-03 (movement.zone-of-control). */
     zoneOfControl: boolean
-    /** SWITCHES.md actionSlots (2026-09-04): how the AI reads an action's `slot`. Only `byProfile` has code behind it. */
+    /** Default slot preference only; both policies honor authored restrictions. SWITCHES.md actionSlots. */
     actionSlots: 'byProfile' | 'any'
     /** SWITCHES.md mirrorSideRules (2026-09-04): an overridden unit follows the FIELDED side's rules, or (`row`, built 2026-09-04 — proving.mirror-row-rules) its own ROW's: `rulesSideOf()` in side.ts is the one reader. */
     mirrorSideRules: 'fielded' | 'row'

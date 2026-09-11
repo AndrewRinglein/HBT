@@ -2275,3 +2275,31 @@ caught use of ES2023 `findLast` in the new test; the test now uses supported arr
 methods, with its assertions unchanged. Snapshot rules advance to v2-migration.6
 because the executable resource semantics changed. Evidence is retained in
 `scratch/flight-budget-red.log` and `scratch/flight-budget-green.log`.
+
+## 2026-09-11 — Authored action-slot legality and AI continuation
+
+V2 migration authorization implements the existing single-action ruling: profile
+determines effects, authored `slot` determines allowed opportunity. Both
+`byProfile` and `any` honor restrictions; the switch chooses only the default
+preference. Missing slot means either. An explicit command selects movement or
+primary; primary ends earlier movement and closes the public action cycle.
+Free actions precede primary and pay resources without a slot; reactions bypass
+activation slots while paying resources. No alternate V1 legality path is added.
+
+Provisional AI policy retains current modes/previews and uses a transient decision
+context: choose each free ID once per cycle, continue on successful choices,
+stop on idle/no progress/closed primary. Its finite action bound throws rather
+than silently returning a truncated simulation. Details and red evidence are in
+V2-AUTHORED-SLOTS.md. Slot/save/Surge state uses existing fields; snapshot rules .7
+reject older executable semantics rather than migrate them.
+
+Intentional historical-test revisions retain all cost, AoO, floor and state/RNG
+assertions: request an explicitly spent slot; complete the direct driver cycle
+before public snapshot parity; grant Swift Flight before executing it; begin a
+new activation before each repeated Devotion; require unpaid Leap to be an exact
+no-op. The old unsupported-any assertion is replaced by its newly supported
+behavior. These edits remain flagged for human review, not self-approved.
+
+Universal action expenditure events are deliberately the next item. They need a
+metadata-only control transition with evidence; this item adds no conditional
+event workaround and makes no claim that passive replay infers explicit slots.

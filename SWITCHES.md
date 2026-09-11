@@ -429,13 +429,21 @@ operations (§4's other OPEN) is not built: there is no fog row yet.
 ## actionSlots — may either of the Activation's two actions spend any action?
 Added 2026-09-04 (refactor.one-action-type). Ruled 2026-09-04: "structurally,
 movement and primary are identical. They can both do any of the same things."
-The action carries `slot` (movement · primary · either; absent = either) and
-the engine records it. **How the AI reads it is not built**: today the AI
-spends movements from the movement action and attacks and powers from the
-primary — `byProfile`, the default. `any` — a movement-slot attack, a
-primary-slot walk — is the designed AI's path (system.ai-modes: "DESIGN FIRST,
-with Angela") and has no code behind it yet; this entry exists so the question
-is on the list and not decided by omission.
+Implemented 2026-09-11 by capability.authored-slots under authorized V2 migration.
+The action carries `slot` (movement · primary · either; absent = either), and
+both policies enforce that restriction. `byProfile`, the default, prefers
+movement for movement profiles and primary for attacks/powers; an incompatible
+preference falls back to an open authored-compatible slot. `any` prefers the
+earliest compatible slot. A caller may explicitly request movement or primary.
+Primary closes earlier movement. Free actions spend no slot but precede primary;
+reactions bypass activation-slot order and retain resource costs.
+
+Provisional AI policy: existing modes continue after successful choices until
+primary, an idle decision or no progress. Each free action ID is chosen at most
+once per cycle by the AI, not a new human/core usage limit. The finite budget is
+two paid opportunities plus all free registry IDs; exceeding it throws. Full
+contract and historical-test changes: `V2-AUTHORED-SLOTS.md`. Universal expenditure
+events remain the immediately following item; no conditional replay fallback.
 
 ## mirrorSideRules — which side's rules does a unit fielded against its row follow?
 Added 2026-09-04 (proving.side-override). Ruled 2026-09-03 (the Proving):

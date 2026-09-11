@@ -10,6 +10,7 @@
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
+import { saveBattle } from '../src/core/snapshot.js'
 import { runActivation } from '../src/ai/modes.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { executeSidestep, stepRangeOf } from '../src/core/movement.js'
@@ -54,8 +55,10 @@ describe('leap — exactly 2 hexes, and the rider rides the swing', () => {
     const w = ctx.state.units[0]!
     w.stamina = 1
     beginActivation(ctx, w.id, 'test')
+    const before = saveBattle(ctx)
     expect(executeSidestep(ctx, w.id, hexId(6, 8), MOVES['power.leap']!)).toBe(false)
-    expect(ctx.events.some((e) => e.type === 'move.refused' && e.causeId === 'power.leap')).toBe(true)
+    // V2 shared legality rejects before spending, emitting or drawing RNG.
+    expect(saveBattle(ctx)).toBe(before)
   })
 
   it('the AI leaps into adjacency when the switch is on — and carries the rider into the attack', () => {
@@ -123,7 +126,11 @@ describe('the zero-hex bonus moves — you stand still on purpose', () => {
     expect(p.maxStamina, 'the price is permanent this battle').toBe(max0 - 1)
     expect(p.stamina, 'the gain lands after the new ceiling').toBe(2)
     // the floor: docking cannot take max below 1 (the wounds precedent)
-    for (let i = 0; i < 12; i++) executeSidestep(ctx, p.id, p.hex, MOVES['power.devotion']!)
+    // V2 legality applies to direct executors too: each new use needs a fresh cycle.
+    for (let i = 0; i < 12; i++) {
+      beginActivation(ctx, p.id, 'test')
+      expect(executeSidestep(ctx, p.id, p.hex, MOVES['power.devotion']!)).toBe(true)
+    }
     expect(p.maxStamina).toBe(1)
   })
 

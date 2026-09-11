@@ -1,0 +1,17 @@
+✔ compiler preserves movement through all TEST action families and authored movement (136.3107ms)
+✔ compiler preserves primary through all TEST action families and authored movement (121.4061ms)
+✔ compiler preserves either through all TEST action families and authored movement (125.3527ms)
+✔ authored movement preserves free without weakening slot transport (121.329ms)
+✔ authored movement rejects a nonboolean free flag (81.6332ms)
+✔ compiler rejects invalid attacks slot before producing output (108.2509ms)
+✔ compiler rejects invalid abilities slot before producing output (110.1118ms)
+✔ compiler rejects invalid moves slot before producing output (109.7895ms)
+✔ compiler rejects invalid settled slot before producing output (79.9158ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1045.955

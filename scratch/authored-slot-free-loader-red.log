@@ -1,0 +1,57 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/authored-slot-pack.test.ts (22 tests | 4 failed) 13ms
+     × all action loaders reject malformed free flag no 3ms
+     × all action loaders reject malformed free flag 1 0ms
+     × all action loaders reject malformed free flag null 0ms
+     × explicit free false and absence remain distinct authored metadata 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > all action loaders reject malformed free flag no
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > all action loaders reject malformed free flag 1
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > all action loaders reject malformed free flag null
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:42:91
+     40|   })
+     41|   it.each(['no', 1, null])('all action loaders reject malformed free f…
+     42|     expect(() => liftMove({ id: 'power.test-slot-bad', free } as unkno…
+       |                                                                                           ^
+     43|     expect(() => liftAttack({ id: 'attack.test-slot-bad', free } as un…
+     44|     const pack = UNIT_PACK as unknown as Record<string, any>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/authored-slot-pack.test.ts > authored slot transport reaches actual battles > explicit free false and absence remain distinct authored metadata
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ test/authored-slot-pack.test.ts:53:53
+     51|     const base: PackMoveRow = { id: 'power.test-slot-lift', name: 'Lif…
+     52|     expect(liftMove(base).free).toBeUndefined()
+     53|     expect(liftMove({ ...base, free: false }).free).toBe(false)
+       |                                                     ^
+     54|   })
+     55|   it.each([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 18 passed (22)
+   Start at  07:03:26
+   Duration  642ms (transform 415ms, setup 0ms, import 515ms, tests 13ms, environment 0ms)
+

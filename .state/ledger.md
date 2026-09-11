@@ -11265,3 +11265,167 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
   PASS  kill switch — the tests fail without the content — tests fail without power.test-flight-plus-three,power.test-flight-plus-five — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## capability.authored-slots — LANDED `c5d2861` **NEEDS REVIEW**
+2026-09-11 14:10
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:21 · ..\COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite — 1070 passed
+  PASS  gate 1 — the id appears in a real battle — attack.test-slot-movement: 5 log lines, 5 fired, 3 changed state · attack.test-slot-either: 8 log lines, 8 fired, 6 changed state
+  PASS  brought its own tests — test/ai-commands.test.ts, test/battle-commands.test.ts, test/flight-budget.test.ts, test/flight.test.ts, test/movement-bonus.test.ts, test/movement-plans.test.ts, test/authored-slot-pack.test.ts, test/authored-slots.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-commands.test.ts (-6), test/flight-budget.test.ts (-1), test/movement-bonus.test.ts (-2), test/movement-plans.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.test-slot-movement live · attack.test-slot-either live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-slot-movement,attack.test-slot-either — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ai-commands.test.ts b/test/ai-commands.test.ts
+index d7a3b66..68700e2 100644
+--- a/test/ai-commands.test.ts
++++ b/test/ai-commands.test.ts
+@@ -115,4 +115,6 @@ describe('AI uses the player action contract', () => {
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: 85 }], [{ type: 'test-zombie', hex: 150 }])
+     const u = ctx.state.units[0]!
++    // V2: the restriction is authored; a profile alone no longer restricts its slot.
++    ctx.actions = { ...ctx.actions, 'power.focus': { ...ctx.actions['power.focus']!, slot: 'movement' } }
+     u.actions = [attacksOf(ctx, u)[0]!.id, 'power.focus']
+     u.stamina = 0
+diff --git a/test/battle-commands.test.ts b/test/battle-commands.test.ts
+index 254d96c..e7cdd36 100644
+--- a/test/battle-commands.test.ts
++++ b/test/battle-commands.test.ts
+@@ -52,8 +52,9 @@ describe('plumbing.battle-commands', () => {
+     expect(saveBattle(ctx)).toBe(before)
+     performAttack(direct, 0, 1, id); settle(direct, id)
++    completeActionCycle(direct) // V2: a public paid primary closes the driver cycle.
+     expect(executeBattleCommand(ctx, policy, command)).toEqual({ ok: true })
+     expect(saveBattle(ctx)).toBe(saveBattle(direct))
+-    rejected(ctx, command, 'stale-sequence')
+-    rejected(ctx, action(ctx, { actionId: id, target: 1 }), 'illegal-target-or-action')
++    rejected(ctx, command, 'not-acting')
++    rejected(ctx, action(ctx, { actionId: id, target: 1 }), 'not-acting')
+   })
+ 
+@@ -65,4 +66,5 @@ describe('plumbing.battle-commands', () => {
+     const direct = fullFork(ctx)
+     usePower(direct, 0, 0, id); settle(direct, id)
++    completeActionCycle(direct) // Driver-neutral usePower does not advance the cursor.
+     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: id, target: 0 }))).toEqual({ ok: true })
+     expect(saveBattle(ctx)).toBe(saveBattle(direct))
+@@ -80,5 +82,6 @@ describe('plumbing.battle-commands', () => {
+     expect(ctx.state.units[0]!.hex).toBe(destination)
+     expect(saveBattle(ctx)).toBe(saveBattle(direct))
+-    rejected(ctx, action(ctx, { actionId: id, destination: 87 }))
++    // V2 profiles no longer imply restrictions: this reuses the SAME slot.
++    rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))
+   })
+ 
+@@ -121,5 +124,5 @@ describe('plumbing.battle-commands', () => {
+     const other = fixture()
+     expect(executeBattleCommand(other, policy, action(other, { actionId: attack(other), target: 1 }))).toEqual({ ok: true })
+-    rejected(other, action(other, { actionId: 'power.move', destination: 84 }), 'movement-slot-closed')
++    rejected(other, action(other, { actionId: 'power.move', destination: 84 }), 'not-acting')
+   })
+ 
+@@ -204,5 +207,5 @@ describe('plumbing.battle-commands', () => {
+   })
+ 
+-  it('rejects complete/unstarted sessions and unsupported slot policy', () => {
++  it('rejects complete/unstarted sessions and accepts the implemented any slot policy', () => {
+     const unstarted = createCustomBattle([{ type: 'test-warrior', hex: 85 }], [{ type: 'test-zombie', hex: 86 }])
+     rejected(unstarted, end(unstarted), 'not-acting')
+@@ -210,5 +213,8 @@ describe('plumbing.battle-commands', () => {
+     rejected(ctx, end(ctx), 'battle-complete')
+     ctx.state.outcome = null; ctx.cfg.switches.actionSlots = 'any'
+-    rejected(ctx, action(ctx, { actionId: attack(ctx), target: 1 }), 'unsupported-action-slots')
++    // capability.authored-slots replaces the explicit not-yet-built rejection.
++    expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: attack(ctx), target: 1 }))).toEqual({ ok: true })
++    expect(ctx.state.units[0]!.moveUsed).toBe(true)
++    expect(ctx.state.units[0]!.primaryUsed).toBe(false)
+   })
+ 
+diff --git a/test/flight-budget.test.ts b/test/flight-budget.test.ts
+index 5bc7133..26a31f1 100644
+--- a/test/flight-budget.test.ts
++++ b/test/flight-budget.test.ts
+@@ -36,5 +36,6 @@ describe('flight spends its local bonus without replenishing activation movement
+       expect(moved.cost).toBe(payment)
+       const after = saveBattle(ctx)
+-      expect(executeAction(ctx, { actor: 0, actionId, destination: 85 }).ok).toBe(false)
++      // V2 can spend primary on movement too; the already-spent movement slot cannot repeat.
++      expect(executeAction(ctx, { actor: 0, actionId, destination: 85, slot: 'movement' }).ok).toBe(false)
+       expect(saveBattle(ctx)).toEqual(after)
+     })
+diff --git a/test/flight.test.ts b/test/flight.test.ts
+index dafc381..633985b 100644
+--- a/test/flight.test.ts
++++ b/test/flight.test.ts
+@@ -150,4 +150,6 @@ describe('landing is real', () => {
+     const dest = flightLandings(ctx, d, MOVES['power.flight-swift']!)
+       .filter((h) => distance(h, d.hex) === 6).sort((a, b) => a - b)[0]!
++    // V2 direct executor validates grants; the drake normally has standard flight.
++    d.actions.push('power.flight-swift')
+     executeFlight(ctx, d.id, dest, MOVES['power.flight-swift']!)
+     expect(d.stamina, 'swift is free').toBe(stam)
+diff --git a/test/movement-bonus.test.ts b/test/movement-bonus.test.ts
+index 983b5ff..9dc239d 100644
+--- a/test/movement-bonus.test.ts
++++ b/test/movement-bonus.test.ts
+@@ -11,4 +11,5 @@ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
++import { saveBattle } from '../src/core/snapshot.js'
+ import { runActivation } from '../src/ai/modes.js'
+ import { beginActivation } from '../src/core/mutate.js'
+@@ -55,6 +56,8 @@ describe('leap — exactly 2 hexes, and the rider rides the swing', () => {
+     w.stamina = 1
+     beginActivation(ctx, w.id, 'test')
++    const before = saveBattle(ctx)
+     expect(executeSidestep(ctx, w.id, hexId(6, 8), MOVES['power.leap']!)).toBe(false)
+-    expect(ctx.events.some((e) => e.type === 'move.refused' && e.causeId === 'power.leap')).toBe(true)
++    // V2 shared legality rejects before spending, emitting or drawing RNG.
++    expect(saveBattle(ctx)).toBe(before)
+   })
+ 
+@@ -124,5 +127,9 @@ describe('the zero-hex bonus moves — you stand still on purpose', () => {
+     expect(p.stamina, 'the gain lands after the new ceiling').toBe(2)
+     // the floor: docking cannot take max below 1 (the wounds precedent)
+-    for (let i = 0; i < 12; i++) executeSidestep(ctx, p.id, p.hex, MOVES['power.devotion']!)
++    // V2 legality applies to direct executors too: each new use needs a fresh cycle.
++    for (let i = 0; i < 12; i++) {
++      beginActivation(ctx, p.id, 'test')
++      expect(executeSidestep(ctx, p.id, p.hex, MOVES['power.devotion']!)).toBe(true)
++    }
+     expect(p.maxStamina).toBe(1)
+   })
+diff --git a/test/movement-plans.test.ts b/test/movement-plans.test.ts
+index c1d2631..b45fbe8 100644
+--- a/test/movement-plans.test.ts
++++ b/test/movement-plans.test.ts
+@@ -44,5 +44,6 @@ describe('shared movement budgets', () => {
+     expect(executeMove(ctx, 0, [86], power)).toBe(1)
+     const before = saveBattle(ctx)
+-    expect(executeMove(ctx, 0, [87], power)).toBe(0)
++    // V2: the repeated request is for the same spent slot, not a new primary move.
++    expect(executeMove(ctx, 0, [87], power, undefined, 'movement')).toBe(0)
+     expect(saveBattle(ctx)).toBe(before)
+     expect(u.hex).toBe(86)
+@@ -105,5 +106,5 @@ describe('shared movement budgets', () => {
+     expect(u.movePointsLeft).toBe(0)
+     const before = saveBattle(ctx)
+-    expect(executeMove(ctx, 0, [84], power)).toBe(0)
++    expect(executeMove(ctx, 0, [84], power, undefined, 'movement')).toBe(0)
+     expect(saveBattle(ctx)).toBe(before)
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

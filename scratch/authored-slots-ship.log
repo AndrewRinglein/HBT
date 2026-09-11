@@ -1,0 +1,66 @@
+
+> hobat-content@1.0.0 ship
+> node ship.mjs
+
+Checked assemble.mjs
+Checked functions.mjs
+Checked assemble.mjs
+Checked expect.mjs
+Checked checklevels.mjs
+Checked mkenginepack.mjs
+Checked mklevelsmd.mjs
+Checked build-viewer.mjs
+Checked mkcodexmd.mjs
+1 · FRESHNESS
+  ok    hbt-codex.html is newer than all 42 sources
+
+2 · RENDER
+  ok    21 tabs clicked and read
+  ok    0 page errors
+
+3 · RULINGS PRESENT
+  ok    ground-layer rule
+  ok    ground replacement
+  ok    ground cancellation exception
+  ok    summon-order rule
+  ok    Spirit Link is Protection
+  ok    Uncorrupted flat cost
+  ok    Oblation flat cost
+  ok    ground: become burning
+  ok    ground: become frost
+  ok    ground: become poisoned
+  ok    Slow is in use
+  ok    rename: Red Harvest
+  ok    rename: Range Finder
+  ok    rename: The Verdict
+  ok    rename: Stagger
+  ok    Shadow Step retargeted
+  ok    Magical Friend is a summon
+  ok    guide: Toughness
+  ok    guide: a cost is a number
+  ok    guide: ground layers
+
+4 · CUTS STAYED CUT  (live rules only — source notes and the guide may still quote them)
+  ok    ground layer with a number: "burning 2 for two Turns"
+  ok    ground layer with a clock: "for two Turns"
+  ok    Bear Form as a power: "Bear Form"
+  ok    terrain-gated targeting: "any hex of darkness"
+  ok    stacking limit: "stacks up to three times"
+  ok    stacking limit: "may stack to +2"
+  ok    cost scaled by a count: "for each ally you healed"
+  ok    cost scaled by a count: "for each stack removed"
+  ok    lowercase status: "gain 2 protection"
+  ok    lowercase status: "apply weak 4"
+  ok    one-Turn Movement loss: "loses 1 Movement on its next Turn"
+  ok    restated universal floor: "to a floor of 0"
+  ok    short-form duration: "gains +1 Armor for the Battle"
+
+5 · NO CLASSLESS HEROES
+  ok    all 257 heroes have a class
+  ok    8 classes, every hero pointing at a real one
+  ok    no class has fewer than 2 heroes
+  ok    all 8 classes have a level table
+
+VERIFY FAILURES: 0
+Candidate validated: 102 fielded definitions; smoke battle heroClear
+SHIPPED: 2 generated files published.
