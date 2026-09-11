@@ -1,0 +1,24 @@
+effect of map.thicket,map.proving.ruin — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.3->4.3
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  map.thicket: UNAVAILABLE/PRESENCE-ONLY — explicitly disabled control absent from WITHOUT; no paired numerical effect
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.proving.ruin: UNAVAILABLE/PRESENCE-ONLY — explicitly disabled control absent from WITHOUT; no paired numerical effect
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.2->3.2
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 5.6->5.6
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.7->4.7
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.dungeon-16x8: heroWins 24->24 (+0)  meanTurns 7.5->7.5
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  test.map.journey-20x10: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  test.map.authored-40x40: heroWins 25->25 (+0)  meanTurns 7.1->7.1
+MEASUREMENT UNAVAILABLE — 2 control(s) lack complete paired evidence
+EFFECT_RESULT {"version":1,"status":"unavailable","unavailable":[{"map":"map.thicket","reason":"disabled-control"},{"map":"map.proving.ruin","reason":"disabled-control"}]}
+PROCESS_EXIT=2

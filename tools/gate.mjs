@@ -61,7 +61,7 @@ function logRun(disposition, extra = {}) {
 
 const sh = (cmd, opts = {}) => execSync(cmd, { encoding: 'utf8', stdio: 'pipe', ...opts })
 const tryRun = (cmd, opts = {}) => { try { return { ok: true, out: sh(cmd, opts) } } catch (e) {
-  return { ok: false, out: (e.stdout ?? '') + (e.stderr ?? '') } } }
+  return { ok: false, status: e.status, out: (e.stdout ?? '') + (e.stderr ?? '') } } }
 
 const backlog = JSON.parse(readFileSync(BACKLOG, 'utf8'))
 const item = backlog.find((b) => b.id === id)
@@ -485,7 +485,19 @@ if (item.changesBaseline && MECHANISM_SHAPES.includes(item.shape)) {
   if (ids.length) {
     const r = tryRun(`npx tsx tools/effect-size.mts ${ids.join(',')}`)
     effectReport = r.out.trim()
-    if (!r.ok) gauntletNotes.push('effect measurement errored')
+    // Every outcome requires a versioned trailer matching its process status.
+    // A successful process alone must never launder unavailable/malformed data.
+    let measured = false, unavailable = false
+    try {
+      const last = effectReport.split(/\r?\n/).at(-1)
+      const result = last?.startsWith('EFFECT_RESULT ') ? JSON.parse(last.slice(14)) : null
+      const shape = result?.version === 1 && Array.isArray(result.unavailable)
+      measured = shape && r.ok && result.status === 'measured' && result.unavailable.length === 0
+      unavailable = shape && !r.ok && r.status === 2 && result.status === 'unavailable'
+        && result.unavailable.length > 0
+        && result.unavailable.every(row => typeof row?.map === 'string' && row.map.length > 0 && ['disabled-control', 'invalid-replicates'].includes(row.reason))
+    } catch { /* malformed protocol remains an error, never a pass */ }
+    if (!measured) gauntletNotes.push(unavailable ? 'effect measurement unavailable' : 'effect measurement errored')
     console.log('\n' + effectReport + '\n')
   }
 }

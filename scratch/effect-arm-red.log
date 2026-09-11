@@ -1,0 +1,138 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/effect-arm-integrity.test.ts (9 tests | 8 failed) 1624ms
+   × reports an explicitly disabled absent map as unavailable, without the old missing-arm crash 209ms
+   × rejects an unexpected missing control loudly 197ms
+   × rejects an unexpected extra control before reporting averages 196ms
+   × refuses paired means with invalid counts 1/+0 194ms
+   × refuses paired means with invalid counts +0/7 194ms
+   × refuses paired means with invalid counts +0/25 193ms
+   × refuses paired means with invalid counts 25/25 196ms
+   × actual isolated gate retains unavailable measurement in seal, ledger and run log 54ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/effect-arm-integrity.test.ts > reports an explicitly disabled absent map as unavailable, without the old missing-arm crash
+AssertionError: expected 'effect of map.disabled — 25 paired ba…' to contain 'map.disabled: UNAVAILABLE/PRESENCE-ON…'
+
+- Expected
++ Received
+
+- map.disabled: UNAVAILABLE/PRESENCE-ONLY
++ effect of map.disabled — 25 paired battles per map, WITH vs WITHOUT
++   map.open: heroWins 10->10 (+0)  meanTurns 4.0->4.0
++ C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:53
++     if (b.invalid === REPS) { console.log(`  ${map}: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.`); anyDelta = true; continue }
++           ^
++ 
++ TypeError: Cannot read properties of undefined (reading 'invalid')
++     at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:53:11)
++     at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
++     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
++     at async importModuleDynamicallyWrapper (node:internal/vm/module:525:15)
++     at async [eval]:33:3
++ 
++ Node.js v24.12.0
++
+
+ ❯ test/effect-arm-integrity.test.ts:22:20
+     20| it('reports an explicitly disabled absent map as unavailable, without …
+     21|   const run = report({ 'map.open': valid(), 'map.disabled': valid() },…
+     22|   expect(run.text).toContain('map.disabled: UNAVAILABLE/PRESENCE-ONLY')
+       |                    ^
+     23|   expect(run.text).not.toContain('TypeError')
+     24|   expect(run.text).not.toContain('MEASURABLE')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  test/effect-arm-integrity.test.ts > rejects an unexpected missing control loudly
+AssertionError: expected 'effect of map.disabled — 25 paired ba…' to contain 'unexpected missing WITHOUT control: m…'
+
+- Expected
++ Received
+
+- unexpected missing WITHOUT control: map.open
++ effect of map.disabled — 25 paired battles per map, WITH vs WITHOUT
++ C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:53
++     if (b.invalid === REPS) { console.log(`  ${map}: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.`); anyDelta = true; continue }
++           ^
++ 
++ TypeError: Cannot read properties of undefined (reading 'invalid')
++     at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:53:11)
++     at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
++     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
++     at async importModuleDynamicallyWrapper (node:internal/vm/module:525:15)
++     at async [eval]:33:3
++ 
++ Node.js v24.12.0
++
+
+ ❯ test/effect-arm-integrity.test.ts:30:20
+     28|   const run = report({ 'map.open': valid() }, {})
+     29|   expect(run.status).toBe(1)
+     30|   expect(run.text).toContain('unexpected missing WITHOUT control: map.…
+       |                    ^
+     31|   expect(run.text).not.toContain('heroWins')
+     32| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  test/effect-arm-integrity.test.ts > rejects an unexpected extra control before reporting averages
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/effect-arm-integrity.test.ts:35:22
+     33| it('rejects an unexpected extra control before reporting averages', ()…
+     34|   const run = report({ 'map.open': valid() }, { 'map.open': valid(), '…
+     35|   expect(run.status).toBe(1)
+       |                      ^
+     36|   expect(run.text).toContain('unexpected extra WITHOUT control: map.ex…
+     37|   expect(run.text).not.toContain('heroWins')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  test/effect-arm-integrity.test.ts > refuses paired means with invalid counts 1/+0
+ FAIL  test/effect-arm-integrity.test.ts > refuses paired means with invalid counts +0/7
+ FAIL  test/effect-arm-integrity.test.ts > refuses paired means with invalid counts +0/25
+ FAIL  test/effect-arm-integrity.test.ts > refuses paired means with invalid counts 25/25
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ test/effect-arm-integrity.test.ts:47:22
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  test/effect-arm-integrity.test.ts > actual isolated gate retains unavailable measurement in seal, ledger and run log
+AssertionError: expected 'not passed — effect measurement error…' to be 'not passed — effect measurement unava…' // Object.is equality
+
+Expected: "not passed — effect measurement unavailable"
+Received: "not passed — effect measurement errored"
+
+ ❯ test/effect-arm-integrity.test.ts:73:27
+     71|     expect(run.status, run.stdout + run.stderr).toBe(0)
+     72|     const item = JSON.parse(readFileSync(join(folder, '.state/backlog.…
+     73|     expect(item.gauntlet).toBe('not passed — effect measurement unavai…
+       |                           ^
+     74|     expect(readFileSync(join(folder, '.state/ledger.md'), 'utf8')).toC…
+     75|     const rows = readFileSync(join(folder, '.state/gauntlet-log.jsonl'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 1 passed (9)
+   Start at  15:55:58
+   Duration  1.77s (transform 17ms, setup 0ms, import 28ms, tests 1.62s, environment 0ms)
+

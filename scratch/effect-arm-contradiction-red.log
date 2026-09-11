@@ -1,0 +1,30 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/effect-arm-integrity.test.ts (14 tests | 1 failed) 1867ms
+   × actual isolated gate preserves 'contradictory success code' in seal, ledger and run log 53ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/effect-arm-integrity.test.ts > actual isolated gate preserves 'contradictory success code' in seal, ledger and run log
+AssertionError: expected 'passed' to be 'not passed — effect measurement error…' // Object.is equality
+
+Expected: "not passed — effect measurement errored"
+Received: "passed"
+
+ ❯ test/effect-arm-integrity.test.ts:81:27
+     79|     expect(run.status, run.stdout + run.stderr).toBe(0)
+     80|     const item = JSON.parse(readFileSync(join(folder, '.state/backlog.…
+     81|     expect(item.gauntlet).toBe(`not passed — effect measurement ${reas…
+       |                           ^
+     82|     expect(readFileSync(join(folder, '.state/ledger.md'), 'utf8')).toC…
+     83|     const rows = readFileSync(join(folder, '.state/gauntlet-log.jsonl'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  15:57:22
+   Duration  2.01s (transform 17ms, setup 0ms, import 28ms, tests 1.87s, environment 0ms)
+

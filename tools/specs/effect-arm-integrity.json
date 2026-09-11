@@ -1,0 +1,11 @@
+{
+  "id": "plumbing.effect-arm-integrity",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": ["terrain.high-cell-los"],
+  "spec": "Effect comparison rejects unexpected missing or extra control arms. Explicitly disabled absent maps and partial or total invalid arms are unavailable, with counts and no invented paired averages. The gate visibly withholds the seal for unavailable measurement, separately from infrastructure errors.",
+  "expect": "Real tool report fixtures reproduce the missing-map crash and invalid-arm arithmetic before repair; complete valid arms retain exact arithmetic. An isolated actual gate fixture records unavailable measurement in its seal, ledger and run log without laundering it as successful numeric verification.",
+  "unreachable": "This repairs offline effect reporting and gate interpretation, outside battle content resolution. Isolated fixtures invoke the actual CLI report and gate against controlled child-process arms; no battle content ID invokes these reporting branches.",
+  "killSwitchExempt": "Disabling battle content cannot remove offline report validation or gate interpretation. Preserved old-source fixture failures prove the missing-map crash, misleading partial-invalid averages and unavailable-measurement misclassification independently of content disablement.",
+  "note": "Separate repair after terrain.high-cell-los landed with an effect-tool error. Preserve that historical verdict and the independent 535-battle LOS consequence evidence. No combat, content, map or historical test edits. Offline exemptions remain visible and withhold this item's seal."
+}

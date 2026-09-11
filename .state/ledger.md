@@ -11639,3 +11639,29 @@ TypeError: Cannot read properties of undefined (reading 'invalid')
 
 Node.js v24.12.0
 ```
+
+## plumbing.effect-arm-integrity — LANDED `6fb1211` **NEEDS REVIEW**
+2026-09-11 23:01
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite — 1233 passed
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/effect-arm-integrity.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN

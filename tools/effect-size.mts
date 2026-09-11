@@ -46,15 +46,46 @@ if (process.argv.includes('--arm')) {
     }).trim().split('\n').pop()!)
   const withArm = run()
   const without = run(ids)
+  const disabled = new Set(ids.split(',').map(id => id.trim()))
+  // Validate the entire comparison before printing any numeric conclusions.
+  // Aggregates do not identify paired valid replicates, so invalid runs cannot
+  // be subtracted or silently counted as zero-turn/zero-win observations.
+  for (const [name, arm] of [['WITH', withArm], ['WITHOUT', without]] as const) {
+    if (!arm || typeof arm !== 'object' || Array.isArray(arm)) throw new Error(`invalid ${name} comparison arm`)
+    for (const [map, value] of Object.entries(arm) as [string, any][]) {
+      if (!value || !['heroWins', 'turns', 'invalid'].every(key => Number.isSafeInteger(value[key]) && value[key] >= 0)
+        || value.invalid > REPS || value.heroWins > REPS - value.invalid) throw new Error(`invalid ${name} control totals: ${map}`)
+    }
+  }
+  if (!Object.keys(withArm).length) throw new Error('empty WITH comparison arm')
+  for (const map of Object.keys(without)) if (!Object.hasOwn(withArm, map)) throw new Error(`unexpected extra WITHOUT control: ${map}`)
+  for (const map of Object.keys(withArm)) if (!Object.hasOwn(without, map) && !disabled.has(map)) throw new Error(`unexpected missing WITHOUT control: ${map}`)
   console.log(`effect of ${ids} — ${REPS} paired battles per map, WITH vs WITHOUT`)
   let anyDelta = false
+  const unavailable: { map: string; reason: string; withInvalid?: number; withoutInvalid?: number }[] = []
   for (const map of Object.keys(withArm)) {
     const a = withArm[map], b = without[map]
-    if (b.invalid === REPS) { console.log(`  ${map}: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.`); anyDelta = true; continue }
+    if (!b) {
+      console.log(`  ${map}: UNAVAILABLE/PRESENCE-ONLY — explicitly disabled control absent from WITHOUT; no paired numerical effect`)
+      unavailable.push({ map, reason: 'disabled-control' }); continue
+    }
+    if (a.invalid || b.invalid) {
+      console.log(`  ${map}: UNAVAILABLE — invalid WITH ${a.invalid}/${REPS}, WITHOUT ${b.invalid}/${REPS}; paired valid replicate identities unavailable`)
+      unavailable.push({ map, reason: 'invalid-replicates', withInvalid: a.invalid, withoutInvalid: b.invalid }); continue
+    }
     const dWin = a.heroWins - b.heroWins
     const dTurns = ((a.turns - b.turns) / REPS)
     if (dWin !== 0 || Math.abs(dTurns) > 0.01) anyDelta = true
     console.log(`  ${map}: heroWins ${b.heroWins}->${a.heroWins} (${dWin >= 0 ? '+' : ''}${dWin})  meanTurns ${(b.turns / REPS).toFixed(1)}->${(a.turns / REPS).toFixed(1)}`)
   }
-  console.log(anyDelta ? 'MEASURABLE' : 'NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.')
+  if (unavailable.length) {
+    console.log(`MEASUREMENT UNAVAILABLE — ${unavailable.length} control(s) lack complete paired evidence`)
+    // Versioned machine contract for the gate. Exit 2 is unavailable evidence;
+    // malformed arm data / child-process errors remain infrastructure failures.
+    console.log('EFFECT_RESULT ' + JSON.stringify({ version: 1, status: 'unavailable', unavailable }))
+    process.exitCode = 2
+  } else {
+    console.log(anyDelta ? 'MEASURABLE' : 'NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.')
+    console.log('EFFECT_RESULT ' + JSON.stringify({ version: 1, status: 'measured', unavailable: [] }))
+  }
 }

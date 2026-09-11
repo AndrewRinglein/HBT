@@ -1,0 +1,42 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/effect-arm-integrity.test.ts (17 tests | 4 failed) 2013ms
+   × keeps complete valid-arm arithmetic and measurable output 195ms
+   × actual isolated gate preserves 'contradictory success code' in seal, ledger and run log 52ms
+   × actual isolated gate preserves 'missing successful trailer' in seal, ledger and run log 48ms
+   × actual isolated gate preserves 'malformed successful trailer' in seal, ledger and run log 49ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/effect-arm-integrity.test.ts > keeps complete valid-arm arithmetic and measurable output
+SyntaxError: Unexpected end of JSON input
+ ❯ test/effect-arm-integrity.test.ts:44:15
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/effect-arm-integrity.test.ts > actual isolated gate preserves 'contradictory success code' in seal, ledger and run log
+ FAIL  test/effect-arm-integrity.test.ts > actual isolated gate preserves 'missing successful trailer' in seal, ledger and run log
+ FAIL  test/effect-arm-integrity.test.ts > actual isolated gate preserves 'malformed successful trailer' in seal, ledger and run log
+AssertionError: expected 'passed' to be 'not passed — effect measurement error…' // Object.is equality
+
+Expected: "not passed — effect measurement errored"
+Received: "passed"
+
+ ❯ test/effect-arm-integrity.test.ts:85:27
+     83|     expect(run.status, run.stdout + run.stderr).toBe(0)
+     84|     const item = JSON.parse(readFileSync(join(folder, '.state/backlog.…
+     85|     expect(item.gauntlet).toBe(reason === 'measured' ? 'passed' : `not…
+       |                           ^
+     86|     expect(readFileSync(join(folder, '.state/ledger.md'), 'utf8')).toC…
+     87|     const rows = readFileSync(join(folder, '.state/gauntlet-log.jsonl'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 13 passed (17)
+   Start at  15:57:42
+   Duration  2.16s (transform 18ms, setup 0ms, import 30ms, tests 2.01s, environment 0ms)
+

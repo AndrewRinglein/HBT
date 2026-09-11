@@ -1,0 +1,20 @@
+
+gate: plumbing.effect-arm-integrity   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 1 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite  — 1233 passed
+  SKIP  gate 1 — not probeable  — This repairs offline effect reporting and gate interpretation, outside battle content resolution. Isolated fixtures invoke the actual CLI report and gate against controlled child-process arms; no battle content ID invokes these reporting branches.
+  PASS  brought its own tests  — test/effect-arm-integrity.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source  — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  SKIP  kill switch — exemption taken  — Disabling battle content cannot remove offline report validation or gate interpretation. Preserved old-source fixture failures prove the missing-map crash, misleading partial-invalid averages and unavailable-measurement misclassification independently of content disablement.
+
+All gates pass. Run with --land to commit.
+
