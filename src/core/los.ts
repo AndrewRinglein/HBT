@@ -1,7 +1,8 @@
 // Derived attack-line geometry. State remains plain data; all shared tables are
 // private and immutable after publication. Terrain changes create a new table.
 import { validBoard, type Board } from './hex.js'
-import { TERRAIN, type Ctx } from './types.js'
+import type { Ctx } from './types.js'
+import { highCells } from './props.js'
 
 export const LOS_LIMITS = Object.freeze({ pairCellTests: 1_024_000_000, reverseEntries: 16_000_000, cacheBytes: 64 * 1024 * 1024 } as const)
 type Table = { key: string; board: Board; cells: number; blockers: readonly number[]; bits: Uint8Array | null; reverse: ReadonlyMap<number, Uint32Array>; entries: number; bytes: number }
@@ -118,8 +119,7 @@ function derive(board: Board, blockers: number[], previous?: Table): View {
 export function prepareAttackLines(ctx: Ctx): void {
   const board = ctx.state.board
   if (!validBoard(board) || ctx.state.terrain.length !== board.width * board.height) throw new Error('LOS: invalid board terrain')
-  const blockers: number[] = []
-  for (let h = 0; h < ctx.state.terrain.length; h++) if (ctx.state.terrain[h] === TERRAIN.OBSTACLE) blockers.push(h)
+  const blockers = [...highCells(ctx)]
   const prior = views.get(ctx)
   if (prior && prior.table.board.width === board.width && prior.table.board.height === board.height && blockers.length === prior.table.blockers.length && blockers.every((h, i) => h === prior.table.blockers[i])) return
   views.set(ctx, derive(board, blockers, prior?.table))

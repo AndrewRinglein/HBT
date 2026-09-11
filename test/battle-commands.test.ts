@@ -1,3 +1,4 @@
+import { setHigh } from './prop-fixtures.js'
 import { describe, expect, it } from 'vitest'
 import { controllerOf, executeAction, executeBattleCommand, validateAction, validateBattleCommand } from '../src/core/commands.js'
 import { advanceBattle, completeActionCycle } from '../src/core/battle.js'
@@ -87,7 +88,7 @@ describe('plumbing.battle-commands', () => {
 
   it('validates the full walk and permits flight across an impassable barrier', () => {
     const ctx = fixture(150); grant(ctx, 'power.flight')
-    for (let i = 0; i < ctx.state.terrain.length; i++) if (i % ctx.state.board.width === 6) ctx.state.terrain[i] = TERRAIN.OBSTACLE
+    for (let i = 0; i < ctx.state.terrain.length; i++) if (i % ctx.state.board.width === 6) setHigh(ctx, i)
     rejected(ctx, action(ctx, { actionId: 'power.move', destination: 87 }), 'unreachable-destination')
     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: 'power.flight', destination: 87 }))).toEqual({ ok: true })
     expect(ctx.state.units[0]!.hex).toBe(87)
@@ -95,14 +96,14 @@ describe('plumbing.battle-commands', () => {
 
   it('rejects impassable paths even when a huge movement budget would reach them', () => {
     const ctx = fixture(150); ctx.state.units[0]!.movePointsLeft = 2000
-    ctx.state.terrain[86] = TERRAIN.OBSTACLE
+    setHigh(ctx, 86)
     rejected(ctx, action(ctx, { actionId: 'power.move', destination: 86 }))
   })
 
   it.each(['power.move', 'power.sidestep', 'power.flight'])('%s rejects offboard, occupied and impassable destinations before spending', id => {
     const ctx = fixture(); grant(ctx, id)
     for (const destination of [-1, ctx.state.terrain.length, 1.5, 86]) rejected(ctx, action(ctx, { actionId: id, destination }))
-    ctx.state.terrain[84] = TERRAIN.OBSTACLE
+    setHigh(ctx, 84)
     rejected(ctx, action(ctx, { actionId: id, destination: 84 }))
   })
 

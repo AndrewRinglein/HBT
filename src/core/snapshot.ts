@@ -1,15 +1,16 @@
 import { geometryOf, validBoard } from './hex.js'
 import { isUnitUid } from './identity.js'
 import { prepareAttackLines } from './los.js'
+import { decodeProps } from './props.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
 import { validateTrigger, type Trigger } from './trigger.js'
-import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, type BattleCursor, type Ctx } from './types.js'
+import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx } from './types.js'
 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.11' // Full-cell obstacle attack lines.
+const RULES_VERSION = 'v2-migration.12' // Canonical authored high props.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -22,7 +23,7 @@ function record(value: unknown): asserts value is Record<string, any> {
 }
 const integer = (n: unknown, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER): n is number => Number.isSafeInteger(n) && (n as number) >= min && (n as number) <= max
 const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(x => typeof x === 'string')
-const validTerrain = (v: unknown, cells: number): boolean => Array.isArray(v) && v.length === cells && v.every(x => integer(x, 0))
+const validTerrain = (v: unknown, cells: number): boolean => Array.isArray(v) && v.length === cells && v.every(x => integer(x, 0) && x !== TERRAIN.OBSTACLE)
 
 /** Sorted object keys; arrays retain their authored order. Hook presence is
  * data; implementation compatibility is covered by RULES_VERSION, not source
@@ -90,6 +91,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   requireThat(validBoard(st.board), 'board dimensions')
   const cells = st.board.width * st.board.height
   requireThat(validTerrain(st.terrain, cells), 'terrain')
+  st.props = decodeProps(st.props, cells)
   requireThat(st.layers === undefined || (Array.isArray(st.layers) && st.layers.length === cells && st.layers.every((x: unknown) => integer(x, 0))), 'layers')
   requireThat(integer(st.turn, 0) && phases.includes(st.phase) && typeof st.mapId === 'string', 'battle clock/map')
   requireThat(st.outcome === null || ['heroClear', 'objectiveMet', 'wipe', 'retreat', 'capped', 'objectiveFailed'].includes(st.outcome), 'outcome')
@@ -160,6 +162,10 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(e.width === st.board.width && e.height === st.board.height, 'initial map dimensions differ')
       requireThat(validTerrain(e.terrain, cells), 'initial map terrain')
       // This is initial terrain; current terrain can have changed since setup.
+    }
+    if (e.type === 'map.loaded') {
+      requireThat(e.mapId === st.mapId && e.width === st.board.width && e.height === st.board.height, 'initial prop map identity/dimensions')
+      e.props = decodeProps(e.props, cells)
     }
   }
   if (s.encounter !== undefined) {

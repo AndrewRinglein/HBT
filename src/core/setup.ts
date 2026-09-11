@@ -4,7 +4,7 @@ import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, U
 import { DEFAULT_CONFIG } from './types.js'
 import { ACTIONS, ATTACKS, ABILITIES, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged } from './items.js'
-import { boardOf, decodeMap, deployOf, mapDef, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
+import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { triggersFrom } from './trigger.js'
 import { emit, gainPower } from './mutate.js'
@@ -12,6 +12,7 @@ import { arrive, heroDeployHexes, placeSetup } from './encounter.js'
 import { rulesSideOf } from './side.js'
 import { rosterUids, type UnitIdentityOptions } from './identity.js'
 import { prepareAttackLines } from './los.js'
+import { passableHexes } from './props.js'
 
 export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
   const actions = [...def.attacks, ...def.abilities, ...def.moves]
@@ -182,12 +183,13 @@ export function createBattle(opts: BattleOptions): Ctx {
   if (direct && opts.mapId !== undefined && opts.mapId !== mapId) throw new Error(`map '${mapId}' differs from supplied mapId '${opts.mapId}'`)
   if (direct && opts.encounter?.mapId !== undefined && opts.encounter.mapId !== mapId) throw new Error(`encounter '${opts.encounter.id}' map '${opts.encounter.mapId}' differs from direct map '${mapId}'`)
   if (opts.encounter && 'board' in opts.encounter && (!validBoard(opts.encounter.board) || opts.encounter.board.width !== board.width || opts.encounter.board.height !== board.height)) throw new Error(`encounter '${opts.encounter.id}' board differs from map '${mapId}'`)
-  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, units: [], outcome: null, seq: 0 }
-  const initialMap = direct ? { terrain: [...state.terrain] } : {}
+  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, units: [], outcome: null, seq: 0 }
+  const initialMap = { ...(direct ? { terrain: [...state.terrain] } : {}), props: structuredClone(state.props) }
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: direct ? structuredClone(opts.encounter) : opts.encounter } : {}) }
   prepareAttackLines(ctx)
+  const passable = passableHexes(ctx)
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   // proving.side-override: under byList the fielded side is the list's, not the row's
@@ -240,8 +242,8 @@ export function createBattle(opts: BattleOptions): Ctx {
       if (!Number.isInteger(hex) || hex < 0 || hex >= state.terrain.length) {
         throw new Error(`${where}: ${who} is placed on hex ${hex}, which is off a ${state.terrain.length}-hex board`)
       }
-      if (!isPassable(state.terrain[hex] ?? 0)) {
-        throw new Error(`${where}: ${who} is placed on hex ${hex}, which is ${terrainIdOf(state.terrain[hex] ?? 0)} — impassable`)
+      if (!passable(hex)) {
+        throw new Error(`${where}: ${who} is placed on hex ${hex}, blocked by a high prop — impassable`)
       }
       const already = taken.get(hex)
       if (already) throw new Error(`${where}: ${who} and ${already} are both placed on hex ${hex}`)
@@ -284,7 +286,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   // ascending order, exactly as the deployment ROW's columns were, so the
   // rolls are the same rolls.
   const passableLine = (edge: import('./hex.js').Edge, depth: number) =>
-    ctx.geo.edgeLine(edge, depth).filter((h) => isPassable(state.terrain[h] ?? 0))
+    ctx.geo.edgeLine(edge, depth).filter(passable)
   const availableLine = (edge: import('./hex.js').Edge, depth: number) => passableLine(edge, depth).filter(h => !taken.has(h))
   // proving.plan-shape: a named gap moves both lines inward, symmetric about the middle
   let heroDepth = 0, enemyDepth = 0
@@ -445,7 +447,8 @@ export function createCustomBattle(
   const rng = makeRng(rootSeedOf(99, 0, opts.replicate ?? 0), opts.strict ? { strict: true } : undefined)
   const mapId = opts.mapId ?? 'map.open'
   const board = boardOf(mapId)
-  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
+  const decoded = decodeMap(mapDef(mapId))
+  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, units: [], outcome: null, seq: 0 }
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   prepareAttackLines(ctx)
@@ -464,6 +467,6 @@ export function createCustomBattle(
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', mapId, { mapId, width: board.width, height: board.height, deploy: deployOf(mapId), ...terrainCensus(state.terrain) })
+  emit(ctx, 'map.loaded', mapId, { mapId, width: board.width, height: board.height, deploy: deployOf(mapId), ...terrainCensus(state.terrain), props: structuredClone(state.props) })
   return ctx
 }

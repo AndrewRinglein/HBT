@@ -1,0 +1,34 @@
+{
+  "board": "40x40",
+  "blockers": 600,
+  "results": [
+    {
+      "label": "038304f",
+      "setupMs": 2961.8385,
+      "sidestep100Ms": 117.51170000000002,
+      "path100Ms": 2.701000000000022,
+      "stats": {
+        "pairCellTests": 767520000,
+        "changedPairs": 0,
+        "reverseEntries": 12548301,
+        "bytes": 50396736,
+        "cacheHit": false,
+        "sharedBytes": 50396736
+      }
+    },
+    {
+      "label": "canonical-props",
+      "setupMs": 2998.3073000000004,
+      "sidestep100Ms": 100.32309999999961,
+      "path100Ms": 4.9307000000007974,
+      "stats": {
+        "pairCellTests": 767520000,
+        "changedPairs": 0,
+        "reverseEntries": 12548301,
+        "bytes": 50396736,
+        "cacheHit": false,
+        "sharedBytes": 50396736
+      }
+    }
+  ]
+}

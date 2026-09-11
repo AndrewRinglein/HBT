@@ -369,3 +369,26 @@ identity/dimensions and the same terrain validity rule as saved state. It does
 not demand equality to current mutable terrain. JSON export already transports
 this event unchanged. Viewer adoption and human visual acceptance remain later
 work; this stage establishes and verifies the engine transport contract only.
+
+## 16. Canonical static props (2026-09-11, rules .12)
+
+Every `map.loaded` now carries `props: HighProp[]`, including an empty array.
+Each record is `{id: 'prop.*', height: 'high', material: 1|2|3,
+footprint: {kind: 'hex', hexes: number[]}}`. IDs are scoped to this map/battle.
+Raw x is normalized once to OPEN plus material-3 `prop.obstacle.<hex>`; explicit
+props preserve ground. Ground census and optional exact terrain describe ground,
+never obstruction. The field-geometry dump includes these same props plus resolved
+per-cell passability; a passive renderer does not infer blockage from terrain IDs.
+
+Props are detached initial facts captured before setup effects. Existing setup
+event order is unchanged: read map.loaded before drawing or buffer until it arrives;
+do not erase earlier unit/layer events. Snapshot restore independently validates
+current and initial props, and rejects numeric OBSTACLE in both ground arrays.
+Initial props are not required to equal future changed current props. No prop
+mutation/destruction events exist in this static stage.
+
+The passive registered-map viewer folds these records and draws a separate prop
+layer; seeking replaces that layer from folded facts. Its mount still requires
+pre-generated geometry. Unknown direct IDs or differing direct dimensions/ground
+remain the explicit viewer-initialization follow-up; never re-fetch a conflicting
+registry map to pretend those facts were rendered correctly.

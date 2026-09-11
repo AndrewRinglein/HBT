@@ -1,0 +1,925 @@
+
+> test
+> vitest run
+
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+C:\Users\aring\AppData\Local\Temp\replay-test.html — seed 0 map.thicket · engine 038304f · 738 events · heroClear in 5 turns
+C:\Users\aring\AppData\Local\Temp\replay-showcase.html — seed 0 test.map.showcase · engine 038304f · 1088 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-a.html — seed 0 test.map.showcase · engine 038304f · 1088 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-b.html — seed 0 test.map.showcase · engine 038304f · 1088 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-a.html — seed 0 map.thicket · engine 038304f · 738 events · heroClear in 5 turns
+C:\Users\aring\AppData\Local\Temp\replay-b.html — seed 0 map.thicket · engine 038304f · 738 events · heroClear in 5 turns
+ ❯ test/direct-map.test.ts (57 tests | 2 failed) 1634ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 3ms
+     × honors every supported glyph exactly and refuses explicit positions in obstacles 2ms
+ ❯ test/terrain.test.ts (31 tests | 1 failed) 1630ms
+     × map.thicket actually contains obstacles — otherwise this item proves nothing 2ms
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\props.ts:41
+  if (state.terrain.includes(6)) throw new Error('props: obstacle shorthand is not canonical runtime ground')
+                                 ^
+
+Error: props: obstacle shorthand is not canonical runtime ground
+    at blockage (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\props.ts:41:40)
+    at highCells (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\props.ts:60:80)
+    at prepareAttackLines (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\los.ts:122:24)
+    at attackLineClear (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\los.ts:128:3)
+    at [eval]:8:103
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30)
+
+Node.js v24.12.0
+ ❯ test/high-cell-los.test.ts (16 tests | 8 failed) 978ms
+     × notices removal and replacement without leaking through a preview fork 4ms
+     × map.thicket blocks its authored shot, removal enables a real paid command 5ms
+     × map.proving.ruin blocks its authored shot, removal enables a real paid command 2ms
+     × real reactions are denied before payment, then pay once without consuming activation slots 12ms
+     × melee reach beyond one hex cannot cross a high cell 1ms
+     × cold and warmed-open construction of identical final geometry have equal work and answers 663ms
+     × new blocker hits are ORed once, without history-dependent retracing 1ms
+     × all-pair tables remain oracle-exact after mixed edits, forks, restores and same-ID other dimensions 11ms
+ ❯ test/battle-cursor.test.ts (42 tests | 32 failed) 461ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.alpha-team 39ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.arc-variant 4ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.assembled-party 30ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.badged 2ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.beasts 9ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.civilians 7ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.eve-24-a 12ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.eve-24-b 7ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.farmers-grown 3ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.flight-bonuses 9ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.gash-variant 11ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.horrors 34ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.item-powers 4ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.kiln 23ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.knockback-two 3ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.mirror-zombies 4ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.movement-bonuses 2ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.ordered-power-preview 2ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-enemies 45ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-party 4ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.rime 28ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.supper 28ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.surge-flight-ladder 7ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.surrounded 9ms
+     × preserves historical events/state/RNG/result: showcase.two-zombies-and-a-child 3ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.waystation 28ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.wounded-entry 1ms
+     × automatic and suspended drivers agree on events/state/RNG/result: test.authored-slots 1ms
+     × automatic and suspended drivers agree on events/state/RNG/result: progression-surge-0 22ms
+     × automatic and suspended drivers agree on events/state/RNG/result: progression-surge-1 20ms
+     × automatic and suspended drivers agree on events/state/RNG/result: progression-surge-2 17ms
+     × automatic and suspended drivers agree on events/state/RNG/result: legacy-surge-cap 1ms
+ ❯ test/additions.test.ts (23 tests | 1 failed) 19346ms
+     × gate 1 — every authored map parses to the right size, and hill counts differ 7ms
+ ❯ test/battle-commands.test.ts (48 tests | 5 failed) 674ms
+     × validates the full walk and permits flight across an impassable barrier 8ms
+     × rejects impassable paths even when a huge movement budget would reach them 5ms
+     × power.move rejects offboard, occupied and impassable destinations before spending 38ms
+     × power.sidestep rejects offboard, occupied and impassable destinations before spending 36ms
+     × power.flight rejects offboard, occupied and impassable destinations before spending 37ms
+ ❯ test/ai-commands.test.ts (19 tests | 1 failed) 33ms
+     × a starved kiter takes a zero-range recovery even when no neighbouring square scores better 5ms
+ ❯ test/scenario.test.ts (20 tests | 1 failed) 79ms
+     × an impassable hex throws and says what terrain it is 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 51 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/additions.test.ts > pass 2 — hills > gate 1 — every authored map parses to the right size, and hill counts differ
+AssertionError: expected 19 to be 20 // Object.is equality
+
+- Expected
++ Received
+
+- 20
++ 19
+
+ ❯ test/additions.test.ts:50:35
+     48|     // each (flanks and field). Assert the layout, which is what we ac…
+     49|     const layouts = MAPS.map(m => terrainOf(m.id).join(''))
+     50|     expect(new Set(layouts).size).toBe(MAPS.length)
+       |                                   ^
+     51|   })
+     52|   it('gate 2 — hills cost 2 movement, open ground 1', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/51]⎯
+
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > a starved kiter takes a zero-range recovery even when no neighbouring square scores better
+Error: props: obstacle shorthand is not canonical runtime ground
+ ❯ blockage src/core/props.ts:41:40
+     39| const tables = new WeakMap<State, Blockage>()
+     40| function blockage(state: State): Blockage {
+     41|   if (state.terrain.includes(6)) throw new Error('props: obstacle shor…
+       |                                        ^
+     42|   const cells = state.board.width * state.board.height, found = new Se…
+     43|   // One scan at the owning operation's boundary, never inside its nei…
+ ❯ highCells src/core/props.ts:60:80
+ ❯ prepareAttackLines src/core/los.ts:122:24
+ ❯ attackLineClear src/core/los.ts:128:3
+ ❯ canAttack src/core/pipeline.ts:261:38
+ ❯ planAction src/core/commands.ts:62:27
+ ❯ validateAction src/core/commands.ts:68:16
+ ❯ legalTarget src/ai/modes.ts:31:46
+ ❯ src/ai/modes.ts:201:85
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/51]⎯
+
+ FAIL  test/battle-commands.test.ts > plumbing.battle-commands > validates the full walk and permits flight across an impassable barrier
+Error: props: obstacle shorthand is not canonical runtime ground
+ ❯ blockage src/core/props.ts:41:40
+     39| const tables = new WeakMap<State, Blockage>()
+     40| function blockage(state: State): Blockage {
+     41|   if (state.terrain.includes(6)) throw new Error('props: obstacle shor…
+       |                                        ^
+     42|   const cells = state.board.width * state.board.height, found = new Se…
+     43|   // One scan at the owning operation's boundary, never inside its nei…
+ ❯ passableHexes src/core/props.ts:63:19
+ ❯ planMovement src/core/movement.ts:144:8
+ ❯ planAction src/core/commands.ts:56:12
+ ❯ planCommand src/core/commands.ts:103:10
+ ❯ executeBattleCommand src/core/commands.ts:112:16
+ ❯ rejected test/battle-commands.test.ts:40:18
+ ❯ test/battle-commands.test.ts:91:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/51]⎯
+
+ FAIL  test/battle-commands.test.ts > plumbing.battle-commands > rejects impassable paths even when a huge movement budget would reach them
+Error: props: obstacle shorthand is not canonical runtime ground
+ ❯ blockage src/core/props.ts:41:40
+     39| const tables = new WeakMap<State, Blockage>()
+     40| function blockage(state: State): Blockage {
+     41|   if (state.terrain.includes(6)) throw new Error('props: obstacle shor…
+       |                                        ^
+     42|   const cells = state.board.width * state.board.height, found = new Se…
+     43|   // One scan at the owning operation's boundary, never inside its nei…
+ ❯ passableHexes src/core/props.ts:63:19
+ ❯ planMovement src/core/movement.ts:144:8
+ ❯ planAction src/core/commands.ts:56:12
+ ❯ planCommand src/core/commands.ts:103:10
+ ❯ executeBattleCommand src/core/commands.ts:112:16
+ ❯ rejected test/battle-commands.test.ts:40:18
+ ❯ test/battle-commands.test.ts:99:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/51]⎯
+
+ FAIL  test/battle-commands.test.ts > plumbing.battle-commands > power.move rejects offboard, occupied and impassable destinations before spending
+ FAIL  test/battle-commands.test.ts > plumbing.battle-commands > power.sidestep rejects offboard, occupied and impassable destinations before spending
+ FAIL  test/battle-commands.test.ts > plumbing.battle-commands > power.flight rejects offboard, occupied and impassable destinations before spending
+Error: props: obstacle shorthand is not canonical runtime ground
+ ❯ blockage src/core/props.ts:41:40
+     39| const tables = new WeakMap<State, Blockage>()
+     40| function blockage(state: State): Blockage {
+     41|   if (state.terrain.includes(6)) throw new Error('props: obstacle shor…
+       |                                        ^
+     42|   const cells = state.board.width * state.board.height, found = new Se…
+     43|   // One scan at the owning operation's boundary, never inside its nei…
+ ❯ passableHexes src/core/props.ts:63:19
+ ❯ planMovement src/core/movement.ts:144:8
+ ❯ planAction src/core/commands.ts:56:12
+ ❯ planCommand src/core/commands.ts:103:10
+ ❯ executeBattleCommand src/core/commands.ts:112:16
+ ❯ rejected test/battle-commands.test.ts:40:18
+ ❯ test/battle-commands.test.ts:106:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.alpha-team
+AssertionError: historical events without new metadata: expected 'e8e7838912ee537460a6d5965d88afe8656ec…' to be '2a813f797fe6385988c9c0af607a2c9663f2b…' // Object.is equality
+
+Expected: "2a813f797fe6385988c9c0af607a2c9663f2bfda5ccf3530ef848c471193bae0"
+Received: "e8e7838912ee537460a6d5965d88afe8656ecd77ebce4437efcca5bee5b49637"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.arc-variant
+AssertionError: historical events without new metadata: expected '0ff4dc7bf198b2f208b626d6275baa8d8b301…' to be '21a50bdfdcdf8dede384d31fe647266ac804f…' // Object.is equality
+
+Expected: "21a50bdfdcdf8dede384d31fe647266ac804faa48f3093ba5b55f9043b8e4144"
+Received: "0ff4dc7bf198b2f208b626d6275baa8d8b301c581db9e881f8418540a909fc66"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.assembled-party
+AssertionError: historical events without new metadata: expected '205211279d268f7cd7e2c2ba2204102047116…' to be '7f452b134003c55f1c81ccb6d5bfabdc4e853…' // Object.is equality
+
+Expected: "7f452b134003c55f1c81ccb6d5bfabdc4e853ff7e2428eacf0168225209ad5e2"
+Received: "205211279d268f7cd7e2c2ba22041020471168d79334dffe60f0c1e31dfd5d7b"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.badged
+AssertionError: historical events without new metadata: expected '79adf42117afcc49acf41d876bad463756117…' to be '4b1904fcf6d8bf76808a26560f540be7f3818…' // Object.is equality
+
+Expected: "4b1904fcf6d8bf76808a26560f540be7f38184f890a49cf6d3c57cb73464c742"
+Received: "79adf42117afcc49acf41d876bad463756117b71c492ab406c42e16e996c9fdb"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.beasts
+AssertionError: historical events without new metadata: expected 'e281dc067a6c04ed14b3d394f0579fec3fce3…' to be '81e60ff62f0116064b83e59e92b2c2deea4db…' // Object.is equality
+
+Expected: "81e60ff62f0116064b83e59e92b2c2deea4db82546f54d38233b0976d3cbed74"
+Received: "e281dc067a6c04ed14b3d394f0579fec3fce35c34a454d01a6b9941836e227d0"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.civilians
+AssertionError: historical events without new metadata: expected 'ca25ee6d1bc0f2dc3b03da083ea483cf2bc5c…' to be '94e85dcec8ab099ce9cbe91ae389c0483ca8f…' // Object.is equality
+
+Expected: "94e85dcec8ab099ce9cbe91ae389c0483ca8fc8cfde4eb57c363118a7fc88e67"
+Received: "ca25ee6d1bc0f2dc3b03da083ea483cf2bc5c5e99584720138cac3243d7e9d7b"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.eve-24-a
+AssertionError: historical events without new metadata: expected 'b97e96b405ac30f699b9e96f2951f9b1be03d…' to be 'b6fe3bdff830dd69f9e25b189924eeec407e1…' // Object.is equality
+
+Expected: "b6fe3bdff830dd69f9e25b189924eeec407e12f01c780b6db9c5baa0d5074c73"
+Received: "b97e96b405ac30f699b9e96f2951f9b1be03dbcfce22cd83ecf564bc31016067"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.eve-24-b
+AssertionError: historical events without new metadata: expected '57f62746810b353d94dc299f025cce16b51fc…' to be 'bc4f8a5db6450c7f7438614cba1a14ab5c782…' // Object.is equality
+
+Expected: "bc4f8a5db6450c7f7438614cba1a14ab5c782f135bb5ddf45bd083027ee014b3"
+Received: "57f62746810b353d94dc299f025cce16b51fcd4b82b41cecb1f5e071981bad36"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.farmers-grown
+AssertionError: historical events without new metadata: expected '155753f2ca2e0d1bc2f3e2c35c10bdc0a1acd…' to be '98c2861b5124ac3bb167e66f5176fa08a3c9c…' // Object.is equality
+
+Expected: "98c2861b5124ac3bb167e66f5176fa08a3c9ca0c178d2510b5a1ad0a69f8056d"
+Received: "155753f2ca2e0d1bc2f3e2c35c10bdc0a1acddf4f209380fca99e0bbd0c237f5"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.flight-bonuses
+AssertionError: events: expected '07e37a94001feb1383f9eb02d52391bb871a6…' to be 'cb2c21aff74fcffb8ad713445353b89b6d024…' // Object.is equality
+
+Expected: "cb2c21aff74fcffb8ad713445353b89b6d0244e388767d9c68392fdd68fedd5b"
+Received: "07e37a94001feb1383f9eb02d52391bb871a66f2eaeee4a5f4740d0ec053296a"
+
+ ❯ test/battle-cursor.test.ts:129:44
+    127|         }
+    128|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    129|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    130|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    131|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.gash-variant
+AssertionError: historical events without new metadata: expected '55e4fa1a9a87e57a697e09e6cbf513b232ca3…' to be '5b62ec0cb5427a6d936d712e43fd47a936e2f…' // Object.is equality
+
+Expected: "5b62ec0cb5427a6d936d712e43fd47a936e2f6176e1dc07bc55ddef663f0607f"
+Received: "55e4fa1a9a87e57a697e09e6cbf513b232ca315782d677b030109259a65b375d"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.horrors
+AssertionError: historical events without new metadata: expected '13d1bdde066d062706085fafd357ad8522913…' to be 'd932349e5987ba1e5c4a6736a58e182f0236a…' // Object.is equality
+
+Expected: "d932349e5987ba1e5c4a6736a58e182f0236ae93b2da2cedc39b1880a89779f4"
+Received: "13d1bdde066d062706085fafd357ad85229132c0fb2f59e657c8903513969367"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.item-powers
+AssertionError: historical events without new metadata: expected '6d10d2cbbeb488036abef071555c9d8a66062…' to be '2b06dd7044e7d5713c3d7cdc7add94be736c1…' // Object.is equality
+
+Expected: "2b06dd7044e7d5713c3d7cdc7add94be736c1c61713611e139791ea570290a7b"
+Received: "6d10d2cbbeb488036abef071555c9d8a66062f7efe95593476be4e9de226f0e4"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.kiln
+AssertionError: historical events without new metadata: expected '7ead723de57b1b51773a6d2c1f8eec7113fe1…' to be '8500b6e9646a27df9972a3cd66fb71ef55278…' // Object.is equality
+
+Expected: "8500b6e9646a27df9972a3cd66fb71ef55278afe4c92fd1ee6acaa2cb2945520"
+Received: "7ead723de57b1b51773a6d2c1f8eec7113fe1c74a1486e6d6e244e4ab346440b"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.knockback-two
+AssertionError: historical events without new metadata: expected '99c8d061500e718cce36e1ca34afbefc60ddd…' to be 'd58f39208f145163f3701c5654c9569962742…' // Object.is equality
+
+Expected: "d58f39208f145163f3701c5654c956996274226bba8bdffd723a1fad5baf5716"
+Received: "99c8d061500e718cce36e1ca34afbefc60ddd8cfa61cfe70d242aaeea7af7042"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.mirror-zombies
+AssertionError: historical events without new metadata: expected 'ebdd361537ff235d2ee92955fed2af4e14616…' to be 'a332a14b2f6f9fcae08f51454e91dd52ddc9b…' // Object.is equality
+
+Expected: "a332a14b2f6f9fcae08f51454e91dd52ddc9b8dc542e4109a5cecdc8047d7ccb"
+Received: "ebdd361537ff235d2ee92955fed2af4e14616bebcac97ee9a20782bc48e33086"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.movement-bonuses
+AssertionError: historical events without new metadata: expected '94d0de11e95a278d8c96747cc584a7746209b…' to be '6a8077ad7ffbfcf26240dd1e90d03658477f3…' // Object.is equality
+
+Expected: "6a8077ad7ffbfcf26240dd1e90d03658477f307042f729d23f2af79889312f2e"
+Received: "94d0de11e95a278d8c96747cc584a7746209bde1c1f2d504b1616c0cd5acdb3f"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.ordered-power-preview
+AssertionError: historical events without new metadata: expected '2799f30a19262d2e09ce2e5100cce8080529e…' to be '36bbac50ac9107d7e5845d8fe34d7c00cba7d…' // Object.is equality
+
+Expected: "36bbac50ac9107d7e5845d8fe34d7c00cba7ddba7a66ac9e959ad575f806fd88"
+Received: "2799f30a19262d2e09ce2e5100cce8080529e7919255f508de6572f362337a0a"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-enemies
+AssertionError: historical events without new metadata: expected '6b2c348eea7b199515cd7d0746bb9b4c702a3…' to be 'bdee767f7a2cb9d8627a3abb2becb0a0c0fa9…' // Object.is equality
+
+Expected: "bdee767f7a2cb9d8627a3abb2becb0a0c0fa92349059348a0d0c707a8dcda223"
+Received: "6b2c348eea7b199515cd7d0746bb9b4c702a3908de9787007a1a3a3099abfacf"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-party
+AssertionError: historical events without new metadata: expected 'ca01a511baefa13abd197d7c4296ac7131c7a…' to be '941d5f9432850847b20c9a25de58a9f260d05…' // Object.is equality
+
+Expected: "941d5f9432850847b20c9a25de58a9f260d05da3dbc81c26789812e1d824b695"
+Received: "ca01a511baefa13abd197d7c4296ac7131c7a1588d81af5a10b9da164ac4f742"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.rime
+AssertionError: historical events without new metadata: expected '25cef3427896e017b58319c7ef3c11be83fec…' to be '3ed1608db4da197c435e6a7a248eac328ba1b…' // Object.is equality
+
+Expected: "3ed1608db4da197c435e6a7a248eac328ba1b5be81bf2777819cd8630a7106c7"
+Received: "25cef3427896e017b58319c7ef3c11be83fecab675d7b80eb6daa2a397a475aa"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.supper
+AssertionError: historical events without new metadata: expected '42b8f67e97383531c2ab800a7cf02bb73d30b…' to be 'ef1c12b92927b459e24a3d567c97c2d11bc13…' // Object.is equality
+
+Expected: "ef1c12b92927b459e24a3d567c97c2d11bc136248096bc8c0b0edf95bf37597f"
+Received: "42b8f67e97383531c2ab800a7cf02bb73d30b86beeea595ff92462abd3e58d43"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.surge-flight-ladder
+AssertionError: historical events without new metadata: expected 'fafc3ca109c41ebb468f5b38944301a785746…' to be 'badeba028d258254a1bbe2726febb5ad773dd…' // Object.is equality
+
+Expected: "badeba028d258254a1bbe2726febb5ad773ddad9ac7627aad9305e15f4aae218"
+Received: "fafc3ca109c41ebb468f5b38944301a785746fe1fd2249572f7683cd2c282deb"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.surrounded
+AssertionError: historical events without new metadata: expected 'e4c9e7ead94e5d2bfaec1b6dc9c55145fc4e3…' to be 'e69571fd103e133f192fefbba53f2eb14a4a7…' // Object.is equality
+
+Expected: "e69571fd103e133f192fefbba53f2eb14a4a776996626a435e1b854fda575e3c"
+Received: "e4c9e7ead94e5d2bfaec1b6dc9c55145fc4e3254f15c8dd135f18733ae7db78e"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.two-zombies-and-a-child
+AssertionError: historical events without new metadata: expected 'f23b080d73f9663460d6fb2d4733493874024…' to be '63423357f4a74cd738067857997530bda3b58…' // Object.is equality
+
+Expected: "63423357f4a74cd738067857997530bda3b5806c5d599894ce2ad38844df2e4a"
+Received: "f23b080d73f9663460d6fb2d473349387402453cb8e01c842d5b6bc5ca8e7bca"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.waystation
+AssertionError: historical events without new metadata: expected '98afb589be27f623f9a8bdfd3685d4e8a2eee…' to be '1597291663c3d70bdda77c372014a5282da41…' // Object.is equality
+
+Expected: "1597291663c3d70bdda77c372014a5282da41edbf151b495c8d6f97614d50ca2"
+Received: "98afb589be27f623f9a8bdfd3685d4e8a2eeed0985174f1fe0203e3f71577f67"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.wounded-entry
+AssertionError: historical events without new metadata: expected 'd6e29b76417fbac3ddc80fa3022e776bd3c2d…' to be 'f803d66406cfa1bc19dd0986a4d63b10ebc59…' // Object.is equality
+
+Expected: "f803d66406cfa1bc19dd0986a4d63b10ebc592d50e41d3d6a3b4757520a6d946"
+Received: "d6e29b76417fbac3ddc80fa3022e776bd3c2d4febc8991a045b0796df685281e"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: test.authored-slots
+AssertionError: events: expected 'f296a3408e1d2317c755c0779fd00b58b7e90…' to be '4c0b449203aadd6744731987d500b2434b211…' // Object.is equality
+
+Expected: "4c0b449203aadd6744731987d500b2434b2118103701fc0deb5575464bcf1862"
+Received: "f296a3408e1d2317c755c0779fd00b58b7e9012c47af2cc7f913b2cd509fbbcb"
+
+ ❯ test/battle-cursor.test.ts:129:44
+    127|         }
+    128|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    129|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    130|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    131|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-0
+AssertionError: historical events without new metadata: expected '71714a76807c3547a5530fb3362396882f423…' to be 'd385609bd1ef9d2459a9c3665e0b4ca5144ab…' // Object.is equality
+
+Expected: "d385609bd1ef9d2459a9c3665e0b4ca5144aba50aded185826d89402570e697e"
+Received: "71714a76807c3547a5530fb3362396882f42398f3091d1c921a426370902a6c5"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-1
+AssertionError: historical events without new metadata: expected 'a111a0ae4fc280d3a5928eef12cb0418d7e64…' to be '5966fe3af0fa4631fae3501e319762740bac2…' // Object.is equality
+
+Expected: "5966fe3af0fa4631fae3501e319762740bac241d225b9c00698ee625b1ab35c3"
+Received: "a111a0ae4fc280d3a5928eef12cb0418d7e645f7595bfa6b79dd7e419e9d9e76"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-2
+AssertionError: historical events without new metadata: expected '061db278d85c1505c3faddb528b6c4e7bc067…' to be '2ca45399477eabb5e9313b80129688ff5c745…' // Object.is equality
+
+Expected: "2ca45399477eabb5e9313b80129688ff5c74564c2f6f3c4d05a4947a5089ac1b"
+Received: "061db278d85c1505c3faddb528b6c4e7bc0679708a72eabb8900932e918d66d0"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/51]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: legacy-surge-cap
+AssertionError: historical events without new metadata: expected '8a24205604dccfe66ec70872f03359df03de1…' to be '13d6f64fb06b82ea827cf8d7f39e83b3e11d4…' // Object.is equality
+
+Expected: "13d6f64fb06b82ea827cf8d7f39e83b3e11d483a4cd188770e8029d8c0c743ff"
+Received: "8a24205604dccfe66ec70872f03359df03de1d26be2ae88a7243eb836ad10886"
+
+ ❯ test/battle-cursor.test.ts:123:77
+    121|           const oldEvents = ctx.events.filter(e => e.type !== 'action.…
+    122|           const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.e…
+    123|           expect(hash(oldEvents), 'historical events without new metad…
+       |                                                                             ^
+    124|           expect(hash(oldState), 'historical state without new sequenc…
+    125|           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/51]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/direct-map.test.ts:105:31
+    103|     { ...authored('map.open'), rows: Array(101).fill('.'.repeat(100)) …
+    104|   ].map(map => ({ map })))('rejects malformed/unsupported authored dat…
+    105|     expect(() => battle(map)).toThrow(/map/i)
+       |                               ^
+    106|   })
+    107|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/51]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > honors every supported glyph exactly and refuses explicit positions in obstacles
+AssertionError: expected [ +0, 1, 2, 3, 4, 5, +0, 7, 8, +0 ] to deeply equal [ +0, 1, 2, 3, 4, 5, 6, 7, 8, +0 ]
+
+- Expected
++ Received
+
+@@ -3,10 +3,10 @@
+    1,
+    2,
+    3,
+    4,
+    5,
+-   6,
++   0,
+    7,
+    8,
+    0,
+  ]
+
+ ❯ test/direct-map.test.ts:121:31
+    119|     const map = { ...authored(), rows: ['.hfrR', 'wxbp.'] }
+    120|     const ctx = battle(map, { heroHexes: [0], enemyHexes: [9] })
+    121|     expect(ctx.state.terrain).toEqual(map.rows.join('').split('').map(…
+       |                               ^
+    122|     expect(() => battle(map, { heroHexes: [6], enemyHexes: [9] })).toT…
+    123|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/51]⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > notices removal and replacement without leaking through a preview fork
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/high-cell-los.test.ts:48:42
+     46|     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+     47|     branch.state.terrain[7] = TERRAIN.OPEN
+     48|     expect(canAttack(branch, 0, 1, bow)).toBe(true)
+       |                                          ^
+     49|     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+     50|     ctx.state.terrain[7] = TERRAIN.FOREST
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/51]⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > map.thicket blocks its authored shot, removal enables a real paid command
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > map.proving.ruin blocks its authored shot, removal enables a real paid command
+AssertionError: expected +0 to be 6 // Object.is equality
+
+- Expected
++ Received
+
+- 6
++ 0
+
+ ❯ test/high-cell-los.test.ts:58:48
+     56|   it.each([['map.thicket', 5, 2, 4, 3], ['map.proving.ruin', 3, 5, 7, …
+     57|     const ctx = createBattle({ replicate: 0, strict: true, mapId, hero…
+     58|     expect(ctx.state.terrain[row * 16 + wall]).toBe(TERRAIN.OBSTACLE)
+       |                                                ^
+     59|     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+     60|     expect(canAttack(ctx, 0, 1, bow, 'reaction')).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/51]⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > real reactions are denied before payment, then pay once without consuming activation slots
+Error: illegal attack: Ranger (TEST) A -> Zombie (TEST) 1 with attack.test-ranger.bow
+ ❯ performHit src/core/pipeline.ts:382:11
+    380|   // primary/stamina gates (already paid) but still need a standing ta…
+    381|   if (hitNo === 1 && !canAttack(ctx, attackerId, targetId, attackId, m…
+    382|     throw new Error(`illegal attack: ${at.name} -> ${tg.name} with ${a…
+       |           ^
+    383|   }
+    384|   if (hitNo > 1 && (tg.lifeState !== 'standing' || ctx.geo.distance(at…
+ ❯ performAttack src/core/pipeline.ts:356:26
+ ❯ test/high-cell-los.test.ts:81:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/51]⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > melee reach beyond one hex cannot cross a high cell
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/high-cell-los.test.ts:96:45
+     94|     expect(canAttack(ctx, 0, 1, action.id, 'reaction')).toBe(false)
+     95|     ctx.state.terrain[6] = TERRAIN.OPEN
+     96|     expect(canAttack(ctx, 0, 1, action.id)).toBe(true)
+       |                                             ^
+     97|     performAttack(ctx, 0, 1, action.id)
+     98|     expect(ctx.events.some(e => e.type === 'attack.declared' && e.caus…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/51]⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > cold and warmed-open construction of identical final geometry have equal work and answers
+Error: Command failed: C:\Program Files\nodejs\node.exe node_modules/tsx/dist/cli.mjs -e import {createBattle} from './src/core/setup.ts'; import {attackLineClear,attackLineStats} from './src/core/los.ts'; const rows=['....','.xx.','....']; const ctx=createBattle({replicate:0,heroes:[],enemies:[],heroHexes:[],enemyHexes:[],map:{id:'test.map.cold-warm',name:'Cold warm',rows:rows.map(r=>r.replaceAll('x','.'))}}); ctx.state.terrain[5]=6;ctx.state.terrain[6]=6; const answers=[];for(let a=0;a<12;a++)for(let b=0;b<12;b++)answers.push(attackLineClear(ctx,a,b));console.log(JSON.stringify({answers,stats:attackLineStats(ctx)}));
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\props.ts:41
+  if (state.terrain.includes(6)) throw new Error('props: obstacle shorthand is not canonical runtime ground')
+                                 ^
+
+Error: props: obstacle shorthand is not canonical runtime ground
+    at blockage (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\props.ts:41:40)
+    at highCells (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\props.ts:60:80)
+    at prepareAttackLines (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\los.ts:122:24)
+    at attackLineClear (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\los.ts:128:3)
+    at [eval]:8:103
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30)
+
+Node.js v24.12.0
+
+ ❯ blockage src/core/props.ts:41:40
+     39| const tables = new WeakMap<State, Blockage>()
+     40| function blockage(state: State): Blockage {
+     41|   if (state.terrain.includes(6)) throw new Error('props: obstacle shor…
+       |                                        ^
+     42|   const cells = state.board.width * state.board.height, found = new Se…
+     43|   // One scan at the owning operation's boundary, never inside its nei…
+ ❯ highCells src/core/props.ts:60:80
+ ❯ prepareAttackLines src/core/los.ts:122:24
+ ❯ attackLineClear src/core/los.ts:128:3
+ ❯ [eval]:8:103
+ ❯ [eval]-wrapper:6:24
+ ❯ run test/high-cell-los.test.ts:104:25
+ ❯ test/high-cell-los.test.ts:106:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/51]⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > new blocker hits are ORed once, without history-dependent retracing
+Error: props: obstacle shorthand is not canonical runtime ground
+ ❯ blockage src/core/props.ts:41:40
+     39| const tables = new WeakMap<State, Blockage>()
+     40| function blockage(state: State): Blockage {
+     41|   if (state.terrain.includes(6)) throw new Error('props: obstacle shor…
+       |                                        ^
+     42|   const cells = state.board.width * state.board.height, found = new Se…
+     43|   // One scan at the owning operation's boundary, never inside its nei…
+ ❯ highCells src/core/props.ts:60:80
+ ❯ prepareAttackLines src/core/los.ts:122:24
+ ❯ attackLineStats src/core/los.ts:142:3
+ ❯ test/high-cell-los.test.ts:128:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/51]⎯
+
+ FAIL  test/high-cell-los.test.ts > exact full-cell geometry > all-pair tables remain oracle-exact after mixed edits, forks, restores and same-ID other dimensions
+AssertionError: 0->5: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ check test/high-cell-los.test.ts:165:58
+    163|       const blockers = ctx.state.terrain.flatMap((t, h) => t === TERRA…
+    164|       for (let a = 0; a < ctx.geo.hexCount; a++) for (let b = 0; b < c…
+    165|         expect(attackLineClear(ctx, a, b), `${a}->${b}`).toBe(!blocker…
+       |                                                          ^
+    166|       }
+    167|     }
+ ❯ test/high-cell-los.test.ts:170:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/51]⎯
+
+ FAIL  test/scenario.test.ts > positions are validated at load, loudly (Law 9) > an impassable hex throws and says what terrain it is
+AssertionError: map.thicket has no impassable hex to test with: expected -1 to be greater than -1
+ ❯ test/scenario.test.ts:177:71
+    175|     const terrain = terrainOf('map.thicket')
+    176|     const blocked = terrain.findIndex((t) => !isPassable(t))
+    177|     expect(blocked, 'map.thicket has no impassable hex to test with').…
+       |                                                                       ^
+    178|     expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(0,…
+    179|       .toThrow(/impassable/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/51]⎯
+
+ FAIL  test/terrain.test.ts > terrain.passable — a wall is a wall > map.thicket actually contains obstacles — otherwise this item proves nothing
+AssertionError: expected 0 to be greater than 0
+ ❯ test/terrain.test.ts:258:58
+    256|   it('map.thicket actually contains obstacles — otherwise this item pr…
+    257|     const t = terrainOf('map.thicket')
+    258|     expect(t.filter(x => x === TERRAIN.OBSTACLE).length).toBeGreaterTh…
+       |                                                          ^
+    259|   })
+    260|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/51]⎯
+
+
+ Test Files  8 failed | 118 passed (126)
+      Tests  51 failed | 1185 passed | 1 todo (1237)
+   Start at  16:13:52
+   Duration  31.15s (transform 1.98s, setup 0ms, import 14.92s, tests 93.89s, environment 8ms)
+

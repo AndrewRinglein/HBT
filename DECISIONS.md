@@ -2399,3 +2399,17 @@ prior goldens: all current scenario/progression cases remained exact. Technical
 evidence/status lives in V2-HIGH-CELL-LOS.md.
 Arbitrary prop footprints, edges, cover, destruction commands, area secondary
 propagation and power.damage/burst shielding remain subsequent V2 work.
+
+## 2026-09-11 — canonical static high props, authorized V2 implementation
+
+terrain.authored-high-props adds one map/battle-scoped prop owner and normalizes
+raw x once; it does not preserve a second terrain-obstacle runtime branch. Every
+movement/landing/placement/arrival/knockback/LOS consumer reads the canonical
+footprint union. Materials and resource policy are provisional in SWITCHES.md.
+Snapshot rules advance to .12, and map.loaded carries detached initial props.
+Viewer registered-map presentation and Kingdom drawing migrate atomically;
+unknown/direct-dimension viewer initialization remains a separately recorded
+dependency. No user maps/art change. Text boards consume direct initial facts.
+The V2 receipt records red evidence, representation fixture changes, old-source
+comparison, package publication and final gate status. Human visual acceptance
+remains separate. Existing LOS/tooling verdicts are not rewritten.

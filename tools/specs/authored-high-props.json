@@ -1,0 +1,10 @@
+{
+ "id":"terrain.authored-high-props", "kind":"terrain", "shape":"rule",
+ "needs":["terrain.high-cell-los","plumbing.effect-arm-integrity"],
+ "spec":"Static authored high hex props preserve ground beneath their detached footprints, block movement, landing, setup, arrivals and attack lines through shared canonical facts. Raw x normalizes once to OPEN ground and a high prop. Passive viewer and Kingdom drawings preserve obstacle presentation.",
+ "expect":"Two published flat TEST maps prove single and multi-cell props, material transport, collision/LOS legality, detached save/replay facts and passive rendering. Prior-source comparison validates exact shorthand footprints and projects only representation, initial facts and the exact knockback diagnostic impassable terrain.obstacle to impassable prop while preserving all other event fields, gameplay and full RNG.",
+ "probeIds":["test.map.high-prop-single","test.map.high-prop-multi"],
+ "variants":["test.map.high-prop-single","test.map.high-prop-multi"],
+ "changesBaseline":true,
+ "note":"One canonical props owner; no runtime x-or-props mode. Only static high full-cell footprints, materials 1/2/3; no low cover, edges, destruction or atlas edits. Shorthand material and resource choices are provisional, recorded and tested. Preserve historical behavior assertions while changing their representation fixtures."
+}

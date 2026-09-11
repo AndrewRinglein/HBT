@@ -7,10 +7,13 @@ import { forkBattle } from '../src/core/fork.js'
 import { createCustomBattle } from '../src/core/setup.js'
 import { applyStatus } from '../src/core/status.js'
 import { battleCursorCases } from './battle-cursor-cases.js'
+import { projectShorthand } from './props-projection.js'
+import { GLYPH, mapDef } from '../src/content/maps.js'
 
 const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
 const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
 const eventGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-action-spent.json', import.meta.url), 'utf8'))
+const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -103,7 +106,8 @@ describe('resumable battle cursor', () => {
       // old files and check their exact hashes after removing ONLY that event
       // and normalizing sequence counters; freeze full current events separately.
       const prior = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
-      let expected = eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      const eventExpected = eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      let expected = propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result
@@ -117,9 +121,16 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
+        const projected = projectShorthand(ctx, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!))
+        if (eventExpected) {
+          expect(hash(projected.events), 'prior event contract, exact prop projection').toBe(eventExpected.events)
+          expect(hash(projected.state), 'prior state, exact prop projection').toBe(eventExpected.state)
+          expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+          expect(result).toEqual(eventExpected.result)
+        }
         if (prior) {
-          const oldEvents = ctx.events.filter(e => e.type !== 'action.spent').map((e, seq) => ({ ...e, seq }))
-          const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.events.length - oldEvents.length) }
+          const oldEvents = projected.events.filter(e => e.type !== 'action.spent').map((e, seq) => ({ ...e, seq }))
+          const oldState = { ...projected.state, seq: ctx.state.seq - (ctx.events.length - oldEvents.length) }
           expect(hash(oldEvents), 'historical events without new metadata').toBe(prior.events)
           expect(hash(oldState), 'historical state without new sequence count').toBe(prior.state)
           expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
@@ -138,7 +149,7 @@ describe('resumable battle cursor', () => {
     const historicalIds = golden.cases.map((row: { id: string }) => row.id)
     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
-    for (const corpus of [identityGolden, eventGolden]) {
+    for (const corpus of [identityGolden, eventGolden, propGolden]) {
       const ids = corpus.cases.map((row: { id: string }) => row.id)
       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
     }

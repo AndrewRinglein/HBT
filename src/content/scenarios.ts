@@ -46,6 +46,11 @@ for (const [id, mapId] of [
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   ...DIRECT_MAP_SCENARIOS,
+  'test.props-viewer-ranged-zoc': {
+    id: 'test.props-viewer-ranged-zoc', note: 'Current production replay coverage: a ranged-only Fire Imp cannot make a melee reaction when Lucius walks away. Both units have existing viewer art.',
+    mapId: 'map.open', heroes: ['alpha-lucius'], heroHexes: [85],
+    enemies: ['unit.fire-imp'], enemyHexes: [86], replicate: 0,
+  },
   'test.board-journey': {
     id: 'test.board-journey', note: 'Published 20×10 TEST map and encounter through the normal export and battle drivers.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.journey-20x10',

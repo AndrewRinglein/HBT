@@ -1,3 +1,4 @@
+import { setHigh } from './prop-fixtures.js'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AI_MODES, runActivation } from '../src/ai/modes.js'
 import * as commands from '../src/core/commands.js'
@@ -39,9 +40,9 @@ describe('AI uses the player action contract', () => {
     const ctx = createCustomBattle([{ type: 'test-air-mage', hex: 85 }], [{ type: 'test-zombie', hex: 150 }])
     const u = ctx.state.units[0]!
     u.actions = [attacksOf(ctx, u)[0]!.id, 'power.focus']
-    ctx.state.terrain.fill(TERRAIN.OBSTACLE)
-    ctx.state.terrain[85] = TERRAIN.OPEN
-    ctx.state.terrain[150] = TERRAIN.OPEN
+    for (let h = 0; h < ctx.geo.hexCount; h++) setHigh(ctx, h)
+    setHigh(ctx, 85, false)
+    setHigh(ctx, 150, false)
     u.stamina = 0
     beginActivation(ctx, 0, 'test')
     const spy = vi.spyOn(commands, 'executeAction')

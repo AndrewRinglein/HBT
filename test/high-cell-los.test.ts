@@ -1,3 +1,4 @@
+import { setHigh, fixtureBlockers } from './prop-fixtures.js'
 import { describe, expect, it } from 'vitest'
 import { execFileSync } from 'node:child_process'
 import { createBattle } from '../src/core/setup.js'
@@ -44,25 +45,25 @@ describe('V2 high cell attack lines', () => {
   it('notices removal and replacement without leaking through a preview fork', () => {
     const ctx = battle(), branch = forkBattle(ctx)
     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
-    branch.state.terrain[7] = TERRAIN.OPEN
+    setHigh(branch, 7, false)
     expect(canAttack(branch, 0, 1, bow)).toBe(true)
     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
-    ctx.state.terrain[7] = TERRAIN.FOREST
+    setHigh(ctx, 7, false); ctx.state.terrain[7] = TERRAIN.FOREST
     expect(canAttack(ctx, 0, 1, bow)).toBe(true)
-    ctx.state.terrain[7] = TERRAIN.OBSTACLE
+    setHigh(ctx, 7)
     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
   })
 
   it.each([['map.thicket', 5, 2, 4, 3], ['map.proving.ruin', 3, 5, 7, 6]] as const)('%s blocks its authored shot, removal enables a real paid command', (mapId, row, from, to, wall) => {
     const ctx = createBattle({ replicate: 0, strict: true, mapId, heroes: ['test-ranger'], enemies: ['test-zombie'], heroHexes: [row * 16 + from], enemyHexes: [row * 16 + to] })
-    expect(ctx.state.terrain[row * 16 + wall]).toBe(TERRAIN.OBSTACLE)
+    expect(fixtureBlockers(ctx)).toContain(row * 16 + wall)
     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
     expect(canAttack(ctx, 0, 1, bow, 'reaction')).toBe(false)
     expect(advanceBattle(ctx)).toEqual({ kind: 'acting', actor: 0 })
     const before = saveBattle(ctx)
     expect(executeBattleCommand(ctx, { humanUnitUids: [ctx.state.units[0]!.uid] }, { kind: 'action', actor: 0, target: 1, actionId: bow, expectedSeq: ctx.state.seq }).ok).toBe(false)
     expect(saveBattle(ctx)).toBe(before)
-    ctx.state.terrain[row * 16 + wall] = TERRAIN.OPEN
+    setHigh(ctx, row * 16 + wall, false)
     expect(canAttack(ctx, 0, 1, bow)).toBe(true)
     const stamina = ctx.state.units[0]!.stamina
     expect(executeBattleCommand(ctx, { humanUnitUids: [ctx.state.units[0]!.uid] }, { kind: 'action', actor: 0, target: 1, actionId: bow, expectedSeq: ctx.state.seq }).ok).toBe(true)
@@ -76,7 +77,7 @@ describe('V2 high cell attack lines', () => {
     const before = saveBattle(ctx)
     expect(() => performAttack(ctx, 0, 1, bow, 'reaction')).toThrow(/illegal/)
     expect(saveBattle(ctx)).toBe(before)
-    ctx.state.terrain[7] = TERRAIN.OPEN
+    setHigh(ctx, 7, false)
     const stamina = actor.stamina
     performAttack(ctx, 0, 1, bow, 'reaction')
     expect(actor.stamina).toBe(stamina - ctx.actions[bow]!.staminaCost)
@@ -92,7 +93,7 @@ describe('V2 high cell attack lines', () => {
     ctx.actions = { ...ctx.actions, [action.id]: { ...action, range: 2 } }
     expect(canAttack(ctx, 0, 1, action.id)).toBe(false)
     expect(canAttack(ctx, 0, 1, action.id, 'reaction')).toBe(false)
-    ctx.state.terrain[6] = TERRAIN.OPEN
+    setHigh(ctx, 6, false)
     expect(canAttack(ctx, 0, 1, action.id)).toBe(true)
     performAttack(ctx, 0, 1, action.id)
     expect(ctx.events.some(e => e.type === 'attack.declared' && e.causeId === action.id)).toBe(true)
@@ -100,7 +101,7 @@ describe('V2 high cell attack lines', () => {
 
   it('cold and warmed-open construction of identical final geometry have equal work and answers', () => {
     const run = (warm: boolean) => {
-      const script = `import {createBattle} from './src/core/setup.ts'; import {attackLineClear,attackLineStats} from './src/core/los.ts'; const rows=['....','.xx.','....']; const ctx=createBattle({replicate:0,heroes:[],enemies:[],heroHexes:[],enemyHexes:[],map:{id:'test.map.cold-warm',name:'Cold warm',rows:${warm ? "rows.map(r=>r.replaceAll('x','.'))" : 'rows'}}}); ${warm ? 'ctx.state.terrain[5]=6;ctx.state.terrain[6]=6;' : ''} const answers=[];for(let a=0;a<12;a++)for(let b=0;b<12;b++)answers.push(attackLineClear(ctx,a,b));console.log(JSON.stringify({answers,stats:attackLineStats(ctx)}));`
+      const script = `import {createBattle} from './src/core/setup.ts'; import {attackLineClear,attackLineStats} from './src/core/los.ts'; const rows=['....','.xx.','....']; const ctx=createBattle({replicate:0,heroes:[],enemies:[],heroHexes:[],enemyHexes:[],map:{id:'test.map.cold-warm',name:'Cold warm',rows:${warm ? "rows.map(r=>r.replaceAll('x','.'))" : 'rows'}}}); ${warm ? 'ctx.state.props=[{id:"prop.warm",height:"high",material:3,footprint:{kind:"hex",hexes:[5,6]}}];' : ''} const answers=[];for(let a=0;a<12;a++)for(let b=0;b<12;b++)answers.push(attackLineClear(ctx,a,b));console.log(JSON.stringify({answers,stats:attackLineStats(ctx)}));`
       return JSON.parse(execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', '-e', script], { encoding: 'utf8' }))
     }
     const cold = run(false), warm = run(true)
@@ -124,7 +125,7 @@ describe('V2 high cell attack lines', () => {
 
   it('new blocker hits are ORed once, without history-dependent retracing', () => {
     const ctx = createBattle({ replicate: 0, heroes: [], enemies: [], heroHexes: [], enemyHexes: [], map: { id: 'test.map.add-los', name: 'Addition', rows: ['......', '......', '......'] } })
-    ctx.state.terrain[7] = TERRAIN.OBSTACLE
+    setHigh(ctx, 7)
     const stats = attackLineStats(ctx)
     expect(stats.cacheHit).toBe(false)
     expect(stats.pairCellTests).toBe(18 * 17 / 2)
@@ -160,7 +161,7 @@ describe('exact full-cell geometry', () => {
   it('all-pair tables remain oracle-exact after mixed edits, forks, restores and same-ID other dimensions', () => {
     const make = (width: number, height: number, blockers: number[]) => createBattle({ replicate: 0, heroes: [], enemies: [], heroHexes: [], enemyHexes: [], map: { id: 'test.map.same-los-id', name: 'Same ID', rows: Array.from({ length: height }, (_, row) => Array.from({ length: width }, (_, col) => blockers.includes(row * width + col) ? 'x' : '.').join('')) } })
     const check = (ctx: ReturnType<typeof createBattle>) => {
-      const blockers = ctx.state.terrain.flatMap((t, h) => t === TERRAIN.OBSTACLE ? [h] : [])
+      const blockers = fixtureBlockers(ctx)
       for (let a = 0; a < ctx.geo.hexCount; a++) for (let b = 0; b < ctx.geo.hexCount; b++) {
         expect(attackLineClear(ctx, a, b), `${a}->${b}`).toBe(!blockers.some(cell => oracle(ctx.state.board.width, a, b, cell)))
       }
@@ -168,7 +169,7 @@ describe('exact full-cell geometry', () => {
     const ctx = make(4, 3, [5, 6]), original = saveBattle(ctx), fork = forkBattle(ctx)
     const forkBefore = saveBattle(fork)
     check(ctx); check(fork)
-    ctx.state.terrain[5] = TERRAIN.OPEN; ctx.state.terrain[9] = TERRAIN.OBSTACLE
+    setHigh(ctx, 5, false); setHigh(ctx, 9)
     check(ctx); check(fork)
     expect(attackLineStats(ctx).pairCellTests).toBe(12 * 11 / 2)
     expect(saveBattle(fork)).toBe(forkBefore)
@@ -178,7 +179,7 @@ describe('exact full-cell geometry', () => {
     check(other); check(ctx); check(fork)
     expect(ctx.state.board).toEqual({ width: 4, height: 3 })
     expect(other.state.board).toEqual({ width: 3, height: 4 })
-    fork.state.terrain[6] = TERRAIN.OPEN
+    setHigh(fork, 6, false)
     check(fork); check(ctx)
   })
   it.each([{ width: 4, height: 3 }, { width: 3, height: 4 }, { width: 5, height: 5 }])('exhaustive independent oracle, symmetry, endpoints and zero-length on $width × $height', board => {

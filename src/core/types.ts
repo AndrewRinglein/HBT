@@ -2,11 +2,14 @@ import type { Board, Edge, Geometry, HexId } from './hex.js'
 import type { Rng } from './rng.js'
 
 export type Side = 'hero' | 'enemy'
+export type HighProp = { id: string; height: 'high'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } }
+export type AuthoredHighProp = { readonly id: string; readonly height: 'high'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } }
 /** Plain authored map transport, decoded by the same boundary for registry and direct input. */
 export type AuthoredMap = {
   readonly id: string; readonly name: string; readonly rows: readonly string[]
   readonly board?: Board; readonly format?: string; readonly note?: string
   readonly deploy?: { readonly hero: Edge; readonly enemy: Edge }
+  readonly props?: readonly AuthoredHighProp[]
 }
 /** What kind of thing a unit is. Every AI can read this about every other unit. */
 export type Role = 'melee' | 'ranged' | 'support'
@@ -671,6 +674,8 @@ export type State = {
   power?: number
   /** One entry per HexId. Plain array so State stays JSON-round-trippable (Law 5b). */
   terrain: number[]
+  /** Canonical obstruction state; authored x is normalized at map decode. */
+  props: HighProp[]
   /**
    * capability.ground-layers (2026-09-03): the painted layer per hex, parallel
    * to `terrain` — LAYER.NONE where nothing is painted. Absent = nothing painted

@@ -11,13 +11,13 @@ const result = runBattle(ctx)
 const names = nameMap(ctx.events)
 
 console.log(`\nBaseline 4v4 — replicate ${replicate} — map '${mapId}'\n`)
-console.log(renderBoard(foldToTurn(ctx.events, setupSeq(ctx.events)), mapIdOf(ctx.events)))
+console.log(renderBoard(foldToTurn(ctx.events, setupSeq(ctx.events)), mapIdOf(ctx.events), ctx.events))
 console.log('\n' + renderRoster(foldToTurn(ctx.events, setupSeq(ctx.events))))
 console.log(renderLog(ctx.events, names).join('\n'))
 
 if (showBoards) {
   const last = ctx.events[ctx.events.length - 1]!.seq
   console.log('\nFINAL BOARD\n')
-  console.log(renderBoard(foldToTurn(ctx.events, last), mapIdOf(ctx.events)))
+  console.log(renderBoard(foldToTurn(ctx.events, last), mapIdOf(ctx.events), ctx.events))
 }
 console.log(`\n${result.outcome} in ${result.turns} turns — ${ctx.events.length} events\n`)

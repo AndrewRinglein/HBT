@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { fixtureBlockers, setHigh } from './prop-fixtures.js'
 import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
          accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf } from '../src/content/maps.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
@@ -17,7 +18,8 @@ const ALL_KINDS = [TERRAIN.OPEN, TERRAIN.HILLS, ...NEW_KINDS]
 function warriorOn(terrain: number) {
   const ctx = createCustomBattle(
     [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
-  ctx.state.terrain[ctx.state.units[0]!.hex] = terrain
+  ctx.state.terrain[ctx.state.units[0]!.hex] = terrain === TERRAIN.OBSTACLE ? TERRAIN.OPEN : terrain
+  if (terrain === TERRAIN.OBSTACLE) setHigh(ctx, ctx.state.units[0]!.hex)
   return { ctx, u: ctx.state.units[0]! }
 }
 
@@ -254,8 +256,8 @@ describe('terrain.passable — a wall is a wall', () => {
   })
 
   it('map.thicket actually contains obstacles — otherwise this item proves nothing', () => {
-    const t = terrainOf('map.thicket')
-    expect(t.filter(x => x === TERRAIN.OBSTACLE).length).toBeGreaterThan(0)
+    const ctx = createBattle({ replicate: 0, mapId: 'map.thicket' })
+    expect(fixtureBlockers(ctx).length).toBeGreaterThan(0)
   })
 
   it('reachable() never offers an obstacle, and pathTo never routes through one', () => {
@@ -264,9 +266,9 @@ describe('terrain.passable — a wall is a wall', () => {
     const u = ctx.state.units[0]!
     u.movePointsLeft = 12
     const reach = reachable(ctx, u)
-    for (const [hex] of reach) expect(ctx.state.terrain[hex]).not.toBe(TERRAIN.OBSTACLE)
+    for (const [hex] of reach) expect(fixtureBlockers(ctx)).not.toContain(hex)
     for (const [hex] of reach) {
-      for (const step of pathTo(reach, u.hex, hex)) expect(ctx.state.terrain[step]).not.toBe(TERRAIN.OBSTACLE)
+      for (const step of pathTo(reach, u.hex, hex)) expect(fixtureBlockers(ctx)).not.toContain(step)
     }
   })
 
@@ -278,7 +280,7 @@ describe('terrain.passable — a wall is a wall', () => {
       for (const e of ctx.events) {
         if (e.type !== 'moved') continue
         moves++
-        if (ctx.state.terrain[e['to'] as number] === TERRAIN.OBSTACLE) entered++
+        if (fixtureBlockers(ctx).includes(e['to'] as number)) entered++
       }
     }
     expect(moves).toBeGreaterThan(500)

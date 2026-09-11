@@ -1,0 +1,24 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/authored-props.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-props.test.ts [ test/authored-props.test.ts ]
+ReferenceError: Cannot access '__vite_ssr_import_3__' before initialization
+ ❯ mapBoardOf src/content/pack.ts:458:32
+
+ ❯ loadMaps src/content/pack.ts:478:5
+ ❯ packTestMaps src/content/pack.ts:487:10
+ ❯ src/content/maps.ts:107:49
+ ❯ src/core/stats.ts:18:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  42 passed (42)
+   Start at  16:24:28
+   Duration  1.38s (transform 656ms, setup 0ms, import 491ms, tests 773ms, environment 0ms)
+

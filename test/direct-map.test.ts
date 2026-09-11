@@ -99,7 +99,7 @@ describe('production direct authored maps', () => {
     { ...authored('map.open'), deploy: { hero: 'west', enemy: 'west' } },
     { ...authored('map.open'), deploy: { hero: 'west', enemy: 'east', depth: 2 } },
     { ...authored('map.open'), terrain: [0] }, { ...authored('map.open'), layers: [] },
-    { ...authored('map.open'), props: [] }, { ...authored('map.open'), elevation: [] },
+    { ...authored('map.open'), edges: [] }, { ...authored('map.open'), elevation: [] },
     { ...authored('map.open'), rows: Array(101).fill('.'.repeat(100)) },
   ].map(map => ({ map })))('rejects malformed/unsupported authored data $map', ({ map }) => {
     expect(() => battle(map)).toThrow(/map/i)
@@ -118,7 +118,8 @@ describe('production direct authored maps', () => {
   it('honors every supported glyph exactly and refuses explicit positions in obstacles', () => {
     const map = { ...authored(), rows: ['.hfrR', 'wxbp.'] }
     const ctx = battle(map, { heroHexes: [0], enemyHexes: [9] })
-    expect(ctx.state.terrain).toEqual(map.rows.join('').split('').map(g => GLYPH[g]))
+    expect(ctx.state.terrain).toEqual(map.rows.join('').split('').map(g => g === 'x' ? 0 : GLYPH[g]))
+    expect(ctx.state.props).toEqual([{ id: 'prop.obstacle.6', height: 'high', material: 3, footprint: { kind: 'hex', hexes: [6] } }])
     expect(() => battle(map, { heroHexes: [6], enemyHexes: [9] })).toThrow(/impassable/)
   })
 

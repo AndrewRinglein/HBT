@@ -1,0 +1,20 @@
+
+gate: terrain.authored-high-props   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 1 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite  — 1269 passed
+  PASS  gate 1 — the id appears in a real battle  — test.map.high-prop-single: 1 log lines, 1 fired, 1 changed state · test.map.high-prop-multi: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests  — test/additions.test.ts, test/ai-commands.test.ts, test/battle-commands.test.ts, test/battle-cursor.test.ts, test/direct-map.test.ts, test/high-cell-los.test.ts, test/scenario.test.ts, test/terrain.test.ts, test/authored-props.test.ts, test/fixtures/battle-cursor-props.json, test/prop-fixtures.ts, test/props-projection.ts
+  WARN  existing tests untouched  — DELETED LINES in test/additions.test.ts (-2), test/ai-commands.test.ts (-3), test/battle-commands.test.ts (-3), test/battle-cursor.test.ts (-4), test/direct-map.test.ts (-2), test/high-cell-los.test.ts (-12), test/scenario.test.ts (-4), test/terrain.test.ts (-6) — will land FLAGGED for review
+  PASS  control battles unchanged  — will re-bless at commit — this item DECLARED it changes the control battles: map.open d3dd199c->051db32e, map.ridge 9682f247->a20d85e3, map.flanks 61ace08f->8567e619, map.highlands da12b28b->f36910dd, map.field 7bd80468->c0c00e82, map.thicket 5e40018d->a303b4ef, map.proving.open 329c5b7b->d1b83203, map.proving.ridge 3f59720e->1fc43944, map.proving.ford 6369de94->60d9ce38, map.proving.copse d61a82db->ece77f7b, map.proving.ruin f3c6cbab->4a149f2c, map.courtyard d631fa0b->42b67605, map.floodplain c007e843->d1ad1779, test.map.embers 0a1b56d0->b2a84548, test.map.showcase d5f8136f->373e4169, test.map.duel-8 3afa813b->155eebff, test.map.dungeon-16x8 9771e5ab->616db0ad, test.map.horde-24 7f4e7bda->3ad4d6bc, test.map.journey-20x10 dc798a4e->624e9288, test.map.authored-40x40 3d7f4f24->200469f6, test.map.high-prop-single ?->2ba01d22, test.map.high-prop-multi ?->d05b8e51, test.map.high-prop-single NEW, test.map.high-prop-multi NEW
+  PASS  content has a published source  — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — test.map.high-prop-single live · test.map.high-prop-multi live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without test.map.high-prop-single,test.map.high-prop-multi — they genuinely test it
+
+All gates pass. Run with --land to commit.
+

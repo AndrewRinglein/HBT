@@ -17,6 +17,7 @@
 
 import { TERRAIN } from '../core/types.js'
 import type { AuthoredMap } from '../core/types.js'
+import { decodeProps } from '../core/props.js'
 import { type Board, type Edge } from '../core/hex.js'
 import { disabledIds } from './disable.js'
 import { packMaps, packTestMaps, mapBoardOf } from './pack.js'
@@ -154,17 +155,22 @@ export function terrainOf(mapId: string): number[] {
 }
 
 /** Validate before allocation; retain no caller-owned arrays or metadata objects. */
-export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[] } {
+export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').HighProp[] } {
   const board = mapBoardOf(m)
   const out: number[] = []
+  const props = decodeProps(m.props === undefined ? [] : m.props, board.width * board.height)
+  if (props.some(p => p.id.startsWith('prop.obstacle.'))) throw new Error('props: reserved shorthand ID')
   for (const row of m.rows) {
     for (const ch of row) {
       const t = GLYPH[ch]
       if (t === undefined) throw new Error(`map '${m.id}' has an unknown glyph '${ch}'`)
-      out.push(t)
+      if (ch === 'x') {
+        props.push({ id: `prop.obstacle.${out.length}`, height: 'high', material: 3, footprint: { kind: 'hex', hexes: [out.length] } })
+        out.push(TERRAIN.OPEN)
+      } else out.push(t)
     }
   }
-  return { id: m.id, board, deploy: { ...(m.deploy ?? DEFAULT_DEPLOY) }, terrain: out }
+  return { id: m.id, board, deploy: { ...(m.deploy ?? DEFAULT_DEPLOY) }, terrain: out, props: decodeProps(props, out.length) }
 }
 
 export function terrainIdOf(terrain: number): string {

@@ -171,12 +171,12 @@ describe('positions are validated at load, loudly (Law 9)', () => {
     return h
   }
 
-  it('an impassable hex throws and says what terrain it is', () => {
-    const terrain = terrainOf('map.thicket')
-    const blocked = terrain.findIndex((t) => !isPassable(t))
+  it('an impassable hex throws and identifies the blocking prop', () => {
+    const fixture = createBattle({ replicate: 0, mapId: 'map.thicket' })
+    const blocked = fixture.state.props[0]!.footprint.hexes[0]!
     expect(blocked, 'map.thicket has no impassable hex to test with').toBeGreaterThan(-1)
     expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(0, blocked) }))
-      .toThrow(/impassable/)
+      .toThrow(/blocked by a high prop.*impassable/)
   })
 
   it('an off-board hex throws', () => {

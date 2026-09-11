@@ -1,0 +1,91 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+[eval]:6
+if (JSON.stringify(ctx.state.props) !== JSON.stringify(map.props)) throw new Error("prop transport differs");
+                                                                   ^
+
+Error: prop transport differs
+    at [eval]:6:74
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30)
+    at asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:11)
+
+Node.js v24.12.0
+[eval]:6
+if (JSON.stringify(ctx.state.props) !== JSON.stringify(map.props)) throw new Error("prop transport differs");
+                                                                   ^
+
+Error: prop transport differs
+    at [eval]:6:74
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30)
+    at asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:11)
+
+Node.js v24.12.0
+ ❯ test/authored-props.test.ts (33 tests | 2 failed) 1239ms
+     × loads real prop packs in a fresh native pack-first process 353ms
+     × loads real prop packs in a fresh native setup-first process 347ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-props.test.ts > canonical authored high props > loads real prop packs in a fresh native pack-first process
+Error: Command failed: C:\Program Files\nodejs\node.exe node_modules/tsx/dist/cli.mjs -e import {packTestMaps} from './src/content/pack.ts';import {createBattle} from './src/core/setup.ts'; const id='test.map.high-prop-single';const map=packTestMaps().find(m=>m.id===id);const ctx=createBattle({replicate:0,mapId:id});if(JSON.stringify(ctx.state.props)!==JSON.stringify(map.props))throw new Error('prop transport differs');console.log('loaded')
+[eval]:6
+if (JSON.stringify(ctx.state.props) !== JSON.stringify(map.props)) throw new Error("prop transport differs");
+                                                                   ^
+
+Error: prop transport differs
+    at [eval]:6:74
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30)
+    at asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:11)
+
+Node.js v24.12.0
+
+ ❯ [eval]:6:74
+ ❯ [eval]-wrapper:6:24
+ ❯ test/authored-props.test.ts:25:12
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/authored-props.test.ts > canonical authored high props > loads real prop packs in a fresh native setup-first process
+Error: Command failed: C:\Program Files\nodejs\node.exe node_modules/tsx/dist/cli.mjs -e import {createBattle} from './src/core/setup.ts';import {packTestMaps} from './src/content/pack.ts'; const id='test.map.high-prop-single';const map=packTestMaps().find(m=>m.id===id);const ctx=createBattle({replicate:0,mapId:id});if(JSON.stringify(ctx.state.props)!==JSON.stringify(map.props))throw new Error('prop transport differs');console.log('loaded')
+[eval]:6
+if (JSON.stringify(ctx.state.props) !== JSON.stringify(map.props)) throw new Error("prop transport differs");
+                                                                   ^
+
+Error: prop transport differs
+    at [eval]:6:74
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30)
+    at asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:11)
+
+Node.js v24.12.0
+
+ ❯ [eval]:6:74
+ ❯ [eval]-wrapper:6:24
+ ❯ test/authored-props.test.ts:25:12
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 31 passed (33)
+   Start at  16:28:01
+   Duration  1.86s (transform 392ms, setup 0ms, import 500ms, tests 1.24s, environment 0ms)
+

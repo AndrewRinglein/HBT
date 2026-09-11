@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/authored-props.test.ts (29 tests | 1 failed | 28 skipped) 8ms
+     × sidestep enumeration prepares blockage once, not once per board cell 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-props.test.ts > canonical authored high props > sidestep enumeration prepares blockage once, not once per board cell
+AssertionError: expected 15 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 15
+
+ ❯ test/authored-props.test.ts:84:19
+     82|     const options = movementOptions(ctx, 0, 'power.sidestep')
+     83|     expect(options.length).toBeGreaterThan(0)
+     84|     expect(reads).toBe(1)
+       |                   ^
+     85|   })
+     86|   it('text board renders unknown-map prop facts without registry looku…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 28 skipped (29)
+   Start at  16:19:01
+   Duration  636ms (transform 398ms, setup 0ms, import 505ms, tests 8ms, environment 0ms)
+

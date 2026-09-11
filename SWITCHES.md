@@ -524,3 +524,17 @@ rejects before geometry allocation; 40×40 with 801 exceeds the work cap too.
 Incremental removal checks existing exact reverse lists, and addition computes
 only new blocker lists. Bounds do not depend on cache history. See receipt and
 benchmark logs for exact shapes; this is a resource policy, not authored tuning.
+
+## terrain.authored-high-props — canonical static footprints (2026-09-11)
+
+Provisional: authored `x` becomes OPEN ground plus high material-3
+`prop.obstacle.<hex>`. Explicit props retain underlying ground, use map/battle
+scoped `prop.*` IDs and material 1/2/3. Footprints contain distinct full hexes;
+different props may overlap, blockage is their union. Total footprint references
+are bounded at 10,000 including shorthand. Reserved shorthand IDs cannot be authored.
+No material-dependent destruction behavior, low cover, edges or props commands
+are implied. Numeric OBSTACLE remains an authoring token, forbidden in saved
+canonical ground and initial map facts. One prepared immutable occupancy view
+per synchronous operation observes any changed footprints at its next boundary.
+Existing LOS limits remain unchanged. The 40×40/600 benchmark compares actual
+setup, sidestep and path enumeration against 038304f; details in the receipt.

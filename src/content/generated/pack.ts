@@ -14495,6 +14495,87 @@ export const UNIT_PACK = {
           "........................................",
           "........................................"
         ]
+      },
+      "test.map.high-prop-single": {
+        "id": "test.map.high-prop-single",
+        "name": "Single high prop TEST",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "format": "20x10",
+        "rows": [
+          "....................",
+          "....................",
+          "....................",
+          "....................",
+          "..........w.........",
+          "....................",
+          "....................",
+          "....................",
+          "....................",
+          "...................."
+        ],
+        "props": [
+          {
+            "id": "prop.test.single",
+            "footprint": {
+              "kind": "hex",
+              "hexes": [
+                90
+              ]
+            },
+            "height": "high",
+            "material": 1
+          }
+        ]
+      },
+      "test.map.high-prop-multi": {
+        "id": "test.map.high-prop-multi",
+        "name": "Multiple high footprints TEST",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "format": "20x10",
+        "rows": [
+          "....................",
+          "....................",
+          "....................",
+          "....................",
+          ".........fwh........",
+          "....................",
+          "....................",
+          "....................",
+          "....................",
+          "...................."
+        ],
+        "props": [
+          {
+            "id": "prop.test.multi",
+            "footprint": {
+              "kind": "hex",
+              "hexes": [
+                89,
+                90,
+                91
+              ]
+            },
+            "height": "high",
+            "material": 2
+          },
+          {
+            "id": "prop.test.second",
+            "footprint": {
+              "kind": "hex",
+              "hexes": [
+                110
+              ]
+            },
+            "height": "high",
+            "material": 3
+          }
+        ]
       }
     },
     "encounters": {

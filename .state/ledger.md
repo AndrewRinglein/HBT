@@ -11665,3 +11665,337 @@ Node.js v24.12.0
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
+
+## terrain.authored-high-props — LANDED `c00663c` **NEEDS REVIEW**
+2026-09-11 23:44
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite — 1269 passed
+  PASS  gate 1 — the id appears in a real battle — test.map.high-prop-single: 1 log lines, 1 fired, 1 changed state · test.map.high-prop-multi: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/additions.test.ts, test/ai-commands.test.ts, test/battle-commands.test.ts, test/battle-cursor.test.ts, test/direct-map.test.ts, test/high-cell-los.test.ts, test/scenario.test.ts, test/terrain.test.ts, test/authored-props.test.ts, test/fixtures/battle-cursor-props.json, test/prop-fixtures.ts, test/props-projection.ts
+  WARN  existing tests untouched — DELETED LINES in test/additions.test.ts (-2), test/ai-commands.test.ts (-3), test/battle-commands.test.ts (-3), test/battle-cursor.test.ts (-4), test/direct-map.test.ts (-2), test/high-cell-los.test.ts (-12), test/scenario.test.ts (-4), test/terrain.test.ts (-6) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open d3dd199c->051db32e, map.ridge 9682f247->a20d85e3, map.flanks 61ace08f->8567e619, map.highlands da12b28b->f36910dd, map.field 7bd80468->c0c00e82, map.thicket 5e40018d->a303b4ef, map.proving.open 329c5b7b->d1b83203, map.proving.ridge 3f59720e->1fc43944, map.proving.ford 6369de94->60d9ce38, map.proving.copse d61a82db->ece77f7b, map.proving.ruin f3c6cbab->4a149f2c, map.courtyard d631fa0b->42b67605, map.floodplain c007e843->d1ad1779, test.map.embers 0a1b56d0->b2a84548, test.map.showcase d5f8136f->373e4169, test.map.duel-8 3afa813b->155eebff, test.map.dungeon-16x8 9771e5ab->616db0ad, test.map.horde-24 7f4e7bda->3ad4d6bc, test.map.journey-20x10 dc798a4e->624e9288, test.map.authored-40x40 3d7f4f24->200469f6, test.map.high-prop-single ?->2ba01d22, test.map.high-prop-multi ?->d05b8e51, test.map.high-prop-single NEW, test.map.high-prop-multi NEW
+  PASS  content has a published source — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.map.high-prop-single live · test.map.high-prop-multi live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.map.high-prop-single,test.map.high-prop-multi — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index 40e0c0e..d501658 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -7,5 +7,5 @@ import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js
+ import { reachable, stepCost } from '../src/core/movement.js'
+ import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE, TEST_COHORT } from '../src/content/index.js'
+-import { MAPS, terrainOf, MAP_PANEL, boardOf } from '../src/content/maps.js'
++import { MAPS, terrainOf, MAP_PANEL, boardOf, decodeMap } from '../src/content/maps.js'
+ import { hexId, distance } from './board16.js'
+ import { TERRAIN } from '../src/core/types.js'
+@@ -47,5 +47,5 @@ describe('pass 2 — hills', () => {
+     // that, and it broke the moment two different maps happened to have 28 hills
+     // each (flanks and field). Assert the layout, which is what we actually mean.
+-    const layouts = MAPS.map(m => terrainOf(m.id).join(''))
++    const layouts = MAPS.map(m => { const { board, terrain, props } = decodeMap(m); return JSON.stringify({ board, terrain, props }) })
+     expect(new Set(layouts).size).toBe(MAPS.length)
+   })
+diff --git a/test/ai-commands.test.ts b/test/ai-commands.test.ts
+index 68700e2..f253cbb 100644
+--- a/test/ai-commands.test.ts
++++ b/test/ai-commands.test.ts
+@@ -1,2 +1,3 @@
++import { setHigh } from './prop-fixtures.js'
+ import { afterEach, describe, expect, it, vi } from 'vitest'
+ import { AI_MODES, runActivation } from '../src/ai/modes.js'
+@@ -40,7 +41,7 @@ describe('AI uses the player action contract', () => {
+     const u = ctx.state.units[0]!
+     u.actions = [attacksOf(ctx, u)[0]!.id, 'power.focus']
+-    ctx.state.terrain.fill(TERRAIN.OBSTACLE)
+-    ctx.state.terrain[85] = TERRAIN.OPEN
+-    ctx.state.terrain[150] = TERRAIN.OPEN
++    for (let h = 0; h < ctx.geo.hexCount; h++) setHigh(ctx, h)
++    setHigh(ctx, 85, false)
++    setHigh(ctx, 150, false)
+     u.stamina = 0
+     beginActivation(ctx, 0, 'test')
+diff --git a/test/battle-commands.test.ts b/test/battle-commands.test.ts
+index e7cdd36..1ee866c 100644
+--- a/test/battle-commands.test.ts
++++ b/test/battle-commands.test.ts
+@@ -1,2 +1,3 @@
++import { setHigh } from './prop-fixtures.js'
+ import { describe, expect, it } from 'vitest'
+ import { controllerOf, executeAction, executeBattleCommand, validateAction, validateBattleCommand } from '../src/core/commands.js'
+@@ -88,5 +89,5 @@ describe('plumbing.battle-commands', () => {
+   it('validates the full walk and permits flight across an impassable barrier', () => {
+     const ctx = fixture(150); grant(ctx, 'power.flight')
+-    for (let i = 0; i < ctx.state.terrain.length; i++) if (i % ctx.state.board.width === 6) ctx.state.terrain[i] = TERRAIN.OBSTACLE
++    for (let i = 0; i < ctx.state.terrain.length; i++) if (i % ctx.state.board.width === 6) setHigh(ctx, i)
+     rejected(ctx, action(ctx, { actionId: 'power.move', destination: 87 }), 'unreachable-destination')
+     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: 'power.flight', destination: 87 }))).toEqual({ ok: true })
+@@ -96,5 +97,5 @@ describe('plumbing.battle-commands', () => {
+   it('rejects impassable paths even when a huge movement budget would reach them', () => {
+     const ctx = fixture(150); ctx.state.units[0]!.movePointsLeft = 2000
+-    ctx.state.terrain[86] = TERRAIN.OBSTACLE
++    setHigh(ctx, 86)
+     rejected(ctx, action(ctx, { actionId: 'power.move', destination: 86 }))
+   })
+@@ -103,5 +104,5 @@ describe('plumbing.battle-commands', () => {
+     const ctx = fixture(); grant(ctx, id)
+     for (const destination of [-1, ctx.state.terrain.length, 1.5, 86]) rejected(ctx, action(ctx, { actionId: id, destination }))
+-    ctx.state.terrain[84] = TERRAIN.OBSTACLE
++    setHigh(ctx, 84)
+     rejected(ctx, action(ctx, { actionId: id, destination: 84 }))
+   })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 4fbef04..7cbc995 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -8,8 +8,11 @@ import { createCustomBattle } from '../src/core/setup.js'
+ import { applyStatus } from '../src/core/status.js'
+ import { battleCursorCases } from './battle-cursor-cases.js'
++import { projectShorthand } from './props-projection.js'
++import { GLYPH, mapDef } from '../src/content/maps.js'
+ 
+ const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
+ const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
+ const eventGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-action-spent.json', import.meta.url), 'utf8'))
++const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -104,5 +107,6 @@ describe('resumable battle cursor', () => {
+       // and normalizing sequence counters; freeze full current events separately.
+       const prior = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      const eventExpected = eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -118,7 +122,14 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
++        const projected = projectShorthand(ctx, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!))
++        if (eventExpected) {
++          expect(hash(projected.events), 'prior event contract, exact prop projection').toBe(eventExpected.events)
++          expect(hash(projected.state), 'prior state, exact prop projection').toBe(eventExpected.state)
++          expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
++          expect(result).toEqual(eventExpected.result)
++        }
+         if (prior) {
+-          const oldEvents = ctx.events.filter(e => e.type !== 'action.spent').map((e, seq) => ({ ...e, seq }))
+-          const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.events.length - oldEvents.length) }
++          const oldEvents = projected.events.filter(e => e.type !== 'action.spent').map((e, seq) => ({ ...e, seq }))
++          const oldState = { ...projected.state, seq: ctx.state.seq - (ctx.events.length - oldEvents.length) }
+           expect(hash(oldEvents), 'historical events without new metadata').toBe(prior.events)
+           expect(hash(oldState), 'historical state without new sequence count').toBe(prior.state)
+@@ -139,5 +150,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+diff --git a/test/direct-map.test.ts b/test/direct-map.test.ts
+index ee85d98..25e8aa4 100644
+--- a/test/direct-map.test.ts
++++ b/test/direct-map.test.ts
+@@ -100,5 +100,5 @@ describe('production direct authored maps', () => {
+     { ...authored('map.open'), deploy: { hero: 'west', enemy: 'east', depth: 2 } },
+     { ...authored('map.open'), terrain: [0] }, { ...authored('map.open'), layers: [] },
+-    { ...authored('map.open'), props: [] }, { ...authored('map.open'), elevation: [] },
++    { ...authored('map.open'), edges: [] }, { ...authored('map.open'), elevation: [] },
+     { ...authored('map.open'), rows: Array(101).fill('.'.repeat(100)) },
+   ].map(map => ({ map })))('rejects malformed/unsupported authored data $map', ({ map }) => {
+@@ -119,5 +119,6 @@ describe('production direct authored maps', () => {
+     const map = { ...authored(), rows: ['.hfrR', 'wxbp.'] }
+     const ctx = battle(map, { heroHexes: [0], enemyHexes: [9] })
+-    expect(ctx.state.terrain).toEqual(map.rows.join('').split('').map(g => GLYPH[g]))
++    expect(ctx.state.terrain).toEqual(map.rows.join('').split('').map(g => g === 'x' ? 0 : GLYPH[g]))
++    expect(ctx.state.props).toEqual([{ id: 'prop.obstacle.6', height: 'high', material: 3, footprint: { kind: 'hex', hexes: [6] } }])
+     expect(() => battle(map, { heroHexes: [6], enemyHexes: [9] })).toThrow(/impassable/)
+   })
+diff --git a/test/high-cell-los.test.ts b/test/high-cell-los.test.ts
+index d8ab709..1739dcc 100644
+--- a/test/high-cell-los.test.ts
++++ b/test/high-cell-los.test.ts
+@@ -1,2 +1,3 @@
++import { setHigh, fixtureBlockers } from './prop-fixtures.js'
+ import { describe, expect, it } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+@@ -45,10 +46,10 @@ describe('V2 high cell attack lines', () => {
+     const ctx = battle(), branch = forkBattle(ctx)
+     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+-    branch.state.terrain[7] = TERRAIN.OPEN
++    setHigh(branch, 7, false)
+     expect(canAttack(branch, 0, 1, bow)).toBe(true)
+     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+-    ctx.state.terrain[7] = TERRAIN.FOREST
++    setHigh(ctx, 7, false); ctx.state.terrain[7] = TERRAIN.FOREST
+     expect(canAttack(ctx, 0, 1, bow)).toBe(true)
+-    ctx.state.terrain[7] = TERRAIN.OBSTACLE
++    setHigh(ctx, 7)
+     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+   })
+@@ -56,5 +57,5 @@ describe('V2 high cell attack lines', () => {
+   it.each([['map.thicket', 5, 2, 4, 3], ['map.proving.ruin', 3, 5, 7, 6]] as const)('%s blocks its authored shot, removal enables a real paid command', (mapId, row, from, to, wall) => {
+     const ctx = createBattle({ replicate: 0, strict: true, mapId, heroes: ['test-ranger'], enemies: ['test-zombie'], heroHexes: [row * 16 + from], enemyHexes: [row * 16 + to] })
+-    expect(ctx.state.terrain[row * 16 + wall]).toBe(TERRAIN.OBSTACLE)
++    expect(fixtureBlockers(ctx)).toContain(row * 16 + wall)
+     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+     expect(canAttack(ctx, 0, 1, bow, 'reaction')).toBe(false)
+@@ -63,5 +64,5 @@ describe('V2 high cell attack lines', () => {
+     expect(executeBattleCommand(ctx, { humanUnitUids: [ctx.state.units[0]!.uid] }, { kind: 'action', actor: 0, target: 1, actionId: bow, expectedSeq: ctx.state.seq }).ok).toBe(false)
+     expect(saveBattle(ctx)).toBe(before)
+-    ctx.state.terrain[row * 16 + wall] = TERRAIN.OPEN
++    setHigh(ctx, row * 16 + wall, false)
+     expect(canAttack(ctx, 0, 1, bow)).toBe(true)
+     const stamina = ctx.state.units[0]!.stamina
+@@ -77,5 +78,5 @@ describe('V2 high cell attack lines', () => {
+     expect(() => performAttack(ctx, 0, 1, bow, 'reaction')).toThrow(/illegal/)
+     expect(saveBattle(ctx)).toBe(before)
+-    ctx.state.terrain[7] = TERRAIN.OPEN
++    setHigh(ctx, 7, false)
+     const stamina = actor.stamina
+     performAttack(ctx, 0, 1, bow, 'reaction')
+@@ -93,5 +94,5 @@ describe('V2 high cell attack lines', () => {
+     expect(canAttack(ctx, 0, 1, action.id)).toBe(false)
+     expect(canAttack(ctx, 0, 1, action.id, 'reaction')).toBe(false)
+-    ctx.state.terrain[6] = TERRAIN.OPEN
++    setHigh(ctx, 6, false)
+     expect(canAttack(ctx, 0, 1, action.id)).toBe(true)
+     performAttack(ctx, 0, 1, action.id)
+@@ -101,5 +102,5 @@ describe('V2 high cell attack lines', () => {
+   it('cold and warmed-open construction of identical final geometry have equal work and answers', () => {
+     const run = (warm: boolean) => {
+-      const script = `import {createBattle} from './src/core/setup.ts'; import {attackLineClear,attackLineStats} from './src/core/los.ts'; const rows=['....','.xx.','....']; const ctx=createBattle({replicate:0,heroes:[],enemies:[],heroHexes:[],enemyHexes:[],map:{id:'test.map.cold-warm',name:'Cold warm',rows:${warm ? "rows.map(r=>r.replaceAll('x','.'))" : 'rows'}}}); ${warm ? 'ctx.state.terrain[5]=6;ctx.state.terrain[6]=6;' : ''} const answers=[];for(let a=0;a<12;a++)for(let b=0;b<12;b++)answers.push(attackLineClear(ctx,a,b));console.log(JSON.stringify({answers,stats:attackLineStats(ctx)}));`
++      const script = `import {createBattle} from './src/core/setup.ts'; import {attackLineClear,attackLineStats} from './src/core/los.ts'; const rows=['....','.xx.','....']; const ctx=createBattle({replicate:0,heroes:[],enemies:[],heroHexes:[],enemyHexes:[],map:{id:'test.map.cold-warm',name:'Cold warm',rows:${warm ? "rows.map(r=>r.replaceAll('x','.'))" : 'rows'}}}); ${warm ? 'ctx.state.props=[{id:"prop.warm",height:"high",material:3,footprint:{kind:"hex",hexes:[5,6]}}];' : ''} const answers=[];for(let a=0;a<12;a++)for(let b=0;b<12;b++)answers.push(attackLineClear(ctx,a,b));console.log(JSON.stringify({answers,stats:attackLineStats(ctx)}));`
+       return JSON.parse(execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', '-e', script], { encoding: 'utf8' }))
+     }
+@@ -125,5 +126,5 @@ describe('V2 high cell attack lines', () => {
+   it('new blocker hits are ORed once, without history-dependent retracing', () => {
+     const ctx = createBattle({ replicate: 0, heroes: [], enemies: [], heroHexes: [], enemyHexes: [], map: { id: 'test.map.add-los', name: 'Addition', rows: ['......', '......', '......'] } })
+-    ctx.state.terrain[7] = TERRAIN.OBSTACLE
++    setHigh(ctx, 7)
+     const stats = attackLineStats(ctx)
+     expect(stats.cacheHit).toBe(false)
+@@ -161,5 +162,5 @@ describe('exact full-cell geometry', () => {
+     const make = (width: number, height: number, blockers: number[]) => createBattle({ replicate: 0, heroes: [], enemies: [], heroHexes: [], enemyHexes: [], map: { id: 'test.map.same-los-id', name: 'Same ID', rows: Array.from({ length: height }, (_, row) => Array.from({ length: width }, (_, col) => blockers.includes(row * width + col) ? 'x' : '.').join('')) } })
+     const check = (ctx: ReturnType<typeof createBattle>) => {
+-      const blockers = ctx.state.terrain.flatMap((t, h) => t === TERRAIN.OBSTACLE ? [h] : [])
++      const blockers = fixtureBlockers(ctx)
+       for (let a = 0; a < ctx.geo.hexCount; a++) for (let b = 0; b < ctx.geo.hexCount; b++) {
+         expect(attackLineClear(ctx, a, b), `${a}->${b}`).toBe(!blockers.some(cell => oracle(ctx.state.board.width, a, b, cell)))
+@@ -169,5 +170,5 @@ describe('exact full-cell geometry', () => {
+     const forkBefore = saveBattle(fork)
+     check(ctx); check(fork)
+-    ctx.state.terrain[5] = TERRAIN.OPEN; ctx.state.terrain[9] = TERRAIN.OBSTACLE
++    setHigh(ctx, 5, false); setHigh(ctx, 9)
+     check(ctx); check(fork)
+     expect(attackLineStats(ctx).pairCellTests).toBe(12 * 11 / 2)
+@@ -179,5 +180,5 @@ describe('exact full-cell geometry', () => {
+     expect(ctx.state.board).toEqual({ width: 4, height: 3 })
+     expect(other.state.board).toEqual({ width: 3, height: 4 })
+-    fork.state.terrain[6] = TERRAIN.OPEN
++    setHigh(fork, 6, false)
+     check(fork); check(ctx)
+   })
+diff --git a/test/scenario.test.ts b/test/scenario.test.ts
+index 348a7a0..2103b93 100644
+--- a/test/scenario.test.ts
++++ b/test/scenario.test.ts
+@@ -172,10 +172,10 @@ describe('positions are validated at load, loudly (Law 9)', () => {
+   }
+ 
+-  it('an impassable hex throws and says what terrain it is', () => {
+-    const terrain = terrainOf('map.thicket')
+-    const blocked = terrain.findIndex((t) => !isPassable(t))
++  it('an impassable hex throws and identifies the blocking prop', () => {
++    const fixture = createBattle({ replicate: 0, mapId: 'map.thicket' })
++    const blocked = fixture.state.props[0]!.footprint.hexes[0]!
+     expect(blocked, 'map.thicket has no impassable hex to test with').toBeGreaterThan(-1)
+     expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(0, blocked) }))
+-      .toThrow(/impassable/)
++      .toThrow(/blocked by a high prop.*impassable/)
+   })
+ 
+diff --git a/test/terrain.test.ts b/test/terrain.test.ts
+index 518f8a5..bea6f29 100644
+--- a/test/terrain.test.ts
++++ b/test/terrain.test.ts
+@@ -1,3 +1,4 @@
+ import { describe, it, expect } from 'vitest'
++import { fixtureBlockers, setHigh } from './prop-fixtures.js'
+ import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
+          accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf } from '../src/content/maps.js'
+@@ -18,5 +19,6 @@ function warriorOn(terrain: number) {
+   const ctx = createCustomBattle(
+     [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
+-  ctx.state.terrain[ctx.state.units[0]!.hex] = terrain
++  ctx.state.terrain[ctx.state.units[0]!.hex] = terrain === TERRAIN.OBSTACLE ? TERRAIN.OPEN : terrain
++  if (terrain === TERRAIN.OBSTACLE) setHigh(ctx, ctx.state.units[0]!.hex)
+   return { ctx, u: ctx.state.units[0]! }
+ }
+@@ -255,6 +257,6 @@ describe('terrain.passable — a wall is a wall', () => {
+ 
+   it('map.thicket actually contains obstacles — otherwise this item proves nothing', () => {
+-    const t = terrainOf('map.thicket')
+-    expect(t.filter(x => x === TERRAIN.OBSTACLE).length).toBeGreaterThan(0)
++    const ctx = createBattle({ replicate: 0, mapId: 'map.thicket' })
++    expect(fixtureBlockers(ctx).length).toBeGreaterThan(0)
+   })
+ 
+@@ -265,7 +267,7 @@ describe('terrain.passable — a wall is a wall', () => {
+     u.movePointsLeft = 12
+     const reach = reachable(ctx, u)
+-    for (const [hex] of reach) expect(ctx.state.terrain[hex]).not.toBe(TERRAIN.OBSTACLE)
++    for (const [hex] of reach) expect(fixtureBlockers(ctx)).not.toContain(hex)
+     for (const [hex] of reach) {
+-      for (const step of pathTo(reach, u.hex, hex)) expect(ctx.state.terrain[step]).not.toBe(TERRAIN.OBSTACLE)
++      for (const step of pathTo(reach, u.hex, hex)) expect(fixtureBlockers(ctx)).not.toContain(step)
+     }
+   })
+@@ -279,5 +281,5 @@ describe('terrain.passable — a wall is a wall', () => {
+         if (e.type !== 'moved') continue
+         moves++
+-        if (ctx.state.terrain[e['to'] as number] === TERRAIN.OBSTACLE) entered++
++        if (fixtureBlockers(ctx).includes(e['to'] as number)) entered++
+       }
+     }
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — EFFECT MEASUREMENT UNAVAILABLE; 2 FLAG(S) WARNED · periodic audit clean
+
+```
+effect of test.map.high-prop-single,test.map.high-prop-multi — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.3->4.3
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.2->5.2
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.proving.ruin: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.2->3.2
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 5.6->5.6
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.7->4.7
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.dungeon-16x8: heroWins 24->24 (+0)  meanTurns 7.5->7.5
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  test.map.journey-20x10: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  test.map.authored-40x40: heroWins 25->25 (+0)  meanTurns 7.1->7.1
+  test.map.high-prop-single: UNAVAILABLE/PRESENCE-ONLY — explicitly disabled control absent from WITHOUT; no paired numerical effect
+  test.map.high-prop-multi: UNAVAILABLE/PRESENCE-ONLY — explicitly disabled control absent from WITHOUT; no paired numerical effect
+MEASUREMENT UNAVAILABLE — 2 control(s) lack complete paired evidence
+EFFECT_RESULT {"version":1,"status":"unavailable","unavailable":[{"map":"test.map.high-prop-single","reason":"disabled-control"},{"map":"test.map.high-prop-multi","reason":"disabled-control"}]}
+```

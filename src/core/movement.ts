@@ -4,7 +4,8 @@
 
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
-import { appliesOnEnterOf, isPassable, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
+import { appliesOnEnterOf, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
+import { passableHexes } from './props.js'
 import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, unit } from './mutate.js'
 import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
 import { forcedTargetOf, applyStatus, isBlocked, isRooted, reduceStatus } from './status.js'
@@ -67,6 +68,7 @@ export function stepCost(ctx: Ctx, to: HexId): number {
  * Ties break on lower HexId so paths are reproducible (Law 6).
  */
 export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
+  const passable = passableHexes(ctx)
   const occ = occupancy(ctx)
   // The power's modifier widens or narrows THIS move's budget (Sprint would be
   // +3); the activation budget itself was set at beginActivation (Slow reads
@@ -85,7 +87,7 @@ export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
       const node = out.get(h)!
       if (node.cost !== c) continue // stale entry, a cheaper path was found
       for (const n of ctx.geo.neighboursOf(h)) {
-        if (occ.has(n) || !isPassable(ctx.state.terrain[n]!)) continue
+        if (occ.has(n) || !passable(n)) continue
         const nc = c + stepCost(ctx, n)
         if (nc > budget) continue
         const prior = out.get(n)
@@ -130,6 +132,9 @@ function movementReason(ctx: Ctx, u: Unit, power: MoveDef, slot?: import('./type
 
 /** One pure destination planner for controls and AI; never spends or predicts RNG. */
 export function planMovement(ctx: Ctx, actor: number, actionId: string, destination: number, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
+  return planMovementWithView(ctx, actor, actionId, destination, passableHexes(ctx), slot)
+}
+function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destination: number, passable: (hex: number) => boolean, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
   const u = ctx.state.units[actor]
   const power = ctx.actions[actionId]
   if (!u || !Number.isSafeInteger(actor) || !power || !isMove(power)) return refused('action-not-ready')
@@ -139,7 +144,7 @@ export function planMovement(ctx: Ctx, actor: number, actionId: string, destinat
   const plan: MovementPlan = { kind: 'move', actor, power, destination, path: [], slot: resolveActionSlot(ctx, u, power, slot)! }
   if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return destination === u.hex ? plan : refused('unreachable-destination')
   if (isRooted(ctx, u)) return refused('actor-rooted')
-  if (!isPassable(ctx.state.terrain[destination]!) || occupancy(ctx).has(destination)) return refused('unreachable-destination')
+  if (!passable(destination) || occupancy(ctx).has(destination)) return refused('unreachable-destination')
   if (power.move.shape === 'sidestep') return ctx.geo.distance(u.hex, destination) === stepRangeOf(power) ? plan : refused('unreachable-destination')
   if (power.move.shape === 'flight') return flightLandings(ctx, u, power).includes(destination) ? plan : refused('unreachable-destination')
   const reach = reachable(ctx, u, power.move.budgetMod)
@@ -160,8 +165,9 @@ export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?
   }
   if (power.move.shape === 'flight') return flightLandings(ctx, u, power).map(destination => ({ kind: 'move', actor, power, destination, path: [], slot: resolveActionSlot(ctx, u, power, slot)! }))
   const out: MovementPlan[] = []
+  const passable = passableHexes(ctx)
   for (let destination = 0; destination < ctx.state.terrain.length; destination++) {
-    const plan = planMovement(ctx, actor, actionId, destination, slot)
+    const plan = planMovementWithView(ctx, actor, actionId, destination, passable, slot)
     if (!('ok' in plan)) out.push(plan)
   }
   return out
@@ -175,6 +181,7 @@ export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?
  * just that the unit moved, but which choice moved it.
  */
 export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: MoveDef, onStep?: StepHook, slot?: import('./types.js').ActionSlot): number {
+  const passable = passableHexes(ctx)
   if (path.length === 0) return 0
   const u = unit(ctx, unitId)
   if (power.move.shape !== 'path' || movementReason(ctx, u, power, slot) || isRooted(ctx, u)) return 0
@@ -182,7 +189,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   const occupied = occupancy(ctx)
   let from = u.hex, asked = 0
   for (const hex of path) {
-    if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.state.terrain.length || ctx.geo.distance(from, hex) !== 1 || occupied.has(hex) || !isPassable(ctx.state.terrain[hex]!)) return 0
+    if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.state.terrain.length || ctx.geo.distance(from, hex) !== 1 || occupied.has(hex) || !passable(hex)) return 0
     asked += stepCost(ctx, hex)
     from = hex
   }
@@ -348,7 +355,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
     throw new Error(`${power.id} must move exactly ${range} hex(es) (${u.hex} -> ${to})`)
   }
   const terrainHere = ctx.state.terrain[to] ?? 0
-  if (!isPassable(terrainHere) || occupancy(ctx).has(to)) {
+  if (!passableHexes(ctx)(to) || occupancy(ctx).has(to)) {
     throw new Error(`sidestep destination ${to} is not open`)
   }
   spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
@@ -376,12 +383,13 @@ export function flightRange(u: Unit, power: MoveDef): number {
  * callers iterate reproducibly (Law 6).
  */
 export function flightLandings(ctx: Ctx, u: Unit, power: MoveDef): HexId[] {
+  const passable = passableHexes(ctx)
   const occ = occupancy(ctx)
   const range = flightRange(u, power)
   const out: HexId[] = []
   for (let h = 0; h < ctx.state.terrain.length; h++) {
     if (h === u.hex || ctx.geo.distance(u.hex, h) > range) continue
-    if (!isPassable(ctx.state.terrain[h] ?? 0) || occ.has(h)) continue
+    if (!passable(h) || occ.has(h)) continue
     out.push(h)
   }
   return out
@@ -402,7 +410,7 @@ export function executeFlight(ctx: Ctx, unitId: number, to: HexId, power: MoveDe
   const d = ctx.geo.distance(u.hex, to)
   if (d < 1 || d > flightRange(u, power)) throw new Error(`flight to ${to} is out of range (${d} > ${flightRange(u, power)})`)
   const terrainThere = ctx.state.terrain[to] ?? 0
-  if (!isPassable(terrainThere) || occupancy(ctx).has(to)) {
+  if (!passableHexes(ctx)(to) || occupancy(ctx).has(to)) {
     throw new Error(`flight landing ${to} is not open`)
   }
   spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
@@ -455,6 +463,7 @@ export function livingEnemies(ctx: Ctx, u: Unit): Unit[] {
  * strips/applies read where a unit stands, not how it got there.
  */
 export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, hexes: number, causeId: string): number {
+  const passable = passableHexes(ctx)
   const pusher = unit(ctx, pusherId)
   const tg = unit(ctx, targetId)
   let at = tg.hex
@@ -464,7 +473,7 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
   for (let i = 0; i < hexes; i++) {
     const next = ctx.geo.stepAwayFrom(prev, at)
     if (next === null) { reason = prev === at ? 'no line' : ctx.geo.distance(prev, at) !== 1 ? 'no straight line — pusher not adjacent' : 'edge of the board'; break }
-    if (!isPassable(ctx.state.terrain[next] ?? 0)) { reason = `impassable ${terrainIdOf(ctx.state.terrain[next] ?? 0)}`; break }
+    if (!passable(next)) { reason = 'impassable prop'; break }
     if (occupancy(ctx).has(next)) { reason = 'occupied'; break }
     prev = at
     at = next

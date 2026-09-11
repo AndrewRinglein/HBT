@@ -21,7 +21,7 @@
 // built at, and it supersedes the Muster mock's 46°.
 //
 // Changes BUILD OUTPUT only, never battle behaviour. Baseline hashes must not move.
-import { MAPS, boardOf, terrainOf, terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
+import { MAPS, decodeMap, terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
   accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf,
   stripsOnEnterOf, stripsOnActivationEndOf, appliesOnEnterOf, appliesOnActivationEndOf,
 } from '../src/content/maps.js'
@@ -35,9 +35,10 @@ if (!m) { console.error(`unknown map '${mapId}'`); process.exit(2) }
 // applies rotateX(TILT) once; 49.3° is ruled. Reapplied 2026-08-26 after the
 // restructure discarded the first uncommitted copy of this change.
 const HEXW = 128, HEXH = 132, COL = 128, ROW = 96, ODD = 64, TILT = 49.3
-const terrain = terrainOf(mapId)
+const decoded = decodeMap(m), terrain = decoded.terrain
+const blocked = new Set(decoded.props.flatMap(p => p.footprint.hexes))
 // board.variable-size (2026-09-04): the map's own dimensions, emitted for the viewer
-const { width: WIDTH, height: HEIGHT } = boardOf(mapId)
+const { width: WIDTH, height: HEIGHT } = decoded.board
 
 // px/py stay CENTRES, as before — only the space changed, not the meaning.
 const hexes = [] as { c: number; r: number; px: number; py: number }[]
@@ -74,6 +75,8 @@ console.log(JSON.stringify({
   colStep: COL, rowStep: ROW, oddOffset: ODD, tilt: TILT,
   hexes, rows: m.rows,
   terrainIds: terrain.map(terrainIdOf),
+  props: decoded.props,
+  passable: terrain.map((_, h) => !blocked.has(h)),
   moveCost: terrain.map((t) => (moveCostOf(t) >= IMPASSABLE ? 99 : moveCostOf(t))),
   table,
 }))

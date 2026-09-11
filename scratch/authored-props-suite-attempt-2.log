@@ -1,0 +1,19 @@
+
+> test
+> vitest run
+
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+C:\Users\aring\AppData\Local\Temp\replay-test.html — seed 0 map.thicket · engine 038304f · 738 events · heroClear in 5 turns
+C:\Users\aring\AppData\Local\Temp\replay-showcase.html — seed 0 test.map.showcase · engine 038304f · 1088 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-a.html — seed 0 test.map.showcase · engine 038304f · 1088 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-b.html — seed 0 test.map.showcase · engine 038304f · 1088 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-a.html — seed 0 map.thicket · engine 038304f · 738 events · heroClear in 5 turns
+C:\Users\aring\AppData\Local\Temp\replay-b.html — seed 0 map.thicket · engine 038304f · 738 events · heroClear in 5 turns
+
+ Test Files  126 passed (126)
+      Tests  1264 passed | 1 todo (1265)
+   Start at  16:25:25
+   Duration  30.09s (transform 2.08s, setup 0ms, import 15.61s, tests 88.25s, environment 8ms)
+

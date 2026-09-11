@@ -31,20 +31,22 @@ import { rollBelow } from './rng.js'
 import { settle } from './settle.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import { makeUnit } from './setup.js'
-import { isPassable, layerAppliesOnEnter, layerOfId } from '../content/maps.js'
+import { layerAppliesOnEnter, layerOfId } from '../content/maps.js'
 import { rulesSideOf } from './side.js'
+import { passableHexes } from './props.js'
 
-function free(ctx: Ctx, hex: HexId): boolean {
-  if (!isPassable(ctx.state.terrain[hex] ?? 0)) return false
+function free(ctx: Ctx, hex: HexId, passable: (hex: number) => boolean): boolean {
+  if (!passable(hex)) return false
   return !ctx.state.units.some((u) => u.lifeState !== 'dead' && u.hex === hex)
 }
 
 /** The nearest free passable hex to `want`, by distance then hex id (Law 6). */
 function nearestFree(ctx: Ctx, want: HexId): HexId | null {
-  if (free(ctx, want)) return want
+  const passable = passableHexes(ctx)
+  if (free(ctx, want, passable)) return want
   let best: HexId | null = null, bestD = Infinity
   for (let h = 0; h < ctx.geo.hexCount; h++) {
-    if (!free(ctx, h)) continue
+    if (!free(ctx, h, passable)) continue
     const d = ctx.geo.distance(want, h)
     if (d < bestD || (d === bestD && best !== null && h < best)) { bestD = d; best = h }
   }
@@ -180,10 +182,11 @@ export function startOfTurn(ctx: Ctx): void {
 
 /** The hero deployment hexes an encounter asks for: nearest free to the zone's centre, lowest id first. */
 export function heroDeployHexes(ctx: Ctx, enc: EncounterDef, n: number, reserved: ReadonlySet<number> = new Set()): HexId[] | null {
+  const passable = passableHexes(ctx)
   if (!enc.heroZone) return null
   const c = ctx.geo.hexId(enc.heroZone.at.near.col, enc.heroZone.at.near.row)
   const ring: HexId[] = []
-  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(c, h) <= enc.heroZone.at.range && isPassable(ctx.state.terrain[h] ?? 0) && !reserved.has(h)) ring.push(h)
+  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(c, h) <= enc.heroZone.at.range && passable(h) && !reserved.has(h)) ring.push(h)
   ring.sort((a, b) => ctx.geo.distance(c, a) - ctx.geo.distance(c, b) || a - b)
   if (ring.length < n) throw new Error(`encounter '${enc.id}': the hero zone holds ${ring.length} hexes, ${n} heroes asked`)
   return ring.slice(0, n)

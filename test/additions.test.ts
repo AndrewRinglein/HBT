@@ -6,7 +6,7 @@ import { resolveDamage, resolveAccuracy, reachOf, canAttack, damageSourceOfAttac
 import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js'
 import { reachable, stepCost } from '../src/core/movement.js'
 import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE, TEST_COHORT } from '../src/content/index.js'
-import { MAPS, terrainOf, MAP_PANEL, boardOf } from '../src/content/maps.js'
+import { MAPS, terrainOf, MAP_PANEL, boardOf, decodeMap } from '../src/content/maps.js'
 import { hexId, distance } from './board16.js'
 import { TERRAIN } from '../src/core/types.js'
 
@@ -46,7 +46,7 @@ describe('pass 2 — hills', () => {
     // The RULE is that no two maps are the same board. Hill COUNT was a proxy for
     // that, and it broke the moment two different maps happened to have 28 hills
     // each (flanks and field). Assert the layout, which is what we actually mean.
-    const layouts = MAPS.map(m => terrainOf(m.id).join(''))
+    const layouts = MAPS.map(m => { const { board, terrain, props } = decodeMap(m); return JSON.stringify({ board, terrain, props }) })
     expect(new Set(layouts).size).toBe(MAPS.length)
   })
   it('gate 2 — hills cost 2 movement, open ground 1', () => {

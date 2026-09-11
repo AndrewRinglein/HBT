@@ -4,8 +4,8 @@
 // renderer cannot either, and finding that out now costs days instead of a rewrite.
 
 import { geometryOf } from '../core/hex.js'
-import { terrainOf, boardOf } from '../content/maps.js'
-import type { Event } from '../core/types.js'
+import { decodeMap, mapDef } from '../content/maps.js'
+import type { Event, HighProp } from '../core/types.js'
 
 type UnitView = {
   id: number
@@ -57,12 +57,16 @@ export function foldToTurn(events: Event[], upToSeq: number): Map<number, UnitVi
 const GLYPH: Record<string, string> = { warrior: 'W', ranger: 'R', mage: 'M', zombie: 'z' }
 
 /** L1 — the board, odd-r offset, indented rows. */
-export function renderBoard(units: Map<number, UnitView>, mapId = 'map.open'): string {
-  const terr = terrainOf(mapId)
-  const geo = geometryOf(boardOf(mapId))   // board.variable-size: the map says how wide it is
+export function renderBoard(units: Map<number, UnitView>, mapId = 'map.open', events: Event[] = []): string {
+  const fact = events.find(e => e.type === 'map.loaded')
+  const decoded = fact?.['terrain'] ? null : decodeMap(mapDef(mapId))
+  const terr = fact?.['terrain'] as number[] | undefined ?? decoded!.terrain
+  const props = fact?.['props'] as HighProp[] | undefined ?? decoded!.props
+  const blocked = new Set(props.flatMap(p => p.footprint.hexes))
+  const geo = geometryOf(fact ? { width: fact['width'] as number, height: fact['height'] as number } : decoded!.board)
   const { width: WIDTH, height: HEIGHT } = geo.board
   const grid: string[][] = Array.from({ length: HEIGHT }, (_, r) =>
-    Array.from({ length: WIDTH }, (_, c) => (terr[r * WIDTH + c] === 1 ? ' ^ ' : ' . ')))
+    Array.from({ length: WIDTH }, (_, c) => (blocked.has(r * WIDTH + c) ? ' # ' : terr[r * WIDTH + c] === 1 ? ' ^ ' : ' . ')))
   for (const u of units.values()) {
     if (u.life === 'dead') continue
     const g = GLYPH[u.typeId] ?? '?'

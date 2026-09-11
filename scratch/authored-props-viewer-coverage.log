@@ -1,0 +1,12 @@
+{"type":"badge.held","scenario":"showcase.rime","seed":1,"events":[{"seq":1247,"turn":8,"phase":"enemy","type":"badge.held","causeId":"trigger.zombie.afflict-rotting-flesh","actor":4,"target":null,"badgeId":"badge.rotting-flesh"},{"seq":1823,"turn":13,"phase":"enemy","type":"badge.held","causeId":"trigger.zombie.afflict-rotting-flesh","actor":4,"target":null,"badgeId":"badge.rotting-flesh"}]}
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\scratch\find-viewer-prop-coverage.mts:10
+if (missing.size) throw new Error(`uncovered: ${[...missing]}`)
+                        ^
+
+Error: uncovered: aoo.skipped
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\scratch\find-viewer-prop-coverage.mts:10:25)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0

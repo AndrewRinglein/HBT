@@ -1,0 +1,13 @@
+{
+  "base": "038304f",
+  "battles": 535,
+  "oldMaps": 20,
+  "appendedMaps": [
+    "test.map.high-prop-single",
+    "test.map.high-prop-multi"
+  ],
+  "exactGameplayAndRng": true,
+  "exactOtherEvents": true,
+  "diagnosticChanges": 3,
+  "projection": "Exact authored x props only; OPEN ground at those cells; initial census/terrain/props; precise knockback reason/stoppedBy diagnostic."
+}
