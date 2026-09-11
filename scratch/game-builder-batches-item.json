@@ -1,0 +1,10 @@
+{
+  "id": "plumbing.game-builder-batches",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "spec": "Game Builder renders every explicit audit boundary, including consecutive and audit-only batches, without crashing or hiding failed audits; stable batch identities and artifact links survive.",
+  "expect": "Isolated CLI fixtures with consecutive boundaries, empty audit batches, failed audits and no history produce the complete page. Live ledger rebuild includes the latest identity landing.",
+  "needs": [],
+  "unreachable": "This repairs the offline ledger renderer, outside battle content and resolution. Isolated CLI fixtures exercise real input logs and generated HTML; no registered battle content ID can invoke this renderer.",
+  "killSwitchExempt": "Content disablement cannot remove an offline ledger rendering branch. The pre-fix renderer fails three isolated CLI fixtures; restoring its old batch/date handling reproduces those failures."
+}

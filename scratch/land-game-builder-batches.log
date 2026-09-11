@@ -1,0 +1,17 @@
+
+gate: plumbing.game-builder-batches   [land]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 2 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:18 · ..\STATE.md:21
+  PASS  typecheck
+  PASS  full test suite  — 979 passed
+  SKIP  gate 1 — not probeable  — This repairs the offline ledger renderer, outside battle content and resolution. Isolated CLI fixtures exercise real input logs and generated HTML; no registered battle content ID can invoke this renderer.
+  PASS  brought its own tests  — test/game-builder-batches.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source  — 29 ids without a published source (19 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  SKIP  kill switch — exemption taken  — Content disablement cannot remove an offline ledger rendering branch. The pre-fix renderer fails three isolated CLI fixtures; restoring its old batch/date handling reproduces those failures.

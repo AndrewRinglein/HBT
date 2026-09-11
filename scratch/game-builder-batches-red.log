@@ -1,0 +1,383 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/game-builder-batches.test.ts (4 tests | 3 failed) 171ms
+   × preserves consecutive audit boundaries and stable batch IDs around later runs 47ms
+   × renders an audit-only batch with its artifacts and zero run count 42ms
+   × keeps a failed audit visible even when no gate run preceded it 42ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/game-builder-batches.test.ts > preserves consecutive audit boundaries and stable batch IDs around later runs
+AssertionError: file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/engine/tools/game-builder.mjs:265
+  const day = (batch.runs[0].at ?? '').slice(0, 10)
+                             ^
+
+TypeError: Cannot read properties of undefined (reading 'at')
+    at file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/engine/tools/game-builder.mjs:265:30
+    at Array.map (<anonymous>)
+    at file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/engine/tools/game-builder.mjs:260:11
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ ../../Heroes%20of%20Blight%20and%20Tragic/engine/tools/game-builder.mjs:265:30
+ ❯ ../../Heroes%20of%20Blight%20and%20Tragic/engine/tools/game-builder.mjs:260:11
+ ❯ build test/game-builder-batches.test.ts:16:36
+     14|     writeFileSync(join(folder, '.state/backlog.json'), '[]')
+     15|     const run = spawnSync(process.execPath, [builder, '--quiet'], { cw…
+     16|     expect(run.status, run.stderr).toBe(0)
+       |                                    ^
+     17|     return readFileSync(join(folder, 'GAME-BUILDER.html'), 'utf8')
+     18|   } finally {
+ ❯ test/game-builder-batches.test.ts:27:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/game-builder-batches.test.ts > renders an audit-only batch with its artifacts and zero run count
+AssertionError: expected '<!doctype html>\n<html lang="en"><hea…' to contain 'audit only'
+
+- Expected
++ Received
+
+- audit only
++ <!doctype html>
++ <html lang="en"><head><meta charset="utf-8">
++ <meta name="viewport" content="width=device-width,initial-scale=1">
++ <title>The Game Builder — Iron Gauntlet log</title>
++ <style>
++   :root { color-scheme: light;
++     --surface:#fcfcfb; --card:#f4f3f1; --ink:#0b0b0b; --ink2:#52514e; --ink3:#8a8880;
++     --seq:#2a78d6; --seq-deep:#1c5cab;
++     --good:#0ca30c; --warn:#fab219; --crit:#d03b3b; --seal:#4a3aa7;
++     --line:#e4e2dd; }
++   @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) {
++     color-scheme: dark;
++     --surface:#1a1a19; --card:#242422; --ink:#ffffff; --ink2:#c3c2b7; --ink3:#8a8880;
++     --seq:#3987e5; --seq-deep:#86b6ef;
++     --good:#0ca30c; --warn:#fab219; --crit:#d03b3b; --seal:#9085e9;
++     --line:#33332f; } }
++   * { box-sizing: border-box }
++   body { margin:0; background:var(--surface); color:var(--ink);
++     font:14px/1.45 ui-sans-serif,system-ui,'Segoe UI',sans-serif; padding:28px 32px 80px }
++   h1 { font-size:20px; margin:0 0 2px } h2 { font-size:15px; margin:34px 0 10px; color:var(--ink) }
++   .sub { color:var(--ink2); margin-bottom:22px }
++   .tiles { display:flex; gap:14px; flex-wrap:wrap; margin:18px 0 8px }
++   .tile { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 18px; min-width:130px }
++   .tile .n { font-size:26px; font-weight:700 } .tile .l { color:var(--ink2); font-size:12px }
++   .frow { display:flex; align-items:center; gap:10px; margin:5px 0; position:relative }
++   .fname { width:340px; text-align:right; color:var(--ink2); font-size:12.5px;
++     white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
++   .ftrack { display:flex; align-items:center; gap:8px }
++   .fbar { height:14px; background:var(--seq); border-radius:0 4px 4px 0 }
++   .frow:hover .fbar { background:var(--seq-deep) }
++   .fval { font-variant-numeric:tabular-nums; color:var(--ink); font-size:12.5px }
++   .frow[data-tip]:hover::after { content:attr(data-tip); position:absolute; left:352px; top:-26px;
++     background:var(--ink); color:var(--surface); padding:3px 8px; border-radius:5px; font-size:12px; white-space:nowrap; z-index:2 }
++   .filters { display:flex; gap:8px; margin:14px 0 16px }
++   .filters button { background:var(--card); color:var(--ink2); border:1px solid var(--line);
++     border-radius:16px; padding:4px 14px; cursor:pointer; font-size:13px }
++   .filters button[aria-pressed=true] { background:var(--seq); color:#fff; border-color:var(--seq) }
++   .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:12px 0 }
++   .cardtitle { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
++   .iid { font-weight:700; font-size:15px }
++   .spec { color:var(--ink2); font-size:12.5px; margin:6px 0 4px }
++   .run { border-top:1px dashed var(--line); margin-top:10px; padding-top:9px }
++   .runhead { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
++   .rlabel { font-weight:600 } .when { color:var(--ink3); font-size:12px; margin-left:auto }
++   .sha { font-family:ui-monospace,monospace; font-size:12px; color:var(--ink2) }
++   .b { display:inline-block; border-radius:5px; padding:1px 8px; font-size:11.5px; font-weight:600; color:#fff }
++   .b-good { background:var(--good) } .b-warn { background:var(--warn); color:#1a1a19 }
++   .b-crit { background:var(--crit) } .b-seal { background:var(--seal) }
++   .fails { margin:6px 0 0; display:flex; gap:6px; flex-wrap:wrap }
++   .notes { margin:6px 0 0; padding-left:20px; color:var(--ink2); font-size:12.5px }
++   .effect { margin-top:6px; font-size:12.5px; color:var(--ink2); font-style:italic }
++   .q { background:var(--card); border:1px solid var(--line); border-left:4px solid var(--warn);
++     border-radius:6px; padding:9px 13px; margin:7px 0; font-size:13px }
++   .q.done { border-left-color:var(--good); color:var(--ink2) }
++   details { margin-top:8px } summary { cursor:pointer; color:var(--ink2); font-size:12.5px }
++   .batch { border:1px solid var(--line); border-radius:10px; margin:14px 0; background:var(--surface) }
++   .batchbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 14px;
++     background:var(--card); border-radius:10px; font-size:13px }
++   details.batch > summary.batchbar { list-style:none } details.batch > summary::-webkit-details-marker { display:none }
++   details.batch > summary.batchbar::before { content:'▸ '; color:var(--ink3) }
++   details.batch[open] > summary.batchbar::before { content:'▾ ' }
++   .bday { font-weight:700 } .bmeta { color:var(--ink3); font-size:12px }
++   .batch .cards { padding:0 14px 12px }
++   .approve { margin-left:auto; background:var(--surface); border:1px solid var(--line); color:var(--ink2);
++     border-radius:14px; padding:3px 12px; cursor:pointer; font-size:12px }
++   .approve:hover { border-color:var(--good); color:var(--good) }
++   .art { color:var(--seq); font-size:12px; text-decoration:none; border:1px solid var(--line);
++     border-radius:14px; padding:2px 10px; background:var(--surface) }
++   .art:hover { border-color:var(--seq) }
++   .watch { margin:10px 14px 0 }
++   .watch iframe { width:100%; height:660px; border:1px solid var(--line); border-radius:8px; background:#111; margin-top:8px }
++   .approved-tick { color:var(--good); font-weight:600; font-size:12.5px; margin-left:auto }
++   table { border-collapse:collapse; margin-top:6px } td,th { border:1px solid var(--line); padding:3px 10px; font-size:12.5px }
++ </style></head><body>
++ <h1>The Game Builder</h1>
++ <div class="sub">The Iron Gauntlet's running log — every landing, every failure, every question. Regenerated by the gate after each run. Built 2026-09-11 09:43 · 0 runs on record.</div>
++
++ <div class="tiles">
++   <div class="tile"><div class="n">0</div><div class="l">landed</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">⛓ seals passed</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">flagged, need review</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">abandoned / reverted</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">backlog open</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">open questions</div></div>
++ </div>
++
++ <h2>Where the loop fails — FAIL count by check, all runs</h2>
++ <div class="sub">No failures on record yet.</div>
++ <details><summary>table view</summary><table><tr><th>check</th><th>fails</th></tr></table></details>
++
++ <h2>Questions — the inbox</h2>
++
++
++ <div class="sub" style="margin-top:8px">Add or answer questions in <code>.state/questions.md</code> — this page re-renders on the next gate run (or <code>node tools/game-builder.mjs</code>).</div>
++
++ <h2>Run log — newest batch on top, older batches collapsed</h2>
++ <div class="filters" role="group" aria-label="filter runs">
++   <button aria-pressed="true" data-f="all">all</button>
++   <button aria-pressed="false" data-f="failing">failing</button>
++   <button aria-pressed="false" data-f="landed">landed</button>
++   <button aria-pressed="false" data-f="sealed">⛓ sealed</button>
++ </div>
++ <div class="sub">No runs yet — the log fills as the gate runs.</div>
++
++ <script>
++   document.querySelector('.filters').addEventListener('click', (e) => {
++     const b = e.target.closest('button'); if (!b) return
++     document.querySelectorAll('.filters button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
++     const f = b.dataset.f
++     document.querySelectorAll('.batch .card').forEach((c) => {
++       c.style.display = (f === 'all' || c.dataset.state === f) ? '' : 'none'
++     })
++   })
++   // Approve = a per-viewer read-marker. Stored in this browser only (the page is
++   // a local file that regenerates); the DURABLE review state is the backlog's
++   // done-needs-review flags, which approving does not touch. Wrapped in
++   // try/catch — if storage is unavailable the button still collapses for now.
++   const store = { get(k) { try { return localStorage.getItem(k) } catch { return null } },
++                   set(k, v) { try { localStorage.setItem(k, v) } catch {} } }
++   function applyApproval(el) {
++     const id = el.dataset.batch
++     if (store.get('gb-approved-' + id) !== '1') return
++     el.querySelector('.approve')?.setAttribute('hidden', '')
++     el.querySelector('.approved-tick')?.removeAttribute('hidden')
++     if (el.tagName === 'DETAILS') el.removeAttribute('open')
++     else { // the newest batch collapses into a details element on approval
++       const d = document.createElement('details')
++       d.className = 'batch'; d.dataset.batch = id
++       const bar = el.querySelector('.batchbar'); const sum = document.createElement('summary')
++       sum.className = 'batchbar'; sum.innerHTML = bar.innerHTML; bar.remove()
++       d.appendChild(sum); while (el.firstChild) d.appendChild(el.firstChild)
++       el.replaceWith(d)
++     }
++   }
++   document.querySelectorAll('.batch').forEach(applyApproval)
++   // The embedded replay loads only when its drawer opens — and only once.
++   document.querySelectorAll('details.watch').forEach((d) => d.addEventListener('toggle', () => {
++     const f = d.querySelector('iframe'); if (d.open && f && !f.src) f.src = f.dataset.src
++   }))
++   document.addEventListener('click', (e) => {
++     const b = e.target.closest('.approve'); if (!b) return
++     e.preventDefault()
++     const el = b.closest('.batch')
++     store.set('gb-approved-' + el.dataset.batch, '1')
++     applyApproval(el)
++   })
++ </script>
++ </body></html>
+
+ ❯ test/game-builder-batches.test.ts:36:16
+     34| it('renders an audit-only batch with its artifacts and zero run count'…
+     35|   const html = build([{ ...audit('audit only'), artifacts: [{ href: 'p…
+     36|   expect(html).toContain('audit only')
+       |                ^
+     37|   expect(html).toContain('Proof artifact')
+     38|   expect(html).toContain('0 items · 0 runs')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/game-builder-batches.test.ts > keeps a failed audit visible even when no gate run preceded it
+AssertionError: expected '<!doctype html>\n<html lang="en"><hea…' to contain 'Audit: FAILED'
+
+- Expected
++ Received
+
+- Audit: FAILED
++ <!doctype html>
++ <html lang="en"><head><meta charset="utf-8">
++ <meta name="viewport" content="width=device-width,initial-scale=1">
++ <title>The Game Builder — Iron Gauntlet log</title>
++ <style>
++   :root { color-scheme: light;
++     --surface:#fcfcfb; --card:#f4f3f1; --ink:#0b0b0b; --ink2:#52514e; --ink3:#8a8880;
++     --seq:#2a78d6; --seq-deep:#1c5cab;
++     --good:#0ca30c; --warn:#fab219; --crit:#d03b3b; --seal:#4a3aa7;
++     --line:#e4e2dd; }
++   @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) {
++     color-scheme: dark;
++     --surface:#1a1a19; --card:#242422; --ink:#ffffff; --ink2:#c3c2b7; --ink3:#8a8880;
++     --seq:#3987e5; --seq-deep:#86b6ef;
++     --good:#0ca30c; --warn:#fab219; --crit:#d03b3b; --seal:#9085e9;
++     --line:#33332f; } }
++   * { box-sizing: border-box }
++   body { margin:0; background:var(--surface); color:var(--ink);
++     font:14px/1.45 ui-sans-serif,system-ui,'Segoe UI',sans-serif; padding:28px 32px 80px }
++   h1 { font-size:20px; margin:0 0 2px } h2 { font-size:15px; margin:34px 0 10px; color:var(--ink) }
++   .sub { color:var(--ink2); margin-bottom:22px }
++   .tiles { display:flex; gap:14px; flex-wrap:wrap; margin:18px 0 8px }
++   .tile { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 18px; min-width:130px }
++   .tile .n { font-size:26px; font-weight:700 } .tile .l { color:var(--ink2); font-size:12px }
++   .frow { display:flex; align-items:center; gap:10px; margin:5px 0; position:relative }
++   .fname { width:340px; text-align:right; color:var(--ink2); font-size:12.5px;
++     white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
++   .ftrack { display:flex; align-items:center; gap:8px }
++   .fbar { height:14px; background:var(--seq); border-radius:0 4px 4px 0 }
++   .frow:hover .fbar { background:var(--seq-deep) }
++   .fval { font-variant-numeric:tabular-nums; color:var(--ink); font-size:12.5px }
++   .frow[data-tip]:hover::after { content:attr(data-tip); position:absolute; left:352px; top:-26px;
++     background:var(--ink); color:var(--surface); padding:3px 8px; border-radius:5px; font-size:12px; white-space:nowrap; z-index:2 }
++   .filters { display:flex; gap:8px; margin:14px 0 16px }
++   .filters button { background:var(--card); color:var(--ink2); border:1px solid var(--line);
++     border-radius:16px; padding:4px 14px; cursor:pointer; font-size:13px }
++   .filters button[aria-pressed=true] { background:var(--seq); color:#fff; border-color:var(--seq) }
++   .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:12px 0 }
++   .cardtitle { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
++   .iid { font-weight:700; font-size:15px }
++   .spec { color:var(--ink2); font-size:12.5px; margin:6px 0 4px }
++   .run { border-top:1px dashed var(--line); margin-top:10px; padding-top:9px }
++   .runhead { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
++   .rlabel { font-weight:600 } .when { color:var(--ink3); font-size:12px; margin-left:auto }
++   .sha { font-family:ui-monospace,monospace; font-size:12px; color:var(--ink2) }
++   .b { display:inline-block; border-radius:5px; padding:1px 8px; font-size:11.5px; font-weight:600; color:#fff }
++   .b-good { background:var(--good) } .b-warn { background:var(--warn); color:#1a1a19 }
++   .b-crit { background:var(--crit) } .b-seal { background:var(--seal) }
++   .fails { margin:6px 0 0; display:flex; gap:6px; flex-wrap:wrap }
++   .notes { margin:6px 0 0; padding-left:20px; color:var(--ink2); font-size:12.5px }
++   .effect { margin-top:6px; font-size:12.5px; color:var(--ink2); font-style:italic }
++   .q { background:var(--card); border:1px solid var(--line); border-left:4px solid var(--warn);
++     border-radius:6px; padding:9px 13px; margin:7px 0; font-size:13px }
++   .q.done { border-left-color:var(--good); color:var(--ink2) }
++   details { margin-top:8px } summary { cursor:pointer; color:var(--ink2); font-size:12.5px }
++   .batch { border:1px solid var(--line); border-radius:10px; margin:14px 0; background:var(--surface) }
++   .batchbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 14px;
++     background:var(--card); border-radius:10px; font-size:13px }
++   details.batch > summary.batchbar { list-style:none } details.batch > summary::-webkit-details-marker { display:none }
++   details.batch > summary.batchbar::before { content:'▸ '; color:var(--ink3) }
++   details.batch[open] > summary.batchbar::before { content:'▾ ' }
++   .bday { font-weight:700 } .bmeta { color:var(--ink3); font-size:12px }
++   .batch .cards { padding:0 14px 12px }
++   .approve { margin-left:auto; background:var(--surface); border:1px solid var(--line); color:var(--ink2);
++     border-radius:14px; padding:3px 12px; cursor:pointer; font-size:12px }
++   .approve:hover { border-color:var(--good); color:var(--good) }
++   .art { color:var(--seq); font-size:12px; text-decoration:none; border:1px solid var(--line);
++     border-radius:14px; padding:2px 10px; background:var(--surface) }
++   .art:hover { border-color:var(--seq) }
++   .watch { margin:10px 14px 0 }
++   .watch iframe { width:100%; height:660px; border:1px solid var(--line); border-radius:8px; background:#111; margin-top:8px }
++   .approved-tick { color:var(--good); font-weight:600; font-size:12.5px; margin-left:auto }
++   table { border-collapse:collapse; margin-top:6px } td,th { border:1px solid var(--line); padding:3px 10px; font-size:12.5px }
++ </style></head><body>
++ <h1>The Game Builder</h1>
++ <div class="sub">The Iron Gauntlet's running log — every landing, every failure, every question. Regenerated by the gate after each run. Built 2026-09-11 09:43 · 0 runs on record.</div>
++
++ <div class="tiles">
++   <div class="tile"><div class="n">0</div><div class="l">landed</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">⛓ seals passed</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">flagged, need review</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">abandoned / reverted</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">backlog open</div></div>
++   <div class="tile"><div class="n">0</div><div class="l">open questions</div></div>
++ </div>
++
++ <h2>Where the loop fails — FAIL count by check, all runs</h2>
++ <div class="sub">No failures on record yet.</div>
++ <details><summary>table view</summary><table><tr><th>check</th><th>fails</th></tr></table></details>
++
++ <h2>Questions — the inbox</h2>
++
++
++ <div class="sub" style="margin-top:8px">Add or answer questions in <code>.state/questions.md</code> — this page re-renders on the next gate run (or <code>node tools/game-builder.mjs</code>).</div>
++
++ <h2>Run log — newest batch on top, older batches collapsed</h2>
++ <div class="filters" role="group" aria-label="filter runs">
++   <button aria-pressed="true" data-f="all">all</button>
++   <button aria-pressed="false" data-f="failing">failing</button>
++   <button aria-pressed="false" data-f="landed">landed</button>
++   <button aria-pressed="false" data-f="sealed">⛓ sealed</button>
++ </div>
++ <div class="sub">No runs yet — the log fills as the gate runs.</div>
++
++ <script>
++   document.querySelector('.filters').addEventListener('click', (e) => {
++     const b = e.target.closest('button'); if (!b) return
++     document.querySelectorAll('.filters button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
++     const f = b.dataset.f
++     document.querySelectorAll('.batch .card').forEach((c) => {
++       c.style.display = (f === 'all' || c.dataset.state === f) ? '' : 'none'
++     })
++   })
++   // Approve = a per-viewer read-marker. Stored in this browser only (the page is
++   // a local file that regenerates); the DURABLE review state is the backlog's
++   // done-needs-review flags, which approving does not touch. Wrapped in
++   // try/catch — if storage is unavailable the button still collapses for now.
++   const store = { get(k) { try { return localStorage.getItem(k) } catch { return null } },
++                   set(k, v) { try { localStorage.setItem(k, v) } catch {} } }
++   function applyApproval(el) {
++     const id = el.dataset.batch
++     if (store.get('gb-approved-' + id) !== '1') return
++     el.querySelector('.approve')?.setAttribute('hidden', '')
++     el.querySelector('.approved-tick')?.removeAttribute('hidden')
++     if (el.tagName === 'DETAILS') el.removeAttribute('open')
++     else { // the newest batch collapses into a details element on approval
++       const d = document.createElement('details')
++       d.className = 'batch'; d.dataset.batch = id
++       const bar = el.querySelector('.batchbar'); const sum = document.createElement('summary')
++       sum.className = 'batchbar'; sum.innerHTML = bar.innerHTML; bar.remove()
++       d.appendChild(sum); while (el.firstChild) d.appendChild(el.firstChild)
++       el.replaceWith(d)
++     }
++   }
++   document.querySelectorAll('.batch').forEach(applyApproval)
++   // The embedded replay loads only when its drawer opens — and only once.
++   document.querySelectorAll('details.watch').forEach((d) => d.addEventListener('toggle', () => {
++     const f = d.querySelector('iframe'); if (d.open && f && !f.src) f.src = f.dataset.src
++   }))
++   document.addEventListener('click', (e) => {
++     const b = e.target.closest('.approve'); if (!b) return
++     e.preventDefault()
++     const el = b.closest('.batch')
++     store.set('gb-approved-' + el.dataset.batch, '1')
++     applyApproval(el)
++   })
++ </script>
++ </body></html>
+
+ ❯ test/game-builder-batches.test.ts:44:16
+     42| it('keeps a failed audit visible even when no gate run preceded it', (…
+     43|   const html = build([audit('failed audit', 'FAILED')])
+     44|   expect(html).toContain('Audit: FAILED')
+       |                ^
+     45| })
+     46|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  02:43:46
+   Duration  316ms (transform 14ms, setup 0ms, import 25ms, tests 171ms, environment 0ms)
+

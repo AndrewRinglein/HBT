@@ -11219,3 +11219,29 @@ effect of unit.test-warrior,unit.test-zombie — 25 paired battles per map, WITH
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## plumbing.game-builder-batches — LANDED `e5b79a5` **NEEDS REVIEW**
+2026-09-11 09:46
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:18 · ..\STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 979 passed
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/game-builder-batches.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 29 ids without a published source (19 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN

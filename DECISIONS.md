@@ -2240,3 +2240,18 @@ asserted its actual status grant. Typecheck and all 30 identity tests pass. A
 fresh counterfactual restores only the old trigger keys temporarily: all four
 typed identity probes fail, then the corrected source is restored. Evidence:
 `scratch/unit-identities-trigger-counterfactual-red.log`. No check was skipped.
+
+## 2026-09-11 — Game Builder audit-only batches (infrastructure repair)
+
+Direct rebuilding after the identity audit exposed an existing renderer crash:
+consecutive batch-end records create an empty closed batch, but its date read
+`runs[0].at`. Gate/audit hooks suppress renderer exceptions, leaving both HTML
+copies stale. Four isolated CLI fixtures reproduced three failures: consecutive
+boundaries crash, audit-only records disappear, and a failed audit is hidden.
+
+Keep every closed batch and its stable ID, label, timestamp and artifacts; only
+the unstarted trailing batch is omitted. Render its audit result explicitly,
+including FAILED, and use the marker timestamp when there are no runs. No
+ledger history or human read/review state is rewritten. This offline renderer
+cannot be exercised or disabled by a battle content ID; its two structural
+exemptions are recorded on the item, and its seal must remain withheld.

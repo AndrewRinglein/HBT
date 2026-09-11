@@ -48,7 +48,7 @@ for (const r of runs) { if (r.type === 'batch-end') continue
 const failRows = Object.entries(failCounts).sort((a, b) => b[1] - a[1])
 
 // ── batches ──────────────────────────────────────────────────────────────────
-// A batch is a working session: consecutive runs with < 3h between them. Old
+// A batch is a working session delimited by explicit audit markers. Old
 // batches collapse to one summary bar — "4 landed, 1 sealed" — with the detail
 // inside; the newest batch renders open on top. The Approve button marks a batch
 // read (a per-viewer localStorage convenience — the durable review state stays
@@ -62,6 +62,8 @@ const batches = [{ id: 'batch-1', runs: [], closed: false }]
 for (const r of runs) {
   if (r.type === 'batch-end') {
     batches[batches.length - 1].closed = true
+    batches[batches.length - 1].closedAt = r.at
+    batches[batches.length - 1].audit = r.audit
     if (r.label) batches[batches.length - 1].label = r.label
     // Artifacts ride the marker: things this batch produced that a human WATCHES,
     // not reads — a replay, an mp4. Hrefs are relative to the shipped page's home
@@ -72,7 +74,9 @@ for (const r of runs) {
   }
   batches[batches.length - 1].runs.push(r)
 }
-while (batches.length && batches[batches.length - 1].runs.length === 0) batches.pop()
+// Remove only the unstarted trailing batch. Consecutive audits are real records
+// with their own labels/artifacts; dropping them also renumbers saved read marks.
+while (batches.length && !batches[batches.length - 1].closed && batches[batches.length - 1].runs.length === 0) batches.pop()
 batches.reverse() // newest first
 
 function groupByItem(rs) {
@@ -262,9 +266,10 @@ ${batches.map((batch, bi) => {
   const landedRuns = batch.runs.filter((r) => r.disposition === 'landed')
   const sealedRuns = landedRuns.filter((r) => r.seal === 'passed')
   const failedRuns = batch.runs.filter((r) => r.disposition === 'failed-checks').length
-  const day = (batch.runs[0].at ?? '').slice(0, 10)
+  const day = (batch.runs[0]?.at ?? batch.closedAt ?? '').slice(0, 10)
   const bar = `<span class="bday">${esc(batch.id.replace('batch-', 'Batch '))}${batch.label ? ' — ' + esc(batch.label) : ''} · ${esc(day)}</span>
     <span class="b b-good">✓ ${landedRuns.length} landed</span>
+    ${batch.audit ? `<span class="b ${batch.audit === 'clean' ? 'b-good' : 'b-crit'}">Audit: ${esc(batch.audit)}</span>` : ''}
     ${sealedRuns.length ? `<span class="b b-seal">⛓ ${sealedRuns.length} sealed</span>` : ''}
     ${failedRuns ? `<span class="b b-crit">✗ ${failedRuns} failed attempts</span>` : ''}
     <span class="bmeta">${items.length} item${items.length === 1 ? '' : 's'} · ${batch.runs.length} runs</span>
