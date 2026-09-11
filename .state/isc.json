@@ -784,11 +784,11 @@
  },
  "051": {
   "red": {
-   "at": "2026-09-03 03:23",
-   "sha": "90247cd",
-   "hash": "daae314ec1c4",
+   "at": "2026-09-11 07:30",
+   "sha": "72c3c7b",
+   "hash": "910e00fa2157",
    "how": "feature absent",
-   "tail": "       | ^ |       9| import { REWARDS } from '../src/content/rewards.js' |      10| import { HERO_POOL, CIVILIANS } from '../src/content/heroes.js'"
+   "tail": "       |                       ^ |      66|     expect(HERO_ITEM_SLOTS).toEqual(Object.fromEntries(heroes.filter((… |      67|   })"
   },
   "closed": {
    "at": "2026-09-03 03:25",

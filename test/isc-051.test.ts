@@ -10,6 +10,7 @@ import { join } from 'node:path'
 import { ITEMS, itemOf } from '../src/content/items.js'
 import { REWARDS } from '../src/content/rewards.js'
 import { HERO_POOL, CIVILIANS } from '../src/content/heroes.js'
+import { HERO_KITS, HERO_ITEM_SLOTS } from '../src/content/generated/kits.js'
 
 const codex = JSON.parse(readFileSync('../content/hbt-content.json', 'utf8'))
 const combos = JSON.parse(readFileSync('../content/gen/tier3-combinations.json', 'utf8')) as { id: string; base: string; enchant: string }[]
@@ -56,6 +57,13 @@ describe('ISC-051 — the item rows are the codex\'s, generated', () => {
       const items = Array.isArray(kit) ? kit : kit?.pinned ?? []
       for (const id of items) expect(() => itemOf(id), `${h.id} → ${id}`).not.toThrow()
     }
+  })
+  it('publishes every authored full kit and item-slot count, including units beyond the current draft pool', () => {
+    // Current flat content owns these rows even while the kingdom draft pool
+    // and engine catalogue are smaller. Publishing a kit does not field a unit.
+    const heroes = codex.heroes.heroes as { id: string; kit: string[] | { pinned: string[] } | null; ported?: { itemSlots?: number } }[]
+    expect(HERO_KITS).toEqual(Object.fromEntries(heroes.filter((h) => Array.isArray(h.kit)).map((h) => [h.id, h.kit])))
+    expect(HERO_ITEM_SLOTS).toEqual(Object.fromEntries(heroes.filter((h) => Number.isInteger(h.ported?.itemSlots)).map((h) => [h.id, h.ported!.itemSlots])))
   })
   it('every combination is a tier-3 row carrying its base and enchant, or a NAMED gap on an enchant the codex lacks; the reward pool is a filter over the rows', () => {
     const gaps = JSON.parse(readFileSync('src/content/generated/items-gaps.json', 'utf8')) as { count: number; gaps: { id: string; needs: string }[] }
