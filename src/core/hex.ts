@@ -12,6 +12,7 @@
 //
 // History: 12×12 in the first commit; 16×16 ruled 2026-08-25 ("we are settling
 // on 16 by 16") — that format survives as `standard`.
+// V2: bounded authored sizes are also legal; these four names remain presets.
 
 export type HexId = number
 
@@ -27,15 +28,23 @@ export type Board = { readonly width: number; readonly height: number }
 export type Edge = 'north' | 'south' | 'east' | 'west'
 
 /**
- * The four formats (ruled 2026-09-03). A map must be one of these; the
- * validator in content/maps.ts refuses anything else, so no fifth size appears
- * by accident.
+ * Historical convenience labels; authored boards may use other bounded sizes.
  */
 export const FORMATS: Readonly<Record<'duel' | 'dungeon' | 'standard' | 'horde', Board>> = {
   duel: { width: 8, height: 8 },
   dungeon: { width: 16, height: 8 },
   standard: { width: 16, height: 16 },
   horde: { width: 24, height: 24 },
+}
+
+/** Provisional V2 resource bound, aligned with the atlas's cell ceiling. */
+export const MAX_BOARD_CELLS = 10_000
+export function validBoard(board: unknown): board is Board {
+  if (!board || typeof board !== 'object' || Array.isArray(board)) return false
+  const b = board as Board
+  return Number.isSafeInteger(b.width) && b.width > 0 && b.width <= MAX_BOARD_CELLS
+    && Number.isSafeInteger(b.height) && b.height > 0 && b.height <= MAX_BOARD_CELLS
+    && b.width * b.height <= MAX_BOARD_CELLS
 }
 
 /** The format name of a board, or null when it is none of the four. */
@@ -102,7 +111,6 @@ function offsetOf(q: number, r: number): [number, number] {
 
 function build(board: Board): Geometry {
   const { width, height } = board
-  if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1) throw new Error(`geometryOf: ${width}×${height} is not a board`)
   const hexCount = width * height
   const hexId = (col: number, row: number): HexId => row * width + col
   const colOf = (h: HexId): number => h % width
@@ -172,6 +180,8 @@ const BUILT = new Map<string, Geometry>()
 
 /** The geometry of a board. Same board → the same object. */
 export function geometryOf(board: Board): Geometry {
+  // Validate even cache hits: string dimensions must not alias numeric keys.
+  if (!validBoard(board)) throw new Error(`geometryOf: board requires positive safe dimensions and at most ${MAX_BOARD_CELLS} cells`)
   const key = `${board.width}x${board.height}`
   let g = BUILT.get(key)
   if (!g) { g = build(board); BUILT.set(key, g) }

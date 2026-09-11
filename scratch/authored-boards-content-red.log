@@ -1,0 +1,384 @@
+✖ assembler accepts 20x10 map and encounter (114.7704ms)
+✖ compiler transports 20x10 shipping map, TEST map and encounter (159.8794ms)
+✖ assembler accepts 40x40 map and encounter (109.4935ms)
+✖ compiler transports 40x40 shipping map, TEST map and encounter (153.9676ms)
+✔ assembler rejects malformed map {"rows":[]} (104.4128ms)
+✔ compiler rejects malformed map {"rows":[]} (142.5307ms)
+✔ assembler rejects malformed map {"rows":[""]} (104.0203ms)
+✖ compiler rejects malformed map {"rows":[""]} (147.812ms)
+✔ assembler rejects malformed map {"rows":[null]} (97.977ms)
+✔ compiler rejects malformed map {"rows":[null]} (138.0006ms)
+✔ assembler rejects malformed map {"rows":[5]} (94.8183ms)
+✖ compiler rejects malformed map {"rows":[5]} (147.7221ms)
+✔ assembler rejects malformed map {"rows":[{"length":20}]} (94.5753ms)
+✖ compiler rejects malformed map {"rows":[{"length":20}]} (151.8678ms)
+✔ assembler rejects malformed map {"rows":["..","."]} (104.5244ms)
+✖ compiler rejects malformed map {"rows":["..","."]} (147.6124ms)
+✔ assembler rejects malformed map {"board":{"width":9007199254740992,"height":1}} (104.3803ms)
+✖ compiler rejects malformed map {"board":{"width":9007199254740992,"height":1}} (147.2297ms)
+✔ assembler rejects malformed map {"board":null} (104.4714ms)
+✖ compiler rejects malformed map {"board":null} (149.1479ms)
+✔ assembler rejects malformed map {"format":"16x16"} (103.8812ms)
+✖ compiler rejects malformed map {"format":"16x16"} (147.9835ms)
+✔ assembler rejects malformed map {"format":null} (104.4745ms)
+✖ compiler rejects malformed map {"format":null} (148.6361ms)
+✔ assembler rejects malformed map {"rows":["....................................................... (107.2845ms)
+✖ compiler rejects malformed map {"rows":["....................................................... (150.0618ms)
+✔ assembler rejects malformed map {"deploy":{"hero":"top","enemy":"east"}} (106.5788ms)
+✖ compiler rejects malformed map {"deploy":{"hero":"top","enemy":"east"}} (150.6612ms)
+✔ assembler rejects malformed map {"deploy":{"hero":"west","enemy":"west"}} (104.6978ms)
+✖ compiler rejects malformed map {"deploy":{"hero":"west","enemy":"west"}} (151.2648ms)
+✔ assembler rejects malformed map {"deploy":null} (107.0168ms)
+✖ compiler rejects malformed map {"deploy":null} (149.8102ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 16
+ℹ fail 16
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4120.9826
+
+✖ failing tests:
+
+test at test\authored-boards.test.mjs:35:3
+✖ assembler accepts 20x10 map and encounter (114.7704ms)
+  AssertionError [ERR_ASSERTION]: bestiary: 33 authored + 207 placeholders (12 superseded)
+  TOTALS
+      72 specialties
+     355 powers
+     274 items
+     161 attacks
+      62 enchants
+      64 tags
+     232 badges
+       8 classes
+     257 heroes
+    1483 total rows with ids
+  items by class: {"weapon":101,"armor":50,"trinket":54,"relic":32,"bloodrune":23,"idol":14}
+  
+  PROBLEMS: 2
+    ! maps map.dimension-probe: 20x10 is not one of the four ruled formats (8x8, 16x8, 16x16, 24x24)
+    ! encounters encounter.prologue-1: board 20x10 is not one of the four ruled formats
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:40:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:42:3
+✖ compiler transports 20x10 shipping map, TEST map and encounter (159.8794ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   height: 10,
+  -   width: 20
+  - }
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:49:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { width: 20, height: 10 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:35:3
+✖ assembler accepts 40x40 map and encounter (109.4935ms)
+  AssertionError [ERR_ASSERTION]: bestiary: 33 authored + 207 placeholders (12 superseded)
+  TOTALS
+      72 specialties
+     355 powers
+     274 items
+     161 attacks
+      62 enchants
+      64 tags
+     232 badges
+       8 classes
+     257 heroes
+    1483 total rows with ids
+  items by class: {"weapon":101,"armor":50,"trinket":54,"relic":32,"bloodrune":23,"idol":14}
+  
+  PROBLEMS: 2
+    ! maps map.dimension-probe: 40x40 is not one of the four ruled formats (8x8, 16x8, 16x16, 24x24)
+    ! encounters encounter.prologue-1: board 40x40 is not one of the four ruled formats
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:40:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:42:3
+✖ compiler transports 40x40 shipping map, TEST map and encounter (153.9676ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   height: 40,
+  -   width: 40
+  - }
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:49:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { width: 40, height: 40 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"rows":[""]} (147.812ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"rows":[5]} (147.7221ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"rows":[{"length":20}]} (151.8678ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"rows":["..","."]} (147.6124ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"board":{"width":9007199254740992,"height":1}} (147.2297ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"board":null} (149.1479ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"format":"16x16"} (147.9835ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"format":null} (148.6361ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"rows":["....................................................... (150.0618ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"deploy":{"hero":"top","enemy":"east"}} (150.6612ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"deploy":{"hero":"west","enemy":"west"}} (151.2648ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:61:42
+✖ compiler rejects malformed map {"deploy":null} (149.8102ms)
+  AssertionError [ERR_ASSERTION]: malformed maps must not silently ship/drop
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:63:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

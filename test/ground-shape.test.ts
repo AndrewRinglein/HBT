@@ -13,6 +13,7 @@ import { TERRAIN } from '../src/core/types.js'
 import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movement.js'
 import { valueOf } from '../src/core/status.js'
 import { ENCOUNTERS } from '../src/content/index.js'
+import { UNIT_PACK } from '../src/content/generated/pack.js'
 import { hexId } from './board16.js'
 
 describe('the one ground shape', () => {
@@ -50,7 +51,12 @@ describe('victory can be achieved early', () => {
 
 describe('one kind: encounter.*', () => {
   it('no battle.* id remains in the registry', () => {
-    for (const id of Object.keys(ENCOUNTERS)) expect(id.startsWith('encounter.'), id).toBe(true)
+    // V2 publishes an explicit TEST lane; it does not introduce a second shipping kind.
+    const testIds = new Set(Object.keys(UNIT_PACK.test.encounters))
+    for (const id of Object.keys(ENCOUNTERS)) {
+      expect(id.startsWith('battle.'), id).toBe(false)
+      expect(id.startsWith('encounter.') || (id.startsWith('test.encounter.') && testIds.has(id)), id).toBe(true)
+    }
     expect(ENCOUNTERS['encounter.prologue-2']).toBeDefined()
     expect(ENCOUNTERS['encounter.horrors-of-the-night']).toBeDefined()
   })

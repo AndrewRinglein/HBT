@@ -1,0 +1,6 @@
+{
+  "changed": [
+    "engine/src/content/generated/pack.ts",
+    "engine/src/content/generated/pack.stamp.json"
+  ]
+}

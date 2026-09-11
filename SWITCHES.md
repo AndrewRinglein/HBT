@@ -487,3 +487,13 @@ heals the hero it just clawed by 8 on the hit that afflicted him. Default
 room, not health. Not yet a Config switch; the function is the one place to
 put it. A sweep on `test.map.horde-24` at its format's 24 bodies (gate 5 plays
 it at 8 — FINDINGS 37) answers what the fill costs the horde.
+
+## maxBoardCells — authored map resource ceiling
+
+Added 2026-09-11 for V2 authored dimensions. Provisional **10,000 cells**,
+matching the atlas ceiling; positive safe-integer width and height are required.
+This is an input/allocation limit, not a battlefield size recommendation.
+`MAX_BOARD_CELLS` in core/hex.ts and content/map-schema.mjs enforce the same
+contract before geometry construction, compilation/publication and save restore.
+The four named FORMATS remain convenience sizes. Raising this limit requires
+new bounded validation and geometry evidence; it is not a per-battle Config knob.

@@ -1,0 +1,17 @@
+
+gate: board.authored-dimensions   [land]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 2 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:945 · ..\CLAUDE-DOS-AND-DONTS.md:129
+  PASS  typecheck
+  PASS  full test suite  — 1139 passed
+  PASS  gate 1 — the id appears in a real battle  — test.map.journey-20x10: 1 log lines, 1 fired, 1 changed state · test.map.authored-40x40: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests  — test/board-formats.test.ts, test/ground-shape.test.ts, test/authored-boards.test.ts
+  WARN  existing tests untouched  — DELETED LINES in test/board-formats.test.ts (-4), test/ground-shape.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged  — will re-bless at commit — this item DECLARED it changes the control battles: test.map.journey-20x10 ?->dc798a4e, test.map.authored-40x40 ?->3d7f4f24, test.map.journey-20x10 NEW, test.map.authored-40x40 NEW
+  PASS  content has a published source  — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without test.map.journey-20x10,test.map.authored-40x40 — they genuinely test it

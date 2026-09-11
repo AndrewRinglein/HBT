@@ -11500,3 +11500,82 @@ index 08a4046..4fbef04 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## board.authored-dimensions — LANDED `a9c2c4c` **NEEDS REVIEW**
+2026-09-11 18:10
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:945 · ..\CLAUDE-DOS-AND-DONTS.md:129
+  PASS  typecheck
+  PASS  full test suite — 1139 passed
+  PASS  gate 1 — the id appears in a real battle — test.map.journey-20x10: 1 log lines, 1 fired, 1 changed state · test.map.authored-40x40: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/board-formats.test.ts, test/ground-shape.test.ts, test/authored-boards.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/board-formats.test.ts (-4), test/ground-shape.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: test.map.journey-20x10 ?->dc798a4e, test.map.authored-40x40 ?->3d7f4f24, test.map.journey-20x10 NEW, test.map.authored-40x40 NEW
+  PASS  content has a published source — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.map.journey-20x10,test.map.authored-40x40 — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/board-formats.test.ts b/test/board-formats.test.ts
+index edf81b8..a8a30bb 100644
+--- a/test/board-formats.test.ts
++++ b/test/board-formats.test.ts
+@@ -7,14 +7,22 @@ import { createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { boardOf, deployOf, terrainOf, MAP_PANEL, DEFAULT_DEPLOY } from '../src/content/maps.js'
+-import { FORMATS, formatOf, geometryOf } from '../src/core/hex.js'
++import { FORMATS, formatOf, geometryOf, validBoard } from '../src/core/hex.js'
+ 
+ const TEST_MAPS = { 'test.map.duel-8': FORMATS.duel, 'test.map.dungeon-16x8': FORMATS.dungeon, 'test.map.horde-24': FORMATS.horde }
++const ORIGINAL_MAP_IDS = [
++  'map.open', 'map.ridge', 'map.flanks', 'map.highlands', 'map.field', 'map.thicket',
++  'map.proving.open', 'map.proving.ridge', 'map.proving.ford', 'map.proving.copse', 'map.proving.ruin',
++  'map.courtyard', 'map.floodplain', 'test.map.embers', 'test.map.showcase',
++  'test.map.duel-8', 'test.map.dungeon-16x8', 'test.map.horde-24',
++]
+ 
+ describe('the maps declare their boards', () => {
+-  it('every map on the panel is one of the four formats, and terrain is width × height long', () => {
+-    expect(MAP_PANEL.length).toBeGreaterThanOrEqual(11)
++  it('every map is bounded, the original18 retain preset formats, and terrain is width × height long', () => {
++    expect(MAP_PANEL.slice(0, ORIGINAL_MAP_IDS.length)).toEqual(ORIGINAL_MAP_IDS)
+     for (const id of MAP_PANEL) {
+       const b = boardOf(id)
+-      expect(formatOf(b), id).not.toBeNull()
++      // V2 appends authored dimensions; the original18 preset maps retain their contract.
++      if (ORIGINAL_MAP_IDS.includes(id)) expect(formatOf(b), id).not.toBeNull()
++      expect(validBoard(b), id).toBe(true)
+       expect(terrainOf(id).length, id).toBe(b.width * b.height)
+     }
+diff --git a/test/ground-shape.test.ts b/test/ground-shape.test.ts
+index 813fe0d..43da518 100644
+--- a/test/ground-shape.test.ts
++++ b/test/ground-shape.test.ts
+@@ -14,4 +14,5 @@ import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movemen
+ import { valueOf } from '../src/core/status.js'
+ import { ENCOUNTERS } from '../src/content/index.js'
++import { UNIT_PACK } from '../src/content/generated/pack.js'
+ import { hexId } from './board16.js'
+ 
+@@ -51,5 +52,10 @@ describe('victory can be achieved early', () => {
+ describe('one kind: encounter.*', () => {
+   it('no battle.* id remains in the registry', () => {
+-    for (const id of Object.keys(ENCOUNTERS)) expect(id.startsWith('encounter.'), id).toBe(true)
++    // V2 publishes an explicit TEST lane; it does not introduce a second shipping kind.
++    const testIds = new Set(Object.keys(UNIT_PACK.test.encounters))
++    for (const id of Object.keys(ENCOUNTERS)) {
++      expect(id.startsWith('battle.'), id).toBe(false)
++      expect(id.startsWith('encounter.') || (id.startsWith('test.encounter.') && testIds.has(id)), id).toBe(true)
++    }
+     expect(ENCOUNTERS['encounter.prologue-2']).toBeDefined()
+     expect(ENCOUNTERS['encounter.horrors-of-the-night']).toBeDefined()
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

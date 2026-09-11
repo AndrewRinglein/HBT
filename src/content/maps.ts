@@ -16,9 +16,9 @@
 // Rows run top (row 0, enemy deployment) to bottom (row 11, hero deployment).
 
 import { TERRAIN } from '../core/types.js'
-import { formatOf, type Board, type Edge } from '../core/hex.js'
+import { type Board, type Edge } from '../core/hex.js'
 import { disabledIds } from './disable.js'
-import { packMaps } from './pack.js'
+import { packMaps, packTestMaps, mapBoardOf } from './pack.js'
 
 /**
  * `deploy` — which edge each side deploys on (board.deploy-edges, 2026-09-04).
@@ -102,8 +102,13 @@ const RAW_MAPS: readonly MapDef[] = [
 // leaves the roster entirely, so its tests genuinely fail without it —
 // identical array when CF_DISABLE_IDS is unset.
 // One owner per id, loudly: a map in the pack AND here is a fork.
-for (const m of packMaps()) if (RAW_MAPS.some((r) => r.id === m.id)) throw new Error(`map '${m.id}' exists in BOTH content/maps.ts and the generated pack — one owner only`)
-export const MAPS: readonly MapDef[] = [...packMaps(), ...RAW_MAPS].filter((m) => !disabledIds().has(m.id))
+const allMaps = [...packMaps(), ...RAW_MAPS, ...packTestMaps()]
+const mapIds = new Set<string>()
+for (const m of allMaps) {
+  if (mapIds.has(m.id)) throw new Error(`map '${m.id}' exists in multiple map lanes — one owner only`)
+  mapIds.add(m.id)
+}
+export const MAPS: readonly MapDef[] = allMaps.filter((m) => !disabledIds().has(m.id))
 
 export const MAP_PANEL = MAPS.map((m) => m.id)
 
@@ -132,21 +137,16 @@ function mapDef(mapId: string): MapDef {
 /**
  * The board a map is drawn on — board.variable-size (2026-09-04). Read off the
  * rows: height is the row count, width the row length, and the pair must be
- * one of the four ruled formats (hex.ts FORMATS) so no fifth size appears by
- * accident. Rectangular, or it is not a map.
+ * bounded positive safe integers. Preset names do not restrict authored sizes.
  */
 export function boardOf(mapId: string): Board {
   const m = mapDef(mapId)
-  const height = m.rows.length
-  const width = m.rows[0]?.length ?? 0
-  for (const row of m.rows) if (row.length !== width) throw new Error(`map '${mapId}' has a row of ${row.length} in a board ${width} wide — not rectangular`)
-  const board = { width, height }
-  if (!formatOf(board)) throw new Error(`map '${mapId}' is ${width}×${height}, which is none of the four formats (8×8, 16×8, 16×16, 24×24 — ruled 2026-09-03)`)
-  return board
+  return mapBoardOf(m)
 }
 
 /** The deployment edges of a map — its own, else the ruled default. The two edges must differ. */
 export function deployOf(mapId: string): Deploy {
+  mapBoardOf(mapDef(mapId))
   const d = mapDef(mapId).deploy ?? DEFAULT_DEPLOY
   if (d.hero === d.enemy) throw new Error(`map '${mapId}' deploys both sides on its ${d.hero} edge`)
   return d

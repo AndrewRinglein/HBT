@@ -1,4 +1,4 @@
-import { geometryOf } from './hex.js'
+import { geometryOf, validBoard } from './hex.js'
 import { isUnitUid } from './identity.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, type BattleCursor, type Ctx } from '.
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.8' // Universal authoritative action expenditure events.
+const RULES_VERSION = 'v2-migration.9' // Authored dimensions with a consistent bounded board contract.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -85,9 +85,8 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   requireThat(s.contentKey === contentKey(runtime), 'content binding differs')
   validatePlain(s)
   const st = s.state; record(st); record(st.board)
-  requireThat(integer(st.board.width, 1) && integer(st.board.height, 1), 'board dimensions')
+  requireThat(validBoard(st.board), 'board dimensions')
   const cells = st.board.width * st.board.height
-  requireThat(integer(cells, 1, 1_000_000), 'board too large')
   requireThat(Array.isArray(st.terrain) && st.terrain.length === cells && st.terrain.every((x: unknown) => integer(x, 0)), 'terrain')
   requireThat(st.layers === undefined || (Array.isArray(st.layers) && st.layers.length === cells && st.layers.every((x: unknown) => integer(x, 0))), 'layers')
   requireThat(integer(st.turn, 0) && phases.includes(st.phase) && typeof st.mapId === 'string', 'battle clock/map')
@@ -157,6 +156,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   }
   if (s.encounter !== undefined) {
     const enc = s.encounter; record(enc)
+    if ('board' in enc) requireThat(validBoard(enc.board) && enc.board.width === st.board.width && enc.board.height === st.board.height, 'encounter board differs')
     requireThat(typeof enc.id === 'string' && typeof enc.name === 'string' && Array.isArray(enc.setup) && Array.isArray(enc.schedule), 'encounter definition')
     record(st.encounter)
     requireThat(st.encounter.id === enc.id && Array.isArray(st.encounter.fired) && st.encounter.fired.every((n: unknown) => integer(n, 0, enc.schedule.length - 1)) && new Set(st.encounter.fired).size === st.encounter.fired.length, 'encounter schedule cursor')

@@ -1,0 +1,127 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:133
+  if (!m) throw new Error(`unknown map '${mapId}' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)`)
+                ^
+
+Error: unknown map 'test.map.journey-20x10' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)
+    at mapDef (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:133:17)
+    at boardOf (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:143:13)
+    at createBattle (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\setup.ts:177:17)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\export-battle.mts:101:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:133
+  if (!m) throw new Error(`unknown map '${mapId}' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)`)
+                ^
+
+Error: unknown map 'test.map.authored-40x40' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)
+    at mapDef (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:133:17)
+    at boardOf (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:143:13)
+    at createBattle (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\setup.ts:177:17)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\export-battle.mts:101:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+··························xxxx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-boards.test.ts > authored board boundaries > test.map.journey-20x10 fields authored dimensions, boundary steps and saved continuation
+AssertionError: expected [ 'map.open', 'map.ridge', …(16) ] to include 'test.map.journey-20x10'
+ ❯ test/authored-boards.test.ts:60:25
+     58|   for (const [mapId, board] of cases) {
+     59|     it(`${mapId} fields authored dimensions, boundary steps and saved …
+     60|       expect(MAP_PANEL).toContain(mapId)
+       |                         ^
+     61|       expect(boardOf(mapId)).toEqual(board)
+     62|       const ctx = createBattle({ mapId, heroes: ['test-warrior'], enem…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/authored-boards.test.ts > authored board boundaries > test.map.journey-20x10 exports the actual board and completed battle
+Error: Command failed: C:\Program Files\nodejs\node.exe node_modules/tsx/dist/cli.mjs tools/export-battle.mts 0 test.map.journey-20x10 2
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:133
+  if (!m) throw new Error(`unknown map '${mapId}' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)`)
+                ^
+
+Error: unknown map 'test.map.journey-20x10' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)
+    at mapDef (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:133:17)
+    at boardOf (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:143:13)
+    at createBattle (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\setup.ts:177:17)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\export-battle.mts:101:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+
+ ❯ mapDef src/content/maps.ts:133:17
+    131| function mapDef(mapId: string): MapDef {
+    132|   const m = MAPS.find((x) => x.id === mapId)
+    133|   if (!m) throw new Error(`unknown map '${mapId}' — maps are authored:…
+       |                 ^
+    134|   return m
+    135| }
+ ❯ boardOf src/content/maps.ts:143:13
+ ❯ createBattle src/core/setup.ts:177:17
+ ❯ <anonymous> tools/export-battle.mts:101:5
+ ❯ test/authored-boards.test.ts:83:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/authored-boards.test.ts > authored board boundaries > test.map.authored-40x40 fields authored dimensions, boundary steps and saved continuation
+AssertionError: expected [ 'map.open', 'map.ridge', …(16) ] to include 'test.map.authored-40x40'
+ ❯ test/authored-boards.test.ts:60:25
+     58|   for (const [mapId, board] of cases) {
+     59|     it(`${mapId} fields authored dimensions, boundary steps and saved …
+     60|       expect(MAP_PANEL).toContain(mapId)
+       |                         ^
+     61|       expect(boardOf(mapId)).toEqual(board)
+     62|       const ctx = createBattle({ mapId, heroes: ['test-warrior'], enem…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  test/authored-boards.test.ts > authored board boundaries > test.map.authored-40x40 exports the actual board and completed battle
+Error: Command failed: C:\Program Files\nodejs\node.exe node_modules/tsx/dist/cli.mjs tools/export-battle.mts 0 test.map.authored-40x40 2
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:133
+  if (!m) throw new Error(`unknown map '${mapId}' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)`)
+                ^
+
+Error: unknown map 'test.map.authored-40x40' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)
+    at mapDef (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:133:17)
+    at boardOf (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:143:13)
+    at createBattle (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\core\setup.ts:177:17)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\export-battle.mts:101:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+
+ ❯ mapDef src/content/maps.ts:133:17
+    131| function mapDef(mapId: string): MapDef {
+    132|   const m = MAPS.find((x) => x.id === mapId)
+    133|   if (!m) throw new Error(`unknown map '${mapId}' — maps are authored:…
+       |                 ^
+    134|   return m
+    135| }
+ ❯ boardOf src/content/maps.ts:143:13
+ ❯ createBattle src/core/setup.ts:177:17
+ ❯ <anonymous> tools/export-battle.mts:101:5
+ ❯ test/authored-boards.test.ts:83:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 26 passed (30)
+   Start at  07:28:43
+   Duration  1.19s (transform 373ms, setup 0ms, import 476ms, tests 597ms, environment 0ms)
+

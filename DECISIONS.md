@@ -2321,3 +2321,31 @@ cursor and result after removing only action.spent and normalizing event seq and
 state.seq. Original and identity goldens remain; a separate event-contract golden
 covers the current corpus. Authoritative shape/timing/reset documentation belongs
 to EVENTS-FOR-THE-VIEWER-2026-09-03.md §14, not a competing event specification.
+
+## 2026-09-11 — Authored board dimensions beyond presets
+
+V2 migration now follows authored map dimensions through content assembly,
+compilation, loading, geometry, setup and saves. The four historical FORMATS
+keep their sizes and names as convenience labels. Provisional limit: width and
+height are positive safe integers and their product is at most 10,000 cells,
+aligned with the atlas's ceiling. Validation precedes geometry cache lookup and
+allocation, so numeric strings cannot alias a warmed numeric cache entry.
+Snapshot rules advance to .9 and reject invalid/oversized/inconsistent boards.
+
+Flat TEST maps/encounters at 20×10 and 40×40 prove transport through the normal
+publisher. They are technical open-board fixtures, not user maps or visually
+approved terrain. TEST maps append after the old 18 controls; existing control
+hashes must remain exact and only the two new map keys are added. Neither user
+map/art bytes nor the four preset sizes change. LOS, props, atlas conversion and
+inline setup remain separate stages.
+
+Initial probes recorded 14 engine failures/14 passes and 16 content failures/16
+passes. A malformed-row test parameterization was corrected and re-run before
+loader implementation. Later probes caught coercible IDs/missing names, invalid
+encounter coordinates and null encounter boards; their red logs are retained.
+A coherent 10,100-cell snapshot passes under the counterfactual prior 1,000,000
+limit and is rejected under the shared 10,000-cell bound. No enormous allocation
+is used as a negative probe. The first publication dry run timed out in an
+unchanged browser click check; its cause is unconfirmed. A normal retry passed
+21 tabs with zero page errors/verification failures. No timeout/assertion was
+weakened and no publication preceded the passing check.

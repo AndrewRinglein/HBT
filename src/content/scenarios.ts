@@ -28,6 +28,16 @@ import { omitDisabled } from './disable.js'
 import { ENCOUNTERS, UNITS } from './index.js'
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
+  'test.board-journey': {
+    id: 'test.board-journey', note: 'Published 20×10 TEST map and encounter through the normal export and battle drivers.',
+    mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.journey-20x10',
+    heroes: ['test-warrior'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
+  'test.board-authored': {
+    id: 'test.board-authored', note: 'Published 40×40 TEST map and encounter through the normal export and battle drivers.',
+    mapId: 'test.map.authored-40x40', encounterId: 'test.encounter.authored-40x40',
+    heroes: ['test-warrior'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.authored-slots': {
     id: 'test.authored-slots', note: 'A movement-slot attack then an either-slot attack through normal AI combat.',
     mapId: 'map.open', heroes: ['test-slot-striker'], heroHexes: [85],

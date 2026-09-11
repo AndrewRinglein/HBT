@@ -1,0 +1,32 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+----------------x···----------------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-boards.test.ts > authored board boundaries > rejects invalid encounter board metadata null
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/authored-boards.test.ts:53:61
+     51|     const encounter = { id: 'test.encounter.invalid-board', name: 'Inv…
+     52|     expect(() => packEncounters(UNITS, { [encounter.id]: encounter }))…
+     53|     expect(() => createBattle({ replicate: 0, encounter })).toThrow(/b…
+       |                                                             ^
+     54|   })
+     55|   it.each([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed | 32 skipped (36)
+   Start at  07:31:48
+   Duration  612ms (transform 382ms, setup 0ms, import 488ms, tests 9ms, environment 0ms)
+

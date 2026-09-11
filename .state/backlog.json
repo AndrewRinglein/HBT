@@ -3243,5 +3243,26 @@
   "status": "done-needs-review",
   "sha": "00e38df",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "board.authored-dimensions",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": [
+   "content.pack-maps",
+   "plumbing.action-spent"
+  ],
+  "spec": "Authored rectangular maps carry any positive safe-integer width and height within 10000 cells through assembler, compiler, loader, geometry, deployment, simulation, save and export; four old formats remain convenience labels.",
+  "expect": "Actual flat TEST 20x10 and 40x40 boards field, move, simulate, reload and export. Malformed rows, invalid or oversized dimensions and contradictory board/format/deploy metadata reject before publication/allocation. Old18 control hashes remain exact; only two TEST control keys are added.",
+  "probeIds": [
+   "test.map.journey-20x10",
+   "test.map.authored-40x40"
+  ],
+  "changesBaseline": true,
+  "note": "V2 map dimensions follow atlas journey20x10 and user40x40 use cases. Provisional 10000-cell bound matches atlas; preserves user maps/art. Explicit TEST lane appends after all current controls, no LOS/props/atlas conversion or inline map setup.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "a9c2c4c",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

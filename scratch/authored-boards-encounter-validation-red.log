@@ -1,0 +1,130 @@
+✔ assembler rejects invalid encounter board or coordinates {"board":{"width":9007199254740992,"height":1}} (115.1514ms)
+✔ assembler rejects invalid encounter board or coordinates {"board":{"width":10001,"height":1}} (107.2204ms)
+✔ assembler rejects invalid encounter board or coordinates {"board":{"width":20,"height":10}} (108.0088ms)
+✖ assembler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":0.5,"row":2}}]} (118.1011ms)
+✖ assembler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":"1","row":2}}]} (116.1436ms)
+✖ assembler rejects invalid encounter board or coordinates {"paint":[{"layer":"terrain.burning","hexes":[0.5]}]} (119.8955ms)
+✔ compiler rejects invalid encounter board or coordinates {"board":{"width":9007199254740992,"height":1}} (129.7339ms)
+✔ compiler rejects invalid encounter board or coordinates {"board":{"width":10001,"height":1}} (125.0928ms)
+✔ compiler rejects invalid encounter board or coordinates {"board":{"width":20,"height":10}} (126.0558ms)
+✖ compiler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":0.5,"row":2}}]} (134.4109ms)
+✖ compiler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":"1","row":2}}]} (135.829ms)
+✖ compiler rejects invalid encounter board or coordinates {"paint":[{"layer":"terrain.burning","hexes":[0.5]}]} (134.8999ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 6
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1524.4205
+
+✖ failing tests:
+
+test at test\authored-boards.test.mjs:85:4
+✖ assembler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":0.5,"row":2}}]} (118.1011ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:91:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:85:4
+✖ assembler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":"1","row":2}}]} (116.1436ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:91:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:85:4
+✖ assembler rejects invalid encounter board or coordinates {"paint":[{"layer":"terrain.burning","hexes":[0.5]}]} (119.8955ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:91:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:85:4
+✖ compiler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":0.5,"row":2}}]} (134.4109ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:91:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:85:4
+✖ compiler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":"1","row":2}}]} (135.829ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:91:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\authored-boards.test.mjs:85:4
+✖ compiler rejects invalid encounter board or coordinates {"paint":[{"layer":"terrain.burning","hexes":[0.5]}]} (134.8999ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:91:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

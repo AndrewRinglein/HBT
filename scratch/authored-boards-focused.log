@@ -1,0 +1,25 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+····x············································
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/board-formats.test.ts > the maps declare their boards > every map on the panel is one of the four formats, and terrain is width × height long
+AssertionError: test.map.journey-20x10: expected null not to be null
+ ❯ test/board-formats.test.ts:18:35
+     16|     for (const id of MAP_PANEL) {
+     17|       const b = boardOf(id)
+     18|       expect(formatOf(b), id).not.toBeNull()
+       |                                   ^
+     19|       expect(terrainOf(id).length, id).toBe(b.width * b.height)
+     20|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 48 passed (49)
+   Start at  11:03:42
+   Duration  2.05s (transform 1.04s, setup 0ms, import 1.42s, tests 1.60s, environment 0ms)
+

@@ -1,0 +1,13 @@
+{
+  "content/hbt-content.json": "86e7f0d6c6fe998a2bf748249e45dfc96ad9daa3e8efa06659fef4be766f08bf",
+  "content/gen/functions.json": "f6b719fdb0d047b349abc5d43f4c49e158cce27823b4dea53a2a9fae2095ac42",
+  "content/FUNCTIONS.md": "89fb92817114acdbf8bb237f0f8d9e614ec2f35cc2d417cd473eb825ef108199",
+  "content/LEVEL-TABLES.md": "08def33294d8a19d3958fa3de7b8f1f22cd4d4dde952ae1bbe86780060852ad2",
+  "content/hbt-codex.html": "57bd9fb3c684b30762b854ffb079ee665a950e81eea1c4ad791759ec2c7518f6",
+  "CODEX.md": "e4997148e4e26c780874b2cb28bef5e537982db95fbed27699548d17a6364c02",
+  "HBT-CODEX.html": "57bd9fb3c684b30762b854ffb079ee665a950e81eea1c4ad791759ec2c7518f6",
+  "content/gen/enemy-pack-gaps.json": "cb563e0b03a84fe385108a19e6775097e3ed33a61033ddb39e7083bdf4373caa",
+  "content/gen/class-power-gaps.json": "1be87a72a79a12d748417e93d799a8b77c37221addd5d7b7c25faf221482e2e6",
+  "engine/src/content/generated/pack.ts": "770f1fe8238adf977fa40c4b717a6553e25e27b0abd2dbb4a985913794ccd60c",
+  "engine/src/content/generated/pack.stamp.json": "b0ae05d49003f97c1884b5ea52ed1fde24913181dba6ae035c1a786668f151c2"
+}

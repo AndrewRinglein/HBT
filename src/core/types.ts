@@ -52,6 +52,8 @@ export type EncounterPlacement = {
 export type EncounterDef = {
   readonly id: string
   readonly name: string
+  /** Optional for programmatic encounters; compiled encounters declare their map's board. */
+  readonly board?: Board
   readonly mapId?: string
   readonly setup: readonly EncounterPlacement[]
   readonly schedule: readonly { readonly phase?: number; readonly enemyPhase?: number; readonly spawn: readonly EncounterPlacement[] }[]

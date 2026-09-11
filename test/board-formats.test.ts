@@ -6,16 +6,24 @@ import { describe, expect, it } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { boardOf, deployOf, terrainOf, MAP_PANEL, DEFAULT_DEPLOY } from '../src/content/maps.js'
-import { FORMATS, formatOf, geometryOf } from '../src/core/hex.js'
+import { FORMATS, formatOf, geometryOf, validBoard } from '../src/core/hex.js'
 
 const TEST_MAPS = { 'test.map.duel-8': FORMATS.duel, 'test.map.dungeon-16x8': FORMATS.dungeon, 'test.map.horde-24': FORMATS.horde }
+const ORIGINAL_MAP_IDS = [
+  'map.open', 'map.ridge', 'map.flanks', 'map.highlands', 'map.field', 'map.thicket',
+  'map.proving.open', 'map.proving.ridge', 'map.proving.ford', 'map.proving.copse', 'map.proving.ruin',
+  'map.courtyard', 'map.floodplain', 'test.map.embers', 'test.map.showcase',
+  'test.map.duel-8', 'test.map.dungeon-16x8', 'test.map.horde-24',
+]
 
 describe('the maps declare their boards', () => {
-  it('every map on the panel is one of the four formats, and terrain is width × height long', () => {
-    expect(MAP_PANEL.length).toBeGreaterThanOrEqual(11)
+  it('every map is bounded, the original18 retain preset formats, and terrain is width × height long', () => {
+    expect(MAP_PANEL.slice(0, ORIGINAL_MAP_IDS.length)).toEqual(ORIGINAL_MAP_IDS)
     for (const id of MAP_PANEL) {
       const b = boardOf(id)
-      expect(formatOf(b), id).not.toBeNull()
+      // V2 appends authored dimensions; the original18 preset maps retain their contract.
+      if (ORIGINAL_MAP_IDS.includes(id)) expect(formatOf(b), id).not.toBeNull()
+      expect(validBoard(b), id).toBe(true)
       expect(terrainOf(id).length, id).toBe(b.width * b.height)
     }
   })

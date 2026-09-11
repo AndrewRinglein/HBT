@@ -1,0 +1,54 @@
+
+> hobat-content@1.0.0 ship:dry
+> node ship.mjs --dry
+
+Checked assemble.mjs
+Checked functions.mjs
+Checked assemble.mjs
+Checked expect.mjs
+Checked checklevels.mjs
+Checked mkenginepack.mjs
+Checked mklevelsmd.mjs
+Checked build-viewer.mjs
+Checked mkcodexmd.mjs
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+elementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+
+    at C:\Users\aring\AppData\Local\Temp\hobat-publish-Mw2OCX\content\verify-codex.mjs:53:31 {
+  log: [
+    '  - attempting click action',
+    '    - waiting for element to be visible, enabled and stable'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0
+NOT SHIPPING: verify-codex.mjs failed:
+
+1 · FRESHNESS
+  ok    hbt-codex.html is newer than all 42 sources
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+elementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+
+    at C:\Users\aring\AppData\Local\Temp\hobat-publish-Mw2OCX\content\verify-codex.mjs:53:31 {
+  log: [
+    '  - attempting click action',
+    '    - waiting for element to be visible, enabled and stable'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0
+

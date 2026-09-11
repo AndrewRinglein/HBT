@@ -1,0 +1,32 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+---------------x--------------------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-boards.test.ts > authored board boundaries > rejects an otherwise coherent oversized snapshot at the board boundary
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/authored-boards.test.ts:48:64
+     46|     snapshot.state.terrain = Array(10100).fill(0)
+     47|     if (snapshot.state.layers) snapshot.state.layers = Array(10100).fi…
+     48|     expect(() => restoreBattle(JSON.stringify(snapshot), ctx)).toThrow…
+       |                                                                ^
+     49|   })
+     50|   it.each([null, { width: 10001, height: 1 }, { width: 16.5, height: 1…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 35 skipped (36)
+   Start at  07:32:51
+   Duration  629ms (transform 380ms, setup 0ms, import 485ms, tests 28ms, environment 0ms)
+

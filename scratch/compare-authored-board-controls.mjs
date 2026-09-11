@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+const base = '76cbd2e';
+const previous = execFileSync('git', ['show', `${base}:.state/baseline.hash`], { encoding: 'utf8' }).trim().split(/\r?\n/);
+const current = fs.readFileSync('scratch/authored-boards-controls.log', 'utf8').trim().split(/\r?\n/);
+assert.equal(previous.length, 18);
+assert.deepEqual(current.slice(0, 18), previous, 'every original map and event hash must stay exact and ordered');
+assert.equal(current.length, 20);
+assert.deepEqual(current.slice(18).map(row => row.split(' ')[0]), ['test.map.journey-20x10', 'test.map.authored-40x40']);
+console.log(JSON.stringify({ base, identicalOriginalHashes: 18, added: current.slice(18) }, null, 2));

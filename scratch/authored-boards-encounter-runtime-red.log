@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+--------------------------x--x--
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-boards.test.ts > authored board boundaries > test.map.journey-20x10 publishes its encounter dimensions and boundary placement
+ FAIL  test/authored-boards.test.ts > authored board boundaries > test.map.authored-40x40 publishes its encounter dimensions and boundary placement
+AssertionError: expected undefined to be defined
+ ❯ test/authored-boards.test.ts:62:25
+     60|     it(`${mapId} publishes its encounter dimensions and boundary place…
+     61|       const encounter = ENCOUNTERS[mapId.replace('test.map.', 'test.en…
+     62|       expect(encounter).toBeDefined(); expect(encounter!.board).toEqua…
+       |                         ^
+     63|       const ctx = createBattle({ replicate: 0, encounter: encounter!, …
+     64|       expect(ctx.state.units.find(u => u.side === 'enemy')!.hex).toBe(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 30 skipped (32)
+   Start at  07:30:07
+   Duration  613ms (transform 389ms, setup 0ms, import 494ms, tests 4ms, environment 0ms)
+

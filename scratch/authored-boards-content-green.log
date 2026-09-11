@@ -1,0 +1,41 @@
+✔ compiler publishes both actual TEST encounters with map dimensions intact (147.3662ms)
+✔ assembler accepts 20x10 map and encounter (127.1347ms)
+✔ compiler transports 20x10 shipping map, TEST map and encounter (158.9867ms)
+✔ assembler accepts 40x40 map and encounter (120.9091ms)
+✔ compiler transports 40x40 shipping map, TEST map and encounter (159.2079ms)
+✔ assembler rejects malformed map {"rows":[]} (110.2927ms)
+✔ compiler rejects malformed map {"rows":[]} (146.2625ms)
+✔ assembler rejects malformed map {"rows":[""]} (107.4028ms)
+✔ compiler rejects malformed map {"rows":[""]} (141.6569ms)
+✔ assembler rejects malformed map {"rows":[null]} (105.5252ms)
+✔ compiler rejects malformed map {"rows":[null]} (141.636ms)
+✔ assembler rejects malformed map {"rows":[5]} (106.8919ms)
+✔ compiler rejects malformed map {"rows":[5]} (141.7006ms)
+✔ assembler rejects malformed map {"rows":[{"length":20}]} (108.9463ms)
+✔ compiler rejects malformed map {"rows":[{"length":20}]} (139.9345ms)
+✔ assembler rejects malformed map {"rows":["..","."]} (107.8721ms)
+✔ compiler rejects malformed map {"rows":["..","."]} (140.1408ms)
+✔ assembler rejects malformed map {"board":{"width":9007199254740992,"height":1}} (106.1069ms)
+✔ compiler rejects malformed map {"board":{"width":9007199254740992,"height":1}} (140.3326ms)
+✔ assembler rejects malformed map {"board":null} (106.1881ms)
+✔ compiler rejects malformed map {"board":null} (140.6612ms)
+✔ assembler rejects malformed map {"format":"16x16"} (108.8782ms)
+✔ compiler rejects malformed map {"format":"16x16"} (138.4704ms)
+✔ assembler rejects malformed map {"format":null} (108.0314ms)
+✔ compiler rejects malformed map {"format":null} (141.7538ms)
+✔ assembler rejects malformed map {"rows":["....................................................... (106.6487ms)
+✔ compiler rejects malformed map {"rows":["....................................................... (144.9062ms)
+✔ assembler rejects malformed map {"deploy":{"hero":"top","enemy":"east"}} (107.6841ms)
+✔ compiler rejects malformed map {"deploy":{"hero":"top","enemy":"east"}} (142.944ms)
+✔ assembler rejects malformed map {"deploy":{"hero":"west","enemy":"west"}} (107.0449ms)
+✔ compiler rejects malformed map {"deploy":{"hero":"west","enemy":"west"}} (141.113ms)
+✔ assembler rejects malformed map {"deploy":null} (107.4993ms)
+✔ compiler rejects malformed map {"deploy":null} (142.6772ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4266.4828

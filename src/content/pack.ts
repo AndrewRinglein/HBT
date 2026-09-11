@@ -5,7 +5,7 @@
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
 import type { ActionDef, AbilityDef, AttackDef, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
-import { formatOf } from '../core/hex.js'
+import { formatOf, validBoard, MAX_BOARD_CELLS, type Board } from '../core/hex.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
 const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat', 'stamina.gain']
@@ -401,9 +401,13 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
 
 /** The encounters — encounter.runner (2026-09-03). Validated loudly: every unit named must be in the pack. */
 export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: Readonly<Record<string, EncounterDef>>): Readonly<Record<string, EncounterDef>> {
-  const raw = rows ?? (UNIT_PACK as unknown as { encounters?: Readonly<Record<string, EncounterDef>> }).encounters ?? {}
+  const data = UNIT_PACK as unknown as { encounters?: Readonly<Record<string, EncounterDef>>; test?: { encounters?: Readonly<Record<string, EncounterDef>> } }
+  const shipping = data.encounters ?? {}, testing = data.test?.encounters ?? {}
+  for (const k of Object.keys(testing)) if (Object.hasOwn(shipping, k)) throw new Error(`duplicate encounter '${k}' across content lanes`)
+  const raw = rows ?? { ...shipping, ...testing }
   for (const [k, e] of Object.entries(raw)) {
     if (k !== e.id) throw new Error(`encounters: key '${k}' names id '${e.id}'`)
+    if ('board' in e && !validBoard(e.board)) throw new Error(`encounters: '${k}' has invalid board dimensions`)
     const check = (p: { unit: string }, where: string) => { if (!units[p.unit]) throw new Error(`encounters: '${k}' ${where} names '${p.unit}', which is not a unit in the pack`) }
     for (const p of e.setup) check(p, 'setup')
     for (const r of e.schedule) { if (r.phase === undefined && r.enemyPhase === undefined) throw new Error(`encounters: '${k}' has a schedule row with no phase`); for (const p of r.spawn) check(p, 'schedule') }
@@ -422,8 +426,7 @@ export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: 
  * PROVING-PLAN Stage A2; session 9's E1). Content owns every shipping map as a
  * row in `gen/maps.json`: `id`, `name`, `board`, `format`, `rows`, and an
  * optional `deploy`. Validated loudly here — key = id, rectangular, the board
- * the rows draw is the board the row claims, and that board is one of the four
- * ruled formats — so `boardOf` never meets a map that lies about its size.
+ * the rows draw is the bounded board the row claims — preset names are labels.
  * Glyphs are checked where the legend lives (maps.ts terrainOf). Order is the
  * pack's, which is the generator's fixed order (Law 6).
  */
@@ -433,20 +436,35 @@ export type PackMapRow = {
   readonly deploy?: { readonly hero: 'north' | 'south' | 'east' | 'west'; readonly enemy: 'north' | 'south' | 'east' | 'west' }
   readonly note?: string
 }
-export function packMaps(): readonly PackMapRow[] {
-  const raw = (UNIT_PACK as unknown as { maps?: Readonly<Record<string, PackMapRow>> }).maps ?? {}
+/** Validate both packed and engine-owned rows before geometry/terrain allocation. */
+export function mapBoardOf(m: PackMapRow): Board {
+  if (!m || typeof m.id !== 'string' || !m.id || typeof m.name !== 'string' || !m.name.trim()) throw new Error('maps: id and name must be nonempty strings')
+  if (!m || !Array.isArray(m.rows) || m.rows.length === 0 || m.rows.some(row => typeof row !== 'string')) throw new Error('maps: rows must be nonempty strings')
+  const board = { width: m.rows[0]!.length, height: m.rows.length }
+  if (!validBoard(board)) throw new Error(`maps: '${m.id}' has invalid board dimensions (maximum ${MAX_BOARD_CELLS} cells)`)
+  if (m.rows.some(row => row.length !== board.width)) throw new Error(`maps: '${m.id}' is not rectangular`)
+  if ('board' in m && (!validBoard(m.board) || m.board.width !== board.width || m.board.height !== board.height)) throw new Error(`maps: '${m.id}' declared board differs from rows`)
+  const format = formatOf(board) ?? `${board.width}x${board.height}`
+  if ('format' in m && m.format !== format) throw new Error(`maps: '${m.id}' claims format '${m.format}' but draws '${format}'`)
+  if ('deploy' in m) {
+    const edges = ['north', 'south', 'east', 'west']
+    if (!m.deploy || !edges.includes(m.deploy.hero) || !edges.includes(m.deploy.enemy) || m.deploy.hero === m.deploy.enemy) throw new Error(`maps: '${m.id}' deploy requires two distinct edges`)
+  }
+  return board
+}
+function loadMaps(raw: Readonly<Record<string, PackMapRow>>): readonly PackMapRow[] {
   const out: PackMapRow[] = []
   for (const [k, m] of Object.entries(raw)) {
+    if (!m || typeof m !== 'object') throw new Error(`maps: invalid row '${k}'`)
     if (k !== m.id) throw new Error(`maps: key '${k}' names id '${m.id}'`)
-    if (!Array.isArray(m.rows) || m.rows.length === 0) throw new Error(`maps: '${k}' has no rows`)
-    const height = m.rows.length, width = m.rows[0]!.length
-    for (const row of m.rows) if (row.length !== width) throw new Error(`maps: '${k}' has a row of ${row.length} in a board ${width} wide — not rectangular`)
-    const fmt = formatOf({ width, height })
-    if (!fmt) throw new Error(`maps: '${k}' draws ${width}×${height}, none of the four formats`)
-    if (m.board && (m.board.width !== width || m.board.height !== height)) throw new Error(`maps: '${k}' claims ${m.board.width}×${m.board.height} but draws ${width}×${height}`)
-    if (m.format && m.format !== fmt) throw new Error(`maps: '${k}' claims format '${m.format}' but draws '${fmt}'`)
-    if (m.deploy && m.deploy.hero === m.deploy.enemy) throw new Error(`maps: '${k}' deploys both sides on its ${m.deploy.hero} edge`)
+    mapBoardOf(m)
     out.push(m)
   }
   return out
+}
+export function packMaps(): readonly PackMapRow[] {
+  return loadMaps((UNIT_PACK as unknown as { maps?: Readonly<Record<string, PackMapRow>> }).maps ?? {})
+}
+export function packTestMaps(): readonly PackMapRow[] {
+  return loadMaps((UNIT_PACK as unknown as { test: { maps?: Readonly<Record<string, PackMapRow>> } }).test.maps ?? {})
 }
