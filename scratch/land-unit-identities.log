@@ -15,3 +15,30 @@ gate: fix.unit-identities   [land]
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content  — tests fail without unit.test-warrior,unit.test-zombie — they genuinely test it
+
+effect of unit.test-warrior,unit.test-zombie — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.3->4.3
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.2->5.2
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.proving.ruin: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.2->3.2
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 5.6->5.6
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.7->4.7
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 5.7->5.7
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+
+
+⛓  IRON GAUNTLET: NOT PASSED — 2 flag(s) warned. The landing stands; the seal is withheld.
+
+LANDED as 72d461b  (flagged for review)
+
