@@ -385,6 +385,16 @@
     "note": "fix.bleed-magnitude's variant source: the test zombie PLUS the gash rider — a delta over the cohort's zombie, fielded only by showcase.gash-variant."
   }
   ,{
+    "id": "test-move-plus-one", "from": "test-oathblade", "name": "Short runner (TEST)",
+    "set": { "movement": 1 }, "triggers": [], "abilities": [], "moves": ["power.test-move-plus-one"],
+    "note": "Live fixture for the positive movement allowance."
+  },
+  {
+    "id": "test-move-plus-three", "from": "test-oathblade", "name": "Long runner (TEST)",
+    "set": { "movement": 1 }, "triggers": [], "abilities": [], "moves": ["power.test-move-plus-three"],
+    "note": "Second live data variant for the positive movement allowance."
+  },
+  {
     "id": "test-ordered-double", "from": "test-air-mage", "name": "Packet caster (TEST)",
     "set": { "magic": 0 }, "triggers": [], "abilities": ["power.test-ordered-double"],
     "note": "fix.ordered-power-preview: registered live source for the two-packet preview probe."

@@ -1486,7 +1486,18 @@ function testBadges() {
 
 const testAttackRows = testAttacks();
 const testAbilityRows = testAbilities();
-const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows, testAbilityRows), attacks: testAttackRows, abilities: testAbilityRows, statuses: testStatuses(), badges: testBadges() };
+function testMoves() {
+  const out = {};
+  const fields = new Set(['id', 'name', 'shape', 'stepRange', 'effects', 'staminaCost', 'budgetMod', 'cooldown', 'warmup', 'uses']);
+  for (const row of readTest('moves.json')) {
+    const { note, ...move } = row;
+    if (!isTestId.ability(move.id) || out[move.id]) throw new Error(`content/test/moves.json: invalid or duplicate '${move.id}'`);
+    for (const key of Object.keys(move)) if (!fields.has(key)) throw new Error(`content/test/moves.json: '${move.id}' carries unknown field '${key}'`);
+    out[move.id] = move;
+  }
+  return out;
+}
+const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows, testAbilityRows), attacks: testAttackRows, abilities: testAbilityRows, statuses: testStatuses(), badges: testBadges(), moves: testMoves() };
 
 const FORMAT_OF = { '8x8': 'duel', '16x8': 'dungeon', '16x16': 'standard', '24x24': 'horde' };   // hex.ts FORMATS; used by both the encounter compiler and the map compiler
 // ── ENCOUNTERS (encounter.runner, 2026-09-03; P11 approved as written) ─────────
