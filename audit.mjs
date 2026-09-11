@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { validateMap } from './map-schema.mjs';
 const D=JSON.parse(fs.readFileSync('hbt-content.json','utf8'));
 const HOOKS=new Set(['startOfBattle','onAttack','onMiss','onHit','onCrit','onDamage','onTakingDamage','onKill','onDeath','onEquip','onActivationEnd','onDodge','aura','passive']);
 const SLOTTED=new Set(['relic','trinket','idol']);
@@ -381,7 +382,7 @@ if(D.encounters){
 }
 
 // R26 THE MAPS. Added 2026-09-04 with content.maps-as-rows. The board is the rows; a map
-// that is not one of the four ruled formats, is not rectangular, uses a glyph outside MAP-01's
+// that has invalid bounded dimensions, is not rectangular, uses a glyph outside MAP-01's
 // legend, or restates the default deploy, is a finding — not a thing anyone notices at runtime.
 if(D.maps){
   const FORMATS=new Set(['8x8','16x8','16x16','24x24']);
@@ -390,7 +391,7 @@ if(D.maps){
   for(const m of D.maps){
     const w=(m.rows?.[0]||'').length, h=(m.rows||[]).length, fmt=w+'x'+h;
     byFormat[fmt]=(byFormat[fmt]||0)+1;
-    if(!FORMATS.has(fmt)) add('map-not-a-ruled-format',m.name||m.id,fmt);
+    try { validateMap(m); } catch(error) { add('map-invalid',m.name||m.id,error.message); continue; }
     for(const r of (m.rows||[])) if(r.length!==w){ add('map-not-rectangular',m.name||m.id,`a row of ${r.length} on a board ${w} wide`); break; }
     const bad=[...new Set([...(m.rows||[]).join('')].filter(g=>!GLYPHS.has(g)))];
     if(bad.length) add('map-glyph-not-in-legend',m.name||m.id,bad.join(' '));

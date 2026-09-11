@@ -1,0 +1,42 @@
+[
+  {
+    "id": "test.encounter.journey-20x10",
+    "name": "Authored 20×10 (TEST)",
+    "map": "test.map.journey-20x10",
+    "board": {
+      "width": 20,
+      "height": 10
+    },
+    "note": "board.authored-dimensions: published coordinate and board metadata probe.",
+    "setup": [
+      {
+        "unit": "unit.zombie",
+        "at": {
+          "col": 19,
+          "row": 9
+        }
+      }
+    ],
+    "schedule": []
+  },
+  {
+    "id": "test.encounter.authored-40x40",
+    "name": "Authored 40×40 (TEST)",
+    "map": "test.map.authored-40x40",
+    "board": {
+      "width": 40,
+      "height": 40
+    },
+    "note": "board.authored-dimensions: published coordinate and board metadata probe.",
+    "setup": [
+      {
+        "unit": "unit.zombie",
+        "at": {
+          "col": 39,
+          "row": 39
+        }
+      }
+    ],
+    "schedule": []
+  }
+]

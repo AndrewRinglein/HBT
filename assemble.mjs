@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { validateMap, validateEncounterBoard } from './map-schema.mjs';
 const G='gen/', R=p=>JSON.parse(fs.readFileSync(G+p,'utf8'));
 const STATS=new Set(['strength','precision','accuracy','crit','luck','reach','dodge','vision','armor','resist','health','magic','spirit','toughness','movement','staminaMax','staminaRegen','surge','itemSlots','deathbedFighting','corruption','favor','bleedOutTurns']);
 const ID=/^[a-z]+\.[a-z0-9.-]+$/;
@@ -38,8 +39,7 @@ const cl=R('classes.json'); out.classes=cl.classes; out.stats=cl.stats; out.art=
 out.levels=R('levels.json');
 // ---- THE MAPS (content.maps-as-rows, PROVING-PLAN Stage A2, 2026-09-04). Moved out of
 // engine/src/content/maps.ts. The ROWS are the board: width is a row's length, height is the
-// number of rows, and the result must be one of the four ruled formats. The test.map.* boards
-// stay in the engine — they never ship and they are not content.
+// number of rows. V2 accepts bounded authored sizes; TEST rows are separate.
 out.maps=R('maps.json').maps;
 // ---- heroes, extracted mechanically from hell-tcg's five creation paths
 out.heroes=R('heroes.json');
@@ -107,29 +107,19 @@ if(fs.existsSync(G+'not-ported.json')) out.notPorted=R('not-ported.json').fields
 
 // ---- the function list: the complete vocabulary content is allowed to use
 if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
-// ---- maps. Every rule here exists because the alternative is a board that silently is not
-// the size it says. FORMATS mirrors engine/src/core/hex.ts; a fifth size is a ruling, not a typo.
-{ const FORMATS={'8x8':1,'16x8':1,'16x16':1,'24x24':1};
-  const GLYPHS=new Set(['.','h','f','r','R','w','x','b','p']);   // MAP-01's legend, one glyph per terrain
-  const EDGES=new Set(['north','south','east','west']);
-  const mid=new Set();
-  for(const m of out.maps||[]){
-    if(!m.id||!/^map\./.test(m.id)) { prob.push(`maps: bad id ${JSON.stringify(m.id)} — a shipping map is map.*`); continue; }
-    if(mid.has(m.id)) prob.push(`maps: DUPLICATE id ${m.id}`); mid.add(m.id);
-    if(!Array.isArray(m.rows)||!m.rows.length){ prob.push(`maps ${m.id}: no rows`); continue; }
-    const w=m.rows[0].length, h=m.rows.length;
-    for(const r of m.rows) if(r.length!==w) prob.push(`maps ${m.id}: a row of ${r.length} on a board ${w} wide — not rectangular`);
-    const fmt=w+'x'+h;
-    if(!FORMATS[fmt]) prob.push(`maps ${m.id}: ${fmt} is not one of the four ruled formats (8x8, 16x8, 16x16, 24x24)`);
-    if(m.format && m.format!==fmt) prob.push(`maps ${m.id}: declares format ${m.format} but its rows are ${fmt} — the rows are the board`);
-    for(const r of m.rows) for(const g of r) if(!GLYPHS.has(g)) prob.push(`maps ${m.id}: glyph "${g}" is not in the MAP-01 legend`);
-    if(m.deploy){
-      if(!EDGES.has(m.deploy.hero)||!EDGES.has(m.deploy.enemy)) prob.push(`maps ${m.id}: deploy names an edge that is not north/south/east/west`);
-      else if(m.deploy.hero===m.deploy.enemy) prob.push(`maps ${m.id}: both sides deploy on the ${m.deploy.hero} edge`);
-      else if(m.deploy.hero==='west'&&m.deploy.enemy==='east') prob.push(`maps ${m.id}: declares the DEFAULT deploy — leave it off, or the default stops meaning anything`);
-    }
-    if(!m.note) prob.push(`maps ${m.id}: no note — a board with no stated intent cannot be re-authored by anyone else`);
-  } }
+// Maps validate through the same schema used by the compiler. TEST rows remain
+// outside shipping Codex content, but malformed test input still blocks assembly.
+const validatedBoards = new Map();
+for (const [rows, testing] of [[out.maps, false], [fs.existsSync('test/maps.json') ? JSON.parse(fs.readFileSync('test/maps.json', 'utf8')) : [], true]]) {
+  if (!Array.isArray(rows)) { prob.push('maps: expected an array'); continue; }
+  for (const m of rows) {
+    try {
+      const board = validateMap(m, testing);
+      if (validatedBoards.has(m.id)) throw new Error(`maps: duplicate ${m.id}`);
+      validatedBoards.set(m.id, board);
+    } catch (error) { prob.push(error.message); }
+  }
+}
 { const known=new Set(out.classes.map(c=>c.id)); const hid=new Set();
   for(const h of out.heroes.heroes){
     if(!ID.test(h.id)) prob.push(`hero: bad id "${h.id}"`);
@@ -204,26 +194,13 @@ try{ out.encounters=R('encounters.json'); }catch{ out.encounters=null; }
 // not a rounding error — it is a unit that never arrives. This is exactly what a re-authored
 // axis gets wrong, so it is checked here rather than discovered in a sweep.
 if(out.encounters){
-  const FORMATS=new Set(['8x8','16x8','16x16','24x24']);
-  const byMap=new Map((out.maps||[]).map(m=>[m.id,{width:m.rows[0].length,height:m.rows.length}]));
-  const rows=[...(out.encounters.prologue||[]),...(out.encounters.scripted||[]),...(out.encounters.authored||[])];
+  const byMap=validatedBoards;
+  const testing=fs.existsSync('test/encounters.json') ? JSON.parse(fs.readFileSync('test/encounters.json','utf8')) : [];
+  if (!Array.isArray(testing)) throw new Error('TEST encounters must be an array');
+  for (const e of testing) if (typeof e?.id !== 'string' || !/^test\.encounter\.[a-z0-9.-]+$/.test(e.id)) prob.push(`invalid TEST encounter id ${e?.id}`);
+  const rows=[...(out.encounters.prologue||[]),...(out.encounters.scripted||[]),...(out.encounters.authored||[]),...testing];
   for(const r of rows){
-    const b=r.board;
-    if(!b||typeof b.width!=='number'||typeof b.height!=='number'){ prob.push(`encounters ${r.id}: no board {width,height}`); continue; }
-    if(!FORMATS.has(b.width+'x'+b.height)) prob.push(`encounters ${r.id}: board ${b.width}x${b.height} is not one of the four ruled formats`);
-    if(typeof r.map==='string'&&r.map!=='none'&&byMap.has(r.map)){
-      const m=byMap.get(r.map);
-      if(m.width!==b.width||m.height!==b.height) prob.push(`encounters ${r.id}: board ${b.width}x${b.height} but map ${r.map} is ${m.width}x${m.height}`);
-    } else if(typeof r.map==='string'&&r.map!=='none'&&!Array.isArray(r.map)) prob.push(`encounters ${r.id}: names map ${r.map}, which is not a map row`);
-    const oob=[];
-    const walk=(o)=>{ if(!o||typeof o!=='object') return;
-      if(Array.isArray(o)) return o.forEach(walk);
-      if(typeof o.col==='number'&&typeof o.row==='number'&&(o.col<0||o.col>=b.width||o.row<0||o.row>=b.height)) oob.push(o.col+','+o.row);
-      for(const k of Object.keys(o)) if(k!=='col'&&k!=='row') walk(o[k]); };
-    walk(r.setup); walk(r.schedule); walk(r.heroZone);
-    if(oob.length) prob.push(`encounters ${r.id}: ${oob.length} placement(s) off a ${b.width}x${b.height} board — ${oob.slice(0,6).join(' · ')}`);
-    for(const p of (r.paint||[])) for(const id of (p.hexes||[]))
-      if(id<0||id>=b.width*b.height){ prob.push(`encounters ${r.id}: paint hex ${id} is off a ${b.width}x${b.height} board`); break; }
+    try { validateEncounterBoard(r, byMap); } catch (error) { prob.push(error.message); continue; }
     if(r.band&&r.band.axis==='col'&&(r.band.startCol===undefined||r.band.startRow!==undefined))
       prob.push(`encounters ${r.id}: band axis is col — it must carry startCol and must NOT carry startRow`);
   }

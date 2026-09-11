@@ -14,7 +14,7 @@ function candidate(change) {
   try {
     fs.mkdirSync(work);
     fs.mkdirSync(path.join(root, 'engine/src/content/generated'), { recursive: true });
-    for (const name of ['mkenginepack.mjs', 'hbt-content.json', 'settled.json']) fs.copyFileSync(path.join(source, name), path.join(work, name));
+    for (const name of ['mkenginepack.mjs', 'map-schema.mjs', 'hbt-content.json', 'settled.json']) fs.copyFileSync(path.join(source, name), path.join(work, name));
     for (const name of ['gen', 'test']) fs.cpSync(path.join(source, name), path.join(work, name), { recursive: true, filter: p => !fs.statSync(p).isFile() || p.endsWith('.json') });
     const edit = (name, fn) => { const p = path.join(work, name); const row = JSON.parse(fs.readFileSync(p, 'utf8')); fn(row); fs.writeFileSync(p, JSON.stringify(row)); };
     change(edit);

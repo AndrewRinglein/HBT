@@ -28,6 +28,12 @@ is an array of rows with a `note` saying which backlog item the row proves.
 Ids: units `test-*`, attacks `attack.test-*`, powers `power.test-*`, statuses
 `test.status.*`, triggers `test.*` / `trigger.test-*`.
 
+V2 also uses `maps.json` (`test.map.*`) and `encounters.json`
+(`test.encounter.*`). Complete map rows carry a name, note and rectangular glyph
+rows; optional board/format metadata must match. TEST encounters name TEST maps,
+declare their board and use the normal setup/schedule shape. Both pass through
+the same bounded dimension validation as shipping content.
+
 **Since 2026-09-02 (`test.fixture-migration`)** the engine's pre-cohort fixtures
 live here too: `test-warrior`, `test-ranger`, `test-mage` (the 2026-08-14 bodies,
 kept exactly), their six attacks and the Arcane Bolt, all renamed into the test

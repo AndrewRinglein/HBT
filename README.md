@@ -15,6 +15,19 @@ Both live one level up, at the top of the project folder, so neither is buried i
 
 ## The pipeline
 
+V2 maps use bounded authored dimensions: positive safe integers, at most 10,000
+cells. `map-schema.mjs` validates map rows/metadata and encounter coordinates for
+both assembly and compilation. The old four sizes remain preset labels, not a
+restriction. Raw map `format`, when present, is `WIDTHxHEIGHT`; the engine pack
+keeps the old preset labels and uses that dimension string for other sizes.
+The shared bound matches the atlas ceiling provisionally; it is a resource
+limit, not a visual-design ruling. Existing authored maps are unchanged.
+
+`test/maps.json` and `test/encounters.json` are separate TEST lanes. They validate
+during assembly without entering shipping Codex rows, then compile to
+`pack.test.maps` / `pack.test.encounters`. Two technical 20×10 and 40×40 fixtures
+prove board transport; they are not user maps or visually approved layouts.
+
 **Publish with `npm run ship`; verify without publication with `npm run ship:dry`.**
 Both commands build the complete candidate in an owned temporary workspace, check the
 expected audit findings and level prices, render every Codex tab in a browser, load the
