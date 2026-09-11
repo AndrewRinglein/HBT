@@ -27,7 +27,7 @@ const fail = (m) => { console.error('GATE FAIL — ' + m); process.exit(1) }
   const offenders = []
   const walk = d => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) walk(p)
     else if (/\.(js|ts|mjs|mts)$/.test(f)) {
-      const rel = relative(PKG, p)
+      const rel = relative(PKG, p).replaceAll('\\', '/')
       if (rel === 'src/engine.ts') continue
       /* any mention of the engine's source tree at all — import, require,
          dynamic import, a path in a template string (review 2026-09-03: the

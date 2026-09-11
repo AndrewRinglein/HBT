@@ -1,0 +1,10 @@
+GATE FAIL — the door is not the only way in:
+  src\engine.ts names the engine's source (ityDef, MoveDef } from '../../engine/src/c)
+  src\engine.ts names the engine's source (ype { StatusDef } from '../../engine/src/c)
+  src\engine.ts names the engine's source (onDef, BadgeDef } from '../../engine/src/c)
+  src\engine.ts names the engine's source (ILITIES, BADGES } from '../../engine/src/c)
+  src\engine.ts names the engine's source ( export { MOVES } from '../../engine/src/c)
+  src\engine.ts names the engine's source (port { STATUSES } from '../../engine/src/c)
+  src\engine.ts names the engine's source (ardOf, deployOf } from '../../engine/src/c)
+  src\engine.ts names the engine's source (etryOf, FORMATS } from '../../engine/src/c)
+  src\engine.ts names the engine's source ( Edge, Geometry } from '../../engine/src/c)

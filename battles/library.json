@@ -84,6 +84,14 @@
   {
    "file": "map_duel-8_s1.json",
    "label": "Duel 8×8"
+  },
+  {
+   "file": "showcase.rime-s1.json",
+   "label": "Rime — repeated affliction"
+  },
+  {
+   "file": "test.props-viewer-ranged-zoc.json",
+   "label": "Ranged-only reaction — no melee attack"
   }
  ]
 }

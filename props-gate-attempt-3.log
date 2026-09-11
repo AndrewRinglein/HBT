@@ -1,0 +1,15 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+maps: 22 in the engine, all in both dumps
+FAIL — the page threw while booting: Error: map.loaded has no canonical props; export this battle with the current engine
+    at fold (eval at <anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:64:13), <anonymous>:375:44)
+    at applyOne (eval at <anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:64:13), <anonymous>:4565:20)
+    at Object.push (eval at <anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:64:13), <anonymous>:4699:33)
+    at load (eval at <anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:64:13), <anonymous>:5047:14)
+    at startHarness (eval at <anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:64:13), <anonymous>:5211:5)
+    at eval (eval at <anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:64:13), <anonymous>:5229:11)
+    at eval (eval at <anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:64:13), <anonymous>:5233:3)
+    at file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:67:3
+build-viewer: verify FAILED — C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.html left untouched; the candidate is at C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.candidate.html
+GATE FAIL — build/verify

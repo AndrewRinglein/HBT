@@ -26,7 +26,7 @@
              speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -129,6 +129,7 @@ export function mountBattleViewer(root, data, opts = {}) {
 
   function render() {
     if (!V.layers.ground) buildGround(V)
+    syncProps(V)
     /* the persistent board objects, coplanar with the ground and right after it */
     syncLayers(V); syncCorpses(V); syncAuras(V)
     drawAim(V)

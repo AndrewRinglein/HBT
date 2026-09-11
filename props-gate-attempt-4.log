@@ -1,0 +1,31 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+maps: 22 in the engine, all in both dumps
+FAIL
+  Horde 24×24 — the river: event type action.spent is neither folded nor on the ignore list
+  Supper (seed 5): event type action.spent is neither folded nor on the ignore list
+  Embers: event type action.spent is neither folded nor on the ignore list
+  Showcase: event type action.spent is neither folded nor on the ignore list
+  Flanks: event type action.spent is neither folded nor on the ignore list
+  Thicket: event type action.spent is neither folded nor on the ignore list
+  Field: event type action.spent is neither folded nor on the ignore list
+  Highlands: event type action.spent is neither folded nor on the ignore list
+  Civilians: event type action.spent is neither folded nor on the ignore list
+  Hunter Alone: event type action.spent is neither folded nor on the ignore list
+  Prologue Bestiary: event type action.spent is neither folded nor on the ignore list
+  Beasts: event type action.spent is neither folded nor on the ignore list
+  Alpha Team: event type action.spent is neither folded nor on the ignore list
+  Item Powers: event type action.spent is neither folded nor on the ignore list
+  Arc Golem: event type action.spent is neither folded nor on the ignore list
+  The Kiln: event type action.spent is neither folded nor on the ignore list
+  Horrors of the Night: event type action.spent is neither folded nor on the ignore list
+  Surrounded (seed 3): event type action.spent is neither folded nor on the ignore list
+  Assembled Party: event type action.spent is neither folded nor on the ignore list
+  Dungeon 16×8 (heroes west): event type action.spent is neither folded nor on the ignore list
+  Duel 8×8: event type action.spent is neither folded nor on the ignore list
+  fold: aoo.skipped is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it
+  fold: badge.held is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it
+  dropped export: event type action.spent is neither folded nor on the ignore list
+build-viewer: verify FAILED — C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.html left untouched; the candidate is at C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.candidate.html
+GATE FAIL — build/verify

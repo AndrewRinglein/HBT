@@ -40,6 +40,7 @@ export function createState() {
     encounter: null,       // {id, name, gaps, objectives:[unit ids], result?}
     AOO: null,             // {holder, mover, attackId} while a free swing interrupts the mover's walk
     board: null,           // {width, height, deploy:{hero, enemy}} from map.loaded (engine 5603c40, §10)
+    props: null,           // detached initial prop facts; null only before map.loaded
   }
 }
 
@@ -49,7 +50,7 @@ function mkUnit(e, UD) {
     hp: e.hp, maxHp: e.maxHp, stam: e.stamina, maxStam: e.maxStamina, st: {}, stBy: {}, life: 'standing', bleed: 0,
     /* `mvBase` was the resting movement until mvOf() read it off the sheet plus
        the log's modifiers (2026-09-03); it is kept OUT rather than set-and-unread */
-    activeMv: null, mods: [], injuries: [], cds: {}, dmgSeen: {},
+    activeMv: null, moveUsed: false, primaryUsed: false, mods: [], injuries: [], cds: {}, dmgSeen: {},
     /* the kit the engine fielded this unit with (unit.equipped): items, the
        attacks they grant, the powers they grant — the bare row has none of it */
     kit: { items: [], grants: [], abilities: [], badges: [] },
@@ -82,6 +83,8 @@ export function fold(S, e, ctx, now = 0) {
     case 'map.loaded':
       /* the board is the map's: width, height and which edge each side deploys on */
       S.board = { mapId: e.mapId, width: e.width, height: e.height, deploy: e.deploy ? { ...e.deploy } : null }
+      if (!Array.isArray(e.props)) throw new Error('map.loaded has no canonical props; export this battle with the current engine')
+      S.props = structuredClone(e.props)
       break
     case 'unit.equipped':
       /* seam.items-per-unit: the fielded unit is the bare row PLUS its kit —
@@ -162,11 +165,15 @@ export function fold(S, e, ctx, now = 0) {
     case 'turn.begin': S.turnNo = e.turn ?? (S.turnNo + 1); break
     case 'phase.begin': if (e.phase) S.phase = e.phase; break
     case 'phase.end.done': S.phase = e.side === 'hero' ? 'enemy' : 'hero'; S.acted = {}; break
+    case 'action.spent':
+      if (!U[e.actor] || typeof e.moveUsed !== 'boolean' || typeof e.primaryUsed !== 'boolean') throw new Error('action.spent lacks authoritative actor/slot state')
+      U[e.actor].moveUsed = e.moveUsed; U[e.actor].primaryUsed = e.primaryUsed
+      break
     case 'activation.begin':
       S.activeId = e.actor; S.subjectId = e.actor; S.subjectMode = 'acting'
       /* the engine names the budget only when something reduced it (Law 12);
          otherwise the resting figure stands — the draw side reads mvOf() */
-      if (U[e.actor]) { U[e.actor].activeMv = e.movePoints ?? null; U[e.actor].moveMods = e.movementMods || null; U[e.actor].confusedFrom = null }
+      if (U[e.actor]) { U[e.actor].activeMv = e.movePoints ?? null; U[e.actor].moveMods = e.movementMods || null; U[e.actor].confusedFrom = null; U[e.actor].moveUsed = false; U[e.actor].primaryUsed = false }
       S.AIM = null; S.AOO = null; cue('inspect.clear')          // FIRING and floats run their own clocks
       break
     case 'activation.end':
@@ -436,7 +443,7 @@ export function fold(S, e, ctx, now = 0) {
     case 'surge.checked': if (U[e.actor]) U[e.actor].surgeChance = e.chance; break
     case 'surge.hit':
       /* the hero acts AGAIN inside the same activation */
-      if (U[e.actor]) { U[e.actor].surgeChance = 0; cue('float', { hex: U[e.actor].hex, kind: 'surge', text: 'SURGE!', big: true }) }
+      if (U[e.actor]) { U[e.actor].surgeChance = 0; U[e.actor].moveUsed = false; U[e.actor].primaryUsed = false; cue('float', { hex: U[e.actor].hex, kind: 'surge', text: 'SURGE!', big: true }) }
       break
     case 'power.gained':
       /* the enemy side's Power pool rose — a side-wide number, not a unit's */
@@ -508,7 +515,7 @@ export function foldTo(events, n, ctx) {
 /** The event types the fold knows. verify.mjs checks every packed log and the
     pump's duration table against this until the engine exports EVENT_TYPES
     (THREE-PACKAGES-PLAN §8.3). */
-export const FOLDED_TYPES = ['unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin',
+export const FOLDED_TYPES = ['unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
   'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'stamina.spent',
   'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'cooldown.set',

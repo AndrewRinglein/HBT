@@ -1,0 +1,9 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+maps: 22 in the engine, all in both dumps
+FAIL
+  Ranged-only reaction — no melee attack: no art for test-ranger
+  fold: status.cancelled is listed UNEXERCISED but the library now carries one — delete the entry, the list only shrinks
+build-viewer: verify FAILED — C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.html left untouched; the candidate is at C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.candidate.html
+GATE FAIL — build/verify

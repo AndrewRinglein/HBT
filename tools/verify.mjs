@@ -223,7 +223,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
   const seen = new Set()
   for (const b of LIB.battles) for (const e of b.battle.events) seen.add(e.type)
   /* known-unexercised, each waiting on a showcase that fields it (ENGINE-FINDINGS #10) */
-  const UNEXERCISED = new Set(['status.cancelled', 'encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled'])
+  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled'])
   const dark = FOLDED_TYPES.filter(t => !seen.has(t))
   for (const t of dark) check(UNEXERCISED.has(t), `fold: ${t} is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it`)
   for (const t of UNEXERCISED) check(!seen.has(t), `fold: ${t} is listed UNEXERCISED but the library now carries one — delete the entry, the list only shrinks`)

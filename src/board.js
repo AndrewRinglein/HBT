@@ -82,6 +82,27 @@ export function buildGround(V) {
   V.layers.ground = ground
 }
 
+/** Draw authored footprints as a separate layer; the ground remains visible below. */
+export function syncProps(V) {
+  const props = V.S.props === null ? V.data.F.props : V.S.props
+  if (!Array.isArray(props)) throw new Error('field has no canonical props; regenerate the field dump')
+  const key = JSON.stringify(props)
+  if (V.propKey === key && V.layers.props) return
+  V.layers.props?.remove()
+  const layer = el('props', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none')
+  const { POS, LAYOUT, ASSETS } = V.data
+  for (const p of props) for (const h of p.footprint.hexes) {
+    const pos = POS[h]
+    if (!pos) throw new Error(`prop ${p.id} has no field position for hex ${h}`)
+    const tile = el('prop cell', `left:${pos.px - LAYOUT.W / 2}px;top:${pos.py - LAYOUT.H / 2}px;background-image:url('${ASSETS['hexMountain.png']}');transform:translateZ(1px)`)
+    tile.dataset.prop = p.id; tile.dataset.hex = String(h)
+    tile.title = `${p.id} · ${p.height} · material ${p.material}`
+    layer.appendChild(tile)
+  }
+  placeAfter(V.layers.ground, layer)
+  V.layers.props = layer; V.propKey = key
+}
+
 /* ── THE PAINTED GROUND LAYERS (2026-09-03, EVENTS-FOR-THE-VIEWER §6) ──────
    A layer sits ON the terrain: one tile per painted hex, keyed by hex, in a
    persistent layer right after the ground (coplanar, DOM order the tiebreak).
@@ -1030,4 +1051,3 @@ export function bindCamera(V) {
   document.addEventListener('keydown', key); document.addEventListener('keyup', keyup)
   return () => { document.removeEventListener('keydown', key); document.removeEventListener('keyup', keyup) }
 }
-
