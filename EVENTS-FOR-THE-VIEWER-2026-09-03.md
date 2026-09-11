@@ -262,3 +262,76 @@ fielding — invisible by ruling, do not draw it), `deathbed.stood` names
 encounters are placed heroes-west on their own boards, Rime's frost belt is
 columns 7–9, and `map.proving.open/ridge/ford/copse/ruin` (16×8) exist.
 Re-export the battles after this commit.
+
+## 14. Universal action expenditure (V2, `plumbing.action-spent`)
+
+Rules version `v2-migration.8` adds one record for every accepted action through
+the central `spendAction` path. This is universal under both slot policies,
+including zero stamina cost, free actions and reactions. There is no profile or
+configuration fallback for older event behavior.
+
+`action.spent` has the normal envelope (`seq`, `turn`, `phase`, `type`,
+`causeId`, `actor`, `target`) plus these authoritative fields:
+
+| Field | Meaning |
+|---|---|
+| `causeId`, `actionId` | The action definition ID that was paid for. |
+| `actor` | Battle-local unit index, as on other combat events. |
+| `target` | `null`; individual effect/declaration events name their targets. |
+| `slot` | Concrete resolved `movement`, `primary`, or `reaction`. Never `either`. |
+| `free` | Boolean copied from action metadata; absence is reported as `false`. |
+| `moveUsed`, `primaryUsed` | Resulting booleans immediately after payment. |
+
+Timing: stamina payment, slot marking unless free/reaction, cooldown and charge
+payment, then **one** `action.spent`, before declarations/displacement/effects.
+Existing resource, cooldown, charge and exhaustion events keep their own meanings;
+this record does not replace them. A multi-hit or area attack emits once for the
+whole action, even when it resolves several hits or targets. A legal movement
+attempt that later provokes a stopping hit has already spent its action. A
+preview, invalid request, or failed readiness check emits no payment receipt.
+
+`free: true` means no activation slot was consumed; the concrete `slot` still
+records the planner's legal opportunity. `slot: reaction` bypasses activation
+slots regardless of `free`, but resource costs still apply. A paid primary can
+leave `moveUsed: false` because that earlier opportunity was skipped; primary
+closes the cycle regardless. Readers use these fields, never attack/move/power
+profiles, to display action availability.
+
+Slot reset lifecycle is explicit: newly fielded units start with both flags false;
+`activation.begin` resets both to false; `surge.hit` resets both to false for a
+new action cycle inside that same Activation. Those event types are authoritative
+reset operations even though their existing payloads do not repeat the constants.
+`activation.end`, phase changes, and ordinary action declarations do not reset
+flags. Retain the flags at End of Activation until the next real reset. A saved
+checkpoint supplies the current flags; consume its later events once, without
+replaying an already-folded prefix. A reaction never resets the acting unit or
+its own actor. These rules require no inference from action profile.
+
+The engine event contract is built here; viewer adoption and human visual
+acceptance are separate work. Historical event fixtures are retained, and this
+metadata transition is verified against the pre-event source rather than
+silently replacing old expected behavior.
+
+### Verification receipt for §14
+
+Initial focused run: 25/25 probes red on the missing record. After the central
+emission, all pass; four additional probes cover free attack/walk, an actual
+opportunity attack and event-only reconstruction across ordinary/Surge resets.
+The 29-probe final focused run and typecheck pass. The old cursor-hash failure is
+preserved in `scratch/action-spent-cursor-transition-red.log`; original and
+identity fixture files are untouched. Current event fixtures are separate, while
+old exact event/state/RNG/result hashes are still asserted after metadata removal.
+
+`scratch/compare-action-spent-transition.mts` extracts committed `b0a80f6` into an
+owned, guarded temporary directory and compares 450 controls, all 28 current
+scenarios and three progression battles: **481 battles, 28,059 new records; zero
+other event, gameplay, RNG, cursor or result changes**. Only `action.spent` is
+removed and event `seq` / `state.seq` normalized. Exact assertions and per-case
+counts remain in the script/report. The full pre-land gate passes 1,099 tests,
+typecheck, live content probes and the kill switch. All 18 control hashes change
+as explicitly declared; the comparison above proves this is metadata only.
+The cursor transition checkpoint recorded 30 failed / 8 passed before adapting
+expectations, and the focused cursor/event check then passed 63/63. The final
+expanded action-event suite passes 29/29. Prior-ruling and historical-test-change
+flags remain for review. Committed checks and the batch audit will be recorded
+after they finish; no human visual acceptance is claimed here.

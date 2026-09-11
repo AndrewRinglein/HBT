@@ -3224,5 +3224,24 @@
   "status": "done-needs-review",
   "sha": "c5d2861",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "plumbing.action-spent",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": [
+   "capability.authored-slots"
+  ],
+  "spec": "Every accepted action emits exactly one universal action.spent record with actor, actionId, resolved slot, free and resulting slot state, sharing the central payment path across human, simulation and replay.",
+  "expect": "Paid, zero-cost, free and reaction actions report exact flags; denied requests and previews emit none; multihit and area spend once. Both policies, movement families, AI/human, saved continuation and Surge agree. A broad comparison against b0a80f6 differs only by new events and event sequence counters.",
+  "probeIds": [
+   "attack.test-slot-movement",
+   "attack.test-slot-either"
+  ],
+  "changesBaseline": true,
+  "note": "Declared universal metadata transition, not a balance change. Existing event fields and gameplay must stay exact after removing only action.spent and normalizing seq/state.seq. Preserve historical fixtures; add a current event-contract fixture. No config conditional emission or compatibility mode. Snapshot .8.",
+  "status": "done-needs-review",
+  "sha": "00e38df",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

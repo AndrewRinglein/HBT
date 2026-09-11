@@ -1,0 +1,2420 @@
+{
+  "base": "b0a80f6",
+  "contract": "plumbing.action-spent",
+  "controls": 450,
+  "scenarios": 28,
+  "progression": 3,
+  "battles": 481,
+  "expenditures": 28059,
+  "otherEventChanges": 0,
+  "gameplayChanges": 0,
+  "rngChanges": 0,
+  "resultChanges": 0,
+  "cases": [
+    {
+      "id": "map.open/0",
+      "eventsBefore": 575,
+      "expenditures": 56
+    },
+    {
+      "id": "map.open/1",
+      "eventsBefore": 575,
+      "expenditures": 60
+    },
+    {
+      "id": "map.open/2",
+      "eventsBefore": 481,
+      "expenditures": 47
+    },
+    {
+      "id": "map.open/3",
+      "eventsBefore": 566,
+      "expenditures": 57
+    },
+    {
+      "id": "map.open/4",
+      "eventsBefore": 560,
+      "expenditures": 56
+    },
+    {
+      "id": "map.open/5",
+      "eventsBefore": 494,
+      "expenditures": 48
+    },
+    {
+      "id": "map.open/6",
+      "eventsBefore": 609,
+      "expenditures": 63
+    },
+    {
+      "id": "map.open/7",
+      "eventsBefore": 523,
+      "expenditures": 54
+    },
+    {
+      "id": "map.open/8",
+      "eventsBefore": 638,
+      "expenditures": 68
+    },
+    {
+      "id": "map.open/9",
+      "eventsBefore": 530,
+      "expenditures": 51
+    },
+    {
+      "id": "map.open/10",
+      "eventsBefore": 449,
+      "expenditures": 42
+    },
+    {
+      "id": "map.open/11",
+      "eventsBefore": 635,
+      "expenditures": 67
+    },
+    {
+      "id": "map.open/12",
+      "eventsBefore": 568,
+      "expenditures": 56
+    },
+    {
+      "id": "map.open/13",
+      "eventsBefore": 649,
+      "expenditures": 64
+    },
+    {
+      "id": "map.open/14",
+      "eventsBefore": 611,
+      "expenditures": 67
+    },
+    {
+      "id": "map.open/15",
+      "eventsBefore": 447,
+      "expenditures": 41
+    },
+    {
+      "id": "map.open/16",
+      "eventsBefore": 532,
+      "expenditures": 51
+    },
+    {
+      "id": "map.open/17",
+      "eventsBefore": 423,
+      "expenditures": 41
+    },
+    {
+      "id": "map.open/18",
+      "eventsBefore": 730,
+      "expenditures": 79
+    },
+    {
+      "id": "map.open/19",
+      "eventsBefore": 463,
+      "expenditures": 45
+    },
+    {
+      "id": "map.open/20",
+      "eventsBefore": 455,
+      "expenditures": 46
+    },
+    {
+      "id": "map.open/21",
+      "eventsBefore": 545,
+      "expenditures": 49
+    },
+    {
+      "id": "map.open/22",
+      "eventsBefore": 727,
+      "expenditures": 81
+    },
+    {
+      "id": "map.open/23",
+      "eventsBefore": 502,
+      "expenditures": 50
+    },
+    {
+      "id": "map.open/24",
+      "eventsBefore": 456,
+      "expenditures": 46
+    },
+    {
+      "id": "map.ridge/0",
+      "eventsBefore": 626,
+      "expenditures": 64
+    },
+    {
+      "id": "map.ridge/1",
+      "eventsBefore": 477,
+      "expenditures": 50
+    },
+    {
+      "id": "map.ridge/2",
+      "eventsBefore": 479,
+      "expenditures": 47
+    },
+    {
+      "id": "map.ridge/3",
+      "eventsBefore": 490,
+      "expenditures": 52
+    },
+    {
+      "id": "map.ridge/4",
+      "eventsBefore": 490,
+      "expenditures": 49
+    },
+    {
+      "id": "map.ridge/5",
+      "eventsBefore": 480,
+      "expenditures": 47
+    },
+    {
+      "id": "map.ridge/6",
+      "eventsBefore": 580,
+      "expenditures": 59
+    },
+    {
+      "id": "map.ridge/7",
+      "eventsBefore": 509,
+      "expenditures": 50
+    },
+    {
+      "id": "map.ridge/8",
+      "eventsBefore": 569,
+      "expenditures": 59
+    },
+    {
+      "id": "map.ridge/9",
+      "eventsBefore": 571,
+      "expenditures": 57
+    },
+    {
+      "id": "map.ridge/10",
+      "eventsBefore": 467,
+      "expenditures": 43
+    },
+    {
+      "id": "map.ridge/11",
+      "eventsBefore": 631,
+      "expenditures": 64
+    },
+    {
+      "id": "map.ridge/12",
+      "eventsBefore": 623,
+      "expenditures": 60
+    },
+    {
+      "id": "map.ridge/13",
+      "eventsBefore": 596,
+      "expenditures": 59
+    },
+    {
+      "id": "map.ridge/14",
+      "eventsBefore": 549,
+      "expenditures": 57
+    },
+    {
+      "id": "map.ridge/15",
+      "eventsBefore": 437,
+      "expenditures": 40
+    },
+    {
+      "id": "map.ridge/16",
+      "eventsBefore": 528,
+      "expenditures": 50
+    },
+    {
+      "id": "map.ridge/17",
+      "eventsBefore": 503,
+      "expenditures": 49
+    },
+    {
+      "id": "map.ridge/18",
+      "eventsBefore": 657,
+      "expenditures": 70
+    },
+    {
+      "id": "map.ridge/19",
+      "eventsBefore": 566,
+      "expenditures": 57
+    },
+    {
+      "id": "map.ridge/20",
+      "eventsBefore": 465,
+      "expenditures": 44
+    },
+    {
+      "id": "map.ridge/21",
+      "eventsBefore": 447,
+      "expenditures": 45
+    },
+    {
+      "id": "map.ridge/22",
+      "eventsBefore": 707,
+      "expenditures": 78
+    },
+    {
+      "id": "map.ridge/23",
+      "eventsBefore": 501,
+      "expenditures": 51
+    },
+    {
+      "id": "map.ridge/24",
+      "eventsBefore": 461,
+      "expenditures": 47
+    },
+    {
+      "id": "map.flanks/0",
+      "eventsBefore": 686,
+      "expenditures": 71
+    },
+    {
+      "id": "map.flanks/1",
+      "eventsBefore": 635,
+      "expenditures": 64
+    },
+    {
+      "id": "map.flanks/2",
+      "eventsBefore": 480,
+      "expenditures": 48
+    },
+    {
+      "id": "map.flanks/3",
+      "eventsBefore": 551,
+      "expenditures": 55
+    },
+    {
+      "id": "map.flanks/4",
+      "eventsBefore": 491,
+      "expenditures": 49
+    },
+    {
+      "id": "map.flanks/5",
+      "eventsBefore": 552,
+      "expenditures": 56
+    },
+    {
+      "id": "map.flanks/6",
+      "eventsBefore": 595,
+      "expenditures": 61
+    },
+    {
+      "id": "map.flanks/7",
+      "eventsBefore": 531,
+      "expenditures": 55
+    },
+    {
+      "id": "map.flanks/8",
+      "eventsBefore": 571,
+      "expenditures": 61
+    },
+    {
+      "id": "map.flanks/9",
+      "eventsBefore": 547,
+      "expenditures": 53
+    },
+    {
+      "id": "map.flanks/10",
+      "eventsBefore": 463,
+      "expenditures": 44
+    },
+    {
+      "id": "map.flanks/11",
+      "eventsBefore": 600,
+      "expenditures": 63
+    },
+    {
+      "id": "map.flanks/12",
+      "eventsBefore": 603,
+      "expenditures": 61
+    },
+    {
+      "id": "map.flanks/13",
+      "eventsBefore": 589,
+      "expenditures": 58
+    },
+    {
+      "id": "map.flanks/14",
+      "eventsBefore": 595,
+      "expenditures": 59
+    },
+    {
+      "id": "map.flanks/15",
+      "eventsBefore": 557,
+      "expenditures": 54
+    },
+    {
+      "id": "map.flanks/16",
+      "eventsBefore": 767,
+      "expenditures": 78
+    },
+    {
+      "id": "map.flanks/17",
+      "eventsBefore": 476,
+      "expenditures": 49
+    },
+    {
+      "id": "map.flanks/18",
+      "eventsBefore": 701,
+      "expenditures": 72
+    },
+    {
+      "id": "map.flanks/19",
+      "eventsBefore": 552,
+      "expenditures": 54
+    },
+    {
+      "id": "map.flanks/20",
+      "eventsBefore": 481,
+      "expenditures": 47
+    },
+    {
+      "id": "map.flanks/21",
+      "eventsBefore": 469,
+      "expenditures": 46
+    },
+    {
+      "id": "map.flanks/22",
+      "eventsBefore": 669,
+      "expenditures": 75
+    },
+    {
+      "id": "map.flanks/23",
+      "eventsBefore": 475,
+      "expenditures": 51
+    },
+    {
+      "id": "map.flanks/24",
+      "eventsBefore": 502,
+      "expenditures": 51
+    },
+    {
+      "id": "map.highlands/0",
+      "eventsBefore": 563,
+      "expenditures": 58
+    },
+    {
+      "id": "map.highlands/1",
+      "eventsBefore": 563,
+      "expenditures": 55
+    },
+    {
+      "id": "map.highlands/2",
+      "eventsBefore": 560,
+      "expenditures": 58
+    },
+    {
+      "id": "map.highlands/3",
+      "eventsBefore": 666,
+      "expenditures": 70
+    },
+    {
+      "id": "map.highlands/4",
+      "eventsBefore": 477,
+      "expenditures": 48
+    },
+    {
+      "id": "map.highlands/5",
+      "eventsBefore": 599,
+      "expenditures": 61
+    },
+    {
+      "id": "map.highlands/6",
+      "eventsBefore": 620,
+      "expenditures": 63
+    },
+    {
+      "id": "map.highlands/7",
+      "eventsBefore": 612,
+      "expenditures": 65
+    },
+    {
+      "id": "map.highlands/8",
+      "eventsBefore": 581,
+      "expenditures": 65
+    },
+    {
+      "id": "map.highlands/9",
+      "eventsBefore": 581,
+      "expenditures": 59
+    },
+    {
+      "id": "map.highlands/10",
+      "eventsBefore": 581,
+      "expenditures": 59
+    },
+    {
+      "id": "map.highlands/11",
+      "eventsBefore": 631,
+      "expenditures": 65
+    },
+    {
+      "id": "map.highlands/12",
+      "eventsBefore": 536,
+      "expenditures": 53
+    },
+    {
+      "id": "map.highlands/13",
+      "eventsBefore": 578,
+      "expenditures": 59
+    },
+    {
+      "id": "map.highlands/14",
+      "eventsBefore": 615,
+      "expenditures": 64
+    },
+    {
+      "id": "map.highlands/15",
+      "eventsBefore": 534,
+      "expenditures": 54
+    },
+    {
+      "id": "map.highlands/16",
+      "eventsBefore": 630,
+      "expenditures": 63
+    },
+    {
+      "id": "map.highlands/17",
+      "eventsBefore": 522,
+      "expenditures": 54
+    },
+    {
+      "id": "map.highlands/18",
+      "eventsBefore": 558,
+      "expenditures": 59
+    },
+    {
+      "id": "map.highlands/19",
+      "eventsBefore": 526,
+      "expenditures": 53
+    },
+    {
+      "id": "map.highlands/20",
+      "eventsBefore": 459,
+      "expenditures": 43
+    },
+    {
+      "id": "map.highlands/21",
+      "eventsBefore": 542,
+      "expenditures": 56
+    },
+    {
+      "id": "map.highlands/22",
+      "eventsBefore": 731,
+      "expenditures": 83
+    },
+    {
+      "id": "map.highlands/23",
+      "eventsBefore": 588,
+      "expenditures": 61
+    },
+    {
+      "id": "map.highlands/24",
+      "eventsBefore": 539,
+      "expenditures": 57
+    },
+    {
+      "id": "map.field/0",
+      "eventsBefore": 875,
+      "expenditures": 100
+    },
+    {
+      "id": "map.field/1",
+      "eventsBefore": 722,
+      "expenditures": 84
+    },
+    {
+      "id": "map.field/2",
+      "eventsBefore": 724,
+      "expenditures": 85
+    },
+    {
+      "id": "map.field/3",
+      "eventsBefore": 719,
+      "expenditures": 80
+    },
+    {
+      "id": "map.field/4",
+      "eventsBefore": 563,
+      "expenditures": 67
+    },
+    {
+      "id": "map.field/5",
+      "eventsBefore": 653,
+      "expenditures": 70
+    },
+    {
+      "id": "map.field/6",
+      "eventsBefore": 716,
+      "expenditures": 80
+    },
+    {
+      "id": "map.field/7",
+      "eventsBefore": 737,
+      "expenditures": 79
+    },
+    {
+      "id": "map.field/8",
+      "eventsBefore": 852,
+      "expenditures": 93
+    },
+    {
+      "id": "map.field/9",
+      "eventsBefore": 722,
+      "expenditures": 81
+    },
+    {
+      "id": "map.field/10",
+      "eventsBefore": 643,
+      "expenditures": 70
+    },
+    {
+      "id": "map.field/11",
+      "eventsBefore": 767,
+      "expenditures": 88
+    },
+    {
+      "id": "map.field/12",
+      "eventsBefore": 700,
+      "expenditures": 78
+    },
+    {
+      "id": "map.field/13",
+      "eventsBefore": 677,
+      "expenditures": 74
+    },
+    {
+      "id": "map.field/14",
+      "eventsBefore": 729,
+      "expenditures": 84
+    },
+    {
+      "id": "map.field/15",
+      "eventsBefore": 620,
+      "expenditures": 70
+    },
+    {
+      "id": "map.field/16",
+      "eventsBefore": 817,
+      "expenditures": 96
+    },
+    {
+      "id": "map.field/17",
+      "eventsBefore": 503,
+      "expenditures": 52
+    },
+    {
+      "id": "map.field/18",
+      "eventsBefore": 719,
+      "expenditures": 85
+    },
+    {
+      "id": "map.field/19",
+      "eventsBefore": 596,
+      "expenditures": 64
+    },
+    {
+      "id": "map.field/20",
+      "eventsBefore": 618,
+      "expenditures": 69
+    },
+    {
+      "id": "map.field/21",
+      "eventsBefore": 608,
+      "expenditures": 68
+    },
+    {
+      "id": "map.field/22",
+      "eventsBefore": 637,
+      "expenditures": 77
+    },
+    {
+      "id": "map.field/23",
+      "eventsBefore": 655,
+      "expenditures": 69
+    },
+    {
+      "id": "map.field/24",
+      "eventsBefore": 592,
+      "expenditures": 65
+    },
+    {
+      "id": "map.thicket/0",
+      "eventsBefore": 717,
+      "expenditures": 82
+    },
+    {
+      "id": "map.thicket/1",
+      "eventsBefore": 693,
+      "expenditures": 77
+    },
+    {
+      "id": "map.thicket/2",
+      "eventsBefore": 595,
+      "expenditures": 64
+    },
+    {
+      "id": "map.thicket/3",
+      "eventsBefore": 567,
+      "expenditures": 59
+    },
+    {
+      "id": "map.thicket/4",
+      "eventsBefore": 646,
+      "expenditures": 69
+    },
+    {
+      "id": "map.thicket/5",
+      "eventsBefore": 534,
+      "expenditures": 59
+    },
+    {
+      "id": "map.thicket/6",
+      "eventsBefore": 698,
+      "expenditures": 75
+    },
+    {
+      "id": "map.thicket/7",
+      "eventsBefore": 574,
+      "expenditures": 61
+    },
+    {
+      "id": "map.thicket/8",
+      "eventsBefore": 788,
+      "expenditures": 88
+    },
+    {
+      "id": "map.thicket/9",
+      "eventsBefore": 524,
+      "expenditures": 56
+    },
+    {
+      "id": "map.thicket/10",
+      "eventsBefore": 516,
+      "expenditures": 51
+    },
+    {
+      "id": "map.thicket/11",
+      "eventsBefore": 618,
+      "expenditures": 69
+    },
+    {
+      "id": "map.thicket/12",
+      "eventsBefore": 639,
+      "expenditures": 70
+    },
+    {
+      "id": "map.thicket/13",
+      "eventsBefore": 656,
+      "expenditures": 72
+    },
+    {
+      "id": "map.thicket/14",
+      "eventsBefore": 671,
+      "expenditures": 76
+    },
+    {
+      "id": "map.thicket/15",
+      "eventsBefore": 575,
+      "expenditures": 60
+    },
+    {
+      "id": "map.thicket/16",
+      "eventsBefore": 780,
+      "expenditures": 87
+    },
+    {
+      "id": "map.thicket/17",
+      "eventsBefore": 520,
+      "expenditures": 54
+    },
+    {
+      "id": "map.thicket/18",
+      "eventsBefore": 734,
+      "expenditures": 85
+    },
+    {
+      "id": "map.thicket/19",
+      "eventsBefore": 534,
+      "expenditures": 56
+    },
+    {
+      "id": "map.thicket/20",
+      "eventsBefore": 595,
+      "expenditures": 65
+    },
+    {
+      "id": "map.thicket/21",
+      "eventsBefore": 482,
+      "expenditures": 49
+    },
+    {
+      "id": "map.thicket/22",
+      "eventsBefore": 772,
+      "expenditures": 84
+    },
+    {
+      "id": "map.thicket/23",
+      "eventsBefore": 611,
+      "expenditures": 67
+    },
+    {
+      "id": "map.thicket/24",
+      "eventsBefore": 588,
+      "expenditures": 62
+    },
+    {
+      "id": "map.proving.open/0",
+      "eventsBefore": 625,
+      "expenditures": 62
+    },
+    {
+      "id": "map.proving.open/1",
+      "eventsBefore": 525,
+      "expenditures": 54
+    },
+    {
+      "id": "map.proving.open/2",
+      "eventsBefore": 412,
+      "expenditures": 39
+    },
+    {
+      "id": "map.proving.open/3",
+      "eventsBefore": 560,
+      "expenditures": 62
+    },
+    {
+      "id": "map.proving.open/4",
+      "eventsBefore": 524,
+      "expenditures": 51
+    },
+    {
+      "id": "map.proving.open/5",
+      "eventsBefore": 514,
+      "expenditures": 52
+    },
+    {
+      "id": "map.proving.open/6",
+      "eventsBefore": 529,
+      "expenditures": 56
+    },
+    {
+      "id": "map.proving.open/7",
+      "eventsBefore": 422,
+      "expenditures": 39
+    },
+    {
+      "id": "map.proving.open/8",
+      "eventsBefore": 462,
+      "expenditures": 46
+    },
+    {
+      "id": "map.proving.open/9",
+      "eventsBefore": 500,
+      "expenditures": 52
+    },
+    {
+      "id": "map.proving.open/10",
+      "eventsBefore": 417,
+      "expenditures": 40
+    },
+    {
+      "id": "map.proving.open/11",
+      "eventsBefore": 605,
+      "expenditures": 63
+    },
+    {
+      "id": "map.proving.open/12",
+      "eventsBefore": 469,
+      "expenditures": 46
+    },
+    {
+      "id": "map.proving.open/13",
+      "eventsBefore": 487,
+      "expenditures": 46
+    },
+    {
+      "id": "map.proving.open/14",
+      "eventsBefore": 535,
+      "expenditures": 55
+    },
+    {
+      "id": "map.proving.open/15",
+      "eventsBefore": 537,
+      "expenditures": 57
+    },
+    {
+      "id": "map.proving.open/16",
+      "eventsBefore": 462,
+      "expenditures": 45
+    },
+    {
+      "id": "map.proving.open/17",
+      "eventsBefore": 423,
+      "expenditures": 41
+    },
+    {
+      "id": "map.proving.open/18",
+      "eventsBefore": 591,
+      "expenditures": 62
+    },
+    {
+      "id": "map.proving.open/19",
+      "eventsBefore": 450,
+      "expenditures": 47
+    },
+    {
+      "id": "map.proving.open/20",
+      "eventsBefore": 407,
+      "expenditures": 37
+    },
+    {
+      "id": "map.proving.open/21",
+      "eventsBefore": 418,
+      "expenditures": 43
+    },
+    {
+      "id": "map.proving.open/22",
+      "eventsBefore": 481,
+      "expenditures": 49
+    },
+    {
+      "id": "map.proving.open/23",
+      "eventsBefore": 575,
+      "expenditures": 59
+    },
+    {
+      "id": "map.proving.open/24",
+      "eventsBefore": 485,
+      "expenditures": 52
+    },
+    {
+      "id": "map.proving.ridge/0",
+      "eventsBefore": 691,
+      "expenditures": 72
+    },
+    {
+      "id": "map.proving.ridge/1",
+      "eventsBefore": 551,
+      "expenditures": 55
+    },
+    {
+      "id": "map.proving.ridge/2",
+      "eventsBefore": 542,
+      "expenditures": 55
+    },
+    {
+      "id": "map.proving.ridge/3",
+      "eventsBefore": 525,
+      "expenditures": 57
+    },
+    {
+      "id": "map.proving.ridge/4",
+      "eventsBefore": 561,
+      "expenditures": 54
+    },
+    {
+      "id": "map.proving.ridge/5",
+      "eventsBefore": 521,
+      "expenditures": 56
+    },
+    {
+      "id": "map.proving.ridge/6",
+      "eventsBefore": 712,
+      "expenditures": 73
+    },
+    {
+      "id": "map.proving.ridge/7",
+      "eventsBefore": 498,
+      "expenditures": 48
+    },
+    {
+      "id": "map.proving.ridge/8",
+      "eventsBefore": 624,
+      "expenditures": 63
+    },
+    {
+      "id": "map.proving.ridge/9",
+      "eventsBefore": 624,
+      "expenditures": 68
+    },
+    {
+      "id": "map.proving.ridge/10",
+      "eventsBefore": 496,
+      "expenditures": 47
+    },
+    {
+      "id": "map.proving.ridge/11",
+      "eventsBefore": 817,
+      "expenditures": 88
+    },
+    {
+      "id": "map.proving.ridge/12",
+      "eventsBefore": 620,
+      "expenditures": 65
+    },
+    {
+      "id": "map.proving.ridge/13",
+      "eventsBefore": 605,
+      "expenditures": 66
+    },
+    {
+      "id": "map.proving.ridge/14",
+      "eventsBefore": 581,
+      "expenditures": 61
+    },
+    {
+      "id": "map.proving.ridge/15",
+      "eventsBefore": 609,
+      "expenditures": 64
+    },
+    {
+      "id": "map.proving.ridge/16",
+      "eventsBefore": 564,
+      "expenditures": 55
+    },
+    {
+      "id": "map.proving.ridge/17",
+      "eventsBefore": 459,
+      "expenditures": 46
+    },
+    {
+      "id": "map.proving.ridge/18",
+      "eventsBefore": 598,
+      "expenditures": 62
+    },
+    {
+      "id": "map.proving.ridge/19",
+      "eventsBefore": 562,
+      "expenditures": 59
+    },
+    {
+      "id": "map.proving.ridge/20",
+      "eventsBefore": 539,
+      "expenditures": 57
+    },
+    {
+      "id": "map.proving.ridge/21",
+      "eventsBefore": 601,
+      "expenditures": 63
+    },
+    {
+      "id": "map.proving.ridge/22",
+      "eventsBefore": 587,
+      "expenditures": 63
+    },
+    {
+      "id": "map.proving.ridge/23",
+      "eventsBefore": 534,
+      "expenditures": 56
+    },
+    {
+      "id": "map.proving.ridge/24",
+      "eventsBefore": 555,
+      "expenditures": 59
+    },
+    {
+      "id": "map.proving.ford/0",
+      "eventsBefore": 632,
+      "expenditures": 61
+    },
+    {
+      "id": "map.proving.ford/1",
+      "eventsBefore": 572,
+      "expenditures": 59
+    },
+    {
+      "id": "map.proving.ford/2",
+      "eventsBefore": 455,
+      "expenditures": 44
+    },
+    {
+      "id": "map.proving.ford/3",
+      "eventsBefore": 642,
+      "expenditures": 69
+    },
+    {
+      "id": "map.proving.ford/4",
+      "eventsBefore": 487,
+      "expenditures": 48
+    },
+    {
+      "id": "map.proving.ford/5",
+      "eventsBefore": 507,
+      "expenditures": 50
+    },
+    {
+      "id": "map.proving.ford/6",
+      "eventsBefore": 463,
+      "expenditures": 46
+    },
+    {
+      "id": "map.proving.ford/7",
+      "eventsBefore": 461,
+      "expenditures": 43
+    },
+    {
+      "id": "map.proving.ford/8",
+      "eventsBefore": 467,
+      "expenditures": 49
+    },
+    {
+      "id": "map.proving.ford/9",
+      "eventsBefore": 491,
+      "expenditures": 50
+    },
+    {
+      "id": "map.proving.ford/10",
+      "eventsBefore": 443,
+      "expenditures": 41
+    },
+    {
+      "id": "map.proving.ford/11",
+      "eventsBefore": 579,
+      "expenditures": 62
+    },
+    {
+      "id": "map.proving.ford/12",
+      "eventsBefore": 475,
+      "expenditures": 46
+    },
+    {
+      "id": "map.proving.ford/13",
+      "eventsBefore": 522,
+      "expenditures": 54
+    },
+    {
+      "id": "map.proving.ford/14",
+      "eventsBefore": 575,
+      "expenditures": 62
+    },
+    {
+      "id": "map.proving.ford/15",
+      "eventsBefore": 574,
+      "expenditures": 64
+    },
+    {
+      "id": "map.proving.ford/16",
+      "eventsBefore": 619,
+      "expenditures": 61
+    },
+    {
+      "id": "map.proving.ford/17",
+      "eventsBefore": 435,
+      "expenditures": 44
+    },
+    {
+      "id": "map.proving.ford/18",
+      "eventsBefore": 577,
+      "expenditures": 59
+    },
+    {
+      "id": "map.proving.ford/19",
+      "eventsBefore": 500,
+      "expenditures": 51
+    },
+    {
+      "id": "map.proving.ford/20",
+      "eventsBefore": 403,
+      "expenditures": 37
+    },
+    {
+      "id": "map.proving.ford/21",
+      "eventsBefore": 486,
+      "expenditures": 51
+    },
+    {
+      "id": "map.proving.ford/22",
+      "eventsBefore": 545,
+      "expenditures": 60
+    },
+    {
+      "id": "map.proving.ford/23",
+      "eventsBefore": 519,
+      "expenditures": 52
+    },
+    {
+      "id": "map.proving.ford/24",
+      "eventsBefore": 550,
+      "expenditures": 60
+    },
+    {
+      "id": "map.proving.copse/0",
+      "eventsBefore": 569,
+      "expenditures": 55
+    },
+    {
+      "id": "map.proving.copse/1",
+      "eventsBefore": 461,
+      "expenditures": 44
+    },
+    {
+      "id": "map.proving.copse/2",
+      "eventsBefore": 584,
+      "expenditures": 60
+    },
+    {
+      "id": "map.proving.copse/3",
+      "eventsBefore": 531,
+      "expenditures": 56
+    },
+    {
+      "id": "map.proving.copse/4",
+      "eventsBefore": 464,
+      "expenditures": 44
+    },
+    {
+      "id": "map.proving.copse/5",
+      "eventsBefore": 495,
+      "expenditures": 49
+    },
+    {
+      "id": "map.proving.copse/6",
+      "eventsBefore": 592,
+      "expenditures": 58
+    },
+    {
+      "id": "map.proving.copse/7",
+      "eventsBefore": 414,
+      "expenditures": 41
+    },
+    {
+      "id": "map.proving.copse/8",
+      "eventsBefore": 773,
+      "expenditures": 80
+    },
+    {
+      "id": "map.proving.copse/9",
+      "eventsBefore": 559,
+      "expenditures": 56
+    },
+    {
+      "id": "map.proving.copse/10",
+      "eventsBefore": 457,
+      "expenditures": 43
+    },
+    {
+      "id": "map.proving.copse/11",
+      "eventsBefore": 694,
+      "expenditures": 75
+    },
+    {
+      "id": "map.proving.copse/12",
+      "eventsBefore": 466,
+      "expenditures": 41
+    },
+    {
+      "id": "map.proving.copse/13",
+      "eventsBefore": 559,
+      "expenditures": 57
+    },
+    {
+      "id": "map.proving.copse/14",
+      "eventsBefore": 601,
+      "expenditures": 67
+    },
+    {
+      "id": "map.proving.copse/15",
+      "eventsBefore": 588,
+      "expenditures": 66
+    },
+    {
+      "id": "map.proving.copse/16",
+      "eventsBefore": 656,
+      "expenditures": 70
+    },
+    {
+      "id": "map.proving.copse/17",
+      "eventsBefore": 474,
+      "expenditures": 48
+    },
+    {
+      "id": "map.proving.copse/18",
+      "eventsBefore": 598,
+      "expenditures": 66
+    },
+    {
+      "id": "map.proving.copse/19",
+      "eventsBefore": 553,
+      "expenditures": 58
+    },
+    {
+      "id": "map.proving.copse/20",
+      "eventsBefore": 456,
+      "expenditures": 47
+    },
+    {
+      "id": "map.proving.copse/21",
+      "eventsBefore": 430,
+      "expenditures": 43
+    },
+    {
+      "id": "map.proving.copse/22",
+      "eventsBefore": 534,
+      "expenditures": 57
+    },
+    {
+      "id": "map.proving.copse/23",
+      "eventsBefore": 595,
+      "expenditures": 64
+    },
+    {
+      "id": "map.proving.copse/24",
+      "eventsBefore": 509,
+      "expenditures": 54
+    },
+    {
+      "id": "map.proving.ruin/0",
+      "eventsBefore": 628,
+      "expenditures": 66
+    },
+    {
+      "id": "map.proving.ruin/1",
+      "eventsBefore": 606,
+      "expenditures": 63
+    },
+    {
+      "id": "map.proving.ruin/2",
+      "eventsBefore": 494,
+      "expenditures": 52
+    },
+    {
+      "id": "map.proving.ruin/3",
+      "eventsBefore": 538,
+      "expenditures": 58
+    },
+    {
+      "id": "map.proving.ruin/4",
+      "eventsBefore": 494,
+      "expenditures": 47
+    },
+    {
+      "id": "map.proving.ruin/5",
+      "eventsBefore": 503,
+      "expenditures": 50
+    },
+    {
+      "id": "map.proving.ruin/6",
+      "eventsBefore": 713,
+      "expenditures": 74
+    },
+    {
+      "id": "map.proving.ruin/7",
+      "eventsBefore": 528,
+      "expenditures": 52
+    },
+    {
+      "id": "map.proving.ruin/8",
+      "eventsBefore": 742,
+      "expenditures": 76
+    },
+    {
+      "id": "map.proving.ruin/9",
+      "eventsBefore": 565,
+      "expenditures": 60
+    },
+    {
+      "id": "map.proving.ruin/10",
+      "eventsBefore": 522,
+      "expenditures": 51
+    },
+    {
+      "id": "map.proving.ruin/11",
+      "eventsBefore": 643,
+      "expenditures": 69
+    },
+    {
+      "id": "map.proving.ruin/12",
+      "eventsBefore": 561,
+      "expenditures": 55
+    },
+    {
+      "id": "map.proving.ruin/13",
+      "eventsBefore": 550,
+      "expenditures": 57
+    },
+    {
+      "id": "map.proving.ruin/14",
+      "eventsBefore": 503,
+      "expenditures": 51
+    },
+    {
+      "id": "map.proving.ruin/15",
+      "eventsBefore": 614,
+      "expenditures": 68
+    },
+    {
+      "id": "map.proving.ruin/16",
+      "eventsBefore": 668,
+      "expenditures": 69
+    },
+    {
+      "id": "map.proving.ruin/17",
+      "eventsBefore": 493,
+      "expenditures": 51
+    },
+    {
+      "id": "map.proving.ruin/18",
+      "eventsBefore": 636,
+      "expenditures": 71
+    },
+    {
+      "id": "map.proving.ruin/19",
+      "eventsBefore": 642,
+      "expenditures": 66
+    },
+    {
+      "id": "map.proving.ruin/20",
+      "eventsBefore": 422,
+      "expenditures": 42
+    },
+    {
+      "id": "map.proving.ruin/21",
+      "eventsBefore": 555,
+      "expenditures": 59
+    },
+    {
+      "id": "map.proving.ruin/22",
+      "eventsBefore": 629,
+      "expenditures": 67
+    },
+    {
+      "id": "map.proving.ruin/23",
+      "eventsBefore": 529,
+      "expenditures": 55
+    },
+    {
+      "id": "map.proving.ruin/24",
+      "eventsBefore": 549,
+      "expenditures": 61
+    },
+    {
+      "id": "map.courtyard/0",
+      "eventsBefore": 399,
+      "expenditures": 39
+    },
+    {
+      "id": "map.courtyard/1",
+      "eventsBefore": 308,
+      "expenditures": 31
+    },
+    {
+      "id": "map.courtyard/2",
+      "eventsBefore": 344,
+      "expenditures": 33
+    },
+    {
+      "id": "map.courtyard/3",
+      "eventsBefore": 374,
+      "expenditures": 40
+    },
+    {
+      "id": "map.courtyard/4",
+      "eventsBefore": 351,
+      "expenditures": 32
+    },
+    {
+      "id": "map.courtyard/5",
+      "eventsBefore": 398,
+      "expenditures": 44
+    },
+    {
+      "id": "map.courtyard/6",
+      "eventsBefore": 548,
+      "expenditures": 55
+    },
+    {
+      "id": "map.courtyard/7",
+      "eventsBefore": 388,
+      "expenditures": 42
+    },
+    {
+      "id": "map.courtyard/8",
+      "eventsBefore": 561,
+      "expenditures": 60
+    },
+    {
+      "id": "map.courtyard/9",
+      "eventsBefore": 410,
+      "expenditures": 46
+    },
+    {
+      "id": "map.courtyard/10",
+      "eventsBefore": 276,
+      "expenditures": 26
+    },
+    {
+      "id": "map.courtyard/11",
+      "eventsBefore": 460,
+      "expenditures": 51
+    },
+    {
+      "id": "map.courtyard/12",
+      "eventsBefore": 347,
+      "expenditures": 35
+    },
+    {
+      "id": "map.courtyard/13",
+      "eventsBefore": 374,
+      "expenditures": 36
+    },
+    {
+      "id": "map.courtyard/14",
+      "eventsBefore": 419,
+      "expenditures": 43
+    },
+    {
+      "id": "map.courtyard/15",
+      "eventsBefore": 466,
+      "expenditures": 50
+    },
+    {
+      "id": "map.courtyard/16",
+      "eventsBefore": 599,
+      "expenditures": 64
+    },
+    {
+      "id": "map.courtyard/17",
+      "eventsBefore": 372,
+      "expenditures": 37
+    },
+    {
+      "id": "map.courtyard/18",
+      "eventsBefore": 381,
+      "expenditures": 42
+    },
+    {
+      "id": "map.courtyard/19",
+      "eventsBefore": 355,
+      "expenditures": 37
+    },
+    {
+      "id": "map.courtyard/20",
+      "eventsBefore": 288,
+      "expenditures": 27
+    },
+    {
+      "id": "map.courtyard/21",
+      "eventsBefore": 365,
+      "expenditures": 41
+    },
+    {
+      "id": "map.courtyard/22",
+      "eventsBefore": 457,
+      "expenditures": 45
+    },
+    {
+      "id": "map.courtyard/23",
+      "eventsBefore": 394,
+      "expenditures": 42
+    },
+    {
+      "id": "map.courtyard/24",
+      "eventsBefore": 378,
+      "expenditures": 43
+    },
+    {
+      "id": "map.floodplain/0",
+      "eventsBefore": 904,
+      "expenditures": 83
+    },
+    {
+      "id": "map.floodplain/1",
+      "eventsBefore": 760,
+      "expenditures": 76
+    },
+    {
+      "id": "map.floodplain/2",
+      "eventsBefore": 635,
+      "expenditures": 60
+    },
+    {
+      "id": "map.floodplain/3",
+      "eventsBefore": 790,
+      "expenditures": 81
+    },
+    {
+      "id": "map.floodplain/4",
+      "eventsBefore": 695,
+      "expenditures": 67
+    },
+    {
+      "id": "map.floodplain/5",
+      "eventsBefore": 655,
+      "expenditures": 61
+    },
+    {
+      "id": "map.floodplain/6",
+      "eventsBefore": 700,
+      "expenditures": 68
+    },
+    {
+      "id": "map.floodplain/7",
+      "eventsBefore": 704,
+      "expenditures": 67
+    },
+    {
+      "id": "map.floodplain/8",
+      "eventsBefore": 792,
+      "expenditures": 75
+    },
+    {
+      "id": "map.floodplain/9",
+      "eventsBefore": 861,
+      "expenditures": 86
+    },
+    {
+      "id": "map.floodplain/10",
+      "eventsBefore": 755,
+      "expenditures": 75
+    },
+    {
+      "id": "map.floodplain/11",
+      "eventsBefore": 788,
+      "expenditures": 76
+    },
+    {
+      "id": "map.floodplain/12",
+      "eventsBefore": 733,
+      "expenditures": 73
+    },
+    {
+      "id": "map.floodplain/13",
+      "eventsBefore": 811,
+      "expenditures": 79
+    },
+    {
+      "id": "map.floodplain/14",
+      "eventsBefore": 743,
+      "expenditures": 78
+    },
+    {
+      "id": "map.floodplain/15",
+      "eventsBefore": 595,
+      "expenditures": 56
+    },
+    {
+      "id": "map.floodplain/16",
+      "eventsBefore": 918,
+      "expenditures": 89
+    },
+    {
+      "id": "map.floodplain/17",
+      "eventsBefore": 612,
+      "expenditures": 59
+    },
+    {
+      "id": "map.floodplain/18",
+      "eventsBefore": 843,
+      "expenditures": 87
+    },
+    {
+      "id": "map.floodplain/19",
+      "eventsBefore": 720,
+      "expenditures": 69
+    },
+    {
+      "id": "map.floodplain/20",
+      "eventsBefore": 809,
+      "expenditures": 77
+    },
+    {
+      "id": "map.floodplain/21",
+      "eventsBefore": 594,
+      "expenditures": 58
+    },
+    {
+      "id": "map.floodplain/22",
+      "eventsBefore": 989,
+      "expenditures": 101
+    },
+    {
+      "id": "map.floodplain/23",
+      "eventsBefore": 687,
+      "expenditures": 69
+    },
+    {
+      "id": "map.floodplain/24",
+      "eventsBefore": 817,
+      "expenditures": 77
+    },
+    {
+      "id": "test.map.embers/0",
+      "eventsBefore": 584,
+      "expenditures": 43
+    },
+    {
+      "id": "test.map.embers/1",
+      "eventsBefore": 426,
+      "expenditures": 36
+    },
+    {
+      "id": "test.map.embers/2",
+      "eventsBefore": 544,
+      "expenditures": 44
+    },
+    {
+      "id": "test.map.embers/3",
+      "eventsBefore": 603,
+      "expenditures": 57
+    },
+    {
+      "id": "test.map.embers/4",
+      "eventsBefore": 613,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.embers/5",
+      "eventsBefore": 517,
+      "expenditures": 42
+    },
+    {
+      "id": "test.map.embers/6",
+      "eventsBefore": 560,
+      "expenditures": 51
+    },
+    {
+      "id": "test.map.embers/7",
+      "eventsBefore": 594,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.embers/8",
+      "eventsBefore": 635,
+      "expenditures": 53
+    },
+    {
+      "id": "test.map.embers/9",
+      "eventsBefore": 609,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.embers/10",
+      "eventsBefore": 431,
+      "expenditures": 34
+    },
+    {
+      "id": "test.map.embers/11",
+      "eventsBefore": 828,
+      "expenditures": 71
+    },
+    {
+      "id": "test.map.embers/12",
+      "eventsBefore": 497,
+      "expenditures": 43
+    },
+    {
+      "id": "test.map.embers/13",
+      "eventsBefore": 715,
+      "expenditures": 62
+    },
+    {
+      "id": "test.map.embers/14",
+      "eventsBefore": 561,
+      "expenditures": 43
+    },
+    {
+      "id": "test.map.embers/15",
+      "eventsBefore": 447,
+      "expenditures": 36
+    },
+    {
+      "id": "test.map.embers/16",
+      "eventsBefore": 554,
+      "expenditures": 51
+    },
+    {
+      "id": "test.map.embers/17",
+      "eventsBefore": 428,
+      "expenditures": 32
+    },
+    {
+      "id": "test.map.embers/18",
+      "eventsBefore": 651,
+      "expenditures": 61
+    },
+    {
+      "id": "test.map.embers/19",
+      "eventsBefore": 542,
+      "expenditures": 48
+    },
+    {
+      "id": "test.map.embers/20",
+      "eventsBefore": 430,
+      "expenditures": 32
+    },
+    {
+      "id": "test.map.embers/21",
+      "eventsBefore": 419,
+      "expenditures": 31
+    },
+    {
+      "id": "test.map.embers/22",
+      "eventsBefore": 685,
+      "expenditures": 65
+    },
+    {
+      "id": "test.map.embers/23",
+      "eventsBefore": 584,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.embers/24",
+      "eventsBefore": 442,
+      "expenditures": 43
+    },
+    {
+      "id": "test.map.showcase/0",
+      "eventsBefore": 629,
+      "expenditures": 64
+    },
+    {
+      "id": "test.map.showcase/1",
+      "eventsBefore": 909,
+      "expenditures": 94
+    },
+    {
+      "id": "test.map.showcase/2",
+      "eventsBefore": 741,
+      "expenditures": 76
+    },
+    {
+      "id": "test.map.showcase/3",
+      "eventsBefore": 658,
+      "expenditures": 68
+    },
+    {
+      "id": "test.map.showcase/4",
+      "eventsBefore": 553,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.showcase/5",
+      "eventsBefore": 536,
+      "expenditures": 52
+    },
+    {
+      "id": "test.map.showcase/6",
+      "eventsBefore": 650,
+      "expenditures": 63
+    },
+    {
+      "id": "test.map.showcase/7",
+      "eventsBefore": 694,
+      "expenditures": 67
+    },
+    {
+      "id": "test.map.showcase/8",
+      "eventsBefore": 815,
+      "expenditures": 77
+    },
+    {
+      "id": "test.map.showcase/9",
+      "eventsBefore": 633,
+      "expenditures": 63
+    },
+    {
+      "id": "test.map.showcase/10",
+      "eventsBefore": 529,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.showcase/11",
+      "eventsBefore": 679,
+      "expenditures": 76
+    },
+    {
+      "id": "test.map.showcase/12",
+      "eventsBefore": 785,
+      "expenditures": 75
+    },
+    {
+      "id": "test.map.showcase/13",
+      "eventsBefore": 605,
+      "expenditures": 55
+    },
+    {
+      "id": "test.map.showcase/14",
+      "eventsBefore": 620,
+      "expenditures": 60
+    },
+    {
+      "id": "test.map.showcase/15",
+      "eventsBefore": 543,
+      "expenditures": 52
+    },
+    {
+      "id": "test.map.showcase/16",
+      "eventsBefore": 554,
+      "expenditures": 48
+    },
+    {
+      "id": "test.map.showcase/17",
+      "eventsBefore": 565,
+      "expenditures": 49
+    },
+    {
+      "id": "test.map.showcase/18",
+      "eventsBefore": 583,
+      "expenditures": 60
+    },
+    {
+      "id": "test.map.showcase/19",
+      "eventsBefore": 552,
+      "expenditures": 51
+    },
+    {
+      "id": "test.map.showcase/20",
+      "eventsBefore": 545,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.showcase/21",
+      "eventsBefore": 553,
+      "expenditures": 52
+    },
+    {
+      "id": "test.map.showcase/22",
+      "eventsBefore": 742,
+      "expenditures": 79
+    },
+    {
+      "id": "test.map.showcase/23",
+      "eventsBefore": 670,
+      "expenditures": 65
+    },
+    {
+      "id": "test.map.showcase/24",
+      "eventsBefore": 504,
+      "expenditures": 49
+    },
+    {
+      "id": "test.map.duel-8/0",
+      "eventsBefore": 499,
+      "expenditures": 51
+    },
+    {
+      "id": "test.map.duel-8/1",
+      "eventsBefore": 406,
+      "expenditures": 43
+    },
+    {
+      "id": "test.map.duel-8/2",
+      "eventsBefore": 327,
+      "expenditures": 33
+    },
+    {
+      "id": "test.map.duel-8/3",
+      "eventsBefore": 305,
+      "expenditures": 32
+    },
+    {
+      "id": "test.map.duel-8/4",
+      "eventsBefore": 267,
+      "expenditures": 22
+    },
+    {
+      "id": "test.map.duel-8/5",
+      "eventsBefore": 390,
+      "expenditures": 44
+    },
+    {
+      "id": "test.map.duel-8/6",
+      "eventsBefore": 456,
+      "expenditures": 45
+    },
+    {
+      "id": "test.map.duel-8/7",
+      "eventsBefore": 278,
+      "expenditures": 28
+    },
+    {
+      "id": "test.map.duel-8/8",
+      "eventsBefore": 431,
+      "expenditures": 45
+    },
+    {
+      "id": "test.map.duel-8/9",
+      "eventsBefore": 376,
+      "expenditures": 41
+    },
+    {
+      "id": "test.map.duel-8/10",
+      "eventsBefore": 294,
+      "expenditures": 32
+    },
+    {
+      "id": "test.map.duel-8/11",
+      "eventsBefore": 458,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.duel-8/12",
+      "eventsBefore": 423,
+      "expenditures": 41
+    },
+    {
+      "id": "test.map.duel-8/13",
+      "eventsBefore": 360,
+      "expenditures": 35
+    },
+    {
+      "id": "test.map.duel-8/14",
+      "eventsBefore": 380,
+      "expenditures": 41
+    },
+    {
+      "id": "test.map.duel-8/15",
+      "eventsBefore": 400,
+      "expenditures": 44
+    },
+    {
+      "id": "test.map.duel-8/16",
+      "eventsBefore": 474,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.duel-8/17",
+      "eventsBefore": 289,
+      "expenditures": 33
+    },
+    {
+      "id": "test.map.duel-8/18",
+      "eventsBefore": 449,
+      "expenditures": 48
+    },
+    {
+      "id": "test.map.duel-8/19",
+      "eventsBefore": 379,
+      "expenditures": 41
+    },
+    {
+      "id": "test.map.duel-8/20",
+      "eventsBefore": 335,
+      "expenditures": 31
+    },
+    {
+      "id": "test.map.duel-8/21",
+      "eventsBefore": 373,
+      "expenditures": 37
+    },
+    {
+      "id": "test.map.duel-8/22",
+      "eventsBefore": 389,
+      "expenditures": 42
+    },
+    {
+      "id": "test.map.duel-8/23",
+      "eventsBefore": 318,
+      "expenditures": 32
+    },
+    {
+      "id": "test.map.duel-8/24",
+      "eventsBefore": 318,
+      "expenditures": 36
+    },
+    {
+      "id": "test.map.dungeon-16x8/0",
+      "eventsBefore": 716,
+      "expenditures": 70
+    },
+    {
+      "id": "test.map.dungeon-16x8/1",
+      "eventsBefore": 719,
+      "expenditures": 72
+    },
+    {
+      "id": "test.map.dungeon-16x8/2",
+      "eventsBefore": 580,
+      "expenditures": 59
+    },
+    {
+      "id": "test.map.dungeon-16x8/3",
+      "eventsBefore": 714,
+      "expenditures": 74
+    },
+    {
+      "id": "test.map.dungeon-16x8/4",
+      "eventsBefore": 565,
+      "expenditures": 50
+    },
+    {
+      "id": "test.map.dungeon-16x8/5",
+      "eventsBefore": 583,
+      "expenditures": 61
+    },
+    {
+      "id": "test.map.dungeon-16x8/6",
+      "eventsBefore": 745,
+      "expenditures": 75
+    },
+    {
+      "id": "test.map.dungeon-16x8/7",
+      "eventsBefore": 599,
+      "expenditures": 60
+    },
+    {
+      "id": "test.map.dungeon-16x8/8",
+      "eventsBefore": 621,
+      "expenditures": 56
+    },
+    {
+      "id": "test.map.dungeon-16x8/9",
+      "eventsBefore": 575,
+      "expenditures": 56
+    },
+    {
+      "id": "test.map.dungeon-16x8/10",
+      "eventsBefore": 599,
+      "expenditures": 61
+    },
+    {
+      "id": "test.map.dungeon-16x8/11",
+      "eventsBefore": 819,
+      "expenditures": 79
+    },
+    {
+      "id": "test.map.dungeon-16x8/12",
+      "eventsBefore": 590,
+      "expenditures": 57
+    },
+    {
+      "id": "test.map.dungeon-16x8/13",
+      "eventsBefore": 536,
+      "expenditures": 53
+    },
+    {
+      "id": "test.map.dungeon-16x8/14",
+      "eventsBefore": 675,
+      "expenditures": 73
+    },
+    {
+      "id": "test.map.dungeon-16x8/15",
+      "eventsBefore": 603,
+      "expenditures": 61
+    },
+    {
+      "id": "test.map.dungeon-16x8/16",
+      "eventsBefore": 795,
+      "expenditures": 80
+    },
+    {
+      "id": "test.map.dungeon-16x8/17",
+      "eventsBefore": 496,
+      "expenditures": 48
+    },
+    {
+      "id": "test.map.dungeon-16x8/18",
+      "eventsBefore": 753,
+      "expenditures": 77
+    },
+    {
+      "id": "test.map.dungeon-16x8/19",
+      "eventsBefore": 607,
+      "expenditures": 53
+    },
+    {
+      "id": "test.map.dungeon-16x8/20",
+      "eventsBefore": 553,
+      "expenditures": 56
+    },
+    {
+      "id": "test.map.dungeon-16x8/21",
+      "eventsBefore": 642,
+      "expenditures": 60
+    },
+    {
+      "id": "test.map.dungeon-16x8/22",
+      "eventsBefore": 703,
+      "expenditures": 70
+    },
+    {
+      "id": "test.map.dungeon-16x8/23",
+      "eventsBefore": 554,
+      "expenditures": 55
+    },
+    {
+      "id": "test.map.dungeon-16x8/24",
+      "eventsBefore": 626,
+      "expenditures": 63
+    },
+    {
+      "id": "test.map.horde-24/0",
+      "eventsBefore": 904,
+      "expenditures": 83
+    },
+    {
+      "id": "test.map.horde-24/1",
+      "eventsBefore": 810,
+      "expenditures": 79
+    },
+    {
+      "id": "test.map.horde-24/2",
+      "eventsBefore": 652,
+      "expenditures": 63
+    },
+    {
+      "id": "test.map.horde-24/3",
+      "eventsBefore": 776,
+      "expenditures": 79
+    },
+    {
+      "id": "test.map.horde-24/4",
+      "eventsBefore": 762,
+      "expenditures": 72
+    },
+    {
+      "id": "test.map.horde-24/5",
+      "eventsBefore": 631,
+      "expenditures": 60
+    },
+    {
+      "id": "test.map.horde-24/6",
+      "eventsBefore": 834,
+      "expenditures": 80
+    },
+    {
+      "id": "test.map.horde-24/7",
+      "eventsBefore": 758,
+      "expenditures": 74
+    },
+    {
+      "id": "test.map.horde-24/8",
+      "eventsBefore": 780,
+      "expenditures": 81
+    },
+    {
+      "id": "test.map.horde-24/9",
+      "eventsBefore": 921,
+      "expenditures": 92
+    },
+    {
+      "id": "test.map.horde-24/10",
+      "eventsBefore": 777,
+      "expenditures": 79
+    },
+    {
+      "id": "test.map.horde-24/11",
+      "eventsBefore": 756,
+      "expenditures": 79
+    },
+    {
+      "id": "test.map.horde-24/12",
+      "eventsBefore": 759,
+      "expenditures": 74
+    },
+    {
+      "id": "test.map.horde-24/13",
+      "eventsBefore": 740,
+      "expenditures": 70
+    },
+    {
+      "id": "test.map.horde-24/14",
+      "eventsBefore": 724,
+      "expenditures": 75
+    },
+    {
+      "id": "test.map.horde-24/15",
+      "eventsBefore": 661,
+      "expenditures": 63
+    },
+    {
+      "id": "test.map.horde-24/16",
+      "eventsBefore": 889,
+      "expenditures": 85
+    },
+    {
+      "id": "test.map.horde-24/17",
+      "eventsBefore": 705,
+      "expenditures": 69
+    },
+    {
+      "id": "test.map.horde-24/18",
+      "eventsBefore": 776,
+      "expenditures": 79
+    },
+    {
+      "id": "test.map.horde-24/19",
+      "eventsBefore": 679,
+      "expenditures": 66
+    },
+    {
+      "id": "test.map.horde-24/20",
+      "eventsBefore": 805,
+      "expenditures": 77
+    },
+    {
+      "id": "test.map.horde-24/21",
+      "eventsBefore": 730,
+      "expenditures": 74
+    },
+    {
+      "id": "test.map.horde-24/22",
+      "eventsBefore": 1013,
+      "expenditures": 109
+    },
+    {
+      "id": "test.map.horde-24/23",
+      "eventsBefore": 672,
+      "expenditures": 69
+    },
+    {
+      "id": "test.map.horde-24/24",
+      "eventsBefore": 800,
+      "expenditures": 77
+    },
+    {
+      "id": "test.authored-slots",
+      "eventsBefore": 102,
+      "expenditures": 6
+    },
+    {
+      "id": "showcase.flight-bonuses",
+      "eventsBefore": 389,
+      "expenditures": 49
+    },
+    {
+      "id": "showcase.surge-flight-ladder",
+      "eventsBefore": 547,
+      "expenditures": 61
+    },
+    {
+      "id": "showcase.movement-bonuses",
+      "eventsBefore": 146,
+      "expenditures": 12
+    },
+    {
+      "id": "showcase.ordered-power-preview",
+      "eventsBefore": 95,
+      "expenditures": 9
+    },
+    {
+      "id": "showcase.beasts",
+      "eventsBefore": 146,
+      "expenditures": 17
+    },
+    {
+      "id": "showcase.prologue-enemies",
+      "eventsBefore": 1685,
+      "expenditures": 142
+    },
+    {
+      "id": "showcase.prologue-party",
+      "eventsBefore": 225,
+      "expenditures": 23
+    },
+    {
+      "id": "showcase.alpha-team",
+      "eventsBefore": 936,
+      "expenditures": 86
+    },
+    {
+      "id": "showcase.arc-variant",
+      "eventsBefore": 242,
+      "expenditures": 11
+    },
+    {
+      "id": "showcase.item-powers",
+      "eventsBefore": 132,
+      "expenditures": 15
+    },
+    {
+      "id": "showcase.civilians",
+      "eventsBefore": 261,
+      "expenditures": 25
+    },
+    {
+      "id": "showcase.eve-24-a",
+      "eventsBefore": 378,
+      "expenditures": 39
+    },
+    {
+      "id": "showcase.eve-24-b",
+      "eventsBefore": 450,
+      "expenditures": 47
+    },
+    {
+      "id": "showcase.gash-variant",
+      "eventsBefore": 679,
+      "expenditures": 61
+    },
+    {
+      "id": "showcase.surrounded",
+      "eventsBefore": 265,
+      "expenditures": 30
+    },
+    {
+      "id": "showcase.two-zombies-and-a-child",
+      "eventsBefore": 189,
+      "expenditures": 18
+    },
+    {
+      "id": "showcase.supper",
+      "eventsBefore": 1408,
+      "expenditures": 158
+    },
+    {
+      "id": "showcase.kiln",
+      "eventsBefore": 1188,
+      "expenditures": 83
+    },
+    {
+      "id": "showcase.rime",
+      "eventsBefore": 1751,
+      "expenditures": 182
+    },
+    {
+      "id": "showcase.horrors",
+      "eventsBefore": 2817,
+      "expenditures": 135
+    },
+    {
+      "id": "showcase.waystation",
+      "eventsBefore": 1400,
+      "expenditures": 164
+    },
+    {
+      "id": "showcase.farmers-grown",
+      "eventsBefore": 240,
+      "expenditures": 24
+    },
+    {
+      "id": "showcase.badged",
+      "eventsBefore": 210,
+      "expenditures": 11
+    },
+    {
+      "id": "showcase.mirror-zombies",
+      "eventsBefore": 349,
+      "expenditures": 39
+    },
+    {
+      "id": "showcase.wounded-entry",
+      "eventsBefore": 71,
+      "expenditures": 5
+    },
+    {
+      "id": "showcase.knockback-two",
+      "eventsBefore": 308,
+      "expenditures": 18
+    },
+    {
+      "id": "showcase.assembled-party",
+      "eventsBefore": 648,
+      "expenditures": 72
+    },
+    {
+      "id": "progression-surge-0",
+      "eventsBefore": 610,
+      "expenditures": 58
+    },
+    {
+      "id": "progression-surge-1",
+      "eventsBefore": 591,
+      "expenditures": 61
+    },
+    {
+      "id": "progression-surge-2",
+      "eventsBefore": 627,
+      "expenditures": 66
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+xxxxxxxxxxxxxxxxxxxxxxxxx
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 25 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > any emits even for a zero-cost attack with its resolved slot
+ FAIL  test/action-spent.test.ts > universal action expenditure > byProfile emits even for a zero-cost attack with its resolved slot
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ event test/action-spent.test.ts:29:22
+
+ ❯ test/action-spent.test.ts:37:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > any records an explicit primary choice
+ FAIL  test/action-spent.test.ts > universal action expenditure > byProfile records an explicit primary choice
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ event test/action-spent.test.ts:29:22
+
+ ❯ test/action-spent.test.ts:43:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > power.move emits for real displacement exactly once
+ FAIL  test/action-spent.test.ts > universal action expenditure > power.flight emits for real displacement exactly once
+ FAIL  test/action-spent.test.ts > universal action expenditure > power.sidestep emits for real displacement exactly once
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ event test/action-spent.test.ts:29:22
+
+ ❯ test/action-spent.test.ts:50:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > a paid power records after all payment events and before its effect
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ event test/action-spent.test.ts:29:22
+
+ ❯ test/action-spent.test.ts:55:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > free power records no slot cost after movement
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ event test/action-spent.test.ts:29:22
+
+ ❯ test/action-spent.test.ts:66:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > reaction free=false preserves both closed flags but pays resources
+ FAIL  test/action-spent.test.ts > universal action expenditure > reaction free=true preserves both closed flags but pays resources
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ event test/action-spent.test.ts:29:22
+
+ ❯ test/action-spent.test.ts:73:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > multi-hit spends and emits once across all hits/targets
+ FAIL  test/action-spent.test.ts > universal action expenditure > area spends and emits once across all hits/targets
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ event test/action-spent.test.ts:29:22
+
+ ❯ test/action-spent.test.ts:82:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > previews and denied actions emit nothing and mutate nothing
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/action-spent.test.ts:94:24
+     92|     expect(saveBattle(ctx)).toBe(before)
+     93|     expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).o…
+     94|     expect(spent(ctx)).toHaveLength(1)
+       |                        ^
+     95|   })
+     96|   it('reload preserves prior expenditure and Surge resets at the real …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > reload preserves prior expenditure and Surge resets at the real cycle boundary
+AssertionError: expected [] to deeply equal [ [ true, false ], …(2) ]
+
+- Expected
++ Received
+
+- [
+-   [
+-     true,
+-     false,
+-   ],
+-   [
+-     true,
+-     true,
+-   ],
+-   [
+-     true,
+-     false,
+-   ],
+- ]
++ []
+
+ ❯ test/action-spent.test.ts:104:65
+    102|       completeActionCycle(live); expect(advanceBattle(live)).toEqual({…
+    103|       expect(executeAction(live, { actor: 0, actionId: id, target: 1 }…
+    104|       expect(spent(live).map(e => [e.moveUsed, e.primaryUsed])).toEqua…
+       |                                                                 ^
+    105|       const reset = live.events.find(e => e.type === 'surge.hit')!
+    106|       expect(reset.seq).toBeGreaterThan(spent(live)[1]!.seq)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/25]⎯
+
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI flee and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI dumb-melee and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI melee-aggressive and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI ranged-kite and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI defender and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI support and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI focused-fire and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI value-hunter and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI follow and public commands emit the identical action records
+ FAIL  test/action-spent.test.ts > universal action expenditure > AI hunter and public commands emit the identical action records
+AssertionError: expected 0 to be greater than 0
+ ❯ test/action-spent.test.ts:123:63
+    121|     })
+    122|     runActivation(ctx, 0)
+    123|     expect(spy).toHaveBeenCalled(); expect(spent(ctx).length).toBeGrea…
+       |                                                               ^
+    124|   })
+    125| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/25]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  25 failed (25)
+   Start at  07:15:40
+   Duration  809ms (transform 380ms, setup 0ms, import 482ms, tests 212ms, environment 0ms)
+

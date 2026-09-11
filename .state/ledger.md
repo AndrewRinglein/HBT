@@ -11429,3 +11429,74 @@ index c1d2631..b45fbe8 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## plumbing.action-spent — LANDED `00e38df` **NEEDS REVIEW**
+2026-09-11 14:21
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:18 · ..\STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 1099 passed
+  PASS  gate 1 — the id appears in a real battle — attack.test-slot-movement: 7 log lines, 7 fired, 3 changed state · attack.test-slot-either: 10 log lines, 10 fired, 6 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/action-spent.test.ts, test/fixtures/battle-cursor-action-spent.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 12fac800->d3dd199c, map.ridge c8f01175->9682f247, map.flanks 03546300->61ace08f, map.highlands b12ac275->da12b28b, map.field 990d1d41->7bd80468, map.thicket b8f528c5->722010e7, map.proving.open 9bc49d5a->329c5b7b, map.proving.ridge 14a91b17->3f59720e, map.proving.ford c150da1d->6369de94, map.proving.copse ce3df8f1->d61a82db, map.proving.ruin 92613e3e->6b32d8f3, map.courtyard 843e32bf->d631fa0b, map.floodplain 376caf09->c007e843, test.map.embers 85cae70b->0a1b56d0, test.map.showcase 6b16a486->d5f8136f, test.map.duel-8 08a2ea43->3afa813b, test.map.dungeon-16x8 817b9720->717a0446, test.map.horde-24 2dc8ea77->7f4e7bda
+  PASS  content has a published source — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-slot-movement,attack.test-slot-either — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 08a4046..4fbef04 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -11,4 +11,5 @@ import { battleCursorCases } from './battle-cursor-cases.js'
+ const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
+ const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
++const eventGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-action-spent.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -99,7 +100,9 @@ describe('resumable battle cursor', () => {
+     const historical = surgeChanged.has(fixture.id) || aiChanged.has(fixture.id) || identityChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
+     it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
+-      // Newly authored scenarios have no pre-extraction history. Keep every old
+-      // golden intact, and compare both current drivers for additions to the corpus.
+-      let expected = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      // Law 10: universal expenditure adds metadata to every battle. Keep both
++      // old files and check their exact hashes after removing ONLY that event
++      // and normalizing sequence counters; freeze full current events separately.
++      const prior = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -115,4 +118,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
++        if (prior) {
++          const oldEvents = ctx.events.filter(e => e.type !== 'action.spent').map((e, seq) => ({ ...e, seq }))
++          const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.events.length - oldEvents.length) }
++          expect(hash(oldEvents), 'historical events without new metadata').toBe(prior.events)
++          expect(hash(oldState), 'historical state without new sequence count').toBe(prior.state)
++          expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
++          expect(result, 'historical result').toEqual(prior.result)
++        }
+         expected ??= { events: hash(ctx.events), state: hash(ctx.state), rng: hash(ctx.rng.log), result }
+         expect(hash(ctx.events), 'events').toBe(expected.events)
+@@ -128,4 +139,8 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
++    for (const corpus of [identityGolden, eventGolden]) {
++      const ids = corpus.cases.map((row: { id: string }) => row.id)
++      expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
++    }
+   })
+ })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

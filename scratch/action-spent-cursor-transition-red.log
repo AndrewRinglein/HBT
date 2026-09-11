@@ -1,0 +1,493 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+·····xxxxxxxxx·xxxxxxxxxxxxxxxxx·xxxx·
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 30 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.alpha-team
+AssertionError: events: expected '741d5ccde709ffe91c7cae82a8301ff31d19a…' to be '2a813f797fe6385988c9c0af607a2c9663f2b…' // Object.is equality
+
+Expected: "2a813f797fe6385988c9c0af607a2c9663f2bfda5ccf3530ef848c471193bae0"
+Received: "741d5ccde709ffe91c7cae82a8301ff31d19a01df68a0ec11854bd8fac405ee4"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.arc-variant
+AssertionError: events: expected '13ebaa448e529df5c4aff2c5979290cd6c2a8…' to be '21a50bdfdcdf8dede384d31fe647266ac804f…' // Object.is equality
+
+Expected: "21a50bdfdcdf8dede384d31fe647266ac804faa48f3093ba5b55f9043b8e4144"
+Received: "13ebaa448e529df5c4aff2c5979290cd6c2a8236eba6ff455b73b1acf138f38d"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.assembled-party
+AssertionError: events: expected '3003e50baa2142e0365721c858075cdd34f06…' to be '7f452b134003c55f1c81ccb6d5bfabdc4e853…' // Object.is equality
+
+Expected: "7f452b134003c55f1c81ccb6d5bfabdc4e853ff7e2428eacf0168225209ad5e2"
+Received: "3003e50baa2142e0365721c858075cdd34f06883b17ac5266ebb6d1b14cc8cad"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.badged
+AssertionError: events: expected 'dd59981639732dd573dcbc9e08ea5ed7fd152…' to be '4b1904fcf6d8bf76808a26560f540be7f3818…' // Object.is equality
+
+Expected: "4b1904fcf6d8bf76808a26560f540be7f38184f890a49cf6d3c57cb73464c742"
+Received: "dd59981639732dd573dcbc9e08ea5ed7fd1522761fc7896c19c0328db6aa6023"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.beasts
+AssertionError: events: expected '3ef019ba13d38e45695f1db3f2a985627086c…' to be '81e60ff62f0116064b83e59e92b2c2deea4db…' // Object.is equality
+
+Expected: "81e60ff62f0116064b83e59e92b2c2deea4db82546f54d38233b0976d3cbed74"
+Received: "3ef019ba13d38e45695f1db3f2a985627086c1f72e6a94a70ce0af077e7bb833"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.civilians
+AssertionError: events: expected '691a87b29e269ecec6b81dcef6d9e68d8ce71…' to be '94e85dcec8ab099ce9cbe91ae389c0483ca8f…' // Object.is equality
+
+Expected: "94e85dcec8ab099ce9cbe91ae389c0483ca8fc8cfde4eb57c363118a7fc88e67"
+Received: "691a87b29e269ecec6b81dcef6d9e68d8ce7193e2d8c526627c76bebbbafc612"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.eve-24-a
+AssertionError: events: expected '48760ce9e2c05ec38d83ffc77feb59a2b2a08…' to be 'b6fe3bdff830dd69f9e25b189924eeec407e1…' // Object.is equality
+
+Expected: "b6fe3bdff830dd69f9e25b189924eeec407e12f01c780b6db9c5baa0d5074c73"
+Received: "48760ce9e2c05ec38d83ffc77feb59a2b2a08a8e4100c0bb710fa20029fb01aa"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.eve-24-b
+AssertionError: events: expected '85e68c1be333c68c0a012c15a1cf6415c2ae1…' to be 'bc4f8a5db6450c7f7438614cba1a14ab5c782…' // Object.is equality
+
+Expected: "bc4f8a5db6450c7f7438614cba1a14ab5c782f135bb5ddf45bd083027ee014b3"
+Received: "85e68c1be333c68c0a012c15a1cf6415c2ae127836dc6ec6acd6b4b1c1f82ec8"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.farmers-grown
+AssertionError: events: expected 'af8a0adaf3c264afd6f6bccc10360cf6cf8e6…' to be '98c2861b5124ac3bb167e66f5176fa08a3c9c…' // Object.is equality
+
+Expected: "98c2861b5124ac3bb167e66f5176fa08a3c9ca0c178d2510b5a1ad0a69f8056d"
+Received: "af8a0adaf3c264afd6f6bccc10360cf6cf8e630158d07ca1fe08c6e05df6fae7"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.gash-variant
+AssertionError: events: expected '0c6c9ec3b9bb7f6606e86ac9da6bb3bd3505d…' to be '5b62ec0cb5427a6d936d712e43fd47a936e2f…' // Object.is equality
+
+Expected: "5b62ec0cb5427a6d936d712e43fd47a936e2f6176e1dc07bc55ddef663f0607f"
+Received: "0c6c9ec3b9bb7f6606e86ac9da6bb3bd3505d645785f71711eab9369d7190b2e"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.horrors
+AssertionError: events: expected '4e8e77583b4be682a572efbb5a1409c096b30…' to be 'd932349e5987ba1e5c4a6736a58e182f0236a…' // Object.is equality
+
+Expected: "d932349e5987ba1e5c4a6736a58e182f0236ae93b2da2cedc39b1880a89779f4"
+Received: "4e8e77583b4be682a572efbb5a1409c096b305363e1d09439a3fa256ae6a61b2"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.item-powers
+AssertionError: events: expected 'e7aec2d510b94f5ef7ddb5054fefcf843a8aa…' to be '2b06dd7044e7d5713c3d7cdc7add94be736c1…' // Object.is equality
+
+Expected: "2b06dd7044e7d5713c3d7cdc7add94be736c1c61713611e139791ea570290a7b"
+Received: "e7aec2d510b94f5ef7ddb5054fefcf843a8aa7505a08ac13f87ca0e953373d7e"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.kiln
+AssertionError: events: expected 'c6c72313ccd10feed010f7ebcaa26289b9dad…' to be '8500b6e9646a27df9972a3cd66fb71ef55278…' // Object.is equality
+
+Expected: "8500b6e9646a27df9972a3cd66fb71ef55278afe4c92fd1ee6acaa2cb2945520"
+Received: "c6c72313ccd10feed010f7ebcaa26289b9dad4293cdd22f5137e02d34c2f52c1"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.knockback-two
+AssertionError: events: expected '56d1c254fd4ab79f3826016acfb3226d1eee7…' to be 'd58f39208f145163f3701c5654c9569962742…' // Object.is equality
+
+Expected: "d58f39208f145163f3701c5654c956996274226bba8bdffd723a1fad5baf5716"
+Received: "56d1c254fd4ab79f3826016acfb3226d1eee7cfbd28e7b8615f87be5d2ad8f8f"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.mirror-zombies
+AssertionError: events: expected 'e0291d9b74ab0e445a83711029fc54dd821a5…' to be 'a332a14b2f6f9fcae08f51454e91dd52ddc9b…' // Object.is equality
+
+Expected: "a332a14b2f6f9fcae08f51454e91dd52ddc9b8dc542e4109a5cecdc8047d7ccb"
+Received: "e0291d9b74ab0e445a83711029fc54dd821a53f71e250895e55024bb7f71e9fc"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.movement-bonuses
+AssertionError: events: expected '6d5d7d272834299fb911b2f4e2a4a59e8a9d4…' to be '6a8077ad7ffbfcf26240dd1e90d03658477f3…' // Object.is equality
+
+Expected: "6a8077ad7ffbfcf26240dd1e90d03658477f307042f729d23f2af79889312f2e"
+Received: "6d5d7d272834299fb911b2f4e2a4a59e8a9d4b8ee8a0566165ffb4844ea47dd9"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.ordered-power-preview
+AssertionError: events: expected '40584eacdb7fe3e7888a84814a7064eb8e0ac…' to be '36bbac50ac9107d7e5845d8fe34d7c00cba7d…' // Object.is equality
+
+Expected: "36bbac50ac9107d7e5845d8fe34d7c00cba7ddba7a66ac9e959ad575f806fd88"
+Received: "40584eacdb7fe3e7888a84814a7064eb8e0ac346511663204236026e3fcc522f"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-enemies
+AssertionError: events: expected '8c5e170ccefab501e9ace5f7096a0dd5382aa…' to be 'bdee767f7a2cb9d8627a3abb2becb0a0c0fa9…' // Object.is equality
+
+Expected: "bdee767f7a2cb9d8627a3abb2becb0a0c0fa92349059348a0d0c707a8dcda223"
+Received: "8c5e170ccefab501e9ace5f7096a0dd5382aa31ff30a7b75f5208901794d373a"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-party
+AssertionError: events: expected '75db6914cd04657dafc46f165e8ad1e803e74…' to be '941d5f9432850847b20c9a25de58a9f260d05…' // Object.is equality
+
+Expected: "941d5f9432850847b20c9a25de58a9f260d05da3dbc81c26789812e1d824b695"
+Received: "75db6914cd04657dafc46f165e8ad1e803e74f2d9caf7acaba0d58848cd0c1f3"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.rime
+AssertionError: events: expected 'b8cdc02b23a530a4ea2c7c8fd0ff7521ddce6…' to be '3ed1608db4da197c435e6a7a248eac328ba1b…' // Object.is equality
+
+Expected: "3ed1608db4da197c435e6a7a248eac328ba1b5be81bf2777819cd8630a7106c7"
+Received: "b8cdc02b23a530a4ea2c7c8fd0ff7521ddce68ebaaae469e1fbc427fc8d77eff"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.supper
+AssertionError: events: expected '8d0f6b31c56eadbdbdd4923fe3edf752a764b…' to be 'ef1c12b92927b459e24a3d567c97c2d11bc13…' // Object.is equality
+
+Expected: "ef1c12b92927b459e24a3d567c97c2d11bc136248096bc8c0b0edf95bf37597f"
+Received: "8d0f6b31c56eadbdbdd4923fe3edf752a764baeaabadb6ec5e40a69141fd18dd"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.surge-flight-ladder
+AssertionError: events: expected '719f6c7a9a68ec112110778a7ee90c58139eb…' to be 'badeba028d258254a1bbe2726febb5ad773dd…' // Object.is equality
+
+Expected: "badeba028d258254a1bbe2726febb5ad773ddad9ac7627aad9305e15f4aae218"
+Received: "719f6c7a9a68ec112110778a7ee90c58139eb11574c32e42f4b45a8a548ebe74"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.surrounded
+AssertionError: events: expected '59d44411a3f5911450832234235872c9c25e7…' to be 'e69571fd103e133f192fefbba53f2eb14a4a7…' // Object.is equality
+
+Expected: "e69571fd103e133f192fefbba53f2eb14a4a776996626a435e1b854fda575e3c"
+Received: "59d44411a3f5911450832234235872c9c25e78dd873764b4eca32a50c8cddf2f"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.two-zombies-and-a-child
+AssertionError: events: expected 'efca0557f89a3694605f77248bac97b8952ed…' to be '63423357f4a74cd738067857997530bda3b58…' // Object.is equality
+
+Expected: "63423357f4a74cd738067857997530bda3b5806c5d599894ce2ad38844df2e4a"
+Received: "efca0557f89a3694605f77248bac97b8952ed4adf6eec7bee6538ffe3b1c6aab"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.waystation
+AssertionError: events: expected '99a0dc23cdc5cb50c6d3b47ea1e1172472181…' to be '1597291663c3d70bdda77c372014a5282da41…' // Object.is equality
+
+Expected: "1597291663c3d70bdda77c372014a5282da41edbf151b495c8d6f97614d50ca2"
+Received: "99a0dc23cdc5cb50c6d3b47ea1e1172472181831507ca531d5323e81cbccc266"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.wounded-entry
+AssertionError: events: expected '13e56ed73362799f0cedb4f4f3fb0d10c2ef0…' to be 'f803d66406cfa1bc19dd0986a4d63b10ebc59…' // Object.is equality
+
+Expected: "f803d66406cfa1bc19dd0986a4d63b10ebc592d50e41d3d6a3b4757520a6d946"
+Received: "13e56ed73362799f0cedb4f4f3fb0d10c2ef00bfde4b0437a16082aace0cb073"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-0
+AssertionError: events: expected 'de28756019ff5fcdab4fd2b16998ce48c3b19…' to be 'd385609bd1ef9d2459a9c3665e0b4ca5144ab…' // Object.is equality
+
+Expected: "d385609bd1ef9d2459a9c3665e0b4ca5144aba50aded185826d89402570e697e"
+Received: "de28756019ff5fcdab4fd2b16998ce48c3b196f248b8da9b3bb953ffad7752ab"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-1
+AssertionError: events: expected '4e96536e6ea2b712c57be16bb086844ea1bb9…' to be '5966fe3af0fa4631fae3501e319762740bac2…' // Object.is equality
+
+Expected: "5966fe3af0fa4631fae3501e319762740bac241d225b9c00698ee625b1ab35c3"
+Received: "4e96536e6ea2b712c57be16bb086844ea1bb991d59c6cb8adca2d90530bc24f8"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-2
+AssertionError: events: expected '90de500702f9dbab2202d530b74dc54ab5ea6…' to be '2ca45399477eabb5e9313b80129688ff5c745…' // Object.is equality
+
+Expected: "2ca45399477eabb5e9313b80129688ff5c74564c2f6f3c4d05a4947a5089ac1b"
+Received: "90de500702f9dbab2202d530b74dc54ab5ea64d4b4767e8790f636e78e5565a9"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/30]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: legacy-surge-cap
+AssertionError: events: expected '12418ebae12ae62f37e8285f5d381fd4f126e…' to be '13d6f64fb06b82ea827cf8d7f39e83b3e11d4…' // Object.is equality
+
+Expected: "13d6f64fb06b82ea827cf8d7f39e83b3e11d483a4cd188770e8029d8c0c743ff"
+Received: "12418ebae12ae62f37e8285f5d381fd4f126ed8372fab7739046d3845d56854e"
+
+ ❯ test/battle-cursor.test.ts:118:44
+    116|         } else result = battle.runBattle(ctx)
+    117|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    118|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    119|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    120|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/30]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  30 failed | 8 passed (38)
+   Start at  07:17:50
+   Duration  952ms (transform 377ms, setup 0ms, import 482ms, tests 357ms, environment 0ms)
+

@@ -1,0 +1,33 @@
+
+EVENTS-FOR-THE-VIEWER-2026-09-03.md — 12 question(s)
+
+  line 29: | `encounter.begin` | `name`, `gaps?` | the battle's title; the gaps are prose, list them in the
+     ↳ ..\GEAR-IMPLEMENTATION.md:329  | 4 | Vision, Root, Confusion, Taunt, Frost, immunity, traps, stabilize — the Waystation rows na
+     ↳ ..\CODEX.md:945  <sub>Hell-TCG Civilian/Soldier, RENAMED to Militia — Soldier is a badge in HoBaT (badge.soldier)
+
+  line 35: | `encounter.lost` | `reason:'objective dead'\|'time'`, `actor?`, `limit?` | outcome `objectiveF
+     ↳ ..\STATE.md:21  | Visual Battle Engine | `viewer/CLAUDE.md` · `viewer/VIEWER-CONSTITUTION.md` · `viewer/HANDOFF-
+
+  line 67: | `life.dead` | + `reason:'bledOut'\|'hp0'\|'obliterated'`, `corpse?:false` | as before; `reason
+     ↳ ..\STATE.md:21  | Visual Battle Engine | `viewer/CLAUDE.md` · `viewer/VIEWER-CONSTITUTION.md` · `viewer/HANDOFF-
+
+  line 75: | `power.gained` | `amount`, `before`, `after`, `kind:'external'\|'arrival'`, `actor?` | the ene
+     ↳ ..\CODEX.md:981  <sub>Hell-TCG Lorekeeper/Archivist (the draw-flooding identity has no meaning without The Hand; 
+     ↳ ..\CODEX.md:1830  | Limits stop stacking; options need no limit | 0 stam | self | UNIVERSAL RULE, not a power you 
+
+  line 104: | `status.applied` | + `by?` (the applying unit) | Taunt's `by` is the unit the taunted must tar
+     ↳ ..\BESTIARY-TEST.md:179  rows must carry `test: true`, and every hook, effect and status a test unit names must be
+     ↳ ..\CODEX.md:1830  | Limits stop stacking; options need no limit | 0 stam | self | UNIVERSAL RULE, not a power you 
+
+  line 105: | `ai.mode` | + `confusedFrom?` | a confused unit ran a different mode this activation |
+     ↳ ..\COMBAT-DESIGN.md:477  - Flight — *(rewritten 2026-08-20; the per-hex model below it replaced was: every hex costs 1, i
+     ↳ ..\COMBAT-DESIGN.md:628  *Changed 2026-08-15:* `onEnter` and `onWounded` removed; `turnEnd` renamed `onActivationEnd`. *C
+
+  line 115: `huntTarget?`, `statuses[].by?`. New `State` fields: `corpses`, `layers`, `power`, `encounter`.
+     ↳ ..\STATE.md:21  | Visual Battle Engine | `viewer/CLAUDE.md` · `viewer/VIEWER-CONSTITUTION.md` · `viewer/HANDOFF-
+
+  line 236: - `deathbed.fell { target, roll, chance, ordinal, bleedsOut, gaps? }` —
+     ↳ COMBAT-SEQUENCE.md:395  > A second thing fell out of fixing it. `ADJACENT` could not be probed for, because the accuracy
+
+8 question(s) may already be answered. Read the lines above before asking.
+

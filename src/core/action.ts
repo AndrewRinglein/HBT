@@ -128,6 +128,9 @@ export function spendAction(ctx: Ctx, unitId: number, a: ActionDef, slot: 'movem
     emit(ctx, 'cooldown.set', a.id, { actor: unitId, actionId: a.id, abilityId: a.id, readyOnTurn: readyAgain })   // abilityId kept for the viewer's reader; actionId is the name
   }
   if (a.uses) spendUse(ctx, unitId, a.id)
+  // Universal payment receipt, including zero-cost, free and reaction actions.
+  // Resulting flags are authoritative; readers never infer a slot from profile.
+  emit(ctx, 'action.spent', a.id, { actor: unitId, actionId: a.id, slot, free: a.free === true, moveUsed: u.moveUsed, primaryUsed: u.primaryUsed })
 }
 
 /**

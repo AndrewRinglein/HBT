@@ -2303,3 +2303,21 @@ behavior. These edits remain flagged for human review, not self-approved.
 Universal action expenditure events are deliberately the next item. They need a
 metadata-only control transition with evidence; this item adds no conditional
 event workaround and makes no claim that passive replay infers explicit slots.
+
+## 2026-09-11 — Universal action expenditure event
+
+The authorized replay contract emits `action.spent` once in central payment for
+every action, including free, reaction and zero-cost actions. It records the
+actual resolved slot and resulting flags after resource/cooldown/use payment,
+before the action's effect. No profile/config branch suppresses the event.
+The existing `activation.begin` and `surge.hit` events authoritatively reset both
+flags to false; their payloads and all other prior events remain unchanged.
+Snapshot rules advance to .8, with no V1 compatibility path.
+
+All 25 initial probes failed for absent expenditure metadata, then passed with
+the central emission. The intended baseline change is metadata only. The
+comparison extracts committed `b0a80f6` and requires exact events, state, RNG,
+cursor and result after removing only action.spent and normalizing event seq and
+state.seq. Original and identity goldens remain; a separate event-contract golden
+covers the current corpus. Authoritative shape/timing/reset documentation belongs
+to EVENTS-FOR-THE-VIEWER-2026-09-03.md §14, not a competing event specification.

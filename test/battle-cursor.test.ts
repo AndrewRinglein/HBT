@@ -10,6 +10,7 @@ import { battleCursorCases } from './battle-cursor-cases.js'
 
 const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
 const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
+const eventGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-action-spent.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -98,9 +99,11 @@ describe('resumable battle cursor', () => {
   for (const fixture of battleCursorCases()) {
     const historical = surgeChanged.has(fixture.id) || aiChanged.has(fixture.id) || identityChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
     it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
-      // Newly authored scenarios have no pre-extraction history. Keep every old
-      // golden intact, and compare both current drivers for additions to the corpus.
-      let expected = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      // Law 10: universal expenditure adds metadata to every battle. Keep both
+      // old files and check their exact hashes after removing ONLY that event
+      // and normalizing sequence counters; freeze full current events separately.
+      const prior = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      let expected = eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result
@@ -114,6 +117,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
+        if (prior) {
+          const oldEvents = ctx.events.filter(e => e.type !== 'action.spent').map((e, seq) => ({ ...e, seq }))
+          const oldState = { ...ctx.state, seq: ctx.state.seq - (ctx.events.length - oldEvents.length) }
+          expect(hash(oldEvents), 'historical events without new metadata').toBe(prior.events)
+          expect(hash(oldState), 'historical state without new sequence count').toBe(prior.state)
+          expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+          expect(result, 'historical result').toEqual(prior.result)
+        }
         expected ??= { events: hash(ctx.events), state: hash(ctx.state), rng: hash(ctx.rng.log), result }
         expect(hash(ctx.events), 'events').toBe(expected.events)
         expect(hash(ctx.state), 'state').toBe(expected.state)
@@ -127,5 +138,9 @@ describe('resumable battle cursor', () => {
     const historicalIds = golden.cases.map((row: { id: string }) => row.id)
     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+    for (const corpus of [identityGolden, eventGolden]) {
+      const ids = corpus.cases.map((row: { id: string }) => row.id)
+      expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+    }
   })
 })
