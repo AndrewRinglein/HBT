@@ -1,0 +1,13 @@
+
+> test
+> node ../engine/node_modules/vitest/vitest.mjs run
+
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/kingdom
+
+
+ Test Files  71 passed (71)
+      Tests  219 passed (219)
+   Start at  16:28:03
+   Duration  3.49s (transform 7.39s, setup 0ms, import 27.33s, tests 6.29s, environment 7ms)
+

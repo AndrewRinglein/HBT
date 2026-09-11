@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/kingdom
+
+ ❯ test/board-from-map.test.ts (4 tests | 1 failed) 18ms
+     × draws canonical props independently of ground on a real obstacle map 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/board-from-map.test.ts > the battle screen sizes its board from the map > draws canonical props independently of ground on a real obstacle map
+TypeError: Cannot read properties of undefined (reading 'length')
+ ❯ test/board-from-map.test.ts:38:20
+     36|     engagementOf(ctx.campaign).mapId = 'map.thicket'
+     37|     const v = viewBattle(ctx.campaign) as any
+     38|     expect(v.props.length).toBeGreaterThan(0)
+       |                    ^
+     39|     for (const p of v.props) for (const hex of p.footprint.hexes) expe…
+     40|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  16:14:41
+   Duration  848ms (transform 562ms, setup 0ms, import 710ms, tests 18ms, environment 0ms)
+

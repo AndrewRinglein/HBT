@@ -11,7 +11,7 @@
 import type { CampaignState } from '../core/campaign.js'
 import { engagementOf } from '../core/mutate.js'
 import { makeBattleState, battleOptionsOf } from '../core/seam.js'
-import { createBattle, terrainIdOf } from '../engine.js'
+import { createBattle, terrainIdOf, type HighProp } from '../engine.js'
 
 export type BattleUnitView = {
   side: 'hero' | 'enemy'
@@ -42,6 +42,7 @@ export type BattleView = {
   height: number
   /** terrain.* id per hex, index = hexId. */
   terrain: string[]
+  props: HighProp[]
   units: BattleUnitView[]
 }
 
@@ -74,6 +75,7 @@ export function viewBattle(campaign: CampaignState): BattleView {
     engagementId: e.id, kind: e.kind, mapId: e.mapId,
     width: ctx.geo.board.width, height: ctx.geo.board.height,
     terrain: ctx.state.terrain.map(terrainIdOf),
+    props: structuredClone(ctx.state.props),
     units,
   }
 }

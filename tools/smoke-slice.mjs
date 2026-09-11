@@ -44,7 +44,18 @@ has('Equip — the heroes you are sending'); has('right hand'); has('armor'); ha
 if (text().includes('1 · Reveal')) throw new Error('the Equip screen still carries the prep step bar')
 { const t = text(); let at = t.indexOf('Idols'); for (const w of ['Bloodrunes', 'Relics', 'Weapons', 'Armor', 'Trinkets']) { const n = t.indexOf(w, at + 1); if (at < 0 || n < 0) throw new Error(`the six sections are not in the ruled order — ${w} does not follow`); at = n } }
 click('advance')                     // → battle
-has('The battle'); has('Fielded as equipped'); click('decide'); has('Reckoning'); click('apply')
+has('The battle'); has('Fielded as equipped')
+// Canonical prop presentation uses the same saved battle/outcome-picker flow.
+click('title')
+const propKey = [...store.keys()].find(k => k.startsWith('hobat-kingdom-save:'))
+const propBattle = JSON.parse(store.get(propKey))
+propBattle.cursor.engagement.mapId = 'map.thicket'
+store.set(propKey, JSON.stringify(propBattle))
+click('slot-continue'); has('The battle'); has('map.thicket')
+if (!(root.innerHTML.match(/data-prop="prop\.obstacle\./g) || []).length) throw new Error('canonical high props are absent from the drawn battle')
+has('high · material 3')
+console.log('smoke: saved registered-map battle draws canonical prop footprints; outcome picker retained: OK')
+click('decide'); has('Reckoning'); click('apply')
 // the Hell-TCG copies (2026-09-04): the recap, then rewards.html's cards, then the level-up sheet — their
 // ceremonies run on a real DOM; here the same performX calls are driven through the page's smoke hook
 has('VICTORY'); has('Slain:'); has('XP Earned:'); click('exit')

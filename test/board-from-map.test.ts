@@ -18,7 +18,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { campaignOf } from '../src/core/campaign.js'
-import { makeCtx } from '../src/core/mutate.js'
+import { makeCtx, engagementOf } from '../src/core/mutate.js'
 import { beginCombatPrep, performAdvancePrep, performDeploy, listDeployable } from '../src/core/prep.js'
 import { viewBattle } from '../src/view/battle.js'
 
@@ -31,6 +31,13 @@ function atBattle() {
 }
 
 describe('the battle screen sizes its board from the map', () => {
+  it('draws canonical props independently of ground on a real obstacle map', () => {
+    const ctx = atBattle()
+    engagementOf(ctx.campaign).mapId = 'map.thicket'
+    const v = viewBattle(ctx.campaign) as any
+    expect(v.props.length).toBeGreaterThan(0)
+    for (const p of v.props) for (const hex of p.footprint.hexes) expect(v.terrain[hex]).toBe('terrain.open')
+  })
   it('reports a whole board, and one terrain per hex on it', () => {
     const v = viewBattle(atBattle().campaign)
     expect(v.width).toBeGreaterThan(0)

@@ -385,6 +385,11 @@ function boardSvg(v: BattleView): string {
     const { cx, cy } = centre(col, row)
     hexes += `<polygon points="${hexPath(cx, cy)}" fill="${fillOf(v.terrain[id] ?? '')}" stroke="#0c0a09" stroke-width="1"><title>${esc(v.terrain[id] ?? '')} · hex ${id} (${col},${row})</title></polygon>`
   }
+  let props = ''
+  for (const p of v.props) for (const hex of p.footprint.hexes) {
+    const { cx, cy } = centre(hex % v.width, Math.floor(hex / v.width))
+    props += `<g data-prop="${esc(p.id)}" data-hex="${hex}"><polygon points="${cx - W * .3},${cy + H * .2} ${cx},${cy - H * .3} ${cx + W * .3},${cy + H * .2}" fill="#75716b" stroke="#171513" stroke-width="1.5"/><title>${esc(p.id)} · high · material ${p.material}</title></g>`
+  }
   let units = ''
   for (const u of v.units) {
     const { cx, cy } = centre(u.col, u.row)
@@ -393,7 +398,7 @@ function boardSvg(v: BattleView): string {
     units += `<g><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(W * 0.34).toFixed(1)}" fill="${fill}" stroke="#000" stroke-width="1.2"/><text x="${cx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#14110f">${label}</text><title>${esc(u.name)} · ${esc(u.typeId)} · hp ${u.hp}/${u.maxHp} · hex ${u.hex}${u.equipped.length ? ' · carries ' + esc(u.equipped.map((i) => i.replace('item.', '')).join(', ')) : ''}${u.attacks.length ? ' · attacks ' + esc(u.attacks.map((a) => a.replace('attack.', '')).join(', ')) : ''}</title></g>`
   }
   const kinds = [...new Set(v.terrain)].sort()
-  return `<div class="board"><svg viewBox="0 0 ${width.toFixed(0)} ${height.toFixed(0)}" width="${width.toFixed(0)}" height="${height.toFixed(0)}">${hexes}${units}</svg></div>
+  return `<div class="board"><svg viewBox="0 0 ${width.toFixed(0)} ${height.toFixed(0)}" width="${width.toFixed(0)}" height="${height.toFixed(0)}">${hexes}${props}${units}</svg></div>
     <div class="legend">${kinds.map((k) => `<span><i style="background:${fillOf(k)}"></i>${esc(k)}</span>`).join('')}<span><i style="background:#c9a227"></i>hero</span><span><i style="background:#c05a4e"></i>enemy</span></div>`
 }
 

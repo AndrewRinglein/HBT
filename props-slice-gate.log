@@ -1,0 +1,69 @@
+
+slice-gate — every P-tier probe
+
+  PASS  ISC-001  a cold-start run reaches the first Article
+  PASS  ISC-002  a finished battle yields per-hero casualty data
+  PASS  ISC-003  a battle runs from campaign facts through the unmodified engine
+  PASS  ISC-004  a CampaignState survives JSON and back
+  PASS  ISC-005  a Week advances through Field and City
+  PASS  ISC-006  each half begins and ends even when it resolves to nothing
+  PASS  ISC-007  the cursor survives a save and reload at every position
+  PASS  ISC-008  a hero fights or takes an exclusive assignment
+  PASS  ISC-009  a quest party remains away until its due Field resolution
+  PASS  ISC-010  commitmentOf owns the availability answer
+  PASS  ISC-011  the slice map is four Territories
+  PASS  ISC-012  a won Conquer claims the Territory and any building on it
+  PASS  ISC-013  a lost Territory must be conquered again; the Kingdom Territory cannot be lost
+  PASS  ISC-014  applyBattleResult is the only writer
+  PASS  ISC-015  losing a battle costs wounds and pays no Salvage
+  PASS  ISC-016  Renown rises by exactly 1 per Engagement won
+  PASS  ISC-017  re-conquest pays Renown and never Salvage
+  PASS  ISC-018  a hero above a wound threshold cannot be deployed
+  PASS  ISC-019  the reward draft draws 3 and keeps 1
+  PASS  ISC-020  the difficulty number is the ruled sum
+  PASS  ISC-021  four currencies exist and none substitutes for another
+  PASS  ISC-022  Salvage arrives only from Conquer
+  PASS  ISC-023  one Renown buys exactly one purchase
+  PASS  ISC-024  an Article slot opens at Renown 10 and every 5 thereafter
+  PASS  ISC-026  Combat Prep runs four steps in the ruled order
+  PASS  ISC-027  the Reveal shows the enemy before any decision
+  PASS  ISC-028  the War Council offers three and takes one
+  PASS  ISC-029  Deploy refuses the fifth unit at the base limit
+  PASS  ISC-031  the panel's result and the fold's result are one shape
+  PASS  ISC-032  the Reckoning is proposed, editable, and written exactly
+  PASS  ISC-034  the Reckoning is proposed from the result and every value is editable
+  PASS  ISC-033  exiting the battle saves a Campaign that reloads past it
+  PASS  ISC-035  the defend roll is one a Week at 6% per owned Territory
+  PASS  ISC-036  City chapel assignments replace the old labours
+  PASS  ISC-037  recruiting costs Faith and adds a hero
+  PASS  ISC-038  healing a wound costs Faith and lowers the level
+  PASS  ISC-039  a hero levels at the ruled thresholds
+  PASS  ISC-040  Salvage buys a Forge node from the settled tree
+  PASS  ISC-041  the Forge's shelf sells for Supplies and the item equips
+  PASS  ISC-042  a new Campaign begins with one stat-less draft of three
+  PASS  ISC-043  the five prologue battles are the authored ones
+  PASS  ISC-044  the draft cadence is 1, +2, then +1 per battle to six
+  PASS  ISC-045  a loss before the Kingdom Territory ends the Campaign
+  PASS  ISC-046  the unavailability roll keeps some heroes home with a story
+  PASS  ISC-047  one quest goes out and comes back
+  PASS  ISC-025  the terminus depends on none of them
+  PASS  ISC-051  the kingdom's item rows are the codex's
+  PASS  ISC-052  a hero enters the roster wearing its content kit
+  PASS  ISC-053  a hero without a content kit is a named gap, never bare
+  PASS  ISC-054  the slot model is the ruled one
+  PASS  ISC-055  equip is a swap; unequip is real
+  PASS  ISC-056  idols and Bloodrunes cost, and refund inside the session
+  PASS  ISC-057  the Forge's shelf follows its level and rerolls each Week
+  PASS  ISC-058  masterwork and enchanted are priced and shaped as ruled
+  PASS  ISC-059  the trade-in is three for one, one tier up, same category, at Enchanted
+  PASS  ISC-060  the Waystation sells its catalog by band, unlimited
+  PASS  ISC-061  used items restock after the battle
+  PASS  ISC-062  set bonuses resolve in both shapes, over what is equipped
+  PASS  ISC-063  set bonuses are resolved at fielding and shown before the battle
+  PASS  ISC-064  what is equipped is what is fielded
+  PASS  ISC-065  the reward draw is tiered at the ruled odds
+../THIN-SLICE-IMPLEMENTATION.md already in sync: 46 of 50 closed · 46 probed · 1 accepted
+../GEAR-IMPLEMENTATION.md already in sync: 15 of 18 closed · 15 probed · 0 accepted
+
+61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 61 of 68 closed · 61 probed · 1 accepted
+
