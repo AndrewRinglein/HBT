@@ -48,5 +48,7 @@
       { "kind": "damage", "stat": "magic", "bonus": 7, "damageType": "magic" }
     ],
     "note": "fix.ordered-power-preview: the second pure-data variant removes protection before damage."
-  }
+  },
+  {"id":"power.test-slot-guard","name":"Early guard (TEST)","slot":"movement","range":0,"staminaCost":1,"cooldown":0,"target":{"select":"self","side":"any"},"effects":[{"kind":"status.apply","statusId":"status.protection","value":2}],"note":"A power uses movement and leaves primary open."},
+  {"id":"power.test-slot-free","name":"Free recovery (TEST)","slot":"primary","free":true,"range":0,"staminaCost":0,"cooldown":0,"target":{"select":"self","side":"any"},"effects":[{"kind":"stamina.gain","value":1}],"note":"Unlimited core readiness; AI deliberately chooses a free action once per cycle."}
 ]

@@ -9,6 +9,13 @@ import fs from 'fs';
 const D = JSON.parse(fs.readFileSync('hbt-content.json', 'utf8'));
 if (!D.testCohort) { console.error('mkenginepack: no testCohort in hbt-content.json — run assemble.mjs first.'); process.exit(1); }
 
+// Slots are authored action restrictions, independent of their effect profile.
+const ACTION_SLOTS = new Set(['movement', 'primary', 'either']);
+function actionSlot(row) {
+  if (row.slot !== undefined && !ACTION_SLOTS.has(row.slot)) throw new Error(`invalid action slot '${row.slot}' on '${row.id ?? row.name}'`);
+  if (row.free !== undefined && typeof row.free !== 'boolean') throw new Error(`invalid free action flag on '${row.id ?? row.name}'`);
+  return { ...(row.slot !== undefined ? { slot: row.slot } : {}), ...(row.free !== undefined ? { free: row.free } : {}) };
+}
 const ACTION = { applyPoison: 'status.poison', applyBleed: 'status.bleed', applyBurn: 'status.burn' };
 const TARGET = { attacked: 'target', self: 'self' };
 const HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd']);
@@ -211,7 +218,7 @@ function compileMoves(powers) {
     const costM = d.match(/[Cc]osts (\d) Stamina/); if (costM && parseInt(costM[1], 10) !== p.stamina) { gap(p.id, `says 'Costs ${costM[1]} Stamina' but stamina is ${p.stamina}`, 'content disagrees with itself'); continue; }
     if (/there is no cooldown/.test(d) && p.cooldown !== 0) { gap(p.id, `says 'no cooldown' but cooldown is ${p.cooldown}`, 'content disagrees with itself'); continue; }
     if (/usable every other Turn/.test(d) && p.cooldown !== 1) { gap(p.id, `says 'every other Turn' but cooldown is ${p.cooldown}`, 'content disagrees with itself'); continue; }
-    out[p.id] = { id: p.id, name: p.name, ...base, ...(effects.length ? { effects } : {}), staminaCost: p.stamina, cooldown: p.cooldown };
+    out[p.id] = { id: p.id, name: p.name, ...actionSlot(p), ...base, ...(effects.length ? { effects } : {}), staminaCost: p.stamina, cooldown: p.cooldown };
   }
   return out;
 }
@@ -458,7 +465,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
           else egaps.push(`${e.effect} ${e.stat ?? ''}`.trim());
         }
         const pid = a.id.replace(/^attack\./, 'power.');
-        authoredAbilities[pid] = { id: pid, name: a.name, staminaCost: 0, cooldown: a.cooldown ?? 0, range: 0, target: { select: 'self', side: 'any' },
+        authoredAbilities[pid] = { id: pid, name: a.name, ...actionSlot(a), staminaCost: 0, cooldown: a.cooldown ?? 0, range: 0, target: { select: 'self', side: 'any' },
           effects: [{ kind: 'corpse.eat', radius: 1, heal, mods, ...(maxHp ? { maxHp } : {}) }], ...(egaps.length ? { gaps: egaps } : {}) };
         abilityIdsLocal.push(pid);
         for (const g of egaps) gap(id, `${pid}: ${g}`, 'enemy self-power clause');
@@ -477,7 +484,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     anyRanged = anyRanged || ranged;
     if (ranged) rangedN++; else meleeN++;
     authoredAttacks[a.id] = {
-      id: a.id, name: a.name || a.id.split('.').pop(),
+      ...actionSlot(a), id: a.id, name: a.name || a.id.split('.').pop(),
       kind: ranged ? 'ranged' : 'melee',
       damageType: a.damageType || 'physical',
       bonus: a.damage?.mod ?? 0, stat: a.damage?.stat || 'strength',
@@ -651,7 +658,7 @@ function settledAttackExtras(a, unitId) {
 function compiledPowerOf(p, unitId) {
   const desc = String(p.description || '');
   const tgt = String(p.targets || '');
-  const base = { id: p.id, name: p.name, staminaCost: p.stamina ?? 0, cooldown: p.cooldown ?? 0 };
+  const base = { id: p.id, name: p.name, ...actionSlot(p), staminaCost: p.stamina ?? 0, cooldown: p.cooldown ?? 0 };
   let m, r;
   if ((m = desc.match(/^Heal the target for (\d+) \+ (\d+) x Spirit\./))
     && (r = tgt.match(/^one ally within (\d+) hexes$/))) {
@@ -736,7 +743,7 @@ for (const id of PARTY) {
       const ranged = typeof a.range === 'number' && a.range > 1;
       anyRanged = anyRanged || ranged;
       authoredAttacks[a.id] = {
-        id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+        ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: a.damageType || 'physical',
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
@@ -755,7 +762,7 @@ for (const id of PARTY) {
   for (const a of [...SATTACK_BY_ID.values()].filter((x) => x.universalToAllUnits)) {
     if (attackIds.includes(a.id)) continue;
     authoredAttacks[a.id] = {
-      id: a.id, name: a.name, kind: 'melee', damageType: a.damageType || 'physical',
+      ...actionSlot(a), id: a.id, name: a.name, kind: 'melee', damageType: a.damageType || 'physical',
       bonus: a.damage ?? 0, stat: a.stat || 'strength', reach: 1, staminaCost: a.stamina ?? 0,
       ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field (2026-09-03): Punch's −5 has a slot
     };
@@ -838,7 +845,7 @@ const alphaTeam = [];
       anyRanged = anyRanged || ranged;
       const area = areaShapeOf(a);
       authoredAttacks[a.id] = {
-        id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+        ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: a.damageType || 'physical',
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
@@ -942,7 +949,7 @@ for (const id of CIVILIANS) {
       const ranged = typeof a.range === 'number' && a.range > 1;
       anyRanged = anyRanged || ranged;
       authoredAttacks[a.id] = {
-        id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+        ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: a.damageType || 'physical',
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         // Civilians are EXACTLY like heroes (ruled 2026-08-26): they pay
@@ -968,7 +975,7 @@ for (const id of CIVILIANS) {
   for (const a of [...SATTACK_BY_ID.values()].filter((x) => x.universalToAllUnits)) {
     if (attackIds.includes(a.id)) continue;
     authoredAttacks[a.id] = {
-      id: a.id, name: a.name, kind: 'melee', damageType: a.damageType || 'physical',
+      ...actionSlot(a), id: a.id, name: a.name, kind: 'melee', damageType: a.damageType || 'physical',
       bonus: a.damage ?? 0, stat: a.stat || 'strength', reach: 1, staminaCost: a.stamina ?? 0,
       ...(a.crit ? { crit: a.crit } : {}),
       ...(a.accuracy ? { accuracy: a.accuracy } : {}),
@@ -1080,7 +1087,7 @@ function takeItemAttack(a) {
   const ranged = typeof a.range === 'number' && a.range > 1;
   const area = areaShapeOf(a);
   authoredAttacks[a.id] = {
-    id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+    ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
     damageType: a.damageType || 'physical',
     bonus: a.damage ?? 0, stat: a.stat || 'strength',
     reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
@@ -1136,7 +1143,7 @@ function compileItemActive(it, row) {
   }
   if (!effects.length) return null;
   for (const e of effects) if (e.kind === 'statMod' && !e.stat) return null;
-  return { id: it.id.replace(/^item\./, 'power.') + '.use', name: it.name, staminaCost: row.stamina ?? 0, cooldown: row.cooldown ?? 0,
+  return { id: it.id.replace(/^item\./, 'power.') + '.use', name: it.name, ...actionSlot(row), staminaCost: row.stamina ?? 0, cooldown: row.cooldown ?? 0,
     ...(row.uses !== undefined ? { uses: typeof row.uses === 'number' ? row.uses : (row.uses.perBattle ?? row.uses.count ?? 1) } : {}),
     ...(free ? { free: true } : {}), range: tg.range, target: tg.target, effects, ...(gaps.length ? { gaps } : {}) };
 }
@@ -1312,7 +1319,7 @@ function compileClassPower(p, cls) {
   const desc = String(p.description || '');
   const tg = targetingOf(String(p.targets || ''));
   const gaps = [];
-  const base = { id: p.id, name: p.name, staminaCost: p.stamina ?? 0, cooldown: p.cooldown ?? 0,
+  const base = { id: p.id, name: p.name, ...actionSlot(p), staminaCost: p.stamina ?? 0, cooldown: p.cooldown ?? 0,
     ...(p.warmup ? { warmup: p.warmup } : {}), ...(p.free ? { free: true } : {}) };
   if (!tg) return { ...base, range: 0, effects: [], target: { select: 'self', side: 'any' }, gaps: [`targets '${p.targets}' unparsed — the power is inert`] };
   if (tg.hexGap) gaps.push(`targets 'a hex within ${tg.hexGap}' — engine centres the blast on a UNIT`);
@@ -1407,7 +1414,7 @@ const isTestId = {
   status: (id) => /^test\.status\.[a-z0-9-]+$/.test(id),
 };
 // the limits and the effect list are ONE vocabulary on every action (ruled 2026-09-04) — test rows may carry any of them
-const ABILITY_FIELDS = new Set(['id', 'name', 'stat', 'bonus', 'damageType', 'range', 'staminaCost', 'cooldown', 'warmup', 'uses', 'free', 'effect', 'area', 'heal', 'guard', 'effects', 'target']);
+const ABILITY_FIELDS = new Set(['id', 'name', 'slot', 'stat', 'bonus', 'damageType', 'range', 'staminaCost', 'cooldown', 'warmup', 'uses', 'free', 'effect', 'area', 'heal', 'guard', 'effects', 'target']);
 function testAbilities() {
   const out = {};
   for (const row of readTest('abilities.json')) {
@@ -1419,7 +1426,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));
@@ -1488,7 +1495,7 @@ const testAttackRows = testAttacks();
 const testAbilityRows = testAbilities();
 function testMoves() {
   const out = {};
-  const fields = new Set(['id', 'name', 'shape', 'stepRange', 'effects', 'staminaCost', 'budgetMod', 'cooldown', 'warmup', 'uses']);
+  const fields = new Set(['id', 'name', 'slot', 'free', 'shape', 'stepRange', 'effects', 'staminaCost', 'budgetMod', 'cooldown', 'warmup', 'uses']);
   for (const row of readTest('moves.json')) {
     const { note, ...move } = row;
     if (!isTestId.ability(move.id) || out[move.id]) throw new Error(`content/test/moves.json: invalid or duplicate '${move.id}'`);
@@ -1623,6 +1630,10 @@ for (const m of (D.maps || [])) {
 
 const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
   classPowers, specialties, levels, enchanted, encounters, badges, maps };
+
+for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test.attacks, test.abilities, test.moves]) {
+  for (const row of Object.values(rows)) actionSlot(row);
+}
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
 // compileCritChart names gaps during pack construction, and writing the file

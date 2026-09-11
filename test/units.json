@@ -423,5 +423,7 @@
     "id": "test-flight-plus-five", "from": "test-air-mage", "name": "Longer flier (TEST)",
     "set": { "movement": 5 }, "triggers": [], "abilities": [], "moves": ["power.test-flight-plus-five"],
     "note": "Second data instance for fix.flight-budget."
-  }
+  },
+  {"id":"test-slot-striker","from":"test-oathblade","name":"Slot striker (TEST)","set":{"movement":5,"ai":"dumb-melee"},"attacks":["attack.test-slot-movement","attack.test-slot-either"],"abilities":["power.test-slot-guard","power.test-slot-free"],"moves":["power.test-slot-flight","power.test-slot-step"],"note":"Authored slots, no engine-specific unit behavior."}
 ]
+
