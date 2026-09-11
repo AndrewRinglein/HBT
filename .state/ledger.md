@@ -10571,3 +10571,23 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 2026-09-11T04:52:57.336Z
 
   FAIL  every test in the suite — 1 FAILED
+
+## fix.ordered-power-preview — LANDED `df999a5`
+2026-09-11 04:57
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:21 · ITEMS-PLAN.md:214
+  PASS  typecheck
+  PASS  full test suite — 759 passed
+  PASS  gate 1 — the id appears in a real battle — power.test-ordered-double: 7 log lines, 7 fired, 5 changed state · power.test-ordered-strip: 9 log lines, 9 fired, 6 changed state
+  PASS  brought its own tests — test/ordered-power-preview.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 27 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — power.test-ordered-double live · power.test-ordered-strip live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.test-ordered-double,power.test-ordered-strip — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

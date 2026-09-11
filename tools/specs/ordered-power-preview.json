@@ -1,0 +1,10 @@
+{
+  "id": "fix.ordered-power-preview", "kind": "fix", "shape": "rule",
+  "needs": ["fix.v2-baseline"],
+  "spec": "Preview ordered power effects by executing the same effect runner on an isolated battle fork. Later packets see consumed Protection and prior status/stat changes. Live state, events and RNG remain unchanged. Constitution Law 1; V2 shared preview/resolution contract.",
+  "expect": "Two 5-damage packets against Protection 3 preview and apply 7; removing Protection before a 7-damage packet previews and applies 7 even against Protection 20. Boundary pools and per-packet Resist agree; repeated previews change nothing live.",
+  "probeIds": ["power.test-ordered-double", "power.test-ordered-strip"],
+  "variants": ["power.test-ordered-double", "power.test-ordered-strip"],
+  "changesBaseline": false,
+  "note": "The test variants are authored in content/test and fielded through registered scenarios. Existing control parties gain no new actions. Damage remains the resolved amount before HP clamping; healing retains the requested amount and additionally exposes healingApplied for UI display."
+}

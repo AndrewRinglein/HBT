@@ -29,6 +29,7 @@ import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './sta
 import { valueOf } from './trigger.js'
 import { effective } from './stats.js'
 import { canSee } from './vision.js'
+import { forkBattle } from './fork.js'
 
 export function abilityDef(ctx: Ctx, id: string): AbilityDef {
   const a = ctx.actions[id]
@@ -154,14 +155,22 @@ export function previewPower(ctx: Ctx, userId: number, targetId: number, ability
   const u = unit(ctx, userId)
   const tg = unit(ctx, targetId)
   if (a.effects) {
-    let damage = 0, heal = 0
-    for (const e of a.effects) {
-      if (e.kind === 'damage' && tg.side !== u.side) {
-        damage += resolveDamage(ctx, u, tg, { id: a.id, stat: e.stat, bonus: e.bonus, damageType: e.damageType }, false, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg)).value
+    // Law 1: run the ordered effects, including all resolved area targets.
+    // The fork consumes its own pools and applies preceding status/stat changes;
+    // neither its events nor any lookahead rolls escape into the live battle.
+    const dry = forkBattle(ctx)
+    performEffects(dry, userId, targetId, a)
+    let damage = 0, heal = 0, healingApplied = 0
+    for (const e of dry.events) {
+      if (e.target !== targetId || e.causeId !== a.id) continue
+      if (e.type === 'power.hit') {
+        damage += (e['ledger'] as { delta: number }[]).reduce((sum, r) => sum + r.delta, 0)
+      } else if (e.type === 'heal.applied') {
+        heal += e['asked'] as number
+        healingApplied += e['amount'] as number
       }
-      if (e.kind === 'heal') heal += valueOf(ctx, u, e.amount)
     }
-    return { damage, heal, hitChance: 100 }
+    return { damage, heal, healingApplied, hitChance: 100 }
   }
   switch (effectOf(a)) {
     case 'heal':
@@ -386,4 +395,3 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Action
     }
   }
 }
-

@@ -28,6 +28,13 @@ import { omitDisabled } from './disable.js'
 import { ENCOUNTERS, UNITS } from './index.js'
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
+  'showcase.ordered-power-preview': {
+    id: 'showcase.ordered-power-preview',
+    note: 'Ordered-effect preview probes: two packets and status removal before damage, from the test content receptacle.',
+    mapId: 'map.open',
+    heroes: ['test-ordered-double', 'test-ordered-strip'], heroHexes: [85, 101],
+    enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 102], replicate: 0,
+  },
   'showcase.beasts': {
     id: 'showcase.beasts',
     note: 'Fields the benched beasts so they can be shown at all — and with the '

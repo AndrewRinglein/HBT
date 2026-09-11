@@ -13327,6 +13327,130 @@ export const UNIT_PACK = {
           "power.move"
         ],
         "side": "enemy"
+      },
+      {
+        "typeId": "test-ordered-double",
+        "name": "Packet caster (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [
+          "power.test-ordered-double"
+        ],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.move",
+          "power.focus"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-ordered-double"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-ordered-double"
+          }
+        ]
+      },
+      {
+        "typeId": "test-ordered-strip",
+        "name": "Strip caster (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [
+          "power.test-ordered-strip"
+        ],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.move",
+          "power.focus"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-ordered-strip"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-ordered-strip"
+          }
+        ]
       }
     ],
     "attacks": {
@@ -13466,6 +13590,54 @@ export const UNIT_PACK = {
           {
             "kind": "gainStamina",
             "value": 2
+          }
+        ]
+      },
+      "power.test-ordered-double": {
+        "id": "power.test-ordered-double",
+        "name": "Two packets (TEST)",
+        "range": 6,
+        "staminaCost": 0,
+        "cooldown": 0,
+        "target": {
+          "select": "unit",
+          "side": "enemy"
+        },
+        "effects": [
+          {
+            "kind": "damage",
+            "stat": "magic",
+            "bonus": 5,
+            "damageType": "magic"
+          },
+          {
+            "kind": "damage",
+            "stat": "magic",
+            "bonus": 5,
+            "damageType": "magic"
+          }
+        ]
+      },
+      "power.test-ordered-strip": {
+        "id": "power.test-ordered-strip",
+        "name": "Strip then strike (TEST)",
+        "range": 6,
+        "staminaCost": 0,
+        "cooldown": 0,
+        "target": {
+          "select": "unit",
+          "side": "enemy"
+        },
+        "effects": [
+          {
+            "kind": "status.remove",
+            "statusId": "status.protection"
+          },
+          {
+            "kind": "damage",
+            "stat": "magic",
+            "bonus": 7,
+            "damageType": "magic"
           }
         ]
       }
