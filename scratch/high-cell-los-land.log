@@ -15,3 +15,27 @@ gate: terrain.high-cell-los   [land]
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content  — tests fail without map.thicket,map.proving.ruin — they genuinely test it
+
+effect of map.thicket,map.proving.ruin — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.3->4.3
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:53
+    if (b.invalid === REPS) { console.log(`  ${map}: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.`); anyDelta = true; continue }
+          ^
+
+TypeError: Cannot read properties of undefined (reading 'invalid')
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:53:11)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+
+
+⛓  IRON GAUNTLET: NOT PASSED — effect measurement errored; 1 flag(s) warned. The landing stands; the seal is withheld.
+
+LANDED as 725eb0e
+

@@ -1,4 +1,4 @@
-# V2 high-cell line of sight — in progress
+# V2 high-cell line of sight — landed, effect-tool finding retained
 
 Item: terrain.high-cell-los. Authority: ../COMBAT-V2-DESIGN-2026-09-07.md §4.
 
@@ -86,4 +86,23 @@ Exactly three of 20 control hashes change, as declared:
 map.thicket 722010e7→5e40018d; map.proving.ruin 6b32d8f3→f3c6cbab;
 test.map.dungeon-16x8 717a0446→9771e5ab. The other 17 are exact. The 61
 changed individual battles split 11/25, 25/25 and 25/25 respectively.
-Committed-tree verification and separate batch audit remain pending.
+Source commit: e623d26 (gate printed its pre-amend 725eb0e). Committed-tree
+tests/baselines passed, and scratch/audit-high-cell-los.log records the separate
+clean batch audit: 1,216 tests, typecheck, all 20 current control hashes and
+whole-core checks. Existing audit debt is unchanged (30 grandfathered source
+IDs and 44 prior review-flagged items). No map/art/content bytes were changed.
+
+The landing seal is **withheld for two reasons**: effect measurement errored,
+and one candidate-ruling flag warned. There were zero exemptions and no edited
+historical tests. This item is tool-status done, not a human visual acceptance.
+Preserved scratch/high-cell-los-land.log contains the actual failure: disabling
+the two maps removes them from MAP_PANEL, but effect-size.mts dereferences the
+missing WITHOUT arm. The tool repair is the immediately following separate
+item; it must not rewrite this landing verdict or claim a numerical paired
+effect for an unavailable arm.
+
+The independent old-source comparison remains valid LOS consequence evidence:
+61 complete paired battles change, 32 change duration, and one dungeon-map
+battle changes outcome. That is distinct from disabling a map and cannot be
+replaced by the broken tool's presence check. No broad balance conclusion is
+claimed from this sample. The interrupted and failed probe logs remain intact.
