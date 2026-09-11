@@ -27,13 +27,14 @@ export function unit(ctx: Ctx, id: number): Unit {
   return u
 }
 
-export function moveUnit(ctx: Ctx, id: number, to: HexId, cost: number, causeId: string, terrainId: string): void {
+export function moveUnit(ctx: Ctx, id: number, to: HexId, cost: number, causeId: string, terrainId: string, bonusPaid = 0): void {
   const u = unit(ctx, id)
   const from = u.hex
   u.hex = to
-  u.movePointsLeft -= cost
+  u.movePointsLeft -= cost - bonusPaid
   emit(ctx, 'moved', causeId, {
     actor: id, from, to, cost,
+    ...(bonusPaid > 0 ? { bonusPaid } : {}),
     // What was paid for, not just how much. `cost: 2` with no terrain is a number
     // nobody can check against the board (Law 12). Passed in rather than looked up:
     // mutate.ts is the one file that imports nothing (Law 5).

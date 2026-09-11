@@ -1,0 +1,12 @@
+{
+  "id": "fix.movement-plans",
+  "kind": "movement",
+  "shape": "rule",
+  "needs": ["plumbing.battle-commands"],
+  "spec": "Share pure movement destination plans between controller legality and future AI enumeration. Walks validate the complete weighted path before spending, consume a positive power allowance once, and reject illegal repeated, blocked or rooted movement. AoO hits cancel the entire pending move.",
+  "expect": "Two authored positive-budget movements execute their advertised distances in real battles. Weighted costs, zero-step Root exception, malformed paths, no-spend rejection and mid-move interruption have concrete tests. Existing controls remain unchanged; newly registered scenarios compare automatic, suspended and restored drivers.",
+  "probeIds": ["power.test-move-plus-one", "power.test-move-plus-three"],
+  "variants": ["power.test-move-plus-one", "power.test-move-plus-three"],
+  "changesBaseline": false,
+  "note": "The old command test explicitly preserved a known positive-budget clamp; it now asserts successful full execution. Historical cursor golden files remain unchanged; new scenarios compare current drivers rather than claim nonexistent historical hashes. Snapshot rules version advances because movement execution semantics changed. AI scoring/routing, slot interchangeability and Surge refresh remain separate items."
+}

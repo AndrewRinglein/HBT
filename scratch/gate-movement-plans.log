@@ -1,0 +1,21 @@
+
+gate: fix.movement-plans   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 5 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\STATE.md:18
+  PASS  typecheck
+  FAIL  full test suite  — 1 FAILED — test/pack-moves.test.ts > the rows come from the Codex, and only from the Codex > every movementAction row is loaded or a named gap, and nothing else is loaded
+  PASS  gate 1 — the id appears in a real battle  — power.test-move-plus-one: 8 log lines, 8 fired, 5 changed state · power.test-move-plus-three: 5 log lines, 5 fired, 4 changed state
+  PASS  brought its own tests  — test/battle-commands.test.ts, test/battle-cursor.test.ts, test/movement-plans.test.ts
+  WARN  existing tests untouched  — DELETED LINES in test/battle-commands.test.ts (-3), test/battle-cursor.test.ts (-5) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source  — 28 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — power.test-move-plus-one live · power.test-move-plus-three live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without power.test-move-plus-one,power.test-move-plus-three — they genuinely test it
+
+NOT READY (attempt 1). Nothing reverted — fix and run the gate again.
+If it cannot be made to pass:  node tools/gate.mjs fix.movement-plans --abandon
+

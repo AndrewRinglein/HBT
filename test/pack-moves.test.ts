@@ -20,7 +20,7 @@ const codexMoves = (): Row[] =>
 const gaps = (): { unit: string; needs: string }[] =>
   JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps
 
-describe('the rows come from the Codex, and only from the Codex', () => {
+describe('the rows come from authored content and the explicit test receptacle', () => {
   it('every movementAction row is loaded or a named gap, and nothing else is loaded', () => {
     const rows = codexMoves()
     const gapIds = new Set(gaps().filter((g) => g.unit.startsWith('power.')).map((g) => g.unit))
@@ -28,8 +28,17 @@ describe('the rows come from the Codex, and only from the Codex', () => {
       const loaded = MOVES[r.id] !== undefined
       expect(loaded !== gapIds.has(r.id), `${r.id}: loaded=${loaded} gap=${gapIds.has(r.id)}`).toBe(true)
     }
-    const codexIds = new Set(rows.map((r) => r.id))
-    for (const id of Object.keys(MOVES)) expect(codexIds.has(id), `${id} is loaded but no Codex row says so`).toBe(true)
+    // fix.movement-plans adds the flat-file test lane already used for attacks
+    // and powers. Require exact source rows, not a test-prefix exemption.
+    const testRows = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'test', 'moves.json'), 'utf8')) as { id: string; name: string; shape: string; budgetMod: number; staminaCost: number; cooldown: number }[]
+    const sourceIds = new Set([...rows, ...testRows].map(r => r.id))
+    for (const id of Object.keys(MOVES)) expect(sourceIds.has(id), `${id} is loaded but no authored source row says so`).toBe(true)
+    for (const row of testRows) {
+      const move = MOVES[row.id]!
+      expect(move, row.id).toBeDefined()
+      expect(move.move).toMatchObject({ shape: row.shape, budgetMod: row.budgetMod })
+      expect([move.name, move.staminaCost, move.cooldown]).toEqual([row.name, row.staminaCost, row.cooldown])
+    }
     // the two the engine cannot express, by name — when one lands, this is the finding
     expect([...gapIds].sort()).toEqual(['power.charging-run', 'power.pray'])
     expect(Object.keys(MOVES)).toEqual(Object.keys(packMoves()))

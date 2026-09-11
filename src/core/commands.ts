@@ -1,12 +1,11 @@
 // The session boundary owns whose input is accepted. Resolution stays in the
 // same attack, power and movement functions used by automatic battles.
-import type { Ctx, MoveDef } from './types.js'
+import type { Ctx } from './types.js'
 import { actionReady, isAttack, isMove } from './action.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { canUsePower, usePower } from './ability.js'
-import { executeFlight, executeMove, executeSidestep, flightLandings, occupancy, pathTo, reachable, stepRangeOf } from './movement.js'
-import { isPassable } from '../content/maps.js'
-import { forcedTargetOf, isBlocked, isRooted } from './status.js'
+import { executeFlight, executeMove, executeSidestep, planMovement, type MovementPlan } from './movement.js'
+import { forcedTargetOf, isBlocked } from './status.js'
 import { settle } from './settle.js'
 import { completeActionCycle } from './battle.js'
 
@@ -18,7 +17,7 @@ export type CommandResult = { ok: true } | { ok: false; reason: string }
 type Rejection = Extract<CommandResult, { ok: false }>
 type Plan = { kind: 'attack'; actor: number; actionId: string; target: number }
   | { kind: 'power'; actor: number; actionId: string; target: number }
-  | { kind: 'move'; actor: number; power: MoveDef; destination: number; path: number[] }
+  | MovementPlan
 const reject = (reason: string): Rejection => ({ ok: false, reason })
 const integer = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0
 function record(v: unknown): v is Record<string, unknown> {
@@ -52,26 +51,7 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   if (!a || !actionReady(ctx, u, a)) return reject('action-not-ready')
   if (isMove(a)) {
     if (aimed || !integer(request.destination) || request.destination >= ctx.state.terrain.length) return reject('malformed-destination')
-    if ((!a.free && u.moveUsed) || u.primaryUsed) return reject('movement-slot-closed')
-    const destination = request.destination
-    const plan: Plan = { kind: 'move', actor, power: a, destination, path: [] }
-    if (a.move.shape === 'sidestep' && stepRangeOf(a) === 0) {
-      return destination === u.hex ? plan : reject('unreachable-destination')
-    }
-    if (isRooted(ctx, u)) return reject('actor-rooted')
-    if (!isPassable(ctx.state.terrain[destination]!) || occupancy(ctx).has(destination)) return reject('unreachable-destination')
-    if (a.move.shape === 'sidestep') return ctx.geo.distance(u.hex, destination) === stepRangeOf(a) ? plan : reject('unreachable-destination')
-    if (a.move.shape === 'flight') return flightLandings(ctx, u, a).includes(destination) ? plan : reject('unreachable-destination')
-    if (a.move.shape !== 'path') return reject('unsupported-movement-shape')
-    // Legacy executeMove consumes raw points; positive path modifiers currently
-    // widen reachable() without giving the executor those points. Constrain this
-    // neutral boundary to executable paths until that separate correction lands.
-    const reach = reachable(ctx, u, Math.min(0, a.move.budgetMod))
-    if (!reach.has(destination)) return reject('unreachable-destination')
-    plan.path = pathTo(reach, u.hex, destination)
-    // Impassability is categorical, including budgets above its sentinel cost.
-    if (plan.path.some(hex => !isPassable(ctx.state.terrain[hex]!))) return reject('unreachable-destination')
-    return plan
+    return planMovement(ctx, actor, actionId, request.destination)
   }
   if (!aimed || !integer(request.target) || !ctx.state.units[request.target]) return reject('malformed-target')
   const target = request.target

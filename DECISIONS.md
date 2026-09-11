@@ -2099,3 +2099,19 @@ User, verbatim:
 > 1. Rescue a civilian, and it requires you to send three people.  And the second one is recover supplies.   And you have to send one hero.   The one hero quest will give 5 experience points, take 1 week, and get 10 supplies.   Rescue a civilian gives everybody 3 experience points, and you get a random civilian that you rescue.   The supplies have a 5% chance of turning into a combat encounter unless you send two other units along with the hero.
 
 Implementation reading: Rescue a Civilian sends three roster people and grants each participant 3 XP plus one randomly selected civilian on success. Recover Supplies requires a hero, lasts one Week, awards that hero 5 XP and the campaign 10 Supplies on success. Zero or one escort retains the 5% combat chance; two additional units remove that risk. Quest encounters use exactly the dispatched party. Provisional defaults: rescue also lasts one Week; rescue has no encounter roll; supply escorts receive no additional fixed XP unless another authored reward grants it; a supply encounter must be won to receive the successful quest payout. The kingdom's data/switches own these defaults, not engine combat rules.
+
+### 2026-09-10 — Positive movement allowance implementation
+
+Under the authorized V2 migration, `fix.movement-plans` corrects the mismatch between
+reachable paths and actual walks. A path action's budget modifier belongs to that
+action: its positive allowance is spent once across the path, before the unit's
+remaining activation points. Negative modifiers cap the path without rewriting the
+Movement stat. A `moved` event keeps the full terrain cost and separately names
+`bonusPaid` when the power paid part of it. An opportunity hit cancels the whole
+move. Rejected complete paths and repeated spent-slot calls spend nothing.
+Two test-only flat-file rows and `showcase.movement-bonuses` exercise different
+allowances; this does not publish Sprint as player content. The old command clamp
+test is replaced by full-execution assertions. Historical cursor hashes are retained;
+new scenarios compare current automatic/suspended/restored drivers. Snapshot rules
+advance to `v2-migration.2`. AI selection, interchangeable slots and Surge refresh
+remain separately gated work.

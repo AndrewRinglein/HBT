@@ -1,0 +1,20 @@
+
+gate: fix.movement-plans   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\STATE.md:18
+  PASS  typecheck
+  PASS  full test suite  — 911 passed
+  PASS  gate 1 — the id appears in a real battle  — power.test-move-plus-one: 8 log lines, 8 fired, 5 changed state · power.test-move-plus-three: 5 log lines, 5 fired, 4 changed state
+  PASS  brought its own tests  — test/battle-commands.test.ts, test/battle-cursor.test.ts, test/pack-moves.test.ts, test/movement-plans.test.ts
+  WARN  existing tests untouched  — DELETED LINES in test/battle-commands.test.ts (-3), test/battle-cursor.test.ts (-5), test/pack-moves.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source  — 28 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — power.test-move-plus-one live · power.test-move-plus-three live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without power.test-move-plus-one,power.test-move-plus-three — they genuinely test it
+
+All gates pass. Run with --land to commit.
+

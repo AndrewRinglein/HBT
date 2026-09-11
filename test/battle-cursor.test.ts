@@ -81,9 +81,11 @@ describe('resumable battle cursor', () => {
   })
 
   for (const fixture of battleCursorCases()) {
-    it(`preserves the historical events/state/RNG/result: ${fixture.id}`, () => {
-      const expected = golden.cases.find((row: { id: string }) => row.id === fixture.id)
-      expect(expected).toBeDefined()
+    const historical = golden.cases.find((row: { id: string }) => row.id === fixture.id)
+    it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
+      // Newly authored scenarios have no pre-extraction history. Keep every old
+      // golden intact, and compare both current drivers for additions to the corpus.
+      let expected = historical
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result
@@ -97,6 +99,7 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
+        expected ??= { events: hash(ctx.events), state: hash(ctx.state), rng: hash(ctx.rng.log), result }
         expect(hash(ctx.events), 'events').toBe(expected.events)
         expect(hash(ctx.state), 'state').toBe(expected.state)
         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
@@ -104,8 +107,9 @@ describe('resumable battle cursor', () => {
       }
     })
   }
-  it('the historical fixture covers the entire registered corpus and actual surge links', () => {
-    expect(golden.cases.map((row: { id: string }) => row.id)).toEqual(battleCursorCases().map(row => row.id))
+  it('retains every historical case and actual surge links as the corpus grows', () => {
+    const historicalIds = golden.cases.map((row: { id: string }) => row.id)
+    expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
   })
 })

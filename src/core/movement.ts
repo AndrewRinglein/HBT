@@ -6,8 +6,8 @@ import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, isPassable, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, unit } from './mutate.js'
-import { actionReady, attacksOf, movesOf, spendAction, staminaCostOf } from './action.js'
-import { forcedTargetOf, applyStatus, reduceStatus } from './status.js'
+import { actionReady, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
+import { forcedTargetOf, applyStatus, isBlocked, isRooted, reduceStatus } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { settle } from './settle.js'
 
@@ -85,7 +85,7 @@ export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
       const node = out.get(h)!
       if (node.cost !== c) continue // stale entry, a cheaper path was found
       for (const n of ctx.geo.neighboursOf(h)) {
-        if (occ.has(n)) continue
+        if (occ.has(n) || !isPassable(ctx.state.terrain[n]!)) continue
         const nc = c + stepCost(ctx, n)
         if (nc > budget) continue
         const prior = out.get(n)
@@ -116,6 +116,57 @@ export function pathTo(reach: Reach, from: HexId, dest: HexId): HexId[] {
 
 export type StepHook = (ctx: Ctx, unitId: number, entered: HexId) => boolean
 
+export type MovementPlan = { kind: 'move'; actor: number; power: MoveDef; destination: number; path: number[] }
+type MovementRejection = { ok: false; reason: string }
+const refused = (reason: string): MovementRejection => ({ ok: false, reason })
+
+function movementReason(ctx: Ctx, u: Unit, power: MoveDef): string | null {
+  if (ctx.state.outcome) return 'battle-complete'
+  if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return 'actor-cannot-act'
+  if (!actionReady(ctx, u, power)) return 'action-not-ready'
+  if ((!power.free && u.moveUsed) || u.primaryUsed) return 'movement-slot-closed'
+  return null
+}
+
+/** One pure destination planner for controls and AI; never spends or predicts RNG. */
+export function planMovement(ctx: Ctx, actor: number, actionId: string, destination: number): MovementPlan | MovementRejection {
+  const u = ctx.state.units[actor]
+  const power = ctx.actions[actionId]
+  if (!u || !Number.isSafeInteger(actor) || !power || !isMove(power)) return refused('action-not-ready')
+  const reason = movementReason(ctx, u, power)
+  if (reason) return refused(reason)
+  if (!Number.isSafeInteger(destination) || destination < 0 || destination >= ctx.state.terrain.length) return refused('malformed-destination')
+  const plan: MovementPlan = { kind: 'move', actor, power, destination, path: [] }
+  if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return destination === u.hex ? plan : refused('unreachable-destination')
+  if (isRooted(ctx, u)) return refused('actor-rooted')
+  if (!isPassable(ctx.state.terrain[destination]!) || occupancy(ctx).has(destination)) return refused('unreachable-destination')
+  if (power.move.shape === 'sidestep') return ctx.geo.distance(u.hex, destination) === stepRangeOf(power) ? plan : refused('unreachable-destination')
+  if (power.move.shape === 'flight') return flightLandings(ctx, u, power).includes(destination) ? plan : refused('unreachable-destination')
+  const reach = reachable(ctx, u, power.move.budgetMod)
+  if (!reach.has(destination)) return refused('unreachable-destination')
+  plan.path = pathTo(reach, u.hex, destination)
+  return plan
+}
+
+/** Stable destination order. Callers keep their own scoring and tie breakers. */
+export function movementOptions(ctx: Ctx, actor: number, actionId: string): MovementPlan[] {
+  const u = ctx.state.units[actor], power = ctx.actions[actionId]
+  if (!u || !power || !isMove(power) || movementReason(ctx, u, power)) return []
+  if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return [{ kind: 'move', actor, power, destination: u.hex, path: [] }]
+  if (isRooted(ctx, u)) return []
+  if (power.move.shape === 'path') {
+    const reach = reachable(ctx, u, power.move.budgetMod)
+    return [...reach.keys()].sort((a, b) => a - b).map(destination => ({ kind: 'move', actor, power, destination, path: pathTo(reach, u.hex, destination) }))
+  }
+  if (power.move.shape === 'flight') return flightLandings(ctx, u, power).map(destination => ({ kind: 'move', actor, power, destination, path: [] }))
+  const out: MovementPlan[] = []
+  for (let destination = 0; destination < ctx.state.terrain.length; destination++) {
+    const plan = planMovement(ctx, actor, actionId, destination)
+    if (!('ok' in plan)) out.push(plan)
+  }
+  return out
+}
+
 /**
  * Walk a path with a chosen `path`-shaped movement power. Returns the number
  * of hexes actually moved.
@@ -126,20 +177,27 @@ export type StepHook = (ctx: Ctx, unitId: number, entered: HexId) => boolean
 export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: MoveDef, onStep?: StepHook): number {
   if (path.length === 0) return 0
   const u = unit(ctx, unitId)
-  if (u.stamina < moveStaminaCost(u, power)) {
-    emit(ctx, 'move.refused', power.id, { actor: unitId, reason: 'stamina' })
-    return 0
+  if (power.move.shape !== 'path' || movementReason(ctx, u, power) || isRooted(ctx, u)) return 0
+  let allowance = Math.max(0, u.movePointsLeft + power.move.budgetMod)
+  const occupied = occupancy(ctx)
+  let from = u.hex, asked = 0
+  for (const hex of path) {
+    if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.state.terrain.length || ctx.geo.distance(from, hex) !== 1 || occupied.has(hex) || !isPassable(ctx.state.terrain[hex]!)) return 0
+    asked += stepCost(ctx, hex)
+    from = hex
   }
+  if (asked > allowance) return 0
 
   spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: path[path.length - 1], hexes: path.length })
 
   let moved = 0
+  let bonusLeft = Math.max(0, power.move.budgetMod)
   const provoked = new Set<number>()   // once per enemy per activation
   for (const hex of path) {
     // 1. movement points — hills cost 2
     const cost = stepCost(ctx, hex)
-    if (u.movePointsLeft < cost) break
+    if (ctx.state.outcome || isRooted(ctx, u) || isBlocked(ctx, u) || allowance < cost || u.movePointsLeft + bonusLeft < cost) break
     // 2. attacks of opportunity — movement.attack-of-opportunity (2026-09-03):
     //    leaving a hex inside an enemy's ZoC provokes ONE attack from that
     //    enemy, its cheapest LEGAL melee attack, through performAttack; once
@@ -166,7 +224,10 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     }
     // 3. enter and spend
     const terrainHere = ctx.state.terrain[hex] ?? 0
-    moveUnit(ctx, unitId, hex, cost, power.id, terrainIdOf(terrainHere))
+    const bonusPaid = Math.min(bonusLeft, cost)
+    bonusLeft -= bonusPaid
+    allowance -= cost
+    moveUnit(ctx, unitId, hex, cost, power.id, terrainIdOf(terrainHere), bonusPaid)
     moved++
     // 4. traps — none in the baseline
     // 5. terrain status ON ENTRY — water strips 1 Burn as you splash through

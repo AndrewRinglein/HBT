@@ -28,6 +28,12 @@ import { omitDisabled } from './disable.js'
 import { ENCOUNTERS, UNITS } from './index.js'
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
+  'showcase.movement-bonuses': {
+    id: 'showcase.movement-bonuses',
+    note: 'Two content-authored positive movement allowances, executed through normal automatic battles.',
+    mapId: 'map.open', heroes: ['test-move-plus-one', 'test-move-plus-three'], heroHexes: [85, 117],
+    enemies: ['test-zombie', 'test-zombie'], enemyHexes: [90, 122], replicate: 0,
+  },
   'showcase.ordered-power-preview': {
     id: 'showcase.ordered-power-preview',
     note: 'Ordered-effect preview probes: two packets and status removal before damage, from the test content receptacle.',

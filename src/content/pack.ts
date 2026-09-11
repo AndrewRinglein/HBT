@@ -206,7 +206,8 @@ export function liftAttacks(raw: Readonly<Record<string, PackAttackRow>>): Reado
  * Validated loudly; plain data in, plain data out.
  */
 export function packMoves(): Readonly<Record<string, MoveDef>> {
-  const raw = (UNIT_PACK as { moves?: Readonly<Record<string, PackMoveRow>> }).moves ?? {}
+  const source = UNIT_PACK as { moves?: Readonly<Record<string, PackMoveRow>>; test?: { moves?: Readonly<Record<string, PackMoveRow>> } }
+  const raw = { ...source.moves, ...source.test?.moves }
   for (const [k, m] of Object.entries(raw)) {
     if (k !== m.id) throw new Error(`unit pack: move key '${k}' names id '${m.id}'`)
     if (!['path', 'sidestep', 'flight'].includes(m.shape)) throw new Error(`unit pack: move '${k}' has shape '${String(m.shape)}'`)

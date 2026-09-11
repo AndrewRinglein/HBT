@@ -131,12 +131,14 @@ describe('plumbing.battle-commands', () => {
     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: 'power.move', destination: 84 }))).toEqual({ ok: true })
   })
 
-  it('constrains positive walk modifiers to the budget the legacy executor can spend', () => {
+  // fix.movement-plans replaces the deliberate legacy clamp with verified bonus spending.
+  it('spends the positive walk modifier that the planner offers', () => {
     const ctx = fixture(150)
     grant(ctx, 'power.move', { move: { shape: 'path', budgetMod: 3 } })
     ctx.state.units[0]!.movePointsLeft = 1
-    rejected(ctx, action(ctx, { actionId: 'power.move', destination: 87 }), 'unreachable-destination')
-    expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: 'power.move', destination: 86 }))).toEqual({ ok: true })
+    expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: 'power.move', destination: 89 }))).toEqual({ ok: true })
+    expect(ctx.state.units[0]!.hex).toBe(89)
+    expect(ctx.state.units[0]!.movePointsLeft).toBe(0)
   })
 
   it.each([null, [], {}, { kind: 'reaction' }, { kind: 'action', actor: 0, actionId: 'x', target: 1 },

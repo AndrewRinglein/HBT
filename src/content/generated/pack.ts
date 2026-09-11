@@ -13329,6 +13329,174 @@ export const UNIT_PACK = {
         "side": "enemy"
       },
       {
+        "typeId": "test-move-plus-one",
+        "name": "Short runner (TEST)",
+        "side": "hero",
+        "maxHp": 15,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 5,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 1,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.massive",
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
+        "moves": [
+          "power.test-move-plus-one"
+        ],
+        "triggers": [
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-move-plus-one"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-move-plus-one"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-move-plus-one"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-move-plus-one"
+          }
+        ]
+      },
+      {
+        "typeId": "test-move-plus-three",
+        "name": "Long runner (TEST)",
+        "side": "hero",
+        "maxHp": 15,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 5,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 1,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.massive",
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
+        "moves": [
+          "power.test-move-plus-three"
+        ],
+        "triggers": [
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-move-plus-three"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-move-plus-three"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-move-plus-three"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-move-plus-three"
+          }
+        ]
+      },
+      {
         "typeId": "test-ordered-double",
         "name": "Packet caster (TEST)",
         "side": "hero",
@@ -13743,6 +13911,24 @@ export const UNIT_PACK = {
         "id": "test.badge.deaths-door",
         "name": "Death's Door (TEST)",
         "triggers": []
+      }
+    },
+    "moves": {
+      "power.test-move-plus-one": {
+        "id": "power.test-move-plus-one",
+        "name": "Short sprint (TEST)",
+        "shape": "path",
+        "staminaCost": 0,
+        "budgetMod": 1,
+        "cooldown": 0
+      },
+      "power.test-move-plus-three": {
+        "id": "power.test-move-plus-three",
+        "name": "Long sprint (TEST)",
+        "shape": "path",
+        "staminaCost": 0,
+        "budgetMod": 3,
+        "cooldown": 0
       }
     }
   },

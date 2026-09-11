@@ -1,0 +1,148 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+xxxxxxxxx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/movement-plans.test.ts > shared movement budgets > executes every advertised open-ground step with bonus 1
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ test/movement-plans.test.ts:27:46
+     25|     const path = pathTo(reachable(ctx, u, bonus), u.hex, destination)
+     26|     expect(path).toHaveLength(1 + bonus)
+     27|     expect(executeMove(ctx, 0, path, power)).toBe(1 + bonus)
+       |                                              ^
+     28|     expect(u.hex).toBe(destination)
+     29|     expect(u.movePointsLeft).toBe(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  test/movement-plans.test.ts > shared movement budgets > executes every advertised open-ground step with bonus 3
+AssertionError: expected 1 to be 4 // Object.is equality
+
+- Expected
++ Received
+
+- 4
++ 1
+
+ ❯ test/movement-plans.test.ts:27:46
+     25|     const path = pathTo(reachable(ctx, u, bonus), u.hex, destination)
+     26|     expect(path).toHaveLength(1 + bonus)
+     27|     expect(executeMove(ctx, 0, path, power)).toBe(1 + bonus)
+       |                                              ^
+     28|     expect(u.hex).toBe(destination)
+     29|     expect(u.movePointsLeft).toBe(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  test/movement-plans.test.ts > shared movement budgets > public internal commands accept the same bonus path
+AssertionError: expected { ok: false, …(1) } to deeply equal { ok: true }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
++   "reason": "unreachable-destination",
+  }
+
+ ❯ test/movement-plans.test.ts:37:83
+     35|   it('public internal commands accept the same bonus path', () => {
+     36|     const { ctx, u, power } = fixture(3)
+     37|     expect(executeAction(ctx, { actor: 0, actionId: power.id, destinat…
+       |                                                                                   ^
+     38|     expect(u.hex).toBe(89)
+     39|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  test/movement-plans.test.ts > shared movement budgets > does not let a repeated movement call regain the action bonus
+AssertionError: expected '{"format":"hobat.battle","version":2,…' to be '{"format":"hobat.battle","version":2,…' // Object.is equality
+
+Expected: "{"format":"hobat.battle","version":2,"rulesVersion":"v2-migration.1","contentKey":"489502:3054349574:1997448322","state":{"turn":0,"phase":"hero","mapId":"map.open","board":{"width":16,"height":16},"terrain":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"units":[{"id":0,"uid":100,"name":"H0","typeId":"test-warrior","side":"hero","rowSide":"hero","hex":86,"hp":10,"maxHp":10,"armor":1,"resist":0,"accuracy":80,"dodge":0,"strength":5,"precision":3,"magic":0,"spirit":0,"crit":0,"luck":0,"role":"melee","movement":1,"reach":0,"stamina":4,"maxStamina":5,"staminaRegen":1,"lifeState":"standing","bleedOut":0,"toughness":0,"surge":0,"surgeChance":0,"vision":0,"auras":[],"summoned":false,"usesLeft":{},"ai":"melee-aggressive","actions":["attack.test-warrior.massive","attack.test-warrior.axe","attack.punch","power.move","power.sidestep"],"cooldowns":{},"statuses":[],"mods":[],"triggers":[{"id":"test.warrior.second-wind","hook":"onTakingDamage","chance":100,"select":"self","effect":{"kind":"status.apply","statusId":"status.regeneration","value":1},"source":"unit.test-warrior"},{"id":"test.warrior.stagger","hook":"onDamage","chance":20,"select":"target","effect":{"kind":"status.apply","statusId":"status.stun","value":1},"source":"unit.test-warrior"},{"id":"test.warrior.brace","hook":"onTakingDamage","chance":50,"select":"self","effect":{"kind":"status.apply","statusId":"test.status.ward","value":1},"source":"unit.test-warrior"}],"tags":["hero","class.warrior"],"badges":["badge.hero"],"moveUsed":true,"primaryUsed":false,"movePointsLeft":0,"activationOrdinal":1,"attackOrdinal":0,"deathbedOrdinal":0},{"id":1,"uid":200,"name":"E0","typeId":"test-zombie","side":"enemy","rowSide":"enemy","hex":150,"hp":10,"maxHp":10,"armor":0,"resist":0,"accuracy":65,"dodge":0,"strength":4,"precision":0,"magic":0,"spirit":0,"crit":0,"luck":0,"role":"melee","movement":4,"reach":0,"stamina":0,"maxStamina":0,"staminaRegen":0,"lifeState":"standing","bleedOut":0,"toughness":0,"surge":0,"surgeChance":0,"vision":0,"auras":[],"summoned":false,"usesLeft":{},"ai":"dumb-melee","actions":["attack.test-zombie.bite","power.move"],"cooldowns":{},"statuses":[],"mods":[],"triggers":[{"id":"trigger.zombie.rot","hook":"onDamage","chance":20,"select":"target","effect":{"kind":"status.apply","statusId":"status.poison","value":1},"source":"unit.test-zombie","onlyWithAttack":"attack.test-zombie.bite"},{"id":"test.zombie.sap","hook":"onDamage","chance":20,"select":"target","effect":{"kind":"status.apply","statusId":"status.weak","value":1},"source":"unit.test-zombie"},{"id":"test.zombie.grasp","hook":"onHit","chance":20,"select":"target","effect":{"kind":"status.apply","statusId":"status.slow","value":1},"source":"unit.test-zombie"}],"tags":["undead"],"badges":[],"moveUsed":false,"primaryUsed":false,"movePointsLeft":0,"activationOrdinal":0,"attackOrdinal":0,"deathbedOrdinal":0}],"outcome":null,"seq":7},"cfg":{"turnCap":25,"switches":{"critEnabled":true,"rangerPunchesWhenAdjacent":false,"moveCostPerHex":false,"aiLeapToAdjacent":true,"areaHitsAllies":true,"aiAreaThroughAllies":false,"healIncludesSelf":true,"critChartShareVsHeroes":50,"critChartShareVsEnemies":50,"critMaxHealthFloorsAtOne":false,"multiCritWithReplacement":true,"bleedShedFromLanded":true,"downedHitBleedTicks":1,"aiAttacksDowned":"whenNoStanding","aiKiteHoldsAtPowerRange":true,"boardClearWaitsForSchedule":false,"aiAttackChoice":"declared","frostBeforeProtection":true,"zoneOfControl":true,"actionSlots":"byProfile","mirrorSideRules":"fielded","aiEatsBeforeBiting":true,"targetUnseen":false}},"events":[{"seq":0,"turn":0,"phase":"hero","type":"unit.enter","causeId":"unit.test-warrior","actor":0,"target":null,"uid":100,"name":"H0","side":"hero","typeId":"test-warrior","role":"melee","hex":85,"hp":10,"maxHp":10,"stamina":5,"maxStamina":5,"terrain":0},{"seq":1,"turn":0,"phase":"hero","type":"unit.enter","causeId":"unit.test-zombie","actor":1,"target":null,"uid":200,"name":"E0","side":"enemy","typeId":"test-zombie","role":"melee","hex":150,"hp":10,"maxHp":10,"stamina":0,"maxStamina":0,"terrain":0},{"seq":2,"turn":0,"phase":"hero","type":"map.loaded","causeId":"map.open","actor":null,"target":null,"mapId":"map.open","width":16,"height":16,"deploy":{"hero":"west","enemy":"east"},"terrain.open":256},{"seq":3,"turn":0,"phase":"hero","type":"activation.begin","causeId":"test","actor":0,"target":null,"ordinal":1,"hex":85,"hp":10,"stamina":5},{"seq":4,"turn":0,"phase":"hero","type":"stamina.spent","causeId":"power.move","actor":0,"target":null,"amount":1,"stamina":4},{"seq":5,"turn":0,"phase":"hero","type":"move.begin","causeId":"power.move","actor":0,"target":null,"from":85,"to":86,"hexes":1},{"seq":6,"turn":0,"phase":"hero","type":"moved","causeId":"power.move","actor":0,"target":null,"from":85,"to":86,"cost":1,"terrain":"terrain.open","movePointsLeft":0}],"rng":{"rootSeed":1144704198,"strict":true,"log":[]}}"
+Received: "{"format":"hobat.battle","version":2,"rulesVersion":"v2-migration.1","contentKey":"489502:3054349574:1997448322","state":{"turn":0,"phase":"hero","mapId":"map.open","board":{"width":16,"height":16},"terrain":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"units":[{"id":0,"uid":100,"name":"H0","typeId":"test-warrior","side":"hero","rowSide":"hero","hex":86,"hp":10,"maxHp":10,"armor":1,"resist":0,"accuracy":80,"dodge":0,"strength":5,"precision":3,"magic":0,"spirit":0,"crit":0,"luck":0,"role":"melee","movement":1,"reach":0,"stamina":3,"maxStamina":5,"staminaRegen":1,"lifeState":"standing","bleedOut":0,"toughness":0,"surge":0,"surgeChance":0,"vision":0,"auras":[],"summoned":false,"usesLeft":{},"ai":"melee-aggressive","actions":["attack.test-warrior.massive","attack.test-warrior.axe","attack.punch","power.move","power.sidestep"],"cooldowns":{},"statuses":[],"mods":[],"triggers":[{"id":"test.warrior.second-wind","hook":"onTakingDamage","chance":100,"select":"self","effect":{"kind":"status.apply","statusId":"status.regeneration","value":1},"source":"unit.test-warrior"},{"id":"test.warrior.stagger","hook":"onDamage","chance":20,"select":"target","effect":{"kind":"status.apply","statusId":"status.stun","value":1},"source":"unit.test-warrior"},{"id":"test.warrior.brace","hook":"onTakingDamage","chance":50,"select":"self","effect":{"kind":"status.apply","statusId":"test.status.ward","value":1},"source":"unit.test-warrior"}],"tags":["hero","class.warrior"],"badges":["badge.hero"],"moveUsed":true,"primaryUsed":false,"movePointsLeft":0,"activationOrdinal":1,"attackOrdinal":0,"deathbedOrdinal":0},{"id":1,"uid":200,"name":"E0","typeId":"test-zombie","side":"enemy","rowSide":"enemy","hex":150,"hp":10,"maxHp":10,"armor":0,"resist":0,"accuracy":65,"dodge":0,"strength":4,"precision":0,"magic":0,"spirit":0,"crit":0,"luck":0,"role":"melee","movement":4,"reach":0,"stamina":0,"maxStamina":0,"staminaRegen":0,"lifeState":"standing","bleedOut":0,"toughness":0,"surge":0,"surgeChance":0,"vision":0,"auras":[],"summoned":false,"usesLeft":{},"ai":"dumb-melee","actions":["attack.test-zombie.bite","power.move"],"cooldowns":{},"statuses":[],"mods":[],"triggers":[{"id":"trigger.zombie.rot","hook":"onDamage","chance":20,"select":"target","effect":{"kind":"status.apply","statusId":"status.poison","value":1},"source":"unit.test-zombie","onlyWithAttack":"attack.test-zombie.bite"},{"id":"test.zombie.sap","hook":"onDamage","chance":20,"select":"target","effect":{"kind":"status.apply","statusId":"status.weak","value":1},"source":"unit.test-zombie"},{"id":"test.zombie.grasp","hook":"onHit","chance":20,"select":"target","effect":{"kind":"status.apply","statusId":"status.slow","value":1},"source":"unit.test-zombie"}],"tags":["undead"],"badges":[],"moveUsed":false,"primaryUsed":false,"movePointsLeft":0,"activationOrdinal":0,"attackOrdinal":0,"deathbedOrdinal":0}],"outcome":null,"seq":9},"cfg":{"turnCap":25,"switches":{"critEnabled":true,"rangerPunchesWhenAdjacent":false,"moveCostPerHex":false,"aiLeapToAdjacent":true,"areaHitsAllies":true,"aiAreaThroughAllies":false,"healIncludesSelf":true,"critChartShareVsHeroes":50,"critChartShareVsEnemies":50,"critMaxHealthFloorsAtOne":false,"multiCritWithReplacement":true,"bleedShedFromLanded":true,"downedHitBleedTicks":1,"aiAttacksDowned":"whenNoStanding","aiKiteHoldsAtPowerRange":true,"boardClearWaitsForSchedule":false,"aiAttackChoice":"declared","frostBeforeProtection":true,"zoneOfControl":true,"actionSlots":"byProfile","mirrorSideRules":"fielded","aiEatsBeforeBiting":true,"targetUnseen":false}},"events":[{"seq":0,"turn":0,"phase":"hero","type":"unit.enter","causeId":"unit.test-warrior","actor":0,"target":null,"uid":100,"name":"H0","side":"hero","typeId":"test-warrior","role":"melee","hex":85,"hp":10,"maxHp":10,"stamina":5,"maxStamina":5,"terrain":0},{"seq":1,"turn":0,"phase":"hero","type":"unit.enter","causeId":"unit.test-zombie","actor":1,"target":null,"uid":200,"name":"E0","side":"enemy","typeId":"test-zombie","role":"melee","hex":150,"hp":10,"maxHp":10,"stamina":0,"maxStamina":0,"terrain":0},{"seq":2,"turn":0,"phase":"hero","type":"map.loaded","causeId":"map.open","actor":null,"target":null,"mapId":"map.open","width":16,"height":16,"deploy":{"hero":"west","enemy":"east"},"terrain.open":256},{"seq":3,"turn":0,"phase":"hero","type":"activation.begin","causeId":"test","actor":0,"target":null,"ordinal":1,"hex":85,"hp":10,"stamina":5},{"seq":4,"turn":0,"phase":"hero","type":"stamina.spent","causeId":"power.move","actor":0,"target":null,"amount":1,"stamina":4},{"seq":5,"turn":0,"phase":"hero","type":"move.begin","causeId":"power.move","actor":0,"target":null,"from":85,"to":86,"hexes":1},{"seq":6,"turn":0,"phase":"hero","type":"moved","causeId":"power.move","actor":0,"target":null,"from":85,"to":86,"cost":1,"terrain":"terrain.open","movePointsLeft":0},{"seq":7,"turn":0,"phase":"hero","type":"stamina.spent","causeId":"power.move","actor":0,"target":null,"amount":1,"stamina":3},{"seq":8,"turn":0,"phase":"hero","type":"move.begin","causeId":"power.move","actor":0,"target":null,"from":86,"to":87,"hexes":1}],"rng":{"rootSeed":1144704198,"strict":true,"log":[]}}"
+
+ ❯ test/movement-plans.test.ts:46:29
+     44|     const before = saveBattle(ctx)
+     45|     expect(executeMove(ctx, 0, [87], power)).toBe(0)
+     46|     expect(saveBattle(ctx)).toBe(before)
+       |                             ^
+     47|     expect(u.hex).toBe(86)
+     48|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  test/movement-plans.test.ts > shared movement budgets > rejects the entire malformed path [86,88] before spending
+ FAIL  test/movement-plans.test.ts > shared movement budgets > rejects the entire malformed path [9999] before spending
+ FAIL  test/movement-plans.test.ts > shared movement budgets > rejects the entire malformed path [86,150] before spending
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/movement-plans.test.ts:53:46
+     51|     const { ctx, power } = fixture(3)
+     52|     const before = saveBattle(ctx)
+     53|     expect(executeMove(ctx, 0, path, power)).toBe(0)
+       |                                              ^
+     54|     expect(saveBattle(ctx)).toBe(before)
+     55|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  test/movement-plans.test.ts > shared movement budgets > Root forbids bonus displacement without spending
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/movement-plans.test.ts:62:46
+     60|     applyStatus(ctx, 0, root.id, 1, 'test')
+     61|     const before = saveBattle(ctx)
+     62|     expect(executeMove(ctx, 0, [86], power)).toBe(0)
+       |                                              ^
+     63|     expect(saveBattle(ctx)).toBe(before)
+     64|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  test/movement-plans.test.ts > shared movement budgets > pays weighted terrain from the same total budget
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ test/movement-plans.test.ts:70:50
+     68|     ctx.state.terrain[86] = TERRAIN.HILLS
+     69|     ctx.state.terrain[87] = TERRAIN.HILLS
+     70|     expect(executeMove(ctx, 0, [86, 87], power)).toBe(2)
+       |                                                  ^
+     71|     expect(u.movePointsLeft).toBe(0)
+     72|     expect(ctx.events.filter(e => e.type === 'moved').map(e => e.cost)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed (9)
+   Start at  23:48:39
+   Duration  677ms (transform 384ms, setup 0ms, import 495ms, tests 45ms, environment 0ms)
+
