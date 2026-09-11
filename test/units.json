@@ -384,4 +384,14 @@
     ],
     "note": "fix.bleed-magnitude's variant source: the test zombie PLUS the gash rider — a delta over the cohort's zombie, fielded only by showcase.gash-variant."
   }
+  ,{
+    "id": "test-ordered-double", "from": "test-air-mage", "name": "Packet caster (TEST)",
+    "set": { "magic": 0 }, "attacks": [], "abilities": ["power.test-ordered-double"],
+    "note": "fix.ordered-power-preview: registered live source for the two-packet preview probe."
+  },
+  {
+    "id": "test-ordered-strip", "from": "test-air-mage", "name": "Strip caster (TEST)",
+    "set": { "magic": 0 }, "attacks": [], "abilities": ["power.test-ordered-strip"],
+    "note": "fix.ordered-power-preview: registered live source for the ordered status-removal variant."
+  }
 ]

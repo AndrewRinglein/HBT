@@ -29,4 +29,24 @@
     ],
     "note": "refactor.one-action-type (2026-09-04): a POWER carrying a movement rider (gainStamina \u2014 Focus's rider) \u2014 'all of them should be capable of doing all of the same things' (Angela 2026-09-04). Free, cooldown 1: the cooldown means one thing on every action now (skip N Turns)."
   }
+  ,{
+    "id": "power.test-ordered-double", "name": "Two packets (TEST)",
+    "range": 6, "staminaCost": 0,
+    "target": { "select": "unit", "side": "enemy" },
+    "effects": [
+      { "kind": "damage", "stat": "magic", "bonus": 5, "damageType": "magic" },
+      { "kind": "damage", "stat": "magic", "bonus": 5, "damageType": "magic" }
+    ],
+    "note": "fix.ordered-power-preview: two packets share and consume one protection pool. Test data only."
+  },
+  {
+    "id": "power.test-ordered-strip", "name": "Strip then strike (TEST)",
+    "range": 6, "staminaCost": 0,
+    "target": { "select": "unit", "side": "enemy" },
+    "effects": [
+      { "kind": "status.remove", "statusId": "status.protection" },
+      { "kind": "damage", "stat": "magic", "bonus": 7, "damageType": "magic" }
+    ],
+    "note": "fix.ordered-power-preview: the second pure-data variant removes protection before damage."
+  }
 ]
