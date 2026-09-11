@@ -1,0 +1,20 @@
+
+gate: terrain.high-cell-los   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 1 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite  — 1216 passed
+  PASS  gate 1 — the id appears in a real battle  — map.thicket: 1 log lines, 1 fired, 1 changed state · map.proving.ruin: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests  — test/high-cell-los.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged  — will re-bless at commit — this item DECLARED it changes the control battles: map.thicket 722010e7->5e40018d, map.proving.ruin 6b32d8f3->f3c6cbab, test.map.dungeon-16x8 717a0446->9771e5ab
+  PASS  content has a published source  — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — map.thicket live · map.proving.ruin live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without map.thicket,map.proving.ruin — they genuinely test it
+
+All gates pass. Run with --land to commit.
+

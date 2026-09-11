@@ -1,0 +1,3613 @@
+{
+  "base": "4b5c53b",
+  "battles": 535,
+  "exactSetupAll": true,
+  "obstacleFreeExact": 434,
+  "identical": 474,
+  "changedCount": 61,
+  "changedCursorCases": [],
+  "obstacleFree": [
+    "map.open/0",
+    "map.open/1",
+    "map.open/2",
+    "map.open/3",
+    "map.open/4",
+    "map.open/5",
+    "map.open/6",
+    "map.open/7",
+    "map.open/8",
+    "map.open/9",
+    "map.open/10",
+    "map.open/11",
+    "map.open/12",
+    "map.open/13",
+    "map.open/14",
+    "map.open/15",
+    "map.open/16",
+    "map.open/17",
+    "map.open/18",
+    "map.open/19",
+    "map.open/20",
+    "map.open/21",
+    "map.open/22",
+    "map.open/23",
+    "map.open/24",
+    "map.ridge/0",
+    "map.ridge/1",
+    "map.ridge/2",
+    "map.ridge/3",
+    "map.ridge/4",
+    "map.ridge/5",
+    "map.ridge/6",
+    "map.ridge/7",
+    "map.ridge/8",
+    "map.ridge/9",
+    "map.ridge/10",
+    "map.ridge/11",
+    "map.ridge/12",
+    "map.ridge/13",
+    "map.ridge/14",
+    "map.ridge/15",
+    "map.ridge/16",
+    "map.ridge/17",
+    "map.ridge/18",
+    "map.ridge/19",
+    "map.ridge/20",
+    "map.ridge/21",
+    "map.ridge/22",
+    "map.ridge/23",
+    "map.ridge/24",
+    "map.flanks/0",
+    "map.flanks/1",
+    "map.flanks/2",
+    "map.flanks/3",
+    "map.flanks/4",
+    "map.flanks/5",
+    "map.flanks/6",
+    "map.flanks/7",
+    "map.flanks/8",
+    "map.flanks/9",
+    "map.flanks/10",
+    "map.flanks/11",
+    "map.flanks/12",
+    "map.flanks/13",
+    "map.flanks/14",
+    "map.flanks/15",
+    "map.flanks/16",
+    "map.flanks/17",
+    "map.flanks/18",
+    "map.flanks/19",
+    "map.flanks/20",
+    "map.flanks/21",
+    "map.flanks/22",
+    "map.flanks/23",
+    "map.flanks/24",
+    "map.highlands/0",
+    "map.highlands/1",
+    "map.highlands/2",
+    "map.highlands/3",
+    "map.highlands/4",
+    "map.highlands/5",
+    "map.highlands/6",
+    "map.highlands/7",
+    "map.highlands/8",
+    "map.highlands/9",
+    "map.highlands/10",
+    "map.highlands/11",
+    "map.highlands/12",
+    "map.highlands/13",
+    "map.highlands/14",
+    "map.highlands/15",
+    "map.highlands/16",
+    "map.highlands/17",
+    "map.highlands/18",
+    "map.highlands/19",
+    "map.highlands/20",
+    "map.highlands/21",
+    "map.highlands/22",
+    "map.highlands/23",
+    "map.highlands/24",
+    "map.proving.open/0",
+    "map.proving.open/1",
+    "map.proving.open/2",
+    "map.proving.open/3",
+    "map.proving.open/4",
+    "map.proving.open/5",
+    "map.proving.open/6",
+    "map.proving.open/7",
+    "map.proving.open/8",
+    "map.proving.open/9",
+    "map.proving.open/10",
+    "map.proving.open/11",
+    "map.proving.open/12",
+    "map.proving.open/13",
+    "map.proving.open/14",
+    "map.proving.open/15",
+    "map.proving.open/16",
+    "map.proving.open/17",
+    "map.proving.open/18",
+    "map.proving.open/19",
+    "map.proving.open/20",
+    "map.proving.open/21",
+    "map.proving.open/22",
+    "map.proving.open/23",
+    "map.proving.open/24",
+    "map.proving.ridge/0",
+    "map.proving.ridge/1",
+    "map.proving.ridge/2",
+    "map.proving.ridge/3",
+    "map.proving.ridge/4",
+    "map.proving.ridge/5",
+    "map.proving.ridge/6",
+    "map.proving.ridge/7",
+    "map.proving.ridge/8",
+    "map.proving.ridge/9",
+    "map.proving.ridge/10",
+    "map.proving.ridge/11",
+    "map.proving.ridge/12",
+    "map.proving.ridge/13",
+    "map.proving.ridge/14",
+    "map.proving.ridge/15",
+    "map.proving.ridge/16",
+    "map.proving.ridge/17",
+    "map.proving.ridge/18",
+    "map.proving.ridge/19",
+    "map.proving.ridge/20",
+    "map.proving.ridge/21",
+    "map.proving.ridge/22",
+    "map.proving.ridge/23",
+    "map.proving.ridge/24",
+    "map.proving.ford/0",
+    "map.proving.ford/1",
+    "map.proving.ford/2",
+    "map.proving.ford/3",
+    "map.proving.ford/4",
+    "map.proving.ford/5",
+    "map.proving.ford/6",
+    "map.proving.ford/7",
+    "map.proving.ford/8",
+    "map.proving.ford/9",
+    "map.proving.ford/10",
+    "map.proving.ford/11",
+    "map.proving.ford/12",
+    "map.proving.ford/13",
+    "map.proving.ford/14",
+    "map.proving.ford/15",
+    "map.proving.ford/16",
+    "map.proving.ford/17",
+    "map.proving.ford/18",
+    "map.proving.ford/19",
+    "map.proving.ford/20",
+    "map.proving.ford/21",
+    "map.proving.ford/22",
+    "map.proving.ford/23",
+    "map.proving.ford/24",
+    "map.proving.copse/0",
+    "map.proving.copse/1",
+    "map.proving.copse/2",
+    "map.proving.copse/3",
+    "map.proving.copse/4",
+    "map.proving.copse/5",
+    "map.proving.copse/6",
+    "map.proving.copse/7",
+    "map.proving.copse/8",
+    "map.proving.copse/9",
+    "map.proving.copse/10",
+    "map.proving.copse/11",
+    "map.proving.copse/12",
+    "map.proving.copse/13",
+    "map.proving.copse/14",
+    "map.proving.copse/15",
+    "map.proving.copse/16",
+    "map.proving.copse/17",
+    "map.proving.copse/18",
+    "map.proving.copse/19",
+    "map.proving.copse/20",
+    "map.proving.copse/21",
+    "map.proving.copse/22",
+    "map.proving.copse/23",
+    "map.proving.copse/24",
+    "map.courtyard/0",
+    "map.courtyard/1",
+    "map.courtyard/2",
+    "map.courtyard/3",
+    "map.courtyard/4",
+    "map.courtyard/5",
+    "map.courtyard/6",
+    "map.courtyard/7",
+    "map.courtyard/8",
+    "map.courtyard/9",
+    "map.courtyard/10",
+    "map.courtyard/11",
+    "map.courtyard/12",
+    "map.courtyard/13",
+    "map.courtyard/14",
+    "map.courtyard/15",
+    "map.courtyard/16",
+    "map.courtyard/17",
+    "map.courtyard/18",
+    "map.courtyard/19",
+    "map.courtyard/20",
+    "map.courtyard/21",
+    "map.courtyard/22",
+    "map.courtyard/23",
+    "map.courtyard/24",
+    "map.floodplain/0",
+    "map.floodplain/1",
+    "map.floodplain/2",
+    "map.floodplain/3",
+    "map.floodplain/4",
+    "map.floodplain/5",
+    "map.floodplain/6",
+    "map.floodplain/7",
+    "map.floodplain/8",
+    "map.floodplain/9",
+    "map.floodplain/10",
+    "map.floodplain/11",
+    "map.floodplain/12",
+    "map.floodplain/13",
+    "map.floodplain/14",
+    "map.floodplain/15",
+    "map.floodplain/16",
+    "map.floodplain/17",
+    "map.floodplain/18",
+    "map.floodplain/19",
+    "map.floodplain/20",
+    "map.floodplain/21",
+    "map.floodplain/22",
+    "map.floodplain/23",
+    "map.floodplain/24",
+    "test.map.embers/0",
+    "test.map.embers/1",
+    "test.map.embers/2",
+    "test.map.embers/3",
+    "test.map.embers/4",
+    "test.map.embers/5",
+    "test.map.embers/6",
+    "test.map.embers/7",
+    "test.map.embers/8",
+    "test.map.embers/9",
+    "test.map.embers/10",
+    "test.map.embers/11",
+    "test.map.embers/12",
+    "test.map.embers/13",
+    "test.map.embers/14",
+    "test.map.embers/15",
+    "test.map.embers/16",
+    "test.map.embers/17",
+    "test.map.embers/18",
+    "test.map.embers/19",
+    "test.map.embers/20",
+    "test.map.embers/21",
+    "test.map.embers/22",
+    "test.map.embers/23",
+    "test.map.embers/24",
+    "test.map.showcase/0",
+    "test.map.showcase/1",
+    "test.map.showcase/2",
+    "test.map.showcase/3",
+    "test.map.showcase/4",
+    "test.map.showcase/5",
+    "test.map.showcase/6",
+    "test.map.showcase/7",
+    "test.map.showcase/8",
+    "test.map.showcase/9",
+    "test.map.showcase/10",
+    "test.map.showcase/11",
+    "test.map.showcase/12",
+    "test.map.showcase/13",
+    "test.map.showcase/14",
+    "test.map.showcase/15",
+    "test.map.showcase/16",
+    "test.map.showcase/17",
+    "test.map.showcase/18",
+    "test.map.showcase/19",
+    "test.map.showcase/20",
+    "test.map.showcase/21",
+    "test.map.showcase/22",
+    "test.map.showcase/23",
+    "test.map.showcase/24",
+    "test.map.duel-8/0",
+    "test.map.duel-8/1",
+    "test.map.duel-8/2",
+    "test.map.duel-8/3",
+    "test.map.duel-8/4",
+    "test.map.duel-8/5",
+    "test.map.duel-8/6",
+    "test.map.duel-8/7",
+    "test.map.duel-8/8",
+    "test.map.duel-8/9",
+    "test.map.duel-8/10",
+    "test.map.duel-8/11",
+    "test.map.duel-8/12",
+    "test.map.duel-8/13",
+    "test.map.duel-8/14",
+    "test.map.duel-8/15",
+    "test.map.duel-8/16",
+    "test.map.duel-8/17",
+    "test.map.duel-8/18",
+    "test.map.duel-8/19",
+    "test.map.duel-8/20",
+    "test.map.duel-8/21",
+    "test.map.duel-8/22",
+    "test.map.duel-8/23",
+    "test.map.duel-8/24",
+    "test.map.horde-24/0",
+    "test.map.horde-24/1",
+    "test.map.horde-24/2",
+    "test.map.horde-24/3",
+    "test.map.horde-24/4",
+    "test.map.horde-24/5",
+    "test.map.horde-24/6",
+    "test.map.horde-24/7",
+    "test.map.horde-24/8",
+    "test.map.horde-24/9",
+    "test.map.horde-24/10",
+    "test.map.horde-24/11",
+    "test.map.horde-24/12",
+    "test.map.horde-24/13",
+    "test.map.horde-24/14",
+    "test.map.horde-24/15",
+    "test.map.horde-24/16",
+    "test.map.horde-24/17",
+    "test.map.horde-24/18",
+    "test.map.horde-24/19",
+    "test.map.horde-24/20",
+    "test.map.horde-24/21",
+    "test.map.horde-24/22",
+    "test.map.horde-24/23",
+    "test.map.horde-24/24",
+    "test.map.journey-20x10/0",
+    "test.map.journey-20x10/1",
+    "test.map.journey-20x10/2",
+    "test.map.journey-20x10/3",
+    "test.map.journey-20x10/4",
+    "test.map.journey-20x10/5",
+    "test.map.journey-20x10/6",
+    "test.map.journey-20x10/7",
+    "test.map.journey-20x10/8",
+    "test.map.journey-20x10/9",
+    "test.map.journey-20x10/10",
+    "test.map.journey-20x10/11",
+    "test.map.journey-20x10/12",
+    "test.map.journey-20x10/13",
+    "test.map.journey-20x10/14",
+    "test.map.journey-20x10/15",
+    "test.map.journey-20x10/16",
+    "test.map.journey-20x10/17",
+    "test.map.journey-20x10/18",
+    "test.map.journey-20x10/19",
+    "test.map.journey-20x10/20",
+    "test.map.journey-20x10/21",
+    "test.map.journey-20x10/22",
+    "test.map.journey-20x10/23",
+    "test.map.journey-20x10/24",
+    "test.map.authored-40x40/0",
+    "test.map.authored-40x40/1",
+    "test.map.authored-40x40/2",
+    "test.map.authored-40x40/3",
+    "test.map.authored-40x40/4",
+    "test.map.authored-40x40/5",
+    "test.map.authored-40x40/6",
+    "test.map.authored-40x40/7",
+    "test.map.authored-40x40/8",
+    "test.map.authored-40x40/9",
+    "test.map.authored-40x40/10",
+    "test.map.authored-40x40/11",
+    "test.map.authored-40x40/12",
+    "test.map.authored-40x40/13",
+    "test.map.authored-40x40/14",
+    "test.map.authored-40x40/15",
+    "test.map.authored-40x40/16",
+    "test.map.authored-40x40/17",
+    "test.map.authored-40x40/18",
+    "test.map.authored-40x40/19",
+    "test.map.authored-40x40/20",
+    "test.map.authored-40x40/21",
+    "test.map.authored-40x40/22",
+    "test.map.authored-40x40/23",
+    "test.map.authored-40x40/24",
+    "test.direct-map-journey",
+    "test.direct-map-authored",
+    "test.board-journey",
+    "test.board-authored",
+    "test.authored-slots",
+    "showcase.flight-bonuses",
+    "showcase.surge-flight-ladder",
+    "showcase.movement-bonuses",
+    "showcase.ordered-power-preview",
+    "showcase.prologue-enemies",
+    "showcase.prologue-party",
+    "showcase.alpha-team",
+    "showcase.arc-variant",
+    "showcase.item-powers",
+    "showcase.civilians",
+    "showcase.eve-24-a",
+    "showcase.eve-24-b",
+    "showcase.gash-variant",
+    "showcase.surrounded",
+    "showcase.two-zombies-and-a-child",
+    "showcase.supper",
+    "showcase.kiln",
+    "showcase.rime",
+    "showcase.horrors",
+    "showcase.waystation",
+    "showcase.farmers-grown",
+    "showcase.badged",
+    "showcase.mirror-zombies",
+    "showcase.wounded-entry",
+    "showcase.knockback-two",
+    "showcase.assembled-party",
+    "progression-surge-0",
+    "progression-surge-1",
+    "progression-surge-2"
+  ],
+  "changed": [
+    {
+      "id": "map.thicket/0",
+      "blockers": 4,
+      "firstDifference": 218,
+      "beforeEvent": {
+        "seq": 218,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 7,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 65,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 218,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 10,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 10,
+        "hitChance": 60,
+        "damageOnHit": 4,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -35
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/1",
+      "blockers": 4,
+      "firstDifference": 719,
+      "beforeEvent": {
+        "seq": 719,
+        "turn": 5,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": null,
+        "amount": 2,
+        "stamina": 0
+      },
+      "afterEvent": {
+        "seq": 719,
+        "turn": 5,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 3,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/2",
+      "blockers": 4,
+      "firstDifference": 402,
+      "beforeEvent": {
+        "seq": 402,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 9,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 45,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 402,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 10,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 10,
+        "hitChance": 30,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -35
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/4",
+      "blockers": 4,
+      "firstDifference": 249,
+      "beforeEvent": {
+        "seq": 249,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.holy-symbol.wrath",
+        "actor": 4,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 249,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 4,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/5",
+      "blockers": 4,
+      "firstDifference": 216,
+      "beforeEvent": {
+        "seq": 216,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 216,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/10",
+      "blockers": 4,
+      "firstDifference": 393,
+      "beforeEvent": {
+        "seq": 393,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 10,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 45,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 393,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 6,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 10,
+        "hitChance": 30,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -35
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/13",
+      "blockers": 4,
+      "firstDifference": 617,
+      "beforeEvent": {
+        "seq": 617,
+        "turn": 5,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 1
+      },
+      "afterEvent": {
+        "seq": 617,
+        "turn": 5,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/14",
+      "blockers": 4,
+      "firstDifference": 389,
+      "beforeEvent": {
+        "seq": 389,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 7,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 45,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 389,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 11,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 9,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/19",
+      "blockers": 4,
+      "firstDifference": 425,
+      "beforeEvent": {
+        "seq": 425,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.holy-symbol.wrath",
+        "actor": 4,
+        "target": 10,
+        "attackId": "attack.holy-symbol.wrath",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "true",
+        "distance": 9,
+        "hitChance": 65,
+        "damageOnHit": 3,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-lucius",
+            "delta": 80
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.holy-symbol.wrath",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.holy-symbol.wrath",
+            "delta": 5
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 425,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.holy-symbol.wrath",
+        "actor": 4,
+        "target": 9,
+        "attackId": "attack.holy-symbol.wrath",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "true",
+        "distance": 9,
+        "hitChance": 65,
+        "damageOnHit": 3,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-lucius",
+            "delta": 80
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.hills",
+            "delta": 10
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.holy-symbol.wrath",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.holy-symbol.wrath",
+            "delta": 5
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/23",
+      "blockers": 4,
+      "firstDifference": 382,
+      "beforeEvent": {
+        "seq": 382,
+        "turn": 3,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.holy-symbol.wrath",
+        "actor": 4,
+        "target": null,
+        "amount": 1,
+        "stamina": 2
+      },
+      "afterEvent": {
+        "seq": 382,
+        "turn": 3,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 4,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.thicket/24",
+      "blockers": 4,
+      "firstDifference": 243,
+      "beforeEvent": {
+        "seq": 243,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.holy-symbol.wrath",
+        "actor": 4,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 243,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 4,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/0",
+      "blockers": 12,
+      "firstDifference": 241,
+      "beforeEvent": {
+        "seq": 241,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 6,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 241,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 7,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 8,
+        "hitChance": 30,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -25
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/1",
+      "blockers": 12,
+      "firstDifference": 220,
+      "beforeEvent": {
+        "seq": 220,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 220,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/2",
+      "blockers": 12,
+      "firstDifference": 222,
+      "beforeEvent": {
+        "seq": 222,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 222,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/3",
+      "blockers": 12,
+      "firstDifference": 220,
+      "beforeEvent": {
+        "seq": 220,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 220,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/4",
+      "blockers": 12,
+      "firstDifference": 236,
+      "beforeEvent": {
+        "seq": 236,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 7,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 236,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 8,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 6,
+        "hitChance": 40,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -15
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/5",
+      "blockers": 12,
+      "firstDifference": 223,
+      "beforeEvent": {
+        "seq": 223,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 223,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/6",
+      "blockers": 12,
+      "firstDifference": 222,
+      "beforeEvent": {
+        "seq": 222,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 7,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 50,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.rocky",
+            "delta": -5
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 222,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 9,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 50,
+        "damageOnHit": 4,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.rocky",
+            "delta": -5
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/7",
+      "blockers": 12,
+      "firstDifference": 221,
+      "beforeEvent": {
+        "seq": 221,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 221,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/8",
+      "blockers": 12,
+      "firstDifference": 219,
+      "beforeEvent": {
+        "seq": 219,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 219,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/9",
+      "blockers": 12,
+      "firstDifference": 245,
+      "beforeEvent": {
+        "seq": 245,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 6,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 245,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 8,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/10",
+      "blockers": 12,
+      "firstDifference": 246,
+      "beforeEvent": {
+        "seq": 246,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 7,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 246,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 8,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 6,
+        "hitChance": 40,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -15
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/11",
+      "blockers": 12,
+      "firstDifference": 218,
+      "beforeEvent": {
+        "seq": 218,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 218,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/12",
+      "blockers": 12,
+      "firstDifference": 224,
+      "beforeEvent": {
+        "seq": 224,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 224,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/13",
+      "blockers": 12,
+      "firstDifference": 220,
+      "beforeEvent": {
+        "seq": 220,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 7,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 55,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 220,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 9,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 55,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/14",
+      "blockers": 12,
+      "firstDifference": 223,
+      "beforeEvent": {
+        "seq": 223,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 223,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/15",
+      "blockers": 12,
+      "firstDifference": 237,
+      "beforeEvent": {
+        "seq": 237,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 6,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 237,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 7,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 6,
+        "hitChance": 40,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -15
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/16",
+      "blockers": 12,
+      "firstDifference": 237,
+      "beforeEvent": {
+        "seq": 237,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 6,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 8,
+        "hitChance": 30,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -25
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 237,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 7,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 6,
+        "hitChance": 40,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -15
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/17",
+      "blockers": 12,
+      "firstDifference": 219,
+      "beforeEvent": {
+        "seq": 219,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 219,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/18",
+      "blockers": 12,
+      "firstDifference": 410,
+      "beforeEvent": {
+        "seq": 410,
+        "turn": 3,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 2
+      },
+      "afterEvent": {
+        "seq": 410,
+        "turn": 3,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/19",
+      "blockers": 12,
+      "firstDifference": 219,
+      "beforeEvent": {
+        "seq": 219,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 7,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 50,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.rocky",
+            "delta": -5
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 219,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 10,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 50,
+        "damageOnHit": 4,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "BASE_MOD",
+            "effectId": "terrain.rocky",
+            "delta": -5
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/20",
+      "blockers": 12,
+      "firstDifference": 241,
+      "beforeEvent": {
+        "seq": 241,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 6,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 241,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 8,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 6,
+        "hitChance": 40,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -15
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/21",
+      "blockers": 12,
+      "firstDifference": 243,
+      "beforeEvent": {
+        "seq": 243,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 6,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 243,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 8,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 6,
+        "hitChance": 40,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -15
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/22",
+      "blockers": 12,
+      "firstDifference": 222,
+      "beforeEvent": {
+        "seq": 222,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 7,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 55,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 222,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": 8,
+        "attackId": "attack.shortbow.short-shot",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "physical",
+        "distance": 9,
+        "hitChance": 55,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-dusk-hawk",
+            "delta": 80
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": -30
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.shortbow.short-shot",
+            "delta": 5
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/23",
+      "blockers": 12,
+      "firstDifference": 241,
+      "beforeEvent": {
+        "seq": 241,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 6,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 241,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 11,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 6,
+        "hitChance": 40,
+        "damageOnHit": 5,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -15
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "map.proving.ruin/24",
+      "blockers": 12,
+      "firstDifference": 422,
+      "beforeEvent": {
+        "seq": 422,
+        "turn": 3,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 2
+      },
+      "afterEvent": {
+        "seq": 422,
+        "turn": 3,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/0",
+      "blockers": 16,
+      "firstDifference": 207,
+      "beforeEvent": {
+        "seq": 207,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 207,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/1",
+      "blockers": 16,
+      "firstDifference": 350,
+      "beforeEvent": {
+        "seq": 350,
+        "turn": 3,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 2
+      },
+      "afterEvent": {
+        "seq": 350,
+        "turn": 3,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 10,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/2",
+      "blockers": 16,
+      "firstDifference": 372,
+      "beforeEvent": {
+        "seq": 372,
+        "turn": 3,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": null,
+        "amount": 2,
+        "stamina": 0
+      },
+      "afterEvent": {
+        "seq": 372,
+        "turn": 3,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 3,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/3",
+      "blockers": 16,
+      "firstDifference": 212,
+      "beforeEvent": {
+        "seq": 212,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 212,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/4",
+      "blockers": 16,
+      "firstDifference": 224,
+      "beforeEvent": {
+        "seq": 224,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": null,
+        "amount": 2,
+        "stamina": 2
+      },
+      "afterEvent": {
+        "seq": 224,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 3,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/5",
+      "blockers": 16,
+      "firstDifference": 205,
+      "beforeEvent": {
+        "seq": 205,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 205,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/6",
+      "blockers": 16,
+      "firstDifference": 346,
+      "beforeEvent": {
+        "seq": 346,
+        "turn": 3,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 2
+      },
+      "afterEvent": {
+        "seq": 346,
+        "turn": 3,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/7",
+      "blockers": 16,
+      "firstDifference": 574,
+      "beforeEvent": {
+        "seq": 574,
+        "turn": 5,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": null,
+        "amount": 2,
+        "stamina": 0
+      },
+      "afterEvent": {
+        "seq": 574,
+        "turn": 5,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 3,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 8,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/8",
+      "blockers": 16,
+      "firstDifference": 223,
+      "beforeEvent": {
+        "seq": 223,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 223,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/9",
+      "blockers": 16,
+      "firstDifference": 229,
+      "beforeEvent": {
+        "seq": 229,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 229,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/10",
+      "blockers": 16,
+      "firstDifference": 216,
+      "beforeEvent": {
+        "seq": 216,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 216,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/11",
+      "blockers": 16,
+      "firstDifference": 204,
+      "beforeEvent": {
+        "seq": 204,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 204,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 8,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 10,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/12",
+      "blockers": 16,
+      "firstDifference": 371,
+      "beforeEvent": {
+        "seq": 371,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 7,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 7,
+        "hitChance": 35,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 371,
+        "turn": 3,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 11,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 2,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 5,
+        "hitChance": 45,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -10
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "capped",
+        "turns": 25,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/13",
+      "blockers": 16,
+      "firstDifference": 231,
+      "beforeEvent": {
+        "seq": 231,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 231,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/14",
+      "blockers": 16,
+      "firstDifference": 207,
+      "beforeEvent": {
+        "seq": 207,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 207,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 9,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/15",
+      "blockers": 16,
+      "firstDifference": 221,
+      "beforeEvent": {
+        "seq": 221,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 221,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/16",
+      "blockers": 16,
+      "firstDifference": 213,
+      "beforeEvent": {
+        "seq": 213,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 213,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/17",
+      "blockers": 16,
+      "firstDifference": 207,
+      "beforeEvent": {
+        "seq": 207,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 207,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/18",
+      "blockers": 16,
+      "firstDifference": 215,
+      "beforeEvent": {
+        "seq": 215,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 215,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 8,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 8,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/19",
+      "blockers": 16,
+      "firstDifference": 384,
+      "beforeEvent": {
+        "seq": 384,
+        "turn": 3,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 384,
+        "turn": 3,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 8,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/20",
+      "blockers": 16,
+      "firstDifference": 208,
+      "beforeEvent": {
+        "seq": 208,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.shortbow.short-shot",
+        "actor": 2,
+        "target": null,
+        "amount": 1,
+        "stamina": 3
+      },
+      "afterEvent": {
+        "seq": 208,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 2,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/21",
+      "blockers": 16,
+      "firstDifference": 237,
+      "beforeEvent": {
+        "seq": 237,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 10,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 8,
+        "hitChance": 30,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -25
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "afterEvent": {
+        "seq": 237,
+        "turn": 2,
+        "phase": "hero",
+        "type": "attack.declared",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": 12,
+        "attackId": "attack.lightning-staff.bolt",
+        "ordinal": 1,
+        "kind": "ranged",
+        "damageType": "magic",
+        "distance": 6,
+        "hitChance": 40,
+        "damageOnHit": 6,
+        "accLedger": [
+          {
+            "station": "BASE",
+            "effectId": "unit.alpha-air-mage",
+            "delta": 75
+          },
+          {
+            "station": "RANGE",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -15
+          },
+          {
+            "station": "SITUATIONAL",
+            "effectId": "attack.lightning-staff.bolt",
+            "delta": -20
+          }
+        ]
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 8,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/22",
+      "blockers": 16,
+      "firstDifference": 250,
+      "beforeEvent": {
+        "seq": 250,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.holy-symbol.wrath",
+        "actor": 4,
+        "target": null,
+        "amount": 1,
+        "stamina": 4
+      },
+      "afterEvent": {
+        "seq": 250,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 4,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 9,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/23",
+      "blockers": 16,
+      "firstDifference": 365,
+      "beforeEvent": {
+        "seq": 365,
+        "turn": 3,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": null,
+        "amount": 2,
+        "stamina": 1
+      },
+      "afterEvent": {
+        "seq": 365,
+        "turn": 3,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 3,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    },
+    {
+      "id": "test.map.dungeon-16x8/24",
+      "blockers": 16,
+      "firstDifference": 233,
+      "beforeEvent": {
+        "seq": 233,
+        "turn": 2,
+        "phase": "hero",
+        "type": "stamina.spent",
+        "causeId": "attack.lightning-staff.bolt",
+        "actor": 3,
+        "target": null,
+        "amount": 2,
+        "stamina": 2
+      },
+      "afterEvent": {
+        "seq": 233,
+        "turn": 2,
+        "phase": "hero",
+        "type": "activation.idle",
+        "causeId": "ai.ranged-kite",
+        "actor": 3,
+        "target": null,
+        "reason": "no target in range"
+      },
+      "beforeResult": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "afterResult": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      }
+    }
+  ]
+}

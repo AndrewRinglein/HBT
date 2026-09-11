@@ -1,5 +1,6 @@
 import { geometryOf, validBoard } from './hex.js'
 import { isUnitUid } from './identity.js'
+import { prepareAttackLines } from './los.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
 import { validateTrigger, type Trigger } from './trigger.js'
@@ -8,7 +9,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, type BattleCursor, type Ctx } from '.
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.10' // Direct authored maps and non-overlapping initial placement.
+const RULES_VERSION = 'v2-migration.11' // Full-cell obstacle attack lines.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -231,7 +232,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(draw(rng, r.stream as Stream, ...r.keys) === r.value, 'RNG value differs')
   }
   const { actions, statuses, critChart, items, badges, ruleBadges, units, arrive } = runtime
-  return {
+  const ctx: Ctx = {
     actions, statuses, critChart, items, badges, ruleBadges,
     ...(units === undefined ? {} : { units }), ...(arrive === undefined ? {} : { arrive }),
     state: st as Ctx['state'], cfg: s.cfg as Ctx['cfg'], events: s.events as Ctx['events'], rng,
@@ -239,4 +240,6 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     ...(s.cursor === undefined ? {} : { battleCursor: s.cursor as BattleCursor }),
     ...(s.encounter === undefined ? {} : { encounter: s.encounter as NonNullable<Ctx['encounter']> }),
   }
+  prepareAttackLines(ctx)
+  return ctx
 }

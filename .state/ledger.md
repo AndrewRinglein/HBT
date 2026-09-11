@@ -11599,3 +11599,43 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
   PASS  kill switch — the tests fail without the content — tests fail without test.direct-map-journey,test.direct-map-authored — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## terrain.high-cell-los — LANDED `725eb0e`
+2026-09-11 22:50
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite — 1216 passed
+  PASS  gate 1 — the id appears in a real battle — map.thicket: 1 log lines, 1 fired, 1 changed state · map.proving.ruin: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/high-cell-los.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.thicket 722010e7->5e40018d, map.proving.ruin 6b32d8f3->f3c6cbab, test.map.dungeon-16x8 717a0446->9771e5ab
+  PASS  content has a published source — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — map.thicket live · map.proving.ruin live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without map.thicket,map.proving.ruin — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — EFFECT MEASUREMENT ERRORED; 1 FLAG(S) WARNED
+
+```
+effect of map.thicket,map.proving.ruin — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.3->4.3
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:53
+    if (b.invalid === REPS) { console.log(`  ${map}: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.`); anyDelta = true; continue }
+          ^
+
+TypeError: Cannot read properties of undefined (reading 'invalid')
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:53:11)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+```

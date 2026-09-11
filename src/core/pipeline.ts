@@ -15,6 +15,7 @@ import { accelerateBleedOut, applyDamage, emit, unit } from './mutate.js'
 import { actionReady, isAttack, spendAction , resolveActionSlot } from './action.js'
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
+import { attackLineClear } from './los.js'
 import { rulesSideOf } from './side.js'
 
 export const ACC = {
@@ -257,7 +258,7 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   // GAME-DESIGN.md §4.) A legality rule, so it is answered here rather than as a
   // penalty the shooter can eat — the shot does not exist.
   if (a.attack.kind === 'ranged' && d <= 1) return false
-  return d <= reachOf(ctx, at, a)
+  return d <= reachOf(ctx, at, a) && attackLineClear(ctx, at.hex, tg.hex)
 }
 
 /**

@@ -2380,3 +2380,22 @@ Final verification: source `24dfacf`, full and committed-tree checks plus the
 separate batch audit passed 1,200 tests and all 20 controls. The single ruling
 warning remains recorded with a withheld seal; no historical tests were edited.
 `V2-DIRECT-MAP.md` records the completed evidence and remaining viewer/terrain work.
+
+## 2026-09-11 — Existing high cells block attack lines
+
+Authorized V2 §4 replaces the old range-only attack line for authored x cells:
+ordinary and reaction attacks, including melee reach, use one exact full-cell
+predicate in canAttack. Radius vision and auras remain unchanged. Closed tangent
+contact and measured geometry limits are provisional choices in SWITCHES.md.
+Immutable all-pairs bitsets and per-blocker reverse lists precompute at setup
+and restore, and detect current terrain edits before queries. Forks share only
+immutable geometry; no cache or resource diagnostic is serialized. Snapshot
+rules advance to .11. Geometry works for all pairs, without weapon-range caps.
+
+Obstacle-bearing battle controls intentionally change; obstacle-free controls
+must retain exact events, state, RNG and results. The old-source comparison and
+existing cursor fixtures preserve historical evidence rather than rewriting
+prior goldens: all current scenario/progression cases remained exact. Technical
+evidence/status lives in V2-HIGH-CELL-LOS.md.
+Arbitrary prop footprints, edges, cover, destruction commands, area secondary
+propagation and power.damage/burst shielding remain subsequent V2 work.

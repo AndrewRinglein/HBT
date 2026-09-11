@@ -1,0 +1,12 @@
+{
+  "id": "terrain.high-cell-los",
+  "kind": "terrain",
+  "shape": "rule",
+  "needs": ["board.direct-map-input"],
+  "spec": "V2 design section 4: existing full-hex obstacles block center-to-center ordinary and reaction attack lines through canAttack. Vision and auras retain radius semantics. Precompute exact integer closed-hex line intersections at map load; invalidate only pairs crossing changed cells.",
+  "expect": "Published map.thicket and map.proving.ruin obstruct real ranger shots with different blocker arrangements. Open rays remain legal; rejected human commands are atomic; reaction legality agrees; restore and preview forks preserve detached answers; full-pair oracle and terrain mutation probes verify geometry and invalidation.",
+  "probeIds": ["map.thicket", "map.proving.ruin"],
+  "variants": ["map.thicket", "map.proving.ruin"],
+  "changesBaseline": true,
+  "note": "First full-cell LOS stage, not arbitrary prop/edge geometry, destruction actions, cover or V2 burst spread. Existing x cells now occlude everywhere; no V1 LOS switch. Existing obstacle-map control changes are expected; maps without obstacles must remain byte-identical. No map/art/content edits. Provisional exact-boundary and resource policies are recorded in SWITCHES.md. Published-map kill switch proves fixture presence; pre-implementation red legality probes and old-source comparisons separately prove the new rule's consequence."
+}

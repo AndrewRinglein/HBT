@@ -1,0 +1,6 @@
+{"width":20,"height":10,"blockers":0,"ms":2,"pairCellTests":0,"changedPairs":0,"reverseEntries":0,"bytes":76,"cacheHit":false,"sharedBytes":76}
+{"width":20,"height":10,"blockers":32,"ms":9,"pairCellTests":636800,"changedPairs":0,"reverseEntries":36564,"bytes":151084,"cacheHit":false,"sharedBytes":151160}
+{"width":40,"height":40,"blockers":0,"ms":2,"pairCellTests":0,"changedPairs":0,"reverseEntries":0,"bytes":76,"cacheHit":false,"sharedBytes":151236}
+{"width":40,"height":40,"blockers":64,"ms":825,"pairCellTests":81868800,"changedPairs":0,"reverseEntries":1289177,"bytes":5321308,"cacheHit":false,"sharedBytes":5472544}
+{"width":40,"height":40,"blockers":600,"ms":7746,"pairCellTests":767520000,"changedPairs":0,"reverseEntries":12548301,"bytes":50396736,"cacheHit":false,"sharedBytes":55869280}
+{"width":100,"height":100,"blockers":0,"ms":6,"pairCellTests":0,"changedPairs":0,"reverseEntries":0,"bytes":80,"cacheHit":false,"sharedBytes":55869360}

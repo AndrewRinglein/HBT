@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/high-cell-los.test.ts (14 tests | 1 failed | 13 skipped) 20ms
+     × all-pair tables remain oracle-exact after mixed edits, forks, restores and same-ID other dimensions 19ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/high-cell-los.test.ts > exact full-cell geometry > all-pair tables remain oracle-exact after mixed edits, forks, restores and same-ID other dimensions
+AssertionError: expected 115 to be 66 // Object.is equality
+
+- Expected
++ Received
+
+- 66
++ 115
+
+ ❯ test/high-cell-los.test.ts:144:48
+    142|     ctx.state.terrain[5] = TERRAIN.OPEN; ctx.state.terrain[9] = TERRAI…
+    143|     check(ctx); check(fork)
+    144|     expect(attackLineStats(ctx).pairCellTests).toBe(12 * 11 / 2)
+       |                                                ^
+    145|     expect(saveBattle(fork).includes('test.map.same-los-id')).toBe(tru…
+    146|     const resumed = restoreBattle(saveBattle(ctx), ctx), old = restore…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 skipped (14)
+   Start at  12:08:27
+   Duration  647ms (transform 400ms, setup 0ms, import 510ms, tests 20ms, environment 0ms)
+

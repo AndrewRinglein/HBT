@@ -1,0 +1,73 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/high-cell-los.test.ts (3 tests | 3 failed) 25ms
+     × rejects a shot through a high cell in ordinary and reaction legality 6ms
+     × rejects a human command atomically and retains that answer after restore 17ms
+     × notices removal and replacement without leaking through a preview fork 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > rejects a shot through a high cell in ordinary and reaction legality
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/high-cell-los.test.ts:19:39
+     17|   it('rejects a shot through a high cell in ordinary and reaction lega…
+     18|     const ctx = battle()
+     19|     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+       |                                       ^
+     20|     expect(canAttack(ctx, 0, 1, bow, 'reaction')).toBe(false)
+     21|     expect(canAttack(battle(['.....', '.....', '.....']), 0, 1, bow)).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > rejects a human command atomically and retains that answer after restore
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/high-cell-los.test.ts:32:25
+     30|         kind: 'action', actor: 0, actionId: bow, target: 1, expectedSe…
+     31|       })
+     32|       expect(result.ok).toBe(false)
+       |                         ^
+     33|       expect(saveBattle(c)).toBe(before)
+     34|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/high-cell-los.test.ts > V2 high cell attack lines > notices removal and replacement without leaking through a preview fork
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/high-cell-los.test.ts:39:39
+     37|   it('notices removal and replacement without leaking through a previe…
+     38|     const ctx = battle(), branch = forkBattle(ctx)
+     39|     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
+       |                                       ^
+     40|     branch.state.terrain[7] = TERRAIN.OPEN
+     41|     expect(canAttack(branch, 0, 1, bow)).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  12:00:05
+   Duration  707ms (transform 426ms, setup 0ms, import 542ms, tests 25ms, environment 0ms)
+

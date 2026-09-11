@@ -6,7 +6,7 @@
 // Angela, 2026-09-03: "The base visibility that should be revealed from
 // darkness is 6, so it's basically everyone has a vision of 6, even though
 // the stat is 0. So versus fog, it would be a 3." (fog: not built — no row).
-// There is no line of sight; Vision is a pure radius.
+// Vision is a pure radius. V2 attack-line blockers are separate (los.ts).
 //
 // Darkness is two things (rule.ground-layers): the battlefield CONDITION,
 // which paints every hex dark at phase 1, and the LAYER, which a unit paints

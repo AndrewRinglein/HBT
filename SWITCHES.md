@@ -497,3 +497,30 @@ This is an input/allocation limit, not a battlefield size recommendation.
 contract before geometry construction, compilation/publication and save restore.
 The four named FORMATS remain convenience sizes. Raising this limit requires
 new bounded validation and geometry evidence; it is not a per-battle Config knob.
+
+## highCellContact — exact closed-hex attack lines
+
+Added 2026-09-11 for V2 high-cell LOS. Provisional **closed contact blocks**:
+touching a high cell's edge or vertex blocks in either direction, including
+melee reach beyond one hex. Vision/auras remain radius rules. The integer affine
+SAT and independent segment/edge oracle test this choice without rounding.
+
+## highCellResources — precomputed all-pairs geometry limits
+
+Added 2026-09-11. Provisional limits in core/los.ts: **1,024,000,000 pair/cell
+tests**, **16,000,000 reverse entries**, **64 MiB shared immutable cache**.
+The 10,000-cell input ceiling is not unconditional dense-LOS support. Reject
+unsupported geometry loudly; never omit blockers or approximate rays. Full
+dimensions and sorted blockers identify tables; forks share only immutable data.
+The cache cap counts estimated retained table bytes, conservatively counting
+shared reverse arrays again. Live contexts may retain evicted tables separately.
+
+The initial 128-million work proposal rejected 40×40 with 600 blockers. Real
+engine measurements justified raising it: cold 7.746s / warm-open 7.434s,
+767,520,000 exact tests, 12,548,301 reverse entries and 50,396,736 estimated
+bytes. Cold/warm 40×40/64 took 0.825s/0.773s. An open 100×100 table takes
+80 estimated bytes and no pair bitset. A 100×100 board with 21 blockers
+rejects before geometry allocation; 40×40 with 801 exceeds the work cap too.
+Incremental removal checks existing exact reverse lists, and addition computes
+only new blocker lists. Bounds do not depend on cache history. See receipt and
+benchmark logs for exact shapes; this is a resource policy, not authored tuning.

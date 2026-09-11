@@ -1,0 +1,9 @@
+{
+  "base": "4b5c53b",
+  "battles": 535,
+  "exactSetupAll": true,
+  "obstacleFreeExact": 434,
+  "identical": 474,
+  "changedCount": 61,
+  "changedCursorCases": []
+}

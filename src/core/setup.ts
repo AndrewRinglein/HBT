@@ -11,6 +11,7 @@ import { emit, gainPower } from './mutate.js'
 import { arrive, heroDeployHexes, placeSetup } from './encounter.js'
 import { rulesSideOf } from './side.js'
 import { rosterUids, type UnitIdentityOptions } from './identity.js'
+import { prepareAttackLines } from './los.js'
 
 export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
   const actions = [...def.attacks, ...def.abilities, ...def.moves]
@@ -186,6 +187,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: direct ? structuredClone(opts.encounter) : opts.encounter } : {}) }
+  prepareAttackLines(ctx)
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   // proving.side-override: under byList the fielded side is the list's, not the row's
@@ -446,6 +448,7 @@ export function createCustomBattle(
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
+  prepareAttackLines(ctx)
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —
   // a fixture hero is the same hero as a scenario hero.
