@@ -970,6 +970,7 @@ for (const id of CIVILIANS) {
     authoredAttacks[a.id] = {
       id: a.id, name: a.name, kind: 'melee', damageType: a.damageType || 'physical',
       bonus: a.damage ?? 0, stat: a.stat || 'strength', reach: 1, staminaCost: a.stamina ?? 0,
+      ...(a.crit ? { crit: a.crit } : {}),
       ...(a.accuracy ? { accuracy: a.accuracy } : {}),
     };
     attackIds.push(a.id);

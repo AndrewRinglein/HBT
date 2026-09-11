@@ -499,11 +499,16 @@ for(const h of heroes){
   // someone notices. An existing weapon is never replaced — the Lumberjack keeps his axe.
   {
     const W=CR.weapons||{};
-    const ITEMS=JSON.parse(fs.readFileSync('gen/settled-items.json','utf8'));
-    const rows=Array.isArray(ITEMS)?ITEMS:(ITEMS.items||Object.values(ITEMS));
+    // Match assemble's weapon sources. A settled weapon is already a weapon;
+    // overlooking it adds a second two-handed item to an authored kit.
+    const rows=['gen/weapons.json','gen/settled-items.json','settled.json'].flatMap(file=>{
+      const data=JSON.parse(fs.readFileSync(file,'utf8'));
+      return (Array.isArray(data)?data:(data.items||[])).map(item=>
+        file==='gen/weapons.json'?{...item,itemClass:item.itemClass||'weapon'}:item);
+    });
     const isWeapon=new Set(rows.filter(x=>x&&x.itemClass==='weapon').map(x=>x.id));
     for(const w of [W.default,...Object.values(W.byType||{}),...Object.values(W.overrides||{})].filter(Boolean))
-      if(!isWeapon.has(w)) problems.push('civilian-rulings weapons: '+w+' is not a weapon in gen/settled-items.json');
+      if(!isWeapon.has(w)) problems.push('civilian-rulings weapons: '+w+' is not an authored weapon');
     let armed=0, already=0;
     for(const h of heroes){
       if(h.class!=='class.civilian') continue;

@@ -1148,8 +1148,7 @@
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Renamed \"Lumberjack and Wife\" -> \"Lumberjack\", ruled 2026-08-25.",
     "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
-    "Stat block dictated 2026-08-25: Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day.",
-    "Armed with item.pitchfork — ruled 2026-09-05, every civilian carries a weapon."
+    "Stat block dictated 2026-08-25: Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day."
    ],
    "specialty": null,
    "originBadges": [],
@@ -1172,8 +1171,7 @@
    "subtype": "Lumberjack",
    "levelTable": "civilian.farmer",
    "kit": [
-    "item.lumberjack-axe",
-    "item.pitchfork"
+    "item.lumberjack-axe"
    ],
    "survivalReward": {
     "currency": "Supplies",
