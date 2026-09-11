@@ -1,0 +1,21 @@
+
+gate: fix.surge-cycle   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\STATE.md:21
+  PASS  typecheck
+  FAIL  full test suite  — 2 FAILED — test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.supper · test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.surrounded
+  FAIL  gate 1 — the id appears in a real battle  — power.flight-labored: 'power.flight-labored' never appears in any log. It is not wired in — check the registry entry.
+  PASS  brought its own tests  — test/battle-cursor.test.ts, test/battle-snapshot.test.ts, test/surge.test.ts, test/surge-cycle.test.ts
+  WARN  existing tests untouched  — DELETED LINES in test/battle-cursor.test.ts (-1), test/surge.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged  — will re-bless at commit — this item DECLARED it changes the control battles: map.open 8c92b7c3->5e5e3620, map.ridge d47ace39->81ae3cce, map.flanks 222ccbe9->6cc62715, map.highlands 22fa874e->2e7ac608, map.field f203cc3f->0e4f351d, map.thicket 9b10a8f0->5c42bf6e, map.proving.open 424d53de->69c7e24c, map.proving.ridge 9a02c4fc->47009d55, map.proving.ford cca60c73->eabbd227, map.proving.copse 18d8de68->275a32c5, map.proving.ruin 9cfd4aaf->e08f2a82, map.courtyard 25022843->abd90e19, test.map.embers db9994a2->ace24399, test.map.showcase 5e1affff->78cba462, test.map.duel-8 305a69d5->d4a77324, test.map.dungeon-16x8 e38312cb->f7c0f8fc, test.map.horde-24 d1a26c1d->3b02f3a0
+  PASS  content has a published source  — 28 ids without a published source (18 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  FAIL  generalizes — the second instance costs zero engine code  — variant 'power.flight-labored' appears in src\core\types.ts — the second instance must be pure data
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without power.flight-labored,power.flight-swift — they genuinely test it
+
+NOT READY (attempt 1). Nothing reverted — fix and run the gate again.
+If it cannot be made to pass:  node tools/gate.mjs fix.surge-cycle --abandon
+

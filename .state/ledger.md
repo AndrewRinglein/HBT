@@ -10796,3 +10796,143 @@ index e2c6a60..7b7102a 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## fix.surge-cycle — LANDED `2d80925` **NEEDS REVIEW**
+2026-09-11 07:15
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 926 passed
+  PASS  gate 1 — the id appears in a real battle — power.flight-labored: 6 log lines, 6 fired, 2 changed state · power.flight-swift: 26 log lines, 26 fired, 13 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/battle-snapshot.test.ts, test/multihit.test.ts, test/surge.test.ts, test/surge-cycle.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-1), test/multihit.test.ts (-2), test/surge.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 8c92b7c3->5e5e3620, map.ridge d47ace39->81ae3cce, map.flanks 222ccbe9->6cc62715, map.highlands 22fa874e->2e7ac608, map.field f203cc3f->0e4f351d, map.thicket 9b10a8f0->5c42bf6e, map.proving.open 424d53de->69c7e24c, map.proving.ridge 9a02c4fc->47009d55, map.proving.ford cca60c73->eabbd227, map.proving.copse 18d8de68->275a32c5, map.proving.ruin 9cfd4aaf->e08f2a82, map.courtyard 25022843->abd90e19, test.map.embers db9994a2->ace24399, test.map.showcase 5e1affff->78cba462, test.map.duel-8 305a69d5->d4a77324, test.map.dungeon-16x8 e38312cb->f7c0f8fc, test.map.horde-24 d1a26c1d->3b02f3a0
+  PASS  content has a published source — 29 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — power.flight-labored live · power.flight-swift live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.flight-labored,power.flight-swift — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 5e8a864..805823c 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -11,4 +11,9 @@ import { battleCursorCases } from './battle-cursor-cases.js'
+ const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
++// Explicit rule migration, not regenerated historical hashes. These nine old
++// cases contain Surge ledger/refresh changes or terminal markers corrected
++// by fix.surge-cycle. Keep every other historical assertion intact; these cases
++// retain automatic/suspended parity plus the exact rules in surge-cycle.test.ts.
++const surgeChanged = new Set(['showcase.assembled-party', 'showcase.badged', 'showcase.beasts', 'showcase.farmers-grown', 'progression-surge-0', 'progression-surge-1', 'legacy-surge-cap', 'showcase.supper', 'showcase.surrounded'])
+ 
+ describe('resumable battle cursor', () => {
+@@ -82,5 +87,5 @@ describe('resumable battle cursor', () => {
+ 
+   for (const fixture of battleCursorCases()) {
+-    const historical = golden.cases.find((row: { id: string }) => row.id === fixture.id)
++    const historical = surgeChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
+     it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
+       // Newly authored scenarios have no pre-extraction history. Keep every old
+@@ -105,4 +110,5 @@ describe('resumable battle cursor', () => {
+         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+         expect(result).toEqual(expected.result)
++        expect(ctx.events.at(-1)!.type).toBe('battle.end')
+       }
+     })
+diff --git a/test/battle-snapshot.test.ts b/test/battle-snapshot.test.ts
+index c19b9fd..11dd459 100644
+--- a/test/battle-snapshot.test.ts
++++ b/test/battle-snapshot.test.ts
+@@ -71,4 +71,7 @@ describe('battle save and restore', () => {
+     ['invalid order', (s: any) => { s.cursor.order.push(s.cursor.order[0]) }],
+     ['invalid next', (s: any) => { s.cursor.next = 900 }],
++    ['missing sampled movement', (s: any) => { delete s.cursor.movementAllowance }],
++    ['negative sampled movement', (s: any) => { s.cursor.movementAllowance = -1 }],
++    ['fractional sampled movement', (s: any) => { s.cursor.movementAllowance = 0.5 }],
+     ['missing cursor', (s: any) => { delete s.cursor }],
+     ['invalid geometry', (s: any) => { s.state.board.width = 0 }],
+diff --git a/test/multihit.test.ts b/test/multihit.test.ts
+index 20261c8..47fbc72 100644
+--- a/test/multihit.test.ts
++++ b/test/multihit.test.ts
+@@ -29,6 +29,8 @@ describe('an attack of two hits', () => {
+ 
+   it('a kill on the first hit cancels the second, and the log says so', () => {
+-    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'unit.ghoul', hex: hexId(5, 6) }])
+-    const g = ctx.state.units[1]!, w = ctx.state.units[0]!
++    // V2 ends the event stream at battle.end. Keep this cancellation assertion
++    // on a nonterminal kill; the separate terminal case below checks the boundary.
++    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }, { type: 'test-warrior', hex: hexId(1, 1) }], [{ type: 'unit.ghoul', hex: hexId(5, 6) }])
++    const g = ctx.state.units[2]!, w = ctx.state.units[0]!
+     // the warrior is the target; make him die to one rake hit — hp 1, and the ghoul cannot miss
+     w.hp = 1
+@@ -40,4 +42,18 @@ describe('an attack of two hits', () => {
+     expect(cancelled?.['hit']).toBe(2)
+     expect(ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === g.id).length).toBe(1)
++    expect(ctx.state.outcome).toBeNull()
++  })
++
++  it('a terminal first hit ends the battle without a second hit or trailing cancellation', () => {
++    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'unit.ghoul', hex: hexId(5, 6) }])
++    const g = ctx.state.units[1]!, w = ctx.state.units[0]!
++    w.hp = 1
++    g.mods.push({ stat: 'accuracy', op: 'add', value: 100, source: 'test', scope: 'unit' })
++    beginActivation(ctx, g.id, 'test')
++    performAttack(ctx, g.id, w.id, 'attack.ghoul.rake')
++    expect(ctx.state.outcome).toBe('wipe')
++    expect(ctx.events.filter(e => e.type === 'attack.declared')).toHaveLength(1)
++    expect(ctx.events.some(e => e.type === 'attack.cancelled')).toBe(false)
++    expect(ctx.events.at(-1)!.type).toBe('battle.end')
+   })
+ 
+diff --git a/test/surge.test.ts b/test/surge.test.ts
+index e4615ad..59c359f 100644
+--- a/test/surge.test.ts
++++ b/test/surge.test.ts
+@@ -33,8 +33,11 @@ describe('the check', () => {
+     expect(hits.length).toBeGreaterThan(0)
+     expect(checks[0]!['hit']).toBe(true)
+-    // the ladder ran once per activation, however many links
++    // fix.surge-cycle: this fixture wins inside its final cycle. The battle
++    // terminates immediately; only earlier activations run their end ladder.
+     const ends = ctx.events.filter((e) => e.type === 'activation.end' && e['actor'] === w.id).length
+     const begins = ctx.events.filter((e) => e.type === 'activation.begin' && e['actor'] === w.id).length
+-    expect(ends).toBe(begins)
++    expect(ctx.state.outcome).toBe('heroClear')
++    expect(ends).toBe(begins - 1)
++    expect(ctx.events.at(-1)!.type).toBe('battle.end')
+     expect(ctx.events.some((e) => e.type === 'stamina.gained' && e.causeId === 'surge')).toBe(true)
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+```
+effect of power.flight-labored,power.flight-swift — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.2->4.2
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.2->5.2
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.proving.ruin: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.2->3.2
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 5.6->5.6
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.0->3.0
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.7->5.7
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

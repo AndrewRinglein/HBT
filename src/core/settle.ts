@@ -93,8 +93,8 @@ export function checkVictory(ctx: Ctx, causeId: string): boolean {
   if (ctx.state.encounter) {
     for (const id of ctx.state.encounter.objectives) {
       if (ctx.state.units[id]!.lifeState === 'dead') {
-        setOutcome(ctx, 'objectiveFailed', causeId)
         emit(ctx, 'encounter.lost', ctx.state.encounter.id, { reason: 'objective dead', actor: id })
+        setOutcome(ctx, 'objectiveFailed', causeId)
         return true
       }
     }

@@ -28,8 +28,10 @@ describe('an attack of two hits', () => {
   })
 
   it('a kill on the first hit cancels the second, and the log says so', () => {
-    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'unit.ghoul', hex: hexId(5, 6) }])
-    const g = ctx.state.units[1]!, w = ctx.state.units[0]!
+    // V2 ends the event stream at battle.end. Keep this cancellation assertion
+    // on a nonterminal kill; the separate terminal case below checks the boundary.
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }, { type: 'test-warrior', hex: hexId(1, 1) }], [{ type: 'unit.ghoul', hex: hexId(5, 6) }])
+    const g = ctx.state.units[2]!, w = ctx.state.units[0]!
     // the warrior is the target; make him die to one rake hit — hp 1, and the ghoul cannot miss
     w.hp = 1
     g.mods.push({ stat: 'accuracy', op: 'add', value: 100, source: 'test', scope: 'unit' })
@@ -39,6 +41,20 @@ describe('an attack of two hits', () => {
     const cancelled = ctx.events.find((e) => e.type === 'attack.cancelled')
     expect(cancelled?.['hit']).toBe(2)
     expect(ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === g.id).length).toBe(1)
+    expect(ctx.state.outcome).toBeNull()
+  })
+
+  it('a terminal first hit ends the battle without a second hit or trailing cancellation', () => {
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'unit.ghoul', hex: hexId(5, 6) }])
+    const g = ctx.state.units[1]!, w = ctx.state.units[0]!
+    w.hp = 1
+    g.mods.push({ stat: 'accuracy', op: 'add', value: 100, source: 'test', scope: 'unit' })
+    beginActivation(ctx, g.id, 'test')
+    performAttack(ctx, g.id, w.id, 'attack.ghoul.rake')
+    expect(ctx.state.outcome).toBe('wipe')
+    expect(ctx.events.filter(e => e.type === 'attack.declared')).toHaveLength(1)
+    expect(ctx.events.some(e => e.type === 'attack.cancelled')).toBe(false)
+    expect(ctx.events.at(-1)!.type).toBe('battle.end')
   })
 
   it('hit 2 reads what hit 1 applied — Frost put on by the first swing raises the second', () => {

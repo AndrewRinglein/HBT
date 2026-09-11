@@ -32,10 +32,13 @@ describe('the check', () => {
     const hits = ctx.events.filter((e) => e.type === 'surge.hit' && e['actor'] === w.id)
     expect(hits.length).toBeGreaterThan(0)
     expect(checks[0]!['hit']).toBe(true)
-    // the ladder ran once per activation, however many links
+    // fix.surge-cycle: this fixture wins inside its final cycle. The battle
+    // terminates immediately; only earlier activations run their end ladder.
     const ends = ctx.events.filter((e) => e.type === 'activation.end' && e['actor'] === w.id).length
     const begins = ctx.events.filter((e) => e.type === 'activation.begin' && e['actor'] === w.id).length
-    expect(ends).toBe(begins)
+    expect(ctx.state.outcome).toBe('heroClear')
+    expect(ends).toBe(begins - 1)
+    expect(ctx.events.at(-1)!.type).toBe('battle.end')
     expect(ctx.events.some((e) => e.type === 'stamina.gained' && e.causeId === 'surge')).toBe(true)
   })
 

@@ -1,0 +1,109 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+xxxxxx·
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/surge-cycle.test.ts > correct Surge cycles > power.flight-labored refreshes the sampled allowance across reload without resampling new Slow
+ FAIL  test/surge-cycle.test.ts > correct Surge cycles > power.flight-swift refreshes the sampled allowance across reload without resampling new Slow
+AssertionError: expected 5 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 5
+
+ ❯ test/surge-cycle.test.ts:38:48
+     36|     expect(advanceBattle(ctx)).toEqual({ kind: 'acting', actor: 0 })
+     37|     expect(ctx.state.units[0]!.activationOrdinal).toBe(1)
+     38|     expect(ctx.state.units[0]!.movePointsLeft).toBe(3)
+       |                                                ^
+     39|     const reopened = movementOptions(ctx, 0, id)
+     40|     expect(Math.max(...reopened.map(p => ctx.geo.distance(ctx.state.un…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/surge-cycle.test.ts > correct Surge cycles > Root gained during a cycle does not regain movement on Surge
+AssertionError: expected 5 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 5
+
+ ❯ test/surge-cycle.test.ts:51:48
+     49|     applyStatus(ctx, 0, root.id, 1, 'test')
+     50|     expect(finish(ctx)).toEqual({ kind: 'acting', actor: 0 })
+     51|     expect(ctx.state.units[0]!.movePointsLeft).toBe(0)
+       |                                                ^
+     52|   })
+     53|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/surge-cycle.test.ts > correct Surge cycles > a newly stunned actor cannot open a Surge cycle
+AssertionError: expected { kind: 'acting', actor: +0 } to deeply equal { kind: 'acting', actor: 1 }
+
+- Expected
++ Received
+
+  {
+-   "actor": 1,
++   "actor": 0,
+    "kind": "acting",
+  }
+
+ ❯ test/surge-cycle.test.ts:59:25
+     57|     const stun = Object.values(ctx.statuses).find(s => s.blocksAction)!
+     58|     applyStatus(ctx, 0, stun.id, 1, 'test')
+     59|     expect(finish(ctx)).toEqual({ kind: 'acting', actor: 1 })
+       |                         ^
+     60|     expect(ctx.events.some(e => e.type === 'surge.hit')).toBe(false)
+     61|     expect(ctx.events.filter(e => e.type === 'activation.end' && e.act…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/surge-cycle.test.ts > correct Surge cycles > winning in a Surge cycle ends at battle.end without another activation ladder
+AssertionError: expected 'phase.end.begin' to be 'battle.end' // Object.is equality
+
+Expected: "battle.end"
+Received: "phase.end.begin"
+
+ ❯ test/surge-cycle.test.ts:75:37
+     73|     expect(ctx.state.outcome).toBe('heroClear')
+     74|     expect(finish(ctx).kind).toBe('complete')
+     75|     expect(ctx.events.at(-1)!.type).toBe('battle.end')
+       |                                     ^
+     76|   })
+     77|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/surge-cycle.test.ts > correct Surge cycles > an endless Surge chain fails loudly without a fabricated outcome or silent phase advance
+AssertionError: expected [Function] to throw error matching /Surge.*overflow/i but got 'silently ended Surge chain'
+
+- Expected:
+/Surge.*overflow/i
+
++ Received:
+"silently ended Surge chain"
+
+ ❯ test/surge-cycle.test.ts:88:8
+     86|         if (next.kind !== 'acting' || next.actor !== 0) throw new Erro…
+     87|       }
+     88|     }).toThrow(/Surge.*overflow/i)
+       |        ^
+     89|     expect(cycles).toBe(256)
+     90|     expect(ctx.state.outcome).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
+   Start at  23:59:09
+   Duration  641ms (transform 371ms, setup 0ms, import 473ms, tests 43ms, environment 0ms)
+

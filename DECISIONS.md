@@ -2115,3 +2115,30 @@ test is replaced by full-execution assertions. Historical cursor hashes are reta
 new scenarios compare current automatic/suspended/restored drivers. Snapshot rules
 advance to `v2-migration.2`. AI selection, interchangeable slots and Surge refresh
 remain separately gated work.
+
+### 2026-09-11 — Surge lifecycle correction
+
+The V2 loop reopens movement/primary choices with the allowance sampled at the
+original activation start. Slow applied mid-activation waits for the next activation;
+current Root still forbids displacement. A new action-blocking status prevents a
+further Surge. This does not fire a second activation-start or end ladder. Winning
+inside a Surge ends at `battle.end`, as does a win during the final actor's end ladder.
+The former silent eight-cycle stop becomes a provisional technical guard of 256
+cycles: overflow throws an invalid-run error, never a battle outcome or phase advance.
+Snapshot rules become `v2-migration.3` and retain the sampled movement allowance.
+
+The parent commit `03ab367` was compared against this correction for all 450 control
+battles: exactly 37 lose a trailing `phase.end.begin`; state (apart from event count),
+RNG draws and results are identical. Evidence: `scratch/verify-surge-controls.mts` and
+`scratch/surge-control-comparison.json`. The gate is explicitly authorized to update
+those control hashes at landing. Nine historical scenario hashes also encode the
+corrected Surge/terminal behavior; their old fixture remains unchanged as history,
+while their tests assert current driver parity, final event and concrete Surge rules.
+All unaffected historical scenario assertions remain in force.
+
+The stronger final-event check additionally found a cancelled second hit emitted
+after a winning first hit, and encounter result metadata emitted after its final
+battle event. Multi-hit resolution now stops immediately on outcome; encounter
+win/loss details precede `battle.end`. The authored flight-ladder probe needed two
+explicit test-only ranged fliers to actually use both movement choices; a registry
+entry without live use did not pass the gate. These rows live in content/test/.

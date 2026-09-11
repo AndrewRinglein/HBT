@@ -28,6 +28,12 @@ import { omitDisabled } from './disable.js'
 import { ENCOUNTERS, UNITS } from './index.js'
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
+  'showcase.surge-flight-ladder': {
+    id: 'showcase.surge-flight-ladder',
+    note: 'Two authored flight ranges and Surge values, fielded beyond initial attack range.',
+    mapId: 'map.open', heroes: ['test-surge-labored', 'test-surge-swift'], heroHexes: [80, 112],
+    enemies: ['test-zombie', 'test-zombie'], enemyHexes: [95, 127], replicate: 0,
+  },
   'showcase.movement-bonuses': {
     id: 'showcase.movement-bonuses',
     note: 'Two content-authored positive movement allowances, executed through normal automatic battles.',

@@ -1,0 +1,7 @@
+{
+  "base": "03ab367",
+  "battles": 450,
+  "changed": 37,
+  "removedOnly": "phase.end.begin after battle.end",
+  "stateRngOutcomeUnchanged": true
+}

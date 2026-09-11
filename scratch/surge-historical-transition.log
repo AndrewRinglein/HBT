@@ -1,0 +1,144 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+·x··········xxx···x················xx·x·························································
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.assembled-party
+AssertionError: events: expected '8b4ec1a57bd14f6ae4e389400571d980e71eb…' to be '29a22d5738af573e0c7c78e07c4c3893163cc…' // Object.is equality
+
+Expected: "29a22d5738af573e0c7c78e07c4c3893163ccd6e6c04038bb6968c9e64e43293"
+Received: "8b4ec1a57bd14f6ae4e389400571d980e71eb60f58f9d768419abf8de342d662"
+
+ ❯ test/battle-cursor.test.ts:103:44
+    101|         } else result = battle.runBattle(ctx)
+    102|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    103|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    104|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    105|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.badged
+AssertionError: events: expected '047e008fd88a9445a9c5037bcba10ac57bf18…' to be '40b0e8454afc94da7043fb76059cf72e182f5…' // Object.is equality
+
+Expected: "40b0e8454afc94da7043fb76059cf72e182f524419de734a05bf210cb8afd69a"
+Received: "047e008fd88a9445a9c5037bcba10ac57bf18ccbbcc1b4e347ba0c63ece21850"
+
+ ❯ test/battle-cursor.test.ts:103:44
+    101|         } else result = battle.runBattle(ctx)
+    102|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    103|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    104|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    105|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.beasts
+AssertionError: events: expected '75c5ab0804b7a81e7a2541f075309629d6323…' to be '8406c18cb4d21eeccf3d64b584e464ef467d7…' // Object.is equality
+
+Expected: "8406c18cb4d21eeccf3d64b584e464ef467d7888074a0716f24bacfc16cc2f2f"
+Received: "75c5ab0804b7a81e7a2541f075309629d632318df17c1222f636b8380f064945"
+
+ ❯ test/battle-cursor.test.ts:103:44
+    101|         } else result = battle.runBattle(ctx)
+    102|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    103|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    104|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    105|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: showcase.farmers-grown
+AssertionError: events: expected 'ff96248158dbe70571d8e3adccc207d87b91c…' to be '2b14f04e1150a12a3c39429bfbeae623f1e64…' // Object.is equality
+
+Expected: "2b14f04e1150a12a3c39429bfbeae623f1e64c051d36c2a1c1db610cdd9381db"
+Received: "ff96248158dbe70571d8e3adccc207d87b91cd1b50b72343244f4a73a1ea5d3d"
+
+ ❯ test/battle-cursor.test.ts:103:44
+    101|         } else result = battle.runBattle(ctx)
+    102|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    103|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    104|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    105|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: progression-surge-0
+AssertionError: events: expected 'e4b9118a3ebf35010f0e26aa158b9d6729765…' to be '108ede7edf2127a8e7dde2337ab9b13e94c38…' // Object.is equality
+
+Expected: "108ede7edf2127a8e7dde2337ab9b13e94c3808396b43b513c865f068fa7dd03"
+Received: "e4b9118a3ebf35010f0e26aa158b9d6729765a5017173ed1053639adeff867e9"
+
+ ❯ test/battle-cursor.test.ts:103:44
+    101|         } else result = battle.runBattle(ctx)
+    102|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    103|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    104|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    105|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: progression-surge-1
+AssertionError: events: expected '433e5f26864972a0012fd69fe8ec2dbcc7804…' to be '07eeaa761fb73ea8113815c20ddbf8d12266e…' // Object.is equality
+
+Expected: "07eeaa761fb73ea8113815c20ddbf8d12266e7205f6012ce7259050abdba3673"
+Received: "433e5f26864972a0012fd69fe8ec2dbcc7804935a446881e555b0ef6461699c2"
+
+ ❯ test/battle-cursor.test.ts:103:44
+    101|         } else result = battle.runBattle(ctx)
+    102|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    103|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    104|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    105|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > preserves historical events/state/RNG/result: legacy-surge-cap
+AssertionError: events: expected '8d4f5ffe0b0bcc8fc769ac56903c21c671c58…' to be 'ddb97765a56bdccfae2693eb3aaf4e92a86b3…' // Object.is equality
+
+Expected: "ddb97765a56bdccfae2693eb3aaf4e92a86b3aacfc0c7c0ce3ff9779dd5b6f20"
+Received: "8d4f5ffe0b0bcc8fc769ac56903c21c671c58d5cf398fe1f12f624f804384d28"
+
+ ❯ test/battle-cursor.test.ts:103:44
+    101|         } else result = battle.runBattle(ctx)
+    102|         expected ??= { events: hash(ctx.events), state: hash(ctx.state…
+    103|         expect(hash(ctx.events), 'events').toBe(expected.events)
+       |                                            ^
+    104|         expect(hash(ctx.state), 'state').toBe(expected.state)
+    105|         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  test/surge.test.ts > the check > a hero with Surge 100 surges every activation: a second move and action, stamina back, one End of Activation
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/surge.test.ts:38:18
+     36|     const ends = ctx.events.filter((e) => e.type === 'activation.end' …
+     37|     const begins = ctx.events.filter((e) => e.type === 'activation.beg…
+     38|     expect(ends).toBe(begins)
+       |                  ^
+     39|     expect(ctx.events.some((e) => e.type === 'stamina.gained' && e.cau…
+     40|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  8 failed | 88 passed (96)
+   Start at  00:00:48
+   Duration  23.02s (transform 1.10s, setup 0ms, import 1.53s, tests 22.81s, environment 0ms)
+

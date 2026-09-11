@@ -3,7 +3,7 @@
 //   Each unit gets one Activation: movement, then a primary action.
 
 import { runActivation } from '../ai/modes.js'
-import { beginActivation, beginTurn, emit, endActivation, gainStamina, layerAt, regenStamina, setOutcome, setPhase } from './mutate.js'
+import { beginActivation, beginTurn, emit, endActivation, gainStamina, layerAt, regenStamina, reopenSurgeCycle, setOutcome, setPhase } from './mutate.js'
 import { roll100 } from './rng.js'
 import { appliesOnActivationEndOf, layerAppliesOnActivationEnd, layerIdOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
@@ -12,6 +12,7 @@ import { heroesLight } from './vision.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import type { BattleCursor, Ctx, Side } from './types.js'
+import { MAX_SURGE_CYCLES } from './types.js'
 import { rulesSideOf } from './side.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -84,6 +85,7 @@ export function endOfActivation(ctx: Ctx, unitId: number): void {
 
 /** The End of Phase ladder. An ordered list of named rungs, so reordering is a sweep axis. */
 function endOfPhase(ctx: Ctx, side: Side): void {
+  if (ctx.state.outcome) return
   emit(ctx, 'phase.end.begin', 'engine', { side })
 
   // 1. auras  2. corpses — none yet
@@ -107,7 +109,7 @@ function endOfPhase(ctx: Ctx, side: Side): void {
   }
   // 6. victory check
   checkVictory(ctx, 'phase.end')
-  emit(ctx, 'phase.end.done', 'engine', { side })
+  if (!ctx.state.outcome) emit(ctx, 'phase.end.done', 'engine', { side })
 }
 
 export type BattleResult = {
@@ -127,7 +129,7 @@ export type BattleAdvance = { kind: 'acting'; actor: number } | { kind: 'complet
 
 function cursorOf(ctx: Ctx): BattleCursor {
   return ctx.battleCursor ??= {
-    at: 'battle-start', phase: 'hero', order: [], next: 0, actor: null, surgeLink: 0, surged: false,
+    at: 'battle-start', phase: 'hero', order: [], next: 0, actor: null, surgeLink: 0, surged: false, movementAllowance: 0,
   }
 }
 
@@ -139,6 +141,7 @@ function cursorOf(ctx: Ctx): BattleCursor {
 export function advanceBattle(ctx: Ctx): BattleAdvance {
   const c = cursorOf(ctx)
   while (true) {
+    if (ctx.state.outcome) c.at = 'complete'
     switch (c.at) {
       case 'battle-start':
         emit(ctx, 'battle.begin', 'engine', {})
@@ -178,8 +181,6 @@ export function advanceBattle(ctx: Ctx): BattleAdvance {
         c.at = 'next-activation'
         break
       case 'next-activation': {
-        // Preserve the old for-loop boundary: the last actor reaches phase-end
-        // even if its end ladder decided combat; an earlier actor returns first.
         if (c.next >= c.order.length) { c.at = 'phase-end'; break }
         if (ctx.state.outcome) { c.at = 'complete'; break }
         const id = c.order[c.next++]!
@@ -189,6 +190,7 @@ export function advanceBattle(ctx: Ctx): BattleAdvance {
         c.surgeLink = 0
         c.surged = false
         beginActivation(ctx, id, 'engine')
+        c.movementAllowance = u.movePointsLeft
         if (isBlocked(ctx, u)) {
           emit(ctx, 'activation.idle', 'status', { actor: id, reason: 'cannot act' })
           c.at = 'activation-end'
@@ -201,13 +203,11 @@ export function advanceBattle(ctx: Ctx): BattleAdvance {
       case 'surge-check': {
         const id = c.actor!
         const u = ctx.state.units[id]!
-        // Deliberately preserve the legacy eight-link stop, and the final
-        // activation.end after a surge wins combat. Separate corrective items
-        // must probe those behaviors; this extraction changes no battle events.
-        if (c.surgeLink >= 8 || u.lifeState !== 'standing' || ctx.state.outcome) {
+        if (u.lifeState !== 'standing' || isBlocked(ctx, u) || rulesSideOf(ctx, u) !== 'hero' || u.surge <= 0) {
           c.at = 'activation-end'
           break
         }
+        if (c.surgeLink >= MAX_SURGE_CYCLES) throw new Error(`Surge cycle overflow for unit ${u.uid}: ${MAX_SURGE_CYCLES} cycles in one activation`)
         const link = c.surgeLink
         u.surgeChance += u.surge
         const roll = roll100(ctx.rng, 'surge', u.uid, u.activationOrdinal, link)
@@ -216,12 +216,7 @@ export function advanceBattle(ctx: Ctx): BattleAdvance {
         if (!hit) { c.at = 'activation-end'; break }
         u.surgeChance = 0
         gainStamina(ctx, id, 1 + u.staminaRegen, 'surge')
-        u.moveUsed = false
-        u.primaryUsed = false
-        // Also preserves the old raw Movement reset; modifier/Root handling
-        // belongs in the explicit Surge correction, not a neutral extraction.
-        u.movePointsLeft = u.movement
-        emit(ctx, 'surge.hit', 'engine', { actor: id, link: link + 1 })
+        reopenSurgeCycle(ctx, id, c.movementAllowance, link + 1)
         c.surgeLink++
         c.surged = true
         c.at = 'acting'
@@ -255,10 +250,8 @@ export function completeActionCycle(ctx: Ctx): void {
   const c = ctx.battleCursor
   if (!c || c.at !== 'acting' || c.actor === null) throw new Error('completeActionCycle requires an acting cursor')
   const u = ctx.state.units[c.actor]!
-  if (!c.surged && ctx.state.outcome) { c.at = 'complete'; return }
-  // The eligibility check was outside the old Surge loop: evaluate once,
-  // after the initial cycle, and preserve it across subsequent Surge cycles.
-  c.at = !c.surged && (rulesSideOf(ctx, u) !== 'hero' || u.surge <= 0) ? 'activation-end' : 'surge-check'
+  if (ctx.state.outcome) { c.at = 'complete'; return }
+  c.at = rulesSideOf(ctx, u) !== 'hero' || u.surge <= 0 ? 'activation-end' : 'surge-check'
 }
 
 /** The automatic simulator is a driver of the same resumable lifecycle. */

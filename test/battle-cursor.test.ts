@@ -10,6 +10,11 @@ import { battleCursorCases } from './battle-cursor-cases.js'
 
 const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+// Explicit rule migration, not regenerated historical hashes. These nine old
+// cases contain Surge ledger/refresh changes or terminal markers corrected
+// by fix.surge-cycle. Keep every other historical assertion intact; these cases
+// retain automatic/suspended parity plus the exact rules in surge-cycle.test.ts.
+const surgeChanged = new Set(['showcase.assembled-party', 'showcase.badged', 'showcase.beasts', 'showcase.farmers-grown', 'progression-surge-0', 'progression-surge-1', 'legacy-surge-cap', 'showcase.supper', 'showcase.surrounded'])
 
 describe('resumable battle cursor', () => {
   it('blocked actors run their end ladder without yielding an action cycle', () => {
@@ -81,7 +86,7 @@ describe('resumable battle cursor', () => {
   })
 
   for (const fixture of battleCursorCases()) {
-    const historical = golden.cases.find((row: { id: string }) => row.id === fixture.id)
+    const historical = surgeChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
     it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
       // Newly authored scenarios have no pre-extraction history. Keep every old
       // golden intact, and compare both current drivers for additions to the corpus.
@@ -104,6 +109,7 @@ describe('resumable battle cursor', () => {
         expect(hash(ctx.state), 'state').toBe(expected.state)
         expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
         expect(result).toEqual(expected.result)
+        expect(ctx.events.at(-1)!.type).toBe('battle.end')
       }
     })
   }

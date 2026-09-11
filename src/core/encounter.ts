@@ -162,9 +162,9 @@ export function checkObjectives(ctx: Ctx, causeId: string): boolean {
   if (objectiveDead(ctx, causeId)) return true
   // the loss timer: after N Turns the battle is lost (heroPhase and phase both count Turns)
   const limit = enc.loseAfter?.phase ?? enc.loseAfter?.heroPhase
-  if (limit !== undefined && ctx.state.turn > limit) { setOutcome(ctx, 'objectiveFailed', causeId); emit(ctx, 'encounter.lost', enc.id, { reason: 'time', limit }); return true }
+  if (limit !== undefined && ctx.state.turn > limit) { emit(ctx, 'encounter.lost', enc.id, { reason: 'time', limit }); setOutcome(ctx, 'objectiveFailed', causeId); return true }
   // survive-to: reaching Turn N alive is the win
-  if (enc.win?.surviveTo !== undefined && ctx.state.turn >= enc.win.surviveTo) { setOutcome(ctx, 'objectiveMet', causeId); emit(ctx, 'encounter.won', enc.id, { reason: 'survived', to: enc.win.surviveTo }); return true }
+  if (enc.win?.surviveTo !== undefined && ctx.state.turn >= enc.win.surviveTo) { emit(ctx, 'encounter.won', enc.id, { reason: 'survived', to: enc.win.surviveTo }); setOutcome(ctx, 'objectiveMet', causeId); return true }
   return false
 }
 
@@ -195,8 +195,8 @@ export function objectiveDead(ctx: Ctx, causeId: string): boolean {
   if (!st || ctx.state.outcome) return false
   for (const id of st.objectives) {
     if (ctx.state.units[id]!.lifeState === 'dead') {
-      setOutcome(ctx, 'objectiveFailed', causeId)
       emit(ctx, 'encounter.lost', st.id, { reason: 'objective dead', actor: id })
+      setOutcome(ctx, 'objectiveFailed', causeId)
       return true
     }
   }

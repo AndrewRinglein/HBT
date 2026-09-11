@@ -13329,6 +13329,126 @@ export const UNIT_PACK = {
         "side": "enemy"
       },
       {
+        "typeId": "test-surge-labored",
+        "name": "Labored flier (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 2,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.flight-labored"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-surge-labored"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-surge-labored"
+          }
+        ],
+        "surge": 10
+      },
+      {
+        "typeId": "test-surge-swift",
+        "name": "Swift flier (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 2,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.flight-swift"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-surge-swift"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-surge-swift"
+          }
+        ],
+        "surge": 20
+      },
+      {
         "typeId": "test-move-plus-one",
         "name": "Short runner (TEST)",
         "side": "hero",

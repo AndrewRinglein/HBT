@@ -359,6 +359,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   let last: AttackResult | null = null
   let damage = 0
   for (let h = 1; h <= hits; h++) {
+    if (ctx.state.outcome) break
     const tg = unit(ctx, targetId)
     if (h > 1 && tg.lifeState !== 'standing') { emit(ctx, 'attack.cancelled', attackId, { actor: attackerId, target: targetId, hit: h, of: hits, reason: 'target fell' }); break }
     if (h > 1 && unit(ctx, attackerId).lifeState !== 'standing') break

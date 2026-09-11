@@ -2,12 +2,12 @@ import { geometryOf } from './hex.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
 import { validateTrigger, type Trigger } from './trigger.js'
-import { DEFAULT_CONFIG, type BattleCursor, type Ctx } from './types.js'
+import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, type BattleCursor, type Ctx } from './types.js'
 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.2' // Correct positive path allowances and movement legality.
+const RULES_VERSION = 'v2-migration.3' // Sampled Surge allowance and terminal lifecycle.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -201,7 +201,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(steps.includes(c.at) && phases.includes(c.phase), 'cursor step/phase')
     requireThat(Array.isArray(c.order) && c.order.every(unitId) && new Set(c.order).size === c.order.length, 'cursor order')
     requireThat(integer(c.next, 0, c.order.length) && (c.actor === null || unitId(c.actor)), 'cursor position')
-    requireThat(integer(c.surgeLink, 0, 8) && typeof c.surged === 'boolean', 'cursor Surge')
+    requireThat(integer(c.surgeLink, 0, MAX_SURGE_CYCLES) && typeof c.surged === 'boolean' && integer(c.movementAllowance, 0), 'cursor Surge')
     const begun = s.events.filter((e: any) => e.type === 'battle.begin').length
     requireThat(c.phase === st.phase, 'cursor phase differs from state')
     if (c.at === 'battle-start') requireThat(begun === 0 && st.turn === 0 && c.actor === null && c.order.length === 0 && c.next === 0, 'battle already begun')

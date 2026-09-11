@@ -348,6 +348,16 @@ export function endActivation(ctx: Ctx, id: number, causeId: string): void {
   emit(ctx, 'activation.end', causeId, { actor: id, hex: unit(ctx, id).hex })
 }
 
+/** A second action cycle inside the same activation, with its original allowance. */
+export function reopenSurgeCycle(ctx: Ctx, id: number, allowance: number, link: number): void {
+  const u = unit(ctx, id)
+  u.moveUsed = false
+  u.primaryUsed = false
+  const rooted = u.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.blocksMovement)
+  u.movePointsLeft = rooted ? 0 : allowance
+  emit(ctx, 'surge.hit', 'engine', { actor: id, link, movePoints: u.movePointsLeft })
+}
+
 export function markMoveUsed(ctx: Ctx, id: number): void { unit(ctx, id).moveUsed = true }
 export function markPrimaryUsed(ctx: Ctx, id: number): void { unit(ctx, id).primaryUsed = true }
 

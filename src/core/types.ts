@@ -301,8 +301,7 @@ export type MoveEffect =
  * PLAYBACK-DESIGN §6.2: the standard battle cannot show the benched beasts or
  * the flight ladder, so nothing new can be shown until a fielding can be named
  * from outside. Measured 2026-08-21: across 640 battles on all 8 maps at two
- * army sizes, `power.flight`, `power.flight-swift`, `power.flight-labored` and
- * all four beast attacks fired ZERO times.
+ * army sizes, all three flight variants and all four beast attacks fired ZERO times.
  *
  * **There is deliberately no `overrides` field, and there must never be one.**
  * A scenario names units and positions; statistics belong to sweeps. A showcase
@@ -814,6 +813,8 @@ export const DEFAULT_CONFIG: Config = {
  * is the initial move/primary opportunity or another granted by Surge.
  * No closures or iterators: phase order and the next Surge key survive a yield.
  */
+/** Technical guard: overflow is an invalid run, never a gameplay outcome. */
+export const MAX_SURGE_CYCLES = 256
 export type BattleCursor = {
   at: 'battle-start' | 'turn-start' | 'hero-start' | 'enemy-arrivals' | 'enemy-start'
     | 'next-activation' | 'acting' | 'surge-check' | 'activation-end'
@@ -824,6 +825,8 @@ export type BattleCursor = {
   actor: number | null
   surgeLink: number
   surged: boolean
+  /** Sampled at activation start; mid-activation Slow waits for the next activation. */
+  movementAllowance: number
 }
 
 /** Everything unserializable lives here, never in State. */

@@ -3089,5 +3089,29 @@
   "status": "done-needs-review",
   "sha": "8c7cf58",
   "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "fix.surge-cycle",
+  "kind": "rule",
+  "shape": "rule",
+  "needs": [
+   "fix.movement-plans"
+  ],
+  "spec": "Surge reopens an action cycle with the movement allowance sampled at the original activation start, preserving once-per-activation Slow timing. Current Root and action-blocking statuses still apply. Completed battles emit no later activation/phase lifecycle events. A technical Surge-chain overflow fails loudly rather than silently ending the activation.",
+  "expect": "Both authored flight ladder variants retain their correct ranges after Surge and save/restore. Mid-activation Slow waits for the next activation; Root and Stun prevent illegal movement/Surge. End ladders run once, winning Surge stops at battle.end, and a deliberately endless chain throws with no fake outcome. Control changes are confined to removal of trailing phase.end.begin markers (37 pre-change control battles exhibited these).",
+  "probeIds": [
+   "power.flight-labored",
+   "power.flight-swift"
+  ],
+  "variants": [
+   "power.flight-labored",
+   "power.flight-swift"
+  ],
+  "changesBaseline": true,
+  "note": "The flight ladder provides two existing authored data instances of the shared refreshed movement allowance. Historical extraction goldens remain evidence of the old implementation; current driver parity and specific correction tests replace incompatible historical expectations. The safety guard is provisionally 256 Surge cycles, an invalid-run exception rather than a gameplay cap. No V1 snapshot compatibility; bump rules version.",
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "2d80925",
+  "gauntlet": "not passed — 3 flag(s) warned"
  }
 ]
