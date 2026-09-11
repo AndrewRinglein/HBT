@@ -8,6 +8,7 @@ export function forkBattle(ctx: Ctx): Ctx {
     cfg: structuredClone(ctx.cfg),
     rng: structuredClone(ctx.rng),
     events: [],
+    ...(ctx.battleCursor ? { battleCursor: structuredClone(ctx.battleCursor) } : {}),
     ...(ctx.encounter ? { encounter: structuredClone(ctx.encounter) } : {}),
   }
 }

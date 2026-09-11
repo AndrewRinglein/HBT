@@ -10591,3 +10591,29 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
   PASS  kill switch — the tests fail without the content — tests fail without power.test-ordered-double,power.test-ordered-strip — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## plumbing.battle-cursor — LANDED `e8eb658` **NEEDS REVIEW**
+2026-09-11 05:02
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\THREE-PACKAGES-PLAN.md:211 · ..\STATE.md:18
+  PASS  typecheck
+  PASS  full test suite — 793 passed
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/battle-cursor-cases.ts, test/battle-cursor.test.ts, test/fixtures/battle-cursor-golden.json
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 27 ids without a published source (17 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

@@ -809,9 +809,28 @@ export const DEFAULT_CONFIG: Config = {
   },
 }
 
+/**
+ * Resumable control flow, separate from historical battle State. An action cycle
+ * is the initial move/primary opportunity or another granted by Surge.
+ * No closures or iterators: phase order and the next Surge key survive a yield.
+ */
+export type BattleCursor = {
+  at: 'battle-start' | 'turn-start' | 'hero-start' | 'enemy-arrivals' | 'enemy-start'
+    | 'next-activation' | 'acting' | 'surge-check' | 'activation-end'
+    | 'phase-end' | 'turn-end' | 'complete'
+  phase: Phase
+  order: number[]
+  next: number
+  actor: number | null
+  surgeLink: number
+  surged: boolean
+}
+
 /** Everything unserializable lives here, never in State. */
 export type Ctx = {
   state: State
+  /** Lazily initialized by advanceBattle; not part of the legacy State schema. */
+  battleCursor?: BattleCursor
   events: Event[]
   rng: Rng
   cfg: Config

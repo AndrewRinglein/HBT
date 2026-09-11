@@ -3018,5 +3018,20 @@
   "status": "done",
   "sha": "df999a5",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "plumbing.battle-cursor",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": [
+   "fix.ordered-power-preview"
+  ],
+  "spec": "Extract the synchronous battle loop into a resumable plain cursor on Ctx with advanceBattle and completeActionCycle. Keep State, event logs, RNG calls and BattleResult unchanged; runBattle drives the same cursor automatically. Clone the cursor in lookahead forks.",
+  "expect": "Every registered scenario and progression Surge cases match pre-extraction hashes; yielding, resuming and repeated completion do not repeat battle initialization, activations, schedule rows or Surge rolls.",
+  "changesBaseline": false,
+  "unreachable": "The resumable cursor is control-flow plumbing, not a registered content instance. Historical scenario hashes and suspended-cycle tests prove integration; a content-id event cannot identify this extraction.",
+  "status": "done-needs-review",
+  "sha": "e8eb658",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
  }
 ]

@@ -11,7 +11,7 @@ import { advanceBand, fireSchedule, startOfTurn } from './encounter.js'
 import { heroesLight } from './vision.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
-import type { Ctx, Phase, Side } from './types.js'
+import type { BattleCursor, Ctx, Side } from './types.js'
 import { rulesSideOf } from './side.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -20,61 +20,6 @@ function activationOrder(ctx: Ctx, side: Side): number[] {
     .filter((u) => u.side === side && u.lifeState === 'standing')
     .map((u) => u.id)
     .sort((a, b) => a - b)
-}
-
-function runPhase(ctx: Ctx, phase: Phase): void {
-  const side: Side = phase === 'hero' ? 'hero' : 'enemy'
-  setPhase(ctx, phase, 'engine')
-
-  for (const id of activationOrder(ctx, side)) {
-    if (ctx.state.outcome) return
-    const u = ctx.state.units[id]!
-    if (u.lifeState !== 'standing') continue // may have fallen since the order was taken
-    beginActivation(ctx, id, 'engine')
-    if (isBlocked(ctx, u)) {
-      emit(ctx, 'activation.idle', 'status', { actor: id, reason: 'cannot act' })
-      endActivation(ctx, id, 'engine')
-      endOfActivation(ctx, id)   // a stunned unit standing in water still soaks
-      continue
-    }
-    runActivation(ctx, id)
-    // fix.post-end-ladder (2026-09-03, filed by the kingdom's ISC-003 probe):
-    // a battle decided mid-Activation is OVER — no surge, no End of Activation
-    // ladder, nothing damaged after battle.end. The idle branch above has the
-    // same guard by construction (isBlocked units never end a battle).
-    if (ctx.state.outcome) return
-    // THE SURGE CHECK — capability.surge (2026-09-03), COMBAT-SEQUENCE: heroes
-    // only; `Surge Chance += Surge`, roll; a hit grants 1 + Stamina Regen,
-    // zeroes the chance and loops back to movement INSIDE this Activation;
-    // a miss keeps the chance. Before End of Activation, which runs once
-    // (ruled 2026-08-21). A surged Activation can surge again, from zero.
-    surgeLoop(ctx, id)
-    endActivation(ctx, id, 'engine')
-    endOfActivation(ctx, id)
-  }
-
-  endOfPhase(ctx, side)
-}
-
-function surgeLoop(ctx: Ctx, id: number): void {
-  const u = ctx.state.units[id]!
-  if (rulesSideOf(ctx, u) !== 'hero' || u.surge <= 0) return   // proving.mirror-row-rules: Surge is a hero-side RULE
-  for (let link = 0; link < 8; link++) {   // a hard ceiling — Law 9 over an infinite loop
-    if (u.lifeState !== 'standing' || ctx.state.outcome) return
-    u.surgeChance += u.surge
-    const roll = roll100(ctx.rng, 'surge', u.uid, u.activationOrdinal, link)
-    const hit = roll <= u.surgeChance
-    emit(ctx, 'surge.checked', 'engine', { actor: id, roll, chance: u.surgeChance, surge: u.surge, hit, link })
-    if (!hit) return
-    u.surgeChance = 0
-    gainStamina(ctx, id, 1 + u.staminaRegen, 'surge')
-    // a fresh movement and primary action in the same Activation
-    u.moveUsed = false
-    u.primaryUsed = false
-    u.movePointsLeft = u.movement
-    emit(ctx, 'surge.hit', 'engine', { actor: id, link: link + 1 })
-    runActivation(ctx, id)
-  }
 }
 
 /**
@@ -172,48 +117,156 @@ export type BattleResult = {
   usesSpent: { unit: number; power: string; spent: number }[]
 }
 
-export function runBattle(ctx: Ctx): BattleResult {
-  emit(ctx, 'battle.begin', 'engine', {})
-  // startOfBattle (hook.on-enter, 2026-09-03; COMBAT-SEQUENCE: "a spawn's
-  // battle starts when it arrives; onEnter is retired"): every unit on the
-  // board at the start fires it once, then settle.
-  for (const u of ctx.state.units) fireTriggers(ctx, 'startOfBattle', { ownerId: u.id, targetId: null, causeId: 'battle.begin', ordinal: 0, keyTag: HOOKS.indexOf('startOfBattle') })
-  settle(ctx, 'engine') // in case a scenario starts in a decided position
-
-  while (!ctx.state.outcome) {
-    if (ctx.state.turn >= ctx.cfg.turnCap) {
-      setOutcome(ctx, 'capped', 'engine')
-      break
-    }
-    beginTurn(ctx, 'engine')
-
-    // Start of Turn (encounter.runner, 2026-09-03):
-    //   1. the wave schedule fires — this Turn's spawns arrive, their
-    //      startOfBattle fires, settle ("Enemies spawn first")
-    //   2. the victory check — objectives: survive-to and the loss timers
-    //      (fix.start-of-turn-victory: a battle decided between phases ends
-    //      here, not mid-activation)
-    // Bleed-out used to advance here and no longer does — see rung 4b of endOfPhase.
-    startOfTurn(ctx)
-    if (ctx.state.outcome) break
-
-    // capability.vision: "when it's the hero's turn, they light up everything within their vision range"
-    heroesLight(ctx, 'phase.hero')
-    runPhase(ctx, 'hero')
-    if (ctx.state.outcome) break
-
-    // enemyPhase: N spawns arrive as the enemy phase of Turn N begins
-    fireSchedule(ctx, 'enemyPhase')
-    if (ctx.state.outcome) break
-    runPhase(ctx, 'enemy')
-    if (ctx.state.outcome) break
-    // the band paints one more row as the enemy phase ends (capability.ground-layers)
-    advanceBand(ctx)
-
-    emit(ctx, 'turn.end', 'engine', { turn: ctx.state.turn })
-  }
-
+function resultOf(ctx: Ctx): BattleResult {
   const usesSpent: BattleResult['usesSpent'] = []
   for (const u of ctx.state.units) for (const [power, spent] of Object.entries(u.usesSpentThisBattle ?? {})) usesSpent.push({ unit: u.id, power, spent })
   return { outcome: ctx.state.outcome ?? 'capped', turns: ctx.state.turn, usesSpent }
+}
+
+export type BattleAdvance = { kind: 'acting'; actor: number } | { kind: 'complete'; result: BattleResult }
+
+function cursorOf(ctx: Ctx): BattleCursor {
+  return ctx.battleCursor ??= {
+    at: 'battle-start', phase: 'hero', order: [], next: 0, actor: null, surgeLink: 0, surged: false,
+  }
+}
+
+/**
+ * Run automatic lifecycle transitions until an action cycle needs its actor,
+ * or combat is complete. Calling this again while awaiting that actor is a
+ * pure read. The driver must complete the cycle explicitly after executing it.
+ */
+export function advanceBattle(ctx: Ctx): BattleAdvance {
+  const c = cursorOf(ctx)
+  while (true) {
+    switch (c.at) {
+      case 'battle-start':
+        emit(ctx, 'battle.begin', 'engine', {})
+        for (const u of ctx.state.units) fireTriggers(ctx, 'startOfBattle', { ownerId: u.id, targetId: null, causeId: 'battle.begin', ordinal: 0, keyTag: HOOKS.indexOf('startOfBattle') })
+        settle(ctx, 'engine')
+        c.at = 'turn-start'
+        break
+      case 'turn-start':
+        if (ctx.state.outcome) { c.at = 'complete'; break }
+        if (ctx.state.turn >= ctx.cfg.turnCap) {
+          setOutcome(ctx, 'capped', 'engine')
+          c.at = 'complete'
+          break
+        }
+        beginTurn(ctx, 'engine')
+        // Arrivals, their start hooks and settle precede objectives and heroes.
+        startOfTurn(ctx)
+        c.at = ctx.state.outcome ? 'complete' : 'hero-start'
+        break
+      case 'hero-start':
+        heroesLight(ctx, 'phase.hero')
+        c.phase = 'hero'
+        setPhase(ctx, c.phase, 'engine')
+        c.order = activationOrder(ctx, c.phase)
+        c.next = 0
+        c.at = 'next-activation'
+        break
+      case 'enemy-arrivals':
+        fireSchedule(ctx, 'enemyPhase')
+        c.at = ctx.state.outcome ? 'complete' : 'enemy-start'
+        break
+      case 'enemy-start':
+        c.phase = 'enemy'
+        setPhase(ctx, c.phase, 'engine')
+        c.order = activationOrder(ctx, c.phase)
+        c.next = 0
+        c.at = 'next-activation'
+        break
+      case 'next-activation': {
+        // Preserve the old for-loop boundary: the last actor reaches phase-end
+        // even if its end ladder decided combat; an earlier actor returns first.
+        if (c.next >= c.order.length) { c.at = 'phase-end'; break }
+        if (ctx.state.outcome) { c.at = 'complete'; break }
+        const id = c.order[c.next++]!
+        const u = ctx.state.units[id]!
+        if (u.lifeState !== 'standing') break
+        c.actor = id
+        c.surgeLink = 0
+        c.surged = false
+        beginActivation(ctx, id, 'engine')
+        if (isBlocked(ctx, u)) {
+          emit(ctx, 'activation.idle', 'status', { actor: id, reason: 'cannot act' })
+          c.at = 'activation-end'
+        } else c.at = 'acting'
+        break
+      }
+      case 'acting':
+        if (c.actor === null) throw new Error('acting cursor has no actor')
+        return { kind: 'acting', actor: c.actor }
+      case 'surge-check': {
+        const id = c.actor!
+        const u = ctx.state.units[id]!
+        // Deliberately preserve the legacy eight-link stop, and the final
+        // activation.end after a surge wins combat. Separate corrective items
+        // must probe those behaviors; this extraction changes no battle events.
+        if (c.surgeLink >= 8 || u.lifeState !== 'standing' || ctx.state.outcome) {
+          c.at = 'activation-end'
+          break
+        }
+        const link = c.surgeLink
+        u.surgeChance += u.surge
+        const roll = roll100(ctx.rng, 'surge', u.uid, u.activationOrdinal, link)
+        const hit = roll <= u.surgeChance
+        emit(ctx, 'surge.checked', 'engine', { actor: id, roll, chance: u.surgeChance, surge: u.surge, hit, link })
+        if (!hit) { c.at = 'activation-end'; break }
+        u.surgeChance = 0
+        gainStamina(ctx, id, 1 + u.staminaRegen, 'surge')
+        u.moveUsed = false
+        u.primaryUsed = false
+        // Also preserves the old raw Movement reset; modifier/Root handling
+        // belongs in the explicit Surge correction, not a neutral extraction.
+        u.movePointsLeft = u.movement
+        emit(ctx, 'surge.hit', 'engine', { actor: id, link: link + 1 })
+        c.surgeLink++
+        c.surged = true
+        c.at = 'acting'
+        break
+      }
+      case 'activation-end':
+        endActivation(ctx, c.actor!, 'engine')
+        endOfActivation(ctx, c.actor!)
+        c.actor = null
+        c.at = 'next-activation'
+        break
+      case 'phase-end':
+        endOfPhase(ctx, c.phase)
+        c.at = ctx.state.outcome ? 'complete' : c.phase === 'hero' ? 'enemy-arrivals' : 'turn-end'
+        break
+      case 'turn-end':
+        advanceBand(ctx)
+        emit(ctx, 'turn.end', 'engine', { turn: ctx.state.turn })
+        c.at = 'turn-start'
+        break
+      case 'complete':
+        return { kind: 'complete', result: resultOf(ctx) }
+      default:
+        throw new Error(`unknown battle cursor step: ${String(c.at)}`)
+    }
+  }
+}
+
+/** Finish exactly one initial/Surge action cycle; lifecycle runs on advance. */
+export function completeActionCycle(ctx: Ctx): void {
+  const c = ctx.battleCursor
+  if (!c || c.at !== 'acting' || c.actor === null) throw new Error('completeActionCycle requires an acting cursor')
+  const u = ctx.state.units[c.actor]!
+  if (!c.surged && ctx.state.outcome) { c.at = 'complete'; return }
+  // The eligibility check was outside the old Surge loop: evaluate once,
+  // after the initial cycle, and preserve it across subsequent Surge cycles.
+  c.at = !c.surged && (rulesSideOf(ctx, u) !== 'hero' || u.surge <= 0) ? 'activation-end' : 'surge-check'
+}
+
+/** The automatic simulator is a driver of the same resumable lifecycle. */
+export function runBattle(ctx: Ctx): BattleResult {
+  while (true) {
+    const next = advanceBattle(ctx)
+    if (next.kind === 'complete') return next.result
+    runActivation(ctx, next.actor)
+    completeActionCycle(ctx)
+  }
 }
