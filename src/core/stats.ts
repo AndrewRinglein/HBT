@@ -75,6 +75,9 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   vision: (u) => u.vision,
 }
 
+/** The same stat vocabulary used by resolution, for external data validation. */
+export function isStatName(name: string): name is StatName { return Object.hasOwn(BASE, name) }
+
 /**
  * Modifiers granted by the hex a unit is standing on.
  * DERIVED, never stored — terrain follows the unit's position, so storing it would

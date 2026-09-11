@@ -10617,3 +10617,48 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## plumbing.battle-snapshot — LANDED `5f7502c` **NEEDS REVIEW**
+2026-09-11 05:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:21 · ..\THREE-PACKAGES-PLAN.md:211
+  PASS  typecheck
+  PASS  full test suite — 848 passed
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/proving-page.test.ts, test/battle-snapshot.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/proving-page.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 27 ids without a published source (17 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/proving-page.test.ts b/test/proving-page.test.ts
+index 5b783c3..a88a8ea 100644
+--- a/test/proving-page.test.ts
++++ b/test/proving-page.test.ts
+@@ -37,4 +37,8 @@ describe('proving-page', () => {
+   })
+ 
++  // Four real CLI processes run here. The full suite twice exceeded Vitest's
++  // default 5s under concurrent load (isolated file: 2.78s for both tests).
++  // This is a correctness check, not a 5s performance contract; keep every
++  // assertion and give the integration workload an explicit bounded budget.
+   it('E9: export-battle --plan reproduces the pair the rig measured — same outcome, same turns, seed names the pair', () => {
+     const state = mkdtempSync(join(tmpdir(), 'proving-export-'))
+@@ -52,4 +56,4 @@ describe('proving-page', () => {
+     expect(m.seed).toMatchObject({ plan: 'proving.smoke', matchup: 'm.mirror-gap-3', battle: 0 })
+     expect(m.events.find((e: { type: string }) => e.type === 'map.loaded')['gap']).toBe(3)
+-  })
++  }, 30000)
+ })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

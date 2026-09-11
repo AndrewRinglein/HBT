@@ -1,0 +1,54 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+···························································-·······································································································································stdout | test/prologue-battles.test.ts > encounter.prologue-2 — Surrounded > the necromancer fields with its compilable behaviour, and its dropped clauses are named gaps
+NECROMANCER gaps remaining: 0
+
+·················stdout | test/prologue-battles.test.ts > encounter.prologue-2 — Surrounded > FINDING: the row names no hero deployment, so the party starts on the player edge and the civilians die on every seed
+SURROUNDED x10 from the player edge: {"objectiveFailed":9,"heroClear":1}
+
+·································································································································································································stdout | test/hero-assembly.test.ts > the progression roster, assembled by the engine > all twenty battles: every fielded hero derives through fieldedDef() and the schedule's stat block agrees — findings printed
+STOWED WEAPONS (schedule rule, engine leaves them off)
+battle 7 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 8 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 9 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 10 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 11 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 12 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 13 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 14 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 15 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 16 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 17 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 19 hero.base.paladin-hunk stows weapon item.sword-of-the-fallen in an item slot
+battle 20 hero.base.rogue-raven stows weapon item.throwing-knives in an item slot
+
+C:\Users\aring\AppData\Local\Temp\replay-test.html — seed 0 map.thicket · engine ac301be · 723 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-showcase.html — seed 0 test.map.showcase · engine ac301be · 981 events · heroClear in 7 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-a.html — seed 0 test.map.showcase · engine ac301be · 981 events · heroClear in 7 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-b.html — seed 0 test.map.showcase · engine ac301be · 981 events · heroClear in 7 turns
+C:\Users\aring\AppData\Local\Temp\replay-a.html — seed 0 map.thicket · engine ac301be · 723 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-b.html — seed 0 map.thicket · engine ac301be · 723 events · heroClear in 6 turns
+····················································································································································································································································································································································································x······························································
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/proving-page.test.ts > proving-page > E9: export-battle --plan reproduces the pair the rig measured — same outcome, same turns, seed names the pair
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/proving-page.test.ts:39:3
+     37|   })
+     38|
+     39|   it('E9: export-battle --plan reproduces the pair the rig measured — …
+       |   ^
+     40|     const state = mkdtempSync(join(tmpdir(), 'proving-export-'))
+     41|     run(['src/cli/proving.ts', 'test/proving/smoke.json', '--out', sta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 110 passed (111)
+      Tests  1 failed | 838 passed | 1 todo (840)
+   Start at  22:09:56
+   Duration  32.45s (transform 7.68s, setup 0ms, import 31.89s, tests 104.89s, environment 16ms)
+

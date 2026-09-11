@@ -36,6 +36,10 @@ describe('proving-page', () => {
     execFileSync(process.execPath, ['--check', f])
   })
 
+  // Four real CLI processes run here. The full suite twice exceeded Vitest's
+  // default 5s under concurrent load (isolated file: 2.78s for both tests).
+  // This is a correctness check, not a 5s performance contract; keep every
+  // assertion and give the integration workload an explicit bounded budget.
   it('E9: export-battle --plan reproduces the pair the rig measured — same outcome, same turns, seed names the pair', () => {
     const state = mkdtempSync(join(tmpdir(), 'proving-export-'))
     run(['src/cli/proving.ts', 'test/proving/smoke.json', '--out', state, '--force'])
@@ -51,5 +55,5 @@ describe('proving-page', () => {
     const m = JSON.parse(run(['tools/export-battle.mts', '--plan', 'test/proving/smoke.json', '--matchup', 'm.mirror-gap-3', '--battle', '0']))
     expect(m.seed).toMatchObject({ plan: 'proving.smoke', matchup: 'm.mirror-gap-3', battle: 0 })
     expect(m.events.find((e: { type: string }) => e.type === 'map.loaded')['gap']).toBe(3)
-  })
+  }, 30000)
 })

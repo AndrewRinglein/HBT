@@ -1,0 +1,8 @@
+{
+  "id": "plumbing.battle-snapshot", "kind": "plumbing", "shape": "plumbing",
+  "needs": ["plumbing.battle-cursor"],
+  "spec": "Versioned JSON battle saves preserve state, control cursor, event prefix, configuration, encounter and RNG log. Restore validates the schema and content binding, reconstructs geometry and strict RNG collision tracking, and never reruns setup.",
+  "expect": "Reload at every action-cycle boundary across all historical scenarios and Surge cases gives identical final state, events, random draws and results. Malformed, old-version, changed-content and tampered-RNG saves fail without modifying the supplied runtime.",
+  "changesBaseline": false,
+  "unreachable": "Saving and restoring a control session is plumbing outside the content registry. Round-trip continuation and corruption tests exercise it; a content id cannot selectively disable serialization."
+}
