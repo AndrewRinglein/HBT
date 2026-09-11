@@ -1,4 +1,6 @@
 [
   { "id": "power.test-move-plus-one", "name": "Short sprint (TEST)", "shape": "path", "staminaCost": 0, "budgetMod": 1, "cooldown": 0, "note": "fix.movement-plans: positive allowance must be spent through the actual walk executor." },
-  { "id": "power.test-move-plus-three", "name": "Long sprint (TEST)", "shape": "path", "staminaCost": 0, "budgetMod": 3, "cooldown": 0, "note": "Second data instance of the same movement allowance mechanism." }
+  { "id": "power.test-move-plus-three", "name": "Long sprint (TEST)", "shape": "path", "staminaCost": 0, "budgetMod": 3, "cooldown": 0, "note": "Second data instance of the same movement allowance mechanism." },
+  { "id": "power.test-flight-plus-three", "name": "Long flight (TEST)", "shape": "flight", "staminaCost": 0, "budgetMod": 3, "cooldown": 0, "note": "fix.flight-budget: a short jump spends the bonus first and cannot replenish activation movement." },
+  { "id": "power.test-flight-plus-five", "name": "Longer flight (TEST)", "shape": "flight", "staminaCost": 0, "budgetMod": 5, "cooldown": 0, "note": "Second pure-data variant of the flight payment rule; no new gameplay tuning." }
 ]

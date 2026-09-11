@@ -413,5 +413,15 @@
     "id": "test-ordered-strip", "from": "test-air-mage", "name": "Strip caster (TEST)",
     "set": { "magic": 0 }, "triggers": [], "abilities": ["power.test-ordered-strip"],
     "note": "fix.ordered-power-preview: registered live source for the ordered status-removal variant."
+  },
+  {
+    "id": "test-flight-plus-three", "from": "test-air-mage", "name": "Long flier (TEST)",
+    "set": { "movement": 5 }, "triggers": [], "abilities": [], "moves": ["power.test-flight-plus-three"],
+    "note": "Live data source for bonus-first flight payment, including jumps shorter than the bonus."
+  },
+  {
+    "id": "test-flight-plus-five", "from": "test-air-mage", "name": "Longer flier (TEST)",
+    "set": { "movement": 5 }, "triggers": [], "abilities": [], "moves": ["power.test-flight-plus-five"],
+    "note": "Second data instance for fix.flight-budget."
   }
 ]
