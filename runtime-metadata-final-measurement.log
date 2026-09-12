@@ -1,0 +1,44 @@
+{
+  "previousPageBytes": 10523022,
+  "finalPageBytes": 9561798,
+  "actualBundleBytes": 9138845,
+  "engineContributionBytes": 21314,
+  "modules": [
+    [
+      "../engine/src/core/hex.ts",
+      {
+        "bytesInOutput": 3723
+      }
+    ],
+    [
+      "../engine/src/core/types.ts",
+      {
+        "bytesInOutput": 527
+      }
+    ],
+    [
+      "../engine/src/core/props.ts",
+      {
+        "bytesInOutput": 2568
+      }
+    ],
+    [
+      "../engine/src/content/disable.ts",
+      {
+        "bytesInOutput": 528
+      }
+    ],
+    [
+      "../engine/src/content/terrain.ts",
+      {
+        "bytesInOutput": 6998
+      }
+    ],
+    [
+      "../engine/src/view/field.ts",
+      {
+        "bytesInOutput": 6970
+      }
+    ]
+  ]
+}
