@@ -24,7 +24,9 @@ as of 2026-09-04).
 
 ## Commands — all from `viewer/`
 
-There is **no install step**. The package runs on `../engine/node_modules`.
+Build tools run on `../engine/node_modules`. The renderer dependency is pinned
+in this package: run `npm ci --ignore-scripts` to install Three.js from the lockfile.
+The published page embeds it and the selected terrain assets; users need no install.
 Python 3 with Pillow is present for the art half.
 
 ```

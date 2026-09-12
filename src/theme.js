@@ -75,3 +75,6 @@ export const SIDE_GLOW = { hero: '224,185,94', enemy: '169,100,216' }
     they must be these */
 export const VFX_STATUS = { poison: 'status.poison', burn: 'status.burn', bleed: 'status.bleed',
   regen: 'status.regeneration', shadow: 'status.stun', frost: 'status.slow', affliction: 'status.weak', weak: 'status.protection' }
+
+// Visual terrain tint only; status effects retain their existing recipes.
+export const TERRAIN_3D_TINT = { 'terrain.forest': '#72825a', 'terrain.rocky': '#aaa095', 'terrain.rocky-hills': '#aaa095' }

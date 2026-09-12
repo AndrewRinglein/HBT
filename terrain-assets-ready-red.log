@@ -1,0 +1,28 @@
+✖ extra late-loaded assets do not prevent subsequent scene updates on a 40 by 40 field (7.7139ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 99.5336
+
+✖ failing tests:
+
+test at tools\terrain-scene.test.mjs:86:1
+✖ extra late-loaded assets do not prevent subsequent scene updates on a 40 by 40 field (7.7139ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1600 !== 1601
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/terrain-scene.test.mjs:100:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1600,
+    expected: 1601,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

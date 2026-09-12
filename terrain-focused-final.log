@@ -1,0 +1,22 @@
+✔ actual browser entry emits no catalog loader or gameplay modules (117.9917ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.4183ms)
+✔ normal static generator still validates and exports identical data (294.142ms)
+✔ normal static generator rejects malformed catalog before writing (143.0063ms)
+✔ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (1749.6607ms)
+✔ all choices repeatedly load actual battles; imported state clears library selection (1670.0923ms)
+✔ headless mount honestly exposes unavailable WebGL as visible 2D fallback (189.2658ms)
+✔ real Three projection matches CSS homogeneous coordinates through perspective, pan, tilt, scale, viewport and outer fit (0.9813ms)
+✔ real Three ground ceiling cannot bury unchanged feet/corpses; prop starts at that plane and is front-facing (1.3764ms)
+✔ every registered field yields exact terrain/prop cells; detached unknown same-ID fields do not alias (2.5595ms)
+✔ curated assets are exact existing self-contained GLBs with no decoder/network dependency (11.862ms)
+✔ real Three scene branch instances exact recorded cells, renders only changes and disposes resources (5.5444ms)
+✔ late readiness cannot activate a disposed layer; failure restores visible 2D without touching folded facts (1.4999ms)
+✔ extra late-loaded assets do not prevent subsequent scene updates on a 40 by 40 field (5.2189ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3730.1581

@@ -25,6 +25,7 @@
              peek, pan, render, dispose, get cursor/events/state/playing/view/invalid/
              speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
+import { terrainLayer } from './terrain3d.js'
 import { createState, fold, foldTo } from './fold.js'
 import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
 import { drawPanel } from './panel.js'
@@ -110,7 +111,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     dom, now,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses,
       LAYERS: data.layers || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
-      ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets },
+      ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, terrainAssets: data.terrainAssets },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
     view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },
@@ -137,6 +138,8 @@ export function mountBattleViewer(root, data, opts = {}) {
   initFX(V)
   const unbindCamera = bindCamera(V)
 
+  const terrain = terrainLayer(V, opts.terrainDriver)
+
   function render() {
     if (!V.layers.ground) buildGround(V)
     syncProps(V)
@@ -144,7 +147,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     syncLayers(V); syncCorpses(V); syncAuras(V)
     drawAim(V)
     syncUnits(V)
-    drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips()
+    drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update()
   }
   V.render = render
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
@@ -303,7 +306,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
     peek(on) { V.view.peek = !!on; applyCam(V); drawEdges(V) },
     pan(dx, dy) { applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
-    dispose() { pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

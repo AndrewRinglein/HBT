@@ -1,0 +1,64 @@
+✖ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (397.9177ms)
+✖ all choices repeatedly load actual battles; imported state clears library selection (328.0409ms)
+✖ headless mount honestly exposes unavailable WebGL as visible 2D fallback (168.9179ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 998.8239
+
+✖ failing tests:
+
+test at tools\terrain-player.test.mjs:15:1
+✖ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (397.9177ms)
+  AssertionError [ERR_ASSERTION]: selector must not be clipped/scaled with battlefield
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/terrain-player.test.mjs:17:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools\terrain-player.test.mjs:28:1
+✖ all choices repeatedly load actual battles; imported state clears library selection (328.0409ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 'true'
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/terrain-player.test.mjs:32:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 'true',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools\terrain-player.test.mjs:39:1
+✖ headless mount honestly exposes unavailable WebGL as visible 2D fallback (168.9179ms)
+  TypeError: Cannot read properties of undefined (reading 'querySelector')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/terrain-player.test.mjs:40:60)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)

@@ -2,12 +2,15 @@
   "name": "viewer",
   "private": true,
   "type": "module",
-  "description": "Heroes of Blight and Tragic — the battle viewer (draws what happened, never decides). A sibling package to engine/ and kingdom/, its own nested git repo (ruled 2026-09-02, THREE-PACKAGES-PLAN.md). Runs on ../engine/node_modules: there is no install step here, and none is possible from the sandbox.",
+  "description": "Heroes of Blight and Tragic — the battle viewer (draws what happened, never decides). A sibling package to engine/ and kingdom/, its own nested git repo (ruled 2026-09-02, THREE-PACKAGES-PLAN.md). Build tools use ../engine/node_modules; the locally pinned Three.js renderer is embedded in the standalone page.",
   "scripts": {
     "static": "node ../engine/node_modules/tsx/dist/cli.mjs tools/dump-static.mts",
     "build": "node tools/build-viewer.mjs",
     "verify": "node tools/verify.mjs BATTLE-VIEWER.html",
     "gate": "node tools/gate.mjs",
     "typecheck": "node ../engine/node_modules/typescript/bin/tsc --noEmit"
+  },
+  "dependencies": {
+    "three": "0.185.1"
   }
 }

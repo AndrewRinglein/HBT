@@ -1,0 +1,29 @@
+✔ actual drop uses unknown initial geometry and preserves every event (1585.8354ms)
+✔ actual drop uses resized initial geometry and preserves every event (692.9493ms)
+✔ actual drop uses changed initial geometry and preserves every event (543.4021ms)
+✔ malformed dropped initial facts leave current viewer intact (535.6625ms)
+✔ component requires initial facts before mutating its host (168.3664ms)
+✔ component rejects a pushed map that differs from prepared initial facts (528.9114ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (927.755ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (496.1617ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (508.5483ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (547.0078ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (494.5469ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (493.9612ms)
+✔ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (1851.0305ms)
+✔ all choices repeatedly load actual battles; imported state clears library selection (1708.6647ms)
+✔ headless mount honestly exposes unavailable WebGL as visible 2D fallback (166.6344ms)
+✔ real Three projection matches CSS homogeneous coordinates through perspective, pan, tilt, scale, viewport and outer fit (0.9739ms)
+✔ real Three ground mesh ceiling supports unchanged feet/corpses; prop starts at that plane and is front-facing (1.3683ms)
+✔ every registered field yields exact terrain/prop cells; detached unknown same-ID fields do not alias (2.6725ms)
+✔ curated assets are exact existing self-contained GLBs with no decoder/network dependency (11.6818ms)
+✔ real Three scene branch instances exact recorded cells, renders only changes and disposes resources (4.256ms)
+✔ late readiness cannot activate a disposed layer; failure restores visible 2D without touching folded facts (1.1529ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7612.1293

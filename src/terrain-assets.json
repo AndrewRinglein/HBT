@@ -1,0 +1,6 @@
+{
+  "meadow": "components/ground/ground-meadow.glb",
+  "water": "meshy/water.glb",
+  "hill": "meshy/hill.glb",
+  "boulders": "meshy/boulders.glb"
+}

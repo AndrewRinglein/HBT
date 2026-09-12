@@ -25,7 +25,7 @@ export function startHarness(mountEl, lib) {
 
   /* ── the chrome, built once ────────────────────────────────────────── */
   const top = document.createElement('div'); top.style.display = 'contents'
-  top.innerHTML = `<div id="rail"></div><div id="battleDD" style="position:relative"></div><div id="seedline"></div>`
+  top.innerHTML = `<div id="rail"></div><div id="seedline"></div>`
   const transport = document.createElement('div'); transport.id = 'transport'
   transport.innerHTML = `
       <button class="tbtn on" id="playBtn">&#10074;&#10074; Pause</button>
@@ -78,7 +78,7 @@ export function startHarness(mountEl, lib) {
     q('#seedline').innerHTML =
       `seed <span class="mono">${b.battle.seed.replicate ?? '—'} · ${initialMapId(b.battle.seed)} · ${b.battle.seed.enemyCount ?? b.battle.seed.scenarioId ?? ''}</span><br>` +
       `engine <span class="mono">${b.battle.engineCommit}</span> · ${EV.length} events`
-    const bb = q('#battleBtn'); if (bb) bb.innerHTML = '⚔ ' + b.label + ' &#9662;'
+    updatePicker(extra ? -1 : i, b.label)
     if (doc) doc.innerHTML = intro(b)
     viewer.push(EV)
     drawRail()
@@ -128,26 +128,39 @@ export function startHarness(mountEl, lib) {
       logbox.scrollTo({ top: Math.max(0, y), behavior: 'smooth' }) }
   }
 
-  /* ── the battle picker: a CUSTOM dropdown of plain divs — a native <select>
-     cannot open inside the artifact pane (found 2026-08-27) ─────────────── */
-  {
-    const dd = top.querySelector('#battleDD')
-    const btn = document.createElement('button'); btn.id = 'battleBtn'; btn.className = 'tbtn'
-    btn.style.cssText = 'max-width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'
-    const menu = document.createElement('div'); menu.id = 'battleMenu'
-    menu.style.cssText = 'display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:600;' +
-      'min-width:290px;background:#14120e;border:1px solid #3a3323;border-radius:3px;box-shadow:0 10px 28px rgba(0,0,0,.65)'
-    lib.battles.forEach((b, i) => {
-      const o = document.createElement('div'); o.className = 'ddOpt'
-      o.style.cssText = 'padding:9px 13px;cursor:pointer;font:600 13px \'Barlow Semi Condensed\',sans-serif;color:#d8cfae;border-bottom:1px solid #241f16;white-space:nowrap'
-      o.textContent = b.label
-      o.addEventListener('click', ev => { ev.stopPropagation(); menu.style.display = 'none'; load(i) })
-      menu.appendChild(o)
-    })
-    btn.addEventListener('click', ev => { ev.stopPropagation(); menu.style.display = menu.style.display === 'none' ? 'block' : 'none' })
-    document.addEventListener('click', () => { menu.style.display = 'none' })
-    dd.appendChild(btn); dd.appendChild(menu)
+  /* The battle picker stays outside the scaled/clipped scene. A custom
+     listbox also works where the artifact host cannot open native selects. */
+  const dd=document.createElement('div');dd.id='battleDD'
+  const label=document.createElement('label');label.id='battleLabel';label.textContent='Battle';label.setAttribute('for','battleBtn')
+  const btn=document.createElement('button');btn.id='battleBtn';btn.setAttribute('role','combobox');btn.setAttribute('aria-labelledby','battleLabel');btn.setAttribute('aria-haspopup','listbox');btn.setAttribute('aria-controls','battleMenu');btn.setAttribute('aria-expanded','false')
+  const menu=document.createElement('div');menu.id='battleMenu';menu.setAttribute('role','listbox');menu.setAttribute('aria-label','Battles');menu.style.display='none'
+  dd.appendChild(label);dd.appendChild(btn);dd.appendChild(menu)
+  const host=q('#doc')||mountEl.parentNode||document.body;host.appendChild(dd)
+  let focused=0,selected=0
+  const options=lib.battles.map((b,i)=>{
+    const o=document.createElement('div');o.className='ddOpt';o.id='battleOption'+i;o.setAttribute('role','option');o.setAttribute('aria-selected','false');o.textContent=b.label
+    o.addEventListener('click',e=>{e.stopPropagation();choose(i)})
+    menu.appendChild(o);return o
+  })
+  function closePicker(){menu.style.display='none';btn.setAttribute('aria-expanded','false');btn.removeAttribute?.('aria-activedescendant')}
+  function openPicker(index=selected<0?0:selected){menu.style.display='block';btn.setAttribute('aria-expanded','true');focusOption(index)}
+  function focusOption(index){focused=Math.max(0,Math.min(options.length-1,index));options.forEach((o,i)=>o.classList.toggle('focused',i===focused));btn.setAttribute('aria-activedescendant',options[focused].id);options[focused].scrollIntoView({block:'nearest'})}
+  function choose(index){load(index);closePicker();btn.focus()}
+  function updatePicker(index,title){selected=index;btn.textContent=(index<0?'Imported · ':'')+title+' ▾';options.forEach((o,i)=>o.setAttribute('aria-selected',String(index===i)))}
+  const pickerKey=e=>{
+    const open=menu.style.display!=='none'
+    if(['ArrowDown','ArrowUp','Home','End','Enter',' ','Escape'].includes(e.key)){e.preventDefault();e.stopPropagation()}
+    else if(e.key==='Tab'){closePicker();return}else return
+    if(e.key==='Escape'){closePicker();return}
+    if(e.key==='Home'){openPicker(0);return}
+    if(e.key==='End'){openPicker(options.length-1);return}
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){if(!open)openPicker();else focusOption(focused+(e.key==='ArrowDown'?1:-1));return}
+    if(open)choose(focused);else openPicker()
   }
+  const outside=e=>{if(!dd.contains(e.target))closePicker()}
+  btn.addEventListener('keydown',pickerKey)
+  btn.addEventListener('click',e=>{e.stopPropagation();menu.style.display==='none'?openPicker():closePicker()})
+  document.addEventListener('click',outside)
 
   /* ── transport ───────────────────────────────────────────────────────── */
   const T = s => transport.querySelector(s)
@@ -207,5 +220,5 @@ export function startHarness(mountEl, lib) {
   addEventListener('resize', fit); fit()
 
   load(0)
-  return { load, playExport, playExportText, onDrop, battleData, get viewer() { return viewer }, dispose() { document.removeEventListener('drop', onDrop); if (viewer) viewer.dispose() } }
+  return { load, playExport, playExportText, onDrop, battleData, get viewer() { return viewer }, dispose() { dd.remove(); document.removeEventListener('click',outside); document.removeEventListener('drop', onDrop); if (viewer) viewer.dispose() } }
 }

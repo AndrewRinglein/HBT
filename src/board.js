@@ -71,7 +71,8 @@ export function buildGround(V) {
   for (let h = 0; h < POS.length; h++) {
     const p = POS[h], l = p.px - LAYOUT.W / 2, t = p.py - LAYOUT.H / 2
     const tid = F.terrainIds[h], sw = TSWATCH[tid] || 'hexPlains'
-    ground.appendChild(el('cell', `left:${l}px;top:${t}px;background-image:url('${ASSETS[sw + '.png']}')`))
+    const tile = el('cell', `left:${l}px;top:${t}px;background-image:url('${ASSETS[sw + '.png']}')`)
+    tile.dataset.terrain = tid; ground.appendChild(tile)
     if (tid === 'terrain.burning') ground.appendChild(burnTile(l, t))
     if (tid === 'terrain.poisoned') ground.appendChild(poisonTile(l, t))
     ground.appendChild(el('ring grid', `left:${l}px;top:${t}px`))
@@ -79,6 +80,8 @@ export function buildGround(V) {
   /* FIRST child, always: corpses and downed units lie FLAT — coplanar with
      these tiles — so DOM order is the tiebreak (found 2026-08-27). */
   V.dom.stage.insertBefore(ground, V.dom.stage.firstChild)
+  V.dom.stage.style.setProperty('--forest-art', `url('${ASSETS['hexForest.png']}')`)
+  V.dom.stage.style.setProperty('--rocky-art', `url('${ASSETS['hexScrub.png']}')`)
   V.layers.ground = ground
 }
 
