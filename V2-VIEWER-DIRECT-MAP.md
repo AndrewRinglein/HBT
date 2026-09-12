@@ -1,6 +1,6 @@
 # Viewer direct-map initialization — viewer.direct-map-initialization
 
-Implementation checkpoint; landing and final publication are not yet claimed.
+Engine landed and audited; final viewer publication is tracked by root STATE.md.
 Base engine d872c34, viewer b465fe5. Root STATE.md owns final cross-package hashes.
 
 ## Contract
@@ -72,6 +72,26 @@ COMBAT-DESIGN.md:66's proposed encounter tail. Neither is redefined here. The
 plumbing shape uses the gate's ordinary non-mechanism classification; no explicit
 exemption fields are declared. Viewer nonlanding gate attempt 1 passed all 23
 production replay checks and all 12 direct-map probes, with door/law/type checks
-clean. Parent source review is complete. Landing, committed checks, audit and
-final publication remain pending. Human visual
+clean. Parent source review is complete. These were the pre-landing checkpoints;
+the completed engine verification follows. Human visual
 acceptance is unverified; existing browser security restrictions remain.
+
+## Final engine verification
+
+Landing attempt 1 passed and committed as 285bf12 (the gate printed c71919e
+before its automatic seal-ledger amendment). The gate's committed-tree rerun
+passed the full suite and unchanged controls. Separate batch audit
+`node tools/audit-all.mjs --label v2-viewer-direct-map` passed: 1,292 tests,
+typecheck, all 22 control hashes, whole-core hardcode and publication checks.
+The landing and audit outputs are retained in scratch/viewer-direct-map-*.log.
+
+The seal is withheld for exactly one candidate-ruling warning; no explicit
+exemption fields or human verdict are claimed. The tool count is 141 of 173
+landed, 46 awaiting review, 13 sealed and 32 pending. Existing LOS and tooling
+verdicts are untouched. No gameplay, RNG, event payload or .12 rules changed.
+
+Final viewer regeneration and `--land --fresh` verification use the clean engine
+commit containing this receipt and audit evidence. Root STATE.md owns the final
+engine bookkeeping and viewer publication hashes, avoiding a reciprocal hash
+update. The earlier passing nonlanding viewer gate is not substituted for that
+final provenance check.
