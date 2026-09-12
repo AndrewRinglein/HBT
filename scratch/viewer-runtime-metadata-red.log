@@ -1,0 +1,38 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/viewer-runtime-metadata.test.ts (3 tests | 1 failed) 85ms
+     × emitted field helper excludes registry, catalog and gameplay modules 76ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/viewer-runtime-metadata.test.ts > readonly runtime metadata > emitted field helper excludes registry, catalog and gameplay modules
+AssertionError: expected [ …(4) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "src/content/generated/pack.ts",
++   "src/core/rng.ts",
++   "src/content/pack.ts",
++   "src/content/maps.ts",
++ ]
+
+ ❯ test/viewer-runtime-metadata.test.ts:13:179
+     11|       .filter(([,v]) => v.bytesInOutput > 0).map(([path]) => path.repl…
+     12|     expect(emitted).toContain('src/view/field.ts')
+     13|     expect(emitted.filter(p => /content\/(?:generated\/|pack\.|maps\.|…
+       |                                                                                                                                                                                   ^
+     14|   })
+     15|   for (const mapId of ['test.map.high-prop-single', 'test.map.high-pro…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  17:31:06
+   Duration  688ms (transform 369ms, setup 0ms, import 480ms, tests 85ms, environment 0ms)
+

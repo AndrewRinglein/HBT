@@ -6,7 +6,7 @@ import { TERRAIN } from '../core/types.js'
 import { terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
   accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf,
   stripsOnEnterOf, stripsOnActivationEndOf, appliesOnEnterOf, appliesOnActivationEndOf,
-} from '../content/maps.js'
+} from '../content/terrain.js'
 
 const HEXW = 128, HEXH = 132, COL = 128, ROW = 96, ODD = 64, TILT = 49.3
 const groundValues = Object.values(TERRAIN).filter(t => t !== TERRAIN.OBSTACLE)

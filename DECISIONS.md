@@ -2423,3 +2423,12 @@ facts are required; no V1 mount API branch. All events remain available to fold.
 The engine owns presentation geometry and exact distance access; static quadratic
 byte tables are retired. Combat/state/event contracts and .12 rules do not change.
 Implementation evidence and remaining verification: V2-VIEWER-DIRECT-MAP.md.
+
+## 2026-09-11 - passive viewer runtime metadata isolation
+
+Authorized item viewer.runtime-metadata moves the existing terrain metadata
+implementation to a registry-free leaf and makes viewer static-tool catalog
+reads explicit and lazy through its single engine door. The passive page checks
+actual emitted modules; required catalog validation still runs for generators.
+No rule/table duplication, purity declaration or snapshot/event change.
+Measurements, boundaries and verification belong to V2-RUNTIME-METADATA.md.

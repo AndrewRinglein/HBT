@@ -3365,5 +3365,25 @@
   "status": "done",
   "sha": "c71919e",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "viewer.runtime-metadata",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.direct-map-initialization"
+  ],
+  "spec": "Separate pure terrain metadata from registered maps so readonly browser field preparation never imports the generated catalog or gameplay mutators; tools load validated catalogs lazily through the same viewer door.",
+  "expect": "Actual emitted browser modules exclude generated pack, catalog loaders and gameplay mutators. Normal static generation still validates malformed catalogs loudly. Existing CLI bytes, all replay events and controls remain unchanged.",
+  "probeIds": [
+   "test.map.high-prop-single",
+   "test.map.high-prop-multi"
+  ],
+  "changesBaseline": false,
+  "note": "Measured dependency cleanup only. One terrain metadata owner, no sideEffects or purity annotations, no validation bypass, no new exemption. Snapshot .12 and gameplay remain unchanged.",
+  "attempts": 1,
+  "status": "done",
+  "sha": "8f71dc7",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]
