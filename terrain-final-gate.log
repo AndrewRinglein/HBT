@@ -1,0 +1,81 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ actual browser entry emits no catalog loader or gameplay modules (118.537ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.4188ms)
+✔ normal static generator still validates and exports identical data (274.8782ms)
+✔ normal static generator rejects malformed catalog before writing (108.5065ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 569.033
+maps: 22 in the engine, all in both dumps
+passive runtime modules: ../engine/src/core/hex.ts, ../engine/src/core/types.ts, ../engine/src/core/props.ts, ../engine/src/content/disable.ts, ../engine/src/content/terrain.ts, ../engine/src/view/field.ts
+OK — 23 battles fold end to end · pure fold == pumped fold · icons 4 used · rows damaging=645 plain=3651
+✔ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (465.0225ms)
+✔ all choices repeatedly load actual battles; imported state clears library selection (1605.5893ms)
+✔ headless mount honestly exposes unavailable WebGL as visible 2D fallback (194.0582ms)
+✔ real Three projection matches CSS homogeneous coordinates through perspective, pan, tilt, scale, viewport and outer fit (1.0005ms)
+✔ real Three ground ceiling cannot bury unchanged feet/corpses; prop starts at that plane and is front-facing (1.4105ms)
+✔ every registered field yields exact terrain/prop cells; detached unknown same-ID fields do not alias (2.4847ms)
+✔ curated assets are exact existing self-contained GLBs with no decoder/network dependency (11.9046ms)
+✔ real Three scene branch instances exact recorded cells, renders only changes and disposes resources (3.9967ms)
+✔ late readiness cannot activate a disposed layer; failure restores visible 2D without touching folded facts (1.2058ms)
+✔ extra late-loaded assets do not prevent subsequent scene updates on a 40 by 40 field (4.8734ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2362.7209
+✔ actual drop uses unknown initial geometry and preserves every event (689.3389ms)
+✔ actual drop uses resized initial geometry and preserves every event (678.5217ms)
+✔ actual drop uses changed initial geometry and preserves every event (532.7512ms)
+✔ malformed dropped initial facts leave current viewer intact (512.145ms)
+✔ component requires initial facts before mutating its host (179.6367ms)
+✔ component rejects a pushed map that differs from prepared initial facts (513.716ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (959.6567ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (521.1482ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (523.974ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (571.3013ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (509.7093ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (511.5159ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6794.2745
+built C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\BATTLE-VIEWER.html · 21.0 MB · viewer 8edaadb · engine 0bfa0c9 · sheets 0bfa0c9 · fields 0bfa0c9 · 23 battles
+fresh: Horde 24×24 — the river — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Supper (seed 5) — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Embers — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Showcase — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Flanks — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Thicket — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Field — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Highlands — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Civilians — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Hunter Alone — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Prologue Bestiary — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Beasts — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Alpha Team — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Item Powers — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Arc Golem — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: The Kiln — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Horrors of the Night — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Surrounded (seed 3) — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Assembled Party — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Dungeon 16×8 (heroes west) — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Duel 8×8 — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Rime — repeated affliction — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Ranged-only reaction — no melee attack — byte-identical events (0bfa0c9 → 0bfa0c9)
+GATE OK
