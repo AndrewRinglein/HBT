@@ -7,7 +7,8 @@
 import { writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 import { allSheets, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames } from '../src/sheet.js'
-import { MAPS } from '../src/engine.js'
+import { readCatalog } from '../src/engine.js'
+const { MAPS } = await readCatalog()
 
 let engineCommit = 'unknown'
 try { engineCommit = execSync('git -C ../engine rev-parse --short HEAD', { encoding: 'utf8' }).trim() } catch {}

@@ -14,11 +14,20 @@
 export type { Ctx, Event, Outcome, Side, UnitDef, AttackDef, AbilityDef, MoveDef } from '../../engine/src/core/types.js'
 export type { StatusDef } from '../../engine/src/core/status.js'
 export type { ActionDef, BadgeDef } from '../../engine/src/core/types.js'
-/* ONE ACTION TYPE (engine 26fa562, §11): ACTIONS is the registry; ATTACKS/ABILITIES are views over it */
-export { UNITS, ACTIONS, ATTACKS, ABILITIES, BADGES } from '../../engine/src/content/index.js'
-export { MOVES } from '../../engine/src/content/moves.js'
-export { STATUSES } from '../../engine/src/content/statuses.js'
-export { MAPS, terrainOf, terrainIdOf, isPassable, LAYER_IDS, boardOf, deployOf } from '../../engine/src/content/maps.js'   // LAYER_IDS: the ground layers by number; boardOf/deployOf: a map's board and edges (2026-09-04)
+// Static tools explicitly request the validated catalog. Keeping those imports
+// inside this unused browser function lets normal tree shaking omit them; no
+// sideEffects/purity annotations suppress their required import-time checks.
+export async function readCatalog() {
+  const [content, moves, statuses, maps] = await Promise.all([
+    import('../../engine/src/content/index.js'),
+    import('../../engine/src/content/moves.js'),
+    import('../../engine/src/content/statuses.js'),
+    import('../../engine/src/content/maps.js'),
+  ])
+  return { UNITS: content.UNITS, ACTIONS: content.ACTIONS, ATTACKS: content.ATTACKS,
+    ABILITIES: content.ABILITIES, BADGES: content.BADGES, MOVES: moves.MOVES,
+    STATUSES: statuses.STATUSES, MAPS: maps.MAPS, LAYER_IDS: maps.LAYER_IDS }
+}
 /* THE BOARD IS THE MAP'S (engine 5603c40, EVENTS-FOR-THE-VIEWER §10): no WIDTH/HEIGHT constants,
    no free hex functions — geometryOf({width, height}) for the board a log's map.loaded names */
 export { geometryOf, FORMATS } from '../../engine/src/core/hex.js'

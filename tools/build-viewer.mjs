@@ -14,6 +14,7 @@ import { createRequire } from 'node:module'
 import { execSync, execFileSync } from 'node:child_process'
 import { resolve, join, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { assertRuntimeMetadata } from './runtime-metadata.mjs'
 
 const require = createRequire(import.meta.url)
 const esbuild = require('../../engine/node_modules/esbuild')
@@ -70,9 +71,9 @@ const stamp = {
 }
 
 /* ── the bundle ──────────────────────────────────────────────────────── */
-const { outputFiles, warnings } = esbuild.buildSync({
+const { outputFiles, warnings, metafile } = esbuild.buildSync({
   entryPoints: ['src/main.js'], bundle: true, write: false, format: 'iife', target: 'es2022',
-  minify: false, legalComments: 'none', logLevel: 'silent',
+  minify: false, legalComments: 'none', logLevel: 'silent', metafile: true,
   define: {
     __BUNDLED_STATIC__: JSON.stringify({ units: statics.units, statuses: statics.statuses, maps: statics.maps, engineCommit: statics.engineCommit,
       /* `actions` is the ONE registry (§11) — a grant of any kind resolves there — and `badges` the
@@ -88,6 +89,7 @@ const { outputFiles, warnings } = esbuild.buildSync({
   },
 })
 for (const w of warnings) console.warn('esbuild:', w.text)
+console.log('passive runtime modules: ' + assertRuntimeMetadata(metafile).join(', '))
 const bundle = outputFiles[0].text
 const stampLine = `viewer ${stamp.viewer}${stamp.viewerDirty ? '*' : ''} · engine ${stamp.engine}${stamp.engineDirty ? '*' : ''}` +
   ` · sheets ${stamp.staticEngine}${stamp.staticDirty ? '*' : ''} · fields ${stamp.fieldsEngine}${stamp.fieldsDirty ? '*' : ''} · ${battles.length} battles` +

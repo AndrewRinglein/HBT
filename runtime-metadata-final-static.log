@@ -1,0 +1,5 @@
+
+> static
+> node ../engine/node_modules/tsx/dist/cli.mjs tools/dump-static.mts
+
+static.json: 22 maps · 102 units · 21 statuses · 545 actions · 209 badges · engine 0bfa0c9

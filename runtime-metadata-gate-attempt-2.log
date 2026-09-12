@@ -1,0 +1,41 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ actual browser entry emits no catalog loader or gameplay modules (71.5656ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.4089ms)
+✔ normal static generator still validates and exports identical data (260.3122ms)
+✔ normal static generator rejects malformed catalog before writing (98.4285ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 493.2117
+maps: 22 in the engine, all in both dumps
+passive runtime modules: ../engine/src/core/hex.ts, ../engine/src/core/types.ts, ../engine/src/core/props.ts, ../engine/src/content/disable.ts, ../engine/src/content/terrain.ts, ../engine/src/view/field.ts
+OK — 23 battles fold end to end · pure fold == pumped fold · icons 4 used · rows damaging=645 plain=3651
+✔ actual drop uses unknown initial geometry and preserves every event (623.7082ms)
+✔ actual drop uses resized initial geometry and preserves every event (619.4202ms)
+✔ actual drop uses changed initial geometry and preserves every event (501.2304ms)
+✔ malformed dropped initial facts leave current viewer intact (489.1137ms)
+✔ component requires initial facts before mutating its host (148.7872ms)
+✔ component rejects a pushed map that differs from prepared initial facts (485.8872ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (925.4524ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (489.0313ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (492.0149ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (541.26ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (484.4744ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (488.4721ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6373.4581
+built C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.html · 9.1 MB · viewer fcae3d2* · engine 1efb95e* · sheets 1efb95e · fields 1efb95e · 23 battles · * = from a dirty tree
+check only — BATTLE-VIEWER.html untouched (pass --land to write it)
+GATE OK

@@ -1,0 +1,12 @@
+GATE FAIL — the door is not the only way in:
+  tools/runtime-metadata.mjs names the engine's source (ted].filter(p => p.includes('/engine/src/')
+  tools/runtime-metadata.mjs names the engine's source (/') && !allowed.has(p.split('/engine/src/')
+  tools/runtime-metadata.mjs names the engine's source (ted].filter(p => p.includes('/engine/src/')
+  tools/runtime-metadata.test.mjs names the engine's source (ssert.ok(emitted.includes('../engine/src/v)
+  tools/runtime-metadata.test.mjs names the engine's source (result.metafile).includes('../engine/src/v)
+  tools/runtime-metadata.test.mjs names the engine's source ({ const meta = {inputs:{'../engine/src/c)
+  tools/runtime-metadata.test.mjs names the engine's source (s:{'out.js':{inputs:{ '../engine/src/v)
+  tools/runtime-metadata.test.mjs names the engine's source (:{bytesInOutput:100}, '../engine/src/c)
+  tools/runtime-metadata.test.mjs names the engine's source (rtRuntimeMetadata(meta), ['../engine/src/v)
+  tools/runtime-metadata.test.mjs names the engine's source (.outputs['out.js'].inputs['../engine/src/c)
+  tools/runtime-metadata.test.mjs names the engine's source (outputs['out.js'].inputs={'../engine/src/c)

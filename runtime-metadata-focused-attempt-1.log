@@ -1,0 +1,12 @@
+✔ actual browser entry emits no catalog loader or gameplay modules (77.1768ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.3852ms)
+✔ normal static generator still validates and exports identical data (253.9044ms)
+✔ normal static generator rejects malformed catalog before writing (100.2558ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 492.4052
