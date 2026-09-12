@@ -2413,3 +2413,13 @@ dependency. No user maps/art change. Text boards consume direct initial facts.
 The V2 receipt records red evidence, representation fixture changes, old-source
 comparison, package publication and final gate status. Human visual acceptance
 remains separate. Existing LOS/tooling verdicts are not rewritten.
+
+## 2026-09-11 — readonly viewer direct-map initialization
+
+Authorized V2 migration item viewer.direct-map-initialization prepares exact initial
+map facts before mounting/dropping a battle. Registry fallback requires matching
+identity and dimensions and only applies when exact terrain is omitted. Initial
+facts are required; no V1 mount API branch. All events remain available to fold.
+The engine owns presentation geometry and exact distance access; static quadratic
+byte tables are retired. Combat/state/event contracts and .12 rules do not change.
+Implementation evidence and remaining verification: V2-VIEWER-DIRECT-MAP.md.

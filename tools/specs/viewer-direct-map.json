@@ -1,0 +1,9 @@
+{
+ "id":"viewer.direct-map-initialization", "kind":"viewer", "shape":"plumbing",
+ "needs":["terrain.authored-high-props"],
+ "spec":"Prepare detached engine-owned presentation geometry from authoritative initial map facts before mounting a battle or replacing a dropped export. Exact distance access supports bounded arbitrary boards without quadratic tables.",
+ "expect":"Unknown IDs, resized known IDs and changed ground/props mount through the same passive component. Invalid facts reject before replacement; initial events, seek/step parity, registered CLI bytes, all existing replays and controls remain unchanged. Thin 1x300 distances and 10000-cell preparation stay exact and bounded.",
+ "probeIds":["test.map.high-prop-single","test.map.high-prop-multi"],
+ "changesBaseline":false,
+ "note":"Readonly presentation boundary only, no combat rules or event changes; canonical event props allow normalized shorthand IDs, raw authoring retains its existing stricter boundary. No registry mutation or new exemptions."
+}

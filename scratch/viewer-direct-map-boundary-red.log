@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/viewer-direct-map.test.ts (23 tests | 1 failed | 22 skipped) 5ms
+     × matches the authored boundary: nonempty direct IDs and distinct deploy edges 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/viewer-direct-map.test.ts > readonly initial field preparation > matches the authored boundary: nonempty direct IDs and distinct deploy edges
+Error: seed: invalid mapId
+ ❯ initialMapId src/view/field.ts:117:65
+    115|   const seed = record(value, 'seed')
+    116|   const valid = (id: unknown): id is string => typeof id === 'string' …
+    117|   if (Object.hasOwn(seed, 'mapId') && !valid(seed.mapId)) throw new Er…
+       |                                                                 ^
+    118|   if (Object.hasOwn(seed, 'map') && !valid(seed.map)) throw new Error(…
+    119|   if ('mapId' in seed && 'map' in seed && seed.mapId !== seed.map) thr…
+ ❯ prepareBattleField src/view/field.ts:78:17
+ ❯ test/viewer-direct-map.test.ts:88:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 22 skipped (23)
+   Start at  17:07:58
+   Duration  757ms (transform 493ms, setup 0ms, import 615ms, tests 5ms, environment 0ms)
+

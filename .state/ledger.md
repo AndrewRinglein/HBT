@@ -11999,3 +11999,23 @@ effect of test.map.high-prop-single,test.map.high-prop-multi — 25 paired battl
 MEASUREMENT UNAVAILABLE — 2 control(s) lack complete paired evidence
 EFFECT_RESULT {"version":1,"status":"unavailable","unavailable":[{"map":"test.map.high-prop-single","reason":"disabled-control"},{"map":"test.map.high-prop-multi","reason":"disabled-control"}]}
 ```
+
+## viewer.direct-map-initialization — LANDED `c71919e`
+2026-09-12 00:19
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:981 · ..\COMBAT-DESIGN.md:66
+  PASS  typecheck
+  PASS  full test suite — 1292 passed
+  PASS  gate 1 — the id appears in a real battle — test.map.high-prop-single: 1 log lines, 1 fired, 1 changed state · test.map.high-prop-multi: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/fixtures/field-cli-d872c34.json, test/fixtures/field-distance-d872c34.json, test/viewer-direct-map.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.map.high-prop-single,test.map.high-prop-multi — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

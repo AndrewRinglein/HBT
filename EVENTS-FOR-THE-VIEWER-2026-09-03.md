@@ -367,8 +367,9 @@ No new inference about props, elevation, LOS or cover is implied.
 Snapshot restore validates a present exact-terrain payload against the saved map
 identity/dimensions and the same terrain validity rule as saved state. It does
 not demand equality to current mutable terrain. JSON export already transports
-this event unchanged. Viewer adoption and human visual acceptance remain later
-work; this stage establishes and verifies the engine transport contract only.
+this event unchanged. The direct-map stage established engine transport;
+viewer initialization adoption is specified in §17. Human visual acceptance
+remains distinct from the technical contract.
 
 ## 16. Canonical static props (2026-09-11, rules .12)
 
@@ -387,8 +388,36 @@ current and initial props, and rejects numeric OBSTACLE in both ground arrays.
 Initial props are not required to equal future changed current props. No prop
 mutation/destruction events exist in this static stage.
 
-The passive registered-map viewer folds these records and draws a separate prop
-layer; seeking replaces that layer from folded facts. Its mount still requires
-pre-generated geometry. Unknown direct IDs or differing direct dimensions/ground
-remain the explicit viewer-initialization follow-up; never re-fetch a conflicting
-registry map to pretend those facts were rendered correctly.
+The passive viewer folds these records and draws a separate prop layer; seeking
+replaces that layer from folded facts. Initial geometry adoption follows §17;
+never re-fetch a conflicting registry map to replace authoritative facts.
+
+## 17. Initial field preparation (2026-09-11, unchanged rules .12)
+
+`mountBattleViewer` requires initialEvents plus meta.seed before touching host DOM.
+The readonly engine `prepareBattleField` inspects the complete initial map facts,
+validates/detaches them and returns presentation geometry and exact distance access.
+No event is consumed by preparation. Hosts still push the entire original stream,
+including unit equipment and layer paints preceding map.loaded. A live host may
+provide its setup events at mount and then push those events and later batches.
+
+Exact terrain, dimensions and props are authoritative even for a known map ID.
+Only omitted terrain permits `{mapId,field}` registry fallback with matching
+identity/dimensions; explicit malformed terrain cannot fall back. Every current
+map event must carry canonical props. Seed mapId (ordinary/scenario exports) and
+map (proving exports) both work, with conflicts rejected. A present causeId must
+agree with mapId. Deployment and optional seed board/deploy must agree as well.
+
+Push detaches and validates each incoming batch before appending: the one map
+fact must match all prepared fields structurally, independent of object-key order,
+with array order and lengths significant. Duplicate/conflicting facts reject
+without consuming the map slot; corrected retry is allowed. Preparation and push
+never discard earlier events. Timed pump, stepping and seeking share the same fold.
+
+`presentationField` also owns the existing field CLI's exact board-space constants,
+legend and output. Raw rows are retained only as optional authored metadata for
+registered CLI parity, never reconstructed from canonical ground. Distance uses
+engine geometry directly; no static N² byte tables or distance truncation remain.
+This changes presentation preparation, not combat events or snapshot rules.
+Verification and landing status are in V2-VIEWER-DIRECT-MAP.md; root STATE.md owns
+final cross-package publication hashes and human visual acceptance status.

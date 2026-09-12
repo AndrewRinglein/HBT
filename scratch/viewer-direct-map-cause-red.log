@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/viewer-direct-map.test.ts (21 tests | 1 failed | 20 skipped) 6ms
+     × rejects a map cause that contradicts its identity 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/viewer-direct-map.test.ts > readonly initial field preparation > rejects a map cause that contradicts its identity
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/viewer-direct-map.test.ts:74:76
+     72|   })
+     73|   it('rejects a map cause that contradicts its identity',()=>{
+     74|     expect(()=>prepareBattleField([{...fact(),causeId:'map.other'}],se…
+       |                                                                            ^
+     75|   })
+     76| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 20 skipped (21)
+   Start at  17:03:44
+   Duration  630ms (transform 390ms, setup 0ms, import 500ms, tests 6ms, environment 0ms)
+
