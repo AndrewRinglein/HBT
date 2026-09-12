@@ -1,6 +1,6 @@
 # Passive viewer runtime metadata — viewer.runtime-metadata
 
-Nonlanding engine/viewer gates pass; landing and publication remain pending.
+Engine landed and audited. Final viewer publication is tracked by root STATE.
 Base engine 1efb95e, viewer fcae3d2. Root STATE owns final cross-package hashes.
 
 ## Measured problem and boundary
@@ -60,5 +60,21 @@ catalog or mutator output. The previous generated pack alone contributed
 915,775 bytes. These size facts do not claim browser performance. Final clean
 provenance/publication measurement follows after engine landing and audit.
 
+## Final engine verification
+
+Source landed as 5721ffb (the gate printed pre-amend 8f71dc7). The full landing
+and committed-tree rerun passed 1,295 tests and every unchanged control. Separate
+`node tools/audit-all.mjs --label v2-runtime-metadata` also passed all tests,
+typecheck, golden controls, whole-core hardcode and publication checks. Retained
+scratch logs include both the repaired failed attempt and these passing results.
+
+The actual landing warning names only THREE-PACKAGES-PLAN:188; the earlier
+two-candidate output above is retained as historical evidence. Exactly one flag
+withholds the seal. No explicit exemption or user review is claimed. Tool count:
+142 of 174 landed, 46 awaiting review, 13 sealed, 32 pending. Existing seals are
+unchanged. Final viewer tools regenerate from the clean engine receipt/audit
+commit; root STATE owns those final cross-package hashes and page measurement.
+
 Existing snapshot .12, event payloads, controls, catalog publication and user
-maps/art are unchanged. Human visual acceptance remains separate.
+maps/art are unchanged. Human visual acceptance remains separate. This receipt
+does not substitute the passing nonlanding page for final `--land --fresh`.
