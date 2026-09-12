@@ -1,0 +1,4 @@
+
+> typecheck
+> node ../engine/node_modules/typescript/bin/tsc --noEmit
+

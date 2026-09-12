@@ -23,3 +23,4 @@ export { MAPS, terrainOf, terrainIdOf, isPassable, LAYER_IDS, boardOf, deployOf 
    no free hex functions — geometryOf({width, height}) for the board a log's map.loaded names */
 export { geometryOf, FORMATS } from '../../engine/src/core/hex.js'
 export type { Board, Edge, Geometry } from '../../engine/src/core/hex.js'
+export { prepareBattleField, initialMapId } from '../../engine/src/view/field.js'

@@ -6,14 +6,14 @@
    (fold.js) is pure, the draw reads it, and the only thing that passes in is
    the event log plus read-only content.
 
-   data = { field, units, statuses, attacks, abilities, layers, hexDist, artmap, assets, meta }
-     field    — board geometry + terrain for this battle's map (generated/fields.json[mapId])
+   data = { initialEvents, field?, fieldMapId?, units, statuses, actions, layers, artmap, assets, meta }
+     initialEvents — initial engine facts, inspected before DOM mounting and never consumed
+     field/fieldMapId — identity-bound registry ground, only when facts omit exact terrain
      units    — typeId -> unit sheet (generated/static.json.units)
      statuses — statusId -> display name
      actions  — the ONE action registry a grant of any kind resolves against (static.json)
      badges   — badgeId -> {name, statModifiers, grants, flags}
-     layers   — ground layer number -> name (static.json.layers); hexDist — the engine's hex
-                distance tables keyed "WxH", each a Uint8Array of hexCount² (decoded by the host from static.json.hexDist)
+     layers   — ground layer number -> name (static.json.layers)
      artmap   — typeId -> {token, card, aspect, height}; assets — file -> data URI / URL
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
      meta     — {label, seed, engineCommit, outcome, turns} for the HUD; outcome/turns
@@ -30,6 +30,7 @@ import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syn
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
+import { prepareBattleField } from './engine.ts'
 
 /* ── DUR: the clock lives here; events carry order, never duration ──────── */
 export const DUR = { 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'moved': 125,
@@ -62,6 +63,16 @@ const REDRAW = new Set(['attack.declared', 'damage.applied', 'life.dead', 'turn.
    encounter's title and objectives, the map (2026-09-03: was a fixed three) */
 const SEED_END = 'battle.begin'
 
+// Exact data equality, including every field, without imposing object-key order.
+// Incoming facts have already been detached; array order remains significant.
+function sameFact(a, b) {
+  if (Object.is(a, b)) return true
+  if (!a || !b || typeof a !== 'object' || typeof b !== 'object' || Array.isArray(a) !== Array.isArray(b)) return false
+  if (Array.isArray(a) && a.length !== b.length) return false
+  const ak = Object.keys(a), bk = Object.keys(b)
+  return ak.length === bk.length && ak.every(k => Object.hasOwn(b, k) && sameFact(a[k], b[k]))
+}
+
 const TEMPLATE = `
   <div id="left">
     <div id="topbar">
@@ -79,7 +90,11 @@ const TEMPLATE = `
   <div id="panel"></div>`
 
 export function mountBattleViewer(root, data, opts = {}) {
-  const F = data.field
+  // Inspect initial facts before touching the host DOM; every event still folds.
+  const prepared = prepareBattleField(data.initialEvents, data.meta?.seed, { mapId: data.fieldMapId, field: data.field })
+  const F = prepared.field
+  const initialMap = structuredClone(data.initialEvents.find(e => e.type === 'map.loaded'))
+  let pushedMap = false
   const now = opts.now || (() => Date.now())
   root.innerHTML = TEMPLATE
   const q = s => root.querySelector(s)
@@ -91,13 +106,10 @@ export function mountBattleViewer(root, data, opts = {}) {
      field dump (and map.loaded says the same); nothing here assumes 16×16 */
   if (F.width == null || F.height == null) throw new Error('mountBattleViewer: the field carries no width/height — regenerate generated/fields.json at engine ≥ 5603c40')
   const LAYOUT = { W: F.hexW, H: F.hexH, COL: F.colStep, ROW: F.rowStep, ODD: F.oddOffset, COLS: F.width, ROWS: F.height, tilt: F.tilt }
-  /* the hex distance table for THIS board — a hex id means nothing without its board (§10) */
-  const boardKey = F.width + 'x' + F.height
-  const DIST = data.hexDist && data.hexDist[boardKey]
   const V = {
     dom, now,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses,
-      LAYERS: data.layers || {}, DIST: DIST || null, BOARD: { width: F.width, height: F.height },
+      LAYERS: data.layers || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
@@ -109,8 +121,6 @@ export function mountBattleViewer(root, data, opts = {}) {
     playing: false, speed: 1, timer: null, invalid: null,
   }
   const ctx = () => ({ UD: V.data.UD, SN: V.data.SN })
-  /* the board objects need the distance table; a host that forgot it is told (Law 1) */
-  if (!V.data.DIST) throw new Error(`mountBattleViewer: data.hexDist has no table for the ${boardKey} board — decode generated/static.json .hexDist (the engine's per-board hex distance tables) and pass them`)
   /* the BEAT clock: wall time scaled by playback speed, so a row that lights
      for 1600 beat-ms lights for the same number of beats at ×⅓ and ×4. The fold
      stamps its `until`s from this, and the draw compares against it. */
@@ -255,8 +265,22 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (V.playing) V.timer = setTimeout(step, 120)
   }
   function push(events) {
+    if (!Array.isArray(events)) throw new Error('push requires an event array')
+    const incoming = structuredClone(events)
+    let sawMap = pushedMap
+    // Validate the incoming batch atomically; a rejected batch permits a corrected
+    // retry. Never rescan accumulated history, skip setup events, or consume facts.
+    for (const e of incoming) {
+      if (e.type === 'map.loaded') {
+        if (sawMap || !sameFact(e, initialMap)) throw new Error('pushed initial map differs from prepared facts or is duplicated')
+        sawMap = true
+      }
+      if (e.type === 'battle.begin' && !sawMap) throw new Error('battle began before initial map facts')
+    }
     const first = V.EV.length === 0
-    for (const e of events) V.EV.push(e)
+    // Input ownership ends here: later host edits cannot corrupt a seek.
+    for (const e of incoming) V.EV.push(e)
+    pushedMap = sawMap
     if (first) {
       /* seed the roster instantly: everything through battle.begin (the setup's
          unit.enters, their kit, the encounter's title, the map). A log with no

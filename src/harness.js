@@ -8,19 +8,11 @@
    ══════════════════════════════════════════════════════════════════════════ */
 import { mountBattleViewer } from './viewer.js'
 import { buildLog } from './log.js'
+import { prepareBattleField, initialMapId } from './engine.ts'
 
 /* the engine's six Outcome arms (core/types.ts, 2026-09-03), in words */
 const OUTNAME = { heroClear: 'heroes win', wipe: 'heroes wiped', capped: 'capped',
   objectiveMet: 'objective met', objectiveFailed: 'objective failed', retreat: 'heroes retreated' }
-
-/** the engine's per-board hex distance tables, dumped as base64 keyed "WxH" (static.json .hexDist) → bytes */
-export function decodeHexDist(tables) {
-  if (!tables) return null
-  const out = {}
-  for (const [k, b64] of Object.entries(tables)) { const bin = atob(b64), u = new Uint8Array(bin.length)
-    for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); out[k] = u }
-  return out
-}
 
 /** lib = { static:{units,statuses,engineCommit}, fields:{mapId:field}, art:{artmap,assets},
            battles:[{label, battle}], stamp:{viewer, engine, built} } */
@@ -47,14 +39,15 @@ export function startHarness(mountEl, lib) {
       <button class="tbtn" id="logBtn">log</button>`
   const logbox = document.createElement('div'); logbox.id = 'logbox'; logbox.style.display = 'none'
 
-  const hexDist = decodeHexDist(lib.static.hexDist)
   function battleData(b) {
-    const mapId = b.battle.seed.mapId
+    const mapId = initialMapId(b.battle.seed)
     const field = lib.fields[mapId]
-    if (!field) throw new Error(`no field geometry for ${mapId} — generated/fields.json must hold every map`)
+    // Validate before disposing the current view. The component uses this same
+    // engine-owned preparation for hosts outside the standalone page.
+    prepareBattleField(b.battle.events, b.battle.seed, { mapId, field })
     return {
-      field, units: lib.static.units, statuses: lib.static.statuses,
-      actions: lib.static.actions, badges: lib.static.badges, layers: lib.static.layers, hexDist,
+      field, fieldMapId: mapId, initialEvents: b.battle.events, units: lib.static.units, statuses: lib.static.statuses,
+      actions: lib.static.actions, badges: lib.static.badges, layers: lib.static.layers,
       artmap: lib.art.artmap, assets: lib.art.assets, glyphs: lib.glyphs,
       meta: { label: b.label, seed: b.battle.seed, engineCommit: b.battle.engineCommit, outcome: b.battle.outcome, turns: b.battle.turns },
     }
@@ -62,9 +55,10 @@ export function startHarness(mountEl, lib) {
 
   function load(i, extra) {
     const b = extra || lib.battles[i]
+    const data = battleData(b)
     if (viewer) viewer.dispose()
     cur = i
-    viewer = mountBattleViewer(mountEl, battleData(b), {
+    viewer = mountBattleViewer(mountEl, data, {
       onCursor(c, e) { q('#scrub').value = String(c); markLog(c - 1); drawRail(); foot(c) },
       onPlayState: setPlayBtn,
       onDrain() { viewer.pause() },                       // a replay's end reads as paused
@@ -82,7 +76,7 @@ export function startHarness(mountEl, lib) {
     logbox.innerHTML = lines.map(l => `<div class="ln ${l.cls}" data-i="${l.i}">${l.t}</div>`).join('')
     q('#scrub').max = String(EV.length); q('#scrub').value = '0'
     q('#seedline').innerHTML =
-      `seed <span class="mono">${b.battle.seed.replicate ?? '—'} · ${b.battle.seed.mapId} · ${b.battle.seed.enemyCount ?? b.battle.seed.scenarioId ?? ''}</span><br>` +
+      `seed <span class="mono">${b.battle.seed.replicate ?? '—'} · ${initialMapId(b.battle.seed)} · ${b.battle.seed.enemyCount ?? b.battle.seed.scenarioId ?? ''}</span><br>` +
       `engine <span class="mono">${b.battle.engineCommit}</span> · ${EV.length} events`
     const bb = q('#battleBtn'); if (bb) bb.innerHTML = '⚔ ' + b.label + ' &#9662;'
     if (doc) doc.innerHTML = intro(b)
@@ -107,7 +101,7 @@ export function startHarness(mountEl, lib) {
       ? ` <details style="display:inline"><summary style="display:inline;cursor:pointer;color:#8b8778">${enc.gaps.length} gap${enc.gaps.length === 1 ? '' : 's'} the engine named</summary><ul style="margin:6px 0 0 18px;padding:0;color:#8b8778;font-size:12px">${enc.gaps.map(g => `<li>${g}</li>`).join('')}</ul></details>`
       : ''
     return (enc ? `<b>${enc.name}</b> &mdash; ` : '') +
-      `every frame folds out of <b>${bt.events.length} events</b> the engine emitted &mdash; seed ${bt.seed.replicate ?? bt.seed.scenarioId} on <code>${bt.seed.mapId}</code> (${board}${deploy}), ` +
+      `every frame folds out of <b>${bt.events.length} events</b> the engine emitted &mdash; seed ${bt.seed.replicate ?? bt.seed.scenarioId} on <code>${initialMapId(bt.seed)}</code> (${board}${deploy}), ` +
       `engine <code>${bt.engineCommit}</code>, ${OUTNAME[bt.outcome] || bt.outcome} in ${bt.turns} turns.${gaps} Pick another battle from the dropdown, or drop an ` +
       `<code>export-battle.mts</code> file anywhere on the page. Nothing is scripted: HP, movement, statuses, downs and deaths are all read from the log.`
   }
@@ -191,8 +185,7 @@ export function startHarness(mountEl, lib) {
       come through here, so the parse and the validation are tested */
   function playExportText(txt, name = 'dropped export') {
     const b = JSON.parse(txt)
-    if (!b || !Array.isArray(b.events) || !b.seed || !b.seed.mapId) throw new Error('not an export-battle.mts file: needs {seed:{mapId,…}, events, engineCommit, outcome, turns}')
-    if (!lib.fields[b.seed.mapId]) throw new Error(`no board geometry for ${b.seed.mapId} — regenerate generated/fields.json`)
+    if (!b || !Array.isArray(b.events) || !b.seed) throw new Error('not an export-battle.mts file: needs seed and events')
     load(cur, { label: String(name).replace(/\.json$/, ''), battle: b })
     return b
   }

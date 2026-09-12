@@ -1,0 +1,28 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+maps: 22 in the engine, all in both dumps
+OK — 23 battles fold end to end · pure fold == pumped fold · icons 4 used · rows damaging=645 plain=3651
+✔ actual drop uses unknown initial geometry and preserves every event (641.4223ms)
+✔ actual drop uses resized initial geometry and preserves every event (633.5389ms)
+✔ actual drop uses changed initial geometry and preserves every event (541.9974ms)
+✔ malformed dropped initial facts leave current viewer intact (487.4293ms)
+✔ component requires initial facts before mutating its host (158.0522ms)
+✔ component rejects a pushed map that differs from prepared initial facts (525.1907ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (965.6306ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (508.3496ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (502.5003ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (576.2054ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (549.9954ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (524.9529ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6699.8415
+built C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.html · 10.0 MB · viewer b465fe5* · engine d872c34* · sheets d872c34* · fields d872c34 · 23 battles · * = from a dirty tree
+check only — BATTLE-VIEWER.html untouched (pass --land to write it)
+GATE OK

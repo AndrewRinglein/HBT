@@ -51,7 +51,7 @@ The clock is the pump's. The fold is pure — state × event → state, plus cue
 
 > *"Legends derive, never hand-typed. TEFFECT comes from the engine's field table at build."* — `VFX/PLAYBACK-DESIGN.md:110`
 
-Terrain effects, status names, unit sheets, board geometry: all generated from the engine through the door, into `generated/`, never typed into the viewer. `generated/` is never hand-edited.
+Terrain effects, status names and unit sheets are generated from the engine through the door into `generated/`, never typed into the viewer. Board geometry is prepared by the engine's readonly field helper through the same door, from authoritative initial facts or matching registered field data; exact distances use its accessor. `generated/` is never hand-edited.
 
 *Caught by:* `generated/static.json` and `generated/fields.json` are written by `tools/dump-static.mts` and `tools/dump-fields.mjs` through the door, each stamped with the engine commit it read; `gate.mjs` checks both against the engine's live map list; `verify.mjs` fails if the two dumps carry different engine commits; the page header prints the viewer, engine, sheet and field commits with a `*` for a dirty tree, and carries no build timestamp, so the same sources build the same bytes and `git diff --quiet BATTLE-VIEWER.html` says whether the page is current. (A hand edit of a dump is still not caught mechanically.)
 

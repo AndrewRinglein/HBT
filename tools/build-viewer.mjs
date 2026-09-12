@@ -51,9 +51,6 @@ for (const [tid, a] of Object.entries(manifest.artmap)) {
 if (!manifest.artmap._pending) throw new Error('artmap has no _pending standee — rerun tools/prep-art.py')
 const library = JSON.parse(readFileSync('battles/library.json', 'utf8'))
 const battles = library.battles.map(({ file, label }) => ({ label, battle: JSON.parse(readFileSync(join('battles', file), 'utf8')) }))
-for (const b of battles) {
-  if (!fields[b.battle.seed.mapId]) throw new Error(`${b.label}: no field for ${b.battle.seed.mapId} in generated/fields.json`)
-}
 /* the stylesheet: url(art/x) → the inlined asset */
 let css = readFileSync('src/styles.css', 'utf8').replace(/url\(["']?art\/([^"')]+)["']?\)/g, (m, f) => {
   if (!assets[f]) throw new Error(`styles.css references art/${f}, not in generated/art/`)
@@ -82,7 +79,7 @@ const { outputFiles, warnings } = esbuild.buildSync({
          badge table (§12). The `attacks`/`abilities` views are a PROVEN SUBSET of `actions` and were
          shipped unread for a day: 155 KB of the page for nothing (REVIEW §D9, 2026-09-04). */
       actions: statics.actions, badges: statics.badges,
-      layers: statics.layers, hexDist: statics.hexDist }),
+      layers: statics.layers }),
     __BUNDLED_FIELDS__: JSON.stringify(Object.fromEntries(Object.entries(fields).filter(([k]) => !k.startsWith('_')))),
     __BUNDLED_ART__: JSON.stringify({ artmap: manifest.artmap, assets }),
     __BUNDLED_BATTLES__: JSON.stringify(battles),
@@ -104,6 +101,7 @@ const tmp = join(PKG, '.build', 'BATTLE-VIEWER.candidate.html')
 writeFileSync(tmp, page)
 try {
   execFileSync('node', ['tools/verify.mjs', tmp], { stdio: 'inherit' })
+  execFileSync('node', ['--test', 'tools/direct-map.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
 } catch (e) {
   console.error(`build-viewer: verify FAILED — ${OUT} left untouched; the candidate is at ${tmp}`)
   process.exit(1)

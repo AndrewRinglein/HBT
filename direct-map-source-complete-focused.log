@@ -1,0 +1,20 @@
+✔ actual drop uses unknown initial geometry and preserves every event (1263.5316ms)
+✔ actual drop uses resized initial geometry and preserves every event (620.949ms)
+✔ actual drop uses changed initial geometry and preserves every event (534.1482ms)
+✔ malformed dropped initial facts leave current viewer intact (507.9142ms)
+✔ component requires initial facts before mutating its host (219.5769ms)
+✔ component rejects a pushed map that differs from prepared initial facts (545.4083ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (972.4918ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (512.1442ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (524.4692ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (582.5066ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (503.0206ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (502.5457ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7407.5611

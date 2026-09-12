@@ -1,0 +1,75 @@
+✖ actual drop uses unknown initial geometry and preserves every event (598.8198ms)
+✖ actual drop uses resized initial geometry and preserves every event (2399.6172ms)
+✖ actual drop uses changed initial geometry and preserves every event (515.0159ms)
+✖ malformed dropped initial facts leave current viewer intact (495.4682ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4100.2767
+
+✖ failing tests:
+
+test at tools\direct-map.test.mjs:21:140
+✖ actual drop uses unknown initial geometry and preserves every event (598.8198ms)
+  Error: alert: Could not play that file: no board geometry for test.map.unregistered — regenerate generated/fields.json
+      at alert (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/fakedom.mjs:114:45)
+      at eval (eval at boot (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:13:3), <anonymous>:5203:9)
+
+test at tools\direct-map.test.mjs:21:140
+✖ actual drop uses resized initial geometry and preserves every event (2399.6172ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  16 !== 13
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:27:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 16,
+    expected: 13,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools\direct-map.test.mjs:21:140
+✖ actual drop uses changed initial geometry and preserves every event (515.0159ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'terrain.open'
+  - 'terrain.water'
+             ^
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:28:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'terrain.open',
+    expected: 'terrain.water',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools\direct-map.test.mjs:35:1
+✖ malformed dropped initial facts leave current viewer intact (495.4682ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:38:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /terrain|field/i,
+    operator: 'throws',
+    diff: 'simple'
+  }

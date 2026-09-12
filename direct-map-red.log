@@ -1,0 +1,66 @@
+✖ actual drop uses unknown initial geometry and preserves every event (590.517ms)
+✖ actual drop uses resized initial geometry and preserves every event (579.8702ms)
+✖ actual drop uses changed initial geometry and preserves every event (483.6264ms)
+✖ malformed dropped initial facts leave current viewer intact (477.1777ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7915.7728
+
+✖ failing tests:
+
+test at tools\direct-map.test.mjs:21:140
+✖ actual drop uses unknown initial geometry and preserves every event (590.517ms)
+  Error: alert: Could not play that file: not an export-battle.mts file: needs {seed:{mapId,…}, events, engineCommit, outcome, turns}
+      at alert (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/fakedom.mjs:114:45)
+      at eval (eval at boot (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:13:3), <anonymous>:5203:9)
+
+test at tools\direct-map.test.mjs:21:140
+✖ actual drop uses resized initial geometry and preserves every event (579.8702ms)
+  Error: alert: Could not play that file: not an export-battle.mts file: needs {seed:{mapId,…}, events, engineCommit, outcome, turns}
+      at alert (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/fakedom.mjs:114:45)
+      at eval (eval at boot (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:13:3), <anonymous>:5203:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+test at tools\direct-map.test.mjs:21:140
+✖ actual drop uses changed initial geometry and preserves every event (483.6264ms)
+  Error: alert: Could not play that file: not an export-battle.mts file: needs {seed:{mapId,…}, events, engineCommit, outcome, turns}
+      at alert (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/fakedom.mjs:114:45)
+      at eval (eval at boot (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:13:3), <anonymous>:5203:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+test at tools\direct-map.test.mjs:35:1
+✖ malformed dropped initial facts leave current viewer intact (477.1777ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /terrain|field/i. Input:
+  
+  'Error: not an export-battle.mts file: needs {seed:{mapId,…}, events, engineCommit, outcome, turns}'
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:38:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: not an export-battle.mts file: needs {seed:{mapId,…}, events, engineCommit, outcome, turns}
+        at Object.playExportText (eval at boot (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:13:3), <anonymous>:5193:77)
+        at file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:38:23
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:38:10)
+        at Test.runInAsyncScope (node:async_hooks:214:14)
+        at Test.run (node:internal/test_runner/test:1106:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+        at Test.postRun (node:internal/test_runner/test:1235:19)
+        at Test.run (node:internal/test_runner/test:1163:12),
+    expected: /terrain|field/i,
+    operator: 'throws',
+    diff: 'simple'
+  }

@@ -34,8 +34,8 @@ node tools/gate.mjs --fresh      also re-export every library battle from ../eng
 node tools/play.mjs <page> <export.json>   play ONE export headlessly: every event type folded/ignored/UNKNOWN, every cue, the final board objects, the first throw (asserts nothing — verify is the gate)
 node tools/build-viewer.mjs [--out path]     the page — refuses to write unless verify passes
 node tools/verify.mjs BATTLE-VIEWER.html     the headless fold of every battle, every surface, every catch (~50s)
-npm run static                   generated/static.json through the door (unit sheets, status names, map list, the attack/ability tables, layer names, the hex distance table; stamped with the engine commit)
-node tools/dump-fields.mjs       generated/fields.json for EVERY map, stamped (interim until viewer.geometry lands in engine/src)
+npm run static                   generated/static.json through the door (unit sheets, status names, map list, attack/ability tables, layer names; stamped with the engine commit)
+node tools/dump-fields.mjs       generated/fields.json for EVERY map, stamped; projection and exact distance access are engine-owned
 python3 tools/prep-art.py [hell-tcg-root]    generated/art/ from the source art + art-src/ (only when art changes; clears orphans)
 npm run typecheck                the door, the sheet and the .mts tools — the .js modules are not typed
 ALLOW_EXEMPTION_GROWTH=1 …       only for the one commit that records a review's discovery of an unmarked computation

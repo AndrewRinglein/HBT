@@ -1,0 +1,17 @@
+✔ actual drop uses unknown initial geometry and preserves every event (699.3295ms)
+✔ actual drop uses resized initial geometry and preserves every event (646.0652ms)
+✔ actual drop uses changed initial geometry and preserves every event (562.4187ms)
+✔ malformed dropped initial facts leave current viewer intact (531.7594ms)
+✔ component requires initial facts before mutating its host (200.7969ms)
+✔ component rejects a pushed map that differs from prepared initial facts (567.9744ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (1116.7318ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (605.5954ms)
+✔ thin direct field has exact engine distances without a stale static table (632.1702ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5651.3839

@@ -1,0 +1,52 @@
+✔ actual drop uses unknown initial geometry and preserves every event (671.1157ms)
+✔ actual drop uses resized initial geometry and preserves every event (654.2733ms)
+✔ actual drop uses changed initial geometry and preserves every event (556.7968ms)
+✔ malformed dropped initial facts leave current viewer intact (524.7449ms)
+✖ component requires initial facts before mutating its host (194.5083ms)
+✖ component rejects a pushed map that differs from prepared initial facts (539.9062ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 4
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3230.7244
+
+✖ failing tests:
+
+test at tools\direct-map.test.mjs:42:1
+✖ component requires initial facts before mutating its host (194.5083ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:46:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /initial/i,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tools\direct-map.test.mjs:49:1
+✖ component rejects a pushed map that differs from prepared initial facts (539.9062ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:53:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /initial|map|prepared/i,
+    operator: 'throws',
+    diff: 'simple'
+  }

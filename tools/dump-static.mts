@@ -6,7 +6,7 @@
 // at runtime. Never hand-edit the output.
 import { writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
-import { allSheets, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, hexDistanceTables } from '../src/sheet.js'
+import { allSheets, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames } from '../src/sheet.js'
 import { MAPS } from '../src/engine.js'
 
 let engineCommit = 'unknown'
@@ -18,6 +18,6 @@ try { dirty = execSync('git -C ../engine status --porcelain', { encoding: 'utf8'
    time; layers: the ground layer names by number (2026-09-03) */
 const out = { engineCommit, engineDirty: dirty, maps: MAPS.map((m) => m.id), units: allSheets(), statuses: statusNames(),
   attacks: attackTable(), abilities: abilityTable(), actions: actionTable(), badges: badgeTable(),
-  layers: layerNames(), hexDist: hexDistanceTables() }
+  layers: layerNames() }
 writeFileSync('generated/static.json', JSON.stringify(out))
 console.log(`static.json: ${out.maps.length} maps · ${Object.keys(out.units).length} units · ${Object.keys(out.statuses).length} statuses · ${Object.keys(out.actions).length} actions · ${Object.keys(out.badges).length} badges · engine ${engineCommit}${dirty ? ' (DIRTY tree)' : ''}`)

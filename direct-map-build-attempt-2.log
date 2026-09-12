@@ -1,0 +1,10 @@
+file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/fakedom.mjs:114
+    addEventListener() {}, alert(m) { throw new Error('alert: ' + m) },
+                                            ^
+
+Error: alert: Could not play that file: initial map cause differs from identity
+    at alert (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/fakedom.mjs:114:45)
+    at eval (eval at <anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/verify.mjs:67:13), <anonymous>:40812:9)
+
+Node.js v24.12.0
+build-viewer: verify FAILED — C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\DIRECT-MAP.html left untouched; the candidate is at C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.candidate.html

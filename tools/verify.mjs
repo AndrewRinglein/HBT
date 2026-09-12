@@ -37,6 +37,9 @@ import fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { makeWindow } from './fakedom.mjs'
+// The readonly engine door is TypeScript in native Node as well as the browser bundle.
+import { register } from '../../engine/node_modules/tsx/dist/esm/api/index.mjs'
+register()
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PKG = resolve(HERE, '..')
@@ -397,7 +400,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
   check(src, `file-drop: no library battle shares a board with any unplayed map (${unplayed.length} unplayed) — the cross-map drop path cannot be tested`)
   if (!src) { src = LIB.battles[0].battle; mapId = src.seed.mapId }
   const noArt = Object.keys(LIB.static.units).find(t => !LIB.art.artmap[t])
-  const events = JSON.parse(JSON.stringify(src.events)).map(e => { if (e.type === 'map.loaded') e.mapId = mapId; return e })
+  const events = JSON.parse(JSON.stringify(src.events)).map(e => { if (e.type === 'map.loaded') { e.mapId = mapId; e.causeId = mapId } return e })
   if (noArt) { const first = events.find(e => e.type === 'unit.enter'); first.typeId = noArt }
   const synthetic = { seed: { ...src.seed, mapId, replicate: 99 }, engineCommit: src.engineCommit, outcome: src.outcome, turns: src.turns, events }
   const file = { name: 'synthetic-drop.json', text: async () => JSON.stringify(synthetic) }
@@ -409,7 +412,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
   try {
     win.document.dispatch('drop', { preventDefault() {}, dataTransfer: { files: [file] } })
     await new Promise(r => setImmediate(r)); await new Promise(r => setImmediate(r))     // the file's text() resolves
-    dropped = !!(H.viewer && H.viewer.events !== beforeDrop && H.viewer.events.length === events.length && H.viewer._V.data.F === LIB.fields[mapId])
+    dropped = !!(H.viewer && H.viewer.events !== beforeDrop && H.viewer.events.length === events.length && JSON.stringify(H.viewer._V.data.F) === JSON.stringify(LIB.fields[mapId]))
     check(dropped, `file-drop: the drop listener did not mount the dropped export (map ${mapId})`)
     if (dropped) { sizeWrap(); const v = drive('dropped export', synthetic, true); check(v && v.cursor === events.length, 'file-drop: the dropped export did not play to the end')
       if (noArt && v) { const E = v._V.layers.UEL.get(events.find(e => e.type === 'unit.enter').actor)
@@ -468,7 +471,8 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
     const ml = EV.find(e => e.type === 'map.loaded')
     check(V.data.BOARD.width === ml.width && V.data.BOARD.height === ml.height, `${b.label}: the field says ${V.data.BOARD.width}×${V.data.BOARD.height}, map.loaded says ${ml.width}×${ml.height}`)
     check(V.data.POS.length === ml.width * ml.height, `${b.label}: ${V.data.POS.length} hex positions for a ${ml.width}×${ml.height} board`)
-    check(V.data.DIST && V.data.DIST.length === (ml.width * ml.height) ** 2, `${b.label}: the distance table is not this board's`)
+    check(typeof V.data.distance === 'function', `${b.label}: the engine distance accessor is missing`)
+    check(V.data.distance(0,0) === 0 && V.data.distance(0,ml.width-1) === ml.width-1, `${b.label}: distance accessor is not bound to this board`)
     check(v.state.board && v.state.board.deploy && v.state.board.deploy.hero === ml.deploy.hero, `${b.label}: the fold did not keep map.loaded's deploy`)
     /* every unit stands on a hex the board has, and the heroes start on their edge */
     const bb = EV.findIndex(e => e.type === 'battle.begin'); const S0 = foldTo(EV, bb + 1, CTX0)
@@ -693,13 +697,13 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
       if (enc) check(V.dom.encchip.textContent === enc.name, `${label}: the encounter chip reads "${V.dom.encchip.textContent}", the encounter is "${enc.name}"`)
       else check(V.dom.encchip.style.display === 'none', `${label}: an encounter chip with no encounter`) }
     /* auras: tiles round every standing holder, from the engine's distance table; none once the holder falls */
-    { const DIST = V.data.DIST, n = V.data.POS.length
+    { const distance = V.data.distance, n = V.data.POS.length
       const holders = Object.values(Send.U).filter(u => ((LIB.static.units[u.typeId] || {}).auras || []).length)
       for (const h of holders.slice(0, 2)) {
         const enter = EV.findIndex(e => e.type === 'unit.enter' && e.actor === h.id)
         const at = Math.max(bb + 1, enter + 1); v.seek(at); v.render()
         const u = v.state.U[h.id]; const auras = LIB.static.units[u.typeId].auras
-        const want = new Set(); for (const a of auras) for (let x = 0; x < n; x++) { const d = DIST[u.hex * n + x]; if (d > 0 && d <= a.radius) want.add(x + '|' + a.side) }
+        const want = new Set(); for (const a of auras) for (let x = 0; x < n; x++) { const d = distance(u.hex, x); if (d > 0 && d <= a.radius) want.add(x + '|' + a.side) }
         const tiles = V.layers.AURA ? V.layers.AURA.size : 0
         /* `===`, not `>=`: a runaway radius or a tile left over from a previous
            frame passed the old assertion while its message claimed equality

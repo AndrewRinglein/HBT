@@ -1,0 +1,20 @@
+✖ custom-map timed pump drains with setup equipment/layers and matches seek (1295.9228ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1381.6675
+
+✖ failing tests:
+
+test at tools\direct-map.test.mjs:114:1
+✖ custom-map timed pump drains with setup equipment/layers and matches seek (1295.9228ms)
+  TypeError: Cannot read properties of undefined (reading 'some')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/direct-map.test.mjs:123:49)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)

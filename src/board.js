@@ -204,21 +204,21 @@ export function corpseGone(V, corpseId, how) {
 
 /* ── AURAS (2026-09-03, §7) — derived on read, never emitted: every STANDING
    holder with `auras` on its sheet tints the hexes within each aura's radius.
-   The radius uses the engine's own hex distance table (generated/static.json
-   .hexDist, dumped through the door) — the viewer draws a ring it was handed,
+   The radius uses the engine's exact distance accessor through the readonly
+   door — the viewer draws a ring with the geometry it was handed,
    it does not re-implement hex geometry. Hostile auras wear the debuff red,
    friendly ones the buff green (theme AURA_HUE). */
 export function syncAuras(V) {
-  const L = V.layers, S = V.S, { UD, POS, LAYOUT, DIST } = V.data
+  const L = V.layers, S = V.S, { UD, POS, LAYOUT, distance } = V.data
   if (!L.auraL) { L.auraL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); placeAfter(L.corpseL || L.layL || L.ground, L.auraL); L.AURA = new Map() }
   const want = new Map()                                   // hex -> {hue, edge}
-  if (DIST) for (const u of Object.values(S.U)) {
+  if (distance) for (const u of Object.values(S.U)) {
     if (u.life !== 'standing') continue
     const auras = (UD[u.typeId] || {}).auras || []
     for (const a of auras) {
       const hue = AURA_HUE[a.side] || AURA_HUE.any
       const n = POS.length
-      for (let h = 0; h < n; h++) { const d = DIST[u.hex * n + h]
+      for (let h = 0; h < n; h++) { const d = distance(u.hex, h)
         /* the key carries `edge` too: a hex that was the rim and is now interior
            must get a NEW tile, or it keeps the bright rim opacity for the rest of
            the battle and the edge smears (REVIEW §C1, 2026-09-04) */
