@@ -1,0 +1,90 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ actual browser entry emits no catalog loader or gameplay modules (115.5631ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.4051ms)
+✔ normal static generator still validates and exports identical data (258.816ms)
+✔ normal static generator rejects malformed catalog before writing (100.9303ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 538.211
+maps: 22 in the engine, all in both dumps
+passive runtime modules: ../engine/src/core/hex.ts, ../engine/src/core/types.ts, ../engine/src/core/props.ts, ../engine/src/content/disable.ts, ../engine/src/content/terrain.ts, ../engine/src/view/field.ts
+OK — 23 battles fold end to end · pure fold == pumped fold · icons 4 used · rows damaging=645 plain=3651
+✔ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (609.9194ms)
+✔ all choices repeatedly load actual battles; imported state clears library selection (1844.588ms)
+✔ unbound battle mount honestly retains accurate 2D without inventing an Atlas linkage (187.9898ms)
+✔ published player exposes all authored maps and journey areas outside the scaled battle, without changing selected battle (202.3032ms)
+✔ explicit presentation binding mounts with original events and display heights; invalid binding preserves current viewer (547.2724ms)
+✔ native verifier import resolves host-owned Three only for Atlas without eager texture loads (81.0489ms)
+✔ packed catalog/listings/layouts exactly preserve live sources; no GLB skins or embedded catalog models (48.4805ms)
+✔ binding is explicit, validates active area/dimensions/identity and detaches snapshot plus catalog (64.9263ms)
+✔ resource URLs resolve actual catalog files and reject outside paths; file opening is actionable (1.1451ms)
+✔ authored light shadow camera uses reference full-map extent and updates its real projection (28.0873ms)
+✔ actual Three world-to-CSS camera preserves authored placement, active-area origin, clip depth and upward winding (20.8007ms)
+✔ partial texture failure disposes successful peers and can retry (0.5438ms)
+✔ shared assembly loads exact authored jobs; cancellation releases late source model and all textures (33.4894ms)
+✔ unbound layer never starts a renderer; late disposal/failure restores 2D and display heights without state mutation (5.7993ms)
+✔ real Three driver preserves world geometry/lights, draws only changes, and releases switched scene (12.9064ms)
+✔ inspection uses latest editable map dimensions and ignores stale index bounds; switching and late loads are isolated (72.4229ms)
+✔ inspection ignores a superseded pending map load and disposes each actual driver exactly once (23.1646ms)
+✔ actual inspector driver builds the selected journey area, preserves perspective controls and disposes camera resources (23.47ms)
+✔ display heights lift corpses and each movement keyframe, then reset without changing folded hexes (0.613ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3516.9252
+✔ actual drop uses unknown initial geometry and preserves every event (742.3975ms)
+✔ actual drop uses resized initial geometry and preserves every event (728.5709ms)
+✔ actual drop uses changed initial geometry and preserves every event (542.773ms)
+✔ malformed dropped initial facts leave current viewer intact (527.5156ms)
+✔ component requires initial facts before mutating its host (191.573ms)
+✔ component rejects a pushed map that differs from prepared initial facts (524.1868ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (970.0056ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (529.875ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (537.7994ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (579.8664ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (525.036ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (521.9353ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7012.6304
+built C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\BATTLE-VIEWER.html · 13.0 MB · viewer 5b581f4 · engine 0bfa0c9 · sheets 0bfa0c9 · fields 0bfa0c9 · 23 battles
+fresh: Horde 24×24 — the river — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Supper (seed 5) — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Embers — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Showcase — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Flanks — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Thicket — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Field — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Highlands — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Civilians — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Hunter Alone — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Prologue Bestiary — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Beasts — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Alpha Team — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Item Powers — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Arc Golem — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: The Kiln — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Horrors of the Night — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Surrounded (seed 3) — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Assembled Party — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Dungeon 16×8 (heroes west) — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Duel 8×8 — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Rime — repeated affliction — byte-identical events (0bfa0c9 → 0bfa0c9)
+fresh: Ranged-only reaction — no melee attack — byte-identical events (0bfa0c9 → 0bfa0c9)
+GATE OK
