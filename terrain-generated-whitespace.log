@@ -1,0 +1,52 @@
+BATTLE-VIEWER.html:7020: space before tab in indent.
++    	 * Creates a perspective projection matrix. This is used internally by
+BATTLE-VIEWER.html:7021: space before tab in indent.
++    	 * {@link PerspectiveCamera#updateProjectionMatrix}.
+BATTLE-VIEWER.html:7022: trailing whitespace.
++    
+BATTLE-VIEWER.html:7023: space before tab in indent.
++    	 * @param {number} left - Left boundary of the viewing frustum at the near plane.
+BATTLE-VIEWER.html:7024: space before tab in indent.
++    	 * @param {number} right - Right boundary of the viewing frustum at the near plane.
+BATTLE-VIEWER.html:7025: space before tab in indent.
++    	 * @param {number} top - Top boundary of the viewing frustum at the near plane.
+BATTLE-VIEWER.html:7026: space before tab in indent.
++    	 * @param {number} bottom - Bottom boundary of the viewing frustum at the near plane.
+BATTLE-VIEWER.html:7027: space before tab in indent.
++    	 * @param {number} near - The distance from the camera to the near plane.
+BATTLE-VIEWER.html:7028: space before tab in indent.
++    	 * @param {number} far - The distance from the camera to the far plane.
+BATTLE-VIEWER.html:7029: space before tab in indent.
++    	 * @param {(WebGLCoordinateSystem|WebGPUCoordinateSystem)} [coordinateSystem=WebGLCoordinateSystem] - The coordinate system.
+BATTLE-VIEWER.html:7030: space before tab in indent.
++    	 * @param {boolean} [reversedDepth=false] - Whether to use a reversed depth.
+BATTLE-VIEWER.html:7031: space before tab in indent.
++    	 * @return {Matrix4} A reference to this matrix.
+BATTLE-VIEWER.html:7032: space before tab in indent.
++    	 */
+BATTLE-VIEWER.html:7073: space before tab in indent.
++    	 * Creates a orthographic projection matrix. This is used internally by
+BATTLE-VIEWER.html:7074: space before tab in indent.
++    	 * {@link OrthographicCamera#updateProjectionMatrix}.
+BATTLE-VIEWER.html:7075: trailing whitespace.
++    
+BATTLE-VIEWER.html:7076: space before tab in indent.
++    	 * @param {number} left - Left boundary of the viewing frustum at the near plane.
+BATTLE-VIEWER.html:7077: space before tab in indent.
++    	 * @param {number} right - Right boundary of the viewing frustum at the near plane.
+BATTLE-VIEWER.html:7078: space before tab in indent.
++    	 * @param {number} top - Top boundary of the viewing frustum at the near plane.
+BATTLE-VIEWER.html:7079: space before tab in indent.
++    	 * @param {number} bottom - Bottom boundary of the viewing frustum at the near plane.
+BATTLE-VIEWER.html:7080: space before tab in indent.
++    	 * @param {number} near - The distance from the camera to the near plane.
+BATTLE-VIEWER.html:7081: space before tab in indent.
++    	 * @param {number} far - The distance from the camera to the far plane.
+BATTLE-VIEWER.html:7082: space before tab in indent.
++    	 * @param {(WebGLCoordinateSystem|WebGPUCoordinateSystem)} [coordinateSystem=WebGLCoordinateSystem] - The coordinate system.
+BATTLE-VIEWER.html:7083: space before tab in indent.
++    	 * @param {boolean} [reversedDepth=false] - Whether to use a reversed depth.
+BATTLE-VIEWER.html:7084: space before tab in indent.
++    	 * @return {Matrix4} A reference to this matrix.
+BATTLE-VIEWER.html:7085: space before tab in indent.
++    	 */
