@@ -1,0 +1,17 @@
+✔ packed catalog/listings/layouts exactly preserve live sources; no GLB skins or embedded catalog models (43.2162ms)
+✔ binding is explicit, validates active area/dimensions/identity and detaches snapshot plus catalog (53.146ms)
+✔ resource URLs resolve actual catalog files and reject outside paths; file opening is actionable (0.2854ms)
+✔ actual Three world-to-CSS camera preserves authored placement, active-area origin, clip depth and upward winding (18.2863ms)
+✔ partial texture failure disposes successful peers and can retry (0.6404ms)
+✔ shared assembly loads exact authored jobs; cancellation releases late source model and all textures (28.4635ms)
+✔ unbound layer never starts a renderer; late disposal/failure restores 2D and display heights without state mutation (4.937ms)
+✔ real Three driver preserves world geometry/lights, draws only changes, and releases switched scene (12.4497ms)
+✔ inspection uses latest editable map dimensions and ignores stale index bounds; switching and late loads are isolated (62.8642ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 430.2694

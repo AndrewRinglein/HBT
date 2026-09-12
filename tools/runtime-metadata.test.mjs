@@ -12,7 +12,7 @@ const enginePath = file => ['..','engine','src',file].join('/')
 
 test('actual browser entry emits no catalog loader or gameplay modules', () => {
   const define = Object.fromEntries(['STATIC','FIELDS','ART','BATTLES','GLYPHS','STAMP'].map(k => ['__BUNDLED_'+k+'__', '{}']))
-  const result = esbuild.buildSync({entryPoints:['src/main.js'], bundle:true, write:false,
+  const result = esbuild.buildSync({entryPoints:['src/main.js'],nodePaths:['node_modules'], bundle:true, write:false,
     format:'iife', platform:'browser', metafile:true, define})
   const emitted = Object.values(result.metafile.outputs).flatMap(o => Object.entries(o.inputs)
     .filter(([,v]) => v.bytesInOutput > 0).map(([p]) => p.replaceAll('\\','/')))

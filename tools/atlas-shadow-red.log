@@ -1,0 +1,31 @@
+✖ authored light shadow camera uses reference full-map extent and updates its real projection (28.7114ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 257.0343
+
+✖ failing tests:
+
+test at tools\terrain-scene.test.mjs:30:1
+✖ authored light shadow camera uses reference full-map extent and updates its real projection (28.7114ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  -52 !== -62.4
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/terrain-scene.test.mjs:34:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: -52,
+    expected: -62.4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

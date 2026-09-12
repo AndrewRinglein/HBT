@@ -26,6 +26,7 @@
              speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
 import { terrainLayer } from './terrain3d.js'
+import {prepareAtlasBinding} from './atlas.js'
 import { createState, fold, foldTo } from './fold.js'
 import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
 import { drawPanel } from './panel.js'
@@ -94,6 +95,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   // Inspect initial facts before touching the host DOM; every event still folds.
   const prepared = prepareBattleField(data.initialEvents, data.meta?.seed, { mapId: data.fieldMapId, field: data.field })
   const F = prepared.field
+  const atlas = prepareAtlasBinding(data.atlasScene, data.atlasCatalog, F)
   const initialMap = structuredClone(data.initialEvents.find(e => e.type === 'map.loaded'))
   let pushedMap = false
   const now = opts.now || (() => Date.now())
@@ -111,7 +113,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     dom, now,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses,
       LAYERS: data.layers || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
-      ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, terrainAssets: data.terrainAssets },
+      ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
     view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },

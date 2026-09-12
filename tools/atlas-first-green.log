@@ -1,0 +1,11 @@
+✔ terrain publication carries the actual Atlas catalog instead of four tile skins (86.2097ms)
+✔ the player offers visible authored Atlas map and journey area inspection (0.2976ms)
+✔ unbound battles do not invent a boulders-for-every-obstacle scene (0.2117ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.8812

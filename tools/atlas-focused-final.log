@@ -1,0 +1,24 @@
+✔ actual browser entry emits no catalog loader or gameplay modules (120.6032ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.5387ms)
+✔ normal static generator still validates and exports identical data (271.1166ms)
+✔ normal static generator rejects malformed catalog before writing (105.5919ms)
+✔ packed catalog/listings/layouts exactly preserve live sources; no GLB skins or embedded catalog models (45.5765ms)
+✔ binding is explicit, validates active area/dimensions/identity and detaches snapshot plus catalog (58.7368ms)
+✔ resource URLs resolve actual catalog files and reject outside paths; file opening is actionable (0.3044ms)
+✔ authored light shadow camera uses reference full-map extent and updates its real projection (26.1466ms)
+✔ actual Three world-to-CSS camera preserves authored placement, active-area origin, clip depth and upward winding (15.5411ms)
+✔ partial texture failure disposes successful peers and can retry (0.4645ms)
+✔ shared assembly loads exact authored jobs; cancellation releases late source model and all textures (25.1559ms)
+✔ unbound layer never starts a renderer; late disposal/failure restores 2D and display heights without state mutation (5.3145ms)
+✔ real Three driver preserves world geometry/lights, draws only changes, and releases switched scene (12.0542ms)
+✔ inspection uses latest editable map dimensions and ignores stale index bounds; switching and late loads are isolated (66.9196ms)
+✔ inspection ignores a superseded pending map load and disposes each actual driver exactly once (22.1756ms)
+✔ actual inspector driver builds the selected journey area, preserves perspective controls and disposes camera resources (22.8262ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 561.009

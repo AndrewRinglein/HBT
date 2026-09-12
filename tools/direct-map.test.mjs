@@ -20,7 +20,7 @@ function boot() {
       // Focused source bundle, not a published artifact. The full gate always
       // supplies its actual candidate page and never enables this mode.
       lib.static=JSON.parse(readFileSync('generated/static.json','utf8'))
-      sourceCode=require('../../engine/node_modules/esbuild').buildSync({entryPoints:['src/main.js'],bundle:true,write:false,platform:'browser',format:'iife',define:Object.fromEntries(Object.entries({STATIC:lib.static,FIELDS:lib.fields,ART:lib.art,GLYPHS:lib.glyphs,BATTLES:lib.battles,STAMP:lib.stamp}).map(([k,v])=>['__BUNDLED_'+k+'__',JSON.stringify(v)]))}).outputFiles[0].text
+      sourceCode=require('../../engine/node_modules/esbuild').buildSync({entryPoints:['src/main.js'],nodePaths:['node_modules'],bundle:true,write:false,platform:'browser',format:'iife',define:Object.fromEntries(Object.entries({STATIC:lib.static,FIELDS:lib.fields,ART:lib.art,GLYPHS:lib.glyphs,BATTLES:lib.battles,STAMP:lib.stamp}).map(([k,v])=>['__BUNDLED_'+k+'__',JSON.stringify(v)]))}).outputFiles[0].text
     }
     run(sourceCode)
   } else run(m[1])

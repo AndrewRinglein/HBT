@@ -1,0 +1,25 @@
+THREE.WARNING: Multiple instances of Three.js being imported.
+✔ actual drop uses unknown initial geometry and preserves every event (1630.9898ms)
+✔ actual drop uses resized initial geometry and preserves every event (744.5777ms)
+✔ actual drop uses changed initial geometry and preserves every event (595.0112ms)
+✔ malformed dropped initial facts leave current viewer intact (561.1076ms)
+✔ component requires initial facts before mutating its host (194.8046ms)
+✔ component rejects a pushed map that differs from prepared initial facts (573.077ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (981.6141ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (563.731ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (538.2652ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (586.0694ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (519.5554ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (512.8388ms)
+THREE.WARNING: Multiple instances of Three.js being imported.
+✔ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (1657.415ms)
+✔ all choices repeatedly load actual battles; imported state clears library selection (1911.9436ms)
+✔ unbound battle mount honestly retains accurate 2D without inventing an Atlas linkage (224.8786ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8101.0853

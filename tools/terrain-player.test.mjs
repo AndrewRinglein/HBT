@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
 import { createRequire } from 'node:module'
+import {execFileSync} from 'node:child_process'
 import { packTerrainAssets } from './terrain-assets.mjs'
 const require=createRequire(import.meta.url)
 let source
@@ -15,8 +16,8 @@ function boot() {
   if(process.env.VIEWER_SOURCE==='1'){
     if(!source){
       run(m[1]);const lib=w.__battleView.lib;w.__battleView.harness.dispose()
-      const inputs={STATIC:lib.static,FIELDS:lib.fields,ART:lib.art,GLYPHS:lib.glyphs,BATTLES:lib.battles,STAMP:lib.stamp,TERRAIN:packTerrainAssets()}
-      source=require('../../engine/node_modules/esbuild').buildSync({entryPoints:['src/main.js'],bundle:true,write:false,platform:'browser',format:'iife',define:Object.fromEntries(Object.entries(inputs).map(([k,v])=>['__BUNDLED_'+k+'__',JSON.stringify(v)]))}).outputFiles[0].text
+      const inputs={STATIC:lib.static,FIELDS:lib.fields,ART:lib.art,GLYPHS:lib.glyphs,BATTLES:lib.battles,STAMP:lib.stamp,ATLAS:packTerrainAssets()}
+      source=require('../../engine/node_modules/esbuild').buildSync({entryPoints:['src/main.js'],nodePaths:['node_modules'],bundle:true,write:false,platform:'browser',format:'iife',define:Object.fromEntries(Object.entries(inputs).map(([k,v])=>['__BUNDLED_'+k+'__',JSON.stringify(v)]))}).outputFiles[0].text
     }
     run(source)
   }else run(m[1])
@@ -50,10 +51,37 @@ test('all choices repeatedly load actual battles; imported state clears library 
   assert.match(w.document.querySelector('#battleBtn').textContent,/Imported journey/)
   H.dispose()
 })
-test('headless mount honestly exposes unavailable WebGL as visible 2D fallback',()=>{
+test('unbound battle mount honestly retains accurate 2D without inventing an Atlas linkage',()=>{
   const w=boot(),v=w.__battleView.viewer,status=v._V.dom.root.querySelector('#terrainStatus')
   assert.ok(status,'renderer availability must be visible')
-  assert.match(status.textContent,/2D.*WebGL/i)
+  assert.match(status.textContent,/2D.*no authored Atlas scene linked/i)
   assert.equal(v._V.layers.ground.style.visibility,'')
   w.__battleView.harness.dispose()
+})
+
+test('published player exposes all authored maps and journey areas outside the scaled battle, without changing selected battle',async()=>{
+ const w=boot(),H=w.__battleView.harness,d=w.document,events=JSON.stringify(H.viewer.events)
+ await H.atlas.ready
+ assert.ok(d.querySelector('#atlasInspector'));assert.equal(d.querySelector('#screen').contains(d.querySelector('#atlasMapButton')),false)
+ assert.equal(d.querySelector('#atlasMapMenu').children.length,w.__battleView.lib.atlas.index.length)
+ await H.atlas.show('buried-pilgrimage',1);assert.equal(d.querySelector('#atlasAreaMenu').children.length,3)
+ assert.equal(d.querySelector('#atlasAreaMenu').children[1].getAttribute('aria-selected'),'true')
+ assert.match(d.querySelector('#atlasStatus').textContent,/viewer\/start.ps1/)
+ assert.equal(JSON.stringify(H.viewer.events),events);H.dispose()
+})
+
+test('explicit presentation binding mounts with original events and display heights; invalid binding preserves current viewer',async()=>{
+ const w=boot(),B=w.__battleView,H=B.harness
+ // Production engine events on a dimension-matched test board. The attached
+ // Atlas scene tests presentation only; it does not claim Atlas combat geometry.
+ const code=`import {createBattle} from './src/core/setup.ts';import {runBattle} from './src/core/battle.ts';const c=createBattle({replicate:1,map:{id:'test.map.atlas-presentation',name:'Presentation fixture',rows:Array(10).fill('.'.repeat(20))},heroes:['alpha-lucius'],enemies:['unit.fire-imp'],heroHexes:[97],enemyHexes:[199]});const r=runBattle(c);console.log(JSON.stringify({seed:{mapId:'test.map.atlas-presentation',replicate:1},events:c.events,engineCommit:'fixture',outcome:r.outcome,turns:r.turns}));`
+ const battle=JSON.parse(execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','-e',code],{cwd:'../engine',encoding:'utf8'}));battle.atlasScene={mapId:'sunken-priory-study'}
+ const data=H.battleData({label:'Presentation binding fixture',battle}),host=w.document.createElement('div');w.document.body.appendChild(host)
+ let failure;const v=B.mount(host,data,{autoplay:false,terrainDriver:(_V,fail)=>{failure=fail;return{ready:Promise.resolve(),dispose(){}}}})
+ v.push(battle.events);await Promise.resolve();await Promise.resolve();assert.deepEqual(v.events,battle.events)
+ assert.ok(v._V.data.displayHeights[97]>50,'authored raised sanctuary height is applied outside folded state')
+ const unit=Object.values(v.state.U).find(u=>u.side==='hero'),node=v._V.layers.UEL.get(unit.id).root;assert.match(node.style.transform,/translateZ/)
+ const saved=JSON.stringify(v.state);failure(Error('test context loss'));assert.equal(v._V.data.displayHeights,null);assert.equal(node.style.transform,'');assert.equal(JSON.stringify(v.state),saved)
+ const before=H.viewer,bad=structuredClone(battle);bad.atlasScene.mapId='floodgates';assert.throws(()=>H.playExport(bad),/engine board/);assert.equal(H.viewer,before)
+ v.dispose();H.dispose()
 })

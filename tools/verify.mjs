@@ -39,7 +39,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { makeWindow } from './fakedom.mjs'
 // The readonly engine door is TypeScript in native Node as well as the browser bundle.
 import { register } from '../../engine/node_modules/tsx/dist/esm/api/index.mjs'
+import {registerAtlasDependency} from './atlas-node.mjs'
 register()
+registerAtlasDependency()
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PKG = resolve(HERE, '..')

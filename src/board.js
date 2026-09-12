@@ -16,6 +16,7 @@ const svgEl = t => document.createElementNS('http://www.w3.org/2000/svg', t)
 /** insert `node` right after `ref` (insertBefore only: the headless DOM has no after()) */
 const placeAfter = (ref, node) => ref.parentNode.insertBefore(node, ref.nextSibling || null)
 export const feetOf = (V, hex) => ({ x: V.data.POS[hex].px, y: V.data.POS[hex].py + V.data.LAYOUT.H * 0.28 })
+export const heightOf = (V, hex) => V.data.displayHeights?.[hex] || 0
 export const squash = V => Math.cos(V.data.LAYOUT.tilt * Math.PI / 180)
 
 /* ── keyframes the tokens and floats use (once per document) ─────────── */
@@ -152,8 +153,9 @@ export function syncLayers(V) {
   const want = S.layers || {}
   for (const [hex, E] of L.LAY) if (want[hex] !== E.layer) { E.node.remove(); L.LAY.delete(hex) }
   for (const [hex, layer] of Object.entries(want)) {
-    if (L.LAY.has(+hex)) continue
+    if (L.LAY.has(+hex)) { L.LAY.get(+hex).node.style.transform = `translateZ(${heightOf(V, +hex)}px)`; continue }
     const node = layerTile(V, +hex, layer)
+    node.style.transform = `translateZ(${heightOf(V, +hex)}px)`
     L.layL.appendChild(node); L.LAY.set(+hex, { layer, node })
   }
 }
@@ -176,10 +178,11 @@ export function syncCorpses(V) {
      `cancelBeats` drops the leavers, so a seek is still instant. */
   for (const [id, E] of L.CORPSE) if (!want[id] && !E.leaving) { E.node.remove(); L.CORPSE.delete(id) }
   for (const c of Object.values(want)) {
-    if (L.CORPSE.has(c.id)) continue
+    if (L.CORPSE.has(c.id)) { L.CORPSE.get(c.id).node.style.transform = `translateZ(${heightOf(V, c.hex)}px)`; continue }
     const a = ARTMAP[c.typeId] || ARTMAP._pending
     const f = feetOf(V, c.hex)
     const root = el('corpse', `left:${f.x}px;top:${f.y}px`)
+    root.style.transform = `translateZ(${heightOf(V, c.hex)}px)`
     root.dataset.corpse = String(c.id)
     const ch = Math.round(150 * 1.60 * ((a.height || 1.55) / 1.55) * 0.55 * 0.6)
     const cw = Math.round(ch * a.aspect)
@@ -259,7 +262,7 @@ export function pushFloat(V, hex, text, col, o = {}) {
   const slot = (L.FLOAT_SLOTS[hex] = (L.FLOAT_SLOTS[hex] ?? -1) + 1)
   const life = o.crit ? 1900 : o.big ? 1500 : 1200
   const wrap = el('bb', `left:${p.px}px;top:${p.py}px`)
-  wrap.style.transform = 'rotateX(var(--anti)) translateZ(150px)'
+  wrap.style.transform = (V.data.displayHeights ? `translateZ(${heightOf(V, hex)}px) ` : '') + 'rotateX(var(--anti)) translateZ(150px)'
   /* units stand taller than the hex — floats start another half-hex above the head */
   if (o.crit) {
     /* rung 2: the numeral IS the crit — bigger, gold-rimmed, snaps in with an
@@ -364,7 +367,7 @@ export function traverse(V, id, startHex, path, dur) {
   const cum = [0]
   for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y))
   const total = cum[cum.length - 1] || 1
-  const kf = pts.map((p, i) => ({ left: p.x + 'px', top: p.y + 'px', offset: cum[i] / total }))
+  const kf = pts.map((p, i) => ({ left: p.x + 'px', top: p.y + 'px', ...(V.data.displayHeights ? {transform:`translateZ(${heightOf(V, [startHex,...path][i])}px)`} : {}), offset: cum[i] / total }))
   if (E.walk) E.walk.cancel()
   E.root.style.transition = 'none'
   const a = E.root.animate(kf, { duration: dur, easing: 'cubic-bezier(.35,0,.2,1)', fill: 'none' })
@@ -554,7 +557,7 @@ export function shove(V, id, from, to, hexes) {
   const dur = dilate(V, Math.min(420, 150 + 90 * Math.max(1, hexes || 1)))
   if (E.walk) E.walk.cancel()
   E.root.style.transition = 'none'
-  const anim = E.root.animate([{ left: a.x + 'px', top: a.y + 'px' }, { left: b.x + 'px', top: b.y + 'px' }],
+  const anim = E.root.animate([{ left: a.x + 'px', top: a.y + 'px', ...(V.data.displayHeights ? {transform:`translateZ(${heightOf(V, from)}px)`} : {}) }, { left: b.x + 'px', top: b.y + 'px', ...(V.data.displayHeights ? {transform:`translateZ(${heightOf(V, to)}px)`} : {}) }],
     { duration: dur, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'none' })
   E.walk = anim
   /* only the current owner clears the slot — see traverse (REVIEW §C4) */
@@ -695,6 +698,7 @@ export function syncUnits(V) {
     let E = L.UEL.get(u.id); if (!E) { E = mkUnit(V, u); L.UEL.set(u.id, E) }
     const f = feetOf(V, u.hex)
     E.root.style.left = f.x + 'px'; E.root.style.top = f.y + 'px'
+    E.root.style.transform = V.data.displayHeights ? `translateZ(${heightOf(V, u.hex)}px)` : ''
     if (u.life === 'dead') {
       /* a corpse, not a disappearance (ruled 2026-08-26) — and since 2026-09-03
          the corpse is the engine's board object (corpse.created), drawn by
@@ -881,7 +885,7 @@ export function drawAim(V) {
   const halo = 'text-shadow:0 2px 5px #000,0 0 14px rgba(0,0,0,.95),0 0 3px #000;'
   const line = (dyOff, html) => {
     const wrap = el('bb', `left:${B.px}px;top:${B.py}px`)
-    wrap.style.transform = 'rotateX(var(--anti)) translateZ(150px)'
+    wrap.style.transform = (V.data.displayHeights ? `translateZ(${heightOf(V, AIM.to)}px) ` : '') + 'rotateX(var(--anti)) translateZ(150px)'
     wrap.appendChild(el('', `position:absolute;left:58px;top:${-150 + dyOff}px;white-space:nowrap;` +
       `font-family:'Barlow Semi Condensed',sans-serif;${halo}pointer-events:none`, html))
     dyn.appendChild(wrap) }

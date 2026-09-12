@@ -9,6 +9,8 @@
 import { mountBattleViewer } from './viewer.js'
 import { buildLog } from './log.js'
 import { prepareBattleField, initialMapId } from './engine.ts'
+import {prepareAtlasBinding} from './atlas.js'
+import {atlasInspector} from './atlas-inspector.js'
 
 /* the engine's six Outcome arms (core/types.ts, 2026-09-03), in words */
 const OUTNAME = { heroClear: 'heroes win', wipe: 'heroes wiped', capped: 'capped',
@@ -44,11 +46,13 @@ export function startHarness(mountEl, lib) {
     const field = lib.fields[mapId]
     // Validate before disposing the current view. The component uses this same
     // engine-owned preparation for hosts outside the standalone page.
-    prepareBattleField(b.battle.events, b.battle.seed, { mapId, field })
+    const prepared = prepareBattleField(b.battle.events, b.battle.seed, { mapId, field })
+    prepareAtlasBinding(b.battle.atlasScene, lib.atlas, prepared.field)
     return {
       field, fieldMapId: mapId, initialEvents: b.battle.events, units: lib.static.units, statuses: lib.static.statuses,
       actions: lib.static.actions, badges: lib.static.badges, layers: lib.static.layers,
       artmap: lib.art.artmap, assets: lib.art.assets, glyphs: lib.glyphs,
+      atlasScene: b.battle.atlasScene, atlasCatalog: lib.atlas,
       meta: { label: b.label, seed: b.battle.seed, engineCommit: b.battle.engineCommit, outcome: b.battle.outcome, turns: b.battle.turns },
     }
   }
@@ -219,6 +223,7 @@ export function startHarness(mountEl, lib) {
   }
   addEventListener('resize', fit); fit()
 
+  const atlas = atlasInspector(q('#doc') || mountEl.parentNode, lib.atlas)
   load(0)
-  return { load, playExport, playExportText, onDrop, battleData, get viewer() { return viewer }, dispose() { dd.remove(); document.removeEventListener('click',outside); document.removeEventListener('drop', onDrop); if (viewer) viewer.dispose() } }
+  return { load, playExport, playExportText, onDrop, battleData, atlas, get viewer() { return viewer }, dispose() { atlas.dispose(); dd.remove(); document.removeEventListener('click',outside); document.removeEventListener('drop', onDrop); if (viewer) viewer.dispose() } }
 }

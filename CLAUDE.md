@@ -26,7 +26,9 @@ as of 2026-09-04).
 
 Build tools run on `../engine/node_modules`. The renderer dependency is pinned
 in this package: run `npm ci --ignore-scripts` to install Three.js from the lockfile.
-The published page embeds it and the selected terrain assets; users need no install.
+The published page embeds it and Atlas metadata. Authored Atlas models/textures
+stream through the existing local Atlas server (`./start.ps1` prints the URL).
+Unbound battles remain fully available in the offline page.
 Python 3 with Pillow is present for the art half.
 
 ```

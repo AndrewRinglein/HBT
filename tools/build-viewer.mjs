@@ -76,8 +76,9 @@ const stamp = {
 const { outputFiles, warnings, metafile } = esbuild.buildSync({
   entryPoints: ['src/main.js'], bundle: true, write: false, format: 'iife', target: 'es2022',
   minify: false, legalComments: 'none', logLevel: 'silent', metafile: true,
+  nodePaths: [resolve(PKG, 'node_modules')],
   define: {
-    __BUNDLED_TERRAIN__: JSON.stringify(packTerrainAssets()),
+    __BUNDLED_ATLAS__: JSON.stringify(packTerrainAssets()),
     __BUNDLED_STATIC__: JSON.stringify({ units: statics.units, statuses: statics.statuses, maps: statics.maps, engineCommit: statics.engineCommit,
       /* `actions` is the ONE registry (§11) — a grant of any kind resolves there — and `badges` the
          badge table (§12). The `attacks`/`abilities` views are a PROVEN SUBSET of `actions` and were

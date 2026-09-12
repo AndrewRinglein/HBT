@@ -1,24 +1,22 @@
-import { readFileSync } from 'node:fs'
-import { resolve, relative, isAbsolute } from 'node:path'
-import { createHash } from 'node:crypto'
-import { fileURLToPath } from 'node:url'
-
-export function inspectGLB(bytes) {
-  if(bytes.length<20 || bytes.readUInt32LE(0)!==0x46546c67 || bytes.readUInt32LE(4)!==2 || bytes.readUInt32LE(8)!==bytes.length) throw new Error('invalid GLB container')
-  const length=bytes.readUInt32LE(12)
-  if(bytes.readUInt32LE(16)!==0x4e4f534a || length>bytes.length-20) throw new Error('invalid GLB JSON')
-  const doc=JSON.parse(bytes.subarray(20,20+length).toString())
-  if(doc.extensionsRequired?.length) throw new Error('terrain asset requires unsupported decoder/extension')
-  for(const row of [...(doc.images||[]),...(doc.buffers||[])]) if(row.uri!==undefined) throw new Error('terrain assets must embed all images and buffers')
-  if(!doc.meshes?.length) throw new Error('terrain asset has no meshes')
-  return doc
-}
-export function packTerrainAssets() {
-  const root=fileURLToPath(new URL('../../assets/terrain-3d/',import.meta.url)), manifest=JSON.parse(readFileSync(new URL('../src/terrain-assets.json',import.meta.url)))
-  return Object.fromEntries(Object.entries(manifest).map(([id,path])=>{
-    const file=resolve(root,path),rel=relative(root,file)
-    if(rel.startsWith('..')||isAbsolute(rel)||!file.endsWith('.glb')) throw new Error('terrain asset outside owned input directory')
-    const bytes=readFileSync(file);inspectGLB(bytes)
-    return [id,{path,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),data:bytes.toString('base64')}]
-  }))
+// Pack authored metadata, never a substituted model set or the whole GLB library.
+import {readFileSync,existsSync} from 'node:fs'
+import {resolve,relative,isAbsolute} from 'node:path'
+import {createHash} from 'node:crypto'
+import {fileURLToPath} from 'node:url'
+import {validateMap} from '../../assets/battle-atlas/schema.mjs'
+export function packTerrainAssets(){
+ const base=fileURLToPath(new URL('../../assets/battle-atlas/',import.meta.url)),assets=resolve(base,'../terrain-3d')
+ const read=file=>JSON.parse(readFileSync(resolve(base,file),'utf8'))
+ const library=read('library.json'),index=read('index.json'),maps={}
+ const ids=new Set();for(const a of library.assets){
+  if(typeof a.id!=='string'||ids.has(a.id))throw Error('Invalid Atlas catalog identity');ids.add(a.id)
+  if(typeof a.file!=='string'||/[\\?#]/.test(a.file))throw Error('Invalid Atlas asset path')
+  const path=resolve(assets,a.file),rel=relative(assets,path)
+  if(rel.startsWith('..')||isAbsolute(rel)||!existsSync(path))throw Error('Atlas asset missing/outside terrain-3d: '+a.file)
+ }
+ for(const row of index){if(typeof row.id!=='string'||!/^[a-z0-9-]+$/.test(row.id)||Object.hasOwn(maps,row.id))throw Error('Invalid Atlas listing')
+  const map=read('maps/'+row.id+'.json');if(map.id!==row.id)throw Error('Atlas map identity mismatch')
+  validateMap(structuredClone(map),map.grid,ids);maps[row.id]=map
+ }
+ const value={library,index,maps};return {...value,sha256:createHash('sha256').update(JSON.stringify(value)).digest('hex')}
 }

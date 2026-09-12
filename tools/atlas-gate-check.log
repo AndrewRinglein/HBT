@@ -1,0 +1,38 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ actual browser entry emits no catalog loader or gameplay modules (122.0794ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.4148ms)
+✔ normal static generator still validates and exports identical data (285.8793ms)
+✔ normal static generator rejects malformed catalog before writing (104.3318ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 580.4846
+maps: 22 in the engine, all in both dumps
+passive runtime modules: ../engine/src/core/hex.ts, ../engine/src/core/types.ts, ../engine/src/core/props.ts, ../engine/src/content/disable.ts, ../engine/src/content/terrain.ts, ../engine/src/view/field.ts
+node:internal/modules/package_json_reader:316
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'three' imported from C:\Users\aring\Desktop\Heroes of Blight and Tragic\assets\battle-atlas\scene.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:316:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:858:18)
+    at defaultResolve (node:internal/modules/esm/resolve:990:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:718:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:735:38)
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+    at resolveBaseSync (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/engine/node_modules/tsx/dist/register-C4vWVmug.mjs:2:10932)
+    at resolveDirectorySync (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/engine/node_modules/tsx/dist/register-C4vWVmug.mjs:2:12238)
+    at resolveTsPathsSync (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/engine/node_modules/tsx/dist/register-C4vWVmug.mjs:2:13445) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.12.0
+build-viewer: verify FAILED — C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.html left untouched; the candidate is at C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.candidate.html
+GATE FAIL — build/verify

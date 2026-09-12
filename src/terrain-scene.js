@@ -1,21 +1,16 @@
-// Presentation only: board coordinates and footprint membership come from the
-// prepared engine field. No movement, sight, elevation or collision rules here.
-export const TERRAIN_ASSET = {
-  'terrain.open':'meadow','terrain.forest':'meadow','terrain.hills':'hill',
-  'terrain.rocky':'hill','terrain.rocky-hills':'hill','terrain.water':'water',
-  'terrain.burning':'meadow','terrain.poisoned':'meadow',
+import * as THREE from 'three'
+import {center} from '../../tools/terrain-workshop/layout-adapter.mjs'
+// One presentation affine for the complete metric scene. Geometry, normals,
+// lights and their attenuation stay in Atlas meters. Only the camera changes.
+export function worldToCSS(binding,field){
+ const sx=field.colStep/(Math.sqrt(3)*1.5),sy=field.rowStep/2.25
+ const p=binding.plan.shift(center(binding.origin.col,binding.origin.row))
+ return new THREE.Matrix4().set(sx,0,0,field.hexes[0].px-p[0]*sx,
+  0,0,sy,field.hexes[0].py-p[2]*sy,0,sx,0,0,0,0,0,1)
 }
-export function terrainScene(field, props) {
-  const ground=field.hexes.map((p,hex)=>{
-    const terrainId=field.terrainIds[hex],asset=TERRAIN_ASSET[terrainId]
-    if(!asset) throw new Error(`3D terrain has no visual treatment for ${terrainId}`)
-    return {hex,x:p.px,y:p.py,terrainId,asset,ceiling:0}
-  })
-  const obstacles=props.flatMap(prop=>prop.footprint.hexes.map(hex=>{
-    const p=field.hexes[hex];if(!p) throw new Error('3D prop has no field position')
-    return {hex,x:p.px,y:p.py,propId:prop.id,material:prop.material,asset:'boulders'}
-  }))
-  return {ground,obstacles}
+export function displayHeights(binding,field){
+ const scale=field.colStep/(Math.sqrt(3)*1.5)
+ return field.hexes.map(p=>binding.plan.heightAtCell(p.c+binding.origin.col,p.r+binding.origin.row)*scale)
 }
 // Column-major CSS homogeneous matrix -> WebGL clip matrix. The stage's
 // layout centre is the viewport centre; CSS transforms act about their actual

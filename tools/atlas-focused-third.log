@@ -1,0 +1,23 @@
+THREE.WARNING: Multiple instances of Three.js being imported.
+✔ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (1458.8601ms)
+✔ all choices repeatedly load actual battles; imported state clears library selection (1801.3918ms)
+✔ unbound battle mount honestly retains accurate 2D without inventing an Atlas linkage (198.1439ms)
+✔ published player exposes all authored maps and journey areas outside the scaled battle, without changing selected battle (218.9376ms)
+✔ explicit presentation binding mounts with original events and display heights; invalid binding preserves current viewer (552.1715ms)
+✔ packed catalog/listings/layouts exactly preserve live sources; no GLB skins or embedded catalog models (45.6636ms)
+✔ binding is explicit, validates active area/dimensions/identity and detaches snapshot plus catalog (58.8276ms)
+✔ resource URLs resolve actual catalog files and reject outside paths; file opening is actionable (0.3442ms)
+✔ actual Three world-to-CSS camera preserves authored placement, active-area origin, clip depth and upward winding (18.8635ms)
+✔ partial texture failure disposes successful peers and can retry (0.6063ms)
+✔ shared assembly loads exact authored jobs; cancellation releases late source model and all textures (29.0968ms)
+✔ unbound layer never starts a renderer; late disposal/failure restores 2D and display heights without state mutation (5.0842ms)
+✔ real Three driver preserves world geometry/lights, draws only changes, and releases switched scene (11.7257ms)
+✔ inspection uses latest editable map dimensions and ignores stale index bounds; switching and late loads are isolated (67.7539ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4327.2796

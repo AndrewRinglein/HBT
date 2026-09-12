@@ -11,6 +11,7 @@ const LIB = {
   glyphs: __BUNDLED_GLYPHS__,
   battles: __BUNDLED_BATTLES__,
   stamp: __BUNDLED_STAMP__,
+  atlas: typeof __BUNDLED_ATLAS__ === 'undefined' ? null : __BUNDLED_ATLAS__,
 }
 const H = startHarness(document.getElementById('screen'), LIB)
 /* the verifier and the console reach the running viewer here */
