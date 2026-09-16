@@ -47,3 +47,9 @@ Candidate full gate passes 1,361 tests, typecheck, both live content probes and
 the kill switch. All 22 control hashes intentionally change and are deferred for
 blessing at landing. Existing ruling candidates and the explicitly documented
 historical-test edit flag withhold the seal; no exemptions were taken.
+
+Landed source is f8e2054 (the gate printed pre-amend 5009cf8). Full landing and
+committed-tree tests/control checks passed: 1,361 tests and 22 intentionally
+updated controls. The seal is withheld for two warning categories (ruling
+candidates and documented historical test edits), with zero exemptions. The
+two-item batch audit follows activation selection.
