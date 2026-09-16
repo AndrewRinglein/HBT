@@ -464,6 +464,10 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [64, 66, 68, 70, 72, 74, 80, 82, 84, 86, 88, 90],
     replicate: 0,
   },
+  'test.damage-packets': {
+    id:'test.damage-packets',note:'Two pure-data ordered packet variants, different types/amounts and physical penetration.',mapId:'map.open',
+    heroes:['test-packet-flame'],heroHexes:[85],enemies:['test-packet-shadow'],enemyHexes:[86],replicate:2,
+  },
   'test.cover-crates': {
     id:'test.cover-crates',note:'TEST target-end low hex cover, passable crates.',mapId:'test.map.cover-crates',
     map:{id:'test.map.cover-crates',name:'Cover crates TEST',rows:['.......','.......','.......'],props:[{id:'prop.crates',height:'low',material:1,footprint:{kind:'hex',hexes:[10]}}]},

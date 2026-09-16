@@ -179,10 +179,15 @@ describe('the branch flip in real battles — Law 4 streams, weighted coin', () 
       const chartCount = branches.filter((b) => b['arm'] === 'chart'
         && !deadTargets.has(b.target)).length
       expect(effects.length).toBeGreaterThanOrEqual(Math.min(1, chartCount) === 1 ? 1 : 0)
-      // damage-arm hits carry crit:true; chart-arm hits never do
+      // V2 packets: crit records confirmation, including chart-only crits.
+      // Keep the damage-arm station assertion; additionally prove each hit's
+      // explicit head count matches its actual preceding branch event.
       for (const h of ctx.events.filter((e) => e.type === 'attack.hit' && e['crit'] === true)) {
+        const branch=[...branches].reverse().find(b=>b.seq<h.seq&&b.actor===h.actor&&b.target===h.target)!
+        expect(branch).toBeDefined()
+        expect(h['critHeads']).toBe(branch['arm']==='damage'?1:0)
         expect((h['ledger'] as { station: string }[]).some((l) => l.station === 'CRIT'),
-          'a damage-arm hit shows the CRIT station in its ledger').toBe(true)
+          'only a damage-arm hit shows the CRIT station in its ledger').toBe(branch['arm']==='damage')
       }
     }
     expect(crits, 'crits happen in real battles now — critEnabled is ON').toBeGreaterThan(0)

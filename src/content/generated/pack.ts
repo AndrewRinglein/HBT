@@ -3500,6 +3500,14 @@ export const UNIT_PACK = {
       "accuracy": -5
     },
     "attack.hand-axe.chop": {
+      "secondaryDamage": [
+        {
+          "id": "critical-rider",
+          "when": "crit",
+          "damageType": "physical",
+          "amount": 4
+        }
+      ],
       "id": "attack.hand-axe.chop",
       "name": "Chop",
       "kind": "melee",
@@ -3932,6 +3940,14 @@ export const UNIT_PACK = {
       "accuracy": 5
     },
     "attack.bane-blade.banishing-blow": {
+      "secondaryDamage": [
+        {
+          "id": "critical-rider",
+          "when": "crit",
+          "damageType": "physical",
+          "amount": 6
+        }
+      ],
       "id": "attack.bane-blade.banishing-blow",
       "name": "Banishing Blow",
       "kind": "melee",
@@ -14018,6 +14034,276 @@ export const UNIT_PACK = {
             "source": "unit.test-slot-striker"
           }
         ]
+      },
+      {
+        "typeId": "test-packet-flame",
+        "name": "Packet flame (TEST)",
+        "side": "hero",
+        "maxHp": 60,
+        "armor": 3,
+        "resist": 1,
+        "accuracy": 100,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 3,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-packet-flame"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
+        "moves": [
+          "power.move",
+          "power.leap"
+        ],
+        "triggers": [
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-packet-flame"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-packet-flame"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-packet-flame"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-packet-flame"
+          },
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-packet-flame"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-packet-flame"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-packet-flame"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-packet-flame"
+          }
+        ],
+        "fireResist": 1,
+        "shadowResist": 2,
+        "luck": 0,
+        "crit": 0
+      },
+      {
+        "typeId": "test-packet-shadow",
+        "name": "Packet shadow (TEST)",
+        "side": "enemy",
+        "maxHp": 60,
+        "armor": 3,
+        "resist": 1,
+        "accuracy": 100,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 3,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-packet-shadow"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
+        "moves": [
+          "power.move",
+          "power.leap"
+        ],
+        "triggers": [
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-packet-shadow"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-packet-shadow"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-packet-shadow"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-packet-shadow"
+          },
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-packet-shadow"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-packet-shadow"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-packet-shadow"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-packet-shadow"
+          }
+        ],
+        "fireResist": 1,
+        "shadowResist": 2,
+        "luck": 0,
+        "crit": 0
       }
     ],
     "attacks": {
@@ -14151,6 +14437,58 @@ export const UNIT_PACK = {
         "reach": 1,
         "staminaCost": 0,
         "slot": "either"
+      },
+      "attack.test-packet-flame": {
+        "id": "attack.test-packet-flame",
+        "name": "Ordered flame (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 2,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "crit": 100,
+        "armorPenetration": 2,
+        "secondaryDamage": [
+          {
+            "id": "flame",
+            "when": "hit",
+            "damageType": "fire",
+            "amount": 4
+          },
+          {
+            "id": "critical",
+            "when": "crit",
+            "damageType": "true",
+            "amount": 3
+          }
+        ]
+      },
+      "attack.test-packet-shadow": {
+        "id": "attack.test-packet-shadow",
+        "name": "Ordered shadow (TEST)",
+        "kind": "melee",
+        "damageType": "magic",
+        "bonus": 1,
+        "stat": "magic",
+        "reach": 1,
+        "staminaCost": 0,
+        "crit": 100,
+        "armorPenetration": 1,
+        "secondaryDamage": [
+          {
+            "id": "shadow",
+            "when": "hit",
+            "damageType": "shadow",
+            "amount": 3
+          },
+          {
+            "id": "physical",
+            "when": "crit",
+            "damageType": "physical",
+            "amount": 5
+          }
+        ]
       }
     },
     "abilities": {

@@ -262,10 +262,9 @@ describe('independent audit of logged battles', () => {
           }
 
           case 'attack.hit': {
-            // station.crit (2026-08-27): the hit event says whether the
-            // DAMAGE ARM fired (crit:true = the +50% pre-mitigation station).
-            // The chart arm lands normal damage, so its hits carry crit:false
-            // and the recompute below needs no change for them.
+            // V2: crit confirms the roll; critHeads explicitly records damage
+            // arms, including zero for a chart-only critical. The independent
+            // recompute below continues to multiply only by this head count.
             if (pending && e.actor === pending.actor) {
               pending.crit = e['crit'] === true
               // station.crit-count: several criticals stack +50% each.

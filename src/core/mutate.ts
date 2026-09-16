@@ -217,6 +217,19 @@ export function applyDamage(ctx: Ctx, id: number, amount: number, causeId: strin
   })
 }
 
+/** Ordered hit packet HP attribution; one HP mutation/event, no settlement inside a hit. */
+export function applyAttackPackets<T extends {readonly resolved:number;readonly damageType:string}>(ctx:Ctx,id:number,plan:readonly T[],causeId:string,extra:Record<string,unknown>){
+  let hp=unit(ctx,id).hp
+  const packets=plan.map(packet=>{
+    const applied=Math.min(packet.resolved,hp);hp-=applied
+    return {...packet,applied,overkill:packet.resolved-applied}
+  })
+  const amount=plan.reduce((n,p)=>n+p.resolved,0),applied=packets.reduce((n,p)=>n+p.applied,0)
+  const physicalApplied=packets.reduce((n,p)=>n+(p.damageType==='physical'?p.applied:0),0)
+  applyDamage(ctx,id,amount,causeId,{...extra,packets,physicalApplied})
+  return {packets,applied,physicalApplied}
+}
+
 /**
  * Healing. Clamped at maxHp; the event carries what was asked vs what landed,
  * because "asked 3, landed 1" is the number Burn-halving and overheal analysis

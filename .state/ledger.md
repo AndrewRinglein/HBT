@@ -12587,3 +12587,138 @@ effect of test.mage.arcane-ward,test.warrior.brace — 25 paired battles per map
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 EFFECT_RESULT {"version":1,"status":"measured","unavailable":[]}
 ```
+
+## rule.damage-packets — LANDED `3dee4bc` **NEEDS REVIEW**
+2026-09-16 10:05
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:479 · DECISIONS.md:2101
+  PASS  typecheck
+  PASS  full test suite — 1479 passed
+  PASS  gate 1 — the id appears in a real battle — attack.test-packet-flame: 36 log lines, 36 fired, 17 changed state · attack.test-packet-shadow: 11 log lines, 11 fired, 4 changed state
+  PASS  brought its own tests — test/audit.test.ts, test/battle-cursor.test.ts, test/crit.test.ts, test/damage-packets.test.ts, test/fixtures/battle-cursor-packets.json, test/packet-projection.ts
+  WARN  existing tests untouched — DELETED LINES in test/audit.test.ts (-4), test/battle-cursor.test.ts (-4), test/crit.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open fdce3210->ace784ed, map.ridge ad6ef91b->05ef85a4, map.flanks ee045f71->383794ec, map.highlands f765192c->9405c818, map.field fac691a7->663037ed, map.thicket 05d32785->b126e1b1, map.proving.open 767bf017->ff4e929c, map.proving.ridge 7462a6b5->753184b2, map.proving.ford f2bba532->c9d9dfdd, map.proving.copse 945ce387->24d75167, map.proving.ruin d310ee03->205bad6c, map.courtyard 90bdce82->3b90d866, map.floodplain fab69f7a->c1de8438, test.map.embers f7eb2f51->3dad8a06, test.map.showcase 40908f36->cbee1de9, test.map.duel-8 e904d2d7->d9f78c25, test.map.dungeon-16x8 d35310f9->1e4c2854, test.map.horde-24 24da21cf->7674493a, test.map.journey-20x10 1190bf61->909f0279, test.map.authored-40x40 2ea69e81->9d951cf5, test.map.high-prop-single bca4b0cb->276cc92b, test.map.high-prop-multi 092a905a->06e26bba
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.test-packet-flame live · attack.test-packet-shadow live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-packet-flame,attack.test-packet-shadow — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index d5f8d21..4808aae 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -263,8 +263,7 @@ describe('independent audit of logged battles', () => {
+ 
+           case 'attack.hit': {
+-            // station.crit (2026-08-27): the hit event says whether the
+-            // DAMAGE ARM fired (crit:true = the +50% pre-mitigation station).
+-            // The chart arm lands normal damage, so its hits carry crit:false
+-            // and the recompute below needs no change for them.
++            // V2: crit confirms the roll; critHeads explicitly records damage
++            // arms, including zero for a chart-only critical. The independent
++            // recompute below continues to multiply only by this head count.
+             if (pending && e.actor === pending.actor) {
+               pending.crit = e['crit'] === true
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 7a7ba13..9a16971 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -10,4 +10,5 @@ import { battleCursorCases } from './battle-cursor-cases.js'
+ import { projectShorthand } from './props-projection.js'
+ import { GLYPH, mapDef } from '../src/content/maps.js'
++import { projectPacketEvents } from './packet-projection.js'
+ 
+ const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
+@@ -24,4 +25,8 @@ const elementalGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
+ // V2 section 18: seven first differences now consume Protection before typed HP damage.
+ const protectionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-protection.json', import.meta.url), 'utf8'))
++// V2 packet facts and Protection reservation: old files stay immutable. The
++// transition tool proves the actual first raw and semantic difference per case.
++// Metadata-only cases retain every earlier historical assertion via projection.
++const packetGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-packets.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -119,8 +124,9 @@ describe('resumable battle cursor', () => {
+       const elementalExpected = elementalGolden.cases.find((row: {id:string}) => row.id === fixture.id)
+       const protectionExpected = protectionGolden.cases.find((row: {id:string}) => row.id === fixture.id)
+-      const migrated = protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
++      const packetExpected = packetGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const migrated = packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -138,5 +144,5 @@ describe('resumable battle cursor', () => {
+         // Historical shorthand projection is only meaningful for a historical
+         // row. New direct geometry retains exact automatic/suspended comparison.
+-        const projected = eventExpected || prior ? projectShorthand(ctx, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:ctx.events,state:ctx.state}
++        const projected = eventExpected || prior ? projectShorthand({...ctx,events:projectPacketEvents(ctx.events)}, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:ctx.events,state:ctx.state}
+         if (eventExpected) {
+           expect(hash(projected.events), 'prior event contract, exact prop projection').toBe(eventExpected.events)
+@@ -166,5 +172,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+diff --git a/test/crit.test.ts b/test/crit.test.ts
+index fbd405b..c56ad3d 100644
+--- a/test/crit.test.ts
++++ b/test/crit.test.ts
+@@ -180,8 +180,13 @@ describe('the branch flip in real battles — Law 4 streams, weighted coin', ()
+         && !deadTargets.has(b.target)).length
+       expect(effects.length).toBeGreaterThanOrEqual(Math.min(1, chartCount) === 1 ? 1 : 0)
+-      // damage-arm hits carry crit:true; chart-arm hits never do
++      // V2 packets: crit records confirmation, including chart-only crits.
++      // Keep the damage-arm station assertion; additionally prove each hit's
++      // explicit head count matches its actual preceding branch event.
+       for (const h of ctx.events.filter((e) => e.type === 'attack.hit' && e['crit'] === true)) {
++        const branch=[...branches].reverse().find(b=>b.seq<h.seq&&b.actor===h.actor&&b.target===h.target)!
++        expect(branch).toBeDefined()
++        expect(h['critHeads']).toBe(branch['arm']==='damage'?1:0)
+         expect((h['ledger'] as { station: string }[]).some((l) => l.station === 'CRIT'),
+-          'a damage-arm hit shows the CRIT station in its ledger').toBe(true)
++          'only a damage-arm hit shows the CRIT station in its ledger').toBe(branch['arm']==='damage')
+       }
+     }
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of attack.test-packet-flame,attack.test-packet-shadow — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.7->4.7
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  map.field: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 4.2->4.2
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ruin: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.4->3.4
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 5.1->5.1
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  test.map.dungeon-16x8: heroWins 22->22 (+0)  meanTurns 9.9->9.9
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 6.2->6.2
+  test.map.journey-20x10: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  test.map.authored-40x40: heroWins 25->25 (+0)  meanTurns 7.7->7.7
+  test.map.high-prop-single: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  test.map.high-prop-multi: heroWins 25->25 (+0)  meanTurns 5.1->5.1
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+EFFECT_RESULT {"version":1,"status":"measured","unavailable":[]}
+```

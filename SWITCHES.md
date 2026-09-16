@@ -693,3 +693,29 @@ does not relax side validation for arbitrary host edits.
 - `selfDamagePreview`: resolved self damage includes possible overkill; actual
   self HP loss is reported separately. Both come from real fork events in effect
   order, including pools consumed by preceding effects.
+
+## 2026-09-16 — Ordered attack packets (provisional details)
+
+- `packetProtectionReservation`: plan all packets at the damage rung using one
+  pool, spend the reservation before onHit, then apply planned HP after onHit.
+  This preserves the specific hook rung while fixing double absorption. Hooks
+  use only unreserved Protection; newly added pools do not rewrite the plan.
+- `packetCriticalEligibility`: hit riders include confirmed crits; crit riders
+  fire once per hit, including injury-only and multiple-critical branches.
+- `packetHookForecast`: public previews describe current state without predicting
+  random onAttack/onCrit hooks. Internal live damage conservation captures its
+  expectation after those hooks at the damage rung, preserving declared accuracy.
+- `packetFrostOnce`: the first eligible physical packet receives the hit's one
+  Frost contribution. An elemental base cannot suppress a later physical rider's
+  contribution; subsequent physical packets do not repeat it.
+- `packetPenetrationSignedArmor`: effective Armor minus `min(pen,max(0,Armor))`;
+  physical packets only. Preserve existing negative vulnerability and never make
+  an attack weaker by adding penetration. Elemental penetration does not exist.
+- `packetAtomicHit`: resolve all eligible packets without intervening settlement;
+  attribute remaining damage as overkill after HP reaches zero. Hook-killed
+  targets receive zero packet HP damage and no duplicate attack damage/kill hook.
+  No nonlethal damage flag or per-packet XP is introduced.
+- `authoredCritPacketInterpretation`: Hand Axe '+4 damage' and Bane Blade 'deal 6
+  more damage' onCrit are provisionally physical AND separately mitigated flat
+  packets. Neither assumption is a user ruling; Armor applies to base and rider.
+  Verbatim original source wording remains in content, with visible review notes.

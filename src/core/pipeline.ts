@@ -12,13 +12,14 @@ import { fireTriggers } from './trigger.js'
 import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
-import { accelerateBleedOut, applyDamage, emit, unit } from './mutate.js'
+import { accelerateBleedOut, applyAttackPackets, emit, unit } from './mutate.js'
 import { actionReady, isAttack, spendAction , resolveActionSlot } from './action.js'
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
 import { attackLineClear } from './los.js'
 import { hasLowCover } from './cover.js'
 import { rulesSideOf } from './side.js'
+import { attackPacketFields } from './attack-profile.js'
 
 export const ACC = {
   BASE: 100,
@@ -149,10 +150,10 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
  * it — which is the mechanism behind Law 1: powers do not get a second pipeline,
  * they get this one with crit forced false (Design Law 23: no roll, no crit).
  */
-export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number; readonly attackKind?: 'melee' | 'ranged' }
+export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number; readonly attackKind?: 'melee' | 'ranged'; readonly armorPenetration?: number }
 /** An attack as the one damage function reads it — the profile with the action's id. */
 export function damageSourceOfAttack(a: AttackDef): DamageSource {
-  return { ...(!a.area?{attackKind:a.attack.kind}:{}), id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}) }
+  return { ...(!a.area?{attackKind:a.attack.kind}:{}), id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}), ...(a.attack.armorPenetration!==undefined?{armorPenetration:a.attack.armorPenetration}:{}) }
 }
 
 /** Power × share, rounded nearest with 0.5 up — the ruled rounding (ENEMY-REVIEW P1). Integers only (Law 7). */
@@ -163,7 +164,7 @@ export function powerShare(pool: number, scale: number): number {
 export function resolveDamage(
   ctx: Ctx, attacker: Unit, target: Unit, a: DamageSource, critHeads: number | boolean,
   outPenalty = 0, absorbAvailable = 0,
-): Resolved {
+): ResolvedDamage {
   // station.crit-count (2026-08-27): the CRIT station takes a HEADS COUNT —
   // +50% each, stacking, before mitigation. `true` still reads as one heads
   // so every existing caller and test keeps its meaning.
@@ -192,26 +193,78 @@ export function resolveDamage(
   }
   // V2 flat cover subtraction is after critical multiplication, before absorption.
   if(a.attackKind && hasLowCover(ctx,attacker.hex,target.hex)) v=step(ledger,DMG.COVER,'COVER','cover',v,v-1)
+  return finishDamage(ctx,target,a,ledger,v,absorbAvailable,a.damageType==='physical'?incomingPhysicalBonus(ctx,target):0)
+}
 
+type ResolvedDamage = Resolved & { raw:number; defense:number; mitigationDelta:number; floorAdjustment:number; resisted:number }
 
+/** Common tail. Secondary packets enter here, never through stat/Power/crit/cover stations. */
+function finishDamage(ctx:Ctx,target:Unit,a:Pick<DamageSource,'damageType'|'armorPenetration'>,ledger:LedgerRow[],v:number,absorbAvailable:number,frost:number):ResolvedDamage {
   // PROTECTION (550): absorbs, and is spent by what it absorbs. Pure here —
   // the spending happens in performAttack, so preview cannot consume anything.
   // FROST (540): the target's Frost adds to every PHYSICAL hit, per hit —
   // capability.frost (2026-09-03), before Armor (ruled) and, by the switch,
   // before Protection. Reads the target's statuses through one helper.
-  const frost = a.damageType === 'physical' ? incomingPhysicalBonus(ctx, target) : 0
+  const raw = v + frost
   if (frost && ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
   const { absorbed, remaining } = absorbDamage(v, absorbAvailable)
   if (absorbed > 0) v = step(ledger, DMG.PROTECTION, 'PROTECTION', 'status.absorb', v, remaining)
   if (frost && !ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
 
+  const mit = flatDamage(ctx, target, v, a.damageType,0,a.armorPenetration??0)
   if (a.damageType !== 'true') {
-    const mit = flatDamage(ctx, target, v, a.damageType)
     v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, mit.beforeFloor)
   }
 
+  const floorAdjustment=Math.max(0,-v)
   if (v < 0) v = step(ledger, DMG.FLOOR, 'FLOOR', 'engine', v, 0)
-  return { value: v, ledger, absorbed }
+  return { value: v, ledger, absorbed, raw, defense:mit.defense, mitigationDelta:mit.defense===0?0:-mit.defense, floorAdjustment, resisted:mit.resisted }
+}
+
+export type DamagePacket = {
+  readonly id:string; readonly source:string; readonly damageType:import('./types.js').DamageType
+  readonly raw:number; readonly absorbed:number; readonly defense:number; readonly mitigationDelta:number
+  readonly floorAdjustment:number; readonly resisted:number; readonly resolved:number; readonly ledger:readonly LedgerRow[]
+}
+export type AttackDamagePlan = {readonly packets:readonly DamagePacket[];readonly value:number;readonly absorbed:number}
+
+/** No hooks, dice or mutations. Confirmed crit is separate from damage-head count. */
+export function planAttackDamage(ctx:Ctx,at:Unit,tg:Unit,a:AttackDef,heads:number,critical:boolean):AttackDamagePlan {
+  const metadata=attackPacketFields(a.attack),packets:DamagePacket[]=[]
+  let available=incomingAbsorb(ctx,tg),physicalSeen=a.attack.damageType==='physical'
+  const add=(id:string,type:import('./types.js').DamageType,d:ResolvedDamage)=>{
+    if(d.ledger.reduce((n,r)=>n+r.delta,0)!==d.value||d.raw-d.absorbed+d.mitigationDelta+d.floorAdjustment!==d.value)throw Error('packet damage ledger does not reconcile')
+    packets.push({id,source:a.id,damageType:type,raw:d.raw,absorbed:d.absorbed,defense:d.defense,mitigationDelta:d.mitigationDelta,floorAdjustment:d.floorAdjustment,resisted:d.resisted,resolved:d.value,ledger:d.ledger})
+    available-=d.absorbed
+  }
+  add('base',a.attack.damageType,resolveDamage(ctx,at,tg,damageSourceOfAttack(a),heads,outgoingPenalty(ctx,at),available))
+  for(const row of metadata.secondaryDamage??[]){
+    if(row.when==='crit'&&!critical)continue
+    const frost=row.damageType==='physical'&&!physicalSeen?incomingPhysicalBonus(ctx,tg):0
+    if(row.damageType==='physical')physicalSeen=true
+    const ledger:LedgerRow[]=[{station:DMG.DECLARE,name:'DECLARE',effectId:a.id,before:0,after:row.amount,delta:row.amount}]
+    add(row.id,row.damageType,finishDamage(ctx,tg,{damageType:row.damageType,armorPenetration:metadata.armorPenetration??0},ledger,row.amount,available,frost))
+  }
+  return {packets,value:packets.reduce((n,p)=>n+p.resolved,0),absorbed:packets.reduce((n,p)=>n+p.absorbed,0)}
+}
+
+/** Reserve at the damage rung; onHit sees only the unreserved pool. */
+function reserveAttackDamage(ctx:Ctx,targetId:number,a:AttackDef,plan:AttackDamagePlan):void {
+  if(plan.absorbed>0)spendAbsorb(ctx,targetId,plan.absorbed,a.id)
+}
+
+/** Same plan and mutator as live resolution; never peek at randomized hooks. */
+function previewAttackDamage(ctx:Ctx,attackerId:number,targetId:number,a:AttackDef,heads:number,critical:boolean){
+  const plan=planAttackDamage(ctx,unit(ctx,attackerId),unit(ctx,targetId),a,heads,critical)
+  // PRIVATE application-only fork: reserveAttackDamage/applyAttackPackets mutate
+  // only target HP/statuses and seq/events. Never run hooks, RNG, settlement or
+  // geometry preparation here. Full-fork parity/frozen-live probes guard this
+  // boundary. Unrelated units/config/RNG stay readonly; this is not an action fork.
+  const units=[...ctx.state.units];units[targetId]=structuredClone(unit(ctx,targetId))
+  const fork:Ctx={...ctx,state:{...ctx.state,units},events:[]}
+  reserveAttackDamage(fork,targetId,a,plan)
+  const facts=applyAttackPackets(fork,targetId,plan.packets,a.id,{actor:attackerId,attackId:a.id})
+  return {value:plan.value,packets:facts.packets,applied:facts.applied,physicalApplied:facts.physicalApplied}
 }
 
 export type AttackResult = {
@@ -228,6 +281,7 @@ export function attackDef(ctx: Ctx, attackId: string): AttackDef {
   const a = ctx.actions[attackId]
   if (!a) throw new Error(`unknown attack ${attackId}`)
   if (!isAttack(a)) throw new Error(`'${attackId}' is not an attack — it carries no attack profile`)
+  attackPacketFields(a.attack)
   return a
 }
 
@@ -247,6 +301,7 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   const tg = unit(ctx, targetId)
   const a = ctx.actions[attackId]
   if (!a || !isAttack(a)) return false
+  attackPacketFields(a.attack)
   if (at.lifeState !== 'standing') return false
   // fix.downed-targetable (2026-09-03): a DOWNED unit can be attacked — GAME-
   // DESIGN §9, "enemies roll at +20 against downed heroes". Only the dead are
@@ -316,10 +371,11 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   // crit (authored: "It does not roll to hit, so it cannot crit"). The hit is
   // certain, so both damage numbers are the plain resolution.
   if (a.area) {
-    const damage = resolveDamage(ctx, at, tg, damageSourceOfAttack(a), false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value
+    const damage = previewAttackDamage(ctx,attackerId,targetId,a,0,false)
     return {
       hitChance: 100, accuracy: 100, accLedger: [] as LedgerRow[],
-      damageOnHit: damage, damageOnCrit: damage, critChance: 0,
+      damageOnHit: damage.value, damageOnCrit: damage.value, damageOnCritChart:damage.value, critChance: 0,
+      packetsOnHit:damage.packets,packetsOnCrit:damage.packets,packetsOnCritChart:damage.packets,
     }
   }
   const acc = resolveAccuracy(ctx, at, tg, a)
@@ -327,14 +383,17 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   // A hit on the DOWNED deals no damage and cannot crit — it accelerates the
   // bleed-out counter (fix.downed-targetable, 2026-09-03). The preview says so.
   if (tg.lifeState === 'downed') {
-    return { hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, critChance: 0, downed: true as const }
+    return { hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, damageOnCritChart:0, packetsOnHit:[],packetsOnCrit:[],packetsOnCritChart:[],critChance: 0, downed: true as const }
   }
+  const hit=previewAttackDamage(ctx,attackerId,targetId,a,0,false)
+  const critical=previewAttackDamage(ctx,attackerId,targetId,a,1,true)
+  const chart=previewAttackDamage(ctx,attackerId,targetId,a,0,true)
   return {
     hitChance,
     accuracy: acc.value,
     accLedger: acc.ledger,
-    damageOnHit: resolveDamage(ctx, at, tg, damageSourceOfAttack(a), false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
-    damageOnCrit: resolveDamage(ctx, at, tg, damageSourceOfAttack(a), true, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
+    damageOnHit:hit.value,damageOnCrit:critical.value,damageOnCritChart:chart.value,
+    packetsOnHit:hit.packets,packetsOnCrit:critical.packets,packetsOnCritChart:chart.packets,
     critChance: critChanceOf(ctx, at, tg, acc.value, a),
   }
 }
@@ -515,14 +574,13 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
     }
   }
 
-  // heads 0/1 still guard against the PREVIEW (the original mismatch net);
-  // more heads than the preview can name recompute the expectation from the
-  // same pipeline at the same moment — the conservation check stays exact.
-  const expected = heads === 0 ? pv.damageOnHit
-    : heads === 1 ? pv.damageOnCrit
-    : resolveDamage(ctx, at, tg, damageSourceOfAttack(a), heads, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value
+  // The public forecast precedes randomized onAttack/onCrit hooks. Internal
+  // conservation must observe their actual effects at the damage rung, for
+  // every critical branch, without changing the already-declared hit roll.
+  const expected = previewAttackDamage(ctx,attackerId,targetId,a,heads,crit).value
   const damage = resolveHitOn(ctx, attackerId, targetId, a, heads, ord, {
     expected,
+    critical:crit,
     rollInfo: { roll, hitChance: pv.hitChance },
   })
 
@@ -547,16 +605,15 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
 /**
  * The HIT branch, once per struck unit — extracted 2026-08-27 for
  * capability.area-attack so the arc runs the exact stations a single-target
- * hit does (Law 1). For the single-target path `expected` is the pre-onAttack
- * preview, which preserves the original guarantee: an onAttack trigger that
- * shifts the damage stations still throws the preview/applied mismatch. Area
+ * hit does (Law 1). For the single-target path `expected` is a fork at the
+ * damage rung after actual onAttack/onCrit effects, not a guess at their dice. Area
  * strikes compute their expectation per target at strike time, because an
  * earlier strike of the same swing may legitimately change a later target's
  * mitigation (protection spent, statuses applied).
  */
 function resolveHitOn(
   ctx: Ctx, attackerId: number, targetId: number, a: AttackDef, crit: number | boolean, ord: number,
-  opts: { expected?: number; rollInfo?: { roll: number; hitChance: number } } = {},
+  opts: { expected?: number; critical?:boolean; rollInfo?: { roll: number; hitChance: number } } = {},
 ): number {
   // station.crit-count (2026-08-27): a heads COUNT — booleans keep meaning.
   const heads = crit === true ? 1 : crit === false ? 0 : crit
@@ -565,10 +622,11 @@ function resolveHitOn(
   const fc = { ownerId: attackerId, targetId, causeId: a.id, ordinal: ord }
 
   const expected = opts.expected ?? preview(ctx, attackerId, targetId, a.id).damageOnHit
-  const dmg = resolveDamage(ctx, at, tg, damageSourceOfAttack(a), heads, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
+  const critical=opts.critical??heads>0
+  const dmg = planAttackDamage(ctx,at,tg,a,heads,critical)
 
   // Conservation: the ledger must fully explain the number (Law 1's sibling).
-  const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
+  const summed = dmg.packets.reduce((s,p)=>s+p.ledger.reduce((n,r)=>n+r.delta,0),0)
   if (summed !== dmg.value) {
     throw new Error(`damage ledger does not reconcile: ledger ${summed} vs value ${dmg.value}`)
   }
@@ -579,28 +637,23 @@ function resolveHitOn(
   emit(ctx, 'attack.hit', a.id, {
     actor: attackerId, target: targetId,
     ...(opts.rollInfo ? { roll: opts.rollInfo.roll, hitChance: opts.rollInfo.hitChance } : { auto: true }),
-    crit: heads > 0, ...(heads > 1 ? { critHeads: heads } : {}),
-    ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
+    crit: critical, ...(critical ? { critHeads: heads } : {}),
+    ledger: dmg.packets[0]!.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
+    packets: structuredClone(dmg.packets),
   })
 
+  reserveAttackDamage(ctx,targetId,a,dmg)
   // "The attack connected — even if armor absorbed all of it."
   fireTriggers(ctx, 'onHit', fc)
 
-  // Spend what the pipeline said would be absorbed, before the damage lands.
-  if (dmg.absorbed > 0) spendAbsorb(ctx, targetId, dmg.absorbed, a.id)
-
-  const hpBefore = tg.hp
-  applyDamage(ctx, targetId, dmg.value, a.id,
-    dmg.absorbed > 0
-      ? { actor: attackerId, attackId: a.id, crit: heads > 0, damageType: a.attack.damageType, absorbed: dmg.absorbed }
-      : { actor: attackerId, attackId: a.id, crit: heads > 0, damageType: a.attack.damageType })
+  const {applied}=applyAttackPackets(ctx,targetId,dmg.packets,a.id,{actor:attackerId,attackId:a.id,crit:critical,damageType:a.attack.damageType,
+    ...(dmg.absorbed>0?{absorbed:dmg.absorbed}:{})})
 
   // "At least 1 damage got through mitigation." applyDamage already computed
   // applied = min(amount, hpBefore), so absorbed-to-zero distinguishes itself.
   // Angela 2026-08-15, the canonical tail:
   //   "If damage is applied on damage triggers, then on taking damage triggers,
   //    then on kill triggers if there's a kill."
-  const applied = Math.min(dmg.value, hpBefore)
   if (applied > 0) {
     fireTriggers(ctx, 'onDamage', fc)
     // onTakingDamage belongs to the VICTIM, so the owner flips. From the victim's

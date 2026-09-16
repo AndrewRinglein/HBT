@@ -4,6 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { isDamageType } from '../core/types.js'
+import { attackPacketFields } from '../core/attack-profile.js'
 import { UNIT_PACK } from './generated/pack.js'
 import type { ActionDef, AbilityDef, AttackDef, AuthoredMap, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
 import { formatOf, validBoard, MAX_BOARD_CELLS, type Board } from '../core/hex.js'
@@ -186,6 +187,8 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
 
 /** An attack row as the pack writes it. */
 export type PackAttackRow = {
+  readonly secondaryDamage?: readonly import('../core/types.js').SecondaryDamage[]
+  readonly armorPenetration?: number
   readonly slot?: ActionDef['slot']
   readonly id: string; readonly name: string; readonly kind: 'melee' | 'ranged'; readonly damageType: import('../core/types.js').DamageType
   readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly reach: number; readonly staminaCost: number
@@ -209,7 +212,7 @@ export function liftAttack(r: PackAttackRow): AttackDef {
     id, name, source: 'weapon', staminaCost, cooldown: cooldown ?? 0, range: reach, ...(r.slot !== undefined ? { slot: r.slot } : {}),
     ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(free !== undefined ? { free } : {}), ...(area ? { area } : {}),
     attack: {
-      kind, damageType, bonus, stat,
+      kind, damageType, bonus, stat, ...attackPacketFields(r),
       ...(applies ? { applies } : {}), ...(crit !== undefined ? { crit } : {}), ...(hits !== undefined ? { hits } : {}),
       ...(powerScale !== undefined ? { powerScale } : {}), ...(accuracy !== undefined ? { accuracy } : {}), ...(critCount !== undefined ? { critCount } : {}),
     },

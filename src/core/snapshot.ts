@@ -1,4 +1,5 @@
 import {isDamageType} from './types.js'
+import {attackPacketFields} from './attack-profile.js'
 import { prepareCover } from './cover.js'
 import { geometryOf, validBoard } from './hex.js'
 import { isUnitUid } from './identity.js'
@@ -12,7 +13,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.18' // Protection covers every typed HP damage path.
+const RULES_VERSION = 'v2-migration.19' // Ordered packets, confirmed crits and pre-onHit Protection reservation.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'selecting', 'activation-start', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -32,6 +33,7 @@ const validTerrain = (v: unknown, cells: number): boolean => Array.isArray(v) &&
  * text (bundling/minification must not invalidate an otherwise identical save).
  * This checksum detects accidental content mismatch, not hostile tampering. */
 function contentKey(runtime: BattleRuntime): string {
+  for(const action of Object.values(runtime.actions))if(action.attack)attackPacketFields(action.attack)
   let a = 0x811c9dc5, b = 0x9e3779b9, length = 0
   const add = (s: string) => {
     length += s.length

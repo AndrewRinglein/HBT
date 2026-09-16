@@ -234,7 +234,18 @@ export type ActionDef = {
 }
 
 /** The attack half of an action — the fields the accuracy and damage pipelines resolve. */
+export type SecondaryDamage = {
+  readonly id: string
+  readonly when: 'hit' | 'crit'
+  readonly damageType: DamageType
+  readonly amount: number
+}
+
 export type AttackProfile = {
+  /** Ordered flat packets after the base; crit means confirmed, including chart-only crits. */
+  readonly secondaryDamage?: readonly SecondaryDamage[]
+  /** Reduces positive Armor for physical packets, never elemental defenses. */
+  readonly armorPenetration?: number
   readonly kind: 'melee' | 'ranged'
   readonly damageType: DamageType
   /** Added to the governing stat. Zombie basic = 0, Axe = +1, Punch = -1. */

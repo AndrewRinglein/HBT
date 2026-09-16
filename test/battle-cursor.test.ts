@@ -9,6 +9,7 @@ import { applyStatus } from '../src/core/status.js'
 import { battleCursorCases } from './battle-cursor-cases.js'
 import { projectShorthand } from './props-projection.js'
 import { GLYPH, mapDef } from '../src/content/maps.js'
+import { projectPacketEvents } from './packet-projection.js'
 
 const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
 const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
@@ -23,6 +24,10 @@ const contactGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-
 const elementalGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-elemental.json', import.meta.url), 'utf8'))
 // V2 section 18: seven first differences now consume Protection before typed HP damage.
 const protectionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-protection.json', import.meta.url), 'utf8'))
+// V2 packet facts and Protection reservation: old files stay immutable. The
+// transition tool proves the actual first raw and semantic difference per case.
+// Metadata-only cases retain every earlier historical assertion via projection.
+const packetGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-packets.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -118,10 +123,11 @@ describe('resumable battle cursor', () => {
       const contactExpected = contactGolden.cases.find((row: {id:string}) => row.id === fixture.id)
       const elementalExpected = elementalGolden.cases.find((row: {id:string}) => row.id === fixture.id)
       const protectionExpected = protectionGolden.cases.find((row: {id:string}) => row.id === fixture.id)
-      const migrated = protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
+      const packetExpected = packetGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const migrated = packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
-      let expected = protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      let expected = packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result
@@ -137,7 +143,7 @@ describe('resumable battle cursor', () => {
         } else result = battle.runBattle(ctx)
         // Historical shorthand projection is only meaningful for a historical
         // row. New direct geometry retains exact automatic/suspended comparison.
-        const projected = eventExpected || prior ? projectShorthand(ctx, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:ctx.events,state:ctx.state}
+        const projected = eventExpected || prior ? projectShorthand({...ctx,events:projectPacketEvents(ctx.events)}, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:ctx.events,state:ctx.state}
         if (eventExpected) {
           expect(hash(projected.events), 'prior event contract, exact prop projection').toBe(eventExpected.events)
           expect(hash(projected.state), 'prior state, exact prop projection').toBe(eventExpected.state)
@@ -165,7 +171,7 @@ describe('resumable battle cursor', () => {
     const historicalIds = golden.cases.map((row: { id: string }) => row.id)
     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden]) {
+    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden]) {
       const ids = corpus.cases.map((row: { id: string }) => row.id)
       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
     }

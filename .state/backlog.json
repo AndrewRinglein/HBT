@@ -3514,5 +3514,29 @@
   "status": "done-needs-review",
   "sha": "15c301a",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "rule.damage-packets",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "rule.protection-universal"
+  ],
+  "spec": "V2 sections 8/15/18: each successful attack resolves its base packet then authored flat hit/confirmed-crit secondary packets against their own defenses, sharing ordered Protection. Physical armor penetration reduces positive Armor only. Existing onHit rung precedes HP application; reserved packet absorption cannot be spent twice by hooks.",
+  "expect": "Independent exact packet accounting, negative defense and negative base values, ordered pool use, critical chart-only and multiple-critical branches, one hit-level hook/death path, pure preview and strict metadata validation. Authored Hand Axe and Bane Blade crit riders migrate with provisional physical typing. Two explicitly named test-content attacks supply different packet types, order and penetration.",
+  "probeIds": [
+   "attack.test-packet-flame",
+   "attack.test-packet-shadow"
+  ],
+  "variants": [
+   "attack.test-packet-flame",
+   "attack.test-packet-shadow"
+  ],
+  "changesBaseline": true,
+  "note": "Scalar hits gain packet facts; confirmed-critical events include injury-only crits. Protection reservation moves before onHit without moving that hook after HP damage. Baseline comparison must distinguish these explicit ordering changes from metadata. No block, burst or knockback mechanics in this item.",
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "3dee4bc",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]
