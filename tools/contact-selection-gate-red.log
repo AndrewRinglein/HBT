@@ -1,0 +1,22 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ actual browser entry emits no catalog loader or gameplay modules (106.3836ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.4115ms)
+✔ normal static generator still validates and exports identical data (220.1065ms)
+✔ normal static generator rejects malformed catalog before writing (91.76ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 474.0656
+maps: 22 in the engine, all in both dumps
+passive runtime modules: ../engine/src/core/hex.ts, ../engine/src/core/geometry.ts, ../engine/src/core/types.ts, ../engine/src/core/props.ts, ../engine/src/content/disable.ts, ../engine/src/content/terrain.ts, ../engine/src/view/field.ts
+FAIL
+  fold: badge.held is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it
+  fold: maxstamina.gained is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it
+build-viewer: verify FAILED — C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.html left untouched; the candidate is at C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.candidate.html
+GATE FAIL — build/verify

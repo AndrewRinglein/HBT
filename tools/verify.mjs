@@ -57,7 +57,7 @@ const { createState, fold, foldTo, FOLDED_TYPES } = await import(pathToFileURL(r
 const { DUR } = await import(pathToFileURL(resolve(PKG, 'src/viewer.js')).href)   // Law 9: if this cannot import, say so
 /* event types the viewer deliberately does nothing with — a NEW engine event
    is a failure until it is folded or listed here on purpose */
-const IGNORED = new Set(['turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin',
+const IGNORED = new Set(['activation.selected', 'turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin',
   'ai.tookHighGround', 'ai.denied', 'knockback.blocked', 'crit.branch'])
 
 /* ── mount the page ────────────────────────────────────────────────────── */

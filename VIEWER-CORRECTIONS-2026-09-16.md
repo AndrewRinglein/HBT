@@ -46,3 +46,35 @@ pure/pumped and seek/step agreement, 25 Atlas/player/presentation checks, 12
 direct-map checks, four metadata checks, typecheck and all 22 registered maps.
 All 26 fresh engine exports retain byte-identical events. Source/page commit IDs
 live in Git; publication stamps the source commit in `BATTLE-VIEWER.html`.
+
+
+## Contact correction and human activation selection
+
+Replay exports are refreshed through the normal owning exporters after engine
+contact correction f8e2054 and activation choice 637b195; clean engine batch
+audit is 1723e63. Frozen Atlas options, source layouts and map bindings remain
+unchanged. Combat event changes are intentional AI behavior, not metadata-only.
+The pre-change Priory continuation episode used by presentation tests is retained
+verbatim in tools/fixtures/priory-contact-before.json, preserving the same AoO
+cue/seek/log assertions after the live replay no longer follows that route.
+
+activation.selected is explicitly ignored session metadata. The engine's later
+activation.begin alone changes the passive current-actor rail; a focused probe
+checks selection does not activate/spend, then begins actors in an alternate
+order. No runtime combat rule or engine mutation import is added. Kingdom's
+built smoke imports a real human export through the existing replay host. Full
+fresh verification and publication receipts follow; no visual seal is implied.
+
+First fresh gate correctly failed event coverage: the changed routes removed
+all badge.held and maxstamina.gained events from the existing 26 seeds. No
+unexercised-event waiver was added. Bounded normal simulation found Rime seed33
+and Prologue Bestiary seed7 as completed witnesses; two standard exporter
+outputs are appended, retaining all existing seeds. The picker now has 28
+battles. The original 26 comprise 20 changed and six identical event streams;
+all three frozen Atlas options/bindings remain exact.
+
+The repaired full --fresh gate passes all 28 replay exports, each byte-identical
+to fresh events from engine 1723e63. All terrain/player/Atlas/presentation tests,
+12 direct-map probes and four runtime-metadata checks pass. The passive emitted
+module allowlist remains unchanged. Publication is generated from the clean
+source commit below; the first failed event-coverage gate remains in the record.

@@ -104,6 +104,14 @@
   {
    "file": "test.props-viewer-ranged-zoc.json",
    "label": "Ranged-only reaction — no melee attack"
+  },
+  {
+   "file": "showcase.rime-s33.json",
+   "label": "Rime · repeated affliction (seed 33)"
+  },
+  {
+   "file": "showcase.prologue-enemies-s7.json",
+   "label": "Prologue Bestiary · lycanthropy (seed 7)"
   }
  ]
 }

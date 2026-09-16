@@ -33,8 +33,8 @@ test('every enemy actually fielded across the entire library has a non-placehold
   }
   assert.ok(seen.size>20)
 })
-test('actual Priory reaction explains attempted continuation and hit-stop without inventing movement',()=>{
-  const events=JSON.parse(readFileSync('battles/showcase.atlas-priory.json')).events
+test('preserved pre-contact-fix Priory reaction explains attempted continuation and hit-stop without inventing movement',()=>{
+  const events=JSON.parse(readFileSync('tools/fixtures/priory-contact-before.json')).events
   const ctx={UD:{},SN:{}},state=createState();let reaction,stop
   for(const event of events){
     const cues=fold(state,event,ctx,0)
@@ -49,4 +49,18 @@ test('actual Priory reaction explains attempted continuation and hit-stop withou
   if(state.AIM){state.AIM.missed=null;state.AIM.expire=null}
   assert.deepEqual(state,foldTo(events,394,ctx))
   assert.match(JSON.stringify(buildLog(events,{},8)),/tries to keep moving/)
+})
+
+// Selection is session metadata; only begin/end events change the passive rail.
+test('human selection does not spend or activate a hero before the engine begins it',()=>{
+ const state=createState(),ctx={UD:{},SN:{}}
+ fold(state,{type:'phase.begin',phase:'hero'},ctx,0)
+ const before=structuredClone(state)
+ assert.deepEqual(fold(state,{type:'activation.selected',actor:2,unitUid:99},ctx,0),[])
+ assert.deepEqual(state,before)
+ fold(state,{type:'activation.begin',actor:2},ctx,0)
+ assert.equal(state.activeId,2);assert.equal(state.subjectId,2);assert.deepEqual(state.acted,{})
+ fold(state,{type:'activation.end',actor:2},ctx,0);assert.deepEqual(state.acted,{'2':true})
+ fold(state,{type:'activation.selected',actor:0,unitUid:402},ctx,0);assert.equal(state.activeId,2)
+ fold(state,{type:'activation.begin',actor:0},ctx,0);assert.equal(state.activeId,0);assert.deepEqual(state.acted,{'2':true})
 })
