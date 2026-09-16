@@ -909,6 +909,10 @@
   "expect": "ISC069 exact multi-type packet preview and human command/event transport, built packet forecast labels, shared viewer import, all prior full tests and P probes. No renderer mitigation formulas or human/GPU acceptance claim.",
   "isc": [
    "069"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "0018e47",
+  "engineSha": "cfbcac4",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]

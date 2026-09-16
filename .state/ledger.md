@@ -2613,3 +2613,26 @@ acceptance. Engine and viewer rules are not duplicated in the host.
 ISC-069: CLOSED at a4ef27d
 slice: 61 of 69 closed · 62 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## v2.packet-display — LANDED `0018e47` **NEEDS REVIEW**
+2026-09-16 10:14 · engine @ cfbcac4
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\DOCS.md:112
+  PASS  typecheck
+  PASS  full test suite — 235 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-069 — a standalone human battle shares engine resolution and replay
+  PASS  brought its own tests — test/isc-069.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-069: red on record (2026-09-16 10:07 @ b43da57, probe 9697702b5a5a)
+  PASS  nothing regresses — every P-tier probe — 62 P-tier probe(s): 62 green, 0 red, 0 regression(s). 61 of 69 closed · 62 probed · 1 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'adapter' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean — engine @ cfbcac4, clean
+  PASS  one door to the engine
+
+ISC-069: CLOSED at 0018e47
+slice: 61 of 69 closed · 62 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

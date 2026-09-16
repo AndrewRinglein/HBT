@@ -1044,8 +1044,8 @@
    "tail": "       |                          ^ |     118|   expect(choice.preview!.packetsOnHit).toMatchObject([{id:'base',damag… |     119|   expect(choice.preview!.packetsOnCritChart).toHaveLength(3)"
   },
   "closed": {
-   "at": "2026-09-16 09:29",
-   "sha": "a4ef27d"
+   "at": "2026-09-16 10:15",
+   "sha": "0018e47"
   }
  }
 }
