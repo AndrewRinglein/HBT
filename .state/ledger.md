@@ -2406,3 +2406,62 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 ISC-003: CLOSED at 9ba86ee
 slice: 61 of 68 closed · 61 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## v2.human-battle-sandbox — LANDED `40da64e` **NEEDS REVIEW**
+2026-09-16 08:08 · engine @ 4ff6e55
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  full test suite — 231 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-069 — a standalone human battle shares engine resolution and replay
+  PASS  brought its own tests — test/criteria-docs.test.ts, test/isc-003.test.ts, test/isc-069.test.ts, test/sandbox-ui.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/criteria-docs.test.ts (-2), test/isc-003.test.ts (-1) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-069: red on record (2026-09-16 08:06 @ 72e09df, probe 737d2adaadce)
+  PASS  nothing regresses — every P-tier probe — 62 P-tier probe(s): 62 green, 0 red, 0 regression(s). 61 of 69 closed · 62 probed · 1 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'adapter' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean — engine @ 4ff6e55, clean
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/criteria-docs.test.ts b/test/criteria-docs.test.ts
+index 5ad1b6c..1b6d89b 100644
+--- a/test/criteria-docs.test.ts
++++ b/test/criteria-docs.test.ts
+@@ -11,8 +11,9 @@ describe('the criteria instrument over two documents', () => {
+   it('counts the slice and the gear plan together, and each file carries its own header line', () => {
+     const total = run('--count').trim()
+-    expect(total).toMatch(/^\d+ of 68 closed · \d+ probed · \d+ accepted$/)
++    expect(total).toMatch(/^\d+ of 69 closed · \d+ probed · \d+ accepted$/)
+     const slice = readFileSync('../THIN-SLICE-IMPLEMENTATION.md', 'utf8')
+     const gear = readFileSync('../GEAR-IMPLEMENTATION.md', 'utf8')
+-    expect(slice).toMatch(/\*\*`\d+ of 50 closed · \d+ probed · \d+ accepted`\*\*/)
++    expect(slice).toMatch(/\*\*`\d+ of 51 closed · \d+ probed · \d+ accepted`\*\*/)
++    expect(slice).toContain('### ISC-069 — a standalone human battle shares engine resolution and replay')
+     expect(gear).toMatch(/\*\*`\d+ of 18 closed · \d+ probed · \d+ accepted`\*\*/)
+     for (let n = 51; n <= 68; n++) expect(gear).toContain(`### ISC-0${n} —`)
+diff --git a/test/isc-003.test.ts b/test/isc-003.test.ts
+index 4ced129..e58bbbf 100644
+--- a/test/isc-003.test.ts
++++ b/test/isc-003.test.ts
+@@ -34,5 +34,8 @@ describe('ISC-003 — the engine is reached through one door and never changed',
+     const door = readFileSync('src/engine.ts', 'utf8')
+     expect(door).not.toMatch(/core\/mutate/)
+-    expect(door).not.toMatch(/core\/pipeline/)
++    // Authorized human sandbox (2026-09-16) needs the engine's preview numbers.
++    // Permit that named read-only export only; raw attack execution stays closed.
++    expect(door.match(/^export.*core\/pipeline.*$/gm)).toEqual(["export { preview } from '../../engine/src/core/pipeline.js'"])
++    expect(door).not.toMatch(/export\s*\{[^}]*performAttack/)
+   })
+ 
+```
+</details>
+
+ISC-069: CLOSED at 40da64e
+slice: 62 of 69 closed · 62 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

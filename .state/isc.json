@@ -1035,6 +1035,10 @@
    "hash": "737d2adaadce",
    "how": "feature absent",
    "tail": "       | ^ |       3| import {SANDBOX_DEFAULT} from '../src/content/sandbox.js' |       4| import {createBattle,runBattle,controllerOf,validateBattleCommand,prev…"
+  },
+  "closed": {
+   "at": "2026-09-16 08:09",
+   "sha": "40da64e"
   }
  }
 }
