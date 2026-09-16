@@ -34,3 +34,9 @@ slice audit again reports 62 green, zero red and zero regressions. The one
 candidate-ruling warning is retained and the seal withheld; no human acceptance
 was manufactured. The built slice smoke also retains the Kingdom outcome picker
 and complete opening-quest flows.
+
+Final SLICE.html and BATTLE-SANDBOX.html were rebuilt from source a7d69cf against
+clean engine cfbcac4 and the final shared viewer source 06f6edf. The complete
+sandbox smoke passed against the published packet-aware viewer 03c0355, including
+exact replay import. All three shared Atlas/CSS/lifecycle probes and the built
+campaign smoke passed. No source art, maps or campaign outcome controls changed.
