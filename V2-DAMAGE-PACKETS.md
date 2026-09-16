@@ -27,3 +27,10 @@ normal generation from clean engine cfbcac4 repaired provenance.
 
 Full gate, audit and publication results follow after execution. Technical
 verification is not human/GPU acceptance; no blocked browser route was bypassed.
+
+The normal check and landing both passed 235 tests, typecheck and all 62 P-tier
+probes. Source landed at 0018e47 with normal bookkeeping 7492c15; the independent
+slice audit again reports 62 green, zero red and zero regressions. The one
+candidate-ruling warning is retained and the seal withheld; no human acceptance
+was manufactured. The built slice smoke also retains the Kingdom outcome picker
+and complete opening-quest flows.
