@@ -31,6 +31,7 @@ compares the regenerated ITEM_ROWS to actual equipped stats: the Fire necklace
 adds fireResist 1, Poison necklace adds poisonResist 1, and Hearthmother idol
 adds both by 1. These are flat resistance values, not immunity.
 
-The final pages are generated from the committed source, then checked by the
-existing built slice, sandbox and shared Atlas component instruments. Human/GPU
-acceptance remains separate; no denied browser route was bypassed.
+The final pages were generated from source 8db39fb against clean engine 6bb36dc.
+The built slice smoke, complete sandbox interaction smoke and all three shared
+Atlas component tests passed. Human/GPU acceptance remains separate; no denied
+browser route was bypassed.
