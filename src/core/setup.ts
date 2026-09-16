@@ -1,3 +1,4 @@
+import { prepareCover } from './cover.js'
 import { geometryOf, validBoard } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
@@ -189,6 +190,7 @@ export function createBattle(opts: BattleOptions): Ctx {
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: direct ? structuredClone(opts.encounter) : opts.encounter } : {}) }
   prepareAttackLines(ctx)
+  prepareCover(ctx)
   const passable = passableHexes(ctx)
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
@@ -452,6 +454,7 @@ export function createCustomBattle(
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   prepareAttackLines(ctx)
+  prepareCover(ctx)
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —
   // a fixture hero is the same hero as a scenario hero.

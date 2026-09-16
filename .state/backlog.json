@@ -3410,5 +3410,28 @@
   "status": "done-needs-review",
   "sha": "2042b90",
   "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "terrain.low-cover",
+  "kind": "terrain",
+  "shape": "rule",
+  "needs": [
+   "terrain.authored-geometry"
+  ],
+  "spec": "V2 low props stay passable and provide capped directional target-end cover to ordinary and reaction attacks. Explicit low polygon edges cost one additional movement point when crossed. One shared preview/resolution pipeline applies ranged minus20 accuracy and all attacks minus1 damage; misses attribute cover after dodge priority.",
+  "expect": "Two pure-data low cover scenarios, exact target-end intersection and source-own exclusion, long rotated geometry, directional cached mutation/restore, movement cost and preview/live parity are verified. High prop behavior and all22 old controls remain unchanged; powers and legacy area attacks retain their existing behavior.",
+  "probeIds": [
+   "test.cover-crates",
+   "test.cover-fence"
+  ],
+  "variants": [
+   "test.cover-crates",
+   "test.cover-fence"
+  ],
+  "changesBaseline": false,
+  "note": "Atlas mechanics prerequisite. No low-cover inference from asset names, no destruction commands or burst migration. Plain authored crossingCost distinguishes low edge from low object. Station and exact contact choices recorded provisionally; oldcontrolfields unchanged when low props absent.",
+  "status": "done-needs-review",
+  "sha": "7f8a86f",
+  "gauntlet": "not passed — 3 flag(s) warned"
  }
 ]

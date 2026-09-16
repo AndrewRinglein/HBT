@@ -464,6 +464,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [64, 66, 68, 70, 72, 74, 80, 82, 84, 86, 88, 90],
     replicate: 0,
   },
+  'test.cover-crates': {
+    id:'test.cover-crates',note:'TEST target-end low hex cover, passable crates.',mapId:'test.map.cover-crates',
+    map:{id:'test.map.cover-crates',name:'Cover crates TEST',rows:['.......','.......','.......'],props:[{id:'prop.crates',height:'low',material:1,footprint:{kind:'hex',hexes:[10]}}]},
+    heroes:['test-ranger'],heroHexes:[7],enemies:['test-zombie'],enemyHexes:[11],replicate:0,
+  },
+  'test.cover-fence': {
+    id:'test.cover-fence',note:'TEST finite low fence cover and explicit crossing cost.',mapId:'test.map.cover-fence',
+    map:{id:'test.map.cover-fence',name:'Cover fence TEST',rows:['.......','.......','.......'],props:[{id:'prop.fence',height:'low',material:2,crossingCost:1,footprint:{kind:'polygon',vertices:[[7800,2100],[8200,2100],[8200,3900],[7800,3900]],movementPadding:0}}]},
+    heroes:['test-ranger'],heroHexes:[7],enemies:['test-zombie'],enemyHexes:[11],replicate:3,
+  },
   'test.geometry-corridor': {
     id:'test.geometry-corridor',note:'TEST finite straight wall and independent missing floor.',mapId:'test.map.geometry-corridor',
     map:{id:'test.map.geometry-corridor',name:'Geometry corridor TEST',rows:['.....','.....','.....'],floor:[false,true,true,true,true,true,true,true,true,true,true,true,true,true,true],props:[{id:'prop.corridor-wall',height:'high',material:3,footprint:{kind:'polygon',vertices:[[3900,1800],[4100,1800],[4100,4200],[3900,4200]],movementPadding:100}}]},

@@ -432,3 +432,15 @@ odd-r coordinates at scale 1000. Physical attack lines use the polygon itself;
 padding is a separately authored movement clearance. The full-hex shape is unchanged.
 The passive engine field exports these facts plus authoritative per-cell passability.
 See SWITCHES.md terrain.authored-geometry for coordinate/boundary/resource policy.
+
+
+<!-- Low cover extension, 2026-09-15 -->
+`map.loaded.props` and passive field props now transport `height:'low'` as well as
+high, with the same hex/polygon coordinates. Optional `crossingCost:1` identifies
+an authored low polygon edge. Low props are passable and do not block high LOS;
+renderers must not infer legality from their assets. Cover is engine-owned.
+Ordinary ranged attack declarations include a COVER accuracy ledger station when
+applicable, and ordinary/melee/reaction hit damage ledgers include flat COVER −1.
+A covered ranged miss adds `{cover:boolean,coverPenalty:20,missCause:'cover'|'dodge'|'accuracy'}`;
+Dodge has priority. No extra miss fields are added when no ranged cover applies.
+Burst/area conversion and destruction events are not included in this extension.

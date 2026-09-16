@@ -7,7 +7,7 @@ import type {State} from '../core/types.js'
 
 import { geometryOf } from '../core/hex.js'
 import { decodeMap, mapDef } from '../content/maps.js'
-import type { Event, HighProp } from '../core/types.js'
+import type { Event, Prop } from '../core/types.js'
 
 type UnitView = {
   id: number
@@ -63,7 +63,7 @@ export function renderBoard(units: Map<number, UnitView>, mapId = 'map.open', ev
   const fact = events.find(e => e.type === 'map.loaded')
   const decoded = fact?.['terrain'] ? null : decodeMap(mapDef(mapId))
   const terr = fact?.['terrain'] as number[] | undefined ?? decoded!.terrain
-  const props = fact?.['props'] as HighProp[] | undefined ?? decoded!.props
+  const props = fact?.['props'] as Prop[] | undefined ?? decoded!.props
 
   const geo = geometryOf(fact ? { width: fact['width'] as number, height: fact['height'] as number } : decoded!.board)
   const floor=fact?.['floor'] as boolean[]|undefined ?? decoded?.floor

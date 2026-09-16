@@ -16,6 +16,7 @@ import { actionReady, isAttack, spendAction , resolveActionSlot } from './action
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
 import { attackLineClear } from './los.js'
+import { hasLowCover } from './cover.js'
 import { rulesSideOf } from './side.js'
 
 export const ACC = {
@@ -24,6 +25,7 @@ export const ACC = {
   ADJACENT: 300,
   TERRAIN: 400,
   CONDITION: 500,
+  COVER: 575,
   TARGET_DODGE: 600,
   SITUATIONAL: 700,
   FINAL: 900,
@@ -38,6 +40,7 @@ export const DMG = {
   TERRAIN: 300,
   POSITIONAL: 350,
   CRIT: 450,
+  COVER: 525,
   /** capability.frost (2026-09-03): Frost on the target, physical hits only, before Armor. */
   FROST: 540,
   PROTECTION: 550,
@@ -134,6 +137,7 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   if (target.lifeState === 'downed') v = step(ledger, ACC.CONDITION, 'TARGET_DOWNED', a.id, v, v + 20)
   // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
   if (a.attack.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.attack.accuracy)
+  if (!a.area && a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-20)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
   return { value: v, ledger, absorbed: 0 }
@@ -144,10 +148,10 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
  * it — which is the mechanism behind Law 1: powers do not get a second pipeline,
  * they get this one with crit forced false (Design Law 23: no roll, no crit).
  */
-export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number }
+export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number; readonly attackKind?: 'melee' | 'ranged' }
 /** An attack as the one damage function reads it — the profile with the action's id. */
 export function damageSourceOfAttack(a: AttackDef): DamageSource {
-  return { id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}) }
+  return { ...(!a.area?{attackKind:a.attack.kind}:{}), id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}) }
 }
 
 /** Power × share, rounded nearest with 0.5 up — the ruled rounding (ENEMY-REVIEW P1). Integers only (Law 7). */
@@ -185,6 +189,9 @@ export function resolveDamage(
     // with two heads is +100%. One rounding rule: truncating integer division.
     v = step(ledger, DMG.CRIT, 'CRIT', 'crit', v, Math.trunc((v * (2 + heads)) / 2))
   }
+  // V2 flat cover subtraction is after critical multiplication, before absorption.
+  if(a.attackKind && hasLowCover(ctx,attacker.hex,target.hex)) v=step(ledger,DMG.COVER,'COVER','cover',v,v-1)
+
 
   // PROTECTION (550): absorbs, and is spent by what it absorbs. Pure here —
   // the spending happens in performAttack, so preview cannot consume anything.
@@ -438,7 +445,10 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   const hit = roll <= pv.hitChance
 
   if (!hit) {
-    emit(ctx, 'attack.miss', a.id, { actor: attackerId, target: targetId, roll, hitChance: pv.hitChance })
+    const covered = pv.accLedger.some(r=>r.name==='COVER')
+    const dodgeBand = pv.accLedger.filter(r=>r.name==='TARGET_DODGE').reduce((n,r)=>n-r.delta,0)
+    const coverMiss = covered && roll<=Math.min(100,pv.accuracy+20) && roll<=100-Math.max(0,dodgeBand)
+    emit(ctx, 'attack.miss', a.id, { actor: attackerId, target: targetId, roll, hitChance: pv.hitChance, ...(covered?{cover:coverMiss,coverPenalty:20,missCause:roll>100-Math.max(0,dodgeBand)?'dodge':coverMiss?'cover':'accuracy'}:{}) })
     // The CALLER settles after performAttack (see ai/modes.ts) — including after a
     // miss, so an onMiss trigger that deals damage is picked up there. Settling here
     // too would nest a settle inside the caller's, which the reentrancy guard turns

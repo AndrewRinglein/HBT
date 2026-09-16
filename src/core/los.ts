@@ -127,7 +127,7 @@ export function prepareAttackLines(ctx: Ctx): void {
   const board = ctx.state.board
   if (!validBoard(board) || ctx.state.terrain.length !== board.width * board.height) throw new Error('LOS: invalid board terrain')
   const shapes:Blocker[] = highCells(ctx).map(cell=>({key:String(cell),cell}))
-  const polygons=ctx.state.props.filter(p=>p.footprint.kind==='polygon')
+  const polygons=ctx.state.props.filter(p=>p.height==='high'&&p.footprint.kind==='polygon')
   // Decode before keying: malformed live edits must never alias valid cached data.
   for(const p of decodeProps(polygons,ctx.state.terrain.length))if(p.footprint.kind==='polygon')shapes.push({key:'p'+JSON.stringify(p.footprint),vertices:p.footprint.vertices})
   const unique=[...new Map(shapes.map(p=>[p.key,p])).values()]
@@ -140,7 +140,7 @@ export function attackLineClear(ctx: Ctx, a: number, b: number): boolean {
   prepareAttackLines(ctx)
   const table = views.get(ctx)!.table
   if (![a, b].every(h => Number.isSafeInteger(h) && h >= 0 && h < table.cells)) throw new Error('LOS: invalid attack hex')
-  if (a === b) return !table.blockers.includes(String(a)) && !ctx.state.props.some(p=>p.footprint.kind==='polygon'&&segmentCrossesPolygon(centerPoint(table.board,a),centerPoint(table.board,a),p.footprint.vertices))
+  if (a === b) return !table.blockers.includes(String(a)) && !ctx.state.props.some(p=>p.height==='high'&&p.footprint.kind==='polygon'&&segmentCrossesPolygon(centerPoint(table.board,a),centerPoint(table.board,a),p.footprint.vertices))
   if (!table.bits) return true
   return !bit(table.bits, pairIndex(table.cells, Math.min(a, b), Math.max(a, b)))
 }

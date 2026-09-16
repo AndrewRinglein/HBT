@@ -1,6 +1,6 @@
 import { centerPoint, segmentNearPolygon, orientation, GEOMETRY_LIMITS } from './geometry.js'
 import { MAX_BOARD_CELLS } from './hex.js'
-import { TERRAIN, type Ctx, type HighProp, type State } from './types.js'
+import { TERRAIN, type Ctx, type Prop, type State } from './types.js'
 
 function plain(value: unknown, keys: string[]): asserts value is Record<string, any> {
   if (!value || typeof value !== 'object' || Array.isArray(value) || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) throw new Error('props: expected plain record')
@@ -13,16 +13,17 @@ function dense(value: unknown, limit: number): asserts value is any[] {
 }
 
 /** Validated detached canonical props. No unsupported future mechanic is ignored. */
-export function decodeProps(value: unknown, cells: number): HighProp[] {
+export function decodeProps(value: unknown, cells: number): Prop[] {
   dense(value, MAX_BOARD_CELLS)
-  const ids = new Set<string>(), out: HighProp[] = []
+  const ids = new Set<string>(), out: Prop[] = []
   let references = 0, vertices = 0
   for (const p of value) {
-    plain(p, ['id', 'height', 'material', 'footprint'])
+    plain(p, ['id', 'height', 'material', 'footprint', 'crossingCost'])
     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) || ids.has(p.id)) throw new Error('props: IDs must be unique prop.* strings')
     ids.add(p.id)
-    if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material')
+    if (!['high','low'].includes(p.height) || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material')
     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'])
+    if(Object.hasOwn(p,'crossingCost') && (p.height!=='low'||p.footprint.kind!=='polygon'||p.crossingCost!==1))throw new Error('props: crossingCost 1 requires a low polygon edge')
     if (p.footprint.kind === 'polygon') {
       plain(p.footprint, ['kind', 'vertices', 'movementPadding'])
       const points = p.footprint.vertices, padding = p.footprint.movementPadding
@@ -38,7 +39,7 @@ export function decodeProps(value: unknown, cells: number): HighProp[] {
         if(j===i || j===(i+1)%points.length)continue
         if(orientation(points[i],points[(i+1)%points.length],points[j])!==turn)throw new Error('props: polygon must be strictly convex')
       }
-      out.push({id:p.id,height:'high',material:p.material,footprint:{kind:'polygon',vertices:points.map(v=>[v[0],v[1]]),movementPadding:padding}})
+      out.push({id:p.id,height:p.height,material:p.material,...(Object.hasOwn(p,'crossingCost')?{crossingCost:1 as const}:{}),footprint:{kind:'polygon',vertices:points.map(v=>[v[0],v[1]]),movementPadding:padding}})
       continue
     }
     plain(p.footprint, ['kind', 'hexes'])
@@ -50,7 +51,7 @@ export function decodeProps(value: unknown, cells: number): HighProp[] {
       if (!Number.isSafeInteger(h) || h < 0 || h >= cells || seen.has(h)) throw new Error('props: invalid or repeated footprint hex')
       seen.add(h)
     }
-    out.push({ id: p.id, height: 'high', material: p.material, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] } })
+    out.push({ id: p.id, height: p.height, material: p.material, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] } })
   }
   return out
 }
@@ -62,6 +63,7 @@ function blockage(state: State, props=state.props): Blockage {
   const cells = state.board.width * state.board.height, found = new Set<number>()
   // One scan at the owning operation's boundary, never inside its neighbor loop.
   for (const p of props) {
+    if (p.height === 'low') continue
     if (p.height !== 'high') throw new Error('props: unsupported live geometry')
     if (p.footprint.kind === 'polygon') continue
     if (p.footprint.kind !== 'hex') throw new Error('props: unsupported live geometry')
@@ -89,11 +91,11 @@ export function decodeFloor(value: unknown, cells: number): boolean[] {
 export type Passable = (hex: number, from?: number) => boolean
 /** Capture once per synchronous operation. Physical polygons are detached so
  * later edits cannot change a prepared movement enumeration halfway through. */
-export function passableHexes(ctx: Pick<Ctx, 'state'>): Passable {
-  const state=ctx.state, props=state.props
+export function passableHexes(ctx: Pick<Ctx, 'state'>, props=ctx.state.props): Passable {
+  const state=ctx.state
   // Preserve the existing one-read operation contract (important for large maps).
   const blocked = blockage(state,props)
-  const polygons=props.filter(p=>p.footprint.kind==='polygon')
+  const polygons=props.filter(p=>p.height==='high'&&p.footprint.kind==='polygon')
   const detached=polygons.length?decodeProps(polygons,state.terrain.length):[]
   const floor=Object.hasOwn(state,'floor')?decodeFloor(state.floor,state.terrain.length):null
   return (hex,from) => {

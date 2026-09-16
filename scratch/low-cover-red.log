@@ -1,0 +1,191 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ × test/low-cover.test.ts > terrain.low-cover > test.cover-crates is live plain data 4ms
+   → unknown scenario 'test.cover-crates' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party, test.geometry-corridor, test.geometry-diagonal
+ × test/low-cover.test.ts > terrain.low-cover > test.cover-fence is live plain data 0ms
+   → unknown scenario 'test.cover-fence' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party, test.geometry-corridor, test.geometry-diagonal
+ × test/low-cover.test.ts > terrain.low-cover > low cells stay passable, do not block attack lines, and apply one capped cover instance 4ms
+   → props: unsupported height or material
+ × test/low-cover.test.ts > terrain.low-cover > excludes source-own and distant cover while using only the crossed target neighbor 2ms
+   → props: unsupported height or material
+ × test/low-cover.test.ts > terrain.low-cover > clips a long rotated polygon to the target end instead of counting its distant intersection 1ms
+   → props: unsupported height or material
+ × test/low-cover.test.ts > terrain.low-cover > keys cover on attack kind, not range, for melee reach 1ms
+   → props: unsupported height or material
+ × test/low-cover.test.ts > terrain.low-cover > keeps legacy area attacks unchanged 1ms
+   → props: unsupported height or material
+ × test/low-cover.test.ts > terrain.low-cover > charges only explicitly authored low edge crossings in planning and actual movement 0ms
+   → props: unsupported field or accessor
+ × test/low-cover.test.ts > terrain.low-cover > observes low prop edits, height swaps, forks and restore without changing initial facts 0ms
+   → props: unsupported height or material
+ × test/low-cover.test.ts > terrain.low-cover > all seeded actual hits agree with preview and emits a cover miss attribution 0ms
+   → props: unsupported height or material
+ ✓ test/low-cover.test.ts > terrain.low-cover > rejects illegal crossing-cost roles and preserves high schema 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > test.cover-crates is live plain data
+Error: unknown scenario 'test.cover-crates' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party, test.geometry-corridor, test.geometry-diagonal
+ ❯ scenarioDef src/content/scenarios.ts:520:11
+    518|   const s = SCENARIOS[id]
+    519|   if (!s) {
+    520|     throw new Error(
+       |           ^
+    521|       `unknown scenario '${id}' — scenarios are an explicit registry, `
+    522|       + `known ids: ${Object.keys(SCENARIOS).join(', ') || '(none)'}`,
+ ❯ test/low-cover.test.ts:19:120
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > test.cover-fence is live plain data
+Error: unknown scenario 'test.cover-fence' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party, test.geometry-corridor, test.geometry-diagonal
+ ❯ scenarioDef src/content/scenarios.ts:520:11
+    518|   const s = SCENARIOS[id]
+    519|   if (!s) {
+    520|     throw new Error(
+       |           ^
+    521|       `unknown scenario '${id}' — scenarios are an explicit registry, `
+    522|       + `known ids: ${Object.keys(SCENARIOS).join(', ') || '(none)'}`,
+ ❯ test/low-cover.test.ts:19:120
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > low cells stay passable, do not block attack lines, and apply one capped cover instance
+Error: props: unsupported height or material
+ ❯ decodeProps src/core/props.ts:24:71
+     22|     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) …
+     23|     ids.add(p.id)
+     24|     if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw …
+       |                                                                       ^
+     25|     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'…
+     26|     if (p.footprint.kind === 'polygon') {
+ ❯ mapBoardOf src/content/pack.ts:462:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/low-cover.test.ts:17:48
+ ❯ test/low-cover.test.ts:21:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > excludes source-own and distant cover while using only the crossed target neighbor
+Error: props: unsupported height or material
+ ❯ decodeProps src/core/props.ts:24:71
+     22|     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) …
+     23|     ids.add(p.id)
+     24|     if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw …
+       |                                                                       ^
+     25|     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'…
+     26|     if (p.footprint.kind === 'polygon') {
+ ❯ mapBoardOf src/content/pack.ts:462:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/low-cover.test.ts:17:48
+ ❯ test/low-cover.test.ts:28:72
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > clips a long rotated polygon to the target end instead of counting its distant intersection
+Error: props: unsupported height or material
+ ❯ decodeProps src/core/props.ts:24:71
+     22|     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) …
+     23|     ids.add(p.id)
+     24|     if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw …
+       |                                                                       ^
+     25|     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'…
+     26|     if (p.footprint.kind === 'polygon') {
+ ❯ mapBoardOf src/content/pack.ts:462:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/low-cover.test.ts:17:48
+ ❯ test/low-cover.test.ts:34:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > keys cover on attack kind, not range, for melee reach
+Error: props: unsupported height or material
+ ❯ decodeProps src/core/props.ts:24:71
+     22|     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) …
+     23|     ids.add(p.id)
+     24|     if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw …
+       |                                                                       ^
+     25|     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'…
+     26|     if (p.footprint.kind === 'polygon') {
+ ❯ mapBoardOf src/content/pack.ts:462:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/low-cover.test.ts:17:48
+ ❯ test/low-cover.test.ts:38:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > keeps legacy area attacks unchanged
+Error: props: unsupported height or material
+ ❯ decodeProps src/core/props.ts:24:71
+     22|     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) …
+     23|     ids.add(p.id)
+     24|     if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw …
+       |                                                                       ^
+     25|     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'…
+     26|     if (p.footprint.kind === 'polygon') {
+ ❯ mapBoardOf src/content/pack.ts:462:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/low-cover.test.ts:17:48
+ ❯ test/low-cover.test.ts:42:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > charges only explicitly authored low edge crossings in planning and actual movement
+Error: props: unsupported field or accessor
+ ❯ plain src/core/props.ts:7:165
+
+ ❯ decodeProps src/core/props.ts:21:5
+ ❯ mapBoardOf src/content/pack.ts:462:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/low-cover.test.ts:17:48
+ ❯ test/low-cover.test.ts:46:82
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > observes low prop edits, height swaps, forks and restore without changing initial facts
+Error: props: unsupported height or material
+ ❯ decodeProps src/core/props.ts:24:71
+     22|     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) …
+     23|     ids.add(p.id)
+     24|     if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw …
+       |                                                                       ^
+     25|     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'…
+     26|     if (p.footprint.kind === 'polygon') {
+ ❯ mapBoardOf src/content/pack.ts:462:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/low-cover.test.ts:17:48
+ ❯ test/low-cover.test.ts:53:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  test/low-cover.test.ts > terrain.low-cover > all seeded actual hits agree with preview and emits a cover miss attribution
+Error: props: unsupported height or material
+ ❯ decodeProps src/core/props.ts:24:71
+     22|     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) …
+     23|     ids.add(p.id)
+     24|     if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw …
+       |                                                                       ^
+     25|     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'…
+     26|     if (p.footprint.kind === 'polygon') {
+ ❯ mapBoardOf src/content/pack.ts:462:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/low-cover.test.ts:17:48
+ ❯ test/low-cover.test.ts:61:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 1 passed (11)
+   Start at  21:39:35
+   Duration  857ms (transform 549ms, setup 0ms, import 698ms, tests 16ms, environment 0ms)
+

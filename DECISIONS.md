@@ -2447,3 +2447,15 @@ their event bytes and full-hex semantics. Low cover and destruction remain separ
 Historical tests receive explicit hex-kind guards/type narrowing because the
 footprint is now a union; all their previous assertions remain. These edits still
 carry the gate's review flag. Technical checks do not establish visual acceptance.
+
+
+## 2026-09-15 — low cover prerequisite for authored Atlas battles
+
+Implementation of the existing COMBAT-V2-DESIGN §3/§5 ruling now accepts generic
+low props alongside high props, supplies directional target-end cover through the
+shared attack pipeline, and charges explicitly authored low-edge path crossings.
+This is not a new user ruling. Contact, station, overlap and resource choices are
+provisional and recorded in SWITCHES.md. Existing free sidestep/flight/forced-move
+budget semantics remain. Snapshot rules advance to .14. Powers and old area
+attacks are unchanged; burst migration and destruction remain separate. Core
+imports no Atlas assets or renderer. See V2-LOW-COVER.md for verification status.

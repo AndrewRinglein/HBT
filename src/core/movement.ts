@@ -1,3 +1,4 @@
+import { lowEdgeCost, preparedLowEdgeCost } from './cover.js'
 // Movement. Reachability by flood fill, then the path is walked ONE STEP AT A TIME
 // (COMBAT-SEQUENCE.md) so that anything which happens mid-move — attacks of
 // opportunity, traps, terrain status — has a place to happen and can interrupt.
@@ -58,8 +59,8 @@ export function occupancy(ctx: Ctx): Map<HexId, number> {
 export type Reach = Map<HexId, { cost: number; prev: HexId }>
 
 /** Movement points to enter a given hex on this board. */
-export function stepCost(ctx: Ctx, to: HexId): number {
-  return moveCostOf(ctx.state.terrain[to] ?? 0)
+export function stepCost(ctx: Ctx, to: HexId, from?: HexId): number {
+  return moveCostOf(ctx.state.terrain[to] ?? 0) + (from===undefined?0:lowEdgeCost(ctx,from,to))
 }
 
 /**
@@ -68,7 +69,7 @@ export function stepCost(ctx: Ctx, to: HexId): number {
  * Ties break on lower HexId so paths are reproducible (Law 6).
  */
 export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
-  const passable = passableHexes(ctx)
+  const props=ctx.state.props,passable=passableHexes(ctx,props),edgeCost=preparedLowEdgeCost(ctx,props)
   const occ = occupancy(ctx)
   // The power's modifier widens or narrows THIS move's budget (Sprint would be
   // +3); the activation budget itself was set at beginActivation (Slow reads
@@ -88,7 +89,7 @@ export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
       if (node.cost !== c) continue // stale entry, a cheaper path was found
       for (const n of ctx.geo.neighboursOf(h)) {
         if (occ.has(n) || !passable(n,h)) continue
-        const nc = c + stepCost(ctx, n)
+        const nc = c + moveCostOf(ctx.state.terrain[n] ?? 0) + edgeCost(h,n)
         if (nc > budget) continue
         const prior = out.get(n)
         if (!prior || nc < prior.cost) {
@@ -181,7 +182,7 @@ export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?
  * just that the unit moved, but which choice moved it.
  */
 export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: MoveDef, onStep?: StepHook, slot?: import('./types.js').ActionSlot): number {
-  const passable = passableHexes(ctx)
+  const props=ctx.state.props,passable=passableHexes(ctx,props),edgeCost=preparedLowEdgeCost(ctx,props)
   if (path.length === 0) return 0
   const u = unit(ctx, unitId)
   if (power.move.shape !== 'path' || movementReason(ctx, u, power, slot) || isRooted(ctx, u)) return 0
@@ -190,7 +191,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   let from = u.hex, asked = 0
   for (const hex of path) {
     if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.state.terrain.length || ctx.geo.distance(from, hex) !== 1 || occupied.has(hex) || !passable(hex,from)) return 0
-    asked += stepCost(ctx, hex)
+    asked += moveCostOf(ctx.state.terrain[hex] ?? 0) + edgeCost(from,hex)
     from = hex
   }
   if (asked > allowance) return 0
@@ -203,7 +204,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   const provoked = new Set<number>()   // once per enemy per activation
   for (const hex of path) {
     // 1. movement points — hills cost 2
-    const cost = stepCost(ctx, hex)
+    const cost = stepCost(ctx, hex, u.hex)
     if (ctx.state.outcome || isRooted(ctx, u) || isBlocked(ctx, u) || allowance < cost || u.movePointsLeft + bonusLeft < cost) break
     // 2. attacks of opportunity — movement.attack-of-opportunity (2026-09-03):
     //    leaving a hex inside an enemy's ZoC provokes ONE attack from that

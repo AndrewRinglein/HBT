@@ -1,0 +1,20 @@
+
+gate: terrain.low-cover   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\CODEX.md:373
+  PASS  typecheck
+  PASS  full test suite  — 1351 passed
+  PASS  gate 1 — the id appears in a real battle  — test.cover-crates: 1 log lines, 1 fired, 1 changed state · test.cover-fence: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests  — test/authored-props.test.ts, test/low-cover.test.ts
+  WARN  existing tests untouched  — DELETED LINES in test/authored-props.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source  — 34 ids without a published source — 2 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — test.cover-crates live · test.cover-fence live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without test.cover-crates,test.cover-fence — they genuinely test it
+
+All gates pass. Run with --land to commit.
+

@@ -12156,3 +12156,41 @@ index 2103b93..213b44c 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## terrain.low-cover — LANDED `7f8a86f` **NEEDS REVIEW**
+2026-09-16 04:54
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\CODEX.md:373
+  PASS  typecheck
+  PASS  full test suite — 1351 passed
+  PASS  gate 1 — the id appears in a real battle — test.cover-crates: 1 log lines, 1 fired, 1 changed state · test.cover-fence: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/authored-props.test.ts, test/low-cover.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/authored-props.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 34 ids without a published source — 2 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.cover-crates live · test.cover-fence live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.cover-crates,test.cover-fence — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/authored-props.test.ts b/test/authored-props.test.ts
+index a739814..4fdb53a 100644
+--- a/test/authored-props.test.ts
++++ b/test/authored-props.test.ts
+@@ -49,5 +49,6 @@ describe('canonical authored high props', () => {
+     expect(ctx.events.find(e => e.type === 'map.loaded')!.props).toEqual(authored)
+   })
+-  it.each([null, {}, [null], [{ ...prop(), id: 'bare' }], [{ ...prop(), id: 'prop.obstacle.7' }], [prop(), prop()], [{ ...prop(), material: 0 }], [{ ...prop(), height: 'low' }], [prop([])], [prop([7, 7])], [prop([15])], [prop([-1])], [prop([1.5])], [{ ...prop(), footprint: { kind: 'edge', hexes: [7] } }], [{ ...prop(), destruction: {} }]].map(props => ({ props })))('rejects malformed authored props at loader and direct boundaries: $props', ({ props }) => {
++  // V2 now supports low; keep the malformed-height rule with an unknown height.
++  it.each([null, {}, [null], [{ ...prop(), id: 'bare' }], [{ ...prop(), id: 'prop.obstacle.7' }], [prop(), prop()], [{ ...prop(), material: 0 }], [{ ...prop(), height: 'medium' }], [prop([])], [prop([7, 7])], [prop([15])], [prop([-1])], [prop([1.5])], [{ ...prop(), footprint: { kind: 'edge', hexes: [7] } }], [{ ...prop(), destruction: {} }]].map(props => ({ props })))('rejects malformed authored props at loader and direct boundaries: $props', ({ props }) => {
+     for (const decode of [mapBoardOf, decodeMap]) expect(() => decode({ ...row(), props } as any)).toThrow(/prop/i)
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED

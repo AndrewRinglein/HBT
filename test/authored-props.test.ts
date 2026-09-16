@@ -48,7 +48,8 @@ describe('canonical authored high props', () => {
     expect(ctx.events.filter(e => e.type === 'action.spent')).toHaveLength(1)
     expect(ctx.events.find(e => e.type === 'map.loaded')!.props).toEqual(authored)
   })
-  it.each([null, {}, [null], [{ ...prop(), id: 'bare' }], [{ ...prop(), id: 'prop.obstacle.7' }], [prop(), prop()], [{ ...prop(), material: 0 }], [{ ...prop(), height: 'low' }], [prop([])], [prop([7, 7])], [prop([15])], [prop([-1])], [prop([1.5])], [{ ...prop(), footprint: { kind: 'edge', hexes: [7] } }], [{ ...prop(), destruction: {} }]].map(props => ({ props })))('rejects malformed authored props at loader and direct boundaries: $props', ({ props }) => {
+  // V2 now supports low; keep the malformed-height rule with an unknown height.
+  it.each([null, {}, [null], [{ ...prop(), id: 'bare' }], [{ ...prop(), id: 'prop.obstacle.7' }], [prop(), prop()], [{ ...prop(), material: 0 }], [{ ...prop(), height: 'medium' }], [prop([])], [prop([7, 7])], [prop([15])], [prop([-1])], [prop([1.5])], [{ ...prop(), footprint: { kind: 'edge', hexes: [7] } }], [{ ...prop(), destruction: {} }]].map(props => ({ props })))('rejects malformed authored props at loader and direct boundaries: $props', ({ props }) => {
     for (const decode of [mapBoardOf, decodeMap]) expect(() => decode({ ...row(), props } as any)).toThrow(/prop/i)
   })
   it('rejects sparse, excessive and accessor arrays without invoking them', () => {

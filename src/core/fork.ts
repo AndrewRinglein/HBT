@@ -1,3 +1,4 @@
+import { forkCover } from './cover.js'
 import type { Ctx } from './types.js'
 import { forkAttackLines } from './los.js'
 
@@ -13,5 +14,6 @@ export function forkBattle(ctx: Ctx): Ctx {
     ...(ctx.encounter ? { encounter: structuredClone(ctx.encounter) } : {}),
   }
   forkAttackLines(ctx, fork)
+  forkCover(ctx, fork)
   return fork
 }

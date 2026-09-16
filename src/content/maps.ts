@@ -140,7 +140,7 @@ export function terrainOf(mapId: string): number[] {
 }
 
 /** Validate before allocation; retain no caller-owned arrays or metadata objects. */
-export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').HighProp[]; floor?: boolean[] } {
+export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').Prop[]; floor?: boolean[] } {
   const board = mapBoardOf(m)
   const out: number[] = []
   const props = decodeProps(m.props === undefined ? [] : m.props, board.width * board.height)

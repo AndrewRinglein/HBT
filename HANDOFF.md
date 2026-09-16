@@ -283,3 +283,14 @@ This does not yet put scenes into battles: the coordinated migration next needs
 low-prop cover, Atlas compilation/binding and shared viewer/game mounting. Keep the
 Kingdom outcome picker and user-authored maps/art intact. Root STATE owns the
 cross-package current position; older next-chat instructions are not a stop rule.
+
+
+## 2026-09-15 — authored low cover checkpoint
+
+`terrain.low-cover` extends generic props with low physical cover and optional
+low-polygon crossingCost:1. See V2-LOW-COVER.md for gate/audit status and SWITCHES.md
+for provisional contact/station/resource policy. Core owns exact directional
+coverage and movement costs; it imports no Atlas renderer or assets. The next
+coordinated stage is the root Atlas compiler and actual viewer/Kingdom battle
+binding, retaining Kingdom's outcome picker. No inspector-only substitute or
+human visual acceptance is claimed by these engine tests.

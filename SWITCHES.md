@@ -574,3 +574,51 @@ Orientation uses exact Number integer products only when the absolute-product su
 fits Number.MAX_SAFE_INTEGER, otherwise BigInt. Weighted squared clearance uses
 BigInt throughout. No trigonometry or geometry quantization happens in combat;
 the external map compiler must quantize its authored transforms once.
+
+
+## terrain.low-cover — directional physical cover (2026-09-15)
+
+V2 §3/§5 owns low props, ranged −20 accuracy/−1 damage, melee −1 damage,
+attack-kind classification, and cap one. Generic `Prop`/`AuthoredProp` now carry
+height `low | high`; strict HighProp aliases remain for high-only callers.
+Low full hexes and convex physical polygons are passable and do not block LOS.
+Their movementPadding is transported/validated but does not create cover or blockage.
+
+Provisional exact contact: intersect the physical attack segment with the target
+cell or a ray-crossed immediately adjacent cell. For polygons the SAME intersection
+must lie inside that target region: distant portions of a long wall never count.
+Remove the closed source-cell portion from eligible contact; source-own cover
+cannot penalize the attacker. All remaining closed tangent contact counts, including
+a one-point physical contact. BigInt rational clipping performs no division or
+rounding. Full-hex props use the same cell boundary geometry as existing LOS.
+
+Provisional stations: ranged ACC.COVER 575 subtracts 20 before target Dodge;
+DMG.COVER 525 subtracts exactly one AFTER critical multiplication and BEFORE
+Frost/Protection/Armor/Resist. The existing final floor prevents negative damage.
+Legacy area attacks and abilities retain their existing behavior; V2 burst work
+remains separate. Shared preview, ordinary attacks and reactions use these stations.
+Covered misses carry coverPenalty 20, boolean cover, and missCause. A roll in the
+highest Dodge points of 1–100 is attributed to dodge first. Otherwise a miss is
+cover-caused exactly when adding back the 20 accuracy would hit; remaining misses
+are accuracy-caused. Uncovered event objects remain unchanged. No onDodge hook or
+prop destruction is introduced; future destruction must occur after this resolution.
+
+Provisional edge policy: optional `crossingCost:1` is allowed only on a low polygon.
+Absent means zero. It explicitly identifies a low edge rather than guessing that
+every crate is a wall. Each distinct authored edge intersected by a neighbor-center
+path step adds one movement point; closed tangent contact counts, including a step
+inside a broad edge. Overlapping distinct edge props sum, while attack cover still
+caps at one. The authoring adapter owns whether compound parts represent distinct
+edges. Path-shaped movement pays; explicit free sidestep, destination-only flight,
+and forced knockback keep their existing no-ground-budget semantics.
+
+All directed cover pairs and adjacent crossing costs are precomputed. Complete
+prop data plus board dimensions key immutable derived tables. Unchanged reverse
+lists are reused; removal/edits revisit affected directed pairs, without clearing
+another overlapping prop. Per-operation movement cost snapshots avoid rescanning
+props inside Dijkstra. Actual walking refreshes at each step boundary for triggers.
+The resource policy is 1,024,000,000 conservative geometry work units, 16,000,000
+reverse entries and a 64 MiB shared LRU budget. Physical-overlap candidate cells
+bound pair work without approximating shapes. Reused reverse lists count toward
+the same complete-table work limit as cold setup. Snapshots contain only plain
+facts; rules version .14 invalidates prior behavior snapshots.
