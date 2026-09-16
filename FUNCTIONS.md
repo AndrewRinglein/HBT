@@ -14,8 +14,8 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `onHit` | 82 | after a hit lands, even if armour ate all of it |
 | `onKill` | 37 |  |
 | `startOfBattle` | 37 |  |
-| `onCrit` | 20 | after its own onHit, only if it crit |
 | `onDamage` | 20 | only if damage actually landed |
+| `onCrit` | 18 | after its own onHit, only if it crit |
 | `onTakingDamage` | 16 |  |
 | `passive` | 16 | always true |
 | `aura` | 14 | checked continuously |
@@ -96,8 +96,8 @@ What a rule may DO.
 | `place a trap` | 19 |
 | `reveal / break stealth` | 18 |
 | `regain stamina` | 15 |
-| `deal damage (type from the weapon)` | 14 |
 | `deal PHYSICAL damage` | 14 |
+| `deal damage (type from the weapon)` | 13 |
 | `move WITHOUT provoking` | 13 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |

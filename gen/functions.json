@@ -133,32 +133,6 @@
    ]
   },
   {
-   "name": "onCrit",
-   "uses": 20,
-   "ids": [
-    "item.war-hammer",
-    "item.stormforged-blade",
-    "item.vial-of-abyssal-essence",
-    "item.tandras-blood-vial",
-    "item.rune-bashing",
-    "item.rune-bleeding-strike",
-    "item.rune-deathdealer",
-    "attack.hand-axe.chop",
-    "attack.carpenters-mallet.bonk",
-    "attack.shepherds-sling.whirl",
-    "attack.bane-blade.banishing-blow",
-    "attack.holy-shield.shield-bash",
-    "attack.claws.flense",
-    "enchant.frost",
-    "enchant.venomous",
-    "enchant.bloodletting",
-    "enchant.lightning",
-    "enchant.gale",
-    "enchant.ironbane",
-    "enchant.fire"
-   ]
-  },
-  {
    "name": "onDamage",
    "uses": 20,
    "ids": [
@@ -182,6 +156,30 @@
     "enchant.goading",
     "enchant.bewildering",
     "enchant.maddening"
+   ]
+  },
+  {
+   "name": "onCrit",
+   "uses": 18,
+   "ids": [
+    "item.war-hammer",
+    "item.stormforged-blade",
+    "item.vial-of-abyssal-essence",
+    "item.tandras-blood-vial",
+    "item.rune-bashing",
+    "item.rune-bleeding-strike",
+    "item.rune-deathdealer",
+    "attack.carpenters-mallet.bonk",
+    "attack.shepherds-sling.whirl",
+    "attack.holy-shield.shield-bash",
+    "attack.claws.flense",
+    "enchant.frost",
+    "enchant.venomous",
+    "enchant.bloodletting",
+    "enchant.lightning",
+    "enchant.gale",
+    "enchant.ironbane",
+    "enchant.fire"
    ]
   },
   {
@@ -1376,26 +1374,6 @@
    ]
   },
   {
-   "name": "deal damage (type from the weapon)",
-   "uses": 14,
-   "ids": [
-    "item.stormforged-blade",
-    "item.demonic-shiv",
-    "item.tandras-blood-vial",
-    "attack.bane-blade.banishing-blow",
-    "power.fire-master.fireball",
-    "power.soul-stealer.eldritch-sacrifice",
-    "power.martyred-saint.the-last-word",
-    "power.holy-avenger.strike-at-evil",
-    "power.exorcist.banish",
-    "power.witch-hunter.judgment",
-    "power.serpent.constrict",
-    "power.stalker.throat-hold",
-    "power.wyrmling.scorch",
-    "power.berserker.unleash"
-   ]
-  },
-  {
    "name": "deal PHYSICAL damage",
    "uses": 14,
    "ids": [
@@ -1413,6 +1391,25 @@
     "power.direbeast.trample",
     "power.stalker.throat-hold",
     "specialty.spirit-walker"
+   ]
+  },
+  {
+   "name": "deal damage (type from the weapon)",
+   "uses": 13,
+   "ids": [
+    "item.stormforged-blade",
+    "item.demonic-shiv",
+    "item.tandras-blood-vial",
+    "power.fire-master.fireball",
+    "power.soul-stealer.eldritch-sacrifice",
+    "power.martyred-saint.the-last-word",
+    "power.holy-avenger.strike-at-evil",
+    "power.exorcist.banish",
+    "power.witch-hunter.judgment",
+    "power.serpent.constrict",
+    "power.stalker.throat-hold",
+    "power.wyrmling.scorch",
+    "power.berserker.unleash"
    ]
   },
   {

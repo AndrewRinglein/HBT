@@ -267,11 +267,6 @@
    "needs": "area attack shape"
   },
   {
-   "unit": "item.hand-axe",
-   "what": "attack.hand-axe.chop onCrit: \"+4 damage\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
    "unit": "item.carpenters-mallet",
    "what": "attack.carpenters-mallet.bonk onCrit: \"apply 1 Stun to the target\"",
    "needs": "trigger shape unparsed"
@@ -340,11 +335,6 @@
    "unit": "item.holy-texts",
    "what": "grants power.holy-texts.mercy",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.bane-blade",
-   "what": "attack.bane-blade.banishing-blow onCrit: \"deal 6 more damage\"",
-   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.sword-of-the-fallen",
