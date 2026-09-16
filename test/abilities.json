@@ -50,5 +50,49 @@
     "note": "fix.ordered-power-preview: the second pure-data variant removes protection before damage."
   },
   {"id":"power.test-slot-guard","name":"Early guard (TEST)","slot":"movement","range":0,"staminaCost":1,"cooldown":0,"target":{"select":"self","side":"any"},"effects":[{"kind":"status.apply","statusId":"status.protection","value":2}],"note":"A power uses movement and leaves primary open."},
-  {"id":"power.test-slot-free","name":"Free recovery (TEST)","slot":"primary","free":true,"range":0,"staminaCost":0,"cooldown":0,"target":{"select":"self","side":"any"},"effects":[{"kind":"stamina.gain","value":1}],"note":"Unlimited core readiness; AI deliberately chooses a free action once per cycle."}
+  {"id":"power.test-slot-free","name":"Free recovery (TEST)","slot":"primary","free":true,"range":0,"staminaCost":0,"cooldown":0,"target":{"select":"self","side":"any"},"effects":[{"kind":"stamina.gain","value":1}],"note":"Unlimited core readiness; AI deliberately chooses a free action once per cycle."},
+{
+  "id": "power.test-burst-flame",
+  "name": "Twin Flame (TEST)",
+  "range": 5,
+  "staminaCost": 1,
+  "cooldown": 0,
+  "burst": {
+    "shape": {
+      "kind": "radius",
+      "radius": 1
+    },
+    "side": "enemy",
+    "packets": [
+      {
+        "id": "ember",
+        "damageType": "fire",
+        "amount": 4
+      },
+      {
+        "id": "shade",
+        "damageType": "shadow",
+        "amount": 3
+      }
+    ]
+  },
+  "note": "rule.bursts: ordered independent source packets share one low-cover budget and Protection pool; hex targeting, no attack hooks."
+},
+{
+  "id": "power.test-burst-mercy",
+  "name": "Mercy Ring (TEST)",
+  "range": 4,
+  "staminaCost": 1,
+  "cooldown": 0,
+  "burst": {
+    "shape": {
+      "kind": "radius",
+      "radius": 1
+    },
+    "side": "ally",
+    "packets": [],
+    "heal": 7
+  },
+  "note": "rule.bursts: healing-only burst is blocked by high props but not attenuated by low props; no onBurst damage reaction."
+}
 ]

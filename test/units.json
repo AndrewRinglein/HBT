@@ -470,5 +470,54 @@
       ]
     },
     "note": "Declared pure-data packet verification unit. No new production unit or balance claim."
-  }
+  },
+{
+  "id": "test-burst-flame",
+  "from": "test-air-mage",
+  "name": "Burst caster (TEST)",
+  "set": {
+    "magic": 3,
+    "maxHp": 40
+  },
+  "triggers": [],
+  "abilities": [
+    "power.test-burst-flame",
+    "power.test-burst-mercy"
+  ],
+  "note": "rule.bursts: real TEST transport for independent damage/healing burst profiles. Art derives from unchanged test-air-mage body."
+},
+{
+  "id": "test-burst-ward",
+  "from": "test-zombie",
+  "name": "Burst ward (TEST)",
+  "set": {
+    "maxHp": 40,
+    "fireResist": 1,
+    "shadowResist": 2
+  },
+  "triggers": [
+    {
+      "id": "test.burst-ward.save",
+      "hook": "onBurst",
+      "chance": 100,
+      "select": "self",
+      "effect": {
+        "kind": "burst.scale",
+        "percent": 50
+      }
+    },
+    {
+      "id": "test.burst-ward.shield",
+      "hook": "onBurst",
+      "chance": 100,
+      "select": "self",
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "status.protection",
+        "value": 2
+      }
+    }
+  ],
+  "note": "rule.bursts: defender save then reactive shield in stable trigger order, real TEST transport; art derives from unchanged test-zombie body."
+}
 ]
