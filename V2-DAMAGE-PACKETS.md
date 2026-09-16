@@ -94,3 +94,29 @@ and suspended drivers. Historical golden files are never overwritten.
 
 Verification, comparison, final gate/audit and publication results are recorded
 below only after they run. Technical verification is not human/GPU acceptance.
+
+## Landing and independent audit
+
+Source landed as `1b4e623`. The third check and normal landing both passed all
+1,479 tests, typecheck, both live variants, disabling-content failure and all
+22 declared/reblessed control battles. The independent batch audit again passed
+1,479 tests, typecheck, exact controls and the whole-core scan. The seal remains
+withheld: two recorded flags cover candidate historical rulings and the explicit
+historical-test projection/confirmed-critical assertion changes. No human review
+was recorded on the user's behalf and no exemptions were taken.
+
+Attempt one found one shared signed-zero serialization defect affecting 55
+assertions plus the old damage-head-only critical assertion. Positive zero is now
+normalized at creation and exact deep equality retained. Attempt two passed all
+1,479 tests but rejected a test's Array.findLast under the configured TypeScript
+target. The coordinator replaced that one lookup with reverse().find; the third
+full gate passed. Neither failed attempt is counted as balance evidence.
+
+Final preserved-case timing was 629.7ms old / 709.9ms new; 200 previews measured
+6.93ms / 18.17ms. Those are local measurements, not performance guarantees.
+The gate's 25-pair-per-map effect run reported zero outcome/turn changes across
+22 controls; those controls do not field the new synthetic attacks, so that is
+not evidence of packet balance. The separate 41-case comparison demonstrates
+the actual first differences and its 13 reservation-order changes with no
+sampled outcome change. The content-disabling gate proves referenced fixtures
+fail when removed; the behavioral reds above independently prove the mechanics.
