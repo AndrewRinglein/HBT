@@ -271,3 +271,15 @@ verdict. Nothing was reviewed or cleared.
 > **2026-09-03 (evening): read `HANDOFF-2026-09-03b.md` after the morning one.**
 > 31 landings from the feature run — assembly, the encounter runner, powers,
 > every status, ZoC, deathbed, surge, auras, corpses, layers, vision, AI.
+## 2026-09-15 — authored floor/polygon prerequisite landed
+
+Source 2370911 adds generic authored floor masks and finite convex high footprints;
+snapshot rules .13. Full gate, committed-tree checks and batch audit pass 1323 tests
+and all 22 unchanged controls. The seal remains withheld for three recorded warning
+categories, no exemptions or human verdict. Contract and evidence are in
+V2-AUTHORED-HIGH-PROPS.md's 2026-09-15 section and SWITCHES.md.
+
+This does not yet put scenes into battles: the coordinated migration next needs
+low-prop cover, Atlas compilation/binding and shared viewer/game mounting. Keep the
+Kingdom outcome picker and user-authored maps/art intact. Root STATE owns the
+cross-package current position; older next-chat instructions are not a stop rule.

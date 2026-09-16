@@ -205,3 +205,18 @@ probe, kill switch and all **22 unchanged controls**. No exemptions. Candidate r
 matches, preserved historical test edits and two new unpublished TEST scenario IDs
 remain visible warning/review categories. The seal is not claimed. Landing and
 committed-tree/batch checks are still pending at this checkpoint.
+
+Final: source **2370911** landed with **1323 tests** and all **22 controls** passing
+both full and committed-tree verification. The gate prints its pre-amend SHA
+2042b90; Git's resulting source commit is 2370911. The separate full audit passes
+typecheck, 1323 tests, all controls and whole-core checks. No exemptions were used.
+The seal remains withheld for three warning categories (candidate ruling matches,
+historical-test review and two unpublished TEST scenario IDs); no human review was
+recorded. Final logs: scratch/authored-geometry-land.log and
+scratch/authored-geometry-audit.log. The offline red-reproof utility is pinned to
+0bfa0c9 so it remains reproducible after landing; no combat source changed afterward.
+
+Generated Game Builder whitespace diagnostics remain distinct from these functional
+passes. The owning root copy is refreshed from the engine-generated artifact.
+Atlas conversion, low cover, scene/battle binding, Kingdom mounting and browser/GPU
+visual acceptance are subsequent work, not fulfilled by this engine prerequisite.

@@ -1,11 +1,11 @@
 
- RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine/.state/geometry-red-DLjyjE
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine/.state/geometry-red-ltVvTF
 
  × test/authored-geometry.test.ts > terrain.authored-geometry > test.geometry-corridor runs real pure-data geometry 3ms
    → unknown scenario 'test.geometry-corridor' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party
  × test/authored-geometry.test.ts > terrain.authored-geometry > test.geometry-diagonal runs real pure-data geometry 0ms
    → unknown scenario 'test.geometry-diagonal' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party
- × test/authored-geometry.test.ts > terrain.authored-geometry > blocks a finite wall between open centers without blocking an unrelated ray 2ms
+ × test/authored-geometry.test.ts > terrain.authored-geometry > blocks a finite wall between open centers without blocking an unrelated ray 3ms
    → props: unsupported field or accessor
  × test/authored-geometry.test.ts > terrain.authored-geometry > keeps absent floor out of LOS while rejecting every destination consumer 0ms
    → maps: unsupported field 'floor'
@@ -30,17 +30,17 @@
  ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [] 0ms
  ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [ true ] 0ms
  ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …(5) ] 0ms
- ✓ test/authored-geometry.test.ts > terrain.authored-geometry > agrees for every pair with an independent BigInt segment-edge oracle on both orientations 51ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > agrees for every pair with an independent BigInt segment-edge oracle on both orientations 69ms
  ✓ test/authored-geometry.test.ts > terrain.authored-geometry > handles exact tangent and padding boundaries including large coordinates without rounded products 0ms
- × test/authored-geometry.test.ts > terrain.authored-geometry > invalidates additions, removals, padding, dimensions and floor independently without retained mutable views 2ms
+ × test/authored-geometry.test.ts > terrain.authored-geometry > invalidates additions, removals, padding, dimensions and floor independently without retained mutable views 3ms
    → props: unsupported live geometry
  × test/authored-geometry.test.ts > terrain.authored-geometry > refuses excessive or accessor geometry before allocation without executing input code 2ms
    → expected [Function] to throw error matching /dense data/ but got 'props: unsupported field or accessor'
 
  Test Files  1 failed (1)
       Tests  11 failed | 13 passed (24)
-   Start at  21:29:40
-   Duration  758ms (transform 440ms, setup 0ms, import 551ms, tests 66ms, environment 0ms)
+   Start at  21:37:32
+   Duration  1.05s (transform 591ms, setup 0ms, import 746ms, tests 87ms, environment 0ms)
 
 
 ⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯

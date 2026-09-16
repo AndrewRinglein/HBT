@@ -5,10 +5,11 @@ import {execFileSync,spawnSync} from 'node:child_process'
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync} from 'node:fs'
 import {resolve,dirname,sep} from 'node:path'
 const base=resolve('.state'),target=mkdtempSync(resolve(base,'geometry-red-'))
+const before='0bfa0c9' // Frozen pre-feature runtime, also reproducible after landing.
 if(!target.startsWith(base+sep))throw Error('red fixture escaped owned directory')
 try{
- const names=execFileSync('git',['ls-tree','-r','--name-only','HEAD','src','package.json','vitest.config.ts'],{encoding:'utf8'}).trim().split('\n')
- for(const name of names){const file=resolve(target,name);mkdirSync(dirname(file),{recursive:true});writeFileSync(file,execFileSync('git',['show','HEAD:'+name],{maxBuffer:32*1024*1024}))}
+ const names=execFileSync('git',['ls-tree','-r','--name-only',before,'src','package.json','vitest.config.ts'],{encoding:'utf8'}).trim().split('\n')
+ for(const name of names){const file=resolve(target,name);mkdirSync(dirname(file),{recursive:true});writeFileSync(file,execFileSync('git',['show',before+':'+name],{maxBuffer:32*1024*1024}))}
  for(const name of ['src/core/geometry.ts','test/authored-geometry.test.ts']){const file=resolve(target,name);mkdirSync(dirname(file),{recursive:true});writeFileSync(file,readFileSync(name))}
  const r=spawnSync(process.execPath,['node_modules/vitest/vitest.mjs','run','test/authored-geometry.test.ts','--root',target,'--reporter=verbose'],{encoding:'utf8',maxBuffer:16*1024*1024})
  const output=(r.stdout||'')+(r.stderr||'');writeFileSync('scratch/authored-geometry-red-final.log',output)

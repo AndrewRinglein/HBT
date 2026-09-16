@@ -1,0 +1,32 @@
+= 'hex') throw new E…
+       |                                                                  ^
+     46|     for (const h of p.footprint.hexes) {
+     47|       if (!Number.isSafeInteger(h) || h < 0 || h >= cells) throw new E…
+ ❯ highCells src/core/props.ts:60:80
+ ❯ prepareAttackLines src/core/los.ts:122:24
+ ❯ attackLineClear src/core/los.ts:128:3
+ ❯ test/authored-geometry.test.ts:107:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > refuses excessive or accessor geometry before allocation without executing input code
+AssertionError: expected [Function] to throw error matching /dense data/ but got 'props: unsupported field or accessor'
+
+- Expected:
+/dense data/
+
++ Received:
+"props: unsupported field or accessor"
+
+ ❯ test/authored-geometry.test.ts:116:48
+    114|  it('refuses excessive or accessor geometry before allocation without …
+    115|   const vertices=wall().footprint.vertices;Object.defineProperty(verti…
+    116|   expect(()=>decodeProps([wall(vertices)],15)).toThrow(/dense data/)
+       |                                                ^
+    117|   const floor=Array(15).fill(true);Object.defineProperty(floor,'0',{ge…
+    118|   expect(()=>decodeMap({...row(),floor})).toThrow(/floor/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+Expected pre-feature failure reproduced; no source file was replaced.
