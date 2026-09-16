@@ -1030,11 +1030,11 @@
  },
  "069": {
   "red": {
-   "at": "2026-09-16 08:06",
-   "sha": "72e09df",
-   "hash": "737d2adaadce",
+   "at": "2026-09-16 08:35",
+   "sha": "d276cb3",
+   "hash": "64ffa18b2a6e",
    "how": "feature absent",
-   "tail": "       | ^ |       3| import {SANDBOX_DEFAULT} from '../src/content/sandbox.js' |       4| import {createBattle,runBattle,controllerOf,validateBattleCommand,prev…"
+   "tail": "       |                                                                         ^ |      29|   expect(advanceSandbox(b)).toEqual(advanceSandbox(a));expect(a.ctx.ev… |      30|   const command={kind:'select-activation',unitUid:a.policy.humanUnitUi…"
   },
   "closed": {
    "at": "2026-09-16 08:09",

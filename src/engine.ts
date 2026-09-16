@@ -37,7 +37,7 @@ export type { UnitDef } from '../../engine/src/core/types.js'
 // The passive viewer's separate door remains metadata-only.
 export { advanceBattle, completeActionCycle } from '../../engine/src/core/battle.js'
 export { runActivation } from '../../engine/src/ai/modes.js'
-export { controllerOf, validateBattleCommand, executeBattleCommand } from '../../engine/src/core/commands.js'
+export { activationChoices, controllerOf, validateBattleCommand, executeBattleCommand } from '../../engine/src/core/commands.js'
 export type { BattleCommand, ControlPolicy } from '../../engine/src/core/commands.js'
 export { isAttack, isMove, staminaCostOf } from '../../engine/src/core/action.js'
 export { movementOptions } from '../../engine/src/core/movement.js'

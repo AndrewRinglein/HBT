@@ -5,11 +5,25 @@ import {makeWindow} from '../../viewer/tools/fakedom.mjs'
 const {w,root,click}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html'),handle=w.__sandbox
 const button=act=>root.els.find(e=>e.dataset.act===act)
 const events=()=>JSON.stringify(handle.session.ctx.events)
+const choose=(uid=handle.session.policy.humanUnitUids[0])=>{
+ if(handle.session.ctx.battleCursor.at!=='selecting')return
+ const el=w.document.getElementById('actor');el.value=String(uid);el.handlers.change();click('select')
+}
+const ready=()=>{if(handle.busy)click('skip');choose();if(handle.busy)click('skip')}
 assert.match(root.textContent,/Battle Sandbox/)
 click('start');assert.ok(handle.viewer);assert.equal(handle.session.ctx.state.board.width,20)
+assert.equal(handle.session.ctx.battleCursor.at,'selecting');assert.ok(button('end').disabled)
+assert.equal(handle.session.ctx.events.some(e=>e.type==='activation.begin'),false)
+const pending=events();click('save');click('resume');assert.equal(events(),pending);assert.equal(handle.session.ctx.battleCursor.at,'selecting')
+const third=handle.session.policy.humanUnitUids[2],staleSelect=button('select')
+choose(third);assert.equal(handle.busy,true);assert.ok(button('end').disabled)
+const selectedEvents=events();staleSelect.handlers.click();assert.equal(events(),selectedEvents,'selection is locked during playback')
+click('skip');assert.equal(handle.session.ctx.battleCursor.actor,2);assert.equal(button('execute').disabled,false,'default party can choose an unblocked hero')
+click('end');click('skip');choose();click('skip')
+assert.deepEqual(handle.session.ctx.events.filter(e=>e.type==='activation.begin').map(e=>e.actor),[2,0],'UI chooses a different order through engine commands')
 assert.ok(button('execute').disabled,'blocked first hero has no made-up movement')
 assert.equal(button('end').disabled,false)
-click('hero-remove');click('hero-remove');click('start')
+click('hero-remove');click('hero-remove');click('start');ready()
 assert.equal(handle.session.ctx.state.units.filter(u=>u.side==='hero').length,1)
 assert.equal(button('execute').disabled,false)
 const before=events(),oldButton=button('execute');click('execute')
@@ -19,7 +33,7 @@ assert.match(root.textContent,/Wait for the current actions/)
 click('skip');assert.equal(handle.busy,false)
 // A natural drain, not just Skip, must unlock inputs after the viewer catches up.
 click('end');for(let n=0;n<200&&handle.busy;n++)w._flush(1000)
-assert.equal(handle.busy,false);assert.equal(handle.viewer.cursor,handle.session.ctx.events.length)
+assert.equal(handle.busy,false);assert.equal(handle.viewer.cursor,handle.session.ctx.events.length);ready()
 click('save');const saved=w.document.getElementById('transferText').value,savedEvents=events();assert.equal(JSON.parse(saved).format,'hbt-sandbox')
 click('end');assert.equal(handle.busy,true);const oldViewer=handle.viewer
 click('reset');assert.notEqual(handle.viewer,oldViewer);const replacement=events();w._flush(10000);assert.equal(events(),replacement,'old callbacks cannot mutate replacement session')
@@ -45,7 +59,7 @@ Object.defineProperty(handle.viewer._V.dom.turnchip,'textContent',{configurable:
 for(let n=0;n<200&&!handle.fault;n++){try{w._flush(1000)}catch{}}
 assert.match(handle.fault,/Injected renderer failure/);assert.equal(handle.busy,false)
 const faultEvents=events();staleSkip.handlers.click();assert.ok(handle.fault);assert.ok(button('end').disabled);assert.equal(events(),faultEvents)
-click('reset');assert.equal(handle.fault,'');assert.equal(button('end').disabled,false)
+click('reset');assert.equal(handle.fault,'');ready();assert.equal(button('end').disabled,false)
 const engineEvents=handle.session.ctx.events
 engineEvents.push=function(...items){Array.prototype.push.apply(this,items);throw Error('Injected partial engine failure')}
 const staleEnd=button('end');click('end');assert.match(handle.fault,/Injected partial engine failure/)
@@ -53,6 +67,6 @@ const partial=events();staleEnd.handlers.click();assert.equal(events(),partial);
 click('resume');assert.equal(handle.fault,'');assert.equal(events(),savedEvents)
 // Finish a real battle by choosing to pass hero activations. Enemy AI and the
 // turn cap/outcome are owned by the engine; the host must stay operable to the end.
-for(let n=0;n<200&&!handle.session.ctx.state.outcome;n++){if(handle.busy)click('skip');click('end')}
+for(let n=0;n<200&&!handle.session.ctx.state.outcome;n++){ready();if(!handle.session.ctx.state.outcome)click('end')}
 if(handle.busy)click('skip');assert.ok(handle.session.ctx.state.outcome);assert.match(root.textContent,/Battle complete/)
-console.log('sandbox built UI: configuration, commands, playback barrier, duplicate input, reset/disposal, fault locks, save/resume/tamper rejection, exact replay export and AI outcome passed')
+console.log('sandbox built UI: configuration, pending selection save, alternate hero order, unblocked default hero, commands, playback barrier, duplicate input, reset/disposal, fault locks, save/resume/tamper rejection, exact replay export and AI outcome passed')

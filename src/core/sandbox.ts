@@ -1,5 +1,5 @@
 // Standalone host adapter. All choices and resolution belong to the engine.
-import {createBattle,advanceBattle,completeActionCycle,runActivation,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf} from '../engine.js'
+import {createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf} from '../engine.js'
 import type {Ctx,BattleOptions,BattleCommand,ControlPolicy} from '../engine.js'
 import {SANDBOX_HEROES,SANDBOX_ENEMIES} from '../content/sandbox.js'
 import {atlasFieldingOf,type AtlasBinding} from '../content/atlas.js'
@@ -25,10 +25,11 @@ export function createSandbox(config:SandboxConfig):Sandbox{
  return {config:structuredClone(config),setup,ctx,policy:{humanUnitUids:ctx.state.units.slice(0,config.heroes.length).map(u=>u.uid)},atlasScene:field.atlasScene}
 }
 export function advanceSandbox(s:Sandbox){
- for(;;){const next=advanceBattle(s.ctx);if(next.kind==='complete'||controllerOf(s.ctx,next.actor,s.policy)==='human')return next
+ for(;;){const next=advanceBattle(s.ctx,s.policy);if(next.kind==='complete'||next.kind==='selecting'||controllerOf(s.ctx,next.actor,s.policy)==='human')return next
   runActivation(s.ctx,next.actor);completeActionCycle(s.ctx)
  }
 }
+export function sandboxActivationChoices(s:Sandbox){return activationChoices(s.ctx,s.policy).map(uid=>{const u=s.ctx.state.units.find(u=>u.uid===uid)!;return {uid,name:u.name,hex:u.hex}})}
 export function sandboxChoices(s:Sandbox):SandboxChoice[]{
  const ctx=s.ctx,actor=ctx.battleCursor?.actor
  if(ctx.state.outcome||ctx.battleCursor?.at!=='acting'||actor==null||controllerOf(ctx,actor,s.policy)!=='human')return []

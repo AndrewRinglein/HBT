@@ -859,5 +859,19 @@
   "sha": "40da64e",
   "engineSha": "4ff6e55",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "v2.activation-choice",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "needs": [
+   "v2.human-battle-sandbox"
+  ],
+  "spec": "Standalone sandbox offers remaining human activations by stable UID through the engine selection command before beginActivation; no host cursor reordering. Keep shared action resolution and Kingdom outcome picker.",
+  "expect": "Extended ISC069 proves engine-owned selection, default-party unblocked choice and alternate order, pending saves, stale command atomicity, full existing action/AI/parity assertions; built UI selection playback/fault locking and full suite/P probes.",
+  "isc": [
+   "069"
+  ]
  }
 ]
