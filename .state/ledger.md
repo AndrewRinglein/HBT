@@ -2465,3 +2465,14 @@ index 4ced129..e58bbbf 100644
 ISC-069: CLOSED at 40da64e
 slice: 62 of 69 closed · 62 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+
+## 2026-09-16 — committed audit of v2.human-battle-sandbox
+
+Source `40da64e`, bookkeeping `1bb2ddf`, engine `4ff6e55` clean, viewer `e1abdd7` clean.
+Independent full suite from committed Kingdom tree: 73 files / 231 passed / 0 failed.
+`npm run typecheck` passed. `node tools/slice-gate.mjs --report scratch/sandbox-committed-audit.json`
+passed all 62 P probes, no regression; 62 of 69 criteria closed, 1 human criterion accepted.
+The built-page UI test is in that suite and drives real bundled listeners, fault locks,
+snapshots, replay import and AI completion. No GPU or human visual acceptance claimed.
+The landing's historical-test review flag remains; this audit does not grant its seal.
