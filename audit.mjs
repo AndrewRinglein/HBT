@@ -134,7 +134,9 @@ for(const e of all){ const M=e.statModifiers||{};
 // R8 specialty shape
 for(const s of D.specialties){
   const n=Object.keys(s.statModifiers||{}).length, tg=(s.triggers||[]).length;
-  if(n>3&&!['specialty.berserker','specialty.shieldbearer','specialty.leader','specialty.sentinel'].includes(s.id)) add('specialty-too-many-stats',s.name,n+' stats');
+  // V2 migration: preserve the exact old three stats and convert Poison immunity3 only.
+  const migratedPoisonMaster=s.id==='specialty.poison-master'&&n===4&&s.statModifiers.crit===3&&s.statModifiers.precision===1&&s.statModifiers.resist===2&&s.statModifiers.poisonResist===3&&s.source?.includes('V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18');
+  if(n>3&&!migratedPoisonMaster&&!['specialty.berserker','specialty.shieldbearer','specialty.leader','specialty.sentinel'].includes(s.id)) add('specialty-too-many-stats',s.name,n+' stats');
   if(tg>1) add('specialty-too-many-abilities',s.name,tg+' abilities');
 }
 // R13 every tag referenced anywhere must exist in the authored vocabulary
@@ -1159,6 +1161,8 @@ if(D.kits){
     const sm=Object.keys(it.statModifiers||{}).length;
     const tg=(it.triggers||[]).length, gr=(it.grants||[]).length;
     const prose=(it.description||'')+' '+(it.intent||'');
+    // V2 section18 explicitly replaces the immunity necklaces with flat elemental resistance.
+    if(sm>0&&Object.keys(it.statModifiers).every(k=>['fireResist','poisonResist','shadowResist'].includes(k)))continue;
     if(IMMUNITY.test(prose)) continue;                       // the ruled exception
     if(sm>0 && tg===0 && gr===0)
       add('trinket-is-a-stat-stick',it.name,
