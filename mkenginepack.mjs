@@ -1273,12 +1273,12 @@ function compileSentences(desc) {
   for (const sRaw of parts) {
     const s0 = sRaw.replace(/\.$/, '');
     let m;
-    if ((m = s0.match(/^Deal (\d+) \+ (Magic|Spirit|Strength|Precision) (magic|physical|true) damage to every unit in the blast(?:, (.*))?$/))) {
+    if ((m = s0.match(/^Deal (\d+) \+ (Magic|Spirit|Strength|Precision) (magic|physical|fire|poison|shadow|true) damage to every unit in the blast(?:, (.*))?$/))) {
       effects.push({ kind: 'damage', stat: m[2].toLowerCase(), bonus: +m[1], damageType: m[3] });
       if (m[4]) gaps.push(`rider: ${m[4]}`);
       continue;
     }
-    if ((m = s0.match(/^Every unit in those hexes, ally or enemy, takes (Precision|Strength|Magic|Spirit) - (\d+) (physical|magic|true) damage(?:, .*)?$/))) {
+    if ((m = s0.match(/^Every unit in those hexes, ally or enemy, takes (Precision|Strength|Magic|Spirit) - (\d+) (physical|magic|fire|poison|shadow|true) damage(?:, .*)?$/))) {
       effects.push({ kind: 'damage', stat: m[1].toLowerCase(), bonus: -m[2], damageType: m[3], allies: 'always' }); continue;
     }
     if ((m = s0.match(/^Heal every ally within (\d+) hexes for (\d+) \+ Spirit(?: — .*)?$/))) { effects.push({ kind: 'heal', amount: SPIRIT(+m[2]) }); continue; }
@@ -1621,7 +1621,13 @@ const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, author
   classPowers, specialties, levels, enchanted, encounters, badges, maps };
 
 for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test.attacks, test.abilities, test.moves]) {
-  for (const row of Object.values(rows)) actionSlot(row);
+  for (const row of Object.values(rows)) {
+    actionSlot(row);
+    if (row.damageType !== undefined) damageType(row.damageType);
+    for (const effect of row.effects || []) {
+      if (effect.kind === 'damage' || effect.kind === 'selfDamage') damageType(effect.damageType);
+    }
+  }
 }
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):

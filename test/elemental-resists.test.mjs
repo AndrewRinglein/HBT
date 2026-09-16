@@ -57,3 +57,10 @@ test('V2 audit exceptions remain narrow',()=>{
  const extra=candidate(edit=>edit('gen/rogue.json',rows=>{rows.specialties.find(x=>x.id==='specialty.poison-master').statModifiers.armor=1}),true);assert.match(extra.stdout,/specialty-too-many-stats/);
  const changed=candidate(edit=>edit('gen/rogue.json',rows=>{rows.specialties.find(x=>x.id==='specialty.poison-master').statModifiers.poisonResist=4}),true);assert.match(changed.stdout,/specialty-too-many-stats/);
 });
+
+for (const kind of ['damage', 'selfDamage']) test('compiler rejects unknown ' + kind + ' effect type', () => {
+  const run = candidate(edit => edit('test/abilities.json', rows => {
+    rows[1].effects = [{kind, amount: 2, stat: 'magic', bonus: 0, damageType: 'holy'}];
+  }));
+  assert.notEqual(run.status, 0); assert.match(run.stderr, /damage type/i); assert.equal(run.pack, null);
+});
