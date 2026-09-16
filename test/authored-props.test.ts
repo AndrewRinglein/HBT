@@ -13,7 +13,8 @@ import { executeBattleCommand } from '../src/core/commands.js'
 import { renderBoard } from '../src/view/text.js'
 import type { HighProp, MoveDef } from '../src/core/types.js'
 
-const prop = (hexes = [7]): HighProp => ({ id: 'prop.fixture', height: 'high', material: 3, footprint: { kind: 'hex', hexes } })
+// The historical fixtures deliberately exercise only full-hex geometry.
+const prop = (hexes = [7]): HighProp & {footprint:{kind:'hex';hexes:number[]}} => ({ id: 'prop.fixture', height: 'high', material: 3, footprint: { kind: 'hex', hexes } })
 const row = (props = [prop()]) => ({ id: 'test.map.props', name: 'Props', rows: ['.....', '..w..', '.....'], props })
 const setup = (map = row()) => createBattle({ replicate: 0, heroes: ['test-ranger'], enemies: ['test-zombie'], heroHexes: [5], enemyHexes: [9], map: map as any })
 
@@ -27,6 +28,7 @@ describe('canonical authored high props', () => {
   it('accepts deeply readonly authored inputs and produces mutable detached state', () => {
     const map = { id: 'test.map.const', name: 'Readonly', rows: ['.w.'], props: [{ id: 'prop.const', height: 'high', material: 1, footprint: { kind: 'hex', hexes: [1] } }] } as const
     const ctx = createBattle({ replicate: 0, heroes: [], enemies: [], map })
+    if(ctx.state.props[0]!.footprint.kind!=='hex')throw Error('expected hex fixture')
     ctx.state.props[0]!.footprint.hexes[0] = 2
     expect(map.props[0].footprint.hexes).toEqual([1])
   })
@@ -39,7 +41,7 @@ describe('canonical authored high props', () => {
     const field = JSON.parse(execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'tools/field-geometry.mts', mapId], { encoding: 'utf8' }))
     expect(field.props).toEqual(authored)
     expect(field.terrainIds[90]).toBe('terrain.water')
-    for (const p of authored) for (const h of p.footprint.hexes) expect(field.passable[h]).toBe(false)
+    for (const p of authored) {if(p.footprint.kind!=='hex')throw Error('expected hex fixture');for (const h of p.footprint.hexes) expect(field.passable[h]).toBe(false)}
     advanceBattle(ctx)
     ctx.state.props = []
     expect(executeBattleCommand(ctx, { humanUnitUids: [ctx.state.units[0]!.uid] }, { kind: 'action', actor: 0, actionId: 'attack.test-ranger.bow', target: 1, expectedSeq: ctx.state.seq }).ok).toBe(true)
@@ -92,6 +94,7 @@ describe('canonical authored high props', () => {
     expect(passable(7)).toBe(false)
     const unit = arrive(ctx, ctx.units!['test-zombie']!, 7, 'test', {})
     expect(unit.hex).not.toBe(7)
+    if(ctx.state.props[0]!.footprint.kind!=='hex')throw Error('expected hex fixture')
     ctx.state.props[0]!.footprint.hexes = [6, 8]
     const next = passableHexes(ctx)
     expect(next(7)).toBe(true); expect(next(6)).toBe(false); expect(next(8)).toBe(false)

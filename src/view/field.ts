@@ -1,8 +1,8 @@
 // Read-only presentation of canonical initial map facts. No filesystem, RNG or
 // combat execution; both the field CLI and browser use this single projection.
-import { decodeProps } from '../core/props.js'
+import { decodeProps,decodeFloor,passableHexes } from '../core/props.js'
 import { geometryOf, validBoard } from '../core/hex.js'
-import { TERRAIN } from '../core/types.js'
+import { TERRAIN,type State } from '../core/types.js'
 import { terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
   accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf,
   stripsOnEnterOf, stripsOnActivationEndOf, appliesOnEnterOf, appliesOnActivationEndOf,
@@ -46,7 +46,8 @@ export function presentationField(input: unknown, rawRows?: readonly string[]) {
     return t as number
   })
   const props = decodeProps(f.props, n)
-  const blocked = new Set(props.flatMap(p => p.footprint.hexes))
+  const floor=Object.hasOwn(f,'floor')?decodeFloor(f.floor,n):undefined
+  const passable=passableHexes({state:{board:b,terrain,props,...(floor?{floor}:{})} as State})
   const hexes = [] as { c: number; r: number; px: number; py: number }[]
   for (let r = 0; r < height; r++) for (let c = 0; c < width; c++) hexes.push({ c, r, px: COL / 2 + c * COL + (r % 2) * ODD, py: HEXH / 2 + r * ROW })
   let rows: string[] | undefined
@@ -61,8 +62,8 @@ export function presentationField(input: unknown, rawRows?: readonly string[]) {
   }))
   return { width, height, w: width * COL + ODD, h: (height - 1) * ROW + HEXH,
     hexW: HEXW, hexH: HEXH, colStep: COL, rowStep: ROW, oddOffset: ODD, tilt: TILT,
-    hexes, ...(rows === undefined ? {} : { rows }), terrainIds: terrain.map(terrainIdOf), props,
-    passable: terrain.map((_,h) => !blocked.has(h)),
+    hexes, ...(rows === undefined ? {} : { rows }), terrainIds: terrain.map(terrainIdOf), props, ...(floor?{floor}:{}),
+    passable: terrain.map((_,h) => passable(h)),
     moveCost: terrain.map(t => moveCostOf(t) >= IMPASSABLE ? 99 : moveCostOf(t)), table }
 }
 
@@ -104,7 +105,7 @@ export function prepareBattleField(events: unknown, seedValue: unknown, fallback
     terrain = dense(f.terrainIds, board.width * board.height, 'registry terrain').map(id => terrainNumbers.get(id as string))
     rows = f.rows
   }
-  const field = presentationField({ ...board, terrain, props: e.props }, rows)
+  const field = presentationField({ ...board, terrain, props: e.props, ...(Object.hasOwn(e,'floor')?{floor:e.floor}:{}) }, rows)
   const geo = geometryOf(board)
   // O(cells) preparation, exact integer distance on demand; never an N² byte table.
   return { field, distance: geo.distance }

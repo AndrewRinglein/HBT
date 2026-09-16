@@ -29,4 +29,4 @@ if (!mapId) { console.error('usage: field-geometry <mapId>'); process.exit(2) }
 const m = MAPS.find(x => x.id === mapId)
 if (!m) { console.error(`unknown map '${mapId}'`); process.exit(2) }
 const decoded = decodeMap(m)
-console.log(JSON.stringify(presentationField({ ...decoded.board, terrain: decoded.terrain, props: decoded.props }, m.rows)))
+console.log(JSON.stringify(presentationField({ ...decoded.board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}) }, m.rows)))

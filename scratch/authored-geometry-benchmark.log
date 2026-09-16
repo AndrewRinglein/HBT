@@ -1,0 +1,2 @@
+{"width":20,"height":10,"count":32,"setupMs":56.5069,"queries100Ms":13.238599999999991,"stats":{"pairCellTests":2547200,"changedPairs":0,"reverseEntries":21397,"bytes":97146,"cacheHit":false,"sharedBytes":97146}}
+{"width":40,"height":40,"count":84,"setupMs":7499.0862,"queries100Ms":28.938100000000304,"stats":{"pairCellTests":429811200,"changedPairs":0,"reverseEntries":1139493,"bytes":4741882,"cacheHit":false,"sharedBytes":4839028}}

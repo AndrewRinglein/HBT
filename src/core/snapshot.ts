@@ -1,7 +1,7 @@
 import { geometryOf, validBoard } from './hex.js'
 import { isUnitUid } from './identity.js'
 import { prepareAttackLines } from './los.js'
-import { decodeProps } from './props.js'
+import { decodeProps, decodeFloor } from './props.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
 import { validateTrigger, type Trigger } from './trigger.js'
@@ -10,7 +10,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.12' // Canonical authored high props.
+const RULES_VERSION = 'v2-migration.13' // Authored floor and finite high polygons.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -92,6 +92,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   const cells = st.board.width * st.board.height
   requireThat(validTerrain(st.terrain, cells), 'terrain')
   st.props = decodeProps(st.props, cells)
+  if(Object.hasOwn(st,'floor'))st.floor=decodeFloor(st.floor,cells)
   requireThat(st.layers === undefined || (Array.isArray(st.layers) && st.layers.length === cells && st.layers.every((x: unknown) => integer(x, 0))), 'layers')
   requireThat(integer(st.turn, 0) && phases.includes(st.phase) && typeof st.mapId === 'string', 'battle clock/map')
   requireThat(st.outcome === null || ['heroClear', 'objectiveMet', 'wipe', 'retreat', 'capped', 'objectiveFailed'].includes(st.outcome), 'outcome')
@@ -166,6 +167,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     if (e.type === 'map.loaded') {
       requireThat(e.mapId === st.mapId && e.width === st.board.width && e.height === st.board.height, 'initial prop map identity/dimensions')
       e.props = decodeProps(e.props, cells)
+      if(Object.hasOwn(e,'floor'))e.floor=decodeFloor(e.floor,cells)
     }
   }
   if (s.encounter !== undefined) {

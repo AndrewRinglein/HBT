@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > test.geometry-corridor runs real pure-data geometry 12ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > test.geometry-diagonal runs real pure-data geometry 5ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > blocks a finite wall between open centers without blocking an unrelated ray 2ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > keeps absent floor out of LOS while rejecting every destination consumer 1ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > padding changes movement but not physical LOS; weighted metric respects x anisotropy 1ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects a walking command across the wall atomically, but flight keeps destination-only semantics 18ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > knockback stops at the thin physical wall even though target center is open 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > detaches initial facts and observes polygon replacement/in-place edits across forks and restore 9ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > transports floor/physical polygon through JSON and exact passive field preparation 26ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 1, 1 ] ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ +0, +0 ], [ +0, 1 ] ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 1, +0 ], [ 2, +0 ] ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 3, +0 ], …(3) ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 3, 3 ], …(2) ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 1.5, +0 ], [ +0, 1 ] ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 40000001, +0 ], …(1) ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor null 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [ true ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …(5) ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > agrees for every pair with an independent BigInt segment-edge oracle on both orientations 47ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > handles exact tangent and padding boundaries including large coordinates without rounded products 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > invalidates additions, removals, padding, dimensions and floor independently without retained mutable views 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > refuses excessive or accessor geometry before allocation without executing input code 8ms
+
+ Test Files  1 passed (1)
+      Tests  24 passed (24)
+   Start at  21:28:13
+   Duration  802ms (transform 438ms, setup 0ms, import 553ms, tests 133ms, environment 0ms)
+

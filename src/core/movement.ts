@@ -5,7 +5,7 @@
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
-import { passableHexes } from './props.js'
+import { passableHexes, type Passable } from './props.js'
 import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, unit } from './mutate.js'
 import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
 import { forcedTargetOf, applyStatus, isBlocked, isRooted, reduceStatus } from './status.js'
@@ -87,7 +87,7 @@ export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
       const node = out.get(h)!
       if (node.cost !== c) continue // stale entry, a cheaper path was found
       for (const n of ctx.geo.neighboursOf(h)) {
-        if (occ.has(n) || !passable(n)) continue
+        if (occ.has(n) || !passable(n,h)) continue
         const nc = c + stepCost(ctx, n)
         if (nc > budget) continue
         const prior = out.get(n)
@@ -134,7 +134,7 @@ function movementReason(ctx: Ctx, u: Unit, power: MoveDef, slot?: import('./type
 export function planMovement(ctx: Ctx, actor: number, actionId: string, destination: number, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
   return planMovementWithView(ctx, actor, actionId, destination, passableHexes(ctx), slot)
 }
-function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destination: number, passable: (hex: number) => boolean, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
+function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destination: number, passable: Passable, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
   const u = ctx.state.units[actor]
   const power = ctx.actions[actionId]
   if (!u || !Number.isSafeInteger(actor) || !power || !isMove(power)) return refused('action-not-ready')
@@ -145,7 +145,7 @@ function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destina
   if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return destination === u.hex ? plan : refused('unreachable-destination')
   if (isRooted(ctx, u)) return refused('actor-rooted')
   if (!passable(destination) || occupancy(ctx).has(destination)) return refused('unreachable-destination')
-  if (power.move.shape === 'sidestep') return ctx.geo.distance(u.hex, destination) === stepRangeOf(power) ? plan : refused('unreachable-destination')
+  if (power.move.shape === 'sidestep') return ctx.geo.distance(u.hex, destination) === stepRangeOf(power) && passable(destination,u.hex) ? plan : refused('unreachable-destination')
   if (power.move.shape === 'flight') return flightLandings(ctx, u, power).includes(destination) ? plan : refused('unreachable-destination')
   const reach = reachable(ctx, u, power.move.budgetMod)
   if (!reach.has(destination)) return refused('unreachable-destination')
@@ -189,7 +189,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   const occupied = occupancy(ctx)
   let from = u.hex, asked = 0
   for (const hex of path) {
-    if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.state.terrain.length || ctx.geo.distance(from, hex) !== 1 || occupied.has(hex) || !passable(hex)) return 0
+    if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.state.terrain.length || ctx.geo.distance(from, hex) !== 1 || occupied.has(hex) || !passable(hex,from)) return 0
     asked += stepCost(ctx, hex)
     from = hex
   }
@@ -355,7 +355,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
     throw new Error(`${power.id} must move exactly ${range} hex(es) (${u.hex} -> ${to})`)
   }
   const terrainHere = ctx.state.terrain[to] ?? 0
-  if (!passableHexes(ctx)(to) || occupancy(ctx).has(to)) {
+  if (!passableHexes(ctx)(to,u.hex) || occupancy(ctx).has(to)) {
     throw new Error(`sidestep destination ${to} is not open`)
   }
   spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
@@ -473,7 +473,7 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
   for (let i = 0; i < hexes; i++) {
     const next = ctx.geo.stepAwayFrom(prev, at)
     if (next === null) { reason = prev === at ? 'no line' : ctx.geo.distance(prev, at) !== 1 ? 'no straight line — pusher not adjacent' : 'edge of the board'; break }
-    if (!passable(next)) { reason = 'impassable prop'; break }
+    if (!passable(next,at)) { reason = ctx.state.floor?.[next]===false?'missing floor':'impassable prop'; break }
     if (occupancy(ctx).has(next)) { reason = 'occupied'; break }
     prev = at
     at = next

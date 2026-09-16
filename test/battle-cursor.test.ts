@@ -121,7 +121,9 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        const projected = projectShorthand(ctx, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!))
+        // Historical shorthand projection is only meaningful for a historical
+        // row. New direct geometry retains exact automatic/suspended comparison.
+        const projected = eventExpected || prior ? projectShorthand(ctx, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:ctx.events,state:ctx.state}
         if (eventExpected) {
           expect(hash(projected.events), 'prior event contract, exact prop projection').toBe(eventExpected.events)
           expect(hash(projected.state), 'prior state, exact prop projection').toBe(eventExpected.state)

@@ -2,14 +2,17 @@ import type { Board, Edge, Geometry, HexId } from './hex.js'
 import type { Rng } from './rng.js'
 
 export type Side = 'hero' | 'enemy'
-export type HighProp = { id: string; height: 'high'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } }
-export type AuthoredHighProp = { readonly id: string; readonly height: 'high'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } }
+export type PolygonFootprint = { kind: 'polygon'; vertices: [number, number][]; movementPadding: number }
+export type HighProp = { id: string; height: 'high'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } | PolygonFootprint }
+export type AuthoredHighProp = { readonly id: string; readonly height: 'high'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } | { readonly kind: 'polygon'; readonly vertices: readonly (readonly [number, number])[]; readonly movementPadding: number } }
 /** Plain authored map transport, decoded by the same boundary for registry and direct input. */
 export type AuthoredMap = {
   readonly id: string; readonly name: string; readonly rows: readonly string[]
   readonly board?: Board; readonly format?: string; readonly note?: string
   readonly deploy?: { readonly hero: Edge; readonly enemy: Edge }
   readonly props?: readonly AuthoredHighProp[]
+  /** True exactly where a unit may stand; absent means all cells have floor. */
+  readonly floor?: readonly boolean[]
 }
 /** What kind of thing a unit is. Every AI can read this about every other unit. */
 export type Role = 'melee' | 'ranged' | 'support'
@@ -676,6 +679,7 @@ export type State = {
   terrain: number[]
   /** Canonical obstruction state; authored x is normalized at map decode. */
   props: HighProp[]
+  floor?: boolean[]
   /**
    * capability.ground-layers (2026-09-03): the painted layer per hex, parallel
    * to `terrain` — LAYER.NONE where nothing is painted. Absent = nothing painted

@@ -538,3 +538,39 @@ canonical ground and initial map facts. One prepared immutable occupancy view
 per synchronous operation observes any changed footprints at its next boundary.
 Existing LOS limits remain unchanged. The 40×40/600 benchmark compares actual
 setup, sidestep and path enumeration against 038304f; details in the receipt.
+
+## terrain.authored-geometry — floor and finite convex footprints (2026-09-15)
+
+Provisional transport: an optional exact-length boolean `floor` mask says which
+cell centers support standing/landing. Absent means complete floor. Missing floor
+blocks placement, arrivals, walking and knockback destinations, but never attack
+lines. Flight retains its existing destination-only contract; it can cross gaps
+and high props but cannot land on either. This is not a new flight altitude rule.
+
+A high prop may instead have `footprint: {kind:'polygon', vertices, movementPadding}`.
+Vertices are integer `[x,y]` pairs in the existing odd-r affine plane at scale 1000:
+cell centers are `[1000*(2*col+row%2),3000*row]`. Finite thickness is authored;
+zero-area shapes are rejected, never silently thickened. Each polygon is strictly
+convex with 3–32 vertices, clockwise or counterclockwise. Concave shapes require
+multiple explicitly authored convex parts. Closed tangent contact blocks.
+
+Physical attack geometry uses those vertices without padding. Movement clearance
+is separately authored as an integer `movementPadding` (zero permitted), measured
+using `distance²=3*dx²+dy²`. This expresses the Atlas metric without square roots:
+one affine y unit is 0.00075 meters, and 0.48 meters corresponds to 640 units.
+This is an input contract, not an automatic body radius or universal 0.48 rule.
+Walking, nonzero sidesteps and knockback reject center segments within the padding;
+placement/arrival/flight only require their destination point to be clear.
+
+Resource bounds: absolute coordinate ≤40,000,000, movement padding ≤100,000,
+8192 total polygon vertices, alongside the existing 10,000 full-hex references.
+LOS keeps the existing all-pairs bitset/reverse-list cache: polygon keys include
+every vertex and padding; its work budget counts a polygon's vertex count.
+Invalidation retains unchanged reverse lists and recomputes pairs affected by
+removed/changed polygons. Floor does not enter the attack cache. These limits
+are resource policies; they do not authorize resizing or simplifying user maps.
+
+Orientation uses exact Number integer products only when the absolute-product sum
+fits Number.MAX_SAFE_INTEGER, otherwise BigInt. Weighted squared clearance uses
+BigInt throughout. No trigonometry or geometry quantization happens in combat;
+the external map compiler must quantize its authored transforms once.

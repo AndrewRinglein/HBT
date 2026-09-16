@@ -18,7 +18,7 @@
 import { TERRAIN } from '../core/types.js'
 import { GLYPH } from './terrain.js'
 import type { AuthoredMap } from '../core/types.js'
-import { decodeProps } from '../core/props.js'
+import { decodeProps, decodeFloor } from '../core/props.js'
 import { type Board, type Edge } from '../core/hex.js'
 import { disabledIds } from './disable.js'
 import { packMaps, packTestMaps, mapBoardOf } from './pack.js'
@@ -140,7 +140,7 @@ export function terrainOf(mapId: string): number[] {
 }
 
 /** Validate before allocation; retain no caller-owned arrays or metadata objects. */
-export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').HighProp[] } {
+export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').HighProp[]; floor?: boolean[] } {
   const board = mapBoardOf(m)
   const out: number[] = []
   const props = decodeProps(m.props === undefined ? [] : m.props, board.width * board.height)
@@ -155,7 +155,7 @@ export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy
       } else out.push(t)
     }
   }
-  return { id: m.id, board, deploy: { ...(m.deploy ?? DEFAULT_DEPLOY) }, terrain: out, props: decodeProps(props, out.length) }
+  return { id: m.id, board, deploy: { ...(m.deploy ?? DEFAULT_DEPLOY) }, terrain: out, props: decodeProps(props, out.length), ...(Object.hasOwn(m,'floor')?{floor:decodeFloor(m.floor,out.length)}:{}) }
 }
 
 // Keep existing registry consumers on the same terrain implementation.

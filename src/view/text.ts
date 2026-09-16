@@ -1,3 +1,5 @@
+import {passableHexes} from '../core/props.js'
+import type {State} from '../core/types.js'
 // The text renderer. Reads the EVENT LOG ONLY — never the state.
 //
 // This is deliberate: if the log cannot describe the battle, the future graphical
@@ -62,11 +64,13 @@ export function renderBoard(units: Map<number, UnitView>, mapId = 'map.open', ev
   const decoded = fact?.['terrain'] ? null : decodeMap(mapDef(mapId))
   const terr = fact?.['terrain'] as number[] | undefined ?? decoded!.terrain
   const props = fact?.['props'] as HighProp[] | undefined ?? decoded!.props
-  const blocked = new Set(props.flatMap(p => p.footprint.hexes))
+
   const geo = geometryOf(fact ? { width: fact['width'] as number, height: fact['height'] as number } : decoded!.board)
+  const floor=fact?.['floor'] as boolean[]|undefined ?? decoded?.floor
+  const passable=passableHexes({state:{board:geo.board,terrain:terr,props,...(floor?{floor}:{})} as State})
   const { width: WIDTH, height: HEIGHT } = geo.board
   const grid: string[][] = Array.from({ length: HEIGHT }, (_, r) =>
-    Array.from({ length: WIDTH }, (_, c) => (blocked.has(r * WIDTH + c) ? ' # ' : terr[r * WIDTH + c] === 1 ? ' ^ ' : ' . ')))
+    Array.from({ length: WIDTH }, (_, c) => (!passable(r * WIDTH + c) ? ' # ' : terr[r * WIDTH + c] === 1 ? ' ^ ' : ' . ')))
   for (const u of units.values()) {
     if (u.life === 'dead') continue
     const g = GLYPH[u.typeId] ?? '?'

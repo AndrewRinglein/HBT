@@ -154,3 +154,54 @@ subsequent --land --fresh gate passed with byte-identical events for every repla
 Root STATE.md owns final viewer publication/provenance after this documentation
 correction, avoiding a reciprocal engine/viewer commit-hash dependency. No engine
 rules changed during presentation publication.
+## 2026-09-15 — finite convex props and independent floor support
+
+The follow-up item `terrain.authored-geometry` supplies the engine prerequisite
+for real Atlas-bound battles. Existing full-cell props remain unchanged. Optional
+floor masks and polygon footprints are strictly validated, detached at setup and
+initial-event boundaries, restored with snapshot rules .13, and exported through
+the passive field helper and text/field CLI. SWITCHES.md owns the provisional
+coordinate, padding and resource contract. No Atlas renderer or catalog enters core.
+
+Geometry is independently checked against a BigInt segment-edge/containment oracle
+for every pair on small boards, with both polygon windings, exact tangent/clearance
+boundaries, overflow-scale coordinates, mutable edits, forks and restore. Walking,
+sidestep and knockback check crossed segments; flight retains destination-only
+semantics. Absent floor never becomes a high attack blocker. Existing integer
+full-cell LOS remains exact; polygons share its bounded bitsets and reverse lists.
+
+Initial red: 9 failed/11 passed. The final expanded 24 probes were re-run against an
+isolated extraction of pre-feature HEAD, using the new mathematical leaf only so
+its independent oracle tests could load (the old runtime never imports it): 11
+failed/13 passed. No working runtime file was replaced. The first focused green
+attempt caught a missing activation in the new path fixture; beginning activation
+preserved the intended successful detour assertion. The initial matrix parameter
+shape was repaired before final red reproof. Logs are retained in scratch.
+
+Full gate attempt 1 found three old harness assumptions: registry-only scenario
+maps, and unconditional shorthand projection on two entirely new polygon scenarios.
+The registry test now fields the actual scenario, keeps its existing terrain and
+range assertions, and additionally checks canonical prop/floor passability. The
+cursor test applies the old representation projection only to cases with old
+goldens; every historical hash/result assertion remains, and both new cases compare
+exact events/state/RNG/result across automatic and suspended drivers. All prior
+golden files are unchanged. Other historical edits only narrow hex fixture types
+with explicit assertions. These changes remain review-flagged by the gate.
+
+Attempt 1 passed all 22 controls, typecheck, real-battle probes, generalization and
+kill-switch checks. The focused repaired corpus passes 89 tests. Full verification
+and landing are recorded after completion below.
+
+Measured precomputed geometry: 20×10 with 32 finite polygons took 56.5 ms at setup,
+2,547,200 weighted pair tests, 21,397 reverse entries and 97,146 retained bytes.
+40×40 with 84 polygons took 7.499 seconds, 429,811,200 tests, 1,139,493 reverse entries
+and 4,741,882 bytes. The initial benchmark omitted explicit empty deployment lists
+and correctly failed on an obstructed auto-deployment edge; its corrected no-unit
+fixture measures geometry only. Existing limits were not widened. These synthetic
+measurements do not certify every authored Atlas map or visual acceptance.
+
+Repaired full check passes: **1323 tests**, typecheck, every real-battle/generalization
+probe, kill switch and all **22 unchanged controls**. No exemptions. Candidate ruling
+matches, preserved historical test edits and two new unpublished TEST scenario IDs
+remain visible warning/review categories. The seal is not claimed. Landing and
+committed-tree/batch checks are still pending at this checkpoint.

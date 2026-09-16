@@ -421,3 +421,14 @@ engine geometry directly; no static N² byte tables or distance truncation remai
 This changes presentation preparation, not combat events or snapshot rules.
 Verification and landing status are in V2-VIEWER-DIRECT-MAP.md; root STATE.md owns
 final cross-package publication hashes and human visual acceptance status.
+<!-- Authored geometry extension, 2026-09-15 -->
+
+`map.loaded` may now carry `floor: boolean[]`, exactly width×height entries,
+only when explicitly authored. False means no standing/landing support, not a
+high obstruction. Its detached initial mask is independent of later state edits.
+`props[].footprint` additionally accepts `{kind:'polygon', vertices:[[x,y],…],
+movementPadding:n}`: finite convex physical high geometry in integer affine
+odd-r coordinates at scale 1000. Physical attack lines use the polygon itself;
+padding is a separately authored movement clearance. The full-hex shape is unchanged.
+The passive engine field exports these facts plus authoritative per-cell passability.
+See SWITCHES.md terrain.authored-geometry for coordinate/boundary/resource policy.

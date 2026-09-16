@@ -1,0 +1,207 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine/.state/geometry-red-DLjyjE
+
+ × test/authored-geometry.test.ts > terrain.authored-geometry > test.geometry-corridor runs real pure-data geometry 3ms
+   → unknown scenario 'test.geometry-corridor' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party
+ × test/authored-geometry.test.ts > terrain.authored-geometry > test.geometry-diagonal runs real pure-data geometry 0ms
+   → unknown scenario 'test.geometry-diagonal' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party
+ × test/authored-geometry.test.ts > terrain.authored-geometry > blocks a finite wall between open centers without blocking an unrelated ray 2ms
+   → props: unsupported field or accessor
+ × test/authored-geometry.test.ts > terrain.authored-geometry > keeps absent floor out of LOS while rejecting every destination consumer 0ms
+   → maps: unsupported field 'floor'
+ × test/authored-geometry.test.ts > terrain.authored-geometry > padding changes movement but not physical LOS; weighted metric respects x anisotropy 0ms
+   → props: unsupported field or accessor
+ × test/authored-geometry.test.ts > terrain.authored-geometry > rejects a walking command across the wall atomically, but flight keeps destination-only semantics 0ms
+   → props: unsupported field or accessor
+ × test/authored-geometry.test.ts > terrain.authored-geometry > knockback stops at the thin physical wall even though target center is open 0ms
+   → props: unsupported field or accessor
+ × test/authored-geometry.test.ts > terrain.authored-geometry > detaches initial facts and observes polygon replacement/in-place edits across forks and restore 0ms
+   → props: unsupported field or accessor
+ × test/authored-geometry.test.ts > terrain.authored-geometry > transports floor/physical polygon through JSON and exact passive field preparation 0ms
+   → maps: unsupported field 'floor'
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 1, 1 ] ] 1ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ +0, +0 ], [ +0, 1 ] ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 1, +0 ], [ 2, +0 ] ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 3, +0 ], …(3) ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 3, 3 ], …(2) ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 1.5, +0 ], [ +0, 1 ] ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid finite convex vertices [ [ +0, +0 ], [ 40000001, +0 ], …(1) ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor null 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [ true ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > rejects invalid floor [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …(5) ] 0ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > agrees for every pair with an independent BigInt segment-edge oracle on both orientations 51ms
+ ✓ test/authored-geometry.test.ts > terrain.authored-geometry > handles exact tangent and padding boundaries including large coordinates without rounded products 0ms
+ × test/authored-geometry.test.ts > terrain.authored-geometry > invalidates additions, removals, padding, dimensions and floor independently without retained mutable views 2ms
+   → props: unsupported live geometry
+ × test/authored-geometry.test.ts > terrain.authored-geometry > refuses excessive or accessor geometry before allocation without executing input code 2ms
+   → expected [Function] to throw error matching /dense data/ but got 'props: unsupported field or accessor'
+
+ Test Files  1 failed (1)
+      Tests  11 failed | 13 passed (24)
+   Start at  21:29:40
+   Duration  758ms (transform 440ms, setup 0ms, import 551ms, tests 66ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > test.geometry-corridor runs real pure-data geometry
+Error: unknown scenario 'test.geometry-corridor' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party
+ ❯ scenarioDef src/content/scenarios.ts:510:11
+    508|   const s = SCENARIOS[id]
+    509|   if (!s) {
+    510|     throw new Error(
+       |           ^
+    511|       `unknown scenario '${id}' — scenarios are an explicit registry, `
+    512|       + `known ids: ${Object.keys(SCENARIOS).join(', ') || '(none)'}`,
+ ❯ test/authored-geometry.test.ts:22:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > test.geometry-diagonal runs real pure-data geometry
+Error: unknown scenario 'test.geometry-diagonal' — scenarios are an explicit registry, known ids: test.direct-map-journey, test.direct-map-authored, test.props-viewer-ranged-zoc, test.board-journey, test.board-authored, test.authored-slots, showcase.flight-bonuses, showcase.surge-flight-ladder, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.beasts, showcase.prologue-enemies, showcase.prologue-party, showcase.alpha-team, showcase.arc-variant, showcase.item-powers, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.supper, showcase.kiln, showcase.rime, showcase.horrors, showcase.waystation, showcase.farmers-grown, showcase.badged, showcase.mirror-zombies, showcase.wounded-entry, showcase.knockback-two, showcase.assembled-party
+ ❯ scenarioDef src/content/scenarios.ts:510:11
+    508|   const s = SCENARIOS[id]
+    509|   if (!s) {
+    510|     throw new Error(
+       |           ^
+    511|       `unknown scenario '${id}' — scenarios are an explicit registry, `
+    512|       + `known ids: ${Object.keys(SCENARIOS).join(', ') || '(none)'}`,
+ ❯ test/authored-geometry.test.ts:22:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > blocks a finite wall between open centers without blocking an unrelated ray
+Error: props: unsupported field or accessor
+ ❯ plain src/core/props.ts:6:165
+
+ ❯ decodeProps src/core/props.ts:24:5
+ ❯ mapBoardOf src/content/pack.ts:461:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/authored-geometry.test.ts:19:59
+ ❯ test/authored-geometry.test.ts:26:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > keeps absent floor out of LOS while rejecting every destination consumer
+Error: maps: unsupported field 'floor'
+ ❯ mapRecord src/content/pack.ts:441:128
+    439|   if (!value || typeof value !== 'object' || Array.isArray(value) || !…
+    440|   for (const key of Reflect.ownKeys(value)) {
+    441|     if (typeof key !== 'string' || !allowed.includes(key) || !('value'…
+       |                                                                                                                                ^
+    442|   }
+    443| }
+ ❯ mapBoardOf src/content/pack.ts:446:3
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/authored-geometry.test.ts:19:59
+ ❯ test/authored-geometry.test.ts:35:61
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > padding changes movement but not physical LOS; weighted metric respects x anisotropy
+Error: props: unsupported field or accessor
+ ❯ plain src/core/props.ts:6:165
+
+ ❯ decodeProps src/core/props.ts:24:5
+ ❯ mapBoardOf src/content/pack.ts:461:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/authored-geometry.test.ts:19:59
+ ❯ test/authored-geometry.test.ts:44:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > rejects a walking command across the wall atomically, but flight keeps destination-only semantics
+Error: props: unsupported field or accessor
+ ❯ plain src/core/props.ts:6:165
+
+ ❯ decodeProps src/core/props.ts:24:5
+ ❯ mapBoardOf src/content/pack.ts:461:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/authored-geometry.test.ts:19:59
+ ❯ test/authored-geometry.test.ts:50:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > knockback stops at the thin physical wall even though target center is open
+Error: props: unsupported field or accessor
+ ❯ plain src/core/props.ts:6:165
+
+ ❯ decodeProps src/core/props.ts:24:5
+ ❯ mapBoardOf src/content/pack.ts:461:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/authored-geometry.test.ts:19:59
+ ❯ test/authored-geometry.test.ts:58:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > detaches initial facts and observes polygon replacement/in-place edits across forks and restore
+Error: props: unsupported field or accessor
+ ❯ plain src/core/props.ts:6:165
+
+ ❯ decodeProps src/core/props.ts:24:5
+ ❯ mapBoardOf src/content/pack.ts:461:32
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/authored-geometry.test.ts:19:59
+ ❯ test/authored-geometry.test.ts:62:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > transports floor/physical polygon through JSON and exact passive field preparation
+Error: maps: unsupported field 'floor'
+ ❯ mapRecord src/content/pack.ts:441:128
+    439|   if (!value || typeof value !== 'object' || Array.isArray(value) || !…
+    440|   for (const key of Reflect.ownKeys(value)) {
+    441|     if (typeof key !== 'string' || !allowed.includes(key) || !('value'…
+       |                                                                                                                                ^
+    442|   }
+    443| }
+ ❯ mapBoardOf src/content/pack.ts:446:3
+ ❯ decodeMap src/content/maps.ts:144:17
+ ❯ createBattle src/core/setup.ts:181:19
+ ❯ setup test/authored-geometry.test.ts:19:59
+ ❯ test/authored-geometry.test.ts:71:61
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > invalidates additions, removals, padding, dimensions and floor independently without retained mutable views
+Error: props: unsupported live geometry
+ ❯ blockage src/core/props.ts:45:66
+     43|   // One scan at the owning operation's boundary, never inside its nei…
+     44|   for (const p of state.props) {
+     45|     if (p.height !== 'high' || p.footprint.kind !== 'hex') throw new E…
+       |                                                                  ^
+     46|     for (const h of p.footprint.hexes) {
+     47|       if (!Number.isSafeInteger(h) || h < 0 || h >= cells) throw new E…
+ ❯ highCells src/core/props.ts:60:80
+ ❯ prepareAttackLines src/core/los.ts:122:24
+ ❯ attackLineClear src/core/los.ts:128:3
+ ❯ test/authored-geometry.test.ts:107:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  test/authored-geometry.test.ts > terrain.authored-geometry > refuses excessive or accessor geometry before allocation without executing input code
+AssertionError: expected [Function] to throw error matching /dense data/ but got 'props: unsupported field or accessor'
+
+- Expected:
+/dense data/
+
++ Received:
+"props: unsupported field or accessor"
+
+ ❯ test/authored-geometry.test.ts:116:48
+    114|  it('refuses excessive or accessor geometry before allocation without …
+    115|   const vertices=wall().footprint.vertices;Object.defineProperty(verti…
+    116|   expect(()=>decodeProps([wall(vertices)],15)).toThrow(/dense data/)
+       |                                                ^
+    117|   const floor=Array(15).fill(true);Object.defineProperty(floor,'0',{ge…
+    118|   expect(()=>decodeMap({...row(),floor})).toThrow(/floor/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+

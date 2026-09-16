@@ -10,7 +10,9 @@ import { SCENARIOS, scenarioDef, scenarioOptions } from '../src/content/scenario
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { UNITS } from '../src/content/index.js'
-import { terrainOf, isPassable } from '../src/content/maps.js'
+import { isPassable } from '../src/content/maps.js'
+
+import {passableHexes} from '../src/core/props.js'
 
 const BEASTS = 'showcase.beasts'
 
@@ -44,7 +46,9 @@ describe('the scenario registry', () => {
 
   it('every scenario names one passable in-range hex per unit', () => {
     for (const [id, s] of Object.entries(SCENARIOS)) {
-      const terrain = terrainOf(s.mapId)
+      // Direct authored scenarios are not registry rows. Preserve the ground
+      // assertion and additionally check canonical floor/prop placement.
+      const ctx=createBattle(scenarioOptions(s)),terrain=ctx.state.terrain,passable=passableHexes(ctx)
       // encounter.runner (2026-09-03): an encounter scenario leaves the hero
       // hexes to the encounter (its zone or the player edge) — the rule for
       // it is that it names NO hexes and NO enemies, and the encounter exists.
@@ -61,6 +65,7 @@ describe('the scenario registry', () => {
       for (const h of all) {
         expect(h, `${id}: hex ${h} off board`).toBeLessThan(terrain.length)
         expect(isPassable(terrain[h] ?? 0), `${id}: hex ${h} impassable`).toBe(true)
+        expect(passable(h),`${id}: hex ${h} obstructed or missing floor`).toBe(true)
       }
     }
   })
@@ -173,6 +178,7 @@ describe('positions are validated at load, loudly (Law 9)', () => {
 
   it('an impassable hex throws and identifies the blocking prop', () => {
     const fixture = createBattle({ replicate: 0, mapId: 'map.thicket' })
+    if(fixture.state.props[0]!.footprint.kind!=='hex')throw Error('expected hex fixture')
     const blocked = fixture.state.props[0]!.footprint.hexes[0]!
     expect(blocked, 'map.thicket has no impassable hex to test with').toBeGreaterThan(-1)
     expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(0, blocked) }))

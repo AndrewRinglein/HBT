@@ -2432,3 +2432,18 @@ reads explicit and lazy through its single engine door. The passive page checks
 actual emitted modules; required catalog validation still runs for generators.
 No rule/table duplication, purity declaration or snapshot/event change.
 Measurements, boundaries and verification belong to V2-RUNTIME-METADATA.md.
+
+## 2026-09-15 — authored floor and finite high geometry prerequisite
+
+The user again requests the approved Battle Atlas scenes in the actual game and
+battle viewer, with movement, cover and line-of-sight rules authoritative in the
+engine. Item terrain.authored-geometry supplies generic floor masks and finite
+convex high props before the external Atlas adapter binds real battles to scenes.
+The provisional integer transport, padding and resource policies are recorded
+in SWITCHES.md. Core imports no catalog or renderer; no user maps or art change.
+Snapshot rules advance to .13. Existing maps without these optional facts retain
+their event bytes and full-hex semantics. Low cover and destruction remain separate.
+
+Historical tests receive explicit hex-kind guards/type narrowing because the
+footprint is now a union; all their previous assertions remain. These edits still
+carry the gate's review flag. Technical checks do not establish visual acceptance.

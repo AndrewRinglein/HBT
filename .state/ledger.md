@@ -12039,3 +12039,120 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
   PASS  kill switch — the tests fail without the content — tests fail without test.map.high-prop-single,test.map.high-prop-multi — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## terrain.authored-geometry — LANDED `2042b90` **NEEDS REVIEW**
+2026-09-16 04:34
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\COMBAT-DESIGN.md:66
+  PASS  typecheck
+  PASS  full test suite — 1323 passed
+  PASS  gate 1 — the id appears in a real battle — test.geometry-corridor: 1 log lines, 1 fired, 1 changed state · test.geometry-diagonal: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/authored-props.test.ts, test/battle-cursor.test.ts, test/prop-fixtures.ts, test/scenario.test.ts, test/authored-geometry.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/authored-props.test.ts (-2), test/battle-cursor.test.ts (-1), test/prop-fixtures.ts (-2), test/scenario.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 32 ids without a published source — 2 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.geometry-corridor live · test.geometry-diagonal live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.geometry-corridor,test.geometry-diagonal — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/authored-props.test.ts b/test/authored-props.test.ts
+index d1d1ded..a739814 100644
+--- a/test/authored-props.test.ts
++++ b/test/authored-props.test.ts
+@@ -14,5 +14,6 @@ import { renderBoard } from '../src/view/text.js'
+ import type { HighProp, MoveDef } from '../src/core/types.js'
+ 
+-const prop = (hexes = [7]): HighProp => ({ id: 'prop.fixture', height: 'high', material: 3, footprint: { kind: 'hex', hexes } })
++// The historical fixtures deliberately exercise only full-hex geometry.
++const prop = (hexes = [7]): HighProp & {footprint:{kind:'hex';hexes:number[]}} => ({ id: 'prop.fixture', height: 'high', material: 3, footprint: { kind: 'hex', hexes } })
+ const row = (props = [prop()]) => ({ id: 'test.map.props', name: 'Props', rows: ['.....', '..w..', '.....'], props })
+ const setup = (map = row()) => createBattle({ replicate: 0, heroes: ['test-ranger'], enemies: ['test-zombie'], heroHexes: [5], enemyHexes: [9], map: map as any })
+@@ -28,4 +29,5 @@ describe('canonical authored high props', () => {
+     const map = { id: 'test.map.const', name: 'Readonly', rows: ['.w.'], props: [{ id: 'prop.const', height: 'high', material: 1, footprint: { kind: 'hex', hexes: [1] } }] } as const
+     const ctx = createBattle({ replicate: 0, heroes: [], enemies: [], map })
++    if(ctx.state.props[0]!.footprint.kind!=='hex')throw Error('expected hex fixture')
+     ctx.state.props[0]!.footprint.hexes[0] = 2
+     expect(map.props[0].footprint.hexes).toEqual([1])
+@@ -40,5 +42,5 @@ describe('canonical authored high props', () => {
+     expect(field.props).toEqual(authored)
+     expect(field.terrainIds[90]).toBe('terrain.water')
+-    for (const p of authored) for (const h of p.footprint.hexes) expect(field.passable[h]).toBe(false)
++    for (const p of authored) {if(p.footprint.kind!=='hex')throw Error('expected hex fixture');for (const h of p.footprint.hexes) expect(field.passable[h]).toBe(false)}
+     advanceBattle(ctx)
+     ctx.state.props = []
+@@ -93,4 +95,5 @@ describe('canonical authored high props', () => {
+     const unit = arrive(ctx, ctx.units!['test-zombie']!, 7, 'test', {})
+     expect(unit.hex).not.toBe(7)
++    if(ctx.state.props[0]!.footprint.kind!=='hex')throw Error('expected hex fixture')
+     ctx.state.props[0]!.footprint.hexes = [6, 8]
+     const next = passableHexes(ctx)
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 7cbc995..27fb1d5 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -122,5 +122,7 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        const projected = projectShorthand(ctx, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!))
++        // Historical shorthand projection is only meaningful for a historical
++        // row. New direct geometry retains exact automatic/suspended comparison.
++        const projected = eventExpected || prior ? projectShorthand(ctx, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:ctx.events,state:ctx.state}
+         if (eventExpected) {
+           expect(hash(projected.events), 'prior event contract, exact prop projection').toBe(eventExpected.events)
+diff --git a/test/prop-fixtures.ts b/test/prop-fixtures.ts
+index 39d04e3..0b8e241 100644
+--- a/test/prop-fixtures.ts
++++ b/test/prop-fixtures.ts
+@@ -3,6 +3,6 @@ import type { Ctx } from '../src/core/types.js'
+ /** Test-only geometry mutation, independent of production blockage/cache helpers. */
+ export function setHigh(ctx: Ctx, hex: number, blocked = true): void {
+-  ctx.state.props = ctx.state.props.map(p => ({ ...p, footprint: { kind: 'hex' as const, hexes: p.footprint.hexes.filter(h => h !== hex) } })).filter(p => p.footprint.hexes.length)
++  ctx.state.props = ctx.state.props.map(p => {if(p.footprint.kind!=='hex')throw Error('expected hex fixture');return { ...p, footprint: { kind: 'hex' as const, hexes: p.footprint.hexes.filter(h => h !== hex) } }}).filter(p => p.footprint.hexes.length)
+   if (blocked) ctx.state.props.push({ id: `prop.test.${hex}`, height: 'high', material: 3, footprint: { kind: 'hex', hexes: [hex] } })
+ }
+-export const fixtureBlockers = (ctx: Ctx): number[] => [...new Set(ctx.state.props.flatMap(p => p.footprint.hexes))]
++export const fixtureBlockers = (ctx: Ctx): number[] => [...new Set(ctx.state.props.flatMap(p => {if(p.footprint.kind!=='hex')throw Error('expected hex fixture');return p.footprint.hexes}))]
+diff --git a/test/scenario.test.ts b/test/scenario.test.ts
+index 2103b93..213b44c 100644
+--- a/test/scenario.test.ts
++++ b/test/scenario.test.ts
+@@ -11,5 +11,7 @@ import { createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { UNITS } from '../src/content/index.js'
+-import { terrainOf, isPassable } from '../src/content/maps.js'
++import { isPassable } from '../src/content/maps.js'
++
++import {passableHexes} from '../src/core/props.js'
+ 
+ const BEASTS = 'showcase.beasts'
+@@ -45,5 +47,7 @@ describe('the scenario registry', () => {
+   it('every scenario names one passable in-range hex per unit', () => {
+     for (const [id, s] of Object.entries(SCENARIOS)) {
+-      const terrain = terrainOf(s.mapId)
++      // Direct authored scenarios are not registry rows. Preserve the ground
++      // assertion and additionally check canonical floor/prop placement.
++      const ctx=createBattle(scenarioOptions(s)),terrain=ctx.state.terrain,passable=passableHexes(ctx)
+       // encounter.runner (2026-09-03): an encounter scenario leaves the hero
+       // hexes to the encounter (its zone or the player edge) — the rule for
+@@ -62,4 +66,5 @@ describe('the scenario registry', () => {
+         expect(h, `${id}: hex ${h} off board`).toBeLessThan(terrain.length)
+         expect(isPassable(terrain[h] ?? 0), `${id}: hex ${h} impassable`).toBe(true)
++        expect(passable(h),`${id}: hex ${h} obstructed or missing floor`).toBe(true)
+       }
+     }
+@@ -174,4 +179,5 @@ describe('positions are validated at load, loudly (Law 9)', () => {
+   it('an impassable hex throws and identifies the blocking prop', () => {
+     const fixture = createBattle({ replicate: 0, mapId: 'map.thicket' })
++    if(fixture.state.props[0]!.footprint.kind!=='hex')throw Error('expected hex fixture')
+     const blocked = fixture.state.props[0]!.footprint.hexes[0]!
+     expect(blocked, 'map.thicket has no impassable hex to test with').toBeGreaterThan(-1)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED

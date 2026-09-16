@@ -3385,5 +3385,30 @@
   "status": "done",
   "sha": "8f71dc7",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "terrain.authored-geometry",
+  "kind": "terrain",
+  "shape": "rule",
+  "needs": [
+   "terrain.authored-high-props",
+   "viewer.runtime-metadata"
+  ],
+  "spec": "Authored floor masks and finite convex high prop polygons supply authoritative placement, walking, landing, knockback and attack-line legality. Physical polygons and explicit movement padding remain separate; absent floors never occlude attacks.",
+  "expect": "Two pure-data direct-map scenarios exercise distinct rotated walls and floor gaps through real setup and combat. Exact closed geometry, bounded validation, detached initial facts, reload, passive fields and mutation invalidation are tested. All22 existing control hashes and registered field CLI bytes remain unchanged.",
+  "probeIds": [
+   "test.geometry-corridor",
+   "test.geometry-diagonal"
+  ],
+  "variants": [
+   "test.geometry-corridor",
+   "test.geometry-diagonal"
+  ],
+  "changesBaseline": false,
+  "note": "Authorized V2 Atlas prerequisite, no Atlas IDs, assets or rendering in core. No low cover or destruction. Integer affine coordinates at1000 units; explicit movement padding and boundary policies recorded provisionally. Flight remains destination-only. Existing full-hex props and control event shapes are unchanged. Meaningful preimplementation red probes separately prove geometry consequence.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "2042b90",
+  "gauntlet": "not passed — 3 flag(s) warned"
  }
 ]

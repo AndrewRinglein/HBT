@@ -2,10 +2,11 @@
 // private and immutable after publication. Terrain changes create a new table.
 import { validBoard, type Board } from './hex.js'
 import type { Ctx } from './types.js'
-import { highCells } from './props.js'
+import { highCells, decodeProps } from './props.js'
+import { centerPoint,segmentCrossesPolygon,type Point } from './geometry.js'
 
 export const LOS_LIMITS = Object.freeze({ pairCellTests: 1_024_000_000, reverseEntries: 16_000_000, cacheBytes: 64 * 1024 * 1024 } as const)
-type Table = { key: string; board: Board; cells: number; blockers: readonly number[]; bits: Uint8Array | null; reverse: ReadonlyMap<number, Uint32Array>; entries: number; bytes: number }
+type Table = { key: string; board: Board; cells: number; blockers: readonly string[]; bits: Uint8Array | null; reverse: ReadonlyMap<string, Uint32Array>; entries: number; bytes: number }
 type Stats = { pairCellTests: number; changedPairs: number; reverseEntries: number; bytes: number; cacheHit: boolean }
 type View = { table: Table; stats: Stats }
 const views = new WeakMap<Ctx, View>()
@@ -53,7 +54,10 @@ function remember(table: Table): void {
   shared.set(table.key, table); sharedBytes += table.bytes
 }
 
-function derive(board: Board, blockers: number[], previous?: Table): View {
+type Blocker={key:string;cell?:number;vertices?:readonly Point[]}
+function derive(board: Board, shapes: Blocker[], previous?: Table): View {
+  const blockers=shapes.map(p=>p.key), byKey=new Map(shapes.map(p=>[p.key,p]))
+  const work=shapes.reduce((n,p)=>n+(p.vertices?.length??1),0)
   const n = board.width * board.height, pairs = n * (n - 1) / 2
   const key = `${board.width}x${board.height}|${blockers.join(',')}`
   const hit = shared.get(key)
@@ -63,7 +67,7 @@ function derive(board: Board, blockers: number[], previous?: Table): View {
   }
   // A bounded board is not a promise of arbitrary dense all-pairs LOS. Refuse
   // unsupported work before allocating, loudly, rather than dropping blockers.
-  if (pairs * blockers.length > LOS_LIMITS.pairCellTests) throw new Error(`LOS: ${n} cells × ${blockers.length} blockers exceeds the ${LOS_LIMITS.pairCellTests} pair-cell work limit`)
+  if (pairs * work > LOS_LIMITS.pairCellTests) throw new Error(`LOS: ${n} cells × ${blockers.length} blockers exceeds the ${LOS_LIMITS.pairCellTests} pair-cell work limit`)
   const stats: Stats = { pairCellTests: 0, changedPairs: 0, reverseEntries: 0, bytes: 0, cacheHit: false }
   if (!blockers.length) {
     const table: Table = { key, board: { ...board }, cells: n, blockers: [], bits: null, reverse: new Map(), entries: 0, bytes: key.length * 2 + 64 }
@@ -71,13 +75,16 @@ function derive(board: Board, blockers: number[], previous?: Table): View {
     return { table, stats }
   }
   const compatible = previous?.board.width === board.width && previous.board.height === board.height ? previous : undefined
-  const reverse = new Map<number, Uint32Array>()
+  const reverse = new Map<string, Uint32Array>()
   let entries = 0
   const xs = new Int32Array(n), ys = new Int32Array(n)
   for (let h = 0; h < n; h++) { xs[h] = 2 * (h % board.width) + (Math.floor(h / board.width) % 2); ys[h] = 3 * Math.floor(h / board.width) }
-  const crosses = (a: number, b: number, cell: number) => {
-    if (++stats.pairCellTests > LOS_LIMITS.pairCellTests) throw new Error('LOS: incremental pair-cell work limit exceeded')
-    return intersects(xs[a]!, ys[a]!, xs[b]!, ys[b]!, xs[cell]!, ys[cell]!)
+  const crosses = (a: number, b: number, key: string) => {
+    const shape=byKey.get(key)!
+    stats.pairCellTests+=shape.vertices?.length??1
+    if (stats.pairCellTests > LOS_LIMITS.pairCellTests) throw new Error('LOS: incremental pair-cell work limit exceeded')
+    if(shape.vertices)return segmentCrossesPolygon([xs[a]!*1000,ys[a]!*1000],[xs[b]!*1000,ys[b]!*1000],shape.vertices)
+    return intersects(xs[a]!, ys[a]!, xs[b]!, ys[b]!, xs[shape.cell!]!, ys[shape.cell!]!)
   }
   const bits = compatible?.bits ? compatible.bits.slice() : new Uint8Array(Math.ceil(pairs / 8))
   for (const cell of blockers) {
@@ -119,16 +126,21 @@ function derive(board: Board, blockers: number[], previous?: Table): View {
 export function prepareAttackLines(ctx: Ctx): void {
   const board = ctx.state.board
   if (!validBoard(board) || ctx.state.terrain.length !== board.width * board.height) throw new Error('LOS: invalid board terrain')
-  const blockers = [...highCells(ctx)]
+  const shapes:Blocker[] = highCells(ctx).map(cell=>({key:String(cell),cell}))
+  const polygons=ctx.state.props.filter(p=>p.footprint.kind==='polygon')
+  // Decode before keying: malformed live edits must never alias valid cached data.
+  for(const p of decodeProps(polygons,ctx.state.terrain.length))if(p.footprint.kind==='polygon')shapes.push({key:'p'+JSON.stringify(p.footprint),vertices:p.footprint.vertices})
+  const unique=[...new Map(shapes.map(p=>[p.key,p])).values()]
+  const blockers=unique.map(p=>p.key)
   const prior = views.get(ctx)
   if (prior && prior.table.board.width === board.width && prior.table.board.height === board.height && blockers.length === prior.table.blockers.length && blockers.every((h, i) => h === prior.table.blockers[i])) return
-  views.set(ctx, derive(board, blockers, prior?.table))
+  views.set(ctx, derive(board, unique, prior?.table))
 }
 export function attackLineClear(ctx: Ctx, a: number, b: number): boolean {
   prepareAttackLines(ctx)
   const table = views.get(ctx)!.table
   if (![a, b].every(h => Number.isSafeInteger(h) && h >= 0 && h < table.cells)) throw new Error('LOS: invalid attack hex')
-  if (a === b) return !table.blockers.includes(a)
+  if (a === b) return !table.blockers.includes(String(a)) && !ctx.state.props.some(p=>p.footprint.kind==='polygon'&&segmentCrossesPolygon(centerPoint(table.board,a),centerPoint(table.board,a),p.footprint.vertices))
   if (!table.bits) return true
   return !bit(table.bits, pairIndex(table.cells, Math.min(a, b), Math.max(a, b)))
 }

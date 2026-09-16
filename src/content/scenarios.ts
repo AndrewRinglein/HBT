@@ -464,6 +464,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [64, 66, 68, 70, 72, 74, 80, 82, 84, 86, 88, 90],
     replicate: 0,
   },
+  'test.geometry-corridor': {
+    id:'test.geometry-corridor',note:'TEST finite straight wall and independent missing floor.',mapId:'test.map.geometry-corridor',
+    map:{id:'test.map.geometry-corridor',name:'Geometry corridor TEST',rows:['.....','.....','.....'],floor:[false,true,true,true,true,true,true,true,true,true,true,true,true,true,true],props:[{id:'prop.corridor-wall',height:'high',material:3,footprint:{kind:'polygon',vertices:[[3900,1800],[4100,1800],[4100,4200],[3900,4200]],movementPadding:100}}]},
+    heroes:['test-ranger'],heroHexes:[5],enemies:['test-zombie'],enemyHexes:[9],replicate:0,
+  },
+  'test.geometry-diagonal': {
+    id:'test.geometry-diagonal',note:'TEST finite diagonal wall and a different floor gap.',mapId:'test.map.geometry-diagonal',
+    map:{id:'test.map.geometry-diagonal',name:'Geometry diagonal TEST',rows:['......','......','......','......'],floor:[true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],props:[{id:'prop.diagonal-wall',height:'high',material:2,footprint:{kind:'polygon',vertices:[[4600,1200],[5100,1400],[3500,5400],[3000,5200]],movementPadding:320}}]},
+    heroes:['test-ranger'],heroHexes:[6],enemies:['test-zombie'],enemyHexes:[11],replicate:3,
+  },
 }
 
 // The kill-switch seam (disable.ts): byte-identical object when nothing is

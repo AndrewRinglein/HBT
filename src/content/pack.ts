@@ -9,7 +9,7 @@ import { formatOf, validBoard, MAX_BOARD_CELLS, type Board } from '../core/hex.j
 // Initialize pure map validation before the trigger -> movement/stats -> maps
 // cycle can load registered maps. The published-props Vitest probe caught the
 // previous order's uninitialized decoder binding; fresh native entry orders are tested too.
-import { decodeProps } from '../core/props.js'
+import { decodeProps, decodeFloor } from '../core/props.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
 const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat', 'stamina.gain']
@@ -443,7 +443,7 @@ function mapRecord(value: unknown, allowed: readonly string[]): void {
 }
 /** Validate both packed and engine-owned rows before geometry/terrain allocation. */
 export function mapBoardOf(m: PackMapRow): Board {
-  mapRecord(m, ['id', 'name', 'rows', 'board', 'format', 'note', 'deploy', 'props'])
+  mapRecord(m, ['id', 'name', 'rows', 'board', 'format', 'note', 'deploy', 'props', 'floor'])
   if (typeof m.id !== 'string' || !m.id.trim() || typeof m.name !== 'string' || !m.name.trim()) throw new Error('maps: id and name must be nonempty strings')
   if ('note' in m && typeof m.note !== 'string') throw new Error('maps: note must be a string')
   if (!Array.isArray(m.rows) || m.rows.length === 0) throw new Error('maps: rows must be nonempty strings')
@@ -458,6 +458,7 @@ export function mapBoardOf(m: PackMapRow): Board {
   }
   const board = { width: m.rows[0]!.length, height: m.rows.length }
   if (!validBoard(board)) throw new Error(`maps: '${m.id}' has invalid board dimensions (maximum ${MAX_BOARD_CELLS} cells)`)
+  if (Object.hasOwn(m,'floor')) decodeFloor(m.floor,board.width*board.height)
   if (m.props !== undefined && decodeProps(m.props, board.width * board.height).some(p => p.id.startsWith('prop.obstacle.'))) throw new Error('map: prop.obstacle.* is reserved for authored x shorthand')
   if (m.rows.some(row => row.length !== board.width)) throw new Error(`maps: '${m.id}' is not rectangular`)
   if ('board' in m) {
