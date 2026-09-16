@@ -16,3 +16,9 @@ gate: v2.atlas-battle-view   [land]   engine @ 4ff6e55
   PASS  naming — no banned words invented
   PASS  engine working tree clean  — engine @ 4ff6e55, clean
   PASS  one door to the engine
+
+⛓  IRON GAUNTLET: NOT PASSED — 1 flag(s) warned. The landing stands; the seal is withheld.
+   ISC-003: CLOSED at 9ba86ee
+
+LANDED as 9ba86ee  (flagged for review)
+
