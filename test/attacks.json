@@ -116,5 +116,59 @@
     "note": "refactor.one-action-type (2026-09-04): an ATTACK with `uses` \u2014 'cooldown, warm-up, and uses are all limitations on uses of any ability ... be it a movement, be it an attack' (Angela 2026-09-04). One swing a Battle, then it leaves the list, exactly as a charged power does."
   },
   {"id":"attack.test-slot-movement","name":"Early strike (TEST)","kind":"melee","damageType":"physical","bonus":0,"stat":"strength","reach":1,"staminaCost":0,"slot":"movement","note":"capability.authored-slots: an attack explicitly spends the movement opportunity."},
-  {"id":"attack.test-slot-either","name":"Flexible strike (TEST)","kind":"melee","damageType":"physical","bonus":1,"stat":"strength","reach":1,"staminaCost":0,"slot":"either","note":"Second authored restriction variant of the same action-slot rule."}
+  {"id":"attack.test-slot-either","name":"Flexible strike (TEST)","kind":"melee","damageType":"physical","bonus":1,"stat":"strength","reach":1,"staminaCost":0,"slot":"either","note":"Second authored restriction variant of the same action-slot rule."},
+  {
+    "id": "attack.test-packet-flame",
+    "name": "Ordered flame (TEST)",
+    "kind": "melee",
+    "damageType": "physical",
+    "bonus": 2,
+    "stat": "strength",
+    "reach": 1,
+    "staminaCost": 0,
+    "crit": 100,
+    "armorPenetration": 2,
+    "secondaryDamage": [
+      {
+        "id": "flame",
+        "when": "hit",
+        "damageType": "fire",
+        "amount": 4
+      },
+      {
+        "id": "critical",
+        "when": "crit",
+        "damageType": "true",
+        "amount": 3
+      }
+    ],
+    "note": "rule.damage-packets declared data variant: physical base, fire hit packet, true confirmed-crit packet, positive Armor penetration. Verification fixture, not shipping weapon tuning."
+  },
+  {
+    "id": "attack.test-packet-shadow",
+    "name": "Ordered shadow (TEST)",
+    "kind": "melee",
+    "damageType": "magic",
+    "bonus": 1,
+    "stat": "magic",
+    "reach": 1,
+    "staminaCost": 0,
+    "crit": 100,
+    "armorPenetration": 1,
+    "secondaryDamage": [
+      {
+        "id": "shadow",
+        "when": "hit",
+        "damageType": "shadow",
+        "amount": 3
+      },
+      {
+        "id": "physical",
+        "when": "crit",
+        "damageType": "physical",
+        "amount": 5
+      }
+    ],
+    "note": "rule.damage-packets second declared data variant: magic base, shadow hit packet, physical crit packet with penetration. Verification fixture, not shipping weapon tuning."
+  }
 ]

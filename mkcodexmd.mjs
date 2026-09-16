@@ -13,6 +13,7 @@ const esc=s=>String(s==null?'':s).replace(/\|/g,'\\|').replace(/\r?\n/g,' ').tri
 const num=n=>(n>0?'+':'')+n;
 const mods=m=>{const e=Object.entries(m||{}).filter(([,v])=>v);return e.length?e.map(([k,v])=>num(v)+' '+k).join(' · '):'—'};
 const trig=e=>(Array.isArray(e.triggers)?e.triggers:[]).map(g=>'**`'+g.hook+'`** '+esc(g.effect||g.description||'')).join('<br>')||'';
+const packets=a=>[...(a.secondaryDamage||[]).map(p=>'**on '+p.when+'** '+p.amount+' '+p.damageType+' damage (separate packet)'),...(a.armorPenetration!=null?['Armor penetration '+a.armorPenetration]:[]),a.packetInterpretation||''].filter(Boolean).map(esc).join('<br>');
 const src=e=>e.source?'\n  <sub>'+esc(e.source)+'</sub>':'';
 
 w('# The HoBaT Codex');
@@ -118,7 +119,7 @@ for(const it of weapons){
     w('');
     w('| Attack | Range | Stat | Dmg | Type | Hits | Acc | Crit | Stam | Targets | Effect |');
     w('|---|---|---|---:|---|---:|---:|---:|---:|---|---|');
-    for(const a of atks) w('| **'+esc(a.name)+'** | '+esc(a.range)+' | '+esc(a.stat)+' | '+num(a.damage||0)+' | '+esc(a.damageType)+' | '+(a.hits||1)+' | '+num(a.accuracy||0)+' | '+num(a.crit||0)+' | '+(a.stamina||0)+' | '+esc(a.targets)+' | '+[esc(a.description||''),trig(a)].filter(Boolean).join('<br>')+' |');
+    for(const a of atks) w('| **'+esc(a.name)+'** | '+esc(a.range)+' | '+esc(a.stat)+' | '+num(a.damage||0)+' | '+esc(a.damageType)+' | '+(a.hits||1)+' | '+num(a.accuracy||0)+' | '+num(a.crit||0)+' | '+(a.stamina||0)+' | '+esc(a.targets)+' | '+[esc(a.description||''),trig(a),packets(a)].filter(Boolean).join('<br>')+' |');
   }
   w('');
 }

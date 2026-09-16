@@ -1657,11 +1657,9 @@
     "melee"
    ],
    "triggers": [
-    {
-     "hook": "onCrit",
-     "effect": "+4 damage"
-    }
-   ],
+     ],
+     "secondaryDamage": [{"id":"critical-rider","when":"crit","damageType":"physical","amount":4}],
+     "packetInterpretation": "Provisional V2: authored '+4 damage' onCrit inherits physical type and is a separately mitigated flat packet, not a bonus merged into base damage. Requires balance review.",
    "slayer": null,
    "source": " | 2026-08-20: Strength +2, -5 Accuracy, 2 stamina, and +4 damage on a crit. A tier-0 axe that swings hard, misses more, and occasionally takes a leg off."
   },
@@ -2780,12 +2778,9 @@
     "melee"
    ],
    "triggers": [
-    {
-     "hook": "onCrit",
-     "chance": 100,
-     "effect": "deal 6 more damage"
-    }
-   ],
+     ],
+     "secondaryDamage": [{"id":"critical-rider","when":"crit","damageType":"physical","amount":6}],
+     "packetInterpretation": "Provisional V2: authored 'deal 6 more damage' onCrit (100%) inherits physical type and is a separately mitigated flat packet, not a bonus merged into base damage. Requires balance review.",
    "slayer": {
     "undead": 2,
     "demon": 2

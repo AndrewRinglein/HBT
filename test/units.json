@@ -424,6 +424,51 @@
     "set": { "movement": 5 }, "triggers": [], "abilities": [], "moves": ["power.test-flight-plus-five"],
     "note": "Second data instance for fix.flight-budget."
   },
-  {"id":"test-slot-striker","from":"test-oathblade","name":"Slot striker (TEST)","set":{"movement":5,"ai":"dumb-melee"},"attacks":["attack.test-slot-movement","attack.test-slot-either"],"abilities":["power.test-slot-guard","power.test-slot-free"],"moves":["power.test-slot-flight","power.test-slot-step"],"note":"Authored slots, no engine-specific unit behavior."}
+  {"id":"test-slot-striker","from":"test-oathblade","name":"Slot striker (TEST)","set":{"movement":5,"ai":"dumb-melee"},"attacks":["attack.test-slot-movement","attack.test-slot-either"],"abilities":["power.test-slot-guard","power.test-slot-free"],"moves":["power.test-slot-flight","power.test-slot-step"],"note":"Authored slots, no engine-specific unit behavior."},
+  {
+    "id": "test-packet-flame",
+    "from": "test-oathblade",
+    "name": "Packet flame (TEST)",
+    "set": {
+      "side": "hero",
+      "maxHp": 60,
+      "armor": 3,
+      "resist": 1,
+      "fireResist": 1,
+      "shadowResist": 2,
+      "strength": 4,
+      "magic": 3,
+      "accuracy": 100,
+      "dodge": 0,
+      "luck": 0,
+      "crit": 0,
+      "attacks": [
+        "attack.test-packet-flame"
+      ]
+    },
+    "note": "Declared pure-data packet verification unit. No new production unit or balance claim."
+  },
+  {
+    "id": "test-packet-shadow",
+    "from": "test-oathblade",
+    "name": "Packet shadow (TEST)",
+    "set": {
+      "side": "enemy",
+      "maxHp": 60,
+      "armor": 3,
+      "resist": 1,
+      "fireResist": 1,
+      "shadowResist": 2,
+      "strength": 4,
+      "magic": 3,
+      "accuracy": 100,
+      "dodge": 0,
+      "luck": 0,
+      "crit": 0,
+      "attacks": [
+        "attack.test-packet-shadow"
+      ]
+    },
+    "note": "Declared pure-data packet verification unit. No new production unit or balance claim."
+  }
 ]
-

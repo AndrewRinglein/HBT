@@ -1,5 +1,8 @@
 # content/ — the HoBaT content pipeline
 
+Ordered attack packet authoring and provisional weapon interpretations:
+[V2-DAMAGE-PACKETS.md](V2-DAMAGE-PACKETS.md).
+
 Everything authored for Heroes of Blight and Tragic that is *data* rather than prose,
 plus the viewer that makes it readable.
 

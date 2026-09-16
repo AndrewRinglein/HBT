@@ -180,6 +180,7 @@ function mods(m){ if(!m||!Object.keys(m).length) return '';
     '<span class="mod '+(v<0?'n':'p')+'">'+(v>0?'+':'')+v+' '+k.replace(/([A-Z])/g,' $1')+'</span>').join('')+'</div>'; }
 function trigs(t){ if(!t||!t.length) return '';
   return '<div class="trig">'+t.map(x=>typeof x==='string'?esc(x):'<b>'+esc(x.hook||x.on||'')+'</b> '+esc(x.effect||x.description||JSON.stringify(x))).join('<br>')+'</div>'; }
+function packets(a){return (a.armorPenetration!=null?'<div class="trig"><b>Armor penetration</b> '+a.armorPenetration+'</div>':'')+(a.secondaryDamage||[]).map(p=>'<div class="trig"><b>on '+esc(p.when)+'</b> '+p.amount+' '+esc(p.damageType)+' damage, separate packet</div>').join('')+(a.packetInterpretation?'<div class="intent">'+esc(a.packetInterpretation)+'</div>':'');}
 function tags(a){ if(!a||!a.length) return '';
   return '<div class="tags">'+a.map(t=>'<span class="'+tagCls(t)+'">'+esc(String(t).replace('tag.',''))+'</span>').join('')+'</div>'; }
 function tier(t){ return t==null?'':'<span class="pill t'+t+'">T'+t+'</span>'; }
@@ -235,7 +236,7 @@ const RENDER = {
     (a.description?'<div class="desc">'+esc(a.description)+'</div>':'')+
     '<div class="mods">'+(a.accuracy?'<span class="mod '+(a.accuracy<0?'n':'p')+'">'+(a.accuracy>0?'+':'')+a.accuracy+' acc</span>':'')+
     (a.crit?'<span class="mod '+(a.crit<0?'n':'p')+'">'+(a.crit>0?'+':'')+a.crit+' crit</span>':'')+'</div>'+
-    trigs(a.triggers)+(a.slayer&&Object.keys(a.slayer||{}).length?'<div class="trig"><b>slayer</b> '+Object.entries(a.slayer).map(([k,v])=>k+' +'+v).join(', ')+'</div>':'')+
+    trigs(a.triggers)+packets(a)+(a.slayer&&Object.keys(a.slayer||{}).length?'<div class="trig"><b>slayer</b> '+Object.entries(a.slayer).map(([k,v])=>k+' +'+v).join(', ')+'</div>':'')+
     tags(a.tags)+'<div class="id">'+esc(a.id)+'</div></div>',
   enchant: e => '<div class="card"><h3>'+esc(e.name)+'</h3><div class="meta">'+tier(e.tier)+
     (e.appliesToTags||[]).map(t=>'<span class="'+tagCls(t)+'">'+esc(t)+'</span>').join('')+
@@ -336,7 +337,7 @@ const TABS=[
          '</div>'+
          (a.targets?'<div class="shape'+(multiHex(a)?' multi':'')+'">'+esc(a.targets)+'</div>':'')+
          (a.description?'<div class="desc" style="font-size:12px">'+esc(a.description)+'</div>':'')+
-         trigs(a.triggers)+
+         trigs(a.triggers)+packets(a)+
          (a.slayer&&Object.keys(a.slayer||{}).length?'<div class="trig"><b>slayer</b> '+Object.entries(a.slayer).map(([k,v])=>k+' +'+v).join(', ')+'</div>':'')+
          tags(a.tags)+'</div>').join('') : '<div class="empty" style="padding:14px">no attacks linked</div>')+'</div></div>';
    };

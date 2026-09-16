@@ -1,5 +1,9 @@
 # HoBaT Content Authoring Guide
 
+V2 attack packet schema and the two provisional migrated weapon riders are owned
+by [V2-DAMAGE-PACKETS.md](V2-DAMAGE-PACKETS.md). Explicit V2 rulings supersede older
+scalar-only damage descriptions below.
+
 How to write an item, a power, a specialty or an enchantment for *Heroes of Blight
 and Tragic*. Written 2026-08-17 against the settled rulings in
 `2-ACTIONS-SETTLED.md` and `3-UNITS-SETTLED.md`, and against the harvested

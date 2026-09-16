@@ -1,5 +1,23 @@
 function elementalStats(row){return Object.fromEntries(['fireResist','poisonResist','shadowResist'].filter(k=>row[k]!==undefined).map(k=>{if(!Number.isSafeInteger(row[k]))throw Error('Invalid elemental resistance '+k);return[k,row[k]]}))}
 function damageType(value){if(!['physical','magic','fire','poison','shadow','true'].includes(value))throw Error('Invalid damage type: '+String(value));return value}
+function packetFields(row){
+  const out={};
+  if(row.armorPenetration!==undefined){
+    if(!Number.isSafeInteger(row.armorPenetration)||row.armorPenetration<0||row.armorPenetration>1000000)throw Error('Invalid integer armor penetration on '+row.id);
+    out.armorPenetration=row.armorPenetration;
+  }
+  if(row.secondaryDamage!==undefined){
+    const ids=new Set(['base']),rows=row.secondaryDamage;
+    if(!Array.isArray(rows)||rows.length>32)throw Error('Invalid secondary packet list on '+row.id);
+    out.secondaryDamage=rows.map(p=>{
+      if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).length!==4||Object.keys(p).some(k=>!['id','when','damageType','amount'].includes(k)))throw Error('Invalid secondary packet shape on '+row.id);
+      if(typeof p.id!=='string'||! /^[a-z][a-z0-9-]{0,63}$/.test(p.id)||ids.has(p.id))throw Error('Duplicate or reserved packet id on '+row.id);
+      if(!['hit','crit'].includes(p.when)||!['physical','magic','fire','poison','shadow','true'].includes(p.damageType)||!Number.isSafeInteger(p.amount)||p.amount<0||p.amount>1000000)throw Error('Invalid secondary packet fields on '+row.id);
+      ids.add(p.id);return {...p};
+    });
+  }
+  return out;
+}
 // mkenginepack.mjs — export the TEST COHORT as the engine's generated unit pack.
 // Run AFTER assemble.mjs. Writes ../engine/src/content/generated/pack.ts.
 //
@@ -487,7 +505,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     anyRanged = anyRanged || ranged;
     if (ranged) rangedN++; else meleeN++;
     authoredAttacks[a.id] = {
-      ...actionSlot(a), id: a.id, name: a.name || a.id.split('.').pop(),
+      ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name || a.id.split('.').pop(),
       kind: ranged ? 'ranged' : 'melee',
       damageType: damageType(a.damageType || 'physical'),
       bonus: a.damage?.mod ?? 0, stat: a.damage?.stat || 'strength',
@@ -511,7 +529,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     const basic = (D.attacks || []).find((x) => x.id === 'attack.basic.melee');
     if (!basic) gap(id, 'no attacks, and attack.basic.melee has no settled row to fall back on', 'content');
     else {
-      authoredAttacks[basic.id] = { id: basic.id, name: basic.name, kind: 'melee',
+      authoredAttacks[basic.id] = { ...packetFields(basic), id: basic.id, name: basic.name, kind: 'melee',
         damageType: damageType(basic.damageType || 'physical'), bonus: basic.damage ?? 0,
         stat: basic.stat || 'strength', reach: 1, staminaCost: basic.stamina ?? 0 };
       attackIds.push(basic.id);
@@ -746,7 +764,7 @@ for (const id of PARTY) {
       const ranged = typeof a.range === 'number' && a.range > 1;
       anyRanged = anyRanged || ranged;
       authoredAttacks[a.id] = {
-        ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+        ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: damageType(a.damageType || 'physical'),
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
@@ -765,7 +783,7 @@ for (const id of PARTY) {
   for (const a of [...SATTACK_BY_ID.values()].filter((x) => x.universalToAllUnits)) {
     if (attackIds.includes(a.id)) continue;
     authoredAttacks[a.id] = {
-      ...actionSlot(a), id: a.id, name: a.name, kind: 'melee', damageType: damageType(a.damageType || 'physical'),
+      ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name, kind: 'melee', damageType: damageType(a.damageType || 'physical'),
       bonus: a.damage ?? 0, stat: a.stat || 'strength', reach: 1, staminaCost: a.stamina ?? 0,
       ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field (2026-09-03): Punch's −5 has a slot
     };
@@ -848,7 +866,7 @@ const alphaTeam = [];
       anyRanged = anyRanged || ranged;
       const area = areaShapeOf(a);
       authoredAttacks[a.id] = {
-        ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+        ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: damageType(a.damageType || 'physical'),
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
@@ -952,7 +970,7 @@ for (const id of CIVILIANS) {
       const ranged = typeof a.range === 'number' && a.range > 1;
       anyRanged = anyRanged || ranged;
       authoredAttacks[a.id] = {
-        ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+        ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: damageType(a.damageType || 'physical'),
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         // Civilians are EXACTLY like heroes (ruled 2026-08-26): they pay
@@ -978,7 +996,7 @@ for (const id of CIVILIANS) {
   for (const a of [...SATTACK_BY_ID.values()].filter((x) => x.universalToAllUnits)) {
     if (attackIds.includes(a.id)) continue;
     authoredAttacks[a.id] = {
-      ...actionSlot(a), id: a.id, name: a.name, kind: 'melee', damageType: damageType(a.damageType || 'physical'),
+      ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name, kind: 'melee', damageType: damageType(a.damageType || 'physical'),
       bonus: a.damage ?? 0, stat: a.stat || 'strength', reach: 1, staminaCost: a.stamina ?? 0,
       ...(a.crit ? { crit: a.crit } : {}),
       ...(a.accuracy ? { accuracy: a.accuracy } : {}),
@@ -1090,7 +1108,7 @@ function takeItemAttack(a) {
   const ranged = typeof a.range === 'number' && a.range > 1;
   const area = areaShapeOf(a);
   authoredAttacks[a.id] = {
-    ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+    ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
     damageType: damageType(a.damageType || 'physical'),
     bonus: a.damage ?? 0, stat: a.stat || 'strength',
     reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
@@ -1429,7 +1447,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));
@@ -1442,7 +1460,7 @@ function testAttacks() {
     if (from) { base = authoredAttacks[from]; if (!base) throw new Error(`content/test/attacks.json: '${row.id}' is a delta over '${from}', which is not a real attack in the pack`); }
     const a = { ...base, ...rest, ...(set || {}), id: row.id };
     for (const k of Object.keys(a)) if (!ATTACK_FIELDS.has(k)) throw new Error(`content/test/attacks.json: '${row.id}' carries unknown field '${k}'`);
-    out[row.id] = a;
+    out[row.id] = {...a,...packetFields(a)};
   }
   return out;
 }
