@@ -12,6 +12,7 @@ const choose=(uid=handle.session.policy.humanUnitUids[0])=>{
 const ready=()=>{if(handle.busy)click('skip');choose();if(handle.busy)click('skip')}
 assert.match(root.textContent,/Battle Sandbox/)
 click('start');assert.ok(handle.viewer);assert.equal(handle.session.ctx.state.board.width,20)
+assert.deepEqual(handle.viewer._V.data.ABSORBING_STATUSES.slice().sort(),['status.protection','test.status.ward'],'embedded viewer must receive current pool metadata')
 assert.equal(handle.session.ctx.battleCursor.at,'selecting');assert.ok(button('end').disabled)
 assert.equal(handle.session.ctx.events.some(e=>e.type==='activation.begin'),false)
 const pending=events();click('save');click('resume');assert.equal(events(),pending);assert.equal(handle.session.ctx.battleCursor.at,'selecting')
@@ -26,6 +27,17 @@ assert.equal(button('end').disabled,false)
 click('hero-remove');click('hero-remove');click('start');ready()
 assert.equal(handle.session.ctx.state.units.filter(u=>u.side==='hero').length,1)
 assert.equal(button('execute').disabled,false)
+// Actual engine self-damage preview must survive the built host's label/filter seam.
+{
+ const actor=handle.session.ctx.state.units[handle.session.ctx.battleCursor.actor],id='power.fire-master.eldritch-might'
+ const originalActions=actor.actions.slice(),originalStamina=actor.stamina
+ actor.actions.push(id);actor.stamina=99
+ const select=w.document.getElementById('action');select.value=id+'|primary';select.handlers.change()
+ assert.match(w.document.getElementById('preview').textContent,/Damage to self: [1-9]/)
+ assert.match(w.document.getElementById('preview').textContent,/Self HP loss: [1-9]/)
+ actor.actions=originalActions;actor.stamina=originalStamina
+ w.document.getElementById('action').handlers.change()
+}
 const before=events(),oldButton=button('execute');click('execute')
 assert.notEqual(events(),before);assert.equal(handle.busy,true);assert.ok(button('end').disabled)
 const once=events();oldButton.handlers.click();assert.equal(events(),once,'double click while animations run emits no commands')

@@ -877,5 +877,20 @@
   "sha": "0dec52d",
   "engineSha": "1723e63",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "v2.elemental-display",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "needs": [
+   "v2.activation-choice"
+  ],
+  "spec": "Adopt the elemental/Protection engine and shared passive renderer: show exact self-damage versus HP-loss previews, forward current absorbing-status metadata, preserve sandbox command/save/export lifecycle and Kingdom outcome picker.",
+  "expect": "ISC069 exact preview/event pool-spending parity; built UI labels and metadata, full suite/P probes and shared renderer tests. No passive combat formulas or human/GPU acceptance claim.",
+  "isc": [
+   "069"
+  ],
+  "attempts": 1
  }
 ]

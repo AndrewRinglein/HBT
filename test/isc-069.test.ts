@@ -91,6 +91,21 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
   const data=exportSandbox(a);expect(data.seed.mapId).toBe(a.setup.map!.id);expect(data.events).toEqual(a.ctx.events)
   expect(data.atlasScene.initialMapFact).toEqual(a.atlasScene.initialMapFact);expect(data.outcome).toBeTruthy()
  })
+ it('forwards exact self-damage preview and pool spending through the command host',()=>{
+  const s=createSandbox({...SANDBOX_DEFAULT,heroes:[SANDBOX_DEFAULT.heroes[0]!]});acting(s)
+  const u=s.ctx.state.units[s.ctx.battleCursor!.actor!]!,id='power.fire-master.eldritch-might'
+  u.actions.push(id);u.stamina=99;u.statuses.push({id:'status.protection',value:1})
+  const before=structuredClone({state:s.ctx.state,events:s.ctx.events,rng:s.ctx.rng})
+  const choice=sandboxChoices(s).find(c=>c.command.actionId===id&&c.command.slot==='primary')!
+  expect(choice).toBeDefined();expect(choice.preview!.selfDamage).toBeGreaterThan(0)
+  expect({state:s.ctx.state,events:s.ctx.events,rng:s.ctx.rng}).toEqual(before)
+  expect(commandSandbox(s,choice.command).ok).toBe(true)
+  const damage=s.ctx.events.find(e=>e.type==='damage.applied'&&e.causeId===id)!
+  expect(damage['amount']).toBe(choice.preview!.selfDamageApplied)
+  expect((damage['amount'] as number)+(damage['overkill'] as number)).toBe(choice.preview!.selfDamage)
+  expect(damage['absorbed']).toBe(1)
+  expect(s.ctx.events.find(e=>e.type==='status.reduced'&&e.causeId===id)).toMatchObject({target:u.id,statusId:'status.protection',by:1})
+ })
  it('rejects invalid configuration before creating a battle and supports variable parties',()=>{
   expect(()=>createSandbox({...SANDBOX_DEFAULT,heroes:[]})).toThrow()
   expect(()=>createSandbox({...SANDBOX_DEFAULT,seed:NaN})).toThrow()

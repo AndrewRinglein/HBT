@@ -10,7 +10,7 @@ export function battleViewAssets(){
  for(const row of Object.values(manifest.artmap))for(const key of ['token','card'])if(row[key]&&!names.has(row[key]))throw Error('Missing art manifest reference '+row[key])
  for(const file of manifest.files){if(!/^[a-zA-Z0-9_.-]+$/.test(file))throw Error('Unsafe art manifest filename '+file)}
  for(const file of manifest.files){const mime=file.endsWith('.png')?'image/png':file.endsWith('.jpg')?'image/jpeg':null;if(mime)assets[file]=`data:${mime};base64,${readFileSync('../viewer/generated/art/'+file).toString('base64')}`}
- return {units:stat.units,statuses:stat.statuses,actions:stat.actions,badges:stat.badges,layers:stat.layers,artmap:manifest.artmap,assets,glyphs:read('ra-glyphs.json')}
+ return {units:stat.units,statuses:stat.statuses,absorbingStatuses:stat.absorbingStatuses,actions:stat.actions,badges:stat.badges,layers:stat.layers,artmap:manifest.artmap,assets,glyphs:read('ra-glyphs.json')}
 }
 export function scopeBattleCSS(source){
  const root=postcss.parse(source)
