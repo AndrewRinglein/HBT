@@ -24,6 +24,7 @@
 //   4. Preview and resolution disagree  -> triggers never alter the damage number, so
 //      there is no second path to disagree with. Damage-changing effects are STATIONS.
 
+import { incomingAbsorb, spendAbsorb } from './status.js'
 import { flatDamage } from './mitigation.js'
 import { isDamageType } from './types.js'
 import type { Ctx, Unit, DamageType } from './types.js'
@@ -430,8 +431,14 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
         actor: owner.id, target: targetId, effect: e.kind, amount: v, damageType: e.damageType,
       })
       if (v > 0) {
-        const damage=flatDamage(ctx,ctx.state.units[targetId]!,v,e.damageType)
-        applyDamage(ctx,targetId,damage.value,t.id,{actor:owner.id,damageType:e.damageType,...(damage.resisted?{resisted:damage.resisted}:{})})
+        const target = unit(ctx, targetId)
+        const damage = flatDamage(ctx, target, v, e.damageType, incomingAbsorb(ctx, target))
+        if (damage.absorbed > 0) spendAbsorb(ctx, targetId, damage.absorbed, t.id)
+        applyDamage(ctx, targetId, damage.value, t.id, {
+          actor: owner.id, damageType: e.damageType,
+          ...(damage.resisted ? { resisted: damage.resisted } : {}),
+          ...(damage.absorbed ? { absorbed: damage.absorbed } : {}),
+        })
       }
       break
     }

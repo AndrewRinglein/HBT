@@ -161,8 +161,12 @@ export function previewPower(ctx: Ctx, userId: number, targetId: number, ability
     // neither its events nor any lookahead rolls escape into the live battle.
     const dry = forkBattle(ctx)
     performEffects(dry, userId, targetId, a)
-    let damage = 0, heal = 0, healingApplied = 0
+    let damage = 0, heal = 0, healingApplied = 0, selfDamage = 0, selfDamageApplied = 0
     for (const e of dry.events) {
+      if (e.type === 'damage.applied' && e.target === userId && e.causeId === a.id) {
+        selfDamageApplied += e['amount'] as number
+        selfDamage += (e['amount'] as number) + (e['overkill'] as number)
+      }
       if (e.target !== targetId || e.causeId !== a.id) continue
       if (e.type === 'power.hit') {
         damage += (e['ledger'] as { delta: number }[]).reduce((sum, r) => sum + r.delta, 0)
@@ -171,7 +175,7 @@ export function previewPower(ctx: Ctx, userId: number, targetId: number, ability
         healingApplied += e['amount'] as number
       }
     }
-    return { damage, heal, healingApplied, hitChance: 100 }
+    return { damage, heal, healingApplied, selfDamage, selfDamageApplied, hitChance: 100 }
   }
   switch (effectOf(a)) {
     case 'heal':
@@ -368,8 +372,13 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Action
       return 0
     }
     case 'selfDamage': {
-      const damage = flatDamage(ctx, unit(ctx, id), e.amount, e.damageType)
-      applyDamage(ctx, id, damage.value, a.id, { actor: userId, abilityId: a.id, damageType: e.damageType, ...(damage.resisted ? { resisted: damage.resisted } : {}) })
+      const damage = flatDamage(ctx, tg, e.amount, e.damageType, incomingAbsorb(ctx, tg))
+      if (damage.absorbed > 0) spendAbsorb(ctx, id, damage.absorbed, a.id)
+      applyDamage(ctx, id, damage.value, a.id, {
+        actor: userId, abilityId: a.id, damageType: e.damageType,
+        ...(damage.resisted ? { resisted: damage.resisted } : {}),
+        ...(damage.absorbed ? { absorbed: damage.absorbed } : {}),
+      })
       return 0
     }
     case 'stamina.gain': {

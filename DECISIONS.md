@@ -2489,3 +2489,13 @@ poisonResist and shadowResist, default 0, across typed attacks/powers/status/tri
 HP damage and authored stat transport. Protection's existing attack ordering is
 preserved. Provisional content magnitude, signed-defense and Shadow-growth treatment
 are recorded in SWITCHES.md; this records implementation, not a new user ruling.
+
+## 2026-09-16 — universal Protection coverage
+
+V2 section 18 extends the existing station-550 ordering to every typed HP damage
+path: attack/power, tick, trigger and explicit selfDamage. Pure absorption and
+flat defense resolution precede caller-owned pool spending and the raw HP mutator.
+Max HP clamping and Shadow obliteration are state changes, not typed damage.
+Self-damage previews expose resolved damage and actual HP loss separately using
+real fork events. Snapshot rules advance to .18. This is authorized implementation,
+not an additional user ruling.

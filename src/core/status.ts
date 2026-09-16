@@ -207,13 +207,14 @@ export function statusDamage(ctx: Ctx, unitId: number, amount: number, causeId: 
   const def = ctx.statuses[causeId]
   if (!def?.tickDamageType) throw new Error(`Damaging status '${causeId}' must declare its damage type`)
   const damageType = def.tickDamageType
-  const result=flatDamage(ctx,unit(ctx,unitId),amount,damageType)
-  amount=result.value
-  const resisted=result.resisted
-  applyDamage(ctx, unitId, amount, causeId,
-    resisted > 0
-      ? { actor: null, statusId: causeId, damageType, resisted }
-      : { actor: null, statusId: causeId, damageType })
+  const target = unit(ctx, unitId)
+  const result = flatDamage(ctx, target, amount, damageType, incomingAbsorb(ctx, target))
+  if (result.absorbed > 0) spendAbsorb(ctx, unitId, result.absorbed, causeId)
+  applyDamage(ctx, unitId, result.value, causeId, {
+    actor: null, statusId: causeId, damageType,
+    ...(result.resisted ? { resisted: result.resisted } : {}),
+    ...(result.absorbed ? { absorbed: result.absorbed } : {}),
+  })
 }
 
 /** Healing from a status, not an action. Same mutator, different cause. */

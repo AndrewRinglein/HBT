@@ -12503,3 +12503,87 @@ effect of status.burn,status.poison — 25 paired battles per map, WITH vs WITHO
 MEASUREMENT UNAVAILABLE — 22 control(s) lack complete paired evidence
 EFFECT_RESULT {"version":1,"status":"unavailable","unavailable":[{"map":"map.open","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.ridge","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.flanks","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.highlands","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.field","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.thicket","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.open","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.ridge","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.ford","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.copse","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.ruin","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.courtyard","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.floodplain","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.embers","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.showcase","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.duel-8","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.dungeon-16x8","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.horde-24","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.journey-20x10","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.authored-40x40","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.high-prop-single","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.high-prop-multi","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25}]}
 ```
+
+## rule.protection-universal — LANDED `15c301a` **NEEDS REVIEW**
+2026-09-16 09:17
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:66 · COMBAT-SEQUENCE.md:221
+  PASS  typecheck
+  PASS  full test suite — 1429 passed
+  PASS  gate 1 — the id appears in a real battle — test.mage.arcane-ward: 9 log lines, 9 fired, 3 changed state · test.warrior.brace: 4 log lines, 4 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-protection.json, test/protection-universal.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open dc66e411->fdce3210, map.ridge a5a1a98f->ad6ef91b, map.flanks e07dba23->ee045f71, map.highlands 02f232a6->f765192c, map.field 7053a20d->fac691a7, map.thicket 676f50e1->05d32785, map.proving.open ce46576e->767bf017, map.proving.ridge 9f937d1f->7462a6b5, map.proving.ford 3ebb505f->f2bba532, map.proving.copse d0d316d8->945ce387, map.proving.ruin 1fc8c5dc->d310ee03, map.courtyard 34e05eca->90bdce82, map.floodplain 8a92d93e->fab69f7a, test.map.embers faa7be15->f7eb2f51, test.map.showcase 7472da18->40908f36, test.map.duel-8 4109d5dc->e904d2d7, test.map.dungeon-16x8 bda4e470->d35310f9, test.map.horde-24 4d09ab43->24da21cf, test.map.journey-20x10 1ceeff0c->1190bf61, test.map.authored-40x40 c0ab7819->2ea69e81, test.map.high-prop-single f87190a4->bca4b0cb, test.map.high-prop-multi 3c73a054->092a905a
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.mage.arcane-ward live · test.warrior.brace live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.mage.arcane-ward,test.warrior.brace — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 20d3b7c..7a7ba13 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -22,4 +22,6 @@ const contactGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-
+ // Historical fixtures remain immutable; both drivers retain exact full hashes.
+ const elementalGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-elemental.json', import.meta.url), 'utf8'))
++// V2 section 18: seven first differences now consume Protection before typed HP damage.
++const protectionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-protection.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -116,8 +118,9 @@ describe('resumable battle cursor', () => {
+       const contactExpected = contactGolden.cases.find((row: {id:string}) => row.id === fixture.id)
+       const elementalExpected = elementalGolden.cases.find((row: {id:string}) => row.id === fixture.id)
+-      const migrated = elementalExpected?.changed === true || contactExpected?.changed === true
++      const protectionExpected = protectionGolden.cases.find((row: {id:string}) => row.id === fixture.id)
++      const migrated = protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -163,5 +166,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of test.mage.arcane-ward,test.warrior.brace — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.7->4.7
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  map.field: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 4.2->4.2
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ruin: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.4->3.4
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 5.1->5.1
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  test.map.dungeon-16x8: heroWins 22->22 (+0)  meanTurns 9.9->9.9
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 6.2->6.2
+  test.map.journey-20x10: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  test.map.authored-40x40: heroWins 25->25 (+0)  meanTurns 7.7->7.7
+  test.map.high-prop-single: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  test.map.high-prop-multi: heroWins 25->25 (+0)  meanTurns 5.1->5.1
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+EFFECT_RESULT {"version":1,"status":"measured","unavailable":[]}
+```

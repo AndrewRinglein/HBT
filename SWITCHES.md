@@ -681,3 +681,15 @@ does not relax side validation for arbitrary host edits.
   or replacement growth rule. Shadow Resist mitigates typed shadow HP damage, including
   any explicitly authored damaging-status row. It does not reduce the current growth
   counter or stop obliteration. No existing Shadow HP tick is claimed.
+
+## 2026-09-16 — Protection for all typed damage
+
+- `protectionBeforeDefense`: retain the existing attack ordering for every typed
+  HP damage path. Even a negative defense is applied after raw absorption; the
+  signed-defense amplification remains consistent with the attack pipeline.
+- `selfDamageIsDamage`: authored effects explicitly saying to take typed damage
+  use Protection and their named defense. No separate health-cost mechanic was
+  found or invented. Max HP changes and Shadow obliteration do not consume pools.
+- `selfDamagePreview`: resolved self damage includes possible overkill; actual
+  self HP loss is reported separately. Both come from real fork events in effect
+  order, including pools consumed by preceding effects.

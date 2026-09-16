@@ -3490,5 +3490,29 @@
   "status": "done-needs-review",
   "sha": "2d1b377",
   "gauntlet": "not passed — effect measurement unavailable; 2 flag(s) warned"
+ },
+ {
+  "id": "rule.protection-universal",
+  "kind": "engine",
+  "shape": "rule",
+  "milestone": "V2",
+  "needs": [
+   "rule.elemental-resists"
+  ],
+  "spec": "V2 section18: Protection absorbs all typed HP damage before defense, including status ticks, triggers, true damage, explicit selfDamage and terrain-fed ticks. Raw HP/cap mutations and Shadow obliteration remain distinct.",
+  "expect": "Both sides and all six types share two data-defined pools; spending events and attribution are exact. Ordered self-damage preview is pure and distinguishes resolved damage from actual HP loss. Signed-defense order, hazard/decay and non-damage controls are tested.",
+  "probeIds": [
+   "test.mage.arcane-ward",
+   "test.warrior.brace"
+  ],
+  "variants": [
+   "test.mage.arcane-ward",
+   "test.warrior.brace"
+  ],
+  "changesBaseline": true,
+  "note": "The two source triggers grant different data-defined absorption pools. Meaningful isolated damage-path red probes establish universal coverage; content-disable probes are not balance measurements if references become invalid.",
+  "status": "done-needs-review",
+  "sha": "15c301a",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

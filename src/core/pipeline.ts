@@ -4,7 +4,7 @@
 // Numbers are spaced so a station can be inserted later without renumbering anything.
 // Integers only, one rounding rule: truncating integer division (Law 7).
 
-import { flatDamage } from './mitigation.js'
+import { absorbDamage, flatDamage } from './mitigation.js'
 import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
@@ -201,15 +201,12 @@ export function resolveDamage(
   // before Protection. Reads the target's statuses through one helper.
   const frost = a.damageType === 'physical' ? incomingPhysicalBonus(ctx, target) : 0
   if (frost && ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
-  let absorbed = 0
-  if (absorbAvailable > 0 && v > 0) {
-    absorbed = Math.min(absorbAvailable, v)
-    v = step(ledger, DMG.PROTECTION, 'PROTECTION', 'status.absorb', v, v - absorbed)
-  }
+  const { absorbed, remaining } = absorbDamage(v, absorbAvailable)
+  if (absorbed > 0) v = step(ledger, DMG.PROTECTION, 'PROTECTION', 'status.absorb', v, remaining)
   if (frost && !ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
 
   if (a.damageType !== 'true') {
-    const mit = flatDamage(ctx,target,v,a.damageType)
+    const mit = flatDamage(ctx, target, v, a.damageType)
     v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, mit.beforeFloor)
   }
 
