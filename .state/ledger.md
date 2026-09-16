@@ -2476,3 +2476,106 @@ passed all 62 P probes, no regression; 62 of 69 criteria closed, 1 human criteri
 The built-page UI test is in that suite and drives real bundled listeners, fault locks,
 snapshots, replay import and AI completion. No GPU or human visual acceptance claimed.
 The landing's historical-test review flag remains; this audit does not grant its seal.
+
+## v2.activation-choice — LANDED `0dec52d` **NEEDS REVIEW**
+2026-09-16 08:39 · engine @ 1723e63
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\DOCS.md:100 · ..\DOCS.md:107
+  PASS  typecheck
+  PASS  full test suite — 233 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-069 — a standalone human battle shares engine resolution and replay
+  PASS  brought its own tests — test/isc-069.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-069.test.ts (-6) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-069: red on record (2026-09-16 08:35 @ d276cb3, probe 64ffa18b2a6e)
+  PASS  nothing regresses — every P-tier probe — 62 P-tier probe(s): 62 green, 0 red, 0 regression(s). 62 of 69 closed · 62 probed · 1 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'adapter' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean — engine @ 1723e63, clean
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-069.test.ts b/test/isc-069.test.ts
+index 60fd2c6..35a3a0b 100644
+--- a/test/isc-069.test.ts
++++ b/test/isc-069.test.ts
+@@ -4,5 +4,32 @@ import {SANDBOX_DEFAULT} from '../src/content/sandbox.js'
+ import {createBattle,runBattle,controllerOf,validateBattleCommand,preview,isAttack} from '../src/engine.js'
+ 
++function acting(s:ReturnType<typeof createSandbox>){
++ const next=advanceSandbox(s)
++ if(next.kind==='selecting'){expect(commandSandbox(s,{kind:'select-activation',unitUid:next.unitUids[0],expectedSeq:s.ctx.state.seq}).ok).toBe(true);const active=advanceSandbox(s);if(active.kind==='selecting')throw Error('selection did not begin');return active}
++ return next
++}
++
+ describe('ISC-069 — a human battle uses the simulation engine',()=>{
++ it('offers the default three heroes before activation and can choose an unblocked hero in a different order',()=>{
++  const s=createSandbox(SANDBOX_DEFAULT),next=advanceSandbox(s)
++  expect(next.kind).toBe('selecting');if(next.kind!=='selecting')throw Error('expected selection')
++  expect(next.unitUids).toHaveLength(3);expect(s.ctx.events.some(e=>e.type==='activation.begin')).toBe(false)
++  const before=saveSandbox(s),uid=next.unitUids[2]!,chosen=s.ctx.state.units.find(u=>u.uid===uid)!
++  expect(commandSandbox(s,{kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq-1}).ok).toBe(false);expect(saveSandbox(s)).toBe(before)
++  expect(commandSandbox(s,{kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq}).ok).toBe(true)
++  expect(s.ctx.battleCursor!.actor).toBe(chosen.id);expect(sandboxChoices(s).length).toBeGreaterThan(0)
++  expect(s.ctx.events.filter(e=>e.type==='activation.begin').map(e=>e.actor)).toEqual([chosen.id])
++  expect(commandSandbox(s,{kind:'end-cycle',actor:chosen.id,expectedSeq:s.ctx.state.seq}).ok).toBe(true)
++  const remaining=advanceSandbox(s);expect(remaining.kind).toBe('selecting');if(remaining.kind!=='selecting')throw Error('expected remaining')
++  expect(remaining.unitUids).not.toContain(uid);expect(commandSandbox(s,{kind:'select-activation',unitUid:remaining.unitUids[0],expectedSeq:s.ctx.state.seq}).ok).toBe(true)
++  expect(s.ctx.events.filter(e=>e.type==='activation.begin').map(e=>e.actor)).toEqual([chosen.id,0])
++ })
++ it('preserves pending hero selection across save/resume with exact events and RNG',()=>{
++  const a=createSandbox(SANDBOX_DEFAULT);expect(advanceSandbox(a).kind).toBe('selecting');const b=restoreSandbox(saveSandbox(a))
++  expect(advanceSandbox(b)).toEqual(advanceSandbox(a));expect(a.ctx.events).toEqual(b.ctx.events)
++  const command={kind:'select-activation',unitUid:a.policy.humanUnitUids[1],expectedSeq:a.ctx.state.seq}
++  expect(commandSandbox(a,command)).toEqual({ok:true});expect(commandSandbox(b,command)).toEqual({ok:true})
++  expect(a.ctx.events).toEqual(b.ctx.events);expect(a.ctx.state).toEqual(b.ctx.state);expect(a.ctx.rng.log).toEqual(b.ctx.rng.log)
++ })
+  it('starts deterministically on each authored area with exact kits, disjoint slots and stable owners',()=>{
+   for(const mapId of ['showcase.atlas-priory','showcase.atlas-angled-halls','showcase.atlas-buried-pilgrimage']){
+@@ -15,5 +42,5 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
+  })
+  it('enumerates only engine-legal choices with authoritative previews and rejects duplicate sequence commands',()=>{
+-  const s=createSandbox({...SANDBOX_DEFAULT,heroes:[SANDBOX_DEFAULT.heroes[0]!]});advanceSandbox(s);const before=s.ctx.events.length
++  const s=createSandbox({...SANDBOX_DEFAULT,heroes:[SANDBOX_DEFAULT.heroes[0]!]});acting(s);const before=s.ctx.events.length
+   const choices=sandboxChoices(s);expect(choices.length).toBeGreaterThan(0);expect(s.ctx.events.length).toBe(before)
+   for(const choice of choices){expect(validateBattleCommand(s.ctx,s.policy,choice.command).ok).toBe(true)
+@@ -24,18 +51,18 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
+  })
+  it('end activation advances AI, ownership never follows changed allegiance, and wrong actors are refused',()=>{
+-  const s=createSandbox(SANDBOX_DEFAULT);const step=advanceSandbox(s);expect(step.kind).toBe('acting')
++  const s=createSandbox(SANDBOX_DEFAULT);const step=acting(s);expect(step.kind).toBe('acting')
+   if(step.kind!=='acting')throw Error('expected hero')
+   const actor=s.ctx.state.units[step.actor]!;actor.side='enemy';expect(controllerOf(s.ctx,actor.id,s.policy)).toBe('human');actor.side='hero'
+   const enemy=s.ctx.state.units.find(u=>!s.policy.humanUnitUids.includes(u.uid))!;enemy.side='hero';expect(controllerOf(s.ctx,enemy.id,s.policy)).toBe('ai');enemy.side='enemy'
+   expect(commandSandbox(s,{kind:'end-cycle',actor:enemy.id,expectedSeq:s.ctx.state.seq}).ok).toBe(false)
+-  for(let n=0;n<15&&!s.ctx.events.some(e=>e.type==='ai.mode');n++){const next=advanceSandbox(s);if(next.kind==='complete')break;expect(commandSandbox(s,{kind:'end-cycle',actor:next.actor,expectedSeq:s.ctx.state.seq}).ok).toBe(true)}
++  for(let n=0;n<15&&!s.ctx.events.some(e=>e.type==='ai.mode');n++){const next=acting(s);if(next.kind==='complete')break;expect(commandSandbox(s,{kind:'end-cycle',actor:next.actor,expectedSeq:s.ctx.state.seq}).ok).toBe(true)}
+   expect(s.ctx.events.some(e=>e.type==='ai.mode')).toBe(true)
+  })
+  it('an actual legal attack exposes the exact engine preview without consuming a roll',()=>{
+-  const s=createSandbox({...SANDBOX_DEFAULT,heroes:[SANDBOX_DEFAULT.heroes[0]!],enemies:['unit.zombie']});advanceSandbox(s)
++  const s=createSandbox({...SANDBOX_DEFAULT,heroes:[SANDBOX_DEFAULT.heroes[0]!],enemies:['unit.zombie']});acting(s)
+   let attack
+   for(let n=0;n<15&&!s.ctx.state.outcome;n++){
++   const step=acting(s);if(step.kind==='complete')break
+    attack=sandboxChoices(s).find(c=>isAttack(s.ctx.actions[c.command.actionId]!));if(attack)break
+-   const step=advanceSandbox(s);if(step.kind==='complete')break
+    commandSandbox(s,{kind:'end-cycle',actor:step.actor,expectedSeq:s.ctx.state.seq})
+   }
+@@ -49,5 +76,5 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
+  })
+  it('engine snapshot resumes identical commands, events, RNG and frozen presentation; malformed save is rejected',()=>{
+-  const a=createSandbox({...SANDBOX_DEFAULT,heroes:[SANDBOX_DEFAULT.heroes[0]!]});advanceSandbox(a);const saved=saveSandbox(a),b=restoreSandbox(saved)
++  const a=createSandbox({...SANDBOX_DEFAULT,heroes:[SANDBOX_DEFAULT.heroes[0]!]});acting(a);const saved=saveSandbox(a),b=restoreSandbox(saved)
+   expect(exportSandbox(a)).toEqual(exportSandbox(b))
+   const choice=sandboxChoices(a)[0]!;expect(commandSandbox(a,choice.command)).toEqual(commandSandbox(b,choice.command))
+```
+</details>
+
+ISC-069: CLOSED at 0dec52d
+slice: 62 of 69 closed · 62 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

@@ -1037,8 +1037,8 @@
    "tail": "       |                                                                         ^ |      29|   expect(advanceSandbox(b)).toEqual(advanceSandbox(a));expect(a.ctx.ev… |      30|   const command={kind:'select-activation',unitUid:a.policy.humanUnitUi…"
   },
   "closed": {
-   "at": "2026-09-16 08:09",
-   "sha": "40da64e"
+   "at": "2026-09-16 08:40",
+   "sha": "0dec52d"
   }
  }
 }

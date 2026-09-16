@@ -872,6 +872,10 @@
   "expect": "Extended ISC069 proves engine-owned selection, default-party unblocked choice and alternate order, pending saves, stale command atomicity, full existing action/AI/parity assertions; built UI selection playback/fault locking and full suite/P probes.",
   "isc": [
    "069"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "0dec52d",
+  "engineSha": "1723e63",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]
