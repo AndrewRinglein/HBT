@@ -237,8 +237,9 @@
   },
   {
    "name": "Resist",
-   "does": "flat mitigation, magic — and burn/poison per tick, never bleed",
-   "value": 2
+   "does": "flat mitigation of magic damage only; Burn and Poison use their named elemental resist",
+   "value": 2,
+   "note": "V2 section8 devalues Magic Resist; numeric balance valuation is not retuned in this mechanism migration."
   },
   {
    "name": "Health",
@@ -292,6 +293,24 @@
    "id": "bleedOutTurns",
    "name": "Bleed-Out Turns",
    "note": "RULED 2026-08-25: how many battlefield turns an unconscious hero has before becoming a corpse (the P4 death model). Base 5 for every class. Badges move it: Death Seeker -3, Survivor +3, Thick Blooded +5."
+  },
+  {
+   "id": "fireResist",
+   "name": "Fire Resist",
+   "does": "flat mitigation of fire HP damage, direct or explicitly typed status ticks; default0, authored grants only",
+   "note": "COMBAT-V2-DESIGN section8; price valuation unmeasured."
+  },
+  {
+   "id": "poisonResist",
+   "name": "Poison Resist",
+   "does": "flat mitigation of poison HP damage, direct or explicitly typed status ticks; default0, authored grants only",
+   "note": "COMBAT-V2-DESIGN section8; price valuation unmeasured."
+  },
+  {
+   "id": "shadowResist",
+   "name": "Shadow Resist",
+   "does": "flat mitigation of shadow HP damage, direct or explicitly typed status ticks; default0, authored grants only",
+   "note": "COMBAT-V2-DESIGN section8; price valuation unmeasured. Shadow growth/obliteration is a distinct condition, not an HP damage tick."
   }
  ],
  "art": {
