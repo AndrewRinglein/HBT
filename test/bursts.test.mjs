@@ -51,3 +51,19 @@ for(const patch of [{secondaryDamage:[{id:'extra',when:'hit',amount:2,damageType
  const run=candidate(edit=>edit('gen/weapons.json',data=>Object.assign(data.attacks.find(a=>a.id==='attack.greatsword.great-cleave'),patch)));
  assert.notEqual(run.status,0);assert.match(run.stdout+run.stderr,/burst/i);assert.equal(run.pack,null);
 });
+
+test('all authored travelling area damage is classified as a hex burst, with unresolved riders still visible',()=>{
+ const run=candidate(()=>{});assert.equal(run.status,0,run.stderr);
+ for(const [id,range,stat,amount,type] of [['power.bowmaster.rain-of-arrows',4,'precision',-1,'physical'],['power.fire-master.fireball',6,'magic',2,'magic'],['power.wyrmling.scorch',3,'magic',2,'magic']]){
+  const row=run.pack.authoredBursts[id];assert.ok(row,id+' must compile as burst');
+  assert.equal(row.range,range);assert.deepEqual(row.burst,{shape:{kind:'radius',radius:1},side:'any',packets:[{id:'base',stat,amount,damageType:type}]});
+  assert.equal(run.pack.classPowers[id],undefined);assert.ok(!(row.gaps||[]).some(g=>g.includes('centres the blast on a UNIT')));
+  if(id!=='power.bowmaster.rain-of-arrows')assert.ok(row.gaps.some(g=>g.includes('burning')),'ground rider remains an honest gap');
+ }
+ for(const row of Object.values(run.pack.classPowers))assert.ok(!(row.target?.select==='area'&&row.target.origin==='target'&&row.effects.some(e=>e.kind==='damage')),row.id);
+});
+
+for(const change of ['missing','payload mismatch'])test('travelling class damage refuses '+change+' burst metadata',()=>{
+ const run=candidate(edit=>edit('gen/mage.json',data=>{const row=data.powers.find(p=>p.id==='power.fire-master.fireball');if(change==='missing')delete row.burst;else row.burst.packets[0].amount++}));
+ assert.notEqual(run.status,0);assert.match(run.stderr+run.stdout,/burst/i);assert.equal(run.pack,null);
+});

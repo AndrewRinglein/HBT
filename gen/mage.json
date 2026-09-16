@@ -232,8 +232,23 @@
     "staff"
    ],
    "description": "Deal 2 + Magic magic damage to every unit in the blast, plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning. It does not roll to hit, so it cannot crit; Resist reduces both the hit and each Burn tick, and allies caught in it burn too. Thrown into a field you set alight last Turn, it is the biggest number this class produces.",
-   "source": "Hell-TCG name reused (Mage/Fire-master, Fireball — row Burn rebuilt as a hex blast that paints burning terrain) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the blast now cashes in the Burn already on each unit and consumes it, which is what makes a burning-terrain branch pay twice. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
-   "triggers": []
+   "source": "Hell-TCG name reused (Mage/Fire-master, Fireball — row Burn rebuilt as a hex blast that paints burning terrain) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the blast now cashes in the Burn already on each unit and consumes it, which is what makes a burning-terrain branch pay twice. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. | 2026-09-16 V2 burst migration: explicit hex placement and shielding; supported base damage/type retained. Uncompiled riders remain named gaps.",
+   "triggers": [],
+   "burst": {
+    "shape": {
+     "kind": "radius",
+     "radius": 1
+    },
+    "side": "any",
+    "packets": [
+     {
+      "id": "base",
+      "stat": "magic",
+      "amount": 2,
+      "damageType": "magic"
+     }
+    ]
+   }
   },
   {
    "id": "power.fire-master.fire-shield",

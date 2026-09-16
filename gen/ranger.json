@@ -289,8 +289,23 @@
     "area"
    ],
    "description": "Every unit in those hexes, ally or enemy, takes Precision - 1 physical damage; as an area effect it cannot crit.",
-   "source": "Hell-TCG name reused (Ranger/Bowmaster, Rain of Arrows — row damage rebuilt as a hex blossom, Drained cut, friendly fire kept as the cost) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
-   "triggers": []
+   "source": "Hell-TCG name reused (Ranger/Bowmaster, Rain of Arrows — row damage rebuilt as a hex blossom, Drained cut, friendly fire kept as the cost) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-09-16 V2 burst migration: explicit hex placement and shielding; supported base damage/type retained. Uncompiled riders remain named gaps.",
+   "triggers": [],
+   "burst": {
+    "shape": {
+     "kind": "radius",
+     "radius": 1
+    },
+    "side": "any",
+    "packets": [
+     {
+      "id": "base",
+      "stat": "precision",
+      "amount": -1,
+      "damageType": "physical"
+     }
+    ]
+   }
   },
   {
    "id": "power.bowmaster.extra-shot",

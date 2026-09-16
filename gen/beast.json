@@ -750,8 +750,23 @@
     "area"
    ],
    "description": "Deal 2 + Magic magic damage to every unit in the blast, and those seven hexes become burning. It does not roll to hit, so it cannot crit.",
-   "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
-   "triggers": []
+   "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one. | 2026-09-16 V2 burst migration: explicit hex placement and shielding; supported base damage/type retained. Uncompiled riders remain named gaps.",
+   "triggers": [],
+   "burst": {
+    "shape": {
+     "kind": "radius",
+     "radius": 1
+    },
+    "side": "any",
+    "packets": [
+     {
+      "id": "base",
+      "stat": "magic",
+      "amount": 2,
+      "damageType": "magic"
+     }
+    ]
+   }
   },
   {
    "id": "power.wyrmling.molten-scales",
