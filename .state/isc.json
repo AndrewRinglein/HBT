@@ -34,8 +34,8 @@
    "tail": " ❯ createBattle ../engine/src/core/setup.ts:182:50 |  ❯ viewBattle src/view/battle.ts:57:15 |  ❯ test/isc-003.test.ts:89:10"
   },
   "closed": {
-   "at": "2026-09-03 20:16",
-   "sha": "5edcbc5"
+   "at": "2026-09-16 05:37",
+   "sha": "9ba86ee"
   },
   "regressed": [
    {
