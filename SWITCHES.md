@@ -633,3 +633,33 @@ weighted-ground costs participate. This is a provisional deterministic policy
 for the authorized contact correction, not opportunity-risk scoring. It does
 not change target choice, Dijkstra routing ties, other modes, free sidesteps,
 or reactions: moving again while already adjacent can still provoke normally.
+
+
+## 2026-09-16 — trusted human activation choice
+
+A trusted ControlPolicy lists stable unit UIDs independently of allegiance. A
+controlled driver pauses before beginActivation when the next captured phase
+actor is standing, unblocked and human-owned. The strict select-activation
+command chooses one remaining eligible human by UID and expected event sequence;
+only the engine moves that actor to the next queue position and emits
+activation.selected. Begin hooks, resources and Surge have not run at selection.
+
+Provisional mixed-control policy: remaining humans can choose their relative
+order when a human slot is reached; AI actors retain their relative order. Dead
+actors are skipped, blocked actors retain their normal end ladder, ownership
+overrides stay authoritative, and new arrivals cannot join the captured queue.
+Surge remains the same activation/actor without another selection.
+
+The automatic driver supplies no policy, retains fixed order and emits no
+selection events. Restoring a pending selection into that driver resumes its
+remaining queue in fixed order; it does not deadlock or invent a human command.
+Pending/accepted-but-not-begun snapshots retain the queue, reject spent actors
+reintroduced after an activation begin, and use rules version .16. Session
+ownership is trusted external configuration, not client command data.
+
+Current production mechanics never change Unit.side after construction. An
+AI-control status changes ownership only; captured-phase restore/fork supports
+that reachable transition. Existing cursor-side snapshot validation remains and
+rejects a forged allegiance change. A future allegiance-changing mechanic must
+define captured-side history before such snapshots become supported; this item
+does not relax side validation for arbitrary host edits.

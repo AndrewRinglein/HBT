@@ -11,10 +11,10 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.15' // Least-cost dumb-melee contact tie policy.
+const RULES_VERSION = 'v2-migration.16' // Explicit pending human activation selection.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
-const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
+const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'selecting', 'activation-start', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
 
 function requireThat(ok: unknown, message: string): asserts ok {
   if (!ok) throw new Error(`Invalid battle snapshot: ${message}`)
@@ -226,6 +226,16 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     else requireThat(begun === 1, 'battle must begin exactly once')
     requireThat(c.order.every((id: number) => st.units[id].side === c.phase), 'cursor order side')
     if (['acting', 'surge-check', 'activation-end'].includes(c.at)) requireThat(c.actor !== null && c.next > 0 && c.order[c.next - 1] === c.actor, 'cursor actor')
+    if (['selecting','activation-start'].includes(c.at)) {
+      requireThat(c.actor === null && c.next < c.order.length, 'pending activation selection')
+      // A dead skip need not have begun, but a begun actor cannot re-enter the remaining queue.
+      const spent = s.events.filter((e: any) => e.type === 'activation.begin' && e.turn === st.turn && e.phase === c.phase)
+      requireThat(spent.every((e: any) => c.order.indexOf(e.actor) >= 0 && c.order.indexOf(e.actor) < c.next), 'pending activation spent order')
+    }
+    if (c.at === 'activation-start') {
+      const selected=s.events.at(-1)
+      requireThat(selected?.type==='activation.selected' && selected.actor===c.order[c.next] && selected.unitUid===st.units[selected.actor].uid, 'selected activation event')
+    }
     if (c.at === 'complete') requireThat(st.outcome !== null, 'completed outcome')
   } else requireThat(!s.events.some((e: any) => e.type === 'battle.begin'), 'missing active cursor')
   record(s.cfg); record(s.cfg.switches)

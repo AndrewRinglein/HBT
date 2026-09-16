@@ -2469,3 +2469,13 @@ when further walking adds no closeness. Existing AoO timing and intentional AI
 blindness to its risk are preserved. Snapshot rules advance to .15. The dedicated
 receipt records pre-change Atlas states, meaningful red probes and scoped control
 changes; this is an implementation decision, not a new user ruling.
+
+
+## 2026-09-16 — human activation choice (implementation)
+
+Authorized V2 plumbing.activation-choice adds an engine-owned selection boundary
+before beginActivation for the human sandbox. Stable-UID policy and the strict
+command API govern eligibility; the host never edits or reorders the cursor.
+Automatic simulation remains fixed-order. Mixed control and automatic resume
+choices are provisional in SWITCHES.md. Snapshot rules advance to .16. This is
+implementation of the authorized playable target, not a new user ruling.

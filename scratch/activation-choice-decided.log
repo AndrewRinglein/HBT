@@ -1,0 +1,21 @@
+
+"human activation order player chooses before activation"
+
+          COMBAT-SEQUENCE.md:92
+     A sequence of Hero Activations and Card Plays, interleaved, in the order the player chooses. The simulator app
+
+  RULING  ..\2-ACTIONS-SETTLED.md:380
+     | Re-activation in the phase loop | Action Surge; `power.leader.command` | The biggest addition. The loop walk
+
+  RULING  ..\COMBAT-DESIGN.md:477
+     - Flight — *(rewritten 2026-08-20; the per-hex model below it replaced was: every hex costs 1, interceptable m
+
+  RULING  ..\COMBAT-DESIGN.md:628
+     *Changed 2026-08-15:* `onEnter` and `onWounded` removed; `turnEnd` renamed `onActivationEnd`. *Changed 2026-08
+
+  RULING  ..\DOCS.md:134
+     | `ENCOUNTERS-ENGINE-HANDOFF.md` | What must the engine build before the authored encounters can run, and in w
+
+  RULING  ..\HANDOFF-ICONS-AND-SUMMON.md:183
+     3. Two units on one activation: stagger by 220ms and number in arrival order. Never open two
+

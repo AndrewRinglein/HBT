@@ -1,0 +1,112 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/activation-choice.test.ts (9 tests | 9 failed) 9ms
+     × waits before beginActivation, then selects by UID rather than array position or policy order 5ms
+     × rejects malformed, accessor, stale, wrong-phase and wrong-controller choices without any mutation 1ms
+     × rejects dead, blocked and spent actors, preserving the remaining phase snapshot 1ms
+     × preserves AI relative order while humans may choose a different order 0ms
+     × ownership overrides remain authoritative, and new phase arrivals cannot join captured selection 0ms
+     × keeps Surge on the selected actor and runs its end ladder only once 0ms
+     × restores and forks pending selection and selected-but-not-begun boundaries independently 0ms
+     × default automatic driver safely resumes pending selection with exact fixed-order events and RNG 0ms
+     × selected human action uses the same shared resolver as AI and preserves prior slot rules 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > waits before beginActivation, then selects by UID rather than array position or policy order
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:18:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > rejects malformed, accessor, stale, wrong-phase and wrong-controller choices without any mutation
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:26:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > rejects dead, blocked and spent actors, preserving the remaining phase snapshot
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:32:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > preserves AI relative order while humans may choose a different order
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:38:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > ownership overrides remain authoritative, and new phase arrivals cannot join captured selection
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:45:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > keeps Surge on the selected actor and runs its end ladder only once
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:49:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > restores and forks pending selection and selected-but-not-begun boundaries independently
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:54:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > default automatic driver safely resumes pending selection with exact fixed-order events and RNG
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:60:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > selected human action uses the same shared resolver as AI and preserves prior slot rules
+TypeError: Cannot read properties of undefined (reading 'defaultItems')
+ ❯ src/core/setup.ts:461:134
+
+ ❯ createCustomBattle src/core/setup.ts:461:10
+ ❯ fixture test/activation-choice.test.ts:10:19
+ ❯ test/activation-choice.test.ts:64:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed (9)
+   Start at  01:25:17
+   Duration  642ms (transform 407ms, setup 0ms, import 514ms, tests 9ms, environment 0ms)
+

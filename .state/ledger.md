@@ -12253,3 +12253,29 @@ index 27fb1d5..7e278cb 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## plumbing.activation-choice — LANDED `ad416c3` **NEEDS REVIEW**
+2026-09-16 08:35
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  full test suite — 1373 passed
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/activation-choice.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 EXEMPTION(S) TAKEN

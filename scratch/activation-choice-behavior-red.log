@@ -1,0 +1,159 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/activation-choice.test.ts (9 tests | 8 failed) 172ms
+     × waits before beginActivation, then selects by UID rather than array position or policy order 8ms
+     × rejects malformed, accessor, stale, wrong-phase and wrong-controller choices without any mutation 113ms
+     × rejects dead, blocked and spent actors, preserving the remaining phase snapshot 9ms
+     × preserves AI relative order while humans may choose a different order 1ms
+     × ownership overrides remain authoritative, and new phase arrivals cannot join captured selection 9ms
+     × keeps Surge on the selected actor and runs its end ladder only once 1ms
+     × restores and forks pending selection and selected-but-not-begun boundaries independently 10ms
+     × selected human action uses the same shared resolver as AI and preserves prior slot rules 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > waits before beginActivation, then selects by UID rather than array position or policy order
+AssertionError: expected { kind: 'acting', actor: +0 } to deeply equal { kind: 'selecting', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "selecting",
+-   "unitUids": [
+-     402,
+-     7,
+-     99,
+-   ],
++   "actor": 0,
++   "kind": "acting",
+  }
+
+ ❯ test/activation-choice.test.ts:17:57
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > rejects malformed, accessor, stale, wrong-phase and wrong-controller choices without any mutation
+AssertionError: expected { ok: false, …(1) } to deeply equal { ok: true }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
++   "reason": "malformed-command",
+  }
+
+ ❯ choose test/activation-choice.test.ts:14:98
+
+ ❯ test/activation-choice.test.ts:28:79
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > rejects dead, blocked and spent actors, preserving the remaining phase snapshot
+TypeError: activationChoices is not a function
+ ❯ test/activation-choice.test.ts:31:144
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > preserves AI relative order while humans may choose a different order
+AssertionError: expected { kind: 'acting', actor: +0 } to deeply equal { kind: 'selecting', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "selecting",
+-   "unitUids": [
+-     402,
+-     99,
+-   ],
++   "actor": 0,
++   "kind": "acting",
+  }
+
+ ❯ test/activation-choice.test.ts:38:36
+     36|  it('preserves AI relative order while humans may choose a different o…
+     37|   const ctx=fixture(),mixed={humanUnitUids:[402,99]},begun:number[]=[]
+     38|   expect(advanceBattle(ctx,mixed)).toEqual({kind:'selecting',unitUids:…
+       |                                    ^
+     39|   expect(advanceBattle(ctx,mixed)).toEqual({kind:'selecting',unitUids:…
+     40|   for(const actor of [1,3,4]){expect(advanceBattle(ctx,mixed)).toEqual…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > ownership overrides remain authoritative, and new phase arrivals cannot join captured selection
+TypeError: activationChoices is not a function
+ ❯ test/activation-choice.test.ts:44:250
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > keeps Surge on the selected actor and runs its end ladder only once
+AssertionError: expected { ok: false, …(1) } to deeply equal { ok: true }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
++   "reason": "malformed-command",
+  }
+
+ ❯ choose test/activation-choice.test.ts:14:98
+
+ ❯ test/activation-choice.test.ts:48:79
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > restores and forks pending selection and selected-but-not-begun boundaries independently
+AssertionError: expected { kind: 'acting', actor: +0 } to deeply equal { kind: 'selecting', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "selecting",
+-   "unitUids": [
+-     402,
+-     7,
+-     99,
+-   ],
++   "actor": 0,
++   "kind": "acting",
+  }
+
+ ❯ test/activation-choice.test.ts:54:75
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  test/activation-choice.test.ts > plumbing.activation-choice > selected human action uses the same shared resolver as AI and preserves prior slot rules
+AssertionError: expected { ok: false, …(1) } to deeply equal { ok: true }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
++   "reason": "malformed-command",
+  }
+
+ ❯ choose test/activation-choice.test.ts:14:98
+
+ ❯ test/activation-choice.test.ts:63:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 1 passed (9)
+   Start at  01:26:32
+   Duration  845ms (transform 423ms, setup 0ms, import 546ms, tests 172ms, environment 0ms)
+

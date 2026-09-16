@@ -839,7 +839,7 @@ export const DEFAULT_CONFIG: Config = {
 export const MAX_SURGE_CYCLES = 256
 export type BattleCursor = {
   at: 'battle-start' | 'turn-start' | 'hero-start' | 'enemy-arrivals' | 'enemy-start'
-    | 'next-activation' | 'acting' | 'surge-check' | 'activation-end'
+    | 'next-activation' | 'selecting' | 'activation-start' | 'acting' | 'surge-check' | 'activation-end'
     | 'phase-end' | 'turn-end' | 'complete'
   phase: Phase
   order: number[]

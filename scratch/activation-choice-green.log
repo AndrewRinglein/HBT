@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  01:26:33
+   Duration  928ms (transform 414ms, setup 0ms, import 540ms, tests 274ms, environment 0ms)
+

@@ -13,6 +13,7 @@ import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status
 import { HOOKS, fireTriggers } from './trigger.js'
 import type { BattleCursor, Ctx, Side } from './types.js'
 import { MAX_SURGE_CYCLES } from './types.js'
+import { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 import { rulesSideOf } from './side.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -127,6 +128,8 @@ function resultOf(ctx: Ctx): BattleResult {
 
 export type BattleAdvance = { kind: 'acting'; actor: number } | { kind: 'complete'; result: BattleResult }
 
+export type ControlledBattleAdvance = BattleAdvance | {kind:'selecting';unitUids:number[]}
+
 function cursorOf(ctx: Ctx): BattleCursor {
   return ctx.battleCursor ??= {
     at: 'battle-start', phase: 'hero', order: [], next: 0, actor: null, surgeLink: 0, surged: false, movementAllowance: 0,
@@ -136,9 +139,12 @@ function cursorOf(ctx: Ctx): BattleCursor {
 /**
  * Run automatic lifecycle transitions until an action cycle needs its actor,
  * or combat is complete. Calling this again while awaiting that actor is a
- * pure read. The driver must complete the cycle explicitly after executing it.
+ * pure read. A trusted policy additionally pauses before a human activation.
+ * The driver must complete the cycle explicitly after executing it.
  */
-export function advanceBattle(ctx: Ctx): BattleAdvance {
+export function advanceBattle(ctx: Ctx): BattleAdvance
+export function advanceBattle(ctx: Ctx, policy: ControlPolicy): ControlledBattleAdvance
+export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattleAdvance {
   const c = cursorOf(ctx)
   while (true) {
     if (ctx.state.outcome) c.at = 'complete'
@@ -183,9 +189,23 @@ export function advanceBattle(ctx: Ctx): BattleAdvance {
       case 'next-activation': {
         if (c.next >= c.order.length) { c.at = 'phase-end'; break }
         if (ctx.state.outcome) { c.at = 'complete'; break }
+        const next = ctx.state.units[c.order[c.next]!]!
+        if (next.lifeState !== 'standing') { c.next++; break }
+        if (policy && !isBlocked(ctx,next) && controllerOf(ctx,next.id,policy)==='human') c.at='selecting'
+        else c.at='activation-start'
+        break
+      }
+      case 'selecting': {
+        const next=ctx.state.units[c.order[c.next]!]!
+        // An automatic driver may resume a waiting save in its fixed order.
+        // A changed ownership/status likewise returns to normal lifecycle.
+        if (!policy || next.lifeState!=='standing' || isBlocked(ctx,next) || controllerOf(ctx,next.id,policy)!=='human') { c.at='activation-start'; break }
+        return {kind:'selecting',unitUids:activationChoices(ctx,policy)}
+      }
+      case 'activation-start': {
         const id = c.order[c.next++]!
         const u = ctx.state.units[id]!
-        if (u.lifeState !== 'standing') break
+        if (u.lifeState !== 'standing') { c.at='next-activation'; break }
         c.actor = id
         c.surgeLink = 0
         c.surged = false

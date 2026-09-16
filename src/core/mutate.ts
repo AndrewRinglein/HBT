@@ -21,6 +21,16 @@ export function emit(ctx: Ctx, type: string, causeId: string, fields: Record<str
   return e
 }
 
+/** Accepted human selection moves only the unspent queue; activation begins later. */
+export function selectActivation(ctx:Ctx, actor:number, causeId:string):void {
+  const c=ctx.battleCursor
+  if(c?.at!=='selecting') throw new Error('selectActivation requires a pending selection')
+  const at=c.order.indexOf(actor,c.next)
+  if(at<0) throw new Error('selected actor is not in the remaining phase queue')
+  c.order.splice(at,1);c.order.splice(c.next,0,actor);c.at='activation-start'
+  emit(ctx,'activation.selected',causeId,{actor,unitUid:ctx.state.units[actor]!.uid})
+}
+
 export function unit(ctx: Ctx, id: number): Unit {
   const u = ctx.state.units[id]
   if (!u) throw new Error(`no unit ${id}`)

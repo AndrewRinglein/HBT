@@ -8,11 +8,14 @@ import { executeFlight, executeMove, executeSidestep, planMovement, type Movemen
 import { forcedTargetOf, isBlocked } from './status.js'
 import { settle } from './settle.js'
 import { completeActionCycle } from './battle.js'
+import { activationChoices, controllerOf, type ControlPolicy } from './control.js'
+import { selectActivation } from './mutate.js'
+import { isUnitUid } from './identity.js'
+export { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 
-/** Trusted host configuration, supplied separately from client command data. */
-export type ControlPolicy = { readonly humanUnitUids: readonly number[] }
+/** Shared action input; session ownership is supplied separately from client data. */
 export type ActionRequest = { actor: number; actionId: string; slot?: import('./types.js').ActionSlot } & ({ target: number } | { destination: number })
-export type BattleCommand = (ActionRequest & { kind: 'action'; expectedSeq: number }) | { kind: 'end-cycle'; actor: number; expectedSeq: number }
+export type BattleCommand = { kind: 'select-activation'; unitUid: number; expectedSeq: number } | (ActionRequest & { kind: 'action'; expectedSeq: number }) | { kind: 'end-cycle'; actor: number; expectedSeq: number }
 export type CommandResult = { ok: true } | { ok: false; reason: string }
 type Rejection = Extract<CommandResult, { ok: false }>
 type Plan = { kind: 'attack'; actor: number; actionId: string; target: number; slot: import('./types.js').ActionSlot }
@@ -27,14 +30,6 @@ function keys(v: Record<string, unknown>, expected: string[]): boolean {
   const own = Reflect.ownKeys(v)
   return own.length === expected.length && expected.every(k => Object.getOwnPropertyDescriptor(v, k)?.value !== undefined)
     && own.every(k => typeof k === 'string' && expected.includes(k))
-}
-
-/** Allegiance/rules side never decides ownership; a positive status can override it. */
-export function controllerOf(ctx: Ctx, actor: number, policy: ControlPolicy): 'human' | 'ai' {
-  const u = ctx.state.units[actor]
-  if (!u) throw new Error(`unknown controller actor ${actor}`)
-  if (u.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.aiControlled)) return 'ai'
-  return policy.humanUnitUids.includes(u.uid) ? 'human' : 'ai'
 }
 
 function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
@@ -83,13 +78,20 @@ export function executeAction(ctx: Ctx, request: unknown): CommandResult {
   return { ok: true }
 }
 
-type SessionPlan = Plan | { kind: 'end-cycle'; actor: number }
+type SessionPlan = Plan | { kind: 'select-activation'; actor: number } | { kind: 'end-cycle'; actor: number }
 function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): SessionPlan | Rejection {
   if (!record(command)) return reject('malformed-command')
   // Reject accessors before reading input, as well as unknown command fields.
   const descriptors = Object.getOwnPropertyDescriptors(command)
   if (Reflect.ownKeys(descriptors).some(k => typeof k !== 'string' || !('value' in descriptors[k]!))) return reject('malformed-command')
   const { kind, actor, expectedSeq } = command
+  if (kind === 'select-activation') {
+    if (!keys(command, ['kind','unitUid','expectedSeq']) || !isUnitUid(command.unitUid) || !integer(expectedSeq)) return reject('malformed-command')
+    if (ctx.state.outcome) return reject('battle-complete')
+    if (expectedSeq !== ctx.state.seq) return reject('stale-sequence')
+    if (!activationChoices(ctx,policy).includes(command.unitUid)) return reject('activation-not-selectable')
+    return {kind,actor:ctx.state.units.find(u=>u.uid===command.unitUid)!.id}
+  }
   if (kind !== 'action' && kind !== 'end-cycle') return reject('malformed-command')
   const fields = kind === 'end-cycle' ? ['kind', 'actor', 'expectedSeq'] : ['kind', 'actor', 'expectedSeq', 'actionId', Object.hasOwn(command, 'target') ? 'target' : 'destination']
   if (kind === 'action' && Object.hasOwn(command, 'slot')) fields.push('slot')
@@ -111,7 +113,8 @@ export function validateBattleCommand(ctx: Ctx, policy: ControlPolicy, command: 
 export function executeBattleCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): CommandResult {
   const plan = planCommand(ctx, policy, command)
   if ('ok' in plan) return plan
-  if (plan.kind === 'end-cycle') completeActionCycle(ctx)
+  if (plan.kind === 'select-activation') selectActivation(ctx,plan.actor,'engine')
+  else if (plan.kind === 'end-cycle') completeActionCycle(ctx)
   else {
     resolvePlan(ctx, plan)
     // A paid primary, victory or falling leaves no further human action.
