@@ -68,3 +68,18 @@ Together with 47 cursor probes, 89 pass before the full gate.
 changed event is a same-cause/target Protection/ward reduction before typed HP
 damage. New damage.absorbed equals emitted pool spending. Full current state,
 events, RNG and result are frozen separately; all earlier fixtures remain intact.
+
+Protection landed at 9d969c5; gate bookkeeping b0245d3. All hard checks and
+committed-tree audit pass: 1,429 tests. Seal remains withheld for the ruling and
+historical-test-edit warnings. The gate's 25-pair-per-map removal of the two TEST
+ward/brace sources completes without invalid runs and reports zero outcome/turn
+change; these are TEST cohort sources, so this is not a numerical estimate of the
+universal Protection rule's balance impact. The separate old/new 41-case runtime
+comparison finds seven changed cases, including one changed battle result.
+Elemental comparison changed no battle results in that bounded corpus.
+
+Independent batch audit: clean, 1,429 tests, all control goldens exact, whole-core
+hardcode scan passes. There remain 34 grandfathered unpublished IDs and 52 flagged
+landings awaiting human review. No human review or GPU acceptance was performed.
+Host adoption now removes stale passive-viewer forecasts, retains current shield
+counters and publishes the six typed damage/named-defense metadata honestly.
