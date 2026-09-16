@@ -53,3 +53,7 @@ committed-tree tests/control checks passed: 1,361 tests and 22 intentionally
 updated controls. The seal is withheld for two warning categories (ruling
 candidates and documented historical test edits), with zero exemptions. The
 two-item batch audit follows activation selection.
+
+Two-item batch audit at selection source 637b195 passes 1,373 tests, typecheck,
+all 22 newly blessed controls and whole-core/content checks. The contact item
+retains its two documented warning categories; audit does not grant its seal.

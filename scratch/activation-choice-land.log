@@ -1,0 +1,22 @@
+
+gate: plumbing.activation-choice   [land]
+
+  PASS  dependencies landed
+  PASS  not already decided  — no existing ruling matches
+  PASS  typecheck
+  PASS  full test suite  — 1373 passed
+  SKIP  gate 1 — not probeable  — Human activation choice is a trusted session boundary, not registered content. Automatic runBattle deliberately never emits selection; explicit pre-change/counterfactual command microbattles prove integration. A content-row probe or disable cannot remove this API.
+  PASS  brought its own tests  — test/activation-choice.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source  — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — no content id to disable — engine plumbing, not applicable
+
+⛓  IRON GAUNTLET: NOT PASSED — 1 exemption(s) taken. The landing stands; the seal is withheld.
+
+LANDED as ad416c3  (flagged for review)
+

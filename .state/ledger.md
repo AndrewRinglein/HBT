@@ -12279,3 +12279,12 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 EXEMPTION(S) TAKEN
+
+
+## 2026-09-16 — melee contact and activation-choice batch audit
+
+Source commits f8e2054 and 637b195; audit-all passes 1,373 tests, typecheck, all
+22 controls and whole-core checks. Contact changed 564 of 594 sampled battles
+and 286 outcomes, with exact first-divergence proof retained; selection leaves
+automatic controls unchanged. Contact warnings and selection's structural
+exemption still withhold seals. No human/GPU approval is inferred.

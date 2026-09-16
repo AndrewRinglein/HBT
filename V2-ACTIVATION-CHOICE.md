@@ -43,3 +43,12 @@ Candidate full gate passes 1,373 tests and all 22 controls remain unchanged.
 The gate explicitly reports the structural content probe/kill-switch as
 inapplicable; it supplies no clean seal. Final focused verification passes
 197 tests including the reachable ownership/snapshot review probe.
+
+
+Landed source is 637b195 (the gate printed pre-amend ad416c3). The candidate,
+landing and committed checks pass 1,373 tests and all 22 controls unchanged from
+the contact correction. The one structural exemption withholds the seal; no
+content kill-switch pass is claimed. The independent two-item batch audit passes
+1,373 tests, typecheck, 22 controls and whole-core/content checks. Its run-log
+boundary and rebuilt Game Builder are retained. Source/API review approved;
+human/GPU acceptance remains separate.
