@@ -128,7 +128,7 @@ for(const r of D.items.filter(i=>i.itemClass==='relic')){
 for(const e of all){ const M=e.statModifiers||{};
   const ups=Object.entries(M).filter(([k,v])=>v>0), dns=Object.entries(M).filter(([k,v])=>v<0);
   if(dns.length===1&&dns[0][0]==='accuracy'&&Math.abs(dns[0][1])<20){
-    const strong=ups.some(([k,v])=>['armor','resist','spirit','magic','toughness','staminaRegen'].includes(k)||(k==='crit'&&v>=10));
+    const strong=ups.some(([k,v])=>['armor','resist','fireResist','poisonResist','shadowResist','spirit','magic','toughness','staminaRegen'].includes(k)||(k==='crit'&&v>=10));
     if(strong) add('accuracy-too-cheap-a-cost',e.name,JSON.stringify(M));
   } }
 // R8 specialty shape
@@ -546,7 +546,7 @@ if(D.heroes&&D.heroes.heroes){
 if(D.badges){
   const STATSET=new Set(D.stats?D.stats.map(s=>s.id||s.name||s):[]);
   const KNOWN=new Set(['strength','precision','accuracy','crit','luck','reach','dodge','vision',
-    'armor','resist','health','magic','spirit','toughness','movement','staminaMax','staminaRegen',
+    'armor','resist','fireResist','poisonResist','shadowResist','health','magic','spirit','toughness','movement','staminaMax','staminaRegen',
     'surge','itemSlots','deathbedFighting','corruption','favor']);
   for(const b of D.badges){
     // the banned vocabulary, now actually applied to badges

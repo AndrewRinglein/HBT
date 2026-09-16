@@ -9,21 +9,18 @@
    "statModifiers": {
     "crit": 3,
     "precision": 1,
-    "resist": 2
+    "resist": 2,
+    "poisonResist": 3
    },
-   "triggers": [
-    {
-     "hook": "passive",
-     "effect": "Immunity to Poison 3"
-    }
-   ],
+   "triggers": [],
    "powers": [
     "power.poison-master.poison-cloud",
     "power.poison-master.hail-of-poison-knives",
     "power.poison-master.antidote",
     "power.poison-master.creeping-dose"
    ],
-   "source": "Hell-TCG Rogue/Poison Master (its Poison Trap was already spent on Ranger's specialty.trapper — this line was rebuilt around a self-immunity and per-tick Resist arithmetic instead) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: strength -1; accuracy -5; health +1. Parked abilities: onHit: your dagger and thrown attacks apply 1 Poison; each tick of it is reduced separately by the target's Resist. | 2026-08-20: \"you ignore all Poison applied to you from any source\" is cut. Immunity N is the mechanic that already does this — it removes N before the status resolves — so this is Immunity to poison 3."
+   "source": "Hell-TCG Rogue/Poison Master (its Poison Trap was already spent on Ranger's specialty.trapper — this line was rebuilt around a self-immunity and per-tick Resist arithmetic instead) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: strength -1; accuracy -5; health +1. Parked abilities: onHit: your dagger and thrown attacks apply 1 Poison; each tick of it is reduced separately by the target's Resist. | 2026-08-20: \"you ignore all Poison applied to you from any source\" is cut. Immunity N is the mechanic that already does this — it removes N before the status resolves — so this is Immunity to poison 3. | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay.",
+   "description": "+3 Poison Resist. Reduces direct and status damage; status values and decay are unchanged."
   },
   {
    "id": "specialty.assassin",

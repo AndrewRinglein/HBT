@@ -779,16 +779,13 @@
     "precision": 4,
     "accuracy": 80,
     "health": 7,
-    "dodge": 15
+    "dodge": 15,
+    "fireResist": 1
    },
    "movePower": "flight",
    "immunity": [
     {
      "status": "weak",
-     "value": 1
-    },
-    {
-     "status": "burn",
      "value": 1
     }
    ],
@@ -824,7 +821,8 @@
       "mod": 0
      }
     }
-   ]
+   ],
+   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
   },
   {
    "id": "unit.powerful-imp",
@@ -841,16 +839,13 @@
     "accuracy": 90,
     "health": 11,
     "dodge": 5,
-    "crit": 5
+    "crit": 5,
+    "fireResist": 1
    },
    "movePower": "flight",
    "immunity": [
     {
      "status": "weak",
-     "value": 1
-    },
-    {
-     "status": "burn",
      "value": 1
     }
    ],
@@ -861,7 +856,8 @@
     {
      "sameAs": "attack.imp.claw"
     }
-   ]
+   ],
+   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
   },
   {
    "id": "unit.fire-imp",
@@ -878,7 +874,8 @@
     "precision": 4,
     "accuracy": 80,
     "health": 9,
-    "dodge": 10
+    "dodge": 10,
+    "fireResist": 2
    },
    "inferred": {
     "accuracy": "80, as the base Imp — flagged in ENEMY-REVIEW"
@@ -887,10 +884,6 @@
     {
      "status": "weak",
      "value": 1
-    },
-    {
-     "status": "burn",
-     "value": 2
     }
    ],
    "triggers": [
@@ -930,7 +923,8 @@
       }
      ]
     }
-   ]
+   ],
+   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
   },
   {
    "id": "unit.poison-imp",
@@ -948,7 +942,8 @@
     "precision": 4,
     "accuracy": 80,
     "health": 9,
-    "dodge": 10
+    "dodge": 10,
+    "poisonResist": 2
    },
    "inferred": {
     "accuracy": "80, as the base Imp"
@@ -957,10 +952,6 @@
     {
      "status": "weak",
      "value": 1
-    },
-    {
-     "status": "poison",
-     "value": 2
     }
    ],
    "triggers": [
@@ -1000,7 +991,8 @@
       }
      ]
     }
-   ]
+   ],
+   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
   },
   {
    "id": "unit.terror-imp",

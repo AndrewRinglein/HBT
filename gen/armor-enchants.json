@@ -1333,17 +1333,15 @@
    ],
    "tier": 3,
    "statModifiers": {
-    "resist": 1
+    "resist": 1,
+    "fireResist": 2
    },
    "triggers": [],
    "slayer": null,
    "grants": [],
-   "intent": "Burn simply stops being a thing that happens to you, which is either the best line on the page or completely dead.",
-   "source": "Hell-TCG name reused (Fire Ward / Fire Shield) | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte).",
-   "immunity": {
-    "burn": 2
-   },
-   "description": "Immunity to Burn 2. 2 points of Burn are removed BEFORE Burn resolves, so those points never get to deal its damage or halve your healing. The ordinary -1 decay still follows, so Burn falls by 3 a Turn."
+   "intent": "Flat fire defense; the separate Magic Resist grant is retained.",
+   "source": "Hell-TCG name reused (Fire Ward / Fire Shield) | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte). | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay.",
+   "description": "+2 Fire Resist. Reduces direct and status damage; status values and decay are unchanged."
   },
   {
    "id": "enchant.stormward",

@@ -1140,45 +1140,43 @@
  "items": [
   {
    "id": "item.necklace-of-fire-immunity",
-   "name": "Necklace of Fire Immunity",
+   "name": "Necklace of Fire Resistance",
    "itemClass": "trinket",
    "tier": 2,
    "slots": 1,
    "hands": 0,
    "classRestriction": null,
-   "statModifiers": {},
+   "statModifiers": {
+    "fireResist": 1
+   },
    "triggers": [],
    "grants": [],
    "equipCost": {},
    "persists": true,
    "tags": [],
-   "immunity": {
-    "burn": 1
-   },
-   "description": "Immunity to Burn 1. One point of Burn is removed BEFORE Burn resolves, so that point never gets to deal its damage or halve your healing. The ordinary -1 decay still follows, so Burn falls by 2 a Turn.",
-   "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on 's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "description": "+1 Fire Resist. Reduces direct and status damage; status values and decay are unchanged.",
+   "intent": "Conditional elemental defense for battle preparation.",
+   "source": "Settled content, 2026-08-17 — rebuilt on 's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards. | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
   },
   {
    "id": "item.necklace-of-poison-immunity",
-   "name": "Necklace of Poison Immunity",
+   "name": "Necklace of Poison Resistance",
    "itemClass": "trinket",
    "tier": 2,
    "slots": 1,
    "hands": 0,
    "classRestriction": null,
-   "statModifiers": {},
+   "statModifiers": {
+    "poisonResist": 1
+   },
    "triggers": [],
    "grants": [],
    "equipCost": {},
    "persists": true,
    "tags": [],
-   "immunity": {
-    "poison": 1
-   },
-   "description": "Immunity to Poison 1. One point of Poison is removed BEFORE Poison resolves, so that point never gets to deal its damage. The ordinary -1 decay still follows, so Poison falls by 2 a Turn.",
-   "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on 's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "description": "+1 Poison Resist. Reduces direct and status damage; status values and decay are unchanged.",
+   "intent": "Conditional elemental defense for battle preparation.",
+   "source": "Settled content, 2026-08-17 — rebuilt on 's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards. | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
   },
   {
    "id": "item.necklace-of-weakness-immunity",
@@ -1449,8 +1447,9 @@
    "shape": "counter",
    "family": "magnitude",
    "effect": "Deals damage equal to its value each Turn and halves all healing received.",
-   "decay": "-1 per Turn. Resist mitigates each tick.",
-   "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay."
+   "decay": "-1 per Turn. Fire Resist mitigates each tick.",
+   "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay. | V2 section 8: explicit elemental type; Magic Resist no longer mitigates this tick.",
+   "damageType": "fire"
   },
   {
    "id": "status.poison",
@@ -1458,8 +1457,9 @@
    "shape": "counter",
    "family": "magnitude",
    "effect": "Deals damage equal to its value each Turn.",
-   "decay": "-1 per Turn. Resist mitigates each tick.",
-   "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay."
+   "decay": "-1 per Turn. Poison Resist mitigates each tick.",
+   "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay. | V2 section 8: explicit elemental type; Magic Resist no longer mitigates this tick.",
+   "damageType": "poison"
   },
   {
    "id": "status.regeneration",

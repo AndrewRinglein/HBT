@@ -2555,7 +2555,10 @@
    "slots": 1,
    "hands": 0,
    "classRestriction": null,
-   "statModifiers": {},
+   "statModifiers": {
+    "fireResist": 1,
+    "poisonResist": 1
+   },
    "triggers": [],
    "grants": [],
    "equipCost": {
@@ -2564,12 +2567,8 @@
    "persists": false,
    "tags": [],
    "intent": "Warmth and safety in a world of fire: it is the answer to a burning map and nothing else.",
-   "source": "Hell-TCG name reused (rare artifact, Blessing of the Hearthmother — rebuilt as a per-Turn Burn and Poison strip, which is what a fire campaign actually needs) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards.",
-   "immunity": {
-    "burn": 1,
-    "poison": 1
-   },
-   "description": "Immunity to Burn 1 and Poison 1. Each is removed BEFORE that status resolves, so those points never get to act. The ordinary -1 decay still follows."
+   "source": "Hell-TCG name reused (rare artifact, Blessing of the Hearthmother — rebuilt as a per-Turn Burn and Poison strip, which is what a fire campaign actually needs) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards. | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay.",
+   "description": "+1 Fire Resist; +1 Poison Resist. Reduces direct and status damage; status values and decay are unchanged."
   },
   {
    "id": "item.censer-of-true-light",
