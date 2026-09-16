@@ -16,8 +16,8 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `startOfBattle` | 37 |  |
 | `onCrit` | 20 | after its own onHit, only if it crit |
 | `onDamage` | 20 | only if damage actually landed |
-| `passive` | 17 | always true |
 | `onTakingDamage` | 16 |  |
+| `passive` | 16 | always true |
 | `aura` | 14 | checked continuously |
 | `onActivationEnd` | 10 | a unit's go, not a Turn |
 | `onDodge` | 9 | on the DEFENDER, when its Dodge is why the attack missed |
@@ -97,12 +97,12 @@ What a rule may DO.
 | `reveal / break stealth` | 18 |
 | `regain stamina` | 15 |
 | `deal damage (type from the weapon)` | 14 |
-| `Immunity N` | 14 |
 | `deal PHYSICAL damage` | 14 |
 | `move WITHOUT provoking` | 13 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |
 | `take damage yourself (a cost)` | 11 |
+| `Immunity N` | 9 |
 | `grant Surge Chance` | 9 |
 | `consume the target’s status` | 7 |
 | `lose a stat (a cost)` | 6 |
@@ -122,7 +122,7 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `burn` | 81 |
+| `burn` | 78 |
 | `bleed` | 66 |
 | `poison` | 51 |
 | `protection` | 42 |
@@ -154,6 +154,8 @@ What a rule may DO.
 | `itemSlots` | 14 |
 | `vision` | 7 |
 | `toughness` | 7 |
+| `fireResist` | 3 |
+| `poisonResist` | 3 |
 | `corruption` | 2 |
 | `surge` | 2 |
 | `staminaRegen` | 1 |

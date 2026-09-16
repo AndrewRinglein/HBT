@@ -1207,11 +1207,6 @@
    "needs": "hook: aura (declared, engine never fires it)"
   },
   {
-   "unit": "item.idol-of-the-hearthmother",
-   "what": "immunity: {\"burn\":1,\"poison\":1}",
-   "needs": "item field: immunity"
-  },
-  {
    "unit": "item.censer-of-true-light",
    "what": "passive: Immunity to Burn 1",
    "needs": "hook: passive (declared, engine never fires it)"
@@ -1255,16 +1250,6 @@
    "unit": "item.roster-of-the-fallen",
    "what": "onDeath: your name goes on the roster: every ally gains +1 ",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.necklace-of-fire-immunity",
-   "what": "immunity: {\"burn\":1}",
-   "needs": "item field: immunity"
-  },
-  {
-   "unit": "item.necklace-of-poison-immunity",
-   "what": "immunity: {\"poison\":1}",
-   "needs": "item field: immunity"
   },
   {
    "unit": "item.necklace-of-weakness-immunity",

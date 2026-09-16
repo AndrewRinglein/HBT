@@ -185,29 +185,6 @@
    ]
   },
   {
-   "name": "passive",
-   "uses": 17,
-   "ids": [
-    "item.cloudsteel-plate",
-    "item.skypriests-vestments",
-    "item.censer-of-true-light",
-    "item.kals-mercy",
-    "specialty.bowmaster",
-    "specialty.wayfinder",
-    "specialty.poison-master",
-    "specialty.fire-master",
-    "specialty.soul-stealer",
-    "specialty.totem-master",
-    "specialty.shepherd",
-    "specialty.apothecary",
-    "specialty.porter",
-    "specialty.archivist",
-    "specialty.sage",
-    "specialty.drake",
-    "specialty.direbeast"
-   ]
-  },
-  {
    "name": "onTakingDamage",
    "uses": 16,
    "ids": [
@@ -227,6 +204,28 @@
     "enchant.regeneration",
     "specialty.vengeance",
     "specialty.blessed-sufferer"
+   ]
+  },
+  {
+   "name": "passive",
+   "uses": 16,
+   "ids": [
+    "item.cloudsteel-plate",
+    "item.skypriests-vestments",
+    "item.censer-of-true-light",
+    "item.kals-mercy",
+    "specialty.bowmaster",
+    "specialty.wayfinder",
+    "specialty.fire-master",
+    "specialty.soul-stealer",
+    "specialty.totem-master",
+    "specialty.shepherd",
+    "specialty.apothecary",
+    "specialty.porter",
+    "specialty.archivist",
+    "specialty.sage",
+    "specialty.drake",
+    "specialty.direbeast"
    ]
   },
   {
@@ -1397,26 +1396,6 @@
    ]
   },
   {
-   "name": "Immunity N",
-   "uses": 14,
-   "ids": [
-    "item.chains-of-the-faithful",
-    "item.winter-cloak",
-    "item.idol-of-the-hearthmother",
-    "item.censer-of-true-light",
-    "item.stormcallers-orb",
-    "item.kals-mercy",
-    "item.necklace-of-fire-immunity",
-    "item.necklace-of-poison-immunity",
-    "item.necklace-of-weakness-immunity",
-    "item.necklace-of-frost-immunity",
-    "power.banner-courage.plant",
-    "enchant.fire-ward",
-    "specialty.poison-master",
-    "specialty.drake"
-   ]
-  },
-  {
    "name": "deal PHYSICAL damage",
    "uses": 14,
    "ids": [
@@ -1505,6 +1484,21 @@
     "enchant.cursed-skull",
     "specialty.contractbound",
     "specialty.redeemer"
+   ]
+  },
+  {
+   "name": "Immunity N",
+   "uses": 9,
+   "ids": [
+    "item.chains-of-the-faithful",
+    "item.winter-cloak",
+    "item.censer-of-true-light",
+    "item.stormcallers-orb",
+    "item.kals-mercy",
+    "item.necklace-of-weakness-immunity",
+    "item.necklace-of-frost-immunity",
+    "power.banner-courage.plant",
+    "specialty.drake"
    ]
   },
   {
@@ -1615,7 +1609,7 @@
  "statuses": [
   {
    "name": "burn",
-   "uses": 81,
+   "uses": 78,
    "ids": [
     "item.runed-crossbow",
     "item.book-of-exorcisms",
@@ -1629,9 +1623,7 @@
     "item.burning-oil",
     "item.fire-trap",
     "item.rune-burning-touch",
-    "item.idol-of-the-hearthmother",
     "item.censer-of-true-light",
-    "item.necklace-of-fire-immunity",
     "attack.apprentice-wand.surge",
     "attack.stormforged-blade.thunder-strike",
     "attack.demon-whip.hellcoil",
@@ -1656,7 +1648,9 @@
     "power.war-priest.holy-flames",
     "power.shepherd.circle-of-healing",
     "power.shepherd.close-wounds",
-    "power.divine-light.total-healing"
+    "power.divine-light.total-healing",
+    "power.divine-light.hallowed-ground",
+    "power.redeemer.true-sacrifice"
    ]
   },
   {
@@ -2503,6 +2497,24 @@
     "specialty.serpent",
     "specialty.direbeast",
     "specialty.carrion"
+   ]
+  },
+  {
+   "name": "fireResist",
+   "uses": 3,
+   "ids": [
+    "item.idol-of-the-hearthmother",
+    "item.necklace-of-fire-immunity",
+    "enchant.fire-ward"
+   ]
+  },
+  {
+   "name": "poisonResist",
+   "uses": 3,
+   "ids": [
+    "item.idol-of-the-hearthmother",
+    "item.necklace-of-poison-immunity",
+    "specialty.poison-master"
    ]
   },
   {
