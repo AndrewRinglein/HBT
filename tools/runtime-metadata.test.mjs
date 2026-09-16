@@ -19,6 +19,7 @@ test('actual browser entry emits no catalog loader or gameplay modules', () => {
   assert.ok(emitted.includes(enginePath('view/field.ts')))
   assert.deepEqual(emitted.filter(p => /engine\/src\/(?:content\/(?:generated\/|pack\.|maps\.|index\.|statuses\.|moves\.)|core\/(?:mutate|trigger|status|pipeline|movement|battle|setup|rng)\.)/.test(p)), [])
   assert.ok(assertRuntimeMetadata(result.metafile).includes(enginePath('view/field.ts')))
+  assert(!result.outputFiles[0].text.includes('function compileAtlasCombat('),'passive bundle must tree-shake the combat compiler')
 })
 
 test('guard distinguishes emitted bytes from parsed or tree-shaken inputs', () => {

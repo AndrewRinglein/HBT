@@ -1,6 +1,6 @@
 // Only the passive viewer bundle has this boundary. A sandbox host can load
 // its combat controller separately; this is not a rule for every app bundle.
-const allowed = new Set(['core/types.ts', 'core/hex.ts', 'core/props.ts',
+const allowed = new Set(['core/types.ts', 'core/hex.ts', 'core/props.ts', 'core/geometry.ts',
   'content/terrain.ts', 'content/disable.ts', 'view/field.ts'])
 // Inspect path components from esbuild data, never import a source path here.
 const enginePart = p => {

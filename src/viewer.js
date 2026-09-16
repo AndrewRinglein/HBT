@@ -95,7 +95,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   // Inspect initial facts before touching the host DOM; every event still folds.
   const prepared = prepareBattleField(data.initialEvents, data.meta?.seed, { mapId: data.fieldMapId, field: data.field })
   const F = prepared.field
-  const atlas = prepareAtlasBinding(data.atlasScene, data.atlasCatalog, F)
+  const atlas = prepareAtlasBinding(data.atlasScene, data.atlasCatalog, F, data.initialEvents.find(e=>e.type==='map.loaded'))
   const initialMap = structuredClone(data.initialEvents.find(e => e.type === 'map.loaded'))
   let pushedMap = false
   const now = opts.now || (() => Date.now())

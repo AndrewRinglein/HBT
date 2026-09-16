@@ -248,7 +248,7 @@ export function fold(S, e, ctx, now = 0) {
       break
     case 'attack.miss':
       /* ONE place says miss (2026-08-27): the lingering targeting line carries the roll */
-      if (S.AIM) { S.AIM.missed = { roll: e.roll }; S.AIM.expire = now + MISS_MS }
+      if (S.AIM) { S.AIM.missed = { roll: e.roll, ...(e.missCause ? {cause:e.missCause} : {}) }; S.AIM.expire = now + MISS_MS }
       if (S.ATTACK && U[e.target]) cue('fx.attack', { kind: S.ATTACK.kind, dt: S.ATTACK.dt, a: e.actor, t: e.target, dmg: S.ATTACK.dmg })
       if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' }
       break

@@ -47,7 +47,7 @@ export function startHarness(mountEl, lib) {
     // Validate before disposing the current view. The component uses this same
     // engine-owned preparation for hosts outside the standalone page.
     const prepared = prepareBattleField(b.battle.events, b.battle.seed, { mapId, field })
-    prepareAtlasBinding(b.battle.atlasScene, lib.atlas, prepared.field)
+    prepareAtlasBinding(b.battle.atlasScene, lib.atlas, prepared.field, b.battle.events.find(e=>e.type==='map.loaded'))
     return {
       field, fieldMapId: mapId, initialEvents: b.battle.events, units: lib.static.units, statuses: lib.static.statuses,
       actions: lib.static.actions, badges: lib.static.badges, layers: lib.static.layers,

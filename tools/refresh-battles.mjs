@@ -11,7 +11,9 @@ for (const { file } of library) {
   if (!target.startsWith(resolve('battles') + '\\') && !target.startsWith(resolve('battles') + '/')) throw new Error('library path outside battles')
   const old = JSON.parse(readFileSync(target, 'utf8'))
   const args = old.seed.scenarioId ? ['--scenario', old.seed.scenarioId, ...(old.seed.replicate != null ? ['--seed', String(old.seed.replicate)] : [])] : [String(old.seed.replicate), old.seed.mapId, String(old.seed.enemyCount)]
-  const bytes = execFileSync(process.execPath, [resolve('../engine/node_modules/tsx/dist/cli.mjs'), 'tools/export-battle.mts', ...args], { cwd: '../engine', encoding: 'utf8', maxBuffer: 1 << 28 })
+  const bytes = old.atlasSetup
+    ? execFileSync(process.execPath,[resolve('../engine/node_modules/tsx/dist/cli.mjs'),'tools/battle-atlas/combat-build.mts','--export-file',target],{cwd:'..',encoding:'utf8',maxBuffer:1<<28})
+    : execFileSync(process.execPath, [resolve('../engine/node_modules/tsx/dist/cli.mjs'), 'tools/export-battle.mts', ...args], { cwd: '../engine', encoding: 'utf8', maxBuffer: 1 << 28 })
   const next = JSON.parse(bytes)
   if (!Array.isArray(next.events.find(e => e.type === 'map.loaded')?.props)) throw new Error(`${file}: exporter omitted props`)
   outputs.push({ target, bytes, file, events: next.events.length, commit: next.engineCommit })

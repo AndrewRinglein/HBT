@@ -21,7 +21,7 @@ test('binding is explicit, validates active area/dimensions/identity and detache
  assert.equal(A.prepareAtlasBinding(undefined,catalog,field),null)
  for(const bad of [null,{},[],{mapId:'unknown'},{mapId:'floodgates',areaIndex:1},{mapId:'sunken-priory-study',layout:catalog.maps.floodgates}])assert.throws(()=>A.prepareAtlasBinding(bad,catalog,field))
  assert.throws(()=>A.prepareAtlasBinding({mapId:'floodgates'},catalog,field),/engine board/)
- const input=structuredClone(catalog),b=A.prepareAtlasBinding({mapId:'buried-pilgrimage',areaIndex:1},input,field),before=JSON.stringify(b.plan.map)
+ const input=structuredClone(catalog),b=A.prepareAtlasBinding({mapId:'buried-pilgrimage',areaIndex:1},input),before=JSON.stringify(b.plan.map)
  input.maps['buried-pilgrimage'].tiles[0].assets=[];input.library.assets[0].file='changed.glb';assert.equal(JSON.stringify(b.plan.map),before);assert.notEqual(b.library.assets[0].file,'changed.glb')
  assert.deepEqual([b.width,b.height],[20,10]);assert.equal(b.origin.col,20);assert.throws(()=>b.plan.heightAtCell(0,0),/outside/)
  const odd=structuredClone(catalog.maps['buried-pilgrimage']);odd.segments[0].row=1;assert.throws(()=>A.prepareAtlasBinding({mapId:odd.id,layout:odd},catalog,field),/Segments|origin/)

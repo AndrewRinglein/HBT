@@ -1,0 +1,36 @@
+✖ real Atlas binding validates exact initial map facts and frozen source identity (0.5413ms)
+✖ 2D fallback draws exact polygons and omits missing-floor tiles (1.6463ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 194.6931
+
+✖ failing tests:
+
+test at tools\atlas-combat.test.mjs:9:1
+✖ real Atlas binding validates exact initial map facts and frozen source identity (0.5413ms)
+  Error: Invalid Atlas scene binding
+      at Module.prepareAtlasBinding (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/.build/atlas-source-test.mjs:965:163)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/atlas-combat.test.mjs:10:18)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+test at tools\atlas-combat.test.mjs:20:1
+✖ 2D fallback draws exact polygons and omits missing-floor tiles (1.6463ms)
+  TypeError: p.footprint.hexes is not iterable
+      at Module.syncProps (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/.build/atlas-source-test.mjs:5367:54)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/atlas-combat.test.mjs:24:21)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)

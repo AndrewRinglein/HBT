@@ -70,6 +70,7 @@ export function buildGround(V) {
   const { POS, F, LAYOUT, ASSETS } = V.data
   const ground = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d')
   for (let h = 0; h < POS.length; h++) {
+    if (F.floor && !F.floor[h]) continue
     const p = POS[h], l = p.px - LAYOUT.W / 2, t = p.py - LAYOUT.H / 2
     const tid = F.terrainIds[h], sw = TSWATCH[tid] || 'hexPlains'
     const tile = el('cell', `left:${l}px;top:${t}px;background-image:url('${ASSETS[sw + '.png']}')`)
@@ -95,13 +96,22 @@ export function syncProps(V) {
   V.layers.props?.remove()
   const layer = el('props', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none')
   const { POS, LAYOUT, ASSETS } = V.data
-  for (const p of props) for (const h of p.footprint.hexes) {
+  for (const p of props) {
+   if(p.footprint.kind==='polygon') {
+    const svg=svgEl('svg'),shape=svgEl('polygon'),F=V.data.F;
+    svg.style.cssText='position:absolute;left:0;top:0;overflow:visible;width:1px;height:1px;transform:translateZ(1px)';
+    shape.setAttribute('points',p.footprint.vertices.map(([x,y])=>`${POS[0].px+x*F.colStep/2000},${POS[0].py+y*F.rowStep/3000}`).join(' '));
+    shape.setAttribute('fill',p.height==='high'?'rgba(62,57,51,.9)':'rgba(119,99,69,.65)');shape.setAttribute('stroke','rgba(220,205,173,.75)');shape.setAttribute('stroke-width','1');
+    shape.dataset.prop=p.id;shape.dataset.height=p.height;svg.appendChild(shape);layer.appendChild(svg);continue;
+   }
+   for (const h of p.footprint.hexes) {
     const pos = POS[h]
     if (!pos) throw new Error(`prop ${p.id} has no field position for hex ${h}`)
     const tile = el('prop cell', `left:${pos.px - LAYOUT.W / 2}px;top:${pos.py - LAYOUT.H / 2}px;background-image:url('${ASSETS['hexMountain.png']}');transform:translateZ(1px)`)
     tile.dataset.prop = p.id; tile.dataset.hex = String(h)
     tile.title = `${p.id} · ${p.height} · material ${p.material}`
     layer.appendChild(tile)
+  }
   }
   placeAfter(V.layers.ground, layer)
   V.layers.props = layer; V.propKey = key
@@ -893,7 +903,7 @@ export function drawAim(V) {
   line(0, `<span style="font-size:24px;font-weight:700;color:#8fa8bd">${AIM.hit}%</span>`)
   if (AIM.dmg != null) line(28, `<span style="font-size:46px;font-weight:700;color:#bcd4e6;line-height:1">${AIM.dmg}</span>`)
   if (AIM.mit) line(78, `<span style="font-size:21px;font-weight:600;color:#6f8fb0">−${AIM.mit} <span style="font-size:12px;letter-spacing:.06em">${AIM.mitLabel.toUpperCase()}</span></span>`)
-  if (AIM.missed) line(104, `<span style="font-size:26px;font-weight:700;color:#b9b2a3">MISS <span style="font-size:13px;color:#8b8778">rolled ${AIM.missed.roll}</span></span>`)
+  if (AIM.missed) line(104, `<span style="font-size:26px;font-weight:700;color:#b9b2a3">${AIM.missed.cause==='cover'?'COVER':AIM.missed.cause==='dodge'?'DODGE':'MISS'} <span style="font-size:13px;color:#8b8778">rolled ${AIM.missed.roll}</span></span>`)
 }
 
 /* ── camera (PLAYBACK-DESIGN §7.8, ruled 2026-09-01) ─────────────────────

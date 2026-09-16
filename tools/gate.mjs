@@ -102,10 +102,12 @@ if (fresh) {
     const args = cur.seed.scenarioId ? ['--scenario', cur.seed.scenarioId, ...(cur.seed.replicate != null ? ['--seed', String(cur.seed.replicate)] : [])]
       : [String(cur.seed.replicate), cur.seed.mapId, String(cur.seed.enemyCount)]
     let out
-    try { out = execFileSync('node', [tsx, 'tools/export-battle.mts', ...args], { cwd: '../engine', encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'pipe'] }) }
+    try { out = cur.atlasSetup
+      ? execFileSync('node',[tsx,'tools/battle-atlas/combat-build.mts','--export-file',resolve('battles',file)],{cwd:'..',encoding:'utf8',maxBuffer:1<<28,stdio:['ignore','pipe','pipe']})
+      : execFileSync('node', [tsx, 'tools/export-battle.mts', ...args], { cwd: '../engine', encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'pipe'] }) }
     catch (e) { console.error(`fresh: ${label} — export failed: ${String(e.stderr || e.message).trim().split('\n').slice(-3).join(' | ')}`); diffs++; continue }
     const nu = JSON.parse(out)
-    const same = JSON.stringify(nu.events) === JSON.stringify(cur.events) && nu.outcome === cur.outcome && nu.turns === cur.turns
+    const same = JSON.stringify(nu.events) === JSON.stringify(cur.events) && nu.outcome === cur.outcome && nu.turns === cur.turns && (!cur.atlasSetup || (JSON.stringify(nu.atlasSetup)===JSON.stringify(cur.atlasSetup)&&JSON.stringify(nu.atlasScene)===JSON.stringify(cur.atlasScene)))
     if (same) console.log(`fresh: ${label} — byte-identical events (${cur.engineCommit} → ${nu.engineCommit})`)
     else {
       diffs++

@@ -328,7 +328,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 
 /* ── a standee at the top of the board is shown whole (ruled 2026-09-03) ──── */
 {
-  load(0); const v = H.viewer; v.pause(); const V = v._V
+  load(LIB.battles.findIndex(b=>b.battle.seed.mapId==='test.map.horde-24')); const v = H.viewer; v.pause(); const V = v._V
   const POS = V.data.POS, sq = Math.cos(V.data.LAYOUT.tilt * Math.PI / 180), halfH = DESIGN.H / 2 / sq, TOP = 200 / sq
   const EV = v.events
   /* the first activation of a unit standing in row 0 or 1 */
@@ -336,7 +336,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
   for (let i = 0; i < EV.length; i++) if (EV[i].type === 'activation.begin') {
     const St = foldTo(EV, i + 1, { UD: LIB.static.units, SN: LIB.static.statuses }); const u = St.U[EV[i].actor]
     if (u && POS[u.hex].r <= 1) { ai = i; actor = u; break } }
-  check(ai >= 0, 'camera-top: no activation of a top-row unit in the first battle to test with')
+  check(ai >= 0, 'camera-top: no activation of a top-row unit in the retained horde fixture to test with')
   if (ai >= 0) {
     v.seek(ai + 1); v.render()
     const head = POS[actor.hex].py - TOP, camTop = V.view.camF.y - halfH
@@ -396,7 +396,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
      replayed its own map, so the cross-map path never ran (REVIEW §B5). */
   const unplayed = (LIB.static.maps || []).filter(m => !LIB.battles.some(b => b.battle.seed.mapId === m) && LIB.fields[m])
   let src = null, mapId = null
-  for (const b of LIB.battles) { const f = LIB.fields[b.battle.seed.mapId]
+  for (const b of LIB.battles.filter(b=>!b.battle.atlasScene && LIB.fields[b.battle.seed.mapId])) { const f = LIB.fields[b.battle.seed.mapId]
     const d = unplayed.find(m => LIB.fields[m].width === f.width && LIB.fields[m].height === f.height)
     if (d) { src = b.battle; mapId = d; break } }
   check(src, `file-drop: no library battle shares a board with any unplayed map (${unplayed.length} unplayed) — the cross-map drop path cannot be tested`)
@@ -468,7 +468,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
   check(odd.length > 0, 'board: no non-square battle in the library — the 16×16 assumption cannot be tested')
   const west = LIB.battles.map((b, i) => [b, i]).filter(([b]) => { const ml = b.battle.events.find(e => e.type === 'map.loaded'); return ml && ml.deploy && ml.deploy.hero === 'west' })
   check(west.length > 0, 'board: no battle with heroes deploying west in the library')
-  for (const [b, i] of [...odd, ...west].slice(0, 2)) {
+  for (const [b, i] of [...odd.filter(([b])=>b.battle.atlasSetup).slice(0,2),...[...odd,...west].filter(([b])=>!b.battle.atlasSetup).slice(0,2)]) {
     load(i); const v = H.viewer; v.pause(); const V = v._V, EV = v.events
     const ml = EV.find(e => e.type === 'map.loaded')
     check(V.data.BOARD.width === ml.width && V.data.BOARD.height === ml.height, `${b.label}: the field says ${V.data.BOARD.width}×${V.data.BOARD.height}, map.loaded says ${ml.width}×${ml.height}`)
@@ -480,8 +480,9 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
     const bb = EV.findIndex(e => e.type === 'battle.begin'); const S0 = foldTo(EV, bb + 1, CTX0)
     for (const u of Object.values(S0.U)) { check(u.hex >= 0 && u.hex < V.data.POS.length, `${b.label}: ${u.name} at hex ${u.hex} is off a ${ml.width}×${ml.height} board`)
       const p = V.data.POS[u.hex]; if (!p) continue
-      if (ml.deploy.hero === 'west' && u.side === 'hero') check(p.c === 0, `${b.label}: hero ${u.name} deploys at column ${p.c}, the map says west`)
-      if (ml.deploy.enemy === 'east' && u.side === 'enemy') check(p.c === ml.width - 1, `${b.label}: enemy ${u.name} deploys at column ${p.c}, the map says east`) }
+      if(b.battle.atlasSetup){const slots=u.side==='hero'?b.battle.atlasSetup.heroHexes:b.battle.atlasSetup.enemyHexes;check(slots.includes(u.hex),`${b.label}: initial unit is outside authored deployment slots`);check(V.data.F.floor[u.hex],`${b.label}: initial unit has no authored floor`)}
+      if (!b.battle.atlasSetup && ml.deploy.hero === 'west' && u.side === 'hero') check(p.c === 0, `${b.label}: hero ${u.name} deploys at column ${p.c}, the map says west`)
+      if (!b.battle.atlasSetup && ml.deploy.enemy === 'east' && u.side === 'enemy') check(p.c === ml.width - 1, `${b.label}: enemy ${u.name} deploys at column ${p.c}, the map says east`) }
     v.render(); for (let k = 0; k < 30 && v.cursor < EV.length; k++) v.step()
   }
 }

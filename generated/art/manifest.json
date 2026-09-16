@@ -82,6 +82,7 @@
   "ph-librarian.png",
   "ph-old-wise-man.png",
   "ph-scary-kid.png",
+  "ph-skeleton.png",
   "ph-spirit-snake.png",
   "priest-armored_256.png",
   "ranger-aggressive_256.png",
@@ -472,6 +473,12 @@
   },
   "_pending": {
    "token": "ph-art-pending.png",
+   "card": null,
+   "aspect": 0.64,
+   "height": 1.55
+  },
+  "unit.skeleton": {
+   "token": "ph-skeleton.png",
    "card": null,
    "aspect": 0.64,
    "height": 1.55

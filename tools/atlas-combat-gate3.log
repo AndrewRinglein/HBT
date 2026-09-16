@@ -1,0 +1,97 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ actual browser entry emits no catalog loader or gameplay modules (111.6363ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.3997ms)
+✔ normal static generator still validates and exports identical data (224.2724ms)
+✔ normal static generator rejects malformed catalog before writing (94.4991ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 489.0982
+maps: 22 in the engine, all in both dumps
+passive runtime modules: ../engine/src/core/hex.ts, ../engine/src/core/geometry.ts, ../engine/src/core/types.ts, ../engine/src/core/props.ts, ../engine/src/content/disable.ts, ../engine/src/content/terrain.ts, ../engine/src/view/field.ts
+OK — 26 battles fold end to end · pure fold == pumped fold · icons 4 used · rows damaging=684 plain=3864
+✔ real Atlas binding validates exact initial map facts and frozen source identity (100.8582ms)
+✔ 2D fallback draws exact polygons and omits missing-floor tiles (2.427ms)
+✔ cover miss label is copied from the engine event, with legacy miss unchanged (1.8197ms)
+✔ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (486.3791ms)
+✔ all choices repeatedly load actual battles; imported state clears library selection (1844.6444ms)
+✔ unbound battle mount honestly retains accurate 2D without inventing an Atlas linkage (253.8739ms)
+✔ published player exposes all authored maps and journey areas outside the scaled battle, without changing selected battle (156.5869ms)
+✔ real compiled Atlas binding mounts with original events and display heights; invalid binding preserves current viewer (212.7425ms)
+✔ native verifier import resolves host-owned Three only for Atlas without eager texture loads (70.4421ms)
+✔ packed catalog/listings/layouts exactly preserve live sources; no GLB skins or embedded catalog models (46.4506ms)
+✔ binding is explicit, validates active area/dimensions/identity and detaches snapshot plus catalog (59.1851ms)
+✔ resource URLs resolve actual catalog files and reject outside paths; file opening is actionable (0.3316ms)
+✔ authored light shadow camera uses reference full-map extent and updates its real projection (24.9806ms)
+✔ actual Three world-to-CSS camera preserves authored placement, active-area origin, clip depth and upward winding (16.9662ms)
+✔ partial texture failure disposes successful peers and can retry (0.4499ms)
+✔ shared assembly loads exact authored jobs; cancellation releases late source model and all textures (27.8552ms)
+✔ unbound layer never starts a renderer; late disposal/failure restores 2D and display heights without state mutation (5.2256ms)
+✔ real Three driver preserves world geometry/lights, draws only changes, and releases switched scene (11.6867ms)
+✔ inspection uses latest editable map dimensions and ignores stale index bounds; switching and late loads are isolated (68.8581ms)
+✔ inspection ignores a superseded pending map load and disposes each actual driver exactly once (20.9153ms)
+✔ actual inspector driver builds the selected journey area, preserves perspective controls and disposes camera resources (24.7074ms)
+✔ display heights lift corpses and each movement keyframe, then reset without changing folded hexes (0.6163ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3064.1318
+✔ actual drop uses unknown initial geometry and preserves every event (694.2256ms)
+✔ actual drop uses resized initial geometry and preserves every event (680.9827ms)
+✔ actual drop uses changed initial geometry and preserves every event (474.3837ms)
+✔ malformed dropped initial facts leave current viewer intact (462.883ms)
+✔ component requires initial facts before mutating its host (154.3382ms)
+✔ component rejects a pushed map that differs from prepared initial facts (450.5017ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (879.0207ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (467.6552ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (476.146ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (518.9045ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (459.8244ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (454.0189ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6250.9838
+built C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\.build\BATTLE-VIEWER.html · 14.3 MB · viewer c4bbf59* · engine 4ff6e55 · sheets 4ff6e55 · fields 4ff6e55 · 26 battles · * = from a dirty tree
+check only — BATTLE-VIEWER.html untouched (pass --land to write it)
+fresh: Sunken Priory · The Broken Chapel — byte-identical events (4ff6e55 → 4ff6e55)
+fresh: The Angled Halls · The Oblique Chambers — byte-identical events (4ff6e55 → 4ff6e55)
+fresh: The Buried Pilgrimage · The Rootless Caves — byte-identical events (4ff6e55 → 4ff6e55)
+fresh: Horde 24×24 — the river — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Supper (seed 5) — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Embers — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Showcase — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Flanks — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Thicket — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Field — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Highlands — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Civilians — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Hunter Alone — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Prologue Bestiary — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Beasts — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Alpha Team — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Item Powers — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Arc Golem — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: The Kiln — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Horrors of the Night — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Surrounded (seed 3) — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Assembled Party — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Dungeon 16×8 (heroes west) — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Duel 8×8 — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Rime — repeated affliction — byte-identical events (0bfa0c9 → 4ff6e55)
+fresh: Ranged-only reaction — no melee attack — byte-identical events (0bfa0c9 → 4ff6e55)
+GATE OK
