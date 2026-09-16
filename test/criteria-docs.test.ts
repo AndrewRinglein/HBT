@@ -10,10 +10,11 @@ const run = (args: string) => execSync(`node tools/slice-gate.mjs ${args}`, { en
 describe('the criteria instrument over two documents', () => {
   it('counts the slice and the gear plan together, and each file carries its own header line', () => {
     const total = run('--count').trim()
-    expect(total).toMatch(/^\d+ of 68 closed · \d+ probed · \d+ accepted$/)
+    expect(total).toMatch(/^\d+ of 69 closed · \d+ probed · \d+ accepted$/)
     const slice = readFileSync('../THIN-SLICE-IMPLEMENTATION.md', 'utf8')
     const gear = readFileSync('../GEAR-IMPLEMENTATION.md', 'utf8')
-    expect(slice).toMatch(/\*\*`\d+ of 50 closed · \d+ probed · \d+ accepted`\*\*/)
+    expect(slice).toMatch(/\*\*`\d+ of 51 closed · \d+ probed · \d+ accepted`\*\*/)
+    expect(slice).toContain('### ISC-069 — a standalone human battle shares engine resolution and replay')
     expect(gear).toMatch(/\*\*`\d+ of 18 closed · \d+ probed · \d+ accepted`\*\*/)
     for (let n = 51; n <= 68; n++) expect(gear).toContain(`### ISC-0${n} —`)
   })

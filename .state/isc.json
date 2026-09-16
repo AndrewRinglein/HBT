@@ -1027,5 +1027,14 @@
    "at": "2026-09-03 20:33",
    "sha": "f1745d1"
   }
+ },
+ "069": {
+  "red": {
+   "at": "2026-09-16 08:06",
+   "sha": "72e09df",
+   "hash": "737d2adaadce",
+   "how": "feature absent",
+   "tail": "       | ^ |       3| import {SANDBOX_DEFAULT} from '../src/content/sandbox.js' |       4| import {createBattle,runBattle,controllerOf,validateBattleCommand,prev…"
+  }
  }
 }

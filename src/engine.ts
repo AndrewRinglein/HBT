@@ -33,6 +33,17 @@ export { LEVELS } from '../../engine/src/content/index.js'
 // the numbers on the card are the numbers the battle would field. Read-only.
 export { fieldedDef } from '../../engine/src/core/setup.js'
 export type { UnitDef } from '../../engine/src/core/types.js'
+// Human sandbox host: public lifecycle/commands and read-only previews only.
+// The passive viewer's separate door remains metadata-only.
+export { advanceBattle, completeActionCycle } from '../../engine/src/core/battle.js'
+export { runActivation } from '../../engine/src/ai/modes.js'
+export { controllerOf, validateBattleCommand, executeBattleCommand } from '../../engine/src/core/commands.js'
+export type { BattleCommand, ControlPolicy } from '../../engine/src/core/commands.js'
+export { isAttack, isMove, staminaCostOf } from '../../engine/src/core/action.js'
+export { movementOptions } from '../../engine/src/core/movement.js'
+export { preview } from '../../engine/src/core/pipeline.js'
+export { previewPower } from '../../engine/src/core/ability.js'
+export { saveBattle, restoreBattle } from '../../engine/src/core/snapshot.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing

@@ -840,5 +840,20 @@
   "sha": "9ba86ee",
   "engineSha": "4ff6e55",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "v2.human-battle-sandbox",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "spec": "Standalone configurable human battle sandbox sharing engine commands, stable UID controllers, previews, AI lifecycle, snapshots and frozen Atlas replay exports; preserve Kingdom outcome picker.",
+  "expect": "ISC069 engine parity and built UI controls, playback input barrier, stale command rejection, save/resume/reset and exact Atlas presentation; full suite/typecheck/P probes and independent audit. Human/GPU acceptance separate.",
+  "isc": [
+   "069"
+  ],
+  "needs": [
+   "v2.atlas-battle-view"
+  ],
+  "attempts": 1
  }
 ]

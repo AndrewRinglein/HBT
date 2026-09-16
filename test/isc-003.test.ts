@@ -33,7 +33,10 @@ describe('ISC-003 — the engine is reached through one door and never changed',
     // and the door opens only onto the engine's public surface, not its mutators
     const door = readFileSync('src/engine.ts', 'utf8')
     expect(door).not.toMatch(/core\/mutate/)
-    expect(door).not.toMatch(/core\/pipeline/)
+    // Authorized human sandbox (2026-09-16) needs the engine's preview numbers.
+    // Permit that named read-only export only; raw attack execution stays closed.
+    expect(door.match(/^export.*core\/pipeline.*$/gm)).toEqual(["export { preview } from '../../engine/src/core/pipeline.js'"])
+    expect(door).not.toMatch(/export\s*\{[^}]*performAttack/)
   })
 
   it('the options are the engine\'s own BattleOptions, and the battle was run by its runBattle', () => {

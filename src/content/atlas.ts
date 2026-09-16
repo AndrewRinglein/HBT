@@ -14,6 +14,7 @@ type AtlasFielding = {
   deploymentSlots: { heroes: number[]; enemies: number[] }
 }
 const rows = registry.entries as unknown as readonly AtlasFielding[]
+export function atlasFieldings(): AtlasFielding[] { return structuredClone([...rows]) }
 export function atlasFieldingOf(id: string): AtlasFielding | undefined {
   const row = rows.find(r => r.id === id || r.setup.map.id === id)
   return row ? structuredClone(row) : undefined
