@@ -69,7 +69,7 @@ const fail = (m) => { console.error('GATE FAIL — ' + m); process.exit(1) }
 /* 2 · typecheck */
 try { execFileSync('node', ['../engine/node_modules/typescript/bin/tsc', '--noEmit'], { stdio: 'inherit' }); console.log('typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean') }
 catch { fail('typecheck') }
-try { execFileSync('node', ['--test', 'tools/runtime-metadata.test.mjs', 'tools/elemental-display.test.mjs'], { stdio: 'inherit' }) }
+try { execFileSync('node', ['--test', 'tools/runtime-metadata.test.mjs', 'tools/elemental-display.test.mjs', 'tools/damage-packets.test.mjs'], { stdio: 'inherit' }) }
 catch { fail('runtime metadata isolation or tool catalog validation') }
 /* 2b · the engine's map list, through the door, against both dumps */
 {

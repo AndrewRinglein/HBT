@@ -175,7 +175,12 @@ function drive(label, battle, allowStandee = false) {
         if (c.k === 'float') {
           /* the cue names the field its number came from; the number in the text must be that field, verbatim */
           const n = c.text.match(/\d+/)
-          if (n) { check(c.of != null && e[c.of] === c.n && +n[0] === Math.abs(c.n), `${label}: float "${c.text}" — n=${c.n} of=${c.of}, event.${c.of}=${c.of && e[c.of]} (${e.type})`) }
+          if (n) {
+            // Packet cues name an exact nested fact. Preserve the scalar check;
+            // never accept an unrelated equal number elsewhere in the event.
+            const source = c.packetIndex == null ? e : (Number.isInteger(c.packetIndex) && c.packetIndex >= 0 ? e.packets?.[c.packetIndex] : undefined)
+            check(c.of != null && source?.[c.of] === c.n && +n[0] === Math.abs(c.n), `${label}: float "${c.text}" — n=${c.n} packet=${c.packetIndex} of=${c.of}, source=${source?.[c.of]} (${e.type})`)
+          }
           else check(c.n == null, `${label}: float "${c.text}" carries n=${c.n} but prints no number`)
         }
         /* no other cue may invent a number: every numeric field is an id, a hex, a beat length, or verbatim */
@@ -372,7 +377,10 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
       if (c.k === 'float' && /^✶/.test(c.text)) injuryFloats++ } }
   check(critWord > 0, 'ladder: no CRIT! word anywhere in the library')
   check(critWord === kicks && critWord === superTier, `ladder: CRIT! ${critWord}, kicks ${kicks}, super-tier impacts ${superTier} — rung 2 must fire all three together`)
-  check(critNumeral > 0 && critNumeral <= critWord, `ladder: ${critNumeral} crit numerals for ${critWord} crits`)
+  // Ordered packets have one numeral per final HP packet, not one per hit.
+  // Keep exact cardinality and event ownership rather than relaxing the limit.
+  const expectedNumerals=LIB.battles.flatMap(b=>b.battle.events).filter(e=>e.type==='damage.applied'&&e.attackId&&e.crit===true).reduce((n,e)=>n+(e.packets?e.packets.length:1),0)
+  check(critNumeral > 0 && critNumeral === expectedNumerals, `ladder: ${critNumeral} crit numerals, expected ${expectedNumerals} from actual critical damage packets`)
   check(injuries > 0 && injuryFloats === 0, `ladder: ${injuries} injury plates, ${injuryFloats} injury floats — rung 3 is a plate, never a float`)
   /* the queue: two injuries at once produce ONE plate on the board and one waiting */
   const v = H.viewer, V = v._V

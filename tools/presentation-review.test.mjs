@@ -64,3 +64,13 @@ test('human selection does not spend or activate a hero before the engine begins
  fold(state,{type:'activation.selected',actor:0,unitUid:402},ctx,0);assert.equal(state.activeId,2)
  fold(state,{type:'activation.begin',actor:0},ctx,0);assert.equal(state.activeId,0);assert.deepEqual(state.acted,{'2':true})
 })
+
+test('packet fixture variants retain the exact authored Oathblade body',()=>{
+  const rows=JSON.parse(readFileSync('../content/test/units.json'))
+  const base=manifest.artmap['test-oathblade']
+  for(const id of ['test-packet-flame','test-packet-shadow']){
+    const source=rows.find(row=>row.id===id)
+    assert.equal(source?.from,'test-oathblade',id+' authored body')
+    assert.deepEqual(manifest.artmap[id],base,id+' exact inherited token, portrait and stature')
+  }
+})

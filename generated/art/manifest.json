@@ -504,6 +504,18 @@
    "card": "card-zombie.jpg",
    "aspect": 0.3789,
    "height": 1.55
+  },
+  "test-packet-flame": {
+   "token": "oathblade_256.png",
+   "card": "card-oathblade.jpg",
+   "aspect": 0.7188,
+   "height": 1.55
+  },
+  "test-packet-shadow": {
+   "token": "oathblade_256.png",
+   "card": "card-oathblade.jpg",
+   "aspect": 0.7188,
+   "height": 1.55
   }
  }
 }

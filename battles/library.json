@@ -112,6 +112,10 @@
   {
    "file": "showcase.prologue-enemies-s7.json",
    "label": "Prologue Bestiary · lycanthropy (seed 7)"
+  },
+  {
+   "file": "test.damage-packets.json",
+   "label": "TEST · ordered fire and shadow packets"
   }
  ]
 }

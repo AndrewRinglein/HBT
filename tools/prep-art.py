@@ -37,6 +37,9 @@ def P(p):
     return p.replace('HELL:', HELL + '/') if p.startswith('HELL:') else p
 
 ARTMAP = {
+ # Packet fixtures are mechanical deltas of test-oathblade; their authored body is unchanged.
+ 'test-packet-flame': {'token':'oathblade_256.png','card':'card-oathblade','src':'battle-tokens/units/oathblade_256.png','cardsrc':'crucible/art/avtair/oathblade-v1.png'},
+ 'test-packet-shadow': {'token':'oathblade_256.png','card':'card-oathblade','src':'battle-tokens/units/oathblade_256.png','cardsrc':'crucible/art/avtair/oathblade-v1.png'},
  'test-oathblade':    {'token':'oathblade_256.png',  'card':'card-oathblade', 'src':'battle-tokens/units/oathblade_256.png',  'cardsrc':'crucible/art/avtair/oathblade-v1.png'},
  'test-sky-pirate':   {'token':'sky-pirate_256.png', 'card':'card-skypirate', 'src':'battle-tokens/units/sky-pirate_256.png', 'cardsrc':'crucible/art/aeronissa/sky-pirate.png'},
  'test-dusk-hawk':    {'token':'dusk-hawk_256.png',  'card':'card-duskhawk',  'src':'battle-tokens/units/dusk-hawk_256.png',  'cardsrc':'crucible/art/avtair/dusk-hawk-v1.png'},

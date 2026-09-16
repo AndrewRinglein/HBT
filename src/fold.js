@@ -259,22 +259,33 @@ export function fold(S, e, ctx, now = 0) {
       break
     case 'damage.applied':
       if (U[e.target]) { U[e.target].hp = e.hpAfter
+        // Critical belongs to this resolved attack, never to intervening hook
+        // damage between attack.hit and the attack's HP event.
+        const critical = !!e.attackId && e.crit === true
         cue('flash', { id: e.target })
         const tick = String(e.causeId || '').includes('status.')
         if (tick) cue('fx.tick', { id: e.target, cause: e.causeId })
         /* HITSTOP (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.2): a strike freezes
            the tokens for 70ms, a crit for 140. A status tick is not a strike. */
-        else cue('hitstop', { ms: S.critPending ? 140 : 70 })
+        else cue('hitstop', { ms: critical ? 140 : 70 })
         /* EVERY damage floats overhead and drifts up, coloured by damage type
            (ruled 2026-08-27): red physical, blue magic, white true. A crit's
            numeral arrives bigger, gold-rimmed, snaps in and HOLDS before it
            drifts — every other number fades in and drifts at once (rung 2). */
         /* every number a float carries names the event field it came from —
            the constitution's catch checks e[of] === n, verbatim */
-        cue('float', { hex: U[e.target].hex, kind: 'damage', dt: e.damageType, text: '−' + e.amount, n: e.amount, of: 'amount', big: true, crit: S.critPending && !tick })
-        S.critPending = false
-        if (e.resisted) cue('float', { hex: U[e.target].hex, kind: 'resisted', text: e.resisted + ' resisted', n: e.resisted, of: 'resisted', small: true })
-        if (e.absorbed) cue('float', { hex: U[e.target].hex, kind: 'absorbed', text: e.absorbed + ' absorbed', n: e.absorbed, of: 'absorbed', small: true })
+        if (e.packets) {
+          e.packets.forEach((p, packetIndex) => {
+            cue('float', { hex: U[e.target].hex, kind: 'damage', dt: p.damageType, text: '−' + p.applied, n: p.applied, of: 'applied', packetIndex, big: true, crit: critical })
+            if (p.resisted) cue('float', { hex: U[e.target].hex, kind: 'resisted', text: p.resisted + ' resisted', n: p.resisted, of: 'resisted', packetIndex, small: true })
+            if (p.absorbed) cue('float', { hex: U[e.target].hex, kind: 'absorbed', text: p.absorbed + ' absorbed', n: p.absorbed, of: 'absorbed', packetIndex, small: true })
+          })
+        } else {
+          cue('float', { hex: U[e.target].hex, kind: 'damage', dt: e.damageType, text: '−' + e.amount, n: e.amount, of: 'amount', big: true, crit: critical })
+          if (e.resisted) cue('float', { hex: U[e.target].hex, kind: 'resisted', text: e.resisted + ' resisted', n: e.resisted, of: 'resisted', small: true })
+          if (e.absorbed) cue('float', { hex: U[e.target].hex, kind: 'absorbed', text: e.absorbed + ' absorbed', n: e.absorbed, of: 'absorbed', small: true })
+        }
+        if (e.attackId) S.critPending = false
         S.AIM = null
         if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' } }
       break

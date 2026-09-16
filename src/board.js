@@ -279,16 +279,17 @@ export function pushFloat(V, hex, text, col, o = {}) {
        overshoot and holds ~200ms before it drifts (critPop keyframes) */
     wrap.appendChild(el('dmg crit', `left:-40px;top:${-140 - slot * 30}px;color:${col};font-size:52px;` +
       `-webkit-text-stroke:1.5px ${CRIT_HUE};text-shadow:0 0 14px rgba(255,207,106,.75),0 2px 6px #000;transform-origin:50% 100%;` +
-      `animation:critPop 1900ms cubic-bezier(.2,1.3,.4,1) forwards`, text))
+      `animation:critPop 1900ms cubic-bezier(.2,1.3,.4,1) forwards`)).textContent = text
   } else
   wrap.appendChild(el('dmg', `left:-34px;top:${-136 - slot * 30}px;color:${col};` +
     (o.big ? 'font-size:36px;' : o.small ? 'font-size:15px;' : 'font-size:20px;') +
-    `animation:floatUp ${life}ms ease-out forwards`, text))
+    `animation:floatUp ${life}ms ease-out forwards`)).textContent = text
   L.floatL.appendChild(wrap)
   /* registered like every other beat: an unregistered timer survives seek(),
      fires against a cleared FLOAT_SLOTS and stacks the next floats (REVIEW §C3) */
   const ft = setTimeout(() => { V.fx.timers.delete(ft); wrap.remove()
     if (L.FLOAT_SLOTS[hex] != null) { L.FLOAT_SLOTS[hex]--; if (L.FLOAT_SLOTS[hex] < 0) delete L.FLOAT_SLOTS[hex] } }, life + 60)
+  V.fx.timers.add(ft)
 }
 export function clearFloats(V) {
   if (V.layers.floatL) V.layers.floatL.innerHTML = ''

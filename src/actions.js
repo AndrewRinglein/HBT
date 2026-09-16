@@ -93,6 +93,9 @@ export function dmgOf(a, u, D) {
   /* an attack's stat and bonus live under `attack` since 26fa562; a legacy
      power shape still carries them on the row */
   const p = a.attack || a
+  // A scalar base is not the total of a multi-packet attack. Wait for the
+  // engine's observed damageOnHit; authored packet rows remain visible below.
+  if (p.secondaryDamage?.length) return null
   const statv = p.stat != null ? ((D.UD || {})[u && u.typeId] || {})[p.stat] : undefined
   if (statv != null) return { n: Math.max(0, statv + (p.bonus || 0)), live: false }
   return null
@@ -157,6 +160,8 @@ export function effectTag(a, u, D, SN) {
   if (p.crit) bits.push('crit ' + sgn(p.crit))
   if (p.hits > 1) bits.push(p.hits + ' hits')
   if (p.critCount > 1) bits.push(p.critCount + ' criticals')
+  if (p.armorPenetration != null) bits.push('Armor penetration ' + p.armorPenetration)
+  for (const packet of (p.secondaryDamage || [])) bits.push('on ' + packet.when + ': ' + packet.amount + ' ' + packet.damageType)
   if (a.uses != null) bits.push(a.uses + ' use' + (a.uses === 1 ? '' : 's') + ' per battle')
   if (a.free) bits.push('free')
   if (p.damageType && !a.area) bits.push(p.damageType)
