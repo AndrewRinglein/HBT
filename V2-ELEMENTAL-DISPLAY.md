@@ -20,7 +20,8 @@ The full fresh check passed: 7 metadata/display tests, 26 renderer tests,
 rows and 4,326 plain rows), and byte-identical fresh exports for all 28 entries.
 Independent built fixtures check actual resistance labels/values, custom shield
 metadata, and that a large Burn counter cannot invent future HP or death.
-Publication uses the same full fresh gate after the source commit.
+Publication passed the same full fresh gate after source commit a48cb9f. The
+published page stamps that source and clean engine/sheets/fields 6bb36dc.
 
 Human visual/GPU acceptance remains separate. No denied browser route was
 bypassed. Maps, source art and combat resolution are unchanged by this adoption.
