@@ -22,7 +22,7 @@
      · the page stamps the viewer and engine commits
      · a multi-hex move steps as ONE beat and lands the unit where the log says
      · hitstop cues carry only the ruled 70/110/140 and all three occur
-     · the skull is on the bar exactly when the tick projection is lethal
+     · current HP/shields are shown without guessed future loss/death
      · the camera pans by inclusion, a manual pan holds, a peek restores
      · off-screen units get edge bubbles that account for every one of them; none during a peek
      · the emphasis ladder: CRIT! + kick + super impact fire together; injuries are queued plates, never floats
@@ -78,8 +78,6 @@ const LIB = BV.lib
 /* the fold context and the projection, hoisted: both are used by checks that
    run before the blocks that used to define them (TDZ, found 2026-09-04) */
 const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
-const { projectTick } = await import(pathToFileURL(resolve(PKG, 'src/projection.js')).href)
-check(typeof projectTick === 'function', 'projection.js no longer exports projectTick')
 const stripB64 = s => s.replace(/data:[^"')]+/g, 'data:…')
 const numsIn = e => { const out = new Set(); const walk = v => { if (typeof v === 'number') out.add(v); else if (v && typeof v === 'object') Object.values(v).forEach(walk) }; walk(e); return out }
 
@@ -264,28 +262,26 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
   for (const ms of seen) check([70, 110, 140].includes(ms), `hitstop: unruled duration ${ms}`)
 }
 
-/* ── the skull (VISUAL-BATTLE-UPDATES §3.1): shown exactly when the projection is lethal ── */
+/* V2: current HP/shields only. No engine forecast is present in these logs. */
 {
-  let lethalSeen = 0, mismatches = 0
+  let statusFrames = 0
   for (let bi = 0; bi < LIB.battles.length; bi++) {
     load(bi); const v = H.viewer; v.pause()
-    const EV = v.events, V = v._V
-    while (v.cursor < EV.length) {
-      const before = v.cursor
-      v.step(); if (v.cursor === before) break
-      if (!['status.applied', 'damage.applied'].includes(EV[v.cursor - 1].type)) continue
+    while (v.cursor < v.events.length) {
+      const before = v.cursor; v.step(); if (v.cursor === before) break
+      if (!['status.applied', 'damage.applied'].includes(v.events[v.cursor - 1].type)) continue
       for (const u of Object.values(v.state.U)) {
         if (u.life !== 'standing') continue
-        const E = V.layers.UEL.get(u.id); if (!E) continue
-        const lethal = projectTick(u, LIB.static.units).lethal
-        const shown = E.skull.style.display !== 'none'
-        if (lethal) lethalSeen++
-        if (lethal !== shown) mismatches++
+        const E = v._V.layers.UEL.get(u.id); if (!E) continue
+        if (Object.values(u.st).some(n => n > 0)) statusFrames++
+        check(E.proj === undefined && E.skull === undefined, 'renderer invented a future HP/death forecast')
+        check(E.hpfill.style.height === Math.round(100 * Math.max(0, u.hp / u.maxHp)) + '%', 'HP bar must draw observed HP only')
+        const pool = LIB.static.absorbingStatuses.reduce((n, id) => n + (u.st[id] || 0), 0)
+        check((E.prot.style.display !== 'none') === (pool > 0), 'current shield counter missing or invented')
       }
     }
   }
-  check(lethalSeen > 0, 'skull: no lethal projection anywhere in the library — cannot test the skull')
-  check(mismatches === 0, `skull: ${mismatches} unit-frames where the skull and the projection disagree`)
+  check(statusFrames > 0, 'no status-bearing frames exercised the no-forecast check')
 }
 
 /* ── the camera (PLAYBACK-DESIGN §7.8): inclusion, not centring; pan holds; peek restores ── */
@@ -620,13 +616,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
         check(u.hp === EV[r].hp && u.maxHp === EV[r].maxHp, `${label}: after hp.reset unit ${e.target} folds ${u.hp}/${u.maxHp}, event says ${EV[r].hp}/${EV[r].maxHp}`)
         /* THE SMALL RED SKULL (Angela 2026-09-04), in the overhead row and nowhere else */
         check(E && /dbSkull/.test(E.badges.innerHTML), `${label}: unit ${e.target} stood at the Deathbed but wears no skull`)
-        /* THE TWO SKULLS ARE DIFFERENT FACTS (Angela 2026-09-04, VISUAL-BATTLE-UPDATES §3.2):
-           the small red one overhead says "stood at the Deathbed"; the bone-white one on the
-           health bar says "dies of its statuses before it acts again". They must be able to
-           disagree — this was `|| true` until 2026-09-04 and asserted nothing. */
-        const lethalNow = projectTick(u, LIB.static.units).lethal
-        check(E && (E.skull.style.display !== 'none') === lethalNow,
-          `${label}: unit ${e.target} wears the Deathbed skull and the projection skull says ${E && E.skull.style.display !== 'none'}, but its tick projection is ${lethalNow ? '' : 'not '}lethal — the two skulls are not independent`)
+        check(E.skull === undefined, `${label}: actual Deathbed mark must not invent a future death prediction`)
         const st = (E.badges.innerHTML.match(/dbSkull[^>]*>.*?font-size:(\d+)px/) || [])[1]
         check(st && +st <= 14, `${label}: the Deathbed skull is ${st}px — Angela ruled "a very small skull"`) } }
     /* EVERY unit, at the END state — the old check broke after the first one
@@ -718,6 +708,27 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
           `${label}: ${h.name} at hex ${u.hex} should tint ${want.size} hexes, ${tiles} aura tiles drawn`)
         const dead = EV.findIndex(e => e.type === 'life.dead' && e.target === h.id)
         if (dead > 0 && holders.length === 1) { v.seek(dead + 1); v.render(); check((V.layers.AURA ? V.layers.AURA.size : 0) === 0, `${label}: ${h.name} is dead and still exerts an aura`) } } }
+  }
+}
+
+// Independent display fixture: extreme status values cannot invent a forecast.
+{
+  load(0); const v = H.viewer; v.pause()
+  v.seek(v.events.findIndex(e => e.type === 'battle.begin') + 1)
+  const V = v._V, u = Object.values(v.state.U).find(u => u.life === 'standing')
+  check(!!u, 'resistance display fixture requires a standing unit')
+  if (u) {
+    V.data.UD = {...V.data.UD, [u.typeId]: {...V.data.UD[u.typeId], fireResist: 2, poisonResist: 3, shadowResist: 4}}
+    V.data.ABSORBING_STATUSES = [...V.data.ABSORBING_STATUSES, 'test.status.display-pool']
+    u.hp = 1; u.st = {'status.burn': 100, 'test.status.display-pool': 3}
+    V.view.inspectId = u.id; V.view.statsOpen = true; v.render()
+    for (const label of ['Armor', 'Magic Resist', 'Fire Resist', 'Poison Resist', 'Shadow Resist'])
+      check(V.dom.panel.innerHTML.includes(label), `missing visible defense label: ${label}`)
+    for (const [label, n] of [['Fire Resist', 2], ['Poison Resist', 3], ['Shadow Resist', 4]])
+      check(new RegExp(label + '</span><span[^>]+>' + n + '</span>').test(V.dom.panel.innerHTML), `named defense value was dropped: ${label}`)
+    const E = V.layers.UEL.get(u.id)
+    check(u.hp === 1 && E.proj === undefined && E.skull === undefined, 'large Burn counter fabricated HP/death instead of waiting for engine facts')
+    check(E.prot.style.display !== 'none' && (E.prot.innerHTML.match(/<div /g) || []).length === 3, 'current pool metadata/counter was replaced with a guessed spend')
   }
 }
 

@@ -1,3 +1,4 @@
+import { DMG_HUE } from './theme.js'
 /* ── the icon pack (HANDOFF-ICONS-AND-SUMMON §1–2) ────────────────────────
    RPG Awesome glyph outlines (game-icons.net, CC BY 3.0) from the inline
    sprite the build emits. One helper, so a name the sprite lacks is a build
@@ -28,6 +29,9 @@ export const ACT_CLASS = {
 export const DHUE = {
   physical: { col: '#d1665c', bg: '#241715', bd: '#4a2a26' },
   magic:    { col: '#8b8ad9', bg: '#171a2a', bd: '#2e3355' },
+  fire:     { col: DMG_HUE.fire, bg: '#241715', bd: '#4a2a26' },
+  poison:   { col: DMG_HUE.poison, bg: '#172415', bd: '#294a26' },
+  shadow:   { col: DMG_HUE.shadow, bg: '#20152a', bd: '#402655' },
   'true':   { col: '#d6b25e', bg: '#241c0e', bd: '#4a3a1c' },
 }
 export function actClass(a) {

@@ -6,7 +6,7 @@
 // at runtime. Never hand-edit the output.
 import { writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
-import { allSheets, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames } from '../src/sheet.js'
+import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames } from '../src/sheet.js'
 import { readCatalog } from '../src/engine.js'
 const { MAPS } = await readCatalog()
 
@@ -17,7 +17,7 @@ try { dirty = execSync('git -C ../engine status --porcelain', { encoding: 'utf8'
 
 /* attacks/abilities: the whole tables, so a unit.equipped grant resolves at fold
    time; layers: the ground layer names by number (2026-09-03) */
-const out = { engineCommit, engineDirty: dirty, maps: MAPS.map((m) => m.id), units: allSheets(), statuses: statusNames(),
+const out = { engineCommit, engineDirty: dirty, maps: MAPS.map((m) => m.id), units: allSheets(), statuses: statusNames(), absorbingStatuses: absorbingStatusIds(),
   attacks: attackTable(), abilities: abilityTable(), actions: actionTable(), badges: badgeTable(),
   layers: layerNames() }
 writeFileSync('generated/static.json', JSON.stringify(out))

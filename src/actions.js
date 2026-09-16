@@ -11,7 +11,7 @@ import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
    Punch, whose crit is genuinely negative (2026-09-01). */
 export const sgn = n => (n > 0 ? '+' : '') + n
 export const STATSHORT = { strength: 'STR', precision: 'PRE', magic: 'MAG', spirit: 'SPI',
-  accuracy: 'ACC', dodge: 'DODGE', armor: 'ARMOR', resist: 'RESIST', movement: 'MOVE', reach: 'REACH' }
+  accuracy: 'ACC', dodge: 'DODGE', armor: 'ARMOR', resist: 'MAGIC RESIST', fireResist: 'FIRE RESIST', poisonResist: 'POISON RESIST', shadowResist: 'SHADOW RESIST', movement: 'MOVE', reach: 'REACH' }
 
 /* ── THE KIT (seam.items-per-unit, folded 2026-09-03) ──────────────────────
    A hero is fielded as the bare row plus the items the log says it wears

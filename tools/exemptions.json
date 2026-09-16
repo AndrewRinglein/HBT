@@ -1,11 +1,6 @@
 {
   "_about": "The numbers the viewer still COMPUTES instead of reading verbatim from the event log or the content sheet. Each is a debt the engine owes as an event or a sheet field (THREE-PACKAGES-PLAN.md §8.3). This list may only SHRINK: verify.mjs fails if the source carries an 'EXEMPTION <name>' marker not listed here, an entry here with no marker left in the source, or more entries than the committed file had (ALLOW_EXEMPTION_GROWTH=1 overrides once, for a review that FINDS an unmarked computation — that is discovery, not growth). Delete the entry the day the engine emits the number.",
   "exemptions": {
-    "tick-projection": {
-      "where": "src/projection.js projectTick",
-      "computes": "next-tick health change from burn/poison/bleed/regeneration/protection",
-      "becomes": "an engine event (tick.forecast, name provisional) emitted when a unit's statuses or protection change"
-    },
     "dmg-fallback": {
       "where": "src/actions.js dmgOf",
       "computes": "stat + bonus for a resting attack row before its damageOnHit has been seen",
@@ -30,12 +25,6 @@
       "where": "src/sheet.ts sheetOf",
       "computes": "resolves a unit's attack/ability/move ids to definitions",
       "becomes": "engine/src/content sheetOf(typeId), exported through both doors (plan §8.3 correction 1)"
-    },
-    "aim-mitigation": {
-      "where": "src/fold.js attack.declared",
-      "computes": "the target's BASE armor/resist off the sheet, printed as −N ARMOR on the forecast",
-      "becomes": "attack.declared carries the live mitigation figure",
-      "found": "review 2026-09-03"
     },
     "stat-delta": {
       "where": "src/actions.js modOf / mvOf (was src/panel.js modOf; moved 2026-09-03 so the movement numeral and the panel share the one sum)",

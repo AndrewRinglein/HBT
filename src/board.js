@@ -2,10 +2,10 @@
    Reads V.S (the folded state) and draws it. Never folds. Every function takes
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
-import { TSWATCH, stStyle, PROJ_TINT, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, PROT_SPENT, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE, LAYER_STATUS } from './theme.js'
+import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE, LAYER_STATUS } from './theme.js'
 import { mvOf } from './actions.js'
 import { subjectOf } from './subject.js'
-import { projectTick, dangerOf } from './projection.js'
+import { dangerOf } from './projection.js'
 import { dangerHTML, raIcon } from './icons.js'
 import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES } from './hexvfx.js'
 
@@ -670,18 +670,9 @@ function mkUnit(V, u) {
   bb.appendChild(flash)
   const badges = el('badges', '')
   const hpbar = el('hpbar', ''); const hpfill = el('hpfill', ''); hpbar.appendChild(hpfill)
-  const proj = el('', 'display:none'); hpbar.appendChild(proj)
   const prot = el('', 'display:none')
   const mark = el('actMark', 'display:none')
-  /* THE SKULL (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §3.1): when the
-     projection crosses zero — the unit dies of its statuses before it acts
-     again — the bar carries a skull. The highest-value fact on the bar: do not
-     spend an action here. Lifted with translateZ like every low numeral. */
-  const skull = el('', 'position:absolute;display:none;pointer-events:none;transform:translateZ(60px);width:20px;height:20px;line-height:1',
-    /* NO filter (the 3D trap) — the halo is a black copy scaled up behind the bone one */
-    raIcon('skull', 'position:absolute;left:0;top:0;font-size:20px;color:#000;transform:scale(1.3);opacity:.9') +
-    raIcon('skull', 'position:absolute;left:0;top:0;font-size:20px;color:#f4ece0'))
-  bb.appendChild(badges); bb.appendChild(hpbar); bb.appendChild(prot); bb.appendChild(mark); bb.appendChild(skull)
+  bb.appendChild(badges); bb.appendChild(hpbar); bb.appendChild(prot); bb.appendChild(mark)
   const clock = el('clockchip', 'left:-20px;top:16px;display:none')
   /* NO PLATE (ruled 2026-09-01); LIFTED toward the camera with translateZ so the
      hex in front does not shear the numeral (PLAYBACK-DESIGN §7.3d) */
@@ -697,7 +688,7 @@ function mkUnit(V, u) {
   root.appendChild(actB); root.appendChild(selR); root.appendChild(downR)
   root.appendChild(bb); root.appendChild(clock)
   V.layers.unitsL.appendChild(root)
-  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, proj, prot, mark, clock, mv, dg, skull, glow, a }
+  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, prot, mark, clock, mv, dg, glow, a }
 }
 export function syncUnits(V) {
   const { S, view, layers: L } = V, { UD, LAYOUT } = V.data
@@ -810,35 +801,15 @@ export function syncUnits(V) {
     /* CONSTANT fill (ruled 2026-09-01): colour here means gain or loss only */
     E.hpfill.style.cssText = `height:${Math.round(100 * frac)}%;background:linear-gradient(#e9e3d2,#c3bba4);transition:height .3s ease`
     {
-      const P = projectTick(u, UD)
-      if (down || P.net === 0) E.proj.style.display = 'none'
-      else {
-        const lossFrac = Math.min(frac, Math.max(0, P.net) / u.maxHp)
-        const gainFrac = Math.min(1 - frac, Math.max(0, -P.net) / u.maxHp)
-        E.proj.style.display = ''
-        if (P.lethal) {
-          E.proj.style.cssText = `position:absolute;left:0;right:0;bottom:0;height:${Math.round(100 * frac)}%;` +
-            `background:repeating-linear-gradient(45deg,${P.tint}cc 0 3px,${P.tint}55 3px 6px);` +
-            `border-top:2px solid #fff;box-shadow:0 0 8px ${P.tint}`
-        } else if (P.net > 0) {
-          E.proj.style.cssText = `position:absolute;left:0;right:0;bottom:${(100 * (frac - lossFrac)).toFixed(1)}%;` +
-            `height:${(100 * lossFrac).toFixed(1)}%;background:${P.tint}d0;border-top:2px solid ${P.tint}`
-        } else {
-          E.proj.style.cssText = `position:absolute;left:0;right:0;bottom:${(100 * frac).toFixed(1)}%;` +
-            `height:${(100 * gainFrac).toFixed(1)}%;background:${PROJ_TINT.heal}66;border-bottom:2px solid ${PROJ_TINT.heal}`
-        }
-      }
-      /* the skull sits on the bar's shoulder — centred on the 6px bar, just above it */
-      if (!down && P.lethal) { E.skull.style.display = ''; E.skull.style.left = (w / 2 + 7 + 3 - 10) + 'px'; E.skull.style.top = (-bhFull - 24) + 'px' }
-      else E.skull.style.display = 'none'
       /* PROTECTION: its own segmented bar beside the HP bar (§1) */
-      const segs = Math.min(12, P.pool)
+      const pool = V.data.ABSORBING_STATUSES.reduce((n, id) => n + (u.st[id] || 0), 0)
+      const segs = Math.min(12, pool)
       if (down || segs <= 0) E.prot.style.display = 'none'
       else {
         E.prot.style.cssText = `position:absolute;left:${w / 2 + 7 + 9}px;top:${-bhFull}px;height:${bh}px;` +
           `width:6px;display:flex;flex-direction:column-reverse;gap:1px;pointer-events:none`
         E.prot.innerHTML = Array.from({ length: segs }, (_, i) =>
-          `<div style="flex:1;border-radius:1px;background:${i < segs - P.absorbed ? stStyle('status.protection').hue : PROT_SPENT};` +
+          `<div style="flex:1;border-radius:1px;background:${stStyle('status.protection').hue};` +
           `box-shadow:0 0 3px rgba(0,0,0,.9)"></div>`).join('')
       }
     }
@@ -846,8 +817,7 @@ export function syncUnits(V) {
        DEATHBED SKULL (Angela: "they need a skull in their status bar, to show
        they're on death's door" · "Use a very small skull for what goes
        overhead, and make it red"). Small and red is what tells it apart from
-       the health bar's bone-white projection skull, which is a different fact
-       (VISUAL-BATTLE-UPDATES §3.1 vs §3.2). NOTHING ELSE (§1). */
+       a future death prediction; only the engine may supply that fact. NOTHING ELSE (§1). */
     const OVER = ['status.stun', 'test.status.daze', 'status.dazed', 'status.weak', 'test.status.enfeeble']
     const sts = Object.entries(u.st).filter(([id, v]) => v > 0 && OVER.includes(id))
     /* the chevron is the buff/debuff layer — the stat block's green and red
@@ -902,7 +872,6 @@ export function drawAim(V) {
   /* COOL IS A FORECAST, WARM IS WHAT HAPPENED (ruled 2026-09-01) */
   line(0, `<span style="font-size:24px;font-weight:700;color:#8fa8bd">${AIM.hit}%</span>`)
   if (AIM.dmg != null) line(28, `<span style="font-size:46px;font-weight:700;color:#bcd4e6;line-height:1">${AIM.dmg}</span>`)
-  if (AIM.mit) line(78, `<span style="font-size:21px;font-weight:600;color:#6f8fb0">−${AIM.mit} <span style="font-size:12px;letter-spacing:.06em">${AIM.mitLabel.toUpperCase()}</span></span>`)
   if (AIM.missed) line(104, `<span style="font-size:26px;font-weight:700;color:#b9b2a3">${AIM.missed.cause==='cover'?'COVER':AIM.missed.cause==='dodge'?'DODGE':'MISS'} <span style="font-size:13px;color:#8b8778">rolled ${AIM.missed.roll}</span></span>`)
 }
 

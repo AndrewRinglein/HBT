@@ -30,6 +30,7 @@ export function sheetOf(typeId: string): UnitSheet | undefined {
     // accuracy — the live total is the engine's, and is one of the five
     // exemptions until the engine emits it (plan §8.3).
     movement: u.movement, armor: u.armor, resist: u.resist, dodge: u.dodge,
+    fireResist: u.fireResist, poisonResist: u.poisonResist, shadowResist: u.shadowResist,
     accuracy: u.accuracy,
     reach: u.reach, maxHp: u.maxHp, maxStamina: u.maxStamina,
     staminaRegen: u.staminaRegen,
@@ -82,4 +83,9 @@ export function statusNames(): Record<string, string> {
   for (const [id, s] of Object.entries(STATUSES) as [string, any][])
     out[id] = s?.name ?? id.replace(/^(test\.)?status\./, '')
   return out
+}
+
+/** Read-only status metadata for drawing current shield counters. */
+export function absorbingStatusIds(): string[] {
+  return Object.entries(STATUSES).filter(([, row]) => row.reducesIncomingDamage).map(([id]) => id)
 }

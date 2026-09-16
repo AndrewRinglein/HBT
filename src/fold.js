@@ -216,13 +216,9 @@ export function fold(S, e, ctx, now = 0) {
     case 'attack.declared':
       if (U[e.actor] && U[e.target]) {
         cue('lunge', { a: e.actor, t: e.target })
-        const tdef = UD[U[e.target].typeId] || {}
-        const mit = e.damageType === 'magic' ? (tdef.resist || 0) : (tdef.armor || 0)
-        /* EXEMPTION aim-mitigation (tools/exemptions.json): `mit` is the target's
-           BASE armor/resist off the sheet; the live figure is the engine's */
         S.AIM = { from: U[e.actor].hex, to: U[e.target].hex, hit: e.hitChance,
           type: e.damageType, tgt: e.target, kind: e.kind,
-          dmg: e.damageOnHit, mit, mitLabel: e.damageType === 'magic' ? 'resist' : 'armor',
+          dmg: e.damageOnHit,
           aoo: !!(S.AOO && S.AOO.holder === e.actor), hit_n: e.hit, hit_of: e.of }
         S.ATTACK = { kind: e.kind, dt: e.damageType, dmg: e.damageOnHit, aoo: !!(S.AOO && S.AOO.holder === e.actor) }
         /* the engine's OWN live damage for this attack — it carries Weak and

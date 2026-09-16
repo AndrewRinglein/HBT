@@ -111,7 +111,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const LAYOUT = { W: F.hexW, H: F.hexH, COL: F.colStep, ROW: F.rowStep, ODD: F.oddOffset, COLS: F.width, ROWS: F.height, tilt: F.tilt }
   const V = {
     dom, now,
-    data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses,
+    data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ABSORBING_STATUSES: data.absorbingStatuses || [],
       LAYERS: data.layers || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null },
     meta: data.meta || {},

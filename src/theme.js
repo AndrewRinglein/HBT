@@ -43,7 +43,7 @@ export const stStyle = id => STYLE[String(id).replace(/^test\./, '').replace(/da
 
 export const PROJ_TINT = { burn: '#ff9d3c', poison: '#8ed14f', bleed: '#e05252', heal: '#8fe08a' }
 /* result colours (ruled 2026-08-27): red physical, blue magic, white true; heals green */
-export const DMG_HUE = { physical: '#ff5346', magic: '#6fb3ff', 'true': '#ffffff', other: '#ffd9a0' }
+export const DMG_HUE = { physical: '#ff5346', magic: '#6fb3ff', fire: STYLE['status.burn'].hue, poison: STYLE['status.poison'].hue, shadow: STYLE['status.shadow'].hue, 'true': '#ffffff', other: '#ffd9a0' }
 export const HEAL_HUE = '#8fe08a'
 /* the buff/debuff layer — the stat block's green and red, used by the chevron,
    the stat rows and the move-rider chips (ruled 2026-09-01) */

@@ -135,7 +135,10 @@ export function drawPanel(V) {
   <div class="pBlock" style="padding:0;border:none;background:none">
     ${twoCols([
       stat('Move', d.movement, 'movement'), stat('Armor', d.armor, 'armor'),
-      stat('Resist', d.resist, 'resist'), stat('Dodge', d.dodge, 'dodge'),
+      stat('Magic Resist', d.resist, 'resist'),
+      ...[['fireResist', 'Fire Resist'], ['poisonResist', 'Poison Resist'], ['shadowResist', 'Shadow Resist']]
+        .filter(([key]) => d[key] !== undefined || (u.mods || []).some(m => m.stat === key))
+        .map(([key, label]) => stat(label, d[key] ?? 0, key)), stat('Dodge', d.dodge, 'dodge'),
       stat('Max HP', d.maxHp, 'maxHp'),
       stat('Accuracy', d.accuracy, 'accuracy'), stat('Crit', d.crit ?? 0, 'crit'),
       stat('Strength', d.strength, 'strength'), stat('Precision', d.precision, 'precision'),
