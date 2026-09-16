@@ -1044,8 +1044,8 @@
    "tail": "       |                                                                   ^ |     101|   expect({state:s.ctx.state,events:s.ctx.events,rng:s.ctx.rng}).toEqua… |     102|   expect(commandSandbox(s,choice.command).ok).toBe(true)"
   },
   "closed": {
-   "at": "2026-09-16 08:40",
-   "sha": "0dec52d"
+   "at": "2026-09-16 09:29",
+   "sha": "a4ef27d"
   }
  }
 }

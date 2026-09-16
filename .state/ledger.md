@@ -2590,3 +2590,26 @@ drives default three-hero alternate order, unblocked selection, pending save,
 playback/fault locks, actual human replay import and engine-resolved outcome.
 Two landing warning categories remain; this audit grants no seal or human/GPU
 acceptance. Engine and viewer rules are not duplicated in the host.
+
+## v2.elemental-display — LANDED `a4ef27d` **NEEDS REVIEW**
+2026-09-16 09:28 · engine @ 6bb36dc
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\DOCS.md:109 · ..\THREE-PACKAGES-PLAN.md:211
+  PASS  typecheck
+  PASS  full test suite — 234 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-069 — a standalone human battle shares engine resolution and replay
+  PASS  brought its own tests — test/isc-069.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-069: red on record (2026-09-16 09:28 @ 8fdb217, probe 1414970fc7f4)
+  PASS  nothing regresses — every P-tier probe — 62 P-tier probe(s): 62 green, 0 red, 0 regression(s). 61 of 69 closed · 62 probed · 1 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'adapter' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean — engine @ 6bb36dc, clean
+  PASS  one door to the engine
+
+ISC-069: CLOSED at a4ef27d
+slice: 61 of 69 closed · 62 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
