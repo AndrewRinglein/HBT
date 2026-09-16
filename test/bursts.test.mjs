@@ -35,7 +35,7 @@ test('compiler separates all four migrated area rows and both TEST burst profile
  assert.equal(run.pack.test.bursts['power.test-burst-mercy'].burst.heal,7);
  assert.ok(run.pack.items['item.halberd'].grants.includes('attack.halberd.cleave'));
  const ward=run.pack.test.units.find(u=>u.typeId==='test-burst-ward');assert.equal(ward.triggers.filter(t=>t.hook==='onBurst').length,2);assert.ok(ward.triggers.some(t=>t.hook!=='onBurst')); // inherited ordinary riders remain
- assert.deepEqual(ward.triggers.find(t=>t.effect.kind==='burst.scale').effect,{kind:'burst.scale',percent:50});
+ assert.deepEqual(ward.triggers.find(t=>t.effect.kind==='burstScale').effect,{kind:'burstScale',percent:50});
 });
 for(const patch of [{side:'foe'},{shape:{kind:'blast1'}},{shape:{kind:'radius',radius:1.5}},{heal:-1},{packets:[{id:'x',amount:3,damageType:'holy'}]},{packets:[{id:'x',amount:1,damageType:'fire'},{id:'x',amount:2,damageType:'fire'}]}])test('compiler rejects malformed burst '+JSON.stringify(patch),()=>{
  const run=candidate(edit=>edit('gen/weapons.json',data=>{data.attacks.find(a=>a.id==='attack.greatsword.great-cleave').burst={...burst,...patch}}));

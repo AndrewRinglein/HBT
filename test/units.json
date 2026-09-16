@@ -502,7 +502,7 @@
       "chance": 100,
       "select": "self",
       "effect": {
-        "kind": "burst.scale",
+        "kind": "burstScale",
         "percent": 50
       }
     },
