@@ -1,0 +1,102 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ actual browser entry emits no catalog loader or gameplay modules (107.4319ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.527ms)
+✔ normal static generator still validates and exports identical data (219.4679ms)
+✔ normal static generator rejects malformed catalog before writing (96.9382ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 478.0599
+maps: 22 in the engine, all in both dumps
+passive runtime modules: ../engine/src/core/hex.ts, ../engine/src/core/geometry.ts, ../engine/src/core/types.ts, ../engine/src/core/props.ts, ../engine/src/content/disable.ts, ../engine/src/content/terrain.ts, ../engine/src/view/field.ts
+OK — 28 battles fold end to end · pure fold == pumped fold · icons 4 used · rows damaging=762 plain=4326
+✔ real Atlas binding validates exact initial map facts and frozen source identity (96.2939ms)
+✔ 2D fallback draws exact polygons and omits missing-floor tiles (2.1614ms)
+✔ cover miss label is copied from the engine event, with legacy miss unchanged (1.7465ms)
+✔ existing exact enemy tokens are attached instead of placeholders or borrowed families (1.3338ms)
+✔ every enemy actually fielded across the entire library has a non-placeholder token (48.363ms)
+✔ preserved pre-contact-fix Priory reaction explains attempted continuation and hit-stop without inventing movement (5.5752ms)
+✔ human selection does not spend or activate a hero before the engine begins it (0.2116ms)
+✔ Battle picker is persistent outside the scaled scene, labeled and keyboard operable (504.5656ms)
+✔ all choices repeatedly load actual battles; imported state clears library selection (1787.7543ms)
+✔ unbound battle mount honestly retains accurate 2D without inventing an Atlas linkage (239.9266ms)
+✔ battle page links to the separate Atlas without mounting a second map viewer (139.6344ms)
+✔ real compiled Atlas binding mounts with original events and display heights; invalid binding preserves current viewer (225.905ms)
+✔ native verifier import resolves host-owned Three only for Atlas without eager texture loads (67.9696ms)
+✔ packed catalog/listings/layouts exactly preserve live sources; no GLB skins or embedded catalog models (43.8138ms)
+✔ binding is explicit, validates active area/dimensions/identity and detaches snapshot plus catalog (56.4932ms)
+✔ resource URLs resolve actual catalog files and reject outside paths; file opening is actionable (0.3011ms)
+✔ authored light shadow camera uses reference full-map extent and updates its real projection (25.0639ms)
+✔ actual Three world-to-CSS camera preserves authored placement, active-area origin, clip depth and upward winding (14.9087ms)
+✔ partial texture failure disposes successful peers and can retry (0.4605ms)
+✔ shared assembly loads exact authored jobs; cancellation releases late source model and all textures (25.6155ms)
+✔ unbound layer never starts a renderer; late disposal/failure restores 2D and display heights without state mutation (4.9566ms)
+✔ real Three driver preserves world geometry/lights, draws only changes, and releases switched scene (10.4067ms)
+✔ inspection uses latest editable map dimensions and ignores stale index bounds; switching and late loads are isolated (68.4778ms)
+✔ inspection ignores a superseded pending map load and disposes each actual driver exactly once (20.2011ms)
+✔ actual inspector driver builds the selected journey area, preserves perspective controls and disposes camera resources (21.8653ms)
+✔ display heights lift corpses and each movement keyframe, then reset without changing folded hexes (0.5847ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3003.4888
+✔ actual drop uses unknown initial geometry and preserves every event (684.1813ms)
+✔ actual drop uses resized initial geometry and preserves every event (678.1661ms)
+✔ actual drop uses changed initial geometry and preserves every event (483.9799ms)
+✔ malformed dropped initial facts leave current viewer intact (464.6953ms)
+✔ component requires initial facts before mutating its host (166.6757ms)
+✔ component rejects a pushed map that differs from prepared initial facts (449.6466ms)
+✔ live component preserves early events, splits, ownership and seek/step on same-ID maps (878.4232ms)
+✔ actual proving exporter map envelope mounts without an invented mapId (455.9381ms)
+✔ preparation-only thin field has exact engine distances without a stale static table (459.1563ms)
+✔ custom-map timed pump drains with setup equipment/layers and matches seek (513.5457ms)
+✔ pushed initial facts ignore object key insertion order without dropping fields (478.2728ms)
+✔ pushed sparse extensions of terrain or footprint reject without consuming a batch (474.5675ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6273.1242
+built C:\Users\aring\Desktop\Heroes of Blight and Tragic\viewer\BATTLE-VIEWER.html · 15.3 MB · viewer bec2d86 · engine 1723e63 · sheets 1723e63 · fields 1723e63 · 28 battles
+fresh: Sunken Priory · The Broken Chapel — byte-identical events (1723e63 → 1723e63)
+fresh: The Angled Halls · The Oblique Chambers — byte-identical events (1723e63 → 1723e63)
+fresh: The Buried Pilgrimage · The Rootless Caves — byte-identical events (1723e63 → 1723e63)
+fresh: Horde 24×24 — the river — byte-identical events (1723e63 → 1723e63)
+fresh: Supper (seed 5) — byte-identical events (1723e63 → 1723e63)
+fresh: Embers — byte-identical events (1723e63 → 1723e63)
+fresh: Showcase — byte-identical events (1723e63 → 1723e63)
+fresh: Flanks — byte-identical events (1723e63 → 1723e63)
+fresh: Thicket — byte-identical events (1723e63 → 1723e63)
+fresh: Field — byte-identical events (1723e63 → 1723e63)
+fresh: Highlands — byte-identical events (1723e63 → 1723e63)
+fresh: Civilians — byte-identical events (1723e63 → 1723e63)
+fresh: Hunter Alone — byte-identical events (1723e63 → 1723e63)
+fresh: Prologue Bestiary — byte-identical events (1723e63 → 1723e63)
+fresh: Beasts — byte-identical events (1723e63 → 1723e63)
+fresh: Alpha Team — byte-identical events (1723e63 → 1723e63)
+fresh: Item Powers — byte-identical events (1723e63 → 1723e63)
+fresh: Arc Golem — byte-identical events (1723e63 → 1723e63)
+fresh: The Kiln — byte-identical events (1723e63 → 1723e63)
+fresh: Horrors of the Night — byte-identical events (1723e63 → 1723e63)
+fresh: Surrounded (seed 3) — byte-identical events (1723e63 → 1723e63)
+fresh: Assembled Party — byte-identical events (1723e63 → 1723e63)
+fresh: Dungeon 16×8 (heroes west) — byte-identical events (1723e63 → 1723e63)
+fresh: Duel 8×8 — byte-identical events (1723e63 → 1723e63)
+fresh: Rime — repeated affliction — byte-identical events (1723e63 → 1723e63)
+fresh: Ranged-only reaction — no melee attack — byte-identical events (1723e63 → 1723e63)
+fresh: Rime · repeated affliction (seed 33) — byte-identical events (1723e63 → 1723e63)
+fresh: Prologue Bestiary · lycanthropy (seed 7) — byte-identical events (1723e63 → 1723e63)
+GATE OK
