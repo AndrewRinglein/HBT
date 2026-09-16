@@ -1,0 +1,376 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+C:\Users\aring\AppData\Local\Temp\replay-test.html — seed 0 map.thicket · engine 4ff6e55 · 782 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-showcase.html — seed 0 test.map.showcase · engine 4ff6e55 · 1001 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-a.html — seed 0 test.map.showcase · engine 4ff6e55 · 1001 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-b.html — seed 0 test.map.showcase · engine 4ff6e55 · 1001 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-a.html — seed 0 map.thicket · engine 4ff6e55 · 782 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-b.html — seed 0 map.thicket · engine 4ff6e55 · 782 events · heroClear in 6 turns
+ ❯ test/battle-cursor.test.ts (47 tests | 21 failed) 669ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.alpha-team 51ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.badged 5ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.beasts 13ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.civilians 8ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.eve-24-b 11ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.farmers-grown 4ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.gash-variant 14ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.horrors 46ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.kiln 30ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.mirror-zombies 6ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.movement-bonuses 2ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-enemies 43ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-party 7ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.rime 40ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.supper 37ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.surge-flight-ladder 9ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.surrounded 10ms
+     × automatic and suspended drivers agree on events/state/RNG/result: showcase.waystation 33ms
+     × automatic and suspended drivers agree on events/state/RNG/result: progression-surge-0 26ms
+     × automatic and suspended drivers agree on events/state/RNG/result: progression-surge-1 21ms
+     × automatic and suspended drivers agree on events/state/RNG/result: progression-surge-2 21ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 21 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.alpha-team
+AssertionError: prior event contract, exact prop projection: expected '6e753dc5075f7e7db01590df84373f550e3b2…' to be '741d5ccde709ffe91c7cae82a8301ff31d19a…' // Object.is equality
+
+Expected: "741d5ccde709ffe91c7cae82a8301ff31d19a01df68a0ec11854bd8fac405ee4"
+Received: "6e753dc5075f7e7db01590df84373f550e3b236797871786f487019be2da46a9"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.badged
+AssertionError: prior event contract, exact prop projection: expected '3018dcd9697e7803433f2dbba24775791ce66…' to be 'dd59981639732dd573dcbc9e08ea5ed7fd152…' // Object.is equality
+
+Expected: "dd59981639732dd573dcbc9e08ea5ed7fd1522761fc7896c19c0328db6aa6023"
+Received: "3018dcd9697e7803433f2dbba24775791ce66d21069362568672b93dea12ecbf"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.beasts
+AssertionError: prior event contract, exact prop projection: expected '90cfe5f1e5403c031efbb7b59af4338a3b713…' to be '3ef019ba13d38e45695f1db3f2a985627086c…' // Object.is equality
+
+Expected: "3ef019ba13d38e45695f1db3f2a985627086c1f72e6a94a70ce0af077e7bb833"
+Received: "90cfe5f1e5403c031efbb7b59af4338a3b713fdb30b85646795ebf6aa034cc6b"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.civilians
+AssertionError: prior event contract, exact prop projection: expected '5b345d8f8b1ccbd72b685cffe32172b4743ca…' to be '691a87b29e269ecec6b81dcef6d9e68d8ce71…' // Object.is equality
+
+Expected: "691a87b29e269ecec6b81dcef6d9e68d8ce7193e2d8c526627c76bebbbafc612"
+Received: "5b345d8f8b1ccbd72b685cffe32172b4743caf7e1a7019ec8aab266f53a83a8c"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.eve-24-b
+AssertionError: prior event contract, exact prop projection: expected '1b0654cda083b1c1a772b69c4d3fc816fd880…' to be '85e68c1be333c68c0a012c15a1cf6415c2ae1…' // Object.is equality
+
+Expected: "85e68c1be333c68c0a012c15a1cf6415c2ae127836dc6ec6acd6b4b1c1f82ec8"
+Received: "1b0654cda083b1c1a772b69c4d3fc816fd8804823e1bbea41f6b3fe484c8ac69"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.farmers-grown
+AssertionError: prior event contract, exact prop projection: expected '7d6e69435e5b3d7f5abdf151148009b40df03…' to be 'af8a0adaf3c264afd6f6bccc10360cf6cf8e6…' // Object.is equality
+
+Expected: "af8a0adaf3c264afd6f6bccc10360cf6cf8e630158d07ca1fe08c6e05df6fae7"
+Received: "7d6e69435e5b3d7f5abdf151148009b40df034004e8c6f5568ef24d1dd1c58c9"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.gash-variant
+AssertionError: prior event contract, exact prop projection: expected '3f8467318ba4126da23ae95a1f1e47488c76e…' to be '0c6c9ec3b9bb7f6606e86ac9da6bb3bd3505d…' // Object.is equality
+
+Expected: "0c6c9ec3b9bb7f6606e86ac9da6bb3bd3505d645785f71711eab9369d7190b2e"
+Received: "3f8467318ba4126da23ae95a1f1e47488c76ec50403e659fcd86939e1117c3dd"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.horrors
+AssertionError: prior event contract, exact prop projection: expected '89067809dab96d1542dda67e705eda64247cb…' to be '4e8e77583b4be682a572efbb5a1409c096b30…' // Object.is equality
+
+Expected: "4e8e77583b4be682a572efbb5a1409c096b305363e1d09439a3fa256ae6a61b2"
+Received: "89067809dab96d1542dda67e705eda64247cb75bfc19af4b289a289e846ec85c"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.kiln
+AssertionError: prior event contract, exact prop projection: expected 'bf0f59c7ee769b5d20bcc274681974fa5e914…' to be 'c6c72313ccd10feed010f7ebcaa26289b9dad…' // Object.is equality
+
+Expected: "c6c72313ccd10feed010f7ebcaa26289b9dad4293cdd22f5137e02d34c2f52c1"
+Received: "bf0f59c7ee769b5d20bcc274681974fa5e914a45390b013f764d37b078e22b63"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.mirror-zombies
+AssertionError: prior event contract, exact prop projection: expected 'e4ab7895eea20a77bd52ad5ded13b4a52939e…' to be 'e0291d9b74ab0e445a83711029fc54dd821a5…' // Object.is equality
+
+Expected: "e0291d9b74ab0e445a83711029fc54dd821a53f71e250895e55024bb7f71e9fc"
+Received: "e4ab7895eea20a77bd52ad5ded13b4a52939ee6447938d752d65dfb5c1a34167"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.movement-bonuses
+AssertionError: prior event contract, exact prop projection: expected 'c5710296b2a1ad7ff76c8e12436f2d247e798…' to be '6d5d7d272834299fb911b2f4e2a4a59e8a9d4…' // Object.is equality
+
+Expected: "6d5d7d272834299fb911b2f4e2a4a59e8a9d4b8ee8a0566165ffb4844ea47dd9"
+Received: "c5710296b2a1ad7ff76c8e12436f2d247e79896fbc3be4390dfa160db7b016dc"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-enemies
+AssertionError: prior event contract, exact prop projection: expected '22c58e4c48206fef92792d6d34db52ca11900…' to be '8c5e170ccefab501e9ace5f7096a0dd5382aa…' // Object.is equality
+
+Expected: "8c5e170ccefab501e9ace5f7096a0dd5382aa31ff30a7b75f5208901794d373a"
+Received: "22c58e4c48206fef92792d6d34db52ca1190009f80ae1089e6a6c9c4607a9bef"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.prologue-party
+AssertionError: prior event contract, exact prop projection: expected '72e1cfbb16dd74d7a6926dfc31cb2d3c15024…' to be '75db6914cd04657dafc46f165e8ad1e803e74…' // Object.is equality
+
+Expected: "75db6914cd04657dafc46f165e8ad1e803e74f2d9caf7acaba0d58848cd0c1f3"
+Received: "72e1cfbb16dd74d7a6926dfc31cb2d3c1502424471fed331cfee700c2e6d5e7b"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.rime
+AssertionError: prior event contract, exact prop projection: expected '3f22f39775baddc63186087d1eefe9fb11dbc…' to be 'b8cdc02b23a530a4ea2c7c8fd0ff7521ddce6…' // Object.is equality
+
+Expected: "b8cdc02b23a530a4ea2c7c8fd0ff7521ddce68ebaaae469e1fbc427fc8d77eff"
+Received: "3f22f39775baddc63186087d1eefe9fb11dbce183cc42c01bd1170e3d2e5e1a4"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.supper
+AssertionError: prior event contract, exact prop projection: expected '16a2f34bb811a1c6cb2818907c633d0783b3c…' to be '8d0f6b31c56eadbdbdd4923fe3edf752a764b…' // Object.is equality
+
+Expected: "8d0f6b31c56eadbdbdd4923fe3edf752a764baeaabadb6ec5e40a69141fd18dd"
+Received: "16a2f34bb811a1c6cb2818907c633d0783b3ca6401cedc697269ca964a699198"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.surge-flight-ladder
+AssertionError: prior event contract, exact prop projection: expected '91636a432edc2227e628b7e6c446c94c8b47b…' to be '719f6c7a9a68ec112110778a7ee90c58139eb…' // Object.is equality
+
+Expected: "719f6c7a9a68ec112110778a7ee90c58139eb11574c32e42f4b45a8a548ebe74"
+Received: "91636a432edc2227e628b7e6c446c94c8b47b4d903b3b2402a93bca2a4d3b8da"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.surrounded
+AssertionError: prior event contract, exact prop projection: expected '6f7f3a4247a6372e0278dc4dd137373aaeb49…' to be '59d44411a3f5911450832234235872c9c25e7…' // Object.is equality
+
+Expected: "59d44411a3f5911450832234235872c9c25e78dd873764b4eca32a50c8cddf2f"
+Received: "6f7f3a4247a6372e0278dc4dd137373aaeb49f5d25485a2247b87156a80b9f44"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: showcase.waystation
+AssertionError: prior event contract, exact prop projection: expected '06504c690336c69b301e2540cb906a2607053…' to be '99a0dc23cdc5cb50c6d3b47ea1e1172472181…' // Object.is equality
+
+Expected: "99a0dc23cdc5cb50c6d3b47ea1e1172472181831507ca531d5323e81cbccc266"
+Received: "06504c690336c69b301e2540cb906a260705331c4417f80fc72dfdc278225f41"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-0
+AssertionError: prior event contract, exact prop projection: expected '89ade6c40aea20db493f4f78cdab0113e93e7…' to be 'de28756019ff5fcdab4fd2b16998ce48c3b19…' // Object.is equality
+
+Expected: "de28756019ff5fcdab4fd2b16998ce48c3b196f248b8da9b3bb953ffad7752ab"
+Received: "89ade6c40aea20db493f4f78cdab0113e93e7bef293c4ff3ae80cf469494a5ad"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-1
+AssertionError: prior event contract, exact prop projection: expected 'cc3e53bc39462ff26e31f92b3bf8c6944595b…' to be '4e96536e6ea2b712c57be16bb086844ea1bb9…' // Object.is equality
+
+Expected: "4e96536e6ea2b712c57be16bb086844ea1bb991d59c6cb8adca2d90530bc24f8"
+Received: "cc3e53bc39462ff26e31f92b3bf8c6944595bcef0de412e860bf1e37c88bd89d"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/21]⎯
+
+ FAIL  test/battle-cursor.test.ts > resumable battle cursor > automatic and suspended drivers agree on events/state/RNG/result: progression-surge-2
+AssertionError: prior event contract, exact prop projection: expected '0bcf6dfbaf5a493af91deeb89d5d9a8c3a9cb…' to be '90de500702f9dbab2202d530b74dc54ab5ea6…' // Object.is equality
+
+Expected: "90de500702f9dbab2202d530b74dc54ab5ea64d4b4767e8790f636e78e5565a9"
+Received: "0bcf6dfbaf5a493af91deeb89d5d9a8c3a9cbdcbc2ce457497379d65bceab42d"
+
+ ❯ test/battle-cursor.test.ts:128:89
+    126|         const projected = eventExpected || prior ? projectShorthand(ct…
+    127|         if (eventExpected) {
+    128|           expect(hash(projected.events), 'prior event contract, exact …
+       |                                                                                         ^
+    129|           expect(hash(projected.state), 'prior state, exact prop proje…
+    130|           expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/21]⎯
+
+
+ Test Files  1 failed | 130 passed (131)
+      Tests  21 failed | 1340 passed | 1 todo (1362)
+   Start at  01:16:59
+   Duration  40.89s (transform 2.58s, setup 0ms, import 17.83s, tests 128.51s, environment 9ms)
+

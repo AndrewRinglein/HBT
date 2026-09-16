@@ -12194,3 +12194,62 @@ index a739814..4fdb53a 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## fix.ai-melee-contact — LANDED `5009cf8` **NEEDS REVIEW**
+2026-09-16 08:23
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\CODEX.md:481
+  PASS  typecheck
+  PASS  full test suite — 1361 passed
+  PASS  gate 1 — the id appears in a real battle — unit.zombie: 2 log lines, 2 fired, 2 changed state · unit.skeleton: 41 log lines, 41 fired, 7 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/ai-melee-contact.test.ts, test/fixtures/battle-cursor-contact.json, test/fixtures/melee-contact-atlas.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 051db32e->1de1b93a, map.ridge a20d85e3->2a06e56e, map.flanks 8567e619->4a615eed, map.highlands f36910dd->cf4ff2fc, map.field c0c00e82->52e826df, map.thicket a303b4ef->1951e472, map.proving.open d1b83203->10d1e952, map.proving.ridge 1fc43944->040abc0f, map.proving.ford 60d9ce38->81b6d44e, map.proving.copse ece77f7b->0bda08ee, map.proving.ruin 4a149f2c->bec31076, map.courtyard 42b67605->56b73b1d, map.floodplain d1ad1779->0d53d361, test.map.embers b2a84548->54a88006, test.map.showcase 373e4169->ca3289f4, test.map.duel-8 155eebff->36a24b22, test.map.dungeon-16x8 616db0ad->48c8c295, test.map.horde-24 3ad4d6bc->fac05384, test.map.journey-20x10 624e9288->d272d358, test.map.authored-40x40 200469f6->58294676, test.map.high-prop-single 2ba01d22->03af3aab, test.map.high-prop-multi d05b8e51->1893d538
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.zombie,unit.skeleton — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 27fb1d5..7e278cb 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -14,4 +14,8 @@ const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.
+ const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
+ const eventGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-action-spent.json', import.meta.url), 'utf8'))
++// Intentional fix.ai-melee-contact migration: old fixtures remain immutable.
++// compare-contact-transition proves every changed first choice is a cheaper
++// equal-distance dumb-melee destination. Unchanged cases keep all prior checks.
++const contactGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-contact.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -106,7 +110,9 @@ describe('resumable battle cursor', () => {
+       // old files and check their exact hashes after removing ONLY that event
+       // and normalizing sequence counters; freeze full current events separately.
+-      const prior = historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      const eventExpected = eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      const contactExpected = contactGolden.cases.find((row: {id:string}) => row.id === fixture.id)
++      const migrated = contactExpected?.changed === true
++      const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -152,5 +158,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

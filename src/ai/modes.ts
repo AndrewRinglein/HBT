@@ -230,14 +230,15 @@ function dumbMelee(decision: Decision, u: Unit): void {
     // sidestep rather than standing refused.
     const walk = movePowerOf(decision, u, 'path')
     if (walk) {
-      const destinations = moveTargets(decision, u, walk)
-      let bestHex: HexId | null = null
-      let bestD = ctx.geo.distance(u.hex, target.hex)
-      for (const hex of destinations) {
-        const d = ctx.geo.distance(hex, target.hex)
-        if (d < bestD) { bestD = d; bestHex = hex }
-      }
-      if (bestHex !== null) act(decision, { actor: u.id, destination: bestHex, actionId: walk.id })
+      // Equal closeness does not justify walking farther around the target.
+      // Cost comes from the authoritative movement planner, including low edges;
+      // no opportunity-risk scoring is introduced here.
+      const distance = ctx.geo.distance(u.hex, target.hex)
+      const best = movementOptions(ctx, u.id, walk.id)
+        .filter(plan => ctx.geo.distance(plan.destination, target.hex) < distance)
+        .sort((a, b) => ctx.geo.distance(a.destination, target.hex) - ctx.geo.distance(b.destination, target.hex)
+          || a.pathCost - b.pathCost || a.path.length - b.path.length || a.destination - b.destination)[0]
+      if (best) act(decision, { actor: u.id, destination: best.destination, actionId: walk.id })
     } else {
       sidestepToward(decision, u, target.hex)
     }

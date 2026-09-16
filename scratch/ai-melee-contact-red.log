@@ -1,0 +1,366 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/ai-melee-contact.test.ts (10 tests | 9 failed) 2542ms
+     × open contact from hero 17 and enemy 21 stops at 18 307ms
+     × open contact from hero 21 and enemy 17 stops at 20 269ms
+     × unit.zombie uses the same least-cost contact policy 281ms
+     × unit.skeleton uses the same least-cost contact policy 268ms
+     × uses actual weighted movement cost before hex ID 269ms
+     × uses path length after equal cost, then hex ID after both tie 296ms
+     × exposes exact pure path cost, including explicit low edges, in both planners 5ms
+     × actual 'priory' continuation state chooses 67 rather than 66 484ms
+     × actual 'buried-pilgrimage' continuation state chooses 87 rather than 46 360ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > open contact from hero 17 and enemy 21 stops at 18
+AssertionError: expected "executeAction" to be called with arguments: [ { …(13) }, { actor: 1, …(2) } ]
+
+Received:
+
+  1st executeAction call:
+
+@@ -30927,8 +30927,8 @@
+      },
+    },
+    {
+      "actionId": "power.move",
+      "actor": 1,
+-     "destination": 18,
++     "destination": 9,
+    },
+  ]
+
+  2nd executeAction call:
+
+@@ -30925,10 +30925,10 @@
+          "typeId": "unit.zombie-hound",
+        },
+      },
+    },
+    {
+-     "actionId": "power.move",
++     "actionId": "attack.zombie.claw",
+      "actor": 1,
+-     "destination": 18,
++     "target": 0,
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ test/ai-melee-contact.test.ts:18:15
+     16|  it.each([[17,21,18],[21,17,20]])('open contact from hero %i and enemy…
+     17|   const ctx=setup(hero!,enemy!),spy=vi.spyOn(commands,'executeAction')…
+     18|   expect(spy).toHaveBeenCalledWith(ctx,{actor:1,destination:dest,actio…
+       |               ^
+     19|   expect(ctx.events.filter(e=>e.type==='moved'&&e.actor===1)).toHaveLe…
+     20|  })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > open contact from hero 21 and enemy 17 stops at 20
+AssertionError: expected "executeAction" to be called with arguments: [ { …(13) }, { actor: 1, …(2) } ]
+
+Received:
+
+  1st executeAction call:
+
+@@ -30927,8 +30927,8 @@
+      },
+    },
+    {
+      "actionId": "power.move",
+      "actor": 1,
+-     "destination": 20,
++     "destination": 12,
+    },
+  ]
+
+  2nd executeAction call:
+
+@@ -30925,10 +30925,10 @@
+          "typeId": "unit.zombie-hound",
+        },
+      },
+    },
+    {
+-     "actionId": "power.move",
++     "actionId": "attack.zombie.claw",
+      "actor": 1,
+-     "destination": 20,
++     "target": 0,
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ test/ai-melee-contact.test.ts:18:15
+     16|  it.each([[17,21,18],[21,17,20]])('open contact from hero %i and enemy…
+     17|   const ctx=setup(hero!,enemy!),spy=vi.spyOn(commands,'executeAction')…
+     18|   expect(spy).toHaveBeenCalledWith(ctx,{actor:1,destination:dest,actio…
+       |               ^
+     19|   expect(ctx.events.filter(e=>e.type==='moved'&&e.actor===1)).toHaveLe…
+     20|  })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > unit.zombie uses the same least-cost contact policy
+AssertionError: expected "executeAction" to be called with arguments: [ { …(13) }, { actor: 1, …(2) } ]
+
+Received:
+
+  1st executeAction call:
+
+@@ -30927,8 +30927,8 @@
+      },
+    },
+    {
+      "actionId": "power.move",
+      "actor": 1,
+-     "destination": 18,
++     "destination": 9,
+    },
+  ]
+
+  2nd executeAction call:
+
+@@ -30925,10 +30925,10 @@
+          "typeId": "unit.zombie-hound",
+        },
+      },
+    },
+    {
+-     "actionId": "power.move",
++     "actionId": "attack.zombie.claw",
+      "actor": 1,
+-     "destination": 18,
++     "target": 0,
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ test/ai-melee-contact.test.ts:22:150
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > unit.skeleton uses the same least-cost contact policy
+AssertionError: expected "executeAction" to be called with arguments: [ { …(13) }, { actor: 1, …(2) } ]
+
+Received:
+
+  1st executeAction call:
+
+@@ -30890,8 +30890,8 @@
+      },
+    },
+    {
+      "actionId": "power.move",
+      "actor": 1,
+-     "destination": 18,
++     "destination": 9,
+    },
+  ]
+
+  2nd executeAction call:
+
+@@ -30888,10 +30888,10 @@
+          "typeId": "unit.zombie-hound",
+        },
+      },
+    },
+    {
+-     "actionId": "power.move",
++     "actionId": "attack.skeleton.gut",
+      "actor": 1,
+-     "destination": 18,
++     "target": 0,
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ test/ai-melee-contact.test.ts:22:150
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > uses actual weighted movement cost before hex ID
+AssertionError: expected "executeAction" to be called with arguments: [ { …(13) }, { actor: 1, …(2) } ]
+
+Received:
+
+  1st executeAction call:
+
+@@ -30928,8 +30928,8 @@
+      },
+    },
+    {
+      "actionId": "power.move",
+      "actor": 1,
+-     "destination": 27,
++     "destination": 11,
+    },
+  ]
+
+  2nd executeAction call:
+
+@@ -30926,10 +30926,10 @@
+          "typeId": "unit.zombie-hound",
+        },
+      },
+    },
+    {
+-     "actionId": "power.move",
++     "actionId": "attack.zombie.claw",
+      "actor": 1,
+-     "destination": 27,
++     "target": 0,
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ test/ai-melee-contact.test.ts:25:155
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > uses path length after equal cost, then hex ID after both tie
+AssertionError: expected "executeAction" to be called with arguments: [ { …(13) }, { actor: 1, …(2) } ]
+
+Received:
+
+  1st executeAction call:
+
+@@ -30928,8 +30928,8 @@
+      },
+    },
+    {
+      "actionId": "power.move",
+      "actor": 1,
+-     "destination": 12,
++     "destination": 4,
+    },
+  ]
+
+  2nd executeAction call:
+
+@@ -30926,10 +30926,10 @@
+          "typeId": "unit.zombie-hound",
+        },
+      },
+    },
+    {
+-     "actionId": "power.move",
++     "actionId": "attack.zombie.claw",
+      "actor": 1,
+-     "destination": 12,
++     "target": 0,
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ test/ai-melee-contact.test.ts:28:155
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > exposes exact pure path cost, including explicit low edges, in both planners
+AssertionError: expected undefined to be 4 // Object.is equality
+
+- Expected:
+4
+
++ Received:
+undefined
+
+ ❯ test/ai-melee-contact.test.ts:36:146
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > actual 'priory' continuation state chooses 67 rather than 66
+AssertionError: expected "executeAction" to be called with arguments: [ { …(14) }, { actor: 4, …(2) } ]
+
+Received:
+
+  1st executeAction call:
+
+@@ -33979,8 +33979,8 @@
+      },
+    },
+    {
+      "actionId": "power.move",
+      "actor": 4,
+-     "destination": 67,
++     "destination": 66,
+    },
+  ]
+
+  2nd executeAction call:
+
+@@ -33977,10 +33977,10 @@
+          "typeId": "unit.zombie-hound",
+        },
+      },
+    },
+    {
+-     "actionId": "power.move",
++     "actionId": "attack.zombie.claw",
+      "actor": 4,
+-     "destination": 67,
++     "target": 0,
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ test/ai-melee-contact.test.ts:41:89
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  test/ai-melee-contact.test.ts > fix.ai-melee-contact > actual 'buried-pilgrimage' continuation state chooses 87 rather than 46
+AssertionError: expected "executeAction" to be called with arguments: [ { …(14) }, { actor: 6, …(2) } ]
+
+Received:
+
+  1st executeAction call:
+
+@@ -32936,8 +32936,8 @@
+      },
+    },
+    {
+      "actionId": "power.move",
+      "actor": 6,
+-     "destination": 87,
++     "destination": 46,
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ test/ai-melee-contact.test.ts:41:89
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 1 passed (10)
+   Start at  01:16:29
+   Duration  3.36s (transform 516ms, setup 0ms, import 659ms, tests 2.54s, environment 0ms)
+

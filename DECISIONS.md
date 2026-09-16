@@ -2459,3 +2459,13 @@ provisional and recorded in SWITCHES.md. Existing free sidestep/flight/forced-mo
 budget semantics remain. Snapshot rules advance to .14. Powers and old area
 attacks are unchanged; burst migration and destruction remain separate. Core
 imports no Atlas assets or renderer. See V2-LOW-COVER.md for verification status.
+
+
+## 2026-09-16 — dumb-melee contact correction (implementation)
+
+Authorized V2 follow-up fix.ai-melee-contact ranks equal-distance path destinations
+by actual movement cost, path length and hex ID. The first contact is retained
+when further walking adds no closeness. Existing AoO timing and intentional AI
+blindness to its risk are preserved. Snapshot rules advance to .15. The dedicated
+receipt records pre-change Atlas states, meaningful red probes and scoped control
+changes; this is an implementation decision, not a new user ruling.

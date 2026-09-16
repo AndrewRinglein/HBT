@@ -119,7 +119,7 @@ export function pathTo(reach: Reach, from: HexId, dest: HexId): HexId[] {
 
 export type StepHook = (ctx: Ctx, unitId: number, entered: HexId) => boolean
 
-export type MovementPlan = { kind: 'move'; actor: number; power: MoveDef; destination: number; path: number[]; slot: import('./types.js').ActionSlot }
+export type MovementPlan = { kind: 'move'; actor: number; power: MoveDef; destination: number; path: number[]; /** Movement points for this path; zero for non-path shapes. */ pathCost: number; slot: import('./types.js').ActionSlot }
 type MovementRejection = { ok: false; reason: string }
 const refused = (reason: string): MovementRejection => ({ ok: false, reason })
 
@@ -142,7 +142,7 @@ function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destina
   const reason = movementReason(ctx, u, power, slot)
   if (reason) return refused(reason)
   if (!Number.isSafeInteger(destination) || destination < 0 || destination >= ctx.state.terrain.length) return refused('malformed-destination')
-  const plan: MovementPlan = { kind: 'move', actor, power, destination, path: [], slot: resolveActionSlot(ctx, u, power, slot)! }
+  const plan: MovementPlan = { kind: 'move', actor, power, destination, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }
   if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return destination === u.hex ? plan : refused('unreachable-destination')
   if (isRooted(ctx, u)) return refused('actor-rooted')
   if (!passable(destination) || occupancy(ctx).has(destination)) return refused('unreachable-destination')
@@ -151,6 +151,7 @@ function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destina
   const reach = reachable(ctx, u, power.move.budgetMod)
   if (!reach.has(destination)) return refused('unreachable-destination')
   plan.path = pathTo(reach, u.hex, destination)
+  plan.pathCost = reach.get(destination)!.cost
   return plan
 }
 
@@ -158,13 +159,13 @@ function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destina
 export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?: import('./types.js').ActionSlot): MovementPlan[] {
   const u = ctx.state.units[actor], power = ctx.actions[actionId]
   if (!u || !power || !isMove(power) || movementReason(ctx, u, power, slot)) return []
-  if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return [{ kind: 'move', actor, power, destination: u.hex, path: [], slot: resolveActionSlot(ctx, u, power, slot)! }]
+  if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return [{ kind: 'move', actor, power, destination: u.hex, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }]
   if (isRooted(ctx, u)) return []
   if (power.move.shape === 'path') {
     const reach = reachable(ctx, u, power.move.budgetMod)
-    return [...reach.keys()].sort((a, b) => a - b).map(destination => ({ kind: 'move', actor, power, destination, path: pathTo(reach, u.hex, destination), slot: resolveActionSlot(ctx, u, power, slot)! }))
+    return [...reach.keys()].sort((a, b) => a - b).map(destination => ({ kind: 'move', actor, power, destination, path: pathTo(reach, u.hex, destination), pathCost: reach.get(destination)!.cost, slot: resolveActionSlot(ctx, u, power, slot)! }))
   }
-  if (power.move.shape === 'flight') return flightLandings(ctx, u, power).map(destination => ({ kind: 'move', actor, power, destination, path: [], slot: resolveActionSlot(ctx, u, power, slot)! }))
+  if (power.move.shape === 'flight') return flightLandings(ctx, u, power).map(destination => ({ kind: 'move', actor, power, destination, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }))
   const out: MovementPlan[] = []
   const passable = passableHexes(ctx)
   for (let destination = 0; destination < ctx.state.terrain.length; destination++) {

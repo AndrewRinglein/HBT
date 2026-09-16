@@ -622,3 +622,14 @@ reverse entries and a 64 MiB shared LRU budget. Physical-overlap candidate cells
 bound pair work without approximating shapes. Reused reverse lists count toward
 the same complete-table work limit as cold setup. Snapshots contain only plain
 facts; rules version .14 invalidates prior behavior snapshots.
+
+
+## 2026-09-16 — dumb-melee contact ties
+
+For equal remaining distance to the nearest target, dumb melee prefers the lower
+actual path movement-point cost, then fewer path steps, then lower destination
+hex ID. Both cost and path come from the engine movement planner; low-edge and
+weighted-ground costs participate. This is a provisional deterministic policy
+for the authorized contact correction, not opportunity-risk scoring. It does
+not change target choice, Dijkstra routing ties, other modes, free sidesteps,
+or reactions: moving again while already adjacent can still provoke normally.
