@@ -1634,6 +1634,7 @@ function moveBursts(rows, destination) {
   for (const [id, row] of Object.entries(rows)) {
     if (Object.hasOwn(row, 'area')) throw Error('Legacy area field is retired: ' + id);
     if (!row.burst) continue;
+    for (const field of ['effects','target','effect','heal','guard','secondaryDamage','armorPenetration']) if (Object.hasOwn(row, field)) throw Error(`Burst '${id}' mixes '${field}' with its exclusive payload`);
     const {name, staminaCost, cooldown = 0, warmup, uses, free, slot} = row;
     const range = row.reach ?? row.range;
     if (!Number.isSafeInteger(range) || range < 0 || range > 100 || row.burst.shape.kind === 'arc' && range !== 1) throw Error('Invalid burst range: ' + id);

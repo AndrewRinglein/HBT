@@ -41,3 +41,13 @@ for(const patch of [{side:'foe'},{shape:{kind:'blast1'}},{shape:{kind:'radius',r
  const run=candidate(edit=>edit('gen/weapons.json',data=>{data.attacks.find(a=>a.id==='attack.greatsword.great-cleave').burst={...burst,...patch}}));
  assert.notEqual(run.status,0);assert.match(run.stdout+run.stderr,/burst/i);assert.equal(run.pack,null);
 });
+
+for(const patch of [{effects:[{kind:'heal',amount:3}],target:{select:'self',side:'any'}},{secondaryDamage:[{id:'extra',when:'hit',amount:2,damageType:'fire'}]},{armorPenetration:2}])test('compiler refuses mixed burst metadata instead of dropping it '+JSON.stringify(patch),()=>{
+ const run=candidate(edit=>edit('test/abilities.json',rows=>Object.assign(rows.find(a=>a.id==='power.test-burst-flame'),patch)));
+ assert.notEqual(run.status,0);assert.match(run.stdout+run.stderr,/burst|unknown field/i);assert.equal(run.pack,null);
+});
+
+for(const patch of [{secondaryDamage:[{id:'extra',when:'hit',amount:2,damageType:'fire'}]},{armorPenetration:2}])test('weapon burst refuses attack-only packet metadata '+JSON.stringify(patch),()=>{
+ const run=candidate(edit=>edit('gen/weapons.json',data=>Object.assign(data.attacks.find(a=>a.id==='attack.greatsword.great-cleave'),patch)));
+ assert.notEqual(run.status,0);assert.match(run.stdout+run.stderr,/burst/i);assert.equal(run.pack,null);
+});
