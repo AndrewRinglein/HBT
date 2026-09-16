@@ -63,3 +63,29 @@ describe('ISC-003 — the engine is reached through one door and never changed',
     expect(resolveEngagement(SPEC).result).toEqual(result)
   })
 })
+
+
+// V2 Atlas fielding consumes the root compiler's plain registry, then uses the
+// same engine setup as every other Kingdom engagement. No renderer owns rules.
+import { createBattle, fieldedDef } from '../src/engine.js'
+import { campaignOf } from '../src/core/campaign.js'
+import { makeCtx } from '../src/core/mutate.js'
+import { beginCombatPrep, performAdvancePrep, performDeploy, listDeployable } from '../src/core/prep.js'
+import { viewBattle } from '../src/view/battle.js'
+const atlasRegistry = JSON.parse(readFileSync('../assets/battle-atlas/generated-combat/registry.json','utf8'))
+for (const entry of atlasRegistry.entries) it(`Atlas seam ${entry.id} preserves six heroes, fifteen enemies, kits/progress and geometry`,()=>{
+ const heroes=Array(6).fill('hero.base.ranger-aggressive'),enemies=Array(15).fill('unit.zombie'),heroItems=heroes.map(()=>['item.shortbow']),heroProgress=heroes.map(()=>({level:2,specialtyId:'specialty.beastward'}));
+ const spec:EngagementSpec={id:'test.atlas.kingdom',mapId:entry.id,seed:19,heroes,enemies,heroItems,heroProgress};
+ const opts=battleOptionsOf(spec);expect(opts.map).toEqual(entry.setup.map);expect(opts.heroes).toEqual(heroes);expect(opts.enemies).toEqual(enemies);expect(opts.heroItems).toEqual(heroItems);expect(opts.heroProgress).toEqual(heroProgress);expect(opts.replicate).toBe(19);
+ expect(opts.heroHexes).toEqual(entry.deploymentSlots.heroes.slice(0,6));expect(opts.enemyHexes).toEqual(entry.deploymentSlots.enemies.slice(0,15));expect(new Set([...opts.heroHexes!,...opts.enemyHexes!]).size).toBe(21);
+ const ctx=createBattle(opts);expect(ctx.state.props).toEqual(entry.setup.map.props);expect(ctx.state.floor).toEqual(entry.setup.map.floor);
+ const unit=ctx.state.units.find(u=>u.side==='hero')!;const expected=fieldedDef(heroes[0]!,heroItems[0],heroProgress[0]);expect(unit.maxHp).toBe(expected.maxHp);expect(unit.actions).toContain('attack.shortbow.short-shot');
+ const explicit=battleOptionsOf({...spec,heroHexes:[...opts.heroHexes!].reverse(),enemyHexes:[...opts.enemyHexes!].reverse()});expect(explicit.heroHexes).toEqual([...opts.heroHexes!].reverse());expect(()=>createBattle(explicit)).not.toThrow();
+ expect(()=>battleOptionsOf({...spec,heroes:Array(entry.deploymentSlots.heroes.length+1).fill(heroes[0])})).toThrow(/capacity/);
+ (opts.map as any).floor[0]=!entry.setup.map.floor[0];expect((battleOptionsOf(spec).map as any).floor).toEqual(entry.setup.map.floor);
+})
+it('normal fixture battle exposes its complete engine initial facts and frozen Atlas scene',()=>{
+ const ctx=makeCtx(campaignOf(readFileSync('fixtures/slice-prep.json','utf8')));beginCombatPrep(ctx,'test');performAdvancePrep(ctx,'test');performAdvancePrep(ctx,'test');for(const id of listDeployable(ctx.campaign).slice(0,4))performDeploy(ctx,id,'test');performAdvancePrep(ctx,'test');performAdvancePrep(ctx,'test');
+ const v=viewBattle(ctx.campaign) as any;expect(v.atlasScene).toBeTruthy();expect(v.initialEvents.length).toBeGreaterThan(v.units.length);const fact=v.initialEvents.find((e:any)=>e.type==='map.loaded');expect(fact.mapId).toBe(v.viewerSeed.mapId);expect(v.props).toEqual(fact.props);expect(v.floor).toEqual(fact.floor);expect(v.units.map((u:any)=>u.hex)).toEqual(v.initialEvents.filter((e:any)=>e.type==='unit.enter').map((e:any)=>e.hex));
+ const canonical=Object.fromEntries(['mapId','width','height','deploy','terrain','props','floor'].map(k=>[k,fact[k]]));expect(canonical).toEqual(v.atlasScene.initialMapFact);expect(v.initialEvents.some((e:any)=>e.type==='activation.begin')).toBe(false);
+})

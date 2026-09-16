@@ -1,0 +1,21 @@
+
+gate: v2.atlas-battle-view   [check]   engine @ 4ff6e55
+
+  PASS  dependencies landed
+  WARN  not already decided  — 1 candidate ruling(s) — READ BEFORE ASKING: ..\THREE-PACKAGES-PLAN.md:211
+  PASS  typecheck
+  PASS  full test suite  — 223 passed
+  PASS  gate 1 — every claimed criterion holds  — ISC-003 — a battle runs from campaign facts through the unmodified engine
+  PASS  brought its own tests  — test/isc-003.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red  — ISC-003: red on record (2026-09-16 05:29 @ b96e971, probe 871df7fa93a5)
+  PASS  nothing regresses — every P-tier probe  — 61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 61 of 68 closed · 61 probed · 1 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code  — shape 'adapter' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean  — engine @ 4ff6e55, clean
+  PASS  one door to the engine
+
+All checks pass. Run with --land to commit.
+

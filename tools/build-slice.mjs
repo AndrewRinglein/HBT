@@ -8,6 +8,7 @@
 //
 // Generated output. Never hand-edit SLICE.html — change src/ui and rebuild.
 
+import {battleViewAssets,scopeBattleCSS} from './battle-view-assets.mjs'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { execSync } from 'node:child_process'
@@ -15,6 +16,7 @@ import { execSync } from 'node:child_process'
 const require = createRequire(import.meta.url)
 const esbuild = require('../../engine/node_modules/esbuild')
 
+const battleAssets=battleViewAssets()
 const fixture = readFileSync('fixtures/slice-prep.json', 'utf8')
 
 // The kingdom art — generated/art/ (tools/prep-art.py), every file inlined as a
@@ -34,6 +36,7 @@ const sha = (() => { try { return execSync('git rev-parse --short HEAD', { encod
 
 const { outputFiles, warnings } = esbuild.buildSync({
   entryPoints: ['src/ui/slice.ts'],
+  nodePaths:['../viewer/node_modules'],
   bundle: true,
   format: 'iife',
   target: ['es2022'],
@@ -41,12 +44,14 @@ const { outputFiles, warnings } = esbuild.buildSync({
   write: false,
   minify: false,
   legalComments: 'none',
-  define: { __FIXTURE_JSON__: JSON.stringify(fixture), __BUILD_SHA__: JSON.stringify(sha), __ART__: JSON.stringify(art) },
+  define: { __FIXTURE_JSON__: JSON.stringify(fixture), __BUILD_SHA__: JSON.stringify(sha), __ART__: JSON.stringify(art), __BATTLE_VIEW_DATA__:JSON.stringify(battleAssets) },
   logLevel: 'warning',
 })
 for (const w of warnings) console.warn(w.text)
-const js = outputFiles[0].text.replace(/<\/script/g, '<\\/script')
-const css = readFileSync('src/ui/slice.css', 'utf8') + '\n' + readFileSync('src/ui/after.css', 'utf8')
+const license=readFileSync('../viewer/node_modules/three/LICENSE','utf8')
+const js = ('/*! Three.js\n'+license+'\n*/\n'+outputFiles[0].text).replace(/<\/script/g, '<\\/script')
+const viewerCSS=readFileSync('../viewer/src/styles.css','utf8').replace(/url\(["']?art\/([^"')]+)["']?\)/g,(_,file)=>{if(!battleAssets.assets[file])throw Error('Missing viewer CSS art '+file);return `url("${battleAssets.assets[file]}")`})
+const css = readFileSync('src/ui/slice.css', 'utf8') + '\n' + readFileSync('src/ui/after.css', 'utf8')+'\n'+scopeBattleCSS(viewerCSS)
 
 const html = `<!doctype html>
 <html lang="en">

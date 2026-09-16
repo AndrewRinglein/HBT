@@ -19,6 +19,7 @@
 
 import { createBattle, runBattle, LEVELS } from '../engine.js'
 import type { BattleOptions, Event, Outcome, Side, HeroProgress } from '../engine.js'
+import { atlasFieldingOf } from '../content/atlas.js'
 import { itemOf } from '../content/items.js'
 import { fieldedModsOfRows, type FieldedMods } from './sets.js'
 import { fieldedItemsOf } from './loadout.js'
@@ -149,10 +150,12 @@ export function progressOf(h: { classes?: readonly string[]; level?: number; spe
 
 /** The joint §4.1 names: a spec becomes the engine's own options, nothing more. */
 export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
+  const authored = atlasFieldingOf(spec.mapId)
+  if (authored && ((!spec.heroHexes && spec.heroes.length > authored.deploymentSlots.heroes.length) || (!spec.enemyHexes && spec.enemies.length > authored.deploymentSlots.enemies.length))) throw new Error(`${spec.id}: authored deployment capacity exceeded`)
   return {
     scenarioId: spec.id,
     replicate: spec.seed,
-    mapId: spec.mapId,
+    ...(authored ? { map: authored.setup.map, heroHexes: authored.deploymentSlots.heroes.slice(0,spec.heroes.length), enemyHexes: authored.deploymentSlots.enemies.slice(0,spec.enemies.length) } : { mapId: spec.mapId }),
     heroes: spec.heroes,
     enemies: spec.enemies,
     enemyCount: spec.enemies.length,

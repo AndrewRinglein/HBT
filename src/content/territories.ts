@@ -42,23 +42,23 @@ const t = (id: string, name: string, mapId: string, hex: [number, number], extra
 })
 
 const RAW_TERRITORIES: readonly TerritoryRow[] = [
-  t('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'map.open', [-1, 0], {
+  t('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'showcase.atlas-priory', [-1, 0], {
     owned: true, kingdom: true, claimedOnce: true, node: 'field',
     buildings: [{ id: 'building.chapel', level: 1, damaged: false, nodes: ['standing'] }, { id: 'building.waystation', level: 0, damaged: true, nodes: [] }],
     adjacent: ['territory.ruined-kingdom.ridge', 'territory.ruined-kingdom.highlands'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
     lostDefenceCosts: { 'currency.supplies': SWITCHES.sanctuaryLostDefenceSupplies },
   }),
-  t('territory.ruined-kingdom.ridge', 'The Ridge', 'map.ridge', [-1, -1], {
+  t('territory.ruined-kingdom.ridge', 'The Ridge', 'showcase.atlas-buried-pilgrimage', [-1, -1], {
     buildings: [{ id: 'building.forge', level: 0, damaged: true, nodes: [] }], node: 'mine',
     adjacent: ['territory.ruined-kingdom.sanctuary', 'territory.ruined-kingdom.thicket'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie-hound', 'unit.skeletal-archer'],
   }),
-  t('territory.ruined-kingdom.highlands', 'The Highlands', 'map.highlands', [0, -1], {
+  t('territory.ruined-kingdom.highlands', 'The Highlands', 'showcase.atlas-angled-halls', [0, -1], {
     adjacent: ['territory.ruined-kingdom.sanctuary'], node: 'abbey',
     enemies: ['unit.imp', 'unit.imp', 'unit.fire-imp', 'unit.poison-imp'],
   }),
-  t('territory.ruined-kingdom.thicket', 'The Thicket', 'map.thicket', [-1, -2], {
+  t('territory.ruined-kingdom.thicket', 'The Thicket', 'showcase.atlas-buried-pilgrimage', [-1, -2], {
     adjacent: ['territory.ruined-kingdom.ridge'], node: 'wellspring',
     enemies: ['unit.bloodhound', 'unit.bloodhound', 'unit.hellhound', 'unit.zombie-hound'],
   }),

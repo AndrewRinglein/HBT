@@ -27,11 +27,11 @@
  },
  "003": {
   "red": {
-   "at": "2026-09-02 03:40",
-   "sha": "1446df6",
-   "hash": "e8da485534d8",
+   "at": "2026-09-16 05:29",
+   "sha": "b96e971",
+   "hash": "871df7fa93a5",
    "how": "feature absent",
-   "tail": "       | ^ |      10| |      11| const SPEC: EngagementSpec = {"
+   "tail": " ❯ createBattle ../engine/src/core/setup.ts:182:50 |  ❯ viewBattle src/view/battle.ts:57:15 |  ❯ test/isc-003.test.ts:89:10"
   },
   "closed": {
    "at": "2026-09-03 20:16",

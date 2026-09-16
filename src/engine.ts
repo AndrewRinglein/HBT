@@ -14,7 +14,7 @@ export { createBattle } from '../../engine/src/core/setup.js'
 export type { BattleOptions } from '../../engine/src/core/setup.js'
 export { runBattle } from '../../engine/src/core/battle.js'
 export type { BattleResult } from '../../engine/src/core/battle.js'
-export type { Ctx, Event, Outcome, Side, ScenarioDef, HeroProgress, HighProp } from '../../engine/src/core/types.js'
+export type { Ctx, Event, Outcome, Side, ScenarioDef, HeroProgress, HighProp, Prop, AuthoredMap } from '../../engine/src/core/types.js'
 export { SCENARIOS, scenarioOptions, scenarioDef } from '../../engine/src/content/scenarios.js'
 // Widened 2026-09-01 for the battle screen (M3): the board's geometry and
 // terrain, and the unit rows' display names. Read-only content and geometry —
@@ -44,6 +44,7 @@ export type { UnitDef } from '../../engine/src/core/types.js'
  */
 export const ENGINE_EVENTS = [
   'battle.begin', 'battle.end',
+  'activation.begin', // t=0 shared-viewer seam probe reads the established engine event
   'map.loaded',
   'unit.enter',
   // widened 2026-09-03 (seam.loadout, G9): what the engine put on each fielded hero, per item

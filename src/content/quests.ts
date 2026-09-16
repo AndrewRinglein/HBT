@@ -25,7 +25,7 @@ const RAW_QUESTS: readonly QuestRow[] = [
   { id: 'quest.recover-supplies', name: 'Recover Supplies', does: 'Choose a hero lead and up to two escorts. The lead gains 5 quest XP; bring home 10 Supplies. Combat risk: 5%, or none with two escorts.', weeks: 1,
     staffing: { kind: 'hero-led', maxEscorts: 2 }, reward: { 'currency.supplies': 10 }, odds: 100,
     xp: { amount: 5, recipient: 'lead' }, rescueCivilian: false,
-    encounter: { pct: 5, safeEscorts: 2, kind: 'engagement.quest', mapId: 'map.open', enemies: ['unit.zombie', 'unit.zombie'] } },
+    encounter: { pct: 5, safeEscorts: 2, kind: 'engagement.quest', mapId: 'showcase.atlas-priory', enemies: ['unit.zombie', 'unit.zombie'] } },
   { id: 'quest.escort', name: 'Escort the survivors', does: 'Walk a band of survivors to the Sanctuary. Two Weeks on the road.', weeks: 2,
     staffing: { kind: 'people', min: 1, max: null }, reward: { 'currency.faith': SWITCHES.questFaith }, odds: SWITCHES.questOdds,
     xp: { amount: 0, recipient: 'party' }, rescueCivilian: false, encounter: null },

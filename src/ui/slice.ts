@@ -18,6 +18,7 @@ import {
   beginCombatPrep, viewCombatPrep, performAdvancePrep, performCouncil,
   canDeploy, canUndeploy, performDeploy, performUndeploy,
 } from '../core/prep.js'
+import {createBattleSurface} from './battle-surface.js'
 import { viewBattle, type BattleView } from '../view/battle.js'
 import { makeBlankResult, withUnitFate, validateResult } from '../core/result.js'
 import { resolveReckoning, applyBattleResult, performExitBattle, resolveDifficulty, type Reckoning } from '../core/reckoning.js'
@@ -56,6 +57,9 @@ import { REALMS } from '../content/realms.js'
 
 declare const __FIXTURE_JSON__: string
 declare const __BUILD_SHA__: string
+declare const __BATTLE_VIEW_DATA__: Record<string, unknown>
+const battleSurface=createBattleSurface(__BATTLE_VIEW_DATA__)
+let shownBattle:BattleView|null=null
 
 
 type App = {
@@ -138,6 +142,8 @@ function ceremonyKey(c: CampaignState): string | null {
 function render(): void {
   const root = document.getElementById('app')!
   const c = app.ctx?.campaign ?? null
+  shownBattle=null
+  if(!c || app.roster || app.levelHero || c.cursor.step!=='battle' || c.cursor.battle?.resultSet)battleSurface.dispose()
   root.className = c ? '' : 'front'
   const key = c ? ceremonyKey(c) : null
   if (app.mounted && app.mounted.key === key) { const st = root.querySelector?.('.status'); if (st) { st.textContent = app.status; st.className = 'status' + (app.error ? ' err' : '') } return }
@@ -167,6 +173,7 @@ function render(): void {
     ${app.roster ? rosterScreen(c) : screen(c)}
   `
   wire(root)
+  if(shownBattle){const slot=root.querySelector<HTMLElement>('[data-battle-surface]');if(!slot)throw Error('Missing battle surface host');battleSurface.mount(slot,shownBattle)}
 }
 
 /** The copied Hell-TCG screens (src/ui/after.ts): the recap after the writer, the rewards (and the level-up step, which is the rewards page again with its LEVEL UP buttons), the level-up sheet. */
@@ -363,47 +370,8 @@ function heroCard(c: CampaignState, h: Hero, on: boolean): string {
 }
 
 // ── the battle screen ───────────────────────────────────────────────────────
-const TERRAIN_FILL: [RegExp, string][] = [
-  [/water|river|lake/, '#2b4a63'], [/forest|thicket|wood/, '#2f4a2c'], [/hill|high/, '#5a4a36'],
-  [/rock|rubble|ruin/, '#4a4340'], [/wall|impass|cliff/, '#1a1614'], [/ember|fire|burn/, '#6a3018'],
-  [/mud|swamp|bog/, '#3b3524'], [/road|path/, '#4e4636'], [/open|grass|field|plain|ground/, '#2b2f22'],
-]
-const fillOf = (id: string) => TERRAIN_FILL.find(([re]) => re.test(id))?.[1] ?? '#262220'
-
-function boardSvg(v: BattleView): string {
-  const S = 0.28, COL = 128 * S, ROW = 96 * S, ODD = 64 * S, W = 128 * S, H = 132 * S
-  const width = v.width * COL + ODD + 8, height = (v.height - 1) * ROW + H + 8
-  const hexPath = (cx: number, cy: number) => {
-    const pts: string[] = []
-    for (let i = 0; i < 6; i++) { const a = Math.PI / 180 * (60 * i - 30); pts.push(`${(cx + (W / 2) * Math.cos(a)).toFixed(1)},${(cy + (H / 2) * Math.sin(a)).toFixed(1)}`) }
-    return pts.join(' ')
-  }
-  const centre = (col: number, row: number) => ({ cx: 4 + COL / 2 + col * COL + (row % 2) * ODD, cy: 4 + H / 2 + row * ROW })
-  let hexes = ''
-  for (let row = 0; row < v.height; row++) for (let col = 0; col < v.width; col++) {
-    const id = row * v.width + col
-    const { cx, cy } = centre(col, row)
-    hexes += `<polygon points="${hexPath(cx, cy)}" fill="${fillOf(v.terrain[id] ?? '')}" stroke="#0c0a09" stroke-width="1"><title>${esc(v.terrain[id] ?? '')} · hex ${id} (${col},${row})</title></polygon>`
-  }
-  let props = ''
-  for (const p of v.props) for (const hex of p.footprint.hexes) {
-    const { cx, cy } = centre(hex % v.width, Math.floor(hex / v.width))
-    props += `<g data-prop="${esc(p.id)}" data-hex="${hex}"><polygon points="${cx - W * .3},${cy + H * .2} ${cx},${cy - H * .3} ${cx + W * .3},${cy + H * .2}" fill="#75716b" stroke="#171513" stroke-width="1.5"/><title>${esc(p.id)} · high · material ${p.material}</title></g>`
-  }
-  let units = ''
-  for (const u of v.units) {
-    const { cx, cy } = centre(u.col, u.row)
-    const fill = u.side === 'hero' ? '#c9a227' : '#c05a4e'
-    const label = u.side === 'hero' ? 'H' + (u.index + 1) : 'E' + (u.index + 1)
-    units += `<g><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(W * 0.34).toFixed(1)}" fill="${fill}" stroke="#000" stroke-width="1.2"/><text x="${cx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#14110f">${label}</text><title>${esc(u.name)} · ${esc(u.typeId)} · hp ${u.hp}/${u.maxHp} · hex ${u.hex}${u.equipped.length ? ' · carries ' + esc(u.equipped.map((i) => i.replace('item.', '')).join(', ')) : ''}${u.attacks.length ? ' · attacks ' + esc(u.attacks.map((a) => a.replace('attack.', '')).join(', ')) : ''}</title></g>`
-  }
-  const kinds = [...new Set(v.terrain)].sort()
-  return `<div class="board"><svg viewBox="0 0 ${width.toFixed(0)} ${height.toFixed(0)}" width="${width.toFixed(0)}" height="${height.toFixed(0)}">${hexes}${props}${units}</svg></div>
-    <div class="legend">${kinds.map((k) => `<span><i style="background:${fillOf(k)}"></i>${esc(k)}</span>`).join('')}<span><i style="background:#c9a227"></i>hero</span><span><i style="background:#c05a4e"></i>enemy</span></div>`
-}
-
 function battleScreen(c: CampaignState): string {
-  const v = viewBattle(c)
+  const v = shownBattle = viewBattle(c)
   const heroes = v.units.filter((u) => u.side === 'hero'), enemies = v.units.filter((u) => u.side === 'enemy')
   if (!app.draft || app.draft.id !== v.engagementId) {
     app.draft = makeBlankResult(v.engagementId, 'heroClear', heroes.map((u) => ({ typeId: u.typeId, name: u.name })), enemies.map((u) => ({ typeId: u.typeId, name: u.name })))
@@ -421,9 +389,9 @@ function battleScreen(c: CampaignState): string {
       <td><input type="number" min="0" step="1" value="${u.kills}" data-fate="kills" data-side="${u.side}" data-index="${u.index}"></td>
     </tr>`
   }
-  return `<h2>The battle — ${esc(v.mapId)}</h2>
+  return `<h2>The battle — ${esc(v.mapName)}</h2>
     <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${heroes.length} heroes, ${enemies.length} enemies, placed by the engine's own setup. Nothing moves: combat is not played in the slice.</p>
-    ${boardSvg(v)}
+    <div data-battle-surface></div>
     <div class="card"><h3>Fielded as equipped</h3><table><tr><th>hero</th><th>carries</th><th>attacks</th></tr>${heroes.map((u) => `<tr><td><span class="tag hero">H${u.index + 1}</span> ${esc(u.name)}</td><td class="meta">${esc(u.equipped.map((i) => itemOf(i).name).join(', ') || '—')}</td><td class="meta">${esc(u.attacks.map((a) => a.replace('attack.', '')).join(', ') || '—')}${u.leftBehind.length ? ` <span class="lost">left behind: ${esc(u.leftBehind.map((i) => itemOf(i).name).join(', '))} — a spare weapon the engine cannot yet take (seam.spare-weapons)</span>` : ''}</td></tr>`).join('')}</table></div>
     <h2>Set what happened</h2>
     <div class="card">
@@ -596,6 +564,7 @@ function wire(root: HTMLElement): void {
 
 // the headless smoke (tools/smoke-slice.mjs) has no DOM for a ceremony to run on; it drives the same performX calls the mounts do
 ;(globalThis as { __sliceDrive?: unknown }).__sliceDrive = {
+  battleViewer: () => battleSurface.viewer,
   takeReward: (id: string) => act(() => performTakeReward(app.ctx!, id, 'slice')),
   levelUp: (id: string, choice: { specialtyId?: string; pick?: number }) => act(() => performLevelUp(app.ctx!, id, 'slice', choice)),
   offers: () => listRewardOffers(app.ctx!.campaign).map((o) => o.id),

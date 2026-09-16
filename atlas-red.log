@@ -1,0 +1,4 @@
+../THIN-SLICE-IMPLEMENTATION.md already in sync: 46 of 50 closed · 46 probed · 1 accepted
+../GEAR-IMPLEMENTATION.md already in sync: 15 of 18 closed · 15 probed · 0 accepted
+ISC-003: RED recorded —  ❯ createBattle ../engine/src/core/setup.ts:182:50 |  ❯ viewBattle src/view/battle.ts:57:15 |  ❯ test/isc-003.test.ts:89:10
+  tier is now P. Implement, then land the item that claims it.

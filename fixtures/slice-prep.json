@@ -12,7 +12,7 @@
    "id": "engagement.conquer.ridge.week-3",
    "kind": "engagement.conquer",
    "territoryId": "territory.ruined-kingdom.ridge",
-   "mapId": "map.ridge",
+   "mapId": "showcase.atlas-buried-pilgrimage",
    "enemies": [
     "unit.zombie",
     "unit.zombie",
@@ -172,7 +172,7 @@
   "territory.ruined-kingdom.highlands": {
    "id": "territory.ruined-kingdom.highlands",
    "name": "The Highlands",
-   "mapId": "map.highlands",
+   "mapId": "showcase.atlas-angled-halls",
    "owned": false,
    "kingdom": false,
    "claimedOnce": false,
@@ -191,7 +191,7 @@
   "territory.ruined-kingdom.ridge": {
    "id": "territory.ruined-kingdom.ridge",
    "name": "The Ridge",
-   "mapId": "map.ridge",
+   "mapId": "showcase.atlas-buried-pilgrimage",
    "owned": false,
    "kingdom": false,
    "claimedOnce": false,
@@ -218,7 +218,7 @@
   "territory.ruined-kingdom.sanctuary": {
    "id": "territory.ruined-kingdom.sanctuary",
    "name": "Sanctuary",
-   "mapId": "map.open",
+   "mapId": "showcase.atlas-priory",
    "owned": true,
    "kingdom": true,
    "claimedOnce": true,
@@ -256,7 +256,7 @@
   "territory.ruined-kingdom.thicket": {
    "id": "territory.ruined-kingdom.thicket",
    "name": "The Thicket",
-   "mapId": "map.thicket",
+   "mapId": "showcase.atlas-buried-pilgrimage",
    "owned": false,
    "kingdom": false,
    "claimedOnce": false,

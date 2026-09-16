@@ -8,10 +8,11 @@
 // fielding the engine would fight, which is the property that lets the engine
 // be invoked later without the screen changing.
 
+import { atlasFieldingOf, type AtlasBinding } from '../content/atlas.js'
 import type { CampaignState } from '../core/campaign.js'
 import { engagementOf } from '../core/mutate.js'
 import { makeBattleState, battleOptionsOf } from '../core/seam.js'
-import { createBattle, terrainIdOf, type HighProp } from '../engine.js'
+import { createBattle, terrainIdOf, type Prop, type Event } from '../engine.js'
 
 export type BattleUnitView = {
   side: 'hero' | 'enemy'
@@ -38,11 +39,16 @@ export type BattleView = {
   engagementId: string
   kind: string
   mapId: string
+  mapName: string
   width: number
   height: number
   /** terrain.* id per hex, index = hexId. */
   terrain: string[]
-  props: HighProp[]
+  props: Prop[]
+  floor?: boolean[]
+  initialEvents: Event[]
+  viewerSeed: {mapId:string;replicate:number;scenarioId:string}
+  atlasScene?: AtlasBinding
   units: BattleUnitView[]
 }
 
@@ -50,6 +56,7 @@ export function viewBattle(campaign: CampaignState): BattleView {
   const e = engagementOf(campaign)
   const spec = makeBattleState(campaign.roster, e)
   const ctx = createBattle(battleOptionsOf(spec))
+  const authored = atlasFieldingOf(e.mapId)
   const units: BattleUnitView[] = []
   const seen: Record<'hero' | 'enemy', number> = { hero: 0, enemy: 0 }
   for (const ev of ctx.events) {
@@ -72,10 +79,14 @@ export function viewBattle(campaign: CampaignState): BattleView {
   }
   units.sort((a, b) => (a.side === b.side ? a.index - b.index : a.side === 'hero' ? -1 : 1))
   return {
-    engagementId: e.id, kind: e.kind, mapId: e.mapId,
+    engagementId: e.id, kind: e.kind, mapId: e.mapId, mapName: authored?.name ?? e.mapId,
     width: ctx.geo.board.width, height: ctx.geo.board.height,
     terrain: ctx.state.terrain.map(terrainIdOf),
     props: structuredClone(ctx.state.props),
+    ...(ctx.state.floor ? {floor:[...ctx.state.floor]} : {}),
+    initialEvents: structuredClone(ctx.events),
+    viewerSeed: {mapId: ctx.events.find(e=>e.type==='map.loaded')!['mapId'] as string,replicate:spec.seed,scenarioId:spec.id},
+    ...(authored ? {atlasScene:authored.atlasScene} : {}),
     units,
   }
 }

@@ -1,0 +1,11 @@
+✔ built Kingdom battle mounts the shared viewer and retains it through outcome edits (381.1095ms)
+✔ actual shared component records authored scene, t=0 units, stable host, replacement and disposal (241.5886ms)
+✔ shared CSS isolates both directions while retaining top-level animations and licensed build (86.867ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 796.2785

@@ -1,0 +1,25 @@
+✖ built Kingdom battle mounts the shared viewer and retains it through outcome edits (234.0679ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 298.374
+
+✖ failing tests:
+
+test at tools\atlas-surface.test.mjs:4:1
+✖ built Kingdom battle mounts the shared viewer and retains it through outcome edits (234.0679ms)
+  TypeError: p.footprint.hexes is not iterable
+      at boardSvg (eval at bootSlice (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:24:2), <anonymous>:126127:60)
+      at battleScreen (eval at bootSlice (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:24:2), <anonymous>:126164:7)
+      at screen (eval at bootSlice (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:24:2), <anonymous>:125920:62)
+      at render (eval at bootSlice (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:24:2), <anonymous>:125878:39)
+      at act2 (eval at bootSlice (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:24:2), <anonymous>:125824:5)
+      at eval (eval at bootSlice (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:24:2), <anonymous>:126286:20)
+      at file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:16:126
+      at Array.forEach (<anonymous>)
+      at Object.click (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:16:115)
+      at click (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/atlas-dom.mjs:25:185)

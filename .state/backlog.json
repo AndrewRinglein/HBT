@@ -821,5 +821,21 @@
   "sha": "9d56fcc",
   "engineSha": "ebc4cf6",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "v2.atlas-battle-view",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "spec": "Connect approved frozen Atlas fieldings to normal Kingdom battle options and the shared paused viewer. Preserve engine ownership, exact initial map facts, kits/progress and variable disjoint deployment; keep outcome picker. Content selects actual Atlas areas. Stable mount across fate edits, disposal on leaving, scoped shared CSS. Human/GPU acceptance remains separate.",
+  "expect": "ISC003 retains its old seam checks and adds real Atlas fields with six heroes and fifteen enemies, explicit slots/capacity, kits/progress and exact initial facts. Full tests/typecheck/P probes, built flow smoke plus proper fake-DOM shared component/lifecycle and CSS isolation checks.",
+  "isc": [
+   "003"
+  ],
+  "needs": [
+   "seam.run-engagement"
+  ],
+  "attempts": 1,
+  "status": "pending"
  }
 ]

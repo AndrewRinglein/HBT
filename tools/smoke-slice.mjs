@@ -1,27 +1,10 @@
-// Smoke for SLICE.html — the screens driven headlessly through a tiny fake DOM: the
+// Smoke for SLICE.html — the screens driven headlessly through the shared tree DOM: the
 // title, the mode-select, the draft, prep, the battle, the Week, absences, a quest,
 // the roster. It is the H checks ISC-048/049/050 mechanised as far as text can be;
 // Andrew still opens the page.  node tools/smoke-slice.mjs SLICE.html
-// a tiny DOM: enough for render() + wire() to run and for clicks to be simulated
-import { readFileSync } from 'node:fs'
-const html = readFileSync(process.argv[2], 'utf8')
-const script = html.slice(html.lastIndexOf('<script>') + 8, html.lastIndexOf('</script>'))
-const store = new Map()
-globalThis.localStorage = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v), removeItem: (k) => store.delete(k) }
-class El {
-  constructor() { this.handlers = {}; this.dataset = {}; this._html = '' }
-  set innerHTML(h) { this._html = h; this.els = [...h.matchAll(/<(\w+)([^>]*)data-act="([^"]+)"([^>]*)>/g)].map((m) => { const e = new El(); const attrs = m[2] + m[4]; for (const a of attrs.matchAll(/data-(\w+)="([^"]*)"/g)) e.dataset[a[1]] = a[2]; e.dataset.act = m[3]; e.disabled = /\bdisabled\b/.test(attrs); return e }) }
-  get innerHTML() { return this._html }
-  querySelectorAll(sel) { return sel === '[data-act]' ? this.els : [] }
-  addEventListener(t, f) { this.handlers[t] = f }
-}
-const root = new El()
-globalThis.document = { getElementById: () => root, createElement: () => new El(), head: { appendChild() {} } }
-globalThis.URL = { createObjectURL: () => '', revokeObjectURL: () => {} }
-globalThis.Blob = class {}
-new Function(script)()
+import { bootSlice } from './atlas-dom.mjs'
+const {w,store,root,click}=bootSlice(process.argv[2])
 const text = () => root.innerHTML.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
-const click = (act, id) => { const e = root.els.find((x) => x.dataset.act === act && (id === undefined || x.dataset.id === id)); if (!e) throw new Error(`no [data-act=${act}${id ? ' id=' + id : ''}] on screen: ${text().slice(0, 300)}`); if (e.disabled) throw new Error(`${act} is disabled`); e.handlers.click() }
 const has = (s) => { if (!text().includes(s)) throw new Error(`expected "${s}" on screen; got: ${text().slice(0, 400)}`) }
 // the front: the Load Game screen (the mock, 2026-09-02) — three campaigns, two locked, three slots; + New Party reaches the draft
 has('Heroes of Blight and Tragic'); has('Choose a campaign'); has('Peasants'); has('Locked'); has('Empty slot')
@@ -52,15 +35,16 @@ const propBattle = JSON.parse(store.get(propKey))
 propBattle.cursor.engagement.mapId = 'map.thicket'
 store.set(propKey, JSON.stringify(propBattle))
 click('slot-continue'); has('The battle'); has('map.thicket')
-if (!(root.innerHTML.match(/data-prop="prop\.obstacle\./g) || []).length) throw new Error('canonical high props are absent from the drawn battle')
-has('high · material 3')
+const drawnProps=root.querySelectorAll('[data-prop]').filter(p=>p.dataset.prop.startsWith('prop.obstacle.'))
+if (!drawnProps.length) throw new Error('canonical high props are absent from the actual shared viewer')
+if (!drawnProps.some(p=>p.title?.includes('high · material 3'))) throw new Error('canonical prop metadata is absent')
 console.log('smoke: saved registered-map battle draws canonical prop footprints; outcome picker retained: OK')
 click('decide'); has('Reckoning'); click('apply')
 // the Hell-TCG copies (2026-09-04): the recap, then rewards.html's cards, then the level-up sheet — their
 // ceremonies run on a real DOM; here the same performX calls are driven through the page's smoke hook
 has('VICTORY'); has('Slain:'); has('XP Earned:'); click('exit')
 has('Your Heroes'); has('Rewards'); has('Reveal all'); if ((root.innerHTML.match(/reward-card face-down/g) || []).length !== 3) throw new Error('three face-down cards expected')
-const drive = globalThis.__sliceDrive
+const drive = w.__sliceDrive
 drive.takeReward(drive.offers()[1])
 while (!text().includes('Week 3 — ')) {
   const lv = root.els.find((x) => x.dataset.act === 'level-hero')
