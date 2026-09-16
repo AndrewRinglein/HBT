@@ -1,3 +1,4 @@
+import { validateBurst } from './burst-schema.mjs';
 import fs from 'fs';
 import { validateMap, validateEncounterBoard } from './map-schema.mjs';
 const G='gen/', R=p=>JSON.parse(fs.readFileSync(G+p,'utf8'));
@@ -161,6 +162,7 @@ const check=(arr,kind)=>{ for(const e of arr){
   if(ids.has(e.id)) prob.push(`DUPLICATE id ${e.id}`); else ids.set(e.id,kind);
   for(const k of Object.keys(e.statModifiers||{})) if(!STATS.has(k)) prob.push(`${kind} ${e.id}: unknown stat "${k}"`);
 }};
+for (const row of [...out.attacks, ...out.powers]) { try { if ('area' in row) throw Error('legacy area is retired'); if (row.burst) validateBurst(row.burst); } catch(e) { prob.push(row.id + ': ' + e.message); } }
 check(out.items,'item'); check(out.attacks,'attack'); check(out.powers,'power');
 check(out.enchants,'enchant'); check(out.specialties,'specialty');
 // dangling grants

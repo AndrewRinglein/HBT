@@ -1,3 +1,4 @@
+import { validateBurst } from './burst-schema.mjs';
 function elementalStats(row){return Object.fromEntries(['fireResist','poisonResist','shadowResist'].filter(k=>row[k]!==undefined).map(k=>{if(!Number.isSafeInteger(row[k]))throw Error('Invalid elemental resistance '+k);return[k,row[k]]}))}
 function damageType(value){if(!['physical','magic','fire','poison','shadow','true'].includes(value))throw Error('Invalid damage type: '+String(value));return value}
 function packetFields(row){
@@ -658,7 +659,7 @@ function settledAttackExtras(a, unitId) {
   // The crit field COMPILES since station.crit (2026-08-27): AttackDef.crit
   // is the weapon's flat addition to crit chance (COMBAT-DESIGN: "Crit from
   // gear"). The gap it used to raise is closed in takeAttack below.
-  if (((a.tags || []).includes('area') || /adjacent to both/.test(a.targets || '')) && !areaShapeOf(a)) {
+  if (((a.tags || []).includes('area') || /adjacent to both/.test(a.targets || '')) && !burstOf(a)) {
     gap(unitId, `${a.id} targets '${String(a.targets).slice(0, 50)}' — lands SINGLE-TARGET`, 'area attack shape');
   }
   return out;
@@ -680,6 +681,7 @@ function compiledPowerOf(p, unitId) {
   const desc = String(p.description || '');
   const tgt = String(p.targets || '');
   const base = { id: p.id, name: p.name, ...actionSlot(p), staminaCost: p.stamina ?? 0, cooldown: p.cooldown ?? 0 };
+  if (p.burst) { const range = String(p.targets).match(/^a hex within (\d+) hexes/); if (!range) throw Error('Burst power needs authored placement range'); return { ...base, range: +range[1], burst: validateBurst(p.burst) }; }
   let m, r;
   if ((m = desc.match(/^Heal the target for (\d+) \+ (\d+) x Spirit\./))
     && (r = tgt.match(/^one ally within (\d+) hexes$/))) {
@@ -691,12 +693,6 @@ function compiledPowerOf(p, unitId) {
     return { ...base, range: 0, effect: 'selfGuard',
       guard: { protectionBase: parseInt(m[1], 10), protectionPerArmor: 1, dodgeLoss: parseInt(m[2], 10) } };
   }
-  if ((m = desc.match(/^Deal magic damage equal to your Magic \+ (\d+) to every unit in the blast\./))
-    && (r = tgt.match(/^a hex within (\d+) hexes and every hex adjacent to it$/))) {
-    gap(unitId, `${p.id} targets 'a hex within ${r[1]}' — engine centres the blast on a UNIT`, 'power targeting: arbitrary hex');
-    return { ...base, range: parseInt(r[1], 10), effect: 'damage',
-      stat: 'magic', bonus: parseInt(m[1], 10), damageType: 'magic', area: 'blast1' };
-  }
   return null;
 }
 
@@ -706,10 +702,7 @@ function compiledPowerOf(p, unitId) {
 // adjacent to both you and it" is a DIFFERENT shape (a chosen half-arc) the
 // engine does not yet express, so it stays a named gap rather than being
 // rounded up to the full arc. Compile-or-name-the-gap; never round.
-function areaShapeOf(a) {
-  if (/the two hexes adjacent to both you and it/.test(String(a.targets || ''))) return 'arc';
-  return null;
-}
+function burstOf(a) { return a.burst ? validateBurst(a.burst) : null; }
 
 const prologueParty = [];
 for (const id of PARTY) {
@@ -768,7 +761,7 @@ for (const id of PARTY) {
         damageType: damageType(a.damageType || 'physical'),
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
-        ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
+        ...(burstOf(a) ? { burst: burstOf(a) } : {}), // capability.area-attack
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
@@ -864,13 +857,13 @@ const alphaTeam = [];
     const takeAttack = (a, own = false) => {
       const ranged = (a.range ?? 1) > 1 && typeof a.range === 'number';
       anyRanged = anyRanged || ranged;
-      const area = areaShapeOf(a);
+      const burst = burstOf(a);
       authoredAttacks[a.id] = {
         ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: damageType(a.damageType || 'physical'),
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
-        ...(area ? { area } : {}), // capability.area-attack, 2026-08-27
+        ...(burst ? { burst } : {}), // capability.area-attack, 2026-08-27
         ...(a.crit ? { crit: a.crit } : {}), // station.crit, 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
@@ -976,7 +969,7 @@ for (const id of CIVILIANS) {
         // Civilians are EXACTLY like heroes (ruled 2026-08-26): they pay
         // what the attack row authors.
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
-        ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
+        ...(burstOf(a) ? { burst: burstOf(a) } : {}), // capability.area-attack
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
@@ -1106,13 +1099,13 @@ const ITEM_STAT = { health: 'maxHp', armor: 'armor', resist: 'resist', fireResis
 function takeItemAttack(a) {
   if (authoredAttacks[a.id]) return;
   const ranged = typeof a.range === 'number' && a.range > 1;
-  const area = areaShapeOf(a);
+  const burst = burstOf(a);
   authoredAttacks[a.id] = {
     ...packetFields(a), ...actionSlot(a), id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
     damageType: damageType(a.damageType || 'physical'),
     bonus: a.damage ?? 0, stat: a.stat || 'strength',
     reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
-    ...(area ? { area } : {}),
+    ...(burst ? { burst } : {}),
     ...(a.crit ? { crit: a.crit } : {}),
     ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
     ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
@@ -1435,7 +1428,7 @@ const isTestId = {
   status: (id) => /^test\.status\.[a-z0-9-]+$/.test(id),
 };
 // the limits and the effect list are ONE vocabulary on every action (ruled 2026-09-04) — test rows may carry any of them
-const ABILITY_FIELDS = new Set(['id', 'name', 'slot', 'stat', 'bonus', 'damageType', 'range', 'staminaCost', 'cooldown', 'warmup', 'uses', 'free', 'effect', 'area', 'heal', 'guard', 'effects', 'target']);
+const ABILITY_FIELDS = new Set(['id', 'name', 'slot', 'stat', 'bonus', 'damageType', 'range', 'staminaCost', 'cooldown', 'warmup', 'uses', 'free', 'effect', 'burst', 'heal', 'guard', 'effects', 'target']);
 function testAbilities() {
   const out = {};
   for (const row of readTest('abilities.json')) {
@@ -1447,7 +1440,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));
@@ -1635,7 +1628,25 @@ for (const row of readTest('encounters.json')) {
 // a default everything declares is not a default.
 // Both map lanes were validated before encounter compilation; neither drops a size.
 
-const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
+// Classify profiles only after TEST deltas inherit their authored source.
+const authoredBursts = {}, testBursts = {};
+function moveBursts(rows, destination) {
+  for (const [id, row] of Object.entries(rows)) {
+    if (Object.hasOwn(row, 'area')) throw Error('Legacy area field is retired: ' + id);
+    if (!row.burst) continue;
+    const {name, staminaCost, cooldown = 0, warmup, uses, free, slot} = row;
+    const range = row.reach ?? row.range;
+    if (!Number.isSafeInteger(range) || range < 0 || range > 100 || row.burst.shape.kind === 'arc' && range !== 1) throw Error('Invalid burst range: ' + id);
+    destination[id] = {id, name, staminaCost, cooldown, range, burst: validateBurst(row.burst), source: row.kind ? 'weapon' : 'item',
+      ...(warmup !== undefined ? {warmup} : {}), ...(uses !== undefined ? {uses} : {}), ...(free !== undefined ? {free} : {}), ...(slot !== undefined ? {slot} : {})};
+    delete rows[id];
+  }
+}
+moveBursts(authoredAttacks, authoredBursts); moveBursts(authoredAbilities, authoredBursts);
+moveBursts(test.attacks, testBursts); moveBursts(test.abilities, testBursts);
+test.bursts = testBursts;
+
+const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
   classPowers, specialties, levels, enchanted, encounters, badges, maps };
 
 for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test.attacks, test.abilities, test.moves]) {
