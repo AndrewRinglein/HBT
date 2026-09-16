@@ -1294,7 +1294,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "description": "A hex-targeted burst affecting all units in the authored three-hex arc, dealing Strength + 1 physical damage. High props stop placement and spread; each low prop crossed reduces damage by 2. It is not an attack.",
+   "description": "A hex-targeted burst affecting all units in the authored three-hex arc, dealing Strength + 1 physical damage. Standard V2 burst shielding and attenuation apply. It is not an attack.",
    "intent": "Three hexes in one swing, at the price of never critting.",
    "source": "settled content | V2 migration 2026-09-16 (provisional): preserve authored shape, costs, range and magnitude; explicit all-units burst, no attack hooks or rolls. Earlier description: An area attack across a three-hex arc. It does not roll to hit, so it cannot crit.",
    "burst": {
@@ -1896,7 +1896,7 @@
     "staff",
     "area"
    ],
-   "description": "A hex-targeted burst affecting all units in the centre hex and its six neighbours, dealing Magic + 1 magic damage. High props stop placement and spread; each low prop crossed reduces damage by 2. It is not an attack.",
+   "description": "A hex-targeted burst affecting all units in the centre hex and its six neighbours, dealing Magic + 1 magic damage. Standard V2 burst shielding and attenuation apply. It is not an attack.",
    "source": "settled content | V2 migration 2026-09-16 (provisional): preserve authored shape, costs, range and magnitude; explicit all-units burst, no attack hooks or rolls. Earlier description: Deal magic damage equal to your Magic + 1 to every unit in the blast. It does not roll to hit, so it cannot crit.",
    "triggers": [],
    "intent": "Pure damage where the other staves leave terrain — one more point, nothing lingering.",

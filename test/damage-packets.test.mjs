@@ -10,7 +10,7 @@ function candidate(change){
  const live=path.resolve(source,'../engine/src/content/generated/pack.ts'),before=fs.readFileSync(live);
  try{
   fs.mkdirSync(work);fs.mkdirSync(path.join(root,'engine/src/content/generated'),{recursive:true});
-  for(const file of ['assemble.mjs','mkenginepack.mjs','map-schema.mjs','hbt-content.json','settled.json'])fs.copyFileSync(path.join(source,file),path.join(work,file));
+  for(const file of ['assemble.mjs','mkenginepack.mjs','map-schema.mjs','burst-schema.mjs','hbt-content.json','settled.json'])fs.copyFileSync(path.join(source,file),path.join(work,file));
   for(const dir of ['gen','test'])fs.cpSync(path.join(source,dir),path.join(work,dir),{recursive:true,filter:p=>!fs.statSync(p).isFile()||p.endsWith('.json')});
   const edit=(file,fn)=>{const p=path.join(work,file),data=JSON.parse(fs.readFileSync(p,'utf8'));fn(data);fs.writeFileSync(p,JSON.stringify(data))};
   change(edit);

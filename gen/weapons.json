@@ -1901,7 +1901,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "description": "A hex-targeted burst affecting all units in the authored three-hex arc, dealing Strength + 1 physical damage. High props stop placement and spread; each low prop crossed reduces damage by 2. It is not an attack.",
+   "description": "A hex-targeted burst affecting all units in the authored three-hex arc, dealing Strength + 1 physical damage. Standard V2 burst shielding and attenuation apply. It is not an attack.",
    "source": " | 2026-08-20: \"every enemy adjacent to you\" was the wrong shape. You name a hex and it hits that hex plus left and right — three attacks, same shape as attack.halberd.cleave. | V2 migration 2026-09-16 (provisional): preserve authored shape, costs, range and magnitude; explicit all-units burst, no attack hooks or rolls. Earlier description: Three hexes in one swing: the hex you name and the one either side of it. Each is resolved as its own attack, so each rolls, and each can crit.",
    "burst": {
     "shape": {
