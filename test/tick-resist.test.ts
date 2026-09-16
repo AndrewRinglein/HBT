@@ -1,3 +1,5 @@
+// Law10 / V2 sections8.2 and18 (2026-09-07): named elemental defense supersedes
+// magic Resist for Burn/Poison. Preserve exact tick/decay assertions under the new stat.
 // RULED, Angela 2026-08-20: Resist mitigates Poison (and Burn) per tick, never
 // Bleed. The canonical table from DECISIONS.md, asserted verbatim.
 import { describe, expect, it } from 'vitest'
@@ -11,11 +13,11 @@ function warriorWithResist(resist: number) {
     [{ type: 'test-zombie', hex: hexId(11, 11) }],
   )
   const w = ctx.state.units[0]!
-  if (resist) w.mods.push({ stat: 'resist', op: 'add', value: resist, source: 'test', scope: 'unit' })
+  if (resist) w.mods.push({ stat: 'poisonResist', op: 'add', value: resist, source: 'test', scope: 'unit' })
   return { ctx, w }
 }
 
-describe('Resist mitigates poison ticks (ruled 2026-08-20)', () => {
+describe('Poison Resist mitigates poison ticks (V2 section8.2)', () => {
   it('the canonical 5-vs-2 walk: take 3, 2, 1, 0, 0 — full clock, shortened pain', () => {
     const { ctx, w } = warriorWithResist(2)
     const hp0 = w.hp

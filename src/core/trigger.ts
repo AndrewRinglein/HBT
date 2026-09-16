@@ -24,6 +24,8 @@
 //   4. Preview and resolution disagree  -> triggers never alter the damage number, so
 //      there is no second path to disagree with. Damage-changing effects are STATIONS.
 
+import { flatDamage } from './mitigation.js'
+import { isDamageType } from './types.js'
 import type { Ctx, Unit, DamageType } from './types.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
@@ -204,6 +206,7 @@ export function validateTrigger(t: Trigger): void {
   if (needsTarget && !HAS_TARGET.has(t.hook)) {
     throw new Error(`${where}: hook '${t.hook}' has no target, so select:'target' can never resolve`)
   }
+  if(t.effect.kind==='damage'&&!isDamageType(t.effect.damageType))throw new Error(`${where}: unknown damage type`)
   if (!t.source) throw new Error(`${where}: every trigger names the source that granted it`)
 }
 
@@ -426,7 +429,10 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
       emit(ctx, 'trigger.fired', t.id, {
         actor: owner.id, target: targetId, effect: e.kind, amount: v, damageType: e.damageType,
       })
-      if (v > 0) applyDamage(ctx, targetId, v, t.id, { actor: owner.id, damageType: e.damageType })
+      if (v > 0) {
+        const damage=flatDamage(ctx,ctx.state.units[targetId]!,v,e.damageType)
+        applyDamage(ctx,targetId,damage.value,t.id,{actor:owner.id,damageType:e.damageType,...(damage.resisted?{resisted:damage.resisted}:{})})
+      }
       break
     }
     case 'knockback': {

@@ -17,6 +17,7 @@
 //               Armor, and lose 5 Dodge for the rest of the Battle. Every use
 //               costs another 5 Dodge")
 
+import { flatDamage } from './mitigation.js'
 import type { AbilityDef, ActionEffect, Ctx, Unit } from './types.js'
 import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, loseMaxStamina, removeCorpse, removeStatus, reduceStatus, unit } from './mutate.js'
 import { actionReady, isPower, spendAction , resolveActionSlot } from './action.js'
@@ -367,7 +368,8 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Action
       return 0
     }
     case 'selfDamage': {
-      applyDamage(ctx, id, e.amount, a.id, { actor: userId, abilityId: a.id, damageType: e.damageType })
+      const damage = flatDamage(ctx, unit(ctx, id), e.amount, e.damageType)
+      applyDamage(ctx, id, damage.value, a.id, { actor: userId, abilityId: a.id, damageType: e.damageType, ...(damage.resisted ? { resisted: damage.resisted } : {}) })
       return 0
     }
     case 'stamina.gain': {

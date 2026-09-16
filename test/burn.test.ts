@@ -1,3 +1,4 @@
+// Law10: COMBAT-V2-DESIGN sections8.2/18 replace magic Resist with named elemental resistance.
 // status.burn — Codex-published (79 uses). Poison's tick with a second edge:
 // halves all healing received while held (§5: halves, never blocks). Source in
 // battle: the Burning Zombie's sear — "on taking damage, the zombie deals 1 burn
@@ -16,7 +17,7 @@ function board(resist = 0) {
     [{ type: 'test-zombie-burning', hex: hexId(6, 5) }],
   )
   const w = ctx.state.units[0]!
-  if (resist) w.mods.push({ stat: 'resist', op: 'add', value: resist, source: 'test', scope: 'unit' })
+  if (resist) w.mods.push({ stat: 'fireResist', op: 'add', value: resist, source: 'test', scope: 'unit' })
   return { ctx, w, z: ctx.state.units[1]! }
 }
 

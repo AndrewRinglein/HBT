@@ -24,7 +24,10 @@ export const TERRAIN = {
   BURNING: 7, POISONED: 8,
 } as const
 export type LifeState = 'standing' | 'downed' | 'dead'
-export type DamageType = 'physical' | 'magic' | 'true'
+export type DamageType = 'physical' | 'magic' | 'fire' | 'poison' | 'shadow' | 'true'
+export function isDamageType(value: unknown): value is DamageType {
+  return typeof value === 'string' && ['physical', 'magic', 'fire', 'poison', 'shadow', 'true'].includes(value)
+}
 export type Phase = 'hero' | 'enemy'
 
 /**
@@ -468,6 +471,9 @@ export type UnitDef = {
   readonly maxHp: number
   readonly armor: number
   readonly resist: number
+  readonly fireResist?: number
+  readonly poisonResist?: number
+  readonly shadowResist?: number
   readonly accuracy: number
   readonly dodge: number
   /**
@@ -589,6 +595,9 @@ export type Unit = {
   maxHp: number
   armor: number
   resist: number
+  fireResist?: number
+  poisonResist?: number
+  shadowResist?: number
   accuracy: number
   dodge: number
   strength: number

@@ -663,3 +663,21 @@ that reachable transition. Existing cursor-side snapshot validation remains and
 rejects a forged allegiance change. A future allegiance-changing mechanic must
 define captured-side history before such snapshots become supported; this item
 does not relax side validation for arbitrary host edits.
+
+
+## 2026-09-16 — elemental resistance migration
+
+- `elementalResistanceMagnitude`: provisional one-for-one conversion of authored fire/poison
+  immunity magnitude into a flat stat. Fire/poison necklaces give 1; Hearthmother gives 1
+  each; Fire Ward gives 2 fireResist and keeps its separate 1 resist; Imp/Powerful Imp give 1
+  fireResist; Fire Imp gives 2 fireResist; Poison Imp gives 2 poisonResist; Poison Master
+  gains 3 poisonResist in place of its passive, retaining its other authored stats.
+  These values are tuning, not full immunity. Stable content IDs stay unchanged.
+- `signedDamageDefense`: preserve the attack pipeline's signed effective-defense rule
+  across typed HP damage: a negative defense increases damage. This explicitly replaces
+  the old status-only clamp at zero; neither a second formula nor a duration change.
+- `shadowGrowthIsNotHpDamage`: retain the authored Shadow growth/obliteration condition
+  provisionally. V2 section 8 names Shadow status damage but supplies no HP tick amount
+  or replacement growth rule. Shadow Resist mitigates typed shadow HP damage, including
+  any explicitly authored damaging-status row. It does not reduce the current growth
+  counter or stop obliteration. No existing Shadow HP tick is claimed.

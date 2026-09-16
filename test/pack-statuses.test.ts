@@ -1,3 +1,5 @@
+// Law10 / V2 sections8.2 and18 (2026-09-07): named elemental defense supersedes
+// magic Resist for Burn/Poison. Preserve exact tick/decay assertions under the new stat.
 // pack.statuses (2026-09-02) — the engine reads its statuses from the Codex.
 // Andrew, asked whether the Codex may own the status rows: "Yes — Codex owns
 // the rows." The rows (settled.json → statuses) compile by exact sentence in
@@ -68,7 +70,8 @@ describe('the rows come from the Codex, and only from the Codex', () => {
     expect(STATUSES['status.bleed']!.tickDamageType).toBe(byId.get('status.bleed')!.damageType)
     for (const id of ['status.poison', 'status.burn']) {
       expect(/Resist mitigates each tick/.test(byId.get(id)!.decay), id).toBe(true)
-      expect(STATUSES[id]!.tickDamageType, id).toBe('magic')
+      expect(STATUSES[id]!.tickDamageType, id).toBe(id==='status.burn'?'fire':'poison')
+      expect(STATUSES[id]!.tickDamageType,id).toBe(byId.get(id)!.damageType)
     }
     // the family word rides along verbatim
     for (const [id, def] of Object.entries(STATUSES)) {
@@ -90,7 +93,7 @@ describe('the rows come from the Codex, and only from the Codex', () => {
     applyStatus(ctx, 0, 'status.regeneration', 1, 'test')
     tickStatuses(ctx, 'hero')
     expect(w.hp).toBe(10 - 3 + 1)
-    expect(ctx.events.find((e) => e.type === 'damage.applied' && e.causeId === 'status.poison')!['damageType']).toBe('magic')
+    expect(ctx.events.find((e) => e.type === 'damage.applied' && e.causeId === 'status.poison')!['damageType']).toBe('poison')
   })
 })
 

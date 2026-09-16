@@ -2479,3 +2479,13 @@ command API govern eligibility; the host never edits or reorders the cursor.
 Automatic simulation remains fixed-order. Mixed control and automatic resume
 choices are provisional in SWITCHES.md. Snapshot rules advance to .16. This is
 implementation of the authorized playable target, not a new user ruling.
+
+
+## 2026-09-16 — named elemental defenses (authorized V2 implementation)
+
+COMBAT-V2-DESIGN sections 8/18 supersede magic resistance for Burn/Poison and
+accelerated fire/poison immunity decay. This item introduces explicit flat fireResist,
+poisonResist and shadowResist, default 0, across typed attacks/powers/status/trigger
+HP damage and authored stat transport. Protection's existing attack ordering is
+preserved. Provisional content magnitude, signed-defense and Shadow-growth treatment
+are recorded in SWITCHES.md; this records implementation, not a new user ruling.

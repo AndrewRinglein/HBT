@@ -20,7 +20,7 @@ import { accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusO
 export type StatName =
   | 'strength' | 'precision' | 'magic' | 'spirit'
   | 'accuracy' | 'dodge'
-  | 'armor' | 'resist'
+  | 'armor' | 'resist' | 'fireResist' | 'poisonResist' | 'shadowResist'
   | 'movement' | 'reach'
   | 'maxHp' | 'maxStamina' | 'staminaRegen'
   // station.crit (2026-08-27): the two crit-system stats, resolvable so
@@ -65,6 +65,9 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   dodge: (u) => u.dodge,
   armor: (u) => u.armor,
   resist: (u) => u.resist,
+  fireResist: (u) => u.fireResist ?? 0,
+  poisonResist: (u) => u.poisonResist ?? 0,
+  shadowResist: (u) => u.shadowResist ?? 0,
   movement: (u) => u.movement,
   reach: (u) => u.reach,
   maxHp: (u) => u.maxHp,

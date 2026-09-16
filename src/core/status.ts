@@ -8,6 +8,7 @@
 // A status is DATA on the unit plus a small code module here. Adding one is a
 // row in the registry and, if it needs behaviour, one function.
 
+import { flatDamage } from './mitigation.js'
 import type { Ctx, Side, Unit } from './types.js'
 import { applyDamage, applyHealing, emit, reduceStatus, removeStatus, setLifeState, unit } from './mutate.js'
 import { effective } from './stats.js'
@@ -34,15 +35,7 @@ export type StatusDef = {
   readonly name: string
   readonly shape: StatusShape
   readonly stacking: Stacking
-  /**
-   * What KIND of damage this status ticks — RULED 2026-08-27: "Status damage
-   * from poison and burn is magic damage... It gets reduced by resist. Bleed
-   * damage is true damage." The type IS the mitigation rule, exactly as it is
-   * for attacks: magic is resist-reduced, physical would be armor-reduced,
-   * true (and absent) is flat. Replaces the 2026-08-20 tickMitigatedByResist
-   * flag — same arithmetic for burn/poison/bleed, one vocabulary instead of
-   * a bespoke boolean.
-   */
+  /** V2: every damaging status declares its type; Burn is fire, Poison poison, Bleed true. */
   readonly tickDamageType?: import('./types.js').DamageType
 
   // ── hooks: what reads and writes this status ──────────────────────────────
@@ -209,26 +202,14 @@ export function heal(ctx: Ctx, unitId: number, amount: number, causeId: string):
   return u.hp - before
 }
 
-/**
- * Damage from a status, not an attack. Same mutator, different cause.
- *
- * RULED, Angela 2026-08-20: Resist mitigates Burn and Poison per tick — never
- * Bleed. Per-tick damage = max(0, value − Resist), and Resist never touches the
- * status VALUE, which decays on its own clock: 5 Poison vs 2 Resist deals
- * 3, 2, 1, 0, 0 as the value walks 5→4→3→2→1→0. A resisted status runs its full
- * duration; Resist shortens the pain, never the clock. The per-status flag is
- * `tickMitigatedByResist` — bleed, when it lands, simply does not set it.
- */
+/** Typed HP damage. Resistance changes damage only, never the status clock (V2 section 8). */
 export function statusDamage(ctx: Ctx, unitId: number, amount: number, causeId: string): void {
   const def = ctx.statuses[causeId]
-  const damageType = def?.tickDamageType ?? 'true'
-  let resisted = 0
-  if (damageType === 'magic' || damageType === 'physical') {
-    const stat = damageType === 'magic' ? 'resist' as const : 'armor' as const
-    const mit = effective(ctx, unit(ctx, unitId), stat).value
-    resisted = Math.min(amount, Math.max(0, mit))
-    amount -= resisted
-  }
+  if (!def?.tickDamageType) throw new Error(`Damaging status '${causeId}' must declare its damage type`)
+  const damageType = def.tickDamageType
+  const result=flatDamage(ctx,unit(ctx,unitId),amount,damageType)
+  amount=result.value
+  const resisted=result.resisted
   applyDamage(ctx, unitId, amount, causeId,
     resisted > 0
       ? { actor: null, statusId: causeId, damageType, resisted }

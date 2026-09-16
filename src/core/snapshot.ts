@@ -1,3 +1,4 @@
+import {isDamageType} from './types.js'
 import { prepareCover } from './cover.js'
 import { geometryOf, validBoard } from './hex.js'
 import { isUnitUid } from './identity.js'
@@ -11,7 +12,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.16' // Explicit pending human activation selection.
+const RULES_VERSION = 'v2-migration.17' // Six typed defenses and elemental status damage.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'selecting', 'activation-start', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -105,6 +106,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(u.id === i && isUnitUid(u.uid) && !uids.has(u.uid), 'unit identity'); uids.add(u.uid)
     requireThat(integer(u.hex, 0, cells - 1), 'unit hex')
     for (const k of ['hp', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'movement', 'reach', 'stamina', 'maxStamina', 'staminaRegen', 'bleedOut', 'toughness', 'surge', 'surgeChance', 'vision', 'movePointsLeft', 'activationOrdinal', 'attackOrdinal', 'deathbedOrdinal']) requireThat(integer(u[k]), `unit ${k}`)
+    for (const key of ['fireResist', 'poisonResist', 'shadowResist']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)
     requireThat(phases.includes(u.side) && phases.includes(u.rowSide) && ['standing', 'downed', 'dead'].includes(u.lifeState), 'unit side/life')
     requireThat(['melee', 'ranged', 'support'].includes(u.role), 'unit role')
     for (const k of ['name', 'typeId', 'ai']) requireThat(typeof u[k] === 'string', `unit ${k}`)
@@ -133,7 +135,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(['status.apply', 'status.remove', 'damage', 'knockback', 'badge.grant', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'stamina.drain', 'layer.paint'].includes(e.kind), 'trigger effect')
       if (['status.apply', 'status.remove'].includes(e.kind)) requireThat(typeof e.statusId === 'string' && Object.hasOwn(runtime.statuses, e.statusId), 'trigger status')
       if (e.kind === 'badge.grant') requireThat(typeof e.badgeId === 'string' && Object.hasOwn(runtime.badges, e.badgeId), 'trigger badge')
-      if (e.kind === 'damage') requireThat(['physical', 'magic', 'true'].includes(e.damageType), 'trigger damage type')
+      if (e.kind === 'damage') requireThat(isDamageType(e.damageType), 'trigger damage type')
       if (e.kind === 'statMod') requireThat(typeof e.stat === 'string' && isStatName(e.stat) && integer(e.value) && ['battle', 'endOfTurn'].includes(e.until), 'trigger modifier')
       if (['status.apply', 'knockback', 'power.gain', 'stamina.drain', 'damage', 'heal'].includes(e.kind)) {
         const v = ['damage', 'heal'].includes(e.kind) ? e.amount : e.value

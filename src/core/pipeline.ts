@@ -4,6 +4,7 @@
 // Numbers are spaced so a station can be inserted later without renumbering anything.
 // Integers only, one rounding rule: truncating integer division (Law 7).
 
+import { flatDamage } from './mitigation.js'
 import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
@@ -208,8 +209,8 @@ export function resolveDamage(
   if (frost && !ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
 
   if (a.damageType !== 'true') {
-    const mit = effective(ctx, target, a.damageType === 'physical' ? 'armor' : 'resist')
-    v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, v - mit.value)
+    const mit = flatDamage(ctx,target,v,a.damageType)
+    v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, mit.beforeFloor)
   }
 
   if (v < 0) v = step(ledger, DMG.FLOOR, 'FLOOR', 'engine', v, 0)

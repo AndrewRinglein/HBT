@@ -1063,6 +1063,7 @@ export const UNIT_PACK = {
       "maxHp": 9,
       "armor": 0,
       "resist": 0,
+      "fireResist": 2,
       "accuracy": 80,
       "dodge": 10,
       "strength": 3,
@@ -1259,6 +1260,7 @@ export const UNIT_PACK = {
       "maxHp": 7,
       "armor": 0,
       "resist": 0,
+      "fireResist": 1,
       "accuracy": 80,
       "dodge": 15,
       "strength": 3,
@@ -1616,6 +1618,7 @@ export const UNIT_PACK = {
       "maxHp": 9,
       "armor": 0,
       "resist": 0,
+      "poisonResist": 2,
       "accuracy": 80,
       "dodge": 10,
       "strength": 3,
@@ -1679,6 +1682,7 @@ export const UNIT_PACK = {
       "maxHp": 11,
       "armor": 0,
       "resist": 0,
+      "fireResist": 1,
       "accuracy": 90,
       "dodge": 5,
       "crit": 5,
@@ -7550,7 +7554,7 @@ export const UNIT_PACK = {
       "decayPerPhase": 1,
       "tick": "damage",
       "halvesHealing": true,
-      "tickDamageType": "magic",
+      "tickDamageType": "fire",
       "cancels": "status.frost"
     },
     "status.poison": {
@@ -7561,7 +7565,7 @@ export const UNIT_PACK = {
       "stacking": "add",
       "decayPerPhase": 1,
       "tick": "damage",
-      "tickDamageType": "magic"
+      "tickDamageType": "poison"
     },
     "status.regeneration": {
       "id": "status.regeneration",
@@ -12638,13 +12642,13 @@ export const UNIT_PACK = {
       "tier": 1,
       "hands": 0,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "fireResist": 1,
+        "poisonResist": 1
+      },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "immunity: {\"burn\":1,\"poison\":1} — item field: immunity"
-      ]
+      "triggers": []
     },
     "item.censer-of-true-light": {
       "id": "item.censer-of-true-light",
@@ -12811,33 +12815,31 @@ export const UNIT_PACK = {
     },
     "item.necklace-of-fire-immunity": {
       "id": "item.necklace-of-fire-immunity",
-      "name": "Necklace of Fire Immunity",
+      "name": "Necklace of Fire Resistance",
       "itemClass": "trinket",
       "tier": 2,
       "hands": 0,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "fireResist": 1
+      },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "immunity: {\"burn\":1} — item field: immunity"
-      ]
+      "triggers": []
     },
     "item.necklace-of-poison-immunity": {
       "id": "item.necklace-of-poison-immunity",
-      "name": "Necklace of Poison Immunity",
+      "name": "Necklace of Poison Resistance",
       "itemClass": "trinket",
       "tier": 2,
       "hands": 0,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "poisonResist": 1
+      },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "immunity: {\"poison\":1} — item field: immunity"
-      ]
+      "triggers": []
     },
     "item.necklace-of-weakness-immunity": {
       "id": "item.necklace-of-weakness-immunity",
@@ -20417,7 +20419,8 @@ export const UNIT_PACK = {
       "statModifiers": {
         "crit": 3,
         "precision": 1,
-        "resist": 2
+        "resist": 2,
+        "poisonResist": 3
       }
     },
     "specialty.assassin": {
@@ -28984,7 +28987,8 @@ export const UNIT_PACK = {
         "armor": 1,
         "dodge": 5,
         "maxHp": -2,
-        "resist": 1
+        "resist": 1,
+        "fireResist": 2
       },
       "grants": [],
       "abilities": [],
@@ -29284,7 +29288,8 @@ export const UNIT_PACK = {
         "maxHp": 4,
         "maxStamina": -1,
         "dodge": -5,
-        "resist": 1
+        "resist": 1,
+        "fireResist": 2
       },
       "grants": [],
       "abilities": [],
@@ -30057,7 +30062,8 @@ export const UNIT_PACK = {
         "resist": 3,
         "movement": -3,
         "accuracy": -15,
-        "reach": -1
+        "reach": -1,
+        "fireResist": 2
       },
       "grants": [],
       "abilities": [],

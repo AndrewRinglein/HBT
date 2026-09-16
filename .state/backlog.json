@@ -3469,5 +3469,26 @@
   "status": "done-needs-review",
   "sha": "ad416c3",
   "gauntlet": "not passed — 1 exemption(s) taken"
+ },
+ {
+  "id": "rule.elemental-resists",
+  "kind": "engine",
+  "shape": "rule",
+  "milestone": "V2",
+  "spec": "COMBAT-V2-DESIGN sections 8/18: six typed flat damage defenses across direct attacks, powers, status ticks and trigger damage; explicit named elemental stats and authored resistance migration, default zero, no accelerated element decay. Shadow growth remains provisionally distinct from typed HP damage.",
+  "expect": "Exact six-type matrix, same-stat direct/tick/trigger behavior, pure preview, equipped/progression stat transport, snapshot and invalid-type validation; authored Burn/fire and Poison/poison with full decay clocks.",
+  "probeIds": [
+   "status.burn",
+   "status.poison"
+  ],
+  "variants": [
+   "test.status.gash",
+   "status.poison"
+  ],
+  "changesBaseline": true,
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "2d1b377",
+  "gauntlet": "not passed — effect measurement unavailable; 2 flag(s) warned"
  }
 ]

@@ -23,7 +23,7 @@ export type Applied = {
   readonly worn: readonly { readonly itemId: string; readonly grants: readonly string[]; readonly abilities: readonly string[]; readonly mods: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }[]
 }
 
-export const FOLDABLE = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
+export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 
 export function applyItems(
   base: UnitDef,
@@ -74,7 +74,10 @@ export function applyItems(
   const anyRanged = attackIds.some((a) => attacks[a]?.attack.kind === 'ranged')
   const def: UnitDef = {
     ...base,
-    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!, dodge: stats['dodge']!,
+    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
+    ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
+    ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
+    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,
     strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
@@ -156,7 +159,10 @@ export function applyProgress(
   for (const p of powers) if (!abilities[p]) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
   return {
     ...base,
-    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!, dodge: stats['dodge']!,
+    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
+    ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
+    ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
+    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,
     strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
@@ -210,7 +216,10 @@ export function applyBadges(
   }
   const def: UnitDef = {
     ...base,
-    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!, dodge: stats['dodge']!,
+    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
+    ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
+    ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
+    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,
     strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,

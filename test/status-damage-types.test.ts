@@ -1,3 +1,5 @@
+// Law10 / V2 sections8.2 and18 (2026-09-07): named elemental defense supersedes
+// magic Resist for Burn/Poison. Preserve exact tick/decay assertions under the new stat.
 // Typed status ticks — fix.status-damage-types (2026-08-27).
 //
 // RULED: "Status damage from poison and burn is magic damage. It should be
@@ -20,9 +22,9 @@ const rig = () => createBattle({
 })
 
 describe('the rows carry their types', () => {
-  it('poison and burn tick MAGIC; bleed ticks TRUE; nothing carries the old flag', () => {
-    expect(STATUSES['status.poison']!.tickDamageType).toBe('magic')
-    expect(STATUSES['status.burn']!.tickDamageType).toBe('magic')
+  it('poison and burn tick their elements; bleed ticks TRUE; nothing carries the old flag', () => {
+    expect(STATUSES['status.poison']!.tickDamageType).toBe('poison')
+    expect(STATUSES['status.burn']!.tickDamageType).toBe('fire')
     expect(STATUSES['status.bleed']!.tickDamageType).toBe('true')
     for (const s of Object.values(STATUSES)) {
       expect('tickMitigatedByResist' in s, `${s.id} still carries the retired flag`).toBe(false)
@@ -31,15 +33,15 @@ describe('the rows carry their types', () => {
 })
 
 describe('the tick — type on the event, mitigation by the type', () => {
-  it('a poison tick says MAGIC and resist reduces it', () => {
+  it('a poison tick says POISON and Poison Resist reduces it', () => {
     const ctx = rig()
     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
-    oath.mods.push({ stat: 'resist', op: 'add', value: 2, source: 'test', scope: 'unit' })
+    oath.mods.push({ stat: 'poisonResist', op: 'add', value: 2, source: 'test', scope: 'unit' })
     applyStatus(ctx, oath.id, 'status.poison', 5, 'test')
     const hpBefore = oath.hp
     tickUnitStatuses(ctx, oath.id)
     const tick = ctx.events.find((e) => e.type === 'damage.applied' && e.causeId === 'status.poison')!
-    expect(tick['damageType'], '"poison and burn is magic damage"').toBe('magic')
+    expect(tick['damageType'], 'V2 poison element').toBe('poison')
     expect(tick['resisted'], '"it gets reduced by resist"').toBe(2)
     expect(tick['amount']).toBe(3) // 5 − resist 2
     expect(oath.hp).toBe(hpBefore - 3)

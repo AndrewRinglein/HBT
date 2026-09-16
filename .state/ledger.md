@@ -12288,3 +12288,218 @@ Source commits f8e2054 and 637b195; audit-all passes 1,373 tests, typecheck, all
 and 286 outcomes, with exact first-divergence proof retained; selection leaves
 automatic controls unchanged. Contact warnings and selection's structural
 exemption still withhold seals. No human/GPU approval is inferred.
+
+## rule.elemental-resists — LANDED `2d1b377` **NEEDS REVIEW**
+2026-09-16 09:10
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:979
+  PASS  typecheck
+  PASS  full test suite — 1387 passed
+  PASS  gate 1 — the id appears in a real battle — status.burn: 20 log lines, 20 fired, 16 changed state · status.poison: 5 log lines, 5 fired, 4 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/bleed.test.ts, test/burn.test.ts, test/flight.test.ts, test/pack-statuses.test.ts, test/status-damage-types.test.ts, test/tick-resist.test.ts, test/elemental-resists.test.ts, test/fixtures/battle-cursor-elemental.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-3), test/bleed.test.ts (-1), test/burn.test.ts (-1), test/flight.test.ts (-5), test/pack-statuses.test.ts (-2), test/status-damage-types.test.ts (-6), test/tick-resist.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 1de1b93a->dc66e411, map.ridge 2a06e56e->a5a1a98f, map.flanks 4a615eed->e07dba23, map.highlands cf4ff2fc->02f232a6, map.field 52e826df->7053a20d, map.thicket 1951e472->676f50e1, map.proving.open 10d1e952->ce46576e, map.proving.ridge 040abc0f->9f937d1f, map.proving.ford 81b6d44e->3ebb505f, map.proving.copse 0bda08ee->d0d316d8, map.proving.ruin bec31076->1fc8c5dc, map.courtyard 56b73b1d->34e05eca, map.floodplain 0d53d361->8a92d93e, test.map.embers 54a88006->faa7be15, test.map.showcase ca3289f4->7472da18, test.map.duel-8 36a24b22->4109d5dc, test.map.dungeon-16x8 48c8c295->bda4e470, test.map.horde-24 fac05384->4d09ab43, test.map.journey-20x10 d272d358->1ceeff0c, test.map.authored-40x40 58294676->c0ab7819, test.map.high-prop-single 03af3aab->f87190a4, test.map.high-prop-multi 1893d538->3c73a054
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.status.gash live · status.poison live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.burn,status.poison — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 7e278cb..20d3b7c 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -18,4 +18,8 @@ const eventGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-ac
+ // equal-distance dumb-melee destination. Unchanged cases keep all prior checks.
+ const contactGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-contact.json', import.meta.url), 'utf8'))
++// Law 10 / V2 sections 8 and 18: exact typed-damage transition captured
++// against 1723e63. Every changed first event is Burn or Poison's typed tick.
++// Historical fixtures remain immutable; both drivers retain exact full hashes.
++const elementalGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-elemental.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -111,8 +115,9 @@ describe('resumable battle cursor', () => {
+       // and normalizing sequence counters; freeze full current events separately.
+       const contactExpected = contactGolden.cases.find((row: {id:string}) => row.id === fixture.id)
+-      const migrated = contactExpected?.changed === true
++      const elementalExpected = elementalGolden.cases.find((row: {id:string}) => row.id === fixture.id)
++      const migrated = elementalExpected?.changed === true || contactExpected?.changed === true
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -158,5 +163,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+diff --git a/test/bleed.test.ts b/test/bleed.test.ts
+index 28b27d4..1f28f67 100644
+--- a/test/bleed.test.ts
++++ b/test/bleed.test.ts
+@@ -1,2 +1,3 @@
++// Law10: COMBAT-V2-DESIGN sections8.2/18 replace magic Resist with named elemental resistance.
+ // Bleed — flat 2 damage a tick, and Resist NEVER touches it (ruled 2026-08-20:
+ // Resist mitigates burn/poison per tick, "never bleed"). The value is a turn
+@@ -19,5 +20,5 @@ function warriorWithResist(resist: number) {
+   )
+   const w = ctx.state.units[0]!
+-  if (resist) w.mods.push({ stat: 'resist', op: 'add', value: resist, source: 'test', scope: 'unit' })
++  if (resist) w.mods.push({ stat: 'poisonResist', op: 'add', value: resist, source: 'test', scope: 'unit' })
+   return { ctx, w }
+ }
+diff --git a/test/burn.test.ts b/test/burn.test.ts
+index 0b83985..281c088 100644
+--- a/test/burn.test.ts
++++ b/test/burn.test.ts
+@@ -1,2 +1,3 @@
++// Law10: COMBAT-V2-DESIGN sections8.2/18 replace magic Resist with named elemental resistance.
+ // status.burn — Codex-published (79 uses). Poison's tick with a second edge:
+ // halves all healing received while held (§5: halves, never blocks). Source in
+@@ -17,5 +18,5 @@ function board(resist = 0) {
+   )
+   const w = ctx.state.units[0]!
+-  if (resist) w.mods.push({ stat: 'resist', op: 'add', value: resist, source: 'test', scope: 'unit' })
++  if (resist) w.mods.push({ stat: 'fireResist', op: 'add', value: resist, source: 'test', scope: 'unit' })
+   return { ctx, w, z: ctx.state.units[1]! }
+ }
+diff --git a/test/flight.test.ts b/test/flight.test.ts
+index 633985b..f554819 100644
+--- a/test/flight.test.ts
++++ b/test/flight.test.ts
+@@ -130,9 +130,7 @@ describe('landing is real', () => {
+       && e['statusId'] === 'status.burn' && e.causeId === 'terrain.burning'),
+       'the landing hex must apply its burn').toBe(true)
+-    // The drake carries Resist 1, and the ruled tick-resist (2026-08-20) says
+-    // per-tick damage = max(0, value − Resist) — so this 1-burn tick deals 0
+-    // to THIS unit, correctly. A resisted status still runs its full clock:
+-    // the tick happened (the value decayed), the damage was blanked by Resist.
+-    expect(hpBefore - d.hp, 'Resist 1 blanks a 1-burn tick').toBe(0)
++    // V2 sections 8.2/18: this drake has magic Resist 1, no authored Fire Resist.
++    // The landing applies Burn and its full tick/decay clock still runs.
++    expect(hpBefore - d.hp, 'Magic Resist does not blank a fire tick').toBe(1)
+     expect(valueOf(d, 'status.burn'), 'and it still decays on its own clock').toBe(0)
+   })
+diff --git a/test/pack-statuses.test.ts b/test/pack-statuses.test.ts
+index c963678..4be5648 100644
+--- a/test/pack-statuses.test.ts
++++ b/test/pack-statuses.test.ts
+@@ -1,2 +1,4 @@
++// Law10 / V2 sections8.2 and18 (2026-09-07): named elemental defense supersedes
++// magic Resist for Burn/Poison. Preserve exact tick/decay assertions under the new stat.
+ // pack.statuses (2026-09-02) — the engine reads its statuses from the Codex.
+ // Andrew, asked whether the Codex may own the status rows: "Yes — Codex owns
+@@ -69,5 +71,6 @@ describe('the rows come from the Codex, and only from the Codex', () => {
+     for (const id of ['status.poison', 'status.burn']) {
+       expect(/Resist mitigates each tick/.test(byId.get(id)!.decay), id).toBe(true)
+-      expect(STATUSES[id]!.tickDamageType, id).toBe('magic')
++      expect(STATUSES[id]!.tickDamageType, id).toBe(id==='status.burn'?'fire':'poison')
++      expect(STATUSES[id]!.tickDamageType,id).toBe(byId.get(id)!.damageType)
+     }
+     // the family word rides along verbatim
+@@ -91,5 +94,5 @@ describe('the rows come from the Codex, and only from the Codex', () => {
+     tickStatuses(ctx, 'hero')
+     expect(w.hp).toBe(10 - 3 + 1)
+-    expect(ctx.events.find((e) => e.type === 'damage.applied' && e.causeId === 'status.poison')!['damageType']).toBe('magic')
++    expect(ctx.events.find((e) => e.type === 'damage.applied' && e.causeId === 'status.poison')!['damageType']).toBe('poison')
+   })
+ })
+diff --git a/test/status-damage-types.test.ts b/test/status-damage-types.test.ts
+index 1e76005..e92623b 100644
+--- a/test/status-damage-types.test.ts
++++ b/test/status-damage-types.test.ts
+@@ -1,2 +1,4 @@
++// Law10 / V2 sections8.2 and18 (2026-09-07): named elemental defense supersedes
++// magic Resist for Burn/Poison. Preserve exact tick/decay assertions under the new stat.
+ // Typed status ticks — fix.status-damage-types (2026-08-27).
+ //
+@@ -21,7 +23,7 @@ const rig = () => createBattle({
+ 
+ describe('the rows carry their types', () => {
+-  it('poison and burn tick MAGIC; bleed ticks TRUE; nothing carries the old flag', () => {
+-    expect(STATUSES['status.poison']!.tickDamageType).toBe('magic')
+-    expect(STATUSES['status.burn']!.tickDamageType).toBe('magic')
++  it('poison and burn tick their elements; bleed ticks TRUE; nothing carries the old flag', () => {
++    expect(STATUSES['status.poison']!.tickDamageType).toBe('poison')
++    expect(STATUSES['status.burn']!.tickDamageType).toBe('fire')
+     expect(STATUSES['status.bleed']!.tickDamageType).toBe('true')
+     for (const s of Object.values(STATUSES)) {
+@@ -32,13 +34,13 @@ describe('the rows carry their types', () => {
+ 
+ describe('the tick — type on the event, mitigation by the type', () => {
+-  it('a poison tick says MAGIC and resist reduces it', () => {
++  it('a poison tick says POISON and Poison Resist reduces it', () => {
+     const ctx = rig()
+     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+-    oath.mods.push({ stat: 'resist', op: 'add', value: 2, source: 'test', scope: 'unit' })
++    oath.mods.push({ stat: 'poisonResist', op: 'add', value: 2, source: 'test', scope: 'unit' })
+     applyStatus(ctx, oath.id, 'status.poison', 5, 'test')
+     const hpBefore = oath.hp
+     tickUnitStatuses(ctx, oath.id)
+     const tick = ctx.events.find((e) => e.type === 'damage.applied' && e.causeId === 'status.poison')!
+-    expect(tick['damageType'], '"poison and burn is magic damage"').toBe('magic')
++    expect(tick['damageType'], 'V2 poison element').toBe('poison')
+     expect(tick['resisted'], '"it gets reduced by resist"').toBe(2)
+     expect(tick['amount']).toBe(3) // 5 − resist 2
+diff --git a/test/tick-resist.test.ts b/test/tick-resist.test.ts
+index 9d717b2..2fa977a 100644
+--- a/test/tick-resist.test.ts
++++ b/test/tick-resist.test.ts
+@@ -1,2 +1,4 @@
++// Law10 / V2 sections8.2 and18 (2026-09-07): named elemental defense supersedes
++// magic Resist for Burn/Poison. Preserve exact tick/decay assertions under the new stat.
+ // RULED, Angela 2026-08-20: Resist mitigates Poison (and Burn) per tick, never
+ // Bleed. The canonical table from DECISIONS.md, asserted verbatim.
+@@ -12,9 +14,9 @@ function warriorWithResist(resist: number) {
+   )
+   const w = ctx.state.units[0]!
+-  if (resist) w.mods.push({ stat: 'resist', op: 'add', value: resist, source: 'test', scope: 'unit' })
++  if (resist) w.mods.push({ stat: 'poisonResist', op: 'add', value: resist, source: 'test', scope: 'unit' })
+   return { ctx, w }
+ }
+ 
+-describe('Resist mitigates poison ticks (ruled 2026-08-20)', () => {
++describe('Poison Resist mitigates poison ticks (V2 section8.2)', () => {
+   it('the canonical 5-vs-2 walk: take 3, 2, 1, 0, 0 — full clock, shortened pain', () => {
+     const { ctx, w } = warriorWithResist(2)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — EFFECT MEASUREMENT UNAVAILABLE; 2 FLAG(S) WARNED
+
+```
+effect of status.burn,status.poison — 25 paired battles per map, WITH vs WITHOUT
+  map.open: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.ridge: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.flanks: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.highlands: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.field: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.thicket: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.proving.open: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.proving.ridge: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.proving.ford: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.proving.copse: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.proving.ruin: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.courtyard: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  map.floodplain: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.embers: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.showcase: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.duel-8: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.dungeon-16x8: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.horde-24: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.journey-20x10: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.authored-40x40: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.high-prop-single: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+  test.map.high-prop-multi: UNAVAILABLE — invalid WITH 0/25, WITHOUT 25/25; paired valid replicate identities unavailable
+MEASUREMENT UNAVAILABLE — 22 control(s) lack complete paired evidence
+EFFECT_RESULT {"version":1,"status":"unavailable","unavailable":[{"map":"map.open","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.ridge","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.flanks","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.highlands","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.field","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.thicket","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.open","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.ridge","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.ford","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.copse","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.proving.ruin","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.courtyard","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"map.floodplain","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.embers","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.showcase","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.duel-8","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.dungeon-16x8","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.horde-24","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.journey-20x10","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.authored-40x40","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.high-prop-single","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25},{"map":"test.map.high-prop-multi","reason":"invalid-replicates","withInvalid":0,"withoutInvalid":25}]}
+```

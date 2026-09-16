@@ -21,6 +21,9 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     id, uid, name, typeId: def.typeId, side: def.side, rowSide: def.rowSide ?? def.side, hex,
     hp: def.maxHp, maxHp: def.maxHp,
     armor: def.armor, resist: def.resist,
+    ...(def.fireResist !== undefined ? {fireResist: def.fireResist} : {}),
+    ...(def.poisonResist !== undefined ? {poisonResist: def.poisonResist} : {}),
+    ...(def.shadowResist !== undefined ? {shadowResist: def.shadowResist} : {}),
     accuracy: def.accuracy, dodge: def.dodge, strength: def.strength, precision: def.precision, magic: def.magic, spirit: def.spirit,
     crit: def.crit ?? 0, luck: def.luck ?? 0, // station.crit 2026-08-27
     role: def.role,

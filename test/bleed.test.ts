@@ -1,3 +1,4 @@
+// Law10: COMBAT-V2-DESIGN sections8.2/18 replace magic Resist with named elemental resistance.
 // Bleed — flat 2 damage a tick, and Resist NEVER touches it (ruled 2026-08-20:
 // Resist mitigates burn/poison per tick, "never bleed"). The value is a turn
 // counter, not a magnitude (GAME-DESIGN §5; Codex, 63 uses). The bearer is
@@ -18,7 +19,7 @@ function warriorWithResist(resist: number) {
     [{ type: 'test-zombie', hex: hexId(11, 11) }],
   )
   const w = ctx.state.units[0]!
-  if (resist) w.mods.push({ stat: 'resist', op: 'add', value: resist, source: 'test', scope: 'unit' })
+  if (resist) w.mods.push({ stat: 'poisonResist', op: 'add', value: resist, source: 'test', scope: 'unit' })
   return { ctx, w }
 }
 

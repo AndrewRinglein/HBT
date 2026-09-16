@@ -129,11 +129,9 @@ describe('landing is real', () => {
     expect(ctx.events.some((e) => e.type === 'status.applied'
       && e['statusId'] === 'status.burn' && e.causeId === 'terrain.burning'),
       'the landing hex must apply its burn').toBe(true)
-    // The drake carries Resist 1, and the ruled tick-resist (2026-08-20) says
-    // per-tick damage = max(0, value − Resist) — so this 1-burn tick deals 0
-    // to THIS unit, correctly. A resisted status still runs its full clock:
-    // the tick happened (the value decayed), the damage was blanked by Resist.
-    expect(hpBefore - d.hp, 'Resist 1 blanks a 1-burn tick').toBe(0)
+    // V2 sections 8.2/18: this drake has magic Resist 1, no authored Fire Resist.
+    // The landing applies Burn and its full tick/decay clock still runs.
+    expect(hpBefore - d.hp, 'Magic Resist does not blank a fire tick').toBe(1)
     expect(valueOf(d, 'status.burn'), 'and it still decays on its own clock').toBe(0)
   })
 
