@@ -1,6 +1,9 @@
 # V2 elemental resistance and Protection verification
 
-Work in progress, 2026-09-16. Authority: COMBAT-V2-DESIGN sections 8/18; one writer.
+Engine batch complete, 2026-09-16: both items landed and the independent audit
+passed 1,429 tests with exact control goldens. Review warnings/seal limits remain
+explicit below. Authority: COMBAT-V2-DESIGN sections 8/18; one writer. Viewer and
+Kingdom adoption receipts live in their owning packages.
 
 Initial meaningful engine probe: 7 failures / 1 pass. Physical/magic triggers
 bypassed mitigation; elemental attacks used magic resistance; Burn was magic;
@@ -34,8 +37,9 @@ full events, state, RNG and result with both automatic and suspended drivers.
 Focused elemental and cursor tests: 61 passed. Changed historical status/flight
 tests explicitly cite the superseding V2 ruling and retain exact decay assertions.
 
-No seal or human/GPU acceptance is claimed. Final engine gates and batch audit
-remain pending; Protection coverage will be its own item.
+Historical pre-gate checkpoint: no seal or human/GPU acceptance was claimed.
+At this point the engine gates and separate Protection item were still pending;
+the completed results are recorded below.
 
 First full gate: 1,387 tests passed; generalized-variant scan correctly refused
 Burn because an existing vision mechanism names it. The variant pair is now
