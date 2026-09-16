@@ -1037,11 +1037,11 @@
  },
  "069": {
   "red": {
-   "at": "2026-09-16 09:28",
-   "sha": "8fdb217",
-   "hash": "1414970fc7f4",
+   "at": "2026-09-16 10:07",
+   "sha": "b43da57",
+   "hash": "9697702b5a5a",
    "how": "feature absent",
-   "tail": "       |                                                                   ^ |     101|   expect({state:s.ctx.state,events:s.ctx.events,rng:s.ctx.rng}).toEqua… |     102|   expect(commandSandbox(s,choice.command).ok).toBe(true)"
+   "tail": "       |                          ^ |     118|   expect(choice.preview!.packetsOnHit).toMatchObject([{id:'base',damag… |     119|   expect(choice.preview!.packetsOnCritChart).toHaveLength(3)"
   },
   "closed": {
    "at": "2026-09-16 09:29",

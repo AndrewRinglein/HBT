@@ -106,6 +106,27 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
   expect(damage['absorbed']).toBe(1)
   expect(s.ctx.events.find(e=>e.type==='status.reduced'&&e.causeId===id)).toMatchObject({target:u.id,statusId:'status.protection',by:1})
  })
+ it('forwards ordered packet forecasts and final HP facts through the same human command',()=>{
+  const s=createSandbox({...SANDBOX_DEFAULT,heroes:[SANDBOX_DEFAULT.heroes[0]!],enemies:['unit.zombie']});acting(s)
+  const actor=s.ctx.state.units[s.ctx.battleCursor!.actor!]!,target=s.ctx.state.units.find(u=>u.side==='enemy')!,id='attack.test-packet-flame'
+  actor.actions.push(id);actor.stamina=99
+  let choice:ReturnType<typeof sandboxChoices>[number]|undefined
+  for(const h of s.ctx.geo.neighboursOf(actor.hex)){target.hex=h;choice=sandboxChoices(s).find(c=>c.command.actionId===id&&c.command.slot==='primary');if(choice)break}
+  expect(choice).toBeDefined();if(!choice||!('target' in choice.command))throw Error('no legal adjacent packet attack')
+  const before=structuredClone({state:s.ctx.state,events:s.ctx.events,rng:s.ctx.rng})
+  expect(choice.preview).toEqual(preview(s.ctx,actor.id,target.id,id))
+  expect(choice.preview!.packetsOnHit).toMatchObject([{id:'base',damageType:'physical'},{id:'flame',damageType:'fire'}])
+  expect(choice.preview!.packetsOnCritChart).toHaveLength(3)
+  expect({state:s.ctx.state,events:s.ctx.events,rng:s.ctx.rng}).toEqual(before)
+  expect(commandSandbox(s,choice.command).ok).toBe(true)
+  const applied=s.ctx.events.slice(before.events.length).find(e=>e.type==='damage.applied'&&e['attackId']===id)
+  // The seeded attack must actually land; this is transport evidence, not a fabricated event.
+  expect(applied).toBeDefined();const packets=applied!['packets'] as {applied:number;overkill:number;resolved:number}[]
+  expect(packets.length).toBeGreaterThanOrEqual(2)
+  expect(packets.reduce((n,p)=>n+p.applied,0)).toBe(applied!['amount'])
+  expect(packets.every(p=>p.applied+p.overkill===p.resolved)).toBe(true)
+  const exported=exportSandbox(s);expect(exported.events).toEqual(s.ctx.events)
+ })
  it('rejects invalid configuration before creating a battle and supports variable parties',()=>{
   expect(()=>createSandbox({...SANDBOX_DEFAULT,heroes:[]})).toThrow()
   expect(()=>createSandbox({...SANDBOX_DEFAULT,seed:NaN})).toThrow()

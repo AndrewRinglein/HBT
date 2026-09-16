@@ -896,5 +896,19 @@
   "sha": "a4ef27d",
   "engineSha": "6bb36dc",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "v2.packet-display",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "needs": [
+   "v2.elemental-display"
+  ],
+  "spec": "Adopt ordered packet previews and final damage facts in the standalone human sandbox and shared passive viewer. Preserve engine commands, current-state forecast semantics, playback barriers, saves and Kingdom outcome picker.",
+  "expect": "ISC069 exact multi-type packet preview and human command/event transport, built packet forecast labels, shared viewer import, all prior full tests and P probes. No renderer mitigation formulas or human/GPU acceptance claim.",
+  "isc": [
+   "069"
+  ]
  }
 ]

@@ -38,6 +38,29 @@ assert.equal(button('execute').disabled,false)
  actor.actions=originalActions;actor.stamina=originalStamina
  w.document.getElementById('action').handlers.change()
 }
+// A real multi-type engine profile exercises the built preview, not fabricated totals.
+{
+ const ctx=handle.session.ctx,actor=ctx.state.units[ctx.battleCursor.actor],enemy=ctx.state.units.find(u=>u.side==='enemy'),id='attack.test-packet-flame'
+ const actions=actor.actions.slice(),stamina=actor.stamina,hex=enemy.hex
+ actor.actions.push(id);actor.stamina=99
+ let shown=false
+ for(const candidate of ctx.geo.neighboursOf(actor.hex)){
+  enemy.hex=candidate
+  const select=w.document.getElementById('action');select.value=id+'|primary';select.handlers.change()
+  if(w.document.getElementById('action').children.some(o=>o.getAttribute('value')===id+'|primary'&&o.hasAttribute('selected'))){shown=true;break}
+ }
+ assert.ok(shown,'engine must offer the adjacent packet attack')
+ const text=w.document.getElementById('preview').textContent
+ assert.match(text,/Current-state forecast/)
+ assert.match(text,/Damage on chart-only critical/)
+ assert.doesNotMatch(text,/raw|overkill/,'headline stays concise')
+ const details=w.document.getElementById('packetDetails');assert.ok(details);assert.equal(details.hasAttribute('open'),false)
+ assert.match(details.textContent,/Damage breakdown/)
+ assert.match(details.textContent,/On hit packets/);assert.match(details.textContent,/fire/);assert.match(details.textContent,/absorbed/)
+ assert.match(details.textContent,/On critical packets/);assert.match(details.textContent,/true/)
+ actor.actions=actions;actor.stamina=stamina;enemy.hex=hex
+ w.document.getElementById('action').handlers.change()
+}
 const before=events(),oldButton=button('execute');click('execute')
 assert.notEqual(events(),before);assert.equal(handle.busy,true);assert.ok(button('end').disabled)
 const once=events();oldButton.handlers.click();assert.equal(events(),once,'double click while animations run emits no commands')
