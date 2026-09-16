@@ -579,12 +579,14 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
       const S = foldTo(EV, v.cursor, CTX)
       check(V.layers.LAY && V.layers.LAY.size === Object.keys(S.layers).length, `${label}: ${V.layers.LAY && V.layers.LAY.size} layer tiles for ${Object.keys(S.layers).length} painted hexes`)
       for (const [hex, layer] of Object.entries(S.layers).slice(0, 5)) check(V.layers.LAY.get(+hex) && V.layers.LAY.get(+hex).layer === layer, `${label}: hex ${hex} tile is not layer ${layer}`) }
-    /* NO HELD (engine 1019510, 2026-09-04): ZoC is a threat, not a stop. move.stopped
-       draws NOTHING of its own — Angela saw "held" on screen and it was wrong — and the
-       reason is 'hit', never 'zone of control'. */
-    { const S = createState(); let drew = 0
-      for (const e of EV) { const cues = fold(S, e, CTX, 0); if (e.type === 'move.stopped') drew += cues.length }
-      check(drew === 0, `${label}: move.stopped cued ${drew} beat(s) — ZoC is a threat, not a stop; nothing is drawn`) }
+    /* Law 10 reason, 2026-09-16: requested explanation of attempted movement now
+       labels an actual HIT stop. Replace the old zero-cues assertion with the
+       exact cause/hex/text contract; retain NO HELD and no zone-entry stop below. */
+    { const S = createState()
+      for (const e of EV) { const cues = fold(S, e, CTX, 0)
+        if (e.type !== 'move.stopped') continue
+        const expected = e.reason === 'hit' ? [{ k:'float', hex:e.hex, kind:'note', text:'STOPPED BY HIT', small:true }] : []
+        check(JSON.stringify(cues) === JSON.stringify(expected), `${label}: move.stopped must explain only an authoritative hit at hex ${e.hex}`) } }
     for (const [e] of byType(EV, 'move.stopped')) check(e.reason !== 'zone of control', `${label}: move.stopped still says "zone of control" — the engine reversed it to 'hit'`)
     { const html = win.document.body.allHTML().map(stripB64).join('\n'); check(!/\bHELD\b/.test(html), `${label}: "HELD" is on a rendered surface`) }
     for (const [e, i] of byType(EV, 'move.stopped').slice(0, 2)) { const S = foldTo(EV, i + 1, CTX); check(S.U[e.actor].hex === e.hex, `${label}: after move.stopped unit ${e.actor} folds at ${S.U[e.actor].hex}, event says ${e.hex}`) }

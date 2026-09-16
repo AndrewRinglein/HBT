@@ -58,7 +58,7 @@ export function buildLog(events, SN, turns) {
       case 'encounter.won': return b('turn', `— objective met: ${e.reason} —`)
       case 'encounter.lost': return b('down', `— objective failed: ${e.reason}${e.actor != null ? ' — ' + nmAt(e) : ''}${e.limit != null ? ' (limit ' + e.limit + ')' : ''} —`)
       case 'move.stopped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;stops at hex ${e.hex} <span class="sq">· ${e.reason === 'hit' ? 'the attack of opportunity connected' : e.reason}</span>`)
-      case 'aoo.provoked': return b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;⚔ <b>${nmAt(e)}</b> takes an attack of opportunity on <b>${nmT(e)}</b> <span class="sq">· ${e.attackId}</span>`)
+      case 'aoo.provoked': return b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> tries to keep moving; ⚔ <b>${nmAt(e)}</b> takes an attack of opportunity <span class="sq">· ${e.attackId}</span>`)
       case 'aoo.skipped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;no attack of opportunity from ${nmAt(e)} <span class="sq">· ${e.reason}</span>`)
       case 'attack.cancelled': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;hit ${e.hit} of ${e.of} cancelled <span class="sq">· ${e.reason}</span>`)
       case 'corpse.created': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;a corpse lies at hex ${e.hex} <span class="sq">· ${e.typeId}</span>`)

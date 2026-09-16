@@ -59,14 +59,13 @@ test('unbound battle mount honestly retains accurate 2D without inventing an Atl
   w.__battleView.harness.dispose()
 })
 
-test('published player exposes all authored maps and journey areas outside the scaled battle, without changing selected battle',async()=>{
+test('battle page links to the separate Atlas without mounting a second map viewer',()=>{
  const w=boot(),H=w.__battleView.harness,d=w.document,events=JSON.stringify(H.viewer.events)
- await H.atlas.ready
- assert.ok(d.querySelector('#atlasInspector'));assert.equal(d.querySelector('#screen').contains(d.querySelector('#atlasMapButton')),false)
- assert.equal(d.querySelector('#atlasMapMenu').children.length,w.__battleView.lib.atlas.index.length)
- await H.atlas.show('buried-pilgrimage',1);assert.equal(d.querySelector('#atlasAreaMenu').children.length,3)
- assert.equal(d.querySelector('#atlasAreaMenu').children[1].getAttribute('aria-selected'),'true')
- assert.match(d.querySelector('#atlasStatus').textContent,/viewer\/start.ps1/)
+ assert.equal(d.querySelector('#atlasInspector'),null)
+ assert.equal(H.atlas,undefined)
+ const link=d.querySelector('#atlasLink');assert.ok(link)
+ assert.equal(link.getAttribute('href'),'../assets/battle-atlas/index.html')
+ assert.equal(link.getAttribute('target'),'_blank')
  assert.equal(JSON.stringify(H.viewer.events),events);H.dispose()
 })
 

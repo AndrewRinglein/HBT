@@ -10,7 +10,6 @@ import { mountBattleViewer } from './viewer.js'
 import { buildLog } from './log.js'
 import { prepareBattleField, initialMapId } from './engine.ts'
 import {prepareAtlasBinding} from './atlas.js'
-import {atlasInspector} from './atlas-inspector.js'
 
 /* the engine's six Outcome arms (core/types.ts, 2026-09-03), in words */
 const OUTNAME = { heroClear: 'heroes win', wipe: 'heroes wiped', capped: 'capped',
@@ -223,7 +222,12 @@ export function startHarness(mountEl, lib) {
   }
   addEventListener('resize', fit); fit()
 
-  const atlas = atlasInspector(q('#doc') || mountEl.parentNode, lib.atlas)
+  const atlasLink = document.createElement('a')
+  atlasLink.id = 'atlasLink'; atlasLink.className = 'atlas-link'
+  atlasLink.setAttribute('href', '../assets/battle-atlas/index.html')
+  atlasLink.setAttribute('target', '_blank'); atlasLink.setAttribute('rel', 'noopener')
+  atlasLink.textContent = 'Open Battle Atlas maps ↗'
+  ;(q('#doc') || mountEl.parentNode).appendChild(atlasLink)
   load(0)
-  return { load, playExport, playExportText, onDrop, battleData, atlas, get viewer() { return viewer }, dispose() { atlas.dispose(); dd.remove(); document.removeEventListener('click',outside); document.removeEventListener('drop', onDrop); if (viewer) viewer.dispose() } }
+  return { load, playExport, playExportText, onDrop, battleData, get viewer() { return viewer }, dispose() { atlasLink.remove(); dd.remove(); document.removeEventListener('click',outside); document.removeEventListener('drop', onDrop); if (viewer) viewer.dispose() } }
 }

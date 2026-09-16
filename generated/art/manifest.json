@@ -3,19 +3,23 @@
  "files": [
   "air-mage_256.png",
   "balrog_256.png",
+  "bloodhound_256.png",
   "bone-dragon_256.png",
+  "bruiser-demon_256.png",
   "card-airmage.jpg",
   "card-balrog.jpg",
   "card-basicimp.jpg",
   "card-bloodhound.jpg",
   "card-bloodyimp.jpg",
   "card-bonedragon.jpg",
+  "card-bruiser-demon.jpg",
   "card-darksniper.jpg",
   "card-demoncmd.jpg",
   "card-desertwolf.jpg",
   "card-duskhawk.jpg",
   "card-eyeblight.jpg",
   "card-farmer.jpg",
+  "card-fast-zombie.jpg",
   "card-firedemon.jpg",
   "card-fireimp.jpg",
   "card-ghoul.jpg",
@@ -25,6 +29,7 @@
   "card-hunter.jpg",
   "card-imp.jpg",
   "card-impmaster.jpg",
+  "card-lieutenant-demon.jpg",
   "card-lucius.jpg",
   "card-lumberjack.jpg",
   "card-magefire.jpg",
@@ -34,10 +39,13 @@
   "card-orphan.jpg",
   "card-osric.jpg",
   "card-palhunk.jpg",
+  "card-poison-imp.jpg",
+  "card-powerful-imp.jpg",
   "card-priestarm.jpg",
   "card-rogueraven.jpg",
   "card-shadowsorc.jpg",
   "card-skelarcher.jpg",
+  "card-skeleton.jpg",
   "card-skelspider.jpg",
   "card-skypirate.jpg",
   "card-spiritsnake.jpg",
@@ -45,11 +53,14 @@
   "card-warriron.jpg",
   "card-werewolf.jpg",
   "card-wolf.jpg",
+  "card-zombie-hound.jpg",
   "card-zombie.jpg",
   "dark-sniper_256.png",
   "dusk-hawk_256.png",
   "eyeblight_256.png",
   "farmer_256.png",
+  "fast-zombie_256.png",
+  "fire-imp_256.png",
   "ghoul_256.png",
   "hellhound_256.png",
   "hexDirt.png",
@@ -62,6 +73,7 @@
   "hexScrub.png",
   "imp-master_256.png",
   "imp_256.png",
+  "lieutenant-demon_256.png",
   "lucius_256.png",
   "lumberjack_256.png",
   "mage-fire_256.png",
@@ -84,18 +96,22 @@
   "ph-scary-kid.png",
   "ph-skeleton.png",
   "ph-spirit-snake.png",
+  "poison-imp_256.png",
+  "powerful-imp_256.png",
   "priest-armored_256.png",
   "ranger-aggressive_256.png",
   "rogue-raven_256.png",
   "shadow-sorcerer_256.png",
   "skeletal-archer_256.png",
   "skeleton-spider_256.png",
+  "skeleton_256.png",
   "sky-pirate_256.png",
   "stone-golem_256.png",
   "strong-skeleton_256.png",
   "warrior-iron_256.png",
   "werewolf_256.png",
   "wolf_256.png",
+  "zombie-hound_256.png",
   "zombie_256.png"
  ],
  "artmap": {
@@ -178,9 +194,9 @@
    "height": 1.55
   },
   "unit.fast-zombie": {
-   "token": "zombie_256.png",
-   "card": "card-zombie.jpg",
-   "aspect": 0.3789,
+   "token": "fast-zombie_256.png",
+   "card": "card-fast-zombie.jpg",
+   "aspect": 0.3477,
    "height": 1.55
   },
   "unit.skeletal-archer": {
@@ -202,39 +218,39 @@
    "height": 1.2
   },
   "unit.powerful-imp": {
-   "token": "imp_256.png",
-   "card": "card-bloodyimp.jpg",
-   "aspect": 0.4219,
+   "token": "powerful-imp_256.png",
+   "card": "card-powerful-imp.jpg",
+   "aspect": 0.9297,
    "height": 1.55
   },
   "unit.fire-imp": {
-   "token": "imp_256.png",
+   "token": "fire-imp_256.png",
    "card": "card-fireimp.jpg",
-   "aspect": 0.4219,
+   "aspect": 0.6797,
    "height": 1.2
   },
   "unit.poison-imp": {
-   "token": "imp_256.png",
-   "card": "card-basicimp.jpg",
-   "aspect": 0.4219,
+   "token": "poison-imp_256.png",
+   "card": "card-poison-imp.jpg",
+   "aspect": 0.6953,
    "height": 1.2
   },
   "unit.bruiser-demon": {
-   "token": "imp_256.png",
-   "card": "card-firedemon.jpg",
-   "aspect": 0.4219,
+   "token": "bruiser-demon_256.png",
+   "card": "card-bruiser-demon.jpg",
+   "aspect": 0.6211,
    "height": 2.0
   },
   "unit.lieutenant-demon": {
-   "token": "imp_256.png",
-   "card": "card-demoncmd.jpg",
-   "aspect": 0.4219,
+   "token": "lieutenant-demon_256.png",
+   "card": "card-lieutenant-demon.jpg",
+   "aspect": 0.4766,
    "height": 2.1
   },
   "unit.bloodhound": {
-   "token": "wolf_256.png",
+   "token": "bloodhound_256.png",
    "card": "card-bloodhound.jpg",
-   "aspect": 0.8633,
+   "aspect": 0.7812,
    "height": 1.0
   },
   "unit.hellhound": {
@@ -244,9 +260,9 @@
    "height": 1.1
   },
   "unit.zombie-hound": {
-   "token": "wolf_256.png",
-   "card": "card-wolf.jpg",
-   "aspect": 0.8633,
+   "token": "zombie-hound_256.png",
+   "card": "card-zombie-hound.jpg",
+   "aspect": 0.9062,
    "height": 1.0
   },
   "unit.werewolf": {
@@ -478,9 +494,15 @@
    "height": 1.55
   },
   "unit.skeleton": {
-   "token": "ph-skeleton.png",
-   "card": null,
-   "aspect": 0.64,
+   "token": "skeleton_256.png",
+   "card": "card-skeleton.jpg",
+   "aspect": 0.625,
+   "height": 1.55
+  },
+  "test-gash-zombie": {
+   "token": "zombie_256.png",
+   "card": "card-zombie.jpg",
+   "aspect": 0.3789,
    "height": 1.55
   }
  }

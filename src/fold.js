@@ -196,8 +196,9 @@ export function fold(S, e, ctx, now = 0) {
          held. `reason: 'hit'` — the provoked swing on the way out connected and
          the mover lost its movement where it stood. The aoo.provoked /
          attack.declared / damage.applied beats tell it; this line only fixes
-         the hex. Nothing is drawn here (Angela saw "held" and it was wrong). */
+         the hex. The hit is the cause of stopping, never entering a zone. */
       if (U[e.actor]) U[e.actor].hex = e.hex
+      if (e.reason === 'hit') cue('float', { hex: e.hex, kind: 'note', text: 'STOPPED BY HIT', small: true })
       S.AOO = null
       break
     case 'aoo.provoked':
@@ -205,6 +206,9 @@ export function fold(S, e, ctx, now = 0) {
          attack.declared/hit/miss that follow belong to this, and the label
          says so. The holder acts; the mover's activation resumes after. */
       S.AOO = { holder: e.actor, mover: e.target, attackId: e.attackId }
+      // This event itself says the mover tried another step. No guessed path,
+      // range or animation into a hex the engine never let the mover enter.
+      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'note', text: 'TRIES TO KEEP MOVING', small: true })
       if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'aoo', text: 'ATTACK OF OPPORTUNITY', small: true })
       S.subjectId = e.actor; S.subjectMode = 'acting'
       break
