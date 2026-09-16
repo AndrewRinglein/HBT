@@ -32,3 +32,20 @@ unpublished TEST scenario IDs withhold the clean seal. The 72-line geometry leaf
 is normalized from its prior CRLF form to LF; its original logic is unchanged.
 Landing, committed-tree verification and separate batch audit remain pending. No human visual acceptance or clean seal is claimed. Actual Atlas scene
 compilation, viewer binding and Kingdom mounting remain the following package work.
+
+
+Final: source **db91771** landed and passed committed-tree tests/control hashes.
+The gate printed its pre-amend SHA 7f8a86f; db91771 is the resulting source commit.
+The separate batch audit passes typecheck, **1351 tests**, all **22 controls**,
+and whole-core checks. No exemption or human review was used. The clean seal
+remains withheld for the three recorded flag categories. Audit reports 34
+historically unpublished IDs and 48 review-flagged landings across the whole tree.
+
+Logs: scratch/low-cover-gate.log, scratch/low-cover-land.log and
+scratch/low-cover-audit.log. The generated engine/root Game Builder copies match
+SHA256 04B719B5D5632623642181F812B51FABA62D526DAB0036B1909DFA1F0ADD408A.
+Their eight generated whitespace-only lines remain a distinct diagnostic, not a
+functional pass claim. Source whitespace checks are clean. The final receipt
+contains no post-audit combat source changes. Root DOCS/STATE publication belongs
+to the coordinated parent task. Actual approved scene compilation and rendering
+in game/replay are next; these engine prerequisites alone do not deliver them.

@@ -294,3 +294,7 @@ coverage and movement costs; it imports no Atlas renderer or assets. The next
 coordinated stage is the root Atlas compiler and actual viewer/Kingdom battle
 binding, retaining Kingdom's outcome picker. No inspector-only substitute or
 human visual acceptance is claimed by these engine tests.
+
+Low-cover final source: db91771. Full gate, committed-tree check and separate
+batch audit pass 1351 tests and all 22 control hashes. No exemption; clean seal
+withheld for three recorded review/publication categories. See V2-LOW-COVER.md.
