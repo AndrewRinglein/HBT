@@ -51,3 +51,8 @@ the real float DOM. Joined packet text is now escaped and float numerals use
 textContent. All 14 packet/presentation probes pass with exact valid-number and
 timer assertions retained. The normal publication gate reruns from this final
 source before replacing BATTLE-VIEWER.html.
+
+Final publication: `node tools/gate.mjs --land --fresh` passed from clean viewer
+source 06f6edf and engine cfbcac4, including all 29 exact refreshed exports,
+16 runtime/packet/elemental probes, 27 scene/presentation probes and the complete
+direct-map import checks. The generated page carries that source provenance.
