@@ -72,6 +72,11 @@
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
   },
   {
+   "unit": "unit.iron-colossus",
+   "what": "had no attack of its own — given attack.basic.melee by rule.enemy-attacks",
+   "needs": "content: authored attacks are owed"
+  },
+  {
    "unit": "unit.lieutenant-demon",
    "what": "(unit) onActivationEnd: grant a stat for the Battle (health)",
    "needs": "trigger-effect: statMod"
