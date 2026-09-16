@@ -2579,3 +2579,14 @@ index 60fd2c6..35a3a0b 100644
 ISC-069: CLOSED at 0dec52d
 slice: 62 of 69 closed · 62 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+
+## 2026-09-16 — committed audit of v2.activation-choice
+
+Source 0dec52d, bookkeeping 1db65a5, clean engine 1723e63. Independent npm test
+JSON report: 73 files / 233 passed / zero failures. Typecheck passed;
+slice-gate --report passed all 62 P probes with zero regressions. Built UI
+drives default three-hero alternate order, unblocked selection, pending save,
+playback/fault locks, actual human replay import and engine-resolved outcome.
+Two landing warning categories remain; this audit grants no seal or human/GPU
+acceptance. Engine and viewer rules are not duplicated in the host.
