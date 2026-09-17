@@ -13,6 +13,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
+import { measurementLabel } from './measurement-label.mjs'
 
 // Artifact links carry a content-hash cache-buster (?v=). Browsers cache
 // file:// pages hard — Angela rebuilt the replay overnight and her browser
@@ -147,7 +148,7 @@ const itemCardsFor = (itemsOrdered) => itemsOrdered.map(([id, rs]) => {
       ${fails.length ? `<div class="fails">${fails.map((c) => `<span class="b b-crit">✗ ${esc(c.name)}</span>`).join(' ')}</div>` : ''}
       ${warns.length ? `<div class="fails">${warns.map((c) => `<span class="b b-warn">⚑ ${esc(c.name)}</span>`).join(' ')}</div>` : ''}
       ${notes.length ? `<ul class="notes">${notes.map((c) => `<li>${esc(c.note)}</li>`).join('')}</ul>` : ''}
-      ${r.effect ? `<div class="effect">measured: ${esc(r.effect)}</div>` : ''}
+      ${r.effect ? `<div class="effect">${measurementLabel(r)}: ${esc(r.effect)}</div>` : ''}
     </div>`
   }).join('')
   return `<div class="card" data-state="${state}">

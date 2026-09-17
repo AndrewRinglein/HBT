@@ -42,7 +42,9 @@ if (process.argv.includes('--arm')) {
   const run = (disable?: string) =>
     JSON.parse(execSync('npx tsx tools/effect-size.mts --arm', {
       encoding: 'utf8',
-      env: disable ? { ...process.env, CF_DISABLE_IDS: disable } : process.env,
+      // WITH is always the complete registry, even if the invoking shell has
+      // an experiment selected. Preserve every unrelated environment setting.
+      env: { ...process.env, CF_DISABLE_IDS: disable ?? '' },
     }).trim().split('\n').pop()!)
   const withArm = run()
   const without = run(ids)

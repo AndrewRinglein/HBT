@@ -3578,5 +3578,21 @@
   "status": "done-needs-review",
   "sha": "5a6addc",
   "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
+ },
+ {
+  "id": "plumbing.measurement-integrity",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": [
+   "plumbing.command-diagnostics"
+  ],
+  "spec": "Validate complete authored action profiles and item grants before experimental filtering. Live actions remain absent, unrelated battles stay runnable, and required missing weapon grants stay invalid. The measurement WITH arm clears inherited disable IDs; Game Builder labels recorded measurement errors and unavailable evidence honestly.",
+  "expect": "Fresh-process unrelated battles remain byte-identical with disabled burst, attack and power IDs; disabled actions cannot execute, unknown grants and disabled malformed/duplicate profiles reject. No-disable battle events/state/RNG/results match the prior source. Actual generated Builder fixtures retain history and escaped error text; WITH and WITHOUT remain distinct under an inherited experimental environment.",
+  "unreachable": "This repairs experiment initialization, child-arm environment and offline measurement presentation. No shipping content row can invoke the distinction between complete authored validation and experimental omission; fresh native processes exercise it directly.",
+  "killSwitchExempt": "The tests themselves exercise multiple CF_DISABLE_IDS values in fresh processes and real gate-history fixtures. Disabling a shipping content row cannot remove offline validation ordering or Builder labeling; preimplementation assertion failures establish these changes independently.",
+  "note": "Separate measurement-integrity repair; no authored content or core combat changes. Historical burst error and withheld seal remain unchanged. Scenarios requiring missing weapon grants remain invalid/unavailable, never zero-effect evidence. No worker, timeout, seed or assertion reductions.",
+  "status": "done-needs-review",
+  "sha": "ff27af9",
+  "gauntlet": "not passed — 2 exemption(s) taken"
  }
 ]

@@ -4,7 +4,7 @@
 
 import type { AbilityDef, ActionDef, AttackDef, UnitDef } from '../core/types.js'
 import { disabledIds, omitDisabled, stripDisabledTriggers } from './disable.js'
-import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties, type PackAttackRow } from './pack.js'
+import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
 import { MOVES } from './moves.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -196,7 +196,7 @@ for (const k of Object.keys(packTestAttacks())) {
 // refactor.one-action-type (2026-09-04): the hand-typed rows are lifted into
 // the one action type exactly as the pack's are.
 const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = liftAttacks(RAW_ATTACK_ROWS)
-export const ATTACKS = omitDisabled({ ...RAW_ATTACKS, ...packAttacks(), ...packTestAttacks() })
+const AUTHORED_ATTACKS = { ...RAW_ATTACKS, ...packAttacks(), ...packTestAttacks() }
 // The authored item powers join the hand-authored abilities through the same
 // seam — capability.item-powers (2026-08-27). One owner per id, loudly.
 for (const k of Object.keys(packAbilities())) {
@@ -209,15 +209,27 @@ for (const k of Object.keys(packTestAbilities())) {
 for (const k of Object.keys(packClassPowers())) {
   if (k in RAW_ABILITIES || k in packAbilities() || k in packTestAbilities()) throw new Error(`class power '${k}' exists elsewhere too — one owner only`)
 }
-export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities(), ...packTestAbilities(), ...packClassPowers() })
+const AUTHORED_ABILITIES = { ...RAW_ABILITIES, ...packAbilities(), ...packTestAbilities(), ...packClassPowers() }
+const AUTHORED_BURSTS = packBursts()
+const AUTHORED_MOVES = packMoves()
 // THE ONE REGISTRY — refactor.one-action-type (2026-09-04). Every attack,
 // power and movement, by id; ATTACKS, ABILITIES and MOVES above are the three
 // views a reader may still prefer. One owner per id, loudly — an id cannot be
 // both a weapon's attack and a class power.
-for (const k of Object.keys(ATTACKS)) if (k in ABILITIES || k in MOVES) throw new Error(`action '${k}' is an attack AND a power or movement — one owner only`)
-for (const k of Object.keys(ABILITIES)) if (k in MOVES) throw new Error(`action '${k}' is a power AND a movement — one owner only`)
-export const BURSTS = omitDisabled(packBursts())
-for (const id of Object.keys(BURSTS)) if (id in ATTACKS || id in ABILITIES || id in MOVES) throw Error(`action '${id}' has duplicate profiles`)
+// Validate complete authored profiles and grants before experiments remove rows.
+// A disabled typo or collision is still an authored-content error. Conversely,
+// a valid omitted action must not invalidate an unrelated item at module load.
+for (const k of Object.keys(AUTHORED_ATTACKS)) if (k in AUTHORED_ABILITIES || k in AUTHORED_MOVES) throw new Error(`action '${k}' is an attack AND a power or movement — one owner only`)
+for (const k of Object.keys(AUTHORED_ABILITIES)) if (k in AUTHORED_MOVES) throw new Error(`action '${k}' is a power AND a movement — one owner only`)
+for (const id of Object.keys(AUTHORED_BURSTS)) if (id in AUTHORED_ATTACKS || id in AUTHORED_ABILITIES || id in AUTHORED_MOVES) throw Error(`action '${id}' has duplicate profiles`)
+const AUTHORED_ITEMS = packItems(AUTHORED_ATTACKS, AUTHORED_ABILITIES, AUTHORED_BURSTS)
+const AUTHORED_ENCHANTED = packEnchanted(AUTHORED_ATTACKS, AUTHORED_ABILITIES, AUTHORED_BURSTS)
+for (const k of Object.keys(AUTHORED_ENCHANTED)) {
+  if (k in AUTHORED_ITEMS) throw new Error(`enchanted row '${k}' collides with a Codex item — one owner only`)
+}
+export const ATTACKS = omitDisabled(AUTHORED_ATTACKS)
+export const ABILITIES = omitDisabled(AUTHORED_ABILITIES)
+export const BURSTS = omitDisabled(AUTHORED_BURSTS)
 export const ACTIONS: Readonly<Record<string, ActionDef>> = { ...ATTACKS, ...ABILITIES, ...MOVES, ...BURSTS }
 // The Critical Injury Chart — ruled data (station.crit 2026-08-27). Not under
 // omitDisabled: rows carry keys, not ids; the kill seam for crits is the
@@ -228,10 +240,7 @@ export const CRIT_CHART = packCritChart()
 // (CF_DISABLE_IDS) reaches an item id like any other.
 // The enchanted tier-3 rows (hero assembly, 2026-09-03; ITEMS-PLAN.md §6)
 // join the Codex items — one registry, one owner per id.
-for (const k of Object.keys(packEnchanted(ATTACKS, ABILITIES, BURSTS))) {
-  if (k in packItems(ATTACKS, ABILITIES, BURSTS)) throw new Error(`enchanted row '${k}' collides with a Codex item — one owner only`)
-}
-export const ITEMS = omitDisabled({ ...packItems(ATTACKS, ABILITIES, BURSTS), ...packEnchanted(ATTACKS, ABILITIES, BURSTS) })
+export const ITEMS = omitDisabled({ ...AUTHORED_ITEMS, ...AUTHORED_ENCHANTED })
 // The badge registry — badge.mechanism (2026-09-04): the Codex's rows and the test receptacle's, one owner per id, through the kill-switch seam.
 for (const k of Object.keys(packTestBadges())) if (k in packBadges()) throw new Error(`badge '${k}' exists in the test receptacle AND the pack — one owner only`)
 export const BADGES = omitDisabled({ ...packBadges(), ...packTestBadges() })
