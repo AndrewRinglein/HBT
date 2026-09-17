@@ -1,6 +1,6 @@
 # Hex-targeted bursts — implementation receipt
 
-Engine/content implementation verified; landing and independent audit pending, 2026-09-17. Authority: COMBAT-V2-DESIGN sections 4, 7, 15 and
+Engine/content landed at 0c6fa07; final independent audit remains under investigation, 2026-09-17. Authority: COMBAT-V2-DESIGN sections 4, 7, 15 and
 18. Baseline engine cfbcac4. This replaces legacy area attacks in one coherent
 item; block, physical burst KDB and destruction remain later dependencies.
 
@@ -61,7 +61,7 @@ The final content suite passes 114/114. Gate attempt 1 passed every hard check e
 
 Gate attempt 2 ran alone and passed every hard check (1,541 tests). Before landing, coordinator review found three more live travelling class blasts in the older ability-effects compiler: Rain of Arrows, Fireball and Scorch. Six added behavior probes were red: empty-centre requests rejected malformed-target, and recipients behind high props lost 5/8/8 HP. Their explicit radius-one/any-side profiles retain Precision minus 1 physical or Magic plus 2 magic, original ranges/costs/cooldowns/warmups. Names alone do not retune the authored magic type to fire. Only the fulfilled unit-centre gap is removed; Burn consumption/ground painting remain named gaps. The compiler rejects target-origin area damage without an explicit burst and rejects disagreement with its authored base payload. Fifteen compiler probes pass.
 
-Separate exact control-panel comparison used all 22 maps, 25 seeds each, enemyCount 8 (550 battles): every historical/current gate hash reproduced. 177 battles retained exact events/state/RNG/result; 373 changed, including 80 changed results. Earliest differences: 305 attack-to-burst declarations, one Storm power-to-burst declaration, and 67 changed AI stamina spends (52 Hack-to-Cleave, 14 Cleave-to-Hack, one Storm-to-Bolt). These are real action/behavior changes, not metadata-envelope changes. This panel is separate from the 42 cursor fixtures, of which 38 remain exact. The tracked comparison recipe asserts identical event prefixes and that the first changed declaration/choice involves a migrated burst.
+Separate exact control-panel comparison used all 22 maps, 25 seeds each, enemyCount 8 (550 battles): every historical/current gate hash reproduced. 177 battles retained exact events/state/RNG/result; 373 changed, including 80 changed results. Earliest differences: 305 attack-to-burst declarations, one Storm power-to-burst declaration, and 67 changed AI stamina spends (52 Hack-to-Cleave, 14 Cleave-to-Hack, one Storm-to-Bolt). These are real action/behavior changes, not metadata-envelope changes. This panel is separate from the 42 cursor fixtures; that earlier checkpoint had 38 exact cases, and the final late-class conversion comparison below has 34. The tracked comparison recipe asserts identical event prefixes and that the first changed declaration/choice involves a migrated burst.
 
 ## Coordinator diagnosis after the final class conversions (2026-09-17)
 
@@ -87,3 +87,36 @@ Recovery checkpoint, 2026-09-17: the late three class powers pass all six precon
 Final content verification passed 117/117 (77.67 seconds), publication receipt and outputs committed as 09fa41b. The next full engine gate found only two stale Fireball assertions in ability-effects.test.ts. Replaced the old ABILITIES lookup with BURSTS while retaining exact warmup fielding; real-battle coverage still demands Aegis and Circle power.used plus specifically Fireball burst.declared and no Fireball power.used. This is an explicit V2 classification/event replacement, not broadened event acceptance.
 
 Final pre-landing gate passed every hard check with 1,552 tests. Candidate-ruling and historical-test-edit flags remain for review; no human review or seal is claimed. Source whitespace checks pass; generated Game Builder whitespace remains the previously recorded generator issue and was not hand-edited.
+
+## Landing and audit finding (2026-09-17)
+
+Normal landing and committed-tree suite passed all 1,552 tests plus exact current
+control hashes. The gate printed source cb30b8c, then amended bookkeeping into
+final engine commit 0c6fa07. Content is published at 09fa41b (117 tests passed).
+Only engine/content are published; viewer and Kingdom bundles remain at packet
+semantics until their separate host stages. No human visual acceptance is claimed.
+
+The mandatory landing-130 periodic audit reported one failing test but discarded
+its raw exception. The immediate detailed four-worker diagnostic passed all 1,552
+tests in 50.92 seconds (kiting 2,801 ms). The original cause is unconfirmed; this
+is not proof of a timeout. A separate narrow tooling item will preserve raw
+command/exit/stdout/stderr/exception evidence on future gate and audit failures
+before the final independent audit. No further timeout or assertion changes.
+
+The WITHOUT measurement arm failed during authored item validation, before
+simulation, so it provides no numerical balance evidence. Reproduce in PowerShell:
+
+```powershell
+$env:TSX_DISABLE_CACHE='1'
+$env:CF_DISABLE_IDS='attack.test-arc.sweep,power.lightning-staff.storm'
+npx tsx tools/effect-size.mts --arm
+```
+
+Exact error: `enchanted: 'item.lightning-staff.lightning' grants power
+'power.lightning-staff.storm', not a pack ability` at src/content/pack.ts:435.
+The content index validates item grants against already filtered actions. The
+next separate loader item must validate complete authored registries before
+experimental filtering, without accepting unknown grants or inventing missing
+actions. Existing reporting protocol is documented in TOOLING-EFFECT-ARMS.md.
+The burst seal stays withheld for this measurement error, periodic audit failure
+and two review flags; later tooling fixes do not rewrite that history.
