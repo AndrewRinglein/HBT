@@ -25,7 +25,7 @@ Initial evidence: `runs/command-diagnostic-red.txt`.
 
 No combat/content code, test assertion, fixture input, seed count, worker count
 or test timeout changed. The two offline-tool exemptions are explicit in the
-pending item; they withhold its seal. The historical burst measurement/audit
+landed item; they withhold its seal. The historical burst measurement/audit
 failure stays recorded. The separate disabled-grant loader defect is untouched.
 
 Normal candidate and landing gates passed all 1,556 tests and the unchanged

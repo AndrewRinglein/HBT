@@ -4,6 +4,11 @@ Engine/content landed at 0c6fa07; independent batch audit passed after the separ
 18. Baseline engine cfbcac4. This replaces legacy area attacks in one coherent
 item; block, physical burst KDB and destruction remain later dependencies.
 
+## Initial plan and probe checkpoint (before implementation)
+
+The following initial checkpoint records the plan and early red probes; the
+landed result and final audit are recorded below.
+
 Preflight found four live legacy area rows: Great Cleave, Halberd Cleave,
 the TEST Arc Sweep, and Lightning Staff Storm. The three arcs preserve their
 authored adjacent three-hex wedge. Storm preserves its radius-one disk and
@@ -28,7 +33,7 @@ command and simulation APIs, then adds exact geometry, lifecycle, content,
 snapshot, AI and built-host probes. No technical pass or visual acceptance is
 claimed at this checkpoint.
 
-## Declared baseline replacements
+## Pre-landing baseline replacements
 
 Before the full gate, legacy area-specific assertions will be replaced under V2 sections 4/7/15/18: ATTACKS/ABILITIES classification, unit targets, attack/power area event names, guaranteed attack roll numbers, and the global areaHitsAllies switch. Their replacement checks retain exact authored wedge/disk geometry, typed amounts, friendly-fire inclusion/exclusion through row-side metadata, action costs/charges, AI utility, deterministic complete runs, and atomic rejection. Old golden inputs remain unchanged; any full-battle expected-state changes require first-divergence attribution. This is a declared test edit, not a unchanged-baseline claim.
 
