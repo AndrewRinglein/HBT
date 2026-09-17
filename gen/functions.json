@@ -1353,6 +1353,28 @@
    ]
   },
   {
+   "name": "deal PHYSICAL damage",
+   "uses": 16,
+   "ids": [
+    "item.bear-trap",
+    "item.stormcallers-orb",
+    "item.necklace-of-frost-immunity",
+    "attack.greatsword.great-cleave",
+    "attack.halberd.cleave",
+    "power.reaver.cleave",
+    "power.bowmaster.rain-of-arrows",
+    "power.trapper.bear-trap",
+    "power.trapper.spring-the-trap",
+    "power.nightblade.fan-of-knives",
+    "power.grove-keeper.quench",
+    "power.serpent.constrict",
+    "power.drake.wing-buffet",
+    "power.direbeast.trample",
+    "power.stalker.throat-hold",
+    "specialty.spirit-walker"
+   ]
+  },
+  {
    "name": "regain stamina",
    "uses": 15,
    "ids": [
@@ -1371,26 +1393,6 @@
     "enchant.abundant",
     "enchant.bloodthirsty",
     "enchant.death"
-   ]
-  },
-  {
-   "name": "deal PHYSICAL damage",
-   "uses": 14,
-   "ids": [
-    "item.bear-trap",
-    "item.stormcallers-orb",
-    "item.necklace-of-frost-immunity",
-    "power.reaver.cleave",
-    "power.bowmaster.rain-of-arrows",
-    "power.trapper.bear-trap",
-    "power.trapper.spring-the-trap",
-    "power.nightblade.fan-of-knives",
-    "power.grove-keeper.quench",
-    "power.serpent.constrict",
-    "power.drake.wing-buffet",
-    "power.direbeast.trample",
-    "power.stalker.throat-hold",
-    "specialty.spirit-walker"
    ]
   },
   {

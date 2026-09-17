@@ -257,11 +257,6 @@
    "needs": "stat: vision (no UnitDef field)"
   },
   {
-   "unit": "alpha-air-mage",
-   "what": "power.lightning-staff.storm targets 'a hex within 4' — engine centres the blast on a UNIT",
-   "needs": "power targeting: arbitrary hex"
-  },
-  {
    "unit": "hero.fixed.lumberjack-and-wife",
    "what": "attack.lumberjack-axe.cleave targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
    "needs": "area attack shape"
@@ -735,11 +730,6 @@
    "unit": "item.earth-staff",
    "what": "grants power.earth-staff.earth-shield",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.lightning-staff",
-   "what": "power.lightning-staff.storm targets 'a hex within 4' — engine centres the blast on a UNIT",
-   "needs": "power targeting: arbitrary hex"
   },
   {
    "unit": "item.priest-chain",

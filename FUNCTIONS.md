@@ -95,8 +95,8 @@ What a rule may DO.
 | `deal MAGIC damage` | 22 |
 | `place a trap` | 19 |
 | `reveal / break stealth` | 18 |
+| `deal PHYSICAL damage` | 16 |
 | `regain stamina` | 15 |
-| `deal PHYSICAL damage` | 14 |
 | `deal damage (type from the weapon)` | 13 |
 | `move WITHOUT provoking` | 13 |
 | `set a ground layer` | 12 |

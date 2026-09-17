@@ -300,11 +300,6 @@
    "what": "modifies only bow/ranged attacks — engine applies it to the unit"
   },
   {
-   "power": "power.bowmaster.rain-of-arrows",
-   "class": "class.ranger",
-   "what": "targets 'a hex within 4' — engine centres the blast on a UNIT"
-  },
-  {
    "power": "power.bowmaster.extra-shot",
    "class": "class.ranger",
    "what": "targets 'up to 2 enemies within Reach' unparsed — the power is inert"
@@ -1127,17 +1122,12 @@
   {
    "power": "power.fire-master.fireball",
    "class": "class.mage",
-   "what": "targets 'a hex within 6' — engine centres the blast on a UNIT"
-  },
-  {
-   "power": "power.fire-master.fireball",
-   "class": "class.mage",
    "what": "rider: plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning"
   },
   {
    "power": "power.fire-master.fireball",
    "class": "class.mage",
-   "what": "unparsed: Resist reduces both the hit and each Burn tick, and allies caught in it burn too"
+   "what": "unparsed: allies caught in it burn too"
   },
   {
    "power": "power.fire-master.fire-shield",
@@ -3138,11 +3128,6 @@
    "power": "power.wyrmling.kindle",
    "class": "class.beast",
    "what": "no effect compiled — the power is inert"
-  },
-  {
-   "power": "power.wyrmling.scorch",
-   "class": "class.beast",
-   "what": "targets 'a hex within 3' — engine centres the blast on a UNIT"
   },
   {
    "power": "power.wyrmling.scorch",
