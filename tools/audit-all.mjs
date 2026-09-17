@@ -12,6 +12,7 @@
 
 import { execSync } from 'node:child_process'
 import { readFileSync, readdirSync, appendFileSync } from 'node:fs'
+import { runDiagnosticCommand } from './command-diagnostic.mjs'
 
 const sh = (cmd) => execSync(cmd, { encoding: 'utf8', stdio: 'pipe' })
 const tryRun = (cmd) => { try { return { ok: true, out: sh(cmd) } } catch (e) {
@@ -32,9 +33,9 @@ audit('typecheck', () => {
 })
 
 audit('every test in the suite', () => {
-  const r = tryRun('npx vitest run --reporter=dot')
+  const r = runDiagnosticCommand('npx vitest run --reporter=dot', 'audit-full-suite')
   const m = r.out.match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
-  return { ok: r.ok, note: r.ok ? `${m?.[2] ?? '?'} passed` : `${m?.[1] ?? '?'} FAILED` }
+  return { ok: r.ok, note: r.ok ? `${m?.[2] ?? '?'} passed` : `${m?.[1] ?? '?'} FAILED — ${r.note}` }
 })
 
 audit('control battles match golden', () => {

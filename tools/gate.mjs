@@ -15,6 +15,7 @@
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { filesContaining } from './source-scan.mjs'
+import { runDiagnosticCommand } from './command-diagnostic.mjs'
 
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
@@ -124,12 +125,12 @@ check('typecheck', () => {
 })
 
 check('full test suite', () => {
-  const r = tryRun('npx vitest run --reporter=dot')
+  const r = runDiagnosticCommand('npx vitest run --reporter=dot', `gate-${id}-full-suite`)
   const m = r.out.match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
   if (r.ok) return { ok: true, note: m ? `${m[2]} passed` : '' }
   // Name the failures. A gate that only says "3 FAILED" makes the next attempt start blind.
   const names = [...r.out.matchAll(/(?:×|FAIL)\s+([^\n]+)/g)].map((x) => x[1].trim())
-  return { ok: false, note: `${m?.[1] ?? '?'} FAILED — ${[...new Set(names)].slice(0, 6).join(' · ') || 'see vitest output'}` }
+  return { ok: false, note: `${m?.[1] ?? '?'} FAILED — ${[...new Set(names)].slice(0, 6).join(' · ') || 'see vitest output'} — ${r.note}` }
 })
 
 check('gate 1 — the id appears in a real battle', () => {
@@ -447,14 +448,14 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
 // pre-land check ran against the working tree, so only a post-commit rerun can
 // catch it. On failure the landing is undone, loudly.
 {
-  const t = tryRun('npx vitest run --reporter=dot')
+  const t = runDiagnosticCommand('npx vitest run --reporter=dot', `gate-${id}-committed-suite`)
   const b = tryRun('npx tsx tools/baseline.mts')
   const nowHashes = b.out.trim().split('\n').filter((l) => / [0-9a-f]{8}$/.test(l)).join('\n')
   const goldenNow = (() => { try { return readFileSync(GOLDEN, 'utf8').trim() } catch { return '' } })()
   const auditOk = t.ok && b.ok && nowHashes === goldenNow
   if (!auditOk) {
     sh('git reset --hard HEAD~1')
-    const why = !t.ok ? 'test suite fails on the committed tree' : !b.ok ? 'baseline probe errors on the committed tree' : 'control battles differ on the committed tree'
+    const why = !t.ok ? `test suite fails on the committed tree — ${t.note}` : !b.ok ? 'baseline probe errors on the committed tree' : 'control battles differ on the committed tree'
     const bl = JSON.parse(readFileSync(BACKLOG, 'utf8'))
     const it = bl.find((x) => x.id === id)
     if (it) { it.attempts = (it.attempts ?? 0) + 1; it.auditFailed = why; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }

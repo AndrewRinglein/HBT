@@ -3562,5 +3562,21 @@
   "status": "done-needs-review",
   "sha": "cb30b8c",
   "gauntlet": "not passed — effect measurement errored; periodic full audit FAILED — investigate before the next item; 2 flag(s) warned"
+ },
+ {
+  "id": "plumbing.command-diagnostics",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": [
+   "rule.bursts"
+  ],
+  "spec": "Failed gate and independent audit test commands retain exact stdout, stderr, exit, command and exception in unique diagnostic artifacts, with concise error excerpts and paths in their existing failure notes.",
+  "expect": "Real failed child processes preserve both output streams and nonzero status; repeated attempts have unique artifacts; diagnostic storage failure cannot hide the original failure; successful output stays unchanged. Candidate, committed-tree and independent audit suites all use the same reporter.",
+  "unreachable": "Offline gate diagnostic transport is not invoked by battle content. Real child-process fixtures exercise nonzero exits, exact output, distinct attempt files and storage failure; existing battle controls must remain identical.",
+  "killSwitchExempt": "Content disablement cannot remove offline command reporting. The preimplementation reporter produced two meaningful assertion failures for missing evidence and missing storage-failure notes; command status and output already remained nonzero and exact.",
+  "note": "Separate observational repair following recurrent full-suite failures whose original exception was discarded. No runtime, content, worker, seed, assertion or timeout change. Original causes remain unconfirmed, and historical burst seal remains withheld.",
+  "status": "done-needs-review",
+  "sha": "5a6addc",
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
  }
 ]
