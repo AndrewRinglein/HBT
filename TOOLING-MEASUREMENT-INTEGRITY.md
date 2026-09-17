@@ -1,6 +1,6 @@
-# Experimental measurement integrity — implementation receipt
+# Experimental measurement integrity — landed and audited
 
-Item `plumbing.measurement-integrity`, following engine baseline `37b6ffd`.
+Item `plumbing.measurement-integrity` landed at `c374358`, following engine baseline `37b6ffd`; independent audit passed on 2026-09-17.
 This is a tooling/content-boundary repair, not a combat or authored-content
 change. Historical burst source `0c6fa07` and its withheld seal remain intact.
 
@@ -68,9 +68,11 @@ inherited Hack omission deliberately exercises the clean WITH environment;
 WITHOUT omits only the two command-line IDs. There are 22 maps x 25 paired
 battles, no invalid arms. WITH totals 546 hero clears and WITHOUT totals 549;
 the three-result difference occurs on test.map.dungeon-16x8 (21 versus 24).
-Thirteen controls differ in the displayed wins/rounded mean turns: open, field,
-thicket, proving.open/ridge/ford/copse, courtyard, test.showcase, dungeon-16x8,
-horde-24, journey-20x10 and high-prop-multi. These are sample observations,
+Thirteen controls differ in the displayed wins/rounded mean turns: `map.open`,
+`map.field`, `map.thicket`, `map.proving.open`, `map.proving.ridge`,
+`map.proving.ford`, `map.proving.copse`, `map.courtyard`, `test.map.showcase`,
+`test.map.dungeon-16x8`, `test.map.horde-24`, `test.map.journey-20x10` and
+`test.map.high-prop-multi`. These are sample observations,
 not a final balance verdict. The old burst error and withheld seal are unchanged.
 Full output: runs/measurement-integrity-real-storm.txt.
 
@@ -82,5 +84,28 @@ setups. The focused fielding test identifies the missing weapon-grant error.
 The versioned report remains unavailable, not zero impact. Output:
 runs/measurement-integrity-real-missing-grant.txt.
 
-Full gates and final independent audit are pending.
-Two explicit offline-tool exemptions remain visible; no human review is implied.
+## Final verification and landing
+
+Normal candidate and landing gates passed all **1,575 tests**, typecheck and
+all **22 unchanged control hashes**. Committed-tree tests and hashes passed.
+Gate source ff27af9 was amended with bookkeeping into c374358. Independent
+`node tools/audit-all.mjs --label "Measurement integrity after V2 bursts"`
+passed the same full suite, exact controls, typecheck and whole-core scan.
+Logs: runs/measurement-integrity-gate.txt, measurement-integrity-land.txt and
+measurement-integrity-audit.txt. One preexisting todo remains.
+
+No prior test assertion, timeout, worker setting, seed, authored row or combat
+resolution changed. Source changes are content/index validation ordering,
+effect-size WITH environment, the Builder label helper and generator; tests,
+comparison recipe and item specification accompany them. Content stays at
+09fa41b with its five preexisting lock archives; viewer and Kingdom are untouched.
+
+Historical .state/ledger.md and .state/gauntlet-log.jsonl byte prefixes were
+compared against 37b6ffd, and the entire rule.bursts verdict row is unchanged.
+Both generated Game Builder copies are synchronized. No prior seal is cleared;
+this new seal is withheld only for its two explicit offline-tool exemptions,
+with no warning flags. No human review or visual acceptance is implied.
+
+Count: 152 of 184 landed, 56 await review, 13 sealed, 32 pending. The next bounded
+stage is host burst adoption. The original intermittent suite failure cause
+remains unconfirmed; diagnostic capture from the preceding stage remains active.
