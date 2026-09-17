@@ -12,7 +12,7 @@
 // what they no longer do is each keep their own copy of what an action MAY.
 
 import { emit, markMoveUsed, markPrimaryUsed, spendStamina } from './mutate.js'
-import type { ActionDef, ActionSlot, AttackDef, Ctx, MoveDef, Unit } from './types.js'
+import type { ActionDef, ActionSlot, AttackDef, BurstDef, Ctx, MoveDef, Unit } from './types.js'
 
 /** The row for an action id, or null — a granted id whose row is absent is indistinguishable from content never authored (the kill-switch seam relies on this). */
 export function actionOf(ctx: Ctx, id: string): ActionDef | null {
@@ -26,10 +26,11 @@ export function actionDef(ctx: Ctx, id: string): ActionDef {
   return a
 }
 
+export const isBurst = (a: ActionDef): a is BurstDef => a.burst !== undefined
 export const isAttack = (a: ActionDef): a is AttackDef => a.attack !== undefined
 export const isMove = (a: ActionDef): a is MoveDef => a.move !== undefined
 /** A power: an action that is neither an attack nor a movement — the effects path resolves it. */
-export const isPower = (a: ActionDef): boolean => a.attack === undefined && a.move === undefined
+export const isPower = (a: ActionDef): boolean => a.attack === undefined && a.move === undefined && a.burst === undefined
 
 // ── the three views over the one list. Row order is the unit's data (Law 6). ──
 
@@ -52,6 +53,7 @@ export function movesOf(ctx: Ctx, u: Unit): MoveDef[] {
   return out
 }
 /** The ids of the unit's attacks / powers / movements — for the code that indexes by id. */
+export const burstsOf = (ctx: Ctx, u: Unit): BurstDef[] => u.actions.map(id => ctx.actions[id]).filter((a): a is BurstDef => !!a && isBurst(a))
 export const attackIdsOf = (ctx: Ctx, u: Unit): string[] => attacksOf(ctx, u).map((a) => a.id)
 export const powerIdsOf = (ctx: Ctx, u: Unit): string[] => powersOf(ctx, u).map((a) => a.id)
 

@@ -201,14 +201,8 @@ export type ActionDef = {
   /** How far the aimed unit may be. An attack's weapon reach (melee 1, the bow 6; hero Reach adds to ranged); a power's range; a move's step range. */
   readonly range: number
   readonly target?: import('./target.js').Targeting
-  /**
-   * AREA (capability.area-attack, 2026-08-27). 'arc' — "an adjacent hex and
-   * the two hexes adjacent to both you and it"; 'blast1' — a hex plus its six
-   * neighbours. An area attack DOES NOT ROLL TO HIT (authored: "It does not
-   * roll to hit, so it cannot crit") — no accuracy station, no miss, no dodge,
-   * no crit; mitigation and riders still run per struck unit.
-   */
-  readonly area?: 'arc' | 'blast1'
+  /** Hex-targeted travel/spread. Exclusive with attack and movement profiles. */
+  readonly burst?: BurstProfile
   // ── what it does — any combination ──
   /** Rolls to hit and runs the one damage function. Present = this action is an attack. */
   readonly attack?: AttackProfile
@@ -232,6 +226,22 @@ export type ActionDef = {
   /** What the Codex row says that the engine cannot do. Never silently half-real. */
   readonly gaps?: readonly string[]
 }
+
+/** Bursts freeze these authored source packets at declaration. */
+export type BurstProfile = {
+  readonly shape: { readonly kind: 'arc' } | { readonly kind: 'radius'; readonly radius: number }
+  readonly side: import('./target.js').TargetSide
+  readonly requireTags?: readonly string[]
+  readonly packets: readonly {
+    readonly id: string
+    readonly damageType: DamageType
+    readonly amount: number
+    readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'
+    readonly powerScale?: number
+  }[]
+  readonly heal?: number
+}
+export type BurstDef = ActionDef & { readonly burst: BurstProfile }
 
 /** The attack half of an action — the fields the accuracy and damage pipelines resolve. */
 export type SecondaryDamage = {
@@ -669,6 +679,7 @@ export type Unit = {
   movePointsLeft: number
   // Per-unit ordinals. These are what keep RNG keys structural and unique.
   activationOrdinal: number
+  burstOrdinal?: number
   attackOrdinal: number
   deathbedOrdinal: number
 }
@@ -734,12 +745,10 @@ export type Config = {
     moveCostPerHex: boolean
     /** Does melee AI leap into adjacency for the rider? SWITCHES.md, 2026-08-25. */
     aiLeapToAdjacent: boolean
-    /** Do area attacks strike allies in the shape? SWITCHES.md, 2026-08-27. */
-    areaHitsAllies: boolean
     /** May a heal power target its own caster? SWITCHES.md, 2026-08-27. */
     healIncludesSelf: boolean
     /** May the AI swing an area attack through its own allies? SWITCHES.md, 2026-08-27. */
-    aiAreaThroughAllies: boolean
+    aiBurstThroughAllies: boolean
     /** Chart share of the crit branch flip, per victim side — critChartSplit, Angela 2026-08-22. */
     critChartShareVsHeroes: number
     critChartShareVsEnemies: number
@@ -795,9 +804,8 @@ export const DEFAULT_CONFIG: Config = {
     aiLeapToAdjacent: true,
     // "Deal magic damage ... to every unit in the blast" (power.lightning-
     // staff.storm) — EVERY unit, so the default is the authored reading.
-    areaHitsAllies: true,
     // Conservative default: the AI never swings wide through a friend.
-    aiAreaThroughAllies: false,
+    aiBurstThroughAllies: false,
     // "one ally within 6 hexes" — whether the priest counts as his own ally
     // is unstated; the common reading says yes. SWITCHES.md, 2026-08-27.
     healIncludesSelf: true,

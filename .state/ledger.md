@@ -12722,3 +12722,975 @@ effect of attack.test-packet-flame,attack.test-packet-shadow — 25 paired battl
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 EFFECT_RESULT {"version":1,"status":"measured","unavailable":[]}
 ```
+
+## rule.bursts — LANDED `cb30b8c` **NEEDS REVIEW**
+2026-09-17 23:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:726 · V2-BURSTS.md:41
+  PASS  typecheck
+  PASS  full test suite — 1552 passed
+  PASS  gate 1 — the id appears in a real battle — attack.test-arc.sweep: 21 log lines, 21 fired, 11 changed state · power.lightning-staff.storm: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/ability-effects.test.ts, test/action-spent.test.ts, test/additions.test.ts, test/alpha-flip.test.ts, test/alpha-team.test.ts, test/area-attack.test.ts, test/attack-choice.test.ts, test/audit.test.ts, test/authored-slots.test.ts, test/battle-cursor.test.ts, test/class-restriction.test.ts, test/crit-count.test.ts, test/crit.test.ts, test/field-eve-24.test.ts, test/integration.test.ts, test/item-powers.test.ts, test/karma-shadow-confusion.test.ts, test/knockback.test.ts, test/low-cover.test.ts, test/one-action-type.test.ts, test/pack-items.test.ts, test/receptacle.test.ts, test/burst-resolution.test.ts, test/bursts.test.ts, test/fixtures/battle-cursor-bursts.json
+  WARN  existing tests untouched — DELETED LINES in test/ability-effects.test.ts (-5), test/action-spent.test.ts (-4), test/additions.test.ts (-5), test/alpha-flip.test.ts (-1), test/alpha-team.test.ts (-5), test/area-attack.test.ts (-144), test/attack-choice.test.ts (-2), test/audit.test.ts (-20), test/authored-slots.test.ts (-5), test/battle-cursor.test.ts (-3), test/class-restriction.test.ts (-6), test/crit-count.test.ts (-1), test/crit.test.ts (-1), test/field-eve-24.test.ts (-4), test/integration.test.ts (-2), test/item-powers.test.ts (-15), test/knockback.test.ts (-2), test/low-cover.test.ts (-3), test/one-action-type.test.ts (-7), test/pack-items.test.ts (-4), test/receptacle.test.ts (-11) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open ace784ed->4d916b99, map.ridge 05ef85a4->f383f2fc, map.flanks 383794ec->78455325, map.highlands 9405c818->c897e8ce, map.field 663037ed->89b5d750, map.thicket b126e1b1->f4f76984, map.proving.open ff4e929c->6d0bb53a, map.proving.ridge 753184b2->2ab03e16, map.proving.ford c9d9dfdd->028bbc1c, map.proving.copse 24d75167->c4132587, map.proving.ruin 205bad6c->cb05e3f4, map.courtyard 3b90d866->57467eb0, map.floodplain c1de8438->36391465, test.map.embers 3dad8a06->47733fd0, test.map.showcase cbee1de9->301e6033, test.map.duel-8 d9f78c25->8d781c17, test.map.dungeon-16x8 1e4c2854->a1f91b90, test.map.horde-24 7674493a->fc80bf9e, test.map.journey-20x10 909f0279->fdbae9cc, test.map.authored-40x40 9d951cf5->754ce42a, test.map.high-prop-single 276cc92b->7e45c142, test.map.high-prop-multi 06e26bba->35d492c3
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.test-arc.sweep live · power.lightning-staff.storm live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-arc.sweep,power.lightning-staff.storm — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ability-effects.test.ts b/test/ability-effects.test.ts
+index 37b5608..bd87cd5 100644
+--- a/test/ability-effects.test.ts
++++ b/test/ability-effects.test.ts
+@@ -14,5 +14,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { valueOf } from '../src/core/status.js'
+ import { effective } from '../src/core/stats.js'
+-import { ABILITIES } from '../src/content/index.js'
++import { ABILITIES, BURSTS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { hexId } from './board16.js'
+@@ -80,5 +80,6 @@ describe('the effect vocabulary, one row each', () => {
+     expect(w.primaryUsed).toBe(false)
+     // warmup: Fireball on a fresh unit is not ready until turn warmup+1
+-    const f = ABILITIES[FIREBALL]!
++    // V2 section 7: Fireball is a burst; its warmup and real fielding remain asserted.
++    const f = BURSTS[FIREBALL]!
+     expect(f.warmup).toBeGreaterThan(0)
+     const ctx2 = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')) })
+@@ -96,13 +97,18 @@ describe('the effect vocabulary, one row each', () => {
+ describe('alive in a real battle', () => {
+   it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
+-    const used = new Set<string>()
++    const used = new Set<string>(), bursts = new Set<string>()
+     for (let r = 0; r < 3; r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')), replicate: r })
+       runBattle(ctx)
+-      for (const e of ctx.events) if (e.type === 'power.used') used.add(String(e.causeId))
++      for (const e of ctx.events) {
++        if (e.type === 'power.used') used.add(String(e.causeId))
++        if (e.type === 'burst.declared') bursts.add(String(e.causeId))
++      }
+     }
+     expect(used.has(AEGIS)).toBe(true)
+     expect(used.has(CIRCLE)).toBe(true)
+-    expect(used.has(FIREBALL)).toBe(true)
++    // V2 section 7 supersedes unit-centred power.used for the travelling blast.
++    expect(bursts.has(FIREBALL)).toBe(true)
++    expect(used.has(FIREBALL)).toBe(false)
+   })
+ })
+diff --git a/test/action-spent.test.ts b/test/action-spent.test.ts
+index 67ebb7b..0ef7579 100644
+--- a/test/action-spent.test.ts
++++ b/test/action-spent.test.ts
+@@ -108,11 +108,11 @@ describe('universal action expenditure', () => {
+     expect(flags).toEqual(ctx.state.units.map(u => ({ moveUsed: u.moveUsed, primaryUsed: u.primaryUsed })))
+   })
+-  it.each(['multi-hit', 'area'])('%s spends and emits once across all hits/targets', kind => {
++  it.each(['multi-hit', 'burst'])('%s spends and emits once across all hits/targets', kind => {
+     const ctx = fixture('any', true), id = grant(ctx, 'attack.test-slot-movement', { uses: 2, staminaCost: 3 })
+     const a = ctx.actions[id]!
+-    ctx.actions = { ...ctx.actions, [id]: kind === 'area' ? { ...a, area: 'arc' } : { ...a, attack: { ...a.attack!, hits: 3 } } }
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
++    ctx.actions = { ...ctx.actions, [id]: kind === 'burst' ? { id, name: a.name, slot: 'movement', staminaCost: 3, cooldown: 0, uses: 2, range: 1, burst: {shape: {kind: 'radius', radius: 1}, side: 'enemy', packets: [{id: 'base', amount: 3, damageType: 'true'}]} } : { ...a, attack: { ...a.attack!, hits: 3 } } }
++    expect(executeAction(ctx, { actor: 0, actionId: id, ...(kind === 'burst' ? {centre: ctx.state.units[1]!.hex} : {target: 1}) }).ok).toBe(true)
+     event(ctx, id, 'movement', false, true, false)
+-    if (kind === 'area') expect(ctx.events.find(e => e.type === 'attack.declared')!.struck).toEqual(expect.arrayContaining([1, 2]))
++    if (kind === 'burst') expect(ctx.events.filter(e => e.type === 'burst.struck').map(e => e.target)).toEqual(expect.arrayContaining([1, 2]))
+     else expect(ctx.state.units[0]!.attackOrdinal).toBe(3)
+     expect(ctx.state.units[0]!.usesLeft[id]).toBe(1)
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index d501658..cf08837 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -243,9 +243,8 @@ describe('pass 4 — Arcane Bolt', () => {
+ // ─── all four together ───────────────────────────────────────────────────────
+ describe('everything together', () => {
+-  // This is 40 strict battles on every map, not a five-second performance
+-  // contract. It exceeds the default even with one worker after shared action
+-  // validation. Preserve every battle and assertion; bound the aggregate run.
+-  it('runs clean on every map with no invalid runs', () => {
+-    for (const mapId of MAPS_ALL)
++  // V2 burst check: the all-map aggregate exceeded 30s under four-worker
++  // suite load; all 26 tests in this file and audit passed with one worker.
++  // Give each map its own bounded test, retaining all 40 seeds and assertions.
++  it.each(MAPS_ALL)('runs clean on %s with no invalid runs', (mapId) => {
+       for (let r = 0; r < 40; r++) {
+         const ctx = createBattle({ replicate: r, mapId, enemyCount: 8, strict: true })
+diff --git a/test/alpha-flip.test.ts b/test/alpha-flip.test.ts
+index ca87734..1ac66fc 100644
+--- a/test/alpha-flip.test.ts
++++ b/test/alpha-flip.test.ts
+@@ -72,5 +72,5 @@ describe('the standard battle is the Alpha Team', () => {
+         if (e.type === 'status.applied') causes.add(e['causeId'] as string)
+         if (e.type === 'knocked') knocked++
+-        if (e.type === 'attack.declared' && e['area']) area++
++        if (e.type === 'burst.declared' && (e['shape'] as {kind:string}).kind === 'arc') area++
+       }
+     }
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index c5b1b43..63fcee6 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -13,5 +13,5 @@ import { readFileSync } from 'node:fs'
+ import { join } from 'node:path'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { ATTACKS, UNITS } from '../src/content/index.js'
++import { BURSTS, ATTACKS, UNITS } from '../src/content/index.js'
+ import { fieldedDef, createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+@@ -89,5 +89,5 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     // on the row, −5 accuracy as a named gap — Law 10, followed same-day.
+     expect(ATTACKS['attack.halberd.hack']).toMatchObject({ staminaCost: 1, attack: { bonus: 2, kind: 'melee' } })
+-    expect(ATTACKS['attack.halberd.cleave']).toMatchObject({ staminaCost: 2, attack: { bonus: 1 } })
++    expect(BURSTS['attack.halberd.cleave']).toMatchObject({ staminaCost: 2, burst: {packets: [{id: 'base', amount: 1, stat: 'strength', damageType: 'physical'}]} })
+     expect(ATTACKS['attack.javelin.throw']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
+     expect(ATTACKS['attack.shortbow.short-shot']).toMatchObject({ range: 5, attack: { kind: 'ranged' } })
+@@ -95,5 +95,5 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     expect(ATTACKS['attack.punch']).toMatchObject({ staminaCost: 0, attack: { bonus: -1, kind: 'melee', crit: -5 } })
+     for (const id of ALPHA()) {
+-      for (const aid of fieldedDef(id).attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
++      for (const aid of fieldedDef(id).attacks) expect(ATTACKS[aid] ?? BURSTS[aid], `${id} grants ${aid}`).toBeDefined()
+       expect(fieldedDef(id).attacks, `${id} — Punch is universal (universalToAllUnits honored)`)
+         .toContain('attack.punch')
+@@ -145,5 +145,5 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
+     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
+-    expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
++    expect(BURSTS['attack.halberd.cleave']!.burst.shape.kind).toBe('arc')
+     // the crit fields COMPILE now (station.crit, same day) — their gaps are
+     // gone. LAW 10, rewritten within hours of being written: the first
+@@ -164,5 +164,5 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     // targeting remainder is the one NAMED partial left behind
+     expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(0)
+-    expect(alpha.some((g) => /power targeting: arbitrary hex/.test(g.needs))).toBe(true)
++    expect(alpha.some((g) => /power targeting: arbitrary hex/.test(g.needs))).toBe(false) // V2 now implements empty-hex placement
+     expect(fieldedDef('alpha-air-mage').abilities).toEqual(['power.lightning-staff.storm'])
+     expect(fieldedDef('alpha-lucius').abilities).toEqual(['power.holy-symbol.heal'])
+diff --git a/test/area-attack.test.ts b/test/area-attack.test.ts
+index c84db00..08fa14d 100644
+--- a/test/area-attack.test.ts
++++ b/test/area-attack.test.ts
+@@ -1,158 +1,67 @@
+-// Area attacks — capability.area-attack (2026-08-27).
+-//
+-// Authored on attack.halberd.cleave: "an adjacent hex and the two hexes
+-// adjacent to both you and it", and "It does not roll to hit, so it cannot
+-// crit." The mechanism is areaHexesOf/areaUnitIdsOf + the per-struck-unit hit
+-// loop in performAttack; the second consumer is attack.test-arc.sweep on the
+-// Arc Golem (pure data), live in showcase.arc-variant.
++// V2 sections 4/7/15/18 replace the former area-attack lifecycle.
++// Retain geometry, exact damage, friendly fire, AI and complete determinism.
+ import { describe, expect, it } from 'vitest'
+-import { areaHexesOf, areaUnitIdsOf, performAttack, preview } from '../src/core/pipeline.js'
+-import { neighboursOf, distance, GEO16 } from './board16.js'
+-import { ATTACKS } from '../src/content/index.js'
++import { burstHexes, previewBurst, useBurst } from '../src/core/burst.js'
++import { BURSTS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { beginActivation } from '../src/core/mutate.js'
+-
+-const SC = 'showcase.arc-variant'
+-const mk = () => createBattle(scenarioOptions(scenarioDef(SC)))
+-
+-describe('the geometry — one function, Law 6 order', () => {
+-  it("the arc is the target hex plus the hexes adjacent to BOTH ends", () => {
+-    // The scenario's own triple: golem 135, zombies 118 and 119.
+-    const arc = areaHexesOf(GEO16, 135, 118, 'arc')
+-    expect(arc[0]).toBe(118) // target first
+-    for (const h of arc.slice(1)) {
+-      expect(distance(135, h), `${h} adjacent to attacker`).toBe(1)
+-      expect(distance(118, h), `${h} adjacent to target`).toBe(1)
++import { runActivation } from '../src/ai/modes.js'
++const sweep = 'attack.test-arc.sweep'
++const mk = () => createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
++describe('authored burst geometry and lifecycle', () => {
++  it('retains exactly the three-hex arc and seven-hex radius-one disk', () => {
++    const ctx = mk(), arc = burstHexes(ctx, 135, 118, BURSTS[sweep]!)
++    expect(arc).toEqual([118, 119, 134])
++    for (const h of arc.filter(h => h !== 118)) {
++      expect(ctx.geo.distance(135, h)).toBe(1); expect(ctx.geo.distance(118, h)).toBe(1)
+     }
+-    expect(arc).toContain(119)
+-    expect(arc.length).toBe(3) // interior board: target + exactly two
++    expect(burstHexes(ctx, 135, 118, BURSTS['power.lightning-staff.storm']!))
++      .toEqual([118, ...ctx.geo.neighboursOf(118)].sort((a, b) => a - b))
+   })
+-
+-  it('blast1 is the hex plus its six neighbours', () => {
+-    const b = areaHexesOf(GEO16, 135, 118, 'blast1')
+-    expect(b[0]).toBe(118)
+-    expect(new Set(b.slice(1))).toEqual(new Set(neighboursOf(118)))
++  it('retains exact damage and targets without any hit or crit rolls', () => {
++    const ctx = mk(), golem = ctx.state.units.find(u => u.typeId === 'test-arc-golem')!
++    const pv = previewBurst(ctx, golem.id, 118, sweep)
++    expect(pv.damage).toBe(12); expect(pv.targets.map(t => t.damage)).toEqual([6, 6])
++    expect(pv).not.toHaveProperty('hitChance'); expect(pv).not.toHaveProperty('critChance')
++    const before = structuredClone(ctx.rng)
++    beginActivation(ctx, golem.id, 'test'); useBurst(ctx, golem.id, 118, sweep)
++    expect(ctx.rng).toEqual(before)
++    expect(ctx.events.filter(e => e.causeId === sweep && e.type === 'burst.declared')).toHaveLength(1)
++    expect(ctx.events.filter(e => e.causeId === sweep && e.type === 'burst.struck').map(e => e.target)).toEqual(pv.targets.map(t => t.id))
++    for (const t of pv.targets) expect(ctx.state.units[t.id]!.hp).toBe(ctx.state.units[t.id]!.maxHp - 6)
++    expect(ctx.events.some(e => e.causeId === sweep && e.type.startsWith('attack.'))).toBe(false)
+   })
+-})
+-
+-describe('no roll, no crit — the authored rule', () => {
+-  it('preview of an area attack is certain: hitChance 100, critChance 0, crit damage = hit damage', () => {
+-    const ctx = mk()
+-    const golem = ctx.state.units.findIndex((u) => u.typeId === 'test-arc-golem')
+-    const z = ctx.state.units.findIndex((u) => u.typeId === 'test-zombie')
+-    const pv = preview(ctx, golem, z, 'attack.test-arc.sweep')
+-    // The golem's accuracy is 5 ON PURPOSE — an area attack never consults it.
+-    expect(pv.hitChance).toBe(100)
+-    expect(pv.critChance).toBe(0)
+-    expect(pv.damageOnCrit).toBe(pv.damageOnHit)
+-    expect(pv.damageOnHit).toBe(6) // bonus 1 + strength 5 (golem re-statted 2026-08-27), zombie armor 0
+-  })
+-
+-  it('a sweep never misses and never draws the to-hit cup: no attack.miss, every strike attack.hit', () => {
+-    const ctx = mk()
+-    runBattle(ctx)
+-    const sweeps = ctx.events.filter((e) => e.causeId === 'attack.test-arc.sweep')
+-    expect(sweeps.some((e) => e.type === 'attack.declared')).toBe(true)
+-    expect(sweeps.some((e) => e.type === 'attack.miss'), 'an area attack cannot miss').toBe(false)
+-    expect(sweeps.filter((e) => e.type === 'attack.hit').every((e) => e['auto'] === true
+-      && e['crit'] === false && e['roll'] === undefined)).toBe(true)
+-  })
+-})
+-
+-describe('the swing — one declaration, one hit per struck unit', () => {
+-  it('the opening sweep strikes both zombies from the scenario geometry', () => {
+-    const ctx = mk()
+-    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+-    // The adjacent PAIR — the scenario's third zombie (hex 55, added for
+-    // station.crit-count's single-target turns) stands outside the arc.
+-    const zombies = ctx.state.units.filter((u) => u.typeId === 'test-zombie' && [118, 119].includes(u.hex))
+-    beginActivation(ctx, golem.id, 'test')
+-    const r = performAttack(ctx, golem.id, zombies[0]!.id, 'attack.test-arc.sweep')
+-    expect(r.hit).toBe(true)
+-    expect(r.crit).toBe(false)
+-    expect(r.damage).toBe(12) // 6 into each zombie (golem re-statted 2026-08-27)
+-    const declared = ctx.events.find((e) => e.type === 'attack.declared' && e.causeId === 'attack.test-arc.sweep')!
+-    expect(declared['area']).toBe('arc')
+-    expect(declared['struck']).toEqual([zombies[0]!.id, zombies[1]!.id])
+-    const hits = ctx.events.filter((e) => e.type === 'attack.hit' && e.causeId === 'attack.test-arc.sweep')
+-    expect(hits.map((e) => e.target)).toEqual([zombies[0]!.id, zombies[1]!.id])
+-    for (const z of zombies) expect(z.hp).toBe(z.maxHp - 6)
+-  })
+-
+-  it('an ally in the arc is struck under the authored default, and spared with areaHitsAllies off', () => {
+-    // Scripted: stand a second golem in the arc. "To every unit in the blast."
+-    const base = scenarioOptions(scenarioDef(SC))
+-    const withAlly = { ...base, heroes: ['test-arc-golem', 'test-arc-golem'], heroHexes: [135, 119] as number[], enemies: ['test-zombie'], enemyHexes: [118] as number[], enemyCount: 1 }
+-    {
+-      const ctx = createBattle(withAlly)
+-      const a = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 135)!
+-      const friend = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 119)!
+-      const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+-      expect(areaUnitIdsOf(ctx, a.id, z.id, 'attack.test-arc.sweep')).toEqual([z.id, friend.id])
+-      beginActivation(ctx, a.id, 'test')
+-      performAttack(ctx, a.id, z.id, 'attack.test-arc.sweep')
+-      expect(friend.hp, 'friendly fire is the authored default').toBe(friend.maxHp - 4) // 6 - armor 2 (re-stat 2026-08-27)
+-    }
+-    {
+-      const ctx = createBattle(withAlly)
+-      ctx.cfg.switches.areaHitsAllies = false
+-      const a = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 135)!
+-      const friend = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 119)!
+-      const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+-      expect(areaUnitIdsOf(ctx, a.id, z.id, 'attack.test-arc.sweep')).toEqual([z.id])
+-      beginActivation(ctx, a.id, 'test')
+-      performAttack(ctx, a.id, z.id, 'attack.test-arc.sweep')
+-      expect(friend.hp, 'switch off — the arc spares the friend').toBe(friend.maxHp)
+-    }
++  for (const side of ['any', 'enemy'] as const) it(`uses the authored ${side} filter for allies in the wedge`, () => {
++    const ctx = createBattle({...scenarioOptions(scenarioDef('showcase.arc-variant')),
++      heroes: ['test-arc-golem', 'test-arc-golem'], heroHexes: [135, 119], enemies: ['test-zombie'], enemyHexes: [118], enemyCount: 1})
++    const actor = ctx.state.units.find(u => u.hex === 135)!, friend = ctx.state.units.find(u => u.hex === 119)!
++    const a = BURSTS[sweep]!
++    ctx.actions = {...ctx.actions, [sweep]: {...a, burst: {...a.burst, side}}}
++    expect(previewBurst(ctx, actor.id, 118, sweep).targets.some(t => t.id === friend.id)).toBe(side === 'any')
++    beginActivation(ctx, actor.id, 'test'); useBurst(ctx, actor.id, 118, sweep)
++    expect(friend.hp).toBe(friend.maxHp - (side === 'any' ? 4 : 0))
+   })
+-
+-  it('the AI swings wide for two enemies but never through an ally under the default switch', () => {
+-    // With a friend standing in the arc and only one other enemy reachable,
+-    // areaSwing must decline (allies > 0) — the golem still attacks, single
+-    // shape logic aside the sweep IS its only attack, so what the rule guards
+-    // here is the alpha case: cleave vs hack. Proven on the Oathblade: two
+-    // zombies in his arc -> cleave; an ally in the arc -> hack.
++  it('AI chooses a useful multi-enemy burst and refuses harmful friendly fire', () => {
+     const base = scenarioOptions(scenarioDef('showcase.alpha-team'))
+-    const two = {
+-      ...base,
+-      heroes: ['alpha-oathblade'], heroHexes: [135] as number[],
+-      enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [118, 119] as number[], enemyCount: 2,
+-    }
+-    const ctx = createBattle(two)
+-    const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+-    runBattle(ctx)
+-    const oathDeclared = ctx.events.filter((e) => e.type === 'attack.declared' && e.actor === oath.id)
+-    expect(oathDeclared[0]!.causeId, 'two enemies in the arc — the first swing is the Cleave').toBe('attack.halberd.cleave')
+-
+-    const withAlly = {
+-      ...base,
+-      heroes: ['alpha-oathblade', 'hero.base.ranger-aggressive'], heroHexes: [135, 119] as number[],
+-      enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [118, 134] as number[], enemyCount: 2,
++    for (const friend of [false, true]) {
++      const ctx = createBattle({...base, heroes: friend ? ['alpha-oathblade', 'hero.base.ranger-aggressive'] : ['alpha-oathblade'],
++        heroHexes: friend ? [135, 119] : [135], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: friend ? [118, 134] : [118, 119], enemyCount: 2})
++      const actor = ctx.state.units.find(u => u.typeId === 'alpha-oathblade')!
++      beginActivation(ctx, actor.id, 'test'); runActivation(ctx, actor.id)
++      const bursts = ctx.events.filter(e => e.actor === actor.id && e.type === 'burst.declared')
++      if (!friend) expect(bursts[0]?.causeId).toBe('attack.halberd.cleave')
++      else for (const e of ctx.events.filter(e => e.actor === actor.id && e.type === 'burst.struck')) expect(ctx.state.units[e.target!]!.side).toBe('enemy')
++      expect(ctx.events.some(e => e.actor === actor.id && ['attack.declared', 'burst.declared'].includes(e.type))).toBe(true)
+     }
+-    const ctx2 = createBattle(withAlly)
+-    const oath2 = ctx2.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+-    beginActivation(ctx2, oath2.id, 'test')
+-    const z = ctx2.state.units.find((u) => u.typeId === 'unit.zombie' && u.hex === 118)!
+-    // both zombies adjacent (118 and 103 are both neighbours of 135), but the
+-    // Hunter stands at 119, inside the 135->118 arc: the rule must refuse.
+-    const struck = areaUnitIdsOf(ctx2, oath2.id, z.id, 'attack.halberd.cleave')
+-    expect(struck.some((id) => ctx2.state.units[id]!.side === 'hero')).toBe(true)
+   })
+-})
+-
+-describe('the verify battle — showcase.arc-variant resolves and the variant is alive', () => {
+-  it('is a seed, and the sweep struck at least two units in one declaration', () => {
+-    const run = () => {
+-      const ctx = mk()
+-      const r = runBattle(ctx)
+-      return { key: `${r.outcome}:${r.turns}:${ctx.events.length}`, events: ctx.events }
+-    }
+-    const a = run(), b = run()
+-    expect(a.key).toBe(b.key)
+-    const declared = a.events.find((e) => e.type === 'attack.declared' && e.causeId === 'attack.test-arc.sweep')!
+-    expect(declared, 'the golem must sweep').toBeDefined()
+-    expect((declared['struck'] as number[]).length).toBeGreaterThanOrEqual(2)
++  it('the verify battle is fully deterministic and really strikes multiple victims', () => {
++    const a = mk(), b = mk(); expect(runBattle(a)).toEqual(runBattle(b))
++    expect(a.state).toEqual(b.state); expect(a.events).toEqual(b.events); expect(a.rng).toEqual(b.rng)
++    const declaration = a.events.findIndex(e => e.type === 'burst.declared' && e.causeId === sweep)
++    expect(declaration).toBeGreaterThan(-1)
++    const next = a.events.findIndex((e, i) => i > declaration && e.type === 'burst.declared')
++    expect(a.events.slice(declaration, next < 0 ? undefined : next).filter(e => e.type === 'burst.struck' && e.causeId === sweep).length).toBeGreaterThanOrEqual(2)
+   })
+ })
+diff --git a/test/attack-choice.test.ts b/test/attack-choice.test.ts
+index 204deb3..e03532c 100644
+--- a/test/attack-choice.test.ts
++++ b/test/attack-choice.test.ts
+@@ -30,6 +30,6 @@ describe('the two policies', () => {
+     }
+     const d = make('declared'), b = make('bestDamage')
+-    expect(d.swung).toBe(attackIdsOf(d.ctx, d.o).find((id) => !d.ctx.actions[id]!.area))   // the first non-area listing
+-    const best = attackIdsOf(b.ctx, b.o).filter((id) => !b.ctx.actions[id]!.area)
++    expect(d.swung).toBe(attackIdsOf(d.ctx, d.o)[0])   // the first non-area listing
++    const best = attackIdsOf(b.ctx, b.o)
+       .map((id) => ({ id, dmg: preview(b.ctx, b.o.id, b.z.id, id).damageOnHit }))
+       .sort((x, y) => y.dmg - x.dmg)[0]!
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 4808aae..08fdae9 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -243,19 +243,7 @@ describe('independent audit of logged battles', () => {
+             // dodge reads through the mod ledger too.
+             acc -= modded(e.target!, 'dodge', tgDef.dodge, e.turn) + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
+-            // capability.area-attack (2026-08-27), audited since the Alpha
+-            // Team's Cleave reached the standard battle (content.alpha-flip,
+-            // 2026-09-02): an AREA attack does not roll to hit — the logged
+-            // chance is a certain 100 whatever the accuracy arithmetic says,
+-            // and the declaration names every struck unit. Each struck unit's
+-            // damage is then recomputed below exactly as a single hit would be.
+-            if (a.area) {
+-              expect(e['hitChance'], `${a.id} is an area attack: no roll`).toBe(100)
+-              const struck = e['struck'] as number[]
+-              expect(struck, 'the declaration names the struck units').toContain(e.target)
+-              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, area: struck.length, seq: e.seq }
+-            } else {
+-              expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
+-              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq }
+-            }
++            // V2 bursts have their own declaration; every attack here still rolls.
++            expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
++            pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq }
+             checkedAcc++
+             break
+@@ -274,4 +262,25 @@ describe('independent audit of logged battles', () => {
+           }
+ 
++          // V2 bursts have an independent, non-attack lifecycle. No earlier
++          // ordinary attack may remain armed across this declaration.
++          case 'burst.declared': {
++            pending = null; pendingPower = null
++            expect(e['hexes']).toBeInstanceOf(Array)
++            expect(e['centre']).toBeTypeOf('number')
++            break
++          }
++          case 'burst.struck': {
++            const packets = e['packets'] as {raw:number;absorbed:number;mitigationDelta:number;floorAdjustment:number;resolved:number;applied:number;overkill:number;ledger:{delta:number}[]}[]
++            for (const p of packets) {
++              expect(p.raw - p.absorbed + p.mitigationDelta + p.floorAdjustment).toBe(p.resolved)
++              expect(p.applied + p.overkill).toBe(p.resolved)
++              expect(p.ledger.reduce((n,r) => n+r.delta,0)).toBe(p.resolved)
++            }
++            expect(packets.reduce((n,p) => n+p.resolved,0)).toBe(e['damage'])
++            expect(packets.reduce((n,p) => n+p.applied,0)).toBe(e['applied'])
++            checkedDamage++
++            break
++          }
++
+           case 'power.used': {
+             const at = UNITS[type.get(e.actor!)!]!
+@@ -288,5 +297,5 @@ describe('independent audit of logged battles', () => {
+             // recompute is exactly as strict as before for exactly the events
+             // it always covered.
+-            if ((ab.effect ?? 'damage') === 'damage' && !ab.area) {
++            if ((ab.effect ?? 'damage') === 'damage') {
+               pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
+             } else {
+@@ -338,5 +347,5 @@ describe('independent audit of logged battles', () => {
+             // An area swing lands on every struck unit in turn; the victim is
+             // whoever THIS event names, not the declared target.
+-            const tg = UNITS[type.get(pending.area ? e.target! : pending.target)!]!
++            const tg = UNITS[type.get(pending.target)!]!
+             const a = ATTACKS[pending.attackId]!
+             // The attack names its stat (strength / precision / spirit since
+@@ -347,5 +356,5 @@ describe('independent audit of logged battles', () => {
+             // badge.afflictions (2026-09-04): Rotting Flesh's +1 Armor arrives as a stored mod — the
+             // auditor reads the target's MODDED mitigation, as it already reads the attacker's modded stat
+-            const victim = pending.area ? e.target! : pending.target
++            const victim = pending.target
+             const mit = a.attack.damageType === 'physical' ? modded(victim, 'armor', tg.armor, e.turn, pending.seq) : a.attack.damageType === 'magic' ? modded(victim, 'resist', tg.resist, e.turn, pending.seq) : 0
+             // The damage-arm crit multiplies BEFORE Protection and Mitigation
+@@ -361,5 +370,4 @@ describe('independent audit of logged battles', () => {
+             expect(e['hpBefore'] as number - (e['amount'] as number)).toBe(e['hpAfter'])
+             checkedDamage++
+-            if (pending.area && --pending.area > 0) break
+             pending = null
+             break
+@@ -375,4 +383,7 @@ describe('independent audit of logged battles', () => {
+   })
+ 
++  // The complete 200-battle sample exceeded 5s under four-worker suite load,
++  // but passes in isolation. As with the 400-battle rate probe below, this
++  // verifies outcomes, not throughput; keep every seed and exact expectation.
+   it('the specific expected numbers appear in real battles, not just unit tests', () => {
+     const seen = new Set<string>()
+@@ -408,5 +419,5 @@ describe('independent audit of logged battles', () => {
+     expect(seen, 'bolt -> zombie = 6').toContain('attack.lightning-staff.bolt->unit.zombie=6')
+     expect(seen, 'short shot -> zombie = 5').toContain('attack.shortbow.short-shot->unit.zombie=5')
+-  })
++  }, 30000)
+ 
+   // This 400-battle sample exceeded 5s in two full-suite runs. Keep all
+diff --git a/test/authored-slots.test.ts b/test/authored-slots.test.ts
+index c4149b8..635a621 100644
+--- a/test/authored-slots.test.ts
++++ b/test/authored-slots.test.ts
+@@ -128,9 +128,10 @@ describe('authored action slots', () => {
+     expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[id], ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([97, 1, true, false])
+   })
+-  it('an area attack spends one slot and one charge for all targets', () => {
+-    const ctx = fixture('any', true), id = grant(ctx, { slot: 'movement', area: 'arc', staminaCost: 3, uses: 2 })
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+-    expect(ctx.events.find(e => e.type === 'attack.declared' && e.causeId === id)!.struck).toContain(1)
+-    expect(ctx.events.find(e => e.type === 'attack.declared' && e.causeId === id)!.struck).toContain(2)
++  it('a V2 burst spends one slot and one charge for all targets', () => {
++    const ctx = fixture('any', true), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2 })
++    ctx.actions = {...ctx.actions, [id]: {id, name: 'Burst', slot: 'movement', staminaCost: 3, cooldown: 0, uses: 2, range: 1, burst: {shape: {kind: 'radius', radius: 1}, side: 'enemy', packets: [{id: 'base', amount: 3, damageType: 'true'}]}}}
++    expect(executeAction(ctx, { actor: 0, actionId: id, centre: ctx.state.units[1]!.hex }).ok).toBe(true)
++    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === id).map(e => e.target)).toContain(1)
++    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === id).map(e => e.target)).toContain(2)
+     expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[id], ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([97, 1, true, false])
+   })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 9a16971..9c798af 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -29,4 +29,7 @@ const protectionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
+ // Metadata-only cases retain every earlier historical assertion via projection.
+ const packetGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-packets.json', import.meta.url), 'utf8'))
++// V2 burst migration: four first differences are replaced attack/power declarations.
++// All 42 prior inputs remain unchanged; full current hashes are frozen separately.
++const burstGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bursts.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -125,8 +128,9 @@ describe('resumable battle cursor', () => {
+       const protectionExpected = protectionGolden.cases.find((row: {id:string}) => row.id === fixture.id)
+       const packetExpected = packetGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const migrated = packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
++      const burstExpected = burstGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const migrated = burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -172,5 +176,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+diff --git a/test/class-restriction.test.ts b/test/class-restriction.test.ts
+index 570ae93..d1c66d1 100644
+--- a/test/class-restriction.test.ts
++++ b/test/class-restriction.test.ts
+@@ -7,5 +7,5 @@
+ import { describe, expect, it } from 'vitest'
+ import { applyItems } from '../src/core/items.js'
+-import { ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
++import { ACTIONS, BURSTS, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
+ import { createBattle } from '../src/core/setup.js'
+ import { hexId } from './board16.js'
+@@ -14,15 +14,15 @@ describe('the fielding reads classRestriction', () => {
+   it('a warrior cannot wield the fire staff (class.mage); the reason names the row, its class and the restriction', () => {
+     expect(ITEMS['item.fire-staff']!.classRestriction).toBe('class.mage')
+-    expect(() => applyItems(UNITS['hero.base.warrior-iron']!, ['item.fire-staff'], ITEMS, ATTACKS, 'test'))
++    expect(() => applyItems(UNITS['hero.base.warrior-iron']!, ['item.fire-staff'], ITEMS, ACTIONS, 'test'))
+       .toThrow(/hero\.base\.warrior-iron \(class\.warrior\) cannot wield 'item\.fire-staff', a class\.mage item/)
+   })
+   it('the mage can — and every Codex start kit already obeys its own restrictions', () => {
+-    expect(() => applyItems(UNITS['hero.base.mage-fire']!, ['item.fire-staff'], ITEMS, ATTACKS, 'test')).not.toThrow()
+-    for (const u of Object.values(UNITS)) if (u.defaultItems?.length) expect(() => applyItems(u, u.defaultItems!, ITEMS, ATTACKS, 'kits')).not.toThrow()
++    expect(() => applyItems(UNITS['hero.base.mage-fire']!, ['item.fire-staff'], ITEMS, ACTIONS, 'test')).not.toThrow()
++    for (const u of Object.values(UNITS)) if (u.defaultItems?.length) expect(() => applyItems(u, u.defaultItems!, ITEMS, ACTIONS, 'kits')).not.toThrow()
+   })
+   it('an unrestricted item goes on anyone; a civilian (class.civilian) is refused a class.warrior item', () => {
+     const free = Object.values(ITEMS).find((i) => !i.classRestriction && i.itemClass === 'armor')!
+-    expect(() => applyItems(UNITS['hero.fixed.fisherman']!, [free.id], ITEMS, ATTACKS, 'test')).not.toThrow()
+-    expect(() => applyItems(UNITS['hero.fixed.fisherman']!, ['item.war-axe'], ITEMS, ATTACKS, 'test')).toThrow(/cannot wield 'item\.war-axe', a class\.warrior item/)
++    expect(() => applyItems(UNITS['hero.fixed.fisherman']!, [free.id], ITEMS, ACTIONS, 'test')).not.toThrow()
++    expect(() => applyItems(UNITS['hero.fixed.fisherman']!, ['item.war-axe'], ITEMS, ACTIONS, 'test')).toThrow(/cannot wield 'item\.war-axe', a class\.warrior item/)
+   })
+   it('createBattle refuses the fielding the same way — the seam the Proving reads', () => {
+diff --git a/test/crit-count.test.ts b/test/crit-count.test.ts
+index 026d36c..88876fc 100644
+--- a/test/crit-count.test.ts
++++ b/test/crit-count.test.ts
+@@ -1,2 +1,3 @@
++import { useBurst } from '../src/core/burst.js'
+ // refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // Multiple criticals — station.crit-count (2026-08-27).
+@@ -86,5 +87,5 @@ describe('one critting hit, N criticals', () => {
+     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+     beginActivation(ctx, golem.id, 'test')
+-    performAttack(ctx, golem.id, z.id, 'attack.test-arc.sweep') // area: cannot crit at all
++    useBurst(ctx, golem.id, z.hex, 'attack.test-arc.sweep') // V2: no attack/crit lifecycle
+     expect(ctx.events.filter((e) => e.type === 'crit.branch').length).toBe(0)
+   })
+diff --git a/test/crit.test.ts b/test/crit.test.ts
+index c56ad3d..49e7f93 100644
+--- a/test/crit.test.ts
++++ b/test/crit.test.ts
+@@ -1,2 +1,3 @@
++import { previewBurst } from '../src/core/burst.js'
+ // refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The Critical Injury Chart — station.crit (2026-08-27).
+@@ -77,5 +78,5 @@ describe('the chance — 3 + crit stat + gear + surplus − luck', () => {
+     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+     const z = ctx.state.units.find((u) => u.hex === 118)!
+-    expect(preview(ctx, oath.id, z.id, 'attack.halberd.cleave').critChance).toBe(0)
++    expect(previewBurst(ctx, oath.id, z.hex, 'attack.halberd.cleave')).not.toHaveProperty('critChance')
+   })
+ })
+diff --git a/test/field-eve-24.test.ts b/test/field-eve-24.test.ts
+index 46e9223..60f48d2 100644
+--- a/test/field-eve-24.test.ts
++++ b/test/field-eve-24.test.ts
+@@ -8,5 +8,5 @@ import { readFileSync } from 'node:fs'
+ import { join } from 'node:path'
+ import { describe, expect, it } from 'vitest'
+-import { ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
++import { ACTIONS, BURSTS, ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { fieldedDef, createBattle } from '../src/core/setup.js'
+@@ -68,5 +68,5 @@ describe('all twenty-four field', () => {
+       const granted = kit.flatMap((it) => (items.get(it)?.grants ?? []).filter((x) => x.startsWith('attack.')))
+       for (const a of granted) {
+-        if (ATTACKS[a]) expect(u.attacks, `${id} carries ${a}`).toContain(a)
++        if (ACTIONS[a]) expect(u.attacks, `${id} carries ${a}`).toContain(a)
+         else expect(g.some((x) => x.unit === id && x.what.includes(a)), `${id}: ${a} unauthored must be a gap`).toBe(true)
+       }
+@@ -74,5 +74,5 @@ describe('all twenty-four field', () => {
+       // powers: compiled or gapped, never silently dropped
+       for (const p of kit.flatMap((it) => (items.get(it)?.grants ?? []).filter((x) => x.startsWith('power.')))) {
+-        const compiled = u.abilities.includes(p) && ABILITIES[p] !== undefined
++        const compiled = u.abilities.includes(p) && ACTIONS[p] !== undefined
+         const gapped = g.some((x) => x.unit === id && x.what.includes(p))
+         expect(compiled !== gapped, `${id}: ${p} compiled=${compiled} gapped=${gapped}`).toBe(true)
+@@ -107,5 +107,5 @@ describe('in real battles — the roll-call', () => {
+       if (!id.startsWith('hero.base.')) continue
+       const u = fieldedDef(id)   // role follows the kit AS FIELDED (seam.items-per-unit)
+-      const anyRanged = u.attacks.some((a) => ATTACKS[a]!.attack.kind === 'ranged')
++      const anyRanged = u.attacks.some((a) => ACTIONS[a]?.attack?.kind === 'ranged')
+       expect(u.role, `${id} role follows its kit`).toBe(anyRanged ? 'ranged' : 'melee')
+     }
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index 5ef1872..b7f7aa0 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -153,7 +153,6 @@ describe('gate 1 — everything appears in the log', () => {
+     for (const t of FIRST_BATTLE.heroes) {
+       const fielded = fieldedDef(t)   // the kit AS FIELDED (seam.items-per-unit)
+-      const kit = fielded.attacks.map((id) => ATTACKS[id]!)
++      const kit = fielded.attacks.map((id) => ATTACKS[id]).filter((a): a is NonNullable<typeof a> => !!a)
+       kit.forEach((a, i) => {
+-        if (a.area) return   // area swings are chosen by areaSwing(), outside declared order
+         const shadowed = kit.slice(0, i).some((b) => b.attack.kind === a.attack.kind && b.staminaCost <= a.staminaCost)
+         const melee = fielded.ai === 'melee-aggressive' && a.attack.kind === 'ranged'
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index 37b5854..82306fa 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -7,8 +7,9 @@
+ // the blast" with no roll and no crit.
+ import { describe, expect, it } from 'vitest'
+-import { canUsePower, powerBlastIdsOf, previewPower, usePower } from '../src/core/ability.js'
++import { canUsePower, previewPower, usePower } from '../src/core/ability.js'
++import { previewBurst, useBurst } from '../src/core/burst.js'
+ import { effective } from '../src/core/stats.js'
+ import { partySpiritSum } from '../src/core/trigger.js'
+-import { ABILITIES, UNITS } from '../src/content/index.js'
++import { ABILITIES, BURSTS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { createBattle } from '../src/core/setup.js'
+@@ -27,7 +28,7 @@ describe('the pack carries the three powers, faithfully', () => {
+       guard: { protectionBase: 4, protectionPerArmor: 1, dodgeLoss: 5 },
+     })
+-    expect(ABILITIES['power.lightning-staff.storm']).toMatchObject({
+-      effect: 'damage', stat: 'magic', bonus: 1, damageType: 'magic',
+-      range: 4, staminaCost: 3, area: 'blast1',
++    expect(BURSTS['power.lightning-staff.storm']).toMatchObject({
++      burst: {shape: {kind: 'radius', radius: 1}, side: 'any', packets: [{id: 'base', amount: 1, stat: 'magic', damageType: 'magic'}]},
++      range: 4, staminaCost: 3,
+     })
+   })
+@@ -122,19 +123,19 @@ describe('Storm — Magic + 1 to every unit in the blast, no roll, no crit', ()
+     const z1 = ctx.state.units.find((u) => u.hex === 118)!
+     const z2 = ctx.state.units.find((u) => u.hex === 102)!
+-    const struck = powerBlastIdsOf(ctx, mage.id, z1.id, 'power.lightning-staff.storm')
+-    expect(struck[0]).toBe(z1.id)
++    const struck = previewBurst(ctx, mage.id, z1.hex, 'power.lightning-staff.storm').targets.map(t => t.id)
++    expect(struck).toContain(z1.id) // V2 stable UID order, not aimed-unit first
+     expect(struck).toContain(z2.id) // 102 is adjacent to 118
+     expect(struck, '"to every unit in the blast" — the ally too').toContain(oath.id)
+     beginActivation(ctx, mage.id, 'test')
+-    usePower(ctx, mage.id, z1.id, 'power.lightning-staff.storm')
++    useBurst(ctx, mage.id, z1.hex, 'power.lightning-staff.storm')
+     const dmg = 1 + mage.magic // vs zombie armor 0 / resist 0, magic damage
+     expect(z1.hp).toBe(z1.maxHp - dmg)
+     expect(z2.hp).toBe(z2.maxHp - dmg)
+     expect(oath.hp, 'friendly lightning is real lightning').toBeLessThan(oath.maxHp)
+-    const hits = ctx.events.filter((e) => e.type === 'power.hit' && e.causeId === 'power.lightning-staff.storm')
++    const hits = ctx.events.filter((e) => e.type === 'burst.struck' && e.causeId === 'power.lightning-staff.storm')
+     expect(hits.length).toBe(struck.length)
+   })
+ 
+-  it('the switch spares allies when off', () => {
++  it('the explicit enemy-side row spares allies', () => {
+     const ctx = createBattle({
+       ...scenarioOptions(scenarioDef(SC)),
+@@ -142,11 +143,12 @@ describe('Storm — Magic + 1 to every unit in the blast, no roll, no crit', ()
+       enemies: ['unit.zombie'], enemyHexes: [118], enemyCount: 1,
+     })
+-    ctx.cfg.switches.areaHitsAllies = false
++    const storm = BURSTS['power.lightning-staff.storm']!
++    ctx.actions = {...ctx.actions, [storm.id]: {...storm, burst: {...storm.burst, side: 'enemy'}}}
+     const mage = ctx.state.units.find((u) => u.typeId === 'alpha-air-mage')!
+     const z = ctx.state.units.find((u) => u.typeId === 'unit.zombie')!
+     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+-    expect(powerBlastIdsOf(ctx, mage.id, z.id, 'power.lightning-staff.storm')).toEqual([z.id])
++    expect(previewBurst(ctx, mage.id, z.hex, 'power.lightning-staff.storm').targets.map(t => t.id)).toEqual([z.id])
+     beginActivation(ctx, mage.id, 'test')
+-    usePower(ctx, mage.id, z.id, 'power.lightning-staff.storm')
++    useBurst(ctx, mage.id, z.hex, 'power.lightning-staff.storm')
+     expect(oath.hp).toBe(oath.maxHp)
+   })
+@@ -186,7 +188,7 @@ describe('they run — no power is dead content in a real battle', () => {
+     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.item-powers')))
+     runBattle(ctx)
+-    const storm = ctx.events.find((e) => e.type === 'power.used' && e.causeId === 'power.lightning-staff.storm')!
++    const storm = ctx.events.find((e) => e.type === 'burst.declared' && e.causeId === 'power.lightning-staff.storm')!
+     expect(storm, 'the mage must storm').toBeDefined()
+-    expect((storm['struck'] as number[]).length, 'the blast catches the clump').toBeGreaterThanOrEqual(2)
++    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === storm.causeId).length, 'the burst catches the clump').toBeGreaterThanOrEqual(2)
+     expect(ctx.state.outcome).not.toBeNull()
+   })
+diff --git a/test/karma-shadow-confusion.test.ts b/test/karma-shadow-confusion.test.ts
+index 6d436e8..ec47dd8 100644
+--- a/test/karma-shadow-confusion.test.ts
++++ b/test/karma-shadow-confusion.test.ts
+@@ -80,4 +80,6 @@ describe('Confusion', () => {
+     for (let r = 0; r < 8 && !want.every((id) => seen.has(id)); r++) {
+       const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }, { type: 'test-zombie', hex: hexId(6, 6) }], { replicate: r })
++      // V2 bursts do not fire attack riders; this control exercises the unchanged ordinary weapons.
++      ctx.state.units[0]!.actions = ctx.state.units[0]!.actions.filter(id => !ctx.actions[id]?.burst)
+       runBattle(ctx)
+       for (const e of ctx.events) if (e.type === 'status.applied') seen.add(e['statusId'] as string)
+diff --git a/test/knockback.test.ts b/test/knockback.test.ts
+index ebb7d7d..07b924f 100644
+--- a/test/knockback.test.ts
++++ b/test/knockback.test.ts
+@@ -97,9 +97,13 @@ describe('the authored rider — Hack pushes on damage', () => {
+ 
+ describe('the second consumer — pure data on the Arc Golem', () => {
+-  it('the golem rams every unit its sweep damages, in the live scenario', () => {
++  it('the golem rams ordinary attack victims with its data-defined onHit rider, in the live scenario', () => {
+     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
++    // V2 sweep no longer fires onHit; retain the data rider proof on real ordinary swings.
++    const golem = ctx.state.units.find(u => u.typeId === 'test-arc-golem')!
++    golem.actions = golem.actions.filter(id => !ctx.actions[id]?.burst)
++    for (const u of ctx.state.units) { u.hp = u.maxHp = 200 } // enough survivors for two separate ordinary Slam rungs
+     runBattle(ctx)
+     const rams = ctx.events.filter((e) => e.type === 'knocked' && e.causeId === 'trigger.test-ram.knockback')
+-    expect(rams.length, 'the opening sweep damages two zombies — both must fly').toBeGreaterThanOrEqual(2)
++    expect(rams.length, 'the ordinary swings must push real victims').toBeGreaterThanOrEqual(2)
+     for (const ev of rams) {
+       expect(distance(ev['from'] as number, ev['to'] as number)).toBe(1)
+diff --git a/test/low-cover.test.ts b/test/low-cover.test.ts
+index 9c2a2e9..fd0fb10 100644
+--- a/test/low-cover.test.ts
++++ b/test/low-cover.test.ts
+@@ -1,2 +1,3 @@
++import {validateBurstAction} from '../src/core/burst-profile.js'
+ import {describe,it,expect} from 'vitest'
+ import {createBattle} from '../src/core/setup.js'
+@@ -42,7 +43,7 @@ describe('terrain.low-cover',()=>{
+   const av=preview(a,0,1,'attack.test-reach'),bv=preview(b,0,1,'attack.test-reach');expect(bv.accuracy).toBe(av.accuracy);expect(bv.damageOnHit).toBe(av.damageOnHit-1)
+  })
+- it('keeps legacy area attacks unchanged',()=>{
+-  const a=setup([]),b=setup();for(const ctx of[a,b]){const atk=structuredClone(ctx.actions[bow]!) as any;atk.area='blast1';ctx.actions={...ctx.actions,[bow]:atk}}
+-  expect(preview(b,0,1,bow)).toEqual(preview(a,0,1,bow))
++ it('rejects retired area metadata rather than bypassing ordinary cover',()=>{
++  const a=setup(),atk={...a.actions[bow]!,area:'blast1'}
++  expect(()=>validateBurstAction(atk)).toThrow(/legacy area/)
+  })
+  it('charges only explicitly authored low edge crossings in planning and actual movement',()=>{
+diff --git a/test/one-action-type.test.ts b/test/one-action-type.test.ts
+index 26735e5..e0ee240 100644
+--- a/test/one-action-type.test.ts
++++ b/test/one-action-type.test.ts
+@@ -13,7 +13,7 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { beginActivation } from '../src/core/mutate.js'
+-import { ACTIONS, ATTACKS, ABILITIES } from '../src/content/index.js'
++import { ACTIONS, ATTACKS, ABILITIES, BURSTS } from '../src/content/index.js'
+ import { MOVES } from '../src/content/moves.js'
+-import { actionReady, attacksOf, isAttack, isMove, isPower, movesOf, powersOf, spendAction } from '../src/core/action.js'
++import { actionReady, attacksOf, burstsOf, isBurst, isAttack, isMove, isPower, movesOf, powersOf, spendAction } from '../src/core/action.js'
+ import { canAttack, performAttack } from '../src/core/pipeline.js'
+ import { canUsePower, usePower } from '../src/core/ability.js'
+@@ -25,10 +25,10 @@ const ONCE = 'attack.test-ram.once'
+ const WIND = 'power.test-second-wind'
+ 
+-describe('one registry, three views', () => {
+-  it('every attack, power and movement is in ACTIONS, and the three views partition it', () => {
++describe('one registry, four views', () => {
++  it('every attack, power and movement is in ACTIONS, and the four views partition it', () => {
+     const all = Object.values(ACTIONS)
+-    expect(all.length).toBe(Object.keys(ATTACKS).length + Object.keys(ABILITIES).length + Object.keys(MOVES).length)
++    expect(all.length).toBe(Object.keys(ATTACKS).length + Object.keys(ABILITIES).length + Object.keys(MOVES).length + Object.keys(BURSTS).length)
+     for (const a of all) {
+-      const kinds = [isAttack(a), isMove(a), isPower(a)].filter(Boolean).length
++      const kinds = [isAttack(a), isMove(a), isPower(a), isBurst(a)].filter(Boolean).length
+       expect(kinds, `${a.id} is exactly one of attack / move / power`).toBe(1)
+       // the limits are one set of fields on every action
+@@ -45,5 +45,6 @@ describe('one registry, three views', () => {
+     const ctx = createBattle(scenarioOptions(SCENARIOS['showcase.arc-variant']!))
+     const g = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+-    expect(g.actions).toEqual([...attacksOf(ctx, g).map((a) => a.id), ...powersOf(ctx, g).map((a) => a.id), ...movesOf(ctx, g).map((a) => a.id)])
++    expect([...g.actions].sort()).toEqual([...attacksOf(ctx, g), ...powersOf(ctx, g), ...movesOf(ctx, g), ...burstsOf(ctx, g)].map(a => a.id).sort())
++    expect(burstsOf(ctx, g).map(a => a.id)).toEqual(g.actions.filter(id => !!ACTIONS[id]?.burst))
+     expect(attacksOf(ctx, g).map((a) => a.id)).toContain(ONCE)
+     expect(powersOf(ctx, g).map((a) => a.id)).toContain(WIND)
+diff --git a/test/pack-items.test.ts b/test/pack-items.test.ts
+index b2bf98b..3c12a41 100644
+--- a/test/pack-items.test.ts
++++ b/test/pack-items.test.ts
+@@ -8,5 +8,5 @@ import { readFileSync } from 'node:fs'
+ import { join } from 'node:path'
+ import { describe, expect, it } from 'vitest'
+-import { ABILITIES, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
++import { ACTIONS, BURSTS, ABILITIES, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
+ import { fieldedDef, createBattle } from '../src/core/setup.js'
+ 
+@@ -76,8 +76,8 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+       for (const g of c.grants ?? []) {
+         if (g.startsWith('power.')) {
+-          const has = it.abilities.includes(g) && ABILITIES[g] !== undefined
++          const has = it.abilities.includes(g) && ACTIONS[g] !== undefined
+           expect(has || it.gaps?.some((x) => x.includes(`grants ${g}`)), `${id}: ${g}`).toBeTruthy()
+         } else {
+-          const has = it.grants.includes(g) && ATTACKS[g] !== undefined
++          const has = it.grants.includes(g) && ACTIONS[g] !== undefined
+           expect(has || it.gaps?.some((x) => x.includes(`grants ${g}`)), `${id}: ${g}`).toBeTruthy()
+         }
+@@ -99,5 +99,5 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+   it('the attack id space widened to every grant: the pack carries far more attacks than the fielded kits use', () => {
+     const granted = new Set(Object.values(ITEMS).flatMap((i) => i.grants))
+-    for (const a of granted) expect(ATTACKS[a], a).toBeDefined()
++    for (const a of granted) expect(ACTIONS[a], a).toBeDefined()
+     const fielded = new Set(Object.values(UNITS).flatMap((u) => u.attacks))
+     expect(granted.size).toBeGreaterThan(fielded.size)
+diff --git a/test/receptacle.test.ts b/test/receptacle.test.ts
+index 63a3429..82710f1 100644
+--- a/test/receptacle.test.ts
++++ b/test/receptacle.test.ts
+@@ -7,5 +7,5 @@ import { readFileSync } from 'node:fs'
+ import { join } from 'node:path'
+ import { describe, expect, it } from 'vitest'
+-import { ATTACKS, UNITS } from '../src/content/index.js'
++import { BURSTS, ATTACKS, UNITS } from '../src/content/index.js'
+ import { STATUSES } from '../src/content/statuses.js'
+ import { packTestAttacks, packTestStatuses, packUnits } from '../src/content/pack.js'
+@@ -23,11 +23,11 @@ describe('the receptacle reaches the engine through the pack', () => {
+     const units = rows('units.json'), attacks = rows('attacks.json'), statuses = rows('statuses.json')
+     for (const r of [...units, ...attacks, ...statuses]) expect(r.note, `${r.id} carries a note naming its backlog item`).toBeTruthy()
+-    const test = (UNIT_PACK as unknown as { test: { units: readonly { typeId: string }[]; attacks: Record<string, unknown>; statuses: Record<string, unknown> } }).test
++    const test = (UNIT_PACK as unknown as { test: { units: readonly { typeId: string }[]; attacks: Record<string, unknown>; bursts: Record<string, unknown>; statuses: Record<string, unknown> } }).test
+     expect(test.units.map((u) => u.typeId).sort()).toEqual(units.map((r) => r.id).sort())
+-    expect(Object.keys(test.attacks).sort()).toEqual(attacks.map((r) => r.id).sort())
++    expect(Object.keys({...test.attacks, ...test.bursts}).filter(id => id.startsWith('attack.')).sort()).toEqual(attacks.map((r) => r.id).sort())
+     expect(Object.keys(test.statuses).sort()).toEqual(statuses.map((r) => r.id).sort())
+     // and they are LOADED, under the test family only
+     for (const r of units) { expect(UNITS[r.id], r.id).toBeDefined(); expect(r.id.startsWith('test-')).toBe(true) }
+-    for (const r of attacks) { expect(ATTACKS[r.id], r.id).toBeDefined(); expect(r.id.startsWith('attack.test-')).toBe(true) }
++    for (const r of attacks) { expect(ATTACKS[r.id] ?? BURSTS[r.id], r.id).toBeDefined(); expect(r.id.startsWith('attack.test-')).toBe(true) }
+     for (const r of statuses) { expect(STATUSES[r.id], r.id).toBeDefined(); expect(r.id.startsWith('test.status.')).toBe(true) }
+   })
+@@ -44,6 +44,6 @@ describe('the receptacle reaches the engine through the pack', () => {
+     const sweep = rows('attacks.json').find((r) => r.id === 'attack.test-arc.sweep')!
+     expect(sweep.from).toBe('attack.halberd.cleave')
+-    const base = ATTACKS[sweep.from!]!
+-    const got = ATTACKS[sweep.id]!
++    const base = BURSTS[sweep.from!]!
++    const got = BURSTS[sweep.id]!
+     const changed = new Set(Object.keys(sweep.set ?? {}))
+     for (const k of Object.keys(base) as (keyof typeof base)[]) {
+@@ -52,5 +52,5 @@ describe('the receptacle reaches the engine through the pack', () => {
+     }
+     for (const [k, v] of Object.entries(sweep.set ?? {})) expect((got as Record<string, unknown>)[k], `${sweep.id}.${k} is the declared change`).toEqual(v)
+-    expect(got.area, 'the shape the delta exists to prove').toBe('arc')
++    expect(got.burst.shape.kind, 'the shape the delta exists to prove').toBe('arc')
+   })
+ 
+@@ -66,10 +66,12 @@ describe('the receptacle reaches the engine through the pack', () => {
+ 
+ describe('in real battles — the receptacle fields, swings and is struck', () => {
+-  it('the golem sweeps its arc in showcase.arc-variant and the sweep pushes', () => {
++  it('the golem sweeps its arc in showcase.arc-variant without firing its attack-only push', () => {
+     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant'))); runBattle(ctx)
+-    const sweeps = ctx.events.filter((e) => e.type === 'attack.declared' && e['attackId'] === 'attack.test-arc.sweep')
++    const sweeps = ctx.events.filter((e) => e.type === 'burst.declared' && e.causeId === 'attack.test-arc.sweep')
+     expect(sweeps.length).toBeGreaterThan(0)
+-    expect(sweeps[0]!['area']).toBe('arc')
+-    expect(ctx.events.some((e) => e.type === 'knocked' && e.causeId === 'trigger.test-ram.knockback')).toBe(true)
++    expect(sweeps[0]!['shape']).toEqual({kind: 'arc'})
++    const first = sweeps[0]!.seq
++    const next = ctx.events.findIndex(e => e.seq > first && ['activation.end', 'attack.declared', 'burst.declared'].includes(e.type))
++    expect(ctx.events.slice(first, next).some(e => e.type === 'knocked' && e.causeId === 'trigger.test-ram.knockback')).toBe(false) // later ordinary Slam may still push
+   })
+ })
+```
+</details>
+
+## IRON GAUNTLET FULL AUDIT — FAILED
+2026-09-17T23:29:02.965Z
+
+  FAIL  every test in the suite — 1 FAILED
+
+IRON GAUNTLET: NOT PASSED — EFFECT MEASUREMENT ERRORED; PERIODIC FULL AUDIT FAILED — INVESTIGATE BEFORE THE NEXT ITEM; 2 FLAG(S) WARNED · periodic audit FAILED
+
+```
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\pack.ts:435
+    for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)
+                                                                         ^
+
+Error: enchanted: 'item.lightning-staff.lightning' grants power 'power.lightning-staff.storm', not a pack ability
+    at packEnchanted (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\pack.ts:435:74)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\index.ts:231:29)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:18:28)
+
+Node.js v24.12.0
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: npx tsx tools/effect-size.mts --arm
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\pack.ts:435
+    for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)
+                                                                         ^
+
+Error: enchanted: 'item.lightning-staff.lightning' grants power 'power.lightning-staff.storm', not a pack ability
+    at packEnchanted (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\pack.ts:435:74)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\index.ts:231:29)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:18:28)
+
+Node.js v24.12.0
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:925:11)
+    at execSync (node:child_process:997:15)
+    at run (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:43:16)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\tools\effect-size.mts:48:19)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    '',
+    'C:\\Users\\aring\\Desktop\\Heroes of Blight and Tragic\\engine\\src\\content\\pack.ts:435\r\n' +
+      "    for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)\r\n" +
+      '                                                                         ^\r\n' +
+      '\r\n' +
+      "Error: enchanted: 'item.lightning-staff.lightning' grants power 'power.lightning-staff.storm', not a pack ability\r\n" +
+      '    at packEnchanted (C:\\Users\\aring\\Desktop\\Heroes of Blight and Tragic\\engine\\src\\content\\pack.ts:435:74)\r\n' +
+      '    at <anonymous> (C:\\Users\\aring\\Desktop\\Heroes of Blight and Tragic\\engine\\src\\content\\index.ts:231:29)\r\n' +
+      '    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)\r\n' +
+      '    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)\r\n' +
+      '    at async <anonymous> (C:\\Users\\aring\\Desktop\\Heroes of Blight and Tragic\\engine\\tools\\effect-size.mts:18:28)\r\n' +
+      '\r\n' +
+      'Node.js v24.12.0\r\n'
+  ],
+  pid: 53284,
+  stdout: '',
+  stderr: 'C:\\Users\\aring\\Desktop\\Heroes of Blight and Tragic\\engine\\src\\content\\pack.ts:435\r\n' +
+    "    for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)\r\n" +
+    '                                                                         ^\r\n' +
+    '\r\n' +
+    "Error: enchanted: 'item.lightning-staff.lightning' grants power 'power.lightning-staff.storm', not a pack ability\r\n" +
+    '    at packEnchanted (C:\\Users\\aring\\Desktop\\Heroes of Blight and Tragic\\engine\\src\\content\\pack.ts:435:74)\r\n' +
+    '    at <anonymous> (C:\\Users\\aring\\Desktop\\Heroes of Blight and Tragic\\engine\\src\\content\\index.ts:231:29)\r\n' +
+    '    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)\r\n' +
+    '    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)\r\n' +
+    '    at async <anonymous> (C:\\Users\\aring\\Desktop\\Heroes of Blight and Tragic\\engine\\tools\\effect-size.mts:18:28)\r\n' +
+    '\r\n' +
+    'Node.js v24.12.0\r\n'
+}
+
+Node.js v24.12.0
+```

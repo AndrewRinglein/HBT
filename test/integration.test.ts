@@ -152,9 +152,8 @@ describe('gate 1 — everything appears in the log', () => {
     const structurallyDead: string[] = []
     for (const t of FIRST_BATTLE.heroes) {
       const fielded = fieldedDef(t)   // the kit AS FIELDED (seam.items-per-unit)
-      const kit = fielded.attacks.map((id) => ATTACKS[id]!)
+      const kit = fielded.attacks.map((id) => ATTACKS[id]).filter((a): a is NonNullable<typeof a> => !!a)
       kit.forEach((a, i) => {
-        if (a.area) return   // area swings are chosen by areaSwing(), outside declared order
         const shadowed = kit.slice(0, i).some((b) => b.attack.kind === a.attack.kind && b.staminaCost <= a.staminaCost)
         const melee = fielded.ai === 'melee-aggressive' && a.attack.kind === 'ranged'
         if (shadowed || melee) structurallyDead.push(`${t}:${a.id}`)

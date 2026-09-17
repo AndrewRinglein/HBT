@@ -15,7 +15,7 @@
 // more than one armor. Slot counts, class restrictions and per-class caps are
 // the kingdom's legality, not the engine's (GAME-ARCHITECTURE §2.3).
 import type { BadgeDef, ItemDef, UnitDef } from './types.js'
-import type { AttackDef } from './types.js'
+import type { ActionDef } from './types.js'
 
 export type Applied = {
   readonly def: UnitDef
@@ -29,7 +29,7 @@ export function applyItems(
   base: UnitDef,
   itemIds: readonly string[],
   items: Readonly<Record<string, ItemDef>>,
-  attacks: Readonly<Record<string, AttackDef>>,
+  attacks: Readonly<Record<string, ActionDef>>,
   where: string,
 ): Applied {
   let hands = 0, armors = 0
@@ -63,7 +63,7 @@ export function applyItems(
       mods[k] = v
     }
     for (const a of it.grants) {
-      if (!attacks[a]) throw new Error(`${where}: item '${id}' grants '${a}', which is not an attack`)
+      if (!attacks[a]) throw new Error(`${where}: item '${id}' grants '${a}', which is not a weapon action`)
       if (!grants.includes(a)) grants.push(a)
     }
     for (const a of it.abilities) if (!abilities.includes(a)) abilities.push(a)
@@ -71,7 +71,7 @@ export function applyItems(
     worn.push({ itemId: id, grants: [...it.grants], abilities: [...it.abilities], mods, ...(it.gaps ? { gaps: it.gaps } : {}) })
   }
   const attackIds = [...grants, ...base.attacks.filter((a) => !grants.includes(a))]
-  const anyRanged = attackIds.some((a) => attacks[a]?.attack.kind === 'ranged')
+  const anyRanged = attackIds.some((a) => attacks[a]?.attack?.kind === 'ranged')
   const def: UnitDef = {
     ...base,
     maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
@@ -111,7 +111,7 @@ export function applyProgress(
   classId: string,
   levels: Readonly<Record<string, LevelTableLike>>,
   specialties: Readonly<Record<string, SpecialtyLike>>,
-  abilities: Readonly<Record<string, unknown>>,
+  abilities: Readonly<Record<string, ActionDef>>,
   where: string,
   /** progression.level-table-by-type: the table to level on when it is not the class's (civilian.farmer). */
   tableId: string = classId,
@@ -156,7 +156,7 @@ export function applyProgress(
   // capability.surge: "Surge always EQUALS the character level" (heroes.json rules) — added to whatever the row and the specialty grant
   stats['surge'] = (stats['surge'] ?? 0) + progress.level
   const powers = [...(progress.powers ?? [])]
-  for (const p of powers) if (!abilities[p]) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
+  for (const p of powers) if (!abilities[p] || abilities[p].attack || abilities[p].move) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
   return {
     ...base,
     maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,

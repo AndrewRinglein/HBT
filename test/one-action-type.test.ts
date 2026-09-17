@@ -12,9 +12,9 @@ import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { beginActivation } from '../src/core/mutate.js'
-import { ACTIONS, ATTACKS, ABILITIES } from '../src/content/index.js'
+import { ACTIONS, ATTACKS, ABILITIES, BURSTS } from '../src/content/index.js'
 import { MOVES } from '../src/content/moves.js'
-import { actionReady, attacksOf, isAttack, isMove, isPower, movesOf, powersOf, spendAction } from '../src/core/action.js'
+import { actionReady, attacksOf, burstsOf, isBurst, isAttack, isMove, isPower, movesOf, powersOf, spendAction } from '../src/core/action.js'
 import { canAttack, performAttack } from '../src/core/pipeline.js'
 import { canUsePower, usePower } from '../src/core/ability.js'
 import { usableMoves } from '../src/core/movement.js'
@@ -24,12 +24,12 @@ import { hexId } from './board16.js'
 const ONCE = 'attack.test-ram.once'
 const WIND = 'power.test-second-wind'
 
-describe('one registry, three views', () => {
-  it('every attack, power and movement is in ACTIONS, and the three views partition it', () => {
+describe('one registry, four views', () => {
+  it('every attack, power and movement is in ACTIONS, and the four views partition it', () => {
     const all = Object.values(ACTIONS)
-    expect(all.length).toBe(Object.keys(ATTACKS).length + Object.keys(ABILITIES).length + Object.keys(MOVES).length)
+    expect(all.length).toBe(Object.keys(ATTACKS).length + Object.keys(ABILITIES).length + Object.keys(MOVES).length + Object.keys(BURSTS).length)
     for (const a of all) {
-      const kinds = [isAttack(a), isMove(a), isPower(a)].filter(Boolean).length
+      const kinds = [isAttack(a), isMove(a), isPower(a), isBurst(a)].filter(Boolean).length
       expect(kinds, `${a.id} is exactly one of attack / move / power`).toBe(1)
       // the limits are one set of fields on every action
       expect(typeof a.staminaCost, a.id).toBe('number')
@@ -44,7 +44,8 @@ describe('one registry, three views', () => {
   it("a unit's one list is its attacks, then its powers, then its movements — and the views read it back in order", () => {
     const ctx = createBattle(scenarioOptions(SCENARIOS['showcase.arc-variant']!))
     const g = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
-    expect(g.actions).toEqual([...attacksOf(ctx, g).map((a) => a.id), ...powersOf(ctx, g).map((a) => a.id), ...movesOf(ctx, g).map((a) => a.id)])
+    expect([...g.actions].sort()).toEqual([...attacksOf(ctx, g), ...powersOf(ctx, g), ...movesOf(ctx, g), ...burstsOf(ctx, g)].map(a => a.id).sort())
+    expect(burstsOf(ctx, g).map(a => a.id)).toEqual(g.actions.filter(id => !!ACTIONS[id]?.burst))
     expect(attacksOf(ctx, g).map((a) => a.id)).toContain(ONCE)
     expect(powersOf(ctx, g).map((a) => a.id)).toContain(WIND)
     expect(movesOf(ctx, g).length).toBeGreaterThan(0)

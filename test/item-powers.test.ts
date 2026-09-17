@@ -6,10 +6,11 @@
 // Battle. Every use costs another 5", Storm "your Magic + 1 to every unit in
 // the blast" with no roll and no crit.
 import { describe, expect, it } from 'vitest'
-import { canUsePower, powerBlastIdsOf, previewPower, usePower } from '../src/core/ability.js'
+import { canUsePower, previewPower, usePower } from '../src/core/ability.js'
+import { previewBurst, useBurst } from '../src/core/burst.js'
 import { effective } from '../src/core/stats.js'
 import { partySpiritSum } from '../src/core/trigger.js'
-import { ABILITIES, UNITS } from '../src/content/index.js'
+import { ABILITIES, BURSTS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -26,9 +27,9 @@ describe('the pack carries the three powers, faithfully', () => {
       effect: 'selfGuard', range: 0, staminaCost: 1, cooldown: 3,
       guard: { protectionBase: 4, protectionPerArmor: 1, dodgeLoss: 5 },
     })
-    expect(ABILITIES['power.lightning-staff.storm']).toMatchObject({
-      effect: 'damage', stat: 'magic', bonus: 1, damageType: 'magic',
-      range: 4, staminaCost: 3, area: 'blast1',
+    expect(BURSTS['power.lightning-staff.storm']).toMatchObject({
+      burst: {shape: {kind: 'radius', radius: 1}, side: 'any', packets: [{id: 'base', amount: 1, stat: 'magic', damageType: 'magic'}]},
+      range: 4, staminaCost: 3,
     })
   })
 })
@@ -121,33 +122,34 @@ describe('Storm — Magic + 1 to every unit in the blast, no roll, no crit', () 
     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
     const z1 = ctx.state.units.find((u) => u.hex === 118)!
     const z2 = ctx.state.units.find((u) => u.hex === 102)!
-    const struck = powerBlastIdsOf(ctx, mage.id, z1.id, 'power.lightning-staff.storm')
-    expect(struck[0]).toBe(z1.id)
+    const struck = previewBurst(ctx, mage.id, z1.hex, 'power.lightning-staff.storm').targets.map(t => t.id)
+    expect(struck).toContain(z1.id) // V2 stable UID order, not aimed-unit first
     expect(struck).toContain(z2.id) // 102 is adjacent to 118
     expect(struck, '"to every unit in the blast" — the ally too').toContain(oath.id)
     beginActivation(ctx, mage.id, 'test')
-    usePower(ctx, mage.id, z1.id, 'power.lightning-staff.storm')
+    useBurst(ctx, mage.id, z1.hex, 'power.lightning-staff.storm')
     const dmg = 1 + mage.magic // vs zombie armor 0 / resist 0, magic damage
     expect(z1.hp).toBe(z1.maxHp - dmg)
     expect(z2.hp).toBe(z2.maxHp - dmg)
     expect(oath.hp, 'friendly lightning is real lightning').toBeLessThan(oath.maxHp)
-    const hits = ctx.events.filter((e) => e.type === 'power.hit' && e.causeId === 'power.lightning-staff.storm')
+    const hits = ctx.events.filter((e) => e.type === 'burst.struck' && e.causeId === 'power.lightning-staff.storm')
     expect(hits.length).toBe(struck.length)
   })
 
-  it('the switch spares allies when off', () => {
+  it('the explicit enemy-side row spares allies', () => {
     const ctx = createBattle({
       ...scenarioOptions(scenarioDef(SC)),
       heroes: ['alpha-air-mage', 'alpha-oathblade'], heroHexes: [151, 119],
       enemies: ['unit.zombie'], enemyHexes: [118], enemyCount: 1,
     })
-    ctx.cfg.switches.areaHitsAllies = false
+    const storm = BURSTS['power.lightning-staff.storm']!
+    ctx.actions = {...ctx.actions, [storm.id]: {...storm, burst: {...storm.burst, side: 'enemy'}}}
     const mage = ctx.state.units.find((u) => u.typeId === 'alpha-air-mage')!
     const z = ctx.state.units.find((u) => u.typeId === 'unit.zombie')!
     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
-    expect(powerBlastIdsOf(ctx, mage.id, z.id, 'power.lightning-staff.storm')).toEqual([z.id])
+    expect(previewBurst(ctx, mage.id, z.hex, 'power.lightning-staff.storm').targets.map(t => t.id)).toEqual([z.id])
     beginActivation(ctx, mage.id, 'test')
-    usePower(ctx, mage.id, z.id, 'power.lightning-staff.storm')
+    useBurst(ctx, mage.id, z.hex, 'power.lightning-staff.storm')
     expect(oath.hp).toBe(oath.maxHp)
   })
 })
@@ -185,9 +187,9 @@ describe('they run — no power is dead content in a real battle', () => {
     // hexes held by his own line, a clump inside 4, himself outside the blast.
     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.item-powers')))
     runBattle(ctx)
-    const storm = ctx.events.find((e) => e.type === 'power.used' && e.causeId === 'power.lightning-staff.storm')!
+    const storm = ctx.events.find((e) => e.type === 'burst.declared' && e.causeId === 'power.lightning-staff.storm')!
     expect(storm, 'the mage must storm').toBeDefined()
-    expect((storm['struck'] as number[]).length, 'the blast catches the clump').toBeGreaterThanOrEqual(2)
+    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === storm.causeId).length, 'the burst catches the clump').toBeGreaterThanOrEqual(2)
     expect(ctx.state.outcome).not.toBeNull()
   })
 })

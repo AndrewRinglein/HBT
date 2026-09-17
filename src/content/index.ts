@@ -4,7 +4,7 @@
 
 import type { AbilityDef, ActionDef, AttackDef, UnitDef } from '../core/types.js'
 import { disabledIds, omitDisabled, stripDisabledTriggers } from './disable.js'
-import { liftAttacks, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties, type PackAttackRow } from './pack.js'
+import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties, type PackAttackRow } from './pack.js'
 import { MOVES } from './moves.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -216,7 +216,9 @@ export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities(), ..
 // both a weapon's attack and a class power.
 for (const k of Object.keys(ATTACKS)) if (k in ABILITIES || k in MOVES) throw new Error(`action '${k}' is an attack AND a power or movement — one owner only`)
 for (const k of Object.keys(ABILITIES)) if (k in MOVES) throw new Error(`action '${k}' is a power AND a movement — one owner only`)
-export const ACTIONS: Readonly<Record<string, ActionDef>> = { ...ATTACKS, ...ABILITIES, ...MOVES }
+export const BURSTS = omitDisabled(packBursts())
+for (const id of Object.keys(BURSTS)) if (id in ATTACKS || id in ABILITIES || id in MOVES) throw Error(`action '${id}' has duplicate profiles`)
+export const ACTIONS: Readonly<Record<string, ActionDef>> = { ...ATTACKS, ...ABILITIES, ...MOVES, ...BURSTS }
 // The Critical Injury Chart — ruled data (station.crit 2026-08-27). Not under
 // omitDisabled: rows carry keys, not ids; the kill seam for crits is the
 // critEnabled switch itself.
@@ -226,10 +228,10 @@ export const CRIT_CHART = packCritChart()
 // (CF_DISABLE_IDS) reaches an item id like any other.
 // The enchanted tier-3 rows (hero assembly, 2026-09-03; ITEMS-PLAN.md §6)
 // join the Codex items — one registry, one owner per id.
-for (const k of Object.keys(packEnchanted(ATTACKS, ABILITIES))) {
-  if (k in packItems(ATTACKS, ABILITIES)) throw new Error(`enchanted row '${k}' collides with a Codex item — one owner only`)
+for (const k of Object.keys(packEnchanted(ATTACKS, ABILITIES, BURSTS))) {
+  if (k in packItems(ATTACKS, ABILITIES, BURSTS)) throw new Error(`enchanted row '${k}' collides with a Codex item — one owner only`)
 }
-export const ITEMS = omitDisabled({ ...packItems(ATTACKS, ABILITIES), ...packEnchanted(ATTACKS, ABILITIES) })
+export const ITEMS = omitDisabled({ ...packItems(ATTACKS, ABILITIES, BURSTS), ...packEnchanted(ATTACKS, ABILITIES, BURSTS) })
 // The badge registry — badge.mechanism (2026-09-04): the Codex's rows and the test receptacle's, one owner per id, through the kill-switch seam.
 for (const k of Object.keys(packTestBadges())) if (k in packBadges()) throw new Error(`badge '${k}' exists in the test receptacle AND the pack — one owner only`)
 export const BADGES = omitDisabled({ ...packBadges(), ...packTestBadges() })

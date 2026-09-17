@@ -13,7 +13,7 @@ import { canUsePower, usePower, previewPower, powerTargetsOf } from '../src/core
 import { beginActivation } from '../src/core/mutate.js'
 import { valueOf } from '../src/core/status.js'
 import { effective } from '../src/core/stats.js'
-import { ABILITIES } from '../src/content/index.js'
+import { ABILITIES, BURSTS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { hexId } from './board16.js'
 import type { AbilityEffect } from '../src/core/types.js'
@@ -79,7 +79,8 @@ describe('the effect vocabulary, one row each', () => {
     usePower(ctx, w.id, m.id, PRAYER)
     expect(w.primaryUsed).toBe(false)
     // warmup: Fireball on a fresh unit is not ready until turn warmup+1
-    const f = ABILITIES[FIREBALL]!
+    // V2 section 7: Fireball is a burst; its warmup and real fielding remain asserted.
+    const f = BURSTS[FIREBALL]!
     expect(f.warmup).toBeGreaterThan(0)
     const ctx2 = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')) })
     const mage = ctx2.state.units.find((u) => u.actions.includes(FIREBALL))!
@@ -95,14 +96,19 @@ describe('the effect vocabulary, one row each', () => {
 
 describe('alive in a real battle', () => {
   it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
-    const used = new Set<string>()
+    const used = new Set<string>(), bursts = new Set<string>()
     for (let r = 0; r < 3; r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')), replicate: r })
       runBattle(ctx)
-      for (const e of ctx.events) if (e.type === 'power.used') used.add(String(e.causeId))
+      for (const e of ctx.events) {
+        if (e.type === 'power.used') used.add(String(e.causeId))
+        if (e.type === 'burst.declared') bursts.add(String(e.causeId))
+      }
     }
     expect(used.has(AEGIS)).toBe(true)
     expect(used.has(CIRCLE)).toBe(true)
-    expect(used.has(FIREBALL)).toBe(true)
+    // V2 section 7 supersedes unit-centred power.used for the travelling blast.
+    expect(bursts.has(FIREBALL)).toBe(true)
+    expect(used.has(FIREBALL)).toBe(false)
   })
 })

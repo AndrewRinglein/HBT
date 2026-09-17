@@ -1,3 +1,4 @@
+import { previewBurst } from '../src/core/burst.js'
 // refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The Critical Injury Chart — station.crit (2026-08-27).
 //
@@ -76,7 +77,7 @@ describe('the chance — 3 + crit stat + gear + surplus − luck', () => {
     const ctx = rig(['alpha-oathblade'], [135], ['unit.zombie', 'unit.zombie'], [118, 119])
     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
     const z = ctx.state.units.find((u) => u.hex === 118)!
-    expect(preview(ctx, oath.id, z.id, 'attack.halberd.cleave').critChance).toBe(0)
+    expect(previewBurst(ctx, oath.id, z.hex, 'attack.halberd.cleave')).not.toHaveProperty('critChance')
   })
 })
 

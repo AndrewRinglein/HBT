@@ -3097,18 +3097,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2
     },
-    "attack.greatsword.great-cleave": {
-      "id": "attack.greatsword.great-cleave",
-      "name": "Great Cleave",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 1,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 3,
-      "area": "arc",
-      "accuracy": -5
-    },
     "attack.punch": {
       "id": "attack.punch",
       "name": "Punch",
@@ -3250,17 +3238,6 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1
-    },
-    "attack.halberd.cleave": {
-      "id": "attack.halberd.cleave",
-      "name": "Cleave",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 1,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 2,
-      "area": "arc"
     },
     "attack.frost-staff.frost-blast": {
       "id": "attack.frost-staff.frost-blast",
@@ -4910,19 +4887,6 @@ export const UNIT_PACK = {
         "mult": 2
       }
     },
-    "power.lightning-staff.storm": {
-      "id": "power.lightning-staff.storm",
-      "name": "Storm",
-      "free": false,
-      "staminaCost": 3,
-      "cooldown": 0,
-      "range": 4,
-      "effect": "damage",
-      "stat": "magic",
-      "bonus": 1,
-      "damageType": "magic",
-      "area": "blast1"
-    },
     "power.loaded-dice-of-mirran.use": {
       "id": "power.loaded-dice-of-mirran.use",
       "name": "Loaded Dice of Mirran",
@@ -5392,6 +5356,158 @@ export const UNIT_PACK = {
           "until": "battle"
         }
       ]
+    }
+  },
+  "authoredBursts": {
+    "power.bowmaster.rain-of-arrows": {
+      "id": "power.bowmaster.rain-of-arrows",
+      "name": "Rain of Arrows",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "range": 4,
+      "burst": {
+        "shape": {
+          "kind": "radius",
+          "radius": 1
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "stat": "precision",
+            "amount": -1,
+            "damageType": "physical"
+          }
+        ]
+      },
+      "source": "class",
+      "warmup": 1,
+      "free": false
+    },
+    "power.fire-master.fireball": {
+      "id": "power.fire-master.fireball",
+      "name": "Fireball",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 6,
+      "burst": {
+        "shape": {
+          "kind": "radius",
+          "radius": 1
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "stat": "magic",
+            "amount": 2,
+            "damageType": "magic"
+          }
+        ]
+      },
+      "source": "class",
+      "gaps": [
+        "rider: plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning",
+        "unparsed: allies caught in it burn too"
+      ],
+      "warmup": 1,
+      "free": false
+    },
+    "power.wyrmling.scorch": {
+      "id": "power.wyrmling.scorch",
+      "name": "Scorch",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 3,
+      "burst": {
+        "shape": {
+          "kind": "radius",
+          "radius": 1
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "stat": "magic",
+            "amount": 2,
+            "damageType": "magic"
+          }
+        ]
+      },
+      "source": "class",
+      "gaps": [
+        "rider: and those seven hexes become burning"
+      ],
+      "warmup": 1,
+      "free": false
+    },
+    "attack.greatsword.great-cleave": {
+      "id": "attack.greatsword.great-cleave",
+      "name": "Great Cleave",
+      "staminaCost": 3,
+      "cooldown": 0,
+      "range": 1,
+      "burst": {
+        "shape": {
+          "kind": "arc"
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "damageType": "physical",
+            "amount": 1,
+            "stat": "strength"
+          }
+        ]
+      },
+      "source": "weapon"
+    },
+    "attack.halberd.cleave": {
+      "id": "attack.halberd.cleave",
+      "name": "Cleave",
+      "staminaCost": 2,
+      "cooldown": 0,
+      "range": 1,
+      "burst": {
+        "shape": {
+          "kind": "arc"
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "damageType": "physical",
+            "amount": 1,
+            "stat": "strength"
+          }
+        ]
+      },
+      "source": "weapon"
+    },
+    "power.lightning-staff.storm": {
+      "id": "power.lightning-staff.storm",
+      "name": "Storm",
+      "staminaCost": 3,
+      "cooldown": 0,
+      "range": 4,
+      "burst": {
+        "shape": {
+          "kind": "radius",
+          "radius": 1
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "damageType": "magic",
+            "amount": 1,
+            "stat": "magic"
+          }
+        ]
+      },
+      "source": "item",
+      "free": false
     }
   },
   "prologueParty": [
@@ -12961,7 +13077,7 @@ export const UNIT_PACK = {
               "kind": "knockback",
               "value": 1
             },
-            "onlyWithAttack": "attack.test-arc.sweep",
+            "onlyWithAttack": "attack.test-ram.slam",
             "source": "unit.test-arc-golem"
           },
           {
@@ -13016,7 +13132,7 @@ export const UNIT_PACK = {
               "statusId": "status.root",
               "value": 1
             },
-            "onlyWithAttack": "attack.test-arc.sweep",
+            "onlyWithAttack": "attack.test-ram.slam",
             "source": "unit.test-arc-golem"
           },
           {
@@ -13053,7 +13169,7 @@ export const UNIT_PACK = {
               "statusId": "status.shadow",
               "value": 2
             },
-            "onlyWithAttack": "attack.test-arc.sweep",
+            "onlyWithAttack": "attack.test-ram.slam",
             "source": "unit.test-arc-golem"
           },
           {
@@ -13066,7 +13182,7 @@ export const UNIT_PACK = {
               "statusId": "status.confusion",
               "value": 2
             },
-            "onlyWithAttack": "attack.test-arc.sweep",
+            "onlyWithAttack": "attack.test-ram.slam",
             "source": "unit.test-arc-golem"
           },
           {
@@ -14304,6 +14420,163 @@ export const UNIT_PACK = {
         "shadowResist": 2,
         "luck": 0,
         "crit": 0
+      },
+      {
+        "typeId": "test-burst-flame",
+        "name": "Burst caster (TEST)",
+        "side": "hero",
+        "maxHp": 40,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 3,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [
+          "power.test-burst-flame",
+          "power.test-burst-mercy"
+        ],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.move",
+          "power.focus"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-burst-flame"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-burst-flame"
+          }
+        ]
+      },
+      {
+        "typeId": "test-burst-ward",
+        "name": "Burst ward (TEST)",
+        "maxHp": 40,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-burst-ward",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-burst-ward"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-burst-ward"
+          },
+          {
+            "id": "test.burst-ward.save",
+            "hook": "onBurst",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "burstScale",
+              "percent": 50
+            },
+            "source": "unit.test-burst-ward"
+          },
+          {
+            "id": "test.burst-ward.shield",
+            "hook": "onBurst",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 2
+            },
+            "source": "unit.test-burst-ward"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "fireResist": 1,
+        "shadowResist": 2
       }
     ],
     "attacks": {
@@ -14333,17 +14606,6 @@ export const UNIT_PACK = {
         "critCount": 3,
         "accuracy": -10,
         "warmup": 1
-      },
-      "attack.test-arc.sweep": {
-        "id": "attack.test-arc.sweep",
-        "name": "Sweep (TEST)",
-        "kind": "melee",
-        "damageType": "physical",
-        "bonus": 1,
-        "stat": "strength",
-        "reach": 1,
-        "staminaCost": 0,
-        "area": "arc"
       },
       "attack.test-zombie.bite": {
         "id": "attack.test-zombie.bite",
@@ -14956,6 +15218,74 @@ export const UNIT_PACK = {
           }
         ],
         "schedule": []
+      }
+    },
+    "bursts": {
+      "attack.test-arc.sweep": {
+        "id": "attack.test-arc.sweep",
+        "name": "Sweep (TEST)",
+        "staminaCost": 0,
+        "cooldown": 0,
+        "range": 1,
+        "burst": {
+          "shape": {
+            "kind": "arc"
+          },
+          "side": "any",
+          "packets": [
+            {
+              "id": "base",
+              "damageType": "physical",
+              "amount": 1,
+              "stat": "strength"
+            }
+          ]
+        },
+        "source": "weapon"
+      },
+      "power.test-burst-flame": {
+        "id": "power.test-burst-flame",
+        "name": "Twin Flame (TEST)",
+        "staminaCost": 1,
+        "cooldown": 0,
+        "range": 5,
+        "burst": {
+          "shape": {
+            "kind": "radius",
+            "radius": 1
+          },
+          "side": "enemy",
+          "packets": [
+            {
+              "id": "ember",
+              "damageType": "fire",
+              "amount": 4
+            },
+            {
+              "id": "shade",
+              "damageType": "shadow",
+              "amount": 3
+            }
+          ]
+        },
+        "source": "item"
+      },
+      "power.test-burst-mercy": {
+        "id": "power.test-burst-mercy",
+        "name": "Mercy Ring (TEST)",
+        "staminaCost": 1,
+        "cooldown": 0,
+        "range": 4,
+        "burst": {
+          "shape": {
+            "kind": "radius",
+            "radius": 1
+          },
+          "side": "ally",
+          "packets": [],
+          "heal": 7
+        },
+        "source": "item"
       }
     }
   },
@@ -15602,33 +15932,6 @@ export const UNIT_PACK = {
       ],
       "gaps": [
         "modifies only bow/ranged attacks — engine applies it to the unit"
-      ]
-    },
-    "power.bowmaster.rain-of-arrows": {
-      "id": "power.bowmaster.rain-of-arrows",
-      "name": "Rain of Arrows",
-      "free": false,
-      "staminaCost": 2,
-      "cooldown": 4,
-      "warmup": 1,
-      "range": 4,
-      "target": {
-        "select": "area",
-        "side": "any",
-        "radius": 1,
-        "origin": "target"
-      },
-      "effects": [
-        {
-          "kind": "damage",
-          "stat": "precision",
-          "bonus": -1,
-          "damageType": "physical",
-          "allies": "always"
-        }
-      ],
-      "gaps": [
-        "targets 'a hex within 4' — engine centres the blast on a UNIT"
       ]
     },
     "power.bowmaster.extra-shot": {
@@ -17036,34 +17339,6 @@ export const UNIT_PACK = {
         "unparsed: Immediately enter stealth: you cannot be seen and cannot be targeted by an attac",
         "unparsed: It breaks the moment you attack, and area effects, terrain and auras reach you a",
         "no effect compiled — the power is inert"
-      ]
-    },
-    "power.fire-master.fireball": {
-      "id": "power.fire-master.fireball",
-      "name": "Fireball",
-      "free": false,
-      "staminaCost": 2,
-      "cooldown": 3,
-      "warmup": 1,
-      "range": 6,
-      "target": {
-        "select": "area",
-        "side": "any",
-        "radius": 1,
-        "origin": "target"
-      },
-      "effects": [
-        {
-          "kind": "damage",
-          "stat": "magic",
-          "bonus": 2,
-          "damageType": "magic"
-        }
-      ],
-      "gaps": [
-        "targets 'a hex within 6' — engine centres the blast on a UNIT",
-        "rider: plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning",
-        "unparsed: Resist reduces both the hit and each Burn tick, and allies caught in it burn too"
       ]
     },
     "power.fire-master.fire-shield": {
@@ -20493,33 +20768,6 @@ export const UNIT_PACK = {
       "effects": [],
       "gaps": [
         "no effect compiled — the power is inert"
-      ]
-    },
-    "power.wyrmling.scorch": {
-      "id": "power.wyrmling.scorch",
-      "name": "Scorch",
-      "free": false,
-      "staminaCost": 2,
-      "cooldown": 3,
-      "warmup": 1,
-      "range": 3,
-      "target": {
-        "select": "area",
-        "side": "any",
-        "radius": 1,
-        "origin": "target"
-      },
-      "effects": [
-        {
-          "kind": "damage",
-          "stat": "magic",
-          "bonus": 2,
-          "damageType": "magic"
-        }
-      ],
-      "gaps": [
-        "targets 'a hex within 3' — engine centres the blast on a UNIT",
-        "rider: and those seven hexes become burning"
       ]
     },
     "power.wyrmling.molten-scales": {

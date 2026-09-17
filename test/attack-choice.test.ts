@@ -29,8 +29,8 @@ describe('the two policies', () => {
       return { ctx, o, z, swung }
     }
     const d = make('declared'), b = make('bestDamage')
-    expect(d.swung).toBe(attackIdsOf(d.ctx, d.o).find((id) => !d.ctx.actions[id]!.area))   // the first non-area listing
-    const best = attackIdsOf(b.ctx, b.o).filter((id) => !b.ctx.actions[id]!.area)
+    expect(d.swung).toBe(attackIdsOf(d.ctx, d.o)[0])   // the first non-area listing
+    const best = attackIdsOf(b.ctx, b.o)
       .map((id) => ({ id, dmg: preview(b.ctx, b.o.id, b.z.id, id).damageOnHit }))
       .sort((x, y) => y.dmg - x.dmg)[0]!
     expect(b.swung).toBe(best.id)

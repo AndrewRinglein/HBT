@@ -2499,3 +2499,9 @@ Max HP clamping and Shadow obliteration are state changes, not typed damage.
 Self-damage previews expose resolved damage and actual HP loss separately using
 real fork events. Snapshot rules advance to .18. This is authorized implementation,
 not an additional user ruling.
+
+## 2026-09-17 — finish V2 in small verified stages
+
+Andrew: “Okay, let's do everything else in very small stages, testing each stage to make sure it's effective. Let's make sure we do a build loop here where we're going to build a stage. We're going to test it very thoroughly. We're going to compare it against what we think it's supposed to be there, against the roadmap, against V1. If it doesn't seem accurate, we're going to rebuild it, and you're going to continue through everything remaining. You're not going to stop to ask questions, but you can ask me questions now.”
+
+Implementation interpretation: continue the authorized migration through bounded build/test/repair loops without routine questions. Compare against roadmap and historical behavior; explicit V2 rulings supersede retired V1 mechanics. No blocking unanswered question remains at this checkpoint.

@@ -242,21 +242,9 @@ describe('independent audit of logged battles', () => {
             // Guard Broken docks dodge (min 0 at application) — the target's
             // dodge reads through the mod ledger too.
             acc -= modded(e.target!, 'dodge', tgDef.dodge, e.turn) + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
-            // capability.area-attack (2026-08-27), audited since the Alpha
-            // Team's Cleave reached the standard battle (content.alpha-flip,
-            // 2026-09-02): an AREA attack does not roll to hit — the logged
-            // chance is a certain 100 whatever the accuracy arithmetic says,
-            // and the declaration names every struck unit. Each struck unit's
-            // damage is then recomputed below exactly as a single hit would be.
-            if (a.area) {
-              expect(e['hitChance'], `${a.id} is an area attack: no roll`).toBe(100)
-              const struck = e['struck'] as number[]
-              expect(struck, 'the declaration names the struck units').toContain(e.target)
-              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, area: struck.length, seq: e.seq }
-            } else {
-              expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
-              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq }
-            }
+            // V2 bursts have their own declaration; every attack here still rolls.
+            expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
+            pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq }
             checkedAcc++
             break
           }
@@ -270,6 +258,27 @@ describe('independent audit of logged battles', () => {
               // station.crit-count: several criticals stack +50% each.
               pending.heads = typeof e['critHeads'] === 'number' ? (e['critHeads'] as number) : (pending.crit ? 1 : 0)
             }
+            break
+          }
+
+          // V2 bursts have an independent, non-attack lifecycle. No earlier
+          // ordinary attack may remain armed across this declaration.
+          case 'burst.declared': {
+            pending = null; pendingPower = null
+            expect(e['hexes']).toBeInstanceOf(Array)
+            expect(e['centre']).toBeTypeOf('number')
+            break
+          }
+          case 'burst.struck': {
+            const packets = e['packets'] as {raw:number;absorbed:number;mitigationDelta:number;floorAdjustment:number;resolved:number;applied:number;overkill:number;ledger:{delta:number}[]}[]
+            for (const p of packets) {
+              expect(p.raw - p.absorbed + p.mitigationDelta + p.floorAdjustment).toBe(p.resolved)
+              expect(p.applied + p.overkill).toBe(p.resolved)
+              expect(p.ledger.reduce((n,r) => n+r.delta,0)).toBe(p.resolved)
+            }
+            expect(packets.reduce((n,p) => n+p.resolved,0)).toBe(e['damage'])
+            expect(packets.reduce((n,p) => n+p.applied,0)).toBe(e['applied'])
+            checkedDamage++
             break
           }
 
@@ -287,7 +296,7 @@ describe('independent audit of logged battles', () => {
             // their own full ledgers. Extended, never weakened: the damage
             // recompute is exactly as strict as before for exactly the events
             // it always covered.
-            if ((ab.effect ?? 'damage') === 'damage' && !ab.area) {
+            if ((ab.effect ?? 'damage') === 'damage') {
               pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
             } else {
               if (ab.effect === 'heal') expect(e['heal'] as number, `${ab.id} heals a stated amount`).toBeGreaterThan(0)
@@ -337,7 +346,7 @@ describe('independent audit of logged battles', () => {
             const at = UNITS[type.get(pending.actor)!]!
             // An area swing lands on every struck unit in turn; the victim is
             // whoever THIS event names, not the declared target.
-            const tg = UNITS[type.get(pending.area ? e.target! : pending.target)!]!
+            const tg = UNITS[type.get(pending.target)!]!
             const a = ATTACKS[pending.attackId]!
             // The attack names its stat (strength / precision / spirit since
             // the Chaplain's Mercy, 2026-08-28) — read that one, not a guess.
@@ -346,7 +355,7 @@ describe('independent audit of logged battles', () => {
             const stat = modded(pending.actor, a.attack.stat, base, e.turn, pending.seq)
             // badge.afflictions (2026-09-04): Rotting Flesh's +1 Armor arrives as a stored mod — the
             // auditor reads the target's MODDED mitigation, as it already reads the attacker's modded stat
-            const victim = pending.area ? e.target! : pending.target
+            const victim = pending.target
             const mit = a.attack.damageType === 'physical' ? modded(victim, 'armor', tg.armor, e.turn, pending.seq) : a.attack.damageType === 'magic' ? modded(victim, 'resist', tg.resist, e.turn, pending.seq) : 0
             // The damage-arm crit multiplies BEFORE Protection and Mitigation
             // (DMG.CRIT at 450), truncating division — the one rounding rule;
@@ -360,7 +369,6 @@ describe('independent audit of logged battles', () => {
             expect(total, `${a.id} damage`).toBe(expected)
             expect(e['hpBefore'] as number - (e['amount'] as number)).toBe(e['hpAfter'])
             checkedDamage++
-            if (pending.area && --pending.area > 0) break
             pending = null
             break
           }
@@ -374,6 +382,9 @@ describe('independent audit of logged battles', () => {
     expect(checkedMoves).toBeGreaterThan(1000)
   })
 
+  // The complete 200-battle sample exceeded 5s under four-worker suite load,
+  // but passes in isolation. As with the 400-battle rate probe below, this
+  // verifies outcomes, not throughput; keep every seed and exact expectation.
   it('the specific expected numbers appear in real battles, not just unit tests', () => {
     const seen = new Set<string>()
     for (let r = 0; r < 200; r++) {
@@ -407,7 +418,7 @@ describe('independent audit of logged battles', () => {
     expect(seen, 'hack -> zombie = 7').toContain('attack.halberd.hack->unit.zombie=7')
     expect(seen, 'bolt -> zombie = 6').toContain('attack.lightning-staff.bolt->unit.zombie=6')
     expect(seen, 'short shot -> zombie = 5').toContain('attack.shortbow.short-shot->unit.zombie=5')
-  })
+  }, 30000)
 
   // This 400-battle sample exceeded 5s in two full-suite runs. Keep all
   // samples and statistical thresholds; the test does not specify throughput.

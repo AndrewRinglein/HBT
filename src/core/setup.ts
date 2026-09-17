@@ -3,7 +3,7 @@ import { geometryOf, validBoard } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
-import { ACTIONS, ATTACKS, ABILITIES, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { ACTIONS, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
@@ -151,8 +151,8 @@ export function fieldedDef(typeId: string, items?: readonly string[], progress?:
   // Hero assembly (2026-09-03): level, specialty and drafted powers fold on
   // BEFORE the items, so the kit sees the grown hero. No progress = the bare
   // row, so every fielding that says nothing is unchanged.
-  const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, `fieldedDef(${typeId})`, levelTableOf(bare)) : bare
-  return applyItems(grown, items ?? bare.defaultItems ?? [], ITEMS, ATTACKS, `fieldedDef(${typeId})`).def
+  const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ACTIONS, `fieldedDef(${typeId})`, levelTableOf(bare)) : bare
+  return applyItems(grown, items ?? bare.defaultItems ?? [], ITEMS, ACTIONS, `fieldedDef(${typeId})`).def
 }
 
 /** The class a hero row belongs to, read off its tags (`class.<x>`) — hero assembly. */
@@ -350,8 +350,8 @@ export function createBattle(opts: BattleOptions): Ctx {
     // one function before the unit is made. Enemies never take this path.
     const itemIds = opts.heroItems?.[i] ?? bare.defaultItems ?? []
     const progress = opts.heroProgress?.[i]
-    const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, where, levelTableOf(bare)) : bare
-    const kitted = applyItems(grown, itemIds, ITEMS, ATTACKS, where)
+    const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ACTIONS, where, levelTableOf(bare)) : bare
+    const kitted = applyItems(grown, itemIds, ITEMS, ACTIONS, where)
     // badge.mechanism (2026-09-04): the row's own badges plus the list handed
     // over for this hero, folded after the kit so a badge sees the kitted hero
     const badgeIds = [...(kitted.def.badges ?? []), ...(opts.heroBadges?.[i] ?? [])]
@@ -461,7 +461,7 @@ export function createCustomBattle(
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —
   // a fixture hero is the same hero as a scenario hero.
-  heroes.forEach((h, i) => { state.units.push(makeUnit(id, identities.heroes[i]!, `H${i}`, applyItems(UNITS[h.type]!, UNITS[h.type]!.defaultItems ?? [], ITEMS, ATTACKS, 'custom battle').def, h.hex)); id++ })
+  heroes.forEach((h, i) => { state.units.push(makeUnit(id, identities.heroes[i]!, `H${i}`, applyItems(UNITS[h.type]!, UNITS[h.type]!.defaultItems ?? [], ITEMS, ACTIONS, 'custom battle').def, h.hex)); id++ })
   enemies.forEach((e, i) => { const d = UNITS[e.type]!; state.units.push(makeUnit(id, identities.enemies[i]!, `E${i}`, d.badges?.length ? applyBadges(d, d.badges, BADGES, 'custom battle').def : d, e.hex)); id++ })
   for (const u of state.units) {
     // A dotted typeId is already a full Codex id and names itself; bare

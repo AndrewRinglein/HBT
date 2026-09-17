@@ -1,4 +1,5 @@
 import {isDamageType} from './types.js'
+import { validateBurstAction } from './burst-profile.js'
 import {attackPacketFields} from './attack-profile.js'
 import { prepareCover } from './cover.js'
 import { geometryOf, validBoard } from './hex.js'
@@ -13,7 +14,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.19' // Ordered packets, confirmed crits and pre-onHit Protection reservation.
+const RULES_VERSION = 'v2-migration.20' // Hex-targeted bursts, defender save hooks and per-caster burst ordinals.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'selecting', 'activation-start', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -33,7 +34,7 @@ const validTerrain = (v: unknown, cells: number): boolean => Array.isArray(v) &&
  * text (bundling/minification must not invalidate an otherwise identical save).
  * This checksum detects accidental content mismatch, not hostile tampering. */
 function contentKey(runtime: BattleRuntime): string {
-  for(const action of Object.values(runtime.actions))if(action.attack)attackPacketFields(action.attack)
+  for (const action of Object.values(runtime.actions)) { validateBurstAction(action); if (action.attack) attackPacketFields(action.attack) }
   let a = 0x811c9dc5, b = 0x9e3779b9, length = 0
   const add = (s: string) => {
     length += s.length
@@ -107,6 +108,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     record(u)
     requireThat(u.id === i && isUnitUid(u.uid) && !uids.has(u.uid), 'unit identity'); uids.add(u.uid)
     requireThat(integer(u.hex, 0, cells - 1), 'unit hex')
+    if (u.burstOrdinal !== undefined) requireThat(integer(u.burstOrdinal, 1), 'burst ordinal')
     for (const k of ['hp', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'movement', 'reach', 'stamina', 'maxStamina', 'staminaRegen', 'bleedOut', 'toughness', 'surge', 'surgeChance', 'vision', 'movePointsLeft', 'activationOrdinal', 'attackOrdinal', 'deathbedOrdinal']) requireThat(integer(u[k]), `unit ${k}`)
     for (const key of ['fireResist', 'poisonResist', 'shadowResist']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)
     requireThat(phases.includes(u.side) && phases.includes(u.rowSide) && ['standing', 'downed', 'dead'].includes(u.lifeState), 'unit side/life')
@@ -134,7 +136,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(typeof t.id === 'string' && typeof t.source === 'string', 'trigger identity')
       validateTrigger(t as Trigger)
       const e = t.effect
-      requireThat(['status.apply', 'status.remove', 'damage', 'knockback', 'badge.grant', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'stamina.drain', 'layer.paint'].includes(e.kind), 'trigger effect')
+      requireThat(['burstScale', 'status.apply', 'status.remove', 'damage', 'knockback', 'badge.grant', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'stamina.drain', 'layer.paint'].includes(e.kind), 'trigger effect')
       if (['status.apply', 'status.remove'].includes(e.kind)) requireThat(typeof e.statusId === 'string' && Object.hasOwn(runtime.statuses, e.statusId), 'trigger status')
       if (e.kind === 'badge.grant') requireThat(typeof e.badgeId === 'string' && Object.hasOwn(runtime.badges, e.badgeId), 'trigger badge')
       if (e.kind === 'damage') requireThat(isDamageType(e.damageType), 'trigger damage type')
@@ -242,6 +244,11 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     }
     if (c.at === 'complete') requireThat(st.outcome !== null, 'completed outcome')
   } else requireThat(!s.events.some((e: any) => e.type === 'battle.begin'), 'missing active cursor')
+  for (const u of st.units) {
+    const declarations = s.events.filter((e: any) => e.type === 'burst.declared' && e.actor === u.id)
+    requireThat((u.burstOrdinal ?? 0) === declarations.length, 'burst ordinal history')
+    requireThat(declarations.every((e: any, i: number) => e.ordinal === i + 1), 'burst event ordinal history')
+  }
   record(s.cfg); record(s.cfg.switches)
   requireThat(integer(s.cfg.turnCap, 1), 'turn cap')
   for (const [k, v] of Object.entries(DEFAULT_CONFIG.switches)) requireThat(typeof s.cfg.switches[k] === typeof v, `switch ${k}`)

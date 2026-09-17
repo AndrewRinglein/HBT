@@ -293,7 +293,7 @@ export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number)
   // (canAttack mode 'reaction': every gate but the primary slot), the spend is
   // the one spend, and nothing is written back. The AI policy for "chooses" is
   // unchanged: the cheapest melee that is legal, ties to declared order.
-  const melee = attacksOf(ctx, h).filter((a) => a.attack.kind === 'melee' && !a.area)
+  const melee = attacksOf(ctx, h).filter((a) => a.attack.kind === 'melee')
   if (melee.length === 0) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'no melee attack' }); return false }
   const legal = melee.filter((a) => canAttack(ctx, holderId, moverId, a.id, 'reaction'))
     .sort((a, b) => a.staminaCost - b.staminaCost || melee.indexOf(a) - melee.indexOf(b))[0]

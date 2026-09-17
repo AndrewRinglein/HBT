@@ -450,3 +450,11 @@ export function paintLayer(ctx: Ctx, hex: HexId, layer: number, causeId: string)
   emit(ctx, cancel ? 'layer.cancelled' : 'layer.painted', causeId, { hex, before, after, layer })
 }
 export function layerAt(ctx: Ctx, hex: HexId): number { return ctx.state.layers?.[hex] ?? 0 }
+
+/** A persistent caster-local burst ordinal, separate from attack cups. */
+export function beginBurst(ctx: Ctx, actor: number, causeId: string, facts: Record<string, unknown>): number {
+  const u = unit(ctx, actor)
+  u.burstOrdinal = (u.burstOrdinal ?? 0) + 1
+  emit(ctx, 'burst.declared', causeId, { ...facts, actor, ordinal: u.burstOrdinal })
+  return u.burstOrdinal
+}

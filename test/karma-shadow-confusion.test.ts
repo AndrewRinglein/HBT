@@ -79,6 +79,8 @@ describe('Confusion', () => {
     const seen = new Set<string>()
     for (let r = 0; r < 8 && !want.every((id) => seen.has(id)); r++) {
       const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }, { type: 'test-zombie', hex: hexId(6, 6) }], { replicate: r })
+      // V2 bursts do not fire attack riders; this control exercises the unchanged ordinary weapons.
+      ctx.state.units[0]!.actions = ctx.state.units[0]!.actions.filter(id => !ctx.actions[id]?.burst)
       runBattle(ctx)
       for (const e of ctx.events) if (e.type === 'status.applied') seen.add(e['statusId'] as string)
     }

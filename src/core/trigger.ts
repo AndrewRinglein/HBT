@@ -21,8 +21,8 @@
 //      -> triggersFrom() rebuilds the list from sources; nothing is removed in place.
 //   3. Triggers pushed by reference, so two units share mutable entries
 //      -> defs are frozen and every unit gets its own copy at assembly.
-//   4. Preview and resolution disagree  -> triggers never alter the damage number, so
-//      there is no second path to disagree with. Damage-changing effects are STATIONS.
+//   4. Damage resolves through shared stations at its declared lifecycle rung.
+//      Hooks can change that state; public forecasts never peek at future rolls.
 
 import { incomingAbsorb, spendAbsorb } from './status.js'
 import { flatDamage } from './mitigation.js'
@@ -61,6 +61,7 @@ export type Hook =
    * because death also arrives from a poison tick and from bleeding out, and a
    * hook wired only into `performAttack` would miss both.
    */
+  | 'onBurst'          // defender reaction before burst mitigation, never an attack hook
   | 'onDeath'
   | 'onActivationEnd'
   /**
@@ -73,11 +74,12 @@ export type Hook =
 
 export const HOOKS: readonly Hook[] = [
   'onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage',
-  'onDeath', 'onActivationEnd', 'startOfBattle',
+  'onDeath', 'onActivationEnd', 'startOfBattle', 'onBurst',
 ] as const
 
 /** Hooks that have a natural target. Authoring `target` on any other is a load error. */
 const HAS_TARGET: ReadonlySet<Hook> = new Set<Hook>([
+  'onBurst',
   'onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage',
 ])
 
@@ -120,6 +122,7 @@ export type ValueSpec =
 
 /** WHAT it does. */
 export type TriggerEffect =
+  | { readonly kind: 'burstScale'; readonly percent: number }
   | { readonly kind: 'status.apply'; readonly statusId: string; readonly value: ValueSpec }
   | { readonly kind: 'status.remove'; readonly statusId: string }
   | { readonly kind: 'damage'; readonly amount: ValueSpec; readonly damageType: DamageType }
@@ -207,6 +210,8 @@ export function validateTrigger(t: Trigger): void {
   if (needsTarget && !HAS_TARGET.has(t.hook)) {
     throw new Error(`${where}: hook '${t.hook}' has no target, so select:'target' can never resolve`)
   }
+  if (t.effect.kind === 'burstScale' && (t.hook !== 'onBurst' || t.select !== 'self' || !Number.isSafeInteger(t.effect.percent) || t.effect.percent < 0 || t.effect.percent > 100)) throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
+  if (t.hook === 'onBurst' && t.onlyWithAttack !== undefined) throw Error(`${where}: onBurst cannot be attack-scoped`)
   if(t.effect.kind==='damage'&&!isDamageType(t.effect.damageType))throw new Error(`${where}: unknown damage type`)
   if (!t.source) throw new Error(`${where}: every trigger names the source that granted it`)
 }
@@ -360,13 +365,15 @@ export function within(ctx: Ctx, from: Unit, n: number, side: 'ally' | 'enemy' |
  * fire must leave a trace or "is this wired in?" has no answer and gate 1 is blind —
  * the `activation.idle` lesson, which cost days the first time.
  */
-export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): void {
+export type BurstAdjustment = { readonly id: string; readonly percent: number }
+export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): BurstAdjustment[] {
+  const adjustments: BurstAdjustment[] = []
   const owner = ctx.state.units[fc.ownerId]
-  if (!owner) return
+  if (!owner) return adjustments
   // A dead unit takes no further actions — EXCEPT onDeath, whose owner is dead by
   // definition. Without this exception the hook would be wired, logged as absent,
   // and silently never fire: the worst failure shape in this project.
-  if (owner.lifeState === 'dead' && hook !== 'onDeath') return
+  if (owner.lifeState === 'dead' && hook !== 'onDeath') return adjustments
 
   const slots = owner.triggers
     .map((t, slot) => ({ t, slot }))
@@ -398,8 +405,12 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): void {
     })
     if (!fired) continue
 
-    for (const id of selectOf(ctx, t, fc)) applyEffect(ctx, t, owner, id)
+    if (t.effect.kind === 'burstScale') {
+      adjustments.push({ id: t.id, percent: t.effect.percent })
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: owner.id, effect: t.effect.kind, percent: t.effect.percent })
+    } else for (const id of selectOf(ctx, t, fc)) applyEffect(ctx, t, owner, id)
   }
+  return adjustments
 }
 
 function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void {

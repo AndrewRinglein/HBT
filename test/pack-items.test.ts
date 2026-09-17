@@ -7,7 +7,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { ABILITIES, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
+import { ACTIONS, BURSTS, ABILITIES, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
 import { fieldedDef, createBattle } from '../src/core/setup.js'
 
 // LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
@@ -75,10 +75,10 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
       const it = ITEMS[id]!
       for (const g of c.grants ?? []) {
         if (g.startsWith('power.')) {
-          const has = it.abilities.includes(g) && ABILITIES[g] !== undefined
+          const has = it.abilities.includes(g) && ACTIONS[g] !== undefined
           expect(has || it.gaps?.some((x) => x.includes(`grants ${g}`)), `${id}: ${g}`).toBeTruthy()
         } else {
-          const has = it.grants.includes(g) && ATTACKS[g] !== undefined
+          const has = it.grants.includes(g) && ACTIONS[g] !== undefined
           expect(has || it.gaps?.some((x) => x.includes(`grants ${g}`)), `${id}: ${g}`).toBeTruthy()
         }
       }
@@ -98,7 +98,7 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
 
   it('the attack id space widened to every grant: the pack carries far more attacks than the fielded kits use', () => {
     const granted = new Set(Object.values(ITEMS).flatMap((i) => i.grants))
-    for (const a of granted) expect(ATTACKS[a], a).toBeDefined()
+    for (const a of granted) expect(ACTIONS[a], a).toBeDefined()
     const fielded = new Set(Object.values(UNITS).flatMap((u) => u.attacks))
     expect(granted.size).toBeGreaterThan(fielded.size)
   })

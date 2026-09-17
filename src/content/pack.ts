@@ -3,10 +3,11 @@
 // clearly differentiated text. We're not hardcoding." The pack file itself is
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
+import { validateBurstAction } from '../core/burst-profile.js'
 import { isDamageType } from '../core/types.js'
 import { attackPacketFields } from '../core/attack-profile.js'
 import { UNIT_PACK } from './generated/pack.js'
-import type { ActionDef, AbilityDef, AttackDef, AuthoredMap, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
+import type { ActionDef, AbilityDef, AttackDef, BurstDef, AuthoredMap, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
 import { formatOf, validBoard, MAX_BOARD_CELLS, type Board } from '../core/hex.js'
 // Initialize pure map validation before the trigger -> movement/stats -> maps
 // cycle can load registered maps. The published-props Vitest probe caught the
@@ -192,7 +193,7 @@ export type PackAttackRow = {
   readonly slot?: ActionDef['slot']
   readonly id: string; readonly name: string; readonly kind: 'melee' | 'ranged'; readonly damageType: import('../core/types.js').DamageType
   readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly reach: number; readonly staminaCost: number
-  readonly applies?: { readonly statusId: string; readonly value: number }; readonly area?: 'arc' | 'blast1'
+  readonly applies?: { readonly statusId: string; readonly value: number };
   readonly crit?: number; readonly hits?: number; readonly cooldown?: number; readonly warmup?: number
   readonly powerScale?: number; readonly accuracy?: number; readonly critCount?: number; readonly uses?: number; readonly free?: boolean
 }
@@ -206,11 +207,12 @@ export type PackMoveRow = {
 
 export function liftAttack(r: PackAttackRow): AttackDef {
   validateActionMetadata(r)
+  validateBurstAction(r as unknown as ActionDef)
   if(!isDamageType(r.damageType))throw Error(`unit pack: invalid damage type on '${r.id}'`)
-  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, area, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free } = r
+  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free } = r
   return {
     id, name, source: 'weapon', staminaCost, cooldown: cooldown ?? 0, range: reach, ...(r.slot !== undefined ? { slot: r.slot } : {}),
-    ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(free !== undefined ? { free } : {}), ...(area ? { area } : {}),
+    ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(free !== undefined ? { free } : {}),
     attack: {
       kind, damageType, bonus, stat, ...attackPacketFields(r),
       ...(applies ? { applies } : {}), ...(crit !== undefined ? { crit } : {}), ...(hits !== undefined ? { hits } : {}),
@@ -299,7 +301,7 @@ export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
  * as its source, and every stat key one the engine has. `gaps` is carried as
  * the row's own list of what it cannot yet do.
  */
-export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>): Readonly<Record<string, ItemDef>> {
+export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as { items?: Readonly<Record<string, ItemDef>> }).items ?? {}
   const CLASSES = ['weapon', 'armor', 'trinket', 'relic', 'idol', 'bloodrune', 'consumable']
   const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
@@ -313,8 +315,8 @@ export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilitie
       if (!STATS.includes(s)) throw new Error(`item pack: '${k}' modifies '${s}', which is not an engine stat — the converter must gap it, never pass it`)
       if (typeof v !== 'number') throw new Error(`item pack: '${k}' statModifier ${s} is not a number`)
     }
-    for (const a of it.grants) if (!attacks[a]) throw new Error(`item pack: '${k}' grants '${a}', which is not in the pack's attacks`)
-    for (const a of it.abilities) if (!abilities[a]) throw new Error(`item pack: '${k}' grants power '${a}', which is not in the pack's abilities`)
+    for (const a of it.grants) if (!attacks[a] && !bursts[a]) throw new Error(`item pack: '${k}' grants '${a}', which is not in the pack's attacks`)
+    for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`item pack: '${k}' grants power '${a}', which is not in the pack's abilities`)
     for (const t of it.triggers) { validateTrigger(t); if (t.source !== k) throw new Error(`item pack: '${k}' carries a trigger sourced '${t.source}'`) }
   }
   return raw
@@ -419,7 +421,7 @@ export function packTestBadges(): Readonly<Record<string, BadgeDef>> {
 }
 
 /** The enchanted tier-3 rows — ITEMS-PLAN.md §6: generated, base + enchant, never hand-edited. Validated like items. */
-export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>): Readonly<Record<string, ItemDef>> {
+export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as unknown as { enchanted?: Readonly<Record<string, ItemDef & { base: string; enchant: string }>> }).enchanted ?? {}
   const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
   for (const [k, it] of Object.entries(raw)) {
@@ -429,8 +431,8 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
     for (const [s, v] of Object.entries(it.statModifiers)) {
       if (!STATS.includes(s) || typeof v !== 'number') throw new Error(`enchanted: '${k}' modifies '${s}' — not an engine stat`)
     }
-    for (const a of it.grants) if (!attacks[a]) throw new Error(`enchanted: '${k}' grants '${a}', not a pack attack`)
-    for (const a of it.abilities) if (!abilities[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)
+    for (const a of it.grants) if (!attacks[a] && !bursts[a]) throw new Error(`enchanted: '${k}' grants '${a}', not a pack attack`)
+    for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)
     for (const t of it.triggers) { validateTrigger(t); if (t.source !== k && t.source !== it.base) throw new Error(`enchanted: '${k}' carries a trigger sourced '${t.source}'`) }
   }
   return raw
@@ -522,4 +524,18 @@ export function packMaps(): readonly PackMapRow[] {
 }
 export function packTestMaps(): readonly PackMapRow[] {
   return loadMaps((UNIT_PACK as unknown as { test: { maps?: Readonly<Record<string, PackMapRow>> } }).test.maps ?? {})
+}
+
+/** Burst IDs retain their authored attack/power namespaces; behavior is the profile. */
+export function packBursts(): Readonly<Record<string, import('../core/types.js').BurstDef>> {
+  const pack = UNIT_PACK as unknown as { authoredBursts?: Record<string, import('../core/types.js').BurstDef>; test?: { bursts?: Record<string, import('../core/types.js').BurstDef> } }
+  const real = pack.authoredBursts ?? {}, test = pack.test?.bursts ?? {}
+  for (const k of Object.keys(test)) if (real[k]) throw Error(`duplicate burst '${k}'`)
+  const rows = { ...real, ...test }
+  for (const [k, a] of Object.entries(rows)) {
+    if (a.id !== k || !a.burst) throw Error('invalid burst row')
+    validateActionMetadata(a)
+    validateBurstAction(a)
+  }
+  return rows
 }

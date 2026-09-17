@@ -6,10 +6,8 @@
 //
 // capability.item-powers (2026-08-27): AbilityDef speaks three shapes now,
 // copied from the authored S31 item powers and never invented —
-//   damage      the original Arcane-Bolt shape; with `area: 'blast1'` it is
-//               the Lightning Staff's Storm ("Deal magic damage equal to your
-//               Magic + 1 to every unit in the blast. It does not roll to
-//               hit, so it cannot crit.")
+//   damage      the single-target Arcane-Bolt shape. V2 Storm is a burst
+//               profile resolved in burst.ts, not this power path.
 //   heal        the Holy Symbol's Heal ("Heal the target for 1 + 2 x Spirit"
 //               — a ValueSpec, so Spirit uses the party-wide sum per
 //               GAME-DESIGN §5's scaling law)
@@ -24,7 +22,7 @@ import { actionReady, isPower, spendAction , resolveActionSlot } from './action.
 export { readyOn, isReady } from './action.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
 import { executeKnockback } from './movement.js'
-import { areaHexesOf, resolveDamage } from './pipeline.js'
+import { resolveDamage } from './pipeline.js'
 import type { DamageSource } from './pipeline.js'
 import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
 import { valueOf } from './trigger.js'
@@ -134,23 +132,6 @@ export function resolveGuardAmount(ctx: Ctx, user: Unit, a: AbilityDef): number 
   return a.guard.protectionBase + a.guard.protectionPerArmor * effective(ctx, user, 'armor').value
 }
 
-/** Every standing unit a blast1 power centred on the target's hex would strike. */
-export function powerBlastIdsOf(ctx: Ctx, userId: number, targetId: number, abilityId: string): number[] {
-  const a = abilityDef(ctx, abilityId)
-  if (!a.area) return [targetId]
-  const u = unit(ctx, userId)
-  const hexes = new Set(areaHexesOf(ctx.geo, u.hex, unit(ctx, targetId).hex, a.area))
-  const out: number[] = []
-  for (const o of ctx.state.units) {
-    if (o.lifeState !== 'standing' || !hexes.has(o.hex)) continue
-    // "to EVERY unit in the blast" — the caster included, if he stood in it.
-    // With areaHitsAllies off only enemies are struck, caster's side spared.
-    if (!ctx.cfg.switches.areaHitsAllies && o.side === u.side) continue
-    out.push(o.id)
-  }
-  return out.sort((x, y) => (x === targetId ? -1 : y === targetId ? 1 : x - y))
-}
-
 export function previewPower(ctx: Ctx, userId: number, targetId: number, abilityId: string) {
   const a = abilityDef(ctx, abilityId)
   const u = unit(ctx, userId)
@@ -233,7 +214,7 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
       break
     }
     default: {
-      if (!a.area) {
+      {
         // The original bolt path, byte-for-byte: one power.used event carrying
         // the ledger. The control baselines and the replay viewer both speak
         // this shape, and a single-target power gained nothing from the loop.
@@ -256,30 +237,7 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
         total = dmg.value
         break
       }
-      const struck = powerBlastIdsOf(ctx, userId, targetId, abilityId)
-      emit(ctx, 'power.used', a.id, {
-        actor: userId, target: targetId, abilityId, name: a.name,
-        distance: ctx.geo.distance(u.hex, tg.hex), area: a.area, struck,
-      })
-      for (const id of struck) {
-        const victim = unit(ctx, id)
-        if (victim.lifeState !== 'standing') continue
-        const dmg = resolvePowerDamage(ctx, u, victim, a, outgoingPenalty(ctx, u), incomingAbsorb(ctx, victim))
-        const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
-        if (summed !== dmg.value) throw new Error(`power ledger does not reconcile: ${summed} vs ${dmg.value}`)
-        emit(ctx, 'power.hit', a.id, {
-          actor: userId, target: id,
-          ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
-        })
-        // Spend what the pipeline said Protection would absorb — same order as attacks.
-        if (dmg.absorbed > 0) spendAbsorb(ctx, id, dmg.absorbed, a.id)
-        applyDamage(ctx, id, dmg.value, a.id,
-          dmg.absorbed > 0
-            ? { actor: userId, abilityId, damageType: a.damageType, absorbed: dmg.absorbed }
-            : { actor: userId, abilityId, damageType: a.damageType })
-        total += dmg.value
-      }
-      break
+
     }
   }
 
@@ -334,7 +292,7 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Action
   switch (e.kind) {
     case 'damage': {
       if (tg.side === u.side) {
-        const allies = e.allies ?? (ctx.cfg.switches.areaHitsAllies ? 'always' : 'never')
+        const allies = e.allies ?? 'always'
         if (allies === 'never') return 0
       }
       const dmg = resolveDamage(ctx, u, tg, { id: a.id, stat: e.stat, bonus: e.bonus, damageType: e.damageType }, false, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg))

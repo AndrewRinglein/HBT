@@ -71,7 +71,7 @@ describe('the standard battle is the Alpha Team', () => {
       for (const e of ctx.events) {
         if (e.type === 'status.applied') causes.add(e['causeId'] as string)
         if (e.type === 'knocked') knocked++
-        if (e.type === 'attack.declared' && e['area']) area++
+        if (e.type === 'burst.declared' && (e['shape'] as {kind:string}).kind === 'arc') area++
       }
     }
     expect(knocked, 'the Halberd pushes').toBeGreaterThan(0)

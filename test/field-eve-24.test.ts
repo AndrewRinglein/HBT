@@ -7,7 +7,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
+import { ACTIONS, BURSTS, ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -67,13 +67,13 @@ describe('all twenty-four field', () => {
       // an attack the Codex names but no row authors must be a named gap
       const granted = kit.flatMap((it) => (items.get(it)?.grants ?? []).filter((x) => x.startsWith('attack.')))
       for (const a of granted) {
-        if (ATTACKS[a]) expect(u.attacks, `${id} carries ${a}`).toContain(a)
+        if (ACTIONS[a]) expect(u.attacks, `${id} carries ${a}`).toContain(a)
         else expect(g.some((x) => x.unit === id && x.what.includes(a)), `${id}: ${a} unauthored must be a gap`).toBe(true)
       }
       expect(u.attacks[u.attacks.length - 1], `${id} ends with the universal Punch`).toBe('attack.punch')
       // powers: compiled or gapped, never silently dropped
       for (const p of kit.flatMap((it) => (items.get(it)?.grants ?? []).filter((x) => x.startsWith('power.')))) {
-        const compiled = u.abilities.includes(p) && ABILITIES[p] !== undefined
+        const compiled = u.abilities.includes(p) && ACTIONS[p] !== undefined
         const gapped = g.some((x) => x.unit === id && x.what.includes(p))
         expect(compiled !== gapped, `${id}: ${p} compiled=${compiled} gapped=${gapped}`).toBe(true)
       }
@@ -106,7 +106,7 @@ describe('in real battles — the roll-call', () => {
     for (const id of Object.keys(UNITS)) {
       if (!id.startsWith('hero.base.')) continue
       const u = fieldedDef(id)   // role follows the kit AS FIELDED (seam.items-per-unit)
-      const anyRanged = u.attacks.some((a) => ATTACKS[a]!.attack.kind === 'ranged')
+      const anyRanged = u.attacks.some((a) => ACTIONS[a]?.attack?.kind === 'ranged')
       expect(u.role, `${id} role follows its kit`).toBe(anyRanged ? 'ranged' : 'melee')
     }
   })

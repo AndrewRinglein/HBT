@@ -6,9 +6,10 @@ import type { HexId } from './../core/hex.js'
 import { livingEnemies, movementOptions, moveStaminaCost, nearestEnemy, stepRangeOf, usableMoves as readyMoves } from './../core/movement.js'
 import { executeAction, validateAction, type ActionRequest } from './../core/commands.js'
 import type { AttackDef, MoveDef } from './../core/types.js'
-import { attackIdsOf, attacksOf, powerIdsOf, powersOf, resolveActionSlot } from './../core/action.js'
-import { areaUnitIdsOf, attackDef, preview, reachOf } from './../core/pipeline.js'
-import { isReady, powerBlastIdsOf, powerTargetsOf, previewPower } from './../core/ability.js'
+import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, powerIdsOf, powersOf, resolveActionSlot } from './../core/action.js'
+import { attackDef, preview, reachOf } from './../core/pipeline.js'
+import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
+import { burstCentres, previewBurst } from './../core/burst.js'
 import { isBlocked, isConfused } from './../core/status.js'
 import { TERRAIN } from './../core/types.js'
 import { emit, unit } from './../core/mutate.js'
@@ -173,34 +174,34 @@ function idle(decision: Decision, u: Unit, reason: string): void {
   emit(ctx, 'activation.idle', `ai.${u.ai}`, { actor: u.id, reason })
 }
 
-/**
- * Swing wide when it is plainly better — capability.area-attack (2026-08-27).
- * A RULE, not a score: if an affordable, legal AREA attack from where the unit
- * stands would strike at least two enemies — and no ally, unless the
- * aiAreaThroughAllies switch says friends are acceptable losses — take it over
- * the preference-order pick. Everything it reads comes from areaUnitIdsOf and
- * canAttack (Law 2 — no second calculator). First qualifying attack in the
- * unit's declared order wins (Law 6).
- */
-function areaSwing(decision: Decision, u: Unit, targetId: number): string | null {
+/** Uses exact engine forecasts; ties are action order then centre hex. No friendly harm by default. */
+function burstIfUseful(decision: Decision, u: Unit): boolean {
   const ctx = decision.ctx
-  for (const a of attacksOf(ctx, u)) {
-    const id = a.id
-    if (!a.area) continue
-    if (!legalTarget(decision, u.id, targetId, id)) continue
-    const struck = areaUnitIdsOf(ctx, u.id, targetId, id)
-    const enemies = struck.filter((s) => unit(ctx, s).side !== u.side).length
-    const allies = struck.length - enemies
-    if (enemies >= 2 && (allies === 0 || ctx.cfg.switches.aiAreaThroughAllies)) return id
+  const bursts = u.actions.filter(id => { const a = ctx.actions[id]; return a && isBurst(a) && actionReady(ctx, u, a) && !decision.freeUsed.has(id) })
+  if (!bursts.length) return false
+  let best: { actionId: string; centre: number; value: number } | null = null
+  let ordinary = 0
+  for (const attack of attacksOf(ctx, u)) for (const enemy of livingEnemies(ctx, u)) {
+    if (legalTarget(decision, u.id, enemy.id, attack.id)) ordinary = Math.max(ordinary, preview(ctx, u.id, enemy.id, attack.id).damageOnHit)
   }
-  return null
+  for (const id of bursts) {
+    for (const centre of burstCentres(ctx, u.id, id)) {
+      const p = previewBurst(ctx, u.id, centre, id)
+      const harm = p.targets.filter(t => unit(ctx, t.id).side === u.side).reduce((n, t) => n + t.applied, 0)
+      if (harm && !ctx.cfg.switches.aiBurstThroughAllies) continue
+      const value = p.targets.reduce((n, t) => n + (unit(ctx, t.id).side === u.side ? t.heal - t.applied : t.applied - t.heal), 0)
+      if (value > 0 && value >= ordinary && (!best || value > best.value)) best = { actionId: id, centre, value }
+    }
+  }
+  return best ? act(decision, { actor: u.id, actionId: best.actionId, centre: best.centre }) : false
 }
 
 function attackIfPossible(decision: Decision, u: Unit, candidates: Unit[]): boolean {
+  if (burstIfUseful(decision, u)) return true
   const ctx = decision.ctx
   const target = lowestHealth(candidates.filter(t => attackIdsOf(ctx, u).some(id => legalTarget(decision, u.id, t.id, id))))
   if (!target) return false
-  const attackId = areaSwing(decision, u, target.id) ?? bestAttack(decision, u.id, target.id)
+  const attackId = bestAttack(decision, u.id, target.id)
   if (!attackId) return false
   // Did stamina force a worse attack than the unit would have preferred?
   const want = attacksOf(ctx, u)[0]
@@ -454,6 +455,7 @@ function meleeAggressive(decision: Decision, u: Unit): void {
   if (effectsPower(decision, u, 'feast')) return
   if (effectsPower(decision, u, 'opening')) return
   if (supportPower(decision, u)) return
+  if (burstIfUseful(decision, u)) return
   if (!attackIfPossible(decision, u, adjacentEnemies(decision, u))) {
     if (!effectsPower(decision, u, 'primary')) idle(decision, u, 'could not reach an enemy')
   }
@@ -512,9 +514,9 @@ function rangedKite(decision: Decision, u: Unit): void {
   // aiKiteHoldsAtPowerRange: the hold distance is the shorter of the two while
   // such a power is ready and affordable; off = weapon reach, as before.
   const powerRange = ctx.cfg.switches.aiKiteHoldsAtPowerRange
-    ? powersOf(ctx, u).filter((a) =>
-        (a.effects ? (a.target?.side !== 'ally' && a.target?.select !== 'self') : (a.effect ?? 'damage') === 'damage')
-        && isReady(ctx, u, a.id) && u.stamina >= a.staminaCost)
+    ? [...powersOf(ctx, u), ...burstsOf(ctx, u)].filter((a) =>
+        (a.burst ? a.burst.side !== 'ally' && a.burst.packets.length > 0 : a.effects ? (a.target?.side !== 'ally' && a.target?.select !== 'self') : (a.effect ?? 'damage') === 'damage')
+        && actionReady(ctx, u, a) && u.stamina >= a.staminaCost)
       .reduce((m, a) => Math.min(m, a.range), Infinity)
     : Infinity
   // The SHOT is always the weapon's reach; only the ideal SPACING moves in to
@@ -590,6 +592,7 @@ function rangedKite(decision: Decision, u: Unit): void {
   effectsPower(decision, u, 'free')
   if (effectsPower(decision, u, 'opening')) return
   if (supportPower(decision, u)) return
+  if (burstIfUseful(decision, u)) return
 
   // A power beats a staff shot whenever it is available and hits harder.
   const power = powerIdsOf(ctx, u).find((id) => enemies.some((e) => legalTarget(decision, u.id, e.id, id)))
@@ -603,14 +606,14 @@ function rangedKite(decision: Decision, u: Unit): void {
     // ability.effects (2026-09-03): an effect-list power with area targeting
     // is an area power too — its blast is what the one targeting vocabulary
     // resolves, not the legacy `area` field.
-    const isArea = !!pa?.area || (!!pa?.effects && pa.target?.select === 'area')
-    const blastOf = (e: Unit) => pa?.area ? powerBlastIdsOf(ctx, u.id, e.id, power) : pa?.effects ? powerTargetsOf(ctx, u.id, e.id, pa) : [e.id]
+    const isArea = !!pa?.effects && pa.target?.select === 'area'
+    const blastOf = (e: Unit) => pa?.effects ? powerTargetsOf(ctx, u.id, e.id, pa) : [e.id]
     const areaPick = isArea
       ? targets.slice().sort((a, b) => a.hp - b.hp || a.id - b.id).find((e) => {
           const struck = blastOf(e)
           const foes = struck.filter((s) => unit(ctx, s).side !== u.side).length
           const allies = struck.length - foes
-          return foes >= 2 && (allies === 0 || ctx.cfg.switches.aiAreaThroughAllies)
+          return foes >= 2 && (allies === 0 || ctx.cfg.switches.aiBurstThroughAllies)
         })
       : undefined
     const t = areaPick ?? lowestHealth(targets)
@@ -678,6 +681,7 @@ function support(decision: Decision, u: Unit): void {
   const ctx = decision.ctx
   effectsPower(decision, u, 'free')
   if (supportPower(decision, u)) return
+  if (burstIfUseful(decision, u)) return
   if (effectsPower(decision, u, 'primary')) return
   rangedKite(decision, u)
 }

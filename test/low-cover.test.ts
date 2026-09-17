@@ -1,3 +1,4 @@
+import {validateBurstAction} from '../src/core/burst-profile.js'
 import {describe,it,expect} from 'vitest'
 import {createBattle} from '../src/core/setup.js'
 import {scenarioDef,scenarioOptions} from '../src/content/scenarios.js'
@@ -41,9 +42,9 @@ describe('terrain.low-cover',()=>{
   const a=setup([]),b=setup([hex([10])]);for(const ctx of[a,b]){const atk=structuredClone(ctx.actions[bow]!) as any;atk.id='attack.test-reach';atk.attack.kind='melee';atk.range=4;ctx.actions={...ctx.actions,[atk.id]:atk};ctx.state.units[0]!.actions.push(atk.id)}
   const av=preview(a,0,1,'attack.test-reach'),bv=preview(b,0,1,'attack.test-reach');expect(bv.accuracy).toBe(av.accuracy);expect(bv.damageOnHit).toBe(av.damageOnHit-1)
  })
- it('keeps legacy area attacks unchanged',()=>{
-  const a=setup([]),b=setup();for(const ctx of[a,b]){const atk=structuredClone(ctx.actions[bow]!) as any;atk.area='blast1';ctx.actions={...ctx.actions,[bow]:atk}}
-  expect(preview(b,0,1,bow)).toEqual(preview(a,0,1,bow))
+ it('rejects retired area metadata rather than bypassing ordinary cover',()=>{
+  const a=setup(),atk={...a.actions[bow]!,area:'blast1'}
+  expect(()=>validateBurstAction(atk)).toThrow(/legacy area/)
  })
  it('charges only explicitly authored low edge crossings in planning and actual movement',()=>{
   const barrier=polygon([[3800,2000],[4200,2000],[4200,4000],[3800,4000]],1),ctx=setup([barrier]);advanceBattle(ctx)

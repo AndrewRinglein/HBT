@@ -3538,5 +3538,29 @@
   "status": "done-needs-review",
   "sha": "3dee4bc",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "rule.bursts",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "rule.damage-packets"
+  ],
+  "spec": "V2 sections 4/7/15/18: hex-targeted bursts replace legacy arc/blast attacks. Exact high shielding and stacked low-prop attenuation; frozen source and eligible UID roster; defender onBurst saves before shared Protection/typed defense. No attack hooks, roll, crit or block. Healing bursts respect walls; auras retain radius semantics.",
+  "expect": "Authored arc/radius variants, empty and occupied hex placement, atomic commands, explicit side/tags, shared cover/shield budgets, reactive save/pool/state changes, no-peek preview, deaths/XP, ordinals/save-resume and simulation/command parity. Viewer and Kingdom adoption are separately gated follow-up stages. Historical inputs remain immutable; first changed events or AI action choices must be attributable to migrated bursts.",
+  "probeIds": [
+   "attack.test-arc.sweep",
+   "power.lightning-staff.storm"
+  ],
+  "variants": [
+   "attack.test-arc.sweep",
+   "power.lightning-staff.storm"
+  ],
+  "changesBaseline": true,
+  "note": "Provisional shape/magnitude preservation and explicit any-side defaults. Ordinary TEST attack riders rebind to Slam instead of firing from burst Sweep. Physical burst KDB, block and prop destruction remain later items. Pending row registered during implementation; candidate selection was recorded in preflight, not falsely claimed pre-edit registration.",
+  "attempts": 3,
+  "status": "done-needs-review",
+  "sha": "cb30b8c",
+  "gauntlet": "not passed — effect measurement errored; periodic full audit FAILED — investigate before the next item; 2 flag(s) warned"
  }
 ]

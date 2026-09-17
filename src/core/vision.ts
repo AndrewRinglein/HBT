@@ -44,6 +44,12 @@ export function canSee(ctx: Ctx, viewer: Unit, target: Unit): boolean {
   return ctx.geo.distance(viewer.hex, target.hex) <= visionOf(ctx, viewer)
 }
 
+/** Hex visibility never invents a Unit or changes high-prop placement blockage. */
+export function canSeeHex(ctx: Ctx, viewer: Unit, hex: number): boolean {
+  if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.geo.hexCount) return false
+  return !isDark(ctx, hex) || ctx.geo.distance(viewer.hex, hex) <= visionOf(ctx, viewer)
+}
+
 /** The condition: every hex dark at phase 1. */
 export function fallNight(ctx: Ctx, causeId: string): void {
   for (let h = 0; h < ctx.geo.hexCount; h++) paintLayer(ctx, h, LAYER.DARKNESS, causeId)

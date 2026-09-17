@@ -719,3 +719,8 @@ does not relax side validation for arbitrary host edits.
   more damage' onCrit are provisionally physical AND separately mitigated flat
   packets. Neither assumption is a user ruling; Armor applies to base and rider.
   Verbatim original source wording remains in content, with visible review notes.
+
+
+## V2 bursts — provisional migration policy (2026-09-16)
+
+See V2-BURSTS.md for the frozen source/roster/geometry lifecycle and exact tests. Existing arc wedges and Storm radius one retain IDs, costs, range and scaling, with explicit any-side metadata. Side/tag filters use allegiance. One per-target low-cover budget is allocated in packet order. onBurst eligibility uses positive declared payload after cover, before Frost/defenses; saves floor each packet before the shared Protection/defense tail. Frost applies once per target and honors frostBeforeProtection. Mixed damage/healing settles after the full burst. Taunt applies to unit targeting; Powers Locked covers bursts. Old areaHitsAllies is replaced by each burst's side field; aiBurstThroughAllies remains an AI preference only, never legality. No attack hooks, crit, block or burst KDB are implied.

@@ -248,18 +248,12 @@ An attack is a list of hits, resolved **one at a time**. Each hit runs the full 
 
 **An Attack is still exactly one Hit** — against one unit. `AttackDef` has no `hits` field and `performAttack` resolves once per struck unit, while the vocabulary table above defines an Attack as *"one or more Hits"* — and two switches (`multiAttackRetargets`, `recomputeStatsBetweenHits`) are already written against a loop that does not exist.
 
-### Area attacks skip the roll (2026-08-27, capability.area-attack)
+### Hex-targeted bursts
 
-An attack with an `area` shape (`'arc'` — the target hex plus the hexes
-adjacent to both attacker and target, authored on the halberd's Cleave;
-`'blast1'` — a hex and its six neighbours) **does not roll to hit**, so steps
-2–5 never run for it: no to-hit cup, no miss, no dodge, no crit — authored:
-*"It does not roll to hit, so it cannot crit."* Steps 6–10 run **once per
-struck unit**, target first then ascending id, each through the same damage
-stations as any single hit (Law 1); settle runs once after the whole swing,
-same as ever. Every standing unit in the shape is struck — allies included
-while `areaHitsAllies` holds its authored default ("to every unit in the
-blast"). The declaration event names the shape and every struck unit.
+V2 sections 4/7/15/18 retire area attacks. Their replacement is a separate
+hex-targeted action with no attack hooks or hit/crit/block rolls. See the
+V2 burst resolution ladder below and V2-BURSTS.md for current behavior
+and verification; the old attack-based path survives only in Git history.
 
 ### `onDeath` is not in this list, on purpose
 
@@ -594,3 +588,10 @@ additively; role follows the kit and ai follows it unless the row authored one.
 The log carries one `unit.equipped` per (unit, item) after `unit.enter`.
 Refused loudly: an unknown item, more than two hands of weapons, two armors, a
 mismatched list. Enemies carry no items.
+
+
+## V2 burst resolution (2026-09-16)
+
+COMBAT-V2-DESIGN sections 4/7/15/18 supersede legacy arc/blast attacks. A burst command names a centre hex. Validate range, hex visibility, high LOS, floor and shared action limits before spending anything. Freeze origin, shape hexes, source packets and eligible stable UIDs/recipient geometry; spend the action once and emit burst.declared. In UID order, skip recipients already dead/zero, emit shielding for high intersections, otherwise apply one stacked low-prop attenuation budget across ordered damage packets. Positive exposed payload invokes defender onBurst once; its actual effects precede planning. Stable authored burstScale saves floor covered source damage. Shared Frost (once), Protection and each typed defense resolve the actual rung. Spend pools once, apply ordered packets, then healing; emit exact burst.struck facts. Settle after the complete burst, retaining onDeath and ordinary battle-result XP. There is no attack hook, hit/crit/block roll, or burst KDB in this stage.
+
+Public previews never execute future onBurst hooks: numbers are current-state/conditional. See V2-BURSTS.md for explicit zero/negative exposure, endpoint cover, moved targets, new summons, caster death, Taunt/Powers Locked, mixed damage/healing and packet-source policy.

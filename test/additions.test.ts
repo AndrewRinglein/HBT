@@ -242,11 +242,10 @@ describe('pass 4 — Arcane Bolt', () => {
 
 // ─── all four together ───────────────────────────────────────────────────────
 describe('everything together', () => {
-  // This is 40 strict battles on every map, not a five-second performance
-  // contract. It exceeds the default even with one worker after shared action
-  // validation. Preserve every battle and assertion; bound the aggregate run.
-  it('runs clean on every map with no invalid runs', () => {
-    for (const mapId of MAPS_ALL)
+  // V2 burst check: the all-map aggregate exceeded 30s under four-worker
+  // suite load; all 26 tests in this file and audit passed with one worker.
+  // Give each map its own bounded test, retaining all 40 seeds and assertions.
+  it.each(MAPS_ALL)('runs clean on %s with no invalid runs', (mapId) => {
       for (let r = 0; r < 40; r++) {
         const ctx = createBattle({ replicate: r, mapId, enemyCount: 8, strict: true })
         const res = runBattle(ctx)

@@ -127,11 +127,12 @@ describe('authored action slots', () => {
     expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
     expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[id], ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([97, 1, true, false])
   })
-  it('an area attack spends one slot and one charge for all targets', () => {
-    const ctx = fixture('any', true), id = grant(ctx, { slot: 'movement', area: 'arc', staminaCost: 3, uses: 2 })
-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
-    expect(ctx.events.find(e => e.type === 'attack.declared' && e.causeId === id)!.struck).toContain(1)
-    expect(ctx.events.find(e => e.type === 'attack.declared' && e.causeId === id)!.struck).toContain(2)
+  it('a V2 burst spends one slot and one charge for all targets', () => {
+    const ctx = fixture('any', true), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2 })
+    ctx.actions = {...ctx.actions, [id]: {id, name: 'Burst', slot: 'movement', staminaCost: 3, cooldown: 0, uses: 2, range: 1, burst: {shape: {kind: 'radius', radius: 1}, side: 'enemy', packets: [{id: 'base', amount: 3, damageType: 'true'}]}}}
+    expect(executeAction(ctx, { actor: 0, actionId: id, centre: ctx.state.units[1]!.hex }).ok).toBe(true)
+    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === id).map(e => e.target)).toContain(1)
+    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === id).map(e => e.target)).toContain(2)
     expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[id], ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([97, 1, true, false])
   })
   it('reload after movement preserves second action and Surge continuation exactly', () => {

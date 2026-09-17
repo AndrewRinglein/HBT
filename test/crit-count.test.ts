@@ -1,3 +1,4 @@
+import { useBurst } from '../src/core/burst.js'
 // refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // Multiple criticals — station.crit-count (2026-08-27).
 //
@@ -85,7 +86,7 @@ describe('one critting hit, N criticals', () => {
     const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
     beginActivation(ctx, golem.id, 'test')
-    performAttack(ctx, golem.id, z.id, 'attack.test-arc.sweep') // area: cannot crit at all
+    useBurst(ctx, golem.id, z.hex, 'attack.test-arc.sweep') // V2: no attack/crit lifecycle
     expect(ctx.events.filter((e) => e.type === 'crit.branch').length).toBe(0)
   })
 })

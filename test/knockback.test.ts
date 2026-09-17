@@ -96,11 +96,15 @@ describe('the authored rider — Hack pushes on damage', () => {
 })
 
 describe('the second consumer — pure data on the Arc Golem', () => {
-  it('the golem rams every unit its sweep damages, in the live scenario', () => {
+  it('the golem rams ordinary attack victims with its data-defined onHit rider, in the live scenario', () => {
     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
+    // V2 sweep no longer fires onHit; retain the data rider proof on real ordinary swings.
+    const golem = ctx.state.units.find(u => u.typeId === 'test-arc-golem')!
+    golem.actions = golem.actions.filter(id => !ctx.actions[id]?.burst)
+    for (const u of ctx.state.units) { u.hp = u.maxHp = 200 } // enough survivors for two separate ordinary Slam rungs
     runBattle(ctx)
     const rams = ctx.events.filter((e) => e.type === 'knocked' && e.causeId === 'trigger.test-ram.knockback')
-    expect(rams.length, 'the opening sweep damages two zombies — both must fly').toBeGreaterThanOrEqual(2)
+    expect(rams.length, 'the ordinary swings must push real victims').toBeGreaterThanOrEqual(2)
     for (const ev of rams) {
       expect(distance(ev['from'] as number, ev['to'] as number)).toBe(1)
     }

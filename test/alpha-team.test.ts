@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { ATTACKS, UNITS } from '../src/content/index.js'
+import { BURSTS, ATTACKS, UNITS } from '../src/content/index.js'
 import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 
@@ -88,13 +88,13 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     // RE-RULED in S37 (2026-08-27): strength −1, 0 stamina (was 1), −5 crit
     // on the row, −5 accuracy as a named gap — Law 10, followed same-day.
     expect(ATTACKS['attack.halberd.hack']).toMatchObject({ staminaCost: 1, attack: { bonus: 2, kind: 'melee' } })
-    expect(ATTACKS['attack.halberd.cleave']).toMatchObject({ staminaCost: 2, attack: { bonus: 1 } })
+    expect(BURSTS['attack.halberd.cleave']).toMatchObject({ staminaCost: 2, burst: {packets: [{id: 'base', amount: 1, stat: 'strength', damageType: 'physical'}]} })
     expect(ATTACKS['attack.javelin.throw']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
     expect(ATTACKS['attack.shortbow.short-shot']).toMatchObject({ range: 5, attack: { kind: 'ranged' } })
     expect(ATTACKS['attack.shortbow.quick-shot']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
     expect(ATTACKS['attack.punch']).toMatchObject({ staminaCost: 0, attack: { bonus: -1, kind: 'melee', crit: -5 } })
     for (const id of ALPHA()) {
-      for (const aid of fieldedDef(id).attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
+      for (const aid of fieldedDef(id).attacks) expect(ATTACKS[aid] ?? BURSTS[aid], `${id} grants ${aid}`).toBeDefined()
       expect(fieldedDef(id).attacks, `${id} — Punch is universal (universalToAllUnits honored)`)
         .toContain('attack.punch')
       expect(fieldedDef(id).attacks.some((aid) => cost(aid) > 0),
@@ -144,7 +144,7 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
       t.id === 'trigger.halberd.hack.knockback' && t.effect.kind === 'knockback')).toBe(true)
     // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
-    expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
+    expect(BURSTS['attack.halberd.cleave']!.burst.shape.kind).toBe('arc')
     // the crit fields COMPILE now (station.crit, same day) — their gaps are
     // gone. LAW 10, rewritten within hours of being written: the first
     // version froze the four dictated numbers, and S34's gear review moved
@@ -163,7 +163,7 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     // are gone, the powers stand on their units, and Storm's arbitrary-hex
     // targeting remainder is the one NAMED partial left behind
     expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(0)
-    expect(alpha.some((g) => /power targeting: arbitrary hex/.test(g.needs))).toBe(true)
+    expect(alpha.some((g) => /power targeting: arbitrary hex/.test(g.needs))).toBe(false) // V2 now implements empty-hex placement
     expect(fieldedDef('alpha-air-mage').abilities).toEqual(['power.lightning-staff.storm'])
     expect(fieldedDef('alpha-lucius').abilities).toEqual(['power.holy-symbol.heal'])
     expect(fieldedDef('alpha-osric').abilities).toEqual(['power.knight-shield.block'])

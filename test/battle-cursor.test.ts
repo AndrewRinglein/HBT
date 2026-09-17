@@ -28,6 +28,9 @@ const protectionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
 // transition tool proves the actual first raw and semantic difference per case.
 // Metadata-only cases retain every earlier historical assertion via projection.
 const packetGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-packets.json', import.meta.url), 'utf8'))
+// V2 burst migration: four first differences are replaced attack/power declarations.
+// All 42 prior inputs remain unchanged; full current hashes are frozen separately.
+const burstGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bursts.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -124,10 +127,11 @@ describe('resumable battle cursor', () => {
       const elementalExpected = elementalGolden.cases.find((row: {id:string}) => row.id === fixture.id)
       const protectionExpected = protectionGolden.cases.find((row: {id:string}) => row.id === fixture.id)
       const packetExpected = packetGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const migrated = packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
+      const burstExpected = burstGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const migrated = burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
-      let expected = packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      let expected = burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result
@@ -171,7 +175,7 @@ describe('resumable battle cursor', () => {
     const historicalIds = golden.cases.map((row: { id: string }) => row.id)
     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden]) {
+    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden]) {
       const ids = corpus.cases.map((row: { id: string }) => row.id)
       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
     }

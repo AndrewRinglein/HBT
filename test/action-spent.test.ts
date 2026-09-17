@@ -107,13 +107,13 @@ describe('universal action expenditure', () => {
     expect(spent(ctx).length).toBeGreaterThan(0)
     expect(flags).toEqual(ctx.state.units.map(u => ({ moveUsed: u.moveUsed, primaryUsed: u.primaryUsed })))
   })
-  it.each(['multi-hit', 'area'])('%s spends and emits once across all hits/targets', kind => {
+  it.each(['multi-hit', 'burst'])('%s spends and emits once across all hits/targets', kind => {
     const ctx = fixture('any', true), id = grant(ctx, 'attack.test-slot-movement', { uses: 2, staminaCost: 3 })
     const a = ctx.actions[id]!
-    ctx.actions = { ...ctx.actions, [id]: kind === 'area' ? { ...a, area: 'arc' } : { ...a, attack: { ...a.attack!, hits: 3 } } }
-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+    ctx.actions = { ...ctx.actions, [id]: kind === 'burst' ? { id, name: a.name, slot: 'movement', staminaCost: 3, cooldown: 0, uses: 2, range: 1, burst: {shape: {kind: 'radius', radius: 1}, side: 'enemy', packets: [{id: 'base', amount: 3, damageType: 'true'}]} } : { ...a, attack: { ...a.attack!, hits: 3 } } }
+    expect(executeAction(ctx, { actor: 0, actionId: id, ...(kind === 'burst' ? {centre: ctx.state.units[1]!.hex} : {target: 1}) }).ok).toBe(true)
     event(ctx, id, 'movement', false, true, false)
-    if (kind === 'area') expect(ctx.events.find(e => e.type === 'attack.declared')!.struck).toEqual(expect.arrayContaining([1, 2]))
+    if (kind === 'burst') expect(ctx.events.filter(e => e.type === 'burst.struck').map(e => e.target)).toEqual(expect.arrayContaining([1, 2]))
     else expect(ctx.state.units[0]!.attackOrdinal).toBe(3)
     expect(ctx.state.units[0]!.usesLeft[id]).toBe(1)
   })

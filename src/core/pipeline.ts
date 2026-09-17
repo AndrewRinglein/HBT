@@ -139,7 +139,7 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   if (target.lifeState === 'downed') v = step(ledger, ACC.CONDITION, 'TARGET_DOWNED', a.id, v, v + 20)
   // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
   if (a.attack.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.attack.accuracy)
-  if (!a.area && a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-20)
+  if (a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-20)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
   return { value: v, ledger, absorbed: 0 }
@@ -150,10 +150,10 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
  * it — which is the mechanism behind Law 1: powers do not get a second pipeline,
  * they get this one with crit forced false (Design Law 23: no roll, no crit).
  */
-export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number; readonly attackKind?: 'melee' | 'ranged'; readonly armorPenetration?: number }
+export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number; readonly attackKind?: 'melee' | 'ranged'; readonly armorPenetration?: number }
 /** An attack as the one damage function reads it — the profile with the action's id. */
 export function damageSourceOfAttack(a: AttackDef): DamageSource {
-  return { ...(!a.area?{attackKind:a.attack.kind}:{}), id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}), ...(a.attack.armorPenetration!==undefined?{armorPenetration:a.attack.armorPenetration}:{}) }
+  return { attackKind:a.attack.kind, id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}), ...(a.attack.armorPenetration!==undefined?{armorPenetration:a.attack.armorPenetration}:{}) }
 }
 
 /** Power × share, rounded nearest with 0.5 up — the ruled rounding (ENEMY-REVIEW P1). Integers only (Law 7). */
@@ -161,20 +161,16 @@ export function powerShare(pool: number, scale: number): number {
   return Math.floor(pool * scale + 0.5)
 }
 
-export function resolveDamage(
-  ctx: Ctx, attacker: Unit, target: Unit, a: DamageSource, critHeads: number | boolean,
-  outPenalty = 0, absorbAvailable = 0,
-): ResolvedDamage {
-  // station.crit-count (2026-08-27): the CRIT station takes a HEADS COUNT —
-  // +50% each, stacking, before mitigation. `true` still reads as one heads
-  // so every existing caller and test keeps its meaning.
-  const heads = critHeads === true ? 1 : critHeads === false ? 0 : critHeads
+/** Shared source rung: bursts freeze this before any defender hooks. */
+export function resolveSourceDamage(ctx: Ctx, attacker: Unit, a: DamageSource, outPenalty = 0) {
   const ledger: LedgerRow[] = []
   let v = a.bonus
   ledger.push({ station: DMG.DECLARE, name: 'DECLARE', effectId: a.id, before: 0, after: v, delta: v })
 
-  const src = effective(ctx, attacker, a.stat)
-  v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + src.value)
+  if (a.stat) {
+    const src = effective(ctx, attacker, a.stat)
+    v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + src.value)
+  }
   // POWER (225): the enemy side's pool, by this attack's share — capability.
   // power-pool (2026-09-03). Nearest, 0.5 up (Law 7). Zero pool, zero row.
   if (a.powerScale && rulesSideOf(ctx, attacker) === 'enemy') {   // proving.mirror-row-rules: the pool is a RULE of the enemy side
@@ -185,6 +181,21 @@ export function resolveDamage(
   // takes, Karma gives half its value rounded down (capability.karma 2026-09-03).
   const outBonus = outgoingBonus(ctx, attacker)
   if (outPenalty || outBonus) v = step(ledger, DMG.SOURCE_STATUS, 'SOURCE_STATUS', 'status', v, v - outPenalty + outBonus)
+
+  return { value: v, ledger }
+}
+
+export function resolveDamage(
+  ctx: Ctx, attacker: Unit, target: Unit, a: DamageSource, critHeads: number | boolean,
+  outPenalty = 0, absorbAvailable = 0,
+): ResolvedDamage {
+  // station.crit-count (2026-08-27): the CRIT station takes a HEADS COUNT —
+  // +50% each, stacking, before mitigation. `true` still reads as one heads
+  // so every existing caller and test keeps its meaning.
+  const heads = critHeads === true ? 1 : critHeads === false ? 0 : critHeads
+  const source = resolveSourceDamage(ctx, attacker, a, outPenalty)
+  const ledger = source.ledger
+  let v = source.value
 
   if (heads > 0) {
     // +50% PER HEADS-CRITICAL, before all mitigation — "do two criticals"
@@ -199,7 +210,7 @@ export function resolveDamage(
 type ResolvedDamage = Resolved & { raw:number; defense:number; mitigationDelta:number; floorAdjustment:number; resisted:number }
 
 /** Common tail. Secondary packets enter here, never through stat/Power/crit/cover stations. */
-function finishDamage(ctx:Ctx,target:Unit,a:Pick<DamageSource,'damageType'|'armorPenetration'>,ledger:LedgerRow[],v:number,absorbAvailable:number,frost:number):ResolvedDamage {
+export function finishDamage(ctx:Ctx,target:Unit,a:Pick<DamageSource,'damageType'|'armorPenetration'>,ledger:LedgerRow[],v:number,absorbAvailable:number,frost:number):ResolvedDamage {
   // PROTECTION (550): absorbs, and is spent by what it absorbs. Pure here —
   // the spending happens in performAttack, so preview cannot consume anything.
   // FROST (540): the target's Frost adds to every PHYSICAL hit, per hit —
@@ -321,63 +332,11 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   return d <= reachOf(ctx, at, a) && attackLineClear(ctx, at.hex, tg.hex)
 }
 
-/**
- * The hexes an area attack covers, from the attacker's hex and the target hex.
- * ONE geometry function (Law 2's sibling): the AI, the preview, the resolution
- * and any renderer all ask this.
- *
- *   'arc'    — the target hex plus the hexes adjacent to BOTH attacker and
- *              target (authored: "an adjacent hex and the two hexes adjacent
- *              to both you and it" — two on the open board, fewer at an edge).
- *   'blast1' — the target hex plus its six neighbours.
- *
- * Sorted ascending, target hex first — explicit order, tiebreaker that cannot
- * tie (Law 6).
- */
-export function areaHexesOf(geo: Geometry, attackerHex: HexId, targetHex: HexId, area: 'arc' | 'blast1'): HexId[] {
-  const rest = area === 'arc'
-    ? geo.neighboursOf(targetHex).filter((h) => geo.distance(attackerHex, h) === 1)
-    : [...geo.neighboursOf(targetHex)]
-  return [targetHex, ...rest.filter((h) => h !== targetHex).sort((a, b) => a - b)]
-}
-
-/**
- * The units an area attack strikes: every STANDING unit in the shape — allies
- * included while the areaHitsAllies switch holds its authored default ("to
- * every unit in the blast"), enemies only when it is off. The attacker is
- * never in its own arc by geometry, but the guard is explicit anyway.
- */
-export function areaUnitIdsOf(ctx: Ctx, attackerId: number, targetId: number, attackId: string): number[] {
-  const at = unit(ctx, attackerId)
-  const a = ctx.actions[attackId]
-  if (!a?.area) return [targetId]
-  const hexes = new Set(areaHexesOf(ctx.geo, at.hex, unit(ctx, targetId).hex, a.area))
-  const out: number[] = []
-  for (const u of ctx.state.units) {
-    if (u.lifeState !== 'standing' || !hexes.has(u.hex) || u.id === attackerId) continue
-    if (!ctx.cfg.switches.areaHitsAllies && u.side === at.side) continue
-    out.push(u.id)
-  }
-  // Target first, then ascending id (Law 6).
-  return out.sort((x, y) => (x === targetId ? -1 : y === targetId ? 1 : x - y))
-}
-
 /** Preview: the same pipeline, run without applying. Law 1 — never a second formula. */
 export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId: string) {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = attackDef(ctx, attackId)
-  // An AREA attack does not roll to hit: no accuracy pipeline, no dodge, no
-  // crit (authored: "It does not roll to hit, so it cannot crit"). The hit is
-  // certain, so both damage numbers are the plain resolution.
-  if (a.area) {
-    const damage = previewAttackDamage(ctx,attackerId,targetId,a,0,false)
-    return {
-      hitChance: 100, accuracy: 100, accLedger: [] as LedgerRow[],
-      damageOnHit: damage.value, damageOnCrit: damage.value, damageOnCritChart:damage.value, critChance: 0,
-      packetsOnHit:damage.packets,packetsOnCrit:damage.packets,packetsOnCritChart:damage.packets,
-    }
-  }
   const acc = resolveAccuracy(ctx, at, tg, a)
   const hitChance = Math.max(0, Math.min(100, acc.value))
   // A hit on the DOWNED deals no damage and cannot crit — it accelerates the
@@ -456,17 +415,12 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   // refactor.one-action-type: THE ONE SPEND — stamina, the primary, the cooldown, a use
   if (hitNo === 1) spendAction(ctx, attackerId, a, mode === 'reaction' ? mode : resolveActionSlot(ctx, at, a, mode)!)
 
-  // Area attacks name every struck unit on the declaration, so a renderer can
-  // sweep the whole shape from the one event.
-  const struck = a.area ? areaUnitIdsOf(ctx, attackerId, targetId, attackId) : undefined
-
   emit(ctx, 'attack.declared', a.id, {
     actor: attackerId, target: targetId, attackId, ordinal: ord, ...(of > 1 ? { hit: hitNo, of } : {}),
     // kind and damageType are on the event, not looked up from ATTACKS, so a
     // renderer can pick an animation without importing game content.
     kind: a.attack.kind, damageType: a.attack.damageType,
     distance: ctx.geo.distance(at.hex, tg.hex), hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
-    ...(a.area ? { area: a.area, struck } : {}),
     // COMBAT-SEQUENCE: "The accuracy roll carries the same [ledger]." It did — and
     // nothing emitted it, so until 2026-08-15 no log could say WHY a hit chance was
     // what it was. Found by gate 1: the ADJACENT station could not be probed for,
@@ -479,24 +433,6 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   // fires, and it is deliberately NOT the same hook as a flaming bow's onHit.
   const fc = { ownerId: attackerId, targetId, causeId: a.id, ordinal: ord }
   fireTriggers(ctx, 'onAttack', fc)
-
-  // ── AREA: no roll to hit, no crit — the hit branch runs once per struck
-  // unit, in the declared order, through the SAME stations as any other hit
-  // (Law 1: one damage function). A unit killed by an earlier strike of this
-  // same swing is skipped — it was standing when the shape was fixed, and the
-  // shape does not re-aim mid-swing.
-  if (a.area) {
-    let total = 0
-    let anyKill = false
-    for (const id of struck!) {
-      const u = unit(ctx, id)
-      if (u.lifeState !== 'standing') continue
-      const applied = resolveHitOn(ctx, attackerId, id, a, false, ord)
-      total += applied
-      if (unit(ctx, id).hp === 0) anyKill = true
-    }
-    return { hit: true, crit: false, accuracy: 100, roll: 0, damage: total, killed: anyKill }
-  }
 
   const roll = roll100(ctx.rng, 'to-hit', at.uid, ord)
   const hit = roll <= pv.hitChance
@@ -603,13 +539,9 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
 }
 
 /**
- * The HIT branch, once per struck unit — extracted 2026-08-27 for
- * capability.area-attack so the arc runs the exact stations a single-target
- * hit does (Law 1). For the single-target path `expected` is a fork at the
- * damage rung after actual onAttack/onCrit effects, not a guess at their dice. Area
- * strikes compute their expectation per target at strike time, because an
- * earlier strike of the same swing may legitimately change a later target's
- * mitigation (protection spent, statuses applied).
+ * One ordinary hit. Its expected state is a fork at the damage rung after
+ * actual onAttack/onCrit effects, never a prediction of their future dice.
+ * V2 bursts have a separate lifecycle and share only source/defense stations.
  */
 function resolveHitOn(
   ctx: Ctx, attackerId: number, targetId: number, a: AttackDef, crit: number | boolean, ord: number,
