@@ -1,6 +1,6 @@
 # Hex-targeted bursts — implementation receipt
 
-Engine/content landed at 0c6fa07; final independent audit remains under investigation, 2026-09-17. Authority: COMBAT-V2-DESIGN sections 4, 7, 15 and
+Engine/content landed at 0c6fa07; independent batch audit passed after the separate diagnostic repair, 2026-09-17. Authority: COMBAT-V2-DESIGN sections 4, 7, 15 and
 18. Baseline engine cfbcac4. This replaces legacy area attacks in one coherent
 item; block, physical burst KDB and destruction remain later dependencies.
 
@@ -120,3 +120,30 @@ experimental filtering, without accepting unknown grants or inventing missing
 actions. Existing reporting protocol is documented in TOOLING-EFFECT-ARMS.md.
 The burst seal stays withheld for this measurement error, periodic audit failure
 and two review flags; later tooling fixes do not rewrite that history.
+
+## Final engine/content checkpoint
+
+Independent batch audit `node tools/audit-all.mjs --label "V2 bursts engine/content
+and failure diagnostics"` passed: 1,556 tests (the 1,552 burst-tree tests plus
+four reporting probes), typecheck, all 22 current control hashes and whole-core
+scan. Log: runs/burst-final-batch-audit.txt. The diagnostic source landed separately
+at 8df994a (gate initially printed 5a6addc), after normal candidate and committed-
+tree checks. No further worker, timeout, assertion, seed or gameplay changes were
+made. The prior periodic audit's exact cause is still unconfirmed; this later pass
+does not rewrite that historical failure or the burst seal.
+
+Current comparison is 34/42 exact historical cursor cases, eight attributed burst
+changes; separate controls are 177/550 exact, 373 changed, 80 changed results.
+Content remains 09fa41b with all 117 tests passing. Five preexisting lock archives
+are preserved. The two Game Builder copies are synchronized through the generator
+and file copy; their seals remain withheld and no human review is implied.
+
+Next bounded work is measurement integrity: complete authored-registry validation
+before experimental action filtering, then distinguish measurement error from
+measured/unavailable results in Game Builder. The current Builder incorrectly
+prefixes raw measurement errors with "measured:"; repair that presentation from
+recorded verdicts without rewriting historical ledger entries. Viewer and Kingdom
+burst adoption follow as separate host stages. Preserve viewer/tools/bursts.test.mjs
+as an unfinished draft: its placeholder fields must be replaced with real engine
+exports, not added as runtime aliases. Block, physical burst KDB and other remaining
+V2 mechanisms are outside this completed burst item.
