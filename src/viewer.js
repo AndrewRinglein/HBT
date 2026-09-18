@@ -35,7 +35,7 @@ import { spriteHTML } from './icons.js'
 import { prepareBattleField } from './engine.ts'
 
 /* ── DUR: the clock lives here; events carry order, never duration ──────── */
-export const DUR = { 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'moved': 125,
+export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck': 160, 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'moved': 125,
   'move.begin': 60, 'attack.declared': 900, 'attack.hit': 250, 'attack.miss': 700,
   'damage.applied': 650, 'life.downed': 420, 'life.dead': 520, 'power.used': 60,
   'status.applied': 200, 'status.reduced': 60, 'status.expired': 60, 'activation.idle': 200,
@@ -56,7 +56,7 @@ export const DUR = { 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'mo
    heroes light ~100 each phase): the pump paints them together and holds this */
 const PAINT_RUN_MS = 260
 /* beats that redraw even when their duration is zero */
-const REDRAW = new Set(['attack.declared', 'damage.applied', 'life.dead', 'turn.begin', 'moved', 'heal.applied',
+const REDRAW = new Set(['burst.declared', 'burst.shielded', 'burst.struck', 'attack.declared', 'damage.applied', 'life.dead', 'turn.begin', 'moved', 'heal.applied',
   'status.applied', 'life.downed', 'knocked', 'crit.effect', 'maxHp.lost',
   'unit.enter', 'unit.equipped', 'encounter.objective', 'unit.shunted', 'corpse.created', 'hp.reset', 'ai.mode', 'ai.hunts', 'surge.checked', 'aoo.skipped',
   'badge.gained', 'unit.badged', 'move.stopped'])
@@ -116,7 +116,7 @@ export function mountBattleViewer(root, data, opts = {}) {
       ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
-    view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },
+    view: { burstVisible: false, inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },
     layers: { ground: null, dyn: null, unitsL: null, UEL: new Map(), floatL: null, FLOAT_SLOTS: {} },
     /* every pending beat the board schedules — timers, stray nodes, the injury
        queue — so seek() and dispose() can drop them all (review 2026-09-03) */
@@ -168,10 +168,48 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (dom.powerchip) { dom.powerchip.style.display = S.power == null ? 'none' : ''; dom.powerchip.textContent = S.power == null ? '' : 'Power ' + S.power }
   }
 
+  // Burst facts are durable; this small clock controls only their visibility.
+  // Remaining beats use elapsed wall time so speed changes cannot jump deadlines.
+  let burstTimer = null, burstGeneration = 0, burstRemaining = 0, burstStarted = 0, disposed = false
+  function cancelBurst() {
+    burstGeneration++
+    if (burstTimer != null) { clearTimeout(burstTimer); V.fx.timers.delete(burstTimer); burstTimer = null }
+    burstRemaining = 0
+  }
+  function fault(err) {
+    V.invalid = err; V.playing = false; cancelBurst()
+    if (V.timer != null) { clearTimeout(V.timer); V.timer = null }
+    if (opts.onPlayState) opts.onPlayState(false)
+    if (opts.onError) opts.onError(err)
+    throw err
+  }
+  function armBurst(beats = 2400) {
+    cancelBurst(); burstRemaining = beats; burstStarted = now()
+    const generation = burstGeneration, declaration = V.S.BURST
+    V.view.burstVisible = true
+    burstTimer = setTimeout(function expireBurst() {
+      if (disposed || V.invalid || generation !== burstGeneration || V.S.BURST !== declaration) return
+      V.fx.timers.delete(burstTimer); burstTimer = null; burstRemaining = 0
+      V.view.burstVisible = false
+      try { render() } catch (err) { fault(err) }
+    }, beats / (V.speed * .75))
+    V.fx.timers.add(burstTimer)
+  }
+  function burstBeat(e) {
+    const B = V.S.BURST
+    if (!B) { cancelBurst(); V.view.burstVisible = false; return }
+    const matching = e.causeId === B.causeId
+    if (e.type === 'burst.declared' || (matching && (
+      (e.type === 'burst.shielded' || e.type === 'burst.struck') && e.actor === B.actor ||
+      e.type === 'damage.applied' && e.burst === true && e.actor === B.actor ||
+      e.type === 'heal.applied' && B.targets.some(t => t.id === e.target)))) armBurst()
+  }
+
   /* ── the pump ────────────────────────────────────────────────────────── */
   function applyOne(e, visual) {
     const cues = fold(V.S, e, ctx(), V.clock())
-    if (visual) playCues(V, cues)
+    if (!V.S.BURST) { cancelBurst(); V.view.burstVisible = false }
+    if (visual) { burstBeat(e); playCues(V, cues) }
     V.cursor++
     if (opts.onCursor) opts.onCursor(V.cursor, e)
     return cues
@@ -250,7 +288,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* Law 9: a beat that throws stops the run and says so — never a silent
        freeze behind a "Pause" button */
     try { d = beat(V.EV[V.cursor]) }
-    catch (err) { V.invalid = err; V.playing = false; if (opts.onPlayState) opts.onPlayState(false); if (opts.onError) opts.onError(err); throw err }
+    catch (err) { fault(err) }
     /* Ruled 2026-08-26: standard speed is 25% slower; all speeds scale off it */
     if (V.playing) V.timer = setTimeout(step, Math.max(16, (d || 8) / (V.speed * 0.75)))
   }
@@ -261,7 +299,8 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (V.timer) { clearTimeout(V.timer); V.timer = null }
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
     V.S = foldTo(V.EV, V.cursor, ctx())
-    cancelBeats(V); clearFloats(V)
+    cancelBurst(); cancelBeats(V); clearFloats(V)
+    V.view.burstVisible = !!V.S.BURST
     V.view.inspectId = null                       // a click from before the scrub must not outrank the actor after it
     for (const E of V.layers.UEL.values()) { if (E.walk) { E.walk.cancel(); E.walk = null } E.root.style.transition = 'none' }
     render()
@@ -299,7 +338,11 @@ export function mountBattleViewer(root, data, opts = {}) {
 
   const api = {
     push, seek, play, pause, step: stepOnce, render,
-    speed(x) { V.speed = x },
+    speed(x) {
+      const remaining = burstTimer == null ? null : Math.max(0, burstRemaining - (now() - burstStarted) * V.speed * .75)
+      V.speed = x
+      if (remaining != null) armBurst(remaining)
+    },
     setZoom(z) { V.view.zoom = z; applyCam(V); drawEdges(V) },
     setBare(b) { V.view.bare = b; render() },
     inspect(id) { V.view.inspectId = id; render() },
@@ -308,7 +351,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
     peek(on) { V.view.peek = !!on; applyCam(V); drawEdges(V) },
     pan(dx, dy) { applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
-    dispose() { terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; cancelBurst(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

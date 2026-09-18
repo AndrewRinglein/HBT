@@ -1,7 +1,8 @@
 /* ── WHAT AN ACTION ACTUALLY DOES — pure, content-only ─────────────────────
    Every field the engine models is surfaced in the engine's own words:
      moves   — shape (path / sidestep / flight), stepRange, budgetMod, riders
-     attacks — area, status rider, crit bonus, critCount, damage type
+     attacks — status rider, crit bonus, critCount, damage type
+     bursts  — authored shape, recipient filters and ordered payload
      powers  — effect (damage / heal / selfGuard), area, range
    Split out of viewer-core.js 2026-09-02. */
 
@@ -40,9 +41,10 @@ export function kitOf(u, D) {
 
 /* the engine's row shape, read where the engine put it (§11) */
 export const isMove = a => !!(a && a.move)
+export const isBurst = a => !!(a && a.burst)
 export const isAttack = a => !!(a && a.attack)
 export const shapeOf = a => (a.move || {}).shape
-export const kindOf = a => isMove(a) ? 'move' : isAttack(a) ? (a.attack.kind || 'melee') : 'power'
+export const kindOf = a => isMove(a) ? 'move' : isAttack(a) ? (a.attack.kind || 'melee') : isBurst(a) ? 'burst' : 'power'
 
 export function actionsOf(u, D) {
   if (!u) return []
@@ -53,7 +55,7 @@ export function actionsOf(u, D) {
   const rows = []
   for (const m of k.moves)     if (!spent.has(m.id)) rows.push({ ...m, kind: 'move' })
   for (const a of k.attacks)   if (!spent.has(a.id)) rows.push({ ...a, kind: a.attack.kind || 'melee', isAttack: true })
-  for (const p of k.abilities) if (!spent.has(p.id)) rows.push({ ...p, kind: 'power', isPower: true })
+  for (const p of k.abilities) if (!spent.has(p.id)) rows.push({ ...p, kind: isBurst(p) ? 'burst' : 'power', isPower: true })
   return rows
 }
 
@@ -88,6 +90,7 @@ export function moveHexes(a, u, D) {
    been declared — it carries every live modifier — else the declare-time
    stat + bonus the ledger showed. The fallback duplicates engine math. */
 export function dmgOf(a, u, D) {
+  if (isBurst(a)) return null
   const live = u && u.dmgSeen ? u.dmgSeen[a.id] : undefined
   if (live != null) return { n: live, live: true }
   /* an attack's stat and bonus live under `attack` since 26fa562; a legacy
@@ -125,6 +128,7 @@ export function effectWord(ef, D, SN) {
     case 'status.apply':   return { word: shortStatus(ef.statusId, SN), val: ef.value, statusId: ef.statusId }
     case 'badge.grant':    return { word: (BD[ef.badgeId] || {}).name || String(ef.badgeId || '').replace(/^badge\./, ''), badge: true }
     case 'damage':         return { word: (ef.damageType ? ef.damageType + ' damage' : 'Damage'), val: ef.amount ?? ef.value }
+    case 'burstScale':     return { word: 'Burst damage percentage', val: ef.percent }
     case 'heal':           return { word: 'Heal', val: ef.amount ?? ef.value }
     case 'knockback':      return { word: 'Knockback', val: ef.hexes ?? ef.value }
     case 'statMod':        return { word: (STATSHORT[ef.stat] || ef.stat), val: ef.value, signed: true }
@@ -141,6 +145,16 @@ export function effectWord(ef, D, SN) {
 
 export function effectTag(a, u, D, SN) {
   const bits = []
+  if (isBurst(a)) {
+    const b = a.burst
+    bits.push(b.shape.kind === 'radius' ? 'radius ' + b.shape.radius : b.shape.kind, b.side)
+    if (b.requireTags?.length) bits.push('tags ' + b.requireTags.join(', '))
+    for (const p of b.packets) bits.push((p.stat ? (STATSHORT[p.stat] || p.stat) + ' ' + sgn(p.amount) : String(p.amount)) + ' ' + p.damageType + (p.powerScale != null ? ' · Power scale ' + p.powerScale : ''))
+    if (b.heal != null) bits.push('heal ' + b.heal)
+    if (a.uses != null) bits.push(a.uses + ' uses per battle')
+    if (a.free) bits.push('free')
+    return bits.join(' · ')
+  }
   if (a.kind === 'move') {
     /* "Move: 6", "Move: 1 · Ignore ZOC" (ruled 2026-09-01, Andrew's copy). The
        RNG cell prints the number; the tag keeps only the SHAPE. */
@@ -152,8 +166,6 @@ export function effectTag(a, u, D, SN) {
     return bits.join(' · ')
   }
   const p = a.attack || a
-  if (a.area === 'arc')    bits.push('arc, no roll')
-  if (a.area === 'blast1') bits.push('blast, no roll')
   if (a.effect === 'heal') bits.push('heals')
   if (a.effect === 'selfGuard') bits.push('protection, permanent stat cost')
   if (p.applies) bits.push(shortStatus(p.applies.statusId, SN) + ' ' + sgn(p.applies.value))
@@ -164,7 +176,7 @@ export function effectTag(a, u, D, SN) {
   for (const packet of (p.secondaryDamage || [])) bits.push('on ' + packet.when + ': ' + packet.amount + ' ' + packet.damageType)
   if (a.uses != null) bits.push(a.uses + ' use' + (a.uses === 1 ? '' : 's') + ' per battle')
   if (a.free) bits.push('free')
-  if (p.damageType && !a.area) bits.push(p.damageType)
+  if (p.damageType) bits.push(p.damageType)
   return bits.join(' · ')
 }
 
@@ -174,6 +186,7 @@ export function effectTag(a, u, D, SN) {
    `onlyWithAttack` scopes a trigger to one attack. */
 export const ATTACK_HOOKS = new Set(['onHit', 'onAttack', 'onDamage', 'onKill', 'onMiss', 'onCrit'])
 export function triggersFor(u, a, D, SN, stStyle) {
+  if (isBurst(a)) return []
   const UD = D.UD || {}
   const out = []
   if (a.kind === 'move') {

@@ -849,6 +849,31 @@ export function drawAim(V) {
   svg.setAttribute('width', F.w); svg.setAttribute('height', F.h)
   svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible;pointer-events:none'
   dyn.appendChild(svg)
+  // Copy the engine footprint. No radius, recipient or shielding calculation.
+  if (S.BURST && V.view.burstVisible) {
+    const B = S.BURST, W = V.data.LAYOUT.W, H = V.data.LAYOUT.H
+    const tile = (hex, cls, colour) => {
+      const p = POS[hex]; if (!Number.isInteger(hex) || !p) throw new Error(`burst references unknown hex ${hex}`)
+      const n = el('ring ' + cls, `left:${p.px-W/2}px;top:${p.py-H/2}px;background:${colour};pointer-events:none`)
+      n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex)}px)`
+      dyn.appendChild(n); return n
+    }
+    for (const hex of B.hexes) tile(hex, 'burstHex', 'rgba(214,178,94,.48)')
+    const centre = tile(B.centre, 'burstCentre', NOTE_HUE)
+    if (centre) centre.title = 'Burst centre'
+    for (const fact of B.shielded) {
+      const n = tile(fact.hex, 'burstShield', 'rgba(160,184,202,.9)')
+      if (n) { n.dataset.props = fact.props.join(', '); n.title = 'Terrain shielding: ' + fact.props.join(', ') }
+    }
+    const p = POS[B.centre]
+    if (p) {
+      const label = el('bb burstLabel', `left:${p.px}px;top:${p.py}px;pointer-events:none`)
+      label.style.transform = `translateZ(${heightOf(V, B.centre)}px) rotateX(var(--anti)) translateZ(150px)`
+      const text = el('', 'position:absolute;left:36px;top:-80px;white-space:nowrap;font:700 18px sans-serif;color:'+NOTE_HUE+';text-shadow:0 2px 5px #000')
+      text.textContent = 'BURST' + (B.shielded.length ? ' · Terrain shielding' : '')
+      label.appendChild(text); dyn.appendChild(label)
+    }
+  }
   const AIM = S.AIM; if (!AIM) return
   const A = POS[AIM.from], B = POS[AIM.to]
   const dx = B.px - A.px, dy = B.py - A.py, L = Math.hypot(dx, dy) || 1, bow = Math.min(120, L * 0.22)

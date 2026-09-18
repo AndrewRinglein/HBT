@@ -10,6 +10,7 @@ import { stStyle } from './theme.js'
 import { actionsOf, moveHexes, dmgOf, effectTag, triggersFor } from './actions.js'
 import { subjectOf } from './subject.js'
 
+const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 const TRG_SHOWN = 3                 // collapse past this many
 const cell = (k, v, col) => `<div class="acCell"><span class="k">${k}</span><span class="v"${col ? ` style="color:${col}"` : ''}>${v}</span></div>`
 
@@ -59,11 +60,11 @@ export function drawBar(V) {
     const dmg = dm ? String(dm.n) : '—'
     /* reach is `range` on every action since 26fa562 (§11) */
     const rng = a.kind === 'move' ? (() => { const n = moveHexes(a, u, D); return n == null ? '—' : String(n) })()
-      : a.area ? String(a.area) : a.range != null ? String(a.range) : '—'
+      : a.range != null ? String(a.range) : '—'
     const stam = a.staminaCost
     /* capability.charges: what the log says is left, else the row's own count */
     const usesLeft = u.charges && u.charges[a.id] != null ? u.charges[a.id] : a.uses
-    const acc = a.area ? '—' : (a.isAttack ? (base != null ? base : '—') : '—')
+    const acc = a.isAttack ? (base != null ? base : '—') : '—'
     const tag = effectTag(a, u, D, SN)
     const trg = triggersFor(u, a, D, SN, stStyle)
     const tkey = u.id + '|' + a.id, topen = view.TRG_OPEN.has(tkey)
@@ -74,13 +75,13 @@ export function drawBar(V) {
     const more = hidden > 0 ? `<button class="acMore" data-trg="${tkey}">${topen ? '&#9652; less' : '&#9662; ' + hidden + ' more'}</button>` : ''
     const trgSide = trg.length ? vis.map(chip).join('') + more : ''
     const dupe = nameCount[a.name || a.id] > 1 ? weaponOf(a.id) : ''
-    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}" data-act="${a.id}" style="border-left-color:${accent}">
+    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}" data-act="${escape(a.id)}" style="border-left-color:${accent}">
       <div class="acMain">
         <div class="acL1">${icoHTML(a)}
-          <span class="acName">${a.name || a.id}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>
-          ${tag ? `<span class="acTag">${tag}</span>` : ''}</div>
+          <span class="acName">${escape(a.name || a.id)}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>
+          ${tag ? `<span class="acTag${a.burst ? ' burstTag' : ''}" title="${escape(tag)}">${escape(tag)}</span>` : ''}</div>
         <div class="acL2">
-          ${cell('ACC', acc)}${cell(a.area ? 'AREA' : 'RNG', rng)}
+          ${a.burst ? cell('TYPE', 'BURST') : cell('ACC', acc)}${cell('RNG', rng)}
           ${cell('DMG', dmg, (a.attack || a).damageType && dmg !== '—' ? actHue(a).col : null)}${cell('STA', stam != null ? stam : '—')}
         </div>
       </div>

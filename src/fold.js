@@ -27,9 +27,10 @@ export function createState() {
     turnNo: 0, phase: 'hero', activeId: null,
     subjectId: null, subjectMode: 'acting',
     acted: {},             // id -> true, this phase (plain data — Law 5b)
+    BURST: null,            // durable engine declaration + recipient summaries; visibility belongs to pump
     AIM: null, FIRING: null, TRIGFLASH: null,
-    ATTACK: null,          // the declared attack {kind, dt, dmg} — outlives AIM, so an area attack's
-                           // second and third hits still know what struck them
+    ATTACK: null,          // the declared attack {kind, dt, dmg} — outlives AIM, so an ordinary attack's
+                           // following damage beats still know what struck them
     critPending: false,    // the attack.hit that just landed was a crit; the damage beat reads it
     outcome: null,
     /* ── 2026-09-03 ── */
@@ -170,6 +171,7 @@ export function fold(S, e, ctx, now = 0) {
       U[e.actor].moveUsed = e.moveUsed; U[e.actor].primaryUsed = e.primaryUsed
       break
     case 'activation.begin':
+      S.BURST = null
       S.activeId = e.actor; S.subjectId = e.actor; S.subjectMode = 'acting'
       /* the engine names the budget only when something reduced it (Law 12);
          otherwise the resting figure stands — the draw side reads mvOf() */
@@ -177,11 +179,13 @@ export function fold(S, e, ctx, now = 0) {
       S.AIM = null; S.AOO = null; cue('inspect.clear')          // FIRING and floats run their own clocks
       break
     case 'activation.end':
+      S.BURST = null
       S.acted[e.actor] = true
       if (U[e.actor]) { U[e.actor].activeMv = null; U[e.actor].moveMods = null; U[e.actor].confusedFrom = null }
       S.ATTACK = null; S.AOO = null
       break
     case 'move.begin':
+      S.BURST = null
       /* moves light their own row too (ruled 2026-09-01) — causeId names the MoveDef */
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
       break
@@ -213,7 +217,21 @@ export function fold(S, e, ctx, now = 0) {
       S.subjectId = e.actor; S.subjectMode = 'acting'
       break
     case 'aoo.skipped': break                                             // nothing to draw; the log names the reason
+    case 'burst.declared':
+      S.AIM = null; S.ATTACK = null; S.AOO = null; S.critPending = false
+      S.BURST = { ...structuredClone(e), shielded: [], struck: [] }
+      S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
+      S.subjectId = e.actor; S.subjectMode = 'acting'
+      break
+    case 'burst.shielded':
+      if (S.BURST?.causeId === e.causeId && S.BURST.actor === e.actor) S.BURST.shielded.push(structuredClone(e))
+      cue('float', { hex: e.hex, kind: 'note', text: 'Terrain shielding', small: true })
+      break
+    case 'burst.struck':
+      if (S.BURST?.causeId === e.causeId && S.BURST.actor === e.actor) S.BURST.struck.push(structuredClone(e))
+      break
     case 'attack.declared':
+      S.BURST = null
       if (U[e.actor] && U[e.target]) {
         cue('lunge', { a: e.actor, t: e.target })
         S.AIM = { from: U[e.actor].hex, to: U[e.target].hex, hit: e.hitChance,
@@ -229,9 +247,8 @@ export function fold(S, e, ctx, now = 0) {
       } break
     case 'attack.hit':
       S.critPending = !!e.crit
-      /* the declared attack outlives the forecast: an area attack emits one
-         attack.hit per struck unit, and every one of them strikes (the old
-         code nulled AIM on the first hit and the rest went silent) */
+      /* Ordinary attack metadata outlives AIM so the impact and subsequent
+         damage beats retain their source after the forecast clears. */
       if (S.ATTACK && U[e.target]) {
         /* THE EMPHASIS LADDER, rung 2 (ruled 2026-09-02, VISUAL-BATTLE-UPDATES §1.3):
            a crit keeps the word — Andrew: "I think we actually want the word
@@ -485,6 +502,7 @@ export function fold(S, e, ctx, now = 0) {
         cue('float', { hex: U[e.actor].hex, kind: 'note', text: 'HUNTS', small: true }) }     // the panel names the quarry
       break
     case 'power.used':
+      S.BURST = null
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
       if (e.target != null && U[e.target] && e.target !== e.actor) cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
       else {
@@ -495,7 +513,7 @@ export function fold(S, e, ctx, now = 0) {
         if (fx) cue('fx.status', { id: e.actor, style: fx })
       }
       break
-    case 'battle.end': S.outcome = e.outcome; break
+    case 'battle.end': S.BURST = null; S.outcome = e.outcome; break
   }
   return cues
 }
@@ -507,7 +525,7 @@ export function fold(S, e, ctx, now = 0) {
     the pump's clock stamped.** Everything else the events rebuilt exactly, and
     discarding it is how a scrub silently deleted the impact effect of every
     attack in the game — 678 of 678 measured (REVIEW-2026-09-04 §A). `ATTACK`
-    outlives AIM on purpose (an area attack's second and third hits read it) and
+    outlives AIM on purpose (ordinary hit and damage beats still read it) and
     carries no clock; `AOO` marks the free swing; both are kept, as is the
     subject, so that seeking to N and stepping to N agree exactly.
 
@@ -526,7 +544,7 @@ export function foldTo(events, n, ctx) {
 /** The event types the fold knows. verify.mjs checks every packed log and the
     pump's duration table against this until the engine exports EVENT_TYPES
     (THREE-PACKAGES-PLAN §8.3). */
-export const FOLDED_TYPES = ['unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
+export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck', 'unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
   'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'stamina.spent',
   'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'cooldown.set',

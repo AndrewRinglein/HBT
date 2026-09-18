@@ -36,6 +36,7 @@
 import fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import {fixtureUnits} from './burst-fixture-data.mjs'
 import { makeWindow } from './fakedom.mjs'
 // The readonly engine door is TypeScript in native Node as well as the browser bundle.
 import { register } from '../../engine/node_modules/tsx/dist/esm/api/index.mjs'
@@ -77,6 +78,7 @@ if (!BV) { console.error('FAIL — window.__battleView not exposed'); process.ex
 const LIB = BV.lib
 /* the fold context and the projection, hoisted: both are used by checks that
    run before the blocks that used to define them (TDZ, found 2026-09-04) */
+const BURST_TESTS = JSON.parse(fs.readFileSync(resolve(PKG, 'tools/fixtures/bursts.json'), 'utf8'))
 const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
 const stripB64 = s => s.replace(/data:[^"')]+/g, 'data:…')
 const numsIn = e => { const out = new Set(); const walk = v => { if (typeof v === 'number') out.add(v); else if (v && typeof v === 'object') Object.values(v).forEach(walk) }; walk(e); return out }
@@ -157,7 +159,7 @@ function drive(label, battle, allowStandee = false) {
      does. 678 of 678 attacks failed this before the fix. */
   { const scrubStrip = S => JSON.stringify({ ...S, AIM: null, FIRING: null, TRIGFLASH: null })
     const sample = new Set()
-    for (let i = 0; i < EV.length; i++) if (/^(attack\.|aoo\.|deathbed\.|crit\.|badge\.)/.test(EV[i].type)) sample.add(i)
+    for (let i = 0; i < EV.length; i++) if (/^(burst\.|attack\.|aoo\.|deathbed\.|crit\.|badge\.)/.test(EV[i].type)) sample.add(i)
     for (let i = 0; i < EV.length; i += Math.max(1, Math.floor(EV.length / 40))) sample.add(i)
     const stepped = createState(); let at = 0, bad = 0, firstBad = null
     for (const i of [...sample].sort((a, b) => a - b)) {
@@ -167,6 +169,17 @@ function drive(label, battle, allowStandee = false) {
     }
     check(bad === 0, `${label}: seeking and stepping disagree at ${bad} of ${sample.size} sampled cursors (first at event ${firstBad}, ${firstBad != null && EV[firstBad] && EV[firstBad].type}) — foldTo may discard only what the pump's clock stamped`) }
 
+  // A step after seeking must produce the same burst cue, not merely final HP.
+  { const state = createState()
+    for (let i=0;i<EV.length;i++) {
+      const cues=fold(state,EV[i],CTX0,0)
+      if (EV[i].type.startsWith('burst.')) {
+        const sought=foldTo(EV,i,CTX0),after=fold(sought,EV[i],CTX0,0)
+        check(JSON.stringify(cues)===JSON.stringify(after), `${label}: burst cue after seek differs at ${i}`)
+        check(JSON.stringify(state.BURST)===JSON.stringify(sought.BURST), `${label}: durable burst facts after seek differ at ${i}`)
+      }
+    }
+  }
   /* every type folded or ignored; float numbers verbatim from their event */
   const types = new Set(EV.map(e => e.type))
   for (const t of types) check(FOLDED_TYPES.includes(t) || IGNORED.has(t), `${label}: event type ${t} is neither folded nor on the ignore list`)
@@ -218,6 +231,18 @@ for (let i = 0; i < LIB.battles.length; i++) {
   if (i > 0) load(i)
   drive(b.label, b.battle)
 }
+// These are TEST imports, never entries in the 29-battle picker. Their exact
+// engine-generated logs cover shielding/save/zero cases the showcase may not.
+const playbackTests=[...BURST_TESTS.cases,...BURST_TESTS.support]
+for (const c of playbackTests) {
+  const battle={events:c.events,seed:{mapId:c.options.map.id},outcome:null,turns:0,engineCommit:BURST_TESTS.engineCommit}
+  const units=LIB.static.units,actions=LIB.static.actions
+  LIB.static.units=fixtureUnits(units,c.action);LIB.static.actions={...actions,[c.action.id]:c.action}
+  try {
+    H.playExport(battle,'Burst playback TEST: '+c.name);sizeWrap()
+    drive('Burst playback TEST: '+c.name,battle,true)
+  } finally { LIB.static.units=units;LIB.static.actions=actions }
+}
 for (const u of uses) check(spriteIds.has(u), `icons: <use> names ${u}, sprite lacks it`)
 check(uses.has('ra-crossed-swords') && uses.has('ra-shoe-prints') && uses.has('ra-bow') && !uses.has('ra-crossbow'), `icons: expected swords, shoe-prints and the bow (never the crossbow) among uses, got ${[...uses].join(',')}`)
 check(damaging > 0 && plain > 0, `icons: rows damaging=${damaging} plain=${plain} — both kinds must appear`)
@@ -230,6 +255,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 {
   const seen = new Set()
   for (const b of LIB.battles) for (const e of b.battle.events) seen.add(e.type)
+  for (const c of playbackTests) for (const e of c.events) seen.add(e.type)
   /* known-unexercised, each waiting on a showcase that fields it (ENGINE-FINDINGS #10) */
   const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled'])
   const dark = FOLDED_TYPES.filter(t => !seen.has(t))

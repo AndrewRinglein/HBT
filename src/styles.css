@@ -528,3 +528,6 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .ddOpt[aria-selected="true"]{color:var(--brass);font-weight:700}
 .ddOpt.focused,.ddOpt:hover{background:#3a3020}
 .atlas-link{display:inline-block;color:#d7cc9d;margin:0 0 12px;text-decoration:underline}
+
+/* Authored burst payload stays readable in its full tooltip without widening the action row. */
+.acTag.burstTag{min-width:0;max-width:145px;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto}
