@@ -1049,8 +1049,8 @@
    "tail": "    187| } |     188| function walkToBurst(s:ReturnType<typeof createSandbox>){ |  ❯ test/isc-069.test.ts:232:61"
   },
   "closed": {
-   "at": "2026-09-18 15:44",
-   "sha": "4d7395d"
+   "at": "2026-09-18 16:01",
+   "sha": "5695c17"
   },
   "regressed": [
    {

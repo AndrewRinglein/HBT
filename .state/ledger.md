@@ -2659,3 +2659,26 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
 ISC-069: CLOSED at 4d7395d
 slice: 60 of 69 closed · 62 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## v2.sandbox-burst-centres — LANDED `5695c17` **NEEDS REVIEW**
+2026-09-18 16:00 · engine @ 22c8c79
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:726
+  PASS  typecheck
+  PASS  full test suite — 243 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-069 — a standalone human battle shares engine resolution and replay
+  PASS  brought its own tests — test/isc-069.test.ts, test/burst-forecast.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-069: red on record (2026-09-18 15:58 @ a6874fb, probe b3f5033dcad6)
+  PASS  nothing regresses — every P-tier probe — 62 P-tier probe(s): 62 green, 0 red, 0 regression(s). 60 of 69 closed · 62 probed · 1 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'adapter' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean — engine @ 22c8c79, clean
+  PASS  one door to the engine
+
+ISC-069: CLOSED at 5695c17
+slice: 61 of 69 closed · 62 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
