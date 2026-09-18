@@ -27,9 +27,9 @@ export class El {
   get nextSibling() { const p = this.parentNode; if (!p) return null; const i = p.children.indexOf(this); return i < 0 ? null : (p.children[i + 1] ?? null) }
   get childNodes() { return this.children } get clientWidth() { return 1920 } get clientHeight() { return 1080 }
   get offsetWidth() { return 100 } get offsetHeight() { return 40 } get offsetTop() { return 0 } get scrollHeight() { return 400 } set scrollTop(v) {} get scrollTop() { return 0 }
-  get textContent() { return this._text + this.children.map(c => c.textContent).join('') } set textContent(v) { this._text = String(v); this.children = [] }
+  get textContent() { return this._text + this.children.map(c => c.textContent).join('') } set textContent(v) { this._text = String(v); for (const c of this.children) c.parentNode = null; this.children = [] }
   get innerHTML() { return this._html ?? '' }
-  set innerHTML(v) { this._html = String(v); this.children = []; this._text = ''; parseInto(this, this._html) }
+  set innerHTML(v) { this._html = String(v); for (const c of this.children) c.parentNode = null; this.children = []; this._text = ''; parseInto(this, this._html) }
   insertAdjacentHTML(where, html) { const tmp = new El('div'); tmp.innerHTML = html; for (const c of [...tmp.children]) this.appendChild(c) }
   appendChild(c) { if (c.parentNode) c.parentNode.removeChild(c); c.parentNode = this; this.children.push(c); return c }
   insertBefore(c, ref) { if (c.parentNode) c.parentNode.removeChild(c); c.parentNode = this; const i = ref ? this.children.indexOf(ref) : -1; i < 0 ? this.children.push(c) : this.children.splice(i, 0, c); return c }

@@ -81,3 +81,29 @@ all 29 fold/seek checks and 29 byte-identical fresh histories. The additional
 assertion is retained in both source and built-page verification. No gate was
 skipped or weakened; the only failed checks were the documented red probes and
 initial fixture setup attempt.
+
+## Shared test DOM detachment repair — 2026-09-18
+
+Kingdom's board-targeting lifecycle probe exposed a test-infrastructure defect:
+innerHTML/textContent replacement discarded children without detaching their
+parentNode links. Retained removed controls therefore incorrectly passed native
+contains-style guards. Two focused probes failed before the repair, one for each
+setter. The shared fake DOM now detaches direct subtree roots before clearing;
+descendant identity/parent relationships within those removed subtrees remain
+intact. Tests also verify querying, contains and later reattachment.
+
+This is a tools-only repair, included in the normal source gate. No product
+containment guard, renderer, engine event, map, asset or battle was changed to
+accommodate the broken harness. The unchanged Kingdom candidate board-targeting
+probe now passes its full empty/occupied click and stale-input lifecycle checks.
+Kingdom's in-progress source remains separate and uncommitted during this stage.
+Full fresh check and clean-source publication are required here; source and page
+commits remain separate. Browser/GPU/human acceptance remains unclaimed.
+
+Full fresh repair gate passed:28 source +66 built +12 direct-map tests (106),
+29 complete fold/seek checks and29 byte-identical fresh battle histories against
+clean engine22c8c79. No full gate failure occurred in this repair; the only reds
+were its two deliberate pre-fix detachment probes. Clean publication repeats the
+same gate after the source commit. Logs: .build/fakedom-detachment-gate.log and
+.build/fakedom-detachment-land.log. Existing art, source maps and all29 stored
+battle envelopes remain byte-identical.
