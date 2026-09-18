@@ -61,6 +61,7 @@ export type Hook =
    * because death also arrives from a poison tick and from bleeding out, and a
    * hook wired only into `performAttack` would miss both.
    */
+  | 'onBlock'          // defender first, then attacker; distinct role-keyed contexts
   | 'onBurst'          // defender reaction before burst mitigation, never an attack hook
   | 'onDeath'
   | 'onActivationEnd'
@@ -74,12 +75,12 @@ export type Hook =
 
 export const HOOKS: readonly Hook[] = [
   'onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage',
-  'onDeath', 'onActivationEnd', 'startOfBattle', 'onBurst',
+  'onDeath', 'onActivationEnd', 'startOfBattle', 'onBurst', 'onBlock',
 ] as const
 
 /** Hooks that have a natural target. Authoring `target` on any other is a load error. */
 const HAS_TARGET: ReadonlySet<Hook> = new Set<Hook>([
-  'onBurst',
+  'onBurst', 'onBlock',
   'onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage',
 ])
 
@@ -316,6 +317,8 @@ export type FireContext = {
    * unchanged and the control battles stay byte-identical.
    */
   readonly keyTag?: number
+  /** Reciprocal hooks have distinct semantic roles even with equal UIDs/ordinals. */
+  readonly keyRole?: number
 }
 
 export function selectOf(ctx: Ctx, t: Trigger, fc: FireContext): number[] {
@@ -396,6 +399,7 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): BurstAdjust
     const targetUid = fc.targetId == null ? 0 : unit(ctx, fc.targetId).uid
     const keys = [owner.uid, targetUid, fc.targetId == null ? 0 : 1, fc.ordinal, slot]
     if (fc.keyTag !== undefined) keys.push(fc.keyTag)
+    if (fc.keyRole !== undefined) keys.push(fc.keyRole)
     const roll = roll100(ctx.rng, 'trigger', ...keys)
     const fired = roll <= chance.value
 

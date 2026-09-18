@@ -13746,3 +13746,169 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 EXEMPTION(S) TAKEN
+
+## rule.block — LANDING REVERTED BY POST-LAND AUDIT
+2026-09-18 16:49
+
+test suite fails on the committed tree — Error: Test timed out in 5000ms. — diagnostic: C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\runs\diagnostics\gate-rule-block-committed-suite-1789750231836-8fa7c16e-79e4-4066-a85c-dd5ae8a9128b.json. The pre-land pass depended on state that did not survive the commit.
+
+## rule.block — LANDED `a422239` **NEEDS REVIEW**
+2026-09-18 16:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:726 · ..\CODEX.md:955
+  PASS  typecheck
+  PASS  full test suite — 1612 passed
+  PASS  gate 1 — the id appears in a real battle — test.block-a.reaction: 33 log lines, 33 fired, 11 changed state · test.block-b.reaction: 33 log lines, 33 fired, 11 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/integration.test.ts, test/low-cover.test.ts, test/block-projection.ts, test/block.test.ts, test/fixtures/battle-cursor-block.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-9), test/integration.test.ts (-1), test/low-cover.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 4d916b99->d7a91eb4, map.ridge f383f2fc->c7d5ea1b, map.flanks 78455325->7da1dc5b, map.highlands c897e8ce->88320bd7, map.field 89b5d750->97fe3e8e, map.thicket f4f76984->481a08c1, map.proving.open 6d0bb53a->6366cd0f, map.proving.ridge 2ab03e16->78f0b113, map.proving.ford 028bbc1c->573459a8, map.proving.copse c4132587->1ee904a8, map.proving.ruin cb05e3f4->4a80d07a, map.courtyard 57467eb0->435f8e84, map.floodplain 36391465->cd1e8706, test.map.embers 47733fd0->92f9a29a, test.map.showcase 301e6033->d0dd0bb5, test.map.duel-8 8d781c17->d92ed87e, test.map.dungeon-16x8 a1f91b90->bf74199f, test.map.horde-24 fc80bf9e->e08b9616, test.map.journey-20x10 fdbae9cc->e696e5a5, test.map.authored-40x40 754ce42a->7b317e15, test.map.high-prop-single 7e45c142->4609565b, test.map.high-prop-multi 35d492c3->23119e28
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.block-a.reaction live · test.block-b.reaction live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.block-a.reaction,test.block-b.reaction — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 9c798af..c061f77 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -10,4 +10,5 @@ import { battleCursorCases } from './battle-cursor-cases.js'
+ import { projectShorthand } from './props-projection.js'
+ import { GLYPH, mapDef } from '../src/content/maps.js'
++import {projectBlock} from './block-projection.js'
+ import { projectPacketEvents } from './packet-projection.js'
+ 
+@@ -31,4 +32,5 @@ const packetGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-p
+ // V2 burst migration: four first differences are replaced attack/power declarations.
+ // All 42 prior inputs remain unchanged; full current hashes are frozen separately.
++const blockGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-block.json', import.meta.url), 'utf8'))
+ const burstGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bursts.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+@@ -124,4 +126,5 @@ describe('resumable battle cursor', () => {
+       // old files and check their exact hashes after removing ONLY that event
+       // and normalizing sequence counters; freeze full current events separately.
++      const blockExpected = blockGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const contactExpected = contactGolden.cases.find((row: {id:string}) => row.id === fixture.id)
+       const elementalExpected = elementalGolden.cases.find((row: {id:string}) => row.id === fixture.id)
+@@ -148,23 +151,32 @@ describe('resumable battle cursor', () => {
+         // Historical shorthand projection is only meaningful for a historical
+         // row. New direct geometry retains exact automatic/suspended comparison.
+-        const projected = eventExpected || prior ? projectShorthand({...ctx,events:projectPacketEvents(ctx.events)}, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:ctx.events,state:ctx.state}
++        // V2 Block metadata-only projection refuses any positive cup. All old
++        // golden assertions remain exact, plus current raw hashes are retained.
++        const historicalCtx=blockExpected?{...ctx,...projectBlock(ctx)}:ctx
++        if(blockExpected){
++          expect(hash(ctx.events),'full Block events').toBe(blockExpected.events)
++          expect(hash(ctx.state),'full Block state').toBe(blockExpected.state)
++          expect(hash(ctx.rng.log),'full Block RNG').toBe(blockExpected.rng)
++          expect(result).toEqual(blockExpected.result)
++        }
++        const projected = eventExpected || prior ? projectShorthand({...historicalCtx,events:projectPacketEvents(historicalCtx.events)}, mapDef(historicalCtx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:historicalCtx.events,state:historicalCtx.state}
+         if (eventExpected) {
+           expect(hash(projected.events), 'prior event contract, exact prop projection').toBe(eventExpected.events)
+           expect(hash(projected.state), 'prior state, exact prop projection').toBe(eventExpected.state)
+-          expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
++          expect(hash(historicalCtx.rng.log)).toBe(eventExpected.rng)
+           expect(result).toEqual(eventExpected.result)
+         }
+         if (prior) {
+           const oldEvents = projected.events.filter(e => e.type !== 'action.spent').map((e, seq) => ({ ...e, seq }))
+-          const oldState = { ...projected.state, seq: ctx.state.seq - (ctx.events.length - oldEvents.length) }
++          const oldState = { ...projected.state, seq: historicalCtx.state.seq - (historicalCtx.events.length - oldEvents.length) }
+           expect(hash(oldEvents), 'historical events without new metadata').toBe(prior.events)
+           expect(hash(oldState), 'historical state without new sequence count').toBe(prior.state)
+-          expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
++          expect(hash(historicalCtx.rng.log), 'historical RNG').toBe(prior.rng)
+           expect(result, 'historical result').toEqual(prior.result)
+         }
+-        expected ??= { events: hash(ctx.events), state: hash(ctx.state), rng: hash(ctx.rng.log), result }
+-        expect(hash(ctx.events), 'events').toBe(expected.events)
+-        expect(hash(ctx.state), 'state').toBe(expected.state)
+-        expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
++        expected ??= { events: hash(historicalCtx.events), state: hash(historicalCtx.state), rng: hash(historicalCtx.rng.log), result }
++        expect(hash(historicalCtx.events), 'events').toBe(expected.events)
++        expect(hash(historicalCtx.state), 'state').toBe(expected.state)
++        expect(hash(historicalCtx.rng.log), 'RNG draws').toBe(expected.rng)
+         expect(result).toEqual(expected.result)
+         expect(ctx.events.at(-1)!.type).toBe('battle.end')
+@@ -176,5 +188,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index b7f7aa0..07492e3 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -114,4 +114,7 @@ describe('gate 1 — everything appears in the log', () => {
+   })
+ 
++  // 2026-09-18: this 200-battle coverage test passed alone in 3.21s but exceeded
++  // Vitest's 5s default in the committed full suite. Keep every seed/assertion;
++  // give this workload a bounded 15s budget rather than a global timeout change.
+   it('every attack a fielded unit carries is actually used somewhere', () => {
+     // LAW 10 — 2026-09-02 (content.alpha-flip): the old text named four
+@@ -171,5 +174,5 @@ describe('gate 1 — everything appears in the log', () => {
+       expect(usedBy.get(t) ?? new Set(), `${key} is structurally dead under declared-order choice`).not.toContain(id)
+     }
+-  })
++  }, 15_000)
+ })
+ 
+diff --git a/test/low-cover.test.ts b/test/low-cover.test.ts
+index fd0fb10..99f2dc8 100644
+--- a/test/low-cover.test.ts
++++ b/test/low-cover.test.ts
+@@ -63,5 +63,5 @@ describe('terrain.low-cover',()=>{
+  it('all seeded actual hits agree with preview and emits a cover miss attribution',()=>{
+   let pings=0,hits=0
+-  for(let seed=0;seed<100;seed++){const ctx=setup([hex()],seed);ctx.cfg.switches.critEnabled=false;advanceBattle(ctx);expect(canAttack(ctx,0,1,bow)).toBe(true);const pv=preview(ctx,0,1,bow);const result=performAttack(ctx,0,1,bow);if(result.hit){hits++;expect(result.damage).toBe(result.crit?pv.damageOnCrit:pv.damageOnHit)}else{const ev=ctx.events.find(e=>e.type==='attack.miss')!;if(result.roll<=Math.min(100,pv.accuracy+20)){expect(ev.cover).toBe(true);pings++}}}
++  for(let seed=0;seed<100;seed++){const ctx=setup([hex()],seed);ctx.cfg.switches.critEnabled=false;advanceBattle(ctx);expect(canAttack(ctx,0,1,bow)).toBe(true);const pv=preview(ctx,0,1,bow);const result=performAttack(ctx,0,1,bow);if(result.hit){hits++;expect(result.damage).toBe(result.crit?pv.damageOnCrit:pv.damageOnHit)}else{const ev=ctx.events.find(e=>e.type==='attack.miss')!;if(result.roll===null)throw Error("zero-Block cover fixture unexpectedly blocked");if(result.roll<=Math.min(100,pv.accuracy+20)){expect(ev.cover).toBe(true);pings++}}}
+   expect(hits).toBeGreaterThan(0);expect(pings).toBeGreaterThan(0)
+  })
+@@ -182,5 +182,5 @@ describe('terrain.low-cover',()=>{
+    const ctx=setup([hex()],seed);ctx.state.units[1]!.dodge=35;ctx.state.units[0]!.accuracy=110;advanceBattle(ctx)
+    const pv=preview(ctx,0,1,bow),r=performAttack(ctx,0,1,bow)
+-   if(!r.hit){const ev=ctx.events.find(e=>e.type==='attack.miss')!;if(r.roll>65){expect(ev.missCause).toBe('dodge');expect(ev.cover).toBe(false);dodged++}else if(r.roll<=pv.accuracy+20){expect(ev.missCause).toBe('cover');covered++}}
++   if(!r.hit){if(r.roll===null)throw Error('zero-Block dodge fixture unexpectedly blocked');const ev=ctx.events.find(e=>e.type==='attack.miss')!;if(r.roll>65){expect(ev.missCause).toBe('dodge');expect(ev.cover).toBe(false);dodged++}else if(r.roll<=pv.accuracy+20){expect(ev.missCause).toBe('cover');covered++}}
+   }
+   expect(dodged).toBeGreaterThan(0);expect(covered).toBeGreaterThan(0)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of test.block-a.reaction,test.block-b.reaction — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  map.field: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.5->5.5
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 4.2->4.2
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.proving.ruin: heroWins 25->25 (+0)  meanTurns 5.2->5.2
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.5->3.5
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 5.9->5.9
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 5.0->5.0
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  test.map.dungeon-16x8: heroWins 21->21 (+0)  meanTurns 10.0->10.0
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  test.map.journey-20x10: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  test.map.authored-40x40: heroWins 25->25 (+0)  meanTurns 7.6->7.6
+  test.map.high-prop-single: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  test.map.high-prop-multi: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+EFFECT_RESULT {"version":1,"status":"measured","unavailable":[]}
+```

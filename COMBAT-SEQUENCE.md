@@ -230,6 +230,18 @@ Rung 2 is the reason this ladder needed the column. `onActivationEnd` is in `HOO
 
 An attack is a list of hits, resolved **one at a time**. Each hit runs the full cycle — damage, triggers, settle — before the next hit begins.
 
+### V2 Block first cup (2026-09-18)
+
+Before the per-hit ladder below, a legal hit freezes the defender's effective
+Block (melee) or Ranged Block (ranged), rolls its separate cup, and emits
+`block.rolled`. Zero/suppressed chance logs a null roll without drawing.
+Unconditional `onAttack` still fires next. A successful block then fires defender
+`onBlock`, attacker `onBlock`, attacker `onMiss`, and returns to the caller's
+settlement; accuracy, criticals and weapon damage are skipped. Failed Block
+continues at the accuracy rung. Each multihit and reaction uses this same path;
+bursts do not. Stun uses explicit `blocksBlock`, independent of `blocksAction`.
+See V2-BLOCK.md and SWITCHES.md for provisional details and verification.
+
 ### Per hit
 
 | # | Step | Built? |
@@ -246,7 +258,9 @@ An attack is a list of hits, resolved **one at a time**. Each hit runs the full 
 | 10 | **`onKill`**, if the target died — *the **killer's** hook* | **yes** |
 | 11 | **Settle** | **yes** |
 
-**An Attack is still exactly one Hit** — against one unit. `AttackDef` has no `hits` field and `performAttack` resolves once per struck unit, while the vocabulary table above defines an Attack as *"one or more Hits"* — and two switches (`multiAttackRetargets`, `recomputeStatsBetweenHits`) are already written against a loop that does not exist.
+An attack may author multiple hits. Each resolves and settles before the next;
+the first pays once, and later hits stop when attacker/target no longer stands.
+Aggregate connection means any hit connected; per-hit results remain available.
 
 ### Hex-targeted bursts
 

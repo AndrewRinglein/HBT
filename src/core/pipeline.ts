@@ -8,11 +8,11 @@ import { absorbDamage, flatDamage } from './mitigation.js'
 import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
-import { fireTriggers } from './trigger.js'
+import { fireTriggers, HOOKS } from './trigger.js'
 import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
-import { accelerateBleedOut, applyAttackPackets, emit, unit } from './mutate.js'
+import { accelerateBleedOut, applyAttackPackets, emit, unit, recordBlock } from './mutate.js'
 import { actionReady, isAttack, spendAction , resolveActionSlot } from './action.js'
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
@@ -282,7 +282,9 @@ export type AttackResult = {
   hit: boolean
   crit: boolean
   accuracy: number
-  roll: number
+  roll: number | null
+  blocked?: boolean
+  hits?: readonly AttackResult[]
   damage: number
   killed: boolean
 }
@@ -332,6 +334,15 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   return d <= reachOf(ctx, at, a) && attackLineClear(ctx, at.hex, tg.hex)
 }
 
+/** Pure first-cup facts. Incapacity is an explicit status capability, not its ID. */
+export function resolveBlock(ctx: Ctx, target: Unit, kind: 'melee' | 'ranged') {
+  const statName = kind === 'ranged' ? 'rangedBlock' : 'block'
+  const resolved = effective(ctx, target, statName)
+  const suppressed = target.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.blocksBlock)
+  return {stat: statName, value: resolved.value, ledger: resolved.ledger,
+    chance: suppressed ? 0 : Math.max(0, Math.min(100, resolved.value)), suppressed}
+}
+
 /** Preview: the same pipeline, run without applying. Law 1 — never a second formula. */
 export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId: string) {
   const at = unit(ctx, attackerId)
@@ -339,15 +350,20 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   const a = attackDef(ctx, attackId)
   const acc = resolveAccuracy(ctx, at, tg, a)
   const hitChance = Math.max(0, Math.min(100, acc.value))
+  const block = resolveBlock(ctx, tg, a.attack.kind)
+  // hitChance remains the accuracy cup conditioned on passing Block. Bps is
+  // integer precision: 10,000 means certainty, with no probability rounding.
+  const blockFacts = {blockChance:block.chance, connectionChanceBps:(100-block.chance)*hitChance, blockSuppressed:block.suppressed}
   // A hit on the DOWNED deals no damage and cannot crit — it accelerates the
   // bleed-out counter (fix.downed-targetable, 2026-09-03). The preview says so.
   if (tg.lifeState === 'downed') {
-    return { hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, damageOnCritChart:0, packetsOnHit:[],packetsOnCrit:[],packetsOnCritChart:[],critChance: 0, downed: true as const }
+    return { ...blockFacts, hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, damageOnCritChart:0, packetsOnHit:[],packetsOnCrit:[],packetsOnCritChart:[],critChance: 0, downed: true as const }
   }
   const hit=previewAttackDamage(ctx,attackerId,targetId,a,0,false)
   const critical=previewAttackDamage(ctx,attackerId,targetId,a,1,true)
   const chart=previewAttackDamage(ctx,attackerId,targetId,a,0,true)
   return {
+    ...blockFacts,
     hitChance,
     accuracy: acc.value,
     accLedger: acc.ledger,
@@ -372,7 +388,7 @@ function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, 
     - effective(ctx, target, 'luck').value)
 }
 
-/** One Hit. Damage resolves completely; triggers would fire after (none yet). */
+/** Each hit completes its shared lifecycle; aggregate hit means any connection. */
 export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): AttackResult {
   const a0 = attackDef(ctx, attackId)
   const hits = Math.max(1, a0.attack.hits ?? 1)
@@ -382,16 +398,18 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   // the target stops standing. The FIRST hit pays the stamina and the primary.
   let last: AttackResult | null = null
   let damage = 0
+  const results: AttackResult[] = []
   for (let h = 1; h <= hits; h++) {
     if (ctx.state.outcome) break
     const tg = unit(ctx, targetId)
     if (h > 1 && tg.lifeState !== 'standing') { emit(ctx, 'attack.cancelled', attackId, { actor: attackerId, target: targetId, hit: h, of: hits, reason: 'target fell' }); break }
     if (h > 1 && unit(ctx, attackerId).lifeState !== 'standing') break
     last = performHit(ctx, attackerId, targetId, attackId, h, hits, mode)
+    results.push(last)
     damage += last.damage
     settle(ctx, attackId)
   }
-  return { ...(last as AttackResult), damage, killed: unit(ctx, targetId).hp === 0 }
+  return { ...(last as AttackResult), hit:results.some(r=>r.hit), blocked:results.every(r=>r.blocked), hits:results, damage, killed: unit(ctx, targetId).hp === 0 }
 }
 
 /** One hit of an attack — the whole of performAttack before multihit. `hit`/`of` name the swing in the log. */
@@ -409,6 +427,9 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
     return { hit: false, crit: false, accuracy: 0, roll: 0, damage: 0, killed: false }
   }
 
+  const incomingOrdinal = (tg.incomingAttackOrdinal ?? 0) + 1
+  // RNG key words are unsigned32; refuse overflow before any payment/mutation.
+  if (!Number.isSafeInteger(incomingOrdinal) || incomingOrdinal < 1 || incomingOrdinal > 0xffffffff) throw Error('incoming attack ordinal overflow')
   const ord = ++at.attackOrdinal
   const pv = preview(ctx, attackerId, targetId, attackId)
 
@@ -420,7 +441,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
     // kind and damageType are on the event, not looked up from ATTACKS, so a
     // renderer can pick an animation without importing game content.
     kind: a.attack.kind, damageType: a.attack.damageType,
-    distance: ctx.geo.distance(at.hex, tg.hex), hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
+    distance: ctx.geo.distance(at.hex, tg.hex), blockChance:pv.blockChance, connectionChanceBps:pv.connectionChanceBps, hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
     // COMBAT-SEQUENCE: "The accuracy roll carries the same [ledger]." It did — and
     // nothing emitted it, so until 2026-08-15 no log could say WHY a hit chance was
     // what it was. Found by gate 1: the ADJACENT station could not be probed for,
@@ -428,11 +449,25 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
     accLedger: pv.accLedger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
   })
 
+  // V2 first cup: freeze before any hook. Zero/suppressed checks still have
+  // an incoming ordinal/event, but never consume a random draw.
+  const blockRoll = pv.blockChance > 0 ? roll100(ctx.rng, 'block', tg.uid, incomingOrdinal) : null
+  const blocked = blockRoll !== null && blockRoll <= pv.blockChance
+  recordBlock(ctx, targetId, a.id, {attacker:attackerId,kind:a.attack.kind,chance:pv.blockChance,
+    roll:blockRoll,blocked,suppressed:pv.blockSuppressed})
+
   // GAME-DESIGN §5: "onAttack always. Then onMiss or onHit. Then onDamage only if
   // damage landed." Every swing, hit or miss — this is where a Mage's burn-on-attack
   // fires, and it is deliberately NOT the same hook as a flaming bow's onHit.
   const fc = { ownerId: attackerId, targetId, causeId: a.id, ordinal: ord }
   fireTriggers(ctx, 'onAttack', fc)
+  if (blocked) {
+    const keyTag = HOOKS.indexOf('onBlock')
+    fireTriggers(ctx, 'onBlock', {ownerId:targetId,targetId:attackerId,causeId:a.id,ordinal:incomingOrdinal,keyTag,keyRole:0})
+    fireTriggers(ctx, 'onBlock', {...fc,keyTag,keyRole:1})
+    fireTriggers(ctx, 'onMiss', fc)
+    return {hit:false,crit:false,accuracy:pv.accuracy,roll:null,blocked:true,damage:0,killed:false}
+  }
 
   const roll = roll100(ctx.rng, 'to-hit', at.uid, ord)
   const hit = roll <= pv.hitChance

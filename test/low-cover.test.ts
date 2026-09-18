@@ -62,7 +62,7 @@ describe('terrain.low-cover',()=>{
  })
  it('all seeded actual hits agree with preview and emits a cover miss attribution',()=>{
   let pings=0,hits=0
-  for(let seed=0;seed<100;seed++){const ctx=setup([hex()],seed);ctx.cfg.switches.critEnabled=false;advanceBattle(ctx);expect(canAttack(ctx,0,1,bow)).toBe(true);const pv=preview(ctx,0,1,bow);const result=performAttack(ctx,0,1,bow);if(result.hit){hits++;expect(result.damage).toBe(result.crit?pv.damageOnCrit:pv.damageOnHit)}else{const ev=ctx.events.find(e=>e.type==='attack.miss')!;if(result.roll<=Math.min(100,pv.accuracy+20)){expect(ev.cover).toBe(true);pings++}}}
+  for(let seed=0;seed<100;seed++){const ctx=setup([hex()],seed);ctx.cfg.switches.critEnabled=false;advanceBattle(ctx);expect(canAttack(ctx,0,1,bow)).toBe(true);const pv=preview(ctx,0,1,bow);const result=performAttack(ctx,0,1,bow);if(result.hit){hits++;expect(result.damage).toBe(result.crit?pv.damageOnCrit:pv.damageOnHit)}else{const ev=ctx.events.find(e=>e.type==='attack.miss')!;if(result.roll===null)throw Error("zero-Block cover fixture unexpectedly blocked");if(result.roll<=Math.min(100,pv.accuracy+20)){expect(ev.cover).toBe(true);pings++}}}
   expect(hits).toBeGreaterThan(0);expect(pings).toBeGreaterThan(0)
  })
  it('rejects illegal crossing-cost roles and preserves high schema',()=>{
@@ -181,7 +181,7 @@ describe('terrain.low-cover',()=>{
   for(let seed=0;seed<150;seed++){
    const ctx=setup([hex()],seed);ctx.state.units[1]!.dodge=35;ctx.state.units[0]!.accuracy=110;advanceBattle(ctx)
    const pv=preview(ctx,0,1,bow),r=performAttack(ctx,0,1,bow)
-   if(!r.hit){const ev=ctx.events.find(e=>e.type==='attack.miss')!;if(r.roll>65){expect(ev.missCause).toBe('dodge');expect(ev.cover).toBe(false);dodged++}else if(r.roll<=pv.accuracy+20){expect(ev.missCause).toBe('cover');covered++}}
+   if(!r.hit){if(r.roll===null)throw Error('zero-Block dodge fixture unexpectedly blocked');const ev=ctx.events.find(e=>e.type==='attack.miss')!;if(r.roll>65){expect(ev.missCause).toBe('dodge');expect(ev.cover).toBe(false);dodged++}else if(r.roll<=pv.accuracy+20){expect(ev.missCause).toBe('cover');covered++}}
   }
   expect(dodged).toBeGreaterThan(0);expect(covered).toBeGreaterThan(0)
   const ctx=setup([],0);ctx.state.units[0]!.accuracy=0;advanceBattle(ctx);performAttack(ctx,0,1,bow)

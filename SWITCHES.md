@@ -724,3 +724,37 @@ does not relax side validation for arbitrary host edits.
 ## V2 bursts — provisional migration policy (2026-09-16)
 
 See V2-BURSTS.md for the frozen source/roster/geometry lifecycle and exact tests. Existing arc wedges and Storm radius one retain IDs, costs, range and scaling, with explicit any-side metadata. Side/tag filters use allegiance. One per-target low-cover budget is allocated in packet order. onBurst eligibility uses positive declared payload after cover, before Frost/defenses; saves floor each packet before the shared Protection/defense tail. Frost applies once per target and honors frostBeforeProtection. Mixed damage/healing settles after the full burst. Taunt applies to unit targeting; Powers Locked covers bursts. Old areaHitsAllies is replaced by each burst's side field; aiBurstThroughAllies remains an AI preference only, never legality. No attack hooks, crit, block or burst KDB are implied.
+# V2 Block implementation choices — 2026-09-18
+
+`rule.block` implements COMBAT-V2-DESIGN §6. Sparse `block` and `rangedBlock`
+default to0; effective values are clamped to0..100 only at the cup. Gear, badges,
+progression and ordinary stat modifiers add through existing stat ownership.
+No shield numbers are chosen here.
+
+The cup is the first random resolution of each legal hit, before unconditional
+`onAttack`. Its result is frozen: onAttack stat/status changes affect later hits,
+not that cup. Successful block then fires defender onBlock, attacker onBlock,
+attacker onMiss, in that order. It does not emit an accuracy-miss event, draw
+accuracy/crit, resolve packets, or spend Protection. Hook effects remain real;
+blocking a weapon does not suppress its unconditional onAttack effects.
+
+Zero/suppressed chance records `block.rolled` with `roll:null` and no RNG draw.
+Every legal incoming hit nevertheless increments a defender-local ordinal.
+Positive chances use the appended block stream with defender UID/ordinal.
+Reciprocal onBlock trigger keys append the appended hook index and role0
+(defender/incoming ordinal) or1 (attacker/attack ordinal). Existing indices stay.
+Stun explicitly carries generic `blocksBlock`; `blocksAction` alone does not.
+Only stun is specified as an exception in §6: downed units provisionally retain
+Block, and blocked hits do not accelerate bleed-out. Prone is a later mechanic.
+
+Preview `hitChance` remains accuracy conditional on passing Block;
+`connectionChanceBps` is `(100-blockChance)*hitChance`, integer basis points
+(10,000=certainty). These are current-state forecasts, not predictions of random
+hooks. AI bestDamage/burstIfUseful still use damageOnHit and are not Block-aware
+optimizers; changing that policy belongs to a separate measured AI stage.
+
+For multihit AttackResult, hit means ANY connected hit; damage is the sum and
+blocked means all resolved hits blocked. `hits` retains exact per-hit results.
+Other legacy scalar fields describe the final hit; that roll can be null even
+when an earlier hit connected. Movement uses aggregate hit for AoO stopping;
+prior-adjacency timing is unchanged. No Block applies to bursts.

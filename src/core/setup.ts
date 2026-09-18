@@ -16,11 +16,14 @@ import { prepareAttackLines } from './los.js'
 import { passableHexes } from './props.js'
 
 export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
+  for (const key of ['block','rangedBlock'] as const) if (def[key] !== undefined && !Number.isSafeInteger(def[key])) throw Error(`unit ${def.typeId}: invalid ${key}`)
   const actions = [...def.attacks, ...def.abilities, ...def.moves]
   return {
     id, uid, name, typeId: def.typeId, side: def.side, rowSide: def.rowSide ?? def.side, hex,
     hp: def.maxHp, maxHp: def.maxHp,
     armor: def.armor, resist: def.resist,
+    ...(def.block !== undefined ? {block: def.block} : {}),
+    ...(def.rangedBlock !== undefined ? {rangedBlock: def.rangedBlock} : {}),
     ...(def.fireResist !== undefined ? {fireResist: def.fireResist} : {}),
     ...(def.poisonResist !== undefined ? {poisonResist: def.poisonResist} : {}),
     ...(def.shadowResist !== undefined ? {shadowResist: def.shadowResist} : {}),

@@ -9,6 +9,7 @@ import { applyStatus } from '../src/core/status.js'
 import { battleCursorCases } from './battle-cursor-cases.js'
 import { projectShorthand } from './props-projection.js'
 import { GLYPH, mapDef } from '../src/content/maps.js'
+import {projectBlock} from './block-projection.js'
 import { projectPacketEvents } from './packet-projection.js'
 
 const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
@@ -30,6 +31,7 @@ const protectionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
 const packetGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-packets.json', import.meta.url), 'utf8'))
 // V2 burst migration: four first differences are replaced attack/power declarations.
 // All 42 prior inputs remain unchanged; full current hashes are frozen separately.
+const blockGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-block.json', import.meta.url), 'utf8'))
 const burstGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bursts.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
@@ -123,6 +125,7 @@ describe('resumable battle cursor', () => {
       // Law 10: universal expenditure adds metadata to every battle. Keep both
       // old files and check their exact hashes after removing ONLY that event
       // and normalizing sequence counters; freeze full current events separately.
+      const blockExpected = blockGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const contactExpected = contactGolden.cases.find((row: {id:string}) => row.id === fixture.id)
       const elementalExpected = elementalGolden.cases.find((row: {id:string}) => row.id === fixture.id)
       const protectionExpected = protectionGolden.cases.find((row: {id:string}) => row.id === fixture.id)
@@ -147,25 +150,34 @@ describe('resumable battle cursor', () => {
         } else result = battle.runBattle(ctx)
         // Historical shorthand projection is only meaningful for a historical
         // row. New direct geometry retains exact automatic/suspended comparison.
-        const projected = eventExpected || prior ? projectShorthand({...ctx,events:projectPacketEvents(ctx.events)}, mapDef(ctx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:ctx.events,state:ctx.state}
+        // V2 Block metadata-only projection refuses any positive cup. All old
+        // golden assertions remain exact, plus current raw hashes are retained.
+        const historicalCtx=blockExpected?{...ctx,...projectBlock(ctx)}:ctx
+        if(blockExpected){
+          expect(hash(ctx.events),'full Block events').toBe(blockExpected.events)
+          expect(hash(ctx.state),'full Block state').toBe(blockExpected.state)
+          expect(hash(ctx.rng.log),'full Block RNG').toBe(blockExpected.rng)
+          expect(result).toEqual(blockExpected.result)
+        }
+        const projected = eventExpected || prior ? projectShorthand({...historicalCtx,events:projectPacketEvents(historicalCtx.events)}, mapDef(historicalCtx.state.mapId).rows.join('').split('').map(g => GLYPH[g]!)) : {events:historicalCtx.events,state:historicalCtx.state}
         if (eventExpected) {
           expect(hash(projected.events), 'prior event contract, exact prop projection').toBe(eventExpected.events)
           expect(hash(projected.state), 'prior state, exact prop projection').toBe(eventExpected.state)
-          expect(hash(ctx.rng.log)).toBe(eventExpected.rng)
+          expect(hash(historicalCtx.rng.log)).toBe(eventExpected.rng)
           expect(result).toEqual(eventExpected.result)
         }
         if (prior) {
           const oldEvents = projected.events.filter(e => e.type !== 'action.spent').map((e, seq) => ({ ...e, seq }))
-          const oldState = { ...projected.state, seq: ctx.state.seq - (ctx.events.length - oldEvents.length) }
+          const oldState = { ...projected.state, seq: historicalCtx.state.seq - (historicalCtx.events.length - oldEvents.length) }
           expect(hash(oldEvents), 'historical events without new metadata').toBe(prior.events)
           expect(hash(oldState), 'historical state without new sequence count').toBe(prior.state)
-          expect(hash(ctx.rng.log), 'historical RNG').toBe(prior.rng)
+          expect(hash(historicalCtx.rng.log), 'historical RNG').toBe(prior.rng)
           expect(result, 'historical result').toEqual(prior.result)
         }
-        expected ??= { events: hash(ctx.events), state: hash(ctx.state), rng: hash(ctx.rng.log), result }
-        expect(hash(ctx.events), 'events').toBe(expected.events)
-        expect(hash(ctx.state), 'state').toBe(expected.state)
-        expect(hash(ctx.rng.log), 'RNG draws').toBe(expected.rng)
+        expected ??= { events: hash(historicalCtx.events), state: hash(historicalCtx.state), rng: hash(historicalCtx.rng.log), result }
+        expect(hash(historicalCtx.events), 'events').toBe(expected.events)
+        expect(hash(historicalCtx.state), 'state').toBe(expected.state)
+        expect(hash(historicalCtx.rng.log), 'RNG draws').toBe(expected.rng)
         expect(result).toEqual(expected.result)
         expect(ctx.events.at(-1)!.type).toBe('battle.end')
       }
@@ -175,7 +187,7 @@ describe('resumable battle cursor', () => {
     const historicalIds = golden.cases.map((row: { id: string }) => row.id)
     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden]) {
+    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden]) {
       const ids = corpus.cases.map((row: { id: string }) => row.id)
       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
     }

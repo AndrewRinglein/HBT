@@ -21,7 +21,7 @@ export function validateActionMetadata(row: { readonly id: string; readonly slot
   if (row.free !== undefined && typeof row.free !== 'boolean') throw new Error(`unit pack: invalid free action flag on '${row.id}'`)
 }
 export function validateNamedResists(stats: Readonly<Record<string, unknown>>, where: string): void {
-  for (const key of ['fireResist', 'poisonResist', 'shadowResist']) {
+  for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock']) {
     if (stats[key] !== undefined && !Number.isSafeInteger(stats[key])) throw new Error(`${where}: ${key} must be an integer`)
   }
 }
@@ -73,7 +73,7 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
       && !r.typeId.startsWith('alpha-')) {
       throw new Error(`unit pack: '${r.typeId}' is not test- / unit.* / hero.* / alpha- — the pack must stay clearly differentiated (Angela 2026-08-20)`)
     }
-    for(const key of ['fireResist','poisonResist','shadowResist'] as const)if(r[key]!==undefined&&!Number.isSafeInteger(r[key]))throw Error(`unit pack: invalid ${key} on '${r.typeId}'`)
+    for(const key of ['fireResist','poisonResist','shadowResist','block','rangedBlock'] as const)if(r[key]!==undefined&&!Number.isSafeInteger(r[key]))throw Error(`unit pack: invalid ${key} on '${r.typeId}'`)
     for (const t of r.triggers ?? []) validateTrigger(t)
     for (const m of r.moves) {
       if (!/^power\./.test(m)) {
@@ -87,7 +87,7 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
   for (const [k, u] of Object.entries(out)) {
     for (const a of u.auras ?? []) {
       if (!a.id.startsWith('aura.') || !Number.isInteger(a.radius) || a.radius < 0) throw new Error(`unit pack: '${k}' aura '${a.id}' is malformed`)
-      for (const st of Object.keys(a.mods)) if (!['strength', 'precision', 'magic', 'spirit', 'accuracy', 'dodge', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'movement', 'reach', 'crit', 'luck', 'maxHp', 'maxStamina', 'staminaRegen', 'toughness', 'surge'].includes(st)) throw new Error(`unit pack: '${k}' aura '${a.id}' lends '${st}', not a stat`)
+      for (const st of Object.keys(a.mods)) if (!['strength', 'precision', 'magic', 'spirit', 'accuracy', 'dodge', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'movement', 'reach', 'crit', 'luck', 'maxHp', 'maxStamina', 'staminaRegen', 'toughness', 'surge'].includes(st)) throw new Error(`unit pack: '${k}' aura '${a.id}' lends '${st}', not a stat`)
     }
   }
   return out
@@ -147,7 +147,7 @@ export function packCritChart(): readonly CritRow[] {
  */
 type PackStatusRow = Omit<StatusDef, 'onPhaseEnd'> & { readonly tick?: 'damage' | 'heal'; readonly family?: string }
 const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage', 'reducesOutgoingDamage',
-  'blocksAction', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'tick', 'family',
+  'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'tick', 'family',
   // capability.frost / root / taunt, 2026-09-03
   'addsIncomingPhysical', 'blocksMovement', 'forcesTarget', 'cancels',
   // capability.karma / shadow / confusion, 2026-09-03
@@ -166,6 +166,7 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
     for (const f of Object.keys(r)) {
       if (!['id', 'name', 'shape', 'stacking', ...STATUS_FLAGS].includes(f)) throw new Error(`${where}: status '${k}' carries unknown field '${f}' — the loader does not know it, so the engine would ignore it silently`)
     }
+    if (r.blocksBlock !== undefined && typeof r.blocksBlock !== 'boolean') throw Error(`${where}: invalid blocksBlock on '${k}'`)
     if (r.tickDamageType!==undefined&&!isDamageType(r.tickDamageType))throw Error(`${where}: invalid tick damage type on '${k}'`)
     if (r.tick === 'damage' && r.tickDamageType === undefined) throw new Error(`${where}: status '${k}' ticks damage with no type`)
     const { tick, ...def } = r
@@ -304,7 +305,7 @@ export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
 export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as { items?: Readonly<Record<string, ItemDef>> }).items ?? {}
   const CLASSES = ['weapon', 'armor', 'trinket', 'relic', 'idol', 'bloodrune', 'consumable']
-  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
+  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id) throw new Error(`item pack: key '${k}' names id '${it.id}'`)
     if (!k.startsWith('item.')) throw new Error(`item pack: '${k}' is not an item.* id`)
@@ -397,7 +398,7 @@ export function packLevels(): Readonly<Record<string, LevelTable>> {
  * the engine folds, every flag a known one, every trigger well-formed with the
  * badge as its source.
  */
-const BADGE_STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
+const BADGE_STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
 const BADGE_FLAGS = ['bleedsOut', 'wounded', 'blocksDeployment']
 function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, family: (k: string) => boolean): Readonly<Record<string, BadgeDef>> {
   for (const [k, b] of Object.entries(raw)) {
@@ -423,7 +424,7 @@ export function packTestBadges(): Readonly<Record<string, BadgeDef>> {
 /** The enchanted tier-3 rows — ITEMS-PLAN.md §6: generated, base + enchant, never hand-edited. Validated like items. */
 export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as unknown as { enchanted?: Readonly<Record<string, ItemDef & { base: string; enchant: string }>> }).enchanted ?? {}
-  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
+  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id || !k.startsWith('item.')) throw new Error(`enchanted: bad key '${k}'`)
     if (typeof it.base !== 'string' || typeof it.enchant !== 'string') throw new Error(`enchanted: '${k}' does not name its base and enchant`)

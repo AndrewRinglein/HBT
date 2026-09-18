@@ -7724,7 +7724,8 @@ export const UNIT_PACK = {
       "family": "duration",
       "stacking": "add",
       "decayPerPhase": 1,
-      "blocksAction": true
+      "blocksAction": true,
+      "blocksBlock": true
     }
   },
   "moves": {
@@ -14577,6 +14578,207 @@ export const UNIT_PACK = {
         "side": "enemy",
         "fireResist": 1,
         "shadowResist": 2
+      },
+      {
+        "typeId": "test-block-a",
+        "name": "Block A (TEST)",
+        "side": "hero",
+        "maxHp": 80,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 100,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 5,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.massive",
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
+        "moves": [
+          "power.move",
+          "power.leap"
+        ],
+        "triggers": [
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-block-a"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-block-a"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-block-a"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-block-a"
+          },
+          {
+            "id": "test.block-a.reaction",
+            "hook": "onBlock",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "statMod",
+              "stat": "block",
+              "value": -20,
+              "until": "battle"
+            },
+            "source": "unit.test-block-a"
+          }
+        ],
+        "block": 75,
+        "rangedBlock": 25,
+        "luck": 100
+      },
+      {
+        "typeId": "test-block-b",
+        "name": "Block B (TEST)",
+        "side": "enemy",
+        "maxHp": 80,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 100,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 5,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.massive",
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
+        "moves": [
+          "power.move",
+          "power.leap"
+        ],
+        "triggers": [
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-block-b"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-block-b"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-block-b"
+          },
+          {
+            "id": "test.oathblade.apply-bleed",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.bleed",
+              "value": 2
+            },
+            "source": "unit.test-block-b"
+          },
+          {
+            "id": "test.block-b.reaction",
+            "hook": "onBlock",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 2
+            },
+            "source": "unit.test-block-b"
+          }
+        ],
+        "block": 30,
+        "rangedBlock": 90,
+        "luck": 100
       }
     ],
     "attacks": {
@@ -14915,6 +15117,15 @@ export const UNIT_PACK = {
         "family": "duration",
         "decayPerPhase": 1,
         "blocksAction": true,
+        "stacking": "add"
+      },
+      "test.status.guard-open": {
+        "id": "test.status.guard-open",
+        "name": "Guard open (TEST)",
+        "shape": "counter",
+        "family": "duration",
+        "decayPerPhase": 1,
+        "blocksBlock": true,
         "stacking": "add"
       }
     },

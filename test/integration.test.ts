@@ -113,6 +113,9 @@ describe('gate 1 — everything appears in the log', () => {
     }
   })
 
+  // 2026-09-18: this 200-battle coverage test passed alone in 3.21s but exceeded
+  // Vitest's 5s default in the committed full suite. Keep every seed/assertion;
+  // give this workload a bounded 15s budget rather than a global timeout change.
   it('every attack a fielded unit carries is actually used somewhere', () => {
     // LAW 10 — 2026-09-02 (content.alpha-flip): the old text named four
     // test-lane attacks and called that "every attack in the content
@@ -170,7 +173,7 @@ describe('gate 1 — everything appears in the log', () => {
       const [t, id] = key.split(':') as [string, string]
       expect(usedBy.get(t) ?? new Set(), `${key} is structurally dead under declared-order choice`).not.toContain(id)
     }
-  })
+  }, 15_000)
 })
 
 describe('gate 2 — invariants across many battles', () => {

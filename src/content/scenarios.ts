@@ -46,6 +46,14 @@ for (const [id, mapId] of [
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   ...DIRECT_MAP_SCENARIOS,
+  'test.block-a': {
+    id:'test.block-a',note:'TEST Block75/RangedBlock25 with reciprocal stripping; no campaign balance claim.',
+    mapId:'map.open',heroes:['test-block-a'],heroHexes:[85],enemies:['test-block-b'],enemyHexes:[86],replicate:0,
+  },
+  'test.block-b': {
+    id:'test.block-b',note:'TEST Block30/RangedBlock90 with reactive Protection against a ranged attacker.',
+    mapId:'map.open',heroes:['test-ranger'],heroHexes:[85],enemies:['test-block-b'],enemyHexes:[88],replicate:1,
+  },
   'test.props-viewer-ranged-zoc': {
     id: 'test.props-viewer-ranged-zoc', note: 'Current production replay coverage: a ranged-only Fire Imp cannot make a melee reaction when Lucius walks away. Both units have existing viewer art.',
     mapId: 'map.open', heroes: ['alpha-lucius'], heroHexes: [85],

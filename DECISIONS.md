@@ -2505,3 +2505,14 @@ not an additional user ruling.
 Andrew: “Okay, let's do everything else in very small stages, testing each stage to make sure it's effective. Let's make sure we do a build loop here where we're going to build a stage. We're going to test it very thoroughly. We're going to compare it against what we think it's supposed to be there, against the roadmap, against V1. If it doesn't seem accurate, we're going to rebuild it, and you're going to continue through everything remaining. You're not going to stop to ask questions, but you can ask me questions now.”
 
 Implementation interpretation: continue the authorized migration through bounded build/test/repair loops without routine questions. Compare against roadmap and historical behavior; explicit V2 rulings supersede retired V1 mechanics. No blocking unanswered question remains at this checkpoint.
+
+
+## 2026-09-18 — V2 Block implementation
+
+Authorized item rule.block implements COMBAT-V2-DESIGN section6 with independent
+Block/Ranged Block stats, the first incoming-hit cup, reciprocal onBlock hooks,
+preview and persistent incoming ordinals. Explicit blocksBlock lets authored
+Stun suppress defense without conflating every activation lock with Stun.
+Snapshot rules advance to .21. Timing/default/downed/AI choices are provisional
+in SWITCHES; this is implementation, not a new user ruling. Shield/class content
+and presentation adoption remain separate. V2-BLOCK.md owns verification.

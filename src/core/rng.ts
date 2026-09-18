@@ -25,6 +25,7 @@ export const STREAMS = [
   'trigger',
   'ai-tiebreak',
   'activation-order',
+  'block', // append only: historical stream indices stay fixed
 ] as const
 
 export type Stream = (typeof STREAMS)[number]

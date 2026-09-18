@@ -458,3 +458,11 @@ export function beginBurst(ctx: Ctx, actor: number, causeId: string, facts: Reco
   emit(ctx, 'burst.declared', causeId, { ...facts, actor, ordinal: u.burstOrdinal })
   return u.burstOrdinal
 }
+
+/** One defender-local incoming hit ordinal; no accuracy or trigger stream reuse. */
+export function recordBlock(ctx: Ctx, defender: number, causeId: string, facts: Record<string, unknown>): number {
+  const u = unit(ctx, defender)
+  u.incomingAttackOrdinal = (u.incomingAttackOrdinal ?? 0) + 1
+  emit(ctx, 'block.rolled', causeId, { ...facts, defender, ordinal: u.incomingAttackOrdinal })
+  return u.incomingAttackOrdinal
+}

@@ -49,6 +49,8 @@ export type StatusDef = {
   readonly reducesOutgoingDamage?: boolean
   /** Read by the turn loop: the unit cannot move or act. */
   readonly blocksAction?: boolean
+  /** Removes Block/Ranged Block while positive; independent from activation locking. */
+  readonly blocksBlock?: boolean
   /**
    * Read ONCE at beginActivation: this Activation's movement points are the
    * unit's Movement minus the summed value of every such status (floor 0 — the

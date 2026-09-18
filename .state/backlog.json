@@ -3594,5 +3594,28 @@
   "status": "done-needs-review",
   "sha": "ff27af9",
   "gauntlet": "not passed — 2 exemption(s) taken"
+ },
+ {
+  "id": "rule.block",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "rule.bursts"
+  ],
+  "spec": "V2 section6: independent Block/Ranged Block stats, first incoming-hit dice cup, defender onBlock then attacker onBlock then attacker onMiss. Unconditional onAttack is retained after the first cup. Each multihit/reaction is independent; bursts never block.",
+  "expect": "Two authored TEST variants, precise hook/RNG identities, frozen pre-hook block result, stun through generic blocksBlock, strict data/snapshot transport, pure conditional-accuracy and unconditional-connection preview, command atomicity and connected multi-hit AoO stopping. No shield balance migration.",
+  "probeIds": [
+   "test.block-a.reaction",
+   "test.block-b.reaction"
+  ],
+  "variants": [
+   "test.block-a.reaction",
+   "test.block-b.reaction"
+  ],
+  "changesBaseline": true,
+  "note": "Every legal incoming hit gains block.rolled metadata and a persistent defender ordinal even at chance0; zero/suppressed checks do not draw. Compare old controls after exact metadata projection and quantify any multihit aggregation repair. Existing authored Stun gains explicit blocksBlock via content compiler; shield/class content remains later.",
+  "status": "done-needs-review",
+  "sha": "a422239",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

@@ -23,7 +23,7 @@ export type Applied = {
   readonly worn: readonly { readonly itemId: string; readonly grants: readonly string[]; readonly abilities: readonly string[]; readonly mods: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }[]
 }
 
-export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
+export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 
 export function applyItems(
   base: UnitDef,
@@ -59,6 +59,7 @@ export function applyItems(
     const mods: Record<string, number> = {}
     for (const [k, v] of Object.entries(it.statModifiers)) {
       if (typeof v !== 'number' || !(FOLDABLE as readonly string[]).includes(k)) throw new Error(`${where}: item '${id}' modifies '${k}', which the engine cannot fold`)
+      if ((k === 'block' || k === 'rangedBlock') && !Number.isSafeInteger(v)) throw Error(`${where}: item '${id}' has invalid ${k}`)
       stats[k] = (stats[k] ?? 0) + v
       mods[k] = v
     }
@@ -75,6 +76,8 @@ export function applyItems(
   const def: UnitDef = {
     ...base,
     maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
+    ...(base.block !== undefined || stats['block'] ? {block: stats['block']!} : {}),
+    ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
     ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
     ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
     ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,
@@ -160,6 +163,8 @@ export function applyProgress(
   return {
     ...base,
     maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
+    ...(base.block !== undefined || stats['block'] ? {block: stats['block']!} : {}),
+    ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
     ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
     ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
     ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,
@@ -217,6 +222,8 @@ export function applyBadges(
   const def: UnitDef = {
     ...base,
     maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
+    ...(base.block !== undefined || stats['block'] ? {block: stats['block']!} : {}),
+    ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
     ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
     ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
     ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,

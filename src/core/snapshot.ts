@@ -14,7 +14,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.20' // Hex-targeted bursts, defender save hooks and per-caster burst ordinals.
+const RULES_VERSION = 'v2-migration.21' // Independent incoming block cups and reciprocal hook roles.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'selecting', 'activation-start', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -108,9 +108,10 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     record(u)
     requireThat(u.id === i && isUnitUid(u.uid) && !uids.has(u.uid), 'unit identity'); uids.add(u.uid)
     requireThat(integer(u.hex, 0, cells - 1), 'unit hex')
+    if (u.incomingAttackOrdinal !== undefined) requireThat(integer(u.incomingAttackOrdinal, 1, 0xffffffff), 'incoming attack ordinal')
     if (u.burstOrdinal !== undefined) requireThat(integer(u.burstOrdinal, 1), 'burst ordinal')
     for (const k of ['hp', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'movement', 'reach', 'stamina', 'maxStamina', 'staminaRegen', 'bleedOut', 'toughness', 'surge', 'surgeChance', 'vision', 'movePointsLeft', 'activationOrdinal', 'attackOrdinal', 'deathbedOrdinal']) requireThat(integer(u[k]), `unit ${k}`)
-    for (const key of ['fireResist', 'poisonResist', 'shadowResist']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)
+    for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)
     requireThat(phases.includes(u.side) && phases.includes(u.rowSide) && ['standing', 'downed', 'dead'].includes(u.lifeState), 'unit side/life')
     requireThat(['melee', 'ranged', 'support'].includes(u.role), 'unit role')
     for (const k of ['name', 'typeId', 'ai']) requireThat(typeof u[k] === 'string', `unit ${k}`)
@@ -245,6 +246,9 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     if (c.at === 'complete') requireThat(st.outcome !== null, 'completed outcome')
   } else requireThat(!s.events.some((e: any) => e.type === 'battle.begin'), 'missing active cursor')
   for (const u of st.units) {
+    const incoming = s.events.filter((e: any) => e.type === 'block.rolled' && e.defender === u.id)
+    requireThat((u.incomingAttackOrdinal ?? 0) === incoming.length, 'incoming attack ordinal history')
+    requireThat(incoming.every((e: any, i: number) => e.ordinal === i + 1), 'block event ordinal history')
     const declarations = s.events.filter((e: any) => e.type === 'burst.declared' && e.actor === u.id)
     requireThat((u.burstOrdinal ?? 0) === declarations.length, 'burst ordinal history')
     requireThat(declarations.every((e: any, i: number) => e.ordinal === i + 1), 'burst event ordinal history')

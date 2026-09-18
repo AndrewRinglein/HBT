@@ -492,6 +492,8 @@ export type UnitDef = {
   readonly maxHp: number
   readonly armor: number
   readonly resist: number
+  readonly block?: number
+  readonly rangedBlock?: number
   readonly fireResist?: number
   readonly poisonResist?: number
   readonly shadowResist?: number
@@ -616,6 +618,8 @@ export type Unit = {
   maxHp: number
   armor: number
   resist: number
+  block?: number
+  rangedBlock?: number
   fireResist?: number
   poisonResist?: number
   shadowResist?: number
@@ -679,6 +683,7 @@ export type Unit = {
   movePointsLeft: number
   // Per-unit ordinals. These are what keep RNG keys structural and unique.
   activationOrdinal: number
+  incomingAttackOrdinal?: number
   burstOrdinal?: number
   attackOrdinal: number
   deathbedOrdinal: number

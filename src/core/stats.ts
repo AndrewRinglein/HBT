@@ -19,7 +19,7 @@ import { accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusO
 
 export type StatName =
   | 'strength' | 'precision' | 'magic' | 'spirit'
-  | 'accuracy' | 'dodge'
+  | 'accuracy' | 'dodge' | 'block' | 'rangedBlock'
   | 'armor' | 'resist' | 'fireResist' | 'poisonResist' | 'shadowResist'
   | 'movement' | 'reach'
   | 'maxHp' | 'maxStamina' | 'staminaRegen'
@@ -63,6 +63,8 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   spirit: (u) => u.spirit,
   accuracy: (u) => u.accuracy,
   dodge: (u) => u.dodge,
+  block: (u) => u.block ?? 0,
+  rangedBlock: (u) => u.rangedBlock ?? 0,
   armor: (u) => u.armor,
   resist: (u) => u.resist,
   fireResist: (u) => u.fireResist ?? 0,
