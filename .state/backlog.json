@@ -952,5 +952,19 @@
   "sha": "5695c17",
   "engineSha": "22c8c79",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "v2.sandbox-board-targeting",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "needs": [
+   "v2.sandbox-burst-centres"
+  ],
+  "spec": "Select burst centres on the shared battlefield from engine facts, without executing until Execute; fence stale UI and session callbacks while preserving dropdown and inspection.",
+  "expect": "ISC069 exact detached targeting facts; built real empty/occupied hex callbacks, stale node/session rejection, busy/fault locks and shared display heights; full suite/P and retained built flows.",
+  "isc": [
+   "069"
+  ]
  }
 ]

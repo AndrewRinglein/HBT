@@ -237,3 +237,15 @@ describe('ISC-069 — engine burst centres and selected forecast',()=>{
   expect(damage['amount']).toBe(p.targets[0]!.applied);expect(damage['packets']).toEqual(p.targets[0]!.packets);expect(exportSandbox(s).events).toEqual(s.ctx.events)
  })
 })
+
+
+import {sandboxTargetingOf} from '../src/ui/sandbox-targeting.js'
+it('ISC-069 projects only exact engine centre/footprint/shield facts into detached host targeting data',()=>{
+ const s=createSandbox(burstConfig);acting(s);const choices=sandboxChoices(s).filter(c=>c.command.actionId===cleave&&c.command.slot==='primary'),command=burstChoice(s,81).command
+ const before=saveSandbox(s),p=sandboxDoor.previewSandboxChoice(s,command),facts=sandboxTargetingOf(choices,p)
+ expect(facts).toEqual({legalHexes:choices.map(c=>'centre' in c.command?c.command.centre:-1),centre:p.centre,hexes:p.hexes,shielded:p.targets.filter(t=>t.shielded.length).map(t=>({hex:t.hex,props:t.shielded}))})
+ expect(saveSandbox(s)).toBe(before)
+ // Detached facts must not rewrite the preview or choices when the host/renderer consumes them.
+ const original=JSON.stringify({choices,p});if(!facts)throw Error('missing targeting facts')
+ facts.hexes.push(0);facts.legalHexes.push(0);expect(JSON.stringify({choices,p})).toBe(original)
+})

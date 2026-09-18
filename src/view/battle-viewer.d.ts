@@ -2,6 +2,7 @@
 // here; engine facts stay typed by Kingdom's own engine door.
 declare module '*viewer/src/viewer.js' {
   export function mountBattleViewer(root: HTMLElement, data: unknown, opts?: Record<string, unknown>): {
+    setTargeting(facts:{legalHexes:readonly number[];centre:number|null;hexes:readonly number[];shielded:readonly {hex:number;props:readonly string[]}[]}|null):void
     push(events: readonly unknown[]): void
     seek(cursor: number): void
     play(): void

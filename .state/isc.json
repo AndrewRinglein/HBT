@@ -1042,11 +1042,11 @@
  },
  "069": {
   "red": {
-   "at": "2026-09-18 15:58",
-   "sha": "a6874fb",
-   "hash": "b3f5033dcad6",
+   "at": "2026-09-18 16:05",
+   "sha": "31dc33a",
+   "hash": "daa5d726c65f",
    "how": "feature absent",
-   "tail": "    187| } |     188| function walkToBurst(s:ReturnType<typeof createSandbox>){ |  ❯ test/isc-069.test.ts:232:61"
+   "tail": "+ Received: | null |  ❯ test/isc-069.test.ts:246:16"
   },
   "closed": {
    "at": "2026-09-18 16:01",

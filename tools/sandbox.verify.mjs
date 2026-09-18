@@ -63,8 +63,8 @@ assert.equal(button('execute').disabled,false)
 }
 const before=events(),oldButton=button('execute');click('execute')
 assert.notEqual(events(),before);assert.equal(handle.busy,true);assert.ok(button('end').disabled)
-const once=events();oldButton.handlers.click();assert.equal(events(),once,'double click while animations run emits no commands')
-assert.match(root.textContent,/Wait for the current actions/)
+const once=events(),lockedPanel=w.document.getElementById('commands').innerHTML;oldButton.handlers.click();assert.equal(events(),once,'detached double click while animations run emits no commands')
+assert.equal(w.document.getElementById('commands').innerHTML,lockedPanel,'detached controls do not change errors or command UI')
 click('skip');assert.equal(handle.busy,false)
 // A natural drain, not just Skip, must unlock inputs after the viewer catches up.
 click('end');for(let n=0;n<200&&handle.busy;n++)w._flush(1000)
