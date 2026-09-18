@@ -32,16 +32,29 @@
   "card-lieutenant-demon.jpg",
   "card-lucius.jpg",
   "card-lumberjack.jpg",
+  "card-mage-fireaura.jpg",
+  "card-mage-sexy.jpg",
+  "card-mage-thinking.jpg",
   "card-magefire.jpg",
   "card-necro.jpg",
   "card-nightstalker.jpg",
   "card-oathblade.jpg",
   "card-orphan.jpg",
   "card-osric.jpg",
+  "card-paladin-dark.jpg",
+  "card-paladin-smug.jpg",
   "card-palhunk.jpg",
   "card-poison-imp.jpg",
   "card-powerful-imp.jpg",
+  "card-priest-pauper.jpg",
+  "card-priest-robes.jpg",
   "card-priestarm.jpg",
+  "card-ranger-nature.jpg",
+  "card-ranger-ranger.jpg",
+  "card-ranger-scantily.jpg",
+  "card-rogue-rose.jpg",
+  "card-rogue-skull.jpg",
+  "card-rogue-snake.jpg",
   "card-rogueraven.jpg",
   "card-shadowsorc.jpg",
   "card-skelarcher.jpg",
@@ -50,6 +63,9 @@
   "card-skypirate.jpg",
   "card-spiritsnake.jpg",
   "card-strongskel.jpg",
+  "card-warrior-barbarian.jpg",
+  "card-warrior-brawler.jpg",
+  "card-warrior-fearsome.jpg",
   "card-warriron.jpg",
   "card-werewolf.jpg",
   "card-wolf.jpg",
@@ -77,12 +93,17 @@
   "lucius_256.png",
   "lumberjack_256.png",
   "mage-fire_256.png",
+  "mage-fireaura_256.png",
+  "mage-sexy_256.png",
+  "mage-thinking_256.png",
   "necromancer_256.png",
   "nightstalker_256.png",
   "oathblade_256.png",
   "orphan-child_256.png",
   "osric_256.png",
+  "paladin-dark_256.png",
   "paladin-hunk_256.png",
+  "paladin-smug_256.png",
   "parchment.jpg",
   "ph-art-pending.png",
   "ph-blacksmith.png",
@@ -99,8 +120,16 @@
   "poison-imp_256.png",
   "powerful-imp_256.png",
   "priest-armored_256.png",
+  "priest-pauper_256.png",
+  "priest-robes_256.png",
   "ranger-aggressive_256.png",
+  "ranger-nature_256.png",
+  "ranger-ranger_256.png",
+  "ranger-scantily_256.png",
   "rogue-raven_256.png",
+  "rogue-rose_256.png",
+  "rogue-skull_256.png",
+  "rogue-snake_256.png",
   "shadow-sorcerer_256.png",
   "skeletal-archer_256.png",
   "skeleton-spider_256.png",
@@ -108,6 +137,9 @@
   "sky-pirate_256.png",
   "stone-golem_256.png",
   "strong-skeleton_256.png",
+  "warrior-barbarian_256.png",
+  "warrior-brawler_256.png",
+  "warrior-fearsome_256.png",
   "warrior-iron_256.png",
   "werewolf_256.png",
   "wolf_256.png",
@@ -516,6 +548,114 @@
    "card": "card-oathblade.jpg",
    "aspect": 0.7188,
    "height": 1.55
+  },
+  "hero.base.mage-fireaura": {
+   "token": "mage-fireaura_256.png",
+   "card": "card-mage-fireaura.jpg",
+   "aspect": 0.5078,
+   "height": 1.55
+  },
+  "hero.base.mage-sexy": {
+   "token": "mage-sexy_256.png",
+   "card": "card-mage-sexy.jpg",
+   "aspect": 0.5,
+   "height": 1.55
+  },
+  "hero.base.mage-thinking": {
+   "token": "mage-thinking_256.png",
+   "card": "card-mage-thinking.jpg",
+   "aspect": 0.4727,
+   "height": 1.55
+  },
+  "hero.base.paladin-dark": {
+   "token": "paladin-dark_256.png",
+   "card": "card-paladin-dark.jpg",
+   "aspect": 0.5508,
+   "height": 1.55
+  },
+  "hero.base.paladin-shiney": {
+   "token": "osric_256.png",
+   "card": "card-osric.jpg",
+   "aspect": 0.5,
+   "height": 1.55
+  },
+  "hero.base.paladin-smug": {
+   "token": "paladin-smug_256.png",
+   "card": "card-paladin-smug.jpg",
+   "aspect": 0.4648,
+   "height": 1.55
+  },
+  "hero.base.priest-pauper": {
+   "token": "priest-pauper_256.png",
+   "card": "card-priest-pauper.jpg",
+   "aspect": 0.332,
+   "height": 1.55
+  },
+  "hero.base.priest-robes": {
+   "token": "priest-robes_256.png",
+   "card": "card-priest-robes.jpg",
+   "aspect": 0.4727,
+   "height": 1.55
+  },
+  "hero.base.priest-scantily": {
+   "token": "lucius_256.png",
+   "card": "card-lucius.jpg",
+   "aspect": 0.3008,
+   "height": 1.55
+  },
+  "hero.base.ranger-nature": {
+   "token": "ranger-nature_256.png",
+   "card": "card-ranger-nature.jpg",
+   "aspect": 0.5,
+   "height": 1.55
+  },
+  "hero.base.ranger-ranger": {
+   "token": "ranger-ranger_256.png",
+   "card": "card-ranger-ranger.jpg",
+   "aspect": 0.582,
+   "height": 1.55
+  },
+  "hero.base.ranger-scantily": {
+   "token": "ranger-scantily_256.png",
+   "card": "card-ranger-scantily.jpg",
+   "aspect": 0.543,
+   "height": 1.55
+  },
+  "hero.base.rogue-rose": {
+   "token": "rogue-rose_256.png",
+   "card": "card-rogue-rose.jpg",
+   "aspect": 0.457,
+   "height": 1.55
+  },
+  "hero.base.rogue-skull": {
+   "token": "rogue-skull_256.png",
+   "card": "card-rogue-skull.jpg",
+   "aspect": 0.5,
+   "height": 1.55
+  },
+  "hero.base.rogue-snake": {
+   "token": "rogue-snake_256.png",
+   "card": "card-rogue-snake.jpg",
+   "aspect": 0.457,
+   "height": 1.55
+  },
+  "hero.base.warrior-barbarian": {
+   "token": "warrior-barbarian_256.png",
+   "card": "card-warrior-barbarian.jpg",
+   "aspect": 0.7812,
+   "height": 0.95
+  },
+  "hero.base.warrior-brawler": {
+   "token": "warrior-brawler_256.png",
+   "card": "card-warrior-brawler.jpg",
+   "aspect": 0.6914,
+   "height": 0.95
+  },
+  "hero.base.warrior-fearsome": {
+   "token": "warrior-fearsome_256.png",
+   "card": "card-warrior-fearsome.jpg",
+   "aspect": 0.6055,
+   "height": 0.95
   }
  }
 }

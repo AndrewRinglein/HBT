@@ -37,6 +37,25 @@ def P(p):
     return p.replace('HELL:', HELL + '/') if p.startswith('HELL:') else p
 
 ARTMAP = {
+ # Complete Eve base roster; existing bodies/cards, warrior stature per VISUAL-BATTLE-UPDATES section 3.3.
+ 'hero.base.mage-fireaura':{'token': 'mage-fireaura_256.png', 'card': 'card-mage-fireaura', 'src': 'battle-tokens/units/mage-fireaura_256.png', 'cardsrc': 'crucible/art/base/mage-fireaura1.png'},
+ 'hero.base.mage-sexy':{'token': 'mage-sexy_256.png', 'card': 'card-mage-sexy', 'src': 'battle-tokens/units/mage-sexy_256.png', 'cardsrc': 'crucible/art/base/mage-sexy1.png'},
+ 'hero.base.mage-thinking':{'token': 'mage-thinking_256.png', 'card': 'card-mage-thinking', 'src': 'battle-tokens/units/mage-thinking_256.png', 'cardsrc': 'crucible/art/base/mage-thinking1.png'},
+ 'hero.base.paladin-dark':{'token': 'paladin-dark_256.png', 'card': 'card-paladin-dark', 'src': 'battle-tokens/units/paladin-dark_256.png', 'cardsrc': 'crucible/art/base/paladin-dark1.png'},
+ 'hero.base.paladin-shiney':{'token': 'osric_256.png', 'card': 'card-osric', 'src': 'battle-tokens/units/osric_256.png', 'cardsrc': 'crucible/art/base/paladin-shiney1.png'},
+ 'hero.base.paladin-smug':{'token': 'paladin-smug_256.png', 'card': 'card-paladin-smug', 'src': 'battle-tokens/units/paladin-smug_256.png', 'cardsrc': 'crucible/art/base/paladin-smug1.png'},
+ 'hero.base.priest-pauper':{'token': 'priest-pauper_256.png', 'card': 'card-priest-pauper', 'src': 'battle-tokens/units/priest-pauper_256.png', 'cardsrc': 'crucible/art/base/priest-pauper1.png'},
+ 'hero.base.priest-robes':{'token': 'priest-robes_256.png', 'card': 'card-priest-robes', 'src': 'battle-tokens/units/priest-robes_256.png', 'cardsrc': 'crucible/art/base/priest-robes1.png'},
+ 'hero.base.priest-scantily':{'token': 'lucius_256.png', 'card': 'card-lucius', 'src': 'battle-tokens/units/lucius_256.png', 'cardsrc': 'crucible/art/base/priest-scantily1.png'},
+ 'hero.base.ranger-nature':{'token': 'ranger-nature_256.png', 'card': 'card-ranger-nature', 'src': 'battle-tokens/units/ranger-nature_256.png', 'cardsrc': 'crucible/art/base/ranger-nature1.png'},
+ 'hero.base.ranger-ranger':{'token': 'ranger-ranger_256.png', 'card': 'card-ranger-ranger', 'src': 'battle-tokens/units/ranger-ranger_256.png', 'cardsrc': 'crucible/art/base/ranger-ranger1.png'},
+ 'hero.base.ranger-scantily':{'token': 'ranger-scantily_256.png', 'card': 'card-ranger-scantily', 'src': 'battle-tokens/units/ranger-scantily_256.png', 'cardsrc': 'crucible/art/base/ranger-scantily1.png'},
+ 'hero.base.rogue-rose':{'token': 'rogue-rose_256.png', 'card': 'card-rogue-rose', 'src': 'battle-tokens/units/rogue-rose_256.png', 'cardsrc': 'crucible/art/base/rogue-rose1.png'},
+ 'hero.base.rogue-skull':{'token': 'rogue-skull_256.png', 'card': 'card-rogue-skull', 'src': 'battle-tokens/units/rogue-skull_256.png', 'cardsrc': 'crucible/art/base/rogue-skull1.png'},
+ 'hero.base.rogue-snake':{'token': 'rogue-snake_256.png', 'card': 'card-rogue-snake', 'src': 'battle-tokens/units/rogue-snake_256.png', 'cardsrc': 'crucible/art/base/rogue-snake1.png'},
+ 'hero.base.warrior-barbarian':{'token': 'warrior-barbarian_256.png', 'card': 'card-warrior-barbarian', 'src': 'battle-tokens/units/warrior-barbarian_256.png', 'cardsrc': 'crucible/art/base/warrior-barbarian1.png', 'height': 0.95},
+ 'hero.base.warrior-brawler':{'token': 'warrior-brawler_256.png', 'card': 'card-warrior-brawler', 'src': 'battle-tokens/units/warrior-brawler_256.png', 'cardsrc': 'crucible/art/base/warrior-brawler1.png', 'height': 0.95},
+ 'hero.base.warrior-fearsome':{'token': 'warrior-fearsome_256.png', 'card': 'card-warrior-fearsome', 'src': 'battle-tokens/units/warrior-fearsome_256.png', 'cardsrc': 'crucible/art/base/warrior-fearsome1.png', 'height': 0.95},
  # Packet fixtures are mechanical deltas of test-oathblade; their authored body is unchanged.
  'test-packet-flame': {'token':'oathblade_256.png','card':'card-oathblade','src':'battle-tokens/units/oathblade_256.png','cardsrc':'crucible/art/avtair/oathblade-v1.png'},
  'test-packet-shadow': {'token':'oathblade_256.png','card':'card-oathblade','src':'battle-tokens/units/oathblade_256.png','cardsrc':'crucible/art/avtair/oathblade-v1.png'},
@@ -147,12 +166,14 @@ def placeholder_token(label):
 if ONLY and ONLY not in ARTMAP: raise ValueError('Unknown art typeId: ' + ONLY)
 previous = json.load(open(os.path.join(OUT, 'manifest.json'))) if ONLY else None
 written = dict.fromkeys(previous['files'], True) if ONLY else {}
+from art_reuse import shared_files_for_new_mapping
+reused = shared_files_for_new_mapping(ONLY, previous, ARTMAP) if ONLY else set()
 def save_png(name, im):
-    if name in written and not ONLY: return
+    if name in reused or (name in written and not ONLY): return
     if im.mode == 'RGBA': im = im.quantize(256)   # flat-shaded art loses nothing visible, file drops ~60%
     im.save(os.path.join(OUT, name), 'PNG', optimize=True); written[name] = True
 def save_jpg(name, im):
-    if name in written and not ONLY: return
+    if name in reused or (name in written and not ONLY): return
     im.save(os.path.join(OUT, name), 'JPEG', quality=82, optimize=True); written[name] = True
 
 manifest = previous['artmap'] if ONLY else {}
@@ -164,7 +185,10 @@ for tid, m in ARTMAP.items():
     else:
         token = m['token']
         src = P(m['src'])
-        if not os.path.exists(src) and m['src'].startswith('HELL:') and os.path.exists(os.path.join(OUT, token)):
+        if token in reused:
+            # Bind the existing published shared file; this is not a source refresh.
+            im = Image.open(os.path.join(OUT, token))
+        elif not os.path.exists(src) and m['src'].startswith('HELL:') and os.path.exists(os.path.join(OUT, token)):
             # the hell-tcg checkout is not on this machine (a sandbox): keep the
             # token this tool wrote from it last time, and say so — never a
             # silent substitute (2026-09-03)
@@ -176,7 +200,9 @@ for tid, m in ARTMAP.items():
     card = m.get('card')
     if card:
         csrc = P(m['cardsrc'])
-        if not os.path.exists(csrc) and m['cardsrc'].startswith('HELL:') and os.path.exists(os.path.join(OUT, card + '.jpg')):
+        if card + '.jpg' in reused:
+            if not os.path.isfile(os.path.join(OUT, card + '.jpg')): raise ValueError('missing shared card: ' + card)
+        elif not os.path.exists(csrc) and m['cardsrc'].startswith('HELL:') and os.path.exists(os.path.join(OUT, card + '.jpg')):
             print('prep-art: %s — card source %s not mounted; keeping the existing generated/art/%s.jpg' % (tid, m['cardsrc'], card), file=sys.stderr)
             written[card + '.jpg'] = True
         else:

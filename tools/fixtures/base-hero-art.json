@@ -1,0 +1,331 @@
+{
+  "about": "Authored base-hero art provenance and preserved source hashes; TEST display assertions only, not combat history.",
+  "heroes": [
+    {
+      "id": "hero.base.mage-fire",
+      "src": "battle-tokens/units/mage-fire_256.png",
+      "cardsrc": "crucible/art/base/mage-fire1.png",
+      "token": "mage-fire_256.png",
+      "card": "card-magefire.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/mage-fire_256.png": "86d028aaaa82d8d6d420068eb286c05046054fc62a1506ca7473e454eb3129e8",
+        "crucible/art/base/mage-fire1.png": "256afd1250679e448767773cb49ca6d4663107e1ddb898305b55814c033613dd"
+      }
+    },
+    {
+      "id": "hero.base.mage-fireaura",
+      "src": "battle-tokens/units/mage-fireaura_256.png",
+      "cardsrc": "crucible/art/base/mage-fireaura1.png",
+      "token": "mage-fireaura_256.png",
+      "card": "card-mage-fireaura.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/mage-fireaura_256.png": "df7cb190caf58fd22737df5f5b3e70b514ac7c53f032574fed27b5107d603075",
+        "crucible/art/base/mage-fireaura1.png": "6fdddcc9147261d4c90b55ee204abe3e71637bd7e047f53a121501f3cdf79cdf"
+      }
+    },
+    {
+      "id": "hero.base.mage-sexy",
+      "src": "battle-tokens/units/mage-sexy_256.png",
+      "cardsrc": "crucible/art/base/mage-sexy1.png",
+      "token": "mage-sexy_256.png",
+      "card": "card-mage-sexy.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/mage-sexy_256.png": "d95376fc8291037872f45ba9744508c21d12009e1c8dacb73de28d1619b815bb",
+        "crucible/art/base/mage-sexy1.png": "ed5a31160fc962b1a2e996ef81e32647a66f61c903289d39d177635c3179e477"
+      }
+    },
+    {
+      "id": "hero.base.mage-thinking",
+      "src": "battle-tokens/units/mage-thinking_256.png",
+      "cardsrc": "crucible/art/base/mage-thinking1.png",
+      "token": "mage-thinking_256.png",
+      "card": "card-mage-thinking.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/mage-thinking_256.png": "92cc23384c22f1080479dcdc164e39920c0317860bd2b2dfc61509a5ce403569",
+        "crucible/art/base/mage-thinking1.png": "42f4a5c05399b152002a669b07cbf2871eebf6dcca8c2d4543bc218508a336dd"
+      }
+    },
+    {
+      "id": "hero.base.paladin-dark",
+      "src": "battle-tokens/units/paladin-dark_256.png",
+      "cardsrc": "crucible/art/base/paladin-dark1.png",
+      "token": "paladin-dark_256.png",
+      "card": "card-paladin-dark.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/paladin-dark_256.png": "df51247b238d9c67c5e3fb351adb2354b35849cf067e04ac454eefa52cd59de7",
+        "crucible/art/base/paladin-dark1.png": "901b8d388c98ac579b7ffbc8c440706036a0ae7fcdd673ec6f8afe467b722065"
+      }
+    },
+    {
+      "id": "hero.base.paladin-hunk",
+      "src": "battle-tokens/units/paladin-hunk_256.png",
+      "cardsrc": "crucible/art/base/paladin-hunk1.png",
+      "token": "paladin-hunk_256.png",
+      "card": "card-palhunk.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/paladin-hunk_256.png": "1d410a9427404364e69230d2f82f57c73341dbfd1e8358cbb7397fe7a238a0c8",
+        "crucible/art/base/paladin-hunk1.png": "5d25579e22f12972a0e35e212e183892cacf9b4fb57853298761836aa83f28da"
+      }
+    },
+    {
+      "id": "hero.base.paladin-shiney",
+      "src": "battle-tokens/units/osric_256.png",
+      "cardsrc": "crucible/art/base/paladin-shiney1.png",
+      "token": "osric_256.png",
+      "card": "card-osric.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/osric_256.png": "5a25b3484fbc8f3aa14dda270c2681844eed43b3ffacfb67e26ea1679aab2b81",
+        "crucible/art/base/paladin-shiney1.png": "2a99e0380e808893a1c60bf4966ebbc741edfc6c5a11e6ae80ce5a5709d2b8eb"
+      }
+    },
+    {
+      "id": "hero.base.paladin-smug",
+      "src": "battle-tokens/units/paladin-smug_256.png",
+      "cardsrc": "crucible/art/base/paladin-smug1.png",
+      "token": "paladin-smug_256.png",
+      "card": "card-paladin-smug.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/paladin-smug_256.png": "52aba072153cc738f026a02347d2655686d36462fe1830c6e7a5314fdd586d2d",
+        "crucible/art/base/paladin-smug1.png": "2693223e085db4b2d063d1ac00802449b053bb2f89bef62a45960f48fbf5aec4"
+      }
+    },
+    {
+      "id": "hero.base.priest-armored",
+      "src": "battle-tokens/units/priest-armored_256.png",
+      "cardsrc": "crucible/art/base/priest-armored1.png",
+      "token": "priest-armored_256.png",
+      "card": "card-priestarm.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/priest-armored_256.png": "031e204651fd1838e0406bb69b205610d25290ab4d35cf8842433ef8482de65b",
+        "crucible/art/base/priest-armored1.png": "8270b9aaf76cc5458b881dd8a21b3fbce7f8895520ccff8b51f41b4b46d13f43"
+      }
+    },
+    {
+      "id": "hero.base.priest-pauper",
+      "src": "battle-tokens/units/priest-pauper_256.png",
+      "cardsrc": "crucible/art/base/priest-pauper1.png",
+      "token": "priest-pauper_256.png",
+      "card": "card-priest-pauper.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/priest-pauper_256.png": "7895aea212c0a827f12ec6e6e9ca3e4142091357e4cdca7abc8acf91e9882ca1",
+        "crucible/art/base/priest-pauper1.png": "8acf0d91d8a0103777c74762fee753f0ef2a058d6ccf6bbe91b319a78d0ca3fe"
+      }
+    },
+    {
+      "id": "hero.base.priest-robes",
+      "src": "battle-tokens/units/priest-robes_256.png",
+      "cardsrc": "crucible/art/base/priest-robes1.png",
+      "token": "priest-robes_256.png",
+      "card": "card-priest-robes.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/priest-robes_256.png": "a6b8f8334f001dec8db55ff90912b814455511e4fcb4e28a3c7f166f965ab3f9",
+        "crucible/art/base/priest-robes1.png": "18800b9408fd7c362fc12b8306872aed3dc1dc18ff2a2f9e938d1bb00fb9945b"
+      }
+    },
+    {
+      "id": "hero.base.priest-scantily",
+      "src": "battle-tokens/units/lucius_256.png",
+      "cardsrc": "crucible/art/base/priest-scantily1.png",
+      "token": "lucius_256.png",
+      "card": "card-lucius.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/lucius_256.png": "67711459e6c266308a7ca37b0698675fe9165f6740ed180e0886b54b72b010bc",
+        "crucible/art/base/priest-scantily1.png": "541044f9936fe6d57dcbdc3155fd27221b18eb2063cc1621e49d57fe7a99960b"
+      }
+    },
+    {
+      "id": "hero.base.ranger-aggressive",
+      "src": "battle-tokens/units/ranger-aggressive_256.png",
+      "cardsrc": "crucible/art/base/ranger-aggressive1.png",
+      "token": "ranger-aggressive_256.png",
+      "card": "card-hunter.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/ranger-aggressive_256.png": "6dcec98748c072ec28365c0d918de4c1d9f4a1a3187671ab4e2c26fe54ed027f",
+        "crucible/art/base/ranger-aggressive1.png": "a26bf64fa2bdf4ffe5ed9df890c02f74701f78cbc45caf32647e7105d381426a"
+      }
+    },
+    {
+      "id": "hero.base.ranger-nature",
+      "src": "battle-tokens/units/ranger-nature_256.png",
+      "cardsrc": "crucible/art/base/ranger-nature1.png",
+      "token": "ranger-nature_256.png",
+      "card": "card-ranger-nature.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/ranger-nature_256.png": "caf599e1c2944741ff8379aa06ed8adc04e515aac66d5fb79edb78557f1cd3ff",
+        "crucible/art/base/ranger-nature1.png": "e96f94794976ab1be8c1909132e15b4e65e33b794569c5b1c5ddedbdbf95738f"
+      }
+    },
+    {
+      "id": "hero.base.ranger-ranger",
+      "src": "battle-tokens/units/ranger-ranger_256.png",
+      "cardsrc": "crucible/art/base/ranger-ranger1.png",
+      "token": "ranger-ranger_256.png",
+      "card": "card-ranger-ranger.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/ranger-ranger_256.png": "043bd34f419d22a2ca0d54fe00bf2a94833d2bfbc60045bbad13006eb1079c78",
+        "crucible/art/base/ranger-ranger1.png": "46348af00590d948c50040f185919b5c4b62075639e7bf6cc7100ecdbf3541a7"
+      }
+    },
+    {
+      "id": "hero.base.ranger-scantily",
+      "src": "battle-tokens/units/ranger-scantily_256.png",
+      "cardsrc": "crucible/art/base/ranger-scantily1.png",
+      "token": "ranger-scantily_256.png",
+      "card": "card-ranger-scantily.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/ranger-scantily_256.png": "0198202da548094524d92010666d3cbba23291e1078efab5ef91e24d85fe1d1a",
+        "crucible/art/base/ranger-scantily1.png": "f167803fa55dcfa1fc9f8f18e42ce1e9b2fe4c8c0c49de72b5e307a4fe8efc07"
+      }
+    },
+    {
+      "id": "hero.base.rogue-raven",
+      "src": "battle-tokens/units/rogue-raven_256.png",
+      "cardsrc": "crucible/art/base/rogue-raven1.jpg",
+      "token": "rogue-raven_256.png",
+      "card": "card-rogueraven.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/rogue-raven_256.png": "4593b4e29c4099721bd5e9f86e694598711c1caf04983bfb1d8b5a523c6f69a6",
+        "crucible/art/base/rogue-raven1.jpg": "f51d8e90458044f15e1a956fdeb009c06a8e8b0ffb1c660a28586f9d4bcff314"
+      }
+    },
+    {
+      "id": "hero.base.rogue-rose",
+      "src": "battle-tokens/units/rogue-rose_256.png",
+      "cardsrc": "crucible/art/base/rogue-rose1.png",
+      "token": "rogue-rose_256.png",
+      "card": "card-rogue-rose.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/rogue-rose_256.png": "f5898a9af0a5e565c07f6a2aca2c6e7d57a0d8f6de09c326ca0a97bad1363cd3",
+        "crucible/art/base/rogue-rose1.png": "1f82fe3d13e49f4e8b682d9d8bf72e4fc9ccea78b01514310b536353af1665fd"
+      }
+    },
+    {
+      "id": "hero.base.rogue-skull",
+      "src": "battle-tokens/units/rogue-skull_256.png",
+      "cardsrc": "crucible/art/base/rogue-skull1.png",
+      "token": "rogue-skull_256.png",
+      "card": "card-rogue-skull.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/rogue-skull_256.png": "27e2bec61be2ab24f8643088c22e04d05d1ab2bfefcddf896f8ac09b14def985",
+        "crucible/art/base/rogue-skull1.png": "82e3e24f2362ce57b140541777f7a3cc41a17bc96c8ccd575d627d2fd52b7bd2"
+      }
+    },
+    {
+      "id": "hero.base.rogue-snake",
+      "src": "battle-tokens/units/rogue-snake_256.png",
+      "cardsrc": "crucible/art/base/rogue-snake1.png",
+      "token": "rogue-snake_256.png",
+      "card": "card-rogue-snake.jpg",
+      "height": 1.55,
+      "hashes": {
+        "battle-tokens/units/rogue-snake_256.png": "7bc15c8cee832c87894023d928f280d831f29ad2c3cd8528a33dd11e410809ad",
+        "crucible/art/base/rogue-snake1.png": "f10a9a4fa5ce019e10553d223adb524910b2efda90c01853be6aebd80fedc329"
+      }
+    },
+    {
+      "id": "hero.base.warrior-barbarian",
+      "src": "battle-tokens/units/warrior-barbarian_256.png",
+      "cardsrc": "crucible/art/base/warrior-barbarian1.png",
+      "token": "warrior-barbarian_256.png",
+      "card": "card-warrior-barbarian.jpg",
+      "height": 0.95,
+      "hashes": {
+        "battle-tokens/units/warrior-barbarian_256.png": "9f10b3d403c0e475ec6e9683bbef334b92431e2e37b7f7782772853d90b79d20",
+        "crucible/art/base/warrior-barbarian1.png": "19da4f6f9e00c877b4f94113dfb8f9a66c76b5e32f6c259e4c68ad75a2d7974b"
+      }
+    },
+    {
+      "id": "hero.base.warrior-brawler",
+      "src": "battle-tokens/units/warrior-brawler_256.png",
+      "cardsrc": "crucible/art/base/warrior-brawler1.png",
+      "token": "warrior-brawler_256.png",
+      "card": "card-warrior-brawler.jpg",
+      "height": 0.95,
+      "hashes": {
+        "battle-tokens/units/warrior-brawler_256.png": "2b3294d74ef3bdd2fc0315aa04ed081852ab23673757a11752ab0f474b6cd02b",
+        "crucible/art/base/warrior-brawler1.png": "df58f10708aaccfb270751c0f11d3e04c2fad43258bc02f6125edda8ac32ae8b"
+      }
+    },
+    {
+      "id": "hero.base.warrior-fearsome",
+      "src": "battle-tokens/units/warrior-fearsome_256.png",
+      "cardsrc": "crucible/art/base/warrior-fearsome1.png",
+      "token": "warrior-fearsome_256.png",
+      "card": "card-warrior-fearsome.jpg",
+      "height": 0.95,
+      "hashes": {
+        "battle-tokens/units/warrior-fearsome_256.png": "cadb37c2616972afb13cafc36d1d6e5fd40f0d90a8efc9c90d93f1b1b56eb926",
+        "crucible/art/base/warrior-fearsome1.png": "fcbb048d15e4478d05be85cfc0edf48f9b72f6c3730ca631660d9d9077c13cc3"
+      }
+    },
+    {
+      "id": "hero.base.warrior-iron",
+      "src": "battle-tokens/units/warrior-iron_256.png",
+      "cardsrc": "crucible/art/base/warrior-iron1.png",
+      "token": "warrior-iron_256.png",
+      "card": "card-warriron.jpg",
+      "height": 0.95,
+      "hashes": {
+        "battle-tokens/units/warrior-iron_256.png": "057143ec8ab27b310ff4687950844894ea3fd7e40202d875dbba14cf458d795f",
+        "crucible/art/base/warrior-iron1.png": "74680ea80b1148da3eaaea453535cacacd2ba6c7d6549d3ac3f0b42e4a198ddc"
+      }
+    }
+  ],
+  "preservedMappings": {
+    "hero.base.mage-fire": {
+      "token": "mage-fire_256.png",
+      "card": "card-magefire.jpg",
+      "aspect": 0.4961,
+      "height": 1.55
+    },
+    "hero.base.paladin-hunk": {
+      "token": "paladin-hunk_256.png",
+      "card": "card-palhunk.jpg",
+      "aspect": 0.6484,
+      "height": 1.55
+    },
+    "hero.base.priest-armored": {
+      "token": "priest-armored_256.png",
+      "card": "card-priestarm.jpg",
+      "aspect": 0.5469,
+      "height": 1.55
+    },
+    "hero.base.ranger-aggressive": {
+      "token": "ranger-aggressive_256.png",
+      "card": "card-hunter.jpg",
+      "aspect": 0.6211,
+      "height": 1.55
+    },
+    "hero.base.rogue-raven": {
+      "token": "rogue-raven_256.png",
+      "card": "card-rogueraven.jpg",
+      "aspect": 0.5039,
+      "height": 1.55
+    },
+    "hero.base.warrior-iron": {
+      "token": "warrior-iron_256.png",
+      "card": "card-warriron.jpg",
+      "aspect": 0.6758,
+      "height": 0.95
+    }
+  }
+}
