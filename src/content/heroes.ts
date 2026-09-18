@@ -7,8 +7,8 @@
 // from 24 eve" — Hunter, Iron Dwarf, Battle Chaplain), and the first hero is
 // DRAFTED, stat-less, from three (GAME-ARCHITECTURE.md §2.5, SKELETON-SETTLED.md
 // :93,124). So the pool's first three are those; the rest are the Eve heroes
-// the fixture already carried, whose unit rows are still the ALPHA test kits
-// until the pack fields the 24 by id — a content gap, named here.
+// the campaign fixture already carried. The standalone sandbox now uses all
+// 24 canonical base IDs; migration of this campaign draft pool remains separate.
 // Civilians are not drafted ("When i draft at start, i AM ONLY DRAFTING HERO
 // CLASSES"); they arrive by rescue — the prologue rows carry them.
 
@@ -42,10 +42,9 @@ const RAW_HEROES: readonly HeroRow[] = [
   hero('hero.base.priest-armored', 'Battle Chaplain', 'class.priest', 'hero.base.priest-armored'),
   // Removed 2026-09-02 (Andrew: "Let's just remove those four alpha heroes"):
   // Oathblade, Sky Pirate, Dusk Hawk, Air Mage — alpha test units with no kit
-  // in the content. The pool is short until the engine fields the rest of the
-  // Eve 24 (engine backlog: content.field-eve-24); the opening drafts what the
-  // pool holds. Lucius and Osric are Eve rows with kits, still fielded on
-  // alpha unit rows until that lands.
+  // in the content. This campaign pool remains intentionally limited pending
+  // its own draft migration; the standalone sandbox already offers the Eve 24.
+  // Lucius and Osric retain the existing campaign aliases here.
   hero('hero.base.priest-scantily', 'Lucius', 'class.priest', 'alpha-lucius'),
   hero('hero.base.paladin-shiney', 'Osric', 'class.paladin', 'alpha-osric'),
 ]

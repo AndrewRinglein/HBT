@@ -135,3 +135,42 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
   expect(s.ctx.state.units.length).toBe(21)
  })
 })
+
+// v2.sandbox-base-roster: authored content, not additions to the campaign draft pool.
+import {SANDBOX_HEROES,sandboxHeroesOf} from '../src/content/sandbox.js'
+import {UNITS} from '../src/engine.js'
+import {HERO_KITS,HERO_ITEM_SLOTS} from '../src/content/generated/kits.js'
+import {HERO_POOL} from '../src/content/heroes.js'
+
+describe('ISC-069 — all24 authored standalone base heroes',()=>{
+ it('fields every authored base hero with canonical name/class/kit and actual resolved actions',()=>{
+  const ids=Object.keys(UNITS).filter(id=>id.startsWith('hero.base.')).sort();expect(ids).toHaveLength(24);expect(SANDBOX_HEROES.map(h=>h.id)).toEqual(ids)
+  const burstKits:Record<string,string[]>={}
+  for(const h of SANDBOX_HEROES){
+   expect(h.unitType).toBe(h.id);expect(h.name).toBe(UNITS[h.id]!.name);expect(h.classes).toEqual(UNITS[h.id]!.tags!.filter(t=>t.startsWith('class.')));expect(h.equipped).toEqual(HERO_KITS[h.id]);expect(h.itemSlots).toBe(HERO_ITEM_SLOTS[h.id])
+   const s=createSandbox({...SANDBOX_DEFAULT,heroes:[h.id],enemies:['unit.zombie']}),u=s.ctx.state.units[0]!
+   expect(s.setup.heroes).toEqual([h.id]);expect(s.setup.heroItems).toEqual([HERO_KITS[h.id]]);expect(u.typeId).toBe(h.id);expect(u.name).toBe(h.name+' A');expect(u.actions.length).toBeGreaterThan(0)
+   for(const id of u.actions)expect(s.ctx.actions[id],h.id+' missing grant '+id).toBeDefined()
+   const bursts=u.actions.filter(id=>s.ctx.actions[id]!.burst!==undefined);if(bursts.length)burstKits[h.id]=bursts
+  }
+  expect(burstKits).toEqual({'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']})
+  expect(HERO_POOL).toHaveLength(5);expect(HERO_POOL.find(h=>h.id==='hero.base.priest-scantily')!.unitType).toBe('alpha-lucius')
+ })
+ it('refuses named missing kit, slot, name or class rather than omitting an authored hero',()=>{
+  const id='hero.base.mage-fireaura',units={[id]:UNITS[id]!}
+  expect(()=>sandboxHeroesOf(units,{},HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*kit'))
+  expect(()=>sandboxHeroesOf(units,HERO_KITS,{})).toThrow(new RegExp(id+'.*itemSlots'))
+  expect(()=>sandboxHeroesOf({[id]:{...UNITS[id]!,tags:['hero']}},HERO_KITS,HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*class'))
+  expect(()=>sandboxHeroesOf({[id]:{...UNITS[id]!,name:''}},HERO_KITS,HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*name'))
+ })
+ it('duplicates are independently cloned, keep distinct stable UIDs, and save deterministically on frozen Atlas',()=>{
+  const id='hero.base.warrior-barbarian',config={...SANDBOX_DEFAULT,heroes:[id,id],enemies:['unit.zombie']},a=createSandbox(config),b=createSandbox(config)
+  expect(a.ctx.events).toEqual(b.ctx.events);expect(a.policy.humanUnitUids).toEqual(b.policy.humanUnitUids);expect(new Set(a.policy.humanUnitUids).size).toBe(2)
+  const before=JSON.stringify(SANDBOX_HEROES),other=a.ctx.state.units[1]!.actions.slice();a.ctx.state.units[0]!.actions.pop();expect(a.ctx.state.units[1]!.actions).toEqual(other);expect(JSON.stringify(SANDBOX_HEROES)).toBe(before)
+  const restored=restoreSandbox(saveSandbox(b));expect(restored.ctx.events).toEqual(b.ctx.events);expect(restored.ctx.rng.log).toEqual(b.ctx.rng.log);expect(restored.policy).toEqual(b.policy);expect(restored.atlasScene).toEqual(b.atlasScene)
+  expect(SANDBOX_DEFAULT.heroes).toHaveLength(3);expect(()=>createSandbox({...config,heroes:['hero.base.unknown']})).toThrow(/Unknown/)
+  for(const heroes of [[],Array(7).fill(id)])expect(()=>createSandbox({...config,heroes})).toThrow(/1–6/)
+  for(const enemies of [[],Array(16).fill('unit.zombie')])expect(()=>createSandbox({...config,enemies})).toThrow(/1–15/)
+  expect(createSandbox({...config,heroes:Array(6).fill(id),enemies:Array(15).fill('unit.zombie')}).ctx.state.units).toHaveLength(21)
+ })
+})

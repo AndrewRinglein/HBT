@@ -914,5 +914,20 @@
   "sha": "0018e47",
   "engineSha": "cfbcac4",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "v2.sandbox-base-roster",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "needs": [
+   "v2.packet-display"
+  ],
+  "spec": "Standalone sandbox offers all24 authored base heroes with canonical unit IDs, exact authored names/class tags and generated kits/slots; preserve default three and campaign draft pool.",
+  "expect": "ISC069 all24 actual canonical fieldings, exact kits and resolved grants, duplicate clones/UIDs, named missing metadata, bounds/determinism/saves/frozen Atlas; built dropdown and exact art, retained campaign flow and full62 P probes. Burst centre controls remain separate.",
+  "isc": [
+   "069"
+  ],
+  "attempts": 1
  }
 ]
