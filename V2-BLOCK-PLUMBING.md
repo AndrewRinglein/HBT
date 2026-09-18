@@ -16,3 +16,5 @@ Badge prose maps both human-readable words and structured field names.
 Full123 tests passed before these two focused regressions were added.
 
 Final source checks:125/125 content tests pass (85.4s);8/8 focused Block probes. Normal transactional publication is the next check.
+
+Publication passed through npm run ship:21 Codex tabs,108 fielded definitions and real combat smoke; six generated outputs changed. Pack records clean content sourcea896b7f and SHA a5696aba2f244b5b9bf176f8ed750fa5451bd3d53a7abe4a6a237a1629f21348. No source art/maps or pre-existing lock archives changed.
