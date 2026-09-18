@@ -98,7 +98,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const atlas = prepareAtlasBinding(data.atlasScene, data.atlasCatalog, F, data.initialEvents.find(e=>e.type==='map.loaded'))
   const initialMap = structuredClone(data.initialEvents.find(e => e.type === 'map.loaded'))
   let pushedMap = false
-  const now = opts.now || (() => Date.now())
+  const now = opts.now || (typeof performance !== 'undefined' && typeof performance.now === 'function' ? () => performance.now() : () => Date.now())
   root.innerHTML = TEMPLATE
   const q = s => root.querySelector(s)
   const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), panel: q('#panel'),
@@ -127,7 +127,14 @@ export function mountBattleViewer(root, data, opts = {}) {
   /* the BEAT clock: wall time scaled by playback speed, so a row that lights
      for 1600 beat-ms lights for the same number of beats at ×⅓ and ×4. The fold
      stamps its `until`s from this, and the draw compares against it. */
-  V.clock = () => now() * V.speed * 0.75
+  let clockValue = 0, wallHighWater = now()
+  V.clock = () => {
+    const wall = now()
+    // Retain the high-water mark during rollback; recovering wall time is not
+    // elapsed time twice. Pause deliberately does not stop visual decay.
+    if (wall > wallHighWater) { clockValue += (wall - wallHighWater) * V.speed * .75; wallHighWater = wall }
+    return clockValue
+  }
 
   /* the stage is sized and centred once; without this it is a zero-size point
      and rotateX pivots around the wrong origin (the quarter-screen bug) */
@@ -169,7 +176,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   }
 
   // Burst facts are durable; this small clock controls only their visibility.
-  // Remaining beats use elapsed wall time so speed changes cannot jump deadlines.
+  // Remaining beats share the continuous clock, including speed changes and rollback.
   let burstTimer = null, burstGeneration = 0, burstRemaining = 0, burstStarted = 0, disposed = false
   function cancelBurst() {
     burstGeneration++
@@ -184,7 +191,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     throw err
   }
   function armBurst(beats = 2400) {
-    cancelBurst(); burstRemaining = beats; burstStarted = now()
+    cancelBurst(); burstRemaining = beats; burstStarted = V.clock()
     const generation = burstGeneration, declaration = V.S.BURST
     V.view.burstVisible = true
     burstTimer = setTimeout(function expireBurst() {
@@ -339,7 +346,9 @@ export function mountBattleViewer(root, data, opts = {}) {
   const api = {
     push, seek, play, pause, step: stepOnce, render,
     speed(x) {
-      const remaining = burstTimer == null ? null : Math.max(0, burstRemaining - (now() - burstStarted) * V.speed * .75)
+      if (typeof x !== 'number' || !Number.isFinite(x) || x <= 0) throw new Error('speed must be a finite positive number')
+      const clock = V.clock() // settle elapsed time at the OLD rate before rebasing
+      const remaining = burstTimer == null ? null : Math.max(0, burstRemaining - (clock - burstStarted))
       V.speed = x
       if (remaining != null) armBurst(remaining)
     },
