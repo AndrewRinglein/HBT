@@ -87,3 +87,8 @@ test('host can clear targeting during render fault without recursion or replacin
  Object.defineProperty(v._V.dom.panel,'innerHTML',{set(){throw failure},configurable:true})
  assert.throws(()=>v.setTargeting(facts()),e=>e===failure);assert.equal(notifications,1);assert.equal(v.invalid,failure);assert.equal(v._V.targeting,null);assert.equal(v._V.dom.stage.querySelector('.targeting'),null);fire(old);assert.throws(()=>v.setTargeting(facts()),/faulted/);v.dispose()
 })
+
+test('host disposal inside a false-returning unit click cannot fall through to inspect/render',()=>{
+ let v,calls=0;const b=boot('movement',{onHexClick(){calls++;v.dispose();return false}});v=b.v;v.setTargeting(facts());const u=Object.values(v.state.U).find(u=>u.hex===85),img=v._V.layers.UEL.get(u.id).img
+ fire(img);assert.equal(calls,1);assert.equal(v.view.inspectId,null);assert.equal(v._V.dom.root.innerHTML,'');fire(img);assert.equal(calls,1)
+})

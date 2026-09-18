@@ -670,7 +670,7 @@ function mkUnit(V, u) {
     ev.stopPropagation()
     if (!V.inputActive() || V.clickSuppressed?.(ev)) return
     const current = V.S.U[id]
-    if (!current || V.offerHexClick(current.hex)) return
+    if (!current || V.offerHexClick(current.hex) || !V.inputActive()) return
     V.view.inspectId = id; V.render()
   })
   bb.appendChild(img)

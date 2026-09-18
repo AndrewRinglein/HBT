@@ -64,3 +64,20 @@ Both full check attempts passed; the second includes all three review repairs.
 Clean publication is run after this source commit so the page stamps its exact
 source SHA. Logs: `.build/targeting-gate1.log`, `.build/targeting-gate2.log`,
 `.build/targeting-land.log` (publication).
+
+## Reentrant host disposal follow-up
+
+Initial source fdbd8fe and clean publication e2fc92f passed the full gate above.
+A further real boundary probe disposes the component inside onHexClick and
+returns false. It failed: the unit handler still set inspectId after disposal.
+The handler now checks active state again after the host callback before any
+inspection fallback. The retained callback is also inert. This adds one probe
+(12 targeting / 45 focused total), without changing host consumption semantics.
+The follow-up runs the same full fresh check and clean publication gates; logs
+`.build/targeting-reentrant-gate.log` and `.build/targeting-reentrant-land.log`.
+
+Follow-up fresh gate passed: 26 source + 62 built + 12 direct-map tests (100),
+all 29 fold/seek checks and 29 byte-identical fresh histories. The additional
+assertion is retained in both source and built-page verification. No gate was
+skipped or weakened; the only failed checks were the documented red probes and
+initial fixture setup attempt.
