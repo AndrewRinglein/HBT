@@ -9,8 +9,8 @@ uses add-item, never a hand-edited verdict. The isolated unchanged test passed
 in 3.21s. Only that test now has a bounded 15s allowance; every seed and assertion
 remains. The diagnostic and source-recovery manifest remain in runs/v2-block
 and runs/diagnostics. This is a timeout, not evidence of missing committed code;
-the gate's generic rollback explanation is not the diagnosis. A fresh complete
-landing and independent audit remain required.
+the gate's generic rollback explanation is not the diagnosis. The fresh complete
+landing and independent audit subsequently passed, as recorded below.
 
 Bounded engine item `rule.block`, base22c8c79. COMBAT-V2-DESIGN §6 owns behavior;
 SWITCHES records provisional timing, zero/downed, RNG and preview policies.
@@ -76,8 +76,7 @@ zero-Block projection exactly. Existing-test edits remain flagged for review:
 old cursor goldens are still checked through the narrow projection, alongside
 new raw goldens; low-cover tests now explicitly narrow nullable accuracy rolls.
 The candidate rulings were read: bursts still bypass Block and existing authored
-onDodge prose does not establish a new hook in this item. Landing and the
-independent committed audit follow this check.
+onDodge prose does not establish a new hook in this item.
 
 The first landing attempt failed test discovery: a safety copy under ignored
 `runs/v2-block/landing-backup` still contained discoverable `*.test.ts` files.
@@ -91,3 +90,27 @@ AI still ranks conditional damage rather than expected connection, including
 against guaranteed Block. Downed/zero-chance/first-cup timing and reciprocal RNG
 roles are recorded provisional decisions in SWITCHES. Prone interaction awaits
 its own implementation. This engine stage provides no visual acceptance evidence.
+
+Final landing and audit
+-----------------------
+Normal `node tools/gate.mjs rule.block --land` landed source **efa87d1** after
+1,612 full-suite tests and the committed-tree suite/control rerun passed. The
+gate prints its pre-amend hash a422239; efa87d1 includes the gate-owned verdict.
+The independent `node tools/audit-all.mjs --label "V2 Block / Ranged Block"`
+then passed typecheck, all 1,612 tests, all 22 control goldens and the whole-core
+scan. The audit retains 34 grandfathered source gaps and 57 flagged landings.
+
+The seal is **withheld: two warning flags**, for candidate rulings and existing
+test edits. No exemption or human approval was supplied. The automatic effect
+sample used 25 seeds on each of 22 existing maps in each arm and reported no
+outcome/turn delta when the two TEST hooks were disabled. Those hooks are absent
+from this old roster, so this is not positive-Block balance evidence; the actual
+TEST scenarios and 33 focused probes establish the new behavior. The separate
+592-battle historical comparison establishes the old-path preservation claim.
+
+Evidence: `runs/v2-block/gate1.log`, `land.log` (backup discovery failure),
+`land2.log` (committed-suite timeout), `land3.log` (successful landing),
+`audit.log`, `transition.json` and the retained capture/recovery manifests.
+Both Game Builder copies are rebuilt from the gate-owned audit record. Content
+remains source a896b7f / publication c27c855 (125 tests); viewer and Kingdom are
+unchanged in this item. No blanket root staging or source-art changes occurred.
