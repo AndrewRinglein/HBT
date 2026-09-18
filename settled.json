@@ -1484,9 +1484,9 @@
    "name": "Stun",
    "shape": "counter",
    "family": "duration",
-   "effect": "Stops the unit acting — its whole Activation is skipped.",
+   "effect": "Stops the unit acting and blocking — its whole Activation is skipped.",
    "decay": "-1 per Turn, so Stun N costs N Activations.",
-   "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay."
+   "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay. V2 update 2026-09-18: COMBAT-V2-DESIGN section6.2 explicitly removes Block while stunned; blocksBlock is separate from activation locking."
   }
  ],
  "testCohort": {

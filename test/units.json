@@ -519,5 +519,60 @@
     }
   ],
   "note": "rule.bursts: defender save then reactive shield in stable trigger order, real TEST transport; art derives from unchanged test-zombie body."
+},
+{
+  "id": "test-block-a",
+  "from": "test-oathblade",
+  "name": "Block A (TEST)",
+  "set": {
+    "side": "hero",
+    "maxHp": 80,
+    "block": 75,
+    "rangedBlock": 25,
+    "accuracy": 100,
+    "luck": 100
+  },
+  "triggers": [
+    {
+      "id": "test.block-a.reaction",
+      "hook": "onBlock",
+      "chance": 100,
+      "select": "target",
+      "effect": {
+        "kind": "statMod",
+        "stat": "block",
+        "value": -20,
+        "until": "battle"
+      }
+    }
+  ],
+  "note": "rule.block pure-data variant; existing Oathblade body, no shield balance or campaign content."
+},
+{
+  "id": "test-block-b",
+  "from": "test-oathblade",
+  "name": "Block B (TEST)",
+  "set": {
+    "side": "enemy",
+    "maxHp": 80,
+    "block": 30,
+    "rangedBlock": 90,
+    "accuracy": 100,
+    "luck": 100
+  },
+  "triggers": [
+    {
+      "id": "test.block-b.reaction",
+      "hook": "onBlock",
+      "chance": 100,
+      "select": "self",
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "status.protection",
+        "value": 2
+      }
+    }
+  ],
+  "note": "rule.block pure-data variant; existing Oathblade body, no shield balance or campaign content."
 }
 ]

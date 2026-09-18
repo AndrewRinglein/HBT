@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { validateMap } from './map-schema.mjs';
 const D=JSON.parse(fs.readFileSync('hbt-content.json','utf8'));
-const HOOKS=new Set(['startOfBattle','onAttack','onMiss','onHit','onCrit','onDamage','onTakingDamage','onKill','onDeath','onEquip','onActivationEnd','onDodge','aura','passive']);
+const HOOKS=new Set(['startOfBattle','onAttack','onMiss','onHit','onCrit','onDamage','onTakingDamage','onKill','onDeath','onEquip','onActivationEnd','onDodge','onBlock','aura','passive']);
 const SLOTTED=new Set(['relic','trinket','idol']);
 const F=[];
 // NARROW exemptions only. A '*' here once hid power.berserker.draw-from-death for three
@@ -288,7 +288,10 @@ for(const a of D.attacks){ const r=a.range;
 //   Ruled 2026-08-20: "clearly designated as tests so they can be thrown away later,
 //   or duplicated into real." That is only true if nothing real ever points at it.
 if(D.bestiaryTest){ const B=D.bestiaryTest;
-  const ENGINE_HOOKS=['onAttack','onMiss','onHit','onDamage','onCrit','onKill','onTakingDamage','onDeath','onActivationEnd'];
+  // Coverage below is the historical bestiaryTest cohort only. New TEST-lane
+  // onBlock coverage is verified by test/block.test.mjs and engine rule.block.
+  const LEGACY_COVERAGE_HOOKS=['onAttack','onMiss','onHit','onDamage','onCrit','onKill','onTakingDamage','onDeath','onActivationEnd'];
+  const ENGINE_HOOKS=[...LEGACY_COVERAGE_HOOKS,'onBlock'];
   const ENGINE_EFFECTS=['status.apply','status.remove','damage'];
   const ENGINE_STATUSES=new Set(['status.poison','status.burn','status.regeneration','status.stun',
     'status.bleed','status.protection','status.weak','status.slow']);
@@ -308,7 +311,7 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
     }
   }
   // the whole point of the roster is COVERAGE — a gap is a finding, not a shrug
-  for(const h of ENGINE_HOOKS) if(!seenHooks.has(h)) add('test-bestiary-misses-a-hook',h,'no test unit exercises it');
+  for(const h of LEGACY_COVERAGE_HOOKS) if(!seenHooks.has(h)) add('test-bestiary-misses-a-hook',h,'no test unit exercises it');
   for(const e of ENGINE_EFFECTS) if(!seenEffects.has(e)) add('test-bestiary-misses-an-effect',e,'no test unit exercises it');
   // nothing real may depend on a throwaway
   const real=[...D.items,...D.enchants,...D.specialties,...D.attacks,...D.powers];

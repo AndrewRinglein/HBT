@@ -8,5 +8,6 @@
   { "id": "test.status.gash", "name": "Gash (testing)", "shape": "counter", "family": "magnitude", "decayPerPhase": 1, "tick": "damage", "tickDamageType": "true", "shedByHealing": "half",
     "note": "The second shedByHealing status beside Bleed (fix.bleed-magnitude): true tick by value, healed off in showcase.gash-variant. Its source, test.zombie.gash, still rides the engine-side fixture zombie until test.fixture-migration." },
   { "id": "test.status.daze", "name": "Daze (testing)", "shape": "counter", "family": "duration", "decayPerPhase": 1, "blocksAction": true,
-    "note": "The second blocksAction instance beside Stun (2026-08-20)." }
+    "note": "The second blocksAction instance beside Stun (2026-08-20)." },
+  { "id": "test.status.guard-open", "name": "Guard open (TEST)", "shape": "counter", "family": "duration", "decayPerPhase": 1, "blocksBlock": true, "note": "rule.block: defense suppression independent of activation locking." }
 ]

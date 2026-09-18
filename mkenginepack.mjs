@@ -1,5 +1,5 @@
 import { validateBurst } from './burst-schema.mjs';
-function elementalStats(row){return Object.fromEntries(['fireResist','poisonResist','shadowResist'].filter(k=>row[k]!==undefined).map(k=>{if(!Number.isSafeInteger(row[k]))throw Error('Invalid elemental resistance '+k);return[k,row[k]]}))}
+function optionalCombatStats(row){return Object.fromEntries(['fireResist','poisonResist','shadowResist','block','rangedBlock'].filter(k=>row[k]!==undefined).map(k=>{if(!Number.isSafeInteger(row[k]))throw Error('Invalid optional combat stat '+k);return[k,row[k]]}))}
 function damageType(value){if(!['physical','magic','fire','poison','shadow','true'].includes(value))throw Error('Invalid damage type: '+String(value));return value}
 function packetFields(row){
   const out={};
@@ -40,7 +40,7 @@ function actionSlot(row) {
 }
 const ACTION = { applyPoison: 'status.poison', applyBleed: 'status.bleed', applyBurn: 'status.burn' };
 const TARGET = { attacked: 'target', self: 'self' };
-const HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd']);
+const HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd', 'onBlock']);
 const dropped = [];
 
 function mapCodexTriggers(h, typeId) {
@@ -70,7 +70,7 @@ const heroes = D.testCohort.heroes.map((h) => {
   const p = h.ported || {}, d = h.derivedBase || {}, e = h.engine || {};
   return {
     typeId: h.typeId, name: h.name, side: 'hero', copyOf: h.copyOf,
-    maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...elementalStats(p),
+    maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...optionalCombatStats(p),
     accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
     strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
     role: e.role, movement: d.movement, reach: p.reach ?? 0,
@@ -142,6 +142,7 @@ const STATUS_SENTENCES = [
   ['Deals TRUE damage equal to its value each Turn, and healing removes half the amount healed.', { tick: 'damage', tickDamageType: 'true', shedByHealing: 'half' }],
   ['Heals the unit an amount equal to its value each Turn.', { tick: 'heal' }],
   ['Stops the unit acting \u2014 its whole Activation is skipped.', { blocksAction: true }],
+  ['Stops the unit acting and blocking \u2014 its whole Activation is skipped.', { blocksAction: true, blocksBlock: true }],
   ['Prevents damage from any source.', { reducesIncomingDamage: true }],
   ['Reduces the damage the unit deals by 1 per point.', { reducesOutgoingDamage: true }],
   ["Reduces the unit's Movement by its value.", { reducesMovement: true }],
@@ -247,7 +248,7 @@ function compileMoves(powers) {
 const moves = compileMoves(SETTLED.powers || []);
 // onActivationEnd joined 2026-09-03 (fix.activation-end-fires): the engine fires it now.
 // startOfBattle joined 2026-09-03 (hook.on-enter, with encounter.runner): fires at battle.begin and at arrival.
-const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd', 'startOfBattle']);
+const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd', 'onBlock', 'startOfBattle']);
 
 // ── BADGES (badge.mechanism, 2026-09-04) ───────────────────────────────────
 // Ruled 2026-09-04: badges are an engine type — the Hero badge, Wounded, the
@@ -259,7 +260,7 @@ const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage',
 // the-gap like every row. Nothing is invented: a clause that does not parse
 // is a gap, never a guess.
 const BADGE_STAT = { str: 'strength', strength: 'strength', pre: 'precision', precision: 'precision', magic: 'magic', spirit: 'spirit',
-  acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', move: 'movement', movement: 'movement',
+  acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedblock:'rangedBlock', 'ranged block':'rangedBlock', move: 'movement', movement: 'movement',
   reach: 'reach', health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
   'stamina regen': 'staminaRegen', regen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // DBF (Deathbed Fighting) is derived from Toughness today, not a stat the engine folds — a +N DBF clause stays a named gap until it is
 const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment' };
@@ -425,7 +426,7 @@ function compileTrigger(t, unitId, attackId) {
 }
 
 // stat words an aura can lend (the engine's foldable stats that resolve on read; health is Max Health, not resolved — a gap)
-const HERO_STAT_LATE = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', movement: 'movement', reach: 'reach', crit: 'crit', luck: 'luck', vision: 'vision' };
+const HERO_STAT_LATE = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedBlock:'rangedBlock', movement: 'movement', reach: 'reach', crit: 'crit', luck: 'luck', vision: 'vision' };
 const authoredEnemies = [];
 const authoredAttacks = {};
 const authoredAbilities = {}; // capability.item-powers, 2026-08-27
@@ -540,7 +541,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   const mostlyRanged = rangedN > 0 && rangedN >= meleeN;
   authoredEnemies.push({
     typeId: id, name: u.name, side: 'enemy',
-    maxHp: st.health, armor: st.armor ?? 0, resist: st.resist ?? 0, ...elementalStats(st),
+    maxHp: st.health, armor: st.armor ?? 0, resist: st.resist ?? 0, ...optionalCombatStats(st),
     accuracy: st.accuracy, dodge: st.dodge ?? 0,
     ...(st.crit ? { crit: st.crit } : {}), ...(st.luck ? { luck: st.luck } : {}), // station.crit 2026-08-27
     strength: st.strength ?? 0, precision: st.precision ?? 0, magic: st.magic ?? 0, spirit: st.spirit ?? 0,
@@ -792,7 +793,7 @@ for (const id of PARTY) {
   // and the engine folds the same numbers at fielding (applyItems).
   const p = { ...h.ported }, d = { ...h.derivedBase };
   const bareP = { ...h.ported }, bareD = { ...h.derivedBase };
-  const FOLD = { health: [p, 'health'], armor: [p, 'armor'], resist: [p, 'resist'], fireResist:[p,'fireResist'], poisonResist:[p,'poisonResist'], shadowResist:[p,'shadowResist'], dodge: [p, 'dodge'],
+  const FOLD = { health: [p, 'health'], armor: [p, 'armor'], resist: [p, 'resist'], fireResist:[p,'fireResist'], poisonResist:[p,'poisonResist'], shadowResist:[p,'shadowResist','block','rangedBlock'], dodge: [p, 'dodge'],
     strength: [p, 'strength'], precision: [p, 'precision'], magic: [p, 'magic'], spirit: [p, 'spirit'],
     reach: [p, 'reach'], accuracy: [d, 'accuracy'], movement: [d, 'movement'],
     staminaMax: [d, 'staminaMax'], staminaRegen: [d, 'staminaRegen'],
@@ -810,7 +811,7 @@ for (const id of PARTY) {
   { const p = bareP, d = bareD;
   prologueParty.push({
     typeId: id, name: h.name, side: 'hero',
-    maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...elementalStats(p),
+    maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...optionalCombatStats(p),
     accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
     ...((d.crit ?? p.crit) ? { crit: d.crit ?? p.crit } : {}), ...((d.luck ?? p.luck) ? { luck: d.luck ?? p.luck } : {}), // station.crit
     strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
@@ -908,7 +909,7 @@ const alphaTeam = [];
     const d = { ...(base?.derivedBase || {}), ...(h.derivedBase || {}) };
     alphaTeam.push({
       typeId: id, name: h.name, side: 'hero',
-      maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...elementalStats(p),
+      maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...optionalCombatStats(p),
       accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
       ...(d.crit ?? p.crit ? { crit: d.crit ?? p.crit } : {}), ...(d.luck ?? p.luck ? { luck: d.luck ?? p.luck } : {}), // station.crit 2026-08-27
       strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
@@ -1000,7 +1001,7 @@ for (const id of CIVILIANS) {
   }
   prologueParty.push({
     typeId: id, name: h.name, side: 'hero',
-    maxHp: p2.health, armor: p2.armor ?? 0, resist: p2.resist ?? 0, ...elementalStats(p2),
+    maxHp: p2.health, armor: p2.armor ?? 0, resist: p2.resist ?? 0, ...optionalCombatStats(p2),
     accuracy: d2.accuracy, dodge: p2.dodge ?? 0, ...(p2.toughness ? { toughness: p2.toughness } : {}),
     ...(d2.crit ?? p2.crit ? { crit: d2.crit ?? p2.crit } : {}), ...(d2.luck ?? p2.luck ? { luck: d2.luck ?? p2.luck } : {}), // station.crit 2026-08-27
     strength: p2.strength ?? 0, precision: p2.precision ?? 0, magic: p2.magic ?? 0, spirit: p2.spirit ?? 0,
@@ -1093,7 +1094,7 @@ function compileCritChart(chart) {
 // understands can say so — never a silent, inert item. Consumables and
 // activated trinkets/relics are ABILITIES WITH CHARGES the engine lacks
 // (ITEMS-PLAN §7); they emit with their stat payload and the active named.
-const ITEM_STAT = { health: 'maxHp', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', dodge: 'dodge', strength: 'strength',
+const ITEM_STAT = { health: 'maxHp', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedBlock:'rangedBlock', dodge: 'dodge', strength: 'strength',
   precision: 'precision', magic: 'magic', spirit: 'spirit', reach: 'reach', accuracy: 'accuracy',
   movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // toughness, surge, vision — 2026-09-03
 function takeItemAttack(a) {
@@ -1254,7 +1255,7 @@ const ARMORS = JSON.parse(fs.readFileSync('gen/armor-enchants.json', 'utf8'));
 
 // Codex stat words -> engine StatName. Anything not here is a named gap.
 const HERO_STAT = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy',
-  dodge: 'dodge', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', movement: 'movement', reach: 'reach', health: 'maxHp',
+  dodge: 'dodge', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedBlock:'rangedBlock', movement: 'movement', reach: 'reach', health: 'maxHp',
   staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };
 const statWord = { Strength: 'strength', Precision: 'precision', Magic: 'magic', Spirit: 'spirit', Accuracy: 'accuracy',
   Dodge: 'dodge', Armor: 'armor', Resist: 'resist', Movement: 'movement', Reach: 'reach', Health: 'maxHp', Crit: 'crit', Luck: 'luck' };
@@ -1448,7 +1449,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
@@ -1475,6 +1476,7 @@ function testUnits(testAttackRows, testAbilityRows) {
     if (from) { base = realUnits.get(from); if (!base) throw new Error(`content/test/units.json: '${row.id}' is a delta over '${from}', which is not a real unit in the pack`); }
     const { id, ...body } = rest;
     const u = { ...base, ...body, ...(set || {}), typeId: row.id, abilities: body.abilities ?? base.abilities ?? [], tags: body.tags ?? base.tags ?? [] };
+    optionalCombatStats(u);
     delete u.copyOf;
     for (const k of Object.keys(u)) if (!UNIT_FIELDS.has(k)) throw new Error(`content/test/units.json: '${row.id}' carries unknown field '${k}'`);
     u.triggers = (u.triggers || []).map((t) => {
@@ -1492,9 +1494,10 @@ function testUnits(testAttackRows, testAbilityRows) {
 }
 function testStatuses() {
   const out = {};
-  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled']);
+  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled']);
   for (const row of readTest('statuses.json')) {
     const { note, ...r } = row;
+    if (r.blocksBlock !== undefined && typeof r.blocksBlock !== 'boolean') throw Error('Invalid blocksBlock flag');
     if (!isTestId.status(r.id)) throw new Error(`content/test/statuses.json: '${r.id}' is not test.status.*`);
     for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
     out[r.id] = { ...r, stacking: 'add' };

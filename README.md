@@ -1,5 +1,7 @@
 # content/ — the HoBaT content pipeline
 
+V2 Block stat/status plumbing: [V2-BLOCK-PLUMBING.md](V2-BLOCK-PLUMBING.md).
+
 Ordered attack packet authoring and provisional weapon interpretations:
 [V2-DAMAGE-PACKETS.md](V2-DAMAGE-PACKETS.md).
 
