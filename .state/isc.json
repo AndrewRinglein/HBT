@@ -766,8 +766,8 @@
    "tail": "  url: 'file:///sessions/brave-clever-fermat/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/slice-run.mts' | } | Node.js v22.23.2"
   },
   "closed": {
-   "at": "2026-09-04 08:17",
-   "sha": "6f5c899"
+   "at": "2026-09-18 15:44",
+   "sha": "4d7395d"
   },
   "regressed": [
    {

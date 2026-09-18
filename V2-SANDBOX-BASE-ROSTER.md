@@ -63,3 +63,15 @@ be recovered only after committed audit via `slice-gate.mjs --close 025 --sha`
 using the verified source, retaining the historical failure. Candidate-ruling
 warnings were inspected: the burst policy remains engine-owned and the quest
 ruling remains unchanged; no extra mechanics or human seal are claimed.
+
+## Landing and independent audit
+
+Source4d7395d and bookkeeping0dd175a landed with238 tests, typecheck and62 green
+P probes. The candidate-ruling warning remains; the gate withholds its seal and
+human/GPU acceptance is not manufactured. Independent committed audit again
+passed62 probes with zero regressions. Owning `--close 025 --sha 4d7395d` reran
+the recovered cold-start probe, verified its existing red and restored closure
+while preserving the recorded failed attempt. Current count is61 of69 closed,
+62 probed,1 accepted. The final source checkpoint includes this receipt and
+instrument-owned closure; both pages are then rebuilt and all built smoke
+commands repeated before publication. No gameplay change repaired ISC025.
