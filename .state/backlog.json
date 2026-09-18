@@ -965,6 +965,10 @@
   "expect": "ISC069 exact detached targeting facts; built real empty/occupied hex callbacks, stale node/session rejection, busy/fault locks and shared display heights; full suite/P and retained built flows.",
   "isc": [
    "069"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "64fc35b",
+  "engineSha": "22c8c79",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]

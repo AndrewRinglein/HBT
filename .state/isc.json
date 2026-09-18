@@ -1049,8 +1049,8 @@
    "tail": "+ Received: | null |  ❯ test/isc-069.test.ts:246:16"
   },
   "closed": {
-   "at": "2026-09-18 16:01",
-   "sha": "5695c17"
+   "at": "2026-09-18 16:19",
+   "sha": "64fc35b"
   },
   "regressed": [
    {
