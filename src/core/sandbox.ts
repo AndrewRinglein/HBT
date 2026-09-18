@@ -1,5 +1,5 @@
 // Standalone host adapter. All choices and resolution belong to the engine.
-import {createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf} from '../engine.js'
+import {createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf} from '../engine.js'
 import type {Ctx,BattleOptions,BattleCommand,ControlPolicy} from '../engine.js'
 import {SANDBOX_HEROES,SANDBOX_ENEMIES} from '../content/sandbox.js'
 import {atlasFieldingOf,type AtlasBinding} from '../content/atlas.js'
@@ -36,7 +36,7 @@ export function sandboxChoices(s:Sandbox):SandboxChoice[]{
  const u=ctx.state.units[actor]!,out:SandboxChoice[]=[]
  for(const id of u.actions){const a=ctx.actions[id];if(!a)continue
   for(const slot of ['movement','primary'] as const){
-   const aims=isMove(a)?movementOptions(ctx,actor,id,slot).map(p=>({destination:p.destination,path:p.path})):ctx.state.units.map(t=>({target:t.id,path:[]}))
+   const aims=isMove(a)?movementOptions(ctx,actor,id,slot).map(p=>({destination:p.destination,path:p.path})):isBurst(a)?burstCentres(ctx,actor,id,slot).map(centre=>({centre,path:[]})):ctx.state.units.map(t=>({target:t.id,path:[]}))
    for(const aim of aims){const {path,...target}=aim,command:ActionCommand={kind:'action',actor,actionId:id,slot,expectedSeq:ctx.state.seq,...target}
     if(!validateBattleCommand(ctx,s.policy,command).ok)continue
     out.push({name:a.name,cost:staminaCostOf(u,a),command,path,preview:'target' in command?(isAttack(a)?preview(ctx,actor,command.target,id):previewPower(ctx,actor,command.target,id)):null})
@@ -44,6 +44,14 @@ export function sandboxChoices(s:Sandbox):SandboxChoice[]{
   }
  }
  return out
+}
+/** Forecast a single current burst command. Enumeration never calls this resolver. */
+export function previewSandboxChoice(s:Sandbox,command:unknown){
+ const valid=validateBattleCommand(s.ctx,s.policy,command)
+ if(!valid.ok)throw Error(valid.reason)
+ const c=command as ActionCommand
+ if(c.kind!=='action'||!('centre' in c)||!isBurst(s.ctx.actions[c.actionId]!))throw Error('Choose a burst centre for this forecast')
+ return previewBurst(s.ctx,c.actor,c.centre,c.actionId)
 }
 export function commandSandbox(s:Sandbox,command:unknown){const result=executeBattleCommand(s.ctx,s.policy,command);if(result.ok)advanceSandbox(s);return result}
 export function exportSandbox(s:Sandbox,provenance?:{engineCommit:string;engineDirty:boolean}){

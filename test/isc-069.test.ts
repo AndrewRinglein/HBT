@@ -174,3 +174,66 @@ describe('ISC-069 — all24 authored standalone base heroes',()=>{
   expect(createSandbox({...config,heroes:Array(6).fill(id),enemies:Array(15).fill('unit.zombie')}).ctx.state.units).toHaveLength(21)
  })
 })
+
+// v2.sandbox-burst-centres: real authored kit and real engine commands only.
+import * as sandboxDoor from '../src/core/sandbox.js'
+import * as engineDoor from '../src/engine.js'
+import {vi} from 'vitest'
+const burstConfig={mapId:'showcase.atlas-priory',heroes:['hero.base.warrior-fearsome'],enemies:['unit.zombie'],seed:1}
+const cleave='attack.halberd.cleave'
+const burstChoice=(s:ReturnType<typeof createSandbox>,centre:number)=>{
+ const choice=sandboxChoices(s).find(c=>c.command.actionId===cleave&&c.command.slot==='primary'&&'centre' in c.command&&c.command.centre===centre)
+ expect(choice,'engine legal burst centre '+centre).toBeDefined();return choice!
+}
+function walkToBurst(s:ReturnType<typeof createSandbox>){
+ acting(s)
+ for(const destination of [85,90,72]){
+  const move=sandboxChoices(s).find(c=>c.command.actionId==='power.move'&&c.command.slot==='movement'&&'destination' in c.command&&c.command.destination===destination)
+  expect(move).toBeDefined();expect(commandSandbox(s,move!.command).ok).toBe(true)
+  if(destination!==72){expect(commandSandbox(s,{kind:'end-cycle',actor:0,expectedSeq:s.ctx.state.seq}).ok).toBe(true);acting(s)}
+ }
+}
+describe('ISC-069 — engine burst centres and selected forecast',()=>{
+ it('enumerates empty legal centres per slot without forecasting recipients',()=>{
+  const s=createSandbox(burstConfig);acting(s)
+  const choices=sandboxChoices(s),centres=choices.filter(c=>c.command.actionId===cleave)
+  expect(centres.some(c=>'centre' in c.command&&c.command.centre===81)).toBe(true)
+  expect(centres.some(c=>'centre' in c.command&&c.command.centre===100)).toBe(true)
+  const spy=vi.spyOn(engineDoor,'previewBurst'),before=saveSandbox(s)
+  try{const listed=sandboxChoices(s);expect(spy).not.toHaveBeenCalled();expect(saveSandbox(s)).toBe(before)
+   for(const c of listed.filter(c=>c.command.actionId===cleave)){expect(c.preview).toBeNull();expect(validateBattleCommand(s.ctx,s.policy,c.command).ok).toBe(true)}
+  }finally{spy.mockRestore()}
+ })
+ it('previews only one selected legal command, without events/RNG/state changes; rejects stale, malformed and enemy choices',()=>{
+  const s=createSandbox(burstConfig);acting(s);const c=burstChoice(s,81),before=saveSandbox(s)
+  const spy=vi.spyOn(engineDoor,'previewBurst')
+  try{const p=sandboxDoor.previewSandboxChoice(s,c.command);expect(spy).toHaveBeenCalledTimes(1);expect(p).toEqual(engineDoor.previewBurst(s.ctx,0,81,cleave));expect(p!.targets).toEqual([])
+   for(const bad of [null,{...c.command,expectedSeq:s.ctx.state.seq-1},{...c.command,actor:1},{...c.command,centre:-1},{...c.command,target:1}])expect(()=>sandboxDoor.previewSandboxChoice(s,bad)).toThrow()
+   expect(saveSandbox(s)).toBe(before)
+  }finally{spy.mockRestore()}
+ })
+ it('executes an empty centre through the normal slot/payment boundary and preserves it in saves/exports',()=>{
+  const s=createSandbox(burstConfig);acting(s);const c=burstChoice(s,81),before=s.ctx.events.length,stamina=s.ctx.state.units[0]!.stamina
+  expect(commandSandbox(s,c.command).ok).toBe(true)
+  const events=s.ctx.events.slice(before),declared=events.find(e=>e.type==='burst.declared')!
+  expect(declared).toBeDefined();expect(declared['centre']).toBe(81);expect(declared['targets']).toEqual([])
+  expect(events.filter(e=>e.type==='action.spent'&&e.actor===0)).toEqual([expect.objectContaining({actor:0,actionId:cleave,slot:'primary',free:false,moveUsed:false,primaryUsed:true})])
+  // The host also advances phase-end regeneration and enemy AI; verify the exact payment moment.
+  expect(events.filter(e=>e.type==='stamina.spent'&&e.actor===0)).toEqual([expect.objectContaining({causeId:cleave,amount:c.cost,stamina:stamina-c.cost})])
+  expect(s.ctx.state.units[0]!.primaryUsed).toBe(true)
+  expect(events.some(e=>e.type==='attack.hit')).toBe(false)
+  expect(sandboxChoices(s).some(c=>c.command.actionId===cleave&&c.command.slot==='primary')).toBe(false)
+  const state=saveSandbox(s);expect(commandSandbox(s,c.command).ok).toBe(false);expect(saveSandbox(s)).toBe(state)
+  const restored=restoreSandbox(state);expect(restored.ctx.events).toEqual(s.ctx.events);expect(restored.ctx.rng.log).toEqual(s.ctx.rng.log);expect(exportSandbox(restored)).toEqual(exportSandbox(s))
+ })
+ // Multi-turn simulation + two restorations exceeded Vitest's 5s default under the full parallel suite.
+ // Keep a bounded integration budget; this probe specifies combat/state parity, not a latency target.
+ it('forecasts real recipient HP on the authored Priory after legal moves, then matches resolution and restored replay',{timeout:15_000},()=>{
+  const s=createSandbox(burstConfig);walkToBurst(s);const c=burstChoice(s,92),before=saveSandbox(s)
+  const p=sandboxDoor.previewSandboxChoice(s,c.command)!;expect(p.targets).toHaveLength(1);expect(p.targets[0]).toMatchObject({id:1,hex:92,applied:5});expect(saveSandbox(s)).toBe(before)
+  const b=restoreSandbox(before),start=s.ctx.events.length;expect(commandSandbox(s,c.command).ok).toBe(true);expect(commandSandbox(b,c.command).ok).toBe(true)
+  expect(b.ctx.events).toEqual(s.ctx.events);expect(b.ctx.rng.log).toEqual(s.ctx.rng.log)
+  const damage=s.ctx.events.slice(start).find(e=>e.type==='damage.applied'&&e.target===1&&e.causeId===cleave)!
+  expect(damage['amount']).toBe(p.targets[0]!.applied);expect(damage['packets']).toEqual(p.targets[0]!.packets);expect(exportSandbox(s).events).toEqual(s.ctx.events)
+ })
+})

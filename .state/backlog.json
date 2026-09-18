@@ -933,5 +933,20 @@
   "sha": "4d7395d",
   "engineSha": "22c8c79",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "v2.sandbox-burst-centres",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "needs": [
+   "v2.sandbox-base-roster"
+  ],
+  "spec": "Offer engine-legal burst centres in the standalone action dropdown; forecast only the selected validated command through previewBurst and execute through the shared command boundary. Board targeting remains separate.",
+  "expect": "ISC069 empty and occupied centre choices, lazy pure previews, stale/policy/payment rejection, actual movement-route recipient damage and save/export parity; built dropdown execution and retained full suite/P probes.",
+  "isc": [
+   "069"
+  ],
+  "attempts": 1
  }
 ]

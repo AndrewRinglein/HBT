@@ -1042,15 +1042,22 @@
  },
  "069": {
   "red": {
-   "at": "2026-09-18 01:07",
-   "sha": "e5a86ca",
-   "hash": "d2ea2d45c5fb",
+   "at": "2026-09-18 15:58",
+   "sha": "a6874fb",
+   "hash": "b3f5033dcad6",
    "how": "feature absent",
-   "tail": "     20| } |  ❯ createSandbox src/core/sandbox.ts:22:14 |  ❯ test/isc-069.test.ts:167:111"
+   "tail": "    187| } |     188| function walkToBurst(s:ReturnType<typeof createSandbox>){ |  ❯ test/isc-069.test.ts:232:61"
   },
   "closed": {
    "at": "2026-09-18 15:44",
    "sha": "4d7395d"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-18 15:55",
+    "sha": "a6874fb",
+    "tail": "forecasts real recipient HP on the authored Priory after legal moves, then matches resolution and restored replay: Error: STACK_TRACE_ERROR"
+   }
+  ]
  }
 }
