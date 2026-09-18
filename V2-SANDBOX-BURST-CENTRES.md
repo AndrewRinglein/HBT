@@ -97,3 +97,18 @@ conditional reactions when the engine flag is present. Detailed rows remain
 collapsed; player copy uses plain “burst reactions” rather than API jargon.
 The landing gate reruns all checks against this final source. The existing
 candidate-ruling warning remains and does not imply human review or acceptance.
+
+
+## Landing and publication
+
+Source5695c17 and bookkeeping0fad538 landed with243 tests, typecheck and all62
+P probes. An independent committed-tree audit again passed62 probes, zero red
+and zero regressions. ISC069 is closed with its failure history retained; count
+is61 of69 closed,62 probed,1 accepted. The seal remains withheld for the existing
+candidate-ruling flag; no review was recorded on the user's behalf.
+
+After this receipt checkpoint, build-sandbox and build-slice publish from clean
+Kingdom source with clean engine22c8c79 and shared viewer13bdcfe (source4a8e369).
+The final pages must pass the burst dropdown, existing sandbox/replay import,
+all24 hero roster, campaign smoke and three Atlas surface checks before the page
+commit. Publication hashes are recorded by the root checkpoint after release.
