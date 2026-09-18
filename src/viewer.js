@@ -19,16 +19,17 @@
      meta     — {label, seed, engineCommit, outcome, turns} for the HUD; outcome/turns
                 are the engine's stamps on the export, never derived here
    opts = { now?: () => ms, autoplay?: bool, onCursor?: (cursor, event) => void,
-            onDrain?: () => void, onPlayState?: (playing) => void, onError?: (err) => void }
+            onHexClick?: (hex) => boolean, onDrain?: () => void, onPlayState?: (playing) => void, onError?: (err) => void }
 
-   Returns { push, seek, play, pause, speed, step, setZoom, setBare, inspect,
+   Returns { setTargeting, push, seek, play, pause, speed, step, setZoom, setBare, inspect,
              peek, pan, render, dispose, get cursor/events/state/playing/view/invalid/
              speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
+import { targetingFacts } from './targeting.js'
 import { terrainLayer } from './terrain3d.js'
 import {prepareAtlasBinding} from './atlas.js'
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -154,7 +155,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     syncProps(V)
     /* the persistent board objects, coplanar with the ground and right after it */
     syncLayers(V); syncCorpses(V); syncAuras(V)
-    drawAim(V)
+    drawAim(V); drawTargeting(V)
     syncUnits(V)
     drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update()
   }
@@ -178,12 +179,31 @@ export function mountBattleViewer(root, data, opts = {}) {
   // Burst facts are durable; this small clock controls only their visibility.
   // Remaining beats share the continuous clock, including speed changes and rollback.
   let burstTimer = null, burstGeneration = 0, burstRemaining = 0, burstStarted = 0, disposed = false
+  let targetingGeneration = 0
+  V.targeting = null
+  V.inputActive = () => !disposed && !V.invalid
+  V.offerHexClick = (hex, generation = targetingGeneration) => {
+    if (!V.inputActive() || generation !== targetingGeneration || !V.targeting?.legalHexes.includes(hex) || !opts.onHexClick) return false
+    try { return opts.onHexClick(hex) === true } catch (err) { return fault(err) }
+  }
+  V.targetingGeneration = () => targetingGeneration
+  function clearTargeting() { targetingGeneration++; V.targeting = null; V.layers.targeting?.remove(); V.layers.targeting = null }
+  function setTargeting(value) {
+    if (disposed) throw new Error('viewer disposed')
+    if (value === null) { clearTargeting(); return } // fault callbacks may safely clear without redrawing
+    if (V.invalid) throw new Error('viewer faulted')
+    const next = targetingFacts(value, V.data.POS) // validate/detach the WHOLE payload before mutation
+    targetingGeneration++; V.targeting = next
+    try { render() } catch (err) { fault(err) }
+  }
   function cancelBurst() {
     burstGeneration++
     if (burstTimer != null) { clearTimeout(burstTimer); V.fx.timers.delete(burstTimer); burstTimer = null }
     burstRemaining = 0
   }
   function fault(err) {
+    if (V.invalid) throw V.invalid
+    clearTargeting()
     V.invalid = err; V.playing = false; cancelBurst()
     if (V.timer != null) { clearTimeout(V.timer); V.timer = null }
     if (opts.onPlayState) opts.onPlayState(false)
@@ -306,7 +326,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (V.timer) { clearTimeout(V.timer); V.timer = null }
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
     V.S = foldTo(V.EV, V.cursor, ctx())
-    cancelBurst(); cancelBeats(V); clearFloats(V)
+    clearTargeting(); cancelBurst(); cancelBeats(V); clearFloats(V)
     V.view.burstVisible = !!V.S.BURST
     V.view.inspectId = null                       // a click from before the scrub must not outrank the actor after it
     for (const E of V.layers.UEL.values()) { if (E.walk) { E.walk.cancel(); E.walk = null } E.root.style.transition = 'none' }
@@ -344,7 +364,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   }
 
   const api = {
-    push, seek, play, pause, step: stepOnce, render,
+    setTargeting, push, seek, play, pause, step: stepOnce, render,
     speed(x) {
       if (typeof x !== 'number' || !Number.isFinite(x) || x <= 0) throw new Error('speed must be a finite positive number')
       const clock = V.clock() // settle elapsed time at the OLD rate before rebasing
@@ -360,7 +380,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
     peek(on) { V.view.peek = !!on; applyCam(V); drawEdges(V) },
     pan(dx, dy) { applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
-    dispose() { disposed = true; cancelBurst(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; clearTargeting(); cancelBurst(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

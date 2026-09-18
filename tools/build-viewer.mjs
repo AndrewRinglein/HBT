@@ -107,7 +107,7 @@ const tmp = join(PKG, '.build', 'BATTLE-VIEWER.candidate.html')
 writeFileSync(tmp, page)
 try {
   execFileSync('node', ['tools/verify.mjs', tmp], { stdio: 'inherit' })
-  execFileSync('node', ['--test', 'tools/terrain-scene.test.mjs', 'tools/terrain-player.test.mjs', 'tools/atlas-combat.test.mjs', 'tools/presentation-review.test.mjs', 'tools/bursts-player.test.mjs', 'tools/clock.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
+  execFileSync('node', ['--test', 'tools/terrain-scene.test.mjs', 'tools/terrain-player.test.mjs', 'tools/atlas-combat.test.mjs', 'tools/presentation-review.test.mjs', 'tools/bursts-player.test.mjs', 'tools/clock.test.mjs', 'tools/targeting.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
   execFileSync('node', ['--test', 'tools/direct-map.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
 } catch (e) {
   console.error(`build-viewer: verify FAILED — ${OUT} left untouched; the candidate is at ${tmp}`)

@@ -665,7 +665,14 @@ function mkUnit(V, u) {
      flattening inside 3D contexts */
   const img = el('', 'position:absolute;background-repeat:no-repeat;background-position:center bottom;background-size:contain;pointer-events:auto;cursor:pointer')
   img.style.backgroundImage = `url("${ASSETS[a.token]}")`
-  img.addEventListener('click', ev => { ev.stopPropagation(); V.view.inspectId = u.id; V.render() })
+  const id = u.id
+  img.addEventListener('click', ev => {
+    ev.stopPropagation()
+    if (!V.inputActive() || V.clickSuppressed?.(ev)) return
+    const current = V.S.U[id]
+    if (!current || V.offerHexClick(current.hex)) return
+    V.view.inspectId = id; V.render()
+  })
   bb.appendChild(img)
   const flash = el('', 'position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,220,160,.4) 55%,transparent 75%);opacity:0;transition:opacity .045s ease;pointer-events:none')
   bb.appendChild(flash)
@@ -839,6 +846,37 @@ export function syncUnits(V) {
 }
 
 /* ── the transient layer: the aim arrow and the projection numbers ─────── */
+/* Targeting is a host-owned overlay, independent of replay BURST facts. */
+export function drawTargeting(V) {
+  V.layers.targeting?.remove(); V.layers.targeting = null
+  const T = V.targeting; if (!T) return
+  const layer = el('targeting', 'position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none')
+  V.layers.targeting = layer
+  V.dom.stage.insertBefore(layer, V.layers.unitsL)
+  const generation = V.targetingGeneration(), {POS, LAYOUT} = V.data
+  const tile = (hex, cls, color) => {
+    const p = POS[hex]
+    const n = el('ring ' + cls, `left:${p.px-LAYOUT.W/2}px;top:${p.py-LAYOUT.H/2}px;background:${color};pointer-events:none`)
+    n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex)}px)`
+    layer.appendChild(n); return n
+  }
+  for (const h of T.hexes) tile(h, 'targetFootprint', 'rgba(100,190,255,.20)')
+  if (T.centre !== null) tile(T.centre, 'targetCentre', 'rgba(255,220,110,.35)')
+  for (const row of T.shielded) {
+    const n = tile(row.hex, 'targetShield', 'rgba(120,120,150,.4)')
+    n.dataset.props = row.props.join(','); n.setAttribute('title', 'Terrain shielding: ' + row.props.join(', '))
+  }
+  for (const h of T.legalHexes) {
+    const p = POS[h], n = document.createElement('button')
+    n.className = 'targetHex'; n.setAttribute('type', 'button'); n.setAttribute('aria-label', 'Select hex ' + h)
+    n.dataset.hex = String(h)
+    n.style.cssText = `position:absolute;left:${p.px-LAYOUT.W/2}px;top:${p.py-LAYOUT.H/2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;background:transparent;border:0;padding:0;cursor:crosshair;pointer-events:auto;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)`
+    n.style.transform = `translateZ(${heightOf(V, h)}px)`
+    n.addEventListener('click', ev => { ev.stopPropagation(); if (!V.clickSuppressed?.(ev)) V.offerHexClick(h, generation) })
+    layer.appendChild(n)
+  }
+}
+
 export function drawAim(V) {
   const { S, dom, data: { POS, F } } = V
   if (V.layers.dyn) V.layers.dyn.remove()
@@ -1029,15 +1067,19 @@ export function drawEdges(V) {
 /** wire drag, arrow keys and the peek key; returns an unbind for dispose() */
 export function bindCamera(V) {
   const wrap = V.dom.stage.parentNode; if (!wrap || !wrap.addEventListener) return () => {}
-  let drag = null
-  const down = e => { if (e.button !== 0 && e.button !== 1) return; drag = { x: e.clientX, y: e.clientY }; wrap.style.cursor = 'grabbing' }
+  let drag = null, dragged = false
+  V.clickSuppressed = e => e.detail !== 0 && dragged
+  const down = e => { if (e.button !== 0 && e.button !== 1) return; dragged = false; drag = { x: e.clientX, y: e.clientY, originX: e.clientX, originY: e.clientY }; wrap.style.cursor = 'grabbing' }
   const move = e => { if (!drag) return
+    // Screen-pixel threshold from pointerdown: jitter is a click, a real drag
+    // applies its full displacement once and then continues incrementally.
+    if (!dragged && Math.hypot(e.clientX - drag.originX, e.clientY - drag.originY) < 4) return
     /* the host may scale the whole component (the harness fits 1920 to the
        window): screen px → component px is the root's rect over its layout width */
     const sq = squash(V), scale = (V.dom.root.getBoundingClientRect && V.dom.root.offsetWidth) ? (V.dom.root.getBoundingClientRect().width / V.dom.root.offsetWidth || 1) : 1
     const dx = (e.clientX - drag.x) / scale, dy = (e.clientY - drag.y) / (scale * sq)
-    drag = { x: e.clientX, y: e.clientY }
-    if (dx || dy) { applyCam(V, { pan: { x: -dx, y: -dy } }); drawEdges(V) } }
+    drag = { ...drag, x: e.clientX, y: e.clientY }
+    if (dx || dy) { dragged = true; applyCam(V, { pan: { x: -dx, y: -dy } }); drawEdges(V) } }
   const up = () => { drag = null; wrap.style.cursor = '' }
   /* keys act only while the pointer is over the board or the component has
      focus — two viewers on one page must not both pan, and a host page keeps
@@ -1045,7 +1087,7 @@ export function bindCamera(V) {
   let hover = false
   const enter = () => { hover = true }, leave = () => { hover = false; up() }
   const key = e => {
-    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return
+    if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return
     if (!hover && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
     const STEP = 120
     const pan = (x, y) => { applyCam(V, { pan: { x, y } }); drawEdges(V) }
@@ -1061,5 +1103,5 @@ export function bindCamera(V) {
   wrap.addEventListener('pointerdown', down); wrap.addEventListener('pointermove', move)
   wrap.addEventListener('pointerup', up); wrap.addEventListener('pointerleave', leave); wrap.addEventListener('pointerenter', enter)
   document.addEventListener('keydown', key); document.addEventListener('keyup', keyup)
-  return () => { document.removeEventListener('keydown', key); document.removeEventListener('keyup', keyup) }
+  return () => { document.removeEventListener('keydown', key); document.removeEventListener('keyup', keyup); for (const [type, fn] of [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter]]) wrap.removeEventListener(type, fn) }
 }
