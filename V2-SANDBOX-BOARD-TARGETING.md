@@ -84,3 +84,17 @@ probe hash is daa5d726c65f. There was no full gate failure for this item; the tw
 pre-gate findings were the recorded declaration and shared fakeDOM repairs.
 The existing burst-policy candidate ruling remains a review flag. Landing and
 independent committed audit follow, with the prior criteria/history preserved.
+
+## Landing and independent audit
+
+Source64fc35b and bookkeeping7d79d9a landed with244 tests, typecheck and all62
+P probes passing. Independent committed-tree audit again passes62 probes with
+zero regressions. Count:61 of69 closed,62 probed,1 accepted. No criterion state
+or seal was manually edited; the existing candidate-ruling flag withholds the
+seal. No human acceptance was recorded.
+
+Both pages are rebuilt from the clean receipt checkpoint against engine22c8c79
+and shared viewerdcb51d2/source40d682a. Publication requires all four built sandbox
+checks (board targeting, burst dropdown, prior sandbox/replay,24hero roster),
+retained campaign smoke and three Atlas lifecycle/CSS probes. Root checkpoint
+records the final source/page hashes after these checks and the page commit.
