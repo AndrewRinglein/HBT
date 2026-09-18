@@ -1049,8 +1049,8 @@
    "tail": "     20| } |  ❯ createSandbox src/core/sandbox.ts:22:14 |  ❯ test/isc-069.test.ts:167:111"
   },
   "closed": {
-   "at": "2026-09-16 10:15",
-   "sha": "0018e47"
+   "at": "2026-09-18 15:44",
+   "sha": "4d7395d"
   }
  }
 }
