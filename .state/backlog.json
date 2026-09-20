@@ -3617,5 +3617,19 @@
   "status": "done-needs-review",
   "sha": "a422239",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "plumbing.gate-recovery",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": [
+   "rule.block"
+  ],
+  "spec": "Preserve candidate source and exact failure diagnostics when the committed-tree audit rejects a landing. Restore the old baseline and pending item through the gate, retain the candidate commit and failure history, and refuse recovery if HEAD or owned metadata changed.",
+  "expect": "Real isolated Git repositories prove introduced and existing pending items, candidate and unrelated working bytes, full retry diff, stale HEAD/metadata refusal, timeout/assertion/baseline diagnostics and unchanged successful landing. All engine tests and historical controls remain exact.",
+  "unreachable": "This is offline Git landing recovery, outside battle resolution. Isolated repositories execute the actual gate and real Git commands with controlled audit outcomes; battle content cannot invoke or remove recovery.",
+  "killSwitchExempt": "Disabling content cannot remove offline Git recovery. Meaningful pre-change fixtures demonstrate candidate deletion, false diagnostic attribution, lost pending rows and unsafe changed-HEAD recovery using the actual gate.",
+  "note": "Bounded infrastructure repair after the recorded Block post-commit timeout. No combat math, content, global timeout or test-discovery policy changes; historical failed attempts remain evidence.",
+  "attempts": 2
  }
 ]
