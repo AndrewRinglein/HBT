@@ -17,6 +17,30 @@ const svgEl = t => document.createElementNS('http://www.w3.org/2000/svg', t)
 const placeAfter = (ref, node) => ref.parentNode.insertBefore(node, ref.nextSibling || null)
 export const feetOf = (V, hex) => ({ x: V.data.POS[hex].px, y: V.data.POS[hex].py + V.data.LAYOUT.H * 0.28 })
 export const heightOf = (V, hex) => V.data.displayHeights?.[hex] || 0
+// Visual interpolation only: both endpoints and whether entry occurred belong
+// to the engine. Never change the unit's authoritative hex for this pose.
+export const OPPORTUNITY_STEP_MS = 240
+export function opportunityPose(V) {
+  const a = V.S.AOO
+  if (a?.to == null) return null
+  if (!V.data.POS[a.from] || !V.data.POS[a.to]) throw new Error('opportunity references unknown hex')
+  const u = V.S.U[a.mover]
+  if (!u || u.life !== 'standing' || u.hex !== a.from) return null
+  const from = feetOf(V, a.from), to = feetOf(V, a.to)
+  return { id: a.mover, from: a.from, to: a.to, moveSeq: a.moveSeq,
+    x: from.x + (to.x-from.x)/3, y: from.y + (to.y-from.y)/3,
+    z: heightOf(V,a.from) + (heightOf(V,a.to)-heightOf(V,a.from))/3 }
+}
+export function animateOpportunityStep(V, id, from, to) {
+  const E = V.layers.UEL.get(id)
+  if (!E?.root.animate) return
+  if (E.walk) E.walk.cancel()
+  E.root.style.transition = 'none'
+  const frame = p => ({left:p.x+'px',top:p.y+'px',transform:`translateZ(${p.z}px)`})
+  const a = E.root.animate([frame(from),frame(to)], {duration:OPPORTUNITY_STEP_MS/(V.speed*.75),easing:'ease-in-out',fill:'none'})
+  E.walk = a
+  a.onfinish = a.oncancel = () => { if (E.walk === a) { E.walk = null; E.root.style.transition = ROOT_TRANSITION } }
+}
 export const squash = V => Math.cos(V.data.LAYOUT.tilt * Math.PI / 180)
 
 /* ── keyframes the tokens and floats use (once per document) ─────────── */
@@ -371,24 +395,26 @@ export const dilate = (V, ms) => Math.max(16, Math.round(ms / (V.speed || 1)))
 export const LIFT = 'translateZ(2px)'
 const BOB = [{ transform: LIFT + ' translateY(0) rotate(0)' }, { transform: LIFT + ' translateY(-6px) rotate(-2.6deg)', offset: .25 },
   { transform: LIFT + ' translateY(-2px) rotate(0)', offset: .5 }, { transform: LIFT + ' translateY(-6px) rotate(2.6deg)', offset: .75 }, { transform: LIFT + ' translateY(0) rotate(0)' }]
-export function traverse(V, id, startHex, path, dur) {
+export function traverse(V, id, startHex, path, dur, startPose = null) {
   const E = V.layers.UEL.get(id), u = V.S.U[id]
   if (!E || !u || !E.root.animate) return
-  const pts = [feetOf(V, startHex), ...path.map(h => feetOf(V, h))]
+  const pts = [startPose || feetOf(V, startHex), ...path.map(h => feetOf(V, h))]
   const cum = [0]
   for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y))
   const total = cum[cum.length - 1] || 1
   const kf = pts.map((p, i) => ({ left: p.x + 'px', top: p.y + 'px', ...(V.data.displayHeights ? {transform:`translateZ(${heightOf(V, [startHex,...path][i])}px)`} : {}), offset: cum[i] / total }))
+  if (startPose) kf[0].transform = `translateZ(${startPose.z}px)`
   if (E.walk) E.walk.cancel()
   E.root.style.transition = 'none'
-  const a = E.root.animate(kf, { duration: dur, easing: 'cubic-bezier(.35,0,.2,1)', fill: 'none' })
+  const motionDuration = startPose ? dilate(V, dur) : dur
+  const a = E.root.animate(kf, { duration: motionDuration, easing: 'cubic-bezier(.35,0,.2,1)', fill: 'none' })
   E.walk = a
-  if (u.life === 'standing') E.img.animate(BOB, { duration: Math.max(120, dur / path.length), iterations: path.length, easing: 'ease-in-out' })
+  if (u.life === 'standing') E.img.animate(BOB, { duration: Math.max(120, motionDuration / path.length), iterations: path.length, easing: 'ease-in-out' })
   /* `cancel()` dispatches ASYNCHRONOUSLY, so a walk cancelled by a later beat
      runs this handler after that beat has claimed `E.walk` — nulling it would
      orphan the new animation from seek() and dispose() (REVIEW §C4). Only the
      current owner may clear the slot. */
-  const release = () => { E.root.style.transition = ROOT_TRANSITION; if (E.walk === a) E.walk = null }
+  const release = () => { if (E.walk === a) { E.root.style.transition = ROOT_TRANSITION; E.walk = null } }
   a.oncancel = release
   a.onfinish = () => {
     release()
@@ -705,9 +731,10 @@ export function syncUnits(V) {
   for (const [id, E] of L.UEL) if (!S.U[id]) E.root.style.display = 'none'
   for (const u of Object.values(S.U)) {
     let E = L.UEL.get(u.id); if (!E) { E = mkUnit(V, u); L.UEL.set(u.id, E) }
-    const f = feetOf(V, u.hex)
+    const attempted = opportunityPose(V)
+    const f = attempted?.id === u.id ? attempted : feetOf(V, u.hex)
     E.root.style.left = f.x + 'px'; E.root.style.top = f.y + 'px'
-    E.root.style.transform = V.data.displayHeights ? `translateZ(${heightOf(V, u.hex)}px)` : ''
+    E.root.style.transform = V.data.displayHeights || attempted?.id === u.id ? `translateZ(${attempted?.id === u.id ? attempted.z : heightOf(V, u.hex)}px)` : ''
     if (u.life === 'dead') {
       /* a corpse, not a disappearance (ruled 2026-08-26) — and since 2026-09-03
          the corpse is the engine's board object (corpse.created), drawn by
@@ -887,6 +914,14 @@ export function drawAim(V) {
   svg.setAttribute('width', F.w); svg.setAttribute('height', F.h)
   svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible;pointer-events:none'
   dyn.appendChild(svg)
+  const attempt = opportunityPose(V)
+  if (attempt) {
+    const p = POS[attempt.to], {W,H} = V.data.LAYOUT
+    const mark = el('ring opportunityDestination', `left:${p.px-W/2}px;top:${p.py-H/2}px;background:${NOTE_HUE.aoo};pointer-events:none`)
+    mark.dataset.hex = String(attempt.to); mark.title = 'Attempted step'
+    mark.style.transform = `translateZ(${heightOf(V,attempt.to)+2}px)`
+    dyn.appendChild(mark)
+  }
   // Copy the engine footprint. No radius, recipient or shielding calculation.
   if (S.BURST && V.view.burstVisible) {
     const B = S.BURST, W = V.data.LAYOUT.W, H = V.data.LAYOUT.H

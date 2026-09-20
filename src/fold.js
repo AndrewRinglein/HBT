@@ -186,6 +186,7 @@ export function fold(S, e, ctx, now = 0) {
       break
     case 'move.begin':
       S.BURST = null
+      S.AOO = null
       /* moves light their own row too (ruled 2026-09-01) — causeId names the MoveDef */
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
       break
@@ -210,13 +211,24 @@ export function fold(S, e, ctx, now = 0) {
          attack.declared/hit/miss that follow belong to this, and the label
          says so. The holder acts; the mover's activation resumes after. */
       S.AOO = { holder: e.actor, mover: e.target, attackId: e.attackId }
+      if (['from', 'to', 'moveSeq'].some(key => Object.hasOwn(e, key))) {
+        if (![e.from, e.to, e.moveSeq].every(n => Number.isSafeInteger(n) && n >= 0) || e.from === e.to)
+          throw new Error('opportunity attempt has invalid hex or movement identity')
+        Object.assign(S.AOO, { from: e.from, to: e.to, moveSeq: e.moveSeq })
+      }
       // This event itself says the mover tried another step. No guessed path,
       // range or animation into a hex the engine never let the mover enter.
-      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'note', text: 'TRIES TO KEEP MOVING', small: true })
+      if (U[e.target] && S.AOO.to == null) cue('float', { hex: U[e.target].hex, kind: 'note', text: 'TRIES TO KEEP MOVING', small: true })
       if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'aoo', text: 'ATTACK OF OPPORTUNITY', small: true })
       S.subjectId = e.actor; S.subjectMode = 'acting'
       break
     case 'aoo.skipped': break                                             // nothing to draw; the log names the reason
+    case 'block.rolled':
+      if (e.blocked) {
+        S.AIM = null; S.ATTACK = null; S.critPending = false
+        if (U[e.defender]) cue('float', { hex: U[e.defender].hex, kind: 'block', text: 'BLOCK', small: true })
+      }
+      break
     case 'burst.declared':
       S.AIM = null; S.ATTACK = null; S.AOO = null; S.critPending = false
       S.BURST = { ...structuredClone(e), shielded: [], struck: [] }
@@ -348,6 +360,7 @@ export function fold(S, e, ctx, now = 0) {
     /* `knocked` MOVES A UNIT (folded 2026-09-01) — unhandled, knocked units
        rendered at a stale hex until their next move */
     case 'knocked':
+      if (S.AOO?.mover === e.target) S.AOO = null
       /* a push of `asked` travels `hexes` (engine 2e649b5); `stoppedBy` says
          what cut it short — occupied, impassable, the edge of the board */
       if (U[e.target]) { const from = U[e.target].hex
@@ -440,8 +453,8 @@ export function fold(S, e, ctx, now = 0) {
         cue('flash', { id: e.target })
         cue('float', { hex: U[e.target].hex, kind: 'bleed', text: 'BLEED-OUT ' + e.bleedOut, n: e.bleedOut, of: 'bleedOut', small: true }) }
       break
-    case 'life.downed': if (U[e.target]) U[e.target].life = 'downed'; break
-    case 'life.dead': if (U[e.target]) { U[e.target].life = 'dead'; cue('hitstop', { ms: 110 }) } break
+    case 'life.downed': if (S.AOO?.mover === e.target) S.AOO = null; if (U[e.target]) U[e.target].life = 'downed'; break
+    case 'life.dead': if (S.AOO?.mover === e.target) S.AOO = null; if (U[e.target]) { U[e.target].life = 'dead'; cue('hitstop', { ms: 110 }) } break
     case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) U[e.target].bleed = e.bleedOut; break
     /* ── bodies and the undead economy (§3) ─────────────────────────────── */
     case 'corpse.created':
@@ -513,7 +526,7 @@ export function fold(S, e, ctx, now = 0) {
         if (fx) cue('fx.status', { id: e.actor, style: fx })
       }
       break
-    case 'battle.end': S.BURST = null; S.outcome = e.outcome; break
+    case 'battle.end': S.BURST = null; S.AOO = null; S.outcome = e.outcome; break
   }
   return cues
 }
@@ -551,7 +564,7 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'bleedout.accelerated', 'power.used', 'battle.end',
   /* 2026-09-03 */
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',
-  'move.stopped', 'aoo.provoked', 'aoo.skipped',
+  'move.stopped', 'aoo.provoked', 'aoo.skipped', 'block.rolled',
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten', 'unit.obliterated',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',

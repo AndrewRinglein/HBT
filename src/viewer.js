@@ -26,6 +26,7 @@
              speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
 import { targetingFacts } from './targeting.js'
+import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf } from './board.js'
 import { terrainLayer } from './terrain3d.js'
 import {prepareAtlasBinding} from './atlas.js'
 import { createState, fold, foldTo } from './fold.js'
@@ -204,7 +205,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   function fault(err) {
     if (V.invalid) throw V.invalid
     clearTargeting()
-    V.invalid = err; V.playing = false; cancelBurst()
+    V.invalid = err; V.playing = false; cancelBurst(); cancelOpportunityLabel(); cancelBeats(V)
     if (V.timer != null) { clearTimeout(V.timer); V.timer = null }
     if (opts.onPlayState) opts.onPlayState(false)
     if (opts.onError) opts.onError(err)
@@ -233,6 +234,20 @@ export function mountBattleViewer(root, data, opts = {}) {
   }
 
   /* ── the pump ────────────────────────────────────────────────────────── */
+  let opportunityLabel = null, opportunityGeneration = 0
+  function cancelOpportunityLabel() {
+    opportunityGeneration++
+    if (opportunityLabel != null) { clearTimeout(opportunityLabel); V.fx.timers.delete(opportunityLabel); opportunityLabel = null }
+  }
+  function afterOpportunityStep(cues) {
+    const generation = opportunityGeneration
+    opportunityLabel = setTimeout(() => {
+      if (disposed || V.invalid || generation !== opportunityGeneration) return
+      V.fx.timers.delete(opportunityLabel); opportunityLabel = null
+      try { playCues(V, cues) } catch (err) { fault(err) }
+    }, OPPORTUNITY_STEP_MS/(V.speed*.75))
+    V.fx.timers.add(opportunityLabel)
+  }
   function applyOne(e, visual) {
     const cues = fold(V.S, e, ctx(), V.clock())
     if (!V.S.BURST) { cancelBurst(); V.view.burstVisible = false }
@@ -261,6 +276,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const MID_WALK = new Set(['stamina.spent', 'status.applied', 'status.reduced', 'trigger.rolled', 'trigger.fired', 'ai.mode'])
   function stepMove(e) {
     const actor = e.actor, EV = V.EV
+    const attempt = opportunityPose(V)
     const startHex = V.S.U[actor] ? V.S.U[actor].hex : null
     const path = []
     let cues = []
@@ -277,7 +293,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     const dur = hexes ? Math.min(900, Math.max(320, 200 + 85 * hexes)) : 0
     playCues(V, cues)
     render()
-    if (hexes && startHex != null) traverse(V, actor, startHex, path, dur)
+    if (hexes && startHex != null) traverse(V, actor, startHex, path, dur, attempt?.id === actor ? attempt : null)
     return dur + (hexes ? 60 : 0)                  // the arrival settle
   }
   /* ONE REPAINT PER RUN (2026-09-03): consecutive layer.painted/cancelled
@@ -293,13 +309,32 @@ export function mountBattleViewer(root, data, opts = {}) {
     return PAINT_RUN_MS
   }
   function beat(e) {
+    cancelOpportunityLabel()
     let d
     if (e.type === 'move.begin' || e.type === 'moved') d = stepMove(e)
     else if (PAINT.has(e.type)) d = stepPaint(e)
     else {
-      applyOne(e, true)
-      d = DUR[e.type] ?? 0
-      if (d > 0 || REDRAW.has(e.type) || expireAim()) render()
+      const before = opportunityPose(V)
+      const cues = applyOne(e, false)
+      burstBeat(e)
+      const after = opportunityPose(V)
+      const starting = after && (!before || before.id !== after.id || before.moveSeq !== after.moveSeq || before.from !== after.from || before.to !== after.to)
+      d = e.type === 'block.rolled' ? (e.blocked ? 700 : 0) : DUR[e.type] ?? 0
+      if (starting) {
+        render()
+        animateOpportunityStep(V, after.id, {...feetOf(V, after.from), z:heightOf(V,after.from)}, after)
+        afterOpportunityStep(cues)
+        d += OPPORTUNITY_STEP_MS
+      } else {
+        playCues(V, cues)
+        if (d > 0 || REDRAW.has(e.type) || expireAim() || before && !after) render()
+        // Forced displacement has its own authoritative shove animation.
+        if (before && !after && e.type !== 'knocked') {
+          const u = V.S.U[before.id]
+          if (u && u.life !== 'dead') animateOpportunityStep(V,before.id,before,{...feetOf(V,u.hex),z:heightOf(V,u.hex)})
+          d = Math.max(d, OPPORTUNITY_STEP_MS)
+        }
+      }
     }
     return d
   }
@@ -326,7 +361,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (V.timer) { clearTimeout(V.timer); V.timer = null }
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
     V.S = foldTo(V.EV, V.cursor, ctx())
-    clearTargeting(); cancelBurst(); cancelBeats(V); clearFloats(V)
+    clearTargeting(); cancelBurst(); cancelOpportunityLabel(); cancelBeats(V); clearFloats(V)
     V.view.burstVisible = !!V.S.BURST
     V.view.inspectId = null                       // a click from before the scrub must not outrank the actor after it
     for (const E of V.layers.UEL.values()) { if (E.walk) { E.walk.cancel(); E.walk = null } E.root.style.transition = 'none' }
@@ -380,7 +415,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
     peek(on) { V.view.peek = !!on; applyCam(V); drawEdges(V) },
     pan(dx, dy) { applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
-    dispose() { disposed = true; clearTargeting(); cancelBurst(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; clearTargeting(); cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

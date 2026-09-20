@@ -65,6 +65,7 @@ export function buildLog(events, SN, turns) {
       case 'move.stopped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;stops at hex ${e.hex} <span class="sq">· ${e.reason === 'hit' ? 'the attack of opportunity connected' : e.reason}</span>`)
       case 'aoo.provoked': return b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> tries to keep moving; ⚔ <b>${nmAt(e)}</b> takes an attack of opportunity <span class="sq">· ${e.attackId}</span>`)
       case 'aoo.skipped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;no attack of opportunity from ${nmAt(e)} <span class="sq">· ${e.reason}</span>`)
+      case 'block.rolled': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${escape(NAMES[e.defender] ?? '#' + e.defender)}</b> ${e.blocked ? 'BLOCKS' : 'does not block'} <span class="sq">· ${escape(e.chance)}%${e.roll == null ? '' : ' · rolled ' + escape(e.roll)}${e.suppressed ? ' · suppressed' : ''}</span>`)
       case 'attack.cancelled': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;hit ${e.hit} of ${e.of} cancelled <span class="sq">· ${e.reason}</span>`)
       case 'corpse.created': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;a corpse lies at hex ${e.hex} <span class="sq">· ${e.typeId}</span>`)
       case 'corpse.removed': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;corpse at hex ${e.hex} ${e.how} <span class="sq">· by ${nmAt(e)}</span>`)
