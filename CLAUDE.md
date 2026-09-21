@@ -217,13 +217,32 @@ and re-asked as open the next day.
 **The mount refuses unlink** (`.git/index.lock`): the shim is
 `../kingdom/HANDOFF-2026-09-04.md` §7. A subagent that commits must be told.
 
-**A Cowork chat cannot run the gate at all** — measured 2026-09-21 in a local
-desktop Cowork chat, which corrects the 2026-09-20 wrap's guess that the cap was
-a cloud-linked chat's. Every shell call is killed at ~178 s whatever timeout is
-asked for, and each runs under `bwrap --unshare-pid --die-with-parent`, so a
-backgrounded gate dies with the call that started it. `node tools/gate.mjs <id>`
-reaches only 3 of its 11 checks in 150 s — dependencies, the decided-check,
-typecheck — and stops before the test suite starts; the gate has no resume or
-per-check flag. **Run every gate, landing and audit from a terminal on the
-machine** (Claude Code in the HBT folder). A Cowork chat can still read, grep,
-write documents and commit them; it can never land an item.
+**A Cowork chat cannot run the gate at all — and nothing in this repo is why.**
+Measured 2026-09-21, correcting the 2026-09-20 wrap's guess about cloud-linked
+chats. Two separate causes, both outside the project:
+
+1. **Cowork's shell tool kills every command at ~178 s**, whatever timeout is
+   asked for. A bare `sleep 200` run outside this folder died at 177,998 ms, one
+   millisecond from the gate run's 177,997 ms. `tools/gate.mjs` contains no
+   timeout literal at all, `vitest.config.ts` budgets 5 s per test, and the
+   `.claude` hooks only append a line to a log and exit 0. Each call also runs
+   under `bwrap --unshare-pid --die-with-parent`, so a backgrounded gate dies
+   with the call that started it.
+2. **The mounted folder costs ~1.4 ms per file metadata call.** `stat` on 5,000
+   files: **7.13 s on the mount, 0.01 s on the sandbox's own disk.** Bulk reads
+   are fine (200 MB in 0.02 s) — it is per-file latency only, so anything that
+   walks a tree pays. `tsc --noEmit` takes **160 s on the mount and 0.79 s** on a
+   `cp -a` copy under `/tmp`. That is why the gate looked as though it hung on
+   trivial checks: it was not hanging, it was statting.
+
+Copying `engine/` to `/tmp` (~90 s, 7,919 files) fixes cause 2, but the suite
+alone still runs past 178 s on the sandbox's 2 vCPUs, and a landing adds the
+kill-switch run and the post-land audit on top. **Run every gate, landing and
+audit from a terminal on the machine.** A Cowork chat can read, grep, measure and
+write documents; it can never land an item.
+
+**`wrap.mjs` commits `git add -A`** (line 166), exactly as the gate does. Wrap
+with an ungated item's files sitting in the tree and the wrap commits them —
+which is how `e89e3a7` swept R0's nine files into HEAD on 2026-09-21, undone the
+same session in `79544c5`. **Park work in progress outside the tree before
+`wrap`, not only before a landing.**
