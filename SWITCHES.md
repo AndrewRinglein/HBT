@@ -758,3 +758,25 @@ blocked means all resolved hits blocked. `hits` retains exact per-hit results.
 Other legacy scalar fields describe the final hit; that roll can be null even
 when an earlier hit connected. Movement uses aggregate hit for AoO stopping;
 prior-adjacency timing is unchanged. No Block applies to bursts.
+
+# V2 shield powers and item identity — provisional numbers, 2026-09-20
+
+Angela ruled the three shields' stats and said of the powers: *"I gave an estimation of what
+to do. Can you fill in the rest?"* — so the numbers below are a switch, not a ruling. The
+dated record that owns them is `../V2-SHIELDS-AND-WEAPONS-2026-09-20.md`, fourth pass. Her
+correction outranks this entry whenever it comes; R1 runs these so battles can answer.
+
+| switch | question | default | status |
+|---|---|---|---|
+| `shieldPowerNumbers` | What do the two powers per shield give, and at what cost? | Round: Turn Aside +10/+10 at 1 stamina, cd 2; Brace +5/+5 +1 Armor at 1, cd 3. Kite: Shield Wall +15 Block +1 Armor at 1, cd 3; Raise Guard +10/+10 at 1, cd 4. Tower: Cover +20/+20 +1 Armor at 2, cd 4; Stand Tall +25 Ranged Block +2 Armor at 2, cd 5. All until end of next activation. | provisional — Angela to correct |
+| `towerShieldIdReuse` | Does the new Tower shield re-author `item.tower-shield` in place, or take a new id? | re-author in place; Kite and Round are new ids | provisional |
+| `retiredShieldGrants` | What becomes of pot-lid's and holy-shield's non-Block grants (Armor, Accuracy, Resist, Health, aura), carried by no kit? | nothing yet — left in place until Angela rules | open, hers |
+
+Reasons for the defaults: costs sit inside the ladder every one of the engine's 339 powers
+already uses (stamina 0 to 2, cooldown 0 to 6), and against the shield powers being retired —
+Knight Block 1 and 3, Tower Cover 1 and 3, Stand Tall 2 and 4. Ordering follows her words:
+Round cheapest, Tower dearest and strongest, Kite between. Each shield's second power covers
+its own gap, so Kite's Raise Guard buys back the ranged block its +5 lacks. Re-authoring
+`item.tower-shield` keeps the name it still carries and matches R1's own instruction to
+re-author Tower Cover rather than invent a kind; `power.knight-shield.block` and
+`power.buckler.block-and-dodge` retire with the items that grant them.
