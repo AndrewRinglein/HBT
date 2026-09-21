@@ -216,3 +216,14 @@ and re-asked as open the next day.
 
 **The mount refuses unlink** (`.git/index.lock`): the shim is
 `../kingdom/HANDOFF-2026-09-04.md` §7. A subagent that commits must be told.
+
+**A Cowork chat cannot run the gate at all** — measured 2026-09-21 in a local
+desktop Cowork chat, which corrects the 2026-09-20 wrap's guess that the cap was
+a cloud-linked chat's. Every shell call is killed at ~178 s whatever timeout is
+asked for, and each runs under `bwrap --unshare-pid --die-with-parent`, so a
+backgrounded gate dies with the call that started it. `node tools/gate.mjs <id>`
+reaches only 3 of its 11 checks in 150 s — dependencies, the decided-check,
+typecheck — and stops before the test suite starts; the gate has no resume or
+per-check flag. **Run every gate, landing and audit from a terminal on the
+machine** (Claude Code in the HBT folder). A Cowork chat can still read, grep,
+write documents and commit them; it can never land an item.
