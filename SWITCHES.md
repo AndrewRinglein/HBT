@@ -769,8 +769,8 @@ correction outranks this entry whenever it comes; R1 runs these so battles can a
 | switch | question | default | status |
 |---|---|---|---|
 | `shieldPowerNumbers` | What do the two powers per shield give, and at what cost? | Round: Turn Aside +10/+10 at 1 stamina, cd 2; Brace +5/+5 +1 Armor at 1, cd 3. Kite: Shield Wall +15 Block +1 Armor at 1, cd 3; Raise Guard +10/+10 at 1, cd 4. Tower: Cover +20/+20 +1 Armor at 2, cd 4; Stand Tall +25 Ranged Block +2 Armor at 2, cd 5. All until end of next activation. | provisional — Angela to correct |
-| `towerShieldIdReuse` | Does the new Tower shield re-author `item.tower-shield` in place, or take a new id? | re-author in place; Kite and Round are new ids | provisional |
-| `retiredShieldGrants` | What becomes of pot-lid's and holy-shield's non-Block grants (Armor, Accuracy, Resist, Health, aura), carried by no kit? | nothing yet — left in place until Angela rules | open, hers |
+| `towerShieldIdReuse` | Does the new Tower shield re-author `item.tower-shield` in place, or take a new id? | **re-author `item.tower-shield` in place — answered by Angela 2026-09-20** (*"Yeah, the new tower shield. Rewrite the tower shield."*); Kite and Round are new ids | answered |
+| `retiredShieldGrants` | What becomes of pot-lid's and holy-shield's non-Block grants (Armor, Accuracy, Resist, Health, aura), carried by no kit? | **left exactly as authored — answered by Angela 2026-09-20** (*"Just leave them as is"*): both items keep every grant, receive no Block or Ranged Block, and stay outside R1's shield class | answered |
 
 Reasons for the defaults: costs sit inside the ladder every one of the engine's 339 powers
 already uses (stamina 0 to 2, cooldown 0 to 6), and against the shield powers being retired —
