@@ -1,11 +1,11 @@
 {
- "now": "plumbing.shield-class - V2 R1 part 1, landed 3c28971 (seal withheld: two plumbing exemptions). Tried: made the gate fit Cowork - suite in four --shard commands, one suite run per landing, no post-land re-run, effect-size, audit-all or Game Builder rebuild inside it, --abandon runs no checks; abandoned R0 and the four August items the Codex replaced; filed R1 at the top. Next: content.v2-shields - author Kite, Round and Tower in the content package and publish the pack, then gate it here; kingdom loadout.ts must count shield class for hands too.",
- "at": "2026-09-23 08:24",
- "sha": "d2e0ed1",
+ "now": "Process ruling 2026-09-23 recorded in DECISIONS.md, not yet built. Tried: nothing further after the previous wrap. Next: make the four changes - one chat per feature across packages (DISPLAY-RULES rule 38), landing runs item tests + typecheck + control battles only, wrap refuses without all four shards green, one item per feature (merge content.v2-shields and content.v2-weapon-block and the kingdom hands rule into one V2 shields item), drop seals and exemptions - then land V2 shields end to end.",
+ "at": "2026-09-23 08:29",
+ "sha": "17c8d2c",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — content: author the Kite, Round and Tower shields for engine item content.v2-shields and publish the pack",
-  "line": "start content"
+  "label": "New chat with Heroes of Blight and Tragic — engine: make the four process changes Andrew approved, then land V2 shields end to end across engine, content and kingdom",
+  "line": "start engine"
  }
 }
