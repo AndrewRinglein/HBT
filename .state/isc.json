@@ -34,8 +34,8 @@
    "tail": "+ Received: | undefined |  ❯ test/isc-003.test.ts:92:63"
   },
   "closed": {
-   "at": "2026-09-16 05:37",
-   "sha": "9ba86ee"
+   "at": "2026-09-23 23:45",
+   "sha": "3376376"
   },
   "regressed": [
    {
@@ -859,8 +859,8 @@
    "tail": "       |                                                                     ^ |      63|     expect(fieldedItemsOf(['item.longsword', 'item.round-shield', 'ite… |      64|   })"
   },
   "closed": {
-   "at": "2026-09-03 04:08",
-   "sha": "a3e9d82"
+   "at": "2026-09-23 23:45",
+   "sha": "3376376"
   }
  },
  "055": {

@@ -2705,3 +2705,107 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
 ISC-069: CLOSED at 64fc35b
 slice: 61 of 69 closed · 62 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## v2.shields-hands — LANDED `3376376` **NEEDS REVIEW**
+2026-09-23 23:44 · engine @ 7ad7516
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../DOCS.md:32 · SWITCHES.md:773
+  PASS  typecheck
+  PASS  full test suite — four shards green on this tree — 4 of 4 on tree 35e96d3722
+  PASS  gate 1 — every claimed criterion holds — ISC-054 holds · ISC-003 holds
+  PASS  brought its own tests — test/equip-screen.test.ts, test/isc-054.test.ts, test/isc-062.test.ts, test/isc-063.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/equip-screen.test.ts (-2), test/isc-054.test.ts (-2), test/isc-062.test.ts (-1), test/isc-063.test.ts (-1) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-054: red on record (2026-09-23 10:04 @ 050606f, probe 3308d466e3cf) · ISC-003: red on record (2026-09-23 23:36 @ 050606f, probe 4511a0063ed0)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — item.round-shield live · item.kite-shield live · item.tower-shield live
+  PASS  naming — new ids use declared kinds
+  WARN  naming — no banned words invented — 'round' — say Turn — will land FLAGGED
+  PASS  engine working tree clean — engine @ 7ad7516, clean
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/equip-screen.test.ts b/test/equip-screen.test.ts
+index 1d31b48..c8c6a1b 100644
+--- a/test/equip-screen.test.ts
++++ b/test/equip-screen.test.ts
+@@ -41,5 +41,5 @@ describe('the Equip screen', () => {
+     expect(html).toContain('swap out Longbow')
+     // the Chaplain cannot draw a bow at all — not his class
+-    expect(displaceFor(ctx.campaign, CHAPLAIN, 'item.shortbow', 'hand-r')).toBe('item.knight-shield')
++    /* Law 10, 2026-09-23 (v2.shields): the Knight Shield retired with V2 R1; this hero's kit carries the Round Shield now. The claim is unchanged. */ expect(displaceFor(ctx.campaign, CHAPLAIN, 'item.shortbow', 'hand-r')).toBe('item.round-shield')
+     expect(html).toMatch(/data-hero="hero\.base\.priest-armored"[^>]*class="[^"]*cant|class="slot[^"]*cant"[^>]*data-hero="hero\.base\.priest-armored"/)
+     performEquip(ctx, HUNTER, 'item.shortbow', 'test', displaceFor(ctx.campaign, HUNTER, 'item.shortbow', 'hand-r'))
+@@ -49,5 +49,5 @@ describe('the Equip screen', () => {
+   it('deltas go red and green with the gear; the set line names the bonus when it triggers', () => {
+     const ctx = toEquip(loadFixture((c) => { c.stash = [...STASH] }), [HUNTER, CHAPLAIN])
+-    performUnequip(ctx, CHAPLAIN, 'item.knight-shield', 'test'); performUnequip(ctx, CHAPLAIN, 'item.holy-texts', 'test')
++    performUnequip(ctx, CHAPLAIN, 'item.round-shield', 'test'); performUnequip(ctx, CHAPLAIN, 'item.holy-texts', 'test')
+     performEquip(ctx, CHAPLAIN, 'item.chains-of-the-wrathful', 'test')
+     performEquip(ctx, CHAPLAIN, 'item.chains-of-the-faithful', 'test', 'item.pilgrims-habit')
+diff --git a/test/isc-054.test.ts b/test/isc-054.test.ts
+index 21998b6..037b2e2 100644
+--- a/test/isc-054.test.ts
++++ b/test/isc-054.test.ts
+@@ -8,4 +8,6 @@ import { describe, it, expect } from 'vitest'
+ import { loadFixture, toEquip } from './walk.js'
+ import { loadoutOf, canEquip, whyNotEquip, performEquip } from '../src/core/shop.js'
++import { fieldedItemsOf, slotCostOf } from '../src/core/loadout.js'
++import { itemOf } from '../src/content/items.js'
+ 
+ const HUNTER = 'hero.base.ranger-aggressive', DWARF = 'hero.base.warrior-iron', OSRIC = 'hero.base.paladin-shiney'
+@@ -40,7 +42,8 @@ describe('ISC-054 — the slot model', () => {
+   it('hands are two weapon slots: a third weapon spills into an item slot, a two-hander needs two of something, and the Backpack widens the slots', () => {
+     const ctx = toEquip(loadFixture((c) => { c.stash = [...STASH] }), [HUNTER, DWARF, OSRIC])
+-    // Osric: longsword + knight shield in hand, two item slots — a dagger spills into a slot
++    // Osric: longsword + kite shield in hand, two item slots — a dagger spills into a slot
++    // Law 10, 2026-09-23 (v2.shields): the Knight Shield retired with V2 R1; this hero's kit carries the Kite Shield now. The claim is unchanged.
+     performEquip(ctx, OSRIC, 'item.dagger', 'test')
+-    expect(loadoutOf(ctx.campaign, OSRIC)).toMatchObject({ hands: ['item.longsword', 'item.knight-shield'], items: ['item.dagger'], itemSlots: { used: 1, max: 2 } })
++    expect(loadoutOf(ctx.campaign, OSRIC)).toMatchObject({ hands: ['item.longsword', 'item.kite-shield'], items: ['item.dagger'], itemSlots: { used: 1, max: 2 } })
+     // a greatsword (2 hands) with one slot left: refused; after the Backpack (+2 slots for 1), it fits as two slots
+     expect(canEquip(ctx.campaign, OSRIC, 'item.greatsword')).toBe(false)
+@@ -50,3 +53,13 @@ describe('ISC-054 — the slot model', () => {
+     expect(loadoutOf(ctx.campaign, OSRIC).itemSlots).toEqual({ used: 4, max: 4 })
+   })
++  // v2.shields (2026-09-23): the shield CLASS counts toward the two hands exactly as the
++  // engine's applyItems counts it — beside a two-hander it is carried, never fielded,
++  // so no backpack shield grants its Block or powers.
++  it('a shield-class item takes a hand; past the hands it is left behind at fielding', () => {
++    expect(itemOf('item.kite-shield').itemClass).toBe('shield')
++    expect(slotCostOf(itemOf('item.kite-shield'))).toBe(1)
++    expect(fieldedItemsOf(['item.longsword', 'item.kite-shield'])).toEqual({ fielded: ['item.longsword', 'item.kite-shield'], leftBehind: [] })
++    expect(fieldedItemsOf(['item.greatsword', 'item.kite-shield'])).toEqual({ fielded: ['item.greatsword'], leftBehind: ['item.kite-shield'] })
++    expect(fieldedItemsOf(['item.longsword', 'item.round-shield', 'item.tower-shield']).leftBehind).toEqual(['item.tower-shield'])
++  })
+ })
+diff --git a/test/isc-062.test.ts b/test/isc-062.test.ts
+index 60b3859..bd3320e 100644
+--- a/test/isc-062.test.ts
++++ b/test/isc-062.test.ts
+@@ -25,5 +25,5 @@ describe('ISC-062 — sets resolve over what is equipped', () => {
+     expect(itemOf(CHAINS).setBonus).toEqual({ tag: 'chain', each: { precision: 1 } })
+     // the Chaplain's hands and armor make way
+-    performUnequip(ctx, CHAPLAIN, 'item.knight-shield', 'test')
++    /* Law 10, 2026-09-23 (v2.shields): the Knight Shield retired with V2 R1; this hero's kit carries the Round Shield now. The claim is unchanged. */ performUnequip(ctx, CHAPLAIN, 'item.round-shield', 'test')
+     performUnequip(ctx, CHAPLAIN, 'item.holy-texts', 'test')
+     performEquip(ctx, CHAPLAIN, CHAINS, 'test')
+diff --git a/test/isc-063.test.ts b/test/isc-063.test.ts
+index f65e3f3..f9bbdc3 100644
+--- a/test/isc-063.test.ts
++++ b/test/isc-063.test.ts
+@@ -17,5 +17,5 @@ const CHAINS = 'item.chains-of-the-wrathful', CHAIN_ARMOR = 'item.chains-of-the-
+ function chained() {
+   const ctx = toEquip(loadFixture((c) => { c.stash = [CHAINS, CHAIN_ARMOR, PRIEST_CHAIN] }), [DWARF, CHAPLAIN])
+-  performUnequip(ctx, CHAPLAIN, 'item.knight-shield', 'test')
++  /* Law 10, 2026-09-23 (v2.shields): the Knight Shield retired with V2 R1; this hero's kit carries the Round Shield now. The claim is unchanged. */ performUnequip(ctx, CHAPLAIN, 'item.round-shield', 'test')
+   performUnequip(ctx, CHAPLAIN, 'item.holy-texts', 'test')
+   performEquip(ctx, CHAPLAIN, CHAINS, 'test')
+```
+</details>
+
+ISC-054: CLOSED at 3376376 · ISC-003: CLOSED at 3376376
+slice: 61 of 69 closed · 62 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED

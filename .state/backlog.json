@@ -988,6 +988,10 @@
    "item.round-shield",
    "item.kite-shield",
    "item.tower-shield"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "3376376",
+  "engineSha": "7ad7516",
+  "gauntlet": "not passed — 3 flag(s) warned"
  }
 ]
