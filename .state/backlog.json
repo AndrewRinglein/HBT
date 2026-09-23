@@ -285,7 +285,8 @@
   "kind": "unit",
   "shape": "data",
   "spec": "Skeleton Archer: enemy, ranged role, 6 HP, 0 armour, 0 resist, 70 accuracy, 2 strength, 3 precision, movement 3, shortbow reach 4 precision physical.",
-  "expect": "appears, kites, shoots, dies; zombies still behave unchanged"
+  "expect": "appears, kites, shoots, dies; zombies still behave unchanged",
+  "attempts": 1
  },
  {
   "id": "unit.brute",

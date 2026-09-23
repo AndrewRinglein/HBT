@@ -60,7 +60,10 @@ node tools/wrap.mjs "<now line>" --next "<which chat, what it does>" "<its first
                                        `wrap` — Now line, count, HANDOFF.md, STATE-ROW.md, one commit
 
 node tools/next.mjs                    the next backlog item that is ready
-node tools/gate.mjs <id>               run the gates, change nothing
+node tools/gate.mjs --shard <k>/4      run a quarter of the test suite (k = 1..4), one command
+                                       each; the gate's suite check passes only when all four
+                                       passed on the exact tree. Each runs ~85–125 s in Cowork
+node tools/gate.mjs <id>               run the gates, change nothing (~140 s in Cowork)
 node tools/gate.mjs <id> --land        commit, only if every gate passes
 node tools/gate.mjs <id> --abandon "<why>"   give up, revert, record why — runs no checks
 node tools/gate.mjs --count            the one count line — start and wrap print it verbatim
