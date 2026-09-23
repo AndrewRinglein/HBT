@@ -14009,3 +14009,8 @@ Superseded by the Codex (Andrew, 2026-09-23): no Ranger specialty in the Codex c
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
+
+## content.v2-shields — ABANDONED
+2026-09-23 09:19
+
+Merged into v2.shields - one backlog item per feature (Andrew, 2026-09-23, DECISIONS less process per feature)
