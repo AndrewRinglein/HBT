@@ -2544,3 +2544,17 @@ The gate's full-suite check is split into four shards (vitest `--shard=k/4`), ea
 Andrew: “Answer question 1, yes, and continue.”
 
 The question was: abandon the August items the Codex has replaced (Skeleton Archer, Ghoul Brute, Rally, Volley), after checking each against the Codex first, and put V2 R1 (shields) at the top of the queue. Checked 2026-09-23: the Codex fields the Skeleton Archer as unit.skeletal-archer (5 HP, 1 armour, 75 accuracy, movement 4 — not the backlog's 6/0/70/3); it has no Ghoul Brute (its ghoul is unit.ghoul, 9 HP, 0 armour, 90 accuracy, movement 6); and neither the Warrior's nor the Ranger's specialties carry a Rally or a Volley power.
+
+## 2026-09-23 — less process per feature
+
+Andrew: “Man, we are just not making any progress. This is so fricking slow. Do I just have way too much validation going on? I have literally used 30 commands, and we have not even gotten through shields.”
+
+Andrew, asked for recommendations on four questions and given them: “Yes.”
+
+Ruled, as recommended:
+1. One chat carries a whole feature across engine, content and kingdom. Each package still commits in its own repository. "New chat after a wrap" stays; "new chat on every package switch" goes (DISPLAY-RULES.md rule 38).
+2. A landing runs the item's own tests, typecheck and the control battles. The full suite runs once per chat, as the four shards, and `wrap` refuses to finish until all four passed on the final tree.
+3. One backlog item per feature, not one per layer — sized to fit one chat. V2 shields is one item: shield class (landed), the three shields, weapon Block, and the kingdom's hands rule.
+4. The seal and the exemptions go. The checks stay as pass or fail; engine-only work skips "appears in a battle" instead of taking an exemption.
+
+The next engine chat makes these four changes first, then lands V2 shields end to end.
