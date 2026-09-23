@@ -13,7 +13,9 @@
 // diagnostic, so the next attempt would start blind. Abandoning is explicit.
 
 import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
+import { readFileSync, writeFileSync, appendFileSync, copyFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { filesContaining } from './source-scan.mjs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
 
@@ -40,7 +42,53 @@ if (process.argv.includes('--count')) {
   process.exit(0)
 }
 
-if (!id) { console.error('usage: node tools/gate.mjs <item-id> [--land|--abandon]  |  --count'); process.exit(2) }
+// ── the suite in four parts (Andrew, 2026-09-22, DECISIONS.md) ─────────────
+// Cowork's shell kills any command at ~178 s and the whole suite takes longer,
+// so the suite runs as SHARDS separate commands, `node tools/gate.mjs --shard k/4`.
+// Each pass is recorded against a hash of the working tree (everything `git add -A`
+// would commit, minus the gate's own .state/ and the generated Game Builder). The
+// gate's "full test suite" check passes only when every shard passed on the exact
+// tree it is gating — edit one file and every shard must run again.
+const SHARDS = 4
+const SHARDS_FILE = '.state/shards.json'
+function treeHash() {
+  const idx = join(tmpdir(), `gate-index-${process.pid}-${Date.now()}`)
+  try { copyFileSync(execSync('git rev-parse --git-path index', { encoding: 'utf8' }).trim(), idx) } catch {}
+  const env = { ...process.env, GIT_INDEX_FILE: idx }
+  try {
+    execSync('git add -A -- . ":!.state" ":!GAME-BUILDER.html" ":!runs"', { env, stdio: 'pipe' })
+    return execSync('git write-tree', { env, encoding: 'utf8' }).trim()
+  } finally { try { rmSync(idx, { force: true }) } catch {} }
+}
+function readShards() { try { return JSON.parse(readFileSync(SHARDS_FILE, 'utf8')) } catch { return null } }
+
+const shardArg = process.argv.indexOf('--shard')
+if (shardArg !== -1) {
+  const m = String(process.argv[shardArg + 1] ?? '').match(/^(\d+)\/(\d+)$/)
+  const k = m ? Number(m[1]) : NaN
+  if (!m || Number(m[2]) !== SHARDS || k < 1 || k > SHARDS) {
+    console.error(`usage: node tools/gate.mjs --shard <k>/${SHARDS}   (k = 1..${SHARDS})`)
+    process.exit(2)
+  }
+  const tree = treeHash()
+  let s = readShards()
+  if (!s || s.tree !== tree || s.total !== SHARDS) s = { tree, total: SHARDS, passed: [] }
+  const r = runDiagnosticCommand(`npx vitest run --shard=${k}/${SHARDS} --reporter=dot`, `gate-shard-${k}-of-${SHARDS}`)
+  const count = r.out.match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
+  s.passed = s.passed.filter((x) => x !== k)
+  if (r.ok) s.passed.push(k)
+  s.passed.sort((a, b) => a - b)
+  s.at = new Date().toISOString()
+  writeFileSync(SHARDS_FILE, JSON.stringify(s, null, 1) + '\n')
+  const todo = Array.from({ length: SHARDS }, (_, i) => i + 1).filter((x) => !s.passed.includes(x))
+  console.log(`shard ${k}/${SHARDS}: ${r.ok ? 'PASS' : 'FAIL'}${count ? ` — ${count[1] ? count[1] + ' failed, ' : ''}${count[2]} passed` : ''}` +
+    (r.ok ? '' : ` — ${r.note}`))
+  console.log(`tree ${tree.slice(0, 10)}: ${s.passed.length} of ${SHARDS} shards passed` +
+    (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${SHARDS}`).join(', ')}` : ' — the suite is green on this tree'))
+  process.exit(r.ok ? 0 : 1)
+}
+
+if (!id) { console.error(`usage: node tools/gate.mjs <item-id> [--land|--abandon "<why>"]  |  --shard <k>/${SHARDS}  |  --count`); process.exit(2) }
 
 /**
  * The Game Builder's data source: one JSON line per gate invocation, appended at
@@ -149,12 +197,14 @@ check('typecheck', () => {
 })
 
 check('full test suite', () => {
-  const r = runDiagnosticCommand('npx vitest run --reporter=dot', `gate-${id}-full-suite`)
-  const m = r.out.match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
-  if (r.ok) return { ok: true, note: m ? `${m[2]} passed` : '' }
-  // Name the failures. A gate that only says "3 FAILED" makes the next attempt start blind.
-  const names = [...r.out.matchAll(/(?:×|FAIL)\s+([^\n]+)/g)].map((x) => x[1].trim())
-  return { ok: false, note: `${m?.[1] ?? '?'} FAILED — ${[...new Set(names)].slice(0, 6).join(' · ') || 'see vitest output'} — ${r.note}` }
+  // Run as four shards beforehand (--shard k/4, above); here the gate only confirms
+  // every shard passed on this exact tree.
+  const tree = treeHash()
+  const s = readShards()
+  const passed = s && s.tree === tree && s.total === SHARDS ? s.passed : []
+  const todo = Array.from({ length: SHARDS }, (_, i) => i + 1).filter((x) => !passed.includes(x))
+  if (!todo.length) return { ok: true, note: `${SHARDS} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)}` }
+  return { ok: false, note: `${passed.length} of ${SHARDS} shards passed on this tree — run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}` }
 })
 
 check('gate 1 — the id appears in a real battle', () => {

@@ -5,12 +5,17 @@ import { describe, expect, it } from 'vitest'
 import { runDiagnosticCommand } from '../tools/command-diagnostic.mjs'
 
 describe('gate command failure evidence', () => {
-  it('uses retained diagnostics in candidate, committed-tree and independent audit suites', () => {
+  // Rewritten 2026-09-22 (Law 10, written reason): this asserted two gate suite
+  // runs, one of them the post-land committed-tree re-run. Andrew cut that re-run
+  // and split the suite into four shard commands (DECISIONS.md, 2026-09-22). The
+  // rule it guards still holds: every gate suite run keeps retained diagnostics.
+  it('uses retained diagnostics in the gate shard suite and the independent audit suite', () => {
     const gate = readFileSync(new URL('../tools/gate.mjs', import.meta.url), 'utf8')
     const audit = readFileSync(new URL('../tools/audit-all.mjs', import.meta.url), 'utf8')
-    expect(gate.match(/runDiagnosticCommand\('npx vitest run --reporter=dot'/g)).toHaveLength(2)
+    expect(gate.match(/runDiagnosticCommand\(`npx vitest run --shard=/g)).toHaveLength(1)
+    expect(gate).not.toMatch(/execSync\([`'"]npx vitest run --reporter=dot/)
     expect(audit.match(/runDiagnosticCommand\('npx vitest run --reporter=dot'/g)).toHaveLength(1)
-    expect(gate).toContain('test suite fails on the committed tree — ${t.note}')
+    expect(gate).toContain('(r.ok ? \'\' : ` — ${r.note}`)')
     expect(audit).toContain('FAILED — ${r.note}')
   })
   it('retains exact stdout, stderr, exit, command and exception in distinct attempt files', () => {

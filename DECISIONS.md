@@ -2532,3 +2532,9 @@ Andrew: “Okay, I thought type check was something else. What don't we need in 
 Andrew: “Okay, we can keep the type check. We can do all four of the things that you're recommending: Keep the type check. Cut the post-land pre-run. Clear the 57 landing review queue in one go. Stop printing at every start. Stop auto-loading GBH's Claude MD and engine chats.”
 
 This supersedes the entry above on the typecheck: it stays in the gate. The four recommendations answered yes were: (1) keep the typecheck; (2) cut the post-land re-run of the full suite and the control battles, the effect-size battles, the every-10th-landing audit-all and the Game Builder rebuild out of the landing, and abandon R0 (plumbing.gate-recovery), which exists only to recover from the post-land re-run failing; (3) clear the review queue in one go and stop printing it at every start; (4) stop auto-loading GBH's CLAUDE.md into engine chats and keep each trap in one place.
+
+## 2026-09-22 — the test suite runs in four parts
+
+Andrew: “Why don't we split the test suite into four parts and then continue? Let's get work done here.”
+
+The gate's full-suite check is split into four shards (vitest `--shard=k/4`), each run as its own command so each fits under Cowork's ~178 s shell limit. The gate accepts the suite only when all four passed on the exact tree being gated.
