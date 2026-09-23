@@ -13983,3 +13983,29 @@ Ruled 2026-09-22 (DECISIONS.md, Andrew): the post-land re-run was cut from the g
 2026-09-23 08:14
 
 Superseded by the Codex (Andrew, 2026-09-23): no Ranger specialty in the Codex carries a Volley power; Ranger powers come from its nine specialties.
+
+## plumbing.shield-class — LANDED `c087e94` **NEEDS REVIEW**
+2026-09-23 08:24
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:116
+  PASS  typecheck
+  PASS  full test suite — 4 of 4 shards passed on tree c1bec6eed5
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/shield-class.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN

@@ -448,7 +448,7 @@ export type BadgeDef = {
 export type ItemDef = {
   readonly id: string
   readonly name: string
-  readonly itemClass: 'weapon' | 'armor' | 'trinket' | 'relic' | 'idol' | 'bloodrune' | 'consumable'
+  readonly itemClass: 'weapon' | 'shield' | 'armor' | 'trinket' | 'relic' | 'idol' | 'bloodrune' | 'consumable'
   readonly tier: number
   readonly hands: number
   readonly slots: number

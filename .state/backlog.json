@@ -7,7 +7,10 @@
   "expect": "Tests: a shield-class item folds its block and rangedBlock and grants its powers when held; shield + 1h weapon is accepted; shield + 2h weapon and shield + shield + 1h weapon are refused naming the unit; a shield in item slots is stowed, not fielded; the pack validator accepts itemClass shield and still refuses an unknown class. Control battles unchanged: no content carries the class yet.",
   "unreachable": "Plumbing for an item class no content carries until content.v2-shields ships; no battle can show the id before then. The tests field shield-class items directly.",
   "killSwitchExempt": "The item class is an engine type, not a content id, so CF_DISABLE_IDS has nothing to disable; the tests assert refusal and folding directly.",
-  "note": "Andrew 2026-09-23: V2 R1 to the top of the queue. First class plumbing, then numeric tuning (V2-HANDOFF.md)."
+  "note": "Andrew 2026-09-23: V2 R1 to the top of the queue. First class plumbing, then numeric tuning (V2-HANDOFF.md).",
+  "status": "done-needs-review",
+  "sha": "c087e94",
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
  },
  {
   "id": "content.v2-shields",

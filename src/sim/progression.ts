@@ -57,12 +57,15 @@ export function pickOf(pick: Readonly<Record<string, number>>): Record<string, n
  * `stowedWeapons`, and the stats the schedule counted from them surface as
  * stat disagreements. Not patched: it is the schedule's rule to settle.
  */
+/** Item classes that are held in hands, never worn from an item slot. */
+const HELD: readonly string[] = ['weapon', 'shield']
 export function itemsOf(h: ScheduleHero, items?: Readonly<Record<string, { itemClass: string }>>): string[] {
-  const slots = items ? h.equipment.slots.filter((i) => items[i.id]?.itemClass !== 'weapon') : h.equipment.slots
+  // A shield in an item slot is stowed like a slot weapon (plumbing.shield-class, V2 R1).
+  const slots = items ? h.equipment.slots.filter((i) => !HELD.includes(items[i.id]?.itemClass ?? '')) : h.equipment.slots
   return [...h.equipment.hands.map((i) => i.id), ...(h.equipment.armor ? [h.equipment.armor.id] : []), ...slots.map((i) => i.id)]
 }
 export function stowedWeapons(h: ScheduleHero, items: Readonly<Record<string, { itemClass: string }>>): string[] {
-  return h.equipment.slots.filter((i) => items[i.id]?.itemClass === 'weapon').map((i) => i.id)
+  return h.equipment.slots.filter((i) => HELD.includes(items[i.id]?.itemClass ?? '')).map((i) => i.id)
 }
 
 export function progressOf(h: ScheduleHero): HeroProgress {

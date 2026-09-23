@@ -11,7 +11,7 @@
 // then the row's own; powers the same; triggers the row's own, then the
 // items'. Stats fold additively — the arithmetic the converter did at pack
 // time, moved to fielding so the numbers follow what is actually worn.
-// Refusals are loud (Law 9): an unknown item, more than two hands of weapons,
+// Refusals are loud (Law 9): an unknown item, more than two hands of weapons and shields,
 // more than one armor. Slot counts, class restrictions and per-class caps are
 // the kingdom's legality, not the engine's (GAME-ARCHITECTURE §2.3).
 import type { BadgeDef, ItemDef, UnitDef } from './types.js'
@@ -54,7 +54,10 @@ export function applyItems(
       const has = (base.tags ?? []).filter((t) => t.startsWith('class.'))
       throw new Error(`${where}: ${base.typeId} (${has.join(', ') || 'no class'}) cannot wield '${id}', a ${it.classRestriction} item`)
     }
-    if (it.itemClass === 'weapon') { hands += it.hands; if (hands > 2) throw new Error(`${where}: ${base.typeId} would wield more than two hands of weapons (${[...seen].join(', ')})`) }
+    // plumbing.shield-class (V2 R1, 2026-09-23): a shield is held, and shares the
+    // two hands with weapons. Folding its Block and granting its powers only here,
+    // for what is handed to the unit, is what keeps a stowed shield inert.
+    if (it.itemClass === 'weapon' || it.itemClass === 'shield') { hands += it.hands; if (hands > 2) throw new Error(`${where}: ${base.typeId} would hold more than two hands of weapons and shields (${[...seen].join(', ')})`) }
     if (it.itemClass === 'armor') { armors += 1; if (armors > 1) throw new Error(`${where}: ${base.typeId} would wear two armors`) }
     const mods: Record<string, number> = {}
     for (const [k, v] of Object.entries(it.statModifiers)) {

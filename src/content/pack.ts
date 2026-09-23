@@ -304,7 +304,7 @@ export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
  */
 export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as { items?: Readonly<Record<string, ItemDef>> }).items ?? {}
-  const CLASSES = ['weapon', 'armor', 'trinket', 'relic', 'idol', 'bloodrune', 'consumable']
+  const CLASSES = ['weapon', 'shield', 'armor', 'trinket', 'relic', 'idol', 'bloodrune', 'consumable']
   const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id) throw new Error(`item pack: key '${k}' names id '${it.id}'`)
