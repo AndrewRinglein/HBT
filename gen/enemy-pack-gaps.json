@@ -177,16 +177,6 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "hero.base.warrior-iron",
-   "what": "item.tower-shield grants power.tower-shield.cover",
-   "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "hero.base.warrior-iron",
-   "what": "item.tower-shield grants power.tower-shield.stand-tall",
-   "needs": "item power — shape unparsed"
-  },
-  {
    "unit": "hero.base.mage-thinking",
    "what": "item.frost-staff grants power.frost-staff.frost-nova",
    "needs": "item power — shape unparsed"
@@ -340,16 +330,6 @@
    "unit": "item.sword-of-the-fallen",
    "what": "attack.sword-of-the-fallen.honour-the-dead onKill: \"heal 3\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.buckler",
-   "what": "attack.buckler.punch onAttack: \"gain 7 Dodge until the end of your next Activation\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.buckler",
-   "what": "grants power.buckler.block-and-dodge",
-   "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.hammer-of-justice",
@@ -705,16 +685,6 @@
    "unit": "item.elfbow",
    "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.tower-shield",
-   "what": "grants power.tower-shield.cover",
-   "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.tower-shield",
-   "what": "grants power.tower-shield.stand-tall",
-   "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.fire-staff",

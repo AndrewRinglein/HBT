@@ -14,15 +14,16 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `onHit` | 82 | after a hit lands, even if armour ate all of it |
 | `onKill` | 37 |  |
 | `startOfBattle` | 37 |  |
-| `onDamage` | 20 | only if damage actually landed |
+| `onDamage` | 19 | only if damage actually landed |
 | `onCrit` | 18 | after its own onHit, only if it crit |
 | `onTakingDamage` | 16 |  |
 | `passive` | 16 | always true |
 | `aura` | 14 | checked continuously |
 | `onActivationEnd` | 10 | a unit's go, not a Turn |
 | `onDodge` | 9 | on the DEFENDER, when its Dodge is why the attack missed |
-| `onAttack` | 6 |  |
+| `onAttack` | 5 |  |
 | `onMiss` | 5 | on the ATTACKER |
+| `onBlock` | 4 |  |
 | `onDeath` | 2 |  |
 
 ## 2 · Targeting shapes
@@ -31,8 +32,8 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 149 |
-| `one enemy in melee reach` | 107 |
+| `self` | 151 |
+| `one enemy in melee reach` | 105 |
 | `one enemy within N hexes` | 85 |
 | `one ally within N hexes` | 52 |
 | `allies within N hexes` | 32 |
@@ -83,8 +84,8 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `grant a stat for the Battle` | 173 |
-| `apply a status` | 143 |
+| `grant a stat for the Battle` | 174 |
+| `apply a status` | 142 |
 | `heal` | 84 |
 | `deal TRUE damage` | 56 |
 | `grant a stat until end of next Turn` | 47 |
@@ -125,10 +126,10 @@ What a rule may DO.
 | `burn` | 78 |
 | `bleed` | 66 |
 | `poison` | 51 |
-| `protection` | 42 |
 | `weak` | 41 |
+| `protection` | 41 |
 | `slow` | 23 |
-| `stun` | 23 |
+| `stun` | 22 |
 | `frost` | 14 |
 | `regeneration` | 7 |
 | `karma` | 6 |
@@ -140,13 +141,14 @@ What a rule may DO.
 | `health` | 98 |
 | `resist` | 59 |
 | `strength` | 54 |
-| `dodge` | 53 |
+| `dodge` | 54 |
 | `movement` | 49 |
 | `armor` | 44 |
 | `accuracy` | 35 |
 | `precision` | 30 |
 | `crit` | 29 |
-| `staminaMax` | 21 |
+| `block` | 22 |
+| `staminaMax` | 22 |
 | `reach` | 20 |
 | `luck` | 19 |
 | `magic` | 17 |
@@ -154,6 +156,7 @@ What a rule may DO.
 | `itemSlots` | 14 |
 | `vision` | 7 |
 | `toughness` | 7 |
+| `rangedBlock` | 3 |
 | `fireResist` | 3 |
 | `poisonResist` | 3 |
 | `corruption` | 2 |
@@ -167,7 +170,7 @@ A stat modifier lasts the rest of the Battle unless the row says otherwise.
 
 | Function | Uses |
 |---|---:|
-| `rest of the Battle` | 174 |
+| `rest of the Battle` | 175 |
 | `until the end of your next Turn` | 40 |
 | `until the start of your next Turn` | 7 |
 | `until the end of the Turn` | 3 |

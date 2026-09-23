@@ -134,7 +134,7 @@
   },
   {
    "name": "onDamage",
-   "uses": 20,
+   "uses": 19,
    "ids": [
     "item.bloody-axe",
     "item.poison-throwing-knives",
@@ -145,7 +145,6 @@
     "attack.barbarian-bow.power-shot",
     "attack.barbarian-bow.crippling-shot",
     "attack.halberd.hack",
-    "attack.knight-shield.shield-slam",
     "attack.earth-staff.earth-blast",
     "attack.club.swing",
     "power.berserker.bloody-strikes",
@@ -279,12 +278,11 @@
   },
   {
    "name": "onAttack",
-   "uses": 6,
+   "uses": 5,
    "ids": [
     "item.rapier",
     "item.book-of-exorcisms",
     "item.demon-whip",
-    "attack.buckler.punch",
     "attack.dagger.stab",
     "power.berserker.bloody-strikes"
    ]
@@ -301,6 +299,16 @@
    ]
   },
   {
+   "name": "onBlock",
+   "uses": 4,
+   "ids": [
+    "item.hand-axe",
+    "item.war-axe",
+    "item.bloody-axe",
+    "item.lumberjack-axe"
+   ]
+  },
+  {
    "name": "onDeath",
    "uses": 2,
    "ids": [
@@ -312,7 +320,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 149,
+   "uses": 151,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -358,7 +366,7 @@
   },
   {
    "name": "one enemy in melee reach",
-   "uses": 107,
+   "uses": 105,
    "ids": [
     "attack.hand-axe.chop",
     "attack.sharpened-stake.jab",
@@ -390,7 +398,6 @@
     "attack.bane-blade.banishing-blow",
     "attack.sword-of-the-fallen.remembrance",
     "attack.sword-of-the-fallen.honour-the-dead",
-    "attack.buckler.punch",
     "attack.bloody-axe.cleave-open",
     "attack.bloody-axe.butcher",
     "attack.hammer-of-justice.judgment",
@@ -399,7 +406,8 @@
     "attack.holy-shield.aegis-slam",
     "attack.death-blade.reap",
     "attack.death-blade.death-stroke",
-    "attack.shadow-dagger.shadow-cut"
+    "attack.shadow-dagger.shadow-cut",
+    "attack.shadow-dagger.from-behind"
    ]
   },
   {
@@ -889,8 +897,11 @@
  "effects": [
   {
    "name": "grant a stat for the Battle",
-   "uses": 173,
+   "uses": 174,
    "ids": [
+    "item.hand-axe",
+    "item.war-axe",
+    "item.bloody-axe",
     "item.hammer-of-justice",
     "item.death-blade",
     "item.sniper-bow",
@@ -923,19 +934,16 @@
     "item.rune-avatar-of-war",
     "item.roster-of-the-fallen",
     "item.banner-of-resolve",
+    "item.lumberjack-axe",
     "attack.iron-mace.crush",
     "attack.death-blade.death-stroke",
     "attack.pickaxe.pick",
-    "power.berserker.fast-fury",
-    "power.shieldbearer.unbreakable",
-    "power.leader.titans-inspiration",
-    "power.warchief.war-cry",
-    "power.warchief.intimidate"
+    "power.berserker.fast-fury"
    ]
   },
   {
    "name": "apply a status",
-   "uses": 143,
+   "uses": 142,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -1745,52 +1753,6 @@
    ]
   },
   {
-   "name": "protection",
-   "uses": 42,
-   "ids": [
-    "item.battlemages-cuirass",
-    "item.mystic-armor",
-    "item.patrocoleas-armor",
-    "item.aether-crystal",
-    "item.heart-of-vyrmothax",
-    "item.starweaver-loom-fragment",
-    "item.pilgrims-warding-stone",
-    "item.finger-of-saint-aldwyn",
-    "item.divine-ward",
-    "item.ring-of-divine-protection",
-    "attack.dagger.stab",
-    "power.shieldbearer.unbreakable",
-    "power.demonic-ward.soul-barrier",
-    "power.spirit-walker.spirit-link",
-    "power.blessed-sufferer.shield-of-flesh",
-    "power.vigil.protect-and-shield",
-    "power.holy-avenger.succor-of-the-faithful",
-    "power.holy-champion.bound-by-the-flesh",
-    "power.sacred-shield.aegis",
-    "power.sacred-shield.guardian-angel",
-    "power.grand-master.muster",
-    "power.purifier.sanctified-ward",
-    "power.exorcist.holy-shield",
-    "power.witch-hunter.iron-and-salt",
-    "power.porter.brace-the-line",
-    "power.direbeast.thick-pelt",
-    "power.broodmother.screen",
-    "power.warbeast.stand-over",
-    "power.knight-shield.block",
-    "power.earth-staff.earth-shield",
-    "power.staff-of-the-magi.power-ward",
-    "power.benevolent-rod.restoration",
-    "power.shieldbearer.last-stand",
-    "power.shieldbearer.resistance",
-    "power.shieldbearer.shield-other",
-    "power.recover",
-    "enchant.divine-protection",
-    "enchant.white-steel",
-    "specialty.divine-light",
-    "specialty.blessed-sufferer"
-   ]
-  },
-  {
    "name": "weak",
    "uses": 41,
    "ids": [
@@ -1837,6 +1799,52 @@
    ]
   },
   {
+   "name": "protection",
+   "uses": 41,
+   "ids": [
+    "item.battlemages-cuirass",
+    "item.mystic-armor",
+    "item.patrocoleas-armor",
+    "item.aether-crystal",
+    "item.heart-of-vyrmothax",
+    "item.starweaver-loom-fragment",
+    "item.pilgrims-warding-stone",
+    "item.finger-of-saint-aldwyn",
+    "item.divine-ward",
+    "item.ring-of-divine-protection",
+    "attack.dagger.stab",
+    "power.shieldbearer.unbreakable",
+    "power.demonic-ward.soul-barrier",
+    "power.spirit-walker.spirit-link",
+    "power.blessed-sufferer.shield-of-flesh",
+    "power.vigil.protect-and-shield",
+    "power.holy-avenger.succor-of-the-faithful",
+    "power.holy-champion.bound-by-the-flesh",
+    "power.sacred-shield.aegis",
+    "power.sacred-shield.guardian-angel",
+    "power.grand-master.muster",
+    "power.purifier.sanctified-ward",
+    "power.exorcist.holy-shield",
+    "power.witch-hunter.iron-and-salt",
+    "power.porter.brace-the-line",
+    "power.direbeast.thick-pelt",
+    "power.broodmother.screen",
+    "power.warbeast.stand-over",
+    "power.earth-staff.earth-shield",
+    "power.staff-of-the-magi.power-ward",
+    "power.benevolent-rod.restoration",
+    "power.shieldbearer.last-stand",
+    "power.shieldbearer.resistance",
+    "power.shieldbearer.shield-other",
+    "power.recover",
+    "enchant.divine-protection",
+    "enchant.white-steel",
+    "specialty.divine-light",
+    "specialty.blessed-sufferer",
+    "specialty.holy-champion"
+   ]
+  },
+  {
    "name": "slow",
    "uses": 23,
    "ids": [
@@ -1867,7 +1875,7 @@
   },
   {
    "name": "stun",
-   "uses": 23,
+   "uses": 22,
    "ids": [
     "item.rune-bashing",
     "item.bracer-of-courage",
@@ -1878,7 +1886,6 @@
     "attack.shepherds-sling.whirl",
     "attack.holy-shield.shield-bash",
     "attack.stormforged-halberd.thunderhead",
-    "attack.knight-shield.shield-slam",
     "attack.staff-of-the-destroyer.sundering",
     "power.bloodrage.unstoppable",
     "power.guardian.stalwart",
@@ -2081,7 +2088,7 @@
   },
   {
    "name": "dodge",
-   "uses": 53,
+   "uses": 54,
    "ids": [
     "item.shadow-dagger",
     "item.mirage-dagger",
@@ -2113,6 +2120,7 @@
     "item.heavy-leather",
     "item.creature-hide",
     "item.plated-armor",
+    "item.tower-shield",
     "item.rangers-worn-boots",
     "item.tome-of-forgotten-whispers",
     "item.banner-of-the-lost-legion",
@@ -2121,8 +2129,7 @@
     "item.crown-of-the-sand-king",
     "power.wayfinder.switch-to-melee",
     "enchant.bloodthirsty",
-    "enchant.stormward",
-    "enchant.silkweave"
+    "enchant.stormward"
    ]
   },
   {
@@ -2330,8 +2337,36 @@
    ]
   },
   {
+   "name": "block",
+   "uses": 22,
+   "ids": [
+    "item.practice-sword",
+    "item.greatsword",
+    "item.raiders-cutlass",
+    "item.obsidian-fang-dagger",
+    "item.duel-runeblades",
+    "item.bane-blade",
+    "item.sword-of-the-fallen",
+    "item.death-blade",
+    "item.shadow-dagger",
+    "item.stormforged-blade",
+    "item.cursed-sand-blade",
+    "item.mirage-dagger",
+    "item.holy-avenger",
+    "item.demonic-shiv",
+    "item.blade-of-demon-slaying",
+    "item.tomb-sentinels-blade",
+    "item.daggers",
+    "item.longsword",
+    "item.dagger",
+    "item.kite-shield",
+    "item.round-shield",
+    "item.tower-shield"
+   ]
+  },
+  {
    "name": "staminaMax",
-   "uses": 21,
+   "uses": 22,
    "ids": [
     "item.borrowed-vestments",
     "item.guardians-mail",
@@ -2347,6 +2382,7 @@
     "item.barbarian-hide",
     "item.heavy-leather",
     "item.plated-armor",
+    "item.tower-shield",
     "item.backpack",
     "item.meditation-beads",
     "item.quartermasters-manifest",
@@ -2499,6 +2535,15 @@
    ]
   },
   {
+   "name": "rangedBlock",
+   "uses": 3,
+   "ids": [
+    "item.kite-shield",
+    "item.round-shield",
+    "item.tower-shield"
+   ]
+  },
+  {
    "name": "fireResist",
    "uses": 3,
    "ids": [
@@ -2550,8 +2595,11 @@
  "durations": [
   {
    "name": "rest of the Battle",
-   "uses": 174,
+   "uses": 175,
    "ids": [
+    "item.hand-axe",
+    "item.war-axe",
+    "item.bloody-axe",
     "item.hammer-of-justice",
     "item.death-blade",
     "item.sniper-bow",
@@ -2584,14 +2632,11 @@
     "item.rune-avatar-of-war",
     "item.roster-of-the-fallen",
     "item.banner-of-resolve",
+    "item.lumberjack-axe",
     "attack.iron-mace.crush",
     "attack.death-blade.death-stroke",
     "attack.pickaxe.pick",
-    "power.berserker.fast-fury",
-    "power.shieldbearer.unbreakable",
-    "power.leader.titans-inspiration",
-    "power.warchief.war-cry",
-    "power.warchief.intimidate"
+    "power.berserker.fast-fury"
    ]
   },
   {
