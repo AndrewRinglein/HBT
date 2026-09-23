@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Add pending work only. Gate/review remain the only writers of verdict fields.
-// node tools/add-item.mjs spec.json [--backlog .state/backlog.json]
+// node tools/add-item.mjs spec.json [--backlog .state/backlog.json] [--first]
+// --first puts the new items at the top of the queue (next.mjs takes backlog order).
 import { readFileSync, writeFileSync, renameSync } from 'node:fs'
 
 const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note', 'unreachable', 'coreLiteralAllow', 'generalizationExempt', 'killSwitchExempt'])
@@ -44,8 +45,9 @@ function validate(items, existing) {
 }
 
 try {
-  const args = process.argv.slice(2)
-  if (!(args.length === 1 || (args.length === 3 && args[1] === '--backlog'))) throw new Error('usage: node tools/add-item.mjs spec.json [--backlog path]')
+  const first = process.argv.includes('--first')
+  const args = process.argv.slice(2).filter(a => a !== '--first')
+  if (!(args.length === 1 || (args.length === 3 && args[1] === '--backlog'))) throw new Error('usage: node tools/add-item.mjs spec.json [--backlog path] [--first]')
   const path = args[2] ?? '.state/backlog.json'
   const original = readFileSync(path, 'utf8')
   const existing = JSON.parse(original)
@@ -55,7 +57,7 @@ try {
   // Validate the whole batch before any write. Refuse a stale source snapshot.
   if (readFileSync(path, 'utf8') !== original) throw new Error('backlog changed during validation; retry')
   const temporary = `${path}.${process.pid}.pending`
-  writeFileSync(temporary, JSON.stringify([...existing, ...items], null, 1) + '\n', { flag: 'wx' })
+  writeFileSync(temporary, JSON.stringify(first ? [...items, ...existing] : [...existing, ...items], null, 1) + '\n', { flag: 'wx' })
   renameSync(temporary, path)
   console.log(`Added ${items.length} pending item(s): ${items.map(item => item.id).join(', ')}`)
 } catch (error) {

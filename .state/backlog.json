@@ -1,5 +1,37 @@
 [
  {
+  "id": "plumbing.shield-class",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "V2 R1 part 1 - shield item class. itemClass 'shield' is a legal item class (types.ts, the pack validator). A shield shares the two hands with weapons in applyItems: shield plus a two-handed weapon, or two shields plus a weapon, is refused loudly. A shield in an item slot is not fielded, exactly like a slot weapon (progression itemsOf/stowedWeapons), so no backpack shield grants its Block or powers. Source: V2-ROADMAP.md R1, V2-HANDOFF.md next-stage traps, V2-SHIELDS-AND-WEAPONS-2026-09-20.md.",
+  "expect": "Tests: a shield-class item folds its block and rangedBlock and grants its powers when held; shield + 1h weapon is accepted; shield + 2h weapon and shield + shield + 1h weapon are refused naming the unit; a shield in item slots is stowed, not fielded; the pack validator accepts itemClass shield and still refuses an unknown class. Control battles unchanged: no content carries the class yet.",
+  "unreachable": "Plumbing for an item class no content carries until content.v2-shields ships; no battle can show the id before then. The tests field shield-class items directly.",
+  "killSwitchExempt": "The item class is an engine type, not a content id, so CF_DISABLE_IDS has nothing to disable; the tests assert refusal and folding directly.",
+  "note": "Andrew 2026-09-23: V2 R1 to the top of the queue. First class plumbing, then numeric tuning (V2-HANDOFF.md)."
+ },
+ {
+  "id": "content.v2-shields",
+  "kind": "content",
+  "shape": "data",
+  "needs": [
+   "plumbing.shield-class"
+  ],
+  "spec": "V2 R1 part 2 - the three shields, authored in content and published to the pack. Kite +20 Block +5 Ranged Block; Round +10/+10; Tower +15/+15, -10 Dodge, -1 max Stamina, re-authoring item.tower-shield in place. All three itemClass shield, hands 1. Two powers each at the provisional numbers in engine/SWITCHES.md shieldPowerNumbers. item.knight-shield and item.buckler retire with power.knight-shield.block and power.buckler.block-and-dodge; pot-lid and holy-shield stay exactly as authored. Kits reassigned per V2-SHIELDS-AND-WEAPONS-2026-09-20.md fourth pass.",
+  "expect": "Each shield appears in a real battle with positive Block; a Tower-carrying hero shows -10 Dodge and -1 max Stamina; each of the six powers fires in a battle; no kit or start pool still names a retired shield.",
+  "note": "Content is authored in the content package and published into src/content/generated/pack.ts; the engine chat gates the published pack."
+ },
+ {
+  "id": "content.v2-weapon-block",
+  "kind": "content",
+  "shape": "data",
+  "needs": [
+   "content.v2-shields"
+  ],
+  "spec": "V2 R1 part 3 - weapon Block per V2-SHIELDS-AND-WEAPONS-2026-09-20.md. One-handed swords +5 Block; two-handed swords +10 Block; knives and daggers +5 Block; all Block only, never Ranged Block. Axes: onBlock (attacker) the blocking target loses 20 Block and 20 Ranged Block for the whole battle, floored at 0, firing on any block. Maces and hammers +2 Impact. Fire damage amounts on maces and hammers, and fire or poison on other weapons, are not stated: provisional values as a switch.",
+  "expect": "A sword-armed unit blocks in a real battle; an axe hit that is blocked leaves the target's Block and Ranged Block 20 lower for the rest of the battle and never below 0; swords and daggers add no Ranged Block.",
+  "note": "Open in the record: fire and poison amounts (item 3), axe on weapon blocks (item 4, default any block)."
+ },
+ {
   "id": "status.poison",
   "kind": "status",
   "shape": "counter",
