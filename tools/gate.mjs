@@ -29,7 +29,7 @@ const GOLDEN = '.state/baseline.hash'
 const RUNLOG = '.state/gauntlet-log.jsonl'
 
 // --count: the one line that says where the backlog is, printed by the gate
-// because the gate is what wrote every status and every seal in it. `start` and
+// because the gate is what wrote every status in it. `start` and
 // `wrap` print this line VERBATIM — neither of them counts anything itself.
 // (Added 2026-09-06 with tools/start.mjs; the GBH package's CARRYOVER.md item 3.)
 if (process.argv.includes('--count')) {
@@ -37,7 +37,6 @@ if (process.argv.includes('--count')) {
   const n = (f) => b.filter(f).length
   console.log(`${n((x) => String(x.status ?? '').startsWith('done'))} of ${b.length} landed · `
     + `${n((x) => x.status === 'done-needs-review')} await review · `
-    + `${n((x) => x.gauntlet === 'passed')} sealed · `
     + `${n((x) => !x.status)} pending`)
   process.exit(0)
 }
@@ -61,6 +60,20 @@ function treeHash() {
   } finally { try { rmSync(idx, { force: true }) } catch {} }
 }
 function readShards() { try { return JSON.parse(readFileSync(SHARDS_FILE, 'utf8')) } catch { return null } }
+
+// --shards-green: exit 0 only when all four shards passed on this exact tree.
+// `wrap` calls it and refuses without it (Andrew, 2026-09-23: the full suite runs
+// once per chat, as the four shards, and wrap refuses until all four are green).
+if (process.argv.includes('--shards-green')) {
+  const tree = treeHash()
+  const s = readShards()
+  const passed = s && s.tree === tree && s.total === SHARDS ? s.passed : []
+  const todo = Array.from({ length: SHARDS }, (_, i) => i + 1).filter((x) => !passed.includes(x))
+  console.log(todo.length
+    ? `${passed.length} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)} — run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}`
+    : `${SHARDS} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)}`)
+  process.exit(todo.length ? 1 : 0)
+}
 
 const shardArg = process.argv.indexOf('--shard')
 if (shardArg !== -1) {
@@ -119,8 +132,6 @@ if (!item) { console.error(`no backlog item '${id}'`); process.exit(2) }
 
 const checks = []
 let ok = true
-/** Set when an item takes the gate-1 deletion exemption. Forces a flagged landing. */
-let unreachableUsed = false
 /** A hard gate. Failing one blocks the landing. */
 const check = (name, fn) => {
   const r = fn()
@@ -141,7 +152,6 @@ const flag = (name, fn) => {
   return r.ok
 }
 
-const okStillTrue = () => ok
 console.log(`\ngate: ${id}   [${MODE}]\n`)
 
 // --abandon runs no checks (2026-09-22): giving up needs a reason, not a full
@@ -196,34 +206,24 @@ check('typecheck', () => {
   return { ok: r.ok, note: r.ok ? '' : r.out.split('\n').filter(Boolean).slice(0, 3).join(' | ') }
 })
 
-check('full test suite', () => {
-  // Run as four shards beforehand (--shard k/4, above); here the gate only confirms
-  // every shard passed on this exact tree.
-  const tree = treeHash()
-  const s = readShards()
-  const passed = s && s.tree === tree && s.total === SHARDS ? s.passed : []
-  const todo = Array.from({ length: SHARDS }, (_, i) => i + 1).filter((x) => !passed.includes(x))
-  if (!todo.length) return { ok: true, note: `${SHARDS} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)}` }
-  return { ok: false, note: `${passed.length} of ${SHARDS} shards passed on this tree — run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}` }
+// The item's own tests, not the full suite (Andrew, 2026-09-23, DECISIONS.md "less
+// process per feature"). The full suite runs once per chat as the four shards, and
+// `wrap` refuses until all four passed on the final tree.
+const touchedTests = () => sh('git status --porcelain --untracked-files=all').split('\n').filter(Boolean)
+  .map((l) => l.slice(3).replace(/^.* -> /, '')).filter((f) => f.startsWith('test/') && /\.test\.ts$/.test(f))
+check("the item's own tests", () => {
+  const files = touchedTests()
+  if (!files.length) return { ok: false, note: 'no test file touched' }
+  const r = runDiagnosticCommand(`npx vitest run ${files.join(' ')} --reporter=dot`, `gate-item-tests-${id}`)
+  return { ok: r.ok, note: r.ok ? files.join(', ') : `${files.join(', ')} — ${r.note}` }
 })
 
 check('gate 1 — the id appears in a real battle', () => {
-  // DELETIONS. Gate 1 asks "is this wired into a battle?" — which a REMOVAL cannot
-  // answer, and an item that removes an unreachable field cannot answer twice over.
-  // Added 2026-08-15, when deleting Targeting.excludeSelf had no honest probe: the
-  // targeting model is not reachable from a battle because no content uses it yet.
-  //
-  // The escape is deliberately expensive to take. It demands a written reason, it
-  // prints as SKIP rather than PASS, and it FLAGS the landing for review — so a
-  // session cannot quietly use it to dodge a probe it simply did not think about.
-  // Law 10: the gate is not weakened, the exemption is made loud and auditable.
-  if (item.unreachable) {
-    if (typeof item.unreachable !== 'string' || item.unreachable.length < 20) {
-      return { ok: false, note: '`unreachable` must be a written reason, not a boolean' }
-    }
-    unreachableUsed = true
-    console.log(`  SKIP  gate 1 — not probeable  — ${item.unreachable}`)
-    return { ok: true, note: '', skipPrint: true }
+  // Engine-only work skips this check instead of taking an exemption (Andrew,
+  // 2026-09-23, DECISIONS.md "less process per feature"): a plumbing item that names
+  // no probeIds has no content id a battle could show. Exemptions are gone.
+  if (item.shape === 'plumbing' && !item.probeIds) {
+    return { ok: true, note: 'engine-only plumbing, no probeIds — not applicable' }
   }
   // An item may nominate the ids to probe when its own id is not a content id
   // (a plumbing item like terrain.kinds introduces terrain.forest, not itself).
@@ -255,11 +255,9 @@ flag('existing tests untouched', () => ({
   ok: weakened.length === 0,
   note: weakened.length ? `DELETED LINES in ${weakened.map((w) => `${w.file} (-${w.del})`).join(', ')} — will land FLAGGED for review` : '',
 }))
-// Taking the gate-1 deletion exemption ALWAYS flags the landing, whatever else
-// passed. An exemption that lands clean is an exemption nobody ever re-reads.
-let needsReview = weakened.length > 0 || unreachableUsed
+// Edited tests still land for Angela's review (Law 10); that is not a seal.
+let needsReview = weakened.length > 0
 let pendingGolden = null
-let exemptions = unreachableUsed ? 1 : 0
 const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/').out : ''
 
 check('control battles unchanged', () => {
@@ -332,7 +330,7 @@ check('content has a published source', () => {
   if (MODE === 'land') {
     try { const g = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')); g.inventedCount = n; writeFileSync('.state/gauntlet.json', JSON.stringify(g)) } catch { writeFileSync('.state/gauntlet.json', JSON.stringify({ landings: 0, inventedCount: n })) }
   }
-  return { ok: true, warn: n > last, note: `${n} ids without a published source${n > last ? ` — ${n - last} NEW from THIS item, seal withheld until published` : n > 10 ? ` (${n - 10} awaiting publication from earlier items — see audit)` : ' (all grandfathered)'}` }
+  return { ok: true, warn: n > last, note: `${n} ids without a published source${n > last ? ` — ${n - last} NEW from THIS item, publish them` : n > 10 ? ` (${n - 10} awaiting publication from earlier items — see audit)` : ' (all grandfathered)'}` }
 })
 
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')
@@ -355,18 +353,10 @@ const CONTENT_ID_IN_CORE = /['"`](attack|power|unit|badge|item|enchant|specialty
 const TAG_LITERALS = /['"`](beast|construct|demon|dragon|elemental|giant|horror|nightmare|plant|undead|vampire|werewolf|catfolk|dwarf|elf|fae)['"`]/
 
 check('hardcode scan — core knows mechanisms, never names', () => {
-  if (item.coreLiteralAllow) {
-    if (typeof item.coreLiteralAllow !== 'string' || item.coreLiteralAllow.length < 20) {
-      return { ok: false, note: '`coreLiteralAllow` must be a written reason, not a boolean' }
-    }
-    needsReview = true; exemptions++
-    console.log(`  SKIP  hardcode scan — exemption taken  — ${item.coreLiteralAllow}`)
-    return { ok: true, note: '', skipPrint: true }
-  }
   const bad = addedLines('src/core').filter((l) => CONTENT_ID_IN_CORE.test(l) || TAG_LITERALS.test(l))
   return {
     ok: bad.length === 0,
-    note: bad.length ? `content names in engine code: ${bad.slice(0, 3).map((l) => l.trim().slice(0, 60)).join(' | ')} — a mechanism reads data; only content knows names. If this is genuinely a board rule (like ZoC), set coreLiteralAllow with the reason.` : '',
+    note: bad.length ? `content names in engine code: ${bad.slice(0, 3).map((l) => l.trim().slice(0, 60)).join(' | ')} — a mechanism reads data; only content knows names.` : '',
   }
 })
 
@@ -374,17 +364,9 @@ check('hardcode scan — core knows mechanisms, never names', () => {
 const MECHANISM_SHAPES = ['rule', 'station', 'trigger', 'modifier', 'pool', 'counter']
 check('generalizes — the second instance costs zero engine code', () => {
   if (!MECHANISM_SHAPES.includes(item.shape)) return { ok: true, note: `shape '${item.shape}' — not a mechanism, exempt` }
-  if (item.generalizationExempt) {
-    if (typeof item.generalizationExempt !== 'string' || item.generalizationExempt.length < 20) {
-      return { ok: false, note: '`generalizationExempt` must be a written reason, not a boolean' }
-    }
-    needsReview = true; exemptions++
-    console.log(`  SKIP  generalizes — exemption taken  — ${item.generalizationExempt}`)
-    return { ok: true, note: '', skipPrint: true }
-  }
   const variants = item.variants ?? []
   if (variants.length < 2) {
-    return { ok: false, note: `a '${item.shape}' item must declare "variants": two or more ids that exercise the SAME mechanism with different data (+2 vs demons proves nothing; +2 vs demons AND +4 vs undead proves a system). Or set generalizationExempt with a written reason.` }
+    return { ok: false, note: `a '${item.shape}' item must declare "variants": two or more ids that exercise the SAME mechanism with different data (+2 vs demons proves nothing; +2 vs demons AND +4 vs undead proves a system).` }
   }
   const notes = []
   for (const v of variants) {
@@ -448,17 +430,9 @@ flag('naming — no banned words invented', () => {
 // src/content/disable.ts). They must FAIL. A test that passes either way would
 // have passed before the feature existed, and proves nothing.
 check('kill switch — the tests fail without the content', () => {
-  if (item.killSwitchExempt) {
-    if (typeof item.killSwitchExempt !== 'string' || item.killSwitchExempt.length < 20) {
-      return { ok: false, note: '`killSwitchExempt` must be a written reason, not a boolean' }
-    }
-    needsReview = true; exemptions++
-    console.log(`  SKIP  kill switch — exemption taken  — ${item.killSwitchExempt}`)
-    return { ok: true, note: '', skipPrint: true }
-  }
   const ids = (item.probeIds ?? [id]).filter((x) => x.includes('.'))
-  if (item.unreachable || ids.length === 0) return { ok: true, note: 'no content id to disable — engine plumbing, not applicable' }
-  const files = sh('git status --porcelain').split('\n').filter(Boolean).map((l) => l.slice(3)).filter((f) => f.startsWith('test/'))
+  if ((item.shape === 'plumbing' && !item.probeIds) || ids.length === 0) return { ok: true, note: 'no content id to disable — engine plumbing, not applicable' }
+  const files = touchedTests()
   if (files.length === 0) return { ok: true, note: 'no touched test files (brought-its-own-tests already failed)' }
   // The env goes through execSync's `env` option, not a `VAR=x cmd` prefix —
   // that prefix is bash-only, and under cmd.exe this check would "fail" because
@@ -511,40 +485,10 @@ item.sha = sha
 writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
 appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp}\n\n${body}\n` +
   (needsReview ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
-// ── the Iron Gauntlet verdict ───────────────────────────────────────────────
-// PASSED means: every hard check passed, no flag warned, no exemption was taken.
-// Anything less lands (flags exist so the loop cannot deadlock) but the seal is
-// withheld, and the ledger says exactly why. (The post-land re-run of the suite
-// and control battles was cut 2026-09-22 — DECISIONS.md, Andrew. What it caught,
-// a pass depending on a file the commit left out, is now refused before the
-// commit: see "nothing the checks read is left out of the commit" above.)
-let gauntletNotes = []
-// Grandfathered environmental debt (the INVENTED ids the content sessions have
-// not yet published) is not this item's doing — it is tracked by the audit and
-// must not withhold every seal until session 2 publishes. Only item-attributable
-// flags count against the gauntlet.
-const warns = checks.filter((c) => c.warn).length  // content-check now only warns on NEW unpublished ids, so it counts
-
-// Cut 2026-09-22 (DECISIONS.md, Andrew): the effect-size battles and the
-// every-10th-landing audit-all no longer run inside a landing. Effect size was
-// recorded, never thresholded; `npx tsx tools/effect-size.mts <id>` and
-// `node tools/audit-all.mjs` still exist and run on their own when wanted.
-
-if (!okStillTrue()) gauntletNotes.push('a hard check failed') // defensive; land mode cannot reach here with ok=false
-if (warns > 0) gauntletNotes.push(`${warns} flag(s) warned`)
-if (exemptions > 0) gauntletNotes.push(`${exemptions} exemption(s) taken`)
-const gauntletPassed = gauntletNotes.length === 0
-item.gauntlet = gauntletPassed ? 'passed' : `not passed — ${gauntletNotes.join('; ')}`
-{
-  const bl = JSON.parse(readFileSync(BACKLOG, 'utf8'))
-  const it = bl.find((x) => x.id === id)
-  if (it) { it.gauntlet = item.gauntlet; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }
-  appendFileSync(LEDGER, `\nIRON GAUNTLET: ${gauntletPassed ? 'PASSED' : item.gauntlet.toUpperCase()}\n`)
-  sh('git add -A')
-  sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
-}
-logRun('landed', { sha, seal: gauntletPassed ? 'passed' : gauntletNotes.join('; ') })
-console.log(gauntletPassed
-  ? `\n⛓  IRON GAUNTLET: PASSED — every check, no flags, no exemptions.`
-  : `\n⛓  IRON GAUNTLET: NOT PASSED — ${gauntletNotes.join('; ')}. The landing stands; the seal is withheld.`)
-console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review)' : ''}\n`)
+// The seal is gone (Andrew, 2026-09-23, DECISIONS.md "less process per feature"):
+// every check is pass or fail, and a landing is a landing. Flags still print and
+// still go in the ledger; edited tests still land for review (Law 10).
+sh('git add -A')
+sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
+logRun('landed', { sha })
+console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review — existing tests edited or a banned word)' : ''}\n`)

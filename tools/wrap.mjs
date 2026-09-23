@@ -99,6 +99,16 @@ if (!next.line) fail(`--next needs the next chat's first line, after the label �
 if (/\n/.test(next.line)) fail('--next takes one line to paste, not several — one block per line')
 if (!/^New chat with /.test(next.label)) fail(`the next chat's label starts "New chat with <folders> — <package>: <what it does>" (ruled 2026-09-06), so Angela knows which folders to select before she reads anything else:\n${USAGE}`)
 
+// The full suite runs once per chat, as the four shards, and wrap refuses until
+// all four passed on the final tree (Andrew, 2026-09-23, DECISIONS.md "less process
+// per feature"). Checked before a byte is written: the wrap's own files change the tree.
+{
+  let green
+  try { execFileSync(process.execPath, [join(HERE, 'gate.mjs'), '--shards-green'], { encoding: 'utf8', stdio: 'pipe' }); green = null }
+  catch (e) { green = String(e.stdout || e.message).trim() }
+  if (green) fail(`the suite is not green on this tree — ${green}. Run the four shards, then wrap.`)
+}
+
 const at = stamp()
 
 // ── 0. the probe (hardening 1) ──────────────────────────────────────────────

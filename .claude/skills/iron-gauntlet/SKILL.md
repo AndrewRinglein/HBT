@@ -3,6 +3,8 @@ name: iron-gauntlet
 description: Iron Gauntlet — the landing loop for the Heroes of Blight and Tragic combat engine. Use ONLY when working inside that project's engine/ folder — adding or fixing a game mechanic, status, unit, terrain, trigger, ability, AI mode or movement power; running tools/gate.mjs, tools/next.mjs or tools/audit-all.mjs; or landing, abandoning or reviewing an item in .state/backlog.json. Covers the gate, the pre-flight checks, the exemption discipline, the stopping rules, and which sibling skill to hand off to. Not applicable to any other project.
 ---
 
+> **Changed 2026-09-23 (Andrew, `engine/DECISIONS.md` "less process per feature"; overrides anything below):** no seal and no exemptions — every check is pass or fail, and engine-only plumbing with no `probeIds` skips "appears in a battle" and the kill switch. A landing runs typecheck, the item's own tests and the control battles; the full suite runs once per chat as the four `--shard` commands and `wrap` refuses until all four are green. One backlog item per feature, carried across engine, content and kingdom in one chat.
+
 # The Iron Gauntlet
 
 **Everything lands through the gate. You do not decide whether an item passed —

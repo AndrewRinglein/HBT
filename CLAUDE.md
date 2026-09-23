@@ -61,8 +61,9 @@ node tools/wrap.mjs "<now line>" --next "<which chat, what it does>" "<its first
 
 node tools/next.mjs                    the next backlog item that is ready
 node tools/gate.mjs --shard <k>/4      run a quarter of the test suite (k = 1..4), one command
-                                       each; the gate's suite check passes only when all four
-                                       passed on the exact tree. Each runs ~85–125 s in Cowork
+                                       each — once per chat; wrap refuses until all four passed
+                                       on the exact tree. Each runs ~85–125 s in Cowork
+node tools/gate.mjs --shards-green     exit 0 only if all four shards passed on this tree
 node tools/gate.mjs <id>               run the gates, change nothing (~140 s in Cowork)
 node tools/gate.mjs <id> --land        commit, only if every gate passes
 node tools/gate.mjs <id> --abandon "<why>"   give up, revert, record why — runs no checks
@@ -87,7 +88,7 @@ node ../GBH/tools/state-rows.mjs --root .   assemble root STATE.md's rows · --c
 ```
 
 **THE GAME BUILDER** — `GAME-BUILDER.html`, double-click it. The gauntlet's running log:
-every landing, every failed check, seals, and the questions inbox. Data:
+every landing, every failed check, and the questions inbox. Data:
 `.state/gauntlet-log.jsonl` (the gate appends one line per run) and `.state/questions.md`
 (the human inbox — add and answer questions there; the page re-renders when
 `game-builder.mjs` runs). It is the thing Angela looks at, so it is what an eyeball check links to.
@@ -95,19 +96,22 @@ every landing, every failed check, seals, and the questions inbox. Data:
 **The gate decides whether an item passed, not you.** Never write `status` into
 `.state/backlog.json` by hand — the only writers are the gate and `tools/review.mjs`,
 which records Angela's verdict on flagged landings (run it only when she has actually
-reviewed and said so, quoting her words; it clears the flag but never rewrites the gate's
-seal history). Adding many mechanics in a row is the `batch-add` skill.
+reviewed and said so, quoting her words; it clears the flag). Adding many mechanics in a row is the `batch-add` skill.
 
 ## The Iron Gauntlet
 
-The gate's full check suite plus what runs around it. **`⛓ IRON GAUNTLET: PASSED` prints
-only when every check passed, no flag warned, and no exemption was taken** — anything less
-still lands (flags exist so the loop cannot deadlock) but the seal is withheld and the
-ledger says why. The verdict is written onto the backlog item as `gauntlet`.
+The gate's checks, each pass or fail. **No seal and no exemptions** (Andrew,
+2026-09-23, `DECISIONS.md` "less process per feature"). Flags still print and go in the
+ledger; a landing that edited existing tests still lands `done-needs-review` (Law 10).
 
+A landing runs: typecheck, **the item's own tests** (the test files it touched), the
+control battles, and the checks below. The full suite runs **once per chat**, as the four
+`--shard` commands, and `wrap` refuses until all four passed on the final tree.
+
+- **Appears in a battle** — probes the id (or `probeIds`). Engine-only plumbing with no
+  `probeIds` skips it as not applicable.
 - **Kill switch** — the item's tests re-run with its content disabled (`CF_DISABLE_IDS`,
-  the seam in `src/content/disable.ts`) and must FAIL. A test that passes either way is
-  tautological.
+  the seam in `src/content/disable.ts`) and must FAIL. Engine-only plumbing skips it.
 - **Hardcode scan** — added `src/core` lines may not contain content-instance ids or
   creature-tag literals. Core knows mechanisms; only content knows names.
 - **Generalization** — a mechanism-shaped item declares `variants`: 2+ ids proving the
@@ -118,14 +122,8 @@ ledger says why. The verdict is written onto the backlog item as `gauntlet`.
 - **Nothing left out of the commit** — `--land` refuses if an ignored file under `src/`,
   `test/` or `tools/` could have fed a pass the commit would not carry.
 
-The full suite and the control battles run **once** per landing. Cut 2026-09-22
-(`DECISIONS.md`, Andrew): the post-land re-run of both, the effect-size battles, the
-every-10th-landing `audit-all` and the Game Builder rebuild. The last three still run on
-their own (Commands, above).
-
-Every exemption (`unreachable`, `coreLiteralAllow`, `generalizationExempt`,
-`killSwitchExempt`) demands a written reason, prints SKIP not PASS, flags the landing for
-review, and withholds the seal. The escape hatches exist; they are deliberately expensive.
+**One backlog item per feature, not one per layer** — sized to fit one chat, carried
+across engine, content and kingdom (each package commits in its own repository).
 
 State lives on disk (`.state/backlog.json`, `.state/ledger.md`, `.state/baseline.hash`), so
 a fresh session resumes exactly where the last one stopped.

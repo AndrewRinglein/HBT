@@ -4,7 +4,7 @@
 // --first puts the new items at the top of the queue (next.mjs takes backlog order).
 import { readFileSync, writeFileSync, renameSync } from 'node:fs'
 
-const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note', 'unreachable', 'coreLiteralAllow', 'generalizationExempt', 'killSwitchExempt'])
+const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note'])
 const required = ['id', 'kind', 'shape', 'spec', 'expect']
 const shapes = new Set(['counter', 'plumbing', 'numbers', 'rule', 'pool', 'data', 'modifier', 'decision', 'trigger', 'station', 'naming', 'flag'])
 
@@ -24,7 +24,7 @@ function validate(items, existing) {
       if (key in item && (!Array.isArray(item[key]) || item[key].some(id => typeof id !== 'string' || !id.trim()) || new Set(item[key]).size !== item[key].length)) throw new Error(`${key} must be an array of distinct nonempty ids`)
     }
     for (const key of ['changesBaseline', 'neutral']) if (key in item && typeof item[key] !== 'boolean') throw new Error(`${key} must be boolean`)
-    for (const key of ['note', 'unreachable', 'coreLiteralAllow', 'generalizationExempt', 'killSwitchExempt']) {
+    for (const key of ['note']) {
       if (key in item && (typeof item[key] !== 'string' || item[key].trim().length < (key === 'note' ? 1 : 20))) throw new Error(`${key} requires a written reason`)
     }
   }

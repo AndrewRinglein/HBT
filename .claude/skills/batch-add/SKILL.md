@@ -3,6 +3,8 @@ name: batch-add
 description: Work through the backlog of mechanics in The Combat Framework one item at a time, unattended — implement, run the blocking gate, fix or abandon, land, repeat. Use when adding many effects, statuses, units, terrain types, abilities or AI modes in a row without a human in the loop.
 ---
 
+> **Changed 2026-09-23 (Andrew, `engine/DECISIONS.md` "less process per feature"; overrides anything below):** no seal and no exemptions — every check is pass or fail, and engine-only plumbing with no `probeIds` skips "appears in a battle" and the kill switch. A landing runs typecheck, the item's own tests and the control battles; the full suite runs once per chat as the four `--shard` commands and `wrap` refuses until all four are green. One backlog item per feature, carried across engine, content and kingdom in one chat.
+
 # Batch add
 
 Work `.state/backlog.json` top to bottom. One item at a time, all the way through, then the next.
