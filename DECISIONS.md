@@ -2558,3 +2558,11 @@ Ruled, as recommended:
 4. The seal and the exemptions go. The checks stay as pass or fail; engine-only work skips "appears in a battle" instead of taking an exemption.
 
 The next engine chat makes these four changes first, then lands V2 shields end to end.
+
+## 2026-09-23 — the kingdom gate fits a Cowork command
+
+Andrew, told the kingdom landing could not finish in Cowork and asked to run it himself: “Okay, no, I'm not running any fucking thing. We have to shorten the check to make it so you can do it.”
+
+Ruled: the kingdom gate takes the engine's shape from “less process per feature” above. The full suite runs as four shards (`node tools/gate.mjs --shard k/4`, from `kingdom/`), each recorded against the exact tree; a landing requires all four green on that tree and runs only typecheck, the claimed probes and the static checks. The separate every-P-tier-probe sweep and the post-land audit are cut — the P-tier probes are test files, so the shards run them.
+
+Andrew, same chat, on letting `v2.shields-hands` also re-close ISC-003 (reopened by a fixture regeneration that this item repaired): “Okay, one is fine.”
