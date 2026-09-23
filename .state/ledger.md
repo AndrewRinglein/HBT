@@ -13912,3 +13912,69 @@ effect of test.block-a.reaction,test.block-b.reaction — 25 paired battles per 
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 EFFECT_RESULT {"version":1,"status":"measured","unavailable":[]}
 ```
+
+## plumbing.gate-recovery — ABANDONED
+2026-09-23 02:15
+
+Ruled 2026-09-22 (DECISIONS.md, Andrew): the post-land re-run was cut from the gate, so there is no committed-tree audit left for R0 to recover from. Its nine files are kept in ../.scratch-r0-pending/.
+
+## REVIEW — 57 flagged landing(s) cleared
+2026-09-23T02:15:22.648Z · Angela: "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+
+  ok  movement.zone-of-control
+  ok  fix.beast-pen-hero-correction
+  ok  content.test-cohort
+  ok  fix.shadow-hound-hero-side
+  ok  encounter.runner
+  ok  capability.power-pool
+  ok  content.alpha-team
+  ok  capability.knockback
+  ok  content.field-eve-24
+  ok  pack.items
+  ok  seam.items-per-unit
+  ok  content.alpha-flip
+  ok  capability.charges
+  ok  ai.attack-choice
+  ok  fix.enemy-ai-role
+  ok  capability.enemy-action-cooldown
+  ok  capability.surge
+  ok  fix.zoc-threat-not-stop
+  ok  fix.knockback-beyond-one
+  ok  refactor.one-action-type
+  ok  board.heroes-west
+  ok  fix.deathbed-no-stands
+  ok  badge.afflictions
+  ok  proving.side-override
+  ok  encounter.band-axis
+  ok  fix.aoo-pays-stamina
+  ok  fix.class-restriction
+  ok  proving.plan-shape
+  ok  pack.rotting-flesh-2
+  ok  proving.rank
+  ok  proving.page
+  ok  proving.score-victory-rate
+  ok  fix.v2-baseline
+  ok  plumbing.battle-cursor
+  ok  plumbing.battle-snapshot
+  ok  plumbing.battle-commands
+  ok  fix.movement-plans
+  ok  fix.surge-cycle
+  ok  fix.ai-shared-commands
+  ok  fix.unit-identities
+  ok  plumbing.game-builder-batches
+  ok  capability.authored-slots
+  ok  plumbing.action-spent
+  ok  board.authored-dimensions
+  ok  plumbing.effect-arm-integrity
+  ok  terrain.authored-high-props
+  ok  terrain.authored-geometry
+  ok  terrain.low-cover
+  ok  fix.ai-melee-contact
+  ok  plumbing.activation-choice
+  ok  rule.elemental-resists
+  ok  rule.protection-universal
+  ok  rule.damage-packets
+  ok  rule.bursts
+  ok  plumbing.command-diagnostics
+  ok  plumbing.measurement-integrity
+  ok  rule.block

@@ -6,7 +6,7 @@ Combat engine and simulation harness for *Heroes of Blight and Tragic*.
 `COMBAT-SEQUENCE.md` has the order of operations. `ENGINE-CONSTITUTION.md` has the laws —
 read it before writing engine code.
 
-**How every chat behaves is `../../GBH/DISPLAY-RULES.md`** — one list, Angela's, numbered
+**How every chat behaves is `../DISPLAY-RULES.md`** — one list, Angela's, numbered
 1–39, for how a chat talks to her, starts, works, uses subagents and wraps. It applies
 here in full, and this file may add a rule but never loosen one. Cut to this 2026-09-06
 (`../../GBH/CARRYOVER.md` items 3 and 8); everything the list already says is gone from here
@@ -62,7 +62,7 @@ node tools/wrap.mjs "<now line>" --next "<which chat, what it does>" "<its first
 node tools/next.mjs                    the next backlog item that is ready
 node tools/gate.mjs <id>               run the gates, change nothing
 node tools/gate.mjs <id> --land        commit, only if every gate passes
-node tools/gate.mjs <id> --abandon     give up, revert, record why
+node tools/gate.mjs <id> --abandon "<why>"   give up, revert, record why — runs no checks
 node tools/gate.mjs --count            the one count line — start and wrap print it verbatim
 node tools/report.mjs                  what landed, abandoned, or needs review
 node tools/review.mjs <id> --ok "..."  record Angela's verdict on a flagged landing (--all for the queue)
@@ -72,8 +72,9 @@ npm test   npm run typecheck   npm run battle <n> [--map=id]   npm run sweep <n>
 npm run proving <plan.json> [--out dir] [--force]   THE PROVING — squads, fixtures and subjects
                                        → paired results and a flip-rate ranking (PROVING-PLAN.md)
 
-node tools/game-builder.mjs            rebuild GAME-BUILDER.html (the gate does this after every run)
-node tools/audit-all.mjs               the Iron Gauntlet's full-tree audit
+node tools/game-builder.mjs            rebuild GAME-BUILDER.html — run it when you want to look
+node tools/audit-all.mjs               the full-tree audit — on its own, never inside a landing
+npx tsx tools/effect-size.mts <id>     WITH-vs-WITHOUT battles for one mechanism — on its own
 ```
 
 Run from the **HBT folder**, by hand, never by any gate:
@@ -85,8 +86,8 @@ node ../GBH/tools/state-rows.mjs --root .   assemble root STATE.md's rows · --c
 **THE GAME BUILDER** — `GAME-BUILDER.html`, double-click it. The gauntlet's running log:
 every landing, every failed check, seals, and the questions inbox. Data:
 `.state/gauntlet-log.jsonl` (the gate appends one line per run) and `.state/questions.md`
-(the human inbox — add and answer questions there; the page re-renders on the next gate
-run). It is the thing Angela looks at, so it is what an eyeball check links to.
+(the human inbox — add and answer questions there; the page re-renders when
+`game-builder.mjs` runs). It is the thing Angela looks at, so it is what an eyeball check links to.
 
 **The gate decides whether an item passed, not you.** Never write `status` into
 `.state/backlog.json` by hand — the only writers are the gate and `tools/review.mjs`,
@@ -108,15 +109,16 @@ ledger says why. The verdict is written onto the backlog item as `gauntlet`.
   creature-tag literals. Core knows mechanisms; only content knows names.
 - **Generalization** — a mechanism-shaped item declares `variants`: 2+ ids proving the
   second instance is pure data, each probed live in a battle.
-- **Consequence** — `changesBaseline: true` with byte-identical control battles FAILS, and
-  consequential mechanisms get a paired WITH-vs-WITHOUT effect measurement
-  (`npx tsx tools/effect-size.mts <id>`) recorded in the ledger.
+- **Consequence** — `changesBaseline: true` with byte-identical control battles FAILS.
 - **Naming** — unknown id kinds block (declare them in `GLOSSARY.md` first); banned
   vocabulary flags.
-- **Post-land audit** — tests and baselines re-run FROM THE COMMITTED TREE; on disagreement
-  the landing is auto-reverted.
-- **Periodic full audit** — `node tools/audit-all.mjs`, run automatically every 10th
-  landing and at the end of every batch: the whole tree, not the delta.
+- **Nothing left out of the commit** — `--land` refuses if an ignored file under `src/`,
+  `test/` or `tools/` could have fed a pass the commit would not carry.
+
+The full suite and the control battles run **once** per landing. Cut 2026-09-22
+(`DECISIONS.md`, Andrew): the post-land re-run of both, the effect-size battles, the
+every-10th-landing `audit-all` and the Game Builder rebuild. The last three still run on
+their own (Commands, above).
 
 Every exemption (`unreachable`, `coreLiteralAllow`, `generalizationExempt`,
 `killSwitchExempt`) demands a written reason, prints SKIP not PASS, flags the landing for
@@ -135,7 +137,7 @@ item that needs it.
 | Item | Open |
 |---|---|
 | any | the item's `spec` and `expect` — `node tools/next.mjs` — before any source file |
-| any | ENGINE-CONSTITUTION.md — the law the item touches · **the Iron Gauntlet, above, before `--land`**: kill switch, hardcode scan, generalization, consequence, naming, post-land audit |
+| any | ENGINE-CONSTITUTION.md — the law the item touches · **the Iron Gauntlet, above, before `--land`**: kill switch, hardcode scan, generalization, consequence, naming |
 | any | `node tools/decided.mjs "<the question>"` before asking anything · SWITCHES.md before deciding anything |
 | rule trigger modifier pool counter station | COMBAT-SEQUENCE.md — the rung the mechanism sits on · src/core · the kill-switch seam `src/content/disable.ts` · its verify scenario in test/ |
 | data numbers content | **the design folder — grep it for the id first** (below) · src/content · its registry array |
@@ -147,9 +149,14 @@ item that needs it.
 
 ## Start and wrap
 
+**An engine chat opens with the Heroes of Blight and Tragic folder only** — not GBH,
+so GBH's `CLAUDE.md` does not load into it (Andrew, 2026-09-22). Its label is
+`New chat with Heroes of Blight and Tragic — engine: <what it does>`. Nothing the engine
+runs reads GBH; only `state-rows.mjs`, run by hand, lives there.
+
 `start engine` runs `node tools/start.mjs`; `wrap` runs
 `node tools/wrap.mjs "<now line>" --next "<label>" "<first line>"`. The rules for both are
-`../../GBH/DISPLAY-RULES.md` §Starting and §Wrapping. What `start.mjs` prints: the count line
+`../DISPLAY-RULES.md` §Starting and §Wrapping. What `start.mjs` prints: the count line
 verbatim from the gate, the Now line, the next chat the last wrap named, how the previous
 chat ended, `Yours:`, `Queue:`, `Delegate:`, `Blocked:`, `Calls since last wrap:`, and the
 stack for the top item (the table above). `wrap.mjs` writes `.state/now.json`,
@@ -214,35 +221,15 @@ before it ships (`--scan MY-PLAN.md`). A rule you have to remember is not a mech
 multi-attack question was settled in `COMBAT-SEQUENCE.md` line 155, litigated by Angela,
 and re-asked as open the next day.
 
-**The mount refuses unlink** (`.git/index.lock`): the shim is
-`../kingdom/HANDOFF-2026-09-04.md` §7. A subagent that commits must be told.
+**A Cowork chat cannot finish a gate run.** Cowork's shell kills every command at
+~178 s whatever timeout is asked for (a bare `sleep 200` died at 177,998 ms), and a
+backgrounded process dies with its call. Nothing in this repo sets that limit. On
+2026-09-22, with the landing already cut down, the full suite alone was still running
+at 170 s here, so gate and land from a terminal on the machine. (The mounted folder
+also costs ~1.4 ms per file stat: a cold `tsc --noEmit` took 160 s on 2026-09-21 and
+5.6 s warm the next day.) The mount-unlink trap is in the root `CLAUDE.md`.
 
-**A Cowork chat cannot run the gate at all — and nothing in this repo is why.**
-Measured 2026-09-21, correcting the 2026-09-20 wrap's guess about cloud-linked
-chats. Two separate causes, both outside the project:
-
-1. **Cowork's shell tool kills every command at ~178 s**, whatever timeout is
-   asked for. A bare `sleep 200` run outside this folder died at 177,998 ms, one
-   millisecond from the gate run's 177,997 ms. `tools/gate.mjs` contains no
-   timeout literal at all, `vitest.config.ts` budgets 5 s per test, and the
-   `.claude` hooks only append a line to a log and exit 0. Each call also runs
-   under `bwrap --unshare-pid --die-with-parent`, so a backgrounded gate dies
-   with the call that started it.
-2. **The mounted folder costs ~1.4 ms per file metadata call.** `stat` on 5,000
-   files: **7.13 s on the mount, 0.01 s on the sandbox's own disk.** Bulk reads
-   are fine (200 MB in 0.02 s) — it is per-file latency only, so anything that
-   walks a tree pays. `tsc --noEmit` takes **160 s on the mount and 0.79 s** on a
-   `cp -a` copy under `/tmp`. That is why the gate looked as though it hung on
-   trivial checks: it was not hanging, it was statting.
-
-Copying `engine/` to `/tmp` (~90 s, 7,919 files) fixes cause 2, but the suite
-alone still runs past 178 s on the sandbox's 2 vCPUs, and a landing adds the
-kill-switch run and the post-land audit on top. **Run every gate, landing and
-audit from a terminal on the machine.** A Cowork chat can read, grep, measure and
-write documents; it can never land an item.
-
-**`wrap.mjs` commits `git add -A`** (line 166), exactly as the gate does. Wrap
-with an ungated item's files sitting in the tree and the wrap commits them —
-which is how `e89e3a7` swept R0's nine files into HEAD on 2026-09-21, undone the
-same session in `79544c5`. **Park work in progress outside the tree before
+**`wrap.mjs` commits `git add -A`**, exactly as the gate does. Wrap with an ungated
+item's files in the tree and the wrap commits them (`e89e3a7` swept R0's nine files on
+2026-09-21; undone in `79544c5`). **Park work in progress outside the tree before
 `wrap`, not only before a landing.**

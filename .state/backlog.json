@@ -145,9 +145,14 @@
   ],
   "generalizationExempt": "an engine RULE of the board (GAME-DESIGN §4) with no content instance to vary — every standing unit exerts it; the switch zoneOfControl is the sweep axis",
   "killSwitchExempt": "no content id carries the zone — it is the six hexes round every standing unit; the tests assert the stop and the provoke, which no row can be disabled to falsify",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "0b79fb7",
-  "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken"
+  "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "movement.attack-of-opportunity",
@@ -1122,9 +1127,14 @@
   "expect": "snake never misses a zombie (acc 110) and lands 4 damage + 3 poison per bite; drake breath poisons 3 and snap poisons 1 with correct stamina; no beast in any horde; control battles re-blessed",
   "unreachable": "BENCHED by Angela's fielding ruling (2026-08-20): all three beasts are hero-side and out of the default party until party assembly exists — no standard battle can field them, so gate 1 has nothing to probe; the custom-battle tests in test/spirit-snake.test.ts and test/green-drake.test.ts field them instead.",
   "changesBaseline": true,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "a4822ab",
-  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "movement.powers",
@@ -1189,9 +1199,14 @@
    "test.sky-pirate.apply-bleed"
   ],
   "changesBaseline": true,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "286472a",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "test.fixture-migration",
@@ -1353,8 +1368,13 @@
    "showcase.beasts"
   ],
   "note": "Not in content/settled.json at all — unlike the snake and drake this ruling could not go through the Codex pipeline, because the puppy exists only as a hand-typed def in engine/src/content/index.ts. That is a content gap.",
-  "status": "done-needs-review",
-  "sha": "3314213"
+  "status": "done",
+  "sha": "3314213",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "sim.coverage",
@@ -1479,9 +1499,14 @@
   ],
   "note": " | 2026-09-03: P11 approved as written (Angela). Carries fix.outcome-enum (the six arms), fix.start-of-turn-victory (Start of Turn rungs 1-2) and hook.on-enter (startOfBattle at arrival) because they are the runner's own rungs; each has its assertion in test/encounter-runner.test.ts.",
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "9c9ac77",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "content.hero-pack",
@@ -1558,9 +1583,14 @@
    "trigger.bruiser-demon.protection"
   ],
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "79e8703",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.status-tick-timing",
@@ -1614,8 +1644,13 @@
   "probeIds": [
    "showcase.alpha-team"
   ],
-  "status": "done-needs-review",
-  "sha": "0cbbb9c"
+  "status": "done",
+  "sha": "0cbbb9c",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "capability.area-attack",
@@ -1659,8 +1694,13 @@
    "trigger.halberd.hack.knockback",
    "trigger.test-ram.knockback"
   ],
-  "status": "done-needs-review",
-  "sha": "80e9b50"
+  "status": "done",
+  "sha": "80e9b50",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "capability.item-powers",
@@ -1803,9 +1843,14 @@
    "hero.base.rogue-skull"
   ],
   "note": "Filed from the kingdom session 2026-09-02; the kingdom reads the engine and never edits it. Until this lands the kingdom's pool is five heroes and the opening drafts what the pool holds.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "60710eb",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "pack.items",
@@ -1824,10 +1869,15 @@
   ],
   "note": "Filed from the kingdom session 2026-09-02. Plan: engine/ITEMS-PLAN.md.",
   "unreachable": "an item id appears in no battle log until seam.items-per-unit fields one (the next landing, which carries the probe); this landing is the registry, proven by pack-items.test against the Codex rows",
-  "status": "done-needs-review",
+  "status": "done",
   "attempts": 1,
   "sha": "058e75e",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "seam.items-per-unit",
@@ -1849,10 +1899,15 @@
    "item.longbow"
   ],
   "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md §2, §4, §5.",
-  "status": "done-needs-review",
+  "status": "done",
   "attempts": 1,
   "sha": "0ea4ad2",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "content.alpha-flip",
@@ -1876,9 +1931,14 @@
    "attack.halberd.cleave",
    "attack.longsword.slash"
   ],
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "da99720",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "seam.unit-mods",
@@ -1916,9 +1976,14 @@
    "power.strength-potion.use"
   ],
   "note": "Filed from the kingdom session 2026-09-02. Target grammar, Root/Confusion/Taunt/Frost and trap placement are separate gaps the rows will name. | 2026-09-03: 19 of the 37 active items compile by exact sentence into power.<item>.use rows (uses, free, cooldown through the effect vocabulary); the rest name their gap. Traps, stealth, reveal, blink, airwalk and stabilise stay gaps.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "1beed08",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "ai.attack-choice",
@@ -1937,11 +2002,16 @@
    "attack.dagger.stab",
    "attack.knight-shield.shield-slam"
   ],
-  "status": "done-needs-review",
+  "status": "done",
   "generalizationExempt": "a SWITCH on the AI's choice rule, not a content mechanism: there is no row to vary — the two policies are the two code paths, and the sweep is the instrument",
   "attempts": 1,
   "sha": "060b61b",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.bleed-magnitude",
@@ -2093,9 +2163,14 @@
    "attack.skeletal-archer.shoot",
    "attack.necromancer.necro-bolt"
   ],
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "32c244e",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "capability.enemy-action-cooldown",
@@ -2111,10 +2186,15 @@
    "attack.test-ram.slam",
    "attack.test-ram.overhead"
   ],
-  "status": "done-needs-review",
+  "status": "done",
   "attempts": 2,
   "sha": "f5a5cac",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "capability.frost-root-taunt",
@@ -2200,9 +2280,14 @@
   ],
   "generalizationExempt": "an engine rule of the Activation with no content instance — every hero rolls it; Surge (a row stat) is the data axis",
   "killSwitchExempt": "no content id carries the check; the tests assert the loop, the stamina and the once-only ladder, which no row can be disabled to falsify",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "b0a5759",
-  "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken"
+  "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "capability.auras",
@@ -2526,9 +2611,14 @@
   ],
   "note": "Landed 2026-09-04. move.stopped now carries reason: hit (the mover's own hex; no by) — the viewer's held rendering has nothing to read and must go (EVENTS §12). The hard stop (step 7 of executeMove) is deleted, not switched: zoneOfControl still keeps the whole mechanism sweepable. Three ZoC tests rewritten as the rule (Law 10 notes at the edit). The swing that stops a mover is a content attack: the test zombie's bite is the probe and the kill switch (disable it and no swing hits, so nothing stops — the tests fail), and the Codex zombie's claw is the second instance, pure data.",
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "1019510",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.knockback-beyond-one",
@@ -2551,9 +2641,14 @@
   "note": "Landed 2026-09-04. FINDING 34: the distance was never capped; this landing is the proof (a push of 2, a push cut short), the log fields (knocked: asked / hexes / stoppedBy) and the test row. FINDING 35 came out of proving it live: the test body could not hit (accuracy 5); it is 65 now, and two liveness tests widened their windows. showcase.knockback-two fields the golem on a replicate where the Overhead lands on Turn 2, so the probe reads the two-hex shove.",
   "attempts": 1,
   "baselineReason": "VERIFIED: with the knocked line masked, all eleven control maps hash identical to the previous tree. The knocked line gained asked / hexes / stoppedBy (Law 12: a shortened push is read off the line), and the halberd's rider fires in every control battle.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "2e649b5",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "refactor.one-action-type",
@@ -2576,9 +2671,14 @@
    "test/one-action-type.test.ts"
   ],
   "note": " | LANDED 2026-09-04 as ONE TYPE, THREE VIEWS: ActionDef carries source, slot, the limits (staminaCost, cooldown, warmup, uses, free), range/target/area, and what it does — an attack profile, a move profile, an effects list (power effects and movement riders, one union). AttackDef / MoveDef / AbilityDef are narrowings by profile. One registry (ctx.actions, content ACTIONS), one list on the unit (actions; attacksOf/powersOf/movesOf are views), one limits check (actionReady) and one spend (spendAction) that canAttack, canUsePower and usableMoves all call. The pack still writes flat rows; the engine lifts them (pack.ts liftAttack/liftMove). The AI reads slot as byProfile (SWITCHES.md actionSlots) until it is designed. Findings 32 and 33 (FINDINGS-2026-09-03.md). 40 test files edited for the row shape — Law 10 note at the top of each; four tests rewrote a cooldown number as the Codex rule.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "26fa562",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "system.ai-modes",
@@ -2608,9 +2708,14 @@
    "test/state.test.ts"
   ],
   "note": "test/state.test.ts row assertions became edge assertions; test/dazed-split.test.ts widened its seed window (first Powers Locked crit is now replicate 133) — Law 10 reasons at both edits. Content still owes the encounters' placements (PROVING-PLAN Stage A3).",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "4bb80e3",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "badge.mechanism",
@@ -2659,9 +2764,14 @@
   "note": "Landed 2026-09-04. CONTENT OWES (4-BADGES-SETTLED): badge.hero — one flag, bleedsOut, on every hero row and on a civilian only when its row says so; badge.wounded — the ruled numbers and the wounded flag. The moment both ship, the bridge in settle.ts (every player unit bleeds; the Codex row is prose) goes quiet on its own and the baselines move for the ruling. The viewer: a skull for Wounded; the wound-level rendering goes (EVENTS §12). deathbed.exhausted is gone; deathbed.none is new; deathbed.stood carries badgeId; unit.woundLevel is gone.",
   "attempts": 1,
   "baselineReason": "the ruling: the stand ladder's penalties (−1 to every stat, −2 Max Stamina, wound levels) are gone; a stood hero in a control battle now gains 1 + Regen stamina and a full bar, and carries the Wounded penalties only once content publishes badge.wounded (until then the STOOD line names the gap). The hero-side deaths are unchanged (the bridge: every player unit bleeds until badge.hero ships).",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "b4cbd9b",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "badge.afflictions",
@@ -2686,10 +2796,15 @@
    "test/afflictions.test.ts"
   ],
   "note": "Landed 2026-09-04. Ghosts / possession: no bestiary row says \"inflict an affliction: possession\" today — attack.ghost.possess is a bare attack; when the bestiary authors the rider it compiles the same way. The auditor (test/audit.test.ts) learned that a mod added while a swing is in flight does not touch that swing's damage (Law 1); three liveness tests widened their seeds (Law 10 notes).",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "e941838",
   "gauntlet": "not passed — 2 flag(s) warned",
-  "attempts": 1
+  "attempts": 1,
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "proving.side-override",
@@ -2707,9 +2822,14 @@
   ],
   "note": "Landed 2026-09-04. FINDING 36: the first mirror sweep (20 seeds, four zombies each way) came out 8-12 AGAINST the side with initiative — the side-keyed rules (the hero side rolls deathbed and bleeds; the enemy side runs Power) weigh more than the first move. A Proving mirror plan must say which it measures; mirrorSideRules: row is the arm that would isolate initiative, and it is not built.",
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "2dd95c8",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "proving.rig",
@@ -2755,9 +2875,14 @@
    "test/band-axis.test.ts"
   ],
   "note": "Pack refresh + FINDING 43. Law 10 edits: item-powers early-exit named its two powers (Storm fires on seed 1 now); bleed-magnitude shed claim moved to a skeleton fielding — the old sheds were the ZOMBIES healing their own Bleed off the mis-targeted Second Wind (FINDING 39); deathbed/badges tests read the real rows; ground-layers Kiln/Rime read columns.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "33847f6",
-  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.aoo-pays-stamina",
@@ -2783,10 +2908,15 @@
    "test/aoo-pays-stamina.test.ts"
   ],
   "note": "Closes FINDING 40. NEUTRAL on the eleven control maps, verified by the gate (byte-identical): every holder there has a 0-cost melee (Punch, claws), so the cheapest legal attack is the same attack and spendStamina(0) emits nothing. The lie was visible where a holder has no 0-cost melee — the audit's Spirit Snake in showcase.beasts — and that fielding is not a control map. The zone-of-control test title \"ONE free swing\" reworded (assertions unchanged).",
-  "status": "done-needs-review",
+  "status": "done",
   "attempts": 1,
   "sha": "93e3195",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "proving.mirror-row-rules",
@@ -2863,10 +2993,15 @@
    "test/class-restriction.test.ts"
   ],
   "note": "Session 9 E5b. Neutral on the control maps: the Alpha and Codex kits all obey their restrictions. The Proving reads this seam: a mis-wielded item is INVALID with this reason, never a number. Carries the pack from content 3c2fa24: the four test hero bodies gained their class.* tag (they had none, so they could wield nothing restricted — the smoke plan's halberd on test-warrior). Law 10: items-per-unit handed the Hunter a halberd (class.warrior) — an illegal fielding by the ruling; the same claims now on the longsword, and the halberd is the refusal case.",
-  "status": "done-needs-review",
+  "status": "done",
   "attempts": 1,
   "sha": "63f75cc",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "proving.plan-shape",
@@ -2890,10 +3025,15 @@
    "test/proving/smoke.json"
   ],
   "note": "Session 9 E2/E3/E5/E6. deployGap is the one engine-side addition (setup.ts); every standard battle is byte-identical because the field is absent. The plan files need one line each on the two initiative plans: \"switches\": {\"mirrorSideRules\": \"row\"} — session 9's generator owns them.",
-  "status": "done-needs-review",
+  "status": "done",
   "attempts": 1,
   "sha": "ef5cb9c",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "pack.rotting-flesh-2",
@@ -2915,9 +3055,14 @@
    "test/afflictions.test.ts"
   ],
   "note": "Pack refresh only.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "9d62be1",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "proving.rank",
@@ -2935,10 +3080,15 @@
    "test/proving-rank.test.ts"
   ],
   "note": "Session 9 E7. A reader's tool: no battle is run, nothing decided. Observation for Angela from the first real run: flip rate counts a flip in EITHER direction, so the hero ladder's top six (3/5) all turned control wins into losses — swing carries the sign; if the score should be one-directional that is a ruling, not a fix.",
-  "status": "done-needs-review",
+  "status": "done",
   "attempts": 1,
   "sha": "122934a",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "proving.page",
@@ -2956,9 +3106,14 @@
    "test/proving-page.test.ts"
   ],
   "note": "Session 9 E8 + E9. The page cannot open a battle in the viewer by itself — a file:// page cannot run a process or fetch — so each pair carries the exact export command and the viewer plays the dropped file. PROVING.html and PROVING-RESULTS.md are generated at the root, declared in DOCS.md, listed under never-hand-edit in CLAUDE.md.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "0e6ff9e",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "proving.score-victory-rate",
@@ -2976,9 +3131,14 @@
    "test/proving-rank.test.ts"
   ],
   "note": "Her words are in DECISIONS.md verbatim. The 2026-09-03 \"move the needle\" reading stands as the flips column.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "993c9d2",
-  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.v2-baseline",
@@ -2991,9 +3151,14 @@
   ],
   "changesBaseline": false,
   "note": "Pre-migration tests failed in 12 places. Two content compiler bugs and obsolete fields/Windows process launch caused real failures; civilian attack-list and flee tests predated the Sep 5 universal Punch ruling. Flee reactions were verified against aoo.provoked events. Existing-test changes require review; this is not a human acceptance claim. Content source fix: 4b58bc8. Preexisting work preserved in checkpoint b1214b4.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "b2014a4",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.ordered-power-preview",
@@ -3030,9 +3195,14 @@
   "expect": "Every registered scenario and progression Surge cases match pre-extraction hashes; yielding, resuming and repeated completion do not repeat battle initialization, activations, schedule rows or Surge rolls.",
   "changesBaseline": false,
   "unreachable": "The resumable cursor is control-flow plumbing, not a registered content instance. Historical scenario hashes and suspended-cycle tests prove integration; a content-id event cannot identify this extraction.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "e8eb658",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "plumbing.battle-snapshot",
@@ -3046,9 +3216,14 @@
   "changesBaseline": false,
   "unreachable": "Saving and restoring a control session is plumbing outside the content registry. Round-trip continuation and corruption tests exercise it; a content id cannot selectively disable serialization.",
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "5f7502c",
-  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "plumbing.battle-commands",
@@ -3062,9 +3237,14 @@
   "changesBaseline": false,
   "unreachable": "The command boundary is session plumbing, not a registered content instance. Explicit command microbattles and existing golden simulation tests prove integration; content-id disablement cannot selectively remove the transport boundary.",
   "note": "This neutral step retains profile-slot resolution, rejects public actionSlots:any, and constrains path moves to their executable raw movement budget. Interchangeable slots, AI routing and positive path budget modifiers remain separate corrective items. Player previews continue using existing hit/damage previews without future random draws.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "ca8f01d",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.movement-plans",
@@ -3086,9 +3266,14 @@
   "changesBaseline": false,
   "note": "The old command test explicitly preserved a known positive-budget clamp; it now asserts successful full execution. Historical cursor golden files remain unchanged; new scenarios compare current drivers rather than claim nonexistent historical hashes. Snapshot rules version advances because movement execution semantics changed. AI scoring/routing, slot interchangeability and Surge refresh remain separate items.",
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "8c7cf58",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.surge-cycle",
@@ -3110,9 +3295,14 @@
   "changesBaseline": true,
   "note": "The flight ladder provides two existing authored data instances of the shared refreshed movement allowance. Historical extraction goldens remain evidence of the old implementation; current driver parity and specific correction tests replace incompatible historical expectations. The safety guard is provisionally 256 Surge cycles, an invalid-run exception rather than a gameplay cap. No V1 snapshot compatibility; bump rules version.",
   "attempts": 2,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "2d80925",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.ai-shared-commands",
@@ -3135,9 +3325,14 @@
   "changesBaseline": true,
   "note": "AI candidate selection now reads shared legality rather than bypassing controller rules. Recovery at zero range can be selected for its rider even without a better adjacent square. Any changed baseline must be traced to these corrections; no balance claim follows from this migration. Authored interchangeable slots and score-quality changes remain separate items.",
   "attempts": 2,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "d6484cf",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.unit-identities",
@@ -3160,9 +3355,14 @@
   "changesBaseline": true,
   "note": "Independent review reproduced trigger target array-index dependence and no-target/index-zero aliasing. Four additional regression cases failed before the trigger correction; baseline changes are declared before implementing that correction. The allocator alone already passed 971 tests with unchanged controls.",
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "72d461b",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "plumbing.game-builder-batches",
@@ -3173,9 +3373,14 @@
   "needs": [],
   "unreachable": "This repairs the offline ledger renderer, outside battle content and resolution. Isolated CLI fixtures exercise real input logs and generated HTML; no registered battle content ID can invoke this renderer.",
   "killSwitchExempt": "Content disablement cannot remove an offline ledger rendering branch. The pre-fix renderer fails three isolated CLI fixtures; restoring its old batch/date handling reproduces those failures.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "e5b79a5",
-  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.flight-budget",
@@ -3221,9 +3426,14 @@
   ],
   "changesBaseline": false,
   "note": "V2 authorized defaults: any honors authored slot (absent=either), optional command movement|primary selects a compatible open slot; omitted chooses earliest. Primary closes movement. Free actions consume no slot and occur before primary; reactions ignore activation slots but pay costs. AI considers each free action ID once per cycle, then continues the existing mode while actions progress. byProfile remains the control configuration. Replaces the historical assertion that any must be rejected; record its review flag.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "c5d2861",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "plumbing.action-spent",
@@ -3240,9 +3450,14 @@
   ],
   "changesBaseline": true,
   "note": "Declared universal metadata transition, not a balance change. Existing event fields and gameplay must stay exact after removing only action.spent and normalizing seq/state.seq. Preserve historical fixtures; add a current event-contract fixture. No config conditional emission or compatibility mode. Snapshot .8.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "00e38df",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "board.authored-dimensions",
@@ -3261,9 +3476,14 @@
   "changesBaseline": true,
   "note": "V2 map dimensions follow atlas journey20x10 and user40x40 use cases. Provisional 10000-cell bound matches atlas; preserves user maps/art. Explicit TEST lane appends after all current controls, no LOS/props/atlas conversion or inline map setup.",
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "a9c2c4c",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "board.direct-map-input",
@@ -3319,9 +3539,14 @@
   "unreachable": "This repairs offline effect reporting and gate interpretation, outside battle content resolution. Isolated fixtures invoke the actual CLI report and gate against controlled child-process arms; no battle content ID invokes these reporting branches.",
   "killSwitchExempt": "Disabling battle content cannot remove offline report validation or gate interpretation. Preserved old-source fixture failures prove the missing-map crash, misleading partial-invalid averages and unavailable-measurement misclassification independently of content disablement.",
   "note": "Separate repair after terrain.high-cell-los landed with an effect-tool error. Preserve that historical verdict and the independent 535-battle LOS consequence evidence. No combat, content, map or historical test edits. Offline exemptions remain visible and withhold this item's seal.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "6fb1211",
-  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "terrain.authored-high-props",
@@ -3343,9 +3568,14 @@
   ],
   "changesBaseline": true,
   "note": "One canonical props owner; no runtime x-or-props mode. Only static high full-cell footprints, materials 1/2/3; no low cover, edges, destruction or atlas edits. Shorthand material and resource choices are provisional, recorded and tested. Preserve historical behavior assertions while changing their representation fixtures.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "c00663c",
-  "gauntlet": "not passed — effect measurement unavailable; 2 flag(s) warned"
+  "gauntlet": "not passed — effect measurement unavailable; 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "viewer.direct-map-initialization",
@@ -3407,9 +3637,14 @@
   "changesBaseline": false,
   "note": "Authorized V2 Atlas prerequisite, no Atlas IDs, assets or rendering in core. No low cover or destruction. Integer affine coordinates at1000 units; explicit movement padding and boundary policies recorded provisionally. Flight remains destination-only. Existing full-hex props and control event shapes are unchanged. Meaningful preimplementation red probes separately prove geometry consequence.",
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "2042b90",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "terrain.low-cover",
@@ -3430,9 +3665,14 @@
   ],
   "changesBaseline": false,
   "note": "Atlas mechanics prerequisite. No low-cover inference from asset names, no destruction commands or burst migration. Plain authored crossingCost distinguishes low edge from low object. Station and exact contact choices recorded provisionally; oldcontrolfields unchanged when low props absent.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "7f8a86f",
-  "gauntlet": "not passed — 3 flag(s) warned"
+  "gauntlet": "not passed — 3 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "fix.ai-melee-contact",
@@ -3449,9 +3689,14 @@
   ],
   "changesBaseline": true,
   "note": "Behavior correction limited to dumb-melee path destination tie ranking. Existing target choice, path routing, sidestep and other AI modes stay unchanged. No new content. Automatic controls intentionally change; snapshot rules advance.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "5009cf8",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "plumbing.activation-choice",
@@ -3466,9 +3711,14 @@
   "changesBaseline": false,
   "unreachable": "Human activation choice is a trusted session boundary, not registered content. Automatic runBattle deliberately never emits selection; explicit pre-change/counterfactual command microbattles prove integration. A content-row probe or disable cannot remove this API.",
   "note": "No new content or player-selection branch in automatic simulation. Structural gate-1 exemption also makes content kill-switch inapplicable; genuine behavioral red and counterfactual probes remain required. Snapshot rules advance to .16.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "ad416c3",
-  "gauntlet": "not passed — 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "rule.elemental-resists",
@@ -3487,9 +3737,14 @@
   ],
   "changesBaseline": true,
   "attempts": 2,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "2d1b377",
-  "gauntlet": "not passed — effect measurement unavailable; 2 flag(s) warned"
+  "gauntlet": "not passed — effect measurement unavailable; 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "rule.protection-universal",
@@ -3511,9 +3766,14 @@
   ],
   "changesBaseline": true,
   "note": "The two source triggers grant different data-defined absorption pools. Meaningful isolated damage-path red probes establish universal coverage; content-disable probes are not balance measurements if references become invalid.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "15c301a",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "rule.damage-packets",
@@ -3535,9 +3795,14 @@
   "changesBaseline": true,
   "note": "Scalar hits gain packet facts; confirmed-critical events include injury-only crits. Protection reservation moves before onHit without moving that hook after HP damage. Baseline comparison must distinguish these explicit ordering changes from metadata. No block, burst or knockback mechanics in this item.",
   "attempts": 2,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "3dee4bc",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "rule.bursts",
@@ -3559,9 +3824,14 @@
   "changesBaseline": true,
   "note": "Provisional shape/magnitude preservation and explicit any-side defaults. Ordinary TEST attack riders rebind to Slam instead of firing from burst Sweep. Physical burst KDB, block and prop destruction remain later items. Pending row registered during implementation; candidate selection was recorded in preflight, not falsely claimed pre-edit registration.",
   "attempts": 3,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "cb30b8c",
-  "gauntlet": "not passed — effect measurement errored; periodic full audit FAILED — investigate before the next item; 2 flag(s) warned"
+  "gauntlet": "not passed — effect measurement errored; periodic full audit FAILED — investigate before the next item; 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "plumbing.command-diagnostics",
@@ -3575,9 +3845,14 @@
   "unreachable": "Offline gate diagnostic transport is not invoked by battle content. Real child-process fixtures exercise nonzero exits, exact output, distinct attempt files and storage failure; existing battle controls must remain identical.",
   "killSwitchExempt": "Content disablement cannot remove offline command reporting. The preimplementation reporter produced two meaningful assertion failures for missing evidence and missing storage-failure notes; command status and output already remained nonzero and exact.",
   "note": "Separate observational repair following recurrent full-suite failures whose original exception was discarded. No runtime, content, worker, seed, assertion or timeout change. Original causes remain unconfirmed, and historical burst seal remains withheld.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "5a6addc",
-  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "plumbing.measurement-integrity",
@@ -3591,9 +3866,14 @@
   "unreachable": "This repairs experiment initialization, child-arm environment and offline measurement presentation. No shipping content row can invoke the distinction between complete authored validation and experimental omission; fresh native processes exercise it directly.",
   "killSwitchExempt": "The tests themselves exercise multiple CF_DISABLE_IDS values in fresh processes and real gate-history fixtures. Disabling a shipping content row cannot remove offline validation ordering or Builder labeling; preimplementation assertion failures establish these changes independently.",
   "note": "Separate measurement-integrity repair; no authored content or core combat changes. Historical burst error and withheld seal remain unchanged. Scenarios requiring missing weapon grants remain invalid/unavailable, never zero-effect evidence. No worker, timeout, seed or assertion reductions.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "ff27af9",
-  "gauntlet": "not passed — 2 exemption(s) taken"
+  "gauntlet": "not passed — 2 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "rule.block",
@@ -3614,9 +3894,14 @@
   ],
   "changesBaseline": true,
   "note": "Every legal incoming hit gains block.rolled metadata and a persistent defender ordinal even at chance0; zero/suppressed checks do not draw. Compare old controls after exact metadata projection and quantify any multihit aggregation repair. Existing authored Stun gains explicit blocksBlock via content compiler; shield/class content remains later.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "a422239",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-23T02:15:22.648Z",
+   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  }
  },
  {
   "id": "plumbing.gate-recovery",
@@ -3630,6 +3915,9 @@
   "unreachable": "This is offline Git landing recovery, outside battle resolution. Isolated repositories execute the actual gate and real Git commands with controlled audit outcomes; battle content cannot invoke or remove recovery.",
   "killSwitchExempt": "Disabling content cannot remove offline Git recovery. Meaningful pre-change fixtures demonstrate candidate deletion, false diagnostic attribution, lost pending rows and unsafe changed-HEAD recovery using the actual gate.",
   "note": "Bounded infrastructure repair after the recorded Block post-commit timeout. No combat math, content, global timeout or test-discovery policy changes; historical failed attempts remain evidence.",
-  "attempts": 2
+  "attempts": 2,
+  "status": "failed",
+  "failedAt": "2026-09-23 02:15",
+  "reason": "Ruled 2026-09-22 (DECISIONS.md, Andrew): the post-land re-run was cut from the gate, so there is no committed-tree audit left for R0 to recover from. Its nine files are kept in ../.scratch-r0-pending/."
  }
 ]

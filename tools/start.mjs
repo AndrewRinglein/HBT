@@ -72,10 +72,9 @@ export function render() {
   // 4. what is Angela's — the flagged landings only she can clear, and the OPEN
   // questions in the Game Builder's inbox. Each carries what she looks at
   // (DISPLAY-RULES.md rule 24: the thing itself, never a document about it).
-  const flagged = backlog.filter((x) => x.status === 'done-needs-review')
+  // The flagged-landing review queue is no longer printed here (Andrew,
+  // 2026-09-22, DECISIONS.md): `node tools/report.mjs` shows it when wanted.
   const yours = []
-  if (flagged.length) yours.push(`${flagged.length} flagged landing(s) await your verdict — look: GAME-BUILDER.html; `
-    + `node tools/review.mjs ${flagged[0].id} --ok "<your words>" (--all for the queue)`)
   const questions = readOpenQuestions()
   if (questions === null) yours.push(`open questions: unknown — ${QUESTIONS}`)
   else for (const q of questions) yours.push(`${q} — look: GAME-BUILDER.html`)
