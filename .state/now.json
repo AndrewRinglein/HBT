@@ -1,11 +1,11 @@
 {
- "now": "Process ruling 2026-09-23 recorded in DECISIONS.md, not yet built. Tried: nothing further after the previous wrap. Next: make the four changes - one chat per feature across packages (DISPLAY-RULES rule 38), landing runs item tests + typecheck + control battles only, wrap refuses without all four shards green, one item per feature (merge content.v2-shields and content.v2-weapon-block and the kingdom hands rule into one V2 shields item), drop seals and exemptions - then land V2 shields end to end.",
- "at": "2026-09-23 08:29",
- "sha": "17c8d2c",
+ "now": "v2.shields — V2 R1. Done: the four process changes (landing = item tests + typecheck + control battles; wrap needs 4 green shards; one item per feature; no seals/exemptions); content shipped (content e312098: Kite/Round/Tower, six powers, sword/dagger Block, axe onBlock); engine landed aaf51a5 (flagged: 10 test files edited under Law 10 for the retired Knight Shield). Kingdom half v2.shields-hands is written, red recorded and green in its own tests but NOT landed and NOT committed (kingdom working tree): its full suite has two failures that predate it (isc-003 Atlas scene; sandbox-ui needs viewer metadata regenerated for the new engine commit) and its gate does not fit Cowork's 178 s. audit-all also does not fit. Next: regenerate viewer metadata, fix isc-003, then land v2.shields-hands from a terminal.",
+ "at": "2026-09-23 10:20",
+ "sha": "de83f81",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: make the four process changes Andrew approved, then land V2 shields end to end across engine, content and kingdom",
-  "line": "start engine"
+  "label": "New chat with Heroes of Blight and Tragic — kingdom: regenerate the viewer metadata, fix isc-003, land v2.shields-hands",
+  "line": "start kingdom"
  }
 }
