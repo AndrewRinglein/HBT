@@ -970,5 +970,24 @@
   "sha": "64fc35b",
   "engineSha": "22c8c79",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "v2.shields-hands",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "V2",
+  "needs": [],
+  "spec": "V2 R1 kingdom half (one feature with engine v2.shields, landed aaf51a5; content e312098). itemClass shield joins the item classes; loadout counts weapon and shield class toward the two hands exactly as the engine applyItems does - slotCostOf, placeOf and fieldedItemsOf - so a shield past the hands is carried, never fielded. Items and kits regenerated from the codex (Kite, Round, Tower; knight-shield and buckler retired); the slice fixture regenerated.",
+  "expect": "ISC-054: a shield-class item costs one hand; beside a one-hander both are fielded; beside a two-hander, or as a third hand item, the shield is left behind. Existing probes that named the Knight Shield read the kit shield that replaced it. ISC-003 re-closes: the regenerated fixture keeps the Ridge on its Atlas map (make-fixture.mts reads it from the territory row).",
+  "isc": [
+   "054",
+   "003"
+  ],
+  "attempts": 1,
+  "variants": [
+   "item.round-shield",
+   "item.kite-shield",
+   "item.tower-shield"
+  ]
  }
 ]

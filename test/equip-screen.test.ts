@@ -40,7 +40,7 @@ describe('the Equip screen', () => {
     expect(html).toMatch(/data-slot="hand-r" data-hero="hero\.base\.ranger-aggressive" data-displace="item\.longbow" data-act="drop"/)
     expect(html).toContain('swap out Longbow')
     // the Chaplain cannot draw a bow at all — not his class
-    expect(displaceFor(ctx.campaign, CHAPLAIN, 'item.shortbow', 'hand-r')).toBe('item.knight-shield')
+    /* Law 10, 2026-09-23 (v2.shields): the Knight Shield retired with V2 R1; this hero's kit carries the Round Shield now. The claim is unchanged. */ expect(displaceFor(ctx.campaign, CHAPLAIN, 'item.shortbow', 'hand-r')).toBe('item.round-shield')
     expect(html).toMatch(/data-hero="hero\.base\.priest-armored"[^>]*class="[^"]*cant|class="slot[^"]*cant"[^>]*data-hero="hero\.base\.priest-armored"/)
     performEquip(ctx, HUNTER, 'item.shortbow', 'test', displaceFor(ctx.campaign, HUNTER, 'item.shortbow', 'hand-r'))
     expect(ctx.campaign.stash).toContain('item.longbow')
@@ -48,7 +48,7 @@ describe('the Equip screen', () => {
   })
   it('deltas go red and green with the gear; the set line names the bonus when it triggers', () => {
     const ctx = toEquip(loadFixture((c) => { c.stash = [...STASH] }), [HUNTER, CHAPLAIN])
-    performUnequip(ctx, CHAPLAIN, 'item.knight-shield', 'test'); performUnequip(ctx, CHAPLAIN, 'item.holy-texts', 'test')
+    performUnequip(ctx, CHAPLAIN, 'item.round-shield', 'test'); performUnequip(ctx, CHAPLAIN, 'item.holy-texts', 'test')
     performEquip(ctx, CHAPLAIN, 'item.chains-of-the-wrathful', 'test')
     performEquip(ctx, CHAPLAIN, 'item.chains-of-the-faithful', 'test', 'item.pilgrims-habit')
     performEquip(ctx, CHAPLAIN, 'item.priest-chain', 'test')

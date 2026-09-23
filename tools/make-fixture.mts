@@ -58,7 +58,8 @@ setCursor(ctx, {
     id: 'engagement.conquer.ridge.week-3',
     kind: 'engagement.conquer',
     territoryId: 'territory.ruined-kingdom.ridge',
-    mapId: 'map.ridge',
+    // the Ridge's own map (v2.atlas-battle-view moved it to an Atlas fielding) — read, never retyped
+    mapId: TERRITORIES.find((t) => t.id === 'territory.ruined-kingdom.ridge')!.mapId,
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie-hound', 'unit.skeletal-archer'],
     condition: null,
     councilOffer: [],

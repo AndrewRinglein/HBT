@@ -15,6 +15,13 @@ import { SWITCHES } from '../content/switches.js'
 
 export const HANDS = 2
 
+/**
+ * What the two hands hold, counted exactly as the engine's applyItems counts them
+ * (V2 R1, 2026-09-23): weapon class and shield class. A shield past the hands is
+ * carried, never fielded — no backpack shield grants its Block or powers.
+ */
+export const isHandItemClass = (row: ItemRow): boolean => row.itemClass === 'weapon' || row.itemClass === 'shield'
+
 export type Loadout = {
   /** Weapons and shields in the hands, in order — the first is the right hand. */
   hands: string[]
@@ -29,7 +36,7 @@ export type Loadout = {
 /** Item slots an item costs in the general slots: a weapon its hands; armor none (its own slot); everything else one. The codex's `slots` on a Bloodrune (0) is outdated — ruled 2026-09-02, "everything here takes a slot". */
 export function slotCostOf(row: ItemRow): number {
   if (row.itemClass === 'armor') return 0
-  if (row.itemClass === 'weapon') return Math.max(1, row.hands)
+  if (isHandItemClass(row)) return Math.max(1, row.hands)
   return 1
 }
 
@@ -47,7 +54,7 @@ export function placeOf(campaign: CampaignState, heroId: HeroId, equipped: reado
     const row = itemOf(id)
     out.counts[row.itemClass] = (out.counts[row.itemClass] ?? 0) + 1
     if (row.itemClass === 'armor') { if (out.armor === null) { out.armor = id; continue } out.items.push(id); continue }
-    const isHandItem = row.itemClass === 'weapon' || isShield(row)
+    const isHandItem = isHandItemClass(row) || isShield(row)
     if (isHandItem && out.handsUsed + Math.max(1, row.hands) <= HANDS) { out.hands.push(id); out.handsUsed += Math.max(1, row.hands); continue }
     out.items.push(id)
     out.itemSlots.used += slotCostOf(row)
@@ -98,7 +105,7 @@ export function fieldedItemsOf(equipped: readonly string[]): { fielded: string[]
   let hands = 0
   for (const id of equipped) {
     const row = itemOf(id)
-    if (row.itemClass === 'weapon') {
+    if (isHandItemClass(row)) {
       const h = Math.max(1, row.hands)
       if (hands + h > HANDS) { leftBehind.push(id); continue }
       hands += h

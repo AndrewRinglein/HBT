@@ -1,4 +1,5 @@
 {
+ "version": 2,
  "realm": "realm.ruined-kingdom",
  "seed": 1,
  "week": 3,
@@ -6,6 +7,8 @@
   "questReport": null,
   "week": 3,
   "stage": "stage.field",
+  "fieldStep": "conquest",
+  "conquestAttempted": true,
   "step": "prep",
   "prepStep": "reveal",
   "engagement": {
@@ -34,9 +37,7 @@
   "prologue": null,
   "draftOffer": null,
   "battle": null,
-  "equipSession": null,
-  "fieldStep": "conquest",
-  "conquestAttempted": true
+  "equipSession": null
  },
  "purse": {
   "currency.faith": 6,
@@ -63,7 +64,7 @@
    "corruption": 0,
    "equipped": [
     "item.longsword",
-    "item.knight-shield",
+    "item.kite-shield",
     "item.basic-armor"
    ],
    "itemSlots": 2
@@ -82,7 +83,7 @@
    "unitType": "hero.base.priest-armored",
    "corruption": 0,
    "equipped": [
-    "item.knight-shield",
+    "item.round-shield",
     "item.holy-texts",
     "item.pilgrims-habit"
    ],
@@ -167,6 +168,7 @@
   }
  },
  "assignments": {},
+ "foughtThisWeek": [],
  "stash": [],
  "territories": {
   "territory.ruined-kingdom.highlands": {
@@ -289,7 +291,5 @@
   "cup.threat": 3019024446,
   "cup.unavailability": 1862212042
  },
- "ended": null,
- "version": 2,
- "foughtThisWeek": []
+ "ended": null
 }

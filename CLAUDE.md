@@ -24,6 +24,8 @@ sandbox; if a binary is missing, Andrew installs it on Windows per
 
 ```
 node tools/next.mjs                  the next backlog item that is ready
+node tools/gate.mjs --shard 1/4      one quarter of the suite (~80 s); run 1/4 … 4/4, one command each
+node tools/gate.mjs --shards-green   have all four passed on this exact tree?
 node tools/gate.mjs <id>             the landing gate — check only, changes nothing
 node tools/gate.mjs <id> --land      land it, only if every check passes
 node tools/gate.mjs <id> --abandon   give up, revert the tree, record why
@@ -48,13 +50,13 @@ node tools/scan.mjs only-writer     ISC-014's static scan
 npm test        npm run typecheck   (the engine's vitest and tsc)
 ```
 
-**The gate takes minutes, and the Cowork sandbox kills a tool call at ~3.**
-Every claimed probe is a vitest run, and "nothing regresses" runs every P probe
-again, then the post-land audit runs them all a third time. From the sandbox,
-run a landing detached and poll the log — `nohup node tools/gate.mjs <id> --land
-> /tmp/land.log 2>&1 &` — never in the foreground. (Found 2026-09-01: the
-reckoning.apply landing was killed after its commit and before its bookkeeping;
-the tail was finished by hand and the ledger says so.)
+**The Cowork shell kills a command at ~178 s, and a background process dies
+with the command that started it** — `nohup … &` does not survive. So the suite
+runs as four shards, one command each, recorded against the exact tree
+(`.state/shards.json`); the landing gate reads that record, runs only typecheck,
+the claimed probes and the static checks, and finishes in well under a minute.
+Edit any file after the shards and all four must run again. Ruled 2026-09-23,
+`engine/DECISIONS.md` "the kingdom gate fits a Cowork command".
 
 **The gate decides whether an item passed, not you.** Never write `status` into
 `.state/backlog.json` or `state` into `.state/isc.json` by hand.
@@ -66,7 +68,8 @@ the tail was finished by hand and the ledger says so.)
 2.  write the probe(s) — test/isc-NNN.test.ts, one per criterion
 3.  node tools/slice-gate.mjs --isc NNN --red  the probe must FAIL before the feature exists
 4.  implement — src/core for mechanisms, src/content for rows, src/engine.ts is the only engine import
-5.  node tools/gate.mjs <id>                   check only
+5.  node tools/gate.mjs --shard 1/4 … 4/4     the suite, one quarter per command
+    node tools/gate.mjs <id>                   check only
 6.  FAIL?  fix, go to 5.  Max 4 attempts, then --abandon and say so.
 7.  PASS?  node tools/gate.mjs <id> --land     commits, closes the ISCs, syncs the doc
 ```

@@ -24,15 +24,81 @@
 // read, never written, from here (THIN-SLICE-IMPLEMENTATION.md §10).
 
 import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, statSync } from 'node:fs'
+import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, statSync, copyFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { filesMentioningId } from './source-mentions.mjs'
 
+// ── the suite in four parts (Andrew, 2026-09-23, engine/DECISIONS.md "less
+// process per feature"; applied to the kingdom the same day: "We have to shorten
+// the check to make it so you can do it.") ─────────────────────────────────────
+// Cowork's shell kills any command at ~178 s; the whole suite plus the P-tier
+// sweep took longer. So the suite runs as four separate commands,
+// `node tools/gate.mjs --shard k/4` (~80 s each), each pass recorded against a
+// hash of the working tree (everything `git add -A` would commit, minus .state/).
+// A landing's "full test suite" check passes only when all four passed on the
+// exact tree it is gating — edit one file and every shard must run again. The
+// P-tier probes are test files, so the shards are also "nothing regresses".
+const SHARDS = 4
+const SHARDS_FILE = '.state/shards.json'
+function treeHash() {
+  const idx = join(tmpdir(), `kgate-index-${process.pid}-${Date.now()}`)
+  try { copyFileSync(execSync('git rev-parse --git-path index', { encoding: 'utf8' }).trim(), idx) } catch {}
+  const env = { ...process.env, GIT_INDEX_FILE: idx }
+  try {
+    execSync('git add -A -- . ":!.state"', { env, stdio: 'pipe' })
+    // .state/ leaves the hash entirely — staged or not (a staged .state once changed the hash of an identical tree)
+    execSync('git rm -r -q --cached --ignore-unmatch -- .state', { env, stdio: 'pipe' })
+    return execSync('git write-tree', { env, encoding: 'utf8' }).trim()
+  } finally { try { rmSync(idx, { force: true }) } catch {} }
+}
+function readShards() { try { return JSON.parse(readFileSync(SHARDS_FILE, 'utf8')) } catch { return null } }
+function shardsTodo(tree) {
+  const s = readShards()
+  const passed = s && s.tree === tree && s.total === SHARDS ? s.passed : []
+  return Array.from({ length: SHARDS }, (_, i) => i + 1).filter((x) => !passed.includes(x))
+}
+
+if (process.argv.includes('--shards-green')) {
+  const tree = treeHash(), todo = shardsTodo(tree)
+  console.log(todo.length
+    ? `${SHARDS - todo.length} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)} — run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}`
+    : `${SHARDS} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)}`)
+  process.exit(todo.length ? 1 : 0)
+}
+
+const shardArg = process.argv.indexOf('--shard')
+if (shardArg !== -1) {
+  const m = String(process.argv[shardArg + 1] ?? '').match(/^(\d+)\/(\d+)$/)
+  const k = m ? Number(m[1]) : NaN
+  if (!m || Number(m[2]) !== SHARDS || k < 1 || k > SHARDS) {
+    console.error(`usage: node tools/gate.mjs --shard <k>/${SHARDS}   (k = 1..${SHARDS})`)
+    process.exit(2)
+  }
+  const tree = treeHash()
+  let s = readShards()
+  if (!s || s.tree !== tree || s.total !== SHARDS) s = { tree, total: SHARDS, passed: [] }
+  let ok = true, out = ''
+  try { out = execSync(`node ../engine/node_modules/vitest/vitest.mjs run --shard=${k}/${SHARDS} --reporter=dot`, { encoding: 'utf8', stdio: 'pipe', env: { ...process.env, NO_COLOR: '1' } }) }
+  catch (e) { ok = false; out = (e.stdout ?? '') + (e.stderr ?? '') }
+  const count = out.replace(/\x1b\[[0-9;]*m/g, '').match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
+  s.passed = s.passed.filter((x) => x !== k)
+  if (ok) s.passed.push(k)
+  s.passed.sort((a, b) => a - b)
+  s.at = new Date().toISOString()
+  writeFileSync(SHARDS_FILE, JSON.stringify(s, null, 1) + '\n')
+  const todo = shardsTodo(tree)
+  const failed = ok ? '' : ' — ' + out.replace(/\x1b\[[0-9;]*m/g, '').split('\n').filter((l) => /FAIL|AssertionError|Error:/.test(l)).slice(0, 6).join(' | ')
+  console.log(`shard ${k}/${SHARDS}: ${ok ? 'PASS' : 'FAIL'}${count ? ` — ${count[1] ? count[1] + ' failed, ' : ''}${count[2]} passed` : ''}${failed}`)
+  console.log(`tree ${tree.slice(0, 10)}: ${SHARDS - todo.length} of ${SHARDS} shards passed` +
+    (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${SHARDS}`).join(', ')}` : ' — the suite is green on this tree'))
+  process.exit(ok ? 0 : 1)
+}
+
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
   : process.argv.includes('--abandon') ? 'abandon' : 'check'
-if (!id) { console.error('usage: node tools/gate.mjs <item-id> [--land|--abandon]'); process.exit(2) }
+if (!id || id.startsWith('--')) { console.error(`usage: node tools/gate.mjs <item-id> [--land|--abandon]  |  --shard <k>/${SHARDS}  |  --shards-green`); process.exit(2) }
 
 const BACKLOG = '.state/backlog.json'
 const LEDGER = '.state/ledger.md'
@@ -137,20 +203,12 @@ check('typecheck', () => {
   return { ok: r.ok, note: r.ok ? '' : r.out.split('\n').filter(Boolean).slice(0, 3).join(' | ') }
 })
 
-// The suite runs ONCE, with the JSON reporter, and its per-file verdicts feed
-// the two probe checks below and the post-land audit (`--report`), so a landing
-// fits the sandbox's ~3-minute tool-call cap (2026-09-01). Same verdicts,
-// fewer spawns.
-const REPORT = join(tmpdir(), `kingdom-suite-${process.pid}.json`)
-function runSuite() {
-  const r = tryRun(`npm test -s -- --reporter=json --outputFile=${JSON.stringify(REPORT)}`, { env: { ...process.env, NO_COLOR: '1' } })
-  let rep = null
-  try { rep = JSON.parse(readFileSync(REPORT, 'utf8')) } catch {}
-  if (!rep) return { ok: false, note: 'vitest produced no report' }
-  const failedFiles = (rep.testResults ?? []).filter((t) => t.status !== 'passed').map((t) => String(t.name).replace(/\\/g, '/').split('/').slice(-1)[0])
-  return { ok: r.ok && rep.numFailedTests === 0 && failedFiles.length === 0, note: r.ok && failedFiles.length === 0 ? `${rep.numPassedTests} passed` : `${rep.numFailedTests} FAILED — ${failedFiles.slice(0, 6).join(' · ')}` }
-}
-check('full test suite', runSuite)
+// The suite is not run here: it ran as the four shards (above), and this reads
+// whether all four passed on this exact tree (2026-09-23).
+check('full test suite — four shards green on this tree', () => {
+  const tree = treeHash(), todo = shardsTodo(tree)
+  return { ok: todo.length === 0, note: todo.length ? `run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}` : `${SHARDS} of ${SHARDS} on tree ${tree.slice(0, 10)}` }
+})
 
 // ── gate 1: every criterion this item claims holds ──────────────────────────
 const iscs = (item.isc ?? []).map(String)
@@ -163,7 +221,7 @@ check('gate 1 — every claimed criterion holds', () => {
   }
   // One call for all of them — the instrument batches the vitest probes into a
   // single process (2026-09-01: a landing has to fit the sandbox's ~3-minute cap).
-  const r = tryRun(`node tools/slice-gate.mjs --isc ${iscs.join(',')} --report ${JSON.stringify(REPORT)}`)
+  const r = tryRun(`node tools/slice-gate.mjs --isc ${iscs.join(',')}`)
   const lines = r.out.trim().split('\n').filter((l) => /^ISC-\d+/.test(l))
   if (!r.ok) return { ok: false, note: lines.filter((l) => /FAILS|not exist/.test(l)).join(' · ') || r.out.trim().split('\n').pop() }
   return { ok: true, note: lines.map((l) => l.replace(/ — .*?: PASSES$/, ' holds').replace(/ — H-tier.*$/, ' — H, a person checks')).join(' · ') }
@@ -199,12 +257,9 @@ check('kill switch — every claimed probe has been seen red', () => {
   return { ok: true, note: notes.join(' · ') }
 })
 
-// ── nothing regresses: the whole P set, not the one you touched ─────────────
-check('nothing regresses — every P-tier probe', () => {
-  const r = tryRun(`node tools/slice-gate.mjs --report ${JSON.stringify(REPORT)}`)
-  const summary = r.out.trim().split('\n').filter((l) => /P-tier probe\(s\)/.test(l)).pop() ?? ''
-  return { ok: r.ok, note: summary }
-})
+// ── nothing regresses: the whole P set is test files, so the four shards above
+// already ran every P-tier probe on this tree (2026-09-23 — the separate sweep
+// took 154 s and could not fit a Cowork command). ──────────────────────────
 
 // ── the anti-hardcode checks (§3 check 3) ───────────────────────────────────
 // Kingdom instance ids are two segments (stage.mend, currency.salvage), so the
@@ -344,33 +399,15 @@ writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
 appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp} · engine @ ${engineSha()}\n\n${body}\n` +
   (needsReview && testDiff ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
 
-// Post-land audit: the decisive checks FROM THE COMMITTED TREE. On failure the
-// landing is undone, loudly. `git add -A` just committed the whole working
-// tree, so what this can catch is a pass that leaned on something git ignores
-// — and the whole suite ran seconds ago on this exact tree. So the audit is
-// the claimed probes plus the typecheck, from the commit, not the suite again:
-// the full run would put a landing past the sandbox's ~3-minute cap (2026-09-02).
-{
-  const t = tryRun('npm run -s typecheck')
-  const p = iscs.length ? tryRun(`node tools/slice-gate.mjs --isc ${iscs.join(',')}`) : { ok: true }
-  if (!t.ok || !p.ok) {
-    sh('git reset --hard HEAD~1')
-    const why = !t.ok ? 'typecheck fails on the committed tree' : 'a claimed probe fails on the committed tree'
-    const bl = JSON.parse(readFileSync(BACKLOG, 'utf8'))
-    const it = bl.find((x) => x.id === id)
-    if (it) { it.attempts = (it.attempts ?? 0) + 1; it.auditFailed = why; delete it.status; delete it.sha; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }
-    appendFileSync(LEDGER, `\n## ${id} — LANDING REVERTED BY POST-LAND AUDIT\n${stamp}\n\n${why}.\n`)
-    console.log(`\nLANDING REVERTED: ${why}. Fix and gate again.\n`)
-    logRun('reverted-by-post-land-audit', { reason: why })
-    process.exit(1)
-  }
-}
+// The post-land audit (typecheck and claimed probes again, from the commit) is
+// cut, as the engine cut its own 2026-09-22: `git add -A` committed the exact
+// tree the shards and the checks above passed on.
 
 // Close the criteria this item claimed, at this sha. The ISC instrument refuses
 // any criterion without a red on record — the same rule the check above enforced.
 let closeNote = ''
 if (iscs.length) {
-  const r = tryRun(`node tools/slice-gate.mjs --close ${iscs.join(',')} --sha ${sha} --report ${JSON.stringify(REPORT)}`)
+  const r = tryRun(`node tools/slice-gate.mjs --close ${iscs.join(',')} --sha ${sha}`)
   closeNote = r.out.trim().split('\n').filter((l) => /CLOSED|FAILS|never|edited/.test(l)).join(' · ')
   if (!r.ok) { needsReview = true; closeNote = 'CLOSE REFUSED — ' + closeNote }
 }

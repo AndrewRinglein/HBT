@@ -27,11 +27,11 @@
  },
  "003": {
   "red": {
-   "at": "2026-09-16 05:29",
-   "sha": "b96e971",
-   "hash": "871df7fa93a5",
+   "at": "2026-09-23 23:36",
+   "sha": "050606f",
+   "hash": "4511a0063ed0",
    "how": "feature absent",
-   "tail": " ❯ createBattle ../engine/src/core/setup.ts:182:50 |  ❯ viewBattle src/view/battle.ts:57:15 |  ❯ test/isc-003.test.ts:89:10"
+   "tail": "+ Received: | undefined |  ❯ test/isc-003.test.ts:92:63"
   },
   "closed": {
    "at": "2026-09-16 05:37",
@@ -42,6 +42,11 @@
     "at": "2026-09-03 10:45",
     "sha": "f6515c2",
     "tail": "the options are the engine's own BattleOptions, and the battle was run by its runBattle: AssertionError: expected [ { seq: 221, turn: 5, …(11) } ] to deeply equal []"
+   },
+   {
+    "at": "2026-09-23 23:03",
+    "sha": "050606f",
+    "tail": "normal fixture battle exposes its complete engine initial facts and frozen Atlas scene: AssertionError: expected undefined to be truthy"
    }
   ]
  },
@@ -847,11 +852,11 @@
  },
  "054": {
   "red": {
-   "at": "2026-09-03 04:05",
-   "sha": "11bb483",
-   "hash": "5eee980745f4",
+   "at": "2026-09-23 10:04",
+   "sha": "050606f",
+   "hash": "3308d466e3cf",
    "how": "feature absent",
-   "tail": "       |            ^ |      45|     // a greatsword (2 hands) with one slot left: refused; after the B… |      46|     expect(canEquip(ctx.campaign, OSRIC, 'item.greatsword')).toBe(fals…"
+   "tail": "       |                                                                     ^ |      63|     expect(fieldedItemsOf(['item.longsword', 'item.round-shield', 'ite… |      64|   })"
   },
   "closed": {
    "at": "2026-09-03 04:08",

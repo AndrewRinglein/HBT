@@ -24,7 +24,7 @@ describe('ISC-062 — sets resolve over what is equipped', () => {
     const ctx = toEquip(loadFixture((c) => { c.stash = [CHAINS, CHAIN_ARMOR, PRIEST_CHAIN, 'item.cart-chain'] }), [CHAPLAIN, DWARF])
     expect(itemOf(CHAINS).setBonus).toEqual({ tag: 'chain', each: { precision: 1 } })
     // the Chaplain's hands and armor make way
-    performUnequip(ctx, CHAPLAIN, 'item.knight-shield', 'test')
+    /* Law 10, 2026-09-23 (v2.shields): the Knight Shield retired with V2 R1; this hero's kit carries the Round Shield now. The claim is unchanged. */ performUnequip(ctx, CHAPLAIN, 'item.round-shield', 'test')
     performUnequip(ctx, CHAPLAIN, 'item.holy-texts', 'test')
     performEquip(ctx, CHAPLAIN, CHAINS, 'test')
     expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([])                    // alone: no other chain item, nothing paid

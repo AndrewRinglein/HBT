@@ -22,7 +22,13 @@ const selectedEvents=events();staleSelect.handlers.click();assert.equal(events()
 click('skip');assert.equal(handle.session.ctx.battleCursor.actor,2);assert.equal(button('execute').disabled,false,'default party can choose an unblocked hero')
 click('end');click('skip');choose();click('skip')
 assert.deepEqual(handle.session.ctx.events.filter(e=>e.type==='activation.begin').map(e=>e.actor),[2,0],'UI chooses a different order through engine commands')
-assert.ok(button('execute').disabled,'blocked first hero has no made-up movement')
+// Was: Execute disabled. Since v2.shields (engine 4789cbd, 2026-09-23) the Iron Dwarf's
+// Tower Shield grants two self powers, so a blocked hero may legally raise it. What this
+// guards is unchanged: no made-up movement — the only actions offered are the shield's,
+// and the only target is the hero himself.
+{const opts=[...w.document.getElementById('action').children].map(o=>o.textContent),aims=[...w.document.getElementById('aim').children].map(o=>o.textContent)
+ assert.ok(opts.length>0);for(const o of opts)assert.match(o,/^(Cover|Stand Tall) · /,'blocked first hero has no made-up movement')
+ assert.equal(aims.length,1);assert.match(aims[0],/^Iron Dwarf A · hex /)}
 assert.equal(button('end').disabled,false)
 click('hero-remove');click('hero-remove');click('start');ready()
 assert.equal(handle.session.ctx.state.units.filter(u=>u.side==='hero').length,1)
