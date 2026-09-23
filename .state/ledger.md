@@ -14014,3 +14014,351 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
 2026-09-23 09:19
 
 Merged into v2.shields - one backlog item per feature (Andrew, 2026-09-23, DECISIONS less process per feature)
+
+## v2.shields — LANDED `aaf51a5` **NEEDS REVIEW**
+2026-09-23 10:01
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../GEAR-IMPLEMENTATION.md:328 · SWITCHES.md:726
+  PASS  typecheck
+  PASS  the item's own tests — test/afflictions.test.ts, test/alpha-team.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/integration.test.ts, test/item-powers.test.ts, test/items-per-unit.test.ts, test/proving.test.ts, test/shield-class.test.ts, test/v2-shields.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.kite-shield: 1 log lines, 1 fired, 1 changed state · item.round-shield: 1 log lines, 1 fired, 1 changed state · item.tower-shield: 1 log lines, 1 fired, 1 changed state · power.kite-shield.shield-wall: 9 log lines, 9 fired, 4 changed state · power.kite-shield.raise-guard: 7 log lines, 7 fired, 4 changed state · power.round-shield.turn-aside: 1 log lines, 1 fired, 1 changed state · power.round-shield.brace: 1 log lines, 1 fired, 1 changed state · power.tower-shield.cover: 11 log lines, 11 fired, 5 changed state · power.tower-shield.stand-tall: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/afflictions.test.ts, test/alpha-team.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/integration.test.ts, test/item-powers.test.ts, test/items-per-unit.test.ts, test/proving.test.ts, test/proving/smoke.json, test/shield-class.test.ts, test/fixtures/battle-cursor-shields.json, test/v2-shields.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/afflictions.test.ts (-4), test/alpha-team.test.ts (-2), test/audit.test.ts (-4), test/battle-cursor.test.ts (-5), test/integration.test.ts (-2), test/item-powers.test.ts (-24), test/items-per-unit.test.ts (-4), test/proving.test.ts (-1), test/proving/smoke.json (-1), test/shield-class.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open d7a91eb4->7a3e035c, map.ridge c7d5ea1b->f7cc3b8c, map.flanks 7da1dc5b->d62d911d, map.highlands 88320bd7->f05fea38, map.field 97fe3e8e->ecf50a34, map.thicket 481a08c1->5e4288f9, map.proving.open 6366cd0f->484f47f4, map.proving.ridge 78f0b113->228638a1, map.proving.ford 573459a8->ac962e66, map.proving.copse 1ee904a8->5a2a05e3, map.proving.ruin 4a80d07a->3600fc3b, map.courtyard 435f8e84->6ca4bc28, map.floodplain cd1e8706->eb9aa173, test.map.embers 92f9a29a->952eecfb, test.map.showcase d0dd0bb5->4a5a4290, test.map.duel-8 d92ed87e->a193d1da, test.map.dungeon-16x8 bf74199f->f28f6266, test.map.horde-24 e08b9616->653dd82b, test.map.journey-20x10 e696e5a5->898aa9c1, test.map.authored-40x40 7b317e15->9a6afe40, test.map.high-prop-single 4609565b->070df03a, test.map.high-prop-multi 23119e28->d43f0920
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.kite-shield,item.round-shield,item.tower-shield,power.kite-shield.shield-wall,power.kite-shield.raise-guard,power.round-shield.turn-aside,power.round-shield.brace,power.tower-shield.cover,power.tower-shield.stand-tall — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/afflictions.test.ts b/test/afflictions.test.ts
+index 72a3a6b..c8f0c04 100644
+--- a/test/afflictions.test.ts
++++ b/test/afflictions.test.ts
+@@ -74,9 +74,18 @@ describe('an affliction lands', () => {
+     // Keep a real-battle fixture with a measured success; assert the roll and
+     // resulting grant together instead of treating twelve seeds as a guarantee.
+-    const ctx = createBattle({ replicate: 29, enemyCount: 8, mapId: 'map.open' })
+-    runBattle(ctx)
+-    const fired = ctx.events.filter(e => e.type === 'trigger.rolled' && e.causeId === ROT && e['fired'])
++    // Law 10, 2026-09-23 (v2.shields): Block went live on the heroes and replicate 29's
++    // success moved. The seed is found, not pinned — the first replicate on this fixture
++    // whose 2% roll succeeds. The roll is asserted as a rule (a success at 2% is a roll of
++    // 1 or 2), no longer the one seed's exact 1; every other assertion is unchanged.
++    let ctx = createBattle({ replicate: 0, enemyCount: 8, mapId: 'map.open' })
++    let fired: typeof ctx.events = []
++    for (let r = 0; r < 200 && fired.length === 0; r++) {
++      ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.open' })
++      runBattle(ctx)
++      fired = ctx.events.filter(e => e.type === 'trigger.rolled' && e.causeId === ROT && e['fired'])
++    }
+     expect(fired).toHaveLength(1)
+-    expect(fired[0]).toMatchObject({ roll: 1, chance: 2 })
++    expect(fired[0]).toMatchObject({ chance: 2 })
++    expect(fired[0]!['roll'] as number).toBeLessThanOrEqual(2)
+     const gained = ctx.events.filter(e => e.type === 'badge.gained' && e['badgeId'] === 'badge.rotting-flesh')
+     expect(gained).toHaveLength(1)
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index 63fcee6..15d762c 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -13,5 +13,5 @@ import { readFileSync } from 'node:fs'
+ import { join } from 'node:path'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { BURSTS, ATTACKS, UNITS } from '../src/content/index.js'
++import { BURSTS, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
+ import { fieldedDef, createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+@@ -167,5 +167,7 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     expect(fieldedDef('alpha-air-mage').abilities).toEqual(['power.lightning-staff.storm'])
+     expect(fieldedDef('alpha-lucius').abilities).toEqual(['power.holy-symbol.heal'])
+-    expect(fieldedDef('alpha-osric').abilities).toEqual(['power.knight-shield.block'])
++    // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield retired with V2 R1 and his kit
++    // carries the Kite Shield; the rule is unchanged — his powers are exactly his shield's.
++    expect(fieldedDef('alpha-osric').abilities).toEqual([...ITEMS['item.kite-shield']!.abilities])
+   })
+ })
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 08fdae9..84638fb 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -32,5 +32,5 @@ describe('independent audit of logged battles', () => {
+       // the event carries stat/value/expiry — so the auditor keeps its own mod
+       // ledger and recomputes the EFFECTIVE stat, exactly like the engine.
+-      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number; seq: number }[]>()
++      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number; seq: number; source?: string }[]>()
+       // badge.afflictions (2026-09-04): a mod added WHILE a swing is in flight (an onHit
+       // rider granting Rotting Flesh's +1 Armor before the damage line) does not touch
+@@ -137,9 +137,18 @@ describe('independent audit of logged battles', () => {
+           case 'statmod.added': {
+             const list = statMods.get(e.actor!) ?? []
+-            list.push({ stat: e['stat'] as string, value: e['value'] as number, seq: e.seq,
++            list.push({ stat: e['stat'] as string, value: e['value'] as number, seq: e.seq, source: e['source'] as string,
+               ...(e['expiresAtTurn'] !== undefined ? { expiresAtTurn: e['expiresAtTurn'] as number } : {}) })
+             statMods.set(e.actor!, list)
+             break
+           }
++          // v2.shields (2026-09-23), extended: "until the end of your next Activation"
++          // mods leave through their own mutator event; the model drops exactly that mod.
++          case 'statmod.expired': {
++            const list = statMods.get(e.actor!) ?? []
++            const i = list.findIndex((m) => m.stat === e['stat'] && m.value === e['value'] && m.source === e['source'])
++            expect(i, 'an expired mod was one the log added').toBeGreaterThanOrEqual(0)
++            list.splice(i, 1)
++            break
++          }
+           case 'knocked': {
+             // capability.knockback (2026-08-27): a knocked unit travels along
+@@ -297,5 +306,8 @@ describe('independent audit of logged battles', () => {
+             // recompute is exactly as strict as before for exactly the events
+             // it always covered.
+-            if ((ab.effect ?? 'damage') === 'damage') {
++            // v2.shields (2026-09-23), extended: an effect-list power (the shield guards —
++            // statMods with a lifetime) lands its effects through statmod.added, not a
++            // damage.applied; only a row with no effect list is a bolt to recompute.
++            if (!ab.effects && (ab.effect ?? 'damage') === 'damage') {
+               pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
+             } else {
+@@ -431,5 +443,8 @@ describe('independent audit of logged battles', () => {
+       for (const e of ctx.events) {
+         if (e.type === 'attack.declared') {
+-          key = `${e['attackId']}@${e['hitChance']}`
++          // Law 10, 2026-09-23 (v2.shields): with Block live on the heroes a swing lands at the
++          // declared CONNECTION chance (Block cup, then the accuracy cup), which attack.declared
++          // states as connectionChanceBps. With no Block that is exactly hitChance, as before.
++          key = `${e['attackId']}@${e['connectionChanceBps'] !== undefined ? (e['connectionChanceBps'] as number) / 100 : e['hitChance']}`
+           tally[key] ??= { swings: 0, hits: 0 }
+           tally[key]!.swings++
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index c061f77..0be9fe0 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -34,4 +34,9 @@ const packetGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-p
+ const blockGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-block.json', import.meta.url), 'utf8'))
+ const burstGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bursts.json', import.meta.url), 'utf8'))
++// v2.shields (2026-09-23), Law 10: Block went live on fielded heroes (Kite/Round/Tower,
++// sword and dagger Block). Cases marked `changed` moved — the fixture counts each case's
++// landed blocks — and are checked against the new frozen hashes on both drivers; every
++// unchanged case keeps every prior assertion. Old fixtures stay immutable.
++const shieldGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-shields.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -132,8 +137,10 @@ describe('resumable battle cursor', () => {
+       const packetExpected = packetGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const burstExpected = burstGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const migrated = burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
++      const shieldExpected = shieldGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const shieldMoved = shieldExpected?.changed === true
++      const migrated = shieldMoved || burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -153,6 +160,6 @@ describe('resumable battle cursor', () => {
+         // V2 Block metadata-only projection refuses any positive cup. All old
+         // golden assertions remain exact, plus current raw hashes are retained.
+-        const historicalCtx=blockExpected?{...ctx,...projectBlock(ctx)}:ctx
+-        if(blockExpected){
++        const historicalCtx=blockExpected&&!shieldMoved?{...ctx,...projectBlock(ctx)}:ctx
++        if(blockExpected&&!shieldMoved){
+           expect(hash(ctx.events),'full Block events').toBe(blockExpected.events)
+           expect(hash(ctx.state),'full Block state').toBe(blockExpected.state)
+@@ -188,5 +195,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden, shieldGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index 7785d37..20e7eae 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -142,5 +142,9 @@ describe('gate 1 — everything appears in the log', () => {
+     }
+     for (const t of new Set<string>([...FIRST_BATTLE.heroes, ...FIRST_BATTLE.enemies]))
+-      expect(UNITS[t]!.attacks.some((id) => used.has(id)), `${t} never attacked`).toBe(true)
++      // Law 10, 2026-09-23 (v2.shields): read the kit AS FIELDED (seam.items-per-unit), not the bare
++      // row. The bare Oathblade row carries only Punch; its halberd attacks are the kit. With Block
++      // live the fights re-timed and the Oathblade stopped punching in 200 seeds while still attacking
++      // with its halberd every battle — the rule ("every fielded unit attacks") is unchanged.
++      expect(fieldedDef(t).attacks.some((id) => used.has(id)), `${t} never attacked`).toBe(true)
+     // FINDING 2026-09-02, surfaced by the flip: bestAttack() takes the FIRST
+     // affordable attack in the unit's declared order, so an authored kit's
+@@ -167,5 +171,5 @@ describe('gate 1 — everything appears in the log', () => {
+     }
+     expect(structurallyDead.sort()).toEqual([
+-      'alpha-osric:attack.knight-shield.shield-slam',
++      // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield (and its Shield Slam) retired with V2 R1.
+       'alpha-osric:attack.longsword.stab',
+       'alpha-sky-pirate:attack.dagger.stab',
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index 82306fa..2f5130e 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -24,7 +24,11 @@ describe('the pack carries the three powers, faithfully', () => {
+       effect: 'heal', range: 6, staminaCost: 1, heal: { scale: 'partySpirit', base: 1, mult: 2 },
+     })
+-    expect(ABILITIES['power.knight-shield.block']).toMatchObject({
+-      effect: 'selfGuard', range: 0, staminaCost: 1, cooldown: 3,
+-      guard: { protectionBase: 4, protectionPerArmor: 1, dodgeLoss: 5 },
++    // Law 10, 2026-09-23 (v2.shields): Knight Block (selfGuard) retired with item.knight-shield in
++    // V2 R1; Osric's kit carries the Kite Shield, whose Lock Shields replaces it here. The claims —
++    // authored numbers, self only, live in a real battle — are unchanged.
++    expect(ABILITIES['power.kite-shield.shield-wall']).toMatchObject({
++      range: 0, staminaCost: 1, cooldown: 3,
++      effects: [{ kind: 'statMod', stat: 'block', value: 15, until: 'endOfNextActivation', who: 'self' },
++        { kind: 'statMod', stat: 'armor', value: 1, until: 'endOfNextActivation', who: 'self' }],
+     })
+     expect(BURSTS['power.lightning-staff.storm']).toMatchObject({
+@@ -70,5 +74,8 @@ describe('Heal — one ally within 6, 1 + 2 x party Spirit', () => {
+ })
+ 
+-describe('Block — protection now, a permanent Dodge price, escalating', () => {
++// Law 10, 2026-09-23 (v2.shields): Knight Block (selfGuard) retired with item.knight-shield in
++// V2 R1; Osric's kit carries the Kite Shield, whose Lock Shields replaces it here. The claims —
++// authored numbers, self only, live in a real battle — are unchanged.
++describe('Lock Shields — the Kite Shield\'s guard, until the end of the next Activation', () => {
+   const rig = () => createBattle({
+     ...scenarioOptions(scenarioDef(SC)),
+@@ -77,23 +84,13 @@ describe('Block — protection now, a permanent Dodge price, escalating', () =>
+   })
+ 
+-  it('grants 4 + effective Armor protection and docks 5 Dodge for the battle, stacking per use', () => {
++  it('+15 Block and +1 Armor now, and the cooldown is real', () => {
+     const ctx = rig()
+     const osric = ctx.state.units.find((u) => u.typeId === 'alpha-osric')!
+-    const dodge0 = effective(ctx, osric, 'dodge').value
+-    const expectProt = 4 + effective(ctx, osric, 'armor').value
++    const block0 = effective(ctx, osric, 'block').value, armor0 = effective(ctx, osric, 'armor').value
+     beginActivation(ctx, osric.id, 'test')
+-    usePower(ctx, osric.id, osric.id, 'power.knight-shield.block')
+-    expect(osric.statuses.find((s) => s.id === 'status.protection')?.value).toBe(expectProt)
+-    expect(effective(ctx, osric, 'dodge').value).toBe(dodge0 - 5)
+-    // "Every use costs another 5 Dodge" — no counter needed, it applies again.
+-    // LAW 10 — 2026-09-04 (refactor.one-action-type): cooldown N = skip N Turns
+-    // (2-ACTIONS-SETTLED.md:71); Block's 3 means ready 4 Turns on, not 3 (FINDING 32).
+-    ctx.state.turn += 4 // past the cooldown
+-    osric.primaryUsed = false
+-    osric.stamina = osric.maxStamina
+-    usePower(ctx, osric.id, osric.id, 'power.knight-shield.block')
+-    expect(effective(ctx, osric, 'dodge').value).toBe(dodge0 - 10)
+-    // and the cooldown is real
+-    expect(canUsePower(ctx, osric.id, osric.id, 'power.knight-shield.block')).toBe(false)
++    usePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')
++    expect(effective(ctx, osric, 'block').value).toBe(block0 + 15)
++    expect(effective(ctx, osric, 'armor').value).toBe(armor0 + 1)
++    expect(canUsePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')).toBe(false)
+   })
+ 
+@@ -106,6 +103,6 @@ describe('Block — protection now, a permanent Dodge price, escalating', () =>
+     const osric = ctx.state.units.find((u) => u.typeId === 'alpha-osric')!
+     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+-    expect(canUsePower(ctx, osric.id, osric.id, 'power.knight-shield.block')).toBe(true)
+-    expect(canUsePower(ctx, osric.id, oath.id, 'power.knight-shield.block')).toBe(false)
++    expect(canUsePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')).toBe(true)
++    expect(canUsePower(ctx, osric.id, oath.id, 'power.kite-shield.shield-wall')).toBe(false)
+   })
+ })
+@@ -169,5 +166,7 @@ describe('they run — no power is dead content in a real battle', () => {
+     // 2) and the loop stopped early. The exit now names the two powers it is
+     // looking for. Neither assertion changed.
+-    const both = () => used.has('power.holy-symbol.heal') && used.has('power.knight-shield.block')
++    // Law 10, 2026-09-23 (v2.shields): Osric's guard is the Kite Shield's now — either of its two powers.
++    const guarded = () => used.has('power.kite-shield.shield-wall') || used.has('power.kite-shield.raise-guard')
++    const both = () => used.has('power.holy-symbol.heal') && guarded()
+     for (let r = 0; r < 20 && !both(); r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
+@@ -179,5 +178,5 @@ describe('they run — no power is dead content in a real battle', () => {
+     }
+     expect(used.has('power.holy-symbol.heal'), 'the priest never healed — dead content').toBe(true)
+-    expect(used.has('power.knight-shield.block'), 'Osric never blocked — dead content').toBe(true)
++    expect(guarded(), 'Osric never raised his shield — dead content').toBe(true)
+   })
+ 
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 5b106ed..5f3b740 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -47,5 +47,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // badge.mechanism / content c24b1ac (2026-09-04): every hero row carries
+       // badge.hero (`badges`) — a new row FIELD, not a folded number; the oracle predates it (Law 10).
+-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
++      // Law 10, 2026-09-23 (v2.shields): V2 R1 moved content, not the fold — the shields
++      // (Kite/Round/Tower replace knight-shield and buckler), sword and dagger Block and
++      // the axe's onBlock trigger. A hero whose kit carries one of those items differs from
++      // the frozen oracle in exactly the fields those items carry, and only those.
++      const R1 = new Set(['abilities', 'block', 'rangedBlock', 'triggers', 'dodge', 'maxStamina'])
++      const r1Kit = (fieldedDef(id).defaultItems ?? []).some((i) => ITEMS[i]?.itemClass === 'shield' || ITEMS[i]?.statModifiers.block || ITEMS[i]?.triggers.some((t) => t.hook === 'onBlock'))
++      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && !(r1Kit && R1.has(k)) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+       if (keys.length) differ[id] = keys
+     }
+@@ -77,4 +83,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       'hero.fixed.lumberjack-and-wife': ['attacks'],
+       'hero.fixed.farmer': ['attacks'],
++      // Law 10, 2026-09-23 (v2.shields): the retired Knight Shield took its Shield Slam with it.
++      'alpha-osric': ['attacks'],
++      'hero.base.paladin-hunk': ['attacks'],
++      'hero.base.paladin-shiney': ['attacks'],
++      'hero.base.paladin-smug': ['attacks'],
+     })
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
+@@ -150,9 +161,10 @@ describe('heroItems — the fielding decides the kit', () => {
+     const bare = UNITS['alpha-osric']!
+     const before = JSON.stringify(bare)
+-    const a = applyItems(bare, ['item.longsword', 'item.knight-shield'], ITEMS, ATTACKS, 'test')
+-    const b = applyItems(bare, ['item.longsword', 'item.knight-shield'], ITEMS, ATTACKS, 'test')
++    // Law 10, 2026-09-23 (v2.shields): item.knight-shield retired; Osric's shield is the Kite now.
++    const a = applyItems(bare, ['item.longsword', 'item.kite-shield'], ITEMS, ATTACKS, 'test')
++    const b = applyItems(bare, ['item.longsword', 'item.kite-shield'], ITEMS, ATTACKS, 'test')
+     expect(JSON.stringify(a.def)).toBe(JSON.stringify(b.def))
+     expect(JSON.stringify(bare)).toBe(before)
+-    expect(a.worn.map((w) => w.itemId)).toEqual(['item.longsword', 'item.knight-shield'])
++    expect(a.worn.map((w) => w.itemId)).toEqual(['item.longsword', 'item.kite-shield'])
+   })
+ })
+diff --git a/test/proving.test.ts b/test/proving.test.ts
+index 047fae7..a8ce259 100644
+--- a/test/proving.test.ts
++++ b/test/proving.test.ts
+@@ -148,5 +148,6 @@ describe('the plan shape session 9 wrote (proving.plan-shape)', () => {
+     const w = withSubject(plan, sub, base)
+     expect(w.heroes![2]).toBe('hero.base.paladin-shiney')
+-    expect(w.heroItems![2]).toEqual(['item.longsword', 'item.knight-shield', 'item.basic-armor'])
++    // Law 10, 2026-09-23 (v2.shields): the paladin's Knight Shield retired; his kit carries the Kite Shield.
++    expect(w.heroItems![2]).toEqual(['item.longsword', 'item.kite-shield', 'item.basic-armor'])
+     const ctx = createBattle(w)
+     expect(attackIdsOf(ctx, ctx.state.units[2]!)).toContain('attack.longsword.slash')
+diff --git a/test/proving/smoke.json b/test/proving/smoke.json
+index e4ae139..3e926ae 100644
+--- a/test/proving/smoke.json
++++ b/test/proving/smoke.json
+@@ -158,5 +158,5 @@
+       "items": [
+         "item.longsword",
+-        "item.knight-shield",
++        "item.kite-shield",
+         "item.basic-armor"
+       ]
+diff --git a/test/shield-class.test.ts b/test/shield-class.test.ts
+index 14af730..64a3c22 100644
+--- a/test/shield-class.test.ts
++++ b/test/shield-class.test.ts
+@@ -11,5 +11,7 @@ import { ACTIONS, ITEMS, UNITS } from '../src/content/index.js'
+ import type { ItemDef } from '../src/core/types.js'
+ 
+-const knight = ITEMS['item.knight-shield']!
++// Law 10, 2026-09-23 (v2.shields): item.knight-shield retired with V2 R1, so the fixture's
++// authored base is now the Kite Shield — the fixture's own class and Block values are unchanged.
++const knight = ITEMS['item.kite-shield']!
+ const shield: ItemDef = { ...knight, id: 'item.test-shield', itemClass: 'shield', statModifiers: { ...knight.statModifiers, block: 20, rangedBlock: 5 } }
+ const second: ItemDef = { ...shield, id: 'item.test-shield-2' }
+```
+</details>

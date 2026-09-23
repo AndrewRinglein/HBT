@@ -73,11 +73,20 @@ describe('an affliction lands', () => {
     // The first twelve standard seeds no longer happen to include a 2% success.
     // Keep a real-battle fixture with a measured success; assert the roll and
     // resulting grant together instead of treating twelve seeds as a guarantee.
-    const ctx = createBattle({ replicate: 29, enemyCount: 8, mapId: 'map.open' })
-    runBattle(ctx)
-    const fired = ctx.events.filter(e => e.type === 'trigger.rolled' && e.causeId === ROT && e['fired'])
+    // Law 10, 2026-09-23 (v2.shields): Block went live on the heroes and replicate 29's
+    // success moved. The seed is found, not pinned — the first replicate on this fixture
+    // whose 2% roll succeeds. The roll is asserted as a rule (a success at 2% is a roll of
+    // 1 or 2), no longer the one seed's exact 1; every other assertion is unchanged.
+    let ctx = createBattle({ replicate: 0, enemyCount: 8, mapId: 'map.open' })
+    let fired: typeof ctx.events = []
+    for (let r = 0; r < 200 && fired.length === 0; r++) {
+      ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.open' })
+      runBattle(ctx)
+      fired = ctx.events.filter(e => e.type === 'trigger.rolled' && e.causeId === ROT && e['fired'])
+    }
     expect(fired).toHaveLength(1)
-    expect(fired[0]).toMatchObject({ roll: 1, chance: 2 })
+    expect(fired[0]).toMatchObject({ chance: 2 })
+    expect(fired[0]!['roll'] as number).toBeLessThanOrEqual(2)
     const gained = ctx.events.filter(e => e.type === 'badge.gained' && e['badgeId'] === 'badge.rotting-flesh')
     expect(gained).toHaveLength(1)
     expect(gained[0]!.seq).toBeGreaterThan(fired[0]!.seq)

@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { BURSTS, ATTACKS, UNITS } from '../src/content/index.js'
+import { BURSTS, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
 import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 
@@ -166,7 +166,9 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     expect(alpha.some((g) => /power targeting: arbitrary hex/.test(g.needs))).toBe(false) // V2 now implements empty-hex placement
     expect(fieldedDef('alpha-air-mage').abilities).toEqual(['power.lightning-staff.storm'])
     expect(fieldedDef('alpha-lucius').abilities).toEqual(['power.holy-symbol.heal'])
-    expect(fieldedDef('alpha-osric').abilities).toEqual(['power.knight-shield.block'])
+    // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield retired with V2 R1 and his kit
+    // carries the Kite Shield; the rule is unchanged — his powers are exactly his shield's.
+    expect(fieldedDef('alpha-osric').abilities).toEqual([...ITEMS['item.kite-shield']!.abilities])
   })
 })
 

@@ -183,6 +183,13 @@ export type Trigger = {
    * data. Absent = unit-scoped, exactly the old behaviour.
    */
   readonly onlyWithAttack?: string
+  /**
+   * onBlock only (V2 shields, 2026-09-23): which side of the block the owner must
+   * be on. The hook fires once for the defender and once for the attacker; an
+   * axe's "on block" is the ATTACKER's (V2-SHIELDS-AND-WEAPONS-2026-09-20.md).
+   * Absent = both roles, exactly the old behaviour.
+   */
+  readonly role?: 'defender' | 'attacker'
 }
 
 // ── validation, at load ─────────────────────────────────────────────────────
@@ -213,6 +220,7 @@ export function validateTrigger(t: Trigger): void {
   }
   if (t.effect.kind === 'burstScale' && (t.hook !== 'onBurst' || t.select !== 'self' || !Number.isSafeInteger(t.effect.percent) || t.effect.percent < 0 || t.effect.percent > 100)) throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
   if (t.hook === 'onBurst' && t.onlyWithAttack !== undefined) throw Error(`${where}: onBurst cannot be attack-scoped`)
+  if (t.role !== undefined && (t.hook !== 'onBlock' || !['defender', 'attacker'].includes(t.role))) throw Error(`${where}: role is 'defender' or 'attacker', on onBlock only`)
   if(t.effect.kind==='damage'&&!isDamageType(t.effect.damageType))throw new Error(`${where}: unknown damage type`)
   if (!t.source) throw new Error(`${where}: every trigger names the source that granted it`)
 }
@@ -386,6 +394,8 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): BurstAdjust
     // trigger on a cause that is not an attack (a status tick, a terrain
     // event) never fires — the scope is a claim about attacks.
     .filter((x) => !x.t.onlyWithAttack || x.t.onlyWithAttack === fc.causeId)
+    // onBlock's two contexts carry keyRole 0 (defender) and 1 (attacker).
+    .filter((x) => x.t.role === undefined || fc.keyRole === (x.t.role === 'attacker' ? 1 : 0))
     .sort((a, b) => (a.t.source < b.t.source ? -1 : a.t.source > b.t.source ? 1
                      : a.t.id < b.t.id ? -1 : a.t.id > b.t.id ? 1 : a.slot - b.slot))
 

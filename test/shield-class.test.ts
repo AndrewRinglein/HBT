@@ -10,7 +10,9 @@ import { itemsOf, stowedWeapons, type ScheduleHero } from '../src/sim/progressio
 import { ACTIONS, ITEMS, UNITS } from '../src/content/index.js'
 import type { ItemDef } from '../src/core/types.js'
 
-const knight = ITEMS['item.knight-shield']!
+// Law 10, 2026-09-23 (v2.shields): item.knight-shield retired with V2 R1, so the fixture's
+// authored base is now the Kite Shield — the fixture's own class and Block values are unchanged.
+const knight = ITEMS['item.kite-shield']!
 const shield: ItemDef = { ...knight, id: 'item.test-shield', itemClass: 'shield', statModifiers: { ...knight.statModifiers, block: 20, rangedBlock: 5 } }
 const second: ItemDef = { ...shield, id: 'item.test-shield-2' }
 const items: Record<string, ItemDef> = { ...ITEMS, [shield.id]: shield, [second.id]: second }

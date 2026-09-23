@@ -46,7 +46,13 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // oracle predates it. Law 10 reason: a new row FIELD, not a changed value.
       // badge.mechanism / content c24b1ac (2026-09-04): every hero row carries
       // badge.hero (`badges`) — a new row FIELD, not a folded number; the oracle predates it (Law 10).
-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // Law 10, 2026-09-23 (v2.shields): V2 R1 moved content, not the fold — the shields
+      // (Kite/Round/Tower replace knight-shield and buckler), sword and dagger Block and
+      // the axe's onBlock trigger. A hero whose kit carries one of those items differs from
+      // the frozen oracle in exactly the fields those items carry, and only those.
+      const R1 = new Set(['abilities', 'block', 'rangedBlock', 'triggers', 'dodge', 'maxStamina'])
+      const r1Kit = (fieldedDef(id).defaultItems ?? []).some((i) => ITEMS[i]?.itemClass === 'shield' || ITEMS[i]?.statModifiers.block || ITEMS[i]?.triggers.some((t) => t.hook === 'onBlock'))
+      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && !(r1Kit && R1.has(k)) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
       if (keys.length) differ[id] = keys
     }
     // FINDING: the converter folded item crit/luck into `ported`, then wrote
@@ -76,6 +82,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       'hero.fixed.orphans': ['attacks'],
       'hero.fixed.lumberjack-and-wife': ['attacks'],
       'hero.fixed.farmer': ['attacks'],
+      // Law 10, 2026-09-23 (v2.shields): the retired Knight Shield took its Shield Slam with it.
+      'alpha-osric': ['attacks'],
+      'hero.base.paladin-hunk': ['attacks'],
+      'hero.base.paladin-shiney': ['attacks'],
+      'hero.base.paladin-smug': ['attacks'],
     })
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
@@ -149,11 +160,12 @@ describe('heroItems — the fielding decides the kit', () => {
   it('applyItems is pure over its inputs — the same call twice is the same def, and the base is untouched', () => {
     const bare = UNITS['alpha-osric']!
     const before = JSON.stringify(bare)
-    const a = applyItems(bare, ['item.longsword', 'item.knight-shield'], ITEMS, ATTACKS, 'test')
-    const b = applyItems(bare, ['item.longsword', 'item.knight-shield'], ITEMS, ATTACKS, 'test')
+    // Law 10, 2026-09-23 (v2.shields): item.knight-shield retired; Osric's shield is the Kite now.
+    const a = applyItems(bare, ['item.longsword', 'item.kite-shield'], ITEMS, ATTACKS, 'test')
+    const b = applyItems(bare, ['item.longsword', 'item.kite-shield'], ITEMS, ATTACKS, 'test')
     expect(JSON.stringify(a.def)).toBe(JSON.stringify(b.def))
     expect(JSON.stringify(bare)).toBe(before)
-    expect(a.worn.map((w) => w.itemId)).toEqual(['item.longsword', 'item.knight-shield'])
+    expect(a.worn.map((w) => w.itemId)).toEqual(['item.longsword', 'item.kite-shield'])
   })
 })
 

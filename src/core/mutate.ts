@@ -147,7 +147,21 @@ export function addStatMod(ctx: Ctx, id: number, mod: import('./stats.js').StatM
   emit(ctx, 'statmod.added', causeId, {
     actor: id, stat: mod.stat, op: mod.op, value: mod.value, source: mod.source,
     ...(mod.expiresAtTurn !== undefined ? { expiresAtTurn: mod.expiresAtTurn } : {}),
+    ...(mod.expiresAfterActivation !== undefined ? { expiresAfterActivation: mod.expiresAfterActivation } : {}),
   })
+}
+
+/**
+ * End of Activation: remove the holder's mods that last "until the end of your
+ * next Activation" and whose Activation this was (V2 shields, 2026-09-23). One
+ * `statmod.expired` event per mod removed (Law 3).
+ */
+export function expireActivationMods(ctx: Ctx, id: number, causeId: string): void {
+  const u = unit(ctx, id)
+  const gone = u.mods.filter((m) => m.expiresAfterActivation !== undefined && m.expiresAfterActivation <= u.activationOrdinal)
+  if (!gone.length) return
+  u.mods = u.mods.filter((m) => !gone.includes(m))
+  for (const m of gone) emit(ctx, 'statmod.expired', causeId, { actor: id, stat: m.stat, op: m.op, value: m.value, source: m.source })
 }
 
 /**

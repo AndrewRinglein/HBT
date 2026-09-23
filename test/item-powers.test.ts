@@ -23,9 +23,13 @@ describe('the pack carries the three powers, faithfully', () => {
     expect(ABILITIES['power.holy-symbol.heal']).toMatchObject({
       effect: 'heal', range: 6, staminaCost: 1, heal: { scale: 'partySpirit', base: 1, mult: 2 },
     })
-    expect(ABILITIES['power.knight-shield.block']).toMatchObject({
-      effect: 'selfGuard', range: 0, staminaCost: 1, cooldown: 3,
-      guard: { protectionBase: 4, protectionPerArmor: 1, dodgeLoss: 5 },
+    // Law 10, 2026-09-23 (v2.shields): Knight Block (selfGuard) retired with item.knight-shield in
+    // V2 R1; Osric's kit carries the Kite Shield, whose Lock Shields replaces it here. The claims —
+    // authored numbers, self only, live in a real battle — are unchanged.
+    expect(ABILITIES['power.kite-shield.shield-wall']).toMatchObject({
+      range: 0, staminaCost: 1, cooldown: 3,
+      effects: [{ kind: 'statMod', stat: 'block', value: 15, until: 'endOfNextActivation', who: 'self' },
+        { kind: 'statMod', stat: 'armor', value: 1, until: 'endOfNextActivation', who: 'self' }],
     })
     expect(BURSTS['power.lightning-staff.storm']).toMatchObject({
       burst: {shape: {kind: 'radius', radius: 1}, side: 'any', packets: [{id: 'base', amount: 1, stat: 'magic', damageType: 'magic'}]},
@@ -69,32 +73,25 @@ describe('Heal — one ally within 6, 1 + 2 x party Spirit', () => {
   })
 })
 
-describe('Block — protection now, a permanent Dodge price, escalating', () => {
+// Law 10, 2026-09-23 (v2.shields): Knight Block (selfGuard) retired with item.knight-shield in
+// V2 R1; Osric's kit carries the Kite Shield, whose Lock Shields replaces it here. The claims —
+// authored numbers, self only, live in a real battle — are unchanged.
+describe('Lock Shields — the Kite Shield\'s guard, until the end of the next Activation', () => {
   const rig = () => createBattle({
     ...scenarioOptions(scenarioDef(SC)),
     heroes: ['alpha-osric'], heroHexes: [135],
     enemies: ['unit.zombie'], enemyHexes: [1], enemyCount: 1,
   })
 
-  it('grants 4 + effective Armor protection and docks 5 Dodge for the battle, stacking per use', () => {
+  it('+15 Block and +1 Armor now, and the cooldown is real', () => {
     const ctx = rig()
     const osric = ctx.state.units.find((u) => u.typeId === 'alpha-osric')!
-    const dodge0 = effective(ctx, osric, 'dodge').value
-    const expectProt = 4 + effective(ctx, osric, 'armor').value
+    const block0 = effective(ctx, osric, 'block').value, armor0 = effective(ctx, osric, 'armor').value
     beginActivation(ctx, osric.id, 'test')
-    usePower(ctx, osric.id, osric.id, 'power.knight-shield.block')
-    expect(osric.statuses.find((s) => s.id === 'status.protection')?.value).toBe(expectProt)
-    expect(effective(ctx, osric, 'dodge').value).toBe(dodge0 - 5)
-    // "Every use costs another 5 Dodge" — no counter needed, it applies again.
-    // LAW 10 — 2026-09-04 (refactor.one-action-type): cooldown N = skip N Turns
-    // (2-ACTIONS-SETTLED.md:71); Block's 3 means ready 4 Turns on, not 3 (FINDING 32).
-    ctx.state.turn += 4 // past the cooldown
-    osric.primaryUsed = false
-    osric.stamina = osric.maxStamina
-    usePower(ctx, osric.id, osric.id, 'power.knight-shield.block')
-    expect(effective(ctx, osric, 'dodge').value).toBe(dodge0 - 10)
-    // and the cooldown is real
-    expect(canUsePower(ctx, osric.id, osric.id, 'power.knight-shield.block')).toBe(false)
+    usePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')
+    expect(effective(ctx, osric, 'block').value).toBe(block0 + 15)
+    expect(effective(ctx, osric, 'armor').value).toBe(armor0 + 1)
+    expect(canUsePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')).toBe(false)
   })
 
   it('legality: self only', () => {
@@ -105,8 +102,8 @@ describe('Block — protection now, a permanent Dodge price, escalating', () => 
     })
     const osric = ctx.state.units.find((u) => u.typeId === 'alpha-osric')!
     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
-    expect(canUsePower(ctx, osric.id, osric.id, 'power.knight-shield.block')).toBe(true)
-    expect(canUsePower(ctx, osric.id, oath.id, 'power.knight-shield.block')).toBe(false)
+    expect(canUsePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')).toBe(true)
+    expect(canUsePower(ctx, osric.id, oath.id, 'power.kite-shield.shield-wall')).toBe(false)
   })
 })
 
@@ -168,7 +165,9 @@ describe('they run — no power is dead content in a real battle', () => {
     // seed 1 beside Block — the set hit 2 before the priest's first heal (seed
     // 2) and the loop stopped early. The exit now names the two powers it is
     // looking for. Neither assertion changed.
-    const both = () => used.has('power.holy-symbol.heal') && used.has('power.knight-shield.block')
+    // Law 10, 2026-09-23 (v2.shields): Osric's guard is the Kite Shield's now — either of its two powers.
+    const guarded = () => used.has('power.kite-shield.shield-wall') || used.has('power.kite-shield.raise-guard')
+    const both = () => used.has('power.holy-symbol.heal') && guarded()
     for (let r = 0; r < 20 && !both(); r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
       runBattle(ctx)
@@ -178,7 +177,7 @@ describe('they run — no power is dead content in a real battle', () => {
       expect(ctx.state.outcome, `replicate ${r} must resolve`).not.toBeNull()
     }
     expect(used.has('power.holy-symbol.heal'), 'the priest never healed — dead content').toBe(true)
-    expect(used.has('power.knight-shield.block'), 'Osric never blocked — dead content').toBe(true)
+    expect(guarded(), 'Osric never raised his shield — dead content').toBe(true)
   })
 
   it('Storm opens showcase.item-powers — the boxed-mage fielding exists for exactly this', () => {

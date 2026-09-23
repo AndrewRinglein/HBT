@@ -780,3 +780,15 @@ its own gap, so Kite's Raise Guard buys back the ranged block its +5 lacks. Re-a
 `item.tower-shield` keeps the name it still carries and matches R1's own instruction to
 re-author Tower Cover rather than invent a kind; `power.knight-shield.block` and
 `power.buckler.block-and-dodge` retire with the items that grant them.
+
+## V2 shields and weapon Block — defaults taken landing v2.shields (2026-09-23)
+
+| Switch | Question | Default | Status |
+|---|---|---|---|
+| `weaponBlockFamilies` | Which weapons are "swords" and "knives and daggers" for weapon Block? | By tag, never by name: `blade` or `sword` → +5 one-handed, +10 two-handed; `dagger` → +5 (the two-handed Daggers pair included). The Rapier (`exotic`) and the Throwing Knives (`thrown`) carry neither tag and get none. | provisional — Angela to correct |
+| `axeOnAnyBlock` | Does the axe's −20 fire when a weapon's Block blocks, or only a shield's? | Any block (V2-SHIELDS-AND-WEAPONS open item 4's stated default). The axe's trigger is the ATTACKER's (`role: 'attacker'`); an axe-holder who blocks strips nothing. | provisional |
+| `axeStripVsSwap` | The ruling accepts that swapping to another shield restores its bonus. | Not built: swaps are R6. Today the −20 is a battle-long mod on the unit, so no swap can restore anything. | open until R6 |
+| `shieldPowerLifetime` | What is "until the end of your next Activation"? | The holder's next Activation: the mod carries the holder's activationOrdinal + 1 and is removed (`statmod.expired`) at that Activation's end. Mid-activation the actor's own next one; on anyone else, their next one. | provisional |
+| `maceImpact` | Maces and hammers +2 Impact. | **Not authored.** Impact feeds the KDB roll (COMBAT-V2 §9), which the engine does not have yet; a +2 with nothing to read it would be inert. Goes with KDB. | content gap |
+| `weaponFirePoison` | Fire on maces and hammers; fire and poison on "weapons of the appropriate type". | **Not authored.** Neither the weapons nor the amounts are stated (open item 3); inventing both across the catalog is the invented-rows trap. Angela's to name. | open |
+| `shieldPowerNames` | Kite's "Shield Wall" and Round's "Brace" collide with existing names (the Shieldbearer's Shield Wall power; an attack called Brace) — the Codex audit refuses duplicates. | Published as **Lock Shields** (`power.kite-shield.shield-wall`) and **Bear Down** (`power.round-shield.brace`); ids unchanged. | provisional — Angela to rename |

@@ -125,7 +125,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     for (const k of ['statuses', 'mods', 'triggers', 'auras']) requireThat(Array.isArray(u[k]), `unit ${k}`)
     for (const m of u.mods) {
       record(m)
-      requireThat(typeof m.stat === 'string' && isStatName(m.stat) && ['add', 'set'].includes(m.op) && integer(m.value) && typeof m.source === 'string' && ['unit', 'item'].includes(m.scope) && (m.expiresAtTurn === undefined || integer(m.expiresAtTurn, 0)), 'stat modifier')
+      requireThat(typeof m.stat === 'string' && isStatName(m.stat) && ['add', 'set'].includes(m.op) && integer(m.value) && typeof m.source === 'string' && ['unit', 'item'].includes(m.scope) && (m.expiresAtTurn === undefined || integer(m.expiresAtTurn, 0)) && (m.expiresAfterActivation === undefined || integer(m.expiresAfterActivation, 0)), 'stat modifier')
     }
     for (const a of u.auras) {
       record(a); record(a.mods)

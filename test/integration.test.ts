@@ -141,7 +141,11 @@ describe('gate 1 — everything appears in the log', () => {
       }
     }
     for (const t of new Set<string>([...FIRST_BATTLE.heroes, ...FIRST_BATTLE.enemies]))
-      expect(UNITS[t]!.attacks.some((id) => used.has(id)), `${t} never attacked`).toBe(true)
+      // Law 10, 2026-09-23 (v2.shields): read the kit AS FIELDED (seam.items-per-unit), not the bare
+      // row. The bare Oathblade row carries only Punch; its halberd attacks are the kit. With Block
+      // live the fights re-timed and the Oathblade stopped punching in 200 seeds while still attacking
+      // with its halberd every battle — the rule ("every fielded unit attacks") is unchanged.
+      expect(fieldedDef(t).attacks.some((id) => used.has(id)), `${t} never attacked`).toBe(true)
     // FINDING 2026-09-02, surfaced by the flip: bestAttack() takes the FIRST
     // affordable attack in the unit's declared order, so an authored kit's
     // later entries are dead unless the first is unaffordable. The test cohort
@@ -166,7 +170,7 @@ describe('gate 1 — everything appears in the log', () => {
       })
     }
     expect(structurallyDead.sort()).toEqual([
-      'alpha-osric:attack.knight-shield.shield-slam',
+      // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield (and its Shield Slam) retired with V2 R1.
       'alpha-osric:attack.longsword.stab',
       'alpha-sky-pirate:attack.dagger.stab',
       'alpha-sky-pirate:attack.javelin.throw',

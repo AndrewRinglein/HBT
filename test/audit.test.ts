@@ -31,7 +31,7 @@ describe('independent audit of logged battles', () => {
       // movement.bonus-actions (2026-08-25): riders add stored stat mods, and
       // the event carries stat/value/expiry — so the auditor keeps its own mod
       // ledger and recomputes the EFFECTIVE stat, exactly like the engine.
-      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number; seq: number }[]>()
+      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number; seq: number; source?: string }[]>()
       // badge.afflictions (2026-09-04): a mod added WHILE a swing is in flight (an onHit
       // rider granting Rotting Flesh's +1 Armor before the damage line) does not touch
       // THAT damage — the number the preview promised is the number that lands (Law 1);
@@ -136,9 +136,18 @@ describe('independent audit of logged battles', () => {
           // spend's arithmetic wrong, which is precisely the audit working.
           case 'statmod.added': {
             const list = statMods.get(e.actor!) ?? []
-            list.push({ stat: e['stat'] as string, value: e['value'] as number, seq: e.seq,
+            list.push({ stat: e['stat'] as string, value: e['value'] as number, seq: e.seq, source: e['source'] as string,
               ...(e['expiresAtTurn'] !== undefined ? { expiresAtTurn: e['expiresAtTurn'] as number } : {}) })
             statMods.set(e.actor!, list)
+            break
+          }
+          // v2.shields (2026-09-23), extended: "until the end of your next Activation"
+          // mods leave through their own mutator event; the model drops exactly that mod.
+          case 'statmod.expired': {
+            const list = statMods.get(e.actor!) ?? []
+            const i = list.findIndex((m) => m.stat === e['stat'] && m.value === e['value'] && m.source === e['source'])
+            expect(i, 'an expired mod was one the log added').toBeGreaterThanOrEqual(0)
+            list.splice(i, 1)
             break
           }
           case 'knocked': {
@@ -296,7 +305,10 @@ describe('independent audit of logged battles', () => {
             // their own full ledgers. Extended, never weakened: the damage
             // recompute is exactly as strict as before for exactly the events
             // it always covered.
-            if ((ab.effect ?? 'damage') === 'damage') {
+            // v2.shields (2026-09-23), extended: an effect-list power (the shield guards —
+            // statMods with a lifetime) lands its effects through statmod.added, not a
+            // damage.applied; only a row with no effect list is a bolt to recompute.
+            if (!ab.effects && (ab.effect ?? 'damage') === 'damage') {
               pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
             } else {
               if (ab.effect === 'heal') expect(e['heal'] as number, `${ab.id} heals a stated amount`).toBeGreaterThan(0)
@@ -430,7 +442,10 @@ describe('independent audit of logged battles', () => {
       let key: string | null = null
       for (const e of ctx.events) {
         if (e.type === 'attack.declared') {
-          key = `${e['attackId']}@${e['hitChance']}`
+          // Law 10, 2026-09-23 (v2.shields): with Block live on the heroes a swing lands at the
+          // declared CONNECTION chance (Block cup, then the accuracy cup), which attack.declared
+          // states as connectionChanceBps. With no Block that is exactly hitChance, as before.
+          key = `${e['attackId']}@${e['connectionChanceBps'] !== undefined ? (e['connectionChanceBps'] as number) / 100 : e['hitChance']}`
           tally[key] ??= { swings: 0, hits: 0 }
           tally[key]!.swings++
         }

@@ -8,7 +8,21 @@
   ],
   "spec": "V2 R1, the whole feature in one item (Andrew, 2026-09-23: one item per feature; merges content.v2-shields, content.v2-weapon-block and the kingdom hands rule). CONTENT: the three shields authored and published to the pack - Kite +20 Block +5 Ranged Block; Round +10/+10; Tower +15/+15, -10 Dodge, -1 max Stamina, re-authoring item.tower-shield in place. All three itemClass shield, hands 1. Two powers each at the provisional numbers in engine/SWITCHES.md shieldPowerNumbers. item.knight-shield and item.buckler retire with power.knight-shield.block and power.buckler.block-and-dodge; pot-lid and holy-shield stay exactly as authored. Kits reassigned per V2-SHIELDS-AND-WEAPONS-2026-09-20.md fourth pass. WEAPON BLOCK: one-handed swords +5 Block; two-handed swords +10 Block; knives and daggers +5 Block; Block only, never Ranged Block. Axes: onBlock (attacker) the blocking target loses 20 Block and 20 Ranged Block for the battle, floored at 0, on any block. Maces and hammers +2 Impact. Unstated fire/poison amounts are provisional switches. KINGDOM: src/core/loadout.ts fieldedItemsOf/slotCostOf count shield class toward the two hands exactly as the engine does; no backpack shield is fielded.",
   "expect": "Each shield appears in a real battle with positive Block; a Tower-carrying hero shows -10 Dodge and -1 max Stamina; each of the six shield powers fires in a battle; no kit or start pool names a retired shield; a sword-armed unit blocks in a real battle; a blocked axe hit leaves the target 20 lower in Block and Ranged Block for the battle, never below 0; swords and daggers add no Ranged Block; kingdom loadout tests: shield + 2h weapon refused, shield in the backpack not fielded.",
-  "note": "Replaces content.v2-shields and content.v2-weapon-block (abandoned as merged). Open in the record: fire and poison amounts (item 3), axe on weapon blocks (item 4, default any block)."
+  "note": "Replaces content.v2-shields and content.v2-weapon-block (abandoned as merged). Open in the record: fire and poison amounts (item 3), axe on weapon blocks (item 4, default any block).",
+  "probeIds": [
+   "item.kite-shield",
+   "item.round-shield",
+   "item.tower-shield",
+   "power.kite-shield.shield-wall",
+   "power.kite-shield.raise-guard",
+   "power.round-shield.turn-aside",
+   "power.round-shield.brace",
+   "power.tower-shield.cover",
+   "power.tower-shield.stand-tall"
+  ],
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "aaf51a5"
  },
  {
   "id": "plumbing.shield-class",

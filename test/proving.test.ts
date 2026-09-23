@@ -147,7 +147,8 @@ describe('the plan shape session 9 wrote (proving.plan-shape)', () => {
     const sub = plan.subjects.find((s) => s.id === 'hero.base.paladin-shiney')!
     const w = withSubject(plan, sub, base)
     expect(w.heroes![2]).toBe('hero.base.paladin-shiney')
-    expect(w.heroItems![2]).toEqual(['item.longsword', 'item.knight-shield', 'item.basic-armor'])
+    // Law 10, 2026-09-23 (v2.shields): the paladin's Knight Shield retired; his kit carries the Kite Shield.
+    expect(w.heroItems![2]).toEqual(['item.longsword', 'item.kite-shield', 'item.basic-armor'])
     const ctx = createBattle(w)
     expect(attackIdsOf(ctx, ctx.state.units[2]!)).toContain('attack.longsword.slash')
     expect(attackIdsOf(ctx, ctx.state.units[2]!)).not.toContain('attack.fire-staff.bolt')

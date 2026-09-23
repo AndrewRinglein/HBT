@@ -140,8 +140,8 @@ export type AbilityEffect =
       readonly kind: 'statMod'
       readonly stat: import('./stats.js').StatName
       readonly value: number
-      /** endOfTurn = this Turn; endOfNextTurn = "until the end of your next Turn"; battle = the rest of the Battle. */
-      readonly until: 'endOfTurn' | 'endOfNextTurn' | 'battle'
+      /** endOfTurn = this Turn; endOfNextTurn = "until the end of your next Turn"; endOfNextActivation = "until the end of your next Activation" (the holder's); battle = the rest of the Battle. */
+      readonly until: 'endOfTurn' | 'endOfNextTurn' | 'endOfNextActivation' | 'battle'
       readonly who?: 'self' | 'target'
     }
   | { readonly kind: 'selfDamage'; readonly amount: number; readonly damageType: DamageType }

@@ -3131,16 +3131,6 @@ export const UNIT_PACK = {
       "crit": 3,
       "accuracy": 5
     },
-    "attack.knight-shield.shield-slam": {
-      "id": "attack.knight-shield.shield-slam",
-      "name": "Shield Slam",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 0,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 2
-    },
     "attack.elfbow.elf-shot": {
       "id": "attack.elfbow.elf-shot",
       "name": "Elf Shot",
@@ -3953,17 +3943,6 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 5
-    },
-    "attack.buckler.punch": {
-      "id": "attack.buckler.punch",
-      "name": "Shield Punch",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 0,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 1,
       "accuracy": 5
     },
     "attack.bloody-axe.cleave-open": {
@@ -4859,19 +4838,187 @@ export const UNIT_PACK = {
         }
       ]
     },
-    "power.knight-shield.block": {
-      "id": "power.knight-shield.block",
-      "name": "Block",
+    "power.kite-shield.shield-wall": {
+      "id": "power.kite-shield.shield-wall",
+      "name": "Lock Shields",
       "free": false,
       "staminaCost": 1,
       "cooldown": 3,
       "range": 0,
-      "effect": "selfGuard",
-      "guard": {
-        "protectionBase": 4,
-        "protectionPerArmor": 1,
-        "dodgeLoss": 5
-      }
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 15,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 1,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.kite-shield.raise-guard": {
+      "id": "power.kite-shield.raise-guard",
+      "name": "Raise Guard",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.tower-shield.cover": {
+      "id": "power.tower-shield.cover",
+      "name": "Cover",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 20,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 20,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 1,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.tower-shield.stand-tall": {
+      "id": "power.tower-shield.stand-tall",
+      "name": "Stand Tall",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 25,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 2,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.round-shield.turn-aside": {
+      "id": "power.round-shield.turn-aside",
+      "name": "Turn Aside",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.round-shield.brace": {
+      "id": "power.round-shield.brace",
+      "name": "Bear Down",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 5,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 5,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 1,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
     },
     "power.holy-symbol.heal": {
       "id": "power.holy-symbol.heal",
@@ -5589,7 +5736,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.basic-armor"
       ],
       "badges": [
@@ -5632,7 +5779,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.ragged-hides"
       ],
       "badges": [
@@ -5674,7 +5821,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.destroyed-mail"
       ],
       "badges": [
@@ -6262,7 +6409,7 @@ export const UNIT_PACK = {
       ],
       "triggers": [],
       "defaultItems": [
-        "item.knight-shield",
+        "item.round-shield",
         "item.holy-texts",
         "item.pilgrims-habit"
       ],
@@ -7424,7 +7571,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.longsword",
-        "item.knight-shield"
+        "item.kite-shield"
       ],
       "badges": [
         "badge.hero"
@@ -7853,7 +8000,36 @@ export const UNIT_PACK = {
         "attack.hand-axe.chop"
       ],
       "abilities": [],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.hand-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.hand-axe"
+        },
+        {
+          "id": "trigger.hand-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.hand-axe"
+        }
+      ]
     },
     "item.sharpened-stake": {
       "id": "item.sharpened-stake",
@@ -8005,7 +8181,9 @@ export const UNIT_PACK = {
       "tier": 0,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.practice-sword.swing"
       ],
@@ -8019,7 +8197,9 @@ export const UNIT_PACK = {
       "tier": 1,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 10
+      },
       "grants": [
         "attack.greatsword.hew",
         "attack.greatsword.great-cleave"
@@ -8054,6 +8234,34 @@ export const UNIT_PACK = {
           },
           "source": "item.war-axe",
           "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
         }
       ]
     },
@@ -8204,7 +8412,9 @@ export const UNIT_PACK = {
       "tier": 1,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.raiders-cutlass.slash",
         "attack.raiders-cutlass.boarding-swing"
@@ -8293,7 +8503,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.rogue",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.obsidian-fang-dagger.fang",
         "attack.obsidian-fang-dagger.gut"
@@ -8308,7 +8520,9 @@ export const UNIT_PACK = {
       "tier": 1,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 10
+      },
       "grants": [
         "attack.duel-runeblades.twin-cut",
         "attack.duel-runeblades.rune-cross"
@@ -8490,7 +8704,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.paladin",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.bane-blade.strike",
         "attack.bane-blade.banishing-blow"
@@ -8506,30 +8722,15 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.paladin",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.sword-of-the-fallen.remembrance",
         "attack.sword-of-the-fallen.honour-the-dead"
       ],
       "abilities": [],
       "triggers": []
-    },
-    "item.buckler": {
-      "id": "item.buckler",
-      "name": "Buckler",
-      "itemClass": "weapon",
-      "tier": 1,
-      "hands": 1,
-      "slots": 1,
-      "statModifiers": {},
-      "grants": [
-        "attack.buckler.punch"
-      ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.buckler.block-and-dodge — item power — shape unparsed"
-      ]
     },
     "item.bloody-axe": {
       "id": "item.bloody-axe",
@@ -8569,6 +8770,34 @@ export const UNIT_PACK = {
             "kind": "status.apply",
             "statusId": "status.bleed",
             "value": 1
+          },
+          "source": "item.bloody-axe"
+        },
+        {
+          "id": "trigger.bloody-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.bloody-axe"
+        },
+        {
+          "id": "trigger.bloody-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
           },
           "source": "item.bloody-axe"
         }
@@ -8640,7 +8869,8 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "strength": 1
+        "strength": 1,
+        "block": 5
       },
       "grants": [
         "attack.death-blade.reap",
@@ -8728,7 +8958,8 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.rogue",
       "statModifiers": {
-        "dodge": 5
+        "dodge": 5,
+        "block": 5
       },
       "grants": [
         "attack.shadow-dagger.shadow-cut",
@@ -8748,7 +8979,8 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "strength": 1
+        "strength": 1,
+        "block": 5
       },
       "grants": [
         "attack.stormforged-blade.arc-cut",
@@ -8840,7 +9072,8 @@ export const UNIT_PACK = {
       "slots": 2,
       "statModifiers": {
         "strength": 2,
-        "maxHp": -2
+        "maxHp": -2,
+        "block": 10
       },
       "grants": [
         "attack.cursed-sand-blade.sand-cut",
@@ -8907,7 +9140,8 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "dodge": 5
+        "dodge": 5,
+        "block": 5
       },
       "grants": [
         "attack.mirage-dagger.flicker-cut",
@@ -8972,7 +9206,8 @@ export const UNIT_PACK = {
       "classRestriction": "class.paladin",
       "statModifiers": {
         "strength": 1,
-        "resist": 1
+        "resist": 1,
+        "block": 5
       },
       "grants": [
         "attack.holy-avenger.avenging-strike",
@@ -9015,7 +9250,8 @@ export const UNIT_PACK = {
       "classRestriction": "class.rogue",
       "statModifiers": {
         "strength": 1,
-        "crit": 5
+        "crit": 5,
+        "block": 5
       },
       "grants": [
         "attack.demonic-shiv.shiv",
@@ -9036,7 +9272,8 @@ export const UNIT_PACK = {
       "slots": 2,
       "statModifiers": {
         "strength": 1,
-        "resist": 1
+        "resist": 1,
+        "block": 10
       },
       "grants": [
         "attack.blade-of-demon-slaying.slayer-cut",
@@ -9118,7 +9355,8 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "strength": 2
+        "strength": 2,
+        "block": 5
       },
       "grants": [
         "attack.tomb-sentinels-blade.sentinel-cut",
@@ -9383,7 +9621,9 @@ export const UNIT_PACK = {
       "tier": 1,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.daggers.stab",
         "attack.daggers.thrown-dagger"
@@ -10317,7 +10557,9 @@ export const UNIT_PACK = {
       "tier": 1,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.longsword.slash",
         "attack.longsword.stab"
@@ -10352,52 +10594,6 @@ export const UNIT_PACK = {
           "source": "item.halberd",
           "onlyWithAttack": "attack.halberd.hack"
         }
-      ]
-    },
-    "item.knight-shield": {
-      "id": "item.knight-shield",
-      "name": "Knight Shield",
-      "itemClass": "weapon",
-      "tier": 1,
-      "hands": 1,
-      "slots": 1,
-      "statModifiers": {},
-      "grants": [
-        "attack.knight-shield.shield-slam"
-      ],
-      "abilities": [
-        "power.knight-shield.block"
-      ],
-      "triggers": [
-        {
-          "id": "trigger.knight-shield.shield-slam.stun",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.stun",
-            "value": 1
-          },
-          "source": "item.knight-shield",
-          "onlyWithAttack": "attack.knight-shield.shield-slam"
-        }
-      ]
-    },
-    "item.tower-shield": {
-      "id": "item.tower-shield",
-      "name": "Tower Shield",
-      "itemClass": "weapon",
-      "tier": 1,
-      "hands": 1,
-      "slots": 1,
-      "statModifiers": {},
-      "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.tower-shield.cover — item power — shape unparsed",
-        "grants power.tower-shield.stand-tall — item power — shape unparsed"
       ]
     },
     "item.fire-staff": {
@@ -10639,7 +10835,9 @@ export const UNIT_PACK = {
       "tier": 0,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.dagger.stab"
       ],
@@ -11064,6 +11262,62 @@ export const UNIT_PACK = {
         "grants power.rod-of-imprisonment.imprison — item power — shape unparsed",
         "grants power.rod-of-imprisonment.sanctuary — item power — shape unparsed"
       ]
+    },
+    "item.kite-shield": {
+      "id": "item.kite-shield",
+      "name": "Kite Shield",
+      "itemClass": "shield",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 20,
+        "rangedBlock": 5
+      },
+      "grants": [],
+      "abilities": [
+        "power.kite-shield.shield-wall",
+        "power.kite-shield.raise-guard"
+      ],
+      "triggers": []
+    },
+    "item.round-shield": {
+      "id": "item.round-shield",
+      "name": "Round Shield",
+      "itemClass": "shield",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 10,
+        "rangedBlock": 10
+      },
+      "grants": [],
+      "abilities": [
+        "power.round-shield.turn-aside",
+        "power.round-shield.brace"
+      ],
+      "triggers": []
+    },
+    "item.tower-shield": {
+      "id": "item.tower-shield",
+      "name": "Tower Shield",
+      "itemClass": "shield",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 15,
+        "rangedBlock": 15,
+        "dodge": -10,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [
+        "power.tower-shield.cover",
+        "power.tower-shield.stand-tall"
+      ],
+      "triggers": []
     },
     "item.loaded-dice-of-mirran": {
       "id": "item.loaded-dice-of-mirran",
@@ -13030,6 +13284,34 @@ export const UNIT_PACK = {
           },
           "source": "item.lumberjack-axe",
           "onlyWithAttack": "attack.lumberjack-axe.chop"
+        },
+        {
+          "id": "trigger.lumberjack-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.lumberjack-axe"
+        },
+        {
+          "id": "trigger.lumberjack-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.lumberjack-axe"
         }
       ]
     }
@@ -24161,6 +24443,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 10,
         "crit": 3
       },
       "grants": [
@@ -24193,6 +24476,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 10,
         "strength": 1
       },
       "grants": [
@@ -24215,6 +24499,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 10,
         "strength": 2,
         "precision": 2,
         "maxHp": -4,
@@ -24237,6 +24522,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 10,
         "resist": 1
       },
       "grants": [
@@ -24258,7 +24544,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 10
+      },
       "grants": [
         "attack.greatsword.hew",
         "attack.greatsword.great-cleave"
@@ -24278,7 +24566,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 10
+      },
       "grants": [
         "attack.greatsword.hew",
         "attack.greatsword.great-cleave"
@@ -24323,6 +24613,34 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
           "id": "trigger.war-axe.bloodletting.bleed-crit",
           "hook": "onCrit",
           "chance": 100,
@@ -24365,6 +24683,34 @@ export const UNIT_PACK = {
           },
           "source": "item.war-axe",
           "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
         }
       ],
       "base": "item.war-axe",
@@ -24405,6 +24751,34 @@ export const UNIT_PACK = {
           },
           "source": "item.war-axe",
           "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
         }
       ],
       "base": "item.war-axe",
@@ -24440,6 +24814,34 @@ export const UNIT_PACK = {
           },
           "source": "item.war-axe",
           "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
         }
       ],
       "base": "item.war-axe",
@@ -24475,6 +24877,34 @@ export const UNIT_PACK = {
           },
           "source": "item.war-axe",
           "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
         },
         {
           "id": "trigger.war-axe.taunting.taunt",
@@ -25480,6 +25910,7 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
+        "block": 5,
         "crit": 3
       },
       "grants": [
@@ -25537,7 +25968,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.raiders-cutlass.slash",
         "attack.raiders-cutlass.boarding-swing"
@@ -25585,6 +26018,7 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
+        "block": 5,
         "strength": 1,
         "dodge": -5
       },
@@ -25634,7 +26068,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.raiders-cutlass.slash",
         "attack.raiders-cutlass.boarding-swing"
@@ -25942,7 +26378,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.rogue",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.obsidian-fang-dagger.fang",
         "attack.obsidian-fang-dagger.gut"
@@ -25986,6 +26424,7 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.rogue",
       "statModifiers": {
+        "block": 5,
         "crit": 3
       },
       "grants": [
@@ -26019,6 +26458,7 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.rogue",
       "statModifiers": {
+        "block": 5,
         "crit": 3
       },
       "grants": [
@@ -26041,7 +26481,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.rogue",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.obsidian-fang-dagger.fang",
         "attack.obsidian-fang-dagger.gut"
@@ -26072,7 +26514,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.rogue",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.obsidian-fang-dagger.fang",
         "attack.obsidian-fang-dagger.gut"
@@ -26103,7 +26547,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.rogue",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.obsidian-fang-dagger.fang",
         "attack.obsidian-fang-dagger.gut"
@@ -26124,6 +26570,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 10,
         "crit": 3
       },
       "grants": [
@@ -26156,6 +26603,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 10,
         "accuracy": 5
       },
       "grants": [
@@ -26177,7 +26625,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 10
+      },
       "grants": [
         "attack.duel-runeblades.twin-cut",
         "attack.duel-runeblades.rune-cross"
@@ -26220,6 +26670,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 10,
         "strength": 2,
         "precision": 2,
         "maxHp": -4,
@@ -27139,6 +27590,7 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.paladin",
       "statModifiers": {
+        "block": 5,
         "resist": 1
       },
       "grants": [
@@ -27161,7 +27613,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.paladin",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.bane-blade.strike",
         "attack.bane-blade.banishing-blow"
@@ -27183,7 +27637,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.paladin",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.bane-blade.strike",
         "attack.bane-blade.banishing-blow"
@@ -27206,6 +27662,7 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.paladin",
       "statModifiers": {
+        "block": 5,
         "strength": 2,
         "precision": 2,
         "maxHp": -4,
@@ -27228,7 +27685,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.paladin",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.sword-of-the-fallen.remembrance",
         "attack.sword-of-the-fallen.honour-the-dead"
@@ -27250,7 +27709,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.paladin",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.sword-of-the-fallen.remembrance",
         "attack.sword-of-the-fallen.honour-the-dead"
@@ -27271,7 +27732,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.paladin",
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.sword-of-the-fallen.remembrance",
         "attack.sword-of-the-fallen.honour-the-dead"
@@ -27294,6 +27757,7 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.paladin",
       "statModifiers": {
+        "block": 5,
         "strength": 1
       },
       "grants": [
@@ -27315,7 +27779,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.daggers.stab",
         "attack.daggers.thrown-dagger"
@@ -27358,6 +27824,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 5,
         "crit": 3
       },
       "grants": [
@@ -27379,7 +27846,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.daggers.stab",
         "attack.daggers.thrown-dagger"
@@ -27409,7 +27878,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.daggers.stab",
         "attack.daggers.thrown-dagger"
@@ -27440,6 +27911,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
+        "block": 5,
         "crit": 3
       },
       "grants": [
@@ -27471,7 +27943,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.daggers.stab",
         "attack.daggers.thrown-dagger"
@@ -28448,6 +28922,7 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
+        "block": 5,
         "crit": 3
       },
       "grants": [
@@ -28479,7 +28954,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.longsword.slash",
         "attack.longsword.stab"
@@ -28501,6 +28978,7 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
+        "block": 5,
         "resist": 1
       },
       "grants": [
@@ -28522,7 +29000,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.longsword.slash",
         "attack.longsword.stab"
@@ -28543,7 +29023,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.longsword.slash",
         "attack.longsword.stab"
@@ -28563,7 +29045,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.longsword.slash",
         "attack.longsword.stab"
@@ -28593,7 +29077,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "block": 5
+      },
       "grants": [
         "attack.longsword.slash",
         "attack.longsword.stab"
@@ -29619,79 +30105,30 @@ export const UNIT_PACK = {
       "base": "item.priest-chain",
       "enchant": "enchant.demon-slayer"
     },
-    "item.buckler.riposte": {
-      "id": "item.buckler.riposte",
-      "name": "Buckler of Riposte",
-      "itemClass": "weapon",
+    "item.tower-shield.riposte": {
+      "id": "item.tower-shield.riposte",
+      "name": "Tower Shield of Riposte",
+      "itemClass": "shield",
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
-      "grants": [
-        "attack.buckler.punch"
-      ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.buckler.block-and-dodge — item power — shape unparsed",
-        "enchant onDodge: the attacker takes 5 true damage — trigger shape unparsed"
-      ],
-      "base": "item.buckler",
-      "enchant": "enchant.riposte"
-    },
-    "item.knight-shield.riposte": {
-      "id": "item.knight-shield.riposte",
-      "name": "Knight Shield of Riposte",
-      "itemClass": "weapon",
-      "tier": 3,
-      "hands": 1,
-      "slots": 1,
-      "statModifiers": {},
-      "grants": [
-        "attack.knight-shield.shield-slam"
-      ],
+      "statModifiers": {
+        "block": 15,
+        "rangedBlock": 15,
+        "dodge": -10,
+        "maxStamina": -1
+      },
+      "grants": [],
       "abilities": [
-        "power.knight-shield.block"
+        "power.tower-shield.cover",
+        "power.tower-shield.stand-tall"
       ],
-      "triggers": [
-        {
-          "id": "trigger.knight-shield.shield-slam.stun",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.stun",
-            "value": 1
-          },
-          "source": "item.knight-shield",
-          "onlyWithAttack": "attack.knight-shield.shield-slam"
-        }
-      ],
-      "base": "item.knight-shield",
+      "triggers": [],
+      "base": "item.tower-shield",
       "enchant": "enchant.riposte",
       "gaps": [
         "enchant onDodge: the attacker takes 5 true damage — trigger shape unparsed"
       ]
-    },
-    "item.tower-shield.riposte": {
-      "id": "item.tower-shield.riposte",
-      "name": "Tower Shield of Riposte",
-      "itemClass": "weapon",
-      "tier": 3,
-      "hands": 1,
-      "slots": 1,
-      "statModifiers": {},
-      "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.tower-shield.cover — item power — shape unparsed",
-        "grants power.tower-shield.stand-tall — item power — shape unparsed",
-        "enchant onDodge: the attacker takes 5 true damage — trigger shape unparsed"
-      ],
-      "base": "item.tower-shield",
-      "enchant": "enchant.riposte"
     },
     "item.silkweave-armor.stormward": {
       "id": "item.silkweave-armor.stormward",

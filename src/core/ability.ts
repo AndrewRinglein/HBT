@@ -261,7 +261,7 @@ export function powerTargetsOf(ctx: Ctx, userId: number, targetId: number, a: Ab
   return resolveTargets(ctx, u, t, aim)
 }
 
-function expiresAtOf(ctx: Ctx, until: 'endOfTurn' | 'endOfNextTurn' | 'battle'): number | undefined {
+function expiresAtOf(ctx: Ctx, until: 'endOfTurn' | 'endOfNextTurn' | 'endOfNextActivation' | 'battle'): number | undefined {
   // `endOfTurn` = expiresAtTurn turn+1, matching modsFor's `turn < expiresAtTurn`
   // (movement.ts, 2026-08-25). endOfNextTurn is one further.
   return until === 'endOfTurn' ? ctx.state.turn + 1 : until === 'endOfNextTurn' ? ctx.state.turn + 2 : undefined
@@ -325,8 +325,12 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Action
       // battle-long, like its loss does.
       if (e.stat === 'maxHp') { if (e.value > 0) gainMaxHp(ctx, id, e.value, a.id); else loseMaxHp(ctx, id, -e.value, a.id); return 0 }
       const expiresAtTurn = expiresAtOf(ctx, e.until)
+      // "until the end of your next Activation": the holder's next one. Mid-activation
+      // the actor's ordinal is the current one; anyone else's is the last one — +1 either way.
+      const expiresAfterActivation = e.until === 'endOfNextActivation' ? tg.activationOrdinal + 1 : undefined
       addStatMod(ctx, id, { stat: e.stat, op: 'add', value: e.value, source: a.id, scope: 'unit',
-        ...(expiresAtTurn !== undefined ? { expiresAtTurn } : {}) }, a.id)
+        ...(expiresAtTurn !== undefined ? { expiresAtTurn } : {}),
+        ...(expiresAfterActivation !== undefined ? { expiresAfterActivation } : {}) }, a.id)
       return 0
     }
     case 'selfDamage': {

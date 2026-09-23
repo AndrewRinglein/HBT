@@ -51,6 +51,11 @@ export type StatMod = {
   scope: StatScope
   /** Turn on which it stops applying. Absent = permanent. */
   expiresAtTurn?: number
+  /**
+   * "until the end of your next Activation" (V2 shields, 2026-09-23): the holder's
+   * activationOrdinal at whose END the mod is removed, by expireActivationMods.
+   */
+  expiresAfterActivation?: number
 }
 
 export type StatLedgerRow = { source: string; op: StatOp; delta: number; from: number; to: number }
