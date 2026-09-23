@@ -53,42 +53,9 @@ it.each([{ withInvalid: 1, withoutInvalid: 0 }, { withInvalid: 0, withoutInvalid
   expect(run.text).not.toContain('Presence is total')
 })
 
-const unavailableTrailer = 'MEASUREMENT UNAVAILABLE\nEFFECT_RESULT ' + JSON.stringify({ version: 1, status: 'unavailable', unavailable: [{ map: 'map.one', reason: 'disabled-control' }] }) + '\n'
-it.each([
-  { status: 2, output: unavailableTrailer, reason: 'unavailable', label: 'unavailable evidence' },
-  { status: 1, output: unavailableTrailer, reason: 'errored', label: 'wrong exit code' },
-  { status: 0, output: unavailableTrailer, reason: 'errored', label: 'contradictory success code' },
-  { status: 2, output: 'MEASUREMENT UNAVAILABLE\n', reason: 'errored', label: 'missing trailer' },
-  { status: 2, output: 'EFFECT_RESULT {bad json}\n', reason: 'errored', label: 'malformed trailer' },
-  { status: 2, output: 'EFFECT_RESULT {"version":1,"status":"unavailable","unavailable":[]}\n', reason: 'errored', label: 'empty unavailable evidence' },
-  { status: 0, output: 'MEASURABLE\n', reason: 'errored', label: 'missing successful trailer' },
-  { status: 0, output: 'EFFECT_RESULT {bad json}\n', reason: 'errored', label: 'malformed successful trailer' },
-  { status: 0, output: 'MEASURABLE\nEFFECT_RESULT {"version":1,"status":"measured","unavailable":[]}\n', reason: 'measured', label: 'complete measured evidence' },
-])('actual isolated gate preserves $label in seal, ledger and run log', ({ status, output, reason }) => {
-  const folder = mkdtempSync(join(tmpdir(), 'hobat-effect-gate-'))
-  try {
-    mkdirSync(join(folder, '.state')); mkdirSync(join(folder, 'src/core'), { recursive: true })
-    writeFileSync(join(folder, '.state/backlog.json'), JSON.stringify([{ id: 'test.effect-arm', kind: 'rule', shape: 'rule', spec: 'Fixture', expect: 'Fixture', changesBaseline: true, variants: ['map.one', 'map.two'], probeIds: ['map.one'] }]))
-    writeFileSync(join(folder, '.state/baseline.hash'), 'map.open 00000000\n')
-    const code = `const cp=await import('node:child_process');const m=await import('node:module');cp.default.execSync=(cmd,opts)=>{
-      if(cmd.includes('effect-size.mts')){const fixture=${JSON.stringify({ status, output })};if(fixture.status===0)return fixture.output;throw Object.assign(Error('effect result'),{status:fixture.status,stdout:fixture.output,stderr:''})};
-      if(cmd.includes('vitest')){if(opts?.env?.CF_DISABLE_IDS)throw Object.assign(Error('disabled'),{status:1,stdout:'1 failed'});return 'Tests 1 passed'};
-      if(cmd==='npx tsx tools/baseline.mts')return 'map.open 11111111\\n';
-      if(cmd==='git status --porcelain')return '?? test/fixture.test.ts\\n';
-      if(cmd==='git rev-parse --short HEAD')return 'fixture';
-      if(cmd.startsWith('git diff')||cmd.startsWith('git add')||cmd.startsWith('git -c')||cmd.includes('tools/probe.mts')||cmd.includes('tools/decided.mjs')||cmd.includes('tools/content-check.mjs')||cmd.includes('tools/game-builder.mjs')||cmd==='npx tsc --noEmit')return '';
-      throw Error('unexpected fixture command '+cmd);
-    };m.syncBuiltinESMExports();process.argv=['node','gate','test.effect-arm','--land'];await import(${JSON.stringify(pathToFileURL(gate).href)});`
-    const run = spawnSync(process.execPath, ['--input-type=module', '-e', code], { cwd: folder, encoding: 'utf8' })
-    expect(run.status, run.stdout + run.stderr).toBe(0)
-    const item = JSON.parse(readFileSync(join(folder, '.state/backlog.json'), 'utf8'))[0]
-    expect(item.gauntlet).toBe(reason === 'measured' ? 'passed' : `not passed — effect measurement ${reason}`)
-    expect(readFileSync(join(folder, '.state/ledger.md'), 'utf8')).toContain(reason === 'measured' ? 'IRON GAUNTLET: PASSED' : `EFFECT MEASUREMENT ${reason.toUpperCase()}`)
-    const rows = readFileSync(join(folder, '.state/gauntlet-log.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line))
-    expect(rows.at(-1).seal).toBe(reason === 'measured' ? 'passed' : `effect measurement ${reason}`)
-    if (reason !== 'measured') expect(run.stdout).not.toContain('IRON GAUNTLET: PASSED')
-  } finally {
-    if (dirname(folder) !== resolve(tmpdir()) || !folder.split(/[\\/]/).at(-1)!.startsWith('hobat-effect-gate-')) throw new Error('unsafe effect fixture cleanup')
-    rmSync(folder, { recursive: true, force: true })
-  }
-})
+// Removed 2026-09-22 (Law 10, written reason): nine cases here drove the real gate
+// with --land and asserted that the effect-size measurement was carried into the
+// seal, the ledger and the run log. Andrew ruled that the effect-size battles no
+// longer run inside a landing (DECISIONS.md, 2026-09-22 — "typecheck stays; the
+// gate and the start get smaller"), so the gate no longer produces what they
+// asserted. The tests above, which check effect-size.mts itself, still stand.

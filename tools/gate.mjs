@@ -57,7 +57,8 @@ function logRun(disposition, extra = {}) {
       ...extra,
     }) + '\n')
   } catch { /* the log is best-effort; the gate's verdict never depends on it */ }
-  try { execSync('node tools/game-builder.mjs --quiet', { stdio: 'ignore' }) } catch { /* ditto */ }
+  // The Game Builder rebuild on every exit was cut 2026-09-22 (DECISIONS.md):
+  // run `node tools/game-builder.mjs` when you want to look.
 }
 
 const sh = (cmd, opts = {}) => execSync(cmd, { encoding: 'utf8', stdio: 'pipe', ...opts })
@@ -94,6 +95,29 @@ const flag = (name, fn) => {
 
 const okStillTrue = () => ok
 console.log(`\ngate: ${id}   [${MODE}]\n`)
+
+// --abandon runs no checks (2026-09-22): giving up needs a reason, not a full
+// suite. `node tools/gate.mjs <id> --abandon "<why>"`.
+if (MODE === 'abandon') {
+  const i = process.argv.indexOf('--abandon')
+  const reason = (process.argv[i + 1] ?? '').trim()
+  if (reason.length < 20 || reason.startsWith('--')) {
+    console.error('--abandon needs a written reason of 20+ characters:  node tools/gate.mjs <id> --abandon "<why>"')
+    process.exit(2)
+  }
+  const stampA = new Date().toISOString().slice(0, 16).replace('T', ' ')
+  // Two calls, not one `;`-joined string: cmd.exe does not read `;`.
+  sh('git checkout -- .')
+  sh('git clean -fdq -e node_modules -e .state -e scratch -e tools')
+  item.status = 'failed'
+  item.failedAt = stampA
+  item.reason = reason
+  writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
+  appendFileSync(LEDGER, `\n## ${id} — ABANDONED\n${stampA}\n\n${reason}\n`)
+  logRun('abandoned', { reason })
+  console.log('\nABANDONED. Working tree is back to the last landed commit.\n')
+  process.exit(1)
+}
 
 check('dependencies landed', () => {
   const missing = (item.needs ?? []).filter((n) => !String(backlog.find((b) => b.id === n)?.status ?? '').startsWith('done'))
@@ -401,23 +425,6 @@ check('kill switch — the tests fail without the content', () => {
 
 const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
-if (MODE === 'abandon') {
-  // Two calls, not one `;`-joined string: `;` is a bash statement separator and
-  // cmd.exe does not read it, so on Windows the whole tail became arguments to
-  // `git checkout` and the clean never ran — an --abandon that left the tree
-  // dirty while reporting success.
-  sh('git checkout -- .')
-  sh('git clean -fdq -e node_modules -e .state -e scratch -e tools')
-  item.status = 'failed'
-  item.failedAt = stamp
-  item.reason = checks.filter((c) => !c.ok).map((c) => `${c.name}: ${c.note}`).join(' | ')
-  writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
-  appendFileSync(LEDGER, `\n## ${id} — ABANDONED\n${stamp}\n\n${body}\n`)
-  logRun('abandoned', { reason: item.reason })
-  console.log('\nABANDONED. Working tree is back to the last landed commit.\n')
-  process.exit(1)
-}
-
 if (!ok) {
   item.attempts = (item.attempts ?? 0) + 1
   writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
@@ -433,6 +440,18 @@ if (MODE !== 'land') {
   process.exit(0)
 }
 
+// Nothing the checks read is left out of the commit. `git add -A` takes every
+// tracked and untracked file; only an ignored file under src/, test/ or tools/
+// could make a pass that the committed tree does not reproduce. Seconds, not a
+// second full suite (replaces the post-land audit, cut 2026-09-22).
+{
+  const left = tryRun('git ls-files --others --ignored --exclude-standard -- src test tools').out.trim()
+  if (left) {
+    console.log(`\nNOT LANDED: ignored files the checks could have read would be left out of the commit:\n${left}\nCommit them, move them out, or un-ignore them, then gate again.\n`)
+    logRun('refused-ignored-files', { reason: left.split('\n').slice(0, 5).join(', ') })
+    process.exit(1)
+  }
+}
 if (pendingGolden) writeFileSync(GOLDEN, pendingGolden)
 sh('git add -A')
 sh(`git -c user.email=a@b -c user.name=combat-framework commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72)}`)}`)
@@ -442,34 +461,13 @@ item.sha = sha
 writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
 appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp}\n\n${body}\n` +
   (needsReview ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
-// ── post-land audit (2026-08-20) ────────────────────────────────────────────
-// Re-run the decisive checks FROM THE COMMITTED TREE. The classic laundering
-// failure is a pass that depended on a file that never got committed — every
-// pre-land check ran against the working tree, so only a post-commit rerun can
-// catch it. On failure the landing is undone, loudly.
-{
-  const t = runDiagnosticCommand('npx vitest run --reporter=dot', `gate-${id}-committed-suite`)
-  const b = tryRun('npx tsx tools/baseline.mts')
-  const nowHashes = b.out.trim().split('\n').filter((l) => / [0-9a-f]{8}$/.test(l)).join('\n')
-  const goldenNow = (() => { try { return readFileSync(GOLDEN, 'utf8').trim() } catch { return '' } })()
-  const auditOk = t.ok && b.ok && nowHashes === goldenNow
-  if (!auditOk) {
-    sh('git reset --hard HEAD~1')
-    const why = !t.ok ? `test suite fails on the committed tree — ${t.note}` : !b.ok ? 'baseline probe errors on the committed tree' : 'control battles differ on the committed tree'
-    const bl = JSON.parse(readFileSync(BACKLOG, 'utf8'))
-    const it = bl.find((x) => x.id === id)
-    if (it) { it.attempts = (it.attempts ?? 0) + 1; it.auditFailed = why; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }
-    appendFileSync(LEDGER, `\n## ${id} — LANDING REVERTED BY POST-LAND AUDIT\n${stamp}\n\n${why}. The pre-land pass depended on state that did not survive the commit.\n`)
-    console.log(`\nLANDING REVERTED: ${why}. The commit is undone; nothing is lost from the working tree of the last good landing. Fix and gate again.\n`)
-    logRun('reverted-by-post-land-audit', { reason: why })
-    process.exit(1)
-  }
-}
 // ── the Iron Gauntlet verdict ───────────────────────────────────────────────
-// PASSED means: every hard check passed, no flag warned, no exemption was taken,
-// the post-land audit agreed, and — for consequential mechanisms — the effect was
-// measured. Anything less lands (flags exist so the loop cannot deadlock) but the
-// seal is withheld, and the ledger says exactly why.
+// PASSED means: every hard check passed, no flag warned, no exemption was taken.
+// Anything less lands (flags exist so the loop cannot deadlock) but the seal is
+// withheld, and the ledger says exactly why. (The post-land re-run of the suite
+// and control battles was cut 2026-09-22 — DECISIONS.md, Andrew. What it caught,
+// a pass depending on a file the commit left out, is now refused before the
+// commit: see "nothing the checks read is left out of the commit" above.)
 let gauntletNotes = []
 // Grandfathered environmental debt (the INVENTED ids the content sessions have
 // not yet published) is not this item's doing — it is tracked by the audit and
@@ -477,51 +475,10 @@ let gauntletNotes = []
 // flags count against the gauntlet.
 const warns = checks.filter((c) => c.warn).length  // content-check now only warns on NEW unpublished ids, so it counts
 
-// Effect measurement for consequential mechanisms: WITH vs WITHOUT, paired seeds,
-// through the kill-switch seam. Recorded, not thresholded — magnitude is a
-// finding, not a gate; the consequence clause already proved non-nullity.
-let effectReport = ''
-if (item.changesBaseline && MECHANISM_SHAPES.includes(item.shape)) {
-  const ids = (item.probeIds ?? [id]).filter((x) => x.includes('.'))
-  if (ids.length) {
-    const r = tryRun(`npx tsx tools/effect-size.mts ${ids.join(',')}`)
-    effectReport = r.out.trim()
-    // Every outcome requires a versioned trailer matching its process status.
-    // A successful process alone must never launder unavailable/malformed data.
-    let measured = false, unavailable = false
-    try {
-      const last = effectReport.split(/\r?\n/).at(-1)
-      const result = last?.startsWith('EFFECT_RESULT ') ? JSON.parse(last.slice(14)) : null
-      const shape = result?.version === 1 && Array.isArray(result.unavailable)
-      measured = shape && r.ok && result.status === 'measured' && result.unavailable.length === 0
-      unavailable = shape && !r.ok && r.status === 2 && result.status === 'unavailable'
-        && result.unavailable.length > 0
-        && result.unavailable.every(row => typeof row?.map === 'string' && row.map.length > 0 && ['disabled-control', 'invalid-replicates'].includes(row.reason))
-    } catch { /* malformed protocol remains an error, never a pass */ }
-    if (!measured) gauntletNotes.push(unavailable ? 'effect measurement unavailable' : 'effect measurement errored')
-    console.log('\n' + effectReport + '\n')
-  }
-}
-
-// Landing counter and the periodic full audit — every 10th landing, the whole
-// tree, because drift that arrives in ten innocent pieces is only visible in
-// aggregate.
-let auditNote = ''
-{
-  let g = { landings: 0 }
-  try { g = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')) } catch {}
-  g.landings = (g.landings ?? 0) + 1
-  writeFileSync('.state/gauntlet.json', JSON.stringify(g))
-  if (g.landings % 10 === 0) {
-    console.log(`\nlanding #${g.landings} — running the periodic full audit`) 
-    // --checkpoint: a mid-batch health check, NOT a batch boundary — the
-    // unflagged call here once split "movement + ground" into two bars.
-    const a = tryRun('node tools/audit-all.mjs --checkpoint')
-    console.log(a.out.trim())
-    if (!a.ok) { gauntletNotes.push('periodic full audit FAILED — investigate before the next item'); auditNote = ' · periodic audit FAILED' }
-    else auditNote = ' · periodic audit clean'
-  }
-}
+// Cut 2026-09-22 (DECISIONS.md, Andrew): the effect-size battles and the
+// every-10th-landing audit-all no longer run inside a landing. Effect size was
+// recorded, never thresholded; `npx tsx tools/effect-size.mts <id>` and
+// `node tools/audit-all.mjs` still exist and run on their own when wanted.
 
 if (!okStillTrue()) gauntletNotes.push('a hard check failed') // defensive; land mode cannot reach here with ok=false
 if (warns > 0) gauntletNotes.push(`${warns} flag(s) warned`)
@@ -532,12 +489,11 @@ item.gauntlet = gauntletPassed ? 'passed' : `not passed — ${gauntletNotes.join
   const bl = JSON.parse(readFileSync(BACKLOG, 'utf8'))
   const it = bl.find((x) => x.id === id)
   if (it) { it.gauntlet = item.gauntlet; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }
-  appendFileSync(LEDGER, `\nIRON GAUNTLET: ${gauntletPassed ? 'PASSED' : item.gauntlet.toUpperCase()}${auditNote}\n` +
-    (effectReport ? '\n```\n' + effectReport + '\n```\n' : ''))
+  appendFileSync(LEDGER, `\nIRON GAUNTLET: ${gauntletPassed ? 'PASSED' : item.gauntlet.toUpperCase()}\n`)
   sh('git add -A')
   sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
 }
-logRun('landed', { sha, seal: gauntletPassed ? 'passed' : gauntletNotes.join('; '), effect: effectReport || undefined })
+logRun('landed', { sha, seal: gauntletPassed ? 'passed' : gauntletNotes.join('; ') })
 console.log(gauntletPassed
   ? `\n⛓  IRON GAUNTLET: PASSED — every check, no flags, no exemptions.`
   : `\n⛓  IRON GAUNTLET: NOT PASSED — ${gauntletNotes.join('; ')}. The landing stands; the seal is withheld.`)

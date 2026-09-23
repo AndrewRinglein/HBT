@@ -2524,3 +2524,11 @@ Andrew: “How do we get the commands to a smaller size? What have we added that
 Andrew: “We'll remove type check too. Seems like three full test suites early on is unnecessary.”
 
 Context: one `gate.mjs --land` ran decided-check, `tsc --noEmit`, the full vitest suite, a battle probe, 22 control battles, content check, variant probes, the kill switch, commit, the full suite again and the control battles again (post-land audit), effect-size battles and, every 10th landing, audit-all — all in one command, past Cowork's 178 s shell limit. Ruling: the gate drops the typecheck, and runs the full test suite once. How the post-land re-run is replaced, and what that means for R0 (plumbing.gate-recovery, which exists to recover from that re-run failing), is recorded when decided.
+
+## 2026-09-22 — typecheck stays; the gate and the start get smaller
+
+Andrew: “Okay, I thought type check was something else. What don't we need in this process that is consuming brain and time?”
+
+Andrew: “Okay, we can keep the type check. We can do all four of the things that you're recommending: Keep the type check. Cut the post-land pre-run. Clear the 57 landing review queue in one go. Stop printing at every start. Stop auto-loading GBH's Claude MD and engine chats.”
+
+This supersedes the entry above on the typecheck: it stays in the gate. The four recommendations answered yes were: (1) keep the typecheck; (2) cut the post-land re-run of the full suite and the control battles, the effect-size battles, the every-10th-landing audit-all and the Game Builder rebuild out of the landing, and abandon R0 (plumbing.gate-recovery), which exists only to recover from the post-land re-run failing; (3) clear the review queue in one go and stop printing it at every start; (4) stop auto-loading GBH's CLAUDE.md into engine chats and keep each trap in one place.
