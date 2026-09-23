@@ -56,7 +56,7 @@ function treeHash() {
   try { copyFileSync(execSync('git rev-parse --git-path index', { encoding: 'utf8' }).trim(), idx) } catch {}
   const env = { ...process.env, GIT_INDEX_FILE: idx }
   try {
-    execSync('git add -A -- . ":!.state" ":!GAME-BUILDER.html" ":!runs"', { env, stdio: 'pipe' })
+    execSync('git add -A -- . ":!.state" ":!GAME-BUILDER.html"', { env, stdio: 'pipe' })
     return execSync('git write-tree', { env, encoding: 'utf8' }).trim()
   } finally { try { rmSync(idx, { force: true }) } catch {} }
 }
@@ -74,7 +74,7 @@ if (shardArg !== -1) {
   let s = readShards()
   if (!s || s.tree !== tree || s.total !== SHARDS) s = { tree, total: SHARDS, passed: [] }
   const r = runDiagnosticCommand(`npx vitest run --shard=${k}/${SHARDS} --reporter=dot`, `gate-shard-${k}-of-${SHARDS}`)
-  const count = r.out.match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
+  const count = r.out.replace(/\x1b\[[0-9;]*m/g, '').match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
   s.passed = s.passed.filter((x) => x !== k)
   if (r.ok) s.passed.push(k)
   s.passed.sort((a, b) => a - b)

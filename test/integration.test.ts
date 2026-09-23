@@ -111,7 +111,10 @@ describe('gate 1 — everything appears in the log', () => {
     for (const melee of [OATH, 'alpha-sky-pirate', 'alpha-osric']) {
       expect(dmg[HAWK] ?? 0, `hawk vs ${melee}`).toBeLessThan(dmg[melee] ?? Infinity)
     }
-  })
+  // LAW 10 — 2026-09-22: its own clock, like the coverage test below. 100 full
+  // battles: 3.4 s alone, past the 5 s default twice inside a Cowork shard today.
+  // Every seed and assertion is unchanged; only the clock is.
+  }, 15_000)
 
   // 2026-09-18: this 200-battle coverage test passed alone in 3.21s but exceeded
   // Vitest's 5s default in the committed full suite. Keep every seed/assertion;

@@ -68,5 +68,9 @@ describe('in real battles', () => {
     }
     expect(locked).toBeGreaterThan(0)
     expect(dazed, 'nothing in the standard battle applies the Codex Dazed yet — when a source lands, this number is the finding').toBe(0)
-  })
+  // LAW 10 — 2026-09-22: its own clock, as twelve other long tests already have.
+  // It runs 160 full standard battles: 4.84 s alone against the 5 s default,
+  // timed out inside the suite on Andrew's machine on 2026-09-19 and in the
+  // Cowork sandbox's shard 3 today. The assertion is untouched; only the clock is.
+  }, 30_000)
 })
