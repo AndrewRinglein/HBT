@@ -805,7 +805,7 @@ for (const id of PARTY) {
   // and the engine folds the same numbers at fielding (applyItems).
   const p = { ...h.ported }, d = { ...h.derivedBase };
   const bareP = { ...h.ported }, bareD = { ...h.derivedBase };
-  const FOLD = { health: [p, 'health'], armor: [p, 'armor'], resist: [p, 'resist'], fireResist:[p,'fireResist'], poisonResist:[p,'poisonResist'], shadowResist:[p,'shadowResist','block','rangedBlock'], dodge: [p, 'dodge'],
+  const FOLD = { health: [p, 'health'], armor: [p, 'armor'], resist: [p, 'resist'], fireResist:[p,'fireResist'], poisonResist:[p,'poisonResist'], shadowResist:[p,'shadowResist'], block:[p,'block'], rangedBlock:[p,'rangedBlock'], dodge: [p, 'dodge'],
     strength: [p, 'strength'], precision: [p, 'precision'], magic: [p, 'magic'], spirit: [p, 'spirit'],
     reach: [p, 'reach'], accuracy: [d, 'accuracy'], movement: [d, 'movement'],
     staminaMax: [d, 'staminaMax'], staminaRegen: [d, 'staminaRegen'],
