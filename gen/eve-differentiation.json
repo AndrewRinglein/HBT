@@ -281,7 +281,7 @@
       },
       "startingItems": [
         "item.longsword",
-        "item.knight-shield"
+        "item.kite-shield"
       ],
       "why": "The bright one. Begins the battle already owed something."
     },
@@ -295,7 +295,7 @@
       },
       "startingItems": [
         "item.longsword",
-        "item.knight-shield"
+        "item.kite-shield"
       ],
       "why": "The very armoured one. Everything he gains in protection he pays for in every other direction."
     },
@@ -311,7 +311,7 @@
       ],
       "startingItems": [
         "item.longsword",
-        "item.knight-shield"
+        "item.kite-shield"
       ],
       "why": "Insufferable, and the dice know it. Ruled: rather than invent a negative floor that would eat later gains, his crit and luck are simply subtracted to zero at the start and his surge drops by 1. He gets the stamina to keep swinging instead."
     },

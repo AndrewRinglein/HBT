@@ -116,10 +116,12 @@
     "attack.longsword.slash",
     "attack.longsword.stab"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 5
+   },
    "triggers": [],
    "intent": "The reference weapon: cheap-and-reliable or expensive-and-heavy, and nothing else to think about.",
-   "source": "settled content"
+   "source": "settled content | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.halberd",
@@ -140,46 +142,6 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Two hands, two hexes of consequence: shove one enemy off you, or catch three of them at once.",
-   "source": "settled content"
-  },
-  {
-   "id": "item.knight-shield",
-   "name": "Knight Shield",
-   "itemClass": "weapon",
-   "tier": 1,
-   "hands": 1,
-   "slots": 1,
-   "classRestriction": null,
-   "tags": [
-    "shield"
-   ],
-   "grants": [
-    "power.knight-shield.block",
-    "attack.knight-shield.shield-slam"
-   ],
-   "statModifiers": {},
-   "triggers": [],
-   "intent": "A shield that answers back: brace behind it, or put its edge through someone's helmet.",
-   "source": "settled content"
-  },
-  {
-   "id": "item.tower-shield",
-   "name": "Tower Shield",
-   "itemClass": "weapon",
-   "tier": 1,
-   "hands": 1,
-   "slots": 1,
-   "classRestriction": null,
-   "tags": [
-    "shield"
-   ],
-   "grants": [
-    "power.tower-shield.cover",
-    "power.tower-shield.stand-tall"
-   ],
-   "statModifiers": {},
-   "triggers": [],
-   "intent": "It has no attack whatsoever, which is the point — it is a wall you happen to be carrying.",
    "source": "settled content"
   },
   {
@@ -412,10 +374,12 @@
    "grants": [
     "attack.dagger.stab"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 5
+   },
    "triggers": [],
    "intent": "Fast, free and barely lethal — you stab with it mostly to keep your guard up.",
-   "source": "settled content"
+   "source": "settled content | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.basic-armor",
@@ -993,6 +957,77 @@
    "triggers": [],
    "intent": "It does not hurt anything. It takes one thing off the board for a Turn -- theirs, or, when it has to be, yours.",
    "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on."
+  },
+  {
+   "id": "item.kite-shield",
+   "name": "Kite Shield",
+   "itemClass": "shield",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "power.kite-shield.shield-wall",
+    "power.kite-shield.raise-guard"
+   ],
+   "statModifiers": {
+    "block": 20,
+    "rangedBlock": 5
+   },
+   "triggers": [],
+   "intent": "Long and pointed, built for the melee line: +20 against blades, little against arrows.",
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
+  },
+  {
+   "id": "item.round-shield",
+   "name": "Round Shield",
+   "itemClass": "shield",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "power.round-shield.turn-aside",
+    "power.round-shield.brace"
+   ],
+   "statModifiers": {
+    "block": 10,
+    "rangedBlock": 10
+   },
+   "triggers": [],
+   "intent": "Even on every side and cheap to use.",
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
+  },
+  {
+   "id": "item.tower-shield",
+   "name": "Tower Shield",
+   "itemClass": "shield",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "power.tower-shield.cover",
+    "power.tower-shield.stand-tall"
+   ],
+   "statModifiers": {
+    "block": 15,
+    "rangedBlock": 15,
+    "dodge": -10,
+    "staminaMax": -1
+   },
+   "triggers": [],
+   "intent": "Better at everything, paid for in Dodge and Stamina.",
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20; fifth pass: re-authors item.tower-shield in place"
   }
  ],
  "attacks": [
@@ -1311,33 +1346,6 @@
      }
     ]
    }
-  },
-  {
-   "id": "attack.knight-shield.shield-slam",
-   "name": "Shield Slam",
-   "range": "melee",
-   "stat": "strength",
-   "damage": 0,
-   "stamina": 2,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy in melee reach",
-   "damageType": "physical",
-   "tags": [
-    "melee",
-    "stun"
-   ],
-   "triggers": [
-    {
-     "hook": "onDamage",
-     "effect": "apply 1 Stun"
-    }
-   ],
-   "slayer": null,
-   "cooldown": 10,
-   "intent": "No damage bonus at all; you are paying two stamina and a cooldown for the Stun.",
-   "source": "settled content | 2026-08-27 review: cooldown 10 — the first HERO attack with a cooldown; the engine has cooldowns on powers and enemy actions, an attack-cooldown field is a named gap."
   },
   {
    "id": "attack.fire-staff.fire-blast",
@@ -1773,60 +1781,6 @@
  ],
  "powers": [
   {
-   "id": "power.knight-shield.block",
-   "name": "Block",
-   "specialty": null,
-   "owner": "item.knight-shield",
-   "stamina": 1,
-   "cooldown": 3,
-   "warmup": 0,
-   "free": false,
-   "targets": "self",
-   "tags": [
-    "defence-power"
-   ],
-   "description": "Gain Protection equal to 4 + your Armor, and lose 5 Dodge for the rest of the Battle.",
-   "source": "settled content | 2026-08-17 quality pass: '5 protection and +2 Armor for the Turn' was a flat number. Now it scales off Armor and each use permanently trades away Dodge. | 2026-08-20: \"every use costs another 5 Dodge\" was a per-use escalation. The stat loss is the rest of the Battle either way, so it stacks naturally without a counter. | 2026-08-20: the escalating cost is back. It needs no counter — a rest-of-Battle stat loss simply applies again each time, and there is no cap on it either. | 2026-08-27: description trimmed by ruling — the per-use escalation needed no restating: stat modifiers stack by applying again; the mechanic is unchanged.",
-   "triggers": [],
-   "intent": "The straightforward brace — a flat mitigation bump plus a pool of protection to spend."
-  },
-  {
-   "id": "power.tower-shield.cover",
-   "name": "Cover",
-   "specialty": null,
-   "owner": "item.tower-shield",
-   "stamina": 1,
-   "cooldown": 3,
-   "warmup": 0,
-   "free": false,
-   "targets": "self",
-   "tags": [
-    "defence-power"
-   ],
-   "description": "Plant the shield: for the rest of the Battle you have +20 Dodge against ranged attacks and -10 Dodge against melee.",
-   "source": "settled content | 2026-08-17 quality pass: '+15 Dodge and 2 protection' was a flat number with no decision. Rebuilt as a directional trade that has to be read against the enemy list. | 2026-08-27: description trimmed by the same ruling.",
-   "triggers": [],
-   "intent": "Dodge for the fight you expect arrows in, and a liability the moment blades close."
-  },
-  {
-   "id": "power.tower-shield.stand-tall",
-   "name": "Stand Tall",
-   "specialty": null,
-   "owner": "item.tower-shield",
-   "stamina": 2,
-   "cooldown": 4,
-   "warmup": 0,
-   "free": false,
-   "targets": "self",
-   "tags": [
-    "defence-power"
-   ],
-   "description": "Stance: for the rest of the Battle you have +2 Armor and +1 Resist, and lose 3 Movement.",
-   "source": "settled content | 2026-08-17 quality pass: '+3 Armor and +2 Resist for 1 Turn' was a flat, decisionless number. Now permanent, and permanently costs most of your Movement. | 2026-08-20: \"your Movement is 2 whatever it was\" was a stat OVERRIDE — nothing else in the game replaces a stat rather than modifying it. -3 Movement instead.",
-   "triggers": [],
-   "intent": "The heaviest mitigation available at tier 1, sold at the price of ever being somewhere else."
-  },
-  {
    "id": "power.fire-staff.fireball",
    "name": "Flame Burst",
    "specialty": null,
@@ -1970,24 +1924,6 @@
    "source": "settled content | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
    "triggers": [],
    "intent": "The terrain half of the fire enchant, on a long enough cooldown to be a decision."
-  },
-  {
-   "id": "power.buckler.block-and-dodge",
-   "name": "Block and Dodge",
-   "specialty": null,
-   "owner": "item.buckler",
-   "stamina": 1,
-   "cooldown": 0,
-   "warmup": 0,
-   "free": false,
-   "targets": "self",
-   "tags": [
-    "defence-power"
-   ],
-   "description": "Gain +10 Luck and +10 Dodge until the end of your next Activation.",
-   "intent": "The small shield's whole philosophy: not being hit is the block.",
-   "source": "2026-08-27 workbook review — Deflect and Cut (the damage-dealing attack) is superseded by this power, ruled: \"Block and Dodge is now a power.\"",
-   "triggers": []
   },
   {
    "id": "power.torch.light",
@@ -2236,6 +2172,114 @@
    "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
    "triggers": [],
    "intent": "You stop being a threat and you stop being a target. It is the button you press when the answer is to survive the Turn."
+  },
+  {
+   "id": "power.round-shield.turn-aside",
+   "name": "Turn Aside",
+   "specialty": null,
+   "owner": "item.round-shield",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +10 Block and +10 Ranged Block until the end of your next Activation.",
+   "intent": "The cheap even guard: lift the rim and let it glance.",
+   "triggers": [],
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
+  },
+  {
+   "id": "power.round-shield.brace",
+   "name": "Bear Down",
+   "specialty": null,
+   "owner": "item.round-shield",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +5 Block, +5 Ranged Block and +1 Armor until the end of your next Activation.",
+   "intent": "Plant the feet behind the boss and take it.",
+   "triggers": [],
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
+  },
+  {
+   "id": "power.kite-shield.shield-wall",
+   "name": "Lock Shields",
+   "specialty": null,
+   "owner": "item.kite-shield",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +15 Block and +1 Armor until the end of your next Activation.",
+   "intent": "The melee line's answer to the melee line.",
+   "triggers": [],
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
+  },
+  {
+   "id": "power.kite-shield.raise-guard",
+   "name": "Raise Guard",
+   "specialty": null,
+   "owner": "item.kite-shield",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +10 Block and +10 Ranged Block until the end of your next Activation.",
+   "intent": "Buys back the arrows the long shield leaves open.",
+   "triggers": [],
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
+  },
+  {
+   "id": "power.tower-shield.cover",
+   "name": "Cover",
+   "specialty": null,
+   "owner": "item.tower-shield",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +20 Block, +20 Ranged Block and +1 Armor until the end of your next Activation.",
+   "intent": "A wall you happen to be carrying, set down.",
+   "triggers": [],
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
+  },
+  {
+   "id": "power.tower-shield.stand-tall",
+   "name": "Stand Tall",
+   "specialty": null,
+   "owner": "item.tower-shield",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +25 Ranged Block and +2 Armor until the end of your next Activation.",
+   "intent": "Doubles down on the arrow wall.",
+   "triggers": [],
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
   }
  ],
  "enchants": [

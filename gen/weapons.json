@@ -15,9 +15,16 @@
     "attack.hand-axe.chop"
    ],
    "statModifiers": {},
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "onBlock",
+     "role": "attacker",
+     "chance": 100,
+     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle"
+    }
+   ],
    "intent": "It splits firewood beautifully and people badly, and it costs you the whole swing either way.",
-   "source": "new (fills the axe form at tier 0)"
+   "source": "new (fills the axe form at tier 0) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.sharpened-stake",
@@ -188,10 +195,12 @@
    "grants": [
     "attack.practice-sword.swing"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 5
+   },
    "triggers": [],
    "intent": "You will hit with it every single time, and every single time nothing will happen.",
-   "source": "new (tier-0 sword; the reliable-and-useless pole of the tier)"
+   "source": "new (tier-0 sword; the reliable-and-useless pole of the tier) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.greatsword",
@@ -209,10 +218,12 @@
     "attack.greatsword.hew",
     "attack.greatsword.great-cleave"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 10
+   },
    "triggers": [],
    "intent": "Too much sword for one hand and too much sword for one enemy — you pick which of those problems to have.",
-   "source": "named in the design with no attacks written; authored here"
+   "source": "named in the design with no attacks written; authored here | 2026-09-23 V2 R1: +10 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.war-axe",
@@ -230,9 +241,16 @@
     "attack.war-axe.hack"
    ],
    "statModifiers": {},
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "onBlock",
+     "role": "attacker",
+     "chance": 100,
+     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle"
+    }
+   ],
    "intent": "The axe is the sword's worse-tempered cousin: it trades the sure hit for the wound that keeps working.",
-   "source": "new (axe identity: crit and Bleed where the sword takes Accuracy)"
+   "source": "new (axe identity: crit and Bleed where the sword takes Accuracy) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.iron-mace",
@@ -402,10 +420,12 @@
     "attack.raiders-cutlass.slash",
     "attack.raiders-cutlass.boarding-swing"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 5
+   },
    "triggers": [],
    "intent": "A short heavy blade for a crowded deck, and everything it touches keeps leaking afterwards.",
-   "source": "Hell-TCG name reused (Warrior, Raider's Cutlass — on-damage Bleed ported to the attacks)"
+   "source": "Hell-TCG name reused (Warrior, Raider's Cutlass — on-damage Bleed ported to the attacks) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.throwing-knives",
@@ -462,10 +482,12 @@
     "attack.obsidian-fang-dagger.fang",
     "attack.obsidian-fang-dagger.gut"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 5
+   },
    "triggers": [],
    "intent": "Volcanic glass takes an edge no steel can and loses it just as fast, so use it on someone who is not looking.",
-   "source": "Hell-TCG name reused (Rogue, Obsidian Fang Dagger — the self-debuff rebuilt as a first-strike window)"
+   "source": "Hell-TCG name reused (Rogue, Obsidian Fang Dagger — the self-debuff rebuilt as a first-strike window) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.duel-runeblades",
@@ -482,10 +504,12 @@
     "attack.duel-runeblades.twin-cut",
     "attack.duel-runeblades.rune-cross"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 10
+   },
    "triggers": [],
    "intent": "Two blades means twice the openings and no hand left for a shield; the runes only care about demons.",
-   "source": "Hell-TCG name reused (Demon Hunter, Duel Runeblades — the dual-wield slot)"
+   "source": "Hell-TCG name reused (Demon Hunter, Duel Runeblades — the dual-wield slot) | 2026-09-23 V2 R1: +10 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.shepherds-sling",
@@ -645,10 +669,12 @@
     "attack.bane-blade.strike",
     "attack.bane-blade.banishing-blow"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 5
+   },
    "triggers": [],
    "intent": "An ordinary blade against ordinary things, which is not what they gave it to you for.",
-   "source": "Hell-TCG name reused (Paladin, Bane Blade)"
+   "source": "Hell-TCG name reused (Paladin, Bane Blade) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.sword-of-the-fallen",
@@ -666,30 +692,12 @@
     "attack.sword-of-the-fallen.remembrance",
     "attack.sword-of-the-fallen.honour-the-dead"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 5
+   },
    "triggers": [],
    "intent": "It belonged to someone who did not come back, and it pays you a little of them every time it lands.",
-   "source": "Hell-TCG name reused (Paladin, Sword of the Fallen — end-of-turn heal moved onto the attacks)"
-  },
-  {
-   "id": "item.buckler",
-   "name": "Buckler",
-   "itemClass": "weapon",
-   "tier": 1,
-   "hands": 1,
-   "slots": 1,
-   "classRestriction": null,
-   "tags": [
-    "shield"
-   ],
-   "grants": [
-    "attack.buckler.punch",
-    "power.buckler.block-and-dodge"
-   ],
-   "statModifiers": {},
-   "triggers": [],
-   "intent": "The small shield buys no armour at all; it buys the half-step that means the blow missed.",
-   "source": "new (the light pole of the shield family — Knight Shield and Tower Shield hold the heavy end) | 2026-08-27 workbook review: dodge +5 removed."
+   "source": "Hell-TCG name reused (Paladin, Sword of the Fallen — end-of-turn heal moved onto the attacks) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.bloody-axe",
@@ -713,10 +721,16 @@
     {
      "hook": "onDamage",
      "effect": "apply 1 Bleed"
+    },
+    {
+     "hook": "onBlock",
+     "role": "attacker",
+     "chance": 100,
+     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle"
     }
    ],
    "intent": "It has never once been cleaned, and it has never once needed to finish the job by itself.",
-   "source": "Hell-TCG name reused (Warrior, Bloody Axe — on-damage Bleed kept as the item trigger)"
+   "source": "Hell-TCG name reused (Warrior, Bloody Axe — on-damage Bleed kept as the item trigger) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.hammer-of-justice",
@@ -790,7 +804,8 @@
     "attack.death-blade.death-stroke"
    ],
    "statModifiers": {
-    "strength": 1
+    "strength": 1,
+    "block": 5
    },
    "triggers": [
     {
@@ -799,7 +814,7 @@
     }
    ],
    "intent": "It gets better the closer the thing in front of you is to dead, which is precisely the wrong incentive to hand a person.",
-   "source": "Hell-TCG name reused (Death Blade — Drained rebuilt as an execution bonus and an on-kill stack)"
+   "source": "Hell-TCG name reused (Death Blade — Drained rebuilt as an execution bonus and an on-kill stack) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.sniper-bow",
@@ -894,7 +909,8 @@
     "attack.shadow-dagger.from-behind"
    ],
    "statModifiers": {
-    "dodge": 5
+    "dodge": 5,
+    "block": 5
    },
    "triggers": [
     {
@@ -903,7 +919,7 @@
     }
    ],
    "intent": "It is a mediocre knife in a fair fight, and you are not supposed to be in one.",
-   "source": "Hell-TCG name reused (Rogue, Shadow Dagger — on-kill Dodge kept)"
+   "source": "Hell-TCG name reused (Rogue, Shadow Dagger — on-kill Dodge kept) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.stormforged-blade",
@@ -921,7 +937,8 @@
     "attack.stormforged-blade.thunder-strike"
    ],
    "statModifiers": {
-    "strength": 1
+    "strength": 1,
+    "block": 5
    },
    "triggers": [
     {
@@ -930,7 +947,7 @@
     }
    ],
    "intent": "The crit is the point: when it lands properly, everything standing near the target learns about it too.",
-   "source": "Hell-TCG name reused (Stormforged Blade — Protection rebuilt as a crit-driven chain)"
+   "source": "Hell-TCG name reused (Stormforged Blade — Protection rebuilt as a crit-driven chain) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.twin-talon-bow",
@@ -1000,7 +1017,8 @@
    ],
    "statModifiers": {
     "strength": 2,
-    "health": -2
+    "health": -2,
+    "block": 10
    },
    "triggers": [
     {
@@ -1009,7 +1027,7 @@
     }
    ],
    "intent": "It is the biggest number available at this tier and it takes its fee out of you first, every time.",
-   "source": "Hell-TCG name reused (Cursed Sand Blade — Shadow self-application rebuilt as true damage)"
+   "source": "Hell-TCG name reused (Cursed Sand Blade — Shadow self-application rebuilt as true damage) | 2026-09-23 V2 R1: +10 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.skyforged-halberd",
@@ -1077,7 +1095,8 @@
     "attack.mirage-dagger.two-places-at-once"
    ],
    "statModifiers": {
-    "dodge": 5
+    "dodge": 5,
+    "block": 5
    },
    "triggers": [
     {
@@ -1086,7 +1105,7 @@
     }
    ],
    "intent": "Half of it is somewhere else, and after a kill so are you.",
-   "source": "Hell-TCG name reused (Mirage Dagger — Misdirection rebuilt as Dodge and a free step)"
+   "source": "Hell-TCG name reused (Mirage Dagger — Misdirection rebuilt as Dodge and a free step) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.seraph-bow",
@@ -1164,7 +1183,8 @@
    ],
    "statModifiers": {
     "strength": 1,
-    "resist": 1
+    "resist": 1,
+    "block": 5
    },
    "triggers": [
     {
@@ -1177,7 +1197,7 @@
     }
    ],
    "intent": "The sword every Paladin is measured against: the heavy swing is true damage, and armour has nothing to say about it.",
-   "source": "Hell-TCG name reused (Paladin, Holy Avenger)"
+   "source": "Hell-TCG name reused (Paladin, Holy Avenger) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.demon-whip",
@@ -1223,7 +1243,8 @@
    ],
    "statModifiers": {
     "strength": 1,
-    "crit": 5
+    "crit": 5,
+    "block": 5
    },
    "triggers": [
     {
@@ -1232,7 +1253,7 @@
     }
    ],
    "intent": "It will happily kill for you and it is quietly keeping a tally of what that has cost you.",
-   "source": "Hell-TCG name reused (Demonic Shiv — random on-kill damage kept, scaled down from tier 4)"
+   "source": "Hell-TCG name reused (Demonic Shiv — random on-kill damage kept, scaled down from tier 4) | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.blade-of-demon-slaying",
@@ -1251,7 +1272,8 @@
    ],
    "statModifiers": {
     "strength": 1,
-    "resist": 1
+    "resist": 1,
+    "block": 10
    },
    "triggers": [
     {
@@ -1260,7 +1282,7 @@
     }
    ],
    "intent": "Against a demon it is the best thing in the game; against a bandit it is a very heavy sword.",
-   "source": "Hell-TCG name reused (Blade of Demon Slaying — pulled down from tier 4, Protection cut)"
+   "source": "Hell-TCG name reused (Blade of Demon Slaying — pulled down from tier 4, Protection cut) | 2026-09-23 V2 R1: +10 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.pharaohs-gauntlets",
@@ -1331,7 +1353,8 @@
     "attack.tomb-sentinels-blade.grave-warden"
    ],
    "statModifiers": {
-    "strength": 2
+    "strength": 2,
+    "block": 5
    },
    "triggers": [
     {
@@ -1344,7 +1367,7 @@
     }
    ],
    "intent": "It was set to guard one doorway for four hundred years, and it rewards you for standing exactly still.",
-   "source": "Hell-TCG name reused (Tomb Sentinel's Blade — on-kill Counterspell rebuilt as a stacking Armor gain) | 2026-08-20: Thorns 3 added — the tomb sentinel answers being struck.",
+   "source": "Hell-TCG name reused (Tomb Sentinel's Blade — on-kill Counterspell rebuilt as a stacking Armor gain) | 2026-08-20: Thorns 3 added — the tomb sentinel answers being struck. | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20",
    "thorns": 3
   },
   {
@@ -1553,10 +1576,12 @@
     "attack.daggers.stab",
     "attack.daggers.thrown-dagger"
    ],
-   "statModifiers": {},
+   "statModifiers": {
+    "block": 5
+   },
    "triggers": [],
    "intent": "A pair, and the pair is the weapon: one for the hand you can reach, one for the hand you cannot.",
-   "source": "Authored in the 2026-08-27 gear workbook review (new row added to the sheet). | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled."
+   "source": "Authored in the 2026-08-27 gear workbook review (new row added to the sheet). | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled. | 2026-09-23 V2 R1: +5 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   },
   {
    "id": "item.pickaxe",
@@ -1656,10 +1681,16 @@
     "axe",
     "melee"
    ],
-   "triggers": [
-     ],
-     "secondaryDamage": [{"id":"critical-rider","when":"crit","damageType":"physical","amount":4}],
-     "packetInterpretation": "Provisional V2: authored '+4 damage' onCrit inherits physical type and is a separately mitigated flat packet, not a bonus merged into base damage. Requires balance review.",
+   "triggers": [],
+   "secondaryDamage": [
+    {
+     "id": "critical-rider",
+     "when": "crit",
+     "damageType": "physical",
+     "amount": 4
+    }
+   ],
+   "packetInterpretation": "Provisional V2: authored '+4 damage' onCrit inherits physical type and is a separately mitigated flat packet, not a bonus merged into base damage. Requires balance review.",
    "slayer": null,
    "source": " | 2026-08-20: Strength +2, -5 Accuracy, 2 stamina, and +4 damage on a crit. A tier-0 axe that swings hard, misses more, and occasionally takes a leg off."
   },
@@ -2791,10 +2822,16 @@
    "tags": [
     "melee"
    ],
-   "triggers": [
-     ],
-     "secondaryDamage": [{"id":"critical-rider","when":"crit","damageType":"physical","amount":6}],
-     "packetInterpretation": "Provisional V2: authored 'deal 6 more damage' onCrit (100%) inherits physical type and is a separately mitigated flat packet, not a bonus merged into base damage. Requires balance review.",
+   "triggers": [],
+   "secondaryDamage": [
+    {
+     "id": "critical-rider",
+     "when": "crit",
+     "damageType": "physical",
+     "amount": 6
+    }
+   ],
+   "packetInterpretation": "Provisional V2: authored 'deal 6 more damage' onCrit (100%) inherits physical type and is a separately mitigated flat packet, not a bonus merged into base damage. Requires balance review.",
    "slayer": {
     "undead": 2,
     "demon": 2
@@ -2849,31 +2886,6 @@
    ],
    "slayer": null,
    "source": "2026-08-27 review: damage +2 -> +1, the ally-heal clause removed — heal 3 self only."
-  },
-  {
-   "id": "attack.buckler.punch",
-   "name": "Shield Punch",
-   "range": "melee",
-   "stat": "strength",
-   "damage": 0,
-   "stamina": 1,
-   "accuracy": 5,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy in melee reach",
-   "damageType": "physical",
-   "tags": [
-    "melee"
-   ],
-   "triggers": [
-    {
-     "hook": "onAttack",
-     "chance": 100,
-     "effect": "gain 7 Dodge until the end of your next Activation"
-    }
-   ],
-   "slayer": null,
-   "source": "2026-08-27 review: gains the dodge rider."
   },
   {
    "id": "attack.bloody-axe.cleave-open",

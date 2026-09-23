@@ -68,7 +68,7 @@
         "unit": "hero.base.paladin-shiney",
         "items": [
           "item.longsword",
-          "item.knight-shield",
+          "item.kite-shield",
           "item.basic-armor"
         ]
       }
@@ -93,7 +93,7 @@
         "unit": "hero.base.paladin-hunk",
         "items": [
           "item.longsword",
-          "item.knight-shield",
+          "item.kite-shield",
           "item.ragged-hides"
         ]
       }
@@ -118,7 +118,7 @@
         "unit": "hero.base.paladin-smug",
         "items": [
           "item.longsword",
-          "item.knight-shield",
+          "item.kite-shield",
           "item.destroyed-mail"
         ]
       }
@@ -454,7 +454,7 @@
       {
         "unit": "hero.base.priest-armored",
         "items": [
-          "item.knight-shield",
+          "item.kite-shield",
           "item.holy-texts",
           "item.pilgrims-habit"
         ]

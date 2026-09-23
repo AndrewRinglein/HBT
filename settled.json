@@ -1236,9 +1236,16 @@
     "attack.lumberjack-axe.cleave"
    ],
    "statModifiers": {},
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "onBlock",
+     "role": "attacker",
+     "chance": 100,
+     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle"
+    }
+   ],
    "intent": "A working tool that has stopped asking what it is for. The first two-handed axe in the game, and it belongs to a civilian.",
-   "source": "dictated 2026-08-25 | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled."
+   "source": "dictated 2026-08-25 | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled. | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
   }
  ],
  "attacks": [
@@ -2028,7 +2035,7 @@
     "derivedBase": {},
     "kit": [
      "item.longsword",
-     "item.knight-shield"
+     "item.kite-shield"
     ],
     "ai": "melee-aggressive",
     "triggers": []

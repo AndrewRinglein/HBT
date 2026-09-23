@@ -47,7 +47,7 @@
         "unit": "hero.base.paladin-shiney",
         "items": [
           "item.longsword",
-          "item.knight-shield",
+          "item.kite-shield",
           "item.basic-armor"
         ]
       },
@@ -125,7 +125,7 @@
       "slot": 2,
       "items": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.basic-armor"
       ]
     },
@@ -137,7 +137,7 @@
       "slot": 2,
       "items": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.basic-armor"
       ]
     },
@@ -149,7 +149,7 @@
       "slot": 2,
       "items": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.ragged-hides"
       ]
     },
@@ -161,7 +161,7 @@
       "slot": 2,
       "items": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.ragged-hides"
       ]
     },
@@ -173,7 +173,7 @@
       "slot": 2,
       "items": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.destroyed-mail"
       ]
     },
@@ -185,7 +185,7 @@
       "slot": 2,
       "items": [
         "item.longsword",
-        "item.knight-shield",
+        "item.kite-shield",
         "item.destroyed-mail"
       ]
     },
@@ -482,7 +482,7 @@
       "side": "hero",
       "slot": 2,
       "items": [
-        "item.knight-shield",
+        "item.kite-shield",
         "item.holy-texts",
         "item.pilgrims-habit"
       ]
@@ -494,7 +494,7 @@
       "side": "hero",
       "slot": 2,
       "items": [
-        "item.knight-shield",
+        "item.kite-shield",
         "item.holy-texts",
         "item.pilgrims-habit"
       ]

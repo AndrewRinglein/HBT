@@ -694,6 +694,18 @@ function compiledPowerOf(p, unitId) {
     return { ...base, range: 0, effect: 'selfGuard',
       guard: { protectionBase: parseInt(m[1], 10), protectionPerArmor: 1, dodgeLoss: parseInt(m[2], 10) } };
   }
+  // V2 shields (2026-09-23): "Gain +10 Block, +10 Ranged Block and +1 Armor until the
+  // end of your next Activation." — a self statMod list with the holder's-activation lifetime.
+  if ((m = desc.match(/^Gain (\+\d+ [A-Z][A-Za-z]*(?: [A-Z][a-z]+)?(?:(?:, | and )\+\d+ [A-Z][A-Za-z]*(?: [A-Z][a-z]+)?)*) until the end of your next Activation\.$/)) && tgt === 'self') {
+    const STAT = { Block: 'block', 'Ranged Block': 'rangedBlock', Armor: 'armor', Dodge: 'dodge', Resist: 'resist', Luck: 'luck' };
+    const effects = [];
+    for (const part of m[1].split(/, | and /)) {
+      const pm = part.match(/^\+(\d+) (.+)$/);
+      if (!pm || !STAT[pm[2]]) return null;
+      effects.push({ kind: 'statMod', stat: STAT[pm[2]], value: +pm[1], until: 'endOfNextActivation', who: 'self' });
+    }
+    return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects };
+  }
   return null;
 }
 
@@ -1200,6 +1212,15 @@ function compileItems() {
       if ((m = eff.match(/^(apply|gain) (\d+) ([A-Za-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
         triggers.push({ id: `trigger.${it.id.replace(/^item\./, '')}.${m[3].toLowerCase()}`, hook: t.hook, chance: t.chance ?? 100,
           select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: parseInt(m[2], 10) }, source: it.id });
+      } else if ((m = eff.match(/^the blocking target loses (\d+) Block and (\d+) Ranged Block for the rest of the Battle$/)) && t.hook === 'onBlock') {
+        // V2 R1 (2026-09-23): the axe cuts through shields. `role` keeps it the ATTACKER's
+        // block hook; Block and Ranged Block floor at 0 in resolveBlock.
+        const role = t.role ? { role: t.role } : {};
+        const base = it.id.replace(/^item\./, '');
+        triggers.push({ id: `trigger.${base}.on-block.block`, hook: 'onBlock', chance: t.chance ?? 100, select: 'target', ...role,
+          effect: { kind: 'statMod', stat: 'block', value: -parseInt(m[1], 10), until: 'battle' }, source: it.id });
+        triggers.push({ id: `trigger.${base}.on-block.ranged-block`, hook: 'onBlock', chance: t.chance ?? 100, select: 'target', ...role,
+          effect: { kind: 'statMod', stat: 'rangedBlock', value: -parseInt(m[2], 10), until: 'battle' }, source: it.id });
       } else if ((m = eff.match(/^Thorns (\d+)$/)) && t.hook === 'onTakingDamage') {
         // RULED 2026-08-27: "Thorns damage that is dealt is true damage."
         triggers.push({ id: `trigger.${it.id.replace(/^item\./, '')}.thorns`, hook: 'onTakingDamage', chance: 100,

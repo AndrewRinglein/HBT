@@ -1360,22 +1360,6 @@
   "itemClass": "weapon"
  },
  {
-  "id": "item.buckler.riposte",
-  "name": "Buckler of Riposte",
-  "base": "item.buckler",
-  "enchant": "enchant.riposte",
-  "tier": 3,
-  "itemClass": "weapon"
- },
- {
-  "id": "item.knight-shield.riposte",
-  "name": "Knight Shield of Riposte",
-  "base": "item.knight-shield",
-  "enchant": "enchant.riposte",
-  "tier": 3,
-  "itemClass": "weapon"
- },
- {
   "id": "item.tower-shield.riposte",
   "name": "Tower Shield of Riposte",
   "base": "item.tower-shield",
