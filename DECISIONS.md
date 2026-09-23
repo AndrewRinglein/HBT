@@ -2516,3 +2516,11 @@ Stun suppress defense without conflating every activation lock with Stun.
 Snapshot rules advance to .21. Timing/default/downed/AI choices are provisional
 in SWITCHES; this is implementation, not a new user ruling. Shield/class content
 and presentation adoption remain separate. V2-BLOCK.md owns verification.
+
+## 2026-09-22 — the gate gets smaller: no typecheck, one full suite
+
+Andrew: “How do we get the commands to a smaller size? What have we added that is breaking this rule?”
+
+Andrew: “We'll remove type check too. Seems like three full test suites early on is unnecessary.”
+
+Context: one `gate.mjs --land` ran decided-check, `tsc --noEmit`, the full vitest suite, a battle probe, 22 control battles, content check, variant probes, the kill switch, commit, the full suite again and the control battles again (post-land audit), effect-size battles and, every 10th landing, audit-all — all in one command, past Cowork's 178 s shell limit. Ruling: the gate drops the typecheck, and runs the full test suite once. How the post-land re-run is replaced, and what that means for R0 (plumbing.gate-recovery, which exists to recover from that re-run failing), is recorded when decided.
