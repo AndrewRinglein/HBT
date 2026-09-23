@@ -286,14 +286,20 @@
   "shape": "data",
   "spec": "Skeleton Archer: enemy, ranged role, 6 HP, 0 armour, 0 resist, 70 accuracy, 2 strength, 3 precision, movement 3, shortbow reach 4 precision physical.",
   "expect": "appears, kites, shoots, dies; zombies still behave unchanged",
-  "attempts": 1
+  "attempts": 1,
+  "status": "failed",
+  "failedAt": "2026-09-23 08:14",
+  "reason": "Superseded by the Codex (Andrew, 2026-09-23): the Skeleton Archer is unit.skeletal-archer with authored numbers 5 HP, 1 armour, 75 accuracy, movement 4; this August spec would add a duplicate with invented ones."
  },
  {
   "id": "unit.brute",
   "kind": "unit",
   "shape": "data",
   "spec": "Ghoul Brute: enemy, melee role, 18 HP, 2 armour, 55 accuracy, 6 strength, movement 3, one heavy attack at Strength +2.",
-  "expect": "a slow heavy enemy that survives multiple hero turns"
+  "expect": "a slow heavy enemy that survives multiple hero turns",
+  "status": "failed",
+  "failedAt": "2026-09-23 08:14",
+  "reason": "Superseded by the Codex (Andrew, 2026-09-23): the Codex has no Ghoul Brute; its ghoul is unit.ghoul (9 HP, 0 armour, 90 accuracy, movement 6)."
  },
  {
   "id": "ability.warrior.rally",
@@ -303,14 +309,20 @@
   "expect": "every ally inside the radius gains protection 2; nobody outside does",
   "needs": [
    "status.protection"
-  ]
+  ],
+  "status": "failed",
+  "failedAt": "2026-09-23 08:14",
+  "reason": "Superseded by the Codex (Andrew, 2026-09-23): no Warrior specialty in the Codex carries a Rally power; Warrior powers come from its nine specialties."
  },
  {
   "id": "ability.ranger.volley",
   "kind": "ability",
   "shape": "data",
   "spec": "Volley: ranger class power, two separate bow hits against the same target, each rolling to hit independently. 2 stamina, cooldown 3.",
-  "expect": "two to-hit rolls and up to two damage events per use; armour applies per hit"
+  "expect": "two to-hit rolls and up to two damage events per use; armour applies per hit",
+  "status": "failed",
+  "failedAt": "2026-09-23 08:14",
+  "reason": "Superseded by the Codex (Andrew, 2026-09-23): no Ranger specialty in the Codex carries a Volley power; Ranger powers come from its nine specialties."
  },
  {
   "id": "ai.mode.defender",

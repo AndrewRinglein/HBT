@@ -2538,3 +2538,9 @@ This supersedes the entry above on the typecheck: it stays in the gate. The four
 Andrew: “Why don't we split the test suite into four parts and then continue? Let's get work done here.”
 
 The gate's full-suite check is split into four shards (vitest `--shard=k/4`), each run as its own command so each fits under Cowork's ~178 s shell limit. The gate accepts the suite only when all four passed on the exact tree being gated.
+
+## 2026-09-23 — the August items the Codex replaced are abandoned; V2 R1 goes to the top
+
+Andrew: “Answer question 1, yes, and continue.”
+
+The question was: abandon the August items the Codex has replaced (Skeleton Archer, Ghoul Brute, Rally, Volley), after checking each against the Codex first, and put V2 R1 (shields) at the top of the queue. Checked 2026-09-23: the Codex fields the Skeleton Archer as unit.skeletal-archer (5 HP, 1 armour, 75 accuracy, movement 4 — not the backlog's 6/0/70/3); it has no Ghoul Brute (its ghoul is unit.ghoul, 9 HP, 0 armour, 90 accuracy, movement 6); and neither the Warrior's nor the Ranger's specialties carry a Rally or a Volley power.

@@ -13978,3 +13978,8 @@ Ruled 2026-09-22 (DECISIONS.md, Andrew): the post-land re-run was cut from the g
   ok  plumbing.command-diagnostics
   ok  plumbing.measurement-integrity
   ok  rule.block
+
+## ability.ranger.volley — ABANDONED
+2026-09-23 08:14
+
+Superseded by the Codex (Andrew, 2026-09-23): no Ranger specialty in the Codex carries a Volley power; Ranger powers come from its nine specialties.
