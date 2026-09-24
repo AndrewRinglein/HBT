@@ -82,3 +82,10 @@ moves, and the build runs 21 battles end to end. A `hex: null` is not something 
 sweep or a unit test would notice — the engine's own tests pass — but it makes
 the encounter undrawable. This is the third time re-export-and-play has found an
 engine defect the engine's own gate did not (see also #12, #15).
+
+## 2026-09-24 — engine `dd78ff1`, v2.loadout-swap (V2 R6)
+
+| # | Finding | Read from | What the viewer did |
+|---|---|---|---|
+| 18 | **`loadout.swapped` names the hands before and after but not the stowed after.** | `src/core/swap.ts` performSwap | Stows (handsBefore + stowed) − handsAfter by instanceId (viewer SWITCHES `swapStowedAfter`). A `stowed` field would remove it. |
+| 19 | **A swap clamps current HP / Stamina when a maximum leaves, and moves maxHp / maxStamina by the items' modifiers, with no event** (engine SWITCHES swapHealthClamp). | `src/core/swap.ts` fold + clamp | Nothing computed (viewer SWITCHES `swapMaxClamp`); the bars keep the last logged figures. No current held item carries those modifiers. |

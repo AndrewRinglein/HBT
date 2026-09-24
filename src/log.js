@@ -73,6 +73,9 @@ export function buildLog(events, SN, turns) {
       case 'unit.equipped': return b('', `&nbsp;&nbsp;${nmAt(e)} wears <span class="sq">${e.itemId}</span>` +
         ((e.grants || []).length ? ` · grants ${e.grants.map(g => g.replace(/^attack\./, '')).join(', ')}` : '') +
         (Object.keys(e.mods || {}).length ? ` · ${Object.entries(e.mods).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}` : ''))
+      // V2 R6 (2026-09-24): the swap — the hands before and after, as instances, and the stamina it cost
+      case 'loadout.swapped': { const hands = list => (list || []).length ? list.map(i => escape(i.itemId) + ' <span class="sq">' + escape(i.instanceId) + '</span>').join(' + ') : 'empty hands'
+        return b(side(e), `&nbsp;&nbsp;<b>${nmAt(e)}</b> swaps ${hands(e.handsBefore)} → ${hands(e.handsAfter)} <span class="sq">· ${e.stamina} stamina</span>`) }
       case 'map.loaded': return b('turn', `— ${e.mapId}${e.width ? ` · ${e.width}×${e.height}` : ''}${e.deploy ? ` · heroes ${e.deploy.hero}, enemies ${e.deploy.enemy}` : ''} —`)
       case 'unit.grown': return b('', `&nbsp;&nbsp;${nmAt(e)} grown — ${e.table} level ${e.level}${e.specialtyId ? ' · ' + e.specialtyId : ''} <span class="sq">· ${Object.entries(e.mods || {}).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}</span>`)
       case 'encounter.begin': return b('turn', `— ${e.name} —`)

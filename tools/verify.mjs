@@ -286,7 +286,10 @@ if (SINGLES) {
   // badge.held (2026-09-23): the engine still emits it (mutate.ts, a badge already worn), but the
   // library re-exported at 7ad7516 no longer grants any unit a badge twice
   // badge.held left 2026-09-23: showcase.rime-s1 carries one at engine 4688026
-  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled'])
+  // loadout.swapped (2026-09-24, V2 R6): a swap is a HUMAN command and the AI never swaps (engine
+  // SWITCHES swapAi, ruled 2026-09-24), so an exported AI battle cannot carry one; the engine's own
+  // log of a human swap is tools/fixtures/loadout-swap.json, driven by tools/loadout-swap.test.mjs
+  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled', 'loadout.swapped'])
   const dark = FOLDED_TYPES.filter(t => !seen.has(t))
   for (const t of dark) check(UNEXERCISED.has(t), `fold: ${t} is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it`)
   for (const t of UNEXERCISED) check(!seen.has(t), `fold: ${t} is listed UNEXERCISED but the library now carries one — delete the entry, the list only shrinks`)

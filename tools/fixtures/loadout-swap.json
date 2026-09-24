@@ -1,0 +1,248 @@
+{
+ "note": "Captured from the engine by a one-off script outside the tree: showcase.prologue-party options, one Iron Dwarf (uid 501) holding item.longsword with item.kite-shield stowed, human-controlled; select-activation, then the engine swap command { hands: [\"501/1\"] }. Every event the engine emitted, in order.",
+ "engineCommit": "af5241d",
+ "events": [
+  {
+   "seq": 0,
+   "turn": 0,
+   "phase": "hero",
+   "type": "unit.enter",
+   "causeId": "hero.base.warrior-iron",
+   "actor": 0,
+   "target": null,
+   "uid": 501,
+   "name": "Iron Dwarf A",
+   "side": "hero",
+   "typeId": "hero.base.warrior-iron",
+   "role": "melee",
+   "hex": 247,
+   "hp": 12,
+   "maxHp": 12,
+   "stamina": 5,
+   "maxStamina": 5,
+   "terrain": 0,
+   "stowed": [
+    {
+     "instanceId": "501/1",
+     "itemId": "item.kite-shield"
+    }
+   ]
+  },
+  {
+   "seq": 1,
+   "turn": 0,
+   "phase": "hero",
+   "type": "unit.equipped",
+   "causeId": "item.longsword",
+   "actor": 0,
+   "target": null,
+   "itemId": "item.longsword",
+   "instanceId": "501/0",
+   "grants": [
+    "attack.longsword.slash",
+    "attack.longsword.stab"
+   ],
+   "abilities": [],
+   "mods": {
+    "block": 5
+   }
+  },
+  {
+   "seq": 2,
+   "turn": 0,
+   "phase": "hero",
+   "type": "unit.badged",
+   "causeId": "badge.hero",
+   "actor": 0,
+   "target": null,
+   "badgeId": "badge.hero",
+   "grants": [],
+   "mods": {},
+   "flags": {
+    "bleedsOut": true
+   }
+  },
+  {
+   "seq": 3,
+   "turn": 0,
+   "phase": "hero",
+   "type": "unit.enter",
+   "causeId": "unit.zombie",
+   "actor": 1,
+   "target": null,
+   "uid": 200,
+   "name": "Zombie 1",
+   "side": "enemy",
+   "typeId": "unit.zombie",
+   "role": "melee",
+   "hex": 118,
+   "hp": 5,
+   "maxHp": 5,
+   "stamina": 0,
+   "maxStamina": 0,
+   "terrain": 0
+  },
+  {
+   "seq": 4,
+   "turn": 0,
+   "phase": "hero",
+   "type": "unit.enter",
+   "causeId": "unit.zombie",
+   "actor": 2,
+   "target": null,
+   "uid": 201,
+   "name": "Zombie 2",
+   "side": "enemy",
+   "typeId": "unit.zombie",
+   "role": "melee",
+   "hex": 122,
+   "hp": 5,
+   "maxHp": 5,
+   "stamina": 0,
+   "maxStamina": 0,
+   "terrain": 0
+  },
+  {
+   "seq": 5,
+   "turn": 0,
+   "phase": "hero",
+   "type": "unit.enter",
+   "causeId": "unit.fast-zombie",
+   "actor": 3,
+   "target": null,
+   "uid": 202,
+   "name": "Fast Zombie 1",
+   "side": "enemy",
+   "typeId": "unit.fast-zombie",
+   "role": "melee",
+   "hex": 120,
+   "hp": 5,
+   "maxHp": 5,
+   "stamina": 0,
+   "maxStamina": 0,
+   "terrain": 0
+  },
+  {
+   "seq": 6,
+   "turn": 0,
+   "phase": "hero",
+   "type": "map.loaded",
+   "causeId": "map.open",
+   "actor": null,
+   "target": null,
+   "mapId": "map.open",
+   "scenarioId": "showcase.prologue-party",
+   "width": 16,
+   "height": 16,
+   "deploy": {
+    "hero": "west",
+    "enemy": "east"
+   },
+   "terrain.open": 256,
+   "props": []
+  },
+  {
+   "seq": 7,
+   "turn": 0,
+   "phase": "hero",
+   "type": "battle.begin",
+   "causeId": "engine",
+   "actor": null,
+   "target": null
+  },
+  {
+   "seq": 8,
+   "turn": 1,
+   "phase": "hero",
+   "type": "turn.begin",
+   "causeId": "engine",
+   "actor": null,
+   "target": null
+  },
+  {
+   "seq": 9,
+   "turn": 1,
+   "phase": "hero",
+   "type": "phase.begin",
+   "causeId": "engine",
+   "actor": null,
+   "target": null
+  },
+  {
+   "seq": 10,
+   "turn": 1,
+   "phase": "hero",
+   "type": "activation.selected",
+   "causeId": "engine",
+   "actor": 0,
+   "target": null,
+   "unitUid": 501
+  },
+  {
+   "seq": 11,
+   "turn": 1,
+   "phase": "hero",
+   "type": "activation.begin",
+   "causeId": "engine",
+   "actor": 0,
+   "target": null,
+   "ordinal": 1,
+   "hex": 247,
+   "hp": 12,
+   "stamina": 5
+  },
+  {
+   "seq": 12,
+   "turn": 1,
+   "phase": "hero",
+   "type": "stamina.spent",
+   "causeId": "engine",
+   "actor": 0,
+   "target": null,
+   "amount": 1,
+   "stamina": 4
+  },
+  {
+   "seq": 13,
+   "turn": 1,
+   "phase": "hero",
+   "type": "loadout.swapped",
+   "causeId": "engine",
+   "actor": 0,
+   "target": null,
+   "handsBefore": [
+    {
+     "instanceId": "501/0",
+     "itemId": "item.longsword"
+    }
+   ],
+   "handsAfter": [
+    {
+     "instanceId": "501/1",
+     "itemId": "item.kite-shield"
+    }
+   ],
+   "stamina": 1
+  },
+  {
+   "seq": 14,
+   "turn": 1,
+   "phase": "hero",
+   "type": "unit.equipped",
+   "causeId": "item.kite-shield",
+   "actor": 0,
+   "target": null,
+   "itemId": "item.kite-shield",
+   "instanceId": "501/1",
+   "grants": [],
+   "abilities": [
+    "power.kite-shield.shield-wall",
+    "power.kite-shield.raise-guard"
+   ],
+   "mods": {
+    "block": 20,
+    "rangedBlock": 5
+   }
+  }
+ ]
+}

@@ -54,7 +54,12 @@ function mkUnit(e, UD) {
     activeMv: null, moveUsed: false, primaryUsed: false, mods: [], injuries: [], cds: {}, dmgSeen: {},
     /* the kit the engine fielded this unit with (unit.equipped): items, the
        attacks they grant, the powers they grant — the bare row has none of it */
-    kit: { items: [], grants: [], abilities: [], badges: [] },
+    kit: { items: [], grants: [], abilities: [], badges: [], held: [] },
+    /* V2 R6 (engine v2.loadout / v2.loadout-swap, 2026-09-24): the item INSTANCES in
+       hand (unit.equipped's instanceId, in order) and stowed (unit.enter's `stowed`);
+       loadout.swapped moves them. `kit.held` is one row per in-hand instance — what its
+       unit.equipped granted — so a swap can take exactly that instance's grants away. */
+    hands: [], stowed: (e.stowed || []).map(i => ({ instanceId: i.instanceId, itemId: i.itemId })),
     /* THE DEATHBED, REVERSED (engine b4cbd9b, 2026-09-04): no stands, no wound
        levels — `woundLevel` is gone from the engine. A unit that stood carries
        the Wounded BADGE and wears a small red skull from here on (Angela). */
@@ -107,9 +112,35 @@ export function fold(S, e, ctx, now = 0) {
          the event (engine finding, 2026-09-03). */
       if (U[e.actor]) { const u = U[e.actor]
         u.kit.items.push(e.itemId)
+        u.kit.held.push({ instanceId: e.instanceId ?? null, itemId: e.itemId, grants: [...(e.grants || [])], abilities: [...(e.abilities || [])] })
+        if (e.instanceId != null && !u.hands.some(i => i.instanceId === e.instanceId)) u.hands.push({ instanceId: e.instanceId, itemId: e.itemId })
         for (const a of (e.grants || [])) if (!u.kit.grants.includes(a)) u.kit.grants.push(a)
         for (const a of (e.abilities || [])) if (!u.kit.abilities.includes(a)) u.kit.abilities.push(a)
-        for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.itemId, fielded: true }) }
+        for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.itemId, fielded: true, ...(e.instanceId != null ? { instance: e.instanceId } : {}) }) }
+      break
+    /* ── THE SWAP (engine v2.loadout-swap dd78ff1, 2026-09-24; COMBAT-V2 §11.2, §15.1:
+       "the rail icons and the unit's kit"). The stamina.spent before it has already set
+       the bar; the unit.equipped lines after it bring what ARRIVED. This beat takes away
+       what LEFT the hands — each leaving instance's own grants, powers and modifiers, as
+       its unit.equipped stated them — sets the hands to the event's handsAfter, and
+       stows everything else carried. One float: SWAP, and the stamina it cost. */
+    case 'loadout.swapped':
+      if (U[e.actor]) { const u = U[e.actor]
+        const after = (e.handsAfter || []).map(i => ({ instanceId: i.instanceId, itemId: i.itemId }))
+        const stays = id => after.some(i => i.instanceId === id)
+        const carried = [...(e.handsBefore || []), ...u.stowed]
+        const leaving = new Set((e.handsBefore || []).map(i => i.instanceId).filter(id => !stays(id)))
+        u.kit.held = u.kit.held.filter(h => !leaving.has(h.instanceId))
+        u.kit.items = u.kit.held.map(h => h.itemId)
+        u.kit.grants = [...new Set(u.kit.held.flatMap(h => h.grants))]
+        u.kit.abilities = [...new Set(u.kit.held.flatMap(h => h.abilities))]
+        u.mods = u.mods.filter(m => !(m.fielded && m.instance != null && leaving.has(m.instance)))
+        /* the hands are the event's own, in hand order; the unit.equipped of an arriving
+           instance then adds its kit row and finds it already in hand */
+        u.hands = after
+        u.stowed = carried.filter(i => !stays(i.instanceId)).map(i => ({ instanceId: i.instanceId, itemId: i.itemId }))
+        cue('float', e.stamina ? { hex: u.hex, kind: 'note', text: 'SWAP · −' + e.stamina + ' STAMINA', n: e.stamina, of: 'stamina', small: true }
+          : { hex: u.hex, kind: 'note', text: 'SWAP', small: true }) }
       break
     case 'unit.grown':
       /* progression applied at fielding (engine 5603c40): the level table's
@@ -629,7 +660,7 @@ export function foldTo(events, n, ctx) {
 /** The event types the fold knows. verify.mjs checks every packed log and the
     pump's duration table against this until the engine exports EVENT_TYPES
     (THREE-PACKAGES-PLAN §8.3). */
-export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck', 'unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
+export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck', 'unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'loadout.swapped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
   'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'unit.proned', 'unit.stood', 'stamina.spent',
   'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'knockback.blocked', 'kdb.rolled', 'thorns.reflected', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',

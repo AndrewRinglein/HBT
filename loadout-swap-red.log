@@ -1,0 +1,161 @@
+TAP version 13
+# Subtest: the fixture is the engine log of one swap: stamina.spent, loadout.swapped, then unit.equipped for what arrived
+ok 1 - the fixture is the engine log of one swap: stamina.spent, loadout.swapped, then unit.equipped for what arrived
+  ---
+  duration_ms: 0.535197
+  type: 'test'
+  ...
+# Subtest: the fold knows loadout.swapped and the pump gives it a beat
+not ok 2 - the fold knows loadout.swapped and the pump gives it a beat
+  ---
+  duration_ms: 2.808106
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/loadout-swap.test.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(FOLDED_TYPES.includes('loadout.swapped'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/loadout-swap.test.mjs:28:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: before the swap: hands from unit.equipped (by instance), stowed from unit.enter
+not ok 3 - before the swap: hands from unit.equipped (by instance), stowed from unit.enter
+  ---
+  duration_ms: 1.335477
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/loadout-swap.test.mjs:34:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'map')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    ids (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/loadout-swap.test.mjs:19:26)
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/loadout-swap.test.mjs:36:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: after the swap: the hands are the event's, the rest is stowed, the kit and its modifiers follow the hands
+not ok 4 - after the swap: the hands are the event's, the rest is stowed, the kit and its modifiers follow the hands
+  ---
+  duration_ms: 0.232963
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/loadout-swap.test.mjs:42:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'map')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    ids (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/loadout-swap.test.mjs:19:26)
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/loadout-swap.test.mjs:44:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the bar's icons change: the longsword's attacks leave, the shield's powers arrive
+not ok 5 - the bar's icons change: the longsword's attacks leave, the shield's powers arrive
+  ---
+  duration_ms: 0.616712
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/loadout-swap.test.mjs:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(before.includes('attack.longsword.slash') && !after.includes('attack.longsword.slash'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/loadout-swap.test.mjs:59:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: one float names the swap and the stamina spent, verbatim from the event
+not ok 6 - one float names the swap and the stamina spent, verbatim from the event
+  ---
+  duration_ms: 0.322793
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/loadout-swap.test.mjs:64:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/loadout-swap.test.mjs:67:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: seeking to any point after the swap equals stepping to it
+ok 7 - seeking to any point after the swap equals stepping to it
+  ---
+  duration_ms: 0.698177
+  type: 'test'
+  ...
+# Subtest: the log line names the hands before and after and the stamina spent
+not ok 8 - the log line names the hands before and after and the stamina spent
+  ---
+  duration_ms: 0.96297
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/loadout-swap.test.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: 'loadout.swapped has a log line'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/loadout-swap.test.mjs:82:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 2
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 118.239163
