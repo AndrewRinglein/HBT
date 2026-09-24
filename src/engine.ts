@@ -49,6 +49,11 @@ export { saveBattle, restoreBattle } from '../../engine/src/core/snapshot.js'
 // stamina cost, read-only. Legality is validateBattleCommand's (canSwap inside it); performSwap
 // stays closed — the swap is issued as the engine's own `swap` battle command.
 export { swapCostOf } from '../../engine/src/core/swap.js'
+// Widened 2026-09-24 for V2 R7 (engine v2.prop-attack e049b15, COMBAT-V2 §12.2 "Props can be
+// targeted directly"): the hexes an attack with Destroy may be aimed at, read-only. Legality is
+// validateBattleCommand's (canAttackHex inside it); attackProp stays closed — the blow is issued
+// as the engine's own { hex } action command.
+export { propAttackHexes } from '../../engine/src/core/prop-attack.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing

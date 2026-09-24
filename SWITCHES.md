@@ -111,3 +111,18 @@ sandboxSwapChoices, `src/ui/sandbox.ts` swapControl; probes `test/sandbox-swap.t
   Reason: moving it to the stash would lose or launder its count. Normal play never meets it (the
   restock runs before any equip session); R11's mid-dungeon equip decides otherwise if it must.
   Provisional, 2026-09-24.
+
+## V2 R7 — aiming an attack at a prop in the sandbox (2026-09-24)
+
+Engine v2.prop-attack (e049b15, COMBAT-V2 §12.2 "Props can be targeted directly"): an attack
+with Destroy may be aimed at a prop's hex as the action `{ hex }`. `src/core/sandbox.ts`
+(`sandboxChoices`), `src/ui/sandbox.ts` (label, board click), the door `src/engine.ts`
+(`propAttackHexes`, read-only). Probe `test/sandbox-prop-attack.test.ts` (red 2 of 3,
+prop-attack-red.log; green 3 of 3). The shared viewer folds the events (viewer 5188c1d).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `sandboxPropAims` | Where do prop hexes appear? | **After the unit targets, in the same Aim list, one per hex the engine's `propAttackHexes` lists, per open slot**, labelled `Prop at hex N (col, row)`; a board click on that hex picks it, as for a burst centre. | The engine lists and validates (Law 2); the host only labels. | provisional — 2026-09-24 |
+| `sandboxPropForecast` | What forecast does a prop aim show? | **None** (`preview: null`): the blow always connects and deals no damage (engine propAttackConnects); the log's prop.struck / prop.damaged lines say what happened. | There is no engine forecast for it to copy. | provisional — 2026-09-24 |
+| `sandboxPropNoHero` | No sandbox hero carries Destroy yet. | **The aims appear only when a fielded hero's attack does;** the probe fields the engine's TEST Chopper through the same sandbox functions. No hero is given Destroy here. | Destroy on campaign gear is content (R12), not the host's to invent. | provisional — 2026-09-24 |
+
