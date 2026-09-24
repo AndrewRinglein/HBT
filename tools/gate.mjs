@@ -18,6 +18,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { filesContaining } from './source-scan.mjs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
+import { revertTree } from './revert-tree.mjs'
 
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
@@ -164,9 +165,11 @@ if (MODE === 'abandon') {
     process.exit(2)
   }
   const stampA = new Date().toISOString().slice(0, 16).replace('T', ' ')
-  // Two calls, not one `;`-joined string: cmd.exe does not read `;`.
-  sh('git checkout -- .')
-  sh('git clean -fdq -e node_modules -e .state -e scratch -e tools')
+  // Cowork-safe revert (2026-09-24, DECISIONS.md "abandon works in Cowork"): overwrite
+  // in place and park, never delete — `git checkout`/`git clean` died on the mount. The
+  // same paths `git clean` spared are spared; .state is the gate's memory and is kept.
+  const rv = revertTree(['node_modules', '.state', 'scratch', 'tools'])
+  console.log(`reverted ${rv.restored.length} file(s) to HEAD${rv.parked.length ? `; parked ${rv.parked.length} file(s) HEAD does not have in ${rv.parkedAt}` : ''}`)
   item.status = 'failed'
   item.failedAt = stampA
   item.reason = reason

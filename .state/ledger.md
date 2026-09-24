@@ -15082,3 +15082,18 @@ index f290758..f2d7aef 100644
          Object.assign(ctx, projectLoadout(ctx))
 ```
 </details>
+
+## v2.swap — ABANDONED
+2026-09-24 12:18
+
+Superseded by v2.loadout-swap (dd78ff1): filed with changesBaseline and no variants; the swap landed under the new id.
+
+## terrain.impassable-naming — ABANDONED
+2026-09-24 12:18
+
+Superseded by naming.terrain-impassable (5f99527), ruled by Andrew 2026-09-24: the id is terrain.impassable.
+
+## seam.spare-weapons — ABANDONED
+2026-09-24 12:18
+
+Retired by COMBAT-V2-DESIGN section 18: a stowed weapon grants nothing (section 11.1). Replaced by v2.loadout (4910771) and v2.loadout-swap (dd78ff1).

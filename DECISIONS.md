@@ -2578,3 +2578,15 @@ Ruled: the id is `terrain.impassable`; `terrain.obstacle` is retired everywhere 
 Andrew, asked for the values of the two swapCost badges (COMBAT-V2-DESIGN-2026-09-07 §11.2): “The values for fast hands and slow hands are to reduce the stamina cost or increase the stamina cost by 1 for item swapping.  The value is fast hands -1 stamina and slow hands +1 stamina to item swap.”
 
 Ruled: Fast Hands is swapCost −1; Slow Hands is swapCost +1. The TEST rows `test.badge.fast-hands` and `test.badge.slow-hands` (content 359cf85) already carry these values. The campaign badges are not yet authored in the Codex; when they are, they copy these numbers.
+
+## 2026-09-24 — abandon works in Cowork
+
+Andrew, asked whether to change the abandon tool so a Cowork chat can abandon items (overwrite each file back in place instead of deleting it): “One, yes.”
+
+Ruled: `--abandon` (engine and kingdom `tools/gate.mjs`) reverts through `tools/revert-tree.mjs`: a tracked file that differs from HEAD is overwritten in place with HEAD's copy; a file HEAD does not have is moved into `<git dir>/_abandoned/<stamp>/`, never deleted; `.state`, `tools`, `scratch` and `node_modules` are left alone, as `git clean` spared them. The first three abandons ran under it the same day: v2.swap, terrain.impassable-naming, seam.spare-weapons. (A tooling choice belongs in GBH's SWITCHES.md, rule 18; GBH is not mounted in this chat, so it is recorded here and in the commit.)
+
+## 2026-09-24 — the V2 defaults, reviewed
+
+Andrew, shown the gameplay defaults from SWITCHES.md (swap: swapAi, swapHealthClamp, swapLimits; KDB: kdbBackDistance, kdbBursts, kdbBothOrder, standFirmAnyPush, kdbAgileIsTheBadge, kdbBadgeCarriers, kdbStrengthFloor; prone: proneNoCrawl, proneNoExpiry, proneAiStandsFirst; collisions: knockbackProtectionAbsorbs, knockbackFloorIsObstruction; Thorns: thornsOnKillingBlow, thornsDownedTarget, thornsPerHit; shields and weapons: weaponBlockFamilies, axeOnAnyBlock, weaponFirePoison, shieldPowerNames, shieldPowerNumbers; and the older V2 sections — the elemental resistance migration, V2 bursts, ordered attack packets): “All of those I reviewed and are fine.”
+
+Ruled: each of those defaults stands as written in SWITCHES.md; their rows now read **ruled**. Three rows describe content not yet authored (kdbBadgeCarriers — no campaign unit carries Stand Firm or Giant yet; kdbStrengthFloor — 0-Strength rows not yet raised to 2; weaponFirePoison — no fire or poison on weapons yet): the present state is accepted, and the content remains to be written.

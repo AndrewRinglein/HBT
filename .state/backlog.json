@@ -43,7 +43,10 @@
   ],
   "note": "Andrew's chat, 2026-09-24 (V2 roadmap R6, second of two).",
   "changesBaseline": true,
-  "attempts": 1
+  "attempts": 1,
+  "status": "failed",
+  "failedAt": "2026-09-24 12:18",
+  "reason": "Superseded by v2.loadout-swap (dd78ff1): filed with changesBaseline and no variants; the swap landed under the new id."
  },
  {
   "id": "v2.thorns",
@@ -626,7 +629,10 @@
   "shape": "decision",
   "spec": "GROUND-REQUIREMENTS.md §1.1 names it terrain.impassable. MAP-01's legend calls it Obstruction, glyph x. The engine uses terrain.obstacle. Two names for one thing — Angela picks, then it goes in GLOSSARY.md and the other is retired.",
   "expect": "one id, in the glossary, and no occurrence of the other anywhere",
-  "note": "BRING TO ANGELA — a naming collision is hers, not a switch."
+  "note": "BRING TO ANGELA — a naming collision is hers, not a switch.",
+  "status": "failed",
+  "failedAt": "2026-09-24 12:18",
+  "reason": "Superseded by naming.terrain-impassable (5f99527), ruled by Andrew 2026-09-24: the id is terrain.impassable."
  },
  {
   "id": "trigger.mechanism",
@@ -2647,7 +2653,10 @@
    "item.dagger",
    "item.shortbow"
   ],
-  "note": "Filed from the kingdom session 2026-09-03; the kingdom's ISC-022/035/043/044 hit it the moment hero.equipped went through the seam."
+  "note": "Filed from the kingdom session 2026-09-03; the kingdom's ISC-022/035/043/044 hit it the moment hero.equipped went through the seam.",
+  "status": "failed",
+  "failedAt": "2026-09-24 12:18",
+  "reason": "Retired by COMBAT-V2-DESIGN section 18: a stowed weapon grants nothing (section 11.1). Replaced by v2.loadout (4910771) and v2.loadout-swap (dd78ff1)."
  },
  {
   "id": "pack.derived-rows",
