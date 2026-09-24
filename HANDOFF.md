@@ -1,42 +1,45 @@
-# engine — handoff 2026-09-24 08:45
+# engine — handoff 2026-09-24 10:35
 
 *Written by tools/wrap.mjs. The only handwritten line is the Now line, given to wrap as its argument. The rest is what start.mjs prints and what git holds. Read by `start engine` — not by a chat, directly.*
 
-engine — next terrain.impassable-naming, 159 of 194 landed · 5 await review · 28 pending
-Now: V2 R3-R4 — prone, knockback collisions, KDB. Done: v2.prone (022b560), v2.knockback-collisions (eab6530, goldens e8b1fd8), v2.kdb (e0987b0); content b737132, 3ac8096, c231c92; viewer draws all three (page ee2adc8); kingdom pages a8c2241; R1 kingdom half and R2 Block presentation landed earlier the same chat. Tried: the kingdom and viewer gates were split into sub-3-minute parts so Cowork can land. Open for Angela: switches in SWITCHES.md (prone, knockback, KDB), badge.immovable not in the design, KDB fires ~0.3 per battle, the look of prone/KDB cues. Known: gate.mjs ~line 492 amends after recording the sha, so ledger shas are dead; Codex published without its browser check. Next: V2 R5 Thorns (magnitude on melee hit taken, adds to collision value; remove the per-activation tick).
-New chat with Heroes of Blight and Tragic — engine: V2 R5 Thorns
+engine — next terrain.impassable-naming, 161 of 196 landed · 7 await review · 28 pending
+Now: V2 R5 Thorns + terrain.impassable naming. Done: naming.terrain-impassable (5f99527, ruled by Andrew 2026-09-24, root 16dc33d), v2.thorns (88064ac: thorns stat, reflect on melee hit incl. armor-zero, collision 1+Thorns, V1 trigger retired); content 02f93ef; viewer 233bfb9 + page 8119a8e (test.thorns replay); kingdom 9c4af65 + pages ac126e6 (Thorns on the equip card and sandbox forecast). Tried: gate --abandon cannot run in Cowork (git checkout -- . refused by the mount), so the superseded terrain.impassable-naming item is still pending. Open for Angela: switches in SWITCHES.md 'V2 Thorns', the thorns hue, Bramble Guard's Codex text still says Thorns hits archers at any range. Known: content ship not run (Codex unchanged; publication tests need msedge). Next: V2 R6 hands, swaps and item instances.
+New chat with Heroes of Blight and Tragic — engine: V2 R6 hands, swaps and item instances
   start engine
-Last landing: 2026-09-24 05:55 (v2.kdb). Previous chat ended: on a wrap, 2026-09-24 08:45
-WRAP NOT COMMITTED: 2026-09-24 08:45 — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.
-  Commit them from the engine folder before landing anything: git add -A; git commit -m "wrap: V2 R3-R4 — prone, knockback collisions, KDB. Done: v2.prone (022b560), v2.knockback-collisions (eab6530, goldens e8b1fd8), v2.kdb (e0987b0); content b737132, 3ac8096, c231c92; viewer draws all three (page ee2adc8); kingdom pages a8c2241; R1 kingdom half and R2 Block presentation landed earlier the same chat. Tried: the kingdom and viewer gates were split into sub-3-minute parts so Cowork can land. Open for Angela: switches in SWITCHES.md (prone, knockback, KDB), badge.immovable not in the design, KDB fires ~0.3 per battle, the look of prone/KDB cues. Known: gate.mjs ~line 492 amends after recording the sha, so ledger shas are dead; Codex published without its browser check. Next: V2 R5 Thorns (magnitude on melee hit taken, adds to collision value; remove the per-activation tick)."
+Last landing: 2026-09-24 09:34 (v2.thorns). Previous chat ended: on a wrap, 2026-09-24 10:35
+WRAP NOT COMMITTED: 2026-09-24 10:35 — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.
+  Commit them from the engine folder before landing anything: git add -A; git commit -m "wrap: V2 R5 Thorns + terrain.impassable naming. Done: naming.terrain-impassable (5f99527, ruled by Andrew 2026-09-24, root 16dc33d), v2.thorns (88064ac: thorns stat, reflect on melee hit incl. armor-zero, collision 1+Thorns, V1 trigger retired); content 02f93ef; viewer 233bfb9 + page 8119a8e (test.thorns replay); kingdom 9c4af65 + pages ac126e6 (Thorns on the equip card and sandbox forecast). Tried: gate --abandon cannot run in Cowork (git checkout -- . refused by the mount), so the superseded terrain.impassable-naming item is still pending. Open for Angela: switches in SWITCHES.md 'V2 Thorns', the thorns hue, Bramble Guard's Codex text still says Thorns hits archers at any range. Known: content ship not run (Codex unchanged; publication tests need msedge). Next: V2 R6 hands, swaps and item instances."
 Yours: (2026-08-27) item.bracer's replacement rule — look: GAME-BUILDER.html; (2026-09-03) Kinds approved BY POLICY this run, for your look — look: GAME-BUILDER.html; (2026-09-03) The Necromancer's Raise has no range on its row. — look: GAME-BUILDER.html; (2026-09-03) The schedule vs the Codex on Surge — look: GAME-BUILDER.html; (2026-09-03) The schedule stows spare weapons in item slots — look: GAME-BUILDER.html; (2026-09-02) Note, no action needed: — look: GAME-BUILDER.html; (2026-09-03) 50 flagged landings await your review — look: GAME-BUILDER.html
 Queue: terrain.impassable-naming [naming · decision], then trigger.zombie.sap [content · trigger], then trigger.mage.kindle [content · trigger] (+18 more)
 Delegate: terrain.impassable-naming [naming · decision] — not yet gated; trigger.zombie.sap [content · trigger] — not yet gated; trigger.mage.kindle [content · trigger] — not yet gated; station.vs-target [engine · station] — not yet gated; move.actions [engine · rule] — not yet gated; fix.start-of-turn-victory [engine · plumbing] — not yet gated; fix.outcome-enum [engine · plumbing] — not yet gated; fix.phase-ladder-config [engine · plumbing] — not yet gated; fix.retired-stations [engine · plumbing] — not yet gated; crit.branch-and-injuries [engine · rule] — not yet gated; hook.on-enter [engine · plumbing] — not yet gated; tool.effect-size-rules [engine · plumbing] — not yet gated; viewer.hexvfx-path [engine · plumbing] — not yet gated; viewer.geometry [engine · plumbing] — 1 attempt(s); content.art-manifest [content · data] — not yet gated; viewer.styles [engine · plumbing] — not yet gated; sim.coverage [engine · plumbing] — not yet gated; seam.unit-mods [engine · plumbing] — not yet gated; seam.spare-weapons [engine · plumbing] — not yet gated; pack.derived-rows [content · data] — not yet gated; system.ai-modes [station · rule] — not yet gated
 Blocked: content.mage-staff needs unit.brute; viewer.build needs viewer.geometry, content.art-manifest; viewer.board needs viewer.build, viewer.geometry; viewer.tile-state needs viewer.board; viewer.panel needs viewer.build; viewer.pump needs viewer.board, viewer.panel; viewer.log-transport needs viewer.pump
-Calls since last wrap: none
+Calls since last wrap:
+  knockbackThornsZero · 2026-09-24 · A unit's collision value is 1 + its Thorns. What is its Thorns?
+  thornsIsAStat · 2026-09-24 · Where does the magnitude live?
+  thornsProtectionAbsorbs · 2026-09-24 · Does the attacker's Protection absorb Thorns damage?
+  thornsOnKillingBlow · 2026-09-24 · Does a unit the hit kills still reflect?
+  thornsDownedTarget · 2026-09-24 · Does a hit on a DOWNED thorned unit reflect?
+  thornsAttackerDown · 2026-09-24 · An attacker already not standing?
+  thornsPerHit · 2026-09-24 · A multi-hit attack? An attack of opportunity?
+  thornsNoHooks · 2026-09-24 · Does the reflected damage fire hooks (onTakingDamage, onKill …) or KDB?
+  thornsCause · 2026-09-24 · What does the log name as the cause?
+  thornsPreview · 2026-09-24 · What does preview say?
+  thornsContentScope · 2026-09-24 · Which content carries the magnitude now?
 Stack for terrain.impassable-naming:
   the item's `spec` and `expect` — `node tools/next.mjs` — before any source file
   ENGINE-CONSTITUTION.md — the law the item touches · **the Iron Gauntlet, above, before `--land`**: kill switch, hardcode scan, generalization, consequence, naming
   `node tools/decided.mjs "<the question>"` before asking anything · SWITCHES.md before deciding anything
   GLOSSARY.md — a new kind is Angela's · DECISIONS.md
 
-## The chat's commits since the last committed wrap (de83f81)
+## The chat's commits since the last committed wrap (b731e12)
 
-- 6e23998 2026-09-23 23:31 bookkeeping: the four shards green on the v2.kdb tree
-- 4688026 2026-09-23 22:56 bookkeeping for v2.kdb: the landing's gauntlet-log line. Landed commit is e0987b0; the gate recorded 9d02ae1 before its own --amend (nothing amended by hand). Content: c231c92 (Impact on attack rows, +2 on the seven hammer-tagged weapon attacks; badge flags cannotBeKnockedBack/cannotBeKnockedDown; badge.stand-firm, badge.giant new, badge.agile down-immune, badge.immovable back-immune; status.prone kdbDown; TEST attack.test-kdb.maul/bash and units test-kdb-*). Scenario: test.kdb. Event: kdb.rolled (actor, target, attackId or burst, physical, impact, strength, margin, chance, roll, fired, typeRoll, kdbType, applied, immune, immuneBy, suppressedBy, gap); knockback.blocked gains reason 'cannot be knocked back' with by. Preview gains kdbChanceOnHit/OnCrit/OnCritChart; previewBurst targets gain kdbChance. Streams kdb-occurs, kdb-type appended. Switches (SWITCHES.md 'V2 KDB', 2026-09-23): kdbBackDistance, kdbDirection, kdbOrder, kdbMultiPacket, kdbBursts, kdbKeys, kdbBothOrder, kdbImmuneNoRoll, standFirmAnyPush, kdbBadgeFlags, kdbAgileIsTheBadge, kdbBadgeCarriers, kdbDownStatusFlag, kdbStrengthFloor; maceImpact answered, knockbackNeverFeedsKdb probed, proneTestSource superseded. Four shards green on tree 8a2b60d6bc before landing.
-- e0987b0 2026-09-23 22:55 v2.kdb: V2 R4 part 2, KDB - knock down and back (COMBAT-V2-DESIGN-2026-09-07.md
-- 6c2c46e 2026-09-23 21:40 bookkeeping for fix.knockback-collisions-goldens: the landing's gauntlet-log line. Landed commit is e8b1fd8; the gate recorded 3dcd152 before its own --amend (nothing amended by hand).
-- e8b1fd8 2026-09-23 21:39 fix.knockback-collisions-goldens: The two frozen corpora v2.knockback-collisions moved, found by shard 4/4
-- eee5f10 2026-09-23 21:30 bookkeeping for v2.knockback-collisions: the landing's gauntlet-log line. Landed commit is eab6530; the gate recorded a413561 before its own --amend (tools/gate.mjs line 492 amends after writing item.sha — nothing amended by hand). Content: 3ac8096 (props collisionValue/consumes in map-schema; TEST map test.map.well-shove with prop.test.well 3/consumes and prop.test.boulder 4). Scenario: test.knockback-well. Events: knocked and knockback.blocked gain collidedWith, blocker, collisionValue, remaining (blocked also asked); collision damage is damage.applied with collision: true, damageType true, causeId = the push's cause, consumedBy when a consumes prop kills; life.dead reason 'consumed' with by and corpse: false. Switches (SWITCHES.md, 2026-09-23): knockbackLineFromRange, knockbackVertexTiebreak, knockbackBurstOrigin, knockbackProtectionAbsorbs, knockbackNeverFeedsKdb, knockbackThornsZero, knockbackFloorIsObstruction, knockbackDeadMoverNoDamage, knockbackPropFields, knockbackTestProps; knockbackBlocked retired.
-- eab6530 2026-09-23 21:29 v2.knockback-collisions: V2 R4 part 1, knockback geometry and collisions (COMBAT-V2-DESIGN-2026-0
-- 5d476ed 2026-09-23 18:40 bookkeeping for v2.prone: the landing's gauntlet-log line. Note: the landing commit was amended after the gate recorded 4a705ec; the landed commit is 022b560 (same tree)
-- 022b560 2026-09-23 18:39 v2.prone: V2 R3, Prone and standing (COMBAT-V2-DESIGN-2026-09-07.md section 10, on
-- 7ad7516 2026-09-23 16:23 DECISIONS: 2026-09-23 - the kingdom gate fits a Cowork command (Andrew); v2.shields-hands re-closes ISC-003
-- 255e0e7 2026-09-23 03:20 wrap: v2.shields — V2 R1. Done: the four process changes (landing = item tests + typecheck + control battles; wrap needs 4 green shards; one item per feature; no seals/exemptions); content shipped (co
+- 88064ac 2026-09-24 02:34 v2.thorns: V2 R5 (COMBAT-V2-DESIGN-2026-09-07 section 9.4, ruled 2026-09-07): Thorn
+- 5f99527 2026-09-24 02:06 naming.terrain-impassable: Andrew, 2026-09-24: the impassable terrain kind is terrain.impassable. R
+- 8de0e28 2026-09-24 01:45 wrap: V2 R3-R4 — prone, knockback collisions, KDB. Done: v2.prone (022b560), v2.knockback-collisions (eab6530, goldens e8b1fd8), v2.kdb (e0987b0); content b737132, 3ac8096, c231c92; viewer draws all t
 
 ## Next chat
 
-New chat with Heroes of Blight and Tragic — engine: V2 R5 Thorns
+New chat with Heroes of Blight and Tragic — engine: V2 R6 hands, swaps and item instances
 ```
 start engine
 ```
