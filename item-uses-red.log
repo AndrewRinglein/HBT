@@ -1,0 +1,87 @@
+TAP version 13
+# Subtest: the fixture: two drinks by one warrior, from two instances, each spent
+ok 1 - the fixture: two drinks by one warrior, from two instances, each spent
+  ---
+  duration_ms: 0.827152
+  type: 'test'
+  ...
+# Subtest: the fold carries the instances spent on arrival, from unit.enter
+not ok 2 - the fold carries the instances spent on arrival, from unit.enter
+  ---
+  duration_ms: 2.679952
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/item-uses.test.mjs:25:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - [
+    -   '100/5'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '100/5'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/item-uses.test.mjs:27:78)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the fold keeps each instance's uses left as charge.spent states them
+not ok 3 - the fold keeps each instance's uses left as charge.spent states them
+  ---
+  duration_ms: 0.22648
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/item-uses.test.mjs:32:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading '101/3')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/item-uses.test.mjs:35:49)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the log names the instance that paid, and says when it is spent
+not ok 4 - the log names the instance that paid, and says when it is spent
+  ---
+  duration_ms: 1.52058
+  type: 'test'
+  location: '/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/viewer/tools/item-uses.test.mjs:40:1'
+  failureType: 'testCodeFailure'
+  error: '101/3'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/viewer/tools/item-uses.test.mjs:45:86)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 94.126325

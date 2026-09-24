@@ -103,7 +103,9 @@ export function buildLog(events, SN, turns) {
       case 'badge.gained': return b('down', `&nbsp;&nbsp;<b>${nmAt(e)}</b> gains <b>${e.name || e.badgeId}</b>` + (Object.keys(e.mods || {}).length ? ` <span class="sq">· ${Object.entries(e.mods).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}</span>` : ''))
       case 'badge.held': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} already had ${e.badgeId}`)
       case 'power.exhausted': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — <span class="sq">${e.abilityId}</span> has no uses left`)
-      case 'charge.spent': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — <span class="sq">${e.abilityId}</span>, ${e.left} use${e.left === 1 ? '' : 's'} left`)
+      /* v2.item-uses: the item instance that paid is named; instanceLeft 0 = that instance is spent */
+      case 'charge.spent': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — <span class="sq">${e.abilityId}</span>, ${e.left} use${e.left === 1 ? '' : 's'} left` +
+        (e.instanceId != null ? ` <span class="sq">· ${escape(String(e.itemId).replace(/^item\./, ''))} ${escape(e.instanceId)} ${e.instanceLeft === 0 ? 'spent' : e.instanceLeft + ' left'}</span>` : ''))
       case 'maxstamina.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} max stamina <span class="sq">· now ${e.maxStamina}</span>`)
       case 'bleedout.accelerated': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b>'s bleed-out moved to ${e.bleedOut} <span class="sq">· ${e.steps} step${e.steps === 1 ? '' : 's'}</span>`)
       case 'surge.checked': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;surge check — rolled ${e.roll} vs ${e.chance}${e.hit ? ' — <b>SURGE</b>' : ''}`)

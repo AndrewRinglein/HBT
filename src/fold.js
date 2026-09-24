@@ -68,6 +68,11 @@ function mkUnit(e, UD) {
     rolls: null,            // Deathbed Fighting rolls made, from deathbed.stood/fell `ordinal`
     spent: [],              // actions whose charges ran out (power.exhausted) — they leave the bar
     charges: {},            // actionId -> uses left (charge.spent)
+    /* V2 R6 item uses (engine v2.item-uses, 2026-09-24): a use belongs to the item instance.
+       spentItems = the instances carried in already spent (unit.enter's `spent`); itemUses =
+       instanceId -> { itemId, left } as charge.spent states it (instanceLeft 0 = spent). */
+    spentItems: [...(e.spent || [])],
+    itemUses: {},
     surgeChance: null,      // the accumulating chance (surge.checked); declared here so the row shape never varies
     prone: null,            // v2.prone (2026-09-23): the prone status ids from unit.proned; null once unit.stood says it stood
     arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null, aiOverride: null, grown: null }
@@ -172,6 +177,8 @@ export function fold(S, e, ctx, now = 0) {
     case 'charge.spent':
       /* capability.charges: one use gone, `left` remain — the bar prints it */
       if (U[e.actor]) (U[e.actor].charges = U[e.actor].charges || {})[e.abilityId ?? e.actionId] = e.left
+      /* v2.item-uses: the instance that paid, and what it has left */
+      if (U[e.actor] && e.instanceId != null) U[e.actor].itemUses[e.instanceId] = { itemId: e.itemId, left: e.instanceLeft }
       break
     case 'power.exhausted':
       /* capability.charges (engine): the action spent its last use and LEAVES
