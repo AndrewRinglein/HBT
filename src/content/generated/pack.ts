@@ -16051,6 +16051,26 @@ export const UNIT_PACK = {
         "id": "test.badge.briar",
         "name": "Briar (TEST)",
         "triggers": []
+      },
+      "test.badge.fast-hands": {
+        "statModifiers": {
+          "swapCost": -1
+        },
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.fast-hands",
+        "name": "Fast Hands (TEST)",
+        "triggers": []
+      },
+      "test.badge.slow-hands": {
+        "statModifiers": {
+          "swapCost": 1
+        },
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.slow-hands",
+        "name": "Slow Hands (TEST)",
+        "triggers": []
       }
     },
     "moves": {

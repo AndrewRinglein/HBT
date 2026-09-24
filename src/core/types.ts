@@ -597,6 +597,8 @@ export type UnitDef = {
   readonly vision?: number
   /** v2.thorns (COMBAT-V2 §9.4, 2026-09-24): the Thorns magnitude, folded from items, badges and specialties. Absent = 0. */
   readonly thorns?: number
+  /** v2.swap (COMBAT-V2 §11.2, 2026-09-24): the loadout swap's stamina cost. Absent = 1 (the rule's default). */
+  readonly swapCost?: number
   /**
    * capability.auras (2026-09-03), COMBAT-DESIGN §5 / Design Law 27 "auras
    * lend, they never give": a radius around this unit granting stat modifiers
@@ -674,6 +676,10 @@ export type Unit = {
   vision: number
   /** v2.thorns: the folded Thorns magnitude; absent on a bare body (read through the `thorns` stat). */
   thorns?: number
+  /** v2.swap: the folded swap cost; absent = 1 (read through the `swapCost` stat). */
+  swapCost?: number
+  /** v2.swap (COMBAT-V2 §11.2): the one swap of this activation is spent. Absent = not spent; cleared at activation start and by a Surge. */
+  swapUsed?: boolean
   /** capability.auras: this unit's auras, own frozen copies (plain data). */
   auras: AuraDef[]
   /** capability.corpses: a raised or summoned unit leaves no corpse. */

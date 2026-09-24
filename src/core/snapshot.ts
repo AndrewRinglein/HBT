@@ -111,7 +111,12 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     if (u.incomingAttackOrdinal !== undefined) requireThat(integer(u.incomingAttackOrdinal, 1, 0xffffffff), 'incoming attack ordinal')
     if (u.burstOrdinal !== undefined) requireThat(integer(u.burstOrdinal, 1), 'burst ordinal')
     for (const k of ['hp', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'movement', 'reach', 'stamina', 'maxStamina', 'staminaRegen', 'bleedOut', 'toughness', 'surge', 'surgeChance', 'vision', 'movePointsLeft', 'activationOrdinal', 'attackOrdinal', 'deathbedOrdinal']) requireThat(integer(u[k]), `unit ${k}`)
-    for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'thorns']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)
+    for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'thorns', 'swapCost']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)
+    requireThat(u.swapUsed === undefined || typeof u.swapUsed === 'boolean', 'unit swapUsed')   // v2.swap
+    if (u.loadout !== undefined) {   // v2.loadout: hands and stowed, item instances
+      record(u.loadout)
+      for (const k of ['hands', 'stowed']) requireThat(Array.isArray(u.loadout[k]) && u.loadout[k].every((i: any) => i !== null && typeof i === 'object' && typeof i.instanceId === 'string' && typeof i.itemId === 'string' && Object.keys(i).length === 2), `unit loadout ${k}`)
+    }
     requireThat(phases.includes(u.side) && phases.includes(u.rowSide) && ['standing', 'downed', 'dead'].includes(u.lifeState), 'unit side/life')
     requireThat(['melee', 'ranged', 'support'].includes(u.role), 'unit role')
     for (const k of ['name', 'typeId', 'ai']) requireThat(typeof u[k] === 'string', `unit ${k}`)

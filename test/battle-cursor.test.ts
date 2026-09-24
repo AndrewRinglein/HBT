@@ -181,11 +181,14 @@ describe('resumable battle cursor', () => {
           }
         } else result = battle.runBattle(ctx)
         const loadoutExpected = loadoutGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-        expect(loadoutExpected, 'frozen v2.loadout hashes for this case').toBeDefined()
+        // Law 10, 2026-09-24 (v2.swap): a case newer than the capture (test.swap) has no frozen
+        // row; it keeps the automatic/suspended comparison below, like every new case before it.
+        if (loadoutExpected) {
         expect(hash(ctx.events), 'full v2.loadout events').toBe(loadoutExpected.events)
         expect(hash(ctx.state), 'full v2.loadout state').toBe(loadoutExpected.state)
         expect(hash(ctx.rng.log), 'full v2.loadout RNG').toBe(loadoutExpected.rng)
         expect(result).toEqual(loadoutExpected.result)
+        }
         // every older assertion below runs on the projection (metadata removed, nothing else)
         Object.assign(ctx, projectLoadout(ctx))
         // Historical shorthand projection is only meaningful for a historical

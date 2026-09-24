@@ -23,7 +23,10 @@ export type Applied = {
   readonly worn: readonly { readonly itemId: string; readonly grants: readonly string[]; readonly abilities: readonly string[]; readonly mods: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }[]
 }
 
-export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
+/** v2.swap: a foldable stat whose absent value is not 0. */
+export const FOLD_BASE: Readonly<Record<string, number>> = { swapCost: 1 }
+
+export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 
 export function applyItems(
   base: UnitDef,
@@ -37,7 +40,7 @@ export function applyItems(
   const abilities: string[] = []
   const triggers = [...(base.triggers ?? [])]
   const stats: Record<string, number> = {}
-  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? 0
+  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? FOLD_BASE[k] ?? 0
   const worn: Applied['worn'][number][] = []
   const seen = new Set<string>()
   for (const id of itemIds) {
@@ -89,7 +92,7 @@ export function applyItems(
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}),
+    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
     attacks: attackIds,
     abilities: [...abilities, ...base.abilities.filter((a) => !abilities.includes(a))],
     triggers,
@@ -126,7 +129,7 @@ export function applyProgress(
   const table = levels[tableId]
   if (!table) throw new Error(`${where}: ${base.typeId} levels on '${tableId}', and the pack has no such level table`)
   const stats: Record<string, number> = {}
-  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? 0
+  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? FOLD_BASE[k] ?? 0
   const add = (k: string, v: number, src: string) => {
     if (!(FOLDABLE as readonly string[]).includes(k)) {
       // itemSlots and surge are campaign quantities the engine does not fold; anything else is an error
@@ -176,7 +179,7 @@ export function applyProgress(
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}),
+    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
     abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
   }
 }
@@ -201,7 +204,7 @@ export function applyBadges(
   where: string,
 ): Badged {
   const stats: Record<string, number> = {}
-  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? 0
+  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? FOLD_BASE[k] ?? 0
   const attacks = [...base.attacks]
   const abilities = [...base.abilities]
   const triggers = [...(base.triggers ?? [])]
@@ -235,7 +238,7 @@ export function applyBadges(
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}),
+    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
     attacks, abilities, triggers,
     badges: [...seen],
   }

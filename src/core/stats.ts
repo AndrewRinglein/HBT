@@ -30,6 +30,8 @@ export type StatName =
   | 'vision'
   /** v2.thorns (COMBAT-V2 §9.4, 2026-09-24): the Thorns magnitude — 0 on every body; items, badges, statuses and auras lend it. */
   | 'thorns'
+  /** v2.swap (COMBAT-V2 §11.2, 2026-09-24): what a loadout swap costs in stamina — 1 on every body; badges, items and statuses fold it. Read never below 0. */
+  | 'swapCost'
 
 /**
  * `add` sums. `set` overrides and wins outright (disarm, petrify).
@@ -86,6 +88,7 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   luck: (u) => u.luck,
   vision: (u) => u.vision,
   thorns: (u) => u.thorns ?? 0,
+  swapCost: (u) => u.swapCost ?? 1,
 }
 
 /** The same stat vocabulary used by resolution, for external data validation. */

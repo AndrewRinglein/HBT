@@ -894,3 +894,23 @@ hands grants; a weapon in an item slot is swap fodder; §6.1 "Two longswords is 
 | `loadoutStowedClasses` | What may be stowed? | **Weapon and shield class only**; anything else in `heroStowed` is refused loudly. | §11.1: "every other item class works normally from its own slot" — a stowed trinket has no meaning. | provisional — 2026-09-24 |
 | `loadoutStowedLog` | Where does the log name a stowed item? | **On `unit.enter`, as `stowed`** (instances), only when there is one. `unit.equipped` stays in-hand only. | §15.2; no new event name for a thing that does nothing until a swap. | provisional — 2026-09-24 |
 | `loadoutScheduleStowed` | Does the progression schedule's stowed weapon (`rosterOptionsOf().stowed`) ride into the battle? | **Not yet** — it is still reported, not fielded. | It would move the progression fixtures twice (here and at the swap); it rides in with v2.swap, when it can do something. | provisional — 2026-09-24 |
+
+## V2 swap — defaults taken landing v2.swap (2026-09-24)
+
+The rule is COMBAT-V2-DESIGN-2026-09-07.md §11.2 (ruled 2026-09-07): one swap per
+activation, only before the primary action, costs `swapCost` stamina (a foldable stat,
+default 1), a Surge reopens it, enemies do not swap. Engine `src/core/swap.ts` (`canSwap`,
+`performSwap`), the `swap` battle command, the event `loadout.swapped`. TEST content:
+`test.badge.fast-hands` (swapCost −1), `test.badge.slow-hands` (+1), scenario `test.swap`.
+V2 R6 part 2 (Andrew's chat, 2026-09-24).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `swapAi` | Does an AI-controlled hero ever swap? | **No.** A swap is a command a human-controlled hero issues; no AI mode chooses one. | When the AI should swap is an AI-mode decision, and `system.ai-modes` is Angela's. | provisional — 2026-09-24 |
+| `swapShape` | What does a swap name? | **The instances to hold afterwards**, in hand order; everything else carried is stowed. Emptying a hand is legal; "nothing changes" is refused. | One verb covers swap one, swap both and drop to Punch; §11.1 "Punch is always available". | provisional — 2026-09-24 |
+| `swapHealthClamp` | A Health (or Stamina) maximum that leaves the hands? A higher one that arrives? | **A lower maximum clamps current Health/Stamina; a higher one does not heal.** | Swapping must not be a heal. | provisional — 2026-09-24 |
+| `swapLimits` | Does a power that leaves and returns keep its cooldown and uses? | **Yes.** Uses are seeded once, the first time the power is in hand; cooldowns are never reset or seeded by a swap. | Otherwise swapping cycles cooldowns and charges. | provisional — 2026-09-24 |
+| `swapAiMode` | Does the unit's role / AI mode follow the swap? | **No** — it stays what the fielded kit set. | Moot while the AI never swaps (`swapAi`); a human-controlled hero has no AI mode in play. | provisional — 2026-09-24 |
+| `swapMovePoints` | Does a Movement modifier that arrives mid-activation change this activation's movement points? | **No** — movement points are read once at activation start (as Slow is, `slowReadAtActivationStart`). The next activation reads the new Movement. | One read point for movement. | provisional — 2026-09-24 |
+| `swapCostFloor` | swapCost folded below 0? | **Read as 0** — a swap never pays the unit. | Same floor as Thorns. | provisional — 2026-09-24 |
+| `swapCause` | What cause does loadout.swapped name? | **`engine`**, as `surge.hit` does; the unit is the actor and the instances are named in the event. | No content row causes a swap. | provisional — 2026-09-24 |

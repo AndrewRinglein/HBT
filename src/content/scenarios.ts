@@ -90,6 +90,17 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.thorns', note: 'TEST: zombies wearing Thorns 1 and Thorns 3 (fielded as the heroes) against Osric (melee) and a ranger (ranged). No campaign claim.',
     mapId: 'map.open', heroes: ['test-thorns-bramble', 'test-thorns-briar'], heroHexes: [86, 102], enemies: ['test-osric', 'test-ranger'], enemyHexes: [85, 81], replicate: 0, sides: 'byList',
   },
+  // v2.swap (2026-09-24, COMBAT-V2 §11.2): two warriors, a longsword in hand and a kite
+  // shield stowed, wearing Fast Hands (swapCost 0) and Slow Hands (swapCost 2). The AI
+  // does not swap (SWITCHES.md swapAi); the scenario fields the loadout and the badges
+  // so the log names them. A swap is a command (commands.ts) — test/v2-swap.test.ts drives it.
+  'test.swap': {
+    id: 'test.swap', note: 'TEST: two warriors carrying a longsword in hand and a kite shield stowed, one with Fast Hands, one with Slow Hands, against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.warrior-iron'], heroHexes: [86, 102],
+    heroItems: [['item.longsword'], ['item.longsword']], heroStowed: [['item.kite-shield'], ['item.kite-shield']],
+    heroBadges: [['test.badge.fast-hands'], ['test.badge.slow-hands']],
+    enemies: ['test-zombie', 'test-zombie'], enemyHexes: [85, 101], replicate: 0,
+  },
   'test.props-viewer-ranged-zoc': {
     id: 'test.props-viewer-ranged-zoc', note: 'Current production replay coverage: a ranged-only Fire Imp cannot make a melee reaction when Lucius walks away. Both units have existing viewer art.',
     mapId: 'map.open', heroes: ['alpha-lucius'], heroHexes: [85],

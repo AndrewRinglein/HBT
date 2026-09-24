@@ -386,6 +386,7 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
   u.activationOrdinal += 1
   u.moveUsed = false
   u.primaryUsed = false
+  delete u.swapUsed   // v2.swap: one swap per activation
   // Slow — and any status declaring reducesMovement: this Activation's points
   // are Movement minus the summed stack values, floored at 0 (the unit still
   // acts from where it stands; that is what separates Slow from Stun). Read
@@ -421,6 +422,7 @@ export function reopenSurgeCycle(ctx: Ctx, id: number, allowance: number, link: 
   const u = unit(ctx, id)
   u.moveUsed = false
   u.primaryUsed = false
+  delete u.swapUsed   // v2.swap (COMBAT-V2 §11.2): "A Surge reopens everything, the swap included"
   const rooted = u.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.blocksMovement)
   u.movePointsLeft = rooted ? 0 : allowance
   emit(ctx, 'surge.hit', 'engine', { actor: id, link, movePoints: u.movePointsLeft })

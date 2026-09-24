@@ -15040,3 +15040,45 @@ index 5f3b740..a951f80 100644
    it('applyItems is pure over its inputs — the same call twice is the same def, and the base is untouched', () => {
 ```
 </details>
+
+## v2.loadout-swap — LANDED `dd468e3` **NEEDS REVIEW**
+2026-09-24 11:36
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:477 · SWITCHES.md:731
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/v2-swap.test.ts
+  PASS  gate 1 — the id appears in a real battle — test.badge.fast-hands: 1 log lines, 1 fired, 1 changed state · test.badge.slow-hands: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/v2-swap.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 33 ids without a published source (23 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.badge.fast-hands live · test.badge.slow-hands live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.badge.fast-hands,test.badge.slow-hands — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index f290758..f2d7aef 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -182,9 +182,12 @@ describe('resumable battle cursor', () => {
+         } else result = battle.runBattle(ctx)
+         const loadoutExpected = loadoutGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-        expect(loadoutExpected, 'frozen v2.loadout hashes for this case').toBeDefined()
++        // Law 10, 2026-09-24 (v2.swap): a case newer than the capture (test.swap) has no frozen
++        // row; it keeps the automatic/suspended comparison below, like every new case before it.
++        if (loadoutExpected) {
+         expect(hash(ctx.events), 'full v2.loadout events').toBe(loadoutExpected.events)
+         expect(hash(ctx.state), 'full v2.loadout state').toBe(loadoutExpected.state)
+         expect(hash(ctx.rng.log), 'full v2.loadout RNG').toBe(loadoutExpected.rng)
+         expect(result).toEqual(loadoutExpected.result)
++        }
+         // every older assertion below runs on the projection (metadata removed, nothing else)
+         Object.assign(ctx, projectLoadout(ctx))
+```
+</details>

@@ -12,11 +12,14 @@ import { completeActionCycle } from './battle.js'
 import { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 import { selectActivation } from './mutate.js'
 import { isUnitUid } from './identity.js'
+import { canSwap, performSwap } from './swap.js'
 export { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 
 /** Shared action input; session ownership is supplied separately from client data. */
 export type ActionRequest = { actor: number; actionId: string; slot?: import('./types.js').ActionSlot } & ({ target: number } | { destination: number } | { centre: number })
 export type BattleCommand = { kind: 'select-activation'; unitUid: number; expectedSeq: number } | (ActionRequest & { kind: 'action'; expectedSeq: number }) | { kind: 'end-cycle'; actor: number; expectedSeq: number }
+  /** v2.swap (COMBAT-V2 §11.2): hold these instances; everything else carried is stowed. */
+  | { kind: 'swap'; actor: number; hands: string[]; expectedSeq: number }
 export type CommandResult = { ok: true } | { ok: false; reason: string }
 type Rejection = Extract<CommandResult, { ok: false }>
 type Plan = { kind: 'attack'; actor: number; actionId: string; target: number; slot: import('./types.js').ActionSlot }
@@ -87,7 +90,7 @@ export function executeAction(ctx: Ctx, request: unknown): CommandResult {
   return { ok: true }
 }
 
-type SessionPlan = Plan | { kind: 'select-activation'; actor: number } | { kind: 'end-cycle'; actor: number }
+type SessionPlan = Plan | { kind: 'select-activation'; actor: number } | { kind: 'end-cycle'; actor: number } | { kind: 'swap'; actor: number; hands: string[] }
 function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): SessionPlan | Rejection {
   if (!record(command)) return reject('malformed-command')
   // Reject accessors before reading input, as well as unknown command fields.
@@ -101,8 +104,8 @@ function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): Session
     if (!activationChoices(ctx,policy).includes(command.unitUid)) return reject('activation-not-selectable')
     return {kind,actor:ctx.state.units.find(u=>u.uid===command.unitUid)!.id}
   }
-  if (kind !== 'action' && kind !== 'end-cycle') return reject('malformed-command')
-  const fields = kind === 'end-cycle' ? ['kind', 'actor', 'expectedSeq'] : ['kind', 'actor', 'expectedSeq', 'actionId', Object.hasOwn(command, 'centre') ? 'centre' : Object.hasOwn(command, 'target') ? 'target' : 'destination']
+  if (kind !== 'action' && kind !== 'end-cycle' && kind !== 'swap') return reject('malformed-command')
+  const fields = kind === 'end-cycle' ? ['kind', 'actor', 'expectedSeq'] : kind === 'swap' ? ['kind', 'actor', 'expectedSeq', 'hands'] : ['kind', 'actor', 'expectedSeq', 'actionId', Object.hasOwn(command, 'centre') ? 'centre' : Object.hasOwn(command, 'target') ? 'target' : 'destination']
   if (kind === 'action' && Object.hasOwn(command, 'slot')) fields.push('slot')
   if (!keys(command, fields) || !integer(actor) || !ctx.state.units[actor] || !integer(expectedSeq)) return reject('malformed-command')
   if (ctx.state.outcome) return reject('battle-complete')
@@ -111,6 +114,12 @@ function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): Session
   if (expectedSeq !== ctx.state.seq) return reject('stale-sequence')
   if (controllerOf(ctx, actor, policy) !== 'human') return reject('not-human-controlled')
   if (kind === 'end-cycle') return { kind, actor }
+  if (kind === 'swap') {
+    const hands = command.hands
+    if (!Array.isArray(hands) || Object.getPrototypeOf(hands) !== Array.prototype || hands.some((h) => typeof h !== 'string')) return reject('malformed-command')
+    const why = canSwap(ctx, actor, hands)
+    return why ? reject(`illegal-swap: ${why}`) : { kind, actor, hands: [...hands] }
+  }
   return planAction(ctx, { actor, actionId: command.actionId, ...(Object.hasOwn(command, 'centre') ? { centre: command.centre } : Object.hasOwn(command, 'target') ? { target: command.target } : { destination: command.destination }), ...(Object.hasOwn(command, 'slot') ? { slot: command.slot } : {}) })
 }
 
@@ -124,6 +133,7 @@ export function executeBattleCommand(ctx: Ctx, policy: ControlPolicy, command: u
   if ('ok' in plan) return plan
   if (plan.kind === 'select-activation') selectActivation(ctx,plan.actor,'engine')
   else if (plan.kind === 'end-cycle') completeActionCycle(ctx)
+  else if (plan.kind === 'swap') performSwap(ctx, plan.actor, plan.hands)
   else {
     resolvePlan(ctx, plan)
     // A paid primary, victory or falling leaves no further human action.

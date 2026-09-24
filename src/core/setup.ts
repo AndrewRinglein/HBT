@@ -37,6 +37,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     surge: def.surge ?? 0, surgeChance: 0,
     vision: def.vision ?? 0,
     ...(def.thorns ? { thorns: def.thorns } : {}),   // v2.thorns: absent on a bare body (snapshots unchanged)
+    ...(def.swapCost !== undefined && def.swapCost !== 1 ? { swapCost: def.swapCost } : {}),   // v2.swap: absent = 1
     auras: (def.auras ?? []).map((a) => ({ ...a })),
     summoned: false,
     // refactor.one-action-type (2026-09-04): ONE list — attacks, powers,
