@@ -993,5 +993,19 @@
   "sha": "3376376",
   "engineSha": "7ad7516",
   "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "v2.block-presentation",
+  "kind": "kingdom",
+  "shape": "adapter",
+  "milestone": "V2",
+  "needs": [
+   "v2.shields-hands"
+  ],
+  "spec": "V2 R2 Block presentation (one feature with viewer 4ee64f9/0b002e7). The sandbox forecast shows the engine preview blockChance, hitChance as Hit chance if not blocked, and connectionChanceBps as Chance to connect; the shared viewer panel lists Block and Ranged Block; the replay log attack line reads block / hit if not blocked / connects from attack.declared; statmod.expired folds; 29 library battles re-exported at engine 7ad7516. Wording: SWITCHES.md blockForecastWording.",
+  "expect": "ISC-069 holds. tools/sandbox-block.verify.mjs, run by test/sandbox-block.test.ts: a real sandbox battle where a zombie attacks the Iron Dwarf and his Tower Shield rolls a positive Block; attack.declared carries the rolled chance; the log line, panel rows and forecast labels copy the engine facts; a Block moves no HP.",
+  "isc": [
+   "069"
+  ]
  }
 ]
