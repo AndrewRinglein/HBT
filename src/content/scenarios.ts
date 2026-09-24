@@ -82,6 +82,14 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.kdb', note: 'TEST: zombies wearing Stand Firm, Agile and Giant (fielded as the heroes) against a Mauler (Impact 3) and a Basher (Impact 7, no damage). No campaign claim.',
     mapId: 'map.open', heroes: ['test-kdb-firm', 'test-kdb-agile', 'test-kdb-giant'], heroHexes: [86, 102, 70], enemies: ['test-kdb-mauler', 'test-kdb-basher'], enemyHexes: [85, 101], replicate: 0, sides: 'byList',
   },
+  // v2.thorns (2026-09-24, COMBAT-V2 §9.4): two thorned zombies (test.badge.bramble
+  // Thorns 1, test.badge.briar Thorns 3), fielded as the heroes so unit.badged names
+  // the badges, against Osric (melee — pays Thorns on every connecting hit) and a
+  // ranger (ranged — never does).
+  'test.thorns': {
+    id: 'test.thorns', note: 'TEST: zombies wearing Thorns 1 and Thorns 3 (fielded as the heroes) against Osric (melee) and a ranger (ranged). No campaign claim.',
+    mapId: 'map.open', heroes: ['test-thorns-bramble', 'test-thorns-briar'], heroHexes: [86, 102], enemies: ['test-osric', 'test-ranger'], enemyHexes: [85, 81], replicate: 0, sides: 'byList',
+  },
   'test.props-viewer-ranged-zoc': {
     id: 'test.props-viewer-ranged-zoc', note: 'Current production replay coverage: a ranged-only Fire Imp cannot make a melee reaction when Lucius walks away. Both units have existing viewer art.',
     mapId: 'map.open', heroes: ['alpha-lucius'], heroHexes: [85],

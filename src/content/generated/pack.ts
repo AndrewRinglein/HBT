@@ -9396,30 +9396,17 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {
         "strength": 2,
-        "block": 5
+        "block": 5,
+        "thorns": 3
       },
       "grants": [
         "attack.tomb-sentinels-blade.sentinel-cut",
         "attack.tomb-sentinels-blade.grave-warden"
       ],
       "abilities": [],
-      "triggers": [
-        {
-          "id": "trigger.tomb-sentinels-blade.thorns",
-          "hook": "onTakingDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "damage",
-            "amount": 3,
-            "damageType": "true"
-          },
-          "source": "item.tomb-sentinels-blade"
-        }
-      ],
+      "triggers": [],
       "gaps": [
-        "onKill: gain +1 Armor for the rest of the Battle, stacking — trigger shape unparsed",
-        "thorns: 3 — item field: thorns"
+        "onKill: gain +1 Armor for the rest of the Battle, stacking — trigger shape unparsed"
       ]
     },
     "item.siege-crossbow": {
@@ -10022,27 +10009,12 @@ export const UNIT_PACK = {
       "hands": 0,
       "slots": 1,
       "statModifiers": {
-        "maxHp": 2
+        "maxHp": 2,
+        "thorns": 2
       },
       "grants": [],
       "abilities": [],
-      "triggers": [
-        {
-          "id": "trigger.stormweave-armor.thorns",
-          "hook": "onTakingDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "damage",
-            "amount": 2,
-            "damageType": "true"
-          },
-          "source": "item.stormweave-armor"
-        }
-      ],
-      "gaps": [
-        "thorns: 2 — item field: thorns"
-      ]
+      "triggers": []
     },
     "item.battlemages-cuirass": {
       "id": "item.battlemages-cuirass",
@@ -10185,27 +10157,12 @@ export const UNIT_PACK = {
         "maxHp": 6,
         "armor": 1,
         "movement": -1,
-        "dodge": -5
+        "dodge": -5,
+        "thorns": 3
       },
       "grants": [],
       "abilities": [],
-      "triggers": [
-        {
-          "id": "trigger.armor-of-thorns.thorns",
-          "hook": "onTakingDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "damage",
-            "amount": 3,
-            "damageType": "true"
-          },
-          "source": "item.armor-of-thorns"
-        }
-      ],
-      "gaps": [
-        "thorns: 3 — item field: thorns"
-      ]
+      "triggers": []
     },
     "item.divine-bulwark": {
       "id": "item.divine-bulwark",
@@ -11601,22 +11558,12 @@ export const UNIT_PACK = {
       "tier": 2,
       "hands": 0,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "thorns": 3
+      },
       "grants": [],
       "abilities": [],
       "triggers": [
-        {
-          "id": "trigger.wreath-of-natures-protection.thorns",
-          "hook": "onTakingDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "damage",
-            "amount": 3,
-            "damageType": "true"
-          },
-          "source": "item.wreath-of-natures-protection"
-        },
         {
           "id": "trigger.wreath-of-natures-protection.regeneration",
           "hook": "startOfBattle",
@@ -11629,9 +11576,6 @@ export const UNIT_PACK = {
           },
           "source": "item.wreath-of-natures-protection"
         }
-      ],
-      "gaps": [
-        "thorns: 3 — item field: thorns"
       ]
     },
     "item.astrolabe-of-the-threshold": {
@@ -13404,18 +13348,6 @@ export const UNIT_PACK = {
             "source": "unit.test-arc-golem"
           },
           {
-            "id": "trigger.test-thorns",
-            "hook": "onTakingDamage",
-            "chance": 100,
-            "select": "target",
-            "effect": {
-              "kind": "damage",
-              "amount": 1,
-              "damageType": "true"
-            },
-            "source": "unit.test-arc-golem"
-          },
-          {
             "id": "trigger.test-eoa.brace",
             "hook": "onActivationEnd",
             "chance": 100,
@@ -13548,7 +13480,8 @@ export const UNIT_PACK = {
           "power.test-second-wind"
         ],
         "badges": [
-          "badge.hero"
+          "badge.hero",
+          "test.badge.bramble"
         ],
         "typeId": "test-arc-golem"
       },
@@ -15514,6 +15447,150 @@ export const UNIT_PACK = {
         "badges": [
           "badge.giant"
         ]
+      },
+      {
+        "typeId": "test-thorns-bramble",
+        "name": "Bramble Zombie (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-thorns-bramble",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-thorns-bramble"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-thorns-bramble"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "badges": [
+          "test.badge.bramble"
+        ]
+      },
+      {
+        "typeId": "test-thorns-briar",
+        "name": "Briar Zombie (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-thorns-briar",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-thorns-briar"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-thorns-briar"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "badges": [
+          "test.badge.briar"
+        ]
       }
     ],
     "attacks": {
@@ -15953,6 +16030,26 @@ export const UNIT_PACK = {
         },
         "id": "test.badge.deaths-door",
         "name": "Death's Door (TEST)",
+        "triggers": []
+      },
+      "test.badge.bramble": {
+        "statModifiers": {
+          "thorns": 1
+        },
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.bramble",
+        "name": "Bramble (TEST)",
+        "triggers": []
+      },
+      "test.badge.briar": {
+        "statModifiers": {
+          "thorns": 3
+        },
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.briar",
+        "name": "Briar (TEST)",
         "triggers": []
       }
     },
@@ -30815,16 +30912,14 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {
         "maxStamina": 1,
-        "luck": 3
+        "luck": 3,
+        "thorns": 2
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.barbarian-hide",
-      "enchant": "enchant.thorned",
-      "gaps": [
-        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
-      ]
+      "enchant": "enchant.thorned"
     },
     "item.barbarian-hide.tainted-blood": {
       "id": "item.barbarian-hide.tainted-blood",
@@ -31016,16 +31111,14 @@ export const UNIT_PACK = {
       "statModifiers": {
         "maxHp": 4,
         "maxStamina": -1,
-        "dodge": -5
+        "dodge": -5,
+        "thorns": 2
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.heavy-leather",
-      "enchant": "enchant.thorned",
-      "gaps": [
-        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
-      ]
+      "enchant": "enchant.thorned"
     },
     "item.heavy-leather.durable": {
       "id": "item.heavy-leather.durable",
@@ -31078,16 +31171,14 @@ export const UNIT_PACK = {
         "maxHp": 4,
         "strength": 1,
         "dodge": -5,
-        "accuracy": -5
+        "accuracy": -5,
+        "thorns": 2
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.brutes-harness",
-      "enchant": "enchant.thorned",
-      "gaps": [
-        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
-      ]
+      "enchant": "enchant.thorned"
     },
     "item.brutes-harness.tainted-blood": {
       "id": "item.brutes-harness.tainted-blood",
@@ -31292,16 +31383,14 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {
         "maxHp": 4,
-        "movement": -1
+        "movement": -1,
+        "thorns": 2
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.mismatched-armor",
-      "enchant": "enchant.thorned",
-      "gaps": [
-        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
-      ]
+      "enchant": "enchant.thorned"
     },
     "item.mismatched-armor.tainted-blood": {
       "id": "item.mismatched-armor.tainted-blood",
@@ -31731,16 +31820,14 @@ export const UNIT_PACK = {
         "movement": -2,
         "maxStamina": -2,
         "dodge": -10,
-        "accuracy": -10
+        "accuracy": -10,
+        "thorns": 2
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.plated-armor",
-      "enchant": "enchant.thorned",
-      "gaps": [
-        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
-      ]
+      "enchant": "enchant.thorned"
     },
     "item.plated-armor.durable": {
       "id": "item.plated-armor.durable",
@@ -34186,12 +34273,11 @@ export const UNIT_PACK = {
     "badge.thorned-hide": {
       "id": "badge.thorned-hide",
       "name": "Thorned Hide",
-      "statModifiers": {},
+      "statModifiers": {
+        "thorns": 1
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "Thorns 1"
-      ]
+      "flags": {}
     },
     "badge.trailwise": {
       "id": "badge.trailwise",
@@ -34872,12 +34958,13 @@ export const UNIT_PACK = {
     "badge.cursed-vengeance": {
       "id": "badge.cursed-vengeance",
       "name": "Cursed Vengeance",
-      "statModifiers": {},
+      "statModifiers": {
+        "thorns": 2
+      },
       "grants": [],
       "flags": {},
       "gaps": [
-        "If on cuirsed Tile",
-        "Thorns 2"
+        "If on cuirsed Tile"
       ]
     },
     "badge.frozen-vengeance": {

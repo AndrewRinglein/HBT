@@ -319,7 +319,7 @@ export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
 export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as { items?: Readonly<Record<string, ItemDef>> }).items ?? {}
   const CLASSES = ['weapon', 'shield', 'armor', 'trinket', 'relic', 'idol', 'bloodrune', 'consumable']
-  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
+  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id) throw new Error(`item pack: key '${k}' names id '${it.id}'`)
     if (!k.startsWith('item.')) throw new Error(`item pack: '${k}' is not an item.* id`)
@@ -412,7 +412,7 @@ export function packLevels(): Readonly<Record<string, LevelTable>> {
  * the engine folds, every flag a known one, every trigger well-formed with the
  * badge as its source.
  */
-const BADGE_STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
+const BADGE_STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns']
 const BADGE_FLAGS = ['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']   // the last two: v2.kdb (COMBAT-V2 §9.5)
 function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, family: (k: string) => boolean): Readonly<Record<string, BadgeDef>> {
   for (const [k, b] of Object.entries(raw)) {
@@ -438,7 +438,7 @@ export function packTestBadges(): Readonly<Record<string, BadgeDef>> {
 /** The enchanted tier-3 rows — ITEMS-PLAN.md §6: generated, base + enchant, never hand-edited. Validated like items. */
 export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as unknown as { enchanted?: Readonly<Record<string, ItemDef & { base: string; enchant: string }>> }).enchanted ?? {}
-  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
+  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id || !k.startsWith('item.')) throw new Error(`enchanted: bad key '${k}'`)
     if (typeof it.base !== 'string' || typeof it.enchant !== 'string') throw new Error(`enchanted: '${k}' does not name its base and enchant`)

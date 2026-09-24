@@ -66,13 +66,16 @@ describe('the tick — type on the event, mitigation by the type', () => {
 })
 
 describe('thorns — retaliation damage is TRUE', () => {
+  // LAW 10 — 2026-09-24 (v2.thorns, COMBAT-V2-DESIGN §9.4): Thorns is a magnitude,
+  // not a trigger. The golem's trigger.test-thorns (V1 onTakingDamage, 1 true) became
+  // test.badge.bramble (Thorns 1), and the reflected damage is named by the melee
+  // attack that set it off (thorns: true). The claim under test — the golem's hide
+  // answers the zombies' bites with TRUE damage, live in the scenario — is unchanged.
   it('the test golem\'s hide deals 1 TRUE back to its attacker, live in the scenario', () => {
-    expect((UNITS['test-arc-golem']!.triggers ?? []).some((t) =>
-      t.id === 'trigger.test-thorns' && t.effect.kind === 'damage'
-      && (t.effect as { damageType: string }).damageType === 'true')).toBe(true)
+    expect(UNITS['test-arc-golem']!.badges ?? []).toContain('test.badge.bramble')
     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
     runBattle(ctx)
-    const thorns = ctx.events.filter((e) => e.type === 'damage.applied' && e.causeId === 'trigger.test-thorns')
+    const thorns = ctx.events.filter((e) => e.type === 'damage.applied' && e['thorns'] === true)
     expect(thorns.length, 'zombies bite the golem — the hide answers').toBeGreaterThan(0)
     for (const t of thorns) expect(t['damageType']).toBe('true')
   })

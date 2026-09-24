@@ -48,6 +48,11 @@ const knockGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kn
 // is checked against its new frozen hashes on both drivers; unchanged cases keep every
 // prior assertion. Old fixtures stay immutable.
 const kdbGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kdb.json', import.meta.url), 'utf8'))
+// v2.thorns (2026-09-24), Law 10: Thorns is a magnitude (COMBAT-V2 §9.4). The golem's
+// V1 retaliation trigger became test.badge.bramble (1 true on each connecting melee hit),
+// so the cases that field it moved; `changed` cases are checked against new frozen hashes
+// on both drivers. Old fixtures stay immutable.
+const thornsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-thorns.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -149,13 +154,15 @@ describe('resumable battle cursor', () => {
       const shieldExpected = shieldGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const knockExpected = knockGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kdbExpected = kdbGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const kdbMoved = kdbExpected?.changed === true
+      const thornsExpected = thornsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const thornsMoved = thornsExpected?.changed === true
+      const kdbMoved = kdbExpected?.changed === true || thornsMoved
       const knockMoved = knockExpected?.changed === true || kdbMoved
       const shieldMoved = shieldExpected?.changed === true || knockMoved
       const migrated = shieldMoved || burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
-      let expected = (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      let expected = (thornsMoved ? thornsExpected : undefined) ?? (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result

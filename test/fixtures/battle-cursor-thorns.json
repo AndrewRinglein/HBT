@@ -1,0 +1,44 @@
+{
+  "sourceCommit": "v2.thorns",
+  "note": "v2.thorns (2026-09-24): Thorns is a magnitude (COMBAT-V2-DESIGN section 9.4). The test golem's V1 onTakingDamage retaliation (trigger.test-thorns: 1 true back at any range, only when damage got through) became test.badge.bramble (Thorns 1: 1 true back on every connecting MELEE hit, armor-zero included; never ranged, burst, miss or block). The listed cases field the golem and moved; both drivers are checked against these frozen hashes. thornsReflected counts the reflections. Old fixtures stay immutable.",
+  "cases": [
+    {
+      "id": "showcase.arc-variant",
+      "events": "52100c7f9a4ed21c528c2ec87f5d9fb7563a2af3e74ca4936a44bbb3af67961e",
+      "state": "4838c879ae76a3833c936ac3cd482600b180fbcfe6baab9b625e7f0506da6974",
+      "rng": "561f4a26f2dd3eaa920ddf344e08a65c98a0d0d5e9ecf4a673ed24bc106a848f",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": [
+          {
+            "unit": 0,
+            "power": "attack.test-ram.once",
+            "spent": 1
+          }
+        ]
+      },
+      "changed": true,
+      "thornsReflected": 3
+    },
+    {
+      "id": "showcase.knockback-two",
+      "events": "acb899bcbe2037abe9ad5c6ca07b2499a3a4fd6a6a959d20b458d9f2afb04ddd",
+      "state": "bdab92a7050c3b94513540cd8b5fb2bf40311f9a620ae583ade99f08e580d11e",
+      "rng": "e3876b1b7a98cc7084324b11293850f9846a928779d7a554938b04de06e1a86f",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": [
+          {
+            "unit": 0,
+            "power": "attack.test-ram.once",
+            "spent": 1
+          }
+        ]
+      },
+      "changed": true,
+      "thornsReflected": 3
+    }
+  ]
+}

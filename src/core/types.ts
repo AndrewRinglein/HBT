@@ -593,6 +593,8 @@ export type UnitDef = {
   readonly surge?: number
   /** capability.vision (2026-09-03): the unit's Vision stat. Ruled 2026-09-03: 0 by default — "nothing is stored on the unit"; the battlefield's 6 is the modifier. */
   readonly vision?: number
+  /** v2.thorns (COMBAT-V2 §9.4, 2026-09-24): the Thorns magnitude, folded from items, badges and specialties. Absent = 0. */
+  readonly thorns?: number
   /**
    * capability.auras (2026-09-03), COMBAT-DESIGN §5 / Design Law 27 "auras
    * lend, they never give": a radius around this unit granting stat modifiers
@@ -668,6 +670,8 @@ export type Unit = {
   surgeChance: number
   /** capability.vision: the Vision STAT (0 by default — the battlefield's 6 is added at read). */
   vision: number
+  /** v2.thorns: the folded Thorns magnitude; absent on a bare body (read through the `thorns` stat). */
+  thorns?: number
   /** capability.auras: this unit's auras, own frozen copies (plain data). */
   auras: AuraDef[]
   /** capability.corpses: a raised or summoned unit leaves no corpse. */

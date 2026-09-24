@@ -14893,3 +14893,80 @@ index d10dcbb..cf12889 100644
      }
 ```
 </details>
+
+## v2.thorns — LANDED `36da82b` **NEEDS REVIEW**
+2026-09-24 09:33
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:879 · HANDOFF.md:26
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/status-damage-types.test.ts, test/v2-thorns.test.ts
+  PASS  gate 1 — the id appears in a real battle — test.badge.bramble: 1 log lines, 1 fired, 1 changed state · test.badge.briar: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/status-damage-types.test.ts, test/fixtures/battle-cursor-thorns.json, test/v2-thorns.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/status-damage-types.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 33 ids without a published source (23 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.badge.bramble live · test.badge.briar live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.badge.bramble,test.badge.briar — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 20952bb..dbfdd72 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -49,4 +49,9 @@ const knockGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kn
+ // prior assertion. Old fixtures stay immutable.
+ const kdbGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kdb.json', import.meta.url), 'utf8'))
++// v2.thorns (2026-09-24), Law 10: Thorns is a magnitude (COMBAT-V2 §9.4). The golem's
++// V1 retaliation trigger became test.badge.bramble (1 true on each connecting melee hit),
++// so the cases that field it moved; `changed` cases are checked against new frozen hashes
++// on both drivers. Old fixtures stay immutable.
++const thornsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-thorns.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -150,5 +155,7 @@ describe('resumable battle cursor', () => {
+       const knockExpected = knockGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const kdbExpected = kdbGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const kdbMoved = kdbExpected?.changed === true
++      const thornsExpected = thornsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const thornsMoved = thornsExpected?.changed === true
++      const kdbMoved = kdbExpected?.changed === true || thornsMoved
+       const knockMoved = knockExpected?.changed === true || kdbMoved
+       const shieldMoved = shieldExpected?.changed === true || knockMoved
+@@ -156,5 +163,5 @@ describe('resumable battle cursor', () => {
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = (thornsMoved ? thornsExpected : undefined) ?? (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+diff --git a/test/status-damage-types.test.ts b/test/status-damage-types.test.ts
+index e92623b..b09deb4 100644
+--- a/test/status-damage-types.test.ts
++++ b/test/status-damage-types.test.ts
+@@ -67,11 +67,14 @@ describe('the tick — type on the event, mitigation by the type', () => {
+ 
+ describe('thorns — retaliation damage is TRUE', () => {
++  // LAW 10 — 2026-09-24 (v2.thorns, COMBAT-V2-DESIGN §9.4): Thorns is a magnitude,
++  // not a trigger. The golem's trigger.test-thorns (V1 onTakingDamage, 1 true) became
++  // test.badge.bramble (Thorns 1), and the reflected damage is named by the melee
++  // attack that set it off (thorns: true). The claim under test — the golem's hide
++  // answers the zombies' bites with TRUE damage, live in the scenario — is unchanged.
+   it('the test golem\'s hide deals 1 TRUE back to its attacker, live in the scenario', () => {
+-    expect((UNITS['test-arc-golem']!.triggers ?? []).some((t) =>
+-      t.id === 'trigger.test-thorns' && t.effect.kind === 'damage'
+-      && (t.effect as { damageType: string }).damageType === 'true')).toBe(true)
++    expect(UNITS['test-arc-golem']!.badges ?? []).toContain('test.badge.bramble')
+     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
+     runBattle(ctx)
+-    const thorns = ctx.events.filter((e) => e.type === 'damage.applied' && e.causeId === 'trigger.test-thorns')
++    const thorns = ctx.events.filter((e) => e.type === 'damage.applied' && e['thorns'] === true)
+     expect(thorns.length, 'zombies bite the golem — the hide answers').toBeGreaterThan(0)
+     for (const t of thorns) expect(t['damageType']).toBe('true')
+```
+</details>

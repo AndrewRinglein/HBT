@@ -1,5 +1,23 @@
 [
  {
+  "id": "v2.thorns",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "V2 R5 (COMBAT-V2-DESIGN-2026-09-07 section 9.4, ruled 2026-09-07): Thorns is a magnitude, not a tick. The thorns stat (folded from items, badges, specialties; stored and derived mods) reflects N true damage onto a melee attacker on every connecting hit, armor-zero included; never on a miss, block, ranged attack or burst; nothing when its holder attacks; adds N to the unit's collision value (section 9.3). The V1 onTakingDamage retaliation trigger (any range, only when damage got through) is removed from the compiler and the test golem.",
+  "expect": "Armor-zero melee hits reflect; miss, Block, ranged and burst do not; Protection absorbs, Armor does not; killing blow reflects; attacker killed by Thorns settles; two thorned units never ping-pong; preview thornsOnHit equals the reflected magnitude; collision value 1 + Thorns; no item carries a thorns trigger; test.thorns scenario reflects live for both badges and replays byte for byte.",
+  "probeIds": [
+   "test.badge.bramble",
+   "test.badge.briar"
+  ],
+  "variants": [
+   "test.badge.bramble",
+   "test.badge.briar"
+  ],
+  "note": "Andrew's chat, 2026-09-24 (V2 roadmap R5). Control battles byte-identical: no control unit carries Thorns. battle-cursor: showcase.arc-variant and showcase.knockback-two moved (the golem) — frozen in test/fixtures/battle-cursor-thorns.json. Defaults in SWITCHES.md 'V2 Thorns'.",
+  "status": "done-needs-review",
+  "sha": "36da82b"
+ },
+ {
   "id": "naming.terrain-impassable",
   "kind": "engine",
   "shape": "plumbing",

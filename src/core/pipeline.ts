@@ -19,6 +19,7 @@ import { canSee } from './vision.js'
 import { attackLineClear } from './los.js'
 import { hasLowCover } from './cover.js'
 import { kdbChanceOf, kdbTarget, resolveKdb } from './kdb.js'
+import { reflectThorns, thornsOnHit } from './thorns.js'
 import { rulesSideOf } from './side.js'
 import { attackPacketFields } from './attack-profile.js'
 
@@ -370,7 +371,7 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   // A hit on the DOWNED deals no damage and cannot crit — it accelerates the
   // bleed-out counter (fix.downed-targetable, 2026-09-03). The preview says so.
   if (tg.lifeState === 'downed') {
-    return { ...blockFacts, hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, damageOnCritChart:0, packetsOnHit:[],packetsOnCrit:[],packetsOnCritChart:[],critChance: 0, kdbChanceOnHit: null, kdbChanceOnCrit: null, kdbChanceOnCritChart: null, downed: true as const }
+    return { ...blockFacts, hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, damageOnCritChart:0, packetsOnHit:[],packetsOnCrit:[],packetsOnCritChart:[],critChance: 0, kdbChanceOnHit: null, kdbChanceOnCrit: null, kdbChanceOnCritChart: null, thornsOnHit: 0, downed: true as const }
   }
   const hit=previewAttackDamage(ctx,attackerId,targetId,a,0,false)
   const critical=previewAttackDamage(ctx,attackerId,targetId,a,1,true)
@@ -392,6 +393,9 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
     packetsOnHit:hit.packets,packetsOnCrit:critical.packets,packetsOnCritChart:chart.packets,
     critChance: critChanceOf(ctx, at, tg, acc.value, a),
     kdbChanceOnHit:kdbOf(hit),kdbChanceOnCrit:kdbOf(critical),kdbChanceOnCritChart:kdbOf(chart),
+    // v2.thorns: the true damage each connecting hit costs the attacker (melee only;
+    // its own Protection may absorb some). The number reflectThorns reads (Law 1).
+    thornsOnHit:thornsOnHit(ctx,tg,a),
   }
 }
 
@@ -679,6 +683,9 @@ function resolveHitOn(
       { ownerId: targetId, targetId: attackerId, causeId: a.id, ordinal: ord })
   }
   if (tg.hp === 0 && applied > 0) { fireTriggers(ctx, 'onKill', fc); decayOnKill(ctx, attackerId, a.id) }   // Karma: -1 on a kill
+  // v2.thorns (COMBAT-V2 §9.4): a connecting MELEE hit on a thorned unit — armor-
+  // zero included, so it is not gated on `applied` — costs the attacker N true.
+  reflectThorns(ctx, attackerId, targetId, a)
 
   // The legacy `applies` rider — a hardcoded 100% onHit trigger with no chance and
   // no hook. Kept working until its content moves to a real trigger, then deleted.

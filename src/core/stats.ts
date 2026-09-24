@@ -28,6 +28,8 @@ export type StatName =
   | 'crit' | 'luck'
   /** capability.vision (2026-09-03): the unit's Vision STAT — 0 by default; the battlefield's 6 is added at read (visionOf), never stored. */
   | 'vision'
+  /** v2.thorns (COMBAT-V2 §9.4, 2026-09-24): the Thorns magnitude — 0 on every body; items, badges, statuses and auras lend it. */
+  | 'thorns'
 
 /**
  * `add` sums. `set` overrides and wins outright (disarm, petrify).
@@ -83,6 +85,7 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   crit: (u) => u.crit,
   luck: (u) => u.luck,
   vision: (u) => u.vision,
+  thorns: (u) => u.thorns ?? 0,
 }
 
 /** The same stat vocabulary used by resolution, for external data validation. */

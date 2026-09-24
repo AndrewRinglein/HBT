@@ -13,6 +13,7 @@ import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction
 import { forcedTargetOf, applyStatus, incomingAbsorb, isBlocked, isProne, isRooted, reduceStatus, spendAbsorb } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { knockImmunity } from './kdb.js'
+import { thornsOf } from './thorns.js'
 import { settle } from './settle.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
@@ -468,8 +469,8 @@ export function livingEnemies(ctx: Ctx, u: Unit): Unit[] {
  *
  *   true damage to the mover = blocker's collision value × remaining points
  *
- * A unit is 1 + its Thorns (COLLISION_UNIT_BASE; the engine has no Thorns
- * magnitude yet — SWITCHES.md knockbackThornsZero), a prop its authored
+ * A unit is 1 + its Thorns (COLLISION_UNIT_BASE + the `thorns` stat, v2.thorns;
+ * SWITCHES.md knockbackThornsZero is answered), a prop its authored
  * `collisionValue`, and a basic obstruction, the map edge or a missing floor
  * COLLISION_OBSTRUCTION. Only the mover is hurt; the struck unit or prop takes
  * nothing and is not moved (no chaining). Protection absorbs it; Armor and the
@@ -490,9 +491,9 @@ export const COLLISION_OBSTRUCTION = 2
 
 type Collision = { collidedWith: 'unit' | 'prop' | 'edge' | 'floor'; blocker: string | number | null; collisionValue: number; consumes: string | null }
 
-/** A unit's collision value: 1 + Thorns. No Thorns magnitude exists in the engine yet (R5), so 0. */
-function unitCollisionValue(_ctx: Ctx, _u: Unit): number {
-  return COLLISION_UNIT_BASE
+/** A unit's collision value: 1 + Thorns (§9.3 "Thorns 2 → 3"; v2.thorns fills in the magnitude). */
+function unitCollisionValue(ctx: Ctx, u: Unit): number {
+  return COLLISION_UNIT_BASE + thornsOf(ctx, u)
 }
 
 export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, hexes: number, causeId: string): number {

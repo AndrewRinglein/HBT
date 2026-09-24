@@ -36,6 +36,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     toughness: def.toughness ?? 0,
     surge: def.surge ?? 0, surgeChance: 0,
     vision: def.vision ?? 0,
+    ...(def.thorns ? { thorns: def.thorns } : {}),   // v2.thorns: absent on a bare body (snapshots unchanged)
     auras: (def.auras ?? []).map((a) => ({ ...a })),
     summoned: false,
     // refactor.one-action-type (2026-09-04): ONE list — attacks, powers,
