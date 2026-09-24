@@ -2,6 +2,8 @@
    A development affordance, not a game surface (ruled 9.6). */
 import { sgn } from './actions.js'
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+/** basis points as a percent, by moving the decimal point in the engine's own digits — no arithmetic (Law 0) */
+export const bpsPct = bps => { const s = String(bps).padStart(3, '0'), f = s.slice(-2).replace(/0+$/, ''); return s.slice(0, -2) + (f ? '.' + f : '') }
 
 export function buildLog(events, SN, turns) {
   const NAMES = {}, SIDES = {}
@@ -19,7 +21,9 @@ export function buildLog(events, SN, turns) {
       case 'burst.declared': return b(side(e), '&nbsp;&nbsp;' + escape(`${nmAt(e)} uses burst ${e.causeId} at hex ${e.centre} · ${e.shape.kind}${e.shape.radius != null ? ' ' + e.shape.radius : ''} · ${e.side}${e.tags?.length ? ' · tags ' + e.tags.join(', ') : ''} · ` + e.packets.map(p => `${p.id}: ${p.value} ${p.damageType}`).join(' → ') + ` · heal ${e.heal}`))
       case 'burst.shielded': return b('', '&nbsp;&nbsp;' + escape(`Terrain shielding: ${nmT(e)} at hex ${e.hex} · ${e.props.join(', ')}`))
       case 'burst.struck': return b('', '&nbsp;&nbsp;' + escape(`Burst result: ${nmT(e)} · damage ${e.damage} · applied ${e.applied} · healed ${e.heal} · terrain reduction ${e.coverDamage}`))
-      case 'attack.declared': return b(side(e), `&nbsp;&nbsp;attacks <b>${nmT(e)}</b> <span class="sq">· hit ${e.hitChance}%${e.of > 1 ? ' · hit ' + e.hit + ' of ' + e.of : ''}</span>`)
+      // V2 R2 (2026-09-23): hitChance is conditional accuracy; Block and the overall
+      // connection are the engine's own fields on this event. Older exports lack them.
+      case 'attack.declared': return b(side(e), `&nbsp;&nbsp;attacks <b>${nmT(e)}</b> <span class="sq">· ${typeof e.blockChance === 'number' ? `block ${e.blockChance}% · hit ${e.hitChance}% if not blocked · connects ${bpsPct(e.connectionChanceBps)}%` : `hit ${e.hitChance}%`}${e.of > 1 ? ' · hit ' + e.hit + ' of ' + e.of : ''}</span>`)
       case 'attack.hit': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — HIT${e.crit ? ' <b>CRIT</b>' : ''}`)
       case 'attack.miss': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — miss`)
       case 'damage.applied': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> takes ${e.amount} ${e.packets ? 'damage' : e.damageType}` +
@@ -45,6 +49,7 @@ export function buildLog(events, SN, turns) {
       case 'staminaMax.lost': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} loses ${e.amount} max stamina`)
       case 'stamina.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} regains ${e.amount} stamina`)
       case 'statmod.added': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — ${e.stat} ${sgn(e.value)} <span class="sq">· ${e.source}</span>`)
+      case 'statmod.expired': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — ${e.stat} ${sgn(e.value)} ends <span class="sq">· ${e.source}</span>`)
       case 'ai.denied': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;wanted <span class="sq">${e.wanted}</span>, took <span class="sq">${e.took}</span> — ${e.reason}`)
       case 'ai.tookHighGround': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;takes the high ground`)
       case 'power.hit': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;strikes <b>${nmT(e)}</b>`)

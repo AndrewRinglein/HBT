@@ -283,7 +283,9 @@ if (SINGLES) {
   for (const b of LIB.battles) for (const e of b.battle.events) seen.add(e.type)
   for (const c of playbackTests) for (const e of c.events) seen.add(e.type)
   /* known-unexercised, each waiting on a showcase that fields it (ENGINE-FINDINGS #10) */
-  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled'])
+  // badge.held (2026-09-23): the engine still emits it (mutate.ts, a badge already worn), but the
+  // library re-exported at 7ad7516 no longer grants any unit a badge twice
+  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled', 'badge.held'])
   const dark = FOLDED_TYPES.filter(t => !seen.has(t))
   for (const t of dark) check(UNEXERCISED.has(t), `fold: ${t} is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it`)
   for (const t of UNEXERCISED) check(!seen.has(t), `fold: ${t} is listed UNEXERCISED but the library now carries one — delete the entry, the list only shrinks`)

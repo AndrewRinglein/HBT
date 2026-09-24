@@ -28,7 +28,7 @@ export function drawPanel(V) {
      it — read off statmod.added, never guessed. Accuracy, Dodge, Crit carry %. */
   /* the per-stat delta is actions.js modOf — the stat-delta exemption's sum
      over statmod.added and the kit's unit.equipped deltas */
-  const PCT = new Set(['accuracy', 'dodge', 'crit'])
+  const PCT = new Set(['accuracy', 'dodge', 'crit', 'block', 'rangedBlock'])
   const stat = (label, value, statKey) => {
     const dlt = statKey ? modOf(u, statKey) : 0
     const col = dlt > 0 ? MOD_UP : dlt < 0 ? MOD_DOWN : '#e8e5dc'
@@ -139,6 +139,10 @@ export function drawPanel(V) {
       ...[['fireResist', 'Fire Resist'], ['poisonResist', 'Poison Resist'], ['shadowResist', 'Shadow Resist']]
         .filter(([key]) => d[key] !== undefined || (u.mods || []).some(m => m.stat === key))
         .map(([key, label]) => stat(label, d[key] ?? 0, key)), stat('Dodge', d.dodge, 'dodge'),
+      // V2 R2 (2026-09-23): Block beside the other defenses, shown whenever the unit has any — innate or a shield's
+      ...[['block', 'Block'], ['rangedBlock', 'Ranged Block']]
+        .filter(([key]) => (d[key] ?? 0) !== 0 || (u.mods || []).some(m => m.stat === key))
+        .map(([key, label]) => stat(label, d[key] ?? 0, key)),
       stat('Max HP', d.maxHp, 'maxHp'),
       stat('Accuracy', d.accuracy, 'accuracy'), stat('Crit', d.crit ?? 0, 'crit'),
       stat('Strength', d.strength, 'strength'), stat('Precision', d.precision, 'precision'),

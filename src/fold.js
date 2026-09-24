@@ -390,6 +390,14 @@ export function fold(S, e, ctx, now = 0) {
       /* the buff/debuff layer's data (UI-BUILD-NOTES §1), held on the unit */
       if (U[e.actor]) (U[e.actor].mods = U[e.actor].mods || []).push({ stat: e.stat, op: e.op, value: e.value, source: e.source })
       break
+    case 'statmod.expired': {
+      /* V2 shields (engine 4789cbd, 2026-09-23): a mod that lasted until the end of the
+         holder's next activation is gone — remove the one the log added, as spelt */
+      const mods = U[e.actor] && U[e.actor].mods
+      const at = mods ? mods.findIndex(m => m.stat === e.stat && m.op === e.op && m.value === e.value && m.source === e.source) : -1
+      if (at >= 0) mods.splice(at, 1)
+      break
+    }
     case 'cooldown.set':
       /* ONE ACTION TYPE (engine 26fa562, §11): `actionId` on every kind;
          `abilityId` is kept for readers that used it, and `attackId` is gone */
@@ -560,7 +568,7 @@ export function foldTo(events, n, ctx) {
 export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck', 'unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
   'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'stamina.spent',
-  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'cooldown.set',
+  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',
   'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'bleedout.accelerated', 'power.used', 'battle.end',
   /* 2026-09-03 */
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',
