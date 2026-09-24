@@ -1,11 +1,11 @@
 {
- "now": "V2 R6 hands, swaps and item instances — closed. Done: swap UI (viewer a40932d + page 281622a folds and logs loadout.swapped; kingdom 9932c81 + page d4fd766, the sandbox Swap command from engine legality); v2.item-uses (engine cdb2233: uses per item instance, spent state, per-instance result, incoming spent state honoured; viewer aa9d3d1/e43fb3f; kingdom eeb6ba5 persists per-slot used counts in the save). Four shards green on tree 6003af3ad7. Tried: nothing abandoned. Ruled: swapAi (AI never swaps) reaffirmed; viewer itemUsesBarCount '1x is fine for now' (0c379a7). Open for Angela: provisional SWITCHES rows 'V2 item uses' (engine, viewer, kingdom) and the swap rows; battle-cursor.test.ts gained fields in v2.item-uses without a review flag. Next: V2 R7 — dynamic terrain and full Atlas support (V2-ROADMAP.md R7).",
- "at": "2026-09-24 19:06",
- "sha": "d3d037e",
+ "now": "V2 R7 part 1-2 prop destruction — closed end to end. Done: v2.prop-destroy (a4ca669: tier = steps, Destroy on attack and burst rows, end-of-attack timing, high leaves low cover, prop.damaged/prop.destroyed; content 72a6aba TEST Chopper/Wrecker), v2.prop-attack (e049b15: an attack with Destroy aimed at a prop's hex, the { hex } action, prop.struck, AI never), fix.prop-destroyed-remnant (9a04748), fix.view-direct-map-seed (1a12a7c: scenario seeds with a direct map draw); viewer 5188c1d + page f98956b (fold, floats, log, 2D markers; library test.prop-destroy; Law 10 picker count made a rule); kingdom 379ffc8 + page ee224b8 (sandbox prop aims). Four shards green on tree 3f8ca9f3b4. Tried: nothing abandoned. Open for Angela: SWITCHES 'V2 prop destruction' and 'V2 attacking a prop' (engine), 'V2 R7 prop destruction' (viewer), sandboxProp* (kingdom); burning props unruled (what ignites, how long, what it does). Next: V2 R7 part 3 — the V2 ground table (grass, wheat, bush, woodland, lava: COMBAT-V2 3.2) as hazards and concealment, then Atlas hazard/concealment compilation.",
+ "at": "2026-09-24 20:29",
+ "sha": "e7fedd1",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: V2 R7 dynamic terrain and full Atlas support",
+  "label": "New chat with Heroes of Blight and Tragic — engine: V2 R7 part 3, the V2 ground table (hazards and concealment)",
   "line": "start engine"
  }
 }
