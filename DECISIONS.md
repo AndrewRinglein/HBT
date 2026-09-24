@@ -2572,3 +2572,9 @@ Andrew, same chat, on letting `v2.shields-hands` also re-close ISC-003 (reopened
 Andrew, asked whether the impassable terrain is `terrain.impassable` (GROUND-REQUIREMENTS.md §1.1) or `terrain.obstacle` (the engine): “Terrain impassable.   And then continue. Do V2 R5 thorns.”
 
 Ruled: the id is `terrain.impassable`; `terrain.obstacle` is retired everywhere (GLOSSARY.md "Settled, 2026-09-24"). The reserved prop shorthand `prop.obstacle.<hex>` is a different kind and is not renamed. The engine constant `TERRAIN.OBSTACLE` becomes `TERRAIN.IMPASSABLE`. This chat then takes V2 R5 Thorns.
+
+## 2026-09-24 — Fast Hands and Slow Hands
+
+Andrew, asked for the values of the two swapCost badges (COMBAT-V2-DESIGN-2026-09-07 §11.2): “The values for fast hands and slow hands are to reduce the stamina cost or increase the stamina cost by 1 for item swapping.  The value is fast hands -1 stamina and slow hands +1 stamina to item swap.”
+
+Ruled: Fast Hands is swapCost −1; Slow Hands is swapCost +1. The TEST rows `test.badge.fast-hands` and `test.badge.slow-hands` (content 359cf85) already carry these values. The campaign badges are not yet authored in the Codex; when they are, they copy these numbers.
