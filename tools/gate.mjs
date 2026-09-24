@@ -24,6 +24,7 @@
 // read, never written, from here (THIN-SLICE-IMPLEMENTATION.md §10).
 
 import { execSync } from 'node:child_process'
+import { revertTree } from './revert-tree.mjs'
 import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, statSync, copyFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -358,8 +359,10 @@ check('one door to the engine', () => {
 const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
 if (MODE === 'abandon') {
-  sh('git checkout -- .')
-  sh('git clean -fdq -e node_modules -e .state -e tools')
+  // Cowork-safe revert (2026-09-24, engine DECISIONS.md "abandon works in Cowork"):
+  // overwrite in place and park, never delete. Same spared paths as the old git clean.
+  const rv = revertTree(['node_modules', '.state', 'tools'])
+  console.log(`reverted ${rv.restored.length} file(s) to HEAD${rv.parked.length ? `; parked ${rv.parked.length} file(s) HEAD does not have in ${rv.parkedAt}` : ''}`)
   item.status = 'failed'
   item.failedAt = stamp
   item.reason = checks.filter((c) => !c.ok).map((c) => `${c.name}: ${c.note}`).join(' | ')
