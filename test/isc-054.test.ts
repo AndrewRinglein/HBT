@@ -55,11 +55,13 @@ describe('ISC-054 — the slot model', () => {
   // v2.shields (2026-09-23): the shield CLASS counts toward the two hands exactly as the
   // engine's applyItems counts it — beside a two-hander it is carried, never fielded,
   // so no backpack shield grants its Block or powers.
-  it('a shield-class item takes a hand; past the hands it is left behind at fielding', () => {
+  // Law 10, 2026-09-24 (v2.loadout): 'left behind' became 'stowed' — COMBAT-V2 §11.1, the item
+  // past the hands is carried as swap fodder and grants nothing. Same lists, same claim.
+  it('a shield-class item takes a hand; past the hands it is stowed at fielding', () => {
     expect(itemOf('item.kite-shield').itemClass).toBe('shield')
     expect(slotCostOf(itemOf('item.kite-shield'))).toBe(1)
-    expect(fieldedItemsOf(['item.longsword', 'item.kite-shield'])).toEqual({ fielded: ['item.longsword', 'item.kite-shield'], leftBehind: [] })
-    expect(fieldedItemsOf(['item.greatsword', 'item.kite-shield'])).toEqual({ fielded: ['item.greatsword'], leftBehind: ['item.kite-shield'] })
-    expect(fieldedItemsOf(['item.longsword', 'item.round-shield', 'item.tower-shield']).leftBehind).toEqual(['item.tower-shield'])
+    expect(fieldedItemsOf(['item.longsword', 'item.kite-shield'])).toEqual({ fielded: ['item.longsword', 'item.kite-shield'], stowed: [] })
+    expect(fieldedItemsOf(['item.greatsword', 'item.kite-shield'])).toEqual({ fielded: ['item.greatsword'], stowed: ['item.kite-shield'] })
+    expect(fieldedItemsOf(['item.longsword', 'item.round-shield', 'item.tower-shield']).stowed).toEqual(['item.tower-shield'])
   })
 })

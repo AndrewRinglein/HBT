@@ -70,7 +70,7 @@ const ENGINE_STAT: Readonly<Record<string, string>> = { health: 'maxHp', stamina
 export function statBlock(c: CampaignState, heroId: string): string {
   const h = c.roster[heroId]!
   const progress = progressOf(h) ?? undefined
-  const { fielded, leftBehind } = fieldedItemsOf(h.equipped)
+  const { fielded, stowed } = fieldedItemsOf(h.equipped)
   let now: UnitDef, bare: UnitDef
   try { now = fieldedDef(h.unitType, fielded, progress); bare = fieldedDef(h.unitType, [], progress) }
   catch (e) { return `<div class="stats gap"><b>the engine cannot field this gear</b> — ${esc((e as Error).message)}</div>` }
@@ -84,7 +84,7 @@ export function statBlock(c: CampaignState, heroId: string): string {
     return `<div class="stRow"><span class="stN">${esc(label)}</span><span class="stV${d > 0 ? ' up' : d < 0 ? ' down' : ''}">${d ? `<em>${sign(d)}</em>` : ''}${value}${PCT.has(key) ? '%' : ''}</span></div>`
   })
   const half = Math.ceil(rows.length / 2)
-  return `<div class="stats"><div class="stCols"><div>${rows.slice(0, half).join('')}</div><div>${rows.slice(half).join('')}</div></div>${leftBehind.length ? `<div class="meta lost">${esc(leftBehind.map((i) => itemOf(i).name).join(', '))} left behind at fielding — a spare weapon the engine cannot yet take</div>` : ''}</div>`
+  return `<div class="stats"><div class="stCols"><div>${rows.slice(0, half).join('')}</div><div>${rows.slice(half).join('')}</div></div>${stowed.length ? `<div class="meta">${esc(stowed.map((i) => itemOf(i).name).join(', '))} stowed — carried into battle, grants nothing until swapped into a hand</div>` : ''}</div>`
 }
 
 /** What leaving says: every triggered set per hero, or that none is. */

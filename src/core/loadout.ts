@@ -92,25 +92,24 @@ export function whyNotFit(campaign: CampaignState, heroId: HeroId, equipped: rea
 }
 
 /**
- * What of `equipped` is handed to the engine at fielding, and what stays behind
- * (seam.loadout, G9). The ruled slot model lets a weapon past the hands ride in an
- * item slot and still grant attacks; the engine's own physical check refuses more
- * than two hands of weapons (the engine backlog item seam.spare-weapons). SWITCHES.spareWeapons
- * says which side wins until the engine lands it — the left-behind list is shown,
- * never swallowed. Pure over rows; hands are counted as the engine counts them.
+ * What of `equipped` is in the hands at fielding, and what is stowed (seam.loadout,
+ * G9; v2.loadout, engine 2026-09-24). COMBAT-V2 §11.1 (ruled 2026-09-07): only what is
+ * in the hands grants; a weapon or shield past the hands rides in an item slot as swap
+ * fodder and grants nothing. `fielded` goes to the engine as heroItems, `stowed` as
+ * heroStowed. Pure over rows; hands are counted as the engine counts them. (The old
+ * SWITCHES.spareWeapons is retired, COMBAT-V2 §18.)
  */
-export function fieldedItemsOf(equipped: readonly string[]): { fielded: string[]; leftBehind: string[] } {
-  if (SWITCHES.spareWeapons === 'kept') return { fielded: [...equipped], leftBehind: [] }
-  const fielded: string[] = [], leftBehind: string[] = []
+export function fieldedItemsOf(equipped: readonly string[]): { fielded: string[]; stowed: string[] } {
+  const fielded: string[] = [], stowed: string[] = []
   let hands = 0
   for (const id of equipped) {
     const row = itemOf(id)
     if (isHandItemClass(row)) {
       const h = Math.max(1, row.hands)
-      if (hands + h > HANDS) { leftBehind.push(id); continue }
+      if (hands + h > HANDS) { stowed.push(id); continue }
       hands += h
     }
     fielded.push(id)
   }
-  return { fielded, leftBehind }
+  return { fielded, stowed }
 }

@@ -52,8 +52,8 @@ export type EngagementSpec = {
    * unchanged. "The items should go into battle" (7-KINGDOM-SETTLED.md 2026-09-02).
    */
   readonly heroItems?: readonly (readonly string[])[]
-  /** Worn on the hero's record but not handed over — a spare weapon past the hands, until the engine's seam.spare-weapons lands (SWITCHES.spareWeapons). Parallel to `heroes`; shown, never swallowed. */
-  readonly heroLeftBehind?: readonly (readonly string[])[]
+  /** v2.loadout (COMBAT-V2 §11.1): weapons and shields past the hands, stowed in item slots — they grant nothing until swapped in. Parallel to `heroes`; handed to the engine as heroStowed. */
+  readonly heroStowed?: readonly (readonly string[])[]
   /**
    * screens.after-battle (G12, 2026-09-03): how far each hero has come — level, specialty,
    * the level-5 pick — parallel to `heroes`; the engine folds the codex's level rows onto the
@@ -122,7 +122,7 @@ export function makeBattleState(
   const heroProgress = rows.map((h) => progressOf(h))
   return {
     id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed, heroMods,
-    ...(carried ? { heroItems: carried.map((c) => c.fielded), heroLeftBehind: carried.map((c) => c.leftBehind) } : {}),
+    ...(carried ? { heroItems: carried.map((c) => c.fielded), heroStowed: carried.map((c) => c.stowed) } : {}),
     ...(heroProgress.some((p) => p) ? { heroProgress } : {}),
   }
 }
@@ -163,6 +163,8 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
     ...(spec.enemyHexes ? { enemyHexes: [...spec.enemyHexes] } : {}),
     // seam.loadout: the equipped lists go through as item ids; the engine reads its own rows for them
     ...(spec.heroItems ? { heroItems: spec.heroItems.map((l) => [...l]) } : {}),
+    // v2.loadout: the stowed ride along as swap fodder; the engine grants nothing from them
+    ...(spec.heroStowed ? { heroStowed: spec.heroStowed.map((l) => [...l]) } : {}),
     // heroMods wait on the engine's seam.unit-mods — resolved and recorded on the spec, not fought
     ...(spec.heroProgress ? { heroProgress: spec.heroProgress.map((p) => p ?? undefined) } : {}),
   }

@@ -31,8 +31,8 @@ export type BattleUnitView = {
   equipped: string[]
   /** The attacks those items grant, in order. */
   attacks: string[]
-  /** Worn on the record, not fielded — a spare weapon the engine cannot yet take (SWITCHES.spareWeapons). */
-  leftBehind: string[]
+  /** v2.loadout: weapons and shields stowed in item slots — carried into battle, granting nothing until swapped in. */
+  stowed: string[]
 }
 
 export type BattleView = {
@@ -74,7 +74,7 @@ export function viewBattle(campaign: CampaignState): BattleView {
       heroId: side === 'hero' ? e.deployed[index] ?? null : null,
       hex, col: ctx.geo.colOf(hex), row: ctx.geo.rowOf(hex),
       hp: ev['hp'] as number, maxHp: ev['maxHp'] as number,
-      equipped: [], attacks: [], leftBehind: side === 'hero' ? [...(spec.heroLeftBehind?.[index] ?? [])] : [],
+      equipped: [], attacks: [], stowed: side === 'hero' ? [...(spec.heroStowed?.[index] ?? [])] : [],
     })
   }
   units.sort((a, b) => (a.side === b.side ? a.index - b.index : a.side === 'hero' ? -1 : 1))

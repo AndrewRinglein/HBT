@@ -39,8 +39,6 @@ export const SWITCHES = {
   engagementsPerStage: 1,
   /** sanctuary.lostDefenceSupplies — what a failed defence of the Kingdom Territory costs, in Supplies. Unruled; soft. */
   sanctuaryLostDefenceSupplies: 5,
-  /** seam.spareWeapons — a weapon carried past the hands, in an item slot (ruled: it still grants attacks). The engine's applyItems counts hands over EVERY weapon handed over and refuses a third (engine gap seam.spare-weapons, filed 2026-09-03), so until it lands the spare is 'left-behind' at fielding and named on the battle screen; 'kept' hands it over and lets the engine refuse. */
-  spareWeapons: 'left-behind' as 'left-behind' | 'kept',
   /** rewards.includeWaystation — may the reward draw deal a row the Waystation sells (a one-use potion, a torch)? The odds name classes and tiers, not shops; unsaid. */
   rewardsIncludeWaystation: false,
   /** levelup.specialtyRequired — "specialization once at level 2" (GEAR-DESIGN.md §7): must the first level-up NAME a specialty, or is the offer declinable (a level taken without one passes it up for good)? Unsaid. */

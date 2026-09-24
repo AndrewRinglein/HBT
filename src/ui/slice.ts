@@ -392,7 +392,7 @@ function battleScreen(c: CampaignState): string {
   return `<h2>The battle — ${esc(v.mapName)}</h2>
     <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${heroes.length} heroes, ${enemies.length} enemies, placed by the engine's own setup. Nothing moves: combat is not played in the slice.</p>
     <div data-battle-surface></div>
-    <div class="card"><h3>Fielded as equipped</h3><table><tr><th>hero</th><th>carries</th><th>attacks</th></tr>${heroes.map((u) => `<tr><td><span class="tag hero">H${u.index + 1}</span> ${esc(u.name)}</td><td class="meta">${esc(u.equipped.map((i) => itemOf(i).name).join(', ') || '—')}</td><td class="meta">${esc(u.attacks.map((a) => a.replace('attack.', '')).join(', ') || '—')}${u.leftBehind.length ? ` <span class="lost">left behind: ${esc(u.leftBehind.map((i) => itemOf(i).name).join(', '))} — a spare weapon the engine cannot yet take (seam.spare-weapons)</span>` : ''}</td></tr>`).join('')}</table></div>
+    <div class="card"><h3>Fielded as equipped</h3><table><tr><th>hero</th><th>carries</th><th>attacks</th></tr>${heroes.map((u) => `<tr><td><span class="tag hero">H${u.index + 1}</span> ${esc(u.name)}</td><td class="meta">${esc(u.equipped.map((i) => itemOf(i).name).join(', ') || '—')}</td><td class="meta">${esc(u.attacks.map((a) => a.replace('attack.', '')).join(', ') || '—')}${u.stowed.length ? ` <span class="meta">stowed: ${esc(u.stowed.map((i) => itemOf(i).name).join(', '))} — grants nothing until swapped in</span>` : ''}</td></tr>`).join('')}</table></div>
     <h2>Set what happened</h2>
     <div class="card">
       <div class="bar">
