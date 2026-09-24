@@ -32,12 +32,16 @@ Unbound battles remain fully available in the offline page.
 Python 3 with Pillow is present for the art half.
 
 ```
-node tools/gate.mjs              CHECK ONLY: door probe · laws 5 and 6 · typecheck · engine map list vs the dumps · build into .build/ with verify inside
-node tools/gate.mjs --land       the same, then writes BATTLE-VIEWER.html
-node tools/gate.mjs --fresh      also re-export every library battle from ../engine and diff byte-for-byte (refuses a dirty engine; --dirty-ok to compare anyway; a scenario's --seed is passed through)
+node tools/gate.mjs --part checks       door probe · laws 5 and 6 · typecheck · tool suites · engine map list vs the dumps (~10 s)
+node tools/gate.mjs --part verify k/4   k = 1..4: build the candidate into .build/, verify.mjs over slice k of the library (~60 s each)
+node tools/gate.mjs --part tests        the node --test lists against the candidate page (~60 s)
+node tools/gate.mjs --status            which parts passed on this exact tree (hash in .build/gate-parts.json) + verify's library-wide checks
+node tools/gate.mjs --land              refuses unless every part passed on this tree; writes BATTLE-VIEWER.html from the byte-identical rebuild
+node tools/gate.mjs                     every part in one command (no shell time limit only — Cowork kills it at ~178 s)
+node tools/gate.mjs --fresh      re-export every library battle from ../engine and diff byte-for-byte (refuses a dirty engine; --dirty-ok to compare anyway; a scenario's --seed is passed through)
 node tools/play.mjs <page> <export.json>   play ONE export headlessly: every event type folded/ignored/UNKNOWN, every cue, the final board objects, the first throw (asserts nothing — verify is the gate)
-node tools/build-viewer.mjs [--out path]     the page — refuses to write unless verify passes
-node tools/verify.mjs BATTLE-VIEWER.html     the headless fold of every battle, every surface, every catch (~50s)
+node tools/build-viewer.mjs [--out path]     the page — refuses to write unless verify passes (--candidate .build/x.html: unverified, .build/ only — the gate's parts)
+node tools/verify.mjs BATTLE-VIEWER.html     the headless fold of every battle, every surface, every catch (~3 min here; --slice k/N --facts f is the gate's share)
 npm run static                   generated/static.json through the door (unit sheets, status names, map list, attack/ability tables, layer names; stamped with the engine commit)
 node tools/dump-fields.mjs       generated/fields.json for EVERY map, stamped; projection and exact distance access are engine-owned
 python3 tools/prep-art.py [hell-tcg-root]    generated/art/ from the source art + art-src/ (only when art changes; clears orphans)

@@ -32,12 +32,21 @@
        beat; the ZoC hold and the attack-of-opportunity label; the Deathbed stand's roll, wound level and
        blood; banners for waves, night, the band, the objective; Surge; the Power chip; auras round every
        standing holder and none round a fallen one
-   Optional --check names add change-specific assertions. */
+   Optional --check names add change-specific assertions.
+
+     node tools/verify.mjs <page> --slice k/N [--facts out.json]      (the gate, 2026-09-23)
+
+   One slice drives only its share of the library battles (tools/verify-slices.mjs
+   assigns them) and slice 1 also runs every check that is not per battle. The
+   library-wide checks that need every battle's facts are written to --facts and
+   judged by the gate over all N slices (verify-slices.mjs mergedFails). With no
+   --slice, everything runs here, exactly as before. */
 import fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import {fixtureUnits} from './burst-fixture-data.mjs'
 import { makeWindow } from './fakedom.mjs'
+import { assignSlices, iconFails, frameFails } from './verify-slices.mjs'
 // The readonly engine door is TypeScript in native Node as well as the browser bundle.
 import { register } from '../../engine/node_modules/tsx/dist/esm/api/index.mjs'
 import {registerAtlasDependency} from './atlas-node.mjs'
@@ -47,8 +56,16 @@ registerAtlasDependency()
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PKG = resolve(HERE, '..')
 const [, , file, ...rest] = process.argv
-if (!file) { console.error('usage: verify.mjs <BATTLE-VIEWER.html> [--check name]'); process.exit(2) }
-const CHECKS = new Set(); for (let i = 0; i < rest.length; i++) if (rest[i] === '--check') CHECKS.add(rest[++i])
+if (!file) { console.error('usage: verify.mjs <BATTLE-VIEWER.html> [--check name] [--slice k/N [--facts out.json]]'); process.exit(2) }
+const CHECKS = new Set(); let SLICE = null, FACTS = null
+for (let i = 0; i < rest.length; i++) {
+  if (rest[i] === '--check') CHECKS.add(rest[++i])
+  else if (rest[i] === '--facts') FACTS = rest[++i]
+  else if (rest[i] === '--slice') { const sm = String(rest[++i]).match(/^(\d+)\/(\d+)$/)
+    if (!sm || +sm[1] < 1 || +sm[1] > +sm[2]) { console.error('verify: --slice takes k/N with 1 <= k <= N'); process.exit(2) }
+    SLICE = { k: +sm[1], n: +sm[2] } }
+}
+if (FACTS && !SLICE) { console.error('verify: --facts needs --slice'); process.exit(2) }
 const html = fs.readFileSync(file, 'utf8')
 const fails = []
 const check = (ok, msg) => { if (!ok) fails.push(msg) }
@@ -76,6 +93,11 @@ try {
 const BV = win.__battleView
 if (!BV) { console.error('FAIL — window.__battleView not exposed'); process.exit(1) }
 const LIB = BV.lib
+/* the slice's share: its battles, and (slice 1 only) the checks that are not per battle */
+const ASSIGN = SLICE ? assignSlices(LIB.battles, SLICE.n) : null
+const mine = i => !SLICE || ASSIGN[i] === SLICE.k
+const SINGLES = !SLICE || SLICE.k === 1
+const driven = []
 /* the fold context and the projection, hoisted: both are used by checks that
    run before the blocks that used to define them (TDZ, found 2026-09-04) */
 const BURST_TESTS = JSON.parse(fs.readFileSync(resolve(PKG, 'tools/fixtures/bursts.json'), 'utf8'))
@@ -227,14 +249,15 @@ function drive(label, battle, allowStandee = false) {
   return v
 }
 for (let i = 0; i < LIB.battles.length; i++) {
+  if (!mine(i)) continue
   const b = LIB.battles[i]
   if (i > 0) load(i)
-  drive(b.label, b.battle)
+  drive(b.label, b.battle); driven.push(i)
 }
 // These are TEST imports, never entries in the 29-battle picker. Their exact
 // engine-generated logs cover shielding/save/zero cases the showcase may not.
 const playbackTests=[...BURST_TESTS.cases,...BURST_TESTS.support]
-for (const c of playbackTests) {
+if (SINGLES) for (const c of playbackTests) {
   const battle={events:c.events,seed:{mapId:c.options.map.id},outcome:null,turns:0,engineCommit:BURST_TESTS.engineCommit}
   const units=LIB.static.units,actions=LIB.static.actions
   LIB.static.units=fixtureUnits(units,c.action);LIB.static.actions={...actions,[c.action.id]:c.action}
@@ -244,15 +267,18 @@ for (const c of playbackTests) {
   } finally { LIB.static.units=units;LIB.static.actions=actions }
 }
 for (const u of uses) check(spriteIds.has(u), `icons: <use> names ${u}, sprite lacks it`)
-check(uses.has('ra-crossed-swords') && uses.has('ra-shoe-prints') && uses.has('ra-bow') && !uses.has('ra-crossbow'), `icons: expected swords, shoe-prints and the bow (never the crossbow) among uses, got ${[...uses].join(',')}`)
-check(damaging > 0 && plain > 0, `icons: rows damaging=${damaging} plain=${plain} — both kinds must appear`)
+/* library-wide: judged here when whole, by the gate over every slice's facts when sliced */
+const iconFacts = { uses: [...uses], damaging, plain }
+if (!SLICE) fails.push(...iconFails(iconFacts))
+if (SINGLES) {
 check(DUR, 'viewer.js no longer exports DUR — the pump/DUR cross-check did not run')
 for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORED.has(t), `pump: DUR names ${t}, which no log folds`)
+}
 /* THE OTHER DIRECTION (REVIEW §B, added 2026-09-04): the completeness check
    above proves every event seen is folded; this proves every fold ARM has an
    example. An arm no log exercises is written from the engine's emit site and
    untested — list it on purpose, the way IGNORED is a deliberate list. */
-{
+if (SINGLES) {
   const seen = new Set()
   for (const b of LIB.battles) for (const e of b.battle.events) seen.add(e.type)
   for (const c of playbackTests) for (const e of c.events) seen.add(e.type)
@@ -264,7 +290,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── one traversal per move (VISUAL-BATTLE-UPDATES §1.1) ───────────────── */
-{
+if (SINGLES) {
   const b = LIB.battles[0]; load(0); const v = H.viewer; v.pause()
   const EV = v.events
   const i = EV.findIndex(e => e.type === 'move.begin' && e.hexes > 1)
@@ -285,7 +311,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── hitstop (VISUAL-BATTLE-UPDATES §1.2): 70 hit · 110 kill · 140 crit ── */
-{
+if (SINGLES) {
   const seen = new Set(); const S = createState()
   for (const b of LIB.battles) { const S = createState()
     for (const e of b.battle.events) for (const c of fold(S, e, { UD: LIB.static.units, SN: LIB.static.statuses }, 0)) if (c.k === 'hitstop') seen.add(c.ms) }
@@ -294,9 +320,10 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* V2: current HP/shields only. No engine forecast is present in these logs. */
+let statusFrames = 0
 {
-  let statusFrames = 0
   for (let bi = 0; bi < LIB.battles.length; bi++) {
+    if (!mine(bi)) continue
     load(bi); const v = H.viewer; v.pause()
     while (v.cursor < v.events.length) {
       const before = v.cursor; v.step(); if (v.cursor === before) break
@@ -312,11 +339,11 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
       }
     }
   }
-  check(statusFrames > 0, 'no status-bearing frames exercised the no-forecast check')
+  if (!SLICE) fails.push(...frameFails({ statusFrames }))
 }
 
 /* ── the camera (PLAYBACK-DESIGN §7.8): inclusion, not centring; pan holds; peek restores ── */
-{
+if (SINGLES) {
   load(0); const v = H.viewer; v.pause(); const V = v._V
   /* stand on an activation whose actor is away from the board's edges, so the
      camera is not clamped and has room to pan on either side */
@@ -354,7 +381,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── a standee at the top of the board is shown whole (ruled 2026-09-03) ──── */
-{
+if (SINGLES) {
   load(LIB.battles.findIndex(b=>b.battle.seed.mapId==='test.map.horde-24')); const v = H.viewer; v.pause(); const V = v._V
   const POS = V.data.POS, sq = Math.cos(V.data.LAYOUT.tilt * Math.PI / 180), halfH = DESIGN.H / 2 / sq, TOP = 200 / sq
   const EV = v.events
@@ -372,7 +399,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── off-screen indicators (PLAYBACK-DESIGN §7.8 part 1) ───────────────── */
-{
+if (SINGLES) {
   load(0); const v = H.viewer; v.pause(); const V = v._V
   for (let i = 0; i < 40 && v.cursor < v.events.length; i++) v.step()      // units spread out a little
   v.render()
@@ -391,7 +418,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── the emphasis ladder (VISUAL-BATTLE-UPDATES §1.3, ruled 2026-09-02) ─── */
-{
+if (SINGLES) {
   let critWord = 0, critNumeral = 0, superTier = 0, kicks = 0, injuries = 0, injuryFloats = 0
   for (const b of LIB.battles) { const S = createState()
     for (const e of b.battle.events) for (const c of fold(S, e, { UD: LIB.static.units, SN: LIB.static.statuses }, 0)) {
@@ -419,7 +446,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 
 /* ── a dropped export plays (plan §8.6) — the REAL drop path, on a map with no
    library battle, fielding a unit with no art entry (the honest standee) ── */
-{
+if (SINGLES) {
   /* THE PAIR: a source battle and a map NO library battle plays, on the SAME
      board — a hex id means nothing on another board (§10). Choosing battle 0
      unconditionally meant the decoy search always failed and the drop silently
@@ -457,7 +484,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── the live path: push in two batches, the pump drains and resumes; dispose leaves nothing behind ── */
-{
+if (SINGLES) {
   load(0); const v = H.viewer; const EV = v.events.slice()
   v.dispose()
   const { mountBattleViewer } = { mountBattleViewer: null }
@@ -493,7 +520,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── the board is the map's (engine 5603c40, §10): a non-square board and a west deploy in the library, laid out from the field and the log, never from a constant ── */
-{
+if (SINGLES) {
   const odd = LIB.battles.map((b, i) => [b, i]).filter(([b]) => { const ml = b.battle.events.find(e => e.type === 'map.loaded'); return ml && ml.width !== ml.height })
   check(odd.length > 0, 'board: no non-square battle in the library — the 16×16 assumption cannot be tested')
   const west = LIB.battles.map((b, i) => [b, i]).filter(([b]) => { const ml = b.battle.events.find(e => e.type === 'map.loaded'); return ml && ml.deploy && ml.deploy.hero === 'west' })
@@ -518,7 +545,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── the lift (Angela 2026-09-03: the dwarf with no legs): every standing or downed token image sits in front of the ground plane, and keeps it through its animations ── */
-{
+if (SINGLES) {
   load(0); const v = H.viewer; v.pause(); v.render(); const V = v._V
   let n = 0
   for (const u of Object.values(v.state.U)) { if (u.life === 'dead') continue; const E = V.layers.UEL.get(u.id); if (!E) continue; n++
@@ -530,7 +557,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── the footprint follows the stature (Angela 2026-09-03: the dwarf's elevation) ── */
-{
+if (SINGLES) {
   load(0); const v = H.viewer; v.pause(); v.render(); const V = v._V
   const rings = []
   for (const u of Object.values(v.state.U)) { if (u.life !== 'standing') continue
@@ -546,7 +573,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 /* ── 2026-09-03: the engine's feature run, one check per beat ──────────── */
-{
+if (SINGLES) {
   const CTX = { UD: LIB.static.units, SN: LIB.static.statuses }
   const byType = (EV, t) => EV.map((e, i) => [e, i]).filter(([e]) => e.type === t)
   /* the library must carry the mechanics, or these checks cannot bite */
@@ -746,7 +773,7 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
 }
 
 // Independent display fixture: extreme status values cannot invent a forecast.
-{
+if (SINGLES) {
   load(0); const v = H.viewer; v.pause()
   v.seek(v.events.findIndex(e => e.type === 'battle.begin') + 1)
   const V = v._V, u = Object.values(v.state.U).find(u => u.life === 'standing')
@@ -766,5 +793,8 @@ for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORE
   }
 }
 
+if (FACTS) fs.writeFileSync(FACTS, JSON.stringify({ k: SLICE.k, n: SLICE.n, libraryCount: LIB.battles.length, battles: driven, singles: SINGLES,
+  ...iconFacts, statusFrames, ok: fails.length === 0, fails }) + '\n')
 if (fails.length) { console.error('FAIL\n  ' + fails.join('\n  ')); process.exit(1) }
+if (SLICE) { console.log(`OK — slice ${SLICE.k}/${SLICE.n}: ${driven.length} of ${LIB.battles.length} battles fold end to end${SINGLES ? ' · the single checks' : ''} · icons ${uses.size} used · rows damaging=${damaging} plain=${plain} · status frames ${statusFrames} (library-wide checks: the gate, over all ${SLICE.n} slices)`); process.exit(0) }
 console.log(`OK — ${LIB.battles.length} battles fold end to end · pure fold == pumped fold · icons ${uses.size} used · rows damaging=${damaging} plain=${plain}${CHECKS.size ? ' · checks: ' + [...CHECKS].join(', ') : ''}`)
