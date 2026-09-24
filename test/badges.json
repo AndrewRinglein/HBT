@@ -62,5 +62,21 @@
       "thorns": 3
     },
     "note": "v2.thorns: Thorns 3 - the second instance, pure data."
+  },
+  {
+    "id": "test.badge.fast-hands",
+    "name": "Fast Hands (TEST)",
+    "statModifiers": {
+      "swapCost": -1
+    },
+    "note": "v2.swap (2026-09-24, COMBAT-V2 section 11.2: 'Fast Hands lowers it'): swapCost -1, the mechanism's first instance. The campaign badge's value is unruled; this is TEST content only."
+  },
+  {
+    "id": "test.badge.slow-hands",
+    "name": "Slow Hands (TEST)",
+    "statModifiers": {
+      "swapCost": 1
+    },
+    "note": "v2.swap (2026-09-24, COMBAT-V2 section 11.2: 'Slow Hands raises it'): swapCost +1, the second instance, pure data. TEST content only."
   }
 ]
