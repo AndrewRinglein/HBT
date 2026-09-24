@@ -2809,3 +2809,25 @@ index f65e3f3..f9bbdc3 100644
 ISC-054: CLOSED at 3376376 · ISC-003: CLOSED at 3376376
 slice: 61 of 69 closed · 62 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## v2.block-presentation — LANDED `65c908f` **NEEDS REVIEW**
+2026-09-24 01:01 · engine @ 7ad7516
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../THREE-PACKAGES-PLAN.md:211
+  PASS  typecheck
+  PASS  full test suite — four shards green on this tree — 4 of 4 on tree 6261a2075c
+  PASS  gate 1 — every claimed criterion holds — ISC-069 — a standalone human battle shares engine resolution and replay
+  PASS  brought its own tests — test/sandbox-block.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-069: red on record (2026-09-18 16:05 @ 31dc33a, probe daa5d726c65f)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'adapter' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean — engine @ 7ad7516, clean
+  PASS  one door to the engine
+
+ISC-069: CLOSED at 65c908f
+slice: 61 of 69 closed · 62 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
