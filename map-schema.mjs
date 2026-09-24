@@ -13,10 +13,15 @@ export function validateProps(value, cells) {
   dense(value, MAX_BOARD_CELLS);
   const ids = new Set(), out = []; let references = 0;
   for (const p of value) {
-    record(p, ['id', 'footprint', 'height', 'material']);
+    record(p, ['id', 'footprint', 'height', 'material', 'collisionValue', 'consumes']);
     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) || p.id.startsWith('prop.obstacle.') || ids.has(p.id)) throw new Error('props: invalid, duplicate or reserved ID');
     ids.add(p.id);
     if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material');
+    // v2.knockback-collisions (COMBAT-V2-DESIGN-2026-09-07 section 9.3, ruled 2026-09-07):
+    // what a push stopped by this prop costs the mover per remaining point (absent = a
+    // basic obstruction's 2, the engine's), and whether it consumes a unit the collision kills.
+    if ('collisionValue' in p && (!Number.isSafeInteger(p.collisionValue) || p.collisionValue < 0 || p.collisionValue > 100)) throw new Error('props: collisionValue must be an integer 0..100');
+    if ('consumes' in p && p.consumes !== true) throw new Error('props: consumes is true or absent');
     record(p.footprint, ['kind', 'hexes']);
     if (p.footprint.kind !== 'hex') throw new Error('props: only full hex footprints are built');
     dense(p.footprint.hexes, cells);
@@ -26,7 +31,7 @@ export function validateProps(value, cells) {
       if (!Number.isSafeInteger(h) || h < 0 || h >= cells || seen.has(h)) throw new Error('props: invalid or repeated footprint hex');
       seen.add(h);
     }
-    out.push({ id: p.id, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] }, height: 'high', material: p.material });
+    out.push({ id: p.id, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] }, height: 'high', material: p.material, ...('collisionValue' in p ? { collisionValue: p.collisionValue } : {}), ...(p.consumes === true ? { consumes: true } : {}) });
   }
   return out;
 }

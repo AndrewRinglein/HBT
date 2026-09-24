@@ -90,5 +90,17 @@
       { "id": "prop.test.multi", "height": "high", "material": 2, "footprint": { "kind": "hex", "hexes": [89, 90, 91] } },
       { "id": "prop.test.second", "height": "high", "material": 3, "footprint": { "kind": "hex", "hexes": [110] } }
     ]
+  },
+  {
+    "id": "test.map.well-shove",
+    "name": "Well shove (TEST)",
+    "note": "v2.knockback-collisions: technical fixture, not user terrain. Nine by seven, open; on the middle row (row 3) prop.test.boulder (collisionValue 4) stands at column 2 and prop.test.well (collisionValue 3, consumes) at column 6, so a push along that row from column 4 strikes one or the other. The numbers are TEST data; the real well is content for later (COMBAT-V2-DESIGN-2026-09-07 section 9.3 rules the well at 3).",
+    "format": "9x7",
+    "board": { "width": 9, "height": 7 },
+    "rows": [".........", ".........", ".........", ".........", ".........", ".........", "........."],
+    "props": [
+      { "id": "prop.test.boulder", "height": "high", "material": 3, "collisionValue": 4, "footprint": { "kind": "hex", "hexes": [29] } },
+      { "id": "prop.test.well", "height": "high", "material": 3, "collisionValue": 3, "consumes": true, "footprint": { "kind": "hex", "hexes": [33] } }
+    ]
   }
 ]
