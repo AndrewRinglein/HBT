@@ -5,7 +5,7 @@ export function validateBurst(b) {
     if (!x || typeof x !== 'object' || Array.isArray(x) || Object.keys(x).some(k => !keys.includes(k))) throw Error('Invalid burst object');
   };
   const integer = (x, min = 0, max = 1000000) => Number.isSafeInteger(x) && x >= min && x <= max;
-  object(b, ['shape', 'side', 'requireTags', 'packets', 'heal']);
+  object(b, ['shape', 'side', 'requireTags', 'packets', 'heal', 'destroy']);
   object(b.shape, ['kind', 'radius']);
   if (b.shape.kind === 'arc') { if ('radius' in b.shape) throw Error('Invalid burst arc radius'); }
   else if (b.shape.kind !== 'radius' || !integer(b.shape.radius, 0, 100)) throw Error('Invalid burst shape');
@@ -22,6 +22,8 @@ export function validateBurst(b) {
     if (p.powerScale !== undefined && (!Number.isFinite(p.powerScale) || p.powerScale < 0 || p.powerScale > 1)) throw Error('Invalid burst Power share');
   }
   if (b.heal !== undefined && !integer(b.heal)) throw Error('Invalid burst healing');
+  // v2.prop-destroy (COMBAT-V2-DESIGN section 12.2): steps to every prop touching the shape.
+  if (b.destroy !== undefined && !integer(b.destroy, 0, 1000)) throw Error('Invalid burst Destroy');
   if (!b.packets.length && b.heal === undefined) throw Error('Burst has no payload');
   return structuredClone(b);
 }

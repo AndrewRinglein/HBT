@@ -669,5 +669,23 @@
     "test.badge.briar"
   ],
   "note": "v2.thorns: the cohort zombie wearing test.badge.briar (Thorns 3) - the second Thorns instance. No campaign content."
+},
+{
+  "id": "test-destroy-chopper",
+  "from": "test-osric",
+  "name": "Chopper (TEST)",
+  "attacks": [
+    "attack.test-destroy.chop"
+  ],
+  "note": "v2.prop-destroy (2026-09-24): Osric's body swinging attack.test-destroy.chop (Destroy 1). No campaign content."
+},
+{
+  "id": "test-destroy-wrecker",
+  "from": "test-osric",
+  "name": "Wrecker (TEST)",
+  "attacks": [
+    "attack.test-destroy.wreck"
+  ],
+  "note": "v2.prop-destroy: Osric's body swinging attack.test-destroy.wreck (Destroy 2) - the second Destroy instance. No campaign content."
 }
 ]

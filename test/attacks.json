@@ -194,5 +194,29 @@
     "staminaCost": 0,
     "impact": 7,
     "note": "v2.kdb: the second Impact instance, pure data - the design's shield bash: 'a shield bash with +7 Impact and no damage still has a strong chance to put someone on the ground' (COMBAT-V2 section 9.1). Bonus -20 floors its damage at 0; Impact 7 still counts. TEST data."
+  },
+  {
+    "id": "attack.test-destroy.chop",
+    "name": "Chop (TEST)",
+    "kind": "melee",
+    "damageType": "physical",
+    "bonus": 0,
+    "stat": "strength",
+    "reach": 1,
+    "staminaCost": 0,
+    "destroy": 1,
+    "note": "v2.prop-destroy (2026-09-24): the first Destroy instance - a plain physical swing with Destroy 1, one step to whatever is in the hex it strikes (COMBAT-V2 section 12.2). TEST data, no campaign claim."
+  },
+  {
+    "id": "attack.test-destroy.wreck",
+    "name": "Wreck (TEST)",
+    "kind": "melee",
+    "damageType": "physical",
+    "bonus": 0,
+    "stat": "strength",
+    "reach": 1,
+    "staminaCost": 0,
+    "destroy": 2,
+    "note": "v2.prop-destroy: the second Destroy instance, pure data - Destroy 2, so an old stone wall (tier 2) falls to one connecting swing. TEST data."
   }
 ]

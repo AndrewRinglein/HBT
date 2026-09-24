@@ -13,6 +13,12 @@ function packetFields(row){
     if(!Number.isSafeInteger(row.impact)||row.impact<0||row.impact>1000)throw Error('Invalid integer Impact on '+row.id);
     if(row.impact>0)out.impact=row.impact;
   }
+  // v2.prop-destroy (2026-09-24, COMBAT-V2-DESIGN section 12.2): Destroy N applies N
+  // steps to whatever is in the hex the attack strikes. Integer, 0 or more; absent = 0.
+  if(row.destroy!==undefined){
+    if(!Number.isSafeInteger(row.destroy)||row.destroy<0||row.destroy>1000)throw Error('Invalid integer Destroy on '+row.id);
+    if(row.destroy>0)out.destroy=row.destroy;
+  }
   if(row.secondaryDamage!==undefined){
     const ids=new Set(['base']),rows=row.secondaryDamage;
     if(!Array.isArray(rows)||rows.length>32)throw Error('Invalid secondary packet list on '+row.id);
@@ -1508,7 +1514,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));
