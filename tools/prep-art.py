@@ -84,6 +84,10 @@ ARTMAP = {
  # cohort zombie wearing one TEST badge (content/test/units.json `from`); same bodies, as test-kdb-*.
  'test-thorns-bramble': {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
  'test-thorns-briar':   {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
+ # v2.prop-destroy test riders (2026-09-24): the Chopper (Destroy 1) and the Wrecker (Destroy 2)
+ # are test-osric swinging a TEST Destroy attack (content/test/units.json `from`); same body, as test-kdb-mauler.
+ 'test-destroy-chopper': {'token':'osric_256.png','card':'card-osric','src':'battle-tokens/units/osric_256.png','cardsrc':'crucible/art/base/paladin-shiney1.png'},
+ 'test-destroy-wrecker': {'token':'osric_256.png','card':'card-osric','src':'battle-tokens/units/osric_256.png','cardsrc':'crucible/art/base/paladin-shiney1.png'},
  # test.thorns fields test-ranger as an ENEMY (2026-09-24) — the first library battle to, so the
  # every-fielded-enemy-has-a-token test needs a row. It is the dictated class.ranger TEST body
  # (content/test/units.json, no `from`): the base Ranger's own token and card, not new art.

@@ -466,6 +466,39 @@ export function fold(S, e, ctx, now = 0) {
     case 'thorns.reflected':
       if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'thorns', text: 'THORNS ' + e.thorns, n: e.thorns, of: 'thorns', small: true })
       break
+    /* ── Prop destruction (engine v2.prop-destroy / v2.prop-attack, 2026-09-24; COMBAT-V2
+       §12, §15.1). The props drawn from map.loaded change by id, exactly as the events
+       state them: prop.damaged sets the steps taken (below the tier; at the tier the
+       prop.destroyed that follows says what is left), prop.destroyed replaces the prop
+       with the engine's own `remnant` (low cover, same id) or removes it. prop.struck
+       is an attack aimed at a prop's hex: a word, no unit, no roll. */
+    case 'prop.struck':
+      S.AIM = null; S.ATTACK = null; S.BURST = null
+      S.FIRING = { unit: e.actor, ability: e.attackId, until: now + FIRE_MS }
+      cue('float', { hex: e.hex, kind: 'note', text: 'STRIKES ' + (e.props || []).length + ' PROP' + ((e.props || []).length === 1 ? '' : 'S'), small: true })
+      break
+    case 'prop.damaged':
+      if (Array.isArray(S.props)) {
+        const at = S.props.findIndex(p => p.id === e.prop)
+        if (at >= 0 && e.stepsAfter < e.tier) { S.props = S.props.slice(); S.props[at] = { ...S.props[at], steps: e.stepsAfter } }
+        const p = at >= 0 ? S.props[at] : null
+        if (p && p.footprint.kind === 'hex' && e.stepsAfter < e.tier) cue('float', { hex: p.footprint.hexes[0], kind: 'note', text: 'DAMAGED ' + e.stepsAfter + '/' + e.tier, n: e.stepsAfter, of: 'steps', small: true })
+      }
+      break
+    case 'prop.destroyed':
+      if (Array.isArray(S.props)) {
+        const at = S.props.findIndex(p => p.id === e.prop)
+        if (at >= 0) {
+          const hex = S.props[at].footprint.kind === 'hex' ? S.props[at].footprint.hexes[0] : null
+          S.props = S.props.slice()
+          if (e.leaves === 'low') {
+            if (!e.remnant || e.remnant.id !== e.prop) throw new Error('prop.destroyed leaves low cover but carries no remnant; export this battle with the current engine')
+            S.props[at] = structuredClone(e.remnant) }
+          else S.props.splice(at, 1)
+          if (hex != null) cue('float', { hex, kind: 'note', text: e.leaves === 'low' ? 'DESTROYED · LOW COVER' : 'DESTROYED', small: true })
+        }
+      }
+      break
     case 'maxHp.lost':
       if (U[e.target]) { U[e.target].maxHp = e.maxHp; U[e.target].hp = e.hp
         cue('float', { hex: U[e.target].hex, kind: 'maxhp', text: '−' + e.amount + ' MAX HP', n: e.amount, of: 'amount', small: true }) }
@@ -670,7 +703,7 @@ export function foldTo(events, n, ctx) {
 export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck', 'unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'loadout.swapped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
   'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'unit.proned', 'unit.stood', 'stamina.spent',
-  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'knockback.blocked', 'kdb.rolled', 'thorns.reflected', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',
+  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'knockback.blocked', 'kdb.rolled', 'thorns.reflected', 'prop.struck', 'prop.damaged', 'prop.destroyed', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',
   'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'bleedout.accelerated', 'power.used', 'battle.end',
   /* 2026-09-03 */
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',

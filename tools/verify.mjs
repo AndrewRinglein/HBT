@@ -254,7 +254,7 @@ for (let i = 0; i < LIB.battles.length; i++) {
   if (i > 0) load(i)
   drive(b.label, b.battle); driven.push(i)
 }
-// These are TEST imports, never entries in the 35-battle picker. Their exact
+// These are TEST imports, never entries in the library picker. Their exact
 // engine-generated logs cover shielding/save/zero cases the showcase may not.
 const playbackTests=[...BURST_TESTS.cases,...BURST_TESTS.support]
 if (SINGLES) for (const c of playbackTests) {
@@ -289,7 +289,11 @@ if (SINGLES) {
   // loadout.swapped (2026-09-24, V2 R6): a swap is a HUMAN command and the AI never swaps (engine
   // SWITCHES swapAi, ruled 2026-09-24), so an exported AI battle cannot carry one; the engine's own
   // log of a human swap is tools/fixtures/loadout-swap.json, driven by tools/loadout-swap.test.mjs
-  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled', 'loadout.swapped'])
+  // prop.struck (2026-09-24, V2 R7): an attack aimed at a prop's hex is a HUMAN command and the AI
+  // never aims at props (engine SWITCHES propAttackAi); the engine's own log of three blows is
+  // tools/fixtures/prop-strike.json, driven by tools/prop-destroy.test.mjs. prop.damaged and
+  // prop.destroyed are carried by the library's test.prop-destroy.
+  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled', 'loadout.swapped', 'prop.struck'])
   const dark = FOLDED_TYPES.filter(t => !seen.has(t))
   for (const t of dark) check(UNEXERCISED.has(t), `fold: ${t} is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it`)
   for (const t of UNEXERCISED) check(!seen.has(t), `fold: ${t} is listed UNEXERCISED but the library now carries one — delete the entry, the list only shrinks`)

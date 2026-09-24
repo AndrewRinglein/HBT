@@ -716,6 +716,18 @@
    "card": "card-ranger-ranger.jpg",
    "aspect": 0.582,
    "height": 1.55
+  },
+  "test-destroy-chopper": {
+   "token": "osric_256.png",
+   "card": "card-osric.jpg",
+   "aspect": 0.5,
+   "height": 1.55
+  },
+  "test-destroy-wrecker": {
+   "token": "osric_256.png",
+   "card": "card-osric.jpg",
+   "aspect": 0.5,
+   "height": 1.55
   }
  }
 }

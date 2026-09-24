@@ -57,7 +57,9 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   /* R4 (2026-09-23): a KDB check that did not fire is silent (0); a fired one holds its word (beat(), as block.rolled) */
   'kdb.rolled': 0,
   /* R5 (2026-09-24): the Thorns word holds a short beat before its damage line */
-  'thorns.reflected': 360 }
+  'thorns.reflected': 360,
+  /* R7 (2026-09-24): a blow at a prop's hex holds like a short swing; each step and the fall hold a beat */
+  'prop.struck': 520, 'prop.damaged': 260, 'prop.destroyed': 420 }
 /* a RUN of ground paints folds as one beat (night falls on every hex, the
    heroes light ~100 each phase): the pump paints them together and holds this */
 const PAINT_RUN_MS = 260

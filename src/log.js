@@ -57,6 +57,10 @@ export function buildLog(events, SN, turns) {
         (e.roll == null ? ' · no roll' : ` · rolled ${e.roll}`) + '</span>' +
         (e.fired ? ` — <b>${String(e.kdbType).toUpperCase()}</b> <span class="sq">· type roll ${e.typeRoll}${e.applied !== e.kdbType ? ' · applied ' + e.applied : ''}${e.suppressedBy ? ' · suppressed by ' + escape(e.suppressedBy.join(', ')) : ''}${e.gap ? ' · ' + escape(e.gap) : ''}</span>` : (e.roll == null ? '' : ' — does not fire')))
       // R5 (2026-09-24): Thorns — the spikes answer a connecting melee hit; the damage line follows
+      /* R7 (2026-09-24): prop destruction, in the engine's own fields */
+      case 'prop.struck': return b(side(e), '&nbsp;&nbsp;' + escape(`strikes hex ${e.hex} · ${e.attackId} · Destroy ${e.destroy} · ${(e.props || []).join(', ')}`))
+      case 'prop.damaged': return b('', '&nbsp;&nbsp;&nbsp;&nbsp;' + escape(`${e.prop} (${e.height}, tier ${e.tier}) · steps ${e.stepsBefore} → ${e.stepsAfter}`))
+      case 'prop.destroyed': return b('', '&nbsp;&nbsp;&nbsp;&nbsp;' + escape(`${e.prop} is destroyed · ${e.leaves === 'low' ? 'leaves low cover' : 'leaves nothing'}`))
       case 'thorns.reflected': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmAt(e)}</b>'s Thorns ${e.thorns} prick <b>${nmT(e)}</b> <span class="sq">· ${e.amount} true${e.absorbed ? ' · ' + e.absorbed + ' absorbed' : ''}</span>`)
       case 'crit.branch': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;CRIT branch — rolled ${e.roll} vs ${e.chartShare} → <b>${e.arm}</b>`)
       case 'crit.effect': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;✶ <b>${e.name}</b> on ${nmT(e)} <span class="sq">· rolled ${e.roll}</span>`)

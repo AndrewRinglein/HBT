@@ -140,6 +140,10 @@
   {
    "file": "test.thorns.json",
    "label": "TEST · Thorns 1 and Thorns 3 answer melee (thorns.reflected)"
+  },
+  {
+   "file": "test.prop-destroy.json",
+   "label": "TEST · Destroy breaks barrels and an old stone wall (prop.damaged, prop.destroyed)"
   }
  ]
 }

@@ -1,0 +1,167 @@
+TAP version 13
+# Subtest: the fixture: three blows at hex 10 — damaged, destroyed to low cover with a remnant, damaged again
+ok 1 - the fixture: three blows at hex 10 — damaged, destroyed to low cover with a remnant, damaged again
+  ---
+  duration_ms: 1.020169
+  type: 'test'
+  ...
+# Subtest: the fold knows the three events and the pump gives each a beat
+not ok 2 - the fold knows the three events and the pump gives each a beat
+  ---
+  duration_ms: 0.549945
+  type: 'test'
+  location: '/sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:29:1'
+  failureType: 'testCodeFailure'
+  error: 'prop.struck'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:32:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the fold follows the prop: intact, damaged 1/2, the remnant exactly, then the remnant damaged
+not ok 3 - the fold follows the prop: intact, damaged 1/2, the remnant exactly, then the remnant damaged
+  ---
+  duration_ms: 1.827613
+  type: 'test'
+  location: '/sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:37:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    undefined !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:41:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: scrubbing never edits the map.loaded fact it started from
+ok 4 - scrubbing never edits the map.loaded fact it started from
+  ---
+  duration_ms: 0.227482
+  type: 'test'
+  ...
+# Subtest: a prop that leaves nothing is removed; low cover with no remnant is refused loudly
+not ok 5 - a prop that leaves nothing is removed; low cover with no remnant is refused loudly
+  ---
+  duration_ms: 0.731405
+  type: 'test'
+  location: '/sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + {
+    +   collisionValue: 4,
+    +   footprint: {
+    +     hexes: [
+    +       10
+    +     ],
+    +     kind: 'hex'
+    +   },
+    +   height: 'high',
+    +   id: 'prop.test.boulder',
+    +   material: 2
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+    id: 'prop.test.boulder'
+    height: 'high'
+    material: 2
+    collisionValue: 4
+    footprint:
+      kind: 'hex'
+      hexes:
+        0: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:57:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: floats: the blow names the props it struck; a step shows n/of; the fall says what is left
+not ok 6 - floats: the blow names the props it struck; a step shows n/of; the fall says what is left
+  ---
+  duration_ms: 4.038655
+  type: 'test'
+  location: '/sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:62:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(JSON.stringify(struck).includes('STRIKES 1 PROP'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:65:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the log says each step and what the fall leaves, in the engine's own fields
+not ok 7 - the log says each step and what the fall leaves, in the engine's own fields
+  ---
+  duration_ms: 1.488087
+  type: 'test'
+  location: '/sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:71:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(line(idx('prop.struck')[0]).includes('strikes hex 10'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///sessions/rcw-01cr2k84pcwwcrs8vbwlz64b/w/red/tools/prop-destroy.test.mjs:74:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 2
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 81.881357

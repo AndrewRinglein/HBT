@@ -126,7 +126,7 @@ export function syncProps(V) {
     svg.style.cssText='position:absolute;left:0;top:0;overflow:visible;width:1px;height:1px;transform:translateZ(1px)';
     shape.setAttribute('points',p.footprint.vertices.map(([x,y])=>`${POS[0].px+x*F.colStep/2000},${POS[0].py+y*F.rowStep/3000}`).join(' '));
     shape.setAttribute('fill',p.height==='high'?'rgba(62,57,51,.9)':'rgba(119,99,69,.65)');shape.setAttribute('stroke','rgba(220,205,173,.75)');shape.setAttribute('stroke-width','1');
-    shape.dataset.prop=p.id;shape.dataset.height=p.height;svg.appendChild(shape);layer.appendChild(svg);continue;
+    shape.dataset.prop=p.id;shape.dataset.height=p.height;if(p.steps){shape.dataset.steps=String(p.steps);shape.setAttribute('stroke-dasharray','3 2')}svg.appendChild(shape);layer.appendChild(svg);continue;
    }
    for (const h of p.footprint.hexes) {
     const pos = POS[h]
@@ -135,6 +135,11 @@ export function syncProps(V) {
     tile.dataset.prop = p.id; tile.dataset.hex = String(h)
     /* R4 (2026-09-23): a prop's authored collision value and `consumes` (map.loaded), as stated */
     tile.title = `${p.id} · ${p.height} · material ${p.material}` + (p.collisionValue != null ? ` · collision ${p.collisionValue}` : '') + (p.consumes ? ' · consumes' : '')
+      /* R7 (2026-09-24): steps taken, as the fold holds them (prop.damaged); low cover reads lighter */
+      + (p.steps ? ` · damaged ${p.steps}/${p.material}` : '')
+    tile.dataset.height = p.height
+    if (p.steps) { tile.dataset.steps = String(p.steps); tile.style.filter = 'sepia(.6) brightness(.8)' }
+    if (p.height === 'low') tile.style.opacity = '.6'
     if (p.consumes) tile.dataset.consumes = '1'
     layer.appendChild(tile)
   }
