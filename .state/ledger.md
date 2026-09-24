@@ -15187,3 +15187,21 @@ Retired by COMBAT-V2-DESIGN section 18: a stowed weapon grants nothing (section 
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## v2.ground-table — LANDED `19e9ef3`
+2026-09-24 23:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/v2-ground-table.test.ts
+  PASS  gate 1 — the id appears in a real battle — terrain.grass: 2 log lines, 2 fired, 2 changed state · terrain.wheat: 2 log lines, 2 fired, 2 changed state · terrain.bush: 2 log lines, 2 fired, 2 changed state · terrain.woodland: 3 log lines, 3 fired, 3 changed state · terrain.lava: 12 log lines, 12 fired, 12 changed state
+  PASS  brought its own tests — test/v2-ground-table.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 40 ids without a published source — 5 NEW from THIS item, publish them
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — terrain.grass live · terrain.bush live · terrain.woodland live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without terrain.grass,terrain.wheat,terrain.bush,terrain.woodland,terrain.lava — they genuinely test it

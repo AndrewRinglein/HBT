@@ -1,5 +1,27 @@
 [
  {
+  "id": "v2.ground-table",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "V2 R7 part 3, the V2 ground table (COMBAT-V2-DESIGN-2026-09-07 section 3.2, ruled 2026-09-07; V2-ROADMAP.md R7). Five terrain kinds: terrain.grass and terrain.wheat (-10 ranged accuracy against the occupant, normal move), terrain.bush (-10 ranged, move +1), terrain.woodland (-15 ranged and -7 melee against, move +1, blocks nothing), terrain.lava (3 fire damage and 2 Burn on entry and again at end of activation; the 3 meets Fire Resist; a push into lava is an entry, not a collision). Concealment is the accuracy ladder's TERRAIN rung (400, revived), read off the target's ground by attack kind, stacking with cover. Every way into a hex goes through core/ground.ts enterGround; a push runs the V2 hazard only. Glyphs g y u o l. Rocky (section 16 item 2a) unruled and not built; section 18's retirement of v1 terrain stat mods is not in this item.",
+  "expect": "the table copies section 3.2 (costs 1 1 2 2 1; ranged -10 -10 -10 -15; melee 0 0 0 -7; lava fire 3 + Burn 2); a shot into grass is exactly 10 worse than into the open and the ledger's 400 row names terrain.grass; woodland -15 a shot, -7 a swing, grass nothing to a swing; the shooter's own ground changes nothing; woodland plus low crates is -35 in two rows; walking into lava deals 3 fire and 2 Burn and again at end of activation; Fire Resist 3 takes 0 with resisted 3 on the line; lava that kills a walker stops the walk; knocked into lava is 3 fire and 2 Burn and no collision; pushed into water keeps its Burn; test.ground-table is live and replays byte for byte; no control battle moves.",
+  "probeIds": [
+   "terrain.grass",
+   "terrain.wheat",
+   "terrain.bush",
+   "terrain.woodland",
+   "terrain.lava"
+  ],
+  "variants": [
+   "terrain.grass",
+   "terrain.bush",
+   "terrain.woodland"
+  ],
+  "note": "Andrew's chat, 2026-09-24 (V2 roadmap R7 part 3). Defaults in SWITCHES.md 'V2 ground table'. Content: TEST scenario test.ground-table. Later: Atlas hazard/concealment compilation; rocky's numbers; section 18 retirement of v1 forest/rocky/hills stat mods; burning grounds; viewer and kingdom drawing the new grounds.",
+  "status": "done",
+  "sha": "19e9ef3"
+ },
+ {
   "id": "fix.view-direct-map-seed",
   "kind": "engine",
   "shape": "plumbing",

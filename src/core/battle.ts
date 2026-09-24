@@ -11,6 +11,7 @@ import { advanceBand, fireSchedule, startOfTurn } from './encounter.js'
 import { heroesLight } from './vision.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
+import { applyGroundHazard } from './ground.js'
 import type { BattleCursor, Ctx, Side } from './types.js'
 import { MAX_SURGE_CYCLES } from './types.js'
 import { activationChoices, controllerOf, type ControlPolicy } from './control.js'
@@ -58,6 +59,12 @@ export function endOfActivation(ctx: Ctx, unitId: number): void {
   // the painted layer, through the same funnel (capability.ground-layers, 2026-09-03)
   const layer = layerAt(ctx, u.hex)
   for (const [sid, n] of layerAppliesOnActivationEnd(layer)) applyStatus(ctx, unitId, sid, n, layerIdOf(layer))
+  // V2 hazard (v2.ground-table, §3.2): lava's second beat — "and again at end of
+  // activation if still there". The ground rungs' last line, before the triggers.
+  if (applyGroundHazard(ctx, unitId, u.hex)) {
+    settle(ctx, terrainIdOf(t))
+    if (u.lifeState !== 'standing' || ctx.state.outcome) return
+  }
   // Rung 2 — `onActivationEnd` triggers fire (fix.activation-end-fires,
   // 2026-09-03). The hook was in HOOKS, validated, glossed and never called —
   // "indistinguishable from a working one until a piece of content depends on

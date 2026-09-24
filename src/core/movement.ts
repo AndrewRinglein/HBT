@@ -5,7 +5,7 @@ import { lowEdgeCost, preparedLowEdgeCost } from './cover.js'
 
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
-import { appliesOnEnterOf, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
+import { appliesOnEnterOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { blockingPropAt, passableHexes, type Passable } from './props.js'
 import { flatDamage } from './mitigation.js'
 import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
@@ -15,6 +15,7 @@ import { canAttack, performAttack } from './pipeline.js'
 import { knockImmunity } from './kdb.js'
 import { thornsOf } from './thorns.js'
 import { settle } from './settle.js'
+import { applyGroundHazard, enterGround } from './ground.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
 // hard-coded. It should be content-driven." The cost of moving is a field on
@@ -242,20 +243,11 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     moveUnit(ctx, unitId, hex, cost, power.id, terrainIdOf(terrainHere), bonusPaid)
     moved++
     // 4. traps — none in the baseline
-    // 5. terrain status ON ENTRY — water strips 1 Burn as you splash through
-    //    (GAME-DESIGN §4: "running through water strips 1 Burn"). Flight, when it
-    //    lands, skips this by construction: a flight move contains zero Steps.
-    for (const sid of stripsOnEnterOf(terrainHere)) {
-      reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
-    }
-    // 5b. terrain status ON ENTRY, the inverse — burning ground sears as you
-    //     cross ("running through costs 1 stack", GAME-DESIGN §4). Same beat as
-    //     the strips, so flight skips both by construction (zero Steps).
-    for (const [sid, n] of appliesOnEnterOf(terrainHere)) {
-      applyStatus(ctx, unitId, sid, n, terrainIdOf(terrainHere))
-    }
-    // the painted layer's entry beat, same funnel (capability.ground-layers, 2026-09-03)
-    for (const [sid, n] of layerAppliesOnEnter(layerAt(ctx, hex))) applyStatus(ctx, unitId, sid, n, layerIdOf(layerAt(ctx, hex)))
+    // 5. the ground's entry beat — one funnel for every way into a hex (core/ground.ts):
+    //    water strips, burning ground sears, the painted layer, and the V2 hazard
+    //    (lava, v2.ground-table). Flight skips all of it by construction: zero Steps.
+    //    A hazard that landed HP damage settles here, so a mover the lava kills stops.
+    if (enterGround(ctx, unitId, hex, 'step')) settle(ctx, terrainIdOf(terrainHere))
     // 6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break
     if (u.lifeState !== 'standing') break
@@ -372,6 +364,10 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
   moveUnit(ctx, unitId, to, 0, power.id, terrainIdOf(terrainHere))
   for (const sid of stripsOnEnterOf(terrainHere)) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
   for (const [sid, n] of appliesOnEnterOf(terrainHere)) applyStatus(ctx, unitId, sid, n, terrainIdOf(terrainHere))
+  // v2.ground-table: a sidestep is a Step, so the V2 hazard meets it too. (The
+  // painted layer's entry beat has never run here — kept exactly, not widened.)
+  if (applyGroundHazard(ctx, unitId, to)) settle(ctx, terrainIdOf(terrainHere))
+  if (u.lifeState !== 'standing') return true
   applyMoveEffects(ctx, unitId, power)
   return true
 }
@@ -549,6 +545,10 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
     emit(ctx, 'knockback.blocked', causeId, { actor: pusherId, target: targetId, at: tg.hex, reason: reason || 'nowhere to go', asked: hexes, ...facts })
   } else {
     knockUnit(ctx, targetId, at, pusherId, causeId, { asked: hexes, taken, ...(taken < hexes && reason ? { stoppedBy: reason } : {}) }, facts)
+    // v2.ground-table, §3.2: "Being knocked into lava is *entering* it, not a
+    // collision" — the hex the push leaves the mover in, before any collision
+    // cost (SWITCHES.md pushEntersGround). The push's caller settles.
+    enterGround(ctx, targetId, at, 'push')
   }
   // The collision's cost: the mover only, and only a standing mover still on
   // its feet — a body the push's own hit already emptied has nothing to lose.

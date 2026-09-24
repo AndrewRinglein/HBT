@@ -19,6 +19,7 @@ import { settle } from './settle.js'
 import { canSee } from './vision.js'
 import { attackLineClear } from './los.js'
 import { hasLowCover } from './cover.js'
+import { accuracyAgainstOf, terrainIdOf } from '../content/maps.js'
 import { kdbChanceOf, kdbTarget, resolveKdb } from './kdb.js'
 import { reflectThorns, thornsOnHit } from './thorns.js'
 import { rulesSideOf } from './side.js'
@@ -28,6 +29,7 @@ export const ACC = {
   BASE: 100,
   RANGE: 200,
   ADJACENT: 300,
+  /** v2.ground-table (§3.2): the ground the TARGET stands in, by attack kind — concealment. Revived; v1's occupied-hex rung was retired into BASE_MOD. */
   TERRAIN: 400,
   CONDITION: 500,
   /** v2.prone (§10): +N against a prone target, −N for a prone attacker. */
@@ -141,6 +143,12 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   if (a.attack.kind === 'ranged' && inMelee(ctx, attacker)) {
     v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)
   }
+  // TERRAIN (400) — V2 concealment (v2.ground-table, COMBAT-V2 §3.2): grass, wheat
+  // and bush hide their occupant from ranged attacks, woodland from both. It reads
+  // the TARGET's ground, whoever shoots; independent of cover, and stacks with it.
+  const hiddenIn = ctx.state.terrain[target.hex] ?? 0
+  const concealment = accuracyAgainstOf(hiddenIn, a.attack.kind)
+  if (concealment) v = step(ledger, ACC.TERRAIN, 'TERRAIN', terrainIdOf(hiddenIn), v, v + concealment)
   // CONDITION — the target's state. Downed: +20 (GAME-DESIGN §9, ruled;
   // fix.downed-targetable 2026-09-03). The row names the attack as its cause.
   if (target.lifeState === 'downed') v = step(ledger, ACC.CONDITION, 'TARGET_DOWNED', a.id, v, v + 20)

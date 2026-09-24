@@ -1,6 +1,6 @@
 // Pure terrain metadata and composition. Registry decoding lives in maps.ts.
 // Moved without changing ruled tables or the disable seam; one implementation.
-import { TERRAIN } from '../core/types.js'
+import { TERRAIN, type DamageType } from '../core/types.js'
 import { disabledIds } from './disable.js'
 
 /** The authored glyph for each terrain kind. MAP-01's legend is the source. */
@@ -8,6 +8,8 @@ export const GLYPH: Readonly<Record<string, number>> = {
   '.': TERRAIN.OPEN, 'h': TERRAIN.HILLS, 'f': TERRAIN.FOREST, 'r': TERRAIN.ROCKY,
   'R': TERRAIN.ROCKY_HILLS, 'w': TERRAIN.WATER, 'x': TERRAIN.IMPASSABLE,
   'b': TERRAIN.BURNING, 'p': TERRAIN.POISONED,
+  // v2.ground-table: no document assigns these glyphs — SWITCHES.md groundGlyphs.
+  'g': TERRAIN.GRASS, 'y': TERRAIN.WHEAT, 'u': TERRAIN.BUSH, 'o': TERRAIN.WOODLAND, 'l': TERRAIN.LAVA,
 }
 
 /** The id a terrain kind answers to in a log line or a modifier source. */
@@ -17,6 +19,8 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.ROCKY_HILLS]: 'terrain.rocky-hills', [TERRAIN.WATER]: 'terrain.water',
   [TERRAIN.IMPASSABLE]: 'terrain.impassable',
   [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
+  [TERRAIN.GRASS]: 'terrain.grass', [TERRAIN.WHEAT]: 'terrain.wheat', [TERRAIN.BUSH]: 'terrain.bush',
+  [TERRAIN.WOODLAND]: 'terrain.woodland', [TERRAIN.LAVA]: 'terrain.lava',
 }
 
 export function terrainIdOf(terrain: number): string {
@@ -51,7 +55,19 @@ export function isPassable(terrain: number): boolean {
 export type Trait = 'rough' | 'elevated' | 'wet' | 'burning' | 'poisoned'
 /** [statusId, amount] pairs — what a terrain APPLIES, the inverse of its strips. */
 export type Applies = readonly (readonly [string, number])[]
+/**
+ * A V2 ground hazard (COMBAT-V2 §3.2, lava): typed damage and statuses, dealt on
+ * ENTRY — a step, a sidestep or a push that carries the unit in — and again at
+ * the occupant's END OF ACTIVATION. The damage is direct and meets the type's own
+ * resist (§8.2); the statuses tick against theirs.
+ */
+export type Hazard = { readonly damageType: DamageType; readonly damage: number; readonly applies: Applies }
 type Mods = { moveCost: number
+  /** V2 §3.2 concealment: accuracy of a RANGED attack against the occupant (negative hides). */
+  rangedAccuracyAgainst?: number
+  /** V2 §3.2 concealment: accuracy of a MELEE attack against the occupant. */
+  meleeAccuracyAgainst?: number
+  hazard?: Hazard
   accuracy?: number; reach?: number; dodge?: number; armor?: number; resist?: number
   /** Statuses reduced by 1 when a unit STEPS ONTO this terrain. */
   stripsOnEnter?: readonly string[]
@@ -107,6 +123,8 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
   [TERRAIN.IMPASSABLE]: [],
   [TERRAIN.BURNING]: ['burning'],
   [TERRAIN.POISONED]: ['poisoned'],
+  [TERRAIN.GRASS]: [], [TERRAIN.WHEAT]: [], [TERRAIN.BUSH]: [],   // stated directly below — see EXTRA
+  [TERRAIN.WOODLAND]: [], [TERRAIN.LAVA]: [],
 }
 
 /**
@@ -116,10 +134,22 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
  */
 const EXTRA: Readonly<Record<number, Mods>> = {
   [TERRAIN.FOREST]: { moveCost: 1, dodge: 10, armor: 1 },
+  // ── V2 ground (v2.ground-table) ─────────────────────────────────────────────
+  // SOURCE OF TRUTH: COMBAT-V2-DESIGN-2026-09-07 §3.2, ruled 2026-09-07. Copied,
+  // not chosen: "−10 ranged accuracy against you", "+1 (difficult)", woodland
+  // "−15 ranged, −7 melee accuracy against you", lava "3 fire damage and 2 Burn on
+  // entry, and again at end of activation". Independent of cover; they stack (§3.2).
+  // Material tier 1 (grass, wheat, bush burn away) waits on the burning-props ruling.
+  [TERRAIN.GRASS]:    { moveCost: 0, rangedAccuracyAgainst: -10 },
+  [TERRAIN.WHEAT]:    { moveCost: 0, rangedAccuracyAgainst: -10 },
+  [TERRAIN.BUSH]:     { moveCost: 1, rangedAccuracyAgainst: -10 },
+  [TERRAIN.WOODLAND]: { moveCost: 1, rangedAccuracyAgainst: -15, meleeAccuracyAgainst: -7 },
+  [TERRAIN.LAVA]:     { moveCost: 0, hazard: { damageType: 'fire', damage: 3, applies: [['status.burn', 2]] } },
 }
 
 type Stat = 'accuracy' | 'reach' | 'dodge' | 'armor' | 'resist'
 const STATS: Stat[] = ['accuracy', 'reach', 'dodge', 'armor', 'resist']
+const AGAINST = ['rangedAccuracyAgainst', 'meleeAccuracyAgainst'] as const
 
 function composed(terrain: number): Mods {
   const out: Mods = { moveCost: 1 }
@@ -127,6 +157,11 @@ function composed(terrain: number): Mods {
     if (!d) return
     out.moveCost += d.moveCost
     for (const k of STATS) if (d[k]) out[k] = (out[k] ?? 0) + d[k]!
+    for (const k of AGAINST) if (d[k]) out[k] = (out[k] ?? 0) + d[k]!
+    if (d.hazard) {
+      if (out.hazard) throw new Error('terrain: two hazards composed into one ground — not expressible')
+      out.hazard = d.hazard
+    }
     // strip lists compose by union — a composed wet terrain would strip too
     if (d.stripsOnEnter) out.stripsOnEnter = [...(out.stripsOnEnter ?? []), ...d.stripsOnEnter]
     if (d.stripsOnActivationEnd) out.stripsOnActivationEnd = [...(out.stripsOnActivationEnd ?? []), ...d.stripsOnActivationEnd]
@@ -162,6 +197,22 @@ export function appliesOnEnterOf(terrain: number): Applies {
 export function appliesOnActivationEndOf(terrain: number): Applies {
   if (disabledIds().has(terrainIdOf(terrain))) return []
   return composed(terrain).appliesOnActivationEnd ?? []
+}
+
+/**
+ * V2 §3.2 concealment — what the ground an occupant stands in does to the accuracy
+ * of an attack of this kind AGAINST it. Read at the accuracy ladder's TERRAIN rung
+ * (400). The kill-switch seam silences it (CF_DISABLE_IDS=terrain.grass …).
+ */
+export function accuracyAgainstOf(terrain: number, kind: 'melee' | 'ranged'): number {
+  if (terrain === TERRAIN.IMPASSABLE || disabledIds().has(terrainIdOf(terrain))) return 0
+  const m = composed(terrain)
+  return (kind === 'ranged' ? m.rangedAccuracyAgainst : m.meleeAccuracyAgainst) ?? 0
+}
+/** V2 §3.2 hazard — null when the ground carries none, or its id is disabled. */
+export function hazardOf(terrain: number): Hazard | null {
+  if (terrain === TERRAIN.IMPASSABLE || disabledIds().has(terrainIdOf(terrain))) return null
+  return composed(terrain).hazard ?? null
 }
 
 /** Extra reach for ranged weapons fired from here. */

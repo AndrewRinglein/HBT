@@ -6,6 +6,7 @@ import { TERRAIN,type State } from '../core/types.js'
 import { terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
   accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf,
   stripsOnEnterOf, stripsOnActivationEndOf, appliesOnEnterOf, appliesOnActivationEndOf,
+  accuracyAgainstOf, hazardOf,
 } from '../content/terrain.js'
 
 const HEXW = 128, HEXH = 132, COL = 128, ROW = 96, ODD = 64, TILT = 49.3
@@ -34,6 +35,11 @@ const groundNote = (t: number): string => {
   if (se.length || sa.length) bits.push(`washes ${[...new Set([...se, ...sa])].map(short).join('/')}`)
   if (ae.length) bits.push(`+${ae.map(([id, n]) => `${n} ${short(id)}`).join(', ')} on entry`)
   if (aa.length) bits.push(`+${aa.map(([id, n]) => `${n} ${short(id)}`).join(', ')} end of activation`)
+  // v2.ground-table: concealment and the hazard, in the same plain words
+  const rv = accuracyAgainstOf(t, 'ranged'), mv = accuracyAgainstOf(t, 'melee')
+  if (rv || mv) bits.push(`${[rv ? `${rv} ranged` : '', mv ? `${mv} melee` : ''].filter(Boolean).join(', ')} accuracy against`)
+  const hz = hazardOf(t)
+  if (hz) bits.push(`${hz.damage} ${hz.damageType}${hz.applies.map(([id, n]) => ` + ${n} ${short(id)}`).join('')} on entry and end of activation`)
   return bits.join(' · ')
 }
 

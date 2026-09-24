@@ -978,3 +978,31 @@ this is the attack half. V2 R7 part 2 (Andrew's chat, 2026-09-24).
 | `propAttackForced` | A taunted unit? | **Cannot aim at a prop** while a taunt names a standing enemy (`forced-target`). | A taunt forces the target of attacks (capability.taunt). | provisional — 2026-09-24 |
 | `propAttackAi` | Does the AI ever attack a prop? | **No, not yet** — a command only, like the swap (swapAi). The AI's use of destruction is R12 (AI decisions). | §0 defers the AI's depth on cover and LOS ("different problem, different day"). | provisional — 2026-09-24 |
 
+## V2 ground table — defaults taken landing v2.ground-table (2026-09-24)
+
+The source: COMBAT-V2-DESIGN-2026-09-07 §3.2 (tiles — ruled 2026-09-07; woodland and lava
+added 2026-09-07). Engine `src/content/terrain.ts` (the rows, `accuracyAgainstOf`,
+`hazardOf`), `src/core/ground.ts` (`enterGround`, `applyGroundHazard`), accuracy rung
+TERRAIN 400 in `src/core/pipeline.ts`. TEST scenario `test.ground-table`. V2 R7 part 3
+(Andrew's chat, 2026-09-24). The numbers are copied, not switches. Rocky (§16 item 2a) is
+unruled and not built; water is unchanged.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `groundGlyphs` | Which map glyphs author the five grounds? | **`g` grass, `y` wheat, `u` bush, `o` woodland, `l` lava.** | No document assigns them; none collides with MAP-01's legend (`. h f r R w x b p`). The Atlas adapter compiles to numbers and never reads these. | provisional — 2026-09-24 |
+| `concealmentRung` | Where on the accuracy ladder does "−10 ranged accuracy against you" land? | **TERRAIN (400), revived**: read off the TARGET's ground, by the attack's kind; one ledger row naming the terrain. | COMBAT-SEQUENCE's row 400 is "the target's occupied-hex modifier" — exactly this; v1 retired it into BASE_MOD because v1 terrain modified its *occupant's* stats. | provisional — 2026-09-24 |
+| `concealmentShooterGround` | Does the shooter's own ground change its aim? | **No.** Only the target's ground; grass under the archer does nothing to the shot. | §3.2: "Standing in it … against you". | provisional — 2026-09-24 |
+| `concealmentScope` | Which attacks does it reach? | **Every attack that rolls to hit** — an attack of opportunity included (it is a melee attack). Bursts do not roll, so it never touches them. | One accuracy function (Law 2). | provisional — 2026-09-24 |
+| `pushEntersGround` | A push that carries a unit into a hex — which ground beats run? | **The V2 hazard only, on the hex the push leaves it in**, before any collision cost. Water does not wash a pushed unit and burning ground does not sear it (unchanged). | §3.2 rules it for lava only: "Being knocked into lava is *entering* it, not a collision". Widening it to the v1 grounds would move battles on ford/field/floodplain on no ruling. | provisional — 2026-09-24 |
+| `hazardDamageFirst` | Lava's two parts — which first? | **The 3 fire, then the 2 Burn.** At a step, after water/burning/the layer; at End of Activation, the last ground rung, before the `onActivationEnd` triggers and the status tick. | The order the row states them. | provisional — 2026-09-24 |
+| `hazardThroughProtection` | Does Protection absorb lava's damage? | **Yes**, then Fire Resist — the same path a Burn tick takes (`statusDamage`). | §8.2 "the 3 is direct fire vs Fire Resist"; Protection absorbs everything (§18 "Not retired"). | provisional — 2026-09-24 |
+| `hazardZeroLine` | Fire Resist 3 in lava — is there a line? | **Yes: `damage.applied` amount 0, `resisted` 3, `hazard: true`, caused by `terrain.lava`.** | Law 12: every log line names its cause, and "walks through untouched" is worth seeing. | provisional — 2026-09-24 |
+| `hazardDownedOccupant` | Does lava hurt a downed unit lying in it? | **No** — only a standing unit meets the hazard. | End of Activation already skips the downed; the entry beats need a mover. | provisional — 2026-09-24 |
+| `hazardKillsMidWalk` | Lava that takes a walker to 0? | **Settle at once; a unit no longer standing stops there.** | The attack-of-opportunity precedent (`settle(ctx, 'movement.aoo')` mid-move). | provisional — 2026-09-24 |
+| `groundBurnsAway` | Grass, wheat and bush are "material tier 1 (burns away)" — built? | **Not yet.** The tier is not on the rows. | Burning props are unruled (what ignites, how long, what it does) — the same open question the prop-destruction wrap left. | open — 2026-09-24 |
+| `groundAi` | Does the AI seek concealment or avoid lava? | **No.** It sees concealment only as a worse hit chance in `preview()`; it paths through lava as it paths through burning ground. | `system.ai-modes` is Angela's, not a chat's. | provisional — 2026-09-24 |
+
+Not done here, on purpose: §18's retirement of "terrain as the cover system" (v1 forest +10
+Dodge, rocky −5 Accuracy, hills +2 reach) — it needs rocky's numbers (§16 item 2a) and a
+ruling on whether v1 forest becomes woodland. A finding, not a switch: a **sidestep** has never
+run the painted layer's entry beat (a step does); kept exactly as it was.
