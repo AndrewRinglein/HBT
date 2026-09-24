@@ -22,7 +22,7 @@ import type { BattleOptions, Event, Outcome, Side, HeroProgress } from '../engin
 import { atlasFieldingOf } from '../content/atlas.js'
 import { itemOf } from '../content/items.js'
 import { fieldedModsOfRows, type FieldedMods } from './sets.js'
-import { fieldedItemsOf } from './loadout.js'
+import { fieldedItemsOf, instanceSlotsOf } from './loadout.js'
 
 /** A campaign-free fielding: everything a battle needs, nothing about a Campaign. */
 export type EngagementSpec = {
@@ -55,6 +55,12 @@ export type EngagementSpec = {
   /** v2.loadout (COMBAT-V2 §11.1): weapons and shields past the hands, stowed in item slots — they grant nothing until swapped in. Parallel to `heroes`; handed to the engine as heroStowed. */
   readonly heroStowed?: readonly (readonly string[])[]
   /**
+   * v2.item-uses (engine cdb2233): uses each carried instance spent before this battle,
+   * parallel to `heroes`, one count per engine instance (heroItems, then heroStowed) —
+   * handed to the engine as heroItemsUsed. Absent when nothing is spent.
+   */
+  readonly heroItemsUsed?: readonly (readonly number[])[]
+  /**
    * screens.after-battle (G12, 2026-09-03): how far each hero has come — level, specialty,
    * the level-5 pick — parallel to `heroes`; the engine folds the codex's level rows onto the
    * unit at fielding (hero assembly 2026-09-03). An entry is null for a hero at level 1 with
@@ -85,6 +91,13 @@ export type UnitTally = {
   readonly kills: number
 }
 
+/**
+ * v2.item-uses: one item instance's spend in this battle — hero row `index`, engine
+ * instance ordinal `instance` (heroItems then heroStowed; instanceSlotsOf maps it to the
+ * equipped slot), the row, and the uses it paid. Only instances that paid appear.
+ */
+export type ItemUseRow = { readonly index: number; readonly instance: number; readonly itemId: string; readonly used: number }
+
 export type EngagementResult = {
   readonly id: string
   readonly outcome: Outcome
@@ -94,6 +107,8 @@ export type EngagementResult = {
   readonly units: readonly UnitTally[]
   /** How many events were folded — a check number for the log that produced this. */
   readonly events: number
+  /** v2.item-uses: what each hero's item instances spent, folded from charge.spent. Absent = nothing spent (the panel's result). */
+  readonly itemUses?: readonly ItemUseRow[]
 }
 
 /**
@@ -106,7 +121,7 @@ export type EngagementResult = {
  * battle condition arrive here when those systems exist.
  */
 export function makeBattleState(
-  roster: Readonly<Record<string, { unitType: string; equipped?: readonly string[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
+  roster: Readonly<Record<string, { unitType: string; equipped?: readonly string[]; used?: readonly number[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
   engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number },
 ): EngagementSpec {
   const rows = engagement.deployed.map((heroId) => {
@@ -120,10 +135,14 @@ export function makeBattleState(
   // what is equipped is what is fielded — a hero row without `equipped` (a bare fielding) keeps its kit
   const carried = rows.every((h) => h.equipped) ? rows.map((h) => fieldedItemsOf(h.equipped!)) : null
   const heroProgress = rows.map((h) => progressOf(h))
+  // v2.item-uses: the uses already spent, per engine instance — only when something is spent
+  for (const h of rows) if (h.used && h.used.length !== (h.equipped?.length ?? -1)) throw new Error(`${engagement.id}: a hero's item uses (${h.used.length}) do not match its equipped items (${h.equipped?.length ?? 'none'})`)
+  const heroItemsUsed = carried && rows.some((h) => h.used?.some((n) => n > 0)) ? rows.map((h) => instanceSlotsOf(h.equipped!).map((k) => h.used?.[k] ?? 0)) : null
   return {
     id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed, heroMods,
     ...(carried ? { heroItems: carried.map((c) => c.fielded), heroStowed: carried.map((c) => c.stowed) } : {}),
     ...(heroProgress.some((p) => p) ? { heroProgress } : {}),
+    ...(heroItemsUsed ? { heroItemsUsed } : {}),
   }
 }
 
@@ -165,6 +184,8 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
     ...(spec.heroItems ? { heroItems: spec.heroItems.map((l) => [...l]) } : {}),
     // v2.loadout: the stowed ride along as swap fodder; the engine grants nothing from them
     ...(spec.heroStowed ? { heroStowed: spec.heroStowed.map((l) => [...l]) } : {}),
+    // v2.item-uses: the uses already spent ride along; the engine carries a spent instance spent
+    ...(spec.heroItemsUsed ? { heroItemsUsed: spec.heroItemsUsed.map((l) => [...l]) } : {}),
     // heroMods wait on the engine's seam.unit-mods — resolved and recorded on the spec, not fought
     ...(spec.heroProgress ? { heroProgress: spec.heroProgress.map((p) => p ?? undefined) } : {}),
   }
@@ -191,6 +212,9 @@ export function makeBattleResult(spec: EngagementSpec, events: readonly Event[])
   let turns = 0
   let heroPhases = 0
   let enemyPhases = 0
+  /** v2.item-uses: hero unit id -> its uid, and the spend per `index/instance`. */
+  const uidOf = new Map<number, number>()
+  const spends = new Map<string, { index: number; instance: number; itemId: string; used: number }>()
 
   for (const e of events) {
     switch (e.type) {
@@ -208,6 +232,23 @@ export function makeBattleResult(spec: EngagementSpec, events: readonly Event[])
         }
         rows.push(row)
         byUnit.set(row.unitId, row)
+        if (side === 'hero') uidOf.set(row.unitId, e['uid'] as number)
+        break
+      }
+      case 'charge.spent': {
+        // v2.item-uses: the instance that paid. Its id is the engine's `<uid>/<n>` (engine
+        // SWITCHES loadoutInstanceId); n is the instance ordinal the spec handed in.
+        const id = e['instanceId']
+        if (id === undefined) break
+        const row = byUnit.get(e.actor!)
+        const uid = uidOf.get(e.actor!)
+        const m = typeof id === 'string' ? /^(\d+)\/(\d+)$/.exec(id) : null
+        if (!row || uid === undefined || !m || Number(m[1]) !== uid) throw new Error(`${spec.id}: charge.spent names item instance '${String(id)}', which is not one of hero unit ${e.actor}'s`)
+        const key = `${row.index}/${m[2]}`
+        const s = spends.get(key) ?? { index: row.index, instance: Number(m[2]), itemId: e['itemId'] as string, used: 0 }
+        if (s.itemId !== e['itemId']) throw new Error(`${spec.id}: item instance '${id}' is named as both '${s.itemId}' and '${String(e['itemId'])}'`)
+        s.used++
+        spends.set(key, s)
         break
       }
       case 'phase.begin':
@@ -252,7 +293,8 @@ export function makeBattleResult(spec: EngagementSpec, events: readonly Event[])
   }
   // Explicit order (Law 6): heroes first, then enemies, each in spec order.
   rows.sort((a, b) => (a.side === b.side ? a.index - b.index : a.side === 'hero' ? -1 : 1))
-  return { id: spec.id, outcome, turns, heroPhases, enemyPhases, units: rows, events: events.length }
+  const itemUses = [...spends.values()].sort((a, b) => a.index - b.index || a.instance - b.instance)
+  return { id: spec.id, outcome, turns, heroPhases, enemyPhases, units: rows, events: events.length, ...(itemUses.length ? { itemUses } : {}) }
 }
 
 /**
@@ -271,5 +313,10 @@ export function resolveEngagement(spec: EngagementSpec): { result: EngagementRes
   if (engine.outcome !== result.outcome || engine.turns !== result.turns) {
     throw new Error(`${spec.id}: the engine reports ${engine.outcome} in ${engine.turns} turns; the log folds to ${result.outcome} in ${result.turns}`)
   }
+  // v2.item-uses: the engine's per-instance report and the fold's must agree too
+  const engineSpent = (engine.itemUses ?? []).filter((x) => x.used > 0).map((x) => `${x.instanceId}:${x.itemId}:${x.used}`).sort()
+  const uids = ctx.state.units.filter((u) => u.side === 'hero').map((u) => u.uid)
+  const foldSpent = (result.itemUses ?? []).map((x) => `${uids[x.index]}/${x.instance}:${x.itemId}:${x.used}`).sort()
+  if (engineSpent.join() !== foldSpent.join()) throw new Error(`${spec.id}: the engine reports item uses [${engineSpent.join(', ')}]; the log folds to [${foldSpent.join(', ')}]`)
   return { result, events: ctx.events }
 }

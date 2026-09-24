@@ -1,0 +1,111 @@
+
+> test
+> node ../engine/node_modules/vitest/vitest.mjs run test/v2-item-uses.test.ts
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/kingdom[39m
+
+ [31m❯[39m test/v2-item-uses.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[32m 230[2mms[22m[39m
+[31m     [31m×[31m fieldedItemsOf names each engine instance's equipped slot, handed then stowed[39m[32m 5[2mms[22m[39m
+[31m     [31m×[31m makeBattleState hands the engine the uses already spent, in instance order[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m the fold reads each instance's spend from the log, and agrees with the engine[39m[32m 202[2mms[22m[39m
+[31m     [31m×[31m the one writer records the spend per instance; the save keeps it; the next fielding skips it; leaving restocks[39m[32m 10[2mms[22m[39m
+[31m     [31m×[31m the writer refuses a spend that names the wrong item or more than it had (Law 9)[39m[32m 4[2mms[22m[39m
+     [32m✓[39m the engine's own result reports per-instance uses through the door[32m 6[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 5 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m test/v2-item-uses.test.ts[2m > [22mv2.item-uses — the kingdom carries each instance's uses in and out[2m > [22mfieldedItemsOf names each engine instance's equipped slot, handed then stowed
+[31m[1mAssertionError[22m: expected undefined to deeply equal [ +0, 1, 3, 2 ][39m
+
+[32m- Expected:[39m
+[
+  0,
+  1,
+  3,
+  2,
+]
+
+[31m+ Received:[39m
+undefined
+
+[36m [2m❯[22m test/v2-item-uses.test.ts:[2m27:21[22m[39m
+    [90m 25|[39m     [34mexpect[39m(f[33m.[39mfielded)[33m.[39m[34mtoEqual[39m([[32m'item.greatsword'[39m[33m,[39m [33mPOTION[39m[33m,[39m [33mPOTION[39m])
+    [90m 26|[39m     [34mexpect[39m(f[33m.[39mstowed)[33m.[39m[34mtoEqual[39m([[32m'item.kite-shield'[39m])
+    [90m 27|[39m     [34mexpect[39m(f[33m.[39mslots)[33m.[39m[34mtoEqual[39m([[34m0[39m[33m,[39m [34m1[39m[33m,[39m [34m3[39m[33m,[39m [34m2[39m])
+    [90m   |[39m                     [31m^[39m
+    [90m 28|[39m   })
+    [90m 29|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m test/v2-item-uses.test.ts[2m > [22mv2.item-uses — the kingdom carries each instance's uses in and out[2m > [22mmakeBattleState hands the engine the uses already spent, in instance order
+[31m[1mAssertionError[22m: expected undefined to deeply equal [ [ +0, +0, +0, +0, 1, 1 ] ][39m
+
+[32m- Expected:[39m
+[
+  [
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+  ],
+]
+
+[31m+ Received:[39m
+undefined
+
+[36m [2m❯[22m test/v2-item-uses.test.ts:[2m33:32[22m[39m
+    [90m 31|[39m     const roster = { h: { unitType: DWARF, equipped: [...KIT, POTION, …
+    [90m 32|[39m     const spec = makeBattleState(roster, { id: 'test.item-uses', mapId…
+    [90m 33|[39m     [34mexpect[39m(spec[33m.[39mheroItemsUsed)[33m.[39m[34mtoEqual[39m([[[34m0[39m[33m,[39m [34m0[39m[33m,[39m [34m0[39m[33m,[39m [34m0[39m[33m,[39m [34m1[39m[33m,[39m [34m1[39m]])
+    [90m   |[39m                                [31m^[39m
+    [90m 34|[39m     const u = createBattle(battleOptionsOf(spec)).state.units.find((x)…
+    [90m 35|[39m     expect(u.usesLeft['power.healing-potion.use']).toBe(1)          //…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m test/v2-item-uses.test.ts[2m > [22mv2.item-uses — the kingdom carries each instance's uses in and out[2m > [22mthe fold reads each instance's spend from the log, and agrees with the engine
+[31m[1mAssertionError[22m: a seed where the dwarf drinks both potions: expected null not to be null[39m
+[36m [2m❯[22m test/v2-item-uses.test.ts:[2m47:69[22m[39m
+    [90m 45|[39m     [35mlet[39m found [33m=[39m [35mnull[39m [35mas[39m [35mnull[39m [33m|[39m [33mReturnType[39m[33m<[39m[35mtypeof[39m resolveEngagement[33m>[39m
+    [90m 46|[39m     for (let seed = 0; seed < 12 && !found; seed++) { const r = resolv…
+    [90m 47|[39m     expect(found, 'a seed where the dwarf drinks both potions').not.to…
+    [90m   |[39m                                                                     [31m^[39m
+    [90m 48|[39m     [35mconst[39m rows [33m=[39m found[33m![39m[33m.[39mresult[33m.[39mitemUses[33m![39m
+    [90m 49|[39m     expect(rows.map((r) => [r.index, r.instance, r.itemId, r.used])).t…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m test/v2-item-uses.test.ts[2m > [22mv2.item-uses — the kingdom carries each instance's uses in and out[2m > [22mthe one writer records the spend per instance; the save keeps it; the next fielding skips it; leaving restocks
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'indexOf')[39m
+[36m [2m❯[22m test/v2-item-uses.test.ts:[2m61:42[22m[39m
+    [90m 59|[39m     h[33m.[39mequipped [33m=[39m [[33m...[39mh[33m.[39mequipped[33m,[39m [33mPOTION[39m[33m,[39m [33mPOTION[39m]
+    [90m 60|[39m     const slot = h.equipped.length - 1                         // the …
+    [90m 61|[39m     [35mconst[39m n [33m=[39m [34mfieldedItemsOf[39m(h[33m.[39mequipped)[33m.[39mslots[33m.[39m[34mindexOf[39m(slot)
+    [90m   |[39m                                          [31m^[39m
+    [90m 62|[39m     const r = { ...panelResult(ctx, true), itemUses: [{ index: 0, inst…
+    [90m 63|[39m     [35mconst[39m k [33m=[39m [34mresolveReckoning[39m(ctx[33m.[39mcampaign[33m,[39m e[33m,[39m r)
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m test/v2-item-uses.test.ts[2m > [22mv2.item-uses — the kingdom carries each instance's uses in and out[2m > [22mthe writer refuses a spend that names the wrong item or more than it had (Law 9)
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'indexOf')[39m
+[36m [2m❯[22m test/v2-item-uses.test.ts:[2m88:42[22m[39m
+    [90m 86|[39m     [35mconst[39m h [33m=[39m ctx[33m.[39mcampaign[33m.[39mroster[e[33m.[39mdeployed[[34m0[39m][33m![39m][33m![39m
+    [90m 87|[39m     h[33m.[39mequipped [33m=[39m [[33m...[39mh[33m.[39mequipped[33m,[39m [33mPOTION[39m]
+    [90m 88|[39m     const n = fieldedItemsOf(h.equipped).slots.indexOf(h.equipped.leng…
+    [90m   |[39m                                          [31m^[39m
+    [90m 89|[39m     for (const bad of [{ index: 0, instance: n, itemId: CURE, used: 1 …
+    [90m 90|[39m       [35mconst[39m c2 [33m=[39m [34mtoBattle[39m([34mloadFixture[39m()[33m,[39m [34m1[39m)
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m5 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 11:05:50
+[2m   Duration [22m 5.33s[2m (transform 3.38s, setup 0ms, import 3.88s, tests 230ms, environment 0ms)[22m
+

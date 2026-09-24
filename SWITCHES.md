@@ -88,3 +88,26 @@ sandboxSwapChoices, `src/ui/sandbox.ts` swapControl; probes `test/sandbox-swap.t
   what is carried (stow a hand item, drop to Punch, take the stowed item back at a later
   activation). Reason: a spare-weapon picker is a new setup surface and a content choice, not this
   item. Provisional, 2026-09-24.
+- **instanceIsSlot** (item V2 R6 item uses, engine v2.item-uses cdb2233). Question: the kingdom has
+  no item-instance ids — what is one instance? Default: **a hero's equipped slot** (index into
+  `hero.equipped`); `instanceSlotsOf` maps the engine's instance ordinal (fielded, then stowed)
+  to it. Reason: `equipped` is the placement list the engine's instances are numbered from; R8's
+  result seam may supply stable ids and this yields. Provisional, 2026-09-24.
+- **heroUsedRecord** (item V2 R6 item uses). Question: where does the save keep each instance's
+  spent uses? Default: **`hero.used`, parallel to `equipped`, absent when nothing is spent**,
+  written only by `applyInstanceUse` (which also adds each use to `cursor.spent`, so ISC-061's
+  Waystation record and restock are unchanged in shape) and cleared by `applyRestock` as the
+  Battle is left. Reason: DUNGEON-MODE 2026-09-10 "Persist … spent item instances"; the
+  impact map's "per-hero spent items"; an optional field leaves every existing save valid.
+  Provisional, 2026-09-24.
+- **itemUsesFoldFromLog** (item V2 R6 item uses). Question: how does the result learn what each
+  instance spent? Default: **folded from `charge.spent`'s `instanceId`** (the engine's
+  `<uid>/<n>`, matched against the hero's own uid, loud on any other); `result.itemUses` lists only
+  instances that paid; `resolveEngagement` checks the fold against the engine's own
+  `BattleResult.itemUses`. The outcome panel's result carries none. Reason: the fold reads only
+  the log (seam.ts); the engine's report is the Law 3 cross-check. Provisional, 2026-09-24.
+- **usedBlocksUnequip** (item V2 R6 item uses). Question: may an instance with spent uses be
+  unequipped? Default: **refused** until the restock clears it; equipping appends a whole slot.
+  Reason: moving it to the stash would lose or launder its count. Normal play never meets it (the
+  restock runs before any equip session); R11's mid-dungeon equip decides otherwise if it must.
+  Provisional, 2026-09-24.

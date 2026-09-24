@@ -100,6 +100,22 @@ export function validateResult(r: EngagementResult, expected?: { heroes: number;
     if (h !== expected.heroes || e !== expected.enemies) throw new Error(`result: ${h} hero and ${e} enemy rows; the Engagement fielded ${expected.heroes} and ${expected.enemies}`)
     if (r.id !== expected.id) throw new Error(`result.id '${r.id}' is not the Engagement '${expected.id}'`)
   }
+  // v2.item-uses: what the item instances spent — hero rows only, each (index, instance) once
+  if (r.itemUses !== undefined) {
+    if (!Array.isArray(r.itemUses)) throw new Error('result: itemUses is not an array')
+    const keys = new Set<string>()
+    const heroRows = r.units.filter((u) => u.side === 'hero').length
+    r.itemUses.forEach((x, i) => {
+      const p = `result: itemUses[${i}]`
+      nonNegInt(x.index, `${p}.index`); nonNegInt(x.instance, `${p}.instance`); nonNegInt(x.used, `${p}.used`)
+      if (x.used < 1) throw new Error(`${p}: an instance that spent nothing is not listed`)
+      if (typeof x.itemId !== 'string' || !x.itemId) throw new Error(`${p}.itemId: missing`)
+      if (x.index >= heroRows) throw new Error(`${p}: hero row ${x.index} is not in the result`)
+      const key = `${x.index}/${x.instance}`
+      if (keys.has(key)) throw new Error(`${p}: instance ${key} appears twice`)
+      keys.add(key)
+    })
+  }
   // The outcome and the rows must agree, whichever hand wrote them.
   const heroes = r.units.filter((u) => u.side === 'hero')
   const enemies = r.units.filter((u) => u.side === 'enemy')

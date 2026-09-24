@@ -34,8 +34,10 @@ import { rollOf } from './rng.js'
 import { validateResult } from './result.js'
 import {
   type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
-  setFoughtThisWeek, applyRelease, setEngagementResolved, applyClaim, setCursor, setRewardOffer, applyRestock,
+  setFoughtThisWeek, applyRelease, setEngagementResolved, applyClaim, setCursor, setRewardOffer, applyRestock, applyInstanceUse,
 } from './mutate.js'
+import { instanceSlotsOf } from './loadout.js'
+import { itemOf } from '../content/items.js'
 import { performRollAbsences } from './absence.js'
 import { performLose } from './map.js'
 import { resolveRewardDraw, performExitReckoning } from './rewards.js'
@@ -151,6 +153,16 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
     if (!Number.isInteger(h.xp) || h.xp < 0 || !Number.isInteger(h.wound) || h.wound < 0 || h.wound > 3) throw new Error(`applyBattleResult refused: '${h.heroId}' xp ${h.xp}, wound ${h.wound}`)
   }
   for (const g of reckoning.grants) if (!(g.currency in c.purse) || !Number.isInteger(g.amount) || g.amount < 0) throw new Error(`applyBattleResult refused: grant ${g.amount} of '${g.currency}'`)
+  // v2.item-uses: each instance's spend, mapped to its hero and equipped slot — checked before anything is written
+  const instanceUses = (result.itemUses ?? []).map((x) => {
+    const heroId = engagement.deployed[x.index]
+    const h = heroId === undefined ? undefined : c.roster[heroId]
+    const slot = h ? instanceSlotsOf(h.equipped)[x.instance] : undefined
+    if (!h || slot === undefined || h.equipped[slot] !== x.itemId) throw new Error(`applyBattleResult refused: item uses name '${x.itemId}' as hero ${x.index}'s instance ${x.instance}, which it does not carry`)
+    const uses = itemOf(x.itemId).uses
+    if (uses === null || (h.used?.[slot] ?? 0) + x.used > uses) throw new Error(`applyBattleResult refused: item uses spend ${x.used} of ${heroId}'s '${x.itemId}', which has ${uses === null ? 'no uses' : `${uses - (h.used?.[slot] ?? 0)} left`}`)
+    return { heroId: heroId!, slot, itemId: x.itemId, used: x.used }
+  })
 
   const cause = engagement.id
   for (const id of engagement.deployed) {
@@ -162,6 +174,7 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
     if (h.xp > 0) applyXp(ctx, h.heroId, h.xp, cause)
     if (h.wound !== c.roster[h.heroId]!.wound) setWound(ctx, h.heroId, h.wound, cause)
   }
+  for (const x of instanceUses) applyInstanceUse(ctx, x.heroId, x.slot, x.itemId, x.used, cause)
   if (engagement.prologue === undefined) performRollAbsences(ctx, engagement.deployed, cause)
   if (reckoning.renown > 0) applyRenown(ctx, reckoning.renown, cause)
   setEngagementResolved(ctx, engagement.id, reckoning.won, cause)

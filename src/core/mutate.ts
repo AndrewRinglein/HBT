@@ -212,10 +212,29 @@ export function applySpendUse(ctx: Ctx, itemId: string, causeId: string): void {
   emit(ctx, 'item.spent', causeId, { itemId })
 }
 
+/**
+ * v2.item-uses (engine cdb2233, 2026-09-24): one hero's item instance — its equipped slot —
+ * spent `n` uses in the Battle being fought. The one write of `hero.used`; each use also
+ * goes on the Battle's record through applySpendUse, so ISC-061's restock reads one list.
+ * `item.spent` names the hero and the slot (Law 12).
+ */
+export function applyInstanceUse(ctx: Ctx, heroId: string, slot: number, itemId: string, n: number, causeId: string): void {
+  const h = heroOrThrow(ctx.campaign, heroId)
+  if (h.equipped[slot] !== itemId) throw new Error(`applyInstanceUse refused: ${heroId}'s slot ${slot} holds '${h.equipped[slot] ?? 'nothing'}', not '${itemId}'`)
+  const used = h.used ? [...h.used] : h.equipped.map(() => 0)
+  if (used.length !== h.equipped.length) throw new Error(`applyInstanceUse refused: ${heroId}'s item uses do not match its equipped items`)
+  used[slot] = used[slot]! + n
+  h.used = used
+  for (let k = 0; k < n; k++) ctx.campaign.cursor.spent.push(itemId)
+  emit(ctx, 'item.spent', causeId, { itemId, heroId, slot, used: used[slot] })
+}
+
 /** Everything spent, made whole again as the Battle is left. */
 export function applyRestock(ctx: Ctx, causeId: string): void {
   const spent = [...new Set(ctx.campaign.cursor.spent)].sort()
   ctx.campaign.cursor.spent = []
+  // v2.item-uses: every hero's instances are whole again too
+  for (const id of Object.keys(ctx.campaign.roster).sort()) delete ctx.campaign.roster[id]!.used
   for (const itemId of spent) emit(ctx, 'item.restocked', causeId, { itemId })
 }
 
@@ -235,7 +254,10 @@ export function applyUnequip(ctx: Ctx, heroId: string, itemId: string, causeId: 
   const h = heroOrThrow(ctx.campaign, heroId)
   const at = h.equipped.indexOf(itemId)
   if (at < 0) throw new Error(`applyUnequip refused: '${itemId}' is not worn by ${heroId}`)
+  // v2.item-uses: a spent instance's count is its slot's; it cannot leave the hero before the restock
+  if ((h.used?.[at] ?? 0) > 0) throw new Error(`applyUnequip refused: ${heroId}'s '${itemId}' has spent uses — it is restocked as the Battle is left`)
   h.equipped.splice(at, 1)
+  if (h.used) h.used.splice(at, 1)
   ctx.campaign.stash.push(itemId)
   emit(ctx, 'item.unequipped', causeId, { heroId, itemId })
 }
@@ -246,6 +268,7 @@ export function applyEquip(ctx: Ctx, heroId: string, itemId: string, causeId: st
   if (at < 0) throw new Error(`applyEquip refused: '${itemId}' is not in the stash`)
   ctx.campaign.stash.splice(at, 1)
   h.equipped.push(itemId)
+  if (h.used) h.used.push(0)   // v2.item-uses: parallel to equipped
   emit(ctx, 'item.equipped', causeId, { heroId, itemId })
 }
 

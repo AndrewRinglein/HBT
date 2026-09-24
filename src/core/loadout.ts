@@ -113,3 +113,24 @@ export function fieldedItemsOf(equipped: readonly string[]): { fielded: string[]
   }
   return { fielded, stowed }
 }
+
+/**
+ * v2.item-uses (engine cdb2233, 2026-09-24): the `equipped` slot of each engine item
+ * instance — instance n is the n-th of fieldedItemsOf's fielded, then stowed (the order
+ * that numbers the engine's `<uid>/<n>`, engine SWITCHES loadoutInstanceId). An
+ * instance, in the kingdom, is a hero's equipped slot.
+ */
+export function instanceSlotsOf(equipped: readonly string[]): number[] {
+  const fielded: number[] = [], stowed: number[] = []
+  let hands = 0
+  equipped.forEach((id, k) => {
+    const row = itemOf(id)
+    if (isHandItemClass(row)) {
+      const h = Math.max(1, row.hands)
+      if (hands + h > HANDS) { stowed.push(k); return }
+      hands += h
+    }
+    fielded.push(k)
+  })
+  return [...fielded, ...stowed]
+}

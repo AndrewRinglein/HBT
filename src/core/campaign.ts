@@ -128,6 +128,13 @@ export type Hero = {
   unitType: string
   /** Item ids worn, from the stash (GAME-ARCHITECTURE.md §1: `campaign.stash[] + hero.equipped`). ORDER IS PLACEMENT (src/core/loadout.ts). */
   equipped: string[]
+  /**
+   * v2.item-uses (2026-09-24): uses spent by each equipped instance, parallel to `equipped` —
+   * the campaign record of spent item instances (DUNGEON-MODE-2026-09-07, 2026-09-10:
+   * "Persist … spent item instances"). Absent = nothing spent. Written only by
+   * applyInstanceUse; cleared by the restock as the Battle is left (ISC-061).
+   */
+  used?: number[]
   /** General item slots, from the codex hero row (`itemSlots`, 0–3). Hands and the armor slot are not counted here. */
   itemSlots: number
   /** Per-hero corruption, STORED (SKELETON-SETTLED.md:117 derives the pool; the summand lives here). */
