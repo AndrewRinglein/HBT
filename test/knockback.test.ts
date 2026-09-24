@@ -4,7 +4,9 @@
 // you" (onDamage). CODEX §12 bans every other forced movement, so this is the
 // whole capability. The undefined edges — walls, occupied hexes, the board
 // rim — stop the push and log knockback.blocked (SWITCHES.md knockbackBlocked,
-// default fizzle-in-place). Second consumer: trigger.test-ram.knockback on
+// default fizzle-in-place). v2.knockback-collisions (2026-09-23) retired the
+// fizzle: a stopped push is a collision (COMBAT-V2 §9.3) — see the edits marked
+// below and test/v2-knockback-collisions.test.ts. Second consumer: trigger.test-ram.knockback on
 // the Arc Golem, pure data, live in showcase.arc-variant.
 import { describe, expect, it } from 'vitest'
 import { stepAwayFrom, distance } from './board16.js'
@@ -17,11 +19,13 @@ import { runBattle } from '../src/core/battle.js'
 import { beginActivation } from '../src/core/mutate.js'
 
 describe('the geometry — a line, or nothing', () => {
-  it('continues the pusher->target line one hex, and is null when not adjacent', () => {
+  it('continues the pusher->target line one hex, from adjacency or from further away', () => {
     // 135 -> 118 continues to 102 (the axial line q3: r8 -> r7 -> r6).
     expect(stepAwayFrom(135, 118)).toBe(102)
     expect(stepAwayFrom(118, 135)).toBe(151) // the same line, reversed
-    expect(stepAwayFrom(135, 102), 'not adjacent — no line').toBeNull()
+    // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed): knockback from ANY
+    // source (COMBAT-V2 §9.3), so a non-adjacent origin continues its line instead of null.
+    expect(stepAwayFrom(135, 102), 'not adjacent — the same line, one further').toBe(stepAwayFrom(118, 102))
     expect(stepAwayFrom(118, 118), 'no direction from a point').toBeNull()
   })
 
@@ -63,7 +67,10 @@ describe('the authored rider — Hack pushes on damage', () => {
     }
   })
 
-  it('a blocked push fizzles in place, loudly', () => {
+  // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed): a blocked push no longer
+  // fizzles harmlessly — the mover stays and takes the struck unit's collision value (1) in
+  // true damage per remaining point; the struck zombie takes nothing (COMBAT-V2 §9.3).
+  it('a blocked push stays in place and the mover pays the collision', () => {
     const ctx = createBattle({
       ...scenarioOptions(scenarioDef('showcase.alpha-team')),
       heroes: ['alpha-oathblade'], heroHexes: [135],
@@ -72,15 +79,23 @@ describe('the authored rider — Hack pushes on damage', () => {
     })
     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
     const z = ctx.state.units.find((u) => u.hex === 118)!
+    const other = ctx.state.units.find((u) => u.hex === 102)!
+    const [zhp, ohp] = [z.hp, other.hp]
     const n = executeKnockback(ctx, oath.id, z.id, 1, 'test.push')
     expect(n).toBe(0)
-    expect(z.hex, 'fizzle-in-place is the switch default').toBe(118)
+    expect(z.hex, 'a stopped push stays where it was stopped').toBe(118)
     const ev = ctx.events.find((e) => e.type === 'knockback.blocked')!
     expect(ev['reason']).toBe('occupied')
+    expect(ev).toMatchObject({ collidedWith: 'unit', blocker: other.id, collisionValue: 1, remaining: 1 })
     expect(ctx.events.some((e) => e.type === 'knocked')).toBe(false)
+    expect(zhp - z.hp, 'the mover pays 1 x 1').toBe(1)
+    expect(other.hp, 'the struck unit takes nothing').toBe(ohp)
+    expect(other.hex).toBe(102)
   })
 
-  it('a push off the board edge is blocked and says so', () => {
+  // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed): the map edge is a basic
+  // obstruction (collision value 2), so the blocked push now costs the mover 2 (COMBAT-V2 §9.3).
+  it('a push off the board edge is blocked, says so, and costs the mover the edge\'s 2', () => {
     const ctx = createBattle({
       ...scenarioOptions(scenarioDef('showcase.alpha-team')),
       heroes: ['alpha-oathblade'], heroHexes: [22],
@@ -88,10 +103,12 @@ describe('the authored rider — Hack pushes on damage', () => {
     })
     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
     const z = ctx.state.units.find((u) => u.typeId === 'unit.zombie')!
+    const hp = z.hp
     const n = executeKnockback(ctx, oath.id, z.id, 1, 'test.push')
     expect(n).toBe(0)
     expect(z.hex).toBe(6)
     expect(ctx.events.find((e) => e.type === 'knockback.blocked')!['reason']).toBe('edge of the board')
+    expect(hp - z.hp).toBe(2)
   })
 })
 

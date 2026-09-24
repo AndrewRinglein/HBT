@@ -56,7 +56,10 @@ describe('terrain.authored-geometry',()=>{
  })
  it('knockback stops at the thin physical wall even though target center is open',()=>{
   const ctx=setup(row([wall()]),[5],[6]);expect(executeKnockback(ctx,0,1,1,'test')).toBe(0)
-  expect(ctx.state.units[1]!.hex).toBe(6);expect(ctx.events.at(-1)?.type).toBe('knockback.blocked')
+  // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed, COMBAT-V2 §9.3): the stopped
+  // push is a collision now, so the blocked line is followed by the mover's collision damage.
+  expect(ctx.state.units[1]!.hex).toBe(6);expect(ctx.events.at(-2)?.type).toBe('knockback.blocked')
+  expect(ctx.events.at(-1)).toMatchObject({type:'damage.applied',target:1,collision:true,collidedWith:'prop',collisionValue:2,remaining:1})
  })
  it('detaches initial facts and observes polygon replacement/in-place edits across forks and restore',()=>{
   const input=row();const ctx=setup(input),initial=ctx.events.find(e=>e.type==='map.loaded')!

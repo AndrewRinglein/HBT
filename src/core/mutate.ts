@@ -58,13 +58,31 @@ export function moveUnit(ctx: Ctx, id: number, to: HexId, cost: number, causeId:
  * event: `moved` is audited against the causing MOVEMENT POWER's own range,
  * and a knockback's cause is a trigger. Its own event keeps both audits exact.
  */
-export function knockUnit(ctx: Ctx, id: number, to: HexId, by: number, causeId: string, travel?: { asked: number; taken: number; stoppedBy?: string }): void {
+export function knockUnit(ctx: Ctx, id: number, to: HexId, by: number, causeId: string, travel?: { asked: number; taken: number; stoppedBy?: string }, collision?: Record<string, unknown>): void {
   const u = unit(ctx, id)
   const from = u.hex
   u.hex = to
   // fix.knockback-beyond-one (2026-09-04): a push of N names N and how far it
-  // got, so a push cut short by a wall or a body is read off the line (Law 12)
-  emit(ctx, 'knocked', causeId, { actor: by, target: id, from, to, ...(travel ? { asked: travel.asked, hexes: travel.taken, ...(travel.stoppedBy ? { stoppedBy: travel.stoppedBy } : {}) } : {}) })
+  // got, so a push cut short by a wall or a body is read off the line (Law 12).
+  // v2.knockback-collisions (2026-09-23): a stopped push also names what it
+  // struck (collidedWith, blocker, collisionValue, remaining) — the damage it
+  // costs the mover is its own damage.applied event, the next line.
+  emit(ctx, 'knocked', causeId, { actor: by, target: id, from, to, ...(travel ? { asked: travel.asked, hexes: travel.taken, ...(travel.stoppedBy ? { stoppedBy: travel.stoppedBy } : {}) } : {}), ...(collision ?? {}) })
+}
+
+/**
+ * v2.knockback-collisions (COMBAT-V2 §9.3): the TRUE damage a stopped push
+ * costs its mover, already through Protection (the caller spends the pool).
+ * One HP mutation, one damage.applied event. When the blocker is a prop that
+ * `consumes` and this damage takes the mover to 0 Health, the same event
+ * carries `consumedBy` and the unit is marked — settle reads the mark where
+ * death is decided (no corpse, no Deathbed). Law 3: one event, both changes.
+ */
+export function applyCollisionDamage(ctx: Ctx, id: number, amount: number, causeId: string, extra: Record<string, unknown>, consumesPropId: string | null): void {
+  const u = unit(ctx, id)
+  const consumed = consumesPropId !== null && u.hp - Math.min(amount, u.hp) <= 0
+  if (consumed) u.consumedBy = consumesPropId
+  applyDamage(ctx, id, amount, causeId, { ...extra, ...(consumed ? { consumedBy: consumesPropId } : {}) })
 }
 
 export function spendStamina(ctx: Ctx, id: number, amount: number, causeId: string): void {

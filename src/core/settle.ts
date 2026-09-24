@@ -35,7 +35,16 @@ export function settle(ctx: Ctx, causeId: string): void {
 
       for (const u of ctx.state.units) {
         // Enemies have no consequence stack: zero HP is simply dead.
-        if (u.lifeState === 'standing' && u.hp <= 0) {
+        if (u.lifeState === 'standing' && u.hp <= 0 && u.consumedBy !== undefined) {
+          // v2.knockback-collisions (COMBAT-V2 §9.3, ruled 2026-09-07): a prop that
+          // `consumes` takes the unit its collision killed — "no corpse is left,
+          // and for a hero there is no Deathbed. The unit is dead." onDeath fires
+          // (below, like every death); the corpse is never created. The first
+          // exception to Design Law 3, amended there, not here.
+          setLifeState(ctx, u.id, 'dead', causeId, { reason: 'consumed', by: u.consumedBy, corpse: false })
+          died.push(u.id)
+          changed = true
+        } else if (u.lifeState === 'standing' && u.hp <= 0) {
           // proving.mirror-row-rules: which side's zero this is — the fielded side's or the row's (SWITCHES mirrorSideRules)
           if (rulesSideOf(ctx, u) === 'enemy') {
             setLifeState(ctx, u.id, 'dead', causeId, { reason: 'hp0' })

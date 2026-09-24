@@ -18,12 +18,17 @@ export function decodeProps(value: unknown, cells: number): Prop[] {
   const ids = new Set<string>(), out: Prop[] = []
   let references = 0, vertices = 0
   for (const p of value) {
-    plain(p, ['id', 'height', 'material', 'footprint', 'crossingCost'])
+    plain(p, ['id', 'height', 'material', 'footprint', 'crossingCost', 'collisionValue', 'consumes'])
     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) || ids.has(p.id)) throw new Error('props: IDs must be unique prop.* strings')
     ids.add(p.id)
     if (!['high','low'].includes(p.height) || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material')
     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'])
     if(Object.hasOwn(p,'crossingCost') && (p.height!=='low'||p.footprint.kind!=='polygon'||p.crossingCost!==1))throw new Error('props: crossingCost 1 requires a low polygon edge')
+    // v2.knockback-collisions (COMBAT-V2 §9.3): only a HIGH prop stops a push,
+    // so only a high prop may carry what a push into it costs.
+    if (Object.hasOwn(p, 'collisionValue') && (p.height !== 'high' || !Number.isSafeInteger(p.collisionValue) || p.collisionValue < 0 || p.collisionValue > 100)) throw new Error('props: collisionValue requires a high prop and an integer 0..100')
+    if (Object.hasOwn(p, 'consumes') && (p.height !== 'high' || p.consumes !== true)) throw new Error('props: consumes is true on a high prop, or absent')
+    const collision = { ...(Object.hasOwn(p, 'collisionValue') ? { collisionValue: p.collisionValue as number } : {}), ...(p.consumes === true ? { consumes: true as const } : {}) }
     if (p.footprint.kind === 'polygon') {
       plain(p.footprint, ['kind', 'vertices', 'movementPadding'])
       const points = p.footprint.vertices, padding = p.footprint.movementPadding
@@ -39,7 +44,7 @@ export function decodeProps(value: unknown, cells: number): Prop[] {
         if(j===i || j===(i+1)%points.length)continue
         if(orientation(points[i],points[(i+1)%points.length],points[j])!==turn)throw new Error('props: polygon must be strictly convex')
       }
-      out.push({id:p.id,height:p.height,material:p.material,...(Object.hasOwn(p,'crossingCost')?{crossingCost:1 as const}:{}),footprint:{kind:'polygon',vertices:points.map(v=>[v[0],v[1]]),movementPadding:padding}})
+      out.push({id:p.id,height:p.height,material:p.material,...(Object.hasOwn(p,'crossingCost')?{crossingCost:1 as const}:{}),...collision,footprint:{kind:'polygon',vertices:points.map(v=>[v[0],v[1]]),movementPadding:padding}})
       continue
     }
     plain(p.footprint, ['kind', 'hexes'])
@@ -51,7 +56,7 @@ export function decodeProps(value: unknown, cells: number): Prop[] {
       if (!Number.isSafeInteger(h) || h < 0 || h >= cells || seen.has(h)) throw new Error('props: invalid or repeated footprint hex')
       seen.add(h)
     }
-    out.push({ id: p.id, height: p.height, material: p.material, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] } })
+    out.push({ id: p.id, height: p.height, material: p.material, ...collision, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] } })
   }
   return out
 }
@@ -104,4 +109,20 @@ export function passableHexes(ctx: Pick<Ctx, 'state'>, props=ctx.state.props): P
     const b=centerPoint(state.board,hex),a=from===undefined?b:centerPoint(state.board,from)
     return !detached.some(p=>p.footprint.kind==='polygon'&&segmentNearPolygon(a,b,p.footprint.vertices,p.footprint.movementPadding))
   }
+}
+
+/**
+ * v2.knockback-collisions (COMBAT-V2 §9.3): the prop that stops a step from
+ * `from` into `hex`, or null when no prop does (a missing floor, say). A high
+ * hex footprint on `hex` first, then a high polygon the step's centre segment
+ * touches — each group in prop-id order (Law 6), the same geometry
+ * passableHexes refuses the step by.
+ */
+export function blockingPropAt(ctx: Pick<Ctx, 'state'>, hex: number, from: number): Prop | null {
+  const state = ctx.state
+  const high = [...state.props].filter(p => p.height === 'high').sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+  for (const p of high) if (p.footprint.kind === 'hex' && p.footprint.hexes.includes(hex)) return p
+  const a = centerPoint(state.board, from), b = centerPoint(state.board, hex)
+  for (const p of high) if (p.footprint.kind === 'polygon' && segmentNearPolygon(a, b, p.footprint.vertices, p.footprint.movementPadding)) return p
+  return null
 }

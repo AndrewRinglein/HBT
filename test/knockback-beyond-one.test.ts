@@ -39,15 +39,23 @@ describe('a push greater than one', () => {
     expect(k.stoppedBy).toBeUndefined()
   })
 
-  it('a push cut short travels what it can and names what stopped it', () => {
+  // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed): the push cut short is a
+  // collision now (COMBAT-V2 §9.3) — the line also names the body it struck and the points left,
+  // and the mover pays 1 (a unit's value) x 2 remaining in true damage; the struck zombie nothing.
+  it('a push cut short travels what it can, names what stopped it, and the mover pays for the rest', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }, { type: 'test-zombie', hex: hexId(8, 5) }])
-    const z = ctx.state.units[1]!
+    const z = ctx.state.units[1]!, struck = ctx.state.units[2]!
+    const [zhp, shp] = [z.hp, struck.hp]
     expect(executeKnockback(ctx, 0, z.id, 3, 'test')).toBe(1)
     expect([colOf(z.hex), rowOf(z.hex)]).toEqual([7, 5])
-    const k = ctx.events.find((e) => e.type === 'knocked') as unknown as { asked: number; hexes: number; stoppedBy?: string }
+    const k = ctx.events.find((e) => e.type === 'knocked') as unknown as { asked: number; hexes: number; stoppedBy?: string; remaining: number; blocker: number }
     expect(k.asked).toBe(3)
     expect(k.hexes).toBe(1)
     expect(k.stoppedBy).toBe('occupied')
+    expect(k.remaining).toBe(2)
+    expect(k.blocker).toBe(struck.id)
+    expect(zhp - z.hp).toBe(2)
+    expect(struck.hp).toBe(shp)
   })
 
   it('live — the shove fires in the arc-variant scenario and moves its target two', () => {

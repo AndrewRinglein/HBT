@@ -15848,6 +15848,51 @@ export const UNIT_PACK = {
             "material": 3
           }
         ]
+      },
+      "test.map.well-shove": {
+        "id": "test.map.well-shove",
+        "name": "Well shove (TEST)",
+        "board": {
+          "width": 9,
+          "height": 7
+        },
+        "format": "9x7",
+        "rows": [
+          ".........",
+          ".........",
+          ".........",
+          ".........",
+          ".........",
+          ".........",
+          "........."
+        ],
+        "props": [
+          {
+            "id": "prop.test.boulder",
+            "footprint": {
+              "kind": "hex",
+              "hexes": [
+                29
+              ]
+            },
+            "height": "high",
+            "material": 3,
+            "collisionValue": 4
+          },
+          {
+            "id": "prop.test.well",
+            "footprint": {
+              "kind": "hex",
+              "hexes": [
+                33
+              ]
+            },
+            "height": "high",
+            "material": 3,
+            "collisionValue": 3,
+            "consumes": true
+          }
+        ]
       }
     },
     "encounters": {

@@ -14380,3 +14380,156 @@ index 14af730..64a3c22 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without status.prone,power.stand-up — they genuinely test it
+
+## v2.knockback-collisions — LANDED `a413561` **NEEDS REVIEW**
+2026-09-24 04:29
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:732
+  PASS  typecheck
+  PASS  the item's own tests — test/authored-geometry.test.ts, test/authored-props.test.ts, test/knockback-beyond-one.test.ts, test/knockback.test.ts, test/v2-knockback-collisions.test.ts
+  PASS  gate 1 — the id appears in a real battle — prop.test.well: 4 log lines, 4 fired, 3 changed state · prop.test.boulder: 3 log lines, 3 fired, 2 changed state
+  PASS  brought its own tests — test/authored-geometry.test.ts, test/authored-props.test.ts, test/knockback-beyond-one.test.ts, test/knockback.test.ts, test/v2-knockback-collisions.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/authored-geometry.test.ts (-1), test/authored-props.test.ts (-1), test/knockback-beyond-one.test.ts (-3), test/knockback.test.ts (-6) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 7a3e035c->eff2f15c, map.ridge f7cc3b8c->8bed1a0a, map.flanks d62d911d->a44811fb, map.highlands f05fea38->b60aad90, map.field ecf50a34->145dae28, map.thicket 5e4288f9->f1c362d3, map.proving.open 484f47f4->a0e8cc56, map.proving.ridge 228638a1->2e9f8fdf, map.proving.ford ac962e66->d3a3c513, map.proving.copse 5a2a05e3->2d0b36e2, map.proving.ruin 3600fc3b->81df9499, map.courtyard 6ca4bc28->4642db51, map.floodplain eb9aa173->d0bd9276, test.map.embers 952eecfb->221f7ad5, test.map.showcase 4a5a4290->9234d62c, test.map.duel-8 a193d1da->df74821b, test.map.dungeon-16x8 f28f6266->90ae97f6, test.map.horde-24 653dd82b->46d7f43c, test.map.journey-20x10 898aa9c1->e561d3f5, test.map.authored-40x40 9a6afe40->3b2e43ce, test.map.high-prop-single 070df03a->3374737d, test.map.high-prop-multi d43f0920->51f0de44, test.map.well-shove ?->f1471d74, test.map.well-shove NEW
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — prop.test.well live · prop.test.boulder live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without prop.test.well,prop.test.boulder — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/authored-geometry.test.ts b/test/authored-geometry.test.ts
+index 9f7b5be..5ed6d86 100644
+--- a/test/authored-geometry.test.ts
++++ b/test/authored-geometry.test.ts
+@@ -57,5 +57,8 @@ describe('terrain.authored-geometry',()=>{
+  it('knockback stops at the thin physical wall even though target center is open',()=>{
+   const ctx=setup(row([wall()]),[5],[6]);expect(executeKnockback(ctx,0,1,1,'test')).toBe(0)
+-  expect(ctx.state.units[1]!.hex).toBe(6);expect(ctx.events.at(-1)?.type).toBe('knockback.blocked')
++  // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed, COMBAT-V2 §9.3): the stopped
++  // push is a collision now, so the blocked line is followed by the mover's collision damage.
++  expect(ctx.state.units[1]!.hex).toBe(6);expect(ctx.events.at(-2)?.type).toBe('knockback.blocked')
++  expect(ctx.events.at(-1)).toMatchObject({type:'damage.applied',target:1,collision:true,collidedWith:'prop',collisionValue:2,remaining:1})
+  })
+  it('detaches initial facts and observes polygon replacement/in-place edits across forks and restore',()=>{
+diff --git a/test/authored-props.test.ts b/test/authored-props.test.ts
+index 4fdb53a..52b4a20 100644
+--- a/test/authored-props.test.ts
++++ b/test/authored-props.test.ts
+@@ -106,5 +106,8 @@ describe('canonical authored high props', () => {
+     expect(executeKnockback(ctx, 0, 1, 1, 'test')).toBe(0)
+     expect(ctx.state.units[1]!.hex).toBe(6)
+-    expect(ctx.events.at(-1)).toMatchObject({ type: 'knockback.blocked', reason: 'impassable prop', at: 6 })
++    // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed, COMBAT-V2 §9.3): the blocked
++    // line now names the prop it struck, and the mover's collision damage follows it.
++    expect(ctx.events.at(-2)).toMatchObject({ type: 'knockback.blocked', reason: 'impassable prop', at: 6, collidedWith: 'prop', blocker: ctx.state.props[0]!.id })
++    expect(ctx.events.at(-1)).toMatchObject({ type: 'damage.applied', target: 1, collision: true, damageType: 'true' })
+   })
+   it('sidestep enumeration prepares blockage once, not once per board cell', () => {
+diff --git a/test/knockback-beyond-one.test.ts b/test/knockback-beyond-one.test.ts
+index 13321cb..4c9900c 100644
+--- a/test/knockback-beyond-one.test.ts
++++ b/test/knockback-beyond-one.test.ts
+@@ -40,13 +40,21 @@ describe('a push greater than one', () => {
+   })
+ 
+-  it('a push cut short travels what it can and names what stopped it', () => {
++  // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed): the push cut short is a
++  // collision now (COMBAT-V2 §9.3) — the line also names the body it struck and the points left,
++  // and the mover pays 1 (a unit's value) x 2 remaining in true damage; the struck zombie nothing.
++  it('a push cut short travels what it can, names what stopped it, and the mover pays for the rest', () => {
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }, { type: 'test-zombie', hex: hexId(8, 5) }])
+-    const z = ctx.state.units[1]!
++    const z = ctx.state.units[1]!, struck = ctx.state.units[2]!
++    const [zhp, shp] = [z.hp, struck.hp]
+     expect(executeKnockback(ctx, 0, z.id, 3, 'test')).toBe(1)
+     expect([colOf(z.hex), rowOf(z.hex)]).toEqual([7, 5])
+-    const k = ctx.events.find((e) => e.type === 'knocked') as unknown as { asked: number; hexes: number; stoppedBy?: string }
++    const k = ctx.events.find((e) => e.type === 'knocked') as unknown as { asked: number; hexes: number; stoppedBy?: string; remaining: number; blocker: number }
+     expect(k.asked).toBe(3)
+     expect(k.hexes).toBe(1)
+     expect(k.stoppedBy).toBe('occupied')
++    expect(k.remaining).toBe(2)
++    expect(k.blocker).toBe(struck.id)
++    expect(zhp - z.hp).toBe(2)
++    expect(struck.hp).toBe(shp)
+   })
+ 
+diff --git a/test/knockback.test.ts b/test/knockback.test.ts
+index 07b924f..59df15b 100644
+--- a/test/knockback.test.ts
++++ b/test/knockback.test.ts
+@@ -5,5 +5,7 @@
+ // whole capability. The undefined edges — walls, occupied hexes, the board
+ // rim — stop the push and log knockback.blocked (SWITCHES.md knockbackBlocked,
+-// default fizzle-in-place). Second consumer: trigger.test-ram.knockback on
++// default fizzle-in-place). v2.knockback-collisions (2026-09-23) retired the
++// fizzle: a stopped push is a collision (COMBAT-V2 §9.3) — see the edits marked
++// below and test/v2-knockback-collisions.test.ts. Second consumer: trigger.test-ram.knockback on
+ // the Arc Golem, pure data, live in showcase.arc-variant.
+ import { describe, expect, it } from 'vitest'
+@@ -18,9 +20,11 @@ import { beginActivation } from '../src/core/mutate.js'
+ 
+ describe('the geometry — a line, or nothing', () => {
+-  it('continues the pusher->target line one hex, and is null when not adjacent', () => {
++  it('continues the pusher->target line one hex, from adjacency or from further away', () => {
+     // 135 -> 118 continues to 102 (the axial line q3: r8 -> r7 -> r6).
+     expect(stepAwayFrom(135, 118)).toBe(102)
+     expect(stepAwayFrom(118, 135)).toBe(151) // the same line, reversed
+-    expect(stepAwayFrom(135, 102), 'not adjacent — no line').toBeNull()
++    // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed): knockback from ANY
++    // source (COMBAT-V2 §9.3), so a non-adjacent origin continues its line instead of null.
++    expect(stepAwayFrom(135, 102), 'not adjacent — the same line, one further').toBe(stepAwayFrom(118, 102))
+     expect(stepAwayFrom(118, 118), 'no direction from a point').toBeNull()
+   })
+@@ -64,5 +68,8 @@ describe('the authored rider — Hack pushes on damage', () => {
+   })
+ 
+-  it('a blocked push fizzles in place, loudly', () => {
++  // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed): a blocked push no longer
++  // fizzles harmlessly — the mover stays and takes the struck unit's collision value (1) in
++  // true damage per remaining point; the struck zombie takes nothing (COMBAT-V2 §9.3).
++  it('a blocked push stays in place and the mover pays the collision', () => {
+     const ctx = createBattle({
+       ...scenarioOptions(scenarioDef('showcase.alpha-team')),
+@@ -73,13 +80,21 @@ describe('the authored rider — Hack pushes on damage', () => {
+     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+     const z = ctx.state.units.find((u) => u.hex === 118)!
++    const other = ctx.state.units.find((u) => u.hex === 102)!
++    const [zhp, ohp] = [z.hp, other.hp]
+     const n = executeKnockback(ctx, oath.id, z.id, 1, 'test.push')
+     expect(n).toBe(0)
+-    expect(z.hex, 'fizzle-in-place is the switch default').toBe(118)
++    expect(z.hex, 'a stopped push stays where it was stopped').toBe(118)
+     const ev = ctx.events.find((e) => e.type === 'knockback.blocked')!
+     expect(ev['reason']).toBe('occupied')
++    expect(ev).toMatchObject({ collidedWith: 'unit', blocker: other.id, collisionValue: 1, remaining: 1 })
+     expect(ctx.events.some((e) => e.type === 'knocked')).toBe(false)
++    expect(zhp - z.hp, 'the mover pays 1 x 1').toBe(1)
++    expect(other.hp, 'the struck unit takes nothing').toBe(ohp)
++    expect(other.hex).toBe(102)
+   })
+ 
+-  it('a push off the board edge is blocked and says so', () => {
++  // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed): the map edge is a basic
++  // obstruction (collision value 2), so the blocked push now costs the mover 2 (COMBAT-V2 §9.3).
++  it('a push off the board edge is blocked, says so, and costs the mover the edge\'s 2', () => {
+     const ctx = createBattle({
+       ...scenarioOptions(scenarioDef('showcase.alpha-team')),
+@@ -89,8 +104,10 @@ describe('the authored rider — Hack pushes on damage', () => {
+     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+     const z = ctx.state.units.find((u) => u.typeId === 'unit.zombie')!
++    const hp = z.hp
+     const n = executeKnockback(ctx, oath.id, z.id, 1, 'test.push')
+     expect(n).toBe(0)
+     expect(z.hex).toBe(6)
+     expect(ctx.events.find((e) => e.type === 'knockback.blocked')!['reason']).toBe('edge of the board')
++    expect(hp - z.hp).toBe(2)
+   })
+ })
+```
+</details>

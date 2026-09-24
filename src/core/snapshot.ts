@@ -160,6 +160,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(typeof status.id === 'string' && Object.hasOwn(runtime.statuses, status.id) && integer(status.value, 0) && (status.by === undefined || unitId(status.by)), 'unit status')
     }
     requireThat(u.huntTarget === undefined || unitId(u.huntTarget), 'hunt target')
+    requireThat(u.consumedBy === undefined || (typeof u.consumedBy === 'string' && /^prop\./.test(u.consumedBy)), 'consumed by')   // v2.knockback-collisions
   }
   requireThat(Array.isArray(s.events) && st.seq === s.events.length, 'event count')
   for (const [i, e] of s.events.entries()) {

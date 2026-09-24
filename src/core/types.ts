@@ -3,9 +3,15 @@ import type { Rng } from './rng.js'
 
 export type Side = 'hero' | 'enemy'
 export type PolygonFootprint = { kind: 'polygon'; vertices: [number, number][]; movementPadding: number }
-export type Prop = { id: string; height: 'high' | 'low'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } | PolygonFootprint; crossingCost?: 1 }
+/**
+ * v2.knockback-collisions (COMBAT-V2 §9.3, ruled 2026-09-07): `collisionValue`
+ * is what a push stopped by this prop costs the mover per remaining point
+ * (absent = a basic obstruction's 2); `consumes` (the well, the pit) takes a
+ * unit the collision kills — no corpse, no Deathbed.
+ */
+export type Prop = { id: string; height: 'high' | 'low'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } | PolygonFootprint; crossingCost?: 1; collisionValue?: number; consumes?: true }
 export type HighProp = Prop & { height: 'high'; crossingCost?: never }
-export type AuthoredProp = { readonly id: string; readonly height: 'high' | 'low'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } | { readonly kind: 'polygon'; readonly vertices: readonly (readonly [number, number])[]; readonly movementPadding: number }; readonly crossingCost?: 1 }
+export type AuthoredProp = { readonly id: string; readonly height: 'high' | 'low'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } | { readonly kind: 'polygon'; readonly vertices: readonly (readonly [number, number])[]; readonly movementPadding: number }; readonly crossingCost?: 1; readonly collisionValue?: number; readonly consumes?: true }
 export type AuthoredHighProp = AuthoredProp & { readonly height: 'high'; readonly crossingCost?: never }
 /** Plain authored map transport, decoded by the same boundary for registry and direct input. */
 export type AuthoredMap = {
@@ -692,6 +698,13 @@ export type Unit = {
   burstOrdinal?: number
   attackOrdinal: number
   deathbedOrdinal: number
+  /**
+   * v2.knockback-collisions (COMBAT-V2 §9.3): the id of the `consumes` prop a
+   * collision drove this unit to 0 Health against. Written only by
+   * applyCollisionDamage (its damage.applied event carries it — Law 3); read
+   * where death is decided (settle): dead, no corpse, no Deathbed.
+   */
+  consumedBy?: string
 }
 
 /** The whole battle state. Serializes to JSON and back with no loss. */

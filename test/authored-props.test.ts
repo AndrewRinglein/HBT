@@ -105,7 +105,10 @@ describe('canonical authored high props', () => {
     const ctx = createBattle({ replicate: 0, map: row(), heroes: ['test-warrior'], enemies: ['test-zombie'], heroHexes: [5], enemyHexes: [6] })
     expect(executeKnockback(ctx, 0, 1, 1, 'test')).toBe(0)
     expect(ctx.state.units[1]!.hex).toBe(6)
-    expect(ctx.events.at(-1)).toMatchObject({ type: 'knockback.blocked', reason: 'impassable prop', at: 6 })
+    // v2.knockback-collisions (2026-09-23, Law 10 — the rule changed, COMBAT-V2 §9.3): the blocked
+    // line now names the prop it struck, and the mover's collision damage follows it.
+    expect(ctx.events.at(-2)).toMatchObject({ type: 'knockback.blocked', reason: 'impassable prop', at: 6, collidedWith: 'prop', blocker: ctx.state.props[0]!.id })
+    expect(ctx.events.at(-1)).toMatchObject({ type: 'damage.applied', target: 1, collision: true, damageType: 'true' })
   })
   it('sidestep enumeration prepares blockage once, not once per board cell', () => {
     const ctx = setup(), props = ctx.state.props

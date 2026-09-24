@@ -74,9 +74,15 @@ export type Geometry = {
   /**
    * The hex one step beyond `through`, continuing the straight line from `from`
    * (capability.knockback, 2026-08-27 — "push the target 1 hex directly away
-   * from you"). Defined ONLY when `from` and `through` are adjacent: a knockback
-   * line from further away is ambiguous on a hex grid, and guessing a direction
-   * is inventing a rule. Returns null off the board or when undefined.
+   * from you"). v2.knockback-collisions (2026-09-23, COMBAT-V2 §9.3: knockback
+   * "from any source"): `from` need not be adjacent. The step is the neighbour
+   * of `through` nearest the ideal continuation `through + (through − from)/n`
+   * (n = their distance), compared exactly in integer cube space (Law 7). An
+   * adjacent `from` gives that line exactly — unchanged from V1. A line that
+   * runs exactly through a vertex ties two neighbours; the tie goes to the
+   * first in the fixed direction order E, NE, NW, W, SW, SE (counter-clockwise
+   * from east — SWITCHES.md knockbackVertexTiebreak). Null when `from` equals
+   * `through`, or when the step leaves the board.
    */
   stepAwayFrom(from: HexId, through: HexId): HexId | null
   isAdjacent(a: HexId, b: HexId): boolean
@@ -92,8 +98,9 @@ function axialQ(col: number, row: number): number {
   return col - (row - (row & 1)) / 2
 }
 
-// The six axial directions, in a fixed order. Order here never decides anything —
-// neighbours() sorts by HexId — but it is fixed so the geometry is reproducible.
+// The six axial directions, in a fixed order: E, NE, NW, W, SW, SE (counter-
+// clockwise from east). neighbours() sorts by HexId; the ONE place the order
+// decides anything is stepAwayFrom's vertex tiebreak (v2.knockback-collisions).
 const DIRS: ReadonlyArray<readonly [number, number]> = [
   [1, 0],
   [1, -1],
@@ -152,8 +159,20 @@ function build(board: Board): Geometry {
     const qt = axialQ(colOf(through), rt)
     const dq = qt - qf
     const dr = rt - rf
-    if ((Math.abs(dq) + Math.abs(dr) + Math.abs(-dq - dr)) / 2 !== 1) return null
-    const [col2, row2] = offsetOf(qt + dq, rt + dr)
+    const ds = -dq - dr
+    const n = (Math.abs(dq) + Math.abs(dr) + Math.abs(ds)) / 2
+    // Squared cube-space distance of each candidate step from the ideal point,
+    // scaled by n so it stays an integer. Strict < keeps the FIRST direction on
+    // a tie — the documented vertex tiebreak (DIRS order).
+    let best = -1
+    let bestScore = Infinity
+    for (let i = 0; i < DIRS.length; i++) {
+      const eq = DIRS[i]![0], er = DIRS[i]![1], es = -eq - er
+      const x = n * eq - dq, y = n * er - dr, z = n * es - ds
+      const score = x * x + y * y + z * z
+      if (score < bestScore) { bestScore = score; best = i }
+    }
+    const [col2, row2] = offsetOf(qt + DIRS[best]![0], rt + DIRS[best]![1])
     return inBounds(col2, row2) ? hexId(col2, row2) : null
   }
   const isAdjacent = (a: HexId, b: HexId): boolean => distance(a, b) === 1

@@ -285,6 +285,12 @@ named. The unexplored branch (collision damage, or damage-on-fizzle) is not
 built; if a sweep or a ruling wants slam-into-wall damage, that is a new
 effect, not a flip of this switch.
 
+**RETIRED 2026-09-23 (v2.knockback-collisions).** Ruled 2026-09-07 in
+COMBAT-V2-DESIGN-2026-09-07.md §9.3: a stopped push is a collision — true damage
+to the mover = the blocker's collision value × remaining knockback points. The
+fizzle is gone; the defaults that landing took are in "V2 knockback collisions"
+at the end of this file.
+
 ## healIncludesSelf — is the priest his own ally?
 Added 2026-08-27 (capability.item-powers). Heal targets "one ally within 6
 hexes"; whether that includes the caster is unstated. Default **true** — the
@@ -808,3 +814,23 @@ The rules are COMBAT-V2-DESIGN-2026-09-07.md §10 (ruled); the numbers live on t
 | `proneAiStandsFirst` | What does a prone AI unit do? | Spends its movement action standing, then chooses its primary as usual (`runActivation`). | The roadmap's AI probe; standing is free of AoO and costs only the slot a prone unit cannot otherwise use. | provisional — 2026-09-23 |
 | `proneStationOrder` | Where do the ±accuracy and ±damage rows sit? | Accuracy at ACC.PRONE 550 (after CONDITION, before COVER and TARGET_DODGE); the −10 Dodge is a derived stat mod read by `effective(dodge)` (source = the status id); damage at DMG.PRONE 500, flat after the crit multiplier and before cover, on attacks only (powers and bursts are not attacks). | Mirrors cover, the other flat V2 attack modifier; +1 is not multiplied by a crit. | provisional — 2026-09-23 |
 | `proneTestSource` | What knocks a unit down before KDB (R4)? | Only test content: `test-trip-a` applies `status.prone`, `test-trip-b` applies `test.status.floored`, both through the generic `status.apply` trigger (scenarios `test.prone-a`, `test.prone-b`). No campaign unit knocks anything down yet. | KDB is R4. | until R4 |
+
+## V2 knockback collisions — defaults taken landing v2.knockback-collisions (2026-09-23)
+
+The rules are COMBAT-V2-DESIGN-2026-09-07.md §9.3 and the consuming-props paragraph after it
+(ruled 2026-09-07). V2 R4 part 1 (geometry and collisions; the KDB roll is the next item).
+What the documents do not answer, these defaults answer:
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `knockbackLineFromRange` | Which way does a push go when its origin is not adjacent (a ranged shot, a reach attack)? | The straight line from the pusher's hex through the target's, continued: the target's neighbour nearest the ideal point `target + (target − pusher)/distance`, compared exactly in integer cube space (`hex.ts stepAwayFrom`). After the first hex the push continues in that one direction. An adjacent origin gives exactly the V1 hex. | §9.3 rules knockback "from any source"; a straight continuation is the only reading that reduces to V1 at range 1. | provisional — 2026-09-23 |
+| `knockbackVertexTiebreak` | The line runs exactly through a vertex (two neighbours equally near). Which one? | The first in the fixed direction order **E, NE, NW, W, SW, SE** (counter-clockwise from east; the geometry's DIRS order). | Board-independent (works when a candidate is off the board) and deterministic (Law 6). Tested both ways (`v2-knockback-collisions.test.ts`). | provisional — 2026-09-23 |
+| `knockbackBurstOrigin` | A burst's push — from the burst centre or the caster? | Not reachable yet: no burst carries a knockback. Every push today reads the PUSHER's hex (earth-blast is a single-target ranged attack in the engine). When a burst gets one, pass its centre as the origin. | Nothing to decide against. | open — for the first burst with a push |
+| `knockbackProtectionAbsorbs` | Does Protection absorb collision damage? Armor? | **Protection yes, Armor and resists no.** The collision is `true` damage through `flatDamage`, which spends Protection first (the pool is spent through `spendAbsorb`). | §7 rules Protection "absorbs everything"; true damage ignores mitigation. | provisional — 2026-09-23 |
+| `knockbackNeverFeedsKdb` | Can collision damage trigger a KDB roll? | **No, by construction**: it is true damage and KDB reads physical damage only (§9.1). No code; a probe goes with the KDB item. | §9.1 margin = physical damage dealt + Impact. | note — probe with KDB |
+| `knockbackThornsZero` | A unit's collision value is 1 + its Thorns. What is its Thorns? | **0 for every unit.** The engine has no Thorns magnitude — Thorns today is a V1 per-activation trigger (`trigger.*.thorns`, e.g. the test golem's), not a stat or status. `unitCollisionValue` (movement.ts) is the one reader; R5 re-rules Thorns as a magnitude and fills it in. `collisionValue` is not yet a foldable unit stat. | §9.4 re-rules Thorns in R5. | until R5 |
+| `knockbackFloorIsObstruction` | A push into a hex with no floor (the `floor` mask false) — what does it strike? | A basic obstruction (**2**), like the map edge; `collidedWith: 'floor'`. A pit that swallows is a PROP with `consumes`, not a missing floor. | The documents name the pit as a prop; a missing floor is the board's edge by another name. | provisional — 2026-09-23 |
+| `knockbackDeadMoverNoDamage` | The push's own hit already took the mover to 0 Health (settle has not run yet). Does the collision still hurt? | **No collision damage** to a mover that is not standing or has 0 Health; the push is still resolved and logged as before. So a well only consumes a unit ITS collision killed. | "takes the unit if the collision kills it". | provisional — 2026-09-23 |
+| `knockbackPropFields` | Where do a prop's collision value and `consumes` live? | On the prop row, authored in content (`map-schema.mjs` validateProps; engine `decodeProps`): `collisionValue` integer 0..100 on a HIGH prop (absent = 2), `consumes: true` on a HIGH prop or absent. Only high props stop a push. | §9.3: "authored on props"; "one boolean on the prop row". | provisional — 2026-09-23 |
+| `knockbackTestProps` | No well or pit exists in content. | TEST props only: `prop.test.well` (3, consumes) and `prop.test.boulder` (4) on `test.map.well-shove` (content test/maps.json), live in scenario `test.knockback-well`. The real well is content for later. | Existing `prop` kind; no new id kind. | until the real well |
+

@@ -6,10 +6,11 @@ import { lowEdgeCost, preparedLowEdgeCost } from './cover.js'
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
-import { passableHexes, type Passable } from './props.js'
-import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
+import { blockingPropAt, passableHexes, type Passable } from './props.js'
+import { flatDamage } from './mitigation.js'
+import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
 import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
-import { forcedTargetOf, applyStatus, isBlocked, isProne, isRooted, reduceStatus } from './status.js'
+import { forcedTargetOf, applyStatus, incomingAbsorb, isBlocked, isProne, isRooted, reduceStatus, spendAbsorb } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { settle } from './settle.js'
 
@@ -454,20 +455,45 @@ export function livingEnemies(ctx: Ctx, u: Unit): Unit[] {
 }
 
 /**
- * Knockback — capability.knockback (2026-08-27). Authored on the halberd's
- * Hack: "push the target 1 hex directly away from you." CODEX §12 bans every
- * other forced movement ("no pulls, pushes or swaps" beyond Knockback), so
- * this is the whole of it.
+ * Knockback — capability.knockback (2026-08-27), collisions re-ruled for V2
+ * (v2.knockback-collisions, 2026-09-23; COMBAT-V2-DESIGN-2026-09-07 §9.3, ruled
+ * 2026-09-07). The rules apply to "all knockback from any source".
  *
- * The line is pusher -> target, continued (stepAwayFrom); it is defined only
- * from adjacency, which every melee push satisfies. Each hex is checked in
- * turn: off the board, impassable, or occupied STOPS the push there — the
- * knockbackBlocked switch question, defaulted to fizzle-in-place, recorded in
- * SWITCHES.md. A stopped push with zero hexes taken logs knockback.blocked
- * with its reason (Law 9: never silent). Ground statuses need no special
- * case: the pushed unit STANDS on the new hex, and end-of-activation terrain
- * strips/applies read where a unit stands, not how it got there.
+ * The line is pusher -> target, continued (stepAwayFrom) — from any distance:
+ * a ranged or reach push goes straight on from the pusher's hex through the
+ * target's (the vertex tiebreak is stepAwayFrom's). Each hex is checked in turn;
+ * off the board, a high prop, a missing floor or a body (standing or downed)
+ * STOPS the push there, and a stopped push is a COLLISION:
+ *
+ *   true damage to the mover = blocker's collision value × remaining points
+ *
+ * A unit is 1 + its Thorns (COLLISION_UNIT_BASE; the engine has no Thorns
+ * magnitude yet — SWITCHES.md knockbackThornsZero), a prop its authored
+ * `collisionValue`, and a basic obstruction, the map edge or a missing floor
+ * COLLISION_OBSTRUCTION. Only the mover is hurt; the struck unit or prop takes
+ * nothing and is not moved (no chaining). Protection absorbs it; Armor and the
+ * resists do not (true damage). A push that lands on lava is an entry, not a
+ * collision — terrain never stops a push. A `consumes` prop takes a unit its
+ * collision kills (applyCollisionDamage marks it; settle decides the death).
+ *
+ * Events: `knocked` when the mover travelled, `knockback.blocked` when it
+ * could not take one hex — either way naming the collision (collidedWith,
+ * blocker, collisionValue, remaining) — then the collision's damage.applied
+ * (causeId = the push's cause, collision: true, damageType 'true'). The V1
+ * fizzle-in-place (SWITCHES.md knockbackBlocked) is retired.
  */
+/** COMBAT-V2 §9.3 table (ruled 2026-09-07): "A unit — 1 base, + its Thorns value". */
+export const COLLISION_UNIT_BASE = 1
+/** COMBAT-V2 §9.3 table: "A basic obstruction — a big rock, a wall, the map edge — 2". */
+export const COLLISION_OBSTRUCTION = 2
+
+type Collision = { collidedWith: 'unit' | 'prop' | 'edge' | 'floor'; blocker: string | number | null; collisionValue: number; consumes: string | null }
+
+/** A unit's collision value: 1 + Thorns. No Thorns magnitude exists in the engine yet (R5), so 0. */
+function unitCollisionValue(_ctx: Ctx, _u: Unit): number {
+  return COLLISION_UNIT_BASE
+}
+
 export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, hexes: number, causeId: string): number {
   const passable = passableHexes(ctx)
   const pusher = unit(ctx, pusherId)
@@ -476,19 +502,55 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
   let prev = pusher.hex
   let taken = 0
   let reason = ''
+  let hit: Collision | null = null
+  const occ = occupancy(ctx)
   for (let i = 0; i < hexes; i++) {
+    if (prev === at) { reason = 'no line'; break }   // a unit cannot push itself; nothing is struck
     const next = ctx.geo.stepAwayFrom(prev, at)
-    if (next === null) { reason = prev === at ? 'no line' : ctx.geo.distance(prev, at) !== 1 ? 'no straight line — pusher not adjacent' : 'edge of the board'; break }
-    if (!passable(next,at)) { reason = ctx.state.floor?.[next]===false?'missing floor':'impassable prop'; break }
-    if (occupancy(ctx).has(next)) { reason = 'occupied'; break }
+    if (next === null) {
+      reason = 'edge of the board'
+      hit = { collidedWith: 'edge', blocker: null, collisionValue: COLLISION_OBSTRUCTION, consumes: null }
+      break
+    }
+    if (!passable(next, at)) {
+      const prop = blockingPropAt(ctx, next, at)
+      if (prop) {
+        reason = 'impassable prop'
+        hit = { collidedWith: 'prop', blocker: prop.id, collisionValue: prop.collisionValue ?? COLLISION_OBSTRUCTION, consumes: prop.consumes ? prop.id : null }
+      } else {
+        reason = ctx.state.floor?.[next] === false ? 'missing floor' : 'impassable'
+        hit = { collidedWith: 'floor', blocker: null, collisionValue: COLLISION_OBSTRUCTION, consumes: null }
+      }
+      break
+    }
+    const body = occ.get(next)
+    if (body !== undefined && body !== targetId) {
+      reason = 'occupied'
+      hit = { collidedWith: 'unit', blocker: body, collisionValue: unitCollisionValue(ctx, unit(ctx, body)), consumes: null }
+      break
+    }
     prev = at
     at = next
     taken++
   }
+  const remaining = hexes - taken
+  const facts = hit ? { collidedWith: hit.collidedWith, ...(hit.blocker !== null ? { blocker: hit.blocker } : {}), collisionValue: hit.collisionValue, remaining } : {}
   if (taken === 0) {
-    emit(ctx, 'knockback.blocked', causeId, { actor: pusherId, target: targetId, at: tg.hex, reason: reason || 'nowhere to go' })
-    return 0
+    emit(ctx, 'knockback.blocked', causeId, { actor: pusherId, target: targetId, at: tg.hex, reason: reason || 'nowhere to go', asked: hexes, ...facts })
+  } else {
+    knockUnit(ctx, targetId, at, pusherId, causeId, { asked: hexes, taken, ...(taken < hexes && reason ? { stoppedBy: reason } : {}) }, facts)
   }
-  knockUnit(ctx, targetId, at, pusherId, causeId, { asked: hexes, taken, ...(taken < hexes && reason ? { stoppedBy: reason } : {}) })
+  // The collision's cost: the mover only, and only a standing mover still on
+  // its feet — a body the push's own hit already emptied has nothing to lose.
+  if (hit && remaining > 0 && tg.lifeState === 'standing' && tg.hp > 0) {
+    const asked = hit.collisionValue * remaining
+    const damage = flatDamage(ctx, tg, asked, 'true', incomingAbsorb(ctx, tg))
+    if (damage.absorbed > 0) spendAbsorb(ctx, targetId, damage.absorbed, causeId)
+    applyCollisionDamage(ctx, targetId, damage.value, causeId, {
+      actor: pusherId, damageType: 'true', collision: true, collidedWith: hit.collidedWith,
+      ...(hit.blocker !== null ? { blocker: hit.blocker } : {}), collisionValue: hit.collisionValue, remaining,
+      ...(damage.absorbed ? { absorbed: damage.absorbed } : {}),
+    }, hit.consumes)
+  }
   return taken
 }

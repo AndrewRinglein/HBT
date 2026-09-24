@@ -143,7 +143,10 @@ export function terrainOf(mapId: string): number[] {
 export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').Prop[]; floor?: boolean[] } {
   const board = mapBoardOf(m)
   const out: number[] = []
-  const props = decodeProps(m.props === undefined ? [] : m.props, board.width * board.height)
+  // v2.knockback-collisions (2026-09-23): the kill-switch seam reaches authored
+  // props too (CF_DISABLE_IDS=prop.x) — a disabled prop is a map without it.
+  const off = disabledIds()
+  const props = decodeProps(m.props === undefined ? [] : m.props, board.width * board.height).filter(p => !off.has(p.id))
   if (props.some(p => p.id.startsWith('prop.obstacle.'))) throw new Error('props: reserved shorthand ID')
   for (const row of m.rows) {
     for (const ch of row) {

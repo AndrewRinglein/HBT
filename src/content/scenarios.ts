@@ -64,6 +64,14 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.prone-b', note: 'TEST: Tripper B floors Osric on a hit (test.status.floored, the second prone instance); Osric stands and swings. No campaign claim.',
     mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-trip-b'], enemyHexes: [86], replicate: 0,
   },
+  // v2.knockback-collisions (2026-09-23): a real battle whose pushes are stopped by
+  // authored props (content test.map.well-shove, 9x7). The golem stands between two
+  // zombies on the middle row; every push it lands drives one into prop.test.boulder (collision 4)
+  // or prop.test.well (collision 3, consumes). TEST data, no campaign claim.
+  'test.knockback-well': {
+    id: 'test.knockback-well', note: 'TEST: the Arc Golem, between two zombies on the middle row, shoves them into a boulder (collision 4) and a well (collision 3, consumes). No campaign claim.',
+    mapId: 'test.map.well-shove', heroes: ['test-arc-golem'], heroHexes: [31], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [30, 32], replicate: 8,
+  },
   'test.props-viewer-ranged-zoc': {
     id: 'test.props-viewer-ranged-zoc', note: 'Current production replay coverage: a ranged-only Fire Imp cannot make a melee reaction when Lucius walks away. Both units have existing viewer art.',
     mapId: 'map.open', heroes: ['alpha-lucius'], heroHexes: [85],

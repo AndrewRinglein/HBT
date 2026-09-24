@@ -1,5 +1,24 @@
 [
  {
+  "id": "v2.knockback-collisions",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "V2 R4 part 1, knockback geometry and collisions (COMBAT-V2-DESIGN-2026-09-07.md section 9.3 and the consuming-props paragraph, ruled 2026-09-07; one item across engine and content). Knockback from ANY source: the line runs from the pusher's hex through the target's from any distance (deterministic vertex tiebreak; adjacent origins unchanged). A push stopped by a blocker deals TRUE damage to the MOVER only = blocker's collision value x remaining knockback points; a unit is 1 + Thorns, a basic obstruction / wall / map edge 2, a prop its authored collisionValue (the well 3). The struck unit or prop takes nothing and is not moved (no chaining). Protection absorbs it; Armor does not. A prop flagged consumes takes a unit the collision kills: dead, no corpse, no Deathbed, onDeath fires. The V1 fizzle is removed. Not the KDB roll (next item).",
+  "expect": "Wall/prop, board-edge and unit collisions each cost value x remaining; only the mover is hurt and the struck unit is untouched and unmoved; push 3 stopped after 1 costs value x 2; Protection absorbs, Armor does not; the well consumes (no corpse, hero skips the Deathbed; a non-consuming prop still rolls it); power-shot.knockback and earth-blast.knockback push from range, the vertex tiebreak holds; a prone target is still pushed; the attack's previewed damage equals its applied damage with the collision its own event; replay deterministic; prop.test.well and prop.test.boulder (content test.map.well-shove) live in scenario test.knockback-well.",
+  "probeIds": [
+   "prop.test.well",
+   "prop.test.boulder"
+  ],
+  "variants": [
+   "prop.test.well",
+   "prop.test.boulder"
+  ],
+  "changesBaseline": true,
+  "note": "Andrew's chat, 2026-09-23. changesBaseline: every control battle's hash moves because knockback.blocked and knocked now carry the collision facts (asked, collidedWith, blocker, collisionValue, remaining); outcomes and turn counts are identical on all 22 panel maps (25 replicates each). Behaviour moved on two: test.map.dungeon-16x8 and test.map.high-prop-multi each have one ranged push that now travels instead of fizzling (dungeon: one collision). The new test map adds a panel line. Defaults in SWITCHES.md 'V2 knockback collisions'.",
+  "status": "done-needs-review",
+  "sha": "a413561"
+ },
+ {
   "id": "v2.prone",
   "kind": "engine",
   "shape": "rule",
