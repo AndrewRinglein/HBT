@@ -1,5 +1,18 @@
 [
  {
+  "id": "fix.view-direct-map-seed",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "V2 R7 follow-up, found wiring the viewer half of prop destruction. A scenario whose seed carries a direct authored map row (test.prop-destroy, test.cover-crates) exports seed.map as that row; the view door initialMapId read seed.map only as an id and refused ('seed: invalid map'), so no such battle could be drawn by the viewer or the kingdom. initialMapId now accepts a plain-data row that names itself by id (accessors refused, must agree with mapId); the field's exact initial facts remain the map.loaded event's own terrain and props.",
+  "expect": "The exported test.prop-destroy seed prepares a field whose props equal the battle's initial props; a row without an id, an empty id, a conflicting mapId and an accessor id are refused; the mapId and proving-plan string envelopes are unchanged; viewer-direct-map tests still pass; no control battle moves.",
+  "needs": [
+   "fix.prop-destroyed-remnant"
+  ],
+  "note": "Andrew's chat, 2026-09-24. The viewer's verify refused test.prop-destroy in the library with 'seed: invalid map'.",
+  "status": "done",
+  "sha": "cbf445f"
+ },
+ {
   "id": "fix.prop-destroyed-remnant",
   "kind": "engine",
   "shape": "plumbing",

@@ -111,14 +111,20 @@ export function prepareBattleField(events: unknown, seedValue: unknown, fallback
   return { field, distance: geo.distance }
 }
 
-/** Both current exporter envelopes: ordinary mapId and proving-plan map. */
+/**
+ * The three exporter envelopes: ordinary mapId, proving-plan map (an id), and a
+ * scenario whose seed carries its direct authored map row (fix.view-direct-map-seed,
+ * 2026-09-24): that row names itself by `id`, and its exact initial facts are the
+ * map.loaded event's own terrain and props, never a registry field.
+ */
 export function initialMapId(value: unknown): string {
   const seed = record(value, 'seed')
   const valid = (id: unknown): id is string => typeof id === 'string' && id.trim().length > 0
+  const map = Object.hasOwn(seed, 'map') && seed.map !== null && typeof seed.map === 'object' ? record(seed.map, 'seed map').id : seed.map
   if (Object.hasOwn(seed, 'mapId') && !valid(seed.mapId)) throw new Error('seed: invalid mapId')
-  if (Object.hasOwn(seed, 'map') && !valid(seed.map)) throw new Error('seed: invalid map')
-  if ('mapId' in seed && 'map' in seed && seed.mapId !== seed.map) throw new Error('seed: conflicting map identities')
-  const id = seed.mapId ?? seed.map
+  if (Object.hasOwn(seed, 'map') && !valid(map)) throw new Error('seed: invalid map')
+  if ('mapId' in seed && 'map' in seed && seed.mapId !== map) throw new Error('seed: conflicting map identities')
+  const id = seed.mapId ?? map
   if (!valid(id)) throw new Error('seed: missing map identity')
   return id
 }
