@@ -18,6 +18,7 @@ import { settle } from './settle.js'
 import { canSee } from './vision.js'
 import { attackLineClear } from './los.js'
 import { hasLowCover } from './cover.js'
+import { kdbChanceOf, kdbTarget, resolveKdb } from './kdb.js'
 import { rulesSideOf } from './side.js'
 import { attackPacketFields } from './attack-profile.js'
 
@@ -369,11 +370,19 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   // A hit on the DOWNED deals no damage and cannot crit — it accelerates the
   // bleed-out counter (fix.downed-targetable, 2026-09-03). The preview says so.
   if (tg.lifeState === 'downed') {
-    return { ...blockFacts, hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, damageOnCritChart:0, packetsOnHit:[],packetsOnCrit:[],packetsOnCritChart:[],critChance: 0, downed: true as const }
+    return { ...blockFacts, hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, damageOnCritChart:0, packetsOnHit:[],packetsOnCrit:[],packetsOnCritChart:[],critChance: 0, kdbChanceOnHit: null, kdbChanceOnCrit: null, kdbChanceOnCritChart: null, downed: true as const }
   }
   const hit=previewAttackDamage(ctx,attackerId,targetId,a,0,false)
   const critical=previewAttackDamage(ctx,attackerId,targetId,a,1,true)
   const chart=previewAttackDamage(ctx,attackerId,targetId,a,0,true)
+  // v2.kdb (COMBAT-V2 §9.1): the KDB chance each branch would roll — the same
+  // forecast the resolution reads (Law 1). null: the branch carries no
+  // physical packet, so it cannot cause KDB. A single hit's chance; a multi-hit
+  // attack sums its hits' physical damage before the one check.
+  const impact=attackPacketFields(a.attack).impact??0
+  const physicalBranch=(b:{packets:readonly {damageType:string}[]})=>b.packets.some(p=>p.damageType==='physical')
+  const kdbSide=physicalBranch(hit)||physicalBranch(critical)||physicalBranch(chart)?kdbTarget(ctx,tg):null
+  const kdbOf=(b:{packets:readonly {damageType:string}[];physicalApplied:number})=>kdbSide&&physicalBranch(b)?kdbChanceOf(kdbSide,b.physicalApplied,impact).chance:null
   return {
     ...blockFacts,
     hitChance,
@@ -382,6 +391,7 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
     damageOnHit:hit.value,damageOnCrit:critical.value,damageOnCritChart:chart.value,
     packetsOnHit:hit.packets,packetsOnCrit:critical.packets,packetsOnCritChart:chart.packets,
     critChance: critChanceOf(ctx, at, tg, acc.value, a),
+    kdbChanceOnHit:kdbOf(hit),kdbChanceOnCrit:kdbOf(critical),kdbChanceOnCritChart:kdbOf(chart),
   }
 }
 
@@ -404,7 +414,15 @@ function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, 
 export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): AttackResult {
   const a0 = attackDef(ctx, attackId)
   const hits = Math.max(1, a0.attack.hits ?? 1)
-  if (hits === 1) return performHit(ctx, attackerId, targetId, attackId, 1, 1, mode)
+  // v2.kdb: ONE KDB check per connecting attack, after its damage and its crit
+  // chart (SWITCHES.md kdbOrder); a multi-hit attack sums its hits' physical
+  // damage (kdbMultiPacket).
+  const kdb: KdbTally = { connected: false, physical: 0, eligible: false }
+  if (hits === 1) {
+    const result = performHit(ctx, attackerId, targetId, attackId, 1, 1, mode, kdb)
+    kdbAfterAttack(ctx, attackerId, targetId, a0, kdb)
+    return result
+  }
   // attack.multihit (2026-09-03): each hit runs the whole cycle — damage,
   // triggers, settle — before the next; no retargeting; cancelled the moment
   // the target stops standing. The FIRST hit pays the stamina and the primary.
@@ -416,16 +434,33 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     const tg = unit(ctx, targetId)
     if (h > 1 && tg.lifeState !== 'standing') { emit(ctx, 'attack.cancelled', attackId, { actor: attackerId, target: targetId, hit: h, of: hits, reason: 'target fell' }); break }
     if (h > 1 && unit(ctx, attackerId).lifeState !== 'standing') break
-    last = performHit(ctx, attackerId, targetId, attackId, h, hits, mode)
+    last = performHit(ctx, attackerId, targetId, attackId, h, hits, mode, kdb)
     results.push(last)
     damage += last.damage
     settle(ctx, attackId)
   }
+  if (!ctx.state.outcome) kdbAfterAttack(ctx, attackerId, targetId, a0, kdb)
   return { ...(last as AttackResult), hit:results.some(r=>r.hit), blocked:results.every(r=>r.blocked), hits:results, damage, killed: unit(ctx, targetId).hp === 0 }
 }
 
+/** v2.kdb: what one attack's hits add up to for its single KDB check. */
+type KdbTally = { connected: boolean; physical: number; eligible: boolean }
+
+/**
+ * v2.kdb (COMBAT-V2 §9): the attack's one KDB check. Only an attack that
+ * connected with a physical packet rolls ("Physical damage only"); the key is
+ * the target's uid and its incoming-attack ordinal (the attack's last hit),
+ * kind 0 — never a turn (§15.4).
+ */
+function kdbAfterAttack(ctx: Ctx, attackerId: number, targetId: number, a: AttackDef, t: KdbTally): void {
+  if (!t.connected || !t.eligible) return
+  const tg = unit(ctx, targetId)
+  resolveKdb(ctx, attackerId, targetId, a.id, t.physical, attackPacketFields(a.attack).impact ?? 0,
+    [tg.uid, tg.incomingAttackOrdinal ?? 0, 0], { attackId: a.id })
+}
+
 /** One hit of an attack — the whole of performAttack before multihit. `hit`/`of` name the swing in the log. */
-function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number, mode: AttackMode | undefined): AttackResult {
+function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number, mode: AttackMode | undefined, kdb?: KdbTally): AttackResult {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = attackDef(ctx, attackId)
@@ -561,11 +596,13 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   // conservation must observe their actual effects at the damage rung, for
   // every critical branch, without changing the already-declared hit roll.
   const expected = previewAttackDamage(ctx,attackerId,targetId,a,heads,crit).value
-  const damage = resolveHitOn(ctx, attackerId, targetId, a, heads, ord, {
+  const landed = resolveHitOn(ctx, attackerId, targetId, a, heads, ord, {
     expected,
     critical:crit,
     rollInfo: { roll, hitChance: pv.hitChance },
   })
+  const damage = landed.applied
+  if (kdb) { kdb.connected = true; kdb.physical += landed.physicalApplied; if (landed.physicalPacket) kdb.eligible = true }
 
   // The chart arm(s): normal damage has landed; now the even roll per tails
   // critical (rollCritEffect, GLOSSARY-fixed name). Skipped once the target
@@ -593,7 +630,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
 function resolveHitOn(
   ctx: Ctx, attackerId: number, targetId: number, a: AttackDef, crit: number | boolean, ord: number,
   opts: { expected?: number; critical?:boolean; rollInfo?: { roll: number; hitChance: number } } = {},
-): number {
+): { applied: number; physicalApplied: number; physicalPacket: boolean } {
   // station.crit-count (2026-08-27): a heads COUNT — booleans keep meaning.
   const heads = crit === true ? 1 : crit === false ? 0 : crit
   const at = unit(ctx, attackerId)
@@ -625,7 +662,7 @@ function resolveHitOn(
   // "The attack connected — even if armor absorbed all of it."
   fireTriggers(ctx, 'onHit', fc)
 
-  const {applied}=applyAttackPackets(ctx,targetId,dmg.packets,a.id,{actor:attackerId,attackId:a.id,crit:critical,damageType:a.attack.damageType,
+  const {applied,physicalApplied}=applyAttackPackets(ctx,targetId,dmg.packets,a.id,{actor:attackerId,attackId:a.id,crit:critical,damageType:a.attack.damageType,
     ...(dmg.absorbed>0?{absorbed:dmg.absorbed}:{})})
 
   // "At least 1 damage got through mitigation." applyDamage already computed
@@ -649,5 +686,5 @@ function resolveHitOn(
     applyStatus(ctx, targetId, a.attack.applies.statusId, a.attack.applies.value, a.id)
   }
 
-  return applied
+  return { applied, physicalApplied, physicalPacket: dmg.packets.some((p) => p.damageType === 'physical') }
 }

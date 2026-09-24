@@ -130,6 +130,11 @@ describe('universal action expenditure', () => {
   })
   it('reload preserves prior expenditure and Surge resets at the real cycle boundary', () => {
     const ctx = fixture(), id = grant(ctx); ctx.state.units[0]!.surge = 100
+    // v2.kdb (2026-09-23), Law 10: a physical hit may now knock the zombie back or
+    // down (COMBAT-V2 §9), which moves it out of reach of the next swing. This test
+    // is about expenditure, not KDB: the zombie stands firm (a Codex badge flag),
+    // so all three swings stay legal exactly as before.
+    ctx.state.units[1]!.badges.push('badge.stand-firm')
     expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
     const loaded = restoreBattle(saveBattle(ctx), ctx)
     for (const live of [ctx, loaded]) {

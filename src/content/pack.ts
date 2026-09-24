@@ -153,7 +153,9 @@ const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage'
   // capability.karma / shadow / confusion, 2026-09-03
   'boostsHealingReceived', 'boostsOutgoingHalf', 'decayOnKill', 'grows', 'obliteratesAtMaxHp', 'swapsAi',
   // v2.prone, 2026-09-23 (COMBAT-V2-DESIGN §10)
-  'prone'] as const
+  'prone',
+  // v2.kdb, 2026-09-23: the prone row a KDB "down" applies (COMBAT-V2 §9.2)
+  'kdbDown'] as const
 const PRONE_NUMBERS = ['accuracyAgainst', 'dodge', 'damageAgainst', 'accuracy', 'damage'] as const
 export function packStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { statuses?: Readonly<Record<string, PackStatusRow>> }).statuses ?? {}
@@ -176,6 +178,7 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
       for (const n of PRONE_NUMBERS) if (!Number.isSafeInteger(p[n])) throw Error(`${where}: prone.${n} on '${k}' is not an integer`)
       if (typeof p['standAction'] !== 'string' || !/^power\./.test(p['standAction'])) throw Error(`${where}: prone.standAction on '${k}' is not a power id`)
     }
+    if (r.kdbDown !== undefined && (r.kdbDown !== true || r.prone === undefined)) throw Error(`${where}: kdbDown on '${k}' must be true, on a prone status`)
     if (r.tickDamageType!==undefined&&!isDamageType(r.tickDamageType))throw Error(`${where}: invalid tick damage type on '${k}'`)
     if (r.tick === 'damage' && r.tickDamageType === undefined) throw new Error(`${where}: status '${k}' ticks damage with no type`)
     const { tick, ...def } = r
@@ -200,6 +203,8 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
 export type PackAttackRow = {
   readonly secondaryDamage?: readonly import('../core/types.js').SecondaryDamage[]
   readonly armorPenetration?: number
+  /** v2.kdb: Impact (COMBAT-V2 §9.1), carried through attackPacketFields. */
+  readonly impact?: number
   readonly slot?: ActionDef['slot']
   readonly id: string; readonly name: string; readonly kind: 'melee' | 'ranged'; readonly damageType: import('../core/types.js').DamageType
   readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly reach: number; readonly staminaCost: number
@@ -408,7 +413,7 @@ export function packLevels(): Readonly<Record<string, LevelTable>> {
  * badge as its source.
  */
 const BADGE_STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
-const BADGE_FLAGS = ['bleedsOut', 'wounded', 'blocksDeployment']
+const BADGE_FLAGS = ['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']   // the last two: v2.kdb (COMBAT-V2 §9.5)
 function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, family: (k: string) => boolean): Readonly<Record<string, BadgeDef>> {
   for (const [k, b] of Object.entries(raw)) {
     if (k !== b.id) throw new Error(`${where}: badge key '${k}' names id '${b.id}'`)

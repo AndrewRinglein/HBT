@@ -74,8 +74,11 @@ describe('the rules', () => {
     // before the Necromancer acts any more (the heroes' opening swings fall
     // differently now that a claw can afflict); the claim holds on the first
     // replicate where a zombie IS hurt, so the first few are tried.
+    // LAW 10 — 2026-09-23 (v2.kdb): KDB now knocks units back and down, so the
+    // opening swings fall differently again; the claim is unchanged, the search
+    // reaches further (up to 12 replicates) for the first hurt zombie.
     let seen = false
-    for (let r = 0; r < 4 && !seen; r++) {
+    for (let r = 0; r < 12 && !seen; r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), replicate: r })
       runBattle(ctx)
       seen = ctx.events.some((e) => e.type === 'ai.mode' && e['mode'] === 'support')

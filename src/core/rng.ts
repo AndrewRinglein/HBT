@@ -26,6 +26,10 @@ export const STREAMS = [
   'ai-tiebreak',
   'activation-order',
   'block', // append only: historical stream indices stay fixed
+  // v2.kdb (COMBAT-V2 §15.4): does KDB fire, and which (back / down / both).
+  // Keyed (target uid, per-unit ordinal, kind) — never a turn. Appended.
+  'kdb-occurs',
+  'kdb-type',
 ] as const
 
 export type Stream = (typeof STREAMS)[number]

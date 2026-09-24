@@ -18,7 +18,7 @@ function dense(value: unknown, max: number): asserts value is any[] {
 const integer = (v: unknown, min = 0, max = LIMIT): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= min && v <= max
 
 export function burstProfile(value: unknown): BurstProfile {
-  record(value, ['shape', 'side', 'requireTags', 'packets', 'heal'])
+  record(value, ['shape', 'side', 'requireTags', 'packets', 'heal', 'impact'])
   record(value.shape, ['kind', 'radius'])
   if (value.shape.kind === 'arc') {
     if (Object.hasOwn(value.shape, 'radius')) throw Error('burst: arc has no radius')
@@ -39,6 +39,7 @@ export function burstProfile(value: unknown): BurstProfile {
     if (p.powerScale !== undefined && (typeof p.powerScale !== 'number' || !Number.isFinite(p.powerScale) || p.powerScale < 0 || p.powerScale > 1)) throw Error('burst: invalid Power share')
   }
   if (value.heal !== undefined && !integer(value.heal)) throw Error('burst: healing must be a bounded nonnegative integer')
+  if (value.impact !== undefined && !integer(value.impact, 0, 1000)) throw Error('burst: Impact must be a bounded nonnegative integer')
   if (!value.packets.length && value.heal === undefined) throw Error('burst: no payload')
   return value as BurstProfile
 }

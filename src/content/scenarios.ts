@@ -72,6 +72,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.knockback-well', note: 'TEST: the Arc Golem, between two zombies on the middle row, shoves them into a boulder (collision 4) and a well (collision 3, consumes). No campaign claim.',
     mapId: 'test.map.well-shove', heroes: ['test-arc-golem'], heroHexes: [31], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [30, 32], replicate: 8,
   },
+  // v2.kdb (2026-09-23): a real battle in which KDB rolls. Two Impact attacks
+  // (attack.test-kdb.maul Impact 3, attack.test-kdb.bash Impact 7 and no damage)
+  // against the three knock badges: badge.stand-firm, badge.agile, badge.giant.
+  // The badge wearers field on the HERO side (sides: byList, the mirror rule):
+  // fielding logs unit.badged for a hero, not for an enemy row, and that line
+  // is what names the badge.
+  'test.kdb': {
+    id: 'test.kdb', note: 'TEST: zombies wearing Stand Firm, Agile and Giant (fielded as the heroes) against a Mauler (Impact 3) and a Basher (Impact 7, no damage). No campaign claim.',
+    mapId: 'map.open', heroes: ['test-kdb-firm', 'test-kdb-agile', 'test-kdb-giant'], heroHexes: [86, 102, 70], enemies: ['test-kdb-mauler', 'test-kdb-basher'], enemyHexes: [85, 101], replicate: 0, sides: 'byList',
+  },
   'test.props-viewer-ranged-zoc': {
     id: 'test.props-viewer-ranged-zoc', note: 'Current production replay coverage: a ranged-only Fire Imp cannot make a melee reaction when Lucius walks away. Both units have existing viewer art.',
     mapId: 'map.open', heroes: ['alpha-lucius'], heroHexes: [85],

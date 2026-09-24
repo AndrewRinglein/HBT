@@ -246,6 +246,8 @@ export type BurstProfile = {
     readonly powerScale?: number
   }[]
   readonly heal?: number
+  /** v2.kdb: the burst's Impact for each recipient's KDB check (SWITCHES.md kdbBursts). Absent = 0. */
+  readonly impact?: number
 }
 export type BurstDef = ActionDef & { readonly burst: BurstProfile }
 
@@ -284,6 +286,11 @@ export type AttackProfile = {
   readonly accuracy?: number
   /** How many CRITICALS one critting hit resolves — station.crit-count. Absent = 1. */
   readonly critCount?: number
+  /**
+   * v2.kdb (COMBAT-V2 §8, §9.1): "Impact adds to the KDB comparison only. It
+   * is not damage." Counts even when the hit deals 0. Absent = 0.
+   */
+  readonly impact?: number
 }
 
 /**
@@ -452,7 +459,11 @@ export type BadgeDef = {
    * Wounded badge: at 0 HP the unit dies, no roll. `blocksDeployment` — the
    * kingdom's: the hero cannot be fielded (the engine only reports it).
    */
-  readonly flags: Readonly<Partial<{ bleedsOut: boolean; wounded: boolean; blocksDeployment: boolean }>>
+  readonly flags: Readonly<Partial<{ bleedsOut: boolean; wounded: boolean; blocksDeployment: boolean
+    /** v2.kdb (COMBAT-V2 §9.5): Stand Firm, Giant, Immovable — no push from any source moves the unit. */
+    cannotBeKnockedBack: boolean
+    /** v2.kdb (COMBAT-V2 §9.5): Stand Firm, Giant, Agile — KDB never knocks the unit down. */
+    cannotBeKnockedDown: boolean }>>
   readonly gaps?: readonly string[]
 }
 

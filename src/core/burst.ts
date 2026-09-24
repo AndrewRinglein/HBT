@@ -12,6 +12,16 @@ import { applyAttackPackets, applyHealing, beginBurst, emit, unit } from './muta
 import { DMG, finishDamage, resolveSourceDamage, type DamagePacket, type LedgerRow } from './pipeline.js'
 import { fireTriggers, HOOKS, type BurstAdjustment } from './trigger.js'
 import { settle } from './settle.js'
+import { kdbForecast, resolveKdb } from './kdb.js'
+
+/**
+ * v2.kdb (SWITCHES.md kdbBursts): physical burst damage can cause KDB, per
+ * recipient, with the burst's own Impact (absent = 0). null: no physical
+ * packet reached this recipient's plan, so no check.
+ */
+function burstKdbChance(ctx: Ctx, target: Unit, a: BurstDef, result: { packets: readonly { damageType: string }[]; physicalApplied: number }): number | null {
+  return result.packets.some(p => p.damageType === 'physical') ? kdbForecast(ctx, target, result.physicalApplied, a.burst.impact ?? 0).chance : null
+}
 
 export function burstHexes(ctx: Ctx, origin: number, centre: number, a: BurstDef): number[] {
   return a.burst.shape.kind === 'arc'
@@ -96,7 +106,7 @@ export function previewBurst(ctx: Ctx, actorId: number, centre: number, actionId
   const prepared = prepare(ctx, unit(ctx, actorId), centre, a)
   const targets = prepared.targets.map(t => {
     const target = unit(ctx, t.id)
-    if (t.shielded.length) return { ...t, damage: 0, applied: 0, heal: 0, packets: [], conditional: false }
+    if (t.shielded.length) return { ...t, damage: 0, applied: 0, heal: 0, packets: [], conditional: false, kdbChance: null }
     const plan = planDamage(ctx, target, a, prepared, t.low, [])
     const units = [...ctx.state.units]; units[t.id] = structuredClone(target)
     const fork: Ctx = { ...ctx, state: { ...ctx.state, units }, events: [] }
@@ -104,7 +114,7 @@ export function previewBurst(ctx: Ctx, actorId: number, centre: number, actionId
     const hp = units[t.id]!.hp
     applyHealing(fork, t.id, prepared.heal, a.id)
     return { ...t, damage: plan.value, applied: result.applied, heal: units[t.id]!.hp - hp,
-      packets: result.packets, conditional: target.triggers.some(x => x.hook === 'onBurst') }
+      packets: result.packets, conditional: target.triggers.some(x => x.hook === 'onBurst'), kdbChance: burstKdbChance(ctx, target, a, result) }
   })
   return { centre, hexes: prepared.hexes, targets, damage: targets.reduce((n, t) => n + t.damage, 0), heal: targets.reduce((n, t) => n + t.heal, 0) }
 }
@@ -133,6 +143,9 @@ export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: st
     applyHealing(ctx, t.id, prepared.heal, a.id)
     emit(ctx, 'burst.struck', a.id, { actor: actorId, target: t.id, hex: t.hex, lowCover: t.low, coverDamage: plan.coverDamage,
       damage: plan.value, applied: result.applied, packets: result.packets, heal: target.hp - beforeHeal })
+    // v2.kdb: this recipient's KDB check — keyed by its uid, the caster's uid
+    // and the caster's burst ordinal, kind 1 (never a turn).
+    if (burstKdbChance(ctx, target, a, result) !== null) resolveKdb(ctx, actorId, t.id, a.id, result.physicalApplied, a.burst.impact ?? 0, [target.uid, actor.uid, ordinal, 1], { burst: true })
   }
   settle(ctx, a.id)
 }

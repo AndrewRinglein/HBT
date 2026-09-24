@@ -53,7 +53,14 @@ describe('independent audit of logged battles', () => {
       const outPenalty = new Map<number, Map<string, number>>()
       const penaltyOf = (id: number) =>
         [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
-      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number; seq: number } | null = null
+      // v2.kdb (2026-09-23), EXTENDED under Law 10: KDB now knocks units down in
+      // these battles, so the auditor learns Prone (v2.prone, COMBAT-V2 §10) from
+      // its own events — unit.proned carries the status, whose ROW gives the
+      // numbers (data, not a name); unit.stood lifts it. And a push may now be
+      // caused by a KDB check (kdb.rolled names the cause first).
+      const prone = new Map<number, { accuracyAgainst: number; dodge: number; damageAgainst: number; accuracy: number; damage: number }>()
+      const kdbCauses = new Set<string>()
+      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number; seq: number; proneDamage?: number } | null = null
       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
 
       for (const e of ctx.events) {
@@ -72,6 +79,16 @@ describe('independent audit of logged battles', () => {
           case 'life.downed':
           case 'life.dead':
             standing.delete(e.target!)
+            break
+
+          case 'unit.proned':
+            prone.set(e.target!, STATUSES[e['statusId'] as string]!.prone!)
+            break
+          case 'unit.stood':
+            prone.delete(e.actor!)
+            break
+          case 'kdb.rolled':
+            kdbCauses.add(e.causeId)
             break
 
           case 'status.applied': case 'status.reduced': {
@@ -159,7 +176,7 @@ describe('independent audit of logged battles', () => {
             // A push is caused by a knockback trigger, OR — since station.crit
             // (2026-08-27) — by the critting attack itself (Knocked Sprawling:
             // the crit.effect event beside it names the row key). Extended.
-            expect(String(e.causeId).includes('knockback') || String(e.causeId).startsWith('attack.'),
+            expect(String(e.causeId).includes('knockback') || String(e.causeId).startsWith('attack.') || kdbCauses.has(e.causeId),
               'a knocked unit names what pushed it').toBe(true)
             hex.set(e.target!, e['to'] as number) // the auditor's map must move too
             break
@@ -251,9 +268,14 @@ describe('independent audit of logged battles', () => {
             // Guard Broken docks dodge (min 0 at application) — the target's
             // dodge reads through the mod ledger too.
             acc -= modded(e.target!, 'dodge', tgDef.dodge, e.turn) + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
+            // v2.kdb: the prone rows, flat — against a prone target +accuracyAgainst and
+            // its Dodge falls by the row's dodge; a prone attacker takes its row's accuracy.
+            const tp = prone.get(e.target!), ap = prone.get(e.actor!)
+            if (tp) acc += tp.accuracyAgainst - tp.dodge
+            if (ap) acc += ap.accuracy
             // V2 bursts have their own declaration; every attack here still rolls.
             expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
-            pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq }
+            pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq, proneDamage: (tp?.damageAgainst ?? 0) + (ap?.damage ?? 0) }
             checkedAcc++
             break
           }
@@ -375,7 +397,8 @@ describe('independent audit of logged battles', () => {
             const preMit = a.attack.bonus + stat - penaltyOf(pending.actor)
             const heads = pending.heads ?? (pending.crit ? 1 : 0)
             const critted = heads > 0 ? Math.trunc((preMit * (2 + heads)) / 2) : preMit
-            const expected = Math.max(0, critted
+            // v2.kdb: DMG.PRONE (500) — flat, after the crit multiplier, before Protection and mitigation
+            const expected = Math.max(0, critted + (pending.proneDamage ?? 0)
               - ((e['absorbed'] as number) ?? 0) - mit)
             const total = (e['amount'] as number) + (e['overkill'] as number)
             expect(total, `${a.id} damage`).toBe(expected)

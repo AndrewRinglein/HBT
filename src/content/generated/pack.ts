@@ -3271,6 +3271,7 @@ export const UNIT_PACK = {
       "accuracy": 5
     },
     "attack.iron-mace.swing": {
+      "impact": 2,
       "id": "attack.iron-mace.swing",
       "name": "Swing",
       "kind": "melee",
@@ -3281,6 +3282,7 @@ export const UNIT_PACK = {
       "staminaCost": 1
     },
     "attack.iron-mace.crush": {
+      "impact": 2,
       "id": "attack.iron-mace.crush",
       "name": "Crush",
       "kind": "melee",
@@ -3498,6 +3500,7 @@ export const UNIT_PACK = {
       "accuracy": 5
     },
     "attack.carpenters-mallet.bonk": {
+      "impact": 2,
       "id": "attack.carpenters-mallet.bonk",
       "name": "Bonk",
       "kind": "melee",
@@ -3586,6 +3589,7 @@ export const UNIT_PACK = {
       "accuracy": 10
     },
     "attack.war-hammer.smash": {
+      "impact": 2,
       "id": "attack.war-hammer.smash",
       "name": "Smash",
       "kind": "melee",
@@ -3597,6 +3601,7 @@ export const UNIT_PACK = {
       "accuracy": -5
     },
     "attack.war-hammer.skullsplitter": {
+      "impact": 2,
       "id": "attack.war-hammer.skullsplitter",
       "name": "Skullsplitter",
       "kind": "melee",
@@ -3968,6 +3973,7 @@ export const UNIT_PACK = {
       "crit": 5
     },
     "attack.hammer-of-justice.judgment": {
+      "impact": 2,
       "id": "attack.hammer-of-justice.judgment",
       "name": "Judgment",
       "kind": "melee",
@@ -3979,6 +3985,7 @@ export const UNIT_PACK = {
       "accuracy": 5
     },
     "attack.hammer-of-justice.sentence": {
+      "impact": 2,
       "id": "attack.hammer-of-justice.sentence",
       "name": "Sentence",
       "kind": "melee",
@@ -7888,7 +7895,8 @@ export const UNIT_PACK = {
         "accuracy": -10,
         "damage": -1,
         "standAction": "power.stand-up"
-      }
+      },
+      "kdbDown": true
     }
   },
   "moves": {
@@ -15222,6 +15230,290 @@ export const UNIT_PACK = {
           "power.move"
         ],
         "side": "enemy"
+      },
+      {
+        "typeId": "test-kdb-mauler",
+        "name": "Mauler (TEST)",
+        "side": "hero",
+        "maxHp": 9,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 72,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-kdb.maul"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.paladin"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": []
+      },
+      {
+        "typeId": "test-kdb-basher",
+        "name": "Basher (TEST)",
+        "side": "hero",
+        "maxHp": 9,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 72,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-kdb.bash"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.paladin"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": []
+      },
+      {
+        "typeId": "test-kdb-firm",
+        "name": "Firm Zombie (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-kdb-firm",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-kdb-firm"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-kdb-firm"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "badges": [
+          "badge.stand-firm"
+        ]
+      },
+      {
+        "typeId": "test-kdb-agile",
+        "name": "Agile Zombie (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-kdb-agile",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-kdb-agile"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-kdb-agile"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "badges": [
+          "badge.agile"
+        ]
+      },
+      {
+        "typeId": "test-kdb-giant",
+        "name": "Giant Zombie (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-kdb-giant",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-kdb-giant"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-kdb-giant"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "badges": [
+          "badge.giant"
+        ]
       }
     ],
     "attacks": {
@@ -15396,6 +15688,28 @@ export const UNIT_PACK = {
             "amount": 5
           }
         ]
+      },
+      "attack.test-kdb.maul": {
+        "id": "attack.test-kdb.maul",
+        "name": "Maul (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 0,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "impact": 3
+      },
+      "attack.test-kdb.bash": {
+        "id": "attack.test-kdb.bash",
+        "name": "Bash (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": -20,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "impact": 7
       }
     },
     "abilities": {
@@ -33397,9 +33711,31 @@ export const UNIT_PACK = {
       "name": "Immovable",
       "statModifiers": {},
       "grants": [],
-      "flags": {},
+      "flags": {
+        "cannotBeKnockedBack": true
+      }
+    },
+    "badge.stand-firm": {
+      "id": "badge.stand-firm",
+      "name": "Stand Firm",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {
+        "cannotBeKnockedBack": true,
+        "cannotBeKnockedDown": true
+      }
+    },
+    "badge.giant": {
+      "id": "badge.giant",
+      "name": "Giant",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {
+        "cannotBeKnockedBack": true,
+        "cannotBeKnockedDown": true
+      },
       "gaps": [
-        "immune to knockback"
+        "the rest of Giant is not yet written"
       ]
     },
     "badge.inspired-cond": {
@@ -34898,7 +35234,9 @@ export const UNIT_PACK = {
         "dodge": 8
       },
       "grants": [],
-      "flags": {},
+      "flags": {
+        "cannotBeKnockedDown": true
+      },
       "gaps": [
         "Gains the Dodge and Roll movement power"
       ]

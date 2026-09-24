@@ -12,6 +12,7 @@ import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt
 import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
 import { forcedTargetOf, applyStatus, incomingAbsorb, isBlocked, isProne, isRooted, reduceStatus, spendAbsorb } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
+import { knockImmunity } from './kdb.js'
 import { settle } from './settle.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
@@ -499,6 +500,14 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
   const pusher = unit(ctx, pusherId)
   const tg = unit(ctx, targetId)
   let at = tg.hex
+  // v2.kdb (COMBAT-V2 §9.5): Stand Firm "cannot be knocked back ... at all" —
+  // no push from any source moves it (SWITCHES.md standFirmAnyPush). Read off
+  // the badges' flags, never an id; the line names the badges (Law 12).
+  const firm = knockImmunity(ctx, tg).back
+  if (firm.length) {
+    emit(ctx, 'knockback.blocked', causeId, { actor: pusherId, target: targetId, at: tg.hex, reason: 'cannot be knocked back', asked: hexes, by: firm })
+    return 0
+  }
   let prev = pusher.hex
   let taken = 0
   let reason = ''

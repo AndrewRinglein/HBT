@@ -27,7 +27,11 @@ describe('authored burst geometry and lifecycle', () => {
     expect(pv).not.toHaveProperty('hitChance'); expect(pv).not.toHaveProperty('critChance')
     const before = structuredClone(ctx.rng)
     beginActivation(ctx, golem.id, 'test'); useBurst(ctx, golem.id, 118, sweep)
-    expect(ctx.rng).toEqual(before)
+    // v2.kdb (2026-09-23, Law 10): a physical burst now rolls KDB per recipient
+    // (SWITCHES.md kdbBursts), so the V2 rule is "no hit or crit dice" — the
+    // only draws a burst makes are KDB's own two streams.
+    expect(ctx.rng.log.slice(0, before.log.length)).toEqual(before.log)
+    expect(ctx.rng.log.slice(before.log.length).every(r => r.stream === 'kdb-occurs' || r.stream === 'kdb-type')).toBe(true)
     expect(ctx.events.filter(e => e.causeId === sweep && e.type === 'burst.declared')).toHaveLength(1)
     expect(ctx.events.filter(e => e.causeId === sweep && e.type === 'burst.struck').map(e => e.target)).toEqual(pv.targets.map(t => t.id))
     for (const t of pv.targets) expect(ctx.state.units[t.id]!.hp).toBe(ctx.state.units[t.id]!.maxHp - 6)

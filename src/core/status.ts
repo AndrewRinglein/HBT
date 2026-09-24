@@ -146,6 +146,12 @@ export type StatusDef = {
    * prone status (MoveEffect `stand`).
    */
   readonly prone?: ProneRule
+  /**
+   * v2.kdb (COMBAT-V2 §9.2): this prone status is the one a KDB "down"
+   * applies. Content marks exactly one row (the Codex's prone row); core
+   * reads the flag, never the id.
+   */
+  readonly kdbDown?: true
 }
 
 export type ProneRule = {

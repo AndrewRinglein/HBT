@@ -1,5 +1,27 @@
 [
  {
+  "id": "v2.kdb",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "V2 R4 part 2, KDB - knock down and back (COMBAT-V2-DESIGN-2026-09-07.md sections 9.1, 9.2, 9.5, 15.4, ruled 2026-09-07; one item across engine and content). Physical damage only (magic, true, elemental never). margin = (physical damage dealt + Impact) - target's Strength; chance = margin x 15%, no cap; damage dealt is post-armor, post-Protection (the physical packets' applied HP); Impact counts even when damage is 0. Once KDB fires: 40% back, 40% down, 20% both. No effect on a unit already prone. Stand Firm: cannot be knocked back or down; Agile: cannot be knocked down (can be knocked back); Giant carries Stand Firm. Named streams kdb-occurs and kdb-type keyed (target persistent uid, per-unit ordinal, kind), never a turn. Down applies the content-flagged prone status (unit.proned); back is the R4 part 1 knockback, collisions apply. Impact is authored content on attack rows (maces and hammers +2, V2-SHIELDS-AND-WEAPONS-2026-09-20); badges Stand Firm, Agile, Giant are Codex rows.",
+  "expect": "Margin/chance formula incl. zero damage with Impact, negative margin no roll, no cap above 100; magic/true/elemental never roll; type split from kdb-type; back pushes and collides, down proners (unit.proned), both does back then down; already-prone target no roll; Stand Firm immune to both; Agile: down suppressed, back still happens, both becomes back-only; named streams deterministic and unshifted by other draws; preview kdbChance equals the executed kdb.rolled chance; collision damage never triggers KDB (knockbackNeverFeedsKdb); physical burst damage rolls per recipient; replay deterministic; one kdb.rolled event per check.",
+  "probeIds": [
+   "attack.test-kdb.maul",
+   "attack.test-kdb.bash",
+   "badge.stand-firm",
+   "badge.agile",
+   "badge.giant"
+  ],
+  "variants": [
+   "attack.test-kdb.maul",
+   "attack.test-kdb.bash"
+  ],
+  "changesBaseline": true,
+  "note": "Andrew's chat, 2026-09-23 (V2 roadmap R4 part 2). changesBaseline: physical hits in every control battle now roll KDB and knock units back and down. Defaults in SWITCHES.md 'V2 KDB'.",
+  "status": "done-needs-review",
+  "sha": "9d02ae1"
+ },
+ {
   "id": "fix.knockback-collisions-goldens",
   "kind": "engine",
   "shape": "plumbing",

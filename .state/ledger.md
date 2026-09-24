@@ -14615,3 +14615,169 @@ index f10d68c..3e3932a 100644
        expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
 ```
 </details>
+
+## v2.kdb — LANDED `9d02ae1` **NEEDS REVIEW**
+2026-09-24 05:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:853
+  PASS  typecheck
+  PASS  the item's own tests — test/action-spent.test.ts, test/ai-modes.test.ts, test/area-attack.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/v2-kdb.test.ts
+  PASS  gate 1 — the id appears in a real battle — attack.test-kdb.maul: 6 log lines, 6 fired, 2 changed state · attack.test-kdb.bash: 16 log lines, 16 fired, 5 changed state · badge.stand-firm: 3 log lines, 3 fired, 1 changed state · badge.agile: 2 log lines, 2 fired, 1 changed state · badge.giant: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/action-spent.test.ts, test/ai-modes.test.ts, test/area-attack.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/fixtures/battle-cursor-kdb.json, test/v2-kdb.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/ai-modes.test.ts (-1), test/area-attack.test.ts (-1), test/audit.test.ts (-4), test/battle-cursor.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open eff2f15c->70753df2, map.ridge 8bed1a0a->c403e250, map.flanks a44811fb->14275486, map.highlands b60aad90->57430091, map.field 145dae28->2d35bd72, map.thicket f1c362d3->3650e8c0, map.proving.open a0e8cc56->a24cde86, map.proving.ridge 2e9f8fdf->b3ed7fc1, map.proving.ford d3a3c513->305b3a72, map.proving.copse 2d0b36e2->a51de98a, map.proving.ruin 81df9499->b27b8620, map.courtyard 4642db51->b8be417b, map.floodplain d0bd9276->6c46a3b4, test.map.embers 221f7ad5->99b4aac6, test.map.showcase 9234d62c->8d3e1a1f, test.map.duel-8 df74821b->bc85b2c6, test.map.dungeon-16x8 90ae97f6->d4dd9cd6, test.map.horde-24 46d7f43c->96f6e9a4, test.map.journey-20x10 e561d3f5->b23fc187, test.map.authored-40x40 3b2e43ce->e07ca224, test.map.high-prop-single 3374737d->30ac6e02, test.map.high-prop-multi 51f0de44->a7de5d82, test.map.well-shove f1471d74->c2b79f93
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.test-kdb.maul live · attack.test-kdb.bash live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-kdb.maul,attack.test-kdb.bash,badge.stand-firm,badge.agile,badge.giant — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/action-spent.test.ts b/test/action-spent.test.ts
+index 0ef7579..393b35e 100644
+--- a/test/action-spent.test.ts
++++ b/test/action-spent.test.ts
+@@ -131,4 +131,9 @@ describe('universal action expenditure', () => {
+   it('reload preserves prior expenditure and Surge resets at the real cycle boundary', () => {
+     const ctx = fixture(), id = grant(ctx); ctx.state.units[0]!.surge = 100
++    // v2.kdb (2026-09-23), Law 10: a physical hit may now knock the zombie back or
++    // down (COMBAT-V2 §9), which moves it out of reach of the next swing. This test
++    // is about expenditure, not KDB: the zombie stands firm (a Codex badge flag),
++    // so all three swings stay legal exactly as before.
++    ctx.state.units[1]!.badges.push('badge.stand-firm')
+     expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+     const loaded = restoreBattle(saveBattle(ctx), ctx)
+diff --git a/test/ai-modes.test.ts b/test/ai-modes.test.ts
+index 68d0f17..e06c974 100644
+--- a/test/ai-modes.test.ts
++++ b/test/ai-modes.test.ts
+@@ -75,6 +75,9 @@ describe('the rules', () => {
+     // differently now that a claw can afflict); the claim holds on the first
+     // replicate where a zombie IS hurt, so the first few are tried.
++    // LAW 10 — 2026-09-23 (v2.kdb): KDB now knocks units back and down, so the
++    // opening swings fall differently again; the claim is unchanged, the search
++    // reaches further (up to 12 replicates) for the first hurt zombie.
+     let seen = false
+-    for (let r = 0; r < 4 && !seen; r++) {
++    for (let r = 0; r < 12 && !seen; r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), replicate: r })
+       runBattle(ctx)
+diff --git a/test/area-attack.test.ts b/test/area-attack.test.ts
+index 08fa14d..4f32d2a 100644
+--- a/test/area-attack.test.ts
++++ b/test/area-attack.test.ts
+@@ -28,5 +28,9 @@ describe('authored burst geometry and lifecycle', () => {
+     const before = structuredClone(ctx.rng)
+     beginActivation(ctx, golem.id, 'test'); useBurst(ctx, golem.id, 118, sweep)
+-    expect(ctx.rng).toEqual(before)
++    // v2.kdb (2026-09-23, Law 10): a physical burst now rolls KDB per recipient
++    // (SWITCHES.md kdbBursts), so the V2 rule is "no hit or crit dice" — the
++    // only draws a burst makes are KDB's own two streams.
++    expect(ctx.rng.log.slice(0, before.log.length)).toEqual(before.log)
++    expect(ctx.rng.log.slice(before.log.length).every(r => r.stream === 'kdb-occurs' || r.stream === 'kdb-type')).toBe(true)
+     expect(ctx.events.filter(e => e.causeId === sweep && e.type === 'burst.declared')).toHaveLength(1)
+     expect(ctx.events.filter(e => e.causeId === sweep && e.type === 'burst.struck').map(e => e.target)).toEqual(pv.targets.map(t => t.id))
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 84638fb..bd0ec6c 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -54,5 +54,12 @@ describe('independent audit of logged battles', () => {
+       const penaltyOf = (id: number) =>
+         [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
+-      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number; seq: number } | null = null
++      // v2.kdb (2026-09-23), EXTENDED under Law 10: KDB now knocks units down in
++      // these battles, so the auditor learns Prone (v2.prone, COMBAT-V2 §10) from
++      // its own events — unit.proned carries the status, whose ROW gives the
++      // numbers (data, not a name); unit.stood lifts it. And a push may now be
++      // caused by a KDB check (kdb.rolled names the cause first).
++      const prone = new Map<number, { accuracyAgainst: number; dodge: number; damageAgainst: number; accuracy: number; damage: number }>()
++      const kdbCauses = new Set<string>()
++      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number; seq: number; proneDamage?: number } | null = null
+       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
+ 
+@@ -75,4 +82,14 @@ describe('independent audit of logged battles', () => {
+             break
+ 
++          case 'unit.proned':
++            prone.set(e.target!, STATUSES[e['statusId'] as string]!.prone!)
++            break
++          case 'unit.stood':
++            prone.delete(e.actor!)
++            break
++          case 'kdb.rolled':
++            kdbCauses.add(e.causeId)
++            break
++
+           case 'status.applied': case 'status.reduced': {
+             const sid = e['statusId'] as string
+@@ -160,5 +177,5 @@ describe('independent audit of logged battles', () => {
+             // (2026-08-27) — by the critting attack itself (Knocked Sprawling:
+             // the crit.effect event beside it names the row key). Extended.
+-            expect(String(e.causeId).includes('knockback') || String(e.causeId).startsWith('attack.'),
++            expect(String(e.causeId).includes('knockback') || String(e.causeId).startsWith('attack.') || kdbCauses.has(e.causeId),
+               'a knocked unit names what pushed it').toBe(true)
+             hex.set(e.target!, e['to'] as number) // the auditor's map must move too
+@@ -252,7 +269,12 @@ describe('independent audit of logged battles', () => {
+             // dodge reads through the mod ledger too.
+             acc -= modded(e.target!, 'dodge', tgDef.dodge, e.turn) + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
++            // v2.kdb: the prone rows, flat — against a prone target +accuracyAgainst and
++            // its Dodge falls by the row's dodge; a prone attacker takes its row's accuracy.
++            const tp = prone.get(e.target!), ap = prone.get(e.actor!)
++            if (tp) acc += tp.accuracyAgainst - tp.dodge
++            if (ap) acc += ap.accuracy
+             // V2 bursts have their own declaration; every attack here still rolls.
+             expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
+-            pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq }
++            pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq, proneDamage: (tp?.damageAgainst ?? 0) + (ap?.damage ?? 0) }
+             checkedAcc++
+             break
+@@ -376,5 +398,6 @@ describe('independent audit of logged battles', () => {
+             const heads = pending.heads ?? (pending.crit ? 1 : 0)
+             const critted = heads > 0 ? Math.trunc((preMit * (2 + heads)) / 2) : preMit
+-            const expected = Math.max(0, critted
++            // v2.kdb: DMG.PRONE (500) — flat, after the crit multiplier, before Protection and mitigation
++            const expected = Math.max(0, critted + (pending.proneDamage ?? 0)
+               - ((e['absorbed'] as number) ?? 0) - mit)
+             const total = (e['amount'] as number) + (e['overkill'] as number)
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 6265beb..20952bb 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -44,4 +44,9 @@ const shieldGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-s
+ // every unchanged case keeps every prior assertion. Old fixtures stay immutable.
+ const knockGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-knockback.json', import.meta.url), 'utf8'))
++// v2.kdb (2026-09-23), Law 10: every physical hit now makes a KDB check (COMBAT-V2 §9)
++// and emits kdb.rolled; fired checks push and prone. Every case marked `changed` moved and
++// is checked against its new frozen hashes on both drivers; unchanged cases keep every
++// prior assertion. Old fixtures stay immutable.
++const kdbGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kdb.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -144,10 +149,12 @@ describe('resumable battle cursor', () => {
+       const shieldExpected = shieldGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const knockExpected = knockGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const knockMoved = knockExpected?.changed === true
++      const kdbExpected = kdbGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const kdbMoved = kdbExpected?.changed === true
++      const knockMoved = knockExpected?.changed === true || kdbMoved
+       const shieldMoved = shieldExpected?.changed === true || knockMoved
+       const migrated = shieldMoved || burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -202,5 +209,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden, shieldGolden, knockGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden, shieldGolden, knockGolden, kdbGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+```
+</details>
