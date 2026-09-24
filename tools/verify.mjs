@@ -298,11 +298,16 @@ if (SINGLES) {
    prone between them and not after; the token wears the prone presentation
    while prone and drops it after; and neither event moves a single HP. */
 if (SINGLES) {
-  const bi = LIB.battles.findIndex(b => { const t = b.battle.events.map(e => e.type); return t.includes('unit.proned') && t.includes('unit.stood') })
-  if (bi < 0) fails.push('prone: no library battle carries both unit.proned and unit.stood')
+  /* 2026-09-23 (R4): real content now knocks units prone (KDB), and the first
+     prone unit of a battle may die lying down (Supper s5, unit 7). The check
+     takes the first unit.proned in the library whose unit later stands — the
+     pair it always meant — and still fails when no such pair exists. */
+  const standsLater = (EV, i) => EV.some((e, j) => j > i && e.type === 'unit.stood' && e.actor === EV[i].target)
+  const bi = LIB.battles.findIndex(b => b.battle.events.some((e, i, EV) => e.type === 'unit.proned' && standsLater(EV, i)))
+  if (bi < 0) fails.push('prone: no library battle carries a unit.proned whose unit later stands (unit.stood)')
   else {
     const label = LIB.battles[bi].label, EV = LIB.battles[bi].battle.events
-    const down = EV.findIndex(e => e.type === 'unit.proned')
+    const down = EV.findIndex((e, i) => e.type === 'unit.proned' && standsLater(EV, i))
     const who = EV[down].target
     const up = EV.findIndex((e, i) => i > down && e.type === 'unit.stood' && e.actor === who)
     if (up < 0) fails.push(`prone: ${label} — unit ${who} goes prone at ${down} and never stands`)
