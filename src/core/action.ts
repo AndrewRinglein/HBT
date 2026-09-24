@@ -12,6 +12,7 @@
 // what they no longer do is each keep their own copy of what an action MAY.
 
 import { emit, markMoveUsed, markPrimaryUsed, spendStamina } from './mutate.js'
+import { canPayFrom } from './items.js'
 import type { ActionDef, ActionSlot, AttackDef, BurstDef, Ctx, MoveDef, Unit } from './types.js'
 
 /** The row for an action id, or null — a granted id whose row is absent is indistinguishable from content never authored (the kill-switch seam relies on this). */
@@ -171,7 +172,12 @@ function spendUse(ctx: Ctx, userId: number, id: string): void {
   const left = (u.usesLeft[id] ?? 0) - 1
   u.usesLeft[id] = left
   u.usesSpentThisBattle = { ...(u.usesSpentThisBattle ?? {}), [id]: (u.usesSpentThisBattle?.[id] ?? 0) + 1 }
-  emit(ctx, 'charge.spent', id, { actor: userId, abilityId: id, left })
+  // v2.item-uses (V2 R6): the use is paid by an item instance when one in reach has one —
+  // the first in instance order (Law 6) — and the line names it; instanceLeft 0 = that
+  // instance is spent. Otherwise the row's own uses pay (SWITCHES.md itemUsesPayOrder).
+  const e = u.itemUses?.find((x) => x.actionId === id && x.left > 0 && canPayFrom(ctx.items, u, x))
+  if (e) { e.left -= 1; e.used += 1 }
+  emit(ctx, 'charge.spent', id, { actor: userId, abilityId: id, left, ...(e ? { instanceId: e.instanceId, itemId: e.itemId, instanceLeft: e.left } : {}) })
   if (left <= 0) {
     u.actions = u.actions.filter((x) => x !== id)
     emit(ctx, 'power.exhausted', id, { actor: userId, abilityId: id })

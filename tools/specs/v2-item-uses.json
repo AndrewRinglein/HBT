@@ -1,0 +1,21 @@
+[
+  {
+    "id": "v2.item-uses",
+    "kind": "engine",
+    "shape": "rule",
+    "spec": "V2 R6 part 3 (V2-ROADMAP.md R6: duplicate item instances remain distinct; save/result/replay preserve instances and uses; V2-IMPACT-MAP-2026-09-07 section 12.2; DUNGEON-MODE-2026-09-07.md section 4). A use belongs to the item instance that granted the power: each carried instance of an item whose power has uses brings its own count (the power row's uses), kept on the unit as itemUses; a use is paid by the first instance in reach (a held item only in hand) and charge.spent names it (instanceId, itemId, instanceLeft; 0 = spent). A fielding may hand in uses already spent (BattleOptions.heroItemsUsed, per hero, per instance, handed then stowed); an instance with none left is carried spent: skipped at fielding, named on unit.enter as spent. The battle result reports every instance's uses (itemUses: used this battle, left). The instance counts survive a swap, a save and a restore.",
+    "expect": "A warrior with two Healing Potions has usesLeft 2 and drinks twice; each charge.spent names a different instance and the power leaves the list only after the second; the result reports both instances used 1, left 0. A Cure Poison handed in spent grants no power, has no unit.equipped, is named on unit.enter, and is reported left 0. A count on a permanent item, past the power's uses, or a list of the wrong length is refused. A save and restore preserve itemUses. No control battle moves; showcase.waystation moves only by the new per-instance metadata.",
+    "needs": [
+      "v2.loadout-swap"
+    ],
+    "note": "Andrew's chat, 2026-09-24 (V2 roadmap R6, third and last piece). The data instances are the Codex's one-use items; the probe reads them in the TEST scenario test.item-uses and in showcase.waystation. Dungeon restores are R11 - this gives R11 the per-instance state in and out. Defaults in SWITCHES.md 'V2 item uses'. One Law 10 edit: battle-cursor.test.ts checks every older fixture on item-uses-projection.ts (removes only the new fields) and freezes the full current hashes in fixtures/battle-cursor-item-uses.json.",
+    "probeIds": [
+      "item.healing-potion",
+      "item.cure-poison"
+    ],
+    "variants": [
+      "item.healing-potion",
+      "item.cure-poison"
+    ]
+  }
+]

@@ -4,7 +4,7 @@ import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ACTIONS, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf } from './items.js'
+import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { triggersFrom } from './trigger.js'
@@ -107,6 +107,13 @@ export type BattleOptions = UnitIdentityOptions & {
    * fodder for v2.swap. Anything not weapon or shield class is refused.
    */
   heroStowed?: readonly (readonly string[] | undefined)[]
+  /**
+   * v2.item-uses (V2 R6; DUNGEON-MODE-2026-09-07 §4 "the re-field skips it"): per hero,
+   * per carried item instance — the handed list, then the stowed, the order that numbers
+   * instanceIds — how many uses were already spent before this battle. An instance with
+   * none left is carried spent: it folds nothing and grants nothing. Absent = all whole.
+   */
+  heroItemsUsed?: readonly (readonly number[] | undefined)[]
   /**
    * Hero assembly (2026-09-03): each fielded hero's level, specialty, pick and
    * drafted powers, in `heroes` order, parallel to heroItems. Absent = the
@@ -220,6 +227,9 @@ export function createBattle(opts: BattleOptions): Ctx {
   }
   if (opts.heroItems && opts.heroItems.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroItems.length} item lists — they must correspond`)
+  }
+  if (opts.heroItemsUsed && opts.heroItemsUsed.length !== heroes.length) {
+    throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroItemsUsed.length} item uses lists — they must correspond`)
   }
   if (opts.heroStowed && opts.heroStowed.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroStowed.length} stowed lists — they must correspond`)
@@ -365,7 +375,14 @@ export function createBattle(opts: BattleOptions): Ctx {
     const itemIds = opts.heroItems?.[i] ?? bare.defaultItems ?? []
     const progress = opts.heroProgress?.[i]
     const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ACTIONS, where, levelTableOf(bare)) : bare
-    const kitted = applyItems(grown, itemIds, ITEMS, ACTIONS, where)
+    // v2.item-uses: the uses each carried instance has left; one handed in with none left
+    // is carried spent — it folds nothing and grants nothing ("the re-field skips it",
+    // DUNGEON-MODE-2026-09-07 §4). Instance ordinals count every item, spent or not.
+    const uid = identities.heroes[i]!
+    const stowedIds = opts.heroStowed?.[i] ?? []
+    const uses = itemUsesOf(grown, uid, [...itemIds, ...stowedIds], opts.heroItemsUsed?.[i], ITEMS, ACTIONS, where)
+    const kept = itemIds.flatMap((_, n) => (uses.spent.has(n) ? [] : [n]))
+    const kitted = applyItems(grown, kept.map((n) => itemIds[n]!), ITEMS, ACTIONS, where)
     // badge.mechanism (2026-09-04): the row's own badges plus the list handed
     // over for this hero, folded after the kit so a badge sees the kitted hero
     const badgeIds = [...(kitted.def.badges ?? []), ...(opts.heroBadges?.[i] ?? [])]
@@ -377,12 +394,21 @@ export function createBattle(opts: BattleOptions): Ctx {
     seen[t]!++
     // v2.loadout: the hands and the stowed, as instances. Only a hero that
     // carries something has a loadout (a bare row's snapshot is unchanged).
-    const uid = identities.heroes[i]!
-    const { loadout, instanceIds } = loadoutOf(grown, uid, itemIds, opts.heroStowed?.[i] ?? [], ITEMS, where)
+    const { loadout, instanceIds } = loadoutOf(grown, uid, itemIds, stowedIds, ITEMS, where, uses.spent)
     const made = makeUnit(id, uid, nm, d, hex)
     if (itemIds.length || loadout.stowed.length) made.loadout = loadout
+    if (uses.entries.length) {
+      // usesLeft of an item-granted power = the row's own uses (a power the bare row or a
+      // badge already grants) + what the instances in reach can pay (SWITCHES.md itemUsesPool)
+      made.itemUses = uses.entries
+      const own = new Set([...grown.attacks, ...grown.abilities, ...grown.moves, ...badged.worn.flatMap((w) => w.grants)])
+      for (const a of [...new Set(uses.entries.map((e) => e.actionId))]) {
+        const n = (own.has(a) ? ACTIONS[a]!.uses! : 0) + instanceUsesLeft(ITEMS, made, a)
+        if (n > 0) made.usesLeft[a] = n; else delete made.usesLeft[a]
+      }
+    }
     state.units.push(made)
-    equipped.push({ unitId: id, worn: worn.map((w, n) => ({ ...w, instanceId: instanceIds[n]! })) })
+    equipped.push({ unitId: id, worn: worn.map((w, j) => ({ ...w, instanceId: instanceIds[kept[j]!]! })) })
     if (progress) {
       // progression.level-table-by-type (2026-09-03), Law 12: the log says
       // which TABLE grew this hero and by how much — a farmer on
@@ -421,6 +447,8 @@ export function createBattle(opts: BattleOptions): Ctx {
       ...(u.rowSide !== u.side ? { rowSide: u.rowSide } : {}),
       // v2.loadout: unit.equipped means in hand (V2 §15.2); the stowed are named here
       ...(u.loadout?.stowed.length ? { stowed: u.loadout.stowed.map((x) => ({ ...x })) } : {}),
+      // v2.item-uses: the instances carried in already spent, named once here (Law 12)
+      ...(u.itemUses?.some((e) => e.left === 0) ? { spent: [...new Set(u.itemUses.filter((e) => u.itemUses!.filter((x) => x.instanceId === e.instanceId).every((x) => x.left === 0)).map((e) => e.instanceId))] } : {}),
     })
     // seam.items-per-unit: one unit.equipped per (unit, item), after the
     // unit's own enter line — the log says why the Hunter shoots and why his

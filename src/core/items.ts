@@ -258,14 +258,68 @@ export const HELD_CLASSES: readonly string[] = ['weapon', 'shield']
 export function loadoutOf(
   base: UnitDef, uid: number, handed: readonly string[], stowed: readonly string[],
   items: Readonly<Record<string, ItemDef>>, where: string,
+  /** v2.item-uses: instance ordinals carried spent — neither in hand nor stowed; they wait in itemUses. */
+  spent: ReadonlySet<number> = new Set(),
 ): { loadout: import('./types.js').Loadout; instanceIds: string[] } {
   const instanceIds = handed.map((_, n) => `${uid}/${n}`)
-  const hands = handed.flatMap((id, n) => (HELD_CLASSES.includes(items[id]!.itemClass) ? [{ instanceId: instanceIds[n]!, itemId: id }] : []))
-  const out = stowed.map((id, k) => {
+  const hands = handed.flatMap((id, n) => (HELD_CLASSES.includes(items[id]!.itemClass) && !spent.has(n) ? [{ instanceId: instanceIds[n]!, itemId: id }] : []))
+  const out = stowed.flatMap((id, k) => {
     const it = items[id]
     if (!it) throw new Error(`${where}: ${base.typeId} stows '${id}', which is not an item in the registry`)
     if (!HELD_CLASSES.includes(it.itemClass)) throw new Error(`${where}: ${base.typeId} stows '${id}', a ${it.itemClass} — only a weapon or shield is stowed; everything else works from its own slot`)
-    return { instanceId: `${uid}/${handed.length + k}`, itemId: id }
+    return spent.has(handed.length + k) ? [] : [{ instanceId: `${uid}/${handed.length + k}`, itemId: id }]
   })
   return { loadout: { hands, stowed: out }, instanceIds }
+}
+
+// ── ITEM-INSTANCE USES (v2.item-uses, V2 R6, 2026-09-24) ─────────────────────
+// A use belongs to the instance that granted the power (V2-ROADMAP R6: "Duplicate
+// item instances remain distinct"). The count itself is the power row's `uses` — the
+// Codex's field (GEAR-DESIGN.md §4 table, "uses 1") — never a second copy on the item
+// (Law 11; SWITCHES.md itemUsesSource). The fielding may hand in uses already spent
+// (DUNGEON-MODE-2026-09-07.md §4: "The layer marks each one-time-use (or limited-use)
+// item as spent; the re-field skips it").
+
+/**
+ * The uses of every carried instance whose powers have `uses`, and which instances
+ * arrive spent. `carried` is handed then stowed — the order that numbers instanceIds;
+ * `used[n]` is what instance n spent before this battle. Loud on every malformed count.
+ */
+export function itemUsesOf(
+  base: UnitDef, uid: number, carried: readonly string[], used: readonly number[] | undefined,
+  items: Readonly<Record<string, ItemDef>>, actions: Readonly<Record<string, ActionDef>>, where: string,
+): { entries: import('./types.js').ItemUse[]; spent: Set<number> } {
+  if (used !== undefined && (!Array.isArray(used) || used.length !== carried.length)) throw new Error(`${where}: ${base.typeId} carries ${carried.length} item instances but is handed ${Array.isArray(used) ? used.length : 'no list of'} uses counts — one per instance, handed then stowed`)
+  const entries: import('./types.js').ItemUse[] = []
+  const spent = new Set<number>()
+  carried.forEach((id, n) => {
+    const row = items[id]
+    if (!row) throw new Error(`${where}: ${base.typeId} carries '${id}', which is not an item in the registry`)
+    const k = used?.[n] ?? 0
+    if (!Number.isSafeInteger(k) || k < 0) throw new Error(`${where}: ${base.typeId}'s '${id}' is handed ${String(k)} uses spent — a count is a whole number`)
+    const powers = [...row.grants, ...row.abilities].filter((a, j, all) => all.indexOf(a) === j && (actions[a]?.uses ?? 0) > 0)
+    if (!powers.length) { if (k > 0) throw new Error(`${where}: ${base.typeId}'s '${id}' is handed ${k} uses spent, but it has no uses — a permanent item is never spent`); return }
+    for (const a of powers) {
+      const total = actions[a]!.uses!
+      if (k > total) throw new Error(`${where}: ${base.typeId}'s '${id}' is handed ${k} uses spent of '${a}', which had only ${total}`)
+      entries.push({ instanceId: `${uid}/${n}`, itemId: id, actionId: a, left: total - k, used: 0 })
+    }
+    if (entries.filter((e) => e.instanceId === `${uid}/${n}`).every((e) => e.left === 0)) spent.add(n)
+  })
+  return { entries, spent }
+}
+
+/** Can this instance pay now? An item worked from its own slot always; a weapon or shield only while in hand. */
+export function canPayFrom(items: Readonly<Record<string, ItemDef>>, u: { loadout?: import('./types.js').Loadout }, e: import('./types.js').ItemUse): boolean {
+  const row = items[e.itemId]
+  if (!row) throw new Error(`item use '${e.instanceId}' names '${e.itemId}', which is not an item in the registry`)
+  if (!HELD_CLASSES.includes(row.itemClass)) return true
+  return !!u.loadout?.hands.some((i) => i.instanceId === e.instanceId)
+}
+
+/** The uses of one power this unit's instances can pay now. */
+export function instanceUsesLeft(items: Readonly<Record<string, ItemDef>>, u: { loadout?: import('./types.js').Loadout; itemUses?: readonly import('./types.js').ItemUse[] }, actionId: string): number {
+  let n = 0
+  for (const e of u.itemUses ?? []) if (e.actionId === actionId && canPayFrom(items, u, e)) n += e.left
+  return n
 }

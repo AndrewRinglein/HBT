@@ -18,7 +18,7 @@
 import { emit, spendStamina } from './mutate.js'
 import { effective } from './stats.js'
 import { isBlocked } from './status.js'
-import { FOLD_BASE, HELD_CLASSES } from './items.js'
+import { FOLD_BASE, HELD_CLASSES, instanceUsesLeft } from './items.js'
 import type { Ctx, ItemDef, ItemInstance, Unit } from './types.js'
 import type { Trigger } from './trigger.js'
 
@@ -86,6 +86,10 @@ export function performSwap(ctx: Ctx, actor: number, hands: readonly string[]): 
   const arriving = after.filter((i) => !before.some((b) => b.instanceId === i.instanceId))
   const cost = swapCostOf(ctx, u)
   spendStamina(ctx, actor, cost, 'engine')
+  // v2.item-uses: a power an item instance pays for is counted by instance — the row's own
+  // share is what the count holds beyond the instances in reach before the swap
+  const counted = [...new Set((u.itemUses ?? []).map((e) => e.actionId))]
+  const ownShare = Object.fromEntries(counted.map((a) => [a, (u.usesLeft[a] ?? 0) - instanceUsesLeft(ctx.items, u, a)]))
 
   // stats, by difference
   for (const i of leaving) fold(u, ctx.items[i.itemId]!, -1)
@@ -113,7 +117,7 @@ export function performSwap(ctx: Ctx, actor: number, hands: readonly string[]): 
   // limits: a power newly in hand is seeded with its uses once; one that was held before keeps its count and its cooldown
   for (const a of [...now.attacks, ...now.powers]) {
     const n = ctx.actions[a]?.uses
-    if (n && u.usesLeft[a] === undefined) u.usesLeft[a] = n
+    if (n && u.usesLeft[a] === undefined && !counted.includes(a)) u.usesLeft[a] = n
   }
 
   // triggers: one copy per leaving instance goes, one copy per arriving instance comes (no dedup, trigger.ts §5)
@@ -130,6 +134,12 @@ export function performSwap(ctx: Ctx, actor: number, hands: readonly string[]): 
   lo.hands = after
   lo.stowed = carried.filter((i) => !hands.includes(i.instanceId)).map((i) => ({ ...i }))
   u.swapUsed = true
+  // v2.item-uses (swapLimits, ruled): each instance keeps its own count through the swap;
+  // the power's count is the row's share plus what the instances now in hand can pay
+  for (const a of counted) {
+    const n = ownShare[a]! + instanceUsesLeft(ctx.items, u, a)
+    if (n > 0 || u.actions.includes(a)) u.usesLeft[a] = n; else delete u.usesLeft[a]
+  }
 
   emit(ctx, 'loadout.swapped', 'engine', { actor, handsBefore: before, handsAfter: after.map((i) => ({ ...i })), stamina: cost })
   for (const i of arriving) {

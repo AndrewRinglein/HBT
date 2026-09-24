@@ -101,6 +101,23 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     heroBadges: [['test.badge.fast-hands'], ['test.badge.slow-hands']],
     enemies: ['test-zombie', 'test-zombie'], enemyHexes: [85, 101], replicate: 0,
   },
+  // v2.item-uses (V2 R6 part 3): uses belong to the item instance. The warrior carries two
+  // Healing Potions (two drinks) and a Cure Poison spent before the battle; the priest a
+  // live Cure Poison and a spent Healing Potion. heroItemsUsed is parallel to the carried
+  // instances (handed, then stowed). test/v2-item-uses.test.ts drives it.
+  'test.item-uses': {
+    id: 'test.item-uses', note: 'TEST: a warrior with two Healing Potions and a spent Cure Poison, a priest with a live Cure Poison and a spent Healing Potion, against three zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-armored'], heroHexes: [86, 102],
+    heroItems: [
+      [...(UNITS['hero.base.warrior-iron']?.defaultItems ?? []), 'item.healing-potion', 'item.healing-potion', 'item.cure-poison'],
+      [...(UNITS['hero.base.priest-armored']?.defaultItems ?? []), 'item.cure-poison', 'item.healing-potion'],
+    ],
+    heroItemsUsed: [
+      [...(UNITS['hero.base.warrior-iron']?.defaultItems ?? []).map(() => 0), 0, 0, 1],
+      [...(UNITS['hero.base.priest-armored']?.defaultItems ?? []).map(() => 0), 0, 1],
+    ],
+    enemies: ['test-zombie', 'test-zombie', 'test-zombie'], enemyHexes: [150, 166, 182], replicate: 0,
+  },
   'test.props-viewer-ranged-zoc': {
     id: 'test.props-viewer-ranged-zoc', note: 'Current production replay coverage: a ranged-only Fire Imp cannot make a melee reaction when Lucius walks away. Both units have existing viewer art.',
     mapId: 'map.open', heroes: ['alpha-lucius'], heroHexes: [85],
@@ -570,6 +587,7 @@ export function scenarioOptions(s: ScenarioDef) {
     enemyCount: s.enemies.length,
     ...(s.heroItems ? { heroItems: s.heroItems } : {}),
     ...(s.heroStowed ? { heroStowed: s.heroStowed } : {}),
+    ...(s.heroItemsUsed ? { heroItemsUsed: s.heroItemsUsed } : {}),
     ...(s.heroProgress ? { heroProgress: s.heroProgress } : {}),
     ...(s.heroBadges ? { heroBadges: s.heroBadges } : {}),
     ...(s.sides ? { sides: s.sides } : {}),

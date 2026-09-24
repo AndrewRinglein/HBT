@@ -118,12 +118,20 @@ export type BattleResult = {
   turns: number
   /** capability.charges: every use spent this Battle, so the kingdom can restock — unit, power, and how many. */
   usesSpent: { unit: number; power: string; spent: number }[]
+  /**
+   * v2.item-uses (V2 R6): every carried instance with uses — what it paid this Battle
+   * and what it has left (0 = spent), including one handed in already spent. Absent
+   * when no unit carries such an item. The kingdom folds it into its record.
+   */
+  itemUses?: { unit: number; instanceId: string; itemId: string; power: string; used: number; left: number }[]
 }
 
 function resultOf(ctx: Ctx): BattleResult {
   const usesSpent: BattleResult['usesSpent'] = []
   for (const u of ctx.state.units) for (const [power, spent] of Object.entries(u.usesSpentThisBattle ?? {})) usesSpent.push({ unit: u.id, power, spent })
-  return { outcome: ctx.state.outcome ?? 'capped', turns: ctx.state.turn, usesSpent }
+  const itemUses: NonNullable<BattleResult['itemUses']> = []
+  for (const u of ctx.state.units) for (const e of u.itemUses ?? []) itemUses.push({ unit: u.id, instanceId: e.instanceId, itemId: e.itemId, power: e.actionId, used: e.used, left: e.left })
+  return { outcome: ctx.state.outcome ?? 'capped', turns: ctx.state.turn, usesSpent, ...(itemUses.length ? { itemUses } : {}) }
 }
 
 export type BattleAdvance = { kind: 'acting'; actor: number } | { kind: 'complete'; result: BattleResult }

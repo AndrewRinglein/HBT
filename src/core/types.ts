@@ -392,6 +392,8 @@ export type ScenarioDef = {
   readonly heroItems?: readonly (readonly string[] | undefined)[]
   /** v2.loadout (V2 §11.1): weapons and shields stowed in item slots, parallel to heroes — swap fodder, granting nothing. */
   readonly heroStowed?: readonly (readonly string[] | undefined)[]
+  /** v2.item-uses: uses each carried instance spent before this battle, parallel to heroes (BattleOptions.heroItemsUsed). */
+  readonly heroItemsUsed?: readonly (readonly number[] | undefined)[]
   readonly heroProgress?: readonly (HeroProgress | undefined)[]
   /** badge.mechanism (2026-09-04): the badges each hero carries into this battle, parallel to heroes — the kingdom's list (a Wounded hero enters Wounded). Added to the row's own. */
   readonly heroBadges?: readonly (readonly string[] | undefined)[]
@@ -734,7 +736,18 @@ export type Unit = {
    * the stowed are swap fodder. Absent on a unit fielded with no items (enemies).
    */
   loadout?: Loadout
+  /**
+   * v2.item-uses (V2 R6): the uses of each carried item instance whose powers have
+   * `uses`, one entry per (instance, power), in instance order. `left` is what the
+   * instance can still pay; `used` what it paid this Battle. The unit's usesLeft is
+   * the sum over the entries it can reach now (a held item only while in hand), plus
+   * the row's own. Absent on a unit carrying no such item (snapshots unchanged).
+   */
+  itemUses?: ItemUse[]
 }
+
+/** v2.item-uses: one carried instance's uses of one power. `left` 0 = spent. */
+export type ItemUse = { instanceId: string; itemId: string; actionId: string; left: number; used: number }
 
 /** v2.loadout: one carried item — which row it is, and which one it is (Law 12). */
 export type ItemInstance = { instanceId: string; itemId: string }

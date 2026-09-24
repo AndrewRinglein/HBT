@@ -117,6 +117,9 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       record(u.loadout)
       for (const k of ['hands', 'stowed']) requireThat(Array.isArray(u.loadout[k]) && u.loadout[k].every((i: any) => i !== null && typeof i === 'object' && typeof i.instanceId === 'string' && typeof i.itemId === 'string' && Object.keys(i).length === 2), `unit loadout ${k}`)
     }
+    if (u.itemUses !== undefined) {   // v2.item-uses: per-instance uses
+      requireThat(Array.isArray(u.itemUses) && u.itemUses.every((e: any) => e !== null && typeof e === 'object' && typeof e.instanceId === 'string' && typeof e.itemId === 'string' && Object.hasOwn(runtime.items, e.itemId) && typeof e.actionId === 'string' && Object.hasOwn(runtime.actions, e.actionId) && integer(e.left, 0) && integer(e.used, 0) && Object.keys(e).length === 5), 'unit itemUses')
+    }
     requireThat(phases.includes(u.side) && phases.includes(u.rowSide) && ['standing', 'downed', 'dead'].includes(u.lifeState), 'unit side/life')
     requireThat(['melee', 'ranged', 'support'].includes(u.role), 'unit role')
     for (const k of ['name', 'typeId', 'ai']) requireThat(typeof u[k] === 'string', `unit ${k}`)

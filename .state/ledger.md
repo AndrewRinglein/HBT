@@ -15097,3 +15097,21 @@ Superseded by naming.terrain-impassable (5f99527), ruled by Andrew 2026-09-24: t
 2026-09-24 12:18
 
 Retired by COMBAT-V2-DESIGN section 18: a stowed weapon grants nothing (section 11.1). Replaced by v2.loadout (4910771) and v2.loadout-swap (dd78ff1).
+
+## v2.item-uses — LANDED `16d3b6f`
+2026-09-24 17:43
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/v2-item-uses.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.healing-potion: 4 log lines, 4 fired, 4 changed state · item.cure-poison: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-item-uses.json, test/item-uses-projection.ts, test/v2-item-uses.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 33 ids without a published source (23 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — item.healing-potion live · item.cure-poison live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.healing-potion,item.cure-poison — they genuinely test it

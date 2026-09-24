@@ -914,3 +914,27 @@ V2 R6 part 2 (Andrew's chat, 2026-09-24).
 | `swapMovePoints` | Does a Movement modifier that arrives mid-activation change this activation's movement points? | **No** — movement points are read once at activation start (as Slow is, `slowReadAtActivationStart`). The next activation reads the new Movement. | One read point for movement. | provisional — 2026-09-24 |
 | `swapCostFloor` | swapCost folded below 0? | **Read as 0** — a swap never pays the unit. | Same floor as Thorns. | provisional — 2026-09-24 |
 | `swapCause` | What cause does loadout.swapped name? | **`engine`**, as `surge.hit` does; the unit is the actor and the instances are named in the event. | No content row causes a swap. | provisional — 2026-09-24 |
+
+## V2 item uses — defaults taken landing v2.item-uses (2026-09-24)
+
+The sources: V2-ROADMAP.md R6 ("Duplicate item instances remain distinct … save/result/replay
+preserve instances and uses"); V2-IMPACT-MAP-2026-09-07 §12.2 (`applyItems` skips items marked
+spent; the battle output hands back items spent); DUNGEON-MODE-2026-09-07.md §4 ("The layer
+marks each one-time-use (or limited-use) item as spent; the re-field skips it") and its
+2026-09-10 ruling ("Persist … spent item instances in dungeon-run state"); GEAR-DESIGN.md §4
+(the uses column — `uses 1` on the Waystation rows). Engine `src/core/items.ts`
+`itemUsesOf` / `canPayFrom` / `instanceUsesLeft`, the unit's `itemUses`,
+`BattleOptions.heroItemsUsed`, `BattleResult.itemUses`. TEST scenario `test.item-uses`.
+V2 R6 part 3 (Andrew's chat, 2026-09-24).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `itemUsesSource` | Where does an instance's use count come from? | **The granted power's `uses`** (the Codex field already compiled onto the power row); no second copy on the engine's item row. | Law 11 — one field. The kingdom's `itemOf().uses` is generated from the same Codex rows. | provisional — 2026-09-24 |
+| `itemUsesPool` | A unit carries two instances granting the same power? | **Each instance brings its own uses**; the power's `usesLeft` is the row's own uses (a power the bare row or a badge grants) plus what every instance in reach can pay. Two Healing Potions are two drinks. | R6 acceptance: duplicates stay distinct. Before this the power's count was seeded once, so the second potion was dead weight. | provisional — 2026-09-24 |
+| `itemUsesPayOrder` | Which instance pays a use? | **The first instance in reach with a use left, in instance order** (`<uid>/<n>`, lowest n first); the row's own uses pay only after every instance is empty. | Law 6: explicit order with a tiebreak that cannot tie; spending the item first leaves the most for a restore that rebuilds the row. | provisional — 2026-09-24 |
+| `itemUsesReach` | Can a stowed weapon or shield pay a use? | **No** — a held-class instance pays only while in hand; a trinket always. The instance keeps its count while stowed and brings it back when swapped in. | §11.1: only the hands grant. `swapLimits` (ruled): uses are never reset by a swap. | provisional — 2026-09-24 |
+| `itemUsesEvent` | What event names the instance? | **`charge.spent` gains `instanceId`, `itemId`, `instanceLeft`** when an instance paid; `instanceLeft: 0` means that instance is spent. No new event name; `power.exhausted` still fires when the power has nothing left. | A new event name is a new name (rule 21); the existing line already means "a use was spent". GLOSSARY's `item.spent` is the kingdom's strategic event. | provisional — 2026-09-24 |
+| `itemUsesIncoming` | How does a fielding hand in uses already spent? | **`heroItemsUsed`**: per hero, one count per carried instance, handed then stowed (the order that numbers instanceIds). A count on a permanent item, past the power's uses, or a list of the wrong length is refused loudly. | Law 9. The kingdom and R11's dungeon both know the order; it is `loadoutInstanceId`'s. | provisional — 2026-09-24 |
+| `itemUsesSpentFielding` | What happens to an instance handed in with no uses left? | **It is carried spent**: not folded (no stats, attacks, powers or triggers), not in hand or stowed, no `unit.equipped`; named on `unit.enter` as `spent` (instance ids) and kept in `itemUses` with `left: 0`. | DUNGEON-MODE §4 "the re-field skips it" — copied, not chosen. What stays chosen is where the log names it (as `stowed` is named, `loadoutStowedLog`). | provisional — 2026-09-24 |
+| `itemUsesMultiPower` | An item granting two powers with uses — how does an incoming count apply? | **The one count applies to each of its powers**; the instance is spent when all are empty. | No such row exists; the simplest reading until one does. | provisional — 2026-09-24 |
+| `itemUsesResult` | What does the result report? | **`itemUses`: one row per (instance, power) — unit, instanceId, itemId, power, `used` this battle, `left` after** — for every carried instance with uses, the spent-on-arrival included. Absent when no unit carries one; `usesSpent` (per power) is unchanged. | R11 needs the whole per-instance state out; an absent field keeps every older result byte-identical. | provisional — 2026-09-24 |
