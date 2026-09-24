@@ -151,7 +151,10 @@ const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage'
   // capability.frost / root / taunt, 2026-09-03
   'addsIncomingPhysical', 'blocksMovement', 'forcesTarget', 'cancels',
   // capability.karma / shadow / confusion, 2026-09-03
-  'boostsHealingReceived', 'boostsOutgoingHalf', 'decayOnKill', 'grows', 'obliteratesAtMaxHp', 'swapsAi'] as const
+  'boostsHealingReceived', 'boostsOutgoingHalf', 'decayOnKill', 'grows', 'obliteratesAtMaxHp', 'swapsAi',
+  // v2.prone, 2026-09-23 (COMBAT-V2-DESIGN §10)
+  'prone'] as const
+const PRONE_NUMBERS = ['accuracyAgainst', 'dodge', 'damageAgainst', 'accuracy', 'damage'] as const
 export function packStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { statuses?: Readonly<Record<string, PackStatusRow>> }).statuses ?? {}
   for (const k of Object.keys(raw)) if (!k.startsWith('status.')) throw new Error(`unit pack: status '${k}' is not a status.* id`)
@@ -167,6 +170,12 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
       if (!['id', 'name', 'shape', 'stacking', ...STATUS_FLAGS].includes(f)) throw new Error(`${where}: status '${k}' carries unknown field '${f}' — the loader does not know it, so the engine would ignore it silently`)
     }
     if (r.blocksBlock !== undefined && typeof r.blocksBlock !== 'boolean') throw Error(`${where}: invalid blocksBlock on '${k}'`)
+    if (r.prone !== undefined) {
+      const p = r.prone as unknown as Record<string, unknown>
+      if (p === null || typeof p !== 'object' || Object.keys(p).sort().join() !== [...PRONE_NUMBERS, 'standAction'].sort().join()) throw Error(`${where}: invalid prone rule on '${k}' — wants ${PRONE_NUMBERS.join(', ')}, standAction`)
+      for (const n of PRONE_NUMBERS) if (!Number.isSafeInteger(p[n])) throw Error(`${where}: prone.${n} on '${k}' is not an integer`)
+      if (typeof p['standAction'] !== 'string' || !/^power\./.test(p['standAction'])) throw Error(`${where}: prone.standAction on '${k}' is not a power id`)
+    }
     if (r.tickDamageType!==undefined&&!isDamageType(r.tickDamageType))throw Error(`${where}: invalid tick damage type on '${k}'`)
     if (r.tick === 'damage' && r.tickDamageType === undefined) throw new Error(`${where}: status '${k}' ticks damage with no type`)
     const { tick, ...def } = r
@@ -253,7 +262,7 @@ export function packMoves(): Readonly<Record<string, MoveDef>> {
     }
     if (m.stepRange !== undefined && (m.shape !== 'sidestep' || typeof m.stepRange !== 'number')) throw new Error(`unit pack: move '${k}' carries a stepRange it cannot use`)
     for (const e of m.effects ?? []) {
-      if (!['gainStamina', 'loseMaxStamina', 'statMod'].includes(e.kind)) throw new Error(`unit pack: move '${k}' carries unknown effect kind '${(e as { kind: string }).kind}'`)
+      if (!['gainStamina', 'loseMaxStamina', 'statMod', 'stand'].includes(e.kind)) throw new Error(`unit pack: move '${k}' carries unknown effect kind '${(e as { kind: string }).kind}'`)
     }
   }
   return Object.fromEntries(Object.entries(raw).map(([k, r]) => [k, liftMove(r)]))

@@ -9,7 +9,7 @@ import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
 import { fireTriggers, HOOKS } from './trigger.js'
-import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, spendAbsorb } from './status.js'
+import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { accelerateBleedOut, applyAttackPackets, emit, unit, recordBlock } from './mutate.js'
@@ -27,6 +27,8 @@ export const ACC = {
   ADJACENT: 300,
   TERRAIN: 400,
   CONDITION: 500,
+  /** v2.prone (§10): +N against a prone target, −N for a prone attacker. */
+  PRONE: 550,
   COVER: 575,
   TARGET_DODGE: 600,
   SITUATIONAL: 700,
@@ -42,6 +44,8 @@ export const DMG = {
   TERRAIN: 300,
   POSITIONAL: 350,
   CRIT: 450,
+  /** v2.prone (§10): flat ±N after the crit multiplier, like cover (SWITCHES.md proneStationOrder). */
+  PRONE: 500,
   COVER: 525,
   /** capability.frost (2026-09-03): Frost on the target, physical hits only, before Armor. */
   FROST: 540,
@@ -137,6 +141,9 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   // CONDITION — the target's state. Downed: +20 (GAME-DESIGN §9, ruled;
   // fix.downed-targetable 2026-09-03). The row names the attack as its cause.
   if (target.lifeState === 'downed') v = step(ledger, ACC.CONDITION, 'TARGET_DOWNED', a.id, v, v + 20)
+  // PRONE (550) — v2.prone, COMBAT-V2-DESIGN §10: the numbers are the status row's.
+  for (const { statusId, rule } of proneRulesOf(ctx, attacker)) v = step(ledger, ACC.PRONE, 'ATTACKER_PRONE', statusId, v, v + rule.accuracy)
+  for (const { statusId, rule } of proneRulesOf(ctx, target)) v = step(ledger, ACC.PRONE, 'TARGET_PRONE', statusId, v, v + rule.accuracyAgainst)
   // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
   if (a.attack.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.attack.accuracy)
   if (a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-20)
@@ -201,6 +208,11 @@ export function resolveDamage(
     // +50% PER HEADS-CRITICAL, before all mitigation — "do two criticals"
     // with two heads is +100%. One rounding rule: truncating integer division.
     v = step(ledger, DMG.CRIT, 'CRIT', 'crit', v, Math.trunc((v * (2 + heads)) / 2))
+  }
+  // PRONE (500) — v2.prone, §10: attacks only (a.attackKind), flat, after the crit multiplier.
+  if (a.attackKind) {
+    for (const { statusId, rule } of proneRulesOf(ctx, attacker)) v = step(ledger, DMG.PRONE, 'ATTACKER_PRONE', statusId, v, v + rule.damage)
+    for (const { statusId, rule } of proneRulesOf(ctx, target)) v = step(ledger, DMG.PRONE, 'TARGET_PRONE', statusId, v, v + rule.damageAgainst)
   }
   // V2 flat cover subtraction is after critical multiplication, before absorption.
   if(a.attackKind && hasLowCover(ctx,attacker.hex,target.hex)) v=step(ledger,DMG.COVER,'COVER','cover',v,v-1)

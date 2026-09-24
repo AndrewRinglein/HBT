@@ -1,5 +1,23 @@
 [
  {
+  "id": "v2.prone",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "V2 R3, Prone and standing (COMBAT-V2-DESIGN-2026-09-07.md section 10, one item across engine and content). Prone is a status flag core reads (never a LifeState, never an id in core): the Codex row status.prone carries its numbers - attacks against the holder +10 accuracy and +1 damage, its Dodge -10; its own attacks -10 accuracy and -1 damage - plus the stand action it grants. While held: no zone of control and so no attacks of opportunity; Block kept; the hex still occupied; Airwalk suspended as a readable fact; no movement action except standing. power.stand-up is a movement-slot power that appears only while prone (every unit has it through the status), consumes the movement action, provokes nothing and removes the status; the primary action stays. AI stands first. Events unit.proned and unit.stood. KDB (what knocks units down) is R4; test content applies the status through the existing status.apply trigger.",
+  "expect": "Legal actions: stand offered only while prone, no other movement while prone; payment: standing spends the movement slot, the primary is still available; occupancy: a prone hex still blocks; Block while prone rolls at the unit's chance; a prone holder makes no AoO; +10/-10/+1 and -10/-1 read through resolveAccuracy/resolveDamage ledgers and effective(dodge); snapshot round-trip mid-prone; AI stands then acts; replay deterministic with unit.proned and unit.stood events; test.status.floored proves the numbers are data.",
+  "probeIds": [
+   "status.prone",
+   "power.stand-up"
+  ],
+  "variants": [
+   "status.prone",
+   "test.status.floored"
+  ],
+  "note": "Andrew chose R3 on 2026-09-23. Defaults recorded in SWITCHES.md: proneNoCrawl, proneNoExpiry, proneAirwalkFact, proneAiStandsFirst, proneStationOrder, proneStacking.",
+  "status": "done",
+  "sha": "4a705ec"
+ },
+ {
   "id": "v2.shields",
   "kind": "content",
   "shape": "data",

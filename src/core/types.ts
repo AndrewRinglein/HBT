@@ -327,6 +327,11 @@ export type ActionEffect = AbilityEffect | MoveEffect
 export type MoveEffect =
   | { readonly kind: 'gainStamina'; readonly value: number }
   | { readonly kind: 'loseMaxStamina'; readonly value: number }
+  /**
+   * v2.prone (COMBAT-V2-DESIGN §10): stand up — removes every prone status the
+   * unit holds. A move carrying it is legal only while prone (action.ts).
+   */
+  | { readonly kind: 'stand' }
   | {
       readonly kind: 'statMod'
       readonly stat: import('./stats.js').StatName

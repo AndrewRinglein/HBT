@@ -7,9 +7,9 @@ import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { passableHexes, type Passable } from './props.js'
-import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, unit } from './mutate.js'
+import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
 import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
-import { forcedTargetOf, applyStatus, isBlocked, isRooted, reduceStatus } from './status.js'
+import { forcedTargetOf, applyStatus, isBlocked, isProne, isRooted, reduceStatus } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { settle } from './settle.js'
 
@@ -263,10 +263,13 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   return moved
 }
 
-/** The standing enemies whose ZoC (their six adjacent hexes) covers `hex`. Sorted by id (Law 6). */
+/**
+ * The standing enemies whose ZoC (their six adjacent hexes) covers `hex`. Sorted by id (Law 6).
+ * v2.prone (§10): a prone unit has no zone of control, and therefore makes no attack of opportunity.
+ */
 export function zocHoldersAt(ctx: Ctx, u: Unit, hex: HexId): Unit[] {
   return ctx.state.units
-    .filter((o) => o.side !== u.side && o.lifeState === 'standing' && ctx.geo.distance(o.hex, hex) === 1)
+    .filter((o) => o.side !== u.side && o.lifeState === 'standing' && ctx.geo.distance(o.hex, hex) === 1 && !isProne(ctx, o))
     .sort((a, b) => a.id - b.id)
 }
 
@@ -329,7 +332,8 @@ export function stepRangeOf(power: MoveDef): number {
  */
 function applyMoveEffects(ctx: Ctx, unitId: number, power: MoveDef): void {
   for (const ef of power.effects ?? []) {
-    if (ef.kind === 'gainStamina') gainStamina(ctx, unitId, ef.value, power.id)
+    if (ef.kind === 'stand') standUp(ctx, unitId, power.id)
+    else if (ef.kind === 'gainStamina') gainStamina(ctx, unitId, ef.value, power.id)
     else if (ef.kind === 'loseMaxStamina') loseMaxStamina(ctx, unitId, ef.value, power.id)
     else if (ef.kind === 'statMod') {
       addStatMod(ctx, unitId, {

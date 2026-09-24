@@ -14362,3 +14362,21 @@ index 14af730..64a3c22 100644
  const second: ItemDef = { ...shield, id: 'item.test-shield-2' }
 ```
 </details>
+
+## v2.prone — LANDED `4a705ec`
+2026-09-24 01:38
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:477 · ../CODEX.md:373
+  PASS  typecheck
+  PASS  the item's own tests — test/v2-prone.test.ts
+  PASS  gate 1 — the id appears in a real battle — status.prone: 8 log lines, 8 fired, 3 changed state · power.stand-up: 4 log lines, 4 fired, 1 changed state
+  PASS  brought its own tests — test/v2-prone.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.prone live · test.status.floored live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.prone,power.stand-up — they genuinely test it

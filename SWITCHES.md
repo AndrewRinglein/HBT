@@ -792,3 +792,19 @@ re-author Tower Cover rather than invent a kind; `power.knight-shield.block` and
 | `maceImpact` | Maces and hammers +2 Impact. | **Not authored.** Impact feeds the KDB roll (COMBAT-V2 §9), which the engine does not have yet; a +2 with nothing to read it would be inert. Goes with KDB. | content gap |
 | `weaponFirePoison` | Fire on maces and hammers; fire and poison on "weapons of the appropriate type". | **Not authored.** Neither the weapons nor the amounts are stated (open item 3); inventing both across the catalog is the invented-rows trap. Angela's to name. | open |
 | `shieldPowerNames` | Kite's "Shield Wall" and Round's "Brace" collide with existing names (the Shieldbearer's Shield Wall power; an attack called Brace) — the Codex audit refuses duplicates. | Published as **Lock Shields** (`power.kite-shield.shield-wall`) and **Bear Down** (`power.round-shield.brace`); ids unchanged. | provisional — Angela to rename |
+
+## V2 prone and standing — defaults taken landing v2.prone (2026-09-23)
+
+The rules are COMBAT-V2-DESIGN-2026-09-07.md §10 (ruled); the numbers live on the Codex row
+`status.prone`. What §10 does not answer, R3 answers with these defaults (Andrew chose R3,
+2026-09-23; the defaults were set by the chat that landed it):
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `proneNoCrawl` | May a prone unit move (crawl) without standing? | **No.** While prone the only legal movement action is the stand action (`action.ts` actionReady); primary actions — attacks at −10/−1, powers — stay legal. | §10 prices a knockdown as "a turn's movement"; a crawl would make it cheaper than the design says. | provisional — 2026-09-23 |
+| `proneNoExpiry` | Does Prone wear off on its own? | **No.** `decayPerPhase` 0; only standing (the stand action, or a `stand` effect) removes it. Death leaves it on the body, where it reads nothing. | §10 names standing as the way up and gives no clock. | provisional — 2026-09-23 |
+| `proneStacking` | What does a second application do to a prone unit? | Nothing: the row stacks `highest` (value stays 1) and `unit.proned` fires only on the transition. | §9.2: "KDB has no effect on a unit that is already prone." | provisional — 2026-09-23 |
+| `proneAirwalkFact` | Airwalk is "suspended" while prone — but the engine has no Airwalk (pack.ts: "engine never fires it"). | **Not implemented.** `airwalkSuspended(ctx, u)` (status.ts) is true while prone; whoever implements Airwalk must read it so a prone unit triggers the traps and ground effects of its hex. | Nothing to suspend yet; the fact is real and readable so the Airwalk item cannot miss it. | content gap — for the Airwalk item |
+| `proneAiStandsFirst` | What does a prone AI unit do? | Spends its movement action standing, then chooses its primary as usual (`runActivation`). | The roadmap's AI probe; standing is free of AoO and costs only the slot a prone unit cannot otherwise use. | provisional — 2026-09-23 |
+| `proneStationOrder` | Where do the ±accuracy and ±damage rows sit? | Accuracy at ACC.PRONE 550 (after CONDITION, before COVER and TARGET_DODGE); the −10 Dodge is a derived stat mod read by `effective(dodge)` (source = the status id); damage at DMG.PRONE 500, flat after the crit multiplier and before cover, on attacks only (powers and bursts are not attacks). | Mirrors cover, the other flat V2 attack modifier; +1 is not multiplied by a crit. | provisional — 2026-09-23 |
+| `proneTestSource` | What knocks a unit down before KDB (R4)? | Only test content: `test-trip-a` applies `status.prone`, `test-trip-b` applies `test.status.floored`, both through the generic `status.apply` trigger (scenarios `test.prone-a`, `test.prone-b`). No campaign unit knocks anything down yet. | KDB is R4. | until R4 |

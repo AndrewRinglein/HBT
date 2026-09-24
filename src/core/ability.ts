@@ -17,7 +17,7 @@
 
 import { flatDamage } from './mitigation.js'
 import type { AbilityDef, ActionEffect, Ctx, Unit } from './types.js'
-import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, loseMaxStamina, removeCorpse, removeStatus, reduceStatus, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, loseMaxStamina, removeCorpse, removeStatus, reduceStatus, standUp, unit } from './mutate.js'
 import { actionReady, isPower, spendAction , resolveActionSlot } from './action.js'
 export { readyOn, isReady } from './action.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
@@ -278,7 +278,7 @@ function performEffects(ctx: Ctx, userId: number, targetId: number, a: AbilityDe
   for (const e of a.effects!) {
     const onSelf = e.kind === 'selfDamage' || (e.kind === 'statMod' && 'who' in e && e.who === 'self')
       // the movement riders (gainStamina, loseMaxStamina) are the mover's own — on a power they are the user's too
-      || e.kind === 'gainStamina' || e.kind === 'loseMaxStamina'
+      || e.kind === 'gainStamina' || e.kind === 'loseMaxStamina' || e.kind === 'stand'
     const ids = onSelf ? [userId] : targets
     for (const id of ids) total += applyOne(ctx, userId, id, a, e)
   }
@@ -350,6 +350,7 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Action
     // the movement riders, reachable from any action now (ONE ACTION TYPE, 2026-09-04)
     case 'gainStamina': { gainStamina(ctx, id, e.value, a.id); return 0 }
     case 'loseMaxStamina': { loseMaxStamina(ctx, id, e.value, a.id); return 0 }
+    case 'stand': { standUp(ctx, id, a.id); return 0 }   // v2.prone — the user's own, like the movement riders
     case 'knockback': {
       const v = valueOf(ctx, u, e.value)
       if (v > 0) executeKnockback(ctx, userId, id, v, a.id)

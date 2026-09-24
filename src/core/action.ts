@@ -34,26 +34,48 @@ export const isPower = (a: ActionDef): boolean => a.attack === undefined && a.mo
 
 // ── the three views over the one list. Row order is the unit's data (Law 6). ──
 
+/**
+ * v2.prone: the ids a unit may use right now — its own list, then any action a
+ * status it holds grants while held (the stand action "only appears while
+ * prone", §10), in status-id order. DERIVED, never stored: standing removes
+ * the status and the grant goes with it, with nothing to remember to undo.
+ */
+export function grantedActionIds(ctx: Ctx, u: Unit): string[] {
+  // u.statuses is kept sorted by id (applyStatus), so this walk is already in status-id order (Law 6)
+  let extra: string[] | null = null
+  for (const s of u.statuses) {
+    const g = s.value > 0 ? ctx.statuses[s.id]?.prone?.standAction : undefined
+    if (g && !u.actions.includes(g) && !extra?.includes(g)) (extra ??= []).push(g)
+  }
+  return extra ? [...u.actions, ...extra] : u.actions
+}
+/** v2.prone: is this unit holding a prone status? Read inline — status.ts imports this module's neighbours. */
+function holdsProne(ctx: Ctx, u: Unit): boolean {
+  return u.statuses.some((s) => s.value > 0 && ctx.statuses[s.id]?.prone !== undefined)
+}
+/** v2.prone: a stand action — a movement whose effects include `stand`. */
+export const standsUp = (a: ActionDef): boolean => a.move !== undefined && (a.effects ?? []).some((e) => e.kind === 'stand')
+
 /** The unit's attacks, in its order — every granted id whose row is present and carries an attack profile. */
 export function attacksOf(ctx: Ctx, u: Unit): AttackDef[] {
   const out: AttackDef[] = []
-  for (const id of u.actions) { const a = ctx.actions[id]; if (a && isAttack(a)) out.push(a) }
+  for (const id of grantedActionIds(ctx, u)) { const a = ctx.actions[id]; if (a && isAttack(a)) out.push(a) }
   return out
 }
 /** The unit's powers, in its order. */
 export function powersOf(ctx: Ctx, u: Unit): ActionDef[] {
   const out: ActionDef[] = []
-  for (const id of u.actions) { const a = ctx.actions[id]; if (a && isPower(a)) out.push(a) }
+  for (const id of grantedActionIds(ctx, u)) { const a = ctx.actions[id]; if (a && isPower(a)) out.push(a) }
   return out
 }
 /** The unit's movements, in its order. */
 export function movesOf(ctx: Ctx, u: Unit): MoveDef[] {
   const out: MoveDef[] = []
-  for (const id of u.actions) { const a = ctx.actions[id]; if (a && isMove(a)) out.push(a) }
+  for (const id of grantedActionIds(ctx, u)) { const a = ctx.actions[id]; if (a && isMove(a)) out.push(a) }
   return out
 }
 /** The ids of the unit's attacks / powers / movements — for the code that indexes by id. */
-export const burstsOf = (ctx: Ctx, u: Unit): BurstDef[] => u.actions.map(id => ctx.actions[id]).filter((a): a is BurstDef => !!a && isBurst(a))
+export const burstsOf = (ctx: Ctx, u: Unit): BurstDef[] => grantedActionIds(ctx, u).map(id => ctx.actions[id]).filter((a): a is BurstDef => !!a && isBurst(a))
 export const attackIdsOf = (ctx: Ctx, u: Unit): string[] => attacksOf(ctx, u).map((a) => a.id)
 export const powerIdsOf = (ctx: Ctx, u: Unit): string[] => powersOf(ctx, u).map((a) => a.id)
 
@@ -84,7 +106,10 @@ export function isReady(ctx: Ctx, u: Unit, id: string): boolean {
  * may DO to its target is that path's question, not this one's.
  */
 export function actionReady(ctx: Ctx, u: Unit, a: ActionDef): boolean {
-  if (!u.actions.includes(a.id)) return false
+  if (!grantedActionIds(ctx, u).includes(a.id)) return false
+  // v2.prone (§10): standing is legal only while prone, and while prone it is
+  // the only movement (SWITCHES.md proneNoCrawl). Primary actions stay.
+  if (a.move !== undefined && standsUp(a) !== holdsProne(ctx, u)) return false
   if (u.stamina < staminaCostOf(u, a)) return false
   if (!isReady(ctx, u, a.id)) return false
   if (a.uses && (u.usesLeft[a.id] ?? 0) <= 0) return false

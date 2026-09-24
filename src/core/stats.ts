@@ -131,9 +131,24 @@ export function auraMods(ctx: Ctx, u: Unit): StatMod[] {
   return out
 }
 
+/**
+ * Modifiers a held status lends — v2.prone (COMBAT-V2-DESIGN §10): "the prone
+ * unit −10 dodge", the number on the status row. DERIVED, never stored, like
+ * terrain and auras: standing removes the status and the mod goes with it.
+ * The registry is read inline off ctx (status.ts imports this file).
+ */
+export function statusMods(ctx: Ctx, u: Unit): StatMod[] {
+  const out: StatMod[] = []
+  for (const s of u.statuses) {
+    const rule = s.value > 0 ? ctx.statuses[s.id]?.prone : undefined
+    if (rule && rule.dodge) out.push({ stat: 'dodge', op: 'add', value: rule.dodge, source: s.id, scope: 'unit' })
+  }
+  return out
+}
+
 export function modsFor(ctx: Ctx, u: Unit): StatMod[] {
   const stored = u.mods.filter((m) => m.expiresAtTurn === undefined || ctx.state.turn < m.expiresAtTurn)
-  const all = [...stored, ...terrainMods(ctx, u), ...auraMods(ctx, u)]
+  const all = [...stored, ...terrainMods(ctx, u), ...auraMods(ctx, u), ...statusMods(ctx, u)]
   // Sorted so resolution never depends on the order things happened to be added.
   // `set` last, because an override is meaningless before the adds it replaces.
   return all.sort((a, b) =>

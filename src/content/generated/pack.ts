@@ -7873,6 +7873,22 @@ export const UNIT_PACK = {
       "decayPerPhase": 1,
       "blocksAction": true,
       "blocksBlock": true
+    },
+    "status.prone": {
+      "id": "status.prone",
+      "name": "Prone",
+      "shape": "flag",
+      "family": "flag",
+      "stacking": "highest",
+      "decayPerPhase": 0,
+      "prone": {
+        "accuracyAgainst": 10,
+        "dodge": -10,
+        "damageAgainst": 1,
+        "accuracy": -10,
+        "damage": -1,
+        "standAction": "power.stand-up"
+      }
     }
   },
   "moves": {
@@ -7984,6 +8000,22 @@ export const UNIT_PACK = {
       "shape": "flight",
       "budgetMod": -1,
       "staminaCost": 2,
+      "cooldown": 0
+    },
+    "power.stand-up": {
+      "id": "power.stand-up",
+      "name": "Stand Up",
+      "slot": "movement",
+      "free": false,
+      "shape": "sidestep",
+      "stepRange": 0,
+      "budgetMod": 0,
+      "effects": [
+        {
+          "kind": "stand"
+        }
+      ],
+      "staminaCost": 0,
       "cooldown": 0
     }
   },
@@ -15061,6 +15093,135 @@ export const UNIT_PACK = {
         "block": 30,
         "rangedBlock": 90,
         "luck": 100
+      },
+      {
+        "typeId": "test-trip-a",
+        "name": "Tripper A (TEST)",
+        "side": "hero",
+        "maxHp": 9,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 72,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.paladin"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": [
+          {
+            "id": "test.trip-a.trip",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.prone",
+              "value": 1
+            },
+            "source": "unit.test-trip-a"
+          }
+        ]
+      },
+      {
+        "typeId": "test-trip-b",
+        "name": "Tripper B (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-trip-b",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-trip-b"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-trip-b"
+          },
+          {
+            "id": "test.trip-b.trip",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.floored",
+              "value": 1
+            },
+            "source": "unit.test-trip-b"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy"
       }
     ],
     "attacks": {
@@ -15408,6 +15569,22 @@ export const UNIT_PACK = {
         "family": "duration",
         "decayPerPhase": 1,
         "blocksBlock": true,
+        "stacking": "add"
+      },
+      "test.status.floored": {
+        "id": "test.status.floored",
+        "name": "Floored (TEST)",
+        "shape": "flag",
+        "family": "duration",
+        "decayPerPhase": 0,
+        "prone": {
+          "accuracyAgainst": 20,
+          "dodge": -5,
+          "damageAgainst": 2,
+          "accuracy": -20,
+          "damage": -2,
+          "standAction": "power.stand-up"
+        },
         "stacking": "add"
       }
     },

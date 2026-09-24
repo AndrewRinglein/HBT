@@ -54,6 +54,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id:'test.block-b',note:'TEST Block30/RangedBlock90 with reactive Protection against a ranged attacker.',
     mapId:'map.open',heroes:['test-ranger'],heroHexes:[85],enemies:['test-block-b'],enemyHexes:[88],replicate:1,
   },
+  // v2.prone (2026-09-23): a real battle that knocks a unit down before KDB (V2 R4)
+  // exists — test riders apply the prone statuses through the generic status.apply.
+  'test.prone-a': {
+    id: 'test.prone-a', note: 'TEST: Tripper A knocks the zombie down on a hit (status.prone); the zombie stands (power.stand-up) and bites. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-trip-a'], heroHexes: [85], enemies: ['test-zombie'], enemyHexes: [86], replicate: 0,
+  },
+  'test.prone-b': {
+    id: 'test.prone-b', note: 'TEST: Tripper B floors Osric on a hit (test.status.floored, the second prone instance); Osric stands and swings. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-trip-b'], enemyHexes: [86], replicate: 0,
+  },
   'test.props-viewer-ranged-zoc': {
     id: 'test.props-viewer-ranged-zoc', note: 'Current production replay coverage: a ranged-only Fire Imp cannot make a melee reaction when Lucius walks away. Both units have existing viewer art.',
     mapId: 'map.open', heroes: ['alpha-lucius'], heroHexes: [85],

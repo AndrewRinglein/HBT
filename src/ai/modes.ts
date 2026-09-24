@@ -6,11 +6,11 @@ import type { HexId } from './../core/hex.js'
 import { livingEnemies, movementOptions, moveStaminaCost, nearestEnemy, stepRangeOf, usableMoves as readyMoves } from './../core/movement.js'
 import { executeAction, validateAction, type ActionRequest } from './../core/commands.js'
 import type { AttackDef, MoveDef } from './../core/types.js'
-import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, powerIdsOf, powersOf, resolveActionSlot } from './../core/action.js'
+import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
 import { attackDef, preview, reachOf } from './../core/pipeline.js'
 import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
 import { burstCentres, previewBurst } from './../core/burst.js'
-import { isBlocked, isConfused } from './../core/status.js'
+import { isBlocked, isConfused, isProne } from './../core/status.js'
 import { TERRAIN } from './../core/types.js'
 import { emit, unit } from './../core/mutate.js'
 import type { Ctx, Unit } from './../core/types.js'
@@ -811,6 +811,12 @@ export function runActivation(ctx: Ctx, unitId: number): void {
   const decision: Decision = {
     ctx, freeUsed: new Set(), actionsTaken: 0, idled: false,
     limit: 2 + Object.values(ctx.actions).filter(a => a.free).length,
+  }
+  // v2.prone (COMBAT-V2-DESIGN §10; SWITCHES.md proneAiStandsFirst): a prone
+  // unit spends its movement action standing, then chooses its primary as usual.
+  if (isProne(ctx, u)) {
+    const stand = usableMoves(decision, u).find(standsUp)
+    if (stand) act(decision, { actor: u.id, destination: u.hex, actionId: stand.id })
   }
   while (!ctx.state.outcome && u.lifeState === 'standing' && !isBlocked(ctx, u) && !u.primaryUsed) {
     const before = decision.actionsTaken

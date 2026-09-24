@@ -262,6 +262,19 @@ export function reduceStatus(ctx: Ctx, unitId: number, id: string, by: number, c
   return spent
 }
 
+/**
+ * v2.prone (COMBAT-V2-DESIGN §10): stand up. Every prone status the unit holds
+ * is removed (status.expired each, in id order), then one `unit.stood` line
+ * names them — the standing is its own event for the viewer (Law 3). The
+ * registry is read inline off ctx (status.ts imports this file).
+ */
+export function standUp(ctx: Ctx, unitId: number, causeId: string): void {
+  const u = unit(ctx, unitId)
+  const ids = u.statuses.filter((s) => s.value > 0 && ctx.statuses[s.id]?.prone !== undefined).map((s) => s.id).sort()
+  for (const id of ids) removeStatus(ctx, unitId, id, causeId)
+  emit(ctx, 'unit.stood', causeId, { actor: unitId, hex: u.hex, statusIds: ids })
+}
+
 export function removeStatus(ctx: Ctx, unitId: number, id: string, causeId: string): void {
   const u = unit(ctx, unitId)
   const i = u.statuses.findIndex((s) => s.id === id)

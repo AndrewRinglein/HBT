@@ -131,6 +131,51 @@ export type StatusDef = {
    * carried so the log, the viewer and the kingdom can see who is Dazed.
    */
   readonly aiControlled?: boolean
+  /**
+   * v2.prone (COMBAT-V2-DESIGN-2026-09-07.md §10, ruled). Holding a positive
+   * status that carries this rule makes the unit PRONE — a status flag, never
+   * a LifeState: it still acts, keeps its Block and fills its hex. The rule's
+   * numbers are content (the Codex row): attacks against the holder gain
+   * `accuracyAgainst` (ACC.PRONE) and `damageAgainst` (DMG.PRONE); the holder's
+   * Dodge takes `dodge` (a derived stat mod, effective()); the holder's own
+   * attacks take `accuracy` and `damage`. What the rule means without numbers
+   * is the board's: no zone of control (so no attacks of opportunity), no
+   * movement action but standing, Airwalk suspended. `standAction` is the
+   * movement power the status grants while held — "a movement-action power
+   * every unit has and that only appears while prone"; using it removes every
+   * prone status (MoveEffect `stand`).
+   */
+  readonly prone?: ProneRule
+}
+
+export type ProneRule = {
+  readonly accuracyAgainst: number
+  readonly dodge: number
+  readonly damageAgainst: number
+  readonly accuracy: number
+  readonly damage: number
+  readonly standAction: string
+}
+
+/** v2.prone: every prone rule this unit holds, in status-id order (Law 6). */
+export function proneRulesOf(ctx: Ctx, u: Unit): { statusId: string; rule: ProneRule }[] {
+  const out: { statusId: string; rule: ProneRule }[] = []
+  if (u.statuses.length === 0) return out
+  for (const s of u.statuses) { const r = ctx.statuses[s.id]?.prone; if (r && s.value > 0) out.push({ statusId: s.id, rule: r }) }
+  return out.length > 1 ? out.sort((a, b) => (a.statusId < b.statusId ? -1 : a.statusId > b.statusId ? 1 : 0)) : out
+}
+/** v2.prone: is this unit knocked down? */
+export function isProne(ctx: Ctx, u: Unit): boolean {
+  return proneRulesOf(ctx, u).length > 0
+}
+/**
+ * v2.prone, §10: "Airwalk — suspended: a knocked-down unit triggers the traps
+ * and ground effects of its hex." Airwalk itself is not implemented in the
+ * engine yet (SWITCHES.md proneAirwalkFact); this is the fact its
+ * implementation must read.
+ */
+export function airwalkSuspended(ctx: Ctx, u: Unit): boolean {
+  return isProne(ctx, u)
 }
 
 export function valueOf(u: Unit, id: string): number {
@@ -167,6 +212,8 @@ export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number,
     u.statuses.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
   }
   emit(ctx, 'status.applied', causeId, { target: unitId, statusId: id, amount: value, before, after, ...(by !== undefined ? { by } : {}) })
+  // v2.prone: the moment a unit goes down is its own line for the viewer (Law 3)
+  if (def.prone && before <= 0 && after > 0) emit(ctx, 'unit.proned', causeId, { target: unitId, statusId: id, hex: u.hex })
 }
 
 // reduceStatus / removeStatus moved into mutate.ts (fix.bleed-magnitude,
