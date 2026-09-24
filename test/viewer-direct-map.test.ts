@@ -3,6 +3,9 @@ import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import gold from './fixtures/field-cli-d872c34.json'
 import distanceGold from './fixtures/field-distance-d872c34.json'
+// v2.knockback-collisions (2026-09-23), Law 10: the content TEST map test.map.well-shove
+// joined the registered maps; the 22 prior bytes stay frozen and the new map's are added.
+import addedGold from './fixtures/field-cli-knockback.json'
 import { presentationField, prepareBattleField, initialMapId } from '../src/view/field.js'
 import { createBattle } from '../src/core/setup.js'
 import { MAP_PANEL, decodeMap, mapDef } from '../src/content/maps.js'
@@ -10,9 +13,9 @@ import { MAP_PANEL, decodeMap, mapDef } from '../src/content/maps.js'
 const fact = (width=4,height=3) => ({type:'map.loaded',mapId:'test.map.direct',width,height,deploy:{hero:'west',enemy:'east'},terrain:Array(width*height).fill(0),props:[]})
 const seed = {mapId:'test.map.direct'}
 describe('readonly initial field preparation',()=>{
-  it('preserves all 22 registered CLI bytes and control membership',()=>{
-    expect(MAP_PANEL).toEqual(Object.keys(gold))
-    for(const [id,hash] of Object.entries(gold)) {
+  it('preserves all 22 registered CLI bytes and control membership, plus the maps added since',()=>{
+    expect(MAP_PANEL).toEqual([...Object.keys(gold), ...Object.keys(addedGold)])
+    for(const [id,hash] of Object.entries({...gold, ...addedGold})) {
       const bytes=execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','tools/field-geometry.mts',id])
       expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
     }

@@ -14533,3 +14533,85 @@ index 07b924f..59df15b 100644
  })
 ```
 </details>
+
+## fix.knockback-collisions-goldens — LANDED `3dcd152` **NEEDS REVIEW**
+2026-09-24 04:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/viewer-direct-map.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/viewer-direct-map.test.ts, test/fixtures/battle-cursor-knockback.json, test/fixtures/field-cli-knockback.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-3), test/viewer-direct-map.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 34 ids without a published source (24 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 0be9fe0..6265beb 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -39,4 +39,9 @@ const burstGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bu
+ // unchanged case keeps every prior assertion. Old fixtures stay immutable.
+ const shieldGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-shields.json', import.meta.url), 'utf8'))
++// v2.knockback-collisions (2026-09-23), Law 10: a stopped push is a collision now
++// (COMBAT-V2 §9.3). The one case that moved (showcase.gash-variant, a blocked push
++// that costs its mover) is checked against its new frozen hashes on both drivers;
++// every unchanged case keeps every prior assertion. Old fixtures stay immutable.
++const knockGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-knockback.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -138,9 +143,11 @@ describe('resumable battle cursor', () => {
+       const burstExpected = burstGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const shieldExpected = shieldGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const shieldMoved = shieldExpected?.changed === true
++      const knockExpected = knockGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const knockMoved = knockExpected?.changed === true
++      const shieldMoved = shieldExpected?.changed === true || knockMoved
+       const migrated = shieldMoved || burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -195,5 +202,5 @@ describe('resumable battle cursor', () => {
+     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
+     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
+-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden, shieldGolden]) {
++    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden, shieldGolden, knockGolden]) {
+       const ids = corpus.cases.map((row: { id: string }) => row.id)
+       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
+diff --git a/test/viewer-direct-map.test.ts b/test/viewer-direct-map.test.ts
+index f10d68c..3e3932a 100644
+--- a/test/viewer-direct-map.test.ts
++++ b/test/viewer-direct-map.test.ts
+@@ -4,4 +4,7 @@ import { createHash } from 'node:crypto'
+ import gold from './fixtures/field-cli-d872c34.json'
+ import distanceGold from './fixtures/field-distance-d872c34.json'
++// v2.knockback-collisions (2026-09-23), Law 10: the content TEST map test.map.well-shove
++// joined the registered maps; the 22 prior bytes stay frozen and the new map's are added.
++import addedGold from './fixtures/field-cli-knockback.json'
+ import { presentationField, prepareBattleField, initialMapId } from '../src/view/field.js'
+ import { createBattle } from '../src/core/setup.js'
+@@ -11,7 +14,7 @@ const fact = (width=4,height=3) => ({type:'map.loaded',mapId:'test.map.direct',w
+ const seed = {mapId:'test.map.direct'}
+ describe('readonly initial field preparation',()=>{
+-  it('preserves all 22 registered CLI bytes and control membership',()=>{
+-    expect(MAP_PANEL).toEqual(Object.keys(gold))
+-    for(const [id,hash] of Object.entries(gold)) {
++  it('preserves all 22 registered CLI bytes and control membership, plus the maps added since',()=>{
++    expect(MAP_PANEL).toEqual([...Object.keys(gold), ...Object.keys(addedGold)])
++    for(const [id,hash] of Object.entries({...gold, ...addedGold})) {
+       const bytes=execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','tools/field-geometry.mts',id])
+       expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
+```
+</details>

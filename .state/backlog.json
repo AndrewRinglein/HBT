@@ -1,5 +1,18 @@
 [
  {
+  "id": "fix.knockback-collisions-goldens",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "v2.knockback-collisions"
+  ],
+  "spec": "The two frozen corpora v2.knockback-collisions moved, found by shard 4/4 after it landed. battle-cursor: showcase.gash-variant carries a blocked push that now costs its mover collision damage (heroClear in 8 Turns, was 9) — a new immutable fixture battle-cursor-knockback.json freezes that one case, the old fixtures stay. viewer-direct-map: the content TEST map test.map.well-shove joined MAP_PANEL — field-cli-knockback.json adds its CLI bytes beside the frozen 22.",
+  "expect": "test/battle-cursor.test.ts and test/viewer-direct-map.test.ts pass; every prior fixture unchanged; control battles unchanged; all four shards green.",
+  "note": "Engine-only test plumbing following the v2.shields pattern (a new frozen fixture per migration, Law 10).",
+  "status": "done-needs-review",
+  "sha": "3dcd152"
+ },
+ {
   "id": "v2.knockback-collisions",
   "kind": "engine",
   "shape": "rule",

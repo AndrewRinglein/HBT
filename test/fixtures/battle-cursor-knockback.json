@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "eab6530",
+  "note": "v2.knockback-collisions (2026-09-23): a stopped push is a collision (COMBAT-V2-DESIGN section 9.3). Only showcase.gash-variant moved: it carries two blocked pushes, one of which now costs its mover collision damage (heroClear in 8 Turns, was 9). Every other case keeps every prior assertion.",
+  "cases": [
+    {
+      "id": "showcase.gash-variant",
+      "events": "9098d7ac4ff03447f98614dcd40c0eecd28f058a3775253a7b923c491ae426e3",
+      "state": "0feaf989a0e8e2c83feb9dca92722be05abf0f341f815efc337d946f889c07d0",
+      "rng": "7f6d3d0d6eb8224d7587c6fbb56040f0d85052f8e0aab2b9bda88b008bd137ed",
+      "result": { "outcome": "heroClear", "turns": 8, "usesSpent": [] },
+      "changed": true,
+      "collisions": 1
+    }
+  ]
+}

@@ -38,6 +38,11 @@ const burstGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bu
 // landed blocks — and are checked against the new frozen hashes on both drivers; every
 // unchanged case keeps every prior assertion. Old fixtures stay immutable.
 const shieldGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-shields.json', import.meta.url), 'utf8'))
+// v2.knockback-collisions (2026-09-23), Law 10: a stopped push is a collision now
+// (COMBAT-V2 §9.3). The one case that moved (showcase.gash-variant, a blocked push
+// that costs its mover) is checked against its new frozen hashes on both drivers;
+// every unchanged case keeps every prior assertion. Old fixtures stay immutable.
+const knockGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-knockback.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -137,11 +142,13 @@ describe('resumable battle cursor', () => {
       const packetExpected = packetGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const burstExpected = burstGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const shieldExpected = shieldGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const shieldMoved = shieldExpected?.changed === true
+      const knockExpected = knockGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const knockMoved = knockExpected?.changed === true
+      const shieldMoved = shieldExpected?.changed === true || knockMoved
       const migrated = shieldMoved || burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
-      let expected = (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      let expected = (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result
@@ -194,7 +201,7 @@ describe('resumable battle cursor', () => {
     const historicalIds = golden.cases.map((row: { id: string }) => row.id)
     expect(battleCursorCases().filter(row => historicalIds.includes(row.id)).map(row => row.id)).toEqual(historicalIds)
     expect(golden.cases.filter((row: { id: string }) => row.id.startsWith('progression-surge')).reduce((n: number, row: { surgeHits: number }) => n + row.surgeHits, 0)).toBeGreaterThan(0)
-    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden, shieldGolden]) {
+    for (const corpus of [identityGolden, eventGolden, propGolden, contactGolden, elementalGolden, protectionGolden, packetGolden, burstGolden, blockGolden, shieldGolden, knockGolden]) {
       const ids = corpus.cases.map((row: { id: string }) => row.id)
       expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
     }
