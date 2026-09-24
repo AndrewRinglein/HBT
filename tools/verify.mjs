@@ -254,7 +254,7 @@ for (let i = 0; i < LIB.battles.length; i++) {
   if (i > 0) load(i)
   drive(b.label, b.battle); driven.push(i)
 }
-// These are TEST imports, never entries in the 34-battle picker. Their exact
+// These are TEST imports, never entries in the 35-battle picker. Their exact
 // engine-generated logs cover shielding/save/zero cases the showcase may not.
 const playbackTests=[...BURST_TESTS.cases,...BURST_TESTS.support]
 if (SINGLES) for (const c of playbackTests) {
@@ -385,6 +385,51 @@ if (SINGLES) {
     v.seek(eaten.EV.length); v.render()
     check(!Object.values(v.state.corpses).some(c => c.of === who), `consumed: ${eaten.label} — a corpse for consumed unit ${who} at the end of the battle`)
   }
+}
+
+/* ── THORNS (V2 R5, added 2026-09-24) ─────────────────────────────────────
+   Thorns is a magnitude (COMBAT-V2-DESIGN §9.4). On each connecting melee hit
+   on a thorned unit the engine states thorns.reflected {actor: the thorned
+   unit, target: the attacker, attackId, thorns, amount} and then a
+   damage.applied on the attacker with thorns: true. The library must carry
+   one; the fold moves no HP on thorns.reflected and floats exactly one word,
+   THORNS <thorns>, over the ATTACKER's hex (never the thorned unit's); the
+   damage.applied with thorns: true that follows (same attacker, same attackId)
+   sets the attacker's HP to its hpAfter, touches no other unit, and — in at
+   least one library instance — lowers it. */
+if (SINGLES) {
+  const hpOf = S => Object.values(S.U).map(u => [u.id, u.hp, u.maxHp])
+  let seenThorns = 0, lowered = 0
+  for (const b of LIB.battles) {
+    const EV = b.battle.events
+    if (!EV.some(e => e.type === 'thorns.reflected')) continue
+    const S = createState(); let at = 0
+    for (let i = 0; i < EV.length; i++) {
+      if (EV[i].type !== 'thorns.reflected') continue
+      const e = EV[i]; seenThorns++
+      while (at < i) fold(S, EV[at++], CTX0, 0)
+      const attacker = S.U[e.target], thorned = S.U[e.actor]
+      check(attacker && thorned, `thorns: ${b.label} — thorns.reflected at ${i} names a unit the fold does not hold (actor ${e.actor}, target ${e.target})`)
+      const before = JSON.stringify(hpOf(S)), cues = fold(S, e, CTX0, 0); at++
+      check(JSON.stringify(hpOf(S)) === before, `thorns: ${b.label} — thorns.reflected at ${i} changed HP (the damage.applied that follows carries it)`)
+      const words = cues.filter(c => c.k === 'float')
+      check(words.length === 1 && words[0].kind === 'thorns' && words[0].text === 'THORNS ' + e.thorns && words[0].hex === attacker?.hex,
+        `thorns: ${b.label} — thorns.reflected at ${i} floats ${JSON.stringify(words.map(c => [c.kind, c.text, c.hex]))}, want one THORNS ${e.thorns} over the attacker (unit ${e.target}, hex ${attacker?.hex})`)
+      const j = EV.findIndex((d, k) => k > i && d.type === 'damage.applied' && d.thorns === true && d.target === e.target && d.attackId === e.attackId)
+      check(j > i, `thorns: ${b.label} — thorns.reflected at ${i} is followed by no damage.applied with thorns: true on the attacker`)
+      if (j <= i) continue
+      while (at < j) fold(S, EV[at++], CTX0, 0)
+      const d = EV[j], hp0 = S.U[d.target]?.hp, rows0 = hpOf(S).filter(r => r[0] !== d.target)
+      fold(S, d, CTX0, 0); at++
+      const hp1 = S.U[d.target]?.hp
+      check(hp1 === d.hpAfter, `thorns: ${b.label} — the thorns damage.applied at ${j} leaves unit ${d.target} at ${hp1}, the event says hpAfter ${d.hpAfter}`)
+      check(JSON.stringify(hpOf(S).filter(r => r[0] !== d.target)) === JSON.stringify(rows0), `thorns: ${b.label} — the thorns damage.applied at ${j} moved another unit's HP`)
+      if (d.amount > 0) check(hp1 < hp0, `thorns: ${b.label} — the thorns damage.applied at ${j} (amount ${d.amount}) did not lower unit ${d.target}'s HP (${hp0} → ${hp1})`)
+      if (hp1 < hp0) lowered++
+    }
+  }
+  if (!seenThorns) fails.push('thorns: no library battle carries a thorns.reflected')
+  else if (!lowered) fails.push('thorns: no library thorns.reflected is followed by a damage.applied that lowers the attacker\'s HP')
 }
 
 /* ── one traversal per move (VISUAL-BATTLE-UPDATES §1.1) ───────────────── */

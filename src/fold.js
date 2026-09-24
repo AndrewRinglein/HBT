@@ -421,6 +421,13 @@ export function fold(S, e, ctx, now = 0) {
         const text = e.applied === e.kdbType ? rolled : rolled + ' · ' + (e.applied === 'none' ? 'RESISTED' : 'ONLY ' + String(e.applied).toUpperCase())
         cue('float', { hex: U[e.target].hex, kind: 'kdb', text, small: true }) }
       break
+    /* ── Thorns (engine v2.thorns, 2026-09-24; COMBAT-V2 §9.4). One thorns.reflected
+       per connecting melee hit on a thorned unit: the word floats over the ATTACKER
+       it pricked (`target`). The HP loss is the damage.applied that follows
+       (thorns: true), already folded — nothing changes state here. */
+    case 'thorns.reflected':
+      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'thorns', text: 'THORNS ' + e.thorns, n: e.thorns, of: 'thorns', small: true })
+      break
     case 'maxHp.lost':
       if (U[e.target]) { U[e.target].maxHp = e.maxHp; U[e.target].hp = e.hp
         cue('float', { hex: U[e.target].hex, kind: 'maxhp', text: '−' + e.amount + ' MAX HP', n: e.amount, of: 'amount', small: true }) }
@@ -625,7 +632,7 @@ export function foldTo(events, n, ctx) {
 export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck', 'unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
   'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'unit.proned', 'unit.stood', 'stamina.spent',
-  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'knockback.blocked', 'kdb.rolled', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',
+  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'knockback.blocked', 'kdb.rolled', 'thorns.reflected', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',
   'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'bleedout.accelerated', 'power.used', 'battle.end',
   /* 2026-09-03 */
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',

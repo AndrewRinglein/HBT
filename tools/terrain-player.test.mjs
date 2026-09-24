@@ -32,7 +32,7 @@ test('Battle picker is persistent outside the scaled scene, labeled and keyboard
   assert.equal(btn.getAttribute('aria-labelledby'),'battleLabel')
   assert.equal(btn.getAttribute('aria-haspopup'),'listbox')
   assert.equal(menu.getAttribute('role'),'listbox')
-  const choices=menu.children;assert.equal(choices.length,34)  // 29 + the two v2.prone TEST battles + the three R4 TEST battles (test.kdb, test.kdb-s7, test.knockback-well; 2026-09-23)
+  const choices=menu.children;assert.equal(choices.length,35)  // 29 + the two v2.prone TEST battles + the three R4 TEST battles (test.kdb, test.kdb-s7, test.knockback-well; 2026-09-23) + the R5 TEST battle (test.thorns; 2026-09-24)
   dispatch(btn,'keydown',{key:'End'});dispatch(btn,'keydown',{key:'Enter'})
   assert.deepEqual(H.viewer.events,w.__battleView.lib.battles.at(-1).battle.events)
   assert.equal(choices[choices.length-1].getAttribute('aria-selected'),'true')

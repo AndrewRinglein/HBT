@@ -55,7 +55,9 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'stamina.drained': 160, 'layer.painted': 0, 'layer.cancelled': 0, 'band.advanced': 900, 'night.fell': 1200, 'light.cast': 0,
   'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0, 'unit.grown': 0,
   /* R4 (2026-09-23): a KDB check that did not fire is silent (0); a fired one holds its word (beat(), as block.rolled) */
-  'kdb.rolled': 0 }
+  'kdb.rolled': 0,
+  /* R5 (2026-09-24): the Thorns word holds a short beat before its damage line */
+  'thorns.reflected': 360 }
 /* a RUN of ground paints folds as one beat (night falls on every hex, the
    heroes light ~100 each phase): the pump paints them together and holds this */
 const PAINT_RUN_MS = 260

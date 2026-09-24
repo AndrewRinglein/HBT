@@ -30,6 +30,7 @@ export function buildLog(events, SN, turns) {
       case 'attack.miss': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — miss`)
       case 'damage.applied': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> takes ${e.amount} ${e.packets ? 'damage' : e.damageType}` +
         (e.collision ? ` <span class="sq">· collision (${escape(e.collidedWith)}${e.blocker != null ? ' ' + escape(NAMES[e.blocker] ?? e.blocker) : ''} ${e.collisionValue} × ${e.remaining} remaining)${e.consumedBy ? ' · consumed by ' + escape(e.consumedBy) : ''}</span>` : '') +
+        (e.thorns ? ` <span class="sq">· thorns</span>` : '') +
         (e.resisted ? ` <span class="sq">· ${e.resisted} resisted</span>` : '') + (e.absorbed ? ` <span class="sq">· ${e.absorbed} absorbed</span>` : '') +
         (e.overkill ? ` <span class="sq">· ${e.overkill} overkill</span>` : '') +
         (e.packets ? e.packets.map(p => `<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sq">${escape(p.source)} / ${escape(p.id)}</span>: ${escape(`${p.applied} ${p.damageType} · raw ${p.raw} · ${p.absorbed} absorbed · defense ${p.defense} · ${p.resisted} resisted · mitigation ${p.mitigationDelta} · floor ${p.floorAdjustment} · resolved ${p.resolved} · ${p.overkill} overkill`)}`).join('') : ''))
@@ -55,6 +56,8 @@ export function buildLog(events, SN, turns) {
         (e.immune ? ` · immune: ${e.immune}${e.immuneBy ? ' (' + escape(e.immuneBy.join(', ')) + ')' : ''}` : '') +
         (e.roll == null ? ' · no roll' : ` · rolled ${e.roll}`) + '</span>' +
         (e.fired ? ` — <b>${String(e.kdbType).toUpperCase()}</b> <span class="sq">· type roll ${e.typeRoll}${e.applied !== e.kdbType ? ' · applied ' + e.applied : ''}${e.suppressedBy ? ' · suppressed by ' + escape(e.suppressedBy.join(', ')) : ''}${e.gap ? ' · ' + escape(e.gap) : ''}</span>` : (e.roll == null ? '' : ' — does not fire')))
+      // R5 (2026-09-24): Thorns — the spikes answer a connecting melee hit; the damage line follows
+      case 'thorns.reflected': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmAt(e)}</b>'s Thorns ${e.thorns} prick <b>${nmT(e)}</b> <span class="sq">· ${e.amount} true${e.absorbed ? ' · ' + e.absorbed + ' absorbed' : ''}</span>`)
       case 'crit.branch': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;CRIT branch — rolled ${e.roll} vs ${e.chartShare} → <b>${e.arm}</b>`)
       case 'crit.effect': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;✶ <b>${e.name}</b> on ${nmT(e)} <span class="sq">· rolled ${e.roll}</span>`)
       case 'maxHp.lost': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> loses ${e.amount} max HP <span class="sq">· now ${e.maxHp}</span>`)

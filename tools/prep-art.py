@@ -80,6 +80,14 @@ ARTMAP = {
  'test-kdb-firm':   {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
  'test-kdb-agile':  {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
  'test-kdb-giant':  {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
+ # v2.thorns test riders (2026-09-24): the Bramble (Thorns 1) and the Briar (Thorns 3) are the
+ # cohort zombie wearing one TEST badge (content/test/units.json `from`); same bodies, as test-kdb-*.
+ 'test-thorns-bramble': {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
+ 'test-thorns-briar':   {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
+ # test.thorns fields test-ranger as an ENEMY (2026-09-24) — the first library battle to, so the
+ # every-fielded-enemy-has-a-token test needs a row. It is the dictated class.ranger TEST body
+ # (content/test/units.json, no `from`): the base Ranger's own token and card, not new art.
+ 'test-ranger': {'token':'ranger-ranger_256.png','card':'card-ranger-ranger','src':'battle-tokens/units/ranger-ranger_256.png','cardsrc':'crucible/art/base/ranger-ranger1.png'},
  'test-zombie-burning':{'token':'zombie_256.png',    'card':'card-zombie',    'src':'battle-tokens/units/zombie_256.png',     'cardsrc':'assets/bestiary/eve/zombie.png'},
  # ── scenario typeIds (2026-08-27) ─────────────────────────────────────────
  # Tokens from the battle-tokens cutout library where the family matches;

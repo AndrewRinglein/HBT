@@ -698,6 +698,24 @@
    "card": "card-zombie.jpg",
    "aspect": 0.3789,
    "height": 1.55
+  },
+  "test-thorns-bramble": {
+   "token": "zombie_256.png",
+   "card": "card-zombie.jpg",
+   "aspect": 0.3789,
+   "height": 1.55
+  },
+  "test-thorns-briar": {
+   "token": "zombie_256.png",
+   "card": "card-zombie.jpg",
+   "aspect": 0.3789,
+   "height": 1.55
+  },
+  "test-ranger": {
+   "token": "ranger-ranger_256.png",
+   "card": "card-ranger-ranger.jpg",
+   "aspect": 0.582,
+   "height": 1.55
   }
  }
 }

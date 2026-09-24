@@ -136,6 +136,10 @@
   {
    "file": "test.knockback-well.json",
    "label": "TEST · knockback collisions: boulder and well (consumed)"
+  },
+  {
+   "file": "test.thorns.json",
+   "label": "TEST · Thorns 1 and Thorns 3 answer melee (thorns.reflected)"
   }
  ]
 }

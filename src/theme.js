@@ -1,7 +1,7 @@
 /* One hue per status, everywhere; one swatch per terrain. Pure tables. */
 export const TSWATCH = { 'terrain.open': 'hexPlains', 'terrain.forest': 'hexForest',
   'terrain.hills': 'hexHills', 'terrain.rocky': 'hexScrub', 'terrain.rocky-hills': 'hexScrub',
-  'terrain.water': 'hexOcean', 'terrain.obstacle': 'hexMountain',
+  'terrain.water': 'hexOcean', 'terrain.impassable': 'hexMountain',
   'terrain.burning': 'hexDirt', 'terrain.poisoned': 'hexMarsh' }
 
 export const STYLE = {   // one hue per status, everywhere — pips, VFX, chips, panel (Law 6)
@@ -70,7 +70,9 @@ export const NOTE_HUE = { knocked: '#cbb9a0', resisted: '#9fb6c8', absorbed: '#8
   /* PROVISIONAL (2026-09-23, R4 knockback/KDB — Angela to judge): a fired KDB's
      word (sandstone), a push's collision (hot amber), a body the well consumed
      (deep-water teal) */
-  kdb: '#e6c07a', collision: '#ff9a4a', consumed: '#3f8f9a' }
+  kdb: '#e6c07a', collision: '#ff9a4a', consumed: '#3f8f9a',
+  /* PROVISIONAL (2026-09-24, R5 Thorns — Angela to judge): the word over a pricked attacker (bramble green) */
+  thorns: '#8fbf5a' }
 /* the protection bar's spent segment; its live segment is the status hue */
 export const PROT_SPENT = '#2f5b78'
 /** theme hue as an "r,g,b" triplet, for the canvas VFX */
