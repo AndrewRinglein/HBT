@@ -2,7 +2,7 @@
 // Every mutator emits an event, which is what makes the log complete by construction —
 // and therefore what makes replay, the text renderer, and every test possible.
 
-import type { Ctx, Event, LifeState, Unit } from './types.js'
+import type { Ctx, Event, LifeState, Prop, Unit } from './types.js'
 import type { HexId } from './hex.js'
 import { effective } from './stats.js'
 
@@ -512,4 +512,34 @@ export function recordBlock(ctx: Ctx, defender: number, causeId: string, facts: 
   u.incomingAttackOrdinal = (u.incomingAttackOrdinal ?? 0) + 1
   emit(ctx, 'block.rolled', causeId, { ...facts, defender, ordinal: u.incomingAttackOrdinal })
   return u.incomingAttackOrdinal
+}
+
+/**
+ * v2.prop-destroy (COMBAT-V2 §12.1–12.3, ruled 2026-09-07): apply `by` destroy
+ * steps to one prop. The tier (material) is the number of steps it takes; below
+ * it the prop is damaged (prop.damaged), at it the prop is destroyed
+ * (prop.damaged, then prop.destroyed). "Destroyed high cover leaves low cover":
+ * a high prop becomes a low prop under the same id and footprint, intact, with
+ * nothing that belongs only to a high prop (collision, consumes); a low prop
+ * leaves nothing. Steps past the tier are lost (SWITCHES.md propDestroyOverflow).
+ * Copy-on-write: `state.props` is replaced, never edited in place, so a shallow
+ * fork sharing the array never sees the change.
+ */
+export function damageProp(ctx: Ctx, propId: string, by: number, causeId: string, actor: number | null): void {
+  if (!Number.isSafeInteger(by) || by < 1) throw new Error('damageProp: steps must be a positive integer')
+  const at = ctx.state.props.findIndex(p => p.id === propId)
+  if (at < 0) throw new Error(`damageProp: no prop ${propId}`)
+  const prop = ctx.state.props[at]!
+  const before = prop.steps ?? 0, after = Math.min(prop.material, before + by)
+  const props = [...ctx.state.props]
+  let leaves: 'low' | 'nothing' | null = null
+  if (after < prop.material) props[at] = { ...prop, steps: after }
+  else if (prop.height === 'high') {
+    const { collisionValue: _c, consumes: _k, steps: _s, crossingCost: _x, ...rest } = prop
+    props[at] = { ...rest, height: 'low' } as Prop
+    leaves = 'low'
+  } else { props.splice(at, 1); leaves = 'nothing' }
+  ctx.state.props = props
+  emit(ctx, 'prop.damaged', causeId, { actor, prop: propId, footprint: prop.footprint.kind, height: prop.height, tier: prop.material, stepsBefore: before, stepsAfter: after })
+  if (leaves) emit(ctx, 'prop.destroyed', causeId, { actor, prop: propId, leaves })
 }

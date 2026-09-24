@@ -444,3 +444,18 @@ applicable, and ordinary/melee/reaction hit damage ledgers include flat COVER �
 A covered ranged miss adds `{cover:boolean,coverPenalty:20,missCause:'cover'|'dodge'|'accuracy'}`;
 Dodge has priority. No extra miss fields are added when no ranged cover applies.
 Burst/area conversion and destruction events are not included in this extension.
+
+## 18. Prop destruction (2026-09-24, `v2.prop-destroy`, COMBAT-V2 §12, §15.1)
+
+Two new events; a renderer folds them onto the props it drew from `map.loaded`, by id.
+
+- `prop.damaged` — `{ actor, prop, footprint: 'hex'|'polygon', height: 'high'|'low', tier, stepsBefore, stepsAfter }`,
+  `causeId` the attack or burst. `height` is the prop's height *before* the step. `stepsAfter < tier` is
+  the damaged state; `stepsAfter === tier` is always followed by `prop.destroyed`.
+- `prop.destroyed` — `{ actor, prop, leaves: 'low'|'nothing' }`. `low`: the prop keeps its id and
+  footprint, now low cover, intact (collision and consumes gone). `nothing`: the prop is gone.
+
+`burst.declared` carries `destroy` only when the burst has Destroy. Live `state.props[].steps`
+(absent = intact) is the same fact, for a snapshot or a mid-battle mount. Both events arrive at
+the end of the attack's resolution — after its damage, KDB and knockback — never mid-attack.
+Burning variants (`prop.ignited`) are not part of this extension.

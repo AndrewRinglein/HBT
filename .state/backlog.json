@@ -1,5 +1,23 @@
 [
  {
+  "id": "v2.prop-destroy",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "V2 R7 part 1, destructible props (COMBAT-V2-DESIGN-2026-09-07 section 12, events section 15.1, ruled 2026-09-07; V2-ROADMAP.md R7). A prop's material tier is the number of destroy steps it takes: intact, damaged (Prop.steps 1..tier-1), destroyed. Destroy N rides on attack rows and burst rows (integer 0..1000). A connecting attack applies N steps to every prop in or touching the hex it strikes (the target's hex at declaration); a burst applies N to every prop touching its shape, shielded or not. Misses and Blocks do not destroy. The change lands at the end of the attack's resolution, once per attack. Destroyed high cover leaves low cover under the same id; a destroyed low prop leaves nothing. Events prop.damaged and prop.destroyed; burst.declared carries destroy. Movement, LOS and cover read the changed props at once. Battle-scoped.",
+  "expect": "Destroy 1 damages a tier-2 wall then destroys it; Destroy 2 destroys tier 1 at once with the extra step lost; only the struck hex; two props in a hex in id order; a miss, a Block, or an attack without Destroy strikes nothing; a two-hit Destroy 1 attack applies one step after both hits; a burst turns a high tier-1 boulder into low cover (passable, LOS open) and a second burst removes it; a polygon edge on the shape boundary is struck, a prop outside is not; low cover is gone once the crates fall; steps survive save/restore and decode refuses steps outside 1..tier-1; test.prop-destroy strikes live with both attacks and replays byte for byte; no control battle moves.",
+  "probeIds": [
+   "attack.test-destroy.chop",
+   "attack.test-destroy.wreck"
+  ],
+  "variants": [
+   "attack.test-destroy.chop",
+   "attack.test-destroy.wreck"
+  ],
+  "note": "Andrew's chat, 2026-09-24 (V2 roadmap R7 part 1). Control battles byte-identical: no control content carries Destroy. Defaults in SWITCHES.md 'V2 prop destruction'. Content: TEST rows attack.test-destroy.chop/.wreck and units test-destroy-chopper/-wrecker; mkenginepack and burst-schema accept destroy. Later R7 parts: direct hex targeting of props, burning variants, hazards, concealment, Atlas adapter diagnostics, viewer/kingdom folding of the new events.",
+  "status": "done",
+  "sha": "7aa40a4"
+ },
+ {
   "id": "v2.item-uses",
   "kind": "engine",
   "shape": "rule",

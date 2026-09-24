@@ -110,7 +110,8 @@ export function prepareCover(ctx:Ctx,input=ctx.state.props):void{
  const board=ctx.state.board
  if(!validBoard(board)||ctx.state.terrain.length!==board.width*board.height)throw new Error('cover: invalid board')
  const props=decodeProps(input.filter(p=>p.height==='low'),ctx.state.terrain.length)
- const shapes=props.map(prop=>({key:JSON.stringify(prop),prop})).sort((a,b)=>a.key<b.key?-1:a.key>b.key?1:0)
+ // v2.prop-destroy: steps taken change no geometry, so they never key a shape.
+ const shapes=props.map(prop=>({key:JSON.stringify({...prop,steps:undefined}),prop})).sort((a,b)=>a.key<b.key?-1:a.key>b.key?1:0)
  const prior=views.get(ctx)
  if(prior&&prior.table.board.width===board.width&&prior.table.board.height===board.height&&shapes.length===prior.table.keys.length&&shapes.every((s,i)=>s.key===prior.table.keys[i]))return
  views.set(ctx,derive(ctx.geo,shapes,prior?.table))

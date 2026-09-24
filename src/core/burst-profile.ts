@@ -18,7 +18,7 @@ function dense(value: unknown, max: number): asserts value is any[] {
 const integer = (v: unknown, min = 0, max = LIMIT): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= min && v <= max
 
 export function burstProfile(value: unknown): BurstProfile {
-  record(value, ['shape', 'side', 'requireTags', 'packets', 'heal', 'impact'])
+  record(value, ['shape', 'side', 'requireTags', 'packets', 'heal', 'impact', 'destroy'])
   record(value.shape, ['kind', 'radius'])
   if (value.shape.kind === 'arc') {
     if (Object.hasOwn(value.shape, 'radius')) throw Error('burst: arc has no radius')
@@ -40,6 +40,8 @@ export function burstProfile(value: unknown): BurstProfile {
   }
   if (value.heal !== undefined && !integer(value.heal)) throw Error('burst: healing must be a bounded nonnegative integer')
   if (value.impact !== undefined && !integer(value.impact, 0, 1000)) throw Error('burst: Impact must be a bounded nonnegative integer')
+  // v2.prop-destroy (COMBAT-V2 §12.2): steps to every prop touching the shape.
+  if (value.destroy !== undefined && !integer(value.destroy, 0, 1000)) throw Error('burst: Destroy must be a bounded nonnegative integer')
   if (!value.packets.length && value.heal === undefined) throw Error('burst: no payload')
   return value as BurstProfile
 }

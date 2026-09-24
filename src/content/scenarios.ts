@@ -540,6 +540,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id:'test.damage-packets',note:'Two pure-data ordered packet variants, different types/amounts and physical penetration.',mapId:'map.open',
     heroes:['test-packet-flame'],heroHexes:[85],enemies:['test-packet-shadow'],enemyHexes:[86],replicate:2,
   },
+  // v2.prop-destroy (2026-09-24, COMBAT-V2 §12): two Destroy swings against zombies
+  // standing in low props — barrels (tier 1) and an old stone wall section (tier 2).
+  // The Chopper (Destroy 1) and the Wrecker (Destroy 2) start adjacent, so a
+  // connecting swing strikes the prop in the zombie's hex. TEST data, no campaign claim.
+  'test.prop-destroy': {
+    id:'test.prop-destroy',note:'TEST: a Chopper (Destroy 1) and a Wrecker (Destroy 2) against zombies standing in barrels (tier 1) and an old stone wall (tier 2). No campaign claim.',mapId:'test.map.prop-destroy',
+    map:{id:'test.map.prop-destroy',name:'Prop destroy TEST',rows:['.......','.......','.......','.......','.......'],props:[{id:'prop.test.barrels',height:'low',material:1,footprint:{kind:'hex',hexes:[10]}},{id:'prop.test.stone-wall',height:'low',material:2,footprint:{kind:'hex',hexes:[24]}}]},
+    heroes:['test-destroy-chopper','test-destroy-wrecker'],heroHexes:[9,23],enemies:['test-zombie','test-zombie'],enemyHexes:[10,24],replicate:0,
+  },
   'test.cover-crates': {
     id:'test.cover-crates',note:'TEST target-end low hex cover, passable crates.',mapId:'test.map.cover-crates',
     map:{id:'test.map.cover-crates',name:'Cover crates TEST',rows:['.......','.......','.......'],props:[{id:'prop.crates',height:'low',material:1,footprint:{kind:'hex',hexes:[10]}}]},

@@ -12,7 +12,8 @@ import { fireTriggers, HOOKS } from './trigger.js'
 import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
-import { accelerateBleedOut, applyAttackPackets, emit, unit, recordBlock } from './mutate.js'
+import { accelerateBleedOut, applyAttackPackets, damageProp, emit, unit, recordBlock } from './mutate.js'
+import { propsTouching } from './props.js'
 import { actionReady, isAttack, spendAction , resolveActionSlot } from './action.js'
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
@@ -422,9 +423,13 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   // chart (SWITCHES.md kdbOrder); a multi-hit attack sums its hits' physical
   // damage (kdbMultiPacket).
   const kdb: KdbTally = { connected: false, physical: 0, eligible: false }
+  // v2.prop-destroy (COMBAT-V2 §12.2): the hex the attack strikes is the target's
+  // hex as the attack is declared — a KDB push after it does not move the blow.
+  const struck = unit(ctx, targetId).hex
   if (hits === 1) {
     const result = performHit(ctx, attackerId, targetId, attackId, 1, 1, mode, kdb)
     kdbAfterAttack(ctx, attackerId, targetId, a0, kdb)
+    destroyAfterAttack(ctx, attackerId, struck, a0, result.hit)
     return result
   }
   // attack.multihit (2026-09-03): each hit runs the whole cycle — damage,
@@ -444,7 +449,21 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     settle(ctx, attackId)
   }
   if (!ctx.state.outcome) kdbAfterAttack(ctx, attackerId, targetId, a0, kdb)
+  destroyAfterAttack(ctx, attackerId, struck, a0, results.some(r => r.hit))
   return { ...(last as AttackResult), hit:results.some(r=>r.hit), blocked:results.every(r=>r.blocked), hits:results, damage, killed: unit(ctx, targetId).hp === 0 }
+}
+
+/**
+ * v2.prop-destroy (COMBAT-V2 §12.2, §12.4): an attack with Destroy N applies N
+ * steps to every prop in the hex it struck — once per attack, however many of its
+ * hits connected (SWITCHES.md propDestroyPerAttack) — at the end of the attack's
+ * resolution, after its KDB, so the attack's own cover was already applied.
+ * "Misses do not destroy": a miss or a Block, on every hit, strikes nothing.
+ */
+function destroyAfterAttack(ctx: Ctx, attackerId: number, struck: number, a: AttackDef, connected: boolean): void {
+  const destroy = attackPacketFields(a.attack).destroy ?? 0
+  if (!connected || destroy < 1 || ctx.state.outcome) return
+  for (const p of propsTouching(ctx, [struck])) damageProp(ctx, p.id, destroy, a.id, attackerId)
 }
 
 /** v2.kdb: what one attack's hits add up to for its single KDB check. */

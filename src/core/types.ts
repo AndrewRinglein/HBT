@@ -8,10 +8,15 @@ export type PolygonFootprint = { kind: 'polygon'; vertices: [number, number][]; 
  * is what a push stopped by this prop costs the mover per remaining point
  * (absent = a basic obstruction's 2); `consumes` (the well, the pit) takes a
  * unit the collision kills — no corpse, no Deathbed.
+ *
+ * v2.prop-destroy (COMBAT-V2 §12, ruled 2026-09-07): `steps` is the destroy steps
+ * the prop has taken (absent = intact); the material tier is how many it takes.
+ * Reaching the tier destroys it — a high prop leaves low cover under the same id,
+ * a low prop leaves nothing (SWITCHES.md 'V2 prop destruction').
  */
-export type Prop = { id: string; height: 'high' | 'low'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } | PolygonFootprint; crossingCost?: 1; collisionValue?: number; consumes?: true }
+export type Prop = { id: string; height: 'high' | 'low'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } | PolygonFootprint; crossingCost?: 1; collisionValue?: number; consumes?: true; steps?: number }
 export type HighProp = Prop & { height: 'high'; crossingCost?: never }
-export type AuthoredProp = { readonly id: string; readonly height: 'high' | 'low'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } | { readonly kind: 'polygon'; readonly vertices: readonly (readonly [number, number])[]; readonly movementPadding: number }; readonly crossingCost?: 1; readonly collisionValue?: number; readonly consumes?: true }
+export type AuthoredProp = { readonly id: string; readonly height: 'high' | 'low'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } | { readonly kind: 'polygon'; readonly vertices: readonly (readonly [number, number])[]; readonly movementPadding: number }; readonly crossingCost?: 1; readonly collisionValue?: number; readonly consumes?: true; readonly steps?: number }
 export type AuthoredHighProp = AuthoredProp & { readonly height: 'high'; readonly crossingCost?: never }
 /** Plain authored map transport, decoded by the same boundary for registry and direct input. */
 export type AuthoredMap = {
@@ -248,6 +253,11 @@ export type BurstProfile = {
   readonly heal?: number
   /** v2.kdb: the burst's Impact for each recipient's KDB check (SWITCHES.md kdbBursts). Absent = 0. */
   readonly impact?: number
+  /**
+   * v2.prop-destroy (COMBAT-V2 §12.2): "An area/burst applies destroy to every hex
+   * and every edge touching the shape." Steps per prop, once per burst. Absent = 0.
+   */
+  readonly destroy?: number
 }
 export type BurstDef = ActionDef & { readonly burst: BurstProfile }
 
@@ -291,6 +301,12 @@ export type AttackProfile = {
    * is not damage." Counts even when the hit deals 0. Absent = 0.
    */
   readonly impact?: number
+  /**
+   * v2.prop-destroy (COMBAT-V2 §12.2): Destroy N applies N steps to whatever is in
+   * the hex the attack strikes, once per connecting attack, at the end of its
+   * resolution (§12.4). "Misses do not destroy." Absent = 0.
+   */
+  readonly destroy?: number
 }
 
 /**

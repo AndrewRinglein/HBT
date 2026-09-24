@@ -8,7 +8,8 @@ import { attackLineClear, segmentCrossesCell } from './los.js'
 import { centerPoint, segmentCrossesPolygon } from './geometry.js'
 import { canSeeHex } from './vision.js'
 import { incomingAbsorb, incomingPhysicalBonus, isBlocked, outgoingPenalty, spendAbsorb } from './status.js'
-import { applyAttackPackets, applyHealing, beginBurst, emit, unit } from './mutate.js'
+import { applyAttackPackets, applyHealing, beginBurst, damageProp, emit, unit } from './mutate.js'
+import { propsTouching } from './props.js'
 import { DMG, finishDamage, resolveSourceDamage, type DamagePacket, type LedgerRow } from './pipeline.js'
 import { fireTriggers, HOOKS, type BurstAdjustment } from './trigger.js'
 import { settle } from './settle.js'
@@ -125,7 +126,8 @@ export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: st
   const prepared = prepare(ctx, actor, centre, a)
   spendAction(ctx, actorId, a, resolveActionSlot(ctx, actor, a, slot)!)
   const ordinal = beginBurst(ctx, actorId, actionId, { centre, origin: actor.hex, shape: a.burst.shape, hexes: prepared.hexes,
-    targets: prepared.targets.map(t => ({uid: t.uid, id: t.id, hex: t.hex})), side: a.burst.side, tags: a.burst.requireTags ?? [], packets: prepared.payload, heal: prepared.heal })
+    targets: prepared.targets.map(t => ({uid: t.uid, id: t.id, hex: t.hex})), side: a.burst.side, tags: a.burst.requireTags ?? [], packets: prepared.payload, heal: prepared.heal,
+    ...(a.burst.destroy ? { destroy: a.burst.destroy } : {}) })
   for (const t of prepared.targets) {
     const target = unit(ctx, t.id)
     if (target.uid !== t.uid || target.lifeState !== 'standing' || target.hp <= 0) continue
@@ -147,5 +149,9 @@ export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: st
     // and the caster's burst ordinal, kind 1 (never a turn).
     if (burstKdbChance(ctx, target, a, result) !== null) resolveKdb(ctx, actorId, t.id, a.id, result.physicalApplied, a.burst.impact ?? 0, [target.uid, actor.uid, ordinal, 1], { burst: true })
   }
+  // v2.prop-destroy (COMBAT-V2 §12.2, §12.4): Destroy reaches every prop in or
+  // touching the shape — shielded or not, a unit there or not — once, at the end
+  // of the burst's resolution, so its own low-cover crossings were already paid.
+  if ((a.burst.destroy ?? 0) > 0 && !ctx.state.outcome) for (const p of propsTouching(ctx, prepared.hexes)) damageProp(ctx, p.id, a.burst.destroy!, a.id, actorId)
   settle(ctx, a.id)
 }

@@ -1,4 +1,4 @@
-import { centerPoint, segmentNearPolygon, orientation, GEOMETRY_LIMITS } from './geometry.js'
+import { centerPoint, cellPolygon, polygonsOverlap, segmentNearPolygon, orientation, GEOMETRY_LIMITS } from './geometry.js'
 import { MAX_BOARD_CELLS } from './hex.js'
 import { TERRAIN, type Ctx, type Prop, type State } from './types.js'
 
@@ -18,7 +18,7 @@ export function decodeProps(value: unknown, cells: number): Prop[] {
   const ids = new Set<string>(), out: Prop[] = []
   let references = 0, vertices = 0
   for (const p of value) {
-    plain(p, ['id', 'height', 'material', 'footprint', 'crossingCost', 'collisionValue', 'consumes'])
+    plain(p, ['id', 'height', 'material', 'footprint', 'crossingCost', 'collisionValue', 'consumes', 'steps'])
     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) || ids.has(p.id)) throw new Error('props: IDs must be unique prop.* strings')
     ids.add(p.id)
     if (!['high','low'].includes(p.height) || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material')
@@ -28,7 +28,10 @@ export function decodeProps(value: unknown, cells: number): Prop[] {
     // so only a high prop may carry what a push into it costs.
     if (Object.hasOwn(p, 'collisionValue') && (p.height !== 'high' || !Number.isSafeInteger(p.collisionValue) || p.collisionValue < 0 || p.collisionValue > 100)) throw new Error('props: collisionValue requires a high prop and an integer 0..100')
     if (Object.hasOwn(p, 'consumes') && (p.height !== 'high' || p.consumes !== true)) throw new Error('props: consumes is true on a high prop, or absent')
-    const collision = { ...(Object.hasOwn(p, 'collisionValue') ? { collisionValue: p.collisionValue as number } : {}), ...(p.consumes === true ? { consumes: true as const } : {}) }
+    // v2.prop-destroy (COMBAT-V2 §12.1): steps taken, 1 .. tier-1 — a prop that has
+    // taken its tier is destroyed and no longer a prop in this form. Absent = intact.
+    if (Object.hasOwn(p, 'steps') && (!Number.isSafeInteger(p.steps) || p.steps < 1 || p.steps >= p.material)) throw new Error('props: steps must be an integer from 1 to material - 1, or absent')
+    const collision = { ...(Object.hasOwn(p, 'collisionValue') ? { collisionValue: p.collisionValue as number } : {}), ...(p.consumes === true ? { consumes: true as const } : {}), ...(Object.hasOwn(p, 'steps') ? { steps: p.steps as number } : {}) }
     if (p.footprint.kind === 'polygon') {
       plain(p.footprint, ['kind', 'vertices', 'movementPadding'])
       const points = p.footprint.vertices, padding = p.footprint.movementPadding
@@ -125,4 +128,19 @@ export function blockingPropAt(ctx: Pick<Ctx, 'state'>, hex: number, from: numbe
   const a = centerPoint(state.board, from), b = centerPoint(state.board, hex)
   for (const p of high) if (p.footprint.kind === 'polygon' && segmentNearPolygon(a, b, p.footprint.vertices, p.footprint.movementPadding)) return p
   return null
+}
+
+/**
+ * v2.prop-destroy (COMBAT-V2 §12.2): every prop in or touching the given hexes —
+ * a hex footprint holding one of them, or a polygon (an edge, an off-centre trunk)
+ * whose shape touches one of their cells, boundary included ("every hex and every
+ * edge touching the shape"). Prop-id order (Law 6). What an attack or a burst strikes.
+ */
+export function propsTouching(ctx: Pick<Ctx, 'state'>, hexes: readonly number[]): Prop[] {
+  const state = ctx.state, set = new Set(hexes)
+  const cells = [...set].sort((a, b) => a - b).map(h => cellPolygon(state.board, h))
+  return state.props.filter(p => p.footprint.kind === 'hex'
+    ? p.footprint.hexes.some(h => set.has(h))
+    : cells.some(c => polygonsOverlap((p.footprint as { vertices: [number, number][] }).vertices, c)))
+    .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
 }

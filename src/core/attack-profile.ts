@@ -2,7 +2,7 @@ import { isDamageType } from './types.js'
 import type { SecondaryDamage } from './types.js'
 
 /** Strict optional packet metadata at every public content/runtime boundary. */
-export function attackPacketFields(value: unknown): {secondaryDamage?: readonly SecondaryDamage[]; armorPenetration?: number; impact?: number} {
+export function attackPacketFields(value: unknown): {secondaryDamage?: readonly SecondaryDamage[]; armorPenetration?: number; impact?: number; destroy?: number} {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('attack packet metadata must be an object')
   const fields = Object.getOwnPropertyDescriptors(value)
   const read = (key: string): unknown => {
@@ -10,9 +10,11 @@ export function attackPacketFields(value: unknown): {secondaryDamage?: readonly 
     if(d && !('value' in d))throw Error(`attack packet ${key} must be plain data`)
     return d?.value
   }
-  const pen=read('armorPenetration'),rows=read('secondaryDamage'),impact=read('impact')
+  const pen=read('armorPenetration'),rows=read('secondaryDamage'),impact=read('impact'),destroy=read('destroy')
   // v2.kdb (COMBAT-V2 §9.1): Impact feeds the KDB comparison only. Integer 0..1000.
   if(impact!==undefined&&(!Number.isSafeInteger(impact)||Number(impact)<0||Number(impact)>1000))throw Error('impact must be an integer from 0 to 1000')
+  // v2.prop-destroy (COMBAT-V2 §12.2): Destroy N is a step count. Integer 0..1000.
+  if(destroy!==undefined&&(!Number.isSafeInteger(destroy)||Number(destroy)<0||Number(destroy)>1000))throw Error('destroy must be an integer from 0 to 1000')
   if(pen!==undefined&&(!Number.isSafeInteger(pen)||Number(pen)<0||Number(pen)>1000000))throw Error('armor penetration must be an integer from 0 to 1000000')
   let secondaryDamage: SecondaryDamage[]|undefined
   if(rows!==undefined){
@@ -33,5 +35,5 @@ export function attackPacketFields(value: unknown): {secondaryDamage?: readonly 
       ids.add(id);secondaryDamage.push({id,when,damageType,amount})
     }
   }
-  return {...(pen!==undefined?{armorPenetration:pen as number}:{}),...(secondaryDamage!==undefined?{secondaryDamage}:{}),...(impact!==undefined?{impact:impact as number}:{})}
+  return {...(pen!==undefined?{armorPenetration:pen as number}:{}),...(secondaryDamage!==undefined?{secondaryDamage}:{}),...(impact!==undefined?{impact:impact as number}:{}),...(destroy!==undefined?{destroy:destroy as number}:{})}
 }

@@ -15591,6 +15591,74 @@ export const UNIT_PACK = {
         "badges": [
           "test.badge.briar"
         ]
+      },
+      {
+        "typeId": "test-destroy-chopper",
+        "name": "Chopper (TEST)",
+        "side": "hero",
+        "maxHp": 9,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 72,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-destroy.chop"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.paladin"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": []
+      },
+      {
+        "typeId": "test-destroy-wrecker",
+        "name": "Wrecker (TEST)",
+        "side": "hero",
+        "maxHp": 9,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 72,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-destroy.wreck"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.paladin"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": []
       }
     ],
     "attacks": {
@@ -15787,6 +15855,28 @@ export const UNIT_PACK = {
         "reach": 1,
         "staminaCost": 0,
         "impact": 7
+      },
+      "attack.test-destroy.chop": {
+        "id": "attack.test-destroy.chop",
+        "name": "Chop (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 0,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "destroy": 1
+      },
+      "attack.test-destroy.wreck": {
+        "id": "attack.test-destroy.wreck",
+        "name": "Wreck (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 0,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "destroy": 2
       }
     },
     "abilities": {

@@ -938,3 +938,24 @@ V2 R6 part 3 (Andrew's chat, 2026-09-24).
 | `itemUsesSpentFielding` | What happens to an instance handed in with no uses left? | **It is carried spent**: not folded (no stats, attacks, powers or triggers), not in hand or stowed, no `unit.equipped`; named on `unit.enter` as `spent` (instance ids) and kept in `itemUses` with `left: 0`. | DUNGEON-MODE §4 "the re-field skips it" — copied, not chosen. What stays chosen is where the log names it (as `stowed` is named, `loadoutStowedLog`). | provisional — 2026-09-24 |
 | `itemUsesMultiPower` | An item granting two powers with uses — how does an incoming count apply? | **The one count applies to each of its powers**; the instance is spent when all are empty. | No such row exists; the simplest reading until one does. | provisional — 2026-09-24 |
 | `itemUsesResult` | What does the result report? | **`itemUses`: one row per (instance, power) — unit, instanceId, itemId, power, `used` this battle, `left` after** — for every carried instance with uses, the spent-on-arrival included. Absent when no unit carries one; `usesSpent` (per power) is unchanged. | R11 needs the whole per-instance state out; an absent field keeps every older result byte-identical. | provisional — 2026-09-24 |
+
+## V2 prop destruction — defaults taken landing v2.prop-destroy (2026-09-24)
+
+The sources: COMBAT-V2-DESIGN-2026-09-07 §12 (materials and steps, applying destroy, results,
+timing, scope — ruled 2026-09-07) and §15.1 (`prop.damaged`, `prop.destroyed`). Engine
+`src/core/mutate.ts` `damageProp`, `src/core/props.ts` `propsTouching`, `destroy` on attack
+and burst profiles, `Prop.steps`. TEST scenario `test.prop-destroy`. V2 R7 part 1
+(Andrew's chat, 2026-09-24). Direct hex targeting, burning variants, hazards and
+concealment are later R7 parts.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `propDestroyStruckHex` | Which props does a single-target attack strike? | **Every prop in or touching the target's hex as the attack is declared** — a hex footprint holding it, or a polygon (an edge) touching its cell, boundary included. A KDB push after the blow does not move it. | §12.2: "applies one step to whatever is in the hex it strikes"; the burst rule's "every hex and every edge touching" read the same way for one hex, so one helper serves both. | provisional — 2026-09-24 |
+| `propDestroyPerAttack` | A multi-hit attack with Destroy N — N per hit, or once? | **Once per attack**, if any hit connected. | §12.4 puts the change "at the end of the attack's resolution"; KDB (kdbMultiPacket) is also one check per attack. | provisional — 2026-09-24 |
+| `propDestroyConnect` | What counts as a miss for "Misses do not destroy"? | **A miss or a Block on every hit.** A hit that deals 0 damage still connects and destroys. | Block is a miss line (§6.2, `attack.missed`); Destroy is not damage. | provisional — 2026-09-24 |
+| `propDestroyOverflow` | Destroy 3 on a tier-1 prop — do the extra steps carry? | **No — steps past the tier are lost**, including into a high prop's low remnant. | §12.2 "Destroy is a step count": each application is steps to *this* prop; a fireball opening a castle wall in one cast would contradict "you need to hit it three times". | provisional — 2026-09-24 |
+| `propDestroyRemnant` | What is left when high cover falls? | **The same id and footprint as a LOW prop, same tier, intact** (steps 0); `collisionValue` and `consumes` go (they belong to high props); a polygon keeps its padding and gains no `crossingCost`. A destroyed low prop leaves nothing and leaves `state.props`. | §12.3 "Destroyed high cover leaves low cover"; per-prop authored leavings (rubble, fire) are not authored yet — when they are, they override this. | provisional — 2026-09-24 |
+| `propDestroyBurstShield` | Does a burst destroy props where its damage was shielded, or with no unit present? | **Yes — every prop touching the shape**, shielded or not, occupied or not. | §12.2 "applies destroy to every hex and every edge touching the shape — including the outer boundary edges. That is what lets a fireball open a room." | provisional — 2026-09-24 |
+| `propDestroyAfterOutcome` | An attack that ends the battle — does it still destroy? | **No** — nothing is applied once the outcome is set (matches KDB on a multi-hit). | Nothing reads the board after the end; no event after `battle.end`. | provisional — 2026-09-24 |
+| `propDestroyRulesVersion` | Does the snapshot rules version move? | **No** — `steps` is optional, so every existing save stays valid; R3–R6 did not move it either. | Law 10: `block.test.ts` pins `.21`. | provisional — 2026-09-24 |
+
