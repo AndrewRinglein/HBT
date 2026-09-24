@@ -1,5 +1,5 @@
 // Standalone host adapter. All choices and resolution belong to the engine.
-import {createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf} from '../engine.js'
+import {createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf,swapCostOf} from '../engine.js'
 import type {Ctx,BattleOptions,BattleCommand,ControlPolicy} from '../engine.js'
 import {SANDBOX_HEROES,SANDBOX_ENEMIES} from '../content/sandbox.js'
 import {atlasFieldingOf,type AtlasBinding} from '../content/atlas.js'
@@ -44,6 +44,34 @@ export function sandboxChoices(s:Sandbox):SandboxChoice[]{
   }
  }
  return out
+}
+type SwapCommand=Extract<BattleCommand,{kind:'swap'}>
+export type SandboxSwapChoice={label:string;hands:string[];command:SwapCommand}
+export type SandboxSwapOffer={choices:SandboxSwapChoice[];cost:number|null;why:string|null}
+/**
+ * V2 R6 (COMBAT-V2 §11.2; engine v2.loadout-swap): the engine's swap, offered to the acting
+ * human-controlled hero. A swap names the instances to hold afterwards (engine SWITCHES
+ * swapShape). Every set of the instances carried is a candidate, in carried order (hands, then
+ * stowed; SWITCHES.md sandboxSwapOrder); the engine's validateBattleCommand keeps the legal ones
+ * (Law 2 — the host decides nothing). With none legal, `why` is the engine's own reason.
+ */
+export function sandboxSwapChoices(s:Sandbox):SandboxSwapOffer{
+ const ctx=s.ctx,actor=ctx.battleCursor?.actor,none={choices:[],cost:null,why:null}
+ if(ctx.state.outcome||ctx.battleCursor?.at!=='acting'||actor==null||controllerOf(ctx,actor,s.policy)!=='human')return none
+ const u=ctx.state.units[actor]!
+ if(!u.loadout)return none
+ const carried=[...u.loadout.hands,...u.loadout.stowed],choices:SandboxSwapChoice[]=[]
+ let why:string|null=null
+ const now=u.loadout.hands.map(i=>i.instanceId).join()
+ for(let mask=0;mask<1<<carried.length;mask++){
+  const picked=carried.filter((_,k)=>mask&(1<<k)),hands=picked.map(i=>i.instanceId)
+  const command:SwapCommand={kind:'swap',actor,hands,expectedSeq:ctx.state.seq}
+  const valid=validateBattleCommand(ctx,s.policy,command)
+  // the reason shown is one for a real change: holding what is already held is always refused
+  if(!valid.ok){if(hands.join()!==now)why??=valid.reason.replace(/^illegal-swap: /,'');continue}
+  choices.push({label:picked.length?picked.map(i=>ctx.items[i.itemId]?.name??i.itemId).join(' + '):'Nothing in hand',hands,command})
+ }
+ return {choices,cost:swapCostOf(ctx,u),why:choices.length?null:why}
 }
 /** Forecast a single current burst command. Enumeration never calls this resolver. */
 export function previewSandboxChoice(s:Sandbox,command:unknown){

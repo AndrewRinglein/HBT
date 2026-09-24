@@ -1,0 +1,11 @@
+file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/sandbox-swap.verify.mjs:27
+const opts=q('swap').children.map(o=>JSON.parse(optionValue(o)))
+                    ^
+
+TypeError: Cannot read properties of null (reading 'children')
+    at file:///sessions/friendly-practical-pasteur/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/sandbox-swap.verify.mjs:27:21
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.2

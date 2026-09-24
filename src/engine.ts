@@ -45,6 +45,10 @@ export { preview } from '../../engine/src/core/pipeline.js'
 export { burstCentres, previewBurst } from '../../engine/src/core/burst.js'
 export { previewPower } from '../../engine/src/core/ability.js'
 export { saveBattle, restoreBattle } from '../../engine/src/core/snapshot.js'
+// Widened 2026-09-24 for the sandbox Swap (V2 R6, engine v2.loadout-swap dd78ff1): the swap's
+// stamina cost, read-only. Legality is validateBattleCommand's (canSwap inside it); performSwap
+// stays closed — the swap is issued as the engine's own `swap` battle command.
+export { swapCostOf } from '../../engine/src/core/swap.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing

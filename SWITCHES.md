@@ -62,3 +62,29 @@ document names it, the row cites the document and this table never sees it.
 
 - **blockForecastWording** (item `v2.block-presentation`). Question: what do the sandbox forecast and the replay log call the engine's three chances? Default: `blockChance` is "Block chance"; `hitChance`, which the engine computes as accuracy *given* the attack is not blocked (V2-HANDOFF.md), is "Hit chance if not blocked"; `connectionChanceBps` is "Chance to connect", shown as a percent by moving the decimal point in the engine's basis points (7250 → 72.5%), never recomputed. The log line reads "block B% · hit H% if not blocked · connects C%". Reason: the bare "Hit chance" showed conditional accuracy as if it were the whole story. Exports older than the engine's Block fields keep the old "hit H%" line. Angela to correct the words.
 - The panel shows Block and Ranged Block beside Dodge, as percentages, only for a unit that has either (innate, or from a shield's `unit.equipped` mods) — the same rule the elemental resists already follow.
+
+## V2 R6 swap — the sandbox Swap command, 2026-09-24
+
+The rule is COMBAT-V2-DESIGN-2026-09-07.md §11.2; engine v2.loadout-swap dd78ff1 (`swap` battle
+command, canSwap inside validateBattleCommand, swapCostOf). `src/core/sandbox.ts`
+sandboxSwapChoices, `src/ui/sandbox.ts` swapControl; probes `test/sandbox-swap.test.ts` and
+`tools/sandbox-swap.verify.mjs` (run by `test/sandbox-swap-ui.test.ts`).
+
+- **sandboxSwapOrder** (item V2 R6 swap UI). Question: a swap names the hands in order (first =
+  right hand); which orders does the sandbox offer? Default: **one option per set of carried
+  instances, in carried order (hands, then stowed)** — every set is a candidate and the engine's
+  validateBattleCommand keeps the legal ones; the reversed order of the same set is not offered.
+  Reason: nothing in the engine reads hand order yet, and doubling every option buries the choice.
+  Provisional, 2026-09-24.
+- **sandboxSwapControl** (item V2 R6 swap UI). Question: hide or disable an illegal swap? Default:
+  **hidden** while choosing a hero, for anyone not human-controlled, and for a hero carrying no
+  loadout; **shown disabled with the engine's own reason** ("Swap unavailable: …", the
+  `illegal-swap:` prefix dropped) when the hero carries a loadout but no swap is legal (already
+  swapped, primary spent, not enough stamina). The reason shown is the first refused candidate
+  other than the hands already held. The button names the engine's swapCostOf. Reason: the player
+  should see why the swap went away, in the engine's words (Law 2). Provisional, 2026-09-24.
+- **sandboxSwapNoSpares** (item V2 R6 swap UI). Question: sandbox heroes field their standard kits,
+  which stow nothing — should the setup form add a spare weapon? Default: **no**; the Swap offers
+  what is carried (stow a hand item, drop to Punch, take the stowed item back at a later
+  activation). Reason: a spare-weapon picker is a new setup surface and a content choice, not this
+  item. Provisional, 2026-09-24.

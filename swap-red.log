@@ -1,0 +1,78 @@
+
+ RUN  v4.1.11 /sessions/friendly-practical-pasteur/mnt/Heroes of Blight and Tragic/kingdom
+
+ ❯ test/sandbox-swap.test.ts (5 tests | 5 failed) 213ms
+     × offers only engine-valid hand lists, never the current one, each at the engine cost 182ms
+     × issuing a choice swaps through the engine: loadout.swapped, stamina spent, the hands moved; then no second swap 9ms
+     × no swap after the primary action, and none without the stamina — the engine says why 8ms
+     × nothing is offered while choosing a hero, to an enemy, or once the battle is over 6ms
+     × what was stowed comes back as an option at the next activation, and a save keeps the loadout 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/sandbox-swap.test.ts > sandbox swap — the engine swap command, offered to a human-controlled hero > offers only engine-valid hand lists, never the current one, each at the engine cost
+TypeError: sandboxSwapChoices is not a function
+ ❯ test/sandbox-swap.test.ts:26:19
+     24|   it('offers only engine-valid hand lists, never the current one, each…
+     25|     const { s, actor } = acting()
+     26|     const offer = sandboxSwapChoices(s)
+       |                   ^
+     27|     expect(offer.why).toBeNull()
+     28|     expect(offer.cost).toBe(1)   // swapCost default 1 (§11.2)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/sandbox-swap.test.ts > sandbox swap — the engine swap command, offered to a human-controlled hero > issuing a choice swaps through the engine: loadout.swapped, stamina spent, the hands moved; then no second swap
+TypeError: sandboxSwapChoices is not a function
+ ❯ test/sandbox-swap.test.ts:45:18
+     43|     const { s, actor } = acting()
+     44|     const before = s.ctx.state.units[actor]!.stamina, keep = handsOf(s…
+     45|     const pick = sandboxSwapChoices(s).choices.find((c) => c.hands.len…
+       |                  ^
+     46|     const n = s.ctx.events.length
+     47|     expect(commandSandbox(s, pick.command)).toEqual({ ok: true })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/sandbox-swap.test.ts > sandbox swap — the engine swap command, offered to a human-controlled hero > no swap after the primary action, and none without the stamina — the engine says why
+TypeError: sandboxSwapChoices is not a function
+ ❯ test/sandbox-swap.test.ts:63:18
+     61|     const { s, actor } = acting()
+     62|     s.ctx.state.units[actor]!.stamina = 0
+     63|     const poor = sandboxSwapChoices(s)
+       |                  ^
+     64|     expect(poor.choices).toEqual([])
+     65|     expect(poor.why).toMatch(/not enough stamina/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/sandbox-swap.test.ts > sandbox swap — the engine swap command, offered to a human-controlled hero > nothing is offered while choosing a hero, to an enemy, or once the battle is over
+TypeError: sandboxSwapChoices is not a function
+ ❯ test/sandbox-swap.test.ts:77:12
+     75|     advanceSandbox(s)
+     76|     expect(s.ctx.battleCursor?.at).toBe('selecting')
+     77|     expect(sandboxSwapChoices(s)).toEqual({ choices: [], cost: null, w…
+       |            ^
+     78|   })
+     79|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/sandbox-swap.test.ts > sandbox swap — the engine swap command, offered to a human-controlled hero > what was stowed comes back as an option at the next activation, and a save keeps the loadout
+TypeError: sandboxSwapChoices is not a function
+ ❯ test/sandbox-swap.test.ts:83:23
+     81|     const { s, actor } = acting()
+     82|     const [sword, shield] = handsOf(s, actor)
+     83|     commandSandbox(s, sandboxSwapChoices(s).choices.find((c) => c.hand…
+       |                       ^
+     84|     expect(commandSandbox(s, { kind: 'end-cycle', actor, expectedSeq: …
+     85|     for (let i = 0; i < 20 && s.ctx.battleCursor?.at !== 'selecting' &…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  09:54:36
+   Duration  4.44s (transform 2.36s, setup 0ms, import 2.76s, tests 213ms, environment 0ms)
+
