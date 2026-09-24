@@ -12,14 +12,14 @@ import { ATTACKS } from '../src/content/index.js'
 import { TERRAIN } from '../src/core/types.js'
 import type { StatName } from '../src/core/stats.js'
 
-const NEW_KINDS = [TERRAIN.FOREST, TERRAIN.ROCKY, TERRAIN.ROCKY_HILLS, TERRAIN.WATER, TERRAIN.OBSTACLE]
+const NEW_KINDS = [TERRAIN.FOREST, TERRAIN.ROCKY, TERRAIN.ROCKY_HILLS, TERRAIN.WATER, TERRAIN.IMPASSABLE]
 const ALL_KINDS = [TERRAIN.OPEN, TERRAIN.HILLS, ...NEW_KINDS]
 
 function warriorOn(terrain: number) {
   const ctx = createCustomBattle(
     [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
-  ctx.state.terrain[ctx.state.units[0]!.hex] = terrain === TERRAIN.OBSTACLE ? TERRAIN.OPEN : terrain
-  if (terrain === TERRAIN.OBSTACLE) setHigh(ctx, ctx.state.units[0]!.hex)
+  ctx.state.terrain[ctx.state.units[0]!.hex] = terrain === TERRAIN.IMPASSABLE ? TERRAIN.OPEN : terrain
+  if (terrain === TERRAIN.IMPASSABLE) setHigh(ctx, ctx.state.units[0]!.hex)
   return { ctx, u: ctx.state.units[0]! }
 }
 
@@ -73,10 +73,10 @@ describe('terrain.kinds — the new kinds carry no rules yet', () => {
   // retired the stat half. Each successor item is the one thing allowed to break the
   // predecessor's neutrality assertion, and it says so in writing (Law 10).
   //
-  // What survives is the claim no later item is allowed to break: an OBSTACLE grants
+  // What survives is the claim no later item is allowed to break: an IMPASSABLE cell grants
   // nothing, because nothing can ever stand on one.
   it('an obstacle grants no modifiers — nothing can stand on it to receive them', () => {
-    const { ctx, u } = warriorOn(TERRAIN.OBSTACLE)
+    const { ctx, u } = warriorOn(TERRAIN.IMPASSABLE)
     expect(terrainMods(ctx, u)).toEqual([])
   })
 
@@ -141,7 +141,7 @@ describe('terrain.movecost — rough ground costs more', () => {
     expect(row(TERRAIN.WATER)).toEqual({ cost: 2, acc: -10, reach: 0, dodge: 0, armor: 0, resist: 0 })
     // "composed" in §1.1 — rock plus a climb, both sets of modifiers
     expect(row(TERRAIN.ROCKY_HILLS)).toEqual({ cost: 3, acc: 5, reach: 2, dodge: 0, armor: 1, resist: 1 })
-    expect(isPassable(TERRAIN.OBSTACLE)).toBe(false)
+    expect(isPassable(TERRAIN.IMPASSABLE)).toBe(false)
   })
 
   // The specific numbers are SWITCHES and moved once already (Angela set rocky-hills
@@ -250,9 +250,9 @@ describe('terrain.movecost — the log says what was paid for', () => {
 // ─── terrain.passable ────────────────────────────────────────────────────────
 describe('terrain.passable — a wall is a wall', () => {
   it('obstacles are impassable; everything else is not', () => {
-    expect(isPassable(TERRAIN.OBSTACLE)).toBe(false)
-    for (const t of ALL_KINDS) if (t !== TERRAIN.OBSTACLE) expect(isPassable(t)).toBe(true)
-    expect(moveCostOf(TERRAIN.OBSTACLE)).toBe(IMPASSABLE)
+    expect(isPassable(TERRAIN.IMPASSABLE)).toBe(false)
+    for (const t of ALL_KINDS) if (t !== TERRAIN.IMPASSABLE) expect(isPassable(t)).toBe(true)
+    expect(moveCostOf(TERRAIN.IMPASSABLE)).toBe(IMPASSABLE)
   })
 
   it('map.thicket actually contains obstacles — otherwise this item proves nothing', () => {

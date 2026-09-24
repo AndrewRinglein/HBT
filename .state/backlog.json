@@ -1,5 +1,16 @@
 [
  {
+  "id": "naming.terrain-impassable",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Andrew, 2026-09-24: the impassable terrain kind is terrain.impassable. Rename the engine's terrain.obstacle id (and its TERRAIN.OBSTACLE constant) to terrain.impassable across engine, viewer and kingdom; record it in GLOSSARY.md; close the SWITCHES.md entry. prop.obstacle.<hex> is a different kind (prop.*) and stays.",
+  "expect": "terrainIdOf(TERRAIN.IMPASSABLE) is terrain.impassable; no tracked source outside archives, ledgers and scratch logs spells terrain.obstacle; control battles byte-identical.",
+  "neutral": true,
+  "note": "Re-files terrain.impassable-naming as plumbing: that item was a naming decision with no content id the gate can probe (obstacle cells are props at runtime since the V2 props migration, so terrain.impassable never appears in a battle log).",
+  "status": "done-needs-review",
+  "sha": "af1d4e0"
+ },
+ {
   "id": "v2.kdb",
   "kind": "engine",
   "shape": "rule",

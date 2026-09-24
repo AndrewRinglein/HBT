@@ -27,7 +27,7 @@ function record(value: unknown): asserts value is Record<string, any> {
 }
 const integer = (n: unknown, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER): n is number => Number.isSafeInteger(n) && (n as number) >= min && (n as number) <= max
 const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(x => typeof x === 'string')
-const validTerrain = (v: unknown, cells: number): boolean => Array.isArray(v) && v.length === cells && v.every(x => integer(x, 0) && x !== TERRAIN.OBSTACLE)
+const validTerrain = (v: unknown, cells: number): boolean => Array.isArray(v) && v.length === cells && v.every(x => integer(x, 0) && x !== TERRAIN.IMPASSABLE)
 
 /** Sorted object keys; arrays retain their authored order. Hook presence is
  * data; implementation compatibility is covered by RULES_VERSION, not source

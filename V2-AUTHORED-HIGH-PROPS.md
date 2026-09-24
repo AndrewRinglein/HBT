@@ -55,7 +55,7 @@ all 20 old maps ×25, all 32 scenarios and three progression cases. The projecti
 first requires canonical shorthand IDs/material/footprints to equal exactly the
 original obstacle cells, then restores ground only at those OPEN cells. Initial
 census, optional exact terrain and props are checked before projection. It maps
-only the exact diagnostic `impassable prop` back to `impassable terrain.obstacle`
+only the exact diagnostic `impassable prop` back to `impassable terrain.impassable`
 on knockback.blocked.reason / knocked.stoppedBy (3 occurrences). All other event
 fields, state, full RNG, cursor and results compare exactly. Script and JSON/log
 are retained in scratch/compare-authored-props.mts and authored-props-transition.*.

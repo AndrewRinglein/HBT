@@ -4,7 +4,7 @@ import { mapDef, decodeMap, terrainIdOf, moveCostOf, isPassable,
          accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf } from '../src/content/maps.js'
 import { TERRAIN } from '../src/core/types.js'
 
-const KINDS = Object.values(TERRAIN).filter(t => t !== TERRAIN.OBSTACLE) as number[]
+const KINDS = Object.values(TERRAIN).filter(t => t !== TERRAIN.IMPASSABLE) as number[]
 const table = KINDS.map((t) => ({
   id: terrainIdOf(t),
   moveCost: moveCostOf(t),

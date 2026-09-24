@@ -101,9 +101,8 @@ with a stated owner is not an open question, and must never appear in this file.
 ### Still not built, from §1.1
 
 - **Water strips Burn and Poison.** No mechanic exists for terrain removing a status.
-- **`terrain.impassable` vs `terrain.obstacle`.** §1.1 names it `terrain.impassable`;
-  MAP-01's legend calls it Obstruction with glyph `x`, and the engine uses
-  `terrain.obstacle`. Two names, one thing — Angela's call, not mine.
+- ~~**The impassable terrain's two names.**~~ **Answered 2026-09-24** (Andrew): it is
+  `terrain.impassable`, per §1.1. See DECISIONS.md and GLOSSARY.md "Settled, 2026-09-24".
 
 ## The original note, kept because a decision you reversed is still a decision
 

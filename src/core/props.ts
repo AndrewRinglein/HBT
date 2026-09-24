@@ -64,7 +64,7 @@ export function decodeProps(value: unknown, cells: number): Prop[] {
 type Blockage = { key: string; cells: readonly number[]; contains: (hex: number) => boolean }
 const tables = new WeakMap<State, Blockage>()
 function blockage(state: State, props=state.props): Blockage {
-  if (state.terrain.includes(TERRAIN.OBSTACLE)) throw new Error('props: obstacle shorthand is not canonical runtime ground')
+  if (state.terrain.includes(TERRAIN.IMPASSABLE)) throw new Error('props: obstacle shorthand is not canonical runtime ground')
   const cells = state.board.width * state.board.height, found = new Set<number>()
   // One scan at the owning operation's boundary, never inside its neighbor loop.
   for (const p of props) {

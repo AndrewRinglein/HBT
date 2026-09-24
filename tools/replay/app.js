@@ -272,13 +272,13 @@ const STVFX = (id) => { const n = id.replace(/^test\./, '').replace(/^status\./,
 const TCOL = {
   'terrain.open':'#6E7C34', 'terrain.forest':'#2C3A22', 'terrain.rocky':'#969694',
   'terrain.hills':'#CEBA28', 'terrain.rocky-hills':'#92683A', 'terrain.water':'#2C6084',
-  'terrain.obstacle':'#805430',
+  'terrain.impassable':'#805430',
   'terrain.burning':'#A6431C', 'terrain.poisoned':'#55701F',
 };
 const TNAME = {
   'terrain.open':'Flatland', 'terrain.forest':'Forest', 'terrain.rocky':'Rocky',
   'terrain.hills':'Hill', 'terrain.rocky-hills':'Rocky Hill', 'terrain.water':'Water',
-  'terrain.obstacle':'Obstruction',
+  'terrain.impassable':'Obstruction',
   'terrain.burning':'Burning Ground', 'terrain.poisoned':'Poisoned Ground',
 };
 // Effects are DERIVED from the engine's own tables at build time, never typed here.

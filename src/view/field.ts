@@ -9,7 +9,7 @@ import { terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
 } from '../content/terrain.js'
 
 const HEXW = 128, HEXH = 132, COL = 128, ROW = 96, ODD = 64, TILT = 49.3
-const groundValues = Object.values(TERRAIN).filter(t => t !== TERRAIN.OBSTACLE)
+const groundValues = Object.values(TERRAIN).filter(t => t !== TERRAIN.IMPASSABLE)
 const terrainNumbers = new Map(groundValues.map(t => [terrainIdOf(t), t]))
 function record(value: unknown, label: string): Record<string, any> {
   if (!value || typeof value !== 'object' || Array.isArray(value) || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) throw new Error(`${label}: expected plain data`)

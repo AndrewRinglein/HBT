@@ -2566,3 +2566,9 @@ Andrew, told the kingdom landing could not finish in Cowork and asked to run it 
 Ruled: the kingdom gate takes the engine's shape from “less process per feature” above. The full suite runs as four shards (`node tools/gate.mjs --shard k/4`, from `kingdom/`), each recorded against the exact tree; a landing requires all four green on that tree and runs only typecheck, the claimed probes and the static checks. The separate every-P-tier-probe sweep and the post-land audit are cut — the P-tier probes are test files, so the shards run them.
 
 Andrew, same chat, on letting `v2.shields-hands` also re-close ISC-003 (reopened by a fixture regeneration that this item repaired): “Okay, one is fine.”
+
+## 2026-09-24 — the impassable terrain is `terrain.impassable`
+
+Andrew, asked whether the impassable terrain is `terrain.impassable` (GROUND-REQUIREMENTS.md §1.1) or `terrain.obstacle` (the engine): “Terrain impassable.   And then continue. Do V2 R5 thorns.”
+
+Ruled: the id is `terrain.impassable`; `terrain.obstacle` is retired everywhere (GLOSSARY.md "Settled, 2026-09-24"). The reserved prop shorthand `prop.obstacle.<hex>` is a different kind and is not renamed. The engine constant `TERRAIN.OBSTACLE` becomes `TERRAIN.IMPASSABLE`. This chat then takes V2 R5 Thorns.

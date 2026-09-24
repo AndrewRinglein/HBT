@@ -33,7 +33,7 @@ describe('water cleanses', () => {
     for (let h = 0; h < t.length; h++) {
       if (t[h] !== TERRAIN.WATER) continue
       for (const n of neighboursOf(h)) {
-        if (t[n] !== undefined && t[n] !== TERRAIN.WATER && t[n] !== TERRAIN.OBSTACLE) return { water: h, shore: n }
+        if (t[n] !== undefined && t[n] !== TERRAIN.WATER && t[n] !== TERRAIN.IMPASSABLE) return { water: h, shore: n }
       }
     }
     throw new Error(`no water with a shore on ${mapId}`)

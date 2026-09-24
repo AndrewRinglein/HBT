@@ -6,7 +6,7 @@ import { disabledIds } from './disable.js'
 /** The authored glyph for each terrain kind. MAP-01's legend is the source. */
 export const GLYPH: Readonly<Record<string, number>> = {
   '.': TERRAIN.OPEN, 'h': TERRAIN.HILLS, 'f': TERRAIN.FOREST, 'r': TERRAIN.ROCKY,
-  'R': TERRAIN.ROCKY_HILLS, 'w': TERRAIN.WATER, 'x': TERRAIN.OBSTACLE,
+  'R': TERRAIN.ROCKY_HILLS, 'w': TERRAIN.WATER, 'x': TERRAIN.IMPASSABLE,
   'b': TERRAIN.BURNING, 'p': TERRAIN.POISONED,
 }
 
@@ -15,7 +15,7 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.OPEN]: 'terrain.open', [TERRAIN.HILLS]: 'terrain.hills',
   [TERRAIN.FOREST]: 'terrain.forest', [TERRAIN.ROCKY]: 'terrain.rocky',
   [TERRAIN.ROCKY_HILLS]: 'terrain.rocky-hills', [TERRAIN.WATER]: 'terrain.water',
-  [TERRAIN.OBSTACLE]: 'terrain.obstacle',
+  [TERRAIN.IMPASSABLE]: 'terrain.impassable',
   [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
 }
 
@@ -104,7 +104,7 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
   [TERRAIN.ROCKY]: ['rough'],
   [TERRAIN.ROCKY_HILLS]: ['rough', 'elevated'],    // composed, per §1.1
   [TERRAIN.WATER]: ['wet'],
-  [TERRAIN.OBSTACLE]: [],
+  [TERRAIN.IMPASSABLE]: [],
   [TERRAIN.BURNING]: ['burning'],
   [TERRAIN.POISONED]: ['poisoned'],
 }
@@ -140,12 +140,12 @@ function composed(terrain: number): Mods {
 }
 
 export function moveCostOf(terrain: number): number {
-  if (terrain === TERRAIN.OBSTACLE) return IMPASSABLE
+  if (terrain === TERRAIN.IMPASSABLE) return IMPASSABLE
   return composed(terrain).moveCost
 }
 
 const statOf = (terrain: number, stat: Stat): number =>
-  terrain === TERRAIN.OBSTACLE ? 0 : (composed(terrain)[stat] ?? 0)
+  terrain === TERRAIN.IMPASSABLE ? 0 : (composed(terrain)[stat] ?? 0)
 
 /** Accuracy bonus for standing here. */
 export function accuracyBonusOf(terrain: number): number { return statOf(terrain, 'accuracy') }

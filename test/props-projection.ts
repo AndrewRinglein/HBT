@@ -4,13 +4,13 @@ import { TERRAIN, type Ctx } from '../src/core/types.js'
 
 /** Narrow migration proof, NOT a runtime/save compatibility path. */
 export function projectShorthand(ctx: Ctx, authoredTerrain: readonly number[]) {
-  const cells = authoredTerrain.flatMap((t, h) => t === TERRAIN.OBSTACLE ? [h] : [])
+  const cells = authoredTerrain.flatMap((t, h) => t === TERRAIN.IMPASSABLE ? [h] : [])
   const expected = cells.map(h => ({ id: `prop.obstacle.${h}`, height: 'high', material: 3, footprint: { kind: 'hex', hexes: [h] } }))
   assert.deepEqual(ctx.state.props, expected, 'projection permits only exact authored x shorthand, never arbitrary props')
   const { props: _, ...state } = structuredClone(ctx.state)
-  for (const h of cells) { assert.equal(state.terrain[h], TERRAIN.OPEN); state.terrain[h] = TERRAIN.OBSTACLE }
+  for (const h of cells) { assert.equal(state.terrain[h], TERRAIN.OPEN); state.terrain[h] = TERRAIN.IMPASSABLE }
   const census = (terrain: readonly number[]) => { const out: Record<string, number> = {}; for (const t of terrain) { const id = terrainIdOf(t); out[id] = (out[id] ?? 0) + 1 } return out }
-  const initialGround = authoredTerrain.map(t => t === TERRAIN.OBSTACLE ? TERRAIN.OPEN : t)
+  const initialGround = authoredTerrain.map(t => t === TERRAIN.IMPASSABLE ? TERRAIN.OPEN : t)
   const events = ctx.events.map(event => {
     const e = structuredClone(event)
     if (e.type === 'map.loaded') {
@@ -27,8 +27,8 @@ export function projectShorthand(ctx: Ctx, authoredTerrain: readonly number[]) {
       return Object.fromEntries(entries) as typeof e
     }
     // Truthful diagnostic correction only; every other field remains compared.
-    if (e.type === 'knockback.blocked' && e.reason === 'impassable prop') e.reason = 'impassable terrain.obstacle'
-    if (e.type === 'knocked' && e.stoppedBy === 'impassable prop') e.stoppedBy = 'impassable terrain.obstacle'
+    if (e.type === 'knockback.blocked' && e.reason === 'impassable prop') e.reason = 'impassable terrain.impassable'
+    if (e.type === 'knocked' && e.stoppedBy === 'impassable prop') e.stoppedBy = 'impassable terrain.impassable'
     return e
   })
   return { state, events }

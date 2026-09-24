@@ -14781,3 +14781,115 @@ index 6265beb..20952bb 100644
        expect(battleCursorCases().filter(row => ids.includes(row.id)).map(row => row.id)).toEqual(ids)
 ```
 </details>
+
+## naming.terrain-impassable — LANDED `af1d4e0` **NEEDS REVIEW**
+2026-09-24 09:06
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:477 · DECISIONS.md:2534
+  PASS  typecheck
+  PASS  the item's own tests — test/terrain.test.ts, test/water-cleanses.test.ts, test/terrain-impassable-naming.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/props-projection.ts, test/terrain.test.ts, test/water-cleanses.test.ts, test/terrain-impassable-naming.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/props-projection.ts (-5), test/terrain.test.ts (-9), test/water-cleanses.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 33 ids without a published source (23 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/props-projection.ts b/test/props-projection.ts
+index 20b7006..df799ea 100644
+--- a/test/props-projection.ts
++++ b/test/props-projection.ts
+@@ -5,11 +5,11 @@ import { TERRAIN, type Ctx } from '../src/core/types.js'
+ /** Narrow migration proof, NOT a runtime/save compatibility path. */
+ export function projectShorthand(ctx: Ctx, authoredTerrain: readonly number[]) {
+-  const cells = authoredTerrain.flatMap((t, h) => t === TERRAIN.OBSTACLE ? [h] : [])
++  const cells = authoredTerrain.flatMap((t, h) => t === TERRAIN.IMPASSABLE ? [h] : [])
+   const expected = cells.map(h => ({ id: `prop.obstacle.${h}`, height: 'high', material: 3, footprint: { kind: 'hex', hexes: [h] } }))
+   assert.deepEqual(ctx.state.props, expected, 'projection permits only exact authored x shorthand, never arbitrary props')
+   const { props: _, ...state } = structuredClone(ctx.state)
+-  for (const h of cells) { assert.equal(state.terrain[h], TERRAIN.OPEN); state.terrain[h] = TERRAIN.OBSTACLE }
++  for (const h of cells) { assert.equal(state.terrain[h], TERRAIN.OPEN); state.terrain[h] = TERRAIN.IMPASSABLE }
+   const census = (terrain: readonly number[]) => { const out: Record<string, number> = {}; for (const t of terrain) { const id = terrainIdOf(t); out[id] = (out[id] ?? 0) + 1 } return out }
+-  const initialGround = authoredTerrain.map(t => t === TERRAIN.OBSTACLE ? TERRAIN.OPEN : t)
++  const initialGround = authoredTerrain.map(t => t === TERRAIN.IMPASSABLE ? TERRAIN.OPEN : t)
+   const events = ctx.events.map(event => {
+     const e = structuredClone(event)
+@@ -28,6 +28,6 @@ export function projectShorthand(ctx: Ctx, authoredTerrain: readonly number[]) {
+     }
+     // Truthful diagnostic correction only; every other field remains compared.
+-    if (e.type === 'knockback.blocked' && e.reason === 'impassable prop') e.reason = 'impassable terrain.obstacle'
+-    if (e.type === 'knocked' && e.stoppedBy === 'impassable prop') e.stoppedBy = 'impassable terrain.obstacle'
++    if (e.type === 'knockback.blocked' && e.reason === 'impassable prop') e.reason = 'impassable terrain.impassable'
++    if (e.type === 'knocked' && e.stoppedBy === 'impassable prop') e.stoppedBy = 'impassable terrain.impassable'
+     return e
+   })
+diff --git a/test/terrain.test.ts b/test/terrain.test.ts
+index bea6f29..306587f 100644
+--- a/test/terrain.test.ts
++++ b/test/terrain.test.ts
+@@ -13,5 +13,5 @@ import { TERRAIN } from '../src/core/types.js'
+ import type { StatName } from '../src/core/stats.js'
+ 
+-const NEW_KINDS = [TERRAIN.FOREST, TERRAIN.ROCKY, TERRAIN.ROCKY_HILLS, TERRAIN.WATER, TERRAIN.OBSTACLE]
++const NEW_KINDS = [TERRAIN.FOREST, TERRAIN.ROCKY, TERRAIN.ROCKY_HILLS, TERRAIN.WATER, TERRAIN.IMPASSABLE]
+ const ALL_KINDS = [TERRAIN.OPEN, TERRAIN.HILLS, ...NEW_KINDS]
+ 
+@@ -19,6 +19,6 @@ function warriorOn(terrain: number) {
+   const ctx = createCustomBattle(
+     [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
+-  ctx.state.terrain[ctx.state.units[0]!.hex] = terrain === TERRAIN.OBSTACLE ? TERRAIN.OPEN : terrain
+-  if (terrain === TERRAIN.OBSTACLE) setHigh(ctx, ctx.state.units[0]!.hex)
++  ctx.state.terrain[ctx.state.units[0]!.hex] = terrain === TERRAIN.IMPASSABLE ? TERRAIN.OPEN : terrain
++  if (terrain === TERRAIN.IMPASSABLE) setHigh(ctx, ctx.state.units[0]!.hex)
+   return { ctx, u: ctx.state.units[0]! }
+ }
+@@ -74,8 +74,8 @@ describe('terrain.kinds — the new kinds carry no rules yet', () => {
+   // predecessor's neutrality assertion, and it says so in writing (Law 10).
+   //
+-  // What survives is the claim no later item is allowed to break: an OBSTACLE grants
++  // What survives is the claim no later item is allowed to break: an IMPASSABLE cell grants
+   // nothing, because nothing can ever stand on one.
+   it('an obstacle grants no modifiers — nothing can stand on it to receive them', () => {
+-    const { ctx, u } = warriorOn(TERRAIN.OBSTACLE)
++    const { ctx, u } = warriorOn(TERRAIN.IMPASSABLE)
+     expect(terrainMods(ctx, u)).toEqual([])
+   })
+@@ -142,5 +142,5 @@ describe('terrain.movecost — rough ground costs more', () => {
+     // "composed" in §1.1 — rock plus a climb, both sets of modifiers
+     expect(row(TERRAIN.ROCKY_HILLS)).toEqual({ cost: 3, acc: 5, reach: 2, dodge: 0, armor: 1, resist: 1 })
+-    expect(isPassable(TERRAIN.OBSTACLE)).toBe(false)
++    expect(isPassable(TERRAIN.IMPASSABLE)).toBe(false)
+   })
+ 
+@@ -251,7 +251,7 @@ describe('terrain.movecost — the log says what was paid for', () => {
+ describe('terrain.passable — a wall is a wall', () => {
+   it('obstacles are impassable; everything else is not', () => {
+-    expect(isPassable(TERRAIN.OBSTACLE)).toBe(false)
+-    for (const t of ALL_KINDS) if (t !== TERRAIN.OBSTACLE) expect(isPassable(t)).toBe(true)
+-    expect(moveCostOf(TERRAIN.OBSTACLE)).toBe(IMPASSABLE)
++    expect(isPassable(TERRAIN.IMPASSABLE)).toBe(false)
++    for (const t of ALL_KINDS) if (t !== TERRAIN.IMPASSABLE) expect(isPassable(t)).toBe(true)
++    expect(moveCostOf(TERRAIN.IMPASSABLE)).toBe(IMPASSABLE)
+   })
+ 
+diff --git a/test/water-cleanses.test.ts b/test/water-cleanses.test.ts
+index d10dcbb..cf12889 100644
+--- a/test/water-cleanses.test.ts
++++ b/test/water-cleanses.test.ts
+@@ -34,5 +34,5 @@ describe('water cleanses', () => {
+       if (t[h] !== TERRAIN.WATER) continue
+       for (const n of neighboursOf(h)) {
+-        if (t[n] !== undefined && t[n] !== TERRAIN.WATER && t[n] !== TERRAIN.OBSTACLE) return { water: h, shore: n }
++        if (t[n] !== undefined && t[n] !== TERRAIN.WATER && t[n] !== TERRAIN.IMPASSABLE) return { water: h, shore: n }
+       }
+     }
+```
+</details>
