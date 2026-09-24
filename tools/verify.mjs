@@ -618,7 +618,12 @@ if (SINGLES) {
   check(odd.length > 0, 'board: no non-square battle in the library — the 16×16 assumption cannot be tested')
   const west = LIB.battles.map((b, i) => [b, i]).filter(([b]) => { const ml = b.battle.events.find(e => e.type === 'map.loaded'); return ml && ml.deploy && ml.deploy.hero === 'west' })
   check(west.length > 0, 'board: no battle with heroes deploying west in the library')
-  for (const [b, i] of [...odd.filter(([b])=>b.battle.atlasSetup).slice(0,2),...[...odd,...west].filter(([b])=>!b.battle.atlasSetup).slice(0,2)]) {
+  /* 2026-09-23 (R4): a scenario that fields units at NAMED hexes (seed heroHexes /
+     enemyHexes — test.knockback-well puts its zombies beside the golem mid-board)
+     makes no deploy-edge claim, so it is not drawn into this edge sample; the
+     sample stays the battles it was (dungeon-16x8 and horde-24 before the R4 adds). */
+  const edgeDeployed = ([b]) => !b.battle.atlasSetup && !(b.battle.seed && (b.battle.seed.heroHexes || b.battle.seed.enemyHexes))
+  for (const [b, i] of [...odd.filter(([b])=>b.battle.atlasSetup).slice(0,2),...[...odd,...west].filter(edgeDeployed).slice(0,2)]) {
     load(i); const v = H.viewer; v.pause(); const V = v._V, EV = v.events
     const ml = EV.find(e => e.type === 'map.loaded')
     check(V.data.BOARD.width === ml.width && V.data.BOARD.height === ml.height, `${b.label}: the field says ${V.data.BOARD.width}×${V.data.BOARD.height}, map.loaded says ${ml.width}×${ml.height}`)
