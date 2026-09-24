@@ -46,5 +46,21 @@
       "wounded": true
     },
     "note": "fix.deathbed-no-stands (2026-09-04): the Wounded badge's SHAPE \u2014 the ruled numbers (\u221210 Accuracy, \u221210 Dodge, \u22121 Strength, \u22121 Precision, \u22122 Max HP) and the flag that makes the next zero fatal \u2014 as a TEST row, so the rule is proved before 4-BADGES-SETTLED publishes badge.wounded. The real row is content's; this one never ships."
+  },
+  {
+    "id": "test.badge.bramble",
+    "name": "Bramble (TEST)",
+    "statModifiers": {
+      "thorns": 1
+    },
+    "note": "v2.thorns (2026-09-24, COMBAT-V2 section 9.4): Thorns 1 as a stat modifier - the mechanism's first instance."
+  },
+  {
+    "id": "test.badge.briar",
+    "name": "Briar (TEST)",
+    "statModifiers": {
+      "thorns": 3
+    },
+    "note": "v2.thorns: Thorns 3 - the second instance, pure data."
   }
 ]

@@ -335,6 +335,8 @@ function compileBadge(row) {
       if (ok) { for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; mods[st] = (mods[st] ?? 0) + v } continue }
     }
     if ((m = clause.match(/^grants\s+`?(power\.[a-z0-9.-]+)`?$/i))) { grants.push(m[1]); continue }
+    // v2.thorns (COMBAT-V2 §9.4): "Thorns N" is the `thorns` stat, nothing conditional.
+    if ((m = clause.match(/^Thorns (\d+)$/))) { mods.thorns = (mods.thorns ?? 0) + parseInt(m[1], 10); continue }
     const fl = Object.keys(BADGE_FLAGS).find((k) => clause.toLowerCase().startsWith(k));
     if (fl) { for (const f of [BADGE_FLAGS[fl]].flat()) flags[f] = true; if (clause.length > fl.length) gaps.push(clause); continue }
     gaps.push(clause);   // hooks (`startOfBattle`: …), class locks, "lifts on rescue" — named, not guessed
@@ -1250,9 +1252,11 @@ function compileItems() {
         triggers.push({ id: `trigger.${base}.on-block.ranged-block`, hook: 'onBlock', chance: t.chance ?? 100, select: 'target', ...role,
           effect: { kind: 'statMod', stat: 'rangedBlock', value: -parseInt(m[2], 10), until: 'battle' }, source: it.id });
       } else if ((m = eff.match(/^Thorns (\d+)$/)) && t.hook === 'onTakingDamage') {
-        // RULED 2026-08-27: "Thorns damage that is dealt is true damage."
-        triggers.push({ id: `trigger.${it.id.replace(/^item\./, '')}.thorns`, hook: 'onTakingDamage', chance: 100,
-          select: 'target', effect: { kind: 'damage', amount: parseInt(m[1], 10), damageType: 'true' }, source: it.id });
+        // v2.thorns (COMBAT-V2 §9.4, 2026-09-24): "Thorns is a magnitude, not a tick" —
+        // the engine's `thorns` stat, which reflects N true damage onto a melee attacker
+        // that hits and adds N to the collision value. No trigger: the V1 onTakingDamage
+        // retaliation (any range, only when damage got through) is retired.
+        statModifiers.thorns = (statModifiers.thorns || 0) + parseInt(m[1], 10);
       } else {
         g(`${t.hook}: ${eff.slice(0, 50)}`, 'trigger shape unparsed');
       }
@@ -1267,7 +1271,10 @@ function compileItems() {
       if (pw) { authoredAbilities[pw.id] = pw; abilities.push(pw.id); for (const gg of pw.gaps || []) g(`${pw.id}: ${gg}`, 'item active clause'); }
       else g(`active: ${String(row.description || '').slice(0, 50)}`, 'an ability with charges/targets — capability.consumables');
     }
-    for (const k of ['thorns', 'airwalk', 'slayer', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
+    // v2.thorns: the row's `thorns` field restates its Thorns trigger; a field the
+    // trigger did not compile (or disagrees with) stays a gap, never a second grant.
+    if (row.thorns !== undefined && row.thorns !== statModifiers.thorns) g(`thorns: ${JSON.stringify(row.thorns)}`, 'item field: thorns');
+    for (const k of ['airwalk', 'slayer', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
     // one-use rows (the Waystation, 2026-09-02): a charge is spent IN battle —
     // the same missing capability as an activated item.
     if (row.uses !== undefined && !abilities.some((a) => authoredAbilities[a]?.uses)) g(`uses: ${JSON.stringify(row.uses)} — no active compiled to carry the charge`, 'charges spent in battle — capability.consumables');
@@ -1459,6 +1466,8 @@ for (const combo of TIER3) {
   const triggers = [...b.triggers];
   for (const t of e?.triggers || []) {
     const eff = String(t.effect || ''); let m;
+    // v2.thorns: the enchant's "Thorns N" is the same magnitude its base items carry.
+    if (t.hook === 'onTakingDamage' && (m = eff.match(/^Thorns (\d+)$/))) { statModifiers.thorns = (statModifiers.thorns ?? 0) + +m[1]; continue; }
     if (TRIG_HOOKS.has(t.hook) && (m = eff.match(/^(apply|gain) (\d+) (?:more )?([A-Za-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
       triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[3].toLowerCase()}${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
         select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }, source: combo.id });

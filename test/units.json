@@ -45,18 +45,6 @@
         "note": "capability.knockback's second variant: the same mechanism as trigger.halberd.hack.knockback, pure data on the test body. | V2 rule.bursts: test instrument rebound from Sweep to ordinary Slam; bursts no longer fire attack hooks. Hook, chance and effect unchanged."
       },
       {
-        "id": "trigger.test-thorns",
-        "hook": "onTakingDamage",
-        "chance": 100,
-        "select": "target",
-        "effect": {
-          "kind": "damage",
-          "amount": 1,
-          "damageType": "true"
-        },
-        "note": "Thorns, test lane (fix.status-damage-types): RULED 'Thorns damage that is dealt is true damage.'"
-      },
-      {
         "id": "trigger.test-eoa.brace",
         "hook": "onActivationEnd",
         "chance": 100,
@@ -190,7 +178,8 @@
       "power.test-second-wind"
     ],
     "badges": [
-      "badge.hero"
+      "badge.hero",
+      "test.badge.bramble"
     ]
   },
   {
@@ -660,5 +649,25 @@
     "badge.giant"
   ],
   "note": "v2.kdb: the cohort zombie wearing badge.giant (carries Stand Firm) - the second Stand Firm instance. No campaign content."
+},
+{
+  "id": "test-thorns-bramble",
+  "triggers": [],
+  "from": "test-zombie",
+  "name": "Bramble Zombie (TEST)",
+  "badges": [
+    "test.badge.bramble"
+  ],
+  "note": "v2.thorns (2026-09-24): the cohort zombie wearing test.badge.bramble (Thorns 1). No campaign content."
+},
+{
+  "id": "test-thorns-briar",
+  "triggers": [],
+  "from": "test-zombie",
+  "name": "Briar Zombie (TEST)",
+  "badges": [
+    "test.badge.briar"
+  ],
+  "note": "v2.thorns: the cohort zombie wearing test.badge.briar (Thorns 3) - the second Thorns instance. No campaign content."
 }
 ]
