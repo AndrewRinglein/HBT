@@ -1726,6 +1726,7 @@
    "accuracy": -10,
    "crit": 0,
    "hits": 1,
+   "impact": 2,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
@@ -2000,6 +2001,7 @@
    "accuracy": 0,
    "crit": 0,
    "hits": 1,
+   "impact": 2,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
@@ -2018,6 +2020,7 @@
    "accuracy": 0,
    "crit": 0,
    "hits": 1,
+   "impact": 2,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
@@ -2047,6 +2050,7 @@
    "accuracy": -5,
    "crit": 0,
    "hits": 1,
+   "impact": 2,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
@@ -2065,6 +2069,7 @@
    "accuracy": -10,
    "crit": 3,
    "hits": 1,
+   "impact": 2,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
@@ -2946,6 +2951,7 @@
    "accuracy": 5,
    "crit": 0,
    "hits": 1,
+   "impact": 2,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
@@ -2965,6 +2971,7 @@
    "accuracy": -5,
    "crit": 3,
    "hits": 1,
+   "impact": 2,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [

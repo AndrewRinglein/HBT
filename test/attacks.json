@@ -170,5 +170,29 @@
       }
     ],
     "note": "rule.damage-packets second declared data variant: magic base, shadow hit packet, physical crit packet with penetration. Verification fixture, not shipping weapon tuning."
+  },
+  {
+    "id": "attack.test-kdb.maul",
+    "name": "Maul (TEST)",
+    "kind": "melee",
+    "damageType": "physical",
+    "bonus": 0,
+    "stat": "strength",
+    "reach": 1,
+    "staminaCost": 0,
+    "impact": 3,
+    "note": "v2.kdb (2026-09-23): the first Impact instance - a plain physical swing with Impact 3, so KDB's margin is damage dealt + 3 - Strength. TEST data, no campaign claim."
+  },
+  {
+    "id": "attack.test-kdb.bash",
+    "name": "Bash (TEST)",
+    "kind": "melee",
+    "damageType": "physical",
+    "bonus": -20,
+    "stat": "strength",
+    "reach": 1,
+    "staminaCost": 0,
+    "impact": 7,
+    "note": "v2.kdb: the second Impact instance, pure data - the design's shield bash: 'a shield bash with +7 Impact and no damage still has a strong chance to put someone on the ground' (COMBAT-V2 section 9.1). Bonus -20 floors its damage at 0; Impact 7 still counts. TEST data."
   }
 ]

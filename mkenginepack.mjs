@@ -7,6 +7,12 @@ function packetFields(row){
     if(!Number.isSafeInteger(row.armorPenetration)||row.armorPenetration<0||row.armorPenetration>1000000)throw Error('Invalid integer armor penetration on '+row.id);
     out.armorPenetration=row.armorPenetration;
   }
+  // v2.kdb (2026-09-23, COMBAT-V2-DESIGN section 8/9.1): Impact adds to the KDB
+  // comparison only; it is not damage. Integer, 0 or more; absent = 0.
+  if(row.impact!==undefined){
+    if(!Number.isSafeInteger(row.impact)||row.impact<0||row.impact>1000)throw Error('Invalid integer Impact on '+row.id);
+    if(row.impact>0)out.impact=row.impact;
+  }
   if(row.secondaryDamage!==undefined){
     const ids=new Set(['base']),rows=row.secondaryDamage;
     if(!Array.isArray(rows)||rows.length>32)throw Error('Invalid secondary packet list on '+row.id);
@@ -185,6 +191,8 @@ function compileStatuses(rows) {
     const hit = prone ? [r.effect, prone] : STATUS_SENTENCES.find(([s]) => s === r.effect);
     if (!hit) { gap(r.id, `status sentence not compilable: '${r.effect}'`, STATUS_GAP_NEEDS[r.id] ?? 'unparsed status sentence'); continue; }
     const flags = { ...hit[1] };
+    // v2.kdb (2026-09-23): the ONE prone status a KDB "down" applies — the row says so
+    if (r.kdbDown !== undefined) { if (r.kdbDown !== true || !flags.prone) { gap(r.id, 'kdbDown on a row that is not a prone status', 'kdbDown: true on the prone row only'); continue; } flags.kdbDown = true; }
     // decay: the one clock the engine has is -1 per Phase (plus Protection's
     // spend-as-it-absorbs, which the absorb station does). Anything else is
     // a gap, whatever the sentence compiled to.
@@ -280,12 +288,15 @@ const BADGE_STAT = { str: 'strength', strength: 'strength', pre: 'precision', pr
   acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedblock:'rangedBlock', 'ranged block':'rangedBlock', move: 'movement', movement: 'movement',
   reach: 'reach', health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
   'stamina regen': 'staminaRegen', regen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // DBF (Deathbed Fighting) is derived from Toughness today, not a stat the engine folds — a +N DBF clause stays a named gap until it is
-const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment' };
+// v2.kdb (2026-09-23, COMBAT-V2-DESIGN section 9.5): Stand Firm "cannot be knocked
+// back or down", Agile "cannot be knocked down", Immovable "immune to knockback".
+// Longest phrase first is not needed: the three prefixes are distinct.
+const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment', 'cannot be knocked back or down': ['cannotBeKnockedBack', 'cannotBeKnockedDown'], 'cannot be knocked down': 'cannotBeKnockedDown', 'immune to knockback': 'cannotBeKnockedBack' };
 // Flags a row may declare STRUCTURALLY. Prose cannot express these — "invisible; no stats;
 // one flag" has no clause to parse — so the row carries `flags: { bleedsOut: true }` and the
 // converter trusts it. Engine handoff 2026-09-04: "Flags other than blocksDeployment need a
 // structured field on the row." A flag not on this list is a gap, never a guess.
-const BADGE_FLAGS_STRUCTURED = new Set(['bleedsOut', 'wounded', 'blocksDeployment']);
+const BADGE_FLAGS_STRUCTURED = new Set(['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']);
 function compileBadge(row) {
   const mods = {}; const grants = []; const flags = {}; const gaps = [];
   // STRUCTURED FIELDS WIN, and they suppress the prose-only gap. A row that states its
@@ -325,7 +336,7 @@ function compileBadge(row) {
     }
     if ((m = clause.match(/^grants\s+`?(power\.[a-z0-9.-]+)`?$/i))) { grants.push(m[1]); continue }
     const fl = Object.keys(BADGE_FLAGS).find((k) => clause.toLowerCase().startsWith(k));
-    if (fl) { flags[BADGE_FLAGS[fl]] = true; if (clause.length > fl.length) gaps.push(clause); continue }
+    if (fl) { for (const f of [BADGE_FLAGS[fl]].flat()) flags[f] = true; if (clause.length > fl.length) gaps.push(clause); continue }
     gaps.push(clause);   // hooks (`startOfBattle`: …), class locks, "lifts on rescue" — named, not guessed
   }
   // the engine's deathbed stat rides the modifiers map under its own name
@@ -1488,7 +1499,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));
@@ -1532,7 +1543,7 @@ function testUnits(testAttackRows, testAbilityRows) {
 }
 function testStatuses() {
   const out = {};
-  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone']);
+  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone', 'kdbDown']);
   for (const row of readTest('statuses.json')) {
     const { note, ...r } = row;
     if (r.blocksBlock !== undefined && typeof r.blocksBlock !== 'boolean') throw Error('Invalid blocksBlock flag');

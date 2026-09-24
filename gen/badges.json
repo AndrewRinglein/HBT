@@ -525,7 +525,30 @@
    "rarity": "shieldbearer",
    "payload": "immune to knockback",
    "category": "SPECIALTY GRANTS",
-   "group": ""
+   "group": "",
+   "note": "v2.kdb (2026-09-23): 'immune to knockback' compiles to the engine's cannotBeKnockedBack flag - no push from any source moves the unit, KDB's back included. Knockdown is not covered: that is Stand Firm (COMBAT-V2-DESIGN section 9.5, 'given to everything immovable')."
+  },
+  {
+   "id": "badge.stand-firm",
+   "name": "Stand Firm",
+   "rarity": "",
+   "category": "STRUCTURAL",
+   "group": "",
+   "payload": "cannot be knocked back or down",
+   "rollable": false,
+   "note": "Given to everything immovable, so the player can read it off the unit rather than discover it. No push from any source moves the unit, and KDB never knocks it back or down. No unit carries it yet: which units are immovable is not named (engine SWITCHES.md kdbBadgeCarriers).",
+   "source": "COMBAT-V2-DESIGN-2026-09-07.md section 9.5 (ruled 2026-09-07): 'Stand Firm - cannot be knocked back or down at all. Given to everything immovable, so the player can read it off the unit rather than discover it.' Written 2026-09-23 with engine item v2.kdb (V2 R4 part 2)."
+  },
+  {
+   "id": "badge.giant",
+   "name": "Giant",
+   "rarity": "",
+   "category": "STRUCTURAL",
+   "group": "",
+   "payload": "cannot be knocked back or down · the rest of Giant is not yet written",
+   "rollable": false,
+   "note": "Carries Stand Firm (its flags, not a second badge). 'Plus other things' is owed: the second clause stays a named gap until the design writes it. No unit carries it yet (engine SWITCHES.md kdbBadgeCarriers).",
+   "source": "COMBAT-V2-DESIGN-2026-09-07.md section 9.5 (ruled 2026-09-07): 'Giant - carries Stand Firm, plus other things.' Written 2026-09-23 with engine item v2.kdb (V2 R4 part 2)."
   },
   {
    "id": "badge.inspired-cond",
@@ -2418,7 +2441,7 @@
    "id": "badge.agile",
    "name": "Agile",
    "rarity": "uncommon",
-   "payload": "Gains the Dodge and Roll movement power; +8 Dodge",
+   "payload": "Gains the Dodge and Roll movement power; +8 Dodge; cannot be knocked down",
    "statModifiers": [
     {
      "stat": "dodge",
@@ -2427,7 +2450,7 @@
     }
    ],
    "note": "Dodge and Roll does not exist yet as a movement power — a new INSTANCE of an existing kind, to be authored (instances are free; the kind exists).",
-   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet). V2 2026-09-23 (engine item v2.kdb): COMBAT-V2-DESIGN-2026-09-07.md section 9.5 (ruled) - 'Agile - cannot be knocked down (can still be knocked back).' Read as this badge, not a second Agile (engine SWITCHES.md kdbAgileIsTheBadge)."
   },
   {
    "id": "badge.ignorant",

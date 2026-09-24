@@ -612,5 +612,53 @@
     }
   ],
   "note": "v2.prone variant: the cohort zombie plus a rider that applies test.status.floored, the second prone instance. No campaign content."
+},
+{
+  "id": "test-kdb-mauler",
+  "from": "test-osric",
+  "name": "Mauler (TEST)",
+  "attacks": [
+    "attack.test-kdb.maul"
+  ],
+  "note": "v2.kdb (2026-09-23): Osric's body swinging attack.test-kdb.maul (Impact 3). No campaign content."
+},
+{
+  "id": "test-kdb-basher",
+  "from": "test-osric",
+  "name": "Basher (TEST)",
+  "attacks": [
+    "attack.test-kdb.bash"
+  ],
+  "note": "v2.kdb: Osric's body swinging attack.test-kdb.bash (no damage, Impact 7) - the second Impact instance. No campaign content."
+},
+{
+  "id": "test-kdb-firm",
+  "triggers": [],
+  "from": "test-zombie",
+  "name": "Firm Zombie (TEST)",
+  "badges": [
+    "badge.stand-firm"
+  ],
+  "note": "v2.kdb: the cohort zombie wearing badge.stand-firm (cannot be knocked back or down). No campaign content."
+},
+{
+  "id": "test-kdb-agile",
+  "triggers": [],
+  "from": "test-zombie",
+  "name": "Agile Zombie (TEST)",
+  "badges": [
+    "badge.agile"
+  ],
+  "note": "v2.kdb: the cohort zombie wearing badge.agile (cannot be knocked down, can be knocked back). No campaign content."
+},
+{
+  "id": "test-kdb-giant",
+  "triggers": [],
+  "from": "test-zombie",
+  "name": "Giant Zombie (TEST)",
+  "badges": [
+    "badge.giant"
+  ],
+  "note": "v2.kdb: the cohort zombie wearing badge.giant (carries Stand Firm) - the second Stand Firm instance. No campaign content."
 }
 ]
