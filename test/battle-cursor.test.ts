@@ -11,6 +11,7 @@ import { projectShorthand } from './props-projection.js'
 import { GLYPH, mapDef } from '../src/content/maps.js'
 import {projectBlock} from './block-projection.js'
 import { projectPacketEvents } from './packet-projection.js'
+import { projectLoadout } from './loadout-projection.js'
 
 const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
 const identityGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-identities.json', import.meta.url), 'utf8'))
@@ -53,6 +54,9 @@ const kdbGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kdb.
 // so the cases that field it moved; `changed` cases are checked against new frozen hashes
 // on both drivers. Old fixtures stay immutable.
 const thornsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-thorns.json', import.meta.url), 'utf8'))
+// v2.loadout (2026-09-24), Law 10: item instances are fielding metadata (loadout-projection.ts).
+// Every case's full current hashes are frozen here; every older assertion runs on the projection.
+const loadoutGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-loadout.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -176,6 +180,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
+        const loadoutExpected = loadoutGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+        expect(loadoutExpected, 'frozen v2.loadout hashes for this case').toBeDefined()
+        expect(hash(ctx.events), 'full v2.loadout events').toBe(loadoutExpected.events)
+        expect(hash(ctx.state), 'full v2.loadout state').toBe(loadoutExpected.state)
+        expect(hash(ctx.rng.log), 'full v2.loadout RNG').toBe(loadoutExpected.rng)
+        expect(result).toEqual(loadoutExpected.result)
+        // every older assertion below runs on the projection (metadata removed, nothing else)
+        Object.assign(ctx, projectLoadout(ctx))
         // Historical shorthand projection is only meaningful for a historical
         // row. New direct geometry retains exact automatic/suspended comparison.
         // V2 Block metadata-only projection refuses any positive cup. All old

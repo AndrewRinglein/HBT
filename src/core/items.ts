@@ -12,7 +12,7 @@
 // items'. Stats fold additively — the arithmetic the converter did at pack
 // time, moved to fielding so the numbers follow what is actually worn.
 // Refusals are loud (Law 9): an unknown item, more than two hands of weapons and shields,
-// more than one armor. Slot counts, class restrictions and per-class caps are
+// more than one armor. The same row twice is two instances (v2.loadout, 2026-09-24). Slot counts, class restrictions and per-class caps are
 // the kingdom's legality, not the engine's (GAME-ARCHITECTURE §2.3).
 import type { BadgeDef, ItemDef, UnitDef } from './types.js'
 import type { ActionDef } from './types.js'
@@ -43,7 +43,8 @@ export function applyItems(
   for (const id of itemIds) {
     const it = items[id]
     if (!it) throw new Error(`${where}: ${base.typeId} is handed '${id}', which is not an item in the registry`)
-    if (seen.has(id)) throw new Error(`${where}: ${base.typeId} is handed '${id}' twice`)
+    // v2.loadout (V2 §6.1 "Two longswords is 10"): the same row handed twice is two
+    // instances, not an error; the hand and armor limits below still refuse too many.
     seen.add(id)
     // fix.class-restriction (2026-09-04, session 9's E5b): the row's restriction
     // is read by the fielding — ruled 2026-09-03 (the Proving): "Items only on
@@ -57,7 +58,7 @@ export function applyItems(
     // plumbing.shield-class (V2 R1, 2026-09-23): a shield is held, and shares the
     // two hands with weapons. Folding its Block and granting its powers only here,
     // for what is handed to the unit, is what keeps a stowed shield inert.
-    if (it.itemClass === 'weapon' || it.itemClass === 'shield') { hands += it.hands; if (hands > 2) throw new Error(`${where}: ${base.typeId} would hold more than two hands of weapons and shields (${[...seen].join(', ')})`) }
+    if (it.itemClass === 'weapon' || it.itemClass === 'shield') { hands += it.hands; if (hands > 2) throw new Error(`${where}: ${base.typeId} would hold more than two hands of weapons and shields (${itemIds.join(', ')})`) }
     if (it.itemClass === 'armor') { armors += 1; if (armors > 1) throw new Error(`${where}: ${base.typeId} would wear two armors`) }
     const mods: Record<string, number> = {}
     for (const [k, v] of Object.entries(it.statModifiers)) {
@@ -239,4 +240,29 @@ export function applyBadges(
     badges: [...seen],
   }
   return { def, worn }
+}
+
+/** v2.loadout: the item classes held in hands (V2 §11.1). Everything else works from its own slot. */
+export const HELD_CLASSES: readonly string[] = ['weapon', 'shield']
+
+/**
+ * v2.loadout (COMBAT-V2 §11.1): what a hero carries in its hands and stows in its
+ * item slots, as item instances. `handed` is the list applyItems folded (only its
+ * weapons and shields are hands); `stowed` grants nothing and must be held-class.
+ * instanceIds are `<uid>/<n>`, n counting every item handed then stowed — unique in
+ * the battle because uid is (SWITCHES.md 'V2 loadout').
+ */
+export function loadoutOf(
+  base: UnitDef, uid: number, handed: readonly string[], stowed: readonly string[],
+  items: Readonly<Record<string, ItemDef>>, where: string,
+): { loadout: import('./types.js').Loadout; instanceIds: string[] } {
+  const instanceIds = handed.map((_, n) => `${uid}/${n}`)
+  const hands = handed.flatMap((id, n) => (HELD_CLASSES.includes(items[id]!.itemClass) ? [{ instanceId: instanceIds[n]!, itemId: id }] : []))
+  const out = stowed.map((id, k) => {
+    const it = items[id]
+    if (!it) throw new Error(`${where}: ${base.typeId} stows '${id}', which is not an item in the registry`)
+    if (!HELD_CLASSES.includes(it.itemClass)) throw new Error(`${where}: ${base.typeId} stows '${id}', a ${it.itemClass} — only a weapon or shield is stowed; everything else works from its own slot`)
+    return { instanceId: `${uid}/${handed.length + k}`, itemId: id }
+  })
+  return { loadout: { hands, stowed: out }, instanceIds }
 }

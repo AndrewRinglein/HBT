@@ -4,7 +4,7 @@ import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ACTIONS, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged } from './items.js'
+import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { triggersFrom } from './trigger.js'
@@ -100,6 +100,12 @@ export type BattleOptions = UnitIdentityOptions & {
    * Enemies carry no items; their rows are authored whole.
    */
   heroItems?: readonly (readonly string[] | undefined)[]
+  /**
+   * v2.loadout (COMBAT-V2 §11.1, ruled 2026-09-07): the weapons and shields each
+   * hero stows in its item slots, parallel to heroes. They grant nothing — swap
+   * fodder for v2.swap. Anything not weapon or shield class is refused.
+   */
+  heroStowed?: readonly (readonly string[] | undefined)[]
   /**
    * Hero assembly (2026-09-03): each fielded hero's level, specialty, pick and
    * drafted powers, in `heroes` order, parallel to heroItems. Absent = the
@@ -213,6 +219,9 @@ export function createBattle(opts: BattleOptions): Ctx {
   }
   if (opts.heroItems && opts.heroItems.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroItems.length} item lists — they must correspond`)
+  }
+  if (opts.heroStowed && opts.heroStowed.length !== heroes.length) {
+    throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroStowed.length} stowed lists — they must correspond`)
   }
   // The default battle size is pinned by content, not by the cycle's length —
   // the roster array is a repeating PATTERN (2026-08-20, the Beast pen), and
@@ -336,7 +345,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   }
 
   let id = 0
-  const equipped: { unitId: number; worn: Applied['worn'] }[] = []
+  const equipped: { unitId: number; worn: (Applied['worn'][number] & { instanceId: string })[] }[] = []
   const grownLog: { unitId: number; table: string; level: number; specialtyId?: string; mods: Record<string, number> }[] = []
   const badgedLog: { unitId: number; worn: Badged['worn'] }[] = []
   // Names come from the DEF (the pack carries Codex names like "Oathblade
@@ -365,8 +374,14 @@ export function createBattle(opts: BattleOptions): Ctx {
     seen[t] = (seen[t] ?? 0)
     const nm = `${d.name ?? label(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
     seen[t]!++
-    state.units.push(makeUnit(id, identities.heroes[i]!, nm, d, hex))
-    equipped.push({ unitId: id, worn })
+    // v2.loadout: the hands and the stowed, as instances. Only a hero that
+    // carries something has a loadout (a bare row's snapshot is unchanged).
+    const uid = identities.heroes[i]!
+    const { loadout, instanceIds } = loadoutOf(grown, uid, itemIds, opts.heroStowed?.[i] ?? [], ITEMS, where)
+    const made = makeUnit(id, uid, nm, d, hex)
+    if (itemIds.length || loadout.stowed.length) made.loadout = loadout
+    state.units.push(made)
+    equipped.push({ unitId: id, worn: worn.map((w, n) => ({ ...w, instanceId: instanceIds[n]! })) })
     if (progress) {
       // progression.level-table-by-type (2026-09-03), Law 12: the log says
       // which TABLE grew this hero and by how much — a farmer on
@@ -403,12 +418,14 @@ export function createBattle(opts: BattleOptions): Ctx {
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
       // proving.side-override: a unit fielded against its row's side says so (Law 12)
       ...(u.rowSide !== u.side ? { rowSide: u.rowSide } : {}),
+      // v2.loadout: unit.equipped means in hand (V2 §15.2); the stowed are named here
+      ...(u.loadout?.stowed.length ? { stowed: u.loadout.stowed.map((x) => ({ ...x })) } : {}),
     })
     // seam.items-per-unit: one unit.equipped per (unit, item), after the
     // unit's own enter line — the log says why the Hunter shoots and why his
     // Health is 9 (Law 12). Cause = the item.
     for (const w of equipped.find((e) => e.unitId === u.id)?.worn ?? []) {
-      emit(ctx, 'unit.equipped', w.itemId, { actor: u.id, itemId: w.itemId, grants: w.grants, abilities: w.abilities, mods: w.mods, ...(w.gaps ? { gaps: w.gaps } : {}) })
+      emit(ctx, 'unit.equipped', w.itemId, { actor: u.id, itemId: w.itemId, instanceId: w.instanceId, grants: w.grants, abilities: w.abilities, mods: w.mods, ...(w.gaps ? { gaps: w.gaps } : {}) })
     }
     // progression.level-table-by-type: one unit.grown per grown hero, cause = the table
     const g = grownLog.find((e) => e.unitId === u.id)

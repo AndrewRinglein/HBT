@@ -155,7 +155,11 @@ describe('heroItems — the fielding decides the kit', () => {
     expect(() => createBattle({ ...one, heroItems: [['item.longbow', 'item.longsword']] })).toThrow(/more than two hands/)
     expect(() => createBattle({ ...one, heroItems: [['item.thick-hide', 'item.basic-armor']] })).toThrow(/two armors/)
     expect(() => createBattle({ ...one, heroItems: [] })).toThrow(/must correspond/)
-    expect(() => createBattle({ ...one, heroItems: [['item.longsword', 'item.longsword']] })).toThrow(/twice/)
+    // LAW 10 — 2026-09-24 (v2.loadout): the same row handed twice was refused as 'twice'.
+    // COMBAT-V2 §6.1 (ruled 2026-09-07): "Two longswords is 10" — two instances, legal.
+    // The claim kept is the refusal of too many hands: a third longsword is still refused.
+    expect(() => createBattle({ ...one, heroItems: [['item.longsword', 'item.longsword']] })).not.toThrow()
+    expect(() => createBattle({ ...one, heroItems: [['item.longsword', 'item.longsword', 'item.longsword']] })).toThrow(/more than two hands/)
   })
   it('applyItems is pure over its inputs — the same call twice is the same def, and the base is untouched', () => {
     const bare = UNITS['alpha-osric']!

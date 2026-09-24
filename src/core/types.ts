@@ -390,6 +390,8 @@ export type ScenarioDef = {
    * Codex default kit and the bare row.
    */
   readonly heroItems?: readonly (readonly string[] | undefined)[]
+  /** v2.loadout (V2 §11.1): weapons and shields stowed in item slots, parallel to heroes — swap fodder, granting nothing. */
+  readonly heroStowed?: readonly (readonly string[] | undefined)[]
   readonly heroProgress?: readonly (HeroProgress | undefined)[]
   /** badge.mechanism (2026-09-04): the badges each hero carries into this battle, parallel to heroes — the kingdom's list (a Wounded hero enters Wounded). Added to the row's own. */
   readonly heroBadges?: readonly (readonly string[] | undefined)[]
@@ -720,7 +722,17 @@ export type Unit = {
    * where death is decided (settle): dead, no corpse, no Deathbed.
    */
   consumedBy?: string
+  /**
+   * v2.loadout (COMBAT-V2 §11.1, ruled 2026-09-07): the weapons and shields in
+   * this hero's hands and those stowed in its item slots. Only the hands grant;
+   * the stowed are swap fodder. Absent on a unit fielded with no items (enemies).
+   */
+  loadout?: Loadout
 }
+
+/** v2.loadout: one carried item — which row it is, and which one it is (Law 12). */
+export type ItemInstance = { instanceId: string; itemId: string }
+export type Loadout = { hands: ItemInstance[]; stowed: ItemInstance[] }
 
 /** The whole battle state. Serializes to JSON and back with no loss. */
 export type State = {

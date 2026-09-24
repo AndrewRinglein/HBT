@@ -14970,3 +14970,73 @@ index e92623b..b09deb4 100644
      for (const t of thorns) expect(t['damageType']).toBe('true')
 ```
 </details>
+
+## v2.loadout — LANDED `3d6924e` **NEEDS REVIEW**
+2026-09-24 11:04
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:121 · ../CODEX.md:1831
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/v2-loadout.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/fixtures/battle-cursor-loadout.json, test/loadout-projection.ts, test/v2-loadout.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/items-per-unit.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 70753df2->9517f717, map.ridge c403e250->dc405411, map.flanks 14275486->c01575d3, map.highlands 57430091->2a8d0dca, map.field 2d35bd72->e8a539a9, map.thicket 3650e8c0->ff33493f, map.proving.open a24cde86->ddadb5f5, map.proving.ridge b3ed7fc1->e3e83cd4, map.proving.ford 305b3a72->6c6d68d9, map.proving.copse a51de98a->f1c1df7d, map.proving.ruin b27b8620->0d453f0f, map.courtyard b8be417b->617ec67e, map.floodplain 6c46a3b4->6ae19527, test.map.embers 99b4aac6->769ce173, test.map.showcase 8d3e1a1f->d8fa8408, test.map.duel-8 bc85b2c6->c39e29d1, test.map.dungeon-16x8 d4dd9cd6->49e0c9b1, test.map.horde-24 96f6e9a4->a9a9c527, test.map.journey-20x10 b23fc187->ee1a6e8a, test.map.authored-40x40 e07ca224->8acf282d, test.map.high-prop-single 30ac6e02->3a6c43ef, test.map.high-prop-multi a7de5d82->518d7e67, test.map.well-shove c2b79f93->3aadafce
+  PASS  content has a published source — 33 ids without a published source (23 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index dbfdd72..f290758 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -12,4 +12,5 @@ import { GLYPH, mapDef } from '../src/content/maps.js'
+ import {projectBlock} from './block-projection.js'
+ import { projectPacketEvents } from './packet-projection.js'
++import { projectLoadout } from './loadout-projection.js'
+ 
+ const golden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-golden.json', import.meta.url), 'utf8'))
+@@ -54,4 +55,7 @@ const kdbGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kdb.
+ // on both drivers. Old fixtures stay immutable.
+ const thornsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-thorns.json', import.meta.url), 'utf8'))
++// v2.loadout (2026-09-24), Law 10: item instances are fielding metadata (loadout-projection.ts).
++// Every case's full current hashes are frozen here; every older assertion runs on the projection.
++const loadoutGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-loadout.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -177,4 +181,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
++        const loadoutExpected = loadoutGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++        expect(loadoutExpected, 'frozen v2.loadout hashes for this case').toBeDefined()
++        expect(hash(ctx.events), 'full v2.loadout events').toBe(loadoutExpected.events)
++        expect(hash(ctx.state), 'full v2.loadout state').toBe(loadoutExpected.state)
++        expect(hash(ctx.rng.log), 'full v2.loadout RNG').toBe(loadoutExpected.rng)
++        expect(result).toEqual(loadoutExpected.result)
++        // every older assertion below runs on the projection (metadata removed, nothing else)
++        Object.assign(ctx, projectLoadout(ctx))
+         // Historical shorthand projection is only meaningful for a historical
+         // row. New direct geometry retains exact automatic/suspended comparison.
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 5f3b740..a951f80 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -156,5 +156,9 @@ describe('heroItems — the fielding decides the kit', () => {
+     expect(() => createBattle({ ...one, heroItems: [['item.thick-hide', 'item.basic-armor']] })).toThrow(/two armors/)
+     expect(() => createBattle({ ...one, heroItems: [] })).toThrow(/must correspond/)
+-    expect(() => createBattle({ ...one, heroItems: [['item.longsword', 'item.longsword']] })).toThrow(/twice/)
++    // LAW 10 — 2026-09-24 (v2.loadout): the same row handed twice was refused as 'twice'.
++    // COMBAT-V2 §6.1 (ruled 2026-09-07): "Two longswords is 10" — two instances, legal.
++    // The claim kept is the refusal of too many hands: a third longsword is still refused.
++    expect(() => createBattle({ ...one, heroItems: [['item.longsword', 'item.longsword']] })).not.toThrow()
++    expect(() => createBattle({ ...one, heroItems: [['item.longsword', 'item.longsword', 'item.longsword']] })).toThrow(/more than two hands/)
+   })
+   it('applyItems is pure over its inputs — the same call twice is the same def, and the base is untouched', () => {
+```
+</details>

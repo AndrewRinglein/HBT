@@ -880,3 +880,17 @@ chat, 2026-09-24). What the documents do not answer, these defaults answer:
 | `thornsCause` | What does the log name as the cause? | **The melee attack whose hit set it off** — `thorns.reflected` and its `damage.applied` (`thorns: true`) both carry that attack id. The magnitude's sources are the fielding lines (`unit.equipped`, `unit.badged`). | The unit keeps no per-item provenance after folding; the attack is the true cause (Law 12). | provisional — 2026-09-24 |
 | `thornsPreview` | What does preview say? | **`thornsOnHit`** — the target's Thorns for a melee attack, 0 for ranged and on a downed target. The attacker's Protection is not subtracted. | Law 2: the AI and UI read the number from preview. | provisional — 2026-09-24 |
 | `thornsContentScope` | Which content carries the magnitude now? | **Every row the compiler can read exactly**: items whose trigger is "Thorns N" (Tomb Sentinel's Blade 3, Stormweave 2, Armor of Thorns 3, Wreath 3), the five `enchant.thorned` rows (2), `badge.thorned-hide` (1). Scorpion Carapace and Scorpion Shield (Thorns plus a Poison/Bleed rider) stay gaps; `badge.cursed-vengeance` (conditional), passive Thorns on bestiary and specialty rows, Bramble Guard, Crown of Thorns and Molten Scales are not in the engine pack yet — R12. | Compile exact sentences only; a rider nobody parsed is a gap, not a guess. | provisional — 2026-09-24 |
+
+## V2 loadout — defaults taken landing v2.loadout (2026-09-24)
+
+The rule is COMBAT-V2-DESIGN-2026-09-07.md §11.1 (ruled 2026-09-07): only what is in the
+hands grants; a weapon in an item slot is swap fodder; §6.1 "Two longswords is 10"; §15.2
+"`unit.equipped` now means *in hand*". Engine `src/core/items.ts` `loadoutOf`; the unit's
+`loadout`; `BattleOptions.heroStowed`. V2 R6 part 1 (Andrew's chat, 2026-09-24).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `loadoutInstanceId` | What names one carried item? | **`<unit uid>/<n>`**, n counting the items handed (in order) then the stowed. Unique in the battle because uid is. | Law 12: everything has an id. The kingdom has no instance ids yet (hero.equipped is a list of row ids); R8's result seam may supply its own and this default then yields. | provisional — 2026-09-24 |
+| `loadoutStowedClasses` | What may be stowed? | **Weapon and shield class only**; anything else in `heroStowed` is refused loudly. | §11.1: "every other item class works normally from its own slot" — a stowed trinket has no meaning. | provisional — 2026-09-24 |
+| `loadoutStowedLog` | Where does the log name a stowed item? | **On `unit.enter`, as `stowed`** (instances), only when there is one. `unit.equipped` stays in-hand only. | §15.2; no new event name for a thing that does nothing until a swap. | provisional — 2026-09-24 |
+| `loadoutScheduleStowed` | Does the progression schedule's stowed weapon (`rosterOptionsOf().stowed`) ride into the battle? | **Not yet** — it is still reported, not fielded. | It would move the progression fixtures twice (here and at the swap); it rides in with v2.swap, when it can do something. | provisional — 2026-09-24 |

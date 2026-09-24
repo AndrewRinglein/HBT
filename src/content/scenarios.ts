@@ -558,6 +558,7 @@ export function scenarioOptions(s: ScenarioDef) {
     enemyHexes: [...s.enemyHexes],
     enemyCount: s.enemies.length,
     ...(s.heroItems ? { heroItems: s.heroItems } : {}),
+    ...(s.heroStowed ? { heroStowed: s.heroStowed } : {}),
     ...(s.heroProgress ? { heroProgress: s.heroProgress } : {}),
     ...(s.heroBadges ? { heroBadges: s.heroBadges } : {}),
     ...(s.sides ? { sides: s.sides } : {}),

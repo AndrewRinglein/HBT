@@ -1,0 +1,23 @@
+[
+  {
+    "id": "v2.loadout",
+    "kind": "engine",
+    "shape": "plumbing",
+    "spec": "V2 R6 part 1 (COMBAT-V2-DESIGN-2026-09-07 section 11.1, ruled 2026-09-07; section 15.2 'unit.equipped now means in hand'). A fielded hero carries its loadout as plain data: the weapons and shields in its hands and the ones stowed in item slots, each an item instance with a battle-unique instanceId. BattleOptions and scenarios take heroStowed, parallel to heroes: weapons and shields in item slots. A stowed item grants nothing (no attacks, powers, triggers or stat modifiers); a stowed item that is not weapon or shield class, or unknown, is refused loudly. The same item id may be handed twice (two longswords) and stays two distinct instances; the hand limit still refuses a third hand. unit.equipped carries the instanceId; unit.enter lists the stowed instances when there are any.",
+    "expect": "A hero fielded with hands [longsword] and stowed [kite-shield] has no kite-shield Block and no kite-shield powers, and unit.loadout.stowed names it with an instanceId; two longswords field as two instances with distinct ids and fold Block twice; a trinket in heroStowed and an unknown id are refused naming the unit; instanceIds are unique across the battle and survive a JSON round trip of the state; a hero fielded with no stowed list is unchanged apart from the instanceId on unit.equipped.",
+    "note": "Andrew's chat, 2026-09-24 (V2 roadmap R6, first of two: the swap is v2.swap). Supersedes seam.spare-weapons (retired, V2 section 18). changesBaseline: fielding events carry instanceId, so every control map's event hash moves; RNG and results are unchanged (battle-cursor: every older fixture passes on loadout-projection.ts, full hashes frozen in battle-cursor-loadout.json).",
+    "changesBaseline": true
+  },
+  {
+    "id": "v2.swap",
+    "kind": "engine",
+    "shape": "rule",
+    "spec": "V2 R6 part 2 (COMBAT-V2-DESIGN-2026-09-07 section 11.2, ruled 2026-09-07). The loadout swap: a hero may exchange what is in its hands for stowed weapons and shields, once per activation, only before its primary action (before or after its move), paying swapCost stamina. swapCost is a foldable stat, default 1. A Surge reopens the swap. Enemies never swap. The swap re-folds the hands: the outgoing items' attacks, powers and stat modifiers leave, the incoming items' arrive; the hand limit holds. It emits loadout.swapped (unit, hands before, hands after, stamina spent) and one unit.equipped per incoming instance.",
+    "expect": "Swapping longsword for a stowed kite shield before the primary costs 1 stamina, removes the longsword's attacks, adds the shield's Block and powers, and emits loadout.swapped; a second swap in the same activation, a swap after the primary, a swap without the stamina and an enemy swap are refused by the one legality function; after a Surge a second swap is legal; swapCost folded to 0 or 2 charges that; Health lost from a Health modifier clamps current Health to the new maximum.",
+    "needs": [
+      "v2.loadout"
+    ],
+    "note": "Andrew's chat, 2026-09-24 (V2 roadmap R6, second of two).",
+    "changesBaseline": true
+  }
+]
