@@ -1,11 +1,11 @@
 {
- "now": "V2 R5 Thorns + terrain.impassable naming. Done: naming.terrain-impassable (5f99527, ruled by Andrew 2026-09-24, root 16dc33d), v2.thorns (88064ac: thorns stat, reflect on melee hit incl. armor-zero, collision 1+Thorns, V1 trigger retired); content 02f93ef; viewer 233bfb9 + page 8119a8e (test.thorns replay); kingdom 9c4af65 + pages ac126e6 (Thorns on the equip card and sandbox forecast). Tried: gate --abandon cannot run in Cowork (git checkout -- . refused by the mount), so the superseded terrain.impassable-naming item is still pending. Open for Angela: switches in SWITCHES.md 'V2 Thorns', the thorns hue, Bramble Guard's Codex text still says Thorns hits archers at any range. Known: content ship not run (Codex unchanged; publication tests need msedge). Next: V2 R6 hands, swaps and item instances.",
- "at": "2026-09-24 10:35",
- "sha": "1d7c4dd",
+ "now": "V2 R6 hands, swaps and item instances — engine half. Done: v2.loadout (4910771: hands and stowed as item instances, heroStowed, two longswords legal, flagged — one Law 10 test edit), v2.loadout-swap (dd78ff1: swapCost stat default 1, canSwap/performSwap, swap battle command, loadout.swapped, Surge reopens, enemies never, AI never swaps; TEST badges fast-hands/slow-hands, scenario test.swap; flagged — one Law 10 test edit); kingdom 2a24984 (stowed handed to the engine, SWITCHES.spareWeapons deleted); content 359cf85; viewer 75537a2 + 9e26aa6 (static stamps). Tried: v2.swap was filed with changesBaseline and no variants, so it was re-filed as v2.loadout-swap. Open for Andrew, from a terminal: abandon v2.swap, seam.spare-weapons and terrain.impassable-naming (the mount refuses git checkout). Open for Angela: SWITCHES.md 'V2 loadout' and 'V2 swap' defaults, especially swapAi (the AI never swaps), and the campaign Fast/Slow Hands values. Next: R6 UI and uses — the viewer folds and logs loadout.swapped, the kingdom sandbox offers the swap to a human hero, item-instance uses and spent state.",
+ "at": "2026-09-24 11:45",
+ "sha": "b596c10",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: V2 R6 hands, swaps and item instances",
+  "label": "New chat with Heroes of Blight and Tragic — engine: V2 R6 swap UI and item uses",
   "line": "start engine"
  }
 }
