@@ -72,6 +72,14 @@ ARTMAP = {
  # cohort zombie plus one (content/test/units.json `from`); same bodies, as with test-gash-zombie.
  'test-trip-a': {'token':'osric_256.png','card':'card-osric','src':'battle-tokens/units/osric_256.png','cardsrc':'crucible/art/base/paladin-shiney1.png'},
  'test-trip-b': {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
+ # v2.kdb test riders (2026-09-23): the Mauler and the Basher are test-osric swinging a TEST Impact
+ # attack; the Firm, Agile and Giant zombies are the cohort zombie wearing one badge
+ # (content/test/units.json `from`); same bodies, as with test-trip-a/b.
+ 'test-kdb-mauler': {'token':'osric_256.png','card':'card-osric','src':'battle-tokens/units/osric_256.png','cardsrc':'crucible/art/base/paladin-shiney1.png'},
+ 'test-kdb-basher': {'token':'osric_256.png','card':'card-osric','src':'battle-tokens/units/osric_256.png','cardsrc':'crucible/art/base/paladin-shiney1.png'},
+ 'test-kdb-firm':   {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
+ 'test-kdb-agile':  {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
+ 'test-kdb-giant':  {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
  'test-zombie-burning':{'token':'zombie_256.png',    'card':'card-zombie',    'src':'battle-tokens/units/zombie_256.png',     'cardsrc':'assets/bestiary/eve/zombie.png'},
  # ── scenario typeIds (2026-08-27) ─────────────────────────────────────────
  # Tokens from the battle-tokens cutout library where the family matches;

@@ -69,10 +69,21 @@ function mkUnit(e, UD) {
 }
 
 /** Fold ONE event into S. ctx = {UD, SN}. Returns the cues to play. */
+/* A prop's word on a float: the last segment of its id ('prop.test.well' → WELL).
+   Text, never a number. */
+const propWord = id => String(id ?? '').split('.').pop().toUpperCase()
+/* The collision a push ended in (knocked / knockback.blocked name it: collidedWith,
+   blocker, collisionValue, remaining). The float names what was struck and the
+   blocker's collision value, verbatim from the event (n/of). */
+const COLLIDED = { unit: 'A BODY' }   // 'edge' and 'floor' read as the engine's own word
+
 export function fold(S, e, ctx, now = 0) {
   const { UD, SN } = ctx
   const U = S.U, cues = []
   const cue = (k, o) => cues.push({ k, ...o })
+  const collisionCue = (e, hex) => { if (!e.collidedWith) return
+    const what = e.collidedWith === 'prop' ? propWord(e.blocker) : COLLIDED[e.collidedWith] || String(e.collidedWith).toUpperCase()
+    cue('float', { hex, kind: 'collision', text: 'COLLISION · ' + what + ' ×' + e.collisionValue, n: e.collisionValue, of: 'collisionValue', small: true }) }
   const nm = id => (U[id] && U[id].name) || ('#' + id)
   switch (e.type) {
     case 'unit.enter':
@@ -382,7 +393,33 @@ export function fold(S, e, ctx, now = 0) {
       if (U[e.target]) { const from = U[e.target].hex
         U[e.target].hex = e.to
         cue('shove', { id: e.target, from, to: e.to, hexes: e.hexes })
-        cue('float', { hex: e.to, kind: 'knocked', text: e.stoppedBy ? 'KNOCKED · ' + String(e.stoppedBy).toUpperCase() : 'KNOCKED', small: true }) }
+        cue('float', { hex: e.to, kind: 'knocked', text: e.stoppedBy ? 'KNOCKED · ' + String(e.stoppedBy).toUpperCase() : 'KNOCKED', small: true })
+        collisionCue(e, e.to) }
+      break
+    /* ── KNOCKBACK COLLISIONS (engine v2.knockback-collisions eab6530, 2026-09-23;
+       COMBAT-V2 §9.3) — a push that could not take one hex. The mover stays put;
+       when the event names what it struck, the mover wears the collision. A
+       Stand Firm push (reason 'cannot be knocked back', `by` the badges) says
+       so in the engine's own words. The damage is the next event's
+       damage.applied (collision: true), floated as every damage is. */
+    case 'knockback.blocked':
+      if (U[e.target]) {
+        if (e.collidedWith) collisionCue(e, U[e.target].hex)
+        else if (e.by) cue('float', { hex: U[e.target].hex, kind: 'knocked', text: String(e.reason).toUpperCase(), small: true }) }
+      break
+    /* ── KDB — knock down and back (engine v2.kdb e0987b0, 2026-09-23; COMBAT-V2
+       §9.1/§9.2/§9.5). One kdb.rolled per check: the margin, chance and roll are
+       the log's (log.js); nothing changes state here — a fired "back" continues
+       with `knocked`, a "down" with status.applied + unit.proned, both already
+       folded. The one cue is a word when the check FIRED: what was rolled
+       (kdbType) and, when a badge stopped some of it, what was applied.
+       A check that did not fire, or an immune target, floats nothing. */
+    case 'kdb.rolled':
+      if (e.fired && U[e.target]) {
+        const KDB = { back: 'KNOCKED BACK', down: 'KNOCKED DOWN', both: 'KNOCKED DOWN AND BACK' }
+        const rolled = KDB[e.kdbType] || 'KDB'
+        const text = e.applied === e.kdbType ? rolled : rolled + ' · ' + (e.applied === 'none' ? 'RESISTED' : 'ONLY ' + String(e.applied).toUpperCase())
+        cue('float', { hex: U[e.target].hex, kind: 'kdb', text, small: true }) }
       break
     case 'maxHp.lost':
       if (U[e.target]) { U[e.target].maxHp = e.maxHp; U[e.target].hp = e.hp
@@ -478,7 +515,11 @@ export function fold(S, e, ctx, now = 0) {
         cue('float', { hex: U[e.target].hex, kind: 'bleed', text: 'BLEED-OUT ' + e.bleedOut, n: e.bleedOut, of: 'bleedOut', small: true }) }
       break
     case 'life.downed': if (S.AOO?.mover === e.target) S.AOO = null; if (U[e.target]) U[e.target].life = 'downed'; break
-    case 'life.dead': if (S.AOO?.mover === e.target) S.AOO = null; if (U[e.target]) { U[e.target].life = 'dead'; cue('hitstop', { ms: 110 }) } break
+    case 'life.dead': if (S.AOO?.mover === e.target) S.AOO = null; if (U[e.target]) { U[e.target].life = 'dead'; cue('hitstop', { ms: 110 })
+        /* v2.knockback-collisions: a consuming prop (the well) took the body —
+           reason 'consumed', `by` the prop, corpse:false. No corpse.created
+           follows, so none is drawn; the word names the prop. */
+        if (e.reason === 'consumed') cue('float', { hex: U[e.target].hex, kind: 'consumed', text: 'CONSUMED · ' + propWord(e.by), big: true }) } break
     case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) U[e.target].bleed = e.bleedOut; break
     /* ── bodies and the undead economy (§3) ─────────────────────────────── */
     case 'corpse.created':
@@ -584,7 +625,7 @@ export function foldTo(events, n, ctx) {
 export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck', 'unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
   'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'unit.proned', 'unit.stood', 'stamina.spent',
-  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',
+  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'knockback.blocked', 'kdb.rolled', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',
   'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'bleedout.accelerated', 'power.used', 'battle.end',
   /* 2026-09-03 */
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',

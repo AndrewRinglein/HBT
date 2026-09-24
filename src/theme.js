@@ -66,7 +66,11 @@ export const CRIT_HUE = '#ffcf6a'
    stood/fell, a bleed-out moved, the rise, the feed, the obliteration, Surge */
 export const NOTE_HUE = { knocked: '#cbb9a0', resisted: '#9fb6c8', absorbed: '#8fd0ff', maxhp: '#d1665c', maxhpUp: '#7ec45f',
   note: '#cbb9a0', aoo: '#ffb070', block: '#9fb6c8', bleed: '#ff3226', badge: BADGE_HUE,
-  raised: '#b48ae0', eaten: '#8ed14f', obliterated: '#6e5bd9', surge: '#ffe2a0' }
+  raised: '#b48ae0', eaten: '#8ed14f', obliterated: '#6e5bd9', surge: '#ffe2a0',
+  /* PROVISIONAL (2026-09-23, R4 knockback/KDB — Angela to judge): a fired KDB's
+     word (sandstone), a push's collision (hot amber), a body the well consumed
+     (deep-water teal) */
+  kdb: '#e6c07a', collision: '#ff9a4a', consumed: '#3f8f9a' }
 /* the protection bar's spent segment; its live segment is the status hue */
 export const PROT_SPENT = '#2f5b78'
 /** theme hue as an "r,g,b" triplet, for the canvas VFX */

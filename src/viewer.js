@@ -53,7 +53,9 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'unit.badged': 0, 'badge.gained': 420, 'badge.held': 0, 'power.exhausted': 160, 'charge.spent': 0, 'maxstamina.gained': 200,
   'surge.checked': 0, 'surge.hit': 600, 'power.gained': 320, 'heal.boosted': 200, 'status.cancelled': 220, 'maxHp.gained': 240,
   'stamina.drained': 160, 'layer.painted': 0, 'layer.cancelled': 0, 'band.advanced': 900, 'night.fell': 1200, 'light.cast': 0,
-  'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0, 'unit.grown': 0 }
+  'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0, 'unit.grown': 0,
+  /* R4 (2026-09-23): a KDB check that did not fire is silent (0); a fired one holds its word (beat(), as block.rolled) */
+  'kdb.rolled': 0 }
 /* a RUN of ground paints folds as one beat (night falls on every hex, the
    heroes light ~100 each phase): the pump paints them together and holds this */
 const PAINT_RUN_MS = 260
@@ -319,7 +321,7 @@ export function mountBattleViewer(root, data, opts = {}) {
       burstBeat(e)
       const after = opportunityPose(V)
       const starting = after && (!before || before.id !== after.id || before.moveSeq !== after.moveSeq || before.from !== after.from || before.to !== after.to)
-      d = e.type === 'block.rolled' ? (e.blocked ? 700 : 0) : DUR[e.type] ?? 0
+      d = e.type === 'block.rolled' ? (e.blocked ? 700 : 0) : e.type === 'kdb.rolled' ? (e.fired ? 520 : 0) : DUR[e.type] ?? 0
       if (starting) {
         render()
         animateOpportunityStep(V, after.id, {...feetOf(V, after.from), z:heightOf(V,after.from)}, after)

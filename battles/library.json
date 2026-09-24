@@ -124,6 +124,18 @@
   {
    "file": "test.prone-b.json",
    "label": "TEST · prone and standing (second prone instance)"
+  },
+  {
+   "file": "test.kdb.json",
+   "label": "TEST · KDB rolls: Stand Firm, Agile, Giant (kdb.rolled)"
+  },
+  {
+   "file": "test.kdb-s7.json",
+   "label": "TEST · KDB fires: knocked back (seed 7)"
+  },
+  {
+   "file": "test.knockback-well.json",
+   "label": "TEST · knockback collisions: boulder and well (consumed)"
   }
  ]
 }

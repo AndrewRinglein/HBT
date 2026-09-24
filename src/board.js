@@ -133,7 +133,9 @@ export function syncProps(V) {
     if (!pos) throw new Error(`prop ${p.id} has no field position for hex ${h}`)
     const tile = el('prop cell', `left:${pos.px - LAYOUT.W / 2}px;top:${pos.py - LAYOUT.H / 2}px;background-image:url('${ASSETS['hexMountain.png']}');transform:translateZ(1px)`)
     tile.dataset.prop = p.id; tile.dataset.hex = String(h)
-    tile.title = `${p.id} · ${p.height} · material ${p.material}`
+    /* R4 (2026-09-23): a prop's authored collision value and `consumes` (map.loaded), as stated */
+    tile.title = `${p.id} · ${p.height} · material ${p.material}` + (p.collisionValue != null ? ` · collision ${p.collisionValue}` : '') + (p.consumes ? ' · consumes' : '')
+    if (p.consumes) tile.dataset.consumes = '1'
     layer.appendChild(tile)
   }
   }

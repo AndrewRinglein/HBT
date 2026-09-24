@@ -76,7 +76,7 @@ const { DUR } = await import(pathToFileURL(resolve(PKG, 'src/viewer.js')).href) 
 /* event types the viewer deliberately does nothing with — a NEW engine event
    is a failure until it is folded or listed here on purpose */
 const IGNORED = new Set(['activation.selected', 'turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin',
-  'ai.tookHighGround', 'ai.denied', 'knockback.blocked', 'crit.branch'])
+  'ai.tookHighGround', 'ai.denied', 'crit.branch'])   // knockback.blocked folded 2026-09-23 (R4 collisions)
 
 /* ── mount the page ────────────────────────────────────────────────────── */
 const m = html.match(/<script>([\s\S]*)<\/script>\s*$/)
@@ -254,7 +254,7 @@ for (let i = 0; i < LIB.battles.length; i++) {
   if (i > 0) load(i)
   drive(b.label, b.battle); driven.push(i)
 }
-// These are TEST imports, never entries in the 31-battle picker. Their exact
+// These are TEST imports, never entries in the 34-battle picker. Their exact
 // engine-generated logs cover shielding/save/zero cases the showcase may not.
 const playbackTests=[...BURST_TESTS.cases,...BURST_TESTS.support]
 if (SINGLES) for (const c of playbackTests) {
@@ -285,7 +285,8 @@ if (SINGLES) {
   /* known-unexercised, each waiting on a showcase that fields it (ENGINE-FINDINGS #10) */
   // badge.held (2026-09-23): the engine still emits it (mutate.ts, a badge already worn), but the
   // library re-exported at 7ad7516 no longer grants any unit a badge twice
-  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled', 'badge.held'])
+  // badge.held left 2026-09-23: showcase.rime-s1 carries one at engine 4688026
+  const UNEXERCISED = new Set(['encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled'])
   const dark = FOLDED_TYPES.filter(t => !seen.has(t))
   for (const t of dark) check(UNEXERCISED.has(t), `fold: ${t} is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it`)
   for (const t of UNEXERCISED) check(!seen.has(t), `fold: ${t} is listed UNEXERCISED but the library now carries one — delete the entry, the list only shrinks`)
@@ -323,6 +324,61 @@ if (SINGLES) {
       { const E = tok(up + 1)
         check(E && !E.root.classList.contains('tokProne') && !/rotate\(/.test(E.img.style.transform), `prone: ${label} — unit ${who}'s token still reads as prone after unit.stood (class ${E && E.root.className}, img ${E && E.img.style.transform})`) }
     }
+  }
+}
+
+/* ── KDB AND KNOCKBACK COLLISIONS (V2 R4, added 2026-09-23) ──────────────
+   The engine states each KDB check (kdb.rolled: margin, chance, roll, fired,
+   kdbType, applied), each collision (knocked / knockback.blocked name what was
+   struck; the cost is a damage.applied with collision: true) and a consumed
+   death (life.dead reason 'consumed', corpse: false). The library must carry a
+   fired and an unfired check, a collision's damage and a consumed death; the
+   fold moves no HP on kdb.rolled / knocked / knockback.blocked / life.dead,
+   sets the collision's HP to the event's hpAfter and touches no other unit, and
+   every number a cue floats is its event's field; a consumed body leaves no
+   corpse in the fold or on the board, and its token is gone. */
+if (SINGLES) {
+  const all = LIB.battles.map((b, bi) => ({ bi, label: b.label, EV: b.battle.events }))
+  const find = pred => { for (const b of all) { const i = b.EV.findIndex(pred); if (i >= 0) return { ...b, i } } return null }
+  const fired = find(e => e.type === 'kdb.rolled' && e.fired === true)
+  const unfired = find(e => e.type === 'kdb.rolled' && e.fired === false)
+  const hit = find(e => e.type === 'damage.applied' && e.collision === true)
+  const eaten = find(e => e.type === 'life.dead' && e.reason === 'consumed')
+  if (!fired) fails.push('kdb: no library battle carries a kdb.rolled that fired')
+  if (!unfired) fails.push('kdb: no library battle carries a kdb.rolled that did not fire')
+  if (!hit) fails.push('collision: no library battle carries a damage.applied with collision: true')
+  if (!eaten) fails.push('collision: no library battle carries a consumed death (life.dead reason consumed)')
+  const hpOf = S => JSON.stringify(Object.values(S.U).map(u => [u.id, u.hp, u.maxHp]))
+  const quiet = new Set(['kdb.rolled', 'knocked', 'knockback.blocked', 'life.dead'])
+  for (const b of all) {
+    const idx = b.EV.map((e, i) => (quiet.has(e.type) && (e.type !== 'life.dead' || e.reason === 'consumed')) || (e.type === 'damage.applied' && e.collision === true) ? i : -1).filter(i => i >= 0)
+    if (!idx.length) continue
+    const S = createState(); let at = 0
+    for (const i of idx) {
+      while (at < i) fold(S, b.EV[at++], CTX0, 0)
+      const e = b.EV[i], before = JSON.parse(hpOf(S)), cues = fold(S, e, CTX0, 0); at++
+      const after = JSON.parse(hpOf(S))
+      if (e.type === 'damage.applied') {
+        check(S.U[e.target]?.hp === e.hpAfter, `collision: ${b.label} — damage.applied at ${i} leaves unit ${e.target} at ${S.U[e.target]?.hp}, the event says hpAfter ${e.hpAfter}`)
+        check(JSON.stringify(after.filter(r => r[0] !== e.target)) === JSON.stringify(before.filter(r => r[0] !== e.target)), `collision: ${b.label} — damage.applied at ${i} moved another unit's HP`)
+        check(cues.some(c => c.k === 'float' && c.kind === 'damage' && c.of === 'amount' && c.n === e.amount), `collision: ${b.label} — damage.applied at ${i} floats no ${e.amount}`)
+      } else check(JSON.stringify(after) === JSON.stringify(before), `kdb: ${b.label} — ${e.type} at ${i} changed HP (the event carries none)`)
+      for (const c of cues) if (c.n != null) check(c.of != null && e[c.of] === c.n, `kdb: ${b.label} — ${e.type} at ${i} floats ${c.n}, the event's ${c.of} is ${e[c.of]}`)
+      if (e.type === 'kdb.rolled') check(cues.filter(c => c.k === 'float').length === (e.fired ? 1 : 0), `kdb: ${b.label} — kdb.rolled at ${i} (fired ${e.fired}) floats ${cues.filter(c => c.k === 'float').length} words`)
+      if ((e.type === 'knocked' || e.type === 'knockback.blocked') && e.collidedWith) check(cues.some(c => c.k === 'float' && c.kind === 'collision' && c.of === 'collisionValue'), `collision: ${b.label} — ${e.type} at ${i} struck ${e.collidedWith} and the mover wears no collision cue`)
+    }
+  }
+  if (eaten) {
+    const e = eaten.EV[eaten.i], who = e.target
+    const Sf = foldTo(eaten.EV, eaten.EV.length, CTX0)
+    check(!Object.values(Sf.corpses).some(c => c.of === who), `consumed: ${eaten.label} — unit ${who} was consumed (${e.by}) and the fold holds a corpse for it`)
+    load(eaten.bi); const v = H.viewer; v.pause(); const V = v._V
+    v.seek(eaten.i + 1); v.render()
+    const E = V.layers.UEL.get(who)
+    check(E && E.root.style.display === 'none', `consumed: ${eaten.label} — unit ${who}'s token still draws after it was consumed`)
+    check([...(V.layers.CORPSE?.keys() || [])].every(id => v.state.corpses[id]?.of !== who) && (V.layers.CORPSE?.size || 0) === Object.keys(v.state.corpses).length, `consumed: ${eaten.label} — the board draws a corpse for consumed unit ${who}`)
+    v.seek(eaten.EV.length); v.render()
+    check(!Object.values(v.state.corpses).some(c => c.of === who), `consumed: ${eaten.label} — a corpse for consumed unit ${who} at the end of the battle`)
   }
 }
 

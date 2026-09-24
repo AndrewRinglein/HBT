@@ -668,6 +668,36 @@
    "card": "card-zombie.jpg",
    "aspect": 0.3789,
    "height": 1.55
+  },
+  "test-kdb-mauler": {
+   "token": "osric_256.png",
+   "card": "card-osric.jpg",
+   "aspect": 0.5,
+   "height": 1.55
+  },
+  "test-kdb-basher": {
+   "token": "osric_256.png",
+   "card": "card-osric.jpg",
+   "aspect": 0.5,
+   "height": 1.55
+  },
+  "test-kdb-firm": {
+   "token": "zombie_256.png",
+   "card": "card-zombie.jpg",
+   "aspect": 0.3789,
+   "height": 1.55
+  },
+  "test-kdb-agile": {
+   "token": "zombie_256.png",
+   "card": "card-zombie.jpg",
+   "aspect": 0.3789,
+   "height": 1.55
+  },
+  "test-kdb-giant": {
+   "token": "zombie_256.png",
+   "card": "card-zombie.jpg",
+   "aspect": 0.3789,
+   "height": 1.55
   }
  }
 }

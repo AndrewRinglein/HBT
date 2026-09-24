@@ -33,7 +33,7 @@ const wrap = v._V.dom.stage.parentNode
 Object.defineProperty(wrap, 'clientWidth', { value: 1408, configurable: true }); Object.defineProperty(wrap, 'clientHeight', { value: 744, configurable: true })
 const EV = v.events
 const types = {}; for (const e of EV) types[e.type] = (types[e.type] || 0) + 1
-const IGNORED = new Set(['turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin', 'map.loaded', 'ai.tookHighGround', 'ai.denied', 'knockback.blocked', 'crit.branch'])
+const IGNORED = new Set(['turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin', 'map.loaded', 'ai.tookHighGround', 'ai.denied', 'crit.branch'])
 console.log(`${exportFile}: ${EV.length} events · engine ${battle.engineCommit} · ${battle.outcome} in ${battle.turns} turns · map ${battle.seed.mapId}`)
 for (const [t, n] of Object.entries(types).sort()) console.log(`  ${FOLDED_TYPES.includes(t) ? 'fold   ' : IGNORED.has(t) ? 'ignore ' : 'UNKNOWN'} ${t} ×${n}`)
 /* the pure fold's cues */

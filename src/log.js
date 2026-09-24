@@ -11,6 +11,8 @@ export function buildLog(events, SN, turns) {
   const nmAt = e => NAMES[e.actor] ?? ('#' + e.actor), nmT = e => NAMES[e.target] ?? ('#' + e.target)
   const side = e => SIDES[e.actor] === 'enemy' ? 'enemy' : 'hero'
   const b = (cls, t) => ({ cls, t })
+  /* R4 (2026-09-23): what a stopped push struck — the engine's collidedWith, blocker, collisionValue, remaining */
+  const collided = e => e.collidedWith ? ` <span class="sq">· struck ${escape(e.collidedWith)}${e.blocker != null ? ' ' + escape(NAMES[e.blocker] ?? e.blocker) : ''} · collision ${e.collisionValue} · ${e.remaining} remaining</span>` : ''
   const sentence = e => {
     switch (e.type) {
       case 'turn.begin': return b('turn', `— Turn ${e.turn} —`)   // e.turn is already 1-based
@@ -27,6 +29,7 @@ export function buildLog(events, SN, turns) {
       case 'attack.hit': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — HIT${e.crit ? ' <b>CRIT</b>' : ''}`)
       case 'attack.miss': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — miss`)
       case 'damage.applied': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> takes ${e.amount} ${e.packets ? 'damage' : e.damageType}` +
+        (e.collision ? ` <span class="sq">· collision (${escape(e.collidedWith)}${e.blocker != null ? ' ' + escape(NAMES[e.blocker] ?? e.blocker) : ''} ${e.collisionValue} × ${e.remaining} remaining)${e.consumedBy ? ' · consumed by ' + escape(e.consumedBy) : ''}</span>` : '') +
         (e.resisted ? ` <span class="sq">· ${e.resisted} resisted</span>` : '') + (e.absorbed ? ` <span class="sq">· ${e.absorbed} absorbed</span>` : '') +
         (e.overkill ? ` <span class="sq">· ${e.overkill} overkill</span>` : '') +
         (e.packets ? e.packets.map(p => `<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sq">${escape(p.source)} / ${escape(p.id)}</span>: ${escape(`${p.applied} ${p.damageType} · raw ${p.raw} · ${p.absorbed} absorbed · defense ${p.defense} · ${p.resisted} resisted · mitigation ${p.mitigationDelta} · floor ${p.floorAdjustment} · resolved ${p.resolved} · ${p.overkill} overkill`)}`).join('') : ''))
@@ -37,15 +40,21 @@ export function buildLog(events, SN, turns) {
       case 'unit.proned': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> is knocked prone <span class="sq">· ${SN[e.statusId] || e.statusId}</span>`)
       case 'unit.stood': return b(side(e), `&nbsp;&nbsp;<b>${nmAt(e)}</b> stands up`)
       case 'life.downed': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> GOES DOWN`)
-      case 'life.dead': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> dies <span class="sq">· ${e.reason}</span>`)
+      case 'life.dead': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> dies <span class="sq">· ${e.reason}${e.by ? ' by ' + escape(e.by) : ''}${e.corpse === false ? ' · no corpse' : ''}</span>`)
       case 'bleedout.tick': return b('down', `&nbsp;&nbsp;bleed-out ${e.bleedOut} — <b>${nmT(e)}</b>`)
       case 'trigger.fired': return e.effect === 'status.apply'
         ? b('status', `&nbsp;&nbsp;&nbsp;&nbsp;⚡ <span class="sq">${e.causeId}</span> — ${SN[e.statusId] || e.statusId}${e.value ? ' ' + sgn(e.value) : ''} on <b>${nmT(e)}</b>`)
         : null
       case 'power.used': return b(side(e), `&nbsp;&nbsp;uses <b>${e.name}</b>`)
       case 'knocked': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> is knocked back ${e.hexes ?? 1} hex${(e.hexes ?? 1) === 1 ? '' : 'es'}` +
-        (e.asked != null && e.hexes !== e.asked ? ` <span class="sq">· asked ${e.asked}, stopped by ${e.stoppedBy}</span>` : ''))
-      case 'knockback.blocked': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;knockback stopped <span class="sq">· ${e.reason}</span>`)
+        (e.asked != null && e.hexes !== e.asked ? ` <span class="sq">· asked ${e.asked}, stopped by ${e.stoppedBy}</span>` : '') + collided(e))
+      // R4 (2026-09-23): a blocked push names what it struck, or the badges that held it
+      case 'knockback.blocked': return b(e.collidedWith ? 'dmg' : '', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> cannot be pushed${e.asked != null ? ' ' + e.asked + ' hex' + (e.asked === 1 ? '' : 'es') : ''} <span class="sq">· ${escape(e.reason)}${e.by ? ' · ' + escape(e.by.join(', ')) : ''}</span>` + collided(e))
+      // R4 (2026-09-23): one KDB check — the engine's margin, chance and roll, and what it did
+      case 'kdb.rolled': return b(e.fired ? 'dmg' : '', `&nbsp;&nbsp;&nbsp;&nbsp;KDB on <b>${nmT(e)}</b> <span class="sq">· margin ${e.margin} (physical ${e.physical} + impact ${e.impact} − strength ${e.strength}) · chance ${e.chance}%` +
+        (e.immune ? ` · immune: ${e.immune}${e.immuneBy ? ' (' + escape(e.immuneBy.join(', ')) + ')' : ''}` : '') +
+        (e.roll == null ? ' · no roll' : ` · rolled ${e.roll}`) + '</span>' +
+        (e.fired ? ` — <b>${String(e.kdbType).toUpperCase()}</b> <span class="sq">· type roll ${e.typeRoll}${e.applied !== e.kdbType ? ' · applied ' + e.applied : ''}${e.suppressedBy ? ' · suppressed by ' + escape(e.suppressedBy.join(', ')) : ''}${e.gap ? ' · ' + escape(e.gap) : ''}</span>` : (e.roll == null ? '' : ' — does not fire')))
       case 'crit.branch': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;CRIT branch — rolled ${e.roll} vs ${e.chartShare} → <b>${e.arm}</b>`)
       case 'crit.effect': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;✶ <b>${e.name}</b> on ${nmT(e)} <span class="sq">· rolled ${e.roll}</span>`)
       case 'maxHp.lost': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> loses ${e.amount} max HP <span class="sq">· now ${e.maxHp}</span>`)
