@@ -1,5 +1,18 @@
 [
  {
+  "id": "fix.prop-destroyed-remnant",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "V2 R7 follow-up (COMBAT-V2-DESIGN-2026-09-07 section 15.1: prop.destroyed carries 'what it leaves behind'). When destroyed high cover leaves low cover, prop.destroyed carries remnant: the low prop now in state, detached, so the viewer and the kingdom copy the fact instead of re-deriving the section 12.3 rule (the viewer draws, it never decides). A prop that leaves nothing carries no remnant.",
+  "expect": "A high tier-1 log struck by the Chopper emits prop.destroyed with leaves low and a remnant equal to (not the same object as) state.props[0], with no collisionValue; crates that leave nothing emit no remnant field; the v2.prop-destroy and v2.prop-attack tests still pass; no control battle moves.",
+  "needs": [
+   "v2.prop-attack"
+  ],
+  "note": "Andrew's chat, 2026-09-24, found wiring the viewer half of R7: the fold would otherwise have to know which fields a high prop drops. EVENTS-FOR-THE-VIEWER section 18 updated.",
+  "status": "done",
+  "sha": "f31ceee"
+ },
+ {
   "id": "v2.prop-attack",
   "kind": "engine",
   "shape": "rule",

@@ -541,5 +541,6 @@ export function damageProp(ctx: Ctx, propId: string, by: number, causeId: string
   } else { props.splice(at, 1); leaves = 'nothing' }
   ctx.state.props = props
   emit(ctx, 'prop.damaged', causeId, { actor, prop: propId, footprint: prop.footprint.kind, height: prop.height, tier: prop.material, stepsBefore: before, stepsAfter: after })
-  if (leaves) emit(ctx, 'prop.destroyed', causeId, { actor, prop: propId, leaves })
+  // fix.prop-destroyed-remnant: the low cover left behind is stated, not re-derived by a reader.
+  if (leaves) emit(ctx, 'prop.destroyed', causeId, { actor, prop: propId, leaves, ...(leaves === 'low' ? { remnant: structuredClone(props[at]) } : {}) })
 }

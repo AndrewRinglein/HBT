@@ -452,8 +452,9 @@ Two new events; a renderer folds them onto the props it drew from `map.loaded`, 
 - `prop.damaged` — `{ actor, prop, footprint: 'hex'|'polygon', height: 'high'|'low', tier, stepsBefore, stepsAfter }`,
   `causeId` the attack or burst. `height` is the prop's height *before* the step. `stepsAfter < tier` is
   the damaged state; `stepsAfter === tier` is always followed by `prop.destroyed`.
-- `prop.destroyed` — `{ actor, prop, leaves: 'low'|'nothing' }`. `low`: the prop keeps its id and
-  footprint, now low cover, intact (collision and consumes gone). `nothing`: the prop is gone.
+- `prop.destroyed` — `{ actor, prop, leaves: 'low'|'nothing', remnant? }`. `low`: the prop keeps its id and
+  footprint, now low cover, intact (collision and consumes gone) — `remnant` is that prop, whole, to
+  copy in place of the old one (`fix.prop-destroyed-remnant`). `nothing`: the prop is gone; no `remnant`.
 
 `burst.declared` carries `destroy` only when the burst has Destroy. Live `state.props[].steps`
 (absent = intact) is the same fact, for a snapshot or a mid-battle mount. Both events arrive at

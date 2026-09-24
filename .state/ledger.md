@@ -15151,3 +15151,21 @@ Retired by COMBAT-V2-DESIGN section 18: a stowed weapon grants nothing (section 
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without attack.test-destroy.chop,attack.test-destroy.wreck — they genuinely test it
+
+## fix.prop-destroyed-remnant — LANDED `f31ceee`
+2026-09-24 19:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: HANDOFF.md:6 · HANDOFF.md:11
+  PASS  typecheck
+  PASS  the item's own tests — test/v2-prop-remnant.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/v2-prop-remnant.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 35 ids without a published source (25 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
