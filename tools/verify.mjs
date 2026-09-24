@@ -254,7 +254,7 @@ for (let i = 0; i < LIB.battles.length; i++) {
   if (i > 0) load(i)
   drive(b.label, b.battle); driven.push(i)
 }
-// These are TEST imports, never entries in the 29-battle picker. Their exact
+// These are TEST imports, never entries in the 31-battle picker. Their exact
 // engine-generated logs cover shielding/save/zero cases the showcase may not.
 const playbackTests=[...BURST_TESTS.cases,...BURST_TESTS.support]
 if (SINGLES) for (const c of playbackTests) {
