@@ -32,7 +32,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 151 |
+| `self` | 152 |
 | `one enemy in melee reach` | 105 |
 | `one enemy within N hexes` | 85 |
 | `one ally within N hexes` | 52 |
@@ -98,8 +98,8 @@ What a rule may DO.
 | `reveal / break stealth` | 18 |
 | `deal PHYSICAL damage` | 16 |
 | `regain stamina` | 15 |
+| `move WITHOUT provoking` | 14 |
 | `deal damage (type from the weapon)` | 13 |
-| `move WITHOUT provoking` | 13 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |
 | `take damage yourself (a cost)` | 11 |

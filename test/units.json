@@ -574,5 +574,43 @@
     }
   ],
   "note": "rule.block pure-data variant; existing Oathblade body, no shield balance or campaign content."
+},
+{
+  "id": "test-trip-a",
+  "from": "test-osric",
+  "name": "Tripper A (TEST)",
+  "triggers": [
+    {
+      "id": "test.trip-a.trip",
+      "hook": "onHit",
+      "chance": 100,
+      "select": "target",
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "status.prone",
+        "value": 1
+      }
+    }
+  ],
+  "note": "v2.prone (2026-09-23): puts status.prone on what it hits through the generic status.apply trigger, so a real battle knocks a unit down before KDB (V2 R4) exists. Osric body, no riders of its own. No campaign content."
+},
+{
+  "id": "test-trip-b",
+  "from": "test-zombie",
+  "name": "Tripper B (TEST)",
+  "triggers": [
+    {
+      "id": "test.trip-b.trip",
+      "hook": "onHit",
+      "chance": 100,
+      "select": "target",
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.floored",
+        "value": 1
+      }
+    }
+  ],
+  "note": "v2.prone variant: the cohort zombie plus a rider that applies test.status.floored, the second prone instance. No campaign content."
 }
 ]

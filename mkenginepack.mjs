@@ -165,10 +165,24 @@ const STATUS_GAP_NEEDS = {
   'status.confusion': 'AI mode swap — capability.confusion',
   'status.shadow': 'a status that GROWS in Settling and obliterates at Max Health, no corpse — capability.shadow',
 };
+// v2.prone (2026-09-23, COMBAT-V2-DESIGN section 10): the one status sentence
+// that carries NUMBERS, so it is read by exact pattern rather than exact
+// string. Every clause is fixed; only the five magnitudes vary. The stand
+// action it grants is the row's own `standAction` field.
+const PRONE_SENTENCE = /^Knocked down: attacks against the unit gain \+(\d+) Accuracy and \+(\d+) damage and its Dodge falls by (\d+), its own attacks take -(\d+) Accuracy and -(\d+) damage, it has no zone of control, keeps its Block, still fills its hex, loses Airwalk, and cannot move until it Stands Up\.$/;
+function proneFlags(r) {
+  const m = PRONE_SENTENCE.exec(r.effect || '');
+  if (!m) return null;
+  if (typeof r.standAction !== 'string' || !/^power\./.test(r.standAction)) { gap(r.id, 'a prone row with no standAction power', 'standAction on the row'); return false; }
+  const n = (i) => parseInt(m[i], 10);
+  return { shape: 'flag', stacking: 'highest', prone: { accuracyAgainst: n(1), dodge: -n(3), damageAgainst: n(2), accuracy: -n(4), damage: -n(5), standAction: r.standAction } };
+}
 function compileStatuses(rows) {
   const out = {};
   for (const r of rows) {
-    const hit = STATUS_SENTENCES.find(([s]) => s === r.effect);
+    const prone = proneFlags(r);
+    if (prone === false) continue;
+    const hit = prone ? [r.effect, prone] : STATUS_SENTENCES.find(([s]) => s === r.effect);
     if (!hit) { gap(r.id, `status sentence not compilable: '${r.effect}'`, STATUS_GAP_NEEDS[r.id] ?? 'unparsed status sentence'); continue; }
     const flags = { ...hit[1] };
     // decay: the one clock the engine has is -1 per Phase (plus Protection's
@@ -179,6 +193,7 @@ function compileStatuses(rows) {
     else if (r.decay === 'Spent by the damage it prevents, and decreases by an additional 1 per Turn.') decayPerPhase = 1;
     else if (r.decay === 'No clock: -1 on a kill, and nothing else.') { decayPerPhase = 0; flags.decayOnKill = true; }   // Karma, 2026-09-03
     else if (/^It GROWS: \+1 per Turn, first of everything in Settling\. It never decays\.$/.test(r.decay)) { decayPerPhase = 0; flags.grows = 1; }   // Shadow, 2026-09-03
+    else if (r.decay === 'No clock: it lasts until the unit Stands Up.' && flags.prone) decayPerPhase = 0;   // Prone, v2.prone 2026-09-23
     else { gap(r.id, `status decay not compilable: '${r.decay}'`, STATUS_GAP_NEEDS[r.id] ?? 'unparsed decay clause'); continue; }
     // tick damage type: the row's own damageType wins; "Resist mitigates each
     // tick" in the decay clause is the ruled magic tick (2026-08-27).
@@ -189,7 +204,7 @@ function compileStatuses(rows) {
     // the engine's shape word is derived from the behaviour; the Codex family
     // rides along verbatim.
     if(flags.tickDamageType)damageType(flags.tickDamageType);
-    const shape = flags.reducesIncomingDamage ? 'pool' : flags.reducesOutgoingDamage ? 'modifier' : 'counter';
+    const shape = flags.shape ?? (flags.reducesIncomingDamage ? 'pool' : flags.reducesOutgoingDamage ? 'modifier' : 'counter');
     // rule.burn-frost-cancel: the row's application clause, exact phrase, sets `cancels` on BOTH rows
     const cancels = /Burn and Frost annihilate one for one on application/.test(r.application || '') ? { cancels: 'status.burn' } : {};
     out[r.id] = { id: r.id, name: r.name, shape, family: r.family ?? r.shape, stacking: 'add', decayPerPhase, ...flags, ...cancels };
@@ -219,6 +234,8 @@ const MOVE_SHAPES = [
 const MOVE_RIDERS = [
   [/You gain \+(\d) Strength until the end of the Turn\./, (m) => ({ kind: 'statMod', stat: 'strength', value: parseInt(m[1], 10), until: 'endOfTurn' })],
   [/(?:^|\. )Gain (\d) Stamina\./, (m) => ({ kind: 'gainStamina', value: parseInt(m[1], 10) })],
+  // v2.prone (2026-09-23): "Stand up from Prone." — legal only while prone (the engine's rule for a stand effect)
+  [/(?:^|\. )Stand up from Prone\./, () => ({ kind: 'stand' })],
   [/Lose (\d) Stamina Max for the rest of the Battle, and gain (\d) Stamina\./, (m) => [{ kind: 'loseMaxStamina', value: parseInt(m[1], 10) }, { kind: 'gainStamina', value: parseInt(m[2], 10) }]],
 ];
 const MOVE_GAPS = [
@@ -1515,7 +1532,7 @@ function testUnits(testAttackRows, testAbilityRows) {
 }
 function testStatuses() {
   const out = {};
-  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled']);
+  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone']);
   for (const row of readTest('statuses.json')) {
     const { note, ...r } = row;
     if (r.blocksBlock !== undefined && typeof r.blocksBlock !== 'boolean') throw Error('Invalid blocksBlock flag');

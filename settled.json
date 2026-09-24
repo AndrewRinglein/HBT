@@ -870,6 +870,26 @@
    "source": "2026-08-25, dictated with badge Charging: \"gain move action: stamina 2, movement +2, gain +3 str until EOA\". Granted by badge.charging. NAMED Charging Run because power.charge already exists (the armor-granted one) — name is a proposal, free to change."
   },
   {
+   "id": "power.stand-up",
+   "name": "Stand Up",
+   "specialty": null,
+   "class": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "movementAction": true,
+   "bonusMove": true,
+   "slot": "movement",
+   "universal": false,
+   "universalToAllUnits": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Do not move at all. Stand up from Prone. It appears only while you are Prone, costs no Stamina, there is no cooldown, and it provokes nothing. It is a bonus move, so it does NOT add your Movement stat.",
+   "intent": "Getting up is your movement for the Activation. You keep your primary action; what you lose is the step, and the vulnerability lasts until you act again.",
+   "source": "COMBAT-V2-DESIGN-2026-09-07.md section 10 (ruled): \"Standing up is a movement-action power that every unit has and that only appears while prone. It consumes the movement action; there is no attack of opportunity or other punishment for standing.\" Every unit has it through status.prone (its standAction), so no kit, class or item grants it. Written 2026-09-23 with engine item v2.prone (V2 R3). The Dodge-and-Roll variant that stands and moves one hex is named by the design as the shape of an upgrade, not authored here."
+  },
+  {
    "id": "rule.enemy-attacks",
    "name": "Enemy attacks are defined, and melee is the floor",
    "specialty": null,
@@ -1494,6 +1514,15 @@
    "effect": "Stops the unit acting and blocking — its whole Activation is skipped.",
    "decay": "-1 per Turn, so Stun N costs N Activations.",
    "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay. V2 update 2026-09-18: COMBAT-V2-DESIGN section6.2 explicitly removes Block while stunned; blocksBlock is separate from activation locking."
+  },
+  {
+   "id": "status.prone",
+   "name": "Prone",
+   "shape": "flag",
+   "effect": "Knocked down: attacks against the unit gain +10 Accuracy and +1 damage and its Dodge falls by 10, its own attacks take -10 Accuracy and -1 damage, it has no zone of control, keeps its Block, still fills its hex, loses Airwalk, and cannot move until it Stands Up.",
+   "decay": "No clock: it lasts until the unit Stands Up.",
+   "standAction": "power.stand-up",
+   "source": "COMBAT-V2-DESIGN-2026-09-07.md section 10 (ruled): attacks against a prone unit +10 accuracy, -10 dodge, +1 damage; attacking while prone -10 accuracy, -1 damage; zone of control none, and therefore no attacks of opportunity; Block retained; the hex still occupied; Airwalk suspended. \"The cost of being knocked down is therefore a turn's movement, plus vulnerability until you act again - not a lost activation.\" Prone is a status flag, not a life state (V2-IMPACT-MAP). Written 2026-09-23 with engine item v2.prone (V2 R3). Provisional where the design is silent (engine SWITCHES.md): no crawl (proneNoCrawl), no expiry (proneNoExpiry), re-application does not stack (proneStacking). What knocks a unit down is KDB, V2 R4."
   }
  ],
  "testCohort": {
