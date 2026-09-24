@@ -1,20 +1,37 @@
-# engine — handoff 2026-09-24 11:45
+# engine — handoff 2026-09-24 19:06
 
 *Written by tools/wrap.mjs. The only handwritten line is the Now line, given to wrap as its argument. The rest is what start.mjs prints and what git holds. Read by `start engine` — not by a chat, directly.*
 
-engine — next v2.swap, 163 of 199 landed · 9 await review · 29 pending
-Now: V2 R6 hands, swaps and item instances — engine half. Done: v2.loadout (4910771: hands and stowed as item instances, heroStowed, two longswords legal, flagged — one Law 10 test edit), v2.loadout-swap (dd78ff1: swapCost stat default 1, canSwap/performSwap, swap battle command, loadout.swapped, Surge reopens, enemies never, AI never swaps; TEST badges fast-hands/slow-hands, scenario test.swap; flagged — one Law 10 test edit); kingdom 2a24984 (stowed handed to the engine, SWITCHES.spareWeapons deleted); content 359cf85; viewer 75537a2 + 9e26aa6 (static stamps). Tried: v2.swap was filed with changesBaseline and no variants, so it was re-filed as v2.loadout-swap. Open for Andrew, from a terminal: abandon v2.swap, seam.spare-weapons and terrain.impassable-naming (the mount refuses git checkout). Open for Angela: SWITCHES.md 'V2 loadout' and 'V2 swap' defaults, especially swapAi (the AI never swaps), and the campaign Fast/Slow Hands values. Next: R6 UI and uses — the viewer folds and logs loadout.swapped, the kingdom sandbox offers the swap to a human hero, item-instance uses and spent state.
-New chat with Heroes of Blight and Tragic — engine: V2 R6 swap UI and item uses
+engine — next trigger.zombie.sap, 164 of 200 landed · 9 await review · 26 pending
+Now: V2 R6 hands, swaps and item instances — closed. Done: swap UI (viewer a40932d + page 281622a folds and logs loadout.swapped; kingdom 9932c81 + page d4fd766, the sandbox Swap command from engine legality); v2.item-uses (engine cdb2233: uses per item instance, spent state, per-instance result, incoming spent state honoured; viewer aa9d3d1/e43fb3f; kingdom eeb6ba5 persists per-slot used counts in the save). Four shards green on tree 6003af3ad7. Tried: nothing abandoned. Ruled: swapAi (AI never swaps) reaffirmed; viewer itemUsesBarCount '1x is fine for now' (0c379a7). Open for Angela: provisional SWITCHES rows 'V2 item uses' (engine, viewer, kingdom) and the swap rows; battle-cursor.test.ts gained fields in v2.item-uses without a review flag. Next: V2 R7 — dynamic terrain and full Atlas support (V2-ROADMAP.md R7).
+New chat with Heroes of Blight and Tragic — engine: V2 R7 dynamic terrain and full Atlas support
   start engine
-Last landing: 2026-09-24 11:36 (v2.loadout-swap). Previous chat ended: on a wrap, 2026-09-24 11:45
-WRAP NOT COMMITTED: 2026-09-24 11:45 — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.
-  Commit them from the engine folder before landing anything: git add -A; git commit -m "wrap: V2 R6 hands, swaps and item instances — engine half. Done: v2.loadout (4910771: hands and stowed as item instances, heroStowed, two longswords legal, flagged — one Law 10 test edit), v2.loadout-swap (dd78ff1: swapCost stat default 1, canSwap/performSwap, swap battle command, loadout.swapped, Surge reopens, enemies never, AI never swaps; TEST badges fast-hands/slow-hands, scenario test.swap; flagged — one Law 10 test edit); kingdom 2a24984 (stowed handed to the engine, SWITCHES.spareWeapons deleted); content 359cf85; viewer 75537a2 + 9e26aa6 (static stamps). Tried: v2.swap was filed with changesBaseline and no variants, so it was re-filed as v2.loadout-swap. Open for Andrew, from a terminal: abandon v2.swap, seam.spare-weapons and terrain.impassable-naming (the mount refuses git checkout). Open for Angela: SWITCHES.md 'V2 loadout' and 'V2 swap' defaults, especially swapAi (the AI never swaps), and the campaign Fast/Slow Hands values. Next: R6 UI and uses — the viewer folds and logs loadout.swapped, the kingdom sandbox offers the swap to a human hero, item-instance uses and spent state."
+Last landing: 2026-09-24 17:44 (v2.item-uses). Previous chat ended: on a wrap, 2026-09-24 19:06
+WRAP NOT COMMITTED: 2026-09-24 19:06 — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.
+  Commit them from the engine folder before landing anything: git add -A; git commit -m "wrap: V2 R6 hands, swaps and item instances — closed. Done: swap UI (viewer a40932d + page 281622a folds and logs loadout.swapped; kingdom 9932c81 + page d4fd766, the sandbox Swap command from engine legality); v2.item-uses (engine cdb2233: uses per item instance, spent state, per-instance result, incoming spent state honoured; viewer aa9d3d1/e43fb3f; kingdom eeb6ba5 persists per-slot used counts in the save). Four shards green on tree 6003af3ad7. Tried: nothing abandoned. Ruled: swapAi (AI never swaps) reaffirmed; viewer itemUsesBarCount '1x is fine for now' (0c379a7). Open for Angela: provisional SWITCHES rows 'V2 item uses' (engine, viewer, kingdom) and the swap rows; battle-cursor.test.ts gained fields in v2.item-uses without a review flag. Next: V2 R7 — dynamic terrain and full Atlas support (V2-ROADMAP.md R7)."
 Yours: (2026-08-27) item.bracer's replacement rule — look: GAME-BUILDER.html; (2026-09-03) Kinds approved BY POLICY this run, for your look — look: GAME-BUILDER.html; (2026-09-03) The Necromancer's Raise has no range on its row. — look: GAME-BUILDER.html; (2026-09-03) The schedule vs the Codex on Surge — look: GAME-BUILDER.html; (2026-09-03) The schedule stows spare weapons in item slots — look: GAME-BUILDER.html; (2026-09-02) Note, no action needed: — look: GAME-BUILDER.html; (2026-09-03) 50 flagged landings await your review — look: GAME-BUILDER.html
-Queue: v2.swap [engine · rule], then terrain.impassable-naming [naming · decision], then trigger.zombie.sap [content · trigger] (+19 more)
-Delegate: v2.swap [engine · rule] — 1 attempt(s); terrain.impassable-naming [naming · decision] — not yet gated; trigger.zombie.sap [content · trigger] — not yet gated; trigger.mage.kindle [content · trigger] — not yet gated; station.vs-target [engine · station] — not yet gated; move.actions [engine · rule] — not yet gated; fix.start-of-turn-victory [engine · plumbing] — not yet gated; fix.outcome-enum [engine · plumbing] — not yet gated; fix.phase-ladder-config [engine · plumbing] — not yet gated; fix.retired-stations [engine · plumbing] — not yet gated; crit.branch-and-injuries [engine · rule] — not yet gated; hook.on-enter [engine · plumbing] — not yet gated; tool.effect-size-rules [engine · plumbing] — not yet gated; viewer.hexvfx-path [engine · plumbing] — not yet gated; viewer.geometry [engine · plumbing] — 1 attempt(s); content.art-manifest [content · data] — not yet gated; viewer.styles [engine · plumbing] — not yet gated; sim.coverage [engine · plumbing] — not yet gated; seam.unit-mods [engine · plumbing] — not yet gated; seam.spare-weapons [engine · plumbing] — not yet gated; pack.derived-rows [content · data] — not yet gated; system.ai-modes [station · rule] — not yet gated
+Queue: trigger.zombie.sap [content · trigger], then trigger.mage.kindle [content · trigger], then station.vs-target [engine · station] (+16 more)
+Delegate: trigger.zombie.sap [content · trigger] — not yet gated; trigger.mage.kindle [content · trigger] — not yet gated; station.vs-target [engine · station] — not yet gated; move.actions [engine · rule] — not yet gated; fix.start-of-turn-victory [engine · plumbing] — not yet gated; fix.outcome-enum [engine · plumbing] — not yet gated; fix.phase-ladder-config [engine · plumbing] — not yet gated; fix.retired-stations [engine · plumbing] — not yet gated; crit.branch-and-injuries [engine · rule] — not yet gated; hook.on-enter [engine · plumbing] — not yet gated; tool.effect-size-rules [engine · plumbing] — not yet gated; viewer.hexvfx-path [engine · plumbing] — not yet gated; viewer.geometry [engine · plumbing] — 1 attempt(s); content.art-manifest [content · data] — not yet gated; viewer.styles [engine · plumbing] — not yet gated; sim.coverage [engine · plumbing] — not yet gated; seam.unit-mods [engine · plumbing] — not yet gated; pack.derived-rows [content · data] — not yet gated; system.ai-modes [station · rule] — not yet gated
 Blocked: content.mage-staff needs unit.brute; viewer.build needs viewer.geometry, content.art-manifest; viewer.board needs viewer.build, viewer.geometry; viewer.tile-state needs viewer.board; viewer.panel needs viewer.build; viewer.pump needs viewer.board, viewer.panel; viewer.log-transport needs viewer.pump
 Calls since last wrap:
+  shieldPowerNumbers · 2026-09-24 · What do the two powers per shield give, and at what cost?
+  weaponBlockFamilies · 2026-09-24 · Which weapons are "swords" and "knives and daggers" for weapon Block?
+  axeOnAnyBlock · 2026-09-24 · Does the axe's −20 fire when a weapon's Block blocks, or only a shield's?
+  weaponFirePoison · 2026-09-24 · Fire on maces and hammers; fire and poison on "weapons of the appropriate type".
+  shieldPowerNames · 2026-09-24 · Kite's "Shield Wall" and Round's "Brace" collide with existing names (the Shieldbearer's Shield Wall power; an attack called Brace) — the Codex audit refuses duplicates.
+  proneNoCrawl · 2026-09-24 · May a prone unit move (crawl) without standing?
+  proneNoExpiry · 2026-09-24 · Does Prone wear off on its own?
+  proneAiStandsFirst · 2026-09-24 · What does a prone AI unit do?
+  knockbackProtectionAbsorbs · 2026-09-24 · Does Protection absorb collision damage? Armor?
   knockbackThornsZero · 2026-09-24 · A unit's collision value is 1 + its Thorns. What is its Thorns?
+  knockbackFloorIsObstruction · 2026-09-24 · A push into a hex with no floor (the floor mask false) — what does it strike?
+  kdbBackDistance · 2026-09-24 · How far does a KDB "back" push?
+  kdbBursts · 2026-09-24 · Can burst damage cause KDB? (§16 item 2 is the open lever.)
+  kdbBothOrder · 2026-09-24 · "Both": which first?
+  standFirmAnyPush · 2026-09-24 · Does "cannot be knocked back" stop pushes that are not KDB (the halberd's Hack, the crit chart's Knocked Sprawling)?
+  kdbAgileIsTheBadge · 2026-09-24 · §9.5 names Agile as new, but badge.agile (Dodge and Roll, +8 Dodge) already exists. One Agile or two?
+  kdbBadgeCarriers · 2026-09-24 · Which units carry Stand Firm or Giant?
+  kdbStrengthFloor · 2026-09-24 · §9.1: "anything at 0 Strength moves to 2 in the migration."
   thornsIsAStat · 2026-09-24 · Where does the magnitude live?
   thornsProtectionAbsorbs · 2026-09-24 · Does the attacker's Protection absorb Thorns damage?
   thornsOnKillingBlow · 2026-09-24 · Does a unit the hit kills still reflect?
@@ -37,21 +54,32 @@ Calls since last wrap:
   swapMovePoints · 2026-09-24 · Does a Movement modifier that arrives mid-activation change this activation's movement points?
   swapCostFloor · 2026-09-24 · swapCost folded below 0?
   swapCause · 2026-09-24 · What cause does loadout.swapped name?
-Stack for v2.swap:
+  itemUsesSource · 2026-09-24 · Where does an instance's use count come from?
+  itemUsesPool · 2026-09-24 · A unit carries two instances granting the same power?
+  itemUsesPayOrder · 2026-09-24 · Which instance pays a use?
+  itemUsesReach · 2026-09-24 · Can a stowed weapon or shield pay a use?
+  itemUsesEvent · 2026-09-24 · What event names the instance?
+  itemUsesIncoming · 2026-09-24 · How does a fielding hand in uses already spent?
+  itemUsesSpentFielding · 2026-09-24 · What happens to an instance handed in with no uses left?
+  itemUsesMultiPower · 2026-09-24 · An item granting two powers with uses — how does an incoming count apply?
+  itemUsesResult · 2026-09-24 · What does the result report?
+Stack for trigger.zombie.sap:
   the item's `spec` and `expect` — `node tools/next.mjs` — before any source file
   ENGINE-CONSTITUTION.md — the law the item touches · **the Iron Gauntlet, above, before `--land`**: kill switch, hardcode scan, generalization, consequence, naming
   `node tools/decided.mjs "<the question>"` before asking anything · SWITCHES.md before deciding anything
   COMBAT-SEQUENCE.md — the rung the mechanism sits on · src/core · the kill-switch seam `src/content/disable.ts` · its verify scenario in test/
+  **the design folder — grep it for the id first** (below) · src/content · its registry array
 
-## The chat's commits since the last committed wrap (1d7c4dd)
+## The chat's commits since the last committed wrap (b596c10)
 
-- dd78ff1 2026-09-24 04:36 v2.loadout-swap: V2 R6 part 2 (COMBAT-V2-DESIGN-2026-09-07 section 11.2, ruled 2026-09-07
-- 4910771 2026-09-24 04:04 v2.loadout: V2 R6 part 1 (COMBAT-V2-DESIGN-2026-09-07 section 11.1, ruled 2026-09-07
-- 5591538 2026-09-24 03:35 wrap: V2 R5 Thorns + terrain.impassable naming. Done: naming.terrain-impassable (5f99527, ruled by Andrew 2026-09-24, root 16dc33d), v2.thorns (88064ac: thorns stat, reflect on melee hit incl. armor-z
+- cdb2233 2026-09-24 10:44 v2.item-uses: V2 R6 part 3 (V2-ROADMAP.md R6: duplicate item instances remain distinct
+- af5241d 2026-09-24 05:18 abandon works in Cowork (Andrew, 2026-09-24: 'One, yes'): tools/revert-tree.mjs overwrites changed files in place and parks files HEAD lacks under .git/_abandoned, never deletes; gate.mjs --abandon uses it. Abandoned v2.swap, terrain.impassable-naming, seam.spare-weapons. DECISIONS: the V2 defaults reviewed ('All of those I reviewed and are fine'); 23 SWITCHES rows now read ruled / accepted. (Tooling choice belongs in GBH SWITCHES.md, rule 18 — GBH not mounted here.)
+- beaf14c 2026-09-24 05:11 DECISIONS: Fast Hands swapCost -1, Slow Hands swapCost +1 (Andrew, 2026-09-24)
+- 9009fe9 2026-09-24 04:45 wrap: V2 R6 hands, swaps and item instances — engine half. Done: v2.loadout (4910771: hands and stowed as item instances, heroStowed, two longswords legal, flagged — one Law 10 test edit), v2.loadout-
 
 ## Next chat
 
-New chat with Heroes of Blight and Tragic — engine: V2 R6 swap UI and item uses
+New chat with Heroes of Blight and Tragic — engine: V2 R7 dynamic terrain and full Atlas support
 ```
 start engine
 ```
