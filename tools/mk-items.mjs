@@ -69,6 +69,22 @@ const sum = (a, b) => { const o = { ...a }; for (const [k, v] of Object.entries(
 /** Stable key order, so the file is byte-stable. */
 const sorted = (o) => Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[k]]))
 
+/**
+ * v2.thorns (engine 88064ac, content 02f93ef, 2026-09-24): Thorns is a STAT. The engine
+ * pack (content/mkenginepack.mjs) reads an onTakingDamage trigger whose effect is exactly
+ * "Thorns N" as statModifiers.thorns += N — for items and enchants alike — and leaves a
+ * trigger with riders ("Thorns 2, and the attacker gains 2 Poison") a named gap. The
+ * kingdom's rows follow the same rule, so the card says what the battle fields.
+ */
+const withThorns = (mods, triggers) => {
+  const o = { ...(mods ?? {}) }
+  for (const t of triggers ?? []) {
+    const m = t.hook === 'onTakingDamage' && typeof t.effect === 'string' ? t.effect.match(/^Thorns (\d+)$/) : null
+    if (m) o.thorns = (o.thorns ?? 0) + Number(m[1])
+  }
+  return o
+}
+
 function rowOfCodex(i) {
   return {
     id: i.id, name: i.name, itemClass: i.itemClass, tier: tierOf(i.tier),
@@ -77,7 +93,7 @@ function rowOfCodex(i) {
     uses: i.uses ?? null, equipCost: sorted(costOf(i.equipCost)),
     // the Waystation's catalog: which band opens the row, and what it costs there (GEAR-DESIGN.md §4)
     waystationBand: i.waystationBand ?? null, price: sorted(costOf(i.price)),
-    statModifiers: sorted(i.statModifiers ?? {}), attackModifiers: sorted(i.attackModifiers ?? {}), grants: [...(i.grants ?? [])],
+    statModifiers: sorted(withThorns(i.statModifiers, i.triggers)), attackModifiers: sorted(i.attackModifiers ?? {}), grants: [...(i.grants ?? [])],
     base: null, enchant: null, source: 'codex',
   }
 }
@@ -121,7 +137,7 @@ for (const i of codex.items) {
     const word = e.name ?? e.id.replace(/^enchant\./, '')
     rows.push({
       ...base, id: `${base.id}.${e.id.replace(/^enchant\./, '')}`, name: `${word} ${base.name}`, tier: 2,
-      statModifiers: sorted(sum(base.statModifiers, e.statModifiers)), attackModifiers: sorted(sum(base.attackModifiers, e.attackModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
+      statModifiers: sorted(sum(base.statModifiers, withThorns(e.statModifiers, e.triggers))), attackModifiers: sorted(sum(base.attackModifiers, e.attackModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
       base: base.id, enchant: e.id, source: 'enchanted',
     })
   }
@@ -141,7 +157,7 @@ for (const c of combos) {
   const base = rowOfCodex(b)
   rows.push({
     ...base, id: c.id, name: c.name, tier: 3,
-    statModifiers: sorted(sum(base.statModifiers, e.statModifiers)), attackModifiers: sorted(sum(base.attackModifiers, e.attackModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
+    statModifiers: sorted(sum(base.statModifiers, withThorns(e.statModifiers, e.triggers))), attackModifiers: sorted(sum(base.attackModifiers, e.attackModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
     base: base.id, enchant: e.id, source: 'combination',
   })
 }

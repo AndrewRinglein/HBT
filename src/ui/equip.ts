@@ -60,6 +60,8 @@ export function deltasOf(c: CampaignState, heroId: string): string {
 export const STAT_ROWS: readonly [label: string, key: keyof UnitDef & string][] = [
   ['Move', 'movement'], ['Armor', 'armor'], ['Resist', 'resist'], ['Dodge', 'dodge'], ['Max HP', 'maxHp'],
   ['Accuracy', 'accuracy'], ['Crit', 'crit'], ['Strength', 'strength'], ['Precision', 'precision'], ['Stam Regen', 'staminaRegen'],
+  // v2.thorns (engine 88064ac, 2026-09-24): Thorns is a folded stat now, so the card shows it
+  ['Thorns', 'thorns'],
 ]
 const PCT = new Set(['accuracy', 'dodge', 'crit'])
 /** The codex's stat names the set payloads use, as the engine's def names them. */

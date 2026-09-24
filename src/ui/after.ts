@@ -332,7 +332,7 @@ export function mountRewards(root: HTMLElement, onConfirm: (itemId: string) => v
 // THE LEVEL-UP — levelup.html
 // ─────────────────────────────────────────────────────────────────────────────
 
-const STAT_LABEL: Record<string, string> = { health: 'Health', staminaMax: 'Max Stamina', staminaRegen: 'Stamina Regen', itemSlots: 'Item Slot', accuracy: 'Accuracy', crit: 'Crit', strength: 'Strength', precision: 'Precision', magic: 'Magic', spirit: 'Spirit', armor: 'Armor', resist: 'Resist', dodge: 'Dodge', reach: 'Reach', movement: 'Movement', luck: 'Luck', vision: 'Vision', toughness: 'Toughness', surge: 'Surge' }
+const STAT_LABEL: Record<string, string> = { health: 'Health', staminaMax: 'Max Stamina', staminaRegen: 'Stamina Regen', itemSlots: 'Item Slot', accuracy: 'Accuracy', crit: 'Crit', strength: 'Strength', precision: 'Precision', magic: 'Magic', spirit: 'Spirit', armor: 'Armor', resist: 'Resist', dodge: 'Dodge', reach: 'Reach', movement: 'Movement', luck: 'Luck', vision: 'Vision', toughness: 'Toughness', surge: 'Surge', thorns: 'Thorns' }
 const label = (k: string) => STAT_LABEL[k] ?? k
 
 export function levelUpScreen(c: CampaignState, heroId: string, from: 'rewards' | 'roster'): string {

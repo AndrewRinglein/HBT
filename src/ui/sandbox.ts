@@ -31,13 +31,15 @@ function setup(){
 const actionKey=(c:SandboxChoice)=>c.command.actionId+'|'+c.command.slot
 // V2 R2 (2026-09-23): the engine's hitChance is conditional accuracy; Block and the overall
 // connection are its own preview fields (V2-HANDOFF.md). Labels: SWITCHES.md blockForecastWording.
-const previewLabels:Record<string,string>={blockChance:'Block chance',hitChance:'Hit chance if not blocked',connectionChanceBps:'Chance to connect',damageOnHit:'Damage on hit',damageOnCrit:'Damage on critical hit',damageOnCritChart:'Damage on chart-only critical',critChance:'Critical chance',damage:'Damage',heal:'Healing',healingApplied:'Healing applied',protection:'Protection',selfDamage:'Damage to self',selfDamageApplied:'Self HP loss'}
+const previewLabels:Record<string,string>={blockChance:'Block chance',hitChance:'Hit chance if not blocked',connectionChanceBps:'Chance to connect',damageOnHit:'Damage on hit',damageOnCrit:'Damage on critical hit',damageOnCritChart:'Damage on chart-only critical',critChance:'Critical chance',damage:'Damage',heal:'Healing',healingApplied:'Healing applied',protection:'Protection',selfDamage:'Damage to self',selfDamageApplied:'Self HP loss',thornsOnHit:'Thorns back to the attacker on hit'}
+// v2.thorns (engine 88064ac): preview().thornsOnHit is 0 on every unthorned target; said only when it bites.
+const QUIET_ZERO=new Set(['thornsOnHit'])
 const PERCENT=new Set(['blockChance','hitChance','critChance'])
 /** basis points as a percent, by moving the decimal point in the engine's own digits — no arithmetic */
 const bpsPct=(bps:number)=>{const s=String(bps).padStart(3,'0'),f=s.slice(-2).replace(/0+$/,'');return s.slice(0,-2)+(f?'.'+f:'')}
 const shown=(key:string,v:number)=>key==='connectionChanceBps'?bpsPct(v)+'%':PERCENT.has(key)?v+'%':String(v)
 function forecast(p:Record<string,unknown>){
- return 'Current-state forecast: '+Object.keys(previewLabels).filter(key=>typeof p[key]==='number').map(key=>previewLabels[key]+': '+shown(key,p[key] as number)).join(' · ')
+ return 'Current-state forecast: '+Object.keys(previewLabels).filter(key=>typeof p[key]==='number'&&!(QUIET_ZERO.has(key)&&p[key]===0)).map(key=>previewLabels[key]+': '+shown(key,p[key] as number)).join(' · ')
 }
 function packetDetails(p:Record<string,unknown>){
  const parts:string[]=[]
