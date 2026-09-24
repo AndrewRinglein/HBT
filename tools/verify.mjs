@@ -291,6 +291,41 @@ if (SINGLES) {
   for (const t of UNEXERCISED) check(!seen.has(t), `fold: ${t} is listed UNEXERCISED but the library now carries one — delete the entry, the list only shrinks`)
 }
 
+/* ── PRONE AND STANDING (v2.prone, added 2026-09-23) ──────────────────────
+   The engine states the going-down (unit.proned) and the getting-up
+   (unit.stood). A library battle must carry both; the pure fold marks the unit
+   prone between them and not after; the token wears the prone presentation
+   while prone and drops it after; and neither event moves a single HP. */
+if (SINGLES) {
+  const bi = LIB.battles.findIndex(b => { const t = b.battle.events.map(e => e.type); return t.includes('unit.proned') && t.includes('unit.stood') })
+  if (bi < 0) fails.push('prone: no library battle carries both unit.proned and unit.stood')
+  else {
+    const label = LIB.battles[bi].label, EV = LIB.battles[bi].battle.events
+    const down = EV.findIndex(e => e.type === 'unit.proned')
+    const who = EV[down].target
+    const up = EV.findIndex((e, i) => i > down && e.type === 'unit.stood' && e.actor === who)
+    if (up < 0) fails.push(`prone: ${label} — unit ${who} goes prone at ${down} and never stands`)
+    else {
+      const hpOf = S => JSON.stringify(Object.values(S.U).map(u => [u.id, u.hp, u.maxHp]))
+      for (let i = 0; i < EV.length; i++) if (EV[i].type === 'unit.proned' || EV[i].type === 'unit.stood') {
+        const S = foldTo(EV, i, CTX0), before = hpOf(S), cues = fold(S, EV[i], CTX0, 0)
+        check(hpOf(S) === before, `prone: ${label} — ${EV[i].type} at ${i} changed HP (neither event carries any)`)
+        check(cues.every(c => c.n == null), `prone: ${label} — ${EV[i].type} at ${i} floats a number no event stated`)
+      }
+      const at = n => foldTo(EV, n, CTX0).U[who]
+      check(at(down + 1)?.prone?.includes(EV[down].statusId), `prone: ${label} — after unit.proned (${down}) the fold does not mark unit ${who} prone with ${EV[down].statusId}`)
+      check(at(up)?.prone?.length > 0, `prone: ${label} — unit ${who} is not prone just before unit.stood (${up})`)
+      check(at(up + 1)?.prone == null, `prone: ${label} — unit ${who} is still prone after unit.stood (${up})`)
+      load(bi); const v = H.viewer; v.pause()
+      const tok = n => { v.seek(n); v.render(); return v._V.layers.UEL.get(who) }
+      { const E = tok(down + 1)
+        check(E && E.root.classList.contains('tokProne') && /rotate\(-62deg\)/.test(E.img.style.transform), `prone: ${label} — unit ${who}'s token does not read as prone after unit.proned (class ${E && E.root.className}, img ${E && E.img.style.transform})`) }
+      { const E = tok(up + 1)
+        check(E && !E.root.classList.contains('tokProne') && !/rotate\(/.test(E.img.style.transform), `prone: ${label} — unit ${who}'s token still reads as prone after unit.stood (class ${E && E.root.className}, img ${E && E.img.style.transform})`) }
+    }
+  }
+}
+
 /* ── one traversal per move (VISUAL-BATTLE-UPDATES §1.1) ───────────────── */
 if (SINGLES) {
   const b = LIB.battles[0]; load(0); const v = H.viewer; v.pause()

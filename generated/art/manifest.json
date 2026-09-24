@@ -656,6 +656,18 @@
    "card": "card-warrior-fearsome.jpg",
    "aspect": 0.6055,
    "height": 0.95
+  },
+  "test-trip-a": {
+   "token": "osric_256.png",
+   "card": "card-osric.jpg",
+   "aspect": 0.5,
+   "height": 1.55
+  },
+  "test-trip-b": {
+   "token": "zombie_256.png",
+   "card": "card-zombie.jpg",
+   "aspect": 0.3789,
+   "height": 1.55
   }
  }
 }

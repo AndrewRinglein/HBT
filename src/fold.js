@@ -64,6 +64,7 @@ function mkUnit(e, UD) {
     spent: [],              // actions whose charges ran out (power.exhausted) — they leave the bar
     charges: {},            // actionId -> uses left (charge.spent)
     surgeChance: null,      // the accumulating chance (surge.checked); declared here so the row shape never varies
+    prone: null,            // v2.prone (2026-09-23): the prone status ids from unit.proned; null once unit.stood says it stood
     arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null, aiOverride: null, grown: null }
 }
 
@@ -348,6 +349,21 @@ export function fold(S, e, ctx, now = 0) {
       S.TRIGFLASH = { unit: e.actor, id: e.causeId, until: now + TRIG_MS }
       if (e.actor != null) { S.subjectId = e.actor; S.subjectMode = 'acting' }
       break
+    /* ── PRONE AND STANDING (engine v2.prone 022b560, 2026-09-23; COMBAT-V2-DESIGN §10) ──
+       The status.applied just before unit.proned has already set the pip and
+       floated "Prone +1"; this beat is the going-down itself. unit.stood follows
+       the status.expired of every prone status the unit held — the log states
+       both, so the token lies down and gets up on the engine's word, never on
+       the viewer's reading of which statuses are prone. Neither touches HP. */
+    case 'unit.proned':
+      if (U[e.target]) { const u = U[e.target]
+        u.prone = [...new Set([...(u.prone || []), e.statusId])].sort()
+        cue('float', { hex: u.hex, kind: 'status', statusId: e.statusId, text: 'PRONE', small: true }) }
+      break
+    case 'unit.stood':
+      if (U[e.actor]) { U[e.actor].prone = null
+        cue('float', { hex: U[e.actor].hex, kind: 'note', text: 'STANDS', small: true }) }
+      break
     case 'status.reduced': if (U[e.target]) U[e.target].st[e.statusId] = e.after; break
     case 'status.expired': if (U[e.target]) { delete U[e.target].st[e.statusId]; delete U[e.target].stBy[e.statusId] } break
     case 'stamina.spent': case 'stamina.regen': case 'stamina.gained':
@@ -567,7 +583,7 @@ export function foldTo(events, n, ctx) {
     (THREE-PACKAGES-PLAN §8.3). */
 export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck', 'unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin', 'action.spent',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
-  'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'stamina.spent',
+  'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'unit.proned', 'unit.stood', 'stamina.spent',
   'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'statmod.expired', 'cooldown.set',
   'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'bleedout.accelerated', 'power.used', 'battle.end',
   /* 2026-09-03 */

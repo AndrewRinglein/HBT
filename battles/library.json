@@ -116,6 +116,14 @@
   {
    "file": "test.damage-packets.json",
    "label": "TEST · ordered fire and shadow packets"
+  },
+  {
+   "file": "test.prone-a.json",
+   "label": "TEST · prone and standing (status.prone)"
+  },
+  {
+   "file": "test.prone-b.json",
+   "label": "TEST · prone and standing (second prone instance)"
   }
  ]
 }

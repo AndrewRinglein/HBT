@@ -68,6 +68,10 @@ ARTMAP = {
  'test-zombie':       {'token':'zombie_256.png',     'card':'card-zombie',    'src':'battle-tokens/units/zombie_256.png',     'cardsrc':'assets/bestiary/eve/zombie.png'},
  # The cohort zombie plus a gash rider (engine fixture-migration test); same body.
  'test-gash-zombie': {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
+ # v2.prone test riders (2026-09-23): Tripper A is test-osric plus a trip trigger, Tripper B the
+ # cohort zombie plus one (content/test/units.json `from`); same bodies, as with test-gash-zombie.
+ 'test-trip-a': {'token':'osric_256.png','card':'card-osric','src':'battle-tokens/units/osric_256.png','cardsrc':'crucible/art/base/paladin-shiney1.png'},
+ 'test-trip-b': {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
  'test-zombie-burning':{'token':'zombie_256.png',    'card':'card-zombie',    'src':'battle-tokens/units/zombie_256.png',     'cardsrc':'assets/bestiary/eve/zombie.png'},
  # ── scenario typeIds (2026-08-27) ─────────────────────────────────────────
  # Tokens from the battle-tokens cutout library where the family matches;

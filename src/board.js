@@ -754,8 +754,17 @@ export function syncUnits(V) {
     const w = Math.round(hpx * E.a.aspect * (down ? 2 : 1))
     E.img.style.left = (-w / 2) + 'px'; E.img.style.top = (-hpx) + 'px'
     E.img.style.width = w + 'px'; E.img.style.height = hpx + 'px'
-    E.img.style.transform = down ? 'rotate(-90deg) ' + LIFT : LIFT
+    /* PRONE (v2.prone, 2026-09-23 — PROVISIONAL, Angela to judge; VIEWER-CHECKPOINT):
+       the unit.proned the log stated lays the figure over — full size, tipped
+       62° onto its side and dropped toward its hex, the billboard leaning back
+       — until unit.stood. Distinct from DOWNED (half size, flat 90°, the red
+       ring): a prone unit keeps its HP bar, pips and full opacity. A class on
+       the root and inline transforms only: no filter, the 3D chain untouched. */
+    const prone = !down && !!(u.prone && u.prone.length)
+    E.root.classList.toggle('tokProne', prone)
+    E.img.style.transform = down ? 'rotate(-90deg) ' + LIFT : prone ? 'rotate(-62deg) ' + LIFT : LIFT
     if (down) E.img.style.top = (-Math.round(hpx * 0.42)) + 'px'
+    else if (prone) E.img.style.top = (-Math.round(hpx * 0.9)) + 'px'
     /* A DOWNED HERO IS STILL A PERSON, not a decal (ruled 2026-09-01) */
     E.img.style.opacity = down ? '.82' : '1'
     E.img.style.boxShadow = down ? '0 10px 16px -6px rgba(0,0,0,.85)' : ''
@@ -792,7 +801,7 @@ export function syncUnits(V) {
       if (!bare && !down) E.shadow.style.cssText = `left:${Math.round(-44 * fp)}px;top:${Math.round(-24 * fp)}px;width:${Math.round(88 * fp)}px;height:${Math.round(44 * fp)}px;` +
         'transform:rotate(-16deg) scale(1.05,.8);opacity:.58'
     }
-    E.bb.style.transform = down ? 'rotateX(calc(var(--anti) * 0.68))' : 'rotateX(var(--anti))'
+    E.bb.style.transform = down ? 'rotateX(calc(var(--anti) * 0.68))' : prone ? 'rotateX(calc(var(--anti) * 0.82))' : 'rotateX(var(--anti))'
     E.actA.style.display = E.actB.style.display = (!bare && u.id === S.activeId && !down) ? '' : 'none'
     E.mark.style.cssText = `left:-9px;top:${-hpx - 46}px;display:${u.id === S.activeId && !down ? 'block' : 'none'}`
     E.selR.style.display = u.id === view.inspectId ? '' : 'none'

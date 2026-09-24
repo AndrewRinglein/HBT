@@ -33,6 +33,9 @@ export function buildLog(events, SN, turns) {
       case 'heal.applied': return b('status', `&nbsp;&nbsp;<b>${nmT(e)}</b> heals ${e.amount}` + (e.halvedBy ? ` <span class="sq">· halved by ${String(e.halvedBy).replace('status.', '')}</span>` : ''))
       case 'status.applied': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> — ${SN[e.statusId] || e.statusId} ${e.before} → ${e.after}`)
       case 'status.expired': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${SN[e.statusId] || e.statusId} fades from <b>${nmT(e)}</b>`)
+      // v2.prone (2026-09-23): the going-down and the getting-up, as the engine states them
+      case 'unit.proned': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> is knocked prone <span class="sq">· ${SN[e.statusId] || e.statusId}</span>`)
+      case 'unit.stood': return b(side(e), `&nbsp;&nbsp;<b>${nmAt(e)}</b> stands up`)
       case 'life.downed': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> GOES DOWN`)
       case 'life.dead': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> dies <span class="sq">· ${e.reason}</span>`)
       case 'bleedout.tick': return b('down', `&nbsp;&nbsp;bleed-out ${e.bleedOut} — <b>${nmT(e)}</b>`)

@@ -23,6 +23,10 @@ export const STYLE = {   // one hue per status, everywhere — pips, VFX, chips,
   'status.confusion': { hue: '#d98cff', gl: 'polygon(20% 0,80% 0,100% 50%,80% 100%,20% 100%,0 50%)', provisional: true },
   'status.root': { hue: '#9c6b3f', gl: 'polygon(50% 0,100% 100%,0 100%)', provisional: true },
   'status.dazed': { hue: '#d9d26e', gl: 'circle(50%)', provisional: true },
+  /* PROVISIONAL (2026-09-23, v2.prone — Angela to judge): Prone, a dusty
+     earth-grey — the colour of the ground the unit is lying on. The test
+     instance test.status.floored reads as Prone (stStyle, below). */
+  'status.prone': { hue: '#a8977c', gl: 'polygon(0 62%,100% 62%,100% 88%,0 88%)', provisional: true },
   'status.powers-locked': { hue: '#8f9bb3', gl: 'polygon(8% 8%,92% 8%,92% 92%,8% 92%)', sq: true, provisional: true },
 }
 /* THE GROUND LAYERS (2026-09-03): a painted layer wears the hue of the status
@@ -39,7 +43,7 @@ export const layerHue = name => LAYER_STATUS[name] ? STYLE[LAYER_STATUS[name]].h
 export const BLOOD_HUE = '#c62828'
 export const stStyle = id => STYLE[String(id).replace(/^test\./, '').replace(/daze$/, 'status.stun')
   .replace(/hobble$/, 'status.slow').replace(/ward$/, 'status.protection')
-  .replace(/enfeeble$/, 'status.weak')] || { hue: '#8ed14f', gl: 'circle(50%)' }
+  .replace(/enfeeble$/, 'status.weak').replace(/^status\.floored$/, 'status.prone')] || { hue: '#8ed14f', gl: 'circle(50%)' }
 
 export const PROJ_TINT = { burn: '#ff9d3c', poison: '#8ed14f', bleed: '#e05252', heal: '#8fe08a' }
 /* result colours (ruled 2026-08-27): red physical, blue magic, white true; heals green */
