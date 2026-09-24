@@ -959,3 +959,22 @@ concealment are later R7 parts.
 | `propDestroyAfterOutcome` | An attack that ends the battle — does it still destroy? | **No** — nothing is applied once the outcome is set (matches KDB on a multi-hit). | Nothing reads the board after the end; no event after `battle.end`. | provisional — 2026-09-24 |
 | `propDestroyRulesVersion` | Does the snapshot rules version move? | **No** — `steps` is optional, so every existing save stays valid; R3–R6 did not move it either. | Law 10: `block.test.ts` pins `.21`. | provisional — 2026-09-24 |
 
+## V2 attacking a prop — defaults taken landing v2.prop-attack (2026-09-24)
+
+The source: COMBAT-V2-DESIGN-2026-09-07 §12.2 ("Props can be targeted directly. A hex is a
+legal target for a destroy-carrying effect, with no unit in it"), ruled 2026-09-07. Engine
+`src/core/prop-attack.ts` (`canAttackHex`, `propAttackHexes`, `attackProp`) and the `hex`
+action request in `src/core/commands.ts`. Bursts already take any hex as their centre, so
+this is the attack half. V2 R7 part 2 (Andrew's chat, 2026-09-24).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `propAttackWho` | Which attacks may be aimed at a hex? | **Only an attack row with Destroy 1 or more.** | §12.2: "a legal target for a destroy-carrying effect". | provisional — 2026-09-24 |
+| `propAttackWhere` | Which hexes? | **A hex holding a prop or touched by one (an edge), with no living unit (standing or downed) in it**, in reach, in sight, a ranged attack not adjacent — the same distance and vision rules as an attack on a unit. | "with no unit in it"; where a unit stands, the unit is the target and the prop is struck by that attack (v2.prop-destroy). | provisional — 2026-09-24 |
+| `propAttackLine` | Does the prop being struck block the line to itself? | **No — the struck props are reached, not crossed;** every other high prop blocks the line as it blocks any attack line (§4). Same cell and polygon tests as burst shielding. | Otherwise a high prop could never be hit by a single attack, and §12.2's "you need to hit it three times" would be unreachable. | provisional — 2026-09-24 |
+| `propAttackConnects` | Does a blow at a prop roll to hit? | **No — it always connects:** no accuracy, Block, crit, damage, KDB, Thorns or hooks, and no dice drawn. | A prop has no Dodge, no Block and no Health; "Misses do not destroy" is about blows aimed at units. | provisional — 2026-09-24 |
+| `propAttackPays` | What does it cost? | **Exactly what the attack costs** — the same `spendAction` (slot, stamina, cooldown, uses). | One action type (refactor.one-action-type). | provisional — 2026-09-24 |
+| `propAttackEvent` | What does the log say? | **`prop.struck`** `{ actor, hex, attackId, kind, destroy, props, distance }`, then `prop.damaged` / `prop.destroyed` per prop. Not `attack.declared`: that event names a target unit and its accuracy ledger, and every reader assumes both. | §15.1 has no event for a blow at a prop; `noun.verb-past` as the section asks. | provisional — 2026-09-24 |
+| `propAttackForced` | A taunted unit? | **Cannot aim at a prop** while a taunt names a standing enemy (`forced-target`). | A taunt forces the target of attacks (capability.taunt). | provisional — 2026-09-24 |
+| `propAttackAi` | Does the AI ever attack a prop? | **No, not yet** — a command only, like the swap (swapAi). The AI's use of destruction is R12 (AI decisions). | §0 defers the AI's depth on cover and LOS ("different problem, different day"). | provisional — 2026-09-24 |
+

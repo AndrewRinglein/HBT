@@ -459,3 +459,11 @@ Two new events; a renderer folds them onto the props it drew from `map.loaded`, 
 (absent = intact) is the same fact, for a snapshot or a mid-battle mount. Both events arrive at
 the end of the attack's resolution — after its damage, KDB and knockback — never mid-attack.
 Burning variants (`prop.ignited`) are not part of this extension.
+
+A blow aimed at a prop's hex (`v2.prop-attack`, §12.2 "Props can be targeted directly") is
+`prop.struck` — `{ actor, hex, attackId, kind: 'melee'|'ranged', destroy, props: [ids], distance }`,
+`causeId` the attack — followed by the `prop.damaged` / `prop.destroyed` pair per prop. There
+is no `attack.declared`, `block.rolled` or damage for it: it always connects and rolls nothing.
+A client aims one with the action request `{ actor, actionId, hex }`; `propAttackHexes` lists
+the legal hexes.
+

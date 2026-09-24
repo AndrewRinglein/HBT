@@ -1,5 +1,26 @@
 [
  {
+  "id": "v2.prop-attack",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "V2 R7 part 2, attacking a prop directly (COMBAT-V2-DESIGN-2026-09-07 section 12.2, ruled 2026-09-07: 'Props can be targeted directly. A hex is a legal target for a destroy-carrying effect, with no unit in it.'). An attack row with Destroy may be aimed at a hex holding or touched by a prop with no living unit in it, in reach and sight (ranged not adjacent), on a line no other high prop blocks - the struck props are reached, not crossed. It pays as the attack does, always connects (no accuracy, Block, damage, hooks or dice), emits prop.struck, and applies its Destroy to every prop in or touching the hex through damageProp. The action request gains { hex }; canAttackHex is its one legality door; propAttackHexes enumerates for a picker. The AI does not use it yet.",
+  "expect": "The Chopper strikes barrels no one stands in with no RNG draw, no attack.declared, block.rolled, damage or trigger; action.spent names the primary; a high tier-2 boulder is struck where it stands and falls to low cover after two blows; the Wrecker takes a tier-2 wall in one; refused: an attack without Destroy, a hex with no prop, a hex a unit stands in, out of reach, ranged adjacent, a high rock on the line, the primary spent, a taunt; the command door returns illegal-hex-or-action, malformed-hex, malformed-action, validates without emitting, and executes; no control battle moves.",
+  "needs": [
+   "v2.prop-destroy"
+  ],
+  "probeIds": [
+   "attack.test-destroy.chop",
+   "attack.test-destroy.wreck"
+  ],
+  "variants": [
+   "attack.test-destroy.chop",
+   "attack.test-destroy.wreck"
+  ],
+  "note": "Andrew's chat, 2026-09-24 (V2 roadmap R7 part 2). A command, like the swap: the AI does not aim at props (SWITCHES.md propAttackAi), so the probe reads the two Destroy attacks live in test.prop-destroy and test/v2-prop-attack.test.ts drives the hex path. Defaults in SWITCHES.md 'V2 attacking a prop'. No content change.",
+  "status": "done",
+  "sha": "a6e614e"
+ },
+ {
   "id": "v2.prop-destroy",
   "kind": "engine",
   "shape": "rule",

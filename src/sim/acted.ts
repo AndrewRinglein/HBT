@@ -56,4 +56,6 @@ export const ACTED: ReadonlySet<string> = new Set(['damage.applied','heal.applie
   // capability.charges (2026-09-03): a use spent is a thing that cannot be undone this Battle
   'charge.spent', 'power.exhausted',
   // v2.prop-destroy (2026-09-24): a prop that took a step or fell is a changed board
-  'prop.damaged', 'prop.destroyed'])
+  'prop.damaged', 'prop.destroyed',
+  // v2.prop-attack (2026-09-24): an attack aimed at a prop's hex — always followed by prop.damaged
+  'prop.struck'])

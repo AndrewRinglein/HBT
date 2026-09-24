@@ -13,10 +13,13 @@ import { activationChoices, controllerOf, type ControlPolicy } from './control.j
 import { selectActivation } from './mutate.js'
 import { isUnitUid } from './identity.js'
 import { canSwap, performSwap } from './swap.js'
+import { attackProp, canAttackHex } from './prop-attack.js'
 export { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 
 /** Shared action input; session ownership is supplied separately from client data. */
-export type ActionRequest = { actor: number; actionId: string; slot?: import('./types.js').ActionSlot } & ({ target: number } | { destination: number } | { centre: number })
+export type ActionRequest = { actor: number; actionId: string; slot?: import('./types.js').ActionSlot } & ({ target: number } | { destination: number } | { centre: number }
+  /** v2.prop-attack (COMBAT-V2 §12.2): an attack with Destroy aimed at a hex holding a prop. */
+  | { hex: number })
 export type BattleCommand = { kind: 'select-activation'; unitUid: number; expectedSeq: number } | (ActionRequest & { kind: 'action'; expectedSeq: number }) | { kind: 'end-cycle'; actor: number; expectedSeq: number }
   /** v2.swap (COMBAT-V2 §11.2): hold these instances; everything else carried is stowed. */
   | { kind: 'swap'; actor: number; hands: string[]; expectedSeq: number }
@@ -25,6 +28,7 @@ type Rejection = Extract<CommandResult, { ok: false }>
 type Plan = { kind: 'attack'; actor: number; actionId: string; target: number; slot: import('./types.js').ActionSlot }
   | { kind: 'power'; actor: number; actionId: string; target: number; slot: import('./types.js').ActionSlot }
   | { kind: 'burst'; actor: number; actionId: string; centre: number; slot: import('./types.js').ActionSlot }
+  | { kind: 'prop-attack'; actor: number; actionId: string; hex: number; slot: import('./types.js').ActionSlot }
   | MovementPlan
 const reject = (reason: string): Rejection => ({ ok: false, reason })
 const integer = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0
@@ -41,7 +45,8 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   if (!record(request)) return reject('malformed-action')
   const aimed = Object.hasOwn(request, 'target')
   const centred = Object.hasOwn(request, 'centre')
-  if (!keys(request, ['actor', 'actionId', centred ? 'centre' : aimed ? 'target' : 'destination', ...(Object.hasOwn(request, 'slot') ? ['slot'] : [])])) return reject('malformed-action')
+  const hexed = Object.hasOwn(request, 'hex')
+  if (!keys(request, ['actor', 'actionId', centred ? 'centre' : aimed ? 'target' : hexed ? 'hex' : 'destination', ...(Object.hasOwn(request, 'slot') ? ['slot'] : [])])) return reject('malformed-action')
   if (request.slot !== undefined && request.slot !== 'movement' && request.slot !== 'primary') return reject('malformed-action')
   const { actor, actionId } = request
   if (!integer(actor) || !ctx.state.units[actor] || typeof actionId !== 'string') return reject('malformed-action')
@@ -57,6 +62,11 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
     return canUseBurst(ctx, actor, request.centre, actionId, slot) ? { kind: 'burst', actor, centre: request.centre, actionId, slot } : reject('illegal-centre-or-action')
   }
   if (centred) return reject('malformed-target')
+  if (hexed) {
+    if (!isAttack(a) || !integer(request.hex) || request.hex >= ctx.state.terrain.length) return reject('malformed-hex')
+    if (forcedTargetOf(ctx, u) !== null) return reject('forced-target')
+    return canAttackHex(ctx, actor, request.hex, actionId, slot) ? { kind: 'prop-attack', actor, hex: request.hex, actionId, slot } : reject('illegal-hex-or-action')
+  }
   if (isMove(a)) {
     if (aimed || !integer(request.destination) || request.destination >= ctx.state.terrain.length) return reject('malformed-destination')
     return planMovement(ctx, actor, actionId, request.destination, slot)
@@ -76,6 +86,7 @@ export function validateAction(ctx: Ctx, request: unknown): CommandResult {
 }
 function resolvePlan(ctx: Ctx, plan: Plan): void {
   if (plan.kind === 'burst') useBurst(ctx, plan.actor, plan.centre, plan.actionId, plan.slot)
+  else if (plan.kind === 'prop-attack') { attackProp(ctx, plan.actor, plan.hex, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
   else if (plan.kind === 'attack') { performAttack(ctx, plan.actor, plan.target, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
   else if (plan.kind === 'power') { usePower(ctx, plan.actor, plan.target, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
   else if (plan.power.move.shape === 'path') executeMove(ctx, plan.actor, plan.path, plan.power, undefined, plan.slot)
@@ -105,7 +116,7 @@ function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): Session
     return {kind,actor:ctx.state.units.find(u=>u.uid===command.unitUid)!.id}
   }
   if (kind !== 'action' && kind !== 'end-cycle' && kind !== 'swap') return reject('malformed-command')
-  const fields = kind === 'end-cycle' ? ['kind', 'actor', 'expectedSeq'] : kind === 'swap' ? ['kind', 'actor', 'expectedSeq', 'hands'] : ['kind', 'actor', 'expectedSeq', 'actionId', Object.hasOwn(command, 'centre') ? 'centre' : Object.hasOwn(command, 'target') ? 'target' : 'destination']
+  const fields = kind === 'end-cycle' ? ['kind', 'actor', 'expectedSeq'] : kind === 'swap' ? ['kind', 'actor', 'expectedSeq', 'hands'] : ['kind', 'actor', 'expectedSeq', 'actionId', Object.hasOwn(command, 'centre') ? 'centre' : Object.hasOwn(command, 'target') ? 'target' : Object.hasOwn(command, 'hex') ? 'hex' : 'destination']
   if (kind === 'action' && Object.hasOwn(command, 'slot')) fields.push('slot')
   if (!keys(command, fields) || !integer(actor) || !ctx.state.units[actor] || !integer(expectedSeq)) return reject('malformed-command')
   if (ctx.state.outcome) return reject('battle-complete')
@@ -120,7 +131,7 @@ function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): Session
     const why = canSwap(ctx, actor, hands)
     return why ? reject(`illegal-swap: ${why}`) : { kind, actor, hands: [...hands] }
   }
-  return planAction(ctx, { actor, actionId: command.actionId, ...(Object.hasOwn(command, 'centre') ? { centre: command.centre } : Object.hasOwn(command, 'target') ? { target: command.target } : { destination: command.destination }), ...(Object.hasOwn(command, 'slot') ? { slot: command.slot } : {}) })
+  return planAction(ctx, { actor, actionId: command.actionId, ...(Object.hasOwn(command, 'centre') ? { centre: command.centre } : Object.hasOwn(command, 'target') ? { target: command.target } : Object.hasOwn(command, 'hex') ? { hex: command.hex } : { destination: command.destination }), ...(Object.hasOwn(command, 'slot') ? { slot: command.slot } : {}) })
 }
 
 /** A public UI may ask legality, then use pipeline previews for numbers; no future roll is exposed. */
