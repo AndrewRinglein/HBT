@@ -1,4 +1,4 @@
-import {isDamageType} from './types.js'
+import {isDamageType, isEndOfPhaseLadder} from './types.js'
 import { validateBurstAction } from './burst-profile.js'
 import {attackPacketFields} from './attack-profile.js'
 import { prepareCover } from './cover.js'
@@ -269,6 +269,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   record(s.cfg); record(s.cfg.switches)
   requireThat(integer(s.cfg.turnCap, 1), 'turn cap')
   for (const [k, v] of Object.entries(DEFAULT_CONFIG.switches)) requireThat(typeof s.cfg.switches[k] === typeof v, `switch ${k}`)
+  requireThat(isEndOfPhaseLadder(s.cfg.switches.endOfPhaseLadder), 'switch endOfPhaseLadder')   // fix.phase-ladder-config
   for (const [k, allowed] of Object.entries({ aiAttacksDowned: ['never', 'whenNoStanding', 'always'], aiAttackChoice: ['declared', 'bestDamage'], actionSlots: ['byProfile', 'any'], mirrorSideRules: ['fielded', 'row'] })) requireThat(allowed.includes(s.cfg.switches[k]), `switch ${k}`)
   const savedRng = s.rng; record(savedRng)
   requireThat(integer(savedRng.rootSeed, 0, 0xffffffff) && typeof savedRng.strict === 'boolean' && Array.isArray(savedRng.log), 'RNG header')

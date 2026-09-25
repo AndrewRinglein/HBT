@@ -1119,3 +1119,16 @@ read from `loadout.worn`). Probes: `test/vs-target.test.ts`; instances `test.bad
 | `vsTargetStatusCarried` | When does a target "carry" a status? | **Value > 0.** | The same test every status reader uses (`blocksBlock`). | provisional — 2026-09-25 |
 | `vsTargetWornTwice` | The same worn item carried twice (two Kai'rin runes) — does its slayer count once or twice? | **Twice: one ledger row per worn instance, in handed order.** Order across sources: badges, then held items, then worn items. | A worn instance's stats already fold once per instance (`applyItems`, v2.loadout "the same row twice is two instances"); a held item counts once only because one attack is made with one weapon. Two worn runes are two sources. Whether the kingdom lets a hero wear two of one rune is its legality, not the engine's. | provisional — 2026-09-25 (fix.vs-target-worn-and-flat) |
 | `wornLoadoutShape` | Where does the unit keep its worn items? | **`loadout.worn`: ItemInstance[] (instanceId, itemId) of the non-held items handed in, spent ones left out, absent when empty.** | Law 11 — the loadout already names what a hero carries, as instances (Law 12); absent-when-empty keeps every weapons-only hero's snapshot unchanged. Never swapped (`performSwap` reads hands and stowed only). | provisional — 2026-09-25 (fix.vs-target-worn-and-flat) |
+
+
+## End of Phase ladder — defaults taken building fix.phase-ladder-config (2026-09-25)
+
+COMBAT-SEQUENCE §End of Hero Phase: the ladder is "an ordered list of named rungs supplied by
+config". `cfg.switches.endOfPhaseLadder` names the built rungs (`END_OF_PHASE_RUNGS`,
+`src/core/types.ts`: `bleedOut` 4b, `staminaRegen` 5, `victoryCheck` 6); `endOfPhase()`
+(`src/core/battle.ts`) runs them in that order. Probes: `test/phase-ladder.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `endOfPhaseLadder` | In what order do the End of Phase rungs run, and may a sweep drop or repeat one? | **`['bleedOut', 'staminaRegen', 'victoryCheck']`. A ladder must name every built rung exactly once; anything else is refused at the first End of Phase and on restore (Law 9).** Bleed-out stays hero-ladder only wherever it sits. | The document's order and the order `battle.ts` always ran — control battles byte-identical. Reordering is the sweep axis the document asks for; dropping a rung would be a different rule, not an order. | provisional — 2026-09-25 |
+| `phaseRungLog` | Does each rung log a line naming itself? | **Off. On, every rung that runs emits `phase.rung` `{side, rung}` before it acts.** | The item asks that "the log names each rung"; always-on would add a line to every battle and move the control battles and every frozen cursor fixture for a log-only change. A sweep that reorders turns it on. | provisional — 2026-09-25 |

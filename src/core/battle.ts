@@ -12,8 +12,8 @@ import { heroesLight } from './vision.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import { applyGroundHazard } from './ground.js'
-import type { BattleCursor, Ctx, Side } from './types.js'
-import { MAX_SURGE_CYCLES } from './types.js'
+import type { BattleCursor, Ctx, EndOfPhaseRung, Side } from './types.js'
+import { END_OF_PHASE_RUNGS, MAX_SURGE_CYCLES, isEndOfPhaseLadder } from './types.js'
 import { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 import { rulesSideOf } from './side.js'
 
@@ -91,33 +91,60 @@ export function endOfActivation(ctx: Ctx, unitId: number): void {
   settle(ctx, terrainIdOf(t))
 }
 
-/** The End of Phase ladder. An ordered list of named rungs, so reordering is a sweep axis. */
-function endOfPhase(ctx: Ctx, side: Side): void {
-  if (ctx.state.outcome) return
-  emit(ctx, 'phase.end.begin', 'engine', { side })
-
-  // 1. auras  2. corpses — none yet
-  // 3. status ticks — MOVED to the End of Activation ladder (ruled 2026-08-26;
-  //    see endOfActivation above). The phase ladder no longer touches statuses.
-  if (ctx.state.outcome) return
-  // 4. durations — travel with the per-activation status pass (see status.ts)
+/**
+ * The End of Phase rungs that are built — COMBAT-SEQUENCE §End of Hero Phase.
+ * fix.phase-ladder-config (2026-09-25): the ladder is `cfg.switches.endOfPhaseLadder`,
+ * an ordered list of these names, so reordering it is a sweep axis rather than a diff.
+ * The default is the document's order and the order this function always ran.
+ *
+ *   1. auras  2. corpses — not rungs yet (COMBAT-SEQUENCE: *not yet*)
+ *   3. status ticks — MOVED to the End of Activation ladder (ruled 2026-08-26; see
+ *      endOfActivation above). The phase ladder no longer touches statuses.
+ *   4. durations — travel with the per-activation status pass (see status.ts)
+ */
+const END_OF_PHASE: Record<EndOfPhaseRung, { sides: readonly Side[]; run: (ctx: Ctx, side: Side) => void }> = {
   // 4b. bleed-out. Angela 2026-08-15: the counter advances at End of Hero Phase,
   //     and only there — not at Start of Turn, and not on the enemy phase. So a
   //     downed hero's five ticks are five HERO phases, which is the window a
   //     rescue actually has.
-  if (side === 'hero') {
-    advanceBleedOuts(ctx)
+  bleedOut: { sides: ['hero'], run: (ctx) => advanceBleedOuts(ctx) },
+  // 5. stamina regen (heroes only; enemies do not run stamina)
+  staminaRegen: {
+    sides: ['hero', 'enemy'],
+    run: (ctx, side) => {
+      for (const u of ctx.state.units) {
+        if (u.side === side && u.lifeState === 'standing' && u.maxStamina > 0) {
+          regenStamina(ctx, u.id, 'phase.end')
+        }
+      }
+    },
+  },
+  // 6. victory check
+  victoryCheck: { sides: ['hero', 'enemy'], run: (ctx) => { checkVictory(ctx, 'phase.end') } },
+}
+
+/** The configured ladder, refused loudly unless it is every built rung exactly once (Law 9). */
+function endOfPhaseLadder(ctx: Ctx): readonly EndOfPhaseRung[] {
+  const ladder: unknown = ctx.cfg.switches.endOfPhaseLadder
+  if (!isEndOfPhaseLadder(ladder)) {
+    throw new Error(`End of Phase ladder ${JSON.stringify(ladder)} must name every built rung exactly once: ${END_OF_PHASE_RUNGS.join(', ')}`)
+  }
+  return ladder
+}
+
+/** The End of Phase ladder: the configured rungs, in order, each on the sides it serves. */
+function endOfPhase(ctx: Ctx, side: Side): void {
+  if (ctx.state.outcome) return
+  const ladder = endOfPhaseLadder(ctx)
+  emit(ctx, 'phase.end.begin', 'engine', { side })
+  for (const rung of ladder) {
+    const r = END_OF_PHASE[rung]
+    if (!r.sides.includes(side)) continue
+    if (ctx.cfg.switches.phaseRungLog) emit(ctx, 'phase.rung', 'phase.end', { side, rung })
+    r.run(ctx, side)
     if (ctx.state.outcome) return
   }
-  // 5. stamina regen (heroes only; enemies do not run stamina)
-  for (const u of ctx.state.units) {
-    if (u.side === side && u.lifeState === 'standing' && u.maxStamina > 0) {
-      regenStamina(ctx, u.id, 'phase.end')
-    }
-  }
-  // 6. victory check
-  checkVictory(ctx, 'phase.end')
-  if (!ctx.state.outcome) emit(ctx, 'phase.end.done', 'engine', { side })
+  emit(ctx, 'phase.end.done', 'engine', { side })
 }
 
 export type BattleResult = {

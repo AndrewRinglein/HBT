@@ -921,7 +921,29 @@ export type Config = {
     aiEatsBeforeBiting: boolean
     /** May a unit target something it cannot see? COMBAT-DESIGN §4 assumes no. SWITCHES.md, 2026-09-03. */
     targetUnseen: boolean
+    /**
+     * The End of Phase ladder, in order — fix.phase-ladder-config (2026-09-25).
+     * COMBAT-SEQUENCE: "an ordered list of named rungs supplied by config ... so
+     * reordering it is a sweep axis rather than a diff." Every built rung exactly
+     * once (END_OF_PHASE_RUNGS); anything else is refused. SWITCHES.md endOfPhaseLadder.
+     */
+    endOfPhaseLadder: EndOfPhaseRung[]
+    /** Does each End of Phase rung log a `phase.rung` line naming itself? SWITCHES.md phaseRungLog. */
+    phaseRungLog: boolean
   }
+}
+
+/**
+ * The BUILT End of Phase rungs, in the document's order (COMBAT-SEQUENCE §End of
+ * Hero Phase: 4b bleed-out — hero ladder only, 5 stamina regen, 6 victory check).
+ * Rungs 1–2 (auras, corpses) are not yet rungs; 3 moved to End of Activation.
+ */
+export const END_OF_PHASE_RUNGS = ['bleedOut', 'staminaRegen', 'victoryCheck'] as const
+export type EndOfPhaseRung = typeof END_OF_PHASE_RUNGS[number]
+/** Every built rung exactly once, nothing else — the one test the runner and the snapshot share. */
+export function isEndOfPhaseLadder(v: unknown): v is EndOfPhaseRung[] {
+  return Array.isArray(v) && v.length === END_OF_PHASE_RUNGS.length
+    && END_OF_PHASE_RUNGS.every((r) => v.filter((x) => x === r).length === 1)
 }
 
 export const DEFAULT_CONFIG: Config = {
@@ -985,6 +1007,11 @@ export const DEFAULT_CONFIG: Config = {
     aiEatsBeforeBiting: true,
     // "Can you target what you cannot see (assumed: no)" — COMBAT-DESIGN §4.
     targetUnseen: false,
+    // The order COMBAT-SEQUENCE gives and battle.ts always ran. SWITCHES.md.
+    endOfPhaseLadder: [...END_OF_PHASE_RUNGS],
+    // Off: the control battles and every frozen cursor fixture stay byte-identical;
+    // on, the log names each rung as it runs. SWITCHES.md, 2026-09-25.
+    phaseRungLog: false,
   },
 }
 

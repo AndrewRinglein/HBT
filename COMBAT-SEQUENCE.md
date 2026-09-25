@@ -95,7 +95,7 @@ Downed heroes do not activate.
 
 ### End of Hero Phase
 
-The ladder is an **ordered list of named rungs supplied by config**, not six hardcoded calls — so reordering it is a sweep axis rather than a diff. *(It is six hardcoded calls in `battle.ts:41`. The reorder sweep axis does not exist yet.)*
+The ladder is an **ordered list of named rungs supplied by config**, not six hardcoded calls — so reordering it is a sweep axis rather than a diff. *(Built 2026-09-25, fix.phase-ladder-config: `cfg.switches.endOfPhaseLadder` orders the built rungs — 4b, 5, 6 — and `phaseRungLog` names each in the log. SWITCHES.md.)*
 
 | # | Rung | Built? |
 |---|---|---|

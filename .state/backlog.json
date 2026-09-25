@@ -1226,7 +1226,9 @@
   "shape": "plumbing",
   "spec": "COMBAT-SEQUENCE: the End of Phase ladder must be \"an ordered list of named rungs supplied by config ... so reordering it is a sweep axis rather than a diff.\" battle.ts:41-59 is four straight-line calls, and battle.ts:40 docstring already claims it is the config version.",
   "expect": "reordering the ladder is a config value a sweep can vary, and the log names each rung",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "41ab92e"
  },
  {
   "id": "fix.retired-stations",
