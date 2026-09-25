@@ -1,6 +1,6 @@
 // Pure terrain metadata and composition. Registry decoding lives in maps.ts.
 // Moved without changing ruled tables or the disable seam; one implementation.
-import { TERRAIN, type DamageType } from '../core/types.js'
+import { TERRAIN, type DamageType, type Side } from '../core/types.js'
 import { disabledIds } from './disable.js'
 
 /** The authored glyph for each terrain kind. MAP-01's legend is the source. */
@@ -12,6 +12,8 @@ export const GLYPH: Readonly<Record<string, number>> = {
   // 'f' (MAP-01's forest glyph) is woodland; 'o' is retired (v2.retire-forest-hills).
   'u': TERRAIN.UNDERGROWTH, 'l': TERRAIN.LAVA,
   'm': TERRAIN.MARSH, 'd': TERRAIN.DESERT, 'n': TERRAIN.RUINS,
+  // v2.structures: no document assigns these glyphs either — SWITCHES.md structureGlyphs.
+  'W': TERRAIN.WALL, 'T': TERRAIN.TOWER, 'H': TERRAIN.HOUSE,
 }
 
 /** The id a terrain kind answers to in a log line or a modifier source. */
@@ -23,6 +25,7 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
   [TERRAIN.UNDERGROWTH]: 'terrain.undergrowth', [TERRAIN.WOODLAND]: 'terrain.woodland', [TERRAIN.LAVA]: 'terrain.lava',
   [TERRAIN.MARSH]: 'terrain.marsh', [TERRAIN.DESERT]: 'terrain.desert', [TERRAIN.RUINS]: 'terrain.ruins',
+  [TERRAIN.WALL]: 'terrain.wall', [TERRAIN.TOWER]: 'terrain.tower', [TERRAIN.HOUSE]: 'terrain.house',
 }
 
 export function terrainIdOf(terrain: number): string {
@@ -136,6 +139,7 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
   // Andrew, 2026-09-24: "Ruins behave like rocky ground" — and "Climber badge will
   // help on ruins the way it does in rocky ground": the same trait, so one reader.
   [TERRAIN.RUINS]: ['rough'],
+  [TERRAIN.WALL]: [], [TERRAIN.TOWER]: [], [TERRAIN.HOUSE]: [],   // v2.structures — EXTRA and STRUCTURE below
 }
 
 /**
@@ -164,6 +168,15 @@ const EXTRA: Readonly<Record<number, Mods>> = {
   [TERRAIN.LAVA]:        { moveCost: 1, hazard: { damageType: 'fire', damage: 3, applies: [['status.burn', 1]] } },
   [TERRAIN.MARSH]:       { moveCost: 1, accuracy: -5, dodge: -10, stripsOnActivationEnd: ['status.burn'] },
   [TERRAIN.DESERT]:      { moveCost: 0, dodge: -5 },
+  // ── V2 structures (v2.structures) — the occupant's own numbers, all attacks ──────
+  // SOURCE OF TRUTH: engine/DECISIONS.md 2026-09-24 (Andrew, verbatim there): "Being on a
+  // wall gives you +1 reach and +5 accuracy." · "Being in a tower also gives you +2 reach
+  // and +10 accuracy." · "Wall and tower do not apply to range attacks only." · "let's have
+  // the tower cost 2 extra moves … a total of 3 moves". The reach is STRUCTURE's (every
+  // attack, where the stat's Reach is ranged-only); what each does against an enemy is too.
+  [TERRAIN.WALL]:  { moveCost: 0, accuracy: 5 },
+  [TERRAIN.TOWER]: { moveCost: 2, accuracy: 10 },
+  [TERRAIN.HOUSE]: { moveCost: 0 },
 }
 
 type Stat = 'accuracy' | 'reach' | 'dodge' | 'armor' | 'resist'
@@ -309,4 +322,81 @@ export function layerAppliesOnEnter(layer: number): Applies {
 export function layerAppliesOnActivationEnd(layer: number): Applies {
   if (!layer || disabledIds().has(layerIdOf(layer))) return []
   return LAYER_TRAITS[layer]?.appliesOnActivationEnd ?? []
+}
+
+// ── STRUCTURES — v2.structures (Andrew, 2026-09-24) ────────────────────────────
+// SOURCE OF TRUTH: engine/DECISIONS.md "2026-09-24 — the ground table, re-ruled", the three
+// answers on walls, towers and houses (verbatim there; they supersede DESIGN-DUMP-CLEANED §5).
+// Every number below is copied, not chosen:
+//   wall  — "a wall is a full obstruction … something you can stand on … when you stand on it
+//           and you have an enemy who's not in a wall or a tower they have -20 accuracy, and you
+//           get 10 block" · "The wall adds to both" (Block and Ranged Block) · "getting up on a
+//           wall requires moving upstairs" · "There is one facing on the wall tile, one facing
+//           that has stairs or a ladder. If you move into the wall from that direction, it costs
+//           one extra" · "Enemies can stand on walls."
+//   tower — "If you are in a tower and you have an enemy who is not also in a tower they get
+//           -25% accuracy. You get 15 blocks and 1 armor." · "It's a flat number." · "Towers are
+//           for heroes only." · "The tower is just an obstruction for shooting past it"
+//   house — "Being in a house if your enemy is not also in a house they get -10 accuracy, and
+//           you get 5 dodge." · "into a house through a door" · "when you are in a house, you
+//           can be shot from outside the house."
+// What the ruling left open is SWITCHES.md "Structures", each marked there.
+export type StructureGuard = {
+  /** Added to the enemy attacker's accuracy (ACC.STRUCTURE, 425). */
+  readonly accuracyAgainst: number
+  /** Added to the occupant's Block and Ranged Block against that attack. */
+  readonly block: number; readonly rangedBlock: number
+  /** Added to the occupant's Dodge (TARGET_DODGE, 600) and Armor (MITIGATION, 600) against it. */
+  readonly dodge: number; readonly armor: number
+}
+export type Structure = {
+  readonly id: string
+  /** How a unit comes in from outside: across ANY side, or only across its authored entry side. */
+  readonly enter: 'any' | 'entry'
+  /** Extra move to come in across the entry side, on top of the ground's own cost. */
+  readonly entryCost: number
+  /** How a unit steps out to a hex that is not the structure: across any side, or only back through its entry. */
+  readonly leave: 'any' | 'entry'
+  /** Only a unit following this side's rules may stand here. */
+  readonly onlySide?: Side
+  /** A unit up on it shoots, and is shot, over every structure between (SWITCHES.md structureLines). */
+  readonly elevated: boolean
+  /** Reach for EVERY attack made from here — melee included ("do not apply to range attacks only"). */
+  readonly reach: number
+  /** What it gives its occupant against an ENEMY attacker who is not standing in one of `sharedWith`. */
+  readonly guard: StructureGuard
+  /** The structures whose occupants the guard does not apply against — its own always among them. */
+  readonly sharedWith: readonly string[]
+}
+const STRUCTURE: Readonly<Record<number, Structure>> = {
+  [TERRAIN.WALL]: {
+    id: 'terrain.wall', enter: 'entry', entryCost: 1,
+    leave: 'any',                                   // SWITCHES.md wallDescent
+    elevated: true, reach: 1,
+    guard: { accuracyAgainst: -20, block: 10, rangedBlock: 10, dodge: 0, armor: 0 },
+    sharedWith: ['terrain.wall', 'terrain.tower'],   // "an enemy who's not in a wall or a tower"
+  },
+  [TERRAIN.TOWER]: {
+    id: 'terrain.tower', enter: 'any', entryCost: 0, // the +2 is the ground's own cost (EXTRA): 3 in all, from any side
+    leave: 'any', onlySide: 'hero',
+    elevated: true, reach: 2,
+    guard: { accuracyAgainst: -25, block: 15, rangedBlock: 15, dodge: 0, armor: 1 },   // rangedBlock: SWITCHES.md towerRangedBlock
+    sharedWith: ['terrain.tower'],
+  },
+  [TERRAIN.HOUSE]: {
+    id: 'terrain.house', enter: 'entry', entryCost: 0,   // SWITCHES.md doorFacing
+    leave: 'entry',                                      // SWITCHES.md houseExit
+    elevated: false, reach: 0,
+    guard: { accuracyAgainst: -10, block: 0, rangedBlock: 0, dodge: 5, armor: 0 },
+    sharedWith: ['terrain.house'],
+  },
+}
+/** The structure this ground is, or null — open ground, or its id disabled (the kill-switch seam). */
+export function structureOf(terrain: number): Structure | null {
+  const s = STRUCTURE[terrain]
+  return s && !off(terrain) ? s : null
+}
+/** May this ground carry an authored entry side (stairs, a door)? Read off the table itself — decode ignores the kill switch. */
+export function takesEntry(terrain: number): boolean {
+  return STRUCTURE[terrain]?.enter === 'entry'
 }

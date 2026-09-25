@@ -25,6 +25,7 @@ import { kdbChanceOf, kdbTarget, resolveKdb } from './kdb.js'
 import { reflectThorns, thornsOnHit } from './thorns.js'
 import { rulesSideOf } from './side.js'
 import { attackPacketFields } from './attack-profile.js'
+import { structureGuard, structureReachOf } from './structure.js'
 
 export const ACC = {
   BASE: 100,
@@ -32,6 +33,8 @@ export const ACC = {
   ADJACENT: 300,
   /** v2.ground-table (§3.2): the ground the TARGET stands in, by attack kind — concealment. Revived; v1's occupied-hex rung was retired into BASE_MOD. */
   TERRAIN: 400,
+  /** v2.structures: the target's wall, tower or house against an enemy not in the same kind — −20 / −25 / −10. */
+  STRUCTURE: 425,
   /** v2.thin-obstruction: −5 per thin-obstruction hex a RANGED shot enters (through, and the target's own; never the shooter's). One row per hex. */
   OBSTRUCTION: 450,
   CONDITION: 500,
@@ -115,7 +118,9 @@ export function inMelee(ctx: Ctx, u: Unit): boolean {
  * own Reach, high ground, and later gear — so this no longer knows about terrain.
  */
 export function reachOf(ctx: Ctx, u: Unit, a: AttackDef): number {
-  return a.attack.kind === 'ranged' ? a.range + stat(ctx, u, 'reach') : a.range
+  // v2.structures: a wall's +1 and a tower's +2 are for EVERY attack (Andrew 2026-09-24:
+  // "Wall and tower do not apply to range attacks only") — the Reach stat stays ranged-only.
+  return (a.attack.kind === 'ranged' ? a.range + stat(ctx, u, 'reach') : a.range) + structureReachOf(ctx, u)
 }
 
 /**
@@ -159,6 +164,10 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   const hiddenIn = ctx.state.terrain[target.hex] ?? 0
   const concealment = accuracyAgainstOf(hiddenIn, a.attack.kind)
   if (concealment) v = step(ledger, ACC.TERRAIN, 'TERRAIN', terrainIdOf(hiddenIn), v, v + concealment)
+  // STRUCTURE (425) — v2.structures (Andrew 2026-09-24): the target's wall, tower or house,
+  // against an enemy attacker not in the same kind: −20 / −25 flat / −10. Every attack kind.
+  const guard = structureGuard(ctx, attacker, target)
+  if (guard?.accuracyAgainst) v = step(ledger, ACC.STRUCTURE, 'STRUCTURE', guard.id, v, v + guard.accuracyAgainst)
   // OBSTRUCTION (450) — v2.thin-obstruction (Andrew 2026-09-24): "If you shoot through a tile
   // that is woodland, you get -5"; "A thin obstruction in your own hex does not count against
   // your own shot, only against those who are shooting you or people who are shooting through
@@ -177,6 +186,8 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   if (a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-20)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
+  // the house's +5 Dodge against that enemy — its own row, naming the house (Law 12)
+  if (guard?.dodge) v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', guard.id, v, v - guard.dodge)
   return { value: v, ledger, absorbed: 0 }
 }
 
@@ -244,13 +255,20 @@ export function resolveDamage(
   }
   // V2 flat cover subtraction is after critical multiplication, before absorption.
   if(a.attackKind && hasLowCover(ctx,attacker.hex,target.hex)) v=step(ledger,DMG.COVER,'COVER','cover',v,v-1)
-  return finishDamage(ctx,target,a,ledger,v,absorbAvailable,a.damageType==='physical'?incomingPhysicalBonus(ctx,target):0)
+  return finishDamage(ctx,target,a,ledger,v,absorbAvailable,a.damageType==='physical'?incomingPhysicalBonus(ctx,target):0,armorGuard(ctx,attacker,target))
+}
+
+/** v2.structures: the tower's +1 Armor against an enemy not also in a tower — what finishDamage reads. */
+export type ArmorGuard = { readonly armor: number; readonly id: string }
+function armorGuard(ctx: Ctx, attacker: Unit, target: Unit): ArmorGuard | undefined {
+  const g = structureGuard(ctx, attacker, target)
+  return g?.armor ? { armor: g.armor, id: g.id } : undefined
 }
 
 type ResolvedDamage = Resolved & { raw:number; defense:number; mitigationDelta:number; floorAdjustment:number; resisted:number }
 
 /** Common tail. Secondary packets enter here, never through stat/Power/crit/cover stations. */
-export function finishDamage(ctx:Ctx,target:Unit,a:Pick<DamageSource,'damageType'|'armorPenetration'>,ledger:LedgerRow[],v:number,absorbAvailable:number,frost:number):ResolvedDamage {
+export function finishDamage(ctx:Ctx,target:Unit,a:Pick<DamageSource,'damageType'|'armorPenetration'>,ledger:LedgerRow[],v:number,absorbAvailable:number,frost:number,guard?:ArmorGuard):ResolvedDamage {
   // PROTECTION (550): absorbs, and is spent by what it absorbs. Pure here —
   // the spending happens in performAttack, so preview cannot consume anything.
   // FROST (540): the target's Frost adds to every PHYSICAL hit, per hit —
@@ -262,9 +280,13 @@ export function finishDamage(ctx:Ctx,target:Unit,a:Pick<DamageSource,'damageType
   if (absorbed > 0) v = step(ledger, DMG.PROTECTION, 'PROTECTION', 'status.absorb', v, remaining)
   if (frost && !ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
 
-  const mit = flatDamage(ctx, target, v, a.damageType,0,a.armorPenetration??0)
+  const mit = flatDamage(ctx, target, v, a.damageType,0,a.armorPenetration??0,guard?.armor??0)
   if (a.damageType !== 'true') {
-    v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, mit.beforeFloor)
+    // v2.structures: the structure's Armor is Armor (penetration reaches it too), written as
+    // its own MITIGATION row naming the structure — the unit's own row is the rest.
+    const own = guard ? flatDamage(ctx, target, v, a.damageType,0,a.armorPenetration??0).beforeFloor : mit.beforeFloor
+    v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, own)
+    if (guard) v = step(ledger, DMG.MITIGATION, 'STRUCTURE_ARMOR', guard.id, v, mit.beforeFloor)
   }
 
   const floorAdjustment=Math.max(0,-v)
@@ -294,7 +316,7 @@ export function planAttackDamage(ctx:Ctx,at:Unit,tg:Unit,a:AttackDef,heads:numbe
     const frost=row.damageType==='physical'&&!physicalSeen?incomingPhysicalBonus(ctx,tg):0
     if(row.damageType==='physical')physicalSeen=true
     const ledger:LedgerRow[]=[{station:DMG.DECLARE,name:'DECLARE',effectId:a.id,before:0,after:row.amount,delta:row.amount}]
-    add(row.id,row.damageType,finishDamage(ctx,tg,{damageType:row.damageType,armorPenetration:metadata.armorPenetration??0},ledger,row.amount,available,frost))
+    add(row.id,row.damageType,finishDamage(ctx,tg,{damageType:row.damageType,armorPenetration:metadata.armorPenetration??0},ledger,row.amount,available,frost,armorGuard(ctx,at,tg)))
   }
   return {packets,value:packets.reduce((n,p)=>n+p.resolved,0),absorbed:packets.reduce((n,p)=>n+p.absorbed,0)}
 }
@@ -375,12 +397,19 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
 }
 
 /** Pure first-cup facts. Incapacity is an explicit status capability, not its ID. */
-export function resolveBlock(ctx: Ctx, target: Unit, kind: 'melee' | 'ranged') {
+export function resolveBlock(ctx: Ctx, target: Unit, kind: 'melee' | 'ranged', attacker?: Unit) {
   const statName = kind === 'ranged' ? 'rangedBlock' : 'block'
   const resolved = effective(ctx, target, statName)
+  // v2.structures: a wall's +10 and a tower's +15 Block — to BOTH Block and Ranged Block —
+  // against an enemy not in the same kind of structure (Andrew 2026-09-24: "The wall adds to
+  // both"). One more ledger row, naming the structure; the Block roll reads the sum.
+  const guard = attacker ? structureGuard(ctx, attacker, target) : null
+  const add = guard ? (kind === 'ranged' ? guard.rangedBlock : guard.block) : 0
+  const value = resolved.value + add
+  const ledger = add ? [...resolved.ledger, { source: guard!.id, op: 'add' as const, delta: add, from: resolved.value, to: value }] : resolved.ledger
   const suppressed = target.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.blocksBlock)
-  return {stat: statName, value: resolved.value, ledger: resolved.ledger,
-    chance: suppressed ? 0 : Math.max(0, Math.min(100, resolved.value)), suppressed}
+  return {stat: statName, value, ledger,
+    chance: suppressed ? 0 : Math.max(0, Math.min(100, value)), suppressed}
 }
 
 /** Preview: the same pipeline, run without applying. Law 1 — never a second formula. */
@@ -390,7 +419,7 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   const a = attackDef(ctx, attackId)
   const acc = resolveAccuracy(ctx, at, tg, a)
   const hitChance = Math.max(0, Math.min(100, acc.value))
-  const block = resolveBlock(ctx, tg, a.attack.kind)
+  const block = resolveBlock(ctx, tg, a.attack.kind, at)
   // hitChance remains the accuracy cup conditioned on passing Block. Bps is
   // integer precision: 10,000 means certainty, with no probability rounding.
   const blockFacts = {blockChance:block.chance, connectionChanceBps:(100-block.chance)*hitChance, blockSuppressed:block.suppressed}

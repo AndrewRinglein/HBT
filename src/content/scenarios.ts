@@ -568,6 +568,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     map:{id:'test.map.thin-sign',name:'Thin sign TEST',rows:['.........'],props:[{id:'prop.test.sign',height:'thin',material:1,footprint:{kind:'hex',hexes:[4]}}]},
     heroes:['test-ranger'],heroHexes:[0],enemies:['test-zombie'],enemyHexes:[8],replicate:0,
   },
+  // v2.structures (Andrew, 2026-09-24, DECISIONS.md — walls, towers and houses): a Ranger in
+  // a tower, a Warrior up on a wall run (stairs on its north end, from the west), a zombie in
+  // a house (its door on the east) and two more coming. Every attack the heroes make from up
+  // there, and every one made at them, carries a structure's row. TEST data, no campaign claim.
+  'test.structures': {
+    id:'test.structures',note:'TEST: a tower, a wall run with stairs and a house with a door — heroes up top, zombies below and one indoors. No campaign claim.',mapId:'test.map.structures',
+    map:{id:'test.map.structures',name:'Structures TEST',rows:['.........','.W.......','TW....H..','.W.......','.........'],entries:[[10,9],[24,25]]},
+    heroes:['test-ranger','test-warrior'],heroHexes:[18,19],enemies:['test-zombie','test-zombie','test-zombie'],enemyHexes:[24,8,44],replicate:0,
+  },
   'test.cover-crates': {
     id:'test.cover-crates',note:'TEST target-end low hex cover, passable crates.',mapId:'test.map.cover-crates',
     map:{id:'test.map.cover-crates',name:'Cover crates TEST',rows:['.......','.......','.......'],props:[{id:'prop.crates',height:'low',material:1,footprint:{kind:'hex',hexes:[10]}}]},

@@ -16,10 +16,10 @@
 // Rows run top (row 0, enemy deployment) to bottom (row 11, hero deployment).
 
 import { TERRAIN } from '../core/types.js'
-import { GLYPH } from './terrain.js'
+import { GLYPH, takesEntry } from './terrain.js'
 import type { AuthoredMap } from '../core/types.js'
 import { decodeProps, decodeFloor } from '../core/props.js'
-import { type Board, type Edge } from '../core/hex.js'
+import { geometryOf, type Board, type Edge } from '../core/hex.js'
 import { disabledIds } from './disable.js'
 import { packMaps, packTestMaps, mapBoardOf } from './pack.js'
 
@@ -139,8 +139,30 @@ export function terrainOf(mapId: string): number[] {
   return decodeMap(mapDef(mapId)).terrain
 }
 
+/**
+ * v2.structures — the authored entry sides: [structure hex, the adjacent hex it is entered
+ * from], at most ONE per structure hex ("There is one facing on the wall tile"). With
+ * `terrain`, each structure hex must be a ground that takes one (a wall, a house). Loud on
+ * anything else (Law 9). Returns a detached copy in structure-hex order (Law 6).
+ */
+export function decodeEntries(value: unknown, board: Board, terrain?: readonly number[]): [number, number][] {
+  if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype) throw new Error('entries: expected a plain array of [structure hex, entered-from hex] pairs')
+  const cells = board.width * board.height, geo = geometryOf(board), seen = new Set<number>(), out: [number, number][] = []
+  if (value.length > cells) throw new Error('entries: more entries than cells')
+  for (let i = 0; i < value.length; i++) {
+    const pair = Object.getOwnPropertyDescriptor(value, String(i))?.value
+    if (!Array.isArray(pair) || pair.length !== 2 || !pair.every((h) => Number.isSafeInteger(h) && h >= 0 && h < cells)) throw new Error('entries: each entry is [structure hex, entered-from hex], both on the board')
+    const [hex, from] = pair as [number, number]
+    if (!geo.isAdjacent(hex, from)) throw new Error(`entries: ${from} is not beside ${hex} — an entry is one side of the structure's hex`)
+    if (seen.has(hex)) throw new Error(`entries: hex ${hex} has two entries — a structure has ONE entry side`)
+    if (terrain && !takesEntry(terrain[hex] ?? 0)) throw new Error(`entries: hex ${hex} is not a wall or a house — nothing there takes stairs or a door`)
+    seen.add(hex); out.push([hex, from])
+  }
+  return out.sort((a, b) => a[0] - b[0])
+}
+
 /** Validate before allocation; retain no caller-owned arrays or metadata objects. */
-export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').Prop[]; floor?: boolean[] } {
+export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').Prop[]; floor?: boolean[]; entries?: [number, number][] } {
   const board = mapBoardOf(m)
   const out: number[] = []
   // v2.knockback-collisions (2026-09-23): the kill-switch seam reaches authored
@@ -158,7 +180,8 @@ export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy
       } else out.push(t)
     }
   }
-  return { id: m.id, board, deploy: { ...(m.deploy ?? DEFAULT_DEPLOY) }, terrain: out, props: decodeProps(props, out.length), ...(Object.hasOwn(m,'floor')?{floor:decodeFloor(m.floor,out.length)}:{}) }
+  return { id: m.id, board, deploy: { ...(m.deploy ?? DEFAULT_DEPLOY) }, terrain: out, props: decodeProps(props, out.length), ...(Object.hasOwn(m,'floor')?{floor:decodeFloor(m.floor,out.length)}:{}),
+    ...(Object.hasOwn(m,'entries')?{entries:decodeEntries(m.entries,board,out)}:{}) }
 }
 
 // Keep existing registry consumers on the same terrain implementation.

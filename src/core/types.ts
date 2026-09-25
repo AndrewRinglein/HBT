@@ -27,6 +27,11 @@ export type AuthoredMap = {
   readonly props?: readonly AuthoredProp[]
   /** True exactly where a unit may stand; absent means all cells have floor. */
   readonly floor?: readonly boolean[]
+  /**
+   * v2.structures: the ONE side a wall's stairs (or ladder) or a house's door is on, as
+   * [structure hex, the adjacent hex it is entered from]. Absent = no structure has one.
+   */
+  readonly entries?: readonly (readonly [number, number])[]
 }
 /** What kind of thing a unit is. Every AI can read this about every other unit. */
 export type Role = 'melee' | 'ranged' | 'support'
@@ -41,6 +46,9 @@ export const TERRAIN = {
   // table, re-ruled"). 10, 11 (wheat, bush) and 12 (woodland's first number) are retired —
   // never reuse them.
   UNDERGROWTH: 9, LAVA: 13, MARSH: 14, DESERT: 15, RUINS: 16,
+  // v2.structures (Andrew, 2026-09-24, DECISIONS.md — walls, towers and houses): a structure
+  // is a ground kind (SWITCHES.md structureAsGround); what each does is content/terrain.ts STRUCTURE.
+  WALL: 17, TOWER: 18, HOUSE: 19,
 } as const
 export type LifeState = 'standing' | 'downed' | 'dead'
 export type DamageType = 'physical' | 'magic' | 'fire' | 'poison' | 'shadow' | 'true'
@@ -806,6 +814,8 @@ export type State = {
   /** Canonical obstruction state; authored x is normalized at map decode. */
   props: Prop[]
   floor?: boolean[]
+  /** v2.structures: [structure hex, the hex it is entered from] — a wall's stairs, a house's door. Absent = none. */
+  entries?: [number, number][]
   /**
    * capability.ground-layers (2026-09-03): the painted layer per hex, parallel
    * to `terrain` — LAYER.NONE where nothing is painted. Absent = nothing painted

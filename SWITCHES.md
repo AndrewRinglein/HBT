@@ -1037,3 +1037,37 @@ against those who are shooting you or people who are shooting through the hex").
 | `thinPerHex` | A hex that is woodland AND holds a sign (or two signs) — −5 once or twice? | **Once.** A hex is thin or it is not; the row names the ground first, else the lowest prop id. | The spec counts "each thin-obstruction HEX it enters"; Andrew: "-5 per woodland hex". | provisional — 2026-09-24 |
 | `thinPropFootprint` | May a thin prop be a drawn shape (polygon) like a fence? | **No — whole hexes only**; a polygon thin prop is refused at decode. | The rule counts hexes entered; a shape would need a second "passes through" nobody has ruled. | provisional — 2026-09-24 |
 | `thinPropDestroy` | Can a thin prop be struck, and what is left? | **Like any prop**: struck with a Destroy attack when no unit stands in its hex, its material sets the hits, and it leaves **nothing** (only a high prop leaves low cover). | Andrew: "material still decides how many hits to destroy"; a sign has no rubble to leave. | provisional — 2026-09-24 |
+
+## Structures — defaults taken building v2.structures (2026-09-25)
+
+The source: `engine/DECISIONS.md` "2026-09-24 — the ground table, re-ruled", Andrew's three answers
+on walls, towers and houses (verbatim there). Engine `src/content/terrain.ts` (`STRUCTURE`, the
+`W`/`T`/`H` rows of `EXTRA`), `src/core/structure.ts` (every reader), accuracy rung STRUCTURE 425,
+Block in `resolveBlock`, Armor as a `STRUCTURE_ARMOR` row at MITIGATION 600, reach in `reachOf`,
+lines in `los.ts` `attackLineClear`. The numbers are copied, not switches: wall −20 / +10 Block and
+Ranged Block / +5 accuracy / +1 reach, stairs +1 move; tower −25 flat / +15 Block / +1 Armor / +10
+accuracy / +2 reach / 3 move to enter / heroes only; house −10 / +5 Dodge. Andrew asked to go over
+ground versus props before these were built; he then said to build what is ruled (2026-09-25), so the
+first row below is the one that talk may overturn.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `structureAsGround` | Is a wall, tower or house a ground or a prop? | **A ground** — `terrain.wall`, `terrain.tower`, `terrain.house` — one per hex, with the entry sides on the map. | A prop's height is `high`, `low` or `thin` (ruled); a fourth height nobody ruled would be the bigger invention. Ground already carries per-hex move cost and occupant stats. Andrew's ground-versus-props talk is still owed. | provisional — 2026-09-25 |
+| `structureGlyphs` | Which map glyphs? | **`W` wall, `T` tower, `H` house.** | No document assigns them (as `groundGlyphs`). | provisional — 2026-09-25 |
+| `structureEntries` | How are the stairs and the door authored? | **`entries` on the map: `[structure hex, the adjacent hex it is entered from]`**, at most one per hex, only on a wall or a house; refused loudly otherwise. | "There is one facing on the wall tile" — one side, named by the hex across it, needs no direction encoding. | provisional — 2026-09-25 |
+| `wallTopMove` | Moving along a wall top? | **The ground's normal cost, 1 a hex** — and wall to tower, tower to wall, counts as along the top (no entry side; the tower's own 3 is still paid). | The default queued with the item. | provisional — 2026-09-25 |
+| `wallDescent` | Coming DOWN from a wall — only by the stairs? | **Any side**, at the destination's normal cost. So a push can also carry a unit off a wall. | The ruling restricts only going up ("can't move up next to them on the wall unless there are stairs"). | provisional — 2026-09-25 |
+| `towerRangedBlock` | Does the tower's +15 Block also add to Ranged Block? | **Yes, both**, as the wall. | The default queued with the item. | provisional — 2026-09-25 |
+| `doorFacing` | The door's facing and cost? | **One side, like stairs; no extra cost.** | The default queued with the item. | provisional — 2026-09-25 |
+| `houseExit` | Out of a house — any side, or only the door? | **Only through the door.** A house is a full obstruction otherwise. | "entered through a door"; walls do not open outward either. | provisional — 2026-09-25 |
+| `towerSide` | "Towers are for heroes only" — heroes by allegiance or by rules? | **By rules** (`rulesSideOf`): under `mirrorSideRules: row` a zombie fielded on the hero side still cannot enter. | Being a hero is a rule, as Deathbed Fighting is. | provisional — 2026-09-25 |
+| `structurePlacement` | Do deployment, authored hexes and arrivals obey the entry and hero-only rules? | **No — placement reads the board only.** An authored hex is trusted; a map should not put a tower on an enemy deploy edge. | Placement is authoring, not movement; keeps every existing placement path unchanged. | provisional — 2026-09-25 |
+| `structureFlight` | Where can a flier land? | **On a wall top or in a house as anyone may stand there; in a tower only a hero.** Flight crosses no side, so no entry is needed. | Flight has zero Steps (as for ground entry beats). | provisional — 2026-09-25 |
+| `structureLines` | What does a structure do to attack lines? | **A wall, tower or house hex blocks a line passing THROUGH it** (the same exact geometry as thin obstructions, `segmentCrossesCell`); never the line's own two ends, so the occupant can be attacked and attack. **A unit up on a wall or in a tower shoots, and is shot, over every structure between.** A house is not up. | "a full obstruction"; "an obstruction for shooting past it"; "when you are in a house, you can be shot from outside". Without the height exception a wall-top archer's line grazes his own wall's next hex. | provisional — 2026-09-25 |
+| `structureVision` | Do structures cut Vision? | **No.** Only thin obstructions do today. | Nothing ruled says so. | provisional — 2026-09-25 |
+| `structureGuardScope` | Which attacks does the guard (the enemy's −N, the Block, Dodge and Armor) answer? | **Every attack an enemy makes at the occupant** — melee, ranged, attacks of opportunity — and the Armor also a power's damage (the one damage function). **Bursts: none** (they do not roll to hit or Block, and read no guard). | "Wall and tower do not apply to range attacks only." | provisional — 2026-09-25 |
+| `structureArmorPenetration` | Can armour penetration take the tower's +1 Armor? | **Yes** — it is Armor. One `STRUCTURE_ARMOR` row names the tower. | One Armor number, one rule. | provisional — 2026-09-25 |
+| `structureReach` | Is the structure's reach the Reach stat? | **No** — it is added at `reachOf` to every attack; the Reach stat stays ranged-only (hills, ruled). | "do not apply to range attacks only" against hills' "Reach only applies to range attacks". | provisional — 2026-09-25 |
+| `structureCollision` | A push a structure refuses (a wall's face, a house wall, a tower for a non-hero)? | **A collision with the structure**: `collidedWith: 'structure'`, the structure named, value **2**. | COMBAT-V2 §9.3's table: "A basic obstruction — a big rock, a wall, the map edge — 2". | provisional — 2026-09-25 |
+| `structureKillSwitch` | What does `CF_DISABLE_IDS=terrain.wall` silence? | **Every structure reader** (entry, lines, reach, guard, occupant accuracy). The tower's 3-move entry stays — it is the ground's cost, as woodland's 2. | The seam's shape for ground (`off()` in terrain.ts). | provisional — 2026-09-25 |
+| `structureAi` | Does the AI seek walls and towers? | **No new behaviour.** It meets them through `reachable` and `preview()` only. | `system.ai-modes` is Angela's, not a chat's. | provisional — 2026-09-25 |

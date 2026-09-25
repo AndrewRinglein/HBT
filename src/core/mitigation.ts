@@ -10,14 +10,15 @@ export function absorbDamage(amount: number, available: number) {
 }
 
 /** Pure. Signed effective defenses preserve the existing attack vulnerability rule. */
-export function flatDamage(ctx: Ctx, target: Unit, amount: number, type: DamageType, absorbAvailable = 0, armorPenetration = 0) {
+export function flatDamage(ctx: Ctx, target: Unit, amount: number, type: DamageType, absorbAvailable = 0, armorPenetration = 0, bonusArmor = 0) {
   if (!isDamageType(type)) throw new Error('Unknown damage type: ' + String(type))
   const { absorbed, remaining } = absorbDamage(amount, absorbAvailable)
   const stat = ({
     physical: 'armor', magic: 'resist', fire: 'fireResist',
     poison: 'poisonResist', shadow: 'shadowResist', true: null,
   } as const)[type]
-  const beforePenetration = stat ? effective(ctx, target, stat).value : 0
+  // bonusArmor: Armor the attack's circumstances add (v2.structures: a tower's +1 against an enemy outside one)
+  const beforePenetration = stat ? effective(ctx, target, stat).value + (type === 'physical' ? bonusArmor : 0) : 0
   const defense = beforePenetration - (type === 'physical' ? Math.min(armorPenetration, Math.max(0, beforePenetration)) : 0)
   const beforeFloor = remaining - defense
   return {

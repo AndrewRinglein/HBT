@@ -6,6 +6,7 @@ import { geometryOf, validBoard } from './hex.js'
 import { isUnitUid } from './identity.js'
 import { prepareAttackLines } from './los.js'
 import { decodeProps, decodeFloor } from './props.js'
+import { decodeEntries } from '../content/maps.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
 import { validateTrigger, type Trigger } from './trigger.js'
@@ -98,6 +99,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   requireThat(validTerrain(st.terrain, cells), 'terrain')
   st.props = decodeProps(st.props, cells)
   if(Object.hasOwn(st,'floor'))st.floor=decodeFloor(st.floor,cells)
+  if(Object.hasOwn(st,'entries'))st.entries=decodeEntries(st.entries,st.board)   // v2.structures
   requireThat(st.layers === undefined || (Array.isArray(st.layers) && st.layers.length === cells && st.layers.every((x: unknown) => integer(x, 0))), 'layers')
   requireThat(integer(st.turn, 0) && phases.includes(st.phase) && typeof st.mapId === 'string', 'battle clock/map')
   requireThat(st.outcome === null || ['heroClear', 'objectiveMet', 'wipe', 'retreat', 'capped', 'objectiveFailed'].includes(st.outcome), 'outcome')
@@ -185,6 +187,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(e.mapId === st.mapId && e.width === st.board.width && e.height === st.board.height, 'initial prop map identity/dimensions')
       e.props = decodeProps(e.props, cells)
       if(Object.hasOwn(e,'floor'))e.floor=decodeFloor(e.floor,cells)
+      if(Object.hasOwn(e,'entries'))e.entries=decodeEntries(e.entries,st.board)
     }
   }
   if (s.encounter !== undefined) {

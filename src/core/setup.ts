@@ -205,8 +205,8 @@ export function createBattle(opts: BattleOptions): Ctx {
   if (direct && opts.mapId !== undefined && opts.mapId !== mapId) throw new Error(`map '${mapId}' differs from supplied mapId '${opts.mapId}'`)
   if (direct && opts.encounter?.mapId !== undefined && opts.encounter.mapId !== mapId) throw new Error(`encounter '${opts.encounter.id}' map '${opts.encounter.mapId}' differs from direct map '${mapId}'`)
   if (opts.encounter && 'board' in opts.encounter && (!validBoard(opts.encounter.board) || opts.encounter.board.width !== board.width || opts.encounter.board.height !== board.height)) throw new Error(`encounter '${opts.encounter.id}' board differs from map '${mapId}'`)
-  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}), units: [], outcome: null, seq: 0 }
-  const initialMap = { ...(direct ? { terrain: [...state.terrain] } : {}), props: structuredClone(state.props), ...(state.floor?{floor:[...state.floor]}:{}) }
+  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}), ...(decoded.entries?{entries:decoded.entries}:{}), units: [], outcome: null, seq: 0 }
+  const initialMap = { ...(direct ? { terrain: [...state.terrain] } : {}), props: structuredClone(state.props), ...(state.floor?{floor:[...state.floor]}:{}), ...(state.entries?{entries:structuredClone(state.entries)}:{}) }
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: direct ? structuredClone(opts.encounter) : opts.encounter } : {}) }
@@ -503,7 +503,7 @@ export function createCustomBattle(
   const mapId = opts.mapId ?? 'map.open'
   const board = boardOf(mapId)
   const decoded = decodeMap(mapDef(mapId))
-  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}), units: [], outcome: null, seq: 0 }
+  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}), ...(decoded.entries?{entries:decoded.entries}:{}), units: [], outcome: null, seq: 0 }
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   prepareAttackLines(ctx)
@@ -523,6 +523,6 @@ export function createCustomBattle(
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', mapId, { mapId, width: board.width, height: board.height, deploy: deployOf(mapId), ...terrainCensus(state.terrain), props: structuredClone(state.props), ...(state.floor?{floor:[...state.floor]}:{}) })
+  emit(ctx, 'map.loaded', mapId, { mapId, width: board.width, height: board.height, deploy: deployOf(mapId), ...terrainCensus(state.terrain), props: structuredClone(state.props), ...(state.floor?{floor:[...state.floor]}:{}), ...(state.entries?{entries:structuredClone(state.entries)}:{}) })
   return ctx
 }

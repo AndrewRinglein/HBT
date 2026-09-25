@@ -16,6 +16,7 @@ import { knockImmunity } from './kdb.js'
 import { thornsOf } from './thorns.js'
 import { settle } from './settle.js'
 import { applyGroundHazard, enterGround } from './ground.js'
+import { passableFor, structureAt, structureStepCost } from './structure.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
 // hard-coded. It should be content-driven." The cost of moving is a field on
@@ -64,7 +65,8 @@ export type Reach = Map<HexId, { cost: number; prev: HexId }>
 
 /** Movement points to enter a given hex on this board. */
 export function stepCost(ctx: Ctx, to: HexId, from?: HexId): number {
-  return moveCostOf(ctx.state.terrain[to] ?? 0) + (from===undefined?0:lowEdgeCost(ctx,from,to))
+  // v2.structures: a wall's stairs cost 1 extra (structureStepCost)
+  return moveCostOf(ctx.state.terrain[to] ?? 0) + (from===undefined?0:lowEdgeCost(ctx,from,to)+structureStepCost(ctx,from,to))
 }
 
 /**
@@ -73,7 +75,7 @@ export function stepCost(ctx: Ctx, to: HexId, from?: HexId): number {
  * Ties break on lower HexId so paths are reproducible (Law 6).
  */
 export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
-  const props=ctx.state.props,passable=passableHexes(ctx,props),edgeCost=preparedLowEdgeCost(ctx,props)
+  const props=ctx.state.props,passable=passableFor(ctx,u,props),edgeCost=preparedLowEdgeCost(ctx,props)
   const occ = occupancy(ctx)
   // The power's modifier widens or narrows THIS move's budget (Sprint would be
   // +3); the activation budget itself was set at beginActivation (Slow reads
@@ -93,7 +95,7 @@ export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
       if (node.cost !== c) continue // stale entry, a cheaper path was found
       for (const n of ctx.geo.neighboursOf(h)) {
         if (occ.has(n) || !passable(n,h)) continue
-        const nc = c + moveCostOf(ctx.state.terrain[n] ?? 0) + edgeCost(h,n)
+        const nc = c + moveCostOf(ctx.state.terrain[n] ?? 0) + edgeCost(h,n) + structureStepCost(ctx,h,n)
         if (nc > budget) continue
         const prior = out.get(n)
         if (!prior || nc < prior.cost) {
@@ -137,7 +139,7 @@ function movementReason(ctx: Ctx, u: Unit, power: MoveDef, slot?: import('./type
 
 /** One pure destination planner for controls and AI; never spends or predicts RNG. */
 export function planMovement(ctx: Ctx, actor: number, actionId: string, destination: number, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
-  return planMovementWithView(ctx, actor, actionId, destination, passableHexes(ctx), slot)
+  return planMovementWithView(ctx, actor, actionId, destination, passableFor(ctx, ctx.state.units[actor]), slot)
 }
 function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destination: number, passable: Passable, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
   const u = ctx.state.units[actor]
@@ -171,7 +173,7 @@ export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?
   }
   if (power.move.shape === 'flight') return flightLandings(ctx, u, power).map(destination => ({ kind: 'move', actor, power, destination, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }))
   const out: MovementPlan[] = []
-  const passable = passableHexes(ctx)
+  const passable = passableFor(ctx, u)
   for (let destination = 0; destination < ctx.state.terrain.length; destination++) {
     const plan = planMovementWithView(ctx, actor, actionId, destination, passable, slot)
     if (!('ok' in plan)) out.push(plan)
@@ -187,16 +189,16 @@ export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?
  * just that the unit moved, but which choice moved it.
  */
 export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: MoveDef, onStep?: StepHook, slot?: import('./types.js').ActionSlot): number {
-  const props=ctx.state.props,passable=passableHexes(ctx,props),edgeCost=preparedLowEdgeCost(ctx,props)
   if (path.length === 0) return 0
   const u = unit(ctx, unitId)
+  const props=ctx.state.props,passable=passableFor(ctx,u,props),edgeCost=preparedLowEdgeCost(ctx,props)
   if (power.move.shape !== 'path' || movementReason(ctx, u, power, slot) || isRooted(ctx, u)) return 0
   let allowance = Math.max(0, u.movePointsLeft + power.move.budgetMod)
   const occupied = occupancy(ctx)
   let from = u.hex, asked = 0
   for (const hex of path) {
     if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.state.terrain.length || ctx.geo.distance(from, hex) !== 1 || occupied.has(hex) || !passable(hex,from)) return 0
-    asked += moveCostOf(ctx.state.terrain[hex] ?? 0) + edgeCost(from,hex)
+    asked += moveCostOf(ctx.state.terrain[hex] ?? 0) + edgeCost(from,hex) + structureStepCost(ctx,from,hex)
     from = hex
   }
   if (asked > allowance) return 0
@@ -356,7 +358,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
     throw new Error(`${power.id} must move exactly ${range} hex(es) (${u.hex} -> ${to})`)
   }
   const terrainHere = ctx.state.terrain[to] ?? 0
-  if (!passableHexes(ctx)(to,u.hex) || occupancy(ctx).has(to)) {
+  if (!passableFor(ctx, u)(to,u.hex) || occupancy(ctx).has(to)) {
     throw new Error(`sidestep destination ${to} is not open`)
   }
   spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
@@ -388,7 +390,7 @@ export function flightRange(u: Unit, power: MoveDef): number {
  * callers iterate reproducibly (Law 6).
  */
 export function flightLandings(ctx: Ctx, u: Unit, power: MoveDef): HexId[] {
-  const passable = passableHexes(ctx)
+  const passable = passableFor(ctx, u)
   const occ = occupancy(ctx)
   const range = flightRange(u, power)
   const out: HexId[] = []
@@ -415,7 +417,7 @@ export function executeFlight(ctx: Ctx, unitId: number, to: HexId, power: MoveDe
   const d = ctx.geo.distance(u.hex, to)
   if (d < 1 || d > flightRange(u, power)) throw new Error(`flight to ${to} is out of range (${d} > ${flightRange(u, power)})`)
   const terrainThere = ctx.state.terrain[to] ?? 0
-  if (!passableHexes(ctx)(to) || occupancy(ctx).has(to)) {
+  if (!passableFor(ctx, u)(to) || occupancy(ctx).has(to)) {
     throw new Error(`flight landing ${to} is not open`)
   }
   spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
@@ -485,7 +487,7 @@ export const COLLISION_UNIT_BASE = 1
 /** COMBAT-V2 §9.3 table: "A basic obstruction — a big rock, a wall, the map edge — 2". */
 export const COLLISION_OBSTRUCTION = 2
 
-type Collision = { collidedWith: 'unit' | 'prop' | 'edge' | 'floor'; blocker: string | number | null; collisionValue: number; consumes: string | null }
+type Collision = { collidedWith: 'unit' | 'prop' | 'edge' | 'floor' | 'structure'; blocker: string | number | null; collisionValue: number; consumes: string | null }
 
 /** A unit's collision value: 1 + Thorns (§9.3 "Thorns 2 → 3"; v2.thorns fills in the magnitude). */
 function unitCollisionValue(ctx: Ctx, u: Unit): number {
@@ -493,9 +495,9 @@ function unitCollisionValue(ctx: Ctx, u: Unit): number {
 }
 
 export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, hexes: number, causeId: string): number {
-  const passable = passableHexes(ctx)
   const pusher = unit(ctx, pusherId)
   const tg = unit(ctx, targetId)
+  const board = passableHexes(ctx), passable = passableFor(ctx, tg)
   let at = tg.hex
   // v2.kdb (COMBAT-V2 §9.5): Stand Firm "cannot be knocked back ... at all" —
   // no push from any source moves it (SWITCHES.md standFirmAnyPush). Read off
@@ -520,7 +522,14 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
     }
     if (!passable(next, at)) {
       const prop = blockingPropAt(ctx, next, at)
-      if (prop) {
+      // v2.structures: the board let the step through and a structure refused it — a wall's
+      // face, a house wall, a tower that is not the mover's — "a wall — 2" (§9.3), the struck
+      // side's structure named (SWITCHES.md structureCollision)
+      const wall = board(next, at) ? structureAt(ctx, next) ?? structureAt(ctx, at) : null
+      if (wall) {
+        reason = 'structure'
+        hit = { collidedWith: 'structure', blocker: wall.id, collisionValue: COLLISION_OBSTRUCTION, consumes: null }
+      } else if (prop) {
         reason = 'impassable prop'
         hit = { collidedWith: 'prop', blocker: prop.id, collisionValue: prop.collisionValue ?? COLLISION_OBSTRUCTION, consumes: prop.consumes ? prop.id : null }
       } else {

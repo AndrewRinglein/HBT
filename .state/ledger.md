@@ -15891,3 +15891,21 @@ index 2d2a6bf..f1baf72 100644
  })
 ```
 </details>
+
+## v2.structures — LANDED `a307495`
+2026-09-25 06:37
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:2602
+  PASS  typecheck
+  PASS  the item's own tests — test/v2-structures.test.ts
+  PASS  gate 1 — the id appears in a real battle — terrain.wall: 4 log lines, 4 fired, 3 changed state · terrain.tower: 2 log lines, 2 fired, 2 changed state · terrain.house: 6 log lines, 6 fired, 6 changed state
+  PASS  brought its own tests — test/v2-structures.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 45 ids without a published source — 3 NEW from THIS item, publish them
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — terrain.wall live · terrain.tower live · terrain.house live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without terrain.wall,terrain.tower,terrain.house — they genuinely test it

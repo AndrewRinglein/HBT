@@ -493,7 +493,7 @@ function mapRecord(value: unknown, allowed: readonly string[]): void {
 }
 /** Validate both packed and engine-owned rows before geometry/terrain allocation. */
 export function mapBoardOf(m: PackMapRow): Board {
-  mapRecord(m, ['id', 'name', 'rows', 'board', 'format', 'note', 'deploy', 'props', 'floor'])
+  mapRecord(m, ['id', 'name', 'rows', 'board', 'format', 'note', 'deploy', 'props', 'floor', 'entries'])
   if (typeof m.id !== 'string' || !m.id.trim() || typeof m.name !== 'string' || !m.name.trim()) throw new Error('maps: id and name must be nonempty strings')
   if ('note' in m && typeof m.note !== 'string') throw new Error('maps: note must be a string')
   if (!Array.isArray(m.rows) || m.rows.length === 0) throw new Error('maps: rows must be nonempty strings')

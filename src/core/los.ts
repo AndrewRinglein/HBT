@@ -4,6 +4,7 @@ import { validBoard, type Board } from './hex.js'
 import type { Ctx } from './types.js'
 import { highCells, decodeProps } from './props.js'
 import { centerPoint,segmentCrossesPolygon,type Point } from './geometry.js'
+import { structureBlocksLine } from './structure.js'
 
 export const LOS_LIMITS = Object.freeze({ pairCellTests: 1_024_000_000, reverseEntries: 16_000_000, cacheBytes: 64 * 1024 * 1024 } as const)
 type Table = { key: string; board: Board; cells: number; blockers: readonly string[]; bits: Uint8Array | null; reverse: ReadonlyMap<string, Uint32Array>; entries: number; bytes: number }
@@ -141,8 +142,11 @@ export function attackLineClear(ctx: Ctx, a: number, b: number): boolean {
   const table = views.get(ctx)!.table
   if (![a, b].every(h => Number.isSafeInteger(h) && h >= 0 && h < table.cells)) throw new Error('LOS: invalid attack hex')
   if (a === b) return !table.blockers.includes(String(a)) && !ctx.state.props.some(p=>p.height==='high'&&p.footprint.kind==='polygon'&&segmentCrossesPolygon(centerPoint(table.board,a),centerPoint(table.board,a),p.footprint.vertices))
-  if (!table.bits) return true
-  return !bit(table.bits, pairIndex(table.cells, Math.min(a, b), Math.max(a, b)))
+  if (table.bits && bit(table.bits, pairIndex(table.cells, Math.min(a, b), Math.max(a, b)))) return false
+  // v2.structures: a wall, tower or house hex blocks a line PASSING it — never its own ends,
+  // and never a line with an end up on a wall or in a tower (structure.ts structureBlocksLine).
+  // The same exact "passes through" test the thin obstructions read (SWITCHES.md structureLines).
+  return !structureBlocksLine(ctx, a, b, (cell) => segmentCrossesCell(table.board, a, b, cell))
 }
 export function forkAttackLines(source: Ctx, fork: Ctx): void {
   prepareAttackLines(source)
