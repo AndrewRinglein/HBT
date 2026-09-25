@@ -22,6 +22,11 @@ npm run sweep <n>                        # n replicates; src/cli/sweep.ts
 npx tsx tools/effect-size.mts <id>       # paired WITH vs WITHOUT, one id
 ```
 
+A **rule** item has no content row to disable, so its backlog row declares `effectSwitch` —
+the switch values its WITHOUT arm runs with (`movement.zone-of-control`: `{"zoneOfControl": false}`,
+`station.crit`: `{"critEnabled": false}`). `effect-size.mts <id>` uses it and says so on its
+second line; a value equal to the default is refused (tool.effect-size-rules, 2026-09-25).
+
 ## Four rules
 
 **1. Same dice on both arms.** Baseline and treatment share seeds. Same to-hit rolls, same terrain event, same placement, same wave draws. The only difference is the thing you changed. Unpaired arms at these sample sizes tell you nothing.

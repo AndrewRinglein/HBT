@@ -9,21 +9,32 @@
 //
 // Child mode (--arm) runs one arm in one process, because CF_DISABLE_IDS is read
 // at module load and cannot be toggled within a process.
+//
+// RULE items (tool.effect-size-rules, 2026-09-25): a backlog row that declares
+// `effectSwitch` — e.g. movement.zone-of-control {"zoneOfControl": false} — is
+// measured by flipping that switch in the WITHOUT arm (CF_EFFECT_SWITCHES), content
+// untouched. Disabling the content a rule touches crashed that arm (Law 9) and
+// measured nothing. tools/effect-arm.ts decides which arm an id gets.
 
 import { execSync } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
+import { checkEffectSwitch, withoutArmFor } from './effect-arm.js'
 
-const REPS = 25
+// CF_EFFECT_REPS exists so a test can run both real arms quickly; unset, it is 25.
+const REPS = process.env.CF_EFFECT_REPS ? Number(process.env.CF_EFFECT_REPS) : 25
+if (!Number.isSafeInteger(REPS) || REPS < 1) throw new Error(`CF_EFFECT_REPS must be a positive integer, got ${process.env.CF_EFFECT_REPS}`)
 
 if (process.argv.includes('--arm')) {
   const { createBattle } = await import('../src/core/setup.js')
   const { runBattle } = await import('../src/core/battle.js')
   const { MAP_PANEL } = await import('../src/content/maps.js')
+  const switches = process.env.CF_EFFECT_SWITCHES ? checkEffectSwitch(JSON.parse(process.env.CF_EFFECT_SWITCHES)) : null
   const rows: Record<string, { heroWins: number; turns: number; invalid: number }> = {}
   for (const mapId of MAP_PANEL) {
     let heroWins = 0, turns = 0, invalid = 0
     for (let r = 0; r < REPS; r++) {
       try {
-        const ctx = createBattle({ replicate: r, enemyCount: 8, mapId })
+        const ctx = createBattle({ replicate: r, enemyCount: 8, mapId, ...(switches ? { cfg: { switches: switches as never } } : {}) })
         const res = runBattle(ctx)
         if (res.outcome === 'heroClear') heroWins++
         turns += res.turns
@@ -39,16 +50,19 @@ if (process.argv.includes('--arm')) {
   // prefix is bash-only, and under cmd.exe the WITHOUT arm would not run at all
   // — which reads as "no measurable effect", the most dangerous wrong answer
   // this tool can give.
-  const run = (disable?: string) =>
+  const backlog = existsSync('.state/backlog.json') ? JSON.parse(readFileSync('.state/backlog.json', 'utf8')) : []
+  const arm = withoutArmFor(ids, backlog)
+  const run = (disable?: string, switches?: Record<string, unknown>) =>
     JSON.parse(execSync('npx tsx tools/effect-size.mts --arm', {
       encoding: 'utf8',
-      // WITH is always the complete registry, even if the invoking shell has
-      // an experiment selected. Preserve every unrelated environment setting.
-      env: { ...process.env, CF_DISABLE_IDS: disable ?? '' },
+      // WITH is always the complete registry and the default switches, even if
+      // the invoking shell has an experiment selected. Preserve every unrelated
+      // environment setting.
+      env: { ...process.env, CF_DISABLE_IDS: disable ?? '', CF_EFFECT_SWITCHES: switches ? JSON.stringify(switches) : '' },
     }).trim().split('\n').pop()!)
   const withArm = run()
-  const without = run(ids)
-  const disabled = new Set(ids.split(',').map(id => id.trim()))
+  const without = arm.mode === 'switch' ? run(undefined, arm.switches) : run(ids)
+  const disabled = new Set(arm.mode === 'switch' ? [] : ids.split(',').map(id => id.trim()))
   // Validate the entire comparison before printing any numeric conclusions.
   // Aggregates do not identify paired valid replicates, so invalid runs cannot
   // be subtracted or silently counted as zero-turn/zero-win observations.
@@ -63,6 +77,7 @@ if (process.argv.includes('--arm')) {
   for (const map of Object.keys(without)) if (!Object.hasOwn(withArm, map)) throw new Error(`unexpected extra WITHOUT control: ${map}`)
   for (const map of Object.keys(withArm)) if (!Object.hasOwn(without, map) && !disabled.has(map)) throw new Error(`unexpected missing WITHOUT control: ${map}`)
   console.log(`effect of ${ids} — ${REPS} paired battles per map, WITH vs WITHOUT`)
+  console.log(arm.mode === 'switch' ? `  WITHOUT = switches ${JSON.stringify(arm.switches)} (a rule item: the backlog row's effectSwitch)` : `  WITHOUT = content disabled: ${ids}`)
   let anyDelta = false
   const unavailable: { map: string; reason: string; withInvalid?: number; withoutInvalid?: number }[] = []
   for (const map of Object.keys(withArm)) {

@@ -4,7 +4,7 @@
 // --first puts the new items at the top of the queue (next.mjs takes backlog order).
 import { readFileSync, writeFileSync, renameSync } from 'node:fs'
 
-const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note'])
+const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note', 'effectSwitch'])
 const required = ['id', 'kind', 'shape', 'spec', 'expect']
 const shapes = new Set(['counter', 'plumbing', 'numbers', 'rule', 'pool', 'data', 'modifier', 'decision', 'trigger', 'station', 'naming', 'flag'])
 
@@ -24,6 +24,8 @@ function validate(items, existing) {
       if (key in item && (!Array.isArray(item[key]) || item[key].some(id => typeof id !== 'string' || !id.trim()) || new Set(item[key]).size !== item[key].length)) throw new Error(`${key} must be an array of distinct nonempty ids`)
     }
     for (const key of ['changesBaseline', 'neutral']) if (key in item && typeof item[key] !== 'boolean') throw new Error(`${key} must be boolean`)
+    // tool.effect-size-rules: the switch values a RULE item's WITHOUT arm runs with (tools/effect-arm.ts checks them against the engine's switches when measured)
+    if ('effectSwitch' in item && (!item.effectSwitch || typeof item.effectSwitch !== 'object' || Array.isArray(item.effectSwitch) || !Object.keys(item.effectSwitch).length)) throw new Error('effectSwitch must be a non-empty object of switch values')
     for (const key of ['note']) {
       if (key in item && (typeof item[key] !== 'string' || item[key].trim().length < (key === 'note' ? 1 : 20))) throw new Error(`${key} requires a written reason`)
     }

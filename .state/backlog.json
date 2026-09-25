@@ -647,6 +647,9 @@
    "by": "Angela",
    "at": "2026-09-23T02:15:22.648Z",
    "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
+  },
+  "effectSwitch": {
+   "zoneOfControl": false
   }
  },
  {
@@ -1384,7 +1387,9 @@
   "kind": "engine",
   "shape": "plumbing",
   "spec": "Effect measurement for RULE items currently disables the content the rule touches, which crashes the comparison arm (Law 9) and reports nothing useful -- seen on status.tick-resist and terrain.water-cleanses. Give rules a toggle the WITHOUT arm can flip (a cfg switch per rule item, declared on the backlog row), and teach effect-size.mts to use it. A tool chore, not a design question -- moved out of the questions inbox 2026-08-20.",
-  "expect": "effect-size on a rule item runs both arms and reports a real delta"
+  "expect": "effect-size on a rule item runs both arms and reports a real delta",
+  "status": "done",
+  "sha": "65e6587"
  },
  {
   "id": "fix.water-regen",
@@ -2302,6 +2307,9 @@
    "by": "Angela",
    "at": "2026-09-04T08:49:00.303Z",
    "note": "A weapon carries a modifier to crit, plus or minus, and it can roll more than one crit at once. And it can have an on-crit trigger of +4 damage or knockback 1."
+  },
+  "effectSwitch": {
+   "critEnabled": false
   }
  },
  {

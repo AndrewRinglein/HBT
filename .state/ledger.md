@@ -16481,3 +16481,21 @@ Superseded: movement chosen from a list landed as movement.powers (ba09f6a), pac
 2026-09-25 23:21
 
 Superseded by station.crit (2026-08-27) and fix.crit-branch-even: the crit flips cup crit-branch (critChartShareVsHeroes/VsEnemies, 50/50 ruled 2026-08-27) between the +50% arm (DMG.CRIT) and one row of the crit chart rolled evenly on cup crit-effect, normal damage landing first (src/core/crit.ts). Grit was renamed Luck (Angela 2026-08-15, 3-UNITS-SETTLED.md); critChanceOf subtracts the target's Luck. Asserted in test/crit.test.ts ('3 + crit stat + gear + surplus - luck'). Closed as superseded under Andrew's 2026-09-25 ruling on delivered items (DECISIONS.md).
+
+## tool.effect-size-rules — LANDED `65e6587`
+2026-09-25 23:26
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:1831 · ../CODEX.md:979
+  PASS  typecheck
+  PASS  the item's own tests — test/effect-size-rules.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/effect-size-rules.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
