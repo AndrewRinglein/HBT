@@ -15689,3 +15689,99 @@ index cf12889..1a881b6 100644
  
 ```
 </details>
+
+## fix.ground-goldens — LANDED `0406f84` **NEEDS REVIEW**
+2026-09-25 02:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/viewer-direct-map.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/viewer-direct-map.test.ts, test/fixtures/battle-cursor-ground.json, test/fixtures/field-cli-ground.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-4), test/viewer-direct-map.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 41 ids without a published source (31 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 0158245..b019b56 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -63,4 +63,11 @@ const loadoutGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-
+ // hashes included, runs on the projection, which removes only the new per-instance fields.
+ const itemUsesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-item-uses.json', import.meta.url), 'utf8'))
++// fix.ground-goldens (2026-09-24), Law 10: the ground table was re-ruled (Andrew, DECISIONS.md
++// "the ground table, re-ruled"; v2.retire-forest-hills) — forest is woodland, hills are ranged-only.
++// Every case's full current hashes are frozen here; a case marked `changed` (it fights on hills
++// or forest) is checked against these and keeps the automatic/suspended comparison, and skips the
++// older layers its battle no longer matches. Every other case keeps every prior assertion.
++// Old fixtures stay immutable.
++const groundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-ground.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -165,5 +172,7 @@ describe('resumable battle cursor', () => {
+       const kdbExpected = kdbGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const thornsExpected = thornsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const thornsMoved = thornsExpected?.changed === true
++      const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const groundMoved = groundExpected?.changed === true
++      const thornsMoved = thornsExpected?.changed === true || groundMoved
+       const kdbMoved = kdbExpected?.changed === true || thornsMoved
+       const knockMoved = knockExpected?.changed === true || kdbMoved
+@@ -172,5 +181,5 @@ describe('resumable battle cursor', () => {
+       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+-      let expected = (thornsMoved ? thornsExpected : undefined) ?? (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
++      let expected = groundMoved ? undefined : (thornsMoved ? thornsExpected : undefined) ?? (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+       for (const suspended of [false, true]) {
+         const ctx = fixture.create()
+@@ -186,5 +195,11 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        const itemUsesExpected = itemUsesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++        if (groundExpected) {
++        expect(hash(ctx.events), 'full ground-table events').toBe(groundExpected.events)
++        expect(hash(ctx.state), 'full ground-table state').toBe(groundExpected.state)
++        expect(hash(ctx.rng.log), 'full ground-table RNG').toBe(groundExpected.rng)
++        expect(result).toEqual(groundExpected.result)
++        }
++        const itemUsesExpected = groundMoved ? undefined : itemUsesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+         // a case newer than this capture keeps the automatic/suspended comparison below
+         if (itemUsesExpected) {
+@@ -196,5 +211,5 @@ describe('resumable battle cursor', () => {
+         // every older assertion below runs on the projection (the per-instance fields removed, nothing else)
+         { const projected = projectItemUses(ctx, result); ctx.events = projected.events; ctx.state = projected.state; result = projected.result }
+-        const loadoutExpected = loadoutGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++        const loadoutExpected = groundMoved ? undefined : loadoutGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+         // Law 10, 2026-09-24 (v2.swap): a case newer than the capture (test.swap) has no frozen
+         // row; it keeps the automatic/suspended comparison below, like every new case before it.
+diff --git a/test/viewer-direct-map.test.ts b/test/viewer-direct-map.test.ts
+index 3e3932a..daa4209 100644
+--- a/test/viewer-direct-map.test.ts
++++ b/test/viewer-direct-map.test.ts
+@@ -7,4 +7,8 @@ import distanceGold from './fixtures/field-distance-d872c34.json'
+ // joined the registered maps; the 22 prior bytes stay frozen and the new map's are added.
+ import addedGold from './fixtures/field-cli-knockback.json'
++// fix.ground-goldens (2026-09-24), Law 10: the re-ruled ground table (forest → woodland, hills
++// ranged-only; Andrew, DECISIONS.md) moved the bytes of the 12 maps with hills or forest. Their new
++// bytes are frozen here and override only those maps; every other map keeps its frozen bytes.
++import groundGold from './fixtures/field-cli-ground.json'
+ import { presentationField, prepareBattleField, initialMapId } from '../src/view/field.js'
+ import { createBattle } from '../src/core/setup.js'
+@@ -16,5 +20,5 @@ describe('readonly initial field preparation',()=>{
+   it('preserves all 22 registered CLI bytes and control membership, plus the maps added since',()=>{
+     expect(MAP_PANEL).toEqual([...Object.keys(gold), ...Object.keys(addedGold)])
+-    for(const [id,hash] of Object.entries({...gold, ...addedGold})) {
++    for(const [id,hash] of Object.entries({...gold, ...addedGold, ...groundGold})) {
+       const bytes=execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','tools/field-geometry.mts',id])
+       expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
+```
+</details>

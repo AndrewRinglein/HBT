@@ -1,5 +1,18 @@
 [
  {
+  "id": "fix.ground-goldens",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "v2.retire-forest-hills"
+  ],
+  "spec": "The two frozen corpora v2.retire-forest-hills moved, found by shard 4/4 after it landed (the gate runs only an item's own tests). battle-cursor: showcase.beasts fights on the showcase map's hills, so its full events moved - a new immutable fixture battle-cursor-ground.json freezes every case's current hashes and marks the one changed case, which skips the older layers and keeps the automatic/suspended comparison. viewer-direct-map: the field CLI bytes of the 12 maps with hills or forest moved (exactly the 12 control battles the item declared) - field-cli-ground.json overrides only those. Captured by tools/capture-ground-cursor.mts and tools/capture-field-ground.mts, both refusing to overwrite.",
+  "expect": "test/battle-cursor.test.ts and test/viewer-direct-map.test.ts pass; every prior fixture unchanged; control battles unchanged; all four shards green.",
+  "note": "Engine-only test plumbing following fix.knockback-collisions-goldens (a new frozen fixture per migration, Law 10). Andrew's chat, 2026-09-24.",
+  "status": "done-needs-review",
+  "sha": "0406f84"
+ },
+ {
   "id": "v2.retire-forest-hills",
   "kind": "engine",
   "shape": "rule",

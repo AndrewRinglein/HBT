@@ -62,6 +62,13 @@ const loadoutGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-
 // Every case's full current hashes are frozen here; every older assertion, the v2.loadout
 // hashes included, runs on the projection, which removes only the new per-instance fields.
 const itemUsesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-item-uses.json', import.meta.url), 'utf8'))
+// fix.ground-goldens (2026-09-24), Law 10: the ground table was re-ruled (Andrew, DECISIONS.md
+// "the ground table, re-ruled"; v2.retire-forest-hills) — forest is woodland, hills are ranged-only.
+// Every case's full current hashes are frozen here; a case marked `changed` (it fights on hills
+// or forest) is checked against these and keeps the automatic/suspended comparison, and skips the
+// older layers its battle no longer matches. Every other case keeps every prior assertion.
+// Old fixtures stay immutable.
+const groundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-ground.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -164,14 +171,16 @@ describe('resumable battle cursor', () => {
       const knockExpected = knockGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kdbExpected = kdbGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const thornsExpected = thornsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const thornsMoved = thornsExpected?.changed === true
+      const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const groundMoved = groundExpected?.changed === true
+      const thornsMoved = thornsExpected?.changed === true || groundMoved
       const kdbMoved = kdbExpected?.changed === true || thornsMoved
       const knockMoved = knockExpected?.changed === true || kdbMoved
       const shieldMoved = shieldExpected?.changed === true || knockMoved
       const migrated = shieldMoved || burstExpected?.changed === true || packetExpected?.semanticChanged === true || protectionExpected?.changed === true || elementalExpected?.changed === true || contactExpected?.changed === true
       const prior = migrated ? undefined : historical ?? identityGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       const eventExpected = migrated ? undefined : eventGolden.cases.find((row: { id: string }) => row.id === fixture.id)
-      let expected = (thornsMoved ? thornsExpected : undefined) ?? (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
+      let expected = groundMoved ? undefined : (thornsMoved ? thornsExpected : undefined) ?? (kdbMoved ? kdbExpected : undefined) ?? (knockMoved ? knockExpected : undefined) ?? (shieldMoved ? shieldExpected : undefined) ?? burstExpected ?? packetExpected ?? protectionExpected ?? elementalExpected ?? contactExpected ?? propGolden.cases.find((row: { id: string }) => row.id === fixture.id)
       for (const suspended of [false, true]) {
         const ctx = fixture.create()
         let result
@@ -185,7 +194,13 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        const itemUsesExpected = itemUsesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+        if (groundExpected) {
+        expect(hash(ctx.events), 'full ground-table events').toBe(groundExpected.events)
+        expect(hash(ctx.state), 'full ground-table state').toBe(groundExpected.state)
+        expect(hash(ctx.rng.log), 'full ground-table RNG').toBe(groundExpected.rng)
+        expect(result).toEqual(groundExpected.result)
+        }
+        const itemUsesExpected = groundMoved ? undefined : itemUsesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
         // a case newer than this capture keeps the automatic/suspended comparison below
         if (itemUsesExpected) {
         expect(hash(ctx.events), 'full v2.item-uses events').toBe(itemUsesExpected.events)
@@ -195,7 +210,7 @@ describe('resumable battle cursor', () => {
         }
         // every older assertion below runs on the projection (the per-instance fields removed, nothing else)
         { const projected = projectItemUses(ctx, result); ctx.events = projected.events; ctx.state = projected.state; result = projected.result }
-        const loadoutExpected = loadoutGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+        const loadoutExpected = groundMoved ? undefined : loadoutGolden.cases.find((row:{id:string})=>row.id===fixture.id)
         // Law 10, 2026-09-24 (v2.swap): a case newer than the capture (test.swap) has no frozen
         // row; it keeps the automatic/suspended comparison below, like every new case before it.
         if (loadoutExpected) {

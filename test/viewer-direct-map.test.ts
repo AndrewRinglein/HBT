@@ -6,6 +6,10 @@ import distanceGold from './fixtures/field-distance-d872c34.json'
 // v2.knockback-collisions (2026-09-23), Law 10: the content TEST map test.map.well-shove
 // joined the registered maps; the 22 prior bytes stay frozen and the new map's are added.
 import addedGold from './fixtures/field-cli-knockback.json'
+// fix.ground-goldens (2026-09-24), Law 10: the re-ruled ground table (forest → woodland, hills
+// ranged-only; Andrew, DECISIONS.md) moved the bytes of the 12 maps with hills or forest. Their new
+// bytes are frozen here and override only those maps; every other map keeps its frozen bytes.
+import groundGold from './fixtures/field-cli-ground.json'
 import { presentationField, prepareBattleField, initialMapId } from '../src/view/field.js'
 import { createBattle } from '../src/core/setup.js'
 import { MAP_PANEL, decodeMap, mapDef } from '../src/content/maps.js'
@@ -15,7 +19,7 @@ const seed = {mapId:'test.map.direct'}
 describe('readonly initial field preparation',()=>{
   it('preserves all 22 registered CLI bytes and control membership, plus the maps added since',()=>{
     expect(MAP_PANEL).toEqual([...Object.keys(gold), ...Object.keys(addedGold)])
-    for(const [id,hash] of Object.entries({...gold, ...addedGold})) {
+    for(const [id,hash] of Object.entries({...gold, ...addedGold, ...groundGold})) {
       const bytes=execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','tools/field-geometry.mts',id])
       expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
     }
