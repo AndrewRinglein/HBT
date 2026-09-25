@@ -1297,7 +1297,9 @@ function compileItems() {
     // rules reach the attacks it grants. A worn item's slayer stays a named gap: the engine
     // keeps no list of worn items to read it from (engine SWITCHES.md 'station.vs-target').
     const vsTarget = HELD_SLAYER.has(it.itemClass) ? slayerRules(row.slayer, it.id) : [];
-    if (!HELD_SLAYER.has(it.itemClass) && slayerRules(row.slayer, it.id).length) g(`slayer: ${JSON.stringify(row.slayer).slice(0, 40)} on a ${it.itemClass}`, 'a worn item\'s slayer — station.vs-target reads held items only');
+    // The gap keeps its pre-station wording byte for byte: it rides the unit.equipped line, and the
+    // battle-cursor goldens hash those lines (fix.vs-target-worn-gap-text). The reason is in SWITCHES.
+    if (!HELD_SLAYER.has(it.itemClass) && slayerRules(row.slayer, it.id).length) g(`slayer: ${JSON.stringify(row.slayer).slice(0, 40)}`, 'item field: slayer');
     // one-use rows (the Waystation, 2026-09-02): a charge is spent IN battle —
     // the same missing capability as an activated item.
     if (row.uses !== undefined && !abilities.some((a) => authoredAbilities[a]?.uses)) g(`uses: ${JSON.stringify(row.uses)} — no active compiled to carry the charge`, 'charges spent in battle — capability.consumables');
