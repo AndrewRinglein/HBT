@@ -12630,7 +12630,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "slayer: {\"vampire\":3,\"undead\":1} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
+        "slayer: {\"vampire\":3,\"undead\":1} — item field: slayer"
       ]
     },
     "item.rune-nightmare-slayer": {
@@ -12645,7 +12645,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "slayer: {\"nightmare\":3} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
+        "slayer: {\"nightmare\":3} — item field: slayer"
       ]
     },
     "item.rune-plant-killer": {
@@ -12661,7 +12661,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onKill: if the kill had the plant tag, immediately regain  — trigger shape unparsed",
-        "slayer: {\"plant\":3} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
+        "slayer: {\"plant\":3} — item field: slayer"
       ]
     },
     "item.rune-burning-touch": {
@@ -12729,7 +12729,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onKill: gain +5 Accuracy for the rest of the Battle — trigger shape unparsed",
-        "slayer: {\"horror\":4,\"nightmare\":2} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
+        "slayer: {\"horror\":4,\"nightmare\":2} — item field: slayer"
       ]
     },
     "item.rune-elemental-bane": {
@@ -12745,7 +12745,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onHit: if the target has the elemental or dragon tag it l — trigger shape unparsed",
-        "slayer: {\"elemental\":4,\"dragon\":2} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
+        "slayer: {\"elemental\":4,\"dragon\":2} — item field: slayer"
       ]
     },
     "item.rune-monster-slayer": {
@@ -12760,7 +12760,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "slayer: {\"beast\":2,\"giant\":2,\"construct\":2,\"drag on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
+        "slayer: {\"beast\":2,\"giant\":2,\"construct\":2,\"drag — item field: slayer"
       ]
     },
     "item.rune-executioner": {
@@ -12891,7 +12891,7 @@ export const UNIT_PACK = {
         "grants tag.outcast — attack row unauthored",
         "onDodge: gain +10 Crit for the rest of the Battle — hook: onDodge (declared, engine never fires it)",
         "onCrit: gain +10 Dodge for the rest of the Battle — trigger shape unparsed",
-        "slayer: {\"demon\":4,\"plant\":4,\"beast\":4} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
+        "slayer: {\"demon\":4,\"plant\":4,\"beast\":4} — item field: slayer"
       ]
     },
     "item.rune-kairin": {
@@ -12907,7 +12907,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onActivationEnd: heal 2 — trigger shape unparsed",
-        "slayer: {\"undead\":3,\"demon\":3} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
+        "slayer: {\"undead\":3,\"demon\":3} — item field: slayer"
       ]
     },
     "item.rune-avatar-of-war": {

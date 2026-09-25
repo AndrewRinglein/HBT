@@ -1,5 +1,14 @@
 [
  {
+  "id": "fix.vs-target-worn-gap-text",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "station.vs-target (25c276c) reworded the gap on a WORN item's slayer (the bloodrunes) to explain why it stays a gap. That gap rides the unit.equipped event, so the battle-cursor goldens progression-surge-0/1/2 moved on text alone (shard 4, 2026-09-25) -- no damage changed. Keep the pre-station wording byte for byte ('slayer: {...} -- item field: slayer'); the reason already lives in SWITCHES.md vsTargetWornItems.",
+  "expect": "test/battle-cursor.test.ts progression-surge-0/1/2 pass against their unchanged golden hashes; test/vs-target.test.ts still finds the worn slayer as a named gap with no rule",
+  "status": "done-needs-review",
+  "sha": "623ed0e"
+ },
+ {
   "id": "v2.structures-same-wall",
   "kind": "engine",
   "shape": "rule",

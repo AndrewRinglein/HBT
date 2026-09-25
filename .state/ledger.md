@@ -16185,3 +16185,45 @@ Superseded by test.zombie.sap, absorbed 2026-08-20 into the status.weakness land
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without test.badge.bane-undead,test.badge.bane-venom — they genuinely test it
+
+## fix.vs-target-worn-gap-text — LANDED `623ed0e` **NEEDS REVIEW**
+2026-09-25 18:38
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/vs-target.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/vs-target.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/vs-target.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/vs-target.test.ts b/test/vs-target.test.ts
+index fa6d1cf..cb1d4d9 100644
+--- a/test/vs-target.test.ts
++++ b/test/vs-target.test.ts
+@@ -37,8 +37,11 @@ describe('the rows', () => {
+     expect(ITEMS['item.iron-mace.holy-water']!.vsTarget).toEqual([{ tag: 'undead', add: 1 }, { tag: 'demon', add: 1 }, { tag: 'vampire', add: 1 }])
+     for (const it of Object.values(ITEMS)) for (const g of it.gaps ?? []) expect(g).not.toMatch(/no VS_TARGET station/)
+-    // a worn item's slayer is a NAMED gap, never dead data (the engine keeps no worn list)
++    // a worn item's slayer is a NAMED gap, never dead data (the engine keeps no worn list).
++    // fix.vs-target-worn-gap-text (2026-09-25): the gap keeps its pre-station wording, byte for
++    // byte — it rides unit.equipped and the battle-cursor goldens hash it. Rule unchanged: a
++    // worn slayer compiles to no rule and is named as a gap.
+     const rune = ITEMS['item.rune-kairin']!
+     expect(rune.vsTarget).toBeUndefined()
+-    expect(rune.gaps?.some((g) => /slayer/.test(g) && /held items only/.test(g))).toBe(true)
++    expect(rune.gaps?.some((g) => /^slayer: /.test(g) && /item field: slayer$/.test(g))).toBe(true)
+   })
+ })
+```
+</details>

@@ -36,10 +36,13 @@ describe('the rows', () => {
     expect(ITEMS['item.greatsword.demon-slayer']!.vsTarget).toEqual([{ tag: 'demon', add: 3 }])
     expect(ITEMS['item.iron-mace.holy-water']!.vsTarget).toEqual([{ tag: 'undead', add: 1 }, { tag: 'demon', add: 1 }, { tag: 'vampire', add: 1 }])
     for (const it of Object.values(ITEMS)) for (const g of it.gaps ?? []) expect(g).not.toMatch(/no VS_TARGET station/)
-    // a worn item's slayer is a NAMED gap, never dead data (the engine keeps no worn list)
+    // a worn item's slayer is a NAMED gap, never dead data (the engine keeps no worn list).
+    // fix.vs-target-worn-gap-text (2026-09-25): the gap keeps its pre-station wording, byte for
+    // byte — it rides unit.equipped and the battle-cursor goldens hash it. Rule unchanged: a
+    // worn slayer compiles to no rule and is named as a gap.
     const rune = ITEMS['item.rune-kairin']!
     expect(rune.vsTarget).toBeUndefined()
-    expect(rune.gaps?.some((g) => /slayer/.test(g) && /held items only/.test(g))).toBe(true)
+    expect(rune.gaps?.some((g) => /^slayer: /.test(g) && /item field: slayer$/.test(g))).toBe(true)
   })
 })
 
