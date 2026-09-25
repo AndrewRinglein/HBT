@@ -2616,3 +2616,15 @@ Ruled (supersedes COMBAT-V2-DESIGN-2026-09-07 §3.2's rows and, for rocky, §18'
 - **Low cover** — applies when you are next to it against enemies whose attack crosses it (as built, v2.cover).
 
 Not yet ruled, asked the same chat: woodland's move cost; what standing in woodland gives; whether a thin obstruction in the target's own hex counts (Q3 said no for woodland, Q5 said "the -5 shooting in does apply"); the standard name; whether hills' bonus is ranged only (§3.3); whether material still sets a full obstruction's destroy tier (§12, v2.prop-destroy); walls, towers and houses.
+
+Andrew, same chat, answering the nine open questions (woodland cost, standing in woodland, own-hex thin obstructions, the name, hills, thin-obstruction cost, material, walls/towers/houses):
+
+“Woodland costs 2 to move into.   Standing in woodland gives others who are targeting you a -15/-7. It's defensive training.   A thin obstruction in your own hex does not count against your own shot, only against those who are shooting you or people who are shooting through the hex.  Okay, let's call it tall vegetation undergrowth.  Reach only applies to range attacks, but let's make the 10 accuracy. It's only 10 ranged accuracy.   Send obstruction is free to move on to   material still decides how many hits to destroy, yes.   Now, do you not have the definition for houses, towers, and walls?”
+
+Ruled (read with the two messages above; this one corrects them where they differ):
+
+- **Woodland** — 2 move to enter. A unit standing in woodland: −15 ranged / −7 melee accuracy against it ("defensive terrain"). Every woodland hex is also a thin obstruction.
+- **Thin obstruction, whose hex it counts in** — it never counts against a shot from its own hex. It counts against every shot INTO its hex (the target's own hex counts) and every shot passing THROUGH it: −5 ranged each. Free to move onto ("Send obstruction" = thin obstruction).
+- **Undergrowth** — the one name for tall vegetation (tall grass, wheat, reeds, bush, high brush, barberry): 1 move, −10 ranged accuracy against the unit standing in it.
+- **Hills** — +10 accuracy and +1 reach, both ranged attacks only (COMBAT-V2 §3.3 as written).
+- **Material** — still decides how many hits destroy a prop (COMBAT-V2 §12, v2.prop-destroy); a full obstruction otherwise behaves the same whatever it looks like.
