@@ -2653,3 +2653,11 @@ Ruled:
 - **Wall** — the +10 Block adds to both Block and Ranged Block. Enemies can stand on walls. A wall hex may carry stairs (or a ladder) on ONE facing: entering the wall hex from that side costs 1 extra move and puts you on top; from any other side you cannot go up.
 - **House** — entered through a door. A unit in a house can be shot from outside.
 - **Ruins** — the Climber badge helps on ruins as on rocky ground.
+
+## 2026-09-24 — thin obstructions are a third kind of prop
+
+Andrew, asked (v2.thin-obstruction) whether a sign, a single tree or an upright body is authored as a third kind of prop — a height `thin` beside `high` and `low`, walkable, −5 to shots entering its hex and −1 Vision, exactly like a woodland hex:
+
+“Yes, it's a third kind of prop.”
+
+Ruled: a prop's height is `high`, `low` or `thin`. A thin prop is a thin obstruction (see "the ground table, re-ruled" above). The name `thin` was the one put to him; he did not offer another. He asked in the same message to go over what counts as ground versus a prop, and how traps, bodies, graves, houses, walls and towers are structured — open, not ruled here.
