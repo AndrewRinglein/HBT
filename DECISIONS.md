@@ -2693,3 +2693,14 @@ Ruled:
 
 - **Lines** — standing on a wall or in a tower gives no line over other obstructions. A wall, tower or house hex blocks every attack line passing through it, whoever is at either end; only the line's own two ends never block. Supersedes the `structureLines` height exception.
 - **Leaving a wall** — only the way you came up: back down across its stairs side. Supersedes `wallDescent` (any side).
+
+## 2026-09-25 — shooting along your own wall; Mage Kindle is wanted
+
+Andrew, asked (1) whether to close `trigger.zombie.sap` and `trigger.mage.kindle` or build Kindle as its backlog row describes ("Mage: 100% onAttack — every swing, hit or miss — apply status.burn to target, value = ceil(partyMagicSum / 5)"), and (2) whether an archer on a wall should be able to shoot along its own wall, or be blocked by the next wall hex (the 2026-09-25 lines ruling above):
+
+“Build Kindle is described.   Two is a great point. You should be able to shoot on the same wall.”
+
+Ruled:
+
+- **Mage Kindle** — build it as described (backlog `trigger.mage.kindle`). Zombie Sap was not answered; it stays as the backlog note has it (absorbed into the Weakness landing as `test.zombie.sap`).
+- **The same wall** — the wall a unit stands on does not block its line: a shot along the wall top, or one that clips the next hex of that wall, is clear. Every OTHER wall, tower or house between still blocks (the 2026-09-25 ruling above stands).
