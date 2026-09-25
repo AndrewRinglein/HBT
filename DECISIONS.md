@@ -2678,3 +2678,16 @@ Andrew, at `start engine`, asked whether to go over ground versus props (traps, 
 “Let's do what you have now. Just build the walls, towers, and houses. Is there anything else left to do after this?”
 
 Ruled: `v2.structures` is built now, as ruled 2026-09-24 above; the ground-versus-props talk comes after it. How a structure is authored — a ground, with its stairs or door on the map (SWITCHES.md `structureAsGround`, `structureEntries`) — is the default that talk may overturn.
+
+## 2026-09-25 — walls and towers do not shoot over; down the way you came up
+
+Andrew, shown the `v2.structures` defaults (SWITCHES.md `wallDescent`: down from a wall on any side; `structureLines`: a unit on a wall or in a tower shoots, and is shot, over every structure between):
+
+“To know walls and towers can't shoot past other obstructions and you're showing me to leave the walls in the same way you came up.”
+
+(Dictated. Read as: "No — walls and towers can't shoot past other obstructions, and you should have them leave the walls the same way they came up.")
+
+Ruled:
+
+- **Lines** — standing on a wall or in a tower gives no line over other obstructions. A wall, tower or house hex blocks every attack line passing through it, whoever is at either end; only the line's own two ends never block. Supersedes the `structureLines` height exception.
+- **Leaving a wall** — only the way you came up: back down across its stairs side. Supersedes `wallDescent` (any side).
