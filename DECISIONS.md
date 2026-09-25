@@ -2704,3 +2704,14 @@ Ruled:
 
 - **Mage Kindle** — build it as described (backlog `trigger.mage.kindle`). Zombie Sap was not answered; it stays as the backlog note has it (absorbed into the Weakness landing as `test.zombie.sap`).
 - **The same wall** — the wall a unit stands on does not block its line: a shot along the wall top, or one that clips the next hex of that wall, is clear. Every OTHER wall, tower or house between still blocks (the 2026-09-25 ruling above stands).
+
+## 2026-09-25 — shooting a unit on a wall; Kindle stays off the Codex Mages
+
+Andrew, asked (1) whether the real Mage heroes in the Codex should carry Kindle too (it is built on the test Mage only, `test.mage.kindle`), and (2) whether an archer on the ground may shoot along a wall top at a unit standing on it, or only the unit on the wall gets the clear shot (SWITCHES.md `sameWallBothEnds`):
+
+“2. Any range unit on the ground can shoot a unit on a wall. They just can't shoot past the wall to a unit that is obstructed by it. I don't know the answer. If the Mage, don't add anything to the Mage heroes in Codex. We'll add it later. If needed.”
+
+Ruled:
+
+- **Shooting a unit on a wall** — any ranged unit on the ground can shoot a unit on a wall; it cannot shoot past the wall to a unit the wall obstructs. As built (`v2.structures-same-wall`): the wall a line's end stands on does not block that line, from either end; every other wall, tower or house between still does. `sameWallBothEnds` is ruled.
+- **Kindle on the Codex Mages** — do not add it. The test Mage alone carries it; "We'll add it later. If needed."
