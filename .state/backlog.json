@@ -1,5 +1,31 @@
 [
  {
+  "id": "v2.ground-retable",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "The V2 ground table as Andrew re-ruled it on 2026-09-24 (engine/DECISIONS.md 'the ground table, re-ruled', verbatim; supersedes COMBAT-V2-DESIGN-2026-09-07 section 3.2 rows). terrain.grass, terrain.wheat and terrain.bush collapse into ONE ground, terrain.undergrowth: 1 move, -10 ranged accuracy against the occupant. terrain.woodland unchanged here (2 move, -15 ranged / -7 melee against). terrain.lava: 2 move, 3 fire and 1 Burn on entry and again at end of activation. New: terrain.marsh (2 move, -5 accuracy and -10 Dodge to the occupant, strips 1 Burn at end of activation), terrain.desert (-5 Dodge to the occupant), terrain.ruins (the rough trait, exactly rocky). The kill-switch seam reaches terrain stat mods and strips. Glyphs u o l m d n. Forest, hills and thin obstructions are separate items.",
+  "expect": "costs 1 2 2 2 1 2; undergrowth -10 ranged and nothing to a swing; woodland -15 / -7; lava 3 fire + 1 Burn at entry (walk costs 4 for 1+2+1) and at end of activation, Fire Resist 3 takes 0, a push into lava enters it, a kill stops the walk; a target in marsh is 10 easier to hit, in desert 5; a shooter in marsh aims 5 worse; ruins read exactly as rocky; marsh washes a Burn at end of activation; test.ground-table is live and replays byte for byte; no control battle moves.",
+  "probeIds": [
+   "terrain.undergrowth",
+   "terrain.woodland",
+   "terrain.lava",
+   "terrain.marsh",
+   "terrain.desert",
+   "terrain.ruins"
+  ],
+  "variants": [
+   "terrain.undergrowth",
+   "terrain.marsh",
+   "terrain.desert"
+  ],
+  "needs": [
+   "v2.ground-table"
+  ],
+  "note": "Andrew's chat, 2026-09-24. Rewrites test/v2-ground-table.test.ts under Law 10: the rule changed by ruling (reason at the top of the file) — lands flagged for review, as it should.",
+  "status": "done-needs-review",
+  "sha": "d99a569"
+ },
+ {
   "id": "v2.ground-table",
   "kind": "engine",
   "shape": "rule",

@@ -8,8 +8,9 @@ export const GLYPH: Readonly<Record<string, number>> = {
   '.': TERRAIN.OPEN, 'h': TERRAIN.HILLS, 'f': TERRAIN.FOREST, 'r': TERRAIN.ROCKY,
   'R': TERRAIN.ROCKY_HILLS, 'w': TERRAIN.WATER, 'x': TERRAIN.IMPASSABLE,
   'b': TERRAIN.BURNING, 'p': TERRAIN.POISONED,
-  // v2.ground-table: no document assigns these glyphs — SWITCHES.md groundGlyphs.
-  'g': TERRAIN.GRASS, 'y': TERRAIN.WHEAT, 'u': TERRAIN.BUSH, 'o': TERRAIN.WOODLAND, 'l': TERRAIN.LAVA,
+  // v2.ground-retable: no document assigns these glyphs — SWITCHES.md groundGlyphs.
+  'u': TERRAIN.UNDERGROWTH, 'o': TERRAIN.WOODLAND, 'l': TERRAIN.LAVA,
+  'm': TERRAIN.MARSH, 'd': TERRAIN.DESERT, 'n': TERRAIN.RUINS,
 }
 
 /** The id a terrain kind answers to in a log line or a modifier source. */
@@ -19,8 +20,8 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.ROCKY_HILLS]: 'terrain.rocky-hills', [TERRAIN.WATER]: 'terrain.water',
   [TERRAIN.IMPASSABLE]: 'terrain.impassable',
   [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
-  [TERRAIN.GRASS]: 'terrain.grass', [TERRAIN.WHEAT]: 'terrain.wheat', [TERRAIN.BUSH]: 'terrain.bush',
-  [TERRAIN.WOODLAND]: 'terrain.woodland', [TERRAIN.LAVA]: 'terrain.lava',
+  [TERRAIN.UNDERGROWTH]: 'terrain.undergrowth', [TERRAIN.WOODLAND]: 'terrain.woodland', [TERRAIN.LAVA]: 'terrain.lava',
+  [TERRAIN.MARSH]: 'terrain.marsh', [TERRAIN.DESERT]: 'terrain.desert', [TERRAIN.RUINS]: 'terrain.ruins',
 }
 
 export function terrainIdOf(terrain: number): string {
@@ -123,8 +124,11 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
   [TERRAIN.IMPASSABLE]: [],
   [TERRAIN.BURNING]: ['burning'],
   [TERRAIN.POISONED]: ['poisoned'],
-  [TERRAIN.GRASS]: [], [TERRAIN.WHEAT]: [], [TERRAIN.BUSH]: [],   // stated directly below — see EXTRA
-  [TERRAIN.WOODLAND]: [], [TERRAIN.LAVA]: [],
+  [TERRAIN.UNDERGROWTH]: [], [TERRAIN.WOODLAND]: [], [TERRAIN.LAVA]: [],   // stated directly below — see EXTRA
+  [TERRAIN.MARSH]: [], [TERRAIN.DESERT]: [],
+  // Andrew, 2026-09-24: "Ruins behave like rocky ground" — and "Climber badge will
+  // help on ruins the way it does in rocky ground": the same trait, so one reader.
+  [TERRAIN.RUINS]: ['rough'],
 }
 
 /**
@@ -134,17 +138,25 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
  */
 const EXTRA: Readonly<Record<number, Mods>> = {
   [TERRAIN.FOREST]: { moveCost: 1, dodge: 10, armor: 1 },
-  // ── V2 ground (v2.ground-table) ─────────────────────────────────────────────
-  // SOURCE OF TRUTH: COMBAT-V2-DESIGN-2026-09-07 §3.2, ruled 2026-09-07. Copied,
-  // not chosen: "−10 ranged accuracy against you", "+1 (difficult)", woodland
-  // "−15 ranged, −7 melee accuracy against you", lava "3 fire damage and 2 Burn on
-  // entry, and again at end of activation". Independent of cover; they stack (§3.2).
-  // Material tier 1 (grass, wheat, bush burn away) waits on the burning-props ruling.
-  [TERRAIN.GRASS]:    { moveCost: 0, rangedAccuracyAgainst: -10 },
-  [TERRAIN.WHEAT]:    { moveCost: 0, rangedAccuracyAgainst: -10 },
-  [TERRAIN.BUSH]:     { moveCost: 1, rangedAccuracyAgainst: -10 },
-  [TERRAIN.WOODLAND]: { moveCost: 1, rangedAccuracyAgainst: -15, meleeAccuracyAgainst: -7 },
-  [TERRAIN.LAVA]:     { moveCost: 0, hazard: { damageType: 'fire', damage: 3, applies: [['status.burn', 2]] } },
+  // ── V2 ground (v2.ground-table, re-ruled v2.ground-retable) ────────────────
+  // SOURCE OF TRUTH: engine/DECISIONS.md "2026-09-24 — the ground table, re-ruled"
+  // (Andrew, verbatim there). It SUPERSEDES COMBAT-V2-DESIGN-2026-09-07 §3.2's rows.
+  // Copied, not chosen:
+  //   undergrowth — "tall grass, wheat … bush … It's one move, -10 ranged against you"
+  //                 ("wheat, grass, reeds … all just different aesthetics for the same thing")
+  //   woodland    — "Woodland costs 2 to move into"; "Standing in woodland gives others
+  //                 who are targeting you a -15/-7" (its thin-obstruction −5 is v2.thin-obstruction)
+  //   lava        — "Stepping into lava should inflict one burn. Cost 2 movement points.
+  //                 And inflict 3 fire damage. Being in lava at the end of your activation
+  //                 should inflict 1 burn and inflict 3 fire damage."
+  //   marsh       — "Cost 2 to move in. Removes one fire at the end of activation. Gives
+  //                 -5 accuracy and -10 dodge to whoever is in it."
+  //   desert      — "Gives -5 dodge."
+  [TERRAIN.UNDERGROWTH]: { moveCost: 0, rangedAccuracyAgainst: -10 },
+  [TERRAIN.WOODLAND]:    { moveCost: 1, rangedAccuracyAgainst: -15, meleeAccuracyAgainst: -7 },
+  [TERRAIN.LAVA]:        { moveCost: 1, hazard: { damageType: 'fire', damage: 3, applies: [['status.burn', 1]] } },
+  [TERRAIN.MARSH]:       { moveCost: 1, accuracy: -5, dodge: -10, stripsOnActivationEnd: ['status.burn'] },
+  [TERRAIN.DESERT]:      { moveCost: 0, dodge: -5 },
 }
 
 type Stat = 'accuracy' | 'reach' | 'dodge' | 'armor' | 'resist'
@@ -179,13 +191,16 @@ export function moveCostOf(terrain: number): number {
   return composed(terrain).moveCost
 }
 
+// v2.ground-retable: the kill-switch seam reaches the occupant's stat mods and the strips
+// too, so marsh, desert and ruins can be proved like every other V2 ground.
+const off = (terrain: number): boolean => disabledIds().has(terrainIdOf(terrain))
 const statOf = (terrain: number, stat: Stat): number =>
-  terrain === TERRAIN.IMPASSABLE ? 0 : (composed(terrain)[stat] ?? 0)
+  terrain === TERRAIN.IMPASSABLE || off(terrain) ? 0 : (composed(terrain)[stat] ?? 0)
 
 /** Accuracy bonus for standing here. */
 export function accuracyBonusOf(terrain: number): number { return statOf(terrain, 'accuracy') }
-export function stripsOnEnterOf(terrain: number): readonly string[] { return composed(terrain).stripsOnEnter ?? [] }
-export function stripsOnActivationEndOf(terrain: number): readonly string[] { return composed(terrain).stripsOnActivationEnd ?? [] }
+export function stripsOnEnterOf(terrain: number): readonly string[] { return off(terrain) ? [] : composed(terrain).stripsOnEnter ?? [] }
+export function stripsOnActivationEndOf(terrain: number): readonly string[] { return off(terrain) ? [] : composed(terrain).stripsOnActivationEnd ?? [] }
 // The applies getters carry the kill-switch seam directly: CF_DISABLE_IDS with a
 // terrain id silences that terrain's applies, so the kill-switch check can prove
 // the tests genuinely depend on the content. (Water's strips predate the seam
@@ -202,7 +217,7 @@ export function appliesOnActivationEndOf(terrain: number): Applies {
 /**
  * V2 §3.2 concealment — what the ground an occupant stands in does to the accuracy
  * of an attack of this kind AGAINST it. Read at the accuracy ladder's TERRAIN rung
- * (400). The kill-switch seam silences it (CF_DISABLE_IDS=terrain.grass …).
+ * (400). The kill-switch seam silences it (CF_DISABLE_IDS=terrain.undergrowth …).
  */
 export function accuracyAgainstOf(terrain: number, kind: 'melee' | 'ranged'): number {
   if (terrain === TERRAIN.IMPASSABLE || disabledIds().has(terrainIdOf(terrain))) return 0

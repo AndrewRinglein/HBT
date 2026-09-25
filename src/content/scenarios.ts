@@ -549,13 +549,14 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     map:{id:'test.map.prop-destroy',name:'Prop destroy TEST',rows:['.......','.......','.......','.......','.......'],props:[{id:'prop.test.barrels',height:'low',material:1,footprint:{kind:'hex',hexes:[10]}},{id:'prop.test.stone-wall',height:'low',material:2,footprint:{kind:'hex',hexes:[24]}}]},
     heroes:['test-destroy-chopper','test-destroy-wrecker'],heroHexes:[9,23],enemies:['test-zombie','test-zombie'],enemyHexes:[10,24],replicate:0,
   },
-  // v2.ground-table (2026-09-24, COMBAT-V2 §3.2): the five V2 grounds in columns
-  // between the lines — zombies wade lava first, then woodland, bush, wheat and grass
-  // on their way to a Ranger and a Warrior. TEST data, no campaign claim.
+  // v2.ground-table, re-ruled v2.ground-retable (Andrew, 2026-09-24, DECISIONS.md): the
+  // V2 grounds in columns between the lines — undergrowth, desert, marsh, ruins,
+  // woodland, lava — two zombies wading west from the lava toward a Ranger and a
+  // Warrior. TEST data, no campaign claim.
   'test.ground-table': {
-    id:'test.ground-table',note:'TEST: V2 ground — columns of grass, wheat, bush, woodland and lava between a Ranger and Warrior and two zombies. No campaign claim.',mapId:'test.map.ground-table',
-    map:{id:'test.map.ground-table',name:'Ground table TEST',rows:['.gyuol.','.gyuol.','.gyuol.','.gyuol.','.gyuol.']},
-    heroes:['test-ranger','test-warrior'],heroHexes:[7,21],enemies:['test-zombie','test-zombie'],enemyHexes:[13,27],replicate:0,
+    id:'test.ground-table',note:'TEST: V2 ground — columns of undergrowth, desert, marsh, ruins, woodland and lava between a Ranger and Warrior and two zombies. No campaign claim.',mapId:'test.map.ground-table',
+    map:{id:'test.map.ground-table',name:'Ground table TEST',rows:['.udmnol..','.udmnol..','.udmnol..','.udmnol..','.udmnol..']},
+    heroes:['test-ranger','test-warrior'],heroHexes:[9,27],enemies:['test-zombie','test-zombie'],enemyHexes:[17,35],replicate:0,
   },
   'test.cover-crates': {
     id:'test.cover-crates',note:'TEST target-end low hex cover, passable crates.',mapId:'test.map.cover-crates',

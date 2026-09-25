@@ -15205,3 +15205,204 @@ Retired by COMBAT-V2-DESIGN section 18: a stowed weapon grants nothing (section 
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without terrain.grass,terrain.wheat,terrain.bush,terrain.woodland,terrain.lava — they genuinely test it
+
+## v2.ground-retable — LANDED `d99a569` **NEEDS REVIEW**
+2026-09-25 01:43
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:2602 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/v2-ground-table.test.ts
+  PASS  gate 1 — the id appears in a real battle — terrain.undergrowth: 4 log lines, 4 fired, 4 changed state · terrain.woodland: 3 log lines, 3 fired, 3 changed state · terrain.lava: 16 log lines, 16 fired, 15 changed state · terrain.marsh: 4 log lines, 4 fired, 4 changed state · terrain.desert: 4 log lines, 4 fired, 4 changed state · terrain.ruins: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/v2-ground-table.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/v2-ground-table.test.ts (-40) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 41 ids without a published source — 1 NEW from THIS item, publish them
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — terrain.undergrowth live · terrain.marsh live · terrain.desert live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without terrain.undergrowth,terrain.woodland,terrain.lava,terrain.marsh,terrain.desert,terrain.ruins — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/v2-ground-table.test.ts b/test/v2-ground-table.test.ts
+index a68484e..4613085 100644
+--- a/test/v2-ground-table.test.ts
++++ b/test/v2-ground-table.test.ts
+@@ -1,14 +1,20 @@
+-// v2.ground-table — V2 R7 part 3: the ground a unit stands in (COMBAT-V2-DESIGN-2026-09-07
+-// §3.2, ruled 2026-09-07).
++// v2.ground-table — V2 R7 part 3: the ground a unit stands in.
+ //
+-//   Grass, wheat   −10 ranged accuracy against you · normal move
+-//   Bush           −10 ranged accuracy against you · +1 (difficult)
+-//   Woodland       −15 ranged, −7 melee accuracy against you · +1 · does not block LOS
+-//   Lava           3 fire damage and 2 Burn on entry, and again at end of activation;
+-//                  the 3 meets Fire Resist; being knocked into lava is entering it
++// Law 10, REWRITTEN by v2.ground-retable (2026-09-24): the rule changed by ruling, not the
++// code under test. Andrew re-ruled COMBAT-V2 §3.2 the same day (engine/DECISIONS.md "the
++// ground table, re-ruled", verbatim there): grass, wheat and bush are ONE ground,
++// undergrowth, at 1 move; lava costs 2 and gives 1 Burn, not 2; marsh, desert and ruins
++// join. Every assertion below reads the ruled table; the old −10-on-grass and 2-Burn
++// numbers were a finding, not a rule.
++//
++//   Undergrowth  1 move · −10 ranged accuracy against you
++//   Woodland     2 move · −15 ranged, −7 melee accuracy against you
++//   Lava         2 move · 3 fire + 1 Burn on entry, and again at end of activation
++//   Marsh        2 move · −5 accuracy, −10 Dodge to whoever is in it · strips 1 Burn at end of activation
++//   Desert       −5 Dodge to whoever is in it
++//   Ruins        behaves like rocky ground (the same trait — Climber reads one)
+ //
+ // Concealment is the accuracy ladder's TERRAIN rung (400), read off the TARGET's ground.
+-// Every way into a hex goes through core/ground.ts. Defaults the document does not
+-// answer are SWITCHES.md "V2 ground table".
++// Every way into a hex goes through core/ground.ts.
+ import { describe, it, expect } from 'vitest'
+ import { createBattle } from '../src/core/setup.js'
+@@ -17,5 +23,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { runBattle, endOfActivation } from '../src/core/battle.js'
+ import { executeMove, executeKnockback, movePowerOf } from '../src/core/movement.js'
+-import { accuracyAgainstOf, hazardOf, moveCostOf, GLYPH } from '../src/content/maps.js'
++import { accuracyAgainstOf, accuracyBonusOf, armorBonusOf, dodgeBonusOf, hazardOf, moveCostOf, resistBonusOf, stripsOnActivationEndOf, GLYPH } from '../src/content/maps.js'
+ import { SCENARIOS, scenarioOptions } from '../src/content/scenarios.js'
+ import { TERRAIN } from '../src/core/types.js'
+@@ -38,56 +44,88 @@ const lavaHits = (ctx: Ctx) => ctx.events.filter((e) => e.type === 'damage.appli
+ const burn = (u: Unit) => u.statuses.find((s) => s.id === 'status.burn')?.value ?? 0
+ const fireResist = (u: Unit, n: number) => u.mods.push({ stat: 'fireResist', op: 'add', value: n, source: 'test', scope: 'unit' })
++const shot = (rows: string[]) => preview(rig(rows, 'test-ranger', 7, 10), 0, 1, BOW)
+ 
+-describe('the table is COMBAT-V2 §3.2, copied', () => {
+-  it('grass and wheat hide from ranged only, at normal cost; bush and woodland cost +1', () => {
+-    expect([TERRAIN.GRASS, TERRAIN.WHEAT, TERRAIN.BUSH, TERRAIN.WOODLAND, TERRAIN.LAVA].map(moveCostOf)).toEqual([1, 1, 2, 2, 1])
+-    expect([TERRAIN.GRASS, TERRAIN.WHEAT, TERRAIN.BUSH, TERRAIN.WOODLAND].map((t) => accuracyAgainstOf(t, 'ranged'))).toEqual([-10, -10, -10, -15])
+-    expect([TERRAIN.GRASS, TERRAIN.WHEAT, TERRAIN.BUSH, TERRAIN.WOODLAND].map((t) => accuracyAgainstOf(t, 'melee'))).toEqual([0, 0, 0, -7])
+-    expect(hazardOf(TERRAIN.LAVA)).toEqual({ damageType: 'fire', damage: 3, applies: [['status.burn', 2]] })
+-    expect(hazardOf(TERRAIN.GRASS)).toBeNull()
+-    expect([GLYPH['g'], GLYPH['y'], GLYPH['u'], GLYPH['o'], GLYPH['l']]).toEqual([TERRAIN.GRASS, TERRAIN.WHEAT, TERRAIN.BUSH, TERRAIN.WOODLAND, TERRAIN.LAVA])
++describe('the table is the 2026-09-24 ruling, copied', () => {
++  it('move costs: undergrowth 1, woodland 2, lava 2, marsh 2, desert 1, ruins 2', () => {
++    expect([TERRAIN.UNDERGROWTH, TERRAIN.WOODLAND, TERRAIN.LAVA, TERRAIN.MARSH, TERRAIN.DESERT, TERRAIN.RUINS].map(moveCostOf)).toEqual([1, 2, 2, 2, 1, 2])
++  })
++  it('concealment: undergrowth −10 ranged; woodland −15 ranged and −7 melee; nothing else hides', () => {
++    expect([TERRAIN.UNDERGROWTH, TERRAIN.WOODLAND, TERRAIN.MARSH, TERRAIN.DESERT].map((t) => accuracyAgainstOf(t, 'ranged'))).toEqual([-10, -15, 0, 0])
++    expect([TERRAIN.UNDERGROWTH, TERRAIN.WOODLAND].map((t) => accuracyAgainstOf(t, 'melee'))).toEqual([0, -7])
++  })
++  it('lava is 3 fire and 1 Burn; marsh −5 accuracy, −10 Dodge and a Burn washed off; desert −5 Dodge', () => {
++    expect(hazardOf(TERRAIN.LAVA)).toEqual({ damageType: 'fire', damage: 3, applies: [['status.burn', 1]] })
++    expect(hazardOf(TERRAIN.UNDERGROWTH)).toBeNull()
++    expect([accuracyBonusOf(TERRAIN.MARSH), dodgeBonusOf(TERRAIN.MARSH), stripsOnActivationEndOf(TERRAIN.MARSH)]).toEqual([-5, -10, ['status.burn']])
++    expect([accuracyBonusOf(TERRAIN.DESERT), dodgeBonusOf(TERRAIN.DESERT)]).toEqual([0, -5])
++  })
++  it('ruins behave like rocky ground — every number the same', () => {
++    const of = (t: number) => [moveCostOf(t), accuracyBonusOf(t), armorBonusOf(t), resistBonusOf(t), dodgeBonusOf(t)]
++    expect(of(TERRAIN.RUINS)).toEqual(of(TERRAIN.ROCKY))
++    expect(of(TERRAIN.RUINS)).toEqual([2, -5, 1, 1, 0])
++  })
++  it('glyphs: u undergrowth, o woodland, l lava, m marsh, d desert, n ruins', () => {
++    expect(['u', 'o', 'l', 'm', 'd', 'n'].map((g) => GLYPH[g])).toEqual([TERRAIN.UNDERGROWTH, TERRAIN.WOODLAND, TERRAIN.LAVA, TERRAIN.MARSH, TERRAIN.DESERT, TERRAIN.RUINS])
+   })
+ })
+ 
+ describe('concealment — the TERRAIN rung reads the target\'s ground', () => {
+-  it('a shot into grass is 10 worse than the same shot into the open, and the ledger names the grass', () => {
+-    const open = preview(rig(row('.......'), 'test-ranger', 7, 10), 0, 1, BOW)
+-    const grass = preview(rig(row('...g...'), 'test-ranger', 7, 10), 0, 1, BOW)
++  it('a shot into undergrowth is 10 worse than the same shot into the open, and the ledger names it', () => {
++    const open = shot(row('.......')), under = shot(row('...u...'))
+     expect(terrainRow(open)).toEqual([])
+-    expect(terrainRow(grass)).toEqual([expect.objectContaining({ station: 400, effectId: 'terrain.grass', delta: -10 })])
+-    expect(grass.accuracy).toBe(open.accuracy - 10)
++    expect(terrainRow(under)).toEqual([expect.objectContaining({ station: 400, effectId: 'terrain.undergrowth', delta: -10 })])
++    expect(under.accuracy).toBe(open.accuracy - 10)
+   })
+-  it('woodland takes 15 from a shot and 7 from a swing; grass takes nothing from a swing', () => {
+-    const shot = preview(rig(row('...o...'), 'test-ranger', 7, 10), 0, 1, BOW)
+-    expect(terrainRow(shot)).toEqual([expect.objectContaining({ effectId: 'terrain.woodland', delta: -15 })])
+-    const swing = preview(rig(row('...o...'), 'test-warrior', 9, 10), 0, 1, AXE)
+-    expect(terrainRow(swing)).toEqual([expect.objectContaining({ effectId: 'terrain.woodland', delta: -7 })])
+-    expect(terrainRow(preview(rig(row('...g...'), 'test-warrior', 9, 10), 0, 1, AXE))).toEqual([])
++  it('woodland takes 15 from a shot and 7 from a swing; undergrowth takes nothing from a swing', () => {
++    expect(terrainRow(shot(row('...o...')))).toEqual([expect.objectContaining({ effectId: 'terrain.woodland', delta: -15 })])
++    expect(terrainRow(preview(rig(row('...o...'), 'test-warrior', 9, 10), 0, 1, AXE))).toEqual([expect.objectContaining({ effectId: 'terrain.woodland', delta: -7 })])
++    expect(terrainRow(preview(rig(row('...u...'), 'test-warrior', 9, 10), 0, 1, AXE))).toEqual([])
+   })
+-  it('the shooter\'s own ground hides nothing — standing in bush does not blur your own aim', () => {
+-    const open = preview(rig(row('.......'), 'test-ranger', 7, 10), 0, 1, BOW)
+-    const fromBush = preview(rig(row('u......'), 'test-ranger', 7, 10), 0, 1, BOW)
+-    expect(fromBush.accuracy).toBe(open.accuracy)
++  it('the shooter\'s own undergrowth does not blur its aim', () => {
++    expect(shot(row('u......')).accuracy).toBe(shot(row('.......')).accuracy)
+   })
+   it('woodland and low cover stack — two rows, −15 and −20', () => {
+     const crates = [{ id: 'prop.test.crates', height: 'low', material: 1, footprint: { kind: 'hex', hexes: [10] } }]
+-    const open = preview(rig(row('.......'), 'test-ranger', 7, 10), 0, 1, BOW)
+     const both = preview(rig(row('...o...'), 'test-ranger', 7, 10, crates), 0, 1, BOW)
+     expect(both.accLedger.filter((r) => r.name === 'TERRAIN' || r.name === 'COVER').map((r) => r.delta)).toEqual([-15, -20])
+-    expect(both.accuracy).toBe(open.accuracy - 35)
++    expect(both.accuracy).toBe(shot(row('.......')).accuracy - 35)
++  })
++})
++
++describe('marsh, desert and ruins — what they do to whoever is in them', () => {
++  it('a target in marsh is 10 easier to hit, a target in desert 5 easier', () => {
++    const open = shot(row('.......')).accuracy
++    expect(shot(row('...m...')).accuracy).toBe(open + 10)
++    expect(shot(row('...d...')).accuracy).toBe(open + 5)
++  })
++  it('a shooter in marsh aims 5 worse; a shooter in ruins aims exactly as one on rocky ground', () => {
++    const open = shot(row('.......')).accuracy
++    expect(shot(row('m......')).accuracy).toBe(open - 5)
++    expect(shot(row('n......')).accuracy).toBe(shot(row('r......')).accuracy)
++    expect(shot(row('n......')).accuracy).toBe(open - 5)
++  })
++  it('standing in marsh at end of activation washes off 1 Burn, named for the marsh', () => {
++    const ctx = rig(row('m......'), 'test-warrior', 0, 34)
++    const w = ctx.state.units[0]!
++    w.statuses.push({ id: 'status.burn', value: 3 } as never)
++    beginActivation(ctx, 0, 'test')
++    endOfActivation(ctx, 0)
++    expect(ctx.events.some((e) => e.type === 'status.reduced' && e.causeId === 'terrain.marsh')).toBe(true)
+   })
+ })
+ 
+ describe('lava — the two-beat hazard', () => {
+-  it('walking in deals 3 fire and 2 Burn, named for the lava', () => {
++  it('walking in costs 2 and deals 3 fire and 1 Burn, named for the lava', () => {
+     const ctx = rig(row('..l....'), 'test-warrior', 0, 34)
+     const w = ctx.state.units[0]!
+     beginActivation(ctx, 0, 'test')
++    const before = w.movePointsLeft
+     executeMove(ctx, 0, [1, 2, 3], movePowerOf(ctx, w, 'path')!)
+     expect(lavaHits(ctx)).toHaveLength(1)
+     expect(lavaHits(ctx)[0]).toMatchObject({ amount: 3, damageType: 'fire', hazard: true, target: 0 })
+-    expect(burn(w)).toBe(2)
++    expect(burn(w)).toBe(1)
+     expect(w.hp).toBe(47)
+     expect(w.hex).toBe(3)
++    expect(before - w.movePointsLeft).toBe(4)
+   })
+   it('and again at end of activation if still there — the second beat', () => {
+@@ -98,5 +136,4 @@ describe('lava — the two-beat hazard', () => {
+     endOfActivation(ctx, 0)
+     expect(lavaHits(ctx).map((e) => e.amount)).toEqual([3, 3])
+-    // 2 on entry + 2 at the end; the tick that follows then burns and decays it
+     const applied = ctx.events.filter((e) => e.type === 'status.applied' && e.causeId === 'terrain.lava')
+     expect(applied).toHaveLength(2)
+@@ -127,5 +164,5 @@ describe('lava — the two-beat hazard', () => {
+     expect(lavaHits(ctx)).toHaveLength(1)
+     expect(lavaHits(ctx)[0]).toMatchObject({ amount: 3, target: 1 })
+-    expect(burn(z)).toBe(2)
++    expect(burn(z)).toBe(1)
+     expect(ctx.events.some((e) => e.type === 'damage.applied' && (e as { collision?: boolean }).collision)).toBe(false)
+   })
+@@ -141,5 +178,5 @@ describe('lava — the two-beat hazard', () => {
+ 
+ describe('live in a battle', () => {
+-  it('test.ground-table: zombies wade the lava and cross the vegetation, and it replays byte for byte', () => {
++  it('test.ground-table: zombies wade the lava and cross the grounds, and it replays byte for byte', () => {
+     const run = () => { const ctx = createBattle(scenarioOptions(SCENARIOS['test.ground-table']!)); runBattle(ctx); return ctx }
+     const a = run()
+```
+</details>

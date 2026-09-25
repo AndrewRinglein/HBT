@@ -989,7 +989,7 @@ unruled and not built; water is unchanged.
 
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
-| `groundGlyphs` | Which map glyphs author the five grounds? | **`g` grass, `y` wheat, `u` bush, `o` woodland, `l` lava.** | No document assigns them; none collides with MAP-01's legend (`. h f r R w x b p`). The Atlas adapter compiles to numbers and never reads these. | provisional — 2026-09-24 |
+| `groundGlyphs` | Which map glyphs author the V2 grounds? | **`u` undergrowth, `o` woodland, `l` lava, `m` marsh, `d` desert, `n` ruins** (v2.ground-retable; `g` and `y` retired with grass and wheat). | No document assigns them; none collides with MAP-01's legend (`. h f r R w x b p`). The Atlas adapter compiles to numbers and never reads these. | provisional — 2026-09-24 |
 | `concealmentRung` | Where on the accuracy ladder does "−10 ranged accuracy against you" land? | **TERRAIN (400), revived**: read off the TARGET's ground, by the attack's kind; one ledger row naming the terrain. | COMBAT-SEQUENCE's row 400 is "the target's occupied-hex modifier" — exactly this; v1 retired it into BASE_MOD because v1 terrain modified its *occupant's* stats. | provisional — 2026-09-24 |
 | `concealmentShooterGround` | Does the shooter's own ground change its aim? | **No.** Only the target's ground; grass under the archer does nothing to the shot. | §3.2: "Standing in it … against you". | provisional — 2026-09-24 |
 | `concealmentScope` | Which attacks does it reach? | **Every attack that rolls to hit** — an attack of opportunity included (it is a melee attack). Bursts do not roll, so it never touches them. | One accuracy function (Law 2). | provisional — 2026-09-24 |
@@ -999,8 +999,15 @@ unruled and not built; water is unchanged.
 | `hazardZeroLine` | Fire Resist 3 in lava — is there a line? | **Yes: `damage.applied` amount 0, `resisted` 3, `hazard: true`, caused by `terrain.lava`.** | Law 12: every log line names its cause, and "walks through untouched" is worth seeing. | provisional — 2026-09-24 |
 | `hazardDownedOccupant` | Does lava hurt a downed unit lying in it? | **No** — only a standing unit meets the hazard. | End of Activation already skips the downed; the entry beats need a mover. | provisional — 2026-09-24 |
 | `hazardKillsMidWalk` | Lava that takes a walker to 0? | **Settle at once; a unit no longer standing stops there.** | The attack-of-opportunity precedent (`settle(ctx, 'movement.aoo')` mid-move). | provisional — 2026-09-24 |
-| `groundBurnsAway` | Grass, wheat and bush are "material tier 1 (burns away)" — built? | **Not yet.** The tier is not on the rows. | Burning props are unruled (what ignites, how long, what it does) — the same open question the prop-destruction wrap left. | open — 2026-09-24 |
+| `groundBurnsAway` | Undergrowth (was grass, wheat, bush) is "material tier 1 (burns away)" in §3.2 — built? | **Not yet.** The tier is not on the rows. | Burning props are unruled (what ignites, how long, what it does) — the same open question the prop-destruction wrap left. | open — 2026-09-24 |
 | `groundAi` | Does the AI seek concealment or avoid lava? | **No.** It sees concealment only as a worse hit chance in `preview()`; it paths through lava as it paths through burning ground. | `system.ai-modes` is Angela's, not a chat's. | provisional — 2026-09-24 |
+
+**Re-ruled the same day (v2.ground-retable).** Andrew replaced §3.2's rows — `engine/DECISIONS.md`
+"2026-09-24 — the ground table, re-ruled", verbatim: grass, wheat and bush are one ground,
+`terrain.undergrowth` (1 move, −10 ranged against); lava costs 2 and gives 1 Burn on each beat;
+marsh, desert and ruins added; forest retired, hills ranged-only (v2.retire-forest-hills);
+woodland is also a thin obstruction (v2.thin-obstruction). The rows below still stand where the
+ruling is silent.
 
 Not done here, on purpose: §18's retirement of "terrain as the cover system" (v1 forest +10
 Dodge, rocky −5 Accuracy, hills +2 reach) — it needs rocky's numbers (§16 item 2a) and a

@@ -33,8 +33,9 @@ export type Role = 'melee' | 'ranged' | 'support'
 export const TERRAIN = {
   OPEN: 0, HILLS: 1, FOREST: 2, ROCKY: 3, ROCKY_HILLS: 4, WATER: 5, IMPASSABLE: 6,
   BURNING: 7, POISONED: 8,
-  // v2.ground-table (COMBAT-V2-DESIGN-2026-09-07 §3.2): the V2 vegetation and lava.
-  GRASS: 9, WHEAT: 10, BUSH: 11, WOODLAND: 12, LAVA: 13,
+  // v2.ground-table / v2.ground-retable (Andrew, 2026-09-24, DECISIONS.md "the ground
+  // table, re-ruled"). 10 and 11 (wheat, bush) are retired numbers — never reuse them.
+  UNDERGROWTH: 9, WOODLAND: 12, LAVA: 13, MARSH: 14, DESERT: 15, RUINS: 16,
 } as const
 export type LifeState = 'standing' | 'downed' | 'dead'
 export type DamageType = 'physical' | 'magic' | 'fire' | 'poison' | 'shadow' | 'true'
