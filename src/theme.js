@@ -1,5 +1,7 @@
 /* One hue per status, everywhere; one swatch per terrain. Pure tables. */
-export const TSWATCH = { 'terrain.open': 'hexPlains', 'terrain.forest': 'hexForest',
+// terrain.woodland (engine v2.retire-forest-hills, Andrew 2026-09-24: "trees are supposed to be
+// woodland") paints as forest did; terrain.forest stays for exports made before it.
+export const TSWATCH = { 'terrain.open': 'hexPlains', 'terrain.forest': 'hexForest', 'terrain.woodland': 'hexForest',
   'terrain.hills': 'hexHills', 'terrain.rocky': 'hexScrub', 'terrain.rocky-hills': 'hexScrub',
   'terrain.water': 'hexOcean', 'terrain.impassable': 'hexMountain',
   'terrain.burning': 'hexDirt', 'terrain.poisoned': 'hexMarsh' }
@@ -87,4 +89,4 @@ export const VFX_STATUS = { poison: 'status.poison', burn: 'status.burn', bleed:
   regen: 'status.regeneration', shadow: 'status.stun', frost: 'status.slow', affliction: 'status.weak', weak: 'status.protection' }
 
 // Visual terrain tint only; status effects retain their existing recipes.
-export const TERRAIN_3D_TINT = { 'terrain.forest': '#72825a', 'terrain.rocky': '#aaa095', 'terrain.rocky-hills': '#aaa095' }
+export const TERRAIN_3D_TINT = { 'terrain.forest': '#72825a', 'terrain.woodland': '#72825a', 'terrain.rocky': '#aaa095', 'terrain.rocky-hills': '#aaa095' }
