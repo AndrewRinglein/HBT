@@ -16162,3 +16162,8 @@ index cc25140..a099db3 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without test.mage.kindle — they genuinely test it
+
+## trigger.zombie.sap — ABANDONED
+2026-09-25 13:01
+
+Superseded by test.zombie.sap, absorbed 2026-08-20 into the status.weakness landing (testing-lane id; trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts 'sap weakens heroes; rot and sap roll independently on their own streams'. Closed per the 2026-09-25 wrap's Next line.

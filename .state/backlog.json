@@ -930,7 +930,10 @@
   "needs": [
    "trigger.mechanism"
   ],
-  "note": "ABSORBED 2026-08-20 into the status.weakness landing as test.zombie.sap (testing-lane id — trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts. Do not build separately."
+  "note": "ABSORBED 2026-08-20 into the status.weakness landing as test.zombie.sap (testing-lane id — trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts. Do not build separately.",
+  "status": "failed",
+  "failedAt": "2026-09-25 13:01",
+  "reason": "Superseded by test.zombie.sap, absorbed 2026-08-20 into the status.weakness landing (testing-lane id; trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts 'sap weakens heroes; rot and sap roll independently on their own streams'. Closed per the 2026-09-25 wrap's Next line."
  },
  {
   "id": "trigger.mage.kindle",
