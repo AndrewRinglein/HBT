@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { fixtureBlockers, setHigh } from './prop-fixtures.js'
 import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
-         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf, rangedAccuracyOf } from '../src/content/maps.js'
+         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf, rangedAccuracyOf, accuracyAgainstOf, THIN_OBSTRUCTION } from '../src/content/maps.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { effective, terrainMods } from '../src/core/stats.js'
@@ -362,7 +362,12 @@ describe('terrain.modifiers — the ground is just another modifier', () => {
     const open = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
     ctx.state.terrain[z.hex] = TERRAIN.WOODLAND
     const wooded = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
-    expect(open - wooded).toBe(15)   // woodland's −15 against, not forest's +10 Dodge (Law 10, top)
+    // Law 10, REWRITTEN by v2.thin-obstruction (2026-09-24) as a rule, not a number: the rule
+    // changed by ruling, not the code under test. Andrew: "Every tile of woodland is a high thin
+    // obstruction" and a thin obstruction counts "against those who are shooting you" — so a
+    // woodland target now costs its concealment AND one thin-obstruction −5 (was 15, now 20).
+    expect(open - wooded).toBe(-(accuracyAgainstOf(TERRAIN.WOODLAND, 'ranged') + THIN_OBSTRUCTION.rangedAccuracy))
+    expect(open - wooded).toBe(20)
   })
 
   it('no new pipeline station was added — terrain rides the stat pipeline', () => {

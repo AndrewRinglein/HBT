@@ -69,6 +69,12 @@ const itemUsesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor
 // older layers its battle no longer matches. Every other case keeps every prior assertion.
 // Old fixtures stay immutable.
 const groundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-ground.json', import.meta.url), 'utf8'))
+// v2.thin-obstruction (2026-09-24), Law 10: every woodland hex became a thin obstruction (Andrew,
+// DECISIONS.md "the ground table, re-ruled") — −5 per thin hex a shot enters. Every case's full
+// current hashes are frozen here (tools/capture-thin-cursor.mts); a case marked `changed` (it shoots
+// through or into woodland) is checked against these, skips the ground layer and every older one its
+// battle no longer matches, and keeps the automatic/suspended comparison. Old fixtures stay immutable.
+const thinGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-thin.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -172,7 +178,9 @@ describe('resumable battle cursor', () => {
       const kdbExpected = kdbGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const thornsExpected = thornsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const groundMoved = groundExpected?.changed === true
+      const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const thinMoved = thinExpected?.changed === true
+      const groundMoved = groundExpected?.changed === true || thinMoved
       const thornsMoved = thornsExpected?.changed === true || groundMoved
       const kdbMoved = kdbExpected?.changed === true || thornsMoved
       const knockMoved = knockExpected?.changed === true || kdbMoved
@@ -194,7 +202,13 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (groundExpected) {
+        if (thinExpected) {
+        expect(hash(ctx.events), 'full thin-obstruction events').toBe(thinExpected.events)
+        expect(hash(ctx.state), 'full thin-obstruction state').toBe(thinExpected.state)
+        expect(hash(ctx.rng.log), 'full thin-obstruction RNG').toBe(thinExpected.rng)
+        expect(result).toEqual(thinExpected.result)
+        }
+        if (groundExpected && !thinMoved) {
         expect(hash(ctx.events), 'full ground-table events').toBe(groundExpected.events)
         expect(hash(ctx.state), 'full ground-table state').toBe(groundExpected.state)
         expect(hash(ctx.rng.log), 'full ground-table RNG').toBe(groundExpected.rng)

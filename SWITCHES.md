@@ -1014,3 +1014,26 @@ v2.retire-forest-hills: forest is gone (woodland took its number 2 and glyph `f`
 accuracy and +1 reach, ranged only (an ELEVATION row at rung 400); rocky KEEPS its v1 modifiers
 ("Rocky ground should do what it used to do"), and ruins share them. A finding, not a switch: a **sidestep** has never
 run the painted layer's entry beat (a step does); kept exactly as it was.
+
+## Thin obstructions — defaults taken building v2.thin-obstruction (2026-09-24)
+
+The source: `engine/DECISIONS.md` "2026-09-24 — the ground table, re-ruled" (Andrew, verbatim
+there). Engine `src/content/terrain.ts` (`thin` on the woodland row, `THIN_OBSTRUCTION`,
+`isThinGround`), `src/core/obstruction.ts` (`thinObstructionsOnLine`), accuracy rung OBSTRUCTION
+450 in `src/core/pipeline.ts`, `withinSight` in `src/core/vision.ts`. The −5 and the −1 are copied,
+not switches; which hexes count for a shot is ruled ("does not count against your own shot, only
+against those who are shooting you or people who are shooting through the hex").
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `thinRung` | Where on the accuracy ladder does the −5 land? | **A new rung, OBSTRUCTION (450)**, between TERRAIN and CONDITION: one row per thin hex entered, each naming its terrain. | It is neither the target's ground (400: a thin hex *between* counts too) nor low cover (575: a prop by the target). Accuracy is additive, so the rung decides only where the row sits in the ledger. | provisional — 2026-09-24 |
+| `thinPassesThrough` | When does a shot "pass through" a hex? | **The attack-line geometry's own exact test** (`los.ts` `segmentCrossesCell`) — closed contact counts, so a line grazing a hex's edge or corner enters it. | One geometry: the same rule a high prop blocks by. A second, looser "passes through" would disagree with LoS on the same line. | provisional — 2026-09-24 |
+| `thinScope` | Which attacks pay it? | **Ranged attacks only**, at the one accuracy function. Melee (reach 2 included), attacks of opportunity and bursts never. | The ruling: "If you shoot through a tile … you get -5 range"; bursts do not roll to hit. | provisional — 2026-09-24 |
+| `thinVisionEnds` | "Each thin obstruction **between** a unit and a hex cuts its vision by 1" — do the two end hexes count? | **No.** Only hexes strictly between; the viewer's own and the far hex never count, so a unit standing in woodland is not itself hidden by its own tree. Same "passes through" test as the shot. | "Between" read literally. The shot rule counts the target's hex because Andrew said so for shots; nothing says so for sight. | provisional — 2026-09-24 |
+| `thinVisionFloor` | Can thin obstructions cut Vision below 1? | **No** — floored at 1, as Vision always is (COMBAT-DESIGN §4: "floored at 1 — always"). An adjacent hex has nothing between, so it is always within sight. | The existing floor, applied to the one number. | provisional — 2026-09-24 |
+| `thinVisionReach` | Where does the cut apply? | **Everywhere Vision is read** — `canSee`, `canSeeHex`, and the hero phase's lighting (`withinSight`). Vision matters only in darkness today. | One reader for "within sight", so targeting and lighting cannot disagree. | provisional — 2026-09-24 |
+| `thinAi` | Does the AI avoid shooting through woodland? | **No new behaviour.** It sees the −5 only as a worse hit chance in `preview()`. | `system.ai-modes` is Angela's, not a chat's. | provisional — 2026-09-24 |
+| `thinProp` | How is a thin obstruction that is not woodland (a sign, a tree, an upright body) authored? | **A prop of height `thin`** — the "high thin prop". | RULED — Andrew, 2026-09-24: "Yes, it's a third kind of prop." · "I think there is a new high thin prop" (DECISIONS.md "thin obstructions are a third kind of prop"). | ruled — 2026-09-24 |
+| `thinPerHex` | A hex that is woodland AND holds a sign (or two signs) — −5 once or twice? | **Once.** A hex is thin or it is not; the row names the ground first, else the lowest prop id. | The spec counts "each thin-obstruction HEX it enters"; Andrew: "-5 per woodland hex". | provisional — 2026-09-24 |
+| `thinPropFootprint` | May a thin prop be a drawn shape (polygon) like a fence? | **No — whole hexes only**; a polygon thin prop is refused at decode. | The rule counts hexes entered; a shape would need a second "passes through" nobody has ruled. | provisional — 2026-09-24 |
+| `thinPropDestroy` | Can a thin prop be struck, and what is left? | **Like any prop**: struck with a Destroy attack when no unit stands in its hex, its material sets the hits, and it leaves **nothing** (only a high prop leaves low cover). | Andrew: "material still decides how many hits to destroy"; a sign has no rubble to leave. | provisional — 2026-09-24 |

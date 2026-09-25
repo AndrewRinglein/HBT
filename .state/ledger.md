@@ -15785,3 +15785,109 @@ index 3e3932a..daa4209 100644
        expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
 ```
 </details>
+
+## v2.thin-obstruction — LANDED `9ea13c1` **NEEDS REVIEW**
+2026-09-25 04:57
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:2602 · COMBAT-SEQUENCE.md:389
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/terrain.test.ts, test/v2-ground-table.test.ts, test/v2-thin-obstruction.test.ts
+  PASS  gate 1 — the id appears in a real battle — terrain.woodland: 1 log lines, 1 fired, 1 changed state · prop.test.sign: 3 log lines, 3 fired, 3 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/terrain.test.ts, test/v2-ground-table.test.ts, test/fixtures/battle-cursor-thin.json, test/v2-thin-obstruction.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/terrain.test.ts (-2), test/v2-ground-table.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.field dfb2105a->e3208d6c, map.proving.copse e05254fa->0a06aede
+  PASS  content has a published source — 42 ids without a published source — 1 NEW from THIS item, publish them
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — terrain.woodland live · prop.test.sign live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without terrain.woodland,prop.test.sign — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index b019b56..a68e119 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -70,4 +70,10 @@ const itemUsesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor
+ // Old fixtures stay immutable.
+ const groundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-ground.json', import.meta.url), 'utf8'))
++// v2.thin-obstruction (2026-09-24), Law 10: every woodland hex became a thin obstruction (Andrew,
++// DECISIONS.md "the ground table, re-ruled") — −5 per thin hex a shot enters. Every case's full
++// current hashes are frozen here (tools/capture-thin-cursor.mts); a case marked `changed` (it shoots
++// through or into woodland) is checked against these, skips the ground layer and every older one its
++// battle no longer matches, and keeps the automatic/suspended comparison. Old fixtures stay immutable.
++const thinGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-thin.json', import.meta.url), 'utf8'))
+ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+@@ -173,5 +179,7 @@ describe('resumable battle cursor', () => {
+       const thornsExpected = thornsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const groundMoved = groundExpected?.changed === true
++      const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const thinMoved = thinExpected?.changed === true
++      const groundMoved = groundExpected?.changed === true || thinMoved
+       const thornsMoved = thornsExpected?.changed === true || groundMoved
+       const kdbMoved = kdbExpected?.changed === true || thornsMoved
+@@ -195,5 +203,11 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (groundExpected) {
++        if (thinExpected) {
++        expect(hash(ctx.events), 'full thin-obstruction events').toBe(thinExpected.events)
++        expect(hash(ctx.state), 'full thin-obstruction state').toBe(thinExpected.state)
++        expect(hash(ctx.rng.log), 'full thin-obstruction RNG').toBe(thinExpected.rng)
++        expect(result).toEqual(thinExpected.result)
++        }
++        if (groundExpected && !thinMoved) {
+         expect(hash(ctx.events), 'full ground-table events').toBe(groundExpected.events)
+         expect(hash(ctx.state), 'full ground-table state').toBe(groundExpected.state)
+diff --git a/test/terrain.test.ts b/test/terrain.test.ts
+index 32c7202..2b8a5f0 100644
+--- a/test/terrain.test.ts
++++ b/test/terrain.test.ts
+@@ -2,5 +2,5 @@ import { describe, it, expect } from 'vitest'
+ import { fixtureBlockers, setHigh } from './prop-fixtures.js'
+ import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
+-         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf, rangedAccuracyOf } from '../src/content/maps.js'
++         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf, rangedAccuracyOf, accuracyAgainstOf, THIN_OBSTRUCTION } from '../src/content/maps.js'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+@@ -363,5 +363,10 @@ describe('terrain.modifiers — the ground is just another modifier', () => {
+     ctx.state.terrain[z.hex] = TERRAIN.WOODLAND
+     const wooded = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
+-    expect(open - wooded).toBe(15)   // woodland's −15 against, not forest's +10 Dodge (Law 10, top)
++    // Law 10, REWRITTEN by v2.thin-obstruction (2026-09-24) as a rule, not a number: the rule
++    // changed by ruling, not the code under test. Andrew: "Every tile of woodland is a high thin
++    // obstruction" and a thin obstruction counts "against those who are shooting you" — so a
++    // woodland target now costs its concealment AND one thin-obstruction −5 (was 15, now 20).
++    expect(open - wooded).toBe(-(accuracyAgainstOf(TERRAIN.WOODLAND, 'ranged') + THIN_OBSTRUCTION.rangedAccuracy))
++    expect(open - wooded).toBe(20)
+   })
+ 
+diff --git a/test/v2-ground-table.test.ts b/test/v2-ground-table.test.ts
+index 2d2a6bf..f1baf72 100644
+--- a/test/v2-ground-table.test.ts
++++ b/test/v2-ground-table.test.ts
+@@ -86,9 +86,14 @@ describe('concealment — the TERRAIN rung reads the target\'s ground', () => {
+     expect(shot(row('u......')).accuracy).toBe(shot(row('.......')).accuracy)
+   })
+-  it('woodland and low cover stack — two rows, −15 and −20', () => {
++  // Law 10, REWRITTEN by v2.thin-obstruction (2026-09-24): the rule changed by ruling, not the
++  // code under test. Every woodland hex is now also a thin obstruction, and a thin obstruction
++  // in the TARGET's hex counts against the shot (Andrew, DECISIONS.md "the ground table,
++  // re-ruled") — so the woodland target pays a third row, −5 at OBSTRUCTION (450). What this
++  // test guards is unchanged: concealment and low cover STACK, as separate rows.
++  it('woodland and low cover stack — separate rows, −15 and −20 (plus woodland\'s thin −5)', () => {
+     const crates = [{ id: 'prop.test.crates', height: 'low', material: 1, footprint: { kind: 'hex', hexes: [10] } }]
+     const both = preview(rig(row('...f...'), 'test-ranger', 7, 10, crates), 0, 1, BOW)
+-    expect(both.accLedger.filter((r) => r.name === 'TERRAIN' || r.name === 'COVER').map((r) => r.delta)).toEqual([-15, -20])
+-    expect(both.accuracy).toBe(shot(row('.......')).accuracy - 35)
++    expect(both.accLedger.filter((r) => r.name === 'TERRAIN' || r.name === 'THIN_OBSTRUCTION' || r.name === 'COVER').map((r) => r.delta)).toEqual([-15, -5, -20])
++    expect(both.accuracy).toBe(shot(row('.......')).accuracy - 40)
+   })
+ })
+```
+</details>

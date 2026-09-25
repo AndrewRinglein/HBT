@@ -72,6 +72,8 @@ type Mods = { moveCost: number
   /** The OCCUPANT's own accuracy with RANGED attacks (hills, v2.retire-forest-hills). */
   rangedAccuracy?: number
   hazard?: Hazard
+  /** v2.thin-obstruction: every hex of this ground is a THIN upright obstruction (THIN_OBSTRUCTION below). */
+  thin?: true
   accuracy?: number; reach?: number; dodge?: number; armor?: number; resist?: number
   /** Statuses reduced by 1 when a unit STEPS ONTO this terrain. */
   stripsOnEnter?: readonly string[]
@@ -157,7 +159,8 @@ const EXTRA: Readonly<Record<number, Mods>> = {
   //                 -5 accuracy and -10 dodge to whoever is in it."
   //   desert      — "Gives -5 dodge."
   [TERRAIN.UNDERGROWTH]: { moveCost: 0, rangedAccuracyAgainst: -10 },
-  [TERRAIN.WOODLAND]:    { moveCost: 1, rangedAccuracyAgainst: -15, meleeAccuracyAgainst: -7 },
+  //   woodland is also thin — "Every tile of woodland is a high thin obstruction" (v2.thin-obstruction)
+  [TERRAIN.WOODLAND]:    { moveCost: 1, rangedAccuracyAgainst: -15, meleeAccuracyAgainst: -7, thin: true },
   [TERRAIN.LAVA]:        { moveCost: 1, hazard: { damageType: 'fire', damage: 3, applies: [['status.burn', 1]] } },
   [TERRAIN.MARSH]:       { moveCost: 1, accuracy: -5, dodge: -10, stripsOnActivationEnd: ['status.burn'] },
   [TERRAIN.DESERT]:      { moveCost: 0, dodge: -5 },
@@ -174,6 +177,7 @@ function composed(terrain: number): Mods {
     out.moveCost += d.moveCost
     for (const k of STATS) if (d[k]) out[k] = (out[k] ?? 0) + d[k]!
     for (const k of AGAINST) if (d[k]) out[k] = (out[k] ?? 0) + d[k]!
+    if (d.thin) out.thin = true
     if (d.hazard) {
       if (out.hazard) throw new Error('terrain: two hazards composed into one ground — not expressible')
       out.hazard = d.hazard
@@ -233,6 +237,23 @@ export function rangedAccuracyOf(terrain: number): number {
   if (terrain === TERRAIN.IMPASSABLE || off(terrain)) return 0
   return composed(terrain).rangedAccuracy ?? 0
 }
+/**
+ * v2.thin-obstruction — what ONE thin upright obstruction does. Copied, not chosen:
+ * engine/DECISIONS.md "2026-09-24 — the ground table, re-ruled" (Andrew, verbatim there):
+ *   "If you shoot through a tile that is woodland, you get -5 range." · "Actually, they're
+ *   also going to reduce vision by one." · "A thin obstruction in your own hex does not count
+ *   against your own shot, only against those who are shooting you or people who are
+ *   shooting through the hex." · "[thin] obstruction is free to move on to".
+ * Undergrowth is NOT thin ("High bush and all the other types of bushes and tall wheat and
+ * grass … do not do that tall thinning destruction of -5").
+ */
+export const THIN_OBSTRUCTION = { rangedAccuracy: -5, vision: -1 } as const
+/** Is every hex of this ground a thin obstruction? The kill-switch seam silences it. */
+export function isThinGround(terrain: number): boolean {
+  return THIN_GROUND.has(terrain) && !off(terrain)
+}
+/** Read once from the static table (content, not state) — no per-call composition. */
+const THIN_GROUND: ReadonlySet<number> = new Set(Object.keys(EXTRA).map(Number).filter((t) => EXTRA[t]!.thin === true))
 /** V2 §3.2 hazard — null when the ground carries none, or its id is disabled. */
 export function hazardOf(terrain: number): Hazard | null {
   if (terrain === TERRAIN.IMPASSABLE || disabledIds().has(terrainIdOf(terrain))) return null

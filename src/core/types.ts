@@ -14,9 +14,10 @@ export type PolygonFootprint = { kind: 'polygon'; vertices: [number, number][]; 
  * Reaching the tier destroys it — a high prop leaves low cover under the same id,
  * a low prop leaves nothing (SWITCHES.md 'V2 prop destruction').
  */
-export type Prop = { id: string; height: 'high' | 'low'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } | PolygonFootprint; crossingCost?: 1; collisionValue?: number; consumes?: true; steps?: number }
+/** v2.thin-obstruction (Andrew 2026-09-24, DECISIONS.md): `thin` is the "high thin prop" — walkable, a unit may stand in it; −5 to shots entering its hex, −1 Vision through it. */
+export type Prop = { id: string; height: 'high' | 'low' | 'thin'; material: 1 | 2 | 3; footprint: { kind: 'hex'; hexes: number[] } | PolygonFootprint; crossingCost?: 1; collisionValue?: number; consumes?: true; steps?: number }
 export type HighProp = Prop & { height: 'high'; crossingCost?: never }
-export type AuthoredProp = { readonly id: string; readonly height: 'high' | 'low'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } | { readonly kind: 'polygon'; readonly vertices: readonly (readonly [number, number])[]; readonly movementPadding: number }; readonly crossingCost?: 1; readonly collisionValue?: number; readonly consumes?: true; readonly steps?: number }
+export type AuthoredProp = { readonly id: string; readonly height: 'high' | 'low' | 'thin'; readonly material: 1 | 2 | 3; readonly footprint: { readonly kind: 'hex'; readonly hexes: readonly number[] } | { readonly kind: 'polygon'; readonly vertices: readonly (readonly [number, number])[]; readonly movementPadding: number }; readonly crossingCost?: 1; readonly collisionValue?: number; readonly consumes?: true; readonly steps?: number }
 export type AuthoredHighProp = AuthoredProp & { readonly height: 'high'; readonly crossingCost?: never }
 /** Plain authored map transport, decoded by the same boundary for registry and direct input. */
 export type AuthoredMap = {

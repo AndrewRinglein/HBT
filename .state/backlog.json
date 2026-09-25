@@ -5,7 +5,18 @@
   "shape": "rule",
   "spec": "Thin obstructions, as Andrew ruled 2026-09-24 (engine/DECISIONS.md 'the ground table, re-ruled', verbatim there). A thin upright obstruction - a tree, a sign, an upright villager's body; EVERY woodland hex is one - is free to move onto and a unit may stand in its hex. A ranged attack takes -5 accuracy for each thin-obstruction hex it enters: every hex the shot passes through AND the target's own hex, never the shooter's own hex ('A thin obstruction in your own hex does not count against your own shot, only against those who are shooting you or people who are shooting through the hex'). Each thin obstruction between a unit and a hex cuts its vision range by 1. Undergrowth (tall grass, wheat, reeds, bush) never does either. A full obstruction (dense trees, a pillar, a rock, a house) is the existing high prop and behaves the same whatever it looks like; material still sets its destroy steps. Authoring a thin obstruction other than woodland needs a representation - a prop height 'thin' is the natural slot - and a new kind or height is a GLOSSARY decision (Andrew/Angela), asked before minting.",
   "expect": "a shot across two woodland hexes into open ground is -10; into a woodland target from open ground across none is -15 (concealment) -5 (thin, target hex) = -20; the shooter's own woodland adds nothing; undergrowth adds no -5; a sign prop does the same as a woodland hex; vision through two thin obstructions is 2 shorter; moving onto a thin obstruction costs nothing extra.",
-  "note": "Queued by Andrew's chat, 2026-09-24, for the next engine chat."
+  "note": "Queued by Andrew's chat, 2026-09-24, for the next engine chat.",
+  "probeIds": [
+   "terrain.woodland",
+   "prop.test.sign"
+  ],
+  "variants": [
+   "terrain.woodland",
+   "prop.test.sign"
+  ],
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "9ea13c1"
  },
  {
   "id": "v2.structures",

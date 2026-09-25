@@ -85,11 +85,16 @@ describe('concealment — the TERRAIN rung reads the target\'s ground', () => {
   it('the shooter\'s own undergrowth does not blur its aim', () => {
     expect(shot(row('u......')).accuracy).toBe(shot(row('.......')).accuracy)
   })
-  it('woodland and low cover stack — two rows, −15 and −20', () => {
+  // Law 10, REWRITTEN by v2.thin-obstruction (2026-09-24): the rule changed by ruling, not the
+  // code under test. Every woodland hex is now also a thin obstruction, and a thin obstruction
+  // in the TARGET's hex counts against the shot (Andrew, DECISIONS.md "the ground table,
+  // re-ruled") — so the woodland target pays a third row, −5 at OBSTRUCTION (450). What this
+  // test guards is unchanged: concealment and low cover STACK, as separate rows.
+  it('woodland and low cover stack — separate rows, −15 and −20 (plus woodland\'s thin −5)', () => {
     const crates = [{ id: 'prop.test.crates', height: 'low', material: 1, footprint: { kind: 'hex', hexes: [10] } }]
     const both = preview(rig(row('...f...'), 'test-ranger', 7, 10, crates), 0, 1, BOW)
-    expect(both.accLedger.filter((r) => r.name === 'TERRAIN' || r.name === 'COVER').map((r) => r.delta)).toEqual([-15, -20])
-    expect(both.accuracy).toBe(shot(row('.......')).accuracy - 35)
+    expect(both.accLedger.filter((r) => r.name === 'TERRAIN' || r.name === 'THIN_OBSTRUCTION' || r.name === 'COVER').map((r) => r.delta)).toEqual([-15, -5, -20])
+    expect(both.accuracy).toBe(shot(row('.......')).accuracy - 40)
   })
 })
 

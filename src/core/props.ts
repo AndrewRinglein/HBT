@@ -21,7 +21,9 @@ export function decodeProps(value: unknown, cells: number): Prop[] {
     plain(p, ['id', 'height', 'material', 'footprint', 'crossingCost', 'collisionValue', 'consumes', 'steps'])
     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) || ids.has(p.id)) throw new Error('props: IDs must be unique prop.* strings')
     ids.add(p.id)
-    if (!['high','low'].includes(p.height) || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material')
+    if (!['high','low','thin'].includes(p.height) || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material')
+    // v2.thin-obstruction: a thin prop stands in whole hexes — the rule counts hexes (SWITCHES.md thinPropFootprint).
+    if (p.height === 'thin' && p.footprint?.kind !== 'hex') throw new Error('props: a thin prop has a hex footprint')
     plain(p.footprint, ['kind', 'hexes', 'vertices', 'movementPadding'])
     if(Object.hasOwn(p,'crossingCost') && (p.height!=='low'||p.footprint.kind!=='polygon'||p.crossingCost!==1))throw new Error('props: crossingCost 1 requires a low polygon edge')
     // v2.knockback-collisions (COMBAT-V2 §9.3): only a HIGH prop stops a push,
@@ -71,7 +73,8 @@ function blockage(state: State, props=state.props): Blockage {
   const cells = state.board.width * state.board.height, found = new Set<number>()
   // One scan at the owning operation's boundary, never inside its neighbor loop.
   for (const p of props) {
-    if (p.height === 'low') continue
+    // low cover and thin props are walkable — only a high prop blocks a hex
+    if (p.height === 'low' || p.height === 'thin') continue
     if (p.height !== 'high') throw new Error('props: unsupported live geometry')
     if (p.footprint.kind === 'polygon') continue
     if (p.footprint.kind !== 'hex') throw new Error('props: unsupported live geometry')

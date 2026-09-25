@@ -558,6 +558,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     map:{id:'test.map.ground-table',name:'Ground table TEST',rows:['.udmnfl..','.udmnfl..','.udmnfl..','.udmnfl..','.udmnfl..']},
     heroes:['test-ranger','test-warrior'],heroHexes:[9,27],enemies:['test-zombie','test-zombie'],enemyHexes:[17,35],replicate:0,
   },
+  // v2.thin-obstruction (Andrew, 2026-09-24, DECISIONS.md "thin obstructions are a third kind
+  // of prop"): a one-row corridor with a sign — a high thin prop — in the middle, between a
+  // Ranger and a zombie. Every shot across it pays −5, and the only way to the Ranger is
+  // through the sign's hex (a high prop there would wall the zombie off). TEST data, no
+  // campaign claim.
+  'test.thin-sign': {
+    id:'test.thin-sign',note:'TEST: a thin prop (a sign) between a Ranger and a zombie — shots across it pay −5, and it does not block the walk. No campaign claim.',mapId:'test.map.thin-sign',
+    map:{id:'test.map.thin-sign',name:'Thin sign TEST',rows:['.........'],props:[{id:'prop.test.sign',height:'thin',material:1,footprint:{kind:'hex',hexes:[4]}}]},
+    heroes:['test-ranger'],heroHexes:[0],enemies:['test-zombie'],enemyHexes:[8],replicate:0,
+  },
   'test.cover-crates': {
     id:'test.cover-crates',note:'TEST target-end low hex cover, passable crates.',mapId:'test.map.cover-crates',
     map:{id:'test.map.cover-crates',name:'Cover crates TEST',rows:['.......','.......','.......'],props:[{id:'prop.crates',height:'low',material:1,footprint:{kind:'hex',hexes:[10]}}]},

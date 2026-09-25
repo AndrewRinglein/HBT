@@ -19,7 +19,8 @@ import { settle } from './settle.js'
 import { canSee } from './vision.js'
 import { attackLineClear } from './los.js'
 import { hasLowCover } from './cover.js'
-import { accuracyAgainstOf, rangedAccuracyOf, terrainIdOf } from '../content/maps.js'
+import { accuracyAgainstOf, rangedAccuracyOf, terrainIdOf, THIN_OBSTRUCTION } from '../content/maps.js'
+import { thinObstructionsOnLine } from './obstruction.js'
 import { kdbChanceOf, kdbTarget, resolveKdb } from './kdb.js'
 import { reflectThorns, thornsOnHit } from './thorns.js'
 import { rulesSideOf } from './side.js'
@@ -31,6 +32,8 @@ export const ACC = {
   ADJACENT: 300,
   /** v2.ground-table (§3.2): the ground the TARGET stands in, by attack kind — concealment. Revived; v1's occupied-hex rung was retired into BASE_MOD. */
   TERRAIN: 400,
+  /** v2.thin-obstruction: −5 per thin-obstruction hex a RANGED shot enters (through, and the target's own; never the shooter's). One row per hex. */
+  OBSTRUCTION: 450,
   CONDITION: 500,
   /** v2.prone (§10): +N against a prone target, −N for a prone attacker. */
   PRONE: 550,
@@ -156,6 +159,13 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   const hiddenIn = ctx.state.terrain[target.hex] ?? 0
   const concealment = accuracyAgainstOf(hiddenIn, a.attack.kind)
   if (concealment) v = step(ledger, ACC.TERRAIN, 'TERRAIN', terrainIdOf(hiddenIn), v, v + concealment)
+  // OBSTRUCTION (450) — v2.thin-obstruction (Andrew 2026-09-24): "If you shoot through a tile
+  // that is woodland, you get -5"; "A thin obstruction in your own hex does not count against
+  // your own shot, only against those who are shooting you or people who are shooting through
+  // the hex." Ranged only. One row per hex, each naming what obstructed it (Law 12).
+  if (a.attack.kind === 'ranged') {
+    for (const o of thinObstructionsOnLine(ctx, attacker.hex, target.hex, true)) v = step(ledger, ACC.OBSTRUCTION, 'THIN_OBSTRUCTION', o.id, v, v + THIN_OBSTRUCTION.rangedAccuracy)
+  }
   // CONDITION — the target's state. Downed: +20 (GAME-DESIGN §9, ruled;
   // fix.downed-targetable 2026-09-03). The row names the attack as its cause.
   if (target.lifeState === 'downed') v = step(ledger, ACC.CONDITION, 'TARGET_DOWNED', a.id, v, v + 20)
