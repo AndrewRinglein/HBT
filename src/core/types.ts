@@ -474,17 +474,17 @@ export type CritRow = {
  * station.vs-target (2026-09-25): a damage modifier that reads the TARGET — what it
  * IS (a tag on its row) or what it CARRIES (a status at value > 0). Read at
  * DMG.VS_TARGET in the one damage function (Law 1); a rule changes a number, so it
- * is a station row, never a trigger. Exactly one of `tag` / `status`; at least one
- * of `add` / `percent`. A Codex slayer map `{<tag>: N}` compiles to `{ tag, add: N }`.
+ * is a station row, never a trigger. Exactly one of `tag` / `status`, and a flat `add`.
+ * A Codex slayer map `{<tag>: N}` compiles to `{ tag, add: N }`. No percent: "There had
+ * been no percentage modifiers to damage" (Andrew 2026-09-25, DECISIONS.md) — the
+ * critical hit is the only multiplier (fix.vs-target-worn-and-flat).
  * Where it is carried and what it reaches: SWITCHES.md 'station.vs-target'.
  */
 export type VsTargetRule = {
   readonly tag?: string
   readonly status?: string
   /** Flat damage added. */
-  readonly add?: number
-  /** Percent of the running value added, truncated toward zero (Law 7). */
-  readonly percent?: number
+  readonly add: number
 }
 
 /**
@@ -534,7 +534,7 @@ export type ItemDef = {
   readonly grants: readonly string[]
   readonly abilities: readonly string[]
   readonly triggers: readonly import('./trigger.js').Trigger[]
-  /** station.vs-target: slayer and its kin — reaches only the attacks THIS item grants, while it is in hand. */
+  /** station.vs-target: slayer and its kin — a HELD item's reach only the attacks it grants, while in hand; a WORN item's (a bloodrune) reach every damage the unit deals, like a badge's. */
   readonly vsTarget?: readonly VsTargetRule[]
   readonly gaps?: readonly string[]
 }
@@ -804,7 +804,13 @@ export type ItemUse = { instanceId: string; itemId: string; actionId: string; le
 
 /** v2.loadout: one carried item — which row it is, and which one it is (Law 12). */
 export type ItemInstance = { instanceId: string; itemId: string }
-export type Loadout = { hands: ItemInstance[]; stowed: ItemInstance[] }
+/**
+ * `worn` (fix.vs-target-worn-and-flat, 2026-09-25): the non-held instances the hero carries
+ * in (bloodrunes, armor, trinkets …), in handed order, spent ones left out — what
+ * DMG.VS_TARGET reads a worn slayer from. Absent when there are none (snapshots of heroes
+ * carrying only weapons and shields unchanged). Never swapped.
+ */
+export type Loadout = { hands: ItemInstance[]; stowed: ItemInstance[]; worn?: ItemInstance[] }
 
 /** The whole battle state. Serializes to JSON and back with no loss. */
 export type State = {

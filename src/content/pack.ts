@@ -417,19 +417,19 @@ const BADGE_STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', '
 const BADGE_FLAGS = ['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']   // the last two: v2.kdb (COMBAT-V2 §9.5)
 /**
  * station.vs-target (2026-09-25): a rule names exactly one predicate — a tag or a
- * status — and at least one integer magnitude. Anything else is refused loudly (Law 9);
+ * status — and an integer flat add. Anything else is refused loudly (Law 9);
  * the converter gaps what it cannot express, never passes it.
  */
 function validateVsTarget(rules: unknown, where: string): void {
   if (rules === undefined) return
   if (!Array.isArray(rules) || rules.length === 0) throw new Error(`${where}: vsTarget must be a non-empty list`)
   for (const r of rules as Record<string, unknown>[]) {
-    for (const f of Object.keys(r)) if (!['tag', 'status', 'add', 'percent'].includes(f)) throw new Error(`${where}: vsTarget rule carries unknown field '${f}'`)
+    // fix.vs-target-worn-and-flat: no `percent` — "no percentage modifiers to damage" (Andrew 2026-09-25)
+    for (const f of Object.keys(r)) if (!['tag', 'status', 'add'].includes(f)) throw new Error(`${where}: vsTarget rule carries unknown field '${f}'`)
     if ((r.tag === undefined) === (r.status === undefined)) throw new Error(`${where}: a vsTarget rule names exactly one of tag / status`)
     if (r.tag !== undefined && (typeof r.tag !== 'string' || !r.tag)) throw new Error(`${where}: vsTarget tag must be a word`)
     if (r.status !== undefined && (typeof r.status !== 'string' || !r.status.startsWith('status.') && !r.status.startsWith('test.status.'))) throw new Error(`${where}: vsTarget status '${String(r.status)}' is not a status id`)
-    if (r.add === undefined && r.percent === undefined) throw new Error(`${where}: a vsTarget rule changes nothing — give add or percent`)
-    for (const f of ['add', 'percent'] as const) if (r[f] !== undefined && !Number.isInteger(r[f])) throw new Error(`${where}: vsTarget ${f} must be an integer (Law 7)`)
+    if (!Number.isInteger(r.add)) throw new Error(`${where}: a vsTarget rule needs an integer add (Law 7)`)
   }
 }
 

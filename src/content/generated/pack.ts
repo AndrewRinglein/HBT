@@ -12629,8 +12629,15 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
-      "gaps": [
-        "slayer: {\"vampire\":3,\"undead\":1} — item field: slayer"
+      "vsTarget": [
+        {
+          "tag": "vampire",
+          "add": 3
+        },
+        {
+          "tag": "undead",
+          "add": 1
+        }
       ]
     },
     "item.rune-nightmare-slayer": {
@@ -12644,8 +12651,11 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
-      "gaps": [
-        "slayer: {\"nightmare\":3} — item field: slayer"
+      "vsTarget": [
+        {
+          "tag": "nightmare",
+          "add": 3
+        }
       ]
     },
     "item.rune-plant-killer": {
@@ -12659,9 +12669,14 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "plant",
+          "add": 3
+        }
+      ],
       "gaps": [
-        "onKill: if the kill had the plant tag, immediately regain  — trigger shape unparsed",
-        "slayer: {\"plant\":3} — item field: slayer"
+        "onKill: if the kill had the plant tag, immediately regain  — trigger shape unparsed"
       ]
     },
     "item.rune-burning-touch": {
@@ -12727,9 +12742,18 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "horror",
+          "add": 4
+        },
+        {
+          "tag": "nightmare",
+          "add": 2
+        }
+      ],
       "gaps": [
-        "onKill: gain +5 Accuracy for the rest of the Battle — trigger shape unparsed",
-        "slayer: {\"horror\":4,\"nightmare\":2} — item field: slayer"
+        "onKill: gain +5 Accuracy for the rest of the Battle — trigger shape unparsed"
       ]
     },
     "item.rune-elemental-bane": {
@@ -12743,9 +12767,18 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "elemental",
+          "add": 4
+        },
+        {
+          "tag": "dragon",
+          "add": 2
+        }
+      ],
       "gaps": [
-        "onHit: if the target has the elemental or dragon tag it l — trigger shape unparsed",
-        "slayer: {\"elemental\":4,\"dragon\":2} — item field: slayer"
+        "onHit: if the target has the elemental or dragon tag it l — trigger shape unparsed"
       ]
     },
     "item.rune-monster-slayer": {
@@ -12759,8 +12792,23 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
-      "gaps": [
-        "slayer: {\"beast\":2,\"giant\":2,\"construct\":2,\"drag — item field: slayer"
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        },
+        {
+          "tag": "giant",
+          "add": 2
+        },
+        {
+          "tag": "construct",
+          "add": 2
+        },
+        {
+          "tag": "dragon",
+          "add": 2
+        }
       ]
     },
     "item.rune-executioner": {
@@ -12887,11 +12935,24 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "demon",
+          "add": 4
+        },
+        {
+          "tag": "plant",
+          "add": 4
+        },
+        {
+          "tag": "beast",
+          "add": 4
+        }
+      ],
       "gaps": [
         "grants tag.outcast — attack row unauthored",
         "onDodge: gain +10 Crit for the rest of the Battle — hook: onDodge (declared, engine never fires it)",
-        "onCrit: gain +10 Dodge for the rest of the Battle — trigger shape unparsed",
-        "slayer: {\"demon\":4,\"plant\":4,\"beast\":4} — item field: slayer"
+        "onCrit: gain +10 Dodge for the rest of the Battle — trigger shape unparsed"
       ]
     },
     "item.rune-kairin": {
@@ -12905,9 +12966,18 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 3
+        },
+        {
+          "tag": "demon",
+          "add": 3
+        }
+      ],
       "gaps": [
-        "onActivationEnd: heal 2 — trigger shape unparsed",
-        "slayer: {\"undead\":3,\"demon\":3} — item field: slayer"
+        "onActivationEnd: heal 2 — trigger shape unparsed"
       ]
     },
     "item.rune-avatar-of-war": {
@@ -16215,7 +16285,7 @@ export const UNIT_PACK = {
         "vsTarget": [
           {
             "status": "status.poison",
-            "percent": 50
+            "add": 3
           }
         ]
       }

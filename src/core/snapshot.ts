@@ -117,7 +117,8 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(u.swapUsed === undefined || typeof u.swapUsed === 'boolean', 'unit swapUsed')   // v2.swap
     if (u.loadout !== undefined) {   // v2.loadout: hands and stowed, item instances
       record(u.loadout)
-      for (const k of ['hands', 'stowed']) requireThat(Array.isArray(u.loadout[k]) && u.loadout[k].every((i: any) => i !== null && typeof i === 'object' && typeof i.instanceId === 'string' && typeof i.itemId === 'string' && Object.keys(i).length === 2), `unit loadout ${k}`)
+      requireThat(Object.keys(u.loadout).every((k) => ['hands', 'stowed', 'worn'].includes(k)), 'unit loadout keys')
+      for (const k of ['hands', 'stowed', ...(u.loadout.worn !== undefined ? ['worn'] : [])]) requireThat(Array.isArray(u.loadout[k]) && u.loadout[k].every((i: any) => i !== null && typeof i === 'object' && typeof i.instanceId === 'string' && typeof i.itemId === 'string' && Object.keys(i).length === 2), `unit loadout ${k}`)
     }
     if (u.itemUses !== undefined) {   // v2.item-uses: per-instance uses
       requireThat(Array.isArray(u.itemUses) && u.itemUses.every((e: any) => e !== null && typeof e === 'object' && typeof e.instanceId === 'string' && typeof e.itemId === 'string' && Object.hasOwn(runtime.items, e.itemId) && typeof e.actionId === 'string' && Object.hasOwn(runtime.actions, e.actionId) && integer(e.left, 0) && integer(e.used, 0) && Object.keys(e).length === 5), 'unit itemUses')

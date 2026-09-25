@@ -241,9 +241,11 @@ export function resolveSourceDamage(ctx: Ctx, attacker: Unit, a: DamageSource, o
 /**
  * station.vs-target — the rules that reach this attacker's damage against this target,
  * in a fixed order (Law 6): the attacker's badges in the order it carries them, then the
- * items in its hands, each rule in its row's order. A badge's rules reach every damage
- * through this function; an item's reach only the actions that item grants, and an item
- * held twice counts once (SWITCHES.md 'station.vs-target'). Pure — preview reads it too.
+ * items in its hands, then the items it wears, each rule in its row's order. A badge's
+ * rules reach every damage through this function; a held item's reach only the actions
+ * that item grants, and an item held twice counts once; a worn item's (a bloodrune's
+ * slayer) reach every damage, like a badge's, one row per worn instance
+ * (SWITCHES.md 'station.vs-target'). Pure — preview reads it too.
  */
 export function vsTargetRules(ctx: Ctx, attacker: Unit, target: Unit, sourceId: string): { id: string; rule: VsTargetRule }[] {
   const out: { id: string; rule: VsTargetRule }[] = []
@@ -257,6 +259,11 @@ export function vsTargetRules(ctx: Ctx, attacker: Unit, target: Unit, sourceId: 
     if (!it?.vsTarget || seen.has(it.id) || !it.grants.includes(sourceId)) continue
     seen.add(it.id)
     for (const rule of it.vsTarget) if (matches(rule)) out.push({ id: it.id, rule })
+  }
+  // fix.vs-target-worn-and-flat: "Bloodrune Slayer bonus happens" — every attack and power
+  // (Andrew 2026-09-25, DECISIONS.md), so no grants check; each worn instance counts
+  for (const w of attacker.loadout?.worn ?? []) {
+    for (const rule of ctx.items[w.itemId]?.vsTarget ?? []) if (matches(rule)) out.push({ id: w.itemId, rule })
   }
   return out
 }
@@ -274,9 +281,9 @@ export function resolveDamage(
   let v = source.value
 
   // VS_TARGET (400): one row per matching rule, naming the badge or item that carries it
-  // (Law 12). Percent of the running value, truncated (Law 7), then the flat add.
+  // (Law 12). A flat add — no percentages (Andrew 2026-09-25, DECISIONS.md).
   for (const { id, rule } of vsTargetRules(ctx, attacker, target, a.id)) {
-    v = step(ledger, DMG.VS_TARGET, 'VS_TARGET', id, v, v + Math.trunc((v * (rule.percent ?? 0)) / 100) + (rule.add ?? 0))
+    v = step(ledger, DMG.VS_TARGET, 'VS_TARGET', id, v, v + rule.add)
   }
 
   if (heads > 0) {

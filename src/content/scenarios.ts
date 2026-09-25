@@ -67,8 +67,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroBadges: [['test.badge.bane-undead']], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
   },
   'test.vs-target-b': {
-    id: 'test.vs-target-b', note: 'TEST: a warrior wearing test.badge.bane-venom (poisons on a hit; +50% vs poisoned) against the 40-HP ward body, which lives past the first hit. No campaign claim.',
+    id: 'test.vs-target-b', note: 'TEST: a warrior wearing test.badge.bane-venom (poisons on a hit; +3 vs poisoned) against the 40-HP ward body, which lives past the first hit. No campaign claim.',
     mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroBadges: [['test.badge.bane-venom']], enemies: ['test-burst-ward'], enemyHexes: [86], replicate: 0,
+  },
+  // fix.vs-target-worn-and-flat (2026-09-25): a WORN item's slayer, live — "Bloodrune Slayer
+  // bonus happens" (Andrew, DECISIONS.md). Two bloodrunes, the mechanism's two instances, on
+  // warriors whose attacks the runes do not grant. Codex rows; the fielding is TEST.
+  'test.vs-target-c': {
+    id: 'test.vs-target-c', note: 'TEST: two warriors, one wearing item.rune-kairin (+3 vs undead), one item.rune-vampire-hunter (+1 vs undead), against three zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], heroItems: [['item.rune-kairin'], ['item.rune-vampire-hunter']],
+    enemies: ['test-zombie', 'test-zombie', 'test-zombie'], enemyHexes: [86, 101, 87], replicate: 0,
   },
   'test.prone-b': {
     id: 'test.prone-b', note: 'TEST: Tripper B floors Osric on a hit (test.status.floored, the second prone instance); Osric stands and swings. No campaign claim.',

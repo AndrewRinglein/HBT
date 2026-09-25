@@ -76,6 +76,15 @@ const groundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-g
 // battle no longer matches, and keeps the automatic/suspended comparison. Old fixtures stay immutable.
 const thinGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-thin.json', import.meta.url), 'utf8'))
 const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-props.json', import.meta.url), 'utf8'))
+// fix.vs-target-worn-and-flat (2026-09-25), Law 10: a worn item's slayer is a rule (Andrew, DECISIONS.md
+// "Bloodrune Slayer bonus happens") and the loadout names the worn instances (loadout.worn). Every
+// case's full current hashes are frozen here (tools/capture-worn-cursor.mts); a case marked `changed`
+// (a hero wears a slayer bloodrune: its gap left unit.equipped) is checked against these and skips
+// every older layer its battle no longer matches; every other case runs the older layers on the
+// projection below, which removes loadout.worn and nothing else. Old fixtures stay immutable.
+const wornGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-worn.json', import.meta.url), 'utf8'))
+const projectWorn = (state: { units: { loadout?: { worn?: unknown } }[] }) =>
+  ({ ...state, units: state.units.map((u) => { if (u.loadout?.worn === undefined) return u; const { worn: _, ...rest } = u.loadout; return { ...u, loadout: rest } }) })
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -179,7 +188,10 @@ describe('resumable battle cursor', () => {
       const thornsExpected = thornsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const thinMoved = thinExpected?.changed === true
+      const wornExpected = wornGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const wornMoved = wornExpected?.changed === true
+      // was: const thinMoved = thinExpected?.changed === true — a worn-moved case skips the thin layer too
+      const thinMoved = thinExpected?.changed === true || wornMoved
       const groundMoved = groundExpected?.changed === true || thinMoved
       const thornsMoved = thornsExpected?.changed === true || groundMoved
       const kdbMoved = kdbExpected?.changed === true || thornsMoved
@@ -202,7 +214,16 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (thinExpected) {
+        if (wornExpected) {
+        expect(hash(ctx.events), 'full worn-slayer events').toBe(wornExpected.events)
+        expect(hash(ctx.state), 'full worn-slayer state').toBe(wornExpected.state)
+        expect(hash(ctx.rng.log), 'full worn-slayer RNG').toBe(wornExpected.rng)
+        expect(result).toEqual(wornExpected.result)
+        }
+        // every older assertion below runs on the projection (loadout.worn removed, nothing else)
+        ctx.state = projectWorn(ctx.state) as typeof ctx.state
+        // was: if (thinExpected) {
+        if (thinExpected && !wornMoved) {
         expect(hash(ctx.events), 'full thin-obstruction events').toBe(thinExpected.events)
         expect(hash(ctx.state), 'full thin-obstruction state').toBe(thinExpected.state)
         expect(hash(ctx.rng.log), 'full thin-obstruction RNG').toBe(thinExpected.rng)

@@ -14,7 +14,9 @@
    "item.rune-kairin",
    "item.rune-vampire-hunter"
   ],
-  "note": "The worn-item list is a new Unit field (Law 11) -- snapshots of item-carrying heroes change, and the progression-surge battle-cursor goldens (heroes wear rune-horror-breaker and rune-nightmare-slayer) move: recapture them and say so. Open question in DECISIONS: are bonus damage packets multiplied by a critical? Not part of this item."
+  "note": "The worn-item list is a new Unit field (Law 11) -- snapshots of item-carrying heroes change, and the progression-surge battle-cursor goldens (heroes wear rune-horror-breaker and rune-nightmare-slayer) move: recapture them and say so. Open question in DECISIONS: are bonus damage packets multiplied by a critical? Not part of this item.",
+  "status": "done-needs-review",
+  "sha": "e4fd418"
  },
  {
   "id": "fix.vs-target-worn-gap-text",

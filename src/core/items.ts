@@ -269,7 +269,10 @@ export function loadoutOf(
     if (!HELD_CLASSES.includes(it.itemClass)) throw new Error(`${where}: ${base.typeId} stows '${id}', a ${it.itemClass} — only a weapon or shield is stowed; everything else works from its own slot`)
     return spent.has(handed.length + k) ? [] : [{ instanceId: `${uid}/${handed.length + k}`, itemId: id }]
   })
-  return { loadout: { hands, stowed: out }, instanceIds }
+  // fix.vs-target-worn-and-flat: the non-held instances, so a worn slayer can be read (Law 11:
+  // the loadout already names what is carried; worn is its third list, absent when empty)
+  const worn = handed.flatMap((id, n) => (!HELD_CLASSES.includes(items[id]!.itemClass) && !spent.has(n) ? [{ instanceId: instanceIds[n]!, itemId: id }] : []))
+  return { loadout: { hands, stowed: out, ...(worn.length ? { worn } : {}) }, instanceIds }
 }
 
 // ── ITEM-INSTANCE USES (v2.item-uses, V2 R6, 2026-09-24) ─────────────────────
