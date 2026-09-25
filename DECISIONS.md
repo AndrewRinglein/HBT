@@ -2685,7 +2685,9 @@ Andrew, shown the `v2.structures` defaults (SWITCHES.md `wallDescent`: down from
 
 “To know walls and towers can't shoot past other obstructions and you're showing me to leave the walls in the same way you came up.”
 
-(Dictated. Read as: "No — walls and towers can't shoot past other obstructions, and you should have them leave the walls the same way they came up.")
+Then, restating it a minute later:
+
+“Walls and towers cannot shoot past other obstructions. You must leave the walls the same way you came up.”
 
 Ruled:
 
