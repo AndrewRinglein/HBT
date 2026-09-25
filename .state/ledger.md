@@ -16144,3 +16144,21 @@ index cc25140..a099db3 100644
 +})
 ```
 </details>
+
+## trigger.mage.kindle — LANDED `53322a9`
+2026-09-25 11:24
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/mage-kindle.test.ts
+  PASS  gate 1 — the id appears in a real battle — test.mage.kindle: 12 log lines, 12 fired, 4 changed state
+  PASS  brought its own tests — test/mage-kindle.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 45 ids without a published source (35 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.mage.kindle live · test.mage.dampen live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.mage.kindle — they genuinely test it

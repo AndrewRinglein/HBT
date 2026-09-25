@@ -13654,6 +13654,22 @@ export const UNIT_PACK = {
               "value": 3
             },
             "source": "unit.test-mage"
+          },
+          {
+            "id": "test.mage.kindle",
+            "hook": "onAttack",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.burn",
+              "value": {
+                "scale": "partyMagic",
+                "div": 5,
+                "round": "up"
+              }
+            },
+            "source": "unit.test-mage"
           }
         ],
         "badges": [

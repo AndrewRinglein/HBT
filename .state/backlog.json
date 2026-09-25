@@ -936,12 +936,21 @@
   "id": "trigger.mage.kindle",
   "kind": "content",
   "shape": "trigger",
+  "probeIds": [
+   "test.mage.kindle"
+  ],
+  "variants": [
+   "test.mage.kindle",
+   "test.mage.dampen"
+  ],
   "spec": "Mage: 100% onAttack -- every swing, hit or miss -- apply status.burn to target, value = ceil(partyMagicSum / 5). Angela: this is compensation for the Mage's lower hit chance, and is deliberately NOT the flaming-bow onHit case.",
   "expect": "burn applies on misses too, and rises to 2 when the party Magic sum reaches 6",
   "needs": [
    "trigger.mechanism"
   ],
-  "note": "BLOCKED BY ANGELA'S OWN FILE: 1-EFFECTS-SETTLED.md says status.burn 'is not yet shaped, so do not reference it from another session yet'. Built once already and removed. The party-wide sum is already implemented and tested."
+  "note": "BLOCKED BY ANGELA'S OWN FILE: 1-EFFECTS-SETTLED.md says status.burn 'is not yet shaped, so do not reference it from another session yet'. Built once already and removed. The party-wide sum is already implemented and tested.",
+  "status": "done",
+  "sha": "53322a9"
  },
  {
   "id": "station.vs-target",
