@@ -78,5 +78,40 @@
       "swapCost": 1
     },
     "note": "v2.swap (2026-09-24, COMBAT-V2 section 11.2: 'Slow Hands raises it'): swapCost +1, the second instance, pure data. TEST content only."
+  },
+  {
+    "id": "test.badge.bane-undead",
+    "name": "Undead Bane (TEST)",
+    "vsTarget": [
+      {
+        "tag": "undead",
+        "add": 2
+      }
+    ],
+    "note": "station.vs-target (engine, 2026-09-25): damage by what the target IS \u2014 +2 against a unit tagged undead, at DMG.VS_TARGET. The mechanism's first instance; a slayer {undead: 2} as the converter compiles it. Never ships."
+  },
+  {
+    "id": "test.badge.bane-venom",
+    "name": "Venom Bane (TEST)",
+    "triggers": [
+      {
+        "id": "trigger.test-bane-venom.poison",
+        "hook": "onHit",
+        "chance": 100,
+        "select": "target",
+        "effect": {
+          "kind": "status.apply",
+          "statusId": "status.poison",
+          "value": 3
+        }
+      }
+    ],
+    "vsTarget": [
+      {
+        "status": "status.poison",
+        "percent": 50
+      }
+    ],
+    "note": "station.vs-target (engine, 2026-09-25): damage by what the target CARRIES \u2014 +50% against a poisoned target (the backlog item's expect), with its own poison rider so a battle reaches it. The second instance, pure data. Never ships."
   }
 ]

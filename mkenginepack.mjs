@@ -1211,6 +1211,18 @@ function compileItemActive(it, row) {
     ...(free ? { free: true } : {}), range: tg.range, target: tg.target, effects, ...(gaps.length ? { gaps } : {}) };
 }
 
+// station.vs-target (engine, 2026-09-25): a slayer map {tag: N} is N flat damage
+// against a target carrying that tag — one engine rule per tag, in the row's order.
+// Anything but whole numbers is refused, never rounded (Law 7).
+const HELD_SLAYER = new Set(['weapon', 'shield']);   // engine items.ts HELD_CLASSES
+function slayerRules(m, where) {
+  if (m === null || m === undefined) return [];
+  if (typeof m !== 'object' || Array.isArray(m)) throw new Error(`${where}: slayer is not a {tag: N} map`);
+  return Object.entries(m).map(([tag, n]) => {
+    if (!Number.isInteger(n)) throw new Error(`${where}: slayer ${tag} ${JSON.stringify(n)} is not a whole number`);
+    return { tag, add: n };
+  });
+}
 function compileItems() {
   const out = {};
   for (const it of CODEX_ITEMS) {
@@ -1280,7 +1292,12 @@ function compileItems() {
     // v2.thorns: the row's `thorns` field restates its Thorns trigger; a field the
     // trigger did not compile (or disagrees with) stays a gap, never a second grant.
     if (row.thorns !== undefined && row.thorns !== statModifiers.thorns) g(`thorns: ${JSON.stringify(row.thorns)}`, 'item field: thorns');
-    for (const k of ['airwalk', 'slayer', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
+    for (const k of ['airwalk', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
+    // station.vs-target: the slayer field is data now — on a HELD item (weapon, shield), whose
+    // rules reach the attacks it grants. A worn item's slayer stays a named gap: the engine
+    // keeps no list of worn items to read it from (engine SWITCHES.md 'station.vs-target').
+    const vsTarget = HELD_SLAYER.has(it.itemClass) ? slayerRules(row.slayer, it.id) : [];
+    if (!HELD_SLAYER.has(it.itemClass) && slayerRules(row.slayer, it.id).length) g(`slayer: ${JSON.stringify(row.slayer).slice(0, 40)} on a ${it.itemClass}`, 'a worn item\'s slayer — station.vs-target reads held items only');
     // one-use rows (the Waystation, 2026-09-02): a charge is spent IN battle —
     // the same missing capability as an activated item.
     if (row.uses !== undefined && !abilities.some((a) => authoredAbilities[a]?.uses)) g(`uses: ${JSON.stringify(row.uses)} — no active compiled to carry the charge`, 'charges spent in battle — capability.consumables');
@@ -1288,6 +1305,7 @@ function compileItems() {
       id: it.id, name: it.name, itemClass: it.itemClass, tier: it.tier ?? 0, hands: it.hands ?? 0, slots: it.slots ?? 0,
       ...(it.classRestriction ? { classRestriction: it.classRestriction } : {}),
       statModifiers, grants, abilities, triggers,
+      ...(vsTarget.length ? { vsTarget } : {}),
       ...(gapsHere.length ? { gaps: gapsHere } : {}),
     };
   }
@@ -1479,8 +1497,12 @@ for (const combo of TIER3) {
         select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }, source: combo.id });
     } else gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — trigger shape unparsed`);
   }
-  if (e?.slayer) gaps.push(`slayer ${JSON.stringify(e.slayer).slice(0, 40)} — no VS_TARGET station`);
-  enchanted[combo.id] = { ...b, id: combo.id, name: combo.name, tier: 3, statModifiers, triggers, base: combo.base, enchant: combo.enchant,
+  // station.vs-target (engine, 2026-09-25): the enchant's slayer joins the base's — rules on the
+  // enchanted item, reaching the attacks it grants.
+  const enchantRules = slayerRules(e?.slayer, combo.enchant);
+  if (enchantRules.length && !HELD_SLAYER.has(b.itemClass)) gaps.push(`slayer ${JSON.stringify(e.slayer).slice(0, 40)} on a ${b.itemClass} — station.vs-target reads held items only`);
+  const vsTarget = [...(b.vsTarget || []), ...(HELD_SLAYER.has(b.itemClass) ? enchantRules : [])];
+  enchanted[combo.id] = { ...b, id: combo.id, name: combo.name, tier: 3, statModifiers, triggers, ...(vsTarget.length ? { vsTarget } : {}), base: combo.base, enchant: combo.enchant,
     gaps: [...(b.gaps || []), ...gaps].length ? [...(b.gaps || []), ...gaps] : undefined };
   if (!enchanted[combo.id].gaps) delete enchanted[combo.id].gaps;
 }
@@ -1570,7 +1592,7 @@ function testStatuses() {
 }
 function testBadges() {
   const out = {};
-  const FIELDS = new Set(['id', 'name', 'statModifiers', 'grants', 'flags', 'triggers']);
+  const FIELDS = new Set(['id', 'name', 'statModifiers', 'grants', 'flags', 'triggers', 'vsTarget']);   // vsTarget: station.vs-target (engine, 2026-09-25)
   for (const row of readTest('badges.json')) {
     const { note, ...r } = row;
     if (!/^test\.badge\.[a-z0-9-]+$/.test(r.id)) throw new Error(`content/test/badges.json: '${r.id}' is not test.badge.*`);
