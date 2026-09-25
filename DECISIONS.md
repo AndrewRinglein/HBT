@@ -2642,3 +2642,14 @@ Ruled (supersedes DESIGN-DUMP-CLEANED §5's numbers where they differ):
 - **Desert** — −5 Dodge (to the unit in it).
 - **Ruins** — behave like rocky ground.
 - The dictation's −1 / −2 damage against wall, tower and building occupants, and its tower +3 reach / +15 accuracy, are not in this ruling — superseded.
+
+Andrew, same chat, answering nine follow-ups (tower −25 flat or percent; Block or Ranged Block; tower entry; attacking into a tower; ZoC into a tower; enemies on walls; stairs and wall-top movement; houses; Climber on ruins):
+
+“1. It's a flat number. The wall adds to both. I think let's have the tower cost 2 extra moves. Yeah, that works. It's just sort of like a door. A hero can move into it, but it costs 2 extra moves, so it costs a total of 3 moves for a hero to go into a tower. It's in the tower. Things can still attack it in the tower.   The tower is just an obstruction for shooting past it for other people, so it doesn't really have any effect on the person who's in the tower or the people who attack the person who's in the tower.   I think, actually, the zone control should reach into the tower. It's simpler. It's just the same because then leaving the tower is still, yeah, so I think we can still have zone controls.  Enemies can stand on walls.   So, I guess we should have a stair tile on the wall. There can be a wall that has stairs on it, and when there is, it costs one extra movement to move. You can only do it from one direction. There is one facing on the wall tile, one facing that has stairs or a ladder. If you move into the wall from that direction, it costs one extra, and you can move up on top of the wall.   Yeah, into a house through a doorhouse  when you are in a house, you can be shot from outside the house.   Climber badge will help on ruins the way it does in rocky ground. Yes, it should.”
+
+Ruled:
+
+- **Tower** — the −25 is flat. Entering costs 2 extra move (3 in all), "sort of like a door"; a hero only. Units outside can attack the hero inside normally; the tower obstructs only shots PASSING it. Zones of control reach into a tower as anywhere else.
+- **Wall** — the +10 Block adds to both Block and Ranged Block. Enemies can stand on walls. A wall hex may carry stairs (or a ladder) on ONE facing: entering the wall hex from that side costs 1 extra move and puts you on top; from any other side you cannot go up.
+- **House** — entered through a door. A unit in a house can be shot from outside.
+- **Ruins** — the Climber badge helps on ruins as on rocky ground.
