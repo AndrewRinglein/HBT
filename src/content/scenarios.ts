@@ -60,6 +60,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.prone-a', note: 'TEST: Tripper A knocks the zombie down on a hit (status.prone); the zombie stands (power.stand-up) and bites. No campaign claim.',
     mapId: 'map.open', heroes: ['test-trip-a'], heroHexes: [85], enemies: ['test-zombie'], enemyHexes: [86], replicate: 0,
   },
+  // station.vs-target (2026-09-25): the two instances of damage-vs-target, each live in a
+  // real battle — by what the target IS (a tag) and by what it CARRIES (a status). TEST data.
+  'test.vs-target-a': {
+    id: 'test.vs-target-a', note: 'TEST: a warrior wearing test.badge.bane-undead (+2 vs undead) against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroBadges: [['test.badge.bane-undead']], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
+  },
+  'test.vs-target-b': {
+    id: 'test.vs-target-b', note: 'TEST: a warrior wearing test.badge.bane-venom (poisons on a hit; +50% vs poisoned) against the 40-HP ward body, which lives past the first hit. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroBadges: [['test.badge.bane-venom']], enemies: ['test-burst-ward'], enemyHexes: [86], replicate: 0,
+  },
   'test.prone-b': {
     id: 'test.prone-b', note: 'TEST: Tripper B floors Osric on a hit (test.status.floored, the second prone instance); Osric stands and swings. No campaign claim.',
     mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-trip-b'], enemyHexes: [86], replicate: 0,

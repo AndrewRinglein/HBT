@@ -1096,3 +1096,21 @@ wheat → tall vegetation (`terrain.undergrowth`), rivers → water, dense trees
 | `atlasProfileCrossingLowOnly` | A profile's +1 crossing cost on an asset authored as a full obstruction (opening-4's priory low wall)? | **Applies to low placements only**; the obstruction stays a full obstruction. A cost on the placement itself stays strict. | The author's role for that placement wins over the asset's default. | provisional — 2026-09-25 |
 | `atlasLandformsNotHills` | The outdoor maps' raised landforms (bluffs, ridges, rises)? | **Presentation only — not hills.** | "Heights remain presentation data" (`ATLAS-COMBAT-INTEGRATION.md`); nobody has ruled which rises are hills. | **ruled** — 2026-09-25, Andrew: “One no for now.” |
 | `atlasFieldedMaps` | Which outdoor maps get a combat fielding? | **The 13 whose battle finishes.** Not fielded: `greenway`, `stonecrown` (every seed 0–9 hits the 25-turn cap), `opening-4` (the sides never meet — no hit on any seed); `harvest`, `wellwood` (legacy objects; the compiler refuses them). | A fielding must finish a real battle (the integration test). Why the AI stalls there is an AI question. | **ruled** — 2026-09-25, Andrew: “2, no.” (no investigation) |
+
+
+## Damage vs target — defaults taken building station.vs-target (2026-09-25)
+
+`DMG.VS_TARGET`: damage modifiers that read the TARGET — what it IS (a tag on its row) or what it
+CARRIES (a status). A `vsTarget` list of rules `{tag | status, add?, percent?}` on a badge or an item
+(`src/core/types.ts` VsTargetRule), read in `resolveDamage` (`src/core/pipeline.ts` vsTargetRules).
+The Codex's slayer maps (`{demon: 3}`) compile to `{tag, add}` rules (`content/mkenginepack.mjs`).
+Probes: `test/vs-target.test.ts`; instances `test.badge.bane-undead`, `test.badge.bane-venom`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `vsTargetStation` | Which number? The backlog says 275, MECHANICS-GAP 400, COMBAT-SEQUENCE 500. | **400 — after SOURCE_STATUS 250, before CRIT 450.** | The 2026-08-20 ruling put it at 400 "so a crit multiplies it"; its same-day amendment moved it to 500 but kept the reason "(the bonus is crit-amplified)" — only a slot before CRIT gives that. 500 is `DMG.PRONE` since v2.prone (`proneStationOrder`). ENGINE-REVIEW-2026-09-02 #6 asked for one number. | provisional — 2026-09-25 |
+| `vsTargetReach` | Which damage does a rule reach? | **A badge's rules: every damage the unit deals through `resolveDamage` — attacks and powers. An item's rules: only the actions that item grants, while it is in hand; the same item held twice counts once.** Bursts (`finishDamage` direct) and secondary packets are not reached. | The enchant is on the weapon ("Demon Slayer greatsword"); a badge is on the hero. Bursts freeze their source before any target is known. | provisional — 2026-09-25 |
+| `vsTargetWornItems` | A slayer on a WORN item — the eight bloodrunes (Kairin, Deathdealer, Monster Slayer …)? | **A named gap on the item row, no rule compiled.** | The engine keeps no list of worn items on a unit (only `loadout.hands`); a rule nothing reads would be dead data. Needs its own item (a worn-item list on the unit — a snapshot change). | provisional — 2026-09-25 |
+| `vsTargetStacking` | A target matching several rules (a vampire tagged `undead` and `vampire` vs Holy Water's `{undead 1, demon 1, vampire 1}`)? | **Every matching rule applies, one ledger row each** — badges in the order the unit carries them, then held items in hand order, rules in row order. | The simplest reading that names every source (Law 12); Perfect Hunter's "every slayer bonus you have from any source" reads as sources adding. | provisional — 2026-09-25 |
+| `vsTargetPercent` | How does a percent rule round, and against what? | **`trunc(running value × percent ÷ 100)`, added before the rule's flat `add`.** | Law 7's one rounding rule; the running value at 400 is the attack's size before crit. | provisional — 2026-09-25 |
+| `vsTargetStatusCarried` | When does a target "carry" a status? | **Value > 0.** | The same test every status reader uses (`blocksBlock`). | provisional — 2026-09-25 |

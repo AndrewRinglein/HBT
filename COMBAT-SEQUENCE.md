@@ -417,12 +417,12 @@ Numbered with gaps on purpose. Ordering is a property of the **station**, not of
 | 250 | SOURCE_STATUS — what the attacker carries that lowers its own damage | **yes** as a station; **no status declares `reducesOutgoingDamage`**, so it has never run with a live value |
 | 300 | TERRAIN | **retired** — same as ACC.TERRAIN |
 | 350 | POSITIONAL — flank | *not yet* — nothing computes facing or flanking |
+| 400 | **VS_TARGET** — slayer bonuses, *+2 vs undead*, damage by target type (a tag) or by status on the target. Reserved 2026-08-20; built 2026-09-25 at **400**, before CRIT so a crit multiplies it (the amendment's 500 kept the reason "crit-amplified" and is now `DMG.PRONE`'s) — SWITCHES.md `vsTargetStation`. One ledger row per matching rule, naming the badge or item | **yes** — badges and held items; worn items and bursts not yet (`vsTargetReach`, `vsTargetWornItems`) |
 | 450 | CRIT — the +50%, before all mitigation | **yes**, behind the `critEnabled` switch |
 | 550 | PROTECTION — consumes; see below | **yes** as a station; **no status declares `reducesIncomingDamage`**, so it has never run with a live value |
 | 600 | MITIGATION — Armor (physical) or Resist (magic); true damage skips both | **yes** |
 | 700 | FLOOR at zero | **yes** |
 | 850 | APPLY | *not yet as a row* — `applyDamage` is a mutator, not a ledger step |
-| 500 | **VS_TARGET** — slayer bonuses, *+2 vs undead*, damage by target type or by status on the target. **Number reserved 2026-08-20** — after CRIT (the bonus is crit-amplified), before PROTECTION and MITIGATION (it is attack size, not mitigation) | *not yet built* |
 
 > **`usePower` does not run this table.** `ability.ts:resolvePowerDamage` is a second damage pipeline: DECLARE → SOURCE_STAT → MITIGATION → FLOOR, skipping SOURCE_STATUS, POSITIONAL, CRIT and PROTECTION. So Weakness would not reduce a power's damage and Protection would not absorb one. Constitution Law 1 says one damage function; there are two.
 

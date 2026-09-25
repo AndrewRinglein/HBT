@@ -12630,7 +12630,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "slayer: {\"vampire\":3,\"undead\":1} — item field: slayer"
+        "slayer: {\"vampire\":3,\"undead\":1} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
       ]
     },
     "item.rune-nightmare-slayer": {
@@ -12645,7 +12645,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "slayer: {\"nightmare\":3} — item field: slayer"
+        "slayer: {\"nightmare\":3} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
       ]
     },
     "item.rune-plant-killer": {
@@ -12661,7 +12661,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onKill: if the kill had the plant tag, immediately regain  — trigger shape unparsed",
-        "slayer: {\"plant\":3} — item field: slayer"
+        "slayer: {\"plant\":3} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
       ]
     },
     "item.rune-burning-touch": {
@@ -12729,7 +12729,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onKill: gain +5 Accuracy for the rest of the Battle — trigger shape unparsed",
-        "slayer: {\"horror\":4,\"nightmare\":2} — item field: slayer"
+        "slayer: {\"horror\":4,\"nightmare\":2} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
       ]
     },
     "item.rune-elemental-bane": {
@@ -12745,7 +12745,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onHit: if the target has the elemental or dragon tag it l — trigger shape unparsed",
-        "slayer: {\"elemental\":4,\"dragon\":2} — item field: slayer"
+        "slayer: {\"elemental\":4,\"dragon\":2} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
       ]
     },
     "item.rune-monster-slayer": {
@@ -12760,7 +12760,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "slayer: {\"beast\":2,\"giant\":2,\"construct\":2,\"drag — item field: slayer"
+        "slayer: {\"beast\":2,\"giant\":2,\"construct\":2,\"drag on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
       ]
     },
     "item.rune-executioner": {
@@ -12891,7 +12891,7 @@ export const UNIT_PACK = {
         "grants tag.outcast — attack row unauthored",
         "onDodge: gain +10 Crit for the rest of the Battle — hook: onDodge (declared, engine never fires it)",
         "onCrit: gain +10 Dodge for the rest of the Battle — trigger shape unparsed",
-        "slayer: {\"demon\":4,\"plant\":4,\"beast\":4} — item field: slayer"
+        "slayer: {\"demon\":4,\"plant\":4,\"beast\":4} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
       ]
     },
     "item.rune-kairin": {
@@ -12907,7 +12907,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onActivationEnd: heal 2 — trigger shape unparsed",
-        "slayer: {\"undead\":3,\"demon\":3} — item field: slayer"
+        "slayer: {\"undead\":3,\"demon\":3} on a bloodrune — a worn item's slayer — station.vs-target reads held items only"
       ]
     },
     "item.rune-avatar-of-war": {
@@ -16177,6 +16177,47 @@ export const UNIT_PACK = {
         "id": "test.badge.slow-hands",
         "name": "Slow Hands (TEST)",
         "triggers": []
+      },
+      "test.badge.bane-undead": {
+        "statModifiers": {},
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.bane-undead",
+        "name": "Undead Bane (TEST)",
+        "vsTarget": [
+          {
+            "tag": "undead",
+            "add": 2
+          }
+        ],
+        "triggers": []
+      },
+      "test.badge.bane-venom": {
+        "statModifiers": {},
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.bane-venom",
+        "name": "Venom Bane (TEST)",
+        "triggers": [
+          {
+            "id": "trigger.test-bane-venom.poison",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 3
+            },
+            "source": "test.badge.bane-venom"
+          }
+        ],
+        "vsTarget": [
+          {
+            "status": "status.poison",
+            "percent": 50
+          }
+        ]
       }
     },
     "moves": {
@@ -25290,11 +25331,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "demon",
+          "add": 3
+        }
+      ],
       "base": "item.greatsword",
-      "enchant": "enchant.demon-slayer",
-      "gaps": [
-        "slayer {\"demon\":3} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.demon-slayer"
     },
     "item.greatsword.destroying": {
       "id": "item.greatsword.destroying",
@@ -25472,12 +25516,17 @@ export const UNIT_PACK = {
           "source": "item.war-axe"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "construct",
+          "add": 2
+        }
+      ],
       "base": "item.war-axe",
       "enchant": "enchant.ironbane",
       "gaps": [
         "enchant onHit: if the target is a construct, it loses 1 Armor for — trigger shape unparsed",
-        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed",
-        "slayer {\"construct\":2} — no VS_TARGET station"
+        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed"
       ]
     },
     "item.war-axe.bloodthirsty": {
@@ -25695,12 +25744,17 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "construct",
+          "add": 2
+        }
+      ],
       "base": "item.iron-mace",
       "enchant": "enchant.ironbane",
       "gaps": [
         "enchant onHit: if the target is a construct, it loses 1 Armor for — trigger shape unparsed",
-        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed",
-        "slayer {\"construct\":2} — no VS_TARGET station"
+        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed"
       ]
     },
     "item.iron-mace.holy-water": {
@@ -25717,11 +25771,24 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 1
+        },
+        {
+          "tag": "demon",
+          "add": 1
+        },
+        {
+          "tag": "vampire",
+          "add": 1
+        }
+      ],
       "base": "item.iron-mace",
       "enchant": "enchant.holy-water",
       "gaps": [
-        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
-        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
       ]
     },
     "item.iron-mace.undead-slayer": {
@@ -25738,11 +25805,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 3
+        }
+      ],
       "base": "item.iron-mace",
       "enchant": "enchant.undead-slayer",
       "gaps": [
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
-        "slayer {\"undead\":3} — no VS_TARGET station"
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
       ]
     },
     "item.iron-mace.heavens-edge": {
@@ -25797,8 +25869,13 @@ export const UNIT_PACK = {
       "gaps": [
         "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed",
         "enchant onHit: if the target is a construct, it loses 1 Armor for — trigger shape unparsed",
-        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed",
-        "slayer {\"construct\":2} — no VS_TARGET station"
+        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed"
+      ],
+      "vsTarget": [
+        {
+          "tag": "construct",
+          "add": 2
+        }
       ],
       "base": "item.war-hammer",
       "enchant": "enchant.ironbane"
@@ -25997,11 +26074,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.hunting-spear",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.hunting-spear.giant-slayer": {
       "id": "item.hunting-spear.giant-slayer",
@@ -26017,11 +26097,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "giant",
+          "add": 3
+        }
+      ],
       "base": "item.hunting-spear",
       "enchant": "enchant.giant-slayer",
       "gaps": [
-        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
-        "slayer {\"giant\":3} — no VS_TARGET station"
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed"
       ]
     },
     "item.hunting-spear.dragon-slayer": {
@@ -26040,11 +26125,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "dragon",
+          "add": 4
+        }
+      ],
       "base": "item.hunting-spear",
       "enchant": "enchant.dragon-slayer",
       "gaps": [
-        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed",
-        "slayer {\"dragon\":4} — no VS_TARGET station"
+        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed"
       ]
     },
     "item.hunting-spear.venomous": {
@@ -26135,11 +26225,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "giant",
+          "add": 3
+        }
+      ],
       "base": "item.glaive",
       "enchant": "enchant.giant-slayer",
       "gaps": [
-        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
-        "slayer {\"giant\":3} — no VS_TARGET station"
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed"
       ]
     },
     "item.glaive.dragon-slayer": {
@@ -26158,11 +26253,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "dragon",
+          "add": 4
+        }
+      ],
       "base": "item.glaive",
       "enchant": "enchant.dragon-slayer",
       "gaps": [
-        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed",
-        "slayer {\"dragon\":4} — no VS_TARGET station"
+        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed"
       ]
     },
     "item.glaive.death": {
@@ -26296,11 +26396,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.crossbow",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.crossbow.abundant": {
       "id": "item.crossbow.abundant",
@@ -26385,11 +26488,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "giant",
+          "add": 3
+        }
+      ],
       "base": "item.crossbow",
       "enchant": "enchant.giant-slayer",
       "gaps": [
-        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
-        "slayer {\"giant\":3} — no VS_TARGET station"
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed"
       ]
     },
     "item.hand-crossbow.venomous": {
@@ -26477,11 +26585,14 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.hand-crossbow",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.hand-crossbow.magic": {
       "id": "item.hand-crossbow.magic",
@@ -26763,11 +26874,18 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "werewolf",
+          "add": 4
+        },
+        {
+          "tag": "beast",
+          "add": 1
+        }
+      ],
       "base": "item.raiders-cutlass",
-      "enchant": "enchant.werewolf-bane",
-      "gaps": [
-        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.werewolf-bane"
     },
     "item.raiders-cutlass.bloodthirsty": {
       "id": "item.raiders-cutlass.bloodthirsty",
@@ -26929,11 +27047,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.throwing-knives",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.throwing-knives.gale": {
       "id": "item.throwing-knives.gale",
@@ -26974,11 +27095,18 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "werewolf",
+          "add": 4
+        },
+        {
+          "tag": "beast",
+          "add": 1
+        }
+      ],
       "base": "item.throwing-knives",
-      "enchant": "enchant.werewolf-bane",
-      "gaps": [
-        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.werewolf-bane"
     },
     "item.poison-stars.venomous": {
       "id": "item.poison-stars.venomous",
@@ -27067,11 +27195,14 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.poison-stars.star"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.poison-stars",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.poison-stars.frost": {
       "id": "item.poison-stars.frost",
@@ -27315,11 +27446,18 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "werewolf",
+          "add": 4
+        },
+        {
+          "tag": "beast",
+          "add": 1
+        }
+      ],
       "base": "item.obsidian-fang-dagger",
-      "enchant": "enchant.werewolf-bane",
-      "gaps": [
-        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.werewolf-bane"
     },
     "item.duel-runeblades.bloodletting": {
       "id": "item.duel-runeblades.bloodletting",
@@ -27529,11 +27667,14 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.shepherds-sling.whirl"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.shepherds-sling",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.shepherds-sling.abundant": {
       "id": "item.shepherds-sling.abundant",
@@ -27892,11 +28033,18 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.iron-claws.eviscerate"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "werewolf",
+          "add": 4
+        },
+        {
+          "tag": "beast",
+          "add": 1
+        }
+      ],
       "base": "item.iron-claws",
-      "enchant": "enchant.werewolf-bane",
-      "gaps": [
-        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.werewolf-bane"
     },
     "item.iron-claws.bloodthirsty": {
       "id": "item.iron-claws.bloodthirsty",
@@ -27949,11 +28097,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "giant",
+          "add": 3
+        }
+      ],
       "base": "item.grappling-harpoon",
       "enchant": "enchant.giant-slayer",
       "gaps": [
-        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
-        "slayer {\"giant\":3} — no VS_TARGET station"
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed"
       ]
     },
     "item.grappling-harpoon.dragon-slayer": {
@@ -27972,11 +28125,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "dragon",
+          "add": 4
+        }
+      ],
       "base": "item.grappling-harpoon",
       "enchant": "enchant.dragon-slayer",
       "gaps": [
-        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed",
-        "slayer {\"dragon\":4} — no VS_TARGET station"
+        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed"
       ]
     },
     "item.grappling-harpoon.hunting": {
@@ -27995,11 +28153,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.grappling-harpoon",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.grappling-harpoon.frost": {
       "id": "item.grappling-harpoon.frost",
@@ -28268,8 +28429,21 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "grants power.holy-texts.mercy — item power — shape unparsed",
-        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
-        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
+      ],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 1
+        },
+        {
+          "tag": "demon",
+          "add": 1
+        },
+        {
+          "tag": "vampire",
+          "add": 1
+        }
       ],
       "base": "item.holy-texts",
       "enchant": "enchant.holy-water"
@@ -28290,8 +28464,13 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "grants power.holy-texts.mercy — item power — shape unparsed",
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
-        "slayer {\"undead\":3} — no VS_TARGET station"
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
+      ],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 3
+        }
       ],
       "base": "item.holy-texts",
       "enchant": "enchant.undead-slayer"
@@ -28334,8 +28513,13 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed",
-        "slayer {\"demon\":3} — no VS_TARGET station"
+        "grants power.holy-texts.mercy — item power — shape unparsed"
+      ],
+      "vsTarget": [
+        {
+          "tag": "demon",
+          "add": 3
+        }
       ],
       "base": "item.holy-texts",
       "enchant": "enchant.demon-slayer"
@@ -28358,11 +28542,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "demon",
+          "add": 3
+        }
+      ],
       "base": "item.bane-blade",
-      "enchant": "enchant.demon-slayer",
-      "gaps": [
-        "slayer {\"demon\":3} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.demon-slayer"
     },
     "item.bane-blade.holy-water": {
       "id": "item.bane-blade.holy-water",
@@ -28381,11 +28568,24 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 1
+        },
+        {
+          "tag": "demon",
+          "add": 1
+        },
+        {
+          "tag": "vampire",
+          "add": 1
+        }
+      ],
       "base": "item.bane-blade",
       "enchant": "enchant.holy-water",
       "gaps": [
-        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
-        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
       ]
     },
     "item.bane-blade.undead-slayer": {
@@ -28405,11 +28605,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 3
+        }
+      ],
       "base": "item.bane-blade",
       "enchant": "enchant.undead-slayer",
       "gaps": [
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
-        "slayer {\"undead\":3} — no VS_TARGET station"
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
       ]
     },
     "item.bane-blade.sacrifice": {
@@ -28453,11 +28658,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 3
+        }
+      ],
       "base": "item.sword-of-the-fallen",
       "enchant": "enchant.undead-slayer",
       "gaps": [
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
-        "slayer {\"undead\":3} — no VS_TARGET station"
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
       ]
     },
     "item.sword-of-the-fallen.heavens-edge": {
@@ -28500,11 +28710,24 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 1
+        },
+        {
+          "tag": "demon",
+          "add": 1
+        },
+        {
+          "tag": "vampire",
+          "add": 1
+        }
+      ],
       "base": "item.sword-of-the-fallen",
       "enchant": "enchant.holy-water",
       "gaps": [
-        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
-        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
       ]
     },
     "item.sword-of-the-fallen.soul-reaper": {
@@ -28789,11 +29012,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.longbow",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.longbow.venomous": {
       "id": "item.longbow.venomous",
@@ -28906,11 +29132,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "dragon",
+          "add": 4
+        }
+      ],
       "base": "item.longbow",
       "enchant": "enchant.dragon-slayer",
       "gaps": [
-        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed",
-        "slayer {\"dragon\":4} — no VS_TARGET station"
+        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed"
       ]
     },
     "item.longbow.frost": {
@@ -29094,11 +29325,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.shortbow",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.shortbow.fire": {
       "id": "item.shortbow.fire",
@@ -29325,11 +29559,14 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.barbarian-bow",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.barbarian-bow.giant-slayer": {
       "id": "item.barbarian-bow.giant-slayer",
@@ -29371,11 +29608,16 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "giant",
+          "add": 3
+        }
+      ],
       "base": "item.barbarian-bow",
       "enchant": "enchant.giant-slayer",
       "gaps": [
-        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
-        "slayer {\"giant\":3} — no VS_TARGET station"
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed"
       ]
     },
     "item.barbarian-bow.fire": {
@@ -29560,11 +29802,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "giant",
+          "add": 3
+        }
+      ],
       "base": "item.javelin",
       "enchant": "enchant.giant-slayer",
       "gaps": [
-        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
-        "slayer {\"giant\":3} — no VS_TARGET station"
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed"
       ]
     },
     "item.javelin.hunting": {
@@ -29583,11 +29830,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "beast",
+          "add": 2
+        }
+      ],
       "base": "item.javelin",
-      "enchant": "enchant.hunting",
-      "gaps": [
-        "slayer {\"beast\":2} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.hunting"
     },
     "item.javelin.venomous": {
       "id": "item.javelin.venomous",
@@ -29746,11 +29996,14 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "demon",
+          "add": 3
+        }
+      ],
       "base": "item.longsword",
-      "enchant": "enchant.demon-slayer",
-      "gaps": [
-        "slayer {\"demon\":3} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.demon-slayer"
     },
     "item.longsword.undead-slayer": {
       "id": "item.longsword.undead-slayer",
@@ -29768,11 +30021,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 3
+        }
+      ],
       "base": "item.longsword",
       "enchant": "enchant.undead-slayer",
       "gaps": [
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
-        "slayer {\"undead\":3} — no VS_TARGET station"
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
       ]
     },
     "item.longsword.werewolf-bane": {
@@ -29791,11 +30049,18 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "werewolf",
+          "add": 4
+        },
+        {
+          "tag": "beast",
+          "add": 1
+        }
+      ],
       "base": "item.longsword",
-      "enchant": "enchant.werewolf-bane",
-      "gaps": [
-        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
-      ]
+      "enchant": "enchant.werewolf-bane"
     },
     "item.longsword.taunting": {
       "id": "item.longsword.taunting",
@@ -29879,11 +30144,16 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.halberd.hack"
         }
       ],
+      "vsTarget": [
+        {
+          "tag": "giant",
+          "add": 3
+        }
+      ],
       "base": "item.halberd",
       "enchant": "enchant.giant-slayer",
       "gaps": [
-        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
-        "slayer {\"giant\":3} — no VS_TARGET station"
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed"
       ]
     },
     "item.halberd.bloodletting": {
@@ -30689,11 +30959,24 @@ export const UNIT_PACK = {
         "power.holy-symbol.heal"
       ],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 1
+        },
+        {
+          "tag": "demon",
+          "add": 1
+        },
+        {
+          "tag": "vampire",
+          "add": 1
+        }
+      ],
       "base": "item.holy-symbol",
       "enchant": "enchant.holy-water",
       "gaps": [
-        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
-        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
       ]
     },
     "item.holy-symbol.undead-slayer": {
@@ -30712,11 +30995,16 @@ export const UNIT_PACK = {
         "power.holy-symbol.heal"
       ],
       "triggers": [],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 3
+        }
+      ],
       "base": "item.holy-symbol",
       "enchant": "enchant.undead-slayer",
       "gaps": [
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
-        "slayer {\"undead\":3} — no VS_TARGET station"
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
       ]
     },
     "item.holy-symbol.bewildering": {
@@ -30792,8 +31080,21 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "grants power.priest-chain.benediction — item power — shape unparsed",
-        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
-        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
+      ],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 1
+        },
+        {
+          "tag": "demon",
+          "add": 1
+        },
+        {
+          "tag": "vampire",
+          "add": 1
+        }
       ],
       "base": "item.priest-chain",
       "enchant": "enchant.holy-water"
@@ -30814,8 +31115,13 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "grants power.priest-chain.benediction — item power — shape unparsed",
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
-        "slayer {\"undead\":3} — no VS_TARGET station"
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
+      ],
+      "vsTarget": [
+        {
+          "tag": "undead",
+          "add": 3
+        }
       ],
       "base": "item.priest-chain",
       "enchant": "enchant.undead-slayer"
@@ -30858,8 +31164,13 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "grants power.priest-chain.benediction — item power — shape unparsed",
-        "slayer {\"demon\":3} — no VS_TARGET station"
+        "grants power.priest-chain.benediction — item power — shape unparsed"
+      ],
+      "vsTarget": [
+        {
+          "tag": "demon",
+          "add": 3
+        }
       ],
       "base": "item.priest-chain",
       "enchant": "enchant.demon-slayer"

@@ -959,9 +959,20 @@
   "id": "station.vs-target",
   "kind": "engine",
   "shape": "station",
+  "probeIds": [
+   "test.badge.bane-undead",
+   "test.badge.bane-venom"
+  ],
+  "variants": [
+   "test.badge.bane-undead",
+   "test.badge.bane-venom"
+  ],
   "spec": "DMG.VS_TARGET at 275: damage modifiers that read the TARGET -- its type/tags and its statuses. NOT triggers: they change a number, so they are a station in the one damage pipeline (Law 1). The status half needs nothing new; the type half needs tags[] on unit defs, which is Bestiary's call.",
   "expect": "'+50% vs poisoned' appears as a row in the damage ledger and in the replay waterfall",
-  "note": "Captured in neither GAME-DESIGN.md nor GAME-ARCHITECTURE.md -- see TRIGGER-NOTES.md 2."
+  "note": "Captured in neither GAME-DESIGN.md nor GAME-ARCHITECTURE.md -- see TRIGGER-NOTES.md 2.",
+  "attempts": 1,
+  "status": "done",
+  "sha": "a2d0498"
  },
  {
   "id": "target.model",

@@ -471,6 +471,23 @@ export type CritRow = {
  * until seam.items-per-unit; this is the registry.
  */
 /**
+ * station.vs-target (2026-09-25): a damage modifier that reads the TARGET — what it
+ * IS (a tag on its row) or what it CARRIES (a status at value > 0). Read at
+ * DMG.VS_TARGET in the one damage function (Law 1); a rule changes a number, so it
+ * is a station row, never a trigger. Exactly one of `tag` / `status`; at least one
+ * of `add` / `percent`. A Codex slayer map `{<tag>: N}` compiles to `{ tag, add: N }`.
+ * Where it is carried and what it reaches: SWITCHES.md 'station.vs-target'.
+ */
+export type VsTargetRule = {
+  readonly tag?: string
+  readonly status?: string
+  /** Flat damage added. */
+  readonly add?: number
+  /** Percent of the running value added, truncated toward zero (Law 7). */
+  readonly percent?: number
+}
+
+/**
  * A BADGE — badge.mechanism (2026-09-04). Ruled 2026-09-04: badges are an
  * engine type. "There is a badge that all heroes start with, that is invisible
  * on a hero, called Hero ... Only those with the badge Hero bleed out" ·
@@ -489,6 +506,8 @@ export type BadgeDef = {
   /** Actions the badge grants — a power, an attack. */
   readonly grants: readonly string[]
   readonly triggers?: readonly import('./trigger.js').Trigger[]
+  /** station.vs-target: damage against a target by its tags or statuses — every damage this unit deals through the one function. */
+  readonly vsTarget?: readonly VsTargetRule[]
   /**
    * What the rules read off the badge. `bleedsOut` — the Hero badge: a failed
    * deathbed roll downs and bleeds out instead of killing. `wounded` — the
@@ -515,6 +534,8 @@ export type ItemDef = {
   readonly grants: readonly string[]
   readonly abilities: readonly string[]
   readonly triggers: readonly import('./trigger.js').Trigger[]
+  /** station.vs-target: slayer and its kin — reaches only the attacks THIS item grants, while it is in hand. */
+  readonly vsTarget?: readonly VsTargetRule[]
   readonly gaps?: readonly string[]
 }
 

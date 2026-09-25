@@ -333,6 +333,7 @@ export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilitie
     for (const a of it.grants) if (!attacks[a] && !bursts[a]) throw new Error(`item pack: '${k}' grants '${a}', which is not in the pack's attacks`)
     for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`item pack: '${k}' grants power '${a}', which is not in the pack's abilities`)
     for (const t of it.triggers) { validateTrigger(t); if (t.source !== k) throw new Error(`item pack: '${k}' carries a trigger sourced '${t.source}'`) }
+    validateVsTarget(it.vsTarget, `item pack: '${k}'`)
   }
   return raw
 }
@@ -414,6 +415,24 @@ export function packLevels(): Readonly<Record<string, LevelTable>> {
  */
 const BADGE_STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost']
 const BADGE_FLAGS = ['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']   // the last two: v2.kdb (COMBAT-V2 §9.5)
+/**
+ * station.vs-target (2026-09-25): a rule names exactly one predicate — a tag or a
+ * status — and at least one integer magnitude. Anything else is refused loudly (Law 9);
+ * the converter gaps what it cannot express, never passes it.
+ */
+function validateVsTarget(rules: unknown, where: string): void {
+  if (rules === undefined) return
+  if (!Array.isArray(rules) || rules.length === 0) throw new Error(`${where}: vsTarget must be a non-empty list`)
+  for (const r of rules as Record<string, unknown>[]) {
+    for (const f of Object.keys(r)) if (!['tag', 'status', 'add', 'percent'].includes(f)) throw new Error(`${where}: vsTarget rule carries unknown field '${f}'`)
+    if ((r.tag === undefined) === (r.status === undefined)) throw new Error(`${where}: a vsTarget rule names exactly one of tag / status`)
+    if (r.tag !== undefined && (typeof r.tag !== 'string' || !r.tag)) throw new Error(`${where}: vsTarget tag must be a word`)
+    if (r.status !== undefined && (typeof r.status !== 'string' || !r.status.startsWith('status.') && !r.status.startsWith('test.status.'))) throw new Error(`${where}: vsTarget status '${String(r.status)}' is not a status id`)
+    if (r.add === undefined && r.percent === undefined) throw new Error(`${where}: a vsTarget rule changes nothing — give add or percent`)
+    for (const f of ['add', 'percent'] as const) if (r[f] !== undefined && !Number.isInteger(r[f])) throw new Error(`${where}: vsTarget ${f} must be an integer (Law 7)`)
+  }
+}
+
 function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, family: (k: string) => boolean): Readonly<Record<string, BadgeDef>> {
   for (const [k, b] of Object.entries(raw)) {
     if (k !== b.id) throw new Error(`${where}: badge key '${k}' names id '${b.id}'`)
@@ -423,6 +442,7 @@ function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, 
     for (const f of Object.keys(b.flags ?? {})) if (!BADGE_FLAGS.includes(f)) throw new Error(`${where}: badge '${k}' carries unknown flag '${f}'`)
     if (!Array.isArray(b.grants)) throw new Error(`${where}: badge '${k}' has no grants list — regenerate the pack`)
     for (const t of b.triggers ?? []) { validateTrigger(t); if (t.source !== k) throw new Error(`${where}: badge '${k}' trigger '${t.id}' names source '${t.source}'`) }
+    validateVsTarget(b.vsTarget, `${where}: badge '${k}'`)
   }
   return raw
 }
@@ -449,6 +469,7 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
     for (const a of it.grants) if (!attacks[a] && !bursts[a]) throw new Error(`enchanted: '${k}' grants '${a}', not a pack attack`)
     for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)
     for (const t of it.triggers) { validateTrigger(t); if (t.source !== k && t.source !== it.base) throw new Error(`enchanted: '${k}' carries a trigger sourced '${t.source}'`) }
+    validateVsTarget(it.vsTarget, `enchanted: '${k}'`)
   }
   return raw
 }

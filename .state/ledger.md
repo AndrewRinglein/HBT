@@ -16167,3 +16167,21 @@ index cc25140..a099db3 100644
 2026-09-25 13:01
 
 Superseded by test.zombie.sap, absorbed 2026-08-20 into the status.weakness landing (testing-lane id; trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts 'sap weakens heroes; rot and sap roll independently on their own streams'. Closed per the 2026-09-25 wrap's Next line.
+
+## station.vs-target — LANDED `a2d0498`
+2026-09-25 18:22
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: MECHANICS-GAP.md:221 · COMBAT-SEQUENCE.md:420
+  PASS  typecheck
+  PASS  the item's own tests — test/vs-target.test.ts
+  PASS  gate 1 — the id appears in a real battle — test.badge.bane-undead: 5 log lines, 5 fired, 3 changed state · test.badge.bane-venom: 8 log lines, 8 fired, 3 changed state
+  PASS  brought its own tests — test/vs-target.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.badge.bane-undead live · test.badge.bane-venom live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.badge.bane-undead,test.badge.bane-venom — they genuinely test it

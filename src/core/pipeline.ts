@@ -7,7 +7,7 @@
 import { absorbDamage, flatDamage } from './mitigation.js'
 import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
-import type { AttackDef, Ctx, Unit } from './types.js'
+import type { AttackDef, Ctx, Unit, VsTargetRule } from './types.js'
 import { fireTriggers, HOOKS } from './trigger.js'
 import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
@@ -54,6 +54,13 @@ export const DMG = {
   SOURCE_STATUS: 250,
   TERRAIN: 300,
   POSITIONAL: 350,
+  /**
+   * station.vs-target (2026-09-25): damage by what the target IS (a tag) or CARRIES (a
+   * status). Before CRIT so a crit multiplies it — "the bonus is crit-amplified", the
+   * 2026-08-20 ruling and its amendment both; COMBAT-SEQUENCE's 500 is DMG.PRONE's now
+   * (SWITCHES.md 'station.vs-target', vsTargetStation).
+   */
+  VS_TARGET: 400,
   CRIT: 450,
   /** v2.prone (§10): flat ±N after the crit multiplier, like cover (SWITCHES.md proneStationOrder). */
   PRONE: 500,
@@ -231,6 +238,29 @@ export function resolveSourceDamage(ctx: Ctx, attacker: Unit, a: DamageSource, o
   return { value: v, ledger }
 }
 
+/**
+ * station.vs-target — the rules that reach this attacker's damage against this target,
+ * in a fixed order (Law 6): the attacker's badges in the order it carries them, then the
+ * items in its hands, each rule in its row's order. A badge's rules reach every damage
+ * through this function; an item's reach only the actions that item grants, and an item
+ * held twice counts once (SWITCHES.md 'station.vs-target'). Pure — preview reads it too.
+ */
+export function vsTargetRules(ctx: Ctx, attacker: Unit, target: Unit, sourceId: string): { id: string; rule: VsTargetRule }[] {
+  const out: { id: string; rule: VsTargetRule }[] = []
+  const matches = (r: VsTargetRule): boolean => r.tag !== undefined
+    ? target.tags.includes(r.tag)
+    : r.status !== undefined && target.statuses.some((s) => s.id === r.status && s.value > 0)
+  for (const b of attacker.badges) for (const rule of ctx.badges[b]?.vsTarget ?? []) if (matches(rule)) out.push({ id: b, rule })
+  const seen = new Set<string>()
+  for (const h of attacker.loadout?.hands ?? []) {
+    const it = ctx.items[h.itemId]
+    if (!it?.vsTarget || seen.has(it.id) || !it.grants.includes(sourceId)) continue
+    seen.add(it.id)
+    for (const rule of it.vsTarget) if (matches(rule)) out.push({ id: it.id, rule })
+  }
+  return out
+}
+
 export function resolveDamage(
   ctx: Ctx, attacker: Unit, target: Unit, a: DamageSource, critHeads: number | boolean,
   outPenalty = 0, absorbAvailable = 0,
@@ -242,6 +272,12 @@ export function resolveDamage(
   const source = resolveSourceDamage(ctx, attacker, a, outPenalty)
   const ledger = source.ledger
   let v = source.value
+
+  // VS_TARGET (400): one row per matching rule, naming the badge or item that carries it
+  // (Law 12). Percent of the running value, truncated (Law 7), then the flat add.
+  for (const { id, rule } of vsTargetRules(ctx, attacker, target, a.id)) {
+    v = step(ledger, DMG.VS_TARGET, 'VS_TARGET', id, v, v + Math.trunc((v * (rule.percent ?? 0)) / 100) + (rule.add ?? 0))
+  }
 
   if (heads > 0) {
     // +50% PER HEADS-CRITICAL, before all mitigation — "do two criticals"
