@@ -2661,3 +2661,12 @@ Andrew, asked (v2.thin-obstruction) whether a sign, a single tree or an upright 
 “Yes, it's a third kind of prop.”
 
 Ruled: a prop's height is `high`, `low` or `thin`. A thin prop is a thin obstruction (see "the ground table, re-ruled" above). The name `thin` was the one put to him; he did not offer another. He asked in the same message to go over what counts as ground versus a prop, and how traps, bodies, graves, houses, walls and towers are structured — open, not ruled here.
+
+Andrew, same chat, shown how a hex is held today (one ground, at most one painted surface effect, floor, any number of props high or low, corpses) and asked whether a hex should carry several surface effects at once:
+
+“No, I think the surface effects just one, or it's confusing.   Okay, I understand the way that you are describing these things. From this standpoint, I think there is a new high thin prop.   If you were in a tile with a high thin prop -5 ranged attack you  and anything shooting through that: there's both -1 vision and -5 range to shoot through it.  If you are on it, you have no penalty.”
+
+Ruled:
+
+- **Surface effects** — one per hex, as built. Not a stack.
+- **High thin prop** — a third kind of prop (height `thin` in data; "high thin prop" in speech). A unit in its hex: ranged attacks against it take −5. A shot passing through its hex: −5, and −1 Vision through it. The unit standing on it takes no penalty to its own shots. The same rule woodland's thin obstruction follows.
