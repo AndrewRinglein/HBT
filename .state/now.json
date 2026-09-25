@@ -1,11 +1,11 @@
 {
- "now": "station.vs-target — damage bonuses that read the target: ruled after landing. Andrew 2026-09-25 (DECISIONS b9a5e80): no percentage damage modifiers exist except the critical hit — the backlog's +50% vs poisoned was an engine example, never authored; damage vs target is added with the other damage before the critical multiplier (400 before CRIT stands, vsTargetStation ruled); a bloodrune's slayer works (vsTargetWornItems superseded); one weapon matching two tags applies both (vsTargetStacking ruled). Landed earlier: 25c276c (clean) and fix.vs-target-worn-gap-text a4d5cd4 (flagged). audit-all run by Andrew from a terminal: clean. Four shards green on tree 7490ccbc24. Open question in DECISIONS: are bonus damage packets (Hand Axe +4, Bane Blade +6 on a critical) multiplied by the critical? Today they are not (V2-DAMAGE-PACKETS.md 9-10). Next: fix.vs-target-worn-and-flat — drop percent, make the test venom rule flat, and let worn items (bloodrunes) carry vsTarget.",
- "at": "2026-09-25 19:08",
- "sha": "b6abaf6",
+ "now": "fix.vs-target-worn-and-flat — damage vs target: landed 0fee6a5, flagged for review (the +50% vs poisoned assertions rewritten as a flat +3; battle-cursor gains a worn-slayer layer, test/fixtures/battle-cursor-worn.json, only progression-surge-0/1/2 changed events, 14 more cases differ only by loadout.worn in state). No vsTarget rule carries a percent; bloodrune slayers are rules read from loadout.worn and reach every attack and power (ruled); Kai'rin +3 vs undead live in test.vs-target-c. Content 5693b3e. Backlog 50fa022 gave the item its probeIds and variants. New switches: vsTargetWornTwice (two runes of one kind count twice), wornLoadoutShape. Four shards green on tree c10032bbbd. audit-all NOT run: it timed out at 176 s in Cowork after typecheck — run it from a terminal. Next: move.actions — movement becomes a chosen action from a list.",
+ "at": "2026-09-25 21:55",
+ "sha": "d34ad9f",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: fix.vs-target-worn-and-flat, bloodrune slayer bonuses and no percentages",
+  "label": "New chat with Heroes of Blight and Tragic — engine: move.actions, movement chosen from a list like attacks",
   "line": "start engine"
  }
 }
