@@ -1236,7 +1236,9 @@
   "shape": "plumbing",
   "spec": "ACC.TERRAIN (400) and DMG.TERRAIN (300) were retired when terrain moved into the stat pipeline. Both constants still sit in the station tables reading as unbuilt gaps. Comment them as retired or delete them, so the next session does not \"fix\" them.",
   "expect": "the station tables distinguish retired from not-yet-built",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "87bca9c"
  },
  {
   "id": "fix.poison-shape",

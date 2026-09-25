@@ -43,6 +43,7 @@ export const ACC = {
   COVER: 575,
   TARGET_DODGE: 600,
   SITUATIONAL: 700,
+  /** NOT YET — the clamp happens in `preview()` and writes no ledger row (COMBAT-SEQUENCE). See UNWIRED_STATIONS. */
   FINAL: 900,
 } as const
 
@@ -52,7 +53,13 @@ export const DMG = {
   /** capability.power-pool (2026-09-03): the enemy side's Power, by the attack's share. */
   POWER: 225,
   SOURCE_STATUS: 250,
+  /**
+   * RETIRED — do not rebuild. Terrain moved into the stat pipeline (an occupied hex's
+   * mods arrive as stat modifiers, then V2 concealment at ACC.TERRAIN); nothing writes
+   * a damage row here. Kept so the number is never reused. See UNWIRED_STATIONS.
+   */
   TERRAIN: 300,
+  /** NOT YET — flank: nothing computes facing or flanking (COMBAT-SEQUENCE). See UNWIRED_STATIONS. */
   POSITIONAL: 350,
   /**
    * station.vs-target (2026-09-25): damage by what the target IS (a tag) or CARRIES (a
@@ -70,8 +77,23 @@ export const DMG = {
   PROTECTION: 550,
   MITIGATION: 600,
   FLOOR: 700,
+  /** NOT YET as a row — `applyDamage` is a mutator, not a ledger step (COMBAT-SEQUENCE). See UNWIRED_STATIONS. */
   APPLY: 850,
 } as const
+
+/**
+ * fix.retired-stations (2026-09-25): the stations nothing writes, and why. `retired`
+ * — it once had a writer and must not be "fixed" back; `notYet` — a reserved slot the
+ * design still owes. Every other station has a live writer. `test/station-tables.test.ts`
+ * holds this list to the code in both directions.
+ */
+export const UNWIRED_STATIONS: {
+  acc: Partial<Record<keyof typeof ACC, 'retired' | 'notYet'>>
+  dmg: Partial<Record<keyof typeof DMG, 'retired' | 'notYet'>>
+} = {
+  acc: { FINAL: 'notYet' },
+  dmg: { TERRAIN: 'retired', POSITIONAL: 'notYet', APPLY: 'notYet' },
+}
 
 export type LedgerRow = {
   station: number
