@@ -347,9 +347,24 @@
           "statusId": "status.protection",
           "value": 3
         }
+      },
+      {
+        "id": "test.mage.kindle",
+        "hook": "onAttack",
+        "chance": 100,
+        "select": "target",
+        "effect": {
+          "kind": "status.apply",
+          "statusId": "status.burn",
+          "value": {
+            "scale": "partyMagic",
+            "div": 5,
+            "round": "up"
+          }
+        }
       }
     ],
-    "note": "test.fixture-migration: the 2026-08-14 dictated mage body, kept exactly (resist 1 is what the magic-mitigation arithmetic reads).",
+    "note": "test.fixture-migration: the 2026-08-14 dictated mage body, kept exactly (resist 1 is what the magic-mitigation arithmetic reads). test.mage.kindle is backlog trigger.mage.kindle, built 2026-09-25 (Andrew, engine/DECISIONS.md: \"Build Kindle is described.\"): every swing, hit or miss, Burn = ceil(party Magic / 5) on the target; test-lane id because trigger.* is not a publishable kind (as test.zombie.sap).",
     "badges": [
       "badge.hero"
     ]
