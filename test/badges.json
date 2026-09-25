@@ -109,9 +109,9 @@
     "vsTarget": [
       {
         "status": "status.poison",
-        "percent": 50
+        "add": 3
       }
     ],
-    "note": "station.vs-target (engine, 2026-09-25): damage by what the target CARRIES \u2014 +50% against a poisoned target (the backlog item's expect), with its own poison rider so a battle reaches it. The second instance, pure data. Never ships."
+    "note": "station.vs-target (engine, 2026-09-25): damage by what the target CARRIES \u2014 +3 against a poisoned target, with its own poison rider so a battle reaches it. The second instance, pure data. Never ships. fix.vs-target-worn-and-flat (engine, 2026-09-25): was +50%; Andrew: 'There had been no percentage modifiers to damage' \u2014 a TEST value, flat."
   }
 ]

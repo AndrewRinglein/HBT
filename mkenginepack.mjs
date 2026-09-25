@@ -1213,8 +1213,8 @@ function compileItemActive(it, row) {
 
 // station.vs-target (engine, 2026-09-25): a slayer map {tag: N} is N flat damage
 // against a target carrying that tag — one engine rule per tag, in the row's order.
-// Anything but whole numbers is refused, never rounded (Law 7).
-const HELD_SLAYER = new Set(['weapon', 'shield']);   // engine items.ts HELD_CLASSES
+// Anything but whole numbers is refused, never rounded (Law 7). Held or worn, every
+// item's slayer compiles (fix.vs-target-worn-and-flat); the engine decides the reach.
 function slayerRules(m, where) {
   if (m === null || m === undefined) return [];
   if (typeof m !== 'object' || Array.isArray(m)) throw new Error(`${where}: slayer is not a {tag: N} map`);
@@ -1293,13 +1293,11 @@ function compileItems() {
     // trigger did not compile (or disagrees with) stays a gap, never a second grant.
     if (row.thorns !== undefined && row.thorns !== statModifiers.thorns) g(`thorns: ${JSON.stringify(row.thorns)}`, 'item field: thorns');
     for (const k of ['airwalk', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
-    // station.vs-target: the slayer field is data now — on a HELD item (weapon, shield), whose
-    // rules reach the attacks it grants. A worn item's slayer stays a named gap: the engine
-    // keeps no list of worn items to read it from (engine SWITCHES.md 'station.vs-target').
-    const vsTarget = HELD_SLAYER.has(it.itemClass) ? slayerRules(row.slayer, it.id) : [];
-    // The gap keeps its pre-station wording byte for byte: it rides the unit.equipped line, and the
-    // battle-cursor goldens hash those lines (fix.vs-target-worn-gap-text). The reason is in SWITCHES.
-    if (!HELD_SLAYER.has(it.itemClass) && slayerRules(row.slayer, it.id).length) g(`slayer: ${JSON.stringify(row.slayer).slice(0, 40)}`, 'item field: slayer');
+    // station.vs-target: the slayer field is data — on a HELD item (weapon, shield) its rules
+    // reach the attacks it grants; on a WORN item (the bloodrunes) every damage the hero deals.
+    // fix.vs-target-worn-and-flat (engine, 2026-09-25): "Bloodrune Slayer bonus happens" (Andrew,
+    // engine DECISIONS.md) — the engine reads loadout.worn, so the worn gap is gone.
+    const vsTarget = slayerRules(row.slayer, it.id);
     // one-use rows (the Waystation, 2026-09-02): a charge is spent IN battle —
     // the same missing capability as an activated item.
     if (row.uses !== undefined && !abilities.some((a) => authoredAbilities[a]?.uses)) g(`uses: ${JSON.stringify(row.uses)} — no active compiled to carry the charge`, 'charges spent in battle — capability.consumables');
@@ -1500,10 +1498,8 @@ for (const combo of TIER3) {
     } else gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — trigger shape unparsed`);
   }
   // station.vs-target (engine, 2026-09-25): the enchant's slayer joins the base's — rules on the
-  // enchanted item, reaching the attacks it grants.
-  const enchantRules = slayerRules(e?.slayer, combo.enchant);
-  if (enchantRules.length && !HELD_SLAYER.has(b.itemClass)) gaps.push(`slayer ${JSON.stringify(e.slayer).slice(0, 40)} on a ${b.itemClass} — station.vs-target reads held items only`);
-  const vsTarget = [...(b.vsTarget || []), ...(HELD_SLAYER.has(b.itemClass) ? enchantRules : [])];
+  // enchanted item; held or worn, the engine decides the reach (fix.vs-target-worn-and-flat).
+  const vsTarget = [...(b.vsTarget || []), ...slayerRules(e?.slayer, combo.enchant)];
   enchanted[combo.id] = { ...b, id: combo.id, name: combo.name, tier: 3, statModifiers, triggers, ...(vsTarget.length ? { vsTarget } : {}), base: combo.base, enchant: combo.enchant,
     gaps: [...(b.gaps || []), ...gaps].length ? [...(b.gaps || []), ...gaps] : undefined };
   if (!enchanted[combo.id].gaps) delete enchanted[combo.id].gaps;
