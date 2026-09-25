@@ -16420,3 +16420,23 @@ index cb1d4d9..771a78a 100644
 +})
 ```
 </details>
+
+## fix.start-of-turn-victory — ABANDONED
+2026-09-25 23:10
+
+Superseded by encounter.runner (a6ec245, 2026-09-03), which carried it: startOfTurn() runs settle('turn.begin') unconditionally, and settle's loop runs checkVictory, so Start of Turn checks victory with nobody downed. Asserted in test/encounter-runner.test.ts (the loss timer ends at Start of Turn N+1). Closed on Andrew's word 2026-09-25 (DECISIONS.md).
+
+## fix.outcome-enum — ABANDONED
+2026-09-25 23:10
+
+Superseded by encounter.runner (a6ec245, 2026-09-03), which carried it: Outcome in src/core/types.ts is heroClear | objectiveMet | wipe | retreat | capped | objectiveFailed, with retreat documented as unreachable (skipped by ruling 2026-09-03). Closed on Andrew's word 2026-09-25 (DECISIONS.md).
+
+## hook.on-enter — ABANDONED
+2026-09-25 23:10
+
+Superseded by encounter.runner (a6ec245, 2026-09-03), which carried it: onEnter was retired 2026-08-15 (COMBAT-SEQUENCE Setup rung 6); startOfBattle fires at battle.begin and for each arrival in fireSchedule, then settle runs. Asserted in test/encounter-runner.test.ts. Closed on Andrew's word 2026-09-25 (DECISIONS.md).
+
+## move.actions — ABANDONED
+2026-09-25 23:10
+
+Superseded: movement chosen from a list landed as movement.powers (ba09f6a), pack.moves and fix.movement-plans; every move event names its power as cause. Its only remaining content was Sprint, and Andrew ruled 2026-09-25: Rogue keeps Side Roll, no one gets Sprint for now (DECISIONS.md).

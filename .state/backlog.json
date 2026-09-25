@@ -1070,7 +1070,10 @@
   "shape": "rule",
   "spec": "Movement becomes a chosen action from a list, like attacks. Angela 2026-08-15: one movement option THEN one attack-or-power, both optional. Most units start with one movement option; more arrive with levels. Rogue Sprint is move +3 for 2 stamina.",
   "expect": "a unit with two movement options picks one, and the log names which",
-  "changesBaseline": true
+  "changesBaseline": true,
+  "status": "failed",
+  "failedAt": "2026-09-25 23:10",
+  "reason": "Superseded: movement chosen from a list landed as movement.powers (ba09f6a), pack.moves and fix.movement-plans; every move event names its power as cause. Its only remaining content was Sprint, and Andrew ruled 2026-09-25: Rogue keeps Side Roll, no one gets Sprint for now (DECISIONS.md)."
  },
  {
   "id": "stat.spirit",
@@ -1201,7 +1204,10 @@
   "shape": "plumbing",
   "spec": "COMBAT-SEQUENCE Start of Turn rung 3 is a victory check. battle.ts runs only advanceBleedOuts, whose settle is guarded by if (downed.length) — so with nobody downed, Start of Turn checks nothing.",
   "expect": "a battle that becomes decided between phases ends at Start of Turn rather than mid-activation",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "status": "failed",
+  "failedAt": "2026-09-25 23:10",
+  "reason": "Superseded by encounter.runner (a6ec245, 2026-09-03), which carried it: startOfTurn() runs settle('turn.begin') unconditionally, and settle's loop runs checkVictory, so Start of Turn checks victory with nobody downed. Asserted in test/encounter-runner.test.ts (the loss timer ends at Start of Turn N+1). Closed on Andrew's word 2026-09-25 (DECISIONS.md)."
  },
  {
   "id": "fix.outcome-enum",
@@ -1209,7 +1215,10 @@
   "shape": "plumbing",
   "spec": "Outcome is heroClear | wipe | capped. COMBAT-SEQUENCE specifies five: objectiveMet and retreat are missing from the type. Blocked in practice on scenario objectives existing, but the enum should not silently disagree.",
   "expect": "the Outcome type matches the document, and an unreachable arm is marked as such",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "status": "failed",
+  "failedAt": "2026-09-25 23:10",
+  "reason": "Superseded by encounter.runner (a6ec245, 2026-09-03), which carried it: Outcome in src/core/types.ts is heroClear | objectiveMet | wipe | retreat | capped | objectiveFailed, with retreat documented as unreachable (skipped by ruling 2026-09-03). Closed on Andrew's word 2026-09-25 (DECISIONS.md)."
  },
  {
   "id": "fix.phase-ladder-config",
@@ -1283,7 +1292,10 @@
   "shape": "plumbing",
   "spec": "GAME-DESIGN 5 lists onEnter and startOfBattle among the hooks; COMBAT-SEQUENCE fires onEnter at battle setup and again at every wave arrival. Neither hook exists. onWounded and onEquip are also in that list and are blocked on wound levels and gear respectively.",
   "expect": "a unit placed at setup fires onEnter once, and settle runs after",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "status": "failed",
+  "failedAt": "2026-09-25 23:10",
+  "reason": "Superseded by encounter.runner (a6ec245, 2026-09-03), which carried it: onEnter was retired 2026-08-15 (COMBAT-SEQUENCE Setup rung 6); startOfBattle fires at battle.begin and for each arrival in fireSchedule, then settle runs. Asserted in test/encounter-runner.test.ts. Closed on Andrew's word 2026-09-25 (DECISIONS.md)."
  },
  {
   "id": "target.no-exclude-self",
