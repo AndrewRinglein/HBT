@@ -2735,3 +2735,14 @@ Andrew, told that the three Atlas combat areas (Priory, Angled Halls, Buried Pil
 Ruled (supersedes the entry above on where the compile writes):
 
 - **The Atlas ground compile** — compiles the outdoor Atlas maps for combat: trees → `terrain.woodland`, bushes, barberry and tall wheat → `terrain.undergrowth` (tall vegetation), houses → `terrain.house`, per the 2026-09-24 ground table. The three dungeon areas stay as they are.
+
+## 2026-09-25 — Atlas raised ground is not hills; the stalled outdoor maps stay unfielded
+
+Andrew, asked (1) "The outdoor maps have raised ground like bluffs and ridges; should those count as hills in combat (+10 ranged accuracy, +1 reach), or stay just for looks?" and (2) "Do you want someone to look into why fights on greenway, stonecrown and opening-4 never finish, so those maps can be added too?":
+
+“One no for now. 2, no.”
+
+Ruled:
+
+- **Atlas landforms** — not hills, for now: bluffs, ridges and rises stay presentation only. SWITCHES.md `atlasLandformsNotHills` is ruled.
+- **greenway, stonecrown, opening-4** — no investigation; they stay compiled but unfielded. SWITCHES.md `atlasFieldedMaps` is ruled.
