@@ -2773,3 +2773,16 @@ Ruled:
 
 - **Bonus damage packets and the critical** — stay as built: secondary packets are not multiplied by the critical (`V2-DAMAGE-PACKETS.md` lines 9–10). The open question in the entry above is closed.
 - **A worn item's damage vs target (bloodrune slayer)** — reaches every attack and power the hero makes, the way a badge's does. The default named in backlog `fix.vs-target-worn-and-flat` is ruled.
+
+
+## 2026-09-25 — Sprint: no one has it for now; three queue items closed as delivered
+
+Andrew, asked (1) "Should I close `fix.start-of-turn-victory`, `fix.outcome-enum` and `hook.on-enter` as already done by `a6ec245`, the way `v2.swap` and `trigger.zombie.sap` were closed?" and (2) "Should anyone get Sprint, or should it be cut? The 15 Aug note on the item gives it to the Rogue, but the Codex from 21 Aug gives the Rogue Side Roll instead, and `COMBAT-DESIGN.md` line 525 marks it "Not ruled."":
+
+“One, yes.   Rogue side roll. No one gets sprint for now.”
+
+Ruled:
+
+- **`fix.start-of-turn-victory`, `fix.outcome-enum`, `hook.on-enter`** — closed as superseded by `encounter.runner` (`a6ec245`, 2026-09-03), whose backlog note says it carries all three with their assertions in `test/encounter-runner.test.ts`.
+- **The Rogue's movement** — Move and Side Roll, as the Codex has it (2026-08-21). The 2026-08-15 "Rogue Sprint" in backlog `move.actions` is superseded.
+- **Sprint** — no one gets it, for now. No Codex row, no grantor. `COMBAT-DESIGN.md` line 525's "Not ruled" is answered. `move.actions` closes: movement chosen from a list landed as `movement.powers` (`ba09f6a`), `pack.moves` and `fix.movement-plans`, and Sprint was its only remaining content.
