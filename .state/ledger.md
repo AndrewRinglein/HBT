@@ -16476,3 +16476,8 @@ Superseded: movement chosen from a list landed as movement.powers (ba09f6a), pac
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## crit.branch-and-injuries — ABANDONED
+2026-09-25 23:21
+
+Superseded by station.crit (2026-08-27) and fix.crit-branch-even: the crit flips cup crit-branch (critChartShareVsHeroes/VsEnemies, 50/50 ruled 2026-08-27) between the +50% arm (DMG.CRIT) and one row of the crit chart rolled evenly on cup crit-effect, normal damage landing first (src/core/crit.ts). Grit was renamed Luck (Angela 2026-08-15, 3-UNITS-SETTLED.md); critChanceOf subtracts the target's Luck. Asserted in test/crit.test.ts ('3 + crit stat + gear + surplus - luck'). Closed as superseded under Andrew's 2026-09-25 ruling on delivered items (DECISIONS.md).
