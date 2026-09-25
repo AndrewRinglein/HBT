@@ -112,5 +112,11 @@
   "sha": "d34ad9f",
   "now": "fix.vs-target-worn-and-flat — damage vs target: landed 0fee6a5, flagged for review (the +50% vs poisoned assertions rewritten as a flat +3; battle-cursor gains a worn-slayer layer, test/fixtures/battle-cursor-worn.json, only progression-surge-0/1/2 changed events, 14 more cases differ only by loadout.worn in state). No vsTarget rule carries a percent; bloodrune slayers are rules read from loadout.worn and reach every attack and power (ruled); Kai'rin +3 vs undead live in test.vs-target-c. Content 5693b3e. Backlog 50fa022 gave the item its probeIds and variants. New switches: vsTargetWornTwice (two runes of one kind count twice), wornLoadoutShape. Four shards green on tree c10032bbbd. audit-all NOT run: it timed out at 176 s in Cowork after typecheck — run it from a terminal. Next: move.actions — movement becomes a chosen action from a list.",
   "committed": true
+ },
+ {
+  "at": "2026-09-25 23:37",
+  "sha": "fc2826b",
+  "now": "fix.phase-ladder-config, fix.retired-stations, tool.effect-size-rules — landed 426c3c8, 87bca9c, 65e6587; every gate PASS, none flagged. Closed as superseded on Andrew's ruling (DECISIONS 37ebf57): move.actions (no one gets Sprint for now; the Rogue keeps Side Roll; COMBAT-DESIGN c3823a4), fix.start-of-turn-victory, fix.outcome-enum, hook.on-enter (all carried by encounter.runner a6ec245), crit.branch-and-injuries (station.crit; Grit is Luck). New switches: endOfPhaseLadder, phaseRungLog. Rule items now declare effectSwitch on the backlog row (movement.zone-of-control, station.crit). Four shards green on tree 77a5d82669. audit-all NOT run: timed out at 174 s in Cowork after typecheck — run it from a terminal. Next: viewer.hexvfx-path — first check whether the viewer.* items are superseded by the ../viewer package.",
+  "committed": true
  }
 ]
