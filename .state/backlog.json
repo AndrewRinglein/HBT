@@ -1,5 +1,22 @@
 [
  {
+  "id": "v2.structures-reruled",
+  "kind": "engine",
+  "shape": "rule",
+  "probeIds": [
+   "terrain.wall",
+   "terrain.tower"
+  ],
+  "variants": [
+   "terrain.wall",
+   "terrain.tower"
+  ],
+  "spec": "Two v2.structures defaults, re-ruled by Andrew 2026-09-25 (engine/DECISIONS.md, verbatim there): \"Walls and towers cannot shoot past other obstructions. You must leave the walls the same way you came up.\" LINES: a wall, tower or house hex blocks every attack line passing through it, whoever stands at either end; the height exception (a unit on a wall or in a tower shot over structures) is gone. LEAVING A WALL: only back across its stairs side (the wall row's leave is now 'entry'); a push off any other face is a collision with the wall. SWITCHES.md wallDescent and structureLines are now ruled.",
+  "expect": "a shooter on a wall or in a tower cannot shoot past a tower or house between; a unit on a wall steps down only to its stair hex; a push off the far face collides with the wall; the bounded line check still agrees with the whole-board reading; control battles byte-identical.",
+  "status": "done-needs-review",
+  "sha": "f832bb1"
+ },
+ {
   "id": "fix.structures-line-speed",
   "kind": "engine",
   "shape": "plumbing",

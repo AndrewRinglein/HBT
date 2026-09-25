@@ -15927,3 +15927,99 @@ index 2d2a6bf..f1baf72 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## v2.structures-reruled — LANDED `f832bb1` **NEEDS REVIEW**
+2026-09-25 07:21
+
+  PASS  dependencies landed
+  WARN  not already decided — 6 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · SWITCHES.md:1066
+  PASS  typecheck
+  PASS  the item's own tests — test/v2-structures-line.test.ts, test/v2-structures.test.ts
+  PASS  gate 1 — the id appears in a real battle — terrain.wall: 2 log lines, 2 fired, 2 changed state · terrain.tower: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/v2-structures-line.test.ts, test/v2-structures.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/v2-structures-line.test.ts (-3), test/v2-structures.test.ts (-7) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 45 ids without a published source (35 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — terrain.wall live · terrain.tower live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without terrain.wall,terrain.tower — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/v2-structures-line.test.ts b/test/v2-structures-line.test.ts
+index ac2d495..d962a11 100644
+--- a/test/v2-structures-line.test.ts
++++ b/test/v2-structures-line.test.ts
+@@ -3,6 +3,8 @@
+ // Law 0's measurement is in the item; this is the proof the shortcut changes no answer: on
+ // several board sizes and layouts, for EVERY pair of hexes, it agrees with the plain reading of
+-// the rule — any structure hex other than the two ends that the line touches blocks it, unless an
+-// end stands on a wall or in a tower.
++// the rule — any structure hex other than the two ends that the line touches blocks it.
++// LAW 10 — 2026-09-25: the "unless an end stands on a wall or in a tower" clause is gone from the
++// reading below, because Andrew RULED it out (DECISIONS.md 2026-09-25): "Walls and towers cannot
++// shoot past other obstructions." The check it proves changed with the ruling.
+ import { describe, it, expect } from 'vitest'
+ import { structureBlocksLine } from '../src/core/structure.js'
+@@ -20,5 +22,5 @@ function layout(width: number, height: number, step: number, offset: number): Pi
+ function plainReading(ctx: Pick<Ctx, 'state'>, a: number, b: number): boolean {
+   const t = ctx.state.terrain, board = ctx.state.board
+-  if (a === b || structureOf(t[a]!)?.elevated || structureOf(t[b]!)?.elevated) return false
++  if (a === b) return false
+   for (let h = 0; h < t.length; h++) if (h !== a && h !== b && structureOf(t[h]!) && segmentCrossesCell(board, a, b, h)) return true
+   return false
+diff --git a/test/v2-structures.test.ts b/test/v2-structures.test.ts
+index 03c9d31..cc25140 100644
+--- a/test/v2-structures.test.ts
++++ b/test/v2-structures.test.ts
+@@ -180,10 +180,23 @@ describe('a unit reaches a wall top only through its stair facing', () => {
+     expect(pathTo(near.reach, at(3, 2), STAIR)).toEqual([FOOT, STAIR])
+   })
+-  it('along the top at 1 a hex (SWITCHES.md wallTopMove), and down on any side (wallDescent)', () => {
+-    const { ctx, reach } = walker(FOOT, [[STAIR, FOOT]])
+-    expect(reach.get(at(1, 3))?.cost).toBe(3)
++  // LAW 10 — 2026-09-25: this test asserted the provisional default `wallDescent` (down on any
++  // side). Andrew then RULED the opposite (DECISIONS.md 2026-09-25): "You must leave the walls the
++  // same way you came up." Rewritten to the ruling; the walk along the top is unchanged.
++  it('along the top at 1 a hex (SWITCHES.md wallTopMove), and down only the way you came up', () => {
++    expect(walker(FOOT, [[STAIR, FOOT]]).reach.get(at(1, 3))?.cost).toBe(3)
++    const { ctx } = walker(STAIR, [[STAIR, FOOT]])
+     const w = ctx.state.units[0]!
+-    expect(executeMove(ctx, 0, [STAIR, at(2, 4)], movePowerOf(ctx, w, 'path')!)).toBe(2)
+-    expect(w.hex).toBe(at(2, 4))
++    expect(executeMove(ctx, 0, [at(2, 4)], movePowerOf(ctx, w, 'path')!)).toBe(0)   // not down the far face
++    expect(executeMove(ctx, 0, [FOOT], movePowerOf(ctx, w, 'path')!)).toBe(1)       // down the stairs
++    expect(w.hex).toBe(FOOT)
++  })
++  it('up on the wall, the ground below is reached only by the stairs; a push off the far face is a collision', () => {
++    const up = walker(STAIR, [[STAIR, FOOT]])
++    expect(up.reach.get(FOOT)?.cost).toBe(1)
++    expect(up.reach.has(at(2, 4))).toBe(false)   // never straight off the far face (and round by the stairs is out of reach)
++    const ctx = rig(board(paint), ['test-warrior', STAIR], ['test-zombie', FOOT], [[STAIR, FOOT]])
++    executeKnockback(ctx, 1, 0, 1, 'test.shove')
++    expect(ctx.events.find((e) => e.type === 'knockback.blocked')).toEqual(expect.objectContaining({ collidedWith: 'structure', blocker: 'terrain.wall' }))
++    expect(ctx.state.units[0]!.hex).toBe(STAIR)
+   })
+   it('an entry must sit beside its hex, on a wall or a house, one per hex', () => {
+@@ -218,8 +231,14 @@ describe('houses: in through the door, and a unit inside can be shot from outsid
+     expect(canAttack(inside, 1, 0, BOW)).toBe(true)
+   })
+-  it('the tower "is just an obstruction for shooting past it" — and a shooter up on a wall sees over it', () => {
++  // LAW 10 — 2026-09-25: this test asserted the provisional default `structureLines` (a shooter
++  // up on a wall sees over). Andrew then RULED the opposite (DECISIONS.md 2026-09-25): "Walls and
++  // towers cannot shoot past other obstructions." Rewritten to the ruling.
++  it('the tower "is just an obstruction for shooting past it" — and up on a wall or in a tower, no one shoots past it', () => {
+     const shooter = at(2, 0), behind = at(2, 5)
+     expect(canAttack(rig(board({ [HOUSE]: 'T' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(false)
+-    expect(canAttack(rig(board({ [HOUSE]: 'T', [shooter]: 'W' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(true)
++    expect(canAttack(rig(board({ [HOUSE]: 'T', [shooter]: 'W' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(false)
++    expect(canAttack(rig(board({ [HOUSE]: 'H', [shooter]: 'T' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(false)
++    // …and the shooter up there is still shot at, and shoots, where nothing stands between
++    expect(canAttack(rig(board({ [shooter]: 'W' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(true)
+   })
+ })
+```
+</details>

@@ -359,7 +359,8 @@ export type Structure = {
   readonly leave: 'any' | 'entry'
   /** Only a unit following this side's rules may stand here. */
   readonly onlySide?: Side
-  /** A unit up on it shoots, and is shot, over every structure between (SWITCHES.md structureLines). */
+  /** Up on it: a move between two raised structures (a wall top, a tower) is along the top, with no entry side.
+   *  It gives NO line over anything — Andrew 2026-09-25: "Walls and towers cannot shoot past other obstructions." */
   readonly elevated: boolean
   /** Reach for EVERY attack made from here — melee included ("do not apply to range attacks only"). */
   readonly reach: number
@@ -371,7 +372,8 @@ export type Structure = {
 const STRUCTURE: Readonly<Record<number, Structure>> = {
   [TERRAIN.WALL]: {
     id: 'terrain.wall', enter: 'entry', entryCost: 1,
-    leave: 'any',                                   // SWITCHES.md wallDescent
+    // RULED 2026-09-25 (Andrew, DECISIONS.md): "You must leave the walls the same way you came up."
+    leave: 'entry',
     elevated: true, reach: 1,
     guard: { accuracyAgainst: -20, block: 10, rangedBlock: 10, dodge: 0, armor: 0 },
     sharedWith: ['terrain.wall', 'terrain.tower'],   // "an enemy who's not in a wall or a tower"

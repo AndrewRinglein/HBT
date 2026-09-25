@@ -8,7 +8,7 @@
 //   • how a unit gets in and out — across any side, or only across the ONE authored entry
 //     side (a wall's stairs, a house's door: `state.entries`), and who may stand there;
 //   • what it does to lines — an attack line passing THROUGH a structure hex is blocked,
-//     its own two ends never are, and a unit up on an elevated one sees over them all;
+//     its own two ends never are; standing up on one sees over nothing (Andrew 2026-09-25);
 //   • the reach its occupant gains, for every attack;
 //   • its GUARD — what it gives its occupant against an enemy attacker who is not standing
 //     in the same kind of structure: accuracy against, Block, Ranged Block, Dodge, Armor.
@@ -87,7 +87,10 @@ export function structureReachOf(ctx: Pick<Ctx, 'state'>, u: Unit): number {
   return structureAt(ctx, u.hex)?.reach ?? 0
 }
 
-/** Does a structure hex block the attack line from `a` to `b`? Its own ends never do; an elevated end sees over. */
+/**
+ * Does a structure hex block the attack line from `a` to `b`? Its own ends never do. Nobody sees
+ * over one — Andrew 2026-09-25 (DECISIONS.md): "Walls and towers cannot shoot past other obstructions."
+ */
 export function structureBlocksLine(ctx: Pick<Ctx, 'state'>, a: number, b: number, crosses: (cell: number) => boolean): boolean {
   if (a === b) return false
   // Only a hex within one row and one column of the two ends' box can touch the segment — a
@@ -103,8 +106,7 @@ export function structureBlocksLine(ctx: Pick<Ctx, 'state'>, a: number, b: numbe
     const h = r * width + c
     if (h !== a && h !== b && STRUCTURE_GROUND[terrain[h]!] === 1) (candidates ??= []).push(h)
   }
-  if (!candidates || structureAt(ctx, a)?.elevated || structureAt(ctx, b)?.elevated) return false
-  return candidates.some(crosses)
+  return candidates !== null && candidates.some(crosses)
 }
 
 /**

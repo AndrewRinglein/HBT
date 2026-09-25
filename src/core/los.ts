@@ -144,7 +144,7 @@ export function attackLineClear(ctx: Ctx, a: number, b: number): boolean {
   if (a === b) return !table.blockers.includes(String(a)) && !ctx.state.props.some(p=>p.height==='high'&&p.footprint.kind==='polygon'&&segmentCrossesPolygon(centerPoint(table.board,a),centerPoint(table.board,a),p.footprint.vertices))
   if (table.bits && bit(table.bits, pairIndex(table.cells, Math.min(a, b), Math.max(a, b)))) return false
   // v2.structures: a wall, tower or house hex blocks a line PASSING it — never its own ends,
-  // and never a line with an end up on a wall or in a tower (structure.ts structureBlocksLine).
+  // whoever stands there; no one shoots over (structure.ts structureBlocksLine, ruled 2026-09-25).
   // The same exact "passes through" test the thin obstructions read (SWITCHES.md structureLines).
   return !structureBlocksLine(ctx, a, b, (cell) => segmentCrossesCell(table.board, a, b, cell))
 }

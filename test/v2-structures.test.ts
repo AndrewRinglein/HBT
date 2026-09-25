@@ -179,12 +179,25 @@ describe('a unit reaches a wall top only through its stair facing', () => {
     const near = walker(at(3, 2), [[STAIR, FOOT]])
     expect(pathTo(near.reach, at(3, 2), STAIR)).toEqual([FOOT, STAIR])
   })
-  it('along the top at 1 a hex (SWITCHES.md wallTopMove), and down on any side (wallDescent)', () => {
-    const { ctx, reach } = walker(FOOT, [[STAIR, FOOT]])
-    expect(reach.get(at(1, 3))?.cost).toBe(3)
+  // LAW 10 — 2026-09-25: this test asserted the provisional default `wallDescent` (down on any
+  // side). Andrew then RULED the opposite (DECISIONS.md 2026-09-25): "You must leave the walls the
+  // same way you came up." Rewritten to the ruling; the walk along the top is unchanged.
+  it('along the top at 1 a hex (SWITCHES.md wallTopMove), and down only the way you came up', () => {
+    expect(walker(FOOT, [[STAIR, FOOT]]).reach.get(at(1, 3))?.cost).toBe(3)
+    const { ctx } = walker(STAIR, [[STAIR, FOOT]])
     const w = ctx.state.units[0]!
-    expect(executeMove(ctx, 0, [STAIR, at(2, 4)], movePowerOf(ctx, w, 'path')!)).toBe(2)
-    expect(w.hex).toBe(at(2, 4))
+    expect(executeMove(ctx, 0, [at(2, 4)], movePowerOf(ctx, w, 'path')!)).toBe(0)   // not down the far face
+    expect(executeMove(ctx, 0, [FOOT], movePowerOf(ctx, w, 'path')!)).toBe(1)       // down the stairs
+    expect(w.hex).toBe(FOOT)
+  })
+  it('up on the wall, the ground below is reached only by the stairs; a push off the far face is a collision', () => {
+    const up = walker(STAIR, [[STAIR, FOOT]])
+    expect(up.reach.get(FOOT)?.cost).toBe(1)
+    expect(up.reach.has(at(2, 4))).toBe(false)   // never straight off the far face (and round by the stairs is out of reach)
+    const ctx = rig(board(paint), ['test-warrior', STAIR], ['test-zombie', FOOT], [[STAIR, FOOT]])
+    executeKnockback(ctx, 1, 0, 1, 'test.shove')
+    expect(ctx.events.find((e) => e.type === 'knockback.blocked')).toEqual(expect.objectContaining({ collidedWith: 'structure', blocker: 'terrain.wall' }))
+    expect(ctx.state.units[0]!.hex).toBe(STAIR)
   })
   it('an entry must sit beside its hex, on a wall or a house, one per hex', () => {
     const b = { width: W, height: 5 }, t = board(paint).join('').split('').map((c) => (c === 'W' ? TERRAIN.WALL : TERRAIN.OPEN))
@@ -217,10 +230,16 @@ describe('houses: in through the door, and a unit inside can be shot from outsid
     const inside = rig(board({ [HOUSE]: 'H' }), ['test-warrior', HOUSE], ['test-ranger', shooter])
     expect(canAttack(inside, 1, 0, BOW)).toBe(true)
   })
-  it('the tower "is just an obstruction for shooting past it" — and a shooter up on a wall sees over it', () => {
+  // LAW 10 — 2026-09-25: this test asserted the provisional default `structureLines` (a shooter
+  // up on a wall sees over). Andrew then RULED the opposite (DECISIONS.md 2026-09-25): "Walls and
+  // towers cannot shoot past other obstructions." Rewritten to the ruling.
+  it('the tower "is just an obstruction for shooting past it" — and up on a wall or in a tower, no one shoots past it', () => {
     const shooter = at(2, 0), behind = at(2, 5)
     expect(canAttack(rig(board({ [HOUSE]: 'T' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(false)
-    expect(canAttack(rig(board({ [HOUSE]: 'T', [shooter]: 'W' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(true)
+    expect(canAttack(rig(board({ [HOUSE]: 'T', [shooter]: 'W' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(false)
+    expect(canAttack(rig(board({ [HOUSE]: 'H', [shooter]: 'T' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(false)
+    // …and the shooter up there is still shot at, and shoots, where nothing stands between
+    expect(canAttack(rig(board({ [shooter]: 'W' }), ['test-warrior', behind], ['test-ranger', shooter]), 1, 0, BOW)).toBe(true)
   })
 })
 

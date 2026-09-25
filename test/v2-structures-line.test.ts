@@ -2,8 +2,10 @@
 // hexes within one row and one column of the line's two ends, reading one flat per-ground table.
 // Law 0's measurement is in the item; this is the proof the shortcut changes no answer: on
 // several board sizes and layouts, for EVERY pair of hexes, it agrees with the plain reading of
-// the rule — any structure hex other than the two ends that the line touches blocks it, unless an
-// end stands on a wall or in a tower.
+// the rule — any structure hex other than the two ends that the line touches blocks it.
+// LAW 10 — 2026-09-25: the "unless an end stands on a wall or in a tower" clause is gone from the
+// reading below, because Andrew RULED it out (DECISIONS.md 2026-09-25): "Walls and towers cannot
+// shoot past other obstructions." The check it proves changed with the ruling.
 import { describe, it, expect } from 'vitest'
 import { structureBlocksLine } from '../src/core/structure.js'
 import { segmentCrossesCell } from '../src/core/los.js'
@@ -19,7 +21,7 @@ function layout(width: number, height: number, step: number, offset: number): Pi
 }
 function plainReading(ctx: Pick<Ctx, 'state'>, a: number, b: number): boolean {
   const t = ctx.state.terrain, board = ctx.state.board
-  if (a === b || structureOf(t[a]!)?.elevated || structureOf(t[b]!)?.elevated) return false
+  if (a === b) return false
   for (let h = 0; h < t.length; h++) if (h !== a && h !== b && structureOf(t[h]!) && segmentCrossesCell(board, a, b, h)) return true
   return false
 }
