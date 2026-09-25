@@ -18,14 +18,16 @@ const mod = (m: Partial<StatMod> & Pick<StatMod, 'stat' | 'value'>): StatMod =>
 
 // ─── gate 2: the numbers the old hardcoded stations produced ─────────────────
 describe('terrain through the stat pipeline', () => {
-  it('hills are still +10 accuracy and +2 ranged reach, and nothing else', () => {
+  // v2.retire-forest-hills (2026-09-24), Law 10 reason: the RULE changed by ruling — Andrew, DECISIONS.md: hills are "+10 accuracy and +1 reach", ranged only ("It's only 10 ranged accuracy").
+  it('hills are +10 ranged accuracy and +1 ranged reach, and nothing else', () => {
     const { ctx, r, z } = ranger()
     const flatAcc = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
     const flatReach = reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!)
 
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
     expect(resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value - flatAcc).toBe(10)
-    expect(reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!) - flatReach).toBe(2)
+    expect(reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!) - flatReach).toBe(1)
+    expect(stat(ctx, r, 'accuracy')).toBe(r.accuracy)              // the +10 is on the ladder, ranged only
     expect(reachOf(ctx, r, ATTACKS['attack.punch']!)).toBe(1)      // melee ignores it
     expect(stat(ctx, r, 'dodge')).toBe(r.dodge)                    // hills grant no dodge
     expect(stat(ctx, r, 'armor')).toBe(r.armor)                    // and no armor
@@ -34,9 +36,10 @@ describe('terrain through the stat pipeline', () => {
   it('terrain is DERIVED — moving off the hill takes the bonus with it', () => {
     const { ctx, r } = ranger()
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
-    expect(stat(ctx, r, 'accuracy')).toBe(r.accuracy + 10)
+    // Law 10 (v2.retire-forest-hills): the hill's stat is its +1 reach now; the rule — derived, not stored — is unchanged
+    expect(stat(ctx, r, 'reach')).toBe(r.reach + 1)
     r.hex = hexId(6, 5)                                            // one hex sideways, open ground
-    expect(stat(ctx, r, 'accuracy')).toBe(r.accuracy)
+    expect(stat(ctx, r, 'reach')).toBe(r.reach)
     expect(terrainMods(ctx, r)).toEqual([])                        // nothing stored to clean up
   })
 })
@@ -103,10 +106,11 @@ describe('the ledger explains the number', () => {
   it('every row names a source, and terrain names itself', () => {
     const { ctx, r } = ranger()
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
-    const e = effective(ctx, r, 'accuracy')
+    // Law 10 (v2.retire-forest-hills): the hill's stat row is its +1 reach; the rule — the row names its source — is unchanged
+    const e = effective(ctx, r, 'reach')
     expect(e.ledger.length).toBe(1)
     expect(e.ledger[0]!.source).toBe('terrain.hills')
-    expect(e.ledger[0]).toMatchObject({ op: 'add', delta: 10, from: r.accuracy, to: r.accuracy + 10 })
+    expect(e.ledger[0]).toMatchObject({ op: 'add', delta: 1, from: r.reach, to: r.reach + 1 })
   })
 
   it('a modifier that changes nothing leaves no row — the ledger is deltas, not intentions', () => {

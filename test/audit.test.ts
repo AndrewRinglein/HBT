@@ -5,7 +5,7 @@ import { runBattle } from '../src/core/battle.js'
 import { UNITS, ATTACKS, ABILITIES } from '../src/content/index.js'
 import { STATUSES } from '../src/content/statuses.js'
 import { MOVES } from '../src/content/moves.js'
-import { accuracyBonusOf, dodgeBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
+import { accuracyBonusOf, accuracyAgainstOf, dodgeBonusOf, rangedAccuracyOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
 import { distance } from './board16.js'
 
 // An INDEPENDENT auditor. It re-derives every number straight from the stat blocks
@@ -256,6 +256,10 @@ describe('independent audit of logged battles', () => {
               if (inMelee) acc -= 20
             }
             acc += accuracyBonusOf(myTerr)
+            // The auditor learned the TERRAIN rung on 2026-09-24 (v2.retire-forest-hills (2026-09-24), Law 10 reason: the RULE changed by ruling — Andrew, DECISIONS.md: hills are "+10 accuracy and +1 reach", ranged only ("It's only 10 ranged accuracy").): the shooter's hills
+            // (+10, ranged only) and the target's concealment — rules, recomputed, not numbers.
+            if (a.attack.kind === 'ranged') acc += rangedAccuracyOf(myTerr)
+            acc += accuracyAgainstOf(terr[hex.get(e.target!)!] ?? 0, a.attack.kind)
             // The auditor learned the attack's OWN modifier on 2026-09-03
             // (station.accuracy-field): the row's `accuracy` — Punch −5, the
             // war-axe's Hack −5, the longbow's +10 — lands at SITUATIONAL.

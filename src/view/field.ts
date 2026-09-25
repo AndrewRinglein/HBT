@@ -6,7 +6,7 @@ import { TERRAIN,type State } from '../core/types.js'
 import { terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
   accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf,
   stripsOnEnterOf, stripsOnActivationEndOf, appliesOnEnterOf, appliesOnActivationEndOf,
-  accuracyAgainstOf, hazardOf,
+  accuracyAgainstOf, hazardOf, rangedAccuracyOf,
 } from '../content/terrain.js'
 
 const HEXW = 128, HEXH = 132, COL = 128, ROW = 96, ODD = 64, TILT = 49.3
@@ -38,6 +38,8 @@ const groundNote = (t: number): string => {
   // v2.ground-table: concealment and the hazard, in the same plain words
   const rv = accuracyAgainstOf(t, 'ranged'), mv = accuracyAgainstOf(t, 'melee')
   if (rv || mv) bits.push(`${[rv ? `${rv} ranged` : '', mv ? `${mv} melee` : ''].filter(Boolean).join(', ')} accuracy against`)
+  const ra = rangedAccuracyOf(t)
+  if (ra) bits.push(`+${ra} ranged accuracy`)
   const hz = hazardOf(t)
   if (hz) bits.push(`${hz.damage} ${hz.damageType}${hz.applies.map(([id, n]) => ` + ${n} ${short(id)}`).join('')} on entry and end of activation`)
   return bits.join(' · ')

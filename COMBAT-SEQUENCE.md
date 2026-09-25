@@ -385,7 +385,7 @@ To-hit is now the core roll of the game and its **final output feeds the crit fo
 | 100 | BASE — the attacker's Accuracy | **yes**, plus a `BASE_MOD` row per stat modifier |
 | 200 | RANGE — −5 per hex past the first, for ranged | **yes** |
 | 300 | ADJACENT — −20 for firing while **you** are adjacent to an enemy | **yes** — see the ruling below |
-| 400 | TERRAIN — the target's occupied-hex modifier | **yes, revived 2026-09-24 (v2.ground-table)** — V2 concealment, COMBAT-V2 §3.2: the ground the *target* stands in, by attack kind (grass/wheat/bush −10 ranged; woodland −15 ranged, −7 melee). v1's occupant stat mods still arrive as `BASE_MOD` |
+| 400 | TERRAIN — the target's occupied-hex modifier | **yes, revived 2026-09-24 (v2.ground-table)** — V2 concealment, COMBAT-V2 §3.2: the ground the *target* stands in, by attack kind (grass/wheat/bush −10 ranged; woodland −15 ranged, −7 melee). Same rung, row `ELEVATION`: the *shooter's* hills, +10 to ranged attacks only (v2.retire-forest-hills, Andrew 2026-09-24). The remaining occupant stat mods (rocky, ruins, water, marsh, desert) still arrive as `BASE_MOD` |
 | 500 | CONDITION — fog, snow, darkness | *not yet* — nothing writes it. This is where the whole battle-condition system lands |
 | 600 | TARGET_DODGE | **yes** |
 | 700 | SITUATIONAL — the design's open melee penalties land here | *not yet* — and it is where **every** attack-level accuracy modifier goes: the AoO's −20, flight's −30, a per-attack ±. `AttackDef` has no `accuracy` field to feed it |

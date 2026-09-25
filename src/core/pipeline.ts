@@ -19,7 +19,7 @@ import { settle } from './settle.js'
 import { canSee } from './vision.js'
 import { attackLineClear } from './los.js'
 import { hasLowCover } from './cover.js'
-import { accuracyAgainstOf, terrainIdOf } from '../content/maps.js'
+import { accuracyAgainstOf, rangedAccuracyOf, terrainIdOf } from '../content/maps.js'
 import { kdbChanceOf, kdbTarget, resolveKdb } from './kdb.js'
 import { reflectThorns, thornsOnHit } from './thorns.js'
 import { rulesSideOf } from './side.js'
@@ -146,6 +146,13 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   // TERRAIN (400) — V2 concealment (v2.ground-table, COMBAT-V2 §3.2): grass, wheat
   // and bush hide their occupant from ranged attacks, woodland from both. It reads
   // the TARGET's ground, whoever shoots; independent of cover, and stacks with it.
+  // ELEVATION, same rung — the SHOOTER's ground: hills give +10 to ranged attacks only
+  // (v2.retire-forest-hills, Andrew 2026-09-24: "It's only 10 ranged accuracy").
+  if (a.attack.kind === 'ranged') {
+    const from = ctx.state.terrain[attacker.hex] ?? 0
+    const high = rangedAccuracyOf(from)
+    if (high) v = step(ledger, ACC.TERRAIN, 'ELEVATION', terrainIdOf(from), v, v + high)
+  }
   const hiddenIn = ctx.state.terrain[target.hex] ?? 0
   const concealment = accuracyAgainstOf(hiddenIn, a.attack.kind)
   if (concealment) v = step(ledger, ACC.TERRAIN, 'TERRAIN', terrainIdOf(hiddenIn), v, v + concealment)

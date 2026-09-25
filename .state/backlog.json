@@ -1,5 +1,27 @@
 [
  {
+  "id": "v2.retire-forest-hills",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Retire v1 forest and move hills to V2, as Andrew ruled 2026-09-24 (engine/DECISIONS.md 'the ground table, re-ruled'): 'There's no more forest' and 'trees are supposed to be woodland' - terrain.woodland takes forest's number 2 and MAP-01's glyph f, so every authored or saved forest hex is woodland (2 move, -15 ranged / -7 melee against the occupant, no Dodge or Armor for it); glyph o retired. Hills: '+10 accuracy and +1 reach', 'It's only 10 ranged accuracy' - the elevated trait gives +1 reach (ranged only, as reach always was) and +10 accuracy for ranged attacks only, an ELEVATION row at the accuracy ladder's TERRAIN rung (400) read off the shooter's ground; rocky hills compose to -5 accuracy (all) plus the hill. Rocky keeps its v1 modifiers. COMBAT-V2 section 18's terrain-as-cover retirement, for forest and hills.",
+  "expect": "a shot from hills is +10 and a swing from hills +0; hills reach +1 for a bow and nothing for a punch; a target in woodland (was forest) is 15 harder to shoot, and its occupant's Dodge and Armor are unchanged; map.field's f hexes are woodland; the independent audit recomputes every hit chance with the ELEVATION and concealment rows; control battles on hill and forest maps move (declared); map.open does not.",
+  "probeIds": [
+   "terrain.hills",
+   "terrain.woodland"
+  ],
+  "variants": [
+   "terrain.hills",
+   "terrain.rocky-hills"
+  ],
+  "needs": [
+   "v2.ground-retable"
+  ],
+  "changesBaseline": true,
+  "note": "Andrew's chat, 2026-09-24. Edits existing tests under Law 10 (terrain, stats, additions, audit, burning-ground, high-cell-los, water-cleanses, v2-ground-table), each with its reason at the edit - lands flagged for review, as it should. The viewer's forest swatch follows in the viewer package.",
+  "status": "done-needs-review",
+  "sha": "59c5a2f"
+ },
+ {
   "id": "v2.ground-retable",
   "kind": "engine",
   "shape": "rule",

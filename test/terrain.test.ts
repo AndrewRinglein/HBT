@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { fixtureBlockers, setHigh } from './prop-fixtures.js'
 import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
-         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf } from '../src/content/maps.js'
+         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf, rangedAccuracyOf } from '../src/content/maps.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { effective, terrainMods } from '../src/core/stats.js'
@@ -12,7 +12,8 @@ import { ATTACKS } from '../src/content/index.js'
 import { TERRAIN } from '../src/core/types.js'
 import type { StatName } from '../src/core/stats.js'
 
-const NEW_KINDS = [TERRAIN.FOREST, TERRAIN.ROCKY, TERRAIN.ROCKY_HILLS, TERRAIN.WATER, TERRAIN.IMPASSABLE]
+// v2.retire-forest-hills (2026-09-24), Law 10 reason: the RULE changed by ruling — Andrew, DECISIONS.md: "There's no more forest" (trees are woodland, which took forest's number and glyph) and hills are "+10 accuracy and +1 reach", ranged only.
+const NEW_KINDS = [TERRAIN.WOODLAND, TERRAIN.ROCKY, TERRAIN.ROCKY_HILLS, TERRAIN.WATER, TERRAIN.IMPASSABLE]
 const ALL_KINDS = [TERRAIN.OPEN, TERRAIN.HILLS, ...NEW_KINDS]
 
 function warriorOn(terrain: number) {
@@ -51,7 +52,7 @@ describe('terrain.kinds — the seven are recognised', () => {
   it('map.field carries real MAP-01 terrain, not a collapse to open/hills', () => {
     const kinds = new Set(terrainOf('map.field'))
     expect(kinds.size).toBeGreaterThan(2)
-    for (const k of [TERRAIN.FOREST, TERRAIN.ROCKY, TERRAIN.WATER]) expect(kinds.has(k)).toBe(true)
+    for (const k of [TERRAIN.WOODLAND, TERRAIN.ROCKY, TERRAIN.WATER]) expect(kinds.has(k)).toBe(true)   // MAP-01's 'f' is woodland now (Law 10, top)
   })
 
   it('an unknown glyph is still a loud failure, not a silent open hex', () => {
@@ -89,11 +90,14 @@ describe('terrain.kinds — the new kinds carry no rules yet', () => {
     for (const s of STATS) expect(effective(openCtx, openU, s).value).toBe(effective(openCtx, openU, s).base)
   })
 
-  it('hills still do what they always did — the conversion changed the glyph, not the rule', () => {
+  // v2.retire-forest-hills (2026-09-24), Law 10 reason: the RULE changed by ruling — Andrew, DECISIONS.md: hills are "+10 accuracy and +1 reach", ranged only ("It's only 10 ranged accuracy").
+  // The glyph conversion this test guarded is unchanged; the hill's numbers are the new ruling.
+  it('hills do what the 2026-09-24 ruling says — the conversion changed the glyph, not the rule', () => {
     const { ctx: o, u: ou } = warriorOn(TERRAIN.OPEN)
     const { ctx: h, u: hu } = warriorOn(TERRAIN.HILLS)
-    expect(effective(h, hu, 'accuracy').value - effective(o, ou, 'accuracy').value).toBe(10)
-    expect(effective(h, hu, 'reach').value - effective(o, ou, 'reach').value).toBe(2)
+    expect(effective(h, hu, 'accuracy').value - effective(o, ou, 'accuracy').value).toBe(0)
+    expect(rangedAccuracyOf(TERRAIN.HILLS)).toBe(10)
+    expect(effective(h, hu, 'reach').value - effective(o, ou, 'reach').value).toBe(1)
     expect(moveCostOf(TERRAIN.HILLS)).toBe(2)
   })
 
@@ -118,7 +122,7 @@ describe('terrain.movecost — rough ground costs more', () => {
     for (const t of ALL_KINDS) {
       if (!isPassable(t)) continue
       const fromTraits = 1 + TRAITS[t]!.reduce((n, k) => n + TRAIT[k].moveCost, 0)
-        + (t === TERRAIN.FOREST ? 1 : 0)
+        + (t === TERRAIN.WOODLAND ? 1 : 0)   // woodland's +1 is stated, as forest's was (Law 10, top)
       expect(moveCostOf(t)).toBe(fromTraits)
     }
     expect(moveCostOf(TERRAIN.ROCKY_HILLS))
@@ -135,12 +139,16 @@ describe('terrain.movecost — rough ground costs more', () => {
       dodge: dodgeBonusOf(t), armor: armorBonusOf(t), resist: resistBonusOf(t),
     })
     expect(row(TERRAIN.OPEN)).toEqual({ cost: 1, acc: 0, reach: 0, dodge: 0, armor: 0, resist: 0 })
-    expect(row(TERRAIN.FOREST)).toEqual({ cost: 2, acc: 0, reach: 0, dodge: 10, armor: 1, resist: 0 })
-    expect(row(TERRAIN.HILLS)).toEqual({ cost: 2, acc: 10, reach: 2, dodge: 0, armor: 0, resist: 0 })
+    // Law 10 (top): forest's +10 Dodge / +1 Armor is gone — woodland gives its occupant no
+    // stat, only concealment against it; hills' +10 moved off the stat (ranged only, below)
+    // and their reach is +1. Rocky, water and open are §1.1 unchanged.
+    expect(row(TERRAIN.WOODLAND)).toEqual({ cost: 2, acc: 0, reach: 0, dodge: 0, armor: 0, resist: 0 })
+    expect(row(TERRAIN.HILLS)).toEqual({ cost: 2, acc: 0, reach: 1, dodge: 0, armor: 0, resist: 0 })
+    expect([rangedAccuracyOf(TERRAIN.HILLS), rangedAccuracyOf(TERRAIN.ROCKY_HILLS), rangedAccuracyOf(TERRAIN.OPEN)]).toEqual([10, 10, 0])
     expect(row(TERRAIN.ROCKY)).toEqual({ cost: 2, acc: -5, reach: 0, dodge: 0, armor: 1, resist: 1 })
     expect(row(TERRAIN.WATER)).toEqual({ cost: 2, acc: -10, reach: 0, dodge: 0, armor: 0, resist: 0 })
     // "composed" in §1.1 — rock plus a climb, both sets of modifiers
-    expect(row(TERRAIN.ROCKY_HILLS)).toEqual({ cost: 3, acc: 5, reach: 2, dodge: 0, armor: 1, resist: 1 })
+    expect(row(TERRAIN.ROCKY_HILLS)).toEqual({ cost: 3, acc: -5, reach: 1, dodge: 0, armor: 1, resist: 1 })   // Law 10 (top)
     expect(isPassable(TERRAIN.IMPASSABLE)).toBe(false)
   })
 
@@ -318,18 +326,19 @@ describe('terrain.modifiers — the ground is just another modifier', () => {
     const b = (s: StatName) => effective(base.ctx, base.u, s).value
     const on = (t: number, s: StatName) => { const { ctx, u } = warriorOn(t); return effective(ctx, u, s).value }
 
-    expect(on(TERRAIN.FOREST, 'dodge') - b('dodge')).toBe(10)
-    expect(on(TERRAIN.FOREST, 'armor') - b('armor')).toBe(1)
+    // Law 10 (top): woodland gives its occupant nothing through the stat pipeline
+    expect(on(TERRAIN.WOODLAND, 'dodge') - b('dodge')).toBe(0)
+    expect(on(TERRAIN.WOODLAND, 'armor') - b('armor')).toBe(0)
     expect(on(TERRAIN.ROCKY, 'armor') - b('armor')).toBe(1)
     expect(on(TERRAIN.ROCKY, 'resist') - b('resist')).toBe(1)
     expect(on(TERRAIN.WATER, 'accuracy') - b('accuracy')).toBe(-10)
-    // composed: rocky's -5 plus hills' +10
-    expect(on(TERRAIN.ROCKY_HILLS, 'accuracy') - b('accuracy')).toBe(5)
-    expect(on(TERRAIN.ROCKY_HILLS, 'reach') - b('reach')).toBe(2)
+    // composed: rocky's -5 on the stat; hills' +10 is ranged-only now, on the ladder (Law 10, top)
+    expect(on(TERRAIN.ROCKY_HILLS, 'accuracy') - b('accuracy')).toBe(-5)
+    expect(on(TERRAIN.ROCKY_HILLS, 'reach') - b('reach')).toBe(1)
   })
 
   it('every terrain modifier names itself in the ledger', () => {
-    for (const t of [TERRAIN.FOREST, TERRAIN.ROCKY, TERRAIN.WATER, TERRAIN.ROCKY_HILLS]) {
+    for (const t of [TERRAIN.HILLS, TERRAIN.ROCKY, TERRAIN.WATER, TERRAIN.ROCKY_HILLS]) {   // forest → hills: woodland carries no stat (Law 10, top)
       const { ctx, u } = warriorOn(t)
       const rows = terrainMods(ctx, u)
       expect(rows.length).toBeGreaterThan(0)
@@ -338,10 +347,11 @@ describe('terrain.modifiers — the ground is just another modifier', () => {
   })
 
   it('a modifier is still DERIVED — stepping off the ground drops it', () => {
-    const { ctx, u } = warriorOn(TERRAIN.FOREST)
-    expect(effective(ctx, u, 'dodge').value).toBeGreaterThan(0)
+    // forest's Dodge → rocky's Armor: the rule under test (derived, not stored) is unchanged (Law 10, top)
+    const { ctx, u } = warriorOn(TERRAIN.ROCKY)
+    const onRock = effective(ctx, u, 'armor').value
     ctx.state.terrain[u.hex] = TERRAIN.OPEN
-    expect(effective(ctx, u, 'dodge').value).toBe(0)
+    expect(onRock - effective(ctx, u, 'armor').value).toBe(1)
     expect(terrainMods(ctx, u)).toEqual([])
   })
 
@@ -350,9 +360,9 @@ describe('terrain.modifiers — the ground is just another modifier', () => {
       [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
     const [r, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
     const open = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
-    ctx.state.terrain[z.hex] = TERRAIN.FOREST
+    ctx.state.terrain[z.hex] = TERRAIN.WOODLAND
     const wooded = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
-    expect(open - wooded).toBe(10)
+    expect(open - wooded).toBe(15)   // woodland's −15 against, not forest's +10 Dodge (Law 10, top)
   })
 
   it('no new pipeline station was added — terrain rides the stat pipeline', () => {

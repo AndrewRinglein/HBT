@@ -555,7 +555,7 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   // Warrior. TEST data, no campaign claim.
   'test.ground-table': {
     id:'test.ground-table',note:'TEST: V2 ground — columns of undergrowth, desert, marsh, ruins, woodland and lava between a Ranger and Warrior and two zombies. No campaign claim.',mapId:'test.map.ground-table',
-    map:{id:'test.map.ground-table',name:'Ground table TEST',rows:['.udmnol..','.udmnol..','.udmnol..','.udmnol..','.udmnol..']},
+    map:{id:'test.map.ground-table',name:'Ground table TEST',rows:['.udmnfl..','.udmnfl..','.udmnfl..','.udmnfl..','.udmnfl..']},
     heroes:['test-ranger','test-warrior'],heroHexes:[9,27],enemies:['test-zombie','test-zombie'],enemyHexes:[17,35],replicate:0,
   },
   'test.cover-crates': {

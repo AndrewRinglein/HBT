@@ -22,7 +22,7 @@ describe('water cleanses', () => {
       .toEqual(['status.burn', 'status.poison'])
     expect(stripsOnActivationEndOf(TERRAIN.WATER)).not.toContain('status.regeneration')
     expect(stripsOnEnterOf(TERRAIN.OPEN)).toEqual([])
-    expect(stripsOnActivationEndOf(TERRAIN.FOREST)).toEqual([])
+    expect(stripsOnActivationEndOf(TERRAIN.WOODLAND)).toEqual([])   // v2.retire-forest-hills, Law 10: forest is gone; woodland took its number (Andrew, 2026-09-24)
   })
 
   /** First water hex on the map, and a passable non-water neighbour to start from. */

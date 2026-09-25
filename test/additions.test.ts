@@ -65,13 +65,14 @@ describe('pass 2 — hills', () => {
     const hill = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
     expect(hill - flat).toBe(10)
   })
-  it('gate 2 — hills give exactly +2 reach, ranged only', () => {
+  // v2.retire-forest-hills (2026-09-24), Law 10 reason: the RULE changed by ruling — Andrew, DECISIONS.md: hills are "+10 accuracy and +1 reach", ranged only ("It's only 10 ranged accuracy").
+  it('gate 2 — hills give exactly +1 reach, ranged only', () => {
     const ctx = createCustomBattle(
       [{ type: 'test-ranger', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
     const r = ctx.state.units[0]!
     expect(reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!)).toBe(6)
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
-    expect(reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!)).toBe(8)
+    expect(reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!)).toBe(7)
     expect(reachOf(ctx, r, ATTACKS['attack.punch']!)).toBe(1)
   })
   it('gate 2 — reachability shrinks on rough ground', () => {

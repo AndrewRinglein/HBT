@@ -5,18 +5,19 @@ import { disabledIds } from './disable.js'
 
 /** The authored glyph for each terrain kind. MAP-01's legend is the source. */
 export const GLYPH: Readonly<Record<string, number>> = {
-  '.': TERRAIN.OPEN, 'h': TERRAIN.HILLS, 'f': TERRAIN.FOREST, 'r': TERRAIN.ROCKY,
+  '.': TERRAIN.OPEN, 'h': TERRAIN.HILLS, 'f': TERRAIN.WOODLAND, 'r': TERRAIN.ROCKY,
   'R': TERRAIN.ROCKY_HILLS, 'w': TERRAIN.WATER, 'x': TERRAIN.IMPASSABLE,
   'b': TERRAIN.BURNING, 'p': TERRAIN.POISONED,
   // v2.ground-retable: no document assigns these glyphs — SWITCHES.md groundGlyphs.
-  'u': TERRAIN.UNDERGROWTH, 'o': TERRAIN.WOODLAND, 'l': TERRAIN.LAVA,
+  // 'f' (MAP-01's forest glyph) is woodland; 'o' is retired (v2.retire-forest-hills).
+  'u': TERRAIN.UNDERGROWTH, 'l': TERRAIN.LAVA,
   'm': TERRAIN.MARSH, 'd': TERRAIN.DESERT, 'n': TERRAIN.RUINS,
 }
 
 /** The id a terrain kind answers to in a log line or a modifier source. */
 const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.OPEN]: 'terrain.open', [TERRAIN.HILLS]: 'terrain.hills',
-  [TERRAIN.FOREST]: 'terrain.forest', [TERRAIN.ROCKY]: 'terrain.rocky',
+  [TERRAIN.ROCKY]: 'terrain.rocky',
   [TERRAIN.ROCKY_HILLS]: 'terrain.rocky-hills', [TERRAIN.WATER]: 'terrain.water',
   [TERRAIN.IMPASSABLE]: 'terrain.impassable',
   [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
@@ -68,6 +69,8 @@ type Mods = { moveCost: number
   rangedAccuracyAgainst?: number
   /** V2 §3.2 concealment: accuracy of a MELEE attack against the occupant. */
   meleeAccuracyAgainst?: number
+  /** The OCCUPANT's own accuracy with RANGED attacks (hills, v2.retire-forest-hills). */
+  rangedAccuracy?: number
   hazard?: Hazard
   accuracy?: number; reach?: number; dodge?: number; armor?: number; resist?: number
   /** Statuses reduced by 1 when a unit STEPS ONTO this terrain. */
@@ -82,7 +85,10 @@ type Mods = { moveCost: number
 /** GROUND-REQUIREMENTS.md §1.1. Change these only from that document. */
 export const TRAIT: Readonly<Record<Trait, Mods>> = {
   rough:    { moveCost: 1, accuracy: -5, armor: 1, resist: 1 },  // rocky: 2, -5 Acc, +1 Armor, +1 Resist
-  elevated: { moveCost: 1, accuracy: 10, reach: 2 },             // hills: 2, +10 Acc, +2 Reach
+  // hills: 2 move. RE-RULED 2026-09-24 (Andrew, DECISIONS.md): "Hills are going to have
+  // +10 accuracy and +1 reach"; "Reach only applies to range attacks … It's only 10
+  // ranged accuracy." Was +10 Accuracy (every attack) and +2 Reach (§1.1, v1).
+  elevated: { moveCost: 1, rangedAccuracy: 10, reach: 1 },
   wet:      { moveCost: 1, accuracy: -10,                        // water: 2, -10 Acc
     // GAME-DESIGN §4 (Water — the anti-status terrain): entry strips 1 Burn;
     // End of Activation strips 1 Burn and 1 Poison. RULED, Angela 2026-08-20:
@@ -117,7 +123,6 @@ export const TRAIT: Readonly<Record<Trait, Mods>> = {
 export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
   [TERRAIN.OPEN]: [],
   [TERRAIN.HILLS]: ['elevated'],
-  [TERRAIN.FOREST]: [],                            // stated directly below — see EXTRA
   [TERRAIN.ROCKY]: ['rough'],
   [TERRAIN.ROCKY_HILLS]: ['rough', 'elevated'],    // composed, per §1.1
   [TERRAIN.WATER]: ['wet'],
@@ -132,12 +137,11 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
 }
 
 /**
- * Modifiers a terrain carries that its traits do not explain.
- * Forest is +10 Dodge, +1 Armor at cost 2 — a shape no other row shares, so it is
- * stated rather than given an invented 'wooded' trait nobody asked for.
+ * Modifiers a terrain carries that its traits do not explain — stated per row rather
+ * than given invented traits nobody asked for. (v1 forest, +10 Dodge +1 Armor, is gone:
+ * Andrew 2026-09-24, "There's no more forest".)
  */
 const EXTRA: Readonly<Record<number, Mods>> = {
-  [TERRAIN.FOREST]: { moveCost: 1, dodge: 10, armor: 1 },
   // ── V2 ground (v2.ground-table, re-ruled v2.ground-retable) ────────────────
   // SOURCE OF TRUTH: engine/DECISIONS.md "2026-09-24 — the ground table, re-ruled"
   // (Andrew, verbatim there). It SUPERSEDES COMBAT-V2-DESIGN-2026-09-07 §3.2's rows.
@@ -161,7 +165,7 @@ const EXTRA: Readonly<Record<number, Mods>> = {
 
 type Stat = 'accuracy' | 'reach' | 'dodge' | 'armor' | 'resist'
 const STATS: Stat[] = ['accuracy', 'reach', 'dodge', 'armor', 'resist']
-const AGAINST = ['rangedAccuracyAgainst', 'meleeAccuracyAgainst'] as const
+const AGAINST = ['rangedAccuracyAgainst', 'meleeAccuracyAgainst', 'rangedAccuracy'] as const
 
 function composed(terrain: number): Mods {
   const out: Mods = { moveCost: 1 }
@@ -223,6 +227,11 @@ export function accuracyAgainstOf(terrain: number, kind: 'melee' | 'ranged'): nu
   if (terrain === TERRAIN.IMPASSABLE || disabledIds().has(terrainIdOf(terrain))) return 0
   const m = composed(terrain)
   return (kind === 'ranged' ? m.rangedAccuracyAgainst : m.meleeAccuracyAgainst) ?? 0
+}
+/** The occupant's own ranged-accuracy bonus from its ground (hills: +10). Ranged attacks only. */
+export function rangedAccuracyOf(terrain: number): number {
+  if (terrain === TERRAIN.IMPASSABLE || off(terrain)) return 0
+  return composed(terrain).rangedAccuracy ?? 0
 }
 /** V2 §3.2 hazard — null when the ground carries none, or its id is disabled. */
 export function hazardOf(terrain: number): Hazard | null {

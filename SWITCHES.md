@@ -1009,7 +1009,8 @@ marsh, desert and ruins added; forest retired, hills ranged-only (v2.retire-fore
 woodland is also a thin obstruction (v2.thin-obstruction). The rows below still stand where the
 ruling is silent.
 
-Not done here, on purpose: §18's retirement of "terrain as the cover system" (v1 forest +10
-Dodge, rocky −5 Accuracy, hills +2 reach) — it needs rocky's numbers (§16 item 2a) and a
-ruling on whether v1 forest becomes woodland. A finding, not a switch: a **sidestep** has never
+§18's retirement of "terrain as the cover system" — ruled by Andrew 2026-09-24 and landed in
+v2.retire-forest-hills: forest is gone (woodland took its number 2 and glyph `f`); hills are +10
+accuracy and +1 reach, ranged only (an ELEVATION row at rung 400); rocky KEEPS its v1 modifiers
+("Rocky ground should do what it used to do"), and ruins share them. A finding, not a switch: a **sidestep** has never
 run the painted layer's entry beat (a step does); kept exactly as it was.

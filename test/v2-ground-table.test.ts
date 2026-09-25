@@ -64,8 +64,9 @@ describe('the table is the 2026-09-24 ruling, copied', () => {
     expect(of(TERRAIN.RUINS)).toEqual(of(TERRAIN.ROCKY))
     expect(of(TERRAIN.RUINS)).toEqual([2, -5, 1, 1, 0])
   })
-  it('glyphs: u undergrowth, o woodland, l lava, m marsh, d desert, n ruins', () => {
-    expect(['u', 'o', 'l', 'm', 'd', 'n'].map((g) => GLYPH[g])).toEqual([TERRAIN.UNDERGROWTH, TERRAIN.WOODLAND, TERRAIN.LAVA, TERRAIN.MARSH, TERRAIN.DESERT, TERRAIN.RUINS])
+  // v2.retire-forest-hills, Law 10: woodland took MAP-01's 'f' (forest is gone); 'o' is retired.
+  it('glyphs: u undergrowth, f woodland, l lava, m marsh, d desert, n ruins', () => {
+    expect(['u', 'f', 'l', 'm', 'd', 'n'].map((g) => GLYPH[g])).toEqual([TERRAIN.UNDERGROWTH, TERRAIN.WOODLAND, TERRAIN.LAVA, TERRAIN.MARSH, TERRAIN.DESERT, TERRAIN.RUINS])
   })
 })
 
@@ -77,8 +78,8 @@ describe('concealment — the TERRAIN rung reads the target\'s ground', () => {
     expect(under.accuracy).toBe(open.accuracy - 10)
   })
   it('woodland takes 15 from a shot and 7 from a swing; undergrowth takes nothing from a swing', () => {
-    expect(terrainRow(shot(row('...o...')))).toEqual([expect.objectContaining({ effectId: 'terrain.woodland', delta: -15 })])
-    expect(terrainRow(preview(rig(row('...o...'), 'test-warrior', 9, 10), 0, 1, AXE))).toEqual([expect.objectContaining({ effectId: 'terrain.woodland', delta: -7 })])
+    expect(terrainRow(shot(row('...f...')))).toEqual([expect.objectContaining({ effectId: 'terrain.woodland', delta: -15 })])
+    expect(terrainRow(preview(rig(row('...f...'), 'test-warrior', 9, 10), 0, 1, AXE))).toEqual([expect.objectContaining({ effectId: 'terrain.woodland', delta: -7 })])
     expect(terrainRow(preview(rig(row('...u...'), 'test-warrior', 9, 10), 0, 1, AXE))).toEqual([])
   })
   it('the shooter\'s own undergrowth does not blur its aim', () => {
@@ -86,7 +87,7 @@ describe('concealment — the TERRAIN rung reads the target\'s ground', () => {
   })
   it('woodland and low cover stack — two rows, −15 and −20', () => {
     const crates = [{ id: 'prop.test.crates', height: 'low', material: 1, footprint: { kind: 'hex', hexes: [10] } }]
-    const both = preview(rig(row('...o...'), 'test-ranger', 7, 10, crates), 0, 1, BOW)
+    const both = preview(rig(row('...f...'), 'test-ranger', 7, 10, crates), 0, 1, BOW)
     expect(both.accLedger.filter((r) => r.name === 'TERRAIN' || r.name === 'COVER').map((r) => r.delta)).toEqual([-15, -20])
     expect(both.accuracy).toBe(shot(row('.......')).accuracy - 35)
   })

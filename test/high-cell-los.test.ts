@@ -48,7 +48,7 @@ describe('V2 high cell attack lines', () => {
     setHigh(branch, 7, false)
     expect(canAttack(branch, 0, 1, bow)).toBe(true)
     expect(canAttack(ctx, 0, 1, bow)).toBe(false)
-    setHigh(ctx, 7, false); ctx.state.terrain[7] = TERRAIN.FOREST
+    setHigh(ctx, 7, false); ctx.state.terrain[7] = TERRAIN.WOODLAND   // v2.retire-forest-hills, Law 10: forest is gone; woodland took its number (Andrew, 2026-09-24)
     expect(canAttack(ctx, 0, 1, bow)).toBe(true)
     setHigh(ctx, 7)
     expect(canAttack(ctx, 0, 1, bow)).toBe(false)

@@ -36,7 +36,7 @@ describe('the data — one mechanism, two pure-data instances', () => {
     expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
   })
   it('every other terrain applies nothing — and burning strips nothing', () => {
-    for (const t of [TERRAIN.OPEN, TERRAIN.HILLS, TERRAIN.FOREST, TERRAIN.WATER]) {
+    for (const t of [TERRAIN.OPEN, TERRAIN.HILLS, TERRAIN.WOODLAND, TERRAIN.WATER]) {   // v2.retire-forest-hills, Law 10: forest is gone; woodland took its number (Andrew, 2026-09-24)
       expect(appliesOnEnterOf(t), String(t)).toEqual([])
       expect(appliesOnActivationEndOf(t), String(t)).toEqual([])
     }
