@@ -100,5 +100,11 @@
   "sha": "9c3ea58",
   "now": "station.vs-target — damage bonuses that read the target: closed. Done: DMG.VS_TARGET at 400, before CRIT (SWITCHES vsTargetStation: the documents said 275, 400 and 500, and 500 is DMG.PRONE now); rules {tag or status, add, percent} on badges (every damage) and on held items (only the attacks that item grants). The Codex's 48 enchanted-weapon slayer maps compile to rules (content 3bd619e); the 8 bloodrune slayers stay named gaps, since a unit keeps no list of worn items (vsTargetWornItems). Test badges test.badge.bane-undead (+2 vs undead) and test.badge.bane-venom (+50% vs poisoned), scenarios test.vs-target-a/-b; landed clean 25c276c. fix.vs-target-worn-gap-text a4d5cd4 (content 1c7b7ec), FLAGGED for review: one assertion rewritten — the reworded bloodrune gap text rode unit.equipped and moved the progression-surge goldens on text alone; the old wording is back. Four shards green on tree 3b8e567e42. audit-all did not finish inside the Cowork 178 s ceiling — run it from a terminal. Tried: shard 2 timed out in additions.test.ts under load; the same tests time the same before and after (2.6 s, 16 s) and passed on rerun. Next: move.actions.",
   "committed": true
+ },
+ {
+  "at": "2026-09-25 19:08",
+  "sha": "b6abaf6",
+  "now": "station.vs-target — damage bonuses that read the target: ruled after landing. Andrew 2026-09-25 (DECISIONS b9a5e80): no percentage damage modifiers exist except the critical hit — the backlog's +50% vs poisoned was an engine example, never authored; damage vs target is added with the other damage before the critical multiplier (400 before CRIT stands, vsTargetStation ruled); a bloodrune's slayer works (vsTargetWornItems superseded); one weapon matching two tags applies both (vsTargetStacking ruled). Landed earlier: 25c276c (clean) and fix.vs-target-worn-gap-text a4d5cd4 (flagged). audit-all run by Andrew from a terminal: clean. Four shards green on tree 7490ccbc24. Open question in DECISIONS: are bonus damage packets (Hand Axe +4, Bane Blade +6 on a critical) multiplied by the critical? Today they are not (V2-DAMAGE-PACKETS.md 9-10). Next: fix.vs-target-worn-and-flat — drop percent, make the test venom rule flat, and let worn items (bloodrunes) carry vsTarget.",
+  "committed": true
  }
 ]
