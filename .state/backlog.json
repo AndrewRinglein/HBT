@@ -1,5 +1,21 @@
 [
  {
+  "id": "v2.thin-obstruction",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Thin obstructions, as Andrew ruled 2026-09-24 (engine/DECISIONS.md 'the ground table, re-ruled', verbatim there). A thin upright obstruction - a tree, a sign, an upright villager's body; EVERY woodland hex is one - is free to move onto and a unit may stand in its hex. A ranged attack takes -5 accuracy for each thin-obstruction hex it enters: every hex the shot passes through AND the target's own hex, never the shooter's own hex ('A thin obstruction in your own hex does not count against your own shot, only against those who are shooting you or people who are shooting through the hex'). Each thin obstruction between a unit and a hex cuts its vision range by 1. Undergrowth (tall grass, wheat, reeds, bush) never does either. A full obstruction (dense trees, a pillar, a rock, a house) is the existing high prop and behaves the same whatever it looks like; material still sets its destroy steps. Authoring a thin obstruction other than woodland needs a representation - a prop height 'thin' is the natural slot - and a new kind or height is a GLOSSARY decision (Andrew/Angela), asked before minting.",
+  "expect": "a shot across two woodland hexes into open ground is -10; into a woodland target from open ground across none is -15 (concealment) -5 (thin, target hex) = -20; the shooter's own woodland adds nothing; undergrowth adds no -5; a sign prop does the same as a woodland hex; vision through two thin obstructions is 2 shorter; moving onto a thin obstruction costs nothing extra.",
+  "note": "Queued by Andrew's chat, 2026-09-24, for the next engine chat."
+ },
+ {
+  "id": "v2.structures",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Walls, towers and houses, as Andrew ruled 2026-09-24 (engine/DECISIONS.md, three answers that day, verbatim there; supersedes DESIGN-DUMP-CLEANED section 5's numbers). WALL: a full obstruction that can be stood on; a wall hex may carry stairs or a ladder on ONE facing - entering from that side costs 1 extra move and puts you on top, no other side goes up; a unit at its foot can attack the unit on top but not step up beside it; enemies may stand on walls. On a wall, against an enemy not on a wall or in a tower: the enemy -20 accuracy, you +10 Block AND +10 Ranged Block; standing on a wall +1 reach and +5 accuracy, all attacks. TOWER: heroes only; entering costs 2 extra move (3 in all), like a door; units outside attack the hero inside normally; the tower obstructs only shots PASSING it; zones of control reach in as anywhere. In a tower, against an enemy not also in a tower: the enemy -25 accuracy (flat), you +15 Block and +1 Armor; being in a tower +2 reach and +10 accuracy, all attacks. HOUSE: entered through a door; a unit inside can be shot from outside; in a house, against an enemy not also in a house: the enemy -10 accuracy, you +5 Dodge. Unruled, becomes a switch: moving along a wall top (default: normal cost); whether the tower's +15 Block also adds to Ranged Block (default: both, as the wall); the door's facing and cost (default: one facing, like stairs, no extra cost).",
+  "expect": "the ruled numbers each appear as one ledger row naming the structure; the enemy penalties apply only when the attacker is not in the same kind of structure; a non-hero cannot enter a tower; a unit reaches a wall top only through its stair facing; Block rolls read the added Block.",
+  "note": "Queued by Andrew's chat, 2026-09-24. Also owed after it: the Atlas compiler (tools/battle-atlas/combat-compiler.mjs refuses hazard/concealment roles today) can now map them - lava -> terrain.lava, rivers -> terrain.water, trees -> terrain.woodland, high brush and barberry -> terrain.undergrowth, meadow floor -> open (DECISIONS.md 2026-09-24)."
+ },
+ {
   "id": "fix.ground-goldens",
   "kind": "engine",
   "shape": "plumbing",

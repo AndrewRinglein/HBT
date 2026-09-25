@@ -1,102 +1,41 @@
-# engine — handoff 2026-09-24 20:29
+# engine — handoff 2026-09-25 03:59
 
 *Written by tools/wrap.mjs. The only handwritten line is the Now line, given to wrap as its argument. The rest is what start.mjs prints and what git holds. Read by `start engine` — not by a chat, directly.*
 
-engine — next trigger.zombie.sap, 168 of 204 landed · 9 await review · 26 pending
-Now: V2 R7 part 1-2 prop destruction — closed end to end. Done: v2.prop-destroy (a4ca669: tier = steps, Destroy on attack and burst rows, end-of-attack timing, high leaves low cover, prop.damaged/prop.destroyed; content 72a6aba TEST Chopper/Wrecker), v2.prop-attack (e049b15: an attack with Destroy aimed at a prop's hex, the { hex } action, prop.struck, AI never), fix.prop-destroyed-remnant (9a04748), fix.view-direct-map-seed (1a12a7c: scenario seeds with a direct map draw); viewer 5188c1d + page f98956b (fold, floats, log, 2D markers; library test.prop-destroy; Law 10 picker count made a rule); kingdom 379ffc8 + page ee224b8 (sandbox prop aims). Four shards green on tree 3f8ca9f3b4. Tried: nothing abandoned. Open for Angela: SWITCHES 'V2 prop destruction' and 'V2 attacking a prop' (engine), 'V2 R7 prop destruction' (viewer), sandboxProp* (kingdom); burning props unruled (what ignites, how long, what it does). Next: V2 R7 part 3 — the V2 ground table (grass, wheat, bush, woodland, lava: COMBAT-V2 3.2) as hazards and concealment, then Atlas hazard/concealment compilation.
-New chat with Heroes of Blight and Tragic — engine: V2 R7 part 3, the V2 ground table (hazards and concealment)
+engine — next v2.thin-obstruction, 172 of 210 landed · 12 await review · 28 pending
+Now: V2 R7 part 3 ground table — landed, then re-ruled by Andrew the same day. Done: v2.ground-table (521bd4d), v2.ground-retable (4aaa22c: grass/wheat/bush are one ground terrain.undergrowth, 1 move, -10 ranged against; lava 2 move, 3 fire + 1 Burn on entry and at end of activation; marsh, desert, ruins added), v2.retire-forest-hills (cab4e1d: forest gone, woodland took number 2 and glyph f; hills +10 accuracy and +1 reach, ranged only; 12 hill/forest maps moved, declared), fix.ground-goldens (3147830: battle-cursor-ground and field-cli-ground fixtures); viewer 937a3c7 + c1e974d, page b9f5d41 (woodland drawn as forest; fields/static re-dumped at a clean engine 250e161); kingdom four shards green. Rulings verbatim in DECISIONS (15049ca, 0a14a46, c98995c, 14c04d8: ground table, woodland, thin and full obstructions, undergrowth, walls/towers/houses, marsh/desert/ruins); root 9f36347 marks COMBAT-V2 3.2 superseded. Four shards green on tree 9c89867359. Tried: gating v2.retire-forest-hills in Cowork exceeds the 178 s ceiling (3 m 32 s) — Andrew landed it from his terminal. Open for Andrew: three landings flagged for review (Law 10 test rewrites, reasons at each edit); SWITCHES 'V2 ground table'; tooling finding for GBH: the shard fingerprint moves when .state is committed (treeHash copies the real index); _to_delete holds this chat's transfer files. Next: v2.thin-obstruction, then v2.structures, then the Atlas ground compile (mappings ruled).
+New chat with Heroes of Blight and Tragic — engine: V2 thin obstructions (-5 per hex a shot enters, -1 vision)
   start engine
-Last landing: 2026-09-24 19:52 (fix.view-direct-map-seed). Previous chat ended: on a wrap, 2026-09-24 20:29
-WRAP NOT COMMITTED: 2026-09-24 20:29 — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.
-  Commit them from the engine folder before landing anything: git add -A; git commit -m "wrap: V2 R7 part 1-2 prop destruction — closed end to end. Done: v2.prop-destroy (a4ca669: tier = steps, Destroy on attack and burst rows, end-of-attack timing, high leaves low cover, prop.damaged/prop.destroyed; content 72a6aba TEST Chopper/Wrecker), v2.prop-attack (e049b15: an attack with Destroy aimed at a prop's hex, the { hex } action, prop.struck, AI never), fix.prop-destroyed-remnant (9a04748), fix.view-direct-map-seed (1a12a7c: scenario seeds with a direct map draw); viewer 5188c1d + page f98956b (fold, floats, log, 2D markers; library test.prop-destroy; Law 10 picker count made a rule); kingdom 379ffc8 + page ee224b8 (sandbox prop aims). Four shards green on tree 3f8ca9f3b4. Tried: nothing abandoned. Open for Angela: SWITCHES 'V2 prop destruction' and 'V2 attacking a prop' (engine), 'V2 R7 prop destruction' (viewer), sandboxProp* (kingdom); burning props unruled (what ignites, how long, what it does). Next: V2 R7 part 3 — the V2 ground table (grass, wheat, bush, woodland, lava: COMBAT-V2 3.2) as hazards and concealment, then Atlas hazard/concealment compilation."
+Last landing: 2026-09-25 02:55 (fix.ground-goldens). Previous chat ended: on a wrap, 2026-09-25 03:59
+WRAP NOT COMMITTED: 2026-09-25 03:59 — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.
+  Commit them from the engine folder before landing anything: git add -A; git commit -m "wrap: V2 R7 part 3 ground table — landed, then re-ruled by Andrew the same day. Done: v2.ground-table (521bd4d), v2.ground-retable (4aaa22c: grass/wheat/bush are one ground terrain.undergrowth, 1 move, -10 ranged against; lava 2 move, 3 fire + 1 Burn on entry and at end of activation; marsh, desert, ruins added), v2.retire-forest-hills (cab4e1d: forest gone, woodland took number 2 and glyph f; hills +10 accuracy and +1 reach, ranged only; 12 hill/forest maps moved, declared), fix.ground-goldens (3147830: battle-cursor-ground and field-cli-ground fixtures); viewer 937a3c7 + c1e974d, page b9f5d41 (woodland drawn as forest; fields/static re-dumped at a clean engine 250e161); kingdom four shards green. Rulings verbatim in DECISIONS (15049ca, 0a14a46, c98995c, 14c04d8: ground table, woodland, thin and full obstructions, undergrowth, walls/towers/houses, marsh/desert/ruins); root 9f36347 marks COMBAT-V2 3.2 superseded. Four shards green on tree 9c89867359. Tried: gating v2.retire-forest-hills in Cowork exceeds the 178 s ceiling (3 m 32 s) — Andrew landed it from his terminal. Open for Andrew: three landings flagged for review (Law 10 test rewrites, reasons at each edit); SWITCHES 'V2 ground table'; tooling finding for GBH: the shard fingerprint moves when .state is committed (treeHash copies the real index); _to_delete holds this chat's transfer files. Next: v2.thin-obstruction, then v2.structures, then the Atlas ground compile (mappings ruled)."
 Yours: (2026-08-27) item.bracer's replacement rule — look: GAME-BUILDER.html; (2026-09-03) Kinds approved BY POLICY this run, for your look — look: GAME-BUILDER.html; (2026-09-03) The Necromancer's Raise has no range on its row. — look: GAME-BUILDER.html; (2026-09-03) The schedule vs the Codex on Surge — look: GAME-BUILDER.html; (2026-09-03) The schedule stows spare weapons in item slots — look: GAME-BUILDER.html; (2026-09-02) Note, no action needed: — look: GAME-BUILDER.html; (2026-09-03) 50 flagged landings await your review — look: GAME-BUILDER.html
-Queue: trigger.zombie.sap [content · trigger], then trigger.mage.kindle [content · trigger], then station.vs-target [engine · station] (+16 more)
-Delegate: trigger.zombie.sap [content · trigger] — not yet gated; trigger.mage.kindle [content · trigger] — not yet gated; station.vs-target [engine · station] — not yet gated; move.actions [engine · rule] — not yet gated; fix.start-of-turn-victory [engine · plumbing] — not yet gated; fix.outcome-enum [engine · plumbing] — not yet gated; fix.phase-ladder-config [engine · plumbing] — not yet gated; fix.retired-stations [engine · plumbing] — not yet gated; crit.branch-and-injuries [engine · rule] — not yet gated; hook.on-enter [engine · plumbing] — not yet gated; tool.effect-size-rules [engine · plumbing] — not yet gated; viewer.hexvfx-path [engine · plumbing] — not yet gated; viewer.geometry [engine · plumbing] — 1 attempt(s); content.art-manifest [content · data] — not yet gated; viewer.styles [engine · plumbing] — not yet gated; sim.coverage [engine · plumbing] — not yet gated; seam.unit-mods [engine · plumbing] — not yet gated; pack.derived-rows [content · data] — not yet gated; system.ai-modes [station · rule] — not yet gated
+Queue: v2.thin-obstruction [engine · rule], then v2.structures [engine · rule], then trigger.zombie.sap [content · trigger] (+18 more)
+Delegate: v2.thin-obstruction [engine · rule] — not yet gated; v2.structures [engine · rule] — not yet gated; trigger.zombie.sap [content · trigger] — not yet gated; trigger.mage.kindle [content · trigger] — not yet gated; station.vs-target [engine · station] — not yet gated; move.actions [engine · rule] — not yet gated; fix.start-of-turn-victory [engine · plumbing] — not yet gated; fix.outcome-enum [engine · plumbing] — not yet gated; fix.phase-ladder-config [engine · plumbing] — not yet gated; fix.retired-stations [engine · plumbing] — not yet gated; crit.branch-and-injuries [engine · rule] — not yet gated; hook.on-enter [engine · plumbing] — not yet gated; tool.effect-size-rules [engine · plumbing] — not yet gated; viewer.hexvfx-path [engine · plumbing] — not yet gated; viewer.geometry [engine · plumbing] — 1 attempt(s); content.art-manifest [content · data] — not yet gated; viewer.styles [engine · plumbing] — not yet gated; sim.coverage [engine · plumbing] — not yet gated; seam.unit-mods [engine · plumbing] — not yet gated; pack.derived-rows [content · data] — not yet gated; system.ai-modes [station · rule] — not yet gated
 Blocked: content.mage-staff needs unit.brute; viewer.build needs viewer.geometry, content.art-manifest; viewer.board needs viewer.build, viewer.geometry; viewer.tile-state needs viewer.board; viewer.panel needs viewer.build; viewer.pump needs viewer.board, viewer.panel; viewer.log-transport needs viewer.pump
-Calls since last wrap:
-  shieldPowerNumbers · 2026-09-24 · What do the two powers per shield give, and at what cost?
-  weaponBlockFamilies · 2026-09-24 · Which weapons are "swords" and "knives and daggers" for weapon Block?
-  axeOnAnyBlock · 2026-09-24 · Does the axe's −20 fire when a weapon's Block blocks, or only a shield's?
-  weaponFirePoison · 2026-09-24 · Fire on maces and hammers; fire and poison on "weapons of the appropriate type".
-  shieldPowerNames · 2026-09-24 · Kite's "Shield Wall" and Round's "Brace" collide with existing names (the Shieldbearer's Shield Wall power; an attack called Brace) — the Codex audit refuses duplicates.
-  proneNoCrawl · 2026-09-24 · May a prone unit move (crawl) without standing?
-  proneNoExpiry · 2026-09-24 · Does Prone wear off on its own?
-  proneAiStandsFirst · 2026-09-24 · What does a prone AI unit do?
-  knockbackProtectionAbsorbs · 2026-09-24 · Does Protection absorb collision damage? Armor?
-  knockbackThornsZero · 2026-09-24 · A unit's collision value is 1 + its Thorns. What is its Thorns?
-  knockbackFloorIsObstruction · 2026-09-24 · A push into a hex with no floor (the floor mask false) — what does it strike?
-  kdbBackDistance · 2026-09-24 · How far does a KDB "back" push?
-  kdbBursts · 2026-09-24 · Can burst damage cause KDB? (§16 item 2 is the open lever.)
-  kdbBothOrder · 2026-09-24 · "Both": which first?
-  standFirmAnyPush · 2026-09-24 · Does "cannot be knocked back" stop pushes that are not KDB (the halberd's Hack, the crit chart's Knocked Sprawling)?
-  kdbAgileIsTheBadge · 2026-09-24 · §9.5 names Agile as new, but badge.agile (Dodge and Roll, +8 Dodge) already exists. One Agile or two?
-  kdbBadgeCarriers · 2026-09-24 · Which units carry Stand Firm or Giant?
-  kdbStrengthFloor · 2026-09-24 · §9.1: "anything at 0 Strength moves to 2 in the migration."
-  thornsIsAStat · 2026-09-24 · Where does the magnitude live?
-  thornsProtectionAbsorbs · 2026-09-24 · Does the attacker's Protection absorb Thorns damage?
-  thornsOnKillingBlow · 2026-09-24 · Does a unit the hit kills still reflect?
-  thornsDownedTarget · 2026-09-24 · Does a hit on a DOWNED thorned unit reflect?
-  thornsAttackerDown · 2026-09-24 · An attacker already not standing?
-  thornsPerHit · 2026-09-24 · A multi-hit attack? An attack of opportunity?
-  thornsNoHooks · 2026-09-24 · Does the reflected damage fire hooks (onTakingDamage, onKill …) or KDB?
-  thornsCause · 2026-09-24 · What does the log name as the cause?
-  thornsPreview · 2026-09-24 · What does preview say?
-  thornsContentScope · 2026-09-24 · Which content carries the magnitude now?
-  loadoutInstanceId · 2026-09-24 · What names one carried item?
-  loadoutStowedClasses · 2026-09-24 · What may be stowed?
-  loadoutStowedLog · 2026-09-24 · Where does the log name a stowed item?
-  loadoutScheduleStowed · 2026-09-24 · Does the progression schedule's stowed weapon (rosterOptionsOf().stowed) ride into the battle?
-  swapAi · 2026-09-24 · Does an AI-controlled hero ever swap?
-  swapShape · 2026-09-24 · What does a swap name?
-  swapHealthClamp · 2026-09-24 · A Health (or Stamina) maximum that leaves the hands? A higher one that arrives?
-  swapLimits · 2026-09-24 · Does a power that leaves and returns keep its cooldown and uses?
-  swapAiMode · 2026-09-24 · Does the unit's role / AI mode follow the swap?
-  swapMovePoints · 2026-09-24 · Does a Movement modifier that arrives mid-activation change this activation's movement points?
-  swapCostFloor · 2026-09-24 · swapCost folded below 0?
-  swapCause · 2026-09-24 · What cause does loadout.swapped name?
-  itemUsesSource · 2026-09-24 · Where does an instance's use count come from?
-  itemUsesPool · 2026-09-24 · A unit carries two instances granting the same power?
-  itemUsesPayOrder · 2026-09-24 · Which instance pays a use?
-  itemUsesReach · 2026-09-24 · Can a stowed weapon or shield pay a use?
-  itemUsesEvent · 2026-09-24 · What event names the instance?
-  itemUsesIncoming · 2026-09-24 · How does a fielding hand in uses already spent?
-  itemUsesSpentFielding · 2026-09-24 · What happens to an instance handed in with no uses left?
-  itemUsesMultiPower · 2026-09-24 · An item granting two powers with uses — how does an incoming count apply?
-  itemUsesResult · 2026-09-24 · What does the result report?
-  propDestroyStruckHex · 2026-09-24 · Which props does a single-target attack strike?
-  propDestroyPerAttack · 2026-09-24 · A multi-hit attack with Destroy N — N per hit, or once?
-  propDestroyConnect · 2026-09-24 · What counts as a miss for "Misses do not destroy"?
-  propDestroyOverflow · 2026-09-24 · Destroy 3 on a tier-1 prop — do the extra steps carry?
-  propDestroyRemnant · 2026-09-24 · What is left when high cover falls?
-  propDestroyBurstShield · 2026-09-24 · Does a burst destroy props where its damage was shielded, or with no unit present?
-  propDestroyAfterOutcome · 2026-09-24 · An attack that ends the battle — does it still destroy?
-  propDestroyRulesVersion · 2026-09-24 · Does the snapshot rules version move?
-  propAttackWho · 2026-09-24 · Which attacks may be aimed at a hex?
-  propAttackWhere · 2026-09-24 · Which hexes?
-  propAttackLine · 2026-09-24 · Does the prop being struck block the line to itself?
-  propAttackConnects · 2026-09-24 · Does a blow at a prop roll to hit?
-  propAttackPays · 2026-09-24 · What does it cost?
-  propAttackEvent · 2026-09-24 · What does the log say?
-  propAttackForced · 2026-09-24 · A taunted unit?
-  propAttackAi · 2026-09-24 · Does the AI ever attack a prop?
-Stack for trigger.zombie.sap:
+Calls since last wrap: none
+Stack for v2.thin-obstruction:
   the item's `spec` and `expect` — `node tools/next.mjs` — before any source file
   ENGINE-CONSTITUTION.md — the law the item touches · **the Iron Gauntlet, above, before `--land`**: kill switch, hardcode scan, generalization, consequence, naming
   `node tools/decided.mjs "<the question>"` before asking anything · SWITCHES.md before deciding anything
   COMBAT-SEQUENCE.md — the rung the mechanism sits on · src/core · the kill-switch seam `src/content/disable.ts` · its verify scenario in test/
-  **the design folder — grep it for the id first** (below) · src/content · its registry array
 
-## The chat's commits since the last committed wrap (d3d037e)
+## The chat's commits since the last committed wrap (e7fedd1)
 
-- 1a12a7c 2026-09-24 19:52 fix.view-direct-map-seed: V2 R7 follow-up, found wiring the viewer half of prop destruction. A sce
-- 9a04748 2026-09-24 19:47 fix.prop-destroyed-remnant: V2 R7 follow-up (COMBAT-V2-DESIGN-2026-09-07 section 15.1: prop.destroye
-- e049b15 2026-09-24 19:39 v2.prop-attack: V2 R7 part 2, attacking a prop directly (COMBAT-V2-DESIGN-2026-09-07 sec
-- a4ca669 2026-09-24 19:25 v2.prop-destroy: V2 R7 part 1, destructible props (COMBAT-V2-DESIGN-2026-09-07 section 12
-- cbfbf4f 2026-09-24 12:06 wrap: V2 R6 hands, swaps and item instances — closed. Done: swap UI (viewer a40932d + page 281622a folds and logs loadout.swapped; kingdom 9932c81 + page d4fd766, the sandbox Swap command from engine
+- 250e161 2026-09-25 03:28 state: gauntlet log and shard record after fix.ground-goldens (four shards green on tree d1b5072b0a) — committed so the viewer and kingdom can stamp a clean engine
+- 3147830 2026-09-25 02:55 fix.ground-goldens: The two frozen corpora v2.retire-forest-hills moved, found by shard 4/4
+- cab4e1d 2026-09-24 19:27 v2.retire-forest-hills: Retire v1 forest and move hills to V2, as Andrew ruled 2026-09-24 (engin
+- 4aaa22c 2026-09-25 01:44 v2.ground-retable: The V2 ground table as Andrew re-ruled it on 2026-09-24 (engine/DECISION
+- 14c04d8 2026-09-25 01:38 DECISIONS: tower entry, wall stairs, houses, ZoC into towers, Climber on ruins (Andrew, 2026-09-24)
+- c98995c 2026-09-25 01:34 DECISIONS: walls, towers, houses, marsh, desert, ruins (Andrew, 2026-09-24)
+- 0a14a46 2026-09-25 01:24 DECISIONS: ground table, second answers (Andrew, 2026-09-24) — woodland 2 move and -15/-7 against its occupant; thin obstruction counts on shots into and through its hex, never from it, free to enter; undergrowth is the name; hills +10/+1 ranged only; material still sets destroy hits
+- 15049ca 2026-09-25 01:16 DECISIONS: the ground table re-ruled (Andrew, 2026-09-24) — lava 2 move 3 fire +1 Burn twice; tall vegetation one ground -10 ranged; open ground no modifier; woodland = thin obstruction -5 per hex through, -1 vision; full obstruction; no forest; rocky as v1; hills +10/+1; water 2 to enter
+- 521bd4d 2026-09-24 23:14 v2.ground-table: V2 R7 part 3, the V2 ground table (COMBAT-V2-DESIGN-2026-09-07 section 3
+- 245e454 2026-09-24 20:29 wrap: V2 R7 part 1-2 prop destruction — closed end to end. Done: v2.prop-destroy (a4ca669: tier = steps, Destroy on attack and burst rows, end-of-attack timing, high leaves low cover, prop.damaged/pro
 
 ## Next chat
 
-New chat with Heroes of Blight and Tragic — engine: V2 R7 part 3, the V2 ground table (hazards and concealment)
+New chat with Heroes of Blight and Tragic — engine: V2 thin obstructions (-5 per hex a shot enters, -1 vision)
 ```
 start engine
 ```
