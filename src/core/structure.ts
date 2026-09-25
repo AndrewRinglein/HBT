@@ -16,7 +16,7 @@
 // Every reader is here, so movement, the line, the accuracy ladder, Block and Armor cannot
 // disagree about who is "in" what.
 import type { Ctx, Unit } from './types.js'
-import { structureOf, type Structure } from '../content/maps.js'
+import { STRUCTURE_GROUND, structureOf, type Structure } from '../content/maps.js'
 import { rulesSideOf } from './side.js'
 import { passableHexes, type Passable } from './props.js'
 
@@ -58,7 +58,19 @@ export function structureAllows(ctx: Ctx, mover: Unit | undefined, to: number, f
  */
 export function passableFor(ctx: Ctx, mover: Unit | undefined, props = ctx.state.props): Passable {
   const board = passableHexes(ctx, props)
+  if (!anyStructure(ctx)) return board
   return (hex, from) => board(hex, from) && structureAllows(ctx, mover, hex, from)
+}
+
+/**
+ * Does this board hold any structure? Read once per movement question, never stored, so a
+ * board with none — every control map — pays no per-step structure reads (Law 0, measured:
+ * the AI-heavy hill battles ran 3–4% slower with a structure read on every neighbour).
+ */
+export function anyStructure(ctx: Pick<Ctx, 'state'>): boolean {
+  const terrain = ctx.state.terrain
+  for (let h = 0; h < terrain.length; h++) if (STRUCTURE_GROUND[terrain[h]!] === 1) return true
+  return false
 }
 
 /** The extra move a step from `from` into `to` costs beyond the ground's own — a wall's stairs. */
@@ -77,20 +89,22 @@ export function structureReachOf(ctx: Pick<Ctx, 'state'>, u: Unit): number {
 
 /** Does a structure hex block the attack line from `a` to `b`? Its own ends never do; an elevated end sees over. */
 export function structureBlocksLine(ctx: Pick<Ctx, 'state'>, a: number, b: number, crosses: (cell: number) => boolean): boolean {
-  if (a === b || structureAt(ctx, a)?.elevated || structureAt(ctx, b)?.elevated) return false
-  // Only a hex within one row and one column of the two ends' box can touch the segment —
-  // a superset, then the exact test. Scanning the whole board on every legality question
-  // measurably slowed the AI's battles (Law 0: 3.39 s → 3.66 s on terrain.test's 60 battles).
+  if (a === b) return false
+  // Only a hex within one row and one column of the two ends' box can touch the segment — a
+  // superset (checked exhaustively on 7×5, 9×8 and 16×16), then the exact test. One array read
+  // per hex: the AI asks this for every hex it weighs (Law 0, measured: a whole-board scan with a
+  // function call per hex made the hill battles 4% slower; this makes them no slower).
   const { width, height } = ctx.state.board, terrain = ctx.state.terrain
   const ra = Math.trunc(a / width), rb = Math.trunc(b / width), ca = a % width, cb = b % width
   const r0 = Math.max(0, Math.min(ra, rb) - 1), r1 = Math.min(height - 1, Math.max(ra, rb) + 1)
   const c0 = Math.max(0, Math.min(ca, cb) - 1), c1 = Math.min(width - 1, Math.max(ca, cb) + 1)
+  let candidates: number[] | null = null
   for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
     const h = r * width + c
-    if (h === a || h === b || !structureOf(terrain[h] ?? 0)) continue
-    if (crosses(h)) return true
+    if (h !== a && h !== b && STRUCTURE_GROUND[terrain[h]!] === 1) (candidates ??= []).push(h)
   }
-  return false
+  if (!candidates || structureAt(ctx, a)?.elevated || structureAt(ctx, b)?.elevated) return false
+  return candidates.some(crosses)
 }
 
 /**

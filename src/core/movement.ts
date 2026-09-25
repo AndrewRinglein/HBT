@@ -16,7 +16,7 @@ import { knockImmunity } from './kdb.js'
 import { thornsOf } from './thorns.js'
 import { settle } from './settle.js'
 import { applyGroundHazard, enterGround } from './ground.js'
-import { passableFor, structureAt, structureStepCost } from './structure.js'
+import { anyStructure, passableFor, structureAt, structureStepCost } from './structure.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
 // hard-coded. It should be content-driven." The cost of moving is a field on
@@ -75,7 +75,7 @@ export function stepCost(ctx: Ctx, to: HexId, from?: HexId): number {
  * Ties break on lower HexId so paths are reproducible (Law 6).
  */
 export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
-  const props=ctx.state.props,passable=passableFor(ctx,u,props),edgeCost=preparedLowEdgeCost(ctx,props)
+  const props=ctx.state.props,passable=passableFor(ctx,u,props),edgeCost=preparedLowEdgeCost(ctx,props),structured=anyStructure(ctx)
   const occ = occupancy(ctx)
   // The power's modifier widens or narrows THIS move's budget (Sprint would be
   // +3); the activation budget itself was set at beginActivation (Slow reads
@@ -95,7 +95,7 @@ export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
       if (node.cost !== c) continue // stale entry, a cheaper path was found
       for (const n of ctx.geo.neighboursOf(h)) {
         if (occ.has(n) || !passable(n,h)) continue
-        const nc = c + moveCostOf(ctx.state.terrain[n] ?? 0) + edgeCost(h,n) + structureStepCost(ctx,h,n)
+        const nc = c + moveCostOf(ctx.state.terrain[n] ?? 0) + edgeCost(h,n) + (structured ? structureStepCost(ctx,h,n) : 0)
         if (nc > budget) continue
         const prior = out.get(n)
         if (!prior || nc < prior.cost) {

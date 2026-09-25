@@ -1,5 +1,14 @@
 [
  {
+  "id": "fix.structures-line-speed",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "v2.structures (landed baf122a) made the attack-line legality question read every hex near the line through a function call, and every movement step read the structures even on boards with none. Measured (40 hill battles, local): 2690 ms before v2.structures, 2800 ms after, 3-4% slower; the line check alone was the cost (2734 ms without it). That pushed test/additions.test.ts (hills) and test/disabled-action-validation.test.mjs past their timeouts in shard 2 on 2026-09-25. Read one flat per-ground table (content/terrain.ts STRUCTURE_GROUND, built once at load from the static table and the kill-switch seam) and skip the per-step structure reads when a board has no structure. No rule changes.",
+  "expect": "the bounded structure line check answers exactly as the whole-board reading for every pair of hexes on four board sizes; control battles byte-identical; the hill battles no slower than before v2.structures (measured 2685 vs 2716 ms).",
+  "status": "done",
+  "sha": "0c77f6a"
+ },
+ {
   "id": "v2.thin-obstruction",
   "kind": "engine",
   "shape": "rule",

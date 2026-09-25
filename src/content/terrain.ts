@@ -391,6 +391,16 @@ const STRUCTURE: Readonly<Record<number, Structure>> = {
     sharedWith: ['terrain.house'],
   },
 }
+/**
+ * 1 where a ground number is a live structure, else 0 — built once at load from the static
+ * table and the kill-switch seam (both fixed for the process), so the hot readers (the attack
+ * line, the AI's movement) test a hex with one array read. Content, not state; nothing to invalidate.
+ */
+export const STRUCTURE_GROUND: Readonly<Uint8Array> = (() => {
+  const keys = Object.keys(STRUCTURE).map(Number), out = new Uint8Array(Math.max(0, ...keys) + 1)
+  for (const t of keys) if (!off(t)) out[t] = 1
+  return out
+})()
 /** The structure this ground is, or null — open ground, or its id disabled (the kill-switch seam). */
 export function structureOf(terrain: number): Structure | null {
   const s = STRUCTURE[terrain]
