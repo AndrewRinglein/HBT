@@ -2628,3 +2628,17 @@ Ruled (read with the two messages above; this one corrects them where they diffe
 - **Undergrowth** — the one name for tall vegetation (tall grass, wheat, reeds, bush, high brush, barberry): 1 move, −10 ranged accuracy against the unit standing in it.
 - **Hills** — +10 accuracy and +1 reach, both ranged attacks only (COMBAT-V2 §3.3 as written).
 - **Material** — still decides how many hits destroy a prop (COMBAT-V2 §12, v2.prop-destroy); a full obstruction otherwise behaves the same whatever it looks like.
+
+Andrew, same chat, shown DESIGN-DUMP-CLEANED.md §5 (the 2026-08-30 dictation: Building, Wall, Tower, Ruins, Marsh, Desert — never ruled) and asked whether its numbers stand:
+
+“Oh, I do also want ruins, marsh, and desert too, yes.   Okay, a wall is a full obstruction.   Is something you can stand on  when you stand on it and you have an enemy who's not in a wall or a tower   they have -20 accuracy, and you get 10 block.  If you are in a tower and you have an enemy who is not also in a tower   they get -25% accuracy. You get 15 blocks and 1 armor.   Being in a tower also gives you +2 reach and +10 accuracy.   Being on a wall gives you +1 reach and +5 accuracy.    Being in a house if your enemy is not also in a house   they get -10 accuracy, and you get 5 dodge.   A marsh.   Cost 2 to move in.   Removes one fire at the end of activation.   Gives -5 accuracy and -10 dodge to whoever is in it.   Desert.   Gives -5 dodge. To whom's in it? .   Ruins behave like rocky ground.   Towers are also full of obstructions to those who are not in it.   Wall and tower do not apply to range attacks only.   Oh, getting up on a wall requires moving upstairs.   Imagine that there is a character on a wall. Another character runs up to the wall. They can attack the person on the wall, but they can't move up next to them on the wall unless there are stairs that let them go up.   Towers are for heroes only.  Any more questions?”
+
+Ruled (supersedes DESIGN-DUMP-CLEANED §5's numbers where they differ):
+
+- **Wall** — a full obstruction that can be stood on. Getting up needs stairs; a unit at its foot can attack the unit on top but cannot step up beside it. On a wall, against an enemy not on a wall or in a tower: the enemy −20 accuracy, you +10 Block. Standing on a wall: +1 reach, +5 accuracy. All attacks, not ranged only.
+- **Tower** — heroes only. A full obstruction to those not in it. In a tower, against an enemy not also in a tower: the enemy −25% accuracy, you +15 Block and +1 Armor. Being in a tower: +2 reach, +10 accuracy. All attacks, not ranged only.
+- **House** — in a house, against an enemy not also in a house: the enemy −10 accuracy, you +5 Dodge.
+- **Marsh** — 2 move to enter; removes 1 Burn at end of activation; −5 accuracy and −10 Dodge to whoever is in it.
+- **Desert** — −5 Dodge (to the unit in it).
+- **Ruins** — behave like rocky ground.
+- The dictation's −1 / −2 damage against wall, tower and building occupants, and its tower +3 reach / +15 accuracy, are not in this ruling — superseded.
