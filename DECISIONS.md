@@ -2746,3 +2746,18 @@ Ruled:
 
 - **Atlas landforms** — not hills, for now: bluffs, ridges and rises stay presentation only. SWITCHES.md `atlasLandformsNotHills` is ruled.
 - **greenway, stonecrown, opening-4** — no investigation; they stay compiled but unfielded. SWITCHES.md `atlasFieldedMaps` is ruled.
+
+
+## 2026-09-25 — damage vs target: no percentages, added before the critical multiplier, bloodrunes count, both tags apply
+
+Andrew, told that `station.vs-target` landed with a "+50% vs poisoned" test rule (the backlog item's expect), the station before the critical, worn-item (bloodrune) slayer left as a gap, and every matching rule applying; and asked (1) "Should a damage-vs-target bonus be multiplied by a critical hit, or added after it?", (2) "Should bloodrunes' slayer bonuses work next?", (3) "Holy Water against a vampire that is also undead — both (+2) or only the best (+1)?":
+
+“I don't know what that +50% damage versus poison came from. There had been no percentage modifiers to damage under things that I have authored.   With the exception of critical hit, the initial damage should be resolved, then the roll for critical hit. There can then be bonus damage. There are things that can trigger on critical hit.  Then, after all of that, we roll the critical hit, and that can create a multiplier.  So you're not applying the damage versus target at some later stage. You're applying it earlier when all the other damage types are being applied.   Bloodrune Slayer bonus happens: the damage versus target bonus. That's typically what a lot of those are.   If a weapon's bonus matches the target twice (holy water against vampire and undead), apply both.”
+
+Ruled:
+
+- **No percentage damage modifiers** — nothing authored modifies damage by a percentage; the critical hit is the only multiplier. The "+50% vs poisoned" was an engine session's example (backlog `station.vs-target` expect, from TRIGGER-NOTES), never authored. A `vsTarget` rule is a flat `add` only; the `percent` field goes (SWITCHES.md `vsTargetPercent` is superseded).
+- **Order** — damage vs target is added with the other damage, before the critical multiplier: `DMG.VS_TARGET` 400, before `CRIT` 450, stands. SWITCHES.md `vsTargetStation` is ruled.
+- **Bloodrunes** — a bloodrune's slayer is a damage-vs-target bonus and works. SWITCHES.md `vsTargetWornItems` (a named gap) is superseded; backlog `fix.vs-target-worn-and-flat` builds it.
+- **One weapon matching a target twice** — both apply (Holy Water vs a vampire that is also undead: +1 and +1). SWITCHES.md `vsTargetStacking` is ruled.
+- **Open, asked** — "bonus damage … then we roll the critical hit, and that can create a multiplier" may mean bonus damage packets (the Hand Axe's +4 on a critical, the Bane Blade's +6) are multiplied too; today they are not (`V2-DAMAGE-PACKETS.md` lines 9–10: secondary values do not repeat the critical multiplier). Not changed until answered.
