@@ -5,6 +5,15 @@
   "shape": "station",
   "spec": "Andrew 2026-09-25 (DECISIONS.md 'damage vs target: no percentages ...'): (1) no percentage damage modifiers -- remove `percent` from VsTargetRule (types, pack validateVsTarget, pipeline vsTargetRules); test.badge.bane-venom becomes a flat add vs poisoned (content/test/badges.json, a TEST value). (2) 'Bloodrune Slayer bonus happens' -- a WORN item's slayer is a damage-vs-target bonus: the unit keeps its worn (non-hand) item ids so DMG.VS_TARGET reads their vsTarget; content/mkenginepack.mjs compiles the bloodrune slayer maps into rules and drops the 'item field: slayer' gap. Default (switch): a worn item's rules reach every damage the unit deals, like a badge. Station 400 before CRIT and both-tags-apply are ruled; unchanged.",
   "expect": "a hero wearing item.rune-kairin deals +3 to an undead target in a real battle with the row naming the rune; no vsTarget rule carries a percent; test/vs-target.test.ts's +50% assertions are rewritten as flat (lands flagged)",
+  "probeIds": [
+   "item.rune-kairin",
+   "item.rune-vampire-hunter",
+   "test.badge.bane-venom"
+  ],
+  "variants": [
+   "item.rune-kairin",
+   "item.rune-vampire-hunter"
+  ],
   "note": "The worn-item list is a new Unit field (Law 11) -- snapshots of item-carrying heroes change, and the progression-surge battle-cursor goldens (heroes wear rune-horror-breaker and rune-nightmare-slayer) move: recapture them and say so. Open question in DECISIONS: are bonus damage packets multiplied by a critical? Not part of this item."
  },
  {
