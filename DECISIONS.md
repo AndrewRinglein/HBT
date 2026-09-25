@@ -2670,3 +2670,11 @@ Ruled:
 
 - **Surface effects** — one per hex, as built. Not a stack.
 - **High thin prop** — a third kind of prop (height `thin` in data; "high thin prop" in speech). A unit in its hex: ranged attacks against it take −5. A shot passing through its hex: −5, and −1 Vision through it. The unit standing on it takes no penalty to its own shots. The same rule woodland's thin obstruction follows.
+
+## 2026-09-24 — structures first, the ground-versus-props talk after
+
+Andrew, at `start engine`, asked whether to go over ground versus props (traps, graves, bridges, cursed ground — not in the engine) before walls, towers and houses are built, or to build `v2.structures` now as ruled:
+
+“Let's do what you have now. Just build the walls, towers, and houses. Is there anything else left to do after this?”
+
+Ruled: `v2.structures` is built now, as ruled 2026-09-24 above; the ground-versus-props talk comes after it. How a structure is authored — a ground, with its stairs or door on the map (SWITCHES.md `structureAsGround`, `structureEntries`) — is the default that talk may overturn.
