@@ -16023,3 +16023,124 @@ index 03c9d31..cc25140 100644
  })
 ```
 </details>
+
+## v2.structures-same-wall — LANDED `c15923d` **NEEDS REVIEW**
+2026-09-25 11:15
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · SWITCHES.md:1066
+  PASS  typecheck
+  PASS  the item's own tests — test/v2-structures-line.test.ts, test/v2-structures.test.ts
+  PASS  gate 1 — the id appears in a real battle — terrain.wall: 2 log lines, 2 fired, 2 changed state · terrain.tower: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/v2-structures-line.test.ts, test/v2-structures.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/v2-structures-line.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 45 ids without a published source (35 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — terrain.wall live · terrain.tower live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without terrain.wall,terrain.tower — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/v2-structures-line.test.ts b/test/v2-structures-line.test.ts
+index d962a11..12907f7 100644
+--- a/test/v2-structures-line.test.ts
++++ b/test/v2-structures-line.test.ts
+@@ -3,5 +3,7 @@
+ // Law 0's measurement is in the item; this is the proof the shortcut changes no answer: on
+ // several board sizes and layouts, for EVERY pair of hexes, it agrees with the plain reading of
+-// the rule — any structure hex other than the two ends that the line touches blocks it.
++// the rule — any structure hex other than the two ends that the line touches blocks it, except
++// the rest of a wall an end stands on (added 2026-09-25, Andrew: "You should be able to shoot on the
++// same wall" — a brute-force flood below, independent of the engine's).
+ // LAW 10 — 2026-09-25: the "unless an end stands on a wall or in a tower" clause is gone from the
+ // reading below, because Andrew RULED it out (DECISIONS.md 2026-09-25): "Walls and towers cannot
+@@ -23,7 +25,52 @@ function plainReading(ctx: Pick<Ctx, 'state'>, a: number, b: number): boolean {
+   const t = ctx.state.terrain, board = ctx.state.board
+   if (a === b) return false
+-  for (let h = 0; h < t.length; h++) if (h !== a && h !== b && structureOf(t[h]!) && segmentCrossesCell(board, a, b, h)) return true
++  const own = new Set<number>()
++  for (const end of [a, b]) {
++    if (t[end] !== TERRAIN.WALL) continue
++    // grow the run by whole-board passes until it stops growing
++    const run = new Set([end])
++    for (let grew = true; grew;) {
++      grew = false
++      for (let h = 0; h < t.length; h++) if (!run.has(h) && t[h] === TERRAIN.WALL && [...run].some((r) => segmentAdjacent(board, r, h))) { run.add(h); grew = true }
++    }
++    for (const h of run) own.add(h)
++  }
++  for (let h = 0; h < t.length; h++) if (h !== a && h !== b && !own.has(h) && structureOf(t[h]!) && segmentCrossesCell(board, a, b, h)) return true
+   return false
+ }
++/** Adjacent by the offset-row rule written out (odd rows shifted right), not by the engine's table. */
++function segmentAdjacent(board: { width: number }, x: number, y: number): boolean {
++  const [rx, cx, ry, cy] = [Math.trunc(x / board.width), x % board.width, Math.trunc(y / board.width), y % board.width]
++  if (rx === ry) return Math.abs(cx - cy) === 1
++  if (Math.abs(rx - ry) !== 1) return false
++  return rx % 2 === 1 ? cy === cx || cy === cx + 1 : cy === cx || cy === cx - 1
++}
++
++/** Wall RUNS (added 2026-09-25): two long walls, one broken by a tower, a diagonal run, houses between. */
++function runs(width: number, height: number): Pick<Ctx, 'state'> {
++  const terrain: number[] = Array(width * height).fill(TERRAIN.OPEN)
++  for (let c = 1; c < width - 1; c++) terrain[1 * width + c] = TERRAIN.WALL
++  for (let c = 0; c < width; c++) terrain[4 * width + c] = c === Math.trunc(width / 2) ? TERRAIN.TOWER : TERRAIN.WALL
++  for (let r = 2; r < height; r++) terrain[r * width + Math.min(width - 1, r)] = TERRAIN.WALL
++  for (let c = 2; c < width; c += 4) terrain[2 * width + c] = TERRAIN.HOUSE
++  return { state: { board: { width, height }, terrain } as Ctx['state'] }
++}
++
++describe('the same-wall rule, on boards with real wall runs, answers exactly as the whole-board reading', () => {
++  for (const [w, h] of [[9, 7], [12, 9]] as const) {
++    it(`${w}×${h} wall runs`, () => {
++      const ctx = runs(w, h), n = w * h
++      let disagreements = 0, clearedByOwnWall = 0
++      for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
++        const want = plainReading(ctx, a, b)
++        if (structureBlocksLine(ctx, a, b, (c) => segmentCrossesCell(ctx.state.board, a, b, c)) !== want) disagreements++
++        // a line the same-wall rule clears: it touches a structure hex other than its ends, yet is clear
++        if (!want && [...Array(n).keys()].some((c) => c !== a && c !== b && structureOf(ctx.state.terrain[c]!) && segmentCrossesCell(ctx.state.board, a, b, c))) clearedByOwnWall++
++      }
++      expect(disagreements).toBe(0)
++      expect(clearedByOwnWall).toBeGreaterThan(0)   // the rule genuinely acts on these boards
++    })
++  }
++})
+ 
+ describe('the bounded structure line check answers exactly as the whole-board reading', () => {
+diff --git a/test/v2-structures.test.ts b/test/v2-structures.test.ts
+index cc25140..a099db3 100644
+--- a/test/v2-structures.test.ts
++++ b/test/v2-structures.test.ts
+@@ -280,2 +280,25 @@ describe('Block rolls read the added Block', () => {
+   })
+ })
++
++// Andrew, 2026-09-25 (DECISIONS.md "shooting along your own wall"): "You should be able to shoot on
++// the same wall." The wall a unit stands on does not block its line; every OTHER structure does.
++describe('an archer shoots along its own wall', () => {
++  const run = (cols: number[], glyph = 'W') => Object.fromEntries(cols.map((c) => [at(2, c), glyph]))
++  const shoots = (paint: Record<number, string>, from: number, to: number) =>
++    canAttack(rig(board(paint), ['test-warrior', to], ['test-ranger', from]), 1, 0, BOW)
++  it('along one unbroken wall, end to end: clear', () => {
++    expect(shoots(run([1, 2, 3, 4, 5]), at(2, 1), at(2, 5))).toBe(true)
++  })
++  it('along its wall and off the end, at a unit on the ground beyond: clear', () => {
++    expect(shoots(run([1, 2, 3, 4]), at(2, 1), at(2, 6))).toBe(true)
++  })
++  it('two separate walls with a third between: the third blocks — it is not the same wall', () => {
++    expect(shoots(run([1, 3, 5]), at(2, 1), at(2, 5))).toBe(false)
++  })
++  it('a tower in the middle of the run breaks it: other obstructions still block', () => {
++    expect(shoots({ ...run([1, 2, 4, 5]), [at(2, 3)]: 'T' }, at(2, 1), at(2, 5))).toBe(false)
++  })
++  it('a unit on the ground has no wall of its own: the same run between blocks its shot', () => {
++    expect(shoots(run([2, 3, 4]), at(2, 1), at(2, 5))).toBe(false)
++  })
++})
+```
+</details>

@@ -1,5 +1,22 @@
 [
  {
+  "id": "v2.structures-same-wall",
+  "kind": "engine",
+  "shape": "rule",
+  "probeIds": [
+   "terrain.wall",
+   "terrain.tower"
+  ],
+  "variants": [
+   "terrain.wall",
+   "terrain.tower"
+  ],
+  "spec": "Andrew, 2026-09-25 (engine/DECISIONS.md 'shooting along your own wall', verbatim there): \"You should be able to shoot on the same wall.\" The rest of the wall an end of an attack line stands on - wall hexes connected to it through other wall hexes - does not block the line; every other wall, tower or house between still does (\"Walls and towers cannot shoot past other obstructions\" stands). Data: clearAlongOwnRun on the structure row, true for the wall only. SWITCHES.md sameWallBothEnds, sameWallOnly.",
+  "expect": "an archer on a wall shoots along its unbroken wall and off its end; a separate wall, or a tower in the run, between still blocks; a unit on the ground is still blocked by a wall between; the bounded line check agrees with an independent whole-board reading on boards with real wall runs; control battles byte-identical.",
+  "status": "done-needs-review",
+  "sha": "c15923d"
+ },
+ {
   "id": "v2.structures-reruled",
   "kind": "engine",
   "shape": "rule",

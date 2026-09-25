@@ -279,3 +279,26 @@ describe('Block rolls read the added Block', () => {
     expect([TERRAIN.OPEN, TERRAIN.WOODLAND, TERRAIN.RUINS].map((t) => structureOf(t))).toEqual([null, null, null])
   })
 })
+
+// Andrew, 2026-09-25 (DECISIONS.md "shooting along your own wall"): "You should be able to shoot on
+// the same wall." The wall a unit stands on does not block its line; every OTHER structure does.
+describe('an archer shoots along its own wall', () => {
+  const run = (cols: number[], glyph = 'W') => Object.fromEntries(cols.map((c) => [at(2, c), glyph]))
+  const shoots = (paint: Record<number, string>, from: number, to: number) =>
+    canAttack(rig(board(paint), ['test-warrior', to], ['test-ranger', from]), 1, 0, BOW)
+  it('along one unbroken wall, end to end: clear', () => {
+    expect(shoots(run([1, 2, 3, 4, 5]), at(2, 1), at(2, 5))).toBe(true)
+  })
+  it('along its wall and off the end, at a unit on the ground beyond: clear', () => {
+    expect(shoots(run([1, 2, 3, 4]), at(2, 1), at(2, 6))).toBe(true)
+  })
+  it('two separate walls with a third between: the third blocks — it is not the same wall', () => {
+    expect(shoots(run([1, 3, 5]), at(2, 1), at(2, 5))).toBe(false)
+  })
+  it('a tower in the middle of the run breaks it: other obstructions still block', () => {
+    expect(shoots({ ...run([1, 2, 4, 5]), [at(2, 3)]: 'T' }, at(2, 1), at(2, 5))).toBe(false)
+  })
+  it('a unit on the ground has no wall of its own: the same run between blocks its shot', () => {
+    expect(shoots(run([2, 3, 4]), at(2, 1), at(2, 5))).toBe(false)
+  })
+})

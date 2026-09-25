@@ -362,6 +362,11 @@ export type Structure = {
   /** Up on it: a move between two raised structures (a wall top, a tower) is along the top, with no entry side.
    *  It gives NO line over anything — Andrew 2026-09-25: "Walls and towers cannot shoot past other obstructions." */
   readonly elevated: boolean
+  /**
+   * The rest of the SAME connected run of this structure does not block a line with an end on it —
+   * Andrew 2026-09-25: "You should be able to shoot on the same wall." Every other structure still does.
+   */
+  readonly clearAlongOwnRun: boolean
   /** Reach for EVERY attack made from here — melee included ("do not apply to range attacks only"). */
   readonly reach: number
   /** What it gives its occupant against an ENEMY attacker who is not standing in one of `sharedWith`. */
@@ -374,21 +379,21 @@ const STRUCTURE: Readonly<Record<number, Structure>> = {
     id: 'terrain.wall', enter: 'entry', entryCost: 1,
     // RULED 2026-09-25 (Andrew, DECISIONS.md): "You must leave the walls the same way you came up."
     leave: 'entry',
-    elevated: true, reach: 1,
+    elevated: true, reach: 1, clearAlongOwnRun: true,
     guard: { accuracyAgainst: -20, block: 10, rangedBlock: 10, dodge: 0, armor: 0 },
     sharedWith: ['terrain.wall', 'terrain.tower'],   // "an enemy who's not in a wall or a tower"
   },
   [TERRAIN.TOWER]: {
     id: 'terrain.tower', enter: 'any', entryCost: 0, // the +2 is the ground's own cost (EXTRA): 3 in all, from any side
     leave: 'any', onlySide: 'hero',
-    elevated: true, reach: 2,
+    elevated: true, reach: 2, clearAlongOwnRun: false,
     guard: { accuracyAgainst: -25, block: 15, rangedBlock: 15, dodge: 0, armor: 1 },   // rangedBlock: SWITCHES.md towerRangedBlock
     sharedWith: ['terrain.tower'],
   },
   [TERRAIN.HOUSE]: {
     id: 'terrain.house', enter: 'entry', entryCost: 0,   // SWITCHES.md doorFacing
     leave: 'entry',                                      // SWITCHES.md houseExit
-    elevated: false, reach: 0,
+    elevated: false, reach: 0, clearAlongOwnRun: false,   // SWITCHES.md sameWallOnly
     guard: { accuracyAgainst: -10, block: 0, rangedBlock: 0, dodge: 5, armor: 0 },
     sharedWith: ['terrain.house'],
   },

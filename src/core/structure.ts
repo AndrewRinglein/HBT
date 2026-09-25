@@ -19,6 +19,7 @@ import type { Ctx, Unit } from './types.js'
 import { STRUCTURE_GROUND, structureOf, type Structure } from '../content/maps.js'
 import { rulesSideOf } from './side.js'
 import { passableHexes, type Passable } from './props.js'
+import { geometryOf } from './hex.js'
 
 /** The structure at a hex, or null. */
 export function structureAt(ctx: Pick<Ctx, 'state'>, hex: number): Structure | null {
@@ -90,6 +91,9 @@ export function structureReachOf(ctx: Pick<Ctx, 'state'>, u: Unit): number {
 /**
  * Does a structure hex block the attack line from `a` to `b`? Its own ends never do. Nobody sees
  * over one — Andrew 2026-09-25 (DECISIONS.md): "Walls and towers cannot shoot past other obstructions."
+ * But the rest of the wall an end stands on does not block ("You should be able to shoot on the same
+ * wall"): a structure whose row says `clearAlongOwnRun`, connected to that end through hexes of
+ * the same structure, is clear (SWITCHES.md sameWallBothEnds).
  */
 export function structureBlocksLine(ctx: Pick<Ctx, 'state'>, a: number, b: number, crosses: (cell: number) => boolean): boolean {
   if (a === b) return false
@@ -106,7 +110,35 @@ export function structureBlocksLine(ctx: Pick<Ctx, 'state'>, a: number, b: numbe
     const h = r * width + c
     if (h !== a && h !== b && STRUCTURE_GROUND[terrain[h]!] === 1) (candidates ??= []).push(h)
   }
-  return candidates !== null && candidates.some(crosses)
+  if (candidates === null) return false
+  let own: Set<number> | null = null
+  for (const c of candidates) {
+    if (!crosses(c)) continue
+    if (structureAt(ctx, c)?.clearAlongOwnRun) {
+      own ??= ownRuns(ctx, a, b)
+      if (own.has(c)) continue
+    }
+    return true
+  }
+  return false
+}
+
+/** Every hex of the runs `a` and `b` stand on — connected hexes of the same `clearAlongOwnRun` structure. */
+function ownRuns(ctx: Pick<Ctx, 'state'>, a: number, b: number): Set<number> {
+  const out = new Set<number>(), geo = geometryOf(ctx.state.board)
+  for (const end of [a, b]) {
+    const s = structureAt(ctx, end)
+    if (!s?.clearAlongOwnRun || out.has(end)) continue
+    const stack = [end]
+    out.add(end)
+    while (stack.length) {
+      for (const n of geo.neighboursOf(stack.pop()!)) {
+        if (out.has(n) || structureAt(ctx, n)?.id !== s.id) continue
+        out.add(n); stack.push(n)
+      }
+    }
+  }
+  return out
 }
 
 /**
