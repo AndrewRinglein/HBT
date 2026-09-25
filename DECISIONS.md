@@ -2761,3 +2761,15 @@ Ruled:
 - **Bloodrunes** — a bloodrune's slayer is a damage-vs-target bonus and works. SWITCHES.md `vsTargetWornItems` (a named gap) is superseded; backlog `fix.vs-target-worn-and-flat` builds it.
 - **One weapon matching a target twice** — both apply (Holy Water vs a vampire that is also undead: +1 and +1). SWITCHES.md `vsTargetStacking` is ruled.
 - **Open, asked** — "bonus damage … then we roll the critical hit, and that can create a multiplier" may mean bonus damage packets (the Hand Axe's +4 on a critical, the Bane Blade's +6) are multiplied too; today they are not (`V2-DAMAGE-PACKETS.md` lines 9–10: secondary values do not repeat the critical multiplier). Not changed until answered.
+
+
+## 2026-09-25 — bonus damage packets and the critical: as built; a bloodrune's slayer reaches everything
+
+Andrew, asked (1) "Did you mean on-critical bonus damage (the Hand Axe's +4 on a critical, the Bane Blade's +6) should also be multiplied by the critical? Right now it isn't (V2-DAMAGE-PACKETS.md, lines 9–10)" and (2) "Should a bloodrune's slayer bonus apply to every attack and power the hero makes, the way a badge's does?":
+
+“I don't have strong opinions one way or another for the bonus damage before or after the critical multiplier.  So if you've already done it one way, that's fine.   2, yes.”
+
+Ruled:
+
+- **Bonus damage packets and the critical** — stay as built: secondary packets are not multiplied by the critical (`V2-DAMAGE-PACKETS.md` lines 9–10). The open question in the entry above is closed.
+- **A worn item's damage vs target (bloodrune slayer)** — reaches every attack and power the hero makes, the way a badge's does. The default named in backlog `fix.vs-target-worn-and-flat` is ruled.
