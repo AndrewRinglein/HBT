@@ -1073,3 +1073,26 @@ first row below is the one that talk may overturn.
 | `structureCollision` | A push a structure refuses (a wall's face, a house wall, a tower for a non-hero)? | **A collision with the structure**: `collidedWith: 'structure'`, the structure named, value **2**. | COMBAT-V2 §9.3's table: "A basic obstruction — a big rock, a wall, the map edge — 2". | provisional — 2026-09-25 |
 | `structureKillSwitch` | What does `CF_DISABLE_IDS=terrain.wall` silence? | **Every structure reader** (entry, lines, reach, guard, occupant accuracy). The tower's 3-move entry stays — it is the ground's cost, as woodland's 2. | The seam's shape for ground (`off()` in terrain.ts). | provisional — 2026-09-25 |
 | `structureAi` | Does the AI seek walls and towers? | **No new behaviour.** It meets them through `reachable` and `preview()` only. | `system.ai-modes` is Angela's, not a chat's. | provisional — 2026-09-25 |
+
+## Atlas ground compile — defaults taken compiling the outdoor maps (2026-09-25)
+
+The source: `engine/DECISIONS.md` "2026-09-25 — the Atlas ground compile is the outdoor maps" (Andrew:
+"Yes, make the outdoor maps playable in combat") and the 2026-09-24 ground table it applies. Root
+`tools/battle-atlas/combat-compiler.mjs` (grounds, structures), `tools/battle-atlas/combat-profiles.json`
+(`policy.grounds`, `policy.groundOrder`, one `ground` / `structure` / `decoration` profile per asset —
+names live there, never in code), probes `tools/battle-atlas/combat-ground.test.mjs` and the last test of
+`combat-integration.test.mts`. Ruled, so not switches: trees → woodland, tall grass / bushes / barberry /
+wheat → tall vegetation (`terrain.undergrowth`), rivers → water, dense trees → a full obstruction, houses →
+`terrain.house`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `atlasGroundOrder` | One hex carries two grounds (a bridge over a river; several trees and grass) — which? | **The first of `impassable, open, water, woodland, undergrowth`**; a house over all of them. | A bridge deck is walked on; a tree hex with grass under it is woodland; the stronger obstruction wins. | provisional — 2026-09-25 |
+| `atlasBridgeOpen` | A bridge on a river hex? | **Open ground** (1 move, no modifier). | "Rivers are just water"; the bridge is the way across it. | provisional — 2026-09-25 |
+| `atlasDenseWoodland` | `woodland-impassable` ("seven rooted trees … close the spaces")? | **A full-obstruction hex** (glyph `x`). | "If you get enough trees together, really dense trees, it becomes a full obstruction." | provisional — 2026-09-25 |
+| `atlasGardenAndOrchard` | The vegetable garden and the orchard ladder, both authored `concealment`? | **Garden → tall vegetation; orchard ladder and baskets → decoration, no ground.** | The garden hides like any tall planting; a ladder and baskets hide nobody. | provisional — 2026-09-25 |
+| `atlasHouseCells` | Which hexes is a house? | **The map's authored building cells** (`town.buildings[].cells`, Willowmarket), **else every hex within its authored `footprintRadius`** (opening maps: 7 hexes). | The model's own interior sits half a hex off its lot on odd rows; the authored lot is what the map drew. | provisional — 2026-09-25 |
+| `atlasHouseDoor` | Where is a house's one door? | **The recorded door opening, else the middle of the model's front (+z) face**, turned by its rotation: the house hex nearest it, entered from the outside hex nearest it. A front that faces off the board (a town-edge house) opens on the nearest side that exists, and the compile says so. | Only the cottage records its door (+z); every house here is built on the cottage. | provisional — 2026-09-25 |
+| `atlasProfileCrossingLowOnly` | A profile's +1 crossing cost on an asset authored as a full obstruction (opening-4's priory low wall)? | **Applies to low placements only**; the obstruction stays a full obstruction. A cost on the placement itself stays strict. | The author's role for that placement wins over the asset's default. | provisional — 2026-09-25 |
+| `atlasLandformsNotHills` | The outdoor maps' raised landforms (bluffs, ridges, rises)? | **Presentation only — not hills.** | "Heights remain presentation data" (`ATLAS-COMBAT-INTEGRATION.md`); nobody has ruled which rises are hills. | open — ask Andrew |
+| `atlasFieldedMaps` | Which outdoor maps get a combat fielding? | **The 13 whose battle finishes.** Not fielded: `greenway`, `stonecrown` (every seed 0–9 hits the 25-turn cap), `opening-4` (the sides never meet — no hit on any seed); `harvest`, `wellwood` (legacy objects; the compiler refuses them). | A fielding must finish a real battle (the integration test). Why the AI stalls there is an AI question. | provisional — 2026-09-25 |
