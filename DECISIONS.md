@@ -2725,3 +2725,13 @@ Andrew, asked what "the Atlas ground compile" (the 2026-09-25 wrap's Next line; 
 Ruled:
 
 - **The Atlas ground compile** — build it: the Atlas combat compiler writes the V2 grounds and the wall, tower and house structures into the three Atlas areas (the frozen Priory, Angled Halls and Buried Pilgrimage fieldings, `ATLAS-COMBAT-INTEGRATION.md`). One backlog item, ahead of `station.vs-target`.
+
+## 2026-09-25 — the Atlas ground compile is the outdoor maps
+
+Andrew, told that the three Atlas combat areas (Priory, Angled Halls, Buried Pilgrimage) are dungeons whose every hex is authored `"dungeon"` floor, so writing the V2 grounds into them changes nothing; that the outdoor Atlas maps carry trees, bushes, tall wheat and houses but cannot be compiled for combat (the compiler refuses their `concealment` placements); and asked "Should I make the outdoor maps playable in combat, with trees as woodland, bushes and wheat as tall vegetation, and houses as houses, instead of changing the three dungeon maps?":
+
+“Yes, make the outdoor maps playable in combat.”
+
+Ruled (supersedes the entry above on where the compile writes):
+
+- **The Atlas ground compile** — compiles the outdoor Atlas maps for combat: trees → `terrain.woodland`, bushes, barberry and tall wheat → `terrain.undergrowth` (tall vegetation), houses → `terrain.house`, per the 2026-09-24 ground table. The three dungeon areas stay as they are.
