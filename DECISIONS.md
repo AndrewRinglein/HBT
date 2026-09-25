@@ -2715,3 +2715,13 @@ Ruled:
 
 - **Shooting a unit on a wall** — any ranged unit on the ground can shoot a unit on a wall; it cannot shoot past the wall to a unit the wall obstructs. As built (`v2.structures-same-wall`): the wall a line's end stands on does not block that line, from either end; every other wall, tower or house between still does. `sameWallBothEnds` is ruled.
 - **Kindle on the Codex Mages** — do not add it. The test Mage alone carries it; "We'll add it later. If needed."
+
+## 2026-09-25 — the Atlas ground compile writes into the three Atlas areas
+
+Andrew, asked what "the Atlas ground compile" (the 2026-09-25 wrap's Next line; no backlog item or document defined it) should do — suggested: have the Atlas compiler write the new grounds and the wall, tower and house structures into the three Atlas areas — or skip it for `station.vs-target`:
+
+“Write it into the three atlas areas.”
+
+Ruled:
+
+- **The Atlas ground compile** — build it: the Atlas combat compiler writes the V2 grounds and the wall, tower and house structures into the three Atlas areas (the frozen Priory, Angled Halls and Buried Pilgrimage fieldings, `ATLAS-COMBAT-INTEGRATION.md`). One backlog item, ahead of `station.vs-target`.
