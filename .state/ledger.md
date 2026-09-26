@@ -16665,3 +16665,149 @@ Closed as delivered on Andrew's 2026-09-26 ruling (DECISIONS.md, 'system.ai-mode
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## pack.enemy-actions — LANDED `fa8b9b7` **NEEDS REVIEW**
+2026-09-26 18:30
+
+  PASS  dependencies landed
+  WARN  not already decided — 6 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:11
+  PASS  typecheck
+  PASS  the item's own tests — test/afflictions.test.ts, test/battle-cursor.test.ts, test/enemy-pack.test.ts, test/pack-enemy-actions.test.ts
+  PASS  gate 1 — the id appears in a real battle — move.hellhound.close-bite: 14 log lines, 14 fired, 5 changed state · move.hound.close-bite: 7 log lines, 7 fired, 3 changed state · move.zombie-hound.close-bite: 7 log lines, 7 fired, 3 changed state
+  PASS  brought its own tests — test/afflictions.test.ts, test/battle-cursor.test.ts, test/enemy-pack.test.ts, test/fixtures/battle-cursor-enemy-actions.json, test/pack-enemy-actions.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/afflictions.test.ts (-2), test/battle-cursor.test.ts (-2), test/enemy-pack.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  WARN  naming — no banned words invented — 'buff/debuff' — say status — will land FLAGGED
+  PASS  kill switch — the tests fail without the content — tests fail without move.hellhound.close-bite,move.hound.close-bite,move.zombie-hound.close-bite — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/afflictions.test.ts b/test/afflictions.test.ts
+index c8f0c04..dbd1207 100644
+--- a/test/afflictions.test.ts
++++ b/test/afflictions.test.ts
+@@ -5,4 +5,6 @@
+ // 2026-08-26) compile to badge.grant triggers; the badge is the Codex's row.
+ import { describe, expect, it } from 'vitest'
++import { readFileSync } from 'node:fs'
++import { join } from 'node:path'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+@@ -16,8 +18,27 @@ const ROT = 'trigger.zombie.afflict-rotting-flesh', LYC = 'trigger.werewolf.affl
+ 
+ describe('the riders compile', () => {
+-  it('five bestiary riders are badge.grant triggers at their authored chances, naming Codex badge rows', () => {
++  // was: 'five bestiary riders are …' — pack.enemy-actions (2026-09-26): every authored rider, however many
++  it('every bestiary affliction rider is a badge.grant trigger at its authored chance, naming a Codex badge row', () => {
+     const all = Object.values(UNITS).flatMap((u) => (u.triggers ?? []).map((t) => ({ unit: u.typeId, ...t })))
+     const grants = all.filter((t) => t.effect.kind === 'badge.grant')
+-    expect(grants.map((t) => t.id).sort()).toEqual([ROT, VAMP, LYC, 'trigger.vampire-lord.afflict-vampirism', 'trigger.zombie-hound.afflict-rotting-flesh'].sort())
++    // LAW 10 — pack.enemy-actions (2026-09-26): the pack now carries the enemy special moves, and the
++    // Zombie Hound's Close Bite authors its own rotting-flesh rider, so the riders are six, not five.
++    // The claim was never "five": it is that every "inflict an affliction" rider the bestiary authors on
++    // a row's own attack or special move compiles to one badge.grant on that unit, scoped to that
++    // action, at its authored hook and chance, naming badge.<affliction>. Derived from the Codex rows now.
++    // was: expect(grants.map((t) => t.id).sort()).toEqual([ROT, VAMP, LYC, 'trigger.vampire-lord.afflict-vampirism', 'trigger.zombie-hound.afflict-rotting-flesh'].sort())
++    type SrcTrig = { hook: string; chance?: number; effects?: { effect: string; affliction?: string }[] }
++    type SrcAct = { id?: string; triggers?: SrcTrig[] }
++    const codex = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'hbt-content.json'), 'utf8')) as
++      { bestiary: { id: string; attacks?: SrcAct[]; moves?: (string | { id: string; attack?: { triggers?: SrcTrig[] } })[] }[] }
++    const key = (unit: string, action: string, hook: string, chance: number, badge: string) => `${unit}|${action}|${hook}|${chance}|${badge}`
++    const authored = codex.bestiary.flatMap((u) => [
++      ...(u.attacks ?? []).filter((a) => a.id).map((a) => ({ action: a.id!, triggers: a.triggers ?? [] })),
++      ...(u.moves ?? []).flatMap((m) => typeof m === 'object' && m.attack ? [{ action: m.id, triggers: m.attack.triggers ?? [] }] : []),
++    ].flatMap(({ action, triggers }) => triggers.flatMap((t) => (t.effects ?? []).filter((e) => e.effect === 'inflict an affliction')
++      .map((e) => key(u.id, action, t.hook, t.chance ?? 100, `badge.${e.affliction}`)))))
++    expect(authored).toContain(key('unit.zombie-hound', 'move.zombie-hound.close-bite', 'onDamage', 2, 'badge.rotting-flesh'))
++    expect(grants.map((t) => key(t.unit, t.onlyWithAttack!, t.hook, t.chance, (t.effect as { badgeId: string }).badgeId)).sort()).toEqual(authored.sort())
++    expect(grants.map((t) => t.id)).toEqual(expect.arrayContaining([ROT, VAMP, LYC]))
+     for (const t of grants) {
+       const e = t.effect as { kind: 'badge.grant'; badgeId: string }
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 3564ccf..ae5e36a 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -86,4 +86,12 @@ const wornGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-wor
+ const projectWorn = (state: { units: { loadout?: { worn?: unknown } }[] }) =>
+   ({ ...state, units: state.units.map((u) => { if (u.loadout?.worn === undefined) return u; const { worn: _, ...rest } = u.loadout; return { ...u, loadout: rest } }) })
++// pack.enemy-actions (2026-09-26), Law 10: the pack carries enemy special moves (Clobber, Buff, the
++// Close Bites) on the movement slot and flight as a flier's one movement power (DECISIONS.md
++// 2026-09-04, "enemies use the one action type too"). Every case's full current hashes are frozen
++// here (tools/capture-enemy-actions-cursor.mts); a case marked `changed` (it fields a hound or a
++// flier — alpha-team, horrors, kiln, prologue-enemies, rime) is checked against these and skips every
++// older layer its battle no longer matches; every other case is byte-identical to the worn capture
++// and runs every older layer unchanged. No state field was added, so no projection. Old fixtures stay immutable.
++const enemyActionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enemy-actions.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -189,6 +197,9 @@ describe('resumable battle cursor', () => {
+       const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const enemyActionsMoved = enemyActionsExpected?.changed === true
+       const wornExpected = wornGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const wornMoved = wornExpected?.changed === true
++      // was: const wornMoved = wornExpected?.changed === true — an enemy-actions-moved case skips the worn layer too (pack.enemy-actions 2026-09-26)
++      const wornMoved = wornExpected?.changed === true || enemyActionsMoved
+       // was: const thinMoved = thinExpected?.changed === true — a worn-moved case skips the thin layer too
+       const thinMoved = thinExpected?.changed === true || wornMoved
+@@ -215,5 +226,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (wornExpected) {
++        if (enemyActionsExpected) {
++        expect(hash(ctx.events), 'full enemy-actions events').toBe(enemyActionsExpected.events)
++        expect(hash(ctx.state), 'full enemy-actions state').toBe(enemyActionsExpected.state)
++        expect(hash(ctx.rng.log), 'full enemy-actions RNG').toBe(enemyActionsExpected.rng)
++        expect(result).toEqual(enemyActionsExpected.result)
++        }
++        // was: if (wornExpected) { — pack.enemy-actions (2026-09-26): a moved case is checked above instead
++        if (wornExpected && !enemyActionsMoved) {
+         expect(hash(ctx.events), 'full worn-slayer events').toBe(wornExpected.events)
+         expect(hash(ctx.state), 'full worn-slayer state').toBe(wornExpected.state)
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index aa47279..4cbb316 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -27,8 +27,15 @@ const authored = () => {
+ describe('the pack carries the authored rows faithfully', () => {
+   it('every prologue-fielded enemy exists, keyed by its full Codex id', () => {
++    const src = authored()
+     for (const id of roster()) {
+       expect(UNITS[id], id).toBeDefined()
+       expect(UNITS[id]!.side, id).toBe('enemy')
+-      expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual(['power.move'])
++      // LAW 10 — pack.enemy-actions (2026-09-26): an enemy row carries exactly ONE movement power
++      // (DECISIONS.md 2026-08-21, "which may or may not be Flight"), and the pack now carries it:
++      // a `movePower: flight` row (the Imp, the Powerful Imp) fields power.flight, not the walk.
++      // The rule — one movement power per enemy row, walk or flight, the row's own — is unchanged.
++      // was: expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual(['power.move'])
++      const movePower = (src.get(id) as { movePower?: string } | undefined)?.movePower
++      expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual([movePower ? `power.${movePower}` : 'power.move'])
+       expect(UNITS[id]!.maxStamina, `${id} — enemies do not run stamina`).toBe(0)
+     }
+@@ -94,5 +101,16 @@ describe('the pack carries the authored rows faithfully', () => {
+     // assertion follows the rule "named, not guessed" to its other side)
+     expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(false)
+-    expect(Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant').length).toBe(5)
++    // LAW 10 — pack.enemy-actions (2026-09-26): the Zombie Hound's Close Bite is carried now and its
++    // own rotting-flesh rider with it. The rule is one badge.grant per "inflict an affliction" rider
++    // authored on a row's own attack or special move — counted from the source rows, not a 5.
++    // was: expect(Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant').length).toBe(5)
++    type SrcTrig = { effects?: { effect: string }[] }
++    const rows = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'gen', 'enemies-authored.json'), 'utf8')).units as
++      { attacks?: { id?: string; triggers?: SrcTrig[] }[]; moves?: (string | { attack?: { triggers?: SrcTrig[] } })[] }[]
++    const riders = rows.flatMap((u) => [
++      ...(u.attacks ?? []).filter((a) => a.id).map((a) => a.triggers ?? []),
++      ...(u.moves ?? []).flatMap((m) => typeof m === 'object' && m.attack ? [m.attack.triggers ?? []] : []),
++    ]).flat().flatMap((t) => (t.effects ?? []).filter((e) => e.effect === 'inflict an affliction')).length
++    expect(Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant').length).toBe(riders)
+     // capability.power-pool landed 2026-09-03: `capability.power` is no longer
+     // a gap anywhere — the Lieutenant's clock and the Vampire Lord's feed are
+```
+</details>

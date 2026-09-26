@@ -26,10 +26,17 @@ const authored = () => {
 
 describe('the pack carries the authored rows faithfully', () => {
   it('every prologue-fielded enemy exists, keyed by its full Codex id', () => {
+    const src = authored()
     for (const id of roster()) {
       expect(UNITS[id], id).toBeDefined()
       expect(UNITS[id]!.side, id).toBe('enemy')
-      expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual(['power.move'])
+      // LAW 10 — pack.enemy-actions (2026-09-26): an enemy row carries exactly ONE movement power
+      // (DECISIONS.md 2026-08-21, "which may or may not be Flight"), and the pack now carries it:
+      // a `movePower: flight` row (the Imp, the Powerful Imp) fields power.flight, not the walk.
+      // The rule — one movement power per enemy row, walk or flight, the row's own — is unchanged.
+      // was: expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual(['power.move'])
+      const movePower = (src.get(id) as { movePower?: string } | undefined)?.movePower
+      expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual([movePower ? `power.${movePower}` : 'power.move'])
       expect(UNITS[id]!.maxStamina, `${id} — enemies do not run stamina`).toBe(0)
     }
   })
@@ -93,7 +100,18 @@ describe('the pack carries the authored rows faithfully', () => {
     // row names the capability as a gap (LAW 10: the gap closed by landing, the
     // assertion follows the rule "named, not guessed" to its other side)
     expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(false)
-    expect(Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant').length).toBe(5)
+    // LAW 10 — pack.enemy-actions (2026-09-26): the Zombie Hound's Close Bite is carried now and its
+    // own rotting-flesh rider with it. The rule is one badge.grant per "inflict an affliction" rider
+    // authored on a row's own attack or special move — counted from the source rows, not a 5.
+    // was: expect(Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant').length).toBe(5)
+    type SrcTrig = { effects?: { effect: string }[] }
+    const rows = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'gen', 'enemies-authored.json'), 'utf8')).units as
+      { attacks?: { id?: string; triggers?: SrcTrig[] }[]; moves?: (string | { attack?: { triggers?: SrcTrig[] } })[] }[]
+    const riders = rows.flatMap((u) => [
+      ...(u.attacks ?? []).filter((a) => a.id).map((a) => a.triggers ?? []),
+      ...(u.moves ?? []).flatMap((m) => typeof m === 'object' && m.attack ? [m.attack.triggers ?? []] : []),
+    ]).flat().flatMap((t) => (t.effects ?? []).filter((e) => e.effect === 'inflict an affliction')).length
+    expect(Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant').length).toBe(riders)
     // capability.power-pool landed 2026-09-03: `capability.power` is no longer
     // a gap anywhere — the Lieutenant's clock and the Vampire Lord's feed are
     // power.gain triggers, the necro-bolt carries its powerScale on the row.

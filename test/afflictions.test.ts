@@ -4,6 +4,8 @@
 // possession." The bestiary's "inflict an affliction" riders (a named gap since
 // 2026-08-26) compile to badge.grant triggers; the badge is the Codex's row.
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { beginActivation } from '../src/core/mutate.js'
@@ -15,10 +17,29 @@ import { hexId } from './board16.js'
 const ROT = 'trigger.zombie.afflict-rotting-flesh', LYC = 'trigger.werewolf.afflict-lycanthropy', VAMP = 'trigger.vampire.afflict-vampirism'
 
 describe('the riders compile', () => {
-  it('five bestiary riders are badge.grant triggers at their authored chances, naming Codex badge rows', () => {
+  // was: 'five bestiary riders are …' — pack.enemy-actions (2026-09-26): every authored rider, however many
+  it('every bestiary affliction rider is a badge.grant trigger at its authored chance, naming a Codex badge row', () => {
     const all = Object.values(UNITS).flatMap((u) => (u.triggers ?? []).map((t) => ({ unit: u.typeId, ...t })))
     const grants = all.filter((t) => t.effect.kind === 'badge.grant')
-    expect(grants.map((t) => t.id).sort()).toEqual([ROT, VAMP, LYC, 'trigger.vampire-lord.afflict-vampirism', 'trigger.zombie-hound.afflict-rotting-flesh'].sort())
+    // LAW 10 — pack.enemy-actions (2026-09-26): the pack now carries the enemy special moves, and the
+    // Zombie Hound's Close Bite authors its own rotting-flesh rider, so the riders are six, not five.
+    // The claim was never "five": it is that every "inflict an affliction" rider the bestiary authors on
+    // a row's own attack or special move compiles to one badge.grant on that unit, scoped to that
+    // action, at its authored hook and chance, naming badge.<affliction>. Derived from the Codex rows now.
+    // was: expect(grants.map((t) => t.id).sort()).toEqual([ROT, VAMP, LYC, 'trigger.vampire-lord.afflict-vampirism', 'trigger.zombie-hound.afflict-rotting-flesh'].sort())
+    type SrcTrig = { hook: string; chance?: number; effects?: { effect: string; affliction?: string }[] }
+    type SrcAct = { id?: string; triggers?: SrcTrig[] }
+    const codex = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'hbt-content.json'), 'utf8')) as
+      { bestiary: { id: string; attacks?: SrcAct[]; moves?: (string | { id: string; attack?: { triggers?: SrcTrig[] } })[] }[] }
+    const key = (unit: string, action: string, hook: string, chance: number, badge: string) => `${unit}|${action}|${hook}|${chance}|${badge}`
+    const authored = codex.bestiary.flatMap((u) => [
+      ...(u.attacks ?? []).filter((a) => a.id).map((a) => ({ action: a.id!, triggers: a.triggers ?? [] })),
+      ...(u.moves ?? []).flatMap((m) => typeof m === 'object' && m.attack ? [{ action: m.id, triggers: m.attack.triggers ?? [] }] : []),
+    ].flatMap(({ action, triggers }) => triggers.flatMap((t) => (t.effects ?? []).filter((e) => e.effect === 'inflict an affliction')
+      .map((e) => key(u.id, action, t.hook, t.chance ?? 100, `badge.${e.affliction}`)))))
+    expect(authored).toContain(key('unit.zombie-hound', 'move.zombie-hound.close-bite', 'onDamage', 2, 'badge.rotting-flesh'))
+    expect(grants.map((t) => key(t.unit, t.onlyWithAttack!, t.hook, t.chance, (t.effect as { badgeId: string }).badgeId)).sort()).toEqual(authored.sort())
+    expect(grants.map((t) => t.id)).toEqual(expect.arrayContaining([ROT, VAMP, LYC]))
     for (const t of grants) {
       const e = t.effect as { kind: 'badge.grant'; badgeId: string }
       expect(BADGES[e.badgeId], `${t.id} names ${e.badgeId}`).toBeDefined()

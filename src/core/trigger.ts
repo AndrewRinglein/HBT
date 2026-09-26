@@ -201,7 +201,10 @@ export type Trigger = {
 export function validateTrigger(t: Trigger): void {
   const where = `trigger '${t.id}'`
   if (!HOOKS.includes(t.hook)) throw new Error(`${where}: unknown hook '${t.hook}'`)
-  if (t.onlyWithAttack !== undefined && !/^attack\.[a-z0-9][a-z0-9.-]*$/.test(t.onlyWithAttack)) {
+  // pack.enemy-actions (2026-09-26): an enemy's special move (the approved `move`
+  // kind, KINDS.md) that carries an attack IS an attack under the one action
+  // type (DECISIONS.md 2026-09-04) — Close Bite's burn rides it like Bite's.
+  if (t.onlyWithAttack !== undefined && !/^(attack|move)\.[a-z0-9][a-z0-9.-]*$/.test(t.onlyWithAttack)) {
     throw new Error(`${where}: onlyWithAttack must name an attack id, got '${t.onlyWithAttack}'`)
   }
   if (typeof t.select === 'string') {

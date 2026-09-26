@@ -85,6 +85,14 @@ const propGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-pro
 const wornGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-worn.json', import.meta.url), 'utf8'))
 const projectWorn = (state: { units: { loadout?: { worn?: unknown } }[] }) =>
   ({ ...state, units: state.units.map((u) => { if (u.loadout?.worn === undefined) return u; const { worn: _, ...rest } = u.loadout; return { ...u, loadout: rest } }) })
+// pack.enemy-actions (2026-09-26), Law 10: the pack carries enemy special moves (Clobber, Buff, the
+// Close Bites) on the movement slot and flight as a flier's one movement power (DECISIONS.md
+// 2026-09-04, "enemies use the one action type too"). Every case's full current hashes are frozen
+// here (tools/capture-enemy-actions-cursor.mts); a case marked `changed` (it fields a hound or a
+// flier — alpha-team, horrors, kiln, prologue-enemies, rime) is checked against these and skips every
+// older layer its battle no longer matches; every other case is byte-identical to the worn capture
+// and runs every older layer unchanged. No state field was added, so no projection. Old fixtures stay immutable.
+const enemyActionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enemy-actions.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -188,8 +196,11 @@ describe('resumable battle cursor', () => {
       const thornsExpected = thornsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const enemyActionsMoved = enemyActionsExpected?.changed === true
       const wornExpected = wornGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const wornMoved = wornExpected?.changed === true
+      // was: const wornMoved = wornExpected?.changed === true — an enemy-actions-moved case skips the worn layer too (pack.enemy-actions 2026-09-26)
+      const wornMoved = wornExpected?.changed === true || enemyActionsMoved
       // was: const thinMoved = thinExpected?.changed === true — a worn-moved case skips the thin layer too
       const thinMoved = thinExpected?.changed === true || wornMoved
       const groundMoved = groundExpected?.changed === true || thinMoved
@@ -214,7 +225,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (wornExpected) {
+        if (enemyActionsExpected) {
+        expect(hash(ctx.events), 'full enemy-actions events').toBe(enemyActionsExpected.events)
+        expect(hash(ctx.state), 'full enemy-actions state').toBe(enemyActionsExpected.state)
+        expect(hash(ctx.rng.log), 'full enemy-actions RNG').toBe(enemyActionsExpected.rng)
+        expect(result).toEqual(enemyActionsExpected.result)
+        }
+        // was: if (wornExpected) { — pack.enemy-actions (2026-09-26): a moved case is checked above instead
+        if (wornExpected && !enemyActionsMoved) {
         expect(hash(ctx.events), 'full worn-slayer events').toBe(wornExpected.events)
         expect(hash(ctx.state), 'full worn-slayer state').toBe(wornExpected.state)
         expect(hash(ctx.rng.log), 'full worn-slayer RNG').toBe(wornExpected.rng)

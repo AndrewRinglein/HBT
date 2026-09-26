@@ -555,6 +555,7 @@ export const UNIT_PACK = {
       "ai": "hunter",
       "aiAuthored": true,
       "attacks": [
+        "move.hound.close-bite",
         "attack.bloodhound.bite"
       ],
       "abilities": [],
@@ -592,7 +593,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.flight"
       ],
       "tags": [
         "undead",
@@ -814,6 +815,7 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
+        "move.demon-hound.close-bite",
         "attack.demon-hound.bite"
       ],
       "abilities": [],
@@ -1215,6 +1217,7 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
+        "move.hellhound.close-bite",
         "attack.hellhound.bite"
       ],
       "abilities": [],
@@ -1237,6 +1240,19 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "unit.hellhound"
+        },
+        {
+          "id": "trigger.hellhound.burn.close-bite",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "unit.hellhound",
+          "onlyWithAttack": "move.hellhound.close-bite"
         },
         {
           "id": "trigger.hellhound.burn",
@@ -1279,7 +1295,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.flight"
       ],
       "tags": [
         "demon"
@@ -1381,9 +1397,11 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
-        "attack.basic.melee"
+        "move.iron-colossus.clobber"
       ],
-      "abilities": [],
+      "abilities": [
+        "move.iron-colossus.buff"
+      ],
       "moves": [
         "power.move"
       ],
@@ -1702,7 +1720,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.flight"
       ],
       "tags": [
         "demon"
@@ -1751,7 +1769,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.flight"
       ],
       "tags": [
         "horror"
@@ -2153,7 +2171,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.flight"
       ],
       "tags": [
         "demon"
@@ -2216,7 +2234,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.flight"
       ],
       "tags": [
         "undead",
@@ -2314,7 +2332,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.flight"
       ],
       "tags": [
         "undead",
@@ -2604,6 +2622,7 @@ export const UNIT_PACK = {
       "ai": "hunter",
       "aiAuthored": true,
       "attacks": [
+        "move.zombie-hound.close-bite",
         "attack.zombie-hound.bite"
       ],
       "abilities": [],
@@ -2615,6 +2634,18 @@ export const UNIT_PACK = {
         "beast"
       ],
       "triggers": [
+        {
+          "id": "trigger.zombie-hound.afflict-rotting-flesh.close-bite",
+          "hook": "onDamage",
+          "chance": 2,
+          "select": "target",
+          "effect": {
+            "kind": "badge.grant",
+            "badgeId": "badge.rotting-flesh"
+          },
+          "source": "unit.zombie-hound",
+          "onlyWithAttack": "move.zombie-hound.close-bite"
+        },
         {
           "id": "trigger.zombie-hound.afflict-rotting-flesh",
           "hook": "onDamage",
@@ -2651,6 +2682,18 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 0
+    },
+    "move.hound.close-bite": {
+      "slot": "movement",
+      "id": "move.hound.close-bite",
+      "name": "Close Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 10
     },
     "attack.bloodhound.bite": {
       "id": "attack.bloodhound.bite",
@@ -2723,6 +2766,18 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 10,
       "staminaCost": 0
+    },
+    "move.demon-hound.close-bite": {
+      "slot": "movement",
+      "id": "move.demon-hound.close-bite",
+      "name": "Close Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 10
     },
     "attack.demon-hound.bite": {
       "id": "attack.demon-hound.bite",
@@ -2817,6 +2872,18 @@ export const UNIT_PACK = {
       "staminaCost": 0,
       "cooldown": 3
     },
+    "move.hellhound.close-bite": {
+      "slot": "movement",
+      "id": "move.hellhound.close-bite",
+      "name": "Close Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 10
+    },
     "attack.hellhound.bite": {
       "id": "attack.hellhound.bite",
       "name": "Bite",
@@ -2867,9 +2934,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0
     },
-    "attack.basic.melee": {
-      "id": "attack.basic.melee",
-      "name": "Basic Attack",
+    "move.iron-colossus.clobber": {
+      "slot": "movement",
+      "id": "move.iron-colossus.clobber",
+      "name": "Clobber",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 0,
@@ -3076,6 +3144,18 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0
+    },
+    "move.zombie-hound.close-bite": {
+      "slot": "movement",
+      "id": "move.zombie-hound.close-bite",
+      "name": "Close Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 10
     },
     "attack.zombie-hound.bite": {
       "id": "attack.zombie-hound.bite",
@@ -7391,6 +7471,44 @@ export const UNIT_PACK = {
           },
           "maxHp": 2
         }
+      ]
+    },
+    "move.iron-colossus.buff": {
+      "id": "move.iron-colossus.buff",
+      "name": "Buff",
+      "slot": "movement",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "movement",
+          "value": 1,
+          "until": "battle"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 5,
+          "until": "battle"
+        },
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "power",
+            "base": 5,
+            "mult": 1
+          }
+        }
+      ],
+      "gaps": [
+        "ai: 'use whenever available' — an action hint on the row (AI-DESIGN.md §3D) waits on ai.scorer"
       ]
     },
     "power.kite-shield.shield-wall": {

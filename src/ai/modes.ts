@@ -6,7 +6,7 @@ import type { HexId } from './../core/hex.js'
 import { livingEnemies, movementOptions, moveStaminaCost, nearestEnemy, stepRangeOf, usableMoves as readyMoves } from './../core/movement.js'
 import { executeAction, legalActions, type ActionRequest } from './../core/commands.js'
 import type { AttackDef, MoveDef } from './../core/types.js'
-import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
+import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, movesOf, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
 import { attackDef, preview, reachOf } from './../core/pipeline.js'
 import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
 import { previewBurst } from './../core/burst.js'
@@ -49,6 +49,19 @@ function usableMoves(decision: Decision, u: Unit): MoveDef[] {
 }
 function movePowerOf(decision: Decision, u: Unit, shape: MoveDef['move']['shape']): MoveDef | null {
   return usableMoves(decision, u).find(a => a.move.shape === shape) ?? null
+}
+/**
+ * The unit's ordinary movement — its walk; for a unit granted NO walk, its
+ * flight. pack.enemy-actions (2026-09-26): "The two common movement types are
+ * flight and walking" (DECISIONS.md 2026-09-04) and an enemy row carries ONE
+ * movement power (2026-08-21), so a flier has no walk, and a mode that closed
+ * only by walking left it standing on its deploy hex. A unit granted any walk
+ * is untouched — the walk, or the same fallbacks as before when it cannot pay.
+ */
+function ordinaryMove(decision: Decision, u: Unit): MoveDef | null {
+  const walk = movePowerOf(decision, u, 'path')
+  if (walk || movesOf(decision.ctx, u).some(a => a.move.shape === 'path')) return walk
+  return movePowerOf(decision, u, 'flight')
 }
 
 /** Candidate legality and actual resolution share the public command mechanism. */
@@ -253,7 +266,7 @@ function dumbMelee(decision: Decision, u: Unit): void {
     // The movement CHOICE (2026-08-21): first affordable path-shaped power in
     // the unit's declared order; a stamina-starved unit falls back to its free
     // sidestep rather than standing refused.
-    const walk = movePowerOf(decision, u, 'path')
+    const walk = ordinaryMove(decision, u)
     if (walk) {
       // Equal closeness does not justify walking farther around the target.
       // Cost comes from the authoritative movement planner, including low edges;
@@ -443,7 +456,7 @@ function meleeAggressive(decision: Decision, u: Unit): void {
   }
 
   if (adjacentEnemies(decision, u).length === 0) {
-    const walk = movePowerOf(decision, u, 'path')
+    const walk = ordinaryMove(decision, u)
     if (!walk) {
       // No affordable walk — the free sidestep (if granted) closes one hex.
       const nearest = nearestEnemy(ctx, u)
@@ -508,7 +521,7 @@ function rangedKite(decision: Decision, u: Unit): void {
     // reachable hex farthest from the nearest enemy, ties to the lower id,
     // then idles saying so. "A civilian flees the nearest enemy" proper is
     // still a needs (8-ENCOUNTERS: attach mode); this is the unarmed floor.
-    const walk = movePowerOf(decision, u, 'path')
+    const walk = ordinaryMove(decision, u)
     if (walk) {
       const destinations = moveTargets(decision, u, walk)
       let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => ctx.geo.distance(u.hex, e.hex)))
@@ -679,7 +692,7 @@ function rangedKite(decision: Decision, u: Unit): void {
 function closeOn(decision: Decision, u: Unit, dest: HexId, stopAt = 1): void {
   const ctx = decision.ctx
   if (ctx.geo.distance(u.hex, dest) <= stopAt) return
-  const walk = movePowerOf(decision, u, 'path')
+  const walk = ordinaryMove(decision, u)
   if (!walk) { sidestepToward(decision, u, dest); return }
   const destinations = moveTargets(decision, u, walk)
   let bestHex: HexId | null = null, bestD = ctx.geo.distance(u.hex, dest)
@@ -786,7 +799,7 @@ function flee(decision: Decision, u: Unit): void {
   const ctx = decision.ctx
   const enemies = livingEnemies(ctx, u)
   if (!enemies.length) { idle(decision, u, 'nothing to flee'); return }
-  const walk = movePowerOf(decision, u, 'path')
+  const walk = ordinaryMove(decision, u)
   if (walk) {
     const destinations = moveTargets(decision, u, walk)
     let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => ctx.geo.distance(u.hex, e.hex)))
