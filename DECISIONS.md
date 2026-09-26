@@ -2853,3 +2853,14 @@ Ruled:
 
 - **An invisible trap is not seen by the AI.** The AI knows everything except stealthed units and invisible traps (`COMBAT-DESIGN.md` line 704 stands).
 - **`system.ai-modes` closes as delivered** — the design is `AI-DESIGN.md`, ruled in the three 2026-09-26 entries above; the work continues as `ai.action-list`, `pack.enemy-actions`, `ai.scorer`, `ai.mode-change`, `ai.encounter-rules`, `ai.sight`.
+
+## 2026-09-26 — no balance adjustments now; features first
+
+Andrew, asked "Hellhounds biting twice now wipes the party in The Kiln by Turn 5, before the fire reaches anyone. Should The Kiln get easier, or should the fire's test prove the fire in a smaller scripted battle instead?":
+
+“v we're not working on balance adjustments. We're trying to get all the features in.”
+
+Ruled:
+
+- **No balance adjustments now; the work is getting every feature in.** The Kiln is not made easier.
+- A test whose claim is a mechanism, and which failed only because a battle's outcome moved, proves the mechanism on a scripted battle instead (Law 10, flagged) — `fix.kiln-fire-test`.
