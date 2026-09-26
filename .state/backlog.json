@@ -1,5 +1,12 @@
 [
  {
+  "id": "tool.cowork-test-timeout",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "spec": "Andrew 2026-09-26 ('Do you need me for this? ... Can you do these functions?'): in the Cowork sandbox (2 cores, load 4-6 from outside the chat) tests that take 1-4 s alone keep crossing vitest's 5 s default one after another — alpha-flip, status poison, zombie-rot, terrain — so shards fail on time, not behaviour. In Cowork only (tools/gate-progress.mjs isCowork), vitest's default testTimeout is 30 s; a terminal keeps vitest's default, so Andrew's machine is unchanged (vitest.config.ts: 'Keep normal test budgets unchanged'). No assertion changes. Shards can also be split finer with the existing --shard k/N.",
+  "expect": "in Cowork the loaded vitest config's testTimeout is 30000; outside Cowork it is unset; explicit per-test timeouts still win"
+ },
+ {
   "id": "fix.terrain-test-timeouts",
   "kind": "fix",
   "shape": "plumbing",
