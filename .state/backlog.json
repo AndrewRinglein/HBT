@@ -10,9 +10,10 @@
  {
   "id": "fix.kiln-fire-test",
   "kind": "fix",
-  "shape": "rule",
+  "shape": "plumbing",
   "spec": "Andrew 2026-09-26 (DECISIONS.md 'no balance adjustments now; features first'). Since pack.enemy-actions the hellhounds' Close Bite ends showcase.kiln on Turn 5, before the fire reaches anyone, so test/ground-layers.test.ts 'The Kiln' fails on a balance outcome. Its claim is a mechanism: the fire reaches a unit standing on the line it paints. Prove that on the Kiln's own band data (advanceBand on a turn whose line is a standing hero's column), not on who survives. Law 10 rewrite, lands flagged.",
-  "expect": "test/ground-layers.test.ts passes; the Kiln's band assertions on the full showcase battle are unchanged; the fire claim fails if the band stops applying its layer's entry status"
+  "expect": "test/ground-layers.test.ts passes; the Kiln's band assertions on the full showcase battle are unchanged; the fire claim fails if the band stops applying its layer's entry status",
+  "attempts": 1
  },
  {
   "id": "fix.masterwork-scope",
