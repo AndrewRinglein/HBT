@@ -16544,3 +16544,8 @@ Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine
 2026-09-26 00:46
 
 Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. Still open, carried to the viewer's work list (VFX/VISUAL-BATTLE-UPDATES.md section 4): stun, slow and protection still borrow the shadow, frost and weak hexVFX styles (viewer/src/theme.js line 89). The single hue table is viewer/src/theme.js.
+
+## content.art-manifest — ABANDONED
+2026-09-26 00:46
+
+Closed on Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): written for the old engine-side playback build (viewer.build), which is superseded by the viewer/ package; the viewer prepares its own art into viewer/generated/art/.

@@ -1836,7 +1836,10 @@
   "expect": "every unit the playback build needs resolves to a card, a token, an aspect and a height from one generated file; a missing aspect or height throws",
   "changesBaseline": false,
   "needs": [],
-  "note": "Built by another chat per the ruling. The row exists here because the playback build depends on it."
+  "note": "Built by another chat per the ruling. The row exists here because the playback build depends on it.",
+  "status": "failed",
+  "failedAt": "2026-09-26 00:46",
+  "reason": "Closed on Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): written for the old engine-side playback build (viewer.build), which is superseded by the viewer/ package; the viewer prepares its own art into viewer/generated/art/."
  },
  {
   "id": "viewer.build",
