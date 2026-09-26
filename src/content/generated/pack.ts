@@ -35271,6 +35271,67 @@ export const UNIT_PACK = {
         "enchant enchant.cruel on attack.greatsword.great-cleave: not an attack row — not copied"
       ]
     },
+    "item.war-axe.masterwork": {
+      "id": "item.war-axe.masterwork",
+      "name": "Masterwork War Axe",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        }
+      ],
+      "base": "item.war-axe"
+    },
     "item.war-axe.heavy": {
       "id": "item.war-axe.heavy",
       "name": "Heavy War Axe",
@@ -35450,6 +35511,24 @@ export const UNIT_PACK = {
       ],
       "base": "item.war-axe",
       "enchant": "enchant.cruel"
+    },
+    "item.iron-mace.masterwork": {
+      "id": "item.iron-mace.masterwork",
+      "name": "Masterwork Iron Mace",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.iron-mace.swing",
+        "attack.iron-mace.crush"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.iron-mace"
     },
     "item.iron-mace.heavy": {
       "id": "item.iron-mace.heavy",
@@ -35643,6 +35722,24 @@ export const UNIT_PACK = {
         "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed"
       ]
     },
+    "item.hunting-spear.masterwork": {
+      "id": "item.hunting-spear.masterwork",
+      "name": "Masterwork Hunting Spear",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.hunting-spear.thrust",
+        "attack.hunting-spear.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.hunting-spear"
+    },
     "item.hunting-spear.heavy": {
       "id": "item.hunting-spear.heavy",
       "name": "Heavy Hunting Spear",
@@ -35832,6 +35929,38 @@ export const UNIT_PACK = {
       "base": "item.crossbow",
       "enchant": "enchant.cruel"
     },
+    "item.hand-crossbow.masterwork": {
+      "id": "item.hand-crossbow.masterwork",
+      "name": "Masterwork Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.hand-crossbow.snapshot",
+        "attack.hand-crossbow.loaded-bolt"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+        }
+      ],
+      "base": "item.hand-crossbow"
+    },
     "item.hand-crossbow.heavy": {
       "id": "item.hand-crossbow.heavy",
       "name": "Heavy Hand Crossbow",
@@ -35925,6 +36054,27 @@ export const UNIT_PACK = {
       "base": "item.hand-crossbow",
       "enchant": "enchant.cruel"
     },
+    "item.rapier.masterwork": {
+      "id": "item.rapier.masterwork",
+      "name": "Masterwork Duelist's Rapier",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.rapier.thrust",
+        "attack.rapier.pierce"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.rapier",
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed"
+      ]
+    },
     "item.rapier.heavy": {
       "id": "item.rapier.heavy",
       "name": "Heavy Duelist's Rapier",
@@ -35984,6 +36134,52 @@ export const UNIT_PACK = {
       "gaps": [
         "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed"
       ]
+    },
+    "item.raiders-cutlass.masterwork": {
+      "id": "item.raiders-cutlass.masterwork",
+      "name": "Masterwork Raider's Cutlass",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.raiders-cutlass.slash",
+        "attack.raiders-cutlass.boarding-swing"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+        }
+      ],
+      "base": "item.raiders-cutlass"
     },
     "item.raiders-cutlass.heavy": {
       "id": "item.raiders-cutlass.heavy",
@@ -36123,6 +36319,25 @@ export const UNIT_PACK = {
       "base": "item.raiders-cutlass",
       "enchant": "enchant.cruel"
     },
+    "item.throwing-knives.masterwork": {
+      "id": "item.throwing-knives.masterwork",
+      "name": "Masterwork Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.throwing-knives.flick",
+        "attack.throwing-knives.fan"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.throwing-knives"
+    },
     "item.throwing-knives.heavy": {
       "id": "item.throwing-knives.heavy",
       "name": "Heavy Throwing Knives",
@@ -36176,6 +36391,39 @@ export const UNIT_PACK = {
       "triggers": [],
       "base": "item.throwing-knives",
       "enchant": "enchant.cruel"
+    },
+    "item.poison-stars.masterwork": {
+      "id": "item.poison-stars.masterwork",
+      "name": "Masterwork Poison Stars",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.poison-stars.star",
+        "attack.poison-stars.venom-spread"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-stars.star.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars",
+          "onlyWithAttack": "attack.poison-stars.star"
+        }
+      ],
+      "base": "item.poison-stars"
     },
     "item.poison-stars.heavy": {
       "id": "item.poison-stars.heavy",
@@ -36272,6 +36520,26 @@ export const UNIT_PACK = {
       ],
       "base": "item.poison-stars",
       "enchant": "enchant.cruel"
+    },
+    "item.obsidian-fang-dagger.masterwork": {
+      "id": "item.obsidian-fang-dagger.masterwork",
+      "name": "Masterwork Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "block": 5,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.obsidian-fang-dagger"
     },
     "item.obsidian-fang-dagger.heavy": {
       "id": "item.obsidian-fang-dagger.heavy",
@@ -36409,6 +36677,38 @@ export const UNIT_PACK = {
       "base": "item.duel-runeblades",
       "enchant": "enchant.cruel"
     },
+    "item.shepherds-sling.masterwork": {
+      "id": "item.shepherds-sling.masterwork",
+      "name": "Masterwork Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.shepherds-sling.stone",
+        "attack.shepherds-sling.whirl"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
+        }
+      ],
+      "base": "item.shepherds-sling"
+    },
     "item.shepherds-sling.heavy": {
       "id": "item.shepherds-sling.heavy",
       "name": "Heavy Shepherd's Sling",
@@ -36501,6 +36801,38 @@ export const UNIT_PACK = {
       ],
       "base": "item.shepherds-sling",
       "enchant": "enchant.cruel"
+    },
+    "item.crippling-whip.masterwork": {
+      "id": "item.crippling-whip.masterwork",
+      "name": "Masterwork Crippling Whip",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.crippling-whip.lash",
+        "attack.crippling-whip.hamstring"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crippling-whip.lash.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.crippling-whip",
+          "onlyWithAttack": "attack.crippling-whip.lash"
+        }
+      ],
+      "base": "item.crippling-whip"
     },
     "item.crippling-whip.heavy": {
       "id": "item.crippling-whip.heavy",
@@ -36789,6 +37121,39 @@ export const UNIT_PACK = {
       "base": "item.grappling-harpoon",
       "enchant": "enchant.cruel"
     },
+    "item.apprentice-wand.masterwork": {
+      "id": "item.apprentice-wand.masterwork",
+      "name": "Masterwork Apprentice Wand",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.apprentice-wand.spark",
+        "attack.apprentice-wand.surge"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.apprentice-wand.surge.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.apprentice-wand",
+          "onlyWithAttack": "attack.apprentice-wand.surge"
+        }
+      ],
+      "base": "item.apprentice-wand"
+    },
     "item.apprentice-wand.heavy": {
       "id": "item.apprentice-wand.heavy",
       "name": "Heavy Apprentice Wand",
@@ -36885,6 +37250,25 @@ export const UNIT_PACK = {
       "base": "item.apprentice-wand",
       "enchant": "enchant.cruel"
     },
+    "item.ancient-tome.masterwork": {
+      "id": "item.ancient-tome.masterwork",
+      "name": "Masterwork Ancient Tome",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.ancient-tome.read-the-page",
+        "attack.ancient-tome.long-passage"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.ancient-tome"
+    },
     "item.ancient-tome.heavy": {
       "id": "item.ancient-tome.heavy",
       "name": "Heavy Ancient Tome",
@@ -36938,6 +37322,27 @@ export const UNIT_PACK = {
       "triggers": [],
       "base": "item.ancient-tome",
       "enchant": "enchant.cruel"
+    },
+    "item.holy-texts.masterwork": {
+      "id": "item.holy-texts.masterwork",
+      "name": "Masterwork Holy Texts",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.holy-texts.verse"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.holy-texts",
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed"
+      ]
     },
     "item.holy-texts.heavy": {
       "id": "item.holy-texts.heavy",
@@ -36999,6 +37404,26 @@ export const UNIT_PACK = {
         "grants power.holy-texts.mercy — item power — shape unparsed"
       ]
     },
+    "item.bane-blade.masterwork": {
+      "id": "item.bane-blade.masterwork",
+      "name": "Masterwork Bane Blade",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "block": 5,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.bane-blade.strike",
+        "attack.bane-blade.banishing-blow"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.bane-blade"
+    },
     "item.bane-blade.heavy": {
       "id": "item.bane-blade.heavy",
       "name": "Heavy Bane Blade",
@@ -37058,6 +37483,26 @@ export const UNIT_PACK = {
       "triggers": [],
       "base": "item.bane-blade",
       "enchant": "enchant.cruel"
+    },
+    "item.sword-of-the-fallen.masterwork": {
+      "id": "item.sword-of-the-fallen.masterwork",
+      "name": "Masterwork Sword of the Fallen",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "block": 5,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance",
+        "attack.sword-of-the-fallen.honour-the-dead"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.sword-of-the-fallen"
     },
     "item.sword-of-the-fallen.heavy": {
       "id": "item.sword-of-the-fallen.heavy",
@@ -38157,6 +38602,24 @@ export const UNIT_PACK = {
       "base": "item.barbarian-bow",
       "enchant": "enchant.long"
     },
+    "item.javelin.masterwork": {
+      "id": "item.javelin.masterwork",
+      "name": "Masterwork Javelin",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.javelin.throw",
+        "attack.javelin.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.javelin"
+    },
     "item.javelin.heavy": {
       "id": "item.javelin.heavy",
       "name": "Heavy Javelin",
@@ -38207,6 +38670,25 @@ export const UNIT_PACK = {
       "triggers": [],
       "base": "item.javelin",
       "enchant": "enchant.cruel"
+    },
+    "item.longsword.masterwork": {
+      "id": "item.longsword.masterwork",
+      "name": "Masterwork Longsword",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword"
     },
     "item.longsword.heavy": {
       "id": "item.longsword.heavy",
@@ -38952,6 +39434,26 @@ export const UNIT_PACK = {
       "base": "item.force-staff",
       "enchant": "enchant.cruel"
     },
+    "item.holy-symbol.masterwork": {
+      "id": "item.holy-symbol.masterwork",
+      "name": "Masterwork Holy Symbol",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.holy-symbol.wrath"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": [],
+      "base": "item.holy-symbol"
+    },
     "item.holy-symbol.heavy": {
       "id": "item.holy-symbol.heavy",
       "name": "Heavy Holy Symbol",
@@ -39008,6 +39510,27 @@ export const UNIT_PACK = {
       "triggers": [],
       "base": "item.holy-symbol",
       "enchant": "enchant.cruel"
+    },
+    "item.priest-chain.masterwork": {
+      "id": "item.priest-chain.masterwork",
+      "name": "Masterwork Priest Chain",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.priest-chain.smite"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.priest-chain",
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed"
+      ]
     },
     "item.priest-chain.heavy": {
       "id": "item.priest-chain.heavy",
@@ -39895,6 +40418,67 @@ export const UNIT_PACK = {
       "triggers": [],
       "base": "item.soaked-plate",
       "enchant": "enchant.fleet"
+    },
+    "item.kite-shield.masterwork": {
+      "id": "item.kite-shield.masterwork",
+      "name": "Masterwork Kite Shield",
+      "itemClass": "shield",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 20,
+        "rangedBlock": 5,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [
+        "power.kite-shield.shield-wall",
+        "power.kite-shield.raise-guard"
+      ],
+      "triggers": [],
+      "base": "item.kite-shield"
+    },
+    "item.round-shield.masterwork": {
+      "id": "item.round-shield.masterwork",
+      "name": "Masterwork Round Shield",
+      "itemClass": "shield",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 10,
+        "rangedBlock": 10,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [
+        "power.round-shield.turn-aside",
+        "power.round-shield.brace"
+      ],
+      "triggers": [],
+      "base": "item.round-shield"
+    },
+    "item.tower-shield.masterwork": {
+      "id": "item.tower-shield.masterwork",
+      "name": "Masterwork Tower Shield",
+      "itemClass": "shield",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 15,
+        "rangedBlock": 15,
+        "dodge": -10,
+        "maxStamina": 0
+      },
+      "grants": [],
+      "abilities": [
+        "power.tower-shield.cover",
+        "power.tower-shield.stand-tall"
+      ],
+      "triggers": [],
+      "base": "item.tower-shield"
     }
   },
   "encounters": {

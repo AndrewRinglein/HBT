@@ -16624,3 +16624,21 @@ index 3c12a41..f2e5031 100644
      for (const [id, c] of codex) {
 ```
 </details>
+
+## fix.masterwork-scope — LANDED `add7432`
+2026-09-26 05:44
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: HANDOFF.md:6 · HANDOFF.md:11
+  PASS  typecheck
+  PASS  the item's own tests — test/pack-derived-rows.test.ts, test/fix-masterwork-scope.test.ts
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/pack-derived-rows.test.ts, test/fix-masterwork-scope.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

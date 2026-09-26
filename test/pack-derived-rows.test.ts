@@ -63,6 +63,9 @@ describe('masterwork — +1 Max Stamina, nothing else', () => {
   // but the Longsword is one-handed and GEAR-DESIGN §3 makes masterwork "two-handers
   // and armor only" — no such row exists in either package. The claim is proved on
   // the Greatsword, the two-handed sword.
+  // SUPERSEDED 2026-09-25 (Andrew, DECISIONS.md "masterwork: one-handers and shields
+  // too"): item.longsword.masterwork now exists in both packages; its claim is proved
+  // in test/fix-masterwork-scope.test.ts. This test's claim on the Greatsword still holds.
   it('a warrior fielded with the masterwork greatsword has one more Max Stamina than with the greatsword, and swings the same attacks', () => {
     const plain = fielded('hero.base.warrior-iron', ['item.greatsword'])
     const mw = fielded('hero.base.warrior-iron', ['item.greatsword.masterwork'])

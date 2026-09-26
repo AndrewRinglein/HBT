@@ -476,7 +476,8 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
 
 /**
  * The Forge's tier-2 rows — pack.derived-rows (2026-09-25; GEAR-DESIGN.md §3).
- * A masterwork row (a tier-1 two-hander or armor, +1 Max Stamina) and an
+ * A masterwork row (a tier-1 two-hander, one-hander, shield or armor, +1 Max
+ * Stamina — widened 2026-09-25, fix.masterwork-scope) and an
  * enchanted row (a tier-1 base x a buyable enchant), derived by
  * content/mkenginepack.mjs by the kingdom's rule (kingdom/tools/mk-items.mjs),
  * never hand-edited. Validated like the tier-3 rows, and more: every row is

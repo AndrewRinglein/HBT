@@ -8,7 +8,11 @@
   ],
   "spec": "Andrew 2026-09-25 (DECISIONS.md, 'masterwork: one-handers and shields too'): masterwork applies to tier-1 two-handers, one-handers, shields and armor (GEAR-DESIGN.md §3, as corrected). content/mkenginepack.mjs (the masterwork rule beside the tier-3 rule, ~line 1558) still makes rows for two-handers and armor only, never a shield. Widen the rule; what masterwork gives is unchanged (+1 Max Stamina, tier 2). The kingdom's tools/mk-items.mjs carries the same hard-coded rule and must change in the kingdom package too, or every kingdom id will no longer resolve in one direction.",
   "expect": "item.longsword.masterwork exists and has +1 maxStamina over item.longsword; a tier-1 shield has a masterwork row; no shield has an enchanted tier-2 row; every masterwork id the kingdom generates resolves in the engine's ITEMS",
-  "note": "Filed 2026-09-25 from Andrew's ruling. SWITCHES.md longswordMasterwork is superseded by it."
+  "note": "Filed 2026-09-25 from Andrew's ruling. SWITCHES.md longswordMasterwork is superseded by it.",
+  "probeIds": [],
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "add7432"
  },
  {
   "id": "fix.vs-target-worn-and-flat",
