@@ -2548,7 +2548,9 @@
    "set.plate",
    "set.slaying"
   ],
-  "note": "Filed from the kingdom session 2026-09-02."
+  "note": "Filed from the kingdom session 2026-09-02.",
+  "status": "done",
+  "sha": "e33361c"
  },
  {
   "id": "capability.charges",

@@ -797,6 +797,27 @@ export type Unit = {
    * the row's own. Absent on a unit carrying no such item (snapshots unchanged).
    */
   itemUses?: ItemUse[]
+  /**
+   * seam.unit-mods (2026-09-25, GEAR-IMPLEMENTATION.md §1): +damage on one carried
+   * weapon's attacks, handed in per fielded hero (BattleOptions.heroMods — the kingdom's
+   * resolved set bonuses). Read at DMG.DECLARE for an attack the item grants while it is
+   * in hand. Written only by applyUnitMods; absent when none (snapshots unchanged).
+   */
+  weaponBonuses?: WeaponBonus[]
+}
+
+/** seam.unit-mods: one weapon's +damage from one source (a set), as the kingdom resolved it. */
+export type WeaponBonus = { itemId: string; damage: number; source: string }
+
+/**
+ * seam.unit-mods (2026-09-25): the per-unit numbers the caller resolved for one fielded
+ * hero — set bonuses (GEAR-DESIGN.md §5). `stats`: unit stat mods, each naming its
+ * source; `attacks`: +damage on one carried weapon's attacks. Plain numbers — the engine
+ * receives numbers, never set logic. Applied at fielding, after the items.
+ */
+export type UnitMods = {
+  readonly stats?: readonly { readonly stat: import('./stats.js').StatName; readonly add: number; readonly source: string }[]
+  readonly attacks?: readonly { readonly itemId: string; readonly damage: number; readonly source: string }[]
 }
 
 /** v2.item-uses: one carried instance's uses of one power. `left` 0 = spent. */

@@ -20,6 +20,8 @@ export const ACTED: ReadonlySet<string> = new Set(['damage.applied','heal.applie
   'unit.grown',
   // badge.mechanism (2026-09-04): a badge worn at fielding or gained mid-battle changed the unit
   'unit.badged', 'badge.gained',
+  // seam.unit-mods (2026-09-25): a set bonus written onto one fielded hero changed the unit
+  'unit.modified',
   // movement.bonus-actions (2026-08-25): a bonus move's rider IS its state
   // change — Focus moves zero hexes on purpose, so 'stamina.gained' is the only
   // mark it leaves. Same widening-is-stricter argument as map.loaded above.

@@ -1,14 +1,15 @@
 import { prepareCover } from './cover.js'
 import { geometryOf, validBoard } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
-import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
+import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, UnitMods, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ACTIONS, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { triggersFrom } from './trigger.js'
-import { emit, gainPower } from './mutate.js'
+import { applyUnitMods, emit, gainPower } from './mutate.js'
+import { isStatName } from './stats.js'
 import { arrive, heroDeployHexes, placeSetup } from './encounter.js'
 import { rulesSideOf } from './side.js'
 import { rosterUids, type UnitIdentityOptions } from './identity.js'
@@ -123,6 +124,15 @@ export type BattleOptions = UnitIdentityOptions & {
   /** badge.mechanism (2026-09-04): the badges each hero carries in — the kingdom's list, parallel to heroes. Added to the row's own. */
   heroBadges?: readonly (readonly string[] | undefined)[]
   /**
+   * seam.unit-mods (2026-09-25, GEAR-IMPLEMENTATION.md §1): per fielded hero, parallel to
+   * heroes / heroHexes / heroItems — the numbers the caller resolved for THIS hero (the
+   * kingdom's set bonuses, GEAR-DESIGN.md §5): stat mods naming their source, and +damage
+   * on one carried weapon's attacks. Applied after the items (and badges), one
+   * `unit.modified` per source. `overrides` is by unit TYPE; this is by fielded unit.
+   * Absent, or an entry absent or empty = nothing changes. Checked loudly (Law 9).
+   */
+  heroMods?: readonly (UnitMods | undefined)[]
+  /**
    * proving.side-override (2026-09-04). Ruled 2026-09-03 (the Proving): "I also
    * want to be able to do enemies against enemies and heroes against heroes ...
    * four zombies against four zombies." `byRow` (default): a row fielded on the
@@ -230,6 +240,9 @@ export function createBattle(opts: BattleOptions): Ctx {
   }
   if (opts.heroItemsUsed && opts.heroItemsUsed.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroItemsUsed.length} item uses lists — they must correspond`)
+  }
+  if (opts.heroMods && opts.heroMods.length !== heroes.length) {
+    throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroMods.length} mod lists — they must correspond`)
   }
   if (opts.heroStowed && opts.heroStowed.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroStowed.length} stowed lists — they must correspond`)
@@ -359,6 +372,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const equipped: { unitId: number; worn: (Applied['worn'][number] & { instanceId: string })[] }[] = []
   const grownLog: { unitId: number; table: string; level: number; specialtyId?: string; mods: Record<string, number> }[] = []
   const badgedLog: { unitId: number; worn: Badged['worn'] }[] = []
+  const modsLog: { unitId: number; mods: UnitMods }[] = []
   // Names come from the DEF (the pack carries Codex names like "Oathblade
   // (TEST)"); a def without one falls back to its title-cased typeId. The old
   // hand-typed NAMES map died with the hand-typed party (2026-08-20).
@@ -408,6 +422,9 @@ export function createBattle(opts: BattleOptions): Ctx {
       }
     }
     state.units.push(made)
+    // seam.unit-mods: checked here, where the hero's kit is known; applied after its log lines
+    const unitMods = opts.heroMods?.[i]
+    if (unitMods) { checkUnitMods(unitMods, d, [...itemIds, ...stowedIds], `${where}: hero ${i} (${t})`); modsLog.push({ unitId: id, mods: unitMods }) }
     equipped.push({ unitId: id, worn: worn.map((w, j) => ({ ...w, instanceId: instanceIds[kept[j]!]! })) })
     if (progress) {
       // progression.level-table-by-type (2026-09-03), Law 12: the log says
@@ -463,6 +480,9 @@ export function createBattle(opts: BattleOptions): Ctx {
     for (const w of badgedLog.find((e) => e.unitId === u.id)?.worn ?? []) {
       emit(ctx, 'unit.badged', w.badgeId, { actor: u.id, badgeId: w.badgeId, grants: w.grants, mods: w.mods, flags: BADGES[w.badgeId]?.flags ?? {}, ...(w.gaps ? { gaps: w.gaps } : {}) })
     }
+    // seam.unit-mods: one unit.modified per (unit, source), after the kit and badge lines
+    const um = modsLog.find((e) => e.unitId === u.id)
+    if (um) applyUnitMods(ctx, u.id, um.mods)
     // capability.power-pool (2026-09-03): a unit fielded at setup arrives too
     const arrival = UNITS[u.typeId]?.powerOnArrival
     if (arrival && rulesSideOf(ctx, u) === 'enemy') gainPower(ctx, arrival, u.typeId, { kind: 'arrival', actor: u.id })
@@ -486,6 +506,29 @@ export function createBattle(opts: BattleOptions): Ctx {
     ? { mapId, scenarioId: opts.scenarioId, width: board.width, height: board.height, deploy, ...gap, ...terrainCensus(state.terrain), ...initialMap }
     : { mapId, width: board.width, height: board.height, deploy, ...gap, ...terrainCensus(state.terrain), ...initialMap })
   return ctx
+}
+
+/**
+ * seam.unit-mods: a hero's per-unit numbers, refused loudly when they could not mean
+ * anything (Law 9) — an unknown stat, a non-integer (Law 7), an unnamed source (Law 12),
+ * a weapon bonus on an item the hero does not carry or one that grants no attack, a
+ * pool driven below its floor.
+ */
+function checkUnitMods(m: UnitMods, d: UnitDef, carried: readonly string[], where: string): void {
+  const pools: Record<string, number> = { maxHp: d.maxHp, maxStamina: d.maxStamina, staminaRegen: d.staminaRegen }
+  for (const s of m.stats ?? []) {
+    if (!isStatName(s.stat)) throw new Error(`${where}: mod stat '${s.stat}' is not a stat the engine knows`)
+    if (!Number.isSafeInteger(s.add)) throw new Error(`${where}: mod ${s.stat} ${s.add} is not an integer`)
+    if (typeof s.source !== 'string' || !s.source) throw new Error(`${where}: mod ${s.stat} ${s.add} names no source`)
+    if (s.stat in pools) pools[s.stat]! += s.add
+  }
+  if (pools['maxHp']! < 1 || pools['maxStamina']! < 0 || pools['staminaRegen']! < 0) throw new Error(`${where}: mods drive a pool below its floor (${JSON.stringify(pools)})`)
+  for (const a of m.attacks ?? []) {
+    if (!Number.isSafeInteger(a.damage)) throw new Error(`${where}: weapon bonus ${a.damage} on '${a.itemId}' is not an integer`)
+    if (typeof a.source !== 'string' || !a.source) throw new Error(`${where}: weapon bonus on '${a.itemId}' names no source`)
+    if (!carried.includes(a.itemId)) throw new Error(`${where}: weapon bonus from '${a.source}' — the hero does not carry '${a.itemId}'`)
+    if (!(ITEMS[a.itemId]?.grants ?? []).some((g) => ACTIONS[g]?.attack)) throw new Error(`${where}: weapon bonus from '${a.source}' — '${a.itemId}' grants no attack`)
+  }
 }
 
 /** Custom rosters, for verification scenarios. */

@@ -123,6 +123,9 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     if (u.itemUses !== undefined) {   // v2.item-uses: per-instance uses
       requireThat(Array.isArray(u.itemUses) && u.itemUses.every((e: any) => e !== null && typeof e === 'object' && typeof e.instanceId === 'string' && typeof e.itemId === 'string' && Object.hasOwn(runtime.items, e.itemId) && typeof e.actionId === 'string' && Object.hasOwn(runtime.actions, e.actionId) && integer(e.left, 0) && integer(e.used, 0) && Object.keys(e).length === 5), 'unit itemUses')
     }
+    if (u.weaponBonuses !== undefined) {   // seam.unit-mods: per-weapon +damage from the fielding
+      requireThat(Array.isArray(u.weaponBonuses) && u.weaponBonuses.every((b: any) => b !== null && typeof b === 'object' && typeof b.itemId === 'string' && Object.hasOwn(runtime.items, b.itemId) && integer(b.damage) && typeof b.source === 'string' && b.source.length > 0 && Object.keys(b).length === 3), 'unit weaponBonuses')
+    }
     requireThat(phases.includes(u.side) && phases.includes(u.rowSide) && ['standing', 'downed', 'dead'].includes(u.lifeState), 'unit side/life')
     requireThat(['melee', 'ranged', 'support'].includes(u.role), 'unit role')
     for (const k of ['name', 'typeId', 'ai']) requireThat(typeof u[k] === 'string', `unit ${k}`)

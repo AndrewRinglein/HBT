@@ -241,6 +241,18 @@ export function resolveSourceDamage(ctx: Ctx, attacker: Unit, a: DamageSource, o
   const ledger: LedgerRow[] = []
   let v = a.bonus
   ledger.push({ station: DMG.DECLARE, name: 'DECLARE', effectId: a.id, before: 0, after: v, delta: v })
+  // WEAPON_BONUS (at DECLARE) — seam.unit-mods (2026-09-25): +damage the fielding handed to
+  // one weapon (a set bonus, "+1 Damage on this weapon", GEAR-DESIGN.md §5). The weapon's own
+  // damage, so it sits with the declared number, before the stat and before the crit.
+  // Attacks only; the item must grant this attack and be in hand; one row per bonus,
+  // naming its source (Law 12). SWITCHES.md unitModsWeaponStation.
+  if (a.attackKind) {
+    for (const b of attacker.weaponBonuses ?? []) {
+      if (!(attacker.loadout?.hands ?? []).some((h) => h.itemId === b.itemId)) continue
+      if (!(ctx.items[b.itemId]?.grants ?? []).includes(a.id)) continue
+      v = step(ledger, DMG.DECLARE, 'WEAPON_BONUS', b.source, v, v + b.damage)
+    }
+  }
 
   if (a.stat) {
     const src = effective(ctx, attacker, a.stat)

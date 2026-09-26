@@ -2,7 +2,7 @@
 // Every mutator emits an event, which is what makes the log complete by construction —
 // and therefore what makes replay, the text renderer, and every test possible.
 
-import type { Ctx, Event, LifeState, Prop, Unit } from './types.js'
+import type { Ctx, Event, LifeState, Prop, Unit, UnitMods } from './types.js'
 import type { HexId } from './hex.js'
 import { effective } from './stats.js'
 
@@ -150,6 +150,47 @@ export function grantBadge(ctx: Ctx, id: number, badgeId: string, causeId: strin
   for (const t of b.triggers ?? []) u.triggers.push({ ...t })
   for (const g of b.grants) if (!u.actions.includes(g) && ctx.actions[g]) u.actions.push(g)
   return true
+}
+
+/**
+ * seam.unit-mods (2026-09-25, GEAR-IMPLEMENTATION.md §1): a fielded hero's per-unit
+ * numbers — the set bonuses the kingdom resolved when it built the hero for battle.
+ * FIELDING ONLY: runs once, after the unit's enter and equipped lines, on a unit at full
+ * Health and Stamina. Grouped by source in the order first handed (Law 6), one
+ * `unit.modified` per source naming it (Law 12). A stat the rules read through the
+ * pipeline becomes a stored StatMod (scope 'unit', source = the set), so the ledger
+ * names it; the three the rules read raw — Max Health, Max Stamina, Stamina Regen — fold
+ * onto the unit's own field, current Health and Stamina rising with their maxima, as
+ * every other source's do (grantBadge). A weapon's +damage is stored as data on the
+ * unit and read at DMG.DECLARE. Zero values are dropped. Inputs are validated by the
+ * fielding (setup.ts) before this runs.
+ */
+export function applyUnitMods(ctx: Ctx, id: number, mods: UnitMods): void {
+  const u = unit(ctx, id)
+  const sources: string[] = []
+  for (const m of [...(mods.stats ?? []), ...(mods.attacks ?? [])]) if (!sources.includes(m.source)) sources.push(m.source)
+  for (const source of sources) {
+    const stats: Record<string, number> = {}
+    for (const m of mods.stats ?? []) if (m.source === source && m.add !== 0) stats[m.stat] = (stats[m.stat] ?? 0) + m.add
+    for (const k of Object.keys(stats)) if (stats[k] === 0) delete stats[k]
+    const attacks = (mods.attacks ?? []).filter((a) => a.source === source && a.damage !== 0).map((a) => ({ itemId: a.itemId, damage: a.damage }))
+    if (!Object.keys(stats).length && !attacks.length) continue
+    const pools: Record<string, number> = {}
+    for (const stat of Object.keys(stats).sort()) {
+      const value = stats[stat]!
+      if (stat === 'maxHp') { u.maxHp += value; u.hp += value; pools['maxHp'] = u.maxHp; pools['hp'] = u.hp; continue }
+      if (stat === 'maxStamina') { u.maxStamina += value; u.stamina += value; pools['maxStamina'] = u.maxStamina; pools['stamina'] = u.stamina; continue }
+      if (stat === 'staminaRegen') { u.staminaRegen += value; pools['staminaRegen'] = u.staminaRegen; continue }
+      u.mods.push({ stat: stat as import('./stats.js').StatName, op: 'add', value, source, scope: 'unit' })
+    }
+    if (attacks.length) u.weaponBonuses = [...(u.weaponBonuses ?? []), ...attacks.map((a) => ({ ...a, source }))]
+    emit(ctx, 'unit.modified', source, {
+      actor: id, source,
+      ...(Object.keys(stats).length ? { stats } : {}),
+      ...(attacks.length ? { attacks } : {}),
+      ...pools,
+    })
+  }
 }
 
 /** The flags of every badge a unit carries, read off the registry — the rules ask this, never the unit. */

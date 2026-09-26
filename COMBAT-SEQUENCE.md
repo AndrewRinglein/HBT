@@ -605,6 +605,14 @@ The log carries one `unit.equipped` per (unit, item) after `unit.enter`.
 Refused loudly: an unknown item, more than two hands of weapons, two armors, a
 mismatched list. Enemies carry no items.
 
+**Per-unit mods, after the items (2026-09-25, seam.unit-mods).** `BattleOptions.heroMods`,
+parallel to `heroes`, carries the numbers the kingdom resolved for one fielded hero — its set
+bonuses (GEAR-DESIGN.md §5): stat mods naming their source, stored as StatMods so the stat
+ledger names the set (Max Health, Max Stamina and Regen fold onto the unit's fields), and
++damage on one carried weapon, a `WEAPON_BONUS` row at DECLARE for that weapon's attacks while
+it is in hand. One `unit.modified` per (unit, source), after the unit's badge lines. Absent =
+nothing changes. SWITCHES.md "Per-unit mods at fielding".
+
 
 ## V2 burst resolution (2026-09-16)
 
