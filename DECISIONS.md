@@ -2813,3 +2813,18 @@ Ruled:
 - **Masterwork** applies to tier-1 two-handers, one-handers, shields and armor. GEAR-DESIGN.md §3 line "two-handers and armor only" is replaced, and "No shield is ever masterwork or enchanted" now reads that a shield may be masterwork (it is still never enchanted — not ruled otherwise).
 - **What masterwork gives is unchanged** — +1 Max Stamina, ×1.5 Supplies, tier 2. The ruling widens which items can be masterwork, nothing else.
 - **Owed:** `fix.masterwork-scope` — content's `mkenginepack.mjs` and the kingdom's `tools/mk-items.mjs` both hard-code "two-handers and armor, never a shield"; both change, and `item.longsword.masterwork` then exists, as `pack.derived-rows` originally expected.
+
+## 2026-09-26 — the AI: modes per unit type, scoring inside them, encounter rules on top
+
+Andrew, asked from `AI-DESIGN.md` §10 (`system.ai-modes`): (1) "Should each unit weigh all its options by score (a mode is a set of weights you tune as data), instead of following a fixed list of rules per mode as it does today?" (2) "In the balance simulations, should heroes play as well as the engine can, or like a typical player?" (3) "When an enemy has a buff or a heal, should the row say when to use it, should the engine work out what it is worth, or both?" (4) "Should enemy sides coordinate by default (one shared target, screen the back line), or only the factions and units you mark?":
+
+“1 we need to use a mix of both things.   We're going to play as well as the engine can.  3. It's going to be both.  We can use simplified versions early on, but we're going to use simulation eventually to figure out more ideal AI behavior.   However, a bunch of these behaviors will be based on characteristics.   There will be units that are dumb, like zombies. There will be units that prioritize the defense of other units.   There will also be scoring in terms of what abilities to use when and who to attack.    There's going to need to be some group coordination. In some instances, we might have to anchor units into a single location or give them other goals that might not be inherent to that unit all the time.   So, unfortunately, the answer to all these questions is all of these things. Sometimes they will work together. By default, they will not work together. By default, we basically have a mode for each type of unit.   But we can have some overarching rules that could apply based on an encounter.”
+
+Ruled:
+
+- **Rules and scoring, both.** A unit's behaviour is its characteristics (fixed rules — a zombie is dumb; some units prioritise defending others) plus scoring of which ability to use when and whom to attack.
+- **Heroes in the simulator play as well as the engine can.**
+- **Ability use: both** the row's own guidance and the engine's valuation. Simplified versions early; simulation later to find better behaviour.
+- **By default, one mode per type of unit, and units do not work together.**
+- **Encounter rules on top:** an encounter may impose overarching rules — group coordination, anchoring units to a location, or goals not inherent to the unit.
+- `AI-DESIGN.md` is rewritten to this ruling; `system.ai-modes` `expect` ("an AI design exists that Angela has ruled on") is met by this entry.
