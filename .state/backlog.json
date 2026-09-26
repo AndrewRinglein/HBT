@@ -4555,7 +4555,8 @@
   "shape": "data",
   "spec": "AI-DESIGN.md §7 step 2. Enemies use the one action type (DECISIONS.md 2026-09-04) and carry uses/cooldown/warmup (capability.enemy-action-cooldown, done), but content/mkenginepack.mjs drops enemy special moves, flight and non-corpse self rows (mkenginepack.mjs:499-533). Carry them: Iron Colossus Charge (cd 4), Clobber, Buff; the hounds' Close Bite and moveIgnoresZOC; flight for the six units with movePower flight. Copy values from the Codex/bestiary rows — never invent.",
   "expect": "each named action is on its unit in the engine pack with the Codex's numbers, and appears on ai.action-list for that unit",
-  "changesBaseline": true
+  "changesBaseline": false,
+  "probeIds": ["move.hellhound.close-bite", "move.hound.close-bite", "move.zombie-hound.close-bite"]
  },
  {
   "id": "ai.scorer",
