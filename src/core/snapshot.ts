@@ -12,11 +12,11 @@ import { isStatName } from './stats.js'
 import { validateTrigger, type Trigger } from './trigger.js'
 import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx } from './types.js'
 
-export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
+export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'aiModes' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
 const RULES_VERSION = 'v2-migration.21' // Independent incoming block cups and reciprocal hook roles.
-const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
+const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'aiModes', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'selecting', 'activation-start', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
 
@@ -282,9 +282,9 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(STREAMS.includes(r.stream) && Array.isArray(r.keys) && r.keys.every((x: unknown) => integer(x)) && integer(r.value, 0, 0xffffffff), 'RNG record')
     requireThat(draw(rng, r.stream as Stream, ...r.keys) === r.value, 'RNG value differs')
   }
-  const { actions, statuses, critChart, items, badges, ruleBadges, units, arrive } = runtime
+  const { actions, statuses, critChart, items, badges, ruleBadges, aiModes, units, arrive } = runtime
   const ctx: Ctx = {
-    actions, statuses, critChart, items, badges, ruleBadges,
+    actions, statuses, critChart, items, badges, ruleBadges, aiModes, aiLog: [],
     ...(units === undefined ? {} : { units }), ...(arrive === undefined ? {} : { arrive }),
     state: st as Ctx['state'], cfg: s.cfg as Ctx['cfg'], events: s.events as Ctx['events'], rng,
     geo: geometryOf(st.board as Ctx['state']['board']),

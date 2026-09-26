@@ -17014,3 +17014,21 @@ index 2b8a5f0..243fe87 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## ai.scorer — LANDED `a23b86f`
+2026-09-26 23:24
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/ai-scorer.test.ts
+  PASS  gate 1 — the id appears in a real battle — ai.dumb-melee: 4 log lines, 4 fired, 2 changed state · ai.melee-aggressive: 6 log lines, 6 fired, 4 changed state
+  PASS  brought its own tests — test/ai-scorer.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source — 9 NEW from THIS item, publish them
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — ai.dumb-melee live · ai.melee-aggressive live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without ai.dumb-melee,ai.melee-aggressive — they genuinely test it

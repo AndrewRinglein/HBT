@@ -252,6 +252,80 @@ export type ActionDef = {
   readonly guard?: { readonly protectionBase: number; readonly protectionPerArmor: number; readonly dodgeLoss: number }
   /** What the Codex row says that the engine cannot do. Never silently half-real. */
   readonly gaps?: readonly string[]
+  /**
+   * ai.scorer (AI-DESIGN.md §3D, ruled 2026-09-26): the designer's hint for this
+   * one action — "ability use is both the row's guidance and the engine's
+   * valuation". Absent = the mode's own rules and scoring decide alone.
+   */
+  readonly aiHint?: AiHint
+}
+
+/**
+ * ai.scorer — an action row's AI hint (AI-DESIGN.md §3D). Each field narrows or
+ * forces the choice; none adds a number of its own. SWITCHES.md `aiHintShape`.
+ *   use: 'whenever'   take it at the primary whenever it is legal ("use whenever available")
+ *   belowHalfHp       only while the user is under half its Max Health
+ *   minEnemiesStruck  only when the aim catches at least this many enemies
+ */
+export type AiHint = {
+  readonly use?: 'whenever'
+  readonly belowHalfHp?: boolean
+  readonly minEnemiesStruck?: number
+}
+
+/**
+ * ai.scorer (AI-DESIGN.md §3C, ruled 2026-09-26): one TIER of a mode's scoring —
+ * consideration → integer weight (Law 7). A plan's score in the tier is the
+ * weighted sum of its considerations; tiers compare in order (the first that
+ * differs decides), and a full tie falls to the order the plans were listed in
+ * (Law 6). One tier is a plain weighted sum; several are a priority ladder.
+ */
+export type AiTier = Readonly<Record<string, number>>
+
+/**
+ * ai.scorer — a MODE, as data (AI-DESIGN.md §3C): the unit type's
+ * characteristics as fixed rules (`rules` names the procedure the engine runs —
+ * dumb, never attacks, defends others) plus the scoring it chooses with.
+ * A new mode is a new row; a row that reuses a procedure with other weights is
+ * no code at all.
+ */
+export type AiModeRow = {
+  readonly id: string
+  /** The characteristic rules — which fixed procedure plays the unit. */
+  readonly rules: 'flee' | 'dumb-melee' | 'melee-aggressive' | 'ranged-kite' | 'defender' | 'support' | 'focused-fire' | 'value-hunter' | 'follow' | 'hunter'
+  /** Whom to attack: tiers over target considerations. */
+  readonly target: readonly AiTier[]
+  /** What the unit's movement is measured against. */
+  readonly anchor: 'nearest-enemy' | 'target' | 'quarry' | 'ward' | 'lead' | 'away' | 'range-band'
+  /** Tiers for the mode's other choices, by choice name (move, position, value, burst, heal). */
+  readonly weights: Readonly<Record<string, readonly AiTier[]>>
+}
+
+/** ai.scorer — one line of the decision log: a plan and the numbers behind it (Law 12). */
+export type AiPlanLine = {
+  readonly actionId: string
+  readonly target?: number
+  readonly destination?: number
+  readonly centre?: number
+  /** One number per tier, in tier order. */
+  readonly score: readonly number[]
+  /** Each consideration the tiers read, measured for this plan. */
+  readonly terms: Readonly<Record<string, number>>
+}
+/**
+ * ai.scorer — one AI decision: the top three plans, the taken one first. Kept
+ * on Ctx.aiLog, never in Ctx.events — SWITCHES.md `aiDecisionLogHome`.
+ */
+export type AiDecision = {
+  /** Index into Ctx.events where the taken plan's own events begin. */
+  readonly at: number
+  readonly turn: number
+  readonly actor: number
+  /** The mode row that chose — the cause (Law 12). */
+  readonly mode: string
+  /** Which choice this was: the rule or scoring step that made it. */
+  readonly choice: string
+  readonly plans: readonly AiPlanLine[]
 }
 
 /** Bursts freeze these authored source packets at declaration. */
@@ -1085,6 +1159,10 @@ export type Ctx = {
    * line, never a silent skip.
    */
   ruleBadges: Readonly<{ hero: string; wounded: string }>
+  /** The AI mode rows — ai.scorer (2026-09-26). On Ctx so the kill-switch seam reaches a mode like any other row. */
+  aiModes: Readonly<Record<string, AiModeRow>>
+  /** The AI decision log — ai.scorer: every decision, its top three plans and their numbers. Not battle state, not the event log. */
+  aiLog: AiDecision[]
   /** The encounter being run, if any — plain data (encounter.runner, 2026-09-03). */
   encounter?: EncounterDef
   /** The unit registry, so the runner can field a spawn mid-battle. */

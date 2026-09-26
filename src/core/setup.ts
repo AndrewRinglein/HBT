@@ -7,6 +7,7 @@ import { ACTIONS, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, U
 import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
+import { AI_MODE_ROWS } from '../content/ai-modes.js'
 import { triggersFrom } from './trigger.js'
 import { applyUnitMods, emit, gainPower } from './mutate.js'
 import { isStatName } from './stats.js'
@@ -217,7 +218,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   if (opts.encounter && 'board' in opts.encounter && (!validBoard(opts.encounter.board) || opts.encounter.board.width !== board.width || opts.encounter.board.height !== board.height)) throw new Error(`encounter '${opts.encounter.id}' board differs from map '${mapId}'`)
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}), ...(decoded.entries?{entries:decoded.entries}:{}), units: [], outcome: null, seq: 0 }
   const initialMap = { ...(direct ? { terrain: [...state.terrain] } : {}), props: structuredClone(state.props), ...(state.floor?{floor:[...state.floor]}:{}), ...(state.entries?{entries:structuredClone(state.entries)}:{}) }
-  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES, aiModes: AI_MODE_ROWS, aiLog: [],
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: direct ? structuredClone(opts.encounter) : opts.encounter } : {}) }
   prepareAttackLines(ctx)
@@ -547,7 +548,7 @@ export function createCustomBattle(
   const board = boardOf(mapId)
   const decoded = decodeMap(mapDef(mapId))
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}), ...(decoded.entries?{entries:decoded.entries}:{}), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES, aiModes: AI_MODE_ROWS, aiLog: [],
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   prepareAttackLines(ctx)
   prepareCover(ctx)
