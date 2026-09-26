@@ -1506,9 +1506,10 @@ for (const combo of TIER3) {
 }
 
 // ── THE FORGE'S TIER-2 ROWS (engine pack.derived-rows, 2026-09-25) ───────────
-// GEAR-DESIGN.md §3: MASTERWORK — a tier-1 two-hander or armor, +1 Max Stamina,
-// tier 2, never a shield; ENCHANTED — a tier-1 base x every buyable enchant whose
-// appliesToTags it meets, tier 2, never a shield. The Forge sells them; before
+// GEAR-DESIGN.md §3: MASTERWORK — a tier-1 two-hander, one-hander, shield or armor,
+// +1 Max Stamina, tier 2 (widened 2026-09-25, Andrew, engine DECISIONS.md "masterwork:
+// one-handers and shields too"; engine fix.masterwork-scope); ENCHANTED — a tier-1
+// base x every buyable enchant whose appliesToTags it meets, tier 2, never a shield. The Forge sells them; before
 // this the engine's ITEMS lacked them and applyItems refused a hero wearing one.
 // WHICH rows exist is the kingdom's rule (kingdom/tools/mk-items.mjs steps 2 and
 // 3), copied below verbatim — the eligibility tests and `applies` — and read off
@@ -1551,17 +1552,22 @@ const derivedItems = {};
   };
   for (const ci of D.items) {
     const tags = [...(ci.tags ?? [])];
-    if (tierOf(ci.tier) !== 1 || tags.includes('shield')) continue;
+    if (tierOf(ci.tier) !== 1) continue;
+    const isShield = tags.includes('shield');
     const b = items[ci.id];
     if (!b) throw new Error(`forge rows: codex item '${ci.id}' has no compiled ItemDef`);
     const { vsTarget: baseVs, gaps: baseGaps, ...bare } = b;
-    // 2. masterwork — tier-1 two-handers and armor, +1 Max Stamina, tier 2. Never a shield.
-    if ((ci.itemClass === 'weapon' && (ci.hands ?? 0) === 2) || ci.itemClass === 'armor') {
+    // 2. masterwork — tier-1 two-handers, one-handers, shields and armor, +1 Max Stamina,
+    //    tier 2 (Andrew 2026-09-25: "It can also apply to a shield. It can also apply to
+    //    a one-hander."). A natural weapon (hands 0) is none of these.
+    const hands = ci.hands ?? 0;
+    if (isShield || ci.itemClass === 'armor' || (ci.itemClass === 'weapon' && (hands === 1 || hands === 2))) {
       put({ ...bare, id: `${b.id}.masterwork`, name: `Masterwork ${b.name}`, tier: 2,
         statModifiers: { ...b.statModifiers, maxStamina: (b.statModifiers.maxStamina ?? 0) + 1 },
         ...(baseVs ? { vsTarget: baseVs } : {}), base: b.id, ...(baseGaps ? { gaps: baseGaps } : {}) });
     }
-    // 3. enchanted — tier-1 base x buyable enchant
+    // 3. enchanted — tier-1 base x buyable enchant. A shield is never enchanted (GEAR-DESIGN.md §3).
+    if (isShield) continue;
     for (const e of D.enchants) {
       if (!e.buyable || !applies({ itemClass: ci.itemClass, tags }, e)) continue;
       const slug = e.id.replace(/^enchant\./, '');
