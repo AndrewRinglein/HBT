@@ -1505,6 +1505,117 @@ for (const combo of TIER3) {
   if (!enchanted[combo.id].gaps) delete enchanted[combo.id].gaps;
 }
 
+// ── THE FORGE'S TIER-2 ROWS (engine pack.derived-rows, 2026-09-25) ───────────
+// GEAR-DESIGN.md §3: MASTERWORK — a tier-1 two-hander or armor, +1 Max Stamina,
+// tier 2, never a shield; ENCHANTED — a tier-1 base x every buyable enchant whose
+// appliesToTags it meets, tier 2, never a shield. The Forge sells them; before
+// this the engine's ITEMS lacked them and applyItems refused a hero wearing one.
+// WHICH rows exist is the kingdom's rule (kingdom/tools/mk-items.mjs steps 2 and
+// 3), copied below verbatim — the eligibility tests and `applies` — and read off
+// the same codex rows (hbt-content.json items and enchants), so both packages
+// hold the same ids by one rule. WHAT a row carries is the base's compiled
+// ItemDef plus:
+//   masterwork   maxStamina +1
+//   armor        the enchant's statModifiers on the item, as the tier-3 rows do
+//   weapon       GEAR-DESIGN.md §3, ruled 2026-09-05 (Angela): "All of the modifiers
+//                from weapons and range weapons are only on the attack. They're not an
+//                inherent stat modifier." The enchant's numbers ride COPIED attack rows
+//                (ITEMS-PLAN.md §6 route (a)): `<attack id>.<enchant>` with Hit ->
+//                accuracy, Crit -> crit, Reach -> reach, Damage -> bonus; the item grants
+//                the copies and nothing on the item says "+6 Hit". (engine SWITCHES
+//                forgeEnchantPayload: the codex rows still carry Keen/Cruel/Far/Long as
+//                statModifiers — the turning §3 asks of settled-items.json is owed.)
+// Anything else an enchant carries is a named gap on the row, never rounded.
+const derivedItems = {};
+{
+  const tierOf = (t) => { const n = Number(t); if (!Number.isInteger(n)) throw new Error(`forge rows: tier '${t}' is not an integer`); return n; };
+  // mk-items.mjs `applies`, verbatim over the codex row's itemClass and tags
+  const applies = (base, e) => {
+    const tags = new Set(base.tags);
+    const ranged = ['bow', 'crossbow', 'sling', 'thrown', 'staff', 'wand', 'book'].some((t) => tags.has(t));
+    for (const t of e.appliesToTags ?? []) {
+      if (t === 'armor' && base.itemClass === 'armor') return true;
+      if (t === 'shield' && tags.has('shield')) return true;
+      if (t === 'weapons' && base.itemClass === 'weapon' && !tags.has('shield')) return true;
+      if (t === 'ranged' && base.itemClass === 'weapon' && ranged) return true;
+      if (t === 'melee' && base.itemClass === 'weapon' && !ranged && !tags.has('shield')) return true;
+      if (tags.has(t)) return true;
+    }
+    return false;
+  };
+  const ATTACK_FIELD = { accuracy: 'accuracy', crit: 'crit', reach: 'reach' };   // a weapon enchant's statModifiers -> the attack row's own field
+  const copies = new Set();
+  const put = (row) => {
+    if (derivedItems[row.id] || items[row.id] || enchanted[row.id]) throw new Error(`forge rows: '${row.id}' already has an owner — one owner only`);
+    derivedItems[row.id] = row;
+  };
+  for (const ci of D.items) {
+    const tags = [...(ci.tags ?? [])];
+    if (tierOf(ci.tier) !== 1 || tags.includes('shield')) continue;
+    const b = items[ci.id];
+    if (!b) throw new Error(`forge rows: codex item '${ci.id}' has no compiled ItemDef`);
+    const { vsTarget: baseVs, gaps: baseGaps, ...bare } = b;
+    // 2. masterwork — tier-1 two-handers and armor, +1 Max Stamina, tier 2. Never a shield.
+    if ((ci.itemClass === 'weapon' && (ci.hands ?? 0) === 2) || ci.itemClass === 'armor') {
+      put({ ...bare, id: `${b.id}.masterwork`, name: `Masterwork ${b.name}`, tier: 2,
+        statModifiers: { ...b.statModifiers, maxStamina: (b.statModifiers.maxStamina ?? 0) + 1 },
+        ...(baseVs ? { vsTarget: baseVs } : {}), base: b.id, ...(baseGaps ? { gaps: baseGaps } : {}) });
+    }
+    // 3. enchanted — tier-1 base x buyable enchant
+    for (const e of D.enchants) {
+      if (!e.buyable || !applies({ itemClass: ci.itemClass, tags }, e)) continue;
+      const slug = e.id.replace(/^enchant\./, '');
+      const gaps = [];
+      const statModifiers = { ...b.statModifiers };
+      let grants = [...b.grants], triggers = [...b.triggers];
+      if (ci.itemClass === 'weapon') {
+        const adds = {};
+        for (const [k, v] of Object.entries(e.statModifiers || {})) {
+          if (ATTACK_FIELD[k]) adds[ATTACK_FIELD[k]] = (adds[ATTACK_FIELD[k]] ?? 0) + v;
+          else gaps.push(`enchant stat ${k} ${v}: no attack field`);
+        }
+        for (const [k, v] of Object.entries(e.attackModifiers || {})) {
+          if (k === 'damage') adds.bonus = (adds.bonus ?? 0) + v;
+          else gaps.push(`enchant attackModifier ${k} ${v}: no attack field`);
+        }
+        const copyOf = {};
+        grants = b.grants.map((aid) => {
+          const a = authoredAttacks[aid];
+          if (!a || a.burst) { gaps.push(`enchant ${e.id} on ${aid}: not an attack row — not copied`); return aid; }
+          const id = `${aid}.${slug}`;
+          if (authoredAttacks[id] && !copies.has(id)) throw new Error(`forge rows: copied attack '${id}' collides with an authored attack`);
+          if (!copies.has(id)) {
+            const c = { ...a, id };
+            for (const [f, v] of Object.entries(adds)) c[f] = (c[f] ?? 0) + v;
+            authoredAttacks[id] = c; copies.add(id);
+          }
+          copyOf[aid] = id;
+          return id;
+        });
+        // an attack-scoped rider follows its attack onto the copy
+        triggers = b.triggers.map((t) => (t.onlyWithAttack && copyOf[t.onlyWithAttack] ? { ...t, onlyWithAttack: copyOf[t.onlyWithAttack] } : t));
+      } else {
+        for (const [k, v] of Object.entries(e.statModifiers || {})) {
+          const st = ITEM_STAT[k] ?? HERO_STAT[k];
+          if (st) statModifiers[st] = (statModifiers[st] ?? 0) + v;
+          else gaps.push(`enchant stat ${k} ${v}: no engine stat`);
+        }
+        for (const [k, v] of Object.entries(e.attackModifiers || {})) gaps.push(`enchant attackModifier ${k} ${v}: ${ci.itemClass} grants no attack`);
+      }
+      for (const t of e.triggers || []) {
+        const eff = String(t.effect || ''); let m;
+        if (t.hook === 'onTakingDamage' && (m = eff.match(/^Thorns (\d+)$/))) { statModifiers.thorns = (statModifiers.thorns ?? 0) + +m[1]; continue; }
+        gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — trigger shape unparsed`);
+      }
+      for (const g of e.grants || []) gaps.push(`enchant grants ${g}: not compiled`);
+      const vsTarget = [...(baseVs || []), ...slayerRules(e.slayer, e.id)];
+      const allGaps = [...(baseGaps || []), ...gaps];
+      put({ ...bare, id: `${b.id}.${slug}`, name: `${e.name ?? slug} ${b.name}`, tier: 2, statModifiers, grants, triggers,
+        ...(vsTarget.length ? { vsTarget } : {}), base: b.id, enchant: e.id, ...(allGaps.length ? { gaps: allGaps } : {}) });
+    }
+  }
+}
+
 // ── THE TEST RECEPTACLE (content/test/, 2026-09-02) ─────────────────────────
 // Test bodies, attacks and statuses that prove a mechanism and never ship.
 // Andrew: "We're not testing features if we're not pulling them from the
@@ -1746,7 +1857,7 @@ moveBursts(test.attacks, testBursts); moveBursts(test.abilities, testBursts);
 test.bursts = testBursts;
 
 const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
-  classPowers, specialties, levels, enchanted, encounters, badges, maps };
+  classPowers, specialties, levels, enchanted, derivedItems, encounters, badges, maps };
 
 for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test.attacks, test.abilities, test.moves]) {
   for (const row of Object.values(rows)) {
