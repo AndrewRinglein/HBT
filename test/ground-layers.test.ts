@@ -13,6 +13,7 @@ import { LAYER, layerOfId } from '../src/content/maps.js'
 import { valueOf } from '../src/core/status.js'
 import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movement.js'
 import { ENCOUNTERS } from '../src/content/index.js'
+import { advanceBand } from '../src/core/encounter.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { hexId, colOf } from './board16.js'
 
@@ -63,7 +64,18 @@ describe('the encounter shapes', () => {
     expect(lines.length).toBeGreaterThan(0)
     expect(lines[0]).toEqual([2, 'col', 15])
     for (let i = 1; i < lines.length; i++) expect(lines[i]![2] - lines[i - 1]![2]).toBe(-1)
-    expect(ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')).toBe(true)
+    // LAW 10 — 2026-09-26 (fix.kiln-fire-test; Andrew, DECISIONS.md 'no balance adjustments
+    // now; features first'): since pack.enemy-actions the hellhounds' Close Bite ends this
+    // battle on Turn 5, before the fire reaches anyone — whether it does is a balance outcome.
+    // The claim is the rule: the fire reaches a unit standing on the line it paints. Proved on
+    // the Kiln's own band data, on the Turn whose line is a standing hero's column.
+    // was: expect(ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')).toBe(true)
+    const kiln = createBattle(scenarioOptions(scenarioDef('showcase.kiln')))
+    const band = kiln.encounter!.band!
+    const hero = kiln.state.units.find((u) => u.side === 'hero' && u.lifeState === 'standing')!
+    kiln.state.turn = band.fromPhase + (colOf(hero.hex) - band.startCol!) / band.direction
+    advanceBand(kiln)
+    expect(kiln.events.some((e) => e.type === 'status.applied' && e.causeId === 'layer.burning' && e['target'] === hero.id)).toBe(true)
   })
 
   it('Rime: a three-column frost belt (columns 7–9) is painted from setup', () => {

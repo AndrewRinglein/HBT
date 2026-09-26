@@ -16811,3 +16811,55 @@ index aa47279..4cbb316 100644
      // a gap anywhere — the Lieutenant's clock and the Vampire Lord's feed are
 ```
 </details>
+
+## fix.kiln-fire-test — LANDED `e498052` **NEEDS REVIEW**
+2026-09-26 19:32
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · ..\COMBAT-DESIGN.md:628
+  PASS  typecheck
+  PASS  the item's own tests — test/ground-layers.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/ground-layers.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/ground-layers.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ground-layers.test.ts b/test/ground-layers.test.ts
+index 0f5931d..4e539cc 100644
+--- a/test/ground-layers.test.ts
++++ b/test/ground-layers.test.ts
+@@ -14,4 +14,5 @@ import { valueOf } from '../src/core/status.js'
+ import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movement.js'
+ import { ENCOUNTERS } from '../src/content/index.js'
++import { advanceBand } from '../src/core/encounter.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { hexId, colOf } from './board16.js'
+@@ -64,5 +65,16 @@ describe('the encounter shapes', () => {
+     expect(lines[0]).toEqual([2, 'col', 15])
+     for (let i = 1; i < lines.length; i++) expect(lines[i]![2] - lines[i - 1]![2]).toBe(-1)
+-    expect(ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')).toBe(true)
++    // LAW 10 — 2026-09-26 (fix.kiln-fire-test; Andrew, DECISIONS.md 'no balance adjustments
++    // now; features first'): since pack.enemy-actions the hellhounds' Close Bite ends this
++    // battle on Turn 5, before the fire reaches anyone — whether it does is a balance outcome.
++    // The claim is the rule: the fire reaches a unit standing on the line it paints. Proved on
++    // the Kiln's own band data, on the Turn whose line is a standing hero's column.
++    // was: expect(ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')).toBe(true)
++    const kiln = createBattle(scenarioOptions(scenarioDef('showcase.kiln')))
++    const band = kiln.encounter!.band!
++    const hero = kiln.state.units.find((u) => u.side === 'hero' && u.lifeState === 'standing')!
++    kiln.state.turn = band.fromPhase + (colOf(hero.hex) - band.startCol!) / band.direction
++    advanceBand(kiln)
++    expect(kiln.events.some((e) => e.type === 'status.applied' && e.causeId === 'layer.burning' && e['target'] === hero.id)).toBe(true)
+   })
+ 
+```
+</details>
