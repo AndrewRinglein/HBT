@@ -496,14 +496,84 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     }
     unitAuras.push({ id: aid, radius: t.range, side, ...(tagM ? { requireTags: [tagM[1].toLowerCase()] } : {}), mods, ...(agaps.length ? { gaps: agaps } : {}) });
   });
-  // Enemy SPECIAL MOVES (move.* — Charge, Close Bite, Clobber…) are a kind the
-  // engine has no mechanism for and Andrew has not approved (kinds.mjs). They
-  // were dropped silently until content.enemy-flip (2026-09-02); the Iron
-  // Colossus fielded with no attack at all and nothing said so. Named now.
-  for (const mv of u.moves || []) gap(id, `special move ${mv.id}${mv.attack ? ' (carries an attack)' : ''}`, 'enemy special moves (move.* — kind unapproved, no engine mechanism)');
   const attackIds = [];
   let anyRanged = false;
   let rangedN = 0, meleeN = 0;
+  // Enemy SPECIAL MOVES (move.*) — pack.enemy-actions (2026-09-26, AI-DESIGN.md
+  // §7 step 2). Dropped silently until content.enemy-flip (2026-09-02), then
+  // named as gaps while the kind was unapproved. The kind was approved
+  // 2026-09-02 (engine DECISIONS.md "The enemy special moves": "Yes, I do want
+  // to have these special moves: charge, close, bite, clobber"), and enemies use
+  // the ONE action type (DECISIONS.md 2026-09-04, "enemies use the one action
+  // type too"), so a move compiles to an action like any other. Every move
+  // spends the Activation's MOVEMENT action (ENEMY-REVIEW.md:276 "their move
+  // action can be a Close Bite"; :348 the Colossus "is entirely movement
+  // powers"). Two shapes compile:
+  //   - a move carrying an attack and no travel (Clobber, Close Bite) → a melee
+  //     attack, slot movement, listed FIRST so a unit starting adjacent takes it
+  //     before its primary. "When starting adjacent" is the movement slot
+  //     itself: the move action comes before any walking, and a melee attack
+  //     needs its target adjacent then (engine SWITCHES.md closeBiteStartingAdjacent).
+  //   - a move carrying only self effects (Buff) → a self power, slot movement.
+  // A move that travels AND attacks (Charge: `hexes` + an attack) has no engine
+  // action that resolves both, so it stays a named gap — never an attack with
+  // its move dropped. Numbers are the row's; nothing here is chosen.
+  for (const mv of u.moves || []) {
+    if (typeof mv === 'string') continue;   // a granted movement power (power.flight) — the unit's movement, below
+    const mneed = (mv.needs || []).filter((n) => !HAVE.has(n));
+    if (mneed.length) { gap(id, `special move ${mv.id}`, mneed.join(',')); continue; }
+    if (mv.hexes !== undefined) { gap(id, `special move ${mv.id}: move ${mv.hexes} hexes and attack, as one action`, 'enemy special move: move-then-attack (no engine action resolves a move and an attack as one)'); continue; }
+    if (mv.attack && !mv.effects) {
+      const at = mv.attack;
+      if (/within/.test(at.targets || '')) { gap(id, `special move ${mv.id}: a ranged move attack`, 'enemy special move: ranged'); continue; }
+      if (!at.damage || at.damage.stat === 'none' || at.damage.stat === null) { gap(id, `special move ${mv.id}: damage reads no stat`, 'attack shape: stat-less (flat) damage'); continue; }
+      authoredAttacks[mv.id] = {
+        ...packetFields(at), slot: 'movement', id: mv.id, name: mv.name,
+        kind: 'melee', damageType: damageType(at.damageType || 'physical'),
+        bonus: at.damage.mod ?? 0, stat: at.damage.stat || 'strength',
+        reach: 1, staminaCost: 0, // enemies do not run stamina
+        ...(at.damage.powerScale ? { powerScale: at.damage.powerScale } : {}),
+        ...(at.crit !== undefined ? { crit: at.crit } : {}),              // station.crit: the move's own crit modifier (Close Bite +10)
+        ...(at.accuracyMod !== undefined ? { accuracy: at.accuracyMod } : {}),   // station.accuracy-field
+        ...(mv.cooldown ? { cooldown: mv.cooldown } : {}), ...(mv.warmup ? { warmup: mv.warmup } : {}),
+        ...(at.attackCount > 1 ? { hits: at.attackCount } : {}),
+      };
+      attackIds.push(mv.id);
+      meleeN++;
+      // the move's riders are scoped to it (onlyWithAttack) and named for it, so a
+      // Close Bite's burn is never the same trigger id as the Bite's (Law 12)
+      const moveSlug = mv.id.split('.').pop();
+      unitTriggers.push(...(at.triggers || []).flatMap((t) => compileTrigger(t, id, mv.id)).map((t) => ({ ...t, id: `${t.id}.${moveSlug}` })));
+      continue;
+    }
+    if (mv.effects && !mv.attack) {
+      const effects = []; const bad = [];
+      for (const e of mv.effects) {
+        if (e.target !== 'self') bad.push(`${e.effect} on '${e.target}'`);
+        else if (e.effect === 'grant a stat for the Battle' && HERO_STAT_LATE[e.stat] && typeof e.value === 'number') effects.push({ kind: 'statMod', stat: HERO_STAT_LATE[e.stat], value: e.value, until: 'battle' });
+        else if (e.effect === 'heal' && typeof e.value === 'number') effects.push({ kind: 'heal', amount: e.powerScale ? { scale: 'power', base: e.value, mult: e.powerScale } : e.value });   // capability.power-pool: heal N + power
+        else bad.push(`${e.effect}${e.stat ? ' ' + e.stat : ''}`);
+      }
+      // never half a move: a clause the engine cannot say gaps the whole row
+      if (bad.length) { gap(id, `special move ${mv.id}: ${bad.join('; ')}`, 'enemy special move: effect'); continue; }
+      authoredAbilities[mv.id] = { id: mv.id, name: mv.name, slot: 'movement', staminaCost: 0, cooldown: mv.cooldown ?? 0, ...(mv.warmup ? { warmup: mv.warmup } : {}),
+        range: 0, target: { select: 'self', side: 'any' }, effects,
+        ...(mv.ai ? { gaps: [`ai: '${mv.ai}' — an action hint on the row (AI-DESIGN.md §3D) waits on ai.scorer`] } : {}) };
+      if (mv.ai) gap(id, `${mv.id}: ai '${mv.ai}'`, 'action hint on the row (AI-DESIGN.md §3D) — waits on ai.scorer');
+      abilityIdsLocal.push(mv.id);
+      continue;
+    }
+    gap(id, `special move ${mv.id}: neither an attack nor self effects`, 'enemy special move: shape');
+  }
+  // pack.enemy-actions: the hounds' movement ignores zones of control
+  // (ENEMY-REVIEW.md:276, "the move-WITHOUT-provoking machinery, as a property
+  // of their movement"). No movement power the engine has walks without
+  // provoking — MoveProfile has no such property and no Codex power row says it
+  // — so the hounds walk with power.move and this stays a named gap.
+  if (u.moveIgnoresZOC) gap(id, 'moveIgnoresZOC: movement that provokes no attack of opportunity', 'movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)');
+  // "has no primary action at all" (ENEMY-REVIEW.md:348): nothing closes a unit's
+  // primary slot — its walk (power.move, either slot) can still spend it.
+  if (u.noPrimaryAction) gap(id, 'noPrimaryAction: true', 'unit field: no primary action (the walk is an either-slot action)');
   for (const raw of u.attacks || []) {
     const a = resolveAttack(raw, id);
     if (!a) continue;
@@ -575,6 +645,17 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     }
   }
   const mostlyRanged = rangedN > 0 && rangedN >= meleeN;
+  // pack.enemy-actions: the unit's ONE movement power (engine DECISIONS.md
+  // 2026-08-21: "enemies now carry exactly ONE movement power in their data row,
+  // which may or may not be Flight"; 2026-09-04: "The two common movement types
+  // are flight and walking"). `movePower: flight` grants power.flight — the
+  // Codex's standard flight, +0 (a unit with no stamina pays none); a power.*
+  // named in the row's moves (the Shadow Sorcerer's spelling) is the same grant.
+  // Walking otherwise, as before.
+  const movePowers = [...(u.movePower ? ['power.' + u.movePower] : []), ...(u.moves || []).filter((m) => typeof m === 'string')];
+  for (const mp of movePowers) if (!moves[mp]) gap(id, `movement power ${mp} has no compiled row`, 'content');
+  if (movePowers.length > 1) gap(id, `${movePowers.length} movement powers (${movePowers.join(', ')}) — an enemy carries one`, 'content');
+  const unitMoves = movePowers.length === 1 && moves[movePowers[0]] ? movePowers : ['power.move'];
   authoredEnemies.push({
     typeId: id, name: u.name, side: 'enemy',
     maxHp: st.health, armor: st.armor ?? 0, resist: st.resist ?? 0, ...optionalCombatStats(st),
@@ -594,7 +675,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     // hounds' hunter); a support row runs support; the rest as before.
     ai: u.ai ?? (u.role === 'support' ? 'support' : mostlyRanged ? 'ranged-kite' : 'dumb-melee'),
     ...(u.ai || u.role === 'support' ? { aiAuthored: true } : {}),
-    attacks: attackIds, abilities: abilityIdsLocal, moves: ['power.move'],
+    attacks: attackIds, abilities: abilityIdsLocal, moves: unitMoves,
     tags: (u.types || []).map((t) => t.toLowerCase()),
     triggers: unitTriggers,
     ...(unitAuras.length ? { auras: unitAuras } : {}),

@@ -18,13 +18,13 @@
   },
   {
    "unit": "unit.bloodhound",
-   "what": "special move move.hound.close-bite (carries an attack)",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
+   "what": "moveIgnoresZOC: movement that provokes no attack of opportunity",
+   "needs": "movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)"
   },
   {
    "unit": "unit.demon-hound",
-   "what": "special move move.demon-hound.close-bite (carries an attack)",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
+   "what": "moveIgnoresZOC: movement that provokes no attack of opportunity",
+   "needs": "movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)"
   },
   {
    "unit": "unit.doombringer",
@@ -38,8 +38,8 @@
   },
   {
    "unit": "unit.fast-zombie",
-   "what": "special move move.fast-zombie.charge (carries an attack)",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
+   "what": "special move move.fast-zombie.charge: move 3 hexes and attack, as one action",
+   "needs": "enemy special move: move-then-attack (no engine action resolves a move and an attack as one)"
   },
   {
    "unit": "unit.ghoul",
@@ -48,8 +48,8 @@
   },
   {
    "unit": "unit.hellhound",
-   "what": "special move move.hellhound.close-bite (carries an attack)",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
+   "what": "moveIgnoresZOC: movement that provokes no attack of opportunity",
+   "needs": "movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)"
   },
   {
    "unit": "unit.imp-master",
@@ -58,23 +58,18 @@
   },
   {
    "unit": "unit.iron-colossus",
-   "what": "special move move.iron-colossus.charge (carries an attack)",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
+   "what": "special move move.iron-colossus.charge: move 2 hexes and attack, as one action",
+   "needs": "enemy special move: move-then-attack (no engine action resolves a move and an attack as one)"
   },
   {
    "unit": "unit.iron-colossus",
-   "what": "special move move.iron-colossus.clobber (carries an attack)",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
+   "what": "move.iron-colossus.buff: ai 'use whenever available'",
+   "needs": "action hint on the row (AI-DESIGN.md §3D) — waits on ai.scorer"
   },
   {
    "unit": "unit.iron-colossus",
-   "what": "special move move.iron-colossus.buff",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
-  },
-  {
-   "unit": "unit.iron-colossus",
-   "what": "had no attack of its own — given attack.basic.melee by rule.enemy-attacks",
-   "needs": "content: authored attacks are owed"
+   "what": "noPrimaryAction: true",
+   "needs": "unit field: no primary action (the walk is an either-slot action)"
   },
   {
    "unit": "unit.lieutenant-demon",
@@ -123,11 +118,6 @@
   },
   {
    "unit": "unit.shadow-sorcerer",
-   "what": "special move undefined",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
-  },
-  {
-   "unit": "unit.shadow-sorcerer",
    "what": "attack.shadow-sorcerer.shadow-strike onHit: knockback",
    "needs": "knockback"
   },
@@ -163,8 +153,8 @@
   },
   {
    "unit": "unit.zombie-hound",
-   "what": "special move move.zombie-hound.close-bite (carries an attack)",
-   "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
+   "what": "moveIgnoresZOC: movement that provokes no attack of opportunity",
+   "needs": "movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)"
   },
   {
    "unit": "hero.base.ranger-ranger",
@@ -472,11 +462,6 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.tomb-sentinels-blade",
-   "what": "thorns: 3",
-   "needs": "item field: thorns"
-  },
-  {
    "unit": "item.siege-crossbow",
    "what": "onHit: ignore 3 of the target's Armor",
    "needs": "trigger shape unparsed"
@@ -587,11 +572,6 @@
    "needs": "item field: thorns"
   },
   {
-   "unit": "item.stormweave-armor",
-   "what": "thorns: 2",
-   "needs": "item field: thorns"
-  },
-  {
    "unit": "item.chains-of-the-faithful",
    "what": "aura: AURA radius 2 -- allies inside have Immunity to Bu",
    "needs": "hook: aura (declared, engine never fires it)"
@@ -605,11 +585,6 @@
    "unit": "item.cloudsteel-plate",
    "what": "airwalk: true",
    "needs": "item field: airwalk"
-  },
-  {
-   "unit": "item.armor-of-thorns",
-   "what": "thorns: 3",
-   "needs": "item field: thorns"
   },
   {
    "unit": "item.divine-bulwark",
@@ -837,11 +812,6 @@
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {
-   "unit": "item.wreath-of-natures-protection",
-   "what": "thorns: 3",
-   "needs": "item field: thorns"
-  },
-  {
    "unit": "item.astrolabe-of-the-threshold",
    "what": "active: Once per Battle, an ally within 6 hexes may immedi",
    "needs": "an ability with charges/targets — capability.consumables"
@@ -1027,24 +997,9 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.rune-vampire-hunter",
-   "what": "slayer: {\"vampire\":3,\"undead\":1}",
-   "needs": "item field: slayer"
-  },
-  {
-   "unit": "item.rune-nightmare-slayer",
-   "what": "slayer: {\"nightmare\":3}",
-   "needs": "item field: slayer"
-  },
-  {
    "unit": "item.rune-plant-killer",
    "what": "onKill: if the kill had the plant tag, immediately regain ",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.rune-plant-killer",
-   "what": "slayer: {\"plant\":3}",
-   "needs": "item field: slayer"
   },
   {
    "unit": "item.rune-horror-breaker",
@@ -1052,24 +1007,9 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.rune-horror-breaker",
-   "what": "slayer: {\"horror\":4,\"nightmare\":2}",
-   "needs": "item field: slayer"
-  },
-  {
    "unit": "item.rune-elemental-bane",
    "what": "onHit: if the target has the elemental or dragon tag it l",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.rune-elemental-bane",
-   "what": "slayer: {\"elemental\":4,\"dragon\":2}",
-   "needs": "item field: slayer"
-  },
-  {
-   "unit": "item.rune-monster-slayer",
-   "what": "slayer: {\"beast\":2,\"giant\":2,\"construct\":2,\"drag",
-   "needs": "item field: slayer"
   },
   {
    "unit": "item.rune-executioner",
@@ -1117,19 +1057,9 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.rune-deathdealer",
-   "what": "slayer: {\"demon\":4,\"plant\":4,\"beast\":4}",
-   "needs": "item field: slayer"
-  },
-  {
    "unit": "item.rune-kairin",
    "what": "onActivationEnd: heal 2",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.rune-kairin",
-   "what": "slayer: {\"undead\":3,\"demon\":3}",
-   "needs": "item field: slayer"
   },
   {
    "unit": "item.rune-avatar-of-war",
