@@ -16642,3 +16642,8 @@ index 3c12a41..f2e5031 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## system.ai-modes — ABANDONED
+2026-09-26 07:10
+
+Closed as delivered on Andrew's 2026-09-26 ruling (DECISIONS.md, 'system.ai-modes closes as delivered'): the AI design is AI-DESIGN.md, ruled in three entries that night; the work continues as ai.action-list, pack.enemy-actions, ai.scorer, ai.mode-change, ai.encounter-rules, ai.sight.

@@ -3301,7 +3301,10 @@
   "shape": "rule",
   "ruling": "DECISIONS.md 2026-09-04 — The AI is far short of what the game needs",
   "spec": "Angela 2026-09-04 rejected ai.attack-choice (\"we need to have AI that is capable of choosing other things other than a basic attack. This is a very nuanced and significant update\") and fix.enemy-ai-role (\"we need much more in terms of the AI for units. You are taking a very simple look at it\"). Six modes is not the target. AI behaviour is a system that has not been designed; the modes that exist are noted per unit as gaps until it is. DESIGN FIRST, with Angela; do not land fixes against it.",
-  "expect": "an AI design exists that Angela has ruled on, before any further mode is built"
+  "expect": "an AI design exists that Angela has ruled on, before any further mode is built",
+  "status": "failed",
+  "failedAt": "2026-09-26 07:10",
+  "reason": "Closed as delivered on Andrew's 2026-09-26 ruling (DECISIONS.md, 'system.ai-modes closes as delivered'): the AI design is AI-DESIGN.md, ruled in three entries that night; the work continues as ai.action-list, pack.enemy-actions, ai.scorer, ai.mode-change, ai.encounter-rules, ai.sight."
  },
  {
   "id": "board.heroes-west",
