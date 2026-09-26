@@ -2786,3 +2786,18 @@ Ruled:
 - **`fix.start-of-turn-victory`, `fix.outcome-enum`, `hook.on-enter`** — closed as superseded by `encounter.runner` (`a6ec245`, 2026-09-03), whose backlog note says it carries all three with their assertions in `test/encounter-runner.test.ts`.
 - **The Rogue's movement** — Move and Side Roll, as the Codex has it (2026-08-21). The 2026-08-15 "Rogue Sprint" in backlog `move.actions` is superseded.
 - **Sprint** — no one gets it, for now. No Codex row, no grantor. `COMBAT-DESIGN.md` line 525's "Not ruled" is answered. `move.actions` closes: movement chosen from a list landed as `movement.powers` (`ba09f6a`), `pack.moves` and `fix.movement-plans`, and Sprint was its only remaining content.
+
+## 2026-09-25 — the engine's viewer items close; the viewer package owns the battle screen
+
+Andrew, asked (1) "Should I close the nine engine `viewer.*` items (hexvfx-path, geometry, build, board, tile-state, panel, pump, log-transport, styles) as replaced by the viewer package, and move what's still unfinished (their own effects for stun, slow and protection, and ground that stays burning or frozen) to the viewer package's work list?", (2) "May I delete the empty `assets/vfx/` folder and change that one doc line to point at `viewer/src/hexvfx.js`?", (3) "`content.art-manifest` (one art file keyed by Codex ID, with each unit's aspect and height) was written for the same old viewer build. Should I close it too, or keep it as content work?":
+
+“1. Yes
+2. Yes
+3. Close it.”
+
+Ruled:
+
+- **`viewer.hexvfx-path`, `viewer.geometry`, `viewer.build`, `viewer.board`, `viewer.tile-state`, `viewer.panel`, `viewer.pump`, `viewer.log-transport`, `viewer.styles`** — closed as superseded by the `viewer/` package (its own repository since 2026-09-02, `THREE-PACKAGES-PLAN.md`). The rows were written 2026-08-21 against `VFX/hexVFX.js` and `build-replay.mjs`, neither of which exists now; the library is `viewer/src/hexvfx.js`.
+- **Still unfinished, carried to the viewer's work list** (`VFX/VISUAL-BATTLE-UPDATES.md` §4): stun, slow and protection still borrow the shadow, frost and weak hexVFX styles (`viewer/src/theme.js` line 89). Ground that stays burning, frozen, poisoned or dark was found already drawn (`viewer/src/board.js`, "the painted ground layers", 2026-09-03), so nothing is carried for `viewer.tile-state`.
+- **`assets/vfx/`** — the empty folder is deleted and `VFX/BATTLE-SCREEN-VFX-DECISIONS.md` points at `viewer/src/hexvfx.js`.
+- **`content.art-manifest`** — closed.
