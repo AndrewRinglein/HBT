@@ -82,7 +82,7 @@ behaviour. A designer can steer one action without touching a mode: "use wheneve
 runs when badly hurt, a boss that fights differently below half health. The condition and the
 new mode are data on the unit's row.
 
-**F. What the AI sees.** Ruled 2026-09-26: everything, except stealthed units — every stat,
+**F. What the AI sees.** Ruled 2026-09-26: everything, except stealthed units and invisible traps (ruled the same night) — every stat,
 power, cooldown and hit chance. No enemy-intent projection is planned.
 
 **G. Overrides stay on top**, as today: Confusion, Dazed, Taunt, civilian flight, a prone
@@ -143,5 +143,4 @@ DECISIONS.md:1840 says both are NOT approved.
 
 All seven questions are answered in `DECISIONS.md` (two entries, 2026-09-26). Scope now is the
 framework — the engine must be able to express every behaviour above; the behaviours
-themselves are authored over time. Open: whether the AI sees the other side's traps
-(`COMBAT-DESIGN.md` line 704 makes hero traps invisible to enemies).
+themselves are authored over time. Ruled after: an invisible trap is not seen by the AI.

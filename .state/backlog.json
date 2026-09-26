@@ -4590,7 +4590,7 @@
   "needs": [
    "ai.action-list"
   ],
-  "spec": "Ruled 2026-09-26: the AI knows everything except stealthed units. The AI's view of the battle excludes units carrying the stealthed flag (src/core/status.ts) from targets, threats and scoring; everything else — stats, powers, cooldowns, hit chances — it reads in full. Traps: open question to Andrew (COMBAT-DESIGN.md line 704).",
+  "spec": "Ruled 2026-09-26: the AI knows everything except stealthed units. The AI's view of the battle excludes units carrying the stealthed flag (src/core/status.ts) from targets, threats and scoring; everything else — stats, powers, cooldowns, hit chances — it reads in full. Invisible traps are likewise unseen (Andrew 2026-09-26; COMBAT-DESIGN.md line 704).",
   "expect": "a stealthed hero is never chosen or scored by an AI unit, and becomes a target the moment stealth breaks"
  }
 ]

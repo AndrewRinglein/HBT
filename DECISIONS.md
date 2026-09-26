@@ -2842,3 +2842,14 @@ Ruled:
 - **No enemy-intent projection is planned.**
 - **The AI knows everything, except stealthed units.** Players see nearly everything too (any unit's stats and powers), except stealth units and later phases not yet revealed.
 - *Reading, not ruled:* "everything" is taken literally — the AI also knows unrevealed later phases. Hero traps are "invisible to enemies" in `COMBAT-DESIGN.md` line 704 and share the stealth machinery; whether the AI sees them is asked, not assumed.
+
+## 2026-09-26 — the AI does not see an invisible trap; system.ai-modes closes as delivered
+
+Andrew, asked (1) "Does the AI see the players' traps, given that `COMBAT-DESIGN.md` line 704 says hero traps are invisible to enemies?" (2) "Should I close the design item (`system.ai-modes`) as done now that you've ruled on the design, so the queue moves to the legal-actions list next?":
+
+“Yeah, if it's truly invisible, if there's a trap that is invisible, they won't see it.   I think two, yes.”
+
+Ruled:
+
+- **An invisible trap is not seen by the AI.** The AI knows everything except stealthed units and invisible traps (`COMBAT-DESIGN.md` line 704 stands).
+- **`system.ai-modes` closes as delivered** — the design is `AI-DESIGN.md`, ruled in the three 2026-09-26 entries above; the work continues as `ai.action-list`, `pack.enemy-actions`, `ai.scorer`, `ai.mode-change`, `ai.encounter-rules`, `ai.sight`.
