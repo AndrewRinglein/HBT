@@ -1,5 +1,13 @@
 [
  {
+  "id": "tool.gate-fits-cowork",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "spec": "Andrew 2026-09-26 ('Add it'): a chat must be able to land and run the shards itself instead of handing Andrew commands. Measured 2026-09-26 in Cowork (2 cores, load ~4): each shell call dies at ~178 s and background processes die with the call; a gate check of fix.kiln-fire-test ran past 172 s (control battles alone 46 s, typecheck 5 s warm); shard 3/4 ran past 176 s; shard 1/4 took 99-111 s; shard 2/4 144 s. Two tests fail on time, not behaviour: additions.test.ts 'pass 2 — hills' (~4.5 s against a 5 s limit, ~21.5 s against 30 s) and integration.test.ts 'gate 2 — invariants across many battles' (5 s limit). Make the gate resumable across calls: each check's result is recorded against the exact tree (as .state/shards.json already does for shards), a re-run skips checks already passed on that tree, and --land commits only when every check has passed on the current tree — so a landing can be finished in several calls under 178 s each. Allow more, smaller shards (e.g. --shard k/8) with wrap accepting any complete set. Give the two slow tests explicit timeouts sized to measured runtime with headroom (a timeout is not an assertion; Law 10 comment at each edit). A tooling ambiguity goes in GBH's SWITCHES.md (DISPLAY-RULES rule 18).",
+  "expect": "in Cowork, fix-sized landings complete through repeated gate calls each under 170 s with the same checks and verdicts as one terminal run; a check passed on one tree is re-run when the tree changes; every shard completes under 170 s; the two slow tests pass under load with their assertions unchanged",
+  "changesBaseline": false
+ },
+ {
   "id": "fix.kiln-fire-test",
   "kind": "fix",
   "shape": "rule",
