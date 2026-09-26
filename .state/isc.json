@@ -904,11 +904,11 @@
  },
  "058": {
   "red": {
-   "at": "2026-09-03 04:32",
-   "sha": "af77cc3",
-   "hash": "d8798318db1e",
+   "at": "2026-09-26 05:48",
+   "sha": "ee224b8",
+   "hash": "70c22ce975d7",
    "how": "feature absent",
-   "tail": "       |                                           ^ |      29|         expect(cost['currency.supplies']).toBeLessThanOrEqual(SWITCHES… |      30|         expect(cost['currency.mana']).toBeUndefined()"
+   "tail": "       |                  ^ |      67|     expect(have.some((id) => isShield(itemOf(id.replace(/\\.masterwork$… |      68|     expect(have.some((id) => { const b = itemOf(id.replace(/\\.masterwo…"
   },
   "closed": {
    "at": "2026-09-03 04:35",

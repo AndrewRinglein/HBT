@@ -12,8 +12,10 @@
 //
 // What it makes, in order:
 //   1. every codex item, as it is;
-//   2. a MASTERWORK row for every tier-1 two-hander and armor (GEAR-DESIGN.md §3: +1 Max
-//      Stamina, tier 2) — the rule is settled, so the rows are derived, not authored;
+//   2. a MASTERWORK row for every tier-1 two-hander, one-hander, shield and armor
+//      (GEAR-DESIGN.md §3: +1 Max Stamina, tier 2; widened 2026-09-25, Andrew, engine
+//      DECISIONS.md "masterwork: one-handers and shields too") — the rule is settled, so
+//      the rows are derived, not authored;
 //   3. an ENCHANTED row for every tier-1 base × every codex enchant flagged `buyable`
 //      (the nine tier-2 enchants, once the content session lands them; none today);
 //   4. the tier-3 combinations from content/gen/tier3-combinations.json, checked
@@ -101,13 +103,16 @@ function rowOfCodex(i) {
 const rows = []
 for (const i of codex.items) rows.push(rowOfCodex(i))
 
-// 2. masterwork — tier-1 two-handers and armor, +1 Max Stamina, tier 2. Never a shield.
+// 2. masterwork — tier-1 two-handers, one-handers, shields and armor, +1 Max Stamina,
+//    tier 2. Andrew 2026-09-25 (engine DECISIONS.md): "It can also apply to a shield. It
+//    can also apply to a one-hander." A natural weapon (hands 0) is none of these. The
+//    engine pack derives the same rows by the same rule (content/mkenginepack.mjs).
 for (const i of codex.items) {
   const base = rowOfCodex(i)
   if (base.tier !== 1) continue
   const isShield = base.tags.includes('shield')
-  const twoHander = base.itemClass === 'weapon' && base.hands === 2
-  if (isShield || !(twoHander || base.itemClass === 'armor')) continue
+  const handed = base.itemClass === 'weapon' && (base.hands === 1 || base.hands === 2)
+  if (!(isShield || handed || base.itemClass === 'armor')) continue
   rows.push({
     ...base, id: `${base.id}.masterwork`, name: `Masterwork ${base.name}`, tier: 2,
     statModifiers: sorted(sum(base.statModifiers, { staminaMax: 1 })),
