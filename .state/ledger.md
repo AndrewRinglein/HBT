@@ -16499,3 +16499,8 @@ Superseded by station.crit (2026-08-27) and fix.crit-branch-even: the crit flips
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.hexvfx-path — ABANDONED
+2026-09-26 00:46
+
+Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. The empty assets/vfx/ is deleted and VFX/BATTLE-SCREEN-VFX-DECISIONS.md now names viewer/src/hexvfx.js (project root repository); the other old references already say the library moved.
