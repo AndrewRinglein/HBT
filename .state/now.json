@@ -1,11 +1,11 @@
 {
- "now": "fix.masterwork-scope landed clean across three packages (Andrew 2026-09-25: masterwork for tier-1 two-handers, one-handers, shields and armor; shields still never enchanted): engine f6cfb29 (test/fix-masterwork-scope.test.ts red 4/5 before, green after), content 21532e5 (mkenginepack rule widened), kingdom aa5eb36 (mk-items rule widened; ISC-058 restated to the ruling under LAW 10, re-seen red, green), root c1013f7 (GEAR-IMPLEMENTATION ISC-058 Truth). 53 masterwork ids in each package, both directions. Four engine shards green on tree 7cb93a3336. Kingdom shards: only the three sandbox-build tests fail, pre-existing: viewer/generated/static.json stamped at engine 250e161 (56 commits stale) - owed to the viewer: re-dump static and fields at a clean engine. audit-all still times out in Cowork. Still owed from pack.derived-rows: weapon-enchant rows carry hero stats and Far/Long bow-only vs GEAR-DESIGN §3 (2026-09-05); mkenginepack tier-3 rule drops an enchant's damage bonus (Law 9); kingdom FieldedMods to heroMods; viewer does not fold unit.modified. Next: system.ai-modes, design-first with Angela; content.mage-staff waits on unit.brute.",
- "at": "2026-09-26 06:14",
- "sha": "57ccee3",
+ "now": "AI designed and ruled (Andrew 2026-09-26, DECISIONS.md four entries; AI-DESIGN.md): a mode per unit type = characteristic rules + scoring; units act alone unless an encounter rules otherwise; modes can change mid-battle; heroes play as well as the engine can; the AI sees all but stealthed units and invisible traps; no intent shown; framework now, behaviours over time; no balance adjustments, features first. Landed: ai.action-list (legalActions; all ten modes read it; control battles identical), pack.enemy-actions (Close Bite x3, Clobber, Buff, flight for seven; flagged: eight tests rewritten as rules), fix.kiln-fire-test, tool.gate-fits-cowork (the gate resumes across calls; --shard k/N; a chat lands itself), fix.terrain-test-timeouts, tool.cowork-test-timeout (30 s test timeout in Cowork only). system.ai-modes closed as delivered. Filed: ai.scorer, ai.mode-change, ai.encounter-rules, ai.sight, capability.charge, capability.move-ignores-zoc, fix.enemy-accuracy-mod. Eight shards green on tree 4138a51760. Buff is on the Colossus's list but unused until ai.scorer.",
+ "at": "2026-09-26 22:53",
+ "sha": "77e2141",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: system.ai-modes, the AI modes design with Angela",
+  "label": "New chat with Heroes of Blight and Tragic — engine: ai.scorer, the AI scoring framework",
   "line": "start engine"
  }
 }
