@@ -4534,5 +4534,63 @@
   "status": "failed",
   "failedAt": "2026-09-23 02:15",
   "reason": "Ruled 2026-09-22 (DECISIONS.md, Andrew): the post-land re-run was cut from the gate, so there is no committed-tree audit left for R0 to recover from. Its nine files are kept in ../.scratch-r0-pending/."
+ },
+ {
+  "id": "ai.action-list",
+  "kind": "ai",
+  "shape": "plumbing",
+  "spec": "AI-DESIGN.md §3A, ruled 2026-09-26 (DECISIONS.md 'the AI: modes per unit type...'). One engine function lists every legal action for a unit now — movement (walk, flight, leap, special moves), attacks, powers, abilities, items — the one action type, heroes and enemies alike, gated by uses/cooldown/warmup. A plan is a destination hex plus the action taken from it. The ten modes in src/ai/modes.ts switch to reading it instead of building their own candidates.",
+  "expect": "every action a mode takes in the control battles is on the list; nothing on the list is refused by validateAction; control battles byte-identical",
+  "changesBaseline": false
+ },
+ {
+  "id": "pack.enemy-actions",
+  "kind": "content",
+  "shape": "data",
+  "spec": "AI-DESIGN.md §7 step 2. Enemies use the one action type (DECISIONS.md 2026-09-04) and carry uses/cooldown/warmup (capability.enemy-action-cooldown, done), but content/mkenginepack.mjs drops enemy special moves, flight and non-corpse self rows (mkenginepack.mjs:499-533). Carry them: Iron Colossus Charge (cd 4), Clobber, Buff; the hounds' Close Bite and moveIgnoresZOC; flight for the six units with movePower flight. Copy values from the Codex/bestiary rows — never invent.",
+  "expect": "each named action is on its unit in the engine pack with the Codex's numbers, and appears on ai.action-list for that unit",
+  "changesBaseline": true
+ },
+ {
+  "id": "ai.scorer",
+  "kind": "ai",
+  "shape": "rule",
+  "needs": [
+   "ai.action-list"
+  ],
+  "spec": "AI-DESIGN.md §3B-D, ruled 2026-09-26: a mode is a unit type's characteristics (fixed rules — dumb, defends others) plus scoring of which action to take and whom to attack; ability use is both the row's hint and the engine's valuation. Build the framework: a consideration interface (each a number from preview(), Laws 1-2), mode rows as data (rules + weights + target preference + anchor), action-row hints, and a decision log naming the top three plans and the numbers behind each (Law 12). Re-express the ten existing modes as rows. New considerations beyond what the ten modes already use are separate items.",
+  "expect": "the ten modes run as data rows through the scorer with control battles byte-identical; a second row with different weights changes a decision in a scripted battle with no code change; every AI decision logs its top three plans",
+  "changesBaseline": false,
+  "note": "Variants (two mode rows proving the second is pure data) to be declared by the implementing chat before code."
+ },
+ {
+  "id": "ai.mode-change",
+  "kind": "ai",
+  "shape": "rule",
+  "needs": [
+   "ai.scorer"
+  ],
+  "spec": "Ruled 2026-09-26 (DECISIONS.md 'the AI: a framework now...'): a unit's mode can change mid-battle — a brute that runs when badly hurt, a boss that fights differently below half health. The condition and the new mode are data on the unit's row; the change emits an event (ai.mode, GLOSSARY) naming its cause.",
+  "expect": "a scripted battle where a unit crossing a health threshold switches mode, logged with its cause, and a second unit with a different condition switches on its own data"
+ },
+ {
+  "id": "ai.encounter-rules",
+  "kind": "ai",
+  "shape": "rule",
+  "needs": [
+   "ai.scorer"
+  ],
+  "spec": "Ruled 2026-09-26: by default units do not work together and each type has its own mode; an encounter may impose overarching rules — group coordination, anchoring units to a location, goals not inherent to the unit. Authored on the encounter row, not the unit. Coordination is a once-per-Phase side step (focus target, jobs) that coordinated units' scoring reads.",
+  "expect": "one encounter anchors a unit to a hex it would otherwise leave; another turns on coordination and its units share a target; the same units without the encounter rules behave as their modes alone"
+ },
+ {
+  "id": "ai.sight",
+  "kind": "ai",
+  "shape": "rule",
+  "needs": [
+   "ai.action-list"
+  ],
+  "spec": "Ruled 2026-09-26: the AI knows everything except stealthed units. The AI's view of the battle excludes units carrying the stealthed flag (src/core/status.ts) from targets, threats and scoring; everything else — stats, powers, cooldowns, hit chances — it reads in full. Traps: open question to Andrew (COMBAT-DESIGN.md line 704).",
+  "expect": "a stealthed hero is never chosen or scored by an AI unit, and becomes a target the moment stealth breaks"
  }
 ]

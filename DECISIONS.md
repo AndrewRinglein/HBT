@@ -2828,3 +2828,17 @@ Ruled:
 - **By default, one mode per type of unit, and units do not work together.**
 - **Encounter rules on top:** an encounter may impose overarching rules — group coordination, anchoring units to a location, or goals not inherent to the unit.
 - `AI-DESIGN.md` is rewritten to this ruling; `system.ai-modes` `expect` ("an AI design exists that Angela has ruled on") is met by this entry.
+
+## 2026-09-26 — the AI: a framework now; modes can change; no intent shown; the AI sees all but the stealthed
+
+Andrew, asked from `AI-DESIGN.md` §10: (1) "Can a unit's mode change mid-battle, like a brute that runs when badly hurt or a boss that fights differently below half health?" (2) "Should players see what an enemy is about to do before it acts, or only find out when it moves?" (3) "Should the AI know only what a player could know (the odds, not the dice roll), or may it see everything?":
+
+“I guess the answer is, to one, yes. You have to understand that the AI behavior is going to be a massive component in this game, massive. We're not trying to address all of that right now. We do need a framework. The logic of the game has to support us having all of these things in AI.   There's no current projection planned.  3. No, the AI is going to know everything because it's going to allow us to behave a little bit more intelligently. The players also really get to know everything because they can click on a unit and see all of its stats. In theory, a player (except for stealth units and later phases that haven't been revealed) has full insight into everything on the battlefield. They can conventionally click an enemy, see all of their powers, and see all of their stats.  But in the interest of trying to get the AI smarter, we need to have the AI know everything. Except for stealth units.   Stealthed.”
+
+Ruled:
+
+- **A unit's mode can change mid-battle.**
+- **Scope now: the framework, not the behaviours.** AI behaviour is "a massive component in this game"; the engine's logic must support all of it, but it is not all built now.
+- **No enemy-intent projection is planned.**
+- **The AI knows everything, except stealthed units.** Players see nearly everything too (any unit's stats and powers), except stealth units and later phases not yet revealed.
+- *Reading, not ruled:* "everything" is taken literally — the AI also knows unrevealed later phases. Hero traps are "invisible to enemies" in `COMBAT-DESIGN.md` line 704 and share the stealth machinery; whether the AI sees them is asked, not assumed.

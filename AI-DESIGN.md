@@ -78,7 +78,14 @@ guidance and the engine's valuation — simplified first, simulation later to fi
 behaviour. A designer can steer one action without touching a mode: "use whenever available" (Iron Colossus Buff, ENEMY-REVIEW.md:352),
 "only below half HP", "only with 2+ enemies in the area".
 
-**E. Overrides stay on top**, as today: Confusion, Dazed, Taunt, civilian flight, a prone
+**E. Mode changes.** Ruled 2026-09-26: a unit's mode can change mid-battle — a brute that
+runs when badly hurt, a boss that fights differently below half health. The condition and the
+new mode are data on the unit's row.
+
+**F. What the AI sees.** Ruled 2026-09-26: everything, except stealthed units — every stat,
+power, cooldown and hit chance. No enemy-intent projection is planned.
+
+**G. Overrides stay on top**, as today: Confusion, Dazed, Taunt, civilian flight, a prone
 unit stands first.
 
 ## 4. Encounter rules and the side brain
@@ -134,6 +141,7 @@ DECISIONS.md:1840 says both are NOT approved.
 
 ## 10. Answered 2026-09-26
 
-The four questions of the draft are answered in `DECISIONS.md` (same date). Open, asked the
-same night: whether a mode can change mid-battle, whether players see enemy intent before it
-acts, and whether the AI may see what a player cannot.
+All seven questions are answered in `DECISIONS.md` (two entries, 2026-09-26). Scope now is the
+framework — the engine must be able to express every behaviour above; the behaviours
+themselves are authored over time. Open: whether the AI sees the other side's traps
+(`COMBAT-DESIGN.md` line 704 makes hero traps invisible to enemies).
