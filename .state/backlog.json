@@ -4556,7 +4556,11 @@
   "spec": "AI-DESIGN.md §7 step 2. Enemies use the one action type (DECISIONS.md 2026-09-04) and carry uses/cooldown/warmup (capability.enemy-action-cooldown, done), but content/mkenginepack.mjs drops enemy special moves, flight and non-corpse self rows (mkenginepack.mjs:499-533). Carry them: Iron Colossus Charge (cd 4), Clobber, Buff; the hounds' Close Bite and moveIgnoresZOC; flight for the six units with movePower flight. Copy values from the Codex/bestiary rows — never invent.",
   "expect": "each named action is on its unit in the engine pack with the Codex's numbers, and appears on ai.action-list for that unit",
   "changesBaseline": false,
-  "probeIds": ["move.hellhound.close-bite", "move.hound.close-bite", "move.zombie-hound.close-bite"]
+  "probeIds": [
+   "move.hellhound.close-bite",
+   "move.hound.close-bite",
+   "move.zombie-hound.close-bite"
+  ]
  },
  {
   "id": "ai.scorer",
@@ -4599,5 +4603,33 @@
   ],
   "spec": "Ruled 2026-09-26: the AI knows everything except stealthed units. The AI's view of the battle excludes units carrying the stealthed flag (src/core/status.ts) from targets, threats and scoring; everything else — stats, powers, cooldowns, hit chances — it reads in full. Invisible traps are likewise unseen (Andrew 2026-09-26; COMBAT-DESIGN.md line 704).",
   "expect": "a stealthed hero is never chosen or scored by an AI unit, and becomes a target the moment stealth breaks"
+ },
+ {
+  "id": "fix.enemy-accuracy-mod",
+  "kind": "content",
+  "shape": "data",
+  "spec": "Found by pack.enemy-actions 2026-09-26: content/mkenginepack.mjs drops a regular enemy attack's accuracyMod silently — e.g. Bone Dragon Wings -20, Balrog Hurl -30 — against Law 9 (never swallow a failure). Carry each attack's accuracyMod from its bestiary row, or name it in content/gen/enemy-pack-gaps.json if the engine cannot express it.",
+  "expect": "every authored enemy attack whose bestiary row carries an accuracyMod has it in the engine pack, read from the row in the test; none is dropped without a named gap",
+  "changesBaseline": true
+ },
+ {
+  "id": "capability.charge",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "pack.enemy-actions"
+  ],
+  "spec": "Charge (Iron Colossus, cd 4; Fast Zombie) moves N hexes and attacks as ONE action — approved with the other move.* rows (DECISIONS.md 2026-09-02/03, 'build them all'). pack.enemy-actions left it out: planAction routes any action with a move to movement only (src/core/commands.ts) and executeMove never attacks. Build the mechanism so a movement-slot action can end in an attack; the Colossus's noPrimaryAction (its walk must not be usable as the main action) rides with it. Values from the Codex rows only.",
+  "expect": "a unit with Charge moves and attacks in one action, the attack resolved by the one damage function; it appears on legalActions when ready and leaves it on cooldown; a second Charge row with different numbers is pure data"
+ },
+ {
+  "id": "capability.move-ignores-zoc",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "pack.enemy-actions"
+  ],
+  "spec": "The hounds 'ignore ZOC' — 'the move-WITHOUT-provoking machinery, as a property of their movement' (ENEMY-REVIEW.md:276-278). pack.enemy-actions left it out: attacks of opportunity are governed only by the global switch (movement.ts ~226) and the movement type has no such property. Make not-provoking a property a movement power row can carry; the four hounds carry it.",
+  "expect": "a hound leaving a hero's zone provokes no attack of opportunity; a walker on the same path does; a second unit with the property is pure data"
  }
 ]
