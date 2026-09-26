@@ -1910,7 +1910,10 @@
    "viewer.board",
    "viewer.panel"
   ],
-  "note": "The event contract is 37 rows, not the 36 the first draft of §3.2 listed — battle.end was omitted. On the wire its only field beyond the envelope is `outcome`; `turn` is already an envelope field."
+  "note": "The event contract is 37 rows, not the 36 the first draft of §3.2 listed — battle.end was omitted. On the wire its only field beyond the envelope is `outcome`; `turn` is already an envelope field.",
+  "status": "failed",
+  "failedAt": "2026-09-26 00:46",
+  "reason": "Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. The event fold is viewer/src/fold.js, gated by viewer/tools/verify.mjs over the whole battle library."
  },
  {
   "id": "viewer.log-transport",
