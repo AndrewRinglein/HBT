@@ -109,6 +109,17 @@ export function isCowork(env = process.env, cwd = process.cwd()) {
 export const COWORK_BUDGET_S = 150
 
 /**
+ * tool.cowork-test-timeout (Andrew 2026-09-26): vitest's default per-test timeout.
+ * In Cowork, load from outside the chat pushes 1-4 s tests past vitest's 5 s default,
+ * so it is 30 s there; a terminal returns undefined and keeps vitest's own default.
+ * A timeout is not an assertion; explicit per-test timeouts still win.
+ */
+export const COWORK_TEST_TIMEOUT_MS = 30_000
+export function testTimeoutFor(env = process.env, cwd = process.cwd()) {
+  return isCowork(env, cwd) ? COWORK_TEST_TIMEOUT_MS : undefined
+}
+
+/**
  * The budget in ms. `--budget <s>` wins (0 = none). Without it: 150 s in Cowork,
  * which leaves ~28 s under the ~178 s kill for a check nobody has timed yet; in a
  * terminal, none — a terminal run behaves exactly as it always did.

@@ -13,6 +13,8 @@ export function serialize(progress: Progress): string
 export function stopBefore(a: { elapsedMs: number; budgetMs: number; estimateMs: number | undefined; ranFresh: number }): boolean
 export function isCowork(env?: Record<string, string | undefined>, cwd?: string): boolean
 export const COWORK_BUDGET_S: number
+export const COWORK_TEST_TIMEOUT_MS: number
+export function testTimeoutFor(env?: Record<string, string | undefined>, cwd?: string): number | undefined
 export function budgetFrom(argv: string[], env?: Record<string, string | undefined>, cwd?: string): number
 export function parseShard(arg: unknown): { k: number; n: number } | null
 export function normalizeShards(raw: unknown, tree: string): ShardRecord
