@@ -1,11 +1,11 @@
 {
- "now": "fix.phase-ladder-config, fix.retired-stations, tool.effect-size-rules — landed 426c3c8, 87bca9c, 65e6587; every gate PASS, none flagged. Closed as superseded on Andrew's ruling (DECISIONS 37ebf57): move.actions (no one gets Sprint for now; the Rogue keeps Side Roll; COMBAT-DESIGN c3823a4), fix.start-of-turn-victory, fix.outcome-enum, hook.on-enter (all carried by encounter.runner a6ec245), crit.branch-and-injuries (station.crit; Grit is Luck). New switches: endOfPhaseLadder, phaseRungLog. Rule items now declare effectSwitch on the backlog row (movement.zone-of-control, station.crit). Four shards green on tree 77a5d82669. audit-all NOT run: timed out at 174 s in Cowork after typecheck — run it from a terminal. Next: viewer.hexvfx-path — first check whether the viewer.* items are superseded by the ../viewer package.",
- "at": "2026-09-25 23:37",
- "sha": "fc2826b",
+ "now": "viewer.* (9) and content.art-manifest closed as superseded by the viewer package on Andrew's ruling (DECISIONS 33597a3; empty assets/vfx deleted, native stun/slow/protection effects carried to VFX/VISUAL-BATTLE-UPDATES §4, root 66da833). Landed: sim.coverage 1625c8c and seam.unit-mods 9541224, every gate PASS; pack.derived-rows 0bddb52 FLAGGED (one test filter line, no assertion moved) with content 9ecd110. Four shards green on tree 601e6149f8. audit-all timed out again in Cowork (full suite in one command); its parts run by hand: shards green, control battles match golden, core scan clean, 44 grandfathered INVENTED. Owed, from pack.derived-rows: content's weapon-enchant rows still carry hero stats and Far/Long still bow-only against GEAR-DESIGN §3 (2026-09-05); the tier-3 rule in mkenginepack silently drops an enchant's damage bonus (Law 9: item.longsword.destroying, rooting, hobbling); the kingdom's FieldedMods needs converting to heroMods; the viewer does not fold unit.modified. Queue: system.ai-modes is design-first with Angela; content.mage-staff waits on unit.brute. Next: design the AI with Angela.",
+ "at": "2026-09-26 04:09",
+ "sha": "d1b2191",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: viewer.hexvfx-path, and whether the viewer items still apply",
+  "label": "New chat with Heroes of Blight and Tragic — engine: system.ai-modes, the AI design with Angela",
   "line": "start engine"
  }
 }
