@@ -16509,3 +16509,8 @@ Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine
 2026-09-26 00:46
 
 Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. Board-space geometry (colStep 128, rowStep 96, oddOffset 64, cell 128x132) is emitted by tools/field-geometry.mts, and projection and exact distance are engine-owned through the viewer door (viewer.direct-map-initialization, viewer.runtime-metadata).
+
+## viewer.build — ABANDONED
+2026-09-26 00:46
+
+Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. The viewer builds and gates its own page: viewer/tools/build-viewer.mjs from generated/static.json and generated/fields.json, published as BATTLE-VIEWER.html.
