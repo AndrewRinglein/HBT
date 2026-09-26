@@ -4544,7 +4544,10 @@
   "shape": "plumbing",
   "spec": "AI-DESIGN.md §3A, ruled 2026-09-26 (DECISIONS.md 'the AI: modes per unit type...'). One engine function lists every legal action for a unit now — movement (walk, flight, leap, special moves), attacks, powers, abilities, items — the one action type, heroes and enemies alike, gated by uses/cooldown/warmup. A plan is a destination hex plus the action taken from it. The ten modes in src/ai/modes.ts switch to reading it instead of building their own candidates.",
   "expect": "every action a mode takes in the control battles is on the list; nothing on the list is refused by validateAction; control battles byte-identical",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "attempts": 1,
+  "status": "done",
+  "sha": "209d82a"
  },
  {
   "id": "pack.enemy-actions",

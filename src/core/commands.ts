@@ -1,11 +1,11 @@
 // The session boundary owns whose input is accepted. Resolution stays in the
 // same attack, power and movement functions used by automatic battles.
 import type { Ctx } from './types.js'
-import { actionReady, isAttack, isBurst, isMove, resolveActionSlot } from './action.js'
+import { actionReady, grantedActionIds, isAttack, isBurst, isMove, resolveActionSlot } from './action.js'
 import { canAttack, performAttack } from './pipeline.js'
-import { canUseBurst, useBurst } from './burst.js'
+import { burstCentres, canUseBurst, useBurst } from './burst.js'
 import { canUsePower, usePower } from './ability.js'
-import { executeFlight, executeMove, executeSidestep, planMovement, type MovementPlan } from './movement.js'
+import { executeFlight, executeMove, executeSidestep, movementOptions, planMovement, type MovementPlan } from './movement.js'
 import { forcedTargetOf, isBlocked } from './status.js'
 import { settle } from './settle.js'
 import { completeActionCycle } from './battle.js'
@@ -13,7 +13,7 @@ import { activationChoices, controllerOf, type ControlPolicy } from './control.j
 import { selectActivation } from './mutate.js'
 import { isUnitUid } from './identity.js'
 import { canSwap, performSwap } from './swap.js'
-import { attackProp, canAttackHex } from './prop-attack.js'
+import { attackProp, canAttackHex, propAttackHexes } from './prop-attack.js'
 export { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 
 /** Shared action input; session ownership is supplied separately from client data. */
@@ -83,6 +83,54 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
 export function validateAction(ctx: Ctx, request: unknown): CommandResult {
   const plan = planAction(ctx, request)
   return 'ok' in plan ? plan : { ok: true }
+}
+/**
+ * THE ACTION LIST — ai.action-list (AI-DESIGN.md §3A, ruled 2026-09-26).
+ * Every action this unit may take right now, as the ActionRequests
+ * validateAction accepts: movement (walk, flight, leap, stand — one entry per
+ * destination), attacks and powers (one per unit aimed at, plus a prop hex for
+ * an attack with Destroy), bursts (one per centre). Heroes and enemies alike;
+ * items' powers are on the unit's list like any other. Uses, cooldown, warmup,
+ * stamina and the slot are the one limits check's (actionReady), reached
+ * through the one legality function — this file enumerates, it never judges:
+ * every aimed candidate is kept only if validateAction accepts it, and a
+ * movement destination comes from the very planner validateAction runs (Law 2).
+ *
+ * Order (Law 6): the unit's granted order (grantedActionIds, first grant wins
+ * a duplicate), then within one action the aim ascending — destination hex,
+ * unit id, then prop hex, centre hex. No entry carries `slot`: the engine's
+ * own slot resolution applies, exactly as for the AI (SWITCHES.md
+ * actionListSlot). Recomputed on every call (Law 8); pure — no state, no RNG.
+ */
+export function legalActions(ctx: Ctx, actor: number): ActionRequest[] {
+  const u = ctx.state.units[actor]
+  if (!u || u.id !== actor) throw new Error(`legalActions: no unit ${actor}`)
+  const out: ActionRequest[] = []
+  const seen: string[] = []
+  for (const actionId of grantedActionIds(ctx, u)) {
+    if (seen.includes(actionId)) continue
+    seen.push(actionId)
+    const a = Object.hasOwn(ctx.actions, actionId) ? ctx.actions[actionId] : undefined
+    if (!a) continue   // a granted id whose row is absent is content never authored (the kill-switch seam)
+    // Movement: the destinations are the movement planner's own enumeration —
+    // movementOptions and validateAction's planMovement are one planner
+    // (movement.ts: "One pure destination planner for controls and AI") over
+    // the same limits, slot and occupancy checks — so each is already a
+    // destination validateAction accepts, and is not planned a second time.
+    // Measured 2026-09-26: re-validating every destination ran one Dijkstra per
+    // hex and took the control battles from 32 s to 167 s, 86% of it in
+    // planMovement. test/ai-action-list.test.ts holds every listed destination
+    // to validateAction across the control battles.
+    if (isMove(a)) { for (const plan of movementOptions(ctx, actor, actionId)) out.push({ actor, actionId, destination: plan.destination }); continue }
+    const candidates: ActionRequest[] = []
+    if (isBurst(a)) for (const centre of burstCentres(ctx, actor, actionId)) candidates.push({ actor, actionId, centre })
+    else {
+      for (let target = 0; target < ctx.state.units.length; target++) candidates.push({ actor, actionId, target })
+      if (isAttack(a)) for (const hex of propAttackHexes(ctx, actor, actionId)) candidates.push({ actor, actionId, hex })
+    }
+    for (const c of candidates) if (validateAction(ctx, c).ok) out.push(c)
+  }
+  return out
 }
 function resolvePlan(ctx: Ctx, plan: Plan): void {
   if (plan.kind === 'burst') useBurst(ctx, plan.actor, plan.centre, plan.actionId, plan.slot)

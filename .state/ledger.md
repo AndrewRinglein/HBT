@@ -16647,3 +16647,21 @@ index 3c12a41..f2e5031 100644
 2026-09-26 07:10
 
 Closed as delivered on Andrew's 2026-09-26 ruling (DECISIONS.md, 'system.ai-modes closes as delivered'): the AI design is AI-DESIGN.md, ruled in three entries that night; the work continues as ai.action-list, pack.enemy-actions, ai.scorer, ai.mode-change, ai.encounter-rules, ai.sight.
+
+## ai.action-list — LANDED `209d82a`
+2026-09-26 07:45
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · SWITCHES.md:1168
+  PASS  typecheck
+  PASS  the item's own tests — test/ai-action-list.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/ai-action-list.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

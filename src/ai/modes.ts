@@ -4,12 +4,12 @@
 
 import type { HexId } from './../core/hex.js'
 import { livingEnemies, movementOptions, moveStaminaCost, nearestEnemy, stepRangeOf, usableMoves as readyMoves } from './../core/movement.js'
-import { executeAction, validateAction, type ActionRequest } from './../core/commands.js'
+import { executeAction, legalActions, type ActionRequest } from './../core/commands.js'
 import type { AttackDef, MoveDef } from './../core/types.js'
 import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
 import { attackDef, preview, reachOf } from './../core/pipeline.js'
 import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
-import { burstCentres, previewBurst } from './../core/burst.js'
+import { previewBurst } from './../core/burst.js'
 import { isBlocked, isConfused, isProne } from './../core/status.js'
 import { TERRAIN } from './../core/types.js'
 import { emit, unit } from './../core/mutate.js'
@@ -18,7 +18,32 @@ import type { Ctx, Unit } from './../core/types.js'
 
 /** Transient AI deliberation, never stored in battle state. Core legality stays
  * authoritative; this context only limits repeated free choices by the AI. */
-type Decision = { ctx: Ctx; freeUsed: Set<string>; actionsTaken: number; limit: number; idled: boolean }
+type Decision = { ctx: Ctx; freeUsed: Set<string>; actionsTaken: number; limit: number; idled: boolean; list: ReadList | null }
+
+/**
+ * ai.action-list (AI-DESIGN.md §3A, 2026-09-26): the modes choose from THE
+ * action list — legalActions, the one legality function's enumeration — never
+ * from candidates of their own. The list read is held for the state it was
+ * read on and no longer: every state change emits an event (Law 3), every
+ * event advances state.seq, so a read is reused only while seq is unchanged
+ * (Law 8; test/ai-action-list.test.ts proves the AI acts on a list read at
+ * the very seq it acts in).
+ */
+type ReadList = { actor: number; seq: number; entries: ActionRequest[]; keys: Set<string> }
+function requestKey(r: ActionRequest): string {
+  const aim = 'target' in r ? `t${r.target}` : 'destination' in r ? `d${r.destination}` : 'centre' in r ? `c${r.centre}` : `h${r.hex}`
+  return `${r.actionId}|${aim}|${r.slot ?? ''}`
+}
+function options(decision: Decision, actor: number): ReadList {
+  const ctx = decision.ctx
+  const held = decision.list
+  if (held && held.actor === actor && held.seq === ctx.state.seq) return held
+  const entries = legalActions(ctx, actor)
+  const list = { actor, seq: ctx.state.seq, entries, keys: new Set(entries.map(requestKey)) }
+  decision.list = list
+  return list
+}
+const onList = (decision: Decision, request: ActionRequest): boolean => options(decision, request.actor).keys.has(requestKey(request))
 function usableMoves(decision: Decision, u: Unit): MoveDef[] {
   return readyMoves(decision.ctx, u).filter(a => !decision.freeUsed.has(a.id) && resolveActionSlot(decision.ctx, u, a) !== null)
 }
@@ -28,14 +53,14 @@ function movePowerOf(decision: Decision, u: Unit, shape: MoveDef['move']['shape'
 
 /** Candidate legality and actual resolution share the public command mechanism. */
 function legalTarget(decision: Decision, actor: number, target: number, actionId: string): boolean {
-  const ctx = decision.ctx
-  return !decision.freeUsed.has(actionId) && validateAction(ctx, { actor, target, actionId }).ok
+  return !decision.freeUsed.has(actionId) && onList(decision, { actor, target, actionId })
 }
 function act(decision: Decision, request: ActionRequest): true {
   const ctx = decision.ctx
   if (decision.freeUsed.has(request.actionId)) throw new Error('AI repeated a free action in one cycle')
   if (decision.actionsTaken >= decision.limit) throw new Error('AI action cycle exceeded its finite choice budget')
   const free = ctx.actions[request.actionId]!.free
+  if (!onList(decision, request)) throw new Error(`AI chose an action not on the action list: ${request.actionId}`)
   const result = executeAction(ctx, request)
   if (!result.ok) throw new Error(`AI selected an illegal action: ${request.actionId}: ${result.reason}`)
   decision.actionsTaken++
@@ -43,9 +68,8 @@ function act(decision: Decision, request: ActionRequest): true {
   return true
 }
 function moveTargets(decision: Decision, u: Unit, power: MoveDef): HexId[] {
-  const ctx = decision.ctx
   if (decision.freeUsed.has(power.id)) return []
-  return movementOptions(ctx, u.id, power.id).map(plan => plan.destination)
+  return options(decision, u.id).entries.flatMap(r => r.actionId === power.id && 'destination' in r ? [r.destination] : [])
 }
 
 /** Lowest current health, ties on lower unit id (Law 6). */
@@ -185,7 +209,7 @@ function burstIfUseful(decision: Decision, u: Unit): boolean {
     if (legalTarget(decision, u.id, enemy.id, attack.id)) ordinary = Math.max(ordinary, preview(ctx, u.id, enemy.id, attack.id).damageOnHit)
   }
   for (const id of bursts) {
-    for (const centre of burstCentres(ctx, u.id, id)) {
+    for (const centre of options(decision, u.id).entries.flatMap(r => r.actionId === id && 'centre' in r ? [r.centre] : [])) {
       const p = previewBurst(ctx, u.id, centre, id)
       const harm = p.targets.filter(t => unit(ctx, t.id).side === u.side).reduce((n, t) => n + t.applied, 0)
       if (harm && !ctx.cfg.switches.aiBurstThroughAllies) continue
@@ -236,6 +260,7 @@ function dumbMelee(decision: Decision, u: Unit): void {
       // no opportunity-risk scoring is introduced here.
       const distance = ctx.geo.distance(u.hex, target.hex)
       const best = movementOptions(ctx, u.id, walk.id)
+        .filter(plan => onList(decision, { actor: u.id, destination: plan.destination, actionId: walk.id }))
         .filter(plan => ctx.geo.distance(plan.destination, target.hex) < distance)
         .sort((a, b) => ctx.geo.distance(a.destination, target.hex) - ctx.geo.distance(b.destination, target.hex)
           || a.pathCost - b.pathCost || a.path.length - b.path.length || a.destination - b.destination)[0]
@@ -809,7 +834,7 @@ export function runActivation(ctx: Ctx, unitId: number): void {
   const mode = MODES[ai]!
   emit(ctx, 'ai.mode', `ai.${ai}`, { actor: unitId, mode: ai, ...(isConfused(ctx, u) ? { confusedFrom: base } : {}), ...(base !== u.ai ? { overriding: u.ai } : {}) })
   const decision: Decision = {
-    ctx, freeUsed: new Set(), actionsTaken: 0, idled: false,
+    ctx, freeUsed: new Set(), actionsTaken: 0, idled: false, list: null,
     limit: 2 + Object.values(ctx.actions).filter(a => a.free).length,
   }
   // v2.prone (COMBAT-V2-DESIGN §10; SWITCHES.md proneAiStandsFirst): a prone
