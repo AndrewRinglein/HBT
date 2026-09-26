@@ -1936,7 +1936,10 @@
   "spec": "PLAYBACK-DESIGN §4.4, §13 item 10. Three hexVFX styles are OWED and currently borrow another: status.stun borrows shadow, status.slow borrows frost, status.protection borrows weak. Author them natively in VFX/hexVFX.js, the canonical and only copy. One hue per status everywhere — pips, board glyphs, panel chips and hexVFX all read the single table. status.regeneration keeps its square pip: a shape cue on top of hue so the one helpful status can never be misread as poison. blight and shadow have no content behind them and may be re-pointed at poisoned ground and darkness; affliction is otherwise dead.",
   "expect": "stun, slow and protection each play a native style, and no status silently falls back to poison-green — the fallback is the exact legibility bug that was caught by eye",
   "changesBaseline": false,
-  "needs": []
+  "needs": [],
+  "status": "failed",
+  "failedAt": "2026-09-26 00:46",
+  "reason": "Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. Still open, carried to the viewer's work list (VFX/VISUAL-BATTLE-UPDATES.md section 4): stun, slow and protection still borrow the shadow, frost and weak hexVFX styles (viewer/src/theme.js line 89). The single hue table is viewer/src/theme.js."
  },
  {
   "id": "fix.shadow-hound-hero-side",
