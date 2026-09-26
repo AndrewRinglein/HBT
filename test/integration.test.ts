@@ -212,7 +212,10 @@ describe('gate 2 — invariants across many battles', () => {
       }
       for (const u of ctx.state.units) expect(hpFromLog.get(u.id)).toBe(u.hp)
     }
-  })
+  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
+  // alone in Cowork (2 cores): 3.4 s against the 5 s default; load ~5 tripled the hill
+  // cases beside it. 30 s is headroom; all 100 seeds and every assertion unchanged.
+  }, 30_000)
 
   it('units never share a hex', () => {
     for (let r = 0; r < 60; r++) {
@@ -221,7 +224,9 @@ describe('gate 2 — invariants across many battles', () => {
       const alive = ctx.state.units.filter(u => u.lifeState !== 'dead').map(u => u.hex)
       expect(new Set(alive).size).toBe(alive.length)
     }
-  })
+  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
+  // alone in Cowork: 1.4 s against the 5 s default. 30 s is headroom; unchanged otherwise.
+  }, 30_000)
 
   it('a battle always ends, and only in a declared way', () => {
     for (let r = 0; r < 100; r++) {
@@ -230,7 +235,9 @@ describe('gate 2 — invariants across many battles', () => {
       expect(['heroClear', 'wipe', 'capped']).toContain(res.outcome)
       expect(res.turns).toBeLessThanOrEqual(ctx.cfg.turnCap)
     }
-  })
+  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
+  // alone in Cowork: 2.3 s against the 5 s default. 30 s is headroom; unchanged otherwise.
+  }, 30_000)
 
   it('state survives a JSON round trip after a full battle', () => {
     const ctx = createBattle({ replicate: 5 }); runBattle(ctx)

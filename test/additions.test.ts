@@ -88,6 +88,9 @@ describe('pass 2 — hills', () => {
     const b = createBattle({ replicate: 3 }); runBattle(b)
     expect(h(a)).toBe(h(b))
   })
+  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
+  // alone in Cowork (2 cores): 4.0 s against the 5 s default, and 11.5 s with the file run
+  // alone at load ~5. 30 s is headroom; every seed and assertion is unchanged.
   it('gate 1 — ranged heroes actually take the high ground when maps have hills', () => {
     let took = 0
     for (const mapId of ['map.ridge', 'map.flanks', 'map.highlands'])
@@ -96,7 +99,7 @@ describe('pass 2 — hills', () => {
         took += ctx.events.filter(e => e.type === 'ai.tookHighGround').length
       }
     expect(took).toBeGreaterThan(0)
-  })
+  }, 30_000)
   // The complete 20-battles-per-map sample exceeded 5s under full-suite load.
   // Preserve its sample and safety threshold, with a bounded integration budget.
   it('a ranged hero never ends its move inside a melee threat range it could have avoided', () => {
@@ -124,7 +127,10 @@ describe('pass 2 — hills', () => {
     }
     expect(total).toBeGreaterThan(100)
     expect(unsafe / total).toBeLessThan(0.5)
-  }, 30000)
+  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
+  // alone in Cowork (2 cores): 22.7 s against the 30 s limit, and 48.2 s with the file
+  // run alone at load ~5. 120 s is headroom; sample and threshold unchanged.
+  }, 120_000)
 })
 
 // ─── PASS 3: the Mage ────────────────────────────────────────────────────────

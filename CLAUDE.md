@@ -61,11 +61,16 @@ node tools/wrap.mjs "<now line>" --next "<which chat, what it does>" "<its first
 
 node tools/next.mjs                    the next backlog item that is ready
 node tools/gate.mjs --shard <k>/4      run a quarter of the test suite (k = 1..4), one command
-                                       each — once per chat; wrap refuses until all four passed
-                                       on the exact tree. Each runs ~85–125 s in Cowork
-node tools/gate.mjs --shards-green     exit 0 only if all four shards passed on this tree
-node tools/gate.mjs <id>               run the gates, change nothing (~140 s in Cowork)
-node tools/gate.mjs <id> --land        commit, only if every gate passes
+                                       each — once per chat; wrap refuses until a complete set
+                                       passed on the exact tree. In Cowork run --shard <k>/8
+                                       (k = 1..8) instead: any complete set counts
+node tools/gate.mjs --shards-green     exit 0 only if a complete set of shards passed on this tree
+node tools/gate.mjs <id>               run the gates, change nothing. Each check is recorded
+                                       against the tree; in Cowork it stops at 150 s (--budget <s>)
+                                       with INCOMPLETE, exit 3 — repeat the same command until it
+                                       finishes. --fresh re-runs every check
+node tools/gate.mjs <id> --land        commit, only if every gate passed on this tree (recorded or
+                                       fresh) — in Cowork, repeat it until it lands
 node tools/gate.mjs <id> --abandon "<why>"   give up, revert, record why — runs no checks
 node tools/gate.mjs --count            the one count line — start and wrap print it verbatim
 node tools/report.mjs                  what landed, abandoned, or needs review
@@ -106,7 +111,7 @@ ledger; a landing that edited existing tests still lands `done-needs-review` (La
 
 A landing runs: typecheck, **the item's own tests** (the test files it touched), the
 control battles, and the checks below. The full suite runs **once per chat**, as the four
-`--shard` commands, and `wrap` refuses until all four passed on the final tree.
+`--shard` commands, and `wrap` refuses until a complete set (four, or `k/8` in Cowork) passed on the final tree.
 
 - **Appears in a battle** — probes the id (or `probeIds`). Engine-only plumbing with no
   `probeIds` skips it as not applicable.
@@ -222,13 +227,16 @@ before it ships (`--scan MY-PLAN.md`). A rule you have to remember is not a mech
 multi-attack question was settled in `COMBAT-SEQUENCE.md` line 155, litigated by Angela,
 and re-asked as open the next day.
 
-**A Cowork chat cannot finish a gate run.** Cowork's shell kills every command at
-~178 s whatever timeout is asked for (a bare `sleep 200` died at 177,998 ms), and a
-backgrounded process dies with its call. Nothing in this repo sets that limit. On
-2026-09-22, with the landing already cut down, the full suite alone was still running
-at 170 s here, so gate and land from a terminal on the machine. (The mounted folder
-also costs ~1.4 ms per file stat: a cold `tsc --noEmit` took 160 s on 2026-09-21 and
-5.6 s warm the next day.) The mount-unlink trap is in the root `CLAUDE.md`.
+**A Cowork call dies at ~178 s, so the gate resumes across calls.** Cowork's shell kills
+every command at ~178 s whatever timeout is asked for (a bare `sleep 200` died at
+177,998 ms), and a backgrounded process dies with its call. Nothing in this repo sets that
+limit. Since `tool.gate-fits-cowork` (2026-09-26) the gate records each check against the
+exact tree in `.state/gate-progress.json` and, in Cowork, stops between checks at 150 s
+with `INCOMPLETE` (exit 3; no attempt, no log line, no landing): **repeat the same
+`gate.mjs <id>` or `--land` command until it finishes.** Run the suite as
+`--shard k/8`, k = 1..8. A single check still has to fit one call: the mounted folder
+costs ~1.4 ms per file stat, and a cold `tsc --noEmit` took 160 s on 2026-09-21 (5.6 s
+warm the next day). The mount-unlink trap is in the root `CLAUDE.md`.
 
 **`wrap.mjs` commits `git add -A`**, exactly as the gate does. Wrap with an ungated
 item's files in the tree and the wrap commits them (`e89e3a7` swept R0's nine files on

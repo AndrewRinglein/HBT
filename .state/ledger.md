@@ -16863,3 +16863,88 @@ index 0f5931d..4e539cc 100644
  
 ```
 </details>
+
+## tool.gate-fits-cowork — LANDED `7cab62b` **NEEDS REVIEW**
+2026-09-26 20:33
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:11
+  PASS  typecheck
+  PASS  the item's own tests — test/additions.test.ts, test/integration.test.ts, test/gate-resume.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/additions.test.ts, test/integration.test.ts, test/gate-resume.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/additions.test.ts (-2), test/integration.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index e55dae6..9275a52 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -89,4 +89,7 @@ describe('pass 2 — hills', () => {
+     expect(h(a)).toBe(h(b))
+   })
++  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
++  // alone in Cowork (2 cores): 4.0 s against the 5 s default, and 11.5 s with the file run
++  // alone at load ~5. 30 s is headroom; every seed and assertion is unchanged.
+   it('gate 1 — ranged heroes actually take the high ground when maps have hills', () => {
+     let took = 0
+@@ -97,5 +100,5 @@ describe('pass 2 — hills', () => {
+       }
+     expect(took).toBeGreaterThan(0)
+-  })
++  }, 30_000)
+   // The complete 20-battles-per-map sample exceeded 5s under full-suite load.
+   // Preserve its sample and safety threshold, with a bounded integration budget.
+@@ -125,5 +128,8 @@ describe('pass 2 — hills', () => {
+     expect(total).toBeGreaterThan(100)
+     expect(unsafe / total).toBeLessThan(0.5)
+-  }, 30000)
++  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
++  // alone in Cowork (2 cores): 22.7 s against the 30 s limit, and 48.2 s with the file
++  // run alone at load ~5. 120 s is headroom; sample and threshold unchanged.
++  }, 120_000)
+ })
+ 
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index 20e7eae..8b44f21 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -213,5 +213,8 @@ describe('gate 2 — invariants across many battles', () => {
+       for (const u of ctx.state.units) expect(hpFromLog.get(u.id)).toBe(u.hp)
+     }
+-  })
++  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
++  // alone in Cowork (2 cores): 3.4 s against the 5 s default; load ~5 tripled the hill
++  // cases beside it. 30 s is headroom; all 100 seeds and every assertion unchanged.
++  }, 30_000)
+ 
+   it('units never share a hex', () => {
+@@ -222,5 +225,7 @@ describe('gate 2 — invariants across many battles', () => {
+       expect(new Set(alive).size).toBe(alive.length)
+     }
+-  })
++  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
++  // alone in Cowork: 1.4 s against the 5 s default. 30 s is headroom; unchanged otherwise.
++  }, 30_000)
+ 
+   it('a battle always ends, and only in a declared way', () => {
+@@ -231,5 +236,7 @@ describe('gate 2 — invariants across many battles', () => {
+       expect(res.turns).toBeLessThanOrEqual(ctx.cfg.turnCap)
+     }
+-  })
++  // LAW 10 — tool.gate-fits-cowork 2026-09-26: a timeout is not an assertion. Measured
++  // alone in Cowork: 2.3 s against the 5 s default. 30 s is headroom; unchanged otherwise.
++  }, 30_000)
+ 
+   it('state survives a JSON round trip after a full battle', () => {
+```
+</details>

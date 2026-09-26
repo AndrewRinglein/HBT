@@ -1,0 +1,25 @@
+{
+ "id": "tool.gate-fits-cowork",
+ "tree": "7528a417355a3114b4788dcbca34f065b881bff7",
+ "ctx": "d84fa518594badce730dbf2ec034d9f076d61704",
+ "results": {},
+ "durations": {
+  "dependencies landed": 0,
+  "not already decided": 474,
+  "typecheck": 3846,
+  "the item's own tests ▸ test/additions.test.ts": 96195,
+  "the item's own tests ▸ test/integration.test.ts": 25873,
+  "the item's own tests ▸ test/gate-resume.test.ts": 5222,
+  "the item's own tests": 32352,
+  "gate 1 — the id appears in a real battle": 1,
+  "brought its own tests": 1512,
+  "existing tests untouched": 0,
+  "control battles unchanged": 37946,
+  "content has a published source": 582,
+  "hardcode scan — core knows mechanisms, never names": 177,
+  "generalizes — the second instance costs zero engine code": 0,
+  "naming — new content ids use declared kinds": 111,
+  "naming — no banned words invented": 2087,
+  "kill switch — the tests fail without the content": 0
+ }
+}

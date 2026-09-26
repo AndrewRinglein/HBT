@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// node tools/gate.mjs <item-id> [--land|--abandon]
+// node tools/gate.mjs <item-id> [--land|--abandon] [--budget <s>] [--fresh]
 //
 // The blocking gate. Claude does not get to decide whether an item passed —
 // this does, and its exit code is not arguable.
@@ -11,14 +11,28 @@
 //
 // Reverting on the first failure would throw away both the work and the
 // diagnostic, so the next attempt would start blind. Abandoning is explicit.
+//
+// RESUMABLE (tool.gate-fits-cowork, Andrew 2026-09-26: 'Add it'). Cowork kills every
+// shell call at ~178 s, so each check's result is recorded against the exact tree in
+// .state/gate-progress.json (tools/gate-progress.mjs). A re-run on the same tree
+// replays what already passed ("PASS (recorded)"); a changed tree discards it. With a
+// budget — `--budget <s>`, 150 s by default in Cowork, none in a terminal — the gate
+// stops between checks once the budget is spent, prints INCOMPLETE and exits 3,
+// counting no attempt, logging nothing and landing nothing: run the same command
+// again. --land commits only when every check has passed on the current tree,
+// recorded or fresh. --fresh discards the record first; --abandon clears it.
 
 import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync, appendFileSync, copyFileSync, rmSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { filesContaining } from './source-scan.mjs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
 import { revertTree } from './revert-tree.mjs'
+import {
+  treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
+  stopBefore, budgetFrom, parseShard, recordShard, shardStatus,
+} from './gate-progress.mjs'
+
+const T0 = Date.now()
 
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
@@ -28,6 +42,7 @@ const BACKLOG = '.state/backlog.json'
 const LEDGER = '.state/ledger.md'
 const GOLDEN = '.state/baseline.hash'
 const RUNLOG = '.state/gauntlet-log.jsonl'
+const PROGRESS = '.state/gate-progress.json'
 
 // --count: the one line that says where the backlog is, printed by the gate
 // because the gate is what wrote every status in it. `start` and
@@ -47,62 +62,56 @@ if (process.argv.includes('--count')) {
 // so the suite runs as SHARDS separate commands, `node tools/gate.mjs --shard k/4`.
 // Each pass is recorded against a hash of the working tree (everything `git add -A`
 // would commit, minus the gate's own .state/ and the generated Game Builder). The
-// gate's "full test suite" check passes only when every shard passed on the exact
-// tree it is gating — edit one file and every shard must run again.
+// suite is green only when every shard passed on the exact tree — edit one file and
+// every shard must run again.
+//
+// Any N works, not only four (tool.gate-fits-cowork, 2026-09-26): a quarter of the
+// suite ran past 176 s in Cowork, so `--shard k/8` runs an eighth. Each N is its own
+// set in .state/shards.json, and ANY complete set on the tree is the full suite.
+// Four stays the default and the wording.
 const SHARDS = 4
 const SHARDS_FILE = '.state/shards.json'
-function treeHash() {
-  const idx = join(tmpdir(), `gate-index-${process.pid}-${Date.now()}`)
-  try { copyFileSync(execSync('git rev-parse --git-path index', { encoding: 'utf8' }).trim(), idx) } catch {}
-  const env = { ...process.env, GIT_INDEX_FILE: idx }
-  try {
-    execSync('git add -A -- . ":!.state" ":!GAME-BUILDER.html"', { env, stdio: 'pipe' })
-    return execSync('git write-tree', { env, encoding: 'utf8' }).trim()
-  } finally { try { rmSync(idx, { force: true }) } catch {} }
-}
 function readShards() { try { return JSON.parse(readFileSync(SHARDS_FILE, 'utf8')) } catch { return null } }
 
-// --shards-green: exit 0 only when all four shards passed on this exact tree.
+// --shards-green: exit 0 only when a complete set of shards passed on this exact tree.
 // `wrap` calls it and refuses without it (Andrew, 2026-09-23: the full suite runs
 // once per chat, as the four shards, and wrap refuses until all four are green).
 if (process.argv.includes('--shards-green')) {
   const tree = treeHash()
-  const s = readShards()
-  const passed = s && s.tree === tree && s.total === SHARDS ? s.passed : []
-  const todo = Array.from({ length: SHARDS }, (_, i) => i + 1).filter((x) => !passed.includes(x))
-  console.log(todo.length
-    ? `${passed.length} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)} — run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}`
-    : `${SHARDS} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)}`)
-  process.exit(todo.length ? 1 : 0)
+  const st = shardStatus(readShards(), tree, SHARDS)
+  console.log(!st.green
+    ? `${st.passed.length} of ${st.n} shards passed on tree ${tree.slice(0, 10)} — run ${st.todo.map((x) => `node tools/gate.mjs --shard ${x}/${st.n}`).join(' · ')}`
+    : `${st.n} of ${st.n} shards passed on tree ${tree.slice(0, 10)}`)
+  process.exit(st.green ? 0 : 1)
 }
 
 const shardArg = process.argv.indexOf('--shard')
 if (shardArg !== -1) {
-  const m = String(process.argv[shardArg + 1] ?? '').match(/^(\d+)\/(\d+)$/)
-  const k = m ? Number(m[1]) : NaN
-  if (!m || Number(m[2]) !== SHARDS || k < 1 || k > SHARDS) {
-    console.error(`usage: node tools/gate.mjs --shard <k>/${SHARDS}   (k = 1..${SHARDS})`)
+  const which = parseShard(process.argv[shardArg + 1])
+  if (!which) {
+    console.error(`usage: node tools/gate.mjs --shard <k>/${SHARDS}   (k = 1..${SHARDS}; or <k>/8, k = 1..8, for smaller shards)`)
     process.exit(2)
   }
+  const { k, n } = which
   const tree = treeHash()
-  let s = readShards()
-  if (!s || s.tree !== tree || s.total !== SHARDS) s = { tree, total: SHARDS, passed: [] }
-  const r = runDiagnosticCommand(`npx vitest run --shard=${k}/${SHARDS} --reporter=dot`, `gate-shard-${k}-of-${SHARDS}`)
+  const r = runDiagnosticCommand(`npx vitest run --shard=${k}/${n} --reporter=dot`, `gate-shard-${k}-of-${n}`)
   const count = r.out.replace(/\x1b\[[0-9;]*m/g, '').match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
-  s.passed = s.passed.filter((x) => x !== k)
-  if (r.ok) s.passed.push(k)
-  s.passed.sort((a, b) => a - b)
+  const s = recordShard(readShards(), tree, k, n, r.ok)
   s.at = new Date().toISOString()
   writeFileSync(SHARDS_FILE, JSON.stringify(s, null, 1) + '\n')
-  const todo = Array.from({ length: SHARDS }, (_, i) => i + 1).filter((x) => !s.passed.includes(x))
-  console.log(`shard ${k}/${SHARDS}: ${r.ok ? 'PASS' : 'FAIL'}${count ? ` — ${count[1] ? count[1] + ' failed, ' : ''}${count[2]} passed` : ''}` +
+  const passed = s.sets[n]
+  const todo = Array.from({ length: n }, (_, i) => i + 1).filter((x) => !passed.includes(x))
+  console.log(`shard ${k}/${n}: ${r.ok ? 'PASS' : 'FAIL'}${count ? ` — ${count[1] ? count[1] + ' failed, ' : ''}${count[2]} passed` : ''}` +
     (r.ok ? '' : ` — ${r.note}`))
-  console.log(`tree ${tree.slice(0, 10)}: ${s.passed.length} of ${SHARDS} shards passed` +
-    (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${SHARDS}`).join(', ')}` : ' — the suite is green on this tree'))
+  console.log(`tree ${tree.slice(0, 10)}: ${passed.length} of ${n} shards passed` +
+    (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${n}`).join(', ')}` : ' — the suite is green on this tree'))
   process.exit(r.ok ? 0 : 1)
 }
 
-if (!id) { console.error(`usage: node tools/gate.mjs <item-id> [--land|--abandon "<why>"]  |  --shard <k>/${SHARDS}  |  --count`); process.exit(2) }
+if (!id) { console.error(`usage: node tools/gate.mjs <item-id> [--land|--abandon "<why>"] [--budget <s>] [--fresh]  |  --shard <k>/${SHARDS}  |  --count`); process.exit(2) }
+
+let BUDGET
+try { BUDGET = budgetFrom(process.argv) } catch (e) { console.error(e.message); process.exit(2) }
 
 /**
  * The Game Builder's data source: one JSON line per gate invocation, appended at
@@ -133,25 +142,17 @@ if (!item) { console.error(`no backlog item '${id}'`); process.exit(2) }
 
 const checks = []
 let ok = true
+// Checks are declared in order below and run afterwards, one at a time, by the loop at
+// the end ("run the checks") — so each can be recorded, replayed, or left to the next call.
+const CHECKS = []
 /** A hard gate. Failing one blocks the landing. */
-const check = (name, fn) => {
-  const r = fn()
-  checks.push({ name, ...r })
-  if (!r.skipPrint) console.log(`  ${r.ok ? 'PASS' : 'FAIL'}  ${name}${r.note ? '  — ' + r.note : ''}`)
-  if (!r.ok) ok = false
-  return r.ok
-}
+const check = (name, fn, o = {}) => { CHECKS.push({ name, kind: 'check', fn, ...o }) }
 /**
  * A flag, not a gate. It lands, but loudly and with the diff in the ledger.
  * Blocking outright would deadlock the loop every time a stale test legitimately
  * needs updating; landing silently is how a loop launders a failure into a pass.
  */
-const flag = (name, fn) => {
-  const r = fn()
-  checks.push({ name, ...r, warn: !r.ok })
-  console.log(`  ${r.ok ? 'PASS' : 'WARN'}  ${name}${r.note ? '  — ' + r.note : ''}`)
-  return r.ok
-}
+const flag = (name, fn) => { CHECKS.push({ name, kind: 'flag', fn }) }
 
 console.log(`\ngate: ${id}   [${MODE}]\n`)
 
@@ -175,6 +176,7 @@ if (MODE === 'abandon') {
   item.reason = reason
   writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
   appendFileSync(LEDGER, `\n## ${id} — ABANDONED\n${stampA}\n\n${reason}\n`)
+  try { const p = JSON.parse(readFileSync(PROGRESS, 'utf8')); writeFileSync(PROGRESS, serialize(clearResults(openProgress(p, p)))) } catch {}
   logRun('abandoned', { reason })
   console.log('\nABANDONED. Working tree is back to the last landed commit.\n')
   process.exit(1)
@@ -217,9 +219,10 @@ const touchedTests = () => sh('git status --porcelain --untracked-files=all').sp
 check("the item's own tests", () => {
   const files = touchedTests()
   if (!files.length) return { ok: false, note: 'no test file touched' }
-  const r = runDiagnosticCommand(`npx vitest run ${files.join(' ')} --reporter=dot`, `gate-item-tests-${id}`)
+  const r = vitestFiles("the item's own tests", files, (cmd) => runDiagnosticCommand(cmd, `gate-item-tests-${id}`))
+  if (!r) return { deferred: true }
   return { ok: r.ok, note: r.ok ? files.join(', ') : `${files.join(', ')} — ${r.note}` }
-})
+}, { split: true })
 
 check('gate 1 — the id appears in a real battle', () => {
   // Engine-only work skips this check instead of taking an exemption (Andrew,
@@ -273,7 +276,7 @@ check('control battles unchanged', () => {
   if (!now) return { ok: false, note: 'baseline probe produced no hashes' }
   let golden = null
   try { golden = readFileSync(GOLDEN, 'utf8').trim() } catch {}
-  if (!golden) { pendingGolden = now + '\n'; return { ok: true, note: 'will bless at commit (first run)' } }
+  if (!golden) return { ok: true, golden: now + '\n', note: 'will bless at commit (first run)' }
   if (golden === now) {
     // THE CONSEQUENCE CLAUSE (2026-08-20). An item that DECLARES it changes the
     // control battles and then changes nothing has not done its job — "the aura
@@ -302,8 +305,7 @@ check('control battles unchanged', () => {
     // failed the landing — and the next attempt then compared against the
     // polluted golden and read its own change as "no consequence". The bless now
     // happens only when the commit does.
-    pendingGolden = now + '\n'
-    return { ok: true, note: `will re-bless at commit — this item DECLARED it changes the control battles: ${detail}` }
+    return { ok: true, golden: now + '\n', note: `will re-bless at commit — this item DECLARED it changes the control battles: ${detail}` }
   }
   return { ok: false, note: `CHANGED: ${detail}. Something leaked. If intended, set "changesBaseline": true on the backlog item.` }
 })
@@ -330,10 +332,9 @@ check('content has a published source', () => {
   // added zero ids and lost its seal anyway).
   let last = 10
   try { last = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')).inventedCount ?? 10 } catch {}
-  if (MODE === 'land') {
-    try { const g = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')); g.inventedCount = n; writeFileSync('.state/gauntlet.json', JSON.stringify(g)) } catch { writeFileSync('.state/gauntlet.json', JSON.stringify({ landings: 0, inventedCount: n })) }
-  }
-  return { ok: true, warn: n > last, note: `${n} ids without a published source${n > last ? ` — ${n - last} NEW from THIS item, publish them` : n > 10 ? ` (${n - 10} awaiting publication from earlier items — see audit)` : ' (all grandfathered)'}` }
+  // The land-mode write of inventedCount is applied by the check loop (the `invented`
+  // effect), so a recorded result replays it exactly as a fresh one does.
+  return { ok: true, warn: n > last, invented: n, note: `${n} ids without a published source${n > last ? ` — ${n - last} NEW from THIS item, publish them` : n > 10 ? ` (${n - 10} awaiting publication from earlier items — see audit)` : ' (all grandfathered)'}` }
 })
 
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')
@@ -423,8 +424,7 @@ flag('naming — no banned words invented', () => {
   const newFiles = sh('git status --porcelain').split('\n').filter((l) => l.startsWith('??') || l.startsWith('A '))
     .map((l) => l.slice(3)).filter((f) => /(utils|helpers|misc|stuff)\.(ts|mjs)$/.test(f))
   for (const f of newFiles) smells.push(`${f} — a file named utils is where names go to be invented`)
-  if (smells.length) needsReview = true
-  return { ok: smells.length === 0, note: smells.length ? [...new Set(smells)].slice(0, 4).join(' | ') + ' — will land FLAGGED' : '' }
+  return { ok: smells.length === 0, review: smells.length > 0, note: smells.length ? [...new Set(smells)].slice(0, 4).join(' | ') + ' — will land FLAGGED' : '' }
 })
 
 // THE KILL-SWITCH CHECK (Iron Gauntlet). Gate 2's assertions are written by the
@@ -442,13 +442,91 @@ check('kill switch — the tests fail without the content', () => {
   // the shell could not find a program called CF_DISABLE_IDS. A kill-switch
   // gate that fails for that reason PASSES the item (it expects failure), so
   // the tautology check would have been silently inert on Windows.
-  const r = tryRun(`npx vitest run ${files.join(' ')} --reporter=dot`,
-    { env: { ...process.env, CF_DISABLE_IDS: ids.join(',') } })
+  const r = vitestFiles('kill switch — the tests fail without the content', files,
+    (cmd) => tryRun(cmd, { env: { ...process.env, CF_DISABLE_IDS: ids.join(',') } }))
+  if (!r) return { deferred: true }
   if (r.ok) {
     return { ok: false, note: `TAUTOLOGICAL — the touched tests PASS with ${ids.join(',')} disabled. They would have passed before the feature existed. Assert something the content actually causes.` }
   }
   return { ok: true, note: `tests fail without ${ids.join(',')} — they genuinely test it` }
-})
+}, { split: true })
+
+// ── run the checks: replay what passed on this tree, run the rest, honour the budget ──
+const tree = treeHash()
+let progress = (() => {
+  let raw = null
+  try { raw = JSON.parse(readFileSync(PROGRESS, 'utf8')) } catch {}
+  let golden = null
+  try { golden = readFileSync(GOLDEN, 'utf8').trim() } catch {}
+  return openProgress(raw, { id, tree, ctx: contextHash(item, backlog, golden) })
+})()
+if (process.argv.includes('--fresh')) progress = clearResults(progress)
+const saveProgress = () => { try { writeFileSync(PROGRESS, serialize(progress)) } catch { /* best-effort: a lost record only means re-running checks */ } }
+const recordedCount = () => CHECKS.filter((c) => recall(progress, c.name)).length
+if (recordedCount()) console.log(`  resuming: ${recordedCount()} of ${CHECKS.length} checks already passed on tree ${tree.slice(0, 10)}\n`)
+
+/**
+ * The vitest run a check makes over `files`. Unbudgeted (a terminal) it is the one
+ * command it always was. Under a budget it runs one command per file, each recorded
+ * on the tree, so a check longer than one Cowork call finishes across calls: the
+ * result is ok only when every file passed, and is the first failing file's result
+ * otherwise — the same verdict one command over every file gives. Returns null when
+ * the budget ran out before the files did.
+ */
+let ranFresh = 0
+function vitestFiles(checkName, files, run) {
+  if (BUDGET === Infinity) return run(`npx vitest run ${files.join(' ')} --reporter=dot`)
+  for (const f of files) {
+    const key = `${checkName} ▸ ${f}`
+    if (recall(progress, key)) continue
+    if (stopBefore({ elapsedMs: Date.now() - T0, budgetMs: BUDGET, estimateMs: progress.durations[key], ranFresh })) return null
+    const t = Date.now()
+    const r = run(`npx vitest run ${f} --reporter=dot`)
+    ranFresh++
+    progress = record(progress, key, { ok: r.ok }, Date.now() - t); saveProgress()
+    if (!r.ok) return r
+  }
+  return { ok: true, out: '' }
+}
+
+let stoppedAt = -1
+{
+  for (let i = 0; i < CHECKS.length; i++) {
+    const c = CHECKS[i]
+    const had = recall(progress, c.name)
+    if (!had && stopBefore({ elapsedMs: Date.now() - T0, budgetMs: BUDGET, estimateMs: c.split ? undefined : progress.durations[c.name], ranFresh })) { stoppedAt = i; break }
+    const t = Date.now()
+    const r = had ?? c.fn()
+    if (r.deferred) { stoppedAt = i; break }
+    const res = c.kind === 'flag' ? { ...r, warn: !r.ok } : r
+    checks.push({ name: c.name, ...res })
+    const tag = c.kind === 'flag' ? (r.ok ? 'PASS' : 'WARN') : (r.ok ? 'PASS' : 'FAIL')
+    if (c.kind === 'flag' || !r.skipPrint) console.log(`  ${tag}${had ? ' (recorded)' : ''}  ${c.name}${r.note ? '  — ' + r.note : ''}`)
+    if (c.kind === 'check' && !r.ok) ok = false
+    // effects — applied the same whether the result is fresh or recorded
+    if (r.golden) pendingGolden = r.golden
+    if (r.review) needsReview = true
+    if (MODE === 'land' && r.invented !== undefined) {
+      const n = r.invented
+      try { const g = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')); g.inventedCount = n; writeFileSync('.state/gauntlet.json', JSON.stringify(g)) } catch { writeFileSync('.state/gauntlet.json', JSON.stringify({ landings: 0, inventedCount: n })) }
+    }
+    if (!had) { ranFresh++; progress = record(progress, c.name, res, Date.now() - t); saveProgress() }
+  }
+}
+if (stoppedAt !== -1) {
+  const left = CHECKS.slice(stoppedAt).map((c) => {
+    const parts = Object.keys(progress.results).filter((k) => k.startsWith(`${c.name} ▸ `)).length
+    return parts ? `${c.name} (${parts} test file(s) recorded)` : c.name
+  })
+  if (ok) {
+    // Out of budget, nothing failed: no attempt, no run-log line, no landing.
+    console.log(`\nINCOMPLETE — ${recordedCount()} of ${CHECKS.length} checks recorded on tree ${tree.slice(0, 10)}; run the same command again` +
+      `\n  (${((Date.now() - T0) / 1000).toFixed(0)} s of a ${(BUDGET / 1000).toFixed(0)} s budget; still to run: ${left.join(', ')})\n`)
+    process.exit(3)
+  }
+  // A check already failed: the verdict is decided, so the run ends as a failed run does.
+  console.log(`  (not run — out of budget after a failure: ${left.join(', ')})`)
+}
 
 const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
@@ -480,6 +558,7 @@ if (MODE !== 'land') {
   }
 }
 if (pendingGolden) writeFileSync(GOLDEN, pendingGolden)
+progress = clearResults(progress); saveProgress()   // landed: this tree's record is spent
 sh('git add -A')
 sh(`git -c user.email=a@b -c user.name=combat-framework commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72)}`)}`)
 const sha = sh('git rev-parse --short HEAD').trim()
