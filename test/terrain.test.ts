@@ -293,7 +293,10 @@ describe('terrain.passable — a wall is a wall', () => {
     }
     expect(moves).toBeGreaterThan(500)
     expect(entered).toBe(0)
-  })
+  // LAW 10 — fix.terrain-test-timeouts 2026-09-26: a timeout is not an assertion. Measured
+  // alone in Cowork (2 cores): 3.9 s against the 5 s default; it timed out under load in
+  // shard 8/8. 30 s is headroom; the 60 battles and both assertions are unchanged.
+  }, 30_000)
 
   it('battles on the obstacle map still end — a wall must not strand the AI', () => {
     let capped = 0
@@ -303,7 +306,10 @@ describe('terrain.passable — a wall is a wall', () => {
       if (ctx.state.outcome === 'capped') capped++
     }
     expect(capped).toBe(0)
-  })
+  // LAW 10 — fix.terrain-test-timeouts 2026-09-26: a timeout is not an assertion. Measured
+  // alone in Cowork (2 cores): 3.2 s against the 5 s default; it timed out under load in
+  // shard 8/8. 30 s is headroom; the 60 battles and the assertion are unchanged.
+  }, 30_000)
 
   it('deployment refuses to place a unit inside a wall, loudly', () => {
     // board.deploy-edges (2026-09-04), Law 10 reason: the default deployment

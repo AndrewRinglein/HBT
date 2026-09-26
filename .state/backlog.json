@@ -4,7 +4,9 @@
   "kind": "fix",
   "shape": "plumbing",
   "spec": "Found landing tool.gate-fits-cowork 2026-09-26: shard 8/8 fails in Cowork only on time — test/terrain.test.ts 'no unit enters an obstacle across 60 real battles' (3.9 s alone) and 'battles on the obstacle map still end' (3.2 s alone) against vitest's 5 s default, at load ~4 on 2 cores. Give each an explicit 30 s timeout with a Law 10 comment; no assertion changes. Others seen timing out under heavier load (zombie-rot, disabled-action-validation, flight-budget, afflictions, weak, status, alpha-flip) get the same treatment when they are seen failing, each measured.",
-  "expect": "test/terrain.test.ts passes with its assertions unchanged; shard 8/8 completes in Cowork"
+  "expect": "test/terrain.test.ts passes with its assertions unchanged; shard 8/8 completes in Cowork",
+  "status": "done-needs-review",
+  "sha": "d70f39e"
  },
  {
   "id": "tool.gate-fits-cowork",

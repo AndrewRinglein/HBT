@@ -16948,3 +16948,51 @@ index 20e7eae..8b44f21 100644
    it('state survives a JSON round trip after a full battle', () => {
 ```
 </details>
+
+## fix.terrain-test-timeouts — LANDED `d70f39e` **NEEDS REVIEW**
+2026-09-26 20:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:11
+  PASS  typecheck
+  PASS  the item's own tests — test/terrain.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/terrain.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/terrain.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/terrain.test.ts b/test/terrain.test.ts
+index 2b8a5f0..243fe87 100644
+--- a/test/terrain.test.ts
++++ b/test/terrain.test.ts
+@@ -294,5 +294,8 @@ describe('terrain.passable — a wall is a wall', () => {
+     expect(moves).toBeGreaterThan(500)
+     expect(entered).toBe(0)
+-  })
++  // LAW 10 — fix.terrain-test-timeouts 2026-09-26: a timeout is not an assertion. Measured
++  // alone in Cowork (2 cores): 3.9 s against the 5 s default; it timed out under load in
++  // shard 8/8. 30 s is headroom; the 60 battles and both assertions are unchanged.
++  }, 30_000)
+ 
+   it('battles on the obstacle map still end — a wall must not strand the AI', () => {
+@@ -304,5 +307,8 @@ describe('terrain.passable — a wall is a wall', () => {
+     }
+     expect(capped).toBe(0)
+-  })
++  // LAW 10 — fix.terrain-test-timeouts 2026-09-26: a timeout is not an assertion. Measured
++  // alone in Cowork (2 cores): 3.2 s against the 5 s default; it timed out under load in
++  // shard 8/8. 30 s is headroom; the 60 battles and the assertion are unchanged.
++  }, 30_000)
+ 
+   it('deployment refuses to place a unit inside a wall, loudly', () => {
+```
+</details>
