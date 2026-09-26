@@ -1,16 +1,15 @@
-import { createBattle } from '../core/setup.js'
-import { runBattle } from '../core/battle.js'
-import { score, type Scoreboard } from '../sim/score.js'
+import type { Scoreboard } from '../sim/score.js'
+import { runSweep } from '../sim/sweep.js'
+import { renderCoverage } from '../sim/coverage.js'
 
-const N = Number(process.argv[2] ?? 100)
-const boards: Scoreboard[] = []
+// `npm run sweep -- <n> --coverage` adds the coverage report (sim.coverage): what the
+// fielded roster could reach and this sweep never used. npm swallows a bare
+// `--coverage` placed before `--` into npm_config_coverage, so both spellings count.
+const N = Number(process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 100)
+const wantCoverage = process.argv.includes('--coverage') || process.env['npm_config_coverage'] === 'true'
 const t0 = Date.now()
-
-for (let i = 0; i < N; i++) {
-  const ctx = createBattle({ replicate: i, strict: true })
-  runBattle(ctx)
-  boards.push(score(ctx.events))
-}
+const run = runSweep(N, { coverage: wantCoverage })
+const boards: Scoreboard[] = run.boards
 const ms = Date.now() - t0
 
 const n = boards.length
@@ -63,3 +62,4 @@ const outTurns = boards.map(b => b.heroStaminaOutTurn).filter((x): x is number =
 console.log(`\nSTAMINA  a hero began an activation at 0 in ${pct(outTurns.length)} of battles` +
   (outTurns.length ? `, first at turn ${(outTurns.reduce((a, c) => a + c, 0) / outTurns.length).toFixed(1)} on average` : ''))
 console.log(`IDLE     ${(avg(b => b.idleActivations) / avg(b => b.totalActivations) * 100).toFixed(0)}% of activations did nothing\n`)
+if (run.coverage) console.log(renderCoverage(run.coverage) + '\n')

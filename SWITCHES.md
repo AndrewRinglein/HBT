@@ -1132,3 +1132,17 @@ config". `cfg.switches.endOfPhaseLadder` names the built rungs (`END_OF_PHASE_RU
 |---|---|---|---|---|
 | `endOfPhaseLadder` | In what order do the End of Phase rungs run, and may a sweep drop or repeat one? | **`['bleedOut', 'staminaRegen', 'victoryCheck']`. A ladder must name every built rung exactly once; anything else is refused at the first End of Phase and on restore (Law 9).** Bleed-out stays hero-ladder only wherever it sits. | The document's order and the order `battle.ts` always ran — control battles byte-identical. Reordering is the sweep axis the document asks for; dropping a rung would be a different rule, not an order. | provisional — 2026-09-25 |
 | `phaseRungLog` | Does each rung log a line naming itself? | **Off. On, every rung that runs emits `phase.rung` `{side, rung}` before it acts.** | The item asks that "the log names each rung"; always-on would add a line to every battle and move the control battles and every frozen cursor fixture for a log-only change. A sweep that reorders turns it on. | provisional — 2026-09-25 |
+
+## Sweep coverage report — defaults taken building sim.coverage (2026-09-25)
+
+`src/sim/coverage.ts` reads a finished log and splits what the fielded roster could reach into
+exercised and never-used; `src/sim/sweep.ts` (`runSweep`) merges it across a sweep and
+`npm run sweep -- <n> --coverage` prints it. A measurement, not a rule — nothing in `src/core`,
+`src/content` or `src/ai` imports `src/sim`. Probes: `test/coverage-sweep.test.ts`. (`../GBH/SWITCHES.md`,
+where a tooling switch belongs, is not on this machine's mount; recorded here instead.)
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `sweepCoverageReport` | Does every sweep print the coverage report, or only on request? | **On request: `--coverage` (or npm's `npm_config_coverage`). `runSweep` returns `coverage: null` without it.** | The battles are byte-identical either way (asserted); opt-in keeps the sweep's existing output unchanged for every reader that parses it. | provisional — 2026-09-25 |
+| `coverageReachableScope` | What counts as REACHABLE, and what as EXERCISED? | **Reachable: registered actions and triggers held by units on the field at battle end (arrivals included; a granted id with no registry row — the kill-switch seam — is not reachable), plus terrain in the map census. Exercised: any log line names it as `causeId`, `source`, `statusId`, `actionId`, `attackId`, `abilityId`, `moveId`, or moved-onto terrain; a trigger that rolled and did not fire counts. Across a sweep: union of reachable, union of exercised.** | The roster actually fielded, not the whole registry — "the Codex has 300 powers and you used 2" says nothing about the run. One battle blind is normal; the report names what NO battle touched. | provisional — 2026-09-25 |
+| `coverageMageBoltName` | The item's expect names `power.mage.bolt`, which left the registry on 2026-09-02 (test.fixture-migration). What stands in? | **The standard mage's staff content (`attack.lightning-staff.*`, `power.lightning-staff.storm`): the test asserts every one is reachable and classified, and the standard 20-battle sweep names `power.lightning-staff.storm` as never used.** | "power.mage.bolt-class" reads as the mage's bolt kit; the lightning staff is what the standard mage carries today. | provisional — 2026-09-25 |

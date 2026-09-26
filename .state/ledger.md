@@ -16549,3 +16549,21 @@ Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine
 2026-09-26 00:46
 
 Closed on Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): written for the old engine-side playback build (viewer.build), which is superseded by the viewer/ package; the viewer prepares its own art into viewer/generated/art/.
+
+## sim.coverage — LANDED `d8af46a`
+2026-09-26 03:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1148 · ../CODEX.md:1832
+  PASS  typecheck
+  PASS  the item's own tests — test/coverage-sweep.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/coverage-sweep.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

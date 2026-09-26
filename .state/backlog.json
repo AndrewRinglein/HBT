@@ -1972,7 +1972,9 @@
   "expect": "a run over the standard battle names power.mage.bolt-class content that was reachable and never used, reports a reachable-coverage percent, and reports zero unused when every reachable id fired; the battle itself is byte-identical with the report on or off",
   "changesBaseline": false,
   "needs": [],
-  "note": "Gate 1: coverage reads a finished log and emits nothing into one, so probe.mts cannot see it. Expect unreachable with a written reason, or a probeId naming content the report must classify."
+  "note": "Gate 1: coverage reads a finished log and emits nothing into one, so probe.mts cannot see it. Expect unreachable with a written reason, or a probeId naming content the report must classify.",
+  "status": "done",
+  "sha": "d8af46a"
  },
  {
   "id": "fix.cohort-drift",
