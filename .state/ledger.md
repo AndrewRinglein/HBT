@@ -16524,3 +16524,8 @@ Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine
 2026-09-26 00:46
 
 Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. Persistent ground (burning, poisoned, frost, weak, darkness) is drawn as the painted ground layers in viewer/src/board.js (2026-09-03, EVENTS-FOR-THE-VIEWER section 6).
+
+## viewer.panel — ABANDONED
+2026-09-26 00:46
+
+Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. The panel is viewer/src/panel.js and subject.js.
