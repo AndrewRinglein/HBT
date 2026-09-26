@@ -3036,7 +3036,9 @@
    "item.longsword.masterwork",
    "item.ancient-tome.cruel"
   ],
-  "note": "Filed from the kingdom session 2026-09-03."
+  "note": "Filed from the kingdom session 2026-09-03.",
+  "status": "done-needs-review",
+  "sha": "d1d495b"
  },
  {
   "id": "fix.post-end-ladder",

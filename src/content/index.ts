@@ -4,7 +4,7 @@
 
 import type { AbilityDef, ActionDef, AttackDef, UnitDef } from '../core/types.js'
 import { disabledIds, omitDisabled, stripDisabledTriggers } from './disable.js'
-import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
+import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packDerivedItems, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
 import { MOVES } from './moves.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -227,6 +227,12 @@ const AUTHORED_ENCHANTED = packEnchanted(AUTHORED_ATTACKS, AUTHORED_ABILITIES, A
 for (const k of Object.keys(AUTHORED_ENCHANTED)) {
   if (k in AUTHORED_ITEMS) throw new Error(`enchanted row '${k}' collides with a Codex item — one owner only`)
 }
+// The Forge's tier-2 rows (pack.derived-rows, 2026-09-25; GEAR-DESIGN.md §3):
+// masterwork and enchanted, derived by the kingdom's rule — one owner per id.
+const AUTHORED_DERIVED = packDerivedItems(AUTHORED_ITEMS, AUTHORED_ATTACKS, AUTHORED_ABILITIES, AUTHORED_BURSTS)
+for (const k of Object.keys(AUTHORED_DERIVED)) {
+  if (k in AUTHORED_ITEMS || k in AUTHORED_ENCHANTED) throw new Error(`derived row '${k}' collides with a Codex item or a tier-3 row — one owner only`)
+}
 export const ATTACKS = omitDisabled(AUTHORED_ATTACKS)
 export const ABILITIES = omitDisabled(AUTHORED_ABILITIES)
 export const BURSTS = omitDisabled(AUTHORED_BURSTS)
@@ -240,7 +246,8 @@ export const CRIT_CHART = packCritChart()
 // (CF_DISABLE_IDS) reaches an item id like any other.
 // The enchanted tier-3 rows (hero assembly, 2026-09-03; ITEMS-PLAN.md §6)
 // join the Codex items — one registry, one owner per id.
-export const ITEMS = omitDisabled({ ...AUTHORED_ITEMS, ...AUTHORED_ENCHANTED })
+// The Forge's tier-2 rows join them (pack.derived-rows, 2026-09-25).
+export const ITEMS = omitDisabled({ ...AUTHORED_ITEMS, ...AUTHORED_ENCHANTED, ...AUTHORED_DERIVED })
 // The badge registry — badge.mechanism (2026-09-04): the Codex's rows and the test receptacle's, one owner per id, through the kill-switch seam.
 for (const k of Object.keys(packTestBadges())) if (k in packBadges()) throw new Error(`badge '${k}' exists in the test receptacle AND the pack — one owner only`)
 export const BADGES = omitDisabled({ ...packBadges(), ...packTestBadges() })

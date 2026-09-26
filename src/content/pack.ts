@@ -474,6 +474,39 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
   return raw
 }
 
+/**
+ * The Forge's tier-2 rows — pack.derived-rows (2026-09-25; GEAR-DESIGN.md §3).
+ * A masterwork row (a tier-1 two-hander or armor, +1 Max Stamina) and an
+ * enchanted row (a tier-1 base x a buyable enchant), derived by
+ * content/mkenginepack.mjs by the kingdom's rule (kingdom/tools/mk-items.mjs),
+ * never hand-edited. Validated like the tier-3 rows, and more: every row is
+ * tier 2 and names a tier-1 pack item as its base; an enchanted row names an
+ * enchant.* id, a masterwork row none. A weapon enchant's numbers ride the
+ * copied attack rows the row grants (GEAR-DESIGN.md §3, ruled 2026-09-05) —
+ * those are ordinary pack attacks, so the grant check below covers them.
+ */
+export function packDerivedItems(items: Readonly<Record<string, ItemDef>>, attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
+  const raw = (UNIT_PACK as unknown as { derivedItems?: Readonly<Record<string, ItemDef & { base: string; enchant?: string }>> }).derivedItems ?? {}
+  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost']
+  for (const [k, it] of Object.entries(raw)) {
+    if (k !== it.id || !k.startsWith('item.')) throw new Error(`derived items: bad key '${k}'`)
+    if (it.tier !== 2) throw new Error(`derived items: '${k}' is tier ${String(it.tier)} — a Forge row is tier 2`)
+    const base = typeof it.base === 'string' ? items[it.base] : undefined
+    if (!base || base.tier !== 1) throw new Error(`derived items: '${k}' names base '${String(it.base)}', which is not a tier-1 pack item`)
+    if (it.enchant !== undefined && (typeof it.enchant !== 'string' || !it.enchant.startsWith('enchant.'))) throw new Error(`derived items: '${k}' names enchant '${String(it.enchant)}'`)
+    if (it.itemClass !== base.itemClass || it.hands !== base.hands || it.slots !== base.slots) throw new Error(`derived items: '${k}' does not keep its base's physical facts`)
+    validateNamedResists(it.statModifiers, k)
+    for (const [s, v] of Object.entries(it.statModifiers)) {
+      if (!STATS.includes(s) || typeof v !== 'number') throw new Error(`derived items: '${k}' modifies '${s}' — not an engine stat`)
+    }
+    for (const a of it.grants) if (!attacks[a] && !bursts[a]) throw new Error(`derived items: '${k}' grants '${a}', not a pack attack`)
+    for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`derived items: '${k}' grants power '${a}', not a pack ability`)
+    for (const t of it.triggers) { validateTrigger(t); if (t.source !== k && t.source !== it.base) throw new Error(`derived items: '${k}' carries a trigger sourced '${t.source}'`) }
+    validateVsTarget(it.vsTarget, `derived items: '${k}'`)
+  }
+  return raw
+}
+
 /** The encounters — encounter.runner (2026-09-03). Validated loudly: every unit named must be in the pack. */
 export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: Readonly<Record<string, EncounterDef>>): Readonly<Record<string, EncounterDef>> {
   const data = UNIT_PACK as unknown as { encounters?: Readonly<Record<string, EncounterDef>>; test?: { encounters?: Readonly<Record<string, EncounterDef>> } }

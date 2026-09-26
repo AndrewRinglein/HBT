@@ -16585,3 +16585,42 @@ Closed on Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items c
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## pack.derived-rows — LANDED `d1d495b` **NEEDS REVIEW**
+2026-09-26 03:57
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../GEAR-IMPLEMENTATION.md:328 · ../DOCS.md:32
+  PASS  typecheck
+  PASS  the item's own tests — test/pack-items.test.ts, test/pack-derived-rows.test.ts
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/pack-items.test.ts, test/pack-derived-rows.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/pack-items.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 44 ids without a published source (34 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/pack-items.test.ts b/test/pack-items.test.ts
+index 3c12a41..f2e5031 100644
+--- a/test/pack-items.test.ts
++++ b/test/pack-items.test.ts
+@@ -47,5 +47,9 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+     // enchanted rows (ITEMS-PLAN.md §6, base + enchant); the Codex rows are
+     // exactly the ones with no `enchant` provenance. Agreement, not a count.
+-    const codexOnly = Object.values(ITEMS).filter((it) => !(it as { enchant?: string }).enchant)
++    // LAW 10 — 2026-09-25 (pack.derived-rows): the Forge's masterwork rows are derived
++    // (GEAR-DESIGN.md §3) and name a `base` but no enchant, so "no derivation provenance"
++    // now reads both fields. The claim — the Codex rows are exactly the underived ones,
++    // every one present with its facts verbatim — is unchanged; no assertion moved.
++    const codexOnly = Object.values(ITEMS).filter((it) => !(it as { enchant?: string }).enchant && !(it as { base?: string }).base)
+     expect(codexOnly.length).toBe(codex.size)
+     for (const [id, c] of codex) {
+```
+</details>

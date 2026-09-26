@@ -4819,6 +4819,2554 @@ export const UNIT_PACK = {
       "stat": "spirit",
       "reach": 3,
       "staminaCost": 3
+    },
+    "attack.greatsword.hew.heavy": {
+      "id": "attack.greatsword.hew.heavy",
+      "name": "Hew",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.greatsword.hew.keen": {
+      "id": "attack.greatsword.hew.keen",
+      "name": "Hew",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 6
+    },
+    "attack.greatsword.hew.cruel": {
+      "id": "attack.greatsword.hew.cruel",
+      "name": "Hew",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.war-axe.chop.heavy": {
+      "id": "attack.war-axe.chop.heavy",
+      "name": "Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.war-axe.hack.heavy": {
+      "id": "attack.war-axe.hack.heavy",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5,
+      "accuracy": -5
+    },
+    "attack.war-axe.chop.keen": {
+      "id": "attack.war-axe.chop.keen",
+      "name": "Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.war-axe.hack.keen": {
+      "id": "attack.war-axe.hack.keen",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5,
+      "accuracy": 1
+    },
+    "attack.war-axe.chop.cruel": {
+      "id": "attack.war-axe.chop.cruel",
+      "name": "Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.war-axe.hack.cruel": {
+      "id": "attack.war-axe.hack.cruel",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 9,
+      "accuracy": -2
+    },
+    "attack.iron-mace.swing.heavy": {
+      "impact": 2,
+      "id": "attack.iron-mace.swing.heavy",
+      "name": "Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.iron-mace.crush.heavy": {
+      "impact": 2,
+      "id": "attack.iron-mace.crush.heavy",
+      "name": "Crush",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.iron-mace.swing.keen": {
+      "impact": 2,
+      "id": "attack.iron-mace.swing.keen",
+      "name": "Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.iron-mace.crush.keen": {
+      "impact": 2,
+      "id": "attack.iron-mace.crush.keen",
+      "name": "Crush",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 6
+    },
+    "attack.iron-mace.swing.cruel": {
+      "impact": 2,
+      "id": "attack.iron-mace.swing.cruel",
+      "name": "Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.iron-mace.crush.cruel": {
+      "impact": 2,
+      "id": "attack.iron-mace.crush.cruel",
+      "name": "Crush",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.war-hammer.smash.heavy": {
+      "impact": 2,
+      "id": "attack.war-hammer.smash.heavy",
+      "name": "Smash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -5
+    },
+    "attack.war-hammer.skullsplitter.heavy": {
+      "impact": 2,
+      "id": "attack.war-hammer.skullsplitter.heavy",
+      "name": "Skullsplitter",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 3,
+      "crit": 3,
+      "accuracy": -10
+    },
+    "attack.war-hammer.smash.keen": {
+      "impact": 2,
+      "id": "attack.war-hammer.smash.keen",
+      "name": "Smash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 1
+    },
+    "attack.war-hammer.skullsplitter.keen": {
+      "impact": 2,
+      "id": "attack.war-hammer.skullsplitter.keen",
+      "name": "Skullsplitter",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 3,
+      "crit": 3,
+      "accuracy": -4
+    },
+    "attack.war-hammer.smash.cruel": {
+      "impact": 2,
+      "id": "attack.war-hammer.smash.cruel",
+      "name": "Smash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -2,
+      "crit": 4
+    },
+    "attack.war-hammer.skullsplitter.cruel": {
+      "impact": 2,
+      "id": "attack.war-hammer.skullsplitter.cruel",
+      "name": "Skullsplitter",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 3,
+      "crit": 7,
+      "accuracy": -7
+    },
+    "attack.hunting-spear.thrust.heavy": {
+      "id": "attack.hunting-spear.thrust.heavy",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 5
+    },
+    "attack.hunting-spear.hurl.heavy": {
+      "id": "attack.hunting-spear.hurl.heavy",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.hunting-spear.thrust.keen": {
+      "id": "attack.hunting-spear.thrust.keen",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 11
+    },
+    "attack.hunting-spear.hurl.keen": {
+      "id": "attack.hunting-spear.hurl.keen",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 6
+    },
+    "attack.hunting-spear.thrust.cruel": {
+      "id": "attack.hunting-spear.thrust.cruel",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.hunting-spear.hurl.cruel": {
+      "id": "attack.hunting-spear.hurl.cruel",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.glaive.sweep.heavy": {
+      "id": "attack.glaive.sweep.heavy",
+      "name": "Sweep",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -5
+    },
+    "attack.glaive.impale.heavy": {
+      "id": "attack.glaive.impale.heavy",
+      "name": "Impale",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 5
+    },
+    "attack.glaive.sweep.keen": {
+      "id": "attack.glaive.sweep.keen",
+      "name": "Sweep",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 1
+    },
+    "attack.glaive.impale.keen": {
+      "id": "attack.glaive.impale.keen",
+      "name": "Impale",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 11
+    },
+    "attack.glaive.sweep.cruel": {
+      "id": "attack.glaive.sweep.cruel",
+      "name": "Sweep",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -2,
+      "crit": 4
+    },
+    "attack.glaive.impale.cruel": {
+      "id": "attack.glaive.impale.cruel",
+      "name": "Impale",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 7,
+      "accuracy": 8
+    },
+    "attack.crossbow.bolt.heavy": {
+      "id": "attack.crossbow.bolt.heavy",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": 5
+    },
+    "attack.crossbow.punch-through.heavy": {
+      "id": "attack.crossbow.punch-through.heavy",
+      "name": "Punch Through",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 4,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 3,
+      "crit": 3
+    },
+    "attack.crossbow.bolt.keen": {
+      "id": "attack.crossbow.bolt.keen",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": 11
+    },
+    "attack.crossbow.punch-through.keen": {
+      "id": "attack.crossbow.punch-through.keen",
+      "name": "Punch Through",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 3,
+      "crit": 3,
+      "accuracy": 6
+    },
+    "attack.crossbow.bolt.cruel": {
+      "id": "attack.crossbow.bolt.cruel",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.crossbow.punch-through.cruel": {
+      "id": "attack.crossbow.punch-through.cruel",
+      "name": "Punch Through",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 3,
+      "crit": 7,
+      "accuracy": 3
+    },
+    "attack.hand-crossbow.snapshot.heavy": {
+      "id": "attack.hand-crossbow.snapshot.heavy",
+      "name": "Snapshot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 5
+    },
+    "attack.hand-crossbow.loaded-bolt.heavy": {
+      "id": "attack.hand-crossbow.loaded-bolt.heavy",
+      "name": "Loaded Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.hand-crossbow.snapshot.keen": {
+      "id": "attack.hand-crossbow.snapshot.keen",
+      "name": "Snapshot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 11
+    },
+    "attack.hand-crossbow.loaded-bolt.keen": {
+      "id": "attack.hand-crossbow.loaded-bolt.keen",
+      "name": "Loaded Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 6
+    },
+    "attack.hand-crossbow.snapshot.cruel": {
+      "id": "attack.hand-crossbow.snapshot.cruel",
+      "name": "Snapshot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.hand-crossbow.loaded-bolt.cruel": {
+      "id": "attack.hand-crossbow.loaded-bolt.cruel",
+      "name": "Loaded Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 7,
+      "accuracy": 3
+    },
+    "attack.rapier.thrust.heavy": {
+      "id": "attack.rapier.thrust.heavy",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 3,
+      "accuracy": 10
+    },
+    "attack.rapier.pierce.heavy": {
+      "id": "attack.rapier.pierce.heavy",
+      "name": "Pierce",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5,
+      "accuracy": 5
+    },
+    "attack.rapier.thrust.keen": {
+      "id": "attack.rapier.thrust.keen",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 3,
+      "accuracy": 16
+    },
+    "attack.rapier.pierce.keen": {
+      "id": "attack.rapier.pierce.keen",
+      "name": "Pierce",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5,
+      "accuracy": 11
+    },
+    "attack.rapier.thrust.cruel": {
+      "id": "attack.rapier.thrust.cruel",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 7,
+      "accuracy": 13
+    },
+    "attack.rapier.pierce.cruel": {
+      "id": "attack.rapier.pierce.cruel",
+      "name": "Pierce",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 9,
+      "accuracy": 8
+    },
+    "attack.raiders-cutlass.slash.heavy": {
+      "id": "attack.raiders-cutlass.slash.heavy",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.raiders-cutlass.boarding-swing.heavy": {
+      "id": "attack.raiders-cutlass.boarding-swing.heavy",
+      "name": "Boarding Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": -5
+    },
+    "attack.raiders-cutlass.slash.keen": {
+      "id": "attack.raiders-cutlass.slash.keen",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.raiders-cutlass.boarding-swing.keen": {
+      "id": "attack.raiders-cutlass.boarding-swing.keen",
+      "name": "Boarding Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 1
+    },
+    "attack.raiders-cutlass.slash.cruel": {
+      "id": "attack.raiders-cutlass.slash.cruel",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.raiders-cutlass.boarding-swing.cruel": {
+      "id": "attack.raiders-cutlass.boarding-swing.cruel",
+      "name": "Boarding Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 7,
+      "accuracy": -2
+    },
+    "attack.throwing-knives.flick.heavy": {
+      "id": "attack.throwing-knives.flick.heavy",
+      "name": "Flick",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "accuracy": 5
+    },
+    "attack.throwing-knives.fan.heavy": {
+      "id": "attack.throwing-knives.fan.heavy",
+      "name": "Fan",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2
+    },
+    "attack.throwing-knives.flick.keen": {
+      "id": "attack.throwing-knives.flick.keen",
+      "name": "Flick",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "accuracy": 11
+    },
+    "attack.throwing-knives.fan.keen": {
+      "id": "attack.throwing-knives.fan.keen",
+      "name": "Fan",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 2,
+      "accuracy": 1,
+      "hits": 2
+    },
+    "attack.throwing-knives.flick.cruel": {
+      "id": "attack.throwing-knives.flick.cruel",
+      "name": "Flick",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.throwing-knives.fan.cruel": {
+      "id": "attack.throwing-knives.fan.cruel",
+      "name": "Fan",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 2,
+      "accuracy": -2,
+      "hits": 2,
+      "crit": 4
+    },
+    "attack.poison-stars.star.heavy": {
+      "id": "attack.poison-stars.star.heavy",
+      "name": "Star",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.poison-stars.venom-spread.heavy": {
+      "id": "attack.poison-stars.venom-spread.heavy",
+      "name": "Venom Spread",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2
+    },
+    "attack.poison-stars.star.keen": {
+      "id": "attack.poison-stars.star.keen",
+      "name": "Star",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.poison-stars.venom-spread.keen": {
+      "id": "attack.poison-stars.venom-spread.keen",
+      "name": "Venom Spread",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 1,
+      "hits": 2
+    },
+    "attack.poison-stars.star.cruel": {
+      "id": "attack.poison-stars.star.cruel",
+      "name": "Star",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.poison-stars.venom-spread.cruel": {
+      "id": "attack.poison-stars.venom-spread.cruel",
+      "name": "Venom Spread",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -2,
+      "hits": 2,
+      "crit": 4
+    },
+    "attack.obsidian-fang-dagger.fang.heavy": {
+      "id": "attack.obsidian-fang-dagger.fang.heavy",
+      "name": "Fang",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 5
+    },
+    "attack.obsidian-fang-dagger.gut.heavy": {
+      "id": "attack.obsidian-fang-dagger.gut.heavy",
+      "name": "Gut",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 10,
+      "accuracy": 5
+    },
+    "attack.obsidian-fang-dagger.fang.keen": {
+      "id": "attack.obsidian-fang-dagger.fang.keen",
+      "name": "Fang",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 11
+    },
+    "attack.obsidian-fang-dagger.gut.keen": {
+      "id": "attack.obsidian-fang-dagger.gut.keen",
+      "name": "Gut",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 10,
+      "accuracy": 11
+    },
+    "attack.obsidian-fang-dagger.fang.cruel": {
+      "id": "attack.obsidian-fang-dagger.fang.cruel",
+      "name": "Fang",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.obsidian-fang-dagger.gut.cruel": {
+      "id": "attack.obsidian-fang-dagger.gut.cruel",
+      "name": "Gut",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 14,
+      "accuracy": 8
+    },
+    "attack.duel-runeblades.twin-cut.heavy": {
+      "id": "attack.duel-runeblades.twin-cut.heavy",
+      "name": "Twin Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2
+    },
+    "attack.duel-runeblades.rune-cross.heavy": {
+      "id": "attack.duel-runeblades.rune-cross.heavy",
+      "name": "Rune Cross",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 5
+    },
+    "attack.duel-runeblades.twin-cut.keen": {
+      "id": "attack.duel-runeblades.twin-cut.keen",
+      "name": "Twin Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2,
+      "accuracy": 6
+    },
+    "attack.duel-runeblades.rune-cross.keen": {
+      "id": "attack.duel-runeblades.rune-cross.keen",
+      "name": "Rune Cross",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 11
+    },
+    "attack.duel-runeblades.twin-cut.cruel": {
+      "id": "attack.duel-runeblades.twin-cut.cruel",
+      "name": "Twin Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.duel-runeblades.rune-cross.cruel": {
+      "id": "attack.duel-runeblades.rune-cross.cruel",
+      "name": "Rune Cross",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 7,
+      "accuracy": 8
+    },
+    "attack.shepherds-sling.stone.heavy": {
+      "id": "attack.shepherds-sling.stone.heavy",
+      "name": "Stone",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.shepherds-sling.whirl.heavy": {
+      "id": "attack.shepherds-sling.whirl.heavy",
+      "name": "Whirl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": -5
+    },
+    "attack.shepherds-sling.stone.keen": {
+      "id": "attack.shepherds-sling.stone.keen",
+      "name": "Stone",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.shepherds-sling.whirl.keen": {
+      "id": "attack.shepherds-sling.whirl.keen",
+      "name": "Whirl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 1
+    },
+    "attack.shepherds-sling.stone.cruel": {
+      "id": "attack.shepherds-sling.stone.cruel",
+      "name": "Stone",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.shepherds-sling.whirl.cruel": {
+      "id": "attack.shepherds-sling.whirl.cruel",
+      "name": "Whirl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "crit": 7,
+      "accuracy": -2
+    },
+    "attack.crippling-whip.lash.heavy": {
+      "id": "attack.crippling-whip.lash.heavy",
+      "name": "Lash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.crippling-whip.hamstring.heavy": {
+      "id": "attack.crippling-whip.hamstring.heavy",
+      "name": "Hamstring",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -5
+    },
+    "attack.crippling-whip.lash.keen": {
+      "id": "attack.crippling-whip.lash.keen",
+      "name": "Lash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.crippling-whip.hamstring.keen": {
+      "id": "attack.crippling-whip.hamstring.keen",
+      "name": "Hamstring",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 1
+    },
+    "attack.crippling-whip.lash.cruel": {
+      "id": "attack.crippling-whip.lash.cruel",
+      "name": "Lash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.crippling-whip.hamstring.cruel": {
+      "id": "attack.crippling-whip.hamstring.cruel",
+      "name": "Hamstring",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -2,
+      "crit": 4
+    },
+    "attack.iron-claws.rake.heavy": {
+      "id": "attack.iron-claws.rake.heavy",
+      "name": "Rake",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 5,
+      "hits": 2
+    },
+    "attack.iron-claws.eviscerate.heavy": {
+      "id": "attack.iron-claws.eviscerate.heavy",
+      "name": "Eviscerate",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.iron-claws.rake.keen": {
+      "id": "attack.iron-claws.rake.keen",
+      "name": "Rake",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 11,
+      "hits": 2
+    },
+    "attack.iron-claws.eviscerate.keen": {
+      "id": "attack.iron-claws.eviscerate.keen",
+      "name": "Eviscerate",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5,
+      "accuracy": 6
+    },
+    "attack.iron-claws.rake.cruel": {
+      "id": "attack.iron-claws.rake.cruel",
+      "name": "Rake",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 8,
+      "hits": 2,
+      "crit": 4
+    },
+    "attack.iron-claws.eviscerate.cruel": {
+      "id": "attack.iron-claws.eviscerate.cruel",
+      "name": "Eviscerate",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 9,
+      "accuracy": 3
+    },
+    "attack.grappling-harpoon.brace.heavy": {
+      "id": "attack.grappling-harpoon.brace.heavy",
+      "name": "Brace",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 5
+    },
+    "attack.grappling-harpoon.hurl.heavy": {
+      "id": "attack.grappling-harpoon.hurl.heavy",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.grappling-harpoon.brace.keen": {
+      "id": "attack.grappling-harpoon.brace.keen",
+      "name": "Brace",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 11
+    },
+    "attack.grappling-harpoon.hurl.keen": {
+      "id": "attack.grappling-harpoon.hurl.keen",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 6
+    },
+    "attack.grappling-harpoon.brace.cruel": {
+      "id": "attack.grappling-harpoon.brace.cruel",
+      "name": "Brace",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.grappling-harpoon.hurl.cruel": {
+      "id": "attack.grappling-harpoon.hurl.cruel",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.apprentice-wand.spark.heavy": {
+      "id": "attack.apprentice-wand.spark.heavy",
+      "name": "Spark",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 0,
+      "accuracy": 5
+    },
+    "attack.apprentice-wand.surge.heavy": {
+      "id": "attack.apprentice-wand.surge.heavy",
+      "name": "Surge",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.apprentice-wand.spark.keen": {
+      "id": "attack.apprentice-wand.spark.keen",
+      "name": "Spark",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 0,
+      "accuracy": 11
+    },
+    "attack.apprentice-wand.surge.keen": {
+      "id": "attack.apprentice-wand.surge.keen",
+      "name": "Surge",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 6
+    },
+    "attack.apprentice-wand.spark.cruel": {
+      "id": "attack.apprentice-wand.spark.cruel",
+      "name": "Spark",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 0,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.apprentice-wand.surge.cruel": {
+      "id": "attack.apprentice-wand.surge.cruel",
+      "name": "Surge",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 7,
+      "accuracy": 3
+    },
+    "attack.ancient-tome.read-the-page.heavy": {
+      "id": "attack.ancient-tome.read-the-page.heavy",
+      "name": "Read the Page",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.ancient-tome.long-passage.heavy": {
+      "id": "attack.ancient-tome.long-passage.heavy",
+      "name": "Long Passage",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 3,
+      "stat": "magic",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -5
+    },
+    "attack.ancient-tome.read-the-page.keen": {
+      "id": "attack.ancient-tome.read-the-page.keen",
+      "name": "Read the Page",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.ancient-tome.long-passage.keen": {
+      "id": "attack.ancient-tome.long-passage.keen",
+      "name": "Long Passage",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "magic",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 1
+    },
+    "attack.ancient-tome.read-the-page.cruel": {
+      "id": "attack.ancient-tome.read-the-page.cruel",
+      "name": "Read the Page",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.ancient-tome.long-passage.cruel": {
+      "id": "attack.ancient-tome.long-passage.cruel",
+      "name": "Long Passage",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "magic",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -2,
+      "crit": 4
+    },
+    "attack.holy-texts.verse.heavy": {
+      "id": "attack.holy-texts.verse.heavy",
+      "name": "Verse",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.holy-texts.verse.keen": {
+      "id": "attack.holy-texts.verse.keen",
+      "name": "Verse",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.holy-texts.verse.cruel": {
+      "id": "attack.holy-texts.verse.cruel",
+      "name": "Verse",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.bane-blade.strike.heavy": {
+      "id": "attack.bane-blade.strike.heavy",
+      "name": "Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 5
+    },
+    "attack.bane-blade.banishing-blow.heavy": {
+      "secondaryDamage": [
+        {
+          "id": "critical-rider",
+          "when": "crit",
+          "damageType": "physical",
+          "amount": 6
+        }
+      ],
+      "id": "attack.bane-blade.banishing-blow.heavy",
+      "name": "Banishing Blow",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.bane-blade.strike.keen": {
+      "id": "attack.bane-blade.strike.keen",
+      "name": "Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 11
+    },
+    "attack.bane-blade.banishing-blow.keen": {
+      "secondaryDamage": [
+        {
+          "id": "critical-rider",
+          "when": "crit",
+          "damageType": "physical",
+          "amount": 6
+        }
+      ],
+      "id": "attack.bane-blade.banishing-blow.keen",
+      "name": "Banishing Blow",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 6
+    },
+    "attack.bane-blade.strike.cruel": {
+      "id": "attack.bane-blade.strike.cruel",
+      "name": "Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.bane-blade.banishing-blow.cruel": {
+      "secondaryDamage": [
+        {
+          "id": "critical-rider",
+          "when": "crit",
+          "damageType": "physical",
+          "amount": 6
+        }
+      ],
+      "id": "attack.bane-blade.banishing-blow.cruel",
+      "name": "Banishing Blow",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.sword-of-the-fallen.remembrance.heavy": {
+      "id": "attack.sword-of-the-fallen.remembrance.heavy",
+      "name": "Remembrance",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.sword-of-the-fallen.honour-the-dead.heavy": {
+      "id": "attack.sword-of-the-fallen.honour-the-dead.heavy",
+      "name": "Honour the Dead",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 5
+    },
+    "attack.sword-of-the-fallen.remembrance.keen": {
+      "id": "attack.sword-of-the-fallen.remembrance.keen",
+      "name": "Remembrance",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.sword-of-the-fallen.honour-the-dead.keen": {
+      "id": "attack.sword-of-the-fallen.honour-the-dead.keen",
+      "name": "Honour the Dead",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 11
+    },
+    "attack.sword-of-the-fallen.remembrance.cruel": {
+      "id": "attack.sword-of-the-fallen.remembrance.cruel",
+      "name": "Remembrance",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.sword-of-the-fallen.honour-the-dead.cruel": {
+      "id": "attack.sword-of-the-fallen.honour-the-dead.cruel",
+      "name": "Honour the Dead",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.claws.swipe.heavy": {
+      "id": "attack.claws.swipe.heavy",
+      "name": "Swipe",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 5,
+      "accuracy": 5
+    },
+    "attack.claws.flense.heavy": {
+      "id": "attack.claws.flense.heavy",
+      "name": "Flense",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2
+    },
+    "attack.claws.swipe.keen": {
+      "id": "attack.claws.swipe.keen",
+      "name": "Swipe",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 5,
+      "accuracy": 11
+    },
+    "attack.claws.flense.keen": {
+      "id": "attack.claws.flense.keen",
+      "name": "Flense",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2,
+      "accuracy": 6
+    },
+    "attack.claws.swipe.cruel": {
+      "id": "attack.claws.swipe.cruel",
+      "name": "Swipe",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 9,
+      "accuracy": 8
+    },
+    "attack.claws.flense.cruel": {
+      "id": "attack.claws.flense.cruel",
+      "name": "Flense",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.daggers.stab.heavy": {
+      "id": "attack.daggers.stab.heavy",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 15
+    },
+    "attack.daggers.thrown-dagger.heavy": {
+      "id": "attack.daggers.thrown-dagger.heavy",
+      "name": "Thrown Dagger",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.daggers.stab.keen": {
+      "id": "attack.daggers.stab.keen",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 15,
+      "accuracy": 6
+    },
+    "attack.daggers.thrown-dagger.keen": {
+      "id": "attack.daggers.thrown-dagger.keen",
+      "name": "Thrown Dagger",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.daggers.stab.cruel": {
+      "id": "attack.daggers.stab.cruel",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 19,
+      "accuracy": 3
+    },
+    "attack.daggers.thrown-dagger.cruel": {
+      "id": "attack.daggers.thrown-dagger.cruel",
+      "name": "Thrown Dagger",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.longbow.shot.heavy": {
+      "id": "attack.longbow.shot.heavy",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1
+    },
+    "attack.longbow.long-shot.heavy": {
+      "id": "attack.longbow.long-shot.heavy",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": 10
+    },
+    "attack.longbow.shot.keen": {
+      "id": "attack.longbow.shot.keen",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.longbow.long-shot.keen": {
+      "id": "attack.longbow.long-shot.keen",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": 16
+    },
+    "attack.longbow.shot.cruel": {
+      "id": "attack.longbow.shot.cruel",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.longbow.long-shot.cruel": {
+      "id": "attack.longbow.long-shot.cruel",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": 13,
+      "crit": 4
+    },
+    "attack.longbow.shot.far": {
+      "id": "attack.longbow.shot.far",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 1
+    },
+    "attack.longbow.long-shot.far": {
+      "id": "attack.longbow.long-shot.far",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 9,
+      "staminaCost": 2,
+      "accuracy": 10
+    },
+    "attack.longbow.shot.long": {
+      "id": "attack.longbow.shot.long",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 1,
+      "accuracy": 3
+    },
+    "attack.longbow.long-shot.long": {
+      "id": "attack.longbow.long-shot.long",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": 13
+    },
+    "attack.shortbow.short-shot.heavy": {
+      "id": "attack.shortbow.short-shot.heavy",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 5
+    },
+    "attack.shortbow.quick-shot.heavy": {
+      "id": "attack.shortbow.quick-shot.heavy",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "crit": 5
+    },
+    "attack.shortbow.short-shot.keen": {
+      "id": "attack.shortbow.short-shot.keen",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 11
+    },
+    "attack.shortbow.quick-shot.keen": {
+      "id": "attack.shortbow.quick-shot.keen",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "crit": 5,
+      "accuracy": 6
+    },
+    "attack.shortbow.short-shot.cruel": {
+      "id": "attack.shortbow.short-shot.cruel",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.shortbow.quick-shot.cruel": {
+      "id": "attack.shortbow.quick-shot.cruel",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "crit": 9,
+      "accuracy": 3
+    },
+    "attack.shortbow.short-shot.far": {
+      "id": "attack.shortbow.short-shot.far",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 1,
+      "accuracy": 5
+    },
+    "attack.shortbow.quick-shot.far": {
+      "id": "attack.shortbow.quick-shot.far",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 0,
+      "crit": 5
+    },
+    "attack.shortbow.short-shot.long": {
+      "id": "attack.shortbow.short-shot.long",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 8
+    },
+    "attack.shortbow.quick-shot.long": {
+      "id": "attack.shortbow.quick-shot.long",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 0,
+      "crit": 5,
+      "accuracy": 3
+    },
+    "attack.elfbow.elf-shot.heavy": {
+      "id": "attack.elfbow.elf-shot.heavy",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 15
+    },
+    "attack.elfbow.double-shot.heavy": {
+      "id": "attack.elfbow.double-shot.heavy",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2
+    },
+    "attack.elfbow.elf-shot.keen": {
+      "id": "attack.elfbow.elf-shot.keen",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 21
+    },
+    "attack.elfbow.double-shot.keen": {
+      "id": "attack.elfbow.double-shot.keen",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 1,
+      "hits": 2
+    },
+    "attack.elfbow.elf-shot.cruel": {
+      "id": "attack.elfbow.elf-shot.cruel",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 18,
+      "crit": 4
+    },
+    "attack.elfbow.double-shot.cruel": {
+      "id": "attack.elfbow.double-shot.cruel",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -2,
+      "hits": 2,
+      "crit": 4
+    },
+    "attack.elfbow.elf-shot.far": {
+      "id": "attack.elfbow.elf-shot.far",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 1,
+      "accuracy": 15
+    },
+    "attack.elfbow.double-shot.far": {
+      "id": "attack.elfbow.double-shot.far",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2
+    },
+    "attack.elfbow.elf-shot.long": {
+      "id": "attack.elfbow.elf-shot.long",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 1,
+      "accuracy": 18
+    },
+    "attack.elfbow.double-shot.long": {
+      "id": "attack.elfbow.double-shot.long",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "accuracy": -2,
+      "hits": 2
+    },
+    "attack.barbarian-bow.power-shot.heavy": {
+      "id": "attack.barbarian-bow.power-shot.heavy",
+      "name": "Power Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -10
+    },
+    "attack.barbarian-bow.crippling-shot.heavy": {
+      "id": "attack.barbarian-bow.crippling-shot.heavy",
+      "name": "Crippling Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -10
+    },
+    "attack.barbarian-bow.power-shot.keen": {
+      "id": "attack.barbarian-bow.power-shot.keen",
+      "name": "Power Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -4
+    },
+    "attack.barbarian-bow.crippling-shot.keen": {
+      "id": "attack.barbarian-bow.crippling-shot.keen",
+      "name": "Crippling Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -4
+    },
+    "attack.barbarian-bow.power-shot.cruel": {
+      "id": "attack.barbarian-bow.power-shot.cruel",
+      "name": "Power Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -7,
+      "crit": 4
+    },
+    "attack.barbarian-bow.crippling-shot.cruel": {
+      "id": "attack.barbarian-bow.crippling-shot.cruel",
+      "name": "Crippling Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -7,
+      "crit": 4
+    },
+    "attack.barbarian-bow.power-shot.far": {
+      "id": "attack.barbarian-bow.power-shot.far",
+      "name": "Power Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": -10
+    },
+    "attack.barbarian-bow.crippling-shot.far": {
+      "id": "attack.barbarian-bow.crippling-shot.far",
+      "name": "Crippling Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": -10
+    },
+    "attack.barbarian-bow.power-shot.long": {
+      "id": "attack.barbarian-bow.power-shot.long",
+      "name": "Power Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": -7
+    },
+    "attack.barbarian-bow.crippling-shot.long": {
+      "id": "attack.barbarian-bow.crippling-shot.long",
+      "name": "Crippling Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": -7
+    },
+    "attack.javelin.throw.heavy": {
+      "id": "attack.javelin.throw.heavy",
+      "name": "Throw",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": -10
+    },
+    "attack.javelin.stab.heavy": {
+      "id": "attack.javelin.stab.heavy",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 6
+    },
+    "attack.javelin.throw.keen": {
+      "id": "attack.javelin.throw.keen",
+      "name": "Throw",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": -4
+    },
+    "attack.javelin.stab.keen": {
+      "id": "attack.javelin.stab.keen",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 6,
+      "accuracy": 6
+    },
+    "attack.javelin.throw.cruel": {
+      "id": "attack.javelin.throw.cruel",
+      "name": "Throw",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": -7,
+      "crit": 4
+    },
+    "attack.javelin.stab.cruel": {
+      "id": "attack.javelin.stab.cruel",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 10,
+      "accuracy": 3
+    },
+    "attack.longsword.slash.heavy": {
+      "id": "attack.longsword.slash.heavy",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.longsword.stab.heavy": {
+      "id": "attack.longsword.stab.heavy",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 5
+    },
+    "attack.longsword.slash.keen": {
+      "id": "attack.longsword.slash.keen",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.longsword.stab.keen": {
+      "id": "attack.longsword.stab.keen",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 11
+    },
+    "attack.longsword.slash.cruel": {
+      "id": "attack.longsword.slash.cruel",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.longsword.stab.cruel": {
+      "id": "attack.longsword.stab.cruel",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 7,
+      "accuracy": 8
+    },
+    "attack.halberd.hack.heavy": {
+      "id": "attack.halberd.hack.heavy",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.halberd.hack.keen": {
+      "id": "attack.halberd.hack.keen",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.halberd.hack.cruel": {
+      "id": "attack.halberd.hack.cruel",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.fire-staff.fire-blast.heavy": {
+      "id": "attack.fire-staff.fire-blast.heavy",
+      "name": "Fire Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.fire-staff.fire-blast.keen": {
+      "id": "attack.fire-staff.fire-blast.keen",
+      "name": "Fire Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.fire-staff.fire-blast.cruel": {
+      "id": "attack.fire-staff.fire-blast.cruel",
+      "name": "Fire Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.frost-staff.frost-blast.heavy": {
+      "id": "attack.frost-staff.frost-blast.heavy",
+      "name": "Frost Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.frost-staff.frost-blast.keen": {
+      "id": "attack.frost-staff.frost-blast.keen",
+      "name": "Frost Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.frost-staff.frost-blast.cruel": {
+      "id": "attack.frost-staff.frost-blast.cruel",
+      "name": "Frost Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.earth-staff.earth-blast.heavy": {
+      "id": "attack.earth-staff.earth-blast.heavy",
+      "name": "Earth Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 1
+    },
+    "attack.earth-staff.earth-blast.keen": {
+      "id": "attack.earth-staff.earth-blast.keen",
+      "name": "Earth Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.earth-staff.earth-blast.cruel": {
+      "id": "attack.earth-staff.earth-blast.cruel",
+      "name": "Earth Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.lightning-staff.bolt.heavy": {
+      "id": "attack.lightning-staff.bolt.heavy",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 4,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "accuracy": -20
+    },
+    "attack.lightning-staff.bolt.keen": {
+      "id": "attack.lightning-staff.bolt.keen",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "accuracy": -14
+    },
+    "attack.lightning-staff.bolt.cruel": {
+      "id": "attack.lightning-staff.bolt.cruel",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "accuracy": -17,
+      "crit": 4
+    },
+    "attack.force-staff.force-blast.heavy": {
+      "id": "attack.force-staff.force-blast.heavy",
+      "name": "Force Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.force-staff.force-blast.keen": {
+      "id": "attack.force-staff.force-blast.keen",
+      "name": "Force Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.force-staff.force-blast.cruel": {
+      "id": "attack.force-staff.force-blast.cruel",
+      "name": "Force Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
+    },
+    "attack.holy-symbol.wrath.heavy": {
+      "id": "attack.holy-symbol.wrath.heavy",
+      "name": "Wrath",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 5
+    },
+    "attack.holy-symbol.wrath.keen": {
+      "id": "attack.holy-symbol.wrath.keen",
+      "name": "Wrath",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 11
+    },
+    "attack.holy-symbol.wrath.cruel": {
+      "id": "attack.holy-symbol.wrath.cruel",
+      "name": "Wrath",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 8,
+      "crit": 4
+    },
+    "attack.priest-chain.smite.heavy": {
+      "id": "attack.priest-chain.smite.heavy",
+      "name": "Smite",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.priest-chain.smite.keen": {
+      "id": "attack.priest-chain.smite.keen",
+      "name": "Smite",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 6
+    },
+    "attack.priest-chain.smite.cruel": {
+      "id": "attack.priest-chain.smite.cruel",
+      "name": "Smite",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 3,
+      "crit": 4
     }
   },
   "authoredAbilities": {
@@ -32635,6 +35183,4718 @@ export const UNIT_PACK = {
       ],
       "base": "item.soaked-plate",
       "enchant": "enchant.white-steel"
+    }
+  },
+  "derivedItems": {
+    "item.greatsword.masterwork": {
+      "id": "item.greatsword.masterwork",
+      "name": "Masterwork Greatsword",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 10,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword"
+    },
+    "item.greatsword.heavy": {
+      "id": "item.greatsword.heavy",
+      "name": "Heavy Greatsword",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 10
+      },
+      "grants": [
+        "attack.greatsword.hew.heavy",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "enchant enchant.heavy on attack.greatsword.great-cleave: not an attack row — not copied"
+      ]
+    },
+    "item.greatsword.keen": {
+      "id": "item.greatsword.keen",
+      "name": "Keen Greatsword",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 10
+      },
+      "grants": [
+        "attack.greatsword.hew.keen",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "enchant enchant.keen on attack.greatsword.great-cleave: not an attack row — not copied"
+      ]
+    },
+    "item.greatsword.cruel": {
+      "id": "item.greatsword.cruel",
+      "name": "Cruel Greatsword",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 10
+      },
+      "grants": [
+        "attack.greatsword.hew.cruel",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "enchant enchant.cruel on attack.greatsword.great-cleave: not an attack row — not copied"
+      ]
+    },
+    "item.war-axe.heavy": {
+      "id": "item.war-axe.heavy",
+      "name": "Heavy War Axe",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-axe.chop.heavy",
+        "attack.war-axe.hack.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.heavy"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.heavy"
+    },
+    "item.war-axe.keen": {
+      "id": "item.war-axe.keen",
+      "name": "Keen War Axe",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-axe.chop.keen",
+        "attack.war-axe.hack.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.keen"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.keen"
+    },
+    "item.war-axe.cruel": {
+      "id": "item.war-axe.cruel",
+      "name": "Cruel War Axe",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-axe.chop.cruel",
+        "attack.war-axe.hack.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.cruel"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.cruel"
+    },
+    "item.iron-mace.heavy": {
+      "id": "item.iron-mace.heavy",
+      "name": "Heavy Iron Mace",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-mace.swing.heavy",
+        "attack.iron-mace.crush.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.iron-mace",
+      "enchant": "enchant.heavy"
+    },
+    "item.iron-mace.keen": {
+      "id": "item.iron-mace.keen",
+      "name": "Keen Iron Mace",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-mace.swing.keen",
+        "attack.iron-mace.crush.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.iron-mace",
+      "enchant": "enchant.keen"
+    },
+    "item.iron-mace.cruel": {
+      "id": "item.iron-mace.cruel",
+      "name": "Cruel Iron Mace",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-mace.swing.cruel",
+        "attack.iron-mace.crush.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.iron-mace",
+      "enchant": "enchant.cruel"
+    },
+    "item.war-hammer.masterwork": {
+      "id": "item.war-hammer.masterwork",
+      "name": "Masterwork War Hammer",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.war-hammer.smash",
+        "attack.war-hammer.skullsplitter"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        }
+      ],
+      "base": "item.war-hammer",
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed"
+      ]
+    },
+    "item.war-hammer.heavy": {
+      "id": "item.war-hammer.heavy",
+      "name": "Heavy War Hammer",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash.heavy",
+        "attack.war-hammer.skullsplitter.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter.heavy"
+        }
+      ],
+      "base": "item.war-hammer",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed"
+      ]
+    },
+    "item.war-hammer.keen": {
+      "id": "item.war-hammer.keen",
+      "name": "Keen War Hammer",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash.keen",
+        "attack.war-hammer.skullsplitter.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter.keen"
+        }
+      ],
+      "base": "item.war-hammer",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed"
+      ]
+    },
+    "item.war-hammer.cruel": {
+      "id": "item.war-hammer.cruel",
+      "name": "Cruel War Hammer",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash.cruel",
+        "attack.war-hammer.skullsplitter.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter.cruel"
+        }
+      ],
+      "base": "item.war-hammer",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed"
+      ]
+    },
+    "item.hunting-spear.heavy": {
+      "id": "item.hunting-spear.heavy",
+      "name": "Heavy Hunting Spear",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hunting-spear.thrust.heavy",
+        "attack.hunting-spear.hurl.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.hunting-spear",
+      "enchant": "enchant.heavy"
+    },
+    "item.hunting-spear.keen": {
+      "id": "item.hunting-spear.keen",
+      "name": "Keen Hunting Spear",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hunting-spear.thrust.keen",
+        "attack.hunting-spear.hurl.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.hunting-spear",
+      "enchant": "enchant.keen"
+    },
+    "item.hunting-spear.cruel": {
+      "id": "item.hunting-spear.cruel",
+      "name": "Cruel Hunting Spear",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hunting-spear.thrust.cruel",
+        "attack.hunting-spear.hurl.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.hunting-spear",
+      "enchant": "enchant.cruel"
+    },
+    "item.glaive.masterwork": {
+      "id": "item.glaive.masterwork",
+      "name": "Masterwork Glaive",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.glaive.sweep",
+        "attack.glaive.impale"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.glaive"
+    },
+    "item.glaive.heavy": {
+      "id": "item.glaive.heavy",
+      "name": "Heavy Glaive",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.glaive.sweep.heavy",
+        "attack.glaive.impale.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.glaive",
+      "enchant": "enchant.heavy"
+    },
+    "item.glaive.keen": {
+      "id": "item.glaive.keen",
+      "name": "Keen Glaive",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.glaive.sweep.keen",
+        "attack.glaive.impale.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.glaive",
+      "enchant": "enchant.keen"
+    },
+    "item.glaive.cruel": {
+      "id": "item.glaive.cruel",
+      "name": "Cruel Glaive",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.glaive.sweep.cruel",
+        "attack.glaive.impale.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.glaive",
+      "enchant": "enchant.cruel"
+    },
+    "item.crossbow.masterwork": {
+      "id": "item.crossbow.masterwork",
+      "name": "Masterwork Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow"
+    },
+    "item.crossbow.heavy": {
+      "id": "item.crossbow.heavy",
+      "name": "Heavy Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.crossbow.bolt.heavy",
+        "attack.crossbow.punch-through.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.heavy"
+    },
+    "item.crossbow.keen": {
+      "id": "item.crossbow.keen",
+      "name": "Keen Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.crossbow.bolt.keen",
+        "attack.crossbow.punch-through.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.keen"
+    },
+    "item.crossbow.cruel": {
+      "id": "item.crossbow.cruel",
+      "name": "Cruel Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.crossbow.bolt.cruel",
+        "attack.crossbow.punch-through.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.cruel"
+    },
+    "item.hand-crossbow.heavy": {
+      "id": "item.hand-crossbow.heavy",
+      "name": "Heavy Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hand-crossbow.snapshot.heavy",
+        "attack.hand-crossbow.loaded-bolt.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt.heavy"
+        }
+      ],
+      "base": "item.hand-crossbow",
+      "enchant": "enchant.heavy"
+    },
+    "item.hand-crossbow.keen": {
+      "id": "item.hand-crossbow.keen",
+      "name": "Keen Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hand-crossbow.snapshot.keen",
+        "attack.hand-crossbow.loaded-bolt.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt.keen"
+        }
+      ],
+      "base": "item.hand-crossbow",
+      "enchant": "enchant.keen"
+    },
+    "item.hand-crossbow.cruel": {
+      "id": "item.hand-crossbow.cruel",
+      "name": "Cruel Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hand-crossbow.snapshot.cruel",
+        "attack.hand-crossbow.loaded-bolt.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt.cruel"
+        }
+      ],
+      "base": "item.hand-crossbow",
+      "enchant": "enchant.cruel"
+    },
+    "item.rapier.heavy": {
+      "id": "item.rapier.heavy",
+      "name": "Heavy Duelist's Rapier",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.rapier.thrust.heavy",
+        "attack.rapier.pierce.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.rapier",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed"
+      ]
+    },
+    "item.rapier.keen": {
+      "id": "item.rapier.keen",
+      "name": "Keen Duelist's Rapier",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.rapier.thrust.keen",
+        "attack.rapier.pierce.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.rapier",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed"
+      ]
+    },
+    "item.rapier.cruel": {
+      "id": "item.rapier.cruel",
+      "name": "Cruel Duelist's Rapier",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.rapier.thrust.cruel",
+        "attack.rapier.pierce.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.rapier",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed"
+      ]
+    },
+    "item.raiders-cutlass.heavy": {
+      "id": "item.raiders-cutlass.heavy",
+      "name": "Heavy Raider's Cutlass",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.raiders-cutlass.slash.heavy",
+        "attack.raiders-cutlass.boarding-swing.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash.heavy"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing.heavy"
+        }
+      ],
+      "base": "item.raiders-cutlass",
+      "enchant": "enchant.heavy"
+    },
+    "item.raiders-cutlass.keen": {
+      "id": "item.raiders-cutlass.keen",
+      "name": "Keen Raider's Cutlass",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.raiders-cutlass.slash.keen",
+        "attack.raiders-cutlass.boarding-swing.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash.keen"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing.keen"
+        }
+      ],
+      "base": "item.raiders-cutlass",
+      "enchant": "enchant.keen"
+    },
+    "item.raiders-cutlass.cruel": {
+      "id": "item.raiders-cutlass.cruel",
+      "name": "Cruel Raider's Cutlass",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.raiders-cutlass.slash.cruel",
+        "attack.raiders-cutlass.boarding-swing.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash.cruel"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing.cruel"
+        }
+      ],
+      "base": "item.raiders-cutlass",
+      "enchant": "enchant.cruel"
+    },
+    "item.throwing-knives.heavy": {
+      "id": "item.throwing-knives.heavy",
+      "name": "Heavy Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.throwing-knives.flick.heavy",
+        "attack.throwing-knives.fan.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.throwing-knives",
+      "enchant": "enchant.heavy"
+    },
+    "item.throwing-knives.keen": {
+      "id": "item.throwing-knives.keen",
+      "name": "Keen Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.throwing-knives.flick.keen",
+        "attack.throwing-knives.fan.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.throwing-knives",
+      "enchant": "enchant.keen"
+    },
+    "item.throwing-knives.cruel": {
+      "id": "item.throwing-knives.cruel",
+      "name": "Cruel Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.throwing-knives.flick.cruel",
+        "attack.throwing-knives.fan.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.throwing-knives",
+      "enchant": "enchant.cruel"
+    },
+    "item.poison-stars.heavy": {
+      "id": "item.poison-stars.heavy",
+      "name": "Heavy Poison Stars",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.poison-stars.star.heavy",
+        "attack.poison-stars.venom-spread.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-stars.star.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars",
+          "onlyWithAttack": "attack.poison-stars.star.heavy"
+        }
+      ],
+      "base": "item.poison-stars",
+      "enchant": "enchant.heavy"
+    },
+    "item.poison-stars.keen": {
+      "id": "item.poison-stars.keen",
+      "name": "Keen Poison Stars",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.poison-stars.star.keen",
+        "attack.poison-stars.venom-spread.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-stars.star.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars",
+          "onlyWithAttack": "attack.poison-stars.star.keen"
+        }
+      ],
+      "base": "item.poison-stars",
+      "enchant": "enchant.keen"
+    },
+    "item.poison-stars.cruel": {
+      "id": "item.poison-stars.cruel",
+      "name": "Cruel Poison Stars",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.poison-stars.star.cruel",
+        "attack.poison-stars.venom-spread.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-stars.star.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars",
+          "onlyWithAttack": "attack.poison-stars.star.cruel"
+        }
+      ],
+      "base": "item.poison-stars",
+      "enchant": "enchant.cruel"
+    },
+    "item.obsidian-fang-dagger.heavy": {
+      "id": "item.obsidian-fang-dagger.heavy",
+      "name": "Heavy Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.obsidian-fang-dagger.fang.heavy",
+        "attack.obsidian-fang-dagger.gut.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.heavy"
+    },
+    "item.obsidian-fang-dagger.keen": {
+      "id": "item.obsidian-fang-dagger.keen",
+      "name": "Keen Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.obsidian-fang-dagger.fang.keen",
+        "attack.obsidian-fang-dagger.gut.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.keen"
+    },
+    "item.obsidian-fang-dagger.cruel": {
+      "id": "item.obsidian-fang-dagger.cruel",
+      "name": "Cruel Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.obsidian-fang-dagger.fang.cruel",
+        "attack.obsidian-fang-dagger.gut.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.cruel"
+    },
+    "item.duel-runeblades.masterwork": {
+      "id": "item.duel-runeblades.masterwork",
+      "name": "Masterwork Duel Runeblades",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 10,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.duel-runeblades.twin-cut",
+        "attack.duel-runeblades.rune-cross"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.duel-runeblades"
+    },
+    "item.duel-runeblades.heavy": {
+      "id": "item.duel-runeblades.heavy",
+      "name": "Heavy Duel Runeblades",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 10
+      },
+      "grants": [
+        "attack.duel-runeblades.twin-cut.heavy",
+        "attack.duel-runeblades.rune-cross.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.duel-runeblades",
+      "enchant": "enchant.heavy"
+    },
+    "item.duel-runeblades.keen": {
+      "id": "item.duel-runeblades.keen",
+      "name": "Keen Duel Runeblades",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 10
+      },
+      "grants": [
+        "attack.duel-runeblades.twin-cut.keen",
+        "attack.duel-runeblades.rune-cross.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.duel-runeblades",
+      "enchant": "enchant.keen"
+    },
+    "item.duel-runeblades.cruel": {
+      "id": "item.duel-runeblades.cruel",
+      "name": "Cruel Duel Runeblades",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 10
+      },
+      "grants": [
+        "attack.duel-runeblades.twin-cut.cruel",
+        "attack.duel-runeblades.rune-cross.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.duel-runeblades",
+      "enchant": "enchant.cruel"
+    },
+    "item.shepherds-sling.heavy": {
+      "id": "item.shepherds-sling.heavy",
+      "name": "Heavy Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.shepherds-sling.stone.heavy",
+        "attack.shepherds-sling.whirl.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl.heavy"
+        }
+      ],
+      "base": "item.shepherds-sling",
+      "enchant": "enchant.heavy"
+    },
+    "item.shepherds-sling.keen": {
+      "id": "item.shepherds-sling.keen",
+      "name": "Keen Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.shepherds-sling.stone.keen",
+        "attack.shepherds-sling.whirl.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl.keen"
+        }
+      ],
+      "base": "item.shepherds-sling",
+      "enchant": "enchant.keen"
+    },
+    "item.shepherds-sling.cruel": {
+      "id": "item.shepherds-sling.cruel",
+      "name": "Cruel Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.shepherds-sling.stone.cruel",
+        "attack.shepherds-sling.whirl.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl.cruel"
+        }
+      ],
+      "base": "item.shepherds-sling",
+      "enchant": "enchant.cruel"
+    },
+    "item.crippling-whip.heavy": {
+      "id": "item.crippling-whip.heavy",
+      "name": "Heavy Crippling Whip",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.crippling-whip.lash.heavy",
+        "attack.crippling-whip.hamstring.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crippling-whip.lash.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.crippling-whip",
+          "onlyWithAttack": "attack.crippling-whip.lash.heavy"
+        }
+      ],
+      "base": "item.crippling-whip",
+      "enchant": "enchant.heavy"
+    },
+    "item.crippling-whip.keen": {
+      "id": "item.crippling-whip.keen",
+      "name": "Keen Crippling Whip",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.crippling-whip.lash.keen",
+        "attack.crippling-whip.hamstring.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crippling-whip.lash.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.crippling-whip",
+          "onlyWithAttack": "attack.crippling-whip.lash.keen"
+        }
+      ],
+      "base": "item.crippling-whip",
+      "enchant": "enchant.keen"
+    },
+    "item.crippling-whip.cruel": {
+      "id": "item.crippling-whip.cruel",
+      "name": "Cruel Crippling Whip",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.crippling-whip.lash.cruel",
+        "attack.crippling-whip.hamstring.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crippling-whip.lash.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.crippling-whip",
+          "onlyWithAttack": "attack.crippling-whip.lash.cruel"
+        }
+      ],
+      "base": "item.crippling-whip",
+      "enchant": "enchant.cruel"
+    },
+    "item.iron-claws.masterwork": {
+      "id": "item.iron-claws.masterwork",
+      "name": "Masterwork Iron Claws",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.iron-claws.rake",
+        "attack.iron-claws.eviscerate"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
+        }
+      ],
+      "base": "item.iron-claws"
+    },
+    "item.iron-claws.heavy": {
+      "id": "item.iron-claws.heavy",
+      "name": "Heavy Iron Claws",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-claws.rake.heavy",
+        "attack.iron-claws.eviscerate.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate.heavy"
+        }
+      ],
+      "base": "item.iron-claws",
+      "enchant": "enchant.heavy"
+    },
+    "item.iron-claws.keen": {
+      "id": "item.iron-claws.keen",
+      "name": "Keen Iron Claws",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-claws.rake.keen",
+        "attack.iron-claws.eviscerate.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate.keen"
+        }
+      ],
+      "base": "item.iron-claws",
+      "enchant": "enchant.keen"
+    },
+    "item.iron-claws.cruel": {
+      "id": "item.iron-claws.cruel",
+      "name": "Cruel Iron Claws",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-claws.rake.cruel",
+        "attack.iron-claws.eviscerate.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate.cruel"
+        }
+      ],
+      "base": "item.iron-claws",
+      "enchant": "enchant.cruel"
+    },
+    "item.grappling-harpoon.masterwork": {
+      "id": "item.grappling-harpoon.masterwork",
+      "name": "Masterwork Grappling Harpoon",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.grappling-harpoon.brace",
+        "attack.grappling-harpoon.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.grappling-harpoon"
+    },
+    "item.grappling-harpoon.heavy": {
+      "id": "item.grappling-harpoon.heavy",
+      "name": "Heavy Grappling Harpoon",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.grappling-harpoon.brace.heavy",
+        "attack.grappling-harpoon.hurl.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.grappling-harpoon",
+      "enchant": "enchant.heavy"
+    },
+    "item.grappling-harpoon.keen": {
+      "id": "item.grappling-harpoon.keen",
+      "name": "Keen Grappling Harpoon",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.grappling-harpoon.brace.keen",
+        "attack.grappling-harpoon.hurl.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.grappling-harpoon",
+      "enchant": "enchant.keen"
+    },
+    "item.grappling-harpoon.cruel": {
+      "id": "item.grappling-harpoon.cruel",
+      "name": "Cruel Grappling Harpoon",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.grappling-harpoon.brace.cruel",
+        "attack.grappling-harpoon.hurl.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.grappling-harpoon",
+      "enchant": "enchant.cruel"
+    },
+    "item.apprentice-wand.heavy": {
+      "id": "item.apprentice-wand.heavy",
+      "name": "Heavy Apprentice Wand",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.apprentice-wand.spark.heavy",
+        "attack.apprentice-wand.surge.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.apprentice-wand.surge.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.apprentice-wand",
+          "onlyWithAttack": "attack.apprentice-wand.surge.heavy"
+        }
+      ],
+      "base": "item.apprentice-wand",
+      "enchant": "enchant.heavy"
+    },
+    "item.apprentice-wand.keen": {
+      "id": "item.apprentice-wand.keen",
+      "name": "Keen Apprentice Wand",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.apprentice-wand.spark.keen",
+        "attack.apprentice-wand.surge.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.apprentice-wand.surge.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.apprentice-wand",
+          "onlyWithAttack": "attack.apprentice-wand.surge.keen"
+        }
+      ],
+      "base": "item.apprentice-wand",
+      "enchant": "enchant.keen"
+    },
+    "item.apprentice-wand.cruel": {
+      "id": "item.apprentice-wand.cruel",
+      "name": "Cruel Apprentice Wand",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.apprentice-wand.spark.cruel",
+        "attack.apprentice-wand.surge.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.apprentice-wand.surge.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.apprentice-wand",
+          "onlyWithAttack": "attack.apprentice-wand.surge.cruel"
+        }
+      ],
+      "base": "item.apprentice-wand",
+      "enchant": "enchant.cruel"
+    },
+    "item.ancient-tome.heavy": {
+      "id": "item.ancient-tome.heavy",
+      "name": "Heavy Ancient Tome",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.ancient-tome.read-the-page.heavy",
+        "attack.ancient-tome.long-passage.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.ancient-tome",
+      "enchant": "enchant.heavy"
+    },
+    "item.ancient-tome.keen": {
+      "id": "item.ancient-tome.keen",
+      "name": "Keen Ancient Tome",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.ancient-tome.read-the-page.keen",
+        "attack.ancient-tome.long-passage.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.ancient-tome",
+      "enchant": "enchant.keen"
+    },
+    "item.ancient-tome.cruel": {
+      "id": "item.ancient-tome.cruel",
+      "name": "Cruel Ancient Tome",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.ancient-tome.read-the-page.cruel",
+        "attack.ancient-tome.long-passage.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.ancient-tome",
+      "enchant": "enchant.cruel"
+    },
+    "item.holy-texts.heavy": {
+      "id": "item.holy-texts.heavy",
+      "name": "Heavy Holy Texts",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-texts.verse.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.holy-texts",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed"
+      ]
+    },
+    "item.holy-texts.keen": {
+      "id": "item.holy-texts.keen",
+      "name": "Keen Holy Texts",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-texts.verse.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.holy-texts",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed"
+      ]
+    },
+    "item.holy-texts.cruel": {
+      "id": "item.holy-texts.cruel",
+      "name": "Cruel Holy Texts",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-texts.verse.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.holy-texts",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed"
+      ]
+    },
+    "item.bane-blade.heavy": {
+      "id": "item.bane-blade.heavy",
+      "name": "Heavy Bane Blade",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.bane-blade.strike.heavy",
+        "attack.bane-blade.banishing-blow.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.bane-blade",
+      "enchant": "enchant.heavy"
+    },
+    "item.bane-blade.keen": {
+      "id": "item.bane-blade.keen",
+      "name": "Keen Bane Blade",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.bane-blade.strike.keen",
+        "attack.bane-blade.banishing-blow.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.bane-blade",
+      "enchant": "enchant.keen"
+    },
+    "item.bane-blade.cruel": {
+      "id": "item.bane-blade.cruel",
+      "name": "Cruel Bane Blade",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.bane-blade.strike.cruel",
+        "attack.bane-blade.banishing-blow.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.bane-blade",
+      "enchant": "enchant.cruel"
+    },
+    "item.sword-of-the-fallen.heavy": {
+      "id": "item.sword-of-the-fallen.heavy",
+      "name": "Heavy Sword of the Fallen",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance.heavy",
+        "attack.sword-of-the-fallen.honour-the-dead.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.sword-of-the-fallen",
+      "enchant": "enchant.heavy"
+    },
+    "item.sword-of-the-fallen.keen": {
+      "id": "item.sword-of-the-fallen.keen",
+      "name": "Keen Sword of the Fallen",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance.keen",
+        "attack.sword-of-the-fallen.honour-the-dead.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.sword-of-the-fallen",
+      "enchant": "enchant.keen"
+    },
+    "item.sword-of-the-fallen.cruel": {
+      "id": "item.sword-of-the-fallen.cruel",
+      "name": "Cruel Sword of the Fallen",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance.cruel",
+        "attack.sword-of-the-fallen.honour-the-dead.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.sword-of-the-fallen",
+      "enchant": "enchant.cruel"
+    },
+    "item.claws.heavy": {
+      "id": "item.claws.heavy",
+      "name": "Heavy Claws",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {},
+      "grants": [
+        "attack.claws.swipe.heavy",
+        "attack.claws.flense.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.claws.flense.bleed",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.claws",
+          "onlyWithAttack": "attack.claws.flense.heavy"
+        }
+      ],
+      "base": "item.claws",
+      "enchant": "enchant.heavy"
+    },
+    "item.claws.keen": {
+      "id": "item.claws.keen",
+      "name": "Keen Claws",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {},
+      "grants": [
+        "attack.claws.swipe.keen",
+        "attack.claws.flense.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.claws.flense.bleed",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.claws",
+          "onlyWithAttack": "attack.claws.flense.keen"
+        }
+      ],
+      "base": "item.claws",
+      "enchant": "enchant.keen"
+    },
+    "item.claws.cruel": {
+      "id": "item.claws.cruel",
+      "name": "Cruel Claws",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {},
+      "grants": [
+        "attack.claws.swipe.cruel",
+        "attack.claws.flense.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.claws.flense.bleed",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.claws",
+          "onlyWithAttack": "attack.claws.flense.cruel"
+        }
+      ],
+      "base": "item.claws",
+      "enchant": "enchant.cruel"
+    },
+    "item.daggers.masterwork": {
+      "id": "item.daggers.masterwork",
+      "name": "Masterwork Daggers",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 5,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.daggers"
+    },
+    "item.daggers.heavy": {
+      "id": "item.daggers.heavy",
+      "name": "Heavy Daggers",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.daggers.stab.heavy",
+        "attack.daggers.thrown-dagger.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.daggers",
+      "enchant": "enchant.heavy"
+    },
+    "item.daggers.keen": {
+      "id": "item.daggers.keen",
+      "name": "Keen Daggers",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.daggers.stab.keen",
+        "attack.daggers.thrown-dagger.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.daggers",
+      "enchant": "enchant.keen"
+    },
+    "item.daggers.cruel": {
+      "id": "item.daggers.cruel",
+      "name": "Cruel Daggers",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.daggers.stab.cruel",
+        "attack.daggers.thrown-dagger.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.daggers",
+      "enchant": "enchant.cruel"
+    },
+    "item.silkweave-armor.masterwork": {
+      "id": "item.silkweave-armor.masterwork",
+      "name": "Masterwork Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": -2,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor"
+    },
+    "item.silkweave-armor.hale": {
+      "id": "item.silkweave-armor.hale",
+      "name": "Hale Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": 0
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.hale"
+    },
+    "item.silkweave-armor.lucky": {
+      "id": "item.silkweave-armor.lucky",
+      "name": "Lucky Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": -2,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.lucky"
+    },
+    "item.silkweave-armor.nimble": {
+      "id": "item.silkweave-armor.nimble",
+      "name": "Nimble Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 11,
+        "maxHp": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.nimble"
+    },
+    "item.silkweave-armor.fleet": {
+      "id": "item.silkweave-armor.fleet",
+      "name": "Fleet Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": -2,
+        "movement": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.fleet"
+    },
+    "item.brutes-harness.masterwork": {
+      "id": "item.brutes-harness.masterwork",
+      "name": "Masterwork Brute's Harness",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 1,
+        "dodge": -5,
+        "accuracy": -5,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness"
+    },
+    "item.brutes-harness.hale": {
+      "id": "item.brutes-harness.hale",
+      "name": "Hale Brute's Harness",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 6,
+        "strength": 1,
+        "dodge": -5,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.hale"
+    },
+    "item.brutes-harness.lucky": {
+      "id": "item.brutes-harness.lucky",
+      "name": "Lucky Brute's Harness",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 1,
+        "dodge": -5,
+        "accuracy": -5,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.lucky"
+    },
+    "item.brutes-harness.nimble": {
+      "id": "item.brutes-harness.nimble",
+      "name": "Nimble Brute's Harness",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 1,
+        "dodge": 1,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.nimble"
+    },
+    "item.brutes-harness.fleet": {
+      "id": "item.brutes-harness.fleet",
+      "name": "Fleet Brute's Harness",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 1,
+        "dodge": -5,
+        "accuracy": -5,
+        "movement": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.fleet"
+    },
+    "item.guardians-mail.masterwork": {
+      "id": "item.guardians-mail.masterwork",
+      "name": "Masterwork Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "movement": -1,
+        "maxStamina": 0
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail"
+    },
+    "item.guardians-mail.hale": {
+      "id": "item.guardians-mail.hale",
+      "name": "Hale Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "movement": -1,
+        "maxStamina": -1,
+        "maxHp": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.hale"
+    },
+    "item.guardians-mail.lucky": {
+      "id": "item.guardians-mail.lucky",
+      "name": "Lucky Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "movement": -1,
+        "maxStamina": -1,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.lucky"
+    },
+    "item.guardians-mail.nimble": {
+      "id": "item.guardians-mail.nimble",
+      "name": "Nimble Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "movement": -1,
+        "maxStamina": -1,
+        "dodge": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.nimble"
+    },
+    "item.guardians-mail.fleet": {
+      "id": "item.guardians-mail.fleet",
+      "name": "Fleet Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "movement": 0,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.fleet"
+    },
+    "item.longbow.masterwork": {
+      "id": "item.longbow.masterwork",
+      "name": "Masterwork Longbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow"
+    },
+    "item.longbow.heavy": {
+      "id": "item.longbow.heavy",
+      "name": "Heavy Longbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot.heavy",
+        "attack.longbow.long-shot.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.heavy"
+    },
+    "item.longbow.keen": {
+      "id": "item.longbow.keen",
+      "name": "Keen Longbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot.keen",
+        "attack.longbow.long-shot.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.keen"
+    },
+    "item.longbow.cruel": {
+      "id": "item.longbow.cruel",
+      "name": "Cruel Longbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot.cruel",
+        "attack.longbow.long-shot.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.cruel"
+    },
+    "item.longbow.far": {
+      "id": "item.longbow.far",
+      "name": "Far Longbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot.far",
+        "attack.longbow.long-shot.far"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.far"
+    },
+    "item.longbow.long": {
+      "id": "item.longbow.long",
+      "name": "Long Longbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot.long",
+        "attack.longbow.long-shot.long"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.long"
+    },
+    "item.shortbow.masterwork": {
+      "id": "item.shortbow.masterwork",
+      "name": "Masterwork Shortbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow"
+    },
+    "item.shortbow.heavy": {
+      "id": "item.shortbow.heavy",
+      "name": "Heavy Shortbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot.heavy",
+        "attack.shortbow.quick-shot.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.heavy"
+    },
+    "item.shortbow.keen": {
+      "id": "item.shortbow.keen",
+      "name": "Keen Shortbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot.keen",
+        "attack.shortbow.quick-shot.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.keen"
+    },
+    "item.shortbow.cruel": {
+      "id": "item.shortbow.cruel",
+      "name": "Cruel Shortbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot.cruel",
+        "attack.shortbow.quick-shot.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.cruel"
+    },
+    "item.shortbow.far": {
+      "id": "item.shortbow.far",
+      "name": "Far Shortbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot.far",
+        "attack.shortbow.quick-shot.far"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.far"
+    },
+    "item.shortbow.long": {
+      "id": "item.shortbow.long",
+      "name": "Long Shortbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot.long",
+        "attack.shortbow.quick-shot.long"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.long"
+    },
+    "item.elfbow.masterwork": {
+      "id": "item.elfbow.masterwork",
+      "name": "Masterwork Elfbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow"
+    },
+    "item.elfbow.heavy": {
+      "id": "item.elfbow.heavy",
+      "name": "Heavy Elfbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.elfbow.elf-shot.heavy",
+        "attack.elfbow.double-shot.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.heavy"
+    },
+    "item.elfbow.keen": {
+      "id": "item.elfbow.keen",
+      "name": "Keen Elfbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.elfbow.elf-shot.keen",
+        "attack.elfbow.double-shot.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.keen"
+    },
+    "item.elfbow.cruel": {
+      "id": "item.elfbow.cruel",
+      "name": "Cruel Elfbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.elfbow.elf-shot.cruel",
+        "attack.elfbow.double-shot.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.cruel"
+    },
+    "item.elfbow.far": {
+      "id": "item.elfbow.far",
+      "name": "Far Elfbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.elfbow.elf-shot.far",
+        "attack.elfbow.double-shot.far"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.far"
+    },
+    "item.elfbow.long": {
+      "id": "item.elfbow.long",
+      "name": "Long Elfbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.elfbow.elf-shot.long",
+        "attack.elfbow.double-shot.long"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.long"
+    },
+    "item.barbarian-bow.masterwork": {
+      "id": "item.barbarian-bow.masterwork",
+      "name": "Masterwork Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.barbarian-bow.power-shot",
+        "attack.barbarian-bow.crippling-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        }
+      ],
+      "base": "item.barbarian-bow"
+    },
+    "item.barbarian-bow.heavy": {
+      "id": "item.barbarian-bow.heavy",
+      "name": "Heavy Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot.heavy",
+        "attack.barbarian-bow.crippling-shot.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot.heavy"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot.heavy"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.heavy"
+    },
+    "item.barbarian-bow.keen": {
+      "id": "item.barbarian-bow.keen",
+      "name": "Keen Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot.keen",
+        "attack.barbarian-bow.crippling-shot.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot.keen"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot.keen"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.keen"
+    },
+    "item.barbarian-bow.cruel": {
+      "id": "item.barbarian-bow.cruel",
+      "name": "Cruel Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot.cruel",
+        "attack.barbarian-bow.crippling-shot.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot.cruel"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot.cruel"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.cruel"
+    },
+    "item.barbarian-bow.far": {
+      "id": "item.barbarian-bow.far",
+      "name": "Far Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot.far",
+        "attack.barbarian-bow.crippling-shot.far"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot.far"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot.far"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.far"
+    },
+    "item.barbarian-bow.long": {
+      "id": "item.barbarian-bow.long",
+      "name": "Long Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot.long",
+        "attack.barbarian-bow.crippling-shot.long"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot.long"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot.long"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.long"
+    },
+    "item.javelin.heavy": {
+      "id": "item.javelin.heavy",
+      "name": "Heavy Javelin",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.javelin.throw.heavy",
+        "attack.javelin.stab.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.javelin",
+      "enchant": "enchant.heavy"
+    },
+    "item.javelin.keen": {
+      "id": "item.javelin.keen",
+      "name": "Keen Javelin",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.javelin.throw.keen",
+        "attack.javelin.stab.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.javelin",
+      "enchant": "enchant.keen"
+    },
+    "item.javelin.cruel": {
+      "id": "item.javelin.cruel",
+      "name": "Cruel Javelin",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.javelin.throw.cruel",
+        "attack.javelin.stab.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.javelin",
+      "enchant": "enchant.cruel"
+    },
+    "item.longsword.heavy": {
+      "id": "item.longsword.heavy",
+      "name": "Heavy Longsword",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.longsword.slash.heavy",
+        "attack.longsword.stab.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.heavy"
+    },
+    "item.longsword.keen": {
+      "id": "item.longsword.keen",
+      "name": "Keen Longsword",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.longsword.slash.keen",
+        "attack.longsword.stab.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.keen"
+    },
+    "item.longsword.cruel": {
+      "id": "item.longsword.cruel",
+      "name": "Cruel Longsword",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.longsword.slash.cruel",
+        "attack.longsword.stab.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.cruel"
+    },
+    "item.halberd.masterwork": {
+      "id": "item.halberd.masterwork",
+      "name": "Masterwork Halberd",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack"
+        }
+      ],
+      "base": "item.halberd"
+    },
+    "item.halberd.heavy": {
+      "id": "item.halberd.heavy",
+      "name": "Heavy Halberd",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.halberd.hack.heavy",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack.heavy"
+        }
+      ],
+      "base": "item.halberd",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "enchant enchant.heavy on attack.halberd.cleave: not an attack row — not copied"
+      ]
+    },
+    "item.halberd.keen": {
+      "id": "item.halberd.keen",
+      "name": "Keen Halberd",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.halberd.hack.keen",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack.keen"
+        }
+      ],
+      "base": "item.halberd",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "enchant enchant.keen on attack.halberd.cleave: not an attack row — not copied"
+      ]
+    },
+    "item.halberd.cruel": {
+      "id": "item.halberd.cruel",
+      "name": "Cruel Halberd",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.halberd.hack.cruel",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack.cruel"
+        }
+      ],
+      "base": "item.halberd",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "enchant enchant.cruel on attack.halberd.cleave: not an attack row — not copied"
+      ]
+    },
+    "item.fire-staff.masterwork": {
+      "id": "item.fire-staff.masterwork",
+      "name": "Masterwork Fire Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.fire-staff.fire-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ],
+      "base": "item.fire-staff",
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed"
+      ]
+    },
+    "item.fire-staff.heavy": {
+      "id": "item.fire-staff.heavy",
+      "name": "Heavy Fire Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.fire-staff.fire-blast.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast.heavy"
+        }
+      ],
+      "base": "item.fire-staff",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed"
+      ]
+    },
+    "item.fire-staff.keen": {
+      "id": "item.fire-staff.keen",
+      "name": "Keen Fire Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.fire-staff.fire-blast.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast.keen"
+        }
+      ],
+      "base": "item.fire-staff",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed"
+      ]
+    },
+    "item.fire-staff.cruel": {
+      "id": "item.fire-staff.cruel",
+      "name": "Cruel Fire Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.fire-staff.fire-blast.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast.cruel"
+        }
+      ],
+      "base": "item.fire-staff",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed"
+      ]
+    },
+    "item.frost-staff.masterwork": {
+      "id": "item.frost-staff.masterwork",
+      "name": "Masterwork Frost Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.frost-staff.frost-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.frost-staff.frost-blast.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.frost-staff",
+          "onlyWithAttack": "attack.frost-staff.frost-blast"
+        }
+      ],
+      "base": "item.frost-staff",
+      "gaps": [
+        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+      ]
+    },
+    "item.frost-staff.heavy": {
+      "id": "item.frost-staff.heavy",
+      "name": "Heavy Frost Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.frost-staff.frost-blast.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.frost-staff.frost-blast.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.frost-staff",
+          "onlyWithAttack": "attack.frost-staff.frost-blast.heavy"
+        }
+      ],
+      "base": "item.frost-staff",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+      ]
+    },
+    "item.frost-staff.keen": {
+      "id": "item.frost-staff.keen",
+      "name": "Keen Frost Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.frost-staff.frost-blast.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.frost-staff.frost-blast.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.frost-staff",
+          "onlyWithAttack": "attack.frost-staff.frost-blast.keen"
+        }
+      ],
+      "base": "item.frost-staff",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+      ]
+    },
+    "item.frost-staff.cruel": {
+      "id": "item.frost-staff.cruel",
+      "name": "Cruel Frost Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.frost-staff.frost-blast.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.frost-staff.frost-blast.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.frost-staff",
+          "onlyWithAttack": "attack.frost-staff.frost-blast.cruel"
+        }
+      ],
+      "base": "item.frost-staff",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+      ]
+    },
+    "item.earth-staff.masterwork": {
+      "id": "item.earth-staff.masterwork",
+      "name": "Masterwork Earth Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.earth-staff.earth-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.earth-staff.earth-blast.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.earth-staff",
+          "onlyWithAttack": "attack.earth-staff.earth-blast"
+        }
+      ],
+      "base": "item.earth-staff",
+      "gaps": [
+        "grants power.earth-staff.earth-shield — item power — shape unparsed"
+      ]
+    },
+    "item.earth-staff.heavy": {
+      "id": "item.earth-staff.heavy",
+      "name": "Heavy Earth Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.earth-staff.earth-blast.heavy"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.earth-staff.earth-blast.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.earth-staff",
+          "onlyWithAttack": "attack.earth-staff.earth-blast.heavy"
+        }
+      ],
+      "base": "item.earth-staff",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "grants power.earth-staff.earth-shield — item power — shape unparsed"
+      ]
+    },
+    "item.earth-staff.keen": {
+      "id": "item.earth-staff.keen",
+      "name": "Keen Earth Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.earth-staff.earth-blast.keen"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.earth-staff.earth-blast.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.earth-staff",
+          "onlyWithAttack": "attack.earth-staff.earth-blast.keen"
+        }
+      ],
+      "base": "item.earth-staff",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "grants power.earth-staff.earth-shield — item power — shape unparsed"
+      ]
+    },
+    "item.earth-staff.cruel": {
+      "id": "item.earth-staff.cruel",
+      "name": "Cruel Earth Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.earth-staff.earth-blast.cruel"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.earth-staff.earth-blast.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.earth-staff",
+          "onlyWithAttack": "attack.earth-staff.earth-blast.cruel"
+        }
+      ],
+      "base": "item.earth-staff",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "grants power.earth-staff.earth-shield — item power — shape unparsed"
+      ]
+    },
+    "item.lightning-staff.masterwork": {
+      "id": "item.lightning-staff.masterwork",
+      "name": "Masterwork Lightning Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.lightning-staff.bolt"
+      ],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
+      "triggers": [],
+      "base": "item.lightning-staff"
+    },
+    "item.lightning-staff.heavy": {
+      "id": "item.lightning-staff.heavy",
+      "name": "Heavy Lightning Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.lightning-staff.bolt.heavy"
+      ],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
+      "triggers": [],
+      "base": "item.lightning-staff",
+      "enchant": "enchant.heavy"
+    },
+    "item.lightning-staff.keen": {
+      "id": "item.lightning-staff.keen",
+      "name": "Keen Lightning Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.lightning-staff.bolt.keen"
+      ],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
+      "triggers": [],
+      "base": "item.lightning-staff",
+      "enchant": "enchant.keen"
+    },
+    "item.lightning-staff.cruel": {
+      "id": "item.lightning-staff.cruel",
+      "name": "Cruel Lightning Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.lightning-staff.bolt.cruel"
+      ],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
+      "triggers": [],
+      "base": "item.lightning-staff",
+      "enchant": "enchant.cruel"
+    },
+    "item.force-staff.masterwork": {
+      "id": "item.force-staff.masterwork",
+      "name": "Masterwork Force Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.force-staff.force-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.force-staff"
+    },
+    "item.force-staff.heavy": {
+      "id": "item.force-staff.heavy",
+      "name": "Heavy Force Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.force-staff.force-blast.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.force-staff",
+      "enchant": "enchant.heavy"
+    },
+    "item.force-staff.keen": {
+      "id": "item.force-staff.keen",
+      "name": "Keen Force Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.force-staff.force-blast.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.force-staff",
+      "enchant": "enchant.keen"
+    },
+    "item.force-staff.cruel": {
+      "id": "item.force-staff.cruel",
+      "name": "Cruel Force Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.force-staff.force-blast.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.force-staff",
+      "enchant": "enchant.cruel"
+    },
+    "item.holy-symbol.heavy": {
+      "id": "item.holy-symbol.heavy",
+      "name": "Heavy Holy Symbol",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-symbol.wrath.heavy"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": [],
+      "base": "item.holy-symbol",
+      "enchant": "enchant.heavy"
+    },
+    "item.holy-symbol.keen": {
+      "id": "item.holy-symbol.keen",
+      "name": "Keen Holy Symbol",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-symbol.wrath.keen"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": [],
+      "base": "item.holy-symbol",
+      "enchant": "enchant.keen"
+    },
+    "item.holy-symbol.cruel": {
+      "id": "item.holy-symbol.cruel",
+      "name": "Cruel Holy Symbol",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-symbol.wrath.cruel"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": [],
+      "base": "item.holy-symbol",
+      "enchant": "enchant.cruel"
+    },
+    "item.priest-chain.heavy": {
+      "id": "item.priest-chain.heavy",
+      "name": "Heavy Priest Chain",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.priest-chain.smite.heavy"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.priest-chain",
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed"
+      ]
+    },
+    "item.priest-chain.keen": {
+      "id": "item.priest-chain.keen",
+      "name": "Keen Priest Chain",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.priest-chain.smite.keen"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.priest-chain",
+      "enchant": "enchant.keen",
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed"
+      ]
+    },
+    "item.priest-chain.cruel": {
+      "id": "item.priest-chain.cruel",
+      "name": "Cruel Priest Chain",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.priest-chain.smite.cruel"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.priest-chain",
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed"
+      ]
+    },
+    "item.barbarian-hide.masterwork": {
+      "id": "item.barbarian-hide.masterwork",
+      "name": "Masterwork Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 2,
+        "luck": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide"
+    },
+    "item.barbarian-hide.hale": {
+      "id": "item.barbarian-hide.hale",
+      "name": "Hale Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 3,
+        "maxHp": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.hale"
+    },
+    "item.barbarian-hide.lucky": {
+      "id": "item.barbarian-hide.lucky",
+      "name": "Lucky Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 11
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.lucky"
+    },
+    "item.barbarian-hide.nimble": {
+      "id": "item.barbarian-hide.nimble",
+      "name": "Nimble Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 3,
+        "dodge": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.nimble"
+    },
+    "item.barbarian-hide.fleet": {
+      "id": "item.barbarian-hide.fleet",
+      "name": "Fleet Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 3,
+        "movement": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.fleet"
+    },
+    "item.studded-leather.masterwork": {
+      "id": "item.studded-leather.masterwork",
+      "name": "Masterwork Studded Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather"
+    },
+    "item.studded-leather.hale": {
+      "id": "item.studded-leather.hale",
+      "name": "Hale Studded Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.hale"
+    },
+    "item.studded-leather.lucky": {
+      "id": "item.studded-leather.lucky",
+      "name": "Lucky Studded Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.lucky"
+    },
+    "item.studded-leather.nimble": {
+      "id": "item.studded-leather.nimble",
+      "name": "Nimble Studded Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2,
+        "dodge": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.nimble"
+    },
+    "item.studded-leather.fleet": {
+      "id": "item.studded-leather.fleet",
+      "name": "Fleet Studded Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2,
+        "movement": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.fleet"
+    },
+    "item.heavy-leather.masterwork": {
+      "id": "item.heavy-leather.masterwork",
+      "name": "Masterwork Heavy Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": 0,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather"
+    },
+    "item.heavy-leather.hale": {
+      "id": "item.heavy-leather.hale",
+      "name": "Hale Heavy Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 6,
+        "maxStamina": -1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.hale"
+    },
+    "item.heavy-leather.lucky": {
+      "id": "item.heavy-leather.lucky",
+      "name": "Lucky Heavy Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": -1,
+        "dodge": -5,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.lucky"
+    },
+    "item.heavy-leather.nimble": {
+      "id": "item.heavy-leather.nimble",
+      "name": "Nimble Heavy Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": -1,
+        "dodge": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.nimble"
+    },
+    "item.heavy-leather.fleet": {
+      "id": "item.heavy-leather.fleet",
+      "name": "Fleet Heavy Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": -1,
+        "dodge": -5,
+        "movement": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.fleet"
+    },
+    "item.heavy-chain.masterwork": {
+      "id": "item.heavy-chain.masterwork",
+      "name": "Masterwork Heavy Chain",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain"
+    },
+    "item.heavy-chain.hale": {
+      "id": "item.heavy-chain.hale",
+      "name": "Hale Heavy Chain",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1,
+        "maxHp": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.hale"
+    },
+    "item.heavy-chain.lucky": {
+      "id": "item.heavy-chain.lucky",
+      "name": "Lucky Heavy Chain",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.lucky"
+    },
+    "item.heavy-chain.nimble": {
+      "id": "item.heavy-chain.nimble",
+      "name": "Nimble Heavy Chain",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1,
+        "dodge": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.nimble"
+    },
+    "item.heavy-chain.fleet": {
+      "id": "item.heavy-chain.fleet",
+      "name": "Fleet Heavy Chain",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": 0
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.fleet"
+    },
+    "item.mismatched-armor.masterwork": {
+      "id": "item.mismatched-armor.masterwork",
+      "name": "Masterwork Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor"
+    },
+    "item.mismatched-armor.hale": {
+      "id": "item.mismatched-armor.hale",
+      "name": "Hale Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 6,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.hale"
+    },
+    "item.mismatched-armor.lucky": {
+      "id": "item.mismatched-armor.lucky",
+      "name": "Lucky Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.lucky"
+    },
+    "item.mismatched-armor.nimble": {
+      "id": "item.mismatched-armor.nimble",
+      "name": "Nimble Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1,
+        "dodge": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.nimble"
+    },
+    "item.mismatched-armor.fleet": {
+      "id": "item.mismatched-armor.fleet",
+      "name": "Fleet Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": 0
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.fleet"
+    },
+    "item.creature-hide.masterwork": {
+      "id": "item.creature-hide.masterwork",
+      "name": "Masterwork Creature Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 5,
+        "maxHp": 1,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide"
+    },
+    "item.creature-hide.hale": {
+      "id": "item.creature-hide.hale",
+      "name": "Hale Creature Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 5,
+        "maxHp": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide",
+      "enchant": "enchant.hale"
+    },
+    "item.creature-hide.lucky": {
+      "id": "item.creature-hide.lucky",
+      "name": "Lucky Creature Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 13,
+        "dodge": 5,
+        "maxHp": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide",
+      "enchant": "enchant.lucky"
+    },
+    "item.creature-hide.nimble": {
+      "id": "item.creature-hide.nimble",
+      "name": "Nimble Creature Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 11,
+        "maxHp": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide",
+      "enchant": "enchant.nimble"
+    },
+    "item.creature-hide.fleet": {
+      "id": "item.creature-hide.fleet",
+      "name": "Fleet Creature Hide",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 5,
+        "maxHp": 1,
+        "movement": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide",
+      "enchant": "enchant.fleet"
+    },
+    "item.plated-armor.masterwork": {
+      "id": "item.plated-armor.masterwork",
+      "name": "Masterwork Plated Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -1,
+        "dodge": -10,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor"
+    },
+    "item.plated-armor.hale": {
+      "id": "item.plated-armor.hale",
+      "name": "Hale Plated Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 6,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.hale"
+    },
+    "item.plated-armor.lucky": {
+      "id": "item.plated-armor.lucky",
+      "name": "Lucky Plated Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 4,
+        "luck": 11,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.lucky"
+    },
+    "item.plated-armor.nimble": {
+      "id": "item.plated-armor.nimble",
+      "name": "Nimble Plated Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -4,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.nimble"
+    },
+    "item.plated-armor.fleet": {
+      "id": "item.plated-armor.fleet",
+      "name": "Fleet Plated Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -1,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.fleet"
+    },
+    "item.reflective-armor.masterwork": {
+      "id": "item.reflective-armor.masterwork",
+      "name": "Masterwork Reflective Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor"
+    },
+    "item.reflective-armor.hale": {
+      "id": "item.reflective-armor.hale",
+      "name": "Hale Reflective Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1,
+        "maxHp": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.hale"
+    },
+    "item.reflective-armor.lucky": {
+      "id": "item.reflective-armor.lucky",
+      "name": "Lucky Reflective Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.lucky"
+    },
+    "item.reflective-armor.nimble": {
+      "id": "item.reflective-armor.nimble",
+      "name": "Nimble Reflective Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1,
+        "dodge": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.nimble"
+    },
+    "item.reflective-armor.fleet": {
+      "id": "item.reflective-armor.fleet",
+      "name": "Fleet Reflective Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "movement": -2,
+        "accuracy": -15,
+        "reach": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.fleet"
+    },
+    "item.soaked-plate.masterwork": {
+      "id": "item.soaked-plate.masterwork",
+      "name": "Masterwork Soaked Plate",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 3,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate"
+    },
+    "item.soaked-plate.hale": {
+      "id": "item.soaked-plate.hale",
+      "name": "Hale Soaked Plate",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.hale"
+    },
+    "item.soaked-plate.lucky": {
+      "id": "item.soaked-plate.lucky",
+      "name": "Lucky Soaked Plate",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 3,
+        "luck": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.lucky"
+    },
+    "item.soaked-plate.nimble": {
+      "id": "item.soaked-plate.nimble",
+      "name": "Nimble Soaked Plate",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 3,
+        "dodge": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.nimble"
+    },
+    "item.soaked-plate.fleet": {
+      "id": "item.soaked-plate.fleet",
+      "name": "Fleet Soaked Plate",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 3,
+        "movement": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.fleet"
     }
   },
   "encounters": {

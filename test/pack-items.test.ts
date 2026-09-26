@@ -46,7 +46,11 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
     // Hero assembly (2026-09-03): ITEMS also carries the generated tier-3
     // enchanted rows (ITEMS-PLAN.md §6, base + enchant); the Codex rows are
     // exactly the ones with no `enchant` provenance. Agreement, not a count.
-    const codexOnly = Object.values(ITEMS).filter((it) => !(it as { enchant?: string }).enchant)
+    // LAW 10 — 2026-09-25 (pack.derived-rows): the Forge's masterwork rows are derived
+    // (GEAR-DESIGN.md §3) and name a `base` but no enchant, so "no derivation provenance"
+    // now reads both fields. The claim — the Codex rows are exactly the underived ones,
+    // every one present with its facts verbatim — is unchanged; no assertion moved.
+    const codexOnly = Object.values(ITEMS).filter((it) => !(it as { enchant?: string }).enchant && !(it as { base?: string }).base)
     expect(codexOnly.length).toBe(codex.size)
     for (const [id, c] of codex) {
       const it = ITEMS[id]!
