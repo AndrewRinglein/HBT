@@ -2801,3 +2801,15 @@ Ruled:
 - **Still unfinished, carried to the viewer's work list** (`VFX/VISUAL-BATTLE-UPDATES.md` §4): stun, slow and protection still borrow the shadow, frost and weak hexVFX styles (`viewer/src/theme.js` line 89). Ground that stays burning, frozen, poisoned or dark was found already drawn (`viewer/src/board.js`, "the painted ground layers", 2026-09-03), so nothing is carried for `viewer.tile-state`.
 - **`assets/vfx/`** — the empty folder is deleted and `VFX/BATTLE-SCREEN-VFX-DECISIONS.md` points at `viewer/src/hexvfx.js`.
 - **`content.art-manifest`** — closed.
+
+## 2026-09-25 — masterwork: one-handers and shields too
+
+Andrew, reading the wrap's note that `item.longsword.masterwork` cannot exist because masterwork is "two-handers and armor only" (GEAR-DESIGN.md §3; SWITCHES.md `longswordMasterwork`):
+
+“Masterwork should not only apply to two-handed armor. It can also apply to a shield. It can also apply to a one-hander.”
+
+Ruled:
+
+- **Masterwork** applies to tier-1 two-handers, one-handers, shields and armor. GEAR-DESIGN.md §3 line "two-handers and armor only" is replaced, and "No shield is ever masterwork or enchanted" now reads that a shield may be masterwork (it is still never enchanted — not ruled otherwise).
+- **What masterwork gives is unchanged** — +1 Max Stamina, ×1.5 Supplies, tier 2. The ruling widens which items can be masterwork, nothing else.
+- **Owed:** `fix.masterwork-scope` — content's `mkenginepack.mjs` and the kingdom's `tools/mk-items.mjs` both hard-code "two-handers and armor, never a shield"; both change, and `item.longsword.masterwork` then exists, as `pack.derived-rows` originally expected.
