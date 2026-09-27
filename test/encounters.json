@@ -38,5 +38,109 @@
       }
     ],
     "schedule": []
+  },
+  {
+    "id": "test.encounter.anchor-hold",
+    "name": "Anchor: hold the line (TEST)",
+    "map": "test.map.journey-20x10",
+    "board": {
+      "width": 20,
+      "height": 10
+    },
+    "note": "ai.encounter-rules (engine, 2026-09-26; AI-DESIGN.md §4): an encounter anchors its Strong Skeleton to (14,4), radius 1; the Zombie beside it is not anchored and plays its mode alone. TEST only, no campaign claim.",
+    "heroZone": {
+      "count": 1,
+      "at": {
+        "near": {
+          "col": 2,
+          "row": 4
+        },
+        "range": 0
+      }
+    },
+    "setup": [
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 14,
+          "row": 4
+        }
+      },
+      {
+        "unit": "unit.zombie",
+        "at": {
+          "col": 14,
+          "row": 6
+        }
+      }
+    ],
+    "schedule": [],
+    "aiRules": [
+      {
+        "id": "test.anchor.hold-the-line",
+        "rule": "anchor",
+        "units": [
+          "unit.strong-skeleton"
+        ],
+        "at": {
+          "col": 14,
+          "row": 4
+        },
+        "radius": 1,
+        "note": "the skeleton's moves may not end more than 1 hex from (14,4)"
+      }
+    ]
+  },
+  {
+    "id": "test.encounter.coordinated-pack",
+    "name": "Coordination: one target (TEST)",
+    "map": "test.map.journey-20x10",
+    "board": {
+      "width": 20,
+      "height": 10
+    },
+    "note": "ai.encounter-rules (engine, 2026-09-26; AI-DESIGN.md §4): an encounter turns coordination on for its two Strong Skeletons; once per Phase the side picks the standing enemy with the least Health as its focus. TEST only, no campaign claim.",
+    "heroZone": {
+      "count": 2,
+      "at": {
+        "near": {
+          "col": 2,
+          "row": 4
+        },
+        "range": 1
+      }
+    },
+    "setup": [
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 9,
+          "row": 0
+        }
+      },
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 9,
+          "row": 9
+        }
+      }
+    ],
+    "schedule": [],
+    "aiRules": [
+      {
+        "id": "test.coordinate.one-target",
+        "rule": "coordinate",
+        "units": [
+          "unit.strong-skeleton"
+        ],
+        "focus": [
+          {
+            "targetHealth": -1
+          }
+        ],
+        "note": "the side's focus: least Health, ties to the lower id"
+      }
+    ]
   }
 ]
