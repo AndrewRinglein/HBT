@@ -18411,6 +18411,162 @@ export const UNIT_PACK = {
           "power.sidestep"
         ],
         "triggers": []
+      },
+      {
+        "typeId": "test-rout-zombie",
+        "name": "Rout Zombie (TEST)",
+        "maxHp": 30,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-rout-zombie",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-rout-zombie"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-rout-zombie"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "aiChanges": [
+          {
+            "id": "test.rout-zombie.rout",
+            "when": {
+              "hpBelow": 50
+            },
+            "mode": "flee"
+          }
+        ]
+      },
+      {
+        "typeId": "test-late-zombie",
+        "name": "Late Zombie (TEST)",
+        "maxHp": 30,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "flee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-late-zombie",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-late-zombie"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-late-zombie"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "aiChanges": [
+          {
+            "id": "test.late-zombie.charge",
+            "when": {
+              "fromTurn": 3
+            },
+            "mode": "dumb-melee"
+          }
+        ]
       }
     ],
     "attacks": {

@@ -2,7 +2,7 @@
 // Every mutator emits an event, which is what makes the log complete by construction —
 // and therefore what makes replay, the text renderer, and every test possible.
 
-import type { Ctx, Event, LifeState, Prop, Unit, UnitMods } from './types.js'
+import type { AiModeChange, Ctx, Event, LifeState, Prop, Unit, UnitMods } from './types.js'
 import type { HexId } from './hex.js'
 import { effective } from './stats.js'
 
@@ -584,4 +584,22 @@ export function damageProp(ctx: Ctx, propId: string, by: number, causeId: string
   emit(ctx, 'prop.damaged', causeId, { actor, prop: propId, footprint: prop.footprint.kind, height: prop.height, tier: prop.material, stepsBefore: before, stepsAfter: after })
   // fix.prop-destroyed-remnant: the low cover left behind is stated, not re-derived by a reader.
   if (leaves) emit(ctx, 'prop.destroyed', causeId, { actor, prop: propId, leaves, ...(leaves === 'low' ? { remnant: structuredClone(props[at]) } : {}) })
+}
+
+/**
+ * ai.mode-change (AI-DESIGN.md §3E, ruled 2026-09-26): the unit's own mode
+ * becomes the change's, the change leaves the unit's list (it happens once),
+ * and `ai.mode` names the change as its cause (Law 12). What decides WHEN is
+ * the AI's (src/ai/modes.ts); this only writes the state and says so.
+ */
+export function changeAiMode(ctx: Ctx, id: number, change: AiModeChange): void {
+  const u = unit(ctx, id)
+  if (!u.aiChanges?.some((c) => c.id === change.id)) throw new Error(`ai.mode-change: unit ${u.name} has no pending change '${change.id}'`)
+  if (!ctx.aiModes[change.mode]) throw new Error(`ai.mode-change: '${change.id}' changes to unknown AI mode '${change.mode}'`)
+  const from = u.ai
+  u.ai = change.mode
+  const rest = u.aiChanges.filter((c) => c.id !== change.id)
+  if (rest.length) u.aiChanges = rest
+  else delete u.aiChanges
+  emit(ctx, 'ai.mode', change.id, { actor: id, mode: change.mode, from, when: { ...change.when } })
 }

@@ -301,6 +301,28 @@ export type AiModeRow = {
   readonly weights: Readonly<Record<string, readonly AiTier[]>>
 }
 
+/**
+ * ai.mode-change (AI-DESIGN.md §3E; DECISIONS.md 2026-09-26 "the AI: a framework
+ * now; modes can change"): "a unit's mode can change mid-battle — a brute that
+ * runs when badly hurt, a boss that fights differently below half health. The
+ * condition and the new mode are data on the unit's row." Read at the start of
+ * the unit's own Activation; each change happens once, and emits `ai.mode`
+ * naming it as the cause (SWITCHES.md, "AI mode changes").
+ */
+export type AiModeChange = {
+  readonly id: string
+  /** Every condition named must hold. Absent conditions do not narrow. */
+  readonly when: AiModeCondition
+  /** The mode the unit changes to — a key of ctx.aiModes (bare, as a unit's `ai`). */
+  readonly mode: string
+}
+export type AiModeCondition = {
+  /** Health below this integer percent of max Health: hp × 100 < maxHp × hpBelow (Law 7). */
+  readonly hpBelow?: number
+  /** The Turn is this one or later. */
+  readonly fromTurn?: number
+}
+
 /** ai.scorer — one line of the decision log: a plan and the numbers behind it (Law 12). */
 export type AiPlanLine = {
   readonly actionId: string
@@ -689,6 +711,8 @@ export type UnitDef = {
   readonly maxStamina: number
   readonly staminaRegen: number
   readonly ai: string
+  /** ai.mode-change: the changes this unit's mode makes mid-battle, in listed order. Absent = none. */
+  readonly aiChanges?: readonly AiModeChange[]
   /**
    * seam.items-per-unit (2026-09-02): `ai` is derived from the kit's attacks
    * unless the Codex row AUTHORED one — then it survives a re-kit at fielding.
@@ -817,6 +841,8 @@ export type Unit = {
   huntTarget?: number
   /** An AI mode standing in for the row's until a Turn ends (the civilians' flight, ruled 2026-09-03). */
   aiOverride?: { mode: string; untilTurn: number }
+  /** ai.mode-change: the changes still to come, own copies; one leaves the list when it happens. Absent = none (snapshots unchanged). */
+  aiChanges?: AiModeChange[]
   /** capability.charges: uses left this Battle, by power id. Only powers with `uses` appear. */
   usesLeft: Record<string, number>
   /** capability.charges: what was spent, for the BattleResult. */

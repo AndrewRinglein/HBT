@@ -174,6 +174,8 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(typeof status.id === 'string' && Object.hasOwn(runtime.statuses, status.id) && integer(status.value, 0) && (status.by === undefined || unitId(status.by)), 'unit status')
     }
     requireThat(u.huntTarget === undefined || unitId(u.huntTarget), 'hunt target')
+    // ai.mode-change: the changes still to come — id, a known mode, integer conditions
+    requireThat(u.aiChanges === undefined || (Array.isArray(u.aiChanges) && u.aiChanges.length > 0 && u.aiChanges.every((c: any) => { record(c); record(c.when); return typeof c.id === 'string' && typeof c.mode === 'string' && (c.when.hpBelow === undefined || integer(c.when.hpBelow, 1, 100)) && (c.when.fromTurn === undefined || integer(c.when.fromTurn, 1)) })), 'unit AI mode changes')
     requireThat(u.consumedBy === undefined || (typeof u.consumedBy === 'string' && /^prop\./.test(u.consumedBy)), 'consumed by')   // v2.knockback-collisions
   }
   requireThat(Array.isArray(s.events) && st.seq === s.events.length, 'event count')

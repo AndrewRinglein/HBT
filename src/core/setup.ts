@@ -48,6 +48,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     // usable on Turn W+1 — isReady is `turn >= cooldowns[id]`).
     usesLeft: Object.fromEntries(actions.flatMap((a) => { const n = ACTIONS[a]?.uses; return n ? [[a, n]] : [] })),
     ai: def.ai,
+    ...(def.aiChanges?.length ? { aiChanges: def.aiChanges.map((c) => ({ ...c, when: { ...c.when } })) } : {}),   // ai.mode-change: absent when none
     actions,
     cooldowns: Object.fromEntries(actions.flatMap((a) => { const w = ACTIONS[a]?.warmup; return w ? [[a, w + 1]] : [] })),
     statuses: [],

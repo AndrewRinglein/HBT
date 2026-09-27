@@ -4632,7 +4632,18 @@
    "ai.scorer"
   ],
   "spec": "Ruled 2026-09-26 (DECISIONS.md 'the AI: a framework now...'): a unit's mode can change mid-battle — a brute that runs when badly hurt, a boss that fights differently below half health. The condition and the new mode are data on the unit's row; the change emits an event (ai.mode, GLOSSARY) naming its cause.",
-  "expect": "a scripted battle where a unit crossing a health threshold switches mode, logged with its cause, and a second unit with a different condition switches on its own data"
+  "expect": "a scripted battle where a unit crossing a health threshold switches mode, logged with its cause, and a second unit with a different condition switches on its own data",
+  "note": "Variants declared 2026-09-26 by the implementing chat: two mode changes through the same mechanism on two TEST rows (content/test/units.json) — a Health threshold (test.rout-zombie.rout) and a Turn (test.late-zombie.charge); the second is pure data.",
+  "variants": [
+   "test.rout-zombie.rout",
+   "test.late-zombie.charge"
+  ],
+  "probeIds": [
+   "test.rout-zombie.rout",
+   "test.late-zombie.charge"
+  ],
+  "status": "done",
+  "sha": "d2263f5"
  },
  {
   "id": "ai.encounter-rules",

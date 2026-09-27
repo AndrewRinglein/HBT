@@ -82,6 +82,18 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.prone-b', note: 'TEST: Tripper B floors Osric on a hit (test.status.floored, the second prone instance); Osric stands and swings. No campaign claim.',
     mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-trip-b'], enemyHexes: [86], replicate: 0,
   },
+  // ai.mode-change (2026-09-26; AI-DESIGN.md §3E): the two instances of a mode that
+  // changes mid-battle, each live in a real battle — by Health (the Rout Zombie runs
+  // below half) and by the Turn (the Late Zombie hangs back, then charges from Turn 3).
+  // The changes are data on the TEST rows (content/test/units.json). No campaign claim.
+  'test.mode-change-a': {
+    id: 'test.mode-change-a', note: 'TEST: a warrior against the Rout Zombie (30 Health), which changes from dumb-melee to flee once below half Health. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], enemies: ['test-rout-zombie'], enemyHexes: [92], replicate: 0,
+  },
+  'test.mode-change-b': {
+    id: 'test.mode-change-b', note: 'TEST: a warrior against the Late Zombie (30 Health), which flees until Turn 3 and then charges (dumb-melee). No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], enemies: ['test-late-zombie'], enemyHexes: [89], replicate: 0,
+  },
   // v2.knockback-collisions (2026-09-23): a real battle whose pushes are stopped by
   // authored props (content test.map.well-shove, 9x7). The golem stands between two
   // zombies on the middle row; every push it lands drives one into prop.test.boulder (collision 4)

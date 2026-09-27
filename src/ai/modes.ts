@@ -16,8 +16,8 @@ import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
 import { previewBurst } from './../core/burst.js'
 import { isBlocked, isConfused, isProne } from './../core/status.js'
 import { TERRAIN } from './../core/types.js'
-import { emit, unit } from './../core/mutate.js'
-import type { AiModeRow, AiTier, Ctx, Unit } from './../core/types.js'
+import { changeAiMode, emit, unit } from './../core/mutate.js'
+import type { AiModeChange, AiModeRow, AiTier, Ctx, Unit } from './../core/types.js'
 import { AI_MODE_ROWS } from './../content/ai-modes.js'
 import { compareScores, lineOf, rank, scorePlan, type Plan, type Ranked, type Scene } from './scorer.js'
 
@@ -908,9 +908,25 @@ const RULES: Record<AiModeRow['rules'], (decision: Decision, u: Unit) => void> =
   'hunter': hunter,
 }
 
+/**
+ * ai.mode-change: do a change's conditions hold now? Every condition it names
+ * must (SWITCHES.md aiModeChangeConditions). Integers only (Law 7).
+ */
+function aiChangeHolds(ctx: Ctx, u: Unit, change: AiModeChange): boolean {
+  const w = change.when
+  if (w.hpBelow !== undefined && !(u.hp * 100 < u.maxHp * w.hpBelow)) return false
+  if (w.fromTurn !== undefined && !(ctx.state.turn >= w.fromTurn)) return false
+  return true
+}
+
 export function runActivation(ctx: Ctx, unitId: number): void {
   const u = unit(ctx, unitId)
   if (ctx.state.outcome || u.lifeState !== 'standing' || isBlocked(ctx, u) || u.primaryUsed) return
+  // ai.mode-change (AI-DESIGN.md §3E): the row's changes are read as the
+  // unit's own Activation opens, before it chooses — every one whose
+  // conditions hold, in listed order, so the last one standing is the mode
+  // it plays (SWITCHES.md aiModeChangeWhen, aiModeChangeOrder).
+  for (const change of [...(u.aiChanges ?? [])]) if (aiChangeHolds(ctx, u, change)) changeAiMode(ctx, unitId, change)
   if (!ctx.aiModes[u.ai]) throw new Error(`unknown AI mode '${u.ai}'`)
   // capability.confusion (2026-09-03): "Swaps the affected unit's AI strategy
   // for a different one" — the next mode in registry order stands in, and the

@@ -6,6 +6,7 @@ import type { AbilityDef, ActionDef, AttackDef, UnitDef } from '../core/types.js
 import { disabledIds, omitDisabled, stripDisabledTriggers } from './disable.js'
 import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packDerivedItems, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
 import { MOVES } from './moves.js'
+import { AI_MODE_ROWS } from './ai-modes.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -279,6 +280,16 @@ for (const u of Object.values(UNITS)) {
   if (u.levelTable !== undefined && !(u.levelTable in LEVELS)) throw new Error(`unit '${u.typeId}' levels on '${u.levelTable}', which is not a level table in the pack`)
   // badge.mechanism: a row's badges name registry rows — unless the kill switch removed one, which is the seam working
   for (const b of u.badges ?? []) if (!(b in BADGES) && !disabledIds().has(b)) throw new Error(`unit '${u.typeId}' carries '${b}', which is not a badge in the pack`)
+  // ai.mode-change (2026-09-26): a row's mode change names a mode row, at least one condition, integers only — loud at load
+  for (const c of u.aiChanges ?? []) {
+    const w = c.when ?? {}
+    if (typeof c.id !== 'string' || !/^[a-z]+\.[a-z0-9.-]+$/.test(c.id)) throw new Error(`unit '${u.typeId}' has a mode change with no id`)
+    if (!(c.mode in AI_MODE_ROWS) && !disabledIds().has(`ai.${c.mode}`)) throw new Error(`unit '${u.typeId}' mode change '${c.id}' changes to '${c.mode}', which is not an AI mode row`)
+    const keys = Object.keys(w)
+    if (!keys.length || keys.some((k) => k !== 'hpBelow' && k !== 'fromTurn')) throw new Error(`unit '${u.typeId}' mode change '${c.id}' must name its condition — hpBelow and/or fromTurn, nothing else`)
+    if (w.hpBelow !== undefined && !(Number.isSafeInteger(w.hpBelow) && w.hpBelow >= 1 && w.hpBelow <= 100)) throw new Error(`unit '${u.typeId}' mode change '${c.id}': hpBelow is an integer percent, 1..100`)
+    if (w.fromTurn !== undefined && !(Number.isSafeInteger(w.fromTurn) && w.fromTurn >= 1)) throw new Error(`unit '${u.typeId}' mode change '${c.id}': fromTurn is an integer Turn, 1 or later`)
+  }
 }
 
 /** The standard battle: the Alpha Team on the west edge, four zombies on the east (ruled 2026-09-03; rows 15 and 0 until 2026-09-04). */

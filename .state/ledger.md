@@ -17032,3 +17032,21 @@ index 2b8a5f0..243fe87 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without ai.dumb-melee,ai.melee-aggressive — they genuinely test it
+
+## ai.mode-change — LANDED `d2263f5`
+2026-09-27 02:52
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/ai-mode-change.test.ts
+  PASS  gate 1 — the id appears in a real battle — test.rout-zombie.rout: 1 log lines, 1 fired, 1 changed state · test.late-zombie.charge: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/ai-mode-change.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.rout-zombie.rout live · test.late-zombie.charge live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.rout-zombie.rout,test.late-zombie.charge — they genuinely test it

@@ -1189,3 +1189,22 @@ in `src/ai/modes.ts`. Probes: `test/ai-scorer.test.ts`.
 Noticed building it, not changed (byte-identity): the kite's power-versus-staff check
 (`rangedKite`, "A power beats a staff shot") prices the staff as `bonus + stat` by hand,
 not through `preview()` — a Law 1 departure that predates the scorer.
+
+## AI mode changes — defaults taken building ai.mode-change (2026-09-26)
+
+AI-DESIGN.md §3E; DECISIONS.md 2026-09-26 "the AI: a framework now; modes can change": "a unit's
+mode can change mid-battle — a brute that runs when badly hurt, a boss that fights differently below
+half health. The condition and the new mode are data on the unit's row." The row field is `aiChanges`
+(`AiModeChange` in `src/core/types.ts`); the check is `runActivation` in `src/ai/modes.ts`; the
+mutator is `changeAiMode` (`src/core/mutate.ts`). Probes: `test/ai-mode-change.test.ts`, on two TEST
+rows (content/test/units.json: `test-rout-zombie`, `test-late-zombie`) and scenarios
+`test.mode-change-a` / `-b`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `aiModeChangeShape` | What does a row say to change its mode? | **`aiChanges: [{ id, when, mode }]` on the unit row, in listed order. `mode` is a mode row's key (bare, as a unit's `ai`); `id` is the change's own id, the `causeId` of its `ai.mode` line and what the kill-switch seam disables (like a trigger's). A TEST row's ids are the test family (`test.*`); a Codex row's id kind is not chosen here.** | The ruling puts the condition and the new mode on the row. An id per change is what makes the log name the cause (Law 12) and the seam reach it. No new id kind was minted: the test rows use `test.*`; which kind a Codex change carries (`trigger.*`, `ai.*`, another) is a naming decision left for Angela when content authors the first one. | provisional — 2026-09-26 |
+| `aiModeChangeConditions` | Which conditions can a change name? | **`hpBelow` — Health below that integer percent of max Health (hp × 100 < maxHp × hpBelow; 50 is "below half", exactly half does not count) — and `fromTurn` — the Turn is that one or later. Every condition named must hold; a change must name at least one. Checked at load.** | "Badly hurt" and "below half health" are the ruling's two examples, both Health. `fromTurn` is the second, different condition the item's expect asks for, and the smallest one the state already holds. Others (an ally falls, a phase is revealed) are added when content needs them — each a new key, no new mechanism. | provisional — 2026-09-26 |
+| `aiModeChangeWhen` | When is a change checked? | **As the unit's own Activation opens, before it chooses anything (after the stand-still checks: a downed, blocked or already-acted unit is not checked until it acts).** Whatever moved the state — a hit, a poison tick, a heal, the Turn — counts as it stands then. | A mode only matters when the unit chooses. One check point keeps the log's order simple: the change line comes right before that Activation's own `ai.mode` line. | provisional — 2026-09-26 |
+| `aiModeChangeOnce` | Does a change undo itself when its condition stops holding (a routed brute healed back to full)? | **No. A change happens once and leaves the unit's list; the new mode stays for the Battle.** A row that wants to change back authors a second change. | "A brute that runs when badly hurt" does not stop running because a priest healed it — and a mode that flickered each Activation would not be legible (AI-DESIGN §5). | provisional — 2026-09-26 |
+| `aiModeChangeOrder` | Two changes hold at once (one heavy hit takes a unit past two thresholds). | **Every change that holds happens, in listed order, each with its own `ai.mode` line; the last is the mode the unit plays.** | Listed order is explicit (Law 6), and the unit ends where its row says it should be for the state it is in, rather than one Activation behind. | provisional — 2026-09-26 |
+| `aiModeChangeUnder` | How does a change sit with the modes that stand in on top — the civilians' flight override, Confusion? | **A change rewrites the unit's own mode (`ai`). An override still stands in until its Turn ends, and Confusion still swaps on top of whatever the unit's mode now is.** | Both were ruled as temporary stand-ins over the unit's mode; the change is to the unit's mode itself. | provisional — 2026-09-26 |
