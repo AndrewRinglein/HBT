@@ -4698,8 +4698,13 @@
    "attack.necromancer.necro-bolt"
   ],
   "attempts": 1,
-  "status": "done-needs-review",
-  "sha": "f5e9cf8"
+  "status": "done",
+  "sha": "f5e9cf8",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:18:53.032Z",
+   "note": "One, that's fine."
+  }
  },
  {
   "id": "capability.charge",

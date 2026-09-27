@@ -17150,3 +17150,8 @@ index ae5e36a..230b794 100644
          expect(hash(ctx.state), 'full enemy-actions state').toBe(enemyActionsExpected.state)
 ```
 </details>
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-27T23:18:53.032Z · Angela: "One, that's fine."
+
+  ok  fix.enemy-accuracy-mod
