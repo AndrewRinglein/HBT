@@ -14,8 +14,13 @@
   "shape": "plumbing",
   "spec": "Found landing tool.gate-fits-cowork 2026-09-26: shard 8/8 fails in Cowork only on time — test/terrain.test.ts 'no unit enters an obstacle across 60 real battles' (3.9 s alone) and 'battles on the obstacle map still end' (3.2 s alone) against vitest's 5 s default, at load ~4 on 2 cores. Give each an explicit 30 s timeout with a Law 10 comment; no assertion changes. Others seen timing out under heavier load (zombie-rot, disabled-action-validation, flight-budget, afflictions, weak, status, alpha-flip) get the same treatment when they are seen failing, each measured.",
   "expect": "test/terrain.test.ts passes with its assertions unchanged; shard 8/8 completes in Cowork",
-  "status": "done-needs-review",
-  "sha": "d70f39e"
+  "status": "done",
+  "sha": "d70f39e",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "tool.gate-fits-cowork",
@@ -24,8 +29,13 @@
   "spec": "Andrew 2026-09-26 ('Add it'): a chat must be able to land and run the shards itself instead of handing Andrew commands. Measured 2026-09-26 in Cowork (2 cores, load ~4): each shell call dies at ~178 s and background processes die with the call; a gate check of fix.kiln-fire-test ran past 172 s (control battles alone 46 s, typecheck 5 s warm); shard 3/4 ran past 176 s; shard 1/4 took 99-111 s; shard 2/4 144 s. Two tests fail on time, not behaviour: additions.test.ts 'pass 2 — hills' (~4.5 s against a 5 s limit, ~21.5 s against 30 s) and integration.test.ts 'gate 2 — invariants across many battles' (5 s limit). Make the gate resumable across calls: each check's result is recorded against the exact tree (as .state/shards.json already does for shards), a re-run skips checks already passed on that tree, and --land commits only when every check has passed on the current tree — so a landing can be finished in several calls under 178 s each. Allow more, smaller shards (e.g. --shard k/8) with wrap accepting any complete set. Give the two slow tests explicit timeouts sized to measured runtime with headroom (a timeout is not an assertion; Law 10 comment at each edit). A tooling ambiguity goes in GBH's SWITCHES.md (DISPLAY-RULES rule 18).",
   "expect": "in Cowork, fix-sized landings complete through repeated gate calls each under 170 s with the same checks and verdicts as one terminal run; a check passed on one tree is re-run when the tree changes; every shard completes under 170 s; the two slow tests pass under load with their assertions unchanged",
   "changesBaseline": false,
-  "status": "done-needs-review",
-  "sha": "7cab62b"
+  "status": "done",
+  "sha": "7cab62b",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "fix.kiln-fire-test",
@@ -34,8 +44,13 @@
   "spec": "Andrew 2026-09-26 (DECISIONS.md 'no balance adjustments now; features first'). Since pack.enemy-actions the hellhounds' Close Bite ends showcase.kiln on Turn 5, before the fire reaches anyone, so test/ground-layers.test.ts 'The Kiln' fails on a balance outcome. Its claim is a mechanism: the fire reaches a unit standing on the line it paints. Prove that on the Kiln's own band data (advanceBand on a turn whose line is a standing hero's column), not on who survives. Law 10 rewrite, lands flagged.",
   "expect": "test/ground-layers.test.ts passes; the Kiln's band assertions on the full showcase battle are unchanged; the fire claim fails if the band stops applying its layer's entry status",
   "attempts": 1,
-  "status": "done-needs-review",
-  "sha": "e498052"
+  "status": "done",
+  "sha": "e498052",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "fix.masterwork-scope",
@@ -68,8 +83,13 @@
    "item.rune-vampire-hunter"
   ],
   "note": "The worn-item list is a new Unit field (Law 11) -- snapshots of item-carrying heroes change, and the progression-surge battle-cursor goldens (heroes wear rune-horror-breaker and rune-nightmare-slayer) move: recapture them and say so. Open question in DECISIONS: are bonus damage packets multiplied by a critical? Not part of this item.",
-  "status": "done-needs-review",
-  "sha": "e4fd418"
+  "status": "done",
+  "sha": "e4fd418",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "fix.vs-target-worn-gap-text",
@@ -77,8 +97,13 @@
   "shape": "plumbing",
   "spec": "station.vs-target (25c276c) reworded the gap on a WORN item's slayer (the bloodrunes) to explain why it stays a gap. That gap rides the unit.equipped event, so the battle-cursor goldens progression-surge-0/1/2 moved on text alone (shard 4, 2026-09-25) -- no damage changed. Keep the pre-station wording byte for byte ('slayer: {...} -- item field: slayer'); the reason already lives in SWITCHES.md vsTargetWornItems.",
   "expect": "test/battle-cursor.test.ts progression-surge-0/1/2 pass against their unchanged golden hashes; test/vs-target.test.ts still finds the worn slayer as a named gap with no rule",
-  "status": "done-needs-review",
-  "sha": "623ed0e"
+  "status": "done",
+  "sha": "623ed0e",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.structures-same-wall",
@@ -94,8 +119,13 @@
   ],
   "spec": "Andrew, 2026-09-25 (engine/DECISIONS.md 'shooting along your own wall', verbatim there): \"You should be able to shoot on the same wall.\" The rest of the wall an end of an attack line stands on - wall hexes connected to it through other wall hexes - does not block the line; every other wall, tower or house between still does (\"Walls and towers cannot shoot past other obstructions\" stands). Data: clearAlongOwnRun on the structure row, true for the wall only. SWITCHES.md sameWallBothEnds, sameWallOnly.",
   "expect": "an archer on a wall shoots along its unbroken wall and off its end; a separate wall, or a tower in the run, between still blocks; a unit on the ground is still blocked by a wall between; the bounded line check agrees with an independent whole-board reading on boards with real wall runs; control battles byte-identical.",
-  "status": "done-needs-review",
-  "sha": "c15923d"
+  "status": "done",
+  "sha": "c15923d",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.structures-reruled",
@@ -111,8 +141,13 @@
   ],
   "spec": "Two v2.structures defaults, re-ruled by Andrew 2026-09-25 (engine/DECISIONS.md, verbatim there): \"Walls and towers cannot shoot past other obstructions. You must leave the walls the same way you came up.\" LINES: a wall, tower or house hex blocks every attack line passing through it, whoever stands at either end; the height exception (a unit on a wall or in a tower shot over structures) is gone. LEAVING A WALL: only back across its stairs side (the wall row's leave is now 'entry'); a push off any other face is a collision with the wall. SWITCHES.md wallDescent and structureLines are now ruled.",
   "expect": "a shooter on a wall or in a tower cannot shoot past a tower or house between; a unit on a wall steps down only to its stair hex; a push off the far face collides with the wall; the bounded line check still agrees with the whole-board reading; control battles byte-identical.",
-  "status": "done-needs-review",
-  "sha": "f832bb1"
+  "status": "done",
+  "sha": "f832bb1",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "fix.structures-line-speed",
@@ -139,8 +174,13 @@
    "prop.test.sign"
   ],
   "changesBaseline": true,
-  "status": "done-needs-review",
-  "sha": "9ea13c1"
+  "status": "done",
+  "sha": "9ea13c1",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.structures",
@@ -172,8 +212,13 @@
   "spec": "The two frozen corpora v2.retire-forest-hills moved, found by shard 4/4 after it landed (the gate runs only an item's own tests). battle-cursor: showcase.beasts fights on the showcase map's hills, so its full events moved - a new immutable fixture battle-cursor-ground.json freezes every case's current hashes and marks the one changed case, which skips the older layers and keeps the automatic/suspended comparison. viewer-direct-map: the field CLI bytes of the 12 maps with hills or forest moved (exactly the 12 control battles the item declared) - field-cli-ground.json overrides only those. Captured by tools/capture-ground-cursor.mts and tools/capture-field-ground.mts, both refusing to overwrite.",
   "expect": "test/battle-cursor.test.ts and test/viewer-direct-map.test.ts pass; every prior fixture unchanged; control battles unchanged; all four shards green.",
   "note": "Engine-only test plumbing following fix.knockback-collisions-goldens (a new frozen fixture per migration, Law 10). Andrew's chat, 2026-09-24.",
-  "status": "done-needs-review",
-  "sha": "0406f84"
+  "status": "done",
+  "sha": "0406f84",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.retire-forest-hills",
@@ -194,8 +239,13 @@
   ],
   "changesBaseline": true,
   "note": "Andrew's chat, 2026-09-24. Edits existing tests under Law 10 (terrain, stats, additions, audit, burning-ground, high-cell-los, water-cleanses, v2-ground-table), each with its reason at the edit - lands flagged for review, as it should. The viewer's forest swatch follows in the viewer package.",
-  "status": "done-needs-review",
-  "sha": "59c5a2f"
+  "status": "done",
+  "sha": "59c5a2f",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.ground-retable",
@@ -220,8 +270,13 @@
    "v2.ground-table"
   ],
   "note": "Andrew's chat, 2026-09-24. Rewrites test/v2-ground-table.test.ts under Law 10: the rule changed by ruling (reason at the top of the file) — lands flagged for review, as it should.",
-  "status": "done-needs-review",
-  "sha": "d99a569"
+  "status": "done",
+  "sha": "d99a569",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.ground-table",
@@ -349,8 +404,13 @@
    "test.badge.fast-hands",
    "test.badge.slow-hands"
   ],
-  "status": "done-needs-review",
-  "sha": "dd468e3"
+  "status": "done",
+  "sha": "dd468e3",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.loadout",
@@ -361,8 +421,13 @@
   "note": "Andrew's chat, 2026-09-24 (V2 roadmap R6, first of two: the swap is v2.swap). Supersedes seam.spare-weapons (retired, V2 section 18). changesBaseline: fielding events carry instanceId, so every control map's event hash moves; RNG and results are unchanged (battle-cursor: every older fixture passes on loadout-projection.ts, full hashes frozen in battle-cursor-loadout.json).",
   "changesBaseline": true,
   "attempts": 1,
-  "status": "done-needs-review",
-  "sha": "3d6924e"
+  "status": "done",
+  "sha": "3d6924e",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.swap",
@@ -395,8 +460,13 @@
    "test.badge.briar"
   ],
   "note": "Andrew's chat, 2026-09-24 (V2 roadmap R5). Control battles byte-identical: no control unit carries Thorns. battle-cursor: showcase.arc-variant and showcase.knockback-two moved (the golem) — frozen in test/fixtures/battle-cursor-thorns.json. Defaults in SWITCHES.md 'V2 Thorns'.",
-  "status": "done-needs-review",
-  "sha": "36da82b"
+  "status": "done",
+  "sha": "36da82b",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "naming.terrain-impassable",
@@ -406,8 +476,13 @@
   "expect": "terrainIdOf(TERRAIN.IMPASSABLE) is terrain.impassable; no tracked source outside archives, ledgers and scratch logs spells terrain.obstacle; control battles byte-identical.",
   "neutral": true,
   "note": "Re-files terrain.impassable-naming as plumbing: that item was a naming decision with no content id the gate can probe (obstacle cells are props at runtime since the V2 props migration, so terrain.impassable never appears in a battle log).",
-  "status": "done-needs-review",
-  "sha": "af1d4e0"
+  "status": "done",
+  "sha": "af1d4e0",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.kdb",
@@ -428,8 +503,13 @@
   ],
   "changesBaseline": true,
   "note": "Andrew's chat, 2026-09-23 (V2 roadmap R4 part 2). changesBaseline: physical hits in every control battle now roll KDB and knock units back and down. Defaults in SWITCHES.md 'V2 KDB'.",
-  "status": "done-needs-review",
-  "sha": "9d02ae1"
+  "status": "done",
+  "sha": "9d02ae1",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "fix.knockback-collisions-goldens",
@@ -441,8 +521,13 @@
   "spec": "The two frozen corpora v2.knockback-collisions moved, found by shard 4/4 after it landed. battle-cursor: showcase.gash-variant carries a blocked push that now costs its mover collision damage (heroClear in 8 Turns, was 9) — a new immutable fixture battle-cursor-knockback.json freezes that one case, the old fixtures stay. viewer-direct-map: the content TEST map test.map.well-shove joined MAP_PANEL — field-cli-knockback.json adds its CLI bytes beside the frozen 22.",
   "expect": "test/battle-cursor.test.ts and test/viewer-direct-map.test.ts pass; every prior fixture unchanged; control battles unchanged; all four shards green.",
   "note": "Engine-only test plumbing following the v2.shields pattern (a new frozen fixture per migration, Law 10).",
-  "status": "done-needs-review",
-  "sha": "3dcd152"
+  "status": "done",
+  "sha": "3dcd152",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.knockback-collisions",
@@ -460,8 +545,13 @@
   ],
   "changesBaseline": true,
   "note": "Andrew's chat, 2026-09-23. changesBaseline: every control battle's hash moves because knockback.blocked and knocked now carry the collision facts (asked, collidedWith, blocker, collisionValue, remaining); outcomes and turn counts are identical on all 22 panel maps (25 replicates each). Behaviour moved on two: test.map.dungeon-16x8 and test.map.high-prop-multi each have one ranged push that now travels instead of fizzling (dungeon: one collision). The new test map adds a panel line. Defaults in SWITCHES.md 'V2 knockback collisions'.",
-  "status": "done-needs-review",
-  "sha": "a413561"
+  "status": "done",
+  "sha": "a413561",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "v2.prone",
@@ -503,8 +593,13 @@
    "power.tower-shield.stand-tall"
   ],
   "changesBaseline": true,
-  "status": "done-needs-review",
-  "sha": "aaf51a5"
+  "status": "done",
+  "sha": "aaf51a5",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "plumbing.shield-class",
@@ -515,9 +610,14 @@
   "unreachable": "Plumbing for an item class no content carries until content.v2-shields ships; no battle can show the id before then. The tests field shield-class items directly.",
   "killSwitchExempt": "The item class is an engine type, not a content id, so CF_DISABLE_IDS has nothing to disable; the tests assert refusal and folding directly.",
   "note": "Andrew 2026-09-23: V2 R1 to the top of the queue. First class plumbing, then numeric tuning (V2-HANDOFF.md).",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "c087e94",
-  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "content.v2-shields",
@@ -3090,8 +3190,13 @@
    "item.ancient-tome.cruel"
   ],
   "note": "Filed from the kingdom session 2026-09-03.",
-  "status": "done-needs-review",
-  "sha": "d1d495b"
+  "status": "done",
+  "sha": "d1d495b",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "fix.post-end-ladder",
@@ -4599,8 +4704,13 @@
    "move.hound.close-bite",
    "move.zombie-hound.close-bite"
   ],
-  "status": "done-needs-review",
-  "sha": "fa8b9b7"
+  "status": "done",
+  "sha": "fa8b9b7",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-09-27T23:51:30.757Z",
+   "note": "Okay, all of the flagged landings seemed fine."
+  }
  },
  {
   "id": "ai.scorer",

@@ -17155,3 +17155,29 @@ index ae5e36a..230b794 100644
 2026-09-27T23:18:53.032Z · Angela: "One, that's fine."
 
   ok  fix.enemy-accuracy-mod
+
+## REVIEW — 22 flagged landing(s) cleared
+2026-09-27T23:51:30.757Z · Angela: "Okay, all of the flagged landings seemed fine."
+
+  ok  fix.terrain-test-timeouts
+  ok  tool.gate-fits-cowork
+  ok  fix.kiln-fire-test
+  ok  fix.vs-target-worn-and-flat
+  ok  fix.vs-target-worn-gap-text
+  ok  v2.structures-same-wall
+  ok  v2.structures-reruled
+  ok  v2.thin-obstruction
+  ok  fix.ground-goldens
+  ok  v2.retire-forest-hills
+  ok  v2.ground-retable
+  ok  v2.loadout-swap
+  ok  v2.loadout
+  ok  v2.thorns
+  ok  naming.terrain-impassable
+  ok  v2.kdb
+  ok  fix.knockback-collisions-goldens
+  ok  v2.knockback-collisions
+  ok  v2.shields
+  ok  plumbing.shield-class
+  ok  pack.derived-rows
+  ok  pack.enemy-actions
