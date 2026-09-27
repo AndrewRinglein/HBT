@@ -4693,7 +4693,11 @@
   "shape": "data",
   "spec": "Found by pack.enemy-actions 2026-09-26: content/mkenginepack.mjs drops a regular enemy attack's accuracyMod silently — e.g. Bone Dragon Wings -20, Balrog Hurl -30 — against Law 9 (never swallow a failure). Carry each attack's accuracyMod from its bestiary row, or name it in content/gen/enemy-pack-gaps.json if the engine cannot express it.",
   "expect": "every authored enemy attack whose bestiary row carries an accuracyMod has it in the engine pack, read from the row in the test; none is dropped without a named gap",
-  "changesBaseline": true
+  "changesBaseline": false,
+  "probeIds": [
+   "attack.necromancer.necro-bolt"
+  ],
+  "attempts": 1
  },
  {
   "id": "capability.charge",
