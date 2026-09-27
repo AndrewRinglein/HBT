@@ -1731,7 +1731,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'aiChanges', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);   // aiChanges: ai.mode-change (engine, 2026-09-26)
 const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
@@ -1766,6 +1766,8 @@ function testUnits(testAttackRows, testAbilityRows) {
       if (!isTestId.trigger(trig.id)) throw new Error(`content/test/units.json: '${row.id}' trigger '${trig.id}' is not test.* / trigger.test-*`);
       return { ...trig, source: `unit.${row.id}` };
     });
+    // ai.mode-change (engine, 2026-09-26): a test row's mode changes are the test family, like its triggers
+    for (const c of u.aiChanges || []) if (!isTestId.trigger(c.id)) throw new Error(`content/test/units.json: '${row.id}' mode change '${c.id}' is not test.* / trigger.test-*`);
     for (const a of u.attacks) if (!testAttackRows[a] && !authoredAttacks[a]) throw new Error(`content/test/units.json: '${row.id}' wields '${a}', which is neither a test attack nor a real one`);
     for (const a of u.abilities) if (!testAbilityRows[a] && !authoredAbilities[a]) throw new Error(`content/test/units.json: '${row.id}' casts '${a}', which is neither a test power nor a real one`);
     // a delta's triggers ADD to the base's, under the test family

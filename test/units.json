@@ -702,5 +702,27 @@
     "attack.test-destroy.wreck"
   ],
   "note": "v2.prop-destroy: Osric's body swinging attack.test-destroy.wreck (Destroy 2) - the second Destroy instance. No campaign content."
+},
+{
+  "id": "test-rout-zombie",
+  "triggers": [],
+  "from": "test-zombie",
+  "name": "Rout Zombie (TEST)",
+  "set": { "maxHp": 30 },
+  "aiChanges": [
+    { "id": "test.rout-zombie.rout", "when": { "hpBelow": 50 }, "mode": "flee" }
+  ],
+  "note": "ai.mode-change (engine, 2026-09-26): the cohort zombie with 30 Health that runs (flee) once below half Health - the brute that runs when badly hurt. No campaign content."
+},
+{
+  "id": "test-late-zombie",
+  "triggers": [],
+  "from": "test-zombie",
+  "name": "Late Zombie (TEST)",
+  "set": { "maxHp": 30, "ai": "flee" },
+  "aiChanges": [
+    { "id": "test.late-zombie.charge", "when": { "fromTurn": 3 }, "mode": "dumb-melee" }
+  ],
+  "note": "ai.mode-change: the cohort zombie with 30 Health that hangs back (flee) and charges (dumb-melee) from Turn 3 - the second change, on a different condition. No campaign content."
 }
 ]
