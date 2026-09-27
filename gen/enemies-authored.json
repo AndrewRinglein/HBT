@@ -341,6 +341,7 @@
     {
      "hook": "onActivationEnd",
      "name": "Raise",
+     "range": 10,
      "effects": [
       {
        "effect": "raise a corpse as a Zombie"
