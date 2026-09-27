@@ -4714,7 +4714,16 @@
    "pack.enemy-actions"
   ],
   "spec": "Charge (Iron Colossus, cd 4; Fast Zombie) moves N hexes and attacks as ONE action — approved with the other move.* rows (DECISIONS.md 2026-09-02/03, 'build them all'). pack.enemy-actions left it out: planAction routes any action with a move to movement only (src/core/commands.ts) and executeMove never attacks. Build the mechanism so a movement-slot action can end in an attack; the Colossus's noPrimaryAction (its walk must not be usable as the main action) rides with it. Values from the Codex rows only.",
-  "expect": "a unit with Charge moves and attacks in one action, the attack resolved by the one damage function; it appears on legalActions when ready and leaves it on cooldown; a second Charge row with different numbers is pure data"
+  "expect": "a unit with Charge moves and attacks in one action, the attack resolved by the one damage function; it appears on legalActions when ready and leaves it on cooldown; a second Charge row with different numbers is pure data",
+  "changesBaseline": false,
+  "probeIds": [
+   "move.fast-zombie.charge",
+   "move.iron-colossus.charge"
+  ],
+  "variants": [
+   "move.fast-zombie.charge",
+   "move.iron-colossus.charge"
+  ]
  },
  {
   "id": "capability.move-ignores-zoc",
