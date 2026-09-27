@@ -127,6 +127,11 @@ const resolveAttack = (a, unitId) => {
   if (!a.sameAs) return a;
   const src = ATTACK_BY_ID.get(a.sameAs);
   if (!src) { gap(unitId, `sameAs ${a.sameAs} resolves to nothing`, 'content'); return null; }
+  // fix.enemy-accuracy-mod (2026-09-27): a sameAs reference ships its SOURCE row;
+  // anything the reference itself carries beyond its id is not read — name it,
+  // never drop it silently (Law 9). None today; the Burning Zombie's carries only its id.
+  const extra = Object.keys(a).filter((k) => k !== 'sameAs' && k !== 'id');
+  if (extra.length) gap(unitId, `sameAs ${a.sameAs} carries ${extra.join(', ')} of its own — the source row ships without them`, 'content: sameAs override');
   return src;
 };
 
@@ -621,6 +626,10 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
       ...(a.damage?.powerScale ? { powerScale: a.damage.powerScale } : {}),   // capability.power-pool, 2026-09-03
       ...(a.cooldown ? { cooldown: a.cooldown } : {}), ...(a.warmup ? { warmup: a.warmup } : {}),   // capability.enemy-action-cooldown, 2026-09-03
       ...(a.attackCount > 1 ? { hits: a.attackCount } : {}),   // attack.multihit, 2026-09-03
+      // fix.enemy-accuracy-mod (engine, 2026-09-27): the row's accuracyMod rides on
+      // AttackDef.accuracy (station.accuracy-field) as the move lane above already
+      // did. Dropped silently before — Bone Dragon Wings -20, Balrog Hurl -30 (Law 9).
+      ...(a.accuracyMod !== undefined ? { accuracy: a.accuracyMod } : {}),
     };
     attackIds.push(a.id);
     unitTriggers.push(...(a.triggers || []).flatMap((t) => compileTrigger(t, id, a.id)));
