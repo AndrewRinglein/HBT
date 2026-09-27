@@ -37,11 +37,6 @@
    "needs": "attack shape: stat-less (flat) damage"
   },
   {
-   "unit": "unit.fast-zombie",
-   "what": "special move move.fast-zombie.charge: move 3 hexes and attack, as one action",
-   "needs": "enemy special move: move-then-attack (no engine action resolves a move and an attack as one)"
-  },
-  {
    "unit": "unit.ghoul",
    "what": "attack.ghoul.devour onKill: grant a stat for the Battle (health)",
    "needs": "trigger-effect: statMod"
@@ -58,18 +53,8 @@
   },
   {
    "unit": "unit.iron-colossus",
-   "what": "special move move.iron-colossus.charge: move 2 hexes and attack, as one action",
-   "needs": "enemy special move: move-then-attack (no engine action resolves a move and an attack as one)"
-  },
-  {
-   "unit": "unit.iron-colossus",
    "what": "move.iron-colossus.buff: ai 'use whenever available'",
    "needs": "action hint on the row (AI-DESIGN.md §3D) — waits on ai.scorer"
-  },
-  {
-   "unit": "unit.iron-colossus",
-   "what": "noPrimaryAction: true",
-   "needs": "unit field: no primary action (the walk is an either-slot action)"
   },
   {
    "unit": "unit.lieutenant-demon",

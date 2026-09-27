@@ -520,14 +520,17 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   //     itself: the move action comes before any walking, and a melee attack
   //     needs its target adjacent then (engine SWITCHES.md closeBiteStartingAdjacent).
   //   - a move carrying only self effects (Buff) → a self power, slot movement.
-  // A move that travels AND attacks (Charge: `hexes` + an attack) has no engine
-  // action that resolves both, so it stays a named gap — never an attack with
-  // its move dropped. Numbers are the row's; nothing here is chosen.
+  //   - a move that travels AND attacks (Charge: `hexes` + an attack) → the same
+  //     melee attack carrying `hexes`, which the engine lifts to a path-shaped
+  //     move profile beside the attack: a CHARGE, aimed at a unit, walking at
+  //     most `hexes` to it and striking as one action (capability.charge,
+  //     2026-09-27; engine src/core/charge.ts). Was a named gap until then.
+  // Numbers are the row's; nothing here is chosen.
   for (const mv of u.moves || []) {
     if (typeof mv === 'string') continue;   // a granted movement power (power.flight) — the unit's movement, below
     const mneed = (mv.needs || []).filter((n) => !HAVE.has(n));
     if (mneed.length) { gap(id, `special move ${mv.id}`, mneed.join(',')); continue; }
-    if (mv.hexes !== undefined) { gap(id, `special move ${mv.id}: move ${mv.hexes} hexes and attack, as one action`, 'enemy special move: move-then-attack (no engine action resolves a move and an attack as one)'); continue; }
+    if (mv.hexes !== undefined && !mv.attack) { gap(id, `special move ${mv.id}: moves ${mv.hexes} hexes with no attack`, 'enemy special move: shape'); continue; }
     if (mv.attack && !mv.effects) {
       const at = mv.attack;
       if (/within/.test(at.targets || '')) { gap(id, `special move ${mv.id}: a ranged move attack`, 'enemy special move: ranged'); continue; }
@@ -542,6 +545,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
         ...(at.accuracyMod !== undefined ? { accuracy: at.accuracyMod } : {}),   // station.accuracy-field
         ...(mv.cooldown ? { cooldown: mv.cooldown } : {}), ...(mv.warmup ? { warmup: mv.warmup } : {}),
         ...(at.attackCount > 1 ? { hits: at.attackCount } : {}),
+        ...(mv.hexes !== undefined ? { hexes: mv.hexes } : {}),   // capability.charge: walk at most this far, then strike
       };
       attackIds.push(mv.id);
       meleeN++;
@@ -576,9 +580,10 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   // provoking — MoveProfile has no such property and no Codex power row says it
   // — so the hounds walk with power.move and this stays a named gap.
   if (u.moveIgnoresZOC) gap(id, 'moveIgnoresZOC: movement that provokes no attack of opportunity', 'movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)');
-  // "has no primary action at all" (ENEMY-REVIEW.md:348): nothing closes a unit's
-  // primary slot — its walk (power.move, either slot) can still spend it.
-  if (u.noPrimaryAction) gap(id, 'noPrimaryAction: true', 'unit field: no primary action (the walk is an either-slot action)');
+  // "has no primary action at all" (ENEMY-REVIEW.md:348): carried as the row's own
+  // field since capability.charge (2026-09-27) — the engine closes the unit's
+  // primary slot (action.ts resolveActionSlot), so its walk spends the movement
+  // slot or nothing. Was a named gap until then.
   for (const raw of u.attacks || []) {
     const a = resolveAttack(raw, id);
     if (!a) continue;
@@ -688,6 +693,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     tags: (u.types || []).map((t) => t.toLowerCase()),
     triggers: unitTriggers,
     ...(unitAuras.length ? { auras: unitAuras } : {}),
+    ...(u.noPrimaryAction ? { noPrimaryAction: true } : {}),   // capability.charge
   });
 }
 // ── THE PROLOGUE PARTY (content.hero-pack, 2026-08-26) ──────────────────────
