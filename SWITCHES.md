@@ -1254,3 +1254,13 @@ reader is `hiddenFrom` (same file), and the AI reads it through `livingEnemies` 
 | `aiSightTauntHidden` | A unit is taunted by a foe that is hidden from it. | **Its candidate list is empty: it must target the taunter and cannot see it, so it chooses no enemy.** | Taunt narrows the list to the taunter (capability.taunt); sight removes the taunter. Falling back to other targets would break the taunt; seeing the taunter would break the sight rule. | provisional — 2026-09-27 |
 | `aiSightTraps` | "Invisible traps are likewise unseen." | **Nothing to hide yet — traps are not built (src/core/movement.ts, "traps — none in the baseline"). When they are, a trap is hidden from the side that did not lay it, through the same reader.** | No trap exists for the AI to see. | provisional — 2026-09-27 |
 | `aiSightDarkness` | Does darkness now hide a unit from the AI too? | **No. The AI knows everything except hidden units — darkness and Vision still govern targeting legality (`canSee`, SWITCHES.md targetUnseen) as before, but the AI's view of positions, stats and threats is whole.** | The ruling names one exception, stealth. | provisional — 2026-09-27 |
+
+## Enemy accuracy modifiers — defaults taken building fix.enemy-accuracy-mod (2026-09-27)
+
+The regular enemy-attack lane of `content/mkenginepack.mjs` now carries a bestiary row's
+`accuracyMod` onto `AttackDef.attack.accuracy` (station.accuracy-field), as the special-move lane
+already did. Probe: `test/enemy-accuracy-mod.test.ts`, every number read from the Codex row.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `accuracyModSameAsOverride` | A unit's attack is a `sameAs` reference that carries fields of its own (an `accuracyMod`, say). Merge them over the source row, or not? | **Not merged: the source row ships as it is, and each extra field is a named gap in `content/gen/enemy-pack-gaps.json` (`content: sameAs override`).** | Law 9 — never drop silently — without inventing an override rule nobody has ruled on. No row does this today (the Burning Zombie's reference carries only its id). | provisional — 2026-09-27 |

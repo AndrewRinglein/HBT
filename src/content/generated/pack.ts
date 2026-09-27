@@ -2681,7 +2681,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "accuracy": -30
     },
     "move.hound.close-bite": {
       "slot": "movement",
@@ -2735,7 +2736,8 @@ export const UNIT_PACK = {
       "bonus": -2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "accuracy": -20
     },
     "attack.bruiser-demon.bash": {
       "id": "attack.bruiser-demon.bash",
@@ -2808,7 +2810,8 @@ export const UNIT_PACK = {
       "bonus": -2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "accuracy": 30
     },
     "attack.eyeblight.claw": {
       "id": "attack.eyeblight.claw",
@@ -2965,7 +2968,8 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
-      "powerScale": 0.5
+      "powerScale": 0.5,
+      "accuracy": 10
     },
     "attack.necromancer.necro-bolt": {
       "id": "attack.necromancer.necro-bolt",
@@ -2976,7 +2980,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 0,
-      "powerScale": 1
+      "powerScale": 1,
+      "accuracy": 10
     },
     "attack.necromancer.necro-strike": {
       "id": "attack.necromancer.necro-strike",
@@ -3111,7 +3116,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 3,
       "staminaCost": 0,
-      "powerScale": 1
+      "powerScale": 1,
+      "accuracy": 15
     },
     "attack.vampire-lord.bite": {
       "id": "attack.vampire-lord.bite",
@@ -3133,7 +3139,8 @@ export const UNIT_PACK = {
       "reach": 2,
       "staminaCost": 0,
       "powerScale": 1,
-      "cooldown": 2
+      "cooldown": 2,
+      "accuracy": -30
     },
     "attack.werewolf.claw-frenzy": {
       "id": "attack.werewolf.claw-frenzy",

@@ -4697,7 +4697,9 @@
   "probeIds": [
    "attack.necromancer.necro-bolt"
   ],
-  "attempts": 1
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "f5e9cf8"
  },
  {
   "id": "capability.charge",

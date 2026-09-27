@@ -17086,3 +17086,67 @@ index 2b8a5f0..243fe87 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without test.status.veil,test.status.shroud — they genuinely test it
+
+## fix.enemy-accuracy-mod — LANDED `f5e9cf8` **NEEDS REVIEW**
+2026-09-27 08:57
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1266 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/enemy-accuracy-mod.test.ts
+  PASS  gate 1 — the id appears in a real battle — attack.necromancer.necro-bolt: 26 log lines, 26 fired, 10 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/enemy-accuracy-mod.test.ts, test/fixtures/battle-cursor-accuracy-mod.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.necromancer.necro-bolt — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index ae5e36a..230b794 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -94,4 +94,11 @@ const projectWorn = (state: { units: { loadout?: { worn?: unknown } }[] }) =>
+ // and runs every older layer unchanged. No state field was added, so no projection. Old fixtures stay immutable.
+ const enemyActionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enemy-actions.json', import.meta.url), 'utf8'))
++// fix.enemy-accuracy-mod (2026-09-27), Law 10: a regular enemy attack now carries its bestiary row's
++// accuracyMod (it was dropped silently, against Law 9). Every case's full current hashes are frozen
++// here (tools/capture-accuracy-mod-cursor.mts); the one case marked `changed` (prologue-enemies — it
++// fields the Necromancer and the Lieutenant Demon, whose attacks carry +10) is checked against these
++// and skips every older layer its battle no longer matches; every other case is byte-identical to
++// the enemy-actions capture and runs every older layer unchanged. No state field was added.
++const accuracyModGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-accuracy-mod.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -198,5 +205,8 @@ describe('resumable battle cursor', () => {
+       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const enemyActionsMoved = enemyActionsExpected?.changed === true
++      const accuracyModExpected = accuracyModGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const accuracyModMoved = accuracyModExpected?.changed === true
++      // was: const enemyActionsMoved = enemyActionsExpected?.changed === true — an accuracy-mod-moved case skips the enemy-actions layer too (fix.enemy-accuracy-mod 2026-09-27)
++      const enemyActionsMoved = enemyActionsExpected?.changed === true || accuracyModMoved
+       const wornExpected = wornGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const wornMoved = wornExpected?.changed === true — an enemy-actions-moved case skips the worn layer too (pack.enemy-actions 2026-09-26)
+@@ -226,5 +236,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (enemyActionsExpected) {
++        if (accuracyModExpected) {
++        expect(hash(ctx.events), 'full accuracy-mod events').toBe(accuracyModExpected.events)
++        expect(hash(ctx.state), 'full accuracy-mod state').toBe(accuracyModExpected.state)
++        expect(hash(ctx.rng.log), 'full accuracy-mod RNG').toBe(accuracyModExpected.rng)
++        expect(result).toEqual(accuracyModExpected.result)
++        }
++        // was: if (enemyActionsExpected) { — fix.enemy-accuracy-mod (2026-09-27): a moved case is checked above instead
++        if (enemyActionsExpected && !accuracyModMoved) {
+         expect(hash(ctx.events), 'full enemy-actions events').toBe(enemyActionsExpected.events)
+         expect(hash(ctx.state), 'full enemy-actions state').toBe(enemyActionsExpected.state)
+```
+</details>

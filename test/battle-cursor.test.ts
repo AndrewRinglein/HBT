@@ -93,6 +93,13 @@ const projectWorn = (state: { units: { loadout?: { worn?: unknown } }[] }) =>
 // older layer its battle no longer matches; every other case is byte-identical to the worn capture
 // and runs every older layer unchanged. No state field was added, so no projection. Old fixtures stay immutable.
 const enemyActionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enemy-actions.json', import.meta.url), 'utf8'))
+// fix.enemy-accuracy-mod (2026-09-27), Law 10: a regular enemy attack now carries its bestiary row's
+// accuracyMod (it was dropped silently, against Law 9). Every case's full current hashes are frozen
+// here (tools/capture-accuracy-mod-cursor.mts); the one case marked `changed` (prologue-enemies — it
+// fields the Necromancer and the Lieutenant Demon, whose attacks carry +10) is checked against these
+// and skips every older layer its battle no longer matches; every other case is byte-identical to
+// the enemy-actions capture and runs every older layer unchanged. No state field was added.
+const accuracyModGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-accuracy-mod.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -197,7 +204,10 @@ describe('resumable battle cursor', () => {
       const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const enemyActionsMoved = enemyActionsExpected?.changed === true
+      const accuracyModExpected = accuracyModGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const accuracyModMoved = accuracyModExpected?.changed === true
+      // was: const enemyActionsMoved = enemyActionsExpected?.changed === true — an accuracy-mod-moved case skips the enemy-actions layer too (fix.enemy-accuracy-mod 2026-09-27)
+      const enemyActionsMoved = enemyActionsExpected?.changed === true || accuracyModMoved
       const wornExpected = wornGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const wornMoved = wornExpected?.changed === true — an enemy-actions-moved case skips the worn layer too (pack.enemy-actions 2026-09-26)
       const wornMoved = wornExpected?.changed === true || enemyActionsMoved
@@ -225,7 +235,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (enemyActionsExpected) {
+        if (accuracyModExpected) {
+        expect(hash(ctx.events), 'full accuracy-mod events').toBe(accuracyModExpected.events)
+        expect(hash(ctx.state), 'full accuracy-mod state').toBe(accuracyModExpected.state)
+        expect(hash(ctx.rng.log), 'full accuracy-mod RNG').toBe(accuracyModExpected.rng)
+        expect(result).toEqual(accuracyModExpected.result)
+        }
+        // was: if (enemyActionsExpected) { — fix.enemy-accuracy-mod (2026-09-27): a moved case is checked above instead
+        if (enemyActionsExpected && !accuracyModMoved) {
         expect(hash(ctx.events), 'full enemy-actions events').toBe(enemyActionsExpected.events)
         expect(hash(ctx.state), 'full enemy-actions state').toBe(enemyActionsExpected.state)
         expect(hash(ctx.rng.log), 'full enemy-actions RNG').toBe(enemyActionsExpected.rng)
