@@ -7,38 +7,51 @@ and date. Tool tasks and engine chores go in the backlog, never here.
 
 ## OPEN
 
-- (2026-08-27) **item.bracer's replacement rule** — your dictation parked it.
-  Multi-criticals currently roll the chart WITH replacement (a doubled row
-  stacks); the without-replacement path is built and waiting on your word.
+- (2026-08-27, reworded 2026-09-27) **The Bracer: can the same critical injury come up twice?**
+  The Bracer makes a critical roll the Critical Injury Chart more than once (T1 twice, T2
+  three times, T3 four times). The chart is short, so repeats happen. If a repeat stacks,
+  four Blindeds is -16 Vision and -120 Accuracy. Does a repeat stack, or is a result that
+  already came up re-rolled? (Today it stacks; the re-roll version is built and waiting.
+  The same answer covers "do two criticals" / "do three criticals".)
 
-- (2026-09-03) **Kinds approved BY POLICY this run, for your look** — Angela
-  ruled "propose and record" for the unattended run; each is in
-  `tools/approved-kinds.json` with a note: `encounter` (unified on it
-  2026-09-03 evening — "We do need to unify on battle or encounter"; the six
-  battle.* rows are renamed and `battle` is gone), `aura`, `corpse`, `layer`
-  (now five instances — `layer.weak` joined by the one-ground-shape ruling),
-  `stamina` (event names, not rows).
+- (2026-09-03, reworded 2026-09-27) **Five new id prefixes were approved without you.**
+  Every thing in the game has an id that starts with its kind — unit.zombie, status.burn,
+  attack.balrog.hurl. A new kind is yours to approve. During the unattended run on
+  2026-09-03 you said "propose and record", so the chat approved five itself: `encounter`
+  (a battle's setup — the six old battle.* rows were renamed to it), `aura` (a radius that
+  lends stats to units standing inside it), `corpse` (a body left on the board), `layer`
+  (something painted on the ground: darkness, frost, weakness), `stamina` (event names
+  only). Keep these five names?
 
-- (2026-09-03) **The Necromancer's Raise has no range on its row.** Compiled
-  as 2 (its aura's radius — the encounter session's reading). Rule it.
-
-- (2026-09-03) **The schedule vs the Codex on Surge** — the progression
-  builder leaves Surge at 0 + specialty; heroes.json says Surge equals the
-  level. The engine follows the Codex. Which is right?
-
-- (2026-09-03) **The schedule stows spare weapons in item slots** (the Lion's
-  third one-hander). The engine wields or nothing. Is a carried weapon a thing?
+- (2026-09-03, narrowed 2026-09-27) **How much Surge does a hero gain each Turn?** The
+  mechanics are ruled (DECISIONS.md 2026-09-27: a gain-per-Turn stat, an amount, a Surge
+  takes away 100). Open is the stat itself: the Codex's hero rows say it equals the level
+  (a level-5 hero gains 5 a Turn); the progression schedule gives 0 plus whatever the
+  specialty adds (Bloodrage +1). The engine follows the Codex. Which is right?
 
 - (2026-09-02) **Note, no action needed:** the crit chart's "loses access to class powers"
   applies a placeholder called `status.powers-locked` (Dazed is two things — your words).
   Rename whenever; one Codex row and one converter line. Answered 2026-09-02: "leave it
   as just a note."
 
-- (2026-09-03) **50 flagged landings await your review** (31 from the
-  2026-09-03 feature run) — `node tools/report.mjs`, verdicts recorded in your
-  words via review.mjs.
-
 ## ANSWERED
+
+- (2026-09-27) **The Necromancer's Raise range** — "Give the necromancer a raise of 10
+  range." (Andrew). Codex row carries 10 (content fd2a8ee); queued fix.raise-range.
+
+- (2026-09-27) **Surge mechanics** — "There is a stat which is surge gain per turn, then you
+  have your amount of surge ... If it's used, it should take away 100. If you have 150
+  surge, automatically you're going to have a surge activation, and you're going to lose
+  100 and still have 50." (Andrew, verbatim in DECISIONS.md). Queued fix.surge-spend.
+
+- (2026-09-27) **The schedule stows spare weapons in item slots** — already settled by
+  COMBAT-V2-DESIGN-2026-09-07 §11.1 (ruled 2026-09-07): a weapon in an item slot grants
+  nothing and is only there to swap into your hands (v2.loadout, v2.loadout-swap landed).
+  The schedule is progression/PROGRESSION-SCHEDULE.md, a worked 20-battle campaign run that
+  gives the simulator realistic parties.
+
+- (2026-09-27) **Flagged landings** — "Okay, all of the flagged landings seemed fine."
+  (Andrew). All 22 cleared via review.mjs.
 
 - (2026-09-03) **The P11 encounter format** — "Approved as written" (Angela,
   from ENCOUNTERS-ENGINE-HANDOFF.md §1). encounter.runner landed; ten

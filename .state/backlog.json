@@ -4855,5 +4855,22 @@
   "spec": "Ruled 2026-09-27 (Andrew, DECISIONS.md 'stealth gets a Codex row and its own backlog item'). Stealth as the Codex settled it (CODEX.md 475, 1589): 'you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never breaks it.' Four parts: (1) the Codex status row status.stealth in content/settled.json, its sentence copied from that definition, compiled by content/mkenginepack.mjs to hidesFromFoes plus the new behaviour flags — any field the definition does not give is a switch; (2) the targeting rule: a unit carrying it cannot be the target of an attack by the other side (canAttack / legalActions, so preview, the AI and hero commands agree; SWITCHES.md aiSightLegality is retired); (3) it breaks the moment its carrier uses an attack or a power, never on movement, logged with the attack or power as cause; (4) reveal effects: an effect kind that breaks stealth on units of the other side within a radius, for the Codex reveal powers and items (Flush Them Out, Spectral Sight, Second Sight, Raise the Torch, Flare, Brilliant Torch, Scouting…) to compile to. Not in this item: the universal rule 'Stealth does not hold' (CODEX.md 1840) and the units and powers that enter stealth.",
   "expect": "a stealthed unit cannot be attacked by the other side but is still reached by an area effect; it breaks when its carrier attacks or uses a power and not when it moves; a reveal effect breaks it on every enemy in its radius and none outside; the Codex row compiles through the pack, not a hand-written status",
   "note": "Queued 2026-09-27 on Andrew's ruling. Variants to declare before code: status.stealth and a second hidesFromFoes status (test.status.veil from ai.sight can carry the break flags as pure data)."
+ },
+ {
+  "id": "fix.raise-range",
+  "kind": "content",
+  "shape": "data",
+  "spec": "Ruled 2026-09-27 (Andrew, DECISIONS.md 'the Necromancer's Raise reaches 10'): \"Give the necromancer a raise of 10 range.\" The Codex row now carries it (content fd2a8ee: the Raise trigger on unit.necromancer in content/gen/enemies-authored.json has range 10). content/mkenginepack.mjs still compiles corpse.raise with the constant radius 2 (SWITCHES.md corpseRaiseRadius) — read the trigger's own range instead, and a Raise row with no range is a named gap, never a default. Retire the corpseRaiseRadius switch.",
+  "expect": "the Necromancer's corpse.raise trigger in the engine pack has the radius its Codex row states, read from the row in the test; a corpse beyond the old 2 and within the row's range is raised in a scripted battle; a Raise row without a range is a named gap",
+  "changesBaseline": false,
+  "note": "Queued 2026-09-27 on Andrew's ruling. The control battles field no Necromancer."
+ },
+ {
+  "id": "fix.surge-spend",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Ruled 2026-09-27 (Andrew, DECISIONS.md 'Surge: a pool that pays 100 per Surge'): \"If it's used, it should take away 100. If you have 150 surge, automatically you're going to have a surge activation, and you're going to lose 100 and still have 50.\" Surge is a gain-per-Turn stat (surge) and an amount (surgeChance) that other things raise or lower. Today a Surge sets the amount to 0 (src/core/battle.ts, COMBAT-SEQUENCE.md Surge check rung 2); a Surge must take away 100 instead. Update COMBAT-SEQUENCE.md's rung. Not ruled, so switches: what a Surge that happens below 100 leaves (take away 100 below zero, or stop at 0); whether a second Surge in the same Activation checks the leftover. The check's position (before the End of Activation ladder, ruled 2026-08-21) is not changed.",
+  "expect": "a hero at 150 Surge surges without a roll and keeps 50; a hero whose Surge happens at a lower amount keeps what the switch says; the amount carries to the next Turn; the surge.checked and surge.hit events show the amount before and after",
+  "note": "Queued 2026-09-27 on Andrew's ruling. Measure the control battles before declaring changesBaseline: an amount under 100 floored at 0 would leave them byte-identical. Variants to declare before code: two hero rows with different Surge."
  }
 ]
