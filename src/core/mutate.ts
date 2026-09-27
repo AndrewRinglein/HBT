@@ -2,7 +2,7 @@
 // Every mutator emits an event, which is what makes the log complete by construction —
 // and therefore what makes replay, the text renderer, and every test possible.
 
-import type { AiModeChange, Ctx, Event, LifeState, Prop, Unit, UnitMods } from './types.js'
+import type { AiModeChange, Ctx, EncounterAiRule, Event, LifeState, Prop, Unit, UnitMods } from './types.js'
 import type { HexId } from './hex.js'
 import { effective } from './stats.js'
 
@@ -602,4 +602,37 @@ export function changeAiMode(ctx: Ctx, id: number, change: AiModeChange): void {
   if (rest.length) u.aiChanges = rest
   else delete u.aiChanges
   emit(ctx, 'ai.mode', change.id, { actor: id, mode: change.mode, from, when: { ...change.when } })
+}
+
+/**
+ * ai.encounter-rules (AI-DESIGN.md §4, ruled 2026-09-26): an encounter's AI rule
+ * binds a unit it fields, as the unit arrives. The unit's `aiRules` names it;
+ * `ai.anchored` / `ai.coordinated` says so, the rule as its cause (Law 12). What
+ * the rule then does to the unit's choices is the AI's (src/ai/modes.ts).
+ */
+export function bindAiRule(ctx: Ctx, id: number, rule: EncounterAiRule): void {
+  const u = unit(ctx, id)
+  if (u.aiRules?.includes(rule.id)) throw new Error(`ai.encounter-rules: unit ${u.name} is already bound by '${rule.id}'`)
+  u.aiRules = [...(u.aiRules ?? []), rule.id]
+  if (rule.rule === 'anchor') {
+    if (!ctx.geo.inBounds(rule.at.col, rule.at.row)) throw new Error(`ai.encounter-rules: '${rule.id}' anchors off the board at (${rule.at.col},${rule.at.row})`)
+    emit(ctx, 'ai.anchored', rule.id, { actor: id, hex: ctx.geo.hexId(rule.at.col, rule.at.row), radius: rule.radius })
+  } else emit(ctx, 'ai.coordinated', rule.id, { actor: id })
+}
+
+/**
+ * ai.encounter-rules — the side step's pick (AI-DESIGN.md §4: "once per Phase
+ * before any Activation that side picks a focus target"): `target` is this
+ * Phase's focus for the coordinate rule, or null when there is none to pick.
+ * `ai.focused` names the rule as its cause.
+ */
+export function setAiFocus(ctx: Ctx, ruleId: string, side: string, target: number | null): void {
+  const st = ctx.state.encounter
+  if (!st) throw new Error(`ai.encounter-rules: '${ruleId}' picks a focus with no encounter running`)
+  const focus = { ...(st.focus ?? {}) }
+  if (target === null) delete focus[ruleId]
+  else { unit(ctx, target); focus[ruleId] = target }
+  if (Object.keys(focus).length) st.focus = focus
+  else delete st.focus
+  emit(ctx, 'ai.focused', ruleId, { side, target })
 }

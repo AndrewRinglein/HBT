@@ -94,6 +94,21 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.mode-change-b', note: 'TEST: a warrior against the Late Zombie (30 Health), which flees until Turn 3 and then charges (dumb-melee). No campaign claim.',
     mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], enemies: ['test-late-zombie'], enemyHexes: [89], replicate: 0,
   },
+  // ai.encounter-rules (2026-09-26; AI-DESIGN.md §4): the two instances of an
+  // encounter's overarching AI rules, each live in a real battle — an anchor (the
+  // Strong Skeleton holds within 1 of its hex while the Zombie beside it advances)
+  // and coordination (two Strong Skeletons share the side's focus, the enemy with
+  // the least Health). The rules are data on TEST encounter rows (content/test/encounters.json).
+  'test.encounter-rules-a': {
+    id: 'test.encounter-rules-a', note: 'TEST: a warrior against test.encounter.anchor-hold — its Strong Skeleton is anchored to (14,4), radius 1; its Zombie is not. No campaign claim.',
+    mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.anchor-hold',
+    heroes: ['test-warrior'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
+  'test.encounter-rules-b': {
+    id: 'test.encounter-rules-b', note: 'TEST: a warrior and a ranger against test.encounter.coordinated-pack — two Strong Skeletons coordinated on one focus a Phase. No campaign claim.',
+    mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.coordinated-pack',
+    heroes: ['test-warrior', 'test-ranger'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   // v2.knockback-collisions (2026-09-23): a real battle whose pushes are stopped by
   // authored props (content test.map.well-shove, 9x7). The golem stands between two
   // zombies on the middle row; every push it lands drives one into prop.test.boulder (collision 4)

@@ -139,8 +139,28 @@ export type EncounterDef = {
   readonly powerSources?: readonly { readonly kind: 'external'; readonly value: number }[]
   /** Where the heroes deploy (prologue-1's `heroes: 1, at: {near, range}`); absent = the player edge. */
   readonly heroZone?: { readonly count: number; readonly at: { readonly near: { readonly col: number; readonly row: number }; readonly range: number } }
+  /**
+   * ai.encounter-rules (AI-DESIGN.md §4; DECISIONS.md 2026-09-26): "an encounter
+   * may impose overarching rules — group coordination, anchoring units to a
+   * location, or goals not inherent to the unit", authored on the encounter row,
+   * not the unit. Absent = the units play their modes alone (the default).
+   */
+  readonly aiRules?: readonly EncounterAiRule[]
   readonly gaps?: readonly string[]
 }
+
+/**
+ * ai.encounter-rules — one overarching AI rule on an encounter row. It binds, as
+ * they arrive, the units the encounter fields whose type is in `units` (absent =
+ * every enemy-side unit it fields). SWITCHES.md "Encounter AI rules".
+ *   anchor      the unit's movement may not end farther than `radius` from `at`
+ *               (a unit already outside may only come back toward it)
+ *   coordinate  once per Phase, before any Activation, the side picks a focus
+ *               target by the `focus` tiers; bound units' scoring reads it
+ */
+export type EncounterAiRule =
+  | { readonly id: string; readonly rule: 'anchor'; readonly units?: readonly string[]; readonly at: { readonly col: number; readonly row: number }; readonly radius: number }
+  | { readonly id: string; readonly rule: 'coordinate'; readonly units?: readonly string[]; readonly focus: readonly AiTier[] }
 
 /**
  * What a power DOES, one effect at a time — ability.effects (2026-09-03).
@@ -843,6 +863,8 @@ export type Unit = {
   aiOverride?: { mode: string; untilTurn: number }
   /** ai.mode-change: the changes still to come, own copies; one leaves the list when it happens. Absent = none (snapshots unchanged). */
   aiChanges?: AiModeChange[]
+  /** ai.encounter-rules: the encounter's AI rules bound to this unit as it arrived, by id, in the row's order. Absent = none (snapshots unchanged). */
+  aiRules?: string[]
   /** capability.charges: uses left this Battle, by power id. Only powers with `uses` appear. */
   usesLeft: Record<string, number>
   /** capability.charges: what was spent, for the BattleResult. */
@@ -941,7 +963,11 @@ export type State = {
   /** board.variable-size (2026-09-04): the map's dimensions — plain data; hex ids are row × width + col on THIS board. */
   board: Board
   /** encounter.runner: which schedule rows have fired (by index), plain data. */
-  encounter?: { id: string; fired: number[]; objectives: number[] }
+  encounter?: {
+    id: string; fired: number[]; objectives: number[]
+    /** ai.encounter-rules: this Phase's focus target, by coordinate rule id (the side step). Absent = none chosen. */
+    focus?: Record<string, number>
+  }
   /**
    * capability.corpses (2026-09-03), ENEMY-REVIEW P4 (ruled 2026-08-23): board
    * objects, created when any enemy dies and when a hero actually dies. A

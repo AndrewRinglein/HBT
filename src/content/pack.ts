@@ -508,18 +508,46 @@ export function packDerivedItems(items: Readonly<Record<string, ItemDef>>, attac
   return raw
 }
 
+/**
+ * ai.encounter-rules — the considerations a side can rank its focus by: numbers
+ * of the target alone, since the side step has no action to preview
+ * (SWITCHES.md encounterFocusTiers).
+ */
+const SIDE_CONSIDERATIONS = ['targetHealth', 'missing']
+function validateEncounterAiRule(k: string, e: EncounterDef, r: import('../core/types.js').EncounterAiRule, units: Readonly<Record<string, UnitDef>>, ids: Set<string>): void {
+  const where = `encounters: '${k}' AI rule '${String(r?.id)}'`
+  if (typeof r?.id !== 'string' || !/^[a-z]+\.[a-z0-9.-]+$/.test(r.id)) throw new Error(`encounters: '${k}' has an AI rule with no id`)
+  if (ids.has(r.id)) throw new Error(`${where} is a duplicate id`)
+  ids.add(r.id)
+  if (r.units !== undefined && (!Array.isArray(r.units) || r.units.length === 0 || r.units.some((u) => !units[u]))) throw new Error(`${where}: units must name units in the pack`)
+  if (r.rule === 'anchor') {
+    const inBoard = (c: number, n: number | undefined) => Number.isSafeInteger(c) && c >= 0 && (n === undefined || c < n)
+    if (!r.at || !inBoard(r.at.col, e.board?.width) || !inBoard(r.at.row, e.board?.height)) throw new Error(`${where}: anchors at a hex off the board`)
+    if (!Number.isSafeInteger(r.radius) || r.radius < 0) throw new Error(`${where}: radius is an integer 0 or more`)
+  } else if (r.rule === 'coordinate') {
+    if (!Array.isArray(r.focus) || r.focus.length === 0) throw new Error(`${where}: coordination needs its focus tiers`)
+    for (const tier of r.focus) for (const [c, w] of Object.entries(tier)) {
+      if (!SIDE_CONSIDERATIONS.includes(c)) throw new Error(`${where}: a side's focus ranks by ${SIDE_CONSIDERATIONS.join(' / ')}, not '${c}'`)
+      if (!Number.isSafeInteger(w)) throw new Error(`${where}: weight for '${c}' is not an integer`)
+    }
+  } else throw new Error(`${where}: rule is 'anchor' or 'coordinate'`)
+}
+
 /** The encounters — encounter.runner (2026-09-03). Validated loudly: every unit named must be in the pack. */
 export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: Readonly<Record<string, EncounterDef>>): Readonly<Record<string, EncounterDef>> {
   const data = UNIT_PACK as unknown as { encounters?: Readonly<Record<string, EncounterDef>>; test?: { encounters?: Readonly<Record<string, EncounterDef>> } }
   const shipping = data.encounters ?? {}, testing = data.test?.encounters ?? {}
   for (const k of Object.keys(testing)) if (Object.hasOwn(shipping, k)) throw new Error(`duplicate encounter '${k}' across content lanes`)
   const raw = rows ?? { ...shipping, ...testing }
+  const ruleIds = new Set<string>()
   for (const [k, e] of Object.entries(raw)) {
     if (k !== e.id) throw new Error(`encounters: key '${k}' names id '${e.id}'`)
     if ('board' in e && !validBoard(e.board)) throw new Error(`encounters: '${k}' has invalid board dimensions`)
     const check = (p: { unit: string }, where: string) => { if (!units[p.unit]) throw new Error(`encounters: '${k}' ${where} names '${p.unit}', which is not a unit in the pack`) }
     for (const p of e.setup) check(p, 'setup')
     for (const r of e.schedule) { if (r.phase === undefined && r.enemyPhase === undefined) throw new Error(`encounters: '${k}' has a schedule row with no phase`); for (const p of r.spawn) check(p, 'schedule') }
+    // ai.encounter-rules (2026-09-26; AI-DESIGN.md §4): the row's AI rules — loud at load
+    for (const r of e.aiRules ?? []) validateEncounterAiRule(k, e, r, units, ruleIds)
     // encounter.band-axis (2026-09-04, FINDING 43): the band's start must match its axis — the engine used to read NaN in silence
     if (e.band) {
       const axis = e.band.axis ?? 'row'

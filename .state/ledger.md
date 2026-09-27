@@ -17050,3 +17050,21 @@ index 2b8a5f0..243fe87 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without test.rout-zombie.rout,test.late-zombie.charge — they genuinely test it
+
+## ai.encounter-rules — LANDED `de373dc`
+2026-09-27 05:21
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/ai-encounter-rules.test.ts
+  PASS  gate 1 — the id appears in a real battle — test.anchor.hold-the-line: 1 log lines, 1 fired, 1 changed state · test.coordinate.one-target: 5 log lines, 5 fired, 5 changed state
+  PASS  brought its own tests — test/ai-encounter-rules.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.anchor.hold-the-line live · test.coordinate.one-target live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.anchor.hold-the-line,test.coordinate.one-target — they genuinely test it

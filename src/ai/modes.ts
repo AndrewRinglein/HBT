@@ -24,7 +24,11 @@ import { compareScores, lineOf, rank, scorePlan, type Plan, type Ranked, type Sc
 
 /** Transient AI deliberation, never stored in battle state. Core legality stays
  * authoritative; this context only limits repeated free choices by the AI. */
-type Decision = { ctx: Ctx; row: AiModeRow; freeUsed: Set<string>; actionsTaken: number; limit: number; idled: boolean; list: ReadList | null }
+type Decision = { ctx: Ctx; row: AiModeRow; freeUsed: Set<string>; actionsTaken: number; limit: number; idled: boolean; list: ReadList | null
+  /** ai.encounter-rules: where the unit's encounter anchors it, and the side's focus this Phase. Empty / absent = none. */
+  anchors: readonly Anchor[]; focus?: number }
+/** ai.encounter-rules: an anchor rule as the AI reads it — the hex, and how far a move may end from it. */
+type Anchor = { readonly id: string; readonly hex: HexId; readonly radius: number }
 
 /**
  * ai.action-list (AI-DESIGN.md §3A, 2026-09-26): the modes choose from THE
@@ -44,10 +48,23 @@ function options(decision: Decision, actor: number): ReadList {
   const ctx = decision.ctx
   const held = decision.list
   if (held && held.actor === actor && held.seq === ctx.state.seq) return held
-  const entries = legalActions(ctx, actor)
+  // ai.encounter-rules: an anchored unit's list holds only the moves its anchors
+  // allow — every procedure chooses from this list, so no mode can walk off
+  const entries = decision.anchors.length
+    ? legalActions(ctx, actor).filter((r) => !('destination' in r) || anchorsAllow(decision, unit(ctx, actor), r.destination))
+    : legalActions(ctx, actor)
   const list = { actor, seq: ctx.state.seq, entries, keys: new Set(entries.map(requestKey)) }
   decision.list = list
   return list
+}
+/**
+ * ai.encounter-rules, the anchor (SWITCHES.md encounterAnchorReach): a move may
+ * end within `radius` of every anchor — or, for a unit already outside one (it
+ * arrived there, or was knocked out), no farther from it than it stands now.
+ */
+function anchorsAllow(decision: Decision, u: Unit, hex: HexId): boolean {
+  const geo = decision.ctx.geo
+  return decision.anchors.every((a) => { const d = geo.distance(hex, a.hex); return d <= a.radius || d <= geo.distance(u.hex, a.hex) })
 }
 const onList = (decision: Decision, request: ActionRequest): boolean => options(decision, request.actor).keys.has(requestKey(request))
 function usableMoves(decision: Decision, u: Unit): MoveDef[] {
@@ -142,7 +159,8 @@ function tiersOf(decision: Decision, choice: string): readonly AiTier[] {
   if (!t) throw new Error(`AI mode '${decision.row.id}' carries no weights for '${choice}'`)
   return t
 }
-const sceneOf = (decision: Decision, u: Unit, extra: Omit<Scene, 'ctx' | 'actor'> = {}): Scene => ({ ctx: decision.ctx, actor: u, ...extra })
+const sceneOf = (decision: Decision, u: Unit, extra: Omit<Scene, 'ctx' | 'actor'> = {}): Scene =>
+  ({ ctx: decision.ctx, actor: u, ...(decision.focus !== undefined ? { focus: decision.focus } : {}), ...extra })
 /**
  * WHOM TO ATTACK — the row's target preference, ranked by the scorer. Listed by
  * id first, so a full tie goes to the lower id (Law 6). Each plan carries the
@@ -162,6 +180,9 @@ const destinationPlans = (actionId: string, hexes: readonly HexId[]): Plan[] => 
  */
 function anchorUnit(decision: Decision, u: Unit): Unit | null {
   const ctx = decision.ctx
+  // ai.encounter-rules (SWITCHES.md encounterFocusSteers): a coordinated unit
+  // whose mode closes on an enemy closes on the side's focus while it stands
+  if (decision.focus !== undefined && ['nearest-enemy', 'target', 'quarry'].includes(decision.row.anchor)) return unit(ctx, decision.focus)
   switch (decision.row.anchor) {
     case 'nearest-enemy': return nearestEnemy(ctx, u) ?? null
     case 'target': { const r = rankTargets(decision, u, livingEnemies(ctx, u)); return r.length ? ranked(decision, r, 0) : null }
@@ -909,6 +930,44 @@ const RULES: Record<AiModeRow['rules'], (decision: Decision, u: Unit) => void> =
 }
 
 /**
+ * ai.encounter-rules (AI-DESIGN.md §4): what the unit's bound encounter rules lay
+ * on this Activation — every anchor, and the focus of its first coordinate rule
+ * while that focus is a standing enemy (SWITCHES.md encounterFocusFallen).
+ */
+function encounterRules(ctx: Ctx, u: Unit): { anchors: Anchor[]; focus?: number } {
+  const anchors: Anchor[] = []
+  let focus: number | undefined
+  for (const id of u.aiRules ?? []) {
+    const rule = ctx.encounter?.aiRules?.find((r) => r.id === id)
+    if (!rule) throw new Error(`ai.encounter-rules: unit ${u.name} is bound by '${id}', which the encounter does not carry`)
+    if (rule.rule === 'anchor') anchors.push({ id, hex: ctx.geo.hexId(rule.at.col, rule.at.row), radius: rule.radius })
+    else if (focus === undefined) {
+      const t = ctx.state.encounter?.focus?.[id]
+      if (t !== undefined && livingEnemies(ctx, u).some((e) => e.id === t)) focus = t
+    }
+  }
+  return { anchors, ...(focus !== undefined ? { focus } : {}) }
+}
+
+/**
+ * ai.encounter-rules: a unit standing outside an anchor comes back first — its
+ * ordinary move (else a sidestep) to the allowed hex nearest the anchor, a RULE
+ * and not the row's tiers (SWITCHES.md encounterAnchorReturn). Inside every
+ * anchor, nothing happens.
+ */
+function returnToAnchor(decision: Decision, u: Unit): void {
+  const ctx = decision.ctx
+  const out = decision.anchors.find((a) => ctx.geo.distance(u.hex, a.hex) > a.radius)
+  if (!out) return
+  const power = ordinaryMove(decision, u) ?? movePowerOf(decision, u, 'sidestep')
+  if (!power) return
+  const d0 = ctx.geo.distance(u.hex, out.hex)
+  const closer = destinationPlans(power.id, moveTargets(decision, u, power).filter((h) => ctx.geo.distance(h, out.hex) < d0))
+  const r = rank(sceneOf(decision, u, { anchor: out.hex }), closer, [{ anchorDistance: -1 }])
+  if (r.length) act(decision, { actor: u.id, destination: r[0]!.plan.destination!, actionId: power.id }, { choice: 'rule.return-to-anchor', ranked: r })
+}
+
+/**
  * ai.mode-change: do a change's conditions hold now? Every condition it names
  * must (SWITCHES.md aiModeChangeConditions). Integers only (Law 7).
  */
@@ -935,14 +994,19 @@ export function runActivation(ctx: Ctx, unitId: number): void {
   // an override (the civilians' flight, ruled 2026-09-03) stands in until its Turn ends
   const base = u.aiOverride && ctx.state.turn <= u.aiOverride.untilTurn ? u.aiOverride.mode : u.ai
   const ai = isConfused(ctx, u) ? names[(names.indexOf(base) + 1) % names.length]! : base
-  const row = ctx.aiModes[ai]
-  if (!row) throw new Error(`unknown AI mode '${ai}'`)
+  const own = ctx.aiModes[ai]
+  if (!own) throw new Error(`unknown AI mode '${ai}'`)
+  // ai.encounter-rules: a coordinated unit ranks whom to attack by the side's
+  // plan first, then its own row's preference (SWITCHES.md encounterFocusTier)
+  const rules = encounterRules(ctx, u)
+  const row: AiModeRow = rules.focus !== undefined ? { ...own, target: [{ sidePlan: 1 }, ...own.target] } : own
   const mode = RULES[row.rules]
   if (!mode) throw new Error(`AI mode '${row.id}' names rules '${row.rules}', which the engine does not have`)
   emit(ctx, 'ai.mode', `ai.${ai}`, { actor: unitId, mode: ai, ...(isConfused(ctx, u) ? { confusedFrom: base } : {}), ...(base !== u.ai ? { overriding: u.ai } : {}) })
   const decision: Decision = {
     ctx, row, freeUsed: new Set(), actionsTaken: 0, idled: false, list: null,
     limit: 2 + Object.values(ctx.actions).filter(a => a.free).length,
+    anchors: rules.anchors, ...(rules.focus !== undefined ? { focus: rules.focus } : {}),
   }
   // v2.prone (COMBAT-V2-DESIGN §10; SWITCHES.md proneAiStandsFirst): a prone
   // unit spends its movement action standing, then chooses its primary as usual.
@@ -950,6 +1014,7 @@ export function runActivation(ctx: Ctx, unitId: number): void {
     const stand = usableMoves(decision, u).find(standsUp)
     if (stand) act(decision, { actor: u.id, destination: u.hex, actionId: stand.id }, { choice: 'rule.stand-up' })
   }
+  returnToAnchor(decision, u)
   hintedAction(decision, u, 'opening')
   while (!ctx.state.outcome && u.lifeState === 'standing' && !isBlocked(ctx, u) && !u.primaryUsed) {
     const before = decision.actionsTaken

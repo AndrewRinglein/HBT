@@ -44,6 +44,8 @@ export type Scene = {
   readonly holdAt?: (hex: HexId) => number
   /** Could a melee enemy reach and strike this hex next Turn. */
   readonly threatened?: (hex: HexId) => boolean
+  /** ai.encounter-rules: the side's focus target this Phase, for a coordinated unit (AI-DESIGN §4). */
+  readonly focus?: number
 }
 
 export type Consideration = (scene: Scene, plan: Plan) => number
@@ -98,6 +100,12 @@ export const CONSIDERATIONS: Readonly<Record<string, Consideration>> = {
   },
   /** How close the hex is to the distance the mode holds at (0 is exact; more negative is worse). */
   spacing: (s, p) => { const hex = destination(p); return -Math.abs(nearestEnemyDistance(s, hex) - need(s.holdAt, 'a hold distance', p)(hex)) },
+  /**
+   * AI-DESIGN §3B #10, side plan: 1 when the plan's target is the side's focus
+   * (ai.encounter-rules' side step), else 0 — also 0 when the side has no focus
+   * this Phase (none was picked, or it has fallen), so the unit's own tiers decide.
+   */
+  sidePlan: (s, p) => (s.focus !== undefined && need(p.target, 'a target', p) === s.focus ? 1 : 0),
   /** A burst's net worth — damage dealt to foes and healing to friends, less the reverse — read from previewBurst by the caller. */
   burstValue: (_s, p) => need(p.facts?.['burstValue'], 'a burst forecast', p),
 }

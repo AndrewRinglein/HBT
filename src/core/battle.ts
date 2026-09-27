@@ -3,6 +3,7 @@
 //   Each unit gets one Activation: movement, then a primary action.
 
 import { runActivation } from '../ai/modes.js'
+import { sideStep } from '../ai/side-brain.js'
 import { beginActivation, beginTurn, emit, endActivation, expireActivationMods, gainStamina, layerAt, regenStamina, reopenSurgeCycle, setOutcome, setPhase } from './mutate.js'
 import { roll100 } from './rng.js'
 import { appliesOnActivationEndOf, layerAppliesOnActivationEnd, layerIdOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
@@ -213,6 +214,7 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
         heroesLight(ctx, 'phase.hero')
         c.phase = 'hero'
         setPhase(ctx, c.phase, 'engine')
+        sideStep(ctx, c.phase)   // ai.encounter-rules: the side step, before any Activation of the Phase
         c.order = activationOrder(ctx, c.phase)
         c.next = 0
         c.at = 'next-activation'
@@ -224,6 +226,7 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
       case 'enemy-start':
         c.phase = 'enemy'
         setPhase(ctx, c.phase, 'engine')
+        sideStep(ctx, c.phase)   // ai.encounter-rules: the side step, before any Activation of the Phase
         c.order = activationOrder(ctx, c.phase)
         c.next = 0
         c.at = 'next-activation'

@@ -337,4 +337,5 @@ export const TEST_COHORT = {
   enemies: ['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'] as const,
 }
 /** The encounters — encounter.runner (2026-09-03). Under the kill-switch seam like any content. */
-export const ENCOUNTERS = omitDisabled(packEncounters(UNITS))
+// ai.encounter-rules: a row's AI rules are inline, so the seam strips them by id too
+export const ENCOUNTERS = stripDisabledTriggers(omitDisabled(packEncounters(UNITS)))

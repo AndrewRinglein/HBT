@@ -19403,6 +19403,106 @@ export const UNIT_PACK = {
           }
         ],
         "schedule": []
+      },
+      "test.encounter.anchor-hold": {
+        "id": "test.encounter.anchor-hold",
+        "name": "Anchor: hold the line (TEST)",
+        "mapId": "test.map.journey-20x10",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "setup": [
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 14,
+              "row": 4
+            }
+          },
+          {
+            "unit": "unit.zombie",
+            "at": {
+              "col": 14,
+              "row": 6
+            }
+          }
+        ],
+        "schedule": [],
+        "heroZone": {
+          "count": 1,
+          "at": {
+            "near": {
+              "col": 2,
+              "row": 4
+            },
+            "range": 0
+          }
+        },
+        "aiRules": [
+          {
+            "id": "test.anchor.hold-the-line",
+            "rule": "anchor",
+            "units": [
+              "unit.strong-skeleton"
+            ],
+            "at": {
+              "col": 14,
+              "row": 4
+            },
+            "radius": 1
+          }
+        ]
+      },
+      "test.encounter.coordinated-pack": {
+        "id": "test.encounter.coordinated-pack",
+        "name": "Coordination: one target (TEST)",
+        "mapId": "test.map.journey-20x10",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "setup": [
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 9,
+              "row": 0
+            }
+          },
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 9,
+              "row": 9
+            }
+          }
+        ],
+        "schedule": [],
+        "heroZone": {
+          "count": 2,
+          "at": {
+            "near": {
+              "col": 2,
+              "row": 4
+            },
+            "range": 1
+          }
+        },
+        "aiRules": [
+          {
+            "id": "test.coordinate.one-target",
+            "rule": "coordinate",
+            "units": [
+              "unit.strong-skeleton"
+            ],
+            "focus": [
+              {
+                "targetHealth": -1
+              }
+            ]
+          }
+        ]
       }
     },
     "bursts": {

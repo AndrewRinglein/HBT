@@ -176,6 +176,9 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(u.huntTarget === undefined || unitId(u.huntTarget), 'hunt target')
     // ai.mode-change: the changes still to come — id, a known mode, integer conditions
     requireThat(u.aiChanges === undefined || (Array.isArray(u.aiChanges) && u.aiChanges.length > 0 && u.aiChanges.every((c: any) => { record(c); record(c.when); return typeof c.id === 'string' && typeof c.mode === 'string' && (c.when.hpBelow === undefined || integer(c.when.hpBelow, 1, 100)) && (c.when.fromTurn === undefined || integer(c.when.fromTurn, 1)) })), 'unit AI mode changes')
+    // ai.encounter-rules: the encounter rules bound to the unit — ids the saved encounter carries
+    requireThat(u.aiRules === undefined || (strings(u.aiRules) && u.aiRules.length > 0 && new Set(u.aiRules).size === u.aiRules.length
+      && u.aiRules.every((id: string) => Array.isArray(s.encounter?.aiRules) && s.encounter.aiRules.some((r: any) => r?.id === id))), 'unit AI rules')
     requireThat(u.consumedBy === undefined || (typeof u.consumedBy === 'string' && /^prop\./.test(u.consumedBy)), 'consumed by')   // v2.knockback-collisions
   }
   requireThat(Array.isArray(s.events) && st.seq === s.events.length, 'event count')
@@ -229,6 +232,20 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       record(row)
       requireThat((integer(row.phase, 1) && row.enemyPhase === undefined) || (integer(row.enemyPhase, 1) && row.phase === undefined), 'encounter schedule timing')
       requireThat(Array.isArray(row.spawn), 'encounter spawn'); row.spawn.forEach(placement)
+    }
+    // ai.encounter-rules: the row's AI rules, and this Phase's focus by coordinate rule
+    if (enc.aiRules !== undefined) {
+      requireThat(Array.isArray(enc.aiRules) && new Set(enc.aiRules.map((r: any) => r?.id)).size === enc.aiRules.length, 'encounter AI rules')
+      for (const r of enc.aiRules) {
+        record(r)
+        requireThat(typeof r.id === 'string' && (r.units === undefined || (strings(r.units) && r.units.length > 0)), 'encounter AI rule')
+        if (r.rule === 'anchor') { coordinate(r.at); requireThat(integer(r.radius, 0), 'encounter anchor radius') }
+        else requireThat(r.rule === 'coordinate' && Array.isArray(r.focus) && r.focus.length > 0 && r.focus.every((t: any) => { record(t); return Object.values(t).every((w) => integer(w)) }), 'encounter coordinate rule')
+      }
+    }
+    if (st.encounter.focus !== undefined) {
+      record(st.encounter.focus)
+      requireThat(Object.entries(st.encounter.focus).every(([k, v]) => unitId(v) && Array.isArray(enc.aiRules) && enc.aiRules.some((r: any) => r.id === k && r.rule === 'coordinate')), 'encounter focus')
     }
   } else requireThat(st.encounter === undefined, 'missing encounter definition')
   if (st.corpses !== undefined) {

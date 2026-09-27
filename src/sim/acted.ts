@@ -60,4 +60,8 @@ export const ACTED: ReadonlySet<string> = new Set(['damage.applied','heal.applie
   // v2.prop-destroy (2026-09-24): a prop that took a step or fell is a changed board
   'prop.damaged', 'prop.destroyed',
   // v2.prop-attack (2026-09-24): an attack aimed at a prop's hex — always followed by prop.damaged
-  'prop.struck'])
+  'prop.struck',
+  // ai.encounter-rules (2026-09-26): a unit bound by an encounter's AI rule is a
+  // changed unit (its aiRules); a side's focus is state its units then act on.
+  // Widening, stricter, as above.
+  'ai.anchored', 'ai.coordinated', 'ai.focused'])

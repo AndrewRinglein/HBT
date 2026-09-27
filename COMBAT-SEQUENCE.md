@@ -93,6 +93,11 @@ A sequence of **Hero Activations and Card Plays, interleaved**, in the order the
 
 Downed heroes do not activate.
 
+**As a Phase begins — the side step** *(built 2026-09-26, `ai.encounter-rules`; AI-DESIGN.md §4)*:
+after `phase.begin` and before the Phase's first Activation, each coordinate rule of the running
+encounter whose bound units stand on this side picks the side's focus (`ai.focused`). With no
+encounter rule nothing runs. The Enemy Phase opens the same way. SWITCHES.md "Encounter AI rules".
+
 ### End of Hero Phase
 
 The ladder is an **ordered list of named rungs supplied by config**, not six hardcoded calls — so reordering it is a sweep axis rather than a diff. *(Built 2026-09-25, fix.phase-ladder-config: `cfg.switches.endOfPhaseLadder` orders the built rungs — 4b, 5, 6 — and `phaseRungLog` names each in the log. SWITCHES.md.)*

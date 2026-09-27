@@ -24,7 +24,7 @@ import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './typ
 import type { HexId } from './hex.js'
 import { arrivalUid } from './identity.js'
 import { applyBadges } from './items.js'
-import { emit, gainPower, paintLayer, setOutcome } from './mutate.js'
+import { bindAiRule, emit, gainPower, paintLayer, setOutcome } from './mutate.js'
 import { applyStatus } from './status.js'
 import { fallNight } from './vision.js'
 import { rollBelow } from './rng.js'
@@ -115,6 +115,18 @@ function defOf(ctx: Ctx, typeId: string, where: string): UnitDef {
   return d
 }
 
+/**
+ * ai.encounter-rules (AI-DESIGN.md §4): the encounter's AI rules bind the units
+ * it fields as they arrive — a rule naming `units` binds those types; a rule
+ * naming none binds every enemy-side unit the encounter fields. In the row's
+ * order (Law 6). An encounter with no rules binds nothing and logs nothing.
+ */
+function bindAiRules(ctx: Ctx, enc: EncounterDef, u: Unit): void {
+  for (const rule of enc.aiRules ?? []) {
+    if (rule.units ? rule.units.includes(u.typeId) : u.side === 'enemy') bindAiRule(ctx, u.id, rule)
+  }
+}
+
 /** Setup: the encounter's own units at phase 1. Called by createBattle after the heroes are placed. */
 export function placeSetup(ctx: Ctx, enc: EncounterDef, names: Record<string, number>): void {
   const st = ctx.state.encounter ?? (ctx.state.encounter = { id: enc.id, fired: [], objectives: [] })
@@ -128,6 +140,7 @@ export function placeSetup(ctx: Ctx, enc: EncounterDef, names: Record<string, nu
       const u = arrive(ctx, def, hex, enc.id, names)
       if (p.objective) { st.objectives.push(u.id); emit(ctx, 'encounter.objective', enc.id, { actor: u.id, typeId: u.typeId, kind: 'protect' }) }
       if (p.civilian && enc.civilianAi) { u.aiOverride = { ...enc.civilianAi }; emit(ctx, 'ai.override', enc.id, { actor: u.id, mode: enc.civilianAi.mode, untilTurn: enc.civilianAi.untilTurn }) }
+      bindAiRules(ctx, enc, u)
     }
   }
 }
@@ -147,7 +160,11 @@ export function fireSchedule(ctx: Ctx, when: 'phase' | 'enemyPhase'): void {
     const arrived: number[] = []
     row.spawn.forEach((p, j) => {
       const def = defOf(ctx, p.unit, `encounter '${enc.id}' schedule row ${i}`)
-      for (const hex of hexesOf(ctx, p, `encounter '${enc.id}' schedule row ${i}`, [i, j])) arrived.push(arrive(ctx, def, hex, enc.id, names).id)
+      for (const hex of hexesOf(ctx, p, `encounter '${enc.id}' schedule row ${i}`, [i, j])) {
+        const u = arrive(ctx, def, hex, enc.id, names)
+        bindAiRules(ctx, enc, u)
+        arrived.push(u.id)
+      }
     })
     // a spawn's battle starts when it arrives (COMBAT-SEQUENCE Start of Turn rung 1)
     for (const id of arrived) fireTriggers(ctx, 'startOfBattle', { ownerId: id, targetId: null, causeId: enc.id, ordinal: 0, keyTag: HOOKS.indexOf('startOfBattle') })

@@ -4653,7 +4653,18 @@
    "ai.scorer"
   ],
   "spec": "Ruled 2026-09-26: by default units do not work together and each type has its own mode; an encounter may impose overarching rules — group coordination, anchoring units to a location, goals not inherent to the unit. Authored on the encounter row, not the unit. Coordination is a once-per-Phase side step (focus target, jobs) that coordinated units' scoring reads.",
-  "expect": "one encounter anchors a unit to a hex it would otherwise leave; another turns on coordination and its units share a target; the same units without the encounter rules behave as their modes alone"
+  "expect": "one encounter anchors a unit to a hex it would otherwise leave; another turns on coordination and its units share a target; the same units without the encounter rules behave as their modes alone",
+  "note": "Variants declared 2026-09-26 by the implementing chat: two encounter AI rules through the same mechanism on two TEST encounter rows (content/test/encounters.json) — an anchor (test.anchor.hold-the-line) and coordination (test.coordinate.one-target); both are pure data.",
+  "variants": [
+   "test.anchor.hold-the-line",
+   "test.coordinate.one-target"
+  ],
+  "probeIds": [
+   "test.anchor.hold-the-line",
+   "test.coordinate.one-target"
+  ],
+  "status": "done",
+  "sha": "de373dc"
  },
  {
   "id": "ai.sight",
