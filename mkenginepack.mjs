@@ -1778,7 +1778,7 @@ function testUnits(testAttackRows, testAbilityRows) {
 }
 function testStatuses() {
   const out = {};
-  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone', 'kdbDown']);
+  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone', 'kdbDown', 'hidesFromFoes']);   // hidesFromFoes: ai.sight (engine, 2026-09-27)
   for (const row of readTest('statuses.json')) {
     const { note, ...r } = row;
     if (r.blocksBlock !== undefined && typeof r.blocksBlock !== 'boolean') throw Error('Invalid blocksBlock flag');

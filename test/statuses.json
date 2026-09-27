@@ -12,5 +12,9 @@
   { "id": "test.status.guard-open", "name": "Guard open (TEST)", "shape": "counter", "family": "duration", "decayPerPhase": 1, "blocksBlock": true, "note": "rule.block: defense suppression independent of activation locking." },
   { "id": "test.status.floored", "name": "Floored (TEST)", "shape": "flag", "family": "duration", "decayPerPhase": 0,
     "prone": { "accuracyAgainst": 20, "dodge": -5, "damageAgainst": 2, "accuracy": -20, "damage": -2, "standAction": "power.stand-up" },
-    "note": "v2.prone (2026-09-23): the second prone instance beside status.prone, with different numbers — proves the prone stations read the row, not a name. No campaign claim." }
+    "note": "v2.prone (2026-09-23): the second prone instance beside status.prone, with different numbers — proves the prone stations read the row, not a name. No campaign claim." },
+  { "id": "test.status.veil", "name": "Veil (TEST)", "shape": "flag", "family": "duration", "decayPerPhase": 1, "hidesFromFoes": true,
+    "note": "ai.sight (engine, 2026-09-27): a status that hides its unit from every opposing AI while positive, and falls away at End of Phase (-1 per Phase) - the stand-in for stealth breaking, so the unit becomes a target. No campaign claim; the real stealth row is the Codex's." },
+  { "id": "test.status.shroud", "name": "Shroud (TEST)", "shape": "flag", "family": "duration", "decayPerPhase": 0, "hidesFromFoes": true,
+    "note": "ai.sight: the second hidesFromFoes instance beside test.status.veil, with no clock - it lasts until removed. Proves the AI's view reads the row, not a name. No campaign claim." }
 ]

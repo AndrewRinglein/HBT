@@ -724,5 +724,43 @@
     { "id": "test.late-zombie.charge", "when": { "fromTurn": 3 }, "mode": "dumb-melee" }
   ],
   "note": "ai.mode-change: the cohort zombie with 30 Health that hangs back (flee) and charges (dumb-melee) from Turn 3 - the second change, on a different condition. No campaign content."
+},
+{
+  "id": "test-veiled-osric",
+  "from": "test-osric",
+  "name": "Veiled Osric (TEST)",
+  "triggers": [
+    {
+      "id": "test.veiled-osric.veil",
+      "hook": "startOfBattle",
+      "chance": 100,
+      "select": "self",
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.veil",
+        "value": 2
+      }
+    }
+  ],
+  "note": "ai.sight (engine, 2026-09-27): the cohort hero Osric, who begins the Battle under test.status.veil (2, -1 per Phase: it ticks at the End of the Hero Phase, so 2 carries it through the first Enemy Phase) - hidden from the enemy AI until it falls away. No campaign content."
+},
+{
+  "id": "test-shrouded-zombie",
+  "from": "test-zombie",
+  "name": "Shrouded Zombie (TEST)",
+  "triggers": [
+    {
+      "id": "test.shrouded-zombie.shroud",
+      "hook": "startOfBattle",
+      "chance": 100,
+      "select": "self",
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.shroud",
+        "value": 1
+      }
+    }
+  ],
+  "note": "ai.sight: the cohort zombie under test.status.shroud (no clock) - the second hidden unit, on the other side: hidden from the hero AI for the whole Battle. No campaign content."
 }
 ]
