@@ -2876,3 +2876,25 @@ Ruled:
 
 - **The Codex gets a `status.stealth` row**, its sentence copied from the settled stealth definition (`CODEX.md` line 475: "you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never breaks it"). Copy, don't invent: any field that definition does not give is a switch, not a guess.
 - **Stealth is queued as its own item, `capability.stealth`**: the targeting rule, breaking on an attack or a power, and reveal effects. It builds on ai.sight's `hidesFromFoes`.
+
+## 2026-09-27 — the Necromancer's Raise reaches 10
+
+Andrew, asked "The Necromancer's Raise has no range on its row. Compiled as 2 (its aura's radius — the encounter session's reading). Rule it.":
+
+“Give the necromancer a raise of 10 range.”
+
+Ruled:
+
+- **The Necromancer's Raise has range 10** — a corpse within 10 hexes can be raised as a Zombie. The number lives on the Codex row (`content/gen/enemies-authored.json`, the Raise trigger's `range`), not in the converter; `SWITCHES.md` `corpseRaiseRadius` (the assumed 2) is retired by this. Queued as `fix.raise-range`.
+
+## 2026-09-27 — Surge: a pool that pays 100 per Surge
+
+Andrew, asked what the difference is between the progression schedule and the Codex on Surge:
+
+“There is a stat which is surge gain per turn, then you have your amount of surge because lots of things can give you surge or take away surge.   And then, during the end step, you roll against your surge to see if it's used. If it's used, it should take away 100. If you have 150 surge, automatically you're going to have a surge activation, and you're going to lose 100 and still have 50.”
+
+Ruled:
+
+- **Surge is two things: a stat, the Surge gained each Turn, and the unit's amount of Surge** (the engine's `surge` and `surgeChance`), which other things may raise or lower (Knocked Sprawling's −50 Surge is one).
+- **The check rolls against the amount. A Surge that happens takes away 100** — it does not empty the amount. 150 Surge surges automatically and keeps 50. The engine today sets the amount to 0 on a Surge (`src/core/battle.ts`, COMBAT-SEQUENCE.md Surge check rung 2) — that changes. Queued as `fix.surge-spend`.
+- **Not ruled here:** how much Surge a hero gains each Turn — the Codex says it equals the level, the schedule says 0 + specialty. Still open, in the questions inbox.
