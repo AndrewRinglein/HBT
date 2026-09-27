@@ -10,7 +10,7 @@ import { blockingPropAt, passableHexes, type Passable } from './props.js'
 import { flatDamage } from './mitigation.js'
 import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
 import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
-import { forcedTargetOf, applyStatus, incomingAbsorb, isBlocked, isProne, isRooted, reduceStatus, spendAbsorb } from './status.js'
+import { forcedTargetOf, hiddenFrom, applyStatus, incomingAbsorb, isBlocked, isProne, isRooted, reduceStatus, spendAbsorb } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { knockImmunity } from './kdb.js'
 import { thornsOf } from './thorns.js'
@@ -435,6 +435,7 @@ export function nearestEnemy(ctx: Ctx, u: Unit): Unit | null {
   let bestD = Infinity
   for (const o of ctx.state.units) {
     if (o.side === u.side || o.lifeState !== 'standing') continue
+    if (hiddenFrom(ctx, u, o)) continue   // ai.sight: a hidden foe is not the nearest anything
     const d = ctx.geo.distance(u.hex, o.hex)
     if (d < bestD || (d === bestD && best && o.id < best.id)) {
       best = o
@@ -449,9 +450,13 @@ export function livingEnemies(ctx: Ctx, u: Unit): Unit[] {
   // taunted it" — while a live Taunt names a standing enemy, that enemy is
   // the whole candidate list. The unit keeps its own AI mode (Angela: "It can
   // keep its same AI, like melee or ranged"); only the list narrows.
+  // ai.sight (2026-09-27): this is the AI's view of its enemies, and a foe a
+  // status hides (hidesFromFoes) is not in it — not a target, not a threat, not
+  // a score. A taunter that is hidden leaves the list EMPTY: the unit must target
+  // it and cannot see it (SWITCHES.md aiSightTauntHidden).
   const forced = forcedTargetOf(ctx, u)
-  if (forced !== null) return [ctx.state.units[forced]!]
-  return ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'standing')
+  if (forced !== null) { const t = ctx.state.units[forced]!; return hiddenFrom(ctx, u, t) ? [] : [t] }
+  return ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'standing' && !hiddenFrom(ctx, u, o))
 }
 
 /**

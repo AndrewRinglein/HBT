@@ -14,7 +14,7 @@ import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, movesOf, powerI
 import { attackDef, preview, reachOf } from './../core/pipeline.js'
 import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
 import { previewBurst } from './../core/burst.js'
-import { isBlocked, isConfused, isProne } from './../core/status.js'
+import { hiddenFrom, isBlocked, isConfused, isProne } from './../core/status.js'
 import { TERRAIN } from './../core/types.js'
 import { changeAiMode, emit, unit } from './../core/mutate.js'
 import type { AiModeChange, AiModeRow, AiTier, Ctx, Unit } from './../core/types.js'
@@ -50,9 +50,12 @@ function options(decision: Decision, actor: number): ReadList {
   if (held && held.actor === actor && held.seq === ctx.state.seq) return held
   // ai.encounter-rules: an anchored unit's list holds only the moves its anchors
   // allow — every procedure chooses from this list, so no mode can walk off
-  const entries = decision.anchors.length
-    ? legalActions(ctx, actor).filter((r) => !('destination' in r) || anchorsAllow(decision, unit(ctx, actor), r.destination))
-    : legalActions(ctx, actor)
+  // ai.sight (2026-09-27): nor any action aimed at a unit hidden from it — the
+  // AI chooses from what it can see, so a hidden foe is never a plan
+  const self = unit(ctx, actor)
+  const entries = legalActions(ctx, actor).filter((r) =>
+    (!('target' in r) || !hiddenFrom(ctx, self, unit(ctx, r.target)))
+    && (!decision.anchors.length || !('destination' in r) || anchorsAllow(decision, self, r.destination)))
   const list = { actor, seq: ctx.state.seq, entries, keys: new Set(entries.map(requestKey)) }
   decision.list = list
   return list
@@ -102,7 +105,7 @@ function hintAllows(decision: Decision, actor: number, actionId: string, aim: { 
     const struck = aim.centre !== undefined ? previewBurst(ctx, actor, aim.centre, actionId).targets.map((t) => t.id)
       : aim.target === undefined ? []
       : a!.effects && a!.target?.select === 'area' ? powerTargetsOf(ctx, actor, aim.target, a!) : [aim.target]
-    if (struck.filter((id) => unit(ctx, id).side !== u.side).length < hint.minEnemiesStruck) return false
+    if (struck.filter((id) => unit(ctx, id).side !== u.side && !hiddenFrom(ctx, u, unit(ctx, id))).length < hint.minEnemiesStruck) return false
   }
   return true
 }
@@ -248,7 +251,7 @@ function withDowned(decision: Decision, u: Unit, standing: Unit[]): Unit[] {
   const mode = ctx.cfg.switches.aiAttacksDowned
   if (mode === 'never') return standing
   if (mode === 'whenNoStanding' && standing.length) return standing
-  const downed = ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'downed'
+  const downed = ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'downed' && !hiddenFrom(ctx, u, o)
     && attackIdsOf(ctx, u).some((id) => legalTarget(decision, u.id, o.id, id)))
   return mode === 'always' ? [...downed, ...standing] : downed
 }
@@ -327,7 +330,9 @@ function burstIfUseful(decision: Decision, u: Unit): boolean {
       const p = previewBurst(ctx, u.id, centre, id)
       const harm = p.targets.filter(t => unit(ctx, t.id).side === u.side).reduce((n, t) => n + t.applied, 0)
       if (harm && !ctx.cfg.switches.aiBurstThroughAllies) continue
-      const value = p.targets.reduce((n, t) => n + (unit(ctx, t.id).side === u.side ? t.heal - t.applied : t.applied - t.heal), 0)
+      // ai.sight: a burst still strikes a hidden foe; the AI does not count it (SWITCHES.md aiSightScoring)
+      const value = p.targets.filter(t => !hiddenFrom(ctx, u, unit(ctx, t.id)))
+        .reduce((n, t) => n + (unit(ctx, t.id).side === u.side ? t.heal - t.applied : t.applied - t.heal), 0)
       if (value > 0 && value >= ordinary && hintAllows(decision, u.id, id, { centre })) plans.push({ actionId: id, centre, facts: { burstValue: value } })
     }
   }
@@ -759,8 +764,8 @@ function rangedKite(decision: Decision, u: Unit): void {
     const areaPick = isArea
       ? rankTargets(decision, u, targets).map((r) => unit(ctx, r.plan.target!)).find((e) => {
           const struck = blastOf(e)
-          const foes = struck.filter((s) => unit(ctx, s).side !== u.side).length
-          const allies = struck.length - foes
+          const foes = struck.filter((s) => unit(ctx, s).side !== u.side && !hiddenFrom(ctx, u, unit(ctx, s))).length
+          const allies = struck.filter((s) => unit(ctx, s).side === u.side).length
           return foes >= 2 && (allies === 0 || ctx.cfg.switches.aiBurstThroughAllies)
         })
       : undefined
@@ -775,7 +780,7 @@ function rangedKite(decision: Decision, u: Unit): void {
       // one less per head beats the staff the moment it catches two.
       const powerDmg = isArea
         ? blastOf(t)
-            .filter((s) => unit(ctx, s).side !== u.side)
+            .filter((s) => unit(ctx, s).side !== u.side && !hiddenFrom(ctx, u, unit(ctx, s)))
             .reduce((sum, s) => sum + previewPower(ctx, u.id, s, power).damage, 0)
         : previewPower(ctx, u.id, t.id, power).damage
       if (powerDmg >= staffDmg) {

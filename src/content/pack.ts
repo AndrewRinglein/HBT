@@ -155,7 +155,9 @@ const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage'
   // v2.prone, 2026-09-23 (COMBAT-V2-DESIGN §10)
   'prone',
   // v2.kdb, 2026-09-23: the prone row a KDB "down" applies (COMBAT-V2 §9.2)
-  'kdbDown'] as const
+  'kdbDown',
+  // ai.sight, 2026-09-27: out of every opposing AI's view while positive
+  'hidesFromFoes'] as const
 const PRONE_NUMBERS = ['accuracyAgainst', 'dodge', 'damageAgainst', 'accuracy', 'damage'] as const
 export function packStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { statuses?: Readonly<Record<string, PackStatusRow>> }).statuses ?? {}

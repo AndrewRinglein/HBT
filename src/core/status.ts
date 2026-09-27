@@ -88,6 +88,16 @@ export type StatusDef = {
    */
   readonly forcesTarget?: boolean
   /**
+   * ai.sight (2026-09-27), ruled 2026-09-26 (Andrew): "the AI knows everything
+   * except stealthed units." While a status carrying this flag is positive on a
+   * unit, that unit is out of every OPPOSING AI's view — not a target, not a
+   * threat, not counted in any score (hiddenFrom, read by the AI through
+   * livingEnemies, nearestEnemy and its action list). Its own side sees it.
+   * This is the AI's view only: whether a hidden unit may be targeted at all,
+   * and what breaks it, is the stealth row's (SWITCHES.md aiSightLegality).
+   */
+  readonly hidesFromFoes?: boolean
+  /**
    * Applied onto a unit holding `cancels`, the two annihilate one for one
    * (rule.burn-frost-cancel: "Burn and Frost annihilate one for one on
    * application — a unit never carries both").
@@ -381,6 +391,15 @@ export function incomingPhysicalBonus(ctx: Ctx, u: Unit): number {
 /** capability.root: is this unit held in place? */
 export function isRooted(ctx: Ctx, u: Unit): boolean {
   return u.statuses.some((s) => ctx.statuses[s.id]?.blocksMovement && s.value > 0)
+}
+/**
+ * ai.sight: is `target` out of `viewer`'s view — a unit of the other side
+ * carrying a positive status whose row hides it from foes? Allies always see
+ * each other (SWITCHES.md aiSightAllies). Reads the row's flag, never a name.
+ */
+export function hiddenFrom(ctx: Ctx, viewer: Unit, target: Unit): boolean {
+  if (target.side === viewer.side) return false
+  return target.statuses.some((s) => s.value > 0 && ctx.statuses[s.id]?.hidesFromFoes === true)
 }
 /** capability.taunt: the unit this one must target, if a live taunt names one that still stands. */
 export function forcedTargetOf(ctx: Ctx, u: Unit): number | null {

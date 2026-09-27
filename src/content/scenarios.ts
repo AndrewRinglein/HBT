@@ -109,6 +109,19 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.coordinated-pack',
     heroes: ['test-warrior', 'test-ranger'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  // ai.sight (2026-09-27; ruled 2026-09-26, "the AI knows everything except
+  // stealthed units"): the two instances of a status that hides its unit from the
+  // opposing AI, each live in a real battle — the Veil on a hero (it falls away, and
+  // the hero becomes a target) and the Shroud on an enemy (no clock: the hero AI
+  // never sees it). Both statuses are data on TEST rows (content/test/). No campaign claim.
+  'test.sight-a': {
+    id: 'test.sight-a', note: 'TEST: Veiled Osric (hidden from the enemy AI through the first Enemy Phase) beside a zombie, plain Osric five hexes off. The zombie passes the one it cannot see. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-veiled-osric', 'test-osric'], heroHexes: [86, 82], enemies: ['test-zombie'], enemyHexes: [87], replicate: 0,
+  },
+  'test.sight-b': {
+    id: 'test.sight-b', note: 'TEST: Osric beside the Shrouded Zombie (hidden from the hero AI all Battle), a plain zombie four hexes off. Osric goes for the one he can see. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-shrouded-zombie', 'test-zombie'], enemyHexes: [86, 89], replicate: 0,
+  },
   // v2.knockback-collisions (2026-09-23): a real battle whose pushes are stopped by
   // authored props (content test.map.well-shove, 9x7). The golem stands between two
   // zombies on the middle row; every push it lands drives one into prop.test.boulder (collision 4)
