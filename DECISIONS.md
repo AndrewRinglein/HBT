@@ -2864,3 +2864,15 @@ Ruled:
 
 - **No balance adjustments now; the work is getting every feature in.** The Kiln is not made easier.
 - A test whose claim is a mechanism, and which failed only because a battle's outcome moved, proves the mechanism on a scripted battle instead (Law 10, flagged) — `fix.kiln-fire-test`.
+
+## 2026-09-27 — stealth gets a Codex row and its own backlog item
+
+Andrew, asked after ai.sight landed (1) "Should the Codex get a real stealth status row, using the settled wording at CODEX.md line 475 ('you cannot be seen and cannot be targeted by an attack…')?" (2) "Should stealth be queued as its own backlog item, covering the targeting rule, breaking on an attack or a power, and reveal effects?":
+
+“1. Yes
+2. Yes”
+
+Ruled:
+
+- **The Codex gets a `status.stealth` row**, its sentence copied from the settled stealth definition (`CODEX.md` line 475: "you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never breaks it"). Copy, don't invent: any field that definition does not give is a switch, not a guess.
+- **Stealth is queued as its own item, `capability.stealth`**: the targeting rule, breaking on an attack or a power, and reveal effects. It builds on ai.sight's `hidesFromFoes`.

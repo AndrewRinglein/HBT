@@ -4714,5 +4714,16 @@
   ],
   "spec": "The hounds 'ignore ZOC' — 'the move-WITHOUT-provoking machinery, as a property of their movement' (ENEMY-REVIEW.md:276-278). pack.enemy-actions left it out: attacks of opportunity are governed only by the global switch (movement.ts ~226) and the movement type has no such property. Make not-provoking a property a movement power row can carry; the four hounds carry it.",
   "expect": "a hound leaving a hero's zone provokes no attack of opportunity; a walker on the same path does; a second unit with the property is pure data"
+ },
+ {
+  "id": "capability.stealth",
+  "kind": "engine",
+  "shape": "flag",
+  "needs": [
+   "ai.sight"
+  ],
+  "spec": "Ruled 2026-09-27 (Andrew, DECISIONS.md 'stealth gets a Codex row and its own backlog item'). Stealth as the Codex settled it (CODEX.md 475, 1589): 'you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never breaks it.' Four parts: (1) the Codex status row status.stealth in content/settled.json, its sentence copied from that definition, compiled by content/mkenginepack.mjs to hidesFromFoes plus the new behaviour flags — any field the definition does not give is a switch; (2) the targeting rule: a unit carrying it cannot be the target of an attack by the other side (canAttack / legalActions, so preview, the AI and hero commands agree; SWITCHES.md aiSightLegality is retired); (3) it breaks the moment its carrier uses an attack or a power, never on movement, logged with the attack or power as cause; (4) reveal effects: an effect kind that breaks stealth on units of the other side within a radius, for the Codex reveal powers and items (Flush Them Out, Spectral Sight, Second Sight, Raise the Torch, Flare, Brilliant Torch, Scouting…) to compile to. Not in this item: the universal rule 'Stealth does not hold' (CODEX.md 1840) and the units and powers that enter stealth.",
+  "expect": "a stealthed unit cannot be attacked by the other side but is still reached by an area effect; it breaks when its carrier attacks or uses a power and not when it moves; a reveal effect breaks it on every enemy in its radius and none outside; the Codex row compiles through the pack, not a hand-written status",
+  "note": "Queued 2026-09-27 on Andrew's ruling. Variants to declare before code: status.stealth and a second hidesFromFoes status (test.status.veil from ai.sight can carry the break flags as pure data)."
  }
 ]
