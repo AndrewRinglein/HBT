@@ -1,43 +1,34 @@
-# engine — handoff 2026-09-26 23:47
+# engine — handoff 2026-09-27 03:27
 
 *Written by tools/wrap.mjs. The only handwritten line is the Now line, given to wrap as its argument. The rest is what start.mjs prints and what git holds. Read by `start engine` — not by a chat, directly.*
 
-engine — next ai.mode-change, 195 of 229 landed · 22 await review · 7 pending
-Now: ai.scorer — the AI framework. Landed: the ten modes are data rows (src/content/ai-modes.ts, on ctx.aiModes: rules + target + anchor + weights in integer tiers) run through the scorer (src/ai/scorer.ts, considerations read from preview and the state); control battles byte-identical on all 23 maps; a second row with other weights changes a decision with no code; every AI action logs its top three plans with their numbers in ctx.aiLog, beside the event log (SWITCHES.md aiDecisionLogHome); action-row hints (aiHint: whenever, belowHalfHp, minEnemiesStruck) wired, none authored. Eight shards green on tree 50f526fa32. Tried: shards before --land do not count after it (the tree hash reads .state from the index, so the landing commit moves it); audit-all does not fit one Cowork call (killed after typecheck); audit.test.ts's 400-battle sample times out at load 5+ (not the scorer: 200 battles 27.5 s old code, 27.2 s new, same load). Noticed: the kite prices its staff by hand, not through preview (Law 1). Owed by content: the Colossus's use-whenever hint (ENEMY-REVIEW.md:352) and Codex publication of the nine ai.* ids. Next: ai.mode-change.
-New chat with Heroes of Blight and Tragic — engine: ai.mode-change, a unit's mode changes mid-battle
+engine — next ai.encounter-rules, 196 of 229 landed · 22 await review · 6 pending
+Now: ai.mode-change — the AI framework. Landed: a unit row carries aiChanges [{id, when, mode}] (when: hpBelow percent, or fromTurn), checked as the unit's Activation opens; each fires once in listed order and emits ai.mode naming its id as cause; variants on two test rows (test.rout-zombie.rout hpBelow 50 -> flee, test.late-zombie.charge fromTurn 3 -> dumb-melee), scenarios test.mode-change-a/-b; six switches (SWITCHES.md 'AI mode changes'). Passed every check first attempt. Eight shards green on tree eddb99d6da. Tried: shard 1/8 (integration kiting, 15 s) and 5/8 (audit hit rates, 30 s) time out at load 5-6 on 2 cores; the kiting test times the same on b3f5555 and HEAD (6-13 s, swings with load), so not the change; re-runs passed. Noticed: the gate records the commit id before amending its own commit (backlog says d2263f5, the landing is 9467984; ai.scorer the same); the gate appends gauntlet-log.jsonl after committing, leaving it modified; stale .git/index.lock from an earlier session (delete now allowed on the folder); pack.stamp.json is only written by publish.mjs, so mkenginepack leaves it stale; content's publication.test.mjs needs Edge, absent in the sandbox. Owed by Angela: which id kind a real (non-test) mode change uses — trigger.*, ai.* or other; no real unit carries one yet. Next: ai.encounter-rules.
+New chat with Heroes of Blight and Tragic — engine: ai.encounter-rules, an encounter's overarching AI rules (anchoring, coordination)
   start engine
-Last landing: 2026-09-26 23:24 (ai.scorer). Previous chat ended: on a wrap, 2026-09-26 23:47
-WRAP NOT COMMITTED: 2026-09-26 23:47 — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.
-  Commit them from the engine folder before landing anything: git add -A; git commit -m "wrap: ai.scorer — the AI framework. Landed: the ten modes are data rows (src/content/ai-modes.ts, on ctx.aiModes: rules + target + anchor + weights in integer tiers) run through the scorer (src/ai/scorer.ts, considerations read from preview and the state); control battles byte-identical on all 23 maps; a second row with other weights changes a decision with no code; every AI action logs its top three plans with their numbers in ctx.aiLog, beside the event log (SWITCHES.md aiDecisionLogHome); action-row hints (aiHint: whenever, belowHalfHp, minEnemiesStruck) wired, none authored. Eight shards green on tree 50f526fa32. Tried: shards before --land do not count after it (the tree hash reads .state from the index, so the landing commit moves it); audit-all does not fit one Cowork call (killed after typecheck); audit.test.ts's 400-battle sample times out at load 5+ (not the scorer: 200 battles 27.5 s old code, 27.2 s new, same load). Noticed: the kite prices its staff by hand, not through preview (Law 1). Owed by content: the Colossus's use-whenever hint (ENEMY-REVIEW.md:352) and Codex publication of the nine ai.* ids. Next: ai.mode-change."
+Last landing: 2026-09-27 02:52 (ai.mode-change). Previous chat ended: on a wrap, 2026-09-27 03:27
+WRAP NOT COMMITTED: 2026-09-27 03:27 — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.
+  Commit them from the engine folder before landing anything: git add -A; git commit -m "wrap: ai.mode-change — the AI framework. Landed: a unit row carries aiChanges [{id, when, mode}] (when: hpBelow percent, or fromTurn), checked as the unit's Activation opens; each fires once in listed order and emits ai.mode naming its id as cause; variants on two test rows (test.rout-zombie.rout hpBelow 50 -> flee, test.late-zombie.charge fromTurn 3 -> dumb-melee), scenarios test.mode-change-a/-b; six switches (SWITCHES.md 'AI mode changes'). Passed every check first attempt. Eight shards green on tree eddb99d6da. Tried: shard 1/8 (integration kiting, 15 s) and 5/8 (audit hit rates, 30 s) time out at load 5-6 on 2 cores; the kiting test times the same on b3f5555 and HEAD (6-13 s, swings with load), so not the change; re-runs passed. Noticed: the gate records the commit id before amending its own commit (backlog says d2263f5, the landing is 9467984; ai.scorer the same); the gate appends gauntlet-log.jsonl after committing, leaving it modified; stale .git/index.lock from an earlier session (delete now allowed on the folder); pack.stamp.json is only written by publish.mjs, so mkenginepack leaves it stale; content's publication.test.mjs needs Edge, absent in the sandbox. Owed by Angela: which id kind a real (non-test) mode change uses — trigger.*, ai.* or other; no real unit carries one yet. Next: ai.encounter-rules."
 Yours: (2026-08-27) item.bracer's replacement rule — look: GAME-BUILDER.html; (2026-09-03) Kinds approved BY POLICY this run, for your look — look: GAME-BUILDER.html; (2026-09-03) The Necromancer's Raise has no range on its row. — look: GAME-BUILDER.html; (2026-09-03) The schedule vs the Codex on Surge — look: GAME-BUILDER.html; (2026-09-03) The schedule stows spare weapons in item slots — look: GAME-BUILDER.html; (2026-09-02) Note, no action needed: — look: GAME-BUILDER.html; (2026-09-03) 50 flagged landings await your review — look: GAME-BUILDER.html
-Queue: ai.mode-change [ai · rule], then ai.encounter-rules [ai · rule], then ai.sight [ai · rule] (+3 more)
-Delegate: ai.mode-change [ai · rule] — not yet gated; ai.encounter-rules [ai · rule] — not yet gated; ai.sight [ai · rule] — not yet gated; fix.enemy-accuracy-mod [content · data] — not yet gated; capability.charge [engine · rule] — not yet gated; capability.move-ignores-zoc [engine · rule] — not yet gated
+Queue: ai.encounter-rules [ai · rule], then ai.sight [ai · rule], then fix.enemy-accuracy-mod [content · data] (+2 more)
+Delegate: ai.encounter-rules [ai · rule] — not yet gated; ai.sight [ai · rule] — not yet gated; fix.enemy-accuracy-mod [content · data] — not yet gated; capability.charge [engine · rule] — not yet gated; capability.move-ignores-zoc [engine · rule] — not yet gated
 Blocked: content.mage-staff needs unit.brute
-Calls since last wrap:
-  actionListSlot · 2026-09-26 · ai.action-list: does the list carry a slot on its entries — one entry per open slot for an either action — or leave the slot to the engine?
-  actionListScope · 2026-09-26 · ai.action-list: are swap and end-cycle on the list?
-  aiDecisionLogHome · 2026-09-26 · Where does the decision log (the top three plans, AI-DESIGN §5) live — in the event log, or beside it?
-  aiModeRowShape · 2026-09-26 · What is a mode row — one weighted sum, or something else?
-  aiRowsHome · 2026-09-26 · Where do the mode rows live until the Codex carries them?
-  aiAttackChoiceTiers · 2026-09-26 · How does the aiAttackChoice switch reach the scorer?
-  aiHintShape · 2026-09-26 · What can an action row's hint say?
-  aiHintWhenever · 2026-09-26 · When is a use: 'whenever' action taken?
-  aiLogRulePicks · 2026-09-26 · What does a choice made by a fixed rule (feast, a stance, the leap, the kite's power, the quarry's swing) log?
-Stack for ai.mode-change:
+Calls since last wrap: none
+Stack for ai.encounter-rules:
   the item's `spec` and `expect` — `node tools/next.mjs` — before any source file
   ENGINE-CONSTITUTION.md — the law the item touches · **the Iron Gauntlet, above, before `--land`**: kill switch, hardcode scan, generalization, consequence, naming
   `node tools/decided.mjs "<the question>"` before asking anything · SWITCHES.md before deciding anything
   COMBAT-SEQUENCE.md — the rung the mechanism sits on · src/core · the kill-switch seam `src/content/disable.ts` · its verify scenario in test/
   src/ai · `system.ai-modes` is Angela's, not a chat's
 
-## The chat's commits since the last committed wrap (77e2141)
+## The chat's commits since the last committed wrap (fbe95a9)
 
-- e7c456b 2026-09-26 23:24 ai.scorer: AI-DESIGN.md §3B-D, ruled 2026-09-26: a mode is a unit type's characteri
-- 0450503 2026-09-26 22:53 wrap: AI designed and ruled (Andrew 2026-09-26, DECISIONS.md four entries; AI-DESIGN.md): a mode per unit type = characteristic rules + scoring; units act alone unless an encounter rules otherwise; mo
+- 9467984 2026-09-27 02:52 ai.mode-change: Ruled 2026-09-26 (DECISIONS.md 'the AI: a framework now...'): a unit's m
+- b3f5555 2026-09-26 23:47 wrap: ai.scorer — the AI framework. Landed: the ten modes are data rows (src/content/ai-modes.ts, on ctx.aiModes: rules + target + anchor + weights in integer tiers) run through the scorer (src/ai/sco
 
 ## Next chat
 
-New chat with Heroes of Blight and Tragic — engine: ai.mode-change, a unit's mode changes mid-battle
+New chat with Heroes of Blight and Tragic — engine: ai.encounter-rules, an encounter's overarching AI rules (anchoring, coordination)
 ```
 start engine
 ```
