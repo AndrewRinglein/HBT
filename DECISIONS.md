@@ -3015,3 +3015,18 @@ Ruled:
 - **New relics:** tier 1: −2 Health, +10 Block, +5 Ranged Block; tier 1: −10 Accuracy, +22 Accuracy on special free attacks. Their tier 2 versions: −2 Health, −1 Armor, +20 Block, +20 Ranged Block; −15 Accuracy, +40 Accuracy on special free attacks.
 - **New bloodrunes** (read as tier 1): on kill, +5 Block; on kill, +10 Ranged Block; on block, +1 Strength; on block, +2 Precision; on miss, gain Bloodlust and lose 2 Stamina.
 - Names, durations and what "gain Bloodlust" gives (CODEX.md 1198 has Bloodlust as a Berserker stance power) are asked back, not assumed.
+
+## 2026-09-28 — two new trinkets: counterattack and fend on demand
+
+Andrew, the same night:
+
+> Then I have two trinkets:
+>
+> 1. Granting Firestrike, Counterstrike: free use, stamina 1, until the end of your next turn, gain Counterattack, cooldown 7.
+> 2. Granting Fend Attack: free use till the end of your next turn, gain Fend Attack, cooldown 7, cost 1 stamina. Those are both trinkets.
+
+Ruled:
+
+- **Trinket 1 grants a power:** free use, 1 Stamina, cooldown 7 — gain Counterattack until the end of your next turn.
+- **Trinket 2 grants a power:** free use, 1 Stamina, cooldown 7 — gain Fend until the end of your next turn.
+- "Free use" is read as a free action (it spends neither the movement nor the primary action). What "Firestrike" names in the first is asked back, not assumed.
