@@ -4866,7 +4866,15 @@
   ],
   "spec": "Ruled 2026-09-27 (Andrew, DECISIONS.md 'stealth gets a Codex row and its own backlog item'). Stealth as the Codex settled it (CODEX.md 475, 1589): 'you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never breaks it.' Four parts: (1) the Codex status row status.stealth in content/settled.json, its sentence copied from that definition, compiled by content/mkenginepack.mjs to hidesFromFoes plus the new behaviour flags — any field the definition does not give is a switch; (2) the targeting rule: a unit carrying it cannot be the target of an attack by the other side (canAttack / legalActions, so preview, the AI and hero commands agree; SWITCHES.md aiSightLegality is retired); (3) it breaks the moment its carrier uses an attack or a power, never on movement, logged with the attack or power as cause; (4) reveal effects: an effect kind that breaks stealth on units of the other side within a radius, for the Codex reveal powers and items (Flush Them Out, Spectral Sight, Second Sight, Raise the Torch, Flare, Brilliant Torch, Scouting…) to compile to. Not in this item: the universal rule 'Stealth does not hold' (CODEX.md 1840) and the units and powers that enter stealth.",
   "expect": "a stealthed unit cannot be attacked by the other side but is still reached by an area effect; it breaks when its carrier attacks or uses a power and not when it moves; a reveal effect breaks it on every enemy in its radius and none outside; the Codex row compiles through the pack, not a hand-written status",
-  "note": "Queued 2026-09-27 on Andrew's ruling. Variants to declare before code: status.stealth and a second hidesFromFoes status (test.status.veil from ai.sight can carry the break flags as pure data)."
+  "note": "Queued 2026-09-27 on Andrew's ruling. Variants to declare before code: status.stealth and a second hidesFromFoes status (test.status.veil from ai.sight can carry the break flags as pure data). Variants declared 2026-09-28 by the implementing chat: the Codex row status.stealth and test.status.cloak (content/test/statuses.json: the same flags minus breaksOnPower, with a clock) - the second is pure data; each live in test.stealth-a / -b. The Veil stays ai.sight's (its tests hold it to the AI's view only).",
+  "variants": [
+   "status.stealth",
+   "test.status.cloak"
+  ],
+  "probeIds": [
+   "status.stealth",
+   "test.status.cloak"
+  ]
  },
  {
   "id": "fix.raise-range",
