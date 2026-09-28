@@ -478,14 +478,15 @@ export function endActivation(ctx: Ctx, id: number, causeId: string): void {
 }
 
 /** A second action cycle inside the same activation, with its original allowance. */
-export function reopenSurgeCycle(ctx: Ctx, id: number, allowance: number, link: number): void {
+export function reopenSurgeCycle(ctx: Ctx, id: number, allowance: number, link: number, amount?: { before: number; after: number }): void {
   const u = unit(ctx, id)
   u.moveUsed = false
   u.primaryUsed = false
   delete u.swapUsed   // v2.swap (COMBAT-V2 §11.2): "A Surge reopens everything, the swap included"
   const rooted = u.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.blocksMovement)
   u.movePointsLeft = rooted ? 0 : allowance
-  emit(ctx, 'surge.hit', 'engine', { actor: id, link, movePoints: u.movePointsLeft })
+  // fix.surge-spend (2026-09-28): the Surge amount before the check and after the spend
+  emit(ctx, 'surge.hit', 'engine', { actor: id, link, movePoints: u.movePointsLeft, ...(amount ? { before: amount.before, after: amount.after } : {}) })
 }
 
 export function markMoveUsed(ctx: Ctx, id: number): void { unit(ctx, id).moveUsed = true }

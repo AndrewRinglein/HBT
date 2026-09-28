@@ -1113,6 +1113,18 @@ export type Config = {
     endOfPhaseLadder: EndOfPhaseRung[]
     /** Does each End of Phase rung log a `phase.rung` line naming itself? SWITCHES.md phaseRungLog. */
     phaseRungLog: boolean
+    /**
+     * fix.surge-spend (2026-09-28): a Surge takes away 100 (ruled 2026-09-27). One that
+     * happens below 100 stops at 0 (true) or leaves the amount below zero (false).
+     * SWITCHES.md surgeSpendFloorsAtZero.
+     */
+    surgeSpendFloorsAtZero: boolean
+    /**
+     * fix.surge-spend: a further Surge check in the same Activation adds Surge to the
+     * leftover and rolls against it (true), or rolls against Surge alone and leaves the
+     * leftover for the next check (false). SWITCHES.md surgeRelinkReadsLeftover.
+     */
+    surgeRelinkReadsLeftover: boolean
   }
 }
 
@@ -1195,6 +1207,12 @@ export const DEFAULT_CONFIG: Config = {
     // Off: the control battles and every frozen cursor fixture stay byte-identical;
     // on, the log names each rung as it runs. SWITCHES.md, 2026-09-25.
     phaseRungLog: false,
+    // fix.surge-spend (2026-09-28): the ruling's example is 150 -> 50; below 100 the
+    // old rule emptied the amount, and a lucky Surge is not a debt. SWITCHES.md.
+    surgeSpendFloorsAtZero: true,
+    // "If you have 150 surge ... you're going to lose 100 and still have 50": the
+    // leftover is the amount, and the amount is what the check rolls against. SWITCHES.md.
+    surgeRelinkReadsLeftover: true,
   },
 }
 
@@ -1205,6 +1223,12 @@ export const DEFAULT_CONFIG: Config = {
  */
 /** Technical guard: overflow is an invalid run, never a gameplay outcome. */
 export const MAX_SURGE_CYCLES = 256
+/**
+ * What one Surge takes away from the amount — ruled 2026-09-27 (Andrew, DECISIONS.md
+ * "Surge: a pool that pays 100 per Surge"): "If it's used, it should take away 100."
+ * An amount at or above it surges without a roll.
+ */
+export const SURGE_COST = 100
 export type BattleCursor = {
   at: 'battle-start' | 'turn-start' | 'hero-start' | 'enemy-arrivals' | 'enemy-start'
     | 'next-activation' | 'selecting' | 'activation-start' | 'acting' | 'surge-check' | 'activation-end'

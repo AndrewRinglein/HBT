@@ -143,8 +143,8 @@ per power."*
 Activation
   ├── movement, then the primary action
   ├── SURGE CHECK          heroes only; enemies never surge
-  │      Surge Chance += Surge, roll against it
-  │      HIT  -> gain 1 + Stamina Regen stamina, Surge Chance = 0,
+  │      Surge Chance += Surge, roll against it (100 or more: no roll, it surges)
+  │      HIT  -> gain 1 + Stamina Regen stamina, Surge Chance −= 100,
   │              go again from movement — STILL THE SAME ACTIVATION
   │      MISS -> Surge Chance persists; fall through
   └── End of Activation    ONCE, however many times you surged
@@ -171,8 +171,10 @@ Under the corrected order every one of those happens **exactly once per unit per
 at the hex the unit finally stops on, no matter how many Activations' worth of doing it
 packed into the one Activation.
 
-**A surged Activation can surge again** — from a freshly zeroed pool, so the second chain
-link is only as likely as `Surge` itself. At level 1 that is 1%.
+**A surged Activation can surge again** — from what the Surge left (fix.surge-spend,
+2026-09-28; SWITCHES.md `surgeRelinkReadsLeftover`): 150 surges, keeps 50, and the next
+link rolls against 50 + `Surge`. Below 100 a Surge leaves 0 (`surgeSpendFloorsAtZero`), so
+the next link is only as likely as `Surge` itself — at level 1 that is 1%.
 
 **A stunned unit skips movement and primary action, AND the surge check** — there is
 nothing to repeat, and a stunned hero winning a free Activation it cannot use is not a
@@ -209,7 +211,7 @@ Attack or class power.
 | # | Rung | Built? |
 |---|---|---|
 | 1 | `Surge Chance += Surge`, roll against it. **Heroes only** | *not yet* — Surge is a stat with no roll behind it |
-| 2 | On a hit: `+1 + Stamina Regen` stamina, `Surge Chance = 0`, **loop back to movement** | *not yet* |
+| 2 | On a hit: `+1 + Stamina Regen` stamina, **`Surge Chance −= 100`** (it does not empty; 150 surges without a roll and keeps 50 — ruled 2026-09-27, Andrew, DECISIONS.md "Surge: a pool that pays 100 per Surge"), **loop back to movement**. Below 100 it stops at 0 (SWITCHES.md `surgeSpendFloorsAtZero`); the amount carries to the next check and the next Turn; `surge.checked` and `surge.hit` log it `before` and `after` | **yes** — fix.surge-spend, 2026-09-28 |
 
 **This runs before End of Activation, not after it.** Ruled 2026-08-21. Putting it after
 is what made the ladder below fire twice for a surging hero.

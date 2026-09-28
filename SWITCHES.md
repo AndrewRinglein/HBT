@@ -1343,3 +1343,21 @@ the same flags minus breaking on a power, with a clock), TEST units `test-stealt
 | `stealthRevealSide` | Does a reveal break its caster's own side's stealth? | **No — only units of the other side. A reveal is not an attack or a power used BY the revealed unit, so it breaks only `breaksOnReveal`.** | Every Codex reveal names enemies or "stealthed units" from the caster's view; "Stealth does not hold" is the only rule that reaches either side, and it is its own item. | provisional — 2026-09-28 |
 | `stealthBrokenLog` | What does the log say when it breaks? | **`status.expired`, the attack, power or reveal as its cause, with `broken: 'attack' \| 'power' \| 'reveal'`. No new event name; the viewer already drops a status on `status.expired`.** | Law 12 (the line names its cause) with nothing new for the viewer to learn. | provisional — 2026-09-28 |
 | `stealthMoveOntoHex` | COMBAT-DESIGN.md 265: "Attempting to move onto its hex stops the movement: 'You moved into a hidden object.'" | **Not built. A stealthed unit fills its hex like any unit, and the planner routes around it.** | Not in the item's spec or the Codex definition; it is a movement rule for its own item. | provisional — 2026-09-28 |
+
+## Surge spend — defaults taken building fix.surge-spend (2026-09-28)
+
+Ruled 2026-09-27 (Andrew, DECISIONS.md "Surge: a pool that pays 100 per Surge"): *"If it's used,
+it should take away 100. If you have 150 surge, automatically you're going to have a surge
+activation, and you're going to lose 100 and still have 50."* The Surge check (`src/core/battle.ts`,
+COMBAT-SEQUENCE.md Surge check rung 2) now takes away `SURGE_COST` (100) instead of emptying the
+amount. Probe: `test/surge-spend.test.ts`, on test-surge-labored (Surge 10) and test-surge-swift (20).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `surgeSpendFloorsAtZero` | A Surge that happens below 100 — take away 100 below zero, or stop at 0? | **Stop at 0** (Config switch, default `true`). Off: the amount goes below zero (a Surge at 30 leaves −70). | The ruling's example is 150 → 50; below 100 the old rule emptied the amount, and a lucky Surge becoming a 70-point debt is a new penalty nobody ruled. Floored, every sub-100 Surge is what it was — the control battles stay byte-identical. | provisional — 2026-09-28 |
+| `surgeRelinkReadsLeftover` | Does a second Surge check in the same Activation check the leftover? | **Yes** (Config switch, default `true`): the next link adds Surge to what the Surge left and rolls against that — 150 surges, keeps 50, the next link rolls against 50 + Surge. Off: a further link rolls against Surge alone and leaves the amount for the next Activation. | "Lose 100 and still have 50" — the 50 is the amount, and the amount is what the check rolls against. | provisional — 2026-09-28 |
+| `surgeAutomaticNoRoll` | "Automatically … a surge activation" — is a roll still drawn at 100 or more? | **No roll.** An amount at or above 100 surges without a draw; `surge.checked` logs `roll: null` and `automatic: true`. A constant reading, not a Config switch. | The ruling says automatically; a die that cannot miss is not a roll. Draws are keyed by what they are (Law 4), so skipping one moves no other. | provisional — 2026-09-28 |
+| `surgeAmountEvents` | How do the events show the amount before and after? | **`before` and `after` on `surge.checked` and `surge.hit`**; `chance` stays the amount rolled against (before + Surge). `after` on a miss is `chance` — the amount persists. | The item's expect; `chance` keeps its meaning for the viewer (`../viewer/src/fold.js` reads it). | provisional — 2026-09-28 |
+
+Not changed: the check's position (before the End of Activation ladder, ruled 2026-08-21) and
+how much Surge a hero gains (still open — DECISIONS.md 2026-09-27, the questions inbox).

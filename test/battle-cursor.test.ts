@@ -117,6 +117,16 @@ const chargeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-c
 // matches; every other case is byte-identical to the charge capture and runs every older layer
 // unchanged. No state field was added, so no projection. Old fixtures stay immutable.
 const zocGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-zoc.json', import.meta.url), 'utf8'))
+// fix.surge-spend (2026-09-28), Law 10: a Surge takes away 100 instead of emptying the amount
+// (Andrew, DECISIONS.md "Surge: a pool that pays 100 per Surge"). Every case's full current hashes
+// are frozen here (tools/capture-surge-spend-cursor.mts); a case marked `changed` (a hero makes a
+// Surge check — assembled-party, farmers-grown, prologue-enemies, supper, surge-flight-ladder, the
+// three progression-surge cases, legacy-surge-cap: surge.checked and surge.hit carry the amount
+// before and after, and an amount at 100 or more surges without a roll) is checked against these
+// and skips every older layer its battle no longer matches; every other case is byte-identical to
+// the zoc capture and runs every older layer unchanged. No state field was added, so no
+// projection. Old fixtures stay immutable.
+const surgeSpendGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-surge-spend.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -221,8 +231,11 @@ describe('resumable battle cursor', () => {
       const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const surgeSpendExpected = surgeSpendGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const surgeSpendMoved = surgeSpendExpected?.changed === true
       const zocExpected = zocGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const zocMoved = zocExpected?.changed === true
+      // was: const zocMoved = zocExpected?.changed === true — a surge-spend-moved case skips the zoc layer too (fix.surge-spend 2026-09-28)
+      const zocMoved = zocExpected?.changed === true || surgeSpendMoved
       const chargeExpected = chargeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const chargeMoved = chargeExpected?.changed === true — a zoc-moved case skips the charge layer too (capability.move-ignores-zoc 2026-09-28)
       const chargeMoved = chargeExpected?.changed === true || zocMoved
@@ -258,7 +271,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (zocExpected) {
+        if (surgeSpendExpected) {
+        expect(hash(ctx.events), 'full surge-spend events').toBe(surgeSpendExpected.events)
+        expect(hash(ctx.state), 'full surge-spend state').toBe(surgeSpendExpected.state)
+        expect(hash(ctx.rng.log), 'full surge-spend RNG').toBe(surgeSpendExpected.rng)
+        expect(result).toEqual(surgeSpendExpected.result)
+        }
+        // was: if (zocExpected) { — fix.surge-spend (2026-09-28): a moved case is checked above instead
+        if (zocExpected && !surgeSpendMoved) {
         expect(hash(ctx.events), 'full zoc events').toBe(zocExpected.events)
         expect(hash(ctx.state), 'full zoc state').toBe(zocExpected.state)
         expect(hash(ctx.rng.log), 'full zoc RNG').toBe(zocExpected.rng)

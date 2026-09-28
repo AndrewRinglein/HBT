@@ -14,7 +14,7 @@ import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status
 import { HOOKS, fireTriggers } from './trigger.js'
 import { applyGroundHazard } from './ground.js'
 import type { BattleCursor, Ctx, EndOfPhaseRung, Side } from './types.js'
-import { END_OF_PHASE_RUNGS, MAX_SURGE_CYCLES, isEndOfPhaseLadder } from './types.js'
+import { END_OF_PHASE_RUNGS, MAX_SURGE_CYCLES, SURGE_COST, isEndOfPhaseLadder } from './types.js'
 import { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 import { rulesSideOf } from './side.js'
 
@@ -274,14 +274,25 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
         }
         if (c.surgeLink >= MAX_SURGE_CYCLES) throw new Error(`Surge cycle overflow for unit ${u.uid}: ${MAX_SURGE_CYCLES} cycles in one activation`)
         const link = c.surgeLink
-        u.surgeChance += u.surge
-        const roll = roll100(ctx.rng, 'surge', u.uid, u.activationOrdinal, link)
-        const hit = roll <= u.surgeChance
-        emit(ctx, 'surge.checked', 'engine', { actor: id, roll, chance: u.surgeChance, surge: u.surge, hit, link })
+        // fix.surge-spend (2026-09-28; ruled 2026-09-27, DECISIONS.md "Surge: a pool that
+        // pays 100 per Surge"): the amount (surgeChance) gains Surge and the check rolls
+        // against it; a Surge takes away SURGE_COST, it does not empty the amount. 150
+        // surges without a roll and keeps 50. Below 100: SWITCHES.md surgeSpendFloorsAtZero.
+        // A further link in the same Activation: SWITCHES.md surgeRelinkReadsLeftover.
+        const before = u.surgeChance
+        const relinkAlone = link > 0 && !ctx.cfg.switches.surgeRelinkReadsLeftover
+        const chance = relinkAlone ? u.surge : before + u.surge
+        const automatic = chance >= SURGE_COST
+        const roll = automatic ? null : roll100(ctx.rng, 'surge', u.uid, u.activationOrdinal, link)
+        const hit = automatic || roll! <= chance
+        const spent = relinkAlone ? before : chance - SURGE_COST
+        const after = !hit ? (relinkAlone ? before : chance)
+          : ctx.cfg.switches.surgeSpendFloorsAtZero ? Math.max(0, spent) : spent
+        u.surgeChance = after
+        emit(ctx, 'surge.checked', 'engine', { actor: id, roll, chance, surge: u.surge, hit, link, before, after, ...(automatic ? { automatic } : {}) })
         if (!hit) { c.at = 'activation-end'; break }
-        u.surgeChance = 0
         gainStamina(ctx, id, 1 + u.staminaRegen, 'surge')
-        reopenSurgeCycle(ctx, id, c.movementAllowance, link + 1)
+        reopenSurgeCycle(ctx, id, c.movementAllowance, link + 1, { before, after })
         c.surgeLink++
         c.surged = true
         c.at = 'acting'
