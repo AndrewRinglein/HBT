@@ -589,6 +589,23 @@
    "universalToAllUnits": true
   },
   {
+   "id": "power.move-ignoring-zoc",
+   "name": "Move, Ignoring Zones of Control",
+   "specialty": null,
+   "class": null,
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "movementAction": true,
+   "granted": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Move up to your Movement, hex by hex, paying each hex’s terrain cost. Ignores zones of control: it provokes nothing.",
+   "intent": "The hounds’ walk: the same walk as Move, except that leaving a zone of control costs nothing.",
+   "source": "ENEMY-REVIEW.md:276-278 (Family: Hounds, all ✓): they “ignore ZOC (the move-WITHOUT-provoking machinery, as a property of their movement — distinct from Juggernaut, which eats the AOO and refuses the slow)”. Granted by the rows marked moveIgnoresZOC (the four hounds). DECISIONS.md 2026-08-20: “There are movement types that can happen without provoking.” Stamina 1 and cooldown 0 copied from power.move, whose walk this is (engine SWITCHES.md ignoresZocWalkCopiesMove). Row added 2026-09-28 by engine item capability.move-ignores-zoc."
+  },
+  {
    "id": "power.sidestep",
    "name": "Sidestep",
    "specialty": null,

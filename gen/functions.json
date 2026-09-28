@@ -320,7 +320,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 152,
+   "uses": 153,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -1217,7 +1217,7 @@
   },
   {
    "name": "move yourself",
-   "uses": 29,
+   "uses": 30,
    "ids": [
     "power.warchief.lead-from-front",
     "power.champion.heroic-charge",
@@ -1243,6 +1243,7 @@
     "power.stalker.from-the-grass",
     "power.warbeast.charge-together",
     "power.move",
+    "power.move-ignoring-zoc",
     "power.flight",
     "power.flight-swift",
     "power.flight-labored",
@@ -1405,7 +1406,7 @@
   },
   {
    "name": "move WITHOUT provoking",
-   "uses": 14,
+   "uses": 15,
    "ids": [
     "power.crusader.holy-charge",
     "power.assassin.dodge-behind",
@@ -1417,6 +1418,7 @@
     "power.direbeast.trample",
     "power.warbeast.charge-together",
     "power.wyrmling.take-wing",
+    "power.move-ignoring-zoc",
     "power.sidestep",
     "power.side-roll",
     "power.leap",

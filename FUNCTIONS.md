@@ -32,7 +32,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 152 |
+| `self` | 153 |
 | `one enemy in melee reach` | 105 |
 | `one enemy within N hexes` | 85 |
 | `one ally within N hexes` | 52 |
@@ -91,14 +91,14 @@ What a rule may DO.
 | `grant a stat until end of next Turn` | 47 |
 | `remove N of a status` | 40 |
 | `grant an aura` | 38 |
-| `move yourself` | 29 |
+| `move yourself` | 30 |
 | `read the party-wide sum` | 27 |
 | `deal MAGIC damage` | 22 |
 | `place a trap` | 19 |
 | `reveal / break stealth` | 18 |
 | `deal PHYSICAL damage` | 16 |
 | `regain stamina` | 15 |
-| `move WITHOUT provoking` | 14 |
+| `move WITHOUT provoking` | 15 |
 | `deal damage (type from the weapon)` | 13 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |

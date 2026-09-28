@@ -17,16 +17,6 @@
    "needs": "set a ground layer"
   },
   {
-   "unit": "unit.bloodhound",
-   "what": "moveIgnoresZOC: movement that provokes no attack of opportunity",
-   "needs": "movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)"
-  },
-  {
-   "unit": "unit.demon-hound",
-   "what": "moveIgnoresZOC: movement that provokes no attack of opportunity",
-   "needs": "movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)"
-  },
-  {
    "unit": "unit.doombringer",
    "what": "attack.doombringer.hammer onDamage: Knockback N",
    "needs": "Knockback N"
@@ -40,11 +30,6 @@
    "unit": "unit.ghoul",
    "what": "attack.ghoul.devour onKill: grant a stat for the Battle (health)",
    "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.hellhound",
-   "what": "moveIgnoresZOC: movement that provokes no attack of opportunity",
-   "needs": "movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)"
   },
   {
    "unit": "unit.imp-master",
@@ -135,11 +120,6 @@
    "unit": "unit.werewolf",
    "what": "attack.werewolf.claw-frenzy onAttack: grant a stat for the Battle (strength) — a pre-damage stat grant is a STATION question (Law 1)",
    "needs": "trigger-effect: statMod before damage"
-  },
-  {
-   "unit": "unit.zombie-hound",
-   "what": "moveIgnoresZOC: movement that provokes no attack of opportunity",
-   "needs": "movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)"
   },
   {
    "unit": "hero.base.ranger-ranger",

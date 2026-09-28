@@ -272,6 +272,16 @@ function compileMoves(powers) {
     if (needs.length) { gap(p.id, `${p.name}: ${d.slice(0, 70)}…`, needs.join('; ')); continue; }
     const effects = [];
     for (const [re, mk] of MOVE_RIDERS) { const m = d.match(re); if (m) { const e = mk(m); effects.push(...(Array.isArray(e) ? e : [e])); } }
+    // capability.move-ignores-zoc (engine, 2026-09-28): "Ignores zones of control" is a
+    // property of the WALK (ENEMY-REVIEW.md:276, "the move-WITHOUT-provoking machinery, as
+    // a property of their movement") — MoveProfile.ignoresZoc. A walk only: a sidestep
+    // already provokes nothing, and flight has its own rule. A row that also says it
+    // provokes normally disagrees with itself.
+    if (/Ignores zones of control/.test(d)) {
+      if (base.shape !== 'path') { gap(p.id, `says 'Ignores zones of control' on a ${base.shape} move`, 'ignoresZoc is a walk\'s property (path-shaped only)'); continue; }
+      if (/Provokes attacks of opportunity normally/.test(d)) { gap(p.id, `says 'Ignores zones of control' and 'Provokes attacks of opportunity normally'`, 'content disagrees with itself'); continue; }
+      base.ignoresZoc = true;
+    }
     // prose vs numbers — the row must agree with itself
     if (/Costs no Stamina|costs no Stamina/.test(d) && p.stamina !== 0) { gap(p.id, `says 'Costs no Stamina' but stamina is ${p.stamina}`, 'content disagrees with itself'); continue; }
     const costM = d.match(/[Cc]osts (\d) Stamina/); if (costM && parseInt(costM[1], 10) !== p.stamina) { gap(p.id, `says 'Costs ${costM[1]} Stamina' but stamina is ${p.stamina}`, 'content disagrees with itself'); continue; }
@@ -574,12 +584,17 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     }
     gap(id, `special move ${mv.id}: neither an attack nor self effects`, 'enemy special move: shape');
   }
-  // pack.enemy-actions: the hounds' movement ignores zones of control
+  // capability.move-ignores-zoc (engine, 2026-09-28; was a named gap since
+  // pack.enemy-actions): the hounds' movement ignores zones of control
   // (ENEMY-REVIEW.md:276, "the move-WITHOUT-provoking machinery, as a property
-  // of their movement"). No movement power the engine has walks without
-  // provoking — MoveProfile has no such property and no Codex power row says it
-  // — so the hounds walk with power.move and this stays a named gap.
-  if (u.moveIgnoresZOC) gap(id, 'moveIgnoresZOC: movement that provokes no attack of opportunity', 'movement power: walk ignoring zones of control (no MoveProfile property, no Codex power row)');
+  // of their movement"). A row marked moveIgnoresZOC walks with the Codex's walk
+  // that says "Ignores zones of control" — found by what it IS (a plain walk
+  // carrying ignoresZoc, no budget change, no riders), never by name. None, or
+  // more than one, is a gap; so is a row that also names a movement power of its
+  // own (a flier that ignores ZoC is a shape nobody has ruled).
+  const ZOC_WALKS = Object.values(moves).filter((m) => m.shape === 'path' && m.ignoresZoc === true && m.budgetMod === 0 && !m.effects);
+  if (u.moveIgnoresZOC && ZOC_WALKS.length !== 1) gap(id, `moveIgnoresZOC: ${ZOC_WALKS.length} Codex walks ignore zones of control — the row needs exactly one`, 'content: movement power row');
+  if (u.moveIgnoresZOC && (u.movePower || (u.moves || []).some((m) => typeof m === 'string'))) gap(id, 'moveIgnoresZOC on a row that names its own movement power', 'content: an enemy carries one movement power');
   // "has no primary action at all" (ENEMY-REVIEW.md:348): carried as the row's own
   // field since capability.charge (2026-09-27) — the engine closes the unit's
   // primary slot (action.ts resolveActionSlot), so its walk spends the movement
@@ -669,7 +684,8 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   const movePowers = [...(u.movePower ? ['power.' + u.movePower] : []), ...(u.moves || []).filter((m) => typeof m === 'string')];
   for (const mp of movePowers) if (!moves[mp]) gap(id, `movement power ${mp} has no compiled row`, 'content');
   if (movePowers.length > 1) gap(id, `${movePowers.length} movement powers (${movePowers.join(', ')}) — an enemy carries one`, 'content');
-  const unitMoves = movePowers.length === 1 && moves[movePowers[0]] ? movePowers : ['power.move'];
+  const zocWalk = u.moveIgnoresZOC && !movePowers.length && ZOC_WALKS.length === 1 ? [ZOC_WALKS[0].id] : null;   // capability.move-ignores-zoc
+  const unitMoves = zocWalk ?? (movePowers.length === 1 && moves[movePowers[0]] ? movePowers : ['power.move']);
   authoredEnemies.push({
     typeId: id, name: u.name, side: 'enemy',
     maxHp: st.health, armor: st.armor ?? 0, resist: st.resist ?? 0, ...optionalCombatStats(st),
