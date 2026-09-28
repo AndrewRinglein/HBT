@@ -163,6 +163,11 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.opening.orphanage', encounterId: 'encounter.opening.orphanage',
     heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk', 'alpha-air-mage'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  'test.opening-lumberjack': {
+    id: 'test.opening-lumberjack', note: 'The opening, battle 2: encounter.opening.lumberjack on map.opening.lumberjack with four Alpha heroes.',
+    mapId: 'map.opening.lumberjack', encounterId: 'encounter.opening.lumberjack',
+    heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk', 'alpha-air-mage'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',

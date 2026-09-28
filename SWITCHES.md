@@ -1515,9 +1515,12 @@ heroes (`src/content/scenarios.ts`). Probes: `test/opening-<key>.test.ts`, helpe
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `openingHeroZones` | Where do the heroes start? (Not stated for any of the six.) | **A zone of radius 2 at Claude's reading of each map**: Orphanage (5,4), west bank by the ford. | "Hero start hexes are the encounters'"; nobody ruled them. Andrew checks them on the Ground Check. | provisional — 2026-09-28 |
+| `openingEndOfEnemyPhase` | An arrival "at the end of Turn N's Enemy Phase" (Lumberjack House, the first Skeletal Archer)? | **It arrives as Turn N+1 begins** (`phase: N+1`) — the next moment the schedule has; it acts first in that Turn's Enemy Phase either way. | The schedule fires at Start of Turn or as an Enemy Phase begins; nothing acts between. | provisional — 2026-09-28 |
+| `openingHeroZonesLumberjack` | The Lumberjack House heroes? | **(5,7) r2**, west of the clearing: the Turn 3 and Turn 5 arrivals come "from behind the heroes" at the west edge. | The markers place "behind the heroes" at (0,5) and (0,9). | provisional — 2026-09-28 |
 | `openingCiviliansNoAi` | The civilians' AI? | **Their own rows' AI** — no `civilianAi` flight window (Supper's is its own ruling). | Not stated; "civilians dying is its own punishment" is about loss, not behaviour. | provisional — 2026-09-28 |
 
 Noticed, not changed: with four Alpha heroes the Orphanage is cleared on Turn 3 in all three
 replicates tried, before the Turn 4 and Turn 5 Zombies arrive — an early clear wins (ruled
 2026-09-03, "victory can be achieved early"; `boardClearWaitsForSchedule` off). The probe turns the
-switch on to see the arrivals.
+switch on to see the arrivals. At the Lumberjack House both civilians died in all three replicates
+tried (their rows' melee AI walks them into the Zombies); the heroes still won each time.

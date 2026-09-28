@@ -43138,6 +43138,106 @@ export const UNIT_PACK = {
           "range": 2
         }
       }
+    },
+    "encounter.opening.lumberjack": {
+      "id": "encounter.opening.lumberjack",
+      "name": "Lumberjack House",
+      "mapId": "map.opening.lumberjack",
+      "board": {
+        "width": 20,
+        "height": 14
+      },
+      "setup": [
+        {
+          "unit": "hero.fixed.lumberjack-and-wife",
+          "civilian": true,
+          "at": {
+            "col": 13,
+            "row": 4
+          }
+        },
+        {
+          "unit": "hero.fixed.lumberjacks-wife",
+          "civilian": true,
+          "at": {
+            "col": 13,
+            "row": 5
+          }
+        },
+        {
+          "unit": "unit.zombie",
+          "count": 3,
+          "hexes": [
+            {
+              "col": 19,
+              "row": 3
+            },
+            {
+              "col": 19,
+              "row": 4
+            },
+            {
+              "col": 19,
+              "row": 8
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 2,
+          "spawn": [
+            {
+              "unit": "unit.skeletal-archer",
+              "at": {
+                "col": 10,
+                "row": 13
+              }
+            }
+          ]
+        },
+        {
+          "phase": 3,
+          "spawn": [
+            {
+              "unit": "unit.skeletal-archer",
+              "at": {
+                "col": 13,
+                "row": 0
+              }
+            },
+            {
+              "unit": "unit.skeletal-archer",
+              "at": {
+                "col": 0,
+                "row": 5
+              }
+            }
+          ]
+        },
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.soldier",
+              "at": {
+                "col": 0,
+                "row": 9
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 4,
+        "at": {
+          "near": {
+            "col": 5,
+            "row": 7
+          },
+          "range": 2
+        }
+      }
     }
   },
   "badges": {

@@ -17771,3 +17771,21 @@ index daa4209..c42917a 100644
 ```diff
 ```
 </details>
+
+## encounter.opening.lumberjack — LANDED `09dc5cb`
+2026-09-28 21:31
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-lumberjack.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.lumberjack: 13 log lines, 13 fired, 9 changed state
+  PASS  brought its own tests — test/opening-lumberjack.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.lumberjack — they genuinely test it

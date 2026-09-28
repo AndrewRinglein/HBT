@@ -5069,7 +5069,9 @@
   "probeIds": [
    "encounter.opening.lumberjack"
   ],
-  "note": "Cut 2026-09-28. Replaces encounter.battle-2's old Surrounded schedule. Switch: the heroes' start hexes and 'behind the heroes' read against them."
+  "note": "Cut 2026-09-28. Replaces encounter.battle-2's old Surrounded schedule. Switch: the heroes' start hexes and 'behind the heroes' read against them.",
+  "status": "done",
+  "sha": "09dc5cb"
  },
  {
   "id": "encounter.opening.bridge",
