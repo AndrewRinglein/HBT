@@ -3091,3 +3091,22 @@ Ruled:
 - **Battle 2, Lumberjack House: the start is three Zombies on the right (east) edge. The Lumberjack and his Wife start six hexes in along the trail.**
 - The rest of battle 2's schedule stands as revised 2026-09-21 (ENCOUNTER_DESIGN_CONCEPT.md): Turn 1, end of the Enemy Phase, one Skeletal Archer from the bottom edge; Turn 3, one Skeletal Archer from the top and one from behind the heroes; Turn 4, three Fast Zombies; Turn 5, one Soldier Undead from behind the heroes. No retreat. Victory: clear the map.
 - Exact hexes are Claude's reading, shown on the Abbotown Ground Check for Andrew to check: "six in along the trail" counted from where the cart track enters at the lower-left, Lumberjack (5,9) and Wife (6,9); Zombies (19,3), (19,4), (19,8) — the east-edge hexes that are not graves or forest.
+
+## 2026-09-28 — battle 2's final schedule; the Schoolhouse goes; battle 3 (Bridge); battle 4 (Cavern Trail) is the Hunt
+
+Andrew, continuing to redefine the opening encounters for the six maps:
+
+> Okay, we'll start with 3 zombies, and then the same turn 1, the same turn 3. We're going to skip turn 4. On turn 5, we're going to be the same.   No retreat. You're surrounded.  And we already have a map here.   Okay, now the schoolhouse battle is gone.   The bridge battle will have four imps on the far side.   Turn 2: they'll get a fire amp on the far side.
+>
+> * Turn 4: one more amp on the far side.
+> * Turn 5: one fire amp on the far side.  No loss at turn 12.   The next battle can be the hunt, but let's turn it into three bloodhounds and one hellhound to start.   On turn 4, we're going to have 4 zombie hounds behind the heroes.  Turn 7, we'll have one hero, one werewolf from in front.
+>
+> No, wait, let's bring that werewolf out of the cavern, so it's going to appear in one of the inside cave squares.
+
+Ruled:
+
+- **Battle 2, Lumberjack House — final schedule.** Start: three Zombies (east edge). Turn 1, end of the Enemy Phase: one Skeletal Archer from the bottom edge. Turn 3: one Skeletal Archer from the top and one from behind the heroes. **Turn 4: nothing** (the three Fast Zombies are cut). Turn 5: one Soldier Undead from behind the heroes. Seven enemies in all. No retreat — you are surrounded. Map: lumberjack-forest, as built.
+- **The Schoolhouse battle is gone.**
+- **Battle 3, Bridge.** Start: **four Imps on the far side.** **Turn 2: one Fire Imp, far side. Turn 4: one Imp, far side. Turn 5: one Fire Imp, far side.** Seven enemies. **No loss at turn 12** — no time limit. ("amp" is read as Imp.)
+- **Battle 4, Cavern Trail, is the Hunt, reworked.** Start: **three Bloodhounds and one Hellhound.** **Turn 4: four Zombie Hounds behind the heroes.** **Turn 7: one Werewolf, appearing in one of the cave-mouth hexes** (Andrew's correction the same minute: "bring that werewolf out of the cavern"; it replaces "from in front"). Eight enemies.
+- Not stated, carried as defaults: victory in battles 3 and 4 is clearing the map, as in battles 1 and 2; retreat in battles 3 and 4 is not addressed. Exact hexes are Claude's reading on the Abbotown Ground Check: the heroes enter from the west on both maps, so "far side" is the east bank (Bridge) and "behind the heroes" the west edge (Cavern Trail).
