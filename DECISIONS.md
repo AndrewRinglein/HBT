@@ -3066,3 +3066,15 @@ Ruled:
 - **Cavern Trail: the few cave-mouth hexes you can see are enterable; nothing deeper.**
 - **Riverbank boulders are low cover.**
 - **The Orphanage's river and lake are ordinary water (terrain.water).** The river on the Bridge and Cavern Trail maps is too deep to cross ("The bridge in Cavern is too deep to cross", read as both of those rivers).
+
+## 2026-09-28 — Battle 1 (Orphanage) redefined; battle 2's civilians are two units
+
+Andrew, given the five old opening encounters in full to redefine them for the new maps:
+
+> We'll change the two zombies and a child to two zombies, an orphan child, and a school teacher. The orphan child and school teacher should be in two of the hexes to the left of the house, right next to the house. Zombies are going to start on the right edge.   No retreat because you're surrounded.   Turn 4, we're going to have a zombie arrive from the bottom edge to the immediate left of the water. Turn 5, we're going to have a zombie arrive from the left edge, center.   Second battle is Lumberjack and wife. They're two different units.
+
+Ruled:
+
+- **Battle 1, Orphanage** (was "Two Zombies and a Child"): **two Zombies, an Orphan Child and a School Teacher.** The Orphan Child and the School Teacher (civilians) stand in two hexes immediately left of the orphanage, right next to it. **The two Zombies start on the right (east) edge.** **No retreat — you are surrounded.** **Turn 4: one Zombie arrives from the bottom edge, immediately left of the water. Turn 5: one Zombie arrives from the left edge, centre.** Victory is clearing the map (ruled earlier the same night).
+- **Battle 2, Lumberjack House: the two civilians are the Lumberjack and his Wife, two separate units.** (The old Surrounded fielded them as one grouped unit with a Farmer.)
+- Exact hexes are Claude's reading of these words on the Orphanage map, shown on the Abbotown Ground Check page for Andrew to check: civilians (12,1) and (13,2); Zombies (19,3) and (19,5); Turn 4 arrival (9,13); Turn 5 arrival (0,6). Not stated and asked: the hero's start hex and whether the old ten-turn loss limit stays.
