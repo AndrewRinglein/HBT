@@ -1468,3 +1468,22 @@ the nearest first. Probe: `test/raise-two.test.ts`; the second instance is TEST 
 Noticed, changed with a written reason (Law 10): `test/raise-range.test.ts`'s "no compiled corpse.raise
 carries a radius its row does not state" now checks a TEST raiser (test-*) against its own row
 (`content/test/units.json`) instead of the Codex — lines added, none removed.
+
+## The opening's units — defaults taken building content.opening-units (2026-09-28)
+
+The source: DECISIONS.md 2026-09-28 "the Lumberjack's Wife and the Undead Soldier, dictated" and
+"battle 2's Undead Soldier is the existing Soldier". The Wife is `hero.fixed.lumberjacks-wife`, a
+civilian authored the way every new civilian is (`content/gen/civilian-rulings.json` newUnits +
+statBlocks + levelTables; `build-heroes.mjs` regenerated `gen/heroes.json` against hell-tcg) and
+confirmed in `gen/encounters.json` civilians so the pack fields her. `unit.soldier` is published as
+an authored row (`gen/enemies-authored.json`) with its bestiary numbers. Probe: `test/opening-units.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `wifeId` | Her id? | **`hero.fixed.lumberjacks-wife`** — a new instance of `hero.fixed.*`. | A new instance may be proposed (GLOSSARY.md); the kind exists. | provisional — 2026-09-28 |
+| `wifeUndictated` | Her numbers the dictation does not give? | **The row she was part of** (`cloneStatsOf: hero.fixed.lumberjack-and-wife`, the hell-tcg row before the Lumberjack's own block): Armor 0, Reach 2, Toughness 2, Item Slots 5, Crit 3, Luck 0, Vision 6, Stamina 5/1; her level table is the Lumberjack's, `civilian.farmer`. No survival reward, no art yet. | DECISIONS.md: "Anything not dictated … follows the civilian rows' existing defaults, not new numbers." | provisional — 2026-09-28 |
+| `soldierAttackDamage` | The bestiary's Soldier attacks say damage `null` (Attack, Heavy Strike) or `melee` (Heavy Blow) with a modifier. What do they deal? | **Strength plus the modifier** (0 when none): Attack +0, Heavy Blow −2 with 3 Weak on hit, Heavy Strike +2; physical, one enemy in melee reach. Family `undead-army`, tier 1 (its rank). | Every hell-tcg enemy attack is its Strength with a modifier; the Codex holds no other number to copy. | provisional — 2026-09-28 |
+
+Noticed, not changed: the kingdom's sandbox tests (`kingdom/test/sandbox-ui.test.ts`) refuse to build
+while the shared viewer's metadata names an older engine commit ("Shared viewer metadata is stale or
+dirty") — every engine landing moves that commit; the viewer's owning tools regenerate it.

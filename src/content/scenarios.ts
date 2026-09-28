@@ -137,6 +137,13 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.raise-one',
     heroes: ['test-warrior'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  // content.opening-units (2026-09-28): battle 2's pair — the Lumberjack and his Wife, two civilians,
+  // against the Soldier that stands in for the Undead Soldier. Probed live here, not by the panel.
+  'test.opening-units': {
+    id: 'test.opening-units', note: 'TEST: the Lumberjack and the Lumberjack\'s Wife (two units) against two Soldiers on the open map. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife'], heroHexes: [85, 101],
+    enemies: ['unit.soldier', 'unit.soldier'], enemyHexes: [89, 105], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',

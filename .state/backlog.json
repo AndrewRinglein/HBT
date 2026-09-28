@@ -5018,7 +5018,9 @@
    "hero.fixed.lumberjack-and-wife",
    "unit.soldier"
   ],
-  "note": "Cut 2026-09-28 from the opening loop (battle 2). Numbers are Andrew's (DECISIONS.md 2026-09-28, two entries): copy them, do not invent. The Wife's id is a new instance of hero.fixed.* (a new instance may be proposed; GLOSSARY.md)."
+  "note": "Cut 2026-09-28 from the opening loop (battle 2). Numbers are Andrew's (DECISIONS.md 2026-09-28, two entries): copy them, do not invent. The Wife's id is a new instance of hero.fixed.* (a new instance may be proposed; GLOSSARY.md).",
+  "status": "done",
+  "sha": "b3632ab"
  },
  {
   "id": "content.flaming-longsword",

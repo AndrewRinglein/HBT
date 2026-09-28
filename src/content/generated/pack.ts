@@ -2075,6 +2075,53 @@ export const UNIT_PACK = {
       ]
     },
     {
+      "typeId": "unit.soldier",
+      "name": "Soldier",
+      "side": "enemy",
+      "maxHp": 10,
+      "armor": 2,
+      "resist": 0,
+      "accuracy": 62,
+      "dodge": 0,
+      "strength": 5,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.soldier.attack",
+        "attack.soldier.heavy-blow",
+        "attack.soldier.heavy-strike"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.soldier.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 3
+          },
+          "source": "unit.soldier",
+          "onlyWithAttack": "attack.soldier.heavy-blow"
+        }
+      ]
+    },
+    {
       "typeId": "unit.strong-skeleton",
       "name": "Strong Skeleton",
       "side": "enemy",
@@ -3114,6 +3161,36 @@ export const UNIT_PACK = {
       "kind": "melee",
       "damageType": "physical",
       "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.soldier.attack": {
+      "id": "attack.soldier.attack",
+      "name": "Attack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.soldier.heavy-blow": {
+      "id": "attack.soldier.heavy-blow",
+      "name": "Heavy Blow",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.soldier.heavy-strike": {
+      "id": "attack.soldier.heavy-strike",
+      "name": "Heavy Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0
@@ -9579,6 +9656,46 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.pile-of-rocks"
+      ]
+    },
+    {
+      "typeId": "hero.fixed.lumberjacks-wife",
+      "name": "Lumberjack's Wife",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 65,
+      "dodge": 10,
+      "toughness": 2,
+      "crit": 3,
+      "strength": 2,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "levelTable": "civilian.farmer",
+      "triggers": [],
+      "defaultItems": [
+        "item.dagger",
+        "item.basic-armor"
       ]
     },
     {
