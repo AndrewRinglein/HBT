@@ -3149,3 +3149,18 @@ Ruled:
 - **Battle 5, Gates, uses the old Curse encounter** ("cursing counter" read as the Curse encounter), as revised 2026-09-21: six defenders already in position — two Bruiser Demons, two Poison Imps, one Powerful Imp, one Lieutenant Demon; curse strikes from Turn 4 (the struck hex and the hexes around it: Weak to everything there, and cursed ground); two Imps on Turn 7, one from the top and one from the bottom; kill all enemies to win; retreating is a loss. On the Gates map the heroes come up the approach from the south, so "top" is the abbey (north) end and "bottom" is behind them.
 - **Battle 6, Cathedral: a Necromancer who raises many of the bodies.** The Cathedral's remains (33 hexes of them on the Ground Check) are raisable corpses; the Necromancer's Raise reaches 10 (ruled 2026-09-27).
 - The rest of the Cathedral encounter is open — Andrew: "I'm not sure what else makes sense in there." Claude proposes; nothing further is ruled here.
+
+## 2026-09-28 — no cut-off hexes; the Lumberjack and Wife on the road
+
+Andrew, checking the Ground Check:
+
+> See a flaw in the Orphanage map? There are two movable forest squares behind a bunch that are not. What happens if a player enters on one of those movable squares and they can't move forward? There are two more that need to be turned into impassable.
+>
+> I see the same flaw on one square. It's column 1, row 3, 4-square. Needs to be impassable.
+>
+> Lumberjack and wife should be in column 13 on the road.
+
+Ruled:
+
+- **No passable hex may be cut off from the rest of its map.** Orphanage (0,8) and (0,10), woodland behind dense forest, become dense forest; Lumberjack House "column 1, row 3" — one-based, hex (0,2) — becomes dense forest. The Ground Check now fills every cut-off pocket on all six maps; none remain.
+- **Battle 2: the Lumberjack and his Wife start in column 13 on the road** — (13,4) and (13,5), the road hexes in column 13 below the cottage door. Supersedes "six in along the trail" as Claude placed it.
