@@ -17525,3 +17525,8 @@ index 542280a..0de20f3 100644
          expect(hash(ctx.state), 'full zoc state').toBe(zocExpected.state)
 ```
 </details>
+
+## terrain.cursed — ABANDONED
+2026-09-28 17:10
+
+Superseded before any code: cursed ground is layer.weak, the existing ground layer, one shape with burning, frost and poison (+1 on entry, +1 at End of Activation; ruled 2026-09-03, DECISIONS.md 1326). Andrew 2026-09-28: follow the same structure planned for all ground effects. No new terrain id.
