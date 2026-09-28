@@ -5085,7 +5085,10 @@
   "probeIds": [
    "encounter.opening.bridge"
   ],
-  "note": "Cut 2026-09-28. Switches: victory is clearing the map and retreat is unaddressed (carried defaults, DECISIONS.md 2026-09-28); the heroes' start hexes."
+  "note": "Cut 2026-09-28. Switches: victory is clearing the map and retreat is unaddressed (carried defaults, DECISIONS.md 2026-09-28); the heroes' start hexes.",
+  "status": "failed",
+  "failedAt": "2026-09-28 21:32",
+  "reason": "Authored on map.opening.bridge exactly as ruled (four Imps east, Fire Imp T2, Imp T4, Fire Imp T5, hero zone (3,10) r2), it never reaches a win with four Alpha heroes: replicates 0-9 end capped 8, wipe 2. Replicate 0 stalls from Turn 12: the last hero stands at (36,0) on the far bank, five Imps within 7 hexes, and nobody attacks for 14 Turns. The expect's 'won when the last enemy dies' cannot be shown; why the AI stalls is an AI question (the atlasFieldedMaps precedent), and whether the Bridge wants different numbers or hero start is Andrew's."
  },
  {
   "id": "encounter.opening.cavern-trail",
