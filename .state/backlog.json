@@ -4885,7 +4885,10 @@
   "spec": "Ruled 2026-09-27 (Andrew, DECISIONS.md 'the Necromancer's Raise reaches 10'): \"Give the necromancer a raise of 10 range.\" The Codex row now carries it (content fd2a8ee: the Raise trigger on unit.necromancer in content/gen/enemies-authored.json has range 10). content/mkenginepack.mjs still compiles corpse.raise with the constant radius 2 (SWITCHES.md corpseRaiseRadius) — read the trigger's own range instead, and a Raise row with no range is a named gap, never a default. Retire the corpseRaiseRadius switch.",
   "expect": "the Necromancer's corpse.raise trigger in the engine pack has the radius its Codex row states, read from the row in the test; a corpse beyond the old 2 and within the row's range is raised in a scripted battle; a Raise row without a range is a named gap",
   "changesBaseline": false,
-  "note": "Queued 2026-09-27 on Andrew's ruling. The control battles field no Necromancer."
+  "note": "Queued 2026-09-27 on Andrew's ruling. The control battles field no Necromancer. Probe declared 2026-09-28 by the implementing chat: trigger.necromancer.raise, the compiled Raise, live where a Necromancer fights (the Supper scenario).",
+  "probeIds": [
+   "trigger.necromancer.raise"
+  ]
  },
  {
   "id": "fix.surge-spend",
