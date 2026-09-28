@@ -1816,6 +1816,113 @@
      ]
     }
    ]
+  },
+  {
+   "id": "encounter.opening.cavern-trail",
+   "name": "Cavern Trail",
+   "map": "map.opening.cavern-trail",
+   "board": {
+    "width": 40,
+    "height": 16
+   },
+   "note": "The opening, battle 4, the Hunt (engine DECISIONS.md 2026-09-28 'battle 4 (Cavern Trail) is the Hunt' and 'the meteor fall is the Hunt's'): three Bloodhounds and a Hellhound; four Zombie Hounds behind the heroes on Turn 4; a Werewolf out of the cave on Turn 7; the meteor fall on Turn 4 - seven 7-hex areas marked at the end of the Enemy Phase, landing after the next Player Phase: burning ground, 2 fire damage and 2 Burn. Eight enemies. Victory: clear the map (carried default). Hexes are the Ground Check's markers; the heroes' zone is Claude's reading (engine SWITCHES.md openingHeroZones).",
+   "heroZone": {
+    "count": 4,
+    "at": {
+     "near": {
+      "col": 5,
+      "row": 6
+     },
+     "range": 2
+    }
+   },
+   "setup": [
+    {
+     "unit": "unit.bloodhound",
+     "count": 3,
+     "hexes": [
+      {
+       "col": 38,
+       "row": 8
+      },
+      {
+       "col": 38,
+       "row": 9
+      },
+      {
+       "col": 38,
+       "row": 10
+      }
+     ]
+    },
+    {
+     "unit": "unit.hellhound",
+     "at": {
+      "col": 39,
+      "row": 9
+     }
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.zombie-hound",
+       "count": 4,
+       "hexes": [
+        {
+         "col": 0,
+         "row": 4
+        },
+        {
+         "col": 0,
+         "row": 5
+        },
+        {
+         "col": 0,
+         "row": 6
+        },
+        {
+         "col": 0,
+         "row": 7
+        }
+       ],
+       "note": "behind the heroes"
+      }
+     ]
+    },
+    {
+     "phase": 7,
+     "spawn": [
+      {
+       "unit": "unit.werewolf",
+       "at": {
+        "col": 19,
+        "row": 2
+       },
+       "note": "out of the cave, a cave-mouth hex"
+      }
+     ]
+    }
+   ],
+   "falls": [
+    {
+     "id": "trigger.cavern-trail.meteor-fall",
+     "turn": 4,
+     "areas": 7,
+     "layer": "layer.burning",
+     "damage": 2,
+     "damageType": "fire",
+     "applies": [
+      [
+       "status.burn",
+       2
+      ]
+     ],
+     "note": "the meteor fall (engine DECISIONS.md 2026-09-28): seven 7-hex areas marked at the end of Turn 4's Enemy Phase, landing after the next Player Phase: burning ground, 2 fire damage and 2 Burn to any unit in them"
+    }
+   ]
   }
  ],
  "_authoredNote": "authored: the encounter session's `+` entries (E1, E2, E4, E5), transcribed 2026-09-03. E3 (the dungeon) is skipped by ruling; E6–E8 are `-` (not settled) and stay in the NOTES. `corpses` entries and `rescue` civilians are shapes the runner does not honour yet — named gaps on the compiled row."
