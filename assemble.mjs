@@ -42,6 +42,9 @@ out.levels=R('levels.json');
 // engine/src/content/maps.ts. The ROWS are the board: width is a row's length, height is the
 // number of rows. V2 accepts bounded authored sizes; TEST rows are separate.
 out.maps=R('maps.json').maps;
+// map.opening-six (2026-09-28): the opening's six maps, compiled from their per-hex ground letters
+// by mkopeningmaps.mjs (gen/opening-maps.json, generated) — the same shipping lane, after the rest.
+if(fs.existsSync(G+'opening-maps.json')) out.maps.push(...R('opening-maps.json').maps);
 // ---- heroes, extracted mechanically from hell-tcg's five creation paths
 out.heroes=R('heroes.json');
 // ---- the TEST COHORT (settled.json testCohort): the standard engine test party — six

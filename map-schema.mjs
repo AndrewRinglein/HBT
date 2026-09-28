@@ -16,7 +16,11 @@ export function validateProps(value, cells) {
     record(p, ['id', 'footprint', 'height', 'material', 'collisionValue', 'consumes']);
     if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) || p.id.startsWith('prop.obstacle.') || ids.has(p.id)) throw new Error('props: invalid, duplicate or reserved ID');
     ids.add(p.id);
-    if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material');
+    // map.opening-six (2026-09-28): a LOW prop on a full hex is low cover (the riverbank
+    // boulders, ruled 2026-09-28; the engine has read low props since v2.low-cover). Only a
+    // high prop takes collisionValue or consumes — the engine's own rule (core/props.ts).
+    if (!['high', 'low'].includes(p.height) || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material');
+    if (p.height === 'low' && ('collisionValue' in p || 'consumes' in p)) throw new Error('props: collisionValue and consumes belong to a high prop');
     // v2.knockback-collisions (COMBAT-V2-DESIGN-2026-09-07 section 9.3, ruled 2026-09-07):
     // what a push stopped by this prop costs the mover per remaining point (absent = a
     // basic obstruction's 2, the engine's), and whether it consumes a unit the collision kills.
@@ -31,9 +35,15 @@ export function validateProps(value, cells) {
       if (!Number.isSafeInteger(h) || h < 0 || h >= cells || seen.has(h)) throw new Error('props: invalid or repeated footprint hex');
       seen.add(h);
     }
-    out.push({ id: p.id, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] }, height: 'high', material: p.material, ...('collisionValue' in p ? { collisionValue: p.collisionValue } : {}), ...(p.consumes === true ? { consumes: true } : {}) });
+    out.push({ id: p.id, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] }, height: p.height, material: p.material, ...('collisionValue' in p ? { collisionValue: p.collisionValue } : {}), ...(p.consumes === true ? { consumes: true } : {}) });
   }
   return out;
+}
+/** The V2 floor mask (engine AuthoredMap.floor): one boolean per cell, true where a unit may stand. */
+export function validateFloor(value, cells, id) {
+  if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype || value.length !== cells || Reflect.ownKeys(value).length !== cells + 1 || value.some(x => typeof x !== 'boolean')) throw new Error(`maps ${id}: floor must be one boolean per cell`);
+  if (!value.includes(false)) throw new Error(`maps ${id}: a floor with no gap says nothing — leave it off`);
+  return [...value];
 }
 export function validBoard(board) {
   return board !== null && typeof board === 'object' && !Array.isArray(board)
@@ -51,7 +61,10 @@ export function validateMap(row, testing = false) {
   if ('board' in row && (!validBoard(row.board) || row.board.width !== board.width || row.board.height !== board.height)) throw new Error(`maps ${row.id}: declared board differs from rows`);
   const size = `${board.width}x${board.height}`;
   if ('format' in row && row.format !== size) throw new Error(`maps ${row.id}: format must match rows ${size}`);
-  if (row.rows.some(r => !/^[.hfrRwxbp]+$/.test(r))) throw new Error(`maps ${row.id}: glyph outside MAP-01 legend`);
+  // map.opening-six (2026-09-28): u n H W T — undergrowth, ruins, house, wall, tower — are
+  // glyphs the engine already decodes (engine/src/content/terrain.ts GLYPH).
+  if (row.rows.some(r => !/^[.hfrRwxbpunHWT]+$/.test(r))) throw new Error(`maps ${row.id}: glyph outside the map legend`);
+  if ('floor' in row) validateFloor(row.floor, board.width * board.height, row.id);
   if (row.props !== undefined) {
     const props = validateProps(row.props, board.width * board.height);
     if (props.reduce((n, p) => n + p.footprint.hexes.length, 0) + row.rows.join('').split('x').length - 1 > MAX_BOARD_CELLS) throw new Error('props: total footprint references exceed limit');
@@ -70,7 +83,7 @@ export function compileMaps(rows, testing = false) {
   for (const row of rows) {
     const board = validateMap(row, testing);
     if (out[row.id]) throw new Error(`maps: duplicate ${row.id}`);
-    out[row.id] = { id: row.id, name: row.name, board, format: FORMAT_OF[`${board.width}x${board.height}`] ?? `${board.width}x${board.height}`, rows: row.rows, ...(row.deploy ? { deploy: row.deploy } : {}), ...(row.props !== undefined ? { props: validateProps(row.props, board.width * board.height) } : {}) };
+    out[row.id] = { id: row.id, name: row.name, board, format: FORMAT_OF[`${board.width}x${board.height}`] ?? `${board.width}x${board.height}`, rows: row.rows, ...(row.deploy ? { deploy: row.deploy } : {}), ...(row.props !== undefined ? { props: validateProps(row.props, board.width * board.height) } : {}), ...(row.floor !== undefined ? { floor: validateFloor(row.floor, board.width * board.height, row.id) } : {}) };
   }
   return out;
 }
