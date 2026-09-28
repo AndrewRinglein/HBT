@@ -156,6 +156,13 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroItems: [['item.war-axe.flaming']],
     enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
   },
+  // encounter.opening.* (2026-09-28): the opening's six battles, each fielded as the kingdom will
+  // field it — the standard four of the Alpha Team in the encounter's hero zone.
+  'test.opening-orphanage': {
+    id: 'test.opening-orphanage', note: 'The opening, battle 1: encounter.opening.orphanage on map.opening.orphanage with four Alpha heroes.',
+    mapId: 'map.opening.orphanage', encounterId: 'encounter.opening.orphanage',
+    heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk', 'alpha-air-mage'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',

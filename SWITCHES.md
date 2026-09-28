@@ -1503,3 +1503,21 @@ enchant (`content/gen/tier3-combinations.json`, 2-ACTIONS-SETTLED.md "the tier-3
 | `flamingSecondBase` | "Flaming Axe" — which axe? | **The War Axe**, the Codex's tier-1 axe (the Ledger's Wood Axe and Great Axe are not yet rows). | The one axe the Codex has at tier 1 today. | provisional — 2026-09-28 |
 | `flamingBasicAttack` | Which attack is the basic attack? | **The base's first attack** (`grants[0]`): Slash on the Longsword, Chop on the War Axe. | The Ledger's rule: "the first attack listed". The Ledger's re-authored longsword (Str+1, 1 Stamina) is today's Slash. | provisional — 2026-09-28 |
 | `flamingFireDamage` | The 2 fire damage — how is it dealt? | **A trigger `damage` effect, fire, 2**, after the hit's Burn and before the swing's own damage lands, through the one damage function (Fire Resist and Protection apply). | The existing trigger damage effect; "on hit" is the onHit hook. | provisional — 2026-09-28 |
+
+## The opening's six encounters — defaults taken building encounter.opening.* (2026-09-28)
+
+The source: DECISIONS.md 2026-09-28 (the six battles, ruled that night) and the Abbotown Ground
+Check's markers (`assets/battle-atlas/opening-ground-proposal-2026-09-28.json`). Rows in
+`content/gen/encounters.json` `authored`; each fielded as scenario `test.opening-<key>` with four Alpha
+heroes (`src/content/scenarios.ts`). Probes: `test/opening-<key>.test.ts`, helpers in
+`test/opening-helpers.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `openingHeroZones` | Where do the heroes start? (Not stated for any of the six.) | **A zone of radius 2 at Claude's reading of each map**: Orphanage (5,4), west bank by the ford. | "Hero start hexes are the encounters'"; nobody ruled them. Andrew checks them on the Ground Check. | provisional — 2026-09-28 |
+| `openingCiviliansNoAi` | The civilians' AI? | **Their own rows' AI** — no `civilianAi` flight window (Supper's is its own ruling). | Not stated; "civilians dying is its own punishment" is about loss, not behaviour. | provisional — 2026-09-28 |
+
+Noticed, not changed: with four Alpha heroes the Orphanage is cleared on Turn 3 in all three
+replicates tried, before the Turn 4 and Turn 5 Zombies arrive — an early clear wins (ruled
+2026-09-03, "victory can be achieved early"; `boardClearWaitsForSchedule` off). The probe turns the
+switch on to see the arrivals.

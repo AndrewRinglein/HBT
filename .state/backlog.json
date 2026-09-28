@@ -5051,7 +5051,10 @@
   "probeIds": [
    "encounter.opening.orphanage"
   ],
-  "note": "Cut 2026-09-28. Switch: the heroes' start hexes (not stated; Claude's reading, shown on the Abbotown Ground Check for Andrew to check)."
+  "note": "Cut 2026-09-28. Switch: the heroes' start hexes (not stated; Claude's reading, shown on the Abbotown Ground Check for Andrew to check).",
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "797108d"
  },
  {
   "id": "encounter.opening.lumberjack",

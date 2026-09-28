@@ -17747,3 +17747,27 @@ index daa4209..c42917a 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without item.longsword.flaming — they genuinely test it
+
+## encounter.opening.orphanage — LANDED `797108d` **NEEDS REVIEW**
+2026-09-28 21:27
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-orphanage.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 5 log lines, 5 fired, 4 changed state
+  PASS  brought its own tests — test/opening-helpers.ts, test/opening-orphanage.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  WARN  naming — no banned words invented — test/opening-helpers.ts — a file named utils is where names go to be invented — will land FLAGGED
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>

@@ -43061,6 +43061,83 @@ export const UNIT_PACK = {
         "needs: capability.ground-layers (the band)",
         "needs: the salvation card at phase 8 (Purify)"
       ]
+    },
+    "encounter.opening.orphanage": {
+      "id": "encounter.opening.orphanage",
+      "name": "Orphanage",
+      "mapId": "map.opening.orphanage",
+      "board": {
+        "width": 20,
+        "height": 14
+      },
+      "setup": [
+        {
+          "unit": "hero.fixed.orphans",
+          "civilian": true,
+          "at": {
+            "col": 12,
+            "row": 1
+          }
+        },
+        {
+          "unit": "hero.fixed.school-teacher",
+          "civilian": true,
+          "at": {
+            "col": 13,
+            "row": 2
+          }
+        },
+        {
+          "unit": "unit.zombie",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 19,
+              "row": 3
+            },
+            {
+              "col": 19,
+              "row": 5
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.zombie",
+              "at": {
+                "col": 9,
+                "row": 13
+              }
+            }
+          ]
+        },
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.zombie",
+              "at": {
+                "col": 0,
+                "row": 6
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 4,
+        "at": {
+          "near": {
+            "col": 5,
+            "row": 4
+          },
+          "range": 2
+        }
+      }
     }
   },
   "badges": {
