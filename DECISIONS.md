@@ -3053,3 +3053,16 @@ Ruled:
 - **Gates is `assets/battle-atlas/maps/abbotown-gate-painted.json`**, the more recent painted gate.
 - **Claude assigns every hex's ground type** from each scene (low cover, trees, water, walls, all of it), and shows a preview with **a letter per hex** for Andrew to verify, map by map.
 - **Battles 1 and 2 (Orphanage, Lumberjack House): victory is clearing the map of every enemy.** A rescue battle is not a different kind of battle.
+
+## 2026-09-28 — cursed ground gives Weak; the cave mouth; bank boulders; which rivers are deep
+
+Andrew, asked what cursed ground does, whether units can enter the cave mouth, whether the riverbank boulders block movement, and whether the rivers are deep:
+
+> Cursed ground is a ground mechanic.  You should have records on what that does. When you move onto it, you gain 1 week at the end of activation. If you're on it, you also gain 1 week. I think the couple of tiles that you can see, you can move into the cavern, but you can't go any deeper.  The boulders on the riverbank should be low cover. The river in the Orphanage is like a regular water tile. All those are water tiles. The bridge in Cavern is too deep to cross.
+
+Ruled:
+
+- **Cursed ground is a ground mechanic: moving onto it gives 1 Weak at the end of that activation, and ending an activation on it gives 1 Weak.** "Week" is read as **Weak** (status.weak), the status the ground carries — a dictation reading, confirmed back to Andrew. The records it lands on: COMBAT-DESIGN.md 700 (the terrain status layer carries Curse, "applied once on entry and again at the occupant's end of turn") and VFX/GROUND-REQUIREMENTS.md 60 (`status.curse` "named in the terrain layer, defined nowhere"); the corpse and grave tiles are cursed ground (AFTERMATH.md 2026-09-23).
+- **Cavern Trail: the few cave-mouth hexes you can see are enterable; nothing deeper.**
+- **Riverbank boulders are low cover.**
+- **The Orphanage's river and lake are ordinary water (terrain.water).** The river on the Bridge and Cavern Trail maps is too deep to cross ("The bridge in Cavern is too deep to cross", read as both of those rivers).
