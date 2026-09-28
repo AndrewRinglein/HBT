@@ -1031,10 +1031,7 @@
   "shape": "numbers",
   "spec": "NOT A DEFECT — Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
   "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not — the split is visible in the sweep, not just in the design",
-  "note": "Open question that IS real: attack.mage.strike was used 0 times in 300 battles, the same dead-content shape as Massive Strike. The melee option on a ranged unit may never be worth taking.",
-  "needs": [
-   "unit.brute"
-  ]
+  "note": "Open question that IS real: attack.mage.strike was used 0 times in 300 battles, the same dead-content shape as Massive Strike. The melee option on a ranged unit may never be worth taking. Unblocked 2026-09-28 (Andrew, DECISIONS.md 'the staff-vs-bow check runs against the Codex's armored enemies'): unit.brute was closed as superseded; sweep against the Codex's armored bestiary rows (unit.skeleton armor 1, unit.bruiser-demon armor 4, ...) and an unarmored one."
  },
  {
   "id": "terrain.water-cleanses",

@@ -2908,3 +2908,13 @@ Andrew, asked "Are you happy for a Surge below 100 to stop at 0 rather than go n
 Ruled:
 
 - **A Surge that happens below 100 leaves the amount at 0, never below.** SWITCHES.md `surgeSpendFloorsAtZero` (default on, built by `fix.surge-spend`) is answered: on.
+
+## 2026-09-28 — the staff-vs-bow check runs against the Codex's armored enemies
+
+Andrew, asked "Should the staff-vs-bow check run against the Codex's armored enemies, like the Skeleton and Bruiser Demon, instead of the Ghoul Brute that was cut?":
+
+“One, yes.”
+
+Ruled:
+
+- **`content.mage-staff` no longer waits on `unit.brute`** (closed as superseded 2026-09-23). It sweeps staff against bow on the Codex's armored enemies (13 bestiary rows carry armor > 0 today — `unit.skeleton` 1, `unit.bruiser-demon` 4 among them) and on an unarmored one.
