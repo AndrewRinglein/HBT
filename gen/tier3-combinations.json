@@ -1870,5 +1870,21 @@
   "enchant": "enchant.white-steel",
   "tier": 3,
   "itemClass": "armor"
+ },
+ {
+  "id": "item.longsword.flaming",
+  "name": "Flaming Longsword",
+  "base": "item.longsword",
+  "enchant": "enchant.flaming",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-axe.flaming",
+  "name": "Flaming War Axe",
+  "base": "item.war-axe",
+  "enchant": "enchant.flaming",
+  "tier": 3,
+  "itemClass": "weapon"
  }
 ]

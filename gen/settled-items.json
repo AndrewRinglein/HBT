@@ -2987,6 +2987,32 @@
    "grants": [],
    "intent": "Rarely — and when it does, they are no use to anyone for a long while.",
    "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a), recovered from NOTES-2026-09-01.md \"Weapons and enchantments\", where it was dictated and never landed. Named by the kingdom session."
+  },
+  {
+   "id": "enchant.flaming",
+   "name": "Flaming",
+   "appliesToTags": [
+    "melee",
+    "ranged"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Burn",
+     "attack": "basic"
+    },
+    {
+     "hook": "onHit",
+     "effect": "deal 2 fire damage",
+     "attack": "basic"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "The weapon's own basic attack, burning: a stack of Burn and two points of fire on every hit, and nothing on a miss.",
+   "source": "Custom weapon series 'Flaming', tier 3 (Armory Ledger, approved for now 2026-09-28, engine DECISIONS.md 'the Armory Ledger is approved for now'): \"Basic attack, on hit: Burn 1 and 2 fire damage.\" Dictated V2-SHIELDS-AND-WEAPONS-2026-09-20.md 317: \"Tier 3. This is a basic attack. On hit, 1 burn and 2 fire damage.\" A custom weapon is a series across base weapons (the Ledger's rules: Flaming Axe, Flaming Longsword, Flaming Halberd); the basic attack is the base's first attack. The tier-3 Flaming Longsword is the reward after opening battle 2 (engine DECISIONS.md 2026-09-28 'custom weapons are series across base weapons'). Tiers 4-6 are not built."
   }
  ]
 }

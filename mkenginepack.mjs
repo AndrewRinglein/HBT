@@ -1622,11 +1622,22 @@ for (const combo of TIER3) {
   const triggers = [...b.triggers];
   for (const t of e?.triggers || []) {
     const eff = String(t.effect || ''); let m;
+    // content.flaming-longsword (engine, 2026-09-28): an enchant trigger that names `attack: 'basic'`
+    // fires only with the base's BASIC attack — its first attack (the Armory Ledger's rule, approved
+    // 2026-09-28: "Almost every weapon has one: the first attack listed"). Anything else is a gap.
+    if (t.attack !== undefined && t.attack !== 'basic') { gaps.push(`enchant ${t.hook}: attack '${t.attack}' — only 'basic' is read`); continue; }
+    const scope = t.attack === 'basic' ? (b.grants?.[0] ? { onlyWithAttack: b.grants[0] } : null) : {};
+    if (scope === null) { gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — the base has no basic attack`); continue; }
+    if (TRIG_HOOKS.has(t.hook) && (m = eff.match(/^deal (\d+) (physical|magic|fire|poison|shadow|true) damage$/))) {
+      triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[2]}-damage${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
+        select: 'target', effect: { kind: 'damage', amount: +m[1], damageType: m[2] }, source: combo.id, ...scope });
+      continue;
+    }
     // v2.thorns: the enchant's "Thorns N" is the same magnitude its base items carry.
     if (t.hook === 'onTakingDamage' && (m = eff.match(/^Thorns (\d+)$/))) { statModifiers.thorns = (statModifiers.thorns ?? 0) + +m[1]; continue; }
     if (TRIG_HOOKS.has(t.hook) && (m = eff.match(/^(apply|gain) (\d+) (?:more )?([A-Za-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
       triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[3].toLowerCase()}${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
-        select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }, source: combo.id });
+        select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }, source: combo.id, ...scope });
     } else gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — trigger shape unparsed`);
   }
   // station.vs-target (engine, 2026-09-25): the enchant's slayer joins the base's — rules on the
