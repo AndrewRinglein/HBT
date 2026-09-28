@@ -1541,6 +1541,14 @@
    "standAction": "power.stand-up",
    "kdbDown": true,
    "source": "COMBAT-V2-DESIGN-2026-09-07.md section 10 (ruled): attacks against a prone unit +10 accuracy, -10 dodge, +1 damage; attacking while prone -10 accuracy, -1 damage; zone of control none, and therefore no attacks of opportunity; Block retained; the hex still occupied; Airwalk suspended. \"The cost of being knocked down is therefore a turn's movement, plus vulnerability until you act again - not a lost activation.\" Prone is a status flag, not a life state (V2-IMPACT-MAP). Written 2026-09-23 with engine item v2.prone (V2 R3). Provisional where the design is silent (engine SWITCHES.md): no crawl (proneNoCrawl), no expiry (proneNoExpiry), re-application does not stack (proneStacking). What knocks a unit down is KDB, V2 R4: kdbDown marks this row as the status a KDB 'down' applies (engine item v2.kdb, 2026-09-23)."
+  },
+  {
+   "id": "status.stealth",
+   "name": "Stealth",
+   "shape": "flag",
+   "effect": "You cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never breaks it.",
+   "decay": "No clock: it lasts until it breaks.",
+   "source": "Ruled 2026-09-27 (Andrew, engine DECISIONS.md 'stealth gets a Codex row and its own backlog item': “1. Yes”, to “Should the Codex get a real stealth status row, using the settled wording at CODEX.md line 475?”). The sentence is the settled stealth definition copied word for word (CODEX.md line 475, the Assassin's startOfBattle, and line 1589, Vanish in Shadow): 'you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never breaks it' — only the first letter capitalised and a closing full stop added. Copy, don't invent: the definition gives no clock, so the decay clause is provisional (engine SWITCHES.md stealthNoClock), as is re-application not stacking (stealthStacking). Written 2026-09-28 with engine item capability.stealth. Not in this row: the universal rule 'Stealth does not hold' (CODEX.md 1840) and the units and powers that enter stealth."
   }
  ],
  "testCohort": {

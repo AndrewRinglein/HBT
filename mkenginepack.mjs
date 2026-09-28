@@ -173,6 +173,16 @@ const STATUS_SENTENCES = [
   ['Increases every heal the unit receives by its value, and every point of damage it deals by half its value.', { boostsHealingReceived: true, boostsOutgoingHalf: true }],
   ['Obliterates the unit \u2014 killed, removed, no corpse \u2014 once it reaches the unit\'s Max Health.', { obliteratesAtMaxHp: true }],
   ["Swaps the affected unit's AI strategy for a different one.", { swapsAi: true }],
+  // capability.stealth (engine, 2026-09-28; ruled 2026-09-27): the settled stealth
+  // definition (CODEX.md 475, 1589), one flag per clause — "cannot be seen" is
+  // ai.sight's hidesFromFoes; "cannot be targeted by an attack" is untargetable (by
+  // the other side); "breaks the moment you use an attack or a power, and whenever a
+  // reveal effect finds you" are the three breaksOn flags. "Area effects, terrain and
+  // auras all still reach you" and "moving never breaks it" are what the engine does
+  // anyway: nothing reads a flag for them. On/off, and a second application does not
+  // add (engine SWITCHES.md stealthStacking).
+  ['You cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you \u2014 moving never breaks it.',
+    { shape: 'flag', stacking: 'highest', hidesFromFoes: true, untargetable: true, breaksOnAttack: true, breaksOnPower: true, breaksOnReveal: true }],
 ];
 const STATUS_GAP_NEEDS = {
   'status.root': 'a blocksMovement flag (movement 0, still acts) — capability.root',
@@ -213,6 +223,7 @@ function compileStatuses(rows) {
     else if (r.decay === 'No clock: -1 on a kill, and nothing else.') { decayPerPhase = 0; flags.decayOnKill = true; }   // Karma, 2026-09-03
     else if (/^It GROWS: \+1 per Turn, first of everything in Settling\. It never decays\.$/.test(r.decay)) { decayPerPhase = 0; flags.grows = 1; }   // Shadow, 2026-09-03
     else if (r.decay === 'No clock: it lasts until the unit Stands Up.' && flags.prone) decayPerPhase = 0;   // Prone, v2.prone 2026-09-23
+    else if (r.decay === 'No clock: it lasts until it breaks.' && (flags.breaksOnAttack || flags.breaksOnPower || flags.breaksOnReveal)) decayPerPhase = 0;   // Stealth, capability.stealth 2026-09-28 (engine SWITCHES.md stealthNoClock)
     else { gap(r.id, `status decay not compilable: '${r.decay}'`, STATUS_GAP_NEEDS[r.id] ?? 'unparsed decay clause'); continue; }
     // tick damage type: the row's own damageType wins; "Resist mitigates each
     // tick" in the decay clause is the ruled magic tick (2026-08-27).
@@ -1809,7 +1820,7 @@ function testUnits(testAttackRows, testAbilityRows) {
 }
 function testStatuses() {
   const out = {};
-  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone', 'kdbDown', 'hidesFromFoes']);   // hidesFromFoes: ai.sight (engine, 2026-09-27)
+  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone', 'kdbDown', 'hidesFromFoes', 'untargetable', 'breaksOnAttack', 'breaksOnPower', 'breaksOnReveal']);   // hidesFromFoes: ai.sight (engine, 2026-09-27); untargetable and the breaksOn flags: capability.stealth (engine, 2026-09-28)
   for (const row of readTest('statuses.json')) {
     const { note, ...r } = row;
     if (r.blocksBlock !== undefined && typeof r.blocksBlock !== 'boolean') throw Error('Invalid blocksBlock flag');

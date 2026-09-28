@@ -94,5 +94,6 @@
     "heal": 7
   },
   "note": "rule.bursts: healing-only burst is blocked by high props but not attenuated by low props; no onBurst damage reaction."
-}
+},
+  {"id":"power.test-lantern","name":"Lantern (TEST)","range":0,"staminaCost":0,"cooldown":0,"target":{"select":"area","side":"enemy","radius":3,"origin":"self"},"effects":[{"kind":"reveal"}],"note":"capability.stealth (engine, 2026-09-28): the reveal effect kind on a TEST power - every enemy within 3 hexes of the caster has any status that breaks on a reveal broken, and nobody further. The radius is the power's own area targeting (the one targeting vocabulary). The Codex reveal powers (Flush Them Out, Spectral Sight, Second Sight, Raise the Torch, Flare, Brilliant Torch, Scouting) compile to this kind later. No campaign claim."}
 ]

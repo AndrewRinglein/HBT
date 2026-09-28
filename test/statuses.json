@@ -16,5 +16,7 @@
   { "id": "test.status.veil", "name": "Veil (TEST)", "shape": "flag", "family": "duration", "decayPerPhase": 1, "hidesFromFoes": true,
     "note": "ai.sight (engine, 2026-09-27): a status that hides its unit from every opposing AI while positive, and falls away at End of Phase (-1 per Phase) - the stand-in for stealth breaking, so the unit becomes a target. No campaign claim; the real stealth row is the Codex's." },
   { "id": "test.status.shroud", "name": "Shroud (TEST)", "shape": "flag", "family": "duration", "decayPerPhase": 0, "hidesFromFoes": true,
-    "note": "ai.sight: the second hidesFromFoes instance beside test.status.veil, with no clock - it lasts until removed. Proves the AI's view reads the row, not a name. No campaign claim." }
+    "note": "ai.sight: the second hidesFromFoes instance beside test.status.veil, with no clock - it lasts until removed. Proves the AI's view reads the row, not a name. No campaign claim." },
+  { "id": "test.status.cloak", "name": "Cloak (TEST)", "shape": "flag", "family": "duration", "decayPerPhase": 1, "hidesFromFoes": true, "untargetable": true, "breaksOnAttack": true, "breaksOnReveal": true,
+    "note": "capability.stealth (engine, 2026-09-28): the second instance beside the Codex's status.stealth - hidden from the other side and not a target of its attacks, broken by its carrier's attack or by a reveal, but NOT by a power, and with a clock (-1 per Phase). Proves the targeting rule and the breaking read the row's flags, not a name. No campaign claim." }
 ]

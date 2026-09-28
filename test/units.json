@@ -762,5 +762,43 @@
     }
   ],
   "note": "ai.sight: the cohort zombie under test.status.shroud (no clock) - the second hidden unit, on the other side: hidden from the hero AI for the whole Battle. No campaign content."
+},
+{
+  "id": "test-stealthed-osric",
+  "from": "test-osric",
+  "name": "Stealthed Osric (TEST)",
+  "triggers": [
+    {
+      "id": "test.stealthed-osric.stealth",
+      "hook": "startOfBattle",
+      "chance": 100,
+      "select": "self",
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "status.stealth",
+        "value": 1
+      }
+    }
+  ],
+  "note": "capability.stealth (engine, 2026-09-28): the cohort hero Osric, who begins the Battle in the Codex's status.stealth (no clock) - no enemy may attack him until he breaks it with an attack of his own. No campaign content."
+},
+{
+  "id": "test-cloaked-zombie",
+  "from": "test-zombie",
+  "name": "Cloaked Zombie (TEST)",
+  "triggers": [
+    {
+      "id": "test.cloaked-zombie.cloak",
+      "hook": "startOfBattle",
+      "chance": 100,
+      "select": "self",
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.cloak",
+        "value": 2
+      }
+    }
+  ],
+  "note": "capability.stealth: the cohort zombie under test.status.cloak (2, -1 per Phase) - the second instance, on the other side: the hero may not attack it until the Cloak breaks or runs off its clock. No campaign content."
 }
 ]
