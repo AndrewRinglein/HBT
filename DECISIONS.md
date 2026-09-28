@@ -3110,3 +3110,15 @@ Ruled:
 - **Battle 3, Bridge.** Start: **four Imps on the far side.** **Turn 2: one Fire Imp, far side. Turn 4: one Imp, far side. Turn 5: one Fire Imp, far side.** Seven enemies. **No loss at turn 12** — no time limit. ("amp" is read as Imp.)
 - **Battle 4, Cavern Trail, is the Hunt, reworked.** Start: **three Bloodhounds and one Hellhound.** **Turn 4: four Zombie Hounds behind the heroes.** **Turn 7: one Werewolf, appearing in one of the cave-mouth hexes** (Andrew's correction the same minute: "bring that werewolf out of the cavern"; it replaces "from in front"). Eight enemies.
 - Not stated, carried as defaults: victory in battles 3 and 4 is clearing the map, as in battles 1 and 2; retreat in battles 3 and 4 is not addressed. Exact hexes are Claude's reading on the Abbotown Ground Check: the heroes enter from the west on both maps, so "far side" is the east bank (Bridge) and "behind the heroes" the west edge (Cavern Trail).
+
+## 2026-09-28 — a meteor fall on Turn 4: seven marked areas, then burning ground
+
+Andrew, the same night:
+
+> In this battle, phase 4, we're going to bring down some fiery meteorites. Let's bring down 7 of them.   What happens is, during the enemy end of phase, 7 areas get painted with something that looks kind of like an aura. We have a VFX for this. It's 7 tiles around, just the edge, soft and red. After the next player phase is over, the meteorites land, creating burning ground and damage and setting people on fire.
+
+Ruled:
+
+- **A meteor fall on Turn 4: seven fiery meteorites.** At the end of the Enemy Phase, **seven areas are marked**, each **seven hexes** (a hex and the six around it), shown by an aura-like marking on **the area's outer edge only, soft and red**. **After the next Player Phase ends, the meteorites land: the areas become burning ground, and everyone in them takes damage and is set on fire (Burn).** The telegraph gives the heroes one Player Phase to get out.
+- The visual already exists as a candidate: "Skyfall", a one-turn coloured warning, descending meteor and fire impact, with a 7-hex option (VFX/README.md 56; assets/characters/oathblade-armor/rebuild/candidates/meteor-strikes/). Its approval and game integration are pending.
+- "In this battle" follows the Hunt on the Cavern Trail (battle 4) in the same dictation; which battle it belongs to is asked back. Not stated: how the seven areas are placed, the damage, the Burn amount, and whether enemies are hit too.
