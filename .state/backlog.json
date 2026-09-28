@@ -4898,6 +4898,14 @@
   "shape": "rule",
   "spec": "Ruled 2026-09-27 (Andrew, DECISIONS.md 'Surge: a pool that pays 100 per Surge'): \"If it's used, it should take away 100. If you have 150 surge, automatically you're going to have a surge activation, and you're going to lose 100 and still have 50.\" Surge is a gain-per-Turn stat (surge) and an amount (surgeChance) that other things raise or lower. Today a Surge sets the amount to 0 (src/core/battle.ts, COMBAT-SEQUENCE.md Surge check rung 2); a Surge must take away 100 instead. Update COMBAT-SEQUENCE.md's rung. Not ruled, so switches: what a Surge that happens below 100 leaves (take away 100 below zero, or stop at 0); whether a second Surge in the same Activation checks the leftover. The check's position (before the End of Activation ladder, ruled 2026-08-21) is not changed.",
   "expect": "a hero at 150 Surge surges without a roll and keeps 50; a hero whose Surge happens at a lower amount keeps what the switch says; the amount carries to the next Turn; the surge.checked and surge.hit events show the amount before and after",
-  "note": "Queued 2026-09-27 on Andrew's ruling. Measure the control battles before declaring changesBaseline: an amount under 100 floored at 0 would leave them byte-identical. Variants to declare before code: two hero rows with different Surge."
+  "note": "Queued 2026-09-27 on Andrew's ruling. Measure the control battles before declaring changesBaseline: an amount under 100 floored at 0 would leave them byte-identical. Variants to declare before code: two hero rows with different Surge. Variants declared 2026-09-28 by the implementing chat: test-surge-labored (Surge 10) and test-surge-swift (Surge 20), the two TEST hero rows content/test/units.json already carries for the Surge probes (pure data, live in showcase.surge-flight-ladder); the tests read each row's Surge.",
+  "variants": [
+   "test-surge-labored",
+   "test-surge-swift"
+  ],
+  "probeIds": [
+   "test-surge-labored",
+   "test-surge-swift"
+  ]
  }
 ]
