@@ -4983,12 +4983,13 @@
   "id": "content.opening-units",
   "kind": "content",
   "shape": "data",
-  "spec": "The two opening units the pack does not have. (1) The Lumberjack's Wife as her own civilian row (DECISIONS.md 2026-09-28: \"Lumberjack and wife. They're two different units.\"); the Lumberjack row (hero.fixed.lumberjack-and-wife, already named 'Lumberjack' in the Codex and pack) stops meaning both, and kingdom/src/content/heroes.ts ~55 ('Lumberjack and Wife') follows. (2) Battle 2's Soldier Undead (DECISIONS.md 2026-09-28 'battle 2's start': 'one Soldier Undead from behind the heroes'): no engine unit; the Codex has unit.soldier (type Undead, authored:false). Both authored in the Codex (content/) and published into src/content/generated/pack.ts through mkenginepack; no number typed that a file does not hold.",
-  "expect": "The Wife fields as a hero-side civilian beside the Lumberjack in a real battle, two units, each killable on its own; the Soldier Undead fields as an enemy with its Codex numbers; no row still names the Lumberjack and Wife as one unit.",
+  "spec": "The two opening units the pack does not have. (1) The Lumberjack's Wife as her own civilian row (DECISIONS.md 2026-09-28: \"Lumberjack and wife. They're two different units.\"), numbers as dictated (DECISIONS.md 2026-09-28 \"the Lumberjack's Wife and the Undead Soldier, dictated\"): Strength 2, Precision 2, Accuracy 65, Health 6, Dodge 10, Movement 5, item.dagger and item.basic-armor; the Lumberjack row (hero.fixed.lumberjack-and-wife, already named Lumberjack in the Codex and pack) stops meaning both, and kingdom/src/content/heroes.ts ~55 (\"Lumberjack and Wife\") follows. (2) Battle 2's Undead Soldier is the existing unit.soldier as it stands (DECISIONS.md 2026-09-28 \"battle 2's Undead Soldier is the existing Soldier\"): it is in the Codex bestiary (authored:false) but not the published pack - publish it with its Codex numbers, no new row. Both through the Codex (content/) and mkenginepack into src/content/generated/pack.ts; no number typed that a file does not hold.",
+  "expect": "The Wife fields as a hero-side civilian beside the Lumberjack in a real battle, two units, each killable on its own, with her dictated numbers; unit.soldier fields as an enemy with its Codex numbers (Strength 5, Armor 2, Health 10, Accuracy 62, Movement 4); no row still names the Lumberjack and Wife as one unit.",
   "probeIds": [
-   "hero.fixed.lumberjack-and-wife"
+   "hero.fixed.lumberjack-and-wife",
+   "unit.soldier"
   ],
-  "note": "Cut 2026-09-28 from the opening loop (battle 2). Numbers dictated by Andrew 2026-09-28 (DECISIONS.md \"the Lumberjack's Wife and the Undead Soldier, dictated\"): copy them, do not invent. The Undead Soldier is a new enemy row (not unit.soldier, which keeps its numbers) and reuses the Soldier's art. The Wife's id is a new instance of hero.fixed.* (a new instance may be proposed; GLOSSARY.md)."
+  "note": "Cut 2026-09-28 from the opening loop (battle 2). Numbers are Andrew's (DECISIONS.md 2026-09-28, two entries): copy them, do not invent. The Wife's id is a new instance of hero.fixed.* (a new instance may be proposed; GLOSSARY.md)."
  },
  {
   "id": "content.flaming-longsword",
@@ -5019,7 +5020,7 @@
   "id": "encounter.opening.lumberjack",
   "kind": "engine",
   "shape": "data",
-  "spec": "Battle 2, Lumberjack House (DECISIONS.md 2026-09-28 'battle 2's final schedule', 'no cut-off hexes; the Lumberjack and Wife on the road'). Map map.opening.lumberjack. Start: three Zombies on the east edge (19,3),(19,4),(19,8); the Lumberjack and his Wife, two civilian units, not objectives, at (13,4),(13,5) on the road. Turn 1, end of the Enemy Phase: one Skeletal Archer (unit.skeletal-archer) from the bottom edge. Turn 3: one Skeletal Archer from the top and one from behind the heroes. Turn 4: nothing. Turn 5: one Soldier Undead from behind the heroes. Seven enemies. No retreat. Victory: clear the map. Hexes from the ground proposal's markers.",
+  "spec": "Battle 2, Lumberjack House (DECISIONS.md 2026-09-28 'battle 2's final schedule', 'no cut-off hexes; the Lumberjack and Wife on the road'). Map map.opening.lumberjack. Start: three Zombies on the east edge (19,3),(19,4),(19,8); the Lumberjack and his Wife, two civilian units, not objectives, at (13,4),(13,5) on the road. Turn 1, end of the Enemy Phase: one Skeletal Archer (unit.skeletal-archer) from the bottom edge. Turn 3: one Skeletal Archer from the top and one from behind the heroes. Turn 4: nothing. Turn 5: one Undead Soldier (unit.soldier, ruled 2026-09-28) from behind the heroes. Seven enemies. No retreat. Victory: clear the map. Hexes from the ground proposal's markers.",
   "expect": "Runs deterministically; seven enemies arrive on their Turns; the Lumberjack and the Wife are two units and either may die without ending the battle; won when the last enemy dies.",
   "needs": [
    "map.opening-six",

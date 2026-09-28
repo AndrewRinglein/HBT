@@ -3189,3 +3189,14 @@ Ruled:
 - **The Lumberjack's Wife** (civilian, her own unit beside the Lumberjack): **Strength 2, Precision 2, Accuracy 65, Health 6, Dodge 10, Movement 5; armed with a knife and basic armor.** "Knife" is read as `item.dagger`, the knife every civilian already carries (ruled 2026-09-05; the Codex has no `item.knife`); "basic armor" is `item.basic-armor`. Anything not dictated (armor stat, stamina, crit, luck, vision, toughness) follows the civilian rows' existing defaults, not new numbers.
 - **The Undead Soldier** (battle 2's "Soldier Undead"): **Strength 4, Precision 3, Health 9, Armor 1, Accuracy 70, Movement 4; immune to Bleed (`immunity: {bleed: 1}`, the Codex's existing immunity shape); armed with a longsword-looking weapon; its attack is Slice, damage Strength. Its art looks like the Soldier's.** Read as **a new enemy row**, not a rewrite of `unit.soldier` (Strength 5, Armor 2, Health 10, Accuracy 62), which other encounters field and which keeps its numbers; the Undead Soldier reuses the Soldier's art.
 - Both land through `content.opening-units`, authored in the Codex and published; that item is no longer blocked.
+
+## 2026-09-28 — battle 2's Undead Soldier is the existing Soldier
+
+Andrew, on the entry above (the Undead Soldier read as a new enemy row beside `unit.soldier`):
+
+“Let's just use the existing soldier as the undead soldier.”
+
+Ruled:
+
+- **Battle 2's Undead Soldier is `unit.soldier`, the Codex's existing Soldier (type Undead), as it stands** — Strength 5, Armor 2, Health 10, Accuracy 62, Movement 4, its own three attacks and art. **No new enemy row is made.** The Undead Soldier stat block dictated minutes earlier (Strength 4, Precision 3, Health 9, Armor 1, Accuracy 70, immune Bleed 1, Slice) is superseded and not built. `unit.soldier` is not yet in the published pack (Codex `authored: false`); `content.opening-units` publishes it.
+- The Lumberjack's Wife stands as dictated above.
