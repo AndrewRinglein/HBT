@@ -2,7 +2,7 @@
 // Every mutator emits an event, which is what makes the log complete by construction —
 // and therefore what makes replay, the text renderer, and every test possible.
 
-import type { AiModeChange, Ctx, EncounterAiRule, Event, LifeState, Prop, Unit, UnitMods } from './types.js'
+import type { AiModeChange, Ctx, EncounterAiRule, Event, LifeState, Prop, Side, Unit, UnitMods } from './types.js'
 import type { HexId } from './hex.js'
 import { effective } from './stats.js'
 
@@ -524,10 +524,22 @@ export function gainPower(ctx: Ctx, amount: number, causeId: string, extra: Reco
 // ENEMY-REVIEW P4: created when any enemy dies and when a hero actually dies;
 // summons leave none. Board objects on the state, plain data, ids by count.
 export function createCorpse(ctx: Ctx, u: Unit, causeId: string): void {
+  const id = pushCorpse(ctx, u.hex, u.typeId, u.side, u.uid)
+  emit(ctx, 'corpse.created', causeId, { corpse: id, hex: u.hex, of: u.id, typeId: u.typeId, side: u.side })
+}
+function pushCorpse(ctx: Ctx, hex: HexId, typeId: string, side: Side, uid: number): number {
   const list = ctx.state.corpses ?? (ctx.state.corpses = [])
   const id = list.length ? Math.max(...list.map((c) => c.id)) + 1 : 1
-  list.push({ id, hex: u.hex, typeId: u.typeId, side: u.side, uid: u.uid })
-  emit(ctx, 'corpse.created', causeId, { corpse: id, hex: u.hex, of: u.id, typeId: u.typeId, side: u.side })
+  list.push({ id, hex, typeId, side, uid })
+  return id
+}
+/**
+ * capability.placed-remains (2026-09-28): a body the ENCOUNTER lays down at setup — no unit died,
+ * so `of` is null and the remains row is named. The same board object as any corpse after this.
+ */
+export function placeCorpse(ctx: Ctx, hex: HexId, typeId: string, side: Side, uid: number, causeId: string, remains: string): void {
+  const id = pushCorpse(ctx, hex, typeId, side, uid)
+  emit(ctx, 'corpse.created', causeId, { corpse: id, hex, of: null, typeId, side, remains })
 }
 export function removeCorpse(ctx: Ctx, corpseId: number, causeId: string, how: 'raised' | 'eaten' | 'consumed' | 'destroyed', actor: number): void {
   const list = ctx.state.corpses ?? []

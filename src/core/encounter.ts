@@ -24,7 +24,7 @@ import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './typ
 import type { HexId } from './hex.js'
 import { arrivalUid } from './identity.js'
 import { applyBadges } from './items.js'
-import { applyDamage, bindAiRule, emit, gainPower, paintLayer, setOutcome } from './mutate.js'
+import { applyDamage, bindAiRule, emit, gainPower, paintLayer, placeCorpse, setOutcome } from './mutate.js'
 import { applyStatus, incomingAbsorb, spendAbsorb } from './status.js'
 import { flatDamage } from './mitigation.js'
 import { fallNight } from './vision.js'
@@ -142,6 +142,24 @@ export function placeSetup(ctx: Ctx, enc: EncounterDef, names: Record<string, nu
       if (p.objective) { st.objectives.push(u.id); emit(ctx, 'encounter.objective', enc.id, { actor: u.id, typeId: u.typeId, kind: 'protect' }) }
       if (p.civilian && enc.civilianAi) { u.aiOverride = { ...enc.civilianAi }; emit(ctx, 'ai.override', enc.id, { actor: u.id, mode: enc.civilianAi.mode, untilTurn: enc.civilianAi.untilTurn }) }
       bindAiRules(ctx, enc, u)
+    }
+  }
+  placeRemains(ctx, enc)
+}
+
+/**
+ * capability.placed-remains (2026-09-28): the encounter's bodies, laid down after its units (so
+ * no unit's identity moves), row by row, hex by hex in authored order. Each takes the next unused
+ * uid, as an arrival does. A body on a hex no unit could stand on is a content error (Law 9).
+ */
+function placeRemains(ctx: Ctx, enc: EncounterDef): void {
+  if (!enc.remains?.length) return
+  const passable = passableHexes(ctx)
+  for (const r of enc.remains) {
+    const def = defOf(ctx, r.typeId, `encounter '${enc.id}' remains '${r.id}'`)
+    for (const hex of r.hexes) {
+      if (!passable(hex) || moveCostOf(ctx.state.terrain[hex] ?? 0) >= IMPASSABLE) throw new Error(`encounter '${enc.id}' remains '${r.id}': hex ${hex} is impassable — a body lies where a unit could stand`)
+      placeCorpse(ctx, hex, def.typeId, def.side, arrivalUid(ctx.state), enc.id, r.id)
     }
   }
 }

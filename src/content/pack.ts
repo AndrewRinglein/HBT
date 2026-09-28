@@ -587,6 +587,16 @@ export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: 
     for (const r of e.aiRules ?? []) validateEncounterAiRule(k, e, r, units, ruleIds)
     // encounter.area-fall (2026-09-28): the row's falls — loud at load
     for (const f of e.falls ?? []) validateEncounterFall(k, f, ruleIds)
+    // capability.placed-remains (2026-09-28): the row's bodies — an id, a unit row, on-board hexes, loud at load
+    for (const r of e.remains ?? []) {
+      const where = `encounters: '${k}' remains '${r?.id}'`
+      if (typeof r?.id !== 'string' || !/^[a-z]+\.[a-z0-9.-]+$/.test(r.id)) throw new Error(`encounters: '${k}' has remains with no id`)
+      if (ruleIds.has(r.id)) throw new Error(`${where} is a duplicate id`)
+      ruleIds.add(r.id)
+      if (!units[r.typeId]) throw new Error(`${where}: '${r.typeId}' is not a unit in the pack`)
+      const cells = e.board ? e.board.width * e.board.height : Infinity
+      if (!Array.isArray(r.hexes) || !r.hexes.length || r.hexes.some((h) => !Number.isSafeInteger(h) || h < 0 || h >= cells) || new Set(r.hexes).size !== r.hexes.length) throw new Error(`${where}: hexes are distinct on-board hex ids, at least one`)
+    }
     // encounter.band-axis (2026-09-04, FINDING 43): the band's start must match its axis — the engine used to read NaN in silence
     if (e.band) {
       const axis = e.band.axis ?? 'row'

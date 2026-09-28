@@ -144,6 +144,14 @@ export type EncounterDef = {
    */
   readonly falls?: readonly FallDef[]
   /**
+   * capability.placed-remains (2026-09-28; DECISIONS.md "Gates is the Curse; the Cathedral has a
+   * Necromancer raising the dead"): bodies the encounter lays on the board at setup — the same board
+   * objects capability.corpses makes (raised, eaten, consumed like any corpse). `typeId` is whose body
+   * (its side is that row's); `hexes` are hex ids. Authored in content as a setup entry
+   * `{ corpses, hexes }` — the shape content already wrote. The ground under them is the row's `paint`.
+   */
+  readonly remains?: readonly { readonly id: string; readonly typeId: string; readonly hexes: readonly number[] }[]
+  /**
    * capability.vision: the battlefield CONDITION — 'darkness' paints every hex
    * dark at phase 1 (Horrors of the Night); heroes light what is inside their
    * Vision on the hero phase; the night family repaints. Absent = daylight.

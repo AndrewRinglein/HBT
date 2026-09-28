@@ -19985,6 +19985,104 @@ export const UNIT_PACK = {
             ]
           }
         ]
+      },
+      "test.encounter.placed-remains-a": {
+        "id": "test.encounter.placed-remains-a",
+        "name": "Placed remains: the chapel (TEST)",
+        "mapId": "test.map.journey-20x10",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "setup": [
+          {
+            "unit": "unit.necromancer",
+            "at": {
+              "col": 17,
+              "row": 1
+            }
+          }
+        ],
+        "schedule": [],
+        "heroZone": {
+          "count": 1,
+          "at": {
+            "near": {
+              "col": 1,
+              "row": 4
+            },
+            "range": 0
+          }
+        },
+        "paint": [
+          {
+            "layer": "layer.weak",
+            "hexes": [
+              94,
+              156,
+              52
+            ]
+          }
+        ],
+        "remains": [
+          {
+            "id": "test.remains.chapel",
+            "typeId": "unit.zombie",
+            "hexes": [
+              94,
+              156,
+              52
+            ]
+          }
+        ]
+      },
+      "test.encounter.placed-remains-b": {
+        "id": "test.encounter.placed-remains-b",
+        "name": "Placed remains: the yard (TEST)",
+        "mapId": "test.map.journey-20x10",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "setup": [
+          {
+            "unit": "unit.ghoul",
+            "at": {
+              "col": 15,
+              "row": 4
+            }
+          }
+        ],
+        "schedule": [],
+        "heroZone": {
+          "count": 1,
+          "at": {
+            "near": {
+              "col": 1,
+              "row": 4
+            },
+            "range": 0
+          }
+        },
+        "paint": [
+          {
+            "layer": "layer.weak",
+            "hexes": [
+              96,
+              94
+            ]
+          }
+        ],
+        "remains": [
+          {
+            "id": "test.remains.yard",
+            "typeId": "unit.skeleton",
+            "hexes": [
+              96,
+              94
+            ]
+          }
+        ]
       }
     },
     "bursts": {
@@ -42418,9 +42516,9 @@ export const UNIT_PACK = {
         }
       },
       "gaps": [
-        "setup: 5 corpses — the near company: Wall Sentry, Longbow Hunter, Moon Bearer, Star Oracle, Violet Knife — hero rows as CORPSES (capability.corpses)",
+        "setup: 5 corpses — the near company: Wall Sentry, Longbow Hunter, Moon Bearer, Star Oracle, Violet Knife — hero rows as CORPSES (capability.corpses) (placed remains need an id and the body's unit, typeId)",
         "setup: 5 × unit.shade — no such row in the pack, NOT fielded",
-        "setup: 5 corpses — the mid company: Blue Buccaneer, Storm Archer, Talisman Bearer, Frost Duelist, Twin Sabers",
+        "setup: 5 corpses — the mid company: Blue Buccaneer, Storm Archer, Talisman Bearer, Frost Duelist, Twin Sabers (placed remains need an id and the body's unit, typeId)",
         "schedule 3: 5 × unit.shade — no such row in the pack, NOT fielded",
         "retreat allowed — skipped by ruling 2026-09-03",
         "salvation — skipped by ruling 2026-09-03",

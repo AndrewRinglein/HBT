@@ -117,6 +117,19 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.meteor-fall',
     heroes: ['test-warrior', 'test-ranger'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  // capability.placed-remains (2026-09-28): the two instances of an encounter's placed remains,
+  // each live in a real battle — Zombie remains a Necromancer raises, and Skeleton remains beside a
+  // Ghoul. The remains are data on TEST encounter rows (content/test/encounters.json).
+  'test.placed-remains-a': {
+    id: 'test.placed-remains-a', note: 'TEST: a warrior against a Necromancer over three placed Zombie remains (test.remains.chapel) on cursed ground. No campaign claim.',
+    mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.placed-remains-a',
+    heroes: ['test-warrior'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
+  'test.placed-remains-b': {
+    id: 'test.placed-remains-b', note: 'TEST: a warrior against a Ghoul between two placed Skeleton remains (test.remains.yard) on cursed ground. No campaign claim.',
+    mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.placed-remains-b',
+    heroes: ['test-warrior'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',

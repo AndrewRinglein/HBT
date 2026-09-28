@@ -1434,3 +1434,19 @@ drawn until now). Engine `src/core/encounter.ts` (`scatterAreas`, `fallCentres`,
 | `areaFallAi` | Does the AI step out of a marked area? | **No AI change.** | AI-DESIGN.md is Angela's. | provisional — 2026-09-28 |
 | `areaFallCup` | The roll's key? | **The terrain-event cup, keyed (the fall's index on the row, the area's index)** — what is rolled, never the turn (Law 4). | COMBAT-SEQUENCE.md: the terrain event picks where it lands. | provisional — 2026-09-28 |
 | `areaFallLandingMoment` | "After the next Player Phase" — before or after that Phase's own end ladder? | **After**: the End of Phase ladder runs, then the fall lands, then the Enemy Phase's arrivals. | "After the Player Phase ends". | provisional — 2026-09-28 |
+
+## Placed remains — defaults taken building capability.placed-remains (2026-09-28)
+
+The source: DECISIONS.md 2026-09-28 "Gates is the Curse; the Cathedral has a Necromancer raising
+the dead" (the Cathedral's remains are raisable corpses; "When the body is raised, the cursed ground
+stays"). The prior art it extends: capability.corpses (the board objects, `createCorpse`) and the
+content encounter shape `{ corpses: N, hexes }` already authored in `encounter.last-company` (a gap
+until now). Engine `placeCorpse` (mutate.ts), `placeRemains` (encounter.ts), an encounter row's
+`remains`. Probe: `test/placed-remains.test.ts`, TEST rows `test.remains.chapel` and `test.remains.yard`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `placedRemainsShape` | Where are placed remains authored? | **The setup entry content already wrote, `{ corpses: N, hexes: [{col,row}] }`, plus an `id` (trigger kind; TEST `test.*`) and `typeId` (whose body).** One without an id or typeId stays a named gap (`encounter.last-company`'s two entries do). | The shape existed; the pack only lacked what the engine needs to lay a body. | provisional — 2026-09-28 |
+| `placedRemainsPaint` | Do the remains paint their own cursed ground? | **No — the row's `paint` does** (`layer.weak` on the same hexes), the one ground mechanism; so the ground outlives the body with no rule of its own. | "Follow the same structure that was planned for all the various ground effects" (DECISIONS.md 2026-09-28). The opening maps list the cursed hexes (`content/gen/opening-maps.json`). | provisional — 2026-09-28 |
+| `placedRemainsOrder` | When, and with what identity? | **After the encounter's units, row by row, hex by hex**; each body takes the next unused uid, as an arrival does. `corpse.created` names the encounter as cause, `of: null`, and the remains id. | Laying bodies after the units moves no unit's identity. | provisional — 2026-09-28 |
+| `placedRemainsSide` | Whose side is a placed body? | **Its unit row's.** | A body is its unit's; nothing reads more. | provisional — 2026-09-28 |

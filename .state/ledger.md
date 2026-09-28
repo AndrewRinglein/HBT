@@ -17675,3 +17675,21 @@ index daa4209..c42917a 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without test.fall.meteor,test.fall.curse — they genuinely test it
+
+## capability.placed-remains — LANDED `b6aae7a`
+2026-09-28 19:04
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:1834
+  PASS  typecheck
+  PASS  the item's own tests — test/placed-remains.test.ts
+  PASS  gate 1 — the id appears in a real battle — test.remains.chapel: 3 log lines, 3 fired, 3 changed state · test.remains.yard: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/placed-remains.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.remains.chapel live · test.remains.yard live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.remains.chapel,test.remains.yard — they genuinely test it

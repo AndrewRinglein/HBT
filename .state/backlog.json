@@ -4975,8 +4975,18 @@
   "shape": "rule",
   "spec": "Remains an encounter places at setup (DECISIONS.md 2026-09-28 'Gates is the Curse; the Cathedral has a Necromancer raising the dead': the Cathedral's remains, 33 hexes on the Ground Check, are raisable corpses). Today corpses come only from deaths (src/core/mutate.ts ~523, settle.ts ~51). An encounter row may author corpses on hexes; they are the same board objects capability.corpses made (CODEX.md 1834, the universal corpse rule) - raised by the Necromancer's Raise, eaten by the Ghoul's Eat Corpse - and each hex is painted layer.weak, cursed ground (DECISIONS.md 2026-09-28 \"cursed ground is the Weak ground layer\"), which stays when the body is raised or eaten (ruled: 'When the body is raised, the cursed ground stays').",
   "expect": "A TEST encounter with three placed remains fields three corpses on their hexes with corpse.created naming the encounter as the cause; a Necromancer in reach raises one and its hex stays cursed ground; a Ghoul eats one and heals the row's numbers and its hex stays cursed; a placed remain on an impassable hex is a loud error.",
+  "probeIds": [
+   "test.remains.chapel",
+   "test.remains.yard"
+  ],
+  "variants": [
+   "test.remains.chapel",
+   "test.remains.yard"
+  ],
   "note": "Cut 2026-09-28 from the opening loop (the Cathedral). Variants to declare before code: two placed-remains rows in two TEST encounters, the second pure data.",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "b6aae7a"
  },
  {
   "id": "fix.raise-two",
