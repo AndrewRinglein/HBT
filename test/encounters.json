@@ -262,5 +262,120 @@
         "note": "the Gates' curse strikes' numbers (engine DECISIONS.md 2026-09-28): falling like the meteors, 3 Weak to everyone inside, the area becomes cursed ground (layer.weak)"
       }
     ]
+  },
+  {
+    "id": "test.encounter.placed-remains-a",
+    "name": "Placed remains: the chapel (TEST)",
+    "map": "test.map.journey-20x10",
+    "board": {
+      "width": 20,
+      "height": 10
+    },
+    "note": "capability.placed-remains (engine, 2026-09-28): three Zombie remains laid at setup on cursed ground (layer.weak); the Necromancer's Raise (reach 10) raises them. A warrior far to the west. TEST only, no campaign claim.",
+    "heroZone": {
+      "count": 1,
+      "at": {
+        "near": {
+          "col": 1,
+          "row": 4
+        },
+        "range": 0
+      }
+    },
+    "setup": [
+      {
+        "unit": "unit.necromancer",
+        "at": {
+          "col": 17,
+          "row": 1
+        }
+      },
+      {
+        "corpses": 3,
+        "id": "test.remains.chapel",
+        "typeId": "unit.zombie",
+        "hexes": [
+          {
+            "col": 14,
+            "row": 4
+          },
+          {
+            "col": 16,
+            "row": 7
+          },
+          {
+            "col": 12,
+            "row": 2
+          }
+        ],
+        "note": "three bodies within the Necromancer's reach"
+      }
+    ],
+    "paint": [
+      {
+        "layer": "layer.weak",
+        "hexes": [
+          94,
+          156,
+          52
+        ]
+      }
+    ],
+    "schedule": []
+  },
+  {
+    "id": "test.encounter.placed-remains-b",
+    "name": "Placed remains: the yard (TEST)",
+    "map": "test.map.journey-20x10",
+    "board": {
+      "width": 20,
+      "height": 10
+    },
+    "note": "capability.placed-remains (engine, 2026-09-28): the second instance, pure data — two Skeleton remains either side of a Ghoul, on cursed ground. TEST only, no campaign claim.",
+    "heroZone": {
+      "count": 1,
+      "at": {
+        "near": {
+          "col": 1,
+          "row": 4
+        },
+        "range": 0
+      }
+    },
+    "setup": [
+      {
+        "unit": "unit.ghoul",
+        "at": {
+          "col": 15,
+          "row": 4
+        }
+      },
+      {
+        "corpses": 2,
+        "id": "test.remains.yard",
+        "typeId": "unit.skeleton",
+        "hexes": [
+          {
+            "col": 16,
+            "row": 4
+          },
+          {
+            "col": 14,
+            "row": 4
+          }
+        ],
+        "note": "two bodies either side of the Ghoul"
+      }
+    ],
+    "paint": [
+      {
+        "layer": "layer.weak",
+        "hexes": [
+          96,
+          94
+        ]
+      }
+    ],
+    "schedule": []
   }
 ]

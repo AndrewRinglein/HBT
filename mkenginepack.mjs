@@ -1898,12 +1898,20 @@ const packUnitIds = new Set([...heroes, ...enemies, ...authoredEnemies, ...prolo
 function compileEncounter(row) {
   const board = validateEncounterBoard(row, { ...maps, ...test.maps });
   const gaps = [];
-  const setup = [];
+  const setup = [], remains = [];
   let heroZone = null;
   if (row.heroZone) heroZone = row.heroZone;
   for (const s of row.setup || []) {
     if (s.heroes !== undefined) { heroZone = { count: s.heroes, at: s.at }; continue; }
-    if (s.corpses !== undefined) { gaps.push(`setup: ${s.corpses} corpses — ${s.note || 'capability.corpses'}`); continue; }
+    // capability.placed-remains (engine, 2026-09-28): a corpses entry that names its remains id and
+    // whose body it is ships as the row's remains; one that does not stays a named gap.
+    if (s.corpses !== undefined) {
+      if (typeof s.id !== 'string' || typeof s.typeId !== 'string') { gaps.push(`setup: ${s.corpses} corpses — ${s.note || 'capability.corpses'} (placed remains need an id and the body's unit, typeId)`); continue; }
+      if (!packUnitIds.has(s.typeId)) { gaps.push(`setup: remains '${s.id}' are '${s.typeId}' — no such row in the pack, NOT placed`); continue; }
+      if (!Array.isArray(s.hexes) || s.hexes.length !== s.corpses || !board) throw new Error(`encounter ${row.id}: remains '${s.id}' name ${s.corpses} corpses and ${s.hexes?.length ?? 0} hexes — one hex each`);
+      remains.push({ id: s.id, typeId: s.typeId, hexes: s.hexes.map((h) => h.row * board.width + h.col) });
+      continue;
+    }
     if (!s.unit) { gaps.push(`setup entry without a unit: ${JSON.stringify(s).slice(0, 60)}`); continue; }
     if (!packUnitIds.has(s.unit)) { gaps.push(`setup: ${s.count ?? 1} × ${s.unit} — no such row in the pack, NOT fielded`); continue; }
     if (s.rescue) gaps.push(`${s.unit} is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian`);
@@ -1956,6 +1964,7 @@ function compileEncounter(row) {
     ...(Array.isArray(row.aiRules) && row.aiRules.length ? { aiRules: row.aiRules.map(({ note: _n, ...r }) => r) } : {}),
     // encounter.area-fall (engine, 2026-09-28): the row's telegraphed area falls ship as data; the engine validates them at load
     ...(Array.isArray(row.falls) && row.falls.length ? { falls: row.falls.map(({ note: _n, ...f }) => f) } : {}),
+    ...(remains.length ? { remains } : {}),   // capability.placed-remains (engine, 2026-09-28)
     ...(gaps.length ? { gaps } : {}) };
 }
 const encounters = {};
@@ -1966,6 +1975,7 @@ for (const row of readTest('encounters.json')) {
   if (!test.maps[row.map]) throw new Error(`TEST encounter ${row.id} must name a TEST map`);
   for (const r of row.aiRules || []) if (!isTestId.trigger(r?.id)) throw new Error(`TEST encounter ${row.id} AI rule '${r?.id}' is not test.* — the test family or nothing`);   // ai.encounter-rules
   for (const f of row.falls || []) if (!isTestId.trigger(f?.id)) throw new Error(`TEST encounter ${row.id} fall '${f?.id}' is not test.* — the test family or nothing`);   // encounter.area-fall
+  for (const s of row.setup || []) if (s.corpses !== undefined && s.id !== undefined && !isTestId.trigger(s.id)) throw new Error(`TEST encounter ${row.id} remains '${s.id}' is not test.* — the test family or nothing`);   // capability.placed-remains
   test.encounters[row.id] = compileEncounter(row);
 }
 
