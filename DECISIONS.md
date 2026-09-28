@@ -2985,3 +2985,33 @@ Ruled:
 
 - **The opening is six battles, in this order: Orphanage → Lumberjack House → Bridge → Cavern Trail → Gates → Cathedral.** Lumberjack House replaces Village Outskirts; Cavern and Trail are one battle; there is no Town battle.
 - **Each of the six has its own specifically designed hex map already** (Andrew). The provisional order read from IMG_5078.jpeg in KINGDOM-V2-2026-09-07.md (2026-09-27) is superseded.
+
+## 2026-09-28 — custom weapons are series across base weapons; the flaming longsword; new relics and bloodrunes
+
+Andrew, asked "Is each custom weapon a single item (one Flaming Longsword), or a series that can sit on many base weapons?", "The existing named weapons at tier 2 and up … do they stay as their own weapons?" and "Is the fixed flaming sword the party gets after battle 2 the tier-3 Flaming Longsword?":
+
+> The idea is that now each custom weapon is a series of different weapons. For example, there could be:
+>
+> * a flaming axe
+> * a flaming longsword
+> * a tier 3 flaming axe
+> * a tier 4 flaming sword
+> * a tier 5 flaming halberd these will be rewards that you can pull. Although you basically pull for weapons and shields, you pull tier 3.   They can stay at tier 2 for right now, the ones that are already tier 2.  Yeah, let's do a flaming long sword, standard tier 3. Yes, that's what you're going to get after battle 2.    I've also got a couple of new relics:
+>    * A tier 1 relic gives -2 health but +10 melee block and +5 range block.
+>    * A tier 1 relic gives -10 accuracy but +22 special attack accuracy.  Then I have tier 2 versions of these:
+>       * The first one: -2 health, -1 armor, and you gain 20 melee block and 20 range block.
+>       * The tier 2 version of the second one: you get -15 accuracy, but you get +40 to special attack accuracy.  Then I have some Bloodrune:
+>          * 1 on kill, gain 5 melee block
+>          * 1 on kill, gain 10 range block
+>          * 1 on block, gain 1 strength
+>          * 1 on block, gain 2 precision
+>          * 1 on miss, gain bloodlust and lose 2 stamina
+
+Ruled:
+
+- **Each custom weapon is a series across base weapons** — a Flaming Axe, a Flaming Longsword, a Flaming Halberd — at tiers 3 to 6. They are rewards drawn in the reward pull; "you basically pull for weapons and shields, you pull tier 3."
+- **The existing named tier-2 weapons stay at tier 2 for now.**
+- **The reward after opening battle 2 is the standard tier-3 Flaming Longsword.**
+- **New relics:** tier 1: −2 Health, +10 Block, +5 Ranged Block; tier 1: −10 Accuracy, +22 Accuracy on special free attacks. Their tier 2 versions: −2 Health, −1 Armor, +20 Block, +20 Ranged Block; −15 Accuracy, +40 Accuracy on special free attacks.
+- **New bloodrunes** (read as tier 1): on kill, +5 Block; on kill, +10 Ranged Block; on block, +1 Strength; on block, +2 Precision; on miss, gain Bloodlust and lose 2 Stamina.
+- Names, durations and what "gain Bloodlust" gives (CODEX.md 1198 has Bloodlust as a Berserker stance power) are asked back, not assumed.
