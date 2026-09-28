@@ -1710,6 +1710,112 @@
      ]
     }
    ]
+  },
+  {
+   "id": "encounter.opening.lumberjack",
+   "name": "Lumberjack House",
+   "map": "map.opening.lumberjack",
+   "board": {
+    "width": 20,
+    "height": 14
+   },
+   "retreat": false,
+   "note": "The opening, battle 2 (engine DECISIONS.md 2026-09-28 'battle 2's final schedule' and 'no cut-off hexes; the Lumberjack and Wife on the road'; \"Second battle is Lumberjack and wife. They're two different units.\"). Three Zombies on the east edge; the Lumberjack and his Wife on the road in column 13, two civilians, not objectives; a Skeletal Archer at the end of Turn 1's Enemy Phase from the bottom edge; Turn 3 one from the top and one from behind the heroes; Turn 5 the Undead Soldier (unit.soldier, ruled 2026-09-28) from behind the heroes. Seven enemies. No retreat; clear the map. Hexes are the Ground Check's markers; the heroes' zone is Claude's reading (engine SWITCHES.md openingHeroZones).",
+   "heroZone": {
+    "count": 4,
+    "at": {
+     "near": {
+      "col": 5,
+      "row": 7
+     },
+     "range": 2
+    }
+   },
+   "setup": [
+    {
+     "unit": "hero.fixed.lumberjack-and-wife",
+     "civilian": true,
+     "at": {
+      "col": 13,
+      "row": 4
+     }
+    },
+    {
+     "unit": "hero.fixed.lumberjacks-wife",
+     "civilian": true,
+     "at": {
+      "col": 13,
+      "row": 5
+     }
+    },
+    {
+     "unit": "unit.zombie",
+     "count": 3,
+     "hexes": [
+      {
+       "col": 19,
+       "row": 3
+      },
+      {
+       "col": 19,
+       "row": 4
+      },
+      {
+       "col": 19,
+       "row": 8
+      }
+     ]
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 2,
+     "spawn": [
+      {
+       "unit": "unit.skeletal-archer",
+       "at": {
+        "col": 10,
+        "row": 13
+       },
+       "note": "the end of Turn 1's Enemy Phase, bottom edge: it arrives as Turn 2 begins (engine SWITCHES.md openingEndOfEnemyPhase)"
+      }
+     ]
+    },
+    {
+     "phase": 3,
+     "spawn": [
+      {
+       "unit": "unit.skeletal-archer",
+       "at": {
+        "col": 13,
+        "row": 0
+       },
+       "note": "top edge"
+      },
+      {
+       "unit": "unit.skeletal-archer",
+       "at": {
+        "col": 0,
+        "row": 5
+       },
+       "note": "behind the heroes"
+      }
+     ]
+    },
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.soldier",
+       "at": {
+        "col": 0,
+        "row": 9
+       },
+       "note": "the Undead Soldier, behind the heroes"
+      }
+     ]
+    }
+   ]
   }
  ],
  "_authoredNote": "authored: the encounter session's `+` entries (E1, E2, E4, E5), transcribed 2026-09-03. E3 (the dungeon) is skipped by ruling; E6–E8 are `-` (not settled) and stay in the NOTES. `corpses` entries and `rescue` civilians are shapes the runner does not honour yet — named gaps on the compiled row."
