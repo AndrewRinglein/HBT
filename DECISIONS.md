@@ -3137,3 +3137,15 @@ Ruled:
 - **The seven areas are placed at random, weighted toward the middle of the map.** **Each area's centre hex is always a hex a unit can move to** — never the impassable deep water, never on the cliff rocks. Its six surrounding hexes are not constrained by this ruling.
 - **The Orphanage has no turn limit** (the old "lost after the 10th turn" is dropped).
 - Not stated: whether two areas may overlap (asked or defaulted when the item is built); the random stream is named by what it rolls (Law 4).
+
+## 2026-09-28 — Gates is the Curse; the Cathedral has a Necromancer raising the dead
+
+Andrew, asked whether Gates uses the old Curse encounter and what is in the Cathedral:
+
+> Gates should use the old cursing counter, yeah?   I want a necromancer who's going to raise a lot of these bodies from the dead.   I'm not sure what else makes sense in there.
+
+Ruled:
+
+- **Battle 5, Gates, uses the old Curse encounter** ("cursing counter" read as the Curse encounter), as revised 2026-09-21: six defenders already in position — two Bruiser Demons, two Poison Imps, one Powerful Imp, one Lieutenant Demon; curse strikes from Turn 4 (the struck hex and the hexes around it: Weak to everything there, and cursed ground); two Imps on Turn 7, one from the top and one from the bottom; kill all enemies to win; retreating is a loss. On the Gates map the heroes come up the approach from the south, so "top" is the abbey (north) end and "bottom" is behind them.
+- **Battle 6, Cathedral: a Necromancer who raises many of the bodies.** The Cathedral's remains (33 hexes of them on the Ground Check) are raisable corpses; the Necromancer's Raise reaches 10 (ruled 2026-09-27).
+- The rest of the Cathedral encounter is open — Andrew: "I'm not sure what else makes sense in there." Claude proposes; nothing further is ruled here.
