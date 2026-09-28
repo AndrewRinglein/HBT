@@ -2967,3 +2967,21 @@ Ruled (read against the numbered questions; anything uncertain is listed under "
 - **The opening:** a lost opening battle is **replayed**; **wounds apply, fatigue does not**; **four civilians** in the opening — two in the Orphanage (an orphan child and the school teacher), two in battle 2.
 
 Still asked (the next reply): the location list names nine places for six battles; "switch to the key battles"; whether the dictated on-block, on-dodge and on-melee-hit counterattacks (the bow staff's "counterstrike on block", the Retaliator's "free special attack on block") are retired by "set off by being attacked".
+
+## 2026-09-28 — the opening's six battles, in order
+
+Andrew, asked "Your battle list names nine places (Orphanage, Village Outskirts, Lumberjack House, Bridge, Cavern, Trail, Gates, Cathedral, Town); is the opening nine battles now, or which six are the battles?":
+
+> Okay, Village Outskirts is being replaced by Lumberjack House.  There's no town.  It's just:
+>
+> * orphanage
+> * lumberjack
+> * bridge
+> *
+> * gates
+> * cathedral I have a specifically designed hex map already for each one of those. Cavern and Trail is one.
+
+Ruled:
+
+- **The opening is six battles, in this order: Orphanage → Lumberjack House → Bridge → Cavern Trail → Gates → Cathedral.** Lumberjack House replaces Village Outskirts; Cavern and Trail are one battle; there is no Town battle.
+- **Each of the six has its own specifically designed hex map already** (Andrew). The provisional order read from IMG_5078.jpeg in KINGDOM-V2-2026-09-07.md (2026-09-27) is superseded.
