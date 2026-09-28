@@ -2930,3 +2930,40 @@ Ruled:
 - **The next Kingdom target is a playable loop through the opening's six battles** — the battles, their rewards, and everything that happens in and between them.
 - **Every other Kingdom stage is postponed** until that loop plays: V2-ROADMAP.md R9's items that the opening does not use, and the post-opening Kingdom (expedition selection, conquest regions, dungeons). What the six battles need is scoped by the questions asked the same night.
 - The same night's weapon, counterattack and enchantment dictation is recorded verbatim in `V2-SHIELDS-AND-WEAPONS-2026-09-20.md` (sixth pass); it is not yet ruled into rows.
+
+## 2026-09-28 — counterattack, special free attacks, the opening six, shields, custom weapons (answers to the 22 questions)
+
+Andrew, answering the 22 numbered questions put to him on the weapon dictation (V2-SHIELDS-AND-WEAPONS-2026-09-20.md sixth pass) and the opening loop:
+
+> Crap, that was a really big misunderstanding and counterattack. No.  Counterattack is set off by being attacked, not by being hit, blocked, or dodged.      We need to settle on all the weapons because a bunch of these are going to replace weapons, but there are also some weapon classes that were not covered here. There are some like daggers, throwing knives, bows, and everything. We need one master weapon list now, which removes the weapons that have been replaced and keeps the ones that have not, so I can approve all of them. Orphanage
+>
+> * village outskirts
+> * lumberjack house
+> * bridge
+> * cavern
+> * trail
+> * gates
+> * cathedral
+> * town
+>
+>  Yes. Yep, I think we're going to switch to the key battles. Any of these six battles, you replay it if you lose it. We're going to have wounds, but not fatigue.   We're going to pick up civilians. We're going to have two civilians in the orphanage: an orphan child and the school teacher. We're going to have two civilians in Battle 2, and I think that'll be it. I think we'll just have four civilians in the beginning.  Yeah, counterattack and counterattack are the same thing. Let's use counterattack. You can counterattack once per enemy action, so if that enemy action is three attacks, all three of their attacks will resolve, and then you will get your one counterattack.   Yep, we're changing attack of opportunity, so it's using the same rules as everything else. No stamina, uses the basic attack.  Until the end of next turn. Yep, Counter Strike and Spear Fend are very similar in that regard. One is triggered by attacking, and one is triggered by moving into your zone of control.   And fumble damage is the same as attack of opportunity. Yes, it can stop you from moving.  I gave a longsword two different second powers: free attacks. I think you just kind of misheard me. The counter strike is with +10 accuracy. That's the one it has. Costs 2 stamina.   13, correct?  For the most part, they're going to replace the weapons, but let's make a list, and I want to be able to look at all of them in one place.   A weapon enchantment giving strength should actually just give damage to the weapon, so the weapon damage should go up.  Crit and accuracy relate to that weapon's attacks.   Stamina, luck, block, dodge, and armor can all be conveyed. Those are all defensive or endurance.  I want a list of all the weapons for 16. Let's keep Tower getting -1. Let's update to these numbers, but let's change Kite to +20 + 5, and let's add in that -1 max stamina to Tower.  In general, use all the things I just put in there.   The round shell has both powers.   Yeah, we'll have:
+>
+> * Iron Round
+> * Iron Knight
+> * Iron Tower
+> * Iron Kite no, you misunderstand enchantments. Enchantments are tier 2. Beyond that, there are custom weapons that are tier 3, 4, 5, 6. That's what these are. When I say enchantments, what I mean is there's a weapon, a longsword. It's a tier 5 flaming longsword. We have a bunch of those. Go and come up with names for them that don't have names.
+
+Ruled (read against the numbered questions; anything uncertain is listed under "Still asked"):
+
+- **Counterattack is the one name** (not counterstrike). It is set off by **being attacked** by an adjacent melee attacker — not by being hit, blocked or dodged. **Once per enemy action**: every attack of that action resolves, then the one counterattack.
+- **Special free attacks — counterattack, fend, the attack of opportunity — are one rule:** the basic attack, **no stamina**, −20 Accuracy. **The attack of opportunity changes to this rule** (replacing the 2026-08-20 "the attacker chooses one of their attacks … they do pay stamina").
+- **Fend** lasts **until the end of your next turn**, like a counterattack power; it is triggered by an enemy moving into your zone of control. Its damage works as the attack of opportunity's does: **it can stop the mover**.
+- **The longsword's second power: counterattack with +10 Accuracy, until the end of your next turn, 2 Stamina.** There is no "free attacks with its other attack" power.
+- **Sweeps:** "the target to their left" is the next hex around the attacker, as the attacker sees it — confirmed.
+- **Weapons:** for the most part the new families replace the existing weapons; **one master weapon list**, replaced weapons removed and the rest kept — daggers, throwing knives, bows and every class the dictation did not cover — for Andrew to approve in one place.
+- **What a weapon's enchantment or custom tier may convey:** Strength becomes **the weapon's damage** (its attacks go up); **Crit and Accuracy apply to that weapon's attacks**; **Stamina, Luck, Block, Dodge and Armor may be conveyed** to the wielder ("defensive or endurance").
+- **Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina.** "In general, use all the things I just put in there." The **Knight shield** is a fourth shield. **The Round shield has both powers.** **Iron is a version of each: Iron Round, Iron Knight, Iron Tower, Iron Kite.**
+- **Enchantments are tier 2. Tiers 3–6 are custom weapons** — e.g. "a tier 5 flaming longsword" — and the dictated series are those custom weapons. Unnamed ones get names proposed by this chat.
+- **The opening:** a lost opening battle is **replayed**; **wounds apply, fatigue does not**; **four civilians** in the opening — two in the Orphanage (an orphan child and the school teacher), two in battle 2.
+
+Still asked (the next reply): the location list names nine places for six battles; "switch to the key battles"; whether the dictated on-block, on-dodge and on-melee-hit counterattacks (the bow staff's "counterstrike on block", the Retaliator's "free special attack on block") are retired by "set off by being attacked".
