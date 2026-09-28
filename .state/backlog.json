@@ -4957,7 +4957,17 @@
   "shape": "rule",
   "spec": "A telegraphed area fall, one mechanism for two rulings (DECISIONS.md 2026-09-28 'a meteor fall on Turn 4', 'the meteor fall: Cavern Trail ...', 'the Cathedral encounter; Gates' curse strikes fall like the meteors'). An encounter row names a Turn N and a fall: at the end of Turn N's Enemy Phase, K areas are marked, each a centre hex and the six around it; after the next Player Phase ends, they land. Placement: at random on a named stream keyed by what it rolls (Law 4: the fall's id and the area index), weighted toward the middle of the map; each centre is a hex a unit can move to (never deep water, never a high prop); the six around it are not constrained. On landing, every hex of every area is painted with the fall's ground layer (capability.ground-layers, one per hex, replace-on-paint), and every unit in an area - either side - takes the fall's damage and statuses through the one damage function (Law 1). Two data instances: the meteor fall - 7 areas, Turn 4, 2 fire damage and 2 Burn, layer.burning; the curse strike - 7 areas, Turn 4, 3 Weak, layer.weak (cursed ground, DECISIONS.md 2026-09-28). Events: area.marked (the hexes, the fall, the landing turn) so the viewer can draw the soft red outer-edge telegraph (VFX 'Skyfall' candidate, VFX/README.md 56), and area.landed naming each unit hit.",
   "expect": "In a TEST encounter on a test map, seven areas are marked at the end of Turn 4's Enemy Phase and nothing lands until Turn 5's Player Phase ends; every marked centre is standable; a hero who walks out of a marked area during Turn 5 takes nothing; a unit left inside takes 2 fire and 2 Burn (meteor) or 3 Weak (curse), enemies included; all 7 hexes of each area carry the ground afterwards; the same seed marks the same hexes, a different seed different ones; the placement is measurably nearer the middle than uniform over 200 seeds.",
-  "note": "Cut 2026-09-28 from the opening loop (Cavern Trail and Gates). Declare the two fall ids as variants before code, in an existing id kind (new kinds are Angela's - GLOSSARY.md). Switches: whether areas may overlap (default: centres distinct, edges may overlap); the middle weighting's shape; whether the enemy AI steps out of a marked area (default: no AI change - AI-DESIGN.md is Angela's); a fall happens once (the curse strikes 'from Turn 4' read as once, DECISIONS.md 3179)."
+  "probeIds": [
+   "test.fall.meteor",
+   "test.fall.curse"
+  ],
+  "variants": [
+   "test.fall.meteor",
+   "test.fall.curse"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop (Cavern Trail and Gates). Declare the two fall ids as variants before code, in an existing id kind (new kinds are Angela's - GLOSSARY.md). Switches: whether areas may overlap (default: centres distinct, edges may overlap); the middle weighting's shape; whether the enemy AI steps out of a marked area (default: no AI change - AI-DESIGN.md is Angela's); a fall happens once (the curse strikes 'from Turn 4' read as once, DECISIONS.md 3179).",
+  "status": "done",
+  "sha": "ddd8cb1"
  },
  {
   "id": "capability.placed-remains",

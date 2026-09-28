@@ -67,6 +67,17 @@ export type Phase = 'hero' | 'enemy'
  * ("We can skip retreat") — and stays in the enum so the document and the
  * type agree; nothing sets it.
  */
+/** encounter.area-fall: one fall on an encounter row. The id is a trigger id (a hook-and-effect pair attached to a row). */
+export type FallDef = {
+  readonly id: string
+  readonly turn: number
+  readonly areas: number
+  readonly layer: string
+  readonly damage?: number
+  readonly damageType?: DamageType
+  readonly applies?: readonly (readonly [string, number])[]
+}
+
 export type Outcome = 'heroClear' | 'objectiveMet' | 'wipe' | 'retreat' | 'capped' | 'objectiveFailed'
 
 /**
@@ -123,6 +134,15 @@ export type EncounterDef = {
   readonly band?: { readonly layer: string; readonly fromPhase: number; readonly axis?: 'row' | 'col'; readonly startRow?: number; readonly startCol?: number; readonly direction: 1 | -1; readonly spare?: readonly number[] }
   /** capability.ground-layers: cells painted at setup, before phase 1 (Rime's frost band rows 6–8). */
   readonly paint?: readonly { readonly layer: string; readonly hexes: readonly number[] }[]
+  /**
+   * encounter.area-fall (2026-09-28; DECISIONS.md "a meteor fall on Turn 4", "Gates' curse strikes
+   * fall like the meteors"): a TELEGRAPHED AREA FALL, a terrain event (COMBAT-SEQUENCE.md "Terrain
+   * events": Scatter of Disks). At the end of Turn `turn`'s Enemy Phase, `areas` areas are marked —
+   * a centre and the six hexes around it — at random on the terrain-event cup, weighted to the
+   * middle; after the next Player Phase ends they land: every hex takes `layer`, every standing unit
+   * inside takes `damage` of `damageType` and the `applies` statuses. Once per battle.
+   */
+  readonly falls?: readonly FallDef[]
   /**
    * capability.vision: the battlefield CONDITION — 'darkness' paints every hex
    * dark at phase 1 (Horrors of the Night); heroes light what is inside their
@@ -1003,6 +1023,8 @@ export type State = {
     id: string; fired: number[]; objectives: number[]
     /** ai.encounter-rules: this Phase's focus target, by coordinate rule id (the side step). Absent = none chosen. */
     focus?: Record<string, number>
+    /** encounter.area-fall: falls marked and not yet landed — the areas' hexes, centre first. Absent = none waiting. */
+    marked?: { fall: string; lands: number; areas: number[][] }[]
   }
   /**
    * capability.corpses (2026-09-03), ENEMY-REVIEW P4 (ruled 2026-08-23): board

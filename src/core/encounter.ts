@@ -24,14 +24,15 @@ import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './typ
 import type { HexId } from './hex.js'
 import { arrivalUid } from './identity.js'
 import { applyBadges } from './items.js'
-import { bindAiRule, emit, gainPower, paintLayer, setOutcome } from './mutate.js'
-import { applyStatus } from './status.js'
+import { applyDamage, bindAiRule, emit, gainPower, paintLayer, setOutcome } from './mutate.js'
+import { applyStatus, incomingAbsorb, spendAbsorb } from './status.js'
+import { flatDamage } from './mitigation.js'
 import { fallNight } from './vision.js'
-import { rollBelow } from './rng.js'
+import { draw, rollBelow } from './rng.js'
 import { settle } from './settle.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import { makeUnit } from './setup.js'
-import { layerAppliesOnEnter, layerOfId } from '../content/maps.js'
+import { IMPASSABLE, layerAppliesOnEnter, layerOfId, moveCostOf, takesEntry } from '../content/maps.js'
 import { rulesSideOf } from './side.js'
 import { passableHexes } from './props.js'
 
@@ -260,4 +261,94 @@ export function advanceBand(ctx: Ctx): void {
     for (const [sid, k] of layerAppliesOnEnter(layer)) applyStatus(ctx, u.id, sid, k, b.layer)
   }
   settle(ctx, enc.id)
+}
+
+// ── encounter.area-fall (2026-09-28) ─────────────────────────────────────────
+// A telegraphed area fall: a terrain event (COMBAT-SEQUENCE.md "Terrain events" — Scatter of
+// Disk/Ring radius 1). One mechanism, two rulings (DECISIONS.md 2026-09-28: the Hunt's meteor fall
+// and the Gates' curse strikes, "falling like the meteors"). The fall's numbers are its row's.
+
+/**
+ * The shape (a pure function of the board, the candidates and the cup): `count` distinct centres,
+ * each drawn from what is left with weight maxD + 1 − distance to the middle hex (SWITCHES.md
+ * areaFallWeight — linear, integers, Law 7), walked in ascending hex order (Law 6). Returns each
+ * area as its centre then its six neighbours in the geometry's order.
+ */
+export function scatterAreas(ctx: Ctx, candidates: readonly HexId[], count: number, roll: (area: number) => number): HexId[][] {
+  const g = ctx.geo
+  const middle = g.hexId(Math.floor((g.board.width - 1) / 2), Math.floor((g.board.height - 1) / 2))
+  const pool = [...candidates].sort((a, b) => a - b)
+  const maxD = pool.reduce((m, h) => Math.max(m, g.distance(h, middle)), 0)
+  const weight = (h: HexId) => maxD + 1 - g.distance(h, middle)
+  const out: HexId[][] = []
+  for (let area = 0; area < count && pool.length; area++) {
+    const total = pool.reduce((t, h) => t + weight(h), 0)
+    let r = roll(area) % total, i = 0
+    while (r >= weight(pool[i]!)) { r -= weight(pool[i]!); i++ }
+    const centre = pool.splice(i, 1)[0]!
+    out.push([centre, ...g.neighboursOf(centre)])
+  }
+  return out
+}
+
+/** Where a fall's centre may be: a hex a unit can move to, with all six neighbours on the board (SWITCHES.md areaFallCentre). */
+export function fallCentres(ctx: Ctx): HexId[] {
+  const passable = passableHexes(ctx), out: HexId[] = []
+  for (let h = 0; h < ctx.geo.hexCount; h++) {
+    const t = ctx.state.terrain[h] ?? 0
+    if (!passable(h) || moveCostOf(t) >= IMPASSABLE || takesEntry(t)) continue
+    if (ctx.geo.neighboursOf(h).length !== 6) continue
+    out.push(h)
+  }
+  return out
+}
+
+/** At the end of Turn N's Enemy Phase (the turn-end step, beside the band): mark every fall whose turn is N. */
+export function markFalls(ctx: Ctx): void {
+  const enc = ctx.encounter
+  if (!enc?.falls?.length || ctx.state.outcome) return
+  const n = ctx.state.turn
+  enc.falls.forEach((f, index) => {
+    if (f.turn !== n) return
+    const centres = fallCentres(ctx)
+    if (centres.length < f.areas) throw new Error(`${enc.id}: fall '${f.id}' needs ${f.areas} centres and the board has ${centres.length}`)
+    // the terrain-event cup, keyed by WHAT is rolled — the fall's place on the row and the area (Law 4)
+    const areas = scatterAreas(ctx, centres, f.areas, (area) => draw(ctx.rng, 'terrain-event', index, area))
+    const st = ctx.state.encounter ?? (ctx.state.encounter = { id: enc.id, fired: [], objectives: [] })
+    ;(st.marked ??= []).push({ fall: f.id, lands: n + 1, areas })
+    emit(ctx, 'area.marked', f.id, { fall: f.id, turn: n, lands: n + 1, areas: areas.map((a) => [...a]), layer: f.layer })
+  })
+}
+
+/** After Turn N's Player Phase ends: every fall marked to land on N lands, in the order it was marked. */
+export function landFalls(ctx: Ctx): void {
+  const enc = ctx.encounter, st = ctx.state.encounter
+  if (!enc || !st?.marked?.length || ctx.state.outcome) return
+  const n = ctx.state.turn
+  for (const m of st.marked.filter((x) => x.lands === n)) {
+    const f = enc.falls?.find((x) => x.id === m.fall)
+    if (!f) throw new Error(`${enc.id}: a marked fall '${m.fall}' is not on the encounter row`)
+    const hexes = [...new Set(m.areas.flat())].sort((a, b) => a - b)
+    const inside = new Set(hexes)
+    // a unit inside two overlapping areas is struck once (SWITCHES.md areaFallOncePerUnit); standing units only
+    const hit = ctx.state.units.filter((u) => u.lifeState === 'standing' && inside.has(u.hex)).map((u) => u.id)
+    emit(ctx, 'area.landed', f.id, { fall: f.id, turn: n, areas: m.areas.map((a) => [...a]), hit, layer: f.layer })
+    const layer = layerOfId(f.layer)
+    for (const hex of hexes) paintLayer(ctx, hex, layer, f.id)
+    for (const id of hit) {
+      const u = ctx.state.units[id]!
+      if (u.lifeState !== 'standing' || ctx.state.outcome) continue
+      if ((f.damage ?? 0) > 0) {
+        // Law 1: the one damage function for damage no attack carries — as the ground's hazard is dealt
+        const r = flatDamage(ctx, u, f.damage!, f.damageType ?? 'physical', incomingAbsorb(ctx, u))
+        if (r.absorbed > 0) spendAbsorb(ctx, id, r.absorbed, f.id)
+        applyDamage(ctx, id, r.value, f.id, { actor: null, damageType: f.damageType ?? 'physical', hex: u.hex,
+          ...(r.resisted ? { resisted: r.resisted } : {}), ...(r.absorbed ? { absorbed: r.absorbed } : {}) })
+      }
+      for (const [sid, k] of f.applies ?? []) applyStatus(ctx, id, sid, k, f.id)
+    }
+    settle(ctx, f.id)
+  }
+  st.marked = st.marked.filter((x) => x.lands !== n)
+  if (!st.marked.length) delete st.marked
 }

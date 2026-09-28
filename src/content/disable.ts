@@ -33,7 +33,7 @@ export function disabledIds(): ReadonlySet<string> { return DISABLED }
  * them — this can. Same contract: byte-identical input object when nothing is
  * disabled.
  */
-export function stripDisabledTriggers<U extends { triggers?: readonly { id: string }[]; auras?: readonly { id: string }[]; aiChanges?: readonly { id: string }[]; aiRules?: readonly { id: string }[] }>(
+export function stripDisabledTriggers<U extends { triggers?: readonly { id: string }[]; auras?: readonly { id: string }[]; aiChanges?: readonly { id: string }[]; aiRules?: readonly { id: string }[]; falls?: readonly { id: string }[] }>(
   reg: Readonly<Record<string, U>>,
 ): Readonly<Record<string, U>> {
   if (DISABLED.size === 0) return reg
@@ -46,6 +46,8 @@ export function stripDisabledTriggers<U extends { triggers?: readonly { id: stri
     if (v.aiChanges?.some((c) => DISABLED.has(c.id))) v = { ...v, aiChanges: v.aiChanges.filter((c) => !DISABLED.has(c.id)) }
     // ai.encounter-rules (2026-09-26): an encounter row's AI rules live inline on the row — same seam
     if (v.aiRules?.some((r) => DISABLED.has(r.id))) v = { ...v, aiRules: v.aiRules.filter((r) => !DISABLED.has(r.id)) }
+    // encounter.area-fall (2026-09-28): an encounter row's falls live inline on the row — same seam
+    if (v.falls?.some((f) => DISABLED.has(f.id))) v = { ...v, falls: v.falls.filter((f) => !DISABLED.has(f.id)) }
     return [k, v]
   }))
 }

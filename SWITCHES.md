@@ -1408,3 +1408,29 @@ and the V2 `floor` mask. Probe: `test/opening-maps.test.ts`.
 Measured: the 23 existing control battles are byte-identical; six new lines join `.state/baseline.hash`.
 The control-battle run grows from ~43 s to ~85 s of CPU (the 40-wide maps' 8-enemy battles are long);
 under this sandbox's outside load it took 138 s of the 178 s a Cowork call allows.
+
+## Area falls — defaults taken building encounter.area-fall (2026-09-28)
+
+The source: DECISIONS.md 2026-09-28 "a Turn 4 meteor fall", "the meteor fall is the Hunt's"
+(seven 7-hex areas marked at the end of the Enemy Phase, landing after the next Player Phase —
+burning ground, 2 fire damage and 2 Burn; "random, weighted to the middle, centre always a hex you
+can move to"), and "Gates' curse strikes fall like the meteors" (3 Weak, cursed ground). The
+prior art it extends: the encounter's ground painting (`paint`, the band — capability.ground-layers)
+and COMBAT-SEQUENCE.md "Terrain events" (Scatter · Disk on the terrain-event cup, declared and never
+drawn until now). Engine `src/core/encounter.ts` (`scatterAreas`, `fallCentres`, `markFalls`,
+`landFalls`); an encounter row's `falls`. Probe: `test/area-fall.test.ts`, TEST rows
+`test.fall.meteor` and `test.fall.curse` on `test.encounter.meteor-fall` / `test.encounter.curse-strike`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `areaFallIdKind` | What kind of id is a fall? | **`trigger.*`** (TEST: `test.*`), inline on the encounter row like its AI rules. | "A hook-and-effect pair attached to a row" (approved-kinds.json); no new kind. | provisional — 2026-09-28 |
+| `areaFallWeight` | "Weighted to the middle" — what shape? | **Linear**: a centre's weight is (the farthest candidate's distance + 1) − its hex distance to the middle hex ((width−1)/2, (height−1)/2, rounded down). Drawn without replacement, ascending hex order. | The simplest weighting that is integer (Law 7) and never zero at the rim. Measured: 200 seeds on the 20×10 TEST board sit ≥10% nearer the middle than uniform. | provisional — 2026-09-28 |
+| `areaFallCentre` | "A hex you can move to" — exactly? | **Passable (no high prop, a floor), not impassable ground, not a house or wall hex, and all six neighbours on the board** — so every area is seven hexes. | The ruling's "7-hex areas"; an edge centre would drop hexes off the board. | provisional — 2026-09-28 |
+| `areaFallOverlap` | May areas overlap? | **Centres are distinct; the rings may overlap.** A hex in two areas is painted once. | The backlog note's default. | provisional — 2026-09-28 |
+| `areaFallOncePerUnit` | A unit inside two overlapping areas? | **Struck once** by the fall. | "Every unit in an area" takes the fall's damage — one fall, one blow. | provisional — 2026-09-28 |
+| `areaFallStanding` | Downed units inside? | **Only standing units are struck** — as the ground's hazard strikes only the standing. | The hazard precedent (ground.ts `applyGroundHazard`). | provisional — 2026-09-28 |
+| `areaFallNoEntryBeat` | Does the freshly painted ground also give its entry status at the landing (as the band does)? | **No** — the landing deals the fall's own damage and statuses; the ground acts from then on. | "2 fire damage and 2 Burn" is the whole landing; the entry beat on top would make it 3 Burn. | provisional — 2026-09-28 |
+| `areaFallOnce` | "From Turn 4" — does it repeat? | **Once**, on its turn. | DECISIONS.md 3179 reads the curse strikes as once, like the meteor fall. | provisional — 2026-09-28 |
+| `areaFallAi` | Does the AI step out of a marked area? | **No AI change.** | AI-DESIGN.md is Angela's. | provisional — 2026-09-28 |
+| `areaFallCup` | The roll's key? | **The terrain-event cup, keyed (the fall's index on the row, the area's index)** — what is rolled, never the turn (Law 4). | COMBAT-SEQUENCE.md: the terrain event picks where it lands. | provisional — 2026-09-28 |
+| `areaFallLandingMoment` | "After the next Player Phase" — before or after that Phase's own end ladder? | **After**: the End of Phase ladder runs, then the fall lands, then the Enemy Phase's arrivals. | "After the Player Phase ends". | provisional — 2026-09-28 |

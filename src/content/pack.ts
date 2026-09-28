@@ -14,6 +14,7 @@ import { formatOf, validBoard, MAX_BOARD_CELLS, type Board } from '../core/hex.j
 // previous order's uninitialized decoder binding; fresh native entry orders are tested too.
 import { decodeProps, decodeFloor } from '../core/props.js'
 import { validateTrigger } from '../core/trigger.js'
+import { layerOfId } from './terrain.js'   // encounter.area-fall: a fall names its ground layer
 import type { StatusDef } from '../core/status.js'
 const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat', 'stamina.gain',
   // capability.stealth, 2026-09-28
@@ -554,6 +555,21 @@ function validateEncounterAiRule(k: string, e: EncounterDef, r: import('../core/
   } else throw new Error(`${where}: rule is 'anchor' or 'coordinate'`)
 }
 
+/** encounter.area-fall (2026-09-28): a fall on an encounter row — its id, turn, count, ground and payload, integers only. */
+function validateEncounterFall(k: string, f: import('../core/types.js').FallDef, ids: Set<string>): void {
+  const where = `encounters: '${k}' fall '${f?.id}'`
+  if (typeof f?.id !== 'string' || !/^[a-z]+\.[a-z0-9.-]+$/.test(f.id)) throw new Error(`encounters: '${k}' has a fall with no id`)
+  if (ids.has(f.id)) throw new Error(`${where} is a duplicate id`)
+  ids.add(f.id)
+  if (!Number.isSafeInteger(f.turn) || f.turn < 1) throw new Error(`${where}: turn is an integer Turn, 1 or later`)
+  if (!Number.isSafeInteger(f.areas) || f.areas < 1) throw new Error(`${where}: areas is an integer, 1 or more`)
+  layerOfId(f.layer)
+  if (f.damage !== undefined && (!Number.isSafeInteger(f.damage) || f.damage < 0)) throw new Error(`${where}: damage is an integer 0 or more`)
+  if ((f.damage ?? 0) > 0 && !isDamageType(f.damageType)) throw new Error(`${where}: damage needs its damageType`)
+  for (const a of f.applies ?? []) if (!Array.isArray(a) || typeof a[0] !== 'string' || !Number.isSafeInteger(a[1]) || a[1] < 1) throw new Error(`${where}: applies is [statusId, a positive integer] pairs`)
+  if (!(f.damage ?? 0) && !(f.applies ?? []).length) throw new Error(`${where}: a fall that deals nothing and applies nothing`)
+}
+
 /** The encounters — encounter.runner (2026-09-03). Validated loudly: every unit named must be in the pack. */
 export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: Readonly<Record<string, EncounterDef>>): Readonly<Record<string, EncounterDef>> {
   const data = UNIT_PACK as unknown as { encounters?: Readonly<Record<string, EncounterDef>>; test?: { encounters?: Readonly<Record<string, EncounterDef>> } }
@@ -569,6 +585,8 @@ export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: 
     for (const r of e.schedule) { if (r.phase === undefined && r.enemyPhase === undefined) throw new Error(`encounters: '${k}' has a schedule row with no phase`); for (const p of r.spawn) check(p, 'schedule') }
     // ai.encounter-rules (2026-09-26; AI-DESIGN.md §4): the row's AI rules — loud at load
     for (const r of e.aiRules ?? []) validateEncounterAiRule(k, e, r, units, ruleIds)
+    // encounter.area-fall (2026-09-28): the row's falls — loud at load
+    for (const f of e.falls ?? []) validateEncounterFall(k, f, ruleIds)
     // encounter.band-axis (2026-09-04, FINDING 43): the band's start must match its axis — the engine used to read NaN in silence
     if (e.band) {
       const axis = e.band.axis ?? 'row'

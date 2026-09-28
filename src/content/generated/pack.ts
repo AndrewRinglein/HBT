@@ -19869,6 +19869,122 @@ export const UNIT_PACK = {
             ]
           }
         ]
+      },
+      "test.encounter.meteor-fall": {
+        "id": "test.encounter.meteor-fall",
+        "name": "Meteor fall (TEST)",
+        "mapId": "test.map.journey-20x10",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "setup": [
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 18,
+              "row": 2
+            }
+          },
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 18,
+              "row": 5
+            }
+          },
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 18,
+              "row": 8
+            }
+          }
+        ],
+        "schedule": [],
+        "heroZone": {
+          "count": 2,
+          "at": {
+            "near": {
+              "col": 1,
+              "row": 4
+            },
+            "range": 1
+          }
+        },
+        "falls": [
+          {
+            "id": "test.fall.meteor",
+            "turn": 4,
+            "areas": 7,
+            "layer": "layer.burning",
+            "damage": 2,
+            "damageType": "fire",
+            "applies": [
+              [
+                "status.burn",
+                2
+              ]
+            ]
+          }
+        ]
+      },
+      "test.encounter.curse-strike": {
+        "id": "test.encounter.curse-strike",
+        "name": "Curse strike (TEST)",
+        "mapId": "test.map.journey-20x10",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "setup": [
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 18,
+              "row": 2
+            }
+          },
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 18,
+              "row": 5
+            }
+          },
+          {
+            "unit": "unit.strong-skeleton",
+            "at": {
+              "col": 18,
+              "row": 8
+            }
+          }
+        ],
+        "schedule": [],
+        "heroZone": {
+          "count": 2,
+          "at": {
+            "near": {
+              "col": 1,
+              "row": 4
+            },
+            "range": 1
+          }
+        },
+        "falls": [
+          {
+            "id": "test.fall.curse",
+            "turn": 4,
+            "areas": 7,
+            "layer": "layer.weak",
+            "applies": [
+              [
+                "status.weak",
+                3
+              ]
+            ]
+          }
+        ]
       }
     },
     "bursts": {

@@ -8,7 +8,7 @@ import { beginActivation, beginTurn, emit, endActivation, expireActivationMods, 
 import { roll100 } from './rng.js'
 import { appliesOnActivationEndOf, layerAppliesOnActivationEnd, layerIdOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
-import { advanceBand, fireSchedule, startOfTurn } from './encounter.js'
+import { advanceBand, fireSchedule, landFalls, markFalls, startOfTurn } from './encounter.js'
 import { heroesLight } from './vision.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
@@ -307,10 +307,13 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
         break
       case 'phase-end':
         endOfPhase(ctx, c.phase)
+        // encounter.area-fall: a fall marked last Turn lands as this Player Phase ends (after its ladder)
+        if (c.phase === 'hero') landFalls(ctx)
         c.at = ctx.state.outcome ? 'complete' : c.phase === 'hero' ? 'enemy-arrivals' : 'turn-end'
         break
       case 'turn-end':
         advanceBand(ctx)
+        markFalls(ctx)   // encounter.area-fall: the end of this Turn's Enemy Phase marks its falls
         emit(ctx, 'turn.end', 'engine', { turn: ctx.state.turn })
         c.at = 'turn-start'
         break

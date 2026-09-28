@@ -109,6 +109,19 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.coordinated-pack',
     heroes: ['test-warrior', 'test-ranger'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  // encounter.area-fall (2026-09-28): the two instances of a telegraphed area fall, each live in a
+  // real battle — the meteor fall (burning ground, fire and Burn) and the curse strike (cursed
+  // ground, Weak). The falls are data on TEST encounter rows (content/test/encounters.json).
+  'test.area-fall-meteor': {
+    id: 'test.area-fall-meteor', note: 'TEST: a warrior and a ranger against three Strong Skeletons; test.fall.meteor marks seven areas at the end of Turn 4 and lands them after Turn 5\'s Player Phase. No campaign claim.',
+    mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.meteor-fall',
+    heroes: ['test-warrior', 'test-ranger'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
+  'test.area-fall-curse': {
+    id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
+    mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',
+    heroes: ['test-warrior', 'test-ranger'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   // ai.sight (2026-09-27; ruled 2026-09-26, "the AI knows everything except
   // stealthed units"): the two instances of a status that hides its unit from the
   // opposing AI, each live in a real battle — the Veil on a hero (it falls away, and

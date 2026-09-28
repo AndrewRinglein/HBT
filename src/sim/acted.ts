@@ -53,6 +53,8 @@ export const ACTED: ReadonlySet<string> = new Set(['damage.applied','heal.applie
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten',
   // capability.ground-layers (2026-09-03): a stroke on the board
   'layer.painted', 'layer.cancelled', 'band.advanced',
+  // encounter.area-fall (2026-09-28): areas marked on the board, and the fall that lands on them
+  'area.marked', 'area.landed',
   // capability.vision (2026-09-03)
   'night.fell', 'light.cast',
   // capability.charges (2026-09-03): a use spent is a thing that cannot be undone this Battle

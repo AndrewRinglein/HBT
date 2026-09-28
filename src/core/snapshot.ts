@@ -206,6 +206,10 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     record(st.encounter)
     requireThat(st.encounter.id === enc.id && Array.isArray(st.encounter.fired) && st.encounter.fired.every((n: unknown) => integer(n, 0, enc.schedule.length - 1)) && new Set(st.encounter.fired).size === st.encounter.fired.length, 'encounter schedule cursor')
     requireThat(Array.isArray(st.encounter.objectives) && st.encounter.objectives.every(unitId), 'encounter objectives')
+    // encounter.area-fall (2026-09-28): falls marked and not yet landed — each names a fall on the row, a later Turn, and on-board areas
+    requireThat(st.encounter.marked === undefined || (Array.isArray(st.encounter.marked) && st.encounter.marked.length > 0 && st.encounter.marked.every((m: any) =>
+      m !== null && typeof m === 'object' && Object.keys(m).length === 3 && Array.isArray(enc.falls) && enc.falls.some((f: any) => f?.id === m.fall)
+      && integer(m.lands, 1) && Array.isArray(m.areas) && m.areas.every((a: unknown) => Array.isArray(a) && a.length > 0 && a.every((h: unknown) => integer(h, 0, cells - 1))))), 'encounter marked falls')
     requireThat(runtime.units && runtime.arrive, 'encounter runtime bindings')
     const coordinate = (p: unknown) => {
       record(p)
