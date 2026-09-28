@@ -17548,3 +17548,112 @@ Superseded before any code: cursed ground is layer.weak, the existing ground lay
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without attack.lightning-staff.bolt — they genuinely test it
+
+## map.opening-six — LANDED `396bd66` **NEEDS REVIEW**
+2026-09-28 18:41
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:2602
+  PASS  typecheck
+  PASS  the item's own tests — test/board-formats.test.ts, test/pack-maps.test.ts, test/viewer-direct-map.test.ts, test/opening-maps.test.ts
+  PASS  gate 1 — the id appears in a real battle — map.opening.orphanage: 1 log lines, 1 fired, 1 changed state · map.opening.cavern-trail: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/board-formats.test.ts, test/pack-maps.test.ts, test/viewer-direct-map.test.ts, test/opening-maps.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/board-formats.test.ts (-3), test/pack-maps.test.ts (-7), test/viewer-direct-map.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.opening.orphanage ?->036e1169, map.opening.lumberjack ?->5cb63a3b, map.opening.bridge ?->571bcc33, map.opening.cavern-trail ?->ad8034aa, map.opening.gates ?->0957064d, map.opening.cathedral ?->4eda03d8, map.opening.orphanage NEW, map.opening.lumberjack NEW, map.opening.bridge NEW, map.opening.cavern-trail NEW, map.opening.gates NEW, map.opening.cathedral NEW
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without map.opening.orphanage,map.opening.cavern-trail — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/board-formats.test.ts b/test/board-formats.test.ts
+index a8a30bb..14624ce 100644
+--- a/test/board-formats.test.ts
++++ b/test/board-formats.test.ts
+@@ -6,5 +6,5 @@ import { describe, expect, it } from 'vitest'
+ import { createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+-import { boardOf, deployOf, terrainOf, MAP_PANEL, DEFAULT_DEPLOY } from '../src/content/maps.js'
++import { boardOf, deployOf, terrainOf, MAP_PANEL, DEFAULT_DEPLOY, mapDef } from '../src/content/maps.js'
+ import { FORMATS, formatOf, geometryOf, validBoard } from '../src/core/hex.js'
+ 
+@@ -19,5 +19,7 @@ const ORIGINAL_MAP_IDS = [
+ describe('the maps declare their boards', () => {
+   it('every map is bounded, the original18 retain preset formats, and terrain is width × height long', () => {
+-    expect(MAP_PANEL.slice(0, ORIGINAL_MAP_IDS.length)).toEqual(ORIGINAL_MAP_IDS)
++    // map.opening-six (2026-09-28), Law 10: the six opening maps are pack rows, so they sit
++    // among the original18 on the panel. The rule kept: the original18 are there, in this order.
++    expect(MAP_PANEL.filter((id) => ORIGINAL_MAP_IDS.includes(id))).toEqual(ORIGINAL_MAP_IDS)
+     for (const id of MAP_PANEL) {
+       const b = boardOf(id)
+@@ -76,5 +78,9 @@ describe('a battle on each format', () => {
+   it('the edges: heroes west, enemies east — every map on the panel (board.heroes-west, 2026-09-04)', () => {
+     expect(DEFAULT_DEPLOY).toEqual({ hero: 'west', enemy: 'east' })
+-    for (const id of MAP_PANEL) expect(deployOf(id), id).toEqual(DEFAULT_DEPLOY)
++    // map.opening-six (2026-09-28), Law 10: three opening maps declare their own edges for a rolled
++    // battle (Gates and Cathedral walked south to north; the Lumberjack House's west edge holds five).
++    // The rule kept: a map that declares nothing deploys heroes west and enemies east.
++    for (const id of MAP_PANEL) if (!mapDef(id).deploy) expect(deployOf(id), id).toEqual(DEFAULT_DEPLOY)
++    for (const id of ORIGINAL_MAP_IDS) expect(deployOf(id), id).toEqual(DEFAULT_DEPLOY)
+     const duel = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.duel-8' })
+     for (const u of duel.state.units) expect(duel.geo.colOf(u.hex)).toBe(u.side === 'hero' ? 0 : 7)
+diff --git a/test/pack-maps.test.ts b/test/pack-maps.test.ts
+index 54d0e50..fde64ff 100644
+--- a/test/pack-maps.test.ts
++++ b/test/pack-maps.test.ts
+@@ -13,10 +13,14 @@ import { formatOf } from '../src/core/hex.js'
+ 
+ describe('the pack owns the shipping maps', () => {
+-  it('thirteen pack rows are on the panel, before the testing lane, in pack order', () => {
++  // map.opening-six (2026-09-28), Law 10: the count 13 was a number standing in for a rule.
++  // The opening's six maps joined the pack after the thirteen (gen/opening-maps.json, appended
++  // by assemble.mjs), so the rule is written out: the thirteen lead the pack in their order, the
++  // pack leads the panel, and everything after the pack is the testing lane.
++  it('the thirteen original pack rows lead the pack, the pack leads the panel, the testing lane follows', () => {
+     const pack = packMaps().map((m) => m.id)
+-    expect(pack.length).toBe(13)
+-    expect(MAP_PANEL.slice(0, 13)).toEqual(pack)
+-    expect(pack).toEqual(expect.arrayContaining(['map.open', 'map.ridge', 'map.flanks', 'map.highlands', 'map.field', 'map.thicket', 'map.proving.open', 'map.proving.ridge', 'map.proving.ford', 'map.proving.copse', 'map.proving.ruin', 'map.courtyard', 'map.floodplain']))
+-    for (const id of MAP_PANEL.slice(13)) expect(id.startsWith('test.map.')).toBe(true)
++    expect(pack.slice(0, 13)).toEqual(['map.open', 'map.ridge', 'map.flanks', 'map.highlands', 'map.field', 'map.thicket', 'map.proving.open', 'map.proving.ridge', 'map.proving.ford', 'map.proving.copse', 'map.proving.ruin', 'map.courtyard', 'map.floodplain'])
++    for (const id of pack.slice(13)) expect(id.startsWith('map.opening.'), id).toBe(true)
++    expect(MAP_PANEL.slice(0, pack.length)).toEqual(pack)
++    for (const id of MAP_PANEL.slice(pack.length)) expect(id.startsWith('test.map.')).toBe(true)
+   })
+ 
+@@ -25,7 +29,11 @@ describe('the pack owns the shipping maps', () => {
+       const b = boardOf(m.id)
+       expect(b).toEqual({ width: m.rows[0]!.length, height: m.rows.length })
+-      expect(formatOf(b)).toBe(m.format)
++      // map.opening-six (2026-09-28), Law 10: the rule the pack compiles by (content/map-schema.mjs
++      // compileMaps) — a preset label for a preset size, else WIDTHxHEIGHT — and a map's own edges
++      // when it declares them, else the default. The thirteen original rows are still pinned below.
++      expect(m.format).toBe(formatOf(b) ?? `${b.width}x${b.height}`)
+       expect(terrainOf(m.id).length).toBe(b.width * b.height)
+-      expect(deployOf(m.id)).toEqual({ hero: 'west', enemy: 'east' })
++      expect(deployOf(m.id)).toEqual(m.deploy ?? { hero: 'west', enemy: 'east' })
++      if (!m.id.startsWith('map.opening.')) { expect(formatOf(b)).toBe(m.format); expect(deployOf(m.id)).toEqual({ hero: 'west', enemy: 'east' }) }
+     }
+     expect(boardOf('map.proving.open')).toEqual({ width: 16, height: 8 })
+diff --git a/test/viewer-direct-map.test.ts b/test/viewer-direct-map.test.ts
+index daa4209..c42917a 100644
+--- a/test/viewer-direct-map.test.ts
++++ b/test/viewer-direct-map.test.ts
+@@ -19,5 +19,10 @@ const seed = {mapId:'test.map.direct'}
+ describe('readonly initial field preparation',()=>{
+   it('preserves all 22 registered CLI bytes and control membership, plus the maps added since',()=>{
+-    expect(MAP_PANEL).toEqual([...Object.keys(gold), ...Object.keys(addedGold)])
++    // map.opening-six (2026-09-28), Law 10: the six opening maps joined the panel among the pack
++    // rows. The rule kept: every frozen map is still on the panel, in its frozen order, and the
++    // only maps added besides are the opening's (their bytes are not frozen here).
++    const frozen = [...Object.keys(gold), ...Object.keys(addedGold)]
++    expect(MAP_PANEL.filter((id) => frozen.includes(id))).toEqual(frozen)
++    for (const id of MAP_PANEL) if (!frozen.includes(id)) expect(id.startsWith('map.opening.'), id).toBe(true)
+     for(const [id,hash] of Object.entries({...gold, ...addedGold, ...groundGold})) {
+       const bytes=execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','tools/field-geometry.mts',id])
+```
+</details>

@@ -4926,7 +4926,11 @@
    "map.opening.orphanage",
    "map.opening.cavern-trail"
   ],
-  "note": "Cut 2026-09-28 from the opening loop (DECISIONS.md 2026-09-28 'Kingdom waits behind the first six battles'). Switches: whether deep water blocks sight (default: no - it is water, only impassable to walking); hero start hexes are the encounters', not the map's. The ground proposal is Claude's; any hex Andrew corrected on the Ground Check wins over the JSON."
+  "note": "Cut 2026-09-28 from the opening loop (DECISIONS.md 2026-09-28 'Kingdom waits behind the first six battles'). Switches: whether deep water blocks sight (default: no - it is water, only impassable to walking); hero start hexes are the encounters', not the map's. The ground proposal is Claude's; any hex Andrew corrected on the Ground Check wins over the JSON.",
+  "changesBaseline": true,
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "396bd66"
  },
  {
   "id": "terrain.cursed",

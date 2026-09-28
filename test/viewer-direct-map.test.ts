@@ -18,7 +18,12 @@ const fact = (width=4,height=3) => ({type:'map.loaded',mapId:'test.map.direct',w
 const seed = {mapId:'test.map.direct'}
 describe('readonly initial field preparation',()=>{
   it('preserves all 22 registered CLI bytes and control membership, plus the maps added since',()=>{
-    expect(MAP_PANEL).toEqual([...Object.keys(gold), ...Object.keys(addedGold)])
+    // map.opening-six (2026-09-28), Law 10: the six opening maps joined the panel among the pack
+    // rows. The rule kept: every frozen map is still on the panel, in its frozen order, and the
+    // only maps added besides are the opening's (their bytes are not frozen here).
+    const frozen = [...Object.keys(gold), ...Object.keys(addedGold)]
+    expect(MAP_PANEL.filter((id) => frozen.includes(id))).toEqual(frozen)
+    for (const id of MAP_PANEL) if (!frozen.includes(id)) expect(id.startsWith('map.opening.'), id).toBe(true)
     for(const [id,hash] of Object.entries({...gold, ...addedGold, ...groundGold})) {
       const bytes=execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','tools/field-geometry.mts',id])
       expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)

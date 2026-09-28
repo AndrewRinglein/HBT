@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
-import { boardOf, deployOf, terrainOf, MAP_PANEL, DEFAULT_DEPLOY } from '../src/content/maps.js'
+import { boardOf, deployOf, terrainOf, MAP_PANEL, DEFAULT_DEPLOY, mapDef } from '../src/content/maps.js'
 import { FORMATS, formatOf, geometryOf, validBoard } from '../src/core/hex.js'
 
 const TEST_MAPS = { 'test.map.duel-8': FORMATS.duel, 'test.map.dungeon-16x8': FORMATS.dungeon, 'test.map.horde-24': FORMATS.horde }
@@ -18,7 +18,9 @@ const ORIGINAL_MAP_IDS = [
 
 describe('the maps declare their boards', () => {
   it('every map is bounded, the original18 retain preset formats, and terrain is width × height long', () => {
-    expect(MAP_PANEL.slice(0, ORIGINAL_MAP_IDS.length)).toEqual(ORIGINAL_MAP_IDS)
+    // map.opening-six (2026-09-28), Law 10: the six opening maps are pack rows, so they sit
+    // among the original18 on the panel. The rule kept: the original18 are there, in this order.
+    expect(MAP_PANEL.filter((id) => ORIGINAL_MAP_IDS.includes(id))).toEqual(ORIGINAL_MAP_IDS)
     for (const id of MAP_PANEL) {
       const b = boardOf(id)
       // V2 appends authored dimensions; the original18 preset maps retain their contract.
@@ -75,7 +77,11 @@ describe('a battle on each format', () => {
 
   it('the edges: heroes west, enemies east — every map on the panel (board.heroes-west, 2026-09-04)', () => {
     expect(DEFAULT_DEPLOY).toEqual({ hero: 'west', enemy: 'east' })
-    for (const id of MAP_PANEL) expect(deployOf(id), id).toEqual(DEFAULT_DEPLOY)
+    // map.opening-six (2026-09-28), Law 10: three opening maps declare their own edges for a rolled
+    // battle (Gates and Cathedral walked south to north; the Lumberjack House's west edge holds five).
+    // The rule kept: a map that declares nothing deploys heroes west and enemies east.
+    for (const id of MAP_PANEL) if (!mapDef(id).deploy) expect(deployOf(id), id).toEqual(DEFAULT_DEPLOY)
+    for (const id of ORIGINAL_MAP_IDS) expect(deployOf(id), id).toEqual(DEFAULT_DEPLOY)
     const duel = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.duel-8' })
     for (const u of duel.state.units) expect(duel.geo.colOf(u.hex)).toBe(u.side === 'hero' ? 0 : 7)
     const dungeon = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.dungeon-16x8' })

@@ -46,9 +46,18 @@ let mentions = 0, acted = 0, changed = 0
 // reaches probed as "never appears" however real it was. Monotone verdict, so
 // prepending battles only widens what can be found; a --neutral claim gets
 // STRICTER, which is the right direction for "changed nothing, anywhere".
+// A MAP id is probed on its own map FIRST (map.opening-six, 2026-09-28): a map is named only
+// by the `map.loaded` of a battle fielded on it, so before this a new map was reached after
+// every scenario and 75 battles on each map ahead of it on the panel — the six opening maps
+// put gate 1 past a Cowork call (~178 s). Prepending battles only widens what can be found
+// (the same monotone argument as the scenarios above); nothing else about the probe changes.
+const ownMap = MAP_PANEL.includes(id)
+  ? [4, 8, 12].map((z) => () => createBattle({ replicate: 0, enemyCount: z, mapId: id, strict: true }))
+  : []
 const battles: (() => ReturnType<typeof createBattle>)[] = scenario
   ? [() => createBattle(scenarioOptions(scenario))]
   : [
+      ...ownMap,
       ...Object.values(SCENARIOS).map((s) => () => createBattle(scenarioOptions(s))),
       ...MAP_PANEL.flatMap((mapId) => [4, 8, 12].flatMap((z) =>
         Array.from({ length: 25 }, (_, r) => () => createBattle({ replicate: r, enemyCount: z, mapId, strict: true })))),

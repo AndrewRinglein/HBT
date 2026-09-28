@@ -408,7 +408,10 @@ check('naming — new content ids use declared kinds', () => {
     // Map ROW art is not an id: a quoted 12-glyph string with a '..' run is
     // board ASCII ('ww..bbbb....'), and reading 'ww' as an id kind was a false
     // positive found landing map.showcase (2026-08-20).
-    const stripped = l.replace(/['"][a-zA-Z.]{12}['"]/g, (s) => (s.includes('..') ? "''" : s))
+    // map.opening-six (2026-09-28): boards are any authored width now (board.variable-size), so
+    // row art is recognised at any length of 12 or more — a 20- or 40-glyph row read 'xf' as a kind.
+    // An id never holds '..' (tools/add-item.mjs id pattern), so the guard is unchanged.
+    const stripped = l.replace(/['"][a-zA-Z.]{12,}['"]/g, (s) => (s.includes('..') ? "''" : s))
     for (const m of stripped.matchAll(/['"`]([a-z]+)\.[a-z0-9][a-z0-9.-]*['"`]/g)) ids.add(m[1])
   }
   const unknown = [...ids].filter((k) => !KNOWN_KINDS.includes(k))

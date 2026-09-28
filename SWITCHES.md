@@ -1385,3 +1385,26 @@ same row and dice:
 The crossover is **armor 3**. Against the armor-1 rows (Skeleton 2.0 vs 3.3, Strong Zombie as it
 stands) the bow still wins: the staff's Bolt is 3 + Precision magic at −20 Accuracy for 2 Stamina
 against the Short Shot's 1 + Precision at +5 for 1, and one point of armor does not close that.
+
+## The opening's six maps — defaults taken building map.opening-six (2026-09-28)
+
+The source: DECISIONS.md 2026-09-28 "the opening's maps: whole size, the painted gate, ground
+types by letter" and "cursed ground gives Weak; the cave mouth; bank boulders; which rivers are
+deep"; the per-hex letters in `assets/battle-atlas/opening-ground-proposal-2026-09-28.json`
+(checked on the Abbotown Ground Check). One compile path: `content/mkopeningmaps.mjs` →
+`content/gen/opening-maps.json` → appended to the shipping lane by `assemble.mjs` → the pack.
+`content/map-schema.mjs` now accepts the engine's glyphs `u n H W T`, low props on a full hex,
+and the V2 `floor` mask. Probe: `test/opening-maps.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `openingDenseForest` | Dense forest (F) and a high obstacle (X) — one prop each, or the ground under them? | **The engine's `x` shorthand**: open ground plus a high material-3 prop (`prop.obstacle.<hex>`). | The legend says "a high obstruction" and "a high prop"; the shorthand is the one existing way to write that. | provisional — 2026-09-28 |
+| `openingCoverMaterial` | What is each low cover (c) made of? | **Material 2 for every one** (`prop.cover.<hex>`, low, full hex). | The letter grid does not say whether a `c` is a fence (tier 1), a pew or a boulder (tier 3); the middle tier until a map says. | provisional — 2026-09-28 |
+| `openingDeepWater` | Deep water (~): what is it in the engine? | **Water (`terrain.water`) with no floor** — the V2 floor mask: nobody stands in it or paths through it, flight cannot land in it, and it blocks no sight. | "Too deep to cross" is a walking rule; nothing ruled it blocks a shot. The floor mask is the existing "may not stand here" (movement.ts, props.ts). | provisional — 2026-09-28 |
+| `openingCursedPaint` | Cursed ground (*) — the map's or the encounter's? | **The encounter's**: the map row carries open ground, and `gen/opening-maps.json` lists each map's cursed hexes under `cursed` for its encounter to paint as `layer.weak` at setup. | A map row carries no layers (AuthoredMap); an encounter's `paint` is how Rime paints frost (capability.ground-layers). | provisional — 2026-09-28 |
+| `openingNoEntries` | Doors and stairs on the houses and walls (H, W)? | **None.** No house or wall on these maps has an entry side, so none is stood on. | The letter grid has no letter for a door or stairs; a door is the encounter's or a later map pass's. | provisional — 2026-09-28 |
+| `openingPanelDeploy` | Which edges does a ROLLED battle on these maps deploy on (the panel, the control battles, the probe)? | **Gates and Cathedral: heroes south, enemies north** (walked south to north). **Lumberjack House: heroes south, enemies east** — its west edge holds five passable hexes and the standard six need six. The rest: the default, heroes west, enemies east. | The encounters place their own units ("hero start hexes are the encounters', not the map's"); these edges only make a rolled battle possible. | provisional — 2026-09-28 |
+
+Measured: the 23 existing control battles are byte-identical; six new lines join `.state/baseline.hash`.
+The control-battle run grows from ~43 s to ~85 s of CPU (the 40-wide maps' 8-enemy battles are long);
+under this sandbox's outside load it took 138 s of the 178 s a Cowork call allows.

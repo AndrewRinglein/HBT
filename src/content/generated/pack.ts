@@ -45030,6 +45030,2904 @@ export const UNIT_PACK = {
         "...........ww...........",
         "...........ww..........."
       ]
+    },
+    "map.opening.orphanage": {
+      "id": "map.opening.orphanage",
+      "name": "Orphanage",
+      "board": {
+        "width": 20,
+        "height": 14
+      },
+      "format": "20x14",
+      "rows": [
+        ".......fww.ff.HHHHH.",
+        "uuuuuufwww...HHHHHf.",
+        ".uuuuu..www...HHHH..",
+        "uuuuuu..ww..........",
+        "........www.........",
+        "ff..................",
+        "ffff..f.www.........",
+        "xfff....www.wwwww..x",
+        "xxff.....wwwwwwwww.f",
+        "xxf......wwwwwwwww.f",
+        "xxxf.....wwwwwwwww..",
+        "xff......www..w....f",
+        "xxf..ff...ww.......f",
+        "xf.ffffff.ww.......f"
+      ],
+      "props": [
+        {
+          "id": "prop.cover.0",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              0
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.1",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              1
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.2",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              2
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.3",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              3
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.4",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              4
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.5",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              5
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.40",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              40
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.67",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              67
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.70",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              70
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.135",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              135
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.157",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              157
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.232",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              232
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.233",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              233
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.235",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              235
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.252",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              252
+            ]
+          },
+          "height": "low",
+          "material": 2
+        }
+      ]
+    },
+    "map.opening.lumberjack": {
+      "id": "map.opening.lumberjack",
+      "name": "Lumberjack House",
+      "board": {
+        "width": 20,
+        "height": 14
+      },
+      "format": "20x14",
+      "rows": [
+        "xxfxxxxxxxxxf..HHH..",
+        "xxfxxfffxxfff..HH...",
+        "xxfff..............x",
+        "xffff...............",
+        "xf..................",
+        "fff.................",
+        "xxf.................",
+        "xff.................",
+        "xff..............fff",
+        "ff..............fffx",
+        "fff.............fffx",
+        "ff..............ffxx",
+        "ffffffff........ffxx",
+        "xfxxfxf.........ffxx"
+      ],
+      "deploy": {
+        "hero": "south",
+        "enemy": "east"
+      },
+      "props": [
+        {
+          "id": "prop.cover.66",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              66
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.67",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              67
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.85",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              85
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.97",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              97
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.98",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              98
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.194",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              194
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.225",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              225
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.234",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              234
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.248",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              248
+            ]
+          },
+          "height": "low",
+          "material": 2
+        }
+      ]
+    },
+    "map.opening.bridge": {
+      "id": "map.opening.bridge",
+      "name": "Bridge",
+      "board": {
+        "width": 40,
+        "height": 20
+      },
+      "format": "40x20",
+      "rows": [
+        ".......wwwwwwwwwwwwwwwwwwwwwwwwww.......",
+        ".......wwwwwwwwwwwwwwwwwwwwwwwwww.......",
+        ".......wwwwwwwwwwwwwwwwwwwwwwwwww.......",
+        "......wwwwwwwwwwwwwwwwwwwwwwwwwww.......",
+        ".......wwwwwwwwwwwwwwwwwwwwwwwwww.......",
+        "......wwwwwwwwwxwwwwwwwwwwwwwxww........",
+        "......xwwwwwww..........................",
+        "......xwwwwww..x.......x.....xx.x.......",
+        "......xwwwwww...wwwwwwwwwwwwwwwww.......",
+        ".......wwwwx..wwwwwwwwwwwwwwwwww........",
+        "...............wwwwwwwwwxwwwwwww........",
+        ".......wwwww........www.....xwww........",
+        ".......wwwwwwww.........................",
+        "......wwwwwwwww........x................",
+        ".......wwwwwwwwwwwx.....................",
+        "......wwwwwwwwwwwwwww..........w........",
+        ".......wwwwwwwwwwwwwwwwwxxwwwwwww.......",
+        "......wwwwwwwwwwwwwwwwwwwwwwwwww........",
+        ".......wwwwwwwwwwwwwwwwwwwwwwwwww.......",
+        "......wwwwwwwwwwwwwwwwwwwwwwwwww........"
+      ],
+      "props": [
+        {
+          "id": "prop.cover.33",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              33
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.46",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              46
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.113",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              113
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.166",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              166
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.366",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              366
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.726",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              726
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.792",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              792
+            ]
+          },
+          "height": "low",
+          "material": 2
+        }
+      ],
+      "floor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    "map.opening.cavern-trail": {
+      "id": "map.opening.cavern-trail",
+      "name": "Cavern Trail",
+      "board": {
+        "width": 40,
+        "height": 16
+      },
+      "format": "40x16",
+      "rows": [
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "..xxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxxxx",
+        "........r..xxxxxxx.xxxxxxxxxxxxxxxxxxxxx",
+        "....................xxxxxxxxxxxxxxxxxxxx",
+        ".......................rxxxxxxxxxxxxxxxx",
+        "......................r........xx.xxxxxx",
+        "................r....................xxx",
+        "........r.....................r.........",
+        "wwwww...............r...r......r........",
+        "wwwwwwww..........................uuuu..",
+        "wwwwwwwwwwwwwwww..................uuuu..",
+        "wwwwwwwwwwwwwwwwwwwwwwww......r...uuuu..",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwww.............",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww......",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+      ],
+      "props": [
+        {
+          "id": "prop.cover.408",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              408
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.409",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              409
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.410",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              410
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.411",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              411
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.412",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              412
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.504",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              504
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.547",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              547
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.594",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              594
+            ]
+          },
+          "height": "low",
+          "material": 2
+        }
+      ],
+      "floor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    "map.opening.gates": {
+      "id": "map.opening.gates",
+      "name": "Gates",
+      "board": {
+        "width": 20,
+        "height": 50
+      },
+      "format": "20x50",
+      "rows": [
+        "....................",
+        "....................",
+        ".........u..........",
+        ".......uu..u........",
+        "......WWWWWWWW......",
+        ".....WWnnWnnn..u....",
+        "......WWWnnnWWu.u...",
+        ".....nWnnnnWn.u.....",
+        "...uuunnnnnnnWuuu...",
+        "...uunW.nnnnn.uuuu..",
+        "..uu.unnnnnnnWuuu...",
+        "...uunWnnnnnn..u....",
+        "...uuunnnnnnnW......",
+        "....unWnnnnnn.......",
+        "......nnnnnnnW...u..",
+        ".....nWnnnnnn...uu..",
+        "...WnnnnnnnnnW.uuuuu",
+        "..WnnWWnnnnnn..uu.u.",
+        "..unnn.WW..WWWnnn.u.",
+        ".uuuu........WWnuuu.",
+        "..uu..........Wnn...",
+        "..WWWW.........u....",
+        "..Wnnn........uuu...",
+        "..WWnW.......nnnW...",
+        "..Wnnnu......WnWWu..",
+        "..uuuu.......nnnnu..",
+        "...uuu........uu....",
+        "....uu.........u....",
+        "...nnnW.........u...",
+        "..WnWW.........uuu..",
+        "...nnW.........uu.u.",
+        "..W...u.....WWW..uu.",
+        ".....uu......nnnuuu.",
+        "..uuuuu.....Wnn.uu..",
+        "...uuuW.........u...",
+        ".....WW.............",
+        "xxxTTWWW............",
+        "xxxTTWW..........xxx",
+        "xxxTTWWW.........xxx",
+        "....................",
+        "................u...",
+        "..............u.uu..",
+        "...............uuu..",
+        "....u.......uuuu.u..",
+        ".uu.u.........u.uu..",
+        ".uu.uu......uuuuuu..",
+        ".uuuu.........u..u..",
+        "..u.u........u.u.u..",
+        "...u..........uuu...",
+        "...................."
+      ],
+      "deploy": {
+        "hero": "south",
+        "enemy": "north"
+      },
+      "props": [
+        {
+          "id": "prop.cover.187",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              187
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.436",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              436
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.448",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              448
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.536",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              536
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.568",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              568
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.572",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              572
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.642",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              642
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.643",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              643
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.710",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              710
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.713",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              713
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.732",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              732
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.734",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              734
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.753",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              753
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.771",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              771
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.772",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              772
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.773",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              773
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.774",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              774
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.775",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              775
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.776",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              776
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.787",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              787
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.812",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              812
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.844",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              844
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.895",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              895
+            ]
+          },
+          "height": "low",
+          "material": 2
+        }
+      ]
+    },
+    "map.opening.cathedral": {
+      "id": "map.opening.cathedral",
+      "name": "Cathedral",
+      "board": {
+        "width": 20,
+        "height": 40
+      },
+      "format": "20x40",
+      "rows": [
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....x....xx......x..",
+        "....................",
+        "....................",
+        "....................",
+        "...................x",
+        "x...................",
+        "....................",
+        "....................",
+        "....................",
+        ".........x..........",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "x..................x",
+        ".........x..........",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        ".........x..........",
+        "....................",
+        "x...................",
+        "...................x",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "...........x........",
+        "........x...........",
+        "....................",
+        "....................",
+        "...................."
+      ],
+      "deploy": {
+        "hero": "south",
+        "enemy": "north"
+      },
+      "props": [
+        {
+          "id": "prop.cover.91",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              91
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.183",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              183
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.184",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              184
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.185",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              185
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.186",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              186
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.187",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              187
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.191",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              191
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.192",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              192
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.193",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              193
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.194",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              194
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.195",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              195
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.284",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              284
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.285",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              285
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.286",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              286
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.292",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              292
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.293",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              293
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.294",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              294
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.295",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              295
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.391",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              391
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.392",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              392
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.393",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              393
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.394",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              394
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.395",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              395
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.403",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              403
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.404",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              404
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.405",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              405
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.406",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              406
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.407",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              407
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.523",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              523
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.524",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              524
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.525",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              525
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.526",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              526
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.527",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              527
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.533",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              533
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.534",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              534
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.535",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              535
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.662",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              662
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.663",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              663
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.664",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              664
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.665",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              665
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.666",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              666
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.667",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              667
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.671",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              671
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.672",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              672
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.673",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              673
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.674",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              674
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.675",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              675
+            ]
+          },
+          "height": "low",
+          "material": 2
+        },
+        {
+          "id": "prop.cover.676",
+          "footprint": {
+            "kind": "hex",
+            "hexes": [
+              676
+            ]
+          },
+          "height": "low",
+          "material": 2
+        }
+      ]
     }
   }
 } as const
