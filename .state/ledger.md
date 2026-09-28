@@ -17530,3 +17530,21 @@ index 542280a..0de20f3 100644
 2026-09-28 17:10
 
 Superseded before any code: cursed ground is layer.weak, the existing ground layer, one shape with burning, frost and poison (+1 on entry, +1 at End of Activation; ruled 2026-09-03, DECISIONS.md 1326). Andrew 2026-09-28: follow the same structure planned for all ground effects. No new terrain id.
+
+## content.mage-staff — LANDED `7b4a095`
+2026-09-28 18:07
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:477 · ../CODEX.md:979
+  PASS  typecheck
+  PASS  the item's own tests — test/mage-staff.test.ts
+  PASS  gate 1 — the id appears in a real battle — attack.lightning-staff.bolt: 22 log lines, 22 fired, 6 changed state
+  PASS  brought its own tests — test/mage-staff.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'numbers' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.lightning-staff.bolt — they genuinely test it

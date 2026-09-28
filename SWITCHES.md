@@ -1361,3 +1361,27 @@ amount. Probe: `test/surge-spend.test.ts`, on test-surge-labored (Surge 10) and 
 
 Not changed: the check's position (before the End of Activation ladder, ruled 2026-08-21) and
 how much Surge a hero gains (still open — DECISIONS.md 2026-09-27, the questions inbox).
+
+## Staff against bow — defaults taken measuring content.mage-staff (2026-09-28)
+
+Ruled 2026-09-28 (Andrew, DECISIONS.md "the staff-vs-bow check runs against the Codex's armored
+enemies"): *"One, yes."* Probe: `test/mage-staff.test.ts` — the standard six, strict, replicates
+0..23, against four of one enemy row; the Air Mage (Lightning Staff, `attack.lightning-staff.bolt`,
+magic) and the Dusk Hawk (Shortbow, physical) fight the same battles side by side.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `mageStaffYardstick` | What is "out-damages" measured as? | **Total damage each hero deals across the sweep (`damageDealtByType`, read from the log), with staff-vs-bow damage per swing as a second assertion.** Both heroes stay in the standard six, so the arms share every roll. | Angela: raw damage per swing is the wrong yardstick on its own; the hero's whole contribution is the one the design argues about, and swapping one hero out would change the fight around it. | provisional — 2026-09-28 |
+| `mageStaffArmoredRow` | Which armored row? | **`unit.bruiser-demon` (armor 4, resist 1)**, with its armor overridden to 0 on the same dice as the proof that armor is the difference. Unarmored: `unit.zombie` (the standard horde). | The ruling names the Skeleton and the Bruiser Demon; the Skeleton does not show the split (below). | provisional — 2026-09-28 |
+
+Measured 2026-09-28 (30 replicates, damage per battle, Mage vs Ranger), armor overridden on the
+same row and dice:
+
+| Row | armor 0 | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|---|
+| Bruiser Demon | 7.2 vs 17.6 | 8.1 vs 14.6 | 8.9 vs 13.5 | 9.3 vs 9.3 | **9.0 vs 4.5** |
+| Strong Zombie | 3.9 vs 6.5 | 3.9 vs 5.9 | 4.6 vs 5.4 | 4.7 vs 4.7 | **7.0 vs 3.4** |
+
+The crossover is **armor 3**. Against the armor-1 rows (Skeleton 2.0 vs 3.3, Strong Zombie as it
+stands) the bow still wins: the staff's Bolt is 3 + Precision magic at −20 Accuracy for 2 Stamina
+against the Short Shot's 1 + Precision at +5 for 1, and one point of armor does not close that.
