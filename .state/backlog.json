@@ -4906,5 +4906,218 @@
   ],
   "status": "done-needs-review",
   "sha": "0447cea"
+ },
+ {
+  "id": "map.opening-six",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "The opening's six maps as combat maps, each at its own size (DECISIONS.md 2026-09-28 'the opening's maps: whole size'): map.opening.orphanage 20x14, map.opening.lumberjack 20x14, map.opening.bridge 40x20, map.opening.cavern-trail 40x16, map.opening.gates 20 cols x 50 rows (abbotown-gate-painted walked south to north; the ruling's '50x20' is the same map), map.opening.cathedral 20x40. Source: the per-hex ground letters in assets/battle-atlas/opening-ground-proposal-2026-09-28.json as checked on the Abbotown Ground Check, with the same night's corrections (no cut-off passable hex; Orphanage (0,8),(0,10) and Lumberjack (0,2) dense forest). Letters map to the engine's ground and props: F dense forest = high prop; c = low prop (riverbank boulders are low cover); X = high prop; B bridge deck = open; w = terrain.water (Orphanage river and lake are ordinary water); ~ = deep water, no unit may stand or path through it (Bridge and Cavern Trail rivers, 'too deep to cross'); * = cursed ground (needs terrain.cursed only for the ground id; until it lands the letter is a switch). Cavern Trail's visible cave-mouth hexes are enterable, nothing deeper. One compile path for all six (the Atlas ground compile reads only maps/*.json; the five Blender scenes need the letter-grid route into AuthoredMap rows + props), published through content (content/map-schema.mjs must accept the letters the engine already has: u n H W T), probeable from the map panel.",
+  "expect": "Each of the six fields in a real battle at its stated size; every passable hex reaches every other (no cut-off pocket, asserted by a flood fill); a unit cannot enter a deep-water hex and a path around the river is found; a riverbank boulder gives low cover; the Orphanage water hex costs what terrain.water costs; the Gates map is 20 wide and 50 long; the six control battles are byte-identical.",
+  "needs": [
+   "terrain.cursed"
+  ],
+  "probeIds": [
+   "map.opening.orphanage",
+   "map.opening.cavern-trail"
+  ],
+  "variants": [
+   "map.opening.orphanage",
+   "map.opening.cavern-trail"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop (DECISIONS.md 2026-09-28 'Kingdom waits behind the first six battles'). Switches: whether deep water blocks sight (default: no - it is water, only impassable to walking); hero start hexes are the encounters', not the map's. The ground proposal is Claude's; any hex Andrew corrected on the Ground Check wins over the JSON."
+ },
+ {
+  "id": "terrain.cursed",
+  "kind": "terrain",
+  "shape": "rule",
+  "spec": "Cursed ground, ruled 2026-09-28 (DECISIONS.md 'cursed ground gives Weak'): \"When you move onto it, you gain 1 weak at the end of activation. If you're on it, you also gain 1 weak.\" Ruled: moving onto it gives 1 Weak at the end of that activation, and ending an activation on it gives 1 Weak. Records it lands on: COMBAT-DESIGN.md 700 (the terrain status layer carries Curse, applied on entry and at end of turn), VFX/GROUND-REQUIREMENTS.md 60, AFTERMATH.md 2026-09-23 (corpse and grave tiles are cursed ground). The engine has layer.weak (src/content/terrain.ts ~297-321), which applies its Weak on entry immediately - the ruling defers the entry Weak to End of Activation. Build terrain.cursed as a ground a map can author and an effect can paint, on the existing appliesOnEnter/appliesOnActivationEnd seam (terrain.burning-ground), with an entry that lands at End of Activation rung 2; bring layer.weak (the painted corpse/grave layer) to the same ruled timing.",
+  "expect": "A hero who walks across two cursed hexes and ends off them gains 1 Weak at End of Activation (not mid-move); one who walks onto a cursed hex and ends there gains 2; one who starts and ends there without moving gains 1; a unit in the air (Airwalk/Flight rung) gains none; burning ground is unchanged.",
+  "probeIds": [
+   "terrain.cursed",
+   "layer.weak"
+  ],
+  "variants": [
+   "terrain.cursed",
+   "layer.weak"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop (Gates' curse strikes and the Cathedral's remains). Switch: crossing several cursed hexes in one activation - one Weak for having entered any, or one per hex (default: one per activation, the ruling's 'you gain 1 weak'). Measure the control battles before declaring changesBaseline."
+ },
+ {
+  "id": "encounter.area-fall",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "A telegraphed area fall, one mechanism for two rulings (DECISIONS.md 2026-09-28 'a meteor fall on Turn 4', 'the meteor fall: Cavern Trail ...', 'the Cathedral encounter; Gates' curse strikes fall like the meteors'). An encounter row names a Turn N and a fall: at the end of Turn N's Enemy Phase, K areas are marked, each a centre hex and the six around it; after the next Player Phase ends, they land. Placement: at random on a named stream keyed by what it rolls (Law 4: the fall's id and the area index), weighted toward the middle of the map; each centre is a hex a unit can move to (never deep water, never a high prop); the six around it are not constrained. On landing, every hex of every area gets the fall's ground, and every unit in an area - either side - takes the fall's damage and statuses through the one damage function (Law 1). Two data instances: the meteor fall - 7 areas, Turn 4, 2 fire damage and 2 Burn, terrain.burning; the curse strike - 7 areas, Turn 4, 3 Weak, terrain.cursed. Events: area.marked (the hexes, the fall, the landing turn) so the viewer can draw the soft red outer-edge telegraph (VFX 'Skyfall' candidate, VFX/README.md 56), and area.landed naming each unit hit.",
+  "expect": "In a TEST encounter on a test map, seven areas are marked at the end of Turn 4's Enemy Phase and nothing lands until Turn 5's Player Phase ends; every marked centre is standable; a hero who walks out of a marked area during Turn 5 takes nothing; a unit left inside takes 2 fire and 2 Burn (meteor) or 3 Weak (curse), enemies included; all 7 hexes of each area carry the ground afterwards; the same seed marks the same hexes, a different seed different ones; the placement is measurably nearer the middle than uniform over 200 seeds.",
+  "needs": [
+   "terrain.cursed"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop (Cavern Trail and Gates). Declare the two fall ids as variants before code, in an existing id kind (new kinds are Angela's - GLOSSARY.md). Switches: whether areas may overlap (default: centres distinct, edges may overlap); the middle weighting's shape; whether the enemy AI steps out of a marked area (default: no AI change - AI-DESIGN.md is Angela's); a fall happens once (the curse strikes 'from Turn 4' read as once, DECISIONS.md 3179)."
+ },
+ {
+  "id": "capability.placed-remains",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Remains an encounter places at setup (DECISIONS.md 2026-09-28 'Gates is the Curse; the Cathedral has a Necromancer raising the dead': the Cathedral's remains, 33 hexes on the Ground Check, are raisable corpses). Today corpses come only from deaths (src/core/mutate.ts ~523, settle.ts ~51). An encounter row may author corpses on hexes; they are the same board objects capability.corpses made (CODEX.md 1834, the universal corpse rule) - raised by the Necromancer's Raise, eaten by the Ghoul's Eat Corpse - and each is painted as cursed ground, which stays when the body is raised or eaten (ruled: 'When the body is raised, the cursed ground stays').",
+  "expect": "A TEST encounter with three placed remains fields three corpses on their hexes with corpse.created naming the encounter as the cause; a Necromancer in reach raises one and its hex stays cursed ground; a Ghoul eats one and heals the row's numbers and its hex stays cursed; a placed remain on an impassable hex is a loud error.",
+  "needs": [
+   "terrain.cursed"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop (the Cathedral). Variants to declare before code: two placed-remains rows in two TEST encounters, the second pure data.",
+  "changesBaseline": false
+ },
+ {
+  "id": "fix.raise-two",
+  "kind": "engine",
+  "shape": "numbers",
+  "spec": "The Necromancer raises two bodies per turn (DECISIONS.md 2026-09-28 'the Cathedral encounter': \"Let's have the necromancer raise two per turn.\"; reach 10, ruled 2026-09-27). trigger.necromancer.raise fires once at the end of each activation and raises one corpse as a Zombie (capability.corpses; fix.raise-range). Make how many it raises a number on the trigger row, authored in the Codex (content), set to 2 for the Necromancer; each raise takes the nearest remaining corpse within reach, ties by the existing tiebreak (Law 6).",
+  "expect": "A Necromancer with four corpses in reach raises two at the end of its activation, the two nearest; with one corpse it raises one; with none, nothing and no error; the raised are Zombies and leave no corpse; a row with the number at 1 raises one.",
+  "needs": [
+   "capability.placed-remains"
+  ],
+  "probeIds": [
+   "trigger.necromancer.raise"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop (the Cathedral). The raise is still 'as a Zombie' (capability.corpses, CODEX.md 1834). Switch: 'two per turn' is two per Necromancer activation (it activates once a Turn). Variants to declare before code: trigger.necromancer.raise and a TEST raiser row with a different count."
+ },
+ {
+  "id": "content.opening-units",
+  "kind": "content",
+  "shape": "data",
+  "spec": "The two opening units the pack does not have. (1) The Lumberjack's Wife as her own civilian row (DECISIONS.md 2026-09-28: \"Lumberjack and wife. They're two different units.\"); the Lumberjack row (hero.fixed.lumberjack-and-wife, already named 'Lumberjack' in the Codex and pack) stops meaning both, and kingdom/src/content/heroes.ts ~55 ('Lumberjack and Wife') follows. (2) Battle 2's Soldier Undead (DECISIONS.md 2026-09-28 'battle 2's start': 'one Soldier Undead from behind the heroes'): no engine unit; the Codex has unit.soldier (type Undead, authored:false). Both authored in the Codex (content/) and published into src/content/generated/pack.ts through mkenginepack; no number typed that a file does not hold.",
+  "expect": "The Wife fields as a hero-side civilian beside the Lumberjack in a real battle, two units, each killable on its own; the Soldier Undead fields as an enemy with its Codex numbers; no row still names the Lumberjack and Wife as one unit.",
+  "probeIds": [
+   "unit.soldier"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop (battle 2). BLOCKED ON ANDREW for the numbers: the Wife's row and which row the Soldier Undead is (asked 2026-09-28). Do not invent either. The Wife's id is a new instance of hero.fixed.* (a new instance may be proposed; GLOSSARY.md)."
+ },
+ {
+  "id": "content.flaming-longsword",
+  "kind": "content",
+  "shape": "data",
+  "spec": "The battle-2 reward, the standard tier-3 Flaming Longsword (DECISIONS.md 2026-09-28 'custom weapons are series across base weapons': \"let's do a flaming long sword, standard tier 3. Yes, that's what you're going to get after battle 2.\"). Dictated V2-SHIELDS-AND-WEAPONS-2026-09-20.md 317: \"Tier 3. This is a basic attack. On hit, 1 burn and 2 fire damage.\" - a custom weapon is a series across base weapons, the flaming effect added to the base weapon's basic attack. Approved in the Armory Ledger (DECISIONS.md 2026-09-28 'the Armory Ledger is approved for now'). Authored in the Codex from the Ledger's row and published.",
+  "expect": "A hero carrying the tier-3 Flaming Longsword hits with the longsword's basic attack plus 1 Burn and 2 fire damage on a hit, nothing extra on a miss; the second series instance does the same on its own base weapon with no new code.",
+  "probeIds": [
+   "item.flaming-longsword"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop. Variants to declare before code: the tier-3 Flaming Longsword and one other tier-3 flaming series row from the Ledger (e.g. the Flaming Axe), the second pure data. Take the ids and names from the Armory Ledger rows; do not coin new ones. The rest of the Ledger (counterattack, fend, the special-free-attack rule, shields, relics, bloodrunes, trinkets) is not part of this cut."
+ },
+ {
+  "id": "encounter.opening.orphanage",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Battle 1, Orphanage (DECISIONS.md 2026-09-28 'Battle 1 (Orphanage) redefined', 'civilians dying is its own punishment', 'the meteor fall ... the Orphanage has no turn limit'). Map map.opening.orphanage. Start: two Zombies on the east edge (19,3),(19,5); the Orphan Child (hero.fixed.orphans) and the School Teacher (hero.fixed.school-teacher) as civilians, not objectives, at (12,1),(13,2) beside the orphanage. Turn 4: one Zombie from the bottom edge immediately left of the water (9,13). Turn 5: one Zombie from the left edge, centre (0,6). No retreat. Victory: clear the map. No turn limit (loseAfter absent; the engine's runaway cap stays - COMBAT-SEQUENCE.md 518). Replaces encounter.battle-1's old schedule; the hexes are the ground proposal's markers.",
+  "expect": "The encounter runs deterministically on its map; each arrival appears on its Turn at its hex (or is shunted, logged); a civilian's death does not end the battle; the battle ends won when the last enemy dies; no loss before the runaway cap.",
+  "needs": [
+   "map.opening-six"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage"
+  ],
+  "note": "Cut 2026-09-28. Switch: the heroes' start hexes (not stated; Claude's reading, shown on the Abbotown Ground Check for Andrew to check)."
+ },
+ {
+  "id": "encounter.opening.lumberjack",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Battle 2, Lumberjack House (DECISIONS.md 2026-09-28 'battle 2's final schedule', 'no cut-off hexes; the Lumberjack and Wife on the road'). Map map.opening.lumberjack. Start: three Zombies on the east edge (19,3),(19,4),(19,8); the Lumberjack and his Wife, two civilian units, not objectives, at (13,4),(13,5) on the road. Turn 1, end of the Enemy Phase: one Skeletal Archer (unit.skeletal-archer) from the bottom edge. Turn 3: one Skeletal Archer from the top and one from behind the heroes. Turn 4: nothing. Turn 5: one Soldier Undead from behind the heroes. Seven enemies. No retreat. Victory: clear the map. Hexes from the ground proposal's markers.",
+  "expect": "Runs deterministically; seven enemies arrive on their Turns; the Lumberjack and the Wife are two units and either may die without ending the battle; won when the last enemy dies.",
+  "needs": [
+   "map.opening-six",
+   "content.opening-units"
+  ],
+  "probeIds": [
+   "encounter.opening.lumberjack"
+  ],
+  "note": "Cut 2026-09-28. Replaces encounter.battle-2's old Surrounded schedule. Switch: the heroes' start hexes and 'behind the heroes' read against them."
+ },
+ {
+  "id": "encounter.opening.bridge",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Battle 3, Bridge (DECISIONS.md 2026-09-28 'battle 3 (Bridge)'). Map map.opening.bridge. Start: four Imps (unit.imp) on the far (east) side. Turn 2: one Fire Imp (unit.fire-imp), far side. Turn 4: one Imp, far side. Turn 5: one Fire Imp, far side. Seven enemies. No time limit ('No loss at turn 12'). Victory: clear the map (carried default). Hexes from the ground proposal's markers; the river is deep water, crossed only at the bridge.",
+  "expect": "Runs deterministically; seven Imps arrive on their Turns on the east bank; no unit crosses the river except by the bridge; won when the last enemy dies.",
+  "needs": [
+   "map.opening-six"
+  ],
+  "probeIds": [
+   "encounter.opening.bridge"
+  ],
+  "note": "Cut 2026-09-28. Switches: victory is clearing the map and retreat is unaddressed (carried defaults, DECISIONS.md 2026-09-28); the heroes' start hexes."
+ },
+ {
+  "id": "encounter.opening.cavern-trail",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Battle 4, Cavern Trail - the Hunt (DECISIONS.md 2026-09-28 'battle 4 (Cavern Trail) is the Hunt', 'the meteor fall: Cavern Trail'). Map map.opening.cavern-trail. Start: three Bloodhounds (unit.bloodhound) and one Hellhound (unit.hellhound). Turn 4: four Zombie Hounds (unit.zombie-hound) behind the heroes (the west edge), and the meteor fall (encounter.area-fall's meteor instance: 7 areas marked at the end of Turn 4's Enemy Phase, landing after the next Player Phase, 2 fire + 2 Burn, burning ground). Turn 7: one Werewolf (unit.werewolf) in one of the cave-mouth hexes. Eight enemies. Victory: clear the map (carried default).",
+  "expect": "Runs deterministically; the hounds and the Werewolf arrive on their Turns; the meteor areas mark on Turn 4 and land at the end of Turn 5's Player Phase, burning every hex of each area and hitting any unit in them; won when the last enemy dies.",
+  "needs": [
+   "map.opening-six",
+   "encounter.area-fall"
+  ],
+  "probeIds": [
+   "encounter.opening.cavern-trail"
+  ],
+  "note": "Cut 2026-09-28. Switches: victory and retreat carried defaults; the heroes' start hexes (they enter from the west)."
+ },
+ {
+  "id": "encounter.opening.gates",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Battle 5, Gates - the old Curse encounter (DECISIONS.md 2026-09-28 'Gates is the Curse', 'Gates' curse strikes fall like the meteors; no Gates turn limit'). Map map.opening.gates (abbotown-gate-painted). Start: six defenders in position - two Bruiser Demons, two Poison Imps, one Powerful Imp, one Lieutenant Demon (unit.bruiser-demon, unit.poison-imp, unit.powerful-imp, unit.lieutenant-demon) at the ground proposal's markers. Turn 4: the curse strike (encounter.area-fall's curse instance: 7 areas, 3 Weak, cursed ground). Turn 7: two Imps, one from the top (the abbey, north end) and one from the bottom (behind the heroes). Victory: kill all enemies. No turn limit (the old 15-turn loss is dropped).",
+  "expect": "Runs deterministically; the curse areas mark on Turn 4 and land after Turn 5's Player Phase, giving 3 Weak to every unit inside and cursing every hex of each area; the two Imps arrive on Turn 7; won when the last enemy dies.",
+  "needs": [
+   "map.opening-six",
+   "encounter.area-fall",
+   "terrain.cursed"
+  ],
+  "probeIds": [
+   "encounter.opening.gates"
+  ],
+  "note": "Cut 2026-09-28. 'Retreating is a loss' cannot happen: retreat is not built (src/core/types.ts 61-70). Switch: the heroes' start hexes (up the approach from the south)."
+ },
+ {
+  "id": "encounter.opening.cathedral",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Battle 6, Cathedral (DECISIONS.md 2026-09-28 'the Cathedral encounter'). Map map.opening.cathedral. Start: the Necromancer (unit.necromancer, raising two per turn, reach 10) at the altar on the raised sanctuary; one Skeleton Archer (unit.skeletal-archer) up on the altar; two Skeletons (unit.skeleton) before it; the remains - every remains hex on the Ground Check - placed as corpses on cursed ground (capability.placed-remains). Turn 5: two Ghouls (unit.ghoul) through the side doors; they eat corpses. A raised body's cursed ground stays. Victory: clear the map; killing the Necromancer stops the raising.",
+  "expect": "Runs deterministically; the Necromancer raises two a turn from the remains while it lives and none after it dies; the Ghouls arrive on Turn 5 and eat; every remains hex stays cursed after its body is raised or eaten; won when the last enemy dies.",
+  "needs": [
+   "map.opening-six",
+   "terrain.cursed",
+   "capability.placed-remains",
+   "fix.raise-two"
+  ],
+  "probeIds": [
+   "encounter.opening.cathedral"
+  ],
+  "note": "Cut 2026-09-28. Switches: the side-door hexes and the heroes' start hexes (Claude's reading on the Ground Check)."
+ },
+ {
+  "id": "kingdom.encounter-battles",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "A human plays an encounter. Today the only human-played battle is kingdom/BATTLE-SANDBOX.html (kingdom/src/core/sandbox.ts, ui/sandbox.ts: the engine command API, src/core/commands.ts 192-209), and it takes a map and a flat enemy list - no encounter. Carry an encounter through the same command path: its map, its setup, its scheduled arrivals, civilians as hero-side units the player does not command (civilianAi), marked fall areas visible from area.marked until they land, and the encounter's outcome ending the battle. The heroes are the player's; the enemies are the AI.",
+  "expect": "From the kingdom's battle screen a person plays encounter.opening.orphanage to the end: the civilians act on their own, the Turn 4 and Turn 5 Zombies arrive, and clearing the map wins; the same commands replayed give the same battle; save and resume mid-battle keep the schedule.",
+  "needs": [
+   "encounter.opening.orphanage"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop. Kingdom commits in its own repository. The battle viewer (../viewer) only replays; its telegraph drawing for area.marked is the viewer's own item, not this one."
+ },
+ {
+  "id": "kingdom.opening-loop",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "The playable loop through the opening's six battles (DECISIONS.md 2026-09-28 'Kingdom waits behind the first six battles', 'answers to the 22 questions'). kingdom/src/core/opening.ts and content/prologue.ts run the old five battles as flat enemy lists; replace them with the six encounters in order - Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Cathedral - each played by the person (kingdom.encounter-battles), not settled by the SLICE outcome picker. A lost opening battle is replayed (today a loss ends the campaign, opening.ts ~136-147). Wounds apply: wounds recorded after a battle (reckoning.ts) reach the next battle's heroes (core/seam.ts passes them). Fatigue does not. The four civilians join the party as rescued (Orphan Child and School Teacher after battle 1; Lumberjack and Wife after battle 2). After battle 2 the party receives the tier-3 Flaming Longsword; the other battles keep the existing reward pull. Every other Kingdom stage stays postponed.",
+  "expect": "A person plays from the Orphanage to the Cathedral in one sitting; losing the Bridge offers the Bridge again with the same party; a hero wounded in battle 1 enters battle 2 wounded and nobody is fatigued; the four civilians who survived are on the roster; the Flaming Longsword is in the party's hands after battle 2; winning the Cathedral ends the opening.",
+  "needs": [
+   "kingdom.encounter-battles",
+   "encounter.opening.lumberjack",
+   "encounter.opening.bridge",
+   "encounter.opening.cavern-trail",
+   "encounter.opening.gates",
+   "encounter.opening.cathedral",
+   "content.flaming-longsword"
+  ],
+  "note": "Cut 2026-09-28. Switch: a civilian who died in their battle does not join ('The units dying is their own punishment' read that way). Kingdom commits in its own repository."
  }
 ]
