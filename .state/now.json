@@ -1,11 +1,11 @@
 {
- "now": "planning — the opening loop cut into 15 backlog items (3599457), no code. Items: map.opening-six, encounter.area-fall, capability.placed-remains, fix.raise-two, content.opening-units, content.flaming-longsword, six encounter.opening.* rows, kingdom.encounter-battles, kingdom.opening-loop. Rulings this chat (DECISIONS.md 2026-09-28): the Lumberjack's Wife's stats dictated; battle 2's Undead Soldier is the existing unit.soldier (dictated block superseded); cursed ground is layer.weak, the one ground-status shape - terrain.cursed abandoned before code; a read-only whole-project review for duplicated mechanisms and content in code, in its own chat (brief engine/REVIEW-DUPLICATION-2026-09-28.md); engine/CLAUDE.md trap: name the prior art before any new mechanism. Tried: terrain.cursed (abandoned: duplicated layer.weak). Noticed: shard 1/8 timed out twice under outside machine load (gate 1 integration tests, 6-8 s alone, 15 s limit), passed on the third run; the git lock shim is at $HOME/bin/git this session. Next: content.mage-staff, then the opening loop in queue order, naming the existing mechanism each item extends.",
- "at": "2026-09-28 17:32",
- "sha": "3a31a0d",
+ "now": "opening loop — 12 landed this chat: content.mage-staff (clean; Mage out-damages Ranger only from armor 3), map.opening-six (flagged), encounter.area-fall, capability.placed-remains, fix.raise-two, content.opening-units, content.flaming-longsword, encounter.opening.orphanage, encounter.opening.lumberjack, encounter.opening.cavern-trail, fix.raise-two-cursor (flagged), fix.opening-maps-off-panel (flagged). Tried: encounter.opening.bridge (abandoned: never wins with four Alpha heroes, capped 8/wipe 2 of 10, an AI stall); encounter.opening.gates authored and reverted, still pending (wipes four Alpha heroes 10 of 10). Noticed: an early clear wins the Orphanage on Turn 3 before its Turn 4-5 Zombies; both Lumberjack civilians die in every replicate; audit-all cannot fit a Cowork call, the full suite ran as 16 shards instead; kingdom sandbox tests refuse a stale shared-viewer metadata commit; git lock shim at $HOME/bin/git. Next: Andrew's answers on the Bridge and the Gates, then encounter.opening.cathedral and kingdom.encounter-battles.",
+ "at": "2026-09-28 22:43",
+ "sha": "3653609",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: build the opening loop",
+  "label": "New chat with Heroes of Blight and Tragic — engine: the Cathedral and the kingdom's encounter battles",
   "line": "start engine"
  }
 }
