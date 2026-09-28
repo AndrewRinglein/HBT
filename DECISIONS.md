@@ -2898,3 +2898,13 @@ Ruled:
 - **Surge is two things: a stat, the Surge gained each Turn, and the unit's amount of Surge** (the engine's `surge` and `surgeChance`), which other things may raise or lower (Knocked Sprawling's −50 Surge is one).
 - **The check rolls against the amount. A Surge that happens takes away 100** — it does not empty the amount. 150 Surge surges automatically and keeps 50. The engine today sets the amount to 0 on a Surge (`src/core/battle.ts`, COMBAT-SEQUENCE.md Surge check rung 2) — that changes. Queued as `fix.surge-spend`.
 - **Not ruled here:** how much Surge a hero gains each Turn — the Codex says it equals the level, the schedule says 0 + specialty. Still open, in the questions inbox.
+
+## 2026-09-28 — a Surge below 100 stops at 0
+
+Andrew, asked "Are you happy for a Surge below 100 to stop at 0 rather than go negative (`surgeSpendFloorsAtZero`)?":
+
+“yes, surge should stop at zero if it goes negative.”
+
+Ruled:
+
+- **A Surge that happens below 100 leaves the amount at 0, never below.** SWITCHES.md `surgeSpendFloorsAtZero` (default on, built by `fix.surge-spend`) is answered: on.
