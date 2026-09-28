@@ -1629,6 +1629,87 @@
     "width": 16,
     "height": 16
    }
+  },
+  {
+   "id": "encounter.opening.orphanage",
+   "name": "Orphanage",
+   "map": "map.opening.orphanage",
+   "board": {
+    "width": 20,
+    "height": 14
+   },
+   "retreat": false,
+   "note": "The opening, battle 1 (engine DECISIONS.md 2026-09-28 'Battle 1 (Orphanage) redefined'): \"We'll change the two zombies and a child to two zombies, an orphan child, and a school teacher. The orphan child and school teacher should be in two of the hexes to the left of the house, right next to the house. Zombies are going to start on the right edge. No retreat because you're surrounded. Turn 4, we're going to have a zombie arrive from the bottom edge to the immediate left of the water. Turn 5, we're going to have a zombie arrive from the left edge, center.\" Victory: clear the map (ruled the same day). No turn limit. Civilians are not objectives: their deaths do not end the battle. Hexes are the Abbotown Ground Check's markers (assets/battle-atlas/opening-ground-proposal-2026-09-28.json); the heroes' zone is Claude's reading (engine SWITCHES.md openingHeroZones).",
+   "heroZone": {
+    "count": 4,
+    "at": {
+     "near": {
+      "col": 5,
+      "row": 4
+     },
+     "range": 2
+    }
+   },
+   "setup": [
+    {
+     "unit": "hero.fixed.orphans",
+     "civilian": true,
+     "at": {
+      "col": 12,
+      "row": 1
+     }
+    },
+    {
+     "unit": "hero.fixed.school-teacher",
+     "civilian": true,
+     "at": {
+      "col": 13,
+      "row": 2
+     }
+    },
+    {
+     "unit": "unit.zombie",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 19,
+       "row": 3
+      },
+      {
+       "col": 19,
+       "row": 5
+      }
+     ]
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.zombie",
+       "at": {
+        "col": 9,
+        "row": 13
+       },
+       "note": "the bottom edge, immediately left of the water"
+      }
+     ]
+    },
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.zombie",
+       "at": {
+        "col": 0,
+        "row": 6
+       },
+       "note": "the left edge, centre"
+      }
+     ]
+    }
+   ]
   }
  ],
  "_authoredNote": "authored: the encounter session's `+` entries (E1, E2, E4, E5), transcribed 2026-09-03. E3 (the dungeon) is skipped by ruling; E6–E8 are `-` (not settled) and stay in the NOTES. `corpses` entries and `rescue` civilians are shapes the runner does not honour yet — named gaps on the compiled row."
