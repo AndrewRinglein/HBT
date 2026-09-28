@@ -36,6 +36,11 @@ const RAISERS: Raiser[] = CODEX.bestiary.flatMap((u) => (u.triggers ?? []).flatM
 const stated = (r: Raiser): r is { unit: string; reach: number } => Number.isSafeInteger(r.reach) && (r.reach as number) >= 0
 const compiledRaises = (unit: string) => (UNITS[unit]?.triggers ?? []).filter((t) => t.effect.kind === 'corpse.raise')
 const radiusOf = (t: { effect: unknown }) => (t.effect as { radius: number }).radius
+// fix.raise-two (2026-09-28): the TEST receptacle's raisers (content/test/units.json, test-*) state
+// their radius in their own rows, not in the Codex — read from there, trigger by trigger.
+const TEST_RADIUS: Record<string, Record<string, number>> = Object.fromEntries(
+  (JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'test', 'units.json'), 'utf8')) as { id: string; triggers?: { id: string; effect?: { kind?: string; radius?: number } }[] }[])
+    .map((u) => [u.id, Object.fromEntries((u.triggers ?? []).filter((t) => t.effect?.kind === 'corpse.raise').map((t) => [t.id, t.effect!.radius!]))]))
 
 describe('fix.raise-range — the Raise reaches what its row states', () => {
   it('the Necromancer\'s row states its Raise range, beyond the old 2 (ruled 2026-09-27)', () => {
@@ -68,6 +73,9 @@ describe('fix.raise-range — the Raise reaches what its row states', () => {
     const withRaise = Object.entries(UNITS).filter(([, u]) => (u.triggers ?? []).some((t) => t.effect.kind === 'corpse.raise'))
     expect(withRaise.length).toBeGreaterThan(0)
     for (const [key, u] of withRaise) {
+      // fix.raise-two (2026-09-28), Law 10: a TEST raiser's row is its own (content/test/units.json),
+      // so its radius is checked against that row instead of the Codex's — re-homed, not skipped.
+      if (key.startsWith('test-')) { for (const t of (u.triggers ?? []).filter((t) => t.effect.kind === 'corpse.raise')) expect(TEST_RADIUS[key]?.[t.id], `${t.id} radius`).toBe(radiusOf(t)); continue }
       const unit = key.startsWith('unit.') ? key : 'unit.' + key
       const rows = RAISERS.filter((r) => r.unit === unit && stated(r)).map((r) => r.reach)
       for (const t of (u.triggers ?? []).filter((t) => t.effect.kind === 'corpse.raise')) {

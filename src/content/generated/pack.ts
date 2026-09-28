@@ -1555,7 +1555,8 @@ export const UNIT_PACK = {
           "effect": {
             "kind": "corpse.raise",
             "unit": "unit.zombie",
-            "radius": 10
+            "radius": 10,
+            "count": 2
           },
           "source": "unit.necromancer"
         },
@@ -18885,6 +18886,51 @@ export const UNIT_PACK = {
           "power.move"
         ],
         "side": "enemy"
+      },
+      {
+        "name": "Raiser (TEST)",
+        "side": "enemy",
+        "tags": [
+          "human"
+        ],
+        "maxHp": 11,
+        "armor": 0,
+        "resist": 1,
+        "accuracy": 90,
+        "dodge": 0,
+        "strength": 3,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 0,
+        "role": "support",
+        "movement": 5,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "support",
+        "attacks": [
+          "attack.necromancer.necro-bolt"
+        ],
+        "abilities": [],
+        "moves": [
+          "power.move"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.test-raise-one",
+            "hook": "onActivationEnd",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "corpse.raise",
+              "unit": "unit.zombie",
+              "radius": 10,
+              "count": 1
+            },
+            "source": "unit.test-raiser"
+          }
+        ],
+        "typeId": "test-raiser"
       }
     ],
     "attacks": {
@@ -20082,6 +20128,51 @@ export const UNIT_PACK = {
               94
             ]
           }
+        ]
+      },
+      "test.encounter.raise-one": {
+        "id": "test.encounter.raise-one",
+        "name": "Raise one (TEST)",
+        "mapId": "test.map.journey-20x10",
+        "board": {
+          "width": 20,
+          "height": 10
+        },
+        "setup": [],
+        "schedule": [],
+        "heroZone": {
+          "count": 1,
+          "at": {
+            "near": {
+              "col": 1,
+              "row": 4
+            },
+            "range": 0
+          }
+        },
+        "paint": [
+          {
+            "layer": "layer.weak",
+            "hexes": [
+              94,
+              156,
+              52
+            ]
+          }
+        ],
+        "remains": [
+          {
+            "id": "test.remains.raise-one",
+            "typeId": "unit.zombie",
+            "hexes": [
+              94,
+              156,
+              52
+            ]
+          }
+        ],
+        "gaps": [
+          "setup: 1 × test-raiser — no such row in the pack, NOT fielded"
         ]
       }
     },

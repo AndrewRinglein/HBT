@@ -130,6 +130,13 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.placed-remains-b',
     heroes: ['test-warrior'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  // fix.raise-two (2026-09-28): the raise's count as data — the TEST raiser takes ONE body per
+  // firing over the same placed remains the Necromancer takes two of (test.placed-remains-a).
+  'test.raise-one': {
+    id: 'test.raise-one', note: 'TEST: a warrior against test-raiser (the Raise at count 1) over three placed Zombie remains. No campaign claim.',
+    mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.raise-one',
+    heroes: ['test-warrior'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',

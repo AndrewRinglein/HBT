@@ -150,8 +150,11 @@ export type TriggerEffect =
    * (the Necromancer: "raise one corpse as a Zombie" — radius assumed its aura's
    * 2, the encounter session's reading, SWITCHES.md corpseRaiseRadius). The
    * raised unit is a SUMMON and leaves no corpse. Nearest corpse first.
+   * fix.raise-two (2026-09-28; DECISIONS.md "the Cathedral encounter": "Let's have the
+   * necromancer raise two per turn."): `count` bodies per firing, the nearest first, ties by
+   * the lower corpse id (Law 6). Absent = one (SWITCHES.md raiseCountDefault).
    */
-  | { readonly kind: 'corpse.raise'; readonly unit: string; readonly radius: number }
+  | { readonly kind: 'corpse.raise'; readonly unit: string; readonly radius: number; readonly count?: number }
   /** capability.corpses: remove every corpse within `radius`, healing the owner `healPer` each (the Spider's Consume the Fallen). */
   | { readonly kind: 'corpse.consume'; readonly radius: number; readonly healPer: number }
   /**
@@ -221,6 +224,8 @@ export function validateTrigger(t: Trigger): void {
   if (needsTarget && !HAS_TARGET.has(t.hook)) {
     throw new Error(`${where}: hook '${t.hook}' has no target, so select:'target' can never resolve`)
   }
+  // fix.raise-two (2026-09-28): how many a raise takes is a whole number, one or more — never zero, never a fraction
+  if (t.effect.kind === 'corpse.raise' && t.effect.count !== undefined && (!Number.isSafeInteger(t.effect.count) || t.effect.count < 1)) throw Error(`${where}: a raise's count is an integer, 1 or more`)
   if (t.effect.kind === 'burstScale' && (t.hook !== 'onBurst' || t.select !== 'self' || !Number.isSafeInteger(t.effect.percent) || t.effect.percent < 0 || t.effect.percent > 100)) throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
   if (t.hook === 'onBurst' && t.onlyWithAttack !== undefined) throw Error(`${where}: onBurst cannot be attack-scoped`)
   if (t.role !== undefined && (t.hook !== 'onBlock' || !['defender', 'attacker'].includes(t.role))) throw Error(`${where}: role is 'defender' or 'attacker', on onBlock only`)
@@ -493,15 +498,17 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
     case 'corpse.raise': {
       const near = corpsesNear(ctx, owner.hex, e.radius)
       emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, corpsesInReach: near.length })
-      const c = near[0]
-      if (!c) break
+      if (!near.length) break
       const def = ctx.units?.[e.unit]
       if (!def) throw new Error(`trigger '${t.id}' raises '${e.unit}', which is not a unit in the registry`)
       if (!ctx.arrive) throw new Error(`trigger '${t.id}' raises a corpse but this battle cannot field arrivals (no ctx.arrive)`)
-      removeCorpse(ctx, c.id, t.id, 'raised', owner.id)
-      const raised = ctx.arrive(ctx, def, c.hex, t.id)
-      raised.summoned = true
-      emit(ctx, 'unit.raised', t.id, { actor: owner.id, raised: raised.id, from: c.typeId, hex: raised.hex })
+      // fix.raise-two: the `count` nearest, in corpsesNear's order (nearest, then lower id — Law 6)
+      for (const c of near.slice(0, e.count ?? 1)) {
+        removeCorpse(ctx, c.id, t.id, 'raised', owner.id)
+        const raised = ctx.arrive(ctx, def, c.hex, t.id)
+        raised.summoned = true
+        emit(ctx, 'unit.raised', t.id, { actor: owner.id, raised: raised.id, from: c.typeId, hex: raised.hex })
+      }
       break
     }
     case 'corpse.consume': {

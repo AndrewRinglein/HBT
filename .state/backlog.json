@@ -5000,7 +5000,13 @@
   "probeIds": [
    "trigger.necromancer.raise"
   ],
-  "note": "Cut 2026-09-28 from the opening loop (the Cathedral). The raise is still 'as a Zombie' (capability.corpses, CODEX.md 1834). Switch: 'two per turn' is two per Necromancer activation (it activates once a Turn). Variants to declare before code: trigger.necromancer.raise and a TEST raiser row with a different count."
+  "variants": [
+   "trigger.necromancer.raise",
+   "trigger.test-raise-one"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop (the Cathedral). The raise is still 'as a Zombie' (capability.corpses, CODEX.md 1834). Switch: 'two per turn' is two per Necromancer activation (it activates once a Turn). Variants to declare before code: trigger.necromancer.raise and a TEST raiser row with a different count.",
+  "status": "done",
+  "sha": "a00efde"
  },
  {
   "id": "content.opening-units",

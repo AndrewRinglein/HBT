@@ -1450,3 +1450,21 @@ until now). Engine `placeCorpse` (mutate.ts), `placeRemains` (encounter.ts), an 
 | `placedRemainsPaint` | Do the remains paint their own cursed ground? | **No — the row's `paint` does** (`layer.weak` on the same hexes), the one ground mechanism; so the ground outlives the body with no rule of its own. | "Follow the same structure that was planned for all the various ground effects" (DECISIONS.md 2026-09-28). The opening maps list the cursed hexes (`content/gen/opening-maps.json`). | provisional — 2026-09-28 |
 | `placedRemainsOrder` | When, and with what identity? | **After the encounter's units, row by row, hex by hex**; each body takes the next unused uid, as an arrival does. `corpse.created` names the encounter as cause, `of: null`, and the remains id. | Laying bodies after the units moves no unit's identity. | provisional — 2026-09-28 |
 | `placedRemainsSide` | Whose side is a placed body? | **Its unit row's.** | A body is its unit's; nothing reads more. | provisional — 2026-09-28 |
+
+## Raise two — defaults taken building fix.raise-two (2026-09-28)
+
+The source: DECISIONS.md 2026-09-28 "the Cathedral encounter" — Andrew: "Let's have the necromancer
+raise two per turn." The Raise's `count` is on its Codex row (`content/gen/enemies-authored.json`,
+the Necromancer's Raise effect, `count: 2`); mkenginepack compiles it; `corpse.raise` takes that many,
+the nearest first. Probe: `test/raise-two.test.ts`; the second instance is TEST `test-raiser`
+(`trigger.test-raise-one`, count 1) over `test.encounter.raise-one`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `raisePerActivation` | "Two per turn" — per Turn, or per activation? | **Per firing of the Raise**, which is End of Activation; the Necromancer activates once a Turn, so two per Turn. A Surge's second action does not re-run the End of Activation ladder (ruled 2026-08-21), so it cannot raise twice. | The backlog note's reading; nothing makes a Necromancer activate twice. | provisional — 2026-09-28 |
+| `raiseCountDefault` | A Raise row with no count? | **One.** The row's sentence is "raise a corpse". A count that is not a whole number 1 or more is a named gap (`content: raise count`). | Every Raise before this ruling raised one; the reach is never defaulted (fix.raise-range), but "a corpse" states one. | provisional — 2026-09-28 |
+| `raiseTwoOrder` | Which two? | **The nearest two in reach, ties by the lower corpse id** (`corpsesNear`'s order, Law 6) — the order bodies were laid or fell. | The existing tiebreak. | provisional — 2026-09-28 |
+
+Noticed, changed with a written reason (Law 10): `test/raise-range.test.ts`'s "no compiled corpse.raise
+carries a radius its row does not state" now checks a TEST raiser (test-*) against its own row
+(`content/test/units.json`) instead of the Codex — lines added, none removed.
