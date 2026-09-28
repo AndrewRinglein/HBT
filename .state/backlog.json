@@ -4845,7 +4845,15 @@
    "pack.enemy-actions"
   ],
   "spec": "The hounds 'ignore ZOC' — 'the move-WITHOUT-provoking machinery, as a property of their movement' (ENEMY-REVIEW.md:276-278). pack.enemy-actions left it out: attacks of opportunity are governed only by the global switch (movement.ts ~226) and the movement type has no such property. Make not-provoking a property a movement power row can carry; the four hounds carry it.",
-  "expect": "a hound leaving a hero's zone provokes no attack of opportunity; a walker on the same path does; a second unit with the property is pure data"
+  "expect": "a hound leaving a hero's zone provokes no attack of opportunity; a walker on the same path does; a second unit with the property is pure data",
+  "changesBaseline": false,
+  "probeIds": [
+   "power.move-ignoring-zoc"
+  ],
+  "variants": [
+   "unit.bloodhound",
+   "unit.hellhound"
+  ]
  },
  {
   "id": "capability.stealth",
