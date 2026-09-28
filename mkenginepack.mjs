@@ -443,9 +443,15 @@ function compileTrigger(t, unitId, attackId) {
         hook: t.hook, chance: t.chance ?? 100, select: areaSelect ?? (ef.target === 'self' ? 'self' : 'target'),
         effect: { kind: 'heal', amount: ef.value }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
     } else if (ef.effect === 'raise a corpse as a Zombie') {
-      // capability.corpses (2026-09-03): the Necromancer's Raise. Radius: its aura's 2 (the encounter session's reading; SWITCHES.md corpseRaiseRadius)
+      // capability.corpses (2026-09-03): the Necromancer's Raise. fix.raise-range (2026-09-28;
+      // ruled 2026-09-27, Andrew, engine DECISIONS.md 'the Necromancer's Raise reaches 10'):
+      // the reach is the trigger's OWN range, read from the row — never a converter
+      // constant (the retired corpseRaiseRadius compiled 2 here). A Raise row that states
+      // no range is a named gap, never a default.
+      const reach = ef.range ?? t.range;
+      if (!Number.isSafeInteger(reach) || reach < 0) { gap(unitId, `${where} ${t.hook}: raise a corpse as a Zombie — range ${reach === undefined || reach === null ? 'unstated' : JSON.stringify(reach)}, the reach is never defaulted`, 'content: range unstated'); continue; }
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'raise').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-        hook: t.hook, chance: t.chance ?? 100, select: 'self', effect: { kind: 'corpse.raise', unit: 'unit.zombie', radius: 2 }, source: unitId });
+        hook: t.hook, chance: t.chance ?? 100, select: 'self', effect: { kind: 'corpse.raise', unit: 'unit.zombie', radius: reach }, source: unitId });
     } else if (/^remove all corpses within range; heal (\d+) per corpse$/.test(ef.effect)) {
       const m = ef.effect.match(/heal (\d+) per corpse/);
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'consume').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
