@@ -2,7 +2,7 @@
 // Three distinct failures, and the log tells them apart.
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
-import { MAP_PANEL } from '../src/content/maps.js'
+import { MAPS, MAP_PANEL } from '../src/content/maps.js'
 import { SCENARIOS, scenarioOptions } from '../src/content/scenarios.js'
 
 const id = process.argv[2]
@@ -51,7 +51,8 @@ let mentions = 0, acted = 0, changed = 0
 // every scenario and 75 battles on each map ahead of it on the panel — the six opening maps
 // put gate 1 past a Cowork call (~178 s). Prepending battles only widens what can be found
 // (the same monotone argument as the scenarios above); nothing else about the probe changes.
-const ownMap = MAP_PANEL.includes(id)
+// fix.opening-maps-off-panel: any REGISTERED map — a campaign map off the panel is probed the same way
+const ownMap = MAPS.some((m) => m.id === id)
   ? [4, 8, 12].map((z) => () => createBattle({ replicate: 0, enemyCount: z, mapId: id, strict: true }))
   : []
 const battles: (() => ReturnType<typeof createBattle>)[] = scenario

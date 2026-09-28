@@ -26,8 +26,10 @@ const SIX: Record<string, { width: number; height: number }> = {
 }
 
 describe('map.opening-six — the opening\'s six maps', () => {
-  it.each(Object.entries(SIX))('%s is on the map panel and fields a real battle at its stated size, run to an outcome', (mapId, size) => {
-    expect(MAP_PANEL).toContain(mapId)
+  // fix.opening-maps-off-panel (2026-09-28): registered, fielded by name, and OFF the fixed control panel
+  it.each(Object.entries(SIX))('%s is a registered map off the control panel and fields a real battle at its stated size, run to an outcome', (mapId, size) => {
+    expect(MAP_PANEL).not.toContain(mapId)
+    expect(mapDef(mapId).panel).toBe(false)
     expect(boardOf(mapId)).toEqual(size)
     const ctx = createBattle({ replicate: 0, mapId, enemyCount: 4, strict: true })
     expect(ctx.state.board).toEqual(size)

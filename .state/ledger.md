@@ -17875,3 +17875,59 @@ index 0de20f3..14b9f0c 100644
          expect(hash(ctx.state), 'full surge-spend state').toBe(surgeSpendExpected.state)
 ```
 </details>
+
+## fix.opening-maps-off-panel — LANDED `fe47734` **NEEDS REVIEW**
+2026-09-28 22:31
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1140
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-maps.test.ts, test/pack-maps.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/opening-maps.test.ts, test/pack-maps.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-maps.test.ts (-2), test/pack-maps.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.opening.orphanage GONE, map.opening.lumberjack GONE, map.opening.bridge GONE, map.opening.cavern-trail GONE, map.opening.gates GONE, map.opening.cathedral GONE
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/opening-maps.test.ts b/test/opening-maps.test.ts
+index a879e3d..e062b3c 100644
+--- a/test/opening-maps.test.ts
++++ b/test/opening-maps.test.ts
+@@ -27,6 +27,8 @@ const SIX: Record<string, { width: number; height: number }> = {
+ 
+ describe('map.opening-six — the opening\'s six maps', () => {
+-  it.each(Object.entries(SIX))('%s is on the map panel and fields a real battle at its stated size, run to an outcome', (mapId, size) => {
+-    expect(MAP_PANEL).toContain(mapId)
++  // fix.opening-maps-off-panel (2026-09-28): registered, fielded by name, and OFF the fixed control panel
++  it.each(Object.entries(SIX))('%s is a registered map off the control panel and fields a real battle at its stated size, run to an outcome', (mapId, size) => {
++    expect(MAP_PANEL).not.toContain(mapId)
++    expect(mapDef(mapId).panel).toBe(false)
+     expect(boardOf(mapId)).toEqual(size)
+     const ctx = createBattle({ replicate: 0, mapId, enemyCount: 4, strict: true })
+diff --git a/test/pack-maps.test.ts b/test/pack-maps.test.ts
+index fde64ff..f89b45d 100644
+--- a/test/pack-maps.test.ts
++++ b/test/pack-maps.test.ts
+@@ -21,6 +21,10 @@ describe('the pack owns the shipping maps', () => {
+     expect(pack.slice(0, 13)).toEqual(['map.open', 'map.ridge', 'map.flanks', 'map.highlands', 'map.field', 'map.thicket', 'map.proving.open', 'map.proving.ridge', 'map.proving.ford', 'map.proving.copse', 'map.proving.ruin', 'map.courtyard', 'map.floodplain'])
+     for (const id of pack.slice(13)) expect(id.startsWith('map.opening.'), id).toBe(true)
+-    expect(MAP_PANEL.slice(0, pack.length)).toEqual(pack)
+-    for (const id of MAP_PANEL.slice(pack.length)) expect(id.startsWith('test.map.')).toBe(true)
++    // fix.opening-maps-off-panel (2026-09-28): a campaign map (`panel: false`) is in the pack and off
++    // the fixed control panel; the pack's panel maps lead the panel, the testing lane follows.
++    const onPanel = packMaps().filter((m) => m.panel !== false).map((m) => m.id)
++    expect(onPanel).toEqual(pack.slice(0, 13))
++    expect(MAP_PANEL.slice(0, onPanel.length)).toEqual(onPanel)
++    for (const id of MAP_PANEL.slice(onPanel.length)) expect(id.startsWith('test.map.')).toBe(true)
+   })
+ 
+```
+</details>

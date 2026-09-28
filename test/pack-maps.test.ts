@@ -20,8 +20,12 @@ describe('the pack owns the shipping maps', () => {
     const pack = packMaps().map((m) => m.id)
     expect(pack.slice(0, 13)).toEqual(['map.open', 'map.ridge', 'map.flanks', 'map.highlands', 'map.field', 'map.thicket', 'map.proving.open', 'map.proving.ridge', 'map.proving.ford', 'map.proving.copse', 'map.proving.ruin', 'map.courtyard', 'map.floodplain'])
     for (const id of pack.slice(13)) expect(id.startsWith('map.opening.'), id).toBe(true)
-    expect(MAP_PANEL.slice(0, pack.length)).toEqual(pack)
-    for (const id of MAP_PANEL.slice(pack.length)) expect(id.startsWith('test.map.')).toBe(true)
+    // fix.opening-maps-off-panel (2026-09-28): a campaign map (`panel: false`) is in the pack and off
+    // the fixed control panel; the pack's panel maps lead the panel, the testing lane follows.
+    const onPanel = packMaps().filter((m) => m.panel !== false).map((m) => m.id)
+    expect(onPanel).toEqual(pack.slice(0, 13))
+    expect(MAP_PANEL.slice(0, onPanel.length)).toEqual(onPanel)
+    for (const id of MAP_PANEL.slice(onPanel.length)) expect(id.startsWith('test.map.')).toBe(true)
   })
 
   it('every pack row draws the board it claims, in one of the four formats, and boardOf agrees', () => {

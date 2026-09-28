@@ -32,6 +32,8 @@ export type AuthoredMap = {
    * [structure hex, the adjacent hex it is entered from]. Absent = no structure has one.
    */
   readonly entries?: readonly (readonly [number, number])[]
+  /** fix.opening-maps-off-panel: false = a campaign map its encounter fields, kept off the fixed control panel. Absent = on it. */
+  readonly panel?: false
 }
 /** What kind of thing a unit is. Every AI can read this about every other unit. */
 export type Role = 'melee' | 'ranged' | 'support'

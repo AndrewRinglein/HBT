@@ -1531,3 +1531,12 @@ never wins with four Alpha heroes (replicates 0-9: capped 8, wipe 2; an AI stall
 6 wipe over replicates 0-9. The Gates, authored as ruled (six defenders at the markers, the curse strike
 `trigger.gates.curse-strike` on Turn 4, two Imps on Turn 7, heroes at (10,46) r2), wiped four Alpha heroes
 in all of replicates 0-9 by Turn 4-7; `encounter.opening.gates` was not landed and stays pending.
+
+## Campaign maps off the panel — fix.opening-maps-off-panel (2026-09-28)
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `mapPanelFalse` | How does a map stay registered but off the fixed control panel? | **`panel: false` on the map row** (content/map-schema.mjs accepts only false; the pack loader too). `MAP_PANEL` is every registered map without it; `MAPS`, `mapDef` and the encounters still read it. The six opening maps carry it (mkopeningmaps.mjs). | Campaign maps are fielded by their encounters; the control panel is the fixed set of shapes that matter (COMBAT-SEQUENCE.md "Maps are not random"), and the six doubled the control run. | provisional — 2026-09-28 |
+
+Supersedes the map.opening-six "probeable from the map panel": the probe fields any registered map id
+on its own map first (tools/probe.mts), on the panel or not.

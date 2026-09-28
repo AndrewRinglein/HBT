@@ -625,7 +625,9 @@ function mapRecord(value: unknown, allowed: readonly string[]): void {
 }
 /** Validate both packed and engine-owned rows before geometry/terrain allocation. */
 export function mapBoardOf(m: PackMapRow): Board {
-  mapRecord(m, ['id', 'name', 'rows', 'board', 'format', 'note', 'deploy', 'props', 'floor', 'entries'])
+  mapRecord(m, ['id', 'name', 'rows', 'board', 'format', 'note', 'deploy', 'props', 'floor', 'entries', 'panel'])
+  // fix.opening-maps-off-panel (2026-09-28): only `panel: false` is a statement; absent is on the panel
+  if (Object.hasOwn(m, 'panel') && (m as { panel?: unknown }).panel !== false) throw new Error(`maps: '${m.id}' panel is false or absent`)
   if (typeof m.id !== 'string' || !m.id.trim() || typeof m.name !== 'string' || !m.name.trim()) throw new Error('maps: id and name must be nonempty strings')
   if ('note' in m && typeof m.note !== 'string') throw new Error('maps: note must be a string')
   if (!Array.isArray(m.rows) || m.rows.length === 0) throw new Error('maps: rows must be nonempty strings')

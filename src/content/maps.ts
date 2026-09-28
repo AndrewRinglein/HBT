@@ -113,7 +113,10 @@ for (const m of allMaps) {
 }
 export const MAPS: readonly MapDef[] = allMaps.filter((m) => !disabledIds().has(m.id))
 
-export const MAP_PANEL = MAPS.map((m) => m.id)
+// fix.opening-maps-off-panel (2026-09-28): the FIXED control panel (COMBAT-SEQUENCE.md "Maps are not
+// random") is every registered map but a campaign map that says `panel: false` — the opening's six,
+// fielded by their encounters. They stay in MAPS: mapDef, boardOf and the encounters read them.
+export const MAP_PANEL = MAPS.filter((m) => m.panel !== false).map((m) => m.id)
 
 export function mapDef(mapId: string): MapDef {
   const m = MAPS.find((x) => x.id === mapId)

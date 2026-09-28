@@ -46055,7 +46055,8 @@ export const UNIT_PACK = {
           "height": "low",
           "material": 2
         }
-      ]
+      ],
+      "panel": false
     },
     "map.opening.lumberjack": {
       "id": "map.opening.lumberjack",
@@ -46185,7 +46186,8 @@ export const UNIT_PACK = {
           "height": "low",
           "material": 2
         }
-      ]
+      ],
+      "panel": false
     },
     "map.opening.bridge": {
       "id": "map.opening.bridge",
@@ -47097,7 +47099,8 @@ export const UNIT_PACK = {
         true,
         true,
         true
-      ]
+      ],
+      "panel": false
     },
     "map.opening.cavern-trail": {
       "id": "map.opening.cavern-trail",
@@ -47856,7 +47859,8 @@ export const UNIT_PACK = {
         false,
         false,
         false
-      ]
+      ],
+      "panel": false
     },
     "map.opening.gates": {
       "id": "map.opening.gates",
@@ -48176,7 +48180,8 @@ export const UNIT_PACK = {
           "height": "low",
           "material": 2
         }
-      ]
+      ],
+      "panel": false
     },
     "map.opening.cathedral": {
       "id": "map.opening.cathedral",
@@ -48761,7 +48766,8 @@ export const UNIT_PACK = {
           "height": "low",
           "material": 2
         }
-      ]
+      ],
+      "panel": false
     }
   }
 } as const

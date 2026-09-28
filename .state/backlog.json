@@ -1,5 +1,16 @@
 [
  {
+  "id": "fix.opening-maps-off-panel",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "map.opening-six (landed 2026-09-28, ee50f50) put the opening's six maps on MAP_PANEL, the fixed control panel every panel-wide test, the control battles and the probe sweep run. They are campaign maps an encounter fields, not control shapes (COMBAT-SEQUENCE.md 'Maps are not random': a fixed panel of the shapes that matter), and their 8-enemy battles on 40-wide boards doubled the control run (~43 s to ~85 s CPU) and pushed test/additions.test.ts past a Cowork call (the chat's full-suite shards). A map row may say panel: false (content/map-schema.mjs, mkopeningmaps.mjs writes it on the six); such a map stays in MAPS (mapDef, boardOf, encounters, direct fielding) and leaves MAP_PANEL. The probe fields a registered map id on its own map first, whether or not it is on the panel.",
+  "expect": "The six opening maps are registered (mapDef, their encounters field) and not on MAP_PANEL; every other map's panel order is unchanged; the control battles lose exactly the six opening lines and every other line is byte-identical; test/additions.test.ts fits its budgets again.",
+  "changesBaseline": true,
+  "note": "Found by the chat's full-suite shards after map.opening-six landed on its own tests.",
+  "status": "done-needs-review",
+  "sha": "fe47734"
+ },
+ {
   "id": "fix.raise-two-cursor",
   "kind": "engine",
   "shape": "plumbing",
