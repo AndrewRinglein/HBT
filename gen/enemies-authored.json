@@ -344,7 +344,9 @@
      "range": 10,
      "effects": [
       {
-       "effect": "raise a corpse as a Zombie"
+       "effect": "raise a corpse as a Zombie",
+       "count": 2,
+       "note": "Andrew, 2026-09-28 (engine DECISIONS.md 'the Cathedral encounter'): \"Let's have the necromancer raise two per turn.\" Two per activation - it activates once a Turn (engine SWITCHES.md raisePerActivation)."
       }
      ],
      "needs": [

@@ -800,5 +800,51 @@
     }
   ],
   "note": "capability.stealth: the cohort zombie under test.status.cloak (2, -1 per Phase) - the second instance, on the other side: the hero may not attack it until the Cloak breaks or runs off its clock. No campaign content."
-}
+},
+  {
+    "id": "test-raiser",
+    "name": "Raiser (TEST)",
+    "side": "enemy",
+    "tags": [
+      "human"
+    ],
+    "maxHp": 11,
+    "armor": 0,
+    "resist": 1,
+    "accuracy": 90,
+    "dodge": 0,
+    "strength": 3,
+    "precision": 3,
+    "magic": 0,
+    "spirit": 0,
+    "role": "support",
+    "movement": 5,
+    "reach": 0,
+    "maxStamina": 0,
+    "staminaRegen": 0,
+    "ai": "support",
+    "attacks": [
+      "attack.necromancer.necro-bolt"
+    ],
+    "abilities": [],
+    "moves": [
+      "power.move"
+    ],
+    "triggers": [
+      {
+        "id": "trigger.test-raise-one",
+        "hook": "onActivationEnd",
+        "chance": 100,
+        "select": "self",
+        "effect": {
+          "kind": "corpse.raise",
+          "unit": "unit.zombie",
+          "radius": 10,
+          "count": 1
+        },
+        "note": "fix.raise-two (engine, 2026-09-28): the second instance of the raise's count, pure data — the Necromancer's Raise at count 1"
+      }
+    ],
+    "note": "fix.raise-two (engine, 2026-09-28): the Necromancer's numbers with one trigger, a Raise that takes ONE body per firing. TEST only."
+  }
 ]

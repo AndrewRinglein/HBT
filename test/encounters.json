@@ -377,5 +377,65 @@
       }
     ],
     "schedule": []
+  },
+  {
+    "id": "test.encounter.raise-one",
+    "name": "Raise one (TEST)",
+    "map": "test.map.journey-20x10",
+    "board": {
+      "width": 20,
+      "height": 10
+    },
+    "note": "fix.raise-two (engine, 2026-09-28): test-raiser, whose Raise takes one body per firing, over three placed Zombie remains on cursed ground. TEST only, no campaign claim.",
+    "heroZone": {
+      "count": 1,
+      "at": {
+        "near": {
+          "col": 1,
+          "row": 4
+        },
+        "range": 0
+      }
+    },
+    "setup": [
+      {
+        "unit": "test-raiser",
+        "at": {
+          "col": 17,
+          "row": 1
+        }
+      },
+      {
+        "corpses": 3,
+        "id": "test.remains.raise-one",
+        "typeId": "unit.zombie",
+        "hexes": [
+          {
+            "col": 14,
+            "row": 4
+          },
+          {
+            "col": 16,
+            "row": 7
+          },
+          {
+            "col": 12,
+            "row": 2
+          }
+        ],
+        "note": "the same three bodies as test.encounter.placed-remains-a"
+      }
+    ],
+    "paint": [
+      {
+        "layer": "layer.weak",
+        "hexes": [
+          94,
+          156,
+          52
+        ]
+      }
+    ],
+    "schedule": []
   }
 ]

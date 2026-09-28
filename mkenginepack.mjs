@@ -450,8 +450,11 @@ function compileTrigger(t, unitId, attackId) {
       // no range is a named gap, never a default.
       const reach = ef.range ?? t.range;
       if (!Number.isSafeInteger(reach) || reach < 0) { gap(unitId, `${where} ${t.hook}: raise a corpse as a Zombie — range ${reach === undefined || reach === null ? 'unstated' : JSON.stringify(reach)}, the reach is never defaulted`, 'content: range unstated'); continue; }
+      // fix.raise-two (engine, 2026-09-28): how many bodies a firing raises is the row's own `count`;
+      // unstated is one ("raise a corpse"). A count that is not a whole number 1 or more is a named gap.
+      if (ef.count !== undefined && (!Number.isSafeInteger(ef.count) || ef.count < 1)) { gap(unitId, `${where} ${t.hook}: raise a corpse as a Zombie — count ${JSON.stringify(ef.count)} is not a whole number 1 or more`, 'content: raise count'); continue; }
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'raise').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-        hook: t.hook, chance: t.chance ?? 100, select: 'self', effect: { kind: 'corpse.raise', unit: 'unit.zombie', radius: reach }, source: unitId });
+        hook: t.hook, chance: t.chance ?? 100, select: 'self', effect: { kind: 'corpse.raise', unit: 'unit.zombie', radius: reach, ...(ef.count !== undefined ? { count: ef.count } : {}) }, source: unitId });
     } else if (/^remove all corpses within range; heal (\d+) per corpse$/.test(ef.effect)) {
       const m = ef.effect.match(/heal (\d+) per corpse/);
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'consume').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
