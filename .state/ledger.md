@@ -17421,3 +17421,21 @@ index d28d3eb..478fb64 100644
      // (Buff's row also carries an AI hint, "use whenever available" — AI-DESIGN.md §3D; that
 ```
 </details>
+
+## capability.stealth — LANDED `2900fdc`
+2026-09-28 02:15
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1250 · DECISIONS.md:2877
+  PASS  typecheck
+  PASS  the item's own tests — test/stealth.test.ts
+  PASS  gate 1 — the id appears in a real battle — status.stealth: 3 log lines, 3 fired, 2 changed state · test.status.cloak: 3 log lines, 3 fired, 2 changed state
+  PASS  brought its own tests — test/stealth.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'flag' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.stealth,test.status.cloak — they genuinely test it

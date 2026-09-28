@@ -10600,6 +10600,19 @@ export const UNIT_PACK = {
         "standAction": "power.stand-up"
       },
       "kdbDown": true
+    },
+    "status.stealth": {
+      "id": "status.stealth",
+      "name": "Stealth",
+      "shape": "flag",
+      "family": "flag",
+      "stacking": "highest",
+      "decayPerPhase": 0,
+      "hidesFromFoes": true,
+      "untargetable": true,
+      "breaksOnAttack": true,
+      "breaksOnPower": true,
+      "breaksOnReveal": true
     }
   },
   "moves": {
@@ -18743,6 +18756,135 @@ export const UNIT_PACK = {
           "power.move"
         ],
         "side": "enemy"
+      },
+      {
+        "typeId": "test-stealthed-osric",
+        "name": "Stealthed Osric (TEST)",
+        "side": "hero",
+        "maxHp": 9,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 72,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "abilities": [],
+        "tags": [
+          "hero",
+          "class.paladin"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": [
+          {
+            "id": "test.stealthed-osric.stealth",
+            "hook": "startOfBattle",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stealth",
+              "value": 1
+            },
+            "source": "unit.test-stealthed-osric"
+          }
+        ]
+      },
+      {
+        "typeId": "test-cloaked-zombie",
+        "name": "Cloaked Zombie (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-cloaked-zombie",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-cloaked-zombie"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-cloaked-zombie"
+          },
+          {
+            "id": "test.cloaked-zombie.cloak",
+            "hook": "startOfBattle",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.cloak",
+              "value": 2
+            },
+            "source": "unit.test-cloaked-zombie"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy"
       }
     ],
     "attacks": {
@@ -19077,6 +19219,24 @@ export const UNIT_PACK = {
             "value": 1
           }
         ]
+      },
+      "power.test-lantern": {
+        "id": "power.test-lantern",
+        "name": "Lantern (TEST)",
+        "range": 0,
+        "staminaCost": 0,
+        "cooldown": 0,
+        "target": {
+          "select": "area",
+          "side": "enemy",
+          "radius": 3,
+          "origin": "self"
+        },
+        "effects": [
+          {
+            "kind": "reveal"
+          }
+        ]
       }
     },
     "statuses": {
@@ -19168,6 +19328,18 @@ export const UNIT_PACK = {
         "family": "duration",
         "decayPerPhase": 0,
         "hidesFromFoes": true,
+        "stacking": "add"
+      },
+      "test.status.cloak": {
+        "id": "test.status.cloak",
+        "name": "Cloak (TEST)",
+        "shape": "flag",
+        "family": "duration",
+        "decayPerPhase": 1,
+        "hidesFromFoes": true,
+        "untargetable": true,
+        "breaksOnAttack": true,
+        "breaksOnReveal": true,
         "stacking": "add"
       }
     },

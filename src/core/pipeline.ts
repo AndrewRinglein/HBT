@@ -9,10 +9,10 @@ import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit, VsTargetRule } from './types.js'
 import { fireTriggers, HOOKS } from './trigger.js'
-import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb } from './status.js'
+import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb, untargetableBy } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
-import { accelerateBleedOut, applyAttackPackets, damageProp, emit, unit, recordBlock } from './mutate.js'
+import { accelerateBleedOut, applyAttackPackets, breakStatuses, damageProp, emit, unit, recordBlock } from './mutate.js'
 import { propsTouching } from './props.js'
 import { actionReady, isAttack, spendAction , resolveActionSlot } from './action.js'
 import { settle } from './settle.js'
@@ -463,6 +463,9 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   // beyond reach. What a hit on the downed does is decided in performAttack.
   if (tg.lifeState === 'dead') return false
   if (at.side === tg.side) return false
+  // capability.stealth (2026-09-28): "cannot be targeted by an attack" — a reaction
+  // included, so a hidden unit leaving a zone draws nothing (SWITCHES.md stealthReaction)
+  if (untargetableBy(ctx, at, tg)) return false
   // capability.vision (2026-09-03): you cannot target what you cannot see (SWITCHES.md targetUnseen)
   if (!ctx.cfg.switches.targetUnseen && !canSee(ctx, at, tg)) return false
   if (mode !== 'reaction' && resolveActionSlot(ctx, at, a, mode) === null) return false
@@ -552,6 +555,10 @@ function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, 
 /** Each hit completes its shared lifecycle; aggregate hit means any connection. */
 export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): AttackResult {
   const a0 = attackDef(ctx, attackId)
+  // capability.stealth (2026-09-28): "It breaks the moment you use an attack" — as
+  // it is declared, before the roll, whatever its mode; a multi-hit attack breaks
+  // it once (SWITCHES.md stealthBreakMoment)
+  breakStatuses(ctx, attackerId, 'attack', attackId)
   const hits = Math.max(1, a0.attack.hits ?? 1)
   // v2.kdb: ONE KDB check per connecting attack, after its damage and its crit
   // chart (SWITCHES.md kdbOrder); a multi-hit attack sums its hits' physical

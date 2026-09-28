@@ -122,6 +122,20 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.sight-b', note: 'TEST: Osric beside the Shrouded Zombie (hidden from the hero AI all Battle), a plain zombie four hexes off. Osric goes for the one he can see. No campaign claim.',
     mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-shrouded-zombie', 'test-zombie'], enemyHexes: [86, 89], replicate: 0,
   },
+  // capability.stealth (2026-09-28; ruled 2026-09-27): the two instances of a status
+  // that makes its carrier untargetable by the other side and breaks on its own
+  // attack, each live in a real battle — the Codex's status.stealth on a hero (no
+  // clock: it holds until he swings) and test.status.cloak on an enemy (a clock, and
+  // it breaks on the zombie's bite). The Cloak is data on a TEST row (content/test/).
+  // No campaign claim.
+  'test.stealth-a': {
+    id: 'test.stealth-a', note: 'TEST: Stealthed Osric (status.stealth, the Codex row) two hexes from a zombie, plain Osric five hexes off. He walks in hidden, and nobody may bite him until his own attack breaks it. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-stealthed-osric', 'test-osric'], heroHexes: [85, 82], enemies: ['test-zombie'], enemyHexes: [87], replicate: 0,
+  },
+  'test.stealth-b': {
+    id: 'test.stealth-b', note: 'TEST: Osric beside the Cloaked Zombie (test.status.cloak), a plain zombie four hexes off. He may not swing at the one he cannot target. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-cloaked-zombie', 'test-zombie'], enemyHexes: [86, 89], replicate: 0,
+  },
   // capability.charge (2026-09-27): the two Codex Charge rows, each live in a real
   // battle — a walk and an attack as one action. The warrior closes to within the
   // charge's reach in the Hero Phase; the enemy charges in its own. Codex units on a

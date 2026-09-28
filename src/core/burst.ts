@@ -8,7 +8,7 @@ import { attackLineClear, segmentCrossesCell } from './los.js'
 import { centerPoint, segmentCrossesPolygon } from './geometry.js'
 import { canSeeHex } from './vision.js'
 import { incomingAbsorb, incomingPhysicalBonus, isBlocked, outgoingPenalty, spendAbsorb } from './status.js'
-import { applyAttackPackets, applyHealing, beginBurst, damageProp, emit, unit } from './mutate.js'
+import { applyAttackPackets, applyHealing, beginBurst, breakStatuses, damageProp, emit, unit } from './mutate.js'
 import { propsTouching } from './props.js'
 import { DMG, finishDamage, resolveSourceDamage, type DamagePacket, type LedgerRow } from './pipeline.js'
 import { fireTriggers, HOOKS, type BurstAdjustment } from './trigger.js'
@@ -125,6 +125,9 @@ export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: st
   const actor = unit(ctx, actorId), a = ctx.actions[actionId] as BurstDef
   const prepared = prepare(ctx, actor, centre, a)
   spendAction(ctx, actorId, a, resolveActionSlot(ctx, actor, a, slot)!)
+  // capability.stealth: a burst on an attack row is an attack; on a power row, a
+  // power (SWITCHES.md stealthBurst). Broken before anyone is struck.
+  breakStatuses(ctx, actorId, a.attack !== undefined ? 'attack' : 'power', a.id)
   const ordinal = beginBurst(ctx, actorId, actionId, { centre, origin: actor.hex, shape: a.burst.shape, hexes: prepared.hexes,
     targets: prepared.targets.map(t => ({uid: t.uid, id: t.id, hex: t.hex})), side: a.burst.side, tags: a.burst.requireTags ?? [], packets: prepared.payload, heal: prepared.heal,
     ...(a.burst.destroy ? { destroy: a.burst.destroy } : {}) })

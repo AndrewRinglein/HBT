@@ -17,14 +17,14 @@
 
 import { flatDamage } from './mitigation.js'
 import type { AbilityDef, ActionEffect, Ctx, Unit } from './types.js'
-import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, loseMaxStamina, removeCorpse, removeStatus, reduceStatus, standUp, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, breakStatuses, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, loseMaxStamina, removeCorpse, removeStatus, reduceStatus, standUp, unit } from './mutate.js'
 import { actionReady, isPower, spendAction , resolveActionSlot } from './action.js'
 export { readyOn, isReady } from './action.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
 import { executeKnockback } from './movement.js'
 import { resolveDamage } from './pipeline.js'
 import type { DamageSource } from './pipeline.js'
-import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
+import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb, untargetableBy } from './status.js'
 import { valueOf } from './trigger.js'
 import { effective } from './stats.js'
 import { canSee } from './vision.js'
@@ -64,6 +64,12 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   }
   // capability.vision: an enemy you cannot see is not a target
   if (tg.side !== u.side && !ctx.cfg.switches.targetUnseen && !canSee(ctx, u, tg)) return false
+  // capability.stealth (2026-09-28): a power AIMED at a foe — one unit, an area
+  // centred on it, or the legacy single-target bolt — may not name an untargetable
+  // one. An area from the caster is aimed at nobody, and still reaches it
+  // (SWITCHES.md stealthPowerAim).
+  const aimedAt = !a.effects || a.target?.select === 'unit' || (a.target?.select === 'area' && a.target.origin === 'target')
+  if (aimedAt && untargetableBy(ctx, u, tg)) return false
   // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses
   if (!actionReady(ctx, u, a)) return false
   if (a.effects) {
@@ -183,6 +189,11 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
   // refactor.one-action-type: THE ONE SPEND — stamina, the primary (unless free), the cooldown, a use.
   // Before this the cooldown was written after the effects and one Turn short (see action.ts).
   spendAction(ctx, userId, a, resolveActionSlot(ctx, u, a, slot)!)
+  // capability.stealth (2026-09-28): "It breaks the moment you use ... a power" —
+  // before the power's effects, so a power that grants stealth grants it afresh
+  // (Vanish in Shadow: "another power"). A movement is not a power (movement.ts
+  // never calls this): SWITCHES.md stealthMovement.
+  breakStatuses(ctx, userId, 'power', a.id)
 
   let total = 0
   if (a.effects) {
@@ -354,6 +365,12 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Action
     case 'knockback': {
       const v = valueOf(ctx, u, e.value)
       if (v > 0) executeKnockback(ctx, userId, id, v, a.id)
+      return 0
+    }
+    case 'reveal': {
+      // capability.stealth: a reveal finds units of the other side only — its own
+      // side's stealth is not what it hunts (SWITCHES.md stealthRevealSide)
+      if (tg.side !== u.side) breakStatuses(ctx, id, 'reveal', a.id)
       return 0
     }
     case 'corpse.eat': {

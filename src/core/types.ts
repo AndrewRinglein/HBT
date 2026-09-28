@@ -197,6 +197,13 @@ export type AbilityEffect =
   | { readonly kind: 'knockback'; readonly value: import('./trigger.js').ValueSpec }
   /** capability.corpses: eat one corpse within `radius` — heal and battle-long stat gains to the eater. Refused (canUsePower) when none is in reach. */
   | { readonly kind: 'corpse.eat'; readonly radius: number; readonly heal: number; readonly mods: Readonly<Partial<Record<import('./stats.js').StatName, number>>>; readonly maxHp?: number }
+  /**
+   * capability.stealth (2026-09-28): "whenever a reveal effect finds you" — on each
+   * resolved target of the OTHER side, every status that breaks on a reveal is
+   * broken. The radius is the power's own area targeting; a reveal is not an
+   * attack, so it breaks nothing else (SWITCHES.md stealthRevealShape).
+   */
+  | { readonly kind: 'reveal' }
 
 /**
  * THE ONE ACTION TYPE — refactor.one-action-type (2026-09-04). Ruled three

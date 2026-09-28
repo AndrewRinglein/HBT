@@ -93,10 +93,29 @@ export type StatusDef = {
    * unit, that unit is out of every OPPOSING AI's view — not a target, not a
    * threat, not counted in any score (hiddenFrom, read by the AI through
    * livingEnemies, nearestEnemy and its action list). Its own side sees it.
-   * This is the AI's view only: whether a hidden unit may be targeted at all,
-   * and what breaks it, is the stealth row's (SWITCHES.md aiSightLegality).
+   * This is the AI's view only. Whether a hidden unit may be targeted at all is
+   * `untargetable`, and what breaks it the `breaksOn` flags (capability.stealth).
    */
   readonly hidesFromFoes?: boolean
+  /**
+   * capability.stealth (2026-09-28): "cannot be targeted by an attack" (the Codex
+   * stealth definition, CODEX.md 475). While positive, no unit of the OTHER side
+   * may aim an attack or a power at its carrier (canAttack, canUsePower — so the
+   * preview, the action list, the AI and hero commands agree). Area effects,
+   * terrain and auras still reach it: they are not aimed at it (SWITCHES.md
+   * stealthPowerAim). Read by untargetableBy, never by name.
+   */
+  readonly untargetable?: boolean
+  /**
+   * capability.stealth: "It breaks the moment you use an attack or a power, and
+   * whenever a reveal effect finds you — moving never breaks it." Each flag names
+   * one thing that removes the status outright (breakStatuses, src/core/mutate.ts),
+   * logged as status.expired with the attack, power or reveal as its cause and
+   * `broken` saying which. Nothing that moves reads them.
+   */
+  readonly breaksOnAttack?: boolean
+  readonly breaksOnPower?: boolean
+  readonly breaksOnReveal?: boolean
   /**
    * Applied onto a unit holding `cancels`, the two annihilate one for one
    * (rule.burn-frost-cancel: "Burn and Frost annihilate one for one on
@@ -400,6 +419,15 @@ export function isRooted(ctx: Ctx, u: Unit): boolean {
 export function hiddenFrom(ctx: Ctx, viewer: Unit, target: Unit): boolean {
   if (target.side === viewer.side) return false
   return target.statuses.some((s) => s.value > 0 && ctx.statuses[s.id]?.hidesFromFoes === true)
+}
+/**
+ * capability.stealth: may `actor` not aim at `target` — a unit of the other side
+ * carrying a positive status whose row makes it untargetable? Its own side may
+ * (a heal on a stealthed ally is not an attack). Reads the row's flag, never a name.
+ */
+export function untargetableBy(ctx: Ctx, actor: Unit, target: Unit): boolean {
+  if (target.side === actor.side) return false
+  return target.statuses.some((s) => s.value > 0 && ctx.statuses[s.id]?.untargetable === true)
 }
 /** capability.taunt: the unit this one must target, if a live taunt names one that still stands. */
 export function forcedTargetOf(ctx: Ctx, u: Unit): number | null {

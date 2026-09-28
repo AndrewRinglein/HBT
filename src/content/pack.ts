@@ -15,7 +15,9 @@ import { formatOf, validBoard, MAX_BOARD_CELLS, type Board } from '../core/hex.j
 import { decodeProps, decodeFloor } from '../core/props.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
-const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat', 'stamina.gain']
+const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat', 'stamina.gain',
+  // capability.stealth, 2026-09-28
+  'reveal']
 export function validateActionMetadata(row: { readonly id: string; readonly slot?: unknown; readonly free?: unknown }): void {
   if (row.slot !== undefined && !['movement', 'primary', 'either'].includes(row.slot as string)) throw new Error(`unit pack: invalid action slot '${String(row.slot)}' on '${row.id}'`)
   if (row.free !== undefined && typeof row.free !== 'boolean') throw new Error(`unit pack: invalid free action flag on '${row.id}'`)
@@ -157,7 +159,9 @@ const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage'
   // v2.kdb, 2026-09-23: the prone row a KDB "down" applies (COMBAT-V2 §9.2)
   'kdbDown',
   // ai.sight, 2026-09-27: out of every opposing AI's view while positive
-  'hidesFromFoes'] as const
+  'hidesFromFoes',
+  // capability.stealth, 2026-09-28: not a target of the other side; what breaks it
+  'untargetable', 'breaksOnAttack', 'breaksOnPower', 'breaksOnReveal'] as const
 const PRONE_NUMBERS = ['accuracyAgainst', 'dodge', 'damageAgainst', 'accuracy', 'damage'] as const
 export function packStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { statuses?: Readonly<Record<string, PackStatusRow>> }).statuses ?? {}
@@ -181,6 +185,8 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
       if (typeof p['standAction'] !== 'string' || !/^power\./.test(p['standAction'])) throw Error(`${where}: prone.standAction on '${k}' is not a power id`)
     }
     if (r.kdbDown !== undefined && (r.kdbDown !== true || r.prone === undefined)) throw Error(`${where}: kdbDown on '${k}' must be true, on a prone status`)
+    // ai.sight / capability.stealth: on or absent, never false or a number
+    for (const f of ['hidesFromFoes', 'untargetable', 'breaksOnAttack', 'breaksOnPower', 'breaksOnReveal'] as const) if (r[f] !== undefined && r[f] !== true) throw Error(`${where}: ${f} on '${k}' must be true or absent`)
     if (r.tickDamageType!==undefined&&!isDamageType(r.tickDamageType))throw Error(`${where}: invalid tick damage type on '${k}'`)
     if (r.tick === 'damage' && r.tickDamageType === undefined) throw new Error(`${where}: status '${k}' ticks damage with no type`)
     const { tick, ...def } = r

@@ -4874,7 +4874,9 @@
   "probeIds": [
    "status.stealth",
    "test.status.cloak"
-  ]
+  ],
+  "status": "done",
+  "sha": "2900fdc"
  },
  {
   "id": "fix.raise-range",

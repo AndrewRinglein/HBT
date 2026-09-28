@@ -16,7 +16,7 @@ import { segmentCrossesCell } from './los.js'
 import { centerPoint, segmentCrossesPolygon } from './geometry.js'
 import { canSeeHex } from './vision.js'
 import { forcedTargetOf, isBlocked } from './status.js'
-import { damageProp, emit, unit } from './mutate.js'
+import { breakStatuses, damageProp, emit, unit } from './mutate.js'
 
 /**
  * The attack line to a prop's hex. A high prop blocks it as it blocks any attack
@@ -72,6 +72,7 @@ export function attackProp(ctx: Ctx, attackerId: number, hex: number, attackId: 
   const at = unit(ctx, attackerId), a = ctx.actions[attackId] as AttackDef
   const destroy = attackPacketFields(a.attack).destroy!
   spendAction(ctx, attackerId, a, resolveActionSlot(ctx, at, a, slot)!)
+  breakStatuses(ctx, attackerId, 'attack', a.id)   // capability.stealth: a blow at a prop is an attack
   const props = propsTouching(ctx, [hex])
   emit(ctx, 'prop.struck', a.id, { actor: attackerId, hex, attackId: a.id, kind: a.attack.kind, destroy, props: props.map(p => p.id), distance: ctx.geo.distance(at.hex, hex) })
   for (const p of props) damageProp(ctx, p.id, destroy, a.id, attackerId)

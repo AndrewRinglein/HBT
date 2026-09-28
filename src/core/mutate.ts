@@ -334,6 +334,25 @@ export function standUp(ctx: Ctx, unitId: number, causeId: string): void {
   emit(ctx, 'unit.stood', causeId, { actor: unitId, hex: u.hex, statusIds: ids })
 }
 
+/**
+ * capability.stealth (2026-09-28): the statuses on this unit that break on this
+ * kind of use — its own attack, its own power, or a reveal that found it — are
+ * removed outright, each one status.expired line naming the attack, power or
+ * reveal as its cause and `broken` saying which (the viewer already drops a
+ * status on status.expired). Read inline off ctx: status.ts imports this file.
+ * Nothing that moves calls it ("moving never breaks it").
+ */
+export function breakStatuses(ctx: Ctx, unitId: number, by: 'attack' | 'power' | 'reveal', causeId: string): void {
+  const u = unit(ctx, unitId)
+  const flag = by === 'attack' ? 'breaksOnAttack' : by === 'power' ? 'breaksOnPower' : 'breaksOnReveal'
+  // u.statuses is kept sorted by id, so the lines come in id order (Law 6)
+  const ids = u.statuses.filter((s) => s.value > 0 && ctx.statuses[s.id]?.[flag] === true).map((s) => s.id)
+  for (const id of ids) {
+    u.statuses.splice(u.statuses.findIndex((s) => s.id === id), 1)
+    emit(ctx, 'status.expired', causeId, { target: unitId, statusId: id, broken: by })
+  }
+}
+
 export function removeStatus(ctx: Ctx, unitId: number, id: string, causeId: string): void {
   const u = unit(ctx, unitId)
   const i = u.statuses.findIndex((s) => s.id === id)
