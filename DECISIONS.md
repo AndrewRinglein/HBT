@@ -3040,3 +3040,16 @@ Andrew, on the Armory Ledger (every weapon, shield, custom tier 3–6 series, ti
 Ruled:
 
 - **Every row of the Armory Ledger is approved as shown**, including the names and readings Claude proposed and the defaults its row questions state. **It is revisited at balance**, not before.
+
+## 2026-09-28 — the opening's maps: whole size, the painted gate, ground types by letter; the first two battles are clear-the-map
+
+Andrew, asked which Gates map, whether the big maps are used whole, whether Claude or he assigns ground types, and what counts as a rescue:
+
+> Why don't you show me all the maps you have in a viewer? Yeah, all these maps should be sized to the right size.  It should be the more recent Abbotitown gate painted.  And the maps should be capable of aligning pretty well with low cover, terrain, trees, and all the various terrain. It looks like it traces back pretty well, but we can discuss each of the maps. You should assign each ground type and then give me a preview map with a letter for what each of the ground types is, and I can just verify that's what I think that's supposed to be.  The rescue battles aren't really defined differently. I think for both of these first two battles, we're going to have victory be "kill all the enemies, clear the map of all enemies."
+
+Ruled:
+
+- **The six opening maps are used at their own size** (Orphanage 20×14, Lumberjack House 20×14, Bridge 40×20, Cavern Trail 40×16, Gates 50×20, Cathedral 20×40).
+- **Gates is `assets/battle-atlas/maps/abbotown-gate-painted.json`**, the more recent painted gate.
+- **Claude assigns every hex's ground type** from each scene (low cover, trees, water, walls, all of it), and shows a preview with **a letter per hex** for Andrew to verify, map by map.
+- **Battles 1 and 2 (Orphanage, Lumberjack House): victory is clearing the map of every enemy.** A rescue battle is not a different kind of battle.
