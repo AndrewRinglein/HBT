@@ -193,7 +193,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   const u = unit(ctx, unitId)
   const props=ctx.state.props,passable=passableFor(ctx,u,props),edgeCost=preparedLowEdgeCost(ctx,props)
   if (power.move.shape !== 'path' || movementReason(ctx, u, power, slot) || isRooted(ctx, u)) return 0
-  let allowance = Math.max(0, u.movePointsLeft + power.move.budgetMod)
+  const allowance = Math.max(0, u.movePointsLeft + power.move.budgetMod)
   const occupied = occupancy(ctx)
   let from = u.hex, asked = 0
   for (const hex of path) {
@@ -205,9 +205,20 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
 
   spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: path[path.length - 1], hexes: path.length })
+  return walkSteps(ctx, unitId, path, power.id, allowance, Math.max(0, power.move.budgetMod), onStep)
+}
 
+/**
+ * THE STEP LOOP — the one walk every path-shaped movement takes, one hex at a
+ * time (COMBAT-SEQUENCE.md): points, attacks of opportunity, enter and spend,
+ * the ground's entry beat, the step hook. Split out of executeMove for
+ * capability.charge (2026-09-27), whose walk is the same walk; the caller has
+ * already validated the path and paid for the action. `causeId` names the
+ * action on every move event (Law 12). Returns the hexes actually moved.
+ */
+export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: string, allowance: number, bonusLeft: number, onStep?: StepHook): number {
+  const u = unit(ctx, unitId)
   let moved = 0
-  let bonusLeft = Math.max(0, power.move.budgetMod)
   const provoked = new Set<number>()   // once per enemy per activation
   for (const hex of path) {
     // 1. movement points — hills cost 2
@@ -233,7 +244,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
       }
       if (struck) {
         u.movePointsLeft = 0   // "you lose movement" — the rest of this activation's steps are gone
-        emit(ctx, 'move.stopped', power.id, { actor: unitId, hex: u.hex, reason: 'hit' })
+        emit(ctx, 'move.stopped', causeId, { actor: unitId, hex: u.hex, reason: 'hit' })
         break
       }
     }
@@ -242,7 +253,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     const bonusPaid = Math.min(bonusLeft, cost)
     bonusLeft -= bonusPaid
     allowance -= cost
-    moveUnit(ctx, unitId, hex, cost, power.id, terrainIdOf(terrainHere), bonusPaid)
+    moveUnit(ctx, unitId, hex, cost, causeId, terrainIdOf(terrainHere), bonusPaid)
     moved++
     // 4. traps — none in the baseline
     // 5. the ground's entry beat — one funnel for every way into a hex (core/ground.ts):

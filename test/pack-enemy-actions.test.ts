@@ -136,10 +136,15 @@ describe('pack.enemy-actions — the pack carries the Codex rows', () => {
 
   it('what the engine cannot express is a NAMED gap, never silently dropped or guessed', () => {
     const gaps = GAPS()
-    // Charge moves N hexes AND attacks as one action: no such action resolves in the engine
+    // Charge moves N hexes AND attacks as one action. Until capability.charge (2026-09-27)
+    // no engine action resolved both, so it was a named gap. REWRITTEN (Law 10) from "is a
+    // gap" to the rule that assertion protected: carried or named, and never a PLAIN attack
+    // with its move dropped — a carried Charge keeps the Codex row's hexes. The mechanism
+    // itself is test/charge.test.ts.
     const [cu, cm] = CHARGE
-    expect(PACK.authoredAttacks[cm], `${cm} must not be carried as a plain attack`).toBeUndefined()
-    expect(gaps.some((g) => g.unit === cu && g.what.includes(cm)), `${cm} named`).toBe(true)
+    const carried = PACK.authoredAttacks[cm]
+    expect(carried !== undefined || gaps.some((g) => g.unit === cu && g.what.includes(cm)), `${cm} carried or named`).toBe(true)
+    if (carried) expect(carried.hexes, `${cm} must not be carried as a plain attack`).toBe(moveRow(cu, cm).hexes)
     // the hounds' movement ignores zones of control: no movement power says "provokes nothing" on a walk
     for (const id of HOUNDS) expect(gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC gap`).toBe(true)
     // the carried moves are no longer gaps, and no gap still calls the kind unapproved (approved 2026-09-02)

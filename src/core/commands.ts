@@ -1,7 +1,7 @@
 // The session boundary owns whose input is accepted. Resolution stays in the
 // same attack, power and movement functions used by automatic battles.
 import type { Ctx } from './types.js'
-import { actionReady, grantedActionIds, isAttack, isBurst, isMove, resolveActionSlot } from './action.js'
+import { actionReady, grantedActionIds, isAttack, isBurst, isCharge, isMove, resolveActionSlot } from './action.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { burstCentres, canUseBurst, useBurst } from './burst.js'
 import { canUsePower, usePower } from './ability.js'
@@ -14,6 +14,7 @@ import { selectActivation } from './mutate.js'
 import { isUnitUid } from './identity.js'
 import { canSwap, performSwap } from './swap.js'
 import { attackProp, canAttackHex, propAttackHexes } from './prop-attack.js'
+import { executeCharge, planCharge, type ChargePlan } from './charge.js'
 export { activationChoices, controllerOf, type ControlPolicy } from './control.js'
 
 /** Shared action input; session ownership is supplied separately from client data. */
@@ -30,6 +31,8 @@ type Plan = { kind: 'attack'; actor: number; actionId: string; target: number; s
   | { kind: 'burst'; actor: number; actionId: string; centre: number; slot: import('./types.js').ActionSlot }
   | { kind: 'prop-attack'; actor: number; actionId: string; hex: number; slot: import('./types.js').ActionSlot }
   | MovementPlan
+  /** capability.charge: a walk and an attack as one action, aimed at a unit (core/charge.ts). */
+  | ChargePlan
 const reject = (reason: string): Rejection => ({ ok: false, reason })
 const integer = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0
 function record(v: unknown): v is Record<string, unknown> {
@@ -63,11 +66,12 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   }
   if (centred) return reject('malformed-target')
   if (hexed) {
-    if (!isAttack(a) || !integer(request.hex) || request.hex >= ctx.state.terrain.length) return reject('malformed-hex')
+    if (!isAttack(a) || isCharge(a) || !integer(request.hex) || request.hex >= ctx.state.terrain.length) return reject('malformed-hex')
     if (forcedTargetOf(ctx, u) !== null) return reject('forced-target')
     return canAttackHex(ctx, actor, request.hex, actionId, slot) ? { kind: 'prop-attack', actor, hex: request.hex, actionId, slot } : reject('illegal-hex-or-action')
   }
-  if (isMove(a)) {
+  // capability.charge: a charge carries a move profile but is aimed at a unit, not a hex
+  if (isMove(a) && !isCharge(a)) {
     if (aimed || !integer(request.destination) || request.destination >= ctx.state.terrain.length) return reject('malformed-destination')
     return planMovement(ctx, actor, actionId, request.destination, slot)
   }
@@ -75,6 +79,7 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   const target = request.target
   const forced = forcedTargetOf(ctx, u)
   if (ctx.state.units[target]!.side !== u.side && forced !== null && target !== forced) return reject('forced-target')
+  if (isCharge(a)) return planCharge(ctx, actor, target, actionId, slot)
   if (isAttack(a)) return canAttack(ctx, actor, target, actionId, slot) ? { kind: 'attack', actor, target, actionId, slot } : reject('illegal-target-or-action')
   return canUsePower(ctx, actor, target, actionId, slot) ? { kind: 'power', actor, target, actionId, slot } : reject('illegal-target-or-action')
 }
@@ -121,12 +126,12 @@ export function legalActions(ctx: Ctx, actor: number): ActionRequest[] {
     // hex and took the control battles from 32 s to 167 s, 86% of it in
     // planMovement. test/ai-action-list.test.ts holds every listed destination
     // to validateAction across the control battles.
-    if (isMove(a)) { for (const plan of movementOptions(ctx, actor, actionId)) out.push({ actor, actionId, destination: plan.destination }); continue }
+    if (isMove(a) && !isCharge(a)) { for (const plan of movementOptions(ctx, actor, actionId)) out.push({ actor, actionId, destination: plan.destination }); continue }
     const candidates: ActionRequest[] = []
     if (isBurst(a)) for (const centre of burstCentres(ctx, actor, actionId)) candidates.push({ actor, actionId, centre })
     else {
       for (let target = 0; target < ctx.state.units.length; target++) candidates.push({ actor, actionId, target })
-      if (isAttack(a)) for (const hex of propAttackHexes(ctx, actor, actionId)) candidates.push({ actor, actionId, hex })
+      if (isAttack(a) && !isCharge(a)) for (const hex of propAttackHexes(ctx, actor, actionId)) candidates.push({ actor, actionId, hex })
     }
     for (const c of candidates) if (validateAction(ctx, c).ok) out.push(c)
   }
@@ -137,6 +142,7 @@ function resolvePlan(ctx: Ctx, plan: Plan): void {
   else if (plan.kind === 'prop-attack') { attackProp(ctx, plan.actor, plan.hex, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
   else if (plan.kind === 'attack') { performAttack(ctx, plan.actor, plan.target, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
   else if (plan.kind === 'power') { usePower(ctx, plan.actor, plan.target, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
+  else if (plan.kind === 'charge') executeCharge(ctx, plan)
   else if (plan.power.move.shape === 'path') executeMove(ctx, plan.actor, plan.path, plan.power, undefined, plan.slot)
   else if (plan.power.move.shape === 'sidestep') executeSidestep(ctx, plan.actor, plan.destination, plan.power, plan.slot)
   else executeFlight(ctx, plan.actor, plan.destination, plan.power, plan.slot)

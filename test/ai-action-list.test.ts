@@ -164,7 +164,9 @@ describe('the action list', () => {
       const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(12, 12) }])
       const u = ctx.state.units[0]!
       // the first registry row of that shape that actually moves (ids sorted — Law 6)
-      const id = Object.keys(ctx.actions).sort().find((k) => { const m = ctx.actions[k]!.move; return m?.shape === shape && !(ctx.actions[k]!.effects ?? []).some((e) => e.kind === 'stand') && (shape !== 'sidestep' || (m.stepRange ?? 1) > 1) })!
+      // (capability.charge, 2026-09-27: a charge — move AND attack — walks to a unit, never to a
+      // listed destination, so it is not a movement row here; Law 10, the rule is unchanged)
+      const id = Object.keys(ctx.actions).sort().find((k) => { const m = ctx.actions[k]!.move; return m?.shape === shape && !ctx.actions[k]!.attack && !(ctx.actions[k]!.effects ?? []).some((e) => e.kind === 'stand') && (shape !== 'sidestep' || (m.stepRange ?? 1) > 1) })!
       expect(id, shape).toBeDefined()
       u.actions = [...u.actions.filter((a) => !ctx.actions[a]?.move), id]
       u.stamina = u.maxStamina

@@ -454,6 +454,9 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   const a = ctx.actions[attackId]
   if (!a || !isAttack(a)) return false
   attackPacketFields(a.attack)
+  // capability.charge (2026-09-27): a charge walks before it strikes; a reaction
+  // does not walk, so a charge is never an attack of opportunity (SWITCHES.md chargeNoReaction)
+  if (mode === 'reaction' && a.move !== undefined) return false
   if (at.lifeState !== 'standing') return false
   // fix.downed-targetable (2026-09-03): a DOWNED unit can be attacked — GAME-
   // DESIGN §9, "enemies roll at +20 against downed heroes". Only the dead are

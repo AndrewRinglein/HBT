@@ -17181,3 +17181,126 @@ index ae5e36a..230b794 100644
   ok  plumbing.shield-class
   ok  pack.derived-rows
   ok  pack.enemy-actions
+
+## capability.charge — LANDED `7356b2d` **NEEDS REVIEW**
+2026-09-28 00:02
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1170 · SWITCHES.md:1286
+  PASS  typecheck
+  PASS  the item's own tests — test/ai-action-list.test.ts, test/battle-cursor.test.ts, test/one-action-type.test.ts, test/pack-enemy-actions.test.ts, test/charge.test.ts
+  PASS  gate 1 — the id appears in a real battle — move.fast-zombie.charge: 10 log lines, 10 fired, 5 changed state · move.iron-colossus.charge: 13 log lines, 13 fired, 7 changed state
+  PASS  brought its own tests — test/ai-action-list.test.ts, test/battle-cursor.test.ts, test/one-action-type.test.ts, test/pack-enemy-actions.test.ts, test/charge.test.ts, test/fixtures/battle-cursor-charge.json
+  WARN  existing tests untouched — DELETED LINES in test/ai-action-list.test.ts (-1), test/battle-cursor.test.ts (-2), test/one-action-type.test.ts (-2), test/pack-enemy-actions.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — move.fast-zombie.charge live · move.iron-colossus.charge live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without move.fast-zombie.charge,move.iron-colossus.charge — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ai-action-list.test.ts b/test/ai-action-list.test.ts
+index 097e4b2..44e1deb 100644
+--- a/test/ai-action-list.test.ts
++++ b/test/ai-action-list.test.ts
+@@ -165,5 +165,7 @@ describe('the action list', () => {
+       const u = ctx.state.units[0]!
+       // the first registry row of that shape that actually moves (ids sorted — Law 6)
+-      const id = Object.keys(ctx.actions).sort().find((k) => { const m = ctx.actions[k]!.move; return m?.shape === shape && !(ctx.actions[k]!.effects ?? []).some((e) => e.kind === 'stand') && (shape !== 'sidestep' || (m.stepRange ?? 1) > 1) })!
++      // (capability.charge, 2026-09-27: a charge — move AND attack — walks to a unit, never to a
++      // listed destination, so it is not a movement row here; Law 10, the rule is unchanged)
++      const id = Object.keys(ctx.actions).sort().find((k) => { const m = ctx.actions[k]!.move; return m?.shape === shape && !ctx.actions[k]!.attack && !(ctx.actions[k]!.effects ?? []).some((e) => e.kind === 'stand') && (shape !== 'sidestep' || (m.stepRange ?? 1) > 1) })!
+       expect(id, shape).toBeDefined()
+       u.actions = [...u.actions.filter((a) => !ctx.actions[a]?.move), id]
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 230b794..6f10c6b 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -101,4 +101,13 @@ const enemyActionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
+ // the enemy-actions capture and runs every older layer unchanged. No state field was added.
+ const accuracyModGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-accuracy-mod.json', import.meta.url), 'utf8'))
++// capability.charge (2026-09-27), Law 10: the pack carries the Codex Charge rows (a walk and an
++// attack as one action) and the Iron Colossus's noPrimaryAction. Every case's full current hashes
++// are frozen here (tools/capture-charge-cursor.mts); a case marked `changed` (it fields a Fast
++// Zombie — alpha-team, civilians, eve-24-a/-b, farmers-grown, item-powers, prologue-enemies,
++// prologue-party: the zombie's action list carries the charge, and where it charges the battle
++// differs) is checked against these and skips every older layer its battle no longer matches;
++// every other case is byte-identical to the accuracy-mod capture and runs every older layer
++// unchanged. No state field was added, so no projection. Old fixtures stay immutable.
++const chargeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-charge.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -205,6 +214,9 @@ describe('resumable battle cursor', () => {
+       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const chargeExpected = chargeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const chargeMoved = chargeExpected?.changed === true
+       const accuracyModExpected = accuracyModGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const accuracyModMoved = accuracyModExpected?.changed === true
++      // was: const accuracyModMoved = accuracyModExpected?.changed === true — a charge-moved case skips the accuracy-mod layer too (capability.charge 2026-09-27)
++      const accuracyModMoved = accuracyModExpected?.changed === true || chargeMoved
+       // was: const enemyActionsMoved = enemyActionsExpected?.changed === true — an accuracy-mod-moved case skips the enemy-actions layer too (fix.enemy-accuracy-mod 2026-09-27)
+       const enemyActionsMoved = enemyActionsExpected?.changed === true || accuracyModMoved
+@@ -236,5 +248,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (accuracyModExpected) {
++        if (chargeExpected) {
++        expect(hash(ctx.events), 'full charge events').toBe(chargeExpected.events)
++        expect(hash(ctx.state), 'full charge state').toBe(chargeExpected.state)
++        expect(hash(ctx.rng.log), 'full charge RNG').toBe(chargeExpected.rng)
++        expect(result).toEqual(chargeExpected.result)
++        }
++        // was: if (accuracyModExpected) { — capability.charge (2026-09-27): a moved case is checked above instead
++        if (accuracyModExpected && !chargeMoved) {
+         expect(hash(ctx.events), 'full accuracy-mod events').toBe(accuracyModExpected.events)
+         expect(hash(ctx.state), 'full accuracy-mod state').toBe(accuracyModExpected.state)
+diff --git a/test/one-action-type.test.ts b/test/one-action-type.test.ts
+index e0ee240..96519d8 100644
+--- a/test/one-action-type.test.ts
++++ b/test/one-action-type.test.ts
+@@ -15,5 +15,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { ACTIONS, ATTACKS, ABILITIES, BURSTS } from '../src/content/index.js'
+ import { MOVES } from '../src/content/moves.js'
+-import { actionReady, attacksOf, burstsOf, isBurst, isAttack, isMove, isPower, movesOf, powersOf, spendAction } from '../src/core/action.js'
++import { actionReady, attacksOf, burstsOf, isBurst, isAttack, isCharge, isMove, isPower, movesOf, powersOf, spendAction } from '../src/core/action.js'
+ import { canAttack, performAttack } from '../src/core/pipeline.js'
+ import { canUsePower, usePower } from '../src/core/ability.js'
+@@ -30,5 +30,9 @@ describe('one registry, four views', () => {
+     expect(all.length).toBe(Object.keys(ATTACKS).length + Object.keys(ABILITIES).length + Object.keys(MOVES).length + Object.keys(BURSTS).length)
+     for (const a of all) {
+-      const kinds = [isAttack(a), isMove(a), isPower(a), isBurst(a)].filter(Boolean).length
++      // REWRITTEN (Law 10) for capability.charge, 2026-09-27: "any combination" is the
++      // ruling (types.ts), and a charge carries a move AND an attack profile. The rule
++      // this assertion protected is that the four VIEWS partition the registry: a charge
++      // is an attack (attacksOf) and never among the movements (movesOf excludes it).
++      const kinds = [isAttack(a), isMove(a) && !isCharge(a), isPower(a), isBurst(a)].filter(Boolean).length
+       expect(kinds, `${a.id} is exactly one of attack / move / power`).toBe(1)
+       // the limits are one set of fields on every action
+diff --git a/test/pack-enemy-actions.test.ts b/test/pack-enemy-actions.test.ts
+index b5a1e18..d28d3eb 100644
+--- a/test/pack-enemy-actions.test.ts
++++ b/test/pack-enemy-actions.test.ts
+@@ -137,8 +137,13 @@ describe('pack.enemy-actions — the pack carries the Codex rows', () => {
+   it('what the engine cannot express is a NAMED gap, never silently dropped or guessed', () => {
+     const gaps = GAPS()
+-    // Charge moves N hexes AND attacks as one action: no such action resolves in the engine
++    // Charge moves N hexes AND attacks as one action. Until capability.charge (2026-09-27)
++    // no engine action resolved both, so it was a named gap. REWRITTEN (Law 10) from "is a
++    // gap" to the rule that assertion protected: carried or named, and never a PLAIN attack
++    // with its move dropped — a carried Charge keeps the Codex row's hexes. The mechanism
++    // itself is test/charge.test.ts.
+     const [cu, cm] = CHARGE
+-    expect(PACK.authoredAttacks[cm], `${cm} must not be carried as a plain attack`).toBeUndefined()
+-    expect(gaps.some((g) => g.unit === cu && g.what.includes(cm)), `${cm} named`).toBe(true)
++    const carried = PACK.authoredAttacks[cm]
++    expect(carried !== undefined || gaps.some((g) => g.unit === cu && g.what.includes(cm)), `${cm} carried or named`).toBe(true)
++    if (carried) expect(carried.hexes, `${cm} must not be carried as a plain attack`).toBe(moveRow(cu, cm).hexes)
+     // the hounds' movement ignores zones of control: no movement power says "provokes nothing" on a walk
+     for (const id of HOUNDS) expect(gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC gap`).toBe(true)
+```
+</details>

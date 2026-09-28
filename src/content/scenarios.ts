@@ -122,6 +122,18 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.sight-b', note: 'TEST: Osric beside the Shrouded Zombie (hidden from the hero AI all Battle), a plain zombie four hexes off. Osric goes for the one he can see. No campaign claim.',
     mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-shrouded-zombie', 'test-zombie'], enemyHexes: [86, 89], replicate: 0,
   },
+  // capability.charge (2026-09-27): the two Codex Charge rows, each live in a real
+  // battle — a walk and an attack as one action. The warrior closes to within the
+  // charge's reach in the Hero Phase; the enemy charges in its own. Codex units on a
+  // TEST fielding. No campaign claim.
+  'test.charge-a': {
+    id: 'test.charge-a', note: 'TEST: a warrior against the Fast Zombie nine hexes off; the warrior closes, the zombie charges (move.fast-zombie.charge, 3 hexes). No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], enemies: ['unit.fast-zombie'], enemyHexes: [94], replicate: 0,
+  },
+  'test.charge-b': {
+    id: 'test.charge-b', note: 'TEST: a warrior against the Iron Colossus eight hexes off; the warrior closes, the Colossus charges (move.iron-colossus.charge, 2 hexes, cd 4) and, having no primary action, does nothing more that Activation. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], enemies: ['unit.iron-colossus'], enemyHexes: [93], replicate: 0,
+  },
   // v2.knockback-collisions (2026-09-23): a real battle whose pushes are stopped by
   // authored props (content test.map.well-shove, 9x7). The golem stands between two
   // zombies on the middle row; every push it lands drives one into prop.test.boulder (collision 4)

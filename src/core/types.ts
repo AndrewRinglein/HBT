@@ -463,6 +463,15 @@ export type MoveProfile = {
   readonly stepRange?: number
   /** Added to the unit's movement-point budget for this action. Move/Sidestep 0; flight-swift +1. */
   readonly budgetMod: number
+  /**
+   * capability.charge (2026-09-27): path-shaped only — this action walks AT MOST
+   * this many movement points, whatever the unit has left beyond it (a Slowed
+   * unit with fewer walks fewer). The Codex row's own field, `hexes` ("move 3
+   * hexes and attack"); terrain costs apply as for any walk (SWITCHES.md
+   * chargeHexesArePoints). Not `stepRange`: that is a sidestep's EXACT distance.
+   * Absent = the unit's own budget (movePointsLeft + budgetMod).
+   */
+  readonly hexes?: number
 }
 
 /** An action seen as an attack: the pipeline's view. */
@@ -734,6 +743,14 @@ export type UnitDef = {
   /** ai.mode-change: the changes this unit's mode makes mid-battle, in listed order. Absent = none. */
   readonly aiChanges?: readonly AiModeChange[]
   /**
+   * capability.charge (2026-09-27): the Iron Colossus "has no primary action at
+   * all; it is entirely movement powers" (ENEMY-REVIEW.md:348). The Codex row's
+   * own field. True = the Activation's primary slot is closed to every action
+   * (resolveActionSlot) — its walk, an either-slot action, spends the movement
+   * slot or nothing. Absent = false.
+   */
+  readonly noPrimaryAction?: boolean
+  /**
    * seam.items-per-unit (2026-09-02): `ai` is derived from the kit's attacks
    * unless the Codex row AUTHORED one — then it survives a re-kit at fielding.
    */
@@ -863,6 +880,8 @@ export type Unit = {
   aiOverride?: { mode: string; untilTurn: number }
   /** ai.mode-change: the changes still to come, own copies; one leaves the list when it happens. Absent = none (snapshots unchanged). */
   aiChanges?: AiModeChange[]
+  /** capability.charge: the row's noPrimaryAction — the primary slot is closed. Absent = open (snapshots unchanged). */
+  noPrimaryAction?: true
   /** ai.encounter-rules: the encounter's AI rules bound to this unit as it arrived, by id, in the row's order. Absent = none (snapshots unchanged). */
   aiRules?: string[]
   /** capability.charges: uses left this Battle, by power id. Only powers with `uses` appear. */

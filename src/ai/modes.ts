@@ -10,7 +10,7 @@ import type { HexId } from './../core/hex.js'
 import { livingEnemies, movementOptions, moveStaminaCost, nearestEnemy, stepRangeOf, usableMoves as readyMoves } from './../core/movement.js'
 import { executeAction, legalActions, type ActionRequest } from './../core/commands.js'
 import type { AttackDef, MoveDef } from './../core/types.js'
-import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, movesOf, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
+import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, isCharge, movesOf, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
 import { attackDef, preview, reachOf } from './../core/pipeline.js'
 import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
 import { previewBurst } from './../core/burst.js'
@@ -235,7 +235,34 @@ function adjacentEnemies(decision: Decision, u: Unit): Unit[] {
  */
 function enemiesInAttackReach(decision: Decision, u: Unit): Unit[] {
   const ctx = decision.ctx
-  return withDowned(decision, u, livingEnemies(ctx, u).filter((e) => attackIdsOf(ctx, u).some((id) => legalTarget(decision, u.id, e.id, id))))
+  return withDowned(decision, u, livingEnemies(ctx, u).filter((e) => strikeIdsOf(ctx, u).some((id) => legalTarget(decision, u.id, e.id, id))))
+}
+
+/**
+ * capability.charge (2026-09-27): the attacks a unit swings where it stands —
+ * every attack but a charge. A charge walks first and is chosen by its own
+ * rule (chargeIfPossible), never as "whatever is in reach" (SWITCHES.md
+ * aiChargeRule). For a unit with no charge this is attackIdsOf exactly.
+ */
+function strikeIdsOf(ctx: Ctx, u: Unit): string[] {
+  return attackIdsOf(ctx, u).filter((id) => !isCharge(ctx.actions[id]!))
+}
+
+/**
+ * capability.charge — the dumb-melee rule (SWITCHES.md aiChargeRule): when the
+ * unit's target is out of reach and a charge at it is on the action list, it
+ * charges instead of walking — the first such charge in the unit's declared
+ * order. The walk and the blow are one action; its primary is still its own.
+ */
+function chargeIfPossible(decision: Decision, u: Unit, target: Unit): boolean {
+  const ctx = decision.ctx
+  const plans = options(decision, u.id).entries
+    .filter((r) => 'target' in r && r.target === target.id && isCharge(ctx.actions[r.actionId]!) && !decision.freeUsed.has(r.actionId)
+      && hintAllows(decision, u.id, r.actionId, { target: target.id }))
+    .map((r) => ({ actionId: r.actionId, target: target.id }))
+  if (!plans.length) return false
+  const r = rank(sceneOf(decision, u), plans, [])
+  return act(decision, { actor: u.id, target: target.id, actionId: r[0]!.plan.actionId }, { choice: 'charge', ranked: r })
 }
 
 /**
@@ -252,7 +279,7 @@ function withDowned(decision: Decision, u: Unit, standing: Unit[]): Unit[] {
   if (mode === 'never') return standing
   if (mode === 'whenNoStanding' && standing.length) return standing
   const downed = ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'downed' && !hiddenFrom(ctx, u, o)
-    && attackIdsOf(ctx, u).some((id) => legalTarget(decision, u.id, o.id, id)))
+    && strikeIdsOf(ctx, u).some((id) => legalTarget(decision, u.id, o.id, id)))
   return mode === 'always' ? [...downed, ...standing] : downed
 }
 
@@ -279,7 +306,7 @@ function bestAttack(decision: Decision, attackerId: number, targetId: number): s
   // ai.scorer: the switch picks the tiers — bestDamage weighs the preview's
   // damage on a hit; declared weighs nothing, so the declared order decides.
   const tiers: readonly AiTier[] = ctx.cfg.switches.aiAttackChoice === 'bestDamage' ? [{ damage: 1 }] : []
-  const plans = attackIdsOf(ctx, u).filter((id) => legalTarget(decision, attackerId, targetId, id)).map((id) => ({ actionId: id, target: targetId }))
+  const plans = strikeIdsOf(ctx, u).filter((id) => legalTarget(decision, attackerId, targetId, id)).map((id) => ({ actionId: id, target: targetId }))
   return rank(sceneOf(decision, u), plans, tiers)[0]?.plan.actionId ?? null
 }
 
@@ -323,7 +350,7 @@ function burstIfUseful(decision: Decision, u: Unit): boolean {
   const plans: Plan[] = []
   let ordinary = 0
   for (const attack of attacksOf(ctx, u)) for (const enemy of livingEnemies(ctx, u)) {
-    if (legalTarget(decision, u.id, enemy.id, attack.id)) ordinary = Math.max(ordinary, preview(ctx, u.id, enemy.id, attack.id).damageOnHit)
+    if (!isCharge(attack) && legalTarget(decision, u.id, enemy.id, attack.id)) ordinary = Math.max(ordinary, preview(ctx, u.id, enemy.id, attack.id).damageOnHit)
   }
   for (const id of bursts) {
     for (const centre of options(decision, u.id).entries.flatMap(r => r.actionId === id && 'centre' in r ? [r.centre] : [])) {
@@ -371,13 +398,13 @@ function attackIfPossible(decision: Decision, u: Unit, candidates: Unit[]): bool
   const ctx = decision.ctx
   // WHOM TO ATTACK: the row's target preference over every candidate the unit
   // can legally strike, each with the attack it would swing (bestAttack).
-  const r = rankTargets(decision, u, candidates.filter(t => attackIdsOf(ctx, u).some(id => legalTarget(decision, u.id, t.id, id))),
+  const r = rankTargets(decision, u, candidates.filter(t => strikeIdsOf(ctx, u).some(id => legalTarget(decision, u.id, t.id, id))),
     (t) => bestAttack(decision, u.id, t.id)!)
   if (!r.length) return false
   const target = ranked(decision, r, 0)
   const attackId = r[0]!.plan.actionId
   // Did stamina force a worse attack than the unit would have preferred?
-  const want = attacksOf(ctx, u)[0]
+  const want = attacksOf(ctx, u).find((a) => !isCharge(a))   // capability.charge: a charge is never the swing it wanted
   const preferred = want?.id
   if (want && preferred !== attackId) {
     if (u.stamina < want.staminaCost) {
@@ -398,7 +425,8 @@ function dumbMelee(decision: Decision, u: Unit): void {
   const target = anchorUnit(decision, u)
   if (!target) return
 
-  if (ctx.geo.distance(u.hex, target.hex) > 1) {
+  // capability.charge: out of reach with a charge on the list, the unit charges instead of walking
+  if (ctx.geo.distance(u.hex, target.hex) > 1 && !chargeIfPossible(decision, u, target)) {
     // The movement CHOICE (2026-08-21): first affordable path-shaped power in
     // the unit's declared order; a stamina-starved unit falls back to its free
     // sidestep rather than standing refused.

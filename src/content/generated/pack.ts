@@ -1047,6 +1047,7 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
+        "move.fast-zombie.charge",
         "attack.zombie.claw"
       ],
       "abilities": [],
@@ -1397,6 +1398,7 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
+        "move.iron-colossus.charge",
         "move.iron-colossus.clobber"
       ],
       "abilities": [
@@ -1408,7 +1410,8 @@ export const UNIT_PACK = {
       "tags": [
         "construct"
       ],
-      "triggers": []
+      "triggers": [],
+      "noPrimaryAction": true
     },
     {
       "typeId": "unit.lieutenant-demon",
@@ -2823,6 +2826,19 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0
     },
+    "move.fast-zombie.charge": {
+      "slot": "movement",
+      "id": "move.fast-zombie.charge",
+      "name": "Charge",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "accuracy": 10,
+      "hexes": 3
+    },
     "attack.zombie.claw": {
       "id": "attack.zombie.claw",
       "name": "claw",
@@ -2936,6 +2952,20 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0
+    },
+    "move.iron-colossus.charge": {
+      "slot": "movement",
+      "id": "move.iron-colossus.charge",
+      "name": "Charge",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "accuracy": -10,
+      "cooldown": 4,
+      "hexes": 2
     },
     "move.iron-colossus.clobber": {
       "slot": "movement",

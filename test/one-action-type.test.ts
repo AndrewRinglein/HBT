@@ -14,7 +14,7 @@ import { runBattle } from '../src/core/battle.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { ACTIONS, ATTACKS, ABILITIES, BURSTS } from '../src/content/index.js'
 import { MOVES } from '../src/content/moves.js'
-import { actionReady, attacksOf, burstsOf, isBurst, isAttack, isMove, isPower, movesOf, powersOf, spendAction } from '../src/core/action.js'
+import { actionReady, attacksOf, burstsOf, isBurst, isAttack, isCharge, isMove, isPower, movesOf, powersOf, spendAction } from '../src/core/action.js'
 import { canAttack, performAttack } from '../src/core/pipeline.js'
 import { canUsePower, usePower } from '../src/core/ability.js'
 import { usableMoves } from '../src/core/movement.js'
@@ -29,7 +29,11 @@ describe('one registry, four views', () => {
     const all = Object.values(ACTIONS)
     expect(all.length).toBe(Object.keys(ATTACKS).length + Object.keys(ABILITIES).length + Object.keys(MOVES).length + Object.keys(BURSTS).length)
     for (const a of all) {
-      const kinds = [isAttack(a), isMove(a), isPower(a), isBurst(a)].filter(Boolean).length
+      // REWRITTEN (Law 10) for capability.charge, 2026-09-27: "any combination" is the
+      // ruling (types.ts), and a charge carries a move AND an attack profile. The rule
+      // this assertion protected is that the four VIEWS partition the registry: a charge
+      // is an attack (attacksOf) and never among the movements (movesOf excludes it).
+      const kinds = [isAttack(a), isMove(a) && !isCharge(a), isPower(a), isBurst(a)].filter(Boolean).length
       expect(kinds, `${a.id} is exactly one of attack / move / power`).toBe(1)
       // the limits are one set of fields on every action
       expect(typeof a.staminaCost, a.id).toBe('number')

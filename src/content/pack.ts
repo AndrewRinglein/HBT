@@ -213,6 +213,12 @@ export type PackAttackRow = {
   readonly applies?: { readonly statusId: string; readonly value: number };
   readonly crit?: number; readonly hits?: number; readonly cooldown?: number; readonly warmup?: number
   readonly powerScale?: number; readonly accuracy?: number; readonly critCount?: number; readonly uses?: number; readonly free?: boolean
+  /**
+   * capability.charge (2026-09-27): the Codex move row's `hexes` — the attack is
+   * a CHARGE, walking at most this many movement points to its target first.
+   * Lifted to a path-shaped move profile beside the attack profile.
+   */
+  readonly hexes?: number
 }
 /** A movement row as the pack writes it. */
 export type PackMoveRow = {
@@ -226,10 +232,12 @@ export function liftAttack(r: PackAttackRow): AttackDef {
   validateActionMetadata(r)
   validateBurstAction(r as unknown as ActionDef)
   if(!isDamageType(r.damageType))throw Error(`unit pack: invalid damage type on '${r.id}'`)
-  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free } = r
+  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free, hexes } = r
+  if (hexes !== undefined && (!Number.isSafeInteger(hexes) || hexes < 1)) throw new Error(`unit pack: charge '${id}' has hexes '${String(hexes)}' — a whole number of at least 1`)
   return {
     id, name, source: 'weapon', staminaCost, cooldown: cooldown ?? 0, range: reach, ...(r.slot !== undefined ? { slot: r.slot } : {}),
     ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(free !== undefined ? { free } : {}),
+    ...(hexes !== undefined ? { move: { shape: 'path' as const, budgetMod: 0, hexes } } : {}),   // capability.charge: walk, then this attack
     attack: {
       kind, damageType, bonus, stat, ...attackPacketFields(r),
       ...(applies ? { applies } : {}), ...(crit !== undefined ? { crit } : {}), ...(hits !== undefined ? { hits } : {}),

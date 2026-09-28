@@ -30,6 +30,13 @@ export function actionDef(ctx: Ctx, id: string): ActionDef {
 export const isBurst = (a: ActionDef): a is BurstDef => a.burst !== undefined
 export const isAttack = (a: ActionDef): a is AttackDef => a.attack !== undefined
 export const isMove = (a: ActionDef): a is MoveDef => a.move !== undefined
+/**
+ * capability.charge (2026-09-27): an action carrying BOTH a move profile and an
+ * attack profile — "Move 3, do damage" (the one-action-type ruling, types.ts).
+ * It is aimed at a UNIT, walks to it and attacks it as ONE action (core/charge.ts);
+ * it is never a destination walk, so it is not among the unit's movements.
+ */
+export const isCharge = (a: ActionDef): a is AttackDef & MoveDef => a.attack !== undefined && a.move !== undefined
 /** A power: an action that is neither an attack nor a movement — the effects path resolves it. */
 export const isPower = (a: ActionDef): boolean => a.attack === undefined && a.move === undefined && a.burst === undefined
 
@@ -69,10 +76,10 @@ export function powersOf(ctx: Ctx, u: Unit): ActionDef[] {
   for (const id of grantedActionIds(ctx, u)) { const a = ctx.actions[id]; if (a && isPower(a)) out.push(a) }
   return out
 }
-/** The unit's movements, in its order. */
+/** The unit's movements, in its order. A charge (isCharge) walks, but is aimed at a unit and resolved as its attack — never a destination walk. */
 export function movesOf(ctx: Ctx, u: Unit): MoveDef[] {
   const out: MoveDef[] = []
-  for (const id of grantedActionIds(ctx, u)) { const a = ctx.actions[id]; if (a && isMove(a)) out.push(a) }
+  for (const id of grantedActionIds(ctx, u)) { const a = ctx.actions[id]; if (a && isMove(a) && !isCharge(a)) out.push(a) }
   return out
 }
 /** The ids of the unit's attacks / powers / movements — for the code that indexes by id. */
@@ -124,7 +131,9 @@ export function resolveActionSlot(ctx: Ctx, u: Unit, a: ActionDef, requested?: A
   if (a.slot !== undefined && !['movement', 'primary', 'either'].includes(a.slot)) throw new Error(`invalid action slot on '${a.id}'`)
   if (u.primaryUsed) return null
   const authored = a.slot ?? 'either'
+  // capability.charge: a unit with noPrimaryAction (the Iron Colossus) has no primary slot to spend
   const compatible = (slot: ActionSlot) => (authored === 'either' || authored === slot) && (a.free || slot === 'primary' || !u.moveUsed)
+    && !(slot === 'primary' && u.noPrimaryAction)
   if (requested !== undefined) return compatible(requested) ? requested : null
   const preferred: ActionSlot = ctx.cfg.switches.actionSlots === 'byProfile' && !isMove(a) ? 'primary' : 'movement'
   const other = preferred === 'movement' ? 'primary' : 'movement'

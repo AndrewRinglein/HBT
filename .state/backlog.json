@@ -4833,7 +4833,9 @@
   "variants": [
    "move.fast-zombie.charge",
    "move.iron-colossus.charge"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "7356b2d"
  },
  {
   "id": "capability.move-ignores-zoc",
