@@ -3030,3 +3030,13 @@ Ruled:
 - **Trinket 1 grants a power:** free use, 1 Stamina, cooldown 7 — gain Counterattack until the end of your next turn.
 - **Trinket 2 grants a power:** free use, 1 Stamina, cooldown 7 — gain Fend until the end of your next turn.
 - "Free use" is read as a free action (it spends neither the movement nor the primary action). What "Firestrike" names in the first is asked back, not assumed.
+
+## 2026-09-28 — the Armory Ledger is approved for now
+
+Andrew, on the Armory Ledger (every weapon, shield, custom tier 3–6 series, tier-2 enchantment, relic, bloodrune and trinket from that night, 148 rows; the page's defaults answer the questions flagged on its rows):
+
+“Okay, all of these armors and weapons that you sent me are going to be approved for now. We're going to revisit it later when we're dealing with balance.”
+
+Ruled:
+
+- **Every row of the Armory Ledger is approved as shown**, including the names and readings Claude proposed and the defaults its row questions state. **It is revisited at balance**, not before.
