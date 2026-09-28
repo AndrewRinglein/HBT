@@ -41,3 +41,9 @@ test('the engine glyphs u n H W T are accepted; an unknown glyph is not', () => 
   assert.ok(compileMaps([{ ...map(undefined), rows: ['unHW', 'T...'] }], true)['test.map.props']);
   assert.throws(() => compileMaps([{ ...map(undefined), rows: ['q...', '....'] }], true), /glyph/);
 });
+// fix.opening-maps-off-panel (2026-09-28): a campaign map says panel: false; nothing else is accepted.
+test('panel: false travels through the compiler; any other panel value is refused', () => {
+  assert.equal(compileMaps([{ ...map([prop]), panel: false }], true)['test.map.props'].panel, false);
+  assert.equal(compileMaps([map([prop])], true)['test.map.props'].panel, undefined);
+  for (const panel of [true, 0, 'no']) assert.throws(() => compileMaps([{ ...map([prop]), panel }], true), /panel/);
+});

@@ -67,7 +67,8 @@ export function compileLetterGrid(m) {
     out.push(row);
   });
   const note = `The opening, battle ${m.battle}: ${m.name}, ${m.cols}x${m.rows}. Compiled by content/mkopeningmaps.mjs from the per-hex ground letters in assets/battle-atlas/opening-ground-proposal-2026-09-28.json (checked by Andrew on the Abbotown Ground Check, engine DECISIONS.md 2026-09-28). Scene: ${m.file}.`;
-  return { row: { id, name: m.name, note, rows: out, ...(DEPLOY[m.key] ? { deploy: DEPLOY[m.key] } : {}), ...(props.length ? { props } : {}), ...(deep ? { floor } : {}) }, cursed };
+  // fix.opening-maps-off-panel (2026-09-28): campaign maps, fielded by their encounters — not control shapes
+  return { row: { id, name: m.name, note, rows: out, panel: false, ...(DEPLOY[m.key] ? { deploy: DEPLOY[m.key] } : {}), ...(props.length ? { props } : {}), ...(deep ? { floor } : {}) }, cursed };
 }
 
 export function buildOpeningMaps(source = JSON.parse(fs.readFileSync(SOURCE, 'utf8'))) {

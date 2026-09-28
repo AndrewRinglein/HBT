@@ -21,6 +21,7 @@
     "xxf..ff...ww.......f",
     "xf.ffffff.ww.......f"
    ],
+   "panel": false,
    "props": [
     {
      "id": "prop.cover.0",
@@ -209,6 +210,7 @@
     "ffffffff........ffxx",
     "xfxxfxf.........ffxx"
    ],
+   "panel": false,
    "deploy": {
     "hero": "south",
     "enemy": "east"
@@ -341,6 +343,7 @@
     ".......wwwwwwwwwwwwwwwwwwwwwwwwww.......",
     "......wwwwwwwwwwwwwwwwwwwwwwwwww........"
    ],
+   "panel": false,
    "props": [
     {
      "id": "prop.cover.33",
@@ -1245,6 +1248,7 @@
     "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww......",
     "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
    ],
+   "panel": false,
    "props": [
     {
      "id": "prop.cover.408",
@@ -2034,6 +2038,7 @@
     "...u..........uuu...",
     "...................."
    ],
+   "panel": false,
    "deploy": {
     "hero": "south",
     "enemy": "north"
@@ -2340,6 +2345,7 @@
     "....................",
     "...................."
    ],
+   "panel": false,
    "deploy": {
     "hero": "south",
     "enemy": "north"

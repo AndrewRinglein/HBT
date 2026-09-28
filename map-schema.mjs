@@ -65,6 +65,9 @@ export function validateMap(row, testing = false) {
   // glyphs the engine already decodes (engine/src/content/terrain.ts GLYPH).
   if (row.rows.some(r => !/^[.hfrRwxbpunHWT]+$/.test(r))) throw new Error(`maps ${row.id}: glyph outside the map legend`);
   if ('floor' in row) validateFloor(row.floor, board.width * board.height, row.id);
+  // fix.opening-maps-off-panel (2026-09-28): a campaign map an encounter fields, not a control shape,
+  // says `panel: false` and stays off the engine's fixed control panel. Only false is written.
+  if ('panel' in row && row.panel !== false) throw new Error(`maps ${row.id}: panel is false or absent`);
   if (row.props !== undefined) {
     const props = validateProps(row.props, board.width * board.height);
     if (props.reduce((n, p) => n + p.footprint.hexes.length, 0) + row.rows.join('').split('x').length - 1 > MAX_BOARD_CELLS) throw new Error('props: total footprint references exceed limit');
@@ -83,7 +86,7 @@ export function compileMaps(rows, testing = false) {
   for (const row of rows) {
     const board = validateMap(row, testing);
     if (out[row.id]) throw new Error(`maps: duplicate ${row.id}`);
-    out[row.id] = { id: row.id, name: row.name, board, format: FORMAT_OF[`${board.width}x${board.height}`] ?? `${board.width}x${board.height}`, rows: row.rows, ...(row.deploy ? { deploy: row.deploy } : {}), ...(row.props !== undefined ? { props: validateProps(row.props, board.width * board.height) } : {}), ...(row.floor !== undefined ? { floor: validateFloor(row.floor, board.width * board.height, row.id) } : {}) };
+    out[row.id] = { id: row.id, name: row.name, board, format: FORMAT_OF[`${board.width}x${board.height}`] ?? `${board.width}x${board.height}`, rows: row.rows, ...(row.deploy ? { deploy: row.deploy } : {}), ...(row.props !== undefined ? { props: validateProps(row.props, board.width * board.height) } : {}), ...(row.floor !== undefined ? { floor: validateFloor(row.floor, board.width * board.height, row.id) } : {}), ...(row.panel === false ? { panel: false } : {}) };
   }
   return out;
 }
