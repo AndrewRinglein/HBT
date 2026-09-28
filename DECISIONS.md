@@ -3164,3 +3164,16 @@ Ruled:
 
 - **No passable hex may be cut off from the rest of its map.** Orphanage (0,8) and (0,10), woodland behind dense forest, become dense forest; Lumberjack House "column 1, row 3" — one-based, hex (0,2) — becomes dense forest. The Ground Check now fills every cut-off pocket on all six maps; none remain.
 - **Battle 2: the Lumberjack and his Wife start in column 13 on the road** — (13,4) and (13,5), the road hexes in column 13 below the cottage door. Supersedes "six in along the trail" as Claude placed it.
+
+## 2026-09-28 — the Cathedral encounter; Gates' curse strikes fall like the meteors; no Gates turn limit
+
+Andrew, answering the Cathedral and Gates questions:
+
+> Let's have the necromancer raise two per turn. Let's do the rest of the things you proposed.  Gates' curses do fall that same way, yep.   The meteor should hit, and everybody in the blast area should get 3 weak, and then weak should be applied on the ground.  Date no longer needs a term 15 fail.   When the body is raised, the cursed ground stays.   I like your proposal. The skeleton archer is up on the altar.
+
+Ruled:
+
+- **Battle 6, Cathedral — as Claude proposed, with Andrew's changes.** The **Necromancer raises two bodies per turn** (reach 10). Start: the Necromancer at the altar on the raised sanctuary, **two Skeletons**, and **one Skeleton Archer up on the altar**. **Turn 5: two Ghouls through the side doors**; they eat corpses, healing themselves and denying the Necromancer bodies. The remains are cursed ground; **a raised body's cursed ground stays**. Win: clear the map; killing the Necromancer stops the raising.
+- **Battle 5, Gates — the curse strikes fall the same way as the meteors:** seven 7-hex areas marked at the end of the Enemy Phase, landing after the next Player Phase, placed at random weighted to the middle with a centre a unit can move to. **Everyone in a landed area gets 3 Weak, and the area becomes cursed ground** ("weak should be applied on the ground": cursed ground, which gives Weak). From Turn 4, as the Curse had it.
+- **Gates has no turn limit** ("Date" read as Gates; the old 15-turn loss is dropped).
+- Not stated: whether the curse strikes repeat after Turn 4 (the meteor fall is once, on Turn 4; read the same way unless Andrew says otherwise); the Ghouls' side-door hexes and the defenders' exact positions are Claude's reading on the Ground Check.
