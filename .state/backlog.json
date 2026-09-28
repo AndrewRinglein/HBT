@@ -4986,9 +4986,9 @@
   "spec": "The two opening units the pack does not have. (1) The Lumberjack's Wife as her own civilian row (DECISIONS.md 2026-09-28: \"Lumberjack and wife. They're two different units.\"); the Lumberjack row (hero.fixed.lumberjack-and-wife, already named 'Lumberjack' in the Codex and pack) stops meaning both, and kingdom/src/content/heroes.ts ~55 ('Lumberjack and Wife') follows. (2) Battle 2's Soldier Undead (DECISIONS.md 2026-09-28 'battle 2's start': 'one Soldier Undead from behind the heroes'): no engine unit; the Codex has unit.soldier (type Undead, authored:false). Both authored in the Codex (content/) and published into src/content/generated/pack.ts through mkenginepack; no number typed that a file does not hold.",
   "expect": "The Wife fields as a hero-side civilian beside the Lumberjack in a real battle, two units, each killable on its own; the Soldier Undead fields as an enemy with its Codex numbers; no row still names the Lumberjack and Wife as one unit.",
   "probeIds": [
-   "unit.soldier"
+   "hero.fixed.lumberjack-and-wife"
   ],
-  "note": "Cut 2026-09-28 from the opening loop (battle 2). BLOCKED ON ANDREW for the numbers: the Wife's row and which row the Soldier Undead is (asked 2026-09-28). Do not invent either. The Wife's id is a new instance of hero.fixed.* (a new instance may be proposed; GLOSSARY.md)."
+  "note": "Cut 2026-09-28 from the opening loop (battle 2). Numbers dictated by Andrew 2026-09-28 (DECISIONS.md \"the Lumberjack's Wife and the Undead Soldier, dictated\"): copy them, do not invent. The Undead Soldier is a new enemy row (not unit.soldier, which keeps its numbers) and reuses the Soldier's art. The Wife's id is a new instance of hero.fixed.* (a new instance may be proposed; GLOSSARY.md)."
  },
  {
   "id": "content.flaming-longsword",

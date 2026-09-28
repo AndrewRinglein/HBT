@@ -3177,3 +3177,15 @@ Ruled:
 - **Battle 5, Gates — the curse strikes fall the same way as the meteors:** seven 7-hex areas marked at the end of the Enemy Phase, landing after the next Player Phase, placed at random weighted to the middle with a centre a unit can move to. **Everyone in a landed area gets 3 Weak, and the area becomes cursed ground** ("weak should be applied on the ground": cursed ground, which gives Weak). From Turn 4, as the Curse had it.
 - **Gates has no turn limit** ("Date" read as Gates; the old 15-turn loss is dropped).
 - Not stated: whether the curse strikes repeat after Turn 4 (the meteor fall is once, on Turn 4; read the same way unless Andrew says otherwise); the Ghouls' side-door hexes and the defenders' exact positions are Claude's reading on the Ground Check.
+
+## 2026-09-28 — the Lumberjack's Wife and the Undead Soldier, dictated
+
+Andrew, asked for the two opening units the pack does not have (backlog `content.opening-units`: "The Lumberjack's Wife has no stats anywhere …" and "Battle 2's Soldier Undead has no stats either …"):
+
+> Wife,  2 str, 2 pre, 65 accuracy, 6 health, 10 dodge, armed with knife and basic armor, move 5.   Undead Soldier,  str 4 pre 3, health 9 armor 1, accuracy 70, move 4, immune bleed 1.  armed wth longsword looking weapon.  Slice: Str.   (looks like soldier art)
+
+Ruled:
+
+- **The Lumberjack's Wife** (civilian, her own unit beside the Lumberjack): **Strength 2, Precision 2, Accuracy 65, Health 6, Dodge 10, Movement 5; armed with a knife and basic armor.** "Knife" is read as `item.dagger`, the knife every civilian already carries (ruled 2026-09-05; the Codex has no `item.knife`); "basic armor" is `item.basic-armor`. Anything not dictated (armor stat, stamina, crit, luck, vision, toughness) follows the civilian rows' existing defaults, not new numbers.
+- **The Undead Soldier** (battle 2's "Soldier Undead"): **Strength 4, Precision 3, Health 9, Armor 1, Accuracy 70, Movement 4; immune to Bleed (`immunity: {bleed: 1}`, the Codex's existing immunity shape); armed with a longsword-looking weapon; its attack is Slice, damage Strength. Its art looks like the Soldier's.** Read as **a new enemy row**, not a rewrite of `unit.soldier` (Strength 5, Armor 2, Health 10, Accuracy 62), which other encounters field and which keeps its numbers; the Undead Soldier reuses the Soldier's art.
+- Both land through `content.opening-units`, authored in the Codex and published; that item is no longer blocked.
