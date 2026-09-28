@@ -36345,6 +36345,138 @@ export const UNIT_PACK = {
       ],
       "base": "item.soaked-plate",
       "enchant": "enchant.white-steel"
+    },
+    "item.longsword.flaming": {
+      "id": "item.longsword.flaming",
+      "name": "Flaming Longsword",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 5
+      },
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.longsword.flaming.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.longsword.flaming",
+          "onlyWithAttack": "attack.longsword.slash"
+        },
+        {
+          "id": "trigger.longsword.flaming.fire-damage",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "damage",
+            "amount": 2,
+            "damageType": "fire"
+          },
+          "source": "item.longsword.flaming",
+          "onlyWithAttack": "attack.longsword.slash"
+        }
+      ],
+      "base": "item.longsword",
+      "enchant": "enchant.flaming"
+    },
+    "item.war-axe.flaming": {
+      "id": "item.war-axe.flaming",
+      "name": "Flaming War Axe",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe"
+        },
+        {
+          "id": "trigger.war-axe.flaming.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.war-axe.flaming",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.flaming.fire-damage",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "damage",
+            "amount": 2,
+            "damageType": "fire"
+          },
+          "source": "item.war-axe.flaming",
+          "onlyWithAttack": "attack.war-axe.chop"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.flaming"
     }
   },
   "derivedItems": {

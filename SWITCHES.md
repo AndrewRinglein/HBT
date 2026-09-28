@@ -1487,3 +1487,19 @@ an authored row (`gen/enemies-authored.json`) with its bestiary numbers. Probe: 
 Noticed, not changed: the kingdom's sandbox tests (`kingdom/test/sandbox-ui.test.ts`) refuse to build
 while the shared viewer's metadata names an older engine commit ("Shared viewer metadata is stale or
 dirty") — every engine landing moves that commit; the viewer's owning tools regenerate it.
+
+## The Flaming series — defaults taken building content.flaming-longsword (2026-09-28)
+
+The source: DECISIONS.md 2026-09-28 "custom weapons are series across base weapons" ("let's do a
+flaming long sword, standard tier 3") and the Armory Ledger's Flaming row, approved for now ("Basic
+attack, on hit: Burn 1 and 2 fire damage"). The prior art it extends: the tier-3 shape, base +
+enchant (`content/gen/tier3-combinations.json`, 2-ACTIONS-SETTLED.md "the tier-3 combinations").
+`enchant.flaming` in `content/gen/settled-items.json`; mkenginepack reads an enchant trigger's
+`attack: 'basic'` and "deal N <type> damage". Probe: `test/flaming-longsword.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `flamingIds` | The ids? The Ledger names the series, not ids. | **The tier-3 shape's own: `item.<base>.flaming`** — `item.longsword.flaming` (Flaming Longsword) and `item.war-axe.flaming` (Flaming War Axe). The backlog's `item.flaming-longsword` was a placeholder. | One id shape for every tier-3 base + enchant row. | provisional — 2026-09-28 |
+| `flamingSecondBase` | "Flaming Axe" — which axe? | **The War Axe**, the Codex's tier-1 axe (the Ledger's Wood Axe and Great Axe are not yet rows). | The one axe the Codex has at tier 1 today. | provisional — 2026-09-28 |
+| `flamingBasicAttack` | Which attack is the basic attack? | **The base's first attack** (`grants[0]`): Slash on the Longsword, Chop on the War Axe. | The Ledger's rule: "the first attack listed". The Ledger's re-authored longsword (Str+1, 1 Stamina) is today's Slash. | provisional — 2026-09-28 |
+| `flamingFireDamage` | The 2 fire damage — how is it dealt? | **A trigger `damage` effect, fire, 2**, after the hit's Burn and before the swing's own damage lands, through the one damage function (Fire Resist and Protection apply). | The existing trigger damage effect; "on hit" is the onHit hook. | provisional — 2026-09-28 |

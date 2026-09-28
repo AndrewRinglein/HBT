@@ -5029,9 +5029,15 @@
   "spec": "The battle-2 reward, the standard tier-3 Flaming Longsword (DECISIONS.md 2026-09-28 'custom weapons are series across base weapons': \"let's do a flaming long sword, standard tier 3. Yes, that's what you're going to get after battle 2.\"). Dictated V2-SHIELDS-AND-WEAPONS-2026-09-20.md 317: \"Tier 3. This is a basic attack. On hit, 1 burn and 2 fire damage.\" - a custom weapon is a series across base weapons, the flaming effect added to the base weapon's basic attack. Approved in the Armory Ledger (DECISIONS.md 2026-09-28 'the Armory Ledger is approved for now'). Authored in the Codex from the Ledger's row and published.",
   "expect": "A hero carrying the tier-3 Flaming Longsword hits with the longsword's basic attack plus 1 Burn and 2 fire damage on a hit, nothing extra on a miss; the second series instance does the same on its own base weapon with no new code.",
   "probeIds": [
-   "item.flaming-longsword"
+   "item.longsword.flaming"
   ],
-  "note": "Cut 2026-09-28 from the opening loop. Variants to declare before code: the tier-3 Flaming Longsword and one other tier-3 flaming series row from the Ledger (e.g. the Flaming Axe), the second pure data. Take the ids and names from the Armory Ledger rows; do not coin new ones. The rest of the Ledger (counterattack, fend, the special-free-attack rule, shields, relics, bloodrunes, trinkets) is not part of this cut."
+  "variants": [
+   "item.longsword.flaming",
+   "item.war-axe.flaming"
+  ],
+  "note": "Cut 2026-09-28 from the opening loop. Variants to declare before code: the tier-3 Flaming Longsword and one other tier-3 flaming series row from the Ledger (e.g. the Flaming Axe), the second pure data. Take the ids and names from the Armory Ledger rows; do not coin new ones. The rest of the Ledger (counterattack, fend, the special-free-attack rule, shields, relics, bloodrunes, trinkets) is not part of this cut.",
+  "status": "done",
+  "sha": "75facf9"
  },
  {
   "id": "encounter.opening.orphanage",

@@ -144,6 +144,18 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife'], heroHexes: [85, 101],
     enemies: ['unit.soldier', 'unit.soldier'], enemyHexes: [89, 105], replicate: 0,
   },
+  // content.flaming-longsword (2026-09-28): the Flaming series' tier 3 on two bases, each live in a
+  // real battle — the Flaming Longsword (the battle-2 reward) and the Flaming War Axe.
+  'test.flaming-longsword': {
+    id: 'test.flaming-longsword', note: 'TEST: a warrior with the Flaming Longsword against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroItems: [['item.longsword.flaming']],
+    enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
+  },
+  'test.flaming-war-axe': {
+    id: 'test.flaming-war-axe', note: 'TEST: a warrior with the Flaming War Axe against two zombies — the second series instance. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroItems: [['item.war-axe.flaming']],
+    enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',
