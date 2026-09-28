@@ -220,6 +220,11 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
   const u = unit(ctx, unitId)
   let moved = 0
   const provoked = new Set<number>()   // once per enemy per activation
+  // capability.move-ignores-zoc (2026-09-28): the ACTION walking says whether it
+  // provokes — MoveProfile.ignoresZoc, the Codex row's own property (the hounds:
+  // "the move-WITHOUT-provoking machinery, as a property of their movement",
+  // ENEMY-REVIEW.md:276-278). `causeId` is that action's id (executeMove, charge.ts).
+  const ignoresZoc = ctx.actions[causeId]?.move?.ignoresZoc === true
   for (const hex of path) {
     // 1. movement points — hills cost 2
     const cost = stepCost(ctx, hex, u.hex)
@@ -239,6 +244,8 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
       for (const e of zocHoldersAt(ctx, u, u.hex)) {
         if (provoked.has(e.id)) continue
         provoked.add(e.id)
+        // the zone is still there — the walk ignores it, and the log says which walk (Law 12)
+        if (ignoresZoc) { emit(ctx, 'zoc.ignored', causeId, { actor: unitId, holder: e.id, hex: u.hex }); continue }
         if (attackOfOpportunity(ctx, e.id, unitId)) struck = true
         if (u.lifeState !== 'standing') return moved
       }

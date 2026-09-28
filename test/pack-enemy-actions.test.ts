@@ -145,8 +145,19 @@ describe('pack.enemy-actions — the pack carries the Codex rows', () => {
     const carried = PACK.authoredAttacks[cm]
     expect(carried !== undefined || gaps.some((g) => g.unit === cu && g.what.includes(cm)), `${cm} carried or named`).toBe(true)
     if (carried) expect(carried.hexes, `${cm} must not be carried as a plain attack`).toBe(moveRow(cu, cm).hexes)
-    // the hounds' movement ignores zones of control: no movement power says "provokes nothing" on a walk
-    for (const id of HOUNDS) expect(gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC gap`).toBe(true)
+    // the hounds' movement ignores zones of control. Until capability.move-ignores-zoc
+    // (2026-09-28) no movement power said "provokes nothing" on a walk, so it was a named
+    // gap. REWRITTEN (Law 10) from "is a gap" to the rule that assertion protected: carried
+    // or named, and never silently a walk that provokes — a carried hound walks only with
+    // moves whose profile ignores zones of control. The mechanism itself is
+    // test/move-ignores-zoc.test.ts.
+    // was: for (const id of HOUNDS) expect(gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC gap`).toBe(true)
+    const packMoves = (UNIT_PACK as unknown as { moves: Record<string, { ignoresZoc?: boolean }> }).moves
+    for (const id of HOUNDS) {
+      const walks = packUnit(id).moves
+      const carried = walks.length > 0 && walks.every((m) => packMoves[m]?.ignoresZoc === true)
+      expect(carried || gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC carried or named`).toBe(true)
+    }
     // the carried moves are no longer gaps, and no gap still calls the kind unapproved (approved 2026-09-02)
     // (Buff's row also carries an AI hint, "use whenever available" — AI-DESIGN.md §3D; that
     // hint is its own named gap until ai.scorer reads it, and is not the move being dropped)

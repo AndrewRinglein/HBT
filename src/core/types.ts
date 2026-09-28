@@ -472,6 +472,16 @@ export type MoveProfile = {
    * Absent = the unit's own budget (movePointsLeft + budgetMod).
    */
   readonly hexes?: number
+  /**
+   * capability.move-ignores-zoc (2026-09-28): path-shaped only — this walk
+   * ignores zones of control: leaving a hex inside an enemy's zone provokes no
+   * attack of opportunity (the step loop logs `zoc.ignored` instead, once per
+   * holder). "The move-WITHOUT-provoking machinery, as a property of their
+   * movement" (ENEMY-REVIEW.md:276-278, the hounds); DECISIONS.md 2026-08-20:
+   * "There are movement types that can happen without provoking." The Codex row's
+   * own sentence, "Ignores zones of control". Absent = the walk provokes.
+   */
+  readonly ignoresZoc?: true
 }
 
 /** An action seen as an attack: the pipeline's view. */

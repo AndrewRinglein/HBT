@@ -226,6 +226,8 @@ export type PackMoveRow = {
   readonly id: string; readonly name: string; readonly shape: 'path' | 'sidestep' | 'flight'; readonly stepRange?: number
   readonly effects?: readonly import('../core/types.js').MoveEffect[]; readonly staminaCost: number; readonly budgetMod: number
   readonly cooldown: number; readonly warmup?: number; readonly uses?: number
+  /** capability.move-ignores-zoc: a walk that provokes no attack of opportunity (MoveProfile.ignoresZoc). */
+  readonly ignoresZoc?: boolean
 }
 
 export function liftAttack(r: PackAttackRow): AttackDef {
@@ -247,11 +249,11 @@ export function liftAttack(r: PackAttackRow): AttackDef {
 }
 export function liftMove(r: PackMoveRow): MoveDef {
   validateActionMetadata(r)
-  const { id, name, shape, stepRange, effects, staminaCost, budgetMod, cooldown, warmup, uses } = r
+  const { id, name, shape, stepRange, effects, staminaCost, budgetMod, cooldown, warmup, uses, ignoresZoc } = r
   return {
     id, name, source: 'movement', staminaCost, cooldown, range: stepRange ?? 1, ...(r.slot !== undefined ? { slot: r.slot } : {}), ...(r.free !== undefined ? { free: r.free } : {}),
     ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(effects ? { effects } : {}),
-    move: { shape, budgetMod, ...(stepRange !== undefined ? { stepRange } : {}) },
+    move: { shape, budgetMod, ...(stepRange !== undefined ? { stepRange } : {}), ...(ignoresZoc === true ? { ignoresZoc: true as const } : {}) },
   }
 }
 export function liftAttacks(raw: Readonly<Record<string, PackAttackRow>>): Readonly<Record<string, AttackDef>> {
@@ -276,6 +278,9 @@ export function packMoves(): Readonly<Record<string, MoveDef>> {
       if (typeof m[f] !== 'number') throw new Error(`unit pack: move '${k}' is missing ${f} — regenerate the pack`)
     }
     if (m.stepRange !== undefined && (m.shape !== 'sidestep' || typeof m.stepRange !== 'number')) throw new Error(`unit pack: move '${k}' carries a stepRange it cannot use`)
+    // capability.move-ignores-zoc: only a WALK can ignore zones of control — a sidestep
+    // already provokes nothing, and flight has its own rule (SWITCHES.md ignoresZocPathOnly)
+    if (m.ignoresZoc !== undefined && (m.ignoresZoc !== true || m.shape !== 'path')) throw new Error(`unit pack: move '${k}' carries ignoresZoc '${String(m.ignoresZoc)}' on a '${m.shape}' move — true, on a path-shaped walk, or absent`)
     for (const e of m.effects ?? []) {
       if (!['gainStamina', 'loseMaxStamina', 'statMod', 'stand'].includes(e.kind)) throw new Error(`unit pack: move '${k}' carries unknown effect kind '${(e as { kind: string }).kind}'`)
     }

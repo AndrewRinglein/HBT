@@ -17304,3 +17304,120 @@ index b5a1e18..d28d3eb 100644
      for (const id of HOUNDS) expect(gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC gap`).toBe(true)
 ```
 </details>
+
+## capability.move-ignores-zoc — LANDED `4e4a83d` **NEEDS REVIEW**
+2026-09-28 01:43
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/enemy-pack.test.ts, test/pack-enemy-actions.test.ts, test/move-ignores-zoc.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.move-ignoring-zoc: 52 log lines, 52 fired, 37 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/enemy-pack.test.ts, test/pack-enemy-actions.test.ts, test/fixtures/battle-cursor-zoc.json, test/move-ignores-zoc.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/enemy-pack.test.ts (-3), test/pack-enemy-actions.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — unit.bloodhound live · unit.hellhound live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.move-ignoring-zoc — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 6f10c6b..542280a 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -110,4 +110,12 @@ const accuracyModGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cur
+ // unchanged. No state field was added, so no projection. Old fixtures stay immutable.
+ const chargeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-charge.json', import.meta.url), 'utf8'))
++// capability.move-ignores-zoc (2026-09-28), Law 10: the four hounds walk with the Codex's walk that
++// ignores zones of control (power.move-ignoring-zoc). Every case's full current hashes are frozen
++// here (tools/capture-zoc-cursor.mts); a case marked `changed` (it fields a hound — alpha-team,
++// kiln, prologue-enemies: the hound's action list carries the walk, and its steps name it and
++// provoke nothing) is checked against these and skips every older layer its battle no longer
++// matches; every other case is byte-identical to the charge capture and runs every older layer
++// unchanged. No state field was added, so no projection. Old fixtures stay immutable.
++const zocGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-zoc.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -214,6 +222,9 @@ describe('resumable battle cursor', () => {
+       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const zocExpected = zocGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const zocMoved = zocExpected?.changed === true
+       const chargeExpected = chargeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const chargeMoved = chargeExpected?.changed === true
++      // was: const chargeMoved = chargeExpected?.changed === true — a zoc-moved case skips the charge layer too (capability.move-ignores-zoc 2026-09-28)
++      const chargeMoved = chargeExpected?.changed === true || zocMoved
+       const accuracyModExpected = accuracyModGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const accuracyModMoved = accuracyModExpected?.changed === true — a charge-moved case skips the accuracy-mod layer too (capability.charge 2026-09-27)
+@@ -248,5 +259,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (chargeExpected) {
++        if (zocExpected) {
++        expect(hash(ctx.events), 'full zoc events').toBe(zocExpected.events)
++        expect(hash(ctx.state), 'full zoc state').toBe(zocExpected.state)
++        expect(hash(ctx.rng.log), 'full zoc RNG').toBe(zocExpected.rng)
++        expect(result).toEqual(zocExpected.result)
++        }
++        // was: if (chargeExpected) { — capability.move-ignores-zoc (2026-09-28): a moved case is checked above instead
++        if (chargeExpected && !zocMoved) {
+         expect(hash(ctx.events), 'full charge events').toBe(chargeExpected.events)
+         expect(hash(ctx.state), 'full charge state').toBe(chargeExpected.state)
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index 4cbb316..c6807e7 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -11,5 +11,5 @@ import { readFileSync } from 'node:fs'
+ import { join } from 'node:path'
+ import { SCENARIOS, scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { ATTACKS, UNITS } from '../src/content/index.js'
++import { ACTIONS, ATTACKS, UNITS } from '../src/content/index.js'
+ import { createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+@@ -36,6 +36,13 @@ describe('the pack carries the authored rows faithfully', () => {
+       // The rule — one movement power per enemy row, walk or flight, the row's own — is unchanged.
+       // was: expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual(['power.move'])
+-      const movePower = (src.get(id) as { movePower?: string } | undefined)?.movePower
+-      expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual([movePower ? `power.${movePower}` : 'power.move'])
++      // LAW 10 — capability.move-ignores-zoc (2026-09-28): a `moveIgnoresZOC` row (the four hounds,
++      // ENEMY-REVIEW.md:276-278) walks with the Codex's walk that ignores zones of control, not Move.
++      // The rule — one movement power per enemy row, the row's own — is unchanged.
++      // was: expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual([movePower ? `power.${movePower}` : 'power.move'])
++      const row = src.get(id) as { movePower?: string; moveIgnoresZOC?: boolean } | undefined
++      const movePower = row?.movePower
++      expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toHaveLength(1)
++      if (row?.moveIgnoresZOC) expect(ACTIONS[UNITS[id]!.moves[0]!]?.move?.ignoresZoc, `${id} — its walk ignores zones of control`).toBe(true)
++      else expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual([movePower ? `power.${movePower}` : 'power.move'])
+       expect(UNITS[id]!.maxStamina, `${id} — enemies do not run stamina`).toBe(0)
+     }
+diff --git a/test/pack-enemy-actions.test.ts b/test/pack-enemy-actions.test.ts
+index d28d3eb..478fb64 100644
+--- a/test/pack-enemy-actions.test.ts
++++ b/test/pack-enemy-actions.test.ts
+@@ -146,6 +146,17 @@ describe('pack.enemy-actions — the pack carries the Codex rows', () => {
+     expect(carried !== undefined || gaps.some((g) => g.unit === cu && g.what.includes(cm)), `${cm} carried or named`).toBe(true)
+     if (carried) expect(carried.hexes, `${cm} must not be carried as a plain attack`).toBe(moveRow(cu, cm).hexes)
+-    // the hounds' movement ignores zones of control: no movement power says "provokes nothing" on a walk
+-    for (const id of HOUNDS) expect(gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC gap`).toBe(true)
++    // the hounds' movement ignores zones of control. Until capability.move-ignores-zoc
++    // (2026-09-28) no movement power said "provokes nothing" on a walk, so it was a named
++    // gap. REWRITTEN (Law 10) from "is a gap" to the rule that assertion protected: carried
++    // or named, and never silently a walk that provokes — a carried hound walks only with
++    // moves whose profile ignores zones of control. The mechanism itself is
++    // test/move-ignores-zoc.test.ts.
++    // was: for (const id of HOUNDS) expect(gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC gap`).toBe(true)
++    const packMoves = (UNIT_PACK as unknown as { moves: Record<string, { ignoresZoc?: boolean }> }).moves
++    for (const id of HOUNDS) {
++      const walks = packUnit(id).moves
++      const carried = walks.length > 0 && walks.every((m) => packMoves[m]?.ignoresZoc === true)
++      expect(carried || gaps.some((g) => g.unit === id && /moveIgnoresZOC/.test(g.what)), `${id} ZOC carried or named`).toBe(true)
++    }
+     // the carried moves are no longer gaps, and no gap still calls the kind unapproved (approved 2026-09-02)
+     // (Buff's row also carries an AI hint, "use whenever available" — AI-DESIGN.md §3D; that
+```
+</details>

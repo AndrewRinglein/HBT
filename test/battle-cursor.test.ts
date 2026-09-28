@@ -109,6 +109,14 @@ const accuracyModGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cur
 // every other case is byte-identical to the accuracy-mod capture and runs every older layer
 // unchanged. No state field was added, so no projection. Old fixtures stay immutable.
 const chargeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-charge.json', import.meta.url), 'utf8'))
+// capability.move-ignores-zoc (2026-09-28), Law 10: the four hounds walk with the Codex's walk that
+// ignores zones of control (power.move-ignoring-zoc). Every case's full current hashes are frozen
+// here (tools/capture-zoc-cursor.mts); a case marked `changed` (it fields a hound — alpha-team,
+// kiln, prologue-enemies: the hound's action list carries the walk, and its steps name it and
+// provoke nothing) is checked against these and skips every older layer its battle no longer
+// matches; every other case is byte-identical to the charge capture and runs every older layer
+// unchanged. No state field was added, so no projection. Old fixtures stay immutable.
+const zocGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-zoc.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -213,8 +221,11 @@ describe('resumable battle cursor', () => {
       const groundExpected = groundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const zocExpected = zocGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const zocMoved = zocExpected?.changed === true
       const chargeExpected = chargeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const chargeMoved = chargeExpected?.changed === true
+      // was: const chargeMoved = chargeExpected?.changed === true — a zoc-moved case skips the charge layer too (capability.move-ignores-zoc 2026-09-28)
+      const chargeMoved = chargeExpected?.changed === true || zocMoved
       const accuracyModExpected = accuracyModGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const accuracyModMoved = accuracyModExpected?.changed === true — a charge-moved case skips the accuracy-mod layer too (capability.charge 2026-09-27)
       const accuracyModMoved = accuracyModExpected?.changed === true || chargeMoved
@@ -247,7 +258,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (chargeExpected) {
+        if (zocExpected) {
+        expect(hash(ctx.events), 'full zoc events').toBe(zocExpected.events)
+        expect(hash(ctx.state), 'full zoc state').toBe(zocExpected.state)
+        expect(hash(ctx.rng.log), 'full zoc RNG').toBe(zocExpected.rng)
+        expect(result).toEqual(zocExpected.result)
+        }
+        // was: if (chargeExpected) { — capability.move-ignores-zoc (2026-09-28): a moved case is checked above instead
+        if (chargeExpected && !zocMoved) {
         expect(hash(ctx.events), 'full charge events').toBe(chargeExpected.events)
         expect(hash(ctx.state), 'full charge state').toBe(chargeExpected.state)
         expect(hash(ctx.rng.log), 'full charge RNG').toBe(chargeExpected.rng)

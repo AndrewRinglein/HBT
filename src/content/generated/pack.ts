@@ -560,7 +560,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.move-ignoring-zoc"
       ],
       "tags": [
         "beast"
@@ -820,7 +820,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.move-ignoring-zoc"
       ],
       "tags": [
         "demon",
@@ -1223,7 +1223,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.move-ignoring-zoc"
       ],
       "tags": [
         "demon",
@@ -2630,7 +2630,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.move-ignoring-zoc"
       ],
       "tags": [
         "undead",
@@ -10609,6 +10609,16 @@ export const UNIT_PACK = {
       "free": false,
       "shape": "path",
       "budgetMod": 0,
+      "staminaCost": 1,
+      "cooldown": 0
+    },
+    "power.move-ignoring-zoc": {
+      "id": "power.move-ignoring-zoc",
+      "name": "Move, Ignoring Zones of Control",
+      "free": false,
+      "shape": "path",
+      "budgetMod": 0,
+      "ignoresZoc": true,
       "staminaCost": 1,
       "cooldown": 0
     },

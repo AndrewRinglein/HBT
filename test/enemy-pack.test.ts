@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { SCENARIOS, scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { ATTACKS, UNITS } from '../src/content/index.js'
+import { ACTIONS, ATTACKS, UNITS } from '../src/content/index.js'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 
@@ -35,8 +35,15 @@ describe('the pack carries the authored rows faithfully', () => {
       // a `movePower: flight` row (the Imp, the Powerful Imp) fields power.flight, not the walk.
       // The rule — one movement power per enemy row, walk or flight, the row's own — is unchanged.
       // was: expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual(['power.move'])
-      const movePower = (src.get(id) as { movePower?: string } | undefined)?.movePower
-      expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual([movePower ? `power.${movePower}` : 'power.move'])
+      // LAW 10 — capability.move-ignores-zoc (2026-09-28): a `moveIgnoresZOC` row (the four hounds,
+      // ENEMY-REVIEW.md:276-278) walks with the Codex's walk that ignores zones of control, not Move.
+      // The rule — one movement power per enemy row, the row's own — is unchanged.
+      // was: expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual([movePower ? `power.${movePower}` : 'power.move'])
+      const row = src.get(id) as { movePower?: string; moveIgnoresZOC?: boolean } | undefined
+      const movePower = row?.movePower
+      expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toHaveLength(1)
+      if (row?.moveIgnoresZOC) expect(ACTIONS[UNITS[id]!.moves[0]!]?.move?.ignoresZoc, `${id} — its walk ignores zones of control`).toBe(true)
+      else expect(UNITS[id]!.moves, `${id} — one movement power per enemy row`).toEqual([movePower ? `power.${movePower}` : 'power.move'])
       expect(UNITS[id]!.maxStamina, `${id} — enemies do not run stamina`).toBe(0)
     }
   })

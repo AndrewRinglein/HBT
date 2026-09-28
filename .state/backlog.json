@@ -4853,7 +4853,9 @@
   "variants": [
    "unit.bloodhound",
    "unit.hellhound"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "4e4a83d"
  },
  {
   "id": "capability.stealth",
