@@ -1,5 +1,15 @@
 [
  {
+  "id": "fix.raise-two-cursor",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "fix.raise-two (landed 2026-09-28, 253e7c3) moved two battle-cursor cases the full suite checks: showcase.prologue-enemies and showcase.supper field the Necromancer, whose Raise now takes two bodies a firing (ruled 2026-09-28: \"Let's have the necromancer raise two per turn.\"). Freeze every cursor case's full hashes in a new layer (tools/capture-raise-two-cursor.mts -> test/fixtures/battle-cursor-raise-two.json, the fix.surge-spend pattern); a case marked changed is checked there and skips the older layers. No engine code changes.",
+  "expect": "The whole battle-cursor suite passes; exactly the two Necromancer cases are marked changed; every older fixture is byte-identical.",
+  "note": "Found by the chat's full-suite shards (shard 8/8), after fix.raise-two landed on its own tests. Its landing ran only the item's touched tests, which is the gate's design since 2026-09-23.",
+  "status": "done-needs-review",
+  "sha": "1dca06d"
+ },
+ {
   "id": "tool.cowork-test-timeout",
   "kind": "plumbing",
   "shape": "plumbing",

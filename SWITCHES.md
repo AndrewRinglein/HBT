@@ -1528,4 +1528,6 @@ switch on to see the arrivals. At the Lumberjack House both civilians died in al
 tried (their rows' melee AI walks them into the Zombies); the heroes still won each time. The Bridge
 never wins with four Alpha heroes (replicates 0-9: capped 8, wipe 2; an AI stall from Turn 12) —
 `encounter.opening.bridge` is abandoned on that finding. The Cavern Trail is a real fight: 4 heroClear,
-6 wipe over replicates 0-9.
+6 wipe over replicates 0-9. The Gates, authored as ruled (six defenders at the markers, the curse strike
+`trigger.gates.curse-strike` on Turn 4, two Imps on Turn 7, heroes at (10,46) r2), wiped four Alpha heroes
+in all of replicates 0-9 by Turn 4-7; `encounter.opening.gates` was not landed and stays pending.

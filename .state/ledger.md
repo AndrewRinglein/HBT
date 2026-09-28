@@ -17812,3 +17812,66 @@ Authored on map.opening.bridge exactly as ruled (four Imps east, Fire Imp T2, Im
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.cavern-trail — they genuinely test it
+
+## fix.raise-two-cursor — LANDED `1dca06d` **NEEDS REVIEW**
+2026-09-28 21:56
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-raise-two.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 0de20f3..14b9f0c 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -128,4 +128,9 @@ const zocGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-zoc.
+ // projection. Old fixtures stay immutable.
+ const surgeSpendGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-surge-spend.json', import.meta.url), 'utf8'))
++// fix.raise-two-cursor (2026-09-28), Law 10: the Necromancer's Raise takes two bodies a firing
++// (fix.raise-two; ruled 2026-09-28, "Let's have the necromancer raise two per turn."). Every case's
++// full hashes are frozen here (tools/capture-raise-two-cursor.mts); a case marked `changed` (it fields
++// a Necromancer with more than one body in reach) is checked here and skips the older layers.
++const raiseTwoGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-raise-two.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -232,6 +237,9 @@ describe('resumable battle cursor', () => {
+       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const raiseTwoExpected = raiseTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const raiseTwoMoved = raiseTwoExpected?.changed === true
+       const surgeSpendExpected = surgeSpendGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const surgeSpendMoved = surgeSpendExpected?.changed === true
++      // fix.raise-two-cursor (2026-09-28): a raise-two-moved case skips the surge-spend layer too
++      const surgeSpendMoved = surgeSpendExpected?.changed === true || raiseTwoMoved
+       const zocExpected = zocGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const zocMoved = zocExpected?.changed === true — a surge-spend-moved case skips the zoc layer too (fix.surge-spend 2026-09-28)
+@@ -272,5 +280,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (surgeSpendExpected) {
++        if (raiseTwoExpected) {
++        expect(hash(ctx.events), 'full raise-two events').toBe(raiseTwoExpected.events)
++        expect(hash(ctx.state), 'full raise-two state').toBe(raiseTwoExpected.state)
++        expect(hash(ctx.rng.log), 'full raise-two RNG').toBe(raiseTwoExpected.rng)
++        expect(result).toEqual(raiseTwoExpected.result)
++        }
++        // fix.raise-two-cursor (2026-09-28): a raise-two-moved case is checked above instead
++        if (surgeSpendExpected && !raiseTwoMoved) {
+         expect(hash(ctx.events), 'full surge-spend events').toBe(surgeSpendExpected.events)
+         expect(hash(ctx.state), 'full surge-spend state').toBe(surgeSpendExpected.state)
+```
+</details>
