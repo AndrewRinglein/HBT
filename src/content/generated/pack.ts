@@ -1555,7 +1555,7 @@ export const UNIT_PACK = {
           "effect": {
             "kind": "corpse.raise",
             "unit": "unit.zombie",
-            "radius": 2
+            "radius": 10
           },
           "source": "unit.necromancer"
         },

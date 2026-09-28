@@ -4888,7 +4888,9 @@
   "note": "Queued 2026-09-27 on Andrew's ruling. The control battles field no Necromancer. Probe declared 2026-09-28 by the implementing chat: trigger.necromancer.raise, the compiled Raise, live where a Necromancer fights (the Supper scenario).",
   "probeIds": [
    "trigger.necromancer.raise"
-  ]
+  ],
+  "status": "done",
+  "sha": "4c53189"
  },
  {
   "id": "fix.surge-spend",

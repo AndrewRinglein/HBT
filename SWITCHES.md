@@ -418,6 +418,13 @@ encounter session assumed its aura's 2 and named it as open (8-ENCOUNTERS E1).
 Compiled as 2 for now — a converter constant, not yet a Config switch; the row
 is where the number should live once ruled.
 
+**RETIRED 2026-09-28 (fix.raise-range).** Ruled 2026-09-27 (Andrew, DECISIONS.md
+"the Necromancer's Raise reaches 10"): *"Give the necromancer a raise of 10 range."* The
+number lives on the Codex row (the Raise trigger's `range`, 10); `content/mkenginepack.mjs`
+reads it and no longer compiles a constant. A Raise row with no range is a named gap
+(`content/gen/enemy-pack-gaps.json`, needs `content: range unstated`), never a default.
+Probe: `test/raise-range.test.ts`.
+
 ## frostLayerStack — what does frost GROUND put on its occupant?
 Added 2026-09-03 (capability.ground-layers). rule.ground-layers names frost as
 a layer and status.frost is shaped, but no row says what standing on frost
