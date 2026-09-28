@@ -52,7 +52,7 @@ const RAW_HEROES: readonly HeroRow[] = [
 /** Civilians the prologue rescues — ordinary hero rows of class.civilian (ruled 2026-08-23). */
 const RAW_CIVILIANS: readonly HeroRow[] = [
   hero('hero.fixed.orphans', 'Orphan Child', 'class.civilian', 'hero.fixed.orphans'),
-  hero('hero.fixed.lumberjack-and-wife', 'Lumberjack and Wife', 'class.civilian', 'hero.fixed.lumberjack-and-wife'),
+  hero('hero.fixed.lumberjack-and-wife', 'Lumberjack', 'class.civilian', 'hero.fixed.lumberjack-and-wife'),
   hero('hero.fixed.farmer', 'Farmer', 'class.civilian', 'hero.fixed.farmer'),
 ]
 
