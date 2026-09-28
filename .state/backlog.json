@@ -4911,11 +4911,8 @@
   "id": "map.opening-six",
   "kind": "engine",
   "shape": "data",
-  "spec": "The opening's six maps as combat maps, each at its own size (DECISIONS.md 2026-09-28 'the opening's maps: whole size'): map.opening.orphanage 20x14, map.opening.lumberjack 20x14, map.opening.bridge 40x20, map.opening.cavern-trail 40x16, map.opening.gates 20 cols x 50 rows (abbotown-gate-painted walked south to north; the ruling's '50x20' is the same map), map.opening.cathedral 20x40. Source: the per-hex ground letters in assets/battle-atlas/opening-ground-proposal-2026-09-28.json as checked on the Abbotown Ground Check, with the same night's corrections (no cut-off passable hex; Orphanage (0,8),(0,10) and Lumberjack (0,2) dense forest). Letters map to the engine's ground and props: F dense forest = high prop; c = low prop (riverbank boulders are low cover); X = high prop; B bridge deck = open; w = terrain.water (Orphanage river and lake are ordinary water); ~ = deep water, no unit may stand or path through it (Bridge and Cavern Trail rivers, 'too deep to cross'); * = cursed ground (needs terrain.cursed only for the ground id; until it lands the letter is a switch). Cavern Trail's visible cave-mouth hexes are enterable, nothing deeper. One compile path for all six (the Atlas ground compile reads only maps/*.json; the five Blender scenes need the letter-grid route into AuthoredMap rows + props), published through content (content/map-schema.mjs must accept the letters the engine already has: u n H W T), probeable from the map panel.",
+  "spec": "The opening's six maps as combat maps, each at its own size (DECISIONS.md 2026-09-28 'the opening's maps: whole size'): map.opening.orphanage 20x14, map.opening.lumberjack 20x14, map.opening.bridge 40x20, map.opening.cavern-trail 40x16, map.opening.gates 20 cols x 50 rows (abbotown-gate-painted walked south to north; the ruling's '50x20' is the same map), map.opening.cathedral 20x40. Source: the per-hex ground letters in assets/battle-atlas/opening-ground-proposal-2026-09-28.json as checked on the Abbotown Ground Check, with the same night's corrections (no cut-off passable hex; Orphanage (0,8),(0,10) and Lumberjack (0,2) dense forest). Letters map to the engine's ground and props: F dense forest = high prop; c = low prop (riverbank boulders are low cover); X = high prop; B bridge deck = open; w = terrain.water (Orphanage river and lake are ordinary water); ~ = deep water, no unit may stand or path through it (Bridge and Cavern Trail rivers, 'too deep to cross'); * = cursed ground, the painted layer.weak on that hex (DECISIONS.md 2026-09-28 \"cursed ground is the Weak ground layer\"; capability.ground-layers - a map or its encounter paints it at setup, as Rime paints frost). Cavern Trail's visible cave-mouth hexes are enterable, nothing deeper. One compile path for all six (the Atlas ground compile reads only maps/*.json; the five Blender scenes need the letter-grid route into AuthoredMap rows + props), published through content (content/map-schema.mjs must accept the letters the engine already has: u n H W T), probeable from the map panel.",
   "expect": "Each of the six fields in a real battle at its stated size; every passable hex reaches every other (no cut-off pocket, asserted by a flood fill); a unit cannot enter a deep-water hex and a path around the river is found; a riverbank boulder gives low cover; the Orphanage water hex costs what terrain.water costs; the Gates map is 20 wide and 50 long; the six control battles are byte-identical.",
-  "needs": [
-   "terrain.cursed"
-  ],
   "probeIds": [
    "map.opening.orphanage",
    "map.opening.cavern-trail"
@@ -4940,28 +4937,25 @@
    "terrain.cursed",
    "layer.weak"
   ],
-  "note": "Cut 2026-09-28 from the opening loop (Gates' curse strikes and the Cathedral's remains). Switch: crossing several cursed hexes in one activation - one Weak for having entered any, or one per hex (default: one per activation, the ruling's 'you gain 1 weak'). Measure the control battles before declaring changesBaseline."
+  "note": "Cut 2026-09-28 from the opening loop (Gates' curse strikes and the Cathedral's remains). Switch: crossing several cursed hexes in one activation - one Weak for having entered any, or one per hex (default: one per activation, the ruling's 'you gain 1 weak'). Measure the control battles before declaring changesBaseline.",
+  "status": "failed",
+  "failedAt": "2026-09-28 17:10",
+  "reason": "Superseded before any code: cursed ground is layer.weak, the existing ground layer, one shape with burning, frost and poison (+1 on entry, +1 at End of Activation; ruled 2026-09-03, DECISIONS.md 1326). Andrew 2026-09-28: follow the same structure planned for all ground effects. No new terrain id."
  },
  {
   "id": "encounter.area-fall",
   "kind": "engine",
   "shape": "rule",
-  "spec": "A telegraphed area fall, one mechanism for two rulings (DECISIONS.md 2026-09-28 'a meteor fall on Turn 4', 'the meteor fall: Cavern Trail ...', 'the Cathedral encounter; Gates' curse strikes fall like the meteors'). An encounter row names a Turn N and a fall: at the end of Turn N's Enemy Phase, K areas are marked, each a centre hex and the six around it; after the next Player Phase ends, they land. Placement: at random on a named stream keyed by what it rolls (Law 4: the fall's id and the area index), weighted toward the middle of the map; each centre is a hex a unit can move to (never deep water, never a high prop); the six around it are not constrained. On landing, every hex of every area gets the fall's ground, and every unit in an area - either side - takes the fall's damage and statuses through the one damage function (Law 1). Two data instances: the meteor fall - 7 areas, Turn 4, 2 fire damage and 2 Burn, terrain.burning; the curse strike - 7 areas, Turn 4, 3 Weak, terrain.cursed. Events: area.marked (the hexes, the fall, the landing turn) so the viewer can draw the soft red outer-edge telegraph (VFX 'Skyfall' candidate, VFX/README.md 56), and area.landed naming each unit hit.",
+  "spec": "A telegraphed area fall, one mechanism for two rulings (DECISIONS.md 2026-09-28 'a meteor fall on Turn 4', 'the meteor fall: Cavern Trail ...', 'the Cathedral encounter; Gates' curse strikes fall like the meteors'). An encounter row names a Turn N and a fall: at the end of Turn N's Enemy Phase, K areas are marked, each a centre hex and the six around it; after the next Player Phase ends, they land. Placement: at random on a named stream keyed by what it rolls (Law 4: the fall's id and the area index), weighted toward the middle of the map; each centre is a hex a unit can move to (never deep water, never a high prop); the six around it are not constrained. On landing, every hex of every area is painted with the fall's ground layer (capability.ground-layers, one per hex, replace-on-paint), and every unit in an area - either side - takes the fall's damage and statuses through the one damage function (Law 1). Two data instances: the meteor fall - 7 areas, Turn 4, 2 fire damage and 2 Burn, layer.burning; the curse strike - 7 areas, Turn 4, 3 Weak, layer.weak (cursed ground, DECISIONS.md 2026-09-28). Events: area.marked (the hexes, the fall, the landing turn) so the viewer can draw the soft red outer-edge telegraph (VFX 'Skyfall' candidate, VFX/README.md 56), and area.landed naming each unit hit.",
   "expect": "In a TEST encounter on a test map, seven areas are marked at the end of Turn 4's Enemy Phase and nothing lands until Turn 5's Player Phase ends; every marked centre is standable; a hero who walks out of a marked area during Turn 5 takes nothing; a unit left inside takes 2 fire and 2 Burn (meteor) or 3 Weak (curse), enemies included; all 7 hexes of each area carry the ground afterwards; the same seed marks the same hexes, a different seed different ones; the placement is measurably nearer the middle than uniform over 200 seeds.",
-  "needs": [
-   "terrain.cursed"
-  ],
   "note": "Cut 2026-09-28 from the opening loop (Cavern Trail and Gates). Declare the two fall ids as variants before code, in an existing id kind (new kinds are Angela's - GLOSSARY.md). Switches: whether areas may overlap (default: centres distinct, edges may overlap); the middle weighting's shape; whether the enemy AI steps out of a marked area (default: no AI change - AI-DESIGN.md is Angela's); a fall happens once (the curse strikes 'from Turn 4' read as once, DECISIONS.md 3179)."
  },
  {
   "id": "capability.placed-remains",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Remains an encounter places at setup (DECISIONS.md 2026-09-28 'Gates is the Curse; the Cathedral has a Necromancer raising the dead': the Cathedral's remains, 33 hexes on the Ground Check, are raisable corpses). Today corpses come only from deaths (src/core/mutate.ts ~523, settle.ts ~51). An encounter row may author corpses on hexes; they are the same board objects capability.corpses made (CODEX.md 1834, the universal corpse rule) - raised by the Necromancer's Raise, eaten by the Ghoul's Eat Corpse - and each is painted as cursed ground, which stays when the body is raised or eaten (ruled: 'When the body is raised, the cursed ground stays').",
+  "spec": "Remains an encounter places at setup (DECISIONS.md 2026-09-28 'Gates is the Curse; the Cathedral has a Necromancer raising the dead': the Cathedral's remains, 33 hexes on the Ground Check, are raisable corpses). Today corpses come only from deaths (src/core/mutate.ts ~523, settle.ts ~51). An encounter row may author corpses on hexes; they are the same board objects capability.corpses made (CODEX.md 1834, the universal corpse rule) - raised by the Necromancer's Raise, eaten by the Ghoul's Eat Corpse - and each hex is painted layer.weak, cursed ground (DECISIONS.md 2026-09-28 \"cursed ground is the Weak ground layer\"), which stays when the body is raised or eaten (ruled: 'When the body is raised, the cursed ground stays').",
   "expect": "A TEST encounter with three placed remains fields three corpses on their hexes with corpse.created naming the encounter as the cause; a Necromancer in reach raises one and its hex stays cursed ground; a Ghoul eats one and heals the row's numbers and its hex stays cursed; a placed remain on an impassable hex is a loud error.",
-  "needs": [
-   "terrain.cursed"
-  ],
   "note": "Cut 2026-09-28 from the opening loop (the Cathedral). Variants to declare before code: two placed-remains rows in two TEST encounters, the second pure data.",
   "changesBaseline": false
  },
@@ -5064,12 +5058,11 @@
   "id": "encounter.opening.gates",
   "kind": "engine",
   "shape": "data",
-  "spec": "Battle 5, Gates - the old Curse encounter (DECISIONS.md 2026-09-28 'Gates is the Curse', 'Gates' curse strikes fall like the meteors; no Gates turn limit'). Map map.opening.gates (abbotown-gate-painted). Start: six defenders in position - two Bruiser Demons, two Poison Imps, one Powerful Imp, one Lieutenant Demon (unit.bruiser-demon, unit.poison-imp, unit.powerful-imp, unit.lieutenant-demon) at the ground proposal's markers. Turn 4: the curse strike (encounter.area-fall's curse instance: 7 areas, 3 Weak, cursed ground). Turn 7: two Imps, one from the top (the abbey, north end) and one from the bottom (behind the heroes). Victory: kill all enemies. No turn limit (the old 15-turn loss is dropped).",
+  "spec": "Battle 5, Gates - the old Curse encounter (DECISIONS.md 2026-09-28 'Gates is the Curse', 'Gates' curse strikes fall like the meteors; no Gates turn limit'). Map map.opening.gates (abbotown-gate-painted). Start: six defenders in position - two Bruiser Demons, two Poison Imps, one Powerful Imp, one Lieutenant Demon (unit.bruiser-demon, unit.poison-imp, unit.powerful-imp, unit.lieutenant-demon) at the ground proposal's markers. Turn 4: the curse strike (encounter.area-fall's curse instance: 7 areas, 3 Weak, painted layer.weak). Turn 7: two Imps, one from the top (the abbey, north end) and one from the bottom (behind the heroes). Victory: kill all enemies. No turn limit (the old 15-turn loss is dropped).",
   "expect": "Runs deterministically; the curse areas mark on Turn 4 and land after Turn 5's Player Phase, giving 3 Weak to every unit inside and cursing every hex of each area; the two Imps arrive on Turn 7; won when the last enemy dies.",
   "needs": [
    "map.opening-six",
-   "encounter.area-fall",
-   "terrain.cursed"
+   "encounter.area-fall"
   ],
   "probeIds": [
    "encounter.opening.gates"
@@ -5080,11 +5073,10 @@
   "id": "encounter.opening.cathedral",
   "kind": "engine",
   "shape": "data",
-  "spec": "Battle 6, Cathedral (DECISIONS.md 2026-09-28 'the Cathedral encounter'). Map map.opening.cathedral. Start: the Necromancer (unit.necromancer, raising two per turn, reach 10) at the altar on the raised sanctuary; one Skeleton Archer (unit.skeletal-archer) up on the altar; two Skeletons (unit.skeleton) before it; the remains - every remains hex on the Ground Check - placed as corpses on cursed ground (capability.placed-remains). Turn 5: two Ghouls (unit.ghoul) through the side doors; they eat corpses. A raised body's cursed ground stays. Victory: clear the map; killing the Necromancer stops the raising.",
+  "spec": "Battle 6, Cathedral (DECISIONS.md 2026-09-28 'the Cathedral encounter'). Map map.opening.cathedral. Start: the Necromancer (unit.necromancer, raising two per turn, reach 10) at the altar on the raised sanctuary; one Skeleton Archer (unit.skeletal-archer) up on the altar; two Skeletons (unit.skeleton) before it; the remains - every remains hex on the Ground Check - placed as corpses on painted layer.weak (capability.placed-remains). Turn 5: two Ghouls (unit.ghoul) through the side doors; they eat corpses. A raised body's cursed ground stays. Victory: clear the map; killing the Necromancer stops the raising.",
   "expect": "Runs deterministically; the Necromancer raises two a turn from the remains while it lives and none after it dies; the Ghouls arrive on Turn 5 and eat; every remains hex stays cursed after its body is raised or eaten; won when the last enemy dies.",
   "needs": [
    "map.opening-six",
-   "terrain.cursed",
    "capability.placed-remains",
    "fix.raise-two"
   ],

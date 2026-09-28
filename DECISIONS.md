@@ -3200,3 +3200,15 @@ Ruled:
 
 - **Battle 2's Undead Soldier is `unit.soldier`, the Codex's existing Soldier (type Undead), as it stands** — Strength 5, Armor 2, Health 10, Accuracy 62, Movement 4, its own three attacks and art. **No new enemy row is made.** The Undead Soldier stat block dictated minutes earlier (Strength 4, Precision 3, Health 9, Armor 1, Accuracy 70, immune Bleed 1, Slice) is superseded and not built. `unit.soldier` is not yet in the published pack (Codex `authored: false`); `content.opening-units` publishes it.
 - The Lumberjack's Wife stands as dictated above.
+
+## 2026-09-28 — cursed ground is the Weak ground layer, the one ground-status shape
+
+Andrew, on the backlog item `terrain.cursed` (a new terrain id for cursed ground, with its entry Weak deferred to End of Activation):
+
+“So, terrain cursed. We don't already have terrain burning or terrain anything else. I want to make sure we're just following the same structure that was planned for all the various ground effects.”
+
+Ruled:
+
+- **Cursed ground is `layer.weak`**, the ground layer already built for it (capability.ground-layers; added 2026-09-03 above, "a `weak` ground layer joins burning, frost, poisoned and darkness"). **No new terrain id.** It follows the one shape every ground status has (Angela, 2026-09-03, above: "when you step on them, you gain one, and if you're there at the end of activation, you gain one"): +1 Weak on entering, +1 Weak at End of Activation, painted one per hex like the others.
+- The opening's cursed hexes (the Ground Check's `*`), the curse strikes' landed areas and the Cathedral's remains are all painted `layer.weak`; the meteor fall's landed areas are painted `layer.burning`. The backlog item `terrain.cursed` is abandoned before any code, and the items that named it now name the layers.
+- Read against the same day's "When you move onto it, you gain 1 week at the end of activation": taken as the one shape, spoken loosely, not a different timing for Weak alone — asked back to confirm.
