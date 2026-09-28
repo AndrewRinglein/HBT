@@ -2918,3 +2918,15 @@ Andrew, asked "Should the staff-vs-bow check run against the Codex's armored ene
 Ruled:
 
 - **`content.mage-staff` no longer waits on `unit.brute`** (closed as superseded 2026-09-23). It sweeps staff against bow on the Codex's armored enemies (13 bestiary rows carry armor > 0 today — `unit.skeleton` 1, `unit.bruiser-demon` 4 among them) and on an unarmored one.
+
+## 2026-09-28 — Kingdom waits behind the first six battles
+
+Andrew, planning Kingdom and the weapon mechanics, on `KINGDOM-V2-2026-09-07.md`'s opening (six missions on the Retaking Abbotown conquest map, 2026-09-27):
+
+“I kind of like to postpone the Kingdom beyond those six stages until after we get a playable loop through the first six battles, rewards, and all the things that are happening in those six battles. We can postpone all of the other Kingdom stages other than the ones that relate to this first six.”
+
+Ruled:
+
+- **The next Kingdom target is a playable loop through the opening's six battles** — the battles, their rewards, and everything that happens in and between them.
+- **Every other Kingdom stage is postponed** until that loop plays: V2-ROADMAP.md R9's items that the opening does not use, and the post-opening Kingdom (expedition selection, conquest regions, dungeons). What the six battles need is scoped by the questions asked the same night.
+- The same night's weapon, counterattack and enchantment dictation is recorded verbatim in `V2-SHIELDS-AND-WEAPONS-2026-09-20.md` (sixth pass); it is not yet ruled into rows.
