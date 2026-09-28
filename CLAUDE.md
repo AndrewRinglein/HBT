@@ -205,6 +205,14 @@ Use the `add-and-verify` skill. Don't improvise the loop.
 
 ## The engine's traps
 
+**Before any new mechanism, name what already does it.** Search the engine's tables and seams
+(`src/core`, `src/content/terrain.ts`, `statuses.ts`, the trigger hooks) and `../content/FUNCTIONS.md`
+for the concept, not the word — then write in the item's `spec` which existing mechanism it
+extends, or that none exists and where you looked. A second way of doing an existing thing passes
+every gate check. (`terrain.cursed`, 2026-09-28: a new terrain id for cursed ground while
+`layer.weak` already was it under the one ground-status shape ruled 2026-09-03 — abandoned before
+code. Andrew: "just create a whole new thing for something that already existed in the wrong way.")
+
 **Before writing ANY content value: find its owner.** Grep the design folder for the id
 first — `../VFX/GROUND-REQUIREMENTS.md`, `../GAME-DESIGN.md`, `../GAME-ARCHITECTURE.md`,
 the numbered `*-SETTLED.md` files, `MAP-01/map.md`. The engine folder is not where content

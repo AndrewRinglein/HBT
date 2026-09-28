@@ -3212,3 +3212,18 @@ Ruled:
 - **Cursed ground is `layer.weak`**, the ground layer already built for it (capability.ground-layers; added 2026-09-03 above, "a `weak` ground layer joins burning, frost, poisoned and darkness"). **No new terrain id.** It follows the one shape every ground status has (Angela, 2026-09-03, above: "when you step on them, you gain one, and if you're there at the end of activation, you gain one"): +1 Weak on entering, +1 Weak at End of Activation, painted one per hex like the others.
 - The opening's cursed hexes (the Ground Check's `*`), the curse strikes' landed areas and the Cathedral's remains are all painted `layer.weak`; the meteor fall's landed areas are painted `layer.burning`. The backlog item `terrain.cursed` is abandoned before any code, and the items that named it now name the layers.
 - Read against the same day's "When you move onto it, you gain 1 week at the end of activation": taken as the one shape, spoken loosely, not a different timing for Weak alone. Confirmed by Andrew the same minute: “It's the same as all the other ones.”
+
+## 2026-09-28 — a whole-project review for duplicated mechanisms; name the prior art before building
+
+Andrew, after `terrain.cursed` was abandoned:
+
+“I want to review the structure of all the changes that have been made to make sure we stayed in the fashion that was initially designed, with content being authored separate from the engine, without duplicating functions. The thing you just tried to do is the number one problem. … How can we thoroughly check all the revisions for problems like this?”
+
+Shown a four-pass review (inventory, duplicates, content in code, independent verification) and asked whether it covers all four packages and whether the findings go on a page he rules on: “Questions 1 and 2, yes, and let's do it. … I want to continue on our work, so should we split this into two different chats?”
+
+Ruled:
+
+- **A read-only review of all four packages** (engine, kingdom, viewer, content tools) for duplicated mechanisms and content living in code, by concept across the whole tree. The brief is `engine/REVIEW-DUPLICATION-2026-09-28.md`.
+- **Findings go on a page Andrew rules on line by line**; nothing is fixed or filed until he has.
+- **Two chats:** the review runs in its own chat, writing nothing inside a package tree; building the opening loop continues in the engine chat.
+- **Before any new mechanism, the item names the existing mechanism it extends, or says none exists and where it looked** — added to engine/CLAUDE.md's traps the same day.
