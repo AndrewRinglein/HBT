@@ -291,6 +291,66 @@
    ]
   },
   {
+   "id": "unit.soldier",
+   "name": "Soldier",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 4,
+    "strength": 5,
+    "precision": 0,
+    "accuracy": 62,
+    "health": 10,
+    "armor": 2
+   },
+   "attacks": [
+    {
+     "id": "attack.soldier.attack",
+     "name": "Attack",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     }
+    },
+    {
+     "id": "attack.soldier.heavy-blow",
+     "name": "Heavy Blow",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": -2
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "chance": 100,
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "weak",
+         "value": 3
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.soldier.heavy-strike",
+     "name": "Heavy Strike",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 2
+     }
+    }
+   ],
+   "note": "Published 2026-09-28 (engine content.opening-units; engine DECISIONS.md 'battle 2's Undead Soldier is the existing Soldier', Andrew: \"Let's just use the existing soldier as the undead soldier.\"). The Codex bestiary row as it stands (gen/bestiary.json unit.soldier: Strength 5, Precision 0, Armor 2, Health 10, Accuracy 62, Movement 4; its three attacks). The bestiary's damage 'null'/'melee' with a modifier is read as Strength plus that modifier, 0 when none (engine SWITCHES.md soldierAttackDamage); Heavy Blow's 'apply a status weak 3 to the unit this hit' is an onHit Weak 3."
+  },
+  {
    "id": "unit.necromancer",
    "name": "Necromancer",
    "tier": 2,

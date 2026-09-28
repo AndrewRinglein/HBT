@@ -134,6 +134,12 @@
    "artSlug": "remembrancer-idris",
    "clearSpecialty": true,
    "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/remembrancer-idris/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.lumberjacks-wife": {
+   "name": "Lumberjack's Wife",
+   "cloneStatsOf": "hero.fixed.lumberjack-and-wife",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-28 (engine DECISIONS.md, Andrew): \"Second battle is Lumberjack and wife. They're two different units.\" The Lumberjack row (hero.fixed.lumberjack-and-wife, already named Lumberjack) is him alone; she is her own civilian beside him. Cloned from the row she was part of for everything not dictated; her dictated numbers are her stat block. No art yet. NO SPECIALTY IS SET — picked at L2 like any civilian."
   }
  },
  "statBlocks": {
@@ -205,6 +211,23 @@
     "value": 2,
     "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse. Supplies is a live currency (KINGDOM-DESIGN: Farm)."
    }
+  },
+  "hero.fixed.lumberjacks-wife": {
+   "why": "Lumberjack's Wife, dictated 2026-09-28 (engine DECISIONS.md 'the Lumberjack's Wife and the Undead Soldier, dictated'): \"Wife,  2 str, 2 pre, 65 accuracy, 6 health, 10 dodge, armed with knife and basic armor, move 5.\" Knife is item.dagger (the Codex has no item.knife); basic armor is item.basic-armor. Anything not dictated follows the row she was part of.",
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "health": 6,
+    "dodge": 10
+   },
+   "derived": {
+    "accuracy": 65,
+    "movement": 5
+   },
+   "kit": [
+    "item.dagger",
+    "item.basic-armor"
+   ]
   },
   "hero.fixed.school-teacher": {
    "why": "School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon.",
@@ -341,6 +364,7 @@
   "hero.fixed.farming-family": "civilian.farmer",
   "hero.fixed.group-of-farmers": "civilian.farmer",
   "hero.fixed.lumberjack-and-wife": "civilian.farmer",
+  "hero.fixed.lumberjacks-wife": "civilian.farmer",
   "hero.fixed.big-caravan": "civilian.merchant",
   "hero.fixed.caravan": "civilian.merchant",
   "hero.fixed.caravan-master": "civilian.merchant",

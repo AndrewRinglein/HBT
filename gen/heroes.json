@@ -20379,6 +20379,78 @@
    "personality": [
     "cheerful"
    ]
+  },
+  {
+   "id": "hero.fixed.lumberjacks-wife",
+   "name": "Lumberjack's Wife",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "neutral",
+   "campaign": null,
+   "art": null,
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "armor": 0,
+    "health": 6,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 5,
+    "toughness": 2,
+    "dodge": 10
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 65,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-28 (engine DECISIONS.md, Andrew): \"Second battle is Lumberjack and wife. They're two different units.\" The Lumberjack row (hero.fixed.lumberjack-and-wife, already named Lumberjack) is him alone; she is her own civilian beside him. Cloned from the row she was part of for everything not dictated; her dictated numbers are her stat block. No art yet. NO SPECIALTY IS SET — picked at L2 like any civilian.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
+    "Stat block dictated 2026-08-25: Lumberjack's Wife, dictated 2026-09-28 (engine DECISIONS.md 'the Lumberjack's Wife and the Undead Soldier, dictated'): \"Wife,  2 str, 2 pre, 65 accuracy, 6 health, 10 dodge, armed with knife and basic armor, move 5.\" Knife is item.dagger (the Codex has no item.knife); basic armor is item.basic-armor. Anything not dictated follows the row she was part of."
+   ],
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "levelBonuses": [
+    "2",
+    "3"
+   ],
+   "cost": {
+    "action": 2,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": "\"She swings the axe, I throw the hammer. Works every time.\"",
+   "backstory": "They fled the burning village together, grabbing every tool they could carry. United in survival, they fight as one.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Lumberjack's Wife",
+   "artMissing": true,
+   "levelTable": "civilian.farmer",
+   "derivedDeltas": {
+    "accuracy": -5
+   },
+   "derivedDeltaWhy": "Lumberjack's Wife, dictated 2026-09-28 (engine DECISIONS.md 'the Lumberjack's Wife and the Undead Soldier, dictated'): \"Wife,  2 str, 2 pre, 65 accuracy, 6 health, 10 dodge, armed with knife and basic armor, move 5.\" Knife is item.dagger (the Codex has no item.knife); basic armor is item.basic-armor. Anything not dictated follows the row she was part of.",
+   "kit": [
+    "item.dagger",
+    "item.basic-armor"
+   ],
+   "personality": [
+    "cheerful"
+   ]
   }
  ]
 }

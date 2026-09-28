@@ -603,15 +603,17 @@
   "rows": []
  },
  "civilians": {
-  "_note": "Civilian objectives are FIXED HERO ROWS (class.civilian), referenced by id — no separate civilian unit type exists or is needed. Ruled 2026-08-25: Farmer, School Teacher and School Children are confirmed in place as civilian units. The dictated Lumberjack maps to hero.fixed.lumberjack-and-wife (the row that exists). ART: all six have legacy thumbnails in the Codex today; full art exists in hell-tcg New Art/hero-art/ as UNDECLARED v1/v2 pairs (farmer-family, farmer-group, lumberjack, orphan-child, school-child) plus settled schoolteacher and school-children files — picking v1 vs v2 is an art ruling per gen/art-conventions.json, not a guess, and local card/ folders for teacher/children are empty pending the art channel.",
+  "_note": "Civilian objectives are FIXED HERO ROWS (class.civilian), referenced by id — no separate civilian unit type exists or is needed. Ruled 2026-08-25: Farmer, School Teacher and School Children are confirmed in place as civilian units. The dictated Lumberjack maps to hero.fixed.lumberjack-and-wife (the row that exists). ART: all six have legacy thumbnails in the Codex today; full art exists in hell-tcg New Art/hero-art/ as UNDECLARED v1/v2 pairs (farmer-family, farmer-group, lumberjack, orphan-child, school-child) plus settled schoolteacher and school-children files — picking v1 vs v2 is an art ruling per gen/art-conventions.json, not a guess, and local card/ folders for teacher/children are empty pending the art channel. 2026-09-28 (engine DECISIONS.md, Andrew): \"Second battle is Lumberjack and wife. They're two different units.\" hero.fixed.lumberjack-and-wife is the Lumberjack alone; the Wife is hero.fixed.lumberjacks-wife, confirmed as a civilian unit (content.opening-units).",
   "confirmed": [
    "hero.fixed.farmer",
    "hero.fixed.school-teacher",
-   "hero.fixed.school-children"
+   "hero.fixed.school-children",
+   "hero.fixed.lumberjacks-wife"
   ],
   "mapped": {
    "lumberjack (dictated)": "hero.fixed.lumberjack-and-wife",
-   "orphan child (dictated)": "hero.fixed.orphans"
+   "orphan child (dictated)": "hero.fixed.orphans",
+   "wife (dictated)": "hero.fixed.lumberjacks-wife"
   },
   "artPendingRuling": [
    "farmer-family v1|v2",
