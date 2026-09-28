@@ -3078,3 +3078,16 @@ Ruled:
 - **Battle 1, Orphanage** (was "Two Zombies and a Child"): **two Zombies, an Orphan Child and a School Teacher.** The Orphan Child and the School Teacher (civilians) stand in two hexes immediately left of the orphanage, right next to it. **The two Zombies start on the right (east) edge.** **No retreat — you are surrounded.** **Turn 4: one Zombie arrives from the bottom edge, immediately left of the water. Turn 5: one Zombie arrives from the left edge, centre.** Victory is clearing the map (ruled earlier the same night).
 - **Battle 2, Lumberjack House: the two civilians are the Lumberjack and his Wife, two separate units.** (The old Surrounded fielded them as one grouped unit with a Farmer.)
 - Exact hexes are Claude's reading of these words on the Orphanage map, shown on the Abbotown Ground Check page for Andrew to check: civilians (12,1) and (13,2); Zombies (19,3) and (19,5); Turn 4 arrival (9,13); Turn 5 arrival (0,6). Not stated and asked: the hero's start hex and whether the old ten-turn loss limit stays.
+
+## 2026-09-28 — civilians dying is its own punishment; battle 2's start
+
+Andrew, the same minute:
+
+> Now, there's no failing the objective if units die. The units dying is their own punishment. Start is 3 zombies on the right. Lumberjack and wife start 6 squares in on the trail.
+
+Ruled:
+
+- **A civilian dying does not fail the battle.** "The units dying is their own punishment." (Supersedes the old Surrounded rule that either objective civilian's death failed the objective; read as holding for the opening's civilians generally.)
+- **Battle 2, Lumberjack House: the start is three Zombies on the right (east) edge. The Lumberjack and his Wife start six hexes in along the trail.**
+- The rest of battle 2's schedule stands as revised 2026-09-21 (ENCOUNTER_DESIGN_CONCEPT.md): Turn 1, end of the Enemy Phase, one Skeletal Archer from the bottom edge; Turn 3, one Skeletal Archer from the top and one from behind the heroes; Turn 4, three Fast Zombies; Turn 5, one Soldier Undead from behind the heroes. No retreat. Victory: clear the map.
+- Exact hexes are Claude's reading, shown on the Abbotown Ground Check for Andrew to check: "six in along the trail" counted from where the cart track enters at the lower-left, Lumberjack (5,9) and Wife (6,9); Zombies (19,3), (19,4), (19,8) — the east-edge hexes that are not graves or forest.
