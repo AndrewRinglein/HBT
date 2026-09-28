@@ -142,5 +142,125 @@
         "note": "the side's focus: least Health, ties to the lower id"
       }
     ]
+  },
+  {
+    "id": "test.encounter.meteor-fall",
+    "name": "Meteor fall (TEST)",
+    "map": "test.map.journey-20x10",
+    "board": {
+      "width": 20,
+      "height": 10
+    },
+    "note": "encounter.area-fall (engine, 2026-09-28): the meteor fall on a TEST encounter — two heroes against three Strong Skeletons on the 20x10 TEST board. TEST only, no campaign claim.",
+    "heroZone": {
+      "count": 2,
+      "at": {
+        "near": {
+          "col": 1,
+          "row": 4
+        },
+        "range": 1
+      }
+    },
+    "setup": [
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 18,
+          "row": 2
+        }
+      },
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 18,
+          "row": 5
+        }
+      },
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 18,
+          "row": 8
+        }
+      }
+    ],
+    "schedule": [],
+    "falls": [
+      {
+        "id": "test.fall.meteor",
+        "turn": 4,
+        "areas": 7,
+        "layer": "layer.burning",
+        "damage": 2,
+        "damageType": "fire",
+        "applies": [
+          [
+            "status.burn",
+            2
+          ]
+        ],
+        "note": "the Hunt's meteor fall's numbers (engine DECISIONS.md 2026-09-28): seven 7-hex areas marked at the end of Turn 4's Enemy Phase, landing after the next Player Phase: burning ground, 2 fire damage and 2 Burn"
+      }
+    ]
+  },
+  {
+    "id": "test.encounter.curse-strike",
+    "name": "Curse strike (TEST)",
+    "map": "test.map.journey-20x10",
+    "board": {
+      "width": 20,
+      "height": 10
+    },
+    "note": "encounter.area-fall (engine, 2026-09-28): the curse strike on a TEST encounter — the same fielding as test.encounter.meteor-fall, a different fall. TEST only, no campaign claim.",
+    "heroZone": {
+      "count": 2,
+      "at": {
+        "near": {
+          "col": 1,
+          "row": 4
+        },
+        "range": 1
+      }
+    },
+    "setup": [
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 18,
+          "row": 2
+        }
+      },
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 18,
+          "row": 5
+        }
+      },
+      {
+        "unit": "unit.strong-skeleton",
+        "at": {
+          "col": 18,
+          "row": 8
+        }
+      }
+    ],
+    "schedule": [],
+    "falls": [
+      {
+        "id": "test.fall.curse",
+        "turn": 4,
+        "areas": 7,
+        "layer": "layer.weak",
+        "applies": [
+          [
+            "status.weak",
+            3
+          ]
+        ],
+        "note": "the Gates' curse strikes' numbers (engine DECISIONS.md 2026-09-28): falling like the meteors, 3 Weak to everyone inside, the area becomes cursed ground (layer.weak)"
+      }
+    ]
   }
 ]

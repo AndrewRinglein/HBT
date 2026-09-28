@@ -1954,6 +1954,8 @@ function compileEncounter(row) {
     ...(row.civilianAi ? { civilianAi: { mode: row.civilianAi.mode, untilTurn: row.civilianAi.untilTurn } } : {}),   // ruled 2026-09-03
     // ai.encounter-rules (engine, 2026-09-26; AI-DESIGN.md §4): the row's overarching AI rules ship as data; the engine validates them at load
     ...(Array.isArray(row.aiRules) && row.aiRules.length ? { aiRules: row.aiRules.map(({ note: _n, ...r }) => r) } : {}),
+    // encounter.area-fall (engine, 2026-09-28): the row's telegraphed area falls ship as data; the engine validates them at load
+    ...(Array.isArray(row.falls) && row.falls.length ? { falls: row.falls.map(({ note: _n, ...f }) => f) } : {}),
     ...(gaps.length ? { gaps } : {}) };
 }
 const encounters = {};
@@ -1963,6 +1965,7 @@ for (const row of readTest('encounters.json')) {
   if (typeof row?.id !== 'string' || !/^test\.encounter\.[a-z0-9.-]+$/.test(row.id) || test.encounters[row.id]) throw new Error(`invalid or duplicate TEST encounter ${row?.id}`);
   if (!test.maps[row.map]) throw new Error(`TEST encounter ${row.id} must name a TEST map`);
   for (const r of row.aiRules || []) if (!isTestId.trigger(r?.id)) throw new Error(`TEST encounter ${row.id} AI rule '${r?.id}' is not test.* — the test family or nothing`);   // ai.encounter-rules
+  for (const f of row.falls || []) if (!isTestId.trigger(f?.id)) throw new Error(`TEST encounter ${row.id} fall '${f?.id}' is not test.* — the test family or nothing`);   // encounter.area-fall
   test.encounters[row.id] = compileEncounter(row);
 }
 
