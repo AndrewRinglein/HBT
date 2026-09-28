@@ -5103,7 +5103,9 @@
   "probeIds": [
    "encounter.opening.cavern-trail"
   ],
-  "note": "Cut 2026-09-28. Switches: victory and retreat carried defaults; the heroes' start hexes (they enter from the west)."
+  "note": "Cut 2026-09-28. Switches: victory and retreat carried defaults; the heroes' start hexes (they enter from the west).",
+  "status": "done",
+  "sha": "12f6db9"
  },
  {
   "id": "encounter.opening.gates",

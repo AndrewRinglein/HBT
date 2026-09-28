@@ -43238,6 +43238,109 @@ export const UNIT_PACK = {
           "range": 2
         }
       }
+    },
+    "encounter.opening.cavern-trail": {
+      "id": "encounter.opening.cavern-trail",
+      "name": "Cavern Trail",
+      "mapId": "map.opening.cavern-trail",
+      "board": {
+        "width": 40,
+        "height": 16
+      },
+      "setup": [
+        {
+          "unit": "unit.bloodhound",
+          "count": 3,
+          "hexes": [
+            {
+              "col": 38,
+              "row": 8
+            },
+            {
+              "col": 38,
+              "row": 9
+            },
+            {
+              "col": 38,
+              "row": 10
+            }
+          ]
+        },
+        {
+          "unit": "unit.hellhound",
+          "at": {
+            "col": 39,
+            "row": 9
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.zombie-hound",
+              "count": 4,
+              "hexes": [
+                {
+                  "col": 0,
+                  "row": 4
+                },
+                {
+                  "col": 0,
+                  "row": 5
+                },
+                {
+                  "col": 0,
+                  "row": 6
+                },
+                {
+                  "col": 0,
+                  "row": 7
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 7,
+          "spawn": [
+            {
+              "unit": "unit.werewolf",
+              "at": {
+                "col": 19,
+                "row": 2
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 4,
+        "at": {
+          "near": {
+            "col": 5,
+            "row": 6
+          },
+          "range": 2
+        }
+      },
+      "falls": [
+        {
+          "id": "trigger.cavern-trail.meteor-fall",
+          "turn": 4,
+          "areas": 7,
+          "layer": "layer.burning",
+          "damage": 2,
+          "damageType": "fire",
+          "applies": [
+            [
+              "status.burn",
+              2
+            ]
+          ]
+        }
+      ]
     }
   },
   "badges": {

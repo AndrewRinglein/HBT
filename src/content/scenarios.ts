@@ -168,6 +168,11 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.opening.lumberjack', encounterId: 'encounter.opening.lumberjack',
     heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk', 'alpha-air-mage'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  'test.opening-cavern-trail': {
+    id: 'test.opening-cavern-trail', note: 'The opening, battle 4: encounter.opening.cavern-trail (the Hunt, with the meteor fall) on map.opening.cavern-trail with four Alpha heroes.',
+    mapId: 'map.opening.cavern-trail', encounterId: 'encounter.opening.cavern-trail',
+    heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk', 'alpha-air-mage'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',

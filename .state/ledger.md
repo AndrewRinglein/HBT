@@ -17794,3 +17794,21 @@ index daa4209..c42917a 100644
 2026-09-28 21:32
 
 Authored on map.opening.bridge exactly as ruled (four Imps east, Fire Imp T2, Imp T4, Fire Imp T5, hero zone (3,10) r2), it never reaches a win with four Alpha heroes: replicates 0-9 end capped 8, wipe 2. Replicate 0 stalls from Turn 12: the last hero stands at (36,0) on the far bank, five Imps within 7 hexes, and nobody attacks for 14 Turns. The expect's 'won when the last enemy dies' cannot be shown; why the AI stalls is an AI question (the atlasFieldedMaps precedent), and whether the Bridge wants different numbers or hero start is Andrew's.
+
+## encounter.opening.cavern-trail — LANDED `12f6db9`
+2026-09-28 21:37
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-cavern-trail.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.cavern-trail: 12 log lines, 12 fired, 9 changed state
+  PASS  brought its own tests — test/opening-cavern-trail.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.cavern-trail — they genuinely test it
