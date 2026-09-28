@@ -3122,3 +3122,18 @@ Ruled:
 - **A meteor fall on Turn 4: seven fiery meteorites.** At the end of the Enemy Phase, **seven areas are marked**, each **seven hexes** (a hex and the six around it), shown by an aura-like marking on **the area's outer edge only, soft and red**. **After the next Player Phase ends, the meteorites land: the areas become burning ground, and everyone in them takes damage and is set on fire (Burn).** The telegraph gives the heroes one Player Phase to get out.
 - The visual already exists as a candidate: "Skyfall", a one-turn coloured warning, descending meteor and fire impact, with a 7-hex option (VFX/README.md 56; assets/characters/oathblade-armor/rebuild/candidates/meteor-strikes/). Its approval and game integration are pending.
 - "In this battle" follows the Hunt on the Cavern Trail (battle 4) in the same dictation; which battle it belongs to is asked back. Not stated: how the seven areas are placed, the damage, the Burn amount, and whether enemies are hit too.
+
+## 2026-09-28 — the meteor fall: Cavern Trail, burning ground, 2 fire and 2 Burn, centred toward the middle; the Orphanage has no turn limit
+
+Andrew, answering which battle, how much, and how the areas are placed:
+
+> Hunt on the Cavern Trail.  It sets all ground ablaze. So all tiles become having the burning ground effect.   It also inflicts 2 burn and 2 fire damage on any unit in that area.   The seven areas are placed at random, but I want a randomization that makes it more towards the middle.  And in this case, the center hex should always be a viable move hex. Don't put it in the impassable water or above the rocks.   Orphanage shall not keep its old lost after 10 turns.
+
+Ruled:
+
+- **The meteor fall belongs to battle 4, the Hunt on the Cavern Trail** (Turn 4).
+- **Every hex of a landed area becomes burning ground** (terrain.burning), all seven hexes.
+- **Every unit in a landed area takes 2 fire damage and 2 Burn** — "any unit", so enemies too.
+- **The seven areas are placed at random, weighted toward the middle of the map.** **Each area's centre hex is always a hex a unit can move to** — never the impassable deep water, never on the cliff rocks. Its six surrounding hexes are not constrained by this ruling.
+- **The Orphanage has no turn limit** (the old "lost after the 10th turn" is dropped).
+- Not stated: whether two areas may overlap (asked or defaulted when the item is built); the random stream is named by what it rolls (Law 4).
