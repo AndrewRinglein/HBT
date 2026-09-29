@@ -54,6 +54,12 @@ export { swapCostOf } from '../../engine/src/core/swap.js'
 // validateBattleCommand's (canAttackHex inside it); attackProp stays closed — the blow is issued
 // as the engine's own { hex } action command.
 export { propAttackHexes } from '../../engine/src/core/prop-attack.js'
+// Widened 2026-09-28 (plumbing.vocabulary-export; DECISIONS.md "the duplication review, ruled",
+// findings K6 K13): the engine's ONE vocabulary — its outcomes, life states and every event type it
+// emits — read here instead of kept as copies. Names only; no rule.
+export { engineVocabulary } from '../../engine/src/core/vocabulary.js'
+export type { EngineVocabulary } from '../../engine/src/core/vocabulary.js'
+export { OUTCOMES, LIFE_STATES } from '../../engine/src/core/types.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing
@@ -73,7 +79,11 @@ export const ENGINE_EVENTS = [
   // widened 2026-09-03 (seam.loadout, G9): what the engine put on each fielded hero, per item
   'unit.equipped',
   'turn.begin', 'turn.end',
-  'phase.begin', 'phase.end',
+  // 'phase.end' left 2026-09-28: the engine never emits it (it is a cause id); test/vocabulary.test.ts
+  // checks this list against the engine's own (plumbing.vocabulary-export, review finding K13).
+  'phase.begin',
+  // seam.ts folds the item uses a battle spent (capability.charges)
+  'charge.spent',
   'damage.applied', 'heal.applied',
   'life.standing', 'life.downed', 'life.dead',
 ] as const

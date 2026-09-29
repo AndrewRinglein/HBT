@@ -10,9 +10,13 @@
 
 import type { EngagementResult, UnitTally } from './seam.js'
 import type { Outcome, Side } from '../engine.js'
+// plumbing.vocabulary-export (engine, 2026-09-28; review finding K6): the outcomes and life states
+// are the engine's lists, read through the door. The copy here had three of six outcomes, so an
+// objectiveMet or objectiveFailed result was refused by the only validator.
+import { OUTCOMES as ENGINE_OUTCOMES, LIFE_STATES } from '../engine.js'
 
-const OUTCOMES: readonly Outcome[] = ['heroClear', 'wipe', 'capped']
-const LIFE: readonly UnitTally['lifeState'][] = ['standing', 'downed', 'dead']
+const OUTCOMES: readonly Outcome[] = ENGINE_OUTCOMES
+const LIFE: readonly UnitTally['lifeState'][] = LIFE_STATES
 
 /**
  * A blank result for the panel to edit: everyone standing, nothing dealt, the
