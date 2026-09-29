@@ -173,6 +173,13 @@ const openingDraftGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
 // only — a zombie's badge.gained for Rotting Flesh now names the '+20 Deathbed Fighting' gap; `movedOnlyText`
 // records that state, RNG and result are unchanged. It is checked here and skips the older layers.
 const afflictionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions.json', import.meta.url), 'utf8'))
+// fix.badge-surge-at-fielding, rule.badge-deathbed-fighting, rule.badge-immunity (2026-09-29), Law 10: the badge
+// rules built (Andrew, DECISIONS.md "Possession's Surge loads at fielding; ... built"). Every case frozen here
+// (tools/capture-badge-rules-cursor.mts). Moved: showcase.prologue-party, test.opening-cavern-trail and
+// test.vampire-bite by log TEXT only (Rotting Flesh's and Vampirism's gain lines no longer name the Deathbed gap);
+// showcase.waystation for real — the mage takes Rotting Flesh on turn 14 and the same zombie's Poison is then
+// refused (status.immune), the rule working. A `changed` case is checked here and skips the older layers.
+const badgeRulesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-badge-rules.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -284,7 +291,10 @@ describe('resumable battle cursor', () => {
       const peddlersVestExpected = peddlersVestGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const openingDraftExpected = openingDraftGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const afflictionsExpected = afflictionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const afflictionsMoved = afflictionsExpected?.changed === true
+      const badgeRulesExpected = badgeRulesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const badgeRulesMoved = badgeRulesExpected?.changed === true
+      // was: const afflictionsMoved = afflictionsExpected?.changed === true — a badge-rules-moved case skips the afflictions layer too (rule.badge-immunity 2026-09-29)
+      const afflictionsMoved = afflictionsExpected?.changed === true || badgeRulesMoved
       // was: const openingDraftMoved = openingDraftExpected?.changed === true — an afflictions-moved case skips the opening-draft layer too (content.afflictions-revised 2026-09-29)
       const openingDraftMoved = openingDraftExpected?.changed === true || afflictionsMoved
       // was: const peddlersVestMoved = peddlersVestExpected?.changed === true — an opening-draft-moved case skips the peddlers-vest layer too (fix.opening-draft 2026-09-29)
@@ -341,7 +351,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (afflictionsExpected) {
+        if (badgeRulesExpected) {
+        expect(hash(ctx.events), 'full badge-rules events').toBe(badgeRulesExpected.events)
+        expect(hash(ctx.state), 'full badge-rules state').toBe(badgeRulesExpected.state)
+        expect(hash(ctx.rng.log), 'full badge-rules RNG').toBe(badgeRulesExpected.rng)
+        expect(result).toEqual(badgeRulesExpected.result)
+        }
+        // was: if (afflictionsExpected) { — rule.badge-immunity (2026-09-29): a badge-rules-moved case is checked above instead
+        if (afflictionsExpected && !badgeRulesMoved) {
         expect(hash(ctx.events), 'full afflictions events').toBe(afflictionsExpected.events)
         expect(hash(ctx.state), 'full afflictions state').toBe(afflictionsExpected.state)
         expect(hash(ctx.rng.log), 'full afflictions RNG').toBe(afflictionsExpected.rng)

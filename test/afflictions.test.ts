@@ -168,12 +168,22 @@ describe('the afflictions as revised 2026-09-29', () => {
   it('the rows carry the ruled numbers; what the engine cannot yet do is a named gap, never dropped', () => {
     expect(BADGES['badge.vampirism']!.statModifiers).toEqual({ strength: 2, precision: 1, maxHp: 3, resist: 1, magic: 1, spirit: -1 })
     expect(BADGES['badge.vampirism']!.grants).toEqual(['power.flight-vampiric'])
-    expect(BADGES['badge.vampirism']!.gaps).toEqual(expect.arrayContaining(['on a melee hit: heal 2', '+15 Deathbed Fighting', 'deploying the hero costs 3 Faith', 'the hero gains half experience']))
+    // LAW 10 — rule.badge-deathbed-fighting and rule.badge-immunity (2026-09-29, Andrew, DECISIONS.md: "yes to 1 and 2"):
+    // the Deathbed points and the immunities were gaps here and are built now; the claim is unchanged — every ruled
+    // clause is either compiled or named, never dropped — the side of that line each one sits on moved.
+    // was: …gaps arrayContaining ['on a melee hit: heal 2', '+15 Deathbed Fighting', 'deploying the hero costs 3 Faith', 'the hero gains half experience']
+    expect(BADGES['badge.vampirism']!.gaps).toEqual(expect.arrayContaining(['on a melee hit: heal 2', 'deploying the hero costs 3 Faith', 'the hero gains half experience']))
+    expect(BADGES['badge.vampirism']!.deathbedFighting).toBe(15)
     expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2 })
-    expect(BADGES['badge.cold-heart']!.gaps).toEqual(expect.arrayContaining(['immune to Karma', 'immune to Cold (cold damage and the Frost status)']))
+    // was: …gaps arrayContaining ['immune to Karma', 'immune to Cold (cold damage and the Frost status)']
+    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'] })
+    expect(BADGES['badge.cold-heart']!.gaps).toEqual(['immune to Cold: cold damage — the engine has no cold damage type'])
     expect(BADGES['badge.possession']!.statModifiers).toEqual({ magic: 2, resist: 1, vision: 3, surge: -10 })
-    expect(BADGES['badge.possession']!.gaps).toEqual(expect.arrayContaining(['−10 Deathbed Fighting', 'deploying the hero costs 3 Mana']))
-    expect(BADGES['badge.rotting-flesh']!.gaps).toContain('+20 Deathbed Fighting')
+    // was: …gaps arrayContaining ['−10 Deathbed Fighting', 'deploying the hero costs 3 Mana']
+    expect(BADGES['badge.possession']!.gaps).toEqual(expect.arrayContaining(['deploying the hero costs 3 Mana']))
+    expect(BADGES['badge.possession']!.deathbedFighting).toBe(-10)
+    // was: expect(BADGES['badge.rotting-flesh']!.gaps).toContain('+20 Deathbed Fighting')
+    expect(BADGES['badge.rotting-flesh']!.deathbedFighting).toBe(20)
     expect(BADGES['badge.lycanthropy']!.gaps).toContain('deploying the hero costs 2 Supplies')
   })
 })
