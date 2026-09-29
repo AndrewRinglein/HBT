@@ -13,7 +13,7 @@
 import { FOLDABLE, FOLD_BASE } from './items.js'
 import { STAT_NAMES } from './stats.js'
 import { ATTACKER_HOOKS, HOOKS, TRIGGER_EFFECT_KINDS } from './trigger.js'
-import { ABILITY_EFFECT_KINDS, LIFE_STATES, MOVE_EFFECT_KINDS, OUTCOMES } from './types.js'
+import { ABILITY_EFFECT_KINDS, DAMAGE_TYPES, LIFE_STATES, MOVE_EFFECT_KINDS, OUTCOMES } from './types.js'
 import { EVENT_TYPES } from './mutate.js'
 import { GLYPH, GLYPH_LAYER, LAYER_IDS, appliesOnActivationEndOf, appliesOnEnterOf, layerAppliesOnActivationEnd, layerAppliesOnEnter, terrainIdOf } from '../content/terrain.js'
 
@@ -34,6 +34,8 @@ export type EngineVocabulary = {
   readonly lifeStates: readonly string[]
   /** Every event type the engine emits; `life.<state>` is spelled out. */
   readonly events: readonly string[]
+  /** rule.badge-immunity (2026-09-29): the damage types (DAMAGE_TYPES) — what a badge's immuneTo.damage may name. */
+  readonly damageTypes: readonly string[]
   /** The ground layers, in the engine's order, and the statuses each applies. */
   readonly layers: readonly { readonly id: string; readonly onEnter: readonly (readonly [string, number])[]; readonly onActivationEnd: readonly (readonly [string, number])[] }[]
   /** Each authored glyph, the terrain it decodes to, the layer it paints (if any) and the statuses that ground applies. */
@@ -53,6 +55,7 @@ export function engineVocabulary(): EngineVocabulary {
     outcomes: [...OUTCOMES],
     lifeStates: [...LIFE_STATES],
     events: [...EVENT_TYPES, ...LIFE_STATES.map((s) => `life.${s}`)],
+    damageTypes: [...DAMAGE_TYPES],
     layers: Object.keys(LAYER_IDS).map(Number).sort((a, b) => a - b).map((n) => ({
       id: LAYER_IDS[n]!, onEnter: layerAppliesOnEnter(n), onActivationEnd: layerAppliesOnActivationEnd(n),
     })),

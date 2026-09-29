@@ -1655,3 +1655,11 @@ The rules are `progression/OPENING-PARTY.json` (`firstHero`, `crucible`, `draftS
 | `deathbedFightingPercentIsPoints` | Is "+15% to deathbed fighting" 15 points on the chance, or 15% of it? | **Points**: 20 + 5 × Toughness + 15. Named on the row as "+15 Deathbed Fighting"; the engine cannot yet read it (a gap). | The Deathbed chance is itself a percentage; the Glossary and audit carry `deathbedFighting` as a stat. | provisional — 2026-09-29 |
 | `vampiricFlightName` | What is the flight power called? | **`power.flight-vampiric`, "Flight (Vampiric)"** — the flight ladder's fourth row: Movement + 1, 2 Stamina. | Named nothing in the ruling; the ladder's own naming (`power.flight-swift`, `power.flight-labored`). A new instance, free to rename. | provisional — 2026-09-29 |
 | `coldHeartRarity` | Cold Heart's rarity? | **`acquired`** — added in game, never rolled; not `affliction`, which is "the family of four". | `_rarityTaxonomy` in content/gen/badges.json. | provisional — 2026-09-29 |
+
+## rule.badge-immunity — immunity from badges, 2026-09-29
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `immunePoisonIsBoth` | "immune to poison" (Rotting Flesh) — the Poison status, poison damage, or both? | **Both**, as an element: the word names a damage type and a status. | "Fire and burn are the same thing ... immune to cold ... resists both frost status and cold damage" — the element reading, applied to the one other word that is both. | provisional — 2026-09-29 |
+| `immunityGainedClearsStatus` | A unit gains an immunity mid-battle while it carries that status — does the status stay? | **Removed at once**, the badge the cause. | Immune means it does not have it. | provisional — 2026-09-29 |
+| `immuneNumberedRows` | "Immune Frost 1", "Immune poison 1", "immunen to fire 1", "immune weak" on an aura — compiled? | **No: named gaps.** A number after an immunity is not immunity (a resistance of 1? a stack cap?), and an aura's immunity is the allies'. | Never guess a number's meaning. | provisional — 2026-09-29 |

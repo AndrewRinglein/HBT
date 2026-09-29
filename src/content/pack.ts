@@ -473,6 +473,12 @@ function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, 
     if (!Array.isArray(b.grants)) throw new Error(`${where}: badge '${k}' has no grants list — regenerate the pack`)
     for (const t of b.triggers ?? []) { validateTrigger(t); if (t.source !== k) throw new Error(`${where}: badge '${k}' trigger '${t.id}' names source '${t.source}'`) }
     validateVsTarget(b.vsTarget, `${where}: badge '${k}'`)
+    if (b.immuneTo !== undefined) {
+      const im = b.immuneTo as { statuses?: unknown; damage?: unknown }
+      if (Object.keys(im).some((key) => key !== 'statuses' && key !== 'damage')) throw new Error(`${where}: badge '${k}' immuneTo names something other than statuses and damage`)
+      if (im.statuses !== undefined && (!Array.isArray(im.statuses) || im.statuses.some((s) => typeof s !== 'string' || !s.startsWith('status.')))) throw new Error(`${where}: badge '${k}' immuneTo.statuses must be status ids`)
+      if (im.damage !== undefined && (!Array.isArray(im.damage) || im.damage.some((d) => !isDamageType(d) || d === 'true'))) throw new Error(`${where}: badge '${k}' immuneTo.damage must be damage types (never true damage)`)
+    }
     if (b.deathbedFighting !== undefined && !Number.isSafeInteger(b.deathbedFighting)) throw new Error(`${where}: badge '${k}' Deathbed Fighting is not a whole number`)
   }
   return raw

@@ -1,5 +1,24 @@
 [
  {
+  "id": "rule.badge-immunity",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [],
+  "changesBaseline": true,
+  "probeIds": [
+   "badge.cold-heart"
+  ],
+  "variants": [
+   "badge.cold-heart",
+   "badge.rotting-flesh"
+  ],
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'Possession's Surge loads at fielding; the Ghost inflicts Possession; Deathbed Fighting and Cold Heart's immunities are built'): build status immunity and cold as an element - Cold Heart immune to Karma, and to Cold (cold damage and the Frost status), as fire resistance covers fire damage and Burn. A badge row carries immuneTo {statuses, damage}: a status it names never lands (status.immune names the badge) and one already carried is removed when the badge is gained; a damage type it names deals nothing through flatDamage (every HP damage path), the attack ledger's IMMUNE row naming the badge; true damage is never resisted. Content compiles 'immune to <element>' and 'immune to <status>'. The engine has no cold damage type: a named gap on Cold Heart. Engine rule: a unit is immune to a status or damage type any carried badge's immuneTo names.",
+  "expect": "A hero with Cold Heart takes no Frost and no Karma (each refusal names badge.cold-heart) but still takes Burn; a Frosted hero gaining Cold Heart loses the Frost; Rotting Flesh makes poison damage 0 and refuses Poison; true damage lands in full.",
+  "note": "changesBaseline: a control battle hero carrying Rotting Flesh now refuses Poison and poison damage - the rule working. The damageTypes vocabulary export is added for content (never a copied list).",
+  "status": "done-needs-review",
+  "sha": "d4654ff"
+ },
+ {
   "id": "rule.badge-deathbed-fighting",
   "kind": "engine",
   "shape": "modifier",

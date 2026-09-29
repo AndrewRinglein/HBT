@@ -66,8 +66,10 @@ export type Assert<T extends true> = T
 export const LIFE_STATES = ['standing', 'downed', 'dead'] as const satisfies readonly LifeState[]
 export type LifeStatesCovered = Assert<Covers<LifeState, typeof LIFE_STATES>>
 export type DamageType = 'physical' | 'magic' | 'fire' | 'poison' | 'shadow' | 'true'
+/** rule.badge-immunity (2026-09-29): the list, exported through the vocabulary so content reads it rather than copying it. */
+export const DAMAGE_TYPES: readonly DamageType[] = ['physical', 'magic', 'fire', 'poison', 'shadow', 'true']
 export function isDamageType(value: unknown): value is DamageType {
-  return typeof value === 'string' && ['physical', 'magic', 'fire', 'poison', 'shadow', 'true'].includes(value)
+  return typeof value === 'string' && (DAMAGE_TYPES as readonly string[]).includes(value)
 }
 export type Phase = 'hero' | 'enemy'
 
@@ -722,6 +724,13 @@ export type BadgeDef = {
    * mid-battle counts from then on.
    */
   readonly deathbedFighting?: number
+  /**
+   * rule.badge-immunity (2026-09-29, Andrew, DECISIONS.md: "I meant immune to Karma, too. As written, it is another
+   * type of status." · "immune to cold, and it resists both frost status and cold damage"): statuses that never
+   * land on the carrier (one it already carries is removed when the badge is gained), and damage types that deal
+   * it nothing. An element names both — Fire is fire damage and Burn.
+   */
+  readonly immuneTo?: { readonly statuses?: readonly string[]; readonly damage?: readonly DamageType[] }
   readonly gaps?: readonly string[]
 }
 

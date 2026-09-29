@@ -44058,8 +44058,15 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "deathbedFighting": 20,
+      "immuneTo": {
+        "statuses": [
+          "status.poison"
+        ],
+        "damage": [
+          "poison"
+        ]
+      },
       "gaps": [
-        "immune to poison",
         "start of battle take 5 true damage"
       ]
     },
@@ -44308,9 +44315,14 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "flags": {},
+      "immuneTo": {
+        "statuses": [
+          "status.karma",
+          "status.frost"
+        ]
+      },
       "gaps": [
-        "immune to Karma",
-        "immune to Cold (cold damage and the Frost status)"
+        "immune to Cold: cold damage — the engine has no cold damage type"
       ]
     },
     "badge.vengeful": {
@@ -45136,9 +45148,11 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "flags": {},
-      "gaps": [
-        "immune to Weak"
-      ]
+      "immuneTo": {
+        "statuses": [
+          "status.weak"
+        ]
+      }
     },
     "badge.diverse-learner": {
       "id": "badge.diverse-learner",
@@ -45254,8 +45268,12 @@ export const UNIT_PACK = {
       "statModifiers": {},
       "grants": [],
       "flags": {},
+      "immuneTo": {
+        "statuses": [
+          "status.weak"
+        ]
+      },
       "gaps": [
-        "Immune to Weak",
         "on taking damage: remove 1 Weak"
       ]
     },
@@ -45546,8 +45564,12 @@ export const UNIT_PACK = {
       "statModifiers": {},
       "grants": [],
       "flags": {},
+      "immuneTo": {
+        "statuses": [
+          "status.frost"
+        ]
+      },
       "gaps": [
-        "Immune to Frost",
         "your attacks apply 1 Frost"
       ]
     },

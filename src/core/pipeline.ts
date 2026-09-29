@@ -358,7 +358,8 @@ export function finishDamage(ctx:Ctx,target:Unit,a:Pick<DamageSource,'damageType
   if (frost && !ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
 
   const mit = flatDamage(ctx, target, v, a.damageType,0,a.armorPenetration??0,guard?.armor??0)
-  if (a.damageType !== 'true') {
+  if (mit.immuneBy) v = step(ledger, DMG.MITIGATION, 'IMMUNE', mit.immuneBy, v, mit.beforeFloor)   // rule.badge-immunity: the badge, named
+  else if (a.damageType !== 'true') {
     // v2.structures: the structure's Armor is Armor (penetration reaches it too), written as
     // its own MITIGATION row naming the structure — the unit's own row is the rest.
     const own = guard ? flatDamage(ctx, target, v, a.damageType,0,a.armorPenetration??0).beforeFloor : mit.beforeFloor

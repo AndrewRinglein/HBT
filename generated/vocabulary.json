@@ -215,6 +215,7 @@
   "status.applied",
   "status.cancelled",
   "status.expired",
+  "status.immune",
   "status.reduced",
   "surge.checked",
   "surge.hit",
@@ -237,6 +238,14 @@
   "life.standing",
   "life.downed",
   "life.dead"
+ ],
+ "damageTypes": [
+  "physical",
+  "magic",
+  "fire",
+  "poison",
+  "shadow",
+  "true"
  ],
  "layers": [
   {

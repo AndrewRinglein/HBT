@@ -19000,3 +19000,29 @@ index 586869e..af6e284 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without badge.vampirism — they genuinely test it
+
+## rule.badge-immunity — LANDED `d4654ff` **NEEDS REVIEW**
+2026-09-29 22:24
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3391 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/badge-immunity.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.cold-heart: 3 log lines, 3 fired, 1 changed state
+  PASS  brought its own tests — test/badge-immunity.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands 5abdfab7->faa7202d, map.thicket 0a7e39d9->39651acd, map.proving.open ddadb5f5->40057351, map.proving.ridge b4c57b63->81503527, map.proving.ford 6c6d68d9->23229730, map.proving.copse 7580095b->42db39f1, map.proving.ruin 0d453f0f->22f979e6, map.courtyard c4541166->de0d8ed2, map.floodplain 98137543->9d817bd6, test.map.embers 1275d84f->d3ac34a2, test.map.duel-8 6adbf206->857a79ad, test.map.dungeon-16x8 49e0c9b1->ec3cd5e5, test.map.horde-24 af603251->48231993, test.map.journey-20x10 ee1a6e8a->1abed9f0, test.map.authored-40x40 f595e23e->1a883073, test.map.high-prop-single 3a6c43ef->db142ae7, test.map.high-prop-multi 4e2267e4->0ca417bc, test.map.well-shove 3aadafce->896a49b2
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 21 new: look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 54 with ACTED (engine/src/sim/acted.ts:6) — only here: action.spent, activation.begin, activation.end, activation.idle, activation.selected, ai.denied …; only there: life.dead, life.downed · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 16 with ENGINE_EVENTS (kingdom/src/engine.ts:77) — only here: activation.end, activation.idle, activation.selected, ai.anchored, ai.coordinated, ai.denied …; only there: life.dead, life.downed, life.standing · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 92 with FOLDED_TYPES (viewer/src/fold.js:703) — only here: activation.idle, activation.selected, ai.anchored, ai.coordinated, ai.denied, ai.focused …; only there: life.dead, life.downed · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 80 with DUR{keys} (viewer/src/viewer.js:40) — only here: action.spent, activation.end, activation.selected, ai.anchored, ai.coordinated, ai.denied …; only there: life.dead, life.downed · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 25 with REDRAW (viewer/src/viewer.js:67) — only here: action.spent, activation.begin, activation.end, activation.idle, activation.selected, ai.anchored …; only there: life.dead, life.downed · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 6 with MID_WALK (viewer/src/viewer.js:282) — only here: action.spent, activation.begin, activation.end, activation.idle, activation.selected, ai.anchored … · … (15 more: node tools/prior-art.mjs --item) — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — badge.cold-heart live · badge.rotting-flesh live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.cold-heart — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
