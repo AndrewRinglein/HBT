@@ -3271,3 +3271,18 @@ Ruled:
 - **No difficulty change yet:** "the battles might be too hard, but let's see what happens when we do the proper upgrades." The Gates and the Cathedral are re-tried after the upgrades.
 
 Still asked (the next reply): whether "Battle 2 should be getting a flaming sword" means the sword is in hand during battle 2 itself; the rate of levelling. Filed as `fix.opening-upgrades`, at the top of the queue.
+
+## 2026-09-28 — the Orphanage loses a Zombie at the start and a later one; every hero has at least 7 Health; the first hero gets positive modifiers
+
+Andrew, shown the Orphanage by class (100 replicates, level 1: Rogues 1 of 25, Priests 3 of 13) and the rogues' numbers (Health 3–6, Armor 0; the thrown and shot rogues attack in about half their turns):
+
+“Let's remove an early zombie and a later zombie. Let's increase the health of everybody to at least 7. If they're the first hero, they need to receive some positive stat modifiers.  Are these characters having no stat modifiers, no badges, nothing positive added to them?”
+
+Ruled:
+
+- **The Orphanage fields one Zombie at the start and one later arrival** — one of the two at (19,3)/(19,5) and one of the Turn 4 / Turn 5 arrivals go. Amends 'Battle 1 (Orphanage) redefined' (above). Which of each is not said: `fix.opening-first-battle`'s switch.
+- **Every hero's Health is at least 7.** The Codex's Eve-of-Ruin rows below 7 (the four Rogues at 5; Rangers, Mages and Forest Elf at 5–6) rise to 7. Whether a kit's penalty (the Peddler's Vest's −2) may still field one below 7 is not said: switch, asked.
+- **The first drafted hero receives positive stat modifiers.** Which and how many are not said: switch, asked.
+- Answered in the same reply, not a ruling: at level 1 in the opening a hero fields only its row, its kit's modifiers (some negative — the Peddler's Vest −2 Health, −5 Dodge, −5 Accuracy; the Destroyed Mail +4 Health, −20 Accuracy) and `badge.hero`, which adds no stats (it carries only bleed-out). No level gains, specialty or class powers — the levelling ruled above is `fix.opening-upgrades`.
+
+Filed as `fix.opening-first-battle`, at the top of the queue.

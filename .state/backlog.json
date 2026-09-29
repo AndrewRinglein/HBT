@@ -1,5 +1,20 @@
 [
  {
+  "id": "fix.opening-first-battle",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.opening-party"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage"
+  ],
+  "changesBaseline": false,
+  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the Orphanage loses a Zombie at the start and a later one; every hero has at least 7 Health; the first hero gets positive modifiers'): 'Let's remove an early zombie and a later zombie. Let's increase the health of everybody to at least 7. If they're the first hero, they need to receive some positive stat modifiers.' Carried across content and engine. (1) encounter.opening.orphanage in content/gen/encounters.json: one starting Zombie and one scheduled Zombie removed (assemble -> build-viewer -> mkenginepack). (2) The Codex hero rows (content/gen/heroes.json, through its generator build-heroes.mjs or eve-differentiation.json - whichever owns Health; find the owner first, never hand-edit a generated file) carry Health at least 7. (3) The first drafted hero of the opening gets positive stat modifiers as a badge row (an instance of the existing badge kind, statModifiers like badge.wounded's) handed in through heroBadges by src/content/opening-party.ts for the hero drafted first - prior art: badge.mechanism (2026-09-04, applyBadges in createBattle) and the kingdom's Wounded entry badge; not a new stat path. Then the Orphanage's win count over 100 replicates, by class, is printed for Andrew.",
+  "expect": "The Orphanage places one Zombie at the start and one on its Turn; every hero.base row fields its row Health of at least 7; the first drafted hero, and only that hero, carries the first-hero badge with positive modifiers at every opening position; the landed opening probes pass (a changed WIN replicate is a Law 10 edit with its reason at the line); the six control battles are byte-identical unless a control battle fields a hero whose Health rose (then declared).",
+  "note": "Filed 2026-09-28. Switches to record, not questions, unless Andrew answers first: which starting Zombie goes (default: (19,5), keeping (19,3)); which later Zombie goes (default: Turn 5's from the left edge, keeping Turn 4's from the bottom edge); whether Health 7 is the row's floor or the fielded floor after the kit (default: the row's; asked); whether civilians rise too (default: no - their numbers were dictated, e.g. the Lumberjack's Wife's Health 6); the first-hero modifiers (default proposed to Andrew: +3 Health, +1 Armor, +10 Accuracy; asked); whether the first-hero badge stays after the opening (default: yes, it is the hero's)."
+ },
+ {
   "id": "fix.opening-upgrades",
   "kind": "engine",
   "shape": "data",
