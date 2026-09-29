@@ -768,6 +768,23 @@
    "source": "2026-08-20: the weak rung of the flight ladder — labored 2 stamina and Movement -1, standard 1 stamina and full Movement, swift 0 stamina and Movement +1. | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
   },
   {
+   "id": "power.flight-vampiric",
+   "name": "Flight (Vampiric)",
+   "specialty": null,
+   "class": null,
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "movementAction": true,
+   "granted": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Movement action. Move up to your Movement + 1, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way. Costs 2 Stamina.",
+   "intent": "The vampire's flight: a hex further than anyone else, at a price.",
+   "source": "2026-09-29: \"They gain the power of flight. Which uses movement +1 as a flight power\" · \"Let's have the Vampirism flight cost 2. Stamina.\" Granted by badge.vampirism. Ruled 2026-09-29 (Andrew, engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
+  },
+  {
    "id": "rule.karma-decay",
    "name": "Karma decay",
    "specialty": null,

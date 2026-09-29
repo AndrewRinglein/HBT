@@ -454,8 +454,14 @@ function compileTrigger(t, unitId, attackId) {
       const badgeId = 'badge.' + ef.affliction;
       if (!badges[badgeId]) { gap(unitId, `${where} ${t.hook}: inflict an affliction '${ef.affliction}' — no badge row ${badgeId}`, 'content: badge row unauthored'); continue; }
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
+      // content.afflictions-revised (2026-09-29, Andrew, engine DECISIONS.md 'the four afflictions'):
+      // "when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism." The
+      // affliction's own row names what comes with it (`inflictedWith`); one roll grants them all.
+      const withBadgeIds = (D.badges.find((b) => b && b.id === badgeId)?.inflictedWith) || [];
+      const missingWith = withBadgeIds.filter((w) => !badges[w]);
+      if (missingWith.length) { gap(unitId, `${where} ${t.hook}: inflict '${ef.affliction}' with ${missingWith.join(', ')} — no badge row`, 'content: badge row unauthored'); continue; }
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'afflict-' + ef.affliction).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-        hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select: 'target', effect: { kind: 'badge.grant', badgeId }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
+        hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select: 'target', effect: { kind: 'badge.grant', badgeId, ...(withBadgeIds.length ? { withBadgeIds: [...withBadgeIds] } : {}) }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
     } else if (ef.effect === 'heal' && typeof ef.value === 'number') {
       // capability.auras (2026-09-03): the Necromancer's EOA pulse — heal N to the area
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
