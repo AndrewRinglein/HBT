@@ -126,6 +126,7 @@ export function effectWord(ef, D, SN) {
   const layerName = id => String(id || '').replace(/^layer\./, '')
   switch (ef.kind) {
     case 'status.apply':   return { word: shortStatus(ef.statusId, SN), val: ef.value, statusId: ef.statusId }
+    case 'status.remove':  return { word: 'Remove ' + shortStatus(ef.statusId, SN), val: ef.value, statusId: ef.statusId }
     case 'badge.grant':    return { word: (BD[ef.badgeId] || {}).name || String(ef.badgeId || '').replace(/^badge\./, ''), badge: true }
     case 'damage':         return { word: (ef.damageType ? ef.damageType + ' damage' : 'Damage'), val: ef.amount ?? ef.value }
     case 'burstScale':     return { word: 'Burst damage percentage', val: ef.percent }
@@ -184,7 +185,11 @@ export function effectTag(a, u, D, SN) {
    "You look at the attack, you see what it does, not somewhere else." The
    attack's own `applies` rider plus the unit's triggers on attack hooks;
    `onlyWithAttack` scopes a trigger to one attack. */
-export const ATTACK_HOOKS = new Set(['onHit', 'onAttack', 'onDamage', 'onKill', 'onMiss', 'onCrit'])
+/* the attacker's hooks inside its attack — the engine's ATTACKER_HOOKS; tools/vocabulary.test.mjs
+   checks this set against engine/generated/vocabulary.json (plumbing.vocabulary-export,
+   2026-09-28, review finding V12: onBlock was missing, so an attacker-side onBlock trigger never
+   reached the attack's chip row) */
+export const ATTACK_HOOKS = new Set(['onHit', 'onAttack', 'onDamage', 'onKill', 'onMiss', 'onCrit', 'onBlock'])
 export function triggersFor(u, a, D, SN, stStyle) {
   if (isBurst(a)) return []
   const UD = D.UD || {}

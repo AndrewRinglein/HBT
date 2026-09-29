@@ -7,7 +7,8 @@ import { sgn, STATSHORT, modOf, effectWord } from './actions.js'
 import { subjectOf } from './subject.js'
 import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
 
-const HOOKLBL = { onHit: 'ON HIT', onAttack: 'ON ATTACK', onDamage: 'ON DAMAGE',
+/* every engine hook has a label — tools/vocabulary.test.mjs checks it against the engine's export */
+export const HOOKLBL = { onHit: 'ON HIT', onBlock: 'ON BLOCK', onAttack: 'ON ATTACK', onDamage: 'ON DAMAGE',
   onTakingDamage: 'WHEN HIT', onKill: 'ON KILL', onDeath: 'ON DEATH', onMiss: 'ON MISS',
   onBurst: 'ON BURST', onCrit: 'ON CRIT', startOfBattle: 'BATTLE START', onActivationEnd: 'ACTIVATION END' }
 
