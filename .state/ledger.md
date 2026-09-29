@@ -18540,3 +18540,87 @@ Superseded before any code by Andrew's 2026-09-28 23:23 reply (DECISIONS.md 'the
 2026-09-29 06:24
 
 Superseded before any code by Andrew's 2026-09-28 23:23 reply (DECISIONS.md 'the draft never repeats a class until all six are drafted; levels by XP at 20, 50, 100, 170, 270, 400'); re-filed with it.
+
+## fix.opening-first-level — LANDED `e45947d` **NEEDS REVIEW**
+2026-09-29 07:02
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/opening-party.test.ts, test/opening-first-level.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 9 log lines, 9 fired, 6 changed state · encounter.opening.cavern-trail: 12 log lines, 12 fired, 9 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/opening-party.test.ts, test/fixtures/battle-cursor-first-level.json, test/opening-first-level.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/opening-party.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 2 new: clone: 9 lines, engine/tools/capture-first-level-cursor.mts:7-15 = engine/tools/capture-zoc-cursor.mts:10-18 · clone: 9 lines, engine/tools/capture-first-level-cursor.mts:15-23 = engine/tools/capture-zoc-cursor.mts:18-26 — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage,encounter.opening.cavern-trail — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 8415bb9..5ee817b 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -145,4 +145,9 @@ const funnelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-f
+ // older layers. Old fixtures stay immutable.
+ const partyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-party.json', import.meta.url), 'utf8'))
++// fix.opening-first-level (2026-09-29), Law 10: the first hero fields at level 2 from the Lumberjack on
++// (Andrew, DECISIONS.md 2026-09-28: "Make it so they get 20 XP no matter what, so they get a level").
++// Every case's full hashes are frozen here (tools/capture-first-level-cursor.mts); a case marked
++// `changed` (test.opening-lumberjack, -cavern-trail) is checked here and skips the older layers.
++const firstLevelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-first-level.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -251,6 +256,9 @@ describe('resumable battle cursor', () => {
+       const raiseTwoExpected = raiseTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const funnelExpected = funnelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const firstLevelExpected = firstLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const firstLevelMoved = firstLevelExpected?.changed === true
+       const partyExpected = partyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const partyMoved = partyExpected?.changed === true
++      // was: const partyMoved = partyExpected?.changed === true — a first-level-moved case skips the party layer too (fix.opening-first-level 2026-09-29)
++      const partyMoved = partyExpected?.changed === true || firstLevelMoved
+       // was: const funnelMoved = funnelExpected?.changed === true — a party-moved case skips the funnel layer too (fix.opening-party 2026-09-29)
+       const funnelMoved = funnelExpected?.changed === true || partyMoved
+@@ -298,5 +306,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (partyExpected) {
++        if (firstLevelExpected) {
++        expect(hash(ctx.events), 'full first-level events').toBe(firstLevelExpected.events)
++        expect(hash(ctx.state), 'full first-level state').toBe(firstLevelExpected.state)
++        expect(hash(ctx.rng.log), 'full first-level RNG').toBe(firstLevelExpected.rng)
++        expect(result).toEqual(firstLevelExpected.result)
++        }
++        // was: if (partyExpected) { — fix.opening-first-level (2026-09-29): a first-level-moved case is checked above instead
++        if (partyExpected && !firstLevelMoved) {
+         expect(hash(ctx.events), 'full party events').toBe(partyExpected.events)
+         expect(hash(ctx.state), 'full party state').toBe(partyExpected.state)
+diff --git a/test/opening-party.test.ts b/test/opening-party.test.ts
+index 108d2e7..d758604 100644
+--- a/test/opening-party.test.ts
++++ b/test/opening-party.test.ts
+@@ -17,9 +17,12 @@ const itemsOf = (u: { loadout?: { hands: { itemId: string }[]; stowed: { itemId:
+ 
+ describe('fix.opening-party — the opening fields the drafted party', () => {
+-  it('the six positions carry the ruled cadence, level 1, and the sword from the Bridge on', () => {
++  // was: 'the six positions carry the ruled cadence, level 1, and the sword from the Bridge on' — Law 10,
++  // fix.opening-first-level (2026-09-29): the level-1 rule was SWITCHES.md openingPartyLevel, overturned
++  // by Andrew 2026-09-28 ("They need to be leveling up"; the Orphanage pays 20 XP). Levels are asserted in
++  // test/opening-first-level.test.ts.
++  it('the six positions carry the ruled cadence and the sword from the Bridge on', () => {
+     expect(OPENING_POSITIONS.map((p) => [p.encounterId, p.drafted])).toEqual([
+       ['encounter.opening.orphanage', 1], ['encounter.opening.lumberjack', 3], ['encounter.opening.bridge', 4],
+       ['encounter.opening.cavern-trail', 5], ['encounter.opening.gates', 6], ['encounter.opening.cathedral', 6]])
+-    expect(OPENING_POSITIONS.every((p) => p.level === 1)).toBe(true)
+     expect(OPENING_POSITIONS.map((p) => p.carried.includes(SWORD))).toEqual([false, false, true, true, true, true])
+   })
+```
+</details>

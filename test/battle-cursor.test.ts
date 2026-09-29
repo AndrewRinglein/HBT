@@ -144,6 +144,11 @@ const funnelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-f
 // `changed` (test.opening-orphanage, -lumberjack, -cavern-trail only) is checked here and skips the
 // older layers. Old fixtures stay immutable.
 const partyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-party.json', import.meta.url), 'utf8'))
+// fix.opening-first-level (2026-09-29), Law 10: the first hero fields at level 2 from the Lumberjack on
+// (Andrew, DECISIONS.md 2026-09-28: "Make it so they get 20 XP no matter what, so they get a level").
+// Every case's full hashes are frozen here (tools/capture-first-level-cursor.mts); a case marked
+// `changed` (test.opening-lumberjack, -cavern-trail) is checked here and skips the older layers.
+const firstLevelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-first-level.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -250,8 +255,11 @@ describe('resumable battle cursor', () => {
       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const raiseTwoExpected = raiseTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const funnelExpected = funnelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const firstLevelExpected = firstLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const firstLevelMoved = firstLevelExpected?.changed === true
       const partyExpected = partyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const partyMoved = partyExpected?.changed === true
+      // was: const partyMoved = partyExpected?.changed === true — a first-level-moved case skips the party layer too (fix.opening-first-level 2026-09-29)
+      const partyMoved = partyExpected?.changed === true || firstLevelMoved
       // was: const funnelMoved = funnelExpected?.changed === true — a party-moved case skips the funnel layer too (fix.opening-party 2026-09-29)
       const funnelMoved = funnelExpected?.changed === true || partyMoved
       // was: const raiseTwoMoved = raiseTwoExpected?.changed === true — a funnel-moved case skips the raise-two layer too (fix.funnel-goldens 2026-09-29)
@@ -297,7 +305,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (partyExpected) {
+        if (firstLevelExpected) {
+        expect(hash(ctx.events), 'full first-level events').toBe(firstLevelExpected.events)
+        expect(hash(ctx.state), 'full first-level state').toBe(firstLevelExpected.state)
+        expect(hash(ctx.rng.log), 'full first-level RNG').toBe(firstLevelExpected.rng)
+        expect(result).toEqual(firstLevelExpected.result)
+        }
+        // was: if (partyExpected) { — fix.opening-first-level (2026-09-29): a first-level-moved case is checked above instead
+        if (partyExpected && !firstLevelMoved) {
         expect(hash(ctx.events), 'full party events').toBe(partyExpected.events)
         expect(hash(ctx.state), 'full party state').toBe(partyExpected.state)
         expect(hash(ctx.rng.log), 'full party RNG').toBe(partyExpected.rng)

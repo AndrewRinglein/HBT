@@ -799,7 +799,7 @@ export function scenarioOptions(s: ScenarioDef, replicate: number = s.replicate)
     ...(heroItems ? { heroItems } : {}),
     ...(s.heroStowed ? { heroStowed: s.heroStowed } : {}),
     ...(s.heroItemsUsed ? { heroItemsUsed: s.heroItemsUsed } : {}),
-    ...(s.heroProgress ? { heroProgress: s.heroProgress } : {}),
+    ...(party ? { heroProgress: party.heroProgress } : s.heroProgress ? { heroProgress: s.heroProgress } : {}),
     ...(s.heroBadges ? { heroBadges: s.heroBadges } : {}),
     ...(s.sides ? { sides: s.sides } : {}),
     ...(s.encounterId ? { encounter: encounterDef(s.encounterId) } : {}),

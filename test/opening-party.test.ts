@@ -16,11 +16,14 @@ const itemsOf = (u: { loadout?: { hands: { itemId: string }[]; stowed: { itemId:
   [...(u.loadout?.hands ?? []), ...(u.loadout?.stowed ?? []), ...(u.loadout?.worn ?? [])].map((i) => i.itemId).sort()
 
 describe('fix.opening-party — the opening fields the drafted party', () => {
-  it('the six positions carry the ruled cadence, level 1, and the sword from the Bridge on', () => {
+  // was: 'the six positions carry the ruled cadence, level 1, and the sword from the Bridge on' — Law 10,
+  // fix.opening-first-level (2026-09-29): the level-1 rule was SWITCHES.md openingPartyLevel, overturned
+  // by Andrew 2026-09-28 ("They need to be leveling up"; the Orphanage pays 20 XP). Levels are asserted in
+  // test/opening-first-level.test.ts.
+  it('the six positions carry the ruled cadence and the sword from the Bridge on', () => {
     expect(OPENING_POSITIONS.map((p) => [p.encounterId, p.drafted])).toEqual([
       ['encounter.opening.orphanage', 1], ['encounter.opening.lumberjack', 3], ['encounter.opening.bridge', 4],
       ['encounter.opening.cavern-trail', 5], ['encounter.opening.gates', 6], ['encounter.opening.cathedral', 6]])
-    expect(OPENING_POSITIONS.every((p) => p.level === 1)).toBe(true)
     expect(OPENING_POSITIONS.map((p) => p.carried.includes(SWORD))).toEqual([false, false, true, true, true, true])
   })
 

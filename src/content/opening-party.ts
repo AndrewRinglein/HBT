@@ -16,6 +16,7 @@
 // folded by fieldedDef() in createBattle — not a second one. Each hero enters wearing its row's own
 // kit (`defaultItems`, GEAR-IMPLEMENTATION.md G3).
 import OPENING from '../../../progression/OPENING-PARTY.json' with { type: 'json' }
+import type { HeroProgress } from '../core/types.js'
 import { makeRng, rollBelow, rootSeedOf, sample } from '../core/rng.js'
 import { ITEMS, UNITS } from './index.js'
 
@@ -25,11 +26,15 @@ export type OpeningPosition = {
   readonly name: string
   /** How many drafted heroes the player has at this battle. */
   readonly drafted: number
-  readonly level: number
+  /** fix.opening-first-level: per draft ordinal, the XP carried into this battle and the level it reaches. */
+  readonly xp: readonly number[]
+  readonly levels: readonly number[]
   /** Items won earlier in the opening and carried into this battle. */
   readonly carried: readonly string[]
 }
 export const OPENING_POSITIONS: readonly OpeningPosition[] = OPENING.positions
+/** The specialty each class takes at level 2 (SWITCHES.md openingSpecialty — build-schedule.mjs's SPECIALTY). */
+const SPECIALTY_OF: Readonly<Record<string, string>> = OPENING.specialties
 
 /** The seed the draft draws under — the replicate alone, so battle n's party extends battle n-1's. */
 const draftRng = (replicate: number) => makeRng(rootSeedOf(0, 0, replicate))
@@ -55,15 +60,23 @@ export function openingDraftOf(replicate: number, count: number): string[] {
  * The party at `position` for `replicate`, as createBattle options: the drafted heroes, each on its
  * own kit, and each carried item on the first drafted hero who can wield it (SWITCHES.md
  * openingCarriedHolder), taking the place of that hero's kit weapons — its shield and armour stay;
- * a result the hands cannot hold is refused by applyItems, the one legality.
+ * a result the hands cannot hold is refused by applyItems, the one legality. A hero above level 1
+ * (fix.opening-first-level: the XP the builder wrote, on the ruled curve) takes its level through
+ * heroProgress — applyProgress folds the class table and the specialty chosen at level 2.
  */
-export function openingPartyOf(position: number, replicate: number): { heroes: string[]; heroItems: (string[] | undefined)[] } {
+export function openingPartyOf(position: number, replicate: number): { heroes: string[]; heroItems: (string[] | undefined)[]; heroProgress: (HeroProgress | undefined)[] } {
   const at = OPENING_POSITIONS.find((p) => p.position === position)
   if (!at) throw new Error(`opening: no position ${position} — progression/OPENING-PARTY.json has ${OPENING_POSITIONS.map((p) => p.position).join(', ')}`)
-  // SWITCHES.md openingPartyLevel: level 1 until the opening's XP has an owner — a level above it
-  // would need drafted powers, which nothing rules, so it is refused rather than guessed
-  if (at.level !== 1) throw new Error(`opening position ${position}: level ${at.level} — the opening's levels have no owner yet (SWITCHES.md openingPartyLevel)`)
   const heroes = openingDraftOf(replicate, at.drafted)
+  const heroProgress = heroes.map((id, n): HeroProgress | undefined => {
+    const level = at.levels[n] ?? 1
+    if (level === 1) return undefined
+    // level 3 brings the first class power, which nothing here chooses yet — refused, not guessed (fix.opening-levels)
+    if (level > 2) throw new Error(`opening position ${position}: draft ${n + 1} is level ${level} — powers from level 3 are fix.opening-levels'`)
+    const cls = (UNITS[id]!.tags ?? []).find((t) => t in SPECIALTY_OF)
+    if (!cls) throw new Error(`opening position ${position}: ${id} has no class with a specialty in progression/OPENING-PARTY.json`)
+    return { level, specialtyId: SPECIALTY_OF[cls]!, powers: [] }
+  })
   const heroItems: (string[] | undefined)[] = heroes.map(() => undefined)
   for (const itemId of at.carried) {
     const item = ITEMS[itemId]
@@ -73,5 +86,5 @@ export function openingPartyOf(position: number, replicate: number): { heroes: s
     const kit = UNITS[heroes[i]!]!.defaultItems ?? []
     heroItems[i] = [itemId, ...kit.filter((k) => ITEMS[k]?.itemClass !== 'weapon')]
   }
-  return { heroes, heroItems }
+  return { heroes, heroItems, heroProgress }
 }
