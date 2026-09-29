@@ -1,14 +1,17 @@
 // encounter.opening.orphanage (2026-09-28): battle 1 of the opening (DECISIONS.md 2026-09-28
-// "Battle 1 (Orphanage) redefined"): two Zombies on the east edge, the Orphan Child and the School
+// "Battle 1 (Orphanage) redefined"): a Zombie on the east edge, the Orphan Child and the School
 // Teacher beside the orphanage as civilians (not objectives), a Zombie on Turn 4 from the bottom edge
-// left of the water and one on Turn 5 from the left edge, centre. Clear the map; no turn limit.
+// left of the water. Clear the map; no turn limit.
+// was: two Zombies on the east edge ... and one on Turn 5 from the left edge, centre — fix.opening-orphanage-lighter
+// (2026-09-29; DECISIONS.md 2026-09-28 'the Orphanage loses a Zombie at the start and a later one':
+// "Let's remove an early zombie and a later zombie.")
 import { describe, expect, it } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyDamage } from '../src/core/mutate.js'
 import { settle } from '../src/core/settle.js'
 import { encounterDef, scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
+import { arrivals, arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
 
 const S = 'test.opening-orphanage'
 describe('encounter.opening.orphanage', () => {
@@ -23,7 +26,27 @@ describe('encounter.opening.orphanage', () => {
   it('each arrival appears on its Turn at its hex', () => {
     const ctx = openingBattle(S, 0, true)
     arrivedAt(ctx, 4, 'unit.zombie', 9, 13)
-    arrivedAt(ctx, 5, 'unit.zombie', 0, 6)
+    // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie from the left edge (0,6) is gone —
+    // "Let's remove an early zombie and a later zombie." (DECISIONS.md 2026-09-28; which one: SWITCHES.md
+    // openingOrphanageLighter). The row no longer has it, so the probe no longer asks for it.
+    // was: arrivedAt(ctx, 5, 'unit.zombie', 0, 6)
+  })
+  // fix.opening-orphanage-lighter (2026-09-29): "Let's remove an early zombie and a later zombie."
+  // (Andrew, DECISIONS.md 2026-09-28 'the Orphanage loses a Zombie at the start and a later one').
+  // Which of each is SWITCHES.md openingOrphanageLighter: (19,5) and Turn 5's go; (19,3) and Turn 4's stay.
+  it('the lighter start: one Zombie at the start and one later arrival, and no more', () => {
+    const e = encounterDef('encounter.opening.orphanage')
+    const zombies = e.setup.filter((p) => p.unit === 'unit.zombie')
+    expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEqual([[1, [{ col: 19, row: 3 }]]])
+    expect((e.schedule ?? []).map((s) => [s.phase, s.spawn.map((u) => u.unit)])).toEqual([[4, ['unit.zombie']]])
+    for (const replicate of [0, 1, 2]) {
+      const ctx = openingBattle(S, replicate, true)
+      const w = ctx.geo.board.width
+      const atStart = ctx.events.filter((ev) => ev.type === 'unit.enter' && ev.turn === 0 && ev['typeId'] === 'unit.zombie').map((ev) => ev['hex'])
+      expect(atStart, `replicate ${replicate}: the Zombies placed at the start`).toEqual([3 * w + 19])
+      expect(arrivals(ctx).map(([t, u]) => [t, u]), `replicate ${replicate}: the arrivals`).toEqual([[4, 'unit.zombie']])
+      expect(ctx.state.units.filter((u) => u.side === 'enemy').length, `replicate ${replicate}: enemies in the whole battle`).toBe(2)
+    }
   })
   it('a civilian\'s death does not end the battle, and it ends won when the last enemy dies — no loss', () => {
     // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — with the child killed at the start, one drafted hero loses replicate 0; replicate 1 is a

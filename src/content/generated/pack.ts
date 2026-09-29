@@ -43119,15 +43119,11 @@ export const UNIT_PACK = {
         },
         {
           "unit": "unit.zombie",
-          "count": 2,
+          "count": 1,
           "hexes": [
             {
               "col": 19,
               "row": 3
-            },
-            {
-              "col": 19,
-              "row": 5
             }
           ]
         }
@@ -43141,18 +43137,6 @@ export const UNIT_PACK = {
               "at": {
                 "col": 9,
                 "row": 13
-              }
-            }
-          ]
-        },
-        {
-          "phase": 5,
-          "spawn": [
-            {
-              "unit": "unit.zombie",
-              "at": {
-                "col": 0,
-                "row": 6
               }
             }
           ]

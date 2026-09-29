@@ -149,6 +149,11 @@ const partyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-pa
 // Every case's full hashes are frozen here (tools/capture-first-level-cursor.mts); a case marked
 // `changed` (test.opening-lumberjack, -cavern-trail) is checked here and skips the older layers.
 const firstLevelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-first-level.json', import.meta.url), 'utf8'))
+// fix.opening-orphanage-lighter (2026-09-29), Law 10: the Orphanage fields one Zombie at the start and one
+// on Turn 4 (Andrew, DECISIONS.md 2026-09-28: "Let's remove an early zombie and a later zombie.").
+// Every case's full hashes are frozen here (tools/capture-orphanage-lighter-cursor.mts); a case marked
+// `changed` (test.opening-orphanage only) is checked here and skips the older layers.
+const orphanageLighterGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-lighter.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -256,7 +261,10 @@ describe('resumable battle cursor', () => {
       const raiseTwoExpected = raiseTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const funnelExpected = funnelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const firstLevelExpected = firstLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const firstLevelMoved = firstLevelExpected?.changed === true
+      const orphanageLighterExpected = orphanageLighterGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const orphanageLighterMoved = orphanageLighterExpected?.changed === true
+      // was: const firstLevelMoved = firstLevelExpected?.changed === true — an orphanage-lighter-moved case skips the first-level layer too (fix.opening-orphanage-lighter 2026-09-29)
+      const firstLevelMoved = firstLevelExpected?.changed === true || orphanageLighterMoved
       const partyExpected = partyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const partyMoved = partyExpected?.changed === true — a first-level-moved case skips the party layer too (fix.opening-first-level 2026-09-29)
       const partyMoved = partyExpected?.changed === true || firstLevelMoved
@@ -305,7 +313,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (firstLevelExpected) {
+        if (orphanageLighterExpected) {
+        expect(hash(ctx.events), 'full orphanage-lighter events').toBe(orphanageLighterExpected.events)
+        expect(hash(ctx.state), 'full orphanage-lighter state').toBe(orphanageLighterExpected.state)
+        expect(hash(ctx.rng.log), 'full orphanage-lighter RNG').toBe(orphanageLighterExpected.rng)
+        expect(result).toEqual(orphanageLighterExpected.result)
+        }
+        // was: if (firstLevelExpected) { — fix.opening-orphanage-lighter (2026-09-29): an orphanage-lighter-moved case is checked above instead
+        if (firstLevelExpected && !orphanageLighterMoved) {
         expect(hash(ctx.events), 'full first-level events').toBe(firstLevelExpected.events)
         expect(hash(ctx.state), 'full first-level state').toBe(firstLevelExpected.state)
         expect(hash(ctx.rng.log), 'full first-level RNG').toBe(firstLevelExpected.rng)

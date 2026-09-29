@@ -28,7 +28,9 @@
   ],
   "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the Orphanage loses a Zombie at the start and a later one ...'): 'Let's remove an early zombie and a later zombie.' encounter.opening.orphanage in content/gen/encounters.json (the content repo; commit there) loses one of its two starting Zombies and one of its two scheduled Zombies (assemble -> build-viewer -> mkenginepack). test/opening-orphanage.test.ts and test/encounter-commands.test.ts follow the row (Law 10 edits with the reason at the line); the battle-cursor golden gets a new frozen layer like fix.opening-party's (tools/capture-*-cursor.mts pattern). Then the Orphanage's wins over 100 replicates, by class, are printed for Andrew.",
   "expect": "The Orphanage places one Zombie at the start and one on its Turn; the landed Orphanage and encounter-commands probes pass on the row; the six control battles are byte-identical.",
-  "note": "Switches: which starting Zombie goes (default: (19,5), keeping (19,3)); which later Zombie goes (default: Turn 5's from the left edge, keeping Turn 4's from the bottom edge, left of the water)."
+  "note": "Switches: which starting Zombie goes (default: (19,5), keeping (19,3)); which later Zombie goes (default: Turn 5's from the left edge, keeping Turn 4's from the bottom edge, left of the water).",
+  "status": "done-needs-review",
+  "sha": "46447bb"
  },
  {
   "id": "content.hero-health-floor",

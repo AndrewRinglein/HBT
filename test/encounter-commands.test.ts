@@ -62,7 +62,8 @@ function drive(ctx: Ctx, policy: ControlPolicy, next: () => BattleCommand, log: 
 const typed = (ctx: Ctx, turn: number) => ctx.events.filter((e) => e.type === 'unit.enter' && e.turn === turn).map((e) => e['typeId'])
 
 describe('kingdom.encounter-battles — a person plays encounter.opening.orphanage through the commands', () => {
-  it('the heroes are the player\'s, the civilians act on their own, the Turn 4 and Turn 5 Zombies arrive, and clearing the map wins', () => {
+  // was: '... the Turn 4 and Turn 5 Zombies arrive ...' — fix.opening-orphanage-lighter (2026-09-29): only Turn 4's remains
+  it('the heroes are the player\'s, the civilians act on their own, the Turn 4 Zombie arrives, and clearing the map wins', () => {
     const { o, ctx, policy } = field()
     const offered = new Set<number>()
     drive(ctx, policy, () => { for (const uid of activationChoices(ctx, policy)) offered.add(uid); return choose(ctx, policy, 3) })
@@ -74,7 +75,8 @@ describe('kingdom.encounter-battles — a person plays encounter.opening.orphana
       expect(ctx.events.some((e) => e.type === 'activation.begin' && e.actor === c.id), `${c.typeId} acts`).toBe(true)
     }
     expect(typed(ctx, 4)).toEqual(['unit.zombie'])
-    expect(typed(ctx, 5)).toEqual(['unit.zombie'])
+    // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie is gone from the row ("Let's remove an early zombie and a later zombie.", DECISIONS.md 2026-09-28; SWITCHES.md openingOrphanageLighter) — nothing arrives on Turn 5. was: toEqual(['unit.zombie'])
+    expect(typed(ctx, 5)).toEqual([])
     expect(ctx.state.outcome).toBe('heroClear')
     expect(ctx.state.units.filter((u) => u.side === 'enemy').every((u) => u.lifeState !== 'standing')).toBe(true)
   })
@@ -98,7 +100,8 @@ describe('kingdom.encounter-battles — a person plays encounter.opening.orphana
     drive(resumed, first.policy, next(resumed))
     expect(i).toBe(commands.length)
     expect(typed(resumed, 4)).toEqual(['unit.zombie'])
-    expect(typed(resumed, 5)).toEqual(['unit.zombie'])
+    // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie is gone from the row ("Let's remove an early zombie and a later zombie.", DECISIONS.md 2026-09-28; SWITCHES.md openingOrphanageLighter) — nothing arrives on Turn 5. was: toEqual(['unit.zombie'])
+    expect(typed(resumed, 5)).toEqual([])
     expect(JSON.stringify(resumed.events)).toBe(JSON.stringify(whole.ctx.events))
   })
 })

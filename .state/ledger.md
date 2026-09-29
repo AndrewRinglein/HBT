@@ -18624,3 +18624,145 @@ index 108d2e7..d758604 100644
    })
 ```
 </details>
+
+## fix.opening-orphanage-lighter — LANDED `46447bb` **NEEDS REVIEW**
+2026-09-29 17:49
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: HANDOFF.md:11 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/encounter-commands.test.ts, test/opening-orphanage.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 4 log lines, 4 fired, 3 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/encounter-commands.test.ts, test/opening-orphanage.test.ts, test/fixtures/battle-cursor-orphanage-lighter.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/encounter-commands.test.ts (-3), test/opening-orphanage.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 2 new: clone: 9 lines, engine/tools/capture-orphanage-lighter-cursor.mts:8-16 = engine/tools/capture-zoc-cursor.mts:10-18 · clone: 9 lines, engine/tools/capture-orphanage-lighter-cursor.mts:16-24 = engine/tools/capture-zoc-cursor.mts:18-26 — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 5ee817b..5f72ab0 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -150,4 +150,9 @@ const partyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-pa
+ // `changed` (test.opening-lumberjack, -cavern-trail) is checked here and skips the older layers.
+ const firstLevelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-first-level.json', import.meta.url), 'utf8'))
++// fix.opening-orphanage-lighter (2026-09-29), Law 10: the Orphanage fields one Zombie at the start and one
++// on Turn 4 (Andrew, DECISIONS.md 2026-09-28: "Let's remove an early zombie and a later zombie.").
++// Every case's full hashes are frozen here (tools/capture-orphanage-lighter-cursor.mts); a case marked
++// `changed` (test.opening-orphanage only) is checked here and skips the older layers.
++const orphanageLighterGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-lighter.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -257,5 +262,8 @@ describe('resumable battle cursor', () => {
+       const funnelExpected = funnelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const firstLevelExpected = firstLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const firstLevelMoved = firstLevelExpected?.changed === true
++      const orphanageLighterExpected = orphanageLighterGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const orphanageLighterMoved = orphanageLighterExpected?.changed === true
++      // was: const firstLevelMoved = firstLevelExpected?.changed === true — an orphanage-lighter-moved case skips the first-level layer too (fix.opening-orphanage-lighter 2026-09-29)
++      const firstLevelMoved = firstLevelExpected?.changed === true || orphanageLighterMoved
+       const partyExpected = partyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const partyMoved = partyExpected?.changed === true — a first-level-moved case skips the party layer too (fix.opening-first-level 2026-09-29)
+@@ -306,5 +314,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (firstLevelExpected) {
++        if (orphanageLighterExpected) {
++        expect(hash(ctx.events), 'full orphanage-lighter events').toBe(orphanageLighterExpected.events)
++        expect(hash(ctx.state), 'full orphanage-lighter state').toBe(orphanageLighterExpected.state)
++        expect(hash(ctx.rng.log), 'full orphanage-lighter RNG').toBe(orphanageLighterExpected.rng)
++        expect(result).toEqual(orphanageLighterExpected.result)
++        }
++        // was: if (firstLevelExpected) { — fix.opening-orphanage-lighter (2026-09-29): an orphanage-lighter-moved case is checked above instead
++        if (firstLevelExpected && !orphanageLighterMoved) {
+         expect(hash(ctx.events), 'full first-level events').toBe(firstLevelExpected.events)
+         expect(hash(ctx.state), 'full first-level state').toBe(firstLevelExpected.state)
+diff --git a/test/encounter-commands.test.ts b/test/encounter-commands.test.ts
+index 7d41035..d0fc81d 100644
+--- a/test/encounter-commands.test.ts
++++ b/test/encounter-commands.test.ts
+@@ -63,5 +63,6 @@ const typed = (ctx: Ctx, turn: number) => ctx.events.filter((e) => e.type === 'u
+ 
+ describe('kingdom.encounter-battles — a person plays encounter.opening.orphanage through the commands', () => {
+-  it('the heroes are the player\'s, the civilians act on their own, the Turn 4 and Turn 5 Zombies arrive, and clearing the map wins', () => {
++  // was: '... the Turn 4 and Turn 5 Zombies arrive ...' — fix.opening-orphanage-lighter (2026-09-29): only Turn 4's remains
++  it('the heroes are the player\'s, the civilians act on their own, the Turn 4 Zombie arrives, and clearing the map wins', () => {
+     const { o, ctx, policy } = field()
+     const offered = new Set<number>()
+@@ -75,5 +76,6 @@ describe('kingdom.encounter-battles — a person plays encounter.opening.orphana
+     }
+     expect(typed(ctx, 4)).toEqual(['unit.zombie'])
+-    expect(typed(ctx, 5)).toEqual(['unit.zombie'])
++    // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie is gone from the row ("Let's remove an early zombie and a later zombie.", DECISIONS.md 2026-09-28; SWITCHES.md openingOrphanageLighter) — nothing arrives on Turn 5. was: toEqual(['unit.zombie'])
++    expect(typed(ctx, 5)).toEqual([])
+     expect(ctx.state.outcome).toBe('heroClear')
+     expect(ctx.state.units.filter((u) => u.side === 'enemy').every((u) => u.lifeState !== 'standing')).toBe(true)
+@@ -99,5 +101,6 @@ describe('kingdom.encounter-battles — a person plays encounter.opening.orphana
+     expect(i).toBe(commands.length)
+     expect(typed(resumed, 4)).toEqual(['unit.zombie'])
+-    expect(typed(resumed, 5)).toEqual(['unit.zombie'])
++    // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie is gone from the row ("Let's remove an early zombie and a later zombie.", DECISIONS.md 2026-09-28; SWITCHES.md openingOrphanageLighter) — nothing arrives on Turn 5. was: toEqual(['unit.zombie'])
++    expect(typed(resumed, 5)).toEqual([])
+     expect(JSON.stringify(resumed.events)).toBe(JSON.stringify(whole.ctx.events))
+   })
+diff --git a/test/opening-orphanage.test.ts b/test/opening-orphanage.test.ts
+index 20e774b..9a687cd 100644
+--- a/test/opening-orphanage.test.ts
++++ b/test/opening-orphanage.test.ts
+@@ -1,6 +1,9 @@
+ // encounter.opening.orphanage (2026-09-28): battle 1 of the opening (DECISIONS.md 2026-09-28
+-// "Battle 1 (Orphanage) redefined"): two Zombies on the east edge, the Orphan Child and the School
++// "Battle 1 (Orphanage) redefined"): a Zombie on the east edge, the Orphan Child and the School
+ // Teacher beside the orphanage as civilians (not objectives), a Zombie on Turn 4 from the bottom edge
+-// left of the water and one on Turn 5 from the left edge, centre. Clear the map; no turn limit.
++// left of the water. Clear the map; no turn limit.
++// was: two Zombies on the east edge ... and one on Turn 5 from the left edge, centre — fix.opening-orphanage-lighter
++// (2026-09-29; DECISIONS.md 2026-09-28 'the Orphanage loses a Zombie at the start and a later one':
++// "Let's remove an early zombie and a later zombie.")
+ import { describe, expect, it } from 'vitest'
+ import { createBattle } from '../src/core/setup.js'
+@@ -9,5 +12,5 @@ import { applyDamage } from '../src/core/mutate.js'
+ import { settle } from '../src/core/settle.js'
+ import { encounterDef, scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
++import { arrivals, arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
+ 
+ const S = 'test.opening-orphanage'
+@@ -24,5 +27,25 @@ describe('encounter.opening.orphanage', () => {
+     const ctx = openingBattle(S, 0, true)
+     arrivedAt(ctx, 4, 'unit.zombie', 9, 13)
+-    arrivedAt(ctx, 5, 'unit.zombie', 0, 6)
++    // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie from the left edge (0,6) is gone —
++    // "Let's remove an early zombie and a later zombie." (DECISIONS.md 2026-09-28; which one: SWITCHES.md
++    // openingOrphanageLighter). The row no longer has it, so the probe no longer asks for it.
++    // was: arrivedAt(ctx, 5, 'unit.zombie', 0, 6)
++  })
++  // fix.opening-orphanage-lighter (2026-09-29): "Let's remove an early zombie and a later zombie."
++  // (Andrew, DECISIONS.md 2026-09-28 'the Orphanage loses a Zombie at the start and a later one').
++  // Which of each is SWITCHES.md openingOrphanageLighter: (19,5) and Turn 5's go; (19,3) and Turn 4's stay.
++  it('the lighter start: one Zombie at the start and one later arrival, and no more', () => {
++    const e = encounterDef('encounter.opening.orphanage')
++    const zombies = e.setup.filter((p) => p.unit === 'unit.zombie')
++    expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEqual([[1, [{ col: 19, row: 3 }]]])
++    expect((e.schedule ?? []).map((s) => [s.phase, s.spawn.map((u) => u.unit)])).toEqual([[4, ['unit.zombie']]])
++    for (const replicate of [0, 1, 2]) {
++      const ctx = openingBattle(S, replicate, true)
++      const w = ctx.geo.board.width
++      const atStart = ctx.events.filter((ev) => ev.type === 'unit.enter' && ev.turn === 0 && ev['typeId'] === 'unit.zombie').map((ev) => ev['hex'])
++      expect(atStart, `replicate ${replicate}: the Zombies placed at the start`).toEqual([3 * w + 19])
++      expect(arrivals(ctx).map(([t, u]) => [t, u]), `replicate ${replicate}: the arrivals`).toEqual([[4, 'unit.zombie']])
++      expect(ctx.state.units.filter((u) => u.side === 'enemy').length, `replicate ${replicate}: enemies in the whole battle`).toBe(2)
++    }
+   })
+   it('a civilian\'s death does not end the battle, and it ends won when the last enemy dies — no loss', () => {
+```
+</details>
