@@ -3352,3 +3352,16 @@ Ruled:
 
 - **The Orphanage pays 20 XP to the hero who fought it, whatever the battle's kills or length** — enough for level 2 (the curve above), so the first hero fields at level 2 from the Lumberjack on. Replaces "the opening battle won't be enough to get a level" (two entries above).
 - **"then we'll do the level"** — the level-up is built now: `fix.opening-first-level`, at the top of the queue. A level-2 hero takes its specialty (chosen at the first level-up, `levels.json` rules) and its class table's level-2 grants. Which specialty a player would choose is not said: switch. The XP of the later battles stays `fix.opening-levels`'s, which now takes battle 1's as this fixed 20.
+
+## 2026-09-29 — the Orphanage gains a Zombie on Turn 2 and one on Turn 3
+
+Andrew, shown the lighter Orphanage (one Zombie at the start, one on Turn 4; won 90 of 100):
+
+“Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3.”
+
+Ruled:
+
+- **The Orphanage (battle 1) gains two arrivals: one Zombie on Turn 2 and one on Turn 3**, on top of the start's one Zombie at (19,3) and Turn 4's at (9,13) (entry 2026-09-28 'the Orphanage loses a Zombie at the start and a later one', built by `fix.opening-orphanage-lighter`). Four Zombies in all.
+- Where each arrives is not said: switch (`fix.opening-orphanage-arrivals`).
+
+Filed: `fix.opening-orphanage-arrivals`, next after `fix.opening-draft`.
