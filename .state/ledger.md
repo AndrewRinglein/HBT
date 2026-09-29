@@ -18515,3 +18515,18 @@ index f2c7644..20e774b 100644
 2026-09-29 06:04
 
 Superseded before any code by the same night's ruling (DECISIONS.md 2026-09-28 'the first hero: Leadership ...'): its first-hero modifiers were a proposal Andrew replaced; re-filed as fix.opening-orphanage-lighter, content.hero-health-floor and fix.opening-first-hero.
+
+## content.hero-health-floor — ABANDONED
+2026-09-29 06:09
+
+Superseded before any code by Andrew's 2026-09-28 23:09 reply (DECISIONS.md 'no Health minimum; the Peddler's Vest has no Health change; the first hero ...'); re-filed with the ruled rules.
+
+## fix.opening-first-hero — ABANDONED
+2026-09-29 06:09
+
+Superseded before any code by Andrew's 2026-09-28 23:09 reply (DECISIONS.md 'no Health minimum; the Peddler's Vest has no Health change; the first hero ...'); re-filed with the ruled rules.
+
+## fix.opening-upgrades — ABANDONED
+2026-09-29 06:09
+
+Superseded before any code by Andrew's 2026-09-28 23:09 reply (DECISIONS.md 'no Health minimum; the Peddler's Vest has no Health change; the first hero ...'); re-filed with the ruled rules.
