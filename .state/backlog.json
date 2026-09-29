@@ -5168,7 +5168,9 @@
   "needs": [
    "encounter.opening.orphanage"
   ],
-  "note": "Cut 2026-09-28 from the opening loop. Kingdom commits in its own repository. The battle viewer (../viewer) only replays; its telegraph drawing for area.marked is the viewer's own item, not this one."
+  "note": "Cut 2026-09-28 from the opening loop. Kingdom commits in its own repository. The battle viewer (../viewer) only replays; its telegraph drawing for area.marked is the viewer's own item, not this one.",
+  "status": "done",
+  "sha": "ec9c0fc"
  },
  {
   "id": "kingdom.opening-loop",
