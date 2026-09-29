@@ -7,8 +7,12 @@
 // second pure-data instance is poisoned ground (Codex, Creeping Blight: "2
 // Poison and 1 Weak — allies included"). Both live on test.map.embers (TESTING
 // LANE — the map that makes the mechanism probeable).
+// Law 10, fix.ground-one-funnel (2026-09-28; DECISIONS.md "the duplication review, ruled", review E2):
+// burning and poisoned ground are painted LAYERS only — the map glyphs 'b'/'p' paint layer.burning /
+// layer.poisoned on open ground at setup, and TERRAIN.BURNING/POISONED are retired. The claims are
+// unchanged; what names them moved: the layer's own id is the cause, the layer tables hold the numbers.
 import { describe, expect, it } from 'vitest'
-import { appliesOnEnterOf, appliesOnActivationEndOf, stripsOnEnterOf, moveCostOf } from '../src/content/maps.js'
+import { appliesOnEnterOf, appliesOnActivationEndOf, stripsOnEnterOf, moveCostOf, layerAppliesOnEnter, layerAppliesOnActivationEnd, LAYER, GLYPH, GLYPH_LAYER } from '../src/content/maps.js'
 import { TERRAIN } from '../src/core/types.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -22,29 +26,32 @@ import { hexId } from './board16.js'
 
 describe('the data — one mechanism, two pure-data instances', () => {
   it('burning: +1 Burn on enter AND +1 at End of Activation ("standing costs 2")', () => {
-    expect(appliesOnEnterOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
-    expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
+    expect(layerAppliesOnEnter(LAYER.BURNING)).toEqual([['status.burn', 1]])
+    expect(layerAppliesOnActivationEnd(LAYER.BURNING)).toEqual([['status.burn', 1]])
   })
   // Law 10 rewrite, RULED 2026-09-03 (Angela, DECISIONS.md): "all of the
   // statuses that are on the ground are supposed to be the same ... when you
   // step on them, you gain one, and if you're there at the end of activation,
   // you gain one." The 2 Poison + 1 Weak of 5-GROUND-SETTLED is superseded.
   it('poisoned: the one ground shape — 1 Poison on enter, 1 Poison at End of Activation, exactly as burning', () => {
-    expect(appliesOnEnterOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
-    expect(appliesOnActivationEndOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
-    expect(appliesOnEnterOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
-    expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
+    expect(layerAppliesOnEnter(LAYER.POISONED)).toEqual([['status.poison', 1]])
+    expect(layerAppliesOnActivationEnd(LAYER.POISONED)).toEqual([['status.poison', 1]])
+    expect(layerAppliesOnEnter(LAYER.BURNING)).toEqual([['status.burn', 1]])
+    expect(layerAppliesOnActivationEnd(LAYER.BURNING)).toEqual([['status.burn', 1]])
   })
   it('every other terrain applies nothing — and burning strips nothing', () => {
     for (const t of [TERRAIN.OPEN, TERRAIN.HILLS, TERRAIN.WOODLAND, TERRAIN.WATER]) {   // v2.retire-forest-hills, Law 10: forest is gone; woodland took its number (Andrew, 2026-09-24)
       expect(appliesOnEnterOf(t), String(t)).toEqual([])
       expect(appliesOnActivationEndOf(t), String(t)).toEqual([])
     }
-    expect(stripsOnEnterOf(TERRAIN.BURNING)).toEqual([])
+    expect(stripsOnEnterOf(GLYPH['b']!)).toEqual([])
   })
   it('the layer carries no move surcharge — the base ground owns cost', () => {
-    expect(moveCostOf(TERRAIN.BURNING)).toBe(1)
-    expect(moveCostOf(TERRAIN.POISONED)).toBe(1)
+    // 'b' and 'p' are open ground under a painted layer
+    expect([GLYPH['b'], GLYPH['p']]).toEqual([TERRAIN.OPEN, TERRAIN.OPEN])
+    expect([GLYPH_LAYER['b'], GLYPH_LAYER['p']]).toEqual([LAYER.BURNING, LAYER.POISONED])
+    expect(moveCostOf(GLYPH['b']!)).toBe(1)
+    expect(moveCostOf(GLYPH['p']!)).toBe(1)
   })
 })
 
@@ -63,7 +70,7 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
     executeMove(ctx, w.id, path, MOVES['power.move']!)
     expect(w.hex).toBe(hexId(5, 5))
     expect(valueOf(w, 'status.burn')).toBe(2)   // one per entered ember hex
-    const causes = ctx.events.filter((e) => e.type === 'status.applied' && e.causeId === 'terrain.burning')
+    const causes = ctx.events.filter((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')
     expect(causes.length).toBe(2)
   })
 
@@ -85,16 +92,16 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
 })
 
 describe('standing costs 2 — the End of Activation beat, in the real loop', () => {
-  it('battles on the ember field produce terrain.burning AND terrain.poisoned applications', () => {
+  it('battles on the ember field produce layer.burning AND layer.poisoned applications', () => {
     let burnApplied = 0, poisonApplied = 0, weakApplied = 0
     for (let r = 0; r < 10; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'test.map.embers' })
       runBattle(ctx)
       for (const e of ctx.events) {
         if (e.type !== 'status.applied') continue
-        if (e.causeId === 'terrain.burning') burnApplied++
-        if (e.causeId === 'terrain.poisoned' && e['statusId'] === 'status.poison') poisonApplied++
-        if (e.causeId === 'terrain.poisoned' && e['statusId'] === 'status.weak') weakApplied++
+        if (e.causeId === 'layer.burning') burnApplied++
+        if (e.causeId === 'layer.poisoned' && e['statusId'] === 'status.poison') poisonApplied++
+        if (e.causeId === 'layer.poisoned' && e['statusId'] === 'status.weak') weakApplied++
       }
     }
     expect(burnApplied).toBeGreaterThan(0)
@@ -107,7 +114,7 @@ describe('standing costs 2 — the End of Activation beat, in the real loop', ()
       const ctx = createBattle({ replicate: 0, enemyCount: 8, mapId })
       runBattle(ctx)
       const applied = ctx.events.filter((e) => e.type === 'status.applied'
-        && (e.causeId === 'terrain.burning' || e.causeId === 'terrain.poisoned'))
+        && (e.causeId === 'layer.burning' || e.causeId === 'layer.poisoned'))
       expect(applied.length, mapId).toBe(0)
     }
   })

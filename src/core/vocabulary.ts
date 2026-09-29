@@ -15,7 +15,7 @@ import { STAT_NAMES } from './stats.js'
 import { ATTACKER_HOOKS, HOOKS, TRIGGER_EFFECT_KINDS } from './trigger.js'
 import { ABILITY_EFFECT_KINDS, LIFE_STATES, MOVE_EFFECT_KINDS, OUTCOMES } from './types.js'
 import { EVENT_TYPES } from './mutate.js'
-import { GLYPH, LAYER_IDS, appliesOnActivationEndOf, appliesOnEnterOf, layerAppliesOnActivationEnd, layerAppliesOnEnter, terrainIdOf } from '../content/terrain.js'
+import { GLYPH, GLYPH_LAYER, LAYER_IDS, appliesOnActivationEndOf, appliesOnEnterOf, layerAppliesOnActivationEnd, layerAppliesOnEnter, terrainIdOf } from '../content/terrain.js'
 
 export type EngineVocabulary = {
   /** Every stat an item, a badge, a level or an aura may fold onto a unit (FOLDABLE). */
@@ -36,8 +36,8 @@ export type EngineVocabulary = {
   readonly events: readonly string[]
   /** The ground layers, in the engine's order, and the statuses each applies. */
   readonly layers: readonly { readonly id: string; readonly onEnter: readonly (readonly [string, number])[]; readonly onActivationEnd: readonly (readonly [string, number])[] }[]
-  /** Each authored glyph, the terrain it decodes to, and the statuses that ground applies. */
-  readonly terrain: readonly { readonly glyph: string; readonly id: string; readonly onEnter: readonly (readonly [string, number])[]; readonly onActivationEnd: readonly (readonly [string, number])[] }[]
+  /** Each authored glyph, the terrain it decodes to, the layer it paints (if any) and the statuses that ground applies. */
+  readonly terrain: readonly { readonly glyph: string; readonly id: string; readonly layer?: string; readonly onEnter: readonly (readonly [string, number])[]; readonly onActivationEnd: readonly (readonly [string, number])[] }[]
 }
 
 export function engineVocabulary(): EngineVocabulary {
@@ -57,7 +57,8 @@ export function engineVocabulary(): EngineVocabulary {
       id: LAYER_IDS[n]!, onEnter: layerAppliesOnEnter(n), onActivationEnd: layerAppliesOnActivationEnd(n),
     })),
     terrain: Object.entries(GLYPH).map(([glyph, t]) => ({
-      glyph, id: terrainIdOf(t), onEnter: appliesOnEnterOf(t), onActivationEnd: appliesOnActivationEndOf(t),
+      glyph, id: terrainIdOf(t), ...(GLYPH_LAYER[glyph] !== undefined ? { layer: LAYER_IDS[GLYPH_LAYER[glyph]!]! } : {}),
+      onEnter: appliesOnEnterOf(t), onActivationEnd: appliesOnActivationEndOf(t),
     })),
   }
 }

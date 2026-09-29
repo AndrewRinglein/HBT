@@ -4,15 +4,15 @@
 
 import { runActivation } from '../ai/modes.js'
 import { sideStep } from '../ai/side-brain.js'
-import { beginActivation, beginTurn, emit, endActivation, expireActivationMods, gainStamina, layerAt, regenStamina, reopenSurgeCycle, setOutcome, setPhase } from './mutate.js'
+import { beginActivation, beginTurn, emit, endActivation, expireActivationMods, gainStamina, regenStamina, reopenSurgeCycle, setOutcome, setPhase } from './mutate.js'
 import { roll100 } from './rng.js'
-import { appliesOnActivationEndOf, layerAppliesOnActivationEnd, layerIdOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
+import { terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
 import { advanceBand, fireSchedule, landFalls, markFalls, startOfTurn } from './encounter.js'
 import { heroesLight } from './vision.js'
-import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
+import { isBlocked, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
-import { applyGroundHazard } from './ground.js'
+import { groundAtActivationEnd } from './ground.js'
 import type { BattleCursor, Ctx, EndOfPhaseRung, Side } from './types.js'
 import { END_OF_PHASE_RUNGS, MAX_SURGE_CYCLES, SURGE_COST, isEndOfPhaseLadder } from './types.js'
 import { activationChoices, controllerOf, type ControlPolicy } from './control.js'
@@ -53,16 +53,10 @@ export function endOfActivation(ctx: Ctx, unitId: number): void {
   if (u.lifeState !== 'standing') return
   if (ctx.state.outcome) return   // fix.post-end-ladder: nothing after battle.end
   const t = ctx.state.terrain[u.hex] ?? 0
-  const strips = stripsOnActivationEndOf(t)
-  for (const sid of strips) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(t))
-  const applies = appliesOnActivationEndOf(t)
-  for (const [sid, n] of applies) applyStatus(ctx, unitId, sid, n, terrainIdOf(t))
-  // the painted layer, through the same funnel (capability.ground-layers, 2026-09-03)
-  const layer = layerAt(ctx, u.hex)
-  for (const [sid, n] of layerAppliesOnActivationEnd(layer)) applyStatus(ctx, unitId, sid, n, layerIdOf(layer))
-  // V2 hazard (v2.ground-table, §3.2): lava's second beat — "and again at end of
-  // activation if still there". The ground rungs' last line, before the triggers.
-  if (applyGroundHazard(ctx, unitId, u.hex)) {
+  // Rung 1 — the ground (strips, applies, the painted layer, the hazard), through its one owner
+  // (core/ground.ts; fix.ground-one-funnel 2026-09-28). The ground rungs' last line is lava's
+  // second beat, before the triggers.
+  if (groundAtActivationEnd(ctx, unitId)) {
     settle(ctx, terrainIdOf(t))
     if (u.lifeState !== 'standing' || ctx.state.outcome) return
   }

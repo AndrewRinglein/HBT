@@ -32,7 +32,8 @@ import { draw, rollBelow } from './rng.js'
 import { settle } from './settle.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import { makeUnit } from './setup.js'
-import { IMPASSABLE, layerAppliesOnEnter, layerOfId, moveCostOf, takesEntry } from '../content/maps.js'
+import { IMPASSABLE, layerOfId, moveCostOf, takesEntry } from '../content/maps.js'
+import { paintGround } from './ground.js'
 import { rulesSideOf } from './side.js'
 import { passableHexes } from './props.js'
 
@@ -244,7 +245,9 @@ export function objectiveDead(ctx: Ctx, causeId: string): boolean {
 
 /** Setup paint (Rime's frost band) — capability.ground-layers. */
 export function paintSetup(ctx: Ctx, enc: EncounterDef): void {
-  for (const p of enc.paint ?? []) for (const hex of p.hexes) paintLayer(ctx, hex, layerOfId(p.layer), enc.id)
+  // through the one paint-with-occupants function (fix.ground-one-funnel, review E3): a hero already
+  // standing on a painted hex takes that ground's entry beat, as the band's units do
+  for (const p of enc.paint ?? []) paintGround(ctx, p.hexes, layerOfId(p.layer), enc.id)
 }
 /**
  * The band: as the enemy phase of Turn N ends (N ≥ fromPhase), one LINE —
@@ -269,15 +272,9 @@ export function advanceBand(ctx: Ctx): void {
   const layer = layerOfId(b.layer)
   emit(ctx, 'band.advanced', enc.id, { turn: n, axis, line, ...(axis === 'row' ? { row: line } : { col: line }), layer: b.layer })
   const hexes = axis === 'col' ? ctx.geo.edgeLine('west', line) : ctx.geo.edgeLine('north', line)
-  for (const hex of hexes) {
-    if (b.spare?.includes(hex)) continue
-    paintLayer(ctx, hex, layer, enc.id)
-  }
-  // a unit standing on a freshly painted hex takes the entry beat now — it did not step, the ground came to it
-  const on = (h: number) => (axis === 'col' ? ctx.geo.colOf(h) : ctx.geo.rowOf(h)) === line
-  for (const u of ctx.state.units) if (u.lifeState === 'standing' && on(u.hex) && !b.spare?.includes(u.hex)) {
-    for (const [sid, k] of layerAppliesOnEnter(layer)) applyStatus(ctx, u.id, sid, k, b.layer)
-  }
+  // a unit standing on a freshly painted hex takes the entry beat now — it did not step, the ground
+  // came to it: the band's rule, now the one rule every painter shares (core/ground.ts paintGround)
+  paintGround(ctx, hexes.filter((hex) => !b.spare?.includes(hex)), layer, enc.id)
   settle(ctx, enc.id)
 }
 

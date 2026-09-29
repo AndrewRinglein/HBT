@@ -41,7 +41,7 @@ const groundNote = (t: number): string => {
   const ra = rangedAccuracyOf(t)
   if (ra) bits.push(`+${ra} ranged accuracy`)
   const hz = hazardOf(t)
-  if (hz) bits.push(`${hz.damage} ${hz.damageType}${hz.applies.map(([id, n]) => ` + ${n} ${short(id)}`).join('')} on entry and end of activation`)
+  if (hz) bits.push(`${hz.damage} ${hz.damageType} on entry and end of activation`)   // what the ground applies is its applies line, above (fix.ground-one-funnel)
   return bits.join(' · ')
 }
 

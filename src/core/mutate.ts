@@ -5,6 +5,7 @@
 import type { AiModeChange, Ctx, EncounterAiRule, Event, LifeState, Prop, Side, Unit, UnitMods } from './types.js'
 import type { HexId } from './hex.js'
 import { effective } from './stats.js'
+import { LAYER } from '../content/terrain.js'
 
 /**
  * EVERY event type the engine emits — plumbing.vocabulary-export (2026-09-28; review finding
@@ -595,7 +596,8 @@ export function corpsesNear(ctx: Ctx, hex: HexId, radius: number): { id: number;
 export function paintLayer(ctx: Ctx, hex: HexId, layer: number, causeId: string): void {
   const layers = ctx.state.layers ?? (ctx.state.layers = new Array<number>(ctx.state.terrain.length).fill(0))
   const before = layers[hex] ?? 0
-  const cancel = (before === 1 && layer === 2) || (before === 2 && layer === 1)   // burning ⟷ frost
+  // burning ⟷ frost (rule.burn-frost-cancel) — by name, not by bare number (fix.ground-one-funnel, review E2)
+  const cancel = (before === LAYER.BURNING && layer === LAYER.FROST) || (before === LAYER.FROST && layer === LAYER.BURNING)
   const after = cancel ? 0 : layer
   layers[hex] = after
   emit(ctx, cancel ? 'layer.cancelled' : 'layer.painted', causeId, { hex, before, after, layer })

@@ -21,6 +21,7 @@ import type { Ctx, Unit } from './types.js'
 import { effective } from './stats.js'
 import { LAYER } from '../content/maps.js'
 import { emit, layerAt, paintLayer } from './mutate.js'
+import { paintGround } from './ground.js'
 import { thinObstructionsOnLine } from './obstruction.js'
 import { THIN_OBSTRUCTION } from '../content/maps.js'
 
@@ -65,10 +66,16 @@ export function canSeeHex(ctx: Ctx, viewer: Unit, hex: number): boolean {
   return !isDark(ctx, hex) || withinSight(ctx, viewer, hex)
 }
 
-/** The condition: every hex dark at phase 1. */
+/**
+ * The condition: every hex dark at phase 1 — except burning ground, which is its own light
+ * (COMBAT-DESIGN.md 261: "any hex with the burning status … is revealed regardless of range").
+ * fix.ground-one-funnel (2026-09-28): burning ground is a layer now, so the night would otherwise
+ * paint over a map's 'b' hexes (SWITCHES nightSparesBurning).
+ */
 export function fallNight(ctx: Ctx, causeId: string): void {
-  for (let h = 0; h < ctx.geo.hexCount; h++) paintLayer(ctx, h, LAYER.DARKNESS, causeId)
-  emit(ctx, 'night.fell', causeId, { hexes: ctx.geo.hexCount })
+  let n = 0
+  for (let h = 0; h < ctx.geo.hexCount; h++) if (layerAt(ctx, h) !== LAYER.BURNING) { paintLayer(ctx, h, LAYER.DARKNESS, causeId); n++ }
+  emit(ctx, 'night.fell', causeId, { hexes: n })
 }
 
 /** The hero phase: each standing hero lights what is inside its Vision — darkness unpainted. */
@@ -84,9 +91,14 @@ export function heroesLight(ctx: Ctx, causeId: string): void {
   if (lit) emit(ctx, 'light.cast', causeId, { hexes: lit })
 }
 
-/** Paint a layer in a radius from a hex — the night family's repaint, the Eyeblight's dying rush. */
+/**
+ * Paint a layer in a radius from a hex — the night family's repaint, the Eyeblight's dying rush —
+ * through the one paint-with-occupants function (fix.ground-one-funnel, review E3): a unit the
+ * ground is painted under takes its entry beat, as the band's do.
+ */
 export function paintRadius(ctx: Ctx, centre: number, radius: number, layer: number, causeId: string): number {
-  let n = 0
-  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(centre, h) <= radius) { paintLayer(ctx, h, layer, causeId); n++ }
-  return n
+  const hexes: number[] = []
+  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(centre, h) <= radius) hexes.push(h)
+  paintGround(ctx, hexes, layer, causeId)
+  return hexes.length
 }

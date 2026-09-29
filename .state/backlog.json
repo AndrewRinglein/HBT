@@ -5213,13 +5213,24 @@
   "id": "fix.ground-one-funnel",
   "kind": "engine",
   "shape": "rule",
+  "probeIds": [
+   "layer.weak",
+   "layer.burning"
+  ],
+  "variants": [
+   "layer.weak",
+   "layer.burning"
+  ],
   "needs": [
    "plumbing.vocabulary-export"
   ],
   "spec": "Duplication review 2026-09-28, findings E1 E2 E3 E4 C3 C4 C6 C7 V3 V9. Andrew: 'The ground table is an engine rule.' 'A push does apply ground statuses.' One owner for every way a unit meets the ground (core/ground.ts). (1) executeSidestep calls enterGround — the painted layer's entry beat now applies on a sidestep (E1). (2) A push runs every ground beat, not the hazard only — retire SWITCHES pushEntersGround; correct hazardDamageFirst's '2 Burn' to the row's 1 (E4). (3) Lava's Burn moves from hazard.applies to appliesOnEnter/appliesOnActivationEnd; hazard keeps the damage (E4). (4) Burning and poisoned ground are layers only: authored 'b'/'p' paint layer.burning/layer.poisoned at setup; TERRAIN.BURNING/POISONED retire; paintLayer uses LAYER constants, not 1/2; vision's burning-reveal needs no terrain case (E2). (5) One paint-with-occupants function used by the band, the trigger layer.paint and setup paint; the entry beat applies to a unit the ground is painted under, as the band already does — recorded in SWITCHES as the reading, one rule (E3). (6) The ground table stays in terrain.ts as an engine rule, citing DECISIONS 2026-09-24 (C6). (7) The Codex's rule.ground-layers text and FUNCTIONS.md's layer list are generated from the engine's exported layer list — five layers incl. layer.weak (C3). (8) content/map-schema.mjs validates glyphs against the engine's GLYPH (C4). (9) The viewer takes layer->status and the terrain list from the engine export (V3, V9). Prior art: enterGround, LAYER_TRAITS, paintLayer — this item removes their duplicates.",
   "expect": "A sidestep onto layer.weak gives +1 Weak on entry; a unit knocked onto burning ground gains Burn and one knocked through water sheds it; lava applies 1 Burn and 3 fire through the same fields as burning ground; a map with 'b' fields layer.burning and a hero there in darkness is revealed; a trigger painting layer.weak under a standing unit gives +1 Weak; a V2-ground map passes the content validator; the viewer draws layer.weak from the export. Changes battles on burning/poisoned maps and every push.",
   "changesBaseline": true,
-  "note": "Do first among the review items: the opening battles use cursed ground (layer.weak) now. C7's Creeping Blight rewrite waits on fix.one-effect-vocabulary (layer.paint is trigger-only today)."
+  "note": "Do first among the review items: the opening battles use cursed ground (layer.weak) now. C7's Creeping Blight rewrite waits on fix.one-effect-vocabulary (layer.paint is trigger-only today).",
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "47a365c"
  },
  {
   "id": "fix.one-effect-vocabulary",

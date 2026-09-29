@@ -16,7 +16,7 @@
 // Rows run top (row 0, enemy deployment) to bottom (row 11, hero deployment).
 
 import { TERRAIN } from '../core/types.js'
-import { GLYPH, takesEntry } from './terrain.js'
+import { GLYPH, GLYPH_LAYER, takesEntry } from './terrain.js'
 import type { AuthoredMap } from '../core/types.js'
 import { decodeProps, decodeFloor } from '../core/props.js'
 import { geometryOf, type Board, type Edge } from '../core/hex.js'
@@ -165,7 +165,7 @@ export function decodeEntries(value: unknown, board: Board, terrain?: readonly n
 }
 
 /** Validate before allocation; retain no caller-owned arrays or metadata objects. */
-export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').Prop[]; floor?: boolean[]; entries?: [number, number][] } {
+export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[]; props: import('../core/types.js').Prop[]; floor?: boolean[]; entries?: [number, number][]; paint?: { layer: number; hexes: number[] }[] } {
   const board = mapBoardOf(m)
   const out: number[] = []
   // v2.knockback-collisions (2026-09-23): the kill-switch seam reaches authored
@@ -173,18 +173,24 @@ export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy
   const off = disabledIds()
   const props = decodeProps(m.props === undefined ? [] : m.props, board.width * board.height).filter(p => !off.has(p.id))
   if (props.some(p => p.id.startsWith('prop.obstacle.'))) throw new Error('props: reserved shorthand ID')
+  // fix.ground-one-funnel (2026-09-28, review E2): 'b' and 'p' are open ground with a painted
+  // layer, grouped per layer in the engine's LAYER order and hex order — setup paints them (Law 6)
+  const painted = new Map<number, number[]>()
   for (const row of m.rows) {
     for (const ch of row) {
       const t = GLYPH[ch]
       if (t === undefined) throw new Error(`map '${m.id}' has an unknown glyph '${ch}'`)
+      const layer = GLYPH_LAYER[ch]
+      if (layer !== undefined) painted.set(layer, [...(painted.get(layer) ?? []), out.length])
       if (ch === 'x') {
         props.push({ id: `prop.obstacle.${out.length}`, height: 'high', material: 3, footprint: { kind: 'hex', hexes: [out.length] } })
         out.push(TERRAIN.OPEN)
       } else out.push(t)
     }
   }
+  const paint = [...painted.entries()].sort((a, b) => a[0] - b[0]).map(([layer, hexes]) => ({ layer, hexes }))
   return { id: m.id, board, deploy: { ...(m.deploy ?? DEFAULT_DEPLOY) }, terrain: out, props: decodeProps(props, out.length), ...(Object.hasOwn(m,'floor')?{floor:decodeFloor(m.floor,out.length)}:{}),
-    ...(Object.hasOwn(m,'entries')?{entries:decodeEntries(m.entries,board,out)}:{}) }
+    ...(Object.hasOwn(m,'entries')?{entries:decodeEntries(m.entries,board,out)}:{}), ...(paint.length ? { paint } : {}) }
 }
 
 // Keep existing registry consumers on the same terrain implementation.

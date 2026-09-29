@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { fixtureBlockers, setHigh } from './prop-fixtures.js'
-import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
+import { MAPS, terrainOf, GLYPH, GLYPH_LAYER, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
          accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf, rangedAccuracyOf, accuracyAgainstOf, THIN_OBSTRUCTION } from '../src/content/maps.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -29,8 +29,12 @@ describe('terrain.kinds — the seven are recognised', () => {
     // Count derived from the enum, not hardcoded (updated 2026-08-20 when
     // burning and poisoned ground grew the legend from 7 to 9 — the OLD
     // assertion was the correct failure, this is the correct fix).
+    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): 'b' and 'p' no longer name terrain kinds —
+    // they paint layer.burning / layer.poisoned on open ground (GLYPH_LAYER). The rule holds for every
+    // other glyph: one glyph, one kind.
     const KINDS = Object.values(TERRAIN).length
-    const glyphs = Object.entries(GLYPH)
+    const glyphs = Object.entries(GLYPH).filter(([g]) => GLYPH_LAYER[g] === undefined)
+    for (const g of Object.keys(GLYPH_LAYER)) expect(GLYPH[g]).toBe(TERRAIN.OPEN)
     expect(glyphs.length).toBe(KINDS)
     expect(new Set(glyphs.map(([, v]) => v)).size).toBe(KINDS)   // no two glyphs share a kind
     for (const t of Object.values(TERRAIN)) expect(terrainIdOf(t)).toMatch(/^terrain\.[a-z-]+$/)

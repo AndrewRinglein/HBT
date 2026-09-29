@@ -350,35 +350,17 @@
   },
   {
    "glyph": "b",
-   "id": "terrain.burning",
-   "onEnter": [
-    [
-     "status.burn",
-     1
-    ]
-   ],
-   "onActivationEnd": [
-    [
-     "status.burn",
-     1
-    ]
-   ]
+   "id": "terrain.open",
+   "layer": "layer.burning",
+   "onEnter": [],
+   "onActivationEnd": []
   },
   {
    "glyph": "p",
-   "id": "terrain.poisoned",
-   "onEnter": [
-    [
-     "status.poison",
-     1
-    ]
-   ],
-   "onActivationEnd": [
-    [
-     "status.poison",
-     1
-    ]
-   ]
+   "id": "terrain.open",
+   "layer": "layer.poisoned",
+   "onEnter": [],
+   "onActivationEnd": []
   },
   {
    "glyph": "u",
@@ -389,8 +371,18 @@
   {
    "glyph": "l",
    "id": "terrain.lava",
-   "onEnter": [],
-   "onActivationEnd": []
+   "onEnter": [
+    [
+     "status.burn",
+     1
+    ]
+   ],
+   "onActivationEnd": [
+    [
+     "status.burn",
+     1
+    ]
+   ]
   },
   {
    "glyph": "m",

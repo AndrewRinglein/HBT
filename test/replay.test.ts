@@ -143,12 +143,15 @@ describe('the showcase build — engine-derived geometry, never the wrong painti
 
   it('an artless map ships NO art and full engine-derived geometry', () => {
     expect(sh).toContain('"art":null')
-    expect(sh).toContain('"terrain.burning"')
-    expect(sh).toContain('"terrain.poisoned"')
+    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): the showcase's embers and blight are
+    // painted layers now, carried by the export's layer.painted lines, not terrain ids
+    expect(sh).toContain('"layer.painted"')
     expect((sh.match(/"px":/g) ?? []).length).toBe(256)   // 16×16 hexes, generated (board ruled 2026-08-25)
   })
   it('the legend carries the ground behaviour, derived from the engine tables', () => {
-    expect(sh).toContain('end of activation')   // burning/poisoned applies note
+    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): the burning/poisoned 'end of activation'
+    // note belonged to terrain kinds that are retired — those grounds are painted layers, drawn from
+    // the log's layer.painted, not the terrain legend. The water note is the legend's ground behaviour.
     expect(sh).toContain('washes')              // water strip note
   })
   it('ground breathes and statuses stand ON the tokens — the viewer code is present', () => {

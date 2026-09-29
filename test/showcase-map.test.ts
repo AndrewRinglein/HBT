@@ -2,8 +2,12 @@
 // at once: river washes on the west, an ember band and a blight belt both
 // sides must cross, hills for the modifiers. Exists so ONE replay can show
 // every landed mechanic (Angela 2026-08-20).
+// Law 10, fix.ground-one-funnel (2026-09-28; DECISIONS.md "the duplication review, ruled", review E2):
+// burning and poisoned ground are painted LAYERS only — the map glyphs 'b'/'p' paint layer.burning /
+// layer.poisoned on open ground at setup, and TERRAIN.BURNING/POISONED are retired. The claims are
+// unchanged; what names them moved: the layer's own id is the cause, the layer tables hold the numbers.
 import { describe, expect, it } from 'vitest'
-import { MAPS, MAP_PANEL, terrainOf } from '../src/content/maps.js'
+import { MAPS, MAP_PANEL, terrainOf, decodeMap, mapDef, LAYER } from '../src/content/maps.js'
 import { TERRAIN } from '../src/core/types.js'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -14,8 +18,9 @@ describe('the board', () => {
     expect(MAP_PANEL).toContain('test.map.showcase')
     const t = terrainOf('test.map.showcase')
     expect(t.filter((x) => x === TERRAIN.WATER).length).toBeGreaterThan(10)
-    expect(t.filter((x) => x === TERRAIN.BURNING).length).toBe(8)
-    expect(t.filter((x) => x === TERRAIN.POISONED).length).toBe(8)
+    const painted = decodeMap(mapDef('test.map.showcase')).paint ?? []
+    expect(painted.find((p) => p.layer === LAYER.BURNING)?.hexes.length).toBe(8)
+    expect(painted.find((p) => p.layer === LAYER.POISONED)?.hexes.length).toBe(8)
     expect(t.filter((x) => x === TERRAIN.HILLS).length).toBe(4)
     // both deployment rows are fully open — nobody spawns in a hazard
     expect(t.slice(0, 16).every((x) => x === TERRAIN.OPEN)).toBe(true)
@@ -28,8 +33,8 @@ describe('the board', () => {
       const ctx = createBattle({ replicate: r, enemyCount: 12, mapId: 'test.map.showcase' })
       runBattle(ctx)
       for (const e of ctx.events) {
-        if (e.type === 'status.applied' && e.causeId === 'terrain.burning') ember++
-        if (e.type === 'status.applied' && e.causeId === 'terrain.poisoned') blight++
+        if (e.type === 'status.applied' && e.causeId === 'layer.burning') ember++
+        if (e.type === 'status.applied' && e.causeId === 'layer.poisoned') blight++
         if (e.type === 'status.reduced' && e.causeId === 'terrain.water') wash++
       }
     }

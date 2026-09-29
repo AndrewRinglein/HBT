@@ -17949,3 +17949,276 @@ index fde64ff..f89b45d 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.ground-one-funnel — LANDED `47a365c` **NEEDS REVIEW**
+2026-09-29 01:05
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/burning-ground.test.ts, test/flight.test.ts, test/ground-shape.test.ts, test/replay.test.ts, test/showcase-map.test.ts, test/terrain.test.ts, test/v2-ground-table.test.ts, test/vocabulary.test.ts, test/ground-funnel.test.ts
+  PASS  gate 1 — the id appears in a real battle — layer.weak: 1 log lines, 1 fired, 1 changed state · layer.burning: 3 log lines, 3 fired, 3 changed state
+  PASS  brought its own tests — test/burning-ground.test.ts, test/flight.test.ts, test/ground-shape.test.ts, test/replay.test.ts, test/showcase-map.test.ts, test/terrain.test.ts, test/v2-ground-table.test.ts, test/vocabulary.test.ts, test/ground-funnel.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/burning-ground.test.ts (-16), test/flight.test.ts (-2), test/ground-shape.test.ts (-2), test/replay.test.ts (-3), test/showcase-map.test.ts (-5), test/terrain.test.ts (-2), test/v2-ground-table.test.ts (-4), test/vocabulary.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: test.map.embers 769ce173->1275d84f, test.map.showcase a842524d->5e0449c9
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — layer.weak live · layer.burning live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without layer.weak,layer.burning — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/burning-ground.test.ts b/test/burning-ground.test.ts
+index f34106c..8e29628 100644
+--- a/test/burning-ground.test.ts
++++ b/test/burning-ground.test.ts
+@@ -8,6 +8,10 @@
+ // Poison and 1 Weak — allies included"). Both live on test.map.embers (TESTING
+ // LANE — the map that makes the mechanism probeable).
++// Law 10, fix.ground-one-funnel (2026-09-28; DECISIONS.md "the duplication review, ruled", review E2):
++// burning and poisoned ground are painted LAYERS only — the map glyphs 'b'/'p' paint layer.burning /
++// layer.poisoned on open ground at setup, and TERRAIN.BURNING/POISONED are retired. The claims are
++// unchanged; what names them moved: the layer's own id is the cause, the layer tables hold the numbers.
+ import { describe, expect, it } from 'vitest'
+-import { appliesOnEnterOf, appliesOnActivationEndOf, stripsOnEnterOf, moveCostOf } from '../src/content/maps.js'
++import { appliesOnEnterOf, appliesOnActivationEndOf, stripsOnEnterOf, moveCostOf, layerAppliesOnEnter, layerAppliesOnActivationEnd, LAYER, GLYPH, GLYPH_LAYER } from '../src/content/maps.js'
+ import { TERRAIN } from '../src/core/types.js'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -23,6 +27,6 @@ import { hexId } from './board16.js'
+ describe('the data — one mechanism, two pure-data instances', () => {
+   it('burning: +1 Burn on enter AND +1 at End of Activation ("standing costs 2")', () => {
+-    expect(appliesOnEnterOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
+-    expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
++    expect(layerAppliesOnEnter(LAYER.BURNING)).toEqual([['status.burn', 1]])
++    expect(layerAppliesOnActivationEnd(LAYER.BURNING)).toEqual([['status.burn', 1]])
+   })
+   // Law 10 rewrite, RULED 2026-09-03 (Angela, DECISIONS.md): "all of the
+@@ -31,8 +35,8 @@ describe('the data — one mechanism, two pure-data instances', () => {
+   // you gain one." The 2 Poison + 1 Weak of 5-GROUND-SETTLED is superseded.
+   it('poisoned: the one ground shape — 1 Poison on enter, 1 Poison at End of Activation, exactly as burning', () => {
+-    expect(appliesOnEnterOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
+-    expect(appliesOnActivationEndOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
+-    expect(appliesOnEnterOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
+-    expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
++    expect(layerAppliesOnEnter(LAYER.POISONED)).toEqual([['status.poison', 1]])
++    expect(layerAppliesOnActivationEnd(LAYER.POISONED)).toEqual([['status.poison', 1]])
++    expect(layerAppliesOnEnter(LAYER.BURNING)).toEqual([['status.burn', 1]])
++    expect(layerAppliesOnActivationEnd(LAYER.BURNING)).toEqual([['status.burn', 1]])
+   })
+   it('every other terrain applies nothing — and burning strips nothing', () => {
+@@ -41,9 +45,12 @@ describe('the data — one mechanism, two pure-data instances', () => {
+       expect(appliesOnActivationEndOf(t), String(t)).toEqual([])
+     }
+-    expect(stripsOnEnterOf(TERRAIN.BURNING)).toEqual([])
++    expect(stripsOnEnterOf(GLYPH['b']!)).toEqual([])
+   })
+   it('the layer carries no move surcharge — the base ground owns cost', () => {
+-    expect(moveCostOf(TERRAIN.BURNING)).toBe(1)
+-    expect(moveCostOf(TERRAIN.POISONED)).toBe(1)
++    // 'b' and 'p' are open ground under a painted layer
++    expect([GLYPH['b'], GLYPH['p']]).toEqual([TERRAIN.OPEN, TERRAIN.OPEN])
++    expect([GLYPH_LAYER['b'], GLYPH_LAYER['p']]).toEqual([LAYER.BURNING, LAYER.POISONED])
++    expect(moveCostOf(GLYPH['b']!)).toBe(1)
++    expect(moveCostOf(GLYPH['p']!)).toBe(1)
+   })
+ })
+@@ -64,5 +71,5 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
+     expect(w.hex).toBe(hexId(5, 5))
+     expect(valueOf(w, 'status.burn')).toBe(2)   // one per entered ember hex
+-    const causes = ctx.events.filter((e) => e.type === 'status.applied' && e.causeId === 'terrain.burning')
++    const causes = ctx.events.filter((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')
+     expect(causes.length).toBe(2)
+   })
+@@ -86,5 +93,5 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
+ 
+ describe('standing costs 2 — the End of Activation beat, in the real loop', () => {
+-  it('battles on the ember field produce terrain.burning AND terrain.poisoned applications', () => {
++  it('battles on the ember field produce layer.burning AND layer.poisoned applications', () => {
+     let burnApplied = 0, poisonApplied = 0, weakApplied = 0
+     for (let r = 0; r < 10; r++) {
+@@ -93,7 +100,7 @@ describe('standing costs 2 — the End of Activation beat, in the real loop', ()
+       for (const e of ctx.events) {
+         if (e.type !== 'status.applied') continue
+-        if (e.causeId === 'terrain.burning') burnApplied++
+-        if (e.causeId === 'terrain.poisoned' && e['statusId'] === 'status.poison') poisonApplied++
+-        if (e.causeId === 'terrain.poisoned' && e['statusId'] === 'status.weak') weakApplied++
++        if (e.causeId === 'layer.burning') burnApplied++
++        if (e.causeId === 'layer.poisoned' && e['statusId'] === 'status.poison') poisonApplied++
++        if (e.causeId === 'layer.poisoned' && e['statusId'] === 'status.weak') weakApplied++
+       }
+     }
+@@ -108,5 +115,5 @@ describe('standing costs 2 — the End of Activation beat, in the real loop', ()
+       runBattle(ctx)
+       const applied = ctx.events.filter((e) => e.type === 'status.applied'
+-        && (e.causeId === 'terrain.burning' || e.causeId === 'terrain.poisoned'))
++        && (e.causeId === 'layer.burning' || e.causeId === 'layer.poisoned'))
+       expect(applied.length, mapId).toBe(0)
+     }
+diff --git a/test/flight.test.ts b/test/flight.test.ts
+index f554819..dfc9d8b 100644
+--- a/test/flight.test.ts
++++ b/test/flight.test.ts
+@@ -59,5 +59,5 @@ describe('zero Steps — the ground between is never touched', () => {
+     expect(fd.hex).toBe(hexId(3, 6))
+     expect(valueOf(fd, 'status.burn'), 'no entry beat fired in the air').toBe(0)
+-    expect(fly.events.filter((e) => e.type === 'status.applied' && e.causeId === 'terrain.burning')).toHaveLength(0)
++    expect(fly.events.filter((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')).toHaveLength(0)   // Law 10, fix.ground-one-funnel: burning ground is a layer (review E2)
+ 
+     const walk = createCustomBattle(
+@@ -128,5 +128,5 @@ describe('landing is real', () => {
+     // fires. The evidence moves from a lingering value to the event trail.
+     expect(ctx.events.some((e) => e.type === 'status.applied'
+-      && e['statusId'] === 'status.burn' && e.causeId === 'terrain.burning'),
++      && e['statusId'] === 'status.burn' && e.causeId === 'layer.burning'),   // Law 10, fix.ground-one-funnel: burning ground is a layer (review E2)
+       'the landing hex must apply its burn').toBe(true)
+     // V2 sections 8.2/18: this drake has magic Resist 1, no authored Fire Resist.
+diff --git a/test/ground-shape.test.ts b/test/ground-shape.test.ts
+index 43da518..760365b 100644
+--- a/test/ground-shape.test.ts
++++ b/test/ground-shape.test.ts
+@@ -23,6 +23,8 @@ describe('the one ground shape', () => {
+       expect(layerAppliesOnActivationEnd(layer), status).toEqual([[status, 1]])
+     }
+-    expect(appliesOnEnterOf(TERRAIN.POISONED)).toEqual(appliesOnEnterOf(TERRAIN.BURNING).map(([, n]) => ['status.poison', n]))
+-    expect(appliesOnActivationEndOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
++    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): burning and poisoned ground are layers
++    // only — the terrain kinds these two lines read are retired; the loop above holds the claim.
++    expect(appliesOnEnterOf(TERRAIN.OPEN)).toEqual([])
++    expect(appliesOnActivationEndOf(TERRAIN.OPEN)).toEqual([])
+   })
+ 
+diff --git a/test/replay.test.ts b/test/replay.test.ts
+index c33ba60..9ef0079 100644
+--- a/test/replay.test.ts
++++ b/test/replay.test.ts
+@@ -144,10 +144,13 @@ describe('the showcase build — engine-derived geometry, never the wrong painti
+   it('an artless map ships NO art and full engine-derived geometry', () => {
+     expect(sh).toContain('"art":null')
+-    expect(sh).toContain('"terrain.burning"')
+-    expect(sh).toContain('"terrain.poisoned"')
++    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): the showcase's embers and blight are
++    // painted layers now, carried by the export's layer.painted lines, not terrain ids
++    expect(sh).toContain('"layer.painted"')
+     expect((sh.match(/"px":/g) ?? []).length).toBe(256)   // 16×16 hexes, generated (board ruled 2026-08-25)
+   })
+   it('the legend carries the ground behaviour, derived from the engine tables', () => {
+-    expect(sh).toContain('end of activation')   // burning/poisoned applies note
++    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): the burning/poisoned 'end of activation'
++    // note belonged to terrain kinds that are retired — those grounds are painted layers, drawn from
++    // the log's layer.painted, not the terrain legend. The water note is the legend's ground behaviour.
+     expect(sh).toContain('washes')              // water strip note
+   })
+diff --git a/test/showcase-map.test.ts b/test/showcase-map.test.ts
+index fea1490..87b4f63 100644
+--- a/test/showcase-map.test.ts
++++ b/test/showcase-map.test.ts
+@@ -3,6 +3,10 @@
+ // sides must cross, hills for the modifiers. Exists so ONE replay can show
+ // every landed mechanic (Angela 2026-08-20).
++// Law 10, fix.ground-one-funnel (2026-09-28; DECISIONS.md "the duplication review, ruled", review E2):
++// burning and poisoned ground are painted LAYERS only — the map glyphs 'b'/'p' paint layer.burning /
++// layer.poisoned on open ground at setup, and TERRAIN.BURNING/POISONED are retired. The claims are
++// unchanged; what names them moved: the layer's own id is the cause, the layer tables hold the numbers.
+ import { describe, expect, it } from 'vitest'
+-import { MAPS, MAP_PANEL, terrainOf } from '../src/content/maps.js'
++import { MAPS, MAP_PANEL, terrainOf, decodeMap, mapDef, LAYER } from '../src/content/maps.js'
+ import { TERRAIN } from '../src/core/types.js'
+ import { createBattle } from '../src/core/setup.js'
+@@ -15,6 +19,7 @@ describe('the board', () => {
+     const t = terrainOf('test.map.showcase')
+     expect(t.filter((x) => x === TERRAIN.WATER).length).toBeGreaterThan(10)
+-    expect(t.filter((x) => x === TERRAIN.BURNING).length).toBe(8)
+-    expect(t.filter((x) => x === TERRAIN.POISONED).length).toBe(8)
++    const painted = decodeMap(mapDef('test.map.showcase')).paint ?? []
++    expect(painted.find((p) => p.layer === LAYER.BURNING)?.hexes.length).toBe(8)
++    expect(painted.find((p) => p.layer === LAYER.POISONED)?.hexes.length).toBe(8)
+     expect(t.filter((x) => x === TERRAIN.HILLS).length).toBe(4)
+     // both deployment rows are fully open — nobody spawns in a hazard
+@@ -29,6 +34,6 @@ describe('the board', () => {
+       runBattle(ctx)
+       for (const e of ctx.events) {
+-        if (e.type === 'status.applied' && e.causeId === 'terrain.burning') ember++
+-        if (e.type === 'status.applied' && e.causeId === 'terrain.poisoned') blight++
++        if (e.type === 'status.applied' && e.causeId === 'layer.burning') ember++
++        if (e.type === 'status.applied' && e.causeId === 'layer.poisoned') blight++
+         if (e.type === 'status.reduced' && e.causeId === 'terrain.water') wash++
+       }
+diff --git a/test/terrain.test.ts b/test/terrain.test.ts
+index 243fe87..da0b9f7 100644
+--- a/test/terrain.test.ts
++++ b/test/terrain.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, it, expect } from 'vitest'
+ import { fixtureBlockers, setHigh } from './prop-fixtures.js'
+-import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
++import { MAPS, terrainOf, GLYPH, GLYPH_LAYER, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
+          accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf, rangedAccuracyOf, accuracyAgainstOf, THIN_OBSTRUCTION } from '../src/content/maps.js'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -30,6 +30,10 @@ describe('terrain.kinds — the seven are recognised', () => {
+     // burning and poisoned ground grew the legend from 7 to 9 — the OLD
+     // assertion was the correct failure, this is the correct fix).
++    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): 'b' and 'p' no longer name terrain kinds —
++    // they paint layer.burning / layer.poisoned on open ground (GLYPH_LAYER). The rule holds for every
++    // other glyph: one glyph, one kind.
+     const KINDS = Object.values(TERRAIN).length
+-    const glyphs = Object.entries(GLYPH)
++    const glyphs = Object.entries(GLYPH).filter(([g]) => GLYPH_LAYER[g] === undefined)
++    for (const g of Object.keys(GLYPH_LAYER)) expect(GLYPH[g]).toBe(TERRAIN.OPEN)
+     expect(glyphs.length).toBe(KINDS)
+     expect(new Set(glyphs.map(([, v]) => v)).size).toBe(KINDS)   // no two glyphs share a kind
+diff --git a/test/v2-ground-table.test.ts b/test/v2-ground-table.test.ts
+index f1baf72..92dd5c3 100644
+--- a/test/v2-ground-table.test.ts
++++ b/test/v2-ground-table.test.ts
+@@ -23,5 +23,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { runBattle, endOfActivation } from '../src/core/battle.js'
+ import { executeMove, executeKnockback, movePowerOf } from '../src/core/movement.js'
+-import { accuracyAgainstOf, accuracyBonusOf, armorBonusOf, dodgeBonusOf, hazardOf, moveCostOf, resistBonusOf, stripsOnActivationEndOf, GLYPH } from '../src/content/maps.js'
++import { accuracyAgainstOf, accuracyBonusOf, appliesOnActivationEndOf, appliesOnEnterOf, armorBonusOf, dodgeBonusOf, hazardOf, moveCostOf, resistBonusOf, stripsOnActivationEndOf, GLYPH } from '../src/content/maps.js'
+ import { SCENARIOS, scenarioOptions } from '../src/content/scenarios.js'
+ import { TERRAIN } from '../src/core/types.js'
+@@ -55,5 +55,9 @@ describe('the table is the 2026-09-24 ruling, copied', () => {
+   })
+   it('lava is 3 fire and 1 Burn; marsh −5 accuracy, −10 Dodge and a Burn washed off; desert −5 Dodge', () => {
+-    expect(hazardOf(TERRAIN.LAVA)).toEqual({ damageType: 'fire', damage: 3, applies: [['status.burn', 1]] })
++    // Law 10, fix.ground-one-funnel (2026-09-28, review E4): the hazard keeps the damage; lava's Burn
++    // is the one ground shape every status-giving ground has. Same numbers, one field each.
++    expect(hazardOf(TERRAIN.LAVA)).toEqual({ damageType: 'fire', damage: 3 })
++    expect(appliesOnEnterOf(TERRAIN.LAVA)).toEqual([['status.burn', 1]])
++    expect(appliesOnActivationEndOf(TERRAIN.LAVA)).toEqual([['status.burn', 1]])
+     expect(hazardOf(TERRAIN.UNDERGROWTH)).toBeNull()
+     expect([accuracyBonusOf(TERRAIN.MARSH), dodgeBonusOf(TERRAIN.MARSH), stripsOnActivationEndOf(TERRAIN.MARSH)]).toEqual([-5, -10, ['status.burn']])
+@@ -173,5 +177,8 @@ describe('lava — the two-beat hazard', () => {
+     expect(ctx.events.some((e) => e.type === 'damage.applied' && (e as { collision?: boolean }).collision)).toBe(false)
+   })
+-  it('a push is a hazard entry only — pushed into water keeps its Burn (the v1 beats stay step-only)', () => {
++  // Law 10, RULED 2026-09-28 (Andrew, DECISIONS.md "the duplication review, ruled"): "A push does apply
++  // ground statuses." This test asserted the provisional switch it replaces (pushEntersGround: the v1
++  // beats step-only), so its claim is reversed by ruling, not weakened.
++  it('a push enters the ground — pushed into water sheds 1 Burn, as a step does', () => {
+     const ctx = rig(row('...w...'), 'test-warrior', 8, 9)
+     const z = ctx.state.units[1]!
+@@ -179,5 +186,5 @@ describe('lava — the two-beat hazard', () => {
+     executeKnockback(ctx, 0, 1, 1, 'test')
+     expect(z.hex).toBe(10)
+-    expect(burn(z)).toBe(3)
++    expect(burn(z)).toBe(2)
+   })
+ })
+diff --git a/test/vocabulary.test.ts b/test/vocabulary.test.ts
+index c97eb33..442ef3a 100644
+--- a/test/vocabulary.test.ts
++++ b/test/vocabulary.test.ts
+@@ -50,5 +50,6 @@ describe('plumbing.vocabulary-export — one exported vocabulary', () => {
+     expect(v.layers.map((l) => l.id)).toEqual(['layer.burning', 'layer.frost', 'layer.poisoned', 'layer.darkness', 'layer.weak'])
+     expect(v.layers.find((l) => l.id === 'layer.weak')!.onEnter).toEqual([['status.weak', 1]])
+-    expect(v.terrain.find((t) => t.glyph === 'b')!.id).toBe('terrain.burning')
++    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): 'b' is open ground under layer.burning
++    expect(v.terrain.find((t) => t.glyph === 'b')).toMatchObject({ id: 'terrain.open', layer: 'layer.burning' })
+   })
+ 
+```
+</details>

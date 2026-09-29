@@ -49,7 +49,8 @@ describe('plumbing.vocabulary-export — one exported vocabulary', () => {
     const v = engineVocabulary()
     expect(v.layers.map((l) => l.id)).toEqual(['layer.burning', 'layer.frost', 'layer.poisoned', 'layer.darkness', 'layer.weak'])
     expect(v.layers.find((l) => l.id === 'layer.weak')!.onEnter).toEqual([['status.weak', 1]])
-    expect(v.terrain.find((t) => t.glyph === 'b')!.id).toBe('terrain.burning')
+    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): 'b' is open ground under layer.burning
+    expect(v.terrain.find((t) => t.glyph === 'b')).toMatchObject({ id: 'terrain.open', layer: 'layer.burning' })
   })
 
   it('every resolvable stat is foldable; the stat list the pack checks against IS FOLDABLE', () => {

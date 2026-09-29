@@ -7,7 +7,9 @@ import { disabledIds } from './disable.js'
 export const GLYPH: Readonly<Record<string, number>> = {
   '.': TERRAIN.OPEN, 'h': TERRAIN.HILLS, 'f': TERRAIN.WOODLAND, 'r': TERRAIN.ROCKY,
   'R': TERRAIN.ROCKY_HILLS, 'w': TERRAIN.WATER, 'x': TERRAIN.IMPASSABLE,
-  'b': TERRAIN.BURNING, 'p': TERRAIN.POISONED,
+  // 'b' and 'p' are open ground with a painted layer (GLYPH_LAYER, below) — fix.ground-one-funnel,
+  // 2026-09-28 (review E2: burning and poisoned ground existed twice, as a terrain and as a layer).
+  'b': TERRAIN.OPEN, 'p': TERRAIN.OPEN,
   // v2.ground-retable: no document assigns these glyphs — SWITCHES.md groundGlyphs.
   // 'f' (MAP-01's forest glyph) is woodland; 'o' is retired (v2.retire-forest-hills).
   'u': TERRAIN.UNDERGROWTH, 'l': TERRAIN.LAVA,
@@ -22,7 +24,6 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.ROCKY]: 'terrain.rocky',
   [TERRAIN.ROCKY_HILLS]: 'terrain.rocky-hills', [TERRAIN.WATER]: 'terrain.water',
   [TERRAIN.IMPASSABLE]: 'terrain.impassable',
-  [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
   [TERRAIN.UNDERGROWTH]: 'terrain.undergrowth', [TERRAIN.WOODLAND]: 'terrain.woodland', [TERRAIN.LAVA]: 'terrain.lava',
   [TERRAIN.MARSH]: 'terrain.marsh', [TERRAIN.DESERT]: 'terrain.desert', [TERRAIN.RUINS]: 'terrain.ruins',
   [TERRAIN.WALL]: 'terrain.wall', [TERRAIN.TOWER]: 'terrain.tower', [TERRAIN.HOUSE]: 'terrain.house',
@@ -61,12 +62,14 @@ export type Trait = 'rough' | 'elevated' | 'wet' | 'burning' | 'poisoned'
 /** [statusId, amount] pairs — what a terrain APPLIES, the inverse of its strips. */
 export type Applies = readonly (readonly [string, number])[]
 /**
- * A V2 ground hazard (COMBAT-V2 §3.2, lava): typed damage and statuses, dealt on
- * ENTRY — a step, a sidestep or a push that carries the unit in — and again at
- * the occupant's END OF ACTIVATION. The damage is direct and meets the type's own
- * resist (§8.2); the statuses tick against theirs.
+ * A V2 ground hazard (COMBAT-V2 §3.2, lava): typed DAMAGE, dealt on ENTRY — a step, a
+ * sidestep or a push that carries the unit in — and again at the occupant's END OF
+ * ACTIVATION. The damage is direct and meets the type's own resist (§8.2). What the
+ * ground APPLIES is appliesOnEnter / appliesOnActivationEnd, the one shape every ground
+ * status has (fix.ground-one-funnel, 2026-09-28, review E4: lava's Burn rode in a second
+ * field, hazard.applies, and so behaved differently on a push).
  */
-export type Hazard = { readonly damageType: DamageType; readonly damage: number; readonly applies: Applies }
+export type Hazard = { readonly damageType: DamageType; readonly damage: number }
 type Mods = { moveCost: number
   /** V2 §3.2 concealment: accuracy of a RANGED attack against the occupant (negative hides). */
   rangedAccuracyAgainst?: number
@@ -87,7 +90,14 @@ type Mods = { moveCost: number
   /** Statuses APPLIED at the occupant's END OF ACTIVATION — ladder rung 2, the tile-effects rung Airwalk will gate. */
   appliesOnActivationEnd?: Applies }
 
-/** GROUND-REQUIREMENTS.md §1.1. Change these only from that document. */
+/**
+ * GROUND-REQUIREMENTS.md §1.1. Change these only from that document.
+ *
+ * THE GROUND TABLE IS AN ENGINE RULE — Andrew, 2026-09-28 (DECISIONS.md "the duplication review,
+ * ruled", finding C6): "The ground table is an engine rule." It stays here, in code, owned by
+ * DECISIONS.md 2026-09-24 "the ground table, re-ruled"; the Codex and the viewer read it through the
+ * engine's exported vocabulary (generated/vocabulary.json), never a copy.
+ */
 export const TRAIT: Readonly<Record<Trait, Mods>> = {
   rough:    { moveCost: 1, accuracy: -5, armor: 1, resist: 1 },  // rocky: 2, -5 Acc, +1 Armor, +1 Resist
   // hills: 2 move. RE-RULED 2026-09-24 (Andrew, DECISIONS.md): "Hills are going to have
@@ -132,8 +142,6 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
   [TERRAIN.ROCKY_HILLS]: ['rough', 'elevated'],    // composed, per §1.1
   [TERRAIN.WATER]: ['wet'],
   [TERRAIN.IMPASSABLE]: [],
-  [TERRAIN.BURNING]: ['burning'],
-  [TERRAIN.POISONED]: ['poisoned'],
   [TERRAIN.UNDERGROWTH]: [], [TERRAIN.WOODLAND]: [], [TERRAIN.LAVA]: [],   // stated directly below — see EXTRA
   [TERRAIN.MARSH]: [], [TERRAIN.DESERT]: [],
   // Andrew, 2026-09-24: "Ruins behave like rocky ground" — and "Climber badge will
@@ -165,7 +173,7 @@ const EXTRA: Readonly<Record<number, Mods>> = {
   [TERRAIN.UNDERGROWTH]: { moveCost: 0, rangedAccuracyAgainst: -10 },
   //   woodland is also thin — "Every tile of woodland is a high thin obstruction" (v2.thin-obstruction)
   [TERRAIN.WOODLAND]:    { moveCost: 1, rangedAccuracyAgainst: -15, meleeAccuracyAgainst: -7, thin: true },
-  [TERRAIN.LAVA]:        { moveCost: 1, hazard: { damageType: 'fire', damage: 3, applies: [['status.burn', 1]] } },
+  [TERRAIN.LAVA]:        { moveCost: 1, hazard: { damageType: 'fire', damage: 3 }, appliesOnEnter: [['status.burn', 1]], appliesOnActivationEnd: [['status.burn', 1]] },
   [TERRAIN.MARSH]:       { moveCost: 1, accuracy: -5, dodge: -10, stripsOnActivationEnd: ['status.burn'] },
   [TERRAIN.DESERT]:      { moveCost: 0, dodge: -5 },
   // ── V2 structures (v2.structures) — the occupant's own numbers, all attacks ──────
@@ -306,6 +314,12 @@ export function layerOfId(id: string): number {
   if (!k) throw new Error(`unknown ground layer '${id}' — the five are ${Object.values(LAYER_IDS).join(', ')}`)
   return +k[0]
 }
+/**
+ * The layer an authored glyph paints on its open ground at setup (fix.ground-one-funnel, review E2):
+ * MAP-01's legend 'b' burning and 'p' poisoned are layers, painted through the one paint-with-
+ * occupants function (core/ground.ts paintGround) with the map as cause.
+ */
+export const GLYPH_LAYER: Readonly<Record<string, number>> = { 'b': LAYER.BURNING, 'p': LAYER.POISONED }
 const LAYER_TRAITS: Readonly<Record<number, Mods>> = {
   [LAYER.BURNING]: TRAIT['burning']!,
   [LAYER.POISONED]: TRAIT['poisoned']!,

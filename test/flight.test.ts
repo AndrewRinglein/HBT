@@ -58,7 +58,7 @@ describe('zero Steps — the ground between is never touched', () => {
     expect(executeFlight(fly, fd.id, hexId(3, 6), MOVES['power.flight']!)).toBe(true)
     expect(fd.hex).toBe(hexId(3, 6))
     expect(valueOf(fd, 'status.burn'), 'no entry beat fired in the air').toBe(0)
-    expect(fly.events.filter((e) => e.type === 'status.applied' && e.causeId === 'terrain.burning')).toHaveLength(0)
+    expect(fly.events.filter((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')).toHaveLength(0)   // Law 10, fix.ground-one-funnel: burning ground is a layer (review E2)
 
     const walk = createCustomBattle(
       [{ type: 'green-drake', hex: hexId(3, 3) }],
@@ -127,7 +127,7 @@ describe('landing is real', () => {
     // unchanged: the landing hex is a hex like any other and its EoA rung
     // fires. The evidence moves from a lingering value to the event trail.
     expect(ctx.events.some((e) => e.type === 'status.applied'
-      && e['statusId'] === 'status.burn' && e.causeId === 'terrain.burning'),
+      && e['statusId'] === 'status.burn' && e.causeId === 'layer.burning'),   // Law 10, fix.ground-one-funnel: burning ground is a layer (review E2)
       'the landing hex must apply its burn').toBe(true)
     // V2 sections 8.2/18: this drake has magic Resist 1, no authored Fire Resist.
     // The landing applies Burn and its full tick/decay clock still runs.

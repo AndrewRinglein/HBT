@@ -5,17 +5,17 @@ import { lowEdgeCost, preparedLowEdgeCost } from './cover.js'
 
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
-import { appliesOnEnterOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
+import { moveCostOf, terrainIdOf } from '../content/maps.js'
 import { blockingPropAt, passableHexes, type Passable } from './props.js'
 import { flatDamage } from './mitigation.js'
 import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
 import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
-import { forcedTargetOf, hiddenFrom, applyStatus, incomingAbsorb, isBlocked, isProne, isRooted, reduceStatus, spendAbsorb } from './status.js'
+import { forcedTargetOf, hiddenFrom, incomingAbsorb, isBlocked, isProne, isRooted, spendAbsorb } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { knockImmunity } from './kdb.js'
 import { thornsOf } from './thorns.js'
 import { settle } from './settle.js'
-import { applyGroundHazard, enterGround } from './ground.js'
+import { enterGround } from './ground.js'
 import { anyStructure, passableFor, structureAt, structureStepCost } from './structure.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
@@ -267,7 +267,7 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
     //    water strips, burning ground sears, the painted layer, and the V2 hazard
     //    (lava, v2.ground-table). Flight skips all of it by construction: zero Steps.
     //    A hazard that landed HP damage settles here, so a mover the lava kills stops.
-    if (enterGround(ctx, unitId, hex, 'step')) settle(ctx, terrainIdOf(terrainHere))
+    if (enterGround(ctx, unitId, hex)) settle(ctx, terrainIdOf(terrainHere))
     // 6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break
     if (u.lifeState !== 'standing') break
@@ -382,11 +382,10 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
   spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to, hexes: 1 })
   moveUnit(ctx, unitId, to, 0, power.id, terrainIdOf(terrainHere))
-  for (const sid of stripsOnEnterOf(terrainHere)) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
-  for (const [sid, n] of appliesOnEnterOf(terrainHere)) applyStatus(ctx, unitId, sid, n, terrainIdOf(terrainHere))
-  // v2.ground-table: a sidestep is a Step, so the V2 hazard meets it too. (The
-  // painted layer's entry beat has never run here — kept exactly, not widened.)
-  if (applyGroundHazard(ctx, unitId, to)) settle(ctx, terrainIdOf(terrainHere))
+  // A sidestep is a Step: the one entry funnel, the painted layer's beat included (fix.ground-one-funnel,
+  // 2026-09-28, review E1 — it once inlined its own copy and skipped the layer, so a sidestep onto
+  // cursed ground gave no Weak until End of Activation).
+  if (enterGround(ctx, unitId, to)) settle(ctx, terrainIdOf(terrainHere))
   if (u.lifeState !== 'standing') return true
   applyMoveEffects(ctx, unitId, power)
   return true
@@ -577,10 +576,11 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
     emit(ctx, 'knockback.blocked', causeId, { actor: pusherId, target: targetId, at: tg.hex, reason: reason || 'nowhere to go', asked: hexes, ...facts })
   } else {
     knockUnit(ctx, targetId, at, pusherId, causeId, { asked: hexes, taken, ...(taken < hexes && reason ? { stoppedBy: reason } : {}) }, facts)
-    // v2.ground-table, §3.2: "Being knocked into lava is *entering* it, not a
-    // collision" — the hex the push leaves the mover in, before any collision
-    // cost (SWITCHES.md pushEntersGround). The push's caller settles.
-    enterGround(ctx, targetId, at, 'push')
+    // §3.2: "Being knocked into lava is *entering* it, not a collision" — and every ground beat
+    // runs, not the hazard only (Andrew, 2026-09-28: "A push does apply ground statuses."; SWITCHES
+    // pushEntersGround retired). The hex the push leaves the mover in, before any collision cost
+    // (SWITCHES pushGroundLandingHex). The push's caller settles.
+    enterGround(ctx, targetId, at)
   }
   // The collision's cost: the mover only, and only a standing mover still on
   // its feet — a body the push's own hit already emptied has nothing to lose.

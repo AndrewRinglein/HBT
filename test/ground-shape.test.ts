@@ -22,8 +22,10 @@ describe('the one ground shape', () => {
       expect(layerAppliesOnEnter(layer), status).toEqual([[status, 1]])
       expect(layerAppliesOnActivationEnd(layer), status).toEqual([[status, 1]])
     }
-    expect(appliesOnEnterOf(TERRAIN.POISONED)).toEqual(appliesOnEnterOf(TERRAIN.BURNING).map(([, n]) => ['status.poison', n]))
-    expect(appliesOnActivationEndOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
+    // Law 10, fix.ground-one-funnel (2026-09-28, review E2): burning and poisoned ground are layers
+    // only — the terrain kinds these two lines read are retired; the loop above holds the claim.
+    expect(appliesOnEnterOf(TERRAIN.OPEN)).toEqual([])
+    expect(appliesOnActivationEndOf(TERRAIN.OPEN)).toEqual([])
   })
 
   it('walking across frost ground gives one; stopping on it gives another', () => {

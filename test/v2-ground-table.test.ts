@@ -22,7 +22,7 @@ import { preview } from '../src/core/pipeline.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { runBattle, endOfActivation } from '../src/core/battle.js'
 import { executeMove, executeKnockback, movePowerOf } from '../src/core/movement.js'
-import { accuracyAgainstOf, accuracyBonusOf, armorBonusOf, dodgeBonusOf, hazardOf, moveCostOf, resistBonusOf, stripsOnActivationEndOf, GLYPH } from '../src/content/maps.js'
+import { accuracyAgainstOf, accuracyBonusOf, appliesOnActivationEndOf, appliesOnEnterOf, armorBonusOf, dodgeBonusOf, hazardOf, moveCostOf, resistBonusOf, stripsOnActivationEndOf, GLYPH } from '../src/content/maps.js'
 import { SCENARIOS, scenarioOptions } from '../src/content/scenarios.js'
 import { TERRAIN } from '../src/core/types.js'
 import type { Ctx, Event, Unit } from '../src/core/types.js'
@@ -54,7 +54,11 @@ describe('the table is the 2026-09-24 ruling, copied', () => {
     expect([TERRAIN.UNDERGROWTH, TERRAIN.WOODLAND].map((t) => accuracyAgainstOf(t, 'melee'))).toEqual([0, -7])
   })
   it('lava is 3 fire and 1 Burn; marsh −5 accuracy, −10 Dodge and a Burn washed off; desert −5 Dodge', () => {
-    expect(hazardOf(TERRAIN.LAVA)).toEqual({ damageType: 'fire', damage: 3, applies: [['status.burn', 1]] })
+    // Law 10, fix.ground-one-funnel (2026-09-28, review E4): the hazard keeps the damage; lava's Burn
+    // is the one ground shape every status-giving ground has. Same numbers, one field each.
+    expect(hazardOf(TERRAIN.LAVA)).toEqual({ damageType: 'fire', damage: 3 })
+    expect(appliesOnEnterOf(TERRAIN.LAVA)).toEqual([['status.burn', 1]])
+    expect(appliesOnActivationEndOf(TERRAIN.LAVA)).toEqual([['status.burn', 1]])
     expect(hazardOf(TERRAIN.UNDERGROWTH)).toBeNull()
     expect([accuracyBonusOf(TERRAIN.MARSH), dodgeBonusOf(TERRAIN.MARSH), stripsOnActivationEndOf(TERRAIN.MARSH)]).toEqual([-5, -10, ['status.burn']])
     expect([accuracyBonusOf(TERRAIN.DESERT), dodgeBonusOf(TERRAIN.DESERT)]).toEqual([0, -5])
@@ -172,13 +176,16 @@ describe('lava — the two-beat hazard', () => {
     expect(burn(z)).toBe(1)
     expect(ctx.events.some((e) => e.type === 'damage.applied' && (e as { collision?: boolean }).collision)).toBe(false)
   })
-  it('a push is a hazard entry only — pushed into water keeps its Burn (the v1 beats stay step-only)', () => {
+  // Law 10, RULED 2026-09-28 (Andrew, DECISIONS.md "the duplication review, ruled"): "A push does apply
+  // ground statuses." This test asserted the provisional switch it replaces (pushEntersGround: the v1
+  // beats step-only), so its claim is reversed by ruling, not weakened.
+  it('a push enters the ground — pushed into water sheds 1 Burn, as a step does', () => {
     const ctx = rig(row('...w...'), 'test-warrior', 8, 9)
     const z = ctx.state.units[1]!
     z.statuses.push({ id: 'status.burn', value: 3 } as never)
     executeKnockback(ctx, 0, 1, 1, 'test')
     expect(z.hex).toBe(10)
-    expect(burn(z)).toBe(3)
+    expect(burn(z)).toBe(2)
   })
 })
 

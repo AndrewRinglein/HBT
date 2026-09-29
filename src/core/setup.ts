@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from './types.js'
 import { ACTIONS, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
+import { paintGround } from './ground.js'
 import { STATUSES } from '../content/statuses.js'
 import { AI_MODE_ROWS } from '../content/ai-modes.js'
 import { triggersFrom } from './trigger.js'
@@ -225,6 +226,9 @@ export function createBattle(opts: BattleOptions): Ctx {
     ...(opts.encounter ? { encounter: direct ? structuredClone(opts.encounter) : opts.encounter } : {}) }
   prepareAttackLines(ctx)
   prepareCover(ctx)
+  // the map's own painted ground ('b' burning, 'p' poisoned) — layers, painted before anyone stands
+  // (fix.ground-one-funnel, review E2), named for the map
+  for (const p of decoded.paint ?? []) paintGround(ctx, p.hexes, p.layer, mapId)
   const passable = passableHexes(ctx)
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
@@ -554,6 +558,7 @@ export function createCustomBattle(
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   prepareAttackLines(ctx)
   prepareCover(ctx)
+  for (const p of decoded.paint ?? []) paintGround(ctx, p.hexes, p.layer, mapId)   // the map's painted ground, as createBattle
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —
   // a fixture hero is the same hero as a scenario hero.

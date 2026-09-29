@@ -43,7 +43,9 @@ export const TERRAIN = {
   // no more forest"; "trees are supposed to be woodland"), so every saved or authored
   // forest hex reads as woodland.
   OPEN: 0, HILLS: 1, WOODLAND: 2, ROCKY: 3, ROCKY_HILLS: 4, WATER: 5, IMPASSABLE: 6,
-  BURNING: 7, POISONED: 8,
+  // 7 and 8 were BURNING and POISONED ground, retired 2026-09-28 (fix.ground-one-funnel, review
+  // finding E2): burning and poisoned ground are painted LAYERS only — the glyphs 'b' and 'p' paint
+  // the burning and poisoned layers on open ground at setup (content/terrain.ts GLYPH_LAYER). Never reuse 7 or 8.
   // v2.ground-table / v2.ground-retable (Andrew, 2026-09-24, DECISIONS.md "the ground
   // table, re-ruled"). 10, 11 (wheat, bush) and 12 (woodland's first number) are retired —
   // never reuse them.
