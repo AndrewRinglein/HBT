@@ -19026,3 +19026,139 @@ index 586869e..af6e284 100644
 ```diff
 ```
 </details>
+
+## fix.opening-orphanage-arrivals — LANDED `7e28134` **NEEDS REVIEW**
+2026-09-29 23:03
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: HANDOFF.md:11 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/encounter-commands.test.ts, test/opening-orphanage.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 10 log lines, 10 fired, 6 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/encounter-commands.test.ts, test/opening-orphanage.test.ts, test/fixtures/battle-cursor-orphanage-arrivals.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/encounter-commands.test.ts (-2), test/opening-orphanage.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 2 new: clone: 9 lines, engine/tools/capture-orphanage-arrivals-cursor.mts:7-15 = engine/tools/capture-zoc-cursor.mts:10-18 · clone: 9 lines, engine/tools/capture-orphanage-arrivals-cursor.mts:15-23 = engine/tools/capture-zoc-cursor.mts:18-26 — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index e9370c0..c67d779 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -181,4 +181,9 @@ const afflictionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cur
+ // refused (status.immune), the rule working. A `changed` case is checked here and skips the older layers.
+ const badgeRulesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-badge-rules.json', import.meta.url), 'utf8'))
++// fix.opening-orphanage-arrivals (2026-09-29), Law 10: the Orphanage gains a Zombie on Turn 2 and one on Turn 3
++// (Andrew, DECISIONS.md 2026-09-29: "Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3."). Every
++// case's full hashes are frozen here (tools/capture-orphanage-arrivals-cursor.mts); a case marked `changed`
++// (test.opening-orphanage only) is checked here and skips the older layers.
++const orphanageArrivalsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-arrivals.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -293,5 +298,8 @@ describe('resumable battle cursor', () => {
+       const afflictionsExpected = afflictionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const badgeRulesExpected = badgeRulesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const badgeRulesMoved = badgeRulesExpected?.changed === true
++      const orphanageArrivalsExpected = orphanageArrivalsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const orphanageArrivalsMoved = orphanageArrivalsExpected?.changed === true
++      // was: const badgeRulesMoved = badgeRulesExpected?.changed === true — an orphanage-arrivals-moved case skips the badge-rules layer too (fix.opening-orphanage-arrivals 2026-09-29)
++      const badgeRulesMoved = badgeRulesExpected?.changed === true || orphanageArrivalsMoved
+       // was: const afflictionsMoved = afflictionsExpected?.changed === true — a badge-rules-moved case skips the afflictions layer too (rule.badge-immunity 2026-09-29)
+       const afflictionsMoved = afflictionsExpected?.changed === true || badgeRulesMoved
+@@ -352,5 +360,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (badgeRulesExpected) {
++        if (orphanageArrivalsExpected) {
++        expect(hash(ctx.events), 'full orphanage-arrivals events').toBe(orphanageArrivalsExpected.events)
++        expect(hash(ctx.state), 'full orphanage-arrivals state').toBe(orphanageArrivalsExpected.state)
++        expect(hash(ctx.rng.log), 'full orphanage-arrivals RNG').toBe(orphanageArrivalsExpected.rng)
++        expect(result).toEqual(orphanageArrivalsExpected.result)
++        }
++        // was: if (badgeRulesExpected) { — fix.opening-orphanage-arrivals (2026-09-29): an orphanage-arrivals-moved case is checked above instead
++        if (badgeRulesExpected && !orphanageArrivalsMoved) {
+         expect(hash(ctx.events), 'full badge-rules events').toBe(badgeRulesExpected.events)
+         expect(hash(ctx.state), 'full badge-rules state').toBe(badgeRulesExpected.state)
+diff --git a/test/encounter-commands.test.ts b/test/encounter-commands.test.ts
+index d0fc81d..1ed80ea 100644
+--- a/test/encounter-commands.test.ts
++++ b/test/encounter-commands.test.ts
+@@ -19,5 +19,6 @@ import type { Ctx } from '../src/core/types.js'
+ const S = 'test.opening-orphanage'
+ // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — the patient player loses replicate 0 with one drafted hero; replicate 1 is a win. Same assertions.
+-const WIN = 1
++// Law 10, fix.opening-orphanage-arrivals (2026-09-29): Turns 2 and 3 gained a Zombie each ("Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3.", DECISIONS.md 2026-09-29), so the patient player now loses replicate 1; replicate 4 is a win. was: const WIN = 1
++const WIN = 4
+ const field = () => { const o = scenarioOptions(scenarioDef(S), WIN); const ctx = createBattle(o); return { o, ctx, policy: { humanUnitUids: ctx.state.units.slice(0, o.heroes.length).map((u) => u.uid) } as ControlPolicy } }
+ 
+@@ -64,5 +65,6 @@ const typed = (ctx: Ctx, turn: number) => ctx.events.filter((e) => e.type === 'u
+ describe('kingdom.encounter-battles — a person plays encounter.opening.orphanage through the commands', () => {
+   // was: '... the Turn 4 and Turn 5 Zombies arrive ...' — fix.opening-orphanage-lighter (2026-09-29): only Turn 4's remains
+-  it('the heroes are the player\'s, the civilians act on their own, the Turn 4 Zombie arrives, and clearing the map wins', () => {
++  // was: '... the Turn 4 Zombie arrives ...' — fix.opening-orphanage-arrivals (2026-09-29): Turns 2, 3 and 4
++  it('the heroes are the player\'s, the civilians act on their own, the Turn 2, 3 and 4 Zombies arrive, and clearing the map wins', () => {
+     const { o, ctx, policy } = field()
+     const offered = new Set<number>()
+@@ -75,4 +77,7 @@ describe('kingdom.encounter-battles — a person plays encounter.opening.orphana
+       expect(ctx.events.some((e) => e.type === 'activation.begin' && e.actor === c.id), `${c.typeId} acts`).toBe(true)
+     }
++    // fix.opening-orphanage-arrivals (2026-09-29): a Zombie on Turn 2 and one on Turn 3 (DECISIONS.md 2026-09-29)
++    expect(typed(ctx, 2)).toEqual(['unit.zombie'])
++    expect(typed(ctx, 3)).toEqual(['unit.zombie'])
+     expect(typed(ctx, 4)).toEqual(['unit.zombie'])
+     // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie is gone from the row ("Let's remove an early zombie and a later zombie.", DECISIONS.md 2026-09-28; SWITCHES.md openingOrphanageLighter) — nothing arrives on Turn 5. was: toEqual(['unit.zombie'])
+diff --git a/test/opening-orphanage.test.ts b/test/opening-orphanage.test.ts
+index 9a687cd..4a9dad6 100644
+--- a/test/opening-orphanage.test.ts
++++ b/test/opening-orphanage.test.ts
+@@ -26,4 +26,8 @@ describe('encounter.opening.orphanage', () => {
+   it('each arrival appears on its Turn at its hex', () => {
+     const ctx = openingBattle(S, 0, true)
++    // fix.opening-orphanage-arrivals (2026-09-29): "Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3."
++    // (Andrew, DECISIONS.md 2026-09-29); where each arrives is SWITCHES.md openingOrphanageArrivals
++    arrivedAt(ctx, 2, 'unit.zombie', 19, 5)
++    arrivedAt(ctx, 3, 'unit.zombie', 0, 6)
+     arrivedAt(ctx, 4, 'unit.zombie', 9, 13)
+     // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie from the left edge (0,6) is gone —
+@@ -39,5 +43,8 @@ describe('encounter.opening.orphanage', () => {
+     const zombies = e.setup.filter((p) => p.unit === 'unit.zombie')
+     expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEqual([[1, [{ col: 19, row: 3 }]]])
+-    expect((e.schedule ?? []).map((s) => [s.phase, s.spawn.map((u) => u.unit)])).toEqual([[4, ['unit.zombie']]])
++    // Law 10, fix.opening-orphanage-arrivals (2026-09-29): "Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3."
++    // (Andrew, DECISIONS.md 2026-09-29) — the start still has one Zombie; the arrivals are now Turns 2, 3 and 4.
++    // was: .toEqual([[4, ['unit.zombie']]])
++    expect((e.schedule ?? []).map((s) => [s.phase, s.spawn.map((u) => u.unit)])).toEqual([[2, ['unit.zombie']], [3, ['unit.zombie']], [4, ['unit.zombie']]])
+     for (const replicate of [0, 1, 2]) {
+       const ctx = openingBattle(S, replicate, true)
+@@ -45,6 +52,8 @@ describe('encounter.opening.orphanage', () => {
+       const atStart = ctx.events.filter((ev) => ev.type === 'unit.enter' && ev.turn === 0 && ev['typeId'] === 'unit.zombie').map((ev) => ev['hex'])
+       expect(atStart, `replicate ${replicate}: the Zombies placed at the start`).toEqual([3 * w + 19])
+-      expect(arrivals(ctx).map(([t, u]) => [t, u]), `replicate ${replicate}: the arrivals`).toEqual([[4, 'unit.zombie']])
+-      expect(ctx.state.units.filter((u) => u.side === 'enemy').length, `replicate ${replicate}: enemies in the whole battle`).toBe(2)
++      // Law 10, fix.opening-orphanage-arrivals (2026-09-29): Turns 2 and 3 gained a Zombie each (DECISIONS.md 2026-09-29).
++      // was: .toEqual([[4, 'unit.zombie']]) and .toBe(2)
++      expect(arrivals(ctx).map(([t, u]) => [t, u]), `replicate ${replicate}: the arrivals`).toEqual([[2, 'unit.zombie'], [3, 'unit.zombie'], [4, 'unit.zombie']])
++      expect(ctx.state.units.filter((u) => u.side === 'enemy').length, `replicate ${replicate}: enemies in the whole battle`).toBe(4)
+     }
+   })
+@@ -52,5 +61,8 @@ describe('encounter.opening.orphanage', () => {
+     // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — with the child killed at the start, one drafted hero loses replicate 0; replicate 1 is a
+     // win (27 of 50 won untouched). Same assertions.
+-    const ctx = createBattle(scenarioOptions(scenarioDef(S), 1))
++    // Law 10, fix.opening-orphanage-arrivals (2026-09-29): Turns 2 and 3 gained a Zombie each (DECISIONS.md 2026-09-29), so
++    // which replicate is a win changed — replicate 1 now loses with the child killed at the start; replicate 4 wins. Same assertions.
++    // was: scenarioOptions(scenarioDef(S), 1)
++    const ctx = createBattle(scenarioOptions(scenarioDef(S), 4))
+     const child = ctx.state.units.find((u) => u.typeId === 'hero.fixed.orphans')!
+     applyDamage(ctx, child.id, 99, 'test.kill', { actor: null }); settle(ctx, 'test.kill')
+```
+</details>

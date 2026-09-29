@@ -43144,6 +43144,30 @@ export const UNIT_PACK = {
       ],
       "schedule": [
         {
+          "phase": 2,
+          "spawn": [
+            {
+              "unit": "unit.zombie",
+              "at": {
+                "col": 19,
+                "row": 5
+              }
+            }
+          ]
+        },
+        {
+          "phase": 3,
+          "spawn": [
+            {
+              "unit": "unit.zombie",
+              "at": {
+                "col": 0,
+                "row": 6
+              }
+            }
+          ]
+        },
+        {
           "phase": 4,
           "spawn": [
             {

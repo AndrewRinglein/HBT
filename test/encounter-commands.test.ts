@@ -18,7 +18,8 @@ import type { Ctx } from '../src/core/types.js'
 
 const S = 'test.opening-orphanage'
 // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — the patient player loses replicate 0 with one drafted hero; replicate 1 is a win. Same assertions.
-const WIN = 1
+// Law 10, fix.opening-orphanage-arrivals (2026-09-29): Turns 2 and 3 gained a Zombie each ("Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3.", DECISIONS.md 2026-09-29), so the patient player now loses replicate 1; replicate 4 is a win. was: const WIN = 1
+const WIN = 4
 const field = () => { const o = scenarioOptions(scenarioDef(S), WIN); const ctx = createBattle(o); return { o, ctx, policy: { humanUnitUids: ctx.state.units.slice(0, o.heroes.length).map((u) => u.uid) } as ControlPolicy } }
 
 /** A patient player: holds for `wait` Turns (ends each activation), then attacks what it can, else closes on the nearest enemy. Only legal commands. */
@@ -63,7 +64,8 @@ const typed = (ctx: Ctx, turn: number) => ctx.events.filter((e) => e.type === 'u
 
 describe('kingdom.encounter-battles — a person plays encounter.opening.orphanage through the commands', () => {
   // was: '... the Turn 4 and Turn 5 Zombies arrive ...' — fix.opening-orphanage-lighter (2026-09-29): only Turn 4's remains
-  it('the heroes are the player\'s, the civilians act on their own, the Turn 4 Zombie arrives, and clearing the map wins', () => {
+  // was: '... the Turn 4 Zombie arrives ...' — fix.opening-orphanage-arrivals (2026-09-29): Turns 2, 3 and 4
+  it('the heroes are the player\'s, the civilians act on their own, the Turn 2, 3 and 4 Zombies arrive, and clearing the map wins', () => {
     const { o, ctx, policy } = field()
     const offered = new Set<number>()
     drive(ctx, policy, () => { for (const uid of activationChoices(ctx, policy)) offered.add(uid); return choose(ctx, policy, 3) })
@@ -74,6 +76,9 @@ describe('kingdom.encounter-battles — a person plays encounter.opening.orphana
       expect(controllerOf(ctx, c.id, policy)).toBe('ai')
       expect(ctx.events.some((e) => e.type === 'activation.begin' && e.actor === c.id), `${c.typeId} acts`).toBe(true)
     }
+    // fix.opening-orphanage-arrivals (2026-09-29): a Zombie on Turn 2 and one on Turn 3 (DECISIONS.md 2026-09-29)
+    expect(typed(ctx, 2)).toEqual(['unit.zombie'])
+    expect(typed(ctx, 3)).toEqual(['unit.zombie'])
     expect(typed(ctx, 4)).toEqual(['unit.zombie'])
     // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie is gone from the row ("Let's remove an early zombie and a later zombie.", DECISIONS.md 2026-09-28; SWITCHES.md openingOrphanageLighter) — nothing arrives on Turn 5. was: toEqual(['unit.zombie'])
     expect(typed(ctx, 5)).toEqual([])

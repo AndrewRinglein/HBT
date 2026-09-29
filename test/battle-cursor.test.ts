@@ -180,6 +180,11 @@ const afflictionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cur
 // showcase.waystation for real — the mage takes Rotting Flesh on turn 14 and the same zombie's Poison is then
 // refused (status.immune), the rule working. A `changed` case is checked here and skips the older layers.
 const badgeRulesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-badge-rules.json', import.meta.url), 'utf8'))
+// fix.opening-orphanage-arrivals (2026-09-29), Law 10: the Orphanage gains a Zombie on Turn 2 and one on Turn 3
+// (Andrew, DECISIONS.md 2026-09-29: "Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3."). Every
+// case's full hashes are frozen here (tools/capture-orphanage-arrivals-cursor.mts); a case marked `changed`
+// (test.opening-orphanage only) is checked here and skips the older layers.
+const orphanageArrivalsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-arrivals.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -292,7 +297,10 @@ describe('resumable battle cursor', () => {
       const openingDraftExpected = openingDraftGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const afflictionsExpected = afflictionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const badgeRulesExpected = badgeRulesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const badgeRulesMoved = badgeRulesExpected?.changed === true
+      const orphanageArrivalsExpected = orphanageArrivalsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const orphanageArrivalsMoved = orphanageArrivalsExpected?.changed === true
+      // was: const badgeRulesMoved = badgeRulesExpected?.changed === true — an orphanage-arrivals-moved case skips the badge-rules layer too (fix.opening-orphanage-arrivals 2026-09-29)
+      const badgeRulesMoved = badgeRulesExpected?.changed === true || orphanageArrivalsMoved
       // was: const afflictionsMoved = afflictionsExpected?.changed === true — a badge-rules-moved case skips the afflictions layer too (rule.badge-immunity 2026-09-29)
       const afflictionsMoved = afflictionsExpected?.changed === true || badgeRulesMoved
       // was: const openingDraftMoved = openingDraftExpected?.changed === true — an afflictions-moved case skips the opening-draft layer too (content.afflictions-revised 2026-09-29)
@@ -351,7 +359,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (badgeRulesExpected) {
+        if (orphanageArrivalsExpected) {
+        expect(hash(ctx.events), 'full orphanage-arrivals events').toBe(orphanageArrivalsExpected.events)
+        expect(hash(ctx.state), 'full orphanage-arrivals state').toBe(orphanageArrivalsExpected.state)
+        expect(hash(ctx.rng.log), 'full orphanage-arrivals RNG').toBe(orphanageArrivalsExpected.rng)
+        expect(result).toEqual(orphanageArrivalsExpected.result)
+        }
+        // was: if (badgeRulesExpected) { — fix.opening-orphanage-arrivals (2026-09-29): an orphanage-arrivals-moved case is checked above instead
+        if (badgeRulesExpected && !orphanageArrivalsMoved) {
         expect(hash(ctx.events), 'full badge-rules events').toBe(badgeRulesExpected.events)
         expect(hash(ctx.state), 'full badge-rules state').toBe(badgeRulesExpected.state)
         expect(hash(ctx.rng.log), 'full badge-rules RNG').toBe(badgeRulesExpected.rng)

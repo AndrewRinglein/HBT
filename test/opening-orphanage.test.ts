@@ -25,6 +25,10 @@ describe('encounter.opening.orphanage', () => {
   it('runs deterministically on its map', () => deterministic(S))
   it('each arrival appears on its Turn at its hex', () => {
     const ctx = openingBattle(S, 0, true)
+    // fix.opening-orphanage-arrivals (2026-09-29): "Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3."
+    // (Andrew, DECISIONS.md 2026-09-29); where each arrives is SWITCHES.md openingOrphanageArrivals
+    arrivedAt(ctx, 2, 'unit.zombie', 19, 5)
+    arrivedAt(ctx, 3, 'unit.zombie', 0, 6)
     arrivedAt(ctx, 4, 'unit.zombie', 9, 13)
     // Law 10, fix.opening-orphanage-lighter (2026-09-29): Turn 5's Zombie from the left edge (0,6) is gone —
     // "Let's remove an early zombie and a later zombie." (DECISIONS.md 2026-09-28; which one: SWITCHES.md
@@ -38,20 +42,28 @@ describe('encounter.opening.orphanage', () => {
     const e = encounterDef('encounter.opening.orphanage')
     const zombies = e.setup.filter((p) => p.unit === 'unit.zombie')
     expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEqual([[1, [{ col: 19, row: 3 }]]])
-    expect((e.schedule ?? []).map((s) => [s.phase, s.spawn.map((u) => u.unit)])).toEqual([[4, ['unit.zombie']]])
+    // Law 10, fix.opening-orphanage-arrivals (2026-09-29): "Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3."
+    // (Andrew, DECISIONS.md 2026-09-29) — the start still has one Zombie; the arrivals are now Turns 2, 3 and 4.
+    // was: .toEqual([[4, ['unit.zombie']]])
+    expect((e.schedule ?? []).map((s) => [s.phase, s.spawn.map((u) => u.unit)])).toEqual([[2, ['unit.zombie']], [3, ['unit.zombie']], [4, ['unit.zombie']]])
     for (const replicate of [0, 1, 2]) {
       const ctx = openingBattle(S, replicate, true)
       const w = ctx.geo.board.width
       const atStart = ctx.events.filter((ev) => ev.type === 'unit.enter' && ev.turn === 0 && ev['typeId'] === 'unit.zombie').map((ev) => ev['hex'])
       expect(atStart, `replicate ${replicate}: the Zombies placed at the start`).toEqual([3 * w + 19])
-      expect(arrivals(ctx).map(([t, u]) => [t, u]), `replicate ${replicate}: the arrivals`).toEqual([[4, 'unit.zombie']])
-      expect(ctx.state.units.filter((u) => u.side === 'enemy').length, `replicate ${replicate}: enemies in the whole battle`).toBe(2)
+      // Law 10, fix.opening-orphanage-arrivals (2026-09-29): Turns 2 and 3 gained a Zombie each (DECISIONS.md 2026-09-29).
+      // was: .toEqual([[4, 'unit.zombie']]) and .toBe(2)
+      expect(arrivals(ctx).map(([t, u]) => [t, u]), `replicate ${replicate}: the arrivals`).toEqual([[2, 'unit.zombie'], [3, 'unit.zombie'], [4, 'unit.zombie']])
+      expect(ctx.state.units.filter((u) => u.side === 'enemy').length, `replicate ${replicate}: enemies in the whole battle`).toBe(4)
     }
   })
   it('a civilian\'s death does not end the battle, and it ends won when the last enemy dies — no loss', () => {
     // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — with the child killed at the start, one drafted hero loses replicate 0; replicate 1 is a
     // win (27 of 50 won untouched). Same assertions.
-    const ctx = createBattle(scenarioOptions(scenarioDef(S), 1))
+    // Law 10, fix.opening-orphanage-arrivals (2026-09-29): Turns 2 and 3 gained a Zombie each (DECISIONS.md 2026-09-29), so
+    // which replicate is a win changed — replicate 1 now loses with the child killed at the start; replicate 4 wins. Same assertions.
+    // was: scenarioOptions(scenarioDef(S), 1)
+    const ctx = createBattle(scenarioOptions(scenarioDef(S), 4))
     const child = ctx.state.units.find((u) => u.typeId === 'hero.fixed.orphans')!
     applyDamage(ctx, child.id, 99, 'test.kill', { actor: null }); settle(ctx, 'test.kill')
     expect(child.lifeState).not.toBe('standing')

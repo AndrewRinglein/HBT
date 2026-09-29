@@ -5603,6 +5603,8 @@
   ],
   "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Orphanage gains a Zombie on Turn 2 and one on Turn 3'): 'Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3.' encounter.opening.orphanage in content/gen/encounters.json (the content repo; commit there) gains two scheduled Zombies, one on Turn 2 and one on Turn 3, beside Turn 4's (assemble -> build-viewer -> mkenginepack). test/opening-orphanage.test.ts and test/encounter-commands.test.ts follow the row (Law 10 edits with the reason at the line); the battle-cursor golden gets a new frozen layer (tools/capture-*-cursor.mts pattern). Then the Orphanage's wins over 100 replicates, by class, are printed for Andrew.",
   "expect": "The Orphanage places one Zombie at the start and one each on Turns 2, 3 and 4; the landed Orphanage and encounter-commands probes pass on the row; the six control battles are byte-identical.",
-  "note": "Switches: where each arrives (default: Turn 2's from the right edge at (19,5), where the removed starting Zombie stood; Turn 3's from the left edge, centre (0,6), where the removed Turn 5 arrival came from)."
+  "note": "Switches: where each arrives (default: Turn 2's from the right edge at (19,5), where the removed starting Zombie stood; Turn 3's from the left edge, centre (0,6), where the removed Turn 5 arrival came from).",
+  "status": "done-needs-review",
+  "sha": "7e28134"
  }
 ]
