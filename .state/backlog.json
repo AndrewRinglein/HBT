@@ -1,5 +1,32 @@
 [
  {
+  "id": "fix.opening-party",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the opening is tested with the player's party, not the Alpha Team'): 'Opening battles should be tested with a party the player should have at that point. We need to move away from these alpha heroes.' Prior art, extended not duplicated: the ruled 2026-09-03 hero states (PROGRESSION-SCHEDULE.json's roster by position is the party; src/sim/progression.ts turns a position into heroes/heroItems/heroProgress through fieldedDef) - the opening's six positions are rebuilt in progression/build-schedule.mjs from the rulings instead of its 2026-09-03 assumptions (four heroes from battle 1, three tier-3 items before battle 1). The party at each position: drafted heroes by the opening draft cadence (GAME-ARCHITECTURE.md 2.5: 1 before battle 1, +2 after it, +1 after each until six - so 1, 3, 4, 5, 6, 6), each drafted from three offered hero-pool rows (stat-less draft) and carrying that row's own kit; the Flaming Longsword from battle 3 on (content.flaming-longsword); the encounter's own civilians as the encounter places them. The six test.opening-* scenarios field that party instead of the four Alpha heroes; no alpha- id remains in an opening scenario. The landed Orphanage, Lumberjack and Cavern Trail probes move to the party (a changed WIN replicate is a Law 10 edit with its reason at the line). Then the Gates and Cathedral rows kept in tmp/ are re-tried on it, and a win count over 50 replicates per battle is printed for Andrew.",
+  "expect": "test.opening-orphanage fields exactly 1 drafted hero plus the Orphan Child and the School Teacher; the Lumberjack 3 drafted heroes; the Bridge 4; the Cavern Trail 5; the Gates 6; the Cathedral 6; every fielded hero is a hero-pool row at its position's level with its own kit, and from the Bridge on one carries the Flaming Longsword; the same replicate drafts the same party and different replicates draft different ones; no opening scenario names an alpha- hero; the landed opening probes pass on the party; the six control battles are byte-identical.",
+  "needs": [
+   "content.flaming-longsword"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage",
+   "encounter.opening.cavern-trail"
+  ],
+  "changesBaseline": false,
+  "note": "Filed 2026-09-28 after encounter.opening.gates lost 60 of 60 with four Alpha heroes (row kept in tmp/encounter.opening.gates-authored-2026-09-29.json; the Cathedral's in tmp/ too; the Bridge abandoned on the same finding). Switches to record, not questions: which of the three offers the test drafts (default: a seeded draw on a named stream keyed by the replicate and the draft ordinal, so replicates sample possible parties); the heroes' level through the opening (default: level 1 until the XP thresholds have an owner - K16 open); whether rescued civilians are fielded in later battles (default: no, only the encounter's own); who holds the Flaming Longsword (default: the first drafted hero who can wield it); wounds and fatigue between battles are the kingdom's, not the probe's (default: none)."
+ },
+ {
+  "id": "tool.wrong-home-audit",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md same entry): the prior-art audit checks both directions - 'or that the engine had something that was supposed to be somewhere else and we need to remove it from the engine.' tool.prior-art-audit finds a new copy of something the engine has; this finds what the engine holds that another package owns. Prior art: the gate's hardcode scan (tools/gate.mjs 'core knows mechanisms, never names') covers only content-instance ids and creature tags on added src/core lines; the duplication review's pass 3 ('content in code', REVIEW-DUPLICATION-2026-09-28.md) was a one-off read. Extend audit-all.mjs's inventory (.state/inventory.json from tool.prior-art-audit): every hand-written engine file (src/core, src/content/{terrain,statuses,maps,scenarios,moves,ai-modes}.ts, src/ai, src/sim) is compared with the Codex (content/hbt-content.json, settled.json) and the published pack, and each hand-typed fact the Codex authors - a unit, item, status or map number or row - is listed with its Codex owner as a removal list; kingdom rules and viewer display facts found in the engine are listed the same way. A fact ruled to be an engine rule (the ground table, DECISIONS.md 2026-09-28 C6) is not listed. The gate flags an item's added engine lines that type a Codex-owned value; such an item lands done-needs-review unless its spec names why the value is the engine's.",
+  "expect": "Run on today's tree the audit writes a removal list naming each hand-typed Codex fact in the engine with file, line and its Codex owner, and leaves the ruled ground table off it; a scratch item that types a Codex unit's health into src/content/scenarios.ts is flagged; a scratch item that adds an engine rule with its ruling named lands normally.",
+  "needs": [
+   "tool.prior-art-audit"
+  ],
+  "changesBaseline": false
+ },
+ {
   "id": "fix.funnel-goldens",
   "kind": "engine",
   "shape": "plumbing",
