@@ -18,15 +18,18 @@ export type { ActionDef, BadgeDef } from '../../engine/src/core/types.js'
 // inside this unused browser function lets normal tree shaking omit them; no
 // sideEffects/purity annotations suppress their required import-time checks.
 export async function readCatalog() {
-  const [content, moves, statuses, maps] = await Promise.all([
+  const [content, moves, statuses, maps, vocabulary] = await Promise.all([
     import('../../engine/src/content/index.js'),
     import('../../engine/src/content/moves.js'),
     import('../../engine/src/content/statuses.js'),
     import('../../engine/src/content/maps.js'),
+    // fix.ground-one-funnel (engine, 2026-09-28; review V3 V9): the engine's ONE vocabulary — names
+    // and what each ground applies, read-only — so the viewer keeps no layer or terrain table of its own
+    import('../../engine/src/core/vocabulary.js'),
   ])
   return { UNITS: content.UNITS, ACTIONS: content.ACTIONS, ATTACKS: content.ATTACKS,
     ABILITIES: content.ABILITIES, BADGES: content.BADGES, MOVES: moves.MOVES,
-    STATUSES: statuses.STATUSES, MAPS: maps.MAPS, LAYER_IDS: maps.LAYER_IDS }
+    STATUSES: statuses.STATUSES, MAPS: maps.MAPS, LAYER_IDS: maps.LAYER_IDS, VOCABULARY: vocabulary.engineVocabulary() }
 }
 /* THE BOARD IS THE MAP'S (engine 5603c40, EVENTS-FOR-THE-VIEWER §10): no WIDTH/HEIGHT constants,
    no free hex functions — geometryOf({width, height}) for the board a log's map.loaded names */

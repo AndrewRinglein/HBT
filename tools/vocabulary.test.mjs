@@ -23,3 +23,18 @@ test('every trigger effect kind has a word', () => {
   const unnamed = V.triggerEffectKinds.filter((kind) => effectWord({ kind, statusId: 'status.burn', value: 1 }, {}, {})?.unknown)
   assert.deepEqual(unnamed, [])
 })
+
+// fix.ground-one-funnel (engine, 2026-09-28; review V3 V9): the ground comes from the engine too.
+import { TSWATCH, layerHue, STYLE } from '../src/theme.js'
+const STATIC = JSON.parse(fs.readFileSync(new URL('../generated/static.json', import.meta.url), 'utf8'))
+
+test('every ground the engine decodes has a swatch — nothing falls back to plains in silence', () => {
+  const ids = [...new Set(V.terrain.filter((t) => !t.layer).map((t) => t.id))]
+  assert.deepEqual(ids.filter((id) => !TSWATCH[id]), [])
+})
+
+test("the painted layers' statuses are the engine's, as generated/static.json carries them", () => {
+  const want = Object.fromEntries(V.layers.filter((l) => l.onEnter.length).map((l) => [l.id, l.onEnter[0][0]]))
+  assert.deepEqual(STATIC.layerStatus, want, 'generated/static.json is stale — npm run static')
+  assert.equal(layerHue('layer.weak', STATIC.layerStatus), STYLE['status.weak'].hue)   // cursed ground wears Weak's hue
+})

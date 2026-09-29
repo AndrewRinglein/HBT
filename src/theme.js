@@ -4,7 +4,15 @@
 export const TSWATCH = { 'terrain.open': 'hexPlains', 'terrain.forest': 'hexForest', 'terrain.woodland': 'hexForest',
   'terrain.hills': 'hexHills', 'terrain.rocky': 'hexScrub', 'terrain.rocky-hills': 'hexScrub',
   'terrain.water': 'hexOcean', 'terrain.impassable': 'hexMountain',
-  'terrain.burning': 'hexDirt', 'terrain.poisoned': 'hexMarsh' }
+  // terrain.burning / terrain.poisoned: retired in the engine 2026-09-28 (fix.ground-one-funnel —
+  // painted layers now); kept for exports made before it, as terrain.forest is
+  'terrain.burning': 'hexDirt', 'terrain.poisoned': 'hexMarsh',
+  /* PROVISIONAL swatches (2026-09-28, fix.ground-one-funnel, review V9 — Angela/Andrew to judge):
+     the V2 grounds and the structures fell back to plains in silence. Each borrows the nearest
+     existing tile; tools/vocabulary.test.mjs fails when the engine adds a ground with none. */
+  'terrain.undergrowth': 'hexScrub', 'terrain.lava': 'hexDirt', 'terrain.marsh': 'hexMarsh',
+  'terrain.desert': 'hexDirt', 'terrain.ruins': 'hexScrub',
+  'terrain.wall': 'hexMountain', 'terrain.tower': 'hexMountain', 'terrain.house': 'hexDirt' }
 
 export const STYLE = {   // one hue per status, everywhere — pips, VFX, chips, panel (Law 6)
   'status.poison': { hue: '#8ed14f', gl: 'circle(50%)' },
@@ -35,10 +43,11 @@ export const STYLE = {   // one hue per status, everywhere — pips, VFX, chips,
    it applies — burning is Burn's orange, frost is Frost's ice, poisoned is
    Poison's green, weak is Weak's purple — so one hue per status holds on the
    ground too (Law 6). Darkness applies nothing and has its own. Keyed by the
-   engine's layer NAME (generated/static.json .layers), never by number. */
-export const LAYER_STATUS = { 'layer.burning': 'status.burn', 'layer.frost': 'status.frost', 'layer.poisoned': 'status.poison', 'layer.weak': 'status.weak' }
+   engine's layer NAME (generated/static.json .layers), never by number. Which status each layer
+   applies is the ENGINE's (static.json .layerStatus, from its exported vocabulary — fix.ground-one-
+   funnel 2026-09-28, review V3: this file kept its own copy). */
 export const DARK_HUE = '#0b0a14'
-export const layerHue = name => LAYER_STATUS[name] ? STYLE[LAYER_STATUS[name]].hue : name === 'layer.darkness' ? DARK_HUE : '#cbb9a0'
+export const layerHue = (name, layerStatus = {}) => layerStatus[name] && STYLE[layerStatus[name]] ? STYLE[layerStatus[name]].hue : name === 'layer.darkness' ? DARK_HUE : '#cbb9a0'
 /* THE DEATHBED SKULL's red (Angela 2026-09-04: "Use a very small skull for
    what goes overhead, and make it red"). Was the wound-level blood, which the
    engine's deathbed reversal deleted — same slot, new owner. */

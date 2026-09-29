@@ -120,7 +120,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const V = {
     dom, now,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ABSORBING_STATUSES: data.absorbingStatuses || [],
-      LAYERS: data.layers || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
+      LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,

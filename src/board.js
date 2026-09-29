@@ -2,7 +2,7 @@
    Reads V.S (the folded state) and draws it. Never folds. Every function takes
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
-import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE, LAYER_STATUS } from './theme.js'
+import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE } from './theme.js'
 import { mvOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { dangerOf } from './projection.js'
@@ -99,8 +99,11 @@ export function buildGround(V) {
     const tid = F.terrainIds[h], sw = TSWATCH[tid] || 'hexPlains'
     const tile = el('cell', `left:${l}px;top:${t}px;background-image:url('${ASSETS[sw + '.png']}')`)
     tile.dataset.terrain = tid; ground.appendChild(tile)
-    if (tid === 'terrain.burning') ground.appendChild(burnTile(l, t))
-    if (tid === 'terrain.poisoned') ground.appendChild(poisonTile(l, t))
+    /* a ground that burns draws fire, whatever its id — lava does now (review V9); the retired
+       terrain.burning / terrain.poisoned ids still draw for exports made before 2026-09-28 */
+    const applies = (V.data.TERRAIN_APPLIES || {})[tid] || []
+    if (applies.includes('status.burn') || tid === 'terrain.burning') ground.appendChild(burnTile(l, t))
+    if (applies.includes('status.poison') || tid === 'terrain.poisoned') ground.appendChild(poisonTile(l, t))
     ground.appendChild(el('ring grid', `left:${l}px;top:${t}px`))
   }
   /* FIRST child, always: corpses and downed units lie FLAT — coplanar with
@@ -181,7 +184,7 @@ export function layerTile(V, hex, layer) {
   if (!p) throw new Error(`layer.painted names hex ${JSON.stringify(hex)}, which is not on this ${V.data.BOARD.width}×${V.data.BOARD.height} board (${V.data.POS.length} hexes) — the engine owes a hex`)
   const l = p.px - V.data.LAYOUT.W / 2, t = p.py - V.data.LAYOUT.H / 2
   const name = (V.data.LAYERS || {})[layer] || ('layer.' + layer)
-  const hue = layerHue(name)
+  const hue = layerHue(name, V.data.LAYER_STATUS)
   if (name === 'layer.burning') return burnTile(l, t)
   if (name === 'layer.poisoned') return poisonTile(l, t)
   if (name === 'layer.frost') return frostTile(l, t, hue)

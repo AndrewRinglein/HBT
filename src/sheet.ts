@@ -10,7 +10,7 @@
 // FIRST entry in tools/exemptions.json — EXEMPTION sheet. It reads content only, through the
 // door, and computes nothing: every field is copied from a definition.
 import { readCatalog } from './engine.js'
-const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS } = await readCatalog()
+const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY } = await readCatalog()
 
 const plain = (o: unknown) => (o ? JSON.parse(JSON.stringify(o)) : undefined)
 const many = (ids: readonly string[] | undefined, table: Record<string, unknown>) =>
@@ -71,6 +71,18 @@ export function badgeTable(): Record<string, unknown> { return plain(BADGES) ?? 
 /** The ground layers by number — 1 burning · 2 frost · 3 poisoned · 4 darkness —
     read from the engine, never typed (Law 4). */
 export function layerNames(): Record<number, string> { return { ...LAYER_IDS } }
+/**
+ * fix.ground-one-funnel (engine, 2026-09-28; review V3 V9): what each ground layer and each terrain
+ * APPLIES, copied from the engine's exported vocabulary — the painted layer wears its status's hue and
+ * a ground that burns draws fire, read from here, never from a table typed in theme.js.
+ */
+export function groundApplies(): { layerStatus: Record<string, string>; terrainApplies: Record<string, string[]>; terrainIds: string[] } {
+  const layerStatus: Record<string, string> = {}
+  for (const l of VOCABULARY.layers) if (l.onEnter[0]) layerStatus[l.id] = l.onEnter[0][0]
+  const terrainApplies: Record<string, string[]> = {}
+  for (const t of VOCABULARY.terrain) if (!t.layer) terrainApplies[t.id] = [...new Set([...t.onEnter, ...t.onActivationEnd].map(([s]) => s))]
+  return { layerStatus, terrainApplies, terrainIds: [...new Set(VOCABULARY.terrain.filter((t) => !t.layer).map((t) => t.id))] }
+}
 
 export function allSheets(): Record<string, UnitSheet> {
   const out: Record<string, UnitSheet> = {}
