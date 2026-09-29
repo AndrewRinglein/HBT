@@ -1,0 +1,7 @@
+{
+ "_note": "The wrong-home audit's rules (tool.wrong-home-audit; DECISIONS.md 2026-09-28 'the opening is tested with the player's party ... the prior-art audit also finds what the engine holds that belongs elsewhere'). ruledEngine: engine files, or ids, ruled to be the engine's own - never listed. kingdomKeys: campaign quantities the kingdom owns; a number typed under one of these keys in engine source is listed. Both lists are SWITCHES.md wrongHomeRuledEngine / wrongHomeKingdomKeys.",
+ "ruledEngine": [
+  { "path": "engine/src/content/terrain.ts", "ruling": "DECISIONS.md 2026-09-28 'the duplication review, ruled' (C6): \"The ground table is an engine rule.\"" }
+ ],
+ "kingdomKeys": ["xp", "xpByTier", "gold", "price", "renown", "upkeep", "wage"]
+}

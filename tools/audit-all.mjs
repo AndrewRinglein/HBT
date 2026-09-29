@@ -90,6 +90,16 @@ audit('prior art — what is new since the last run', () => {
   return { ok: true, note: (lines.find((l) => l.startsWith('prior art')) ?? '').replace(/^prior art — /, '') }
 })
 
+audit('wrong home — what the engine holds that another package owns', () => {
+  // tool.wrong-home-audit (2026-09-28): the removal list, generated/wrong-home.md. Printed, not failed —
+  // every line is a move out of the engine, and each is its own item.
+  const r = tryRun('node tools/wrong-home.mjs --write')
+  if (!r.ok) return { ok: false, note: r.out.split('\n').filter(Boolean).at(-1) }
+  const lines = r.out.split('\n').filter(Boolean)
+  for (const l of lines.slice(1)) console.log(`        ${l.trim()}`)
+  return { ok: true, note: `${(lines.find((l) => l.startsWith('wrong home')) ?? '').replace(/^wrong home — /, '')} — generated/wrong-home.md` }
+})
+
 const failed = results.filter((r) => !r.ok)
 const stamp = new Date().toISOString()
 // The audit runs at batch end — so it OWNS the batch boundary. One marker line

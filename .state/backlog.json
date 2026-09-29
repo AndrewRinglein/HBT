@@ -24,7 +24,9 @@
   "needs": [
    "tool.prior-art-audit"
   ],
-  "changesBaseline": false
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "9358d0e"
  },
  {
   "id": "fix.funnel-goldens",

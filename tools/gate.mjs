@@ -28,6 +28,7 @@ import { filesContaining } from './source-scan.mjs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
 import { revertTree } from './revert-tree.mjs'
 import { checkItem } from './prior-art.mjs'
+import { checkWrongHome } from './wrong-home.mjs'
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
   stopBefore, budgetFrom, parseShard, recordShard, shardStatus,
@@ -378,6 +379,15 @@ flag('prior art — nothing new copies what exists', () => {
   catch (e) { return { ok: false, review: true, note: `the prior-art audit could not run: ${String(e.message ?? e).split('\n')[0]}` } }
 })
 
+// tool.wrong-home-audit (2026-09-28, the same ruling: "…or that the engine had something that was
+// supposed to be somewhere else and we need to remove it from the engine"). The item's changed engine
+// files: a content row or a content value typed in, a content name read by core/ai/sim, a campaign
+// quantity, a display colour. A FLAG: it lands for review unless the spec has an "Engine rule:" line.
+flag('wrong home — nothing another package owns', () => {
+  try { const { ok, review, note } = checkWrongHome(item); return { ok, review, note } }
+  catch (e) { return { ok: false, review: true, note: `the wrong-home audit could not run: ${String(e.message ?? e).split('\n')[0]}` } }
+})
+
 // Shapes that introduce a MECHANISM must prove the second instance is data.
 const MECHANISM_SHAPES = ['rule', 'station', 'trigger', 'modifier', 'pool', 'counter']
 check('generalizes — the second instance costs zero engine code', () => {
@@ -592,4 +602,4 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
 sh('git add -A')
 sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
 logRun('landed', { sha })
-console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review — existing tests edited, a banned word, or prior art not named)' : ''}\n`)
+console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review — existing tests edited, a banned word, prior art not named, or a wrong home)' : ''}\n`)

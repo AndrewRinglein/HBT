@@ -86,6 +86,8 @@ node tools/audit-all.mjs               the full-tree audit — on its own, never
 node tools/prior-art.mjs [--item]      what is new since .state/inventory.json (--write: audit-all's run;
                                        --root <dir> --fresh: a whole tree with no baseline). jscpd lives in
                                        tools/jscpd: npm ci --prefix tools/jscpd
+node tools/wrong-home.mjs [--item]     what the engine holds that another package owns (--write: the
+                                       removal list, generated/wrong-home.{json,md})
 npx tsx tools/effect-size.mts <id>     WITH-vs-WITHOUT battles for one mechanism — on its own
 ```
 
@@ -133,6 +135,10 @@ control battles, and the checks below. The full suite runs **once per chat**, as
   (`tools/prior-art-funnels.json`), a jscpd clone on an added line. Any of them holds the landing as
   `done-needs-review` unless the spec has a `Prior art:` line naming what it resembles and why it is not
   the same. `node tools/prior-art.mjs --item` shows it before the gate does.
+- **Wrong home** — a flag (tool.wrong-home-audit, 2026-09-28). The item's changed engine files: a content
+  row or a content number typed in, a content name read by core/ai/sim, a campaign quantity, a display
+  colour. Lands `done-needs-review` unless the spec has an `Engine rule:` line naming the ruling. The whole
+  list of what to move out is `generated/wrong-home.md` (`node tools/wrong-home.mjs --write`).
 - **Nothing left out of the commit** — `--land` refuses if an ignored file under `src/`,
   `test/` or `tools/` could have fed a pass the commit would not carry.
 
@@ -200,7 +206,7 @@ archive/         old handoffs. Never read.
 
 **Generated here, never hand-edited:** anything under `generated/`, `GAME-BUILDER.html`,
 `.state/backlog.json`, `.state/ledger.md`, `.state/gauntlet-log.jsonl`,
-`.state/gauntlet.json`, `.state/baseline.hash` (the gate's), `.state/inventory.json` (the prior-art audit's), and `.state/now.json`,
+`.state/gauntlet.json`, `.state/baseline.hash` (the gate's), `.state/inventory.json` (the prior-art audit's), `generated/wrong-home.{json,md}`, and `.state/now.json`,
 `.state/wraps.json`, `HANDOFF.md`, `STATE-ROW.md` (the wrap's). Regenerate; never edit.
 
 ## Adding anything touches four places

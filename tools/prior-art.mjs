@@ -409,11 +409,14 @@ export const namesPriorArt = (item) => /\bprior[ -]?art\s*:/i.test(`${item?.spec
 
 /** The verdict the gate records: flags or new clones hold the landing for review unless the spec names its prior art. */
 export function verdict(item, flags, newClones) {
-  const lines = [...flags.map(describe), ...newClones.map(describeClone)]
-  if (!lines.length) return { ok: true, note: 'nothing new resembles what exists' }
-  const named = namesPriorArt(item)
-  const head = `${lines.length} new: ${lines.slice(0, 6).join(' · ')}${lines.length > 6 ? ` · … (${lines.length - 6} more: node tools/prior-art.mjs --item)` : ''}`
-  return { ok: false, review: !named, note: named ? `${head} — the spec names its prior art` : `${head} — no "Prior art:" line in the spec: lands for review` }
+  return heldVerdict([...flags.map(describe), ...newClones.map(describeClone)], namesPriorArt(item),
+    { clean: 'nothing new resembles what exists', marker: 'Prior art:', named: 'the spec names its prior art', more: 'node tools/prior-art.mjs --item' })
+}
+/** A flag's verdict (the prior-art and wrong-home flags share it): lines found hold the landing for review unless the spec carries the marker. */
+export function heldVerdict(lines, named, { clean, marker, named: namedNote, more }) {
+  if (!lines.length) return { ok: true, note: clean }
+  const head = `${lines.length} new: ${lines.slice(0, 6).join(' · ')}${lines.length > 6 ? ` · … (${lines.length - 6} more: ${more})` : ''}`
+  return { ok: false, review: !named, note: named ? `${head} — ${namedNote}` : `${head} — no "${marker}" line in the spec: lands for review` }
 }
 
 // ── clones (jscpd) ─────────────────────────────────────────────────────────────

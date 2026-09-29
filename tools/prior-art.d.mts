@@ -26,6 +26,7 @@ export function flagsFor(a: { before: Inventory; after: Inventory; whole: Invent
 export function describe(f: Flag): string
 export function namesPriorArt(item: { spec?: string } | null | undefined): boolean
 export function verdict(item: { spec?: string }, flags: Flag[], newClones: Clone[]): Verdict
+export function heldVerdict(lines: string[], named: boolean, o: { clean: string; marker: string; named: string; more: string }): Verdict
 export function clonesOf(files: string[], root?: string): Clone[]
 export function describeClone(c: Clone): string
 export function clonesTouching(clones: Clone[], added: Record<string, [number, number][]>): Clone[]
