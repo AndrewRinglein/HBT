@@ -18530,3 +18530,13 @@ Superseded before any code by Andrew's 2026-09-28 23:09 reply (DECISIONS.md 'no 
 2026-09-29 06:09
 
 Superseded before any code by Andrew's 2026-09-28 23:09 reply (DECISIONS.md 'no Health minimum; the Peddler's Vest has no Health change; the first hero ...'); re-filed with the ruled rules.
+
+## fix.opening-draft-modifiers — ABANDONED
+2026-09-29 06:24
+
+Superseded before any code by Andrew's 2026-09-28 23:23 reply (DECISIONS.md 'the draft never repeats a class until all six are drafted; levels by XP at 20, 50, 100, 170, 270, 400'); re-filed with it.
+
+## fix.opening-levels-rewards — ABANDONED
+2026-09-29 06:24
+
+Superseded before any code by Andrew's 2026-09-28 23:23 reply (DECISIONS.md 'the draft never repeats a class until all six are drafted; levels by XP at 20, 50, 100, 170, 270, 400'); re-filed with it.

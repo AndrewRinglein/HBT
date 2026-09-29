@@ -3325,3 +3325,19 @@ Ruled:
 - **Levelling: the first battle is not enough for a level; the second battle is.** The rate after that is not said.
 
 Re-filed (the three items filed from the entries above abandoned before any code): `content.peddlers-vest`, `fix.opening-draft-modifiers`, `fix.opening-levels-rewards`; `fix.opening-orphanage-lighter` stands.
+
+## 2026-09-28 — the draft never repeats a class until all six are drafted; levels by XP at 20, 50, 100, 170, 270, 400
+
+Andrew, on the draft and the levelling in the entries above:
+
+“There's a very specific method of drafting. Until you've drafted all six of the starting classes, you never get a draft of the same class again.  So if your first hero is a warrior, on your next draft pool you will not see a warrior. Well, levels are determined by experience points, so for the first level, you need 20 experience points.   Then you need to get to 50, then 100.  Then 170.  270 400”
+
+“Are the experience point rewards included in the game?”
+
+Ruled:
+
+- **Until all six starting classes are drafted, no draft offers a class already drafted.** A Warrior first means no Warrior in the next offer. With six drafts in the opening, the opening party is one of each class. The first hero, taken without a pick, counts.
+- **Levels by XP: level 2 at 20 XP, level 3 at 50, level 4 at 100, level 5 at 170, level 6 at 270, level 7 at 400** (cumulative). Replaces the soft curve "20 · 100 · 250 · 500 · then scale out" (GLOSSARY.md "Level thresholds", SKELETON-SETTLED.md:114, `kingdom/src/content/levels.ts`).
+- Answered, not a ruling: **the XP rewards are in the kingdom, not the engine.** `kingdom/src/core/reckoning.ts` gives each surviving hero-side unit `max(0, 15 − enemy phases) + 3 × kills`, one MVP +10 (a roll weighted by XP), and the dead nothing; quests pay their own XP (`kingdom/src/content/quests.ts`). The tier prices in `8-ENCOUNTERS-NOTES.md` (2 / 5 / 15 per kill) are not what the kingdom uses. With one drafted hero the Orphanage's MVP is nearly certain to be that hero — so the Orphanage alone may already reach 20, against "the opening battle won't be enough to get a level" (entry above). `fix.opening-levels` measures it and reports.
+
+Re-filed: `fix.opening-draft` (replaces `fix.opening-draft-modifiers`) and `fix.opening-levels` (replaces `fix.opening-levels-rewards`), both abandoned before any code.
