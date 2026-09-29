@@ -18847,3 +18847,96 @@ index a951f80..e73d5ff 100644
      expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
 ```
 </details>
+
+## fix.opening-draft — LANDED `2bbd5e2` **NEEDS REVIEW**
+2026-09-29 18:51
+
+  PASS  dependencies landed
+  WARN  not already decided — 6 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/peddlers-vest.test.ts, test/opening-draft.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 4 log lines, 4 fired, 3 changed state · encounter.opening.cavern-trail: 12 log lines, 12 fired, 9 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/peddlers-vest.test.ts, test/fixtures/battle-cursor-opening-draft.json, test/opening-draft.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/peddlers-vest.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 2 new: clone: 9 lines, engine/tools/capture-opening-draft-cursor.mts:8-16 = engine/tools/capture-zoc-cursor.mts:10-18 · clone: 9 lines, engine/tools/capture-opening-draft-cursor.mts:16-24 = engine/tools/capture-zoc-cursor.mts:18-26 — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage,encounter.opening.cavern-trail — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 10e235b..d9fc94b 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -161,4 +161,11 @@ const orphanageLighterGolden = JSON.parse(readFileSync(new URL('./fixtures/battl
+ // -eve-24-b, -horrors, -rime, test.opening-cavern-trail) is checked here and skips the older layers.
+ const peddlersVestGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-peddlers-vest.json', import.meta.url), 'utf8'))
++// fix.opening-draft (2026-09-29), Law 10: the opening's heroes carry the first hero's Leadership, badges,
++// +2 Health and Crucible points, and every later draft is the best-scoring of three rolled heroes of classes
++// not yet drafted (Andrew, DECISIONS.md 2026-09-28: "we use the Crucible randomness, three heroes, and then
++// use a weighted system for what you choose"). Every case's full hashes are frozen here
++// (tools/capture-opening-draft-cursor.mts); a case marked `changed` (test.opening-orphanage, -lumberjack,
++// -cavern-trail) is checked here and skips the older layers.
++const openingDraftGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-draft.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -270,5 +277,8 @@ describe('resumable battle cursor', () => {
+       const orphanageLighterExpected = orphanageLighterGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const peddlersVestExpected = peddlersVestGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const peddlersVestMoved = peddlersVestExpected?.changed === true
++      const openingDraftExpected = openingDraftGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const openingDraftMoved = openingDraftExpected?.changed === true
++      // was: const peddlersVestMoved = peddlersVestExpected?.changed === true — an opening-draft-moved case skips the peddlers-vest layer too (fix.opening-draft 2026-09-29)
++      const peddlersVestMoved = peddlersVestExpected?.changed === true || openingDraftMoved
+       // was: const orphanageLighterMoved = orphanageLighterExpected?.changed === true — a peddlers-vest-moved case skips the orphanage-lighter layer too (content.peddlers-vest 2026-09-29)
+       const orphanageLighterMoved = orphanageLighterExpected?.changed === true || peddlersVestMoved
+@@ -323,5 +333,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (peddlersVestExpected) {
++        if (openingDraftExpected) {
++        expect(hash(ctx.events), 'full opening-draft events').toBe(openingDraftExpected.events)
++        expect(hash(ctx.state), 'full opening-draft state').toBe(openingDraftExpected.state)
++        expect(hash(ctx.rng.log), 'full opening-draft RNG').toBe(openingDraftExpected.rng)
++        expect(result).toEqual(openingDraftExpected.result)
++        }
++        // was: if (peddlersVestExpected) { — fix.opening-draft (2026-09-29): an opening-draft-moved case is checked above instead
++        if (peddlersVestExpected && !openingDraftMoved) {
+         expect(hash(ctx.events), 'full peddlers-vest events').toBe(peddlersVestExpected.events)
+         expect(hash(ctx.state), 'full peddlers-vest state').toBe(peddlersVestExpected.state)
+diff --git a/test/peddlers-vest.test.ts b/test/peddlers-vest.test.ts
+index 586869e..af6e284 100644
+--- a/test/peddlers-vest.test.ts
++++ b/test/peddlers-vest.test.ts
+@@ -10,5 +10,5 @@ import { createBattle, fieldedDef } from '../src/core/setup.js'
+ import { ITEMS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { openingDraftOf } from '../src/content/opening-party.js'
++import { openingDraftOf, openingPartyOf } from '../src/content/opening-party.js'
+ 
+ const VEST = 'item.peddlers-vest'
+@@ -41,7 +41,13 @@ describe('content.peddlers-vest — -5 Dodge, -5 Accuracy, +1 item slot, no Heal
+     const r = Array.from({ length: 200 }, (_, n) => n).find((n) => openingDraftOf(n, 1)[0] === 'hero.base.rogue-raven')
+     expect(r, 'a replicate that drafts the Raven first').toBeDefined()
+-    const ctx = createBattle({ ...scenarioOptions(scenarioDef('test.opening-orphanage'), r!), replicate: r! } as Parameters<typeof createBattle>[0])
++    const opts = scenarioOptions(scenarioDef('test.opening-orphanage'), r!)
++    const ctx = createBattle({ ...opts, replicate: r! } as Parameters<typeof createBattle>[0])
+     const raven = ctx.state.units.find((u) => u.typeId === 'hero.base.rogue-raven')!
+-    expect([raven.maxHp, raven.hp]).toEqual([5, 5])
++    // Law 10, fix.opening-draft (2026-09-29): the first hero now carries +2 Health and its Crucible points
++    // (Andrew, DECISIONS.md 2026-09-28: "+2 health. One stat point from the Crucible's randomness"), handed
++    // in as unit mods — the vest's part is unchanged: her Health is her row's 5 plus exactly what was handed in.
++    // was: expect([raven.maxHp, raven.hp]).toEqual([5, 5])
++    const handed = (openingPartyOf(1, r!).heroMods[0]?.stats ?? []).filter((m) => m.stat === 'maxHp').reduce((a, m) => a + m.add, 0)
++    expect([raven.maxHp, raven.hp]).toEqual([5 + handed, 5 + handed])
+   })
+ })
+```
+</details>

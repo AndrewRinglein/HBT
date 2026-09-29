@@ -44348,6 +44348,13 @@ export const UNIT_PACK = {
         "bleedsOut": true
       }
     },
+    "badge.leadership": {
+      "id": "badge.leadership",
+      "name": "Leadership",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {}
+    },
     "badge.wounded": {
       "id": "badge.wounded",
       "name": "Wounded",

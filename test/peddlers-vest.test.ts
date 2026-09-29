@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { createBattle, fieldedDef } from '../src/core/setup.js'
 import { ITEMS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { openingDraftOf } from '../src/content/opening-party.js'
+import { openingDraftOf, openingPartyOf } from '../src/content/opening-party.js'
 
 const VEST = 'item.peddlers-vest'
 const codexRow = () => (JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'hbt-content.json'), 'utf8')) as
@@ -40,8 +40,14 @@ describe('content.peddlers-vest — -5 Dodge, -5 Accuracy, +1 item slot, no Heal
     // the opening's draft (fix.opening-party) is the one path that fields a pool hero at level 1 on its own kit
     const r = Array.from({ length: 200 }, (_, n) => n).find((n) => openingDraftOf(n, 1)[0] === 'hero.base.rogue-raven')
     expect(r, 'a replicate that drafts the Raven first').toBeDefined()
-    const ctx = createBattle({ ...scenarioOptions(scenarioDef('test.opening-orphanage'), r!), replicate: r! } as Parameters<typeof createBattle>[0])
+    const opts = scenarioOptions(scenarioDef('test.opening-orphanage'), r!)
+    const ctx = createBattle({ ...opts, replicate: r! } as Parameters<typeof createBattle>[0])
     const raven = ctx.state.units.find((u) => u.typeId === 'hero.base.rogue-raven')!
-    expect([raven.maxHp, raven.hp]).toEqual([5, 5])
+    // Law 10, fix.opening-draft (2026-09-29): the first hero now carries +2 Health and its Crucible points
+    // (Andrew, DECISIONS.md 2026-09-28: "+2 health. One stat point from the Crucible's randomness"), handed
+    // in as unit mods — the vest's part is unchanged: her Health is her row's 5 plus exactly what was handed in.
+    // was: expect([raven.maxHp, raven.hp]).toEqual([5, 5])
+    const handed = (openingPartyOf(1, r!).heroMods[0]?.stats ?? []).filter((m) => m.stat === 'maxHp').reduce((a, m) => a + m.add, 0)
+    expect([raven.maxHp, raven.hp]).toEqual([5 + handed, 5 + handed])
   })
 })

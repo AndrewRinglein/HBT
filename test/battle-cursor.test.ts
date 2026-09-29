@@ -160,6 +160,13 @@ const orphanageLighterGolden = JSON.parse(readFileSync(new URL('./fixtures/battl
 // case marked `changed` (the ones fielding the Raven or the Robes priest: showcase.assembled-party,
 // -eve-24-b, -horrors, -rime, test.opening-cavern-trail) is checked here and skips the older layers.
 const peddlersVestGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-peddlers-vest.json', import.meta.url), 'utf8'))
+// fix.opening-draft (2026-09-29), Law 10: the opening's heroes carry the first hero's Leadership, badges,
+// +2 Health and Crucible points, and every later draft is the best-scoring of three rolled heroes of classes
+// not yet drafted (Andrew, DECISIONS.md 2026-09-28: "we use the Crucible randomness, three heroes, and then
+// use a weighted system for what you choose"). Every case's full hashes are frozen here
+// (tools/capture-opening-draft-cursor.mts); a case marked `changed` (test.opening-orphanage, -lumberjack,
+// -cavern-trail) is checked here and skips the older layers.
+const openingDraftGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-draft.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -269,7 +276,10 @@ describe('resumable battle cursor', () => {
       const firstLevelExpected = firstLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const orphanageLighterExpected = orphanageLighterGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const peddlersVestExpected = peddlersVestGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const peddlersVestMoved = peddlersVestExpected?.changed === true
+      const openingDraftExpected = openingDraftGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const openingDraftMoved = openingDraftExpected?.changed === true
+      // was: const peddlersVestMoved = peddlersVestExpected?.changed === true — an opening-draft-moved case skips the peddlers-vest layer too (fix.opening-draft 2026-09-29)
+      const peddlersVestMoved = peddlersVestExpected?.changed === true || openingDraftMoved
       // was: const orphanageLighterMoved = orphanageLighterExpected?.changed === true — a peddlers-vest-moved case skips the orphanage-lighter layer too (content.peddlers-vest 2026-09-29)
       const orphanageLighterMoved = orphanageLighterExpected?.changed === true || peddlersVestMoved
       // was: const firstLevelMoved = firstLevelExpected?.changed === true — an orphanage-lighter-moved case skips the first-level layer too (fix.opening-orphanage-lighter 2026-09-29)
@@ -322,7 +332,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (peddlersVestExpected) {
+        if (openingDraftExpected) {
+        expect(hash(ctx.events), 'full opening-draft events').toBe(openingDraftExpected.events)
+        expect(hash(ctx.state), 'full opening-draft state').toBe(openingDraftExpected.state)
+        expect(hash(ctx.rng.log), 'full opening-draft RNG').toBe(openingDraftExpected.rng)
+        expect(result).toEqual(openingDraftExpected.result)
+        }
+        // was: if (peddlersVestExpected) { — fix.opening-draft (2026-09-29): an opening-draft-moved case is checked above instead
+        if (peddlersVestExpected && !openingDraftMoved) {
         expect(hash(ctx.events), 'full peddlers-vest events').toBe(peddlersVestExpected.events)
         expect(hash(ctx.state), 'full peddlers-vest state').toBe(peddlersVestExpected.state)
         expect(hash(ctx.rng.log), 'full peddlers-vest RNG').toBe(peddlersVestExpected.rng)

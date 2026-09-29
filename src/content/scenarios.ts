@@ -800,7 +800,8 @@ export function scenarioOptions(s: ScenarioDef, replicate: number = s.replicate)
     ...(s.heroStowed ? { heroStowed: s.heroStowed } : {}),
     ...(s.heroItemsUsed ? { heroItemsUsed: s.heroItemsUsed } : {}),
     ...(party ? { heroProgress: party.heroProgress } : s.heroProgress ? { heroProgress: s.heroProgress } : {}),
-    ...(s.heroBadges ? { heroBadges: s.heroBadges } : {}),
+    // fix.opening-draft (2026-09-29): an opening scenario's heroes carry their badges and rolled points in
+    ...(party ? { heroBadges: party.heroBadges, heroMods: party.heroMods } : s.heroBadges ? { heroBadges: s.heroBadges } : {}),
     ...(s.sides ? { sides: s.sides } : {}),
     ...(s.encounterId ? { encounter: encounterDef(s.encounterId) } : {}),
   }
