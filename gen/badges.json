@@ -1287,6 +1287,19 @@
    "source": "Ruled 2026-09-04 (engine/DECISIONS.md, \"Deathbed Fighting, REVERSED\"). verbatim: \"There is a badge that all heroes start with. That is invisible on a hero called Hero. It is not on civilians unless expressly said so. Only those with the badge Hero bleed out. A civilian who goes down and does not have the hero badge is just dead and a corpse. Now any player unit rolls deathbed fighting. Unless they have the badge Wounded. If they are wounded, then they just die. When a player succeeds at deathbed fighting and they are not wounded (because they did not get a chance to roll if they were wounded), they immediately gain Wounded. Wounded gives: -10 accuracy, -10 dodge, -1 strength, -1 precision, -2 max HP.\" Same day: \"The hero badge does nothing else.\""
   },
   {
+   "id": "badge.leadership",
+   "name": "Leadership",
+   "rarity": "",
+   "category": "AWARDED",
+   "group": "",
+   "payload": "(no effect yet — the first hero starts with it)",
+   "payloadIsData": true,
+   "statModifiers": [],
+   "rollable": false,
+   "note": "The opening's first hero starts with it. It does nothing yet: \"Don't worry about what it does.\"",
+   "source": "Ruled 2026-09-28 (engine/DECISIONS.md, 'no Health minimum; the Peddler's Vest has no Health change; the first hero gets Leadership and a random positive badge ...'). verbatim: \"Just do a leadership badge and stick it on there for now. Don't worry about what it does.\" \"You get the leadership badge.\" Added by fix.opening-draft (engine, 2026-09-29)."
+  },
+  {
    "id": "badge.wounded",
    "name": "Wounded",
    "rarity": "",
