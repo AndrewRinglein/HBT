@@ -212,6 +212,32 @@ if(out.encounters){
 }
 // Enemy spells CUT 2026-08-22 - the new game does not want them. They were also hollow: all
 // 193 had an empty abilities array because their effect lived in triggers.onEnter.
+// ---- the ground layers are the ENGINE's (fix.ground-one-funnel, engine 2026-09-28; DECISIONS.md "the
+// duplication review, ruled", finding C3: "The ground table is an engine rule."). rule.ground-layers'
+// list and its "The N layers are:" sentence are generated from the engine's exported vocabulary
+// (../engine/generated/vocabulary.json) — the hand copy said four and left cursed ground (layer.weak)
+// out, which is how terrain.cursed came to be proposed. What each layer applies is the engine's too.
+{
+  const V=JSON.parse(fs.readFileSync(new URL('../engine/generated/vocabulary.json', import.meta.url),'utf8'));
+  const NUM=['zero','one','two','three','four','five','six','seven','eight','nine','ten'];
+  const names=V.layers.map(l=>l.id.replace(/^layer\./,''));
+  const word=s=>s.replace(/^status\./,'').replace(/^./,c=>c.toUpperCase());
+  const does=V.layers.map(l=>{
+    const n=l.id.replace(/^layer\./,'');
+    if(!l.onEnter.length&&!l.onActivationEnd.length) return `${n} applies nothing`;
+    const e=l.onEnter.map(([s,k])=>`${k} ${word(s)}`).join(' and '), a=l.onActivationEnd.map(([s,k])=>`${k} ${word(s)}`).join(' and ');
+    return `${n} gives ${e} on entry and ${a} at End of Activation`;
+  });
+  const sentence=`The ${NUM[names.length]??names.length} layers are: ${names.join(' · ')} (${does.join('; ')}; weak is cursed ground).`;
+  let seen=0;
+  for(const r of out.powers) if(r.id==='rule.ground-layers'){
+    seen++;
+    if(!/The \w+ layers are: [^.]*\./.test(r.description||'')) prob.push('rule.ground-layers: no "The N layers are: …." sentence to generate from the engine vocabulary');
+    r.description=r.description.replace(/The \w+ layers are: [^.]*\./, sentence);
+    r.layers=names;
+  }
+  if(seen!==1) prob.push(`rule.ground-layers: expected one row, found ${seen}`);
+}
 // Validation must preserve the last usable assembly on failure.
 if (!prob.length) fs.writeFileSync('hbt-content.json', JSON.stringify(out));
 else process.exitCode = 1;

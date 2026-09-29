@@ -2,7 +2,7 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 82,
+   "uses": 83,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
@@ -943,7 +943,7 @@
   },
   {
    "name": "apply a status",
-   "uses": 142,
+   "uses": 143,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -1427,7 +1427,7 @@
   },
   {
    "name": "deal damage (type from the weapon)",
-   "uses": 13,
+   "uses": 14,
    "ids": [
     "item.stormforged-blade",
     "item.demonic-shiv",
@@ -1441,7 +1441,8 @@
     "power.serpent.constrict",
     "power.stalker.throat-hold",
     "power.wyrmling.scorch",
-    "power.berserker.unleash"
+    "power.berserker.unleash",
+    "enchant.flaming"
    ]
   },
   {
@@ -1619,7 +1620,7 @@
  "statuses": [
   {
    "name": "burn",
-   "uses": 78,
+   "uses": 79,
    "ids": [
     "item.runed-crossbow",
     "item.book-of-exorcisms",
@@ -1711,7 +1712,7 @@
   },
   {
    "name": "poison",
-   "uses": 51,
+   "uses": 52,
    "ids": [
     "item.poison-throwing-knives",
     "item.scorpion-carapace",

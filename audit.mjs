@@ -395,7 +395,7 @@ if(D.encounters){
 // legend, or restates the default deploy, is a finding — not a thing anyone notices at runtime.
 if(D.maps){
   const FORMATS=new Set(['8x8','16x8','16x16','24x24']);
-  const GLYPHS=new Set(['.','h','f','r','R','w','x','b','p']);
+  const GLYPHS=new Set(JSON.parse(fs.readFileSync('../engine/generated/vocabulary.json','utf8')).terrain.map(t=>t.glyph));   // the engine's GLYPH (fix.ground-one-funnel, C4)
   const byFormat={};
   for(const m of D.maps){
     const w=(m.rows?.[0]||'').length, h=(m.rows||[]).length, fmt=w+'x'+h;

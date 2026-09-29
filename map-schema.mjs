@@ -1,4 +1,8 @@
 // V2 authored boards. Presets are labels, not the list of legal dimensions.
+import fs from 'fs';
+// fix.ground-one-funnel (engine, 2026-09-28; review finding C4): the map legend is the engine's GLYPH,
+// read from its exported vocabulary — the copy here refused every V2 ground the engine decodes.
+const ENGINE_GLYPHS = new Set(JSON.parse(fs.readFileSync(new URL('../engine/generated/vocabulary.json', import.meta.url), 'utf8')).terrain.map((t) => t.glyph));
 export const MAX_BOARD_CELLS = 10000;
 export const FORMAT_OF = Object.freeze({ '8x8': 'duel', '16x8': 'dungeon', '16x16': 'standard', '24x24': 'horde' });
 export function validateProps(value, cells) {
@@ -61,9 +65,7 @@ export function validateMap(row, testing = false) {
   if ('board' in row && (!validBoard(row.board) || row.board.width !== board.width || row.board.height !== board.height)) throw new Error(`maps ${row.id}: declared board differs from rows`);
   const size = `${board.width}x${board.height}`;
   if ('format' in row && row.format !== size) throw new Error(`maps ${row.id}: format must match rows ${size}`);
-  // map.opening-six (2026-09-28): u n H W T — undergrowth, ruins, house, wall, tower — are
-  // glyphs the engine already decodes (engine/src/content/terrain.ts GLYPH).
-  if (row.rows.some(r => !/^[.hfrRwxbpunHWT]+$/.test(r))) throw new Error(`maps ${row.id}: glyph outside the map legend`);
+  if (row.rows.some(r => [...r].some(g => !ENGINE_GLYPHS.has(g)))) throw new Error(`maps ${row.id}: glyph outside the map legend (the engine's GLYPH)`);
   if ('floor' in row) validateFloor(row.floor, board.width * board.height, row.id);
   // fix.opening-maps-off-panel (2026-09-28): a campaign map an encounter fields, not a control shape,
   // says `panel: false` and stays off the engine's fixed control panel. Only false is written.

@@ -11,7 +11,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses | Notes |
 |---|---:|---|
-| `onHit` | 82 | after a hit lands, even if armour ate all of it |
+| `onHit` | 83 | after a hit lands, even if armour ate all of it |
 | `onKill` | 37 |  |
 | `startOfBattle` | 37 |  |
 | `onDamage` | 19 | only if damage actually landed |
@@ -85,7 +85,7 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `grant a stat for the Battle` | 174 |
-| `apply a status` | 142 |
+| `apply a status` | 143 |
 | `heal` | 84 |
 | `deal TRUE damage` | 56 |
 | `grant a stat until end of next Turn` | 47 |
@@ -99,7 +99,7 @@ What a rule may DO.
 | `deal PHYSICAL damage` | 16 |
 | `regain stamina` | 15 |
 | `move WITHOUT provoking` | 15 |
-| `deal damage (type from the weapon)` | 13 |
+| `deal damage (type from the weapon)` | 14 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |
 | `take damage yourself (a cost)` | 11 |
@@ -119,13 +119,13 @@ What a rule may DO.
 
 **Protection and Karma are statuses like the rest** — there is no separate "grant Protection" function, it is `apply a status`. Karma is the only one that decays on an EVENT rather than on the clock: every unit in the game loses 1 Karma on kill. **Slow** is the one-Turn Movement loss, written as a status so nothing has to remember whose next Turn it is.
 
-**A status is not a ground layer.** The four ground layers — `burning` · `frost` · `poisoned` · `darkness` — carry no number and no duration, a hex holds exactly one, and a new one replaces the old. See `rule.ground-layers`. A unit gains **Frost**; a hex becomes **frost**.
+**A status is not a ground layer.** The five ground layers — `burning` · `frost` · `poisoned` · `darkness` · `weak` — carry no number and no duration, a hex holds exactly one, and a new one replaces the old. See `rule.ground-layers`. A unit gains **Frost**; a hex becomes **frost**.
 
 | Function | Uses |
 |---|---:|
-| `burn` | 78 |
+| `burn` | 79 |
 | `bleed` | 66 |
-| `poison` | 51 |
+| `poison` | 52 |
 | `weak` | 41 |
 | `protection` | 41 |
 | `slow` | 23 |
