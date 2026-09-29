@@ -1,7 +1,7 @@
 import type {Hero} from '../core/campaign.js'
 import {HERO_KITS,HERO_ITEM_SLOTS} from './generated/kits.js'
 import {atlasFieldings} from './atlas.js'
-import {UNITS,type UnitDef} from '../engine.js'
+import {UNITS,ENCOUNTERS,type UnitDef} from '../engine.js'
 
 export const SANDBOX_MAPS=atlasFieldings().map(r=>({id:r.id,name:r.name}))
 /** Authored standalone presets; campaign drafting keeps its own explicit pool. */
@@ -19,4 +19,10 @@ export function sandboxHeroesOf(units:Readonly<Record<string,UnitDef>>=UNITS,kit
 export const SANDBOX_HEROES=sandboxHeroesOf()
 // Standard published enemy bodies; this roster is content, not a rule.
 export const SANDBOX_ENEMIES=['unit.zombie','unit.skeleton','unit.skeletal-archer','unit.fast-zombie','unit.imp','unit.fire-imp','unit.ghoul','unit.hellhound'].map(id=>({id,name:UNITS[id]!.name??id.replace('unit.','').replaceAll('-',' ')}))
+/**
+ * kingdom.encounter-battles (engine, 2026-09-28): the encounters a person may play here — the opening's
+ * battles, in the engine's own registry, by the engine's names. An encounter fields its own map, units,
+ * schedule and civilians; the player brings the heroes. Content, not a rule: which ones is this list.
+ */
+export const SANDBOX_ENCOUNTERS=Object.values(ENCOUNTERS).filter(e=>e.id.startsWith('encounter.opening.')).map(e=>({id:e.id,name:e.name??e.id}))
 export const SANDBOX_DEFAULT={mapId:'showcase.atlas-priory',heroes:['hero.base.warrior-iron','hero.base.ranger-aggressive','hero.base.priest-armored'],enemies:['unit.zombie','unit.zombie','unit.skeleton','unit.skeleton'],seed:1}

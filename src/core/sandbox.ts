@@ -1,28 +1,54 @@
 // Standalone host adapter. All choices and resolution belong to the engine.
-import {createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf,swapCostOf,propAttackHexes} from '../engine.js'
+import {encounterDef,createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf,swapCostOf,propAttackHexes} from '../engine.js'
 import type {Ctx,BattleOptions,BattleCommand,ControlPolicy} from '../engine.js'
-import {SANDBOX_HEROES,SANDBOX_ENEMIES} from '../content/sandbox.js'
+import {SANDBOX_HEROES,SANDBOX_ENEMIES,SANDBOX_ENCOUNTERS} from '../content/sandbox.js'
 import {atlasFieldingOf,type AtlasBinding} from '../content/atlas.js'
 import {makeBattleState,battleOptionsOf} from './seam.js'
 import {compileAtlasCombat,canonicalJSON} from '../../../tools/battle-atlas/combat-compiler.mjs'
 
-export type SandboxConfig={mapId:string;heroes:string[];enemies:string[];seed:number}
-export type Sandbox={config:SandboxConfig;setup:BattleOptions;ctx:Ctx;policy:ControlPolicy;atlasScene:AtlasBinding}
+/**
+ * `encounterId` (kingdom.encounter-battles, engine 2026-09-28): play an engine encounter instead of a free
+ * battle — its map, its units, its schedule, its civilians and its outcome are the encounter's; `mapId`
+ * and `enemies` are ignored. The heroes are the player's; everyone else, civilians included, the AI's.
+ */
+export type SandboxConfig={mapId:string;heroes:string[];enemies:string[];seed:number;encounterId?:string}
+export type Sandbox={config:SandboxConfig;setup:BattleOptions;ctx:Ctx;policy:ControlPolicy;atlasScene?:AtlasBinding}
+/** A free battle always stands on an authored Atlas battlefield. */
+export type AtlasSandbox=Sandbox&{atlasScene:AtlasBinding}
 type ActionCommand=Extract<BattleCommand,{kind:'action'}>
 export type SandboxChoice={name:string;cost:number;command:ActionCommand;preview:Record<string,unknown>|null;path:number[]}
 function configured(config:SandboxConfig){
  if(!config||!Number.isSafeInteger(config.seed)||config.seed<0||config.seed>2147483647)throw Error('Seed must be an integer from 0 to 2147483647')
+ if(config.encounterId!==undefined){
+  if(!SANDBOX_ENCOUNTERS.some(e=>e.id===config.encounterId))throw Error('Choose an available encounter')
+  if(!Array.isArray(config.heroes)||config.heroes.length<1||config.heroes.length>6)throw Error('Choose 1–6 heroes')
+  if(config.heroes.some(id=>!SANDBOX_HEROES.some(h=>h.id===id)))throw Error('Unknown hero')
+  return null
+ }
  const field=atlasFieldingOf(config.mapId);if(!field)throw Error('Choose an available Atlas battlefield')
  if(!Array.isArray(config.heroes)||config.heroes.length<1||config.heroes.length>6)throw Error('Choose 1–6 heroes')
  if(!Array.isArray(config.enemies)||config.enemies.length<1||config.enemies.length>15)throw Error('Choose 1–15 enemies')
  if(config.heroes.some(id=>!SANDBOX_HEROES.some(h=>h.id===id))||config.enemies.some(id=>!SANDBOX_ENEMIES.some(e=>e.id===id)))throw Error('Unknown hero or enemy')
  return field
 }
+export function createSandbox(config:SandboxConfig&{encounterId?:undefined}):AtlasSandbox
+export function createSandbox(config:SandboxConfig):Sandbox
 export function createSandbox(config:SandboxConfig):Sandbox{
  const field=configured(config),roster=Object.fromEntries(config.heroes.map((id,i)=>['hero-'+i,structuredClone(SANDBOX_HEROES.find(h=>h.id===id)!)]))
- const spec=makeBattleState(roster,{id:field.id,mapId:config.mapId,enemies:config.enemies,deployed:Object.keys(roster),seed:config.seed})
- const setup=battleOptionsOf(spec),ctx=createBattle(setup)
- return {config:structuredClone(config),setup,ctx,policy:{humanUnitUids:ctx.state.units.slice(0,config.heroes.length).map(u=>u.uid)},atlasScene:field.atlasScene}
+ // an encounter: the engine's own row fields its map, units and schedule; the heroes stand in its hero zone
+ const encounter=config.encounterId!==undefined?encounterDef(config.encounterId):null
+ const spec=makeBattleState(roster,encounter?{id:encounter.id,mapId:encounter.mapId??(()=>{throw Error(`encounter '${encounter.id}' names no map`)})(),enemies:[],deployed:Object.keys(roster),seed:config.seed}:{id:field!.id,mapId:config.mapId,enemies:config.enemies,deployed:Object.keys(roster),seed:config.seed})
+ const setup:BattleOptions=encounter?{...battleOptionsOf(spec),encounter}:battleOptionsOf(spec),ctx=createBattle(setup)
+ // the heroes are fielded first, so the player's are the first N; the encounter's civilians arrive after and stay the AI's
+ return {config:structuredClone(config),setup,ctx,policy:{humanUnitUids:ctx.state.units.slice(0,config.heroes.length).map(u=>u.uid)},...(field?{atlasScene:field.atlasScene}:{})}
+}
+/**
+ * The fall areas marked and not yet landed (engine encounter.area-fall): each area.marked line without its
+ * area.landed, read from the log alone — what the player must see coming until the areas land.
+ */
+export function sandboxMarkedAreas(s:Sandbox):{fall:string;hexes:number[];landsAfterTurn:number}[]{
+ const landed=new Set(s.ctx.events.filter(e=>e.type==='area.landed').map(e=>e.causeId))
+ return s.ctx.events.filter(e=>e.type==='area.marked'&&!landed.has(e.causeId)).map(e=>({fall:e.causeId,hexes:[...new Set((e['areas'] as number[][]).flat())].sort((a,b)=>a-b),landsAfterTurn:(e['lands'] as number|undefined)??e.turn+1}))
 }
 export function advanceSandbox(s:Sandbox){
  for(;;){const next=advanceBattle(s.ctx,s.policy);if(next.kind==='complete'||next.kind==='selecting'||controllerOf(s.ctx,next.actor,s.policy)==='human')return next
@@ -84,17 +110,24 @@ export function previewSandboxChoice(s:Sandbox,command:unknown){
  return previewBurst(s.ctx,c.actor,c.centre,c.actionId)
 }
 export function commandSandbox(s:Sandbox,command:unknown){const result=executeBattleCommand(s.ctx,s.policy,command);if(result.ok)advanceSandbox(s);return result}
-export function exportSandbox(s:Sandbox,provenance?:{engineCommit:string;engineDirty:boolean}){
+export function exportSandbox<S extends Sandbox>(s:S,provenance?:{engineCommit:string;engineDirty:boolean}){
  const map=s.ctx.events.find(e=>e.type==='map.loaded')!;
- return {seed:{mapId:map['mapId'] as string,replicate:s.config.seed,scenarioId:s.setup.scenarioId},...provenance,outcome:s.ctx.state.outcome,turns:s.ctx.state.turn,events:structuredClone(s.ctx.events),atlasScene:structuredClone(s.atlasScene)}
+ return {seed:{mapId:map['mapId'] as string,replicate:s.config.seed,scenarioId:s.setup.scenarioId},...provenance,outcome:s.ctx.state.outcome,turns:s.ctx.state.turn,events:structuredClone(s.ctx.events),atlasScene:structuredClone(s.atlasScene) as S['atlasScene']}
 }
-export function saveSandbox(s:Sandbox):string{return JSON.stringify({format:'hbt-sandbox',version:1,config:s.config,setup:s.setup,atlasScene:s.atlasScene,snapshot:saveBattle(s.ctx)})}
+export function saveSandbox(s:Sandbox):string{return JSON.stringify({format:'hbt-sandbox',version:1,config:s.config,setup:s.setup,...(s.atlasScene?{atlasScene:s.atlasScene}:{}),snapshot:saveBattle(s.ctx)})}
 export function restoreSandbox(text:string):Sandbox{
  const saved=JSON.parse(text);if(saved?.format!=='hbt-sandbox'||saved.version!==1)throw Error('Not a supported sandbox save')
  configured(saved.config)
  const expected=createSandbox(saved.config).setup
  for(const key of ['heroes','enemies','replicate','heroItems','scenarioId'] as const){
   if(canonicalJSON(expected[key])!==canonicalJSON(saved.setup?.[key]))throw Error('Saved configuration and setup disagree: '+key)
+ }
+ if(saved.config.encounterId!==undefined){
+  // an encounter save: the engine's own row, re-read, must be the one the save carries; then the same fielding checks
+  if(canonicalJSON(expected.encounter)!==canonicalJSON(saved.setup?.encounter))throw Error('Saved configuration and setup disagree: encounter')
+  const runtime=createBattle(saved.setup),ctx=restoreBattle(saved.snapshot,runtime)
+  if(canonicalJSON(ctx.events.slice(0,runtime.events.length))!==canonicalJSON(runtime.events))throw Error('Saved initial roster, identities or fielding disagree')
+  return {config:structuredClone(saved.config),setup:saved.setup,ctx,policy:{humanUnitUids:runtime.state.units.slice(0,saved.config.heroes.length).map(u=>u.uid)}}
  }
  const runtime=createBattle(saved.setup),ctx=restoreBattle(saved.snapshot,runtime)
  const binding=saved.atlasScene
