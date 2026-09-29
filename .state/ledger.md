@@ -18940,3 +18940,23 @@ index 586869e..af6e284 100644
  })
 ```
 </details>
+
+## content.afflictions-revised — LANDED `38f7b72`
+2026-09-29 21:36
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3383 · HANDOFF.md:11
+  PASS  typecheck
+  PASS  the item's own tests — test/afflictions.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.cold-heart: 3 log lines, 3 fired, 1 changed state
+  PASS  brought its own tests — test/afflictions.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands 5abdfab7->16507149, map.thicket 0a7e39d9->22d53175, map.proving.open ddadb5f5->52da6651, map.proving.ridge b4c57b63->3ac2b84b, map.proving.ford 6c6d68d9->3109854d, map.proving.copse 7580095b->fba30c89, map.proving.ruin 0d453f0f->350bf719, map.courtyard c4541166->b88c10f8, map.floodplain 98137543->2fcf5af3, test.map.embers 1275d84f->a12727cb, test.map.duel-8 6adbf206->c6259b56, test.map.dungeon-16x8 49e0c9b1->62247d73, test.map.horde-24 af603251->299ddfd7, test.map.journey-20x10 ee1a6e8a->fbb00a14, test.map.authored-40x40 8acf282d->db937b99, test.map.high-prop-single 3a6c43ef->bcc6f983, test.map.high-prop-multi 4e2267e4->e6136bf8, test.map.well-shove 3aadafce->608051b4
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — nothing new resembles what exists
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.cold-heart — they genuinely test it

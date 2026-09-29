@@ -113,3 +113,67 @@ describe('an affliction lands', () => {
     expect(gained[0]!.seq).toBeGreaterThan(fired[0]!.seq)
   })
 })
+
+// content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'):
+// "They get +2 strength, +1 precision, +3 health, +1 resist. -1 spirit. ... +1 magic. They gain
+// the power of flight. Which uses movement +1" · "Let's have the Vampirism flight cost 2. Stamina."
+// · "when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism" · "Cold
+// Hard badge gives Immune to Karma 2, Immune to Cold 2, and +2 Health" · "Cold Heart is only those
+// who get afflicted." · "Possession gives -10 to action surge per turn."
+describe('the afflictions as revised 2026-09-29', () => {
+  const BITE = 'attack.vampire.bite'
+  function bitten() {
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'unit.vampire', hex: hexId(5, 6) }], { cfg: { switches: { critEnabled: false } as never } })
+    const w = ctx.state.units[0]!, v = ctx.state.units[1]!
+    w.hp = 999; w.maxHp = 999
+    v.mods.push({ stat: 'accuracy', op: 'add', value: 200, source: 'test', scope: 'unit' })
+    return { ctx, w, v }
+  }
+
+  it('one Vampire bite that afflicts grants Vampirism AND Cold Heart on the one roll, and a later bite grants neither again', () => {
+    const { ctx, w, v } = bitten()
+    const before = { str: effective(ctx, w, 'strength').value, pre: effective(ctx, w, 'precision').value, res: effective(ctx, w, 'resist').value, mag: effective(ctx, w, 'magic').value, spi: effective(ctx, w, 'spirit').value, maxHp: w.maxHp }
+    let i = 0
+    for (; i < 80 && !w.badges.includes('badge.vampirism'); i++) { beginActivation(ctx, v.id, 'test'); performAttack(ctx, v.id, w.id, BITE) }
+    expect(w.badges).toContain('badge.vampirism')
+    expect(w.badges).toContain('badge.cold-heart')
+    const fired = ctx.events.filter((e) => e.type === 'trigger.rolled' && e.causeId === VAMP && e['fired'])
+    expect(fired).toHaveLength(1)   // one roll …
+    const gained = ctx.events.filter((e) => e.type === 'badge.gained')
+    expect(gained.map((e) => e['badgeId'])).toEqual(['badge.vampirism', 'badge.cold-heart'])   // … two badges, the affliction first
+    for (const g of gained) expect(g.causeId).toBe(VAMP)
+    // +2 Strength, +1 Precision, +1 Resist, +1 Magic, −1 Spirit; +3 Health (Vampirism) and +2 (Cold Heart)
+    expect(effective(ctx, w, 'strength').value).toBe(before.str + 2)
+    expect(effective(ctx, w, 'precision').value).toBe(before.pre + 1)
+    expect(effective(ctx, w, 'resist').value).toBe(before.res + 1)
+    expect(effective(ctx, w, 'magic').value).toBe(before.mag + 1)
+    expect(effective(ctx, w, 'spirit').value).toBe(before.spi - 1)
+    expect(w.maxHp).toBe(before.maxHp + 5)
+    // the flight joins the hero's actions
+    expect(w.actions).toContain('power.flight-vampiric')
+    for (let k = 0; k < 60; k++) { beginActivation(ctx, v.id, 'test'); performAttack(ctx, v.id, w.id, BITE) }
+    expect(w.badges.filter((b) => b === 'badge.cold-heart')).toHaveLength(1)
+    expect(ctx.events.filter((e) => e.type === 'badge.gained')).toHaveLength(2)
+  })
+
+  it('every Vampirism rider carries Cold Heart with it; no other affliction does, and no enemy carries Cold Heart', () => {
+    const grants = Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant')
+    const vamp = grants.filter((t) => (t.effect as { badgeId: string }).badgeId === 'badge.vampirism')
+    expect(vamp.length).toBeGreaterThanOrEqual(2)   // the Vampire and the Vampire Lord
+    for (const t of vamp) expect((t.effect as { withBadgeIds?: string[] }).withBadgeIds).toEqual(['badge.cold-heart'])
+    for (const t of grants.filter((g) => !vamp.includes(g))) expect((t.effect as { withBadgeIds?: string[] }).withBadgeIds).toBeUndefined()
+    for (const u of Object.values(UNITS)) expect(u.badges ?? [], u.typeId).not.toContain('badge.cold-heart')
+  })
+
+  it('the rows carry the ruled numbers; what the engine cannot yet do is a named gap, never dropped', () => {
+    expect(BADGES['badge.vampirism']!.statModifiers).toEqual({ strength: 2, precision: 1, maxHp: 3, resist: 1, magic: 1, spirit: -1 })
+    expect(BADGES['badge.vampirism']!.grants).toEqual(['power.flight-vampiric'])
+    expect(BADGES['badge.vampirism']!.gaps).toEqual(expect.arrayContaining(['on a melee hit: heal 2', '+15 Deathbed Fighting', 'deploying the hero costs 3 Faith', 'the hero gains half experience']))
+    expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2 })
+    expect(BADGES['badge.cold-heart']!.gaps).toEqual(expect.arrayContaining(['immune to Karma', 'immune to Cold (cold damage and the Frost status)']))
+    expect(BADGES['badge.possession']!.statModifiers).toEqual({ magic: 2, resist: 1, vision: 3, surge: -10 })
+    expect(BADGES['badge.possession']!.gaps).toEqual(expect.arrayContaining(['−10 Deathbed Fighting', 'deploying the hero costs 3 Mana']))
+    expect(BADGES['badge.rotting-flesh']!.gaps).toContain('+20 Deathbed Fighting')
+    expect(BADGES['badge.lycanthropy']!.gaps).toContain('deploying the hero costs 2 Supplies')
+  })
+})

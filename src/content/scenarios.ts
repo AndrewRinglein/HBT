@@ -79,6 +79,13 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], heroItems: [['item.rune-kairin'], ['item.rune-vampire-hunter']],
     enemies: ['test-zombie', 'test-zombie', 'test-zombie'], enemyHexes: [86, 101, 87], replicate: 0,
   },
+  // content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'): "when the
+  // affliction of Vampirism happens, it grants both Cold Heart and Vampirism." A real battle in which a
+  // Vampire's bite afflicts — replicate 7 is the first whose 20% roll succeeds (found, not tuned).
+  'test.vampire-bite': {
+    id: 'test.vampire-bite', note: 'TEST: two warriors against one Vampire; its bite afflicts one of them with Vampirism and Cold Heart on one roll. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], enemies: ['unit.vampire'], enemyHexes: [86], replicate: 7,
+  },
   'test.prone-b': {
     id: 'test.prone-b', note: 'TEST: Tripper B floors Osric on a hit (test.status.floored, the second prone instance); Osric stands and swings. No campaign claim.',
     mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-trip-b'], enemyHexes: [86], replicate: 0,

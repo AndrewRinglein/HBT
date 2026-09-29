@@ -3365,3 +3365,29 @@ Ruled:
 - Where each arrives is not said: switch (`fix.opening-orphanage-arrivals`).
 
 Filed: `fix.opening-orphanage-arrivals`, next after `fix.opening-draft`.
+
+## 2026-09-29 — the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge
+
+Andrew, shown the four affliction rows as the pack carries them:
+
+“Vampire: Deploying a vampire costs 3 faith.   Vampires only gain half experience points.   They get +2 strength, +1 precision, +3 health, +1 resist.   -1 spirit.   They gain on melee hit. They heal 2.   +1 magic.   They gain the power of flight.   Which uses movement +1  as a flight power   a lycanthrope hero also has a cost of 2 supplies to deploy.   Possessed hero costs 3 magic crystals to deploy.   Vampirism gives +15% to deathbed fighting.   Writing flesh gives +20%.   Possession gives -10.   Possession gives -10 to action surge per turn.”
+
+“Vampires also gain the Cold Heart badge.   Cold Hard badge gives Immune to Karma 2, Immune to Cold 2, and +2 Health.”
+
+Asked what four readings meant, the same day:
+
+“Mana crystals is mana. It's supposed to be mana crystals, but I guess it's noted as mana.   Possession's first -10 is a deathbed roll? Yes. Writing flesh is Rotting Flesh?   We don't necessarily need to have one badge granting another. We can just have it so that when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism.   I meant immune to Karma, too. As written, it is another type of status.   Immune to cold should be immune to frost, yes.   Well, immune to frost. We have some terminology thing here. It should also be cold resistance. Fire and burn are the same thing, so if you have fire resistance, it resists the burn status and fire. I guess this is immune to cold, and it resists both frost status and cold damage.   Cold Heart is only those who get afflicted.   Let's have the Vampirism flight cost 2. Stamina.”
+
+Ruled:
+
+- **Vampirism is +2 Strength, +1 Precision, +3 Health, +1 Resist, +1 Magic, −1 Spirit; on a melee hit, heal 2; +15 Deathbed Fighting; a flight power, Movement + 1, costing 2 Stamina; deploying the hero costs 3 Faith; the hero gains half experience.** Replaces the whole row ("+2 Strength · grants `power.vampirism.blood-drain` · `onDamage` (melee): heal 1"): the blood drain, never defined, is gone.
+- **When Vampirism is inflicted, Cold Heart is granted with it** — one roll, two badges. Not a badge granting a badge. **Cold Heart is only for the afflicted**: enemy Vampires do not carry it.
+- **Cold Heart: Immune to Karma, Immune to Cold, +2 Health.** "Karma 2 / Cold 2" was "too". Karma is the status. **Cold is an element like Fire**: fire resistance resists fire damage and the Burn status, so immunity to Cold is immunity to cold damage and the Frost status.
+- **Lycanthropy: deploying the hero costs 2 Supplies.** Its stats are unchanged.
+- **Rotting Flesh ("Writing flesh"): +20 Deathbed Fighting.** Its stats are unchanged.
+- **Possession: −10 Deathbed Fighting; −10 Surge per turn; deploying the hero costs 3 Mana** ("magic crystals" / "mana crystals" is the currency the Glossary calls Mana, `currency.mana`). Its stats are unchanged.
+- "+15%" is read as 15 points on the Deathbed Fighting chance (20 + 5 × Toughness, a percentage).
+
+What the engine cannot yet do is a named gap on the badge row, never dropped: Deathbed Fighting from a badge, a badge's own hit-trigger (heal 2), immunity to a status, a cold damage type, deploy costs and half experience (the kingdom's).
+
+Filed: `content.afflictions-revised`.

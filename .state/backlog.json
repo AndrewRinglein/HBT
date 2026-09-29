@@ -1,5 +1,21 @@
 [
  {
+  "id": "content.afflictions-revised",
+  "kind": "content",
+  "shape": "data",
+  "needs": [],
+  "changesBaseline": true,
+  "probeIds": [
+   "badge.cold-heart"
+  ],
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). badge.vampirism: +2 Strength, +1 Precision, +3 Health, +1 Resist, +1 Magic, -1 Spirit, grants power.flight-vampiric (flight, Movement + 1, 2 Stamina), the blood drain gone; badge.cold-heart (new, +2 Health, immune to Karma and to Cold) is granted WITH Vampirism on the same roll when it is inflicted - the badge row's inflictedWith, compiled onto the badge.grant trigger as withBadgeIds; badge.possession -10 Surge; Deathbed Fighting, deploy costs, half experience, the melee-hit heal and the immunities are named gaps on the rows. Engine rule: a badge.grant trigger effect may carry withBadgeIds, badges granted with the first on the same roll, only when the first is newly granted.",
+  "expect": "A Vampire's bite that afflicts gives the hero Vampirism and Cold Heart on one roll: +2 Strength, +1 Precision, +1 Resist, +1 Magic, -1 Spirit, +5 Max Health, and Flight (Vampiric) in its actions; a later bite grants neither again; no enemy carries Cold Heart; Possession folds -10 Surge.",
+  "note": "The control battles field no afflicted hero and no possessor; the vampire riders move only battles where a bite lands and rolls under 20/30. Corrected 2026-09-29 (attempt 2, before any landing): gate 1 found no standard battle where a bite afflicts, so scenario test.vampire-bite fields one (replicate 7, the first whose roll succeeds); power.flight-vampiric left the probe list — no battle flies an afflicted hero, and test/afflictions.test.ts asserts it joins the hero's actions. Corrected 2026-09-29 (attempt 3): changesBaseline true. The control battles move by TEXT only — diffed on map.highlands and map.thicket (25 replicates each) against the HEAD pack: 3 lines of 25k differ, each a zombie's badge.gained for Rotting Flesh whose gaps list now names '+20 Deathbed Fighting'; no roll, number or outcome moved.",
+  "attempts": 3,
+  "status": "done",
+  "sha": "38f7b72"
+ },
+ {
   "id": "fix.opening-first-level",
   "kind": "engine",
   "shape": "data",

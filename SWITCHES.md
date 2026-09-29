@@ -1646,3 +1646,12 @@ The rules are `progression/OPENING-PARTY.json` (`firstHero`, `crucible`, `draftS
 | `openingCutBadges` | A badge the Crucible still rolls but the Codex has cut? | **Not rolled; named in `OPENING-PARTY.json` `crucible.badges.notInCodex`** (today `badge.brittle`, cut 2026-08-25). | The Codex owns the badges; the engine cannot field a badge it does not have. | provisional — 2026-09-29 |
 | `openingRollUnfielded` | A rolled point no unit mod can take? | **Kept on the hero's record and named (`unfielded`), not fielded**: Item Slots (a kingdom quantity) and Toughness. | seam.unit-mods takes the engine's stat names only. | provisional — 2026-09-29 |
 | `openingKingdomClasses` | The kingdom's pool has four of the six classes — when does its class rule lift? | **When every class the pool can offer has been drafted.** | The pool is short of the Rogue and the Mage "pending its own draft migration" (kingdom/src/content/heroes.ts); a class it cannot offer must not hold the draft shut. | provisional — 2026-09-29 |
+
+## content.afflictions-revised — the four afflictions, 2026-09-29
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `afflictionCompanionsOnlyOnNewGrant` | A hero who already carries Vampirism is bitten and the roll succeeds — is Cold Heart granted? | **Only when the affliction itself is newly granted.** A hero already carrying it gains nothing (a badge is never granted twice either way). | "when the affliction of Vampirism happens, it grants both" — the affliction happening is the grant. | provisional — 2026-09-29 |
+| `deathbedFightingPercentIsPoints` | Is "+15% to deathbed fighting" 15 points on the chance, or 15% of it? | **Points**: 20 + 5 × Toughness + 15. Named on the row as "+15 Deathbed Fighting"; the engine cannot yet read it (a gap). | The Deathbed chance is itself a percentage; the Glossary and audit carry `deathbedFighting` as a stat. | provisional — 2026-09-29 |
+| `vampiricFlightName` | What is the flight power called? | **`power.flight-vampiric`, "Flight (Vampiric)"** — the flight ladder's fourth row: Movement + 1, 2 Stamina. | Named nothing in the ruling; the ladder's own naming (`power.flight-swift`, `power.flight-labored`). A new instance, free to rename. | provisional — 2026-09-29 |
+| `coldHeartRarity` | Cold Heart's rarity? | **`acquired`** — added in game, never rolled; not `affliction`, which is "the family of four". | `_rarityTaxonomy` in content/gen/badges.json. | provisional — 2026-09-29 |

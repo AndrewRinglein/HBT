@@ -2360,7 +2360,10 @@ export const UNIT_PACK = {
           "select": "target",
           "effect": {
             "kind": "badge.grant",
-            "badgeId": "badge.vampirism"
+            "badgeId": "badge.vampirism",
+            "withBadgeIds": [
+              "badge.cold-heart"
+            ]
           },
           "source": "unit.vampire",
           "onlyWithAttack": "attack.vampire.bite"
@@ -2512,7 +2515,10 @@ export const UNIT_PACK = {
           "select": "target",
           "effect": {
             "kind": "badge.grant",
-            "badgeId": "badge.vampirism"
+            "badgeId": "badge.vampirism",
+            "withBadgeIds": [
+              "badge.cold-heart"
+            ]
           },
           "source": "unit.vampire-lord",
           "onlyWithAttack": "attack.vampire-lord.bite"
@@ -10880,6 +10886,15 @@ export const UNIT_PACK = {
       "free": false,
       "shape": "flight",
       "budgetMod": -1,
+      "staminaCost": 2,
+      "cooldown": 0
+    },
+    "power.flight-vampiric": {
+      "id": "power.flight-vampiric",
+      "name": "Flight (Vampiric)",
+      "free": false,
+      "shape": "flight",
+      "budgetMod": 1,
       "staminaCost": 2,
       "cooldown": 0
     },
@@ -43845,7 +43860,8 @@ export const UNIT_PACK = {
       "flags": {},
       "gaps": [
         "`startOfBattle`: regeneration 5",
-        "`onAttack`: +1 Strength"
+        "`onAttack`: +1 Strength",
+        "deploying the hero costs 2 Supplies"
       ]
     },
     "badge.many-pockets": {
@@ -43972,12 +43988,15 @@ export const UNIT_PACK = {
       "statModifiers": {
         "magic": 2,
         "resist": 1,
-        "vision": 3
+        "vision": 3,
+        "surge": -10
       },
       "grants": [],
       "flags": {},
       "gaps": [
-        "`startOfBattle`: −2 card draw"
+        "`startOfBattle`: −2 card draw",
+        "−10 Deathbed Fighting",
+        "deploying the hero costs 3 Mana"
       ]
     },
     "badge.quick-study": {
@@ -44046,7 +44065,8 @@ export const UNIT_PACK = {
       "flags": {},
       "gaps": [
         "immune to poison",
-        "start of battle take 5 true damage"
+        "start of battle take 5 true damage",
+        "+20 Deathbed Fighting"
       ]
     },
     "badge.scarred-hide": {
@@ -44270,14 +44290,35 @@ export const UNIT_PACK = {
       "id": "badge.vampirism",
       "name": "Vampirism",
       "statModifiers": {
-        "strength": 2
+        "strength": 2,
+        "precision": 1,
+        "maxHp": 3,
+        "resist": 1,
+        "magic": 1,
+        "spirit": -1
       },
       "grants": [
-        "power.vampirism.blood-drain"
+        "power.flight-vampiric"
       ],
       "flags": {},
       "gaps": [
-        "`onDamage` (melee): heal 1"
+        "on a melee hit: heal 2",
+        "+15 Deathbed Fighting",
+        "deploying the hero costs 3 Faith",
+        "the hero gains half experience"
+      ]
+    },
+    "badge.cold-heart": {
+      "id": "badge.cold-heart",
+      "name": "Cold Heart",
+      "statModifiers": {
+        "maxHp": 2
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "immune to Karma",
+        "immune to Cold (cold damage and the Frost status)"
       ]
     },
     "badge.vengeful": {

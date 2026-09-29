@@ -153,7 +153,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       const e = t.effect
       requireThat((TRIGGER_EFFECT_KINDS as readonly string[]).includes(e.kind), 'trigger effect')   // plumbing.vocabulary-export: the list, not a copy
       if (['status.apply', 'status.remove'].includes(e.kind)) requireThat(typeof e.statusId === 'string' && Object.hasOwn(runtime.statuses, e.statusId), 'trigger status')
-      if (e.kind === 'badge.grant') requireThat(typeof e.badgeId === 'string' && Object.hasOwn(runtime.badges, e.badgeId), 'trigger badge')
+      if (e.kind === 'badge.grant') requireThat(typeof e.badgeId === 'string' && Object.hasOwn(runtime.badges, e.badgeId) && (e.withBadgeIds === undefined || (Array.isArray(e.withBadgeIds) && e.withBadgeIds.every((w: unknown) => typeof w === 'string' && Object.hasOwn(runtime.badges, w)))), 'trigger badge')
       if (e.kind === 'damage') requireThat(isDamageType(e.damageType), 'trigger damage type')
       if (e.kind === 'statMod') requireThat(typeof e.stat === 'string' && isStatName(e.stat) && integer(e.value) && ['battle', 'endOfTurn'].includes(e.until), 'trigger modifier')
       if (['status.apply', 'knockback', 'power.gain', 'stamina.drain', 'damage', 'heal'].includes(e.kind)) {

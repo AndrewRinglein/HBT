@@ -148,7 +148,16 @@ export type TriggerEffect =
    * add possession." The bestiary's "inflict an affliction" made data — the
    * badge id is the row's; the engine grants it through grantBadge.
    */
-  | { readonly kind: 'badge.grant'; readonly badgeId: string }
+  | {
+    readonly kind: 'badge.grant'; readonly badgeId: string
+    /**
+     * content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'):
+     * "when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism."
+     * Badges granted WITH the first, on the same roll, in the order the row lists them —
+     * only when the first is newly granted. Not a badge granting a badge: the affliction does.
+     */
+    readonly withBadgeIds?: readonly string[]
+  }
   /** capability.power-pool (2026-09-03): the clock and the condition — "add power", "gain Power". Side-wide, never per unit. */
   | { readonly kind: 'power.gain'; readonly value: ValueSpec }
   /** capability.auras (2026-09-03): the End-of-Activation pulse — the Necromancer's "heal 3" to allies within 2. */
@@ -497,8 +506,10 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
     }
     case 'badge.grant': {
       // badge.afflictions: only a standing unit can be afflicted; a badge already carried is not granted twice (grantBadge says so)
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, badgeId: e.badgeId })
-      if (unit(ctx, targetId).lifeState === 'standing') grantBadge(ctx, targetId, e.badgeId, t.id)
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, badgeId: e.badgeId, ...(e.withBadgeIds?.length ? { withBadgeIds: [...e.withBadgeIds] } : {}) })
+      if (unit(ctx, targetId).lifeState === 'standing' && grantBadge(ctx, targetId, e.badgeId, t.id)) {
+        for (const w of e.withBadgeIds ?? []) grantBadge(ctx, targetId, w, t.id)
+      }
       break
     }
     case 'heal': {
