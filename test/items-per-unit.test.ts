@@ -87,7 +87,13 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       'hero.base.paladin-hunk': ['attacks'],
       'hero.base.paladin-shiney': ['attacks'],
       'hero.base.paladin-smug': ['attacks'],
+      // Law 10, content.peddlers-vest (2026-09-29): the Peddler's Vest no longer takes 2 Health (Andrew,
+      // DECISIONS.md 2026-09-28: "No health change."). Content moved, not the fold — the two rows that wear
+      // it differ from the frozen oracle in maxHp alone, by exactly the 2 the vest used to take (below).
+      'hero.base.priest-robes': ['maxHp'],
+      'hero.base.rogue-raven': ['maxHp'],
     })
+    for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
   })

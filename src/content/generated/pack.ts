@@ -12678,7 +12678,6 @@ export const UNIT_PACK = {
       "hands": 0,
       "slots": 0,
       "statModifiers": {
-        "maxHp": -2,
         "dodge": -5,
         "accuracy": -5
       },

@@ -5452,7 +5452,9 @@
   "attempts": 1,
   "probeIds": [
    "item.peddlers-vest"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "3b94bc3"
  },
  {
   "id": "fix.opening-draft-modifiers",

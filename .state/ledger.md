@@ -18766,3 +18766,84 @@ index 20e774b..9a687cd 100644
    it('a civilian\'s death does not end the battle, and it ends won when the last enemy dies — no loss', () => {
 ```
 </details>
+
+## content.peddlers-vest — LANDED `3b94bc3` **NEEDS REVIEW**
+2026-09-29 18:15
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: HANDOFF.md:11 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/peddlers-vest.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.peddlers-vest: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/fixtures/battle-cursor-peddlers-vest.json, test/peddlers-vest.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 2 new: clone: 9 lines, engine/tools/capture-peddlers-vest-cursor.mts:16-24 = engine/tools/capture-zoc-cursor.mts:18-26 · clone: 9 lines, engine/tools/capture-peddlers-vest-cursor.mts:8-16 = engine/tools/capture-zoc-cursor.mts:10-18 — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'numbers' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.peddlers-vest — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 5f72ab0..10e235b 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -155,4 +155,10 @@ const firstLevelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
+ // `changed` (test.opening-orphanage only) is checked here and skips the older layers.
+ const orphanageLighterGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-lighter.json', import.meta.url), 'utf8'))
++// content.peddlers-vest (2026-09-29), Law 10: the Peddler's Vest no longer takes 2 Health (Andrew,
++// DECISIONS.md 2026-09-28: "The Peddler's Vest should just be -5 dodge, -5 accuracy, +1 item slot. No
++// health change."). Every case's full hashes are frozen here (tools/capture-peddlers-vest-cursor.mts); a
++// case marked `changed` (the ones fielding the Raven or the Robes priest: showcase.assembled-party,
++// -eve-24-b, -horrors, -rime, test.opening-cavern-trail) is checked here and skips the older layers.
++const peddlersVestGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-peddlers-vest.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -263,5 +269,8 @@ describe('resumable battle cursor', () => {
+       const firstLevelExpected = firstLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const orphanageLighterExpected = orphanageLighterGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const orphanageLighterMoved = orphanageLighterExpected?.changed === true
++      const peddlersVestExpected = peddlersVestGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const peddlersVestMoved = peddlersVestExpected?.changed === true
++      // was: const orphanageLighterMoved = orphanageLighterExpected?.changed === true — a peddlers-vest-moved case skips the orphanage-lighter layer too (content.peddlers-vest 2026-09-29)
++      const orphanageLighterMoved = orphanageLighterExpected?.changed === true || peddlersVestMoved
+       // was: const firstLevelMoved = firstLevelExpected?.changed === true — an orphanage-lighter-moved case skips the first-level layer too (fix.opening-orphanage-lighter 2026-09-29)
+       const firstLevelMoved = firstLevelExpected?.changed === true || orphanageLighterMoved
+@@ -314,5 +323,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (orphanageLighterExpected) {
++        if (peddlersVestExpected) {
++        expect(hash(ctx.events), 'full peddlers-vest events').toBe(peddlersVestExpected.events)
++        expect(hash(ctx.state), 'full peddlers-vest state').toBe(peddlersVestExpected.state)
++        expect(hash(ctx.rng.log), 'full peddlers-vest RNG').toBe(peddlersVestExpected.rng)
++        expect(result).toEqual(peddlersVestExpected.result)
++        }
++        // was: if (orphanageLighterExpected) { — content.peddlers-vest (2026-09-29): a peddlers-vest-moved case is checked above instead
++        if (orphanageLighterExpected && !peddlersVestMoved) {
+         expect(hash(ctx.events), 'full orphanage-lighter events').toBe(orphanageLighterExpected.events)
+         expect(hash(ctx.state), 'full orphanage-lighter state').toBe(orphanageLighterExpected.state)
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index a951f80..e73d5ff 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -88,5 +88,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       'hero.base.paladin-shiney': ['attacks'],
+       'hero.base.paladin-smug': ['attacks'],
++      // Law 10, content.peddlers-vest (2026-09-29): the Peddler's Vest no longer takes 2 Health (Andrew,
++      // DECISIONS.md 2026-09-28: "No health change."). Content moved, not the fold — the two rows that wear
++      // it differ from the frozen oracle in maxHp alone, by exactly the 2 the vest used to take (below).
++      'hero.base.priest-robes': ['maxHp'],
++      'hero.base.rogue-raven': ['maxHp'],
+     })
++    for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
+     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
+```
+</details>
