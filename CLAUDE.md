@@ -83,6 +83,9 @@ npm run proving <plan.json> [--out dir] [--force]   THE PROVING — squads, fixt
 
 node tools/game-builder.mjs            rebuild GAME-BUILDER.html — run it when you want to look
 node tools/audit-all.mjs               the full-tree audit — on its own, never inside a landing
+node tools/prior-art.mjs [--item]      what is new since .state/inventory.json (--write: audit-all's run;
+                                       --root <dir> --fresh: a whole tree with no baseline). jscpd lives in
+                                       tools/jscpd: npm ci --prefix tools/jscpd
 npx tsx tools/effect-size.mts <id>     WITH-vs-WITHOUT battles for one mechanism — on its own
 ```
 
@@ -124,6 +127,12 @@ control battles, and the checks below. The full suite runs **once per chat**, as
 - **Consequence** — `changesBaseline: true` with byte-identical control battles FAILS.
 - **Naming** — unknown id kinds block (declare them in `GLOSSARY.md` first); banned
   vocabulary flags.
+- **Prior art** — a flag, not a gate (tool.prior-art-audit, 2026-09-28). What the item changed in all
+  four packages (uncommitted) against the tree: a new vocabulary sharing 75% of another file's list, a new
+  function or constant another file already declares, a new call around a ruled funnel
+  (`tools/prior-art-funnels.json`), a jscpd clone on an added line. Any of them holds the landing as
+  `done-needs-review` unless the spec has a `Prior art:` line naming what it resembles and why it is not
+  the same. `node tools/prior-art.mjs --item` shows it before the gate does.
 - **Nothing left out of the commit** — `--land` refuses if an ignored file under `src/`,
   `test/` or `tools/` could have fed a pass the commit would not carry.
 
@@ -191,7 +200,7 @@ archive/         old handoffs. Never read.
 
 **Generated here, never hand-edited:** anything under `generated/`, `GAME-BUILDER.html`,
 `.state/backlog.json`, `.state/ledger.md`, `.state/gauntlet-log.jsonl`,
-`.state/gauntlet.json`, `.state/baseline.hash` (the gate's), and `.state/now.json`,
+`.state/gauntlet.json`, `.state/baseline.hash` (the gate's), `.state/inventory.json` (the prior-art audit's), and `.state/now.json`,
 `.state/wraps.json`, `HANDOFF.md`, `STATE-ROW.md` (the wrap's). Regenerate; never edit.
 
 ## Adding anything touches four places

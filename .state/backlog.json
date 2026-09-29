@@ -5246,7 +5246,9 @@
   ],
   "spec": "Duplication review 2026-09-28, the prevention (page section 'Prevention'). tools/audit-all.mjs writes .state/inventory.json across all four packages (string vocabularies of 3+ ids, exported names, effect kind literals, hook/stream/outcome/event lists, id literals by family) and diffs it against its last run. Three flags, each only for what is new: (1) look-alike vocabulary — a new list overlapping an existing list in another file by 75% or more, with the difference; (2) same name, second home — a new function or constant whose name exists in another file or package; (3) funnel bypass — a new call to a concept owner's inner primitives from outside the owner, against a short ruled list (entering a hex -> enterGround; direct typed damage -> the one damage function; applying an effect -> the one interpreter; counting hands -> the one hands helper). The gate prints the flags for an item's added lines and records them in the ledger; an item whose lines raise a flag needs a priorArt line in its spec naming what it resembles and why it is not the same, else it lands done-needs-review. Plus jscpd on changed files against all four packages.",
   "expect": "Run on the review's pinned tree the audit flags at least LAYER_STATUS vs LAYER_IDS, OUTCOMES vs Outcome, the hook copies, levelTableOf, loadoutOf and fnv1a; a scratch item that adds a copy of HELD_CLASSES or calls appliesOnEnterOf from movement.ts is flagged; an item with a priorArt line naming it lands normally.",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "c616946"
  },
  {
   "id": "fix.ground-one-funnel",

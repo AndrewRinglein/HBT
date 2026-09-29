@@ -1,0 +1,8 @@
+{
+  "name": "prior-art-clones",
+  "private": true,
+  "description": "jscpd for the prior-art audit (tool.prior-art-audit, 2026-09-28): cross-package clone detection. Its own folder so installing it never touches the engine's node_modules. Install: npm ci --prefix tools/jscpd",
+  "dependencies": {
+    "jscpd": "4.3.0"
+  }
+}

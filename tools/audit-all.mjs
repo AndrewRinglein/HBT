@@ -79,6 +79,17 @@ audit('flagged landings awaiting review', () => {
   return { ok: true, note: flagged.length ? `${flagged.length} flagged: ${flagged.slice(0, 6).join(', ')} — node tools/report.mjs` : 'none' }
 })
 
+audit('prior art — what is new since the last run', () => {
+  // tool.prior-art-audit (2026-09-28): the whole tree's inventory (.state/inventory.json) diffed
+  // against the last run. What is new is printed, not failed — a look-alike needs reading, and the
+  // gate already asked each landing to name its prior art. A run that cannot finish fails (Law 9).
+  const r = tryRun('node tools/prior-art.mjs --write')
+  if (!r.ok) return { ok: false, note: r.out.split('\n').filter(Boolean).at(-1) }
+  const lines = r.out.split('\n').filter(Boolean)
+  for (const l of lines.slice(1)) console.log(`        ${l.trim()}`)
+  return { ok: true, note: (lines.find((l) => l.startsWith('prior art')) ?? '').replace(/^prior art — /, '') }
+})
+
 const failed = results.filter((r) => !r.ok)
 const stamp = new Date().toISOString()
 // The audit runs at batch end — so it OWNS the batch boundary. One marker line

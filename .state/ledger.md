@@ -18338,3 +18338,22 @@ index c42917a..b761e5a 100644
        expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
 ```
 </details>
+
+## tool.prior-art-audit — LANDED `c616946`
+2026-09-29 03:11
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:11
+  PASS  typecheck
+  PASS  the item's own tests — test/prior-art.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/fixtures/prior-art-pinned/, test/prior-art.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — nothing new resembles what exists
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

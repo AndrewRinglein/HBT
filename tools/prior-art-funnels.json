@@ -1,0 +1,29 @@
+{
+ "_note": "The ruled funnels for the prior-art audit's third flag (tool.prior-art-audit; DECISIONS.md 2026-09-28 'the duplication review, ruled': the four concept owners are the backlog item's spec, 'fine as proposed'). A call to a primitive, a read of a member or a dispatch on a literal listed here, NEW in a file outside `files`, is a funnel bypass. `files` holds the owner and the files that define its primitives. Which primitives stand for each concept is SWITCHES.md priorArtFunnelPrimitives.",
+ "funnels": [
+  {
+   "concept": "entering a hex",
+   "owner": "enterGround (engine/src/core/ground.ts)",
+   "files": ["engine/src/core/ground.ts", "engine/src/content/terrain.ts", "engine/src/content/maps.ts"],
+   "calls": ["appliesOnEnterOf", "stripsOnEnterOf", "layerAppliesOnEnter"]
+  },
+  {
+   "concept": "direct typed damage",
+   "owner": "the one damage function (engine/src/core/pipeline.ts, mitigation.ts, mutate.ts)",
+   "files": ["engine/src/core/pipeline.ts", "engine/src/core/mitigation.ts", "engine/src/core/mutate.ts"],
+   "calls": ["flatDamage", "spendAbsorb", "applyDamage"]
+  },
+  {
+   "concept": "applying an effect",
+   "owner": "applyEffect, the one interpreter (engine/src/core/trigger.ts)",
+   "files": ["engine/src/core/trigger.ts"],
+   "literalsFrom": "engine/src/core/trigger.ts#TriggerEffect.kind"
+  },
+  {
+   "concept": "counting hands",
+   "owner": "the one hands helper (engine/src/core/items.ts)",
+   "files": ["engine/src/core/items.ts"],
+   "members": ["hands"]
+  }
+ ]
+}

@@ -27,6 +27,7 @@ import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { filesContaining } from './source-scan.mjs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
 import { revertTree } from './revert-tree.mjs'
+import { checkItem } from './prior-art.mjs'
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
   stopBefore, budgetFrom, parseShard, recordShard, shardStatus,
@@ -364,6 +365,19 @@ check('hardcode scan — core knows mechanisms, never names', () => {
   }
 })
 
+// tool.prior-art-audit (2026-09-28; DECISIONS.md "the duplication review, ruled", the review page's
+// Prevention section, and "the opening is tested with the player's party": "we need to check
+// features aren't copying something the engine already has"). What the item changed across the
+// four packages (uncommitted, per repository) against the tree as it stands: a new vocabulary that
+// looks like one elsewhere, a new name another file already declares, a new call around a ruled
+// funnel (tools/prior-art-funnels.json), and jscpd clones on its added lines. A FLAG: it lands, but
+// for review, unless the spec has a "Prior art:" line naming what it resembles and why it is not
+// the same. A run that cannot finish (jscpd missing) is loud and holds the landing too (Law 9).
+flag('prior art — nothing new copies what exists', () => {
+  try { const { ok, review, note } = checkItem(item); return { ok, review, note } }
+  catch (e) { return { ok: false, review: true, note: `the prior-art audit could not run: ${String(e.message ?? e).split('\n')[0]}` } }
+})
+
 // Shapes that introduce a MECHANISM must prove the second instance is data.
 const MECHANISM_SHAPES = ['rule', 'station', 'trigger', 'modifier', 'pool', 'counter']
 check('generalizes — the second instance costs zero engine code', () => {
@@ -553,7 +567,9 @@ if (MODE !== 'land') {
 // could make a pass that the committed tree does not reproduce. Seconds, not a
 // second full suite (replaces the post-land audit, cut 2026-09-22).
 {
-  const left = tryRun('git ls-files --others --ignored --exclude-standard -- src test tools').out.trim()
+  // tools/jscpd/node_modules is the prior-art audit's installed dependency, as node_modules/ is the
+  // engine's: npm ci --prefix tools/jscpd, never committed (tool.prior-art-audit, 2026-09-28).
+  const left = tryRun(`git ls-files --others --ignored --exclude-standard -- src test tools ':!tools/jscpd/node_modules'`).out.trim()
   if (left) {
     console.log(`\nNOT LANDED: ignored files the checks could have read would be left out of the commit:\n${left}\nCommit them, move them out, or un-ignore them, then gate again.\n`)
     logRun('refused-ignored-files', { reason: left.split('\n').slice(0, 5).join(', ') })
@@ -576,4 +592,4 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
 sh('git add -A')
 sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
 logRun('landed', { sha })
-console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review — existing tests edited or a banned word)' : ''}\n`)
+console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review — existing tests edited, a banned word, or prior art not named)' : ''}\n`)
