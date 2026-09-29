@@ -3255,3 +3255,19 @@ Ruled:
 
 - **An opening battle is tested with the party the player has at that point in the opening, not the Alpha Team.** The Alpha heroes leave the opening probes (`test.opening-*` in `src/content/scenarios.ts`). The prior art is the ruled 2026-09-03 "hero states" (above: `progression/PROGRESSION-SCHEDULE.json`'s roster "by position" is the party, loaded by `src/sim/progression.ts`) and the opening draft cadence (`GAME-ARCHITECTURE.md` §2.5: 1 drafted hero before battle 1, +2 after it, +1 after each until six), the civilians rescued (DECISIONS 2026-09-28 'answers to the 22 questions') and the Flaming Longsword after battle 2. The schedule was built 2026-09-03 for a 20-battle run that fields four heroes from battle 1; its opening positions do not match the cadence. Filed as `fix.opening-party`. The Bridge, the Gates and the Cathedral are re-tried on that party, not on the Alpha Team.
 - **`tool.prior-art-audit` goes ahead** ("Yes"). Its scope is both directions: a new feature that copies something the engine already has, **and** something the engine holds that belongs in another package (content, kingdom, viewer), to be removed from the engine. The second direction is filed as `tool.wrong-home-audit`, beside it.
+
+## 2026-09-28 — the opening's party levels up; the Flaming Longsword is a Warrior's or a Paladin's; the Bridge gives a reward
+
+Andrew, told the win counts over 50 replicates on the drafted level-1 party (`fix.opening-party`: Orphanage 27, Lumberjack 36, Cavern Trail 7, Gates 0, Cathedral 0) and asked whether the heroes should level up in the opening or the Gates and Cathedral get weaker enemies, and whether the Flaming Longsword should go to the first hero whose class fights with swords:
+
+“They need to be leveling up.  Battle 2 should be getting a flaming sword.   Yeah, the Flaming Longsword will hurt the priest, the ranger, or the mage. Really, it only is going to help the paladin or the warrior.   On battle 3, which is the bridge, we should be giving another reward, which can help, and the levels also should help. Also, the battles might be too hard, but let's see what happens when we do the proper upgrades.  The orphanage: only 27 of 50 win. Where's the death happening at the orphanage?  And is it against a certain type, like mage and priest are the ones that lose?”
+
+Ruled:
+
+- **The opening's heroes level up** between its battles. Overturns SWITCHES.md `openingPartyLevel` (level 1 throughout). How fast is not said; the rate is `fix.opening-upgrades`'s switch until ruled.
+- **The Flaming Longsword is battle 2's reward** ("Battle 2 should be getting a flaming sword"), read as won at the Lumberjack and carried from the Bridge on, as built — KINGDOM-V2-2026-09-07.md "Sword after battle 2".
+- **Only a Warrior or a Paladin takes the Flaming Longsword** ("it will hurt the priest, the ranger, or the mage. Really, it only is going to help the paladin or the warrior"). Overturns SWITCHES.md `openingCarriedHolder` (the first drafted hero).
+- **Battle 3, the Bridge, gives another reward** "which can help" — carried from battle 4 on. What it is is not said; the standing reward is one item from three face-down cards (7-KINGDOM-SETTLED.md "Post-battle, reward, level-up": 25% weapon, 25% armor, 20% trinket, 10% idol, 10% Bloodrune, 10% relic).
+- **No difficulty change yet:** "the battles might be too hard, but let's see what happens when we do the proper upgrades." The Gates and the Cathedral are re-tried after the upgrades.
+
+Still asked (the next reply): whether "Battle 2 should be getting a flaming sword" means the sword is in hand during battle 2 itself; the rate of levelling. Filed as `fix.opening-upgrades`, at the top of the queue.

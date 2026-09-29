@@ -1,5 +1,20 @@
 [
  {
+  "id": "fix.opening-upgrades",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.opening-party"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage",
+   "encounter.opening.cavern-trail"
+  ],
+  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the opening's party levels up; the Flaming Longsword is a Warrior's or a Paladin's; the Bridge gives a reward'): 'They need to be leveling up.' 'it only is going to help the paladin or the warrior.' 'On battle 3, which is the bridge, we should be giving another reward.' Prior art, extended not duplicated: progression/OPENING-PARTY.json's positions (level, carried) written by progression/build-schedule.mjs --opening, and src/content/opening-party.ts (fix.opening-party) - the levels reach the battle through heroProgress and fieldedDef (the 2026-09-03 hero assembly: progression/build-schedule.mjs levelGains/powersFor/specialty, src/sim/progression.ts progressOf), never a second leveller. (1) Each position carries a level per drafted hero by the rate below, fielded as heroProgress (level, specialty, powers as the schedule builder chooses them). (2) The Flaming Longsword goes only to a drafted hero tagged class.warrior or class.paladin (the item's own rule, not a name in code); with neither drafted it is carried by nobody. (3) The Bridge's reward: one item drawn by the standing reward odds (7-KINGDOM-SETTLED.md: 25% weapon, 25% armor, 20% trinket, 10% idol, 10% Bloodrune, 10% relic) as the player would choose it from three, carried from battle 4 on by the drafted hero it suits. Then win counts over 50 replicates per battle are printed for Andrew, and the Gates and the Cathedral (rows in tmp/) are re-tried.",
+  "expect": "Every opening position fields its drafted heroes through heroProgress at the ruled rate, and a hero drafted earlier is never below one drafted later; the Flaming Longsword is held only by a class.warrior or class.paladin hero, and by nobody when neither is drafted; from the Cavern Trail on one hero carries the Bridge's reward; the same replicate gives the same party and rewards; the landed opening probes pass; the six control battles are byte-identical.",
+  "note": "Filed 2026-09-28 from Andrew's reply to the fix.opening-party win counts. Switches to record, not questions, unless he answers first: the levelling rate (default: +1 level to every drafted hero after each opening battle it was in the party for - the 20-battle schedule's 'one level per battle' made per hero; asked); the Bridge reward's tier (default: tier 3 weapon or armour, tier 1 trinket/idol/Bloodrune/relic, the build-schedule.mjs reward stream); how the three-card pick is made (default: the build-schedule.mjs score for the drafted hero it fits best); a level's powers and specialty (default: build-schedule.mjs powersFor and SPECIALTY). Orphanage findings for context (100 replicates, level 1): wins by the drafted hero's class - warrior 17/18, paladin 13/16, mage 10/16, ranger 6/12, priest 3/13, rogue 1/25; losses fall on Turns 7-11 after the Turn 4 and Turn 5 Zombies arrive, the last hit a Zombie claw in 43 of 50."
+ },
+ {
   "id": "fix.opening-party",
   "kind": "engine",
   "shape": "data",
