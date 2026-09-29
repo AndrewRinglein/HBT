@@ -220,5 +220,11 @@
   "sha": "40b644e",
   "now": "duplication review, first three, and the kingdom's encounter battles — 4 landed this chat: plumbing.vocabulary-export (declared control change: the one stat map compiles Blinded's -4 Vision), fix.ground-one-funnel (flagged), kingdom.encounter-battles, fix.funnel-goldens (flagged). Tried: encounter.opening.cathedral authored and reverted, still pending (0 wins in 50 replicates with four Alpha heroes, 49 wipe or capped; the Necromancer raises 14-22 and is never reached; row kept in tmp/encounter.opening.cathedral-authored-2026-09-29.json). Noticed: audit-all still cannot fit a Cowork call (suite ran as 8 shards, green, 2266 tests); every engine commit stales the viewer static stamp the kingdom sandbox build requires (re-stamp with npm run static in viewer); content publication.test expects 4 audit findings and gets 5 (zone-of-control on the ignoresZoc walk text). Next: Andrew's answers on the Bridge, the Gates and the Cathedral, then tool.prior-art-audit and fix.one-effect-vocabulary.",
   "committed": true
+ },
+ {
+  "at": "2026-09-29 04:49",
+  "sha": "8bdaec9",
+  "now": "prior-art audit, both directions — 2 landed this chat: tool.prior-art-audit (clean; .state/inventory.json baseline: 774 look-alike lists, 58 second homes, 42 funnel bypasses, 50 clones; jscpd in tools/jscpd), tool.wrong-home-audit (clean; generated/wrong-home.md lists 17 to move out of the engine). Ruled (Andrew): the opening is tested with the player's party, not the Alpha Team; filed fix.opening-party and tool.wrong-home-audit. Tried: encounter.opening.gates authored and reverted, still pending (0 wins in 60 with four Alpha heroes; row kept in tmp/encounter.opening.gates-authored-2026-09-29.json). Noticed: the tooling switches sit in engine SWITCHES.md because GBH is not in this chat; pipeline.ts ledger names enemies unit.unit.<id>. Suite green as 8 shards, 2294 tests. Next: fix.opening-party, then the Gates and Cathedral re-tried on that party.",
+  "committed": true
  }
 ]
