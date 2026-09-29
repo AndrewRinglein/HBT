@@ -348,6 +348,13 @@ const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment', 'cannot be knocke
 // one flag" has no clause to parse — so the row carries `flags: { bleedsOut: true }` and the
 // converter trusts it. Engine handoff 2026-09-04: "Flags other than blocksDeployment need a
 // structured field on the row." A flag not on this list is a gap, never a guess.
+// rule.badge-immunity (2026-09-29, Andrew, engine DECISIONS.md: "Fire and burn are the same thing, so if you have
+// fire resistance, it resists the burn status and fire. I guess this is immune to cold, and it resists both frost
+// status and cold damage."): an ELEMENT word names a damage type and the status that is its other face. "immune to
+// <element>" is immunity to both; "immune to <status>" to the status alone. Poison is both a status and a damage
+// type by the same word — engine SWITCHES.md immunePoisonIsBoth. A damage type the engine lacks is a named gap.
+const ELEMENTS = { fire: { status: 'status.burn', damage: 'fire' }, cold: { status: 'status.frost', damage: 'cold' }, poison: { status: 'status.poison', damage: 'poison' } };
+const DAMAGE_TYPES = new Set(VOCAB.damageTypes);
 const BADGE_FLAGS_STRUCTURED = new Set(['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']);
 function compileBadge(row) {
   const mods = {}; const grants = []; const flags = {}; const gaps = [];
@@ -378,7 +385,7 @@ function compileBadge(row) {
   // ... Deathbed Fighting ... built'): "+N Deathbed Fighting" / "Deathbed Fighting +N" is the holder's own
   // points on the Deathbed chance. Not on an aura row — there the points are the allies' (a comma would split
   // "allies +2 health, +15 Deathbed Fighting" and hand the aura's number to its carrier): named, not guessed.
-  let deathbed = 0;
+  let deathbed = 0; const imStatuses = []; const imDamage = [];
   const auraRow = /\baura\b/i.test(payload);
   if (!payload || /prose only/i.test(payload)) gaps.push(payload ? 'payload is prose only — the numbers are owed' : 'no payload');
   else for (const raw of payload.split(/\s*[·;]\s*|,\s*(?![^()]*\))/)) {
@@ -400,10 +407,21 @@ function compileBadge(row) {
     if ((m = clause.match(/^Thorns (\d+)$/))) { mods.thorns = (mods.thorns ?? 0) + parseInt(m[1], 10); continue }
     const fl = Object.keys(BADGE_FLAGS).find((k) => clause.toLowerCase().startsWith(k));
     if (fl) { for (const f of [BADGE_FLAGS[fl]].flat()) flags[f] = true; if (clause.length > fl.length) gaps.push(clause); continue }
+    if (!auraRow && (m = clause.match(/^immune to ([A-Za-z]+)(?:\s*\([^)]*\))?$/i))) {
+      const word = m[1].toLowerCase(); const el = ELEMENTS[word];
+      if (el && statuses[el.status]) {
+        imStatuses.push(el.status);
+        if (DAMAGE_TYPES.has(el.damage)) imDamage.push(el.damage); else gaps.push(`immune to ${m[1]}: ${el.damage} damage — the engine has no ${el.damage} damage type`);
+        continue;
+      }
+      if (!el && statuses['status.' + word]) { imStatuses.push('status.' + word); continue }
+    }
     gaps.push(clause);   // hooks (`startOfBattle`: …), class locks, "lifts on rescue" — named, not guessed
   }
   // the engine's deathbed stat rides the modifiers map under its own name
-  const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(deathbed ? { deathbedFighting: deathbed } : {}), ...(gaps.length ? { gaps } : {}) };
+  const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(deathbed ? { deathbedFighting: deathbed } : {}),
+    ...(imStatuses.length || imDamage.length ? { immuneTo: { ...(imStatuses.length ? { statuses: [...new Set(imStatuses)] } : {}), ...(imDamage.length ? { damage: [...new Set(imDamage)] } : {}) } } : {}),
+    ...(gaps.length ? { gaps } : {}) };
   return out;
 }
 const badges = {};
