@@ -43503,9 +43503,7 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "flags": {},
-      "gaps": [
-        "+20 Deathbed Fighting"
-      ]
+      "deathbedFighting": 20
     },
     "badge.defiant": {
       "id": "badge.defiant",
@@ -43513,9 +43511,9 @@ export const UNIT_PACK = {
       "statModifiers": {},
       "grants": [],
       "flags": {},
+      "deathbedFighting": 5,
       "gaps": [
-        "`startOfBattle`: protection 3",
-        "+5 Deathbed Fighting"
+        "`startOfBattle`: protection 3"
       ]
     },
     "badge.devout": {
@@ -43945,9 +43943,7 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "flags": {},
-      "gaps": [
-        "+5 Deathbed Fighting"
-      ]
+      "deathbedFighting": 5
     },
     "badge.oathsworn": {
       "id": "badge.oathsworn",
@@ -43957,9 +43953,7 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "flags": {},
-      "gaps": [
-        "+10 Deathbed Fighting"
-      ]
+      "deathbedFighting": 10
     },
     "badge.overchanneller": {
       "id": "badge.overchanneller",
@@ -43993,9 +43987,9 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "flags": {},
+      "deathbedFighting": -10,
       "gaps": [
         "`startOfBattle`: −2 card draw",
-        "−10 Deathbed Fighting",
         "deploying the hero costs 3 Mana"
       ]
     },
@@ -44063,10 +44057,10 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "flags": {},
+      "deathbedFighting": 20,
       "gaps": [
         "immune to poison",
-        "start of battle take 5 true damage",
-        "+20 Deathbed Fighting"
+        "start of battle take 5 true damage"
       ]
     },
     "badge.scarred-hide": {
@@ -44084,8 +44078,8 @@ export const UNIT_PACK = {
       "statModifiers": {},
       "grants": [],
       "flags": {},
+      "deathbedFighting": 10,
       "gaps": [
-        "+10 Deathbed Fighting",
         "`onKill`: +2 Stamina"
       ]
     },
@@ -44282,9 +44276,7 @@ export const UNIT_PACK = {
       "statModifiers": {},
       "grants": [],
       "flags": {},
-      "gaps": [
-        "+40 Deathbed Fighting"
-      ]
+      "deathbedFighting": 40
     },
     "badge.vampirism": {
       "id": "badge.vampirism",
@@ -44301,9 +44293,9 @@ export const UNIT_PACK = {
         "power.flight-vampiric"
       ],
       "flags": {},
+      "deathbedFighting": 15,
       "gaps": [
         "on a melee hit: heal 2",
-        "+15 Deathbed Fighting",
         "deploying the hero costs 3 Faith",
         "the hero gains half experience"
       ]
@@ -44766,8 +44758,8 @@ export const UNIT_PACK = {
       "statModifiers": {},
       "grants": [],
       "flags": {},
+      "deathbedFighting": 15,
       "gaps": [
-        "Deathbed Fighting +15",
         "Lucky +15",
         "Health +1"
       ]

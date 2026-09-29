@@ -716,6 +716,12 @@ export type BadgeDef = {
     cannotBeKnockedBack: boolean
     /** v2.kdb (COMBAT-V2 §9.5): Stand Firm, Giant, Agile — KDB never knocks the unit down. */
     cannotBeKnockedDown: boolean }>>
+  /**
+   * rule.badge-deathbed-fighting (2026-09-29, Andrew, DECISIONS.md): points on the carrier's Deathbed
+   * Fighting chance — 20 + 5 × Toughness + every badge's own. Read at the roll, so a badge gained
+   * mid-battle counts from then on.
+   */
+  readonly deathbedFighting?: number
   readonly gaps?: readonly string[]
 }
 

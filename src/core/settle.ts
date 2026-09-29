@@ -163,15 +163,25 @@ export function advanceBleedOuts(ctx: Ctx): void {
  * wounded badge the pack lacks is a named gap on the STOOD line, never a
  * silent skip (the numbers are content's — 4-BADGES-SETTLED owes the row).
  */
-export function deathbedFighting(u: { toughness: number }): number {
-  return 20 + 5 * u.toughness
+export function deathbedFighting(u: { toughness: number }, fromBadges: number = 0): number {
+  return 20 + 5 * u.toughness + fromBadges
+}
+/**
+ * rule.badge-deathbed-fighting (2026-09-29, Andrew, DECISIONS.md 'Possession's Surge loads at fielding; the
+ * Ghost inflicts Possession; Deathbed Fighting ... built'): "Vampirism gives +15% to deathbed fighting.
+ * Writing flesh gives +20%. Possession gives -10." Every badge the unit carries, in carry order (Law 6),
+ * each named on the roll's line (Law 12).
+ */
+function deathbedSources(ctx: Ctx, u: { badges: readonly string[] }): { badgeId: string; value: number }[] {
+  return u.badges.flatMap((b) => { const v = ctx.badges[b]?.deathbedFighting; return v ? [{ badgeId: b, value: v }] : [] })
 }
 export type DeathbedVerdict = 'stood' | 'bleeds' | 'dies' | 'dies-wounded'
 function deathbed(ctx: Ctx, id: number, causeId: string): DeathbedVerdict {
   const u = ctx.state.units[id]!
   const flags = badgeFlags(ctx, u)
   if (flags.wounded) { emit(ctx, 'deathbed.none', causeId, { target: id, reason: 'wounded' }); return 'dies-wounded' }
-  const chance = Math.max(0, Math.min(100, deathbedFighting(u)))
+  const sources = deathbedSources(ctx, u)
+  const chance = Math.max(0, Math.min(100, deathbedFighting(u, sources.reduce((n, s) => n + s.value, 0))))
   const ord = ++u.deathbedOrdinal
   const roll = roll100(ctx.rng, 'deathbed', u.uid, ord)
   const stood = roll <= chance
@@ -181,7 +191,7 @@ function deathbed(ctx: Ctx, id: number, causeId: string): DeathbedVerdict {
     // reading (every player unit bleeds) stands in, and the line names the gap.
     const heroRowMissing = !ctx.badges[ctx.ruleBadges.hero]?.flags.bleedsOut
     const bleeds = flags.bleedsOut || (heroRowMissing && rulesSideOf(ctx, u) === 'hero')
-    emit(ctx, 'deathbed.fell', causeId, { target: id, roll, chance, ordinal: ord, bleedsOut: bleeds,
+    emit(ctx, 'deathbed.fell', causeId, { target: id, roll, chance, ordinal: ord, bleedsOut: bleeds, ...(sources.length ? { sources } : {}),
       ...(heroRowMissing && !flags.bleedsOut ? { gaps: [`no row for ${ctx.ruleBadges.hero} in the pack — every player unit bleeds out until content authors it`] } : {}) })
     return bleeds ? 'bleeds' : 'dies'
   }
@@ -191,7 +201,7 @@ function deathbed(ctx: Ctx, id: number, causeId: string): DeathbedVerdict {
   // prose-only row (the Codex's today) is the same gap as no row
   const gap = !woundedRow ? `no row for ${woundedId} in the pack — the Wounded penalties are owed to content`
     : !woundedRow.flags.wounded ? `${woundedId} carries no wounded flag and no numbers — the row is prose only; owed to content` : undefined
-  emit(ctx, 'deathbed.stood', causeId, { target: id, roll, chance, ordinal: ord, badgeId: woundedId, ...(gap ? { gaps: [gap] } : {}) })
+  emit(ctx, 'deathbed.stood', causeId, { target: id, roll, chance, ordinal: ord, badgeId: woundedId, ...(sources.length ? { sources } : {}), ...(gap ? { gaps: [gap] } : {}) })
   if (!gap) grantBadge(ctx, id, woundedId, causeId)
   // "they gain 1 stamina and 1 equal to whatever their stamina recovery is" — capped, gains never overflow
   gainStamina(ctx, id, 1 + u.staminaRegen, causeId)

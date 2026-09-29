@@ -1,5 +1,24 @@
 [
  {
+  "id": "rule.badge-deathbed-fighting",
+  "kind": "engine",
+  "shape": "modifier",
+  "needs": [],
+  "changesBaseline": true,
+  "probeIds": [
+   "badge.vampirism"
+  ],
+  "variants": [
+   "badge.vampirism",
+   "badge.rotting-flesh"
+  ],
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'Possession's Surge loads at fielding; the Ghost inflicts Possession; Deathbed Fighting and Cold Heart's immunities are built'): build Deathbed Fighting from badges - 'Vampirism gives +15% to deathbed fighting. Writing flesh gives +20%. Possession gives -10.' A badge row carries deathbedFighting (compiled from '+N Deathbed Fighting' / 'Deathbed Fighting +N', never on an aura row); the Deathbed chance is 20 + 5 x Toughness + every carried badge's points, clamped 0..100, each source named on the deathbed line in carry order. Ten Codex rows compile. Engine rule: the Deathbed chance adds the carrier's badges' deathbedFighting at the roll.",
+  "expect": "A Toughness-0 hero rolls at 35 with Vampirism, 40 with Rotting Flesh, 10 with Possession; Vampirism and Possession at Toughness 2 roll at 35 with both named as sources; 100 stays the ceiling; a hero with no such badge rolls as before and names no sources.",
+  "note": "changesBaseline: a control battle whose hero carries Rotting Flesh (a zombie's claw) or a rolled badge with Deathbed Fighting rolls at a new chance - the rule working, not a leak.",
+  "status": "done",
+  "sha": "fe457e1"
+ },
+ {
   "id": "fix.badge-surge-at-fielding",
   "kind": "engine",
   "shape": "plumbing",

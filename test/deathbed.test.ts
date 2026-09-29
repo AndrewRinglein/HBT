@@ -19,6 +19,7 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { deathbedFighting, settle } from '../src/core/settle.js'
 import { effective } from '../src/core/stats.js'
+import { grantBadge } from '../src/core/mutate.js'
 import { BADGES, UNITS } from '../src/content/index.js'
 import { SCENARIOS, scenarioOptions } from '../src/content/scenarios.js'
 import { hexId } from './board16.js'
@@ -160,5 +161,40 @@ describe('live', () => {
     expect(ctx.events.some((e) => e.type === 'deathbed.none' && e['target'] === w.id)).toBe(true)
     expect(ctx.events.some((e) => e.type === 'life.downed' && e['target'] === w.id)).toBe(false)
     expect(ctx.events.filter((e) => e.type === 'deathbed.stood' || e.type === 'deathbed.fell').length).toBe(0)
+  })
+})
+
+// rule.badge-deathbed-fighting (2026-09-29, Andrew, DECISIONS.md 'Possession's Surge loads at fielding; the Ghost
+// inflicts Possession; Deathbed Fighting and Cold Heart's immunities are built'): "Vampirism gives +15% to deathbed
+// fighting. Writing flesh gives +20%. Possession gives -10." — and "yes" to building it.
+describe('Deathbed Fighting from badges', () => {
+  const roll = (badges: string[], toughness = 0) => {
+    const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+    const w = ctx.state.units[0]!
+    w.toughness = toughness
+    for (const b of badges) grantBadge(ctx, w.id, b, 'test')
+    drop(ctx, w.id)
+    return ctx.events.find((e) => e.type === 'deathbed.stood' || e.type === 'deathbed.fell')!
+  }
+  it('the rows carry the ruled points', () => {
+    expect(BADGES['badge.vampirism']!.deathbedFighting).toBe(15)
+    expect(BADGES['badge.rotting-flesh']!.deathbedFighting).toBe(20)
+    expect(BADGES['badge.possession']!.deathbedFighting).toBe(-10)
+    expect(BADGES['badge.lycanthropy']!.deathbedFighting).toBeUndefined()
+  })
+  it('the chance is 20 + 5 × Toughness + every badge\'s points, each named on the line in carry order', () => {
+    expect(deathbedFighting({ toughness: 3 }, 15)).toBe(50)
+    expect(roll(['badge.vampirism'])['chance']).toBe(35)
+    expect(roll(['badge.rotting-flesh'])['chance']).toBe(40)
+    expect(roll(['badge.possession'])['chance']).toBe(10)
+    const both = roll(['badge.vampirism', 'badge.possession'], 2)
+    expect(both['chance']).toBe(20 + 10 + 15 - 10)
+    expect(both['sources']).toEqual([{ badgeId: 'badge.vampirism', value: 15 }, { badgeId: 'badge.possession', value: -10 }])
+  })
+  it('still a percentage: never above 100; a unit with no such badge names no sources', () => {
+    expect(roll(['badge.rotting-flesh'], 16)['chance']).toBe(100)
+    const plain = roll([])
+    expect(plain['chance']).toBe(20)
+    expect('sources' in plain).toBe(false)
   })
 })

@@ -473,6 +473,7 @@ function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, 
     if (!Array.isArray(b.grants)) throw new Error(`${where}: badge '${k}' has no grants list — regenerate the pack`)
     for (const t of b.triggers ?? []) { validateTrigger(t); if (t.source !== k) throw new Error(`${where}: badge '${k}' trigger '${t.id}' names source '${t.source}'`) }
     validateVsTarget(b.vsTarget, `${where}: badge '${k}'`)
+    if (b.deathbedFighting !== undefined && !Number.isSafeInteger(b.deathbedFighting)) throw new Error(`${where}: badge '${k}' Deathbed Fighting is not a whole number`)
   }
   return raw
 }
