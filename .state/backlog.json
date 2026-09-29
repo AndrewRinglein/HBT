@@ -1,5 +1,20 @@
 [
  {
+  "id": "fix.opening-first-level",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.opening-party"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage",
+   "encounter.opening.cavern-trail"
+  ],
+  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the Orphanage pays 20 XP no matter what: the first hero reaches level 2 after battle 1'): 'Make it so they get 20 XP no matter what, so they get a level, and then we'll do the level.' With the curve ruled the same night (DECISIONS.md 'levels by XP at 20, 50, 100, 170, 270, 400'). Prior art, extended not duplicated: progression/OPENING-PARTY.json and src/content/opening-party.ts (fix.opening-party) carry the party by position; the level reaches the battle as heroProgress through applyProgress/fieldedDef (the 2026-09-03 hero assembly, src/core/items.ts applyProgress: the class table's grants and the specialty chosen at level 2), never a second leveller; the specialty per class is build-schedule.mjs's SPECIALTY table, reused. progression/build-schedule.mjs --opening writes, per position, each drafted hero's XP (the Orphanage's fixed 20 to whoever fought it) and level by the curve, and each class's specialty; opening-party.ts fields a level-2 hero with its specialty. Level 3 and up are refused until fix.opening-levels (they need class powers).",
+  "expect": "At the Orphanage every hero is level 1; from the Lumberjack on the hero drafted first fields at level 2 with its class's specialty and its class table's level-2 grants, and every later draftee at level 1; the same replicate gives the same party; the landed opening probes pass (a changed WIN replicate is a Law 10 edit with its reason); the six control battles are byte-identical.",
+  "note": "Switches: which specialty a level-2 hero takes (default: build-schedule.mjs SPECIALTY - bloodrage, bowmaster, assassin, fire-master, shepherd, sacred-shield); the later battles' XP is 0 in the probe until fix.opening-levels (default)."
+ },
+ {
   "id": "fix.opening-orphanage-lighter",
   "kind": "engine",
   "shape": "data",

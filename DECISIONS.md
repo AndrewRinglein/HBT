@@ -3341,3 +3341,14 @@ Ruled:
 - Answered, not a ruling: **the XP rewards are in the kingdom, not the engine.** `kingdom/src/core/reckoning.ts` gives each surviving hero-side unit `max(0, 15 − enemy phases) + 3 × kills`, one MVP +10 (a roll weighted by XP), and the dead nothing; quests pay their own XP (`kingdom/src/content/quests.ts`). The tier prices in `8-ENCOUNTERS-NOTES.md` (2 / 5 / 15 per kill) are not what the kingdom uses. With one drafted hero the Orphanage's MVP is nearly certain to be that hero — so the Orphanage alone may already reach 20, against "the opening battle won't be enough to get a level" (entry above). `fix.opening-levels` measures it and reports.
 
 Re-filed: `fix.opening-draft` (replaces `fix.opening-draft-modifiers`) and `fix.opening-levels` (replaces `fix.opening-levels-rewards`), both abandoned before any code.
+
+## 2026-09-28 — the Orphanage pays 20 XP no matter what: the first hero reaches level 2 after battle 1
+
+Andrew, told that the kingdom's XP (3 a kill, the speed bonus, the MVP's +10) may already give the lone hero 20 XP at the Orphanage, against "the opening battle won't be enough to get a level":
+
+“I think it's fine. Let's go and do a level. Make it so they get 20 XP no matter what, so they get a level, and then we'll do the level.”
+
+Ruled:
+
+- **The Orphanage pays 20 XP to the hero who fought it, whatever the battle's kills or length** — enough for level 2 (the curve above), so the first hero fields at level 2 from the Lumberjack on. Replaces "the opening battle won't be enough to get a level" (two entries above).
+- **"then we'll do the level"** — the level-up is built now: `fix.opening-first-level`, at the top of the queue. A level-2 hero takes its specialty (chosen at the first level-up, `levels.json` rules) and its class table's level-2 grants. Which specialty a player would choose is not said: switch. The XP of the later battles stays `fix.opening-levels`'s, which now takes battle 1's as this fixed 20.
