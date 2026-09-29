@@ -5445,10 +5445,14 @@
   "kind": "content",
   "shape": "numbers",
   "needs": [],
-  "changesBaseline": true,
+  "changesBaseline": false,
   "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'no Health minimum; the Peddler's Vest has no Health change ...'): 'The Peddler's Vest should just be -5 dodge, -5 accuracy, +1 item slot. No health change.' item.peddlers-vest in the Codex: statModifiers itemSlots +1, dodge -5, accuracy -5, and no health (was health -2) - in content/gen/armor-enchants.json (find its owner first; never hand-edit a generated file) and CODEX.md's row; pipeline to the engine pack. Every test or golden that fields a vest wearer (the Raven, the Robes priest, squad.heroes-second) follows as a Law 10 edit with its reason at the line; a moved control battle is declared.",
   "expect": "The Peddler's Vest adds one item slot and takes 5 Dodge and 5 Accuracy and no Health; the Codex and the engine pack agree; the Raven fields Health 5.",
-  "note": "No hero row's Health changes: there is no Health minimum (same entry)."
+  "note": "No hero row's Health changes: there is no Health minimum (same entry). Corrected 2026-09-29 (before any landing): the item probes item.peddlers-vest (its own id is not a content id), and it is neutral on the control battles - no control map fields the Raven or the Robes priest (tools/baseline.mts byte-identical with the vest changed), so changesBaseline is false; the battles it moves are the battle-cursor showcases and test.opening-cavern-trail, frozen in a new layer.",
+  "attempts": 1,
+  "probeIds": [
+   "item.peddlers-vest"
+  ]
  },
  {
   "id": "fix.opening-draft-modifiers",
