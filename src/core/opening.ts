@@ -21,7 +21,7 @@ import { beginCombatPrep } from './prep.js'
 import { beginWeek } from './week.js'
 import { listTerritories } from './map.js'
 import { tickAssignments } from './assignments.js'
-import { groupOf } from '../content/classes.js'
+import { CLASSES, groupOf } from '../content/classes.js'
 import { HERO_POOL, CIVILIANS, heroRowOf, assertKitted, type HeroRow } from '../content/heroes.js'
 import { PROLOGUE, DRAFT_CADENCE, DRAFT_OFFER, type PrologueRow } from '../content/prologue.js'
 import { TERRITORIES, REALM } from '../content/territories.js'
@@ -76,9 +76,27 @@ export function canDraft(campaign: CampaignState, heroId: HeroId): boolean {
   return campaign.cursor.step === 'draft' && (campaign.cursor.draftOffer ?? []).includes(heroId)
 }
 
+/**
+ * Rows the next draft may offer: not on the roster, and — until every hero class has been drafted — of a
+ * class not yet drafted. Ruled 2026-09-28 (Andrew, engine/DECISIONS.md 'the draft never repeats a class
+ * until all six are drafted'): "Until you've drafted all six of the starting classes, you never get a draft
+ * of the same class again. So if your first hero is a warrior, on your next draft pool you will not see a
+ * warrior." The same rule as the engine's opening probe (engine/src/content/opening-party.ts, fix.opening-draft).
+ */
+export function draftPoolOf(campaign: CampaignState): HeroRow[] {
+  // "all six" is every hero class the pool can offer: this pool is still short of the Rogue and the Mage
+  // (heroes.ts, "pending its own draft migration"), so a class it cannot offer never holds the rule shut
+  // (engine SWITCHES.md openingKingdomClasses)
+  const heroClasses = CLASSES.filter((r) => r.group === 'hero' && HERO_POOL.some((h) => h.classes.includes(r.id))).map((r) => r.id)
+  const drafted = new Set(Object.values(campaign.roster).filter((h) => groupOf(h.classes) === 'hero').flatMap((h) => h.classes).filter((c) => heroClasses.includes(c)))
+  const allDrafted = heroClasses.every((c) => drafted.has(c))
+  return HERO_POOL.filter((h) => !campaign.roster[h.id] && (allDrafted || !h.classes.some((c) => drafted.has(c))))
+}
+
 function offerDraft(ctx: Ctx, causeId: string): void {
   const c = ctx.campaign
-  const pool = HERO_POOL.filter((h) => !c.roster[h.id])
+  // was: const pool = HERO_POOL.filter((h) => !c.roster[h.id]) — fix.opening-draft (2026-09-29): the class rule
+  const pool = draftPoolOf(c)
   const offer = pickOf(c, CUP_IDS.reveal, ['draft', draftedCountOf(c)], pool, DRAFT_OFFER).map((h) => h.id)
   if (offer.length === 0) throw new Error('the hero pool is empty — nobody left to draft')
   setDraftOffer(ctx, offer, causeId)

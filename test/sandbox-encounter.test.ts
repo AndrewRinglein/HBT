@@ -3,11 +3,15 @@
 // its own map, units, scheduled arrivals and civilians; the heroes are the player's, everyone else —
 // civilians included — the AI's; the encounter's outcome ends the battle; the same commands replay the
 // same battle; a save resumed mid-battle keeps the schedule. Marked fall areas show until they land.
+import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxActivationChoices, sandboxChoices, sandboxMarkedAreas, saveSandbox, restoreSandbox, type Sandbox, type SandboxConfig } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT, SANDBOX_ENCOUNTERS } from '../src/content/sandbox.js'
 import type { BattleCommand } from '../src/engine.js'
 
+/** The Orphanage's scheduled arrivals, as the Codex row says them (content/gen/encounters.json). */
+const SCHEDULE = (JSON.parse(readFileSync(new URL('../../content/gen/encounters.json', import.meta.url), 'utf8')) as { authored: { id: string; schedule?: { phase: number; spawn: { unit: string }[] }[] }[] })
+  .authored.find((e) => e.id === 'encounter.opening.orphanage')!.schedule ?? []
 const ORPHANAGE: SandboxConfig = { mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 0, encounterId: 'encounter.opening.orphanage' }
 const start = (config: SandboxConfig) => { const s = createSandbox(config); advanceSandbox(s); return s }
 
@@ -44,7 +48,8 @@ describe('kingdom.encounter-battles — the sandbox plays an engine encounter', 
     expect(SANDBOX_ENCOUNTERS.find((e) => e.id === 'encounter.opening.orphanage')!.name).toBe('Orphanage')
   })
 
-  it('the Orphanage to the end: the civilians act on their own, the Turn 4 and Turn 5 Zombies arrive, clearing the map wins', () => {
+  // was: '... the Turn 4 and Turn 5 Zombies arrive ...' — engine fix.opening-orphanage-lighter (2026-09-29): the row's arrivals
+  it('the Orphanage to the end: the civilians act on their own, the scheduled Zombies arrive, clearing the map wins', () => {
     const s = start(ORPHANAGE)
     expect(s.ctx.events.find((e) => e.type === 'map.loaded')!['mapId']).toBe('map.opening.orphanage')
     const heroes = s.ctx.state.units.slice(0, ORPHANAGE.heroes.length).map((u) => u.uid)
@@ -54,8 +59,12 @@ describe('kingdom.encounter-battles — the sandbox plays an engine encounter', 
     play(s, () => { for (const u of sandboxActivationChoices(s)) offered.add(u.uid); return choose(s, 3) })
     expect([...offered].sort()).toEqual([...heroes].sort())
     for (const c of civilians) expect(s.ctx.events.some((e) => e.type === 'activation.begin' && e.actor === c.id), c.typeId).toBe(true)
-    expect(arrived(s, 4)).toEqual(['unit.zombie'])
-    expect(arrived(s, 5)).toEqual(['unit.zombie'])
+    // Law 10, engine fix.opening-orphanage-lighter (2026-09-29): the Orphanage's arrivals are the row's to say
+    // (Andrew, engine DECISIONS.md 2026-09-28: "Let's remove an early zombie and a later zombie."), so every
+    // scheduled arrival is read from the encounter row and must come on its Turn — a rule, not the old count.
+    // was: expect(arrived(s, 4)).toEqual(['unit.zombie']); expect(arrived(s, 5)).toEqual(['unit.zombie'])
+    expect(SCHEDULE.length).toBeGreaterThan(0)
+    for (const at of SCHEDULE) expect(arrived(s, at.phase), `Turn ${at.phase}`).toEqual(at.spawn.map((x) => x.unit))
     expect(s.ctx.state.outcome).toBe('heroClear')
   })
 

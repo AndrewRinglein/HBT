@@ -1,8 +1,9 @@
 // kingdom.encounter-battles (engine, 2026-09-28): the BUILT sandbox plays an engine encounter from its
 // battle screen — the Encounter control fields the encounter's own map, units, schedule and civilians;
-// only the heroes are offered to the player; the Turn 4 and Turn 5 arrivals come; a marked fall shows
+// only the heroes are offered to the player; the row's scheduled arrivals come; a marked fall shows
 // until it lands; save/resume keeps the schedule; the encounter's outcome ends the battle.
 import assert from 'node:assert/strict'
+import {readFileSync} from 'node:fs'
 import {bootSlice} from './atlas-dom.mjs'
 const {w,root,click}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html'),handle=w.__sandbox
 const select=(id,value)=>{const el=w.document.getElementById(id);el.value=value;el.handlers.change()}
@@ -25,7 +26,13 @@ passUntil(3);click('save');const saved=w.document.getElementById('transferText')
 assert.equal(JSON.parse(saved).config.encounterId,'encounter.opening.orphanage')
 passUntil(6)
 const arrivals=t=>ctx().events.filter(e=>e.type==='unit.enter'&&e.turn===t).map(e=>e.typeId)
-assert.deepEqual([arrivals(4),arrivals(5)],[['unit.zombie'],['unit.zombie']],'the Turn 4 and Turn 5 Zombies arrive')
+// Law 10, engine fix.opening-orphanage-lighter (2026-09-29): the Orphanage's arrivals are the row's to say
+// (Andrew, engine DECISIONS.md 2026-09-28: "Let's remove an early zombie and a later zombie."), so each
+// scheduled arrival is read from the encounter row and must come on its Turn — a rule, not the old count.
+// was: assert.deepEqual([arrivals(4),arrivals(5)],[['unit.zombie'],['unit.zombie']],'the Turn 4 and Turn 5 Zombies arrive')
+const schedule=JSON.parse(readFileSync('../content/gen/encounters.json','utf8')).authored.find(e=>e.id==='encounter.opening.orphanage').schedule
+assert.ok(schedule.length>0,'the Orphanage schedules arrivals')
+for(const s of schedule)assert.deepEqual(arrivals(s.phase),s.spawn.map(x=>x.unit),'the Turn '+s.phase+' arrivals come')
 for(const c of civilians)assert.ok(ctx().events.some(e=>e.type==='activation.begin'&&e.actor===c.id),c.typeId+' acts on its own')
 const onward=events()
 click('resume');assert.equal(events(),at3,'resume restores the Turn 3 save');passUntil(6);assert.equal(events(),onward,'the resumed battle keeps the schedule')
@@ -41,4 +48,4 @@ passUntil(6)
 assert.equal(ctx().state.outcome,null,'the heroes stand at Turn 6')
 assert.equal(w.document.getElementById('markedAreas'),null,'the areas have landed')
 select('encounter','');assert.equal(w.document.getElementById('map').disabled,false,'a free battle chooses its battlefield again')
-console.log('sandbox encounters: encounter control, its own map and units, heroes-only choices, civilians on their own, Turn 4/5 arrivals, save/resume schedule, outcome, marked fall areas until landing passed')
+console.log('sandbox encounters: encounter control, its own map and units, heroes-only choices, civilians on their own, the scheduled arrivals, save/resume schedule, outcome, marked fall areas until landing passed')
