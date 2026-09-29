@@ -167,6 +167,12 @@ const peddlersVestGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
 // (tools/capture-opening-draft-cursor.mts); a case marked `changed` (test.opening-orphanage, -lumberjack,
 // -cavern-trail) is checked here and skips the older layers.
 const openingDraftGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-draft.json', import.meta.url), 'utf8'))
+// content.afflictions-revised (2026-09-29), Law 10: the four afflictions revised (Andrew, DECISIONS.md 'the
+// four afflictions'). Every case's full hashes are frozen here (tools/capture-afflictions-cursor.mts); a case
+// marked `changed` (showcase.prologue-party, showcase.waystation, test.opening-cavern-trail) moved by log TEXT
+// only — a zombie's badge.gained for Rotting Flesh now names the '+20 Deathbed Fighting' gap; `movedOnlyText`
+// records that state, RNG and result are unchanged. It is checked here and skips the older layers.
+const afflictionsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -277,7 +283,10 @@ describe('resumable battle cursor', () => {
       const orphanageLighterExpected = orphanageLighterGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const peddlersVestExpected = peddlersVestGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const openingDraftExpected = openingDraftGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const openingDraftMoved = openingDraftExpected?.changed === true
+      const afflictionsExpected = afflictionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const afflictionsMoved = afflictionsExpected?.changed === true
+      // was: const openingDraftMoved = openingDraftExpected?.changed === true — an afflictions-moved case skips the opening-draft layer too (content.afflictions-revised 2026-09-29)
+      const openingDraftMoved = openingDraftExpected?.changed === true || afflictionsMoved
       // was: const peddlersVestMoved = peddlersVestExpected?.changed === true — an opening-draft-moved case skips the peddlers-vest layer too (fix.opening-draft 2026-09-29)
       const peddlersVestMoved = peddlersVestExpected?.changed === true || openingDraftMoved
       // was: const orphanageLighterMoved = orphanageLighterExpected?.changed === true — a peddlers-vest-moved case skips the orphanage-lighter layer too (content.peddlers-vest 2026-09-29)
@@ -332,7 +341,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (openingDraftExpected) {
+        if (afflictionsExpected) {
+        expect(hash(ctx.events), 'full afflictions events').toBe(afflictionsExpected.events)
+        expect(hash(ctx.state), 'full afflictions state').toBe(afflictionsExpected.state)
+        expect(hash(ctx.rng.log), 'full afflictions RNG').toBe(afflictionsExpected.rng)
+        expect(result).toEqual(afflictionsExpected.result)
+        }
+        // was: if (openingDraftExpected) { — content.afflictions-revised (2026-09-29): an afflictions-moved case is checked above instead
+        if (openingDraftExpected && !afflictionsMoved) {
         expect(hash(ctx.events), 'full opening-draft events').toBe(openingDraftExpected.events)
         expect(hash(ctx.state), 'full opening-draft state').toBe(openingDraftExpected.state)
         expect(hash(ctx.rng.log), 'full opening-draft RNG').toBe(openingDraftExpected.rng)

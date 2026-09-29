@@ -28,7 +28,11 @@ describe('the registry', () => {
     }
     // the afflictions are rows, their stats compiled, their hooks named as gaps until badge.afflictions
     expect(BADGES['badge.lycanthropy']!.statModifiers).toMatchObject({ strength: 2, movement: 2 })
-    expect(BADGES['badge.vampirism']!.grants).toContain('power.vampirism.blood-drain')
+    // LAW 10 — content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'): Vampirism was
+    // rewritten whole and the undefined blood drain is gone — "They gain the power of flight. Which uses movement +1".
+    // The claim (the row's grant compiles) is unchanged; the authored grant is.
+    // was: expect(BADGES['badge.vampirism']!.grants).toContain('power.vampirism.blood-drain')
+    expect(BADGES['badge.vampirism']!.grants).toContain('power.flight-vampiric')
     expect(BADGES['badge.possession']!.statModifiers).toMatchObject({ magic: 2, vision: 3 })
     // content c24b1ac (2026-09-04): the two rows the rules read by role are data now
     expect(BADGES['badge.wounded']!.statModifiers).toEqual({ accuracy: -10, dodge: -10, strength: -1, precision: -1, maxHp: -2 })
