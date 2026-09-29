@@ -1,5 +1,50 @@
 [
  {
+  "id": "fix.opening-orphanage-lighter",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.opening-party"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage"
+  ],
+  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the Orphanage loses a Zombie at the start and a later one ...'): 'Let's remove an early zombie and a later zombie.' encounter.opening.orphanage in content/gen/encounters.json (the content repo; commit there) loses one of its two starting Zombies and one of its two scheduled Zombies (assemble -> build-viewer -> mkenginepack). test/opening-orphanage.test.ts and test/encounter-commands.test.ts follow the row (Law 10 edits with the reason at the line); the battle-cursor golden gets a new frozen layer like fix.opening-party's (tools/capture-*-cursor.mts pattern). Then the Orphanage's wins over 100 replicates, by class, are printed for Andrew.",
+  "expect": "The Orphanage places one Zombie at the start and one on its Turn; the landed Orphanage and encounter-commands probes pass on the row; the six control battles are byte-identical.",
+  "note": "Switches: which starting Zombie goes (default: (19,5), keeping (19,3)); which later Zombie goes (default: Turn 5's from the left edge, keeping Turn 4's from the bottom edge, left of the water)."
+ },
+ {
+  "id": "content.hero-health-floor",
+  "kind": "content",
+  "shape": "numbers",
+  "needs": [
+   "fix.opening-party"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage"
+  ],
+  "changesBaseline": true,
+  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the Orphanage loses a Zombie ...; every hero has at least 7 Health' and 'the first hero: ... the Peddler's Vest gives Health'): 'Let's increase the health of everybody to at least 7.' 'Gives you 2 health, but you lose 5 dodging, 5 accuracy.' In the Codex, through the file that owns each number (find the owner first - content/gen/heroes.json is built by build-heroes.mjs; never hand-edit a generated file): every Eve-of-Ruin base hero row's Health is at least 7 (the four Rogues at 5, the four Mages at 6, the Rangers at 5-6 rise; Priests 7, Paladins 9, Warriors 10-12 stay), and item.peddlers-vest is health +2 (was -2), dodge -5, accuracy -5, itemSlots +1 (content/gen/armor-enchants.json and CODEX.md's row). Pipeline to the engine pack; every test or golden that fields a raised row follows as a Law 10 edit with its reason; the control-battle change is declared.",
+  "expect": "Every hero.base row fields Health at least 7 before its kit; the Peddler's Vest adds 2 Health and takes 5 Dodge and 5 Accuracy; the Codex and the engine pack agree; the moved control battles are declared.",
+  "note": "Switches: Health 7 is the row's floor, not the fielded floor after the kit (default; asked 2026-09-28); civilians keep their dictated numbers (default: yes - e.g. the Lumberjack's Wife's Health 6; asked)."
+ },
+ {
+  "id": "fix.opening-first-hero",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.opening-party",
+   "content.hero-health-floor"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage",
+   "encounter.opening.cavern-trail"
+  ],
+  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the first hero: Leadership, a 25% second badge, +2 Health, a Crucible stat point and a 30% second; the draft offers three with the Crucible's modifiers'): 'The first hero just gets all these positive modifiers. You're not drafting, you're just taking one.' 'You get your choice of one of three heroes. Those heroes had randomized modifiers applied to them, and typically you would pick the best one.' Prior art, extended not duplicated: the Crucible's generator (crucible/ - stat-pool.json's weighted pool, badges.json, the unique-badge guarantee in CRUCIBLE-PLAN.md section 4) for the randomized modifiers; badge.mechanism (heroBadges into applyBadges) for badges; src/content/opening-party.ts (fix.opening-party) for the draw - named 'draft' stream, keyed by what the roll is. (1) The first hero: one pool row taken (no offer), with the Leadership badge, a 25% roll for another positive badge, +2 Health, one stat point from the Crucible's pool (a Health point = 2 Health), and a 30% roll for another stat point. (2) Every later opening draft: three pool rows offered, each with the Crucible's randomized modifiers applied, the best one taken. The modifiers and badges travel with the hero to every later opening position. Then win counts over 50 replicates per opening battle are printed for Andrew.",
+  "expect": "The first drafted hero carries the Leadership badge, +2 Health and one or two Crucible stat points at the ruled odds, and a second positive badge at 25%; each later draft offers three heroes with randomized modifiers and takes the best; a hero's modifiers are the same at every opening position; the same replicate gives the same party; the landed opening probes pass; the control battles are byte-identical.",
+  "note": "Blocked on content: no Leadership badge row exists (content/gen/badges.json 234 rows, crucible/data/badges.json 43) - asked 2026-09-28 whether it is the Leadership power (aura radius 5: +10 Accuracy, +1 Strength, +1 Resist) as a badge. Switches: what 'the best one' is (default: the highest total of the Crucible's modifiers, weighted as stat-pool.json weighs them - asked); which badges count as positive (default: the Crucible's rollable non-Flawed badges); how the Crucible rolls modifiers for a later draft (default: the Crucible generator's own counts and odds, read from crucible/ - never retyped)."
+ },
+ {
   "id": "fix.opening-first-battle",
   "kind": "engine",
   "shape": "data",
@@ -12,7 +57,10 @@
   "changesBaseline": false,
   "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the Orphanage loses a Zombie at the start and a later one; every hero has at least 7 Health; the first hero gets positive modifiers'): 'Let's remove an early zombie and a later zombie. Let's increase the health of everybody to at least 7. If they're the first hero, they need to receive some positive stat modifiers.' Carried across content and engine. (1) encounter.opening.orphanage in content/gen/encounters.json: one starting Zombie and one scheduled Zombie removed (assemble -> build-viewer -> mkenginepack). (2) The Codex hero rows (content/gen/heroes.json, through its generator build-heroes.mjs or eve-differentiation.json - whichever owns Health; find the owner first, never hand-edit a generated file) carry Health at least 7. (3) The first drafted hero of the opening gets positive stat modifiers as a badge row (an instance of the existing badge kind, statModifiers like badge.wounded's) handed in through heroBadges by src/content/opening-party.ts for the hero drafted first - prior art: badge.mechanism (2026-09-04, applyBadges in createBattle) and the kingdom's Wounded entry badge; not a new stat path. Then the Orphanage's win count over 100 replicates, by class, is printed for Andrew.",
   "expect": "The Orphanage places one Zombie at the start and one on its Turn; every hero.base row fields its row Health of at least 7; the first drafted hero, and only that hero, carries the first-hero badge with positive modifiers at every opening position; the landed opening probes pass (a changed WIN replicate is a Law 10 edit with its reason at the line); the six control battles are byte-identical unless a control battle fields a hero whose Health rose (then declared).",
-  "note": "Filed 2026-09-28. Switches to record, not questions, unless Andrew answers first: which starting Zombie goes (default: (19,5), keeping (19,3)); which later Zombie goes (default: Turn 5's from the left edge, keeping Turn 4's from the bottom edge); whether Health 7 is the row's floor or the fielded floor after the kit (default: the row's; asked); whether civilians rise too (default: no - their numbers were dictated, e.g. the Lumberjack's Wife's Health 6); the first-hero modifiers (default proposed to Andrew: +3 Health, +1 Armor, +10 Accuracy; asked); whether the first-hero badge stays after the opening (default: yes, it is the hero's)."
+  "note": "Filed 2026-09-28. Switches to record, not questions, unless Andrew answers first: which starting Zombie goes (default: (19,5), keeping (19,3)); which later Zombie goes (default: Turn 5's from the left edge, keeping Turn 4's from the bottom edge); whether Health 7 is the row's floor or the fielded floor after the kit (default: the row's; asked); whether civilians rise too (default: no - their numbers were dictated, e.g. the Lumberjack's Wife's Health 6); the first-hero modifiers (default proposed to Andrew: +3 Health, +1 Armor, +10 Accuracy; asked); whether the first-hero badge stays after the opening (default: yes, it is the hero's).",
+  "status": "failed",
+  "failedAt": "2026-09-29 06:04",
+  "reason": "Superseded before any code by the same night's ruling (DECISIONS.md 2026-09-28 'the first hero: Leadership ...'): its first-hero modifiers were a proposal Andrew replaced; re-filed as fix.opening-orphanage-lighter, content.hero-health-floor and fix.opening-first-hero."
  },
  {
   "id": "fix.opening-upgrades",

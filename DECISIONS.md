@@ -3286,3 +3286,24 @@ Ruled:
 - Answered in the same reply, not a ruling: at level 1 in the opening a hero fields only its row, its kit's modifiers (some negative — the Peddler's Vest −2 Health, −5 Dodge, −5 Accuracy; the Destroyed Mail +4 Health, −20 Accuracy) and `badge.hero`, which adds no stats (it carries only bleed-out). No level gains, specialty or class powers — the levelling ruled above is `fix.opening-upgrades`.
 
 Filed as `fix.opening-first-battle`, at the top of the queue.
+
+## 2026-09-28 — the first hero: Leadership, a 25% second badge, +2 Health, a Crucible stat point and a 30% second; the draft offers three with the Crucible's modifiers; the Peddler's Vest gives Health
+
+Andrew, asked what the first hero's positive modifiers should be (proposed: +3 Health, +1 Armor, +10 Accuracy), then shown the Peddler's Vest's row, in four messages:
+
+“The first hero should get one positive badge and a 25% chance of another positive badge.  They get 2 extra health.  They start with the leadership badge.  It may get one extra stat point, which could be two health if it's health, one extra stat point, according to the randomness that has been set in the Crucible.  And a 30% chance of another stat point”
+
+“The Peddler's vest costs you 2 health, 5 dodge, and 5 accuracy. ?”
+
+“I think it's supposed to be the other way around.   Gives you 2 health, but you lose 5 dodging, 5 accuracy.”
+
+“There are supposed to be rules for the drafted heroes. You get your choice of one of three heroes.  Those heroes had randomized modifiers applied to them, and typically you would pick the best one. The first hero just gets all these positive modifiers. You're not drafting, you're just taking one. You don't get to see the stats.”
+
+Ruled:
+
+- **The first hero is taken, not drafted:** one hero, stats unseen, no pick. It gets all of: **the Leadership badge**; **a 25% chance of another positive badge**; **+2 Health**; **one extra stat point** rolled by the Crucible's randomness (`crucible/data/stat-pool.json`), a point of Health being **2 Health**; and **a 30% chance of another stat point**. Replaces the proposed +3 Health / +1 Armor / +10 Accuracy (the entry above). Reading: "one positive badge" and "the leadership badge" are the same badge.
+- **Every later opening draft offers three heroes with the Crucible's randomized modifiers applied**, and the player "typically" picks the best one. Overturns SWITCHES.md `openingDraftPick` (a seeded take): the probe takes the best of the three. What "best" means is not said: switch.
+- **The Peddler's Vest gives +2 Health** and costs −5 Dodge and −5 Accuracy (and keeps its +1 item slot). Corrects `content/gen/armor-enchants.json` (`health: -2`) and CODEX.md's row.
+- Not found: **no Leadership badge exists** — not in `content/gen/badges.json` (234 rows) nor `crucible/data/badges.json` (43). The nearest is the Leadership **power** (`power.leader.leadership`: an aura, radius 5, +10 Accuracy, +1 Strength, +1 Resist). Asked.
+
+`fix.opening-first-battle` is abandoned before any code (its first-hero default is superseded) and re-filed as `fix.opening-orphanage-lighter`, `content.hero-health-floor` and `fix.opening-first-hero`.

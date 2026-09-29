@@ -18510,3 +18510,8 @@ index f2c7644..20e774b 100644
      applyDamage(ctx, child.id, 99, 'test.kill', { actor: null }); settle(ctx, 'test.kill')
 ```
 </details>
+
+## fix.opening-first-battle — ABANDONED
+2026-09-29 06:04
+
+Superseded before any code by the same night's ruling (DECISIONS.md 2026-09-28 'the first hero: Leadership ...'): its first-hero modifiers were a proposal Andrew replaced; re-filed as fix.opening-orphanage-lighter, content.hero-health-floor and fix.opening-first-hero.
