@@ -18377,3 +18377,136 @@ index c42917a..b761e5a 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.opening-party — LANDED `c9fb9b9` **NEEDS REVIEW**
+2026-09-29 05:21
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/encounter-commands.test.ts, test/opening-cavern-trail.test.ts, test/opening-lumberjack.test.ts, test/opening-orphanage.test.ts, test/opening-party.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 9 log lines, 9 fired, 6 changed state · encounter.opening.cavern-trail: 12 log lines, 12 fired, 9 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/encounter-commands.test.ts, test/opening-cavern-trail.test.ts, test/opening-helpers.ts, test/opening-lumberjack.test.ts, test/opening-orphanage.test.ts, test/fixtures/battle-cursor-party.json, test/opening-party.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/encounter-commands.test.ts (-2), test/opening-helpers.ts (-1), test/opening-lumberjack.test.ts (-1), test/opening-orphanage.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 2 new: clone: 9 lines, engine/tools/capture-party-cursor.mts:8-16 = engine/tools/capture-zoc-cursor.mts:10-18 · clone: 9 lines, engine/tools/capture-party-cursor.mts:16-24 = engine/tools/capture-zoc-cursor.mts:18-26 — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage,encounter.opening.cavern-trail — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index b1a0649..8415bb9 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -139,4 +139,10 @@ const raiseTwoGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor
+ // `changed` is checked here and skips the older layers. Old fixtures stay immutable.
+ const funnelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-funnel.json', import.meta.url), 'utf8'))
++// fix.opening-party (2026-09-29), Law 10: the opening scenarios field the party the player has at that
++// point, not four Alpha heroes (Andrew, DECISIONS.md 2026-09-28: "We need to move away from these alpha
++// heroes."). Every case's full hashes are frozen here (tools/capture-party-cursor.mts); a case marked
++// `changed` (test.opening-orphanage, -lumberjack, -cavern-trail only) is checked here and skips the
++// older layers. Old fixtures stay immutable.
++const partyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-party.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -245,5 +251,8 @@ describe('resumable battle cursor', () => {
+       const raiseTwoExpected = raiseTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const funnelExpected = funnelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const funnelMoved = funnelExpected?.changed === true
++      const partyExpected = partyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const partyMoved = partyExpected?.changed === true
++      // was: const funnelMoved = funnelExpected?.changed === true — a party-moved case skips the funnel layer too (fix.opening-party 2026-09-29)
++      const funnelMoved = funnelExpected?.changed === true || partyMoved
+       // was: const raiseTwoMoved = raiseTwoExpected?.changed === true — a funnel-moved case skips the raise-two layer too (fix.funnel-goldens 2026-09-29)
+       const raiseTwoMoved = raiseTwoExpected?.changed === true || funnelMoved
+@@ -289,5 +298,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (funnelExpected) {
++        if (partyExpected) {
++        expect(hash(ctx.events), 'full party events').toBe(partyExpected.events)
++        expect(hash(ctx.state), 'full party state').toBe(partyExpected.state)
++        expect(hash(ctx.rng.log), 'full party RNG').toBe(partyExpected.rng)
++        expect(result).toEqual(partyExpected.result)
++        }
++        // was: if (funnelExpected) { — fix.opening-party (2026-09-29): a party-moved case is checked above instead
++        if (funnelExpected && !partyMoved) {
+         expect(hash(ctx.events), 'full funnel events').toBe(funnelExpected.events)
+         expect(hash(ctx.state), 'full funnel state').toBe(funnelExpected.state)
+diff --git a/test/encounter-commands.test.ts b/test/encounter-commands.test.ts
+index 5bf0d10..7d41035 100644
+--- a/test/encounter-commands.test.ts
++++ b/test/encounter-commands.test.ts
+@@ -18,5 +18,7 @@ import type { Ctx } from '../src/core/types.js'
+ 
+ const S = 'test.opening-orphanage'
+-const field = () => { const o = scenarioOptions(scenarioDef(S)); const ctx = createBattle(o); return { o, ctx, policy: { humanUnitUids: ctx.state.units.slice(0, o.heroes.length).map((u) => u.uid) } as ControlPolicy } }
++// Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — the patient player loses replicate 0 with one drafted hero; replicate 1 is a win. Same assertions.
++const WIN = 1
++const field = () => { const o = scenarioOptions(scenarioDef(S), WIN); const ctx = createBattle(o); return { o, ctx, policy: { humanUnitUids: ctx.state.units.slice(0, o.heroes.length).map((u) => u.uid) } as ControlPolicy } }
+ 
+ /** A patient player: holds for `wait` Turns (ends each activation), then attacks what it can, else closes on the nearest enemy. Only legal commands. */
+@@ -93,5 +95,5 @@ describe('kingdom.encounter-battles — a person plays encounter.opening.orphana
+     expect(first.ctx.state.turn).toBe(3)
+     const saved = JSON.parse(JSON.stringify(saveBattle(first.ctx)))
+-    const resumed = restoreBattle(saved, createBattle(scenarioOptions(scenarioDef(S))))
++    const resumed = restoreBattle(saved, createBattle(scenarioOptions(scenarioDef(S), WIN)))
+     drive(resumed, first.policy, next(resumed))
+     expect(i).toBe(commands.length)
+diff --git a/test/opening-cavern-trail.test.ts b/test/opening-cavern-trail.test.ts
+index cdf369a..d0a349c 100644
+--- a/test/opening-cavern-trail.test.ts
++++ b/test/opening-cavern-trail.test.ts
+@@ -11,4 +11,6 @@ import { arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
+ const S = 'test.opening-cavern-trail', FALL = 'trigger.cavern-trail.meteor-fall'
+ // Replicate 1 is a battle the heroes win (replicates 0-9: 4 heroClear, 6 wipe — a real fight).
++// fix.opening-party (2026-09-29): on the party drafted by battle 4 (five heroes, not four Alpha heroes)
++// replicate 1 is still a win; 7 of 50 are.
+ const WIN = 1
+ describe('encounter.opening.cavern-trail', () => {
+diff --git a/test/opening-helpers.ts b/test/opening-helpers.ts
+index eb56515..fbef98e 100644
+--- a/test/opening-helpers.ts
++++ b/test/opening-helpers.ts
+@@ -13,5 +13,6 @@ import type { Ctx } from '../src/core/types.js'
+  */
+ export function openingBattle(scenario: string, replicate = 0, waitForSchedule = false): Ctx {
+-  const opts = scenarioOptions(scenarioDef(scenario))
++  // fix.opening-party: the replicate goes to scenarioOptions, which drafts that replicate's party
++  const opts = scenarioOptions(scenarioDef(scenario), replicate)
+   const ctx = createBattle({ ...opts, replicate, ...(waitForSchedule ? { cfg: { switches: { boardClearWaitsForSchedule: true } } } : {}) } as Parameters<typeof createBattle>[0])
+   runBattle(ctx)
+diff --git a/test/opening-lumberjack.test.ts b/test/opening-lumberjack.test.ts
+index bf62c49..76a6c76 100644
+--- a/test/opening-lumberjack.test.ts
++++ b/test/opening-lumberjack.test.ts
+@@ -38,5 +38,6 @@ describe('encounter.opening.lumberjack', () => {
+   })
+   it('is won when the last enemy dies', () => {
+-    const ctx = openingBattle(S)
++    // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — on the party replicate 0 is lost (36 of 50 won) and replicate 1 is a win. Same assertion.
++    const ctx = openingBattle(S, 1)
+     expect(ctx.state.outcome).toBe('heroClear')
+     expect(ctx.state.units.filter((u) => u.side === 'enemy').every((u) => u.lifeState !== 'standing')).toBe(true)
+diff --git a/test/opening-orphanage.test.ts b/test/opening-orphanage.test.ts
+index f2c7644..20e774b 100644
+--- a/test/opening-orphanage.test.ts
++++ b/test/opening-orphanage.test.ts
+@@ -27,5 +27,7 @@ describe('encounter.opening.orphanage', () => {
+   })
+   it('a civilian\'s death does not end the battle, and it ends won when the last enemy dies — no loss', () => {
+-    const ctx = createBattle(scenarioOptions(scenarioDef(S)))
++    // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — with the child killed at the start, one drafted hero loses replicate 0; replicate 1 is a
++    // win (27 of 50 won untouched). Same assertions.
++    const ctx = createBattle(scenarioOptions(scenarioDef(S), 1))
+     const child = ctx.state.units.find((u) => u.typeId === 'hero.fixed.orphans')!
+     applyDamage(ctx, child.id, 99, 'test.kill', { actor: null }); settle(ctx, 'test.kill')
+```
+</details>

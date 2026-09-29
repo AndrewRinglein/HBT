@@ -26,7 +26,9 @@ describe('encounter.opening.orphanage', () => {
     arrivedAt(ctx, 5, 'unit.zombie', 0, 6)
   })
   it('a civilian\'s death does not end the battle, and it ends won when the last enemy dies — no loss', () => {
-    const ctx = createBattle(scenarioOptions(scenarioDef(S)))
+    // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — with the child killed at the start, one drafted hero loses replicate 0; replicate 1 is a
+    // win (27 of 50 won untouched). Same assertions.
+    const ctx = createBattle(scenarioOptions(scenarioDef(S), 1))
     const child = ctx.state.units.find((u) => u.typeId === 'hero.fixed.orphans')!
     applyDamage(ctx, child.id, 99, 'test.kill', { actor: null }); settle(ctx, 'test.kill')
     expect(child.lifeState).not.toBe('standing')

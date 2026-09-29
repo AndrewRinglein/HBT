@@ -138,6 +138,12 @@ const raiseTwoGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor
 // ground beat. Every case's full hashes are frozen here (tools/capture-funnel-cursor.mts); a case marked
 // `changed` is checked here and skips the older layers. Old fixtures stay immutable.
 const funnelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-funnel.json', import.meta.url), 'utf8'))
+// fix.opening-party (2026-09-29), Law 10: the opening scenarios field the party the player has at that
+// point, not four Alpha heroes (Andrew, DECISIONS.md 2026-09-28: "We need to move away from these alpha
+// heroes."). Every case's full hashes are frozen here (tools/capture-party-cursor.mts); a case marked
+// `changed` (test.opening-orphanage, -lumberjack, -cavern-trail only) is checked here and skips the
+// older layers. Old fixtures stay immutable.
+const partyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-party.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -244,7 +250,10 @@ describe('resumable battle cursor', () => {
       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const raiseTwoExpected = raiseTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const funnelExpected = funnelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const funnelMoved = funnelExpected?.changed === true
+      const partyExpected = partyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const partyMoved = partyExpected?.changed === true
+      // was: const funnelMoved = funnelExpected?.changed === true — a party-moved case skips the funnel layer too (fix.opening-party 2026-09-29)
+      const funnelMoved = funnelExpected?.changed === true || partyMoved
       // was: const raiseTwoMoved = raiseTwoExpected?.changed === true — a funnel-moved case skips the raise-two layer too (fix.funnel-goldens 2026-09-29)
       const raiseTwoMoved = raiseTwoExpected?.changed === true || funnelMoved
       const surgeSpendExpected = surgeSpendGolden.cases.find((row:{id:string})=>row.id===fixture.id)
@@ -288,7 +297,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (funnelExpected) {
+        if (partyExpected) {
+        expect(hash(ctx.events), 'full party events').toBe(partyExpected.events)
+        expect(hash(ctx.state), 'full party state').toBe(partyExpected.state)
+        expect(hash(ctx.rng.log), 'full party RNG').toBe(partyExpected.rng)
+        expect(result).toEqual(partyExpected.result)
+        }
+        // was: if (funnelExpected) { — fix.opening-party (2026-09-29): a party-moved case is checked above instead
+        if (funnelExpected && !partyMoved) {
         expect(hash(ctx.events), 'full funnel events').toBe(funnelExpected.events)
         expect(hash(ctx.state), 'full funnel state').toBe(funnelExpected.state)
         expect(hash(ctx.rng.log), 'full funnel RNG').toBe(funnelExpected.rng)

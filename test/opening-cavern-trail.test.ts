@@ -10,6 +10,8 @@ import { arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
 
 const S = 'test.opening-cavern-trail', FALL = 'trigger.cavern-trail.meteor-fall'
 // Replicate 1 is a battle the heroes win (replicates 0-9: 4 heroClear, 6 wipe — a real fight).
+// fix.opening-party (2026-09-29): on the party drafted by battle 4 (five heroes, not four Alpha heroes)
+// replicate 1 is still a win; 7 of 50 are.
 const WIN = 1
 describe('encounter.opening.cavern-trail', () => {
   it('carries the meteor fall with the ruled numbers', () => {

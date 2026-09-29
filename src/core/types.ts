@@ -621,6 +621,12 @@ export type ScenarioDef = {
   /** badge.mechanism (2026-09-04): the badges each hero carries into this battle, parallel to heroes — the kingdom's list (a Wounded hero enters Wounded). Added to the row's own. */
   readonly heroBadges?: readonly (readonly string[] | undefined)[]
   /**
+   * fix.opening-party (2026-09-29): field the party the player has at this position of the
+   * opening (1..6) — drafted per replicate by content (src/content/opening-party.ts) from
+   * progression/OPENING-PARTY.json — instead of `heroes`, which stays empty. Never read by core.
+   */
+  readonly openingPosition?: number
+  /**
    * encounter.runner (2026-09-03): the encounter this scenario runs. Its
    * setup and schedule supply the enemy side, so `enemies` is empty and the
    * heroes deploy where the encounter says (or the player edge).

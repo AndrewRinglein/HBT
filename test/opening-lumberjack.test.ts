@@ -37,7 +37,8 @@ describe('encounter.opening.lumberjack', () => {
     expect(encounterDef('encounter.opening.lumberjack').setup.filter((p) => p.civilian).every((p) => !p.objective)).toBe(true)
   })
   it('is won when the last enemy dies', () => {
-    const ctx = openingBattle(S)
+    // Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — on the party replicate 0 is lost (36 of 50 won) and replicate 1 is a win. Same assertion.
+    const ctx = openingBattle(S, 1)
     expect(ctx.state.outcome).toBe('heroClear')
     expect(ctx.state.units.filter((u) => u.side === 'enemy').every((u) => u.lifeState !== 'standing')).toBe(true)
   })

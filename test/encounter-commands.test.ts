@@ -17,7 +17,9 @@ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import type { Ctx } from '../src/core/types.js'
 
 const S = 'test.opening-orphanage'
-const field = () => { const o = scenarioOptions(scenarioDef(S)); const ctx = createBattle(o); return { o, ctx, policy: { humanUnitUids: ctx.state.units.slice(0, o.heroes.length).map((u) => u.uid) } as ControlPolicy } }
+// Law 10, fix.opening-party (2026-09-29): the battle now fields the party drafted by this point, not four Alpha heroes, so which replicate is a win changed — the patient player loses replicate 0 with one drafted hero; replicate 1 is a win. Same assertions.
+const WIN = 1
+const field = () => { const o = scenarioOptions(scenarioDef(S), WIN); const ctx = createBattle(o); return { o, ctx, policy: { humanUnitUids: ctx.state.units.slice(0, o.heroes.length).map((u) => u.uid) } as ControlPolicy } }
 
 /** A patient player: holds for `wait` Turns (ends each activation), then attacks what it can, else closes on the nearest enemy. Only legal commands. */
 function choose(ctx: Ctx, policy: ControlPolicy, wait: number): BattleCommand {
@@ -92,7 +94,7 @@ describe('kingdom.encounter-battles — a person plays encounter.opening.orphana
     drive(first.ctx, first.policy, next(first.ctx), [], 3)   // stop at Turn 3, before either arrival
     expect(first.ctx.state.turn).toBe(3)
     const saved = JSON.parse(JSON.stringify(saveBattle(first.ctx)))
-    const resumed = restoreBattle(saved, createBattle(scenarioOptions(scenarioDef(S))))
+    const resumed = restoreBattle(saved, createBattle(scenarioOptions(scenarioDef(S), WIN)))
     drive(resumed, first.policy, next(resumed))
     expect(i).toBe(commands.length)
     expect(typed(resumed, 4)).toEqual(['unit.zombie'])

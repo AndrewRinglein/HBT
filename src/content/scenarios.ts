@@ -27,6 +27,7 @@ import type { EncounterDef, ScenarioDef } from '../core/types.js'
 import { omitDisabled } from './disable.js'
 import { ENCOUNTERS, UNITS } from './index.js'
 import { MAPS } from './maps.js'
+import { openingPartyOf } from './opening-party.js'
 
 // Published TEST rows, not duplicated authored terrain. A disabled source map
 // removes only its dependent direct scenario; unrelated imports remain usable.
@@ -157,21 +158,25 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
   },
   // encounter.opening.* (2026-09-28): the opening's six battles, each fielded as the kingdom will
-  // field it — the standard four of the Alpha Team in the encounter's hero zone.
+  // field it. fix.opening-party (2026-09-29, Andrew: "Opening battles should be tested with a party
+  // the player should have at that point. We need to move away from these alpha heroes."): the
+  // party the player has at the battle's position, drafted per replicate (content/opening-party.ts);
+  // the encounter places its own civilians. The Bridge, the Gates and the Cathedral join with their
+  // encounter rows (positions 3, 5, 6).
   'test.opening-orphanage': {
-    id: 'test.opening-orphanage', note: 'The opening, battle 1: encounter.opening.orphanage on map.opening.orphanage with four Alpha heroes.',
-    mapId: 'map.opening.orphanage', encounterId: 'encounter.opening.orphanage',
-    heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk', 'alpha-air-mage'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+    id: 'test.opening-orphanage', note: 'The opening, battle 1: encounter.opening.orphanage on map.opening.orphanage with the party drafted by then (one hero).',
+    mapId: 'map.opening.orphanage', encounterId: 'encounter.opening.orphanage', openingPosition: 1,
+    heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
   'test.opening-lumberjack': {
-    id: 'test.opening-lumberjack', note: 'The opening, battle 2: encounter.opening.lumberjack on map.opening.lumberjack with four Alpha heroes.',
-    mapId: 'map.opening.lumberjack', encounterId: 'encounter.opening.lumberjack',
-    heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk', 'alpha-air-mage'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+    id: 'test.opening-lumberjack', note: 'The opening, battle 2: encounter.opening.lumberjack on map.opening.lumberjack with the party drafted by then (three heroes).',
+    mapId: 'map.opening.lumberjack', encounterId: 'encounter.opening.lumberjack', openingPosition: 2,
+    heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
   'test.opening-cavern-trail': {
-    id: 'test.opening-cavern-trail', note: 'The opening, battle 4: encounter.opening.cavern-trail (the Hunt, with the meteor fall) on map.opening.cavern-trail with four Alpha heroes.',
-    mapId: 'map.opening.cavern-trail', encounterId: 'encounter.opening.cavern-trail',
-    heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk', 'alpha-air-mage'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+    id: 'test.opening-cavern-trail', note: 'The opening, battle 4: encounter.opening.cavern-trail (the Hunt, with the meteor fall) on map.opening.cavern-trail with the party drafted by then (five heroes, one with the Flaming Longsword).',
+    mapId: 'map.opening.cavern-trail', encounterId: 'encounter.opening.cavern-trail', openingPosition: 4,
+    heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
@@ -770,20 +775,28 @@ export const SCENARIOS = omitDisabled(RAW_SCENARIOS)
  * `enemyCount` comes from the roster's own length rather than being a second
  * number that can disagree with it.
  */
-export function scenarioOptions(s: ScenarioDef) {
+/**
+ * A scenario as createBattle options. `replicate` defaults to the scenario's own; an opening
+ * scenario (fix.opening-party) drafts its party for the replicate asked, so a sweep over
+ * replicates passes it HERE — spreading a different replicate over the result keeps the party
+ * the scenario's own replicate drafted.
+ */
+export function scenarioOptions(s: ScenarioDef, replicate: number = s.replicate) {
+  const party = s.openingPosition ? openingPartyOf(s.openingPosition, replicate) : null
+  const heroItems = party ? party.heroItems : s.heroItems
   return {
     scenarioId: s.id,
-    replicate: s.replicate,
+    replicate,
     mapId: s.mapId,
     ...(s.map ? { map: s.map } : {}),
-    heroes: s.heroes,
+    heroes: party ? party.heroes : s.heroes,
     // an encounter scenario leaves the hero hexes to the encounter (its zone
     // or the player edge) — an empty list means "not named", not "zero"
     ...(s.heroHexes.length ? { heroHexes: [...s.heroHexes] } : {}),
     enemies: s.enemies,
     enemyHexes: [...s.enemyHexes],
     enemyCount: s.enemies.length,
-    ...(s.heroItems ? { heroItems: s.heroItems } : {}),
+    ...(heroItems ? { heroItems } : {}),
     ...(s.heroStowed ? { heroStowed: s.heroStowed } : {}),
     ...(s.heroItemsUsed ? { heroItemsUsed: s.heroItemsUsed } : {}),
     ...(s.heroProgress ? { heroProgress: s.heroProgress } : {}),

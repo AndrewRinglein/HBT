@@ -12,7 +12,8 @@ import type { Ctx } from '../src/core/types.js'
  * on `boardClearWaitsForSchedule` for that run — a fielding choice, not the rule.
  */
 export function openingBattle(scenario: string, replicate = 0, waitForSchedule = false): Ctx {
-  const opts = scenarioOptions(scenarioDef(scenario))
+  // fix.opening-party: the replicate goes to scenarioOptions, which drafts that replicate's party
+  const opts = scenarioOptions(scenarioDef(scenario), replicate)
   const ctx = createBattle({ ...opts, replicate, ...(waitForSchedule ? { cfg: { switches: { boardClearWaitsForSchedule: true } } } : {}) } as Parameters<typeof createBattle>[0])
   runBattle(ctx)
   return ctx

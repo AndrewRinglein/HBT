@@ -13,7 +13,9 @@
    "encounter.opening.cavern-trail"
   ],
   "changesBaseline": false,
-  "note": "Filed 2026-09-28 after encounter.opening.gates lost 60 of 60 with four Alpha heroes (row kept in tmp/encounter.opening.gates-authored-2026-09-29.json; the Cathedral's in tmp/ too; the Bridge abandoned on the same finding). Switches to record, not questions: which of the three offers the test drafts (default: a seeded draw on a named stream keyed by the replicate and the draft ordinal, so replicates sample possible parties); the heroes' level through the opening (default: level 1 until the XP thresholds have an owner - K16 open); whether rescued civilians are fielded in later battles (default: no, only the encounter's own); who holds the Flaming Longsword (default: the first drafted hero who can wield it); wounds and fatigue between battles are the kingdom's, not the probe's (default: none)."
+  "note": "Filed 2026-09-28 after encounter.opening.gates lost 60 of 60 with four Alpha heroes (row kept in tmp/encounter.opening.gates-authored-2026-09-29.json; the Cathedral's in tmp/ too; the Bridge abandoned on the same finding). Switches to record, not questions: which of the three offers the test drafts (default: a seeded draw on a named stream keyed by the replicate and the draft ordinal, so replicates sample possible parties); the heroes' level through the opening (default: level 1 until the XP thresholds have an owner - K16 open); whether rescued civilians are fielded in later battles (default: no, only the encounter's own); who holds the Flaming Longsword (default: the first drafted hero who can wield it); wounds and fatigue between battles are the kingdom's, not the probe's (default: none).",
+  "status": "done-needs-review",
+  "sha": "c9fb9b9"
  },
  {
   "id": "tool.wrong-home-audit",

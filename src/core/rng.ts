@@ -30,6 +30,10 @@ export const STREAMS = [
   // Keyed (target uid, per-unit ordinal, kind) — never a turn. Appended.
   'kdb-occurs',
   'kdb-type',
+  // fix.opening-party (2026-09-29): the opening's stat-less draft — which three are offered and
+  // which one is taken. Keyed (draft ordinal, 0 = the offer | 1 = the take) under a root seed from
+  // the replicate alone, so a replicate's party grows by prefix across the six battles. Appended.
+  'draft',
 ] as const
 
 export type Stream = (typeof STREAMS)[number]
