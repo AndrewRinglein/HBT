@@ -374,10 +374,19 @@ function compileBadge(row) {
     return { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(gaps.length ? { gaps } : {}) };
   }
   const payload = String(row.payload || '').replace(/\*\*/g, '');
+  // rule.badge-deathbed-fighting (2026-09-29, Andrew, engine DECISIONS.md 'Possession's Surge loads at fielding;
+  // ... Deathbed Fighting ... built'): "+N Deathbed Fighting" / "Deathbed Fighting +N" is the holder's own
+  // points on the Deathbed chance. Not on an aura row — there the points are the allies' (a comma would split
+  // "allies +2 health, +15 Deathbed Fighting" and hand the aura's number to its carrier): named, not guessed.
+  let deathbed = 0;
+  const auraRow = /\baura\b/i.test(payload);
   if (!payload || /prose only/i.test(payload)) gaps.push(payload ? 'payload is prose only — the numbers are owed' : 'no payload');
   else for (const raw of payload.split(/\s*[·;]\s*|,\s*(?![^()]*\))/)) {
     const clause = raw.trim(); if (!clause) continue;
     let m;
+    if (!auraRow && ((m = clause.match(/^([+−-]\s*\d+)\s+Deathbed Fighting$/i)) || (m = clause.match(/^Deathbed Fighting\s+([+−-]\s*\d+)$/i)))) {
+      deathbed += parseInt(m[1].replace('−', '-').replace(/\s+/g, ''), 10); continue;
+    }
     if ((m = clause.match(/^([+−-]\s*\d+)\s+(.+)$/))) {
       const v = parseInt(m[1].replace('−', '-').replace(/\s+/g, ''), 10);
       // "+1 S, P, reach, H" — one number, several stats
@@ -394,7 +403,7 @@ function compileBadge(row) {
     gaps.push(clause);   // hooks (`startOfBattle`: …), class locks, "lifts on rescue" — named, not guessed
   }
   // the engine's deathbed stat rides the modifiers map under its own name
-  const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(gaps.length ? { gaps } : {}) };
+  const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(deathbed ? { deathbedFighting: deathbed } : {}), ...(gaps.length ? { gaps } : {}) };
   return out;
 }
 const badges = {};
