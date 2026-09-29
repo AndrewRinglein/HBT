@@ -17931,3 +17931,21 @@ index fde64ff..f89b45d 100644
  
 ```
 </details>
+
+## plumbing.vocabulary-export — LANDED `90c1010`
+2026-09-29 00:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1257
+  PASS  typecheck
+  PASS  the item's own tests — test/vocabulary.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/vocabulary.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 9517f717->586dd2b2, map.ridge 41cf2f22->5f203320, map.proving.copse 0a06aede->7580095b, map.courtyard 76290e8d->c4541166, map.floodplain b4bac913->98137543, test.map.duel-8 ab5ff916->6adbf206, test.map.horde-24 a9a9c527->af603251
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

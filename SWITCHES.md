@@ -1540,3 +1540,17 @@ in all of replicates 0-9 by Turn 4-7; `encounter.opening.gates` was not landed a
 
 Supersedes the map.opening-six "probeable from the map panel": the probe fields any registered map id
 on its own map first (tools/probe.mts), on the panel or not.
+
+## One exported vocabulary — plumbing.vocabulary-export (2026-09-28)
+
+`src/core/vocabulary.ts` gathers the engine's lists (FOLDABLE, the resolvable stats, HOOKS, the attacker's
+hooks, the three effect-kind lists, OUTCOMES, LIFE_STATES, EVENT_TYPES, the layers and the glyphs);
+`tools/vocabulary.mts` writes it to `generated/vocabulary.json` for the content tools. `emit` takes only a
+listed event type, so tsc refuses an unlisted one; `test/vocabulary.test.ts` refuses a stale JSON and a listed
+event nothing emits.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `vocabularyStatuses` | content/audit.mjs's ENGINE_STATUSES — from the export? | **No: from settled.json's status rows**, the rows the pack publishes and the engine loads. The export carries no status list. | Statuses are content ("Codex owns the rows", approved-kinds 2026-09-02); a status list in the frozen JSON would go stale every time the content chat adds a row, before any engine change. | provisional — 2026-09-28 |
+| `vocabularyStatMapWidens` | The converter's eight stat maps become one (C11). Clauses one map dropped and another accepted now compile — do they land with this item? | **Yes, and the item declares it changes the control battles.** Blinded's −4 Vision (the crit chart; its "no vision model" gap was stale since capability.vision, 2026-09-03) moves map.open, map.ridge, map.proving.copse, map.courtyard, map.floodplain, test.map.duel-8 and test.map.horde-24 — confirmed by re-running the controls with that one effect removed (byte-identical). Also compiling now: "+N health for the Battle" on the Ghoul, Vampire, Vampire Lord and Lieutenant Demon (statMod maxHp; the Lieutenant Demon's aura lends maxHp). | The review's verifier: "The map gaps are real"; Andrew ruled C11 "fix as proposed". Each clause is the Codex row's own text. statMod sites take only resolvable stats (surge and toughness stay gaps). | provisional — 2026-09-28 |
+| `vocabularyUnitFields` | snapshot.ts's lists of the Unit record's integer fields (hp, stamina, bleedOut, surgeChance …) — a stat list to replace? | **No.** They validate the Unit record's fields, a superset of the stats with a different job; the vocabulary test matches FOLDABLE's own run of names only. | Not the stat vocabulary. | provisional — 2026-09-28 |

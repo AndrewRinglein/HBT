@@ -93,6 +93,8 @@ const BASE: Record<StatName, (u: Unit) => number> = {
 
 /** The same stat vocabulary used by resolution, for external data validation. */
 export function isStatName(name: string): name is StatName { return Object.hasOwn(BASE, name) }
+/** plumbing.vocabulary-export: the resolvable stats, in BASE's order — the exported vocabulary's `resolvable`. */
+export const STAT_NAMES: readonly StatName[] = Object.keys(BASE) as StatName[]
 
 /**
  * Modifiers granted by the hex a unit is standing on.

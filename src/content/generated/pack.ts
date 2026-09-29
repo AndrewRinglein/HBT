@@ -1194,6 +1194,20 @@ export const UNIT_PACK = {
           },
           "source": "unit.ghoul",
           "onlyWithAttack": "attack.ghoul.devour"
+        },
+        {
+          "id": "trigger.ghoul.health-health",
+          "hook": "onKill",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "maxHp",
+            "value": 4,
+            "until": "battle"
+          },
+          "source": "unit.ghoul",
+          "onlyWithAttack": "attack.ghoul.devour"
         }
       ]
     },
@@ -1465,6 +1479,27 @@ export const UNIT_PACK = {
           "source": "unit.lieutenant-demon"
         },
         {
+          "id": "trigger.lieutenant-demon.health-health",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": {
+            "select": "area",
+            "side": "ally",
+            "radius": 4,
+            "origin": "self",
+            "requireTags": [
+              "demon"
+            ]
+          },
+          "effect": {
+            "kind": "statMod",
+            "stat": "maxHp",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "unit.lieutenant-demon"
+        },
+        {
           "id": "trigger.lieutenant-demon.gathering-doom",
           "hook": "onActivationEnd",
           "chance": 100,
@@ -1485,10 +1520,10 @@ export const UNIT_PACK = {
             "demon"
           ],
           "mods": {
-            "accuracy": 20
+            "accuracy": 20,
+            "maxHp": 4
           },
           "gaps": [
-            "grant a stat for the Battle health 4",
             "Immunity N weak 1",
             "Immunity N poison 1",
             "Immunity N burn 1"
@@ -2305,6 +2340,20 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.vampire.bite"
         },
         {
+          "id": "trigger.vampire.health-health",
+          "hook": "onKill",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "maxHp",
+            "value": 3,
+            "until": "battle"
+          },
+          "source": "unit.vampire",
+          "onlyWithAttack": "attack.vampire.bite"
+        },
+        {
           "id": "trigger.vampire.afflict-vampirism",
           "hook": "onDamage",
           "chance": 20,
@@ -2398,6 +2447,20 @@ export const UNIT_PACK = {
           "effect": {
             "kind": "heal",
             "amount": 6
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire-lord.bite"
+        },
+        {
+          "id": "trigger.vampire-lord.feed-health",
+          "hook": "onKill",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "maxHp",
+            "value": 5,
+            "until": "battle"
           },
           "source": "unit.vampire-lord",
           "onlyWithAttack": "attack.vampire-lord.bite"
@@ -8466,7 +8529,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -8508,7 +8570,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -8551,7 +8612,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -8593,7 +8653,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 8,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -8636,7 +8695,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -8678,7 +8736,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -8720,7 +8777,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -8762,7 +8818,6 @@ export const UNIT_PACK = {
       "reach": 3,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -8804,7 +8859,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -8847,7 +8901,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -8888,7 +8941,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -8930,7 +8982,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -8972,7 +9023,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9014,7 +9064,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9056,7 +9105,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9098,7 +9146,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9140,7 +9187,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9182,7 +9228,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9225,7 +9270,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9267,7 +9311,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9310,7 +9353,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9353,7 +9395,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9395,7 +9436,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9437,7 +9477,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9480,7 +9519,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9519,7 +9557,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9559,7 +9596,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9599,7 +9635,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9639,7 +9674,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -9678,7 +9712,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9718,7 +9751,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9757,7 +9789,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9796,7 +9827,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9835,7 +9865,6 @@ export const UNIT_PACK = {
       "reach": 3,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9874,7 +9903,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9913,7 +9941,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9952,7 +9979,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -9991,7 +10017,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "melee-aggressive",
       "attacks": [
         "attack.punch"
       ],
@@ -10030,7 +10055,6 @@ export const UNIT_PACK = {
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
-      "ai": "ranged-kite",
       "attacks": [
         "attack.punch"
       ],
@@ -10413,6 +10437,11 @@ export const UNIT_PACK = {
         "key": "blinded",
         "name": "Blinded",
         "effects": [
+          {
+            "kind": "statMod",
+            "stat": "vision",
+            "value": -4
+          },
           {
             "kind": "statMod",
             "stat": "accuracy",
@@ -23339,6 +23368,7 @@ export const UNIT_PACK = {
       "effects": [
         {
           "kind": "statMod",
+          "stat": "vision",
           "value": 3,
           "until": "battle",
           "who": "self"

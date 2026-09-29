@@ -3227,3 +3227,20 @@ Ruled:
 - **Findings go on a page Andrew rules on line by line**; nothing is fixed or filed until he has.
 - **Two chats:** the review runs in its own chat, writing nothing inside a package tree; building the opening loop continues in the engine chat.
 - **Before any new mechanism, the item names the existing mechanism it extends, or says none exists and where it looked** — added to engine/CLAUDE.md's traps the same day.
+
+## 2026-09-28 — the duplication review, ruled
+
+The review (`engine/REVIEW-DUPLICATION-2026-09-28.md`) ran read-only at engine 5747e86, content 4bb0ae6, kingdom aa5eb36, viewer b9f5d41 and put 65 verified findings on a page (claude.ai artifact "Duplication Review 2026-09-28"; each finding cites the original, the duplicate and the landing that brought it). Andrew, asked for the calls only he could make:
+
+“The ground table is an engine rule. Crit base 3 should be counted once. Let's do 2,515 XP by tier. A push does apply ground statuses. There should be no weapon that is zero-handed. The wound badge should weaken the hero in battle, which is either something you can start with or acquire if you trigger deathbed fighting. Everything else is fine as proposed.”
+
+Ruled:
+
+- **The ground table is an engine rule** (finding C6). terrain.ts keeps it, citing DECISIONS 2026-09-24; the Codex's layer list and FUNCTIONS.md are generated from the engine's export — five layers, `layer.weak` among them (C3).
+- **Crit base 3 is counted once** (C1). The engine's 3 is the rule; the converter publishes each unit's authored crit minus 3.
+- **XP per kill is 2 / 5 / 15 by tier** (K7) — dictated "2,515", read as the Codex's `xpByTier` 2/5/15.
+- **A push applies ground statuses** (E4). Every ground beat runs on a push; SWITCHES `pushEntersGround` retires.
+- **No weapon is zero-handed** (E13, K4). Every weapon takes at least one hand; the pack loader refuses `hands: 0`.
+- **The Wounded badge weakens the hero in battle** (K10) — held from the start, or gained when the hero stands at Deathbed Fighting; the kingdom carries it into and out of battle.
+- **Every other finding: fix as proposed** (64 of 65 Fix; C6 Keep). Filed as eight backlog items: `plumbing.vocabulary-export`, `tool.prior-art-audit`, `fix.ground-one-funnel`, `fix.one-effect-vocabulary`, `fix.codex-numbers`, `fix.one-hero-assembly`, `kingdom.reads-engine`, `viewer.reads-engine`.
+- Readings taken under "as proposed", recorded here so they are checked: a unit the ground is painted under takes the entry beat, as the advancing band already does (E3); Codex class vision becomes a delta of 0 for every class, per the 2026-09-03 "everyone has a vision of 6" (C2). Still open, owed before `kingdom.reads-engine` lands (K16): where the XP thresholds to level 10 live, one campaign id scheme, and whether territory battles are Codex encounters.

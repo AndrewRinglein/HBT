@@ -28,6 +28,16 @@ export const FOLD_BASE: Readonly<Record<string, number>> = { swapCost: 1 }
 
 export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 
+/**
+ * The default AI of a kit — the ONE place it is derived (plumbing.vocabulary-export, review
+ * finding C16: the converter derived it three more times). A kit with any ranged attack kites;
+ * the rest close. A row that authors its ai keeps it (aiAuthored); the pack loader fills a hero
+ * row that names none from this (content/index.ts).
+ */
+export function defaultAiOf(attackIds: readonly string[], attacks: Readonly<Record<string, ActionDef>>): string {
+  return attackIds.some((a) => attacks[a]?.attack?.kind === 'ranged') ? 'ranged-kite' : 'melee-aggressive'
+}
+
 export function applyItems(
   base: UnitDef,
   itemIds: readonly string[],
@@ -98,7 +108,7 @@ export function applyItems(
     triggers,
     // role follows the kit; ai follows the kit unless the row authored one
     role: itemIds.length || base.defaultItems ? (anyRanged ? 'ranged' : 'melee') : base.role,
-    ai: base.aiAuthored ? base.ai : (itemIds.length || base.defaultItems ? (anyRanged ? 'ranged-kite' : 'melee-aggressive') : base.ai),
+    ai: base.aiAuthored ? base.ai : (itemIds.length || base.defaultItems ? defaultAiOf(attackIds, attacks) : base.ai),
   }
   return { def, worn }
 }

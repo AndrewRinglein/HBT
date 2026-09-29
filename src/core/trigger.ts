@@ -78,6 +78,14 @@ export const HOOKS: readonly Hook[] = [
   'onDeath', 'onActivationEnd', 'startOfBattle', 'onBurst', 'onBlock',
 ] as const
 
+/**
+ * plumbing.vocabulary-export (2026-09-28): the hooks that fire on the ATTACKER's own triggers
+ * inside its attack (pipeline.ts performAttack: onAttack, then onBlock's attacker role, onMiss,
+ * onHit, onCrit, onDamage, onKill). What the viewer's action bar shows under an attack is this
+ * list, read, never copied (review finding V12: its copy had lost onBlock).
+ */
+export const ATTACKER_HOOKS: readonly Hook[] = ['onAttack', 'onBlock', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill'] as const
+
 /** Hooks that have a natural target. Authoring `target` on any other is a load error. */
 const HAS_TARGET: ReadonlySet<Hook> = new Set<Hook>([
   'onBurst', 'onBlock',
@@ -168,6 +176,10 @@ export type TriggerEffect =
   | { readonly kind: 'stamina.drain'; readonly value: ValueSpec }
   /** capability.vision / ground-layers: paint `layer` in `radius` around the owner ('self') or the hook's target ('target') — Nightfall, The Dark Rushes In. */
   | { readonly kind: 'layer.paint'; readonly layer: string; readonly radius: number; readonly origin: 'self' | 'target' }
+
+/** plumbing.vocabulary-export: every trigger effect kind, checked against the union by tsc — snapshot validation and the exported vocabulary read it. */
+export const TRIGGER_EFFECT_KINDS = ['burstScale', 'status.apply', 'status.remove', 'damage', 'knockback', 'badge.grant', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'stamina.drain', 'layer.paint'] as const satisfies readonly TriggerEffect['kind'][]
+export type TriggerEffectKindsCovered = import('./types.js').Assert<import('./types.js').Covers<TriggerEffect['kind'], typeof TRIGGER_EFFECT_KINDS>>
 
 export type Trigger = {
   readonly id: string

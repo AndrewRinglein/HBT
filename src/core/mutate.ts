@@ -6,7 +6,38 @@ import type { AiModeChange, Ctx, EncounterAiRule, Event, LifeState, Prop, Side, 
 import type { HexId } from './hex.js'
 import { effective } from './stats.js'
 
-export function emit(ctx: Ctx, type: string, causeId: string, fields: Record<string, unknown> = {}): Event {
+/**
+ * EVERY event type the engine emits — plumbing.vocabulary-export (2026-09-28; review finding
+ * K13: the kingdom kept a hand list that named 'phase.end', which is never emitted, and lacked
+ * 'charge.spent'). `emit` takes only these, so tsc refuses a new event that is not listed here;
+ * test/vocabulary.test.ts refuses a listed one no source emits. The life transitions are
+ * `life.<LifeState>` (setLife). Kingdom and viewer label tables are checked against this.
+ */
+export const EVENT_TYPES = [
+  'action.spent', 'activation.begin', 'activation.end', 'activation.idle', 'activation.selected',
+  'ai.anchored', 'ai.coordinated', 'ai.denied', 'ai.focused', 'ai.hunts', 'ai.mode', 'ai.override',
+  'ai.tookHighGround', 'aoo.provoked', 'aoo.skipped', 'area.landed', 'area.marked',
+  'attack.cancelled', 'attack.declared', 'attack.hit', 'attack.miss', 'badge.gained', 'badge.held',
+  'band.advanced', 'battle.begin', 'battle.end', 'bleedout.accelerated', 'bleedout.set',
+  'bleedout.tick', 'block.rolled', 'burst.declared', 'burst.shielded', 'burst.struck',
+  'charge.spent', 'cooldown.set', 'corpse.created', 'corpse.eaten', 'corpse.removed',
+  'crit.branch', 'crit.effect', 'damage.applied', 'deathbed.fell', 'deathbed.none',
+  'deathbed.stood', 'encounter.begin', 'encounter.lost', 'encounter.objective', 'encounter.roll',
+  'encounter.wave', 'encounter.won', 'error.settleOverflow', 'heal.applied', 'heal.boosted',
+  'hp.reset', 'kdb.rolled', 'knockback.blocked', 'knocked', 'layer.cancelled', 'layer.painted',
+  'light.cast', 'loadout.swapped', 'map.loaded', 'maxHp.gained', 'maxHp.lost', 'maxstamina.gained',
+  'move.begin', 'move.stopped', 'moved', 'night.fell', 'phase.begin', 'phase.end.begin',
+  'phase.end.done', 'phase.rung', 'power.exhausted', 'power.gained', 'power.hit', 'power.used',
+  'prop.damaged', 'prop.destroyed', 'prop.struck', 'stamina.drained', 'stamina.gained',
+  'stamina.regen', 'stamina.spent', 'staminaMax.lost', 'statmod.added', 'statmod.expired',
+  'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
+  'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
+  'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
+  'unit.proned', 'unit.raised', 'unit.shunted', 'unit.stood', 'zoc.ignored',
+] as const
+export type EventType = (typeof EVENT_TYPES)[number] | `life.${LifeState}`
+
+export function emit(ctx: Ctx, type: EventType, causeId: string, fields: Record<string, unknown> = {}): Event {
   const e: Event = {
     seq: ctx.state.seq++,
     turn: ctx.state.turn,

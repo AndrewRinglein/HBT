@@ -9,7 +9,7 @@ import { decodeProps, decodeFloor } from './props.js'
 import { decodeEntries } from '../content/maps.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
-import { validateTrigger, type Trigger } from './trigger.js'
+import { validateTrigger, TRIGGER_EFFECT_KINDS, type Trigger } from './trigger.js'
 import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx } from './types.js'
 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'aiModes' | 'units' | 'arrive'>
@@ -151,7 +151,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(typeof t.id === 'string' && typeof t.source === 'string', 'trigger identity')
       validateTrigger(t as Trigger)
       const e = t.effect
-      requireThat(['burstScale', 'status.apply', 'status.remove', 'damage', 'knockback', 'badge.grant', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'stamina.drain', 'layer.paint'].includes(e.kind), 'trigger effect')
+      requireThat((TRIGGER_EFFECT_KINDS as readonly string[]).includes(e.kind), 'trigger effect')   // plumbing.vocabulary-export: the list, not a copy
       if (['status.apply', 'status.remove'].includes(e.kind)) requireThat(typeof e.statusId === 'string' && Object.hasOwn(runtime.statuses, e.statusId), 'trigger status')
       if (e.kind === 'badge.grant') requireThat(typeof e.badgeId === 'string' && Object.hasOwn(runtime.badges, e.badgeId), 'trigger badge')
       if (e.kind === 'damage') requireThat(isDamageType(e.damageType), 'trigger damage type')

@@ -16,9 +16,13 @@ import { decodeProps, decodeFloor } from '../core/props.js'
 import { validateTrigger } from '../core/trigger.js'
 import { layerOfId } from './terrain.js'   // encounter.area-fall: a fall names its ground layer
 import type { StatusDef } from '../core/status.js'
-const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat', 'stamina.gain',
-  // capability.stealth, 2026-09-28
-  'reveal']
+// plumbing.vocabulary-export (2026-09-28): the effect kinds and the stat names are the engine's
+// lists (core/types.ts, core/items.ts), never copies — review findings C10 (five stat lists here,
+// the aura one missing vision, thorns and swapCost) and the effect-kind copy that stood here.
+import { ABILITY_EFFECT_KINDS } from '../core/types.js'
+import { FOLDABLE } from '../core/items.js'
+const EFFECT_KINDS: readonly string[] = ABILITY_EFFECT_KINDS
+const STATS: readonly string[] = FOLDABLE
 export function validateActionMetadata(row: { readonly id: string; readonly slot?: unknown; readonly free?: unknown }): void {
   if (row.slot !== undefined && !['movement', 'primary', 'either'].includes(row.slot as string)) throw new Error(`unit pack: invalid action slot '${String(row.slot)}' on '${row.id}'`)
   if (row.free !== undefined && typeof row.free !== 'boolean') throw new Error(`unit pack: invalid free action flag on '${row.id}'`)
@@ -40,7 +44,9 @@ import { statusDamage, statusHeal } from '../core/status.js'
 
 const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge',
   'strength', 'precision', 'magic', 'spirit', 'role', 'movement', 'reach',
-  'maxStamina', 'staminaRegen', 'ai', 'attacks',
+  // 'ai' left 2026-09-28 (plumbing.vocabulary-export, finding C16): a hero row that names no ai
+  // takes the kit's default from core/items.ts defaultAiOf, filled by content/index.ts.
+  'maxStamina', 'staminaRegen', 'attacks',
   // moves joined 2026-08-21 — movement is a granted CHOICE, read from the
   // data like everything else; a pack row without one is a pipeline bug.
   'moves'] as const
@@ -86,14 +92,18 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
     if (out[r.typeId]) throw new Error(`unit pack: duplicate typeId '${r.typeId}'`)
     out[r.typeId] = r
   }
-  // capability.auras (2026-09-03): every aura well-formed, its stats the engine's
-  for (const [k, u] of Object.entries(out)) {
+  validateAuras(out)
+  return out
+}
+
+/** capability.auras (2026-09-03): every aura well-formed, its stats the engine's (FOLDABLE — an aura may lend Thorns, Vision or a swap cost like any other stat). */
+export function validateAuras(units: Readonly<Record<string, UnitDef>>): void {
+  for (const [k, u] of Object.entries(units)) {
     for (const a of u.auras ?? []) {
       if (!a.id.startsWith('aura.') || !Number.isInteger(a.radius) || a.radius < 0) throw new Error(`unit pack: '${k}' aura '${a.id}' is malformed`)
-      for (const st of Object.keys(a.mods)) if (!['strength', 'precision', 'magic', 'spirit', 'accuracy', 'dodge', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'movement', 'reach', 'crit', 'luck', 'maxHp', 'maxStamina', 'staminaRegen', 'toughness', 'surge'].includes(st)) throw new Error(`unit pack: '${k}' aura '${a.id}' lends '${st}', not a stat`)
+      for (const st of Object.keys(a.mods)) if (!STATS.includes(st)) throw new Error(`unit pack: '${k}' aura '${a.id}' lends '${st}', not a stat`)
     }
   }
-  return out
 }
 
 /** The pack's own note — surfaced so tooling can print WHY these units exist. */
@@ -341,7 +351,6 @@ export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
 export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as { items?: Readonly<Record<string, ItemDef>> }).items ?? {}
   const CLASSES = ['weapon', 'shield', 'armor', 'trinket', 'relic', 'idol', 'bloodrune', 'consumable']
-  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id) throw new Error(`item pack: key '${k}' names id '${it.id}'`)
     if (!k.startsWith('item.')) throw new Error(`item pack: '${k}' is not an item.* id`)
@@ -435,7 +444,6 @@ export function packLevels(): Readonly<Record<string, LevelTable>> {
  * the engine folds, every flag a known one, every trigger well-formed with the
  * badge as its source.
  */
-const BADGE_STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost']
 const BADGE_FLAGS = ['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']   // the last two: v2.kdb (COMBAT-V2 §9.5)
 /**
  * station.vs-target (2026-09-25): a rule names exactly one predicate — a tag or a
@@ -460,7 +468,7 @@ function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, 
     if (k !== b.id) throw new Error(`${where}: badge key '${k}' names id '${b.id}'`)
     if (!family(k)) throw new Error(`${where}: '${k}' is not in this registry's id family`)
     validateNamedResists(b.statModifiers ?? {}, k)
-    for (const [st, v] of Object.entries(b.statModifiers ?? {})) if (!BADGE_STATS.includes(st) || typeof v !== 'number') throw new Error(`${where}: badge '${k}' modifies '${st}' — not an engine stat`)
+    for (const [st, v] of Object.entries(b.statModifiers ?? {})) if (!STATS.includes(st) || typeof v !== 'number') throw new Error(`${where}: badge '${k}' modifies '${st}' — not an engine stat`)
     for (const f of Object.keys(b.flags ?? {})) if (!BADGE_FLAGS.includes(f)) throw new Error(`${where}: badge '${k}' carries unknown flag '${f}'`)
     if (!Array.isArray(b.grants)) throw new Error(`${where}: badge '${k}' has no grants list — regenerate the pack`)
     for (const t of b.triggers ?? []) { validateTrigger(t); if (t.source !== k) throw new Error(`${where}: badge '${k}' trigger '${t.id}' names source '${t.source}'`) }
@@ -480,7 +488,6 @@ export function packTestBadges(): Readonly<Record<string, BadgeDef>> {
 /** The enchanted tier-3 rows — ITEMS-PLAN.md §6: generated, base + enchant, never hand-edited. Validated like items. */
 export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as unknown as { enchanted?: Readonly<Record<string, ItemDef & { base: string; enchant: string }>> }).enchanted ?? {}
-  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id || !k.startsWith('item.')) throw new Error(`enchanted: bad key '${k}'`)
     if (typeof it.base !== 'string' || typeof it.enchant !== 'string') throw new Error(`enchanted: '${k}' does not name its base and enchant`)
@@ -510,7 +517,6 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
  */
 export function packDerivedItems(items: Readonly<Record<string, ItemDef>>, attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
   const raw = (UNIT_PACK as unknown as { derivedItems?: Readonly<Record<string, ItemDef & { base: string; enchant?: string }>> }).derivedItems ?? {}
-  const STATS = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id || !k.startsWith('item.')) throw new Error(`derived items: bad key '${k}'`)
     if (it.tier !== 2) throw new Error(`derived items: '${k}' is tier ${String(it.tier)} — a Forge row is tier 2`)

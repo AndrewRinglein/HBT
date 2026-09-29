@@ -53,6 +53,16 @@ export const TERRAIN = {
   WALL: 17, TOWER: 18, HOUSE: 19,
 } as const
 export type LifeState = 'standing' | 'downed' | 'dead'
+/**
+ * plumbing.vocabulary-export (2026-09-28; DECISIONS.md "the duplication review, ruled"): a
+ * runtime list beside its union, checked by tsc both ways — `Covers` is true only when the
+ * list names every member, and `satisfies` refuses a stranger. The kingdom, the viewer and
+ * the content tools read these lists (src/core/vocabulary.ts) instead of keeping copies.
+ */
+export type Covers<U, L extends readonly unknown[]> = [Exclude<U, L[number]>] extends [never] ? true : false
+export type Assert<T extends true> = T
+export const LIFE_STATES = ['standing', 'downed', 'dead'] as const satisfies readonly LifeState[]
+export type LifeStatesCovered = Assert<Covers<LifeState, typeof LIFE_STATES>>
 export type DamageType = 'physical' | 'magic' | 'fire' | 'poison' | 'shadow' | 'true'
 export function isDamageType(value: unknown): value is DamageType {
   return typeof value === 'string' && ['physical', 'magic', 'fire', 'poison', 'shadow', 'true'].includes(value)
@@ -81,6 +91,8 @@ export type FallDef = {
 }
 
 export type Outcome = 'heroClear' | 'objectiveMet' | 'wipe' | 'retreat' | 'capped' | 'objectiveFailed'
+export const OUTCOMES = ['heroClear', 'objectiveMet', 'wipe', 'retreat', 'capped', 'objectiveFailed'] as const satisfies readonly Outcome[]
+export type OutcomesCovered = Assert<Covers<Outcome, typeof OUTCOMES>>
 
 /**
  * An ENCOUNTER as the engine consumes it — encounter.runner (2026-09-03),
@@ -530,6 +542,11 @@ export type AbilityDef = ActionDef
 
 /** Every effect kind an action may carry — the power effects and the movement riders, one list. */
 export type ActionEffect = AbilityEffect | MoveEffect
+/** plumbing.vocabulary-export: the effect kinds a power (`AbilityEffect`) and a move rider (`MoveEffect`) may say — pack.ts validates against these, never a copy. */
+export const ABILITY_EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'stamina.gain', 'knockback', 'corpse.eat', 'reveal'] as const satisfies readonly AbilityEffect['kind'][]
+export type AbilityEffectKindsCovered = Assert<Covers<AbilityEffect['kind'], typeof ABILITY_EFFECT_KINDS>>
+export const MOVE_EFFECT_KINDS = ['gainStamina', 'loseMaxStamina', 'stand', 'statMod'] as const satisfies readonly MoveEffect['kind'][]
+export type MoveEffectKindsCovered = Assert<Covers<MoveEffect['kind'], typeof MOVE_EFFECT_KINDS>>
 
 /**
  * What a movement power DOES beyond moving — the rider on a bonus move.

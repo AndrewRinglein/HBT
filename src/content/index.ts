@@ -7,6 +7,7 @@ import { disabledIds, omitDisabled, stripDisabledTriggers } from './disable.js'
 import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packDerivedItems, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
 import { MOVES } from './moves.js'
 import { AI_MODE_ROWS } from './ai-modes.js'
+import { defaultAiOf } from '../core/items.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -267,7 +268,23 @@ export const SPECIALTIES = omitDisabled(packSpecialties())
 // The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
 // A collision is a LOUD failure: the pack owns test- ids, this file owns the
 // rest, and neither may quietly shadow the other.
-const PACK = packUnits()
+const PACK = withDefaultAi(packUnits())
+/**
+ * plumbing.vocabulary-export (2026-09-28; review finding C16): a pack row that authors no ai
+ * takes its kit's default — defaultAiOf over the row's own attacks and what its default items
+ * grant, the same function fielding uses (core/items.ts). The converter derived it three more
+ * times; it no longer does. The key keeps its place before `attacks`.
+ */
+function withDefaultAi(units: Readonly<Record<string, UnitDef>>): Readonly<Record<string, UnitDef>> {
+  const out: Record<string, UnitDef> = {}
+  for (const [k, u] of Object.entries(units)) {
+    if (u.ai !== undefined) { out[k] = u; continue }
+    const kit = [...(u.defaultItems ?? []).flatMap((id) => ITEMS[id]?.grants ?? []), ...u.attacks]
+    const ai = defaultAiOf(kit, ACTIONS)
+    out[k] = Object.fromEntries(Object.entries(u).flatMap(([f, v]) => f === 'attacks' ? [['ai', ai], [f, v]] : [[f, v]])) as unknown as UnitDef
+  }
+  return out
+}
 for (const k of Object.keys(PACK)) {
   if (k in RAW_UNITS) throw new Error(`unit '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
 }

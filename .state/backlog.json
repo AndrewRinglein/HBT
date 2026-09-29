@@ -5186,5 +5186,96 @@
    "content.flaming-longsword"
   ],
   "note": "Cut 2026-09-28. Switch: a civilian who died in their battle does not join ('The units dying is their own punishment' read that way). Kingdom commits in its own repository."
+ },
+ {
+  "id": "plumbing.vocabulary-export",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Duplication review 2026-09-28 (DECISIONS.md 'the duplication review, ruled'; page findings C10 C11 C16 C17 K6 K13 V12). The engine exports ONE vocabulary: stat names (FOLDABLE), trigger hooks (HOOKS), action and trigger effect kinds, battle outcomes, event types it emits, ground layer ids and what each applies, terrain ids and glyphs — as a module the other packages import and as a generated JSON the content tools read. Every hand copy then reads it: pack.ts's five stat lists and the aura list (which gains vision, thorns, swapCost); mkenginepack.mjs's two hook sets and eight stat-word maps become one map checked against the export; the converter's default-AI derivation is deleted (core/items.ts:101 owns it); the converter's targeting phrase tables are checked against gen/functions.json; kingdom ENGINE_EVENTS and OUTCOMES/LIFE, and the viewer's ATTACK_HOOKS/HOOKLBL/effectWord, are checked against the export. Prior art: each list named here already exists; this item removes the copies, it adds no concept.",
+  "expect": "One exported vocabulary; grep finds no second hand list of stats, hooks, effect kinds or outcomes in engine/src, the converter, kingdom/src or viewer/src; a Codex aura lending thorns loads; content/audit.mjs's ENGINE_EFFECTS/ENGINE_STATUSES read the export; kingdom and viewer label tables fail their own checks when the engine adds a hook or event they do not name. Battles byte-identical.",
+  "changesBaseline": true,
+  "note": "Foundation for tool.prior-art-audit and the three fix items; carried across engine, content, kingdom and viewer, each committing in its own repository. changesBaseline set true 2026-09-28 by the landing chat: the one stat map compiles Blinded's -4 Vision (the crit chart's stale 'no vision model' gap), which moves seven control maps; with that one effect removed the controls are byte-identical (SWITCHES.md vocabularyStatMapWidens).",
+  "status": "done",
+  "sha": "90c1010"
+ },
+ {
+  "id": "tool.prior-art-audit",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "plumbing.vocabulary-export"
+  ],
+  "spec": "Duplication review 2026-09-28, the prevention (page section 'Prevention'). tools/audit-all.mjs writes .state/inventory.json across all four packages (string vocabularies of 3+ ids, exported names, effect kind literals, hook/stream/outcome/event lists, id literals by family) and diffs it against its last run. Three flags, each only for what is new: (1) look-alike vocabulary — a new list overlapping an existing list in another file by 75% or more, with the difference; (2) same name, second home — a new function or constant whose name exists in another file or package; (3) funnel bypass — a new call to a concept owner's inner primitives from outside the owner, against a short ruled list (entering a hex -> enterGround; direct typed damage -> the one damage function; applying an effect -> the one interpreter; counting hands -> the one hands helper). The gate prints the flags for an item's added lines and records them in the ledger; an item whose lines raise a flag needs a priorArt line in its spec naming what it resembles and why it is not the same, else it lands done-needs-review. Plus jscpd on changed files against all four packages.",
+  "expect": "Run on the review's pinned tree the audit flags at least LAYER_STATUS vs LAYER_IDS, OUTCOMES vs Outcome, the hook copies, levelTableOf, loadoutOf and fnv1a; a scratch item that adds a copy of HELD_CLASSES or calls appliesOnEnterOf from movement.ts is flagged; an item with a priorArt line naming it lands normally.",
+  "changesBaseline": false
+ },
+ {
+  "id": "fix.ground-one-funnel",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "plumbing.vocabulary-export"
+  ],
+  "spec": "Duplication review 2026-09-28, findings E1 E2 E3 E4 C3 C4 C6 C7 V3 V9. Andrew: 'The ground table is an engine rule.' 'A push does apply ground statuses.' One owner for every way a unit meets the ground (core/ground.ts). (1) executeSidestep calls enterGround — the painted layer's entry beat now applies on a sidestep (E1). (2) A push runs every ground beat, not the hazard only — retire SWITCHES pushEntersGround; correct hazardDamageFirst's '2 Burn' to the row's 1 (E4). (3) Lava's Burn moves from hazard.applies to appliesOnEnter/appliesOnActivationEnd; hazard keeps the damage (E4). (4) Burning and poisoned ground are layers only: authored 'b'/'p' paint layer.burning/layer.poisoned at setup; TERRAIN.BURNING/POISONED retire; paintLayer uses LAYER constants, not 1/2; vision's burning-reveal needs no terrain case (E2). (5) One paint-with-occupants function used by the band, the trigger layer.paint and setup paint; the entry beat applies to a unit the ground is painted under, as the band already does — recorded in SWITCHES as the reading, one rule (E3). (6) The ground table stays in terrain.ts as an engine rule, citing DECISIONS 2026-09-24 (C6). (7) The Codex's rule.ground-layers text and FUNCTIONS.md's layer list are generated from the engine's exported layer list — five layers incl. layer.weak (C3). (8) content/map-schema.mjs validates glyphs against the engine's GLYPH (C4). (9) The viewer takes layer->status and the terrain list from the engine export (V3, V9). Prior art: enterGround, LAYER_TRAITS, paintLayer — this item removes their duplicates.",
+  "expect": "A sidestep onto layer.weak gives +1 Weak on entry; a unit knocked onto burning ground gains Burn and one knocked through water sheds it; lava applies 1 Burn and 3 fire through the same fields as burning ground; a map with 'b' fields layer.burning and a hero there in darkness is revealed; a trigger painting layer.weak under a standing unit gives +1 Weak; a V2-ground map passes the content validator; the viewer draws layer.weak from the export. Changes battles on burning/poisoned maps and every push.",
+  "changesBaseline": true,
+  "note": "Do first among the review items: the opening battles use cursed ground (layer.weak) now. C7's Creeping Blight rewrite waits on fix.one-effect-vocabulary (layer.paint is trigger-only today)."
+ },
+ {
+  "id": "fix.one-effect-vocabulary",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "plumbing.vocabulary-export"
+  ],
+  "spec": "Duplication review 2026-09-28, findings E5 E6 E7 E8 C7 C13 C14 C20. One effect union and one applyEffect used by actions, triggers, move riders and crit rows; one name per mutator (stamina.gain/gainStamina, stamina.drain/loseStamina, knockback/push, status.apply/status); one duration set for statMod including end of Activation; flat damage and stat damage stay two distinct kinds in the one union; snapshot validation reads the union. The legacy power fields (effect/stat/bonus/heal/guard) retire: the converter emits effects for every power and selfGuard becomes status.apply Protection + statMod, so core names no status id. One dealDirectDamage for the six inline absorb->flatDamage->spend->applyDamage copies; one packet planner shared by attack and burst; cited LOW_COVER_ACCURACY read from the ledger by the miss event; DMG.BURST_SAVE and BURST_LOW_COVER_ABSORB. Then rewrite Creeping Blight to paint layer.poisoned. Prior art: trigger.ts applyEffect is the survivor.",
+  "expect": "grep finds one effect interpreter and one direct-damage function; every existing battle byte-identical except rows whose compiled meaning was wrong (C20's end-of-Activation, stated in the landing); 'remove N of a status' works from a trigger; power.holy-symbol.heal resolves through effects.",
+  "changesBaseline": false,
+  "note": "Law 1 / 2 area — say so in the commit. If any control battle moves, the item names which row and why."
+ },
+ {
+  "id": "fix.codex-numbers",
+  "kind": "content",
+  "shape": "numbers",
+  "spec": "Duplication review 2026-09-28, findings C1 C2 C5 C8 C9 C21 K7. Andrew: 'Crit base 3 should be counted once.' '2, 5, 15 XP by tier.' (1) Crit: the engine's base 3 (pipeline.ts critChanceOf) is the rule; the converter publishes each unit's authored crit minus 3 (hero rogue +2, warrior 0); enemy crit values authored as totals are published the same way — list every enemy row whose crit changes in the landing (C1). (2) Vision: the engine's 6 is ruled (DECISIONS 2026-09-03); Codex derivedBase.vision becomes a delta of 0 for every class, and the converter emits it or names a gap (C2). (3) Bleed-out and Deathbed: keep the engine formulas; bleedOut and a Deathbed bonus become foldable stats the Codex base and the badges (Death Seeker, Survivor, Thick Blooded) feed; the Codex browser reads an engine-derived value (C9). (4) The 2026-09-02 price ladder goes into gen/classes.json stats; checklevels, build-viewer and mklevelsmd read D.stats (C8). (5) Restore Angela's 2026-08-20 beast rulings (spirit-snake, green-drake, shadow-hound-puppy) into settled.json + assemble.mjs, then delete assemble.HEAD.mjs and settled.HEAD.json (C5, C21). (6) Publish enemy tier and xpByTier 2/5/15 so the kingdom can pay XP by tier (K7).",
+  "expect": "A level-1 warrior's crit chance is 3 and a rogue's 5 before gear; test/crit.test.ts updated with the written reason; every hero sees 6; a Death Seeker bleeds out in 2; LEVEL-TABLES.md shows one ladder; the Codex beast rows match the dictated numbers; the engine pack carries tier on enemy rows.",
+  "changesBaseline": true
+ },
+ {
+  "id": "fix.one-hero-assembly",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "plumbing.vocabulary-export"
+  ],
+  "spec": "Duplication review 2026-09-28, findings E10 E11 E12 E13 E14. Andrew: 'There should be no weapon that is zero-handed.' (1) One assembler: fieldedDef(typeId, {items, stowed, used, progress, badges, heroMods}) that createBattle and createCustomBattle both call, so the Equip preview and the battle cannot disagree (E10, E11). (2) One foldStats helper for items, progress and badges; swap's fold reads FOLDABLE/FOLD_BASE the same way (E12). (3) One HANDS constant and one handsOf(item) in core; every weapon takes at least one hand — the Codex rows with hands 0 (claws, fangs, hooves, horns, tail, breath and their forge variants) become 1, and the pack loader refuses hands 0; progression.ts's HELD copy goes (E13). Check every beast/enemy kit for more than two hands after the change and list any in the landing. (4) One enterUnit mutator building unit.enter; one name-label function (E14).",
+  "expect": "fieldedDef and createBattle return the same def for the same options; a zero-hand item fails the pack load; a fixture hero carries badge.hero; one unit.enter shape for fielded, arrived and custom units.",
+  "changesBaseline": true,
+  "note": "Zero-hand retirement may push a natural-weapon enemy past two hands; the landing names each such row for Andrew rather than inventing a fix."
+ },
+ {
+  "id": "kingdom.reads-engine",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "fix.one-hero-assembly",
+   "fix.codex-numbers"
+  ],
+  "spec": "Duplication review 2026-09-28, findings K1-K18 and V10 (kingdom half). Andrew: 'The wound badge should weaken the hero in battle, which is either something you can start with or acquire if you trigger deathbed fighting.' The kingdom stops keeping second copies of engine facts: level table by levelTableOf (civilians on their type tables) (K1, V10); item packs published once from the engine's compiled rows plus campaign fields, mk-items steps 1-4 retired (K2); set bonuses passed as heroMods (K3); hands and held classes from the engine (K4); item uses from the granted power (K8); heroes built from engine rows like sandboxHeroesOf, Lucius/Osric resolved (K9); wounds are badge.wounded — carried into battle via heroBadges, and a badge gained at Deathbed kept after the battle; badge.fatigued/exhausted added to the Codex (K10); stat labels keyed by engine names (K11); the hash from the engine (K12); prologue battles are Codex encounters, outcomes from the engine (K5, K6); XP by tier 2/5/15 (K7); draft card from fieldedDef (K14); LEVELS/SPECIALTIES/kits through engine.ts (K15); classes generated (K17); one level-up loop in autoplay (K18).",
+  "expect": "A Farmer levels on civilian.farmer and its level-5 pick fields; the Equip card and the battle show the same numbers for a set-bonus hero; the Net is one-use in battle; a hero who stood at Deathbed fights the next battle Wounded; a tier-2 kill pays 5 XP.",
+  "changesBaseline": false,
+  "note": "Open before it lands (K16, ruled 'fine as proposed' but the proposal asked): where the XP thresholds to level 10 live, one campaign id scheme (realm.* vs Codex campaign ids), and whether territory battles are Codex encounters. The kingdom is on hold for the opening six — file, do not start, until it resumes."
+ },
+ {
+  "id": "viewer.reads-engine",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "plumbing.vocabulary-export"
+  ],
+  "spec": "Duplication review 2026-09-28, findings V1 V2 V4 V5 V6 V7 V8 V11 V12 V13 V14. The viewer reads engine facts instead of recomputing them: action lists and kinds from the engine (Charges and the prone Stand appear; ignoresZoc read from the move) (V1); the danger marker calls dmgOf/preview and loses its hand table (V2); one absorbing-status sum for panel and board (V4); one status->style map, tick flag from the pack (V5); resting movement and move range from engine events, verify.mjs stops using the same formula as its oracle (V6); surge.hit's movePoints and after read, not recomputed (V7); aura coverage matches the engine or is marked an exemption (V8); one sentence table for the log, the engine CLI's stale 'bleed-out 3' removed (V11); hook and effect labels checked against the export (V12); hexvfx's second geometry deleted (V13); dump-fields compares an engine geometry stamp (V14).",
+  "expect": "The fast zombie's Charge shows in its action bar; a prone unit shows Stand; the test zombies' danger reads 4; status.weak plays Weak's style; after a Surge the movement numeral is the engine's.",
+  "changesBaseline": false,
+  "note": "Batch with the next viewer work."
  }
 ]
