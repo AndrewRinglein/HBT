@@ -1,5 +1,17 @@
 [
  {
+  "id": "fix.badge-surge-at-fielding",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [],
+  "changesBaseline": false,
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'Possession's Surge loads at fielding; ...'): 'The -10 surge per turn cannot be relevant until the next battle. It can be loaded on load.' A badge granted mid-battle folds its runtime-resolvable stats at once; a stat the runtime never resolves (Surge, Toughness - read off the unit, folded at fielding) is not added as a modifier nothing reads: badge.gained names it as atFielding. Fielded with the badge (the next battle), the unit carries it. Engine rule: grantBadge defers every non-resolvable stat to fielding.",
+  "expect": "Possession granted mid-battle adds +2 Magic, +1 Resist, +3 Vision now and leaves Surge unchanged, its gain line naming atFielding {surge: -10}; a hero fielded Possessed has 10 less Surge; a badge with no such stat names nothing.",
+  "attempts": 1,
+  "status": "done",
+  "sha": "634648c"
+ },
+ {
   "id": "content.afflictions-revised",
   "kind": "content",
   "shape": "data",

@@ -4,7 +4,7 @@
 
 import type { AiModeChange, Ctx, EncounterAiRule, Event, LifeState, Prop, Side, Unit, UnitMods } from './types.js'
 import type { HexId } from './hex.js'
-import { effective } from './stats.js'
+import { effective, isStatName } from './stats.js'
 import { LAYER } from '../content/terrain.js'
 
 /**
@@ -172,9 +172,15 @@ export function grantBadge(ctx: Ctx, id: number, badgeId: string, causeId: strin
   if (!b) throw new Error(`grantBadge: '${badgeId}' is not a badge in the registry`)
   if (u.badges.includes(badgeId)) { emit(ctx, 'badge.held', causeId, { actor: id, badgeId }); return false }
   u.badges.push(badgeId)
-  emit(ctx, 'badge.gained', causeId, { actor: id, badgeId, name: b.name, mods: b.statModifiers, flags: b.flags, ...(b.gaps ? { gaps: b.gaps } : {}) })
+  // fix.badge-surge-at-fielding (2026-09-29, Andrew, DECISIONS.md 'Possession's Surge loads at fielding'):
+  // "The -10 surge per turn cannot be relevant until the next battle. It can be loaded on load." A stat the
+  // runtime never resolves (Surge, Toughness — read off the unit, folded at fielding) waits for the next
+  // fielding; the gain line names it rather than adding a modifier nothing reads.
+  const atFielding = Object.fromEntries(Object.entries(b.statModifiers).filter(([stat, value]) => value && !isStatName(stat)))
+  emit(ctx, 'badge.gained', causeId, { actor: id, badgeId, name: b.name, mods: b.statModifiers, flags: b.flags, ...(b.gaps ? { gaps: b.gaps } : {}), ...(Object.keys(atFielding).length ? { atFielding } : {}) })
   for (const [stat, value] of Object.entries(b.statModifiers)) {
     if (!value) continue
+    if (Object.hasOwn(atFielding, stat)) continue
     if (stat === 'maxHp') { if (value > 0) gainMaxHp(ctx, id, value, badgeId); else loseMaxHp(ctx, id, -value, badgeId); continue }
     if (stat === 'maxStamina') { if (value < 0) loseMaxStamina(ctx, id, -value, badgeId); else { u.maxStamina += value; emit(ctx, 'maxstamina.gained', badgeId, { target: id, amount: value, maxStamina: u.maxStamina }) }; continue }
     addStatMod(ctx, id, { stat: stat as import('./stats.js').StatName, op: 'add', value, source: badgeId, scope: 'unit' }, badgeId)

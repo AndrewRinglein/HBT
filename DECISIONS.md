@@ -3391,3 +3391,16 @@ Ruled:
 What the engine cannot yet do is a named gap on the badge row, never dropped: Deathbed Fighting from a badge, a badge's own hit-trigger (heal 2), immunity to a status, a cold damage type, deploy costs and half experience (the kingdom's).
 
 Filed: `content.afflictions-revised`.
+
+## 2026-09-29 — Possession's Surge loads at fielding; the Ghost inflicts Possession; Deathbed Fighting and Cold Heart's immunities are built
+
+Andrew, asked (1) whether to build Deathbed Fighting from badges next, (2) whether to build status immunity and a cold damage type so Cold Heart does more than +2 Health, (3) whether ghosts should inflict Possession — and told its −10 Surge may need extra engine work mid-battle:
+
+“The -10 surge per turn cannot be relevant until the next battle. It can be loaded on load. Ghost should inflict possession, and yes to 1 and 2.”
+
+Ruled:
+
+- **A badge's Surge is folded when the unit is fielded, never mid-battle.** A hero possessed in a fight gains the badge's other stats at once and its −10 Surge from the next battle on.
+- **The Ghost inflicts Possession.** (Its rider already exists: Possess, 25%, SOFT — `content/gen/bestiary-riders.json`. The Ghost is not an authored enemy, so it is not in the engine pack.)
+- **Build Deathbed Fighting from badges** (the entry above's +15 / +20 / −10).
+- **Build status immunity and cold as an element**: Cold Heart's immunity to Karma, and to Cold — cold damage and the Frost status, as fire resistance covers fire damage and Burn.
