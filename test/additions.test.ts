@@ -46,7 +46,10 @@ describe('pass 2 — hills', () => {
     // The RULE is that no two maps are the same board. Hill COUNT was a proxy for
     // that, and it broke the moment two different maps happened to have 28 hills
     // each (flanks and field). Assert the layout, which is what we actually mean.
-    const layouts = MAPS.map(m => { const { board, terrain, props } = decodeMap(m); return JSON.stringify({ board, terrain, props }) })
+    // fix.funnel-goldens (2026-09-29), Law 10: 'b'/'p' are painted layers on open ground now
+    // (fix.ground-one-funnel), so a map's board is also what it paints — without it test.map.embers
+    // read as map.open. The rule is unchanged: no two maps are the same board.
+    const layouts = MAPS.map(m => { const { board, terrain, props, paint } = decodeMap(m); return JSON.stringify({ board, terrain, props, paint }) })
     expect(new Set(layouts).size).toBe(MAPS.length)
   })
   it('gate 2 — hills cost 2 movement, open ground 1', () => {

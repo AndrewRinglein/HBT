@@ -1,5 +1,15 @@
 [
  {
+  "id": "fix.funnel-goldens",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "plumbing.vocabulary-export (landed 2026-09-29, 6f5b303) and fix.ground-one-funnel (ebcd407) moved golden bytes the full suite checks (the chat's shards 4/8 and 8/8): eight battle-cursor cases (Blinded's -4 Vision now compiles; '+N health for the Battle' on the Ghoul, Vampire, Vampire Lord and Lieutenant Demon; lava's Burn before its fire; 'b'/'p' as painted layers; a push meets every ground beat); the field bytes of test.map.embers and test.map.showcase ('b'/'p' decode to open ground under a painted layer); and additions.test.ts's 'no two maps are the same board', which compared terrain and props only, so test.map.embers now reads as map.open. Freeze every cursor case's full hashes in a new layer (tools/capture-funnel-cursor.mts -> test/fixtures/battle-cursor-funnel.json, the fix.raise-two-cursor pattern; a case marked changed is checked there and skips the older layers); freeze the two maps' new field bytes in an override fixture (the fix.ground-goldens pattern); a map's board includes what it paints (decodeMap's paint). No engine code changes.",
+  "expect": "The whole battle-cursor suite passes with exactly the moved cases marked changed; viewer-direct-map passes with only the two maps overridden; additions.test.ts passes with the paint in the layout; every older fixture is byte-identical.",
+  "note": "Found by the chat's full-suite shards after the two landings ran only their own tests, the gate's design since 2026-09-23.",
+  "status": "done-needs-review",
+  "sha": "f5d10ac"
+ },
+ {
   "id": "fix.opening-maps-off-panel",
   "kind": "engine",
   "shape": "plumbing",

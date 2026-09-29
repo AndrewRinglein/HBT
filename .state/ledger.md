@@ -18240,3 +18240,101 @@ index c97eb33..442ef3a 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.funnel-goldens — LANDED `f5d10ac` **NEEDS REVIEW**
+2026-09-29 01:49
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:11
+  PASS  typecheck
+  PASS  the item's own tests — test/additions.test.ts, test/battle-cursor.test.ts, test/viewer-direct-map.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/additions.test.ts, test/battle-cursor.test.ts, test/viewer-direct-map.test.ts, test/fixtures/battle-cursor-funnel.json, test/fixtures/field-cli-funnel.json
+  WARN  existing tests untouched — DELETED LINES in test/additions.test.ts (-1), test/battle-cursor.test.ts (-2), test/viewer-direct-map.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index 9275a52..d6f071d 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -47,5 +47,8 @@ describe('pass 2 — hills', () => {
+     // that, and it broke the moment two different maps happened to have 28 hills
+     // each (flanks and field). Assert the layout, which is what we actually mean.
+-    const layouts = MAPS.map(m => { const { board, terrain, props } = decodeMap(m); return JSON.stringify({ board, terrain, props }) })
++    // fix.funnel-goldens (2026-09-29), Law 10: 'b'/'p' are painted layers on open ground now
++    // (fix.ground-one-funnel), so a map's board is also what it paints — without it test.map.embers
++    // read as map.open. The rule is unchanged: no two maps are the same board.
++    const layouts = MAPS.map(m => { const { board, terrain, props, paint } = decodeMap(m); return JSON.stringify({ board, terrain, props, paint }) })
+     expect(new Set(layouts).size).toBe(MAPS.length)
+   })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 14b9f0c..b1a0649 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -133,4 +133,10 @@ const surgeSpendGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
+ // a Necromancer with more than one body in reach) is checked here and skips the older layers.
+ const raiseTwoGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-raise-two.json', import.meta.url), 'utf8'))
++// fix.funnel-goldens (2026-09-29), Law 10: the duplication review's rulings (DECISIONS.md 2026-09-28) —
++// plumbing.vocabulary-export's one stat map compiles Blinded's -4 Vision and '+N health for the Battle';
++// fix.ground-one-funnel runs lava's Burn before its fire, paints 'b'/'p' as layers and gives a push every
++// ground beat. Every case's full hashes are frozen here (tools/capture-funnel-cursor.mts); a case marked
++// `changed` is checked here and skips the older layers. Old fixtures stay immutable.
++const funnelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-funnel.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -238,5 +244,8 @@ describe('resumable battle cursor', () => {
+       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const raiseTwoExpected = raiseTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const raiseTwoMoved = raiseTwoExpected?.changed === true
++      const funnelExpected = funnelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const funnelMoved = funnelExpected?.changed === true
++      // was: const raiseTwoMoved = raiseTwoExpected?.changed === true — a funnel-moved case skips the raise-two layer too (fix.funnel-goldens 2026-09-29)
++      const raiseTwoMoved = raiseTwoExpected?.changed === true || funnelMoved
+       const surgeSpendExpected = surgeSpendGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // fix.raise-two-cursor (2026-09-28): a raise-two-moved case skips the surge-spend layer too
+@@ -280,5 +289,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (raiseTwoExpected) {
++        if (funnelExpected) {
++        expect(hash(ctx.events), 'full funnel events').toBe(funnelExpected.events)
++        expect(hash(ctx.state), 'full funnel state').toBe(funnelExpected.state)
++        expect(hash(ctx.rng.log), 'full funnel RNG').toBe(funnelExpected.rng)
++        expect(result).toEqual(funnelExpected.result)
++        }
++        // was: if (raiseTwoExpected) { — fix.funnel-goldens (2026-09-29): a funnel-moved case is checked above instead
++        if (raiseTwoExpected && !funnelMoved) {
+         expect(hash(ctx.events), 'full raise-two events').toBe(raiseTwoExpected.events)
+         expect(hash(ctx.state), 'full raise-two state').toBe(raiseTwoExpected.state)
+diff --git a/test/viewer-direct-map.test.ts b/test/viewer-direct-map.test.ts
+index c42917a..b761e5a 100644
+--- a/test/viewer-direct-map.test.ts
++++ b/test/viewer-direct-map.test.ts
+@@ -11,4 +11,9 @@ import addedGold from './fixtures/field-cli-knockback.json'
+ // bytes are frozen here and override only those maps; every other map keeps its frozen bytes.
+ import groundGold from './fixtures/field-cli-ground.json'
++// fix.funnel-goldens (2026-09-29), Law 10: burning and poisoned ground became painted layers
++// (fix.ground-one-funnel; DECISIONS.md 2026-09-28 "the duplication review, ruled", review E2) — 'b' and
++// 'p' decode to open ground, which moved the bytes of the two maps that use them. Their new bytes
++// override only those two maps; every other map keeps its frozen bytes.
++import funnelGold from './fixtures/field-cli-funnel.json'
+ import { presentationField, prepareBattleField, initialMapId } from '../src/view/field.js'
+ import { createBattle } from '../src/core/setup.js'
+@@ -25,5 +30,5 @@ describe('readonly initial field preparation',()=>{
+     expect(MAP_PANEL.filter((id) => frozen.includes(id))).toEqual(frozen)
+     for (const id of MAP_PANEL) if (!frozen.includes(id)) expect(id.startsWith('map.opening.'), id).toBe(true)
+-    for(const [id,hash] of Object.entries({...gold, ...addedGold, ...groundGold})) {
++    for(const [id,hash] of Object.entries({...gold, ...addedGold, ...groundGold, ...funnelGold})) {
+       const bytes=execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','tools/field-geometry.mts',id])
+       expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
+```
+</details>

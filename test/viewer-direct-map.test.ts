@@ -10,6 +10,11 @@ import addedGold from './fixtures/field-cli-knockback.json'
 // ranged-only; Andrew, DECISIONS.md) moved the bytes of the 12 maps with hills or forest. Their new
 // bytes are frozen here and override only those maps; every other map keeps its frozen bytes.
 import groundGold from './fixtures/field-cli-ground.json'
+// fix.funnel-goldens (2026-09-29), Law 10: burning and poisoned ground became painted layers
+// (fix.ground-one-funnel; DECISIONS.md 2026-09-28 "the duplication review, ruled", review E2) — 'b' and
+// 'p' decode to open ground, which moved the bytes of the two maps that use them. Their new bytes
+// override only those two maps; every other map keeps its frozen bytes.
+import funnelGold from './fixtures/field-cli-funnel.json'
 import { presentationField, prepareBattleField, initialMapId } from '../src/view/field.js'
 import { createBattle } from '../src/core/setup.js'
 import { MAP_PANEL, decodeMap, mapDef } from '../src/content/maps.js'
@@ -24,7 +29,7 @@ describe('readonly initial field preparation',()=>{
     const frozen = [...Object.keys(gold), ...Object.keys(addedGold)]
     expect(MAP_PANEL.filter((id) => frozen.includes(id))).toEqual(frozen)
     for (const id of MAP_PANEL) if (!frozen.includes(id)) expect(id.startsWith('map.opening.'), id).toBe(true)
-    for(const [id,hash] of Object.entries({...gold, ...addedGold, ...groundGold})) {
+    for(const [id,hash] of Object.entries({...gold, ...addedGold, ...groundGold, ...funnelGold})) {
       const bytes=execFileSync(process.execPath,['node_modules/tsx/dist/cli.mjs','tools/field-geometry.mts',id])
       expect(createHash('sha256').update(bytes).digest('hex'),id).toBe(hash)
     }

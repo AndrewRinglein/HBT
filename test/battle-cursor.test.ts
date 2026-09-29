@@ -132,6 +132,12 @@ const surgeSpendGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
 // full hashes are frozen here (tools/capture-raise-two-cursor.mts); a case marked `changed` (it fields
 // a Necromancer with more than one body in reach) is checked here and skips the older layers.
 const raiseTwoGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-raise-two.json', import.meta.url), 'utf8'))
+// fix.funnel-goldens (2026-09-29), Law 10: the duplication review's rulings (DECISIONS.md 2026-09-28) —
+// plumbing.vocabulary-export's one stat map compiles Blinded's -4 Vision and '+N health for the Battle';
+// fix.ground-one-funnel runs lava's Burn before its fire, paints 'b'/'p' as layers and gives a push every
+// ground beat. Every case's full hashes are frozen here (tools/capture-funnel-cursor.mts); a case marked
+// `changed` is checked here and skips the older layers. Old fixtures stay immutable.
+const funnelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-funnel.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -237,7 +243,10 @@ describe('resumable battle cursor', () => {
       const thinExpected = thinGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const enemyActionsExpected = enemyActionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const raiseTwoExpected = raiseTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const raiseTwoMoved = raiseTwoExpected?.changed === true
+      const funnelExpected = funnelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const funnelMoved = funnelExpected?.changed === true
+      // was: const raiseTwoMoved = raiseTwoExpected?.changed === true — a funnel-moved case skips the raise-two layer too (fix.funnel-goldens 2026-09-29)
+      const raiseTwoMoved = raiseTwoExpected?.changed === true || funnelMoved
       const surgeSpendExpected = surgeSpendGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // fix.raise-two-cursor (2026-09-28): a raise-two-moved case skips the surge-spend layer too
       const surgeSpendMoved = surgeSpendExpected?.changed === true || raiseTwoMoved
@@ -279,7 +288,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (raiseTwoExpected) {
+        if (funnelExpected) {
+        expect(hash(ctx.events), 'full funnel events').toBe(funnelExpected.events)
+        expect(hash(ctx.state), 'full funnel state').toBe(funnelExpected.state)
+        expect(hash(ctx.rng.log), 'full funnel RNG').toBe(funnelExpected.rng)
+        expect(result).toEqual(funnelExpected.result)
+        }
+        // was: if (raiseTwoExpected) { — fix.funnel-goldens (2026-09-29): a funnel-moved case is checked above instead
+        if (raiseTwoExpected && !funnelMoved) {
         expect(hash(ctx.events), 'full raise-two events').toBe(raiseTwoExpected.events)
         expect(hash(ctx.state), 'full raise-two state').toBe(raiseTwoExpected.state)
         expect(hash(ctx.rng.log), 'full raise-two RNG').toBe(raiseTwoExpected.rng)
