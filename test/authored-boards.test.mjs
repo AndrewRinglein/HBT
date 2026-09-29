@@ -10,7 +10,7 @@ function candidate(change, assemble = false) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hobat-boards-')), work = path.join(root, 'content');
   const before = fs.readFileSync(livePack);
   try {
-    fs.mkdirSync(work); fs.mkdirSync(path.join(root, 'engine/src/content/generated'), { recursive: true });
+    fs.mkdirSync(work); fs.mkdirSync(path.join(root, 'engine/src/content/generated'), { recursive: true }); fs.mkdirSync(path.join(root, 'engine/generated'), { recursive: true }); fs.copyFileSync(path.join(source, '../engine/generated/vocabulary.json'), path.join(root, 'engine/generated/vocabulary.json'));   // the engine's vocabulary the converter reads (plumbing.vocabulary-export)
     for (const file of fs.readdirSync(source)) if (/\.(mjs|json)$/.test(file)) fs.copyFileSync(path.join(source, file), path.join(work, file));
     for (const folder of ['gen', 'test']) fs.cpSync(path.join(source, folder), path.join(work, folder), { recursive: true, filter: p => !fs.statSync(p).isFile() || p.endsWith('.json') });
     const edit = (file, fn) => { const p = path.join(work, file); const data = JSON.parse(fs.readFileSync(p, 'utf8')); fn(data); fs.writeFileSync(p, JSON.stringify(data)); };

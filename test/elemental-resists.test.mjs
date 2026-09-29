@@ -13,7 +13,7 @@ function candidate(change, auditing=false) {
   const published = fs.readFileSync(livePack);
   try {
     fs.mkdirSync(work);
-    fs.mkdirSync(path.join(root, 'engine/src/content/generated'), { recursive: true });
+    fs.mkdirSync(path.join(root, 'engine/src/content/generated'), { recursive: true }); fs.mkdirSync(path.join(root, 'engine/generated'), { recursive: true }); fs.copyFileSync(path.join(source, '../engine/generated/vocabulary.json'), path.join(root, 'engine/generated/vocabulary.json'));   // the engine's vocabulary the converter reads (plumbing.vocabulary-export)
     for (const name of ['audit.mjs', 'assemble.mjs', 'mkenginepack.mjs', 'map-schema.mjs','burst-schema.mjs', 'hbt-content.json', 'settled.json']) fs.copyFileSync(path.join(source, name), path.join(work, name));
     for (const name of ['gen', 'test']) fs.cpSync(path.join(source, name), path.join(work, name), { recursive: true, filter: p => !fs.statSync(p).isFile() || p.endsWith('.json') });
     const edit = (name, fn) => { const p = path.join(work, name); const row = JSON.parse(fs.readFileSync(p, 'utf8')); fn(row); fs.writeFileSync(p, JSON.stringify(row)); };

@@ -27,11 +27,6 @@
    "needs": "attack shape: stat-less (flat) damage"
   },
   {
-   "unit": "unit.ghoul",
-   "what": "attack.ghoul.devour onKill: grant a stat for the Battle (health)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
    "unit": "unit.imp-master",
    "what": "aura 'allies within N hexes' — range null, N never stated",
    "needs": "content: range unstated"
@@ -40,16 +35,6 @@
    "unit": "unit.iron-colossus",
    "what": "move.iron-colossus.buff: ai 'use whenever available'",
    "needs": "action hint on the row (AI-DESIGN.md §3D) — waits on ai.scorer"
-  },
-  {
-   "unit": "unit.lieutenant-demon",
-   "what": "(unit) onActivationEnd: grant a stat for the Battle (health)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.lieutenant-demon",
-   "what": "aura aura-1: grant a stat for the Battle (health)",
-   "needs": "aura: health"
   },
   {
    "unit": "unit.lieutenant-demon",
@@ -107,16 +92,6 @@
    "needs": "trigger-effect: statMod"
   },
   {
-   "unit": "unit.vampire",
-   "what": "attack.vampire.bite onKill: grant a stat for the Battle (health)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.vampire-lord",
-   "what": "attack.vampire-lord.bite onKill: grant a stat for the Battle (health)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
    "unit": "unit.werewolf",
    "what": "attack.werewolf.claw-frenzy onAttack: grant a stat for the Battle (strength) — a pre-damage stat grant is a STATION question (Law 1)",
    "needs": "trigger-effect: statMod before damage"
@@ -135,11 +110,6 @@
    "unit": "hero.base.mage-thinking",
    "what": "item.frost-staff grants power.frost-staff.frost-nova",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "hero.base.mage-thinking",
-   "what": "item.watchmans-coat statModifier 'vision' 2",
-   "needs": "stat: vision (no UnitDef field)"
   },
   {
    "unit": "hero.base.mage-sexy",
@@ -195,11 +165,6 @@
    "unit": "hero.base.rogue-skull",
    "what": "attack.daggers.thrown-dagger onKill: \"gain 50 Surge\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "hero.base.rogue-skull",
-   "what": "item.watchmans-coat statModifier 'vision' 2",
-   "needs": "stat: vision (no UnitDef field)"
   },
   {
    "unit": "hero.fixed.lumberjack-and-wife",
@@ -1110,11 +1075,6 @@
    "unit": "item.lumberjack-axe",
    "what": "attack.lumberjack-axe.cleave targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
    "needs": "area attack shape"
-  },
-  {
-   "unit": "critChart",
-   "what": "blinded: -4 Vision",
-   "needs": "no vision model (gap L-3a)"
   },
   {
    "unit": "critChart",

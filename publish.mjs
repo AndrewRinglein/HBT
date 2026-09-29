@@ -81,6 +81,9 @@ export function publishContent({ projectRoot, dry = false, tsxCli, log = console
     }
     fs.cpSync(path.join(projectRoot, 'engine/src'), path.join(temporaryRoot, 'engine/src'), { recursive: true });
     fs.copyFileSync(path.join(projectRoot, 'engine/package.json'), path.join(temporaryRoot, 'engine/package.json'));
+    // the engine's vocabulary, which mkenginepack and audit read (plumbing.vocabulary-export, engine 2026-09-28)
+    fs.mkdirSync(path.join(temporaryRoot, 'engine/generated'), { recursive: true });
+    fs.copyFileSync(path.join(projectRoot, 'engine/generated/vocabulary.json'), path.join(temporaryRoot, 'engine/generated/vocabulary.json'));
     // No successful no-op builder may validate an old copied output as its candidate.
     for (const relative of OUTPUTS) {
       const file = path.join(temporaryRoot, relative);

@@ -291,10 +291,14 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
   // Coverage below is the historical bestiaryTest cohort only. New TEST-lane
   // onBlock coverage is verified by test/block.test.mjs and engine rule.block.
   const LEGACY_COVERAGE_HOOKS=['onAttack','onMiss','onHit','onDamage','onCrit','onKill','onTakingDamage','onDeath','onActivationEnd'];
-  const ENGINE_HOOKS=[...LEGACY_COVERAGE_HOOKS,'onBlock'];
-  const ENGINE_EFFECTS=['status.apply','status.remove','damage'];
-  const ENGINE_STATUSES=new Set(['status.poison','status.burn','status.regeneration','status.stun',
-    'status.bleed','status.protection','status.weak','status.slow']);
+  // plumbing.vocabulary-export (engine, 2026-09-28): what the engine fires and applies is the
+  // engine's own export (../engine/generated/vocabulary.json), never a copy here. The statuses are
+  // the Codex's rows the engine loads (settled.json statuses -> the pack), not an engine word list.
+  const VOCAB=JSON.parse(fs.readFileSync('../engine/generated/vocabulary.json','utf8'));
+  const ENGINE_HOOKS=VOCAB.hooks;
+  const ENGINE_EFFECTS=VOCAB.triggerEffectKinds;
+  const LEGACY_COVERAGE_EFFECTS=['status.apply','status.remove','damage'];
+  const ENGINE_STATUSES=new Set((JSON.parse(fs.readFileSync('settled.json','utf8')).statuses||[]).map(r=>r.id));
   const seenHooks=new Set(), seenEffects=new Set();
   for(const u of B.units){
     if(!String(u.id).startsWith('test.')) add('test-unit-id-not-marked',u.name,u.id);
@@ -312,7 +316,7 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
   }
   // the whole point of the roster is COVERAGE — a gap is a finding, not a shrug
   for(const h of LEGACY_COVERAGE_HOOKS) if(!seenHooks.has(h)) add('test-bestiary-misses-a-hook',h,'no test unit exercises it');
-  for(const e of ENGINE_EFFECTS) if(!seenEffects.has(e)) add('test-bestiary-misses-an-effect',e,'no test unit exercises it');
+  for(const e of LEGACY_COVERAGE_EFFECTS) if(!seenEffects.has(e)) add('test-bestiary-misses-an-effect',e,'no test unit exercises it');
   // nothing real may depend on a throwaway
   const real=[...D.items,...D.enchants,...D.specialties,...D.attacks,...D.powers];
   for(const e of real){ const t=JSON.stringify(e);

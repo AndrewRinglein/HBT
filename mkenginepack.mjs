@@ -41,6 +41,31 @@ function packetFields(row){
 import fs from 'fs';
 import { compileMaps, validateEncounterBoard } from './map-schema.mjs';
 const D = JSON.parse(fs.readFileSync('hbt-content.json', 'utf8'));
+// ── THE ENGINE'S VOCABULARY (plumbing.vocabulary-export, engine 2026-09-28) ────
+// Read, never copied: ../engine/generated/vocabulary.json is written by the engine
+// (tools/vocabulary.mts) from its own lists. Review findings C11 and C16: this file kept
+// two hook sets and eight stat-word maps that disagreed (statWord had no Vision, STAT_W no
+// Health, the late hero map no toughness or surge) and derived the default AI three times.
+const VOCAB = JSON.parse(fs.readFileSync('../engine/generated/vocabulary.json', 'utf8'));
+const ENGINE_HOOKS = new Set(VOCAB.hooks);
+const FOLDABLE_STATS = new Set(VOCAB.stats), RESOLVABLE_STATS = new Set(VOCAB.resolvable);
+// Codex stat word (any case) -> engine stat. THE ONE MAP; every value is checked against the
+// engine's export below, so a stat the engine renames or drops fails the build, loudly.
+const STAT_OF = {
+  str: 'strength', strength: 'strength', pre: 'precision', precision: 'precision', magic: 'magic', spirit: 'spirit',
+  acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist',
+  fireresist: 'fireResist', poisonresist: 'poisonResist', shadowresist: 'shadowResist', block: 'block',
+  rangedblock: 'rangedBlock', 'ranged block': 'rangedBlock', move: 'movement', movement: 'movement', reach: 'reach',
+  health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp',
+  staminamax: 'maxStamina', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
+  staminaregen: 'staminaRegen', 'stamina regen': 'staminaRegen', regen: 'staminaRegen',
+  crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision', thorns: 'thorns',
+};
+for (const [w, st] of Object.entries(STAT_OF)) if (!FOLDABLE_STATS.has(st)) throw new Error(`mkenginepack: STAT_OF maps '${w}' to '${st}', which is not an engine stat (../engine/generated/vocabulary.json)`);
+/** A Codex stat word as the engine stat a fold (item, badge, level, specialty, aura) may carry, else undefined. */
+const statOf = (w) => w == null ? undefined : STAT_OF[String(w).toLowerCase().replace(/\s+/g, ' ')];
+/** The same, only when the stat pipeline can modify it at runtime (a statMod) — surge and toughness cannot. */
+const modStatOf = (w) => { const st = statOf(w); return st && RESOLVABLE_STATS.has(st) ? st : undefined; };
 if (!D.testCohort) { console.error('mkenginepack: no testCohort in hbt-content.json — run assemble.mjs first.'); process.exit(1); }
 
 // Slots are authored action restrictions, independent of their effect profile.
@@ -52,7 +77,6 @@ function actionSlot(row) {
 }
 const ACTION = { applyPoison: 'status.poison', applyBleed: 'status.bleed', applyBurn: 'status.burn' };
 const TARGET = { attacked: 'target', self: 'self' };
-const HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd', 'onBlock']);
 const dropped = [];
 
 function mapCodexTriggers(h, typeId) {
@@ -61,7 +85,7 @@ function mapCodexTriggers(h, typeId) {
     for (const r of rows || []) {
       const statusId = ACTION[r.action];
       const select = TARGET[r.target];
-      if (!HOOKS.has(hook) || !statusId || !select) {
+      if (!ENGINE_HOOKS.has(hook) || !statusId || !select) {
         dropped.push(`${typeId}: ${hook}/${r.action} -> no engine meaning yet`);
         continue;
       }
@@ -303,9 +327,8 @@ function compileMoves(powers) {
   return out;
 }
 const moves = compileMoves(SETTLED.powers || []);
-// onActivationEnd joined 2026-09-03 (fix.activation-end-fires): the engine fires it now.
-// startOfBattle joined 2026-09-03 (hook.on-enter, with encounter.runner): fires at battle.begin and at arrival.
-const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd', 'onBlock', 'startOfBattle']);
+// The hooks the engine fires are the engine's list (ENGINE_HOOKS, read from its vocabulary).
+const TRIG_HOOKS = ENGINE_HOOKS;
 
 // ── BADGES (badge.mechanism, 2026-09-04) ───────────────────────────────────
 // Ruled 2026-09-04: badges are an engine type — the Hero badge, Wounded, the
@@ -316,10 +339,7 @@ const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage',
 // deathbed flags — and names every other clause as a gap, compile-or-name-
 // the-gap like every row. Nothing is invented: a clause that does not parse
 // is a gap, never a guess.
-const BADGE_STAT = { str: 'strength', strength: 'strength', pre: 'precision', precision: 'precision', magic: 'magic', spirit: 'spirit',
-  acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedblock:'rangedBlock', 'ranged block':'rangedBlock', move: 'movement', movement: 'movement',
-  reach: 'reach', health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
-  'stamina regen': 'staminaRegen', regen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // DBF (Deathbed Fighting) is derived from Toughness today, not a stat the engine folds — a +N DBF clause stays a named gap until it is
+// (the badge's stat words are STAT_OF, above — one map)   // DBF (Deathbed Fighting) is derived from Toughness today, not a stat the engine folds — a +N DBF clause stays a named gap until it is
 // v2.kdb (2026-09-23, COMBAT-V2-DESIGN section 9.5): Stand Firm "cannot be knocked
 // back or down", Agile "cannot be knocked down", Immovable "immune to knockback".
 // Longest phrase first is not needed: the three prefixes are distinct.
@@ -341,7 +361,7 @@ function compileBadge(row) {
   // data" would silently re-compile all of them. The row says so, or it does not.
   if (row.payloadIsData === true) {
     for (const m of (row.statModifiers || [])) {
-      const st = BADGE_STAT[String(m.stat).toLowerCase()] ?? m.stat;
+      const st = statOf(m.stat) ?? m.stat;
       if (!st || typeof m.value !== 'number') { gaps.push('statModifiers entry ' + JSON.stringify(m)); continue }
       if ((m.op ?? 'add') !== 'add') { gaps.push('statModifiers op ' + m.op + ' (only add is compiled)'); continue }
       mods[st] = (mods[st] ?? 0) + m.value;
@@ -363,8 +383,8 @@ function compileBadge(row) {
       // "+1 S, P, reach, H" — one number, several stats
       const words = m[2].split(/\s*,\s*|\s+and\s+/).map((w) => w.trim().toLowerCase());
       let ok = true;
-      for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; if (!st) { ok = false; break } }
-      if (ok) { for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; mods[st] = (mods[st] ?? 0) + v } continue }
+      for (const w of words) { const st = statOf(w); if (!st) { ok = false; break } }
+      if (ok) { for (const w of words) { const st = statOf(w); mods[st] = (mods[st] ?? 0) + v } continue }
     }
     if ((m = clause.match(/^grants\s+`?(power\.[a-z0-9.-]+)`?$/i))) { grants.push(m[1]); continue }
     // v2.thorns (COMBAT-V2 §9.4): "Thorns N" is the `thorns` stat, nothing conditional.
@@ -464,7 +484,7 @@ function compileTrigger(t, unitId, attackId) {
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'paint-' + ef.layer).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select: ef.origin === 'self' || !ef.origin ? 'self' : 'target',
         effect: { kind: 'layer.paint', layer: 'layer.' + ef.layer, radius: ef.radius, origin: ef.origin === 'self' || !ef.origin ? 'self' : 'target' }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
-    } else if (/^grant a stat (for the Battle|until end of your Activation)$/.test(ef.effect) && (HERO_STAT_LATE[ef.stat] || ef.stat === 'vision')) {
+    } else if (/^grant a stat (for the Battle|until end of your Activation)$/.test(ef.effect) && modStatOf(ef.stat)) {
       // statMod trigger effects (2026-09-03): "grant a stat for the Battle" — Blight the Eye's −2 Vision, −10 Accuracy
       const until = /Battle/.test(ef.effect) ? 'battle' : 'endOfTurn';
       const select = ef.target === 'self' ? 'self' : areaSelect ?? 'target';
@@ -473,7 +493,7 @@ function compileTrigger(t, unitId, attackId) {
       if (t.hook === 'onActivationEnd' && select === 'target') { gap(unitId, `${where} ${t.hook}: ${ef.effect} (${ef.stat}) — no target on this hook`, 'trigger-effect: statMod'); continue; }
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || ef.stat).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${ef.stat}`,
         hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select,
-        effect: { kind: 'statMod', stat: HERO_STAT_LATE[ef.stat] ?? 'vision', value: ef.value, until }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
+        effect: { kind: 'statMod', stat: modStatOf(ef.stat), value: ef.value, until }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
     } else if (ef.effect === 'target loses stamina') {
       // capability.target-stamina-loss (2026-09-03): the existing drain, aimed at the target
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'drain').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-stamina`,
@@ -497,7 +517,7 @@ function compileTrigger(t, unitId, attackId) {
 }
 
 // stat words an aura can lend (the engine's foldable stats that resolve on read; health is Max Health, not resolved — a gap)
-const HERO_STAT_LATE = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedBlock:'rangedBlock', movement: 'movement', reach: 'reach', crit: 'crit', luck: 'luck', vision: 'vision' };
+// (the late hero stat map is STAT_OF — one map)
 const authoredEnemies = [];
 const authoredAttacks = {};
 const authoredAbilities = {}; // capability.item-powers, 2026-08-27
@@ -526,7 +546,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     if (t.condition && !tagM) { gap(id, `aura condition '${t.condition}'`, 'aura condition'); return; }
     const mods = {}; const agaps = [];
     for (const ef of t.effects || []) {
-      if (/^grant a stat/.test(ef.effect) && HERO_STAT_LATE[ef.stat]) mods[HERO_STAT_LATE[ef.stat]] = (mods[HERO_STAT_LATE[ef.stat]] ?? 0) + ef.value;
+      if (/^grant a stat/.test(ef.effect) && modStatOf(ef.stat)) mods[modStatOf(ef.stat)] = (mods[modStatOf(ef.stat)] ?? 0) + ef.value;
       else { agaps.push(`${ef.effect}${ef.stat ? ' ' + ef.stat : ''}${ef.status ? ' ' + ef.status : ''} ${ef.value ?? ''}`.trim()); gap(id, `aura ${nm}: ${ef.effect}${ef.stat ? ' (' + ef.stat + ')' : ''}${ef.status ? ' ' + ef.status : ''}`, ef.status ? 'aura: status immunity' : 'aura: ' + (ef.stat || ef.effect)); }
     }
     unitAuras.push({ id: aid, radius: t.range, side, ...(tagM ? { requireTags: [tagM[1].toLowerCase()] } : {}), mods, ...(agaps.length ? { gaps: agaps } : {}) });
@@ -589,7 +609,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
       const effects = []; const bad = [];
       for (const e of mv.effects) {
         if (e.target !== 'self') bad.push(`${e.effect} on '${e.target}'`);
-        else if (e.effect === 'grant a stat for the Battle' && HERO_STAT_LATE[e.stat] && typeof e.value === 'number') effects.push({ kind: 'statMod', stat: HERO_STAT_LATE[e.stat], value: e.value, until: 'battle' });
+        else if (e.effect === 'grant a stat for the Battle' && modStatOf(e.stat) && typeof e.value === 'number') effects.push({ kind: 'statMod', stat: modStatOf(e.stat), value: e.value, until: 'battle' });
         else if (e.effect === 'heal' && typeof e.value === 'number') effects.push({ kind: 'heal', amount: e.powerScale ? { scale: 'power', base: e.value, mult: e.powerScale } : e.value });   // capability.power-pool: heal N + power
         else bad.push(`${e.effect}${e.stat ? ' ' + e.stat : ''}`);
       }
@@ -635,7 +655,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
         for (const e of a.effects || []) {
           if (e.effect === 'heal') heal += e.value ?? 0;
           else if (/^grant a stat/.test(e.effect) && e.stat === 'health') maxHp += e.value ?? 0;
-          else if (/^grant a stat/.test(e.effect) && HERO_STAT_LATE[e.stat]) mods[HERO_STAT_LATE[e.stat]] = (mods[HERO_STAT_LATE[e.stat]] ?? 0) + (e.value ?? 0);
+          else if (/^grant a stat/.test(e.effect) && modStatOf(e.stat)) mods[modStatOf(e.stat)] = (mods[modStatOf(e.stat)] ?? 0) + (e.value ?? 0);
           else egaps.push(`${e.effect} ${e.stat ?? ''}`.trim());
         }
         const pid = a.id.replace(/^attack\./, 'power.');
@@ -973,17 +993,14 @@ for (const id of PARTY) {
   // and the engine folds the same numbers at fielding (applyItems).
   const p = { ...h.ported }, d = { ...h.derivedBase };
   const bareP = { ...h.ported }, bareD = { ...h.derivedBase };
-  const FOLD = { health: [p, 'health'], armor: [p, 'armor'], resist: [p, 'resist'], fireResist:[p,'fireResist'], poisonResist:[p,'poisonResist'], shadowResist:[p,'shadowResist'], block:[p,'block'], rangedBlock:[p,'rangedBlock'], dodge: [p, 'dodge'],
-    strength: [p, 'strength'], precision: [p, 'precision'], magic: [p, 'magic'], spirit: [p, 'spirit'],
-    reach: [p, 'reach'], accuracy: [d, 'accuracy'], movement: [d, 'movement'],
-    staminaMax: [d, 'staminaMax'], staminaRegen: [d, 'staminaRegen'],
-    // crit and luck are UnitDef fields since station.crit (2026-08-27); the
-    // party lane learned to carry and fold them with content.field-eve-24.
-    crit: [p, 'crit'], luck: [p, 'luck'] };
+  // Which Codex object a stat word folds into: the derived four live on derivedBase, the rest on
+  // ported; whether it is a stat at all is STAT_OF's (one map). The key stays the Codex word.
+  const DERIVED_WORDS = new Set(['accuracy', 'movement', 'staminaMax', 'staminaRegen']);
+  const foldOf = (stat) => statOf(stat) ? [DERIVED_WORDS.has(stat) ? d : p, stat] : undefined;
   for (const itemId of items) {
     const it = ITEM_BY_ID.get(itemId);
     for (const [stat, v] of Object.entries(it?.statModifiers || {})) {
-      const f = FOLD[stat];
+      const f = foldOf(stat);
       if (f) f[0][f[1]] = (f[0][f[1]] || 0) + v;
       else gap(id, `${itemId} statModifier '${stat}' ${v}`, 'stat: ' + stat + ' (no UnitDef field)');
     }
@@ -1004,7 +1021,7 @@ for (const id of PARTY) {
     // the row says is the data leading, and the sweep will move it.
     reach: p.reach ?? 0,
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
-    ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
+    // no ai: the engine derives a hero's default from its kit (core/items.ts defaultAiOf; C16)
     attacks: ownAttackIds, abilities: [],
     moves: movesForClass(h.class),
     // hero assembly (2026-09-03): the class rides on tags so fieldedDef can find the level table
@@ -1096,7 +1113,8 @@ const alphaTeam = [];
       role: anyRanged ? 'ranged' : 'melee',
       movement: d.movement, reach: p.reach ?? 0,
       maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
-      ai: h.ai || (anyRanged ? 'ranged-kite' : 'melee-aggressive'),
+      // an authored ai rides; otherwise the engine derives it from the kit (defaultAiOf; C16)
+      ...(h.ai ? { ai: h.ai } : {}),
       // an AUTHORED ai (settled.json says so) survives a re-kit at fielding;
       // a derived one is derived again (seam.items-per-unit)
       ...(h.ai ? { aiAuthored: true } : {}),
@@ -1190,7 +1208,7 @@ for (const id of CIVILIANS) {
     // The level-1 hero baseline (COMBAT-DESIGN.md:461) — the rows' derived 0
     // is stale and the ruling says exactly-like-heroes.
     maxStamina: 5, staminaRegen: 1,
-    ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
+    // no ai: the engine derives it from the kit (core/items.ts defaultAiOf; C16)
     attacks: civOwnAttackIds, abilities: [],
     // "Beasts and Civilians get neither" half-step (Codex 2026-08-21).
     moves: ['power.move'],
@@ -1212,14 +1230,15 @@ for (const id of CIVILIANS) {
 // settled.json carries the DICTATED PROSE (one machine copy of the ruling);
 // the engine never parses prose at runtime, so the ten fixed strings compile
 // HERE into structured effects — compile-or-name-the-gap, like every row.
-// The two clauses the engine cannot express are dropped with named gaps:
-// Blinded's −4 Vision (no vision model — gap L-3a) and Knocked Sprawling's
-// −50 Surge (no surge quantity). The push LANDS — forced movement was built
+// The one clause the engine cannot express is dropped with a named gap:
+// Knocked Sprawling's −50 Surge (no surge quantity a statMod can move). Blinded's
+// −4 Vision compiles since the stat words are one map read against the engine's
+// vocabulary (plumbing.vocabulary-export, 2026-09-28) — the vision model it waited
+// on landed 2026-09-03 (capability.vision). The push LANDS — forced movement was built
 // today (capability.knockback), overtaking the row's own `needs` note.
 // The chart's "loses access to class powers" status. A placeholder id, see the
 // settled.json row's source; the ONE other place it is named.
 const POWERS_LOCKED = 'status.powers-locked';
-const STAT_WORD = { Accuracy: 'accuracy', Movement: 'movement', Strength: 'strength', Precision: 'precision', Armor: 'armor', Resist: 'resist', Dodge: 'dodge' };
 function compileCritChart(chart) {
   const rows = [];
   for (const r of chart.rows || []) {
@@ -1230,8 +1249,8 @@ function compileCritChart(chart) {
       if ((m = clause.match(/^-(\d+) ([A-Za-z ]+)$/))) {
         const statName = m[2].trim();
         if (statName === 'Max Health') { effects.push({ kind: 'loseMaxHp', value: parseInt(m[1], 10) }); continue; }
-        const stat = STAT_WORD[statName];
-        if (!stat) { gap('critChart', `${r.key}: -${m[1]} ${statName}`, statName === 'Vision' ? 'no vision model (gap L-3a)' : statName === 'Surge' ? 'no surge quantity in the engine' : 'stat: ' + statName); continue; }
+        const stat = modStatOf(statName);
+        if (!stat) { gap('critChart', `${r.key}: -${m[1]} ${statName}`, statName === 'Surge' ? 'no surge quantity in the engine' : 'stat: ' + statName); continue; }
         effects.push({ kind: 'statMod', stat, value: -parseInt(m[1], 10), ...(floored ? { floor: 0 } : {}) });
       } else if ((m = clause.match(/^(\d+) turns?$/))) {
         const prev = effects[effects.length - 1];
@@ -1274,9 +1293,7 @@ function compileCritChart(chart) {
 // understands can say so — never a silent, inert item. Consumables and
 // activated trinkets/relics are ABILITIES WITH CHARGES the engine lacks
 // (ITEMS-PLAN §7); they emit with their stat payload and the active named.
-const ITEM_STAT = { health: 'maxHp', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedBlock:'rangedBlock', dodge: 'dodge', strength: 'strength',
-  precision: 'precision', magic: 'magic', spirit: 'spirit', reach: 'reach', accuracy: 'accuracy',
-  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // toughness, surge, vision — 2026-09-03
+// (item stat words are STAT_OF — one map)
 function takeItemAttack(a) {
   if (authoredAttacks[a.id]) return;
   const ranged = typeof a.range === 'number' && a.range > 1;
@@ -1293,7 +1310,17 @@ function takeItemAttack(a) {
   };
 }
 // ── ITEM ACTIVES (capability.charges, 2026-09-03) ───────────────────────────
-const ITEM_TARGET = (tgt) => {
+// The targeting grammar is gen/functions.json's (review finding C17): every phrase the two
+// compilers below accept must be one of its shapes, normalized exactly as functions.mjs counts
+// them (digits -> N, 'N hex' -> 'N hexes'). A phrase outside the vocabulary fails the build.
+const TARGET_SHAPES = new Set(JSON.parse(fs.readFileSync('gen/functions.json', 'utf8')).shapes.map((x) => x.name));
+function inVocabulary(tgt, compiled) {
+  if (compiled && tgt && !TARGET_SHAPES.has(String(tgt).replace(/\d+/g, 'N').replace(/\bN hex\b/g, 'N hexes')))
+    throw new Error(`mkenginepack: targeting '${tgt}' compiles here but is not a shape in gen/functions.json — run functions.mjs, or the phrase is off-vocabulary`);
+  return compiled;
+}
+const ITEM_TARGET = (tgt) => inVocabulary(tgt, ITEM_TARGET_RAW(tgt));
+const ITEM_TARGET_RAW = (tgt) => {
   let r;
   if (!tgt || tgt === 'self') return { target: { select: 'self', side: 'any' }, range: 0 };
   if ((r = tgt.match(/^(?:yourself or )?one ally within (\d+) hex(?:es)?$/))) return { target: { select: 'unit', side: 'ally' }, range: +r[1] };
@@ -1301,7 +1328,6 @@ const ITEM_TARGET = (tgt) => {
   if ((r = tgt.match(/^allies within (\d+) hexes$/))) return { target: { select: 'area', side: 'ally', radius: +r[1], origin: 'self' }, range: 0 };
   return null;
 };
-const STAT_W = { Strength: 'strength', Precision: 'precision', Magic: 'magic', Spirit: 'spirit', Accuracy: 'accuracy', Dodge: 'dodge', Armor: 'armor', Resist: 'resist', Movement: 'movement', Reach: 'reach', Crit: 'crit', Luck: 'luck', Vision: 'vision' };
 function compileItemActive(it, row) {
   const desc = String(row.description || '');
   const tg = ITEM_TARGET(row.targets);
@@ -1326,11 +1352,11 @@ function compileItemActive(it, row) {
     if ((m = s0.match(/^The target gains Protection equal to (\d+) \+ Spirit$/))) { effects.push({ kind: 'status.apply', statusId: 'status.protection', value: SP(+m[1]) }); continue; }
     if ((m = s0.match(/^Each ally within \d+ hexes, including you, heals (\d+) \+ Spirit$/))) { effects.push({ kind: 'heal', amount: SP(+m[1]) }); continue; }
     if ((m = s0.match(/^Each ally within \d+ hexes, including you, removes all Stun and all Weak and gains \+(\d+) Resist for the rest of the Battle$/))) { effects.push({ kind: 'status.remove', statusId: 'status.stun' }); effects.push({ kind: 'status.remove', statusId: 'status.weak' }); effects.push({ kind: 'statMod', stat: 'resist', value: +m[1], until: 'battle' }); continue; }
-    if ((m = s0.match(/^gain \+(\d+) ([A-Z][a-z]+) and lose (\d+) ([A-Z][a-z]+) for the rest of the Battle$/))) { effects.push({ kind: 'statMod', stat: STAT_W[m[2]], value: +m[1], until: 'battle', who: 'self' }); effects.push({ kind: 'statMod', stat: STAT_W[m[4]], value: -m[3], until: 'battle', who: 'self' }); continue; }
-    if ((m = s0.match(/^until the end of your Activation, gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+), and lose (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: STAT_W[m[2]], value: +m[1], until: 'endOfTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: STAT_W[m[4]], value: +m[3], until: 'endOfTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: STAT_W[m[6]], value: -m[5], until: 'endOfTurn', who: 'self' }); gaps.push('"until the end of your Activation" is read as until the end of the Turn'); continue; }
+    if ((m = s0.match(/^gain \+(\d+) ([A-Z][a-z]+) and lose (\d+) ([A-Z][a-z]+) for the rest of the Battle$/))) { effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'battle', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[4]), value: -m[3], until: 'battle', who: 'self' }); continue; }
+    if ((m = s0.match(/^until the end of your Activation, gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+), and lose (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'endOfTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[4]), value: +m[3], until: 'endOfTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[6]), value: -m[5], until: 'endOfTurn', who: 'self' }); gaps.push('"until the end of your Activation" is read as until the end of the Turn'); continue; }
     if ((m = s0.match(/^the target gains \+(\d+) Movement for the rest of the Battle and loses (\d+) Root and (\d+) Slow$/))) { effects.push({ kind: 'statMod', stat: 'movement', value: +m[1], until: 'battle' }); effects.push({ kind: 'status.remove', statusId: 'status.root', value: +m[2] }); effects.push({ kind: 'status.remove', statusId: 'status.slow', value: +m[3] }); continue; }
     if ((m = s0.match(/^Until the end of your next Turn, your attacks gain \+(\d+) Accuracy$/))) { effects.push({ kind: 'statMod', stat: 'accuracy', value: +m[1], until: 'endOfNextTurn', who: 'self' }); continue; }
-    if ((m = s0.match(/^Until the end of your next Turn you gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: STAT_W[m[2]], value: +m[1], until: 'endOfNextTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: STAT_W[m[4]], value: +m[3], until: 'endOfNextTurn', who: 'self' }); continue; }
+    if ((m = s0.match(/^Until the end of your next Turn you gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'endOfNextTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[4]), value: +m[3], until: 'endOfNextTurn', who: 'self' }); continue; }
     if ((m = s0.match(/^Heal (\d+) and remove (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'heal', amount: +m[1] }); effects.push({ kind: 'status.remove', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }); continue; }
     if ((m = s0.match(/^You take -(\d+) Accuracy until the end of your next Turn$/))) { effects.push({ kind: 'statMod', stat: 'accuracy', value: -m[1], until: 'endOfNextTurn', who: 'self' }); continue; }
     if (/^(Protection is spent|Spirit is the party-wide|Surplus over|Bleed is TRUE|You must be adjacent|The ferryman)/.test(s0)) continue;   // explanation, not rule
@@ -1363,7 +1389,7 @@ function compileItems() {
     const g = (what, needs) => { gapsHere.push(`${what} — ${needs}`); gap(it.id, what, needs); };
     const statModifiers = {};
     for (const [k, v] of Object.entries(row.statModifiers || {})) {
-      if (ITEM_STAT[k]) statModifiers[ITEM_STAT[k]] = (statModifiers[ITEM_STAT[k]] || 0) + v;
+      if (statOf(k)) statModifiers[statOf(k)] = (statModifiers[statOf(k)] || 0) + v;
       else g(`statModifier '${k}' ${v}`, `stat: ${k} (no UnitDef field)`);
     }
     const grants = [], abilities = [];
@@ -1465,14 +1491,10 @@ const LEVELS = JSON.parse(fs.readFileSync('gen/levels.json', 'utf8'));
 const TIER3 = JSON.parse(fs.readFileSync('gen/tier3-combinations.json', 'utf8'));
 const ARMORS = JSON.parse(fs.readFileSync('gen/armor-enchants.json', 'utf8'));
 
-// Codex stat words -> engine StatName. Anything not here is a named gap.
-const HERO_STAT = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy',
-  dodge: 'dodge', armor: 'armor', resist: 'resist', fireResist:'fireResist', poisonResist:'poisonResist', shadowResist:'shadowResist', block:'block', rangedBlock:'rangedBlock', movement: 'movement', reach: 'reach', health: 'maxHp',
-  staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };
-const statWord = { Strength: 'strength', Precision: 'precision', Magic: 'magic', Spirit: 'spirit', Accuracy: 'accuracy',
-  Dodge: 'dodge', Armor: 'armor', Resist: 'resist', Movement: 'movement', Reach: 'reach', Health: 'maxHp', Crit: 'crit', Luck: 'luck' };
+// Codex stat words -> engine stat: STAT_OF, above (one map). Anything not there is a named gap.
 
-function targetingOf(tgt) {
+function targetingOf(tgt) { return inVocabulary(tgt, targetingOfRaw(tgt)); }
+function targetingOfRaw(tgt) {
   let r;
   if (tgt === 'self') return { target: { select: 'self', side: 'any' }, range: 0 };
   if ((r = tgt.match(/^one ally within (\d+) hexes$/))) return { target: { select: 'unit', side: 'ally' }, range: +r[1] };
@@ -1525,10 +1547,10 @@ function compileSentences(desc) {
     if ((m = s0.match(/^Every ally within \d+ hexes gains \+(\d+) (Armor|Resist|Strength|Dodge|Accuracy) for the rest of the Battle$/))) {
       effects.push({ kind: 'statMod', stat: m[2].toLowerCase(), value: +m[1], until: 'battle' }); continue;
     }
-    if ((m = s0.match(/^you gain \+(\d+) (Health|Armor|Strength|Dodge)$/))) { effects.push({ kind: 'statMod', stat: statWord[m[2]], value: +m[1], until: 'battle', who: 'self' }); continue; }
+    if ((m = s0.match(/^you gain \+(\d+) (Health|Armor|Strength|Dodge)$/))) { effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'battle', who: 'self' }); continue; }
     if ((m = s0.match(/^Stance: gain ([+-]\d+) ([A-Z][a-z]+)(?: and ([+-]\d+) ([A-Z][a-z]+))? for the rest of the Battle(?:, and (.*))?$/))) {
-      effects.push({ kind: 'statMod', stat: statWord[m[2]], value: +m[1], until: 'battle', who: 'self' });
-      if (m[3]) effects.push({ kind: 'statMod', stat: statWord[m[4]], value: +m[3], until: 'battle', who: 'self' });
+      effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'battle', who: 'self' });
+      if (m[3]) effects.push({ kind: 'statMod', stat: modStatOf(m[4]), value: +m[3], until: 'battle', who: 'self' });
       if (m[5]) gaps.push(`stance rider: ${m[5]}`);
       continue;
     }
@@ -1556,7 +1578,7 @@ function compileClassPower(p, cls) {
     const until = untilOf(p.modifies.scope);
     if (!until) gaps.push(`modifies scope '${p.modifies.scope}' unparsed`);
     else for (const [k, v] of Object.entries(p.modifies.statModifiers || {})) {
-      const st = HERO_STAT[k]; if (!st) { gaps.push(`modifies ${k}: no engine stat`); continue; }
+      const st = statOf(k); if (!st) { gaps.push(`modifies ${k}: no engine stat`); continue; }
       effects.push({ kind: 'statMod', stat: st, value: v, until, who: 'self' });
     }
     if (p.modifies.tags?.length) gaps.push(`modifies only ${p.modifies.tags.join('/')} attacks — engine applies it to the unit`);
@@ -1587,7 +1609,7 @@ for (const [cls, def] of Object.entries(CLASS_DEFS)) {
 const specialties = {};
 for (const def of Object.values(CLASS_DEFS)) for (const sp of def.specialties || []) {
   const mods = {}; const gaps = [];
-  for (const [k, v] of Object.entries(sp.statModifiers || {})) { const st = HERO_STAT[k]; if (st) mods[st] = v; else gaps.push(`${k} ${v}: no engine stat`); }
+  for (const [k, v] of Object.entries(sp.statModifiers || {})) { const st = statOf(k); if (st) mods[st] = v; else gaps.push(`${k} ${v}: no engine stat`); }
   specialties[sp.id] = { id: sp.id, name: sp.name ?? sp.id, class: sp.class, statModifiers: mods, ...(gaps.length ? { gaps } : {}) };
 }
 const levels = {};
@@ -1597,10 +1619,10 @@ for (const c of [...(LEVELS.classes || []), ...(LEVELS.civilianTypes || [])]) {
   const rows = [];
   for (const r of c.rows || []) {
     const grants = {}; const gaps = [];
-    const put = (k, v) => { const st = HERO_STAT[k] ?? (k === 'itemSlots' ? 'itemSlots' : null); if (st) grants[st] = (grants[st] ?? 0) + v; else gaps.push(`${k} ${v}: no engine stat`); };
+    const put = (k, v) => { const st = statOf(k) ?? (k === 'itemSlots' ? 'itemSlots' : null); if (st) grants[st] = (grants[st] ?? 0) + v; else gaps.push(`${k} ${v}: no engine stat`); };
     for (const [k, v] of Object.entries(c.freebie || {})) put(k, v);
     for (const [k, v] of Object.entries(r.grants || {})) put(k, v);
-    const choice = r.choice ? r.choice.options.map((o) => { const out = {}; for (const [k, v] of Object.entries(o)) { const st = HERO_STAT[k] ?? (k === 'itemSlots' ? 'itemSlots' : null); if (st) out[st] = v; else gaps.push(`choice ${k}: no engine stat`); } return out; }) : undefined;
+    const choice = r.choice ? r.choice.options.map((o) => { const out = {}; for (const [k, v] of Object.entries(o)) { const st = statOf(k) ?? (k === 'itemSlots' ? 'itemSlots' : null); if (st) out[st] = v; else gaps.push(`choice ${k}: no engine stat`); } return out; }) : undefined;
     rows.push({ level: r.level, grants, ...(choice ? { choice } : {}), ...(r.power ? { power: true } : {}), ...(gaps.length ? { gaps } : {}) });
   }
   levels[c.id] = { id: c.id, rows };
@@ -1615,7 +1637,7 @@ for (const combo of TIER3) {
   if (!e) gaps.push(`enchant ${combo.enchant} unauthored`);
   const statModifiers = { ...b.statModifiers };
   for (const [k, v] of Object.entries(e?.statModifiers || {})) {
-    const st = ITEM_STAT[k] ?? HERO_STAT[k];
+    const st = statOf(k);
     if (st) statModifiers[st] = (statModifiers[st] ?? 0) + v;
     else gaps.push(`enchant stat ${k} ${v}: no engine stat`);   // never passed, never rounded
   }
@@ -1745,7 +1767,7 @@ const derivedItems = {};
         triggers = b.triggers.map((t) => (t.onlyWithAttack && copyOf[t.onlyWithAttack] ? { ...t, onlyWithAttack: copyOf[t.onlyWithAttack] } : t));
       } else {
         for (const [k, v] of Object.entries(e.statModifiers || {})) {
-          const st = ITEM_STAT[k] ?? HERO_STAT[k];
+          const st = statOf(k);
           if (st) statModifiers[st] = (statModifiers[st] ?? 0) + v;
           else gaps.push(`enchant stat ${k} ${v}: no engine stat`);
         }

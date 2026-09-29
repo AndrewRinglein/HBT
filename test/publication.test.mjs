@@ -24,6 +24,7 @@ function fixture(t) {
   fs.copyFileSync(path.join(source, 'art/manifest.json'), path.join(content, 'art/manifest.json'));
   fs.cpSync(path.join(source, '../engine/src'), path.join(root, 'engine/src'), { recursive: true });
   fs.copyFileSync(path.join(source, '../engine/package.json'), path.join(root, 'engine/package.json'));
+  fs.mkdirSync(path.join(root, 'engine/generated'), { recursive: true }); fs.copyFileSync(path.join(source, '../engine/generated/vocabulary.json'), path.join(root, 'engine/generated/vocabulary.json'));   // the engine's vocabulary the converter reads (plumbing.vocabulary-export)
   return { root, content };
 }
 
