@@ -138,7 +138,7 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `health` | 98 |
+| `health` | 97 |
 | `resist` | 59 |
 | `strength` | 54 |
 | `dodge` | 54 |

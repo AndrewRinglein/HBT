@@ -1954,13 +1954,12 @@
  "stats": [
   {
    "name": "health",
-   "uses": 98,
+   "uses": 97,
    "ids": [
     "item.holy-shield",
     "item.cursed-sand-blade",
     "item.thick-hide",
     "item.pilgrims-habit",
-    "item.peddlers-vest",
     "item.silkweave-armor",
     "item.brutes-harness",
     "item.ghost-thread-cloak",
@@ -1995,7 +1994,8 @@
     "item.heavy-leather",
     "item.mismatched-armor",
     "item.creature-hide",
-    "item.plated-armor"
+    "item.plated-armor",
+    "item.soaked-plate"
    ]
   },
   {
