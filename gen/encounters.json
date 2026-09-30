@@ -1827,6 +1827,91 @@
    ]
   },
   {
+   "id": "encounter.opening.bridge",
+   "name": "Bridge",
+   "map": "map.opening.bridge",
+   "board": {
+    "width": 40,
+    "height": 20
+   },
+   "note": "The opening, battle 3 (engine DECISIONS.md 2026-09-28 'battle 2's final schedule; the Schoolhouse goes; battle 3 (Bridge); battle 4 (Cavern Trail) is the Hunt': \"The bridge battle will have four imps on the far side. Turn 2: they'll get a fire amp on the far side. Turn 4: one more amp on the far side. Turn 5: one fire amp on the far side. No loss at turn 12.\"). Four Imps on the far (east) bank; a Fire Imp on Turn 2, an Imp on Turn 4 and a Fire Imp on Turn 5, all on the far side. Seven enemies. No time limit; victory: clear the map (carried default). Hexes are the Ground Check's markers (assets/battle-atlas/opening-ground-proposal-2026-09-28.json); the heroes' zone, (3,10) r2 on the west bank at the bridge's approach, is Claude's reading (engine SWITCHES.md openingHeroZonesBridge). Re-authored by encounter.opening.bridge-ai after encounter.opening.bridge stalled: the Imps fled a walker they could never safely shoot (engine SWITCHES.md aiKiteAlone).",
+   "heroZone": {
+    "count": 4,
+    "at": {
+     "near": {
+      "col": 3,
+      "row": 10
+     },
+     "range": 2
+    }
+   },
+   "setup": [
+    {
+     "unit": "unit.imp",
+     "count": 4,
+     "hexes": [
+      {
+       "col": 36,
+       "row": 6
+      },
+      {
+       "col": 36,
+       "row": 8
+      },
+      {
+       "col": 36,
+       "row": 10
+      },
+      {
+       "col": 36,
+       "row": 12
+      }
+     ]
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 2,
+     "spawn": [
+      {
+       "unit": "unit.fire-imp",
+       "at": {
+        "col": 39,
+        "row": 9
+       },
+       "note": "far side"
+      }
+     ]
+    },
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.imp",
+       "at": {
+        "col": 39,
+        "row": 11
+       },
+       "note": "far side"
+      }
+     ]
+    },
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.fire-imp",
+       "at": {
+        "col": 39,
+        "row": 7
+       },
+       "note": "far side"
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "encounter.opening.cavern-trail",
    "name": "Cavern Trail",
    "map": "map.opening.cavern-trail",
