@@ -197,6 +197,14 @@ const ghostColdGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
 // test.opening-cavern-trail (Rotting Flesh takes Poison again, with 1 Poison Resist on its ticks) and test.vampire-bite (Cold
 // Heart is +1 Cold Resist, not an immunity). A `changed` case is checked here and skips the older layers.
 const resistOneWayGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-resist-one-way.json', import.meta.url), 'utf8'))
+// encounter.opening.bridge-ai (2026-09-30), Law 10: a kiter with no melee ally standing plays its row's positionAlone
+// ladder — a shot ahead of safety, the shot read by canAttack's geometry (SWITCHES.md aiKiteAlone; the Bridge never ended
+// because its Imps fled walkers they could never safely shoot). Every case frozen here (tools/capture-kite-alone-cursor.mts),
+// test.opening-bridge new. Moved for real, the rule working: every case where a kiter is left without a melee ally or reads a
+// line its old distance test did not — showcase.alpha-team, showcase.kiln, showcase.supper, showcase.surge-flight-ladder,
+// showcase.two-zombies-and-a-child, test.block-b, test.geometry-corridor, test.geometry-diagonal, test.opening-orphanage (one
+// hero, never screened) and test.structures. A `changed` case is checked here and skips the older layers.
+const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kite-alone.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -312,7 +320,10 @@ describe('resumable battle cursor', () => {
       const orphanageArrivalsExpected = orphanageArrivalsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const resistOneWayMoved = resistOneWayExpected?.changed === true
+      const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const kiteAloneMoved = kiteAloneExpected?.changed === true
+      // was: const resistOneWayMoved = resistOneWayExpected?.changed === true — a kite-alone-moved case skips the resist-one-way layer too (encounter.opening.bridge-ai 2026-09-30)
+      const resistOneWayMoved = resistOneWayExpected?.changed === true || kiteAloneMoved
       // was: const ghostColdMoved = ghostColdExpected?.changed === true — a resist-one-way-moved case skips the ghost-cold layer too (rule.immunity-is-resistance 2026-09-29)
       const ghostColdMoved = ghostColdExpected?.changed === true || resistOneWayMoved
       // was: const orphanageArrivalsMoved = orphanageArrivalsExpected?.changed === true — a ghost-cold-moved case skips the orphanage-arrivals layer too (content.ghost 2026-09-29)
@@ -377,7 +388,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (resistOneWayExpected) {
+        if (kiteAloneExpected) {
+        expect(hash(ctx.events), 'full kite-alone events').toBe(kiteAloneExpected.events)
+        expect(hash(ctx.state), 'full kite-alone state').toBe(kiteAloneExpected.state)
+        expect(hash(ctx.rng.log), 'full kite-alone RNG').toBe(kiteAloneExpected.rng)
+        expect(result).toEqual(kiteAloneExpected.result)
+        }
+        // was: if (resistOneWayExpected) { — encounter.opening.bridge-ai (2026-09-30): a kite-alone-moved case is checked above instead
+        if (resistOneWayExpected && !kiteAloneMoved) {
         expect(hash(ctx.events), 'full resist-one-way events').toBe(resistOneWayExpected.events)
         expect(hash(ctx.state), 'full resist-one-way state').toBe(resistOneWayExpected.state)
         expect(hash(ctx.rng.log), 'full resist-one-way RNG').toBe(resistOneWayExpected.rng)

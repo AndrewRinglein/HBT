@@ -42,6 +42,12 @@ export type Scene = {
   readonly reachAt?: (hex: HexId) => number
   /** The distance the mode wants to hold at from a hex. */
   readonly holdAt?: (hex: HexId) => number
+  /**
+   * Could the unit's weapon strike this enemy were it standing on a hex — canAttack's own geometry
+   * (attackReachesHex: reach, the ranged-adjacent ban, the line) on a shadow copy (Law 2). Read by
+   * `clearShot` (encounter.opening.bridge-ai, 2026-09-30).
+   */
+  readonly shotFrom?: (hex: HexId, enemy: Unit) => boolean
   /** Could a melee enemy reach and strike this hex next Turn. */
   readonly threatened?: (hex: HexId) => boolean
   /** ai.encounter-rules: the side's focus target this Phase, for a coordinated unit (AI-DESIGN §4). */
@@ -93,6 +99,13 @@ export const CONSIDERATIONS: Readonly<Record<string, Consideration>> = {
   safe: (s, p) => safe(s, destination(p)),
   /** 1 when an enemy is within weapon reach of the hex. */
   canShoot: (s, p) => canShoot(s, destination(p)),
+  /**
+   * 1 when the weapon could strike an enemy from the hex by the legality geometry itself (shotFrom:
+   * reach, the ranged-adjacent ban, the line) — encounter.opening.bridge-ai (2026-09-30). `canShoot`
+   * above is distance against reach only; two shooters with a standing shaft between them each read
+   * a shot where they stand. The unscreened kite's ladder reads this one (SWITCHES.md aiKiteAlone).
+   */
+  clearShot: (s, p) => { const hex = destination(p), shotFrom = need(s.shotFrom, 'a shot test', p); return need(s.enemies, 'the enemies', p).some((e) => shotFrom(hex, e)) ? 1 : 0 },
   /** 1 for hills — only where the hex is safe and has a shot: height is never worth walking into reach. */
   highGround: (s, p) => {
     const hex = destination(p)

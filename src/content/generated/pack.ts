@@ -43345,6 +43345,87 @@ export const UNIT_PACK = {
         }
       }
     },
+    "encounter.opening.bridge": {
+      "id": "encounter.opening.bridge",
+      "name": "Bridge",
+      "mapId": "map.opening.bridge",
+      "board": {
+        "width": 40,
+        "height": 20
+      },
+      "setup": [
+        {
+          "unit": "unit.imp",
+          "count": 4,
+          "hexes": [
+            {
+              "col": 36,
+              "row": 6
+            },
+            {
+              "col": 36,
+              "row": 8
+            },
+            {
+              "col": 36,
+              "row": 10
+            },
+            {
+              "col": 36,
+              "row": 12
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 2,
+          "spawn": [
+            {
+              "unit": "unit.fire-imp",
+              "at": {
+                "col": 39,
+                "row": 9
+              }
+            }
+          ]
+        },
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.imp",
+              "at": {
+                "col": 39,
+                "row": 11
+              }
+            }
+          ]
+        },
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.fire-imp",
+              "at": {
+                "col": 39,
+                "row": 7
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 4,
+        "at": {
+          "near": {
+            "col": 3,
+            "row": 10
+          },
+          "range": 2
+        }
+      }
+    },
     "encounter.opening.cavern-trail": {
       "id": "encounter.opening.cavern-trail",
       "name": "Cavern Trail",

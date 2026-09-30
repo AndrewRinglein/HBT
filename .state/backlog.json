@@ -1,5 +1,21 @@
 [
  {
+  "id": "encounter.opening.bridge-ai-refiled",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Re-files encounter.opening.bridge-ai (abandoned 2026-09-30: filed without probeIds, so gate 1 could never pass). PLAYABLE-OPENING-PLAN.md item 9. encounter.opening.bridge failed (cut 2026-09-28): battle 3 never reaches a result - the AI stalls across the deep river. Find why, fix it where it belongs, and land Battle 3 as ruled 2026-09-28 (four Imps far side; Turn 2 a Fire Imp, Turn 4 an Imp, Turn 5 a Fire Imp; no time limit; victory clears the map). The cause: the ranged-kite ladder put safety strictly ahead of a shot, so a flying Imp (Blast 4) never found a hex both safe from a walking hero's Movement + 1 and in range, and never shot; secondarily the shot test ignored line of sight. Extends the existing ai-modes rows (src/content/ai-modes.ts) with a positionAlone ladder and the scorer with clearShot, which reads legality through the rules' own attack check; no new mechanism.",
+  "expect": "Battle 3 runs deterministically to a win or a loss on every seed tried with the player's party at that point; the stall's cause is named.",
+  "needs": [
+   "map.opening-six"
+  ],
+  "probeIds": [
+   "encounter.opening.bridge"
+  ],
+  "note": "Re-filed 2026-09-30 (Andrew: 'Park, abandon, re-file'). kingdom.opening-loop-three still needs the abandoned encounter.opening.bridge-ai; re-pointing it is a backlog edit no tool makes.",
+  "status": "done-needs-review",
+  "sha": "fbef1f7"
+ },
+ {
   "id": "tool.fast-process",
   "kind": "plumbing",
   "shape": "plumbing",
@@ -104,7 +120,11 @@
   "kind": "engine",
   "shape": "data",
   "spec": "PLAYABLE-OPENING-PLAN.md item 9. encounter.opening.bridge failed (cut 2026-09-28): battle 3 never reaches a result - the AI stalls across the deep river. Find why (the Imps' flight, the bridge deck, the deep water ~ that no unit may enter), fix it where it belongs, and land Battle 3 as ruled 2026-09-28 (four Imps far side; Turn 2 a Fire Imp, Turn 4 an Imp, Turn 5 a Fire Imp; no time limit; victory clears the map).",
-  "expect": "Battle 3 runs deterministically to a win or a loss on every seed tried with the player's party at that point; the stall's cause is named."
+  "expect": "Battle 3 runs deterministically to a win or a loss on every seed tried with the player's party at that point; the stall's cause is named.",
+  "attempts": 1,
+  "status": "failed",
+  "failedAt": "2026-09-30 19:43",
+  "reason": "Filed without probeIds, so gate 1 probes 'encounter.opening.bridge-ai', which is not a content id, and can never pass. The work (ranged-kite positionAlone ladder, clearShot) is kept and re-filed as encounter.opening.bridge-ai-refiled with probeIds encounter.opening.bridge. Ruled 2026-09-30, Andrew: 'Park, abandon, re-file'."
  },
  {
   "id": "viewer.opening-cast",

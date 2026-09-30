@@ -180,8 +180,8 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   // field it. fix.opening-party (2026-09-29, Andrew: "Opening battles should be tested with a party
   // the player should have at that point. We need to move away from these alpha heroes."): the
   // party the player has at the battle's position, drafted per replicate (content/opening-party.ts);
-  // the encounter places its own civilians. The Bridge, the Gates and the Cathedral join with their
-  // encounter rows (positions 3, 5, 6).
+  // the encounter places its own civilians. The Gates and the Cathedral join with their encounter rows
+  // (positions 5, 6); the Bridge joined with encounter.opening.bridge-ai (2026-09-30).
   'test.opening-orphanage': {
     id: 'test.opening-orphanage', note: 'The opening, battle 1: encounter.opening.orphanage on map.opening.orphanage with the party drafted by then (one hero).',
     mapId: 'map.opening.orphanage', encounterId: 'encounter.opening.orphanage', openingPosition: 1,
@@ -190,6 +190,11 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   'test.opening-lumberjack': {
     id: 'test.opening-lumberjack', note: 'The opening, battle 2: encounter.opening.lumberjack on map.opening.lumberjack with the party drafted by then (three heroes).',
     mapId: 'map.opening.lumberjack', encounterId: 'encounter.opening.lumberjack', openingPosition: 2,
+    heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
+  'test.opening-bridge': {
+    id: 'test.opening-bridge', note: 'The opening, battle 3: encounter.opening.bridge on map.opening.bridge with the party drafted by then (four heroes, one with the Flaming Longsword).',
+    mapId: 'map.opening.bridge', encounterId: 'encounter.opening.bridge', openingPosition: 3,
     heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
   'test.opening-cavern-trail': {

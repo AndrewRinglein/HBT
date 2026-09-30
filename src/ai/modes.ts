@@ -11,7 +11,7 @@ import { livingEnemies, movementOptions, moveStaminaCost, nearestEnemy, stepRang
 import { executeAction, legalActions, type ActionRequest } from './../core/commands.js'
 import type { AttackDef, MoveDef } from './../core/types.js'
 import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, isCharge, movesOf, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
-import { attackDef, preview, reachOf } from './../core/pipeline.js'
+import { attackDef, attackReachesHex, preview, reachOf } from './../core/pipeline.js'
 import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
 import { previewBurst } from './../core/burst.js'
 import { hiddenFrom, isBlocked, isConfused, isProne } from './../core/status.js'
@@ -722,8 +722,14 @@ function rangedKite(decision: Decision, u: Unit): void {
   // What a hex is worth: the row's position tiers (ai.scorer). The ten rows
   // carry the kite's own ladder — safety first, then a shot, then height,
   // then ideal spacing (src/content/ai-modes.ts POSITION).
-  const scene = sceneOf(decision, u, { enemies, reachAt, holdAt, threatened: (hex: HexId) => meleeThreatens(decision, u, hex) })
-  const position = tiersOf(decision, 'position')
+  // encounter.opening.bridge-ai (2026-09-30; SWITCHES.md aiKiteAlone): the ladder holds its distance
+  // only while a melee ally of its side stands to hold the line — with none, the row's
+  // `positionAlone` ladder puts the shot ahead of safety, and reads the shot by canAttack's geometry
+  // (shotFrom), so a warband of kiters facing walkers it can never safely shoot still fights.
+  const shotFrom = (hex: HexId, e: Unit) => attackReachesHex(ctx, { ...u, hex }, bow, e.hex)
+  const scene = sceneOf(decision, u, { enemies, reachAt, shotFrom, holdAt, threatened: (hex: HexId) => meleeThreatens(decision, u, hex) })
+  const screened = ctx.state.units.some((o) => o.side === u.side && o.id !== u.id && o.lifeState === 'standing' && o.role === 'melee')
+  const position = tiersOf(decision, screened ? 'position' : 'positionAlone')
   const scoreOf = (hex: HexId): readonly number[] => scorePlan(scene, { actionId: 'here', destination: hex }, position).score
   const better = (a: readonly number[], b: readonly number[]) => compareScores(a, b) > 0
 

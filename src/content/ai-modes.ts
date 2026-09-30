@@ -24,6 +24,15 @@ const HEAL: readonly AiTier[] = [{ missing: 1 }]
 const BURST: readonly AiTier[] = [{ burstValue: 1 }]
 /** The kite's hex, in strict priority: safe, then a shot, then height, then spacing. */
 const POSITION: readonly AiTier[] = [{ safe: 1 }, { canShoot: 1 }, { highGround: 1 }, { spacing: 1 }]
+/**
+ * The kite's hex when NO melee ally of its side stands (encounter.opening.bridge-ai, 2026-09-30;
+ * SWITCHES.md aiKiteAlone): a safe shot first, then ANY shot, then height, then spacing. The
+ * screened ladder above holds its distance while an ally holds the line; with nobody holding it,
+ * the shot is the point — a warband of kiters against walkers it can never safely shoot (an Imp's
+ * Blast reaches 4, a walking hero threatens Movement + 1) fled forever and the Bridge never ended.
+ * The shot here is the legality geometry's (clearShot: reach, line), not distance alone.
+ */
+const POSITION_ALONE: readonly AiTier[] = [{ safe: 1, clearShot: 1 }, { clearShot: 1 }, { highGround: 1 }, { spacing: 1 }]
 
 const common = { heal: HEAL, burst: BURST }
 
@@ -39,13 +48,13 @@ const rows: Record<string, AiModeRow> = {
     weights: { ...common, move: CLOSE } },
   // holds at reach and shoots the weakest thing it can see
   'ranged-kite': { id: 'ai.ranged-kite', rules: 'ranged-kite', target: WEAKEST, anchor: 'range-band',
-    weights: { ...common, move: CLOSE, position: POSITION } },
+    weights: { ...common, move: CLOSE, position: POSITION, positionAlone: POSITION_ALONE } },
   // stays by the nearest ally under half Health (else the nearest ally)
   'defender': { id: 'ai.defender', rules: 'defender', target: WEAKEST, anchor: 'ward',
     weights: { ...common, move: CLOSE } },
   // allies first — heals, powers — then fights like a kiter
   'support': { id: 'ai.support', rules: 'support', target: WEAKEST, anchor: 'range-band',
-    weights: { ...common, move: CLOSE, position: POSITION } },
+    weights: { ...common, move: CLOSE, position: POSITION, positionAlone: POSITION_ALONE } },
   // the whole side on one target: the weakest standing enemy
   'focused-fire': { id: 'ai.focused-fire', rules: 'focused-fire', target: WEAKEST, anchor: 'target',
     weights: { ...common, move: CLOSE } },

@@ -1519,6 +1519,7 @@ heroes (`src/content/scenarios.ts`). Probes: `test/opening-<key>.test.ts`, helpe
 | `openingEndOfEnemyPhase` | An arrival "at the end of Turn N's Enemy Phase" (Lumberjack House, the first Skeletal Archer)? | **It arrives as Turn N+1 begins** (`phase: N+1`) — the next moment the schedule has; it acts first in that Turn's Enemy Phase either way. | The schedule fires at Start of Turn or as an Enemy Phase begins; nothing acts between. | provisional — 2026-09-28 |
 | `openingHeroZonesLumberjack` | The Lumberjack House heroes? | **(5,7) r2**, west of the clearing: the Turn 3 and Turn 5 arrivals come "from behind the heroes" at the west edge. | The markers place "behind the heroes" at (0,5) and (0,9). | provisional — 2026-09-28 |
 | `openingHeroZonesCavern` | The Cavern Trail heroes? | **(5,6) r2**, the trail's west end: the Zombie Hounds come "behind the heroes" at the west edge. | The markers. | provisional — 2026-09-28 |
+| `openingHeroZonesBridge` | The Bridge heroes? | **(3,10) r2**, the west bank at the bridge's approach (row 10 is the one land row joining the west bank to both branches). | The Imps are "on the far side"; the markers put them on the east bank, so the heroes start on the west. The reading encounter.opening.bridge took, kept by encounter.opening.bridge-ai. | provisional — 2026-09-30 |
 | `openingFallIds` | The real falls' ids? | **`trigger.<battle>.<fall>`**: `trigger.cavern-trail.meteor-fall` (and `trigger.gates.curse-strike`). | The trigger kind the area fall uses (`areaFallIdKind`). | provisional — 2026-09-28 |
 | `openingCiviliansNoAi` | The civilians' AI? | **Their own rows' AI** — no `civilianAi` flight window (Supper's is its own ruling). | Not stated; "civilians dying is its own punishment" is about loss, not behaviour. | provisional — 2026-09-28 |
 
@@ -1703,3 +1704,30 @@ The rules are `progression/OPENING-PARTY.json` (`firstHero`, `crucible`, `draftS
 | `plannedHexProvokes` | What does the forecast do with an attack of opportunity on the planned path — roll it, assume it hits (the walk stops), or assume it misses? | **Record it and walk on as if it missed:** each provoke is listed (`at`, `from`, the holder's chosen `attackId` by the swing's own rule `aooChoice`, and that swing's `preview()` against the mover where it stands), and every number after it is read at the planned hex. The holder's reaction stamina is not spent on the fork. | Rolling it on the fork would show the player a future named-stream roll (Law 4); "the plan shows its costs before commit" (UI-BUILD-NOTES §5) asks for the provoke points and their odds, and the ghost's forecast is "if you arrive". | provisional — 2026-09-30 |
 | `plannedHexWalk` | Is the planned hex placed, or walked? | **Walked** — the fork runs the real `executeAction` (the one step loop): points, stamina, the slot, ground entered on the way. A step that would down the mover (lava) or stop it (Root) forecasts `arrives: false` with the hex it would reach. | "Equals the preview taken after actually moving there, number for number" — only the real walk makes it equal by construction (Law 1). | provisional — 2026-09-30 |
 | `threatQuery` | "Pointing at an enemy lights up where it can move and hit": moved with what budget, hit with which attacks, onto which hexes? | **Move:** every destination on THE action list of a fork where the unit's own next Activation has begun (`beginActivation` — Movement through the stat pipeline, Slow, Root; nothing else that would happen before it is projected). **Hit:** every hex one of its ready attacks reaches (canAttack's geometry, `attackReachesHex`: range, the ranged-adjacent ban, the line) from where it stands or from the forecast of any of those moves — whether or not a unit could stand there. A charge is left out of `hit`. Its own hex is in neither. | The ruling asks for the enemy's reach as the engine would judge it; the budget is the one its Activation would read. Standability and charges are the viewer's and a later item's refinements. | provisional — 2026-09-30 |
+
+## encounter.opening.bridge-ai — why the Bridge never ended, 2026-09-30
+
+The stall (encounter.opening.bridge, cut 2026-09-28): the kite's position ladder
+(`src/content/ai-modes.ts` POSITION) put **safety strictly ahead of a shot**, "safe" being out of every
+melee enemy's Movement + 1 (`meleeThreatens`). An Imp's Blast reaches 4; a walking hero threatens 5 or
+6; so no hex is ever both safe and a shot. The Imps fly 7 and the heroes walk 5, so the Imps always
+found a safe hex, never shot, and a melee hero could never catch them: nobody attacked for 14 Turns.
+Neither the bridge deck nor the deep water was the cause — they only give a flier room to keep away.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `aiKiteAlone` | A kiter that can never be both safe and in a shot — what does it do? | **While a melee ally of its side stands, nothing changes. With none, the row's `positionAlone` ladder: a safe shot, then any shot, then height, then spacing — the shot read by canAttack's geometry (`clearShot`: reach, the ranged-adjacent ban, the line), not distance alone.** Rows `ranged-kite` and `support` carry it. | The kite's own comment: "the shot is the point". Holding back is right while someone else holds the line; with nobody holding it, a warband of kiters that never shoots can only stall. Scoped to the unscreened kiter so the control battles stay byte-identical; the battle-cursor cases where a kiter is left alone moved (Law 10, `test/fixtures/battle-cursor-kite-alone.json`). | provisional — 2026-09-30 |
+
+Noticed, not changed:
+- **`canShoot` ignores the line.** The screened ladder still reads a shot as distance against reach, so
+  two shooters with a standing shaft or a drowned stone between them each read "a shot" where they stand
+  and neither moves. The unscreened ladder reads `clearShot`; moving the screened one too changes six
+  control maps (thicket, proving.ruin, dungeon-16x8, high-prop-single, high-prop-multi, well-shove) — its
+  own item, declaring `changesBaseline`.
+- **A melee hero closes by straight-line distance** (`meleeAggressive`'s fallback), so with its enemy
+  across the river it walks to the water's edge and stands there. The Bridge still ends — the Imps come
+  to it — but the heroes lose most seeds: of 100 replicates on the party drafted by battle 3, 99 wipe
+  and 1 is won (on the 2026-09-30 deck map in the content working tree: 98 and 2). Whether the Bridge
+  wants other numbers is Andrew's.
+- **"out of stamina"** is the kiter's idle reason whenever stamina < 1 — always, for an enemy with no
+  stamina pool — even when the truth is "no target in range".

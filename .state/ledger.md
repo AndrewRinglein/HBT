@@ -19712,3 +19712,88 @@ index 0f3936b..1979ccd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## encounter.opening.bridge-ai — ABANDONED
+2026-09-30 19:43
+
+Filed without probeIds, so gate 1 probes 'encounter.opening.bridge-ai', which is not a content id, and can never pass. The work (ranged-kite positionAlone ladder, clearShot) is kept and re-filed as encounter.opening.bridge-ai-refiled with probeIds encounter.opening.bridge. Ruled 2026-09-30, Andrew: 'Park, abandon, re-file'.
+
+## encounter.opening.bridge-ai-refiled — LANDED `fbef1f7` **NEEDS REVIEW**
+2026-09-30 19:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1719 · DECISIONS.md:3533
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/opening-party.test.ts, test/opening-bridge.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.bridge: 11 log lines, 11 fired, 7 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/opening-party.test.ts, test/fixtures/battle-cursor-kite-alone.json, test/opening-bridge.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/opening-party.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.bridge — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 76377e5..5d07e1a 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -198,4 +198,12 @@ const ghostColdGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
+ // Heart is +1 Cold Resist, not an immunity). A `changed` case is checked here and skips the older layers.
+ const resistOneWayGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-resist-one-way.json', import.meta.url), 'utf8'))
++// encounter.opening.bridge-ai (2026-09-30), Law 10: a kiter with no melee ally standing plays its row's positionAlone
++// ladder — a shot ahead of safety, the shot read by canAttack's geometry (SWITCHES.md aiKiteAlone; the Bridge never ended
++// because its Imps fled walkers they could never safely shoot). Every case frozen here (tools/capture-kite-alone-cursor.mts),
++// test.opening-bridge new. Moved for real, the rule working: every case where a kiter is left without a melee ally or reads a
++// line its old distance test did not — showcase.alpha-team, showcase.kiln, showcase.supper, showcase.surge-flight-ladder,
++// showcase.two-zombies-and-a-child, test.block-b, test.geometry-corridor, test.geometry-diagonal, test.opening-orphanage (one
++// hero, never screened) and test.structures. A `changed` case is checked here and skips the older layers.
++const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kite-alone.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -313,5 +321,8 @@ describe('resumable battle cursor', () => {
+       const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const resistOneWayMoved = resistOneWayExpected?.changed === true
++      const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const kiteAloneMoved = kiteAloneExpected?.changed === true
++      // was: const resistOneWayMoved = resistOneWayExpected?.changed === true — a kite-alone-moved case skips the resist-one-way layer too (encounter.opening.bridge-ai 2026-09-30)
++      const resistOneWayMoved = resistOneWayExpected?.changed === true || kiteAloneMoved
+       // was: const ghostColdMoved = ghostColdExpected?.changed === true — a resist-one-way-moved case skips the ghost-cold layer too (rule.immunity-is-resistance 2026-09-29)
+       const ghostColdMoved = ghostColdExpected?.changed === true || resistOneWayMoved
+@@ -378,5 +389,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (resistOneWayExpected) {
++        if (kiteAloneExpected) {
++        expect(hash(ctx.events), 'full kite-alone events').toBe(kiteAloneExpected.events)
++        expect(hash(ctx.state), 'full kite-alone state').toBe(kiteAloneExpected.state)
++        expect(hash(ctx.rng.log), 'full kite-alone RNG').toBe(kiteAloneExpected.rng)
++        expect(result).toEqual(kiteAloneExpected.result)
++        }
++        // was: if (resistOneWayExpected) { — encounter.opening.bridge-ai (2026-09-30): a kite-alone-moved case is checked above instead
++        if (resistOneWayExpected && !kiteAloneMoved) {
+         expect(hash(ctx.events), 'full resist-one-way events').toBe(resistOneWayExpected.events)
+         expect(hash(ctx.state), 'full resist-one-way state').toBe(resistOneWayExpected.state)
+diff --git a/test/opening-party.test.ts b/test/opening-party.test.ts
+index d758604..cb444a2 100644
+--- a/test/opening-party.test.ts
++++ b/test/opening-party.test.ts
+@@ -85,5 +85,7 @@ describe('fix.opening-party — the opening fields the drafted party', () => {
+   it('no opening scenario names an Alpha hero', () => {
+     const opening = Object.values(SCENARIOS).filter((s) => s.id.startsWith('test.opening-') && s.encounterId?.startsWith('encounter.opening.'))
+-    expect(opening.map((s) => s.id).sort()).toEqual(['test.opening-cavern-trail', 'test.opening-lumberjack', 'test.opening-orphanage'])
++    // Law 10, encounter.opening.bridge-ai (2026-09-30): the Bridge joins as battle 3 (position 3), fielded like the others — the list grows, every assertion below runs on it too.
++    // was: expect(opening.map((s) => s.id).sort()).toEqual(['test.opening-cavern-trail', 'test.opening-lumberjack', 'test.opening-orphanage'])
++    expect(opening.map((s) => s.id).sort()).toEqual(['test.opening-bridge', 'test.opening-cavern-trail', 'test.opening-lumberjack', 'test.opening-orphanage'])
+     for (const s of opening) {
+       expect(s.openingPosition, s.id).toBeGreaterThan(0)
+```
+</details>
