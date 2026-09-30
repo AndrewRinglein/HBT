@@ -3527,3 +3527,11 @@ Ruled:
 - **The seven hexes are bridge deck (B), not high obstacles.** The only standing shaft on the deck is (15,7); the other three are on the west bank at column 6.
 - The scene follows the map: `tools/battle-atlas/build-abbotown-encounters.py` widens the deck edge under those hexes, leaves out the three low stone blocks that stood on the deck and keeps deck chips under 0.2 m; every other placement is unchanged. The measured navigation is one connected area. The prior scene is kept in `assets/terrain-3d/abbotown-encounters/prior-2026-09-30/`.
 - Also shown, not ruled here: the scene's measurement flags the Orphanage water, the two houses, the west-edge dense forest and low cover, but those are the measurement's simple rule (water impassable, walls solid, foliage ignored, anything 0.22–1.77 m blocks), not the engine's. Andrew: the water is ankle-deep and stood in; units stand inside both houses **and the roof comes off when one is inside** (not yet built — no roof change on occupancy exists in the viewer or either scene); dense forest is a full obstruction.
+
+## 2026-09-30 — encounter.opening.bridge-ai: park, abandon, re-file
+
+Andrew, shown that the Bridge fix works (Battle 3 ends on all 100 seeds) but that `encounter.opening.bridge-ai` was filed with no `probeIds`, so gate 1 probes an id that is not a content id and can never pass, and asked how to land it:
+
+“Park, abandon, re-file”
+
+Ruled: the work is parked outside the tree, `encounter.opening.bridge-ai` is abandoned with that reason, and re-filed as `encounter.opening.bridge-ai-refiled` with `probeIds: ["encounter.opening.bridge"]`. Left open: `kingdom.opening-loop-three` still `needs` the abandoned id — no tool edits an existing item's `needs`, and the backlog is never hand-edited.
