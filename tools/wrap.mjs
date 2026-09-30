@@ -106,7 +106,20 @@ if (!/^New chat with /.test(next.label)) fail(`the next chat's label starts "New
   let green
   try { execFileSync(process.execPath, [join(HERE, 'gate.mjs'), '--shards-green'], { encoding: 'utf8', stdio: 'pipe' }); green = null }
   catch (e) { green = String(e.stdout || e.message).trim() }
-  if (green) fail(`the suite is not green on this tree — ${green}. Run the four shards, then wrap.`)
+  if (green) fail(`the suite is not green on this tree — ${green}. Run the shards (Cowork: --shard k/8; a terminal: --shard 1/1, the whole suite in one command), then wrap.`)
+}
+
+// The fast process (Andrew, 2026-09-30, DECISIONS.md "the fast process; the full process
+// kept"): the prior-art and wrong-home flags no longer run per item — they run here, once,
+// over the whole tree, before a byte is written. Flags: each prints its one summary line and
+// never blocks; the detail is the tool's own output. A run that cannot finish says so.
+for (const [name, tool] of [['prior art', 'prior-art.mjs'], ['wrong home', 'wrong-home.mjs']]) {
+  let line
+  try {
+    const out = execFileSync(process.execPath, [join(HERE, tool)], { encoding: 'utf8', stdio: 'pipe', timeout: 60_000 })
+    line = out.split('\n').map((l) => l.trim()).find(Boolean) ?? `${name}: no output`
+  } catch (e) { line = `${name}: did not finish (${String(e.message ?? e).split('\n')[0].slice(0, 80)})` }
+  console.log(`flag  ${line}  — detail: node tools/${tool}`)
 }
 
 const at = stamp()

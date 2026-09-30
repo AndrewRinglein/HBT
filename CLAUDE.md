@@ -63,12 +63,14 @@ node tools/next.mjs                    the next backlog item that is ready
 node tools/gate.mjs --shard <k>/4      run a quarter of the test suite (k = 1..4), one command
                                        each — once per chat; wrap refuses until a complete set
                                        passed on the exact tree. In Cowork run --shard <k>/8
-                                       (k = 1..8) instead: any complete set counts
+                                       (k = 1..8) instead: any complete set counts. In a
+                                       terminal, --shard 1/1 is the whole suite in one command
 node tools/gate.mjs --shards-green     exit 0 only if a complete set of shards passed on this tree
 node tools/gate.mjs <id>               run the gates, change nothing. Each check is recorded
                                        against the tree; in Cowork it stops at 150 s (--budget <s>)
                                        with INCOMPLETE, exit 3 — repeat the same command until it
-                                       finishes. --fresh re-runs every check
+                                       finishes. --fresh re-runs every check. --full runs the
+                                       full per-item process (see The Iron Gauntlet)
 node tools/gate.mjs <id> --land        commit, only if every gate passed on this tree (recorded or
                                        fresh) — in Cowork, repeat it until it lands
 node tools/gate.mjs <id> --abandon "<why>"   give up, revert, record why — runs no checks
@@ -116,12 +118,24 @@ ledger; a landing that edited existing tests still lands `done-needs-review` (La
 
 A landing runs: typecheck, **the item's own tests** (the test files it touched), the
 control battles, and the checks below. The full suite runs **once per chat**, as the four
-`--shard` commands, and `wrap` refuses until a complete set (four, or `k/8` in Cowork) passed on the final tree.
+`--shard` commands, and `wrap` refuses until a complete set (four, or `k/8` in Cowork, or
+`1/1` in a terminal) passed on the final tree.
+
+**Fast by default; the full process kept** (Andrew, 2026-09-30, `DECISIONS.md` "the fast
+process; the full process kept"). The gate's default is **fast**: the prior-art and
+wrong-home flags do not run per item — `wrap` runs both once over the whole tree, as flags
+that never block — and the kill switch runs on the test files the item **added** (every
+touched file when it added none). `node tools/gate.mjs <id> --full` runs every per-item check
+as before; the git tag `process-full-2026-09-30` is the whole harness as it stood. Every run
+logs `process: fast|full` in `.state/gauntlet-log.jsonl`, so the two can be compared.
+Engine work goes fastest in Claude Code on Andrew's PC, where no command limit applies
+(recommended 2026-09-30, not ruled).
 
 - **Appears in a battle** — probes the id (or `probeIds`). Engine-only plumbing with no
   `probeIds` skips it as not applicable.
 - **Kill switch** — the item's tests re-run with its content disabled (`CF_DISABLE_IDS`,
   the seam in `src/content/disable.ts`) and must FAIL. Engine-only plumbing skips it.
+  Fast: the test files the item added; `--full`: every test file it touched.
 - **Hardcode scan** — added `src/core` lines may not contain content-instance ids or
   creature-tag literals. Core knows mechanisms; only content knows names.
 - **Generalization** — a mechanism-shaped item declares `variants`: 2+ ids proving the
@@ -129,13 +143,15 @@ control battles, and the checks below. The full suite runs **once per chat**, as
 - **Consequence** — `changesBaseline: true` with byte-identical control battles FAILS.
 - **Naming** — unknown id kinds block (declare them in `GLOSSARY.md` first); banned
   vocabulary flags.
-- **Prior art** — a flag, not a gate (tool.prior-art-audit, 2026-09-28). What the item changed in all
+- **Prior art** — a flag, not a gate (tool.prior-art-audit, 2026-09-28); per item only with
+  `--full`, otherwise once at `wrap` over the whole tree (2026-09-30). What the item changed in all
   four packages (uncommitted) against the tree: a new vocabulary sharing 75% of another file's list, a new
   function or constant another file already declares, a new call around a ruled funnel
   (`tools/prior-art-funnels.json`), a jscpd clone on an added line. Any of them holds the landing as
   `done-needs-review` unless the spec has a `Prior art:` line naming what it resembles and why it is not
   the same. `node tools/prior-art.mjs --item` shows it before the gate does.
-- **Wrong home** — a flag (tool.wrong-home-audit, 2026-09-28). The item's changed engine files: a content
+- **Wrong home** — a flag (tool.wrong-home-audit, 2026-09-28); per item only with `--full`,
+  otherwise once at `wrap` (2026-09-30). The item's changed engine files: a content
   row or a content number typed in, a content name read by core/ai/sim, a campaign quantity, a display
   colour. Lands `done-needs-review` unless the spec has an `Engine rule:` line naming the ruling. The whole
   list of what to move out is `generated/wrong-home.md` (`node tools/wrong-home.mjs --write`).

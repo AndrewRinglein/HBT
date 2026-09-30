@@ -21,6 +21,13 @@
 // counting no attempt, logging nothing and landing nothing: run the same command
 // again. --land commits only when every check has passed on the current tree,
 // recorded or fresh. --fresh discards the record first; --abandon clears it.
+//
+// FAST BY DEFAULT, --full KEPT (Andrew, 2026-09-30, DECISIONS.md "the fast process; the
+// full process kept"). The default runs every check except the prior-art and wrong-home
+// flags, which `wrap` runs once over the whole tree, and its kill switch runs on the test
+// files the item ADDED (every touched file when it added none). `--full` runs every
+// per-item check exactly as before; the git tag `process-full-2026-09-30` is the whole
+// harness as it stood. Outside Cowork the suite is one command: `--shard 1/1`.
 
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
@@ -31,7 +38,7 @@ import { checkItem } from './prior-art.mjs'
 import { checkWrongHome } from './wrong-home.mjs'
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
-  stopBefore, budgetFrom, parseShard, recordShard, shardStatus,
+  stopBefore, budgetFrom, parseShard, recordShard, shardStatus, testFilesIn, killSwitchFiles,
 } from './gate-progress.mjs'
 
 const T0 = Date.now()
@@ -39,6 +46,8 @@ const T0 = Date.now()
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
   : process.argv.includes('--abandon') ? 'abandon' : 'check'
+const FULL = process.argv.includes('--full')
+const PROCESS = FULL ? 'full' : 'fast'
 
 const BACKLOG = '.state/backlog.json'
 const LEDGER = '.state/ledger.md'
@@ -110,7 +119,7 @@ if (shardArg !== -1) {
   process.exit(r.ok ? 0 : 1)
 }
 
-if (!id) { console.error(`usage: node tools/gate.mjs <item-id> [--land|--abandon "<why>"] [--budget <s>] [--fresh]  |  --shard <k>/${SHARDS}  |  --count`); process.exit(2) }
+if (!id) { console.error(`usage: node tools/gate.mjs <item-id> [--land|--abandon "<why>"] [--full] [--budget <s>] [--fresh]  |  --shard <k>/${SHARDS} (1/1 = the whole suite, one command)  |  --count`); process.exit(2) }
 
 let BUDGET
 try { BUDGET = budgetFrom(process.argv) } catch (e) { console.error(e.message); process.exit(2) }
@@ -124,7 +133,7 @@ try { BUDGET = budgetFrom(process.argv) } catch (e) { console.error(e.message); 
 function logRun(disposition, extra = {}) {
   try {
     appendFileSync(RUNLOG, JSON.stringify({
-      at: new Date().toISOString(), id, mode: MODE, disposition,
+      at: new Date().toISOString(), id, mode: MODE, process: PROCESS, disposition,
       attempt: (item.attempts ?? 0) + (disposition === 'failed-checks' ? 0 : 1),
       checks: checks.map((c) => ({ name: c.name, ok: !!c.ok, warn: !!c.warn, note: c.note || undefined })),
       ...extra,
@@ -156,7 +165,7 @@ const check = (name, fn, o = {}) => { CHECKS.push({ name, kind: 'check', fn, ...
  */
 const flag = (name, fn) => { CHECKS.push({ name, kind: 'flag', fn }) }
 
-console.log(`\ngate: ${id}   [${MODE}]\n`)
+console.log(`\ngate: ${id}   [${MODE} · ${PROCESS}]\n`)
 
 // --abandon runs no checks (2026-09-22): giving up needs a reason, not a full
 // suite. `node tools/gate.mjs <id> --abandon "<why>"`.
@@ -216,8 +225,7 @@ check('typecheck', () => {
 // The item's own tests, not the full suite (Andrew, 2026-09-23, DECISIONS.md "less
 // process per feature"). The full suite runs once per chat as the four shards, and
 // `wrap` refuses until all four passed on the final tree.
-const touchedTests = () => sh('git status --porcelain --untracked-files=all').split('\n').filter(Boolean)
-  .map((l) => l.slice(3).replace(/^.* -> /, '')).filter((f) => f.startsWith('test/') && /\.test\.ts$/.test(f))
+const touchedTests = () => testFilesIn(sh('git status --porcelain --untracked-files=all'))
 check("the item's own tests", () => {
   const files = touchedTests()
   if (!files.length) return { ok: false, note: 'no test file touched' }
@@ -375,6 +383,7 @@ check('hardcode scan — core knows mechanisms, never names', () => {
 // for review, unless the spec has a "Prior art:" line naming what it resembles and why it is not
 // the same. A run that cannot finish (jscpd missing) is loud and holds the landing too (Law 9).
 flag('prior art — nothing new copies what exists', () => {
+  if (!FULL) return { ok: true, note: 'fast — wrap runs it over the whole tree; --full runs it here' }
   try { const { ok, review, note } = checkItem(item); return { ok, review, note } }
   catch (e) { return { ok: false, review: true, note: `the prior-art audit could not run: ${String(e.message ?? e).split('\n')[0]}` } }
 })
@@ -384,6 +393,7 @@ flag('prior art — nothing new copies what exists', () => {
 // files: a content row or a content value typed in, a content name read by core/ai/sim, a campaign
 // quantity, a display colour. A FLAG: it lands for review unless the spec has an "Engine rule:" line.
 flag('wrong home — nothing another package owns', () => {
+  if (!FULL) return { ok: true, note: 'fast — wrap runs it over the whole tree; --full runs it here' }
   try { const { ok, review, note } = checkWrongHome(item); return { ok, review, note } }
   catch (e) { return { ok: false, review: true, note: `the wrong-home audit could not run: ${String(e.message ?? e).split('\n')[0]}` } }
 })
@@ -462,7 +472,9 @@ flag('naming — no banned words invented', () => {
 check('kill switch — the tests fail without the content', () => {
   const ids = (item.probeIds ?? [id]).filter((x) => x.includes('.'))
   if ((item.shape === 'plumbing' && !item.probeIds) || ids.length === 0) return { ok: true, note: 'no content id to disable — engine plumbing, not applicable' }
-  const files = touchedTests()
+  // fast: the test files the item ADDED — its own verify scenario, not an existing battle
+  // file it happened to edit; every touched file when it added none. --full: every touched file.
+  const files = killSwitchFiles(sh('git status --porcelain --untracked-files=all'), FULL)
   if (files.length === 0) return { ok: true, note: 'no touched test files (brought-its-own-tests already failed)' }
   // The env goes through execSync's `env` option, not a `VAR=x cmd` prefix —
   // that prefix is bash-only, and under cmd.exe this check would "fail" because
@@ -485,7 +497,8 @@ let progress = (() => {
   try { raw = JSON.parse(readFileSync(PROGRESS, 'utf8')) } catch {}
   let golden = null
   try { golden = readFileSync(GOLDEN, 'utf8').trim() } catch {}
-  return openProgress(raw, { id, tree, ctx: contextHash(item, backlog, golden) })
+  // the process is part of the context: a fast pass never replays into a --full run
+  return openProgress(raw, { id, tree, ctx: contextHash({ ...item, process: PROCESS }, backlog, golden) })
 })()
 if (process.argv.includes('--fresh')) progress = clearResults(progress)
 const saveProgress = () => { try { writeFileSync(PROGRESS, serialize(progress)) } catch { /* best-effort: a lost record only means re-running checks */ } }

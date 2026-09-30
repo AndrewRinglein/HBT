@@ -184,3 +184,21 @@ export function shardStatus(raw, tree, defaultN) {
   if (partial.length) return { green: false, ...partial[0] }
   return { green: false, n: defaultN, passed: [], todo: Array.from({ length: defaultN }, (_, i) => i + 1) }
 }
+
+// ── which test files (the fast process, Andrew 2026-09-30) ──────────────────
+/** The test files in `git status --porcelain --untracked-files=all` output. */
+export function testFilesIn(porcelain) {
+  return String(porcelain ?? '').split('\n').filter(Boolean)
+    .map((l) => l.slice(3).replace(/^.* -> /, '')).filter((f) => f.startsWith('test/') && /\.test\.ts$/.test(f))
+}
+/**
+ * The kill switch's files. `full`: every touched test file, as before 2026-09-30. Fast: the
+ * files the item ADDED (untracked `??` or staged new `A`), its own verify scenario — an existing
+ * battle file it edited is not re-run with the content off; every touched file when it added none.
+ */
+export function killSwitchFiles(porcelain, full = false) {
+  const touched = testFilesIn(porcelain)
+  if (full) return touched
+  const added = testFilesIn(String(porcelain ?? '').split('\n').filter((l) => /^(\?\?|A.) /.test(l)).join('\n'))
+  return added.length ? added : touched
+}

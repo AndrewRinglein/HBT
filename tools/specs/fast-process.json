@@ -1,0 +1,7 @@
+[{
+ "id": "tool.fast-process",
+ "kind": "plumbing",
+ "shape": "plumbing",
+ "spec": "Andrew 2026-09-30 (DECISIONS.md 'the fast process; the full process kept'): 'Okay, can we preserve the long process somewhere, but then update this to our new fast process?' The full process is the git tag process-full-2026-09-30 and gate.mjs --full, which runs every per-item check as before. Fast is the default: the prior-art and wrong-home flags run once at wrap over the whole tree, never per item; the kill switch re-runs the test files the item added (every touched file when it added none); the run log records process fast|full. Outside Cowork the suite is one command, --shard 1/1, which wrap accepts. Prior art: tool.gate-fits-cowork (the resumable gate and shard sets this reuses), tool.prior-art-audit and tool.wrong-home-audit (the flags moved, unchanged).",
+ "expect": "a fast gate run prints 'fast' for prior art and wrong home and does not run them; --full runs them; the kill switch in fast mode takes only added test files; wrap prints both flags' summary lines before writing; test/fast-process.test.ts green"
+}]
