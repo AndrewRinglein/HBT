@@ -2698,6 +2698,62 @@
     }
    ],
    "source": "Dictated 2026-09-02. Shadow Grasp NAME IS MINE — the melee attack was dictated unnamed. Movement 11 with Flight, Accuracy 130 and three attacks that all paint darkness and strip Vision: it makes the board dark faster than the party can cross it, and every hit it lands makes the next one likelier."
+  },
+  {
+   "id": "unit.ghost",
+   "name": "Ghost",
+   "tier": 1,
+   "types": [
+    "Ghost"
+   ],
+   "family": "oddballs",
+   "stats": {
+    "movement": 5,
+    "strength": 4,
+    "precision": 5,
+    "accuracy": 85,
+    "health": 4,
+    "dodge": 10
+   },
+   "movePower": "flight",
+   "attacks": [
+    {
+     "id": "attack.ghost.attack",
+     "name": "Attack",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "damageType": "magic"
+    },
+    {
+     "id": "attack.ghost.possess",
+     "name": "Possess",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "magic",
+      "mod": 0
+     },
+     "damageType": "magic",
+     "triggers": [
+      {
+       "hook": "onHit",
+       "chance": 25,
+       "effects": [
+        {
+         "effect": "inflict an affliction",
+         "affliction": "possession"
+        }
+       ],
+       "needs": [
+        "capability.inflict-affliction"
+       ]
+      }
+     ]
+    }
+   ],
+   "source": "Ruled 2026-09-29 (Andrew, engine/DECISIONS.md \"the Ghost as the bestiary has it; Cold Resist; ...\"): \"Should the Ghost go in with its bestiary numbers as-is ...?\" — \"Yes.\" · \"Ghost should inflict possession\". Ported as-is from gen/bestiary.json unit.ghost (rank 1: Strength 4, Precision 5, Armor 0, Health 4, Reach 1, Resist 0, Dodge 10; derived Accuracy 85, Movement 5; types Ghost and Flying — Flying is the flight move). Possess: the bestiary rider (gen/bestiary-riders.json, 25%, SOFT), fired onHit because Possess deals 0 — Magic 0 + 0 is exactly the authored 0 (engine SWITCHES ghostPossessReadsMagic). Attack: the bestiary gives it no number; it reads Strength, magic-typed (engine SWITCHES ghostAttackReadsStrength). Phase (\"grant a stat for the Battle\", value 2, no stat named) is left out — the bestiary names no stat. Family oddballs: no ghost family exists."
   }
  ]
 }
