@@ -2,7 +2,7 @@
    Reads V.S (the folded state) and draws it. Never folds. Every function takes
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
-import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE } from './theme.js'
+import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly } from './theme.js'
 import { mvOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { dangerOf } from './projection.js'
@@ -84,12 +84,15 @@ function groundLines(d, colour, opt = {}) {
   g.appendChild(mk(opt.w || 4.4, colour, opt.dash))
   return g
 }
+/* the burning ground's flames (and, since viewer.under-unit, a burning body's): gradient, flicker s, delay s */
+const FIRE = [['#ffe6a8,#ff9a2e 48%,#e0490c', .62, 0], ['#fff0c8,#ffab3e 50%,#d64810', .84, .21],
+  ['#fffbe8,#ffc45c 55%,#e8640f', 1.02, .44], ['#ffe6a8,#ff8f22 52%,#c33f0a', .74, .66]]
 function burnTile(l, t) {
   const w = el('lay', `left:${l}px;top:${t}px`)
   w.appendChild(el('', `position:absolute;inset:0;background:radial-gradient(ellipse at 50% 58%,rgba(86,64,46,.42) 25%,rgba(98,76,54,.24) 66%,rgba(104,82,58,.06) 100%);mix-blend-mode:multiply`))
   w.appendChild(el('', `position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(255,130,25,.34) 0%,rgba(70,18,4,.04) 78%);mix-blend-mode:screen;animation:fxPulse 1.3s ease-in-out infinite`))
-  ;[[38, 26, 24, 56, '#ffe6a8,#ff9a2e 48%,#e0490c', 2, .62, 0], [62, 36, 20, 46, '#fff0c8,#ffab3e 50%,#d64810', 1.6, .84, .21],
-    [52, 46, 30, 38, '#fffbe8,#ffc45c 55%,#e8640f', 2.4, 1.02, .44], [25, 50, 16, 32, '#ffe6a8,#ff8f22 52%,#c33f0a', 1.6, .74, .66]]
+  ;[[38, 26, 24, 56, 2], [62, 36, 20, 46, 1.6], [52, 46, 30, 38, 2.4], [25, 50, 16, 32, 1.6]]
+    .map(([fl, ft, fw, fh, bl], i) => [fl, ft, fw, fh, FIRE[i][0], bl, FIRE[i][1], FIRE[i][2]])
     .forEach(([fl, ft, fw, fh, g, bl, d, dl]) => w.appendChild(el('flame',
       `left:${fl}px;top:${ft}px;width:${fw}px;height:${fh}px;background:linear-gradient(${g});filter:blur(${bl}px);animation:fxFlicker ${d}s ease-in-out ${dl}s infinite`)))
   ;[[44, 60, 5, '#ffca6a', 8, 2.4, 0], [70, 56, 4, '#ffd98a', 7, 3.1, .6], [58, 70, 3, '#ffb347', 6, 2.8, 1.3]]
@@ -736,7 +739,9 @@ function mkUnit(V, u) {
   const hpbar = el('hpbar', ''); const hpfill = el('hpfill', ''); hpbar.appendChild(hpfill)
   const prot = el('', 'display:none')
   const mark = el('actMark', 'display:none')
-  bb.appendChild(badges); bb.appendChild(hpbar); bb.appendChild(prot); bb.appendChild(mark)
+  /* viewer.under-unit: the name under the feet, and what a status draws ON the body (Stun, Burn, Poison) */
+  const name = el('uuName', 'display:none'), fx = el('uuFx', 'display:none')
+  bb.appendChild(fx); bb.appendChild(badges); bb.appendChild(hpbar); bb.appendChild(prot); bb.appendChild(mark); bb.appendChild(name)
   const clock = el('clockchip', 'left:-20px;top:16px;display:none')
   /* NO PLATE (ruled 2026-09-01); LIFTED toward the camera with translateZ so the
      hex in front does not shear the numeral (PLAYBACK-DESIGN §7.3d) */
@@ -752,7 +757,44 @@ function mkUnit(V, u) {
   root.appendChild(actB); root.appendChild(selR); root.appendChild(downR)
   root.appendChild(bb); root.appendChild(clock)
   V.layers.unitsL.appendChild(root)
-  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, prot, mark, clock, mv, dg, glow, a }
+  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, prot, mark, clock, mv, dg, glow, a, name, fx }
+}
+/* ── UNDER THE UNIT (viewer.under-unit, 2026-09-29; engine DECISIONS.md "the playable battle screen" and "the
+   playable screen: the acting mark ..."; PLAYABLE-OPENING-PLAN.md item 6) ─────────────────────────────────────
+   "a health bar and name underneath the units … some icons go there as well" · "Protection should be represented
+   by a bar underneath health" · no Poison or Burn icon: "we can display that on the unit directly with a fire and
+   poison" · "Stun should be shown on a character" · Slow "can just change the number that shows how much movement
+   that character has". Drawn on the playable screen's battles — those bound to a painted scene (SWITCHES
+   underUnitWhere); every other board keeps the beside-the-token bar and the overhead glyphs it was ruled with.
+   The Health and Protection bars are the SAME elements laid across (rotated 90°, so they fill from the left):
+   the fill is still the folded HP and the segments still the engine's absorbing pool — nothing new is counted. */
+export const underUnit = V => V.data.atlas?.kind === 'painted'
+const UU = { w: 64, name: 10, hp: 28, prot: 38, icons: 46, iconsBare: 38, lift: 'translateZ(60px)' }
+const BODY_FX = {
+  /* the burning ground's flames (its colours and flicker), as tongues standing up the body: pointed, translucent,
+     low on the figure so the figure still shows through */
+  burn: H => { const W = Math.max(30, Math.round(H * .46))
+    const at = [[-.3, 0, .34, .4], [.3, .02, .3, .36], [0, .1, .36, .46], [-.18, .36, .26, .3], [.2, .4, .24, .28]]
+    const tongue = 'polygon(50% 0,60% 20%,76% 44%,86% 68%,78% 90%,50% 100%,22% 90%,14% 68%,24% 44%,40% 20%)'
+    return '<div class="uuFire">' + at.map(([x, b, fw, fh], i) => { const [g, d, dl] = FIRE[i % FIRE.length], [c1, c2, c3] = g.split(',').map(c => c.split(' ')[0])
+      const ww = Math.round(fw * W), hh = Math.round(fh * H)
+      return `<div class="flame" style="left:${Math.round(x * W - ww / 2)}px;top:${-Math.round(b * H) - hh}px;width:${ww}px;height:${hh}px;clip-path:${tongue};` +
+        `background:radial-gradient(ellipse 50% 62% at 50% 76%,${c1} 0%,${c2} 30%,${c3}99 58%,${c3}00 78%);opacity:.82;` +
+        `animation:fxFlicker ${d}s ease-in-out ${dl + i * .13}s infinite"></div>` }).join('') +
+      [[-.18, .3, 2.4, 0], [.14, .45, 3.1, .6], [.02, .6, 2.8, 1.3]].map(([x, b, d, dl]) => `<div class="ember" style="left:${Math.round(x * W)}px;` +
+        `top:${-Math.round(b * H)}px;width:4px;height:4px;background:#ffca6a;box-shadow:0 0 7px #ff9a2e;animation:fxEmber ${d}s linear ${dl}s infinite"></div>`).join('') + '</div>' },
+  /* Poison's green haze and its bubbles rising off the body */
+  poison: H => { const W = Math.max(30, Math.round(H * .46)), c = rgb(stStyle('status.poison').hue)
+    return `<div class="uuPoison"><div style="position:absolute;left:${-Math.round(W * .7)}px;top:${-Math.round(H * .9)}px;width:${Math.round(W * 1.4)}px;` +
+      `height:${Math.round(H * .9)}px;border-radius:50%;background:radial-gradient(ellipse at 50% 62%,rgba(${c},.46) 0%,rgba(${c},.18) 45%,rgba(${c},0) 72%);` +
+      'animation:fxPulse 1.9s ease-in-out infinite"></div>' +
+      [[-.22, .18, 11, 3.2, 0], [.2, .34, 9, 3.8, .9], [-.04, .52, 13, 4.4, 1.8], [.12, .7, 8, 3.4, 2.4], [-.16, .44, 7, 3.6, 1.2]].map(([x, b, s, d, dl]) =>
+        `<div style="position:absolute;left:${Math.round(x * W - s / 2)}px;top:${-Math.round(b * H)}px;width:${s}px;height:${s}px;border-radius:50%;` +
+        `background:rgba(${c},.72);box-shadow:0 0 4px rgba(${c},.8);animation:fxBubble ${d}s ease-in ${dl}s infinite"></div>`).join('') + '</div>' },
+  /* Stun's stars circling the head, in Stun's hue and glyph */
+  stun: H => { const st = stStyle('status.stun')
+    return `<div class="uuStun" style="position:absolute;left:0;top:${-H - 12}px">` +
+      [0, 1, 2].map(i => `<div class="uuStar" style="clip-path:${st.gl};background:${st.hue};animation-delay:${-(i * .5).toFixed(2)}s"></div>`).join('') + '</div>' },
 }
 export function syncUnits(V) {
   const { S, view, layers: L } = V, { UD, LAYOUT } = V.data
@@ -799,6 +841,10 @@ export function syncUnits(V) {
        (viewer.character-models) keeps the standee only as its click target: ring, shadow, bars, chips and
        the bleed-out counter stay; the picture is the model's. */
     const modelled = !!V.cast?.shows(u.id)
+    /* what rides the figure's head (the acting arrow, the overhead glyphs, the stars of a Stun) rides the MODEL's
+       head where a model stands — about two thirds of the standee (SWITCHES modelScale, viewer.under-unit) */
+    const figPx = modelled ? Math.round(V.cast.heightPx?.(u.id) || hpx) : hpx
+    const under = underUnit(V)
     E.img.style.opacity = modelled ? '0' : down ? '.82' : '1'
     E.img.style.boxShadow = down && !modelled ? '0 10px 16px -6px rgba(0,0,0,.85)' : ''
     E.flash.style.left = (-w / 2 - 8) + 'px'; E.flash.style.top = (-hpx * 0.7) + 'px'
@@ -836,7 +882,7 @@ export function syncUnits(V) {
     }
     E.bb.style.transform = down ? 'rotateZ(var(--unspin, 0deg)) rotateX(calc(var(--anti) * 0.68))' : prone ? 'rotateZ(var(--unspin, 0deg)) rotateX(calc(var(--anti) * 0.82))' : 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti))'
     E.actA.style.display = E.actB.style.display = (!bare && u.id === S.activeId && !down) ? '' : 'none'
-    E.mark.style.cssText = `left:-9px;top:${-hpx - 46}px;display:${u.id === S.activeId && !down ? 'block' : 'none'}`
+    E.mark.style.cssText = `left:-9px;top:${-figPx - 46}px;display:${u.id === S.activeId && !down ? 'block' : 'none'}`
     E.selR.style.display = u.id === view.inspectId ? '' : 'none'
     /* Movement numeral, lower-left (ruled 2026-08-26) */
     {
@@ -871,20 +917,23 @@ export function syncUnits(V) {
     }
     /* HP bar rides the token; trimmed from the BOTTOM only (ruled 2026-09-01) */
     const frac = Math.max(0, u.hp / u.maxHp)
-    const bhFull = Math.round(base * 0.55)
+    const bhFull = modelled ? figPx : Math.round(base * 0.55)
     const BAR_TRIM = 18
     const bh = Math.max(24, bhFull - BAR_TRIM)
-    E.hpbar.style.cssText = down ? 'display:none' : `left:${w / 2 + 7}px;top:${-bhFull}px;height:${bh}px`
+    /* the absorbing pool the Protection bar draws (§1): the engine's absorbing statuses, as folded */
+    const pool = V.data.ABSORBING_STATUSES.reduce((n, id) => n + (u.st[id] || 0), 0)
+    /* under the unit: laid across below the name, filling from the left (UU above) */
+    const across = top => `left:${UU.w / 2}px;top:${top}px;height:${UU.w}px;transform-origin:0 0;transform:${UU.lift} rotate(90deg)`
+    E.hpbar.style.cssText = down ? 'display:none' : under ? across(UU.hp) : `left:${w / 2 + 7}px;top:${-bhFull}px;height:${bh}px`
     /* CONSTANT fill (ruled 2026-09-01): colour here means gain or loss only */
     E.hpfill.style.cssText = `height:${Math.round(100 * frac)}%;background:linear-gradient(#e9e3d2,#c3bba4);transition:height .3s ease`
     {
       /* PROTECTION: its own segmented bar beside the HP bar (§1) */
-      const pool = V.data.ABSORBING_STATUSES.reduce((n, id) => n + (u.st[id] || 0), 0)
       const segs = Math.min(12, pool)
       if (down || segs <= 0) E.prot.style.display = 'none'
       else {
-        E.prot.style.cssText = `position:absolute;left:${w / 2 + 7 + 9}px;top:${-bhFull}px;height:${bh}px;` +
-          `width:6px;display:flex;flex-direction:column-reverse;gap:1px;pointer-events:none`
+        E.prot.style.cssText = (under ? `position:absolute;${across(UU.prot)};width:5px;` : `position:absolute;left:${w / 2 + 7 + 9}px;top:${-bhFull}px;height:${bh}px;width:6px;`) +
+          `display:flex;flex-direction:column-reverse;gap:1px;pointer-events:none`
         E.prot.innerHTML = Array.from({ length: segs }, (_, i) =>
           `<div style="flex:1;border-radius:1px;background:${stStyle('status.protection').hue};` +
           `box-shadow:0 0 3px rgba(0,0,0,.9)"></div>`).join('')
@@ -896,7 +945,10 @@ export function syncUnits(V) {
        overhead, and make it red"). Small and red is what tells it apart from
        a future death prediction; only the engine may supply that fact. NOTHING ELSE (§1). */
     const OVER = ['status.stun', 'test.status.daze', 'status.dazed', 'status.weak', 'test.status.enfeeble']
-    const sts = Object.entries(u.st).filter(([id, v]) => v > 0 && OVER.includes(id))
+    /* under the unit, every status is an icon but those drawn on the body, the movement-only ones and the
+       Protection bar's pool (viewer.under-unit) */
+    const iconed = id => under ? !onBodyAs(id) && !movementOnly(id) && !V.data.ABSORBING_STATUSES.includes(id) : OVER.includes(id)
+    const sts = Object.entries(u.st).filter(([id, v]) => v > 0 && iconed(id))
     /* the chevron is the buff/debuff layer — the stat block's green and red
        (ruled 2026-09-01 for move riders), not a status's hue (Law 6) */
     /* the kit and the growth a unit was fielded with (unit.equipped,
@@ -904,7 +956,21 @@ export function syncUnits(V) {
        only what happened in the battle */
     const live = (u.mods || []).filter(m => !m.fielded)
     const chev = live.length ? live.reduce((n, m) => n + (m.value > 0 ? 1 : -1), 0) : 0
-    E.badges.style.cssText = down ? 'display:none' : `left:${-w / 2 - 2}px;top:${-hpx - 22}px`
+    E.badges.classList.toggle('uuIcons', under)
+    E.badges.style.cssText = down ? 'display:none' : under
+      ? `left:${-UU.w / 2}px;top:${pool > 0 ? UU.icons : UU.iconsBare}px;width:${UU.w}px;justify-content:center;transform:${UU.lift}`
+      : `left:${-w / 2 - 2}px;top:${-figPx - 22}px`
+    /* the name, under the feet (the unit's own, from its unit.enter) */
+    if (under && !bare) { E.name.style.cssText = `display:block;left:-90px;top:${UU.name}px;width:180px;color:${SIDE_TINT[u.side] || SIDE_TINT.enemy}`
+      if (E.name.textContent !== u.name) E.name.textContent = u.name }
+    else E.name.style.display = 'none'
+    /* ON THE BODY: Stun's stars, Burn's flames, Poison's haze — rebuilt only when what is drawn changes, so the
+       animations run on and are not restarted by every render */
+    const body = under && !down ? [...new Set(Object.entries(u.st).filter(([, v]) => v > 0).map(([id]) => onBodyAs(id)).filter(Boolean))].sort() : []
+    const fxKey = body.join(',') + '|' + figPx
+    if (E.fxKey !== fxKey) { E.fxKey = fxKey
+      E.fx.style.cssText = body.length ? '' : 'display:none'
+      E.fx.innerHTML = body.map(k => BODY_FX[k](figPx)).join('') }
     const dbSkull = u.deathbed ? `<div class="badge dbSkull" title="stood at the Deathbed">${raIcon('skull', `font-size:13px;color:${BLOOD_HUE}`)}</div>` : ''
     E.badges.innerHTML = dbSkull + sts.map(([id, v]) => { const st = stStyle(id)
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +

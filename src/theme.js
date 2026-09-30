@@ -56,6 +56,21 @@ export const stStyle = id => STYLE[String(id).replace(/^test\./, '').replace(/da
   .replace(/hobble$/, 'status.slow').replace(/ward$/, 'status.protection')
   .replace(/enfeeble$/, 'status.weak').replace(/^status\.floored$/, 'status.prone')] || { hue: '#8ed14f', gl: 'circle(50%)' }
 
+/* UNDER THE UNIT (viewer.under-unit, engine DECISIONS.md 2026-09-29 "the playable battle screen"): "we don't need
+   poison or burn icons on the units because we can display that on the unit directly" · "Slow does not need
+   representation on the character. It can just change the number that shows how much movement that character
+   has" · "Stun should be shown on a character". Each list names the engine's statuses that behave so — the testing
+   lane's Daze blocks action as Stun does, its Hobble reduces movement as Slow does — and engine
+   test/under-unit.test.ts asserts every list is exactly the engine's (blocksAction · tickDamageType fire ·
+   tickDamageType poison · reducesMovement), so a new or renamed status shows up there. (Not read through stStyle:
+   its test-lane aliases resolve to "status.status.stun" and fall back to Poison's look — a standing bug, reported.) */
+export const UNDER_UNIT = { body: { stun: ['status.stun', 'test.status.daze'], burn: ['status.burn'], poison: ['status.poison'] },
+  movementOnly: ['status.slow', 'test.status.hobble'] }
+/** the body effect a status is drawn as (stun · burn · poison), or null when it is an icon */
+export const onBodyAs = id => { for (const [k, ids] of Object.entries(UNDER_UNIT.body)) if (ids.includes(id)) return k; return null }
+/** a status that only changes the movement number — no icon, nothing on the body */
+export const movementOnly = id => UNDER_UNIT.movementOnly.includes(id)
+
 export const PROJ_TINT = { burn: '#ff9d3c', poison: '#8ed14f', bleed: '#e05252', heal: '#8fe08a' }
 /* result colours (ruled 2026-08-27): red physical, blue magic, white true; heals green */
 export const DMG_HUE = { physical: '#ff5346', magic: '#6fb3ff', fire: STYLE['status.burn'].hue, poison: STYLE['status.poison'].hue, shadow: STYLE['status.shadow'].hue, 'true': '#ffffff', other: '#ffd9a0' }

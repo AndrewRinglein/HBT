@@ -193,6 +193,8 @@ const wrapAngle = a => Math.atan2(Math.sin(a), Math.cos(a))
 /** the cast: every bound unit on the board as its model, in the 3D scene, following its token */
 export function createCast(V, scene, toWorld, platform = {}) {
   const looks = new Map(), bodies = new Map(), group = new THREE.Group()
+  /* board px per scene metre, upward: the scene's own map (the inverse of toWorld), its y axis -> the board's z */
+  const up = toWorld.clone().invert().elements, PX_PER_M = Math.hypot(up[4], up[5], up[6])
   group.name = 'characters'; scene.add(group)
   const readStyle = platform.readStyle || (el => getComputedStyle(el))
   const load = platform.load || (look => loadLook(look, { ...platform, cancelled: () => disposed }))
@@ -270,6 +272,8 @@ export function createCast(V, scene, toWorld, platform = {}) {
     frame,
     get size() { return bodies.size },
     shows: id => bodies.has(id),
+    /** how tall a unit's body stands, in board px (viewer.under-unit: the acting arrow and the body effects ride its head) */
+    heightPx: id => { const B = bodies.get(id); return B ? B.standingHeight() * PX_PER_M : null },
     body: id => bodies.get(id) || null,
     /** the fold's lunge: the attacker strikes, turned toward its target — a bow's shot when it has one */
     strike(a, t, kind) {

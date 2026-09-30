@@ -540,3 +540,18 @@ html,body{margin:0;background:#08090b;color:var(--ink);
   letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:rgba(8,9,11,.78);border:1px solid var(--brass);
   border-radius:2px;padding:7px 11px;cursor:pointer}
 #camReset:hover{background:#2a2110}
+
+/* ── viewer.under-unit (2026-09-29): under the unit its name, Health, Protection and compact icons; Stun, Burn and
+   Poison on the body (engine DECISIONS.md "the playable battle screen"; board.js UU and BODY_FX) ── */
+.uuName{position:absolute;text-align:center;white-space:nowrap;pointer-events:none;transform:translateZ(60px);
+  font:700 12px/1 'Barlow Semi Condensed',ui-sans-serif,system-ui,sans-serif;letter-spacing:.03em;
+  text-shadow:0 1px 3px #000,0 0 8px rgba(0,0,0,.95),0 0 2px #000}
+.uuIcons .badge{width:15px;height:15px}
+.uuIcons .pip{min-width:10px;height:10px;font-size:8px;line-height:10px;right:-3px;bottom:-3px}
+.uuFx{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;transform:translateZ(8px);transform-style:preserve-3d}
+.uuStar{position:absolute;left:-6px;top:-6px;width:12px;height:12px;animation:uuOrbit 1.5s linear infinite}
+@keyframes uuOrbit{0%{transform:translate(18px,0) scale(1)}12.5%{transform:translate(12.7px,4.2px) scale(1.08)}
+  25%{transform:translate(0,6px) scale(1.15)}37.5%{transform:translate(-12.7px,4.2px) scale(1.08)}
+  50%{transform:translate(-18px,0) scale(1)}62.5%{transform:translate(-12.7px,-4.2px) scale(.82);opacity:.8}
+  75%{transform:translate(0,-6px) scale(.66);opacity:.6}87.5%{transform:translate(12.7px,-4.2px) scale(.82);opacity:.8}
+  100%{transform:translate(18px,0) scale(1)}}
