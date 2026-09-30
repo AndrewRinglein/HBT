@@ -43572,13 +43572,11 @@ export const UNIT_PACK = {
       "id": "badge.dragon-slayer",
       "name": "Dragon Slayer",
       "statModifiers": {
-        "maxHp": 2
+        "maxHp": 2,
+        "fireResist": 1
       },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "immunen to fire 1"
-      ]
+      "flags": {}
     },
     "badge.drilled": {
       "id": "badge.drilled",
@@ -44854,22 +44852,20 @@ export const UNIT_PACK = {
     "badge.frost-resistant": {
       "id": "badge.frost-resistant",
       "name": "Frost Resistant",
-      "statModifiers": {},
+      "statModifiers": {
+        "coldResist": 1
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "Immune Frost 1"
-      ]
+      "flags": {}
     },
     "badge.poison-resistant": {
       "id": "badge.poison-resistant",
       "name": "Poison Resistant",
-      "statModifiers": {},
+      "statModifiers": {
+        "poisonResist": 1
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "Immune poison 1"
-      ]
+      "flags": {}
     },
     "badge.curse-resistant": {
       "id": "badge.curse-resistant",
@@ -44884,12 +44880,11 @@ export const UNIT_PACK = {
     "badge.fire-resistant": {
       "id": "badge.fire-resistant",
       "name": "Fire Resistant",
-      "statModifiers": {},
+      "statModifiers": {
+        "fireResist": 1
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "Immune fire 1"
-      ]
+      "flags": {}
     },
     "badge.troll-blood": {
       "id": "badge.troll-blood",

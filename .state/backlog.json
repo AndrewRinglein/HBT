@@ -1,5 +1,20 @@
 [
  {
+  "id": "content.immune-one-is-resist",
+  "kind": "content",
+  "shape": "data",
+  "needs": [],
+  "changesBaseline": false,
+  "probeIds": [
+   "badge.frost-resistant"
+  ],
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Ghost as the bestiary has it; Cold Resist; \"Immune X 1\" is a resistance of 1'): 'Immune Frost 1' is +1 Cold Resist, 'Immune poison 1' +1 Poison Resist, 'Immune fire 1' (and Dragon Slayer's 'immunen to fire 1') +1 Fire Resist; the content converter reads 'Immune <element or its status> N' as +N of the element's resistance (Frost is Cold's, Burn is Fire's). 'Immune weak 1' names no element and stays a named gap. SWITCHES immuneNumberedRows answered.",
+  "expect": "Frost Resistant folds 1 Cold Resist and takes 1 off cold damage and nothing off fire; Fire Resistant 1 Fire Resist; Poison Resistant 1 Poison Resist; Dragon Slayer +2 Health and 1 Fire Resist; Curse Resistant's clause is a gap.",
+  "attempts": 1,
+  "status": "done",
+  "sha": "507c660"
+ },
+ {
   "id": "rule.cold-resist",
   "kind": "engine",
   "shape": "plumbing",

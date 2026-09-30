@@ -19220,3 +19220,23 @@ index ffd1e00..033bb1b 100644
      expect(BADGES['badge.brave']!.immuneTo).toEqual({ statuses: ['status.weak'] })
 ```
 </details>
+
+## content.immune-one-is-resist — LANDED `507c660`
+2026-09-30 00:21
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1666 · SWITCHES.md:1672
+  PASS  typecheck
+  PASS  the item's own tests — test/immune-one-is-resist.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.frost-resistant: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/immune-one-is-resist.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — nothing new resembles what exists
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.frost-resistant — they genuinely test it
