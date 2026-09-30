@@ -185,6 +185,11 @@ const badgeRulesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
 // case's full hashes are frozen here (tools/capture-orphanage-arrivals-cursor.mts); a case marked `changed`
 // (test.opening-orphanage only) is checked here and skips the older layers.
 const orphanageArrivalsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-arrivals.json', import.meta.url), 'utf8'))
+// rule.cold-resist, content.immune-one-is-resist, content.ghost (2026-09-29), Law 10: the Ghost, Cold Resist and "Immune X 1"
+// as a resistance (Andrew, DECISIONS.md 'the Ghost as the bestiary has it; ...'). Every case frozen here
+// (tools/capture-ghost-cold-cursor.mts), test.ghost and test.frost-resistant new. Moved: test.vampire-bite by log TEXT only
+// (Cold Heart's gain line no longer names the cold-damage gap). A `changed` case is checked here and skips the older layers.
+const ghostColdGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-ghost-cold.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -298,7 +303,10 @@ describe('resumable battle cursor', () => {
       const afflictionsExpected = afflictionsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const badgeRulesExpected = badgeRulesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const orphanageArrivalsExpected = orphanageArrivalsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const orphanageArrivalsMoved = orphanageArrivalsExpected?.changed === true
+      const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const ghostColdMoved = ghostColdExpected?.changed === true
+      // was: const orphanageArrivalsMoved = orphanageArrivalsExpected?.changed === true — a ghost-cold-moved case skips the orphanage-arrivals layer too (content.ghost 2026-09-29)
+      const orphanageArrivalsMoved = orphanageArrivalsExpected?.changed === true || ghostColdMoved
       // was: const badgeRulesMoved = badgeRulesExpected?.changed === true — an orphanage-arrivals-moved case skips the badge-rules layer too (fix.opening-orphanage-arrivals 2026-09-29)
       const badgeRulesMoved = badgeRulesExpected?.changed === true || orphanageArrivalsMoved
       // was: const afflictionsMoved = afflictionsExpected?.changed === true — a badge-rules-moved case skips the afflictions layer too (rule.badge-immunity 2026-09-29)
@@ -359,7 +367,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (orphanageArrivalsExpected) {
+        if (ghostColdExpected) {
+        expect(hash(ctx.events), 'full ghost-cold events').toBe(ghostColdExpected.events)
+        expect(hash(ctx.state), 'full ghost-cold state').toBe(ghostColdExpected.state)
+        expect(hash(ctx.rng.log), 'full ghost-cold RNG').toBe(ghostColdExpected.rng)
+        expect(result).toEqual(ghostColdExpected.result)
+        }
+        // was: if (orphanageArrivalsExpected) { — content.ghost (2026-09-29): a ghost-cold-moved case is checked above instead
+        if (orphanageArrivalsExpected && !ghostColdMoved) {
         expect(hash(ctx.events), 'full orphanage-arrivals events').toBe(orphanageArrivalsExpected.events)
         expect(hash(ctx.state), 'full orphanage-arrivals state').toBe(orphanageArrivalsExpected.state)
         expect(hash(ctx.rng.log), 'full orphanage-arrivals RNG').toBe(orphanageArrivalsExpected.rng)

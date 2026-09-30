@@ -89,8 +89,13 @@ const listed = (ctx: Ctx, actor: number, actionId: string, pred: (r: ActionReque
 const at = (target: number) => (r: ActionRequest) => 'target' in r && r.target === target
 
 describe('pack.enemy-actions — the pack carries the Codex rows', () => {
-  it('the named rows exist in the Codex as the item says (six movePower fliers, four ZOC-ignoring hounds)', () => {
-    expect(CODEX.bestiary.filter((u) => u.movePower === 'flight').length).toBe(6)
+  // LAW 10 — content.ghost (2026-09-29, Andrew, DECISIONS.md 'the Ghost as the bestiary has it; ...'): the Ghost is
+  // authored and flies (its bestiary type Flying), so the fliers are seven. The claim — the authored fliers carry
+  // movePower flight into the pack — is unchanged; the count of authored rows moved.
+  // was: it('... (six movePower fliers, four ZOC-ignoring hounds)') · expect(...length).toBe(6)
+  it('the named rows exist in the Codex as the item says (seven movePower fliers with the Ghost, four ZOC-ignoring hounds)', () => {
+    expect(CODEX.bestiary.filter((u) => u.movePower === 'flight').length).toBe(7)
+    expect(CODEX.bestiary.find((u) => u.id === 'unit.ghost')?.movePower).toBe('flight')
     for (const id of HOUNDS) expect(row(id).moveIgnoresZOC, id).toBe(true)
     for (const [u, m] of [...ATTACK_MOVES, BUFF, CHARGE]) expect(moveRow(u, m).name, m).toBeTruthy()
   })
