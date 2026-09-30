@@ -8,8 +8,16 @@ import {bootSlice} from './atlas-dom.mjs'
 const {w,root,click}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html'),handle=w.__sandbox
 const select=(id,value)=>{const el=w.document.getElementById(id);el.value=value;el.handlers.change()}
 const events=()=>JSON.stringify(handle.session.ctx.events)
-const ready=()=>{if(handle.busy)click('skip');const c=handle.session.ctx.battleCursor;if(c.at==='selecting'){const el=w.document.getElementById('actor');el.handlers.change();click('select')}if(handle.busy)click('skip')}
-const passUntil=turn=>{for(let n=0;n<400&&!handle.session.ctx.state.outcome&&handle.session.ctx.state.turn<turn;n++){ready();if(!handle.session.ctx.state.outcome&&handle.session.ctx.state.turn<turn)click('end')}if(handle.busy)click('skip')}
+// Law 10, viewer.play-chrome (2026-09-30): an encounter battle is played on the board alone — the hero dropdown, Activate
+// hero and End activation are retired for the opening battles (PLAYABLE-OPENING-PLAN.md item 8) — so a Turn is passed with
+// the battle screen's End Turn, its pop-up answered (engine end-player-phase: every hero yet to act forgoes and still runs
+// its End of Activation ladder), instead of choosing and ending each hero; the heroes offered are the pop-up's list.
+// was: const ready=()=>{if(handle.busy)click('skip');const c=handle.session.ctx.battleCursor;if(c.at==='selecting'){const el=w.document.getElementById('actor');el.handlers.change();click('select')}if(handle.busy)click('skip')}
+// was: const passUntil=turn=>{for(let n=0;n<400&&!handle.session.ctx.state.outcome&&handle.session.ctx.state.turn<turn;n++){ready();if(!handle.session.ctx.state.outcome&&handle.session.ctx.state.turn<turn)click('end')}if(handle.busy)click('skip')}
+const screen=id=>handle.viewer._V.dom.root.querySelector('#'+id),press=id=>screen(id).handlers.click({})
+const settle=()=>{if(handle.busy)click('skip')}
+const endTurn=()=>{settle();press('playEndTurn');if(screen('playAsk').style.display!=='none')press('playAskYes');settle()}
+const passUntil=turn=>{for(let n=0;n<400&&!handle.session.ctx.state.outcome&&handle.session.ctx.state.turn<turn;n++)endTurn();settle()}
 
 select('encounter','encounter.opening.orphanage')
 assert.ok(w.document.getElementById('map').disabled,'an encounter brings its own battlefield')
@@ -20,7 +28,7 @@ assert.equal(ctx().events.find(e=>e.type==='map.loaded').mapId,'map.opening.orph
 assert.deepEqual([ctx().state.board.width,ctx().state.board.height],[20,14])
 const heroes=handle.session.policy.humanUnitUids,civilians=ctx().state.units.filter((u,i)=>u.side==='hero'&&i>=heroes.length)
 assert.deepEqual(civilians.map(u=>u.typeId).sort(),['hero.fixed.orphans','hero.fixed.school-teacher'])
-const offered=[...w.document.getElementById('actor').children].map(o=>Number(o.getAttribute('value')))
+const offered=handle.viewer._V.play.endTurn.yetToAct.map(id=>ctx().state.units[id].uid)   // was: [...w.document.getElementById('actor').children].map(o=>Number(o.getAttribute('value')))
 assert.ok(offered.length>0&&offered.every(uid=>heroes.includes(uid)),'only the heroes are offered to the player')
 passUntil(3);click('save');const saved=w.document.getElementById('transferText').value,at3=events()
 assert.equal(JSON.parse(saved).config.encounterId,'encounter.opening.orphanage')
@@ -36,7 +44,7 @@ for(const s of schedule)assert.deepEqual(arrivals(s.phase),s.spawn.map(x=>x.unit
 for(const c of civilians)assert.ok(ctx().events.some(e=>e.type==='activation.begin'&&e.actor===c.id),c.typeId+' acts on its own')
 const onward=events()
 click('resume');assert.equal(events(),at3,'resume restores the Turn 3 save');passUntil(6);assert.equal(events(),onward,'the resumed battle keeps the schedule')
-for(let n=0;n<400&&!ctx().state.outcome;n++){ready();if(!ctx().state.outcome)click('end')}
+for(let n=0;n<400&&!ctx().state.outcome;n++)endTurn()   // was: {ready();if(!ctx().state.outcome)click('end')}
 if(handle.busy)click('skip');assert.ok(ctx().state.outcome);assert.match(root.textContent,/Battle complete/)
 
 select('encounter','encounter.opening.cavern-trail');click('start')

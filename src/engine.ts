@@ -72,6 +72,10 @@ export { OUTCOMES, LIFE_STATES } from '../../engine/src/core/types.js'
 export { forecastFrom, previewFrom, threatOf } from '../../engine/src/core/forecast.js'
 export type { Forecast, PlannedMove } from '../../engine/src/core/forecast.js'
 export { zocHoldersAt } from '../../engine/src/core/movement.js'
+// Widened 2026-09-30 for viewer.play-chrome (PLAYABLE-OPENING-PLAN.md item 8; engine command.end-player-phase ad3f1cb):
+// the heroes that have not acted — the End Turn pop-up's question ("If you have anybody who has not acted, it should pop
+// up"). A read-only query; End Turn itself is the engine's `end-player-phase` command.
+export { heroesYetToAct } from '../../engine/src/core/commands.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing

@@ -8,15 +8,21 @@
 // choices (validateBattleCommand), the ghost is forecastFrom, its attack previewFrom, the enemy's reach threatOf, the
 // hatching zocHoldersAt. This file only remembers what the player has chosen, asks the engine, and hands the viewer
 // plain facts to draw (viewer SWITCHES / kingdom SWITCHES.md playInput*). It never computes a range, a path or a number.
+// viewer.play-chrome (PLAYABLE-OPENING-PLAN.md item 8; engine DECISIONS.md 2026-09-29 "the playable battle screen"): the
+// ending — whether End Turn and End activation may be given is validateBattleCommand's answer on the engine's own
+// commands (`end-player-phase`, `end-cycle`), who has not acted is heroesYetToAct (the pop-up's list), and the viewer's
+// End Turn and End activation clicks come back here as those commands (kingdom SWITCHES.md playChrome*).
 import {sandboxChoices,sandboxActivationChoices,type Sandbox,type SandboxChoice} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,isAttack,isMove} from '../engine.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove} from '../engine.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
-export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}
+export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
 export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null}
 export type CommandResult={ok:true}|{ok:false;reason:string}
+/** viewer.play-chrome: what the viewer's End Turn and End activation may do (viewer src/play.js's optional ending facts) */
+export type PlayEnding={endTurn:{yetToAct:number[]}|null;endActivation:boolean}
 /** One aimable use of the chosen action: the command's aim field and the hex it is drawn on. */
 type Use={hex:number;key:'target'|'centre'|'hex';value:number;slot:'movement'|'primary'}
 type Ghost={actionId:string;slot:'movement'|'primary';destination:number}
@@ -147,9 +153,22 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const r=run(command);note=r.ok?null:r.reason;done();return true
  }
 
+ /** the ending: End Turn when the engine would take `end-player-phase` now, with the heroes it says have not acted (as unit
+     ids, for the pop-up); End activation when it would take `end-cycle` from the hero acting */
+ function ending():PlayEnding{
+  const s=session();if(!s||s.ctx.state.outcome)return {endTurn:null,endActivation:false}
+  const actor=actorOf(s),seq=s.ctx.state.seq
+  const turn=validateBattleCommand(s.ctx,s.policy,{kind:'end-player-phase',expectedSeq:seq}).ok
+  const cycle=actor!==null&&validateBattleCommand(s.ctx,s.policy,{kind:'end-cycle',actor,expectedSeq:seq}).ok
+  return {endTurn:turn?{yetToAct:heroesYetToAct(s.ctx,s.policy).map(uid=>s.ctx.state.units.find(u=>u.uid===uid)!.id)}:null,endActivation:cycle}
+ }
  function input(e:PlayEvent):boolean{
   const s=session();if(!s||s.ctx.state.outcome)return false
   const actor=sync(s)
+  // viewer.play-chrome: End Turn (asked first by the viewer's pop-up when ending() names heroes) and End activation
+  if(e.kind==='end-turn'){const r=run({kind:'end-player-phase',expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;if(r.ok)done();return r.ok}
+  if(e.kind==='end-activation'){if(actor===null)return false
+   const r=run({kind:'end-cycle',actor,expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;if(r.ok)done();return r.ok}
   if(e.kind==='point'){point=e.hex;return true}
   if(e.kind==='back'){note=null
    // right-click steps back ONE stage: the aim, then the ghost, then the chosen action (UI-BUILD-NOTES §5)
@@ -189,6 +208,6 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   if(aim?.locked&&aim.hex===hex)return confirmUse(s,actor,u)
   aim={hex,locked:true};note=null;return true
  }
- return {facts,input,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ return {facts,ending,input,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>
