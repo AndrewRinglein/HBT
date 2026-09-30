@@ -353,7 +353,11 @@ const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment', 'cannot be knocke
 // status and cold damage."): an ELEMENT word names a damage type and the status that is its other face. "immune to
 // <element>" is immunity to both; "immune to <status>" to the status alone. Poison is both a status and a damage
 // type by the same word — engine SWITCHES.md immunePoisonIsBoth. A damage type the engine lacks is a named gap.
-const ELEMENTS = { fire: { status: 'status.burn', damage: 'fire' }, cold: { status: 'status.frost', damage: 'cold' }, poison: { status: 'status.poison', damage: 'poison' } };
+const ELEMENTS = { fire: { status: 'status.burn', damage: 'fire', resist: 'fireResist' }, cold: { status: 'status.frost', damage: 'cold', resist: 'coldResist' }, poison: { status: 'status.poison', damage: 'poison', resist: 'poisonResist' } };
+// content.immune-one-is-resist (2026-09-29, Andrew, engine DECISIONS.md: "What does the '1' in 'Immune Frost 1' ... mean: a
+// resistance of 1 ...?" — "Yes"): "Immune <element or its status> N" is +N of that element's resistance. A status names
+// its element: Frost is Cold's, Burn is Fire's. A word with no element (Weak) stays a named gap.
+const ELEMENT_OF_WORD = { fire: 'fire', burn: 'fire', cold: 'cold', frost: 'cold', poison: 'poison' };
 const DAMAGE_TYPES = new Set(VOCAB.damageTypes);
 const BADGE_FLAGS_STRUCTURED = new Set(['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']);
 function compileBadge(row) {
@@ -407,6 +411,10 @@ function compileBadge(row) {
     if ((m = clause.match(/^Thorns (\d+)$/))) { mods.thorns = (mods.thorns ?? 0) + parseInt(m[1], 10); continue }
     const fl = Object.keys(BADGE_FLAGS).find((k) => clause.toLowerCase().startsWith(k));
     if (fl) { for (const f of [BADGE_FLAGS[fl]].flat()) flags[f] = true; if (clause.length > fl.length) gaps.push(clause); continue }
+    if (!auraRow && (m = clause.match(/^immunen?\s+(?:to\s+)?([A-Za-z]+)\s+(\d+)$/i)) && ELEMENT_OF_WORD[m[1].toLowerCase()]) {
+      const st = ELEMENTS[ELEMENT_OF_WORD[m[1].toLowerCase()]].resist;
+      mods[st] = (mods[st] ?? 0) + parseInt(m[2], 10); continue;
+    }
     if (!auraRow && (m = clause.match(/^immune to ([A-Za-z]+)(?:\s*\([^)]*\))?$/i))) {
       const word = m[1].toLowerCase(); const el = ELEMENTS[word];
       if (el && statuses[el.status]) {
