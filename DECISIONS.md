@@ -3418,3 +3418,17 @@ Ruled:
 - **"Immune <element> 1" is a resistance of 1**: Immune Frost 1 is +1 Cold Resist, Immune poison 1 is +1 Poison Resist, Immune fire 1 (and Dragon Slayer's "immunen to fire 1") is +1 Fire Resist. ("Immune weak 1" names a status with no resistance stat: a named gap.)
 
 Filed: `rule.cold-resist`, `content.immune-one-is-resist`, `content.ghost`.
+
+## 2026-09-29 — the Ghost possesses on its Attack at 15%; every resistance works the one way, and it replaces immunity
+
+Andrew, asked (1) when a Ghost should use Possess over Attack, (2) whether Cold Resist should also weaken the Frost status:
+
+“We should move it to a chance on attack. Let's give it a 15% chance on attack.   So there is one way we're doing resistance. It should all be the same. I don't know why you're asking me this in five different ways. Every type of resistance should work the same. Replaces previous immunity”
+
+Ruled:
+
+- **The Ghost's Attack possesses at 15%** (on a hit). Possess — 0 damage, and now nothing else — is dropped from the row.
+- **Resistance is the one way, and it is already ruled**: COMBAT-V2-DESIGN §8.2 (2026-09-07), "one resist, both forms" — an element's resist reduces that element's damage flatly, dealt directly or by its status's tick; it never shortens or refuses a status. Cold Resist works exactly as Fire Resist does. (Question 2 had its answer there; it should not have been asked.)
+- **Immunity is replaced by resistance** — the V2 migration's own rule (2026-09-16, the immunity necklaces: "elemental immunity becomes flat named resistance"). The status-refusing, damage-zeroing immunity built earlier today (`rule.badge-immunity`) is removed. "Immune to <element or its status> N" is +N of the element's resist; with no number, +1, as the necklaces' one-for-one migration. A status with no element (Karma, Weak) has no resist: a named gap.
+
+Filed: `content.ghost-possess-on-attack`, `rule.immunity-is-resistance`.

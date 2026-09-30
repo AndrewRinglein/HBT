@@ -1143,8 +1143,7 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
-        "attack.ghost.attack",
-        "attack.ghost.possess"
+        "attack.ghost.attack"
       ],
       "abilities": [],
       "moves": [
@@ -1157,14 +1156,14 @@ export const UNIT_PACK = {
         {
           "id": "trigger.ghost.afflict-possession",
           "hook": "onHit",
-          "chance": 25,
+          "chance": 15,
           "select": "target",
           "effect": {
             "kind": "badge.grant",
             "badgeId": "badge.possession"
           },
           "source": "unit.ghost",
-          "onlyWithAttack": "attack.ghost.possess"
+          "onlyWithAttack": "attack.ghost.attack"
         }
       ]
     },
@@ -3028,16 +3027,6 @@ export const UNIT_PACK = {
       "damageType": "magic",
       "bonus": 0,
       "stat": "strength",
-      "reach": 1,
-      "staminaCost": 0
-    },
-    "attack.ghost.possess": {
-      "id": "attack.ghost.possess",
-      "name": "Possess",
-      "kind": "melee",
-      "damageType": "magic",
-      "bonus": 0,
-      "stat": "magic",
       "reach": 1,
       "staminaCost": 0
     },

@@ -93,9 +93,9 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroBadges: [['badge.frost-resistant']], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
   },
   // content.ghost (2026-09-29, Andrew, DECISIONS.md "the Ghost as the bestiary has it; ..."): two Ghosts, fielded in a
-  // real battle. TEST fielding of a Codex row. (Their AI never picks Possess over Attack — engine SWITCHES ghostPossessAi.)
+  // real battle. TEST fielding of a Codex row. (Their Attack possesses on 15% of hits — content.ghost-possess-on-attack.)
   'test.ghost': {
-    id: 'test.ghost', note: 'TEST: two warriors against two Ghosts (flight, a magic-typed Attack, Possess at 25%). No campaign claim.',
+    id: 'test.ghost', note: 'TEST: two warriors against two Ghosts (flight, a magic-typed Attack that possesses at 15%). No campaign claim.',
     mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], enemies: ['unit.ghost', 'unit.ghost'], enemyHexes: [88, 103], replicate: 0,
   },
   'test.prone-b': {

@@ -1,5 +1,19 @@
 [
  {
+  "id": "content.ghost-possess-on-attack",
+  "kind": "content",
+  "shape": "data",
+  "needs": [],
+  "changesBaseline": false,
+  "probeIds": [
+   "unit.ghost"
+  ],
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Ghost possesses on its Attack at 15%; every resistance works the one way, and it replaces immunity'): 'We should move it to a chance on attack. Let's give it a 15% chance on attack.' unit.ghost's possession rider moves from Possess (25%) to its Attack (onHit, 15%); Possess, 0 damage with nothing left, is dropped. SWITCHES ghostPossessAi answered, ghostPossessReadsMagic retired.",
+  "expect": "The Ghost has one attack, magic-typed on Strength, whose hit possesses at 15%; a possessing hit gives +2 Magic now and the -10 Surge at the next fielding; Ghosts possess in real battles (6 of 40 two-on-two).",
+  "status": "done-needs-review",
+  "sha": "66de9ce"
+ },
+ {
   "id": "content.ghost",
   "kind": "content",
   "shape": "data",
