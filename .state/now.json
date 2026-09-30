@@ -1,11 +1,11 @@
 {
- "now": "afflictions revised, badge rules, cold, Ghost — engine. Landed content.afflictions-revised, fix.badge-surge-at-fielding, rule.badge-deathbed-fighting, rule.badge-immunity (then removed), rule.cold-resist, content.immune-one-is-resist, content.ghost, content.ghost-possess-on-attack, rule.immunity-is-resistance; suite green 2342. Tried: a separate immunity mechanism — wrong, COMBAT-V2 §8.2 already rules one resist, both forms. Next: Vampirism's heal 2 on a melee hit, deploy costs and half XP (kingdom), Karma and Weak have no resist (named gaps).",
- "at": "2026-09-30 02:21",
- "sha": "fa86b36",
+ "now": "the playable opening, Milestone 1 — engine, viewer, kingdom. Landed rule.primary-ends-activation, command.end-player-phase, preview.from-planned-hex, viewer.painted-board, viewer.character-models, viewer.under-unit, viewer.play-input, viewer.play-chrome (four flagged for review on prior art, no Prior art: line in their specs); battle 1 plays with the mouse on the painted scene, unseen in a real browser; ruled 2026-09-30 the End activation button stays; suite green 2379. Tried: nothing abandoned. Next: Andrew plays battle 1 (the eyeball check); encounter.opening.bridge-ai; the painted scenes disagree with the engine on walkable hexes (103 Orphanage, 5 Lumberjack, 20 Bridge) — content's; no weapon swap in the opening battles yet.",
+ "at": "2026-09-30 07:55",
+ "sha": "4f3c879",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: take the top of the queue (encounter.opening.gates)",
+  "label": "New chat with Heroes of Blight and Tragic — engine: take the top of the queue (encounter.opening.bridge-ai)",
   "line": "start engine"
  }
 }
