@@ -3510,3 +3510,20 @@ Ruled:
 - **Fast is the default.** A landing no longer runs the prior-art and wrong-home flags per item; `wrap` runs both over the whole tree, as flags that never block. The kill switch runs on the test files the item ADDED; an item that added none keeps every test file it touched, as before. Every other check is unchanged.
 - **Outside Cowork the full suite is one command**, `node tools/gate.mjs --shard 1/1` (any complete set of shards is the suite, so `wrap` accepts it). The gate already has no budget in a terminal.
 - Recommended, not ruled: engine chats run in Claude Code on Andrew's PC, where no command limit applies. Turning Cowork's cloud off does not remove the limit — its local workspace has the same one.
+
+## 2026-09-30 — the Bridge's northern branch is walkable; the deck hexes marked X are deck
+
+Andrew, shown that the painted Bridge scene's measured navigation stranded ten deck hexes of the northern branch (columns 24–29, rows 6–7) that the engine's map joins to the rest:
+
+“Okay, all those purple tiles should be walkable terrain.”
+
+Then, asked whether the seven deck hexes the ground proposal had marked X ("standing shafts") — (23,7) (29,7) (30,7) (32,7) on the northern branch, (28,11) (23,13) (18,14) on the southern — should be walkable deck too, since the scene has no shaft on any of them:
+
+“Yes.”
+
+Ruled:
+
+- **Both branches of the Bridge are walkable from bank to bank, the northern branch included.** The ten stranded hexes are deck.
+- **The seven hexes are bridge deck (B), not high obstacles.** The only standing shaft on the deck is (15,7); the other three are on the west bank at column 6.
+- The scene follows the map: `tools/battle-atlas/build-abbotown-encounters.py` widens the deck edge under those hexes, leaves out the three low stone blocks that stood on the deck and keeps deck chips under 0.2 m; every other placement is unchanged. The measured navigation is one connected area. The prior scene is kept in `assets/terrain-3d/abbotown-encounters/prior-2026-09-30/`.
+- Also shown, not ruled here: the scene's measurement flags the Orphanage water, the two houses, the west-edge dense forest and low cover, but those are the measurement's simple rule (water impassable, walls solid, foliage ignored, anything 0.22–1.77 m blocks), not the engine's. Andrew: the water is ankle-deep and stood in; units stand inside both houses **and the roof comes off when one is inside** (not yet built — no roof change on occupancy exists in the viewer or either scene); dense forest is a full obstruction.
