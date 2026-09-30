@@ -50,3 +50,9 @@ Engine v2.prop-destroy (a4ca669), v2.prop-attack (e049b15), fix.prop-destroyed-r
 | `prop3dUnchanged` | Does the 3D Atlas scene hide a destroyed model? | **Not yet.** The 2D prop layer follows the events; the 3D scene still draws the authored models. The Atlas destruction study (`assets/battle-atlas/TERRAIN-DESTRUCTION.md`) says no combat integration is implied. | Wiring authored scene objects to prop ids is its own R7 item. | provisional — 2026-09-24 |
 | `propStruckUnexercised` | No library battle carries a blow aimed at a prop. | **`prop.struck` joins verify's UNEXERCISED list**; the probe drives the engine's own log. | The AI never aims at a prop (engine propAttackAi). | provisional — 2026-09-24 |
 
+
+## statusUnderUnit — which status display sits under a unit (2026-09-29)
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `statusUnderUnit` | The battle demo shows three ways to show status under a unit — compact icons, named effect chips, labels on the focused pair only. Which? | **Compact icons**, under the Health and Protection bars; no Poison or Burn icon (those show on the body). | Andrew: "some icons go there as well"; the question itself went unanswered (engine/DECISIONS.md 2026-09-29 "the playable screen: the acting mark …"). | provisional — 2026-09-29 |
