@@ -31,7 +31,7 @@ export const EVENT_TYPES = [
   'phase.end.done', 'phase.rung', 'power.exhausted', 'power.gained', 'power.hit', 'power.used',
   'prop.damaged', 'prop.destroyed', 'prop.struck', 'stamina.drained', 'stamina.gained',
   'stamina.regen', 'stamina.spent', 'staminaMax.lost', 'statmod.added', 'statmod.expired',
-  'status.applied', 'status.cancelled', 'status.expired', 'status.immune', 'status.reduced', 'surge.checked',
+  'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
   'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
   'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
   'unit.proned', 'unit.raised', 'unit.shunted', 'unit.stood', 'zoc.ignored',
@@ -187,8 +187,6 @@ export function grantBadge(ctx: Ctx, id: number, badgeId: string, causeId: strin
   }
   for (const t of b.triggers ?? []) u.triggers.push({ ...t })
   for (const g of b.grants) if (!u.actions.includes(g) && ctx.actions[g]) u.actions.push(g)
-  // rule.badge-immunity (2026-09-29): immune from now on — a status it already carries is removed, the badge the cause
-  for (const s of b.immuneTo?.statuses ?? []) if (u.statuses.some((x) => x.id === s)) removeStatus(ctx, id, s, badgeId)
   return true
 }
 

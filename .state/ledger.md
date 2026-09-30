@@ -19334,3 +19334,177 @@ index 33a9320..618f73c 100644
      expect(w.surge).toBe(surge0)
 ```
 </details>
+
+## rule.immunity-is-resistance — LANDED `4dec2c0` **NEEDS REVIEW**
+2026-09-30 01:58
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1672 · DECISIONS.md:3431
+  PASS  typecheck
+  PASS  the item's own tests — test/afflictions.test.ts, test/badge-immunity.test.ts, test/cold-resist.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.cold-heart: 4 log lines, 4 fired, 2 changed state
+  PASS  brought its own tests — test/afflictions.test.ts, test/badge-immunity.test.ts, test/cold-resist.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/afflictions.test.ts (-6), test/badge-immunity.test.ts (-40), test/cold-resist.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands faa7202d->87ae61ed, map.thicket 39651acd->9b35fa93, map.proving.open 40057351->ca8f206b, map.proving.ridge 81503527->113785a4, map.proving.ford 23229730->98fb20b4, map.proving.copse 42db39f1->7176496f, map.proving.ruin 22f979e6->7882854b, map.courtyard de0d8ed2->86c2de4f, map.floodplain 9d817bd6->5a3493f2, test.map.embers d3ac34a2->6795745a, test.map.duel-8 857a79ad->c389e368, test.map.dungeon-16x8 ec3cd5e5->54d4adc0, test.map.horde-24 48231993->fffde918, test.map.journey-20x10 1abed9f0->6028880d, test.map.authored-40x40 1a883073->fc98a0c5, test.map.high-prop-single db142ae7->9fba144d, test.map.high-prop-multi 0ca417bc->a2f14f8c, test.map.well-shove 896a49b2->0e40ee04
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — nothing new resembles what exists
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.cold-heart — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/afflictions.test.ts b/test/afflictions.test.ts
+index 0b67d61..718ed03 100644
+--- a/test/afflictions.test.ts
++++ b/test/afflictions.test.ts
+@@ -175,10 +175,11 @@ describe('the afflictions as revised 2026-09-29', () => {
+     expect(BADGES['badge.vampirism']!.gaps).toEqual(expect.arrayContaining(['on a melee hit: heal 2', 'deploying the hero costs 3 Faith', 'the hero gains half experience']))
+     expect(BADGES['badge.vampirism']!.deathbedFighting).toBe(15)
+-    expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2 })
+-    // was: …gaps arrayContaining ['immune to Karma', 'immune to Cold (cold damage and the Frost status)']
+-    // LAW 10 — rule.cold-resist (2026-09-29, Andrew: cold damage and Cold Resist, "yes"): the cold-damage gap is built.
+-    // was: immuneTo { statuses: ['status.karma', 'status.frost'] } and gaps ['immune to Cold: cold damage — the engine has no cold damage type']
+-    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'], damage: ['cold'] })
+-    expect(BADGES['badge.cold-heart']!.gaps).toBeUndefined()
++    // LAW 10 — rule.immunity-is-resistance (2026-09-29, Andrew, DECISIONS.md: "Every type of resistance should work the
++    // same. Replaces previous immunity"): Cold Heart's "immune to Cold" is +1 Cold Resist (one for one, the V2 migration's
++    // necklaces); Karma has no element and no resist, so "immune to Karma" is a named gap. The claim — every ruled clause
++    // compiled or named — is unchanged.
++    // was: statModifiers { maxHp: 2 } · immuneTo { statuses: ['status.karma', 'status.frost'], damage: ['cold'] } · gaps undefined
++    expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2, coldResist: 1 })
++    expect(BADGES['badge.cold-heart']!.gaps).toEqual(['immune to Karma'])
+     expect(BADGES['badge.possession']!.statModifiers).toEqual({ magic: 2, resist: 1, vision: 3, surge: -10 })
+     // was: …gaps arrayContaining ['−10 Deathbed Fighting', 'deploying the hero costs 3 Mana']
+diff --git a/test/badge-immunity.test.ts b/test/badge-immunity.test.ts
+index 033bb1b..30d0808 100644
+--- a/test/badge-immunity.test.ts
++++ b/test/badge-immunity.test.ts
+@@ -1,11 +1,18 @@
+-// rule.badge-immunity (2026-09-29, Andrew, DECISIONS.md 'Possession's Surge loads at fielding; the Ghost inflicts
+-// Possession; Deathbed Fighting and Cold Heart's immunities are built'): "Cold Hard badge gives Immune to Karma 2,
+-// Immune to Cold 2" · "I meant immune to Karma, too. As written, it is another type of status." · "Fire and burn are
+-// the same thing ... I guess this is immune to cold, and it resists both frost status and cold damage." · "yes".
++// rule.immunity-is-resistance (2026-09-29, Andrew, DECISIONS.md 'the Ghost possesses on its Attack at 15%; every resistance
++// works the one way, and it replaces immunity'): "So there is one way we're doing resistance. It should all be the same. ...
++// Every type of resistance should work the same. Replaces previous immunity"
++//
++// LAW 10 — this file proved rule.badge-immunity (earlier the same day): a badge's immunity refused a status and zeroed a
++// damage type. That mechanism is removed; the file now proves what replaced it. The one way is COMBAT-V2-DESIGN §8.2 —
++// an element's resist reduces that element's damage flatly, dealt directly or by its status's tick, and never refuses or
++// shortens a status — with the V2 migration's "elemental immunity becomes flat named resistance", one for one.
++// was: 'Cold Heart: Karma and Frost never land …', 'a Frosted hero who gains Cold Heart loses the Frost …',
++//      'Rotting Flesh: poison damage deals nothing …' (status.immune events, immuneTo rows, flatDamage immuneBy)
+ import { describe, expect, it } from 'vitest'
+ import { createCustomBattle } from '../src/core/setup.js'
+ import { grantBadge } from '../src/core/mutate.js'
+-import { applyStatus } from '../src/core/status.js'
++import { applyStatus, statusDamage } from '../src/core/status.js'
+ import { flatDamage } from '../src/core/mitigation.js'
++import { effective } from '../src/core/stats.js'
+ import { BADGES } from '../src/content/index.js'
+ import { hexId } from './board16.js'
+@@ -13,54 +20,40 @@ import { hexId } from './board16.js'
+ const field = () => {
+   const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+-  return { ctx, w: ctx.state.units[0]! }
++  const w = ctx.state.units[0]!
++  w.hp = 999; w.maxHp = 999
++  return { ctx, w }
+ }
+ const has = (w: { statuses: { id: string; value: number }[] }, id: string) => w.statuses.find((s) => s.id === id)?.value ?? 0
+ 
+-describe('immunity from badges', () => {
+-  // LAW 10 — rule.cold-resist (2026-09-29): cold damage exists now, so Cold Heart's immunity names it rather than a gap.
+-  // was: 'the rows: Cold Heart is immune to Karma and Frost, its cold damage a named gap; …' — immuneTo { statuses } and the gap
+-  it('the rows: Cold Heart is immune to Karma, Frost and cold damage; Rotting Flesh to poison, status and damage', () => {
+-    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'], damage: ['cold'] })
+-    expect(BADGES['badge.cold-heart']!.gaps).toBeUndefined()
+-    expect(BADGES['badge.rotting-flesh']!.immuneTo).toEqual({ statuses: ['status.poison'], damage: ['poison'] })
+-    expect(BADGES['badge.brave']!.immuneTo).toEqual({ statuses: ['status.weak'] })
+-    expect(BADGES['badge.vampirism']!.immuneTo).toBeUndefined()
++describe('immunity is resistance', () => {
++  it('"immune to <element or its status>" is +1 of the element\'s resist; a status with no element is a named gap', () => {
++    expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2, coldResist: 1 })     // immune to Cold
++    expect(BADGES['badge.frostborn']!.statModifiers).toEqual({ coldResist: 1 })                // Immune to Frost — Cold's status
++    expect(BADGES['badge.rotting-flesh']!.statModifiers['poisonResist' as never]).toBe(1)     // immune to poison
++    expect(BADGES['badge.cold-heart']!.gaps).toEqual(['immune to Karma'])
++    expect(BADGES['badge.brave']!.gaps).toEqual(['immune to Weak'])
++    for (const b of Object.values(BADGES)) expect('immuneTo' in b, b.id).toBe(false)
+   })
+ 
+-  it('Cold Heart: Karma and Frost never land, each refusal names the badge; Burn still lands', () => {
++  it('a resist never refuses a status: Cold Heart takes Frost and Karma as anyone does', () => {
+     const { ctx, w } = field()
+     grantBadge(ctx, w.id, 'badge.cold-heart', 'test')
+     applyStatus(ctx, w.id, 'status.frost', 2, 'test')
+     applyStatus(ctx, w.id, 'status.karma', 3, 'test')
+-    applyStatus(ctx, w.id, 'status.burn', 1, 'test')
+-    expect(has(w, 'status.frost')).toBe(0)
+-    expect(has(w, 'status.karma')).toBe(0)
+-    expect(has(w, 'status.burn')).toBe(1)
+-    const refused = ctx.events.filter((e) => e.type === 'status.immune')
+-    expect(refused.map((e) => [e['statusId'], e['badgeId'], e['value']])).toEqual([['status.frost', 'badge.cold-heart', 2], ['status.karma', 'badge.cold-heart', 3]])
+-  })
+-
+-  it('a Frosted hero who gains Cold Heart loses the Frost at once, the badge the cause', () => {
+-    const { ctx, w } = field()
+-    applyStatus(ctx, w.id, 'status.frost', 2, 'test')
+     expect(has(w, 'status.frost')).toBe(2)
+-    grantBadge(ctx, w.id, 'badge.cold-heart', 'test')
+-    expect(has(w, 'status.frost')).toBe(0)
+-    expect(ctx.events.some((e) => e.causeId === 'badge.cold-heart' && e['statusId'] === 'status.frost')).toBe(true)
++    expect(has(w, 'status.karma')).toBe(3)
+   })
+ 
+-  it('Rotting Flesh: poison damage deals nothing and names the badge; other damage is untouched; true damage is never resisted', () => {
++  it('one resist, both forms: Rotting Flesh takes one point off poison damage, direct or by the Poison tick, and the status stays', () => {
+     const { ctx, w } = field()
+-    const before = flatDamage(ctx, w, 5, 'poison')
++    const direct0 = flatDamage(ctx, w, 5, 'poison').value
+     grantBadge(ctx, w.id, 'badge.rotting-flesh', 'test')
+-    const poison = flatDamage(ctx, w, 5, 'poison')
+-    expect(before.value).toBeGreaterThan(0)
+-    expect(poison.value).toBe(0)
+-    expect(poison.resisted).toBe(5)
+-    expect(poison.immuneBy).toBe('badge.rotting-flesh')
+-    expect(flatDamage(ctx, w, 5, 'fire').immuneBy).toBeUndefined()
+-    expect(flatDamage(ctx, w, 5, 'true').value).toBe(5)
++    expect(effective(ctx, w, 'poisonResist').value).toBe(1)
++    expect(flatDamage(ctx, w, 5, 'poison').value).toBe(direct0 - 1)
+     applyStatus(ctx, w.id, 'status.poison', 3, 'test')
+-    expect(has(w, 'status.poison')).toBe(0)
++    expect(has(w, 'status.poison')).toBe(3)
++    const hp = w.hp
++    statusDamage(ctx, w.id, 3, 'status.poison')
++    expect(hp - w.hp).toBe(2)
+   })
+ })
+diff --git a/test/cold-resist.test.ts b/test/cold-resist.test.ts
+index 0f3936b..1979ccd 100644
+--- a/test/cold-resist.test.ts
++++ b/test/cold-resist.test.ts
+@@ -33,10 +33,13 @@ describe('cold, an element with its own resistance', () => {
+     expect(flatDamage(ctx, w, 5, 'fire').value).toBe(flatDamage(ctx, field().w, 5, 'fire').value)
+   })
+-  it('Cold Heart is immune to cold damage: none of it lands, the badge named', () => {
++  // LAW 10 — rule.immunity-is-resistance (2026-09-29, Andrew: "Every type of resistance should work the same. Replaces
++  // previous immunity"): Cold Heart's immunity to Cold is +1 Cold Resist, and resists like any other.
++  // was: 'Cold Heart is immune to cold damage: none of it lands, the badge named' — value 0, immuneBy badge.cold-heart
++  it('Cold Heart resists cold as any resist does: +1 Cold Resist, one point off cold damage', () => {
+     const { ctx, w } = field()
++    const bare = flatDamage(ctx, w, 7, 'cold').value
+     grantBadge(ctx, w.id, 'badge.cold-heart', 'test')
+-    const r = flatDamage(ctx, w, 7, 'cold')
+-    expect(r.value).toBe(0)
+-    expect(r.immuneBy).toBe('badge.cold-heart')
++    expect(effective(ctx, w, 'coldResist').value).toBe(1)
++    expect(flatDamage(ctx, w, 7, 'cold').value).toBe(bare - 1)
+   })
+ })
+```
+</details>

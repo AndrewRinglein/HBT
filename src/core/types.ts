@@ -724,13 +724,6 @@ export type BadgeDef = {
    * mid-battle counts from then on.
    */
   readonly deathbedFighting?: number
-  /**
-   * rule.badge-immunity (2026-09-29, Andrew, DECISIONS.md: "I meant immune to Karma, too. As written, it is another
-   * type of status." · "immune to cold, and it resists both frost status and cold damage"): statuses that never
-   * land on the carrier (one it already carries is removed when the badge is gained), and damage types that deal
-   * it nothing. An element names both — Fire is fire damage and Burn.
-   */
-  readonly immuneTo?: { readonly statuses?: readonly string[]; readonly damage?: readonly DamageType[] }
   readonly gaps?: readonly string[]
 }
 

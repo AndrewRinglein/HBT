@@ -1661,15 +1661,15 @@ The rules are `progression/OPENING-PARTY.json` (`firstHero`, `crucible`, `draftS
 
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
-| `immunePoisonIsBoth` | "immune to poison" (Rotting Flesh) — the Poison status, poison damage, or both? | **Both**, as an element: the word names a damage type and a status. | "Fire and burn are the same thing ... immune to cold ... resists both frost status and cold damage" — the element reading, applied to the one other word that is both. | provisional — 2026-09-29 |
-| `immunityGainedClearsStatus` | A unit gains an immunity mid-battle while it carries that status — does the status stay? | **Removed at once**, the badge the cause. | Immune means it does not have it. | provisional — 2026-09-29 |
+| `immunePoisonIsBoth` | "immune to poison" (Rotting Flesh) — the Poison status, poison damage, or both? | **Both**, as an element: the word names a damage type and a status. | "Fire and burn are the same thing ... immune to cold ... resists both frost status and cold damage" — the element reading, applied to the one other word that is both. | **retired 2026-09-29** — immunity is resistance (`rule.immunity-is-resistance`): "immune to poison" is +1 Poison Resist |
+| `immunityGainedClearsStatus` | A unit gains an immunity mid-battle while it carries that status — does the status stay? | **Removed at once**, the badge the cause. | Immune means it does not have it. | **retired 2026-09-29** — a resist never refuses or removes a status (COMBAT-V2-DESIGN §8.2; `rule.immunity-is-resistance`) |
 | `immuneNumberedRows` | "Immune Frost 1", "Immune poison 1", "immunen to fire 1", "immune weak" on an aura — compiled? | **No: named gaps.** A number after an immunity is not immunity (a resistance of 1? a stack cap?), and an aura's immunity is the allies'. | Never guess a number's meaning. | **answered 2026-09-29** (Andrew, DECISIONS.md: "Yes" — a resistance of 1): built by `content.immune-one-is-resist`; "Immune weak 1" and the aura rows stay named gaps |
 
 ## rule.cold-resist — Cold Resist, 2026-09-29
 
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
-| `coldResistAndFrost` | Does Cold Resist lessen the Frost status (Frost adds damage to hits the unit takes)? | **No — Cold Resist mitigates cold damage only.** Immunity to Cold still refuses Frost. | Fire Resist lessens Burn because Burn's tick is fire damage; resistance "changes damage only, never the status clock" (V2 §8). Frost deals no damage of its own, so there is nothing of it for a resistance to take off. | provisional — 2026-09-29 |
+| `coldResistAndFrost` | Does Cold Resist lessen the Frost status (Frost adds damage to hits the unit takes)? | **No — Cold Resist mitigates cold damage only.** Immunity to Cold still refuses Frost. | Fire Resist lessens Burn because Burn's tick is fire damage; resistance "changes damage only, never the status clock" (V2 §8). Frost deals no damage of its own, so there is nothing of it for a resistance to take off. | **answered 2026-09-29** (Andrew, DECISIONS.md: "Every type of resistance should work the same") — COMBAT-V2-DESIGN §8.2, as built; "Immunity to Cold still refuses Frost" is retired with immunity |
 
 ## content.ghost — the Ghost, 2026-09-29
 

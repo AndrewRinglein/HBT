@@ -8,7 +8,7 @@
 // A status is DATA on the unit plus a small code module here. Adding one is a
 // row in the registry and, if it needs behaviour, one function.
 
-import { flatDamage, immunityOf } from './mitigation.js'
+import { flatDamage } from './mitigation.js'
 import type { Ctx, Side, Unit } from './types.js'
 import { applyDamage, applyHealing, emit, reduceStatus, removeStatus, setLifeState, unit } from './mutate.js'
 import { effective } from './stats.js'
@@ -224,9 +224,6 @@ export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number,
   const def = ctx.statuses[id]
   if (!def) throw new Error(`unknown status '${id}' — statuses are an explicit registry, check content/statuses.ts`)
   const u = unit(ctx, unitId)
-  // rule.badge-immunity (2026-09-29): a status the unit is immune to never lands — the line names the badge
-  const immuneBy = immunityOf(ctx, u, { status: id })
-  if (immuneBy) { emit(ctx, 'status.immune', causeId, { target: unitId, statusId: id, value, badgeId: immuneBy }); return }
   // rule.burn-frost-cancel (capability.frost, 2026-09-03): one for one on application
   if (def.cancels) {
     const other = u.statuses.find((s) => s.id === def.cancels)
@@ -301,7 +298,6 @@ export function statusDamage(ctx: Ctx, unitId: number, amount: number, causeId: 
     actor: null, statusId: causeId, damageType,
     ...(result.resisted ? { resisted: result.resisted } : {}),
     ...(result.absorbed ? { absorbed: result.absorbed } : {}),
-    ...(result.immuneBy ? { immuneBy: result.immuneBy } : {}),
   })
 }
 

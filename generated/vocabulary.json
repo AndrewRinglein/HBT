@@ -217,7 +217,6 @@
   "status.applied",
   "status.cancelled",
   "status.expired",
-  "status.immune",
   "status.reduced",
   "surge.checked",
   "surge.hit",

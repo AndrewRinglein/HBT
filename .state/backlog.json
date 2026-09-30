@@ -1,5 +1,20 @@
 [
  {
+  "id": "rule.immunity-is-resistance",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [],
+  "changesBaseline": true,
+  "probeIds": [
+   "badge.cold-heart"
+  ],
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Ghost possesses on its Attack at 15%; every resistance works the one way, and it replaces immunity'): 'So there is one way we're doing resistance. It should all be the same. ... Every type of resistance should work the same. Replaces previous immunity.' The one way is COMBAT-V2-DESIGN section 8.2 (one resist, both forms), with the V2 migration's 'elemental immunity becomes flat named resistance', one for one. rule.badge-immunity's mechanism is removed from the engine (BadgeDef.immuneTo, immunityOf, the status refusal and clearing, the IMMUNE ledger row, status.immune, the pack validation). Content reads 'Immune [to] <element or its status> [N]' as +N of that resist, +1 with no number; a status with no element (Karma, Weak) is a named gap. Engine rule: none new - resistance is the existing flat element resist.",
+  "expect": "No badge carries immuneTo and the engine refuses no status by badge; Cold Heart is +2 Health and +1 Cold Resist, its Karma a named gap, and still takes Frost and Karma; Rotting Flesh +1 Poison Resist takes one point off poison damage direct or by tick and keeps its Poison; Frostborn +1 Cold Resist.",
+  "note": "changesBaseline: a control-battle hero with Rotting Flesh now takes Poison (with 1 Poison Resist against its ticks) where the removed immunity refused it.",
+  "status": "done-needs-review",
+  "sha": "4dec2c0"
+ },
+ {
   "id": "content.ghost-possess-on-attack",
   "kind": "content",
   "shape": "data",

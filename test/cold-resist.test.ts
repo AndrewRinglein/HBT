@@ -32,11 +32,14 @@ describe('cold, an element with its own resistance', () => {
     expect(resisted.resisted).toBe(bare.resisted + 2)
     expect(flatDamage(ctx, w, 5, 'fire').value).toBe(flatDamage(ctx, field().w, 5, 'fire').value)
   })
-  it('Cold Heart is immune to cold damage: none of it lands, the badge named', () => {
+  // LAW 10 — rule.immunity-is-resistance (2026-09-29, Andrew: "Every type of resistance should work the same. Replaces
+  // previous immunity"): Cold Heart's immunity to Cold is +1 Cold Resist, and resists like any other.
+  // was: 'Cold Heart is immune to cold damage: none of it lands, the badge named' — value 0, immuneBy badge.cold-heart
+  it('Cold Heart resists cold as any resist does: +1 Cold Resist, one point off cold damage', () => {
     const { ctx, w } = field()
+    const bare = flatDamage(ctx, w, 7, 'cold').value
     grantBadge(ctx, w.id, 'badge.cold-heart', 'test')
-    const r = flatDamage(ctx, w, 7, 'cold')
-    expect(r.value).toBe(0)
-    expect(r.immuneBy).toBe('badge.cold-heart')
+    expect(effective(ctx, w, 'coldResist').value).toBe(1)
+    expect(flatDamage(ctx, w, 7, 'cold').value).toBe(bare - 1)
   })
 })

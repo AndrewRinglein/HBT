@@ -34,7 +34,7 @@ export type EngineVocabulary = {
   readonly lifeStates: readonly string[]
   /** Every event type the engine emits; `life.<state>` is spelled out. */
   readonly events: readonly string[]
-  /** rule.badge-immunity (2026-09-29): the damage types (DAMAGE_TYPES) — what a badge's immuneTo.damage may name. */
+  /** rule.cold-resist (2026-09-29): the damage types (DAMAGE_TYPES), exported so content reads the list rather than copying it. */
   readonly damageTypes: readonly string[]
   /** The ground layers, in the engine's order, and the statuses each applies. */
   readonly layers: readonly { readonly id: string; readonly onEnter: readonly (readonly [string, number])[]; readonly onActivationEnd: readonly (readonly [string, number])[] }[]

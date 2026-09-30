@@ -44129,19 +44129,12 @@ export const UNIT_PACK = {
         "maxHp": 8,
         "armor": 1,
         "movement": -2,
-        "accuracy": -10
+        "accuracy": -10,
+        "poisonResist": 1
       },
       "grants": [],
       "flags": {},
       "deathbedFighting": 20,
-      "immuneTo": {
-        "statuses": [
-          "status.poison"
-        ],
-        "damage": [
-          "poison"
-        ]
-      },
       "gaps": [
         "start of battle take 5 true damage"
       ]
@@ -44387,19 +44380,14 @@ export const UNIT_PACK = {
       "id": "badge.cold-heart",
       "name": "Cold Heart",
       "statModifiers": {
-        "maxHp": 2
+        "maxHp": 2,
+        "coldResist": 1
       },
       "grants": [],
       "flags": {},
-      "immuneTo": {
-        "statuses": [
-          "status.karma",
-          "status.frost"
-        ],
-        "damage": [
-          "cold"
-        ]
-      }
+      "gaps": [
+        "immune to Karma"
+      ]
     },
     "badge.vengeful": {
       "id": "badge.vengeful",
@@ -45221,11 +45209,9 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "flags": {},
-      "immuneTo": {
-        "statuses": [
-          "status.weak"
-        ]
-      }
+      "gaps": [
+        "immune to Weak"
+      ]
     },
     "badge.diverse-learner": {
       "id": "badge.diverse-learner",
@@ -45341,12 +45327,8 @@ export const UNIT_PACK = {
       "statModifiers": {},
       "grants": [],
       "flags": {},
-      "immuneTo": {
-        "statuses": [
-          "status.weak"
-        ]
-      },
       "gaps": [
+        "Immune to Weak",
         "on taking damage: remove 1 Weak"
       ]
     },
@@ -45634,14 +45616,11 @@ export const UNIT_PACK = {
     "badge.frostborn": {
       "id": "badge.frostborn",
       "name": "Frostborn",
-      "statModifiers": {},
+      "statModifiers": {
+        "coldResist": 1
+      },
       "grants": [],
       "flags": {},
-      "immuneTo": {
-        "statuses": [
-          "status.frost"
-        ]
-      },
       "gaps": [
         "your attacks apply 1 Frost"
       ]

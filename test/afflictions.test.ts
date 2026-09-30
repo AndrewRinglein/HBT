@@ -174,12 +174,13 @@ describe('the afflictions as revised 2026-09-29', () => {
     // was: …gaps arrayContaining ['on a melee hit: heal 2', '+15 Deathbed Fighting', 'deploying the hero costs 3 Faith', 'the hero gains half experience']
     expect(BADGES['badge.vampirism']!.gaps).toEqual(expect.arrayContaining(['on a melee hit: heal 2', 'deploying the hero costs 3 Faith', 'the hero gains half experience']))
     expect(BADGES['badge.vampirism']!.deathbedFighting).toBe(15)
-    expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2 })
-    // was: …gaps arrayContaining ['immune to Karma', 'immune to Cold (cold damage and the Frost status)']
-    // LAW 10 — rule.cold-resist (2026-09-29, Andrew: cold damage and Cold Resist, "yes"): the cold-damage gap is built.
-    // was: immuneTo { statuses: ['status.karma', 'status.frost'] } and gaps ['immune to Cold: cold damage — the engine has no cold damage type']
-    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'], damage: ['cold'] })
-    expect(BADGES['badge.cold-heart']!.gaps).toBeUndefined()
+    // LAW 10 — rule.immunity-is-resistance (2026-09-29, Andrew, DECISIONS.md: "Every type of resistance should work the
+    // same. Replaces previous immunity"): Cold Heart's "immune to Cold" is +1 Cold Resist (one for one, the V2 migration's
+    // necklaces); Karma has no element and no resist, so "immune to Karma" is a named gap. The claim — every ruled clause
+    // compiled or named — is unchanged.
+    // was: statModifiers { maxHp: 2 } · immuneTo { statuses: ['status.karma', 'status.frost'], damage: ['cold'] } · gaps undefined
+    expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2, coldResist: 1 })
+    expect(BADGES['badge.cold-heart']!.gaps).toEqual(['immune to Karma'])
     expect(BADGES['badge.possession']!.statModifiers).toEqual({ magic: 2, resist: 1, vision: 3, surge: -10 })
     // was: …gaps arrayContaining ['−10 Deathbed Fighting', 'deploying the hero costs 3 Mana']
     expect(BADGES['badge.possession']!.gaps).toEqual(expect.arrayContaining(['deploying the hero costs 3 Mana']))
