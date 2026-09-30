@@ -1,5 +1,114 @@
 [
  {
+  "id": "rule.primary-ends-activation",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "PLAYABLE-OPENING-PLAN.md item 1. Ruled 2026-09-29 (Andrew, DECISIONS.md 'the playable battle screen ...'): 'When you perform your primary action and it is not a free primary action, after that action resolves, there's no button to end activation.' Under the human command path (commands.ts), a resolved non-free primary action ends the unit's activation (the Surge check still runs where the rules run it); a free primary action does not. The AI path is unchanged unless it already differs - name any difference found. Engine rule: a non-free primary action closes the activation once it resolves.",
+  "expect": "A human hero that attacks (non-free) needs no end-cycle command - its activation ends and the next choice is offered; a free primary action leaves the activation open; replays of existing battles are unchanged or the change is declared."
+ },
+ {
+  "id": "command.end-player-phase",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "rule.primary-ends-activation"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 2. Ruled 2026-09-29: 'There should be a button for End whole turn ... If you have anybody who has not acted, it should pop up ... If all your units act, then your turn just ends. And by turn, I mean player phase.' A battle command that ends the Player Phase for the human side (every hero not yet activated forgoes its activation), a query naming the heroes that have not acted (for the pop-up), and the phase ending by itself when every hero has acted. Engine rule: ending the Player Phase is a command; the viewer only asks.",
+  "expect": "With two heroes unacted, the query names both and end-player-phase moves to the Enemy Phase with neither acting; when the last hero's activation ends the phase advances with no command; the sandbox and replays agree."
+ },
+ {
+  "id": "preview.from-planned-hex",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "PLAYABLE-OPENING-PLAN.md item 3. The ghost ('click a hex for a ghost, click again to confirm', ruled 2026-09-29) needs the engine's forecast from where the hero WOULD stand: reach, line of sight, to-hit, damage, terrain and auras it would stand in, and the provoke points on the path (VFX/UI-BUILD-NOTES-2026-09-02.md section 5, 'preview() must accept a hypothetical position'). Pure: no state change, no RNG draw. Also the enemy reach query for 'pointing at an enemy lights up where it can move and hit'.",
+  "expect": "A preview asked from a planned hex equals the preview taken after actually moving there, number for number; asking it draws no RNG and changes nothing; an enemy's move-and-hit hexes come from the engine."
+ },
+ {
+  "id": "viewer.painted-board",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "PLAYABLE-OPENING-PLAN.md item 4. Ruled 2026-09-29: the painted 3D scenes are the battle board, turned into hex maps (retires 'WebGL is NOT required' for these battles). map.opening.orphanage draws on assets/terrain-3d/orphanage-riverside, lumberjack on lumberjack-forest, bridge on abbotown-encounters/bridge, each aligned to its hex grid. Camera: rotate, zoom, tilt, right-drag to pan, a Reset button to the starting angled view. Served by the local server.",
+  "expect": "Battle 1 opens on the riverside scene with its hexes where the engine's are (an eyeball check linked for Andrew); rotate/zoom/tilt/pan work and Reset returns the starting view."
+ },
+ {
+  "id": "viewer.character-models",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.painted-board"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 5. Ruled 2026-09-29: units are 3D models where one exists, else their token; enemies need idle, move, attack, hit reaction and death, heroes those plus what their weapon's powers need ('most' is enough; outfits may be reused). A dead unit is its model lying where it fell; a downed unit the same with a bleed-out counter. Bind per unit type from assets/characters/APPROVED-CHARACTERS.md and assets/battle-demo/roster.mjs; the viewer computes nothing.",
+  "expect": "Battle 1's Zombies and heroes are animated models that walk, strike, flinch and fall; a unit without a model is its token; a downed hero lies with its counter."
+ },
+ {
+  "id": "viewer.under-unit",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.character-models"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 6. Ruled 2026-09-29: under each unit its name, Health bar, Protection bar beneath it, and compact status icons (SWITCHES statusUnderUnit) - no Poison or Burn icon, those show on the body; Stun shown on the body; Slow only changes the movement number; ring, shadow and chips kept; the acting hero marked by a glowing disc with a sweep and a bobbing arrow.",
+  "expect": "Every unit in battle 1 shows name, Health and Protection under it; a stunned unit shows it on the body; a burning one burns; the acting hero carries the disc and arrow."
+ },
+ {
+  "id": "viewer.play-input",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "preview.from-planned-hex",
+   "viewer.under-unit"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 7. Ruled 2026-09-29: click a hero to act; click an action-bar slot to choose the action; click a hex for a ghost, click again to confirm; right-click steps back; with an attack chosen an arrow follows the pointer and whatever it is over shows the forecast (hit chance, damage, the notch or skull on its Health bar); with nothing chosen, pointing at an enemy lights up where it can move and hit; clicking an enemy shows it in the right panel (the panel shows whoever was clicked last); zone-of-control hatching and the path preview while planning a move. Every legality and number from the engine.",
+  "expect": "Andrew can move and attack in battle 1 with the mouse alone; the forecast shown equals what lands; right-click undoes a stage; no dropdown is needed."
+ },
+ {
+  "id": "viewer.play-chrome",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "command.end-player-phase",
+   "viewer.play-input"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 8. Ruled 2026-09-29: an End Turn button ending the Player Phase, with the pop-up 'Are you sure you want to end your turn? You have units that have not acted.' when any hero has not acted; the phase ends by itself when all have; enemy turns play in full animation with a 2x speed button; a battle log. Then Andrew plays battle 1.",
+  "expect": "Battle 1 plays start to finish in the new screen: End Turn and its pop-up, 2x speed, the log; an eyeball check for Andrew."
+ },
+ {
+  "id": "encounter.opening.bridge-ai",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "PLAYABLE-OPENING-PLAN.md item 9. encounter.opening.bridge failed (cut 2026-09-28): battle 3 never reaches a result - the AI stalls across the deep river. Find why (the Imps' flight, the bridge deck, the deep water ~ that no unit may enter), fix it where it belongs, and land Battle 3 as ruled 2026-09-28 (four Imps far side; Turn 2 a Fire Imp, Turn 4 an Imp, Turn 5 a Fire Imp; no time limit; victory clears the map).",
+  "expect": "Battle 3 runs deterministically to a win or a loss on every seed tried with the player's party at that point; the stall's cause is named."
+ },
+ {
+  "id": "viewer.opening-cast",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.play-chrome"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 10. Battles 2 and 3's cast in the new screen: Skeletal Archer, the Soldier (the undead soldier), Imps and Fire Imps (flying), the Lumberjack, his Wife, the Orphan Child and the School Teacher (tokens where no model), the drafted heroes' outfits by class (reuse allowed). Ranged and flying presentation.",
+  "expect": "Battles 2 and 3 play in the new screen with every unit shown as a model or its token, archers shooting and imps flying."
+ },
+ {
+  "id": "kingdom.abbotown-map",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "PLAYABLE-OPENING-PLAN.md item 11. Ruled 2026-09-29: the Retaking Abbotown map is built from Andrew's sketch (C:/Users/aring/Downloads/IMG_5078.jpeg; KINGDOM-V2-2026-09-07.md 'Conquest maps'): six sections in order (Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Cathedral), taken ones marked, an arrow on the next; clicking the next starts its battle.",
+  "expect": "The map shows six sections with the taken ones marked and the next pointed to; an eyeball check for Andrew."
+ },
+ {
+  "id": "kingdom.opening-loop-three",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "needs": [
+   "kingdom.abbotown-map",
+   "viewer.opening-cast",
+   "encounter.opening.bridge-ai"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 12. Ruled 2026-09-29: one page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards (the Orphanage's 20 XP, the Flaming Longsword after battle 2, the item choice after battle 3, level-ups, wounds carried; no tactics) -> map, for the first three battles; a lost battle is replayed with the same party. Narrows kingdom.opening-loop to three battles.",
+  "expect": "Andrew plays from the Orphanage through the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled."
+ },
+ {
   "id": "rule.immunity-is-resistance",
   "kind": "engine",
   "shape": "data",

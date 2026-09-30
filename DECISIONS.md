@@ -3432,3 +3432,58 @@ Ruled:
 - **Immunity is replaced by resistance** — the V2 migration's own rule (2026-09-16, the immunity necklaces: "elemental immunity becomes flat named resistance"). The status-refusing, damage-zeroing immunity built earlier today (`rule.badge-immunity`) is removed. "Immune to <element or its status> N" is +N of the element's resist; with no number, +1, as the necklaces' one-for-one migration. A status with no element (Karma, Weak) has no resist: a named gap.
 
 Filed: `content.ghost-possess-on-attack`, `rule.immunity-is-resistance`.
+
+## 2026-09-29 — the playable opening: the first three battles first, one page, a local server
+
+Andrew, asking for "the first six battles and the play map for the six battles playable, including the battle view being a playable UI … With updated 3D maps, UI, characters, and correct motions", answering twelve planning questions:
+
+“One, yes.   To just build it from the sketch  3, yes. I don't know what you mean by demo layout. A lot of work has gone into the battle viewer. There are a lot of very specific things in that, so we might need to cover that in detail.   5. They can show slot tokens.   6. That is what enemy units need. Hero units need to be able to support their weapon's power.   It's okay if we don't have everything, but we should have most, and I want to get most in there so I can see what this looks like.   It's okay if we reuse some appearance outfits. Let's leave tactics out. One sitting is enough for now. 10. Yeah, let's do it on a local server.   Enemy turns play out in full animation. Have a double-speed button.   Yeah, I don't even think we need all six battles playable. Let's just get the first three all the way playable, get the visuals mostly there, and the right buttons.”
+
+Ruled:
+
+- **Target: the first three battles (Orphanage, Lumberjack House, Bridge) all the way playable**, visuals mostly there, the right buttons. Gates and Cathedral are not in this target.
+- **One page, one loop:** the campaign map → draft and equip → battle → rewards → back to the map, built on the existing Battle Sandbox.
+- **The Retaking Abbotown campaign map is built from Andrew's sketch** (IMG_5078): six sections, taken ones marked, the next one pointed to.
+- **The 3D maps are the painted scenes** (Orphanage riverside and its siblings; the painted gate).
+- **The battle screen is the battle viewer.** "A lot of work has gone into the battle viewer" — its specifics are to be covered with Andrew in detail before the playable screen is built. (Claude's "demo layout" question was about assets/battle-demo, a visual demo; it is not the battle screen.)
+- **A unit with no 3D model shows its token** ("slot tokens" read as the unit's existing token art).
+- **Motions: enemies need idle, move, attack, hit reaction and death. Heroes need those and whatever their weapon's powers need.** Not everything is required — "most", enough to see what it looks like. Reusing appearance outfits across heroes is fine.
+- **No tactics** in this loop. **One sitting** — no save and quit. **Played on a local server.**
+- **Enemy turns play out in full animation, with a double-speed button.**
+
+Filed: nothing yet — the plan is written after the battle viewer is covered.
+
+## 2026-09-29 — the playable battle screen: what sits under a unit, the downed, clicks, camera, End Turn, the activation that ends itself
+
+Andrew, answering eleven questions on the battle viewer as the playable screen:
+
+“I believe there is another mockup, a demo version that was created, that has a health bar and name underneath the units.   Also, some icons go there as well, but I don't believe we need poison or burn icons on the units because we can display that on the unit directly with a fire and poison.    Down units should use the dead 3D character lying on the ground.   Unconscious units should use that same thing but have a counter for bleeding out.    There should already be some kind of demo view of how we choose targets, how ores and targeting areas are displayed. What happens when you point over an enemy?   Protection should be represented by a bar underneath health.  Slow does not need representation on the character. It can just change the number that shows how much movement that character has.   Stun should be shown on a character. The painted 3D scenes turned into hex maps? Yes.   2, yes.   3, yes.   4, yes.   5, yes.  Also, if you click an enemy hero, you get them focused on the right-hand side.   6. It shows whoever you clicked last.   7. I don't know what you mean.  8 battlelog, yes.  9, yes.   10. You should be able to rotate around, but there should be a button to reset. You should be able to right-click to grab the map and move. You should be able to navigate, zoom, and tilt, and there should be a button somewhere where you just reset, and it goes back to the starting angled view.   There should be a button for "End whole turn," but a shadow popup. If you have anybody who has not acted, it should pop up and say, "Are you sure you want to end your turn? You have units that have not acted. If all your units act, then your turn just ends."   And by turn, I mean player phase.   When you perform your primary action and it is not a free primary action, after that action resolves, there's no button to end activation. Just when you do a non-free primary action, after it's resolved, that ends the activation, so we're saving a click for "End Unit."”
+
+Ruled:
+
+- **Under each unit: a Health bar and the unit's name, as in the battle demo's mockup, with a Protection bar beneath the Health bar.** Some icons go there too — **but not Poison or Burn**: those are shown on the body itself (the fire and poison effects).
+- **Stun is shown on the character. Slow is not** — it only changes the unit's movement number.
+- **A dead unit is its 3D model lying on the ground (the death motion's end). An unconscious (downed) unit is the same, with a bleed-out counter.**
+- **The painted 3D scenes are the battle board**, turned into hex maps. (Retires "WebGL is NOT required", PLAYBACK-DESIGN.md:107, for these battles.)
+- **3D characters keep the token's surroundings** (ring, shadow, the bars, the chips) — yes.
+- **Moving and attacking on the board**: click a hex for a ghost, click again to confirm, right-click to step back — yes. **Actions are chosen from the action bar** — yes. **The hero who acts next is chosen by clicking it on the board** — yes.
+- **The right-hand panel shows whoever was clicked last** — a hero, or an enemy clicked to inspect it. (Replaces "The panel is about whoever is acting … Not click-driven", PLAYBACK-DESIGN.md:114, for the playable screen.)
+- **A battle log** — yes. **Zone-of-control hatching and the path preview** — build them.
+- **Camera: rotate, zoom, tilt, and right-click-drag to move the map; a Reset button returns to the starting angled view.**
+- **"End Turn" ends the Player Phase.** If a hero has not acted, a pop-up asks: "Are you sure you want to end your turn? You have units that have not acted." **When every hero has acted, the Player Phase ends by itself.**
+- **A non-free primary action ends the unit's activation once it resolves** — no End Activation click after it. (A free primary action does not.)
+- Question 7 (the "whose turn it is" look) was unclear; it is re-asked in plain words.
+
+## 2026-09-29 — the playable screen: the acting mark, pointing at an enemy, the forecast
+
+Andrew, asked which status display goes under a unit, what pointing at an enemy does with no attack chosen, whether the forecast shows on pointing, and which "this hero is acting" mark to use:
+
+“Bobbing arrow overhead and the glowing disc under its feet with a sweep I really don't know until I see it, so just choose one. With no attack chosen, that's a good idea. Pointing at an enemy lights up where it can move in him. That's good.   The forecast should show yes. If you have your hero selected, you click your hero, and then you're mousing around. There's an arrow, and whenever you put it over something, it shows you”
+
+Ruled:
+
+- **The acting hero is marked by the glowing disc with a sweep under its feet and a bobbing arrow overhead** — Claude's choice on "just choose one"; to be seen and changed if wrong.
+- **With no attack chosen, pointing at an enemy lights up where it can move and hit.**
+- **The forecast shows on pointing:** with the hero selected (clicked), an arrow follows the pointer, and whatever it is over shows its forecast.
+- The status display under a unit was not answered: default **compact icons** (`viewer/SWITCHES.md` statusUnderUnit).
+- The work is ordered in `PLAYABLE-OPENING-PLAN.md`; its twelve items are filed at the top of the engine queue.
