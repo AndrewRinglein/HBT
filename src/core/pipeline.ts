@@ -471,13 +471,26 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   if (mode !== 'reaction' && resolveActionSlot(ctx, at, a, mode) === null) return false
   // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses
   if (!actionReady(ctx, at, a)) return false
-  const d = ctx.geo.distance(at.hex, tg.hex)
   // "You cannot use a ranged attack on something adjacent." (Angela, 2026-08-15;
   // GAME-DESIGN.md §4.) A legality rule, so it is answered here rather than as a
   // penalty the shooter can eat — the shot does not exist.
-  if (a.attack.kind === 'ranged' && d <= 1) return false
-  return d <= reachOf(ctx, at, a) && attackLineClear(ctx, at.hex, tg.hex)
+  return attackReachesHex(ctx, at, a, tg.hex)
 }
+
+/**
+ * The attack's geometry from where the attacker stands: the ranged-adjacent ban,
+ * reach and the line — canAttack's tail, split out (preview.from-planned-hex) so
+ * the enemy reach query (forecast.ts threatOf) asks the one legality function's
+ * own question of a hex nobody stands on yet (Law 2).
+ */
+export function attackReachesHex(ctx: Ctx, at: Unit, a: AttackDef, hex: HexId): boolean {
+  const d = ctx.geo.distance(at.hex, hex)
+  if (a.attack.kind === 'ranged' && d <= 1) return false
+  return d <= reachOf(ctx, at, a) && attackLineClear(ctx, at.hex, hex)
+}
+
+/** What preview() answers — the type a forecast carries (preview.from-planned-hex). */
+export type AttackPreview = ReturnType<typeof preview>
 
 /** Pure first-cup facts. Incapacity is an explicit status capability, not its ID. */
 export function resolveBlock(ctx: Ctx, target: Unit, kind: 'melee' | 'ranged', attacker?: Unit) {

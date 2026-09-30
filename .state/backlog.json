@@ -25,7 +25,10 @@
   "kind": "engine",
   "shape": "plumbing",
   "spec": "PLAYABLE-OPENING-PLAN.md item 3. The ghost ('click a hex for a ghost, click again to confirm', ruled 2026-09-29) needs the engine's forecast from where the hero WOULD stand: reach, line of sight, to-hit, damage, terrain and auras it would stand in, and the provoke points on the path (VFX/UI-BUILD-NOTES-2026-09-02.md section 5, 'preview() must accept a hypothetical position'). Pure: no state change, no RNG draw. Also the enemy reach query for 'pointing at an enemy lights up where it can move and hit'.",
-  "expect": "A preview asked from a planned hex equals the preview taken after actually moving there, number for number; asking it draws no RNG and changes nothing; an enemy's move-and-hit hexes come from the engine."
+  "expect": "A preview asked from a planned hex equals the preview taken after actually moving there, number for number; asking it draws no RNG and changes nothing; an enemy's move-and-hit hexes come from the engine.",
+  "attempts": 1,
+  "status": "done",
+  "sha": "dff2bd5"
  },
  {
   "id": "viewer.painted-board",

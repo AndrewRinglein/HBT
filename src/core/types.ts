@@ -1361,4 +1361,10 @@ export type Ctx = {
    * runner (which imports setup, which imports content: the cycle).
    */
   arrive?: (ctx: Ctx, def: UnitDef, hex: number, causeId: string) => Unit
+  /**
+   * preview.from-planned-hex: set only on a FORECAST fork (core/forecast.ts). The step loop
+   * records each attack of opportunity here, with its preview, instead of rolling it, and walks
+   * on as if it missed (SWITCHES.md plannedHexProvokes). Absent on every real battle.
+   */
+  dryWalk?: { provokes: import('./forecast.js').Provoke[] }
 }

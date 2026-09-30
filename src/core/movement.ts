@@ -4,14 +4,14 @@ import { lowEdgeCost, preparedLowEdgeCost } from './cover.js'
 // opportunity, traps, terrain status — has a place to happen and can interrupt.
 
 import type { HexId } from './hex.js'
-import type { Ctx, MoveDef, Unit } from './types.js'
+import type { AttackDef, Ctx, MoveDef, Unit } from './types.js'
 import { moveCostOf, terrainIdOf } from '../content/maps.js'
 import { blockingPropAt, passableHexes, type Passable } from './props.js'
 import { flatDamage } from './mitigation.js'
 import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
 import { actionReady, resolveActionSlot, attacksOf, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
 import { forcedTargetOf, hiddenFrom, incomingAbsorb, isBlocked, isProne, isRooted, spendAbsorb } from './status.js'
-import { canAttack, performAttack } from './pipeline.js'
+import { canAttack, performAttack, preview } from './pipeline.js'
 import { knockImmunity } from './kdb.js'
 import { thornsOf } from './thorns.js'
 import { settle } from './settle.js'
@@ -246,6 +246,10 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
         provoked.add(e.id)
         // the zone is still there — the walk ignores it, and the log says which walk (Law 12)
         if (ignoresZoc) { emit(ctx, 'zoc.ignored', causeId, { actor: unitId, holder: e.id, hex: u.hex }); continue }
+        // preview.from-planned-hex: a forecast walk (core/forecast.ts, on a fork) records the
+        // provoke — the holder's own choice of swing and its preview() — and walks on as if it
+        // missed; a real swing would roll a named stream (SWITCHES.md plannedHexProvokes)
+        if (ctx.dryWalk) { const c = aooChoice(ctx, e.id, unitId); ctx.dryWalk.provokes.push({ at: u.hex, from: e.id, ...('attack' in c ? { attackId: c.attack.id, preview: preview(ctx, e.id, unitId, c.attack.id) } : { attackId: null, skipped: c.skipped, preview: null }) }); continue }
         if (attackOfOpportunity(ctx, e.id, unitId)) struck = true
         if (u.lifeState !== 'standing') return moved
       }
@@ -298,8 +302,22 @@ export function zocHoldersAt(ctx: Ctx, u: Unit, hex: HexId): Unit[] {
  * Returns whether the swing HIT — the mover's movement ends on a hit
  * (fix.zoc-threat-not-stop, 2026-09-04) and on nothing else.
  */
-export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number): boolean {
+/**
+ * The holder's choice of swing — its cheapest LEGAL melee attack as a reaction
+ * (lowest stamina cost, ties to declared order), or why there is none. Split out
+ * of attackOfOpportunity for preview.from-planned-hex: the swing and the
+ * forecast of it choose by this one rule. Pure.
+ */
+export function aooChoice(ctx: Ctx, holderId: number, moverId: number): { attack: AttackDef } | { skipped: 'no melee attack' | 'not legal' } {
   const h = unit(ctx, holderId)
+  const melee = attacksOf(ctx, h).filter((a) => a.attack.kind === 'melee')
+  if (melee.length === 0) return { skipped: 'no melee attack' }
+  const legal = melee.filter((a) => canAttack(ctx, holderId, moverId, a.id, 'reaction'))
+    .sort((a, b) => a.staminaCost - b.staminaCost || melee.indexOf(a) - melee.indexOf(b))[0]
+  return legal ? { attack: legal } : { skipped: 'not legal' }
+}
+
+export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number): boolean {
   // fix.aoo-pays-stamina (2026-09-04, FINDING 40). Ruled 2026-08-20 (DECISIONS
   // "The attack of opportunity, final form"): "The attacker chooses one of
   // their attacks. They do pay stamina for it. It could have a cooldown, and if
@@ -311,11 +329,9 @@ export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number)
   // (canAttack mode 'reaction': every gate but the primary slot), the spend is
   // the one spend, and nothing is written back. The AI policy for "chooses" is
   // unchanged: the cheapest melee that is legal, ties to declared order.
-  const melee = attacksOf(ctx, h).filter((a) => a.attack.kind === 'melee')
-  if (melee.length === 0) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'no melee attack' }); return false }
-  const legal = melee.filter((a) => canAttack(ctx, holderId, moverId, a.id, 'reaction'))
-    .sort((a, b) => a.staminaCost - b.staminaCost || melee.indexOf(a) - melee.indexOf(b))[0]
-  if (!legal) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'not legal' }); return false }
+  const choice = aooChoice(ctx, holderId, moverId)
+  if (!('attack' in choice)) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: choice.skipped }); return false }
+  const legal = choice.attack
   emit(ctx, 'aoo.provoked', 'movement.aoo', { actor: holderId, target: moverId, attackId: legal.id })
   const result = performAttack(ctx, holderId, moverId, legal.id, 'reaction')
   settle(ctx, 'movement.aoo')
