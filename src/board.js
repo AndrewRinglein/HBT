@@ -1408,7 +1408,8 @@ export function bindCamera(V) {
     else if (e.key === 'ArrowUp') pan(0, -STEP)
     else if (e.key === 'ArrowDown') pan(0, STEP)
     else if (e.key.toLowerCase() === PEEK_KEY && !e.repeat) { V.view.peek = true; applyCam(V); drawEdges(V) }
-    else if (e.key === 'Escape' && V.play) V.offerPlay({ kind: 'back' })   /* ESC behaves as the right-click (UI-BUILD-NOTES §5) */
+    else if (e.key === 'Escape' && V.play && !V.asking) V.offerPlay({ kind: 'back' })   /* ESC behaves as the right-click (UI-BUILD-NOTES §5) */
+    else if (e.key === 'Escape' && V.asking) return   /* viewer.play-chrome: the End Turn pop-up takes its own Esc (chrome.js) */
     else return
     e.preventDefault()
   }

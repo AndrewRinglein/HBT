@@ -25,6 +25,8 @@
             is offered to it: {kind:'point', hex|null} · {kind:'hex', hex} · {kind:'unit', id, hex} · {kind:'back'}
             (a right-click that did not drag, or Esc) · {kind:'slot', actionId, unit} (an action-bar row). The host
             answers from the engine and calls setPlay again; the viewer draws and never decides.
+            viewer.play-chrome: a host that plays also gets the play chrome (src/chrome.js) — End Turn and its pop-up,
+            End activation, 2× speed, the battle log — whose clicks come as {kind:'end-turn'} · {kind:'end-activation'}.
 
    Returns { setTargeting, setPlay, push, seek, play, pause, speed, step, setZoom, setBare, inspect,
              peek, pan, render, dispose, get cursor/events/state/playing/view/invalid/
@@ -32,6 +34,7 @@
    ══════════════════════════════════════════════════════════════════════════ */
 import { targetingFacts } from './targeting.js'
 import { playFacts } from './play.js'
+import { mountPlayChrome } from './chrome.js'
 import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf } from './board.js'
 import { terrainLayer } from './terrain3d.js'
 import { bundledModels } from './models.js'
@@ -171,6 +174,9 @@ export function mountBattleViewer(root, data, opts = {}) {
   const unbindCamera = bindCamera(V)
 
   const terrain = terrainLayer(V, opts.terrainDriver)
+  /* viewer.play-chrome: End Turn, End activation, 2×, the log — for a host that plays; nothing for a replay */
+  V.asking = false
+  const chrome = opts.onPlay ? mountPlayChrome(V, { offer: input => V.offerPlay(input), speed: x => api.speed(x) }) : { sync() {}, relog() {}, dispose() {} }
 
   function render() {
     if (!V.layers.ground) buildGround(V)
@@ -179,7 +185,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     syncLayers(V); syncCorpses(V); syncAuras(V)
     drawAim(V); drawTargeting(V)
     syncUnits(V); syncPlayInput(V); drawPlay(V)
-    drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update()
+    drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
   }
   V.render = render
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
@@ -215,14 +221,14 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (!V.inputActive() || !V.play || !opts.onPlay) return false
     try { return opts.onPlay(input) === true } catch (err) { return fault(err) }
   }
-  function clearPlay() { V.play = null; syncPlayInput(V); drawPlay(V) }
+  function clearPlay() { V.play = null; syncPlayInput(V); drawPlay(V); chrome.sync() }
   function setPlay(value) {
     if (disposed) throw new Error('viewer disposed')
     if (value === null) { if (V.play) { clearPlay(); drawBar(V) } return }
     if (V.invalid) throw new Error('viewer faulted')
     const next = playFacts(value, V.data.POS)   // validate/detach the WHOLE payload before mutation
     V.play = next
-    try { syncPlayInput(V); drawPlay(V); drawBar(V) } catch (err) { fault(err) }
+    try { syncPlayInput(V); drawPlay(V); drawBar(V); chrome.sync() } catch (err) { fault(err) }
   }
   function clearTargeting() { targetingGeneration++; V.targeting = null; V.layers.targeting?.remove(); V.layers.targeting = null }
   function setTargeting(value) {
@@ -385,7 +391,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     let d
     /* Law 9: a beat that throws stops the run and says so — never a silent
        freeze behind a "Pause" button */
-    try { d = beat(V.EV[V.cursor]) }
+    try { d = beat(V.EV[V.cursor]); chrome.sync() }
     catch (err) { fault(err) }
     /* Ruled 2026-08-26: standard speed is 25% slower; all speeds scale off it */
     if (V.playing) V.timer = setTimeout(step, Math.max(16, (d || 8) / (V.speed * 0.75)))
@@ -424,6 +430,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     // Input ownership ends here: later host edits cannot corrupt a seek.
     for (const e of incoming) V.EV.push(e)
     pushedMap = sawMap
+    chrome.relog()
     if (first) {
       /* seed the roster instantly: everything through battle.begin (the setup's
          unit.enters, their kit, the encounter's title, the map). A log with no
@@ -455,7 +462,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.painted-board: turn (degrees about the view centre), tilt (degrees), zoom (a factor), Reset */
     turn(deg) { turnCam(V, { yaw: deg }) }, tilt(deg) { turnCam(V, { tilt: deg }) }, zoom(f) { turnCam(V, { zoom: f }) },
     resetView() { resetCam(V) },
-    dispose() { disposed = true; clearTargeting(); V.play = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; chrome.dispose(); clearTargeting(); V.play = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */
