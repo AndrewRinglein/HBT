@@ -1,5 +1,5 @@
 import { validateBurst } from './burst-schema.mjs';
-function optionalCombatStats(row){return Object.fromEntries(['fireResist','poisonResist','shadowResist','block','rangedBlock'].filter(k=>row[k]!==undefined).map(k=>{if(!Number.isSafeInteger(row[k]))throw Error('Invalid optional combat stat '+k);return[k,row[k]]}))}
+function optionalCombatStats(row){return Object.fromEntries(['fireResist','poisonResist','shadowResist','coldResist','block','rangedBlock'].filter(k=>row[k]!==undefined).map(k=>{if(!Number.isSafeInteger(row[k]))throw Error('Invalid optional combat stat '+k);return[k,row[k]]}))}
 function damageType(value){if(!['physical','magic','fire','poison','shadow','true'].includes(value))throw Error('Invalid damage type: '+String(value));return value}
 function packetFields(row){
   const out={};
@@ -54,7 +54,7 @@ const FOLDABLE_STATS = new Set(VOCAB.stats), RESOLVABLE_STATS = new Set(VOCAB.re
 const STAT_OF = {
   str: 'strength', strength: 'strength', pre: 'precision', precision: 'precision', magic: 'magic', spirit: 'spirit',
   acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist',
-  fireresist: 'fireResist', poisonresist: 'poisonResist', shadowresist: 'shadowResist', block: 'block',
+  fireresist: 'fireResist', poisonresist: 'poisonResist', shadowresist: 'shadowResist', coldresist: 'coldResist', 'cold resist': 'coldResist', block: 'block',
   rangedblock: 'rangedBlock', 'ranged block': 'rangedBlock', move: 'movement', movement: 'movement', reach: 'reach',
   health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp',
   staminamax: 'maxStamina', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
@@ -1848,7 +1848,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'aiChanges', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);   // aiChanges: ai.mode-change (engine, 2026-09-26)
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'aiChanges', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);   // aiChanges: ai.mode-change (engine, 2026-09-26)
 const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)

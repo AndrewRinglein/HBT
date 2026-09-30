@@ -2,7 +2,7 @@ import { validateBurst } from './burst-schema.mjs';
 import fs from 'fs';
 import { validateMap, validateEncounterBoard } from './map-schema.mjs';
 const G='gen/', R=p=>JSON.parse(fs.readFileSync(G+p,'utf8'));
-const STATS=new Set(['strength','precision','accuracy','crit','luck','reach','dodge','vision','armor','resist','fireResist','poisonResist','shadowResist','block','rangedBlock','health','magic','spirit','toughness','movement','staminaMax','staminaRegen','surge','itemSlots','deathbedFighting','corruption','favor','bleedOutTurns']);
+const STATS=new Set(['strength','precision','accuracy','crit','luck','reach','dodge','vision','armor','resist','fireResist','poisonResist','shadowResist','coldResist','block','rangedBlock','health','magic','spirit','toughness','movement','staminaMax','staminaRegen','surge','itemSlots','deathbedFighting','corruption','favor','bleedOutTurns']);
 const ID=/^[a-z]+\.[a-z0-9.-]+$/;
 const prob=[]; const ids=new Map();
 const CLASSES=['warrior','ranger','rogue','mage','priest','paladin','civilian','beast'];
