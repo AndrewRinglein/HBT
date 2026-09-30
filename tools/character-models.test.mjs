@@ -27,7 +27,10 @@ const typesIn = b => [...new Set(b.events.filter(e => e.type === 'unit.enter').m
 
 test('battle 1 binds its Zombies and its hero to approved models; the civilians keep their tokens', () => {
   assert.deepEqual(typesIn(battle1), ['hero.base.ranger-scantily', 'hero.fixed.orphans', 'hero.fixed.school-teacher', 'unit.zombie'])
-  assert.deepEqual(Object.keys(pack).sort(), ['hero.base.ranger-scantily', 'unit.zombie'])
+  /* Law 10 (viewer.opening-cast, 2026-09-30): was the pack's whole key list, ['hero.base.ranger-scantily', 'unit.zombie'];
+     the pack now also binds battles 2 and 3's cast and every drafted hero by class (tools/opening-cast.test.mjs). The rule
+     kept: battle 1's enemy and hero are bound, its civilians are not */
+  for (const t of typesIn(battle1)) assert.equal(!!pack[t], !t.startsWith('hero.fixed.'), t)
   const zombie = pack['unit.zombie'], elf = pack['hero.base.ranger-scantily']
   for (const look of zombie.looks) {
     assert.deepEqual(Object.keys(look.motions).sort(), ['attack', 'death', 'idle', 'move'], 'the four approved zombie actions')
@@ -157,7 +160,13 @@ test('a dead unit is its model lying where it fell; a downed hero lies with its 
 test('the approved files load: every look stands its height, carries every bound motion, and its death ends lying', async () => {
   const location = { protocol: 'http:', href: 'http://127.0.0.1:4230/viewer/BATTLE-VIEWER.html' }
   const fetch = async url => { const b = readFileSync('..' + new URL(url).pathname); return { ok: true, arrayBuffer: async () => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) } }
-  for (const b of Object.values(pack)) for (const look of b.looks) {
+  /* Law 10 (viewer.opening-cast, 2026-09-30): was every look of every binding; the pack now binds 24 heroes to two
+     shared looks and battles 2 and 3's cast, whose files tools/opening-cast.test.mjs loads. This loads battle 1's looks,
+     each once */
+  const battle1Looks = new Map()
+  for (const t of typesIn(battle1)) for (const look of pack[t]?.looks || []) battle1Looks.set(look.id, look)
+  assert.deepEqual([...battle1Looks.keys()].sort(), ['archer', 'plague-zombie', 'woman-blonde'])
+  for (const look of battle1Looks.values()) {
     const loaded = await A.loadLook(look, { location, fetch, textures: false })
     assert.deepEqual(Object.keys(loaded.clips).sort(), Object.keys(look.motions).sort(), look.id)
     const body = A.createBody(loaded)

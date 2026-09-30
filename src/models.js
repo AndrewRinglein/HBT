@@ -17,9 +17,10 @@ import {transformationFor} from '../../assets/characters/hero-transformations/af
 import {createBodyAfflictions} from '../../assets/characters/hero-transformations/body-afflictions.mjs'
 
 export const bundledModels = typeof __BUNDLED_MODELS__ === 'undefined' ? null : __BUNDLED_MODELS__
-const LOOPS = new Set(['idle', 'move'])
+const LOOPS = new Set(['idle', 'move', 'flight'])
 const FADE = .25              // s — the crossfade between two motions
 const RECOIL = .28            // s — the recoil of a body that has no hit reaction (viewer SWITCHES modelRecoil)
+const LUNGE = .36             // s — the lean of a body that has no strike or shot motion (viewer SWITCHES modelLunge)
 const TURN = 12               // 1/s — how fast a body turns to face (the battle demo's motion.mjs turnToward)
 
 /** the model binding for a unit type, or null when it has none (it keeps its token) */
@@ -151,7 +152,7 @@ export function createBody(loaded, appearanceOptions = {}) {
   mixer.stopAllAction()
   const actions = {}
   for (const [k, clip] of Object.entries(clips)) { const a = mixer.clipAction(clip); a.setLoop(LOOPS.has(k) ? THREE.LoopRepeat : THREE.LoopOnce, Infinity); a.clampWhenFinished = !LOOPS.has(k); actions[k] = a }
-  let motion = null, once = false, recoilT = Infinity, appearanceTime = 0, layer = null, selected = null, appearanceFailed = false
+  let motion = null, once = false, recoilT = Infinity, lungeT = Infinity, appearanceTime = 0, layer = null, selected = null, appearanceFailed = false
   const registry = appearanceOptions.registry || transformationRegistry
   const body = {
     look, stage, yaw: 0, face: 0, life: null, base: 'idle',
@@ -185,11 +186,14 @@ export function createBody(loaded, appearanceOptions = {}) {
     /** a body with no hit reaction recoils: it leans back and returns */
     recoilStart() { recoilT = 0 },
     recoil: () => recoilT < RECOIL ? Math.sin(Math.PI * recoilT / RECOIL) : 0,
+    /** a body with no strike (or shot) motion leans toward its target and returns (viewer.opening-cast) */
+    lungeStart() { lungeT = 0 },
+    lunge: () => lungeT < LUNGE ? Math.sin(Math.PI * lungeT / LUNGE) : 0,
     lying: () => motion === 'death' && !!actions.death && actions.death.time >= actions.death.getClip().duration - 1e-4,
     frame(dt) {
       layer?.before(); mixer.update(dt); appearanceTime += dt; layer?.after(appearanceTime, body.life === 'standing'); centre()
-      recoilT += dt
-      lean.rotation.x = -.22 * body.recoil()
+      recoilT += dt; lungeT += dt
+      lean.rotation.x = -.22 * body.recoil() + .18 * body.lunge()
       stage.rotation.y = body.yaw
       stage.updateMatrixWorld(true)
     },
@@ -293,10 +297,12 @@ export function createCast(V, scene, toWorld, platform = {}) {
       const E = V.layers.UEL.get(u.id)
       const walking = u.life === 'standing' && !!(E && E.walk && E.walk.playState !== 'finished' && E.walk.playState !== 'idle')
       if (walking) {
-        if (body.motion !== 'move') body.play('move')
+        /* a flight (the board's traversal says its shape — viewer.opening-cast) flies where the look can; else it walks */
+        const going = E.walkShape === 'flight' && body.has('flight') ? 'flight' : 'move'
+        if (body.motion !== going) body.play(going)
         const dx = body.stage.position.x - body.last.x, dz = body.stage.position.z - body.last.z
         if (dx * dx + dz * dz > 1e-8) body.face = Math.atan2(dx, dz)
-      } else if (body.motion === 'move' && body.base) body.play(body.base)
+      } else if ((body.motion === 'move' || body.motion === 'flight') && body.base) body.play(body.base)
       body.last.copy(body.stage.position)
       body.yaw += wrapAngle(body.face - body.yaw) * (1 - Math.exp(-TURN * dt))
       body.frame(step)
@@ -312,10 +318,11 @@ export function createCast(V, scene, toWorld, platform = {}) {
     /** how tall a unit's body stands, in board px (viewer.under-unit: the acting arrow and the body effects ride its head) */
     heightPx: id => { const B = bodies.get(id); return B ? B.standingHeight() * PX_PER_M : null },
     body: id => bodies.get(id) || null,
-    /** the fold's lunge: the attacker strikes, turned toward its target — a bow's shot when it has one */
+    /** the fold's lunge: the attacker strikes, turned toward its target — a bow's shot when it has one; a look with
+        neither leans toward it (the shot itself is the board's projectile, fx.attack) */
     strike(a, t, kind) {
       const A = bodies.get(a); if (!A || V.S.U[a]?.life !== 'standing') return
-      A.play(kind === 'ranged' && A.has('ranged') ? 'ranged' : 'attack')
+      if (!A.play(kind === 'ranged' && A.has('ranged') ? 'ranged' : 'attack')) A.lungeStart()
       const p = whereIs(t, new THREE.Vector3()); if (!p) return
       const dx = p.x - A.stage.position.x, dz = p.z - A.stage.position.z
       if (dx * dx + dz * dz > 1e-8) A.face = Math.atan2(dx, dz)

@@ -427,8 +427,10 @@ export const dilate = (V, ms) => Math.max(16, Math.round(ms / (V.speed || 1)))
 export const LIFT = 'translateZ(2px)'
 const BOB = [{ transform: LIFT + ' translateY(0) rotate(0)' }, { transform: LIFT + ' translateY(-6px) rotate(-2.6deg)', offset: .25 },
   { transform: LIFT + ' translateY(-2px) rotate(0)', offset: .5 }, { transform: LIFT + ' translateY(-6px) rotate(2.6deg)', offset: .75 }, { transform: LIFT + ' translateY(0) rotate(0)' }]
-export function traverse(V, id, startHex, path, dur, startPose = null) {
+export function traverse(V, id, startHex, path, dur, startPose = null, shape = null) {
   const E = V.layers.UEL.get(id), u = V.S.U[id]
+  /* the move's shape (the engine's movement power: path, sidestep, flight) rides the token, for its model (viewer.opening-cast) */
+  if (E) E.walkShape = shape || 'path'
   if (!E || !u || !E.root.animate) return
   const pts = [startPose || feetOf(V, startHex), ...path.map(h => feetOf(V, h))]
   const cum = [0]

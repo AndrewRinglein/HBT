@@ -332,10 +332,14 @@ export function mountBattleViewer(root, data, opts = {}) {
       break
     }
     const hexes = path.length
-    const dur = hexes ? Math.min(900, Math.max(320, 200 + 85 * hexes)) : 0
+    /* a flight is one `moved` over the engine's own distance (move.begin `hexes`): it is paced by that distance, not by
+       its one landing (viewer.opening-cast; viewer SWITCHES flightPace) — the power's shape is the engine's action row */
+    const shape = e.type === 'move.begin' ? V.data.ACT[e.causeId]?.move?.shape ?? null : null
+    const span = shape === 'flight' && hexes && Number.isInteger(e.hexes) && e.hexes > 0 ? e.hexes : hexes
+    const dur = hexes ? Math.min(900, Math.max(320, 200 + 85 * span)) : 0
     playCues(V, cues)
     render()
-    if (hexes && startHex != null) traverse(V, actor, startHex, path, dur, attempt?.id === actor ? attempt : null)
+    if (hexes && startHex != null) traverse(V, actor, startHex, path, dur, attempt?.id === actor ? attempt : null, shape)
     return dur + (hexes ? 60 : 0)                  // the arrival settle
   }
   /* ONE REPAINT PER RUN (2026-09-03): consecutive layer.painted/cancelled

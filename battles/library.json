@@ -148,6 +148,14 @@
   {
    "file": "test.opening-orphanage.json",
    "label": "Orphanage · battle 1 on its painted scene"
+  },
+  {
+   "file": "test.opening-lumberjack.json",
+   "label": "Lumberjack House · battle 2 on its painted scene"
+  },
+  {
+   "file": "test.opening-bridge.json",
+   "label": "Bridge · battle 3 on its painted scene"
   }
  ]
 }

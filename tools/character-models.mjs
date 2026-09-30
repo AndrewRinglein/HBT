@@ -15,6 +15,12 @@
 // Every file is read for its animation names and its SHA-256 is recorded: the page refuses any other bytes.
 // A motion the ruling asks for and the look lacks is listed as `missing` — never borrowed from another body.
 //
+// viewer.opening-cast (PLAYABLE-OPENING-PLAN.md item 10) binds the rest of battles 2 and 3: the Skeleton Archer and the
+// Soldier on the approved humanoids (accepted-humanoids.json: idle, walk, death), the Imp and the Fire Imp on the demo's
+// winged imp (its flight too), and every drafted hero by class (CLASS_LOOKS). A look's `missing` also names what the unit
+// type's own sheet asks of it — a ranged attack with no shot motion, a flight power with no flight motion
+// (generated/static.json, the engine's sheet through the door).
+//
 //   node tools/character-models.mjs --json      print the pack (the engine's test/character-models.test.ts reads it)
 import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
 import { createHash } from 'node:crypto'
@@ -25,15 +31,48 @@ const PKG = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const ROOT = resolve(PKG, '..')
 /* the viewer's motion words, in the ruling's order (DECISIONS.md 2026-09-29: "idle, move, attack, hit reaction
    and death"; "heroes ... whatever their weapon's powers need" — a bow's shot is `ranged`) */
-export const MOTIONS = ['idle', 'move', 'attack', 'ranged', 'hit', 'death']
+export const MOTIONS = ['idle', 'move', 'flight', 'attack', 'ranged', 'hit', 'death']
 export const RULED = ['idle', 'move', 'attack', 'hit', 'death']
 /* the battle demo's roster keys -> the viewer's (the demo plays `block` as the struck unit's reaction:
    assets/battle-demo/main.mjs, `a===target&&step.kind==='melee'&&blocked` -> sample('block')) */
-const ROSTER_KEY = { idle: 'idle', move: 'move', melee: 'attack', ranged: 'ranged', block: 'hit', death: 'death' }
+const ROSTER_KEY = { idle: 'idle', move: 'move', flight: 'flight', melee: 'attack', ranged: 'ranged', block: 'hit', death: 'death' }
 /* which look each engine unit type wears (viewer SWITCHES.md, viewer.character-models) */
+const HUMANOIDS = 'assets/characters/humanoid-enemies/accepted-humanoids.json'
 export const BINDINGS = {
   'unit.zombie': { looks: ['plague-zombie', 'woman-blonde'], approval: 'assets/characters/monster-motion-audition/slow-zombie/accepted-zombies.json' },
-  'hero.base.ranger-scantily': { looks: ['archer'] },
+  /* viewer.opening-cast (viewer SWITCHES modelOpeningEnemies, modelSoldier, modelHumanoidStature): the approved humanoids
+     have no roster row; they are fitted to the demo's medium humanoid rig (CC_Base), so they stand at its stature */
+  'unit.skeletal-archer': { looks: ['skeletal-archer'], approval: HUMANOIDS, stature: 'archer' },
+  'unit.soldier': { looks: ['strong-skeleton'], approval: HUMANOIDS, stature: 'archer' },
+  'unit.imp': { looks: ['imp'] },
+  'unit.fire-imp': { looks: ['fire-imp'] },
+}
+/* the drafted heroes' outfits, by class (viewer SWITCHES modelHeroOutfits; engine DECISIONS.md 2026-09-29 "the playable
+   opening": "outfits may be reused across heroes"): every hero.base.* the engine's sheet lists wears its class's look */
+export const CLASS_LOOKS = {
+  'class.ranger': ['archer'],
+  'class.warrior': ['oathblade'], 'class.paladin': ['oathblade'],
+  'class.priest': ['oathblade'], 'class.mage': ['oathblade'], 'class.rogue': ['oathblade'],
+}
+/** every binding: the named unit types, then each hero.base.* of the engine's sheet by its one class tag */
+export function bindings(units = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')).units) {
+  const all = { ...BINDINGS }
+  for (const [typeId, sheet] of Object.entries(units)) {
+    if (!typeId.startsWith('hero.base.')) continue
+    const classes = (sheet.tags || []).filter(t => t.startsWith('class.'))
+    if (classes.length !== 1) throw new Error(`${typeId}: the sheet gives it ${classes.length} class tags, not one`)
+    const looks = CLASS_LOOKS[classes[0]]
+    if (!looks) throw new Error(`${typeId}: no outfit for ${classes[0]}`)
+    all[typeId] = { looks }
+  }
+  return all
+}
+/* what a unit type's sheet asks of its body beyond the ruled five: a shot for a ranged attack, a flight for a flight power */
+function asked(sheet) {
+  const extra = []
+  if ((sheet?.attacks || []).some(a => a.attack?.kind === 'ranged')) extra.push('ranged')
+  if ((sheet?.moves || []).some(m => m.move?.shape === 'flight')) extra.push('flight')
+  return extra
 }
 /* the battle demo's `male` family shows its armour but the cloak, and of the body only the head and hands
    (assets/battle-demo/actors.mjs prepareVisibility) */
@@ -64,28 +103,33 @@ const clipIn = (path, name) => {
 
 export async function packCharacterModels() {
   const { catalog } = await import(pathToFileURL(resolve(ROOT, 'assets/battle-demo/roster.mjs')).href)
+  const units = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')).units
   const pack = {}
-  for (const [typeId, bind] of Object.entries(BINDINGS)) {
+  for (const [typeId, bind] of Object.entries(bindings(units))) {
     const approval = bind.approval ? JSON.parse(readFileSync(resolve(ROOT, bind.approval), 'utf8')) : null
     const looks = bind.looks.map(id => {
-      const row = catalog.find(a => a.id === id)
-      if (!row) throw new Error(`${typeId}: the battle demo's roster has no '${id}'`)
-      const look = { id, name: row.name, height: row.height, pivot: row.pivot, motions: {}, hidden: [], props: [] }
+      const variant = approval ? approval.variants.find(v => v.id === id) : null
+      if (approval && !variant) throw new Error(`${typeId}: ${bind.approval} approves no '${id}'`)
+      const row = catalog.find(a => a.id === id), frame = row ?? (bind.stature ? catalog.find(a => a.id === bind.stature) : null)
+      if (!frame) throw new Error(`${typeId}: the battle demo's roster has no '${id}'`)
+      const look = { id, name: row?.name ?? variant.name, height: frame.height, pivot: frame.pivot, motions: {}, hidden: [], props: [] }
       if (approval) {
-        /* the approval record owns the files and their hashes; the death file is the body (its baked floor
-           placement parents the rig — accepted-zombies.json limitations; the demo's active cast does the same) */
-        const variant = approval.variants.find(v => v.id === id)
-        if (!variant) throw new Error(`${typeId}: ${bind.approval} approves no '${id}'`)
+        /* the approval record owns the files and their hashes. A motion in its own file (the Zombies) names it; one
+           embedded in the character (the humanoids) is in the variant's model. The body is the variant's model, else
+           the death file (its baked floor placement parents the rig — accepted-zombies.json limitations; the demo's
+           active cast does the same) */
         const base = posix.dirname(bind.approval) + '/'
+        const hashOf = file => { const sha256 = approval.files[file]; if (!/^[0-9a-f]{64}$/.test(sha256 || '')) throw new Error(`${typeId} ${id}: ${file} has no recorded hash`); return sha256 }
         for (const [action, clipName] of Object.entries(approval.sharedActions)) {
           const a = variant.animations.find(x => x.action === action && x.clip === clipName)
           if (!a || a.visualAcceptance !== 'approved') throw new Error(`${typeId} ${id}: ${action} is not an approved animation`)
-          const sha256 = approval.files[a.file]
-          if (!/^[0-9a-f]{64}$/.test(sha256 || '')) throw new Error(`${typeId} ${id}: ${a.file} has no recorded hash`)
-          look.motions[action] = { path: base + a.file, sha256, clip: clipIn(base + a.file, clipName) }
+          const file = a.file ?? variant.model
+          if (!file) throw new Error(`${typeId} ${id}: ${action} names no file`)
+          look.motions[action] = { path: base + file, sha256: hashOf(file), clip: clipIn(base + file, clipName) }
         }
         if (!look.motions.death) throw new Error(`${typeId} ${id}: no approved death to lie in`)
-        look.model = { path: look.motions.death.path, sha256: look.motions.death.sha256 }
+        look.model = variant.model ? { path: base + variant.model, sha256: hashOf(variant.model) } : { path: look.motions.death.path, sha256: look.motions.death.sha256 }
+        if (variant.modelSHA256 && variant.modelSHA256 !== look.model.sha256) throw new Error(`${typeId} ${id}: the record's model hash and its file list disagree`)
       } else {
         look.model = { path: rel(row.model), sha256: digest(rel(row.model)) }
         for (const [key, m] of Object.entries(row.clips)) {
@@ -102,7 +146,7 @@ export async function packCharacterModels() {
         }
       }
       if (!(look.height > 0) || typeof look.pivot !== 'string') throw new Error(`${typeId} ${id}: no height or pivot in the roster`)
-      look.missing = RULED.filter(m => !look.motions[m])
+      look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
       return look
     })
     pack[typeId] = { typeId, looks }
