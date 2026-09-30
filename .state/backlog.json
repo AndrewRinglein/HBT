@@ -35,7 +35,10 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "PLAYABLE-OPENING-PLAN.md item 4. Ruled 2026-09-29: the painted 3D scenes are the battle board, turned into hex maps (retires 'WebGL is NOT required' for these battles). map.opening.orphanage draws on assets/terrain-3d/orphanage-riverside, lumberjack on lumberjack-forest, bridge on abbotown-encounters/bridge, each aligned to its hex grid. Camera: rotate, zoom, tilt, right-drag to pan, a Reset button to the starting angled view. Served by the local server.",
-  "expect": "Battle 1 opens on the riverside scene with its hexes where the engine's are (an eyeball check linked for Andrew); rotate/zoom/tilt/pan work and Reset returns the starting view."
+  "expect": "Battle 1 opens on the riverside scene with its hexes where the engine's are (an eyeball check linked for Andrew); rotate/zoom/tilt/pan work and Reset returns the starting view.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "82e8f77"
  },
  {
   "id": "viewer.character-models",

@@ -19574,3 +19574,29 @@ index 0f3936b..1979ccd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.painted-board — LANDED `82e8f77` **NEEDS REVIEW**
+2026-09-30 04:46
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/painted-board.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/painted-board.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 19 new: look-alike vocabulary: FOLDED_TYPES (viewer/src/fold.js:714) shares 93 with EVENT_TYPES (engine/src/core/mutate.ts:17) — only here: life.dead, life.downed; only there: activation.forgone, activation.idle, activation.selected, ai.anchored, ai.coordinated, ai.denied … · look-alike vocabulary: FOLDED_TYPES (viewer/src/fold.js:714) shares 51 with ACTED (engine/src/sim/acted.ts:6) — only here: action.spent, activation.begin, activation.end, ai.hunts, ai.override, aoo.skipped …; only there: ai.anchored, ai.coordinated, ai.focused, area.landed, area.marked · look-alike vocabulary: FOLDED_TYPES (viewer/src/fold.js:714) shares 17 with ENGINE_EVENTS (kingdom/src/engine.ts:77) — only here: activation.end, ai.hunts, ai.mode, ai.override, aoo.provoked, aoo.skipped …; only there: life.standing, turn.end · look-alike vocabulary: FOLDED_TYPES (viewer/src/fold.js:714) shares 81 with DUR{keys} (viewer/src/viewer.js:41) — only here: action.spent, activation.end, battle.begin, bleedout.set, block.rolled, cooldown.set …; only there: activation.idle, crit.branch · look-alike vocabulary: FOLDED_TYPES (viewer/src/fold.js:714) shares 28 with REDRAW (viewer/src/viewer.js:68) — only here: action.spent, activation.begin, activation.end, ai.override, aoo.provoked, attack.cancelled … · look-alike vocabulary: FOLDED_TYPES (viewer/src/fold.js:714) shares 5 with MID_WALK (viewer/src/viewer.js:287) — only here: action.spent, activation.begin, activation.end, ai.hunts, ai.override, aoo.provoked …; only there: trigger.rolled · … (13 more: node tools/prior-art.mjs --item) — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
