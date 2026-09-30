@@ -142,7 +142,7 @@ export function drawPanel(V) {
     ${twoCols([
       stat('Move', d.movement, 'movement'), stat('Armor', d.armor, 'armor'),
       stat('Magic Resist', d.resist, 'resist'),
-      ...[['fireResist', 'Fire Resist'], ['poisonResist', 'Poison Resist'], ['shadowResist', 'Shadow Resist']]
+      ...[['fireResist', 'Fire Resist'], ['poisonResist', 'Poison Resist'], ['shadowResist', 'Shadow Resist'], ['coldResist', 'Cold Resist']]
         .filter(([key]) => d[key] !== undefined || (u.mods || []).some(m => m.stat === key))
         .map(([key, label]) => stat(label, d[key] ?? 0, key)), stat('Dodge', d.dodge, 'dodge'),
       // V2 R2 (2026-09-23): Block beside the other defenses, shown whenever the unit has any — innate or a shield's
