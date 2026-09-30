@@ -134,7 +134,9 @@
    "viewer.play-chrome"
   ],
   "spec": "PLAYABLE-OPENING-PLAN.md item 10. Battles 2 and 3's cast in the new screen: Skeletal Archer, the Soldier (the undead soldier), Imps and Fire Imps (flying), the Lumberjack, his Wife, the Orphan Child and the School Teacher (tokens where no model), the drafted heroes' outfits by class (reuse allowed). Ranged and flying presentation.",
-  "expect": "Battles 2 and 3 play in the new screen with every unit shown as a model or its token, archers shooting and imps flying."
+  "expect": "Battles 2 and 3 play in the new screen with every unit shown as a model or its token, archers shooting and imps flying.",
+  "status": "done",
+  "sha": "9938024"
  },
  {
   "id": "kingdom.abbotown-map",
