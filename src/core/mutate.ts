@@ -15,7 +15,7 @@ import { LAYER } from '../content/terrain.js'
  * `life.<LifeState>` (setLife). Kingdom and viewer label tables are checked against this.
  */
 export const EVENT_TYPES = [
-  'action.spent', 'activation.begin', 'activation.end', 'activation.idle', 'activation.selected',
+  'action.spent', 'activation.begin', 'activation.end', 'activation.forgone', 'activation.idle', 'activation.selected',
   'ai.anchored', 'ai.coordinated', 'ai.denied', 'ai.focused', 'ai.hunts', 'ai.mode', 'ai.override',
   'ai.tookHighGround', 'aoo.provoked', 'aoo.skipped', 'area.landed', 'area.marked',
   'attack.cancelled', 'attack.declared', 'attack.hit', 'attack.miss', 'badge.gained', 'badge.held',
@@ -61,6 +61,22 @@ export function selectActivation(ctx:Ctx, actor:number, causeId:string):void {
   if(at<0) throw new Error('selected actor is not in the remaining phase queue')
   c.order.splice(at,1);c.order.splice(c.next,0,actor);c.at='activation-start'
   emit(ctx,'activation.selected',causeId,{actor,unitUid:ctx.state.units[actor]!.uid})
+}
+
+/**
+ * command.end-player-phase: the player ends the Phase — these unspent activations are
+ * forgone. Only the cursor's `forgo` list changes; each forgone unit still begins, idles and
+ * runs its End of Activation ladder when the queue reaches it (advanceBattle).
+ */
+export function forgoActivations(ctx: Ctx, actors: readonly number[], causeId: string): void {
+  const c = ctx.battleCursor
+  if (!c || (c.at !== 'selecting' && c.at !== 'acting')) throw new Error('forgoActivations requires a pending selection or an acting cursor')
+  for (const actor of actors) {
+    if (c.order.indexOf(actor, c.next) < 0) throw new Error(`forgone actor ${actor} is not in the remaining phase queue`)
+    if (c.forgo?.includes(actor)) continue
+    ;(c.forgo ??= []).push(actor)
+    emit(ctx, 'activation.forgone', causeId, { actor, unitUid: ctx.state.units[actor]!.uid })
+  }
 }
 
 export function unit(ctx: Ctx, id: number): Unit {

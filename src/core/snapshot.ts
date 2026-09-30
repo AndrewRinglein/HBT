@@ -266,6 +266,8 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(Array.isArray(c.order) && c.order.every(unitId) && new Set(c.order).size === c.order.length, 'cursor order')
     requireThat(integer(c.next, 0, c.order.length) && (c.actor === null || unitId(c.actor)), 'cursor position')
     requireThat(integer(c.surgeLink, 0, MAX_SURGE_CYCLES) && typeof c.surged === 'boolean' && integer(c.movementAllowance, 0), 'cursor Surge')
+    // command.end-player-phase: the forgone activations are units of this Phase's queue, each once
+    requireThat(c.forgo === undefined || (Array.isArray(c.forgo) && c.forgo.every((id: unknown) => unitId(id) && c.order.includes(id)) && new Set(c.forgo).size === c.forgo.length), 'cursor forgone activations')
     const begun = s.events.filter((e: any) => e.type === 'battle.begin').length
     requireThat(c.phase === st.phase, 'cursor phase differs from state')
     if (c.at === 'battle-start') requireThat(begun === 0 && st.turn === 0 && c.actor === null && c.order.length === 0 && c.next === 0, 'battle already begun')

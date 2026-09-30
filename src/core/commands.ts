@@ -9,13 +9,13 @@ import { executeFlight, executeMove, executeSidestep, movementOptions, planMovem
 import { forcedTargetOf, isBlocked } from './status.js'
 import { settle } from './settle.js'
 import { completeActionCycle } from './battle.js'
-import { activationChoices, controllerOf, type ControlPolicy } from './control.js'
-import { selectActivation } from './mutate.js'
+import { activationChoices, controllerOf, yetToActIds, type ControlPolicy } from './control.js'
+import { forgoActivations, selectActivation } from './mutate.js'
 import { isUnitUid } from './identity.js'
 import { canSwap, performSwap } from './swap.js'
 import { attackProp, canAttackHex, propAttackHexes } from './prop-attack.js'
 import { executeCharge, planCharge, type ChargePlan } from './charge.js'
-export { activationChoices, controllerOf, type ControlPolicy } from './control.js'
+export { activationChoices, controllerOf, heroesYetToAct, type ControlPolicy } from './control.js'
 
 /** Shared action input; session ownership is supplied separately from client data. */
 export type ActionRequest = { actor: number; actionId: string; slot?: import('./types.js').ActionSlot } & ({ target: number } | { destination: number } | { centre: number }
@@ -24,6 +24,12 @@ export type ActionRequest = { actor: number; actionId: string; slot?: import('./
 export type BattleCommand = { kind: 'select-activation'; unitUid: number; expectedSeq: number } | (ActionRequest & { kind: 'action'; expectedSeq: number }) | { kind: 'end-cycle'; actor: number; expectedSeq: number }
   /** v2.swap (COMBAT-V2 §11.2): hold these instances; everything else carried is stowed. */
   | { kind: 'swap'; actor: number; hands: string[]; expectedSeq: number }
+  /**
+   * command.end-player-phase (ruled 2026-09-29, DECISIONS.md "the playable battle screen"): End
+   * Turn — every human hero not yet activated this Phase forgoes its activation; an acting hero's
+   * cycle closes as `end-cycle` closes it. The pop-up's list is `heroesYetToAct`.
+   */
+  | { kind: 'end-player-phase'; expectedSeq: number }
 export type CommandResult = { ok: true } | { ok: false; reason: string }
 type Rejection = Extract<CommandResult, { ok: false }>
 type Plan = { kind: 'attack'; actor: number; actionId: string; target: number; slot: import('./types.js').ActionSlot }
@@ -156,6 +162,7 @@ export function executeAction(ctx: Ctx, request: unknown): CommandResult {
 }
 
 type SessionPlan = Plan | { kind: 'select-activation'; actor: number } | { kind: 'end-cycle'; actor: number } | { kind: 'swap'; actor: number; hands: string[] }
+  | { kind: 'end-player-phase'; acting: boolean }
 function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): SessionPlan | Rejection {
   if (!record(command)) return reject('malformed-command')
   // Reject accessors before reading input, as well as unknown command fields.
@@ -168,6 +175,17 @@ function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): Session
     if (expectedSeq !== ctx.state.seq) return reject('stale-sequence')
     if (!activationChoices(ctx,policy).includes(command.unitUid)) return reject('activation-not-selectable')
     return {kind,actor:ctx.state.units.find(u=>u.uid===command.unitUid)!.id}
+  }
+  if (kind === 'end-player-phase') {
+    // Engine rule (command.end-player-phase): ending the Player Phase is a command; the viewer only asks.
+    if (!keys(command, ['kind', 'expectedSeq']) || !integer(expectedSeq)) return reject('malformed-command')
+    if (ctx.state.outcome) return reject('battle-complete')
+    if (expectedSeq !== ctx.state.seq) return reject('stale-sequence')
+    const c = ctx.battleCursor
+    if (c?.at === 'selecting') return { kind, acting: false }
+    if (c?.at !== 'acting' || c.actor === null) return reject('not-awaiting-player')
+    if (controllerOf(ctx, c.actor, policy) !== 'human') return reject('not-human-controlled')
+    return { kind, acting: true }
   }
   if (kind !== 'action' && kind !== 'end-cycle' && kind !== 'swap') return reject('malformed-command')
   const fields = kind === 'end-cycle' ? ['kind', 'actor', 'expectedSeq'] : kind === 'swap' ? ['kind', 'actor', 'expectedSeq', 'hands'] : ['kind', 'actor', 'expectedSeq', 'actionId', Object.hasOwn(command, 'centre') ? 'centre' : Object.hasOwn(command, 'target') ? 'target' : Object.hasOwn(command, 'hex') ? 'hex' : 'destination']
@@ -198,6 +216,12 @@ export function executeBattleCommand(ctx: Ctx, policy: ControlPolicy, command: u
   if ('ok' in plan) return plan
   if (plan.kind === 'select-activation') selectActivation(ctx,plan.actor,'engine')
   else if (plan.kind === 'end-cycle') completeActionCycle(ctx)
+  else if (plan.kind === 'end-player-phase') {
+    forgoActivations(ctx, yetToActIds(ctx, policy), 'command.end-player-phase')
+    // Mid-activation, the hero's cycle closes exactly as end-cycle closes it: the Surge check
+    // still runs where the rules run it (SWITCHES.md endPhaseMidActivation).
+    if (plan.acting) completeActionCycle(ctx)
+  }
   else if (plan.kind === 'swap') performSwap(ctx, plan.actor, plan.hands)
   else {
     resolvePlan(ctx, plan)

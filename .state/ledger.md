@@ -19528,3 +19528,29 @@ index 0f3936b..1979ccd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## command.end-player-phase — LANDED `2613c3f` **NEEDS REVIEW**
+2026-09-30 03:44
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1697 · SWITCHES.md:1142
+  PASS  typecheck
+  PASS  the item's own tests — test/end-player-phase.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/end-player-phase.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 12 new: look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 54 with ACTED (engine/src/sim/acted.ts:6) — only here: action.spent, activation.begin, activation.end, activation.forgone, activation.idle, activation.selected …; only there: life.dead, life.downed · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 16 with ENGINE_EVENTS (kingdom/src/engine.ts:77) — only here: activation.end, activation.forgone, activation.idle, activation.selected, ai.anchored, ai.coordinated …; only there: life.dead, life.downed, life.standing · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 92 with FOLDED_TYPES (viewer/src/fold.js:703) — only here: activation.forgone, activation.idle, activation.selected, ai.anchored, ai.coordinated, ai.denied …; only there: life.dead, life.downed · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 80 with DUR{keys} (viewer/src/viewer.js:40) — only here: action.spent, activation.end, activation.forgone, activation.selected, ai.anchored, ai.coordinated …; only there: life.dead, life.downed · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 25 with REDRAW (viewer/src/viewer.js:67) — only here: action.spent, activation.begin, activation.end, activation.forgone, activation.idle, activation.selected …; only there: life.dead, life.downed · look-alike vocabulary: EVENT_TYPES (engine/src/core/mutate.ts:17) shares 6 with MID_WALK (viewer/src/viewer.js:282) — only here: action.spent, activation.begin, activation.end, activation.forgone, activation.idle, activation.selected … · … (6 more: node tools/prior-art.mjs --item) — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>

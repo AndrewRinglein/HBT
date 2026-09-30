@@ -1309,6 +1309,13 @@ export type BattleCursor = {
   surged: boolean
   /** Sampled at activation start; mid-activation Slow waits for the next activation. */
   movementAllowance: number
+  /**
+   * command.end-player-phase (ruled 2026-09-29, DECISIONS.md "the playable battle screen"):
+   * the unit ids whose activations this Phase were forgone by `end-player-phase`. Each still
+   * begins, idles and runs its End of Activation ladder in queue order; cleared at Phase end.
+   * Absent unless the command was given, so an automatic battle's cursor is unchanged.
+   */
+  forgo?: number[]
 }
 
 /** Everything unserializable lives here, never in State. */

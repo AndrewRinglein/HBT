@@ -130,6 +130,7 @@
   "action.spent",
   "activation.begin",
   "activation.end",
+  "activation.forgone",
   "activation.idle",
   "activation.selected",
   "ai.anchored",

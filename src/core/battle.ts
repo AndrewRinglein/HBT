@@ -230,7 +230,7 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
         if (ctx.state.outcome) { c.at = 'complete'; break }
         const next = ctx.state.units[c.order[c.next]!]!
         if (next.lifeState !== 'standing') { c.next++; break }
-        if (policy && !isBlocked(ctx,next) && controllerOf(ctx,next.id,policy)==='human') c.at='selecting'
+        if (policy && !isBlocked(ctx,next) && controllerOf(ctx,next.id,policy)==='human' && !c.forgo?.includes(next.id)) c.at='selecting'
         else c.at='activation-start'
         break
       }
@@ -238,7 +238,8 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
         const next=ctx.state.units[c.order[c.next]!]!
         // An automatic driver may resume a waiting save in its fixed order.
         // A changed ownership/status likewise returns to normal lifecycle.
-        if (!policy || next.lifeState!=='standing' || isBlocked(ctx,next) || controllerOf(ctx,next.id,policy)!=='human') { c.at='activation-start'; break }
+        // command.end-player-phase: a forgone hero is not offered; it begins and idles.
+        if (!policy || next.lifeState!=='standing' || isBlocked(ctx,next) || controllerOf(ctx,next.id,policy)!=='human' || c.forgo?.includes(next.id)) { c.at='activation-start'; break }
         return {kind:'selecting',unitUids:activationChoices(ctx,policy)}
       }
       case 'activation-start': {
@@ -252,6 +253,12 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
         c.movementAllowance = u.movePointsLeft
         if (isBlocked(ctx, u)) {
           emit(ctx, 'activation.idle', 'status', { actor: id, reason: 'cannot act' })
+          c.at = 'activation-end'
+        } else if (c.forgo?.includes(id)) {
+          // command.end-player-phase: the player ended the Phase — the activation is forgone.
+          // It still began and still runs its End of Activation ladder, as a blocked unit's does
+          // (SWITCHES.md forgoneActivationRunsLadder).
+          emit(ctx, 'activation.idle', 'command', { actor: id, reason: 'forgone' })
           c.at = 'activation-end'
         } else c.at = 'acting'
         break
@@ -300,6 +307,7 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
         c.at = 'next-activation'
         break
       case 'phase-end':
+        delete c.forgo   // command.end-player-phase: forgone activations end with their Phase
         endOfPhase(ctx, c.phase)
         // encounter.area-fall: a fall marked last Turn lands as this Player Phase ends (after its ladder)
         if (c.phase === 'hero') landFalls(ctx)

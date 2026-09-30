@@ -16,7 +16,9 @@
    "rule.primary-ends-activation"
   ],
   "spec": "PLAYABLE-OPENING-PLAN.md item 2. Ruled 2026-09-29: 'There should be a button for End whole turn ... If you have anybody who has not acted, it should pop up ... If all your units act, then your turn just ends. And by turn, I mean player phase.' A battle command that ends the Player Phase for the human side (every hero not yet activated forgoes its activation), a query naming the heroes that have not acted (for the pop-up), and the phase ending by itself when every hero has acted. Engine rule: ending the Player Phase is a command; the viewer only asks.",
-  "expect": "With two heroes unacted, the query names both and end-player-phase moves to the Enemy Phase with neither acting; when the last hero's activation ends the phase advances with no command; the sandbox and replays agree."
+  "expect": "With two heroes unacted, the query names both and end-player-phase moves to the Enemy Phase with neither acting; when the last hero's activation ends the phase advances with no command; the sandbox and replays agree.",
+  "status": "done-needs-review",
+  "sha": "2613c3f"
  },
  {
   "id": "preview.from-planned-hex",
