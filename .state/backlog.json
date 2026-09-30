@@ -60,7 +60,9 @@
    "viewer.character-models"
   ],
   "spec": "PLAYABLE-OPENING-PLAN.md item 6. Ruled 2026-09-29: under each unit its name, Health bar, Protection bar beneath it, and compact status icons (SWITCHES statusUnderUnit) - no Poison or Burn icon, those show on the body; Stun shown on the body; Slow only changes the movement number; ring, shadow and chips kept; the acting hero marked by a glowing disc with a sweep and a bobbing arrow.",
-  "expect": "Every unit in battle 1 shows name, Health and Protection under it; a stunned unit shows it on the body; a burning one burns; the acting hero carries the disc and arrow."
+  "expect": "Every unit in battle 1 shows name, Health and Protection under it; a stunned unit shows it on the body; a burning one burns; the acting hero carries the disc and arrow.",
+  "status": "done-needs-review",
+  "sha": "4387167"
  },
  {
   "id": "viewer.play-input",
