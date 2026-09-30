@@ -3535,3 +3535,11 @@ Andrew, shown that the Bridge fix works (Battle 3 ends on all 100 seeds) but tha
 “Park, abandon, re-file”
 
 Ruled: the work is parked outside the tree, `encounter.opening.bridge-ai` is abandoned with that reason, and re-filed as `encounter.opening.bridge-ai-refiled` with `probeIds: ["encounter.opening.bridge"]`. Left open: `kingdom.opening-loop-three` still `needs` the abandoned id — no tool edits an existing item's `needs`, and the backlog is never hand-edited.
+
+## 2026-09-30 — the Fire Imp flies
+
+Andrew, told that the engine gives the Fire Imp no flight, so it walks in battle 3 (`content/gen/enemies-authored.json` unit.fire-imp has no `movePower`, while unit.imp has `"movePower": "flight"`):
+
+“The Fire Imp does fly, yes. That was an oversight if it does not.”
+
+Ruled: **the Fire Imp flies** — the same flight move as the Imp. The missing `movePower` is the oversight; the fix goes through the Codex (content), filed as `content.fire-imp-flight`. Not ruled here: the Poison Imp ("same as Fire Imp with poison throughout") also has no flight.

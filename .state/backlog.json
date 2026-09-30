@@ -1,5 +1,16 @@
 [
  {
+  "id": "content.fire-imp-flight",
+  "kind": "content",
+  "shape": "data",
+  "needs": [],
+  "probeIds": [
+   "unit.fire-imp"
+  ],
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the Fire Imp flies'): 'The Fire Imp does fly, yes. That was an oversight if it does not.' content/gen/enemies-authored.json unit.fire-imp gains \"movePower\": \"flight\", the Imp's own flight move (unit.imp has it); regenerate the engine pack through the content pipeline. Then battle 3 (encounter.opening.bridge) is re-run: it must still end on every seed, as encounter.opening.bridge-ai-refiled made it. Prior art: unit.imp's movePower row; no new mechanism.",
+  "expect": "The engine's unit.fire-imp moves with the flight power; in battle 3 a Fire Imp crosses the river by air; battle 3 still reaches a result on every seed; in the battle screen the Fire Imp plays its flight loop."
+ },
+ {
   "id": "encounter.opening.bridge-ai-refiled",
   "kind": "engine",
   "shape": "data",
