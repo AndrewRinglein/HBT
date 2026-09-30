@@ -34,6 +34,7 @@ import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
 import { createHash } from 'node:crypto'
 import { mergedFails } from './verify-slices.mjs'
+import { PAGE_TESTS } from './page-tests.mjs'
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 process.chdir(PKG)
@@ -142,10 +143,6 @@ function verifySlice(k) {
   if (!facts || facts.k !== k || facts.n !== SLICES) ok = false
   return { ok, page, facts, why: ok ? '' : facts ? 'verify failed' : 'verify failed before it recorded its facts' }
 }
-const PAGE_TESTS = [
-  ['tools/terrain-scene.test.mjs', 'tools/terrain-player.test.mjs', 'tools/atlas-combat.test.mjs', 'tools/presentation-review.test.mjs', 'tools/bursts-player.test.mjs', 'tools/clock.test.mjs', 'tools/targeting.test.mjs', 'tools/base-hero-art.test.mjs', 'tools/opportunity-step.test.mjs', 'tools/painted-board.test.mjs', 'tools/character-models.test.mjs', 'tools/under-unit.test.mjs'],
-  ['tools/direct-map.test.mjs'],
-]
 function pageTests() {
   const page = buildCandidate()
   let ok = true

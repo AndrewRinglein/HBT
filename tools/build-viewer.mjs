@@ -22,6 +22,7 @@ import { packTerrainAssets } from './terrain-assets.mjs'
 import { packPaintedScenes } from './painted-scenes.mjs'
 import { packCharacterModels } from './character-models.mjs'
 import { assertRuntimeMetadata } from './runtime-metadata.mjs'
+import { PAGE_TESTS } from './page-tests.mjs'
 
 const require = createRequire(import.meta.url)
 const esbuild = require('../../engine/node_modules/esbuild')
@@ -126,8 +127,7 @@ const tmp = join(PKG, '.build', 'BATTLE-VIEWER.candidate.html')
 writeFileSync(tmp, page)
 try {
   execFileSync('node', ['tools/verify.mjs', tmp], { stdio: 'inherit' })
-  execFileSync('node', ['--test', 'tools/terrain-scene.test.mjs', 'tools/terrain-player.test.mjs', 'tools/atlas-combat.test.mjs', 'tools/presentation-review.test.mjs', 'tools/bursts-player.test.mjs', 'tools/clock.test.mjs', 'tools/targeting.test.mjs', 'tools/base-hero-art.test.mjs', 'tools/opportunity-step.test.mjs', 'tools/painted-board.test.mjs', 'tools/character-models.test.mjs', 'tools/under-unit.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
-  execFileSync('node', ['--test', 'tools/direct-map.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
+  for (const list of PAGE_TESTS) execFileSync('node', ['--test', ...list], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
 } catch (e) {
   console.error(`build-viewer: verify FAILED — ${OUT} left untouched; the candidate is at ${tmp}`)
   process.exit(1)

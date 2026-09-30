@@ -2,7 +2,7 @@
    Reads V.S (the folded state) and draws it. Never folds. Every function takes
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
-import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly } from './theme.js'
+import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly, PLAY_HUE } from './theme.js'
 import { mvOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { dangerOf } from './projection.js'
@@ -730,8 +730,13 @@ function mkUnit(V, u) {
     if (!V.inputActive() || V.clickSuppressed?.(ev)) return
     const current = V.S.U[id]
     if (!current || V.offerHexClick(current.hex) || !V.inputActive()) return
-    V.view.inspectId = id; V.render()
+    /* viewer.play-input: the panel shows whoever was clicked last (engine DECISIONS.md 2026-09-29), and the click is
+       offered to the host too — to start the hero's activation, or to aim at (and fire on) a target */
+    V.view.inspectId = id
+    if (V.play) V.offerPlay({ kind: 'unit', id, hex: current.hex })
+    if (V.inputActive()) V.render()
   })
+  img.addEventListener('pointerenter', () => { const current = V.S.U[id]; if (current && V.play) V.offerPlay({ kind: 'point', hex: current.hex }) })
   bb.appendChild(img)
   const flash = el('', 'position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,220,160,.4) 55%,transparent 75%);opacity:0;transition:opacity .045s ease;pointer-events:none')
   bb.appendChild(flash)
@@ -796,6 +801,12 @@ const BODY_FX = {
     return `<div class="uuStun" style="position:absolute;left:0;top:${-H - 12}px">` +
       [0, 1, 2].map(i => `<div class="uuStar" style="clip-path:${st.gl};background:${st.hue};animation-delay:${-(i * .5).toFixed(2)}s"></div>`).join('') + '</div>' },
 }
+/** the standee's size from its art row (ruled 2026-08-26: units reduced 45%; a downed one half height, lying) */
+function standeeSize(a, down) {
+  const base = Math.round(150 * 1.60 * ((a.height || 1.55) / 1.55) * (down ? 0.5 : 1))
+  const hpx = Math.round(base * 0.55)
+  return { base, hpx, w: Math.round(hpx * a.aspect * (down ? 2 : 1)) }
+}
 export function syncUnits(V) {
   const { S, view, layers: L } = V, { UD, LAYOUT } = V.data
   if (!L.unitsL) { L.unitsL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); V.dom.stage.appendChild(L.unitsL) }
@@ -821,9 +832,7 @@ export function syncUnits(V) {
     E.badges.style.display = ''; E.mark.style.display = ''
     const down = u.life === 'downed'
     /* Ruled 2026-08-26: units reduced 45%; the health bar keeps its size. */
-    const base = Math.round(150 * 1.60 * ((E.a.height || 1.55) / 1.55) * (down ? 0.5 : 1))
-    const hpx = Math.round(base * 0.55)
-    const w = Math.round(hpx * E.a.aspect * (down ? 2 : 1))
+    const { base, hpx, w } = standeeSize(E.a, down)
     E.img.style.left = (-w / 2) + 'px'; E.img.style.top = (-hpx) + 'px'
     E.img.style.width = w + 'px'; E.img.style.height = hpx + 'px'
     /* PRONE (v2.prone, 2026-09-23 — PROVISIONAL, Angela to judge; VIEWER-CHECKPOINT):
@@ -1056,12 +1065,21 @@ export function drawAim(V) {
     }
   }
   const AIM = S.AIM; if (!AIM) return
-  const A = POS[AIM.from], B = POS[AIM.to]
-  const dx = B.px - A.px, dy = B.py - A.py, L = Math.hypot(dx, dy) || 1, bow = Math.min(120, L * 0.22)
-  const cx = (A.px + B.px) / 2 - dy / L * bow, cy = (A.py + B.py) / 2 + dx / L * bow
   /* the arrow is part of the forecast, so it is cool too (2026-09-01) */
   const aCol = AIM.missed ? 'rgba(150,143,132,.9)' : 'rgba(140,178,208,.96)'
-  svg.appendChild(groundLines(`M${A.px} ${A.py}Q${cx} ${cy} ${B.px} ${B.py}`, aCol, { w: 6.2, haloW: 10.4, dash: AIM.missed ? '14 10' : null }))
+  const line = aimArrow(V, dyn, svg, AIM.from, AIM.to, aCol, !!AIM.missed)
+  /* COOL IS A FORECAST, WARM IS WHAT HAPPENED (ruled 2026-09-01) */
+  line(0, `<span style="font-size:24px;font-weight:700;color:#8fa8bd">${AIM.hit}%</span>`)
+  if (AIM.dmg != null) line(28, `<span style="font-size:46px;font-weight:700;color:#bcd4e6;line-height:1">${AIM.dmg}</span>`)
+  if (AIM.missed) line(104, `<span style="font-size:26px;font-weight:700;color:#b9b2a3">${AIM.missed.cause==='cover'?'COVER':AIM.missed.cause==='dodge'?'DODGE':'MISS'} <span style="font-size:13px;color:#8b8778">rolled ${AIM.missed.roll}</span></span>`)
+}
+/** THE aim arrow — the bowed ground line and its head from one hex to another — and a writer for the bare, haloed
+    forecast lines beside its head. Shared by the log's aim (drawAim) and the play input's (drawPlay). */
+function aimArrow(V, dyn, svg, fromHex, toHex, aCol, dashed) {
+  const { POS } = V.data, A = POS[fromHex], B = POS[toHex]
+  const dx = B.px - A.px, dy = B.py - A.py, L = Math.hypot(dx, dy) || 1, bow = Math.min(120, L * 0.22)
+  const cx = (A.px + B.px) / 2 - dy / L * bow, cy = (A.py + B.py) / 2 + dx / L * bow
+  svg.appendChild(groundLines(`M${A.px} ${A.py}Q${cx} ${cy} ${B.px} ${B.py}`, aCol, { w: 6.2, haloW: 10.4, dash: dashed ? '14 10' : null }))
   const tx = B.px - cx, ty = B.py - cy, TL = Math.hypot(tx, ty) || 1, ux = tx / TL, uy = ty / TL, px = -uy, py = ux
   const head = `M${B.px} ${B.py}L${B.px - ux * 30 + px * 15} ${B.py - uy * 30 + py * 15}L${B.px - ux * 18} ${B.py - uy * 18}L${B.px - ux * 30 - px * 15} ${B.py - uy * 30 - py * 15}Z`
   const hp = svgEl('path')
@@ -1070,16 +1088,108 @@ export function drawAim(V) {
   svg.appendChild(hp)
   /* No box (ruled 2026-08-26): bare numbers, haloed like every ground line. */
   const halo = 'text-shadow:0 2px 5px #000,0 0 14px rgba(0,0,0,.95),0 0 3px #000;'
-  const line = (dyOff, html) => {
+  return (dyOff, html) => {
     const wrap = el('bb', `left:${B.px}px;top:${B.py}px`)
-    wrap.style.transform = (V.data.displayHeights ? `translateZ(${heightOf(V, AIM.to)}px) ` : '') + 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(150px)'
+    wrap.style.transform = (V.data.displayHeights ? `translateZ(${heightOf(V, toHex)}px) ` : '') + 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(150px)'
     wrap.appendChild(el('', `position:absolute;left:58px;top:${-150 + dyOff}px;white-space:nowrap;` +
       `font-family:'Barlow Semi Condensed',sans-serif;${halo}pointer-events:none`, html))
-    dyn.appendChild(wrap) }
-  /* COOL IS A FORECAST, WARM IS WHAT HAPPENED (ruled 2026-09-01) */
-  line(0, `<span style="font-size:24px;font-weight:700;color:#8fa8bd">${AIM.hit}%</span>`)
-  if (AIM.dmg != null) line(28, `<span style="font-size:46px;font-weight:700;color:#bcd4e6;line-height:1">${AIM.dmg}</span>`)
-  if (AIM.missed) line(104, `<span style="font-size:26px;font-weight:700;color:#b9b2a3">${AIM.missed.cause==='cover'?'COVER':AIM.missed.cause==='dodge'?'DODGE':'MISS'} <span style="font-size:13px;color:#8b8778">rolled ${AIM.missed.roll}</span></span>`)
+    dyn.appendChild(wrap)
+    return wrap }
+}
+
+/* ── THE PLAY INPUT (viewer.play-input, 2026-09-30; PLAYABLE-OPENING-PLAN.md item 7; engine DECISIONS.md 2026-09-29
+   "the playable battle screen" and "the playable screen: the acting mark, pointing at an enemy, the forecast";
+   VFX/UI-BUILD-NOTES-2026-09-02.md §5) ─────────────────────────────────────────────────────────────────────────────
+   Two layers under the units while a host has handed facts over (setPlay, src/play.js). The INPUT layer is one
+   transparent hex button per board hex — pointing at it and clicking it are offered to the host, which answers from
+   the engine; it is built once and kept, so redrawing the plan under a still pointer does not re-fire the pointing.
+   The PLAN layer draws the facts: the reach, the zone-of-control hatching, the engine's walk to the hex pointed at and
+   its provoke points, the ghost, an enemy's reach, the chosen action's targets, and the aim — the forecast's arrow
+   from the hero (or its ghost) with its hit chance and damage beside the head, and the notch it would cut in the
+   target's Health bar (the skull when it would kill). Nothing here decides a hex or works out a number. */
+const HEXCLIP = 'clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)'
+export function syncPlayInput(V) {
+  if (!V.play) { V.layers.playInput?.remove(); V.layers.playInput = null; return }
+  if (V.layers.playInput) return
+  const { POS, LAYOUT } = V.data, layer = el('playInput', 'position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none')
+  V.layers.playInput = layer
+  V.dom.stage.insertBefore(layer, V.layers.unitsL || null)
+  for (const key of Object.keys(POS)) {
+    const h = +key, p = POS[h], n = document.createElement('button')
+    n.className = 'playHex'; n.setAttribute('type', 'button'); n.setAttribute('aria-label', 'Hex ' + h); n.dataset.hex = String(h)
+    n.style.cssText = `position:absolute;left:${p.px - LAYOUT.W / 2}px;top:${p.py - LAYOUT.H / 2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;background:transparent;border:0;padding:0;cursor:pointer;pointer-events:auto;${HEXCLIP}`
+    n.style.transform = `translateZ(${heightOf(V, h)}px)`
+    n.addEventListener('pointerenter', () => { V.offerPlay({ kind: 'point', hex: h }) })
+    n.addEventListener('click', ev => { ev.stopPropagation(); if (!V.clickSuppressed?.(ev)) V.offerPlay({ kind: 'hex', hex: h }) })
+    layer.appendChild(n)
+  }
+}
+export function drawPlay(V) {
+  V.layers.play?.remove(); V.layers.play = null
+  const P = V.play
+  for (const E of V.layers.UEL.values()) { if (E.playNotch) E.playNotch.style.display = 'none'; if (E.playSkull) E.playSkull.style.display = 'none' }
+  if (V.dom.playNote) { V.dom.playNote.style.display = P && P.note ? '' : 'none'; V.dom.playNote.textContent = P && P.note ? P.note : '' }
+  if (!P) return
+  const { POS, LAYOUT, F } = V.data
+  const layer = el('playPlan', 'position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none')
+  V.layers.play = layer
+  V.dom.stage.insertBefore(layer, V.layers.playInput ? V.layers.playInput.nextSibling : (V.layers.unitsL || null))
+  const tile = (hex, cls, style) => { const p = POS[hex]
+    const n = el('playTile ' + cls, `position:absolute;left:${p.px - LAYOUT.W / 2}px;top:${p.py - LAYOUT.H / 2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;pointer-events:none;${style}`)
+    n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex) + 1}px)`; layer.appendChild(n); return n }
+  const ring = (hex, cls, colour) => { const n = el('ring ' + cls, `left:${POS[hex].px - LAYOUT.W / 2}px;top:${POS[hex].py - LAYOUT.H / 2}px;background:${colour};pointer-events:none`)
+    n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex) + 2}px)`; layer.appendChild(n); return n }
+  for (const h of P.reach) tile(h, 'playReach', `background:${PLAY_HUE.reach};${HEXCLIP}`)
+  for (const h of P.zoc) tile(h, 'playZoc', `background:repeating-linear-gradient(45deg,${PLAY_HUE.zoc} 0 5px,transparent 5px 14px);${HEXCLIP}`)
+  if (P.threat) {
+    for (const h of P.threat.move) tile(h, 'playThreatMove', `background:${PLAY_HUE.threatMove};${HEXCLIP}`)
+    for (const h of P.threat.hit) ring(h, 'playThreatHit', PLAY_HUE.threatHit)
+  }
+  for (const h of P.targets) ring(h, 'playTarget', PLAY_HUE.target)
+  const svg = svgEl('svg')
+  svg.setAttribute('width', F.w); svg.setAttribute('height', F.h)
+  svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible;pointer-events:none'
+  layer.appendChild(svg)
+  if (P.path.length > 1) {
+    const line = svgEl('g'); line.setAttribute('class', 'playPath')
+    line.appendChild(groundLines('M' + P.path.map(h => `${POS[h].px} ${POS[h].py}`).join('L'), PLAY_HUE.path, { w: 5, haloW: 9, dash: '2 12' }))
+    svg.appendChild(line)
+  }
+  for (const h of P.provokes) { const n = ring(h, 'playProvoke', PLAY_HUE.provoke); n.title = 'Attack of opportunity' }
+  if (P.ghost) drawGhost(V, layer, P.ghost)
+  if (P.aim) {
+    const A = P.aim, line = aimArrow(V, layer, svg, A.from, A.to, PLAY_HUE.path, !A.locked)
+    const lines = []
+    if (A.hit != null) lines.push(line(0, `<span class="playHit" style="font-size:24px;font-weight:700;color:#8fa8bd">${A.hit}%</span>`))
+    if (A.dmg != null) lines.push(line(28, `<span class="playDmg" style="font-size:46px;font-weight:700;color:#bcd4e6;line-height:1">${A.dmg}</span>`))
+    for (const w of lines) w.classList.add('playAim')
+    const E = A.target != null ? V.layers.UEL.get(A.target) : null, u = A.target != null ? V.S.U[A.target] : null
+    if (E && u && A.hpAfter != null && u.maxHp > 0) {
+      if (!E.playNotch) { E.playNotch = el('playNotch', ''); E.hpbar.appendChild(E.playNotch) }
+      const after = Math.max(0, A.hpAfter)
+      E.playNotch.style.cssText = `position:absolute;left:0;right:0;bottom:${100 * after / u.maxHp}%;height:${Math.max(0, 100 * (u.hp - after) / u.maxHp)}%;` +
+        `background:${A.lethal ? PLAY_HUE.lethal : PLAY_HUE.loss};border-bottom:2px solid ${PLAY_HUE.notch};box-sizing:border-box;pointer-events:none`
+      E.playNotch.dataset.hpAfter = String(A.hpAfter)
+      if (A.lethal) {
+        if (!E.playSkull) { E.playSkull = el('playSkull', ''); E.playSkull.innerHTML = raIcon('skull', `font-size:15px;color:${PLAY_HUE.skull}`); E.bb.appendChild(E.playSkull) }
+        E.playSkull.style.cssText = underUnit(V) ? `position:absolute;left:${-UU.w / 2 - 18}px;top:${UU.hp - 8}px;transform:${UU.lift};pointer-events:none`
+          : `position:absolute;left:${(parseFloat(E.hpbar.style.left) || 0) - 5}px;top:${(parseFloat(E.hpbar.style.top) || 0) - 20}px;pointer-events:none`
+      }
+    }
+  }
+}
+/* the ghost: the planned hero's own standee, faint, on the planned hex — "a phantom of the unit appears there. The unit
+   does not move; nothing is spent" (UI-BUILD-NOTES §5). The standee's size is the token's (standeeSize). */
+function drawGhost(V, layer, G) {
+  const u = V.S.U[G.unit]; if (!u) return
+  const { ARTMAP, ASSETS } = V.data, a = ARTMAP[u.typeId] || ARTMAP._pending, f = feetOf(V, G.hex), { hpx, w } = standeeSize(a, false)
+  const root = el('playGhost', `position:absolute;left:${f.x}px;top:${f.y}px;width:0;height:0;transform-style:preserve-3d;pointer-events:none;transform:translateZ(${heightOf(V, G.hex) + 3}px)`)
+  root.dataset.hex = String(G.hex); root.dataset.unit = String(G.unit)
+  root.appendChild(el('sel', `left:-48px;top:-31px;width:96px;height:62px;border-color:${PLAY_HUE.ghost}`))
+  const bb = el('bb', 'left:0;top:0;transform:rotateZ(var(--unspin, 0deg)) rotateX(var(--anti))')
+  const img = el('', `position:absolute;left:${-w / 2}px;top:${-hpx}px;width:${w}px;height:${hpx}px;background-repeat:no-repeat;background-position:center bottom;background-size:contain;opacity:.45;pointer-events:none;transform:${LIFT}`)
+  img.style.backgroundImage = `url("${ASSETS[a.token]}")`
+  bb.appendChild(img); root.appendChild(bb); layer.appendChild(root)
 }
 
 /* ── camera (PLAYBACK-DESIGN §7.8, ruled 2026-09-01) ─────────────────────
@@ -1277,7 +1387,9 @@ export function bindCamera(V) {
     if (drag.turn) { turnCam(V, { yaw: sx * CAM.YAW_PER_PX, tilt: -sy * CAM.TILT_PER_PX }); return }
     const z = (V.view.cam && V.view.cam.zoom) || 1, d = unturn(V, sx / z, sy / (z * sq))
     applyCam(V, { pan: { x: -d.x, y: -d.y } }); drawEdges(V) }
-  const up = () => { drag = null; wrap.style.cursor = ''; if (transition !== null) { V.dom.stage.style.transition = transition; transition = null } }
+  const up = e => { const released = drag; drag = null; wrap.style.cursor = ''; if (transition !== null) { V.dom.stage.style.transition = transition; transition = null }
+    /* viewer.play-input: a right-click that did not drag the map steps the plan back one stage (UI-BUILD-NOTES §5) */
+    if (e && e.button === 2 && released && !dragged && V.play) V.offerPlay({ kind: 'back' }) }
   /* the right button is the map's grab, never the browser's menu */
   const menu = e => { e.preventDefault() }
   const wheel = e => { if (!e.deltaY) return; e.preventDefault(); turnCam(V, { zoom: Math.exp(-e.deltaY * CAM.WHEEL) }) }
@@ -1285,7 +1397,7 @@ export function bindCamera(V) {
      focus — two viewers on one page must not both pan, and a host page keeps
      its arrow keys (review 2026-09-03) */
   let hover = false
-  const enter = () => { hover = true }, leave = () => { hover = false; up() }
+  const enter = () => { hover = true }, leave = () => { hover = false; up(); if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
   const key = e => {
     if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return
     if (!hover && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
@@ -1296,6 +1408,7 @@ export function bindCamera(V) {
     else if (e.key === 'ArrowUp') pan(0, -STEP)
     else if (e.key === 'ArrowDown') pan(0, STEP)
     else if (e.key.toLowerCase() === PEEK_KEY && !e.repeat) { V.view.peek = true; applyCam(V); drawEdges(V) }
+    else if (e.key === 'Escape' && V.play) V.offerPlay({ kind: 'back' })   /* ESC behaves as the right-click (UI-BUILD-NOTES §5) */
     else return
     e.preventDefault()
   }

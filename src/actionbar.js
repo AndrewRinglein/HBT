@@ -75,7 +75,9 @@ export function drawBar(V) {
     const more = hidden > 0 ? `<button class="acMore" data-trg="${tkey}">${topen ? '&#9652; less' : '&#9662; ' + hidden + ' more'}</button>` : ''
     const trgSide = trg.length ? vis.map(chip).join('') + more : ''
     const dupe = nameCount[a.name || a.id] > 1 ? weaponOf(a.id) : ''
-    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}" data-act="${escape(a.id)}" style="border-left-color:${accent}">
+    /* viewer.play-input: the action the host says is chosen for the planning hero is lit */
+    const chosen = V.play && V.play.slot === a.id && V.play.actor === u.id
+    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${chosen ? ' playChosen' : ''}" data-act="${escape(a.id)}" style="border-left-color:${accent}">
       <div class="acMain">
         <div class="acL1">${icoHTML(a)}
           <span class="acName">${escape(a.name || a.id)}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>
@@ -97,4 +99,7 @@ export function drawBar(V) {
     if (view.TRG_OPEN.has(k)) view.TRG_OPEN.delete(k); else view.TRG_OPEN.add(k)
     drawBar(V)
   }))
+  /* viewer.play-input: clicking a row offers that action to the host — it chooses it for the acting hero or ignores it */
+  bar.querySelectorAll('.acRow').forEach(r => { if (!r.dataset.act) return
+    r.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation(); V.offerPlay({ kind: 'slot', actionId: r.dataset.act, unit: subjectOf(V) }) }) })
 }
