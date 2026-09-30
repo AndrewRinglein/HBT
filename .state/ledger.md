@@ -19600,3 +19600,29 @@ index 0f3936b..1979ccd 100644
 ```diff
 ```
 </details>
+
+## viewer.character-models — LANDED `9e49cf5` **NEEDS REVIEW**
+2026-09-30 05:29
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:1836
+  PASS  typecheck
+  PASS  the item's own tests — test/character-models.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/character-models.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 5 new: look-alike vocabulary: (unnamed@129) (viewer/tools/build-viewer.mjs:129) shares 11 with (unnamed@146) (viewer/tools/gate.mjs:146) — the same members · look-alike vocabulary: ROSTER_KEY{keys} (viewer/tools/character-models.mjs:32) shares 3 with ACT_CLASS{keys} (viewer/src/icons.js:20) — only here: block, death, idle; only there: special · same name, second home: release (viewer/src/models.js:189) is also declared in viewer/src/painted.js:35 · clone: 6 lines, viewer/src/models.js:189-194 = viewer/src/painted.js:35-40 · clone: 6 lines, viewer/tools/character-models.mjs:108-113 = viewer/tools/painted-scenes.mjs:65-70 — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>

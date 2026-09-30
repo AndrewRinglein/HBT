@@ -48,7 +48,9 @@
    "viewer.painted-board"
   ],
   "spec": "PLAYABLE-OPENING-PLAN.md item 5. Ruled 2026-09-29: units are 3D models where one exists, else their token; enemies need idle, move, attack, hit reaction and death, heroes those plus what their weapon's powers need ('most' is enough; outfits may be reused). A dead unit is its model lying where it fell; a downed unit the same with a bleed-out counter. Bind per unit type from assets/characters/APPROVED-CHARACTERS.md and assets/battle-demo/roster.mjs; the viewer computes nothing.",
-  "expect": "Battle 1's Zombies and heroes are animated models that walk, strike, flinch and fall; a unit without a model is its token; a downed hero lies with its counter."
+  "expect": "Battle 1's Zombies and heroes are animated models that walk, strike, flinch and fall; a unit without a model is its token; a downed hero lies with its counter.",
+  "status": "done-needs-review",
+  "sha": "9e49cf5"
  },
  {
   "id": "viewer.under-unit",
