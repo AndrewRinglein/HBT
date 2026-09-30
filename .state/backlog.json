@@ -73,7 +73,9 @@
    "viewer.under-unit"
   ],
   "spec": "PLAYABLE-OPENING-PLAN.md item 7. Ruled 2026-09-29: click a hero to act; click an action-bar slot to choose the action; click a hex for a ghost, click again to confirm; right-click steps back; with an attack chosen an arrow follows the pointer and whatever it is over shows the forecast (hit chance, damage, the notch or skull on its Health bar); with nothing chosen, pointing at an enemy lights up where it can move and hit; clicking an enemy shows it in the right panel (the panel shows whoever was clicked last); zone-of-control hatching and the path preview while planning a move. Every legality and number from the engine.",
-  "expect": "Andrew can move and attack in battle 1 with the mouse alone; the forecast shown equals what lands; right-click undoes a stage; no dropdown is needed."
+  "expect": "Andrew can move and attack in battle 1 with the mouse alone; the forecast shown equals what lands; right-click undoes a stage; no dropdown is needed.",
+  "status": "done",
+  "sha": "31b2d84"
  },
  {
   "id": "viewer.play-chrome",
