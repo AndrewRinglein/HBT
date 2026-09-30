@@ -12,6 +12,9 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import {clone as cloneRig} from 'three/addons/utils/SkeletonUtils.js'
 import {atlasSourceURL} from './atlas.js'
 import {release} from './painted.js'
+import transformationRegistry from '../../assets/characters/hero-transformations/activation-registry.json' with {type:'json'}
+import {transformationFor} from '../../assets/characters/hero-transformations/afflictions.mjs'
+import {createBodyAfflictions} from '../../assets/characters/hero-transformations/body-afflictions.mjs'
 
 export const bundledModels = typeof __BUNDLED_MODELS__ === 'undefined' ? null : __BUNDLED_MODELS__
 const LOOPS = new Set(['idle', 'move'])
@@ -111,7 +114,7 @@ function fitProp(root, p, clips, pose, reference) {
 }
 
 /** one unit's body: the rig cloned, scaled to the roster's stature, its motions ready */
-export function createBody(loaded) {
+export function createBody(loaded, appearanceOptions = {}) {
   const { look, clips } = loaded
   const root = cloneRig(loaded.scene), hidden = new Set(look.hidden || []), meshes = []
   root.traverse(o => { if (hidden.has(o.name)) o.visible = false; if (o.isMesh) { o.castShadow = false; o.receiveShadow = true; o.frustumCulled = false; meshes.push(o) } })
@@ -148,9 +151,21 @@ export function createBody(loaded) {
   mixer.stopAllAction()
   const actions = {}
   for (const [k, clip] of Object.entries(clips)) { const a = mixer.clipAction(clip); a.setLoop(LOOPS.has(k) ? THREE.LoopRepeat : THREE.LoopOnce, Infinity); a.clampWhenFinished = !LOOPS.has(k); actions[k] = a }
-  let motion = null, once = false, recoilT = Infinity
+  let motion = null, once = false, recoilT = Infinity, appearanceTime = 0, layer = null, selected = null, appearanceFailed = false
+  const registry = appearanceOptions.registry || transformationRegistry
   const body = {
     look, stage, yaw: 0, face: 0, life: null, base: 'idle',
+    get appearance() { return { identity: selected?.identity || null, state: layer?.state || 'normal', requested: selected?.state || 'normal', bodyFit: layer ? 'compatible' : 'pending' } },
+    setAfflictions(unit) {
+      selected = transformationFor(unit, registry, look.identity)
+      if (!selected) return layer ? layer.set(null) : Promise.resolve()
+      const profile = selected.profile
+      if (!layer && !appearanceFailed && profile && profile.model.sha256 === look.model?.sha256 && appearanceOptions.loadHead) {
+        try { layer = createBodyAfflictions(root, profile, {loadHead: ref => appearanceOptions.loadHead(ref, profile), onError: appearanceOptions.onError}) }
+        catch(error) { appearanceFailed = true; appearanceOptions.onError?.(error) }
+      }
+      return layer ? layer.set(selected) : Promise.resolve()
+    },
     get motion() { return motion },
     has: k => !!actions[k],
     /** play a motion: a loop (idle, move) until told otherwise; the rest once — the death holds its last frame */
@@ -164,7 +179,7 @@ export function createBody(loaded) {
       next.play()
       if (snap && !LOOPS.has(key)) next.time = next.getClip().duration
       motion = key; once = !LOOPS.has(key) && key !== 'death'
-      if (snap) mixer.update(0)
+      if (snap) { layer?.before(); mixer.update(0); layer?.after(appearanceTime, body.life === 'standing') }
       return true
     },
     /** a body with no hit reaction recoils: it leans back and returns */
@@ -172,7 +187,7 @@ export function createBody(loaded) {
     recoil: () => recoilT < RECOIL ? Math.sin(Math.PI * recoilT / RECOIL) : 0,
     lying: () => motion === 'death' && !!actions.death && actions.death.time >= actions.death.getClip().duration - 1e-4,
     frame(dt) {
-      mixer.update(dt); centre()
+      layer?.before(); mixer.update(dt); appearanceTime += dt; layer?.after(appearanceTime, body.life === 'standing'); centre()
       recoilT += dt
       lean.rotation.x = -.22 * body.recoil()
       stage.rotation.y = body.yaw
@@ -180,7 +195,7 @@ export function createBody(loaded) {
     },
     height: () => { stage.updateMatrixWorld(true); return measure() },
     standingHeight: () => standing,
-    dispose() { stage.removeFromParent(); mixer.stopAllAction(); mixer.uncacheRoot(root) },
+    dispose() { layer?.dispose(); stage.removeFromParent(); mixer.stopAllAction(); mixer.uncacheRoot(root) },
   }
   /* a once motion (a strike, a flinch) returns to the body's resting motion when it ends */
   mixer.addEventListener('finished', e => { if (once && e.action === actions[motion]) { once = false; body.play(body.base) } })
@@ -193,12 +208,33 @@ const wrapAngle = a => Math.atan2(Math.sin(a), Math.cos(a))
 /** the cast: every bound unit on the board as its model, in the 3D scene, following its token */
 export function createCast(V, scene, toWorld, platform = {}) {
   const looks = new Map(), bodies = new Map(), group = new THREE.Group()
+  const headLoads = new Map()
   /* board px per scene metre, upward: the scene's own map (the inverse of toWorld), its y axis -> the board's z */
   const up = toWorld.clone().invert().elements, PX_PER_M = Math.hypot(up[4], up[5], up[6])
   group.name = 'characters'; scene.add(group)
   const readStyle = platform.readStyle || (el => getComputedStyle(el))
   const load = platform.load || (look => loadLook(look, { ...platform, cancelled: () => disposed }))
   let disposed = false
+  function loadHead(ref, profile) {
+    if (!headLoads.has(ref.path)) headLoads.set(ref.path, (async () => {
+      const loaded = await loadLook({id:ref.path,model:ref,motions:{},props:[]}, {...platform,cancelled:()=>disposed})
+      try {
+      let material; loaded.scene.traverse(o=>{if(o.isMesh&&!material)material=Array.isArray(o.material)?o.material[0]:o.material})
+      if(!material)throw Error('Transformation head has no material: '+ref.path)
+      let recess=null
+      if(ref.path.endsWith('-undead.glb')&&profile.recess&&platform.textures!==false){
+        const url=atlasSourceURL(profile.recess.path,platform.location),response=await (platform.fetch||globalThis.fetch)(url)
+        if(!response.ok)throw Error('Transformation recess unavailable: '+profile.recess.path)
+        const bytes=await response.arrayBuffer(),digest=hex(await (platform.digest||(d=>crypto.subtle.digest('SHA-256',d)))(bytes))
+        if(digest!==profile.recess.sha256)throw Error('Transformation recess hash mismatch')
+        const local=URL.createObjectURL(new Blob([bytes],{type:'image/png'}))
+        try{recess=await new THREE.TextureLoader().loadAsync(local);recess.flipY=false}finally{URL.revokeObjectURL(local)}
+      }
+      return {scene:loaded.scene,material,recess}
+      } catch(error) { release(loaded.scene); throw error }
+    })().catch(error=>{headLoads.delete(ref.path);throw error}))
+    return headLoads.get(ref.path)
+  }
   function want(look) {
     let entry = looks.get(look.id)
     if (entry) return entry
@@ -238,13 +274,14 @@ export function createCast(V, scene, toWorld, platform = {}) {
       if (!el && !(body && u.life === 'dead' && !body.lying())) continue
       if (!body) {
         /* a look that cannot be stood up is its token, said once — never the whole scene's failure (Law 9: said, not swallowed) */
-        try { body = createBody(entry.loaded) } catch (err) { entry.state = 'failed'; entry.error = err; platform.onError?.(look, err); continue }
+        try { body = createBody(entry.loaded, {registry:platform.registry,loadHead:platform.loadHead||loadHead,onError:error=>platform.onError?.(look,error,{appearance:true})}) } catch (err) { entry.state = 'failed'; entry.error = err; platform.onError?.(look, err); continue }
         group.add(body.stage); bodies.set(u.id, body); changed = true
         body.life = u.life; const r = rest(body, u.life); if (r) body.play(r, { snap: true })
         if (el) place(el, body.stage.position)
         body.last = body.stage.position.clone()
       }
       kept.add(u.id)
+      body.setAfflictions(u)
       if (el) place(el, body.stage.position)
       /* life is the fold's: a change plays the death from its start (a seek lands on its end: snap) */
       if (body.life !== u.life) {
@@ -290,13 +327,15 @@ export function createCast(V, scene, toWorld, platform = {}) {
     },
     /** a seek: every body at its resting pose now — the dead and the downed at the death's end */
     snap() {
-      for (const [id, B] of bodies) { const u = V.S.U[id]; if (!u) continue; B.life = u.life; const r = rest(B, u.life); if (r) B.play(r, { snap: true }); B.yaw = B.face }
+      for (const [id, B] of bodies) { const u = V.S.U[id]; if (!u) continue; B.setAfflictions(u); B.life = u.life; const r = rest(B, u.life); if (r) B.play(r, { snap: true }); B.yaw = B.face }
     },
     dispose() {
       if (disposed) return; disposed = true
       for (const id of [...bodies.keys()]) drop(id)
       group.removeFromParent()
       for (const e of looks.values()) if (e.loaded) { release(e.loaded.scene); for (const p of e.loaded.props) release(p.scene) }
+      for (const pending of headLoads.values()) pending.then(h=>{release(h.scene);h.recess?.dispose()},()=>{})
+      headLoads.clear()
     },
   }
 }

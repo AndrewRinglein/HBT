@@ -32,7 +32,7 @@ export function createDriver(V,onFailure,platform={}){
  const load=painted(V.data.atlas)?(platform.loadPainted||loadPaintedScene):(platform.loadAssembly||loadAtlasAssembly)
  const ready=load(V.data.atlas,{...platform,cancelled:()=>disposed}).then(result=>{
   if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene):atlasEnvironment(scene,built)
-  if(V.data.models)V.cast=(platform.createCast||createCast)(V,scene,affine.clone().invert(),{...(platform.models||{}),location:platform.location,onError:(look,error)=>{const st=wrap.querySelector('#terrainStatus');if(st)st.textContent+=' · '+look.name+' is its token: '+String(error?.message||error)}})
+  if(V.data.models)V.cast=(platform.createCast||createCast)(V,scene,affine.clone().invert(),{...(platform.models||{}),location:platform.location,onError:(look,error,detail)=>{const st=wrap.querySelector('#terrainStatus');if(st)st.textContent+=' · '+look.name+(detail?.appearance?' transformation unavailable: ':' is its token: ')+String(error?.message||error)}})
   if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true;frame()
  })
  function frame(){if(disposed)return;try{

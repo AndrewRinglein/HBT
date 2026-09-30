@@ -3,10 +3,11 @@
 // No package layout change and no validation/module execution is skipped.
 import {registerHooks} from 'node:module'
 const atlasURL=new URL('../../assets/battle-atlas/',import.meta.url).href
+const characterURL=new URL('../../assets/characters/hero-transformations/',import.meta.url).href
 export function registerAtlasDependency(){
  const three=import.meta.resolve('three')
  return registerHooks({resolve(specifier,context,next){
-  if(specifier==='three'&&context.parentURL?.startsWith(atlasURL))return next(three,context)
+  if(specifier==='three'&&[atlasURL,characterURL].some(prefix=>context.parentURL?.startsWith(prefix)))return next(three,context)
   return next(specifier,context)
  }})
 }
