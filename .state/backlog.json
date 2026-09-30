@@ -86,7 +86,9 @@
    "viewer.play-input"
   ],
   "spec": "PLAYABLE-OPENING-PLAN.md item 8. Ruled 2026-09-29: an End Turn button ending the Player Phase, with the pop-up 'Are you sure you want to end your turn? You have units that have not acted.' when any hero has not acted; the phase ends by itself when all have; enemy turns play in full animation with a 2x speed button; a battle log. Then Andrew plays battle 1.",
-  "expect": "Battle 1 plays start to finish in the new screen: End Turn and its pop-up, 2x speed, the log; an eyeball check for Andrew."
+  "expect": "Battle 1 plays start to finish in the new screen: End Turn and its pop-up, 2x speed, the log; an eyeball check for Andrew.",
+  "status": "done",
+  "sha": "3e38de1"
  },
  {
   "id": "encounter.opening.bridge-ai",
