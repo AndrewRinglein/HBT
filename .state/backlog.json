@@ -4,7 +4,9 @@
   "kind": "engine",
   "shape": "plumbing",
   "spec": "PLAYABLE-OPENING-PLAN.md item 1. Ruled 2026-09-29 (Andrew, DECISIONS.md 'the playable battle screen ...'): 'When you perform your primary action and it is not a free primary action, after that action resolves, there's no button to end activation.' Under the human command path (commands.ts), a resolved non-free primary action ends the unit's activation (the Surge check still runs where the rules run it); a free primary action does not. The AI path is unchanged unless it already differs - name any difference found. Engine rule: a non-free primary action closes the activation once it resolves.",
-  "expect": "A human hero that attacks (non-free) needs no end-cycle command - its activation ends and the next choice is offered; a free primary action leaves the activation open; replays of existing battles are unchanged or the change is declared."
+  "expect": "A human hero that attacks (non-free) needs no end-cycle command - its activation ends and the next choice is offered; a free primary action leaves the activation open; replays of existing battles are unchanged or the change is declared.",
+  "status": "done",
+  "sha": "c284770"
  },
  {
   "id": "command.end-player-phase",

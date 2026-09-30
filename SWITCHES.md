@@ -1679,3 +1679,9 @@ The rules are `progression/OPENING-PARTY.json` (`firstHero`, `crucible`, `draftS
 | `ghostPossessReadsMagic` | Possess deals 0 in the bestiary; the engine's damage is always a stat plus a bonus. | **Magic + 0** — the Ghost's Magic is 0, so it deals exactly 0 while its Magic is 0. Its 25% fires **onHit** (onDamage never fires on 0). | Copy, don't invent: 0 is the authored number. | **retired 2026-09-29** — Possess dropped (`content.ghost-possess-on-attack`) |
 | `ghostPhaseLeftOut` | Phase: "grant a stat for the Battle", value 2, no stat named. | **Left out**, named in the row's source. | The bestiary names no stat. | provisional — 2026-09-29 |
 | `ghostPossessAi` | When does a Ghost choose Possess (0 damage) over Attack (4)? | **Never, as built** — the AI takes the damaging attack (40 battles: 53 Attacks, 0 Possess). No existing hint (`use: 'whenever'`, `belowHalfHp`, `minEnemiesStruck`) fits "sometimes". | A design choice — brought to Andrew. | **answered 2026-09-29** (Andrew, DECISIONS.md: "move it to a chance on attack ... 15%"): Possess dropped, the Attack possesses at 15% (`content.ghost-possess-on-attack`) |
+
+## rule.primary-ends-activation — the activation that ends itself, 2026-09-29
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `primaryEndsBySlot` | Does a non-free action spent in the **movement** slot (an `either` attack taken as the movement action) end the activation, as a non-free primary does? | **No — only a spend of the primary slot ends it.** The movement-slot spend is the movement action; the activation stays open for the primary. As built: executeBattleCommand closes the cycle on `primaryUsed`, which only a non-free primary-slot spend sets (`spendAction`). | The ruling names "your primary action"; the slot law (DECISIONS.md 2026-09-04: "two actions in every activation: movement and primary") makes the slot, not the action's profile, what is primary. | provisional — 2026-09-29 |

@@ -203,6 +203,9 @@ export function executeBattleCommand(ctx: Ctx, policy: ControlPolicy, command: u
     resolvePlan(ctx, plan)
     // A paid primary, victory or falling leaves no further human action.
     // The driver closes the cycle so advanceBattle can finish its lifecycle.
+    // rule.primary-ends-activation (ruled 2026-09-29, DECISIONS.md "the playable battle
+    // screen"): a non-free primary ends the activation once it resolves — no end-cycle
+    // command; a free one does not; the Surge check runs on advance (surge-check).
     if (ctx.state.outcome || ctx.state.units[plan.actor]!.lifeState !== 'standing' || ctx.state.units[plan.actor]!.primaryUsed) completeActionCycle(ctx)
   }
   return { ok: true }

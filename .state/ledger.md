@@ -19508,3 +19508,23 @@ index 0f3936b..1979ccd 100644
  })
 ```
 </details>
+
+## rule.primary-ends-activation — LANDED `c284770`
+2026-09-30 03:28
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../GEAR-IMPLEMENTATION.md:330 · SWITCHES.md:1194
+  PASS  typecheck
+  PASS  the item's own tests — test/primary-ends-activation.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/primary-ends-activation.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — nothing new resembles what exists
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
