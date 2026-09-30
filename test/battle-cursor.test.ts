@@ -190,6 +190,13 @@ const orphanageArrivalsGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
 // (tools/capture-ghost-cold-cursor.mts), test.ghost and test.frost-resistant new. Moved: test.vampire-bite by log TEXT only
 // (Cold Heart's gain line no longer names the cold-damage gap). A `changed` case is checked here and skips the older layers.
 const ghostColdGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-ghost-cold.json', import.meta.url), 'utf8'))
+// content.ghost-possess-on-attack, rule.immunity-is-resistance (2026-09-29), Law 10: the Ghost possesses on its Attack at 15%
+// and immunity is resistance (Andrew, DECISIONS.md 'the Ghost possesses on its Attack at 15%; every resistance works the one
+// way, and it replaces immunity'). Every case frozen here (tools/capture-resist-one-way-cursor.mts). Moved for real, the
+// rulings working: test.ghost (the Attack now possesses; Possess gone), showcase.waystation, showcase.prologue-party,
+// test.opening-cavern-trail (Rotting Flesh takes Poison again, with 1 Poison Resist on its ticks) and test.vampire-bite (Cold
+// Heart is +1 Cold Resist, not an immunity). A `changed` case is checked here and skips the older layers.
+const resistOneWayGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-resist-one-way.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -304,7 +311,10 @@ describe('resumable battle cursor', () => {
       const badgeRulesExpected = badgeRulesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const orphanageArrivalsExpected = orphanageArrivalsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const ghostColdMoved = ghostColdExpected?.changed === true
+      const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const resistOneWayMoved = resistOneWayExpected?.changed === true
+      // was: const ghostColdMoved = ghostColdExpected?.changed === true — a resist-one-way-moved case skips the ghost-cold layer too (rule.immunity-is-resistance 2026-09-29)
+      const ghostColdMoved = ghostColdExpected?.changed === true || resistOneWayMoved
       // was: const orphanageArrivalsMoved = orphanageArrivalsExpected?.changed === true — a ghost-cold-moved case skips the orphanage-arrivals layer too (content.ghost 2026-09-29)
       const orphanageArrivalsMoved = orphanageArrivalsExpected?.changed === true || ghostColdMoved
       // was: const badgeRulesMoved = badgeRulesExpected?.changed === true — an orphanage-arrivals-moved case skips the badge-rules layer too (fix.opening-orphanage-arrivals 2026-09-29)
@@ -367,7 +377,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (ghostColdExpected) {
+        if (resistOneWayExpected) {
+        expect(hash(ctx.events), 'full resist-one-way events').toBe(resistOneWayExpected.events)
+        expect(hash(ctx.state), 'full resist-one-way state').toBe(resistOneWayExpected.state)
+        expect(hash(ctx.rng.log), 'full resist-one-way RNG').toBe(resistOneWayExpected.rng)
+        expect(result).toEqual(resistOneWayExpected.result)
+        }
+        // was: if (ghostColdExpected) { — rule.immunity-is-resistance (2026-09-29): a resist-one-way-moved case is checked above instead
+        if (ghostColdExpected && !resistOneWayMoved) {
         expect(hash(ctx.events), 'full ghost-cold events').toBe(ghostColdExpected.events)
         expect(hash(ctx.state), 'full ghost-cold state').toBe(ghostColdExpected.state)
         expect(hash(ctx.rng.log), 'full ghost-cold RNG').toBe(ghostColdExpected.rng)
