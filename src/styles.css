@@ -575,6 +575,8 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .pcBtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 #playLog{position:absolute;left:14px;bottom:34px;z-index:55;width:560px;height:232px;overflow-y:auto;padding:8px 12px;
   background:rgba(12,11,9,.86);border:1px solid #2a251d;border-radius:2px;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
+/* a log row's "dmg" class is also the board's damage float (.dmg: absolute, 34px, animated) — not in the log */
+#playLog .ln.dmg{position:static;font-family:inherit;font-size:inherit;font-weight:inherit;text-shadow:none;animation:none}
 #playAsk{position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
 #playAskBox{max-width:560px;padding:26px 30px 22px;background:#15120d;border:1px solid var(--brass);border-radius:3px;
   box-shadow:0 24px 60px rgba(0,0,0,.8),0 0 0 1px #000;color:var(--ink);font:500 18px/1.4 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif}
