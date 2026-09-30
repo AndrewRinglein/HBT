@@ -3487,3 +3487,13 @@ Ruled:
 - **The forecast shows on pointing:** with the hero selected (clicked), an arrow follows the pointer, and whatever it is over shows its forecast.
 - The status display under a unit was not answered: default **compact icons** (`viewer/SWITCHES.md` statusUnderUnit).
 - The work is ordered in `PLAYABLE-OPENING-PLAN.md`; its twelve items are filed at the top of the engine queue.
+
+## 2026-09-30 — the End activation button stays
+
+Andrew, asked whether the End activation button (kept by `viewer.play-chrome`, `viewer/SWITCHES.md` playChromeEndActivation) should stay for a hero who only moves, since the 2026-09-29 ruling removes the click after a non-free primary:
+
+“Yeah, I suppose it should stay since you need to be able to end without doing another action.”
+
+Ruled:
+
+- **The End activation button stays** for a human hero who is acting — for ending an activation without doing another action (a hero that only moved, or used only a free primary). After a non-free primary it is still never needed: that ends the activation by itself (2026-09-29).
