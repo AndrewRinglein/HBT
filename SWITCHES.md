@@ -1670,3 +1670,12 @@ The rules are `progression/OPENING-PARTY.json` (`firstHero`, `crucible`, `draftS
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `coldResistAndFrost` | Does Cold Resist lessen the Frost status (Frost adds damage to hits the unit takes)? | **No — Cold Resist mitigates cold damage only.** Immunity to Cold still refuses Frost. | Fire Resist lessens Burn because Burn's tick is fire damage; resistance "changes damage only, never the status clock" (V2 §8). Frost deals no damage of its own, so there is nothing of it for a resistance to take off. | provisional — 2026-09-29 |
+
+## content.ghost — the Ghost, 2026-09-29
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `ghostAttackReadsStrength` | The bestiary's Ghost "Attack" has no damage number — what does it deal? | **Strength + 0, magic-typed** (the bestiary's damage type). | The bestiary's other plain melee attacks read Strength; its type is the row's. | provisional — 2026-09-29 |
+| `ghostPossessReadsMagic` | Possess deals 0 in the bestiary; the engine's damage is always a stat plus a bonus. | **Magic + 0** — the Ghost's Magic is 0, so it deals exactly 0 while its Magic is 0. Its 25% fires **onHit** (onDamage never fires on 0). | Copy, don't invent: 0 is the authored number. | provisional — 2026-09-29 |
+| `ghostPhaseLeftOut` | Phase: "grant a stat for the Battle", value 2, no stat named. | **Left out**, named in the row's source. | The bestiary names no stat. | provisional — 2026-09-29 |
+| `ghostPossessAi` | When does a Ghost choose Possess (0 damage) over Attack (4)? | **Never, as built** — the AI takes the damaging attack (40 battles: 53 Attacks, 0 Possess). No existing hint (`use: 'whenever'`, `belowHalfHp`, `minEnemiesStruck`) fits "sometimes". | A design choice — brought to Andrew. | **open — 2026-09-29** |

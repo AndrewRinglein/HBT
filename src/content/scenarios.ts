@@ -92,6 +92,12 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.frost-resistant', note: 'TEST: a warrior wearing badge.frost-resistant (+1 Cold Resist) against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroBadges: [['badge.frost-resistant']], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
   },
+  // content.ghost (2026-09-29, Andrew, DECISIONS.md "the Ghost as the bestiary has it; ..."): two Ghosts, fielded in a
+  // real battle. TEST fielding of a Codex row. (Their AI never picks Possess over Attack — engine SWITCHES ghostPossessAi.)
+  'test.ghost': {
+    id: 'test.ghost', note: 'TEST: two warriors against two Ghosts (flight, a magic-typed Attack, Possess at 25%). No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], enemies: ['unit.ghost', 'unit.ghost'], enemyHexes: [88, 103], replicate: 0,
+  },
   'test.prone-b': {
     id: 'test.prone-b', note: 'TEST: Tripper B floors Osric on a hit (test.status.floored, the second prone instance); Osric stands and swings. No campaign claim.',
     mapId: 'map.open', heroes: ['test-osric'], heroHexes: [85], enemies: ['test-trip-b'], enemyHexes: [86], replicate: 0,

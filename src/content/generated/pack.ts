@@ -1124,6 +1124,51 @@ export const UNIT_PACK = {
       ]
     },
     {
+      "typeId": "unit.ghost",
+      "name": "Ghost",
+      "side": "enemy",
+      "maxHp": 4,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 85,
+      "dodge": 10,
+      "strength": 4,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.ghost.attack",
+        "attack.ghost.possess"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.flight"
+      ],
+      "tags": [
+        "ghost"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.ghost.afflict-possession",
+          "hook": "onHit",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "badge.grant",
+            "badgeId": "badge.possession"
+          },
+          "source": "unit.ghost",
+          "onlyWithAttack": "attack.ghost.possess"
+        }
+      ]
+    },
+    {
       "typeId": "unit.ghoul",
       "name": "Ghoul",
       "side": "enemy",
@@ -2974,6 +3019,26 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.ghost.attack": {
+      "id": "attack.ghost.attack",
+      "name": "Attack",
+      "kind": "melee",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.ghost.possess": {
+      "id": "attack.ghost.possess",
+      "name": "Possess",
+      "kind": "melee",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "magic",
+      "reach": 1,
       "staminaCost": 0
     },
     "attack.ghoul.rake": {

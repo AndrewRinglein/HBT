@@ -1,5 +1,19 @@
 [
  {
+  "id": "content.ghost",
+  "kind": "content",
+  "shape": "data",
+  "needs": [],
+  "changesBaseline": false,
+  "probeIds": [
+   "unit.ghost"
+  ],
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Ghost as the bestiary has it; Cold Resist; \"Immune X 1\" is a resistance of 1'): 'Should the Ghost go in with its bestiary numbers as-is ...?' - 'Yes.'; earlier the same day: 'Ghost should inflict possession'. unit.ghost authored in content/gen/enemies-authored.json from gen/bestiary.json as-is: tier 1, Strength 4, Precision 5, Armor 0, Health 4, Resist 0, Dodge 10, Accuracy 85, Movement 5, flight; Attack (Strength + 0, magic); Possess (Magic + 0 = the authored 0, magic) whose hit possesses at 25% (the bestiary rider). Phase left out (no stat named). Scenario test.ghost fields two. The AI never picks Possess over Attack: SWITCHES ghostPossessAi, open, brought to Andrew.",
+  "expect": "The Ghost fields with the ported numbers and flight; a Possess hit deals nothing and one in four grants Possession (+2 Magic now, the -10 Surge at the next fielding); two Ghosts fight in test.ghost.",
+  "status": "done",
+  "sha": "63caa8e"
+ },
+ {
   "id": "content.immune-one-is-resist",
   "kind": "content",
   "shape": "data",
