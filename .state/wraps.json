@@ -256,5 +256,11 @@
   "sha": "4f3c879",
   "now": "the playable opening, Milestone 1 — engine, viewer, kingdom. Landed rule.primary-ends-activation, command.end-player-phase, preview.from-planned-hex, viewer.painted-board, viewer.character-models, viewer.under-unit, viewer.play-input, viewer.play-chrome (four flagged for review on prior art, no Prior art: line in their specs); battle 1 plays with the mouse on the painted scene, unseen in a real browser; ruled 2026-09-30 the End activation button stays; suite green 2379. Tried: nothing abandoned. Next: Andrew plays battle 1 (the eyeball check); encounter.opening.bridge-ai; the painted scenes disagree with the engine on walkable hexes (103 Orphanage, 5 Lumberjack, 20 Bridge) — content's; no weapon swap in the opening battles yet.",
   "committed": true
+ },
+ {
+  "at": "2026-09-30 09:36",
+  "sha": "4a8e329",
+  "now": "the fast process — engine harness. Landed tool.fast-process: the gate is fast by default (prior-art and wrong-home run once at wrap, the kill switch re-runs only added test files), --full and the git tag process-full-2026-09-30 keep the old process; outside Cowork the suite is one command, --shard 1/1; ruled 2026-09-30; suite green 2387. Tried: nothing abandoned. Next: Andrew plays battle 1 (the eyeball check); encounter.opening.bridge-ai; engine chats in Claude Code on Andrew's PC (recommended, not ruled).",
+  "committed": true
  }
 ]
