@@ -17,9 +17,11 @@ const field = () => {
 const has = (w: { statuses: { id: string; value: number }[] }, id: string) => w.statuses.find((s) => s.id === id)?.value ?? 0
 
 describe('immunity from badges', () => {
-  it('the rows: Cold Heart is immune to Karma and Frost, its cold damage a named gap; Rotting Flesh to poison, status and damage', () => {
-    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'] })
-    expect(BADGES['badge.cold-heart']!.gaps).toContain('immune to Cold: cold damage — the engine has no cold damage type')
+  // LAW 10 — rule.cold-resist (2026-09-29): cold damage exists now, so Cold Heart's immunity names it rather than a gap.
+  // was: 'the rows: Cold Heart is immune to Karma and Frost, its cold damage a named gap; …' — immuneTo { statuses } and the gap
+  it('the rows: Cold Heart is immune to Karma, Frost and cold damage; Rotting Flesh to poison, status and damage', () => {
+    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'], damage: ['cold'] })
+    expect(BADGES['badge.cold-heart']!.gaps).toBeUndefined()
     expect(BADGES['badge.rotting-flesh']!.immuneTo).toEqual({ statuses: ['status.poison'], damage: ['poison'] })
     expect(BADGES['badge.brave']!.immuneTo).toEqual({ statuses: ['status.weak'] })
     expect(BADGES['badge.vampirism']!.immuneTo).toBeUndefined()

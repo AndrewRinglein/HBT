@@ -26,7 +26,7 @@ export type Applied = {
 /** v2.swap: a foldable stat whose absent value is not 0. */
 export const FOLD_BASE: Readonly<Record<string, number>> = { swapCost: 1 }
 
-export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
+export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 
 /**
  * The default AI of a kit — the ONE place it is derived (plumbing.vocabulary-export, review
@@ -97,7 +97,8 @@ export function applyItems(
     ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
     ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
     ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
-    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,
+    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}),
+    ...(base.coldResist !== undefined || stats['coldResist'] ? {coldResist: stats['coldResist']!} : {}), dodge: stats['dodge']!,
     strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
@@ -184,7 +185,8 @@ export function applyProgress(
     ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
     ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
     ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
-    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,
+    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}),
+    ...(base.coldResist !== undefined || stats['coldResist'] ? {coldResist: stats['coldResist']!} : {}), dodge: stats['dodge']!,
     strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
@@ -243,7 +245,8 @@ export function applyBadges(
     ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
     ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
     ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
-    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}), dodge: stats['dodge']!,
+    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}),
+    ...(base.coldResist !== undefined || stats['coldResist'] ? {coldResist: stats['coldResist']!} : {}), dodge: stats['dodge']!,
     strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,

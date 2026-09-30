@@ -3404,3 +3404,17 @@ Ruled:
 - **The Ghost inflicts Possession.** (Its rider already exists: Possess, 25%, SOFT — `content/gen/bestiary-riders.json`. The Ghost is not an authored enemy, so it is not in the engine pack.)
 - **Build Deathbed Fighting from badges** (the entry above's +15 / +20 / −10).
 - **Build status immunity and cold as an element**: Cold Heart's immunity to Karma, and to Cold — cold damage and the Frost status, as fire resistance covers fire damage and Burn.
+
+## 2026-09-29 — the Ghost as the bestiary has it; Cold Resist; "Immune X 1" is a resistance of 1
+
+Andrew, asked (1) "Should the Ghost go in with its bestiary numbers as-is (4 Strength, 5 Precision, 4 Health, 10 Dodge, Movement 5, Possess at 25%), or will you set its stats?", (2) "Should cold damage get its own resistance stat, like fire resistance, now that Cold is an element?", (3) "What does the '1' in 'Immune Frost 1', 'Immune poison 1' and 'Immune fire 1' mean: a resistance of 1, or something else?":
+
+“Yes, yes, yes.”
+
+Ruled:
+
+- **The Ghost is authored from its bestiary row as-is**: Strength 4, Precision 5, Armor 0, Health 4, Reach 1, Resist 0, Dodge 10, Accuracy 85, Movement 5; its Possess inflicts Possession at 25% (the rider, `content/gen/bestiary-riders.json`). What the bestiary leaves unsaid (a damage with no number, a buff with no stat) is a switch or a named gap, never an invented value.
+- **Cold is an element with its own resistance, Cold Resist, as Fire has Fire Resist.** Cold damage is a damage type; Cold Resist mitigates it; Cold Heart's immunity to Cold now covers cold damage too.
+- **"Immune <element> 1" is a resistance of 1**: Immune Frost 1 is +1 Cold Resist, Immune poison 1 is +1 Poison Resist, Immune fire 1 (and Dragon Slayer's "immunen to fire 1") is +1 Fire Resist. ("Immune weak 1" names a status with no resistance stat: a named gap.)
+
+Filed: `rule.cold-resist`, `content.immune-one-is-resist`, `content.ghost`.

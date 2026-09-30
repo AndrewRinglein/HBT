@@ -29,7 +29,7 @@ export function flatDamage(ctx: Ctx, target: Unit, amount: number, type: DamageT
   if (immuneBy) return { value: 0, beforeFloor: Math.min(0, remaining), absorbed, defense: Math.max(0, remaining), resisted: Math.max(0, remaining), immuneBy }
   const stat = ({
     physical: 'armor', magic: 'resist', fire: 'fireResist',
-    poison: 'poisonResist', shadow: 'shadowResist', true: null,
+    poison: 'poisonResist', shadow: 'shadowResist', cold: 'coldResist', true: null,
   } as const)[type]
   // bonusArmor: Armor the attack's circumstances add (v2.structures: a tower's +1 against an enemy outside one)
   const beforePenetration = stat ? effective(ctx, target, stat).value + (type === 'physical' ? bonusArmor : 0) : 0

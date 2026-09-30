@@ -21,6 +21,8 @@ export type StatName =
   | 'strength' | 'precision' | 'magic' | 'spirit'
   | 'accuracy' | 'dodge' | 'block' | 'rangedBlock'
   | 'armor' | 'resist' | 'fireResist' | 'poisonResist' | 'shadowResist'
+  /** rule.cold-resist (2026-09-29, Andrew, DECISIONS.md: cold is an element, and its resistance is Cold Resist, as Fire's is Fire Resist). */
+  | 'coldResist'
   | 'movement' | 'reach'
   | 'maxHp' | 'maxStamina' | 'staminaRegen'
   // station.crit (2026-08-27): the two crit-system stats, resolvable so
@@ -79,6 +81,7 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   fireResist: (u) => u.fireResist ?? 0,
   poisonResist: (u) => u.poisonResist ?? 0,
   shadowResist: (u) => u.shadowResist ?? 0,
+  coldResist: (u) => u.coldResist ?? 0,
   movement: (u) => u.movement,
   reach: (u) => u.reach,
   maxHp: (u) => u.maxHp,

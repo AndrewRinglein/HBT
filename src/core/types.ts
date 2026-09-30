@@ -65,9 +65,9 @@ export type Covers<U, L extends readonly unknown[]> = [Exclude<U, L[number]>] ex
 export type Assert<T extends true> = T
 export const LIFE_STATES = ['standing', 'downed', 'dead'] as const satisfies readonly LifeState[]
 export type LifeStatesCovered = Assert<Covers<LifeState, typeof LIFE_STATES>>
-export type DamageType = 'physical' | 'magic' | 'fire' | 'poison' | 'shadow' | 'true'
+export type DamageType = 'physical' | 'magic' | 'fire' | 'poison' | 'shadow' | 'cold' | 'true'
 /** rule.badge-immunity (2026-09-29): the list, exported through the vocabulary so content reads it rather than copying it. */
-export const DAMAGE_TYPES: readonly DamageType[] = ['physical', 'magic', 'fire', 'poison', 'shadow', 'true']
+export const DAMAGE_TYPES: readonly DamageType[] = ['physical', 'magic', 'fire', 'poison', 'shadow', 'cold', 'true']
 export function isDamageType(value: unknown): value is DamageType {
   return typeof value === 'string' && (DAMAGE_TYPES as readonly string[]).includes(value)
 }
@@ -788,6 +788,8 @@ export type UnitDef = {
   readonly fireResist?: number
   readonly poisonResist?: number
   readonly shadowResist?: number
+  /** rule.cold-resist (2026-09-29): mitigates cold damage, as fireResist mitigates fire. */
+  readonly coldResist?: number
   readonly accuracy: number
   readonly dodge: number
   /**
@@ -928,6 +930,7 @@ export type Unit = {
   fireResist?: number
   poisonResist?: number
   shadowResist?: number
+  coldResist?: number
   accuracy: number
   dodge: number
   strength: number

@@ -1,5 +1,17 @@
 [
  {
+  "id": "rule.cold-resist",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [],
+  "changesBaseline": false,
+  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Ghost as the bestiary has it; Cold Resist; \"Immune X 1\" is a resistance of 1'): 'Should cold damage get its own resistance stat, like fire resistance, now that Cold is an element?' - 'Yes.' cold joins the damage types (DAMAGE_TYPES, the vocabulary export) and coldResist the stats (StatName, BASE, FOLDABLE, the unit and def fields, the fold, snapshot and pack validation), mitigating cold damage as fireResist mitigates fire; content reads 'Cold Resist' as the stat; Cold Heart's immunity to Cold compiles cold damage (its gap closes); the viewer labels it. No content deals cold damage yet. Engine rule: cold damage is mitigated by coldResist.",
+  "expect": "cold is a damage type and coldResist a resolvable, foldable stat in the vocabulary; 2 Cold Resist takes 2 off cold damage and nothing off fire; Cold Heart makes cold damage 0 and names itself; no control battle moves (nothing deals cold damage).",
+  "note": "Plumbing: a stat and a damage type with no content source yet. The Frost status is not touched by Cold Resist - SWITCHES.md coldResistAndFrost.",
+  "status": "done-needs-review",
+  "sha": "e10ea95"
+ },
+ {
   "id": "rule.badge-immunity",
   "kind": "engine",
   "shape": "rule",

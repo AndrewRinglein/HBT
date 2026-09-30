@@ -28,7 +28,7 @@ export function validateActionMetadata(row: { readonly id: string; readonly slot
   if (row.free !== undefined && typeof row.free !== 'boolean') throw new Error(`unit pack: invalid free action flag on '${row.id}'`)
 }
 export function validateNamedResists(stats: Readonly<Record<string, unknown>>, where: string): void {
-  for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'block', 'rangedBlock']) {
+  for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock']) {
     if (stats[key] !== undefined && !Number.isSafeInteger(stats[key])) throw new Error(`${where}: ${key} must be an integer`)
   }
 }
@@ -82,7 +82,7 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
       && !r.typeId.startsWith('alpha-')) {
       throw new Error(`unit pack: '${r.typeId}' is not test- / unit.* / hero.* / alpha- — the pack must stay clearly differentiated (Angela 2026-08-20)`)
     }
-    for(const key of ['fireResist','poisonResist','shadowResist','block','rangedBlock'] as const)if(r[key]!==undefined&&!Number.isSafeInteger(r[key]))throw Error(`unit pack: invalid ${key} on '${r.typeId}'`)
+    for(const key of ['fireResist','poisonResist','shadowResist','coldResist','block','rangedBlock'] as const)if(r[key]!==undefined&&!Number.isSafeInteger(r[key]))throw Error(`unit pack: invalid ${key} on '${r.typeId}'`)
     for (const t of r.triggers ?? []) validateTrigger(t)
     for (const m of r.moves) {
       if (!/^power\./.test(m)) {

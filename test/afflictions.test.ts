@@ -176,8 +176,10 @@ describe('the afflictions as revised 2026-09-29', () => {
     expect(BADGES['badge.vampirism']!.deathbedFighting).toBe(15)
     expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2 })
     // was: …gaps arrayContaining ['immune to Karma', 'immune to Cold (cold damage and the Frost status)']
-    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'] })
-    expect(BADGES['badge.cold-heart']!.gaps).toEqual(['immune to Cold: cold damage — the engine has no cold damage type'])
+    // LAW 10 — rule.cold-resist (2026-09-29, Andrew: cold damage and Cold Resist, "yes"): the cold-damage gap is built.
+    // was: immuneTo { statuses: ['status.karma', 'status.frost'] } and gaps ['immune to Cold: cold damage — the engine has no cold damage type']
+    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'], damage: ['cold'] })
+    expect(BADGES['badge.cold-heart']!.gaps).toBeUndefined()
     expect(BADGES['badge.possession']!.statModifiers).toEqual({ magic: 2, resist: 1, vision: 3, surge: -10 })
     // was: …gaps arrayContaining ['−10 Deathbed Fighting', 'deploying the hero costs 3 Mana']
     expect(BADGES['badge.possession']!.gaps).toEqual(expect.arrayContaining(['deploying the hero costs 3 Mana']))

@@ -44343,11 +44343,11 @@ export const UNIT_PACK = {
         "statuses": [
           "status.karma",
           "status.frost"
+        ],
+        "damage": [
+          "cold"
         ]
-      },
-      "gaps": [
-        "immune to Cold: cold damage — the engine has no cold damage type"
-      ]
+      }
     },
     "badge.vengeful": {
       "id": "badge.vengeful",

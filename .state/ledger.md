@@ -19162,3 +19162,61 @@ index 9a687cd..4a9dad6 100644
      applyDamage(ctx, child.id, 99, 'test.kill', { actor: null }); settle(ctx, 'test.kill')
 ```
 </details>
+
+## rule.cold-resist — LANDED `e10ea95` **NEEDS REVIEW**
+2026-09-30 00:16
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1672 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/afflictions.test.ts, test/badge-immunity.test.ts, test/cold-resist.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/afflictions.test.ts, test/badge-immunity.test.ts, test/cold-resist.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/afflictions.test.ts (-2), test/badge-immunity.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  WARN  prior art — nothing new copies what exists — 132 new: look-alike vocabulary: (unnamed@31) (engine/src/content/pack.ts:31) shares 6 with STATS (content/assemble.mjs:5) — only there: accuracy, armor, bleedOutTurns, corruption, crit, deathbedFighting … · look-alike vocabulary: (unnamed@31) (engine/src/content/pack.ts:31) shares 4 with (unnamed@1172) (content/audit.mjs:1172) — only here: block, rangedBlock · look-alike vocabulary: (unnamed@31) (engine/src/content/pack.ts:31) shares 6 with (unnamed@2) (content/mkenginepack.mjs:2) — the same members · look-alike vocabulary: (unnamed@31) (engine/src/content/pack.ts:31) shares 6 with STAT_OF{values} (content/mkenginepack.mjs:54) — only there: accuracy, armor, crit, dodge, luck, magic … · look-alike vocabulary: (unnamed@31) (engine/src/content/pack.ts:31) shares 6 with UNIT_FIELDS (content/mkenginepack.mjs:1851) — only there: abilities, accuracy, ai, aiChanges, armor, attacks … · look-alike vocabulary: (unnamed@31) (engine/src/content/pack.ts:31) shares 6 with FOLDABLE (engine/src/core/items.ts:29) — only there: accuracy, armor, crit, dodge, luck, magic … · … (126 more: node tools/prior-art.mjs --item) — no "Prior art:" line in the spec: lands for review
+  PASS  wrong home — nothing another package owns — nothing another package owns
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/afflictions.test.ts b/test/afflictions.test.ts
+index ad2d83b..0b67d61 100644
+--- a/test/afflictions.test.ts
++++ b/test/afflictions.test.ts
+@@ -177,6 +177,8 @@ describe('the afflictions as revised 2026-09-29', () => {
+     expect(BADGES['badge.cold-heart']!.statModifiers).toEqual({ maxHp: 2 })
+     // was: …gaps arrayContaining ['immune to Karma', 'immune to Cold (cold damage and the Frost status)']
+-    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'] })
+-    expect(BADGES['badge.cold-heart']!.gaps).toEqual(['immune to Cold: cold damage — the engine has no cold damage type'])
++    // LAW 10 — rule.cold-resist (2026-09-29, Andrew: cold damage and Cold Resist, "yes"): the cold-damage gap is built.
++    // was: immuneTo { statuses: ['status.karma', 'status.frost'] } and gaps ['immune to Cold: cold damage — the engine has no cold damage type']
++    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'], damage: ['cold'] })
++    expect(BADGES['badge.cold-heart']!.gaps).toBeUndefined()
+     expect(BADGES['badge.possession']!.statModifiers).toEqual({ magic: 2, resist: 1, vision: 3, surge: -10 })
+     // was: …gaps arrayContaining ['−10 Deathbed Fighting', 'deploying the hero costs 3 Mana']
+diff --git a/test/badge-immunity.test.ts b/test/badge-immunity.test.ts
+index ffd1e00..033bb1b 100644
+--- a/test/badge-immunity.test.ts
++++ b/test/badge-immunity.test.ts
+@@ -18,7 +18,9 @@ const has = (w: { statuses: { id: string; value: number }[] }, id: string) => w.
+ 
+ describe('immunity from badges', () => {
+-  it('the rows: Cold Heart is immune to Karma and Frost, its cold damage a named gap; Rotting Flesh to poison, status and damage', () => {
+-    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'] })
+-    expect(BADGES['badge.cold-heart']!.gaps).toContain('immune to Cold: cold damage — the engine has no cold damage type')
++  // LAW 10 — rule.cold-resist (2026-09-29): cold damage exists now, so Cold Heart's immunity names it rather than a gap.
++  // was: 'the rows: Cold Heart is immune to Karma and Frost, its cold damage a named gap; …' — immuneTo { statuses } and the gap
++  it('the rows: Cold Heart is immune to Karma, Frost and cold damage; Rotting Flesh to poison, status and damage', () => {
++    expect(BADGES['badge.cold-heart']!.immuneTo).toEqual({ statuses: ['status.karma', 'status.frost'], damage: ['cold'] })
++    expect(BADGES['badge.cold-heart']!.gaps).toBeUndefined()
+     expect(BADGES['badge.rotting-flesh']!.immuneTo).toEqual({ statuses: ['status.poison'], damage: ['poison'] })
+     expect(BADGES['badge.brave']!.immuneTo).toEqual({ statuses: ['status.weak'] })
+```
+</details>
