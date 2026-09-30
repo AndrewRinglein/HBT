@@ -33,6 +33,8 @@ export { UNITS } from '../../engine/src/content/index.js'
 // Widened 2026-09-03 for screens.after-battle (G12): the engine's own level tables, read so the
 // level-5 pick the kingdom records as an index resolves to the option in the pack's stat names.
 export { LEVELS } from '../../engine/src/content/index.js'
+// Read-only combat badge IDs at the campaign seam; story badges stay in the roster.
+export { BADGES } from '../../engine/src/content/index.js'
 // Widened 2026-09-03 for the Equip screen (screens.equip-stats): the engine's own
 // fielded unit — the bare row with items and progress folded by the one function — so
 // the numbers on the card are the numbers the battle would field. Read-only.

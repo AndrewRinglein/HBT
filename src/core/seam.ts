@@ -17,12 +17,14 @@
 // No campaign code. `makeBattleState(campaign, engagement, seed) → BattleOptions`
 // is M1's; it will produce an EngagementSpec and call battleOptionsOf.
 
-import { createBattle, runBattle, LEVELS } from '../engine.js'
+import { createBattle, runBattle, LEVELS, BADGES } from '../engine.js'
 import type { BattleOptions, Event, Outcome, Side, HeroProgress } from '../engine.js'
 import { atlasFieldingOf } from '../content/atlas.js'
 import { itemOf } from '../content/items.js'
 import { fieldedModsOfRows, type FieldedMods } from './sets.js'
 import { fieldedItemsOf, instanceSlotsOf } from './loadout.js'
+
+const combatBadges = (badges: readonly string[] = []) => badges.filter(id => Object.hasOwn(BADGES, id))
 
 /** A campaign-free fielding: everything a battle needs, nothing about a Campaign. */
 export type EngagementSpec = {
@@ -60,6 +62,8 @@ export type EngagementSpec = {
    * handed to the engine as heroItemsUsed. Absent when nothing is spent.
    */
   readonly heroItemsUsed?: readonly (readonly number[])[]
+  /** Persistent campaign badges, in deployment order; the engine owns their effects. */
+  readonly heroBadges?: readonly (readonly string[])[]
   /**
    * screens.after-battle (G12, 2026-09-03): how far each hero has come — level, specialty,
    * the level-5 pick — parallel to `heroes`; the engine folds the codex's level rows onto the
@@ -121,7 +125,7 @@ export type EngagementResult = {
  * battle condition arrive here when those systems exist.
  */
 export function makeBattleState(
-  roster: Readonly<Record<string, { unitType: string; equipped?: readonly string[]; used?: readonly number[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
+  roster: Readonly<Record<string, { unitType: string; badges?: readonly string[]; equipped?: readonly string[]; used?: readonly number[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
   engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number },
 ): EngagementSpec {
   const rows = engagement.deployed.map((heroId) => {
@@ -130,6 +134,7 @@ export function makeBattleState(
     return h
   })
   const heroes = rows.map((h) => h.unitType)
+  const heroBadges = rows.map(h => combatBadges(h.badges))
   // the sets, resolved here — "looked up when the players are being built and shipped to combat"
   const heroMods = rows.map((h) => fieldedModsOfRows((h.equipped ?? []).map(itemOf)))
   // what is equipped is what is fielded — a hero row without `equipped` (a bare fielding) keeps its kit
@@ -143,6 +148,7 @@ export function makeBattleState(
     ...(carried ? { heroItems: carried.map((c) => c.fielded), heroStowed: carried.map((c) => c.stowed) } : {}),
     ...(heroProgress.some((p) => p) ? { heroProgress } : {}),
     ...(heroItemsUsed ? { heroItemsUsed } : {}),
+    ...(heroBadges.some(b=>b.length) ? { heroBadges } : {}),
   }
 }
 
@@ -186,6 +192,7 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
     ...(spec.heroStowed ? { heroStowed: spec.heroStowed.map((l) => [...l]) } : {}),
     // v2.item-uses: the uses already spent ride along; the engine carries a spent instance spent
     ...(spec.heroItemsUsed ? { heroItemsUsed: spec.heroItemsUsed.map((l) => [...l]) } : {}),
+    ...(spec.heroBadges?.some(l=>combatBadges(l).length) ? { heroBadges: spec.heroBadges.map(combatBadges) } : {}),
     // heroMods wait on the engine's seam.unit-mods — resolved and recorded on the spec, not fought
     ...(spec.heroProgress ? { heroProgress: spec.heroProgress.map((p) => p ?? undefined) } : {}),
   }
