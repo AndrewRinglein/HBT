@@ -2725,21 +2725,11 @@
       "stat": "strength",
       "mod": 0
      },
-     "damageType": "magic"
-    },
-    {
-     "id": "attack.ghost.possess",
-     "name": "Possess",
-     "targets": "one enemy in melee reach",
-     "damage": {
-      "stat": "magic",
-      "mod": 0
-     },
      "damageType": "magic",
      "triggers": [
       {
        "hook": "onHit",
-       "chance": 25,
+       "chance": 15,
        "effects": [
         {
          "effect": "inflict an affliction",
@@ -2753,7 +2743,7 @@
      ]
     }
    ],
-   "source": "Ruled 2026-09-29 (Andrew, engine/DECISIONS.md \"the Ghost as the bestiary has it; Cold Resist; ...\"): \"Should the Ghost go in with its bestiary numbers as-is ...?\" — \"Yes.\" · \"Ghost should inflict possession\". Ported as-is from gen/bestiary.json unit.ghost (rank 1: Strength 4, Precision 5, Armor 0, Health 4, Reach 1, Resist 0, Dodge 10; derived Accuracy 85, Movement 5; types Ghost and Flying — Flying is the flight move). Possess: the bestiary rider (gen/bestiary-riders.json, 25%, SOFT), fired onHit because Possess deals 0 — Magic 0 + 0 is exactly the authored 0 (engine SWITCHES ghostPossessReadsMagic). Attack: the bestiary gives it no number; it reads Strength, magic-typed (engine SWITCHES ghostAttackReadsStrength). Phase (\"grant a stat for the Battle\", value 2, no stat named) is left out — the bestiary names no stat. Family oddballs: no ghost family exists."
+   "source": "Ruled 2026-09-29 (Andrew, engine/DECISIONS.md \"the Ghost as the bestiary has it; Cold Resist; ...\"): \"Should the Ghost go in with its bestiary numbers as-is ...?\" — \"Yes.\" · \"Ghost should inflict possession\". Ported as-is from gen/bestiary.json unit.ghost (rank 1: Strength 4, Precision 5, Armor 0, Health 4, Reach 1, Resist 0, Dodge 10; derived Accuracy 85, Movement 5; types Ghost and Flying — Flying is the flight move). Possess: the bestiary rider (gen/bestiary-riders.json, 25%, SOFT), fired onHit because Possess deals 0 — Magic 0 + 0 is exactly the authored 0 (engine SWITCHES ghostPossessReadsMagic). Attack: the bestiary gives it no number; it reads Strength, magic-typed (engine SWITCHES ghostAttackReadsStrength). Phase (\"grant a stat for the Battle\", value 2, no stat named) is left out — the bestiary names no stat. Family oddballs: no ghost family exists. | 2026-09-29 (Andrew, engine/DECISIONS.md \"the Ghost possesses on its Attack at 15%; ...\"): \"We should move it to a chance on attack. Let us give it a 15% chance on attack.\" The possession rider moved to Attack (onHit, 15%); Possess — 0 damage and nothing else — is dropped (the AI never chose it: 40 battles, 53 Attacks, 0 Possess)."
   }
  ]
 }
