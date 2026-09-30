@@ -62,6 +62,7 @@
   "card-skeleton.jpg",
   "card-skelspider.jpg",
   "card-skypirate.jpg",
+  "card-soldier.jpg",
   "card-spiritsnake.jpg",
   "card-strongskel.jpg",
   "card-warrior-barbarian.jpg",
@@ -114,6 +115,7 @@
   "ph-fishermans-wife.png",
   "ph-group-farmers.png",
   "ph-librarian.png",
+  "ph-lumberjacks-wife.png",
   "ph-old-wise-man.png",
   "ph-scary-kid.png",
   "ph-skeleton.png",
@@ -137,6 +139,7 @@
   "skeleton-spider_256.png",
   "skeleton_256.png",
   "sky-pirate_256.png",
+  "soldier_256.png",
   "stone-golem_256.png",
   "strong-skeleton_256.png",
   "warrior-barbarian_256.png",
@@ -736,6 +739,18 @@
    "card": "card-schoolteacher.jpg",
    "aspect": 0.3594,
    "height": 1.55
+  },
+  "unit.soldier": {
+   "token": "soldier_256.png",
+   "card": "card-soldier.jpg",
+   "aspect": 0.5117,
+   "height": 1.55
+  },
+  "hero.fixed.lumberjacks-wife": {
+   "token": "ph-lumberjacks-wife.png",
+   "card": null,
+   "aspect": 0.64,
+   "height": 1.5
   }
  }
 }

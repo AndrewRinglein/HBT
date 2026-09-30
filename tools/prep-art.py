@@ -104,11 +104,15 @@ ARTMAP = {
  # viewer.painted-board (2026-09-29): battle 1's School Teacher, the existing one-level civilian art (viewer SWITCHES schoolTeacherArt)
  'hero.fixed.school-teacher':   {'token':'schoolteacher_256.png','card':'card-schoolteacher','src':'art/heroes/schoolteacher/hex/l1_256.png','cardsrc':'art/heroes/schoolteacher/card/l1.png'},
  'hero.fixed.lumberjack-and-wife':{'token':'lumberjack_256.png','card':'card-lumberjack','src':'art/heroes/lumberjack/hex/l1_256.png','cardsrc':'art/heroes/lumberjack/card/l1.png','height':1.6},
+ # viewer.opening-cast (2026-09-30): battle 2's Lumberjack's Wife has no token or card art -- the ART PENDING standee, never borrowed (viewer SWITCHES lumberjacksWifeToken)
+ 'hero.fixed.lumberjacks-wife': {'ph':'Lumberjacks Wife', 'height':1.5},
  'hero.fixed.farmer':           {'token':'farmer_256.png','card':'card-farmer','src':'art/heroes/farmer/hex/l1_256.png','cardsrc':'art/heroes/farmer/card/l1.png','height':1.5},
  'unit.skeleton': {'token':'skeleton_256.png','card':'card-skeleton','src':'battle-tokens/units/skeleton_256.png','cardsrc':'assets/bestiary/eve/skeleton.png','height':1.55},
  'unit.zombie':      {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
  'unit.fast-zombie': {'token':'fast-zombie_256.png','card':'card-fast-zombie','src':'battle-tokens/units/fast-zombie_256.png','cardsrc':'assets/bestiary/hobat/fast-zombie.png'},
  'unit.skeletal-archer':{'token':'skeletal-archer_256.png','card':'card-skelarcher','src':'battle-tokens/units/skeletal-archer_256.png','cardsrc':'assets/bestiary/eve/skeletal-archer.png'},
+ # viewer.opening-cast (2026-09-30): battle 2's Soldier keeps 'its own ... art' (engine DECISIONS.md, Andrew on the Undead Soldier): the battle-tokens cutout of hell-tcg's enemies/soldier.png
+ 'unit.soldier':     {'token':'soldier_256.png','card':'card-soldier','src':'battle-tokens/units/soldier_256.png','cardsrc':'assets/bestiary/eve/soldier.png'},
  'unit.necromancer': {'token':'necromancer_256.png','card':'card-necro','src':'battle-tokens/units/necromancer_256.png','cardsrc':'assets/bestiary/eve/lesser-necromancer.png'},
  'unit.imp':         {'token':'imp_256.png','card':'card-imp','src':'battle-tokens/units/imp_256.png','cardsrc':'assets/bestiary/eve/imp.png','height':1.2},
  'unit.powerful-imp':{'token':'powerful-imp_256.png','card':'card-powerful-imp','src':'battle-tokens/units/powerful-imp_256.png','cardsrc':'assets/bestiary/hobat/powerful-imp.png','height':1.55},

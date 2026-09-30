@@ -14,6 +14,7 @@ const A = await modules(), pack = await packCharacterModels()
 const battle2 = JSON.parse(readFileSync('battles/test.opening-lumberjack.json', 'utf8'))
 const battle3 = JSON.parse(readFileSync('battles/test.opening-bridge.json', 'utf8'))
 const units = JSON.parse(readFileSync('generated/static.json', 'utf8')).units
+const artmap = JSON.parse(readFileSync('generated/art/manifest.json', 'utf8')).artmap
 
 function boot(hash) {
   const html = readFileSync(process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html', 'utf8'), m = html.match(/<script>([\s\S]*)<\/script>\s*$/), w = makeWindow()
@@ -51,6 +52,8 @@ test('battles 2 and 3: every enemy and every drafted hero is a model; the civili
   assert.deepEqual(typesIn(battle2), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife', 'unit.skeletal-archer', 'unit.soldier', 'unit.zombie'])
   assert.deepEqual(typesIn(battle3), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome', 'unit.fire-imp', 'unit.imp'])
   for (const t of [...typesIn(battle2), ...typesIn(battle3)]) {
+    /* "a model or its token": every unit has its token under it (the Soldier its own art, the Lumberjack's Wife the ART PENDING standee) */
+    assert.ok(artmap[t]?.token, `${t} has its token`)
     const b = A.modelBinding(t, pack)
     if (t.startsWith('hero.fixed.')) { assert.equal(b, null, `${t} is its token`); continue }
     assert.ok(b, `${t} is a model`)
