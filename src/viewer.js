@@ -29,8 +29,9 @@ import { targetingFacts } from './targeting.js'
 import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf } from './board.js'
 import { terrainLayer } from './terrain3d.js'
 import {prepareAtlasBinding} from './atlas.js'
+import {paintedBinding, bundledPainted} from './painted.js'
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -50,7 +51,7 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'corpse.created': 0, 'corpse.removed': 380, 'unit.raised': 640, 'corpse.eaten': 300, 'unit.obliterated': 520,
   /* the Deathbed Fighting modal holds the game (ruled 2026-09-03 evening): DB_TOTAL + a breath */
   'deathbed.stood': 2800, 'deathbed.fell': 2800, 'deathbed.none': 2800, 'hp.reset': 320, 'bleedout.accelerated': 320,
-  'unit.badged': 0, 'badge.gained': 420, 'badge.held': 0, 'power.exhausted': 160, 'charge.spent': 0, 'maxstamina.gained': 200,
+  'unit.badged': 0, 'unit.modified': 0, 'badge.gained': 420, 'badge.held': 0, 'power.exhausted': 160, 'charge.spent': 0, 'maxstamina.gained': 200,
   'surge.checked': 0, 'surge.hit': 600, 'power.gained': 320, 'heal.boosted': 200, 'status.cancelled': 220, 'maxHp.gained': 240,
   'stamina.drained': 160, 'layer.painted': 0, 'layer.cancelled': 0, 'band.advanced': 900, 'night.fell': 1200, 'light.cast': 0,
   'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0, 'unit.grown': 0,
@@ -67,7 +68,7 @@ const PAINT_RUN_MS = 260
 const REDRAW = new Set(['burst.declared', 'burst.shielded', 'burst.struck', 'attack.declared', 'damage.applied', 'life.dead', 'turn.begin', 'moved', 'heal.applied',
   'status.applied', 'life.downed', 'knocked', 'crit.effect', 'maxHp.lost',
   'unit.enter', 'unit.equipped', 'encounter.objective', 'unit.shunted', 'corpse.created', 'hp.reset', 'ai.mode', 'ai.hunts', 'surge.checked', 'aoo.skipped',
-  'badge.gained', 'unit.badged', 'move.stopped'])
+  'badge.gained', 'unit.badged', 'unit.modified', 'move.stopped'])
 /* the roster is seeded instantly — everything up to and including battle.begin
    never animates: the setup's unit.enters, their kit (unit.equipped), the
    encounter's title and objectives, the map (2026-09-03: was a fixed three) */
@@ -91,7 +92,8 @@ const TEMPLATE = `
     </div>
     <div id="boardwrap"><div id="stage"></div>
       <canvas id="vfxC" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:35"></canvas>
-      <div id="camHud" class="mono" style="position:absolute;left:14px;bottom:10px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div></div>
+      <div id="camHud" class="mono" style="position:absolute;left:14px;bottom:10px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div>
+      <button id="camReset" type="button" title="Return to the starting angled view">Reset view</button></div>
     <div data-slot="transport" style="display:contents"></div>
     <div id="stambar"></div>
     <div id="actionbar"></div>
@@ -103,8 +105,11 @@ export function mountBattleViewer(root, data, opts = {}) {
   // Inspect initial facts before touching the host DOM; every event still folds.
   const prepared = prepareBattleField(data.initialEvents, data.meta?.seed, { mapId: data.fieldMapId, field: data.field })
   const F = prepared.field
-  const atlas = prepareAtlasBinding(data.atlasScene, data.atlasCatalog, F, data.initialEvents.find(e=>e.type==='map.loaded'))
   const initialMap = structuredClone(data.initialEvents.find(e => e.type === 'map.loaded'))
+  /* the board's scene: an Atlas layout the export binds, else the painted scene of the map it names
+     (viewer.painted-board — map.opening.*; a host may hand its own pack as data.paintedScenes) */
+  const atlas = prepareAtlasBinding(data.atlasScene, data.atlasCatalog, F, data.initialEvents.find(e=>e.type==='map.loaded'))
+    ?? paintedBinding(initialMap && initialMap.mapId, F, data.paintedScenes ?? bundledPainted)
   let pushedMap = false
   const now = opts.now || (typeof performance !== 'undefined' && typeof performance.now === 'function' ? () => performance.now() : () => Date.now())
   root.innerHTML = TEMPLATE
@@ -124,7 +129,7 @@ export function mountBattleViewer(root, data, opts = {}) {
       ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
-    view: { burstVisible: false, inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },
+    view: { burstVisible: false, inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null }, cam: homeCam(), home: null },
     layers: { ground: null, dyn: null, unitsL: null, UEL: new Map(), floatL: null, FLOAT_SLOTS: {} },
     /* every pending beat the board schedules — timers, stray nodes, the injury
        queue — so seek() and dispose() can drop them all (review 2026-09-03) */
@@ -421,6 +426,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
     peek(on) { V.view.peek = !!on; applyCam(V); drawEdges(V) },
     pan(dx, dy) { applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
+    /* viewer.painted-board: turn (degrees about the view centre), tilt (degrees), zoom (a factor), Reset */
+    turn(deg) { turnCam(V, { yaw: deg }) }, tilt(deg) { turnCam(V, { tilt: deg }) }, zoom(f) { turnCam(V, { zoom: f }) },
+    resetView() { resetCam(V) },
     dispose() { disposed = true; clearTargeting(); cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }

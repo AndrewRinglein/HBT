@@ -101,6 +101,8 @@ ARTMAP = {
  # are recorded in VIEWER-CHECKPOINT.md for the art thread.
  'hero.base.ranger-aggressive':{'token':'ranger-aggressive_256.png','card':'card-hunter','src':'battle-tokens/units/ranger-aggressive_256.png','cardsrc':'crucible/art/base/ranger-aggressive1.png'},
  'hero.fixed.orphans':          {'token':'orphan-child_256.png','card':'card-orphan','src':'art/heroes/orphan-child/hex/l1_256.png','cardsrc':'art/heroes/orphan-child/card/l1.png','height':1.0},
+ # viewer.painted-board (2026-09-29): battle 1's School Teacher, the existing one-level civilian art (viewer SWITCHES schoolTeacherArt)
+ 'hero.fixed.school-teacher':   {'token':'schoolteacher_256.png','card':'card-schoolteacher','src':'art/heroes/schoolteacher/hex/l1_256.png','cardsrc':'art/heroes/schoolteacher/card/l1.png'},
  'hero.fixed.lumberjack-and-wife':{'token':'lumberjack_256.png','card':'card-lumberjack','src':'art/heroes/lumberjack/hex/l1_256.png','cardsrc':'art/heroes/lumberjack/card/l1.png','height':1.6},
  'hero.fixed.farmer':           {'token':'farmer_256.png','card':'card-farmer','src':'art/heroes/farmer/hex/l1_256.png','cardsrc':'art/heroes/farmer/card/l1.png','height':1.5},
  'unit.skeleton': {'token':'skeleton_256.png','card':'card-skeleton','src':'battle-tokens/units/skeleton_256.png','cardsrc':'assets/bestiary/eve/skeleton.png','height':1.55},

@@ -164,6 +164,17 @@ export function fold(S, e, ctx, now = 0) {
         u.kit.badges.push(e.badgeId)
         for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.badgeId, fielded: true }) }
       break
+    case 'unit.modified':
+      /* seam.unit-mods (engine 2026-09-25, mutate.ts applyUnitMods): the per-unit numbers a hero was
+         BUILT with, one line per source (the opening's first hero, the crucible roll, a set bonus).
+         Max Health and Max Stamina come stated as the unit's new pools, current rising with them;
+         every other stat is a `fielded` mod, like the kit's and the badges' — what the unit IS, not a
+         battle buff. Folded for viewer.painted-board: battle 1's hero carries two. */
+      if (U[e.actor]) { const u = U[e.actor]
+        if (e.maxHp != null) { u.maxHp = e.maxHp; u.hp = e.hp }
+        if (e.maxStamina != null) { u.maxStam = e.maxStamina; u.stam = e.stamina }
+        for (const [stat, value] of Object.entries(e.stats || {})) if (stat !== 'maxHp' && stat !== 'maxStamina') u.mods.push({ stat, op: 'add', value, source: e.source, fielded: true }) }
+      break
     case 'badge.gained':
       /* mid-battle: the deathbed's Wounded, an affliction's Rotting Flesh. The
          statmod.added / maxHp.* lines that follow put its modifiers on, so the
@@ -710,7 +721,7 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'move.stopped', 'aoo.provoked', 'aoo.skipped', 'block.rolled',
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten', 'unit.obliterated',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
-  'unit.badged', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
+  'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',
   'layer.painted', 'layer.cancelled', 'band.advanced', 'night.fell', 'light.cast',
   'ai.mode', 'ai.hunts', 'ai.override']

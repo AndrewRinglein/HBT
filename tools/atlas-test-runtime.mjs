@@ -7,7 +7,7 @@ import * as THREE from 'three'
 export {THREE}
 const require=createRequire(import.meta.url),esbuild=require('../../engine/node_modules/esbuild')
 export async function modules(){
- const entry=`export * from './src/atlas.js';export * from './src/atlas-renderer.js';export * from './src/atlas-inspector.js';export * from './src/terrain-scene.js';export * from './src/terrain3d.js';export * from '../assets/battle-atlas/scene.mjs';export {heightOf,syncUnits,syncCorpses,traverse,buildGround,syncProps,drawAim} from './src/board.js';`
+ const entry=`export * from './src/atlas.js';export * from './src/atlas-renderer.js';export * from './src/atlas-inspector.js';export * from './src/terrain-scene.js';export * from './src/terrain3d.js';export * from './src/painted.js';export * from '../assets/battle-atlas/scene.mjs';export {heightOf,syncUnits,syncCorpses,traverse,buildGround,syncProps,drawAim} from './src/board.js';`
  const result=await esbuild.build({stdin:{contents:entry,resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',nodePaths:[resolve('node_modules')],plugins:[{name:'one-three',setup(b){b.onResolve({filter:/^three$/},()=>({path:pathToFileURL(resolve('node_modules/three/build/three.module.js')).href,external:true}))}}]})
  mkdirSync('.build',{recursive:true});const path=resolve('.build/atlas-source-test.mjs');writeFileSync(path,result.outputFiles[0].text);return import(pathToFileURL(path).href)
 }

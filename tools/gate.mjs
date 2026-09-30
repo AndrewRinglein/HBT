@@ -143,7 +143,7 @@ function verifySlice(k) {
   return { ok, page, facts, why: ok ? '' : facts ? 'verify failed' : 'verify failed before it recorded its facts' }
 }
 const PAGE_TESTS = [
-  ['tools/terrain-scene.test.mjs', 'tools/terrain-player.test.mjs', 'tools/atlas-combat.test.mjs', 'tools/presentation-review.test.mjs', 'tools/bursts-player.test.mjs', 'tools/clock.test.mjs', 'tools/targeting.test.mjs', 'tools/base-hero-art.test.mjs', 'tools/opportunity-step.test.mjs'],
+  ['tools/terrain-scene.test.mjs', 'tools/terrain-player.test.mjs', 'tools/atlas-combat.test.mjs', 'tools/presentation-review.test.mjs', 'tools/bursts-player.test.mjs', 'tools/clock.test.mjs', 'tools/targeting.test.mjs', 'tools/base-hero-art.test.mjs', 'tools/opportunity-step.test.mjs', 'tools/painted-board.test.mjs'],
   ['tools/direct-map.test.mjs'],
 ]
 function pageTests() {

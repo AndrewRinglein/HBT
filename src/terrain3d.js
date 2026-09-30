@@ -1,15 +1,18 @@
 import * as THREE from 'three'
 import {clipMatrix,worldToCSS,displayHeights} from './terrain-scene.js'
 import {loadAtlasAssembly,atlasEnvironment} from './atlas-renderer.js'
+import {paintedToCSS,paintedHeights,loadPaintedScene,paintedEnvironment,PAINTED_EXPOSURE} from './painted.js'
+// Two scene sources behind one board: an Atlas layout (atlas.js) or a painted scene (painted.js, viewer.painted-board)
+const painted=b=>b?.kind==='painted'
 
 export function terrainLayer(V,driverFactory=createDriver){
  const wrap=V.dom.stage.parentNode,status=document.createElement('div');status.id='terrainStatus';status.setAttribute('role','status');wrap.appendChild(status)
  let disposed=false,driver=null,version=0
- function visibility(on){wrap.classList.toggle('terrain3d-ready',on);V.data.displayHeights=on?displayHeights(V.data.atlas,V.data.F):null;V.render?.()}
+ function visibility(on){wrap.classList.toggle('terrain3d-ready',on);V.data.displayHeights=on?(painted(V.data.atlas)?paintedHeights(V.data.atlas):displayHeights(V.data.atlas,V.data.F)):null;V.render?.()}
  function fail(error){if(disposed)return;version++;visibility(false);status.textContent='2D terrain · '+String(error?.message||error);driver?.dispose();driver=null}
  if(!V.data.atlas){status.textContent='2D battle · no authored Atlas scene linked';return{update(){},dispose(){status.remove()}}}
- status.textContent='Loading authored Atlas scene…'
- try{driver=driverFactory(V,fail);const current=++version;Promise.resolve(driver.ready).then(()=>{if(disposed||current!==version||!driver)return;visibility(true);status.textContent='Atlas 3D · '+V.data.atlas.plan.map.name},fail)}catch(error){fail(error)}
+ status.textContent=painted(V.data.atlas)?'Loading painted scene…':'Loading authored Atlas scene…'
+ try{driver=driverFactory(V,fail);const current=++version;Promise.resolve(driver.ready).then(()=>{if(disposed||current!==version||!driver)return;visibility(true);status.textContent=painted(V.data.atlas)?'Painted 3D · '+V.data.atlas.name:'Atlas 3D · '+V.data.atlas.plan.map.name},fail)}catch(error){fail(error)}
  return{update(){},dispose(){if(disposed)return;disposed=true;version++;driver?.dispose();driver=null;V.data.displayHeights=null;status.remove();wrap.classList.remove('terrain3d-ready')}}
 }
 export function createDriver(V,onFailure,platform={}){
@@ -17,14 +20,15 @@ export function createDriver(V,onFailure,platform={}){
  const wrap=V.dom.stage.parentNode,canvas=document.createElement('canvas');canvas.className='terrain3d-canvas';canvas.setAttribute('aria-hidden','true')
  const renderer=new (platform.Renderer||THREE.WebGLRenderer)({canvas,antialias:true,alpha:true})
  wrap.insertBefore(canvas,V.dom.stage);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace
- renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=painted(V.data.atlas)?PAINTED_EXPOSURE:1
  if(renderer.shadowMap){renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.shadowMap.autoUpdate=false}
- const scene=new THREE.Scene(),camera=new THREE.Camera(),affine=worldToCSS(V.data.atlas,V.data.F)
+ const scene=new THREE.Scene(),camera=new THREE.Camera(),affine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F)
  camera.matrixAutoUpdate=false;camera.matrixWorld.identity();camera.matrixWorldInverse.identity()
  let disposed=false,built,removeEnvironment,raf=null,cameraKey='',viewportKey='',dirty=true
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
- const ready=(platform.loadAssembly||loadAtlasAssembly)(V.data.atlas,{...platform,cancelled:()=>disposed}).then(result=>{
-  if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=atlasEnvironment(scene,built)
+ const load=painted(V.data.atlas)?(platform.loadPainted||loadPaintedScene):(platform.loadAssembly||loadAtlasAssembly)
+ const ready=load(V.data.atlas,{...platform,cancelled:()=>disposed}).then(result=>{
+  if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene):atlasEnvironment(scene,built)
   if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true;frame()
  })
  function frame(){if(disposed)return;try{

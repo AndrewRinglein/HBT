@@ -228,6 +228,10 @@ export function startHarness(mountEl, lib) {
   atlasLink.setAttribute('target', '_blank'); atlasLink.setAttribute('rel', 'noopener')
   atlasLink.textContent = 'Open Battle Atlas maps ↗'
   ;(q('#doc') || mountEl.parentNode).appendChild(atlasLink)
-  load(0)
+  /* the page's address may name the battle to open — its map or its scenario, e.g.
+     BATTLE-VIEWER.html#map.opening.orphanage (viewer.painted-board: battle 1 opens on its painted scene) */
+  const hash = typeof location !== 'undefined' && location && typeof location.hash === 'string' ? decodeURIComponent(location.hash.slice(1)) : ''
+  const named = hash ? lib.battles.findIndex(b => b.battle.seed && (b.battle.seed.mapId === hash || b.battle.seed.scenarioId === hash)) : -1
+  load(named >= 0 ? named : 0)
   return { load, playExport, playExportText, onDrop, battleData, get viewer() { return viewer }, dispose() { atlasLink.remove(); dd.remove(); document.removeEventListener('click',outside); document.removeEventListener('drop', onDrop); if (viewer) viewer.dispose() } }
 }

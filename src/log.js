@@ -104,6 +104,7 @@ export function buildLog(events, SN, turns) {
       case 'deathbed.none': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> downed — already Wounded, no roll <span class="sq">· ${e.reason}</span>`)
       case 'hp.reset': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> fights on at ${e.hp} / ${e.maxHp}`)
       case 'unit.badged': return b('', `&nbsp;&nbsp;${nmAt(e)} carries <span class="sq">${e.badgeId}</span>` + (Object.keys(e.mods || {}).length ? ` · ${Object.entries(e.mods).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}` : ''))
+      case 'unit.modified': return b('', `&nbsp;&nbsp;${nmAt(e)} built with <span class="sq">${e.source}</span>` + (Object.keys(e.stats || {}).length ? ` · ${Object.entries(e.stats).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}` : '') + ((e.attacks || []).length ? ` · ${e.attacks.map(a => a.itemId + ' damage ' + sgn(a.damage)).join(', ')}` : ''))
       case 'badge.gained': return b('down', `&nbsp;&nbsp;<b>${nmAt(e)}</b> gains <b>${e.name || e.badgeId}</b>` + (Object.keys(e.mods || {}).length ? ` <span class="sq">· ${Object.entries(e.mods).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}</span>` : ''))
       case 'badge.held': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} already had ${e.badgeId}`)
       case 'power.exhausted': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — <span class="sq">${e.abilityId}</span> has no uses left`)

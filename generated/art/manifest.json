@@ -56,6 +56,7 @@
   "card-rogue-skull.jpg",
   "card-rogue-snake.jpg",
   "card-rogueraven.jpg",
+  "card-schoolteacher.jpg",
   "card-shadowsorc.jpg",
   "card-skelarcher.jpg",
   "card-skeleton.jpg",
@@ -130,6 +131,7 @@
   "rogue-rose_256.png",
   "rogue-skull_256.png",
   "rogue-snake_256.png",
+  "schoolteacher_256.png",
   "shadow-sorcerer_256.png",
   "skeletal-archer_256.png",
   "skeleton-spider_256.png",
@@ -727,6 +729,12 @@
    "token": "osric_256.png",
    "card": "card-osric.jpg",
    "aspect": 0.5,
+   "height": 1.55
+  },
+  "hero.fixed.school-teacher": {
+   "token": "schoolteacher_256.png",
+   "card": "card-schoolteacher.jpg",
+   "aspect": 0.3594,
    "height": 1.55
   }
  }

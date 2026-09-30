@@ -144,6 +144,10 @@
   {
    "file": "test.prop-destroy.json",
    "label": "TEST · Destroy breaks barrels and an old stone wall (prop.damaged, prop.destroyed)"
+  },
+  {
+   "file": "test.opening-orphanage.json",
+   "label": "Orphanage · battle 1 on its painted scene"
   }
  ]
 }
