@@ -3497,3 +3497,16 @@ Andrew, asked whether the End activation button (kept by `viewer.play-chrome`, `
 Ruled:
 
 - **The End activation button stays** for a human hero who is acting — for ending an activation without doing another action (a hero that only moved, or used only a free primary). After a non-free primary it is still never needed: that ends the activation by itself (2026-09-29).
+
+## 2026-09-30 — the fast process; the full process kept
+
+Andrew: “So, with Start Engine and how I'm developing in this system, according to the documentation, it's doing a good job, but it's kind of slow. It's taken me like a week to build a bunch of things, and I would like to speed this up. What in this process is making it take so long? I don't think it needs as many tests of battles as it's doing.”
+
+Shown the gauntlet log (199 landings, 84% passed the gate on the first try; the checks that failed most were the cheap ones, and the full suite caught 16 regressions in 120 runs) and that most of the remaining time in Cowork is the ~178 s command limit — the suite as eight shards, the gate resumed across calls — Andrew: “Okay, can we preserve the long process somewhere, but then update this to our new fast process?”
+
+Ruled:
+
+- **The full process is kept, restorable exactly:** the git tag `process-full-2026-09-30` (the engine repo at the wrap before this change), and `node tools/gate.mjs <id> --full`, which runs every per-item check as before.
+- **Fast is the default.** A landing no longer runs the prior-art and wrong-home flags per item; `wrap` runs both over the whole tree, as flags that never block. The kill switch runs on the test files the item ADDED; an item that added none keeps every test file it touched, as before. Every other check is unchanged.
+- **Outside Cowork the full suite is one command**, `node tools/gate.mjs --shard 1/1` (any complete set of shards is the suite, so `wrap` accepts it). The gate already has no budget in a terminal.
+- Recommended, not ruled: engine chats run in Claude Code on Andrew's PC, where no command limit applies. Turning Cowork's cloud off does not remove the limit — its local workspace has the same one.
