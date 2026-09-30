@@ -268,5 +268,11 @@
   "sha": "51afeb9",
   "now": "encounter.opening.bridge-ai-refiled — the playable opening. Landed (flagged for review): the Bridge stalled because the ranged-kite ladder put safety ahead of a shot, so flying Imps never found a hex both safe and in range; a kiter with no melee ally now plays a positionAlone ladder (a shot first) and clearShot reads line of sight; Battle 3 ends on all 100 seeds, heroes win 1-2%; control battles unchanged; suite green 2396. Tried: encounter.opening.bridge-ai abandoned (filed without probeIds) and re-filed, ruled 2026-09-30. Next: Andrew — the Bridge's difficulty and kingdom.opening-loop-three's dependency on the abandoned id; viewer.opening-cast.",
   "committed": true
+ },
+ {
+  "at": "2026-09-30 22:55",
+  "sha": "651a60e",
+  "now": "viewer.opening-cast — the playable opening. Landed: battles 2 and 3 in the new screen — Skeleton Archer, the Soldier (Armored Skeleton), Imps flying (the demo's winged imp), heroes in the demo's archer (Ranger) or Oathblade (every other class) outfit, civilians on their tokens; a body with no strike or shot leans and the board flies the arrow; suite green 2402. Tried: nothing abandoned. Next: Andrew — eyeball battles 2 and 3 in kingdom/BATTLE-SANDBOX.html; the Fire Imp has no flight in the engine, so it walks; the Lumberjack's Wife has no art; kingdom.abbotown-map.",
+  "committed": false
  }
 ]
