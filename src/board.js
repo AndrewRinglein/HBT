@@ -239,7 +239,9 @@ export function syncCorpses(V) {
      `cancelBeats` drops the leavers, so a seek is still instant. */
   for (const [id, E] of L.CORPSE) if (!want[id] && !E.leaving) { E.node.remove(); L.CORPSE.delete(id) }
   for (const c of Object.values(want)) {
-    if (L.CORPSE.has(c.id)) { L.CORPSE.get(c.id).node.style.transform = `translateZ(${heightOf(V, c.hex)}px)`; continue }
+    /* a body that is its 3D model lies there itself (viewer.character-models): the flat art gives way */
+    const art = V.cast?.shows(c.of) ? '0' : '.38'
+    if (L.CORPSE.has(c.id)) { const E = L.CORPSE.get(c.id); E.node.style.transform = `translateZ(${heightOf(V, c.hex)}px)`; E.img.style.opacity = art; continue }
     const a = ARTMAP[c.typeId] || ARTMAP._pending
     const f = feetOf(V, c.hex)
     const root = el('corpse', `left:${f.x}px;top:${f.y}px`)
@@ -249,7 +251,7 @@ export function syncCorpses(V) {
     const cw = Math.round(ch * a.aspect)
     const toCentre = Math.round(LAYOUT.H * 0.28)
     const img = el('', `position:absolute;left:${-cw / 2}px;top:${-ch / 2 - toCentre}px;width:${cw}px;height:${ch}px;` +
-      `background-repeat:no-repeat;background-position:center bottom;background-size:contain;transform:rotate(-90deg);opacity:.38;pointer-events:none`)
+      `background-repeat:no-repeat;background-position:center bottom;background-size:contain;transform:rotate(-90deg);opacity:${art};pointer-events:none`)
     img.style.backgroundImage = `url("${ASSETS[a.token]}")`
     root.appendChild(img)
     L.corpseL.appendChild(root); L.CORPSE.set(c.id, { node: root, img })
@@ -677,8 +679,9 @@ export function deathbedModal(V, c) {
 export function playCues(V, cues) {
   for (const c of cues) {
     switch (c.k) {
-      case 'lunge': lunge(V, c.a, c.t); break
-      case 'flash': hitFlash(V, c.id); break
+      /* the models strike and flinch on the same cues the standees lunge and flash on (viewer.character-models) */
+      case 'lunge': lunge(V, c.a, c.t); V.cast?.strike(c.a, c.t, c.kind); break
+      case 'flash': hitFlash(V, c.id); V.cast?.flinch(c.id); break
       case 'hitstop': hitstop(V, c.ms); break
       case 'float': pushFloat(V, c.hex, c.text, floatHue(c), c); break
       case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg, c.crit); break
@@ -792,9 +795,12 @@ export function syncUnits(V) {
     E.img.style.transform = down ? 'rotate(-90deg) ' + LIFT : prone ? 'rotate(-62deg) ' + LIFT : LIFT
     if (down) E.img.style.top = (-Math.round(hpx * 0.42)) + 'px'
     else if (prone) E.img.style.top = (-Math.round(hpx * 0.9)) + 'px'
-    /* A DOWNED HERO IS STILL A PERSON, not a decal (ruled 2026-09-01) */
-    E.img.style.opacity = down ? '.82' : '1'
-    E.img.style.boxShadow = down ? '0 10px 16px -6px rgba(0,0,0,.85)' : ''
+    /* A DOWNED HERO IS STILL A PERSON, not a decal (ruled 2026-09-01). A unit drawn as its 3D model
+       (viewer.character-models) keeps the standee only as its click target: ring, shadow, bars, chips and
+       the bleed-out counter stay; the picture is the model's. */
+    const modelled = !!V.cast?.shows(u.id)
+    E.img.style.opacity = modelled ? '0' : down ? '.82' : '1'
+    E.img.style.boxShadow = down && !modelled ? '0 10px 16px -6px rgba(0,0,0,.85)' : ''
     E.flash.style.left = (-w / 2 - 8) + 'px'; E.flash.style.top = (-hpx * 0.7) + 'px'
     E.flash.style.width = (w + 16) + 'px'; E.flash.style.height = (hpx * 0.6) + 'px'
     E.downR.style.display = down ? '' : 'none'

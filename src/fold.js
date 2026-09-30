@@ -306,7 +306,7 @@ export function fold(S, e, ctx, now = 0) {
     case 'attack.declared':
       S.BURST = null
       if (U[e.actor] && U[e.target]) {
-        cue('lunge', { a: e.actor, t: e.target })
+        cue('lunge', { a: e.actor, t: e.target, kind: e.kind })
         S.AIM = { from: U[e.actor].hex, to: U[e.target].hex, hit: e.hitChance,
           type: e.damageType, tgt: e.target, kind: e.kind,
           dmg: e.damageOnHit,

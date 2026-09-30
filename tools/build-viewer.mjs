@@ -20,6 +20,7 @@ import { resolve, join, extname, dirname, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { packTerrainAssets } from './terrain-assets.mjs'
 import { packPaintedScenes } from './painted-scenes.mjs'
+import { packCharacterModels } from './character-models.mjs'
 import { assertRuntimeMetadata } from './runtime-metadata.mjs'
 
 const require = createRequire(import.meta.url)
@@ -90,6 +91,8 @@ const { outputFiles, warnings, metafile } = esbuild.buildSync({
     __BUNDLED_ATLAS__: JSON.stringify(packTerrainAssets()),
     /* viewer.painted-board: the painted scenes' hex alignment, related to the engine's board once, at build */
     __BUNDLED_PAINTED__: JSON.stringify(packPaintedScenes(fields)),
+    /* viewer.character-models: which unit types are 3D models, each motion's file, clip and hash */
+    __BUNDLED_MODELS__: JSON.stringify(await packCharacterModels()),
     __BUNDLED_STATIC__: JSON.stringify({ units: statics.units, statuses: statics.statuses, absorbingStatuses: statics.absorbingStatuses, maps: statics.maps, engineCommit: statics.engineCommit,
       /* `actions` is the ONE registry (§11) — a grant of any kind resolves there — and `badges` the
          badge table (§12). The `attacks`/`abilities` views are a PROVEN SUBSET of `actions` and were
@@ -123,7 +126,7 @@ const tmp = join(PKG, '.build', 'BATTLE-VIEWER.candidate.html')
 writeFileSync(tmp, page)
 try {
   execFileSync('node', ['tools/verify.mjs', tmp], { stdio: 'inherit' })
-  execFileSync('node', ['--test', 'tools/terrain-scene.test.mjs', 'tools/terrain-player.test.mjs', 'tools/atlas-combat.test.mjs', 'tools/presentation-review.test.mjs', 'tools/bursts-player.test.mjs', 'tools/clock.test.mjs', 'tools/targeting.test.mjs', 'tools/base-hero-art.test.mjs', 'tools/opportunity-step.test.mjs', 'tools/painted-board.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
+  execFileSync('node', ['--test', 'tools/terrain-scene.test.mjs', 'tools/terrain-player.test.mjs', 'tools/atlas-combat.test.mjs', 'tools/presentation-review.test.mjs', 'tools/bursts-player.test.mjs', 'tools/clock.test.mjs', 'tools/targeting.test.mjs', 'tools/base-hero-art.test.mjs', 'tools/opportunity-step.test.mjs', 'tools/painted-board.test.mjs', 'tools/character-models.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
   execFileSync('node', ['--test', 'tools/direct-map.test.mjs'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: tmp } })
 } catch (e) {
   console.error(`build-viewer: verify FAILED — ${OUT} left untouched; the candidate is at ${tmp}`)

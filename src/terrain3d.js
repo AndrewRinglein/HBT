@@ -2,6 +2,8 @@ import * as THREE from 'three'
 import {clipMatrix,worldToCSS,displayHeights} from './terrain-scene.js'
 import {loadAtlasAssembly,atlasEnvironment} from './atlas-renderer.js'
 import {paintedToCSS,paintedHeights,loadPaintedScene,paintedEnvironment,PAINTED_EXPOSURE} from './painted.js'
+import {createCast} from './models.js'
+// The units drawn as 3D models stand in the same scene (viewer.character-models, models.js): board px -> scene by the inverse of the scene's own map
 // Two scene sources behind one board: an Atlas layout (atlas.js) or a painted scene (painted.js, viewer.painted-board)
 const painted=b=>b?.kind==='painted'
 
@@ -24,14 +26,18 @@ export function createDriver(V,onFailure,platform={}){
  if(renderer.shadowMap){renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.shadowMap.autoUpdate=false}
  const scene=new THREE.Scene(),camera=new THREE.Camera(),affine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F)
  camera.matrixAutoUpdate=false;camera.matrixWorld.identity();camera.matrixWorldInverse.identity()
- let disposed=false,built,removeEnvironment,raf=null,cameraKey='',viewportKey='',dirty=true
+ let disposed=false,built,removeEnvironment,raf=null,cameraKey='',viewportKey='',dirty=true,last=null
+ const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
  const load=painted(V.data.atlas)?(platform.loadPainted||loadPaintedScene):(platform.loadAssembly||loadAtlasAssembly)
  const ready=load(V.data.atlas,{...platform,cancelled:()=>disposed}).then(result=>{
   if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene):atlasEnvironment(scene,built)
+  if(V.data.models)V.cast=(platform.createCast||createCast)(V,scene,affine.clone().invert(),{...(platform.models||{}),location:platform.location,onError:(look,error)=>{const st=wrap.querySelector('#terrainStatus');if(st)st.textContent+=' · '+look.name+' is its token: '+String(error?.message||error)}})
   if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true;frame()
  })
  function frame(){if(disposed)return;try{
+  const t=clock(),dt=last===null?0:Math.min(.1,Math.max(0,(t-last)/1000));last=t
+  if(V.cast){V.cast.frame(dt);if(V.cast.size)dirty=true}
   const style=(platform.readStyle||getComputedStyle)(V.dom.stage),w=wrap.clientWidth,h=wrap.clientHeight,key=style.transform+'|'+style.transformOrigin+'|'+w+'|'+h
   if(key!==cameraKey&&w>0&&h>0){const matrix=platform.matrix?platform.matrix(style.transform):new window.DOMMatrixReadOnly(style.transform==='none'?undefined:style.transform)
    camera.projectionMatrix.fromArray(clipMatrix(Array.from(matrix.toFloat64Array()),style.transformOrigin.split(' ').map(parseFloat),V.data.F,{w,h})).multiply(affine)
@@ -39,5 +45,5 @@ export function createDriver(V,onFailure,platform={}){
   if(w>0&&h>0&&viewportKey!==w+'x'+h){renderer.setSize(w,h,false);viewportKey=w+'x'+h;dirty=true}
   if(dirty&&w>0&&h>0){renderer.render(scene,camera);dirty=false}raf=requestAnimationFrame(frame)
  }catch(error){onFailure(error)}}
- return{ready,dispose(){if(disposed)return;disposed=true;if(raf!==null)window.cancelAnimationFrame(raf);canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove()}}
+ return{ready,dispose(){if(disposed)return;disposed=true;if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove()}}
 }

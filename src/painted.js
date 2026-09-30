@@ -32,7 +32,8 @@ export function paintedToCSS(b) {
 export const paintedHeights = b => b.heights.slice()
 export const paintedSceneURL = (b, location) => atlasSourceURL('assets/terrain-3d/' + b.scene + '/scene.glb', location)
 
-function release(root) {
+/** free a parsed scene's geometry, materials and textures (the character models reuse it: models.js) */
+export function release(root) {
   const geometries = new Set(), materials = new Set(), textures = new Set()
   root.traverse(o => { if (o.geometry) geometries.add(o.geometry); for (const m of [].concat(o.material || [])) { materials.add(m); for (const v of Object.values(m)) if (v?.isTexture) textures.add(v) } })
   geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => { t.source?.data?.close?.(); t.dispose() })

@@ -28,6 +28,7 @@
 import { targetingFacts } from './targeting.js'
 import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf } from './board.js'
 import { terrainLayer } from './terrain3d.js'
+import { bundledModels } from './models.js'
 import {prepareAtlasBinding} from './atlas.js'
 import {paintedBinding, bundledPainted} from './painted.js'
 import { createState, fold, foldTo } from './fold.js'
@@ -126,7 +127,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     dom, now,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ABSORBING_STATUSES: data.absorbingStatuses || [],
       LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
-      ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null },
+      ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
+      /* viewer.character-models: which unit types are drawn as 3D models (a host may hand its own pack) */
+      models: data.characterModels ?? bundledModels },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
     view: { burstVisible: false, inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null }, cam: homeCam(), home: null },
@@ -377,6 +380,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     V.view.inspectId = null                       // a click from before the scrub must not outrank the actor after it
     for (const E of V.layers.UEL.values()) { if (E.walk) { E.walk.cancel(); E.walk = null } E.root.style.transition = 'none' }
     render()
+    V.cast?.snap()                                // the models land on their resting pose, the fallen at the death's end
     requestAnimationFrame(() => { for (const E of V.layers.UEL.values()) E.root.style.transition = ROOT_TRANSITION })
     if (opts.onCursor) opts.onCursor(V.cursor, V.EV[V.cursor - 1] || null)
     if (V.playing) V.timer = setTimeout(step, 120)
