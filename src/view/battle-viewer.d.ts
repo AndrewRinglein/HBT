@@ -3,6 +3,9 @@
 declare module '*viewer/src/viewer.js' {
   export function mountBattleViewer(root: HTMLElement, data: unknown, opts?: Record<string, unknown>): {
     setTargeting(facts:{legalHexes:readonly number[];centre:number|null;hexes:readonly number[];shielded:readonly {hex:number;props:readonly string[]}[]}|null):void
+    /** viewer.play-input: the plan facts to draw (src/ui/play-input.ts PlayFacts), or null to stop taking the mouse */
+    setPlay(facts:object|null):void
+    inspect(id:number|null):void
     push(events: readonly unknown[]): void
     seek(cursor: number): void
     play(): void

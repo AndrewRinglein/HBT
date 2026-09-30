@@ -4,7 +4,8 @@ import {viewSandbox} from '../view/sandbox.js'
 import {createBattleSurface} from './battle-surface.js'
 import {burstForecast} from './burst-forecast.js'
 import {sandboxTargetingOf} from './sandbox-targeting.js'
-import {controllerOf,validateBattleCommand} from '../engine.js'
+import {controllerOf,validateBattleCommand,type BattleCommand} from '../engine.js'
+import {createPlayInput,type PlayEvent} from './play-input.js'
 
 declare const __BATTLE_VIEW_DATA__:Record<string,unknown>
 declare const __BUILD_SHA__:string
@@ -13,6 +14,20 @@ const root=document.getElementById('app')!
 const escape=(x:unknown)=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!))
 let session:Sandbox|null=null,surface:ReturnType<typeof createBattleSurface>|null=null,generation=0,busy=false,fault='',error='',choices:SandboxChoice[]=[],swap:SandboxSwapOffer|null=null,selectedSwap='',selectedAction='',selectedAim='',selectedActor=''
 const config:SandboxConfig=structuredClone(SANDBOX_DEFAULT)
+// viewer.play-input (PLAYABLE-OPENING-PLAN.md item 7): the mouse on the battle screen. The play input asks the engine and
+// runs each command it makes through the same host path the Execute button uses; the viewer draws its facts.
+const play=createPlayInput(()=>session,runPlay)
+function runPlay(command:BattleCommand){
+ if(!session||!surface?.viewer)return {ok:false as const,reason:'Start a battle first'}
+ const before=session.ctx.events.length
+ let result:ReturnType<typeof commandSandbox>
+ try{result=commandSandbox(session,command)}catch(e){fault=(e as Error).message;error=fault;busy=false;throw e}
+ if(!result.ok){error=result.reason;return result}
+ error='';busy=true;surface.viewer.push(session.ctx.events.slice(before));surface.viewer.play()
+ return result
+}
+/** the plan facts while a human can act; none while the resolved actions play, after a fault or at the outcome */
+function refreshPlay(){if(!surface?.viewer)return;surface.viewer.setPlay(!session||busy||fault||session.ctx.state.outcome?null:play.facts())}
 root.innerHTML=`<header><h1>Battle Sandbox</h1><p>Command the heroes against AI enemies on an authored battlefield.</p><a href="SLICE.html">Kingdom</a> · <a href="../viewer/BATTLE-VIEWER.html">Battle Viewer</a> · <a href="../assets/battle-atlas/index.html">Battle Atlas</a></header><section id="setup"></section><section id="commands" aria-live="polite"></section><div id="battle"></div><section id="transfer"><h2>Save and replay</h2><p>Save keeps the full battle for resuming. Replay JSON opens in the Battle Viewer.</p><button data-act="save">Save battle</button> <button data-act="resume">Resume saved battle</button> <button data-act="export">Export replay JSON</button> <button data-act="import">Resume pasted save</button><label for="transferText">Battle save / replay JSON</label><textarea id="transferText" rows="5" spellcheck="false"></textarea></section><footer>Kingdom ${escape(__BUILD_SHA__)} · engine ${escape(__ENGINE_PROVENANCE__.engineCommit)}${__ENGINE_PROVENANCE__.engineDirty?' (dirty source)':''}</footer>`
 const q=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T
 const options=(rows:readonly {id:string;name:string}[],selected:string)=>rows.map(r=>`<option value="${escape(r.id)}"${r.id===selected?' selected':''}>${escape(r.name)}</option>`).join('')
@@ -80,13 +95,14 @@ function controls(){
  // encounter.area-fall: the areas marked to fall, shown from their area.marked line until they land
  const marked=session&&!session.ctx.state.outcome?sandboxMarkedAreas(session):[]
  const markedNote=marked.map(m=>`<p id="markedAreas" role="status">Marked to fall after Turn ${m.landsAfterTurn}'s Player Phase (${escape(m.fall)}): hexes ${m.hexes.map(h=>`${h} (${session!.ctx.geo.colOf(h)}, ${session!.ctx.geo.rowOf(h)})`).join(', ')}</p>`).join('')
- q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?.name??'Resolving battle')}`:'Start a battle to play'}</h2>${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`:''}`
+ q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?.name??'Resolving battle')}`:'Start a battle to play'}</h2>${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}${busy||fault?'':'<p id="playHelp">On the board: click a hero to act · click a hex for a ghost, click it again to move · click an action on the bar, point at an enemy for the forecast, click it, click again to confirm · right-click (or Esc) steps back.</p>'}${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`:''}`
  changeListener(q('commands'),q<HTMLSelectElement>('actor'),()=>{selectedActor=q<HTMLSelectElement>('actor').value;controls()},'selecting')
  changeListener(q('commands'),q<HTMLSelectElement>('action'),()=>{selectedAction=q<HTMLSelectElement>('action').value;selectedAim='';controls()},'acting')
  changeListener(q('commands'),q<HTMLSelectElement>('aim'),()=>{selectedAim=q<HTMLSelectElement>('aim').value;controls()},'acting')
  changeListener(q('commands'),q<HTMLSelectElement>('swap'),()=>{selectedSwap=q<HTMLSelectElement>('swap').value;controls()},'acting')
  bind(q('commands'))
  surface?.viewer?.setTargeting(fault?null:targeting)
+ refreshPlay()
 }
 function install(next:Sandbox){
  const epoch=generation+1
@@ -98,6 +114,12 @@ function install(next:Sandbox){
   const choice=choices.find(c=>actionKey(c)===selectedAction&&(('centre' in c.command&&c.command.centre===hex)||('hex' in c.command&&c.command.hex===hex)))
   if(!choice||!validateBattleCommand(session.ctx,session.policy,choice.command).ok)return false
   selectedAim=JSON.stringify(choice.command);controls();return true
+ },onPlay:(e:PlayEvent)=>{
+  if(epoch!==generation||!session||busy||fault||session.ctx.state.outcome)return false
+  let took=false
+  try{took=play.input(e)}catch(err){fault=(err as Error).message;error=fault;busy=false;controls();return false}
+  if(e.kind==='point'){if(took)refreshPlay();return took}
+  controls();return took
  },onDrain:()=>{if(epoch!==generation)return;busy=false;controls()},onError:(e:Error)=>{if(epoch!==generation)return;fault=e.message;error=fault;busy=false;controls()}})
  const staging=document.createElement('div'),view=viewSandbox(next)
  try{candidate.mount(staging,view)}catch(e){candidate.dispose();throw e}
@@ -128,5 +150,11 @@ function action(act:string){let mayHaveMutated=false;try{
  }catch(e){error=(e as Error).message;if(mayHaveMutated){fault=error;busy=false}controls()}}
 function bind(host:HTMLElement){host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',()=>{if(!attached(host,el)||el.hasAttribute('disabled'))return;action(el.dataset.act!)}))}
 bind(q('transfer'));setup();controls()
+// viewer.play-input: ?play=<encounter id>[&heroes=<hero id>,…] fields that encounter at once — the playable opening's
+// battles open straight onto the board (kingdom SWITCHES.md playInputOpenOn)
+{const params=typeof location!=='undefined'&&location.search?new URLSearchParams(location.search):null,want=params?.get('play')
+ if(want&&SANDBOX_ENCOUNTERS.some(e=>e.id===want)){config.encounterId=want
+  const heroes=(params!.get('heroes')??'').split(',').filter(id=>SANDBOX_HEROES.some(h=>h.id===id)).slice(0,6);if(heroes.length)config.heroes=heroes
+  setup();action('start')}}
 // A read-only integration handle for the built-page smoke; commands still use UI listeners.
 Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation}}})

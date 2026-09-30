@@ -65,6 +65,13 @@ export { propAttackHexes } from '../../engine/src/core/prop-attack.js'
 export { engineVocabulary } from '../../engine/src/core/vocabulary.js'
 export type { EngineVocabulary } from '../../engine/src/core/vocabulary.js'
 export { OUTCOMES, LIFE_STATES } from '../../engine/src/core/types.js'
+// Widened 2026-09-30 for viewer.play-input (PLAYABLE-OPENING-PLAN.md item 7; engine preview.from-planned-hex aaacea8):
+// the ghost's forecast (forecastFrom, previewFrom — reach, provoke points, the attack from where the hero WOULD stand),
+// the enemy reach query (threatOf — "pointing at an enemy lights up where it can move and hit") and who holds a zone
+// of control over a hex (zocHoldersAt — the hatching). Read-only lookaheads on forks; no rule, no mutator.
+export { forecastFrom, previewFrom, threatOf } from '../../engine/src/core/forecast.js'
+export type { Forecast, PlannedMove } from '../../engine/src/core/forecast.js'
+export { zocHoldersAt } from '../../engine/src/core/movement.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing

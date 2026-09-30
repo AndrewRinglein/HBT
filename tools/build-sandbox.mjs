@@ -5,7 +5,10 @@ import {battleViewAssets,scopeBattleCSS} from './battle-view-assets.mjs'
 const require=createRequire(import.meta.url),esbuild=require('../../engine/node_modules/esbuild')
 const sha=execFileSync('git',['rev-parse','--short','HEAD'],{encoding:'utf8'}).trim()
 const provenance={engineCommit:execFileSync('git',['-C','../engine','rev-parse','--short','HEAD'],{encoding:'utf8'}).trim(),engineDirty:!!execFileSync('git',['-C','../engine','status','--porcelain'],{encoding:'utf8'}).trim()}
-const data=battleViewAssets()
+// viewer.play-input: the playable screen's battles stand on their painted scenes with their 3D models — the viewer's own
+// packs (viewer.painted-board, viewer.character-models), handed to the component as data like every other table
+const {packPaintedScenes}=await import('../../viewer/tools/painted-scenes.mjs'),{packCharacterModels}=await import('../../viewer/tools/character-models.mjs')
+const data={...battleViewAssets(),paintedScenes:packPaintedScenes(),characterModels:await packCharacterModels()}
 const result=esbuild.buildSync({entryPoints:['src/ui/sandbox.ts'],nodePaths:['../viewer/node_modules'],bundle:true,platform:'browser',format:'iife',target:['es2022'],write:false,legalComments:'none',define:{__BUILD_SHA__:JSON.stringify(sha),__ENGINE_PROVENANCE__:JSON.stringify(provenance),__BATTLE_VIEW_DATA__:JSON.stringify(data)}})
 const shared=readFileSync('../viewer/src/styles.css','utf8').replace(/url\(["']?art\/([^"')]+)["']?\)/g,(_,file)=>{if(!data.assets[file])throw Error('Missing viewer CSS art '+file);return `url("${data.assets[file]}")`})
 const css=readFileSync('src/ui/sandbox.css','utf8')+'\n'+scopeBattleCSS(shared)
