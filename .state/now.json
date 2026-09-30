@@ -1,11 +1,11 @@
 {
- "now": "the fast process — engine harness. Landed tool.fast-process: the gate is fast by default (prior-art and wrong-home run once at wrap, the kill switch re-runs only added test files), --full and the git tag process-full-2026-09-30 keep the old process; outside Cowork the suite is one command, --shard 1/1; ruled 2026-09-30; suite green 2387. Tried: nothing abandoned. Next: Andrew plays battle 1 (the eyeball check); encounter.opening.bridge-ai; engine chats in Claude Code on Andrew's PC (recommended, not ruled).",
- "at": "2026-09-30 09:36",
- "sha": "4a8e329",
+ "now": "encounter.opening.bridge-ai-refiled — the playable opening. Landed (flagged for review): the Bridge stalled because the ranged-kite ladder put safety ahead of a shot, so flying Imps never found a hex both safe and in range; a kiter with no melee ally now plays a positionAlone ladder (a shot first) and clearShot reads line of sight; Battle 3 ends on all 100 seeds, heroes win 1-2%; control battles unchanged; suite green 2396. Tried: encounter.opening.bridge-ai abandoned (filed without probeIds) and re-filed, ruled 2026-09-30. Next: Andrew — the Bridge's difficulty and kingdom.opening-loop-three's dependency on the abandoned id; viewer.opening-cast.",
+ "at": "2026-09-30 20:00",
+ "sha": "51afeb9",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: take the top of the queue (encounter.opening.bridge-ai)",
+  "label": "New chat with Heroes of Blight and Tragic — engine: take the top of the queue (viewer.opening-cast)",
   "line": "start engine"
  }
 }
