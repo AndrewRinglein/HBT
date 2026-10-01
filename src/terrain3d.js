@@ -37,12 +37,12 @@ export function createDriver(V,onFailure,platform={}){
  if(renderer.shadowMap){renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.shadowMap.autoUpdate=false}
  /* the board's map (viewer.js sets it; a driver handed a bare board makes it the same way) */
  const scene=new THREE.Scene(),affine=V.data.boardAffine||(V.data.boardAffine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F))
- let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null
+ let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0
  const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
  const load=painted(V.data.atlas)?(platform.loadPainted||loadPaintedScene):(platform.loadAssembly||loadAtlasAssembly)
  const ready=load(V.data.atlas,{...platform,cancelled:()=>disposed}).then(result=>{
-  if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene):atlasEnvironment(scene,built)
+  if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene,V.data.atlas):atlasEnvironment(scene,built)
   if(V.data.models)V.cast=(platform.createCast||createCast)(V,scene,affine.clone().invert(),{...(platform.models||{}),location:platform.location,onError:(look,error,detail)=>{const st=wrap.querySelector('#terrainStatus');if(st)st.textContent+=' · '+look.name+(detail?.appearance?' transformation unavailable: ':' is its token: ')+String(error?.message||error)}})
   if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true
   /* viewer.bodies-before-board: the board opens with every body on it standing — never their 2D tokens first */
@@ -51,6 +51,8 @@ export function createDriver(V,onFailure,platform={}){
  function frame(){if(disposed)return;try{
   const t=clock(),dt=last===null?0:Math.min(.1,Math.max(0,(t-last)/1000));last=t
   if(V.cast){V.cast.frame(dt);if(V.cast.size)dirty=true}
+  /* viewer.caravan-scene: a scene whose fires and fog move draws every frame, camera and units still or not */
+  if(built?.animated&&V.camera3d){effectTime+=dt;built.animate(effectTime,V.camera3d);dirty=true}
   const w=wrap.clientWidth,h=wrap.clientHeight
   /* a board that has not framed itself yet (a bare one) is seen from the starting angled view at its middle */
   if(!V.camera3d&&w>0&&h>0){V.camera3d=orbitCamera(affine,{x:V.data.F.w/2,y:V.data.F.h/2,yaw:0,tilt:V.data.F.tilt,zoom:1},{w,h});V.camVersion=(V.camVersion||0)+1}

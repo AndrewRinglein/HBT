@@ -34,7 +34,7 @@ Python 3 with Pillow is present for the art half.
 ```
 node tools/gate.mjs --part checks       door probe · laws 5 and 6 · typecheck · tool suites · engine map list vs the dumps (~10 s)
 node tools/gate.mjs --part verify k/4   k = 1..4: build the candidate into .build/, verify.mjs over slice k of the library (~60 s each)
-node tools/gate.mjs --part tests        the node --test lists against the candidate page (~60 s)
+node tools/gate.mjs --part tests k/2    k = 1, 2: half of the node --test lists each against the candidate page (~90 s each; one part until 2026-10-01, when it neared Cowork's ~178 s kill)
 node tools/gate.mjs --status            which parts passed on this exact tree (hash in .build/gate-parts.json) + verify's library-wide checks
 node tools/gate.mjs --land              refuses unless every part passed on this tree; writes BATTLE-VIEWER.html from the byte-identical rebuild
 node tools/gate.mjs                     every part in one command (no shell time limit only — Cowork kills it at ~178 s)

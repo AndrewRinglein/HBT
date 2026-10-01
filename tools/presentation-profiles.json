@@ -1,0 +1,16 @@
+{
+  "_note": "viewer.caravan-scene (2026-10-01; ../ATLAS-COMBAT-INTEGRATION.md 'Caravan camera and surroundings: implementation handoff — 2026-10-01'): how a painted scene is PRESENTED in the battle screen, by scene. Look settings only — the scene's facts (its fires, its cursed hexes, its hexes) are read from the scene's own files when the pack is built (tools/presentation-profile.mjs), never written here. Validated by tools/presentation-profile.mjs; a scene with no profile is presented as before.",
+  "caravan-aftermath": {
+    "source": "assets/battle-atlas/caravan-aftermath.mjs — the accepted caravan preview (root 415528d, d9e5482; Andrew 2026-10-01: \"Okay, that works well.\")",
+    "environment": { "background": "#302c25" },
+    "surroundings": {
+      "groundName": "Ground_Moor",
+      "propNames": ["Tree_Boundary_0", "Growth_DryScrub", "Growth_DryScrub.004", "Growth_DryScrub.021", "Boundary_Rocks", "Rock_Outcrop"],
+      "soilPatches": [[0.31, 0.83, 0.16, 0.15], [0.06, 0.82, 0.18, 0.14]],
+      "seed": 731,
+      "width": 95,
+      "keepOut": [{ "side": "west", "zFrom": -14, "zTo": -5 }, { "side": "east", "zFrom": -2, "zTo": 9 }]
+    },
+    "effects": { "fire": true, "cursedGround": true }
+  }
+}

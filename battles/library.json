@@ -156,6 +156,10 @@
   {
    "file": "test.opening-bridge.json",
    "label": "Bridge · battle 3 on its painted scene"
+  },
+  {
+   "file": "test.caravan-aftermath.json",
+   "label": "Caravan Aftermath · on its painted scene (provisional fight)"
   }
  ]
 }

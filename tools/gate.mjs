@@ -46,7 +46,11 @@ const fail = (m) => { throw new GateFail(m) }
 const SLICES = 4
 const RECORD = '.build/gate-parts.json'
 const CANDIDATE = '.build/gate-candidate.html'
-const PARTS = ['checks', ...Array.from({ length: SLICES }, (_, i) => `verify ${i + 1}/${SLICES}`), 'tests']
+/* the page tests run as TEST_PARTS parts (viewer.caravan-scene, 2026-10-01): the one tests part had grown to 165-168 s against
+   Cowork's ~178 s kill — one more test file and it could never finish there. Each part is one share of PAGE_TESTS' files in
+   order, consecutive files of the same list still one node --test run. */
+const TEST_PARTS = 2
+const PARTS = ['checks', ...Array.from({ length: SLICES }, (_, i) => `verify ${i + 1}/${SLICES}`), ...Array.from({ length: TEST_PARTS }, (_, i) => `tests ${i + 1}/${TEST_PARTS}`)]
 
 /* the working tree as `git add -A` would commit it, through a throwaway index;
    .build/ (the record, the candidate) leaves the hash staged or not */
@@ -143,10 +147,17 @@ function verifySlice(k) {
   if (!facts || facts.k !== k || facts.n !== SLICES) ok = false
   return { ok, page, facts, why: ok ? '' : facts ? 'verify failed' : 'verify failed before it recorded its facts' }
 }
-function pageTests() {
+/** the node --test runs of test part k (1-based): PAGE_TESTS' files in order, cut into TEST_PARTS shares by count */
+function testRuns(k, n = TEST_PARTS, lists = PAGE_TESTS) {
+  const files = lists.flatMap((list, li) => list.map(f => ({ f, li }))), per = Math.ceil(files.length / n)
+  const runs = []
+  for (const { f, li } of files.slice((k - 1) * per, k * per)) { const last = runs.at(-1); if (last && last.li === li) last.files.push(f); else runs.push({ li, files: [f] }) }
+  return runs.map(r => r.files)
+}
+function pageTests(k) {
   const page = buildCandidate()
   let ok = true
-  for (const list of PAGE_TESTS) try { execFileSync('node', ['--test', ...list], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: resolve(CANDIDATE) } }) } catch { ok = false }
+  for (const list of testRuns(k)) try { execFileSync('node', ['--test', ...list], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: resolve(CANDIDATE) } }) } catch { ok = false }
   return { ok, page, why: ok ? '' : 'a node --test list failed' }
 }
 
@@ -158,7 +169,7 @@ function runPart(name) {
   let r
   try {
     if (name === 'checks') { checks(); r = { ok: true } }
-    else if (name === 'tests') r = pageTests()
+    else if (name.startsWith('tests ')) r = pageTests(+name.match(/^tests (\d+)\//)[1])
     else r = verifySlice(+name.match(/^verify (\d+)\//)[1])
   } catch (e) { if (!(e instanceof GateFail)) throw e; r = { ok: false, why: e.message } }
   rec.parts[name] = { ...r, secs: secs(t0), at: new Date().toISOString() }
@@ -192,8 +203,8 @@ function status(tree = treeHash()) {
 const partArg = argv.indexOf('--part')
 if (partArg >= 0) {
   const name = [argv[partArg + 1], argv[partArg + 2]].filter(Boolean).join(' ').trim()
-  const want = argv[partArg + 1] === 'verify' ? name : argv[partArg + 1]
-  if (!PARTS.includes(want)) { console.error(`usage: node tools/gate.mjs --part checks | --part verify <k>/${SLICES} | --part tests   (k = 1..${SLICES})`); process.exit(2) }
+  const want = ['verify', 'tests'].includes(argv[partArg + 1]) ? name : argv[partArg + 1]
+  if (!PARTS.includes(want)) { console.error(`usage: node tools/gate.mjs --part checks | --part verify <k>/${SLICES} | --part tests <k>/${TEST_PARTS}`); process.exit(2) }
   process.exit(runPart(want) ? 0 : 1)
 }
 if (argv.includes('--status')) process.exit(status().green ? 0 : 1)
@@ -243,7 +254,7 @@ if (argv.includes('--fresh')) {
   console.log('FRESH OK')
   process.exit(0)
 }
-if (argv.length && !(argv.length === 1 && dirtyOk)) { console.error('usage: node tools/gate.mjs [--part checks | --part verify k/' + SLICES + ' | --part tests | --status | --land | --fresh [--dirty-ok]]'); process.exit(2) }
+if (argv.length && !(argv.length === 1 && dirtyOk)) { console.error('usage: node tools/gate.mjs [--part checks | --part verify k/' + SLICES + ' | --part tests k/' + TEST_PARTS + ' | --status | --land | --fresh [--dirty-ok]]'); process.exit(2) }
 
 /* no flag: every part, in sequence, in one command */
 for (const p of PARTS) runPart(p)

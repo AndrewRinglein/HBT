@@ -37,10 +37,15 @@ test('battle 1 opens on the riverside painted scene: the address names the map, 
   H.dispose()
 })
 
-test('every engine hex of the three painted maps is drawn where its scene hex stands', () => {
+test('every engine hex of every painted map is drawn where its scene hex stands', () => {
   const w = boot(), B = w.__battleView, pack = packPaintedScenes(fields)
-  assert.deepEqual(Object.keys(pack).sort(), Object.keys(SCENES).sort())
-  for (const [mapId, { scene }] of Object.entries(SCENES)) {
+  /* Law 10, viewer.caravan-scene (2026-10-01): the pack was the opening's three scenes; a map compiled from a painted scene's
+     measured navigation (content/gen/painted-maps.json — the caravan aftermath, engine DECISIONS.md 2026-10-01) is bound
+     too. Rewritten as the rule — every bound map, hex by hex — with the opening's three still required by name.
+     was: assert.deepEqual(Object.keys(pack).sort(), Object.keys(SCENES).sort()); for (... of Object.entries(SCENES)) */
+  const compiled = JSON.parse(readFileSync('../content/gen/painted-maps.json', 'utf8'))
+  assert.deepEqual(Object.keys(pack).sort(), [...Object.keys(SCENES), ...compiled.maps.map(m => m.id)].sort())
+  for (const [mapId, { scene }] of [...Object.entries(SCENES), ...Object.entries(compiled.scenes)]) {
     const field = B.lib.fields[mapId], b = A.paintedBinding(mapId, field, pack), world = A.paintedToCSS(b), heights = A.paintedHeights(b), n = nav(scene)
     assert.equal(b.scene, scene)
     for (const p of field.hexes) {
