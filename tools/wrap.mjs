@@ -30,9 +30,8 @@
 //      (The add → commit → amend pattern is the gate's own, tools/gate.mjs.)
 //   3. VERIFY, NEVER ASSUME. "Committed" means git was asked afterwards and
 //      said so — HEAD moved — not that this script reached its last line.
-//   4. NEVER MOVE OR DELETE A FILE. The previous handoff is COPIED to archive/
-//      and then HANDOFF.md is overwritten in place. `renameSync` is an unlink,
-//      and unlink is what this mount refuses.
+//   4. NEVER MOVE OR DELETE A FILE. Every file is overwritten in place.
+//      `renameSync` is an unlink, and unlink is what this mount refuses.
 //
 // When git is unavailable the wrap still records — the handoff is the thing you
 // most need when the machine is misbehaving — but it records the truth, prints
@@ -40,26 +39,25 @@
 // uncommitted wrap until it is resolved. (Switch `wrap.gitUnavailable` in
 // the GBH package's SWITCHES.md; `refuse` is the other path.)
 //
-// One writer per file: wrap.mjs writes .state/now.json, .state/wraps.json,
-// HANDOFF.md and STATE-ROW.md, and nothing else writes them. The backlog, the
+// One file (Andrew, 2026-10-01): wrap.mjs writes .state/now.json and nothing
+// else — the Now line, the next chat, the count, what start.mjs printed and the
+// chat's commits. HANDOFF.md and STATE-ROW.md are produced from it by
+// tools/handoff.mjs; the previous handoff and the wrap history are git's
+// (`git log -- .state/now.json`), not archive/ and not a wraps file. The backlog, the
 // ledger and .state/gauntlet.json stay the gate's alone — a wrap changes no
 // item's status.
 //
 // Then the chat stops.
 
 import { execFileSync } from 'node:child_process'
-import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'node:fs'
+import { writeFileSync, mkdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { render } from './start.mjs'
+import { produce, NOW_FILE } from './handoff.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PACKAGE = 'engine'
-const TITLE = 'Combat engine'   // the first cell of root STATE.md's workstream table
-const NOW_FILE = '.state/now.json'
-const WRAPS_FILE = '.state/wraps.json'
-const HANDOFF = 'HANDOFF.md'
-const ROW = 'STATE-ROW.md'
 
 // A git that has not answered in this long is not going to. Twenty seconds is
 // far past a healthy call here (milliseconds) and far short of the three-minute
@@ -132,58 +130,25 @@ const gitUp = probe.ok
 const sha = gitUp ? probe.out : null
 if (!gitUp) console.error(`wrap: git cannot work here — ${probe.why}. Recording anyway, and saying so.`)
 
-// 1. the Now line — written `committed: false` (hardening 2). Only a verified
-// commit is allowed to change that, at the very end.
+// 1. the chat's commits since the last wrap — git's record, not a wraps file
+const since = gitUp ? gitTry(['log', '-1', '--grep=^wrap:', '--format=%h']).out || null : null
+const log = !gitUp ? { ok: false, why: probe.why } : since ? gitTry(['log', '--format=%h %ad %s', '--date=format:%Y-%m-%d %H:%M', `${since}..HEAD`]) : gitTry(['log', '--format=%h %ad %s', '--date=format:%Y-%m-%d %H:%M', '-20'])
+const commits = log.ok ? log.out.split('\n').filter(Boolean) : [`unknown — git log: ${log.why}`]
+
+// 2. now.json — written `committed: false` (hardening 2); only a verified commit
+// may change that, at the very end. The Now line goes in first so the count and
+// start.mjs's lines read it; then they go in too, and the handoff is produced.
 mkdirSync('.state', { recursive: true })
-const writeNow = (extra = {}) => writeFileSync(NOW_FILE, JSON.stringify({ now: nowLine, at, sha, by: 'wrap', committed: false, next, ...extra }, null, 1) + '\n')
-writeNow()
-
-// 2. the count — and everything else start.mjs renders, now that the Now line is written
+let now = { now: nowLine, at, sha, by: 'wrap', committed: false, next }
+const writeNow = (extra = {}) => { now = { ...now, ...extra }; writeFileSync(NOW_FILE, JSON.stringify(now, null, 1) + '\n'); produce() }
+writeFileSync(NOW_FILE, JSON.stringify(now, null, 1) + '\n')
 const countLine = execFileSync(process.execPath, [join(HERE, 'gate.mjs'), '--count'], { encoding: 'utf8' }).trim().split('\n').pop()
-const lines = render()
+writeNow({ count: countLine, lines: render({ wrapping: true }), since, commits })
 
-// 3. the handoff — one file, the previous COPIED to archive/ and this one
-// overwritten in place (hardening 4: no rename, no unlink, ever)
-if (existsSync(HANDOFF)) {
-  const prev = readFileSync(HANDOFF, 'utf8')
-  const m = prev.match(/^# .* — handoff (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/m)
-  const when = m ? m[1] : statSync(HANDOFF).mtime.toISOString().slice(0, 16).replace('T', ' ')
-  mkdirSync('archive', { recursive: true })
-  const base = `HANDOFF-${when.replace(' ', '-').replace(':', '')}`
-  let dest = join('archive', `${base}.md`)
-  for (let i = 2; existsSync(dest); i++) dest = join('archive', `${base}-${i}.md`)
-  writeFileSync(dest, prev)   // copy; the original is overwritten below, never unlinked
-}
 // the handover: one plain-words line naming the chat, then the first line alone
 // inside a fenced code block — ``` above and below, nothing else
 const handover = [next.label, '```', next.line, '```']
-const previous = readWraps()
-const since = previous.filter((w) => w.committed !== false).at(-1)?.sha
-const log = since ? gitTry(['log', '--format=%h %ad %s', '--date=format:%Y-%m-%d %H:%M', `${since}..HEAD`]) : gitTry(['log', '--format=%h %ad %s', '--date=format:%Y-%m-%d %H:%M', '-20'])
-const commits = log.ok ? log.out.split('\n').filter(Boolean) : [`unknown — git log: ${log.why}`]
-const handoff = [
-  `# ${PACKAGE} — handoff ${at}`, '',
-  `*Written by tools/wrap.mjs. The only handwritten line is the Now line, given to wrap as its argument. The rest is what start.mjs prints and what git holds. Read by \`start ${PACKAGE}\` — not by a chat, directly.*`, '',
-  ...lines, '',
-  `## The chat's commits${since ? ` since the last committed wrap (${since})` : ' (last 20; no committed wrap on record)'}`, '',
-  ...(commits.length ? commits.map((c) => `- ${c}`) : ['- none']), '',
-  '## Next chat', '',
-  ...handover, '',
-].join('\n')
-writeFileSync(HANDOFF, handoff)   // overwrite in place
-
-// 4. the STATE row — one table row, the shape root STATE.md's workstream table
-// uses (four cells); the GBH package's tools/state-rows.mjs assembles it, run by hand
-const get = (prefix) => (lines.find((l) => l.startsWith(prefix)) ?? '').slice(prefix.length).trim()
-const cell = (s) => s.replace(/\|/g, '\\|')
-const row = `| **${TITLE}** | \`engine/CLAUDE.md\` · \`engine/ENGINE-CONSTITUTION.md\` · \`engine/COMBAT-SEQUENCE.md\` · \`engine/HANDOFF.md\` | ${cell(`**\`${countLine}\`** (${at}), the count written by its own gate. Last landing: ${get('Last landing:').replace(/\. Previous chat ended:.*$/, '')}. Now: ${nowLine}`)} | ${cell(`**Angela:** ${get('Yours:')}. **Queue:** ${get('Queue:')}`)} |\n`
-writeFileSync(ROW, row)
-
-// 5. the wrap on record — `committed` is the honest field the next wrap and
-// `start` both read
 const subject = `wrap: ${nowLine}`.replace(/[`$]/g, '').slice(0, 200)
-const writeWraps = (committed, head) => writeFileSync(WRAPS_FILE, JSON.stringify([...previous, { at, sha: head ?? sha, now: nowLine, committed }], null, 1) + '\n')
-writeWraps(false)
 
 // ── 6. the commit, then the verification, then the truth ────────────────────
 const RECOVER = `git add -A; git commit -m ${JSON.stringify(subject)}`
@@ -201,9 +166,9 @@ const after = gitTry(['rev-parse', '--short', 'HEAD'], GIT_PROBE_MS)
 if (!after.ok) done(false, `committed, but git could not confirm it — ${after.why}`)
 if (after.out === sha && !nothing) done(false, `git reported success but HEAD is still ${sha} — the commit did not land`)
 
-// only now may anything say it is committed (hardening 2)
-writeNow({ committed: true, sha: after.out })
-writeWraps(true, after.out)
+// only now may anything say it is committed (hardening 2). `sha` stays the HEAD
+// the chat ended on: the amend below would orphan the wrap commit's own sha.
+writeNow({ committed: true })
 const amend = gitTry(['add', '-A'])
 if (amend.ok) gitTry(['commit', '-q', '--amend', '--no-edit'])
 const head = gitTry(['rev-parse', '--short', 'HEAD'], GIT_PROBE_MS)
@@ -220,7 +185,7 @@ function done(committed, why, head) {
       : `RECORDED BUT NOT COMMITTED — ${PACKAGE} at ${at}`,
     `Now: ${nowLine}`,
     countLine,
-    `${HANDOFF} replaced; ${ROW} rendered.`,
+    `${NOW_FILE} written; HANDOFF.md and STATE-ROW.md produced from it.`,
     committed ? 'Stop here.' : [
       `git did not commit it: ${why}.`,
       `The files are on disk and correct; git does not have them.`,
@@ -231,13 +196,4 @@ function done(committed, why, head) {
     ...handover,
   ].join('\n'))
   process.exit(committed ? 0 : 1)   // never swallow a failure (law 9)
-}
-
-/** Every wrap on record. [] when there is none — this is the first. */
-function readWraps() {
-  if (!existsSync(WRAPS_FILE)) return []
-  try {
-    const j = JSON.parse(readFileSync(WRAPS_FILE, 'utf8'))
-    return Array.isArray(j) ? j : []
-  } catch (e) { fail(`${WRAPS_FILE}: ${e.message}`) }
 }

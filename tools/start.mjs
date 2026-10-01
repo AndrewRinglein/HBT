@@ -32,7 +32,8 @@ const QUESTIONS = '.state/questions.md'
 const NOW_FILE = '.state/now.json'
 const SWITCHES_FILE = 'SWITCHES.md'
 
-export function render() {
+/** wrapping: the lines a wrap stores in now.json — without the uncommitted-wrap warning, which describes the wrap before this one */
+export function render({ wrapping = false } = {}) {
   const backlog = readBacklog()
   const landedIds = new Set(backlog.filter((x) => String(x.status ?? '').startsWith('done')).map((x) => x.id))
   // the queue is next.mjs's rule, not a second one: no status, every `needs` landed
@@ -64,8 +65,8 @@ export function render() {
   // `committed: false` and only a VERIFIED commit rewrites it to true, so a
   // false here means exactly one thing: those files are on disk and git has
   // never seen them. Resolve it before landing anything on top.
-  if (now && now.committed === false) {
-    lines.push(`WRAP NOT COMMITTED: ${now.at} — HANDOFF.md, STATE-ROW.md and the Now line are on disk; git does not have them.`,
+  if (now && now.committed === false && !wrapping) {
+    lines.push(`WRAP NOT COMMITTED: ${now.at} — ${NOW_FILE} and the HANDOFF.md and STATE-ROW.md produced from it are on disk; git does not have them.`,
       `  Commit them from the ${PACKAGE} folder before landing anything: git add -A; git commit -m "wrap: ${now.now}"`)
   }
 
