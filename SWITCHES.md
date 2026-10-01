@@ -174,3 +174,19 @@ from the screen), `test/sandbox-chrome-ui.test.ts` (tools/sandbox-chrome.verify.
 The user's transformation ruling requires existing afflictions to survive deployment. `makeBattleState` copies each deployed hero's persistent badges in deployment order, and `battleOptionsOf` passes them through the engine's existing `heroBadges` seam. No afflictions are granted by presentation. Empty unaffected deployments retain their previous options shape. Probe: `test/affliction-fielding.test.ts` (red: missing heroBadges; green: engine fielded units retain the proper badges).
 
 Only badge IDs recognized by the engine's read-only `BADGES` registry cross this seam; campaign-only story badges such as `badge.responsible` stay on the campaign hero. Filtering also applies to restored EngagementSpecs. The expanded probe first reproduced the story-badge regression, then passed alongside all 39 ISC047 quest tests after the correction.
+
+## viewer.battle-full-screen — the battle is its own screen (2026-09-30)
+
+Andrew (engine DECISIONS.md 2026-09-30 "the battle is its own full screen; End Turn and End Activation lower right; a red
+targeting arrow"): "I want a fucking battle. It should be full screen. How can I experience this if you've got one screen
+that is both your launcher and your battle?" `src/ui/sandbox.ts` has two views; `src/ui/battle-surface.ts` takes
+`layout.fill`. Probes `test/sandbox-full-screen-ui.test.ts` (tools/sandbox-full-screen.verify.mjs, the built page) and
+engine `test/battle-full-screen.test.ts`. The viewer's half (End Turn and End activation in the corner, the red arrow) is
+viewer SWITCHES.md `playChromeHome` and `playLook`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `battleViewWhich` | Which battles open as their own full-window view? | **Every encounter battle — a `?play=` battle, or Start with an Encounter chosen.** A free (Atlas) battle keeps the launcher page with its dropdowns and Execute. | The ruling is about the opening's battles, which are the encounter battles (playChromeBoardOnly); a free battle is played with the launcher's own controls, which live on the launcher page. | provisional — 2026-09-30 |
+| `battleViewFit` | How does a 1920x1080 battle fill a window of another shape? | **Scaled to the largest size that fits the window whole — up as well as down — and centred; the rest is the screen's own black.** Nothing is cropped and nothing scrolls. | "Full screen": the whole battle screen is always visible; stretching would distort the hexes and cropping would hide the panel or the bar. | provisional — 2026-09-30 |
+| `battleViewSays` | What of the sandbox's own text shows in the battle view? | **Only what must be said: an error, a stopped battle, or the outcome** — the commands box, floated over the battle, with "Back to the launcher" at the outcome. The heading, the help line and "Show current state" do not show; the screen's own top bar names the Turn and Phase. | "No launcher text"; Law 9 still holds — a failure is never hidden. | provisional — 2026-09-30 |
+| `battleViewLauncher` | How does one get from the battle to the launcher and back? | **A small Launcher button at the window's top right; the launcher shows "Return to the battle" while an encounter battle is in progress, and hides the board.** Save and Replay are in the launcher. | "The launcher stays a separate view": it is reachable, but not on the battle screen. | provisional — 2026-09-30 |

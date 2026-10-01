@@ -17,10 +17,13 @@ Object.defineProperties(El.prototype,{
  disabled:{get(){return this.hasAttribute('disabled')},configurable:true},
 })
 export function dom(){const w=makeWindow();w.removeEventListener=()=>{};const store=new Map();w.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)};return{w,store}}
-export function bootSlice(file='SLICE.html'){
- const {w,store}=dom(),root=w.document.createElement('div');root.id='app';w.document.body.appendChild(root)
+// opts (viewer.battle-full-screen): search — the page's location.search, e.g. '?play=encounter.opening.orphanage'; width and
+// height — the window's inner size (fakedom's default is 1920x1080)
+export function bootSlice(file='SLICE.html',opts={}){
+ const {w,store}=dom();if(opts.width)w.innerWidth=opts.width;if(opts.height)w.innerHeight=opts.height;w.location={search:opts.search??''}
+ const root=w.document.createElement('div');root.id='app';w.document.body.appendChild(root)
  const html=readFileSync(file,'utf8'),script=html.slice(html.lastIndexOf('<script>')+8,html.lastIndexOf('</script>'))
- const names=['window','document','globalThis','self','localStorage','requestAnimationFrame','cancelAnimationFrame','setTimeout','clearTimeout','setInterval','clearInterval','getComputedStyle','performance','HTMLElement','Element']
+ const names=['window','document','globalThis','self','localStorage','requestAnimationFrame','cancelAnimationFrame','setTimeout','clearTimeout','setInterval','clearInterval','getComputedStyle','performance','HTMLElement','Element','location']
  new Function(...names,script)(...names.map(n=>['window','globalThis','self'].includes(n)?w:['HTMLElement','Element'].includes(n)?El:w[n]))
  const click=(act,id)=>{const el=root.els.find(e=>e.dataset.act===act&&(id===undefined||e.dataset.id===id));if(!el||el.disabled)throw Error('Missing/disabled action '+act);el.handlers.click()}
  return{w,store,root,click}
