@@ -274,5 +274,11 @@
   "sha": "651a60e",
   "now": "viewer.opening-cast — the playable opening. Landed: battles 2 and 3 in the new screen — Skeleton Archer, the Soldier (Armored Skeleton), Imps flying (the demo's winged imp), heroes in the demo's archer (Ranger) or Oathblade (every other class) outfit, civilians on their tokens; a body with no strike or shot leans and the board flies the arrow; suite green 2402. Tried: nothing abandoned. Next: Andrew — eyeball battles 2 and 3 in kingdom/BATTLE-SANDBOX.html; the Fire Imp has no flight in the engine, so it walks; the Lumberjack's Wife has no art; kingdom.abbotown-map.",
   "committed": false
+ },
+ {
+  "at": "2026-10-01 01:05",
+  "sha": "807653c",
+  "now": "viewer.battle-full-screen — the playable opening. Landed: the battle is its own screen — BATTLE-SANDBOX.html?play= opens the battle alone, scaled to fill the window (no setup form, no launcher text; a small Launcher button goes to the setup view and back); End Turn and End activation moved off the map into the screen's lower right-hand corner; the targeting arrow and its numbers are red; suite green 2406. Tried: nothing abandoned. Next: Andrew — eyeball kingdom/BATTLE-SANDBOX.html?play=encounter.opening.orphanage; viewer.every-model (the 3D characters Andrew did not see).",
+  "committed": true
  }
 ]
