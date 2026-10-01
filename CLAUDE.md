@@ -5,13 +5,11 @@ map, Assignments, the Reckoning. A **sibling package to `engine/`, and its own
 nested git repository** (ruled 2026-09-01). It imports the engine through one
 door and never edits it.
 
-**Read first, in this order:** the root `STATE.md` · the root `CLAUDE.md` (laws,
-vocabulary) · `GLOSSARY.md` (the naming authority) · **`THIN-SLICE-IMPLEMENTATION.md`**
-(what is true when the slice is done, what command proves each part, and in what
-order it gets built — this package exists to close its criteria) ·
-`GAME-ARCHITECTURE.md` §1, §2, §4 (the interfaces) · `KINGDOM-DESIGN.md` (the
-rules). The engine's Constitution applies here in full — plain data, integers,
-named streams, every mutation an event.
+**Read on start:** `THIN-SLICE-IMPLEMENTATION.md` — the criteria this package exists to
+close. The root `CLAUDE.md` is already loaded and `GLOSSARY.md` settles any name.
+Opened by the item that needs it: `GAME-ARCHITECTURE.md` §1, §2, §4 (the interfaces) ·
+`KINGDOM-DESIGN.md` (the rules). The engine's Constitution applies here in full — plain
+data, integers, named streams, every mutation an event.
 
 ---
 
