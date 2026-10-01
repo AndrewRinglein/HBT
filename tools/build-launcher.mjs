@@ -14,9 +14,11 @@ import {execFileSync} from 'node:child_process'
 import {createRequire} from 'node:module'
 import {resolve,dirname,basename} from 'node:path'
 import {pathToFileURL} from 'node:url'
+import {codeStamp} from '../../engine/tools/code-stamp.mjs'
 const require=createRequire(import.meta.url),esbuild=require('../../engine/node_modules/esbuild')
 const ROOT=resolve('..'),sha=execFileSync('git',['rev-parse','--short','HEAD'],{encoding:'utf8'}).trim()
-const engine=execFileSync('git',['-C','../engine','rev-parse','--short','HEAD'],{encoding:'utf8'}).trim()
+/* the engine's code stamp, not its HEAD (Andrew, 2026-10-01) */
+const engine=codeStamp().stamp
 /* the kingdom's own content, through its one door to the engine */
 const entry=`export {SANDBOX_ENCOUNTERS} from './src/content/sandbox.ts';export {ENCOUNTERS,SCENARIOS,UNITS} from './src/engine.ts'`
 const built=esbuild.buildSync({stdin:{contents:entry,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})

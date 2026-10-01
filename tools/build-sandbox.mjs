@@ -1,10 +1,12 @@
 import {readFileSync,writeFileSync} from 'node:fs'
 import {execFileSync} from 'node:child_process'
+import {codeStamp} from '../../engine/tools/code-stamp.mjs'
 import {createRequire} from 'node:module'
 import {battleViewAssets,scopeBattleCSS} from './battle-view-assets.mjs'
 const require=createRequire(import.meta.url),esbuild=require('../../engine/node_modules/esbuild')
 const sha=execFileSync('git',['rev-parse','--short','HEAD'],{encoding:'utf8'}).trim()
-const provenance={engineCommit:execFileSync('git',['-C','../engine','rev-parse','--short','HEAD'],{encoding:'utf8'}).trim(),engineDirty:!!execFileSync('git',['-C','../engine','status','--porcelain'],{encoding:'utf8'}).trim()}
+/* the engine's code stamp, not its HEAD (Andrew, 2026-10-01) */
+const provenance=(({stamp,dirty})=>({engineCommit:stamp,engineDirty:dirty}))(codeStamp())
 // viewer.play-input: the playable screen's battles stand on their painted scenes with their 3D models — the viewer's own
 // packs (viewer.painted-board, viewer.character-models), handed to the component as data like every other table
 const {packPaintedScenes}=await import('../../viewer/tools/painted-scenes.mjs'),{packCharacterModels}=await import('../../viewer/tools/character-models.mjs')

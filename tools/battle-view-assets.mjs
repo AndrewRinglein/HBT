@@ -1,10 +1,12 @@
 import {readFileSync} from 'node:fs'
 import {execFileSync} from 'node:child_process'
 import {createRequire} from 'node:module'
+import {codeStamp} from '../../engine/tools/code-stamp.mjs'
 const require=createRequire(import.meta.url),postcss=require('../../engine/node_modules/postcss')
 export function battleViewAssets(){
  const read=file=>JSON.parse(readFileSync('../viewer/generated/'+file,'utf8')),stat=read('static.json'),manifest=read('art/manifest.json'),assets={}
- const engineCommit=execFileSync('git',['-C','../engine','rev-parse','--short','HEAD'],{encoding:'utf8'}).trim()
+ /* the engine's code stamp, not its HEAD (Andrew, 2026-10-01): a ruling commit is not staleness */
+ const engineCommit=codeStamp().stamp
  if(stat.engineDirty||stat.engineCommit!==engineCommit)throw Error('Shared viewer metadata is stale or dirty; regenerate through its owning tools')
  const names=new Set(manifest.files)
  for(const row of Object.values(manifest.artmap))for(const key of ['token','card'])if(row[key]&&!names.has(row[key]))throw Error('Missing art manifest reference '+row[key])

@@ -25,6 +25,7 @@
 
 import { execSync } from 'node:child_process'
 import { revertTree } from './revert-tree.mjs'
+import { codeStamp } from '../../engine/tools/code-stamp.mjs'
 import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, statSync, copyFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -152,7 +153,8 @@ function logRun(disposition, extra = {}) {
     }) + '\n')
   } catch { /* best-effort; the verdict never depends on it */ }
 }
-const engineSha = () => { const r = tryRun(`git -C ${ENGINE} rev-parse --short HEAD`); return r.ok ? r.out.trim() : 'unknown' }
+/* the engine's code stamp, not its HEAD (Andrew, 2026-10-01): a ruling commit changes nothing verified here */
+const engineSha = () => codeStamp().stamp
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')
 
 // -uall: an untracked DIRECTORY would otherwise appear as one line and hide
