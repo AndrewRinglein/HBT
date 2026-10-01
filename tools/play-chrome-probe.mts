@@ -6,7 +6,7 @@
 // the engine then did. From Turn 2 every hero acts and End Turn is never pressed: the Player Phase must end by itself.
 // After every paid attack the record keeps whether the activation closed without an End activation click.
 //
-//   npx tsx tools/play-chrome-probe.mts        prints the record as JSON (engine test/play-chrome.test.ts reads it)
+//   npx tsx tools/play-chrome-probe.mts        prints the record as JSON (test/play-chrome-engine.test.ts reads it)
 import {createSandbox,advanceSandbox,commandSandbox,type Sandbox} from '../src/core/sandbox.js'
 import {SANDBOX_DEFAULT} from '../src/content/sandbox.js'
 import {createPlayInput} from '../src/ui/play-input.js'

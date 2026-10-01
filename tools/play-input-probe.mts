@@ -4,7 +4,7 @@
 // one stage. Records what the screen was told to draw and what the engine then did, so the tests can ask: did the
 // forecast shown equal what landed? No dropdown, no hand-built command except End activation (the next item's End Turn).
 //
-//   npx tsx tools/play-input-probe.mts        prints the record as JSON (engine test/play-input.test.ts reads it)
+//   npx tsx tools/play-input-probe.mts        prints the record as JSON (test/play-input-engine.test.ts reads it)
 import {createSandbox,advanceSandbox,commandSandbox,sandboxActivationChoices,type Sandbox} from '../src/core/sandbox.js'
 import {SANDBOX_DEFAULT} from '../src/content/sandbox.js'
 import {createPlayInput,type PlayFacts} from '../src/ui/play-input.js'
