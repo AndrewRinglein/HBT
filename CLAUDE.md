@@ -78,6 +78,7 @@ node tools/gate.mjs --count            the one count line — start and wrap pri
 node tools/report.mjs                  what landed, abandoned, or needs review
 node tools/review.mjs <id> --ok "..."  record Angela's verdict on a flagged landing (--all for the queue)
 node tools/decided.mjs "<question>"    is it already ruled on? --scan <doc> for every question in one
+node tools/engine-modules.mjs          link engine/node_modules into a worker's copy from the main folder (viewer and kingdom tools do it themselves)
 
 npm test   npm run typecheck   npm run battle <n> [--map=id]   npm run sweep <n>
 npm run proving <plan.json> [--out dir] [--force]   THE PROVING — squads, fixtures and subjects
