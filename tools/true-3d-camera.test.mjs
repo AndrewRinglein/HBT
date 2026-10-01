@@ -325,7 +325,7 @@ test('Focus selected unit centres on purpose; ordinary selection keeps the minim
   const f0 = { ...V.view.camF }
   V.view.inspectId = pick; v.render()
   assert.deepEqual(V.view.camF, f0, 'selecting a unit already in view does not move the camera')
-  assert.equal(bar(V, 'focus').disabled, false)
+  assert.equal(bar(V, 'focus').getAttribute('aria-disabled'), 'false', 'Focus is offered with a unit to focus')
   press(V, 'focus')
   const p = V.data.POS[V.S.U[pick].hex]; near(V.camTarget.x, p.px, 1e-6, 'Focus centres it (x)'); near(V.camTarget.y, p.py, 1e-6, 'and (y)')
   v.dispose()

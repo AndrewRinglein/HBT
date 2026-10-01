@@ -1461,7 +1461,7 @@ export function syncCamBar(V) {
     const k = b.getAttribute('data-cam')
     if (k === 'overhead') b.setAttribute('aria-pressed', String(st.overhead))
     else if (k === 'inspect') b.setAttribute('aria-pressed', String(st.inspect))
-    else if (k === 'focus') b.disabled = st.focus == null
+    else if (k === 'focus') b.setAttribute('aria-disabled', String(st.focus == null))
   }
 }
 /* ── OFF-SCREEN UNIT INDICATORS (PLAYBACK-DESIGN §7.8 part 1, ruled) ──────
@@ -1652,7 +1652,7 @@ export function bindCamera(V) {
   /* the camera bar (viewer.tactical-camera): each button is the camera's own, never the board's drag or click */
   const camButtons = wrap.querySelectorAll ? [...wrap.querySelectorAll('#camBar button')].filter(b => b.getAttribute('data-cam')) : []
   const btnDown = e => { e.stopPropagation() }
-  const btnClicks = camButtons.map(b => { const kind = b.getAttribute('data-cam'); return e => { e.stopPropagation(); if (!b.disabled) cameraView(V, kind) } })
+  const btnClicks = camButtons.map(b => { const kind = b.getAttribute('data-cam'); return e => { e.stopPropagation(); if (b.getAttribute('aria-disabled') !== 'true') cameraView(V, kind) } })
   camButtons.forEach((b, i) => { b.addEventListener('pointerdown', btnDown); b.addEventListener('click', btnClicks[i]) })
   const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['click',click]]
   for (const [type, fn] of bound) wrap.addEventListener(type, fn, type === 'wheel' ? { passive: false } : undefined)
