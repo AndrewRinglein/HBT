@@ -1,11 +1,11 @@
 {
- "now": "viewer.tactical-camera, encounter.caravan-aftermath, viewer.caravan-scene — the camera redesigned, the caravan fielded. Landed: content.fire-imp-flight (the Fire Imp flies); the accepted caravan camera for every battle (40° start, 40–75° tactical, Lower/Raise 10°, Q/E 60°, Overhead, Inspect, Whole map, Focus selected unit; off-screen bubbles only for units wholly out of view); the caravan aftermath playable on its painted scene with its surroundings, fires and cursed fog (provisional fight: 2 Bloodhounds + 2 Imps); battle controls (no aim arrow until an attack is chosen, the arrow stops at its reach - fix.aim-reach; Devotion used from the bar); PLAY.vbs starts the game server and adds it to Startup; viewer gate tests split in two; fix.suite-after-caravan rewrote 7 stale tests (review); suite green. Tried: nothing abandoned; kingdom 5b97243's message wrongly claimed four shards green - corrected in 859530c. Next: Andrew - double-click PLAY.vbs and play the Caravan from http://127.0.0.1:4230/play; then viewer.walk-in-step and the rest of Andrew's queue.",
- "at": "2026-10-01 20:17",
- "sha": "3af673e",
+ "now": "viewer.walk-in-step — the walk in step with the hexes. Landed: every 3D body plays its walk clip for the whole traversal, its stride timed to the ground it covers (the standing foot now slides ~0.05 of the body's speed, was ~0.9); a walk takes 600 ms per hex and grows with the walk (was 320-900 ms whatever its length, so the clips never got past their first step); the Imps fly at the same pace; the viewer page and data re-dumped, the kingdom's BATTLE-SANDBOX.html and SLICE.html republished; suite green. Tried: nothing abandoned. Next: Andrew - play a battle from http://127.0.0.1:4230/play and judge the pace (viewer SWITCHES walkPace, 600 ms a hex: the zombies' and armoured heroes' slow walk clips play about 8x fast); then viewer.weapons-in-hand and the rest of Andrew's queue.",
+ "at": "2026-10-01 21:54",
+ "sha": "18f5a98",
  "by": "wrap",
  "committed": true,
  "next": {
-  "label": "New chat with Heroes of Blight and Tragic — engine: take the top of the queue (viewer.walk-in-step, then Andrew's queue)",
+  "label": "New chat with Heroes of Blight and Tragic — engine: take the top of the queue (viewer.weapons-in-hand, then Andrew's queue)",
   "line": "start engine"
  }
 }
