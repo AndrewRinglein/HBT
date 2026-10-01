@@ -3641,3 +3641,31 @@ Andrew, after the wrap of kingdom.civilians-played and viewer.bodies-before-boar
 Ruled:
 
 - **Every reply that ends work on the game gives the playable link, clickable, at the top** — http://127.0.0.1:4230/play (the launcher), and the battle the work touched (`http://127.0.0.1:4230/kingdom/BATTLE-SANDBOX.html?play=<encounter>`). A wrap's reply included.
+
+## 2026-10-01 — the camera redesigned on the caravan preview; the caravan's fight; what is queued after it
+
+Andrew, asking for the caravan handoff (`../ATLAS-COMBAT-INTEGRATION.md` "Caravan camera and surroundings: implementation handoff — 2026-10-01") to be implemented:
+
+“Well, this isn't just a caravan handoff. This is a redesign of our camera fix. We need to redesign the camera.”
+
+Ruled: **the accepted caravan camera is the camera of every battle**, not of the caravan alone — landed as viewer.tactical-camera (viewer `b7b66e8`/`dc09f82`; numbers in `../viewer/src/camera-policy.js`, readings in `../viewer/SWITCHES.md` "viewer.tactical-camera").
+
+Andrew, while it was built (each queued after the camera, in this order, “This is a lot to queue up after what you're currently working on.” · “Please proceed very carefully through all of these items.”):
+
+“Okay, when the characters are moving on the map, they're not actually walking or moving. They just slide across. The whole idea of adding in a walking animation is so they use it.”
+
+“The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding weapons.”
+
+“Also, the special move Devotion for the priest did not work. I can't double-click on it or anything to make it trigger. I can only click a regular move or just use a regular move. I'm supposed to be selecting what I'm doing.”
+
+“Also, these characters are faded, like they're ghost-like, because there are other competing things. The characters are the stars. They should not be faded, especially not one that's selected.”
+
+“We also need a character selector bar above the screen, the way it is in the visual playback. You have all the heroes and enemies as tiny little cards above the screen. That should still be there. And I can use that to target things as well as clicking on them.”
+
+“Also, there's a bug where the pointed indicators revealing other things that are off-map are pointing at things that are on-map. I start out looking at three heroes, and they have those bubbles pointing at them.” — fixed with the camera (viewer SWITCHES edgeBubbleInside).
+
+“Also, I said we could use placeholders, but don't we have more 3D things we can use? We've done all kinds of different heads, all kinds of different armor. Maybe you're just seeing the fact that we have more rigged up for the one basic male model, but the idea is to rig this up. We have the things for everything, just about.”
+
+Asked what the heroes fight on the caravan map so it can be played in the sandbox (Imps and Bloodhounds — a provisional fight using the creatures painted on the map: 2 Imps + 2 Bloodhounds from the far end of the road, heroes at the near end, ground fires burn and the corpse hexes are cursed (Weak); marked provisional until ruled · map only · Andrew dictates), Andrew chose **“Imps and Bloodhounds (Recommended)”**.
+
+Ruled: **the caravan aftermath is fought, provisionally, by 2 Imps and 2 Bloodhounds from the far end of the road against the heroes at the near end; its seven ground fires are burning ground and its 31 corpse hexes cursed ground (Weak).** Which end is near, the hexes, and how many heroes are Claude's readings (engine SWITCHES.md, the caravan rows).
