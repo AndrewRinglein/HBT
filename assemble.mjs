@@ -1,5 +1,6 @@
 import { validateBurst } from './burst-schema.mjs';
 import fs from 'fs';
+import { readPainted, resolvePaint } from './mkpaintedmaps.mjs';
 import { validateMap, validateEncounterBoard } from './map-schema.mjs';
 const G='gen/', R=p=>JSON.parse(fs.readFileSync(G+p,'utf8'));
 const STATS=new Set(['strength','precision','accuracy','crit','luck','reach','dodge','vision','armor','resist','fireResist','poisonResist','shadowResist','coldResist','block','rangedBlock','health','magic','spirit','toughness','movement','staminaMax','staminaRegen','surge','itemSlots','deathbedFighting','corruption','favor','bleedOutTurns']);
@@ -45,6 +46,10 @@ out.maps=R('maps.json').maps;
 // map.opening-six (2026-09-28): the opening's six maps, compiled from their per-hex ground letters
 // by mkopeningmaps.mjs (gen/opening-maps.json, generated) — the same shipping lane, after the rest.
 if(fs.existsSync(G+'opening-maps.json')) out.maps.push(...R('opening-maps.json').maps);
+// map.caravan-aftermath (2026-10-01): maps compiled from a painted scene's measured navigation by mkpaintedmaps.mjs
+// (gen/painted-maps.json, generated) — the same shipping lane; their ground lists fill the encounters' paint below.
+const painted=readPainted();
+if(painted) out.maps.push(...painted.maps);
 // ---- heroes, extracted mechanically from hell-tcg's five creation paths
 out.heroes=R('heroes.json');
 // ---- the TEST COHORT (settled.json testCohort): the standard engine test party — six
@@ -205,7 +210,7 @@ if(out.encounters){
   for (const e of testing) if (typeof e?.id !== 'string' || !/^test\.encounter\.[a-z0-9.-]+$/.test(e.id)) prob.push(`invalid TEST encounter id ${e?.id}`);
   const rows=[...(out.encounters.prologue||[]),...(out.encounters.scripted||[]),...(out.encounters.authored||[]),...testing];
   for(const r of rows){
-    try { validateEncounterBoard(r, byMap); } catch (error) { prob.push(error.message); continue; }
+    try { if(r.paint) r.paint=resolvePaint(r, painted); validateEncounterBoard(r, byMap); } catch (error) { prob.push(error.message); continue; }
     if(r.band&&r.band.axis==='col'&&(r.band.startCol===undefined||r.band.startRow!==undefined))
       prob.push(`encounters ${r.id}: band axis is col — it must carry startCol and must NOT carry startRow`);
   }

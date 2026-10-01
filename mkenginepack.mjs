@@ -39,6 +39,7 @@ function packetFields(row){
 // party and enemies come from HERE — the Codex pipeline — not from hand-typed
 // rows. Deterministic output: same inputs, byte-identical pack.
 import fs from 'fs';
+import { readPainted, resolvePaint } from './mkpaintedmaps.mjs';
 import { compileMaps, validateEncounterBoard } from './map-schema.mjs';
 const D = JSON.parse(fs.readFileSync('hbt-content.json', 'utf8'));
 // ── THE ENGINE'S VOCABULARY (plumbing.vocabulary-export, engine 2026-09-28) ────
@@ -131,6 +132,7 @@ const enemies = D.testCohort.enemies.map((z) => { const { copyOf, ...row } = z; 
 // invent — so the whole attack is a gap, not a number I picked.
 const AUTH = JSON.parse(fs.readFileSync('gen/enemies-authored.json', 'utf8'));
 const ENC = JSON.parse(fs.readFileSync('gen/encounters.json', 'utf8'));
+const PAINTED = readPainted();   // map.caravan-aftermath: the painted scenes' ground lists (mkpaintedmaps.mjs)
 const gaps = [];
 const gap = (unit, what, needs) => gaps.push({ unit, what, needs });
 
@@ -2014,7 +2016,8 @@ function compileEncounter(row) {
     ...(row.band.startRow !== undefined ? { startRow: row.band.startRow } : {}),
     ...(row.band.spare ? { spare: row.band.spare } : {}) } : undefined;
   if (row.band && row.band.axis === 'col') gaps.push('band walks the COLUMN axis (axis:col, startCol) — the engine must read it; a reader still expecting startRow gets undefined');
-  const paint = row.paint ? row.paint.map((p) => ({ layer: p.layer, hexes: p.hexes })) : undefined;
+  // map.caravan-aftermath (2026-10-01): a paint may name its map's ground (gen/painted-maps.json) instead of listing hexes
+  const paint = row.paint ? resolvePaint(row, PAINTED).map((p) => ({ layer: p.layer, hexes: p.hexes })) : undefined;
   // The board ships (PROVING-PLAN Stage A3, 2026-09-04). Every row names it; a row that does
   // not is a hard gap, because a placement means nothing without the board it is placed on.
   return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),
