@@ -29,6 +29,7 @@
 //                       and diff it byte-for-byte against battles/ — the engine's
 //                       own regression test for the library (plan §8.4). A
 //                       difference is reported, never written over. Not a part.
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, copyFileSync, rmSync } from 'node:fs'
 import { execFileSync, execSync } from 'node:child_process'
 import { resolve, dirname, join, relative } from 'node:path'

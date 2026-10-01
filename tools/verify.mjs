@@ -41,6 +41,7 @@
    library-wide checks that need every battle's facts are written to --facts and
    judged by the gate over all N slices (verify-slices.mjs mergedFails). With no
    --slice, everything runs here, exactly as before. */
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -48,8 +49,9 @@ import {fixtureUnits} from './burst-fixture-data.mjs'
 import { makeWindow } from './fakedom.mjs'
 import { assignSlices, iconFails, frameFails } from './verify-slices.mjs'
 // The readonly engine door is TypeScript in native Node as well as the browser bundle.
-import { register } from '../../engine/node_modules/tsx/dist/esm/api/index.mjs'
 import {registerAtlasDependency} from './atlas-node.mjs'
+// imported after the link above exists, so a worker's copy resolves it
+const { register } = await import('../../engine/node_modules/tsx/dist/esm/api/index.mjs')
 register()
 registerAtlasDependency()
 

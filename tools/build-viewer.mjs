@@ -13,6 +13,7 @@
 // The gate runs verify.mjs on the result BEFORE it is moved into place: a page
 // that does not fold every library battle end to end is never written over
 // the last one that did. Generated output — never hand-edit BATTLE-VIEWER.html.
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import { readFileSync, writeFileSync, readdirSync, renameSync, mkdirSync, existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { execSync, execFileSync } from 'node:child_process'

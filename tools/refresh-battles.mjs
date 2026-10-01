@@ -1,4 +1,5 @@
 // Refresh the library through the production exporter, preserving its exact seeds.
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import { readFileSync, writeFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { resolve, join } from 'node:path'

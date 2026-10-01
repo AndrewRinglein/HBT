@@ -1,3 +1,4 @@
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import {createRequire} from 'node:module'
 import {pathToFileURL} from 'node:url'
 import {resolve} from 'node:path'

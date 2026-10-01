@@ -6,6 +6,7 @@
 // moves that tool into src/, this file goes away and the door supplies it.
 // Every map is dumped, not only the library's, so a dropped export from any
 // map can play (plan §8.6). Never hand-edit the output.
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import { execFileSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
