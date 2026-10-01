@@ -3601,3 +3601,13 @@ Ruled:
 - **Every unit in the Orphanage has a 3D model — find it; none stands as a 2D token.** The models are in `assets/characters/hero-transformations/player-roster/models/` (among them `orphan-child`, `school-teacher`, `warrior-iron`, the `ranger-*`, `priest-*`, `paladin-*`, `rogue-*`, `mage-*` and `warrior-*` bodies, `lumberjack`, `lumberjacks-wife`). This corrects viewer.opening-cast, which left the civilians (and the Lumberjack's Wife) on tokens as having no model. **If a model lacks something, ask Andrew.**
 - **No 2D assets on the 3D map.**
 - **No other map loads first.** The board that shows for a blink before the battle's own scene must not load; the battle's 3D map is the first thing seen.
+
+## 2026-09-30 — the game plays from a link
+
+Andrew, told after viewer.true-3d-camera landed to open `PLAY-OPENING.bat` to see it:
+
+“Listen, I don't want to have to go dig for bat files. I want a way to play this game out of a link.”
+
+Ruled:
+
+- **The game is played by opening a link** — never by finding and running a .bat file. How (a hosted page, or the local server always running behind a bookmark) was asked the same evening; recorded below when answered.
