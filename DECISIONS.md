@@ -3620,3 +3620,14 @@ Ruled:
 
 - **A local link on this PC:** the game's server (tools/battle-atlas/serve.mjs, port 4230) starts with Windows, so the link always opens; no .bat to run.
 - **A game launcher:** one page at that link lists the battles that can be played and opens each straight into the battle screen. Filed as `kingdom.play-launcher` (first in the queue).
+
+## 2026-09-30 — the civilians are played; no 2D before the 3D bodies
+
+Andrew, having played from http://127.0.0.1:4230/play:
+
+“There's no movement for the child when I click on it, so the civilians, I think, aren't activating properly.   Also, two-dimensional images of other heroes are loading before the 3D images are loading. You still have some kind of legacy 2D other things loading, better than blinking out of existence.”
+
+Ruled (the reading taken; 2026-08-26 "civilians are EXACTLY like heroes" is the prior ruling it rests on):
+
+- **The civilians are played by the player, like the heroes.** In a battle the person plays, clicking the Orphan Child (or any of the encounter's civilians) starts its activation — reach, path, attack — as clicking a hero does; End Turn's pop-up counts them among those yet to act. Until now the sandbox left them to the AI (kingdom/src/core/sandbox.ts, an unrecorded choice). Filed `kingdom.civilians-played`.
+- **No 2D picture stands in for a body that is still loading.** The battle opens when its 3D map and the 3D bodies of everyone on it are in; a unit that arrives later shows no token while its body loads. A token is drawn only where a body cannot be had (said in the status line, as before). Filed `viewer.bodies-before-board`.
