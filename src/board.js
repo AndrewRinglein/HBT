@@ -853,7 +853,10 @@ export function syncUnits(V) {
     /* what the pointer's ray meets (pickAt): an upright body on the feet, as tall as the figure drawn — a downed one low and wide */
     E.pick = down ? { r: Math.max(30, w / 2), h: 36 } : { r: Math.max(26, Math.round(w * .36)), h: figPx }
     const under = underUnit(V)
-    E.img.style.opacity = modelled ? '0' : down ? '.82' : '1'
+    /* viewer.bodies-before-board: a body still loading is not stood in for by its 2D token (the token stays the click
+       target, unseen); a body that cannot be had keeps its token, as before */
+    const waiting = !modelled && !!V.cast?.pending?.(u.id)
+    E.img.style.opacity = modelled || waiting ? '0' : down ? '.82' : '1'
     E.img.style.boxShadow = down && !modelled ? '0 10px 16px -6px rgba(0,0,0,.85)' : ''
     E.flash.style.left = (-w / 2 - 8) + 'px'; E.flash.style.top = (-hpx * 0.7) + 'px'
     E.flash.style.width = (w + 16) + 'px'; E.flash.style.height = (hpx * 0.6) + 'px'

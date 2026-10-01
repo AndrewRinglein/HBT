@@ -264,7 +264,8 @@ export function createCast(V, scene, toWorld, platform = {}) {
     let entry = looks.get(look.id)
     if (entry) return entry
     entry = { state: 'loading', loaded: null, error: null }; looks.set(look.id, entry)
-    Promise.resolve().then(() => load(look)).then(l => { if (disposed) return; entry.state = 'ready'; entry.loaded = l },
+    /* done: settles when the look is in or has failed (viewer.bodies-before-board: the board waits on it) */
+    entry.done = Promise.resolve().then(() => load(look)).then(l => { if (disposed) return; entry.state = 'ready'; entry.loaded = l },
       err => { if (disposed) return; entry.state = 'failed'; entry.error = err; platform.onError?.(look, err) })
     return entry
   }
@@ -332,10 +333,17 @@ export function createCast(V, scene, toWorld, platform = {}) {
     /* the standee gives way to the body (and comes back when it goes) */
     if (changed) V.render?.()
   }
+  /* viewer.bodies-before-board (engine DECISIONS.md 2026-09-30 "no 2D before the 3D bodies"): the looks of a unit with a
+     body, asked for at once */
+  const lookOf = u => { const binding = u && modelBinding(u.typeId, V.data.models); return binding ? want(lookFor(binding, u.id)) : null }
   return {
     frame,
     get size() { return bodies.size },
     shows: id => bodies.has(id),
+    /** the unit has a body that is still loading — no token picture stands in for it meanwhile */
+    pending: id => { const u = V.S.U[id], e = u && u.life !== 'dead' ? lookOf(u) : null; return !!e && (e.state === 'loading' || (e.state === 'ready' && !bodies.has(id))) },
+    /** every unit now on the board's look, loaded or failed: the board opens when this settles */
+    settle: () => Promise.all(Object.values(V.S.U).filter(u => u.life !== 'dead').map(lookOf).filter(Boolean).map(e => e.done)).then(() => { if (!disposed) frame(0) }),
     /** how tall a unit's body stands, in board px (viewer.under-unit: the acting arrow and the body effects ride its head) */
     heightPx: id => { const B = bodies.get(id); return B ? B.standingHeight() * PX_PER_M : null },
     body: id => bodies.get(id) || null,

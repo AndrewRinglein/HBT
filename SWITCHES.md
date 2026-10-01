@@ -205,3 +205,16 @@ Orphanage unit its own model, no flash of another map" ("True 3D orbit"; "That o
 | `modelCivilianStature` | The civilian bodies are height-normalised; "physical child stature in game is not configured" (civilian-study run.json). How tall does each stand? | **At the demo's medium humanoid stature (1.728 m, the roster's `archer` row) times its standee's height over the School Teacher's** (prep-art.py ARTMAP): the Teacher 1.728 m, the Lumberjack 1.784, his Wife 1.672, the Orphan Child 1.115. | The standees already rule the cast's relative heights; one adult anchors them to the humanoids' rig. | provisional — 2026-10-01 |
 | `modelFillMotions` | What fills a look's missing strike, flinch or shot? (viewer.every-model) | **The selected free-library performances, borrowed onto any CC_Base body that has every bone they move:** a punch → the Hook punch (`selections.json` `hook`, "Hook punch can work for our punch"); a sword strike → the Sword combination (`combo`); a flinch → the Head-hit reaction (`battle-actions/selections.json` `headhit`); a bow shot → the battle demo's archer's. The Skeleton Archer: sword, flinch, bow; the Soldier: sword, flinch; the civilians: the punch. Played on the body's own bone lengths (models.js `borrowClip`: rotations kept, only the hip travels, rebased). The Zombies' rig is not CC_Base: their flinch stays `missing` and they recoil (`modelRecoil`). | Engine DECISIONS.md 2026-09-30 'a bunch of motions, not every one' loosens `modelLunge`'s "never borrowed": "a lacking motion is filled from the approved or selected motions where one fits, and is still listed where none does". | provisional — 2026-10-01 |
 | `modelImpFlinch` | The Imp's flinch? | **The winged imp's own `getHit`**, a clip of its character file that the demo's roster leaves unused. | Its own body's performance, so nothing borrowed. | provisional — 2026-10-01 |
+
+## viewer.bodies-before-board — no 2D before the 3D bodies (2026-09-30)
+
+Engine backlog viewer.bodies-before-board; ruled 2026-09-30, engine DECISIONS.md "the civilians are played; no 2D before
+the 3D bodies" ("two-dimensional images of other heroes are loading before the 3D images are loading"). `src/models.js`
+(pending, settle), `src/terrain3d.js`, `src/board.js`; probes `tools/bodies-before-board.test.mjs` and engine
+`test/bodies-before-board.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `bodiesOpenBoard` | When does the board open? | **When the 3D scene is in and every body of a unit then on the board has loaded or failed** — the loading line ("Loading the battle's 3D map…") covers both. No time limit: a file that never answers keeps the line up. | "No 2D … loading before the 3D images." | provisional — 2026-09-30 |
+| `bodyLoadingToken` | A unit that arrives later, whose body is still loading? | **Its token picture is not shown** (its ring, bars and name are, and it can be clicked) until its body stands. | The ruling; better a moment's gap than a 2D figure. | provisional — 2026-09-30 |
+| `bodyFailedToken` | A body that cannot be loaded? | **Its token, as before, said in the corner status line** — "if a model lacks something, ask Andrew" (2026-09-30). | Nothing else can show it. | provisional — 2026-09-30 |

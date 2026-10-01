@@ -44,8 +44,10 @@ export function createDriver(V,onFailure,platform={}){
  const ready=load(V.data.atlas,{...platform,cancelled:()=>disposed}).then(result=>{
   if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene):atlasEnvironment(scene,built)
   if(V.data.models)V.cast=(platform.createCast||createCast)(V,scene,affine.clone().invert(),{...(platform.models||{}),location:platform.location,onError:(look,error,detail)=>{const st=wrap.querySelector('#terrainStatus');if(st)st.textContent+=' · '+look.name+(detail?.appearance?' transformation unavailable: ':' is its token: ')+String(error?.message||error)}})
-  if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true;frame()
- })
+  if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true
+  /* viewer.bodies-before-board: the board opens with every body on it standing — never their 2D tokens first */
+  return V.cast?.settle?.()
+ }).then(()=>{if(!disposed)frame()})
  function frame(){if(disposed)return;try{
   const t=clock(),dt=last===null?0:Math.min(.1,Math.max(0,(t-last)/1000));last=t
   if(V.cast){V.cast.frame(dt);if(V.cast.size)dirty=true}
