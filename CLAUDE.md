@@ -6,19 +6,11 @@ game are one component. A **sibling package to `engine/` and `kingdom/`, and its
 own nested git repository** (ruled 2026-09-02, `THREE-PACKAGES-PLAN.md`). It
 imports the engine through one door and never edits it.
 
-**Read first, in this order:** the root `STATE.md` · the root `CLAUDE.md` (laws,
-vocabulary) · `GLOSSARY.md` (the naming authority) · **`HANDOFF-2026-09-04.md`**
-(what is built, what is open, how to work here — start there if you are new) ·
-**`REVIEW-2026-09-04.md`** (the standing bug list — read §A before touching
-`fold.js`) ·
-**`VIEWER-CONSTITUTION.md`**
-(this package's seven laws, each with its catch) · `THREE-PACKAGES-PLAN.md`
-(the seams, the stages, what not to do) · then the look, which is ruled in
-`VFX/PLAYBACK-DESIGN.md`, `VFX/UI-BUILD-NOTES-2026-09-02.md` and the work list
-`VFX/VISUAL-BATTLE-UPDATES.md`. `VFX/VIEWER-CHECKPOINT.md` is the thread's dated
-record — traps, rulings, what exists. `ENGINE-FINDINGS-2026-09-03.md` is what the
-viewer found the engine's events do not carry — for the engine chat (16 findings
-as of 2026-09-04).
+**Read on start:** `VIEWER-CONSTITUTION.md` (this package's seven laws, each with its
+catch). The root `CLAUDE.md` is already loaded and `GLOSSARY.md` settles any name.
+Everything else is opened by the item that needs it (`../DISPLAY-RULES.md` rule 26):
+`REVIEW-2026-09-04.md` §A before touching `fold.js`, `VFX/PLAYBACK-DESIGN.md` and
+`VFX/VISUAL-BATTLE-UPDATES.md` for the look, `THREE-PACKAGES-PLAN.md` for the seams.
 
 ---
 
