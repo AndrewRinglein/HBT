@@ -25,8 +25,9 @@ function cast(id,want){
  const models=V().data.models,units=ctx().state.units
  for(const u of units){
   assert.ok(V().layers.UEL.get(u.id)?.img,`${u.typeId} stands on its token`)
-  if(u.typeId.startsWith('hero.fixed.'))assert.ok(!models[u.typeId],`${u.typeId} is its token, no model`)
-  else assert.ok(models[u.typeId]?.looks?.length,`${u.typeId} is a model`)
+  /* Law 10 (viewer.every-model, 2026-10-01): was "hero.fixed.* is its token, no model". Andrew 2026-09-30 (engine
+     DECISIONS.md 'a true 3D battle'): "none stands as a 2D token" — every civilian is a model now (sandbox-every-model.verify.mjs) */
+  assert.ok(models[u.typeId]?.looks?.length,`${u.typeId} is a model`)
  }
  assert.ok(units.some(u=>u.typeId.startsWith('hero.base.')),id+': drafted heroes')
  assert.deepEqual([...new Set(units.map(u=>u.typeId).filter(t=>!t.startsWith('hero.base.')))].sort(),want,id+': its cast')
@@ -38,7 +39,9 @@ const soldier=()=>ctx().state.units.some(u=>u.typeId==='unit.soldier')
 for(let t=0;t<12&&(shot()<0||!soldier())&&!ctx().state.outcome;t++)turn(()=>{})
 cast('encounter.opening.lumberjack',['hero.fixed.lumberjack-and-wife','hero.fixed.lumberjacks-wife','unit.skeletal-archer','unit.soldier','unit.zombie'])
 assert.ok(shot()>=0,'a Skeleton Archer shot');assert.ok(V().cursor>shot(),'and the screen played it')
-assert.ok(m2['unit.skeletal-archer'].looks[0].missing.includes('ranged'),'no approved shot motion: listed missing, the shot is the board\'s arrow')
+/* Law 10 (viewer.every-model, 2026-10-01): was "no approved shot motion: listed missing". Andrew 2026-09-30 (engine
+   DECISIONS.md 'a bunch of motions'): the selected bow shot is used — the body draws, the board still flies the arrow */
+assert.ok(m2['unit.skeletal-archer'].looks[0].motions.ranged,'the Skeleton Archer draws the selected bow shot')
 // battle 3: the Imps fly
 const m3=field('encounter.opening.bridge')
 assert.ok(m3['unit.imp'].looks[0].motions.flight,'the Imp\'s look flies')
@@ -48,4 +51,4 @@ const flight=()=>ctx().events.some(e=>e.type==='move.begin'&&e.causeId==='power.
 for(let t=0;t<12&&!(flight()&&flew.size)&&!ctx().state.outcome;t++)turn(watch)
 cast('encounter.opening.bridge',['unit.fire-imp','unit.imp'])
 assert.ok(flight(),'an Imp flew (engine power.flight)');assert.ok(flew.size>0,'the screen flew it: its traversal carries the flight shape')
-console.log(`sandbox cast: battle 2 and battle 3 fielded from the screen, every enemy and drafted hero a model, every civilian its token; a Skeleton Archer shot, ${flew.size} Imp(s) flew on the board passed`)
+console.log(`sandbox cast: battle 2 and battle 3 fielded from the screen, every enemy, drafted hero and civilian a model; a Skeleton Archer shot, ${flew.size} Imp(s) flew on the board passed`)
