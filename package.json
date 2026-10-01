@@ -8,6 +8,7 @@
     "build": "node tools/build-viewer.mjs",
     "verify": "node tools/verify.mjs BATTLE-VIEWER.html",
     "gate": "node tools/gate.mjs",
+    "test": "node ../engine/node_modules/vitest/vitest.mjs run --dir test",
     "typecheck": "node ../engine/node_modules/typescript/bin/tsc --noEmit"
   },
   "dependencies": {

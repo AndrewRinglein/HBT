@@ -29,7 +29,7 @@
 // type's own sheet asks of it — a ranged attack with no shot motion, a flight power with no flight motion
 // (generated/static.json, the engine's sheet through the door).
 //
-//   node tools/character-models.mjs --json      print the pack (the engine's test/character-models.test.ts reads it)
+//   node tools/character-models.mjs --json      print the pack (test/character-models.test.ts reads it)
 import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { resolve, dirname, posix } from 'node:path'

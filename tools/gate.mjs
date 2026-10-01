@@ -9,7 +9,9 @@
 //
 //   --part checks       1. the DOOR PROBE — nothing under src/ or tools/ names the
 //                          engine's source except src/engine.ts; 1b. Laws 5 and 6;
-//                       2. typecheck (src/*.ts, tools/*.mts) and the tool suites;
+//                       2. typecheck (src/*.ts, tools/*.mts), the tool suites and
+//                          test/ — the page tests that ask the engine's content
+//                          (moved here from engine/test, Andrew 2026-10-01);
 //                       2b. the engine's map list against both dumps
 //   --part verify k/4   3. build the candidate page into .build/ (deterministic: no
 //                          timestamp) and run verify.mjs over slice k of the
@@ -120,6 +122,9 @@ function checks() {
   catch { fail('typecheck') }
   try { execFileSync('node', ['--test', 'tools/fakedom.test.mjs', 'tools/runtime-metadata.test.mjs', 'tools/elemental-display.test.mjs', 'tools/damage-packets.test.mjs', 'tools/bursts.test.mjs', 'tools/loadout-swap.test.mjs', 'tools/item-uses.test.mjs', 'tools/prop-destroy.test.mjs', 'tools/vocabulary.test.mjs'], { stdio: 'inherit' }) }
   catch { fail('runtime metadata isolation or tool catalog validation') }
+  /* 2a · test/ — the viewer's page tests against the engine's content, run on the engine's vitest */
+  try { execFileSync('node', ['../engine/node_modules/vitest/vitest.mjs', 'run', '--dir', 'test', '--reporter=dot'], { stdio: 'inherit' }) }
+  catch { fail('test/ — the page tests against the engine') }
   /* 2b · the engine's map list, through the door, against both dumps */
   {
     const tsx = resolve('../engine/node_modules/tsx/dist/cli.mjs')

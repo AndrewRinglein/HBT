@@ -14,7 +14,7 @@
 // grid is not the engine board's, or any hex whose scene centre does not land on the engine's (Law 1: a missing
 // or disagreeing fact is a build failure, never a best fit).
 //
-//   node tools/painted-scenes.mjs --json      print the pack (the engine's test/painted-board.test.ts reads it)
+//   node tools/painted-scenes.mjs --json      print the pack (test/painted-board.test.ts reads it)
 import { readFileSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
