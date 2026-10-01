@@ -3575,3 +3575,29 @@ Ruled:
 
 - **Yes — the selected free-library motions may be used on the Skeleton Archer, the Soldier and any look that lacks one.** Not every motion is required; many visible motions are. This loosens 2026-09-29's "what a look lacks is listed, never borrowed" (viewer.character-models) for the playable opening: a lacking motion is filled from the approved or selected motions where one fits, and is still listed where none does.
 - **Every hero the battle fields wears one of the hero bodies already built** (the battle demo's archer, Oathblade, the female fitted bodies, the casters), reused across heroes and classes. No new hero bodies for the opening.
+
+
+## 2026-09-30 — a true 3D battle: an orbit camera, every Orphanage unit its own model, no flash of another map
+
+Andrew, having played `kingdom/BATTLE-SANDBOX.html?play=encounter.opening.orphanage` after viewer.battle-full-screen landed (his screenshot: the status line reads "Painted 3D · Orphanage"; the board shows the 3D riverside scene with the bridge, rocks and trees):
+
+“When I maneuver the map, it stretches the 3D assets. These are supposed to be 3D assets. The heroes are not 3D assets. This is not a 3D map from either perspective.”
+
+“Do you need to ask me questions? Do we need to go through a Q&A of what this should be?   The battle screen is sort of 2D, but if I rotate it one direction, it just stretches, and then the characters are 2D renderings of 3D assets.”
+
+Asked four questions. His answers:
+
+- How should the battle camera work? — chose **“True 3D orbit”** (offered as: “A real perspective camera: rotate all the way around, tilt, zoom and pan; terrain and characters seen correctly from any angle, like a 3D tactics game.”)
+- What should a unit with no 3D model yet look like? — “Everything in Orphanage has a 3D model, so if you're not finding the 3D model, you're just not looking in the right place.   Ask me if there is anything missing in the model because we're not”
+- What should the battle map itself be? — “These maps are supposed to be converted into 3D. I thought everything was converted into 3D. What do you mean by "painted 3D scenes"? We started with paintings. I thought we turned these into three-dimensional models.”
+- What does the status line under the board start with? — “A different map loads for a blink of an eye, and then this map. That other map should not be loading.   This is the right map. We then have 2D assets on it as well, and it's not doing the right type of behavior for how we change perspective.”
+
+Answered on the spot: "painted 3D scene" is only the code's name (viewer/src/painted.js) for the 3D model converted from the painting — `assets/terrain-3d/orphanage-riverside/scene.glb`; it is three-dimensional, and it is what loaded ("Painted 3D · Orphanage").
+
+Ruled:
+
+- **The battle camera is a true 3D orbit camera**: a real perspective camera that rotates all the way around, tilts, zooms and pans, with the terrain and the characters seen correctly from any angle. Today the board is a flat CSS plane and the WebGL layer copies that plane's tilt (viewer/src/terrain3d.js `clipMatrix` from the stage's CSS transform), which is why turning the board stretches the scene and the bodies. The ground marks (hexes, reach, path, the arrow), the bars and names under units, and every click follow the 3D camera.
+- **The maps are 3D** — the 3D scenes converted from the paintings are the board, as ruled 2026-09-29.
+- **Every unit in the Orphanage has a 3D model — find it; none stands as a 2D token.** The models are in `assets/characters/hero-transformations/player-roster/models/` (among them `orphan-child`, `school-teacher`, `warrior-iron`, the `ranger-*`, `priest-*`, `paladin-*`, `rogue-*`, `mage-*` and `warrior-*` bodies, `lumberjack`, `lumberjacks-wife`). This corrects viewer.opening-cast, which left the civilians (and the Lumberjack's Wife) on tokens as having no model. **If a model lacks something, ask Andrew.**
+- **No 2D assets on the 3D map.**
+- **No other map loads first.** The board that shows for a blink before the battle's own scene must not load; the battle's 3D map is the first thing seen.
