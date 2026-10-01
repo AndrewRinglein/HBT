@@ -202,3 +202,13 @@ this PC"; "Make me a game launcher where I can play the various battles"). `tool
 | `launcherAddress` | Which link? | **http://127.0.0.1:4230/play** — the server the battles already need (tools/battle-atlas/serve.mjs) answers `/play` with `kingdom/PLAY.html`; `/` stays the Battle Atlas. | One short address on the one server; nothing else moves. | provisional — 2026-09-30 |
 | `launcherBattles` | Which battles, in what order? | **Every encounter the sandbox may play (`SANDBOX_ENCOUNTERS`), in the opening's order (the engine scenario's `openingPosition`)**, each card opening `BATTLE-SANDBOX.html?play=<id>` with the sandbox's default heroes; then a free battle (the sandbox's own setup) and the recorded battles (`viewer/BATTLE-VIEWER.html`). | The sandbox's list is the playable one; a new encounter appears on the next build. | provisional — 2026-09-30 |
 | `launcherCard` | What does a card say? | **Battle N, the name, the foes (the engine's units, counted, with how many arrive later) and who to protect (its civilians)**, over its 3D map's review render (`<scene>/review.png`, else the scene family's `review/<scene>.png`, as the opening ground proposal names the scene). A battle not yet on its 3D map in the battle screen says so on its picture ("flat board for now"). | Facts from their owners; the picture is the map's own render. | provisional — 2026-09-30 |
+
+## kingdom.civilians-played — the civilians are the player's (2026-09-30)
+
+Engine backlog kingdom.civilians-played; ruled 2026-09-30, engine DECISIONS.md "the civilians are played; no 2D before the
+3D bodies" ("There's no movement for the child when I click on it"; 2026-08-26 "Civilians are exactly like heroes").
+`src/core/sandbox.ts` (playerPolicy); probes `tools/sandbox-civilians.verify.mjs` and engine `test/civilians-played.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `civiliansPlayed` | Which units does the player play? | **Every unit fielded on the heroes' side at the battle's start — the drafted heroes and the encounter's civilians** (a new battle and a restored save alike). A civilian that arrives by schedule later is the AI's (none does in the opening's four). | The ruling; arrivals are not yet asked about. | provisional — 2026-09-30 |

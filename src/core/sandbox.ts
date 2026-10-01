@@ -31,6 +31,12 @@ function configured(config:SandboxConfig){
  if(config.heroes.some(id=>!SANDBOX_HEROES.some(h=>h.id===id))||config.enemies.some(id=>!SANDBOX_ENEMIES.some(e=>e.id===id)))throw Error('Unknown hero or enemy')
  return field
 }
+/**
+ * kingdom.civilians-played (engine DECISIONS.md 2026-09-30 "the civilians are played"; 2026-08-26 "Civilians are exactly
+ * like heroes"): the player plays every unit fielded on the heroes' side — the drafted heroes and an encounter's
+ * civilians — read from the battle's initial fielding. (Until 2026-09-30 the civilians were left to the AI.)
+ */
+export function playerPolicy(ctx:{state:{units:readonly {uid:number;side:string}[]}}){return {humanUnitUids:ctx.state.units.filter(u=>u.side==='hero').map(u=>u.uid)}}
 export function createSandbox(config:SandboxConfig&{encounterId?:undefined}):AtlasSandbox
 export function createSandbox(config:SandboxConfig):Sandbox
 export function createSandbox(config:SandboxConfig):Sandbox{
@@ -39,8 +45,7 @@ export function createSandbox(config:SandboxConfig):Sandbox{
  const encounter=config.encounterId!==undefined?encounterDef(config.encounterId):null
  const spec=makeBattleState(roster,encounter?{id:encounter.id,mapId:encounter.mapId??(()=>{throw Error(`encounter '${encounter.id}' names no map`)})(),enemies:[],deployed:Object.keys(roster),seed:config.seed}:{id:field!.id,mapId:config.mapId,enemies:config.enemies,deployed:Object.keys(roster),seed:config.seed})
  const setup:BattleOptions=encounter?{...battleOptionsOf(spec),encounter}:battleOptionsOf(spec),ctx=createBattle(setup)
- // the heroes are fielded first, so the player's are the first N; the encounter's civilians arrive after and stay the AI's
- return {config:structuredClone(config),setup,ctx,policy:{humanUnitUids:ctx.state.units.slice(0,config.heroes.length).map(u=>u.uid)},...(field?{atlasScene:field.atlasScene}:{})}
+ return {config:structuredClone(config),setup,ctx,policy:playerPolicy(ctx),...(field?{atlasScene:field.atlasScene}:{})}
 }
 /**
  * The fall areas marked and not yet landed (engine encounter.area-fall): each area.marked line without its
@@ -127,7 +132,7 @@ export function restoreSandbox(text:string):Sandbox{
   if(canonicalJSON(expected.encounter)!==canonicalJSON(saved.setup?.encounter))throw Error('Saved configuration and setup disagree: encounter')
   const runtime=createBattle(saved.setup),ctx=restoreBattle(saved.snapshot,runtime)
   if(canonicalJSON(ctx.events.slice(0,runtime.events.length))!==canonicalJSON(runtime.events))throw Error('Saved initial roster, identities or fielding disagree')
-  return {config:structuredClone(saved.config),setup:saved.setup,ctx,policy:{humanUnitUids:runtime.state.units.slice(0,saved.config.heroes.length).map(u=>u.uid)}}
+  return {config:structuredClone(saved.config),setup:saved.setup,ctx,policy:playerPolicy(runtime)}
  }
  const runtime=createBattle(saved.setup),ctx=restoreBattle(saved.snapshot,runtime)
  const binding=saved.atlasScene
@@ -140,5 +145,5 @@ export function restoreSandbox(text:string):Sandbox{
  }
  if(runtime.state.units.length!==saved.config.heroes.length+saved.config.enemies.length)throw Error('Saved roster and setup disagree')
  if(canonicalJSON(ctx.events.slice(0,runtime.events.length))!==canonicalJSON(runtime.events))throw Error('Saved initial roster, identities or fielding disagree')
- return {config:structuredClone(saved.config),setup:saved.setup,ctx,atlasScene:saved.atlasScene,policy:{humanUnitUids:runtime.state.units.slice(0,saved.config.heroes.length).map(u=>u.uid)}}
+ return {config:structuredClone(saved.config),setup:saved.setup,ctx,atlasScene:saved.atlasScene,policy:playerPolicy(runtime)}
 }
