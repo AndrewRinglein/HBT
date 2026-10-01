@@ -28,7 +28,7 @@ describe("battles 2 and 3's cast in the new screen", () => {
     expect(types('encounter.opening.lumberjack', true)).toEqual(['hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife'])
     expect(types('encounter.opening.bridge', false)).toEqual(['unit.fire-imp', 'unit.imp'])
   })
-  it('every enemy is a model that stands, walks and falls; what its look lacks is listed; the civilians keep their tokens', () => {
+  it('every enemy is a model that stands, walks and falls; what its look lacks is listed; the civilians are models too', () => {
     for (const enc of ['encounter.opening.lumberjack', 'encounter.opening.bridge']) {
       for (const t of types(enc, false)) {
         expect(models[t], t).toBeDefined()
@@ -37,13 +37,17 @@ describe("battles 2 and 3's cast in the new screen", () => {
           for (const m of RULED) expect(look.missing.includes(m), `${t} ${look.id} ${m}`).toBe(!look.motions[m])
         }
       }
-      for (const t of types(enc, true)) expect(models[t], t).toBeUndefined()
+      /* Law 10 (viewer.every-model, 2026-10-01): was `toBeUndefined()` — the civilians kept their tokens. Andrew 2026-09-30
+         (DECISIONS.md 'a true 3D battle'): "none stands as a 2D token" (test/every-model.test.ts) */
+      for (const t of types(enc, true)) expect(models[t], t).toBeDefined()
     }
   })
   it('the archers shoot: a ranged enemy has a shot motion or lists it missing (the shot is the board projectile)', () => {
     expect(shoots('unit.skeletal-archer')).toBe(true)
     for (const look of models['unit.skeletal-archer']!.looks) expect(!!look.motions.ranged || look.missing.includes('ranged')).toBe(true)
-    expect(models['unit.skeletal-archer']!.looks[0]!.missing).toEqual(['attack', 'hit', 'ranged'])
+    /* Law 10 (viewer.every-model, 2026-10-01): was ['attack', 'hit', 'ranged'] — listed, never borrowed. Andrew 2026-09-30
+       (DECISIONS.md 'a bunch of motions, not every one'): the selected motions "may be used on the Skeleton Archer" */
+    expect(models['unit.skeletal-archer']!.looks[0]!.missing).toEqual([])
   })
   it('the imps fly: the engine grants the Imp flight and its look has a flight motion', () => {
     expect(flies('unit.imp')).toBe(true)

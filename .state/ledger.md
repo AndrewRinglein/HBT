@@ -19877,3 +19877,80 @@ index d758604..cb444a2 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.every-model — LANDED `c7f63bb` **NEEDS REVIEW**
+2026-10-01 05:34
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3576
+  PASS  typecheck
+  PASS  the item's own tests — test/character-models.test.ts, test/opening-cast.test.ts, test/every-model.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/character-models.test.ts, test/opening-cast.test.ts, test/every-model.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/character-models.test.ts (-2), test/opening-cast.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/character-models.test.ts b/test/character-models.test.ts
+index de4364b..d8f6088 100644
+--- a/test/character-models.test.ts
++++ b/test/character-models.test.ts
+@@ -22,5 +22,5 @@ describe('the character models stand on the engine roster', () => {
+     for (const typeId of Object.keys(models)) expect(Object.hasOwn(UNITS, typeId), typeId).toBe(true)
+   })
+-  it("battle 1's enemies are all models with the ruled motions; its civilians keep their tokens", () => {
++  it("battle 1's enemies are all models with the ruled motions; its civilians are models too", () => {
+     const enc = (ENCOUNTERS as Record<string, any>)['encounter.opening.orphanage']
+     const fielded = [...enc.setup, ...enc.schedule.flatMap((s: any) => s.spawn)]
+@@ -35,5 +35,9 @@ describe('the character models stand on the engine roster', () => {
+       }
+     }
+-    for (const typeId of civilians) expect(models[typeId], typeId).toBeUndefined()
++    /* Law 10 (viewer.every-model, 2026-10-01): was `toBeUndefined()` — the civilians kept their tokens. Andrew 2026-09-30
++       (DECISIONS.md 'a true 3D battle'): "Everything in Orphanage has a 3D model"; they now wear their own roster bodies
++       (test/every-model.test.ts) */
++    expect(civilians.length).toBeGreaterThan(0)
++    for (const typeId of civilians) expect(models[typeId], typeId).toBeDefined()
+   })
+   it('the bow hero shoots, is struck and falls', () => {
+diff --git a/test/opening-cast.test.ts b/test/opening-cast.test.ts
+index 745f274..39ff9cd 100644
+--- a/test/opening-cast.test.ts
++++ b/test/opening-cast.test.ts
+@@ -29,5 +29,5 @@ describe("battles 2 and 3's cast in the new screen", () => {
+     expect(types('encounter.opening.bridge', false)).toEqual(['unit.fire-imp', 'unit.imp'])
+   })
+-  it('every enemy is a model that stands, walks and falls; what its look lacks is listed; the civilians keep their tokens', () => {
++  it('every enemy is a model that stands, walks and falls; what its look lacks is listed; the civilians are models too', () => {
+     for (const enc of ['encounter.opening.lumberjack', 'encounter.opening.bridge']) {
+       for (const t of types(enc, false)) {
+@@ -38,5 +38,7 @@ describe("battles 2 and 3's cast in the new screen", () => {
+         }
+       }
+-      for (const t of types(enc, true)) expect(models[t], t).toBeUndefined()
++      /* Law 10 (viewer.every-model, 2026-10-01): was `toBeUndefined()` — the civilians kept their tokens. Andrew 2026-09-30
++         (DECISIONS.md 'a true 3D battle'): "none stands as a 2D token" (test/every-model.test.ts) */
++      for (const t of types(enc, true)) expect(models[t], t).toBeDefined()
+     }
+   })
+@@ -44,5 +46,7 @@ describe("battles 2 and 3's cast in the new screen", () => {
+     expect(shoots('unit.skeletal-archer')).toBe(true)
+     for (const look of models['unit.skeletal-archer']!.looks) expect(!!look.motions.ranged || look.missing.includes('ranged')).toBe(true)
+-    expect(models['unit.skeletal-archer']!.looks[0]!.missing).toEqual(['attack', 'hit', 'ranged'])
++    /* Law 10 (viewer.every-model, 2026-10-01): was ['attack', 'hit', 'ranged'] — listed, never borrowed. Andrew 2026-09-30
++       (DECISIONS.md 'a bunch of motions, not every one'): the selected motions "may be used on the Skeleton Archer" */
++    expect(models['unit.skeletal-archer']!.looks[0]!.missing).toEqual([])
+   })
+   it('the imps fly: the engine grants the Imp flight and its look has a flight motion', () => {
+```
+</details>

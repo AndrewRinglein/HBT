@@ -33,7 +33,9 @@
   "shape": "plumbing",
   "needs": [],
   "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the battle is its own full screen; ...; every 3D character'): 'And there are no 3D characters in this. I want all the 3D characters and enemies and motions.' Seen 2026-09-30 in Andrew's Chrome: the opening battle fields the sandbox's default heroes (Iron Dwarf, Hunter, Battle Chaplain), which are not among viewer/tools/character-models.mjs BINDINGS, so they stand as 2D tokens; on the squeezed board nothing reads as 3D. Every unit fielded in battles 1-3 (heroes the screen fields included) is a 3D model from assets/characters (APPROVED-CHARACTERS.md, assets/battle-demo/roster.mjs), with idle, move, attack, hit and death; flyers fly. The motions the approved looks lack (Skeleton Archer and Soldier attack/hit, the Imps' hit) are supplied per Andrew's answer to the motion question asked 2026-09-30. Corrected 2026-09-30 (Andrew, DECISIONS.md 'a true 3D battle: ...'): 'Everything in Orphanage has a 3D model, so if you're not finding the 3D model, you're just not looking in the right place.   Ask me if there is anything missing in the model because we're not'. The models are in assets/characters/hero-transformations/player-roster/models/ (roster.json, manifest.json): orphan-child, school-teacher, lumberjack, lumberjacks-wife, warrior-iron and the other drafted-hero bodies (ranger-*, priest-*, paladin-*, rogue-*, mage-*, warrior-*). Each drafted hero wears its own body where the roster has one; no unit of battles 1-3 stands as a token; a model lacking a motion or part is asked of Andrew, not substituted silently.",
-  "expect": "In battles 1-3 every hero, enemy and civilian on the board is a 3D model that idles, walks (or flies), attacks, flinches and dies; none stands as a 2D token."
+  "expect": "In battles 1-3 every hero, enemy and civilian on the board is a 3D model that idles, walks (or flies), attacks, flinches and dies; none stands as a 2D token.",
+  "status": "done-needs-review",
+  "sha": "c7f63bb"
  },
  {
   "id": "content.fire-imp-flight",

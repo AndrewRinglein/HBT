@@ -21,7 +21,7 @@ describe('the character models stand on the engine roster', () => {
   it('binds only unit types the engine fields', () => {
     for (const typeId of Object.keys(models)) expect(Object.hasOwn(UNITS, typeId), typeId).toBe(true)
   })
-  it("battle 1's enemies are all models with the ruled motions; its civilians keep their tokens", () => {
+  it("battle 1's enemies are all models with the ruled motions; its civilians are models too", () => {
     const enc = (ENCOUNTERS as Record<string, any>)['encounter.opening.orphanage']
     const fielded = [...enc.setup, ...enc.schedule.flatMap((s: any) => s.spawn)]
     const enemies = [...new Set(fielded.filter((f: any) => !f.civilian).map((f: any) => f.unit))]
@@ -34,7 +34,11 @@ describe('the character models stand on the engine roster', () => {
         expect(RULED.filter(m => !look.motions[m])).toEqual(look.missing)
       }
     }
-    for (const typeId of civilians) expect(models[typeId], typeId).toBeUndefined()
+    /* Law 10 (viewer.every-model, 2026-10-01): was `toBeUndefined()` — the civilians kept their tokens. Andrew 2026-09-30
+       (DECISIONS.md 'a true 3D battle'): "Everything in Orphanage has a 3D model"; they now wear their own roster bodies
+       (test/every-model.test.ts) */
+    expect(civilians.length).toBeGreaterThan(0)
+    for (const typeId of civilians) expect(models[typeId], typeId).toBeDefined()
   })
   it('the bow hero shoots, is struck and falls', () => {
     const look = models['hero.base.ranger-scantily']!.looks[0]!
