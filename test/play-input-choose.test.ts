@@ -9,7 +9,7 @@ import { describe, it, expect } from 'vitest'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxActivationChoices, sandboxChoices, type Sandbox } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
 import { createPlayInput } from '../src/ui/play-input.js'
-import { reachOf, isAttack, isMove } from '../src/engine.js'
+import { actionReach, isAttack, isMove } from '../src/engine.js'
 
 const start = () => { const s = createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' }); advanceSandbox(s); return s }
 /** a sandbox with the hero of this type acting, and a play input on it */
@@ -40,7 +40,7 @@ describe('choosing what the hero does', () => {
   })
   it('an attack chosen, the arrow reaches no further than its reach — the engine\'s — toward the pointer', () => {
     const { s, P, h } = acting(/warrior/)
-    const u = s.ctx.state.units[h.id]!, melee = u.actions.find((id) => { const a = s.ctx.actions[id]!; return isAttack(a) && reachOf(s.ctx, u, a) === 1 })!
+    const u = s.ctx.state.units[h.id]!, melee = u.actions.find((id) => isAttack(s.ctx.actions[id]!) && actionReach(s.ctx, u.id, id) === 1)!
     expect(melee, 'the hero has a reach-1 attack').toBeTruthy()
     expect(P.input({ kind: 'slot', actionId: melee, unit: h.id })).toBe(true)
     const g = s.ctx.geo, far = [...Array(g.hexCount).keys()].find((x) => g.distance(h.hex, x) === 6)!

@@ -13,7 +13,7 @@
 // commands (`end-player-phase`, `end-cycle`), who has not acted is heroesYetToAct (the pop-up's list), and the viewer's
 // End Turn and End activation clicks come back here as those commands (kingdom SWITCHES.md playChrome*).
 import {sandboxChoices,sandboxActivationChoices,type Sandbox,type SandboxChoice} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,reachOf} from '../engine.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,actionReach} from '../engine.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
 export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}
@@ -108,11 +108,11 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  const useCommand=(s:Sandbox,actor:number,u:Use):BattleCommand=>({kind:'action',actor,actionId:chosen!,slot:u.slot,expectedSeq:s.ctx.state.seq,...(u.key==='target'?{target:u.value}:u.key==='centre'?{centre:u.value}:{hex:u.value})} as BattleCommand)
  const done=()=>{chosen=null;ghost=null;aim=null}
  /** the hex the aim arrow reaches toward `at`: `at` itself when within the chosen action's reach (the engine's reachOf for an
-     attack, the row's range for anything else), else the hex within that reach nearest `at` (the farther of a tie, then the
+     attack read from where the hero would stand — engine actionReach, fix.aim-reach — the row's range for anything else),
+     else the hex within that reach nearest `at` (the farther of a tie, then the
      lower id) — so a punch's arrow is one hex long however far the pointer is (kingdom SWITCHES playInputAimReach) */
  const withinReach=(s:Sandbox,actor:number,from:number,at:number):number=>{
-  const a=s.ctx.actions[chosen!]!,u=s.ctx.state.units[actor]!,g=s.ctx.geo
-  const reach=isAttack(a)?reachOf(s.ctx,u,a):typeof (a as {range?:number}).range==='number'?(a as {range:number}).range:null
+  const g=s.ctx.geo,reach=actionReach(s.ctx,actor,chosen!,from)
   if(reach===null||g.distance(from,at)<=reach)return at
   let best=from
   for(let h=0;h<g.hexCount;h++){if(g.distance(from,h)>reach)continue
