@@ -280,5 +280,11 @@
   "sha": "807653c",
   "now": "viewer.battle-full-screen — the playable opening. Landed: the battle is its own screen — BATTLE-SANDBOX.html?play= opens the battle alone, scaled to fill the window (no setup form, no launcher text; a small Launcher button goes to the setup view and back); End Turn and End activation moved off the map into the screen's lower right-hand corner; the targeting arrow and its numbers are red; suite green 2406. Tried: nothing abandoned. Next: Andrew — eyeball kingdom/BATTLE-SANDBOX.html?play=encounter.opening.orphanage; viewer.every-model (the 3D characters Andrew did not see).",
   "committed": true
+ },
+ {
+  "at": "2026-10-01 03:37",
+  "sha": "c282776",
+  "now": "viewer.true-3d-camera — the playable opening. Landed: the battle's camera is one real perspective camera — the 3D scene and the board (hex marks, the arrow, bars, names, floats, click targets) are drawn through it, so turning a full circle, tilting and zooming no longer stretch the scene or the bodies; a click or a point is the camera's ray against the board (the hex top or the body under the pointer, at any angle); nothing of the board shows before the battle's own 3D scene (a loading line instead of the flat board that flashed), and no WebGL 2 is said plainly; viewer tests painted-board, terrain-scene and verify's camera checks rewritten as rules, reasons at each edit; suite green. Tried: nothing abandoned. Next: Andrew — eyeball kingdom/BATTLE-SANDBOX.html?play=encounter.opening.orphanage (turn all the way round, tilt, zoom, click a hero and a hex); viewer.every-model.",
+  "committed": true
  }
 ]
