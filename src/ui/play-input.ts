@@ -13,7 +13,7 @@
 // commands (`end-player-phase`, `end-cycle`), who has not acted is heroesYetToAct (the pop-up's list), and the viewer's
 // End Turn and End activation clicks come back here as those commands (kingdom SWITCHES.md playChrome*).
 import {sandboxChoices,sandboxActivationChoices,type Sandbox,type SandboxChoice} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove} from '../engine.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,reachOf} from '../engine.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
 export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}
@@ -107,6 +107,21 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  const moveCommand=(s:Sandbox,actor:number,g:Ghost):BattleCommand=>({kind:'action',actor,actionId:g.actionId,slot:g.slot,destination:g.destination,expectedSeq:s.ctx.state.seq})
  const useCommand=(s:Sandbox,actor:number,u:Use):BattleCommand=>({kind:'action',actor,actionId:chosen!,slot:u.slot,expectedSeq:s.ctx.state.seq,...(u.key==='target'?{target:u.value}:u.key==='centre'?{centre:u.value}:{hex:u.value})} as BattleCommand)
  const done=()=>{chosen=null;ghost=null;aim=null}
+ /** the hex the aim arrow reaches toward `at`: `at` itself when within the chosen action's reach (the engine's reachOf for an
+     attack, the row's range for anything else), else the hex within that reach nearest `at` (the farther of a tie, then the
+     lower id) — so a punch's arrow is one hex long however far the pointer is (kingdom SWITCHES playInputAimReach) */
+ const withinReach=(s:Sandbox,actor:number,from:number,at:number):number=>{
+  const a=s.ctx.actions[chosen!]!,u=s.ctx.state.units[actor]!,g=s.ctx.geo
+  const reach=isAttack(a)?reachOf(s.ctx,u,a):typeof (a as {range?:number}).range==='number'?(a as {range:number}).range:null
+  if(reach===null||g.distance(from,at)<=reach)return at
+  let best=from
+  for(let h=0;h<g.hexCount;h++){if(g.distance(from,h)>reach)continue
+   const d=g.distance(h,at),bd=g.distance(best,at)
+   if(d<bd||(d===bd&&(g.distance(from,h)>g.distance(from,best)||(g.distance(from,h)===g.distance(from,best)&&h<best))))best=h}
+  return best
+ }
+ /** a movement power that goes nowhere (Devotion: stepRange 0): its only legal destination is the hero's own hex */
+ const standsStill=(s:Sandbox,actor:number,choices:SandboxChoice[])=>choices.length>0&&choices.every(c=>(c.command as {destination:number}).destination===s.ctx.state.units[actor]!.hex)
 
  function facts():PlayFacts{
   const s=session(),empty:PlayFacts={actor:null,slot:null,reach:[],zoc:[],path:[],provokes:[],ghost:null,threat:null,targets:[],aim:null,note}
@@ -126,11 +141,15 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    if(c){f.path=[here,...c.path];const fc=forecastOf(s,actor,{actionId:c.command.actionId,slot:c.command.slot??'movement',destination:to!});if(fc.ok)f.provokes=asc(fc.provokes.map(p=>p.at))}
    return f
   }
+  /* engine DECISIONS.md 2026-10-01 (Andrew: "you can't target without an ability selected … what is that red arrow for? I have
+     to click an attack type, and the red arrow should only extend as far as whatever its range is"): no action chosen, no
+     arrow; with one chosen, the arrow stops at its reach — the hex within the engine's reach nearest the pointer */
+  if(chosen===null)return f
   const uses=usesOf(s,actor),from=ghost?.destination??here
   f.targets=asc(uses.map(u=>u.hex))
   const at=aim?.locked?aim.hex:point
-  if(at!==null&&at!==from){const u=uses.find(u=>u.hex===at)
-   f.aim={from,to:at,target:u?.key==='target'?u.value:null,...(u?numbersOf(s,actor,u):{hit:null,dmg:null,hpAfter:null,lethal:false}),locked:!!(aim?.locked&&u)}}
+  if(at!==null&&at!==from){const to=withinReach(s,actor,from,at),u=uses.find(u=>u.hex===to)
+   f.aim={from,to,target:u?.key==='target'?u.value:null,...(u?numbersOf(s,actor,u):{hit:null,dmg:null,hpAfter:null,lethal:false}),locked:!!(aim?.locked&&u)}}
   return f
  }
 
@@ -181,12 +200,21 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    const u=s.ctx.state.units[actor]!
    if(!u.actions.includes(e.actionId)||!s.ctx.actions[e.actionId])return false
    const a=s.ctx.actions[e.actionId]!
-   if(isMove(a)){if(ghost&&ghost.actionId!==e.actionId)ghost=null;chosen=e.actionId;aim=null
-    if(!moveOf(s,actor)?.choices.length){chosen=null;note=`${a.name}: no legal hex now.`;return true}
+   if(isMove(a)){
+    /* a power that goes nowhere is used from the bar: chosen, it is planned on the hero's own hex at once; chosen again (or
+       the hero clicked) it is used — engine DECISIONS.md 2026-10-01, Devotion: "I can't double-click on it or anything to
+       make it trigger" (kingdom SWITCHES playInputStandStill) */
+    if(ghost&&ghost.actionId===e.actionId&&ghost.destination===s.ctx.state.units[actor]!.hex&&chosen===e.actionId){const r=run(moveCommand(s,actor,ghost));note=r.ok?null:r.reason;done();return true}
+    if(ghost&&ghost.actionId!==e.actionId)ghost=null;chosen=e.actionId;aim=null
+    const mv=moveOf(s,actor)
+    if(!mv?.choices.length){chosen=null;note=`${a.name}: no legal hex now.`;return true}
+    if(standsStill(s,actor,mv.choices)){const c=mv.choices[0]!;ghost={actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost
+     note=`${a.name}: click it again, or the hero, to use it.`;return true}
     note=null;return true}
-   const was=chosen;chosen=e.actionId;aim=null
-   if(!usesOf(s,actor).length){chosen=was;note=`${a.name}: nothing in reach${ghost?' from the ghost':''}.`;return true}
-   note=null;return true}
+   /* chosen even with nothing in reach — its arrow still shows how far it reaches (engine DECISIONS.md 2026-10-01); right-click
+      takes it back (kingdom SWITCHES playInputAimReach) */
+   chosen=e.actionId;aim=null
+   note=usesOf(s,actor).length?null:`${a.name}: nothing in reach${ghost?' from the ghost':''}.`;return true}
   if(e.kind==='unit'){
    if(s.ctx.battleCursor?.at==='selecting'){
     const uid=s.ctx.state.units[e.id]?.uid

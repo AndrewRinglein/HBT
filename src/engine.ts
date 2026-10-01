@@ -48,7 +48,7 @@ export { activationChoices, controllerOf, validateBattleCommand, executeBattleCo
 export type { BattleCommand, ControlPolicy } from '../../engine/src/core/commands.js'
 export { isAttack, isMove, isBurst, staminaCostOf } from '../../engine/src/core/action.js'
 export { movementOptions } from '../../engine/src/core/movement.js'
-export { preview } from '../../engine/src/core/pipeline.js'
+export { preview, reachOf } from '../../engine/src/core/pipeline.js'   // reachOf: an attack's effective reach (the aim arrow's length, kingdom SWITCHES playInputAimReach)
 export { burstCentres, previewBurst } from '../../engine/src/core/burst.js'
 export { previewPower } from '../../engine/src/core/ability.js'
 export { saveBattle, restoreBattle } from '../../engine/src/core/snapshot.js'

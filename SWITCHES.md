@@ -219,3 +219,12 @@ Engine backlog kingdom.civilians-played; ruled 2026-09-30, engine DECISIONS.md "
 |---|---|---|---|---|
 | `sandboxCaravan` | May the caravan aftermath be played from the sandbox and the launcher? | **Yes — `SANDBOX_EXTRA_ENCOUNTERS` names it beside the opening's battles;** it has no place in the opening, so its launcher card says "Encounter" and comes after them. | Ruled 2026-10-01 (engine DECISIONS.md "the caravan's fight"): "so it can be played in the sandbox". | provisional — 2026-10-01 |
 | `launcherCaravanPicture` | The caravan has no `review.png`. Its card's picture? | **`review-tactical-surroundings.png`** — the accepted presentation's render, which the scene's `production.json` presentationRevision records. | The picture is the map's own render (launcherCard). | provisional — 2026-10-01 |
+
+## the battle controls — 2026-10-01
+
+Andrew (engine DECISIONS.md 2026-10-01): "You're supposed to select your movement type. It's okay if it's the top one by default.  Then you can't target without an ability selected. … the red arrow should only extend as far as whatever its range is." · "the special move Devotion for the priest did not work. I can't double-click on it or anything to make it trigger."
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `playInputAimReach` | When is the aim arrow drawn, and how long is it? | **Only with an action chosen on the bar** (none drawn otherwise, movement spent or not). **It ends at the pointer when the pointer is within the action's reach — an attack's is the engine's `reachOf`, anything else its row's range — else at the hex within that reach nearest the pointer** (the farther of a tie, then the lower id). An attack may be chosen with nothing in reach: its arrow still shows its reach, the note says so, right-click takes it back. | The ruling; "nothing in reach" used to refuse the choice, which left no way to see the reach. | provisional — 2026-10-01 |
+| `playInputStandStill` | A movement power that goes nowhere (Devotion: its only legal use is the hero's own hex)? | **Chosen on the bar it is planned at once on the hero's own hex, with the note "Devotion: click it again, or the hero, to use it."; chosen again, or the hero clicked, it is used.** | The plan-then-confirm of every other move, with nothing to aim at; the old path (click the hero's own hex under its body, twice, nothing shown) was invisible. | provisional — 2026-10-01 |
