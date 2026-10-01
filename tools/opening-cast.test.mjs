@@ -130,7 +130,7 @@ test('the Soldier strikes with its sword combination; a look with no strike stri
   w2.__battleView.harness.dispose()
 })
 
-test('the Imps fly: a flight flies the body and lands it; the Fire Imp, given no flight by the engine, walks', async () => {
+test('the Imps fly: a flight flies the body and lands it; the Fire Imp flies too', async () => {
   const i = at(battle3, 'move.begin', e => e.causeId === 'power.flight' && typeOf(battle3, e.actor) === 'unit.imp')
   assert.ok(i >= 0, 'battle 3 has an Imp flight')
   const w = boot('#map.opening.bridge'), { V, cast } = await standAt(w, i), e = battle3.events[i]
@@ -143,14 +143,20 @@ test('the Imps fly: a flight flies the body and lands it; the Fire Imp, given no
   E.walk = null; cast.frame(.1)
   assert.equal(imp.motion, 'idle', 'landed')
   w.__battleView.harness.dispose()
+  /* Law 10, engine content.fire-imp-flight (DECISIONS.md 2026-09-30 'the Fire Imp flies': "The Fire Imp does fly, yes.
+     That was an oversight if it does not."): the engine now gives the Fire Imp the Imp's flight, and the item expects "in
+     the battle screen the Fire Imp plays its flight loop". Rewritten from 'given no flight, it walks' (walkShape 'path',
+     motion 'move', and only if a Fire Imp moved) to the ruled rule — required, not optional.
+     was: assert.equal(E2.walkShape, 'path') … assert.equal(s.cast.body(x.actor).motion, 'move') */
   const j = at(battle3, 'move.begin', x => typeOf(battle3, x.actor) === 'unit.fire-imp')
-  if (j >= 0) {
-    const w2 = boot('#map.opening.bridge'), s = await standAt(w2, j), x = battle3.events[j]
-    w2.__battleView.harness.viewer.step()
-    const E2 = s.V.layers.UEL.get(x.actor); assert.equal(E2.walkShape, 'path')
-    E2.walk = { playState: 'running' }; s.cast.frame(.1); assert.equal(s.cast.body(x.actor).motion, 'move'); E2.walk = null
-    w2.__battleView.harness.dispose()
-  }
+  assert.ok(j >= 0, 'battle 3 has a Fire Imp move')
+  assert.equal(battle3.events[j].causeId, 'power.flight', 'the engine flies the Fire Imp')
+  const w2 = boot('#map.opening.bridge'), s = await standAt(w2, j), x = battle3.events[j]
+  w2.__battleView.harness.viewer.step()
+  const E2 = s.V.layers.UEL.get(x.actor); assert.equal(E2.walkShape, 'flight', 'the Fire Imp\'s traversal is a flight')
+  E2.walk = { playState: 'running' }; s.cast.frame(.1); assert.equal(s.cast.body(x.actor).motion, 'flight', 'it plays its flight loop'); E2.walk = null
+  s.cast.frame(.1); assert.equal(s.cast.body(x.actor).motion, 'idle', 'and lands')
+  w2.__battleView.harness.dispose()
 })
 
 /* lying, by the head: a winged Imp's wings and the Skeleton Archer's bow (skinned to its hip, 1.01 m tall at the Death's

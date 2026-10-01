@@ -284,6 +284,7 @@ export function fold(S, e, ctx, now = 0) {
       S.subjectId = e.actor; S.subjectMode = 'acting'
       break
     case 'aoo.skipped': break                                             // nothing to draw; the log names the reason
+    case 'zoc.ignored': break                                             // viewer.caravan-scene: a mover that ignores ZoC (the Bloodhound) passes a holder; no attack, nothing to draw
     case 'block.rolled':
       if (e.blocked) {
         S.AIM = null; S.ATTACK = null; S.critPending = false
@@ -718,7 +719,7 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'bleedout.accelerated', 'power.used', 'battle.end',
   /* 2026-09-03 */
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',
-  'move.stopped', 'aoo.provoked', 'aoo.skipped', 'block.rolled',
+  'move.stopped', 'aoo.provoked', 'aoo.skipped', 'zoc.ignored', 'block.rolled',
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten', 'unit.obliterated',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
