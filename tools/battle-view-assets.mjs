@@ -1,3 +1,4 @@
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import {readFileSync} from 'node:fs'
 import {execFileSync} from 'node:child_process'
 import {createRequire} from 'node:module'

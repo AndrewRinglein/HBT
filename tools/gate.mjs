@@ -23,6 +23,7 @@
 // This gate commits to kingdom/'s own repository and nothing else. The engine is
 // read, never written, from here (THIN-SLICE-IMPLEMENTATION.md §10).
 
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import { execSync } from 'node:child_process'
 import { revertTree } from './revert-tree.mjs'
 import { codeStamp } from '../../engine/tools/code-stamp.mjs'

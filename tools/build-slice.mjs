@@ -8,6 +8,7 @@
 //
 // Generated output. Never hand-edit SLICE.html — change src/ui and rebuild.
 
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import {battleViewAssets,scopeBattleCSS} from './battle-view-assets.mjs'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createRequire } from 'node:module'

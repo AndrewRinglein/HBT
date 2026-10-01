@@ -26,6 +26,7 @@
 // (faith, manaCrystals) become currency ids. `uses` is the codex's `uses` when it exists
 // (the Waystation rows will carry it), else null — a permanent item.
 
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'

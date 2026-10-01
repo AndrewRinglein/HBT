@@ -3,6 +3,7 @@
 // various battles." The COMMITTED launcher (PLAY.html) has one card for every battle the sandbox may play, in the
 // opening's order, each opening BATTLE-SANDBOX.html?play=<its encounter>; a free battle and the recorded battles; and the
 // server (tools/battle-atlas/serve.mjs) answers http://127.0.0.1:<port>/play with it.
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import assert from 'node:assert/strict'
 import {readFileSync,existsSync} from 'node:fs'
 import {spawn} from 'node:child_process'

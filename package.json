@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Heroes of Blight and Tragic — the Kingdom layer (the strategic altitude). A sibling package to engine/, its own nested git repo. Runs on engine/node_modules: there is no install step here, and none is possible from the sandbox.",
   "scripts": {
-    "test": "node ../engine/node_modules/vitest/vitest.mjs run",
-    "typecheck": "node ../engine/node_modules/typescript/bin/tsc --noEmit"
+    "test": "node ../engine/tools/engine-modules.mjs && node ../engine/node_modules/vitest/vitest.mjs run",
+    "typecheck": "node ../engine/tools/engine-modules.mjs && node ../engine/node_modules/typescript/bin/tsc --noEmit"
   }
 }

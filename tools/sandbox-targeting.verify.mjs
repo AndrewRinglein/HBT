@@ -1,3 +1,4 @@
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {bootSlice} from './atlas-dom.mjs'

@@ -9,6 +9,7 @@
 // here is typed by hand. Each card opens BATTLE-SANDBOX.html?play=<encounter id>.
 //
 //   node tools/build-launcher.mjs [out]      (default PLAY.html) — generated, never hand-edit
+import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import {readFileSync,writeFileSync,existsSync,mkdirSync} from 'node:fs'
 import {execFileSync} from 'node:child_process'
 import {createRequire} from 'node:module'
