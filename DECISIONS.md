@@ -3669,3 +3669,11 @@ Andrew, while it was built (each queued after the camera, in this order, “This
 Asked what the heroes fight on the caravan map so it can be played in the sandbox (Imps and Bloodhounds — a provisional fight using the creatures painted on the map: 2 Imps + 2 Bloodhounds from the far end of the road, heroes at the near end, ground fires burn and the corpse hexes are cursed (Weak); marked provisional until ruled · map only · Andrew dictates), Andrew chose **“Imps and Bloodhounds (Recommended)”**.
 
 Ruled: **the caravan aftermath is fought, provisionally, by 2 Imps and 2 Bloodhounds from the far end of the road against the heroes at the near end; its seven ground fires are burning ground and its 31 corpse hexes cursed ground (Weak).** Which end is near, the hexes, and how many heroes are Claude's readings (engine SWITCHES.md, the caravan rows).
+
+Andrew, later the same night (queued with the rest; the links and the icon answered at once with `../PLAY.vbs`):
+
+“Neither of those links work. And the clickable icon you put on the desktop doesn't seem to load with the updates.”
+
+“The walking isn't very well timed or spaced based on the number of tiles that are being moved. I don't know how we sync that up better.   You're supposed to select your movement type. It's okay if it's the top one by default.  Then you can't target without an ability selected. If I am on my primary action part of a unit's activation, I automatically have a red arrow, but what is that red arrow for? I have to click an attack type, and the red arrow should only extend as far as whatever its range is. If I click someone who has a punch, it should have range 1, and if I point my arrow further away, only one space should go because it's got range 1.  Also, we still don't have other heroes. I don't know if that's in your queue or not (the way they look), and we don't have weapons. I don't see any weapons.”
+
+Ruled (the readings): **the movement type is chosen, the top one by default; no target is aimed until an attack is chosen; the aim arrow reaches no further than the chosen attack's range; the walk is timed to the hexes walked.** `../PLAY.vbs` stops any server on port 4230, starts this folder's, opens /play, and on its first run adds a Startup starter — the 2026-09-30 "starts with Windows", which had not been set up.
