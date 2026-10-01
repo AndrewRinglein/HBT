@@ -304,5 +304,11 @@
   "sha": "009e271",
   "now": "kingdom.civilians-played, viewer.bodies-before-board — the playable opening. Landed: the civilians are the player's (the Orphan Child and the School Teacher are clicked to act and walked like heroes; End Turn names them); no 2D token stands in for a 3D body - the battle opens when the 3D map and every body on it are in (about a minute on Andrew's PC for the Orphanage), and a later arrival shows no token while its body loads; suite green. Tried: nothing abandoned. Next: Andrew — play the Orphanage from http://127.0.0.1:4230/play: click the Orphan Child; another chat landed viewer.every-model meanwhile (two engine chats at once — rule 35).",
   "committed": true
+ },
+ {
+  "at": "2026-10-01 20:17",
+  "sha": "3af673e",
+  "now": "viewer.tactical-camera, encounter.caravan-aftermath, viewer.caravan-scene — the camera redesigned, the caravan fielded. Landed: content.fire-imp-flight (the Fire Imp flies); the accepted caravan camera for every battle (40° start, 40–75° tactical, Lower/Raise 10°, Q/E 60°, Overhead, Inspect, Whole map, Focus selected unit; off-screen bubbles only for units wholly out of view); the caravan aftermath playable on its painted scene with its surroundings, fires and cursed fog (provisional fight: 2 Bloodhounds + 2 Imps); battle controls (no aim arrow until an attack is chosen, the arrow stops at its reach - fix.aim-reach; Devotion used from the bar); PLAY.vbs starts the game server and adds it to Startup; viewer gate tests split in two; fix.suite-after-caravan rewrote 7 stale tests (review); suite green. Tried: nothing abandoned; kingdom 5b97243's message wrongly claimed four shards green - corrected in 859530c. Next: Andrew - double-click PLAY.vbs and play the Caravan from http://127.0.0.1:4230/play; then viewer.walk-in-step and the rest of Andrew's queue.",
+  "committed": true
  }
 ]
