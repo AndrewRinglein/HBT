@@ -4,7 +4,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; the caravan's fight; what is queued after it' and 'the links and the icon; ... walk timed to the hexes'): 'when the characters are moving on the map, they're not actually walking or moving. They just slide across. The whole idea of adding in a walking animation is so they use it.' · 'The walking isn't very well timed or spaced based on the number of tiles that are being moved.' Every 3D body that walks a path plays its walk clip for the whole traversal (models.js motion 'move'), its stride timed to the hexes walked so the feet do not slide (the clip's root stride against the board's hex width, the traversal's duration from the pump's DUR per hex). Find first why the clip is not seen today (E.walk / walkShape / cast.frame) — a test exists for the Imps' flight loop (tools/opening-cast.test.mjs).",
-  "expect": "In the Orphanage and the Bridge a hero walking N hexes plays its walk clip throughout, and its feet advance one stride per stride length (no slide); the traversal's duration grows with N; a flier flies."
+  "expect": "In the Orphanage and the Bridge a hero walking N hexes plays its walk clip throughout, and its feet advance one stride per stride length (no slide); the traversal's duration grows with N; a flier flies.",
+  "status": "done",
+  "sha": "d2e4344"
  },
  {
   "id": "viewer.weapons-in-hand",
