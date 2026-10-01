@@ -3611,3 +3611,12 @@ Andrew, told after viewer.true-3d-camera landed to open `PLAY-OPENING.bat` to se
 Ruled:
 
 - **The game is played by opening a link** — never by finding and running a .bat file. How (a hosted page, or the local server always running behind a bookmark) was asked the same evening; recorded below when answered.
+
+Asked which kind of link (a hosted page on any device; a local link on this PC with the server started with Windows; both), Andrew chose **“Local link on this PC”**, and added:
+
+“Make me a game launcher where I can play the various battles.”
+
+Ruled:
+
+- **A local link on this PC:** the game's server (tools/battle-atlas/serve.mjs, port 4230) starts with Windows, so the link always opens; no .bat to run.
+- **A game launcher:** one page at that link lists the battles that can be played and opens each straight into the battle screen. Filed as `kingdom.play-launcher` (first in the queue).
