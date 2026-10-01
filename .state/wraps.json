@@ -298,5 +298,11 @@
   "sha": "94429ca",
   "now": "kingdom.play-launcher — the playable opening. Landed: the game plays from a link — http://127.0.0.1:4230/play is the launcher (kingdom/PLAY.html, built from the sandbox's encounters): Orphanage, Lumberjack House, Bridge and Cavern Trail, each straight into the battle screen, plus a free battle and the recorded battles; the server answers /play; HBT-game-server.vbs in Andrew's Windows Startup folder starts it (tools/play-server.vbs) at every sign-in — started tonight, the old PLAY-OPENING.bat server window closed. Earlier this chat: viewer.true-3d-camera (one real 3D camera, no stretch, clicks by the camera's ray, no flat board before the scene). Suite green. Tried: nothing abandoned. Next: Andrew — play from http://127.0.0.1:4230/play; viewer.every-model.",
   "committed": true
+ },
+ {
+  "at": "2026-10-01 08:16",
+  "sha": "009e271",
+  "now": "kingdom.civilians-played, viewer.bodies-before-board — the playable opening. Landed: the civilians are the player's (the Orphan Child and the School Teacher are clicked to act and walked like heroes; End Turn names them); no 2D token stands in for a 3D body - the battle opens when the 3D map and every body on it are in (about a minute on Andrew's PC for the Orphanage), and a later arrival shows no token while its body loads; suite green. Tried: nothing abandoned. Next: Andrew — play the Orphanage from http://127.0.0.1:4230/play: click the Orphan Child; another chat landed viewer.every-model meanwhile (two engine chats at once — rule 35).",
+  "committed": true
  }
 ]
