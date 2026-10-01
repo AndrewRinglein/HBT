@@ -1084,7 +1084,7 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "moves": [
-        "power.move"
+        "power.flight"
       ],
       "tags": [
         "demon",
