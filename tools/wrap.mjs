@@ -55,6 +55,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { render } from './start.mjs'
 import { produce, NOW_FILE } from './handoff.mjs'
+import { commitOnly } from './commit-only.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PACKAGE = 'engine'
@@ -151,15 +152,19 @@ const handover = [next.label, '```', next.line, '```']
 const subject = `wrap: ${nowLine}`.replace(/[`$]/g, '').slice(0, 200)
 
 // ── 6. the commit, then the verification, then the truth ────────────────────
-const RECOVER = `git add -A; git commit -m ${JSON.stringify(subject)}`
+// Only the wrap's own files (Andrew, 2026-10-01): never `git add -A`, so an ungated
+// item's files in the tree stay out of the wrap (the e89e3a7 trap, engine CLAUDE.md).
+const WRAP_FILES = [NOW_FILE, 'HANDOFF.md', 'STATE-ROW.md']
+const RECOVER = `git add -- ${WRAP_FILES.join(' ')}; git commit -m ${JSON.stringify(subject)} -- ${WRAP_FILES.join(' ')}`
 if (!gitUp) done(false, `git never answered — ${probe.why}`)
 
-const add = gitTry(['add', '-A'])
-if (!add.ok) done(false, `git add failed — ${add.why}`)
-const commit = gitTry(['commit', '-q', '-m', subject])
-// a commit that fails because there was nothing to commit is not a failure
-const nothing = !commit.ok && /nothing to commit|no changes added/i.test(commit.why)
-if (!commit.ok && !nothing) done(false, `git commit failed — ${commit.why}`)
+let nothing = false
+try { commitOnly(WRAP_FILES, { message: subject, timeout: GIT_WORK_MS }) } catch (e) {
+  const why = String(e.stderr || e.message || '').split('\n')[0]
+  // a commit that fails because there was nothing to commit is not a failure
+  nothing = /nothing to commit|no changes added/i.test(String(e.stdout || '') + why)
+  if (!nothing) done(false, `git commit failed — ${why}`)
+}
 
 // hardening 3: ask git, do not assume. HEAD must have moved.
 const after = gitTry(['rev-parse', '--short', 'HEAD'], GIT_PROBE_MS)
@@ -169,8 +174,7 @@ if (after.out === sha && !nothing) done(false, `git reported success but HEAD is
 // only now may anything say it is committed (hardening 2). `sha` stays the HEAD
 // the chat ended on: the amend below would orphan the wrap commit's own sha.
 writeNow({ committed: true })
-const amend = gitTry(['add', '-A'])
-if (amend.ok) gitTry(['commit', '-q', '--amend', '--no-edit'])
+try { commitOnly(WRAP_FILES, { amend: true, timeout: GIT_WORK_MS }) } catch { /* the wrap is committed; only the flag's rewrite is not — start says so */ }
 const head = gitTry(['rev-parse', '--short', 'HEAD'], GIT_PROBE_MS)
 done(true, null, head.ok ? head.out : after.out)
 

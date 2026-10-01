@@ -35,6 +35,7 @@ import { filesContaining } from './source-scan.mjs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
 import { revertTree } from './revert-tree.mjs'
 import { readBacklog, saveItem, progressFor } from './backlog.mjs'
+import { changedPaths, commitOnly } from './commit-only.mjs'
 import { checkItem } from './prior-art.mjs'
 import { checkWrongHome } from './wrong-home.mjs'
 import {
@@ -587,9 +588,9 @@ if (MODE !== 'land') {
   process.exit(0)
 }
 
-// Nothing the checks read is left out of the commit. `git add -A` takes every
-// tracked and untracked file; only an ignored file under src/, test/ or tools/
-// could make a pass that the committed tree does not reproduce. Seconds, not a
+// Nothing the checks read is left out of the commit. The commit takes every changed
+// tracked and untracked file outside .state/; only an ignored file under src/, test/ or
+// tools/ could make a pass that the committed tree does not reproduce. Seconds, not a
 // second full suite (replaces the post-land audit, cut 2026-09-22).
 {
   // tools/jscpd/node_modules is the prior-art audit's installed dependency, as node_modules/ is the
@@ -601,14 +602,20 @@ if (MODE !== 'land') {
     process.exit(1)
   }
 }
+// The item's files, and only those (Andrew, 2026-10-01: "commit only the files the item
+// touched instead of everything"): every file changed outside .state/ — exactly the tree
+// the checks judged (treeHash) — plus what the gate itself writes for this landing. The
+// rest of .state/ (another area's list and progress, the wrap's now.json, shards.json,
+// the questions inbox) and anything staged by hand stay out of the commit.
+const itemFiles = changedPaths().filter((p) => !p.startsWith('.state/') && p !== 'GAME-BUILDER.html')
+const GATE = { email: 'a@b', name: 'combat-framework' }   // start.mjs knows a gated commit by this author
 if (pendingGolden) writeFileSync(GOLDEN, pendingGolden)
 progress = clearResults(progress); saveProgress()   // landed: this tree's record is spent
-sh('git add -A')
-sh(`git -c user.email=a@b -c user.name=combat-framework commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72)}`)}`)
+commitOnly([...itemFiles, PROGRESS, GOLDEN, '.state/gauntlet.json'], { message: `${id}: ${item.spec.slice(0, 72)}`, author: GATE })
 const sha = sh('git rev-parse --short HEAD').trim()
 item.status = needsReview ? 'done-needs-review' : 'done'
 item.sha = sha
-saveItem(backlog, item)
+const listFile = saveItem(backlog, item)
 appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp}\n\n${body}\n` +
   (needsReview ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
 // The seal is gone (Andrew, 2026-09-23, DECISIONS.md "less process per feature"):
@@ -617,6 +624,6 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
 // The landing's gauntlet-log line goes into the landing commit, not a commit of
 // its own (Andrew, 2026-10-01): logged before the amend picks it up.
 logRun('landed', { sha })
-sh('git add -A')
-sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
+commitOnly([listFile, LEDGER, RUNLOG], { amend: true, author: GATE })
+console.log(`committed ${itemFiles.length} file(s) the item touched, and the gate's records`)
 console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review — existing tests edited, a banned word, prior art not named, or a wrong home)' : ''}\n`)

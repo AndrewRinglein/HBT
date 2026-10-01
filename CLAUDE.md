@@ -277,7 +277,11 @@ with `INCOMPLETE` (exit 3; no attempt, no log line, no landing): **repeat the sa
 costs ~1.4 ms per file stat, and a cold `tsc --noEmit` took 160 s on 2026-09-21 (5.6 s
 warm the next day). The mount-unlink trap is in the root `CLAUDE.md`.
 
-**`wrap.mjs` commits `git add -A`**, exactly as the gate does. Wrap with an ungated
-item's files in the tree and the wrap commits them (`e89e3a7` swept R0's nine files on
-2026-09-21; undone in `79544c5`). **Park work in progress outside the tree before
-`wrap`, not only before a landing.**
+**The gate and `wrap` commit only their own files, never `git add -A`** (Andrew,
+2026-10-01; `tools/commit-only.mjs`). `wrap` commits `.state/now.json`, `HANDOFF.md` and
+`STATE-ROW.md` and nothing else; the gate commits every file changed outside `.state/` (the
+tree its checks judged) and its own records — the item area's list and progress file, the
+ledger, the run log, the baseline. Before this, a wrap with an ungated item's files in the tree
+committed them (`e89e3a7` swept R0's nine files on 2026-09-21; undone in `79544c5`). **A
+landing still takes every changed file outside `.state/`** — park another item's work outside
+the tree before landing.
