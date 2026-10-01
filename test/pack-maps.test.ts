@@ -4,6 +4,7 @@
 // were hand-typed in maps.ts moved there row for row (every control hash
 // held); the TESTING lane stays hand-typed. `createBattle` used to say
 // "unknown map 'map.proving.open'" — the whole Proving waited on this.
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { MAPS, MAP_PANEL, boardOf, deployOf, terrainOf } from '../src/content/maps.js'
 import { packMaps } from '../src/content/pack.js'
@@ -19,7 +20,11 @@ describe('the pack owns the shipping maps', () => {
   it('the thirteen original pack rows lead the pack, the pack leads the panel, the testing lane follows', () => {
     const pack = packMaps().map((m) => m.id)
     expect(pack.slice(0, 13)).toEqual(['map.open', 'map.ridge', 'map.flanks', 'map.highlands', 'map.field', 'map.thicket', 'map.proving.open', 'map.proving.ridge', 'map.proving.ford', 'map.proving.copse', 'map.proving.ruin', 'map.courtyard', 'map.floodplain'])
-    for (const id of pack.slice(13)) expect(id.startsWith('map.opening.'), id).toBe(true)
+    // Law 10, encounter.caravan-aftermath (2026-10-01): after the thirteen come the campaign maps — the opening's, compiled
+    // from the Ground Check letters, and those compiled from a painted scene's navigation (content/gen/painted-maps.json).
+    // was: for (const id of pack.slice(13)) expect(id.startsWith('map.opening.'), id).toBe(true)
+    const compiled: string[] = JSON.parse(readFileSync('../content/gen/painted-maps.json', 'utf8')).maps.map((m: { id: string }) => m.id)
+    for (const id of pack.slice(13)) expect(id.startsWith('map.opening.') || compiled.includes(id), id).toBe(true)
     // fix.opening-maps-off-panel (2026-09-28): a campaign map (`panel: false`) is in the pack and off
     // the fixed control panel; the pack's panel maps lead the panel, the testing lane follows.
     const onPanel = packMaps().filter((m) => m.panel !== false).map((m) => m.id)
@@ -38,7 +43,9 @@ describe('the pack owns the shipping maps', () => {
       expect(m.format).toBe(formatOf(b) ?? `${b.width}x${b.height}`)
       expect(terrainOf(m.id).length).toBe(b.width * b.height)
       expect(deployOf(m.id)).toEqual(m.deploy ?? { hero: 'west', enemy: 'east' })
-      if (!m.id.startsWith('map.opening.')) { expect(formatOf(b)).toBe(m.format); expect(deployOf(m.id)).toEqual({ hero: 'west', enemy: 'east' }) }
+      // Law 10, encounter.caravan-aftermath (2026-10-01): the preset-format rule is the panel's maps', not every map outside
+      // the opening — a campaign map (panel: false) may be any authored size. was: if (!m.id.startsWith('map.opening.')) {…}
+      if (m.panel !== false) { expect(formatOf(b)).toBe(m.format); expect(deployOf(m.id)).toEqual({ hero: 'west', enemy: 'east' }) }
     }
     expect(boardOf('map.proving.open')).toEqual({ width: 16, height: 8 })
     expect(boardOf('map.courtyard')).toEqual({ width: 8, height: 8 })

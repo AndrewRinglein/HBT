@@ -20054,3 +20054,164 @@ index 745f274..39ff9cd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.suite-after-caravan — LANDED `01388ee` **NEEDS REVIEW**
+2026-10-01 20:05
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1719 · SWITCHES.md:1741
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/pack-enemy-actions.test.ts, test/pack-maps.test.ts, test/painted-board.test.ts, test/play-launcher.test.ts, test/true-3d-camera.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/pack-enemy-actions.test.ts, test/pack-maps.test.ts, test/painted-board.test.ts, test/play-launcher.test.ts, test/true-3d-camera.test.ts, test/fixtures/battle-cursor-fire-imp-flight.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/pack-enemy-actions.test.ts (-2), test/pack-maps.test.ts (-2), test/painted-board.test.ts (-3), test/play-launcher.test.ts (-1), test/true-3d-camera.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 5d07e1a..64a5e3d 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -206,4 +206,10 @@ const resistOneWayGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
+ // hero, never screened) and test.structures. A `changed` case is checked here and skips the older layers.
+ const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kite-alone.json', import.meta.url), 'utf8'))
++// content.fire-imp-flight (2026-10-01), Law 10: the Fire Imp flies with the Imp's flight (ruled 2026-09-30, DECISIONS.md "the
++// Fire Imp flies": "The Fire Imp does fly, yes. That was an oversight if it does not."). Every case frozen here
++// (tools/capture-fire-imp-flight-cursor.mts). Moved for real, the ruling working: exactly the four cases that field a Fire
++// Imp — showcase.kiln (4), showcase.prologue-enemies (1), test.opening-bridge (2 scheduled) and test.props-viewer-ranged-zoc
++// (1). A `changed` case is checked here and skips the older layers.
++const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-flight.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -322,5 +328,8 @@ describe('resumable battle cursor', () => {
+       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const kiteAloneMoved = kiteAloneExpected?.changed === true
++      const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const fireImpFlightMoved = fireImpFlightExpected?.changed === true
++      // was: const kiteAloneMoved = kiteAloneExpected?.changed === true — a fire-imp-flight-moved case skips the kite-alone layer too (content.fire-imp-flight 2026-10-01)
++      const kiteAloneMoved = kiteAloneExpected?.changed === true || fireImpFlightMoved
+       // was: const resistOneWayMoved = resistOneWayExpected?.changed === true — a kite-alone-moved case skips the resist-one-way layer too (encounter.opening.bridge-ai 2026-09-30)
+       const resistOneWayMoved = resistOneWayExpected?.changed === true || kiteAloneMoved
+@@ -389,5 +398,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (kiteAloneExpected) {
++        if (fireImpFlightExpected) {
++        expect(hash(ctx.events), 'full fire-imp-flight events').toBe(fireImpFlightExpected.events)
++        expect(hash(ctx.state), 'full fire-imp-flight state').toBe(fireImpFlightExpected.state)
++        expect(hash(ctx.rng.log), 'full fire-imp-flight RNG').toBe(fireImpFlightExpected.rng)
++        expect(result).toEqual(fireImpFlightExpected.result)
++        }
++        // was: if (kiteAloneExpected) { — content.fire-imp-flight (2026-10-01): a fire-imp-flight-moved case is checked above instead
++        if (kiteAloneExpected && !fireImpFlightMoved) {
+         expect(hash(ctx.events), 'full kite-alone events').toBe(kiteAloneExpected.events)
+         expect(hash(ctx.state), 'full kite-alone state').toBe(kiteAloneExpected.state)
+diff --git a/test/pack-enemy-actions.test.ts b/test/pack-enemy-actions.test.ts
+index 681f2b9..b9f766c 100644
+--- a/test/pack-enemy-actions.test.ts
++++ b/test/pack-enemy-actions.test.ts
+@@ -94,6 +94,11 @@ describe('pack.enemy-actions — the pack carries the Codex rows', () => {
+   // movePower flight into the pack — is unchanged; the count of authored rows moved.
+   // was: it('... (six movePower fliers, four ZOC-ignoring hounds)') · expect(...length).toBe(6)
+-  it('the named rows exist in the Codex as the item says (seven movePower fliers with the Ghost, four ZOC-ignoring hounds)', () => {
+-    expect(CODEX.bestiary.filter((u) => u.movePower === 'flight').length).toBe(7)
++  it('the named rows exist in the Codex as the item says (eight movePower fliers with the Ghost and the Fire Imp, four ZOC-ignoring hounds)', () => {
++    // Law 10, content.fire-imp-flight (2026-10-01; DECISIONS.md 2026-09-30 "the Fire Imp flies": "The Fire Imp does fly, yes.
++    // That was an oversight if it does not."): the Codex's Fire Imp row gained the Imp's movePower, so the fliers are eight;
++    // the rule asserted — the count of the Codex's own flight rows, the Ghost among them — is unchanged.
++    // was: expect(CODEX.bestiary.filter((u) => u.movePower === 'flight').length).toBe(7)
++    expect(CODEX.bestiary.filter((u) => u.movePower === 'flight').length).toBe(8)
++    expect(CODEX.bestiary.find((u) => u.id === 'unit.fire-imp')?.movePower).toBe('flight')
+     expect(CODEX.bestiary.find((u) => u.id === 'unit.ghost')?.movePower).toBe('flight')
+     for (const id of HOUNDS) expect(row(id).moveIgnoresZOC, id).toBe(true)
+diff --git a/test/pack-maps.test.ts b/test/pack-maps.test.ts
+index f89b45d..65b4297 100644
+--- a/test/pack-maps.test.ts
++++ b/test/pack-maps.test.ts
+@@ -5,4 +5,5 @@
+ // held); the TESTING lane stays hand-typed. `createBattle` used to say
+ // "unknown map 'map.proving.open'" — the whole Proving waited on this.
++import { readFileSync } from 'node:fs'
+ import { describe, expect, it } from 'vitest'
+ import { MAPS, MAP_PANEL, boardOf, deployOf, terrainOf } from '../src/content/maps.js'
+@@ -20,5 +21,9 @@ describe('the pack owns the shipping maps', () => {
+     const pack = packMaps().map((m) => m.id)
+     expect(pack.slice(0, 13)).toEqual(['map.open', 'map.ridge', 'map.flanks', 'map.highlands', 'map.field', 'map.thicket', 'map.proving.open', 'map.proving.ridge', 'map.proving.ford', 'map.proving.copse', 'map.proving.ruin', 'map.courtyard', 'map.floodplain'])
+-    for (const id of pack.slice(13)) expect(id.startsWith('map.opening.'), id).toBe(true)
++    // Law 10, encounter.caravan-aftermath (2026-10-01): after the thirteen come the campaign maps — the opening's, compiled
++    // from the Ground Check letters, and those compiled from a painted scene's navigation (content/gen/painted-maps.json).
++    // was: for (const id of pack.slice(13)) expect(id.startsWith('map.opening.'), id).toBe(true)
++    const compiled: string[] = JSON.parse(readFileSync('../content/gen/painted-maps.json', 'utf8')).maps.map((m: { id: string }) => m.id)
++    for (const id of pack.slice(13)) expect(id.startsWith('map.opening.') || compiled.includes(id), id).toBe(true)
+     // fix.opening-maps-off-panel (2026-09-28): a campaign map (`panel: false`) is in the pack and off
+     // the fixed control panel; the pack's panel maps lead the panel, the testing lane follows.
+@@ -39,5 +44,7 @@ describe('the pack owns the shipping maps', () => {
+       expect(terrainOf(m.id).length).toBe(b.width * b.height)
+       expect(deployOf(m.id)).toEqual(m.deploy ?? { hero: 'west', enemy: 'east' })
+-      if (!m.id.startsWith('map.opening.')) { expect(formatOf(b)).toBe(m.format); expect(deployOf(m.id)).toEqual({ hero: 'west', enemy: 'east' }) }
++      // Law 10, encounter.caravan-aftermath (2026-10-01): the preset-format rule is the panel's maps', not every map outside
++      // the opening — a campaign map (panel: false) may be any authored size. was: if (!m.id.startsWith('map.opening.')) {…}
++      if (m.panel !== false) { expect(formatOf(b)).toBe(m.format); expect(deployOf(m.id)).toEqual({ hero: 'west', enemy: 'east' }) }
+     }
+     expect(boardOf('map.proving.open')).toEqual({ width: 16, height: 8 })
+diff --git a/test/painted-board.test.ts b/test/painted-board.test.ts
+index 131afef..207dbe9 100644
+--- a/test/painted-board.test.ts
++++ b/test/painted-board.test.ts
+@@ -19,8 +19,13 @@ const pack = (): Record<string, Painted> => JSON.parse(execFileSync(process.exec
+ describe('the painted scenes stand on the engine board', () => {
+   const painted = pack()
+-  it('binds exactly the three maps the plan names', () => {
+-    expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage'])
++  // Law 10, viewer.caravan-scene (2026-10-01): the pack binds the three maps the plan names AND every map compiled from a
++  // painted scene's measured navigation (content/gen/painted-maps.json — map.caravan-aftermath, DECISIONS.md 2026-10-01).
++  // was: expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage'])
++  const compiled: string[] = JSON.parse(readFileSync('../content/gen/painted-maps.json', 'utf8')).maps.map((m: { id: string }) => m.id)
++  it('binds exactly the three maps the plan names and the maps compiled from painted scenes', () => {
++    expect(compiled).toEqual(['map.caravan-aftermath'])
++    expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage', ...compiled].sort())
+   })
+-  it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge'])('%s: every engine hex lands on its scene hex', (id) => {
++  it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge', 'map.caravan-aftermath'])('%s: every engine hex lands on its scene hex', (id) => {
+     const b = painted[id]!, d = decodeMap(mapDef(id)), field = presentationField({ ...d.board, terrain: d.terrain, props: d.props }, mapDef(id).rows)
+     expect([b.kind, b.mapId, b.cols, b.rows]).toEqual(['painted', id, field.width, field.height])
+diff --git a/test/play-launcher.test.ts b/test/play-launcher.test.ts
+index f6e95c3..54135d0 100644
+--- a/test/play-launcher.test.ts
++++ b/test/play-launcher.test.ts
+@@ -18,5 +18,8 @@ describe('the game plays from a link: the launcher', () => {
+   it('the launcher lists every playable battle in that order, each straight into the battle screen, and /play serves it', () => {
+     const out = execFileSync(process.execPath, ['tools/play-launcher.verify.mjs', 'PLAY.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
+-    expect(out).toMatch(/play launcher: 4 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail\).*passed/)
++    // Law 10, viewer.caravan-scene (2026-10-01; DECISIONS.md 2026-10-01 "the caravan's fight" — "so it can be played in the
++    // sandbox"): the sandbox plays the caravan aftermath too (kingdom SWITCHES sandboxCaravan), after the opening's four.
++    // was: expect(out).toMatch(/play launcher: 4 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail\).*passed/)
++    expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
+   }, 60000)
+ })
+diff --git a/test/true-3d-camera.test.ts b/test/true-3d-camera.test.ts
+index ca4bebd..edf74cd 100644
+--- a/test/true-3d-camera.test.ts
++++ b/test/true-3d-camera.test.ts
+@@ -31,5 +31,7 @@ describe('a true 3D battle: one real camera, the board drawn through it, no othe
+   it('the viewer page: one perspective camera, rigid, the board drawn through it at every angle; nothing stretches; the ray picks the hex or body under the pointer; no flat board before the scene', () => {
+     const out = run('../viewer', ['--test', 'tools/true-3d-camera.test.mjs'])
+-    expect(out).toMatch(/# pass 6/)
++    // Law 10, viewer.tactical-camera (2026-10-01; DECISIONS.md 2026-10-01 "the camera redesigned on the caravan preview"): the
++    // viewer's camera file gained the tactical policy's eight tests; every one still passes. was: expect(out).toMatch(/# pass 6/)
++    expect(Number(/# pass (\d+)/.exec(out)?.[1])).toBeGreaterThanOrEqual(14)
+     expect(out).toMatch(/# fail 0/)
+   }, 120000)
+```
+</details>

@@ -93,8 +93,13 @@ describe('pack.enemy-actions — the pack carries the Codex rows', () => {
   // authored and flies (its bestiary type Flying), so the fliers are seven. The claim — the authored fliers carry
   // movePower flight into the pack — is unchanged; the count of authored rows moved.
   // was: it('... (six movePower fliers, four ZOC-ignoring hounds)') · expect(...length).toBe(6)
-  it('the named rows exist in the Codex as the item says (seven movePower fliers with the Ghost, four ZOC-ignoring hounds)', () => {
-    expect(CODEX.bestiary.filter((u) => u.movePower === 'flight').length).toBe(7)
+  it('the named rows exist in the Codex as the item says (eight movePower fliers with the Ghost and the Fire Imp, four ZOC-ignoring hounds)', () => {
+    // Law 10, content.fire-imp-flight (2026-10-01; DECISIONS.md 2026-09-30 "the Fire Imp flies": "The Fire Imp does fly, yes.
+    // That was an oversight if it does not."): the Codex's Fire Imp row gained the Imp's movePower, so the fliers are eight;
+    // the rule asserted — the count of the Codex's own flight rows, the Ghost among them — is unchanged.
+    // was: expect(CODEX.bestiary.filter((u) => u.movePower === 'flight').length).toBe(7)
+    expect(CODEX.bestiary.filter((u) => u.movePower === 'flight').length).toBe(8)
+    expect(CODEX.bestiary.find((u) => u.id === 'unit.fire-imp')?.movePower).toBe('flight')
     expect(CODEX.bestiary.find((u) => u.id === 'unit.ghost')?.movePower).toBe('flight')
     for (const id of HOUNDS) expect(row(id).moveIgnoresZOC, id).toBe(true)
     for (const [u, m] of [...ATTACK_MOVES, BUFF, CHARGE]) expect(moveRow(u, m).name, m).toBeTruthy()

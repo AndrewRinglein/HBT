@@ -1,5 +1,14 @@
 [
  {
+  "id": "fix.suite-after-caravan",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "The once-per-chat suite (2026-10-01) found seven tests pinned to the world before this chat's ruled landings; each rewritten as its rule, the reason at the edit (Law 10). content.fire-imp-flight (DECISIONS.md 2026-09-30 'the Fire Imp flies'): battle-cursor gains a fire-imp-flight capture layer (tools/capture-fire-imp-flight-cursor.mts, test/fixtures/battle-cursor-fire-imp-flight.json) - exactly the four cases that field a Fire Imp moved (showcase.kiln, showcase.prologue-enemies, test.opening-bridge, test.props-viewer-ranged-zoc); pack-enemy-actions counts eight Codex fliers, the Fire Imp among them. encounter.caravan-aftermath (DECISIONS.md 2026-10-01 'the caravan's fight'): pack-maps admits the maps compiled from painted scenes after the thirteen and holds the preset-format rule to the panel's maps; painted-board binds the opening's three and the compiled caravan, hex for hex; play-launcher lists five battles. viewer.tactical-camera (DECISIONS.md 2026-10-01 'the camera redesigned'): true-3d-camera reads the viewer camera file's pass count as at least 14, fail 0.",
+  "expect": "The full suite passes on the tree with the night's landings; every rewritten assertion carries its reason and the old line at the edit; no assertion is dropped.",
+  "status": "done-needs-review",
+  "sha": "01388ee"
+ },
+ {
   "id": "fix.aim-reach",
   "kind": "engine",
   "shape": "plumbing",

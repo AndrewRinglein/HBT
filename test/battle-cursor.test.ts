@@ -205,6 +205,12 @@ const resistOneWayGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
 // showcase.two-zombies-and-a-child, test.block-b, test.geometry-corridor, test.geometry-diagonal, test.opening-orphanage (one
 // hero, never screened) and test.structures. A `changed` case is checked here and skips the older layers.
 const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kite-alone.json', import.meta.url), 'utf8'))
+// content.fire-imp-flight (2026-10-01), Law 10: the Fire Imp flies with the Imp's flight (ruled 2026-09-30, DECISIONS.md "the
+// Fire Imp flies": "The Fire Imp does fly, yes. That was an oversight if it does not."). Every case frozen here
+// (tools/capture-fire-imp-flight-cursor.mts). Moved for real, the ruling working: exactly the four cases that field a Fire
+// Imp — showcase.kiln (4), showcase.prologue-enemies (1), test.opening-bridge (2 scheduled) and test.props-viewer-ranged-zoc
+// (1). A `changed` case is checked here and skips the older layers.
+const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-flight.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -321,7 +327,10 @@ describe('resumable battle cursor', () => {
       const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const kiteAloneMoved = kiteAloneExpected?.changed === true
+      const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const fireImpFlightMoved = fireImpFlightExpected?.changed === true
+      // was: const kiteAloneMoved = kiteAloneExpected?.changed === true — a fire-imp-flight-moved case skips the kite-alone layer too (content.fire-imp-flight 2026-10-01)
+      const kiteAloneMoved = kiteAloneExpected?.changed === true || fireImpFlightMoved
       // was: const resistOneWayMoved = resistOneWayExpected?.changed === true — a kite-alone-moved case skips the resist-one-way layer too (encounter.opening.bridge-ai 2026-09-30)
       const resistOneWayMoved = resistOneWayExpected?.changed === true || kiteAloneMoved
       // was: const ghostColdMoved = ghostColdExpected?.changed === true — a resist-one-way-moved case skips the ghost-cold layer too (rule.immunity-is-resistance 2026-09-29)
@@ -388,7 +397,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (kiteAloneExpected) {
+        if (fireImpFlightExpected) {
+        expect(hash(ctx.events), 'full fire-imp-flight events').toBe(fireImpFlightExpected.events)
+        expect(hash(ctx.state), 'full fire-imp-flight state').toBe(fireImpFlightExpected.state)
+        expect(hash(ctx.rng.log), 'full fire-imp-flight RNG').toBe(fireImpFlightExpected.rng)
+        expect(result).toEqual(fireImpFlightExpected.result)
+        }
+        // was: if (kiteAloneExpected) { — content.fire-imp-flight (2026-10-01): a fire-imp-flight-moved case is checked above instead
+        if (kiteAloneExpected && !fireImpFlightMoved) {
         expect(hash(ctx.events), 'full kite-alone events').toBe(kiteAloneExpected.events)
         expect(hash(ctx.state), 'full kite-alone state').toBe(kiteAloneExpected.state)
         expect(hash(ctx.rng.log), 'full kite-alone RNG').toBe(kiteAloneExpected.rng)

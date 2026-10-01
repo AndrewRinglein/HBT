@@ -30,7 +30,9 @@ describe('a true 3D battle: one real camera, the board drawn through it, no othe
   })
   it('the viewer page: one perspective camera, rigid, the board drawn through it at every angle; nothing stretches; the ray picks the hex or body under the pointer; no flat board before the scene', () => {
     const out = run('../viewer', ['--test', 'tools/true-3d-camera.test.mjs'])
-    expect(out).toMatch(/# pass 6/)
+    // Law 10, viewer.tactical-camera (2026-10-01; DECISIONS.md 2026-10-01 "the camera redesigned on the caravan preview"): the
+    // viewer's camera file gained the tactical policy's eight tests; every one still passes. was: expect(out).toMatch(/# pass 6/)
+    expect(Number(/# pass (\d+)/.exec(out)?.[1])).toBeGreaterThanOrEqual(14)
     expect(out).toMatch(/# fail 0/)
   }, 120000)
   it('the sandbox page opened with ?play=encounter.opening.orphanage stands on the Orphanage scene with that camera, and shows no flat board in its place', () => {

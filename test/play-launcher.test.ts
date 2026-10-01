@@ -17,6 +17,9 @@ describe('the game plays from a link: the launcher', () => {
   })
   it('the launcher lists every playable battle in that order, each straight into the battle screen, and /play serves it', () => {
     const out = execFileSync(process.execPath, ['tools/play-launcher.verify.mjs', 'PLAY.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
-    expect(out).toMatch(/play launcher: 4 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail\).*passed/)
+    // Law 10, viewer.caravan-scene (2026-10-01; DECISIONS.md 2026-10-01 "the caravan's fight" — "so it can be played in the
+    // sandbox"): the sandbox plays the caravan aftermath too (kingdom SWITCHES sandboxCaravan), after the opening's four.
+    // was: expect(out).toMatch(/play launcher: 4 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail\).*passed/)
+    expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
   }, 60000)
 })

@@ -18,10 +18,15 @@ const pack = (): Record<string, Painted> => JSON.parse(execFileSync(process.exec
 
 describe('the painted scenes stand on the engine board', () => {
   const painted = pack()
-  it('binds exactly the three maps the plan names', () => {
-    expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage'])
+  // Law 10, viewer.caravan-scene (2026-10-01): the pack binds the three maps the plan names AND every map compiled from a
+  // painted scene's measured navigation (content/gen/painted-maps.json — map.caravan-aftermath, DECISIONS.md 2026-10-01).
+  // was: expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage'])
+  const compiled: string[] = JSON.parse(readFileSync('../content/gen/painted-maps.json', 'utf8')).maps.map((m: { id: string }) => m.id)
+  it('binds exactly the three maps the plan names and the maps compiled from painted scenes', () => {
+    expect(compiled).toEqual(['map.caravan-aftermath'])
+    expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage', ...compiled].sort())
   })
-  it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge'])('%s: every engine hex lands on its scene hex', (id) => {
+  it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge', 'map.caravan-aftermath'])('%s: every engine hex lands on its scene hex', (id) => {
     const b = painted[id]!, d = decodeMap(mapDef(id)), field = presentationField({ ...d.board, terrain: d.terrain, props: d.props }, mapDef(id).rows)
     expect([b.kind, b.mapId, b.cols, b.rows]).toEqual(['painted', id, field.width, field.height])
     const cells: Cell[] = JSON.parse(readFileSync(`../assets/terrain-3d/${b.scene}/navigation.json`, 'utf8')).cells
