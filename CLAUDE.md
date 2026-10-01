@@ -195,7 +195,7 @@ runs reads GBH; only `state-rows.mjs`, run by hand, lives there.
 `node tools/wrap.mjs "<now line>" --next "<label>" "<first line>"`. The rules for both are
 `../DISPLAY-RULES.md` §Starting and §Wrapping. What `start.mjs` prints: the count line
 verbatim from the gate, the Now line, the next chat the last wrap named, how the previous
-chat ended, `Yours:`, `Queue:`, `Delegate:`, `Blocked:`, `Calls since last wrap:`, and the
+chat ended, `Ungated since last wrap:` (every commit since the last wrap the gate did not make — Andrew, 2026-10-01), `Yours:`, `Queue:`, `Delegate:`, `Blocked:`, `Calls since last wrap:`, and the
 stack for the top item (the table above). `wrap.mjs` writes only `.state/now.json`;
 `tools/handoff.mjs` produces `HANDOFF.md` and `STATE-ROW.md` from it (Andrew, 2026-10-01). Then it
 commits — and it refuses a wrap that does not name the next chat and its first line.

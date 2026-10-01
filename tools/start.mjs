@@ -70,6 +70,12 @@ export function render({ wrapping = false } = {}) {
       `  Commit them from the ${PACKAGE} folder before landing anything: git add -A; git commit -m "wrap: ${now.now}"`)
   }
 
+  // 3c. every commit since the last wrap that did not go through the gate
+  // (Andrew, 2026-10-01). The gate commits as `combat-framework`; anything else —
+  // a ruling, a hand fix, a tool change — is listed, so the chat sees what
+  // landed without the checks. The last wrap is git's: the last `wrap:` commit.
+  lines.push(...ungatedSinceWrap())
+
   // 4. what is Angela's — the flagged landings only she can clear, and the OPEN
   // questions in the Game Builder's inbox. Each carries what she looks at
   // (DISPLAY-RULES.md rule 24: the thing itself, never a document about it).
@@ -122,6 +128,23 @@ export function render({ wrapping = false } = {}) {
     }
   }
   return lines
+}
+
+/** The author the gate commits as (tools/gate.mjs, `-c user.name=…`). */
+const GATE_AUTHOR = 'combat-framework'
+
+/** "Ungated since last wrap: …" — every commit after the last `wrap:` commit not authored by the gate. */
+function ungatedSinceWrap() {
+  const git = (args) => execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 20_000 }).trim()
+  let rows
+  try {
+    const since = git(['log', '-1', '--grep=^wrap:', '--format=%h'])
+    rows = git(['log', '--format=%h%x09%an%x09%ad%x09%s', '--date=format:%Y-%m-%d %H:%M', ...(since ? [`${since}..HEAD`] : ['-20'])])
+      .split('\n').filter(Boolean).map((l) => l.split('\t'))
+  } catch (e) { return [`Ungated since last wrap: unknown — git log: ${String(e.stderr || e.message).split('\n')[0]}`] }
+  const ungated = rows.filter(([, author]) => author !== GATE_AUTHOR)
+  if (!ungated.length) return ['Ungated since last wrap: none']
+  return [`Ungated since last wrap: ${ungated.length}`, ...ungated.map(([h, author, at, subject]) => `  ${h} ${at} ${author} — ${subject.slice(0, 100)}`)]
 }
 
 function readBacklog() {
