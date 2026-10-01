@@ -13,7 +13,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the civilians are played; no 2D before the 3D bodies'): 'two-dimensional images of other heroes are loading before the 3D images are loading. You still have some kind of legacy 2D other things loading'. Today the battle shows once its 3D scene is ready (viewer.true-3d-camera) while the bodies (viewer/src/models.js) still load, so every modelled unit stands as its 2D token until its body arrives. (1) The board stays on its loading line until the scene AND the bodies of every unit on the board are loaded (or have failed). (2) A unit that has a body but whose body is still loading (an arrival later in the battle) shows no token picture meanwhile. (3) A body that cannot be loaded keeps the token, said in the status line, as before.",
-  "expect": "Opening BATTLE-SANDBOX.html?play=encounter.opening.orphanage no 2D hero, enemy or civilian picture appears at any moment: the loading line, then the 3D map with every body standing."
+  "expect": "Opening BATTLE-SANDBOX.html?play=encounter.opening.orphanage no 2D hero, enemy or civilian picture appears at any moment: the loading line, then the 3D map with every body standing.",
+  "status": "done",
+  "sha": "49495b9"
  },
  {
   "id": "kingdom.play-launcher",
