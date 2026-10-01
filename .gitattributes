@@ -1,0 +1,5 @@
+# The gate only ever appends to these two, so when two workers land in separate copies
+# of the folder, git keeps both sides' new lines instead of stopping on a conflict
+# (Andrew, 2026-10-01). Lines from each side stay in their own order.
+.state/ledger.md merge=union
+.state/gauntlet-log.jsonl merge=union
