@@ -13,16 +13,18 @@
 //                          test/ — the page tests that ask the engine's content
 //                          (moved here from engine/test, Andrew 2026-10-01);
 //                       2b. the engine's map list against both dumps
-//   --part verify k/4   3. build the candidate page into .build/ (deterministic: no
-//                          timestamp) and run verify.mjs over slice k of the
+//   --part verify k/4   3. the candidate page in .build/ (deterministic: no
+//                          timestamp) — built ONCE per tree, every verify and tests
+//                          part checks that one copy — and verify.mjs over slice k of the
 //                          library (tools/verify-slices.mjs; slice 1 also runs
 //                          every check that is not per battle)
 //   --part tests        3b. the node --test lists that run against the page
 //   --status            which parts passed on this tree, and verify's library-wide
 //                       checks over the facts of all four slices
-//   --land              refuses unless every part passed on THIS tree and the
-//                       page rebuilds byte-identical to the one they verified;
-//                       then writes BATTLE-VIEWER.html
+//   --land              refuses unless every part passed on THIS tree against the
+//                       one candidate, unchanged, built from the same engine code
+//                       and viewer commit; then writes that candidate as
+//                       BATTLE-VIEWER.html — no rebuild
 //   (no flag)           every part in sequence, in one command, recorded — for a
 //                       shell with no time limit; says whether --land may run
 //   --fresh             re-export every library battle from the engine at ../engine
@@ -30,7 +32,7 @@
 //                       own regression test for the library (plan §8.4). A
 //                       difference is reported, never written over. Not a part.
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
-import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, copyFileSync, rmSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, copyFileSync, rmSync, existsSync } from 'node:fs'
 import { execFileSync, execSync } from 'node:child_process'
 import { resolve, dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -138,14 +140,38 @@ function checks() {
   }
 }
 
-/* ── 3 · the candidate page: built, never verified here, only ever in .build/ ── */
-function buildCandidate() {
+/* ── 3 · the candidate page: built ONCE, never verified here, only ever in .build/ ──
+   Andrew, 2026-10-01: the gate builds its candidate once and runs every check against that one
+   copy, instead of rebuilding it for each part. The build is recorded with the parts
+   (rec.candidate: its sha256 and what it was built from); a part reuses it while the tree, the
+   file's bytes, the engine's code stamp and the viewer commit the page stamps are all unchanged,
+   and builds it again only when one of them moved. */
+const candidateInputs = () => {
+  let head = 'none'
+  try { head = execSync('git rev-parse HEAD', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() } catch {}
+  const { stamp, dirty } = codeStamp()
+  return { engine: stamp, engineDirty: dirty, viewerHead: head }
+}
+const sameInputs = (a, b) => !!a && !!b && a.engine === b.engine && a.engineDirty === b.engineDirty && a.viewerHead === b.viewerHead
+/** why the recorded candidate cannot be reused, or null when it can */
+function staleCandidate(rec, inputs = candidateInputs()) {
+  const c = rec && rec.candidate
+  if (!c) return 'no candidate built on this tree'
+  if (!existsSync(CANDIDATE) || sha256(CANDIDATE) !== c.page) return 'the candidate file is missing or changed'
+  if (!sameInputs(c.inputs, inputs)) return `an input outside this tree changed since it was built (engine ${c.inputs.engine} → ${inputs.engine}, viewer ${String(c.inputs.viewerHead).slice(0, 7)} → ${inputs.viewerHead.slice(0, 7)})`
+  return null
+}
+function candidate(rec) {
+  const inputs = candidateInputs()
+  if (!staleCandidate(rec, inputs)) { console.log(`candidate: reusing ${CANDIDATE} · sha256 ${rec.candidate.page.slice(0, 12)} (built once on this tree)`); return rec.candidate.page }
   mkdirSync('.build', { recursive: true })
   try { execFileSync('node', ['tools/build-viewer.mjs', '--candidate', CANDIDATE], { stdio: 'inherit' }) } catch { fail('build') }
-  return sha256(CANDIDATE)
+  rec.candidate = { page: sha256(CANDIDATE), inputs, at: new Date().toISOString() }
+  writeFileSync(RECORD, JSON.stringify(rec, null, 1) + '\n')   // saved now: a part that dies after the build still leaves it reusable
+  return rec.candidate.page
 }
-function verifySlice(k) {
-  const page = buildCandidate()
+function verifySlice(k, rec) {
+  const page = candidate(rec)
   const factsFile = join(tmpdir(), `vgate-facts-${process.pid}-${Date.now()}.json`)
   let facts = null, ok = true
   try { execFileSync('node', ['tools/verify.mjs', CANDIDATE, '--slice', `${k}/${SLICES}`, '--facts', factsFile], { stdio: 'inherit' }) } catch { ok = false }
@@ -161,8 +187,8 @@ function testRuns(k, n = TEST_PARTS, lists = PAGE_TESTS) {
   for (const { f, li } of files.slice((k - 1) * per, k * per)) { const last = runs.at(-1); if (last && last.li === li) last.files.push(f); else runs.push({ li, files: [f] }) }
   return runs.map(r => r.files)
 }
-function pageTests(k) {
-  const page = buildCandidate()
+function pageTests(k, rec) {
+  const page = candidate(rec)
   let ok = true
   for (const list of testRuns(k)) try { execFileSync('node', ['--test', ...list], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: resolve(CANDIDATE) } }) } catch { ok = false }
   return { ok, page, why: ok ? '' : 'a node --test list failed' }
@@ -172,12 +198,12 @@ function pageTests(k) {
 function runPart(name) {
   const t0 = Date.now(), tree = treeHash()
   let rec = readRecord()
-  if (!rec || rec.tree !== tree || rec.slices !== SLICES) rec = { tree, slices: SLICES, parts: {} }
+  if (!rec || rec.tree !== tree || rec.slices !== SLICES) rec = { tree, slices: SLICES, parts: {} }   // a new tree: no parts, no candidate
   let r
   try {
     if (name === 'checks') { checks(); r = { ok: true } }
-    else if (name.startsWith('tests ')) r = pageTests(+name.match(/^tests (\d+)\//)[1])
-    else r = verifySlice(+name.match(/^verify (\d+)\//)[1])
+    else if (name.startsWith('tests ')) r = pageTests(+name.match(/^tests (\d+)\//)[1], rec)
+    else r = verifySlice(+name.match(/^verify (\d+)\//)[1], rec)
   } catch (e) { if (!(e instanceof GateFail)) throw e; r = { ok: false, why: e.message } }
   rec.parts[name] = { ...r, secs: secs(t0), at: new Date().toISOString() }
   mkdirSync('.build', { recursive: true })
@@ -218,11 +244,13 @@ if (argv.includes('--status')) process.exit(status().green ? 0 : 1)
 if (argv.includes('--land')) {
   const tree = treeHash(), st = status(tree)
   if (!st.green) { console.error('GATE REFUSES --land — every part must pass on this exact tree first'); process.exit(1) }
-  let page
-  try { page = buildCandidate() } catch (e) { console.error('GATE FAIL — ' + e.message); process.exit(1) }
-  if (page !== st.page) { console.error(`GATE REFUSES --land — the page rebuilds as ${page.slice(0, 12)}, the parts verified ${st.page.slice(0, 12)}: an input outside this tree (the engine, the HEAD commit the page stamps) changed since. Run the verify and tests parts again`); process.exit(1) }
-  if (treeHash() !== tree) { console.error('GATE REFUSES --land — the tree changed while the page was rebuilt'); process.exit(1) }
+  // no rebuild: the candidate every part checked is the page that lands, if it is still that page
+  const rec = readRecord(), stale = staleCandidate(rec)
+  if (stale) { console.error(`GATE REFUSES --land — ${stale}. Run the verify and tests parts again`); process.exit(1) }
+  const page = rec.candidate.page
+  if (page !== st.page) { console.error(`GATE REFUSES --land — the candidate is ${page.slice(0, 12)}, the parts verified ${st.page.slice(0, 12)}. Run the verify and tests parts again`); process.exit(1) }
   copyFileSync(CANDIDATE, 'BATTLE-VIEWER.html')
+  if (treeHash() !== tree) { console.error('GATE REFUSES --land — the tree changed while the page was written'); process.exit(1) }
   console.log(`landed BATTLE-VIEWER.html · sha256 ${page.slice(0, 12)} · the page every part verified on tree ${tree.slice(0, 10)}`)
   process.exit(0)
 }
