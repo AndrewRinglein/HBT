@@ -197,6 +197,14 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.opening.bridge', encounterId: 'encounter.opening.bridge', openingPosition: 3,
     heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  // encounter.caravan-aftermath (2026-10-01; DECISIONS.md "the caravan's fight", provisional): the caravan aftermath with the
+  // four heroes of the Bridge's library battle (each with its 3D body in the viewer) and their standard kits — the
+  // encounter places them in its zone. Not a campaign battle: no openingPosition.
+  'test.caravan-aftermath': {
+    id: 'test.caravan-aftermath', note: 'The caravan aftermath (provisional, DECISIONS.md 2026-10-01): encounter.caravan-aftermath on map.caravan-aftermath — 2 Bloodhounds and 2 Imps at the east end of the road against four standard heroes at the west end.',
+    mapId: 'map.caravan-aftermath', encounterId: 'encounter.caravan-aftermath',
+    heroes: ['hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.priest-armored', 'hero.base.warrior-fearsome'], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.opening-cavern-trail': {
     id: 'test.opening-cavern-trail', note: 'The opening, battle 4: encounter.opening.cavern-trail (the Hunt, with the meteor fall) on map.opening.cavern-trail with the party drafted by then (five heroes, one with the Flaming Longsword).',
     mapId: 'map.opening.cavern-trail', encounterId: 'encounter.opening.cavern-trail', openingPosition: 4,

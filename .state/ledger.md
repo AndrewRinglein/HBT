@@ -20014,3 +20014,23 @@ index 745f274..39ff9cd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without unit.fire-imp — they genuinely test it
+
+## encounter.caravan-aftermath — LANDED `be770ee`
+2026-10-01 10:45
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1741
+  PASS  typecheck
+  PASS  the item's own tests — test/caravan-aftermath.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.caravan-aftermath: 43 log lines, 43 fired, 42 changed state
+  PASS  brought its own tests — test/caravan-aftermath.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.caravan-aftermath — they genuinely test it

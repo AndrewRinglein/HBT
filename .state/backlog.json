@@ -1,5 +1,17 @@
 [
  {
+  "id": "encounter.caravan-aftermath",
+  "kind": "content",
+  "shape": "data",
+  "probeIds": [
+   "encounter.caravan-aftermath"
+  ],
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; the caravan's fight'), provisional: 'Imps and Bloodhounds (Recommended)' - 2 Imps + 2 Bloodhounds from the far end of the road, the heroes at the near end, the ground fires burning and the corpse hexes cursed (Weak). content/mkpaintedmaps.mjs compiles map.caravan-aftermath from assets/terrain-3d/caravan-aftermath/navigation.json (usable '.', the rest 'x'; SWITCHES caravanBlocked) with its ground lists; encounter.caravan-aftermath in content/gen/encounters.json paints layer.weak and layer.burning by naming the map's ground (resolvePaint in assemble and mkenginepack; SWITCHES caravanGround); zones SWITCHES caravanZones; scenario test.caravan-aftermath with four standard heroes. Prior art: mkopeningmaps.mjs is the letter-grid compile path for the Ground Check maps and the opening's cursed lists; an encounter's paint is capability.ground-layers (encounter.rime). This extends paint with a ground reference instead of a second way to lay ground.",
+  "expect": "The engine fields encounter.caravan-aftermath on a 32x18 map whose 18 wreck hexes are impassable, with the scene's 7 fires layer.burning and its 31 corpses layer.weak at setup; four heroes in the west zone on clean ground, two Bloodhounds and two Imps at the east end; the battle ends on every seed and both kinds of foe attack; nobody stands on a wreck.",
+  "status": "done",
+  "sha": "be770ee"
+ },
+ {
   "id": "kingdom.civilians-played",
   "kind": "kingdom",
   "shape": "plumbing",

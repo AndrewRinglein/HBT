@@ -1731,3 +1731,11 @@ Noticed, not changed:
   wants other numbers is Andrew's.
 - **"out of stamina"** is the kiter's idle reason whenever stamina < 1 — always, for an enemy with no
   stamina pool — even when the truth is "no target in range".
+
+## encounter.caravan-aftermath — 2026-10-01
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `caravanZones` | Where do the caravan's sides start? | **Heroes: a 4-hex zone within 2 of (1,5), the west end of the road (it enters the west edge at row 4). Foes: the Bloodhounds at (29,10) and (29,11) in front, the Imps at (31,9) and (31,11) behind them — the east end, where the road leaves at rows 10–11.** All on open ground, none on a fire or a corpse. | Ruled: "from the far end of the road … the heroes at the near end" (DECISIONS.md 2026-10-01); which end is near is the reading — the road runs west to east and heroes west is the carried default. | provisional — 2026-10-01 |
+| `caravanBlocked` | The scene measures 13 obstructed hexes and 5 standing pockets walled off by wreckage. In the engine? | **All 18 are high obstacles ('x').** The engine has no wall along a hex edge, so a pocket the measure cut off would be walkable from its neighbours; marking it solid keeps the engine's map to what a body could reach in the scene. | The handoff: "Respect physical wreck obstructions"; measured usability is an authoring fact, the engine's own map is what is legal. | provisional — 2026-10-01 |
+| `caravanGround` | The caravan's cursed corpses and ground fires — which engine ground? | **The corpses are cursed ground, layer.weak; the seven ground fires layer.burning; both painted by the encounter at setup from the map's own ground lists (content/gen/painted-maps.json `ground`, read through `"paint": [{"layer", "ground"}]`), never retyped.** The four cart-fire sites stand on wreck hexes and stay decorative. | DECISIONS.md 2026-09-28 "cursed ground is layer.weak"; the ruling 2026-10-01 ("ground fires burn, corpse hexes cursed (Weak)"); a visual effect never silently applies damage — the layer does, in the engine. | provisional — 2026-10-01 |
