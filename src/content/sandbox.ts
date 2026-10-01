@@ -24,5 +24,8 @@ export const SANDBOX_ENEMIES=['unit.zombie','unit.skeleton','unit.skeletal-arche
  * battles, in the engine's own registry, by the engine's names. An encounter fields its own map, units,
  * schedule and civilians; the player brings the heroes. Content, not a rule: which ones is this list.
  */
-export const SANDBOX_ENCOUNTERS=Object.values(ENCOUNTERS).filter(e=>e.id.startsWith('encounter.opening.')).map(e=>({id:e.id,name:e.name??e.id}))
+// viewer.caravan-scene (2026-10-01; engine DECISIONS.md 2026-10-01 'the caravan's fight', provisional): the caravan aftermath
+// is played here too — not one of the opening's battles, so it is named (kingdom SWITCHES sandboxCaravan)
+export const SANDBOX_EXTRA_ENCOUNTERS=['encounter.caravan-aftermath']
+export const SANDBOX_ENCOUNTERS=Object.values(ENCOUNTERS).filter(e=>e.id.startsWith('encounter.opening.')||SANDBOX_EXTRA_ENCOUNTERS.includes(e.id)).map(e=>({id:e.id,name:e.name??e.id}))
 export const SANDBOX_DEFAULT={mapId:'showcase.atlas-priory',heroes:['hero.base.warrior-iron','hero.base.ranger-aggressive','hero.base.priest-armored'],enemies:['unit.zombie','unit.zombie','unit.skeleton','unit.skeleton'],seed:1}

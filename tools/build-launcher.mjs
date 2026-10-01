@@ -27,22 +27,28 @@ const proposal=JSON.parse(readFileSync(resolve(ROOT,'assets/battle-atlas/opening
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c])
 const nameOf=id=>{const u=UNITS[id];if(!u?.name)throw Error(`launcher: unit ${id} has no name`);return u.name}
 /** a battle's 3D map render: <scene>/review.png, else the scene family's review/<scene>.png; null when it has none */
-function pictureOf(name){
- const row=proposal.maps.find(m=>m.name===name);if(!row)return null
- const dir=resolve(ROOT,row.file),own=dir+'/review.png',family=resolve(dirname(dir),'review',basename(dir)+'.png')
- const file=existsSync(own)?own:existsSync(family)?family:null;if(!file)return null
+/* viewer.caravan-scene (2026-10-01): a map compiled from a painted scene's navigation (content/gen/painted-maps.json) has no
+   ground-proposal row; its picture is its scene's review render — the caravan's accepted presentation render, which its
+   production.json presentationRevision records (kingdom SWITCHES launcherCaravanPicture) */
+const painted=JSON.parse(readFileSync(resolve(ROOT,'content/gen/painted-maps.json'),'utf8'))
+const PAINTED_PICTURE={'caravan-aftermath':'review-tactical-surroundings.png'}
+function pictureOf(name,mapId){
+ const row=proposal.maps.find(m=>m.name===name),scene=painted.scenes?.[mapId]?.scene
+ if(!row&&!scene)return null
+ const dir=resolve(ROOT,row?row.file:'assets/terrain-3d/'+scene),own=dir+'/review.png',family=resolve(dirname(dir),'review',basename(dir)+'.png'),named=scene&&PAINTED_PICTURE[scene]?dir+'/'+PAINTED_PICTURE[scene]:null
+ const file=existsSync(own)?own:existsSync(family)?family:named&&existsSync(named)?named:null;if(!file)return null
  const b64=execFileSync('python3',['-c',`import sys,io,base64
 from PIL import Image
 im=Image.open(sys.argv[1]).convert('RGB');im.thumbnail((720,720));b=io.BytesIO();im.save(b,'JPEG',quality=82);sys.stdout.write(base64.b64encode(b.getvalue()).decode())`,file],{encoding:'utf8',maxBuffer:1<<24})
  return 'data:image/jpeg;base64,'+b64
 }
-const on3D=new Set(Object.keys(SCENES))
+const on3D=new Set([...Object.keys(SCENES),...painted.maps.map(m=>m.id)])
 const battles=SANDBOX_ENCOUNTERS.map(({id,name})=>{
  const enc=ENCOUNTERS[id],sc=Object.values(SCENARIOS).find(s=>s.encounterId===id&&s.openingPosition)
  const fielded=[...enc.setup.map(f=>({...f,later:false})),...(enc.schedule??[]).flatMap(s=>(s.spawn??[]).map(f=>({...f,later:true})))]
  const enemies=new Map(),civilians=[]
  for(const f of fielded){if(f.civilian){civilians.push(nameOf(f.unit));continue}const e=enemies.get(f.unit)??{n:0,later:0};e.n++;if(f.later)e.later++;enemies.set(f.unit,e)}
- return{id,name,position:sc?.openingPosition??null,mapId:enc.mapId,enemies:[...enemies].map(([u,e])=>({name:nameOf(u),...e})),civilians,picture:pictureOf(name),on3D:on3D.has(enc.mapId)}
+ return{id,name,position:sc?.openingPosition??null,mapId:enc.mapId,enemies:[...enemies].map(([u,e])=>({name:nameOf(u),...e})),civilians,picture:pictureOf(name,enc.mapId),on3D:on3D.has(enc.mapId)}
 }).sort((a,b)=>(a.position??99)-(b.position??99))
 const card=b=>`<a class="card" href="../kingdom/BATTLE-SANDBOX.html?play=${esc(b.id)}" data-encounter="${esc(b.id)}">
   <div class="pic"${b.picture?` style="background-image:url('${b.picture}')"`:''}>${b.on3D?'':'<span class="tag">flat board for now — its 3D map is not in the battle screen yet</span>'}</div>

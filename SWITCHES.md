@@ -212,3 +212,10 @@ Engine backlog kingdom.civilians-played; ruled 2026-09-30, engine DECISIONS.md "
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `civiliansPlayed` | Which units does the player play? | **Every unit fielded on the heroes' side at the battle's start — the drafted heroes and the encounter's civilians** (a new battle and a restored save alike). A civilian that arrives by schedule later is the AI's (none does in the opening's four). | The ruling; arrivals are not yet asked about. | provisional — 2026-09-30 |
+
+## viewer.caravan-scene — 2026-10-01
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `sandboxCaravan` | May the caravan aftermath be played from the sandbox and the launcher? | **Yes — `SANDBOX_EXTRA_ENCOUNTERS` names it beside the opening's battles;** it has no place in the opening, so its launcher card says "Encounter" and comes after them. | Ruled 2026-10-01 (engine DECISIONS.md "the caravan's fight"): "so it can be played in the sandbox". | provisional — 2026-10-01 |
+| `launcherCaravanPicture` | The caravan has no `review.png`. Its card's picture? | **`review-tactical-surroundings.png`** — the accepted presentation's render, which the scene's `production.json` presentationRevision records. | The picture is the map's own render (launcherCard). | provisional — 2026-10-01 |
