@@ -1,5 +1,21 @@
 [
  {
+  "id": "viewer.battle-full-screen",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [],
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the battle is its own full screen; End Turn and End Activation lower right; a red targeting arrow; every 3D character'): 'I want a fucking battle. It should be full screen. How can I experience this if you've got one screen that is both your launcher and your battle?' 'You've got End Turn and End Activation on the battle map. They shouldn't be. Put them in the lower right-hand corner.' 'The arrow for targeting should be red, not blue.' Today kingdom/BATTLE-SANDBOX.html?play=<encounter> shows the setup form (Field a battle, heroes, seed) above a board squeezed into the lower left of the window. (1) Opening a battle shows the battle alone, filling the window: no setup form, no launcher text; the launcher stays a separate view. (2) End Turn and End Activation leave the board and sit in the screen's lower right-hand corner. (3) The targeting arrow (and its forecast line) is red. Viewer and kingdom halves; the engine test asserts the page opened with ?play= has no setup form visible and the board fills the viewport.",
+  "expect": "BATTLE-SANDBOX.html?play=encounter.opening.orphanage opens to the battle filling the window with nothing of the setup form showing; End Turn and End Activation are in the lower right corner, not over the board; the targeting arrow is red."
+ },
+ {
+  "id": "viewer.every-model",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [],
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the battle is its own full screen; ...; every 3D character'): 'And there are no 3D characters in this. I want all the 3D characters and enemies and motions.' Seen 2026-09-30 in Andrew's Chrome: the opening battle fields the sandbox's default heroes (Iron Dwarf, Hunter, Battle Chaplain), which are not among viewer/tools/character-models.mjs BINDINGS, so they stand as 2D tokens; on the squeezed board nothing reads as 3D. Every unit fielded in battles 1-3 (heroes the screen fields included) is a 3D model from assets/characters (APPROVED-CHARACTERS.md, assets/battle-demo/roster.mjs), with idle, move, attack, hit and death; flyers fly. The motions the approved looks lack (Skeleton Archer and Soldier attack/hit, the Imps' hit) are supplied per Andrew's answer to the motion question asked 2026-09-30.",
+  "expect": "In battles 1-3 every hero and enemy on the board is a 3D model that idles, walks (or flies), attacks, flinches and dies; no unit of those battles stands as a 2D token except the civilians that have no model."
+ },
+ {
   "id": "content.fire-imp-flight",
   "kind": "content",
   "shape": "data",

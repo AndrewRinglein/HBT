@@ -3543,3 +3543,22 @@ Andrew, told that the engine gives the Fire Imp no flight, so it walks in battle
 “The Fire Imp does fly, yes. That was an oversight if it does not.”
 
 Ruled: **the Fire Imp flies** — the same flight move as the Imp. The missing `movePower` is the oversight; the fix goes through the Codex (content), filed as `content.fire-imp-flight`. Not ruled here: the Poison Imp ("same as Fire Imp with poison throughout") also has no flight.
+
+## 2026-09-30 — the battle is its own full screen; End Turn and End Activation lower right; a red targeting arrow; every 3D character
+
+Andrew, having opened `kingdom/BATTLE-SANDBOX.html?play=encounter.opening.orphanage` (and battles 2 and 3) on the local server:
+
+“Okay, you've got one screen with the ability to open the battle. It is the same as the battle. I want a fucking battle. It should be full screen. How can I experience this if you've got one screen that is both your launcher and your battle?”
+
+“You've got End Turn and End Activation on the battle map. They shouldn't be. Put them in the lower right-hand corner.”
+
+“The arrow for targeting should be red, not blue.”
+
+“And there are no 3D characters in this. I want all the 3D characters and enemies and motions.”
+
+Ruled:
+
+- **The battle is its own screen, full screen.** The launcher (the sandbox's setup) and the battle are not one page view: opening a battle shows only the battle, filling the window.
+- **End Turn and End Activation are not on the battle map; they sit in the lower right-hand corner of the screen.** (The End Activation button stays — 2026-09-30 'the End activation button stays' — it moves.)
+- **The targeting arrow is red, not blue.**
+- **Every 3D character, enemy and motion is in the battle.** None showed in Andrew's play of 2026-09-30 although viewer.opening-cast landed; that is a defect, not a choice.
