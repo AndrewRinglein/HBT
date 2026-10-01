@@ -943,6 +943,7 @@
    "inferred": {
     "accuracy": "80, as the base Imp — flagged in ENEMY-REVIEW"
    },
+   "movePower": "flight",
    "immunity": [
     {
      "status": "weak",
