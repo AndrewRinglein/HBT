@@ -612,7 +612,9 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
 // The seal is gone (Andrew, 2026-09-23, DECISIONS.md "less process per feature"):
 // every check is pass or fail, and a landing is a landing. Flags still print and
 // still go in the ledger; edited tests still land for review (Law 10).
+// The landing's gauntlet-log line goes into the landing commit, not a commit of
+// its own (Andrew, 2026-10-01): logged before the amend picks it up.
+logRun('landed', { sha })
 sh('git add -A')
 sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
-logRun('landed', { sha })
 console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review — existing tests edited, a banned word, prior art not named, or a wrong home)' : ''}\n`)
