@@ -20,8 +20,9 @@
 // (map, seed). PROVING.html prints these commands beside every pair.
 //   npx tsx tools/export-battle.mts --plan <file> --subject <id> --pair <n> [--arm with|without] [--slot k] [--rotation r] > battle.json
 //   npx tsx tools/export-battle.mts --plan <file> --matchup <id> --battle <n> > battle.json
-import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
+// engineCommit carries the code stamp, not HEAD: a ruling commit re-exports byte-identical battles
+import { codeStamp } from './code-stamp.mjs'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { SCENARIOS, scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
@@ -63,8 +64,7 @@ if (argv.includes('--plan')) {
   }
   const ctx = createBattle(opts)
   runBattle(ctx)
-  let commit = 'unknown'
-  try { commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim() } catch {}
+  const commit = codeStamp().stamp
   console.log(JSON.stringify({ seed, engineCommit: commit, outcome: ctx.events.find((e) => e.type === 'battle.end')?.['outcome'] ?? 'unknown', turns: ctx.state.turn, events: ctx.events }))
   process.exit(0)
 }
@@ -101,8 +101,7 @@ const ctx = scenarioId
   : createBattle({ replicate, enemyCount, mapId })
 runBattle(ctx)
 
-let commit = 'unknown'
-try { commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim() } catch {}
+const commit = codeStamp().stamp
 
 // `seed` gains scenarioId ONLY when there is one, so a positional export is
 // byte-identical to what it produced before this flag existed (§9: same battle,
