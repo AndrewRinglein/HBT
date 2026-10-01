@@ -3562,3 +3562,16 @@ Ruled:
 - **End Turn and End Activation are not on the battle map; they sit in the lower right-hand corner of the screen.** (The End Activation button stays — 2026-09-30 'the End activation button stays' — it moves.)
 - **The targeting arrow is red, not blue.**
 - **Every 3D character, enemy and motion is in the battle.** None showed in Andrew's play of 2026-09-30 although viewer.opening-cast landed; that is a defect, not a choice.
+
+## 2026-09-30 — a bunch of motions, not every one; the hero bodies we have are reused
+
+Andrew, asked (1) whether the Skeleton Archer and the Soldier, which have no approved attack or flinch, may use the free-library motions already selected (the sword combo, a bow shot) for now, and (2) whether the battle should field the drafted classes wearing the hero bodies already built, or bodies should be built for the sandbox's Iron Dwarf, Hunter and Battle Chaplain:
+
+“Yes, I don't really care about every single motion being in there. I want to see a bunch of motions in there.”
+
+“We can reuse the hero bodies we already have.”
+
+Ruled:
+
+- **Yes — the selected free-library motions may be used on the Skeleton Archer, the Soldier and any look that lacks one.** Not every motion is required; many visible motions are. This loosens 2026-09-29's "what a look lacks is listed, never borrowed" (viewer.character-models) for the playable opening: a lacking motion is filled from the approved or selected motions where one fits, and is still listed where none does.
+- **Every hero the battle fields wears one of the hero bodies already built** (the battle demo's archer, Oathblade, the female fitted bodies, the casters), reused across heroes and classes. No new hero bodies for the opening.
