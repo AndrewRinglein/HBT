@@ -8,7 +8,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
 import { THREE, modules } from './atlas-test-runtime.mjs'
-import { packCharacterModels, CLASS_LOOKS, RULED } from './character-models.mjs'
+import { packCharacterModels, CLASS_LOOKS, RULED, CIVILIANS } from './character-models.mjs'
 import { fold, foldTo } from '../src/fold.js'
 const A = await modules(), pack = await packCharacterModels()
 const battle2 = JSON.parse(readFileSync('battles/test.opening-lumberjack.json', 'utf8'))
@@ -48,24 +48,28 @@ const typeOf = (b, id) => b.events.find(e => e.type === 'unit.enter' && e.actor 
 const at = (b, type, pred = () => true) => b.events.findIndex(e => e.type === type && pred(e))
 async function standAt(w, i) { const { V, cast } = castFor(w); w.__battleView.harness.viewer.seek(i); cast.frame(0); await settle(); await settle(); cast.frame(0); return { V, cast } }
 
-test('battles 2 and 3: every enemy and every drafted hero is a model; the civilians keep their tokens', () => {
+test('battles 2 and 3: every enemy, every drafted hero and every civilian is a model', () => {
   assert.deepEqual(typesIn(battle2), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife', 'unit.skeletal-archer', 'unit.soldier', 'unit.zombie'])
   assert.deepEqual(typesIn(battle3), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome', 'unit.fire-imp', 'unit.imp'])
   for (const t of [...typesIn(battle2), ...typesIn(battle3)]) {
     /* "a model or its token": every unit has its token under it (the Soldier its own art, the Lumberjack's Wife the ART PENDING standee) */
     assert.ok(artmap[t]?.token, `${t} has its token`)
     const b = A.modelBinding(t, pack)
-    if (t.startsWith('hero.fixed.')) { assert.equal(b, null, `${t} is its token`); continue }
+    /* Law 10 (viewer.every-model, 2026-10-01): was `hero.fixed.* -> null, its token`. Andrew 2026-09-30 (engine
+       DECISIONS.md 'a true 3D battle'): "none stands as a 2D token" — the Lumberjack and his Wife wear their own bodies */
     assert.ok(b, `${t} is a model`)
     for (const look of b.looks) {
       for (const m of ['idle', 'move', 'death']) assert.ok(look.motions[m], `${t} ${look.id} ${m}`)
       for (const m of RULED) assert.equal(!look.motions[m], look.missing.includes(m), `${t} ${look.id}: ${m} is bound or listed missing`)
     }
   }
-  /* what the approved looks lack is listed, never borrowed from another body */
-  assert.deepEqual(pack['unit.skeletal-archer'].looks[0].missing, ['attack', 'hit', 'ranged'])
-  assert.deepEqual(pack['unit.soldier'].looks[0].missing, ['attack', 'hit'])
-  assert.deepEqual(pack['unit.imp'].looks[0].missing, ['hit'])
+  /* Law 10 (viewer.every-model, 2026-10-01): was "what the approved looks lack is listed, never borrowed" — the Skeleton
+     Archer missing ['attack', 'hit', 'ranged'], the Soldier ['attack', 'hit'], the Imp ['hit']. Andrew 2026-09-30 (engine
+     DECISIONS.md 'a bunch of motions, not every one'): the selected motions "may be used on the Skeleton Archer, the
+     Soldier and any look that lacks one". The rule kept: battle 2 and 3's looks lack nothing a selected motion fits */
+  assert.deepEqual(pack['unit.skeletal-archer'].looks[0].missing, [])
+  assert.deepEqual(pack['unit.soldier'].looks[0].missing, [])
+  assert.deepEqual(pack['unit.imp'].looks[0].missing, [])
   assert.ok(pack['unit.imp'].looks[0].motions.flight, 'the Imp flies')
   /* the page opens each battle on its own address and carries the pack */
   for (const [hash, b] of [['#map.opening.lumberjack', battle2], ['#map.opening.bridge', battle3]]) {
@@ -85,14 +89,18 @@ test('every drafted hero wears its class outfit, with every ruled motion', () =>
   }
 })
 
-test('the Skeleton Archer shoots: it turns to its target and leans, and the board flies the arrow', async () => {
+test('the Skeleton Archer shoots: it turns to its target and draws its bow, and the board flies the arrow', async () => {
   const i = at(battle2, 'attack.declared', e => typeOf(battle2, e.actor) === 'unit.skeletal-archer' && e.kind === 'ranged')
   assert.ok(i >= 0, 'battle 2 has a Skeleton Archer shot')
   const w = boot('#map.opening.lumberjack'), { V, cast } = await standAt(w, i), e = battle2.events[i]
   const archer = cast.body(e.actor); assert.ok(archer, 'the Skeleton Archer is its model'); assert.equal(archer.motion, 'idle')
   w.__battleView.harness.viewer.step()
   cast.frame(.1)
-  assert.ok(archer.lunge() > 0, 'no approved shot motion: the body leans toward its target')
+  /* Law 10 (viewer.every-model, 2026-10-01): was `archer.lunge() > 0` — "no approved shot motion: the body leans". The
+     Skeleton Archer now plays the demo archer's bow shot (Andrew 2026-09-30: the selected motions "may be used on the
+     Skeleton Archer"); a look with no shot still leans (the next test) */
+  assert.equal(archer.motion, 'ranged', 'it plays its bow shot')
+  assert.equal(archer.lunge(), 0)
   cast.frame(1)
   const p = new THREE.Vector3(), T = cast.body(e.target)
   if (T) { p.copy(T.stage.position); const want = Math.atan2(p.x - archer.stage.position.x, p.z - archer.stage.position.z)
@@ -106,12 +114,20 @@ test('the Skeleton Archer shoots: it turns to its target and leans, and the boar
   w.__battleView.harness.dispose()
 })
 
-test('the Soldier, with no approved strike, strikes with a lean', async () => {
+test('the Soldier strikes with its sword combination; a look with no strike strikes with a lean', async () => {
   const i = at(battle2, 'attack.declared', e => typeOf(battle2, e.actor) === 'unit.soldier')
   const w = boot('#map.opening.lumberjack'), { cast } = await standAt(w, i), e = battle2.events[i]
   w.__battleView.harness.viewer.step(); cast.frame(.1)
-  assert.ok(cast.body(e.actor).lunge() > 0)
+  /* Law 10 (viewer.every-model, 2026-10-01): was `lunge() > 0` — the Soldier had no strike; it now borrows the selected
+     Sword combination. The lean is kept for a look that has none: the same Soldier with its strike taken out */
+  assert.equal(cast.body(e.actor).motion, 'attack'); assert.equal(cast.body(e.actor).lunge(), 0)
   w.__battleView.harness.dispose()
+  const w2 = boot('#map.opening.lumberjack'), V2 = w2.__battleView.harness.viewer._V, soldier = V2.data.models['unit.soldier']
+  V2.data.models = { ...V2.data.models, 'unit.soldier': { ...soldier, looks: soldier.looks.map(l => { const motions = { ...l.motions }; delete motions.attack; return { ...l, motions } }) } }
+  const s2 = await standAt(w2, i)
+  w2.__battleView.harness.viewer.step(); s2.cast.frame(.1)
+  assert.ok(s2.cast.body(e.actor).lunge() > 0, 'no strike: it leans toward its target')
+  w2.__battleView.harness.dispose()
 })
 
 test('the Imps fly: a flight flies the body and lands it; the Fire Imp, given no flight by the engine, walks', async () => {
@@ -146,7 +162,8 @@ test('the approved files load: each new look stands its height, binds every moti
   const fetch = async url => { const b = readFileSync('..' + new URL(url).pathname); return { ok: true, arrayBuffer: async () => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) } }
   const seen = new Set(['plague-zombie', 'woman-blonde', 'archer'])     // battle 1's, loaded by character-models.test.mjs
   for (const t of [...typesIn(battle2), ...typesIn(battle3)]) for (const look of pack[t]?.looks || []) {
-    if (seen.has(look.id)) continue; seen.add(look.id)
+    /* viewer.every-model: the civilians' bodies are loaded by tools/every-model.test.mjs, not twice */
+    if (seen.has(look.id) || CIVILIANS.includes(t)) continue; seen.add(look.id)
     const loaded = await A.loadLook(look, { location, fetch, textures: false })
     assert.deepEqual(Object.keys(loaded.clips).sort(), Object.keys(look.motions).sort(), look.id)
     const body = A.createBody(loaded)

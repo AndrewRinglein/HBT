@@ -57,6 +57,27 @@ export function slimGLB(buffer, { meshes = false } = {}) {
   return out.buffer
 }
 
+/* viewer.every-model: a performance borrowed from another body of the same rig (tools/character-models.mjs SELECTED) keeps
+   its rotations, and the body keeps its own bone lengths — every translation but the pivot's is dropped, and the pivot's
+   travel is carried over at the ratio of the two bodies' pivot heights. That is the civilian study's own transfer
+   ("authored rotation/timing with fitted target rest translations", civilian-study motion-record.json), and why: a strike
+   that kept its donor's translations "stretched child from about 1.025 ready height to 1.848" (civilian-study run.json) */
+export function borrowClip(clip, source, body, pivot) {
+  const from = source.getObjectByName(pivot)?.position, to = body.getObjectByName(pivot)?.position
+  if (!from || !to || !(from.length() > 0)) throw new Error(`borrowed ${clip.name}: no ${pivot} to carry its travel`)
+  const k = to.length() / from.length(), tracks = []
+  for (const t of clip.tracks) {
+    const dot = t.name.lastIndexOf('.'), node = t.name.slice(0, dot), prop = t.name.slice(dot + 1)
+    if (prop === 'quaternion') tracks.push(t)
+    else if (prop === 'position' && node === pivot) {
+      const v = Float32Array.from(t.values)
+      for (let i = 0; i < v.length; i += 3) { v[i] = to.x + (v[i] - from.x) * k; v[i + 1] = to.y + (v[i + 1] - from.y) * k; v[i + 2] = to.z + (v[i + 2] - from.z) * k }
+      tracks.push(new THREE.VectorKeyframeTrack(t.name, t.times, v, t.getInterpolation()))
+    }
+  }
+  return new THREE.AnimationClip(clip.name, clip.duration, tracks)
+}
+
 const hex = buf => Array.from(new Uint8Array(buf), n => n.toString(16).padStart(2, '0')).join('')
 /** fetch a look's files, refuse any that is not the approved file, parse them: the body, its motions, what it holds */
 export async function loadLook(look, platform = {}) {
@@ -89,7 +110,7 @@ export async function loadLook(look, platform = {}) {
     const g = ref.path === look.model.path ? model : await gltfOf(ref, 'motion')
     const clip = g.animations.find(c => c.name === ref.clip)
     if (!clip) throw new Error(`character model ${ref.path} has no animation '${ref.clip}'`)
-    return [motion, clip]
+    return [motion, ref.borrowed ? borrowClip(clip, g.scene, model.scene, look.pivot) : clip]
   }))
   const props = await Promise.all((look.props || []).map(async p => ({ ...p, scene: (await gltfOf(p, 'model')).scene })))
   if (cancelled()) throw new Error('character model load cancelled')

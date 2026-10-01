@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { makeWindow } from './fakedom.mjs'
 import { THREE, modules } from './atlas-test-runtime.mjs'
-import { packCharacterModels, RULED } from './character-models.mjs'
+import { packCharacterModels, RULED, CIVILIANS } from './character-models.mjs'
 const A = await modules(), pack = await packCharacterModels()
 const battle1 = JSON.parse(readFileSync('battles/test.opening-orphanage.json', 'utf8'))
 
@@ -25,16 +25,20 @@ function boot(hash) {
 }
 const typesIn = b => [...new Set(b.events.filter(e => e.type === 'unit.enter').map(e => e.typeId))].sort()
 
-test('battle 1 binds its Zombies and its hero to approved models; the civilians keep their tokens', () => {
+test('battle 1 binds its Zombies, its hero and its civilians to models', () => {
   assert.deepEqual(typesIn(battle1), ['hero.base.ranger-scantily', 'hero.fixed.orphans', 'hero.fixed.school-teacher', 'unit.zombie'])
   /* Law 10 (viewer.opening-cast, 2026-09-30): was the pack's whole key list, ['hero.base.ranger-scantily', 'unit.zombie'];
      the pack now also binds battles 2 and 3's cast and every drafted hero by class (tools/opening-cast.test.mjs). The rule
      kept: battle 1's enemy and hero are bound, its civilians are not */
-  for (const t of typesIn(battle1)) assert.equal(!!pack[t], !t.startsWith('hero.fixed.'), t)
+  /* Law 10 (viewer.every-model, 2026-10-01): was `!!pack[t] === !t.startsWith('hero.fixed.')` — the civilians unbound.
+     Andrew 2026-09-30 (engine DECISIONS.md 'a true 3D battle'): "Everything in Orphanage has a 3D model"; the Orphan
+     Child and the School Teacher now wear their own roster bodies (tools/every-model.test.mjs). The rule kept: every
+     unit battle 1 fields is bound */
+  for (const t of typesIn(battle1)) assert.ok(pack[t], t)
   const zombie = pack['unit.zombie'], elf = pack['hero.base.ranger-scantily']
   for (const look of zombie.looks) {
     assert.deepEqual(Object.keys(look.motions).sort(), ['attack', 'death', 'idle', 'move'], 'the four approved zombie actions')
-    assert.deepEqual(look.missing, ['hit'], 'no approved zombie hit reaction exists: listed, never borrowed')
+    assert.deepEqual(look.missing, ['hit'], 'no zombie hit reaction exists and no selected one fits its rig: listed')
   }
   assert.deepEqual(Object.keys(elf.looks[0].motions).sort(), ['attack', 'death', 'hit', 'idle', 'move', 'ranged'], 'the bow hero shoots as well')
   assert.deepEqual(elf.looks[0].missing, [])
@@ -47,7 +51,8 @@ test('battle 1 binds its Zombies and its hero to approved models; the civilians 
   /* the page carries the pack, and the binding is by type */
   const w = boot('#map.opening.orphanage'), V = w.__battleView.harness.viewer._V
   assert.deepEqual(V.data.models, pack)
-  assert.equal(A.modelBinding('hero.fixed.orphans', pack), null); assert.equal(A.modelBinding('unit.zombie', pack).typeId, 'unit.zombie')
+  /* Law 10 (viewer.every-model): the unbound example was the Orphan Child, now bound; the Werewolf (not in battles 1-3) is not */
+  assert.equal(A.modelBinding('unit.werewolf', pack), null); assert.equal(A.modelBinding('unit.zombie', pack).typeId, 'unit.zombie')
   w.__battleView.harness.dispose()
 })
 
@@ -75,14 +80,18 @@ const at = (V, type, pred = () => true) => V.EV.findIndex(e => e.type === type &
 
 test('the cast: a bound unit is its model standing on its token; an unbound unit keeps its token', async () => {
   const w = boot('#map.opening.orphanage'), H = w.__battleView.harness, v = H.viewer, { V, scene, cast, toWorld, loads } = castFor(w)
+  /* Law 10 (viewer.every-model, 2026-10-01): battle 1 no longer fields an unbound unit (its civilians are models), so the
+     page's pack is shorn of the Orphan Child's binding here to keep the rule "an unbound unit keeps its token" */
+  V.data.models = Object.fromEntries(Object.entries(V.data.models).filter(([t]) => t !== 'hero.fixed.orphans'))
   v.seek(at(V, 'unit.enter', e => e.name === 'Zombie 1') + 1); cast.frame(0); await settle(); await settle(); cast.frame(0)
   const elf = Object.values(V.S.U).find(u => u.typeId === 'hero.base.ranger-scantily'), zombie = Object.values(V.S.U).find(u => u.typeId === 'unit.zombie')
   const orphan = Object.values(V.S.U).find(u => u.typeId === 'hero.fixed.orphans')
   assert.ok(cast.shows(elf.id) && cast.shows(zombie.id), 'the hero and the Zombie are models'); assert.equal(cast.shows(orphan.id), false, 'the Orphan Child is its token')
   const worn = A.lookFor(pack['unit.zombie'], zombie.id)
   assert.equal(worn.id, pack['unit.zombie'].looks[zombie.id % 2].id, 'the Zombies wear the approved looks in turn')
-  assert.deepEqual([...new Set(loads)].sort(), ['archer', worn.id].sort(), 'only the looks on the board load, each once')
-  assert.equal(loads.length, 2)
+  /* Law 10 (viewer.every-model): was ['archer', zombie] and 2 — the School Teacher is now a model too */
+  assert.deepEqual([...new Set(loads)].sort(), ['archer', 'school-teacher', worn.id].sort(), 'only the looks on the board load, each once')
+  assert.equal(loads.length, 3)
   V.render()
   assert.equal(V.layers.UEL.get(zombie.id).img.style.opacity, '0', 'a modelled unit hides its standee, keeps its ring and bars')
   assert.notEqual(V.layers.UEL.get(zombie.id).fring.style.display, 'none')
@@ -164,7 +173,8 @@ test('the approved files load: every look stands its height, carries every bound
      shared looks and battles 2 and 3's cast, whose files tools/opening-cast.test.mjs loads. This loads battle 1's looks,
      each once */
   const battle1Looks = new Map()
-  for (const t of typesIn(battle1)) for (const look of pack[t]?.looks || []) battle1Looks.set(look.id, look)
+  /* viewer.every-model: battle 1's civilians' bodies are loaded by tools/every-model.test.mjs, not twice */
+  for (const t of typesIn(battle1)) if (!CIVILIANS.includes(t)) for (const look of pack[t]?.looks || []) battle1Looks.set(look.id, look)
   assert.deepEqual([...battle1Looks.keys()].sort(), ['archer', 'plague-zombie', 'woman-blonde'])
   for (const look of battle1Looks.values()) {
     const loaded = await A.loadLook(look, { location, fetch, textures: false })

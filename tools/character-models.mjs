@@ -13,7 +13,15 @@
 //   what is shown of a body, what it holds — the battle demo's own rules for that family (actors.mjs
 //                                  prepareVisibility, purchased-stage-equipment.js's bow), written out as data
 // Every file is read for its animation names and its SHA-256 is recorded: the page refuses any other bytes.
-// A motion the ruling asks for and the look lacks is listed as `missing` — never borrowed from another body.
+// A motion the ruling asks for and the look lacks is listed as `missing`. viewer.every-model loosens "never borrowed"
+// (engine DECISIONS.md 2026-09-30 'a bunch of motions, not every one': "a lacking motion is filled from the approved or
+// selected motions where one fits, and is still listed where none does"): a binding's `fill` names the selected
+// performance (SELECTED) for what its look lacks — only onto a rig with every bone the performance moves — and the page
+// plays it `borrowed`, on the body's own bone lengths (src/models.js borrowClip). `own` names a look's own unused clip.
+//
+// viewer.every-model (engine DECISIONS.md 2026-09-30 'a true 3D battle': "Everything in Orphanage has a 3D model") binds
+// battles 1-3's civilians to their own animated bodies (CIVILIANS): the activation registry names each civilian's roster
+// identity, the roster names its body, the body's paint record names its bytes.
 //
 // viewer.opening-cast (PLAYABLE-OPENING-PLAN.md item 10) binds the rest of battles 2 and 3: the Skeleton Archer and the
 // Soldier on the approved humanoids (accepted-humanoids.json: idle, walk, death), the Imp and the Fire Imp on the demo's
@@ -42,10 +50,12 @@ export const BINDINGS = {
   'unit.zombie': { looks: ['plague-zombie', 'woman-blonde'], approval: 'assets/characters/monster-motion-audition/slow-zombie/accepted-zombies.json' },
   /* viewer.opening-cast (viewer SWITCHES modelOpeningEnemies, modelSoldier, modelHumanoidStature): the approved humanoids
      have no roster row; they are fitted to the demo's medium humanoid rig (CC_Base), so they stand at its stature */
-  'unit.skeletal-archer': { looks: ['skeletal-archer'], approval: HUMANOIDS, stature: 'archer' },
-  'unit.soldier': { looks: ['strong-skeleton'], approval: HUMANOIDS, stature: 'archer' },
-  'unit.imp': { looks: ['imp'] },
-  'unit.fire-imp': { looks: ['fire-imp'] },
+  /* viewer.every-model (viewer SWITCHES modelFillMotions): what the approved humanoids lack, from the selected performances */
+  'unit.skeletal-archer': { looks: ['skeletal-archer'], approval: HUMANOIDS, stature: 'archer', fill: { attack: 'sword', hit: 'flinch', ranged: 'bow' } },
+  'unit.soldier': { looks: ['strong-skeleton'], approval: HUMANOIDS, stature: 'archer', fill: { attack: 'sword', hit: 'flinch' } },
+  /* viewer.every-model (viewer SWITCHES modelImpFlinch): the winged imp's own getHit, which the demo's roster leaves unused */
+  'unit.imp': { looks: ['imp'], own: { hit: 'getHit' } },
+  'unit.fire-imp': { looks: ['fire-imp'], own: { hit: 'getHit' } },
 }
 /* the drafted heroes' outfits, by class (viewer SWITCHES modelHeroOutfits; engine DECISIONS.md 2026-09-29 "the playable
    opening": "outfits may be reused across heroes"): every hero.base.* the engine's sheet lists wears its class's look */
@@ -54,9 +64,37 @@ export const CLASS_LOOKS = {
   'class.warrior': ['oathblade'], 'class.paladin': ['oathblade'],
   'class.priest': ['oathblade'], 'class.mage': ['oathblade'], 'class.rogue': ['oathblade'],
 }
-/** every binding: the named unit types, then each hero.base.* of the engine's sheet by its one class tag */
+/* viewer.every-model: battles 1-3's civilians (viewer SWITCHES modelCivilians), each in its own roster body
+   (player-roster/roster.json `bodyModel`, through activation-registry.json `typeIds`). The body's four authored clips
+   (civilian-study animate_civilians.py: Idle, Walk, Take Damage, Death) are its motions; its punch is the selected Hook
+   punch. It stands at the demo's medium humanoid stature, scaled by its standee against the School Teacher's (viewer
+   SWITCHES modelCivilianStature — the bodies are height-normalised and "physical child stature in game is not
+   configured", civilian-study run.json; the standee heights are viewer/tools/prep-art.py's ARTMAP) */
+export const CIVILIANS = ['hero.fixed.orphans', 'hero.fixed.school-teacher', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife']
+const ROSTER = 'assets/characters/hero-transformations/player-roster/roster.json'
+const REGISTRY = 'assets/characters/hero-transformations/activation-registry.json'
+const CIVILIAN_CLIPS = { idle: 'Idle', move: 'Walk', hit: 'Take Damage', death: 'Death' }
+const CIVILIAN_STATURE = { frame: 'archer', standee: 'hero.fixed.school-teacher' }
+const CIVILIAN_FILL = { attack: 'punch' }
+/* the selected performances a look's lack may be filled from (engine DECISIONS.md 2026-09-30 'a bunch of motions, not
+   every one'): the record that selected each names its clip and hash; the catalog beside it names its file */
+const FREE = 'assets/characters/oathblade-armor/rebuild/free-motion-study/'
+const SELECTED = {
+  punch: { record: FREE + 'selections.json', key: 'hook' },                  // "Hook punch can work for our punch"
+  sword: { record: FREE + 'selections.json', key: 'combo' },                 // "I love these sword moves" (Sword combination)
+  flinch: { record: FREE + 'battle-actions/selections.json', key: 'headhit' }, // Head-hit reaction, selected 2026-09-30
+  bow: { roster: 'archer', clip: 'ranged' },                                 // the battle demo's archer's bow shot
+}
+/** every binding: the named unit types, each civilian of battles 1-3, then each hero.base.* of the engine's sheet by its one class tag */
 export function bindings(units = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')).units) {
   const all = { ...BINDINGS }
+  const registry = JSON.parse(readFileSync(resolve(ROOT, REGISTRY), 'utf8'))
+  for (const typeId of CIVILIANS) {
+    if (!units[typeId]) throw new Error(`${typeId}: the engine's sheet has no such civilian`)
+    const identity = registry.typeIds[typeId]
+    if (!identity) throw new Error(`${typeId}: ${REGISTRY} names no roster identity for it`)
+    all[typeId] = { looks: [identity], civilian: true, fill: CIVILIAN_FILL }
+  }
   for (const [typeId, sheet] of Object.entries(units)) {
     if (!typeId.startsWith('hero.base.')) continue
     const classes = (sheet.tags || []).filter(t => t.startsWith('class.'))
@@ -82,6 +120,8 @@ const EQUIPMENT_ROOT = 'assets/characters/oathblade-armor/generated/rebuild/weap
 const PROPS = { bow: [{ file: 'bow-flexible.glb', hand: 'L', calibrate: { motion: 'ranged', at: 0.45 } }] }
 
 const rel = p => p.replace(/^\//, '')
+/* a roster path is absolute on Andrew's PC (C:\\...\\Heroes of Blight and Tragic\\assets\\...): the project-relative part */
+const fromRoster = p => { const m = /[\\/]Heroes of Blight and Tragic[\\/](.+)$/.exec(p || ''); if (!m) throw new Error(`roster path ${p} is not in the project`); return m[1].replace(/\\/g, '/') }
 function glbJSON(path) {
   const abs = resolve(ROOT, path)
   if (!existsSync(abs)) throw new Error(`character model ${path} is missing`)
@@ -101,19 +141,60 @@ const clipIn = (path, name) => {
   return clip
 }
 
+/** the nodes a clip moves, by name */
+const movedBy = (path, clip) => { const g = glbJSON(path), a = (g.animations || []).find(x => x.name === clip); return [...new Set(a.channels.map(c => g.nodes[c.target.node].name))] }
+/** a selected performance, borrowed onto a body: refused unless the body's rig has every bone it moves */
+function selected(name, body, catalog) {
+  const sel = SELECTED[name]; if (!sel) throw new Error(`no selected performance '${name}'`)
+  let ref
+  if (sel.roster) {
+    const m = catalog.find(a => a.id === sel.roster)?.clips[sel.clip]
+    if (!m?.file) throw new Error(`the battle demo's ${sel.roster} has no ${sel.clip} file`)
+    ref = { path: rel(m.file), sha256: digest(rel(m.file)), clip: clipIn(rel(m.file), m.name) }
+  } else {
+    const chosen = JSON.parse(readFileSync(resolve(ROOT, sel.record), 'utf8')).clips[sel.key]
+    if (!chosen || !/^[0-9a-f]{64}$/.test(chosen.sha256 || '')) throw new Error(`${sel.record} selects no '${sel.key}' with a hash`)
+    const row = JSON.parse(readFileSync(resolve(ROOT, posix.dirname(sel.record), 'catalog.json'), 'utf8')).clips.find(c => c.id === sel.key && c.sourceClip === chosen.clip)
+    if (!row) throw new Error(`${posix.dirname(sel.record)}/catalog.json has no file for '${sel.key}'`)
+    const path = 'assets/characters/oathblade-armor' + row.target
+    if (digest(path) !== chosen.sha256) throw new Error(`${path} is not the selected ${chosen.clip}`)
+    ref = { path, sha256: chosen.sha256, clip: clipIn(path, chosen.clip) }
+  }
+  const bones = new Set((glbJSON(body).nodes || []).map(n => n.name)), lacks = movedBy(ref.path, ref.clip).filter(n => !bones.has(n))
+  if (lacks.length) throw new Error(`${name} (${ref.clip}) moves ${lacks.length} bones ${body} lacks (${lacks.slice(0, 3).join(', ')})`)
+  return { ...ref, borrowed: true }
+}
+
 export async function packCharacterModels() {
   const { catalog } = await import(pathToFileURL(resolve(ROOT, 'assets/battle-demo/roster.mjs')).href)
   const units = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')).units
+  const artmap = JSON.parse(readFileSync(resolve(PKG, 'generated/art/manifest.json'), 'utf8')).artmap
+  const roster = JSON.parse(readFileSync(resolve(ROOT, ROSTER), 'utf8')).characters
   const pack = {}
   for (const [typeId, bind] of Object.entries(bindings(units))) {
     const approval = bind.approval ? JSON.parse(readFileSync(resolve(ROOT, bind.approval), 'utf8')) : null
     const looks = bind.looks.map(id => {
       const variant = approval ? approval.variants.find(v => v.id === id) : null
       if (approval && !variant) throw new Error(`${typeId}: ${bind.approval} approves no '${id}'`)
-      const row = catalog.find(a => a.id === id), frame = row ?? (bind.stature ? catalog.find(a => a.id === bind.stature) : null)
+      const civilian = bind.civilian ? roster.find(c => c.id === id) : null
+      if (bind.civilian && !civilian?.bodyModel) throw new Error(`${typeId}: ${ROSTER} gives '${id}' no body`)
+      const row = civilian ? null : catalog.find(a => a.id === id)
+      const frame = row ?? catalog.find(a => a.id === (civilian ? CIVILIAN_STATURE.frame : bind.stature))
       if (!frame) throw new Error(`${typeId}: the battle demo's roster has no '${id}'`)
-      const look = { id, name: row?.name ?? variant.name, height: frame.height, pivot: frame.pivot, motions: {}, hidden: [], props: [] }
-      if (approval) {
+      let height = frame.height
+      if (civilian) {
+        const own = artmap[typeId]?.height, by = artmap[CIVILIAN_STATURE.standee]?.height
+        if (!(own > 0) || !(by > 0)) throw new Error(`${typeId}: no standee height to stand it by`)
+        height = frame.height * own / by
+      }
+      const look = { id, name: civilian?.name ?? row?.name ?? variant.name, height, pivot: frame.pivot, motions: {}, hidden: [], props: [] }
+      if (civilian) {
+        /* the civilian's own animated body: its paint record names the bytes (civilian-study install_repaint.py) */
+        const body = fromRoster(civilian.bodyModel), record = JSON.parse(readFileSync(resolve(ROOT, posix.dirname(body), 'paint-record.json'), 'utf8'))
+        if (!/^[0-9a-f]{64}$/.test(record.outputSHA256 || '') || digest(body) !== record.outputSHA256) throw new Error(`${typeId} ${id}: ${body} is not the painted body its record names`)
+        look.model = { path: body, sha256: record.outputSHA256 }
+        for (const [motion, clip] of Object.entries(CIVILIAN_CLIPS)) look.motions[motion] = { path: body, sha256: record.outputSHA256, clip: clipIn(body, clip) }
+      } else if (approval) {
         /* the approval record owns the files and their hashes. A motion in its own file (the Zombies) names it; one
            embedded in the character (the humanoids) is in the variant's model. The body is the variant's model, else
            the death file (its baked floor placement parents the rig — accepted-zombies.json limitations; the demo's
@@ -145,6 +226,8 @@ export async function packCharacterModels() {
           look.props.push({ path: EQUIPMENT_ROOT + p.file, sha256: digest(EQUIPMENT_ROOT + p.file), hand: p.hand, calibrate: p.calibrate })
         }
       }
+      for (const [motion, clip] of Object.entries(bind.own || {})) if (!look.motions[motion]) look.motions[motion] = { path: look.model.path, sha256: look.model.sha256, clip: clipIn(look.model.path, clip) }
+      for (const [motion, name] of Object.entries(bind.fill || {})) if (!look.motions[motion]) look.motions[motion] = selected(name, look.model.path, catalog)
       if (!(look.height > 0) || typeof look.pivot !== 'string') throw new Error(`${typeId} ${id}: no height or pivot in the roster`)
       look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
       return look
