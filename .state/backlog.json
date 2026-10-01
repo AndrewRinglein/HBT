@@ -4,7 +4,9 @@
   "kind": "kingdom",
   "shape": "plumbing",
   "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the game plays from a link'): 'I don't want to have to go dig for bat files. I want a way to play this game out of a link.' - chose 'Local link on this PC' - 'Make me a game launcher where I can play the various battles.' Today a battle is opened by PLAY-OPENING.bat (which starts tools/battle-atlas/serve.mjs and opens kingdom/BATTLE-SANDBOX.html?play=<encounter>). (1) kingdom/PLAY.html, the launcher, generated from the sandbox's encounter list (kingdom SANDBOX_ENCOUNTERS, the engine's encounters): one card per battle - its name, its place in the opening, what it fields (the engine's enemies and civilians) and a picture of its 3D map - each opening BATTLE-SANDBOX.html?play=<encounter id>; and a free battle (the sandbox's own setup) and the recorded battles (viewer/BATTLE-VIEWER.html). (2) The server answers http://127.0.0.1:4230/play with the launcher. (3) Machine setup, not repo: the server starts with Windows (a hidden start in the Startup folder) so the link always works.",
-  "expect": "http://127.0.0.1:4230/play shows the launcher with the Orphanage, Lumberjack House, Bridge and Cavern Trail; clicking a battle opens it straight into the battle screen; no .bat is run."
+  "expect": "http://127.0.0.1:4230/play shows the launcher with the Orphanage, Lumberjack House, Bridge and Cavern Trail; clicking a battle opens it straight into the battle screen; no .bat is run.",
+  "status": "done",
+  "sha": "6993259"
  },
  {
   "id": "viewer.true-3d-camera",
