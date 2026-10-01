@@ -5,7 +5,9 @@
   "shape": "plumbing",
   "needs": [],
   "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the battle is its own full screen; End Turn and End Activation lower right; a red targeting arrow; every 3D character'): 'I want a fucking battle. It should be full screen. How can I experience this if you've got one screen that is both your launcher and your battle?' 'You've got End Turn and End Activation on the battle map. They shouldn't be. Put them in the lower right-hand corner.' 'The arrow for targeting should be red, not blue.' Today kingdom/BATTLE-SANDBOX.html?play=<encounter> shows the setup form (Field a battle, heroes, seed) above a board squeezed into the lower left of the window. (1) Opening a battle shows the battle alone, filling the window: no setup form, no launcher text; the launcher stays a separate view. (2) End Turn and End Activation leave the board and sit in the screen's lower right-hand corner. (3) The targeting arrow (and its forecast line) is red. Viewer and kingdom halves; the engine test asserts the page opened with ?play= has no setup form visible and the board fills the viewport.",
-  "expect": "BATTLE-SANDBOX.html?play=encounter.opening.orphanage opens to the battle filling the window with nothing of the setup form showing; End Turn and End Activation are in the lower right corner, not over the board; the targeting arrow is red."
+  "expect": "BATTLE-SANDBOX.html?play=encounter.opening.orphanage opens to the battle filling the window with nothing of the setup form showing; End Turn and End Activation are in the lower right corner, not over the board; the targeting arrow is red.",
+  "status": "done",
+  "sha": "204da75"
  },
  {
   "id": "viewer.every-model",
