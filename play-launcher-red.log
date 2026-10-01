@@ -1,0 +1,3 @@
+# red before the launcher: no PLAY.html in the committed kingdom (0a8f2bd), and the committed server answers /play with:
+/play -> HTTP 404
+Error: ENOENT: no such file or directory, open 'MISSING-PLAY.html'

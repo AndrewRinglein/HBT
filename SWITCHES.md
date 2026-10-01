@@ -190,3 +190,15 @@ viewer SWITCHES.md `playChromeHome` and `playLook`.
 | `battleViewFit` | How does a 1920x1080 battle fill a window of another shape? | **Scaled to the largest size that fits the window whole — up as well as down — and centred; the rest is the screen's own black.** Nothing is cropped and nothing scrolls. | "Full screen": the whole battle screen is always visible; stretching would distort the hexes and cropping would hide the panel or the bar. | provisional — 2026-09-30 |
 | `battleViewSays` | What of the sandbox's own text shows in the battle view? | **Only what must be said: an error, a stopped battle, or the outcome** — the commands box, floated over the battle, with "Back to the launcher" at the outcome. The heading, the help line and "Show current state" do not show; the screen's own top bar names the Turn and Phase. | "No launcher text"; Law 9 still holds — a failure is never hidden. | provisional — 2026-09-30 |
 | `battleViewLauncher` | How does one get from the battle to the launcher and back? | **A small Launcher button at the window's top right; the launcher shows "Return to the battle" while an encounter battle is in progress, and hides the board.** Save and Replay are in the launcher. | "The launcher stays a separate view": it is reachable, but not on the battle screen. | provisional — 2026-09-30 |
+
+## kingdom.play-launcher — the game launcher at /play (2026-09-30)
+
+Engine backlog kingdom.play-launcher; ruled 2026-09-30, engine DECISIONS.md "the game plays from a link" ("Local link on
+this PC"; "Make me a game launcher where I can play the various battles"). `tools/build-launcher.mjs` → `PLAY.html`;
+`../tools/battle-atlas/serve.mjs` (`/play`); probes `tools/play-launcher.verify.mjs` and engine `test/play-launcher.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `launcherAddress` | Which link? | **http://127.0.0.1:4230/play** — the server the battles already need (tools/battle-atlas/serve.mjs) answers `/play` with `kingdom/PLAY.html`; `/` stays the Battle Atlas. | One short address on the one server; nothing else moves. | provisional — 2026-09-30 |
+| `launcherBattles` | Which battles, in what order? | **Every encounter the sandbox may play (`SANDBOX_ENCOUNTERS`), in the opening's order (the engine scenario's `openingPosition`)**, each card opening `BATTLE-SANDBOX.html?play=<id>` with the sandbox's default heroes; then a free battle (the sandbox's own setup) and the recorded battles (`viewer/BATTLE-VIEWER.html`). | The sandbox's list is the playable one; a new encounter appears on the next build. | provisional — 2026-09-30 |
+| `launcherCard` | What does a card say? | **Battle N, the name, the foes (the engine's units, counted, with how many arrive later) and who to protect (its civilians)**, over its 3D map's review render (`<scene>/review.png`, else the scene family's `review/<scene>.png`, as the opening ground proposal names the scene). A battle not yet on its 3D map in the battle screen says so on its picture ("flat board for now"). | Facts from their owners; the picture is the map's own render. | provisional — 2026-09-30 |
