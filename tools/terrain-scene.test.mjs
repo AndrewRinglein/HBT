@@ -67,21 +67,26 @@ test('shared assembly loads exact authored jobs; cancellation releases late sour
  const pending=A.loadAtlasAssembly(b,{createCanvas:canvas,cancelled:()=>cancelled,loadTexture:async()=>new THREE.Texture(),loadModel:async()=>{requested();await wait;return model()}})
  await entered;cancelled=true;release();await assert.rejects(pending,/cancelled/);assert.equal(released,files.length+1)
 })
-test('unbound layer never starts a renderer; late disposal/failure restores 2D and display heights without state mutation',async()=>{
+/* viewer.true-3d-camera (engine DECISIONS.md 2026-09-30 "no other map loads first"): a scene that fails is said plainly and the
+   flat board is not put in its place — the assertion was /2D.*asset broken/ (the 2D fallback), rewritten as that rule */
+test('unbound layer never starts a renderer; late disposal/failure says the 3D map is unavailable and clears display heights without state mutation',async()=>{
  const w=environment(),wrap=document.createElement('div'),stage=document.createElement('div');wrap.appendChild(stage)
  const V={dom:{stage},data:{F:field,atlas:null},S:{},render(){}};let calls=0
  A.terrainLayer(V,()=>{calls++});assert.equal(calls,0)
  V.data.atlas=bind();let release,disposed=0;const ready=new Promise(r=>release=r),layer=A.terrainLayer(V,()=>({ready,dispose(){disposed++}}));layer.dispose();release();await ready;await Promise.resolve();assert.equal(V.data.displayHeights,null);assert.equal(disposed,1)
- const failed=A.terrainLayer(V,()=>({ready:Promise.reject(Error('asset broken')),dispose(){disposed++}}));await Promise.resolve();await Promise.resolve();assert.match(wrap.querySelectorAll('#terrainStatus').at(-1).textContent,/2D.*asset broken/);assert.equal(V.data.displayHeights,null);assert.equal(disposed,2);failed.dispose()
+ const failed=A.terrainLayer(V,()=>({ready:Promise.reject(Error('asset broken')),dispose(){disposed++}}));await Promise.resolve();await Promise.resolve();assert.match(wrap.querySelectorAll('#terrainStatus').at(-1).textContent,/3D map unavailable.*asset broken/);assert.ok(wrap.classList.contains('terrain3d-failed'),'the board stays hidden');assert.equal(V.data.displayHeights,null);assert.equal(disposed,2);failed.dispose()
 })
+/* viewer.true-3d-camera: the driver draws with the board's own camera (V.camera3d) and draws again when it moves (V.camVersion) —
+   it was a copy of the stage's CSS transform (readStyle/matrix), redrawn when that string changed; rewritten as that rule */
 test('real Three driver preserves world geometry/lights, draws only changes, and releases switched scene',async()=>{
  const w=environment(),wrap=document.createElement('div'),stage=document.createElement('div');wrap.appendChild(stage);const frames=[];globalThis.requestAnimationFrame=f=>{frames.push(f);return frames.length};w.cancelAnimationFrame=()=>{}
  const stats={draws:0,disposed:0};class Renderer{constructor(){this.shadowMap={}}setPixelRatio(){}setSize(){}render(scene,camera){stats.draws++;stats.scene=scene;stats.camera=camera}dispose(){stats.disposed++}forceContextLoss(){}}
- const binding=bind(),V={dom:{stage},data:{F:field,atlas:binding}},model=new THREE.Mesh(new THREE.BoxGeometry(1,2,3),new THREE.MeshStandardMaterial()),before=Array.from(model.geometry.attributes.position.array)
- let css='a';const driver=A.createDriver(V,e=>{throw e},{Renderer,loadModel:async()=>model,loadTexture:async()=>new THREE.Texture(),createCanvas:canvas,readStyle:()=>({transform:css,transformOrigin:field.w/2+' '+field.h/2+' 0'}),matrix:()=>({toFloat64Array:()=>new THREE.Matrix4().elements})})
+ const binding=bind(),V={dom:{stage},data:{F:field,atlas:binding,boardAffine:A.worldToCSS(binding,field)}},model=new THREE.Mesh(new THREE.BoxGeometry(1,2,3),new THREE.MeshStandardMaterial()),before=Array.from(model.geometry.attributes.position.array)
+ V.camera3d=A.orbitCamera(V.data.boardAffine,{x:field.w/2,y:field.h/2,yaw:0,tilt:49.3,zoom:1},{w:1920,h:1080});V.camVersion=1
+ const driver=A.createDriver(V,e=>{throw e},{Renderer,loadModel:async()=>model,loadTexture:async()=>new THREE.Texture(),createCanvas:canvas})
  await driver.ready;assert.equal(stats.draws,1);assert.deepEqual(Array.from(model.geometry.attributes.position.array),before)
  assert.ok(stats.scene.children.find(o=>o.type==='Group'));const lights=[];stats.scene.traverse(o=>{if(o.isPointLight)lights.push([o.intensity,o.distance,...o.position.toArray()])});assert.deepEqual(lights,binding.plan.lights.map(l=>[l.intensity,l.distance,...l.position]))
- frames.shift()();assert.equal(stats.draws,1);css='b';frames.shift()();assert.equal(stats.draws,2);driver.dispose();driver.dispose();assert.equal(stats.disposed,1);assert.equal(wrap.children.length,1)
+ assert.equal(stats.camera,V.camera3d);frames.shift()();assert.equal(stats.draws,1);V.camVersion++;frames.shift()();assert.equal(stats.draws,2);driver.dispose();driver.dispose();assert.equal(stats.disposed,1);assert.equal(wrap.children.length,1)
 })
 test('inspection uses latest editable map dimensions and ignores stale index bounds; switching and late loads are isolated',async()=>{
  environment();const host=document.createElement('div'),calls=[],seen=[],current=structuredClone(catalog);current.index.find(r=>r.id==='floodgates').grid.cols=20

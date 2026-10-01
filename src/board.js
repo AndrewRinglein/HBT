@@ -7,6 +7,7 @@ import { mvOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { dangerHTML, raIcon } from './icons.js'
+import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard } from './camera3d.js'
 import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES } from './hexvfx.js'
 
 export const el = (cls, style, html) => { const d = document.createElement('div')
@@ -328,7 +329,7 @@ export function pushFloat(V, hex, text, col, o = {}) {
   const slot = (L.FLOAT_SLOTS[hex] = (L.FLOAT_SLOTS[hex] ?? -1) + 1)
   const life = o.crit ? 1900 : o.big ? 1500 : 1200
   const wrap = el('bb', `left:${p.px}px;top:${p.py}px`)
-  wrap.style.transform = (V.data.displayHeights ? `translateZ(${heightOf(V, hex)}px) ` : '') + 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(150px)'
+  wrap.style.transform = (V.data.displayHeights ? `translateZ(${heightOf(V, hex)}px) ` : '') + 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(150px)'
   /* units stand taller than the hex — floats start another half-hex above the head */
   if (o.crit) {
     /* rung 2: the numeral IS the crit — bigger, gold-rimmed, snaps in with an
@@ -470,8 +471,11 @@ export function cameraKick(V, aId, tId) {
   const wrap = V.dom.stage.parentNode, A = V.S.U[aId], T = V.S.U[tId]
   if (!wrap || !wrap.animate || !A || !T) return
   const pa = V.data.POS[A.hex], pt = V.data.POS[T.hex]
-  const { x: dx, y: dy } = turned(V, pt.px - pa.px, pt.py - pa.py), L = Math.hypot(dx, dy) || 1
-  const kx = (dx / L * 6).toFixed(1), ky = (dy / L * 6 * squash(V)).toFixed(1)
+  /* along the blow as the camera shows it (viewer.true-3d-camera) */
+  if (!V.camera3d) return
+  const a = screenOf(boardAffine(V), V.camera3d, pa.px, pa.py, heightOf(V, A.hex)), b = screenOf(boardAffine(V), V.camera3d, pt.px, pt.py, heightOf(V, T.hex))
+  const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy) || 1
+  const kx = (dx / L * 6).toFixed(1), ky = (dy / L * 6).toFixed(1)
   wrap.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${kx}px,${ky}px)`, offset: 90 / 230 }, { transform: 'translate(0,0)' }],
     { duration: 230, easing: 'ease-out' })
 }
@@ -515,7 +519,7 @@ function playInjury(V) {
   if (!u || !wrap) { next(); return }
   const p = V.data.POS[u.hex]
   const bb = el('bb', `left:${p.px}px;top:${p.py}px`)
-  bb.style.transform = 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(160px)'
+  bb.style.transform = 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(160px)'
   const plate = el('injPlate', 'left:-90px;top:-118px;width:180px', `<b>✶</b> ${job.name}`)
   bb.appendChild(plate); V.dom.stage.appendChild(bb); V.fx.nodes.add(bb)
   if (plate.animate) plate.animate([{ transform: 'scale(1.25)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 140, easing: 'cubic-bezier(.2,1.2,.4,1)' })
@@ -549,8 +553,8 @@ export function lunge(V, attId, tgtId) {
   const p1 = V.data.POS[from.hex], p2 = V.data.POS[T.hex]
   const dx = p2.px - p1.px, dy = p2.py - p1.py, L = Math.hypot(dx, dy) || 1
   A.bb.style.transition = 'transform .13s ease'
-  A.bb.style.transform = `rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translate(${(dx / L * 26).toFixed(0)}px,${(dy / L * 26 * 0.65).toFixed(0)}px)`
-  { const t = setTimeout(() => { V.fx.timers.delete(t); A.bb.style.transform = 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti))' }, dilate(V, 170)); V.fx.timers.add(t) }
+  A.bb.style.transform = `scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translate(${(dx / L * 26).toFixed(0)}px,${(dy / L * 26 * 0.65).toFixed(0)}px)`
+  { const t = setTimeout(() => { V.fx.timers.delete(t); A.bb.style.transform = 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti))' }, dilate(V, 170)); V.fx.timers.add(t) }
 }
 export function hitFlash(V, tgtId) {
   /* a STRIKE, not a glow: 45ms (ruled 2026-09-01; it was 160 and read as a glow) */
@@ -584,7 +588,7 @@ export function arrive(V, id) {
      exist yet — make it now, so the drop-in has something to drop */
   if (!V.layers.UEL.has(id)) syncUnits(V)
   const E = V.layers.UEL.get(id); if (!E || !E.root.animate) return
-  E.bb.animate([{ transform: 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateY(-46px)', opacity: 0 }, { transform: 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateY(0)', opacity: 1 }],
+  E.bb.animate([{ transform: 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateY(-46px)', opacity: 0 }, { transform: 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateY(0)', opacity: 1 }],
     { duration: 380, easing: 'cubic-bezier(.2,.9,.3,1.2)' })
 }
 /* the RISE (unit.raised): the raised body stands up from the corpse's flat pose */
@@ -639,8 +643,8 @@ export function shove(V, id, from, to, hexes) {
    own red — the float says which badge, this says WHO */
 export function badgeBeat(V, id) {
   const E = V.layers.UEL.get(id); if (!E || !E.bb.animate) return
-  E.bb.animate([{ transform: 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) scale(1)' }, { transform: 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) scale(1.08)', offset: .35 },
-    { transform: 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) scale(1)' }], { duration: dilate(V, 420), easing: 'ease-out' })
+  E.bb.animate([{ transform: 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) scale(1)' }, { transform: 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) scale(1.08)', offset: .35 },
+    { transform: 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) scale(1)' }], { duration: dilate(V, 420), easing: 'ease-out' })
 }
 
 /* DEATHBED FIGHTING — the modal (Angela, 2026-09-03 evening, VISUAL-BATTLE-
@@ -724,20 +728,11 @@ function mkUnit(V, u) {
   const bb = el('bb', 'left:0;top:0')
   /* a DIV with background-image, not an <img>; and NO filter — filters force
      flattening inside 3D contexts */
-  const img = el('', 'position:absolute;background-repeat:no-repeat;background-position:center bottom;background-size:contain;pointer-events:auto;cursor:pointer')
+  const img = el('', 'position:absolute;background-repeat:no-repeat;background-position:center bottom;background-size:contain;pointer-events:none;cursor:pointer')
   img.style.backgroundImage = `url("${ASSETS[a.token]}")`
   const id = u.id
-  img.addEventListener('click', ev => {
-    ev.stopPropagation()
-    if (!V.inputActive() || V.clickSuppressed?.(ev)) return
-    const current = V.S.U[id]
-    if (!current || V.offerHexClick(current.hex) || !V.inputActive()) return
-    /* viewer.play-input: the panel shows whoever was clicked last (engine DECISIONS.md 2026-09-29), and the click is
-       offered to the host too — to start the hero's activation, or to aim at (and fire on) a target */
-    V.view.inspectId = id
-    if (V.play) V.offerPlay({ kind: 'unit', id, hex: current.hex })
-    if (V.inputActive()) V.render()
-  })
+  /* the token's own click (a host or a test that clicks it); a pointer's click is the camera's pick (bindCamera) */
+  img.addEventListener('click', ev => { ev.stopPropagation(); if (!V.clickSuppressed?.(ev)) clickUnit(V, id) })
   img.addEventListener('pointerenter', () => { const current = V.S.U[id]; if (current && V.play) V.offerPlay({ kind: 'point', hex: current.hex }) })
   bb.appendChild(img)
   const flash = el('', 'position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,220,160,.4) 55%,transparent 75%);opacity:0;transition:opacity .045s ease;pointer-events:none')
@@ -855,6 +850,8 @@ export function syncUnits(V) {
     /* what rides the figure's head (the acting arrow, the overhead glyphs, the stars of a Stun) rides the MODEL's
        head where a model stands — about two thirds of the standee (SWITCHES modelScale, viewer.under-unit) */
     const figPx = modelled ? Math.round(V.cast.heightPx?.(u.id) || hpx) : hpx
+    /* what the pointer's ray meets (pickAt): an upright body on the feet, as tall as the figure drawn — a downed one low and wide */
+    E.pick = down ? { r: Math.max(30, w / 2), h: 36 } : { r: Math.max(26, Math.round(w * .36)), h: figPx }
     const under = underUnit(V)
     E.img.style.opacity = modelled ? '0' : down ? '.82' : '1'
     E.img.style.boxShadow = down && !modelled ? '0 10px 16px -6px rgba(0,0,0,.85)' : ''
@@ -891,7 +888,7 @@ export function syncUnits(V) {
       if (!bare && !down) E.shadow.style.cssText = `left:${Math.round(-44 * fp)}px;top:${Math.round(-24 * fp)}px;width:${Math.round(88 * fp)}px;height:${Math.round(44 * fp)}px;` +
         'transform:rotate(-16deg) scale(1.05,.8);opacity:.58'
     }
-    E.bb.style.transform = down ? 'rotateZ(var(--unspin, 0deg)) rotateX(calc(var(--anti) * 0.68))' : prone ? 'rotateZ(var(--unspin, 0deg)) rotateX(calc(var(--anti) * 0.82))' : 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti))'
+    E.bb.style.transform = down ? 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(calc(var(--anti) * 0.68))' : prone ? 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(calc(var(--anti) * 0.82))' : 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti))'
     E.actA.style.display = E.actB.style.display = (!bare && u.id === S.activeId && !down) ? '' : 'none'
     E.mark.style.cssText = `left:-9px;top:${-figPx - 46}px;display:${u.id === S.activeId && !down ? 'block' : 'none'}`
     E.selR.style.display = u.id === view.inspectId ? '' : 'none'
@@ -1016,7 +1013,7 @@ export function drawTargeting(V) {
     const p = POS[h], n = document.createElement('button')
     n.className = 'targetHex'; n.setAttribute('type', 'button'); n.setAttribute('aria-label', 'Select hex ' + h)
     n.dataset.hex = String(h)
-    n.style.cssText = `position:absolute;left:${p.px-LAYOUT.W/2}px;top:${p.py-LAYOUT.H/2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;background:transparent;border:0;padding:0;cursor:crosshair;pointer-events:auto;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)`
+    n.style.cssText = `position:absolute;left:${p.px-LAYOUT.W/2}px;top:${p.py-LAYOUT.H/2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;background:transparent;border:0;padding:0;cursor:crosshair;pointer-events:none;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)`
     n.style.transform = `translateZ(${heightOf(V, h)}px)`
     n.addEventListener('click', ev => { ev.stopPropagation(); if (!V.clickSuppressed?.(ev)) V.offerHexClick(h, generation) })
     layer.appendChild(n)
@@ -1060,7 +1057,7 @@ export function drawAim(V) {
     const p = POS[B.centre]
     if (p) {
       const label = el('bb burstLabel', `left:${p.px}px;top:${p.py}px;pointer-events:none`)
-      label.style.transform = `translateZ(${heightOf(V, B.centre)}px) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(150px)`
+      label.style.transform = `translateZ(${heightOf(V, B.centre)}px) scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(150px)`
       const text = el('', 'position:absolute;left:36px;top:-80px;white-space:nowrap;font:700 18px sans-serif;color:'+NOTE_HUE+';text-shadow:0 2px 5px #000')
       text.textContent = 'BURST' + (B.shielded.length ? ' · Terrain shielding' : '')
       label.appendChild(text); dyn.appendChild(label)
@@ -1092,7 +1089,7 @@ function aimArrow(V, dyn, svg, fromHex, toHex, aCol, dashed) {
   const halo = 'text-shadow:0 2px 5px #000,0 0 14px rgba(0,0,0,.95),0 0 3px #000;'
   return (dyOff, html) => {
     const wrap = el('bb', `left:${B.px}px;top:${B.py}px`)
-    wrap.style.transform = (V.data.displayHeights ? `translateZ(${heightOf(V, toHex)}px) ` : '') + 'rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(150px)'
+    wrap.style.transform = (V.data.displayHeights ? `translateZ(${heightOf(V, toHex)}px) ` : '') + 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(150px)'
     wrap.appendChild(el('', `position:absolute;left:58px;top:${-150 + dyOff}px;white-space:nowrap;` +
       `font-family:'Barlow Semi Condensed',sans-serif;${halo}pointer-events:none`, html))
     dyn.appendChild(wrap)
@@ -1119,7 +1116,7 @@ export function syncPlayInput(V) {
   for (const key of Object.keys(POS)) {
     const h = +key, p = POS[h], n = document.createElement('button')
     n.className = 'playHex'; n.setAttribute('type', 'button'); n.setAttribute('aria-label', 'Hex ' + h); n.dataset.hex = String(h)
-    n.style.cssText = `position:absolute;left:${p.px - LAYOUT.W / 2}px;top:${p.py - LAYOUT.H / 2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;background:transparent;border:0;padding:0;cursor:pointer;pointer-events:auto;${HEXCLIP}`
+    n.style.cssText = `position:absolute;left:${p.px - LAYOUT.W / 2}px;top:${p.py - LAYOUT.H / 2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;background:transparent;border:0;padding:0;cursor:pointer;pointer-events:none;${HEXCLIP}`
     n.style.transform = `translateZ(${heightOf(V, h)}px)`
     n.addEventListener('pointerenter', () => { V.offerPlay({ kind: 'point', hex: h }) })
     n.addEventListener('click', ev => { ev.stopPropagation(); if (!V.clickSuppressed?.(ev)) V.offerPlay({ kind: 'hex', hex: h }) })
@@ -1188,7 +1185,7 @@ function drawGhost(V, layer, G) {
   const root = el('playGhost', `position:absolute;left:${f.x}px;top:${f.y}px;width:0;height:0;transform-style:preserve-3d;pointer-events:none;transform:translateZ(${heightOf(V, G.hex) + 3}px)`)
   root.dataset.hex = String(G.hex); root.dataset.unit = String(G.unit)
   root.appendChild(el('sel', `left:-48px;top:-31px;width:96px;height:62px;border-color:${PLAY_HUE.ghost}`))
-  const bb = el('bb', 'left:0;top:0;transform:rotateZ(var(--unspin, 0deg)) rotateX(var(--anti))')
+  const bb = el('bb', 'left:0;top:0;transform:scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti))')
   const img = el('', `position:absolute;left:${-w / 2}px;top:${-hpx}px;width:${w}px;height:${hpx}px;background-repeat:no-repeat;background-position:center bottom;background-size:contain;opacity:.45;pointer-events:none;transform:${LIFT}`)
   img.style.backgroundImage = `url("${ASSETS[a.token]}")`
   bb.appendChild(img); root.appendChild(bb); layer.appendChild(root)
@@ -1222,63 +1219,122 @@ export function viewportOf(V) {
   const H = wrap && wrap.clientHeight ? wrap.clientHeight : VIEW.H
   return { W, H }
 }
+/* viewer.true-3d-camera (2026-09-30; engine DECISIONS.md "a true 3D battle: an orbit camera …"): the pose worked out
+   here — the board point looked at, the turn, the tilt, the zoom — is handed to ONE real perspective camera
+   (camera3d.js), and the stage's CSS matrix and the 3D scene both come from that camera. The inclusion rule reasons
+   in the board's true proportions: iso px, where a board px south is stretched by isoK to the length of one east
+   (1 on a board with no 3D scene), so a turned view frames what it shows. */
+export const isoK = V => 1 / anisoOf(boardAffine(V))
+/** the board's own map, scene metres -> board px (viewer.js sets it from the battle's scene; a bare V gets the flat one) */
+export const boardAffine = V => V.data.boardAffine || (V.data.boardAffine = flatAffine(V.data.F))
 export function applyCam(V, opts = {}) {
   const { S, view, data: { POS, F } } = V
-  const bw = F.w, bh = F.h, sq = squash(V)
+  const k = isoK(V), bw = F.w, bh = F.h * k, sq = squash(V)
   const fit = view.zoom === 'fit' || view.peek
   const cam = view.cam || homeCam(), yaw = cam.yaw || 0, tilt = tiltOf(V)
   const { W: VW, H: VH } = viewportOf(V)
-  const top = TOKEN_TOP / sq                          // the standee's overhang above its feet, in board-y
+  const top = TOKEN_TOP / sq                          // the standee's overhang above its feet, in iso board-y
   const s = fit ? Math.min(VW / bw, VH / ((bh + top) * sq)) : cam.zoom
   const halfW = (VW / 2) / s, halfH = (VH / 2) / (s * sq)
   const M = 80
+  const iso = p => ({ px: p.px, py: p.py * k })
   const pts = []
-  if (S.AIM) pts.push(POS[S.AIM.from], POS[S.AIM.to])
-  else { const u = S.U[subjectOf(V)]; if (u) pts.push(POS[u.hex]) }
-  /* a peek never moves the remembered camera; a manual pan is applied first */
-  const camF = view.camF
+  if (S.AIM) pts.push(iso(POS[S.AIM.from]), iso(POS[S.AIM.to]))
+  else { const u = S.U[subjectOf(V)]; if (u) pts.push(iso(POS[u.hex])) }
+  /* a peek never moves the remembered camera; a manual pan is applied first. view.camF is in board px; f is it in iso */
+  const camF = view.camF, f = { x: camF.x, y: camF.y == null ? null : camF.y * k }, f0 = { ...f }
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
-  else if (opts.pan) { if (camF.x == null) { camF.x = bw / 2; camF.y = bh / 2 } camF.x += opts.pan.x; camF.y += opts.pan.y }
-  else if (camF.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; camF.x = p.px; camF.y = p.py }
-  else if (yaw) includeTurned(V, camF, pts, halfW, halfH, M, top)                   // the turned camera: the same rule in its own frame
+  else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k }
+  else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py }
+  else if (yaw) includeTurned(V, f, pts, halfW, halfH, M, top)                       // the turned camera: the same rule in its own frame
   else if (pts.length === 2 && (Math.abs(pts[0].px - pts[1].px) > 2 * (halfW - M) || Math.abs(pts[0].py - pts[1].py) > 2 * (halfH - M))) {
-    camF.x = (pts[0].px + pts[1].px) / 2; camF.y = (pts[0].py + pts[1].py) / 2       // a pair that cannot both fit: the midpoint
+    f.x = (pts[0].px + pts[1].px) / 2; f.y = (pts[0].py + pts[1].py) / 2           // a pair that cannot both fit: the midpoint
   } else {
     for (const p of pts) {                                                             // the minimal nudge, per point
-      if (p.px < camF.x - halfW + M) camF.x = p.px + halfW - M
-      else if (p.px > camF.x + halfW - M) camF.x = p.px - halfW + M
-      if (p.py - top < camF.y - halfH + M) camF.y = p.py - top + halfH - M            // the HEAD comes in, not the feet
-      else if (p.py > camF.y + halfH - M) camF.y = p.py - halfH + M
+      if (p.px < f.x - halfW + M) f.x = p.px + halfW - M
+      else if (p.px > f.x + halfW - M) f.x = p.px - halfW + M
+      if (p.py - top < f.y - halfH + M) f.y = p.py - top + halfH - M                  // the HEAD comes in, not the feet
+      else if (p.py > f.y + halfH - M) f.y = p.py - halfH + M
     }
   }
   if (!fit && yaw) {
     /* turned, the board's rectangle is not the view's: keep the centre on the board */
-    camF.x = Math.min(Math.max(camF.x, 0), bw); camF.y = Math.min(Math.max(camF.y, -top), bh)
+    f.x = Math.min(Math.max(f.x, 0), bw); f.y = Math.min(Math.max(f.y, -top), bh)
   } else if (!fit) {
     /* the clamp lets the camera show TOKEN_TOP of empty space above row 0 */
-    camF.x = bw <= halfW * 2 ? bw / 2 : Math.min(Math.max(camF.x, halfW), bw - halfW)
-    camF.y = bh + top <= halfH * 2 ? (bh - top) / 2 : Math.min(Math.max(camF.y, halfH - top), bh - halfH)
+    f.x = bw <= halfW * 2 ? bw / 2 : Math.min(Math.max(f.x, halfW), bw - halfW)
+    f.y = bh + top <= halfH * 2 ? (bh - top) / 2 : Math.min(Math.max(f.y, halfH - top), bh - halfH)
   }
-  const cx = fit ? bw / 2 : camF.x, cy = fit ? (bh - top) / 2 : camF.y                // peek shows the whole board and every standee, centred
-  if (!fit && !view.home && camF.x != null) view.home = { x: camF.x, y: camF.y }   // the starting view Reset returns to
-  V.dom.stage.style.transform = `perspective(2600px) rotateX(${+tilt.toFixed(3)}deg)${yaw ? ` rotateZ(${+yaw.toFixed(3)}deg)` : ''} scale(${s.toFixed(4)}) translate(${(bw / 2 - cx).toFixed(1)}px,${(bh / 2 - cy).toFixed(1)}px)`
-  V.dom.stage.style.setProperty('--anti', (-tilt) + 'deg'); V.dom.stage.style.setProperty('--unspin', (yaw ? -yaw : 0) + 'deg')
+  /* written back only when moved, so a camera that did not move keeps its exact numbers */
+  if (!fit) { if (f.x !== f0.x) camF.x = f.x; if (f.y !== f0.y) camF.y = f.y / k }
+  const cx = fit ? bw / 2 : f.x, cy = fit ? (bh - top) / 2 : f.y                     // peek shows the whole board and every standee, centred
+  if (!fit && !view.home && camF.x != null) view.home = { x: camF.x, y: camF.y }     // the starting view Reset returns to
+  setPose(V, { x: cx, y: cy / k, yaw, tilt, zoom: s })
   /* the HUD says only what the camera is doing (Law 5: the export's outcome,
      turn count and engine stamp are the harness's to print, and a replay must
      not spoil its own ending on frame one — review 2026-09-03) */
   if (V.dom.hud) { const u = S.U[subjectOf(V)]
     V.dom.hud.textContent = (view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit' : (cam.zoom === 1 ? '1× native' : cam.zoom.toFixed(2) + '×') + ' · drag to turn and tilt · right-drag or arrows to pan · wheel to zoom · hold Z to peek') + (u ? ' · on ' + u.name : '') }
 }
+/* ── the glide (the 1.1 s half-speed camera glide of 2026-09-01, which was the stage's CSS transition) is now the
+   camera's own: the pose eases to its target and every frame of it is one real camera, so the 3D scene and the board
+   never part. A drag, a mount and a host with no animation frames show the pose at once. ─────────────────────── */
+export const GLIDE_MS = 1100
+function bezier(x1, y1, x2, y2) {
+  const c = (a, b, t) => 3 * a * t * (1 - t) * (1 - t) + 3 * b * t * t * (1 - t) + t * t * t
+  return u => { if (u <= 0) return 0; if (u >= 1) return 1
+    let lo = 0, hi = 1, t = u
+    for (let i = 0; i < 40; i++) { const x = c(x1, x2, t); if (Math.abs(x - u) < 1e-7) break; if (x < u) lo = t; else hi = t; t = (lo + hi) / 2 }
+    return c(y1, y2, t) }
+}
+const EASE = bezier(.4, 0, .2, 1)
+const clockOf = V => V.now ? V.now() : Date.now()
+const samePose = (a, b) => a.x === b.x && a.y === b.y && a.yaw === b.yaw && a.tilt === b.tilt && a.zoom === b.zoom
+function setPose(V, pose) {
+  V.camTarget = pose
+  const from = V.camShown
+  if (!from || !V.view.glide || V.view.dragging || typeof requestAnimationFrame !== 'function') { V.camAnim = null; showPose(V, pose); return }
+  if (samePose(from, pose)) { if (!V.camAnim) showPose(V, pose); else V.camAnim.to = pose; return }
+  V.camAnim = { from: { ...from }, to: pose, t0: clockOf(V) }
+  if (V.camRaf == null) V.camRaf = requestAnimationFrame(() => glideFrame(V))
+}
+function glideFrame(V) {
+  V.camRaf = null
+  const A = V.camAnim; if (!A) return
+  const t = Math.min(1, (clockOf(V) - A.t0) / GLIDE_MS), e = EASE(t), a = A.from, b = A.to
+  const turn = ((b.yaw - a.yaw) % 360 + 540) % 360 - 180                              // the short way round
+  let yaw = a.yaw + turn * e; yaw = ((yaw + 180) % 360 + 360) % 360 - 180
+  showPose(V, t >= 1 ? b : { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e, yaw, tilt: a.tilt + (b.tilt - a.tilt) * e, zoom: a.zoom * Math.pow(b.zoom / a.zoom, e) })
+  if (t < 1) V.camRaf = requestAnimationFrame(() => glideFrame(V)); else V.camAnim = null
+}
+/** stop a glide where it is (dispose) */
+export function stopGlide(V) {
+  V.camAnim = null
+  if (V.camRaf != null && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(V.camRaf)
+  V.camRaf = null
+}
+/** show a pose: the camera, and the stage drawn through it (its CSS matrix, the billboards' angles and correction) */
+export function showPose(V, pose) {
+  const { W, H } = viewportOf(V), A = boardAffine(V)
+  V.camera3d = orbitCamera(A, pose, { w: W, h: H }, V.camera3d || undefined)
+  const st = V.dom.stage.style
+  st.transformOrigin = '0 0 0'
+  st.transform = matrix3d(stageMatrix(A, V.camera3d, { w: V.data.F.w, h: V.data.F.h }))
+  st.setProperty('--anti', (-pose.tilt) + 'deg'); st.setProperty('--unspin', (pose.yaw ? -pose.yaw : 0) + 'deg')
+  st.setProperty('--aniso', String(anisoOf(A)))
+  V.camShown = pose; V.camVersion = (V.camVersion || 0) + 1
+}
 /* ── the turned camera (viewer.painted-board; engine DECISIONS.md 2026-09-29 "the playable battle
    screen": "You should be able to rotate around, but there should be a button to reset. You should be
    able to right-click to grab the map and move. You should be able to navigate, zoom, and tilt, and
    there should be a button somewhere where you just reset, and it goes back to the starting angled
-   view."). Yaw turns the board about the view centre, tilt is its rotateX (F.tilt is the starting
-   angle), zoom scales the 1× view. Billboards undo yaw and tilt (--unspin, --anti), so every standee
-   still faces the camera. The limits are look choices (viewer SWITCHES cameraLimits). */
+   view."). Yaw turns the camera about the board point it looks at, tilt is its angle from straight down
+   (F.tilt is the starting angle), zoom brings it nearer. Billboards undo yaw and tilt (--unspin, --anti) and the
+   board's south squeeze (--aniso), so every standee still faces the camera, true. The limits are look choices
+   (viewer SWITCHES cameraLimits). */
 export const CAM = { TILT_MIN: 10, TILT_MAX: 75, ZOOM_MIN: .35, ZOOM_MAX: 2.5, YAW_PER_PX: .3, TILT_PER_PX: .2, WHEEL: .0015 }
 export const homeCam = () => ({ yaw: 0, tilt: null, zoom: 1 })
-/** PAN BY INCLUSION in the turned camera's own frame — the rule above, rotated */
+/** PAN BY INCLUSION in the turned camera's own frame — the rule above, rotated (iso px throughout) */
 function includeTurned(V, camF, pts, halfW, halfH, M, top) {
   const rel = p => turned(V, p.px - camF.x, p.py - camF.y)
   if (pts.length === 2) { const a = rel(pts[0]), b = rel(pts[1])
@@ -1320,27 +1376,24 @@ export function resetCam(V) {
    unit is noise (review 2026-09-03). Bubbles sit EDGE_INSET inside the edge. */
 export const EDGE_INSET = 34, EDGE_GROUP = 44, EDGE_TOKEN = 24
 export function drawEdges(V) {
-  const { S, view, data: { POS, F }, layers: L } = V
+  const { S, view, data: { POS }, layers: L } = V
   const wrap = V.dom.stage.parentNode; if (!wrap) return
   if (!L.edgeL) { L.edgeL = el('edgeL', 'position:absolute;inset:0;pointer-events:none;z-index:40'); wrap.appendChild(L.edgeL) }
   const fit = view.zoom === 'fit' || view.peek
-  const camF = view.camF
-  if (fit || camF.x == null) { L.edgeL.innerHTML = ''; return }
-  const sq = squash(V), s = (view.cam && view.cam.zoom) || 1
-  const { W, H: Hh } = viewportOf(V)
-  const halfW = (W / 2) / s, halfH = (Hh / 2) / (s * sq)
+  if (fit || view.camF.x == null || !V.camTarget) { L.edgeL.innerHTML = ''; return }
+  /* viewer.true-3d-camera: inside is where the camera (where it is going, when it glides) shows the unit — its hex as
+     the perspective draws it, the standee's head inside the top edge — not a rectangle of the board */
+  const { W, H: Hh } = viewportOf(V), A = boardAffine(V)
+  const cam = orbitCamera(A, V.camTarget, { w: W, h: Hh }), s = V.camTarget.zoom
   const cx = W / 2, cy = Hh / 2
   const off = []
   for (const u of Object.values(S.U)) {
     if (u.life === 'dead') continue
-    const p = POS[u.hex]
-    const r = turned(V, p.px - camF.x, p.py - camF.y)                                  // the camera's frame (identity unturned)
-    const inside = !(view.cam && view.cam.yaw)
-      ? Math.abs(p.px - camF.x) <= halfW - EDGE_TOKEN && (p.py - TOKEN_TOP / sq) >= camF.y - halfH && p.py <= camF.y + halfH - EDGE_TOKEN / sq
-      : Math.abs(r.x) <= halfW - EDGE_TOKEN && (r.y - TOKEN_TOP / sq) >= -halfH && r.y <= halfH - EDGE_TOKEN / sq
+    const p = POS[u.hex], q = screenOf(A, cam, p.px, p.py, heightOf(V, u.hex))
+    const inside = q.ahead && q.x >= EDGE_TOKEN * s && q.x <= W - EDGE_TOKEN * s && q.y - TOKEN_TOP * s >= 0 && q.y <= Hh - EDGE_TOKEN * s
     if (inside) continue
     /* screen offset from the viewport centre, clamped to the edge rectangle */
-    const dx = r.x * s, dy = r.y * s * sq
+    const dx = q.x - cx, dy = q.y - cy
     const k = Math.min((cx - EDGE_INSET) / Math.max(1, Math.abs(dx)), (cy - EDGE_INSET) / Math.max(1, Math.abs(dy)))
     const x = cx + dx * Math.min(1, k), y = cy + dy * Math.min(1, k)
     off.push({ u, x, y, ang: Math.atan2(dy, dx) })
@@ -1363,48 +1416,110 @@ export function drawEdges(V) {
       ${dgr ? `<span class="edgeDg">${dgr.n}${raIcon(dgr.kind === 'ranged' ? 'bow' : 'crossed-swords', 'font-size:12px')}</span>` : ''}
     </div>` }).join('')
 }
-/** wire drag, wheel, arrow keys, the peek key and Reset; returns an unbind for dispose().
+/* ── what is under the pointer (viewer.true-3d-camera): the camera's ray through the pointer against the board — every
+   unit's body and every hex's top at its display height (camera3d.js pickBoard) — never the stage's flat plane. A
+   unit's body is an upright cylinder on its feet as tall as its figure (its model's height where a model stands). */
+export function pointerAt(V, e) {
+  const wrap = V.dom.stage.parentNode, cam = V.camera3d
+  if (!wrap || !cam || e.clientX == null) return null
+  /* the host may scale the whole component (the harness fits 1920 to the window; the kingdom fills it): client px ->
+     the wrap's own layout px */
+  const r = wrap.getBoundingClientRect ? wrap.getBoundingClientRect() : { left: 0, top: 0, width: wrap.clientWidth, height: wrap.clientHeight }
+  const { W, H } = viewportOf(V)
+  if (!(r.width > 0 && r.height > 0)) return null
+  return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height }
+}
+export function pickAt(V, x, y) {
+  const cam = V.camera3d; if (!cam) return null
+  const { POS, LAYOUT, F } = V.data, A = boardAffine(V)
+  const hexes = []
+  for (const key of Object.keys(POS)) { const h = +key; if (F.floor && !F.floor[h]) continue; hexes.push({ hex: h, x: POS[h].px, y: POS[h].py, z: heightOf(V, h) }) }
+  const units = []
+  for (const u of Object.values(V.S.U)) {
+    if (u.life === 'dead') continue
+    const E = V.layers.UEL.get(u.id); if (!E || !E.pick || E.root.style.display === 'none') continue
+    const f = feetOf(V, u.hex)
+    units.push({ id: u.id, hex: u.hex, x: f.x, y: f.y, z: heightOf(V, u.hex), r: E.pick.r, h: E.pick.h })
+  }
+  return pickBoard(boardRay(A, cam, x, y), hexes, units, { W: LAYOUT.W, H: LAYOUT.H }, anisoOf(A))
+}
+/** a click on a unit (its body, under the pointer): the targeting host first, then the panel and the play host */
+export function clickUnit(V, id) {
+  if (!V.inputActive()) return
+  const current = V.S.U[id]
+  if (!current || V.offerHexClick(current.hex) || !V.inputActive()) return
+  /* viewer.play-input: the panel shows whoever was clicked last (engine DECISIONS.md 2026-09-29), and the click is
+     offered to the host too — to start the hero's activation, or to aim at (and fire on) a target */
+  V.view.inspectId = id
+  if (V.play) V.offerPlay({ kind: 'unit', id, hex: current.hex })
+  if (V.inputActive()) V.render()
+}
+/** a click on a hex (its top, under the pointer): a legal target hex goes to the targeting host, else to the play host */
+export function clickHex(V, hex) {
+  const T = V.targeting
+  if (T && T.legalHexes.includes(hex)) { V.offerHexClick(hex, V.targetingGeneration()); return }
+  if (V.play) V.offerPlay({ kind: 'hex', hex })
+}
+/** wire drag, wheel, arrow keys, the peek key, Reset and the pointer's pick; returns an unbind for dispose().
     viewer.painted-board (engine DECISIONS.md 2026-09-29): a LEFT drag turns (across) and tilts (up and
     down), a RIGHT drag grabs the map and moves it ("right-click to grab the map and move"; the middle
     button pans too), the wheel zooms, Reset returns the starting angled view (viewer SWITCHES cameraDrag). */
 export function bindCamera(V) {
   const wrap = V.dom.stage.parentNode; if (!wrap || !wrap.addEventListener) return () => {}
-  let drag = null, dragged = false, transition = null
+  let drag = null, dragged = false, pointed
   V.clickSuppressed = e => e.detail !== 0 && dragged
   const down = e => { if (e.button !== 0 && e.button !== 1 && e.button !== 2) return; dragged = false
     drag = { x: e.clientX, y: e.clientY, originX: e.clientX, originY: e.clientY, turn: e.button === 0 }; wrap.style.cursor = 'grabbing' }
-  const move = e => { if (!drag) return
+  /* the pointer over the board: point at what is under it (offered once per change), and say so with the cursor */
+  const hover = e => {
+    const at = pointerAt(V, e), hit = at ? pickAt(V, at.x, at.y) : null
+    const T = V.targeting
+    wrap.style.cursor = !hit ? '' : hit.unit == null && T && T.legalHexes.includes(hit.hex) ? 'crosshair' : (hit.unit != null || V.play) ? 'pointer' : ''
+    if (!V.play) { pointed = undefined; return }
+    const hex = hit ? hit.hex : null
+    if (hex !== pointed) { pointed = hex; V.offerPlay({ kind: 'point', hex }) }
+  }
+  const move = e => { if (!drag) { hover(e); return }
     // Screen-pixel threshold from pointerdown: jitter is a click, a real drag
     // applies its full displacement once and then continues incrementally.
     if (!dragged && Math.hypot(e.clientX - drag.originX, e.clientY - drag.originY) < 4) return
     /* the host may scale the whole component (the harness fits 1920 to the
        window): screen px → component px is the root's rect over its layout width */
-    const sq = squash(V), scale = (V.dom.root.getBoundingClientRect && V.dom.root.offsetWidth) ? (V.dom.root.getBoundingClientRect().width / V.dom.root.offsetWidth || 1) : 1
+    const sq = squash(V), k = isoK(V), scale = (V.dom.root.getBoundingClientRect && V.dom.root.offsetWidth) ? (V.dom.root.getBoundingClientRect().width / V.dom.root.offsetWidth || 1) : 1
     const sx = (e.clientX - drag.x) / scale, sy = (e.clientY - drag.y) / scale
     drag = { ...drag, x: e.clientX, y: e.clientY }
     if (!sx && !sy) return
     /* a drag follows the pointer, not the 1.1 s glide; the glide comes back on release */
-    if (!dragged && transition === null) { transition = V.dom.stage.style.transition; V.dom.stage.style.transition = 'none' }
-    dragged = true
+    dragged = true; V.view.dragging = true
     if (drag.turn) { turnCam(V, { yaw: sx * CAM.YAW_PER_PX, tilt: -sy * CAM.TILT_PER_PX }); return }
-    const z = (V.view.cam && V.view.cam.zoom) || 1, d = unturn(V, sx / z, sy / (z * sq))
-    applyCam(V, { pan: { x: -d.x, y: -d.y } }); drawEdges(V) }
-  const up = e => { const released = drag; drag = null; wrap.style.cursor = ''; if (transition !== null) { V.dom.stage.style.transition = transition; transition = null }
+    const z = (V.view.cam && V.view.cam.zoom) || 1, d = unturn(V, sx / z, sy / (z * sq))     // iso px under the pointer
+    applyCam(V, { pan: { x: -d.x, y: -d.y / k } }); drawEdges(V) }
+  const up = e => { const released = drag; drag = null; wrap.style.cursor = ''; V.view.dragging = false
     /* viewer.play-input: a right-click that did not drag the map steps the plan back one stage (UI-BUILD-NOTES §5) */
     if (e && e.button === 2 && released && !dragged && V.play) V.offerPlay({ kind: 'back' }) }
+  /* a click lands on what the camera's ray meets — a unit's body or a hex — at any angle (a keyboard press on a
+     focused hex button is that button's own; a press on a control is the control's) */
+  const click = e => {
+    if (!e || !(e.detail > 0) || V.clickSuppressed(e)) return
+    const t = e.target
+    if (t && t !== wrap && typeof t.closest === 'function' && t.closest('button:not(.playHex):not(.targetHex),input,select,textarea,a,#playChrome')) return
+    const at = pointerAt(V, e), hit = at ? pickAt(V, at.x, at.y) : null
+    if (!hit) return
+    if (hit.unit != null) clickUnit(V, hit.unit); else clickHex(V, hit.hex)
+  }
   /* the right button is the map's grab, never the browser's menu */
   const menu = e => { e.preventDefault() }
   const wheel = e => { if (!e.deltaY) return; e.preventDefault(); turnCam(V, { zoom: Math.exp(-e.deltaY * CAM.WHEEL) }) }
   /* keys act only while the pointer is over the board or the component has
      focus — two viewers on one page must not both pan, and a host page keeps
      its arrow keys (review 2026-09-03) */
-  let hover = false
-  const enter = () => { hover = true }, leave = () => { hover = false; up(); if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
+  let over = false
+  const enter = () => { over = true }, leave = () => { over = false; up(); pointed = undefined; if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
   const key = e => {
     if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return
-    if (!hover && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
+    if (!over && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
     const STEP = 120
-    const pan = (x, y) => { const d = unturn(V, x, y); applyCam(V, { pan: { x: d.x, y: d.y } }); drawEdges(V) }
+    const pan = (x, y) => { const d = unturn(V, x, y); applyCam(V, { pan: { x: d.x, y: d.y / isoK(V) } }); drawEdges(V) }
     if (e.key === 'ArrowLeft') pan(-STEP, 0)
     else if (e.key === 'ArrowRight') pan(STEP, 0)
     else if (e.key === 'ArrowUp') pan(0, -STEP)
@@ -1419,7 +1534,7 @@ export function bindCamera(V) {
   const reset = wrap.querySelector ? wrap.querySelector('#camReset') : null
   const resetDown = e => { e.stopPropagation() }, resetClick = e => { e.stopPropagation(); resetCam(V) }
   if (reset) { reset.addEventListener('pointerdown', resetDown); reset.addEventListener('click', resetClick) }
-  const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel]]
+  const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['click',click]]
   for (const [type, fn] of bound) wrap.addEventListener(type, fn, type === 'wheel' ? { passive: false } : undefined)
   document.addEventListener('keydown', key); document.addEventListener('keyup', keyup)
   return () => { document.removeEventListener('keydown', key); document.removeEventListener('keyup', keyup); for (const [type, fn] of bound) wrap.removeEventListener(type, fn)

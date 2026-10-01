@@ -52,8 +52,9 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 #boardwrap{flex:1 1 auto;position:relative;overflow:hidden;background:#0d0e10}
 #boardwrap::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse at 50% 46%,transparent 52%,rgba(4,5,7,.72) 100%)}
-#stage{position:absolute;left:50%;top:50%;transform-style:preserve-3d;
-  transition:transform .55s cubic-bezier(.4,0,.2,1)}
+/* viewer.true-3d-camera: the stage is drawn through the one camera (camera3d.js) — its matrix is set from the
+   camera's own projection about the stage's corner; the glide is the camera's, not a CSS transition */
+#stage{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform-origin:0 0 0}
 .cell,.ring,.lay{position:absolute;width:128px;height:132px}
 .cell{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
   background-size:cover;background-position:center}
@@ -101,7 +102,7 @@ html,body{margin:0;background:#08090b;color:var(--ink);
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.9))}
 
 /* billboards */
-.bb{position:absolute;transform-origin:50% 100%;transform:rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
+.bb{position:absolute;transform-origin:50% 100%;transform:scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
   transform-style:preserve-3d;pointer-events:none}
 .tok{display:block;width:auto;pointer-events:auto;cursor:pointer}
 .shadow{position:absolute;border-radius:50%;background:rgba(0,0,0,.55);filter:blur(7px)}
@@ -141,7 +142,7 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 @keyframes actBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 
 /* ── aiming ────────────────────────────────────────────────────────────── */
-.aimRead{position:absolute;transform-origin:50% 100%;transform:rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
+.aimRead{position:absolute;transform-origin:50% 100%;transform:scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
   width:174px;background:rgba(10,9,7,.95);border:1px solid #5c3028;border-radius:3px;
   padding:7px 9px;pointer-events:none;z-index:70}
 .aimRead .th{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#f09a8a;
@@ -212,16 +213,16 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .ember{position:absolute;border-radius:50%}
 
 /* chips on the plane */
-.hazchip{position:absolute;transform-origin:50% 100%;transform:rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
+.hazchip{position:absolute;transform-origin:50% 100%;transform:scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
   font-size:11px;font-weight:600;padding:3px 8px;border-radius:2px;white-space:nowrap;
   background:rgba(12,9,5,.88);border:1px solid #5c4620;color:#f2c877;pointer-events:none}
-.clockchip{position:absolute;transform-origin:50% 100%;transform:rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
+.clockchip{position:absolute;transform-origin:50% 100%;transform:scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
   font-size:12px;font-weight:700;padding:2px 7px;border-radius:2px;
   background:rgba(30,6,6,.9);border:1px solid #7a2222;color:#ff9b9b;
   animation:fxClock 1.6s ease-in-out infinite;pointer-events:none}
 
 /* to-hit readout */
-#tohit{position:absolute;transform-origin:50% 100%;transform:rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
+#tohit{position:absolute;transform-origin:50% 100%;transform:scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
   width:186px;background:rgba(10,9,7,.94);border:1px solid #443a28;border-radius:3px;
   padding:7px 9px;pointer-events:none}
 #tohit .th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);
@@ -233,7 +234,7 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 #tohit .foot{font-size:10px;color:var(--dim);margin-top:4px;font-style:italic}
 
 /* annotation pins */
-.pin{position:absolute;transform-origin:50% 50%;transform:rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
+.pin{position:absolute;transform-origin:50% 50%;transform:scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti));
   width:22px;height:22px;border-radius:11px;background:#e0b95e;color:#0b0a08;
   font-size:11px;font-weight:700;line-height:22px;text-align:center;
   box-shadow:0 2px 6px rgba(0,0,0,.8);pointer-events:none;z-index:60}
@@ -518,6 +519,10 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 #stage{z-index:1}
 .terrain3d-ready #stage .cell{background-image:none !important}
 .terrain3d-ready #stage .props{visibility:hidden}
+/* viewer.true-3d-camera: "no other map loads first" — until the battle's own 3D scene is ready, and when it cannot be
+   drawn, the board is not shown (no flat swatch board in its place); a plain line says why */
+.terrain3d-loading #stage,.terrain3d-failed #stage,.terrain3d-loading .edgeL,.terrain3d-failed .edgeL{visibility:hidden}
+#terrainLoading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:45;max-width:70%;text-align:center;color:#e6dcbc;font-size:20px;line-height:1.4;background:rgba(14,12,9,.88);padding:14px 26px;border:1px solid #4a3a1c;border-radius:3px;pointer-events:none}
 #terrainStatus{position:absolute;right:14px;bottom:10px;z-index:50;background:#14120e;color:#d8cfae;padding:4px 10px;border:1px solid #4a3a1c;font-size:12px;max-width:65%}
 #battleDD{position:relative;width:min(760px,100%);margin:12px 0;z-index:1000}
 #battleLabel{display:block;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--brass);margin-bottom:5px}

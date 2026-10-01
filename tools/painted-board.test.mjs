@@ -56,6 +56,8 @@ test('every engine hex of the three painted maps is drawn where its scene hex st
   assert.equal(A.paintedBinding('map.open', B.lib.fields['map.open'], pack), null, 'a map with no painted scene keeps its board')
 })
 
+/* viewer.true-3d-camera (engine DECISIONS.md 2026-09-30 "a true 3D battle: an orbit camera"): the scene is drawn with the board's own
+   camera — it was the stage's CSS transform copied through clipMatrix (the copy that stretched it); rewritten as that rule */
 test('the painted driver loads only the measured scene, lights it as reviewed, and follows the board camera', async () => {
   const pack = packPaintedScenes(fields), b = A.paintedBinding('map.opening.orphanage', fields['map.opening.orphanage'], pack)
   const location = { protocol: 'http:', href: 'http://127.0.0.1:4230/viewer/BATTLE-VIEWER.html' }
@@ -70,23 +72,29 @@ test('the painted driver loads only the measured scene, lights it as reviewed, a
   const w = makeWindow(); globalThis.document = w.document; globalThis.window = w; const frames = []; globalThis.requestAnimationFrame = f => { frames.push(f); return frames.length }; w.cancelAnimationFrame = () => {}
   const wrap = w.document.createElement('div'), stage = w.document.createElement('div'); wrap.appendChild(stage)
   const stats = { draws: 0 }; class Renderer { constructor() { this.shadowMap = {} } setPixelRatio() {} setSize() {} render(scene, camera) { stats.draws++; stats.scene = scene; stats.camera = camera } dispose() {} forceContextLoss() {} }
-  const field = fields['map.opening.orphanage'], M = new THREE.Matrix4().makeRotationX(49.3 * Math.PI / 180), origin = [field.w / 2, field.h / 2, 0]
-  const V = { dom: { stage }, data: { F: field, atlas: b } }
-  const driver = A.createDriver(V, e => { throw e }, { Renderer, loadPainted: async () => loaded, readStyle: () => ({ transform: 'm', transformOrigin: origin.join(' ') }), matrix: () => ({ toFloat64Array: () => M.elements }) })
+  const field = fields['map.opening.orphanage']
+  const V = { dom: { stage }, data: { F: field, atlas: b, boardAffine: A.paintedToCSS(b) } }
+  V.camera3d = A.orbitCamera(V.data.boardAffine, { x: field.w / 2, y: field.h / 2, yaw: 0, tilt: 49.3, zoom: 1 }, { w: wrap.clientWidth, h: wrap.clientHeight }); V.camVersion = 1
+  const driver = A.createDriver(V, e => { throw e }, { Renderer, loadPainted: async () => loaded })
   await driver.ready; assert.equal(stats.draws, 1)
-  const expected = new THREE.Matrix4().fromArray(A.clipMatrix(M.elements, origin, field, { w: wrap.clientWidth, h: wrap.clientHeight })).multiply(A.paintedToCSS(b))
-  stats.camera.projectionMatrix.elements.forEach((x, i) => close(x, expected.elements[i], 'projection ' + i))
+  assert.equal(stats.camera, V.camera3d, 'the board\'s own camera')
   const lights = []; stats.scene.traverse(o => { if (o.isLight) lights.push(o.type) }); assert.deepEqual(lights.sort(), ['DirectionalLight', 'HemisphereLight'])
   driver.dispose()
 })
 
 test('the camera turns, tilts, zooms and pans by drag, wheel and call, and Reset returns the starting angled view', () => {
   const w = boot('#map.opening.orphanage'), H = w.__battleView.harness, v = H.viewer, V = v._V, stage = V.dom.stage, wrap = stage.parentNode
-  const start = stage.style.transform, anti = stage.style.getPropertyValue('--anti')
-  assert.match(start, /rotateX\(49\.3deg\)/); assert.doesNotMatch(start, /rotateZ/, 'the starting view is not turned')
-  v.turn(30); assert.match(stage.style.transform, /rotateZ\(30deg\)/); assert.equal(stage.style.getPropertyValue('--unspin'), '-30deg', 'billboards undo the turn')
-  v.tilt(-12); assert.match(stage.style.transform, /rotateX\(37\.3deg\)/)
-  v.zoom(1.5); assert.match(stage.style.transform, /scale\(1\.5000\)/)
+  /* viewer.true-3d-camera (engine DECISIONS.md 2026-09-30 "a true 3D battle: an orbit camera"): the turn, the tilt and the zoom are
+     the one camera's (V.camera3d), which the stage is drawn through — these read rotateX(49.3deg), rotateZ(30deg) and
+     scale(1.5000) in the stage's CSS transform; rewritten as the camera's own angle from straight down, its turn about the
+     board point it looks at, and its distance */
+  const off = () => V.camera3d.position.clone().sub(V.camera3d.userData.focus)
+  const tiltNow = () => Math.acos(off().y / off().length()) * 180 / Math.PI, yawNow = () => Math.atan2(off().x, off().z) * 180 / Math.PI
+  const start = stage.style.transform, anti = stage.style.getPropertyValue('--anti'), d0 = off().length()
+  assert.match(start, /^matrix3d\(/, 'the stage is drawn through the camera'); close(tiltNow(), 49.3, 'the starting tilt'); close(yawNow(), 0, 'the starting view is not turned')
+  v.turn(30); close(yawNow(), 30, 'turned 30 degrees about the focus'); assert.equal(stage.style.getPropertyValue('--unspin'), '-30deg', 'billboards undo the turn')
+  v.tilt(-12); close(tiltNow(), 37.3, 'tilted 12 degrees up')
+  v.zoom(1.5); close(off().length(), d0 / 1.5, 'zoomed: 1.5 times nearer')
   const camF = { ...V.view.camF }; v.pan(60, 30); assert.notDeepEqual(V.view.camF, camF)
   assert.notEqual(stage.style.transform, start)
   /* the pointer: a left drag turns and tilts, a right drag grabs the map, the wheel zooms, the right button opens no menu */

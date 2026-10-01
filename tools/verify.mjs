@@ -73,6 +73,8 @@ const check = (ok, msg) => { if (!ok) fails.push(msg) }
 /* ── the pure fold, imported directly ──────────────────────────────────── */
 const { createState, fold, foldTo, FOLDED_TYPES } = await import(pathToFileURL(resolve(PKG, 'src/fold.js')).href)
 const { DUR } = await import(pathToFileURL(resolve(PKG, 'src/viewer.js')).href)   // Law 9: if this cannot import, say so
+const { orbitCamera } = await import(pathToFileURL(resolve(PKG, 'src/camera3d.js')).href)   // the camera's pose -> the camera (viewer.true-3d-camera)
+const THREE = await import('three')
 /* event types the viewer deliberately does nothing with — a NEW engine event
    is a failure until it is folded or listed here on purpose */
 const IGNORED = new Set(['activation.selected', 'turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin',
@@ -525,9 +527,11 @@ if (SINGLES) {
   check(panned.x !== before.x, 'camera: pan did nothing')
   v.render(); check(V.view.camF.x === panned.x, 'camera: a render undid a manual pan although the subject was still in view')
   /* peek shows the whole board and releases to exactly where it was */
-  v.peek(true); check(/scale\(0\.\d+\)/.test(V.dom.stage.style.transform), 'camera: peek did not scale the board to fit')
+  /* viewer.true-3d-camera: the zoom is the one camera's pose (V.camTarget), not a scale() in the stage's CSS — these read
+     scale(0.x) and scale(1.0000) in the transform; rewritten as the pose's zoom */
+  v.peek(true); check(V.camTarget && V.camTarget.zoom < 1, 'camera: peek did not scale the board to fit')
   check(V.view.camF.x === panned.x && V.view.camF.y === panned.y, 'camera: peek moved the remembered camera')
-  v.peek(false); check(/scale\(1\.0000\)/.test(V.dom.stage.style.transform), 'camera: releasing peek did not return to 1x')
+  v.peek(false); check(V.camTarget && V.camTarget.zoom === 1, 'camera: releasing peek did not return to 1x')
 }
 
 /* ── a standee at the top of the board is shown whole (ruled 2026-09-03) ──── */
@@ -556,9 +560,16 @@ if (SINGLES) {
   /* pan to a corner: with board space larger than the view, someone must be off-screen */
   v.pan(-4000, -4000)
   const bubs = V.layers.edgeL ? V.layers.edgeL.querySelectorAll('.edgeBub') : []
-  const POS = V.data.POS, camF = V.view.camF
-  const sq = Math.cos(V.data.LAYOUT.tilt * Math.PI / 180)
-  const offCount = Object.values(v.state.U).filter(u => u.life !== 'dead' && !(Math.abs(POS[u.hex].px - camF.x) <= DESIGN.W / 2 - 24 && (POS[u.hex].py - 200 / sq) >= camF.y - DESIGN.H / 2 / sq && POS[u.hex].py <= camF.y + DESIGN.H / 2 / sq - 24 / sq)).length
+  /* viewer.true-3d-camera: off-screen is where the perspective camera draws the unit — its hex outside the window (a
+     token's width in from the sides and the foot, its 200 px standee inside the top) — counted here with Three's own
+     projection; it was a rectangle of the board about camF (no perspective, no turn), rewritten as that rule */
+  const POS = V.data.POS, T = V.camTarget, s = T.zoom, inv = V.data.boardAffine.clone().invert()
+  const cam = orbitCamera(V.data.boardAffine, T, { w: DESIGN.W, h: DESIGN.H })
+  const offCount = Object.values(v.state.U).filter(u => {
+    if (u.life === 'dead') return false
+    const w = new THREE.Vector3(POS[u.hex].px, POS[u.hex].py, V.data.displayHeights?.[u.hex] || 0).applyMatrix4(inv)
+    const ahead = w.clone().applyMatrix4(cam.matrixWorldInverse).z < 0, n = w.project(cam), x = (n.x + 1) / 2 * DESIGN.W, y = (1 - n.y) / 2 * DESIGN.H
+    return !(ahead && x >= 24 * s && x <= DESIGN.W - 24 * s && y - 200 * s >= 0 && y <= DESIGN.H - 24 * s) }).length
   check(offCount > 0, 'edges: panning to a corner left nobody off-screen — the test cannot bite')
   check(bubs.length > 0 && bubs.length <= offCount, `edges: ${bubs.length} bubbles for ${offCount} off-screen units`)
   const counted = bubs.reduce((n, b) => n + (b.querySelector('.edgeN') ? +b.querySelector('.edgeN').textContent : 1), 0)

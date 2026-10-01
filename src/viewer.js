@@ -39,9 +39,11 @@ import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, h
 import { terrainLayer } from './terrain3d.js'
 import { bundledModels } from './models.js'
 import {prepareAtlasBinding} from './atlas.js'
-import {paintedBinding, bundledPainted} from './painted.js'
+import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
+import {worldToCSS} from './terrain-scene.js'
+import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -138,11 +140,14 @@ export function mountBattleViewer(root, data, opts = {}) {
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ABSORBING_STATUSES: data.absorbingStatuses || [],
       LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
+      /* viewer.true-3d-camera: the board's map from the scene's metres to board px — the battle's 3D scene's own, else the
+         flat board's (camera3d.js); the one camera, the stage and the 3D layer all stand on it */
+      boardAffine: atlas ? (atlas.kind === 'painted' ? paintedToCSS(atlas) : worldToCSS(atlas, F)) : flatAffine(F),
       /* viewer.character-models: which unit types are drawn as 3D models (a host may hand its own pack) */
       models: data.characterModels ?? bundledModels },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
-    view: { burstVisible: false, inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null }, cam: homeCam(), home: null },
+    view: { burstVisible: false, inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null }, cam: homeCam(), home: null, glide: false, dragging: false },
     layers: { ground: null, dyn: null, unitsL: null, UEL: new Map(), floatL: null, FLOAT_SLOTS: {} },
     /* every pending beat the board schedules — timers, stray nodes, the injury
        queue — so seek() and dispose() can drop them all (review 2026-09-03) */
@@ -166,7 +171,7 @@ export function mountBattleViewer(root, data, opts = {}) {
      and rotateX pivots around the wrong origin (the quarter-screen bug) */
   dom.stage.style.width = F.w + 'px'; dom.stage.style.height = F.h + 'px'
   dom.stage.style.marginLeft = (-F.w / 2) + 'px'; dom.stage.style.marginTop = (-F.h / 2) + 'px'
-  dom.stage.style.transition = 'none'                // born TILTED — the glide starts after first paint
+  dom.stage.style.transition = 'none'                // born TILTED — the camera's glide (board.js) starts after first paint
   ensureKeyframes()
   /* the icon sprite is the component's: one per document, whoever mounts */
   if (data.glyphs && !document.getElementById('raSprite')) document.body.insertAdjacentHTML('beforeend', spriteHTML(data.glyphs))
@@ -466,10 +471,10 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.painted-board: turn (degrees about the view centre), tilt (degrees), zoom (a factor), Reset */
     turn(deg) { turnCam(V, { yaw: deg }) }, tilt(deg) { turnCam(V, { tilt: deg }) }, zoom(f) { turnCam(V, { zoom: f }) },
     resetView() { resetCam(V) },
-    dispose() { disposed = true; chrome.dispose(); clearTargeting(); V.play = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */
-  requestAnimationFrame(() => requestAnimationFrame(() => { dom.stage.style.transition = 'transform 1.1s cubic-bezier(.4,0,.2,1)' }))
+  requestAnimationFrame(() => requestAnimationFrame(() => { if (!disposed) V.view.glide = true }))
   return api
 }
