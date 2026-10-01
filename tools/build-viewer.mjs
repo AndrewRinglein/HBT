@@ -23,6 +23,7 @@ import { packPaintedScenes } from './painted-scenes.mjs'
 import { packCharacterModels } from './character-models.mjs'
 import { assertRuntimeMetadata } from './runtime-metadata.mjs'
 import { PAGE_TESTS } from './page-tests.mjs'
+import { codeStamp } from '../../engine/tools/code-stamp.mjs'
 
 const require = createRequire(import.meta.url)
 const esbuild = require('../../engine/node_modules/esbuild')
@@ -72,7 +73,9 @@ let css = readFileSync('src/styles.css', 'utf8').replace(/url\(["']?art\/([^"')]
 })
 /* the engine's state is measured NOW, not copied from the dump; the dumps
    carry their own stamps and verify checks they agree with the engine */
-const engineNow = { commit: sha(resolve(PKG, '../engine')), dirty: dirty(resolve(PKG, '../engine')) }
+/* the engine is its code stamp, not its HEAD (Andrew, 2026-10-01): a ruling, wrap or
+   log commit in the engine leaves the page byte-identical */
+const engineNow = (({ stamp, dirty }) => ({ commit: stamp, dirty }))(codeStamp(resolve(PKG, '../engine')))
 const stamp = {
   viewer: sha(PKG), viewerDirty: dirty(PKG),
   engine: engineNow.commit, engineDirty: engineNow.dirty,

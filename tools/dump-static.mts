@@ -5,15 +5,13 @@
 // standalone page bakes this file in; the game (stage 3) reads the same door
 // at runtime. Never hand-edit the output.
 import { writeFileSync } from 'node:fs'
-import { execSync } from 'node:child_process'
+import { codeStamp } from '../../engine/tools/code-stamp.mjs'
 import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, groundApplies } from '../src/sheet.js'
 import { readCatalog } from '../src/engine.js'
 const { MAPS } = await readCatalog()
 
-let engineCommit = 'unknown'
-try { engineCommit = execSync('git -C ../engine rev-parse --short HEAD', { encoding: 'utf8' }).trim() } catch {}
-let dirty = false
-try { dirty = execSync('git -C ../engine status --porcelain', { encoding: 'utf8' }).trim().length > 0 } catch {}
+/* the engine's code stamp, not its HEAD (Andrew, 2026-10-01): a ruling commit leaves this file unchanged */
+const { stamp: engineCommit, dirty } = codeStamp()
 
 /* attacks/abilities: the whole tables, so a unit.equipped grant resolves at fold
    time; layers: the ground layer names by number (2026-09-03) */

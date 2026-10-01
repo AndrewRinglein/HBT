@@ -35,6 +35,7 @@ import { tmpdir } from 'node:os'
 import { createHash } from 'node:crypto'
 import { mergedFails } from './verify-slices.mjs'
 import { PAGE_TESTS } from './page-tests.mjs'
+import { codeStamp } from '../../engine/tools/code-stamp.mjs'
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 process.chdir(PKG)
@@ -224,8 +225,8 @@ if (argv.includes('--fresh')) {
     mkdirSync('.build', { recursive: true })
     /* an export from a dirty engine tree stamps HEAD's sha and is not HEAD's
        battle — refuse unless told the caller knows (review 2026-09-03) */
-    const engineDirty = execFileSync('git', ['-C', '../engine', 'status', '--porcelain'], { encoding: 'utf8' }).trim().length > 0
-    if (engineDirty && !dirtyOk) fail('--fresh: the engine tree is dirty; its exports would carry HEAD\'s sha for battles HEAD did not produce. Land or stash it, or pass --dirty-ok to compare anyway')
+    const engineDirty = codeStamp().dirty
+    if (engineDirty && !dirtyOk) fail('--fresh: the engine tree is dirty; its exports would carry the committed code stamp for battles the committed code did not produce. Land or stash it, or pass --dirty-ok to compare anyway')
     const lib = JSON.parse(readFileSync('battles/library.json', 'utf8')).battles
     const tsx = resolve('../engine/node_modules/tsx/dist/cli.mjs')
     let diffs = 0

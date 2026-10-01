@@ -9,13 +9,14 @@
 import { execFileSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { codeStamp } from '../../engine/tools/code-stamp.mjs'
 
 const engine = resolve(process.argv[2] ?? '../engine')
 const tsx = resolve('../engine/node_modules/tsx/dist/cli.mjs')
 /* the map list comes through the door (tools/list-maps.mts), never a direct engine import */
 const list = execFileSync('node', [tsx, 'tools/list-maps.mts'], { encoding: 'utf8' }).trim().split(/\s+/)
-const sha = (() => { try { return execFileSync('git', ['-C', engine, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).trim() } catch { return 'unknown' } })()
-const dirty = (() => { try { return execFileSync('git', ['-C', engine, 'status', '--porcelain'], { encoding: 'utf8' }).trim().length > 0 } catch { return false } })()
+/* the engine's code stamp, not its HEAD (Andrew, 2026-10-01): a ruling commit leaves this file unchanged */
+const { stamp: sha, dirty } = codeStamp(engine)
 const fields = {}
 for (const id of list) {
   const f = JSON.parse(execFileSync('node', [tsx, 'tools/field-geometry.mts', id], { cwd: engine, encoding: 'utf8', maxBuffer: 1 << 26 }))
