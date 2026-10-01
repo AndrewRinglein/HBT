@@ -4,7 +4,9 @@
   "kind": "kingdom",
   "shape": "plumbing",
   "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the civilians are played; no 2D before the 3D bodies'): 'There's no movement for the child when I click on it, so the civilians, I think, aren't activating properly.' (2026-08-26: 'Civilians are exactly like heroes.') kingdom/src/core/sandbox.ts gives the player only the drafted heroes (policy humanUnitUids = the first config.heroes.length units, 'the encounter's civilians ... stay the AI's'), so clicking the Orphan Child does nothing and the AI moves it. The sandbox's control policy is every unit fielded on the heroes' side - the drafted heroes and the encounter's civilians - for a new battle and a restored save alike.",
-  "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage, clicking the Orphan Child in the Hero Phase starts its activation and shows where it can move; it moves where clicked; End Turn's pop-up names the civilians that have not acted."
+  "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage, clicking the Orphan Child in the Hero Phase starts its activation and shows where it can move; it moves where clicked; End Turn's pop-up names the civilians that have not acted.",
+  "status": "done",
+  "sha": "0d77bd2"
  },
  {
   "id": "viewer.bodies-before-board",
