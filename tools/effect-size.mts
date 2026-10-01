@@ -17,8 +17,8 @@
 // measured nothing. tools/effect-arm.ts decides which arm an id gets.
 
 import { execSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
 import { checkEffectSwitch, withoutArmFor } from './effect-arm.js'
+import { readBacklog } from './backlog.mjs'
 
 // CF_EFFECT_REPS exists so a test can run both real arms quickly; unset, it is 25.
 const REPS = process.env.CF_EFFECT_REPS ? Number(process.env.CF_EFFECT_REPS) : 25
@@ -50,7 +50,7 @@ if (process.argv.includes('--arm')) {
   // prefix is bash-only, and under cmd.exe the WITHOUT arm would not run at all
   // — which reads as "no measurable effect", the most dangerous wrong answer
   // this tool can give.
-  const backlog = existsSync('.state/backlog.json') ? JSON.parse(readFileSync('.state/backlog.json', 'utf8')) : []
+  const backlog = (() => { try { return readBacklog() } catch { return [] } })()
   const arm = withoutArmFor(ids, backlog)
   const run = (disable?: string, switches?: Record<string, unknown>) =>
     JSON.parse(execSync('npx tsx tools/effect-size.mts --arm', {

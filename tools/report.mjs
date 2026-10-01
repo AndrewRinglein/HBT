@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync } from 'node:fs'
-const b = JSON.parse(readFileSync('.state/backlog.json', 'utf8'))
+import { readBacklog } from './backlog.mjs'
+const b = readBacklog()
 const by = (s) => b.filter(x => (x.status ?? 'pending') === s)
 const flagged = by('done-needs-review'), done = by('done'), failed = by('failed'), pending = by('pending')
 console.log(`\nBacklog — ${done.length + flagged.length} landed, ${failed.length} abandoned, ${pending.length} pending\n`)

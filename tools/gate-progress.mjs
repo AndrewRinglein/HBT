@@ -4,7 +4,7 @@
 // call, so neither a gate check nor a quarter of the suite reliably fits in one call
 // there. Two records make the work resumable, both keyed by the exact working tree:
 //
-//   .state/gate-progress.json  each gate check's result for one item on one tree.
+//   .state/gate-progress.<area>.json  (one per area, tools/backlog.mjs) each gate check's result for one item on one tree.
 //                              A re-run on the same tree replays what passed; a
 //                              changed tree (or item, or what the checks read from
 //                              .state) discards it. --land commits only when every

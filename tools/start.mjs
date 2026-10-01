@@ -6,12 +6,13 @@
 // This is the tool. It composes nothing from memory and counts nothing itself:
 // the count is `gate.mjs --count`'s line verbatim, the Now line is the one the
 // last wrap wrote to .state/now.json, the last landing is the gauntlet log's
-// own record, the queue is next.mjs's readiness rule over .state/backlog.json,
+// own record, the queue is next.mjs's readiness rule over .state/backlog.<area>.json,
 // the Delegate line is that queue with where each item stands, the Calls lines
 // are the switches recorded since the last wrap, and the stack is CLAUDE.md's
 // Stack table for the top item.
 //
 //   node tools/start.mjs            print the lines, in order
+//   node tools/start.mjs --area <a>  the same, the queue cut to one area (engine, viewer-kingdom, content, art)
 //
 // Rules: a missing Now line prints "none — last chat ended without wrap" —
 // information, never a guess, never a prior value. A missing file is unknown,
@@ -23,21 +24,24 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { readBacklog, areaOf, AREAS } from './backlog.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PACKAGE = 'engine'
-const BACKLOG = '.state/backlog.json'
 const RUNLOG = '.state/gauntlet-log.jsonl'
 const QUESTIONS = '.state/questions.md'
 const NOW_FILE = '.state/now.json'
 const SWITCHES_FILE = 'SWITCHES.md'
 
-/** wrapping: the lines a wrap stores in now.json — without the uncommitted-wrap warning, which describes the wrap before this one */
-export function render({ wrapping = false } = {}) {
+/**
+ * wrapping: the lines a wrap stores in now.json — without the uncommitted-wrap warning, which describes the wrap before this one.
+ * area: one area's queue (tools/backlog.mjs) — a worker's own; `needs` still read every area.
+ */
+export function render({ wrapping = false, area = null } = {}) {
   const backlog = readBacklog()
   const landedIds = new Set(backlog.filter((x) => String(x.status ?? '').startsWith('done')).map((x) => x.id))
   // the queue is next.mjs's rule, not a second one: no status, every `needs` landed
-  const pending = backlog.filter((x) => !x.status)
+  const pending = backlog.filter((x) => !x.status && (!area || areaOf(x) === area))
   const queue = pending.filter((x) => (x.needs ?? []).every((n) => landedIds.has(n)))
   const item = (x) => `${x.id} [${x.kind} · ${x.shape}]`
 
@@ -147,11 +151,6 @@ function ungatedSinceWrap() {
   return [`Ungated since last wrap: ${ungated.length}`, ...ungated.map(([h, author, at, subject]) => `  ${h} ${at} ${author} — ${subject.slice(0, 100)}`)]
 }
 
-function readBacklog() {
-  if (!existsSync(BACKLOG)) throw new Error(`${BACKLOG}: not here — run from the engine folder`)
-  return JSON.parse(readFileSync(BACKLOG, 'utf8'))
-}
-
 function readNow() {
   if (!existsSync(NOW_FILE)) return null
   let j
@@ -236,5 +235,7 @@ function readStack() {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
-  console.log(render().join('\n'))
+  const at = process.argv.indexOf('--area'), area = at >= 0 ? process.argv[at + 1] : null
+  if (at >= 0 && !AREAS.includes(area)) { console.error(`--area is one of ${AREAS.join(', ')}`); process.exit(2) }
+  console.log(render({ area }).join('\n'))
 }

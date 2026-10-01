@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 // The next item to work on. Pure read — never writes status.
-import { readFileSync } from 'node:fs'
-const b = JSON.parse(readFileSync('.state/backlog.json', 'utf8'))
-const done = new Set(b.filter(x => String(x.status ?? '').startsWith('done')).map(x => x.id))
+// --area <a>: the next item of one area's list (tools/backlog.mjs) — a worker's own queue.
+import { readBacklog, areaOf } from './backlog.mjs'
+const at = process.argv.indexOf('--area'), area = at >= 0 ? process.argv[at + 1] : null
+const all = readBacklog()
+const b = area ? all.filter(x => areaOf(x) === area) : all
+const done = new Set(all.filter(x => String(x.status ?? '').startsWith('done')).map(x => x.id))
 const next = b.find(x => !x.status && (x.needs ?? []).every(n => done.has(n)))
 if (!next) {
   const blocked = b.filter(x => !x.status)

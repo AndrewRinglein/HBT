@@ -14,7 +14,7 @@
 //
 // RESUMABLE (tool.gate-fits-cowork, Andrew 2026-09-26: 'Add it'). Cowork kills every
 // shell call at ~178 s, so each check's result is recorded against the exact tree in
-// .state/gate-progress.json (tools/gate-progress.mjs). A re-run on the same tree
+// .state/gate-progress.<area>.json, the item area's own (tools/gate-progress.mjs, tools/backlog.mjs). A re-run on the same tree
 // replays what already passed ("PASS (recorded)"); a changed tree discards it. With a
 // budget — `--budget <s>`, 150 s by default in Cowork, none in a terminal — the gate
 // stops between checks once the budget is spent, prints INCOMPLETE and exits 3,
@@ -34,6 +34,7 @@ import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { filesContaining } from './source-scan.mjs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
 import { revertTree } from './revert-tree.mjs'
+import { readBacklog, saveItem, progressFor } from './backlog.mjs'
 import { checkItem } from './prior-art.mjs'
 import { checkWrongHome } from './wrong-home.mjs'
 import {
@@ -49,18 +50,16 @@ const MODE = process.argv.includes('--land') ? 'land'
 const FULL = process.argv.includes('--full')
 const PROCESS = FULL ? 'full' : 'fast'
 
-const BACKLOG = '.state/backlog.json'
 const LEDGER = '.state/ledger.md'
 const GOLDEN = '.state/baseline.hash'
 const RUNLOG = '.state/gauntlet-log.jsonl'
-const PROGRESS = '.state/gate-progress.json'
 
 // --count: the one line that says where the backlog is, printed by the gate
 // because the gate is what wrote every status in it. `start` and
 // `wrap` print this line VERBATIM — neither of them counts anything itself.
 // (Added 2026-09-06 with tools/start.mjs; the GBH package's CARRYOVER.md item 3.)
 if (process.argv.includes('--count')) {
-  const b = JSON.parse(readFileSync(BACKLOG, 'utf8'))
+  const b = readBacklog()
   const n = (f) => b.filter(f).length
   console.log(`${n((x) => String(x.status ?? '').startsWith('done'))} of ${b.length} landed · `
     + `${n((x) => x.status === 'done-needs-review')} await review · `
@@ -147,9 +146,12 @@ const sh = (cmd, opts = {}) => execSync(cmd, { encoding: 'utf8', stdio: 'pipe', 
 const tryRun = (cmd, opts = {}) => { try { return { ok: true, out: sh(cmd, opts) } } catch (e) {
   return { ok: false, status: e.status, out: (e.stdout ?? '') + (e.stderr ?? '') } } }
 
-const backlog = JSON.parse(readFileSync(BACKLOG, 'utf8'))
+// Every area's list is read (needs cross areas); only the item's own area's list and
+// progress file are written (tools/backlog.mjs, Andrew 2026-10-01: one worker per area).
+const backlog = readBacklog()
 const item = backlog.find((b) => b.id === id)
 if (!item) { console.error(`no backlog item '${id}'`); process.exit(2) }
+const PROGRESS = progressFor(item)
 
 const checks = []
 let ok = true
@@ -185,7 +187,7 @@ if (MODE === 'abandon') {
   item.status = 'failed'
   item.failedAt = stampA
   item.reason = reason
-  writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
+  saveItem(backlog, item)
   appendFileSync(LEDGER, `\n## ${id} — ABANDONED\n${stampA}\n\n${reason}\n`)
   try { const p = JSON.parse(readFileSync(PROGRESS, 'utf8')); writeFileSync(PROGRESS, serialize(clearResults(openProgress(p, p)))) } catch {}
   logRun('abandoned', { reason })
@@ -572,7 +574,7 @@ const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  $
 
 if (!ok) {
   item.attempts = (item.attempts ?? 0) + 1
-  writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
+  saveItem(backlog, item)
   console.log(`\nNOT READY (attempt ${item.attempts}). Nothing reverted — fix and run the gate again.` +
     `\nIf it cannot be made to pass:  node tools/gate.mjs ${id} --abandon\n`)
   logRun('failed-checks')
@@ -606,7 +608,7 @@ sh(`git -c user.email=a@b -c user.name=combat-framework commit -q -m ${JSON.stri
 const sha = sh('git rev-parse --short HEAD').trim()
 item.status = needsReview ? 'done-needs-review' : 'done'
 item.sha = sha
-writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
+saveItem(backlog, item)
 appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp}\n\n${body}\n` +
   (needsReview ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
 // The seal is gone (Andrew, 2026-09-23, DECISIONS.md "less process per feature"):

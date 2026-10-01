@@ -1,42 +1,5 @@
 [
  {
-  "id": "viewer.walk-in-step",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; the caravan's fight; what is queued after it' and 'the links and the icon; ... walk timed to the hexes'): 'when the characters are moving on the map, they're not actually walking or moving. They just slide across. The whole idea of adding in a walking animation is so they use it.' · 'The walking isn't very well timed or spaced based on the number of tiles that are being moved.' Every 3D body that walks a path plays its walk clip for the whole traversal (models.js motion 'move'), its stride timed to the hexes walked so the feet do not slide (the clip's root stride against the board's hex width, the traversal's duration from the pump's DUR per hex). Find first why the clip is not seen today (E.walk / walkShape / cast.frame) — a test exists for the Imps' flight loop (tools/opening-cast.test.mjs).",
-  "expect": "In the Orphanage and the Bridge a hero walking N hexes plays its walk clip throughout, and its feet advance one stride per stride length (no slide); the traversal's duration grows with N; a flier flies.",
-  "status": "done",
-  "sha": "d2e4344"
- },
- {
-  "id": "viewer.weapons-in-hand",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding weapons.' · 'we don't have weapons. I don't see any weapons.' Every 3D body holds the 3D weapon of its kit in its hand socket (assets/characters/oathblade-armor/generated/rebuild/weapon-audition/equipment/ has bow-flexible.glb; read assets/characters/PRODUCTION-START.md and production-lessons.json first, and the skills AGENTS.md names for equipment placement).",
-  "expect": "In the sandbox every hero whose kit names a weapon with a 3D model holds it in hand through idle, walk and attack; a weapon without a model is listed, not faked."
- },
- {
-  "id": "viewer.characters-unfaded",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'these characters are faded, like they're ghost-like, because there are other competing things. The characters are the stars. They should not be faded, especially not one that's selected.' Find what dims the bodies (the board's DOM overlays over the WebGL canvas, the marks, opacity on standees, the lighting) and draw every body at full strength, the selected one never under anything.",
-  "expect": "Side-by-side screenshots: every body drawn at full strength over the ground marks; the selected body brightest; nothing semi-transparent over a body."
- },
- {
-  "id": "viewer.unit-card-bar",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'We also need a character selector bar above the screen, the way it is in the visual playback. You have all the heroes and enemies as tiny little cards above the screen. That should still be there. And I can use that to target things as well as clicking on them.' The replay's unit-card strip (the topbar portraits) in the live battle and the Kingdom host; a card click is the unit click (select a hero to act; with an attack chosen, target that unit through the play input).",
-  "expect": "In the sandbox the strip of every unit's card sits above the board; clicking a hero's card starts its activation; with an attack chosen, clicking an enemy's card aims and confirms exactly as clicking its body."
- },
- {
-  "id": "viewer.real-bodies",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'I said we could use placeholders, but don't we have more 3D things we can use? We've done all kinds of different heads, all kinds of different armor. ... the idea is to rig this up. We have the things for everything, just about.' Today every base hero is the one oathblade.glb body. Inventory assets/characters (PRODUCTION-START.md first; APPROVED-CHARACTERS.md) and bind each unit to its own assembled body - heads, armour, outfits - and the Bloodhound to the hounds in assets/characters/wolf/. Character production rules in AGENTS.md apply.",
-  "expect": "Every hero and enemy of the opening's battles and the caravan stands in its own body; a unit with no approved parts is listed, not faked."
- },
- {
   "id": "fix.suite-after-caravan",
   "kind": "engine",
   "shape": "plumbing",
@@ -53,87 +16,6 @@
   "expect": "actionReach equals reachOf for every attack of every unit in a fielded battle, from any hex asked; null for a move or an unknown action or unit.",
   "status": "done",
   "sha": "52e057b"
- },
- {
-  "id": "encounter.caravan-aftermath",
-  "kind": "content",
-  "shape": "data",
-  "probeIds": [
-   "encounter.caravan-aftermath"
-  ],
-  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; the caravan's fight'), provisional: 'Imps and Bloodhounds (Recommended)' - 2 Imps + 2 Bloodhounds from the far end of the road, the heroes at the near end, the ground fires burning and the corpse hexes cursed (Weak). content/mkpaintedmaps.mjs compiles map.caravan-aftermath from assets/terrain-3d/caravan-aftermath/navigation.json (usable '.', the rest 'x'; SWITCHES caravanBlocked) with its ground lists; encounter.caravan-aftermath in content/gen/encounters.json paints layer.weak and layer.burning by naming the map's ground (resolvePaint in assemble and mkenginepack; SWITCHES caravanGround); zones SWITCHES caravanZones; scenario test.caravan-aftermath with four standard heroes. Prior art: mkopeningmaps.mjs is the letter-grid compile path for the Ground Check maps and the opening's cursed lists; an encounter's paint is capability.ground-layers (encounter.rime). This extends paint with a ground reference instead of a second way to lay ground.",
-  "expect": "The engine fields encounter.caravan-aftermath on a 32x18 map whose 18 wreck hexes are impassable, with the scene's 7 fires layer.burning and its 31 corpses layer.weak at setup; four heroes in the west zone on clean ground, two Bloodhounds and two Imps at the east end; the battle ends on every seed and both kinds of foe attack; nobody stands on a wreck.",
-  "status": "done",
-  "sha": "be770ee"
- },
- {
-  "id": "kingdom.civilians-played",
-  "kind": "kingdom",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the civilians are played; no 2D before the 3D bodies'): 'There's no movement for the child when I click on it, so the civilians, I think, aren't activating properly.' (2026-08-26: 'Civilians are exactly like heroes.') kingdom/src/core/sandbox.ts gives the player only the drafted heroes (policy humanUnitUids = the first config.heroes.length units, 'the encounter's civilians ... stay the AI's'), so clicking the Orphan Child does nothing and the AI moves it. The sandbox's control policy is every unit fielded on the heroes' side - the drafted heroes and the encounter's civilians - for a new battle and a restored save alike.",
-  "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage, clicking the Orphan Child in the Hero Phase starts its activation and shows where it can move; it moves where clicked; End Turn's pop-up names the civilians that have not acted.",
-  "status": "done",
-  "sha": "0d77bd2"
- },
- {
-  "id": "viewer.bodies-before-board",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the civilians are played; no 2D before the 3D bodies'): 'two-dimensional images of other heroes are loading before the 3D images are loading. You still have some kind of legacy 2D other things loading'. Today the battle shows once its 3D scene is ready (viewer.true-3d-camera) while the bodies (viewer/src/models.js) still load, so every modelled unit stands as its 2D token until its body arrives. (1) The board stays on its loading line until the scene AND the bodies of every unit on the board are loaded (or have failed). (2) A unit that has a body but whose body is still loading (an arrival later in the battle) shows no token picture meanwhile. (3) A body that cannot be loaded keeps the token, said in the status line, as before.",
-  "expect": "Opening BATTLE-SANDBOX.html?play=encounter.opening.orphanage no 2D hero, enemy or civilian picture appears at any moment: the loading line, then the 3D map with every body standing.",
-  "status": "done",
-  "sha": "49495b9"
- },
- {
-  "id": "kingdom.play-launcher",
-  "kind": "kingdom",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the game plays from a link'): 'I don't want to have to go dig for bat files. I want a way to play this game out of a link.' - chose 'Local link on this PC' - 'Make me a game launcher where I can play the various battles.' Today a battle is opened by PLAY-OPENING.bat (which starts tools/battle-atlas/serve.mjs and opens kingdom/BATTLE-SANDBOX.html?play=<encounter>). (1) kingdom/PLAY.html, the launcher, generated from the sandbox's encounter list (kingdom SANDBOX_ENCOUNTERS, the engine's encounters): one card per battle - its name, its place in the opening, what it fields (the engine's enemies and civilians) and a picture of its 3D map - each opening BATTLE-SANDBOX.html?play=<encounter id>; and a free battle (the sandbox's own setup) and the recorded battles (viewer/BATTLE-VIEWER.html). (2) The server answers http://127.0.0.1:4230/play with the launcher. (3) Machine setup, not repo: the server starts with Windows (a hidden start in the Startup folder) so the link always works.",
-  "expect": "http://127.0.0.1:4230/play shows the launcher with the Orphanage, Lumberjack House, Bridge and Cavern Trail; clicking a battle opens it straight into the battle screen; no .bat is run.",
-  "status": "done",
-  "sha": "6993259"
- },
- {
-  "id": "viewer.true-3d-camera",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'a true 3D battle: an orbit camera, every Orphanage unit its own model, no flash of another map'): 'When I maneuver the map, it stretches the 3D assets.' 'The battle screen is sort of 2D, but if I rotate it one direction, it just stretches' - answered 'True 3D orbit'; 'A different map loads for a blink of an eye, and then this map. That other map should not be loading.' Today the board is a flat CSS plane (board.js camera: drag to turn and tilt, wheel to zoom) and the WebGL layer (viewer/src/terrain3d.js) builds its projection from that plane's CSS transform (clipMatrix), so turning the board shears the 3D scene and the bodies. (1) The battle screen's camera is a real THREE perspective camera orbiting the board: rotate all the way around, tilt, zoom, pan (right-drag and the arrow keys), Reset returns to the starting angled view (2026-09-29 camera ruling kept). (2) Everything drawn on the board follows that camera: the hex ground marks (reach, zone of control, path, provoke rings, targets, the red targeting arrow and its numbers), the ghost, the Health/Protection bars and names under units, the acting mark, the floating combat text; and every click and hover lands on the hex or unit under the pointer from any angle (raycast against the board, not the CSS plane). (3) Before the battle's own 3D scene is ready nothing else is shown - no flat swatch board or other map for a blink; a loading state instead. Viewer, with the kingdom sandbox and the replay page (BATTLE-VIEWER.html served) both using it; a page without WebGL 2 says so plainly rather than drawing a flat board.",
-  "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage the board turns a full circle and tilts with the 3D scene and the bodies keeping their proportions at every angle (no stretch); a hex clicked at any angle is the hex under the pointer; the ground marks, the arrow and the bars stay on their hexes and units while turning; no other map appears before the Orphanage's scene.",
-  "status": "done",
-  "sha": "6503899"
- },
- {
-  "id": "viewer.battle-full-screen",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [],
-  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the battle is its own full screen; End Turn and End Activation lower right; a red targeting arrow; every 3D character'): 'I want a fucking battle. It should be full screen. How can I experience this if you've got one screen that is both your launcher and your battle?' 'You've got End Turn and End Activation on the battle map. They shouldn't be. Put them in the lower right-hand corner.' 'The arrow for targeting should be red, not blue.' Today kingdom/BATTLE-SANDBOX.html?play=<encounter> shows the setup form (Field a battle, heroes, seed) above a board squeezed into the lower left of the window. (1) Opening a battle shows the battle alone, filling the window: no setup form, no launcher text; the launcher stays a separate view. (2) End Turn and End Activation leave the board and sit in the screen's lower right-hand corner. (3) The targeting arrow (and its forecast line) is red. Viewer and kingdom halves; the engine test asserts the page opened with ?play= has no setup form visible and the board fills the viewport.",
-  "expect": "BATTLE-SANDBOX.html?play=encounter.opening.orphanage opens to the battle filling the window with nothing of the setup form showing; End Turn and End Activation are in the lower right corner, not over the board; the targeting arrow is red.",
-  "status": "done",
-  "sha": "204da75"
- },
- {
-  "id": "viewer.every-model",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [],
-  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the battle is its own full screen; ...; every 3D character'): 'And there are no 3D characters in this. I want all the 3D characters and enemies and motions.' Seen 2026-09-30 in Andrew's Chrome: the opening battle fields the sandbox's default heroes (Iron Dwarf, Hunter, Battle Chaplain), which are not among viewer/tools/character-models.mjs BINDINGS, so they stand as 2D tokens; on the squeezed board nothing reads as 3D. Every unit fielded in battles 1-3 (heroes the screen fields included) is a 3D model from assets/characters (APPROVED-CHARACTERS.md, assets/battle-demo/roster.mjs), with idle, move, attack, hit and death; flyers fly. The motions the approved looks lack (Skeleton Archer and Soldier attack/hit, the Imps' hit) are supplied per Andrew's answer to the motion question asked 2026-09-30. Corrected 2026-09-30 (Andrew, DECISIONS.md 'a true 3D battle: ...'): 'Everything in Orphanage has a 3D model, so if you're not finding the 3D model, you're just not looking in the right place.   Ask me if there is anything missing in the model because we're not'. The models are in assets/characters/hero-transformations/player-roster/models/ (roster.json, manifest.json): orphan-child, school-teacher, lumberjack, lumberjacks-wife, warrior-iron and the other drafted-hero bodies (ranger-*, priest-*, paladin-*, rogue-*, mage-*, warrior-*). Each drafted hero wears its own body where the roster has one; no unit of battles 1-3 stands as a token; a model lacking a motion or part is asked of Andrew, not substituted silently.",
-  "expect": "In battles 1-3 every hero, enemy and civilian on the board is a 3D model that idles, walks (or flies), attacks, flinches and dies; none stands as a 2D token.",
-  "status": "done-needs-review",
-  "sha": "c7f63bb"
- },
- {
-  "id": "content.fire-imp-flight",
-  "kind": "content",
-  "shape": "data",
-  "needs": [],
-  "probeIds": [
-   "unit.fire-imp"
-  ],
-  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the Fire Imp flies'): 'The Fire Imp does fly, yes. That was an oversight if it does not.' content/gen/enemies-authored.json unit.fire-imp gains \"movePower\": \"flight\", the Imp's own flight move (unit.imp has it); regenerate the engine pack through the content pipeline. Then battle 3 (encounter.opening.bridge) is re-run: it must still end on every seed, as encounter.opening.bridge-ai-refiled made it. Prior art: unit.imp's movePower row; no new mechanism.",
-  "expect": "The engine's unit.fire-imp moves with the flight power; in battle 3 a Fire Imp crosses the river by air; battle 3 still reaches a result on every seed; in the battle screen the Fire Imp plays its flight loop.",
-  "status": "done",
-  "sha": "cc5b106"
  },
  {
   "id": "encounter.opening.bridge-ai-refiled",
@@ -192,66 +74,6 @@
   "sha": "dff2bd5"
  },
  {
-  "id": "viewer.painted-board",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "spec": "PLAYABLE-OPENING-PLAN.md item 4. Ruled 2026-09-29: the painted 3D scenes are the battle board, turned into hex maps (retires 'WebGL is NOT required' for these battles). map.opening.orphanage draws on assets/terrain-3d/orphanage-riverside, lumberjack on lumberjack-forest, bridge on abbotown-encounters/bridge, each aligned to its hex grid. Camera: rotate, zoom, tilt, right-drag to pan, a Reset button to the starting angled view. Served by the local server.",
-  "expect": "Battle 1 opens on the riverside scene with its hexes where the engine's are (an eyeball check linked for Andrew); rotate/zoom/tilt/pan work and Reset returns the starting view.",
-  "attempts": 1,
-  "status": "done-needs-review",
-  "sha": "82e8f77"
- },
- {
-  "id": "viewer.character-models",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [
-   "viewer.painted-board"
-  ],
-  "spec": "PLAYABLE-OPENING-PLAN.md item 5. Ruled 2026-09-29: units are 3D models where one exists, else their token; enemies need idle, move, attack, hit reaction and death, heroes those plus what their weapon's powers need ('most' is enough; outfits may be reused). A dead unit is its model lying where it fell; a downed unit the same with a bleed-out counter. Bind per unit type from assets/characters/APPROVED-CHARACTERS.md and assets/battle-demo/roster.mjs; the viewer computes nothing.",
-  "expect": "Battle 1's Zombies and heroes are animated models that walk, strike, flinch and fall; a unit without a model is its token; a downed hero lies with its counter.",
-  "status": "done-needs-review",
-  "sha": "9e49cf5"
- },
- {
-  "id": "viewer.under-unit",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [
-   "viewer.character-models"
-  ],
-  "spec": "PLAYABLE-OPENING-PLAN.md item 6. Ruled 2026-09-29: under each unit its name, Health bar, Protection bar beneath it, and compact status icons (SWITCHES statusUnderUnit) - no Poison or Burn icon, those show on the body; Stun shown on the body; Slow only changes the movement number; ring, shadow and chips kept; the acting hero marked by a glowing disc with a sweep and a bobbing arrow.",
-  "expect": "Every unit in battle 1 shows name, Health and Protection under it; a stunned unit shows it on the body; a burning one burns; the acting hero carries the disc and arrow.",
-  "status": "done-needs-review",
-  "sha": "4387167"
- },
- {
-  "id": "viewer.play-input",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [
-   "preview.from-planned-hex",
-   "viewer.under-unit"
-  ],
-  "spec": "PLAYABLE-OPENING-PLAN.md item 7. Ruled 2026-09-29: click a hero to act; click an action-bar slot to choose the action; click a hex for a ghost, click again to confirm; right-click steps back; with an attack chosen an arrow follows the pointer and whatever it is over shows the forecast (hit chance, damage, the notch or skull on its Health bar); with nothing chosen, pointing at an enemy lights up where it can move and hit; clicking an enemy shows it in the right panel (the panel shows whoever was clicked last); zone-of-control hatching and the path preview while planning a move. Every legality and number from the engine.",
-  "expect": "Andrew can move and attack in battle 1 with the mouse alone; the forecast shown equals what lands; right-click undoes a stage; no dropdown is needed.",
-  "status": "done",
-  "sha": "31b2d84"
- },
- {
-  "id": "viewer.play-chrome",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [
-   "command.end-player-phase",
-   "viewer.play-input"
-  ],
-  "spec": "PLAYABLE-OPENING-PLAN.md item 8. Ruled 2026-09-29: an End Turn button ending the Player Phase, with the pop-up 'Are you sure you want to end your turn? You have units that have not acted.' when any hero has not acted; the phase ends by itself when all have; enemy turns play in full animation with a 2x speed button; a battle log. Then Andrew plays battle 1.",
-  "expect": "Battle 1 plays start to finish in the new screen: End Turn and its pop-up, 2x speed, the log; an eyeball check for Andrew.",
-  "status": "done",
-  "sha": "3e38de1"
- },
- {
   "id": "encounter.opening.bridge-ai",
   "kind": "engine",
   "shape": "data",
@@ -261,37 +83,6 @@
   "status": "failed",
   "failedAt": "2026-09-30 19:43",
   "reason": "Filed without probeIds, so gate 1 probes 'encounter.opening.bridge-ai', which is not a content id, and can never pass. The work (ranged-kite positionAlone ladder, clearShot) is kept and re-filed as encounter.opening.bridge-ai-refiled with probeIds encounter.opening.bridge. Ruled 2026-09-30, Andrew: 'Park, abandon, re-file'."
- },
- {
-  "id": "viewer.opening-cast",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [
-   "viewer.play-chrome"
-  ],
-  "spec": "PLAYABLE-OPENING-PLAN.md item 10. Battles 2 and 3's cast in the new screen: Skeletal Archer, the Soldier (the undead soldier), Imps and Fire Imps (flying), the Lumberjack, his Wife, the Orphan Child and the School Teacher (tokens where no model), the drafted heroes' outfits by class (reuse allowed). Ranged and flying presentation.",
-  "expect": "Battles 2 and 3 play in the new screen with every unit shown as a model or its token, archers shooting and imps flying.",
-  "status": "done",
-  "sha": "9938024"
- },
- {
-  "id": "kingdom.abbotown-map",
-  "kind": "kingdom",
-  "shape": "plumbing",
-  "spec": "PLAYABLE-OPENING-PLAN.md item 11. Ruled 2026-09-29: the Retaking Abbotown map is built from Andrew's sketch (C:/Users/aring/Downloads/IMG_5078.jpeg; KINGDOM-V2-2026-09-07.md 'Conquest maps'): six sections in order (Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Cathedral), taken ones marked, an arrow on the next; clicking the next starts its battle.",
-  "expect": "The map shows six sections with the taken ones marked and the next pointed to; an eyeball check for Andrew."
- },
- {
-  "id": "kingdom.opening-loop-three",
-  "kind": "kingdom",
-  "shape": "plumbing",
-  "needs": [
-   "kingdom.abbotown-map",
-   "viewer.opening-cast",
-   "encounter.opening.bridge-ai"
-  ],
-  "spec": "PLAYABLE-OPENING-PLAN.md item 12. Ruled 2026-09-29: one page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards (the Orphanage's 20 XP, the Flaming Longsword after battle 2, the item choice after battle 3, level-ups, wounds carried; no tactics) -> map, for the first three battles; a lost battle is replayed with the same party. Narrows kingdom.opening-loop to three battles.",
-  "expect": "Andrew plays from the Orphanage through the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled."
  },
  {
   "id": "rule.immunity-is-resistance",
@@ -307,49 +98,6 @@
   "note": "changesBaseline: a control-battle hero with Rotting Flesh now takes Poison (with 1 Poison Resist against its ticks) where the removed immunity refused it.",
   "status": "done-needs-review",
   "sha": "4dec2c0"
- },
- {
-  "id": "content.ghost-possess-on-attack",
-  "kind": "content",
-  "shape": "data",
-  "needs": [],
-  "changesBaseline": false,
-  "probeIds": [
-   "unit.ghost"
-  ],
-  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Ghost possesses on its Attack at 15%; every resistance works the one way, and it replaces immunity'): 'We should move it to a chance on attack. Let's give it a 15% chance on attack.' unit.ghost's possession rider moves from Possess (25%) to its Attack (onHit, 15%); Possess, 0 damage with nothing left, is dropped. SWITCHES ghostPossessAi answered, ghostPossessReadsMagic retired.",
-  "expect": "The Ghost has one attack, magic-typed on Strength, whose hit possesses at 15%; a possessing hit gives +2 Magic now and the -10 Surge at the next fielding; Ghosts possess in real battles (6 of 40 two-on-two).",
-  "status": "done-needs-review",
-  "sha": "66de9ce"
- },
- {
-  "id": "content.ghost",
-  "kind": "content",
-  "shape": "data",
-  "needs": [],
-  "changesBaseline": false,
-  "probeIds": [
-   "unit.ghost"
-  ],
-  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Ghost as the bestiary has it; Cold Resist; \"Immune X 1\" is a resistance of 1'): 'Should the Ghost go in with its bestiary numbers as-is ...?' - 'Yes.'; earlier the same day: 'Ghost should inflict possession'. unit.ghost authored in content/gen/enemies-authored.json from gen/bestiary.json as-is: tier 1, Strength 4, Precision 5, Armor 0, Health 4, Resist 0, Dodge 10, Accuracy 85, Movement 5, flight; Attack (Strength + 0, magic); Possess (Magic + 0 = the authored 0, magic) whose hit possesses at 25% (the bestiary rider). Phase left out (no stat named). Scenario test.ghost fields two. The AI never picks Possess over Attack: SWITCHES ghostPossessAi, open, brought to Andrew.",
-  "expect": "The Ghost fields with the ported numbers and flight; a Possess hit deals nothing and one in four grants Possession (+2 Magic now, the -10 Surge at the next fielding); two Ghosts fight in test.ghost.",
-  "status": "done",
-  "sha": "63caa8e"
- },
- {
-  "id": "content.immune-one-is-resist",
-  "kind": "content",
-  "shape": "data",
-  "needs": [],
-  "changesBaseline": false,
-  "probeIds": [
-   "badge.frost-resistant"
-  ],
-  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the Ghost as the bestiary has it; Cold Resist; \"Immune X 1\" is a resistance of 1'): 'Immune Frost 1' is +1 Cold Resist, 'Immune poison 1' +1 Poison Resist, 'Immune fire 1' (and Dragon Slayer's 'immunen to fire 1') +1 Fire Resist; the content converter reads 'Immune <element or its status> N' as +N of the element's resistance (Frost is Cold's, Burn is Fire's). 'Immune weak 1' names no element and stays a named gap. SWITCHES immuneNumberedRows answered.",
-  "expect": "Frost Resistant folds 1 Cold Resist and takes 1 off cold damage and nothing off fire; Fire Resistant 1 Fire Resist; Poison Resistant 1 Poison Resist; Dragon Slayer +2 Health and 1 Fire Resist; Curse Resistant's clause is a gap.",
-  "attempts": 1,
-  "status": "done",
-  "sha": "507c660"
  },
  {
   "id": "rule.cold-resist",
@@ -414,22 +162,6 @@
   "sha": "634648c"
  },
  {
-  "id": "content.afflictions-revised",
-  "kind": "content",
-  "shape": "data",
-  "needs": [],
-  "changesBaseline": true,
-  "probeIds": [
-   "badge.cold-heart"
-  ],
-  "spec": "Ruled 2026-09-29 (Andrew, DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). badge.vampirism: +2 Strength, +1 Precision, +3 Health, +1 Resist, +1 Magic, -1 Spirit, grants power.flight-vampiric (flight, Movement + 1, 2 Stamina), the blood drain gone; badge.cold-heart (new, +2 Health, immune to Karma and to Cold) is granted WITH Vampirism on the same roll when it is inflicted - the badge row's inflictedWith, compiled onto the badge.grant trigger as withBadgeIds; badge.possession -10 Surge; Deathbed Fighting, deploy costs, half experience, the melee-hit heal and the immunities are named gaps on the rows. Engine rule: a badge.grant trigger effect may carry withBadgeIds, badges granted with the first on the same roll, only when the first is newly granted.",
-  "expect": "A Vampire's bite that afflicts gives the hero Vampirism and Cold Heart on one roll: +2 Strength, +1 Precision, +1 Resist, +1 Magic, -1 Spirit, +5 Max Health, and Flight (Vampiric) in its actions; a later bite grants neither again; no enemy carries Cold Heart; Possession folds -10 Surge.",
-  "note": "The control battles field no afflicted hero and no possessor; the vampire riders move only battles where a bite lands and rolls under 20/30. Corrected 2026-09-29 (attempt 2, before any landing): gate 1 found no standard battle where a bite afflicts, so scenario test.vampire-bite fields one (replicate 7, the first whose roll succeeds); power.flight-vampiric left the probe list — no battle flies an afflicted hero, and test/afflictions.test.ts asserts it joins the hero's actions. Corrected 2026-09-29 (attempt 3): changesBaseline true. The control battles move by TEXT only — diffed on map.highlands and map.thicket (25 replicates each) against the HEAD pack: 3 lines of 25k differ, each a zombie's badge.gained for Rotting Flesh whose gaps list now names '+20 Deathbed Fighting'; no roll, number or outcome moved.",
-  "attempts": 3,
-  "status": "done",
-  "sha": "38f7b72"
- },
- {
   "id": "fix.opening-first-level",
   "kind": "engine",
   "shape": "data",
@@ -461,24 +193,6 @@
   "note": "Switches: which starting Zombie goes (default: (19,5), keeping (19,3)); which later Zombie goes (default: Turn 5's from the left edge, keeping Turn 4's from the bottom edge, left of the water).",
   "status": "done-needs-review",
   "sha": "46447bb"
- },
- {
-  "id": "content.hero-health-floor",
-  "kind": "content",
-  "shape": "numbers",
-  "needs": [
-   "fix.opening-party"
-  ],
-  "probeIds": [
-   "encounter.opening.orphanage"
-  ],
-  "changesBaseline": true,
-  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'the Orphanage loses a Zombie ...; every hero has at least 7 Health' and 'the first hero: ... the Peddler's Vest gives Health'): 'Let's increase the health of everybody to at least 7.' 'Gives you 2 health, but you lose 5 dodging, 5 accuracy.' In the Codex, through the file that owns each number (find the owner first - content/gen/heroes.json is built by build-heroes.mjs; never hand-edit a generated file): every Eve-of-Ruin base hero row's Health is at least 7 (the four Rogues at 5, the four Mages at 6, the Rangers at 5-6 rise; Priests 7, Paladins 9, Warriors 10-12 stay), and item.peddlers-vest is health +2 (was -2), dodge -5, accuracy -5, itemSlots +1 (content/gen/armor-enchants.json and CODEX.md's row). Pipeline to the engine pack; every test or golden that fields a raised row follows as a Law 10 edit with its reason; the control-battle change is declared.",
-  "expect": "Every hero.base row fields Health at least 7 before its kit; the Peddler's Vest adds 2 Health and takes 5 Dodge and 5 Accuracy; the Codex and the engine pack agree; the moved control battles are declared.",
-  "note": "Switches: Health 7 is the row's floor, not the fielded floor after the kit (default; asked 2026-09-28); civilians keep their dictated numbers (default: yes - e.g. the Lumberjack's Wife's Health 6; asked).",
-  "status": "failed",
-  "failedAt": "2026-09-29 06:09",
-  "reason": "Superseded before any code by Andrew's 2026-09-28 23:09 reply (DECISIONS.md 'no Health minimum; the Peddler's Vest has no Health change; the first hero ...'); re-filed with the ruled rules."
  },
  {
   "id": "fix.opening-first-hero",
@@ -649,21 +363,6 @@
    "at": "2026-09-27T23:51:30.757Z",
    "note": "Okay, all of the flagged landings seemed fine."
   }
- },
- {
-  "id": "fix.masterwork-scope",
-  "kind": "content",
-  "shape": "data",
-  "needs": [
-   "pack.derived-rows"
-  ],
-  "spec": "Andrew 2026-09-25 (DECISIONS.md, 'masterwork: one-handers and shields too'): masterwork applies to tier-1 two-handers, one-handers, shields and armor (GEAR-DESIGN.md §3, as corrected). content/mkenginepack.mjs (the masterwork rule beside the tier-3 rule, ~line 1558) still makes rows for two-handers and armor only, never a shield. Widen the rule; what masterwork gives is unchanged (+1 Max Stamina, tier 2). The kingdom's tools/mk-items.mjs carries the same hard-coded rule and must change in the kingdom package too, or every kingdom id will no longer resolve in one direction.",
-  "expect": "item.longsword.masterwork exists and has +1 maxStamina over item.longsword; a tier-1 shield has a masterwork row; no shield has an enchanted tier-2 row; every masterwork id the kingdom generates resolves in the engine's ITEMS",
-  "note": "Filed 2026-09-25 from Andrew's ruling. SWITCHES.md longswordMasterwork is superseded by it.",
-  "probeIds": [],
-  "changesBaseline": false,
-  "status": "done",
-  "sha": "add7432"
  },
  {
   "id": "fix.vs-target-worn-and-flat",
@@ -1170,36 +869,6 @@
   "sha": "4a705ec"
  },
  {
-  "id": "v2.shields",
-  "kind": "content",
-  "shape": "data",
-  "needs": [
-   "plumbing.shield-class"
-  ],
-  "spec": "V2 R1, the whole feature in one item (Andrew, 2026-09-23: one item per feature; merges content.v2-shields, content.v2-weapon-block and the kingdom hands rule). CONTENT: the three shields authored and published to the pack - Kite +20 Block +5 Ranged Block; Round +10/+10; Tower +15/+15, -10 Dodge, -1 max Stamina, re-authoring item.tower-shield in place. All three itemClass shield, hands 1. Two powers each at the provisional numbers in engine/SWITCHES.md shieldPowerNumbers. item.knight-shield and item.buckler retire with power.knight-shield.block and power.buckler.block-and-dodge; pot-lid and holy-shield stay exactly as authored. Kits reassigned per V2-SHIELDS-AND-WEAPONS-2026-09-20.md fourth pass. WEAPON BLOCK: one-handed swords +5 Block; two-handed swords +10 Block; knives and daggers +5 Block; Block only, never Ranged Block. Axes: onBlock (attacker) the blocking target loses 20 Block and 20 Ranged Block for the battle, floored at 0, on any block. Maces and hammers +2 Impact. Unstated fire/poison amounts are provisional switches. KINGDOM: src/core/loadout.ts fieldedItemsOf/slotCostOf count shield class toward the two hands exactly as the engine does; no backpack shield is fielded.",
-  "expect": "Each shield appears in a real battle with positive Block; a Tower-carrying hero shows -10 Dodge and -1 max Stamina; each of the six shield powers fires in a battle; no kit or start pool names a retired shield; a sword-armed unit blocks in a real battle; a blocked axe hit leaves the target 20 lower in Block and Ranged Block for the battle, never below 0; swords and daggers add no Ranged Block; kingdom loadout tests: shield + 2h weapon refused, shield in the backpack not fielded.",
-  "note": "Replaces content.v2-shields and content.v2-weapon-block (abandoned as merged). Open in the record: fire and poison amounts (item 3), axe on weapon blocks (item 4, default any block).",
-  "probeIds": [
-   "item.kite-shield",
-   "item.round-shield",
-   "item.tower-shield",
-   "power.kite-shield.shield-wall",
-   "power.kite-shield.raise-guard",
-   "power.round-shield.turn-aside",
-   "power.round-shield.brace",
-   "power.tower-shield.cover",
-   "power.tower-shield.stand-tall"
-  ],
-  "changesBaseline": true,
-  "status": "done",
-  "sha": "aaf51a5",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-27T23:51:30.757Z",
-   "note": "Okay, all of the flagged landings seemed fine."
-  }
- },
- {
   "id": "plumbing.shield-class",
   "kind": "engine",
   "shape": "plumbing",
@@ -1216,34 +885,6 @@
    "at": "2026-09-27T23:51:30.757Z",
    "note": "Okay, all of the flagged landings seemed fine."
   }
- },
- {
-  "id": "content.v2-shields",
-  "kind": "content",
-  "shape": "data",
-  "needs": [
-   "plumbing.shield-class"
-  ],
-  "spec": "V2 R1 part 2 - the three shields, authored in content and published to the pack. Kite +20 Block +5 Ranged Block; Round +10/+10; Tower +15/+15, -10 Dodge, -1 max Stamina, re-authoring item.tower-shield in place. All three itemClass shield, hands 1. Two powers each at the provisional numbers in engine/SWITCHES.md shieldPowerNumbers. item.knight-shield and item.buckler retire with power.knight-shield.block and power.buckler.block-and-dodge; pot-lid and holy-shield stay exactly as authored. Kits reassigned per V2-SHIELDS-AND-WEAPONS-2026-09-20.md fourth pass.",
-  "expect": "Each shield appears in a real battle with positive Block; a Tower-carrying hero shows -10 Dodge and -1 max Stamina; each of the six powers fires in a battle; no kit or start pool still names a retired shield.",
-  "note": "Content is authored in the content package and published into src/content/generated/pack.ts; the engine chat gates the published pack.",
-  "status": "failed",
-  "failedAt": "2026-09-23 09:19",
-  "reason": "Merged into v2.shields - one backlog item per feature (Andrew, 2026-09-23, DECISIONS less process per feature)"
- },
- {
-  "id": "content.v2-weapon-block",
-  "kind": "content",
-  "shape": "data",
-  "needs": [
-   "content.v2-shields"
-  ],
-  "spec": "V2 R1 part 3 - weapon Block per V2-SHIELDS-AND-WEAPONS-2026-09-20.md. One-handed swords +5 Block; two-handed swords +10 Block; knives and daggers +5 Block; all Block only, never Ranged Block. Axes: onBlock (attacker) the blocking target loses 20 Block and 20 Ranged Block for the whole battle, floored at 0, firing on any block. Maces and hammers +2 Impact. Fire damage amounts on maces and hammers, and fire or poison on other weapons, are not stated: provisional values as a switch.",
-  "expect": "A sword-armed unit blocks in a real battle; an axe hit that is blocked leaves the target's Block and Ranged Block 20 lower for the rest of the battle and never below 0; swords and daggers add no Ranged Block.",
-  "note": "Open in the record: fire and poison amounts (item 3), axe on weapon blocks (item 4, default any block).",
-  "status": "failed",
-  "failedAt": "2026-09-23 09:19",
-  "reason": "Merged into v2.shields - one backlog item per feature (Andrew, 2026-09-23, DECISIONS less process per feature)"
  },
  {
   "id": "status.poison",
@@ -1624,19 +1265,6 @@
   }
  },
  {
-  "id": "content.mage-staff",
-  "kind": "content",
-  "shape": "numbers",
-  "spec": "NOT A DEFECT — Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
-  "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not — the split is visible in the sweep, not just in the design",
-  "probeIds": [
-   "attack.lightning-staff.bolt"
-  ],
-  "note": "Open question that IS real: attack.mage.strike was used 0 times in 300 battles, the same dead-content shape as Massive Strike. The melee option on a ranged unit may never be worth taking. Unblocked 2026-09-28 (Andrew, DECISIONS.md 'the staff-vs-bow check runs against the Codex's armored enemies'): unit.brute was closed as superseded; sweep against the Codex's armored bestiary rows (unit.skeleton armor 1, unit.bruiser-demon armor 4, ...) and an unarmored one.",
-  "status": "done",
-  "sha": "7b4a095"
- },
- {
   "id": "terrain.water-cleanses",
   "kind": "terrain",
   "shape": "rule",
@@ -1679,65 +1307,6 @@
   "expect": "all six baselines byte-identical, because no unit carries a trigger yet",
   "changesBaseline": false,
   "note": "turnEnd renamed to onActivationEnd -- GAME-DESIGN 5 uses the banned Turn/Activation collision. Four Hell TCG anti-patterns designed out with a test each. | 2026-08-15: COMBAT-SEQUENCE.md had onAttack at step 6 (after Apply), where a miss could never reach it. Angela moved it to step 1. The code was already right and the DOCUMENT was wrong -- luck, not correctness, so the per-hit order is now asserted in test/trigger.test.ts."
- },
- {
-  "id": "trigger.zombie.rot",
-  "kind": "content",
-  "shape": "trigger",
-  "spec": "Zombie: 20% onDamage, apply status.poison 1 to target. Replaces the hardcoded `applies` rider on attack.zombie.basic, which is a 100% onHit trigger with no chance and no hook.",
-  "expect": "poison lands on roughly 20% of zombie hits that dealt damage, and the applies rider is deleted",
-  "changesBaseline": true,
-  "needs": [
-   "trigger.mechanism"
-  ],
-  "note": "status.poison is PUBLISHED in 1-EFFECTS-SETTLED.md -- the only one of the three rows that is.",
-  "variants": [
-   "trigger.zombie.rot",
-   "test.warrior.second-wind"
-  ],
-  "attempts": 1,
-  "status": "done",
-  "sha": "676f6b3",
-  "gauntlet": "not passed — 2 flag(s) warned",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
-  }
- },
- {
-  "id": "trigger.zombie.sap",
-  "kind": "content",
-  "shape": "trigger",
-  "spec": "Zombie: a SECOND, independent 20% onDamage, apply status.weakness 1 to target.",
-  "expect": "both zombie triggers roll independently -- roughly 4% of damaging hits apply both",
-  "needs": [
-   "trigger.mechanism"
-  ],
-  "note": "ABSORBED 2026-08-20 into the status.weakness landing as test.zombie.sap (testing-lane id — trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts. Do not build separately.",
-  "status": "failed",
-  "failedAt": "2026-09-25 13:01",
-  "reason": "Superseded by test.zombie.sap, absorbed 2026-08-20 into the status.weakness landing (testing-lane id; trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts 'sap weakens heroes; rot and sap roll independently on their own streams'. Closed per the 2026-09-25 wrap's Next line."
- },
- {
-  "id": "trigger.mage.kindle",
-  "kind": "content",
-  "shape": "trigger",
-  "probeIds": [
-   "test.mage.kindle"
-  ],
-  "variants": [
-   "test.mage.kindle",
-   "test.mage.dampen"
-  ],
-  "spec": "Mage: 100% onAttack -- every swing, hit or miss -- apply status.burn to target, value = ceil(partyMagicSum / 5). Angela: this is compensation for the Mage's lower hit chance, and is deliberately NOT the flaming-bow onHit case.",
-  "expect": "burn applies on misses too, and rises to 2 when the party Magic sum reaches 6",
-  "needs": [
-   "trigger.mechanism"
-  ],
-  "note": "BLOCKED BY ANGELA'S OWN FILE: 1-EFFECTS-SETTLED.md says status.burn 'is not yet shaped, so do not reference it from another session yet'. Built once already and removed. The party-wide sum is already implemented and tested.",
-  "status": "done",
-  "sha": "53322a9"
  },
  {
   "id": "station.vs-target",
@@ -1995,20 +1564,6 @@
   "changesBaseline": false,
   "status": "done",
   "sha": "87bca9c"
- },
- {
-  "id": "fix.poison-shape",
-  "kind": "content",
-  "shape": "plumbing",
-  "spec": "status.poison is declared shape:'pool'; core/status.ts's own table says poison is a counter (a pool is spent when something consumes it — protection, shields). shape is documentation and never branches, which is why a wrong one sits there indefinitely.",
-  "expect": "the declared shape matches the shape table",
-  "changesBaseline": false,
-  "probeIds": [
-   "status.poison"
-  ],
-  "status": "done",
-  "sha": "afb6ff9",
-  "gauntlet": "passed"
  },
  {
   "id": "station.accuracy-field",
@@ -2293,66 +1848,6 @@
   }
  },
  {
-  "id": "unit.spirit-snake",
-  "kind": "content",
-  "shape": "data",
-  "spec": "The Spirit Snake — first of the Beast pen, mined from the Codex Beast class (published source, ruled 2026-08-20). Codex §10 statline verbatim (str 1, prec 1, armor 1, hp 2, reach 1); §5 Fangs Bite (+2 strength melee, shared attack row); §3 Serpent rider as trigger.spirit-snake.venom (onHit 100%, poison 2 — unconditional onHit is identical while the bite is its only attack). Accuracy 70 = SWITCHES.md beastAccuracy (Codex prices every class but Beast); stamina 0 (enemies do not run stamina). Extends the FIRST_BATTLE cycle at slot 5 — composition of the first four unchanged. Forced one core fix: setup named every enemy Zombie N (content literal in core); enemies are now named from their typeId. Viewer: zombie art + green coil-ring overlay + venom pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
-  "expect": "bite previews 3 vs the ranger and 2 vs the warrior; venom applies poison 2 in real battles; at enemyCount 4 the composition is the original 4v4",
-  "probeIds": [
-   "unit.spirit-snake",
-   "trigger.spirit-snake.venom",
-   "attack.fangs.bite"
-  ],
-  "changesBaseline": true,
-  "attempts": 1,
-  "status": "done",
-  "sha": "2ca5d4d",
-  "gauntlet": "not passed — 1 flag(s) warned",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
-  }
- },
- {
-  "id": "unit.green-drake",
-  "kind": "content",
-  "shape": "data",
-  "needs": [
-   "unit.spirit-snake"
-  ],
-  "spec": "The Green Drake — Codex §10 statline verbatim (str 5, prec 4, armor 1, hp 12, reach 2, resist 1; toughness dropped, no field); §5 Breath Hiss (+0 magic, range 3, rider as trigger.green-drake.venom-breath onHit 100% poison 2). Published magic 0 makes Hiss a 0-damage attack — the threat is the poison clock, faithful to the rows (flagged for Angela: if this reads wrong in play the fix is attack-scoped triggers, not a fangs fallback). Extends the cycle at slot 10 — enemyCount 8 control battles are BYTE-IDENTICAL (changesBaseline false, proven neutral). Forced one AI generalization: dumb-melee swings at what is IN REACH via canAttack (Law 2), not merely adjacent — an adjacency-only check meant the drake closed and never attacked; for reach-1 units (every zombie) candidates and idle text are the old behaviour exactly. Viewer: double emerald ring + venom pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
-  "expect": "hiss previews 0 damage at reach 5; venom-breath poisons in z=12 battles; z=8 battles byte-identical",
-  "probeIds": [
-   "unit.green-drake",
-   "trigger.green-drake.venom-breath",
-   "attack.breath.hiss"
-  ],
-  "changesBaseline": false,
-  "status": "done",
-  "sha": "1880d24",
-  "gauntlet": "passed"
- },
- {
-  "id": "unit.shadow-hound-puppy",
-  "kind": "content",
-  "shape": "data",
-  "needs": [
-   "unit.spirit-snake",
-   "status.bleed"
-  ],
-  "spec": "The Shadow Hound Puppy — Codex §10 statline verbatim (str 6, prec 2, armor 0, hp 12, reach 1; toughness dropped, no field); §3 Hound rider as trigger.shadow-hound-puppy.worry (onHit 100%, bleed 1 — named for the Hound power Worry the Wound); shares attack.fangs.bite. Landed LAST of the pen because the kit needs status.bleed. melee-aggressive — the thing that is still coming. Cycle slot 11 — z=8 control battles byte-identical (changesBaseline false). Viewer: umbral violet ring + worried! pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
-  "expect": "bite previews 7 vs the warrior; worry bleeds in z=12 battles and the bleed ticks its flat 2; z=8 battles byte-identical",
-  "probeIds": [
-   "unit.shadow-hound-puppy",
-   "trigger.shadow-hound-puppy.worry"
-  ],
-  "changesBaseline": false,
-  "status": "done",
-  "sha": "792cc14",
-  "gauntlet": "passed"
- },
- {
   "id": "viewer.status-legibility",
   "kind": "engine",
   "shape": "plumbing",
@@ -2373,21 +1868,6 @@
    "at": "2026-08-20T20:53:39.777Z",
    "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
- },
- {
-  "id": "map.showcase",
-  "kind": "content",
-  "shape": "data",
-  "spec": "The Proving Ground (test.map.showcase, TESTING LANE — never ships): one board exercising every ground mechanic at once — western river (washes), an ember band (rows 3-4) and a blight belt (rows 6-7) both sides must cross, hills for modifiers, both deployment rows clean. Exists so a single replay can SHOW every landed mechanic (Angela 2026-08-20: a replay that shows off all the various new things). Joins MAP_PANEL, so the baseline gains one line; the six real maps and embers are untouched.",
-  "expect": "battles on it produce ember applies, blight applies and river washes; deployment rows are hazard-free",
-  "probeIds": [
-   "test.map.showcase"
-  ],
-  "changesBaseline": true,
-  "attempts": 3,
-  "status": "done",
-  "sha": "5788005",
-  "gauntlet": "passed"
  },
  {
   "id": "viewer.showcase-vfx",
@@ -2426,26 +1906,6 @@
   "status": "done",
   "sha": "5d7a21b",
   "gauntlet": "passed"
- },
- {
-  "id": "fix.beast-pen-hero-correction",
-  "kind": "content",
-  "shape": "data",
-  "needs": [
-   "trigger.attack-scoped"
-  ],
-  "spec": "Angela 2026-08-20: the Beast pen are PLAYER beasts and the ported blocks were never her design; content changes land in the CODEX, the source of truth, not hard-coded. Her rulings went into content/settled.json (a new hero-rulings overlay assemble.mjs applies) and the Codex was regenerated (PROBLEMS: 0); the engine now mirrors the Codex. Spirit Snake: hero-side, her dictated block (hp 4, dodge 50, move 8, acc 110, armor 0, resist 2, str 2, prec 0, stamina 8), venom 3 Poison on hit scoped to the fangs; zero item slots and no weapon slots (slots live in the Codex — no engine loadout yet). Green Drake: hero-side, her block (hp 12, armor 2, resist 1, str 4, prec 3, acc 65, reach 2), two attacks with different scoped riders — Poison Breath (precision magic, 3 Poison, 2 Stam) and Snap (strength, 1 Poison, 1 Stam); Flight waits on movement.flight. Puppy: pulled, benched-provisional, pending her block. The horde cycle is the original undead texture again; fangs cost their Codex Stam 1 (brawlStaminaCost answered). ALL THREE ARE BENCHED by her fielding ruling — hence the unreachable exemption: they appear in no standard battle until party assembly exists; the custom-battle tests field them.",
-  "expect": "snake never misses a zombie (acc 110) and lands 4 damage + 3 poison per bite; drake breath poisons 3 and snap poisons 1 with correct stamina; no beast in any horde; control battles re-blessed",
-  "unreachable": "BENCHED by Angela's fielding ruling (2026-08-20): all three beasts are hero-side and out of the default party until party assembly exists — no standard battle can field them, so gate 1 has nothing to probe; the custom-battle tests in test/spirit-snake.test.ts and test/green-drake.test.ts field them instead.",
-  "changesBaseline": true,
-  "status": "done",
-  "sha": "a4822ab",
-  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-23T02:15:22.648Z",
-   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
-  }
  },
  {
   "id": "movement.powers",
@@ -2490,33 +1950,6 @@
    "by": "Angela",
    "at": "2026-09-04T09:04:13.393Z",
    "note": "Flight rides on movement powers. The two common movement types are flight and walking."
-  }
- },
- {
-  "id": "content.test-cohort",
-  "kind": "content",
-  "shape": "data",
-  "spec": "THE STANDARD TEST SIX (Angela 2026-08-20): heroes tracked in the Codex, not dictated — six clones, one per class, copied so they can be tweaked without touching the originals: Oathblade I (warrior), Sky Pirate I (rogue), Dusk Hawk I (ranger), Air Mage (mage), Lucius (priest), Osric (paladin) — plus test copies of the zombie horde as the Codex bestiary seed. Source of truth: content/settled.json testCohort → assemble.mjs resolves clones → mkenginepack.mjs exports src/content/generated/pack.ts (NEVER hand-edited) → pack.ts loader validates loudly and merges with collision-is-an-error. Clearly differentiated: test- typeIds, (TEST) names, enforced by the loader. Stats first, weapons next (her ruling). The testing-lane riders travelled to the cohort with unchanged ids so every status kept its bearer, and the FIRST retIREMENT happened: test.ranger.serrated-arrows is gone — the Sky Pirates published Cutlass (converter-mapped from the Codex, on damage bleed 1) is bleeds battle source now. Old dictated defs remain ONLY as custom-battle fixtures pending backlog test.fixture-migration. New id kind declared: hero.* (GLOSSARY).",
-  "expect": "the standard battle is 6v4, every fielded typeId is test- prefixed, stat blocks match the Codex rows verbatim, the Cutlass bleeds, and no unit in the registry carries serrated-arrows",
-  "probeIds": [
-   "test-oathblade",
-   "test-sky-pirate",
-   "test-dusk-hawk",
-   "test-air-mage",
-   "test-lucius",
-   "test-osric",
-   "test-zombie",
-   "test-zombie-burning",
-   "test.sky-pirate.apply-bleed"
-  ],
-  "changesBaseline": true,
-  "status": "done",
-  "sha": "286472a",
-  "gauntlet": "not passed — 1 flag(s) warned",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-23T02:15:22.648Z",
-   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
   }
  },
  {
@@ -2580,19 +2013,6 @@
   "status": "failed",
   "failedAt": "2026-09-26 00:46",
   "reason": "Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. Board-space geometry (colStep 128, rowStep 96, oddOffset 64, cell 128x132) is emitted by tools/field-geometry.mts, and projection and exact distance are engine-owned through the viewer door (viewer.direct-map-initialization, viewer.runtime-metadata)."
- },
- {
-  "id": "content.art-manifest",
-  "kind": "content",
-  "shape": "data",
-  "spec": "PLAYBACK-DESIGN §5.2, §13 item 3. One generated manifest keyed by CODEX ENTITY ID, absorbing battle-tokens/manifest.json (23 of 32 slugs) and content/art/*manifest*.json, adding the fields the board needs. `aspect` and `height` are REQUIRED — a missing value is a loud build failure, never a default, because hardcoding 1.55 is exactly why the Grave Warden would be the wrong size. Board mips are DERIVED by the build, never hand-touched. RULED 2026-08-21: another chat builds this manifest and inserts it; the playback design owns its CONTRACT, not its construction.",
-  "expect": "every unit the playback build needs resolves to a card, a token, an aspect and a height from one generated file; a missing aspect or height throws",
-  "changesBaseline": false,
-  "needs": [],
-  "note": "Built by another chat per the ruling. The row exists here because the playback build depends on it.",
-  "status": "failed",
-  "failedAt": "2026-09-26 00:46",
-  "reason": "Closed on Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): written for the old engine-side playback build (viewer.build), which is superseded by the viewer/ package; the viewer prepares its own art into viewer/generated/art/."
  },
  {
   "id": "viewer.build",
@@ -2696,26 +2116,6 @@
   "status": "failed",
   "failedAt": "2026-09-26 00:46",
   "reason": "Closed as superseded under Andrew's 2026-09-25 ruling (DECISIONS.md, 'the engine's viewer items close'): the battle screen is the viewer/ package, its own repository since 2026-09-02 (THREE-PACKAGES-PLAN.md), and this row was written 2026-08-21 against VFX/hexVFX.js and build-replay.mjs, neither of which exists now. Still open, carried to the viewer's work list (VFX/VISUAL-BATTLE-UPDATES.md section 4): stun, slow and protection still borrow the shadow, frost and weak hexVFX styles (viewer/src/theme.js line 89). The single hue table is viewer/src/theme.js."
- },
- {
-  "id": "fix.shadow-hound-hero-side",
-  "kind": "content",
-  "shape": "data",
-  "spec": "RULED 2026-08-21: 'Shadow Hound Puppy is supposed to be a hero, not an enemy. All of those initial beasts, of which there were only a couple, were meant to be heroes.' The 2026-08-20 Beast-pen ruling reached the snake and the drake (fix.beast-pen-hero-correction, a4822ab) and missed this row, which kept side 'enemy' from its ported block — so index.ts carried a comment reading 'the Beast pen are PLAYER beasts' directly above a field saying enemy. Found by the side check added with scenario.export, which threw rather than silently swapping the unit's side. Does NOT settle its stat block: the numbers are still the ported Codex row awaiting her dictation. maxStamina 0 is an enemy property and attack.fangs.bite costs 1 Stamina, so hero-side the puppy can move and can never attack — recorded, not invented around ('copy, don't invent'). Harmless while benched.",
-  "expect": "the puppy enters battles side 'hero', showcase.beasts fields all three beasts hero-side, and a test asserts the can-move-cannot-attack gap so her dictated block breaks it loudly instead of changing behaviour silently",
-  "changesBaseline": false,
-  "needs": [],
-  "probeIds": [
-   "showcase.beasts"
-  ],
-  "note": "Not in content/settled.json at all — unlike the snake and drake this ruling could not go through the Codex pipeline, because the puppy exists only as a hand-typed def in engine/src/content/index.ts. That is a content gap.",
-  "status": "done",
-  "sha": "3314213",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-23T02:15:22.648Z",
-   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
-  }
  },
  {
   "id": "sim.coverage",
@@ -3173,59 +2573,6 @@
   }
  },
  {
-  "id": "content.field-eve-24",
-  "kind": "content",
-  "shape": "data",
-  "spec": "Field the rest of the Eve-of-Ruin 24 in the engine pack (content/mkenginepack.mjs currently fields the prologue three — Hunter, Iron Dwarf, Battle Chaplain — plus the three civilians). All 24 carry FULL kits in hbt-content.json heroKits (2026-08-27b), so every one resolves deterministically under the pack's own kit law; no draw is needed. Ruled 2026-09-02 (Andrew): the four alpha heroes — Air Mage, Oathblade, Sky Pirate, Dusk Hawk — are REMOVED from the kingdom's pool because no kit exists for them; the kingdom needs kitted Eve mages, paladins and rogues in the pack to draft six and to recruit at the Beacon. Lucius (hero.base.priest-scantily) and Osric (hero.base.paladin-shiney) are Eve rows still fielded as alpha-lucius / alpha-osric test units; fielding their real rows retires those too.",
-  "expect": "UNITS carries a hero.base.* row for each of the 24 with attacks and folded kit stats per the existing three; the kingdom's src/content/heroes.ts can then list them by id with no alpha-* unitType left",
-  "changesBaseline": false,
-  "needs": [],
-  "probeIds": [
-   "hero.base.mage-fire",
-   "hero.base.rogue-skull"
-  ],
-  "variants": [
-   "hero.base.mage-fire",
-   "hero.base.rogue-skull"
-  ],
-  "note": "Filed from the kingdom session 2026-09-02; the kingdom reads the engine and never edits it. Until this lands the kingdom's pool is five heroes and the opening drafts what the pool holds.",
-  "status": "done",
-  "sha": "60710eb",
-  "gauntlet": "not passed — 3 flag(s) warned",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-23T02:15:22.648Z",
-   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
-  }
- },
- {
-  "id": "pack.items",
-  "kind": "content",
-  "shape": "data",
-  "spec": "engine/ITEMS-PLAN.md §3: content/mkenginepack.mjs emits ItemDef rows (id, name, itemClass, hands, slots, statModifiers in engine stat names, grants, abilities, compiled triggers with source = the item id) into src/content/generated/pack.ts — weapons and armor first, then every other class whose payload compiles; attacks widened to every attack any packed item grants; an ITEMS registry in src/content/index.ts beside UNITS and ATTACKS, on Ctx so CF_DISABLE_IDS reaches it. Compile or name the gap: vision, itemSlots, toughness, corruption and unparsed trigger prose go to gaps.json, never rounded.",
-  "expect": "every kit item in heroKits resolves to an ItemDef; every grants id is in ATTACKS; disabling an item id by kill-switch refuses loudly where it is referenced",
-  "changesBaseline": false,
-  "needs": [
-   "content.field-eve-24"
-  ],
-  "probeIds": [],
-  "variants": [
-   "item.longsword",
-   "item.thick-hide"
-  ],
-  "note": "Filed from the kingdom session 2026-09-02. Plan: engine/ITEMS-PLAN.md.",
-  "unreachable": "an item id appears in no battle log until seam.items-per-unit fields one (the next landing, which carries the probe); this landing is the registry, proven by pack-items.test against the Codex rows",
-  "status": "done",
-  "attempts": 1,
-  "sha": "058e75e",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-23T02:15:22.648Z",
-   "note": "Andrew, 2026-09-22: Clear the 57 landing review queue in one go."
-  }
- },
- {
   "id": "seam.items-per-unit",
   "kind": "engine",
   "shape": "plumbing",
@@ -3472,29 +2819,6 @@
    "by": "Angela",
    "at": "2026-09-04T08:43:06.842Z",
    "note": "18 is fine."
-  }
- },
- {
-  "id": "content.enemy-flip",
-  "kind": "content",
-  "shape": "data",
-  "spec": "The standard battle's horde becomes AUTHORED rows: the Codex's own Zombie (enemies-authored.json) and a Burning Zombie authored from 6-BESTIARY-SETTLED — Angela 2026-08-20: 'You could create a burning zombie and mix them in with the other zombies. On taking damage, the zombie deals 1 burn to its attacker.' — mixed in one per four, the ruled cadence kept; its trigger keeps the published id trigger.zombie-burning.sear. The converter packs EVERY authored enemy (33), not only the prologue's; two silent drops become named gaps (enemy special moves move.*, and stat-less attacks like the Eyeblight's gaze). The test enemy clones stay in the pack as an explicitly-fielded fixture (TEST_COHORT.enemies) for the test-lane riders (grasp, sap, lurch, rot). The last of the standard battle's scaffolding.",
-  "expect": "every control battle moves (the horde changed); the standard battle fields unit.zombie x3 + unit.zombie-burning per four; the sear burns attackers in the standard battle; every authored enemy is in UNITS and every dropped clause is a named gap; tests that assumed the test enemies field them explicitly or take pressure from a larger authored horde (reasons at the edits). FINDING to carry to Andrew: four authored zombies are a 2.8-turn walkover for the Alpha Team",
-  "changesBaseline": true,
-  "needs": [
-   "seam.items-per-unit"
-  ],
-  "probeIds": [
-   "unit.zombie-burning",
-   "trigger.zombie-burning.sear"
-  ],
-  "status": "done",
-  "sha": "01d871a",
-  "gauntlet": "not passed — 2 flag(s) warned",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-04T08:49:00.686Z",
-   "note": "Yes to content enemy flip. We are moving away from the initial hard-coded test cases that the engine did."
   }
  },
  {
@@ -3773,30 +3097,6 @@
   "status": "failed",
   "failedAt": "2026-09-24 12:18",
   "reason": "Retired by COMBAT-V2-DESIGN section 18: a stowed weapon grants nothing (section 11.1). Replaced by v2.loadout (4910771) and v2.loadout-swap (dd78ff1)."
- },
- {
-  "id": "pack.derived-rows",
-  "kind": "content",
-  "shape": "data",
-  "spec": "Filed from the kingdom session 2026-09-03 (seam.loadout, G9). The kingdom generates 30 masterwork rows (item.<base>.masterwork: +1 Max Stamina, tier 2) and 173 enchanted tier-2 rows (item.<base>.<enchant>) from the codex per GEAR-DESIGN.md §3 — the Forge sells them. The engine's ITEMS registry has the 274 codex items and the 236 tier-3 combinations, not these 203, so a hero who buys one off the shelf and wears it into battle is refused by applyItems ('not an item in the registry'). Either the pack derives the same rows by the same rule (the kingdom's tools/mk-items.mjs is the reference) or the kingdom hands the engine a row, not an id — the first keeps one owner per row.",
-  "expect": "every id in kingdom/src/content/generated/items.ts resolves in the engine's ITEMS; a hero fielded with item.longsword.masterwork has +1 maxStamina over the longsword",
-  "changesBaseline": false,
-  "needs": [
-   "pack.items"
-  ],
-  "probeIds": [],
-  "variants": [
-   "item.longsword.masterwork",
-   "item.ancient-tome.cruel"
-  ],
-  "note": "Filed from the kingdom session 2026-09-03.",
-  "status": "done",
-  "sha": "d1d495b",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-27T23:51:30.757Z",
-   "note": "Okay, all of the flagged landings seemed fine."
-  }
  },
  {
   "id": "fix.post-end-ladder",
@@ -4939,45 +4239,6 @@
   }
  },
  {
-  "id": "viewer.direct-map-initialization",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [
-   "terrain.authored-high-props"
-  ],
-  "spec": "Prepare detached engine-owned presentation geometry from authoritative initial map facts before mounting a battle or replacing a dropped export. Exact distance access supports bounded arbitrary boards without quadratic tables.",
-  "expect": "Unknown IDs, resized known IDs and changed ground/props mount through the same passive component. Invalid facts reject before replacement; initial events, seek/step parity, registered CLI bytes, all existing replays and controls remain unchanged. Thin 1x300 distances and 10000-cell preparation stay exact and bounded.",
-  "probeIds": [
-   "test.map.high-prop-single",
-   "test.map.high-prop-multi"
-  ],
-  "changesBaseline": false,
-  "note": "Readonly presentation boundary only, no combat rules or event changes; canonical event props allow normalized shorthand IDs, raw authoring retains its existing stricter boundary. No registry mutation or new exemptions.",
-  "status": "done",
-  "sha": "c71919e",
-  "gauntlet": "not passed — 1 flag(s) warned"
- },
- {
-  "id": "viewer.runtime-metadata",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [
-   "viewer.direct-map-initialization"
-  ],
-  "spec": "Separate pure terrain metadata from registered maps so readonly browser field preparation never imports the generated catalog or gameplay mutators; tools load validated catalogs lazily through the same viewer door.",
-  "expect": "Actual emitted browser modules exclude generated pack, catalog loaders and gameplay mutators. Normal static generation still validates malformed catalogs loudly. Existing CLI bytes, all replay events and controls remain unchanged.",
-  "probeIds": [
-   "test.map.high-prop-single",
-   "test.map.high-prop-multi"
-  ],
-  "changesBaseline": false,
-  "note": "Measured dependency cleanup only. One terrain metadata owner, no sideEffects or purity annotations, no validation bypass, no new exemption. Snapshot .12 and gameplay remain unchanged.",
-  "attempts": 1,
-  "status": "done",
-  "sha": "8f71dc7",
-  "gauntlet": "not passed — 1 flag(s) warned"
- },
- {
   "id": "terrain.authored-geometry",
   "kind": "terrain",
   "shape": "rule",
@@ -5293,26 +4554,6 @@
   "sha": "209d82a"
  },
  {
-  "id": "pack.enemy-actions",
-  "kind": "content",
-  "shape": "data",
-  "spec": "AI-DESIGN.md §7 step 2. Enemies use the one action type (DECISIONS.md 2026-09-04) and carry uses/cooldown/warmup (capability.enemy-action-cooldown, done), but content/mkenginepack.mjs drops enemy special moves, flight and non-corpse self rows (mkenginepack.mjs:499-533). Carry them: Iron Colossus Charge (cd 4), Clobber, Buff; the hounds' Close Bite and moveIgnoresZOC; flight for the six units with movePower flight. Copy values from the Codex/bestiary rows — never invent.",
-  "expect": "each named action is on its unit in the engine pack with the Codex's numbers, and appears on ai.action-list for that unit",
-  "changesBaseline": false,
-  "probeIds": [
-   "move.hellhound.close-bite",
-   "move.hound.close-bite",
-   "move.zombie-hound.close-bite"
-  ],
-  "status": "done",
-  "sha": "fa8b9b7",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-27T23:51:30.757Z",
-   "note": "Okay, all of the flagged landings seemed fine."
-  }
- },
- {
   "id": "ai.scorer",
   "kind": "ai",
   "shape": "rule",
@@ -5398,25 +4639,6 @@
   "sha": "07395a6"
  },
  {
-  "id": "fix.enemy-accuracy-mod",
-  "kind": "content",
-  "shape": "data",
-  "spec": "Found by pack.enemy-actions 2026-09-26: content/mkenginepack.mjs drops a regular enemy attack's accuracyMod silently — e.g. Bone Dragon Wings -20, Balrog Hurl -30 — against Law 9 (never swallow a failure). Carry each attack's accuracyMod from its bestiary row, or name it in content/gen/enemy-pack-gaps.json if the engine cannot express it.",
-  "expect": "every authored enemy attack whose bestiary row carries an accuracyMod has it in the engine pack, read from the row in the test; none is dropped without a named gap",
-  "changesBaseline": false,
-  "probeIds": [
-   "attack.necromancer.necro-bolt"
-  ],
-  "attempts": 1,
-  "status": "done",
-  "sha": "f5e9cf8",
-  "reviewed": {
-   "by": "Angela",
-   "at": "2026-09-27T23:18:53.032Z",
-   "note": "One, that's fine."
-  }
- },
- {
   "id": "capability.charge",
   "kind": "engine",
   "shape": "rule",
@@ -5477,20 +4699,6 @@
   ],
   "status": "done",
   "sha": "2900fdc"
- },
- {
-  "id": "fix.raise-range",
-  "kind": "content",
-  "shape": "data",
-  "spec": "Ruled 2026-09-27 (Andrew, DECISIONS.md 'the Necromancer's Raise reaches 10'): \"Give the necromancer a raise of 10 range.\" The Codex row now carries it (content fd2a8ee: the Raise trigger on unit.necromancer in content/gen/enemies-authored.json has range 10). content/mkenginepack.mjs still compiles corpse.raise with the constant radius 2 (SWITCHES.md corpseRaiseRadius) — read the trigger's own range instead, and a Raise row with no range is a named gap, never a default. Retire the corpseRaiseRadius switch.",
-  "expect": "the Necromancer's corpse.raise trigger in the engine pack has the radius its Codex row states, read from the row in the test; a corpse beyond the old 2 and within the row's range is raised in a scripted battle; a Raise row without a range is a named gap",
-  "changesBaseline": false,
-  "note": "Queued 2026-09-27 on Andrew's ruling. The control battles field no Necromancer. Probe declared 2026-09-28 by the implementing chat: trigger.necromancer.raise, the compiled Raise, live where a Necromancer fights (the Supper scenario).",
-  "probeIds": [
-   "trigger.necromancer.raise"
-  ],
-  "status": "done",
-  "sha": "4c53189"
  },
  {
   "id": "fix.surge-spend",
@@ -5605,37 +4813,6 @@
   "note": "Cut 2026-09-28 from the opening loop (the Cathedral). The raise is still 'as a Zombie' (capability.corpses, CODEX.md 1834). Switch: 'two per turn' is two per Necromancer activation (it activates once a Turn). Variants to declare before code: trigger.necromancer.raise and a TEST raiser row with a different count.",
   "status": "done",
   "sha": "a00efde"
- },
- {
-  "id": "content.opening-units",
-  "kind": "content",
-  "shape": "data",
-  "spec": "The two opening units the pack does not have. (1) The Lumberjack's Wife as her own civilian row (DECISIONS.md 2026-09-28: \"Lumberjack and wife. They're two different units.\"), numbers as dictated (DECISIONS.md 2026-09-28 \"the Lumberjack's Wife and the Undead Soldier, dictated\"): Strength 2, Precision 2, Accuracy 65, Health 6, Dodge 10, Movement 5, item.dagger and item.basic-armor; the Lumberjack row (hero.fixed.lumberjack-and-wife, already named Lumberjack in the Codex and pack) stops meaning both, and kingdom/src/content/heroes.ts ~55 (\"Lumberjack and Wife\") follows. (2) Battle 2's Undead Soldier is the existing unit.soldier as it stands (DECISIONS.md 2026-09-28 \"battle 2's Undead Soldier is the existing Soldier\"): it is in the Codex bestiary (authored:false) but not the published pack - publish it with its Codex numbers, no new row. Both through the Codex (content/) and mkenginepack into src/content/generated/pack.ts; no number typed that a file does not hold.",
-  "expect": "The Wife fields as a hero-side civilian beside the Lumberjack in a real battle, two units, each killable on its own, with her dictated numbers; unit.soldier fields as an enemy with its Codex numbers (Strength 5, Armor 2, Health 10, Accuracy 62, Movement 4); no row still names the Lumberjack and Wife as one unit.",
-  "probeIds": [
-   "hero.fixed.lumberjack-and-wife",
-   "unit.soldier"
-  ],
-  "note": "Cut 2026-09-28 from the opening loop (battle 2). Numbers are Andrew's (DECISIONS.md 2026-09-28, two entries): copy them, do not invent. The Wife's id is a new instance of hero.fixed.* (a new instance may be proposed; GLOSSARY.md).",
-  "status": "done",
-  "sha": "b3632ab"
- },
- {
-  "id": "content.flaming-longsword",
-  "kind": "content",
-  "shape": "data",
-  "spec": "The battle-2 reward, the standard tier-3 Flaming Longsword (DECISIONS.md 2026-09-28 'custom weapons are series across base weapons': \"let's do a flaming long sword, standard tier 3. Yes, that's what you're going to get after battle 2.\"). Dictated V2-SHIELDS-AND-WEAPONS-2026-09-20.md 317: \"Tier 3. This is a basic attack. On hit, 1 burn and 2 fire damage.\" - a custom weapon is a series across base weapons, the flaming effect added to the base weapon's basic attack. Approved in the Armory Ledger (DECISIONS.md 2026-09-28 'the Armory Ledger is approved for now'). Authored in the Codex from the Ledger's row and published.",
-  "expect": "A hero carrying the tier-3 Flaming Longsword hits with the longsword's basic attack plus 1 Burn and 2 fire damage on a hit, nothing extra on a miss; the second series instance does the same on its own base weapon with no new code.",
-  "probeIds": [
-   "item.longsword.flaming"
-  ],
-  "variants": [
-   "item.longsword.flaming",
-   "item.war-axe.flaming"
-  ],
-  "note": "Cut 2026-09-28 from the opening loop. Variants to declare before code: the tier-3 Flaming Longsword and one other tier-3 flaming series row from the Ledger (e.g. the Flaming Axe), the second pure data. Take the ids and names from the Armory Ledger rows; do not coin new ones. The rest of the Ledger (counterattack, fend, the special-free-attack rule, shields, relics, bloodrunes, trinkets) is not part of this cut.",
-  "status": "done",
-  "sha": "75facf9"
  },
  {
   "id": "encounter.opening.orphanage",
@@ -5826,14 +5003,6 @@
   "note": "Law 1 / 2 area — say so in the commit. If any control battle moves, the item names which row and why."
  },
  {
-  "id": "fix.codex-numbers",
-  "kind": "content",
-  "shape": "numbers",
-  "spec": "Duplication review 2026-09-28, findings C1 C2 C5 C8 C9 C21 K7. Andrew: 'Crit base 3 should be counted once.' '2, 5, 15 XP by tier.' (1) Crit: the engine's base 3 (pipeline.ts critChanceOf) is the rule; the converter publishes each unit's authored crit minus 3 (hero rogue +2, warrior 0); enemy crit values authored as totals are published the same way — list every enemy row whose crit changes in the landing (C1). (2) Vision: the engine's 6 is ruled (DECISIONS 2026-09-03); Codex derivedBase.vision becomes a delta of 0 for every class, and the converter emits it or names a gap (C2). (3) Bleed-out and Deathbed: keep the engine formulas; bleedOut and a Deathbed bonus become foldable stats the Codex base and the badges (Death Seeker, Survivor, Thick Blooded) feed; the Codex browser reads an engine-derived value (C9). (4) The 2026-09-02 price ladder goes into gen/classes.json stats; checklevels, build-viewer and mklevelsmd read D.stats (C8). (5) Restore Angela's 2026-08-20 beast rulings (spirit-snake, green-drake, shadow-hound-puppy) into settled.json + assemble.mjs, then delete assemble.HEAD.mjs and settled.HEAD.json (C5, C21). (6) Publish enemy tier and xpByTier 2/5/15 so the kingdom can pay XP by tier (K7).",
-  "expect": "A level-1 warrior's crit chance is 3 and a rogue's 5 before gear; test/crit.test.ts updated with the written reason; every hero sees 6; a Death Seeker bleeds out in 2; LEVEL-TABLES.md shows one ladder; the Codex beast rows match the dictated numbers; the engine pack carries tier on enemy rows.",
-  "changesBaseline": true
- },
- {
   "id": "fix.one-hero-assembly",
   "kind": "engine",
   "shape": "plumbing",
@@ -5857,34 +5026,6 @@
   "expect": "A Farmer levels on civilian.farmer and its level-5 pick fields; the Equip card and the battle show the same numbers for a set-bonus hero; the Net is one-use in battle; a hero who stood at Deathbed fights the next battle Wounded; a tier-2 kill pays 5 XP.",
   "changesBaseline": false,
   "note": "Open before it lands (K16, ruled 'fine as proposed' but the proposal asked): where the XP thresholds to level 10 live, one campaign id scheme (realm.* vs Codex campaign ids), and whether territory battles are Codex encounters. The kingdom is on hold for the opening six — file, do not start, until it resumes."
- },
- {
-  "id": "viewer.reads-engine",
-  "kind": "viewer",
-  "shape": "plumbing",
-  "needs": [
-   "plumbing.vocabulary-export"
-  ],
-  "spec": "Duplication review 2026-09-28, findings V1 V2 V4 V5 V6 V7 V8 V11 V12 V13 V14. The viewer reads engine facts instead of recomputing them: action lists and kinds from the engine (Charges and the prone Stand appear; ignoresZoc read from the move) (V1); the danger marker calls dmgOf/preview and loses its hand table (V2); one absorbing-status sum for panel and board (V4); one status->style map, tick flag from the pack (V5); resting movement and move range from engine events, verify.mjs stops using the same formula as its oracle (V6); surge.hit's movePoints and after read, not recomputed (V7); aura coverage matches the engine or is marked an exemption (V8); one sentence table for the log, the engine CLI's stale 'bleed-out 3' removed (V11); hook and effect labels checked against the export (V12); hexvfx's second geometry deleted (V13); dump-fields compares an engine geometry stamp (V14).",
-  "expect": "The fast zombie's Charge shows in its action bar; a prone unit shows Stand; the test zombies' danger reads 4; status.weak plays Weak's style; after a Surge the movement numeral is the engine's.",
-  "changesBaseline": false,
-  "note": "Batch with the next viewer work."
- },
- {
-  "id": "content.peddlers-vest",
-  "kind": "content",
-  "shape": "numbers",
-  "needs": [],
-  "changesBaseline": false,
-  "spec": "Ruled 2026-09-28 (Andrew, DECISIONS.md 'no Health minimum; the Peddler's Vest has no Health change ...'): 'The Peddler's Vest should just be -5 dodge, -5 accuracy, +1 item slot. No health change.' item.peddlers-vest in the Codex: statModifiers itemSlots +1, dodge -5, accuracy -5, and no health (was health -2) - in content/gen/armor-enchants.json (find its owner first; never hand-edit a generated file) and CODEX.md's row; pipeline to the engine pack. Every test or golden that fields a vest wearer (the Raven, the Robes priest, squad.heroes-second) follows as a Law 10 edit with its reason at the line; a moved control battle is declared.",
-  "expect": "The Peddler's Vest adds one item slot and takes 5 Dodge and 5 Accuracy and no Health; the Codex and the engine pack agree; the Raven fields Health 5.",
-  "note": "No hero row's Health changes: there is no Health minimum (same entry). Corrected 2026-09-29 (before any landing): the item probes item.peddlers-vest (its own id is not a content id), and it is neutral on the control battles - no control map fields the Raven or the Robes priest (tools/baseline.mts byte-identical with the vest changed), so changesBaseline is false; the battles it moves are the battle-cursor showcases and test.opening-cavern-trail, frozen in a new layer.",
-  "attempts": 1,
-  "probeIds": [
-   "item.peddlers-vest"
-  ],
-  "status": "done-needs-review",
-  "sha": "3b94bc3"
  },
  {
   "id": "fix.opening-draft-modifiers",

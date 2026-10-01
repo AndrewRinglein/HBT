@@ -13,6 +13,7 @@
 import { execSync } from 'node:child_process'
 import { readFileSync, readdirSync, appendFileSync } from 'node:fs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
+import { readBacklog } from './backlog.mjs'
 
 const sh = (cmd) => execSync(cmd, { encoding: 'utf8', stdio: 'pipe' })
 const tryRun = (cmd) => { try { return { ok: true, out: sh(cmd) } } catch (e) {
@@ -74,7 +75,7 @@ audit('content has published sources', () => {
 
 audit('flagged landings awaiting review', () => {
   // Not a failure — a reminder. Flags only work if somebody reads them.
-  const backlog = JSON.parse(readFileSync('.state/backlog.json', 'utf8'))
+  const backlog = readBacklog()
   const flagged = backlog.filter((b) => b.status === 'done-needs-review').map((b) => b.id)
   return { ok: true, note: flagged.length ? `${flagged.length} flagged: ${flagged.slice(0, 6).join(', ')} — node tools/report.mjs` : 'none' }
 })

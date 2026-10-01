@@ -4,14 +4,15 @@
 // per rule item, declared on the backlog row), and teach effect-size.mts to use it."
 // The row's `effectSwitch` names the switch values of the WITHOUT arm.
 import { spawnSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { checkEffectSwitch, withoutArmFor } from '../tools/effect-arm.js'
+import { readBacklog } from '../tools/backlog.mjs'
 
 const tool = fileURLToPath(new URL('../tools/effect-size.mts', import.meta.url))
 const tsx = fileURLToPath(new URL('../node_modules/tsx/dist/cli.mjs', import.meta.url))
-const backlog = JSON.parse(readFileSync(new URL('../.state/backlog.json', import.meta.url), 'utf8')) as { id: string; shape: string; effectSwitch?: unknown }[]
+// every area's list (tools/backlog.mjs, 2026-10-01: one to-do list per area)
+const backlog = readBacklog(fileURLToPath(new URL('../.state', import.meta.url))) as { id: string; shape: string; effectSwitch?: unknown }[]
 
 describe('a rule item names the switch its WITHOUT arm flips', () => {
   it('movement.zone-of-control and station.crit declare their switches on the backlog row', () => {

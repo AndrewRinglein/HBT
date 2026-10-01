@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 // Add pending work only. Gate/review remain the only writers of verdict fields.
-// node tools/add-item.mjs spec.json [--backlog .state/backlog.json] [--first]
+// node tools/add-item.mjs spec.json [--backlog <file>] [--first]
 // --first puts the new items at the top of the queue (next.mjs takes backlog order).
-import { readFileSync, writeFileSync, renameSync } from 'node:fs'
+// Each item goes into its own area's list, .state/backlog.<area>.json (tools/backlog.mjs);
+// --backlog <file> writes every item into that one file instead.
+import { readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs'
+import { readBacklog, areaOf, backlogFiles, backlogFile } from './backlog.mjs'
 
 const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note', 'effectSwitch'])
 const required = ['id', 'kind', 'shape', 'spec', 'expect']
@@ -50,17 +53,30 @@ try {
   const first = process.argv.includes('--first')
   const args = process.argv.slice(2).filter(a => a !== '--first')
   if (!(args.length === 1 || (args.length === 3 && args[1] === '--backlog'))) throw new Error('usage: node tools/add-item.mjs spec.json [--backlog path] [--first]')
-  const path = args[2] ?? '.state/backlog.json'
-  const original = readFileSync(path, 'utf8')
-  const existing = JSON.parse(original)
   const input = JSON.parse(readFileSync(args[0], 'utf8'))
   const items = Array.isArray(input) ? input : [input]
-  validate(items, existing)
-  // Validate the whole batch before any write. Refuse a stale source snapshot.
-  if (readFileSync(path, 'utf8') !== original) throw new Error('backlog changed during validation; retry')
-  const temporary = `${path}.${process.pid}.pending`
-  writeFileSync(temporary, JSON.stringify(first ? [...items, ...existing] : [...existing, ...items], null, 1) + '\n', { flag: 'wx' })
-  renameSync(temporary, path)
+  // one file (--backlog, or an old single .state/backlog.json), or each item's area's list
+  const single = args[2] ?? (backlogFiles().length === 1 ? backlogFiles()[0] : null)
+  const snapshot = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : '[]')
+  if (single) {
+    const original = readFileSync(single, 'utf8')
+    validate(items, JSON.parse(original))
+    if (readFileSync(single, 'utf8') !== original) throw new Error('backlog changed during validation; retry')
+    put(single, JSON.parse(original), items)
+  } else {
+    const groups = new Map()
+    for (const item of items) { const f = backlogFile(areaOf(item)); groups.set(f, [...(groups.get(f) ?? []), item]) }
+    const originals = new Map([...groups.keys()].map((f) => [f, snapshot(f)]))
+    validate(items, readBacklog())   // ids and needs are checked against every area
+    // Validate the whole batch before any write. Refuse a stale source snapshot.
+    for (const [f, text] of originals) if (snapshot(f) !== text) throw new Error('backlog changed during validation; retry')
+    for (const [f, group] of groups) put(f, JSON.parse(originals.get(f)), group)
+  }
+  function put(path, existing, added) {
+    const temporary = `${path}.${process.pid}.pending`
+    writeFileSync(temporary, JSON.stringify(first ? [...added, ...existing] : [...existing, ...added], null, 1) + '\n', { flag: 'wx' })
+    renameSync(temporary, path)
+  }
   console.log(`Added ${items.length} pending item(s): ${items.map(item => item.id).join(', ')}`)
 } catch (error) {
   console.error(`add-item: ${error.message}`)

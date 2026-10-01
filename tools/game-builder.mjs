@@ -7,13 +7,14 @@
 //
 // Data sources (all read-only here):
 //   .state/gauntlet-log.jsonl   one line per gate invocation (the gate writes it)
-//   .state/backlog.json         item status, seals, specs
+//   .state/backlog.<area>.json  item status, seals, specs (tools/backlog.mjs)
 //   .state/questions.md         the human inbox — OPEN and ANSWERED
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
 import { measurementLabel } from './measurement-label.mjs'
+import { readBacklog } from './backlog.mjs'
 
 // Artifact links carry a content-hash cache-buster (?v=). Browsers cache
 // file:// pages hard — Angela rebuilt the replay overnight and her browser
@@ -30,7 +31,7 @@ const quiet = process.argv.includes('--quiet')
 const read = (p, fallback = '') => (existsSync(p) ? readFileSync(p, 'utf8') : fallback)
 
 const runs = read('.state/gauntlet-log.jsonl').split('\n').filter(Boolean).map((l) => JSON.parse(l))
-const backlog = JSON.parse(read('.state/backlog.json', '[]'))
+const backlog = (() => { try { return readBacklog() } catch { return [] } })()
 const questionsMd = read('.state/questions.md')
 
 // ── aggregates ───────────────────────────────────────────────────────────────

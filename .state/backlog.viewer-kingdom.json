@@ -1,0 +1,237 @@
+[
+ {
+  "id": "viewer.walk-in-step",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; the caravan's fight; what is queued after it' and 'the links and the icon; ... walk timed to the hexes'): 'when the characters are moving on the map, they're not actually walking or moving. They just slide across. The whole idea of adding in a walking animation is so they use it.' · 'The walking isn't very well timed or spaced based on the number of tiles that are being moved.' Every 3D body that walks a path plays its walk clip for the whole traversal (models.js motion 'move'), its stride timed to the hexes walked so the feet do not slide (the clip's root stride against the board's hex width, the traversal's duration from the pump's DUR per hex). Find first why the clip is not seen today (E.walk / walkShape / cast.frame) — a test exists for the Imps' flight loop (tools/opening-cast.test.mjs).",
+  "expect": "In the Orphanage and the Bridge a hero walking N hexes plays its walk clip throughout, and its feet advance one stride per stride length (no slide); the traversal's duration grows with N; a flier flies.",
+  "status": "done",
+  "sha": "d2e4344"
+ },
+ {
+  "id": "viewer.weapons-in-hand",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding weapons.' · 'we don't have weapons. I don't see any weapons.' Every 3D body holds the 3D weapon of its kit in its hand socket (assets/characters/oathblade-armor/generated/rebuild/weapon-audition/equipment/ has bow-flexible.glb; read assets/characters/PRODUCTION-START.md and production-lessons.json first, and the skills AGENTS.md names for equipment placement).",
+  "expect": "In the sandbox every hero whose kit names a weapon with a 3D model holds it in hand through idle, walk and attack; a weapon without a model is listed, not faked."
+ },
+ {
+  "id": "viewer.characters-unfaded",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'these characters are faded, like they're ghost-like, because there are other competing things. The characters are the stars. They should not be faded, especially not one that's selected.' Find what dims the bodies (the board's DOM overlays over the WebGL canvas, the marks, opacity on standees, the lighting) and draw every body at full strength, the selected one never under anything.",
+  "expect": "Side-by-side screenshots: every body drawn at full strength over the ground marks; the selected body brightest; nothing semi-transparent over a body."
+ },
+ {
+  "id": "viewer.unit-card-bar",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'We also need a character selector bar above the screen, the way it is in the visual playback. You have all the heroes and enemies as tiny little cards above the screen. That should still be there. And I can use that to target things as well as clicking on them.' The replay's unit-card strip (the topbar portraits) in the live battle and the Kingdom host; a card click is the unit click (select a hero to act; with an attack chosen, target that unit through the play input).",
+  "expect": "In the sandbox the strip of every unit's card sits above the board; clicking a hero's card starts its activation; with an attack chosen, clicking an enemy's card aims and confirms exactly as clicking its body."
+ },
+ {
+  "id": "viewer.real-bodies",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'I said we could use placeholders, but don't we have more 3D things we can use? We've done all kinds of different heads, all kinds of different armor. ... the idea is to rig this up. We have the things for everything, just about.' Today every base hero is the one oathblade.glb body. Inventory assets/characters (PRODUCTION-START.md first; APPROVED-CHARACTERS.md) and bind each unit to its own assembled body - heads, armour, outfits - and the Bloodhound to the hounds in assets/characters/wolf/. Character production rules in AGENTS.md apply.",
+  "expect": "Every hero and enemy of the opening's battles and the caravan stands in its own body; a unit with no approved parts is listed, not faked."
+ },
+ {
+  "id": "kingdom.civilians-played",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the civilians are played; no 2D before the 3D bodies'): 'There's no movement for the child when I click on it, so the civilians, I think, aren't activating properly.' (2026-08-26: 'Civilians are exactly like heroes.') kingdom/src/core/sandbox.ts gives the player only the drafted heroes (policy humanUnitUids = the first config.heroes.length units, 'the encounter's civilians ... stay the AI's'), so clicking the Orphan Child does nothing and the AI moves it. The sandbox's control policy is every unit fielded on the heroes' side - the drafted heroes and the encounter's civilians - for a new battle and a restored save alike.",
+  "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage, clicking the Orphan Child in the Hero Phase starts its activation and shows where it can move; it moves where clicked; End Turn's pop-up names the civilians that have not acted.",
+  "status": "done",
+  "sha": "0d77bd2"
+ },
+ {
+  "id": "viewer.bodies-before-board",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the civilians are played; no 2D before the 3D bodies'): 'two-dimensional images of other heroes are loading before the 3D images are loading. You still have some kind of legacy 2D other things loading'. Today the battle shows once its 3D scene is ready (viewer.true-3d-camera) while the bodies (viewer/src/models.js) still load, so every modelled unit stands as its 2D token until its body arrives. (1) The board stays on its loading line until the scene AND the bodies of every unit on the board are loaded (or have failed). (2) A unit that has a body but whose body is still loading (an arrival later in the battle) shows no token picture meanwhile. (3) A body that cannot be loaded keeps the token, said in the status line, as before.",
+  "expect": "Opening BATTLE-SANDBOX.html?play=encounter.opening.orphanage no 2D hero, enemy or civilian picture appears at any moment: the loading line, then the 3D map with every body standing.",
+  "status": "done",
+  "sha": "49495b9"
+ },
+ {
+  "id": "kingdom.play-launcher",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the game plays from a link'): 'I don't want to have to go dig for bat files. I want a way to play this game out of a link.' - chose 'Local link on this PC' - 'Make me a game launcher where I can play the various battles.' Today a battle is opened by PLAY-OPENING.bat (which starts tools/battle-atlas/serve.mjs and opens kingdom/BATTLE-SANDBOX.html?play=<encounter>). (1) kingdom/PLAY.html, the launcher, generated from the sandbox's encounter list (kingdom SANDBOX_ENCOUNTERS, the engine's encounters): one card per battle - its name, its place in the opening, what it fields (the engine's enemies and civilians) and a picture of its 3D map - each opening BATTLE-SANDBOX.html?play=<encounter id>; and a free battle (the sandbox's own setup) and the recorded battles (viewer/BATTLE-VIEWER.html). (2) The server answers http://127.0.0.1:4230/play with the launcher. (3) Machine setup, not repo: the server starts with Windows (a hidden start in the Startup folder) so the link always works.",
+  "expect": "http://127.0.0.1:4230/play shows the launcher with the Orphanage, Lumberjack House, Bridge and Cavern Trail; clicking a battle opens it straight into the battle screen; no .bat is run.",
+  "status": "done",
+  "sha": "6993259"
+ },
+ {
+  "id": "viewer.true-3d-camera",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'a true 3D battle: an orbit camera, every Orphanage unit its own model, no flash of another map'): 'When I maneuver the map, it stretches the 3D assets.' 'The battle screen is sort of 2D, but if I rotate it one direction, it just stretches' - answered 'True 3D orbit'; 'A different map loads for a blink of an eye, and then this map. That other map should not be loading.' Today the board is a flat CSS plane (board.js camera: drag to turn and tilt, wheel to zoom) and the WebGL layer (viewer/src/terrain3d.js) builds its projection from that plane's CSS transform (clipMatrix), so turning the board shears the 3D scene and the bodies. (1) The battle screen's camera is a real THREE perspective camera orbiting the board: rotate all the way around, tilt, zoom, pan (right-drag and the arrow keys), Reset returns to the starting angled view (2026-09-29 camera ruling kept). (2) Everything drawn on the board follows that camera: the hex ground marks (reach, zone of control, path, provoke rings, targets, the red targeting arrow and its numbers), the ghost, the Health/Protection bars and names under units, the acting mark, the floating combat text; and every click and hover lands on the hex or unit under the pointer from any angle (raycast against the board, not the CSS plane). (3) Before the battle's own 3D scene is ready nothing else is shown - no flat swatch board or other map for a blink; a loading state instead. Viewer, with the kingdom sandbox and the replay page (BATTLE-VIEWER.html served) both using it; a page without WebGL 2 says so plainly rather than drawing a flat board.",
+  "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage the board turns a full circle and tilts with the 3D scene and the bodies keeping their proportions at every angle (no stretch); a hex clicked at any angle is the hex under the pointer; the ground marks, the arrow and the bars stay on their hexes and units while turning; no other map appears before the Orphanage's scene.",
+  "status": "done",
+  "sha": "6503899"
+ },
+ {
+  "id": "viewer.battle-full-screen",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [],
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the battle is its own full screen; End Turn and End Activation lower right; a red targeting arrow; every 3D character'): 'I want a fucking battle. It should be full screen. How can I experience this if you've got one screen that is both your launcher and your battle?' 'You've got End Turn and End Activation on the battle map. They shouldn't be. Put them in the lower right-hand corner.' 'The arrow for targeting should be red, not blue.' Today kingdom/BATTLE-SANDBOX.html?play=<encounter> shows the setup form (Field a battle, heroes, seed) above a board squeezed into the lower left of the window. (1) Opening a battle shows the battle alone, filling the window: no setup form, no launcher text; the launcher stays a separate view. (2) End Turn and End Activation leave the board and sit in the screen's lower right-hand corner. (3) The targeting arrow (and its forecast line) is red. Viewer and kingdom halves; the engine test asserts the page opened with ?play= has no setup form visible and the board fills the viewport.",
+  "expect": "BATTLE-SANDBOX.html?play=encounter.opening.orphanage opens to the battle filling the window with nothing of the setup form showing; End Turn and End Activation are in the lower right corner, not over the board; the targeting arrow is red.",
+  "status": "done",
+  "sha": "204da75"
+ },
+ {
+  "id": "viewer.every-model",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [],
+  "spec": "Ruled 2026-09-30 (Andrew, DECISIONS.md 'the battle is its own full screen; ...; every 3D character'): 'And there are no 3D characters in this. I want all the 3D characters and enemies and motions.' Seen 2026-09-30 in Andrew's Chrome: the opening battle fields the sandbox's default heroes (Iron Dwarf, Hunter, Battle Chaplain), which are not among viewer/tools/character-models.mjs BINDINGS, so they stand as 2D tokens; on the squeezed board nothing reads as 3D. Every unit fielded in battles 1-3 (heroes the screen fields included) is a 3D model from assets/characters (APPROVED-CHARACTERS.md, assets/battle-demo/roster.mjs), with idle, move, attack, hit and death; flyers fly. The motions the approved looks lack (Skeleton Archer and Soldier attack/hit, the Imps' hit) are supplied per Andrew's answer to the motion question asked 2026-09-30. Corrected 2026-09-30 (Andrew, DECISIONS.md 'a true 3D battle: ...'): 'Everything in Orphanage has a 3D model, so if you're not finding the 3D model, you're just not looking in the right place.   Ask me if there is anything missing in the model because we're not'. The models are in assets/characters/hero-transformations/player-roster/models/ (roster.json, manifest.json): orphan-child, school-teacher, lumberjack, lumberjacks-wife, warrior-iron and the other drafted-hero bodies (ranger-*, priest-*, paladin-*, rogue-*, mage-*, warrior-*). Each drafted hero wears its own body where the roster has one; no unit of battles 1-3 stands as a token; a model lacking a motion or part is asked of Andrew, not substituted silently.",
+  "expect": "In battles 1-3 every hero, enemy and civilian on the board is a 3D model that idles, walks (or flies), attacks, flinches and dies; none stands as a 2D token.",
+  "status": "done-needs-review",
+  "sha": "c7f63bb"
+ },
+ {
+  "id": "viewer.painted-board",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "PLAYABLE-OPENING-PLAN.md item 4. Ruled 2026-09-29: the painted 3D scenes are the battle board, turned into hex maps (retires 'WebGL is NOT required' for these battles). map.opening.orphanage draws on assets/terrain-3d/orphanage-riverside, lumberjack on lumberjack-forest, bridge on abbotown-encounters/bridge, each aligned to its hex grid. Camera: rotate, zoom, tilt, right-drag to pan, a Reset button to the starting angled view. Served by the local server.",
+  "expect": "Battle 1 opens on the riverside scene with its hexes where the engine's are (an eyeball check linked for Andrew); rotate/zoom/tilt/pan work and Reset returns the starting view.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "82e8f77"
+ },
+ {
+  "id": "viewer.character-models",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.painted-board"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 5. Ruled 2026-09-29: units are 3D models where one exists, else their token; enemies need idle, move, attack, hit reaction and death, heroes those plus what their weapon's powers need ('most' is enough; outfits may be reused). A dead unit is its model lying where it fell; a downed unit the same with a bleed-out counter. Bind per unit type from assets/characters/APPROVED-CHARACTERS.md and assets/battle-demo/roster.mjs; the viewer computes nothing.",
+  "expect": "Battle 1's Zombies and heroes are animated models that walk, strike, flinch and fall; a unit without a model is its token; a downed hero lies with its counter.",
+  "status": "done-needs-review",
+  "sha": "9e49cf5"
+ },
+ {
+  "id": "viewer.under-unit",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.character-models"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 6. Ruled 2026-09-29: under each unit its name, Health bar, Protection bar beneath it, and compact status icons (SWITCHES statusUnderUnit) - no Poison or Burn icon, those show on the body; Stun shown on the body; Slow only changes the movement number; ring, shadow and chips kept; the acting hero marked by a glowing disc with a sweep and a bobbing arrow.",
+  "expect": "Every unit in battle 1 shows name, Health and Protection under it; a stunned unit shows it on the body; a burning one burns; the acting hero carries the disc and arrow.",
+  "status": "done-needs-review",
+  "sha": "4387167"
+ },
+ {
+  "id": "viewer.play-input",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "preview.from-planned-hex",
+   "viewer.under-unit"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 7. Ruled 2026-09-29: click a hero to act; click an action-bar slot to choose the action; click a hex for a ghost, click again to confirm; right-click steps back; with an attack chosen an arrow follows the pointer and whatever it is over shows the forecast (hit chance, damage, the notch or skull on its Health bar); with nothing chosen, pointing at an enemy lights up where it can move and hit; clicking an enemy shows it in the right panel (the panel shows whoever was clicked last); zone-of-control hatching and the path preview while planning a move. Every legality and number from the engine.",
+  "expect": "Andrew can move and attack in battle 1 with the mouse alone; the forecast shown equals what lands; right-click undoes a stage; no dropdown is needed.",
+  "status": "done",
+  "sha": "31b2d84"
+ },
+ {
+  "id": "viewer.play-chrome",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "command.end-player-phase",
+   "viewer.play-input"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 8. Ruled 2026-09-29: an End Turn button ending the Player Phase, with the pop-up 'Are you sure you want to end your turn? You have units that have not acted.' when any hero has not acted; the phase ends by itself when all have; enemy turns play in full animation with a 2x speed button; a battle log. Then Andrew plays battle 1.",
+  "expect": "Battle 1 plays start to finish in the new screen: End Turn and its pop-up, 2x speed, the log; an eyeball check for Andrew.",
+  "status": "done",
+  "sha": "3e38de1"
+ },
+ {
+  "id": "viewer.opening-cast",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.play-chrome"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 10. Battles 2 and 3's cast in the new screen: Skeletal Archer, the Soldier (the undead soldier), Imps and Fire Imps (flying), the Lumberjack, his Wife, the Orphan Child and the School Teacher (tokens where no model), the drafted heroes' outfits by class (reuse allowed). Ranged and flying presentation.",
+  "expect": "Battles 2 and 3 play in the new screen with every unit shown as a model or its token, archers shooting and imps flying.",
+  "status": "done",
+  "sha": "9938024"
+ },
+ {
+  "id": "kingdom.abbotown-map",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "PLAYABLE-OPENING-PLAN.md item 11. Ruled 2026-09-29: the Retaking Abbotown map is built from Andrew's sketch (C:/Users/aring/Downloads/IMG_5078.jpeg; KINGDOM-V2-2026-09-07.md 'Conquest maps'): six sections in order (Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Cathedral), taken ones marked, an arrow on the next; clicking the next starts its battle.",
+  "expect": "The map shows six sections with the taken ones marked and the next pointed to; an eyeball check for Andrew."
+ },
+ {
+  "id": "kingdom.opening-loop-three",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "needs": [
+   "kingdom.abbotown-map",
+   "viewer.opening-cast",
+   "encounter.opening.bridge-ai"
+  ],
+  "spec": "PLAYABLE-OPENING-PLAN.md item 12. Ruled 2026-09-29: one page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards (the Orphanage's 20 XP, the Flaming Longsword after battle 2, the item choice after battle 3, level-ups, wounds carried; no tactics) -> map, for the first three battles; a lost battle is replayed with the same party. Narrows kingdom.opening-loop to three battles.",
+  "expect": "Andrew plays from the Orphanage through the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled."
+ },
+ {
+  "id": "viewer.direct-map-initialization",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "terrain.authored-high-props"
+  ],
+  "spec": "Prepare detached engine-owned presentation geometry from authoritative initial map facts before mounting a battle or replacing a dropped export. Exact distance access supports bounded arbitrary boards without quadratic tables.",
+  "expect": "Unknown IDs, resized known IDs and changed ground/props mount through the same passive component. Invalid facts reject before replacement; initial events, seek/step parity, registered CLI bytes, all existing replays and controls remain unchanged. Thin 1x300 distances and 10000-cell preparation stay exact and bounded.",
+  "probeIds": [
+   "test.map.high-prop-single",
+   "test.map.high-prop-multi"
+  ],
+  "changesBaseline": false,
+  "note": "Readonly presentation boundary only, no combat rules or event changes; canonical event props allow normalized shorthand IDs, raw authoring retains its existing stricter boundary. No registry mutation or new exemptions.",
+  "status": "done",
+  "sha": "c71919e",
+  "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "viewer.runtime-metadata",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.direct-map-initialization"
+  ],
+  "spec": "Separate pure terrain metadata from registered maps so readonly browser field preparation never imports the generated catalog or gameplay mutators; tools load validated catalogs lazily through the same viewer door.",
+  "expect": "Actual emitted browser modules exclude generated pack, catalog loaders and gameplay mutators. Normal static generation still validates malformed catalogs loudly. Existing CLI bytes, all replay events and controls remain unchanged.",
+  "probeIds": [
+   "test.map.high-prop-single",
+   "test.map.high-prop-multi"
+  ],
+  "changesBaseline": false,
+  "note": "Measured dependency cleanup only. One terrain metadata owner, no sideEffects or purity annotations, no validation bypass, no new exemption. Snapshot .12 and gameplay remain unchanged.",
+  "attempts": 1,
+  "status": "done",
+  "sha": "8f71dc7",
+  "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "viewer.reads-engine",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "plumbing.vocabulary-export"
+  ],
+  "spec": "Duplication review 2026-09-28, findings V1 V2 V4 V5 V6 V7 V8 V11 V12 V13 V14. The viewer reads engine facts instead of recomputing them: action lists and kinds from the engine (Charges and the prone Stand appear; ignoresZoc read from the move) (V1); the danger marker calls dmgOf/preview and loses its hand table (V2); one absorbing-status sum for panel and board (V4); one status->style map, tick flag from the pack (V5); resting movement and move range from engine events, verify.mjs stops using the same formula as its oracle (V6); surge.hit's movePoints and after read, not recomputed (V7); aura coverage matches the engine or is marked an exemption (V8); one sentence table for the log, the engine CLI's stale 'bleed-out 3' removed (V11); hook and effect labels checked against the export (V12); hexvfx's second geometry deleted (V13); dump-fields compares an engine geometry stamp (V14).",
+  "expect": "The fast zombie's Charge shows in its action bar; a prone unit shows Stand; the test zombies' danger reads 4; status.weak plays Weak's style; after a Surge the movement numeral is the engine's.",
+  "changesBaseline": false,
+  "note": "Batch with the next viewer work."
+ }
+]

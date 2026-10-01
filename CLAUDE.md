@@ -55,11 +55,11 @@ something faster.
 ## Commands
 
 ```
-node tools/start.mjs                   `start engine` — where the package is, rendered
+node tools/start.mjs [--area <a>]      `start engine` — where the package is, rendered (--area: one area's queue)
 node tools/wrap.mjs "<now line>" --next "<which chat, what it does>" "<its first line>"
                                        `wrap` — writes .state/now.json; HANDOFF.md, STATE-ROW.md produced from it; one commit
 
-node tools/next.mjs                    the next backlog item that is ready
+node tools/next.mjs [--area <a>]       the next backlog item that is ready (areas: engine, viewer-kingdom, content, art)
 node tools/gate.mjs --shard <k>/4      run a quarter of the test suite (k = 1..4), one command
                                        each — once per chat; wrap refuses until a complete set
                                        passed on the exact tree. In Cowork run --shard <k>/8
@@ -106,7 +106,7 @@ every landing, every failed check, and the questions inbox. Data:
 `game-builder.mjs` runs). It is the thing Angela looks at, so it is what an eyeball check links to.
 
 **The gate decides whether an item passed, not you.** Never write `status` into
-`.state/backlog.json` by hand — the only writers are the gate and `tools/review.mjs`,
+`.state/backlog.<area>.json` by hand — the only writers are the gate and `tools/review.mjs`,
 which records Angela's verdict on flagged landings (run it only when she has actually
 reviewed and said so, quoting her words; it clears the flag). Adding many mechanics in a row is the `batch-add` skill.
 
@@ -161,7 +161,7 @@ Engine work goes fastest in Claude Code on Andrew's PC, where no command limit a
 **One backlog item per feature, not one per layer** — sized to fit one chat, carried
 across engine, content and kingdom (each package commits in its own repository).
 
-State lives on disk (`.state/backlog.json`, `.state/ledger.md`, `.state/baseline.hash`), so
+State lives on disk (`.state/backlog.<area>.json` — one to-do list per area: engine, viewer-kingdom, content, art; `tools/backlog.mjs`, Andrew 2026-10-01 — `.state/ledger.md`, `.state/baseline.hash`), so
 a fresh session resumes exactly where the last one stopped.
 
 ## Stack
@@ -221,7 +221,7 @@ archive/         old handoffs. Never read.
 ```
 
 **Generated here, never hand-edited:** anything under `generated/`, `GAME-BUILDER.html`,
-`.state/backlog.json`, `.state/ledger.md`, `.state/gauntlet-log.jsonl`,
+`.state/backlog.<area>.json`, `.state/ledger.md`, `.state/gauntlet-log.jsonl`,
 `.state/gauntlet.json`, `.state/baseline.hash` (the gate's), `.state/inventory.json` (the prior-art audit's), `generated/wrong-home.{json,md}`, and `.state/now.json` (the wrap's),
 `HANDOFF.md`, `STATE-ROW.md` (produced from it by `tools/handoff.mjs`). Regenerate; never edit.
 
@@ -270,7 +270,7 @@ and re-asked as open the next day.
 every command at ~178 s whatever timeout is asked for (a bare `sleep 200` died at
 177,998 ms), and a backgrounded process dies with its call. Nothing in this repo sets that
 limit. Since `tool.gate-fits-cowork` (2026-09-26) the gate records each check against the
-exact tree in `.state/gate-progress.json` and, in Cowork, stops between checks at 150 s
+exact tree in its area's `.state/gate-progress.<area>.json` and, in Cowork, stops between checks at 150 s
 with `INCOMPLETE` (exit 3; no attempt, no log line, no landing): **repeat the same
 `gate.mjs <id>` or `--land` command until it finishes.** Run the suite as
 `--shard k/8`, k = 1..8. A single check still has to fit one call: the mounted folder

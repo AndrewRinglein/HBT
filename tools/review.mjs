@@ -10,8 +10,9 @@
 // records WHO signed off, WHEN, and in what words, in both the backlog and
 // the ledger, and flips done-needs-review → done so the queue counts down.
 
-import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
+import { appendFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
+import { readBacklog, saveArea, areaOf } from './backlog.mjs'
 
 const args = process.argv.slice(2)
 const all = args.includes('--all')
@@ -25,7 +26,7 @@ if (!note || note.length < 8) {
 }
 if (!all && !id) { console.error('usage: review.mjs <id> --ok "note"  |  review.mjs --all --ok "note"'); process.exit(2) }
 
-const backlog = JSON.parse(readFileSync('.state/backlog.json', 'utf8'))
+const backlog = readBacklog()
 const targets = backlog.filter((b) => b.status === 'done-needs-review' && (all || b.id === id))
 if (targets.length === 0) { console.log(all ? 'Nothing is flagged.' : `'${id}' is not flagged.`); process.exit(all ? 0 : 1) }
 
@@ -35,7 +36,7 @@ for (const b of targets) {
   b.reviewed = { by: 'Angela', at: stamp, note }
   console.log(`  reviewed  ${b.id}  (${b.gauntlet ?? 'no gauntlet verdict'})`)
 }
-writeFileSync('.state/backlog.json', JSON.stringify(backlog, null, 1) + '\n')
+for (const area of new Set(targets.map(areaOf))) saveArea(backlog, area)   // only the areas it cleared
 appendFileSync('.state/ledger.md',
   `\n## REVIEW — ${targets.length} flagged landing(s) cleared\n${stamp} · Angela: "${note}"\n\n` +
   targets.map((b) => `  ok  ${b.id}`).join('\n') + '\n')
