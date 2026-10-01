@@ -3631,3 +3631,13 @@ Ruled (the reading taken; 2026-08-26 "civilians are EXACTLY like heroes" is the 
 
 - **The civilians are played by the player, like the heroes.** In a battle the person plays, clicking the Orphan Child (or any of the encounter's civilians) starts its activation — reach, path, attack — as clicking a hero does; End Turn's pop-up counts them among those yet to act. Until now the sandbox left them to the AI (kingdom/src/core/sandbox.ts, an unrecorded choice). Filed `kingdom.civilians-played`.
 - **No 2D picture stands in for a body that is still loading.** The battle opens when its 3D map and the 3D bodies of everyone on it are in; a unit that arrives later shows no token while its body loads. A token is drawn only where a body cannot be had (said in the status line, as before). Filed `viewer.bodies-before-board`.
+
+## 2026-10-01 — always a playable link
+
+Andrew, after the wrap of kingdom.civilians-played and viewer.bodies-before-board (whose reply did not repeat the link):
+
+“Where is my playable link? It doesn't work. How can I fucking test things without a playable link? I always need a playable link.”
+
+Ruled:
+
+- **Every reply that ends work on the game gives the playable link, clickable, at the top** — http://127.0.0.1:4230/play (the launcher), and the battle the work touched (`http://127.0.0.1:4230/kingdom/BATTLE-SANDBOX.html?play=<encounter>`). A wrap's reply included.
