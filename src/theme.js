@@ -118,8 +118,11 @@ export const TERRAIN_3D_TINT = { 'terrain.forest': '#72825a', 'terrain.woodland'
 /* viewer.play-input (2026-09-30): the planning overlay's colours — COOL IS A FORECAST (ruled 2026-09-01), so the reach,
    the path, the ghost and the forecast's arrow share the aim's cool blue; the zone of control is hatched in the attack
    of opportunity's own note hue; an enemy's reach is violet (walk) and red (hit); the notch eats the Health bar in the
-   damage red and the skull is blood. Look choices (viewer SWITCHES playLook). */
+   damage red and the skull is blood. Look choices (viewer SWITCHES playLook).
+   viewer.battle-full-screen (engine DECISIONS.md 2026-09-30, Andrew: "The arrow for targeting should be red, not blue."):
+   the targeting arrow and the forecast numbers beside its head are red — aim, aimHit, aimDmg; the walk's path stays cool. */
 export const PLAY_HUE = { reach: 'rgba(120,190,240,.20)', reachEdge: 'rgba(150,205,245,.55)', path: 'rgba(140,178,208,.96)',
+  aim: 'rgba(222,52,46,.96)', aimHit: '#ff9d92', aimDmg: '#ff6a5c',
   zoc: 'rgba(255,176,112,.50)', provoke: NOTE_HUE.aoo, ghost: 'rgba(191,242,255,.9)', target: 'rgba(255,215,100,.9)',
   threatMove: 'rgba(170,120,240,.24)', threatHit: 'rgba(235,80,80,.85)', loss: 'rgba(235,80,70,.8)', lethal: 'rgba(198,40,40,.95)',
   notch: 'rgba(255,255,255,.95)', skull: BLOOD_HUE, note: 'rgba(8,9,11,.82)' }

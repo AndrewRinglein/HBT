@@ -1160,10 +1160,10 @@ export function drawPlay(V) {
   for (const h of P.provokes) { const n = ring(h, 'playProvoke', PLAY_HUE.provoke); n.title = 'Attack of opportunity' }
   if (P.ghost) drawGhost(V, layer, P.ghost)
   if (P.aim) {
-    const A = P.aim, line = aimArrow(V, layer, svg, A.from, A.to, PLAY_HUE.path, !A.locked)
+    const A = P.aim, line = aimArrow(V, layer, svg, A.from, A.to, PLAY_HUE.aim, !A.locked)   /* red (viewer.battle-full-screen) */
     const lines = []
-    if (A.hit != null) lines.push(line(0, `<span class="playHit" style="font-size:24px;font-weight:700;color:#8fa8bd">${A.hit}%</span>`))
-    if (A.dmg != null) lines.push(line(28, `<span class="playDmg" style="font-size:46px;font-weight:700;color:#bcd4e6;line-height:1">${A.dmg}</span>`))
+    if (A.hit != null) lines.push(line(0, `<span class="playHit" style="font-size:24px;font-weight:700;color:${PLAY_HUE.aimHit}">${A.hit}%</span>`))
+    if (A.dmg != null) lines.push(line(28, `<span class="playDmg" style="font-size:46px;font-weight:700;color:${PLAY_HUE.aimDmg};line-height:1">${A.dmg}</span>`))
     for (const w of lines) w.classList.add('playAim')
     const E = A.target != null ? V.layers.UEL.get(A.target) : null, u = A.target != null ? V.S.U[A.target] : null
     if (E && u && A.hpAfter != null && u.maxHp > 0) {
