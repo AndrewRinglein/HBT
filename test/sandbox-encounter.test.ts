@@ -49,7 +49,7 @@ describe('kingdom.encounter-battles — the sandbox plays an engine encounter', 
   })
 
   // was: '... the Turn 4 and Turn 5 Zombies arrive ...' — engine fix.opening-orphanage-lighter (2026-09-29): the row's arrivals
-  it('the Orphanage to the end: the civilians act on their own, the scheduled Zombies arrive, clearing the map wins', () => {
+  it('the Orphanage to the end: the civilians are played with the heroes, the scheduled Zombies arrive, clearing the map wins', () => {
     const s = start(ORPHANAGE)
     expect(s.ctx.events.find((e) => e.type === 'map.loaded')!['mapId']).toBe('map.opening.orphanage')
     const heroes = s.ctx.state.units.slice(0, ORPHANAGE.heroes.length).map((u) => u.uid)
@@ -57,7 +57,12 @@ describe('kingdom.encounter-battles — the sandbox plays an engine encounter', 
     expect(civilians.map((u) => u.typeId).sort()).toEqual(['hero.fixed.orphans', 'hero.fixed.school-teacher'])
     const offered = new Set<number>()
     play(s, () => { for (const u of sandboxActivationChoices(s)) offered.add(u.uid); return choose(s, 3) })
-    expect([...offered].sort()).toEqual([...heroes].sort())
+    // Law 10, kingdom.civilians-played (engine DECISIONS.md 2026-09-30 'the civilians are played; no 2D before the 3D
+    // bodies'; kingdom SWITCHES civiliansPlayed): the player plays every unit fielded on the heroes' side, so the
+    // civilians are offered with the drafted heroes. That landing rewrote tools/sandbox-encounter.verify.mjs and left this
+    // probe expecting the heroes alone (red on shard 4 since 4886541); rewritten as the ruled rule, the same strength.
+    // was: expect([...offered].sort()).toEqual([...heroes].sort())
+    expect([...offered].sort()).toEqual([...heroes, ...civilians.map((u) => u.uid)].sort())
     for (const c of civilians) expect(s.ctx.events.some((e) => e.type === 'activation.begin' && e.actor === c.id), c.typeId).toBe(true)
     // Law 10, engine fix.opening-orphanage-lighter (2026-09-29): the Orphanage's arrivals are the row's to say
     // (Andrew, engine DECISIONS.md 2026-09-28: "Let's remove an early zombie and a later zombie."), so every
