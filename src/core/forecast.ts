@@ -20,7 +20,7 @@ import { auraMods, terrainMods } from './stats.js'
 import { forkBattle } from './fork.js'
 import { executeAction, legalActions, validateAction, type ActionRequest } from './commands.js'
 import { attackReachesHex, canAttack, preview, reachOf, type AttackPreview } from './pipeline.js'
-import { actionReady, attacksOf, isCharge } from './action.js'
+import { actionReady, attacksOf, isAttack, isCharge, isMove } from './action.js'
 import { beginActivation, layerAt } from './mutate.js'
 import { layerIdOf, terrainIdOf } from '../content/maps.js'
 
@@ -133,4 +133,18 @@ export function threatOf(ctx: Ctx, unitId: number): { move: HexId[]; hit: HexId[
   }
   const asc = (s: Set<HexId>) => [...s].sort((a, b) => a - b)
   return { move: asc(move), hit: asc(hit) }
+}
+
+/**
+ * fix.aim-reach (2026-10-01; DECISIONS.md 2026-10-01, Andrew: "the red arrow should only extend as far as whatever its
+ * range is"): how far an action reaches for a unit standing on `fromHex` (its own hex when omitted) — an attack's is
+ * reachOf() read on a shadow copy at that hex, the way threatOf and the AI read it; any other aimed action its row's
+ * range; null for a move (walked, not aimed) or an action with none. Read only: the screen draws an aim arrow no longer than this.
+ */
+export function actionReach(ctx: Ctx, unitId: number, actionId: string, fromHex?: HexId): number | null {
+  const u = ctx.state.units[unitId], a = ctx.actions[actionId]
+  if (!u || !a || isMove(a)) return null   // a move is walked, not aimed
+  if (isAttack(a)) return reachOf(ctx, fromHex === undefined ? u : { ...u, hex: fromHex }, a)
+  const range = (a as { range?: unknown }).range
+  return typeof range === 'number' ? range : null
 }

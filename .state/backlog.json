@@ -1,5 +1,14 @@
 [
  {
+  "id": "fix.aim-reach",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the links and the icon; choose the movement type; no aim before an attack is chosen; the arrow reaches the attack's range'): 'the red arrow should only extend as far as whatever its range is. If I click someone who has a punch, it should have range 1'. core/forecast.ts actionReach(ctx, unitId, actionId, fromHex?): an attack's reachOf on a shadow copy at the hex (as threatOf and the AI read it), any other aimed action its row's range, null for a move. Read only, for the kingdom's aim arrow (kingdom SWITCHES playInputAimReach) through its door's existing forecast.js exports - the door's pipeline export stays preview alone (kingdom ISC-003). Prior art: reachOf is the reach; this only reads it for a unit and action by id from a hex, as forecast.ts already does inside threatOf.",
+  "expect": "actionReach equals reachOf for every attack of every unit in a fielded battle, from any hex asked; null for a move or an unknown action or unit.",
+  "status": "done",
+  "sha": "52e057b"
+ },
+ {
   "id": "encounter.caravan-aftermath",
   "kind": "content",
   "shape": "data",
