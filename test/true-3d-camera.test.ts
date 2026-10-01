@@ -29,7 +29,7 @@ describe('a true 3D battle: one real camera, the board drawn through it, no othe
     expect(f.tilt).toBe(49.3)
   })
   it('the viewer page: one perspective camera, rigid, the board drawn through it at every angle; nothing stretches; the ray picks the hex or body under the pointer; no flat board before the scene', () => {
-    const out = run('../viewer', ['--test', 'tools/true-3d-camera.test.mjs'])
+    const out = run('../viewer', ['--test', '--test-reporter=tap', 'tools/true-3d-camera.test.mjs'])
     // Law 10, viewer.tactical-camera (2026-10-01; DECISIONS.md 2026-10-01 "the camera redesigned on the caravan preview"): the
     // viewer's camera file gained the tactical policy's eight tests; every one still passes. was: expect(out).toMatch(/# pass 6/)
     expect(Number(/# pass (\d+)/.exec(out)?.[1])).toBeGreaterThanOrEqual(14)

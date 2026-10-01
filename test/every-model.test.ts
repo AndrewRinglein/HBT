@@ -68,7 +68,7 @@ describe('battles 1-3: every hero, enemy and civilian a 3D model with its motion
     expect(borrowed).toBeGreaterThan(0)
   })
   it('the viewer page: the bodies load, strike and flinch on their own bone lengths, and every unit of battles 1-3 stands on the board as its model', () => {
-    const out = run('../viewer', ['--test', 'tools/every-model.test.mjs'])
+    const out = run('../viewer', ['--test', '--test-reporter=tap', 'tools/every-model.test.mjs'])
     expect(out).toMatch(/# pass 5/)
     expect(out).toMatch(/# fail 0/)
   }, 150000)

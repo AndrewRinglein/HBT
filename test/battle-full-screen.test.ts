@@ -26,7 +26,7 @@ describe('the battle is its own full screen; End Turn and End Activation lower r
     expect(out).toMatch(/sandbox full screen: .*passed/)
   }, 60000)
   it('the viewer page: End Turn and End activation in the screen\'s lower right-hand corner, not on the board; the targeting arrow red', () => {
-    const out = run('../viewer', ['--test', 'tools/battle-full-screen.test.mjs'])
+    const out = run('../viewer', ['--test', '--test-reporter=tap', 'tools/battle-full-screen.test.mjs'])
     expect(out).toMatch(/# pass 3/)
     expect(out).toMatch(/# fail 0/)
   }, 90000)
