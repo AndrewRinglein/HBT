@@ -50,7 +50,7 @@ import { spriteHTML } from './icons.js'
 import { prepareBattleField } from './engine.ts'
 
 /* ── DUR: the clock lives here; events carry order, never duration ──────── */
-export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck': 160, 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'moved': 125,
+export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck': 160, 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'moved': 600,
   'move.begin': 60, 'attack.declared': 900, 'attack.hit': 250, 'attack.miss': 700,
   'damage.applied': 650, 'life.downed': 420, 'life.dead': 520, 'power.used': 60,
   'status.applied': 200, 'status.reduced': 60, 'status.expired': 60, 'activation.idle': 200,
@@ -352,7 +352,11 @@ export function mountBattleViewer(root, data, opts = {}) {
        its one landing (viewer.opening-cast; viewer SWITCHES flightPace) — the power's shape is the engine's action row */
     const shape = e.type === 'move.begin' ? V.data.ACT[e.causeId]?.move?.shape ?? null : null
     const span = shape === 'flight' && hexes && Number.isInteger(e.hexes) && e.hexes > 0 ? e.hexes : hexes
-    const dur = hexes ? Math.min(900, Math.max(320, 200 + 85 * span)) : 0
+    /* viewer.walk-in-step (engine DECISIONS.md 2026-10-01, Andrew: "The walking isn't very well timed or spaced based on the
+       number of tiles that are being moved"): a traversal takes DUR.moved per hex walked (viewer SWITCHES walkPace) — it
+       grows with the walk, with no floor or ceiling; the 3D body's stride is timed to it (models.js pace). Was
+       200 + 85 × hexes, clamped 320–900 ms: a five-hex walk crossed the board in 625 ms, before a walk clip could show. */
+    const dur = hexes ? DUR.moved * span : 0
     playCues(V, cues)
     render()
     if (hexes && startHex != null) traverse(V, actor, startHex, path, dur, attempt?.id === actor ? attempt : null, shape)

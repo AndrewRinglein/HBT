@@ -454,7 +454,10 @@ if (SINGLES) {
     check(u && u.hex === EV[i].to, `traversal: after the beat the unit stands at ${u && u.hex}, the move said ${EV[i].to}`)
     const E = v._V.layers.UEL.get(EV[i].actor)
     const a = E && E.root.animations && E.root.animations[E.root.animations.length - 1]
-    const want = Math.min(900, Math.max(320, 200 + 85 * EV[i].hexes))
+    /* Law 10 (viewer.walk-in-step, 2026-10-01): was Math.min(900, Math.max(320, 200 + 85 * hexes)). Andrew (engine DECISIONS.md
+       2026-10-01): "The walking isn't very well timed or spaced based on the number of tiles that are being moved" — the
+       rule kept is the pump's: the traversal is DUR.moved per hex, so it grows with the walk */
+    const want = DUR.moved * EV[i].hexes
     check(a && a.kf.length === EV[i].hexes + 1, `traversal: expected ${EV[i].hexes + 1} waypoints, got ${a && a.kf.length}`)
     check(a && a.opts.duration === want && a.opts.easing === 'cubic-bezier(.35,0,.2,1)', `traversal: duration/easing ${a && a.opts.duration}/${a && a.opts.easing}, expected ${want}/cubic-bezier(.35,0,.2,1)`)
     const bob = E && E.img.animations && E.img.animations[E.img.animations.length - 1]

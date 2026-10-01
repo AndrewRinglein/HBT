@@ -135,6 +135,38 @@ function fitProp(root, p, clips, pose, reference) {
   socket.quaternion.copy(hand.getWorldQuaternion(new THREE.Quaternion()).invert().multiply(new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(right, up, forward))))
 }
 
+/* viewer.walk-in-step (engine DECISIONS.md 2026-10-01, Andrew: "when the characters are moving on the map, they're not
+   actually walking or moving. They just slide across."): how far a travelling motion carries the body per second of its
+   clip, in metres on the body — the clip's own stride, so the cast can play it at the token's pace with the feet on the
+   ground. A clip that travels (root motion: the zombies' slow walk, the imps' walk and flight, the oathblade's walk
+   forward) is its pivot's travel over the clip; an in-place walk (the humanoids' and civilians' Walk) is the speed a
+   planted foot slides back under the hips (a foot within 3% of the body's height of its lowest is planted). Null where
+   neither can be read: that motion plays at its own pace, as before. */
+export function groundSpeed(clip, { pose, root, stage, pivot, feet, height, inPlace }) {
+  const dur = clip.duration; if (!(dur > 0)) return null
+  const n = Math.max(16, Math.ceil(dur * 30)), inv = new THREE.Matrix4(), hip = [], soles = feet.map(() => [])
+  for (let i = 0; i <= n; i++) {
+    /* a looping action wraps at its end: the last sample is a hair before it */
+    pose(clip, Math.min(dur * i / n, dur - 1e-4)); root.position.x = root.position.z = 0
+    stage.updateMatrixWorld(true); inv.copy(stage.matrixWorld).invert()
+    hip.push(new THREE.Vector3().setFromMatrixPosition(pivot.matrixWorld).applyMatrix4(inv))
+    feet.forEach((f, j) => soles[j].push(new THREE.Vector3().setFromMatrixPosition(f.matrixWorld).applyMatrix4(inv)))
+  }
+  const travel = Math.hypot(hip[n].x - hip[0].x, hip[n].z - hip[0].z)
+  if (travel > .05 * height) return travel / dur
+  if (!inPlace) return null
+  const dt = dur / n, speeds = []
+  for (const s of soles) {
+    const low = Math.min(...s.map(p => p.y)) + .03 * height
+    for (let i = 0; i < n; i++) if (s[i].y < low && s[i + 1].y < low)
+      speeds.push(Math.hypot(s[i + 1].x - hip[i + 1].x - s[i].x + hip[i].x, s[i + 1].z - hip[i + 1].z - s[i].z + hip[i].z) / dt)
+  }
+  if (!speeds.length) return null
+  speeds.sort((x, y) => x - y)
+  const v = speeds[speeds.length >> 1]
+  return v > 1e-3 ? v : null
+}
+
 /** one unit's body: the rig cloned, scaled to the roster's stature, its motions ready */
 export function createBody(loaded, appearanceOptions = {}) {
   const { look, clips } = loaded
@@ -170,6 +202,11 @@ export function createBody(loaded, appearanceOptions = {}) {
   stage.updateMatrixWorld(true)
   const measure = () => { const b = bounds(), inv = new THREE.Matrix4().copy(stage.matrixWorld).invert(); b.applyMatrix4(inv); return b.max.y - b.min.y }
   const standing = measure()
+  /* viewer.walk-in-step: each travelling motion's ground speed, measured once from the clip on this body (groundSpeed) */
+  const feet = []; root.traverse(o => { if (o.isBone && /foot(l|r|left|right)?$/.test(o.name.replace(/[^a-z]/gi, '').toLowerCase())) feet.push(o) })
+  const gaits = {}
+  for (const k of ['move', 'flight']) if (clips[k]) gaits[k] = groundSpeed(clips[k], { pose, root, stage, pivot, feet, height: look.height, inPlace: k === 'move' })
+  pose(reference); centre()
   mixer.stopAllAction()
   const actions = {}
   for (const [k, clip] of Object.entries(clips)) { const a = mixer.clipAction(clip); a.setLoop(LOOPS.has(k) ? THREE.LoopRepeat : THREE.LoopOnce, Infinity); a.clampWhenFinished = !LOOPS.has(k); actions[k] = a }
@@ -204,6 +241,14 @@ export function createBody(loaded, appearanceOptions = {}) {
       if (snap) { layer?.before(); mixer.update(0); layer?.after(appearanceTime, body.life === 'standing') }
       return true
     },
+    /** metres of ground a travelling motion covers per second of its clip (null: unmeasured, it plays at its own pace) */
+    gait: k => gaits[k] ?? null,
+    /** the travelling motion keeps to the ground: over `metres` of the token's travel in a frame of `step` clip seconds it
+        advances metres / gait — one stride per stride length, whatever the board's pace or the easing (viewer.walk-in-step) */
+    pace(k, metres, step) { const a = actions[k], g = gaits[k]; if (a && g && step > 0) a.setEffectiveTimeScale(metres / (g * step)) },
+    /** where a motion's clip is now, in clip seconds */
+    clipTime: k => actions[k] ? actions[k].time : null,
+    clipLength: k => actions[k] ? actions[k].getClip().duration : null,
     /** a body with no hit reaction recoils: it leans back and returns */
     recoilStart() { recoilT = 0 },
     recoil: () => recoilT < RECOIL ? Math.sin(Math.PI * recoilT / RECOIL) : 0,
@@ -324,6 +369,8 @@ export function createCast(V, scene, toWorld, platform = {}) {
         if (body.motion !== going) body.play(going)
         const dx = body.stage.position.x - body.last.x, dz = body.stage.position.z - body.last.z
         if (dx * dx + dz * dz > 1e-8) body.face = Math.atan2(dx, dz)
+        /* its stride timed to the ground it covers this frame: the feet do not slide (viewer.walk-in-step) */
+        if (body.motion === going) body.pace(going, Math.hypot(dx, dz), step)
       } else if ((body.motion === 'move' || body.motion === 'flight') && body.base) body.play(body.base)
       body.last.copy(body.stage.position)
       body.yaw += wrapAngle(body.face - body.yaw) * (1 - Math.exp(-TURN * dt))
