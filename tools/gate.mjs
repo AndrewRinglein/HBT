@@ -26,6 +26,7 @@
 import { execSync } from 'node:child_process'
 import { revertTree } from './revert-tree.mjs'
 import { codeStamp } from '../../engine/tools/code-stamp.mjs'
+import { changedPaths, commitOnly } from '../../engine/tools/commit-only.mjs'
 import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, statSync, copyFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -391,11 +392,15 @@ if (MODE !== 'land') {
 }
 
 // ── land ────────────────────────────────────────────────────────────────────
-sh('git add -A')
-// Backticks stripped from the subject (2026-09-03): a spec quoting `equipped` cut at 72
-// characters left an unbalanced backtick inside the shell's double quotes, the commit
-// never ran, and the gate died between `git add -A` and the ledger.
-sh(`git -c user.email=a@b -c user.name=kingdom commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72).replace(/[`$]/g, '')}`)}`)
+// The item's files, and only those (Andrew, 2026-10-01: "commit only the files the item
+// touched instead of everything"): every file changed outside .state/ — exactly the tree
+// the checks judged (treeHash) — never `git add -A`. The bookkeeping commit below takes
+// the gate's records and whatever its own closing step changed, nothing else.
+const KINGDOM = { email: 'a@b', name: 'kingdom' }
+const before = new Set(changedPaths())
+const itemFiles = [...before].filter((p) => !p.startsWith('.state/'))
+// the subject goes to git as an argument, not through a shell, so a backtick in the spec is safe
+commitOnly(itemFiles, { message: `${id}: ${item.spec.slice(0, 72)}`, author: KINGDOM })
 const sha = sh('git rev-parse --short HEAD').trim()
 item.status = needsReview ? 'done-needs-review' : 'done'
 item.sha = sha
@@ -405,7 +410,7 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
   (needsReview && testDiff ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
 
 // The post-land audit (typecheck and claimed probes again, from the commit) is
-// cut, as the engine cut its own 2026-09-22: `git add -A` committed the exact
+// cut, as the engine cut its own 2026-09-22: the landing commits the exact
 // tree the shards and the checks above passed on.
 
 // Close the criteria this item claimed, at this sha. The ISC instrument refuses
@@ -436,8 +441,9 @@ logRun('landed', { sha, seal: gauntletPassed ? 'passed' : gauntletNotes.join('; 
 // (2026-09-01): amending after recording the sha left the backlog, the ledger and
 // isc.json all naming a commit that no longer existed. Two commits per landing,
 // and every sha written down is one you can check out.
-sh('git add -A')
-sh(`git -c user.email=a@b -c user.name=kingdom commit -q -m ${JSON.stringify(`bookkeeping for ${id} (${sha})`)}`)
+// the gate's records, and what the closing step changed since the landing (slice-gate syncs a criteria document)
+const closed = changedPaths().filter((p) => !before.has(p) && !p.startsWith('.state/'))
+commitOnly([BACKLOG, LEDGER, RUNLOG, '.state/isc.json', ...closed], { message: `bookkeeping for ${id} (${sha})`, author: KINGDOM })
 console.log(gauntletPassed
   ? `\n⛓  IRON GAUNTLET: PASSED — every check, no flags, no exemptions.`
   : `\n⛓  IRON GAUNTLET: NOT PASSED — ${gauntletNotes.join('; ')}. The landing stands; the seal is withheld.`)
