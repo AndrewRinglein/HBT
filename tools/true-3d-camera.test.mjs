@@ -206,3 +206,166 @@ test('the 3D scene is drawn with the board\'s own camera, and again whenever it 
   frames.shift()(); assert.equal(stats.draws, 2, 'the camera moved: drawn again'); assert.equal(stats.camera, V.camera3d)
   driver.dispose()
 })
+
+/* ── viewer.tactical-camera (2026-10-01): Andrew accepted the caravan preview's camera ("Okay, that works well. How do we add
+   this to our game visualization?") and then: "This is a redesign of our camera … We need to redesign the camera."
+   ATLAS-COMBAT-INTEGRATION.md "Caravan camera and surroundings: implementation handoff — 2026-10-01" is the policy:
+   40° above the ground to start, 40–75° tactically, Lower/Raise by 10°, Q/E and the turn buttons by 60°, Overhead and
+   Inspect each restoring what came before, a drag from Overhead unlocking the tilt past 5 px (a click not), the
+   whole-map fit of the original board as the farthest zoom, and a bounded pan. ─────────────────────────────────────── */
+const bar = (V, kind) => V.dom.camBar.querySelectorAll('button').find(b => b.getAttribute('data-cam') === kind)
+const press = (V, kind) => fire(bar(V, kind), 'click')
+/** the camera's angle above the ground, read off the camera itself */
+const elevationOf = cam => { const look = new THREE.Vector3(0, 0, -1).applyQuaternion(cam.quaternion); return 90 - Math.acos(-look.y) / DEG }
+/** a board point (px, z up) as the camera shows it, in the camera's own viewport */
+function shows(V, x, y, z) {
+  const cam = V.camera3d, vp = cam.userData.viewport, p = new THREE.Vector3(x, y, z).applyMatrix4(toWorld(V))
+  const c = p.clone().applyMatrix4(cam.matrixWorldInverse), n = p.project(cam)
+  return { x: (n.x + 1) / 2 * vp.w, y: (1 - n.y) / 2 * vp.h, ahead: c.z < 0 }
+}
+const sized = (V, w, h) => { const wrap = V.dom.stage.parentNode; Object.defineProperty(wrap, 'clientWidth', { get: () => w, configurable: true }); Object.defineProperty(wrap, 'clientHeight', { get: () => h, configurable: true }); V.render() }
+
+test('the tactical camera starts 40° above the ground; Lower and Raise step 10° inside 40–75°; a drag cannot leave them; Angled view returns 40°', () => {
+  const { v, V } = boot(), wrap = V.dom.stage.parentNode
+  for (const k of ['reset', 'whole', 'angled', 'lower', 'raise', 'overhead', 'left', 'right', 'focus', 'inspect']) assert.ok(bar(V, k), `the ${k} button is on the board`)
+  near(elevationOf(V.camera3d), 40, 1e-6, 'the start')
+  assert.equal(v.cameraState.stance, 'tactical'); near(v.cameraState.elevation, 40, 1e-9, 'the state says so')
+  const seen = []
+  for (let i = 0; i < 5; i++) { press(V, 'raise'); seen.push(Math.round(elevationOf(V.camera3d) * 1e6) / 1e6) }
+  assert.deepEqual(seen, [50, 60, 70, 75, 75], 'Raise angle: 10° a press, never past 75°')
+  seen.length = 0
+  for (let i = 0; i < 5; i++) { press(V, 'lower'); seen.push(Math.round(elevationOf(V.camera3d) * 1e6) / 1e6) }
+  assert.deepEqual(seen, [65, 55, 45, 40, 40], 'Lower angle: 10° a press, never below 40°')
+  fire(wrap, 'pointerdown', { button: 0, clientX: 50, clientY: 50 }); fire(wrap, 'pointermove', { clientX: 50, clientY: 0 }); fire(wrap, 'pointermove', { clientX: 50, clientY: -2000 }); fire(wrap, 'pointerup', {})
+  near(elevationOf(V.camera3d), 40, 1e-6, 'a drag up as far as it goes stops at 40°')
+  fire(wrap, 'pointerdown', { button: 0, clientX: 50, clientY: 50 }); fire(wrap, 'pointermove', { clientX: 50, clientY: 60 }); fire(wrap, 'pointermove', { clientX: 50, clientY: 4000 }); fire(wrap, 'pointerup', {})
+  near(elevationOf(V.camera3d), 75, 1e-6, 'a drag down as far as it goes stops at 75°')
+  press(V, 'angled'); near(elevationOf(V.camera3d), 40, 1e-6, 'Angled view: 40° again')
+  v.dispose()
+})
+
+test('Overhead toggles and restores the view before it exactly; from Overhead a drag past 5 px unlocks the tilt, a click does not', () => {
+  const { v, V } = boot(), wrap = V.dom.stage.parentNode
+  v.turn(77); press(V, 'raise'); v.zoom(1.4); v.pan(90, -40)
+  const before = V.dom.stage.style.transform, pose = { ...V.view.cam }
+  press(V, 'overhead')
+  assert.equal(v.cameraState.stance, 'overhead'); assert.equal(bar(V, 'overhead').getAttribute('aria-pressed'), 'true')
+  near(elevationOf(V.camera3d), 90, 1e-6, 'straight down')
+  press(V, 'overhead')
+  assert.equal(V.dom.stage.style.transform, before, 'pressed again: exactly the view before it'); assert.deepEqual(V.view.cam, pose)
+  assert.equal(bar(V, 'overhead').getAttribute('aria-pressed'), 'false')
+  press(V, 'overhead')
+  fire(wrap, 'pointerdown', { button: 0, clientX: 50, clientY: 50 }); fire(wrap, 'pointermove', { clientX: 53, clientY: 52 }); fire(wrap, 'pointerup', {})
+  assert.equal(v.cameraState.stance, 'overhead', 'a press that moves under 5 px is a click: still Overhead')
+  fire(wrap, 'pointerdown', { button: 0, clientX: 50, clientY: 50 }); fire(wrap, 'pointermove', { clientX: 50, clientY: 62 }); fire(wrap, 'pointerup', {})
+  assert.equal(v.cameraState.stance, 'tactical', 'a drag past 5 px leaves Overhead')
+  const e = elevationOf(V.camera3d); assert.ok(e >= 40 - 1e-6 && e <= 75 + 1e-6, `and the tilt is the tactical camera's again: ${e}°`)
+  v.dispose()
+})
+
+test('Inspect is broader exploration — steeper, flatter, farther than tactical — and restores the tactical pose', () => {
+  const { v, V } = boot()
+  v.zoom(.01); const far = V.camTarget.zoom                                         /* the tactical whole-map fit */
+  v.resetView(); v.turn(-60); v.zoom(1.3); v.pan(-120, 70)
+  const before = V.dom.stage.style.transform
+  press(V, 'inspect'); assert.equal(v.cameraState.stance, 'inspect'); assert.equal(bar(V, 'inspect').getAttribute('aria-pressed'), 'true')
+  v.tilt(-200); near(elevationOf(V.camera3d), 89, 1e-6, 'Inspect looks down to 89°')
+  v.tilt(200); near(elevationOf(V.camera3d), 3, 1e-6, 'and along the ground to 3°')
+  v.tilt(-37); v.zoom(.01); assert.ok(V.camTarget.zoom < far * .99, 'and pulls back past the tactical whole-map fit')
+  press(V, 'inspect')
+  assert.equal(V.dom.stage.style.transform, before, 'switched off: exactly the tactical pose before it')
+  assert.equal(v.cameraState.stance, 'tactical')
+  v.dispose()
+})
+
+test('Whole map fits the original board — every hex and a standing figure on it — at portrait and wide viewports, six turns and every tactical angle; nothing zooms out past it', () => {
+  const { v, V } = boot(), F = V.data.F
+  const corners = []
+  for (const [key, p] of Object.entries(V.data.POS)) { const h = +key
+    if ((h % F.width) % 7 && Math.floor(h / F.width) % 5 && h % F.width !== F.width - 1 && Math.floor(h / F.width) !== F.height - 1) continue   // the edges and a lattice inside
+    for (const [dx, dy] of [[-.5, -.5], [.5, -.5], [-.5, .5], [.5, .5]]) for (const z of [0, 200]) corners.push([p.px + dx * V.data.LAYOUT.W, p.py + dy * V.data.LAYOUT.H, z]) }
+  let checked = 0
+  for (const [w, h] of [[1920, 1080], [900, 1600], [2560, 900]]) {
+    sized(V, w, h)
+    for (const yaw of [0, 60, 120, 180, -120, -60]) for (const elev of [40, 55, 75]) {
+      v.resetView(); press(V, 'whole'); v.turn(yaw); v.tilt((90 - elev) - V.view.cam.tilt); press(V, 'whole')
+      /* Whole map is the preview's: unturned, 55°; the fit itself is checked at every turn and angle through the peek */
+      v.turn(yaw); v.tilt((90 - elev) - V.view.cam.tilt); v.peek(true)
+      for (const [x, y, z] of corners) { const q = shows(V, x, y, z)
+        assert.ok(q.ahead && q.x >= -.5 && q.x <= w + .5 && q.y >= -.5 && q.y <= h + .5, `${w}x${h} at ${yaw}°, ${elev}°: (${x},${y},${z}) shown at ${q.x.toFixed(1)},${q.y.toFixed(1)}`); checked++ }
+      const fitZoom = V.camTarget.zoom; v.peek(false)
+      v.zoom(.001); near(V.camTarget.zoom, fitZoom, 1e-9 * fitZoom, `the wheel stops at the fit (${w}x${h}, ${yaw}°, ${elev}°)`)
+    }
+  }
+  assert.ok(checked > 20000, `enough corners to bite: ${checked}`)
+  v.dispose()
+})
+
+test('the pan is bounded by the board: pinned at the whole-map fit, roaming it when nearer, never off it', () => {
+  const { v, V } = boot(), F = V.data.F
+  press(V, 'whole'); const at = { x: V.camTarget.x, y: V.camTarget.y }
+  v.pan(5000, 5000); assert.deepEqual({ x: V.camTarget.x, y: V.camTarget.y }, at, 'at the fit the board is pinned in the middle')
+  v.zoom(100)
+  /* this board has no decorative surroundings: unturned, the view's own edge stops at the board's (SWITCHES cameraPanNoVoid) */
+  const halfW = 1920 / 2 / V.camTarget.zoom
+  v.pan(-1e5, -1e5); near(V.camTarget.x, halfW, 1e-6, 'near, the view comes to the left edge and no further')
+  v.pan(1e5, 1e5); near(V.camTarget.x, F.w - halfW, 1e-6, 'and to the right edge, never past it'); assert.ok(V.camTarget.y <= F.h, 'nor past the bottom')
+  /* turned, the preview's bound alone: the view's centre roams to the board's edge, never past it */
+  v.turn(60); v.pan(-1e5, 0); const left = V.camTarget.x; v.pan(1e5, 0); const right = V.camTarget.x
+  assert.ok(left >= -1e-6 && left < halfW && right <= F.w + 1e-6 && right > F.w - halfW, `turned: ${left} .. ${right}`)
+  v.dispose()
+})
+
+test('Focus selected unit centres on purpose; ordinary selection keeps the minimal inclusion and never recentres', () => {
+  const { v, V } = boot()
+  v.pan(-320, -160)                                                                   /* the subject now stands off the middle */
+  const ids = Object.values(V.S.U).filter(u => u.life !== 'dead').map(u => u.id)
+  const pick = ids.find(id => { const p = V.data.POS[V.S.U[id].hex], q = shows(V, p.px, p.py, 0); return q.ahead && q.x > 120 && q.x < 1800 && q.y > 200 && q.y < 980 && Math.hypot(q.x - 960, q.y - 540) > 120 })
+  assert.ok(pick != null, 'a unit in view, off the middle: ' + JSON.stringify(ids.map(id => { const p = V.data.POS[V.S.U[id].hex], q = shows(V, p.px, p.py, 0); return [id, Math.round(q.x), Math.round(q.y), q.ahead] })))
+  const f0 = { ...V.view.camF }
+  V.view.inspectId = pick; v.render()
+  assert.deepEqual(V.view.camF, f0, 'selecting a unit already in view does not move the camera')
+  assert.equal(bar(V, 'focus').disabled, false)
+  press(V, 'focus')
+  const p = V.data.POS[V.S.U[pick].hex]; near(V.camTarget.x, p.px, 1e-6, 'Focus centres it (x)'); near(V.camTarget.y, p.py, 1e-6, 'and (y)')
+  v.dispose()
+})
+
+test('Q and E turn by 60°, Home resets — for the board under the pointer only: two boards on one page never both turn; dispose lets go of the keys', () => {
+  const one = boot(), w = one.w, B = w.__battleView, L = B.lib
+  const mapId = battle1.events.find(e => e.type === 'map.loaded').mapId
+  const data = { field: L.fields[mapId], fieldMapId: mapId, initialEvents: battle1.events, units: L.static.units, statuses: L.static.statuses, absorbingStatuses: L.static.absorbingStatuses,
+    actions: L.static.actions, badges: L.static.badges, layers: L.static.layers, artmap: L.art.artmap, assets: L.art.assets, glyphs: L.glyphs, meta: { seed: battle1.seed } }
+  const host = w.document.createElement('div'); w.document.body.appendChild(host)
+  const two = B.mount(host, data, { autoplay: false }); two.push(battle1.events)
+  const key = k => w.document.dispatch('keydown', { key: k, target: w.document.body, preventDefault() {} })
+  fire(one.V.dom.stage.parentNode, 'pointerenter')
+  key('e'); assert.equal(one.V.view.cam.yaw, 60, 'E: 60° round'); assert.equal(two._V.view.cam.yaw, 0, 'the other board does not turn')
+  key('q'); key('q'); assert.equal(one.V.view.cam.yaw, -60, 'Q: 60° back')
+  press(one.V, 'right'); assert.equal(one.V.view.cam.yaw, 0, 'the turn button: 60°')
+  key('Home'); assert.deepEqual(one.V.view.cam, { yaw: 0, tilt: 50, zoom: 1 }, 'Home: the starting view')
+  fire(one.V.dom.stage.parentNode, 'pointerleave'); key('e'); assert.equal(one.V.view.cam.yaw, 0, 'the pointer gone: no keys')
+  two.dispose(); one.v.dispose()
+  key('e'); assert.equal(one.V.view.cam.yaw, 0, 'disposed: the keys are let go')
+})
+
+test('a bubble is for a unit none of whose figure is in view — never one standing in view near an edge', () => {
+  const { v, V } = boot()
+  let inView = 0, outOfView = 0
+  for (const [yaw, z] of [[0, 1], [0, 2.2], [60, 1.8], [180, 1.2], [-120, 2.5]]) {
+    v.resetView(); v.turn(yaw); v.zoom(z)
+    const named = new Set(V.layers.edgeL.querySelectorAll('.edgeBub').flatMap(b => (b.getAttribute('title') || '').split(', ')))
+    const count = {}; for (const u of Object.values(V.S.U)) if (u.life !== 'dead') count[u.name] = (count[u.name] || 0) + 1
+    for (const u of Object.values(V.S.U)) { if (u.life === 'dead' || count[u.name] > 1) continue   /* a bubble names units, not ids */
+      const p = V.data.POS[u.hex], zz = V.data.displayHeights?.[u.hex] || 0, E = V.layers.UEL.get(u.id), tall = (E && E.pick && E.pick.h) || 200
+      const feet = shows(V, p.px, p.py, zz), head = shows(V, p.px, p.py, zz + tall), mid = { x: (feet.x + head.x) / 2, y: (feet.y + head.y) / 2 }
+      const pts = [feet, mid, head], slack = 24 * V.camTarget.zoom                 /* half a token's width (board.js EDGE_TOKEN) */
+      const seen = feet.ahead && pts.some(q => q.x >= 0 && q.x <= 1920 && q.y >= 0 && q.y <= 1080)
+      const gone = !feet.ahead || pts.every(q => q.x < -slack || q.x > 1920 + slack) || pts.every(q => q.y < 0) || pts.every(q => q.y > 1080)
+      if (seen) { assert.ok(!named.has(u.name), `${u.name} stands in view at ${yaw}°, ${z}x — no bubble`); inView++ }
+      else if (gone) { assert.ok(named.has(u.name), `${u.name} is out of view at ${yaw}°, ${z}x — its bubble`); outOfView++ }
+    }
+  }
+  assert.ok(inView > 4 && outOfView > 4, `enough to bite: ${inView} in view, ${outOfView} out`)
+  v.dispose()
+})

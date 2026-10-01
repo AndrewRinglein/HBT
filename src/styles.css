@@ -541,10 +541,16 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .targetHex:focus-visible{background:rgba(255,215,100,.35)!important;box-shadow:inset 0 0 0 5px #ffd764;outline:none}
 
 /* ── viewer.painted-board (2026-09-29): Reset returns the starting angled view ── */
-#camReset{position:absolute;right:14px;bottom:10px;z-index:50;font:600 11px/1 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:rgba(8,9,11,.78);border:1px solid var(--brass);
-  border-radius:2px;padding:7px 11px;cursor:pointer}
-#camReset:hover{background:#2a2110}
+/* viewer.tactical-camera (2026-10-01): the accepted caravan preview's camera buttons, along the board's bottom left
+   (End Turn and the play chrome keep the bottom right) */
+#camBar{position:absolute;left:14px;bottom:10px;z-index:50;display:flex;flex-wrap:wrap;gap:5px;max-width:calc(100% - 360px)}
+#camBar button{font:600 11px/1 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink);background:rgba(8,9,11,.82);border:1px solid var(--brass);border-radius:2px;padding:7px 10px;cursor:pointer}
+#camBar button:hover{background:#2a2110}
+#camBar button[aria-pressed="true"]{background:#3a2c12;box-shadow:inset 0 0 0 1px #ffd764;color:#ffe9b0}
+#camBar button[disabled]{opacity:.45;cursor:default}
+#camBar button:focus-visible{outline:2px solid #ffd764;outline-offset:1px}
+#camBar button[data-cam="left"],#camBar button[data-cam="right"]{font-size:14px;padding:4px 9px}
 
 /* ── viewer.under-unit (2026-09-29): under the unit its name, Health, Protection and compact icons; Stun, Burn and
    Poison on the body (engine DECISIONS.md "the playable battle screen"; board.js UU and BODY_FX) ── */

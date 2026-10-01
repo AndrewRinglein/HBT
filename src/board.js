@@ -7,7 +7,8 @@ import { mvOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { dangerHTML, raIcon } from './icons.js'
-import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard } from './camera3d.js'
+import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, LENS } from './camera3d.js'
+import { POLICY, TILT, fitZoom, zoomLimits, tiltLimits, panRange, turned as turnedBy, elevationOfTilt } from './camera-policy.js'
 import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES } from './hexvfx.js'
 
 export const el = (cls, style, html) => { const d = document.createElement('div')
@@ -1230,14 +1231,35 @@ export function viewportOf(V) {
 export const isoK = V => 1 / anisoOf(boardAffine(V))
 /** the board's own map, scene metres -> board px (viewer.js sets it from the battle's scene; a bare V gets the flat one) */
 export const boardAffine = V => V.data.boardAffine || (V.data.boardAffine = flatAffine(V.data.F))
+/* viewer.tactical-camera (2026-10-01): the camera's stance — Overhead (a toggle that restores the view before it), Inspect
+   (broader exploration that restores the tactical pose after it), else the tactical camera (camera-policy.js) */
+/** the scene carries decorative surroundings beyond the board (its presentation profile; viewer.caravan-scene) */
+export const surrounded = V => !!(V.data.atlas && V.data.atlas.presentation && V.data.atlas.presentation.surroundings)
+export const camStance = V => V.view.overhead ? 'overhead' : V.view.inspect ? 'inspect' : 'tactical'
+/** the whole original board's fit at this turn and tilt on this viewport (camera-policy.js fitZoom): the engine's map,
+    never decoration, with a standing figure's room */
+export function boardFit(V, yaw, tilt) {
+  const k = isoK(V), { W, H } = viewportOf(V)
+  return fitZoom({ w: V.data.F.w, h: V.data.F.h * k }, { w: W, h: H }, yaw, tilt, TOKEN_TOP, LENS)
+}
 export function applyCam(V, opts = {}) {
   const { S, view, data: { POS, F } } = V
-  const k = isoK(V), bw = F.w, bh = F.h * k, sq = squash(V)
-  const fit = view.zoom === 'fit' || view.peek
-  const cam = view.cam || homeCam(), yaw = cam.yaw || 0, tilt = tiltOf(V)
+  const k = isoK(V), bw = F.w, bh = F.h * k
+  const cam = view.cam || (view.cam = homeCam()), stance = camStance(V)
+  /* a pan or a focus leaves the whole-map framing from where it is */
+  if ((opts.pan || opts.focus) && view.overview) view.overview = false
+  /* the tilt stays inside its stance's limits (tactical 15–50° from straight down: 40–75° above the ground) */
+  const [tlo, thi] = tiltLimits(stance), t0 = cam.tilt == null ? TILT.START : cam.tilt
+  const tc = Math.min(thi, Math.max(tlo, t0)); if (tc !== cam.tilt) cam.tilt = tc
+  const yaw = cam.yaw || 0, tilt = tiltOf(V), sq = squash(V)
   const { W: VW, H: VH } = viewportOf(V)
+  const fitZ = boardFit(V, yaw, tilt)
+  /* fit: the harness's fit, the held peek and the whole-map views (Whole map, Overhead) — refitted on every resize */
+  const fit = view.zoom === 'fit' || view.peek || view.overview
+  const [zlo, zhi] = zoomLimits(stance, fitZ, { w: VW, h: VH }, TOKEN_TOP)
+  if (!fit) { const zc = Math.min(zhi, Math.max(zlo, cam.zoom)); if (zc !== cam.zoom) cam.zoom = zc }
+  const s = fit ? fitZ : cam.zoom
   const top = TOKEN_TOP / sq                          // the standee's overhang above its feet, in iso board-y
-  const s = fit ? Math.min(VW / bw, VH / ((bh + top) * sq)) : cam.zoom
   const halfW = (VW / 2) / s, halfH = (VH / 2) / (s * sq)
   const M = 80
   const iso = p => ({ px: p.px, py: p.py * k })
@@ -1246,38 +1268,62 @@ export function applyCam(V, opts = {}) {
   else { const u = S.U[subjectOf(V)]; if (u) pts.push(iso(POS[u.hex])) }
   /* a peek never moves the remembered camera; a manual pan is applied first. view.camF is in board px; f is it in iso */
   const camF = view.camF, f = { x: camF.x, y: camF.y == null ? null : camF.y * k }, f0 = { ...f }
+  /* viewer.tactical-camera: the pan is bounded by the ORIGINAL board, opened by how much nearer than the whole-map fit
+     the camera is (pinned to the middle at the fit — the whole-map fit's own centre — the whole board near), the board's
+     rectangle grown a little north and south so a figure on the first or last row, its head and its name and bars,
+     can be brought to the middle and seen whole. Inspect roams the whole of it at any zoom. The subject's inclusion is
+     applied AFTER the bound, so a unit's head and label win over the bound (the handoff: "Unit head/label clearance
+     takes priority over blindly copying the preview's ground-only pan clamp"). */
+  const bound = () => {
+    const X = [0, bw], Y = [-POLICY.EDGE_ROOM, bh + POLICY.EDGE_ROOM]
+    let [xlo, xhi] = stance === 'inspect' ? X : panRange(X[0], X[1], s, fitZ)
+    let [ylo, yhi] = stance === 'inspect' ? Y : panRange(Y[0], Y[1], s, fitZ)
+    /* a board with no decorative surroundings (viewer SWITCHES cameraPanNoVoid): unturned and tactical, the view also
+       stays on the board where the board is the larger — the rule before 2026-10-01 — so no empty background opens beside
+       it; the preview's looser bound is for a scene whose surroundings fill that space */
+    if (!surrounded(V) && !yaw && stance === 'tactical') {
+      const ox = bw <= halfW * 2 ? [bw / 2, bw / 2] : [halfW, bw - halfW]
+      const oy = bh + top <= halfH * 2 ? [bh / 2, bh / 2] : [halfH - top, bh - halfH]   // smaller than the view: the whole-map fit's centre
+      xlo = Math.max(xlo, ox[0]); xhi = Math.min(xhi, ox[1]); if (xlo > xhi) xlo = xhi = (ox[0] + ox[1]) / 2
+      ylo = Math.max(ylo, oy[0]); yhi = Math.min(yhi, oy[1]); if (ylo > yhi) ylo = yhi = (oy[0] + oy[1]) / 2
+    }
+    f.x = Math.min(Math.max(f.x, xlo), xhi); f.y = Math.min(Math.max(f.y, ylo), yhi)
+  }
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
-  else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k }
-  else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py }
-  else if (yaw) includeTurned(V, f, pts, halfW, halfH, M, top)                       // the turned camera: the same rule in its own frame
-  else if (pts.length === 2 && (Math.abs(pts[0].px - pts[1].px) > 2 * (halfW - M) || Math.abs(pts[0].py - pts[1].py) > 2 * (halfH - M))) {
-    f.x = (pts[0].px + pts[1].px) / 2; f.y = (pts[0].py + pts[1].py) / 2           // a pair that cannot both fit: the midpoint
-  } else {
-    for (const p of pts) {                                                             // the minimal nudge, per point
-      if (p.px < f.x - halfW + M) f.x = p.px + halfW - M
-      else if (p.px > f.x + halfW - M) f.x = p.px - halfW + M
-      if (p.py - top < f.y - halfH + M) f.y = p.py - top + halfH - M                  // the HEAD comes in, not the feet
-      else if (p.py > f.y + halfH - M) f.y = p.py - halfH + M
+  else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound() }
+  else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound() }      // Focus selected unit: centred, on purpose
+  else if (opts.hold) bound()                                                        // a restored view (Overhead, Inspect off) is shown as it was
+  else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py; bound() }
+  else if (view.inspect) bound()                                                     // Inspect explores: selection never pulls the camera
+  else {
+    bound()
+    if (yaw) includeTurned(V, f, pts, halfW, halfH, M, top)                          // the turned camera: the same rule in its own frame
+    else if (pts.length === 2 && (Math.abs(pts[0].px - pts[1].px) > 2 * (halfW - M) || Math.abs(pts[0].py - pts[1].py) > 2 * (halfH - M))) {
+      f.x = (pts[0].px + pts[1].px) / 2; f.y = (pts[0].py + pts[1].py) / 2         // a pair that cannot both fit: the midpoint
+    } else {
+      for (const p of pts) {                                                           // the minimal nudge, per point
+        if (p.px < f.x - halfW + M) f.x = p.px + halfW - M
+        else if (p.px > f.x + halfW - M) f.x = p.px - halfW + M
+        if (p.py - top < f.y - halfH + M) f.y = p.py - top + halfH - M                // the HEAD comes in, not the feet
+        else if (p.py > f.y + halfH - M) f.y = p.py - halfH + M
+      }
     }
   }
-  if (!fit && yaw) {
-    /* turned, the board's rectangle is not the view's: keep the centre on the board */
-    f.x = Math.min(Math.max(f.x, 0), bw); f.y = Math.min(Math.max(f.y, -top), bh)
-  } else if (!fit) {
-    /* the clamp lets the camera show TOKEN_TOP of empty space above row 0 */
-    f.x = bw <= halfW * 2 ? bw / 2 : Math.min(Math.max(f.x, halfW), bw - halfW)
-    f.y = bh + top <= halfH * 2 ? (bh - top) / 2 : Math.min(Math.max(f.y, halfH - top), bh - halfH)
-  }
-  /* written back only when moved, so a camera that did not move keeps its exact numbers */
+  /* written back only when moved, so a camera that did not move keeps its exact numbers. A whole-map view (not the peek,
+     not the harness's fit) remembers its centre, so what follows it — a drag, a turn, Inspect — starts from the view seen */
   if (!fit) { if (f.x !== f0.x) camF.x = f.x; if (f.y !== f0.y) camF.y = f.y / k }
-  const cx = fit ? bw / 2 : f.x, cy = fit ? (bh - top) / 2 : f.y                     // peek shows the whole board and every standee, centred
+  else if (view.overview && !view.peek && view.zoom !== 'fit') { camF.x = bw / 2; camF.y = bh / 2 / k }
+  const cx = fit ? bw / 2 : f.x, cy = fit ? bh / 2 : f.y                             // a fit shows the whole board, centred
   if (!fit && !view.home && camF.x != null) view.home = { x: camF.x, y: camF.y }     // the starting view Reset returns to
   setPose(V, { x: cx, y: cy / k, yaw, tilt, zoom: s })
+  syncCamBar(V)
   /* the HUD says only what the camera is doing (Law 5: the export's outcome,
      turn count and engine stamp are the harness's to print, and a replay must
      not spoil its own ending on frame one — review 2026-09-03) */
   if (V.dom.hud) { const u = S.U[subjectOf(V)]
-    V.dom.hud.textContent = (view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit' : (cam.zoom === 1 ? '1× native' : cam.zoom.toFixed(2) + '×') + ' · drag to turn and tilt · right-drag or arrows to pan · wheel to zoom · hold Z to peek') + (u ? ' · on ' + u.name : '') }
+    const what = view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit'
+      : (stance === 'inspect' ? 'Inspect · free exploration' : stance === 'overhead' ? 'Overhead' : 'Tactical camera · ' + Math.round(elevationOfTilt(tilt)) + '°') + (view.overview ? ' · whole map' : '')
+    V.dom.hud.textContent = what + ' · drag to turn and tilt · right-drag to pan · wheel to zoom · Q/E turn · hold Z to peek' + (u ? ' · on ' + u.name : '') }
 }
 /* ── the glide (the 1.1 s half-speed camera glide of 2026-09-01, which was the stage's CSS transition) is now the
    camera's own: the pose eases to its target and every frame of it is one real camera, so the 3D scene and the board
@@ -1335,8 +1381,12 @@ export function showPose(V, pose) {
    (F.tilt is the starting angle), zoom brings it nearer. Billboards undo yaw and tilt (--unspin, --anti) and the
    board's south squeeze (--aniso), so every standee still faces the camera, true. The limits are look choices
    (viewer SWITCHES cameraLimits). */
-export const CAM = { TILT_MIN: 10, TILT_MAX: 75, ZOOM_MIN: .35, ZOOM_MAX: 2.5, YAW_PER_PX: .3, TILT_PER_PX: .2, WHEEL: .0015 }
-export const homeCam = () => ({ yaw: 0, tilt: null, zoom: 1 })
+/* viewer.tactical-camera (2026-10-01): the limits are the policy's (camera-policy.js) — tactical tilt 15–50° from straight
+   down (40–75° above the ground), Overhead 0°, Inspect 1–87°; zoom from the whole original board's fit to a standing
+   figure at half the view's height. What is left here is the feel of the drag and the wheel (viewer SWITCHES cameraLimits). */
+export const CAM = { TILT_MIN: TILT.MIN, TILT_MAX: TILT.MAX, YAW_PER_PX: .3, TILT_PER_PX: .2, WHEEL: .0015, FOCUS_ZOOM: 1.5 }
+/** the starting angled view: 40° above the ground, no turn, 1× (the policy's, not the engine field's 49.3° tilt) */
+export const homeCam = () => ({ yaw: 0, tilt: TILT.START, zoom: 1 })
 /** PAN BY INCLUSION in the turned camera's own frame — the rule above, rotated (iso px throughout) */
 function includeTurned(V, camF, pts, halfW, halfH, M, top) {
   const rel = p => turned(V, p.px - camF.x, p.py - camF.y)
@@ -1349,19 +1399,70 @@ function includeTurned(V, camF, pts, halfW, halfH, M, top) {
     const d = unturn(V, dx, dy); camF.x += d.x; camF.y += d.y
   }
 }
-/** turn, tilt or zoom the camera by a step; the angles and scale stay inside CAM's limits */
+/** turn, tilt or zoom the camera by a step; the angles and scale stay inside the stance's limits (applyCam clamps). Any
+    such step leaves the whole-map framing; a tilt from Overhead unlocks it at the steepest tactical angle. */
 export function turnCam(V, { yaw = 0, tilt = 0, zoom = 1 } = {}) {
   const c = V.view.cam || (V.view.cam = homeCam())
-  if (yaw) { let y = (c.yaw + yaw) % 360; if (y > 180) y -= 360; if (y <= -180) y += 360; c.yaw = Math.abs(y) < 1e-9 ? 0 : y }
-  if (tilt) c.tilt = Math.min(CAM.TILT_MAX, Math.max(CAM.TILT_MIN, tiltOf(V) + tilt))
-  if (zoom !== 1) c.zoom = Math.min(CAM.ZOOM_MAX, Math.max(CAM.ZOOM_MIN, c.zoom * zoom))
+  if (V.view.overhead && tilt) { V.view.overhead = null; c.tilt = TILT.MIN }
+  if (yaw || tilt || zoom !== 1) V.view.overview = false
+  if (yaw) c.yaw = turnedBy(c.yaw || 0, yaw)
+  if (tilt) { const [lo, hi] = tiltLimits(camStance(V)); c.tilt = Math.min(hi, Math.max(lo, tiltOf(V) + tilt)) }
+  if (zoom !== 1) c.zoom = c.zoom * zoom
   applyCam(V); drawEdges(V)
 }
-/** Reset: back to the starting angled view — the engine's tilt, no turn, 1× zoom, the camera where the battle opened */
+/** Reset: back to the starting angled view — 40° above the ground, no turn, 1× zoom, the camera where the battle opened;
+    Overhead and Inspect are left */
 export function resetCam(V) {
-  V.view.cam = homeCam()
+  V.view.cam = homeCam(); V.view.overhead = null; V.view.inspect = null; V.view.overview = false
   V.view.camF = V.view.home ? { x: V.view.home.x, y: V.view.home.y } : { x: null, y: null }
   applyCam(V); drawEdges(V)
+}
+const snapshot = V => ({ cam: { ...V.view.cam }, camF: { ...V.view.camF }, overview: !!V.view.overview, overhead: V.view.overhead || null })
+function restore(V, s) { V.view.cam = { ...s.cam }; V.view.camF = { ...s.camF }; V.view.overview = s.overview; V.view.overhead = s.overhead }
+/** the unit Focus selected unit centres on: the one clicked last, else the subject */
+export const focusUnitOf = V => { const id = V.view.inspectId != null && V.S.U[V.view.inspectId] ? V.view.inspectId : subjectOf(V); const u = V.S.U[id]; return u && u.life !== 'dead' ? u : null }
+/** the camera's named views (viewer.tactical-camera; the accepted caravan preview's buttons):
+    angled · lower · raise · left · right · whole · overhead · inspect · focus · reset */
+export function cameraView(V, kind) {
+  const view = V.view, c = view.cam || (view.cam = homeCam())
+  if (kind === 'reset') return resetCam(V)
+  if (kind === 'left' || kind === 'right') return turnCam(V, { yaw: kind === 'left' ? -POLICY.TURN_STEP : POLICY.TURN_STEP })
+  /* Lower angle brings the eye down toward the ground (a larger tilt from straight down); Raise lifts it */
+  if (kind === 'lower' || kind === 'raise') return turnCam(V, { tilt: (kind === 'lower' ? 1 : -1) * POLICY.ANGLE_STEP })
+  if (kind === 'angled') { view.overhead = null; view.overview = false; c.tilt = TILT.START }
+  else if (kind === 'whole') { view.overhead = null; view.overview = true; c.yaw = 0; c.tilt = TILT.WHOLE }
+  else if (kind === 'overhead') {
+    if (view.overhead) { const back = view.overhead; view.overhead = null; restore(V, back); view.overhead = back.overhead }
+    else { const back = snapshot(V); view.overhead = back; view.overview = true; c.yaw = 0; c.tilt = 0 }
+  } else if (kind === 'inspect') {
+    if (view.inspect) { const back = view.inspect; view.inspect = null; restore(V, back) }
+    else { view.inspect = snapshot(V); view.overhead = null; view.overview = false }
+  } else if (kind === 'focus') {
+    const u = focusUnitOf(V); if (!u) return
+    view.overview = false; view.peek = false
+    if (c.zoom < CAM.FOCUS_ZOOM) c.zoom = CAM.FOCUS_ZOOM
+    applyCam(V, { focus: V.data.POS[u.hex] }); drawEdges(V); return
+  } else throw new Error('cameraView: unknown view ' + kind)
+  /* a whole-map view keeps the zoom it had for when it is left; the fit is applyCam's */
+  if (view.overview) c.zoom = boardFit(V, c.yaw || 0, c.tilt)
+  applyCam(V, { hold: kind === 'overhead' || kind === 'inspect' }); drawEdges(V)
+}
+/** what the camera is doing, for the bar and the hosts */
+export function cameraState(V) {
+  const c = V.view.cam || homeCam(), tilt = tiltOf(V)
+  return { stance: camStance(V), overhead: !!V.view.overhead, inspect: !!V.view.inspect, overview: !!V.view.overview,
+    yaw: c.yaw || 0, tilt, elevation: elevationOfTilt(tilt), zoom: V.camTarget ? V.camTarget.zoom : c.zoom, focus: focusUnitOf(V)?.id ?? null }
+}
+/** the camera bar's buttons say the camera's state: Overhead and Inspect pressed, Focus only with a unit to focus */
+export function syncCamBar(V) {
+  const bar = V.dom.camBar; if (!bar) return
+  const st = cameraState(V)
+  for (const b of bar.querySelectorAll('button')) {
+    const k = b.getAttribute('data-cam')
+    if (k === 'overhead') b.setAttribute('aria-pressed', String(st.overhead))
+    else if (k === 'inspect') b.setAttribute('aria-pressed', String(st.inspect))
+    else if (k === 'focus') b.disabled = st.focus == null
+  }
 }
 /* ── OFF-SCREEN UNIT INDICATORS (PLAYBACK-DESIGN §7.8 part 1, ruled) ──────
    Andrew: "a little bubble with an arrow pointing off with a miniaturized
@@ -1392,8 +1493,15 @@ export function drawEdges(V) {
   const off = []
   for (const u of Object.values(S.U)) {
     if (u.life === 'dead') continue
-    const p = POS[u.hex], q = screenOf(A, cam, p.px, p.py, heightOf(V, u.hex))
-    const inside = q.ahead && q.x >= EDGE_TOKEN * s && q.x <= W - EDGE_TOKEN * s && q.y - TOKEN_TOP * s >= 0 && q.y <= Hh - EDGE_TOKEN * s
+    /* viewer.tactical-camera (2026-10-01; Andrew: "the pointed indicators … are pointing at things that are on-map. I
+       start out looking at three heroes, and they have those bubbles pointing at them"): a bubble is for a unit NONE of
+       whose figure is in view — its feet and its head as the camera draws them (the body's own height where a model
+       stands), a figure's half-width either side. The old test flagged any unit whose head came within a full figure's
+       height of the top edge at the focus's scale, so a hero plainly standing in view near the top got a bubble. */
+    const p = POS[u.hex], z = heightOf(V, u.hex), E = V.layers.UEL.get(u.id), tall = (E && E.pick && E.pick.h) || TOKEN_TOP
+    const q = screenOf(A, cam, p.px, p.py, z), head = screenOf(A, cam, p.px, p.py, z + tall)
+    const half = EDGE_TOKEN * s, ys = [q.y, head.y]
+    const inside = q.ahead && head.ahead && Math.max(q.x, head.x) >= -half && Math.min(q.x, head.x) <= W + half && Math.max(...ys) >= 0 && Math.min(...ys) <= Hh
     if (inside) continue
     /* screen offset from the viewport centre, clamped to the edge rectangle */
     const dx = q.x - cx, dy = q.y - cy
@@ -1485,7 +1593,11 @@ export function bindCamera(V) {
   const move = e => { if (!drag) { hover(e); return }
     // Screen-pixel threshold from pointerdown: jitter is a click, a real drag
     // applies its full displacement once and then continues incrementally.
-    if (!dragged && Math.hypot(e.clientX - drag.originX, e.clientY - drag.originY) < 4) return
+    const travel = Math.hypot(e.clientX - drag.originX, e.clientY - drag.originY)
+    if (!dragged && travel < 4) return
+    /* viewer.tactical-camera: from Overhead a left drag unlocks the tilt (at the steepest tactical angle) only past 5 px of
+       travel; a click, or a press that wanders less, leaves Overhead as it is */
+    if (!dragged && drag.turn && V.view.overhead) { if (travel <= POLICY.DRAG_PX) return; V.view.overhead = null; V.view.overview = false; V.view.cam.tilt = TILT.MIN }
     /* the host may scale the whole component (the harness fits 1920 to the
        window): screen px → component px is the root's rect over its layout width */
     const sq = squash(V), k = isoK(V), scale = (V.dom.root.getBoundingClientRect && V.dom.root.offsetWidth) ? (V.dom.root.getBoundingClientRect().width / V.dom.root.offsetWidth || 1) : 1
@@ -1528,18 +1640,23 @@ export function bindCamera(V) {
     else if (e.key === 'ArrowUp') pan(0, -STEP)
     else if (e.key === 'ArrowDown') pan(0, STEP)
     else if (e.key.toLowerCase() === PEEK_KEY && !e.repeat) { V.view.peek = true; applyCam(V); drawEdges(V) }
+    else if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey && !e.altKey) cameraView(V, 'left')     /* Q / E: one hex side round */
+    else if ((e.key === 'e' || e.key === 'E') && !e.ctrlKey && !e.metaKey && !e.altKey) cameraView(V, 'right')
+    else if (e.key === 'Home') cameraView(V, 'reset')
     else if (e.key === 'Escape' && V.play && !V.asking) V.offerPlay({ kind: 'back' })   /* ESC behaves as the right-click (UI-BUILD-NOTES §5) */
     else if (e.key === 'Escape' && V.asking) return   /* viewer.play-chrome: the End Turn pop-up takes its own Esc (chrome.js) */
     else return
     e.preventDefault()
   }
   const keyup = e => { if (e.key.toLowerCase() === PEEK_KEY) { V.view.peek = false; applyCam(V); drawEdges(V) } }
-  const reset = wrap.querySelector ? wrap.querySelector('#camReset') : null
-  const resetDown = e => { e.stopPropagation() }, resetClick = e => { e.stopPropagation(); resetCam(V) }
-  if (reset) { reset.addEventListener('pointerdown', resetDown); reset.addEventListener('click', resetClick) }
+  /* the camera bar (viewer.tactical-camera): each button is the camera's own, never the board's drag or click */
+  const camButtons = wrap.querySelectorAll ? [...wrap.querySelectorAll('#camBar button')].filter(b => b.getAttribute('data-cam')) : []
+  const btnDown = e => { e.stopPropagation() }
+  const btnClicks = camButtons.map(b => { const kind = b.getAttribute('data-cam'); return e => { e.stopPropagation(); if (!b.disabled) cameraView(V, kind) } })
+  camButtons.forEach((b, i) => { b.addEventListener('pointerdown', btnDown); b.addEventListener('click', btnClicks[i]) })
   const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['click',click]]
   for (const [type, fn] of bound) wrap.addEventListener(type, fn, type === 'wheel' ? { passive: false } : undefined)
   document.addEventListener('keydown', key); document.addEventListener('keyup', keyup)
   return () => { document.removeEventListener('keydown', key); document.removeEventListener('keyup', keyup); for (const [type, fn] of bound) wrap.removeEventListener(type, fn)
-    if (reset) { reset.removeEventListener('pointerdown', resetDown); reset.removeEventListener('click', resetClick) } }
+    camButtons.forEach((b, i) => { b.removeEventListener('pointerdown', btnDown); b.removeEventListener('click', btnClicks[i]) }) }
 }

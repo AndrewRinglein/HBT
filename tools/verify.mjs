@@ -565,11 +565,18 @@ if (SINGLES) {
      projection; it was a rectangle of the board about camF (no perspective, no turn), rewritten as that rule */
   const POS = V.data.POS, T = V.camTarget, s = T.zoom, inv = V.data.boardAffine.clone().invert()
   const cam = orbitCamera(V.data.boardAffine, T, { w: DESIGN.W, h: DESIGN.H })
+  /* viewer.tactical-camera (2026-10-01; Andrew: "the pointed indicators … are pointing at things that are on-map"):
+     off-screen is now when NO part of the figure is in view — its feet and its head (its body's height) as the camera
+     draws them, half a token's width either side (viewer SWITCHES edgeBubbleInside). The rule counted before (the hex in
+     from the sides and the foot, a 200 px standee wholly inside the top) flagged heroes standing in view; rewritten as
+     the ruled rule, the same projection. */
+  const shown = (u, z) => { const w = new THREE.Vector3(POS[u.hex].px, POS[u.hex].py, z).applyMatrix4(inv)
+    const ahead = w.clone().applyMatrix4(cam.matrixWorldInverse).z < 0, n = w.project(cam); return { ahead, x: (n.x + 1) / 2 * DESIGN.W, y: (1 - n.y) / 2 * DESIGN.H } }
   const offCount = Object.values(v.state.U).filter(u => {
     if (u.life === 'dead') return false
-    const w = new THREE.Vector3(POS[u.hex].px, POS[u.hex].py, V.data.displayHeights?.[u.hex] || 0).applyMatrix4(inv)
-    const ahead = w.clone().applyMatrix4(cam.matrixWorldInverse).z < 0, n = w.project(cam), x = (n.x + 1) / 2 * DESIGN.W, y = (1 - n.y) / 2 * DESIGN.H
-    return !(ahead && x >= 24 * s && x <= DESIGN.W - 24 * s && y - 200 * s >= 0 && y <= DESIGN.H - 24 * s) }).length
+    const z = V.data.displayHeights?.[u.hex] || 0, E = V.layers.UEL.get(u.id), tall = (E && E.pick && E.pick.h) || 200
+    const q = shown(u, z), h = shown(u, z + tall), half = 24 * s
+    return !(q.ahead && h.ahead && Math.max(q.x, h.x) >= -half && Math.min(q.x, h.x) <= DESIGN.W + half && Math.max(q.y, h.y) >= 0 && Math.min(q.y, h.y) <= DESIGN.H) }).length
   check(offCount > 0, 'edges: panning to a corner left nobody off-screen — the test cannot bite')
   check(bubs.length > 0 && bubs.length <= offCount, `edges: ${bubs.length} bubbles for ${offCount} off-screen units`)
   const counted = bubs.reduce((n, b) => n + (b.querySelector('.edgeN') ? +b.querySelector('.edgeN').textContent : 1), 0)

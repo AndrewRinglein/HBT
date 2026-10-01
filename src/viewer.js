@@ -43,7 +43,7 @@ import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
 import {worldToCSS} from './terrain-scene.js'
 import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -104,8 +104,19 @@ const TEMPLATE = `
     </div>
     <div id="boardwrap"><div id="stage"></div>
       <canvas id="vfxC" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:35"></canvas>
-      <div id="camHud" class="mono" style="position:absolute;left:14px;bottom:10px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div>
-      <button id="camReset" type="button" title="Return to the starting angled view">Reset view</button>
+      <div id="camHud" class="mono" style="position:absolute;left:14px;bottom:52px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div>
+      <div id="camBar" role="toolbar" aria-label="Camera">
+        <button id="camReset" type="button" data-cam="reset" title="Return to the starting angled view (Home)">Reset view</button>
+        <button type="button" data-cam="whole" title="Fit the whole battlefield">Whole map</button>
+        <button type="button" data-cam="angled" title="40 degrees above the ground">Angled view</button>
+        <button type="button" data-cam="lower" title="Lower the camera 10 degrees">Lower angle</button>
+        <button type="button" data-cam="raise" title="Raise the camera 10 degrees">Raise angle</button>
+        <button type="button" data-cam="overhead" aria-pressed="false" title="Straight down; press again to go back">Overhead</button>
+        <button type="button" data-cam="left" aria-label="Turn left" title="Turn left (Q)">&#8630;</button>
+        <button type="button" data-cam="right" aria-label="Turn right" title="Turn right (E)">&#8631;</button>
+        <button type="button" data-cam="focus" title="Centre the camera on the selected unit">Focus selected unit</button>
+        <button type="button" data-cam="inspect" aria-pressed="false" title="Explore freely; press again to return">Inspect</button>
+      </div>
       <div id="playNote" role="status" style="display:none"></div></div>
     <div data-slot="transport" style="display:contents"></div>
     <div id="stambar"></div>
@@ -127,7 +138,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const now = opts.now || (typeof performance !== 'undefined' && typeof performance.now === 'function' ? () => performance.now() : () => Date.now())
   root.innerHTML = TEMPLATE
   const q = s => root.querySelector(s)
-  const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), panel: q('#panel'),
+  const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), camBar: q('#camBar'), panel: q('#panel'),
     stambar: q('#stambar'), actionbar: q('#actionbar'), turnchip: q('#turnchip'), phasechip: q('#phasechip'),
     encchip: q('#encchip'), powerchip: q('#powerchip'), playNote: q('#playNote'),
     slots: { top: q('[data-slot=top]'), transport: q('[data-slot=transport]'), bottom: q('[data-slot=bottom]') } }
@@ -471,6 +482,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.painted-board: turn (degrees about the view centre), tilt (degrees), zoom (a factor), Reset */
     turn(deg) { turnCam(V, { yaw: deg }) }, tilt(deg) { turnCam(V, { tilt: deg }) }, zoom(f) { turnCam(V, { zoom: f }) },
     resetView() { resetCam(V) },
+    /* viewer.tactical-camera: the camera's named views — angled, lower, raise, left, right, whole, overhead, inspect, focus,
+       reset — and what it is doing (stance, elevation, turn, zoom) */
+    camera(kind) { cameraView(V, kind) }, get cameraState() { return cameraState(V) },
     dispose() { disposed = true; stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }

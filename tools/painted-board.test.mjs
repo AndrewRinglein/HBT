@@ -89,11 +89,15 @@ test('the camera turns, tilts, zooms and pans by drag, wheel and call, and Reset
      scale(1.5000) in the stage's CSS transform; rewritten as the camera's own angle from straight down, its turn about the
      board point it looks at, and its distance */
   const off = () => V.camera3d.position.clone().sub(V.camera3d.userData.focus)
+  /* Law 10, viewer.tactical-camera (2026-10-01): the starting angle was the engine field's 49.3° tilt; Andrew accepted the
+     caravan preview's camera, whose initial Angled view is 40° above the ground (ATLAS-COMBAT-INTEGRATION.md 2026-10-01
+     handoff), so the start is tilt 50 from straight down and Reset's remembered tilt is that number, not null. The
+     rules asserted — the start, a 12° step, Reset exact — are unchanged. */
   const tiltNow = () => Math.acos(off().y / off().length()) * 180 / Math.PI, yawNow = () => Math.atan2(off().x, off().z) * 180 / Math.PI
   const start = stage.style.transform, anti = stage.style.getPropertyValue('--anti'), d0 = off().length()
-  assert.match(start, /^matrix3d\(/, 'the stage is drawn through the camera'); close(tiltNow(), 49.3, 'the starting tilt'); close(yawNow(), 0, 'the starting view is not turned')
+  assert.match(start, /^matrix3d\(/, 'the stage is drawn through the camera'); close(tiltNow(), 90 - 40, 'the starting tilt: 40 degrees above the ground'); close(yawNow(), 0, 'the starting view is not turned')
   v.turn(30); close(yawNow(), 30, 'turned 30 degrees about the focus'); assert.equal(stage.style.getPropertyValue('--unspin'), '-30deg', 'billboards undo the turn')
-  v.tilt(-12); close(tiltNow(), 37.3, 'tilted 12 degrees up')
+  v.tilt(-12); close(tiltNow(), 50 - 12, 'tilted 12 degrees up')
   v.zoom(1.5); close(off().length(), d0 / 1.5, 'zoomed: 1.5 times nearer')
   const camF = { ...V.view.camF }; v.pan(60, 30); assert.notDeepEqual(V.view.camF, camF)
   assert.notEqual(stage.style.transform, start)
@@ -109,7 +113,7 @@ test('the camera turns, tilts, zooms and pans by drag, wheel and call, and Reset
   /* Reset: the button on the board */
   fire(V.dom.root.querySelector('#camReset'), 'click')
   assert.equal(stage.style.transform, start, 'Reset returns exactly the starting view')
-  assert.deepEqual(V.view.cam, { yaw: 0, tilt: null, zoom: 1 })
+  assert.deepEqual(V.view.cam, { yaw: 0, tilt: 50, zoom: 1 })
   assert.equal(stage.style.getPropertyValue('--anti'), anti); assert.equal(stage.style.getPropertyValue('--unspin'), '0deg')
   H.dispose()
 })
