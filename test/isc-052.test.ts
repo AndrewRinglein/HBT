@@ -43,7 +43,11 @@ describe('ISC-052 — a hero enters wearing its kit', () => {
     expect(ctx.campaign.roster[pick.id]!.equipped).toEqual(codexKit(pick.id))
     expect(ctx.events.filter((e) => e.type === 'item.equipped' && e['heroId'] === pick.id).map((e) => e['from'])).toEqual(codexKit(pick.id).map(() => 'beacon'))
     const opened = playOpening(makeCtx(makeNewCampaign(3)))
-    expect(opened.campaign.roster['hero.fixed.orphans']!.equipped).toEqual(['item.pile-of-rocks'])
+    /* Law 10, 2026-10-02 (fix.orphans-teacher-knife; engine DECISIONS.md 2026-10-02 'the Net is a trinket with no hands; the
+       orphans and the school teacher start with a knife': "The Orphanage, Orphanage, and the school teacher should start
+       with a knife each."): the Orphan Child's Codex kit is the Dagger now; the claim — a rescued civilian carries its
+       tool — is unchanged. was: .toEqual(['item.pile-of-rocks']) */
+    expect(opened.campaign.roster['hero.fixed.orphans']!.equipped).toEqual(['item.dagger'])
     expect(opened.events.some((e) => e.type === 'item.equipped' && e['heroId'] === 'hero.fixed.orphans' && e['from'] === 'rescue')).toBe(true)
   })
 })
