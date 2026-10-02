@@ -242,7 +242,10 @@ describe('pass 4 — Arcane Bolt', () => {
   it('gate 1 — casts appear in the log with a full damage ledger', () => {
     // Arcane Bolt again — test cohort, explicitly (2026-09-02, see above).
     const ctx = createBattle({ replicate: 1, enemyCount: 8, heroes: TEST_COHORT.heroes }); runBattle(ctx)
-    const cast = ctx.events.find(e => e.type === 'power.used')!
+    // Law 10, fix.one-effect-vocabulary (2026-10-01): the Bolt is an effects list (statDamage) like every power, so its
+    // ledger rides the power.hit that follows its power.used, as every effect-list power's does; same ledger, same assertions.
+    // was: const cast = ctx.events.find(e => e.type === 'power.used')!; const led = cast['ledger'] as ...
+    const cast = ctx.events.find(e => e.type === 'power.hit' && e.causeId === 'power.test-mage.bolt')!
     const led = cast['ledger'] as { station: string; delta: number }[]
     expect(led.reduce((s, r) => s + r.delta, 0)).toBe(8)
     expect(led.map(r => r.station)).toContain('DECLARE')

@@ -62,7 +62,7 @@ describe('plumbing.battle-commands', () => {
   it('uses the same power effects, costs and settle', () => {
     const ctx = fixture()
     const id = 'power.test-command-heal'
-    ctx.actions = { ...ctx.actions, [id]: { id, name: 'Command healing fixture', staminaCost: 1, cooldown: 1, range: 0, effect: 'heal', heal: 4 } }
+    ctx.actions = { ...ctx.actions, [id]: { id, name: 'Command healing fixture', staminaCost: 1, cooldown: 1, range: 0, target: { select: 'unit', side: 'ally' }, effects: [{ kind: 'heal', amount: 4 }] } }   // Law 10, fix.one-effect-vocabulary (2026-10-01): the fixture power is an effects list — the legacy power shape it used is retired; same power, same assertions.
     grant(ctx, id); ctx.state.units[0]!.hp -= 6
     const direct = fullFork(ctx)
     usePower(direct, 0, 0, id); settle(direct, id)
@@ -234,7 +234,7 @@ describe('plumbing.battle-commands', () => {
     let id = attack(ctx)
     if (kind === 'power') {
       id = 'power.test-command-damage'
-      ctx.actions = { ...ctx.actions, [id]: { id, name: 'Finishing fixture', staminaCost: 0, cooldown: 0, range: 1, stat: 'strength', bonus: 0, damageType: 'physical' } }
+      ctx.actions = { ...ctx.actions, [id]: { id, name: 'Finishing fixture', staminaCost: 0, cooldown: 0, range: 1, target: { select: 'unit', side: 'enemy' }, effects: [{ kind: 'statDamage', stat: 'strength', bonus: 0, damageType: 'physical' }] } }   // Law 10, fix.one-effect-vocabulary (2026-10-01): the fixture power is an effects list — the legacy power shape it used is retired; same power, same assertions.
       grant(ctx, id)
     }
     const direct = fullFork(ctx)
@@ -297,7 +297,7 @@ describe('plumbing.battle-commands', () => {
     let id = attack(ctx)
     if (kind === 'power') {
       id = 'power.test-command-target'
-      ctx.actions = { ...ctx.actions, [id]: { id, name: 'Target fixture', staminaCost: 0, cooldown: 0, range: 1, stat: 'strength', bonus: 0, damageType: 'physical' } }
+      ctx.actions = { ...ctx.actions, [id]: { id, name: 'Target fixture', staminaCost: 0, cooldown: 0, range: 1, target: { select: 'unit', side: 'enemy' }, effects: [{ kind: 'statDamage', stat: 'strength', bonus: 0, damageType: 'physical' }] } }   // Law 10, fix.one-effect-vocabulary (2026-10-01): the fixture power is an effects list — the legacy power shape it used is retired; same power, same assertions.
       grant(ctx, id)
     }
     const taunt = Object.keys(ctx.statuses).find(id => ctx.statuses[id]!.forcesTarget)!
@@ -312,7 +312,7 @@ describe('plumbing.battle-commands', () => {
     const taunt = Object.keys(ctx.statuses).find(id => ctx.statuses[id]!.forcesTarget)!
     applyStatus(ctx, 0, taunt, 1, 'test', 1)
     const id = 'power.test-command-self'
-    ctx.actions = { ...ctx.actions, [id]: { id, name: 'Self fixture', staminaCost: 0, cooldown: 0, range: 0, free: true, effect: 'heal', heal: 1 } }
+    ctx.actions = { ...ctx.actions, [id]: { id, name: 'Self fixture', staminaCost: 0, cooldown: 0, range: 0, free: true, target: { select: 'unit', side: 'ally' }, effects: [{ kind: 'heal', amount: 1 }] } }   // Law 10, fix.one-effect-vocabulary (2026-10-01): the fixture power is an effects list — the legacy power shape it used is retired; same power, same assertions.
     grant(ctx, id)
     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: id, target: 0 }))).toEqual({ ok: true })
     ctx.state.units[1]!.lifeState = 'downed'

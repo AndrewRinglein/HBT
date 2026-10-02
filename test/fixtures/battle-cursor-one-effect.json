@@ -1,6 +1,6 @@
 {
-  "sourceCommit": "content.afflictions-at-zero",
-  "note": "Rotting Flesh carries +5 bleed-out and the four afflictions name what happens at 0 Health (DECISIONS.md 2026-10-01). Cases marked changed differ from the fix.turn-mods-expire capture (captured over that layer, combined 2026-10-02); movedOnlyText means state, RNG and result are unchanged.",
+  "sourceCommit": "fix.one-effect-vocabulary",
+  "note": "the one effect union and interpreter (fix.one-effect-vocabulary). Cases marked changed differ from the fix.codex-numbers capture; movedOnlyText means state, RNG and result are unchanged.",
   "cases": [
     {
       "id": "showcase.alpha-team",
@@ -12,7 +12,8 @@
         "turns": 9,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": true
     },
     {
       "id": "showcase.arc-variant",
@@ -34,8 +35,8 @@
     },
     {
       "id": "showcase.assembled-party",
-      "events": "d0f94ca40c548850ae27e94a4f763924772f0d2ff2c45a9d178d0108b2ed9770",
-      "state": "098d51404058ee538f715ffddba894d0cd5c5de966583cb1405b3b9e5a16b21b",
+      "events": "eddf59ccb823f6bc71fc1a69f8a7a086c6cba15421353b9fbf03ca08e7527acc",
+      "state": "b20564c2075f3e2b72455dac3542df06f5bb62981b03fde5983fac152db35fd2",
       "rng": "a36c3558734f6d14ca5de36df5ba195c22cd8555d812be5b0bd3e6179f73498c",
       "result": {
         "outcome": "heroClear",
@@ -130,15 +131,16 @@
     },
     {
       "id": "showcase.gash-variant",
-      "events": "cf8f79d60c25930bcf19c38e81b98e805742de732415630863063e25be7e58cd",
-      "state": "b6fd0de58b565f0e743de03507b545d0f4a9e92bd2fed996c8146a8bfe8b20fb",
+      "events": "5a0cf2e9dc54d83e9597391316b5d4c0f831f913c5581944244f87004f4d1370",
+      "state": "80dcc0408df4cc73b4e0c7dd5ccb73addac1f4dd4baf28044f55e9f4436ed739",
       "rng": "9d0050a106e291c977206be07e51af392f2d392fcd365eaa8455451811f7d004",
       "result": {
         "outcome": "heroClear",
         "turns": 8,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": true
     },
     {
       "id": "showcase.horrors",
@@ -166,8 +168,8 @@
     },
     {
       "id": "showcase.kiln",
-      "events": "28abef2214cfb4de40f12b967200dc9a68c149b9355435de487d85fbf4f9e4d8",
-      "state": "c7c702dd0901d4950574389bbc3aa57779193a2da9d363c531e7c543c13d2448",
+      "events": "566a5339610c7a4d318ec7d33e75c80730dc6c596307d04847beab313af36805",
+      "state": "32e5bbc00a5dc3739f9a20b7cf192633681f6390a30430beee5f7673c668b9e0",
       "rng": "1e0df8280105927860e6d9550211cd1a8a108ab530a48fe9c0ab5b38166a3533",
       "result": {
         "outcome": "wipe",
@@ -240,11 +242,12 @@
         "turns": 5,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.prologue-party",
-      "events": "ec88d58350e5db22d42304c901258191db3d5598d47fcba77eca21a9d6471262",
+      "events": "7ad6dc2c000de0ce27d6963abcfce97bf0670265148c0b69dde4c4274a7f85c1",
       "state": "4c0dddf362f40a9548ed99d48d191124ddf8617c2c7f88e86f6750950c85eab3",
       "rng": "d9af44c8ed153940f4a9d7f218abd6c7b7fa96bf0d1da3caf1d1066a2896f7bc",
       "result": {
@@ -252,13 +255,12 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "showcase.rime",
-      "events": "7edeeabc3e29b13360216b606c3875b264c8c6a7489201a46e92839d5ce8dfd3",
-      "state": "f2ac064f399e5a0c095c39f7b1107220496c05b4d3452c63dc937109e1298804",
+      "events": "2ec8fc0547a712f4de08e0805fdffeb974e71ced5ab008bfcbde0b746e64b76c",
+      "state": "567b6e984d8e6ddcb04e99a74f95c22be7b2b03e040e5099a717ff5a63b96588",
       "rng": "481fb2506b1a7f6ff8261a0581f15b9d0ad85edae0119bb9e02c327bedeb7952",
       "result": {
         "outcome": "wipe",
@@ -269,8 +271,8 @@
     },
     {
       "id": "showcase.supper",
-      "events": "a2eaf4759935a0e71adcb8e69e9c5a849f7e4ad71432fa5ac07dd74cfbb6e3e4",
-      "state": "1b2b625c5d5beaea80643eb12ea91d13f51078886a12fe3655e3435f793ee4e6",
+      "events": "8cb0a8959edff90004d1e7804b40e6d5cc5f3f27d78e57c517db92fbd4001c33",
+      "state": "74b2f6f3f494222496534c8c0bcef2c057def0837e93ec8d263d55f399dfd333",
       "rng": "e48227051fc033a87ebbce0d63ec736645dddab7d7b63939bf8cd1e53872d085",
       "result": {
         "outcome": "wipe",
@@ -317,7 +319,7 @@
     },
     {
       "id": "showcase.waystation",
-      "events": "34ec82545de9fd00e4b9d4369d08345e405726e33b05ea82cc6f6e9debd3e2c8",
+      "events": "643594020b1547ddb32f32265799ba71c518fb9b949aabc3ca0b8c50eea76f33",
       "state": "ee1461ea95aafe3c41d38777877f8d71a8623f64d4449914d745076772e9d34f",
       "rng": "f66762eed55f12293d3db5a04c375e0af9f850560c450b28f3cf51bdc237ae0a",
       "result": {
@@ -438,8 +440,7 @@
           }
         ]
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "showcase.wounded-entry",
@@ -449,18 +450,6 @@
       "result": {
         "outcome": "wipe",
         "turns": 1,
-        "usesSpent": []
-      },
-      "changed": false
-    },
-    {
-      "id": "test.afflictions-at-zero",
-      "events": "b26b1a026ef51c3fa91871d285fe0d7ddc046a31a33f71f1bf1ab647e2cae2c6",
-      "state": "5f3eaa24355bf6eed932944b5e586c31fc7340584e21e09716f8ff753864048d",
-      "rng": "cf6cd6d84150eaf0545c545184b1a4f19513df4c704699499544e307bcc497ad",
-      "result": {
-        "outcome": "heroClear",
-        "turns": 4,
         "usesSpent": []
       },
       "changed": false
@@ -503,8 +492,8 @@
     },
     {
       "id": "test.block-a",
-      "events": "b45c546d66466d34d12d6984918f119e699c6e32c1afaddea8455599da4cd297",
-      "state": "bb351af2312609dd075db73696f5094bf2570bcf33ca1c2c5baf7f29170c6bf9",
+      "events": "ad4d0b533b5d572e672ec016fbef880440df961e942055a4da491ce3250bb65b",
+      "state": "67d5305d07873260ddd189df122f075faf2ad5be21e3362ef107fe6597e1af47",
       "rng": "baacb1435c1889bd6f6662c1617299f44460477aad4f1840ad91375842167e3f",
       "result": {
         "outcome": "heroClear",
@@ -611,8 +600,8 @@
     },
     {
       "id": "test.damage-packets",
-      "events": "173bdef86a208e24098ac15230ce7a5b02175c8a70abf4b9dcd4adb939cd300d",
-      "state": "3363865f52638d2f2164275aa123111c30a1c2bfbe3f2f7d2a1f001b50d5704f",
+      "events": "1e53d3e3f2fb4504b802a4fdc52991551efc7a7935bfbcbc4912ae7f39dc35fe",
+      "state": "ad7df5faf02fd48f12f53e5ad54fd224182039c3e70325e2ea8640854aa5bea0",
       "rng": "217367de8613f4a5d40710a9f10cbe51764986a5a976426bc7b4df9fa93733a9",
       "result": {
         "outcome": "heroClear",
@@ -858,7 +847,8 @@
         "turns": 5,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.mode-change-a",
@@ -898,20 +888,19 @@
     },
     {
       "id": "test.opening-cathedral",
-      "events": "6a4fc6af62f8d339f3be18986072229edc31ef61ea3fc0a4fb0adec9beaab911",
-      "state": "2eab9424124f3f1ea8e260e3908971023fd399a06d93a2ad6b849743536cbd59",
+      "events": "e8037602cd3a2eeb63e01ec2d985186c786a9ce708d14a5900687b22c3c1ae8a",
+      "state": "bda53dae1cfc0ab9e2288dfa252e588f3c293656c8f48dd50327dc34d2c1dcce",
       "rng": "426bee0aa9b9ad2566b5ef7a318aa09e372c67174d52dc691430c25080cebb9f",
       "result": {
         "outcome": "wipe",
         "turns": 12,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.opening-cavern-trail",
-      "events": "64326e9ba21cc534919f179fc5f7cb46019182d748e4510dc25687ba522d5004",
+      "events": "21a08ae1573ca5f99937248eb7870684290efbb9ba772abe5fa3405bbfb0656b",
       "state": "dc9bb6d6b5402fcf539d0bb074a67e0d3fce4af44e4ba5d365525f2b4c446b4b",
       "rng": "a596e241b03778ce893ea7a574d9c8c4e7b539100c6ac4df84647a42bef2f339",
       "result": {
@@ -919,20 +908,20 @@
         "turns": 10,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.opening-gates",
-      "events": "c4e9f123a0ee70ea04712b55cb23264e451793aba1db071dcbc76b889567869c",
-      "state": "1bcd9fc724fb66f0f1bf268d52c8188d1c758522b998ad3dbbba46a44a728429",
+      "events": "1b4426737d84d7784dfff66b1449830637257b838d0fc773ef9457f118609c6a",
+      "state": "b14519c49ec28901bf222f8706273263b380ef4cf4f71a1368ed222d9a0e9ab4",
       "rng": "257082714e212ba5a2f48fb92f3f90968d84ca1d95f2fbc5e73f7c91e061d740",
       "result": {
         "outcome": "wipe",
         "turns": 6,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.opening-lumberjack",
@@ -1040,7 +1029,8 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": true
     },
     {
       "id": "test.raise-one",
@@ -1152,7 +1142,7 @@
     },
     {
       "id": "test.vampire-bite",
-      "events": "c338f12ba27c5e28b6112bd735b5a51de2894588cca35b2c3f97f2836c52a2de",
+      "events": "b1c9db435a5ab51efc93e0433900d4b4786f64ffb7404c7d0ac5a78ec1d84df0",
       "state": "06d7cc12580bf1295e01249acce930ec62578db68fb020e4be3abb0719044ffa",
       "rng": "22b85a747fc623b6c754d2060f8c6ae5696f1c86aaba3d384ac161d2f4366c29",
       "result": {
@@ -1160,8 +1150,7 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.vs-target-a",
@@ -1201,8 +1190,8 @@
     },
     {
       "id": "progression-surge-0",
-      "events": "2ea4c75c72508e7743ee8f0f821d92d2d76bba0c9595712c6a09169fdbc16e23",
-      "state": "ae381bd689d5fc7e196993d977de4946e673c49b65479b9e2a70bcfed5fad61e",
+      "events": "8f377b22f26cfc0f71e2f1418d7582719a41c27f872a9f9442c7dd010e47a666",
+      "state": "bc9521ed5d080efaabca1ea57a2798ff6da3244ad558684bd6a66d327d092820",
       "rng": "0f2cec50df0b2fffe5e1ef003078c50c6d217a8667e5e050e413d01230cae217",
       "result": {
         "outcome": "heroClear",
@@ -1225,8 +1214,8 @@
     },
     {
       "id": "progression-surge-2",
-      "events": "25e3505b43afedfeb0c7ff284e33c8c4a1176a38fa32904cac5d3123743139f0",
-      "state": "1faf2e5a016c3aa670f7f6c5721c36716067f202ce13578e7b321353cc6a15e2",
+      "events": "3e5c24f3f5c9b185ddc03fa7b956ede09bfdefe3e7d9c1e1dc263767f846b78a",
+      "state": "b502e68983001d4495880fdac09257ddca09eafe9031249a07c29b85589dadd8",
       "rng": "ffa9ee7ea4e4830c884e67a0dc023678e2389f31ad52f252819728b0292b0c4c",
       "result": {
         "outcome": "heroClear",

@@ -88,7 +88,9 @@ describe('fix.opening-party — the opening fields the drafted party', () => {
     // was: expect(opening.map((s) => s.id).sort()).toEqual(['test.opening-cavern-trail', 'test.opening-lumberjack', 'test.opening-orphanage'])
     // Law 10, encounter.opening.gates (817b21d, 2026-10-01): Gates joins as battle 5, fielded like the others — the list grows, every assertion below runs on it too.
     // was: expect(opening.map((s) => s.id).sort()).toEqual(['test.opening-bridge', 'test.opening-cavern-trail', 'test.opening-lumberjack', 'test.opening-orphanage'])
-    expect(opening.map((s) => s.id).sort()).toEqual(['test.opening-bridge', 'test.opening-cavern-trail', 'test.opening-gates', 'test.opening-lumberjack', 'test.opening-orphanage'])
+    // Law 10, encounter.opening.cathedral (2026-10-01): the Cathedral joins as battle 6, fielded like the others — the list grows, every assertion below runs on it too.
+    // was: expect(opening.map((s) => s.id).sort()).toEqual(['test.opening-bridge', 'test.opening-cavern-trail', 'test.opening-gates', 'test.opening-lumberjack', 'test.opening-orphanage'])
+    expect(opening.map((s) => s.id).sort()).toEqual(['test.opening-bridge', 'test.opening-cathedral', 'test.opening-cavern-trail', 'test.opening-gates', 'test.opening-lumberjack', 'test.opening-orphanage'])
     for (const s of opening) {
       expect(s.openingPosition, s.id).toBeGreaterThan(0)
       expect(s.heroes).toEqual([])

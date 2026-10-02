@@ -39,8 +39,12 @@ describe('the rows come from authored content and the explicit test receptacle',
       expect(move.move).toMatchObject({ shape: row.shape, budgetMod: row.budgetMod })
       expect([move.name, move.staminaCost, move.cooldown]).toEqual([row.name, row.staminaCost, row.cooldown])
     }
-    // the two the engine cannot express, by name — when one lands, this is the finding
-    expect([...gapIds].sort()).toEqual(['power.charging-run', 'power.pray'])
+    // the ones the engine cannot express, by name — when one lands, this is the finding
+    // Law 10, fix.one-effect-vocabulary (2026-10-01): Charging Run landed — its "+3 Strength until the end of your
+    // Activation" is the one duration set's endOfActivation (C20), so it loads as a move and leaves the gap list.
+    // was: expect([...gapIds].sort()).toEqual(['power.charging-run', 'power.pray'])
+    expect([...gapIds].sort()).toEqual(['power.pray'])
+    expect(MOVES['power.charging-run']!.effects).toContainEqual({ kind: 'statMod', stat: 'strength', value: 3, until: 'endOfActivation' })
     expect(Object.keys(MOVES)).toEqual(Object.keys(packMoves()))
   })
 
@@ -64,7 +68,8 @@ describe('the rows come from authored content and the explicit test receptacle',
       if (/gain \+(\d) Strength until the end of the Turn/.test(r.description)) {
         expect(m.effects).toContainEqual({ kind: 'statMod', stat: 'strength', value: parseInt(r.description.match(/gain \+(\d) Strength/)![1]!, 10), until: 'endOfTurn' })
       }
-      if (/Gain (\d) Stamina\./.test(r.description)) expect(m.effects).toContainEqual({ kind: 'gainStamina', value: parseInt(r.description.match(/Gain (\d) Stamina\./)![1]!, 10) })
+      // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (gainStamina -> stamina.gain, the mover's own); the assertion is unchanged.
+      if (/Gain (\d) Stamina\./.test(r.description)) expect(m.effects).toContainEqual({ kind: 'stamina.gain', value: parseInt(r.description.match(/Gain (\d) Stamina\./)![1]!, 10), who: 'self' })
       if (/Lose (\d) Stamina Max/.test(r.description)) expect(m.effects).toContainEqual({ kind: 'loseMaxStamina', value: parseInt(r.description.match(/Lose (\d) Stamina Max/)![1]!, 10) })
     }
   })

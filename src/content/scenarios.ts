@@ -222,6 +222,11 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.opening.gates', encounterId: 'encounter.opening.gates', openingPosition: 5,
     heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  'test.opening-cathedral': {
+    id: 'test.opening-cathedral', note: 'The opening, battle 6: encounter.opening.cathedral (the Necromancer raising the remains) on map.opening.cathedral with the party drafted by then (six heroes, one with the Flaming Longsword).',
+    mapId: 'map.opening.cathedral', encounterId: 'encounter.opening.cathedral', openingPosition: 6,
+    heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',

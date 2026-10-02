@@ -1,6 +1,6 @@
 {
-  "sourceCommit": "content.afflictions-at-zero",
-  "note": "Rotting Flesh carries +5 bleed-out and the four afflictions name what happens at 0 Health (DECISIONS.md 2026-10-01). Cases marked changed differ from the fix.turn-mods-expire capture (captured over that layer, combined 2026-10-02); movedOnlyText means state, RNG and result are unchanged.",
+  "sourceCommit": "fix.turn-mods-expire",
+  "note": "Turn-long mods leave with statmod.expired (fix.turn-mods-expire). Cases marked changed differ from the fix.one-effect-vocabulary capture; movedOnlyText means state, RNG and result are unchanged.",
   "cases": [
     {
       "id": "showcase.alpha-team",
@@ -42,7 +42,8 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.badged",
@@ -138,7 +139,8 @@
         "turns": 8,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.horrors",
@@ -174,7 +176,8 @@
         "turns": 5,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.knockback-two",
@@ -244,7 +247,7 @@
     },
     {
       "id": "showcase.prologue-party",
-      "events": "ec88d58350e5db22d42304c901258191db3d5598d47fcba77eca21a9d6471262",
+      "events": "7ad6dc2c000de0ce27d6963abcfce97bf0670265148c0b69dde4c4274a7f85c1",
       "state": "4c0dddf362f40a9548ed99d48d191124ddf8617c2c7f88e86f6750950c85eab3",
       "rng": "d9af44c8ed153940f4a9d7f218abd6c7b7fa96bf0d1da3caf1d1066a2896f7bc",
       "result": {
@@ -252,8 +255,7 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "showcase.rime",
@@ -265,7 +267,8 @@
         "turns": 12,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.supper",
@@ -277,7 +280,8 @@
         "turns": 6,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.surge-flight-ladder",
@@ -317,7 +321,7 @@
     },
     {
       "id": "showcase.waystation",
-      "events": "34ec82545de9fd00e4b9d4369d08345e405726e33b05ea82cc6f6e9debd3e2c8",
+      "events": "643594020b1547ddb32f32265799ba71c518fb9b949aabc3ca0b8c50eea76f33",
       "state": "ee1461ea95aafe3c41d38777877f8d71a8623f64d4449914d745076772e9d34f",
       "rng": "f66762eed55f12293d3db5a04c375e0af9f850560c450b28f3cf51bdc237ae0a",
       "result": {
@@ -438,8 +442,7 @@
           }
         ]
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "showcase.wounded-entry",
@@ -449,18 +452,6 @@
       "result": {
         "outcome": "wipe",
         "turns": 1,
-        "usesSpent": []
-      },
-      "changed": false
-    },
-    {
-      "id": "test.afflictions-at-zero",
-      "events": "b26b1a026ef51c3fa91871d285fe0d7ddc046a31a33f71f1bf1ab647e2cae2c6",
-      "state": "5f3eaa24355bf6eed932944b5e586c31fc7340584e21e09716f8ff753864048d",
-      "rng": "cf6cd6d84150eaf0545c545184b1a4f19513df4c704699499544e307bcc497ad",
-      "result": {
-        "outcome": "heroClear",
-        "turns": 4,
         "usesSpent": []
       },
       "changed": false
@@ -511,7 +502,8 @@
         "turns": 14,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.block-b",
@@ -619,7 +611,8 @@
         "turns": 5,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.direct-map-authored",
@@ -898,7 +891,7 @@
     },
     {
       "id": "test.opening-cathedral",
-      "events": "6a4fc6af62f8d339f3be18986072229edc31ef61ea3fc0a4fb0adec9beaab911",
+      "events": "9faa4610f60031b7e294cfd5de612fb641d5223c534ab0628988aa2da067bfbd",
       "state": "2eab9424124f3f1ea8e260e3908971023fd399a06d93a2ad6b849743536cbd59",
       "rng": "426bee0aa9b9ad2566b5ef7a318aa09e372c67174d52dc691430c25080cebb9f",
       "result": {
@@ -907,11 +900,11 @@
         "usesSpent": []
       },
       "changed": true,
-      "movedOnlyText": true
+      "movedOnlyText": false
     },
     {
       "id": "test.opening-cavern-trail",
-      "events": "64326e9ba21cc534919f179fc5f7cb46019182d748e4510dc25687ba522d5004",
+      "events": "21a08ae1573ca5f99937248eb7870684290efbb9ba772abe5fa3405bbfb0656b",
       "state": "dc9bb6d6b5402fcf539d0bb074a67e0d3fce4af44e4ba5d365525f2b4c446b4b",
       "rng": "a596e241b03778ce893ea7a574d9c8c4e7b539100c6ac4df84647a42bef2f339",
       "result": {
@@ -919,8 +912,7 @@
         "turns": 10,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.opening-gates",
@@ -932,7 +924,8 @@
         "turns": 6,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.opening-lumberjack",
@@ -1152,7 +1145,7 @@
     },
     {
       "id": "test.vampire-bite",
-      "events": "c338f12ba27c5e28b6112bd735b5a51de2894588cca35b2c3f97f2836c52a2de",
+      "events": "b1c9db435a5ab51efc93e0433900d4b4786f64ffb7404c7d0ac5a78ec1d84df0",
       "state": "06d7cc12580bf1295e01249acce930ec62578db68fb020e4be3abb0719044ffa",
       "rng": "22b85a747fc623b6c754d2060f8c6ae5696f1c86aaba3d384ac161d2f4366c29",
       "result": {
@@ -1160,8 +1153,7 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.vs-target-a",
@@ -1209,7 +1201,8 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "progression-surge-1",
@@ -1233,7 +1226,8 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "legacy-surge-cap",

@@ -20256,6 +20256,16 @@ index ca4bebd..edf74cd 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.gates — they genuinely test it
 
+## encounter.opening.cathedral — LANDED `b884eaf`
+2026-10-02 00:28
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:1836 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-cathedral.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.cathedral: 75 log lines, 75 fired, 73 changed state
+  PASS  brought its own tests — test/opening-cathedral.test.ts
+  PASS  existing tests untouched
 ## fix.codex-numbers — ABANDONED
 2026-10-02 00:47
 
@@ -20287,6 +20297,22 @@ Filed 2026-09-28 with no probeIds: gate 1 probes 'fix.codex-numbers', which is n
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.cathedral — they genuinely test it
+
+## fix.one-effect-vocabulary — LANDED `bfbeebe` **NEEDS REVIEW**
+2026-10-02 01:58
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:979
+  PASS  typecheck
+  PASS  the item's own tests — test/ability-effects.test.ts, test/additions.test.ts, test/audit.test.ts, test/battle-commands.test.ts, test/battle-cursor.test.ts, test/burst-resolution.test.ts, test/crit.test.ts, test/elemental-resists.test.ts, test/item-powers.test.ts, test/one-action-type.test.ts, test/pack-moves.test.ts, test/prior-art.test.ts, test/protection-universal.test.ts, test/wrong-home.test.ts, test/one-effect-vocabulary.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/ability-effects.test.ts, test/additions.test.ts, test/audit.test.ts, test/battle-commands.test.ts, test/battle-cursor.test.ts, test/burst-resolution.test.ts, test/crit.test.ts, test/elemental-resists.test.ts, test/item-powers.test.ts, test/one-action-type.test.ts, test/pack-moves.test.ts, test/prior-art.test.ts, test/protection-universal.test.ts, test/wrong-home.test.ts, test/fixtures/battle-cursor-one-effect.json, test/one-effect-vocabulary.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/ability-effects.test.ts (-3), test/additions.test.ts (-1), test/audit.test.ts (-14), test/battle-commands.test.ts (-4), test/battle-cursor.test.ts (-2), test/burst-resolution.test.ts (-1), test/crit.test.ts (-4), test/elemental-resists.test.ts (-1), test/item-powers.test.ts (-2), test/one-action-type.test.ts (-1), test/pack-moves.test.ts (-3), test/prior-art.test.ts (-2), test/protection-universal.test.ts (-5), test/wrong-home.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 586dd2b2->983d18c3, map.ridge 5f203320->18c4d691, map.flanks 62501d02->985e06ac, map.highlands 87ae61ed->bd615103, map.field e3208d6c->1a8f8f94, map.thicket 9b35fa93->2870f4ef, map.proving.open ca8f206b->aedbd5e7, map.proving.ridge 113785a4->b1cf3676, map.proving.ford 98fb20b4->682c5a04, map.proving.copse 7176496f->482a63b4, map.proving.ruin 7882854b->6c74ca06, map.courtyard 86c2de4f->9c9625e9, map.floodplain 5a3493f2->c850c8cb, test.map.embers 6795745a->26fe6085, test.map.showcase 5e0449c9->9519c5bd, test.map.duel-8 c389e368->8fd5a5c4, test.map.dungeon-16x8 54d4adc0->93ac941b, test.map.horde-24 fffde918->e7aa772e, test.map.journey-20x10 6028880d->c7a6819c, test.map.authored-40x40 fc98a0c5->db525dbf, test.map.high-prop-single 9fba144d->0c47694f, test.map.high-prop-multi a2f14f8c->4b290d55, test.map.well-shove 0e40ee04->d264c02d
   PASS  generalizes — the second instance costs zero engine code — shape 'numbers' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -20486,6 +20512,373 @@ index 0000000..f33760c
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ability-effects.test.ts b/test/ability-effects.test.ts
+index bd87cd5..d68e3b6 100644
+--- a/test/ability-effects.test.ts
++++ b/test/ability-effects.test.ts
+@@ -17,5 +17,5 @@ import { ABILITIES, BURSTS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { hexId } from './board16.js'
+-import type { AbilityEffect } from '../src/core/types.js'
++import type { Effect } from '../src/core/types.js'
+ 
+ const AEGIS = 'power.sacred-shield.aegis'
+@@ -34,5 +34,5 @@ function board(powers: string[]) {
+   return { ctx, w, m, z: ctx.state.units[2]! }
+ }
+-const eff = (id: string, kind: AbilityEffect['kind']) => ABILITIES[id]!.effects!.find((e) => e.kind === kind)!
++const eff = (id: string, kind: Effect['kind']) => ABILITIES[id]!.effects!.find((e) => e.kind === kind)!
+ 
+ describe('the effect vocabulary, one row each', () => {
+@@ -64,5 +64,6 @@ describe('the effect vocabulary, one row each', () => {
+     beginActivation(ctx, w.id, 'test')
+     usePower(ctx, w.id, w.id, MIGHT)
+-    const dmg = eff(MIGHT, 'selfDamage') as { amount: number }
++    // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (selfDamage -> damage, who: 'self'); the assertion is unchanged.
++    const dmg = eff(MIGHT, 'damage') as { amount: number }
+     const mod = eff(MIGHT, 'statMod') as { value: number }
+     expect(w.hp).toBe(before - dmg.amount)
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index d6f071d..006da45 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -243,5 +243,8 @@ describe('pass 4 — Arcane Bolt', () => {
+     // Arcane Bolt again — test cohort, explicitly (2026-09-02, see above).
+     const ctx = createBattle({ replicate: 1, enemyCount: 8, heroes: TEST_COHORT.heroes }); runBattle(ctx)
+-    const cast = ctx.events.find(e => e.type === 'power.used')!
++    // Law 10, fix.one-effect-vocabulary (2026-10-01): the Bolt is an effects list (statDamage) like every power, so its
++    // ledger rides the power.hit that follows its power.used, as every effect-list power's does; same ledger, same assertions.
++    // was: const cast = ctx.events.find(e => e.type === 'power.used')!; const led = cast['ledger'] as ...
++    const cast = ctx.events.find(e => e.type === 'power.hit' && e.causeId === 'power.test-mage.bolt')!
+     const led = cast['ledger'] as { station: string; delta: number }[]
+     expect(led.reduce((s, r) => s + r.delta, 0)).toBe(8)
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 228aaf9..264b9b8 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -62,5 +62,6 @@ describe('independent audit of logged battles', () => {
+       const kdbCauses = new Set<string>()
+       let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number; seq: number; proneDamage?: number } | null = null
+-      let pendingPower: { actor: number; target: number; abilityId: string } | null = null
++      let pendingPower: { actor: number; target: number; abilityId: string; stat: 'strength' | 'precision' | 'magic' | 'spirit'; bonus: number; damageType: string } | null = null
++      let pendingHeal: string | null = null
+ 
+       for (const e of ctx.events) {
+@@ -318,4 +319,9 @@ describe('independent audit of logged battles', () => {
+           }
+ 
++          case 'heal.applied': {
++            if (pendingHeal && e.causeId === pendingHeal) { expect(e['asked'] as number, `${pendingHeal} heals a stated amount`).toBeGreaterThan(0); pendingHeal = null }
++            break
++          }
++
+           case 'power.used': {
+             const at = UNITS[type.get(e.actor!)!]!
+@@ -335,12 +341,16 @@ describe('independent audit of logged battles', () => {
+             // statMods with a lifetime) lands its effects through statmod.added, not a
+             // damage.applied; only a row with no effect list is a bolt to recompute.
+-            if (!ab.effects && (ab.effect ?? 'damage') === 'damage') {
+-              pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
++            // Law 10, fix.one-effect-vocabulary (2026-10-01): the legacy shapes retired, so the three checks
++            // follow the rows to their effects lists — extended, never weakened. A single-target power whose
++            // one effect is a statDamage (the TEST Arcane Bolt) arms the same recompute; a heal power's
++            // heal.applied must ask a stated amount (was: power.used's `heal` field); a self power lands on its
++            // caster (was: selfGuard only — no row has carried that shape since 2026-09-23).
++            // was: if (!ab.effects && (ab.effect ?? 'damage') === 'damage') { pendingPower = {...} } else { heal / selfGuard checks }
++            const only = ab.effects?.length === 1 ? ab.effects[0]! : undefined
++            if (only?.kind === 'statDamage' && ab.target?.select === 'unit') {
++              pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id, stat: only.stat, bonus: only.bonus, damageType: only.damageType }
+             } else {
+-              if (ab.effect === 'heal') expect(e['heal'] as number, `${ab.id} heals a stated amount`).toBeGreaterThan(0)
+-              if (ab.effect === 'selfGuard') {
+-                expect(e.target, 'selfGuard lands on its caster').toBe(e.actor)
+-                expect(e['protection'] as number, `${ab.id} states its protection`).toBeGreaterThan(0)
+-              }
++              if (ab.effects?.some((x) => x.kind === 'heal')) pendingHeal = ab.id
++              if (ab.target?.select === 'self') expect(e.target, `${ab.id} lands on its caster`).toBe(e.actor)
+               pendingPower = null
+             }
+@@ -365,8 +375,8 @@ describe('independent audit of logged battles', () => {
+               const at = UNITS[type.get(pendingPower.actor)!]!
+               const tg = UNITS[type.get(pendingPower.target)!]!
+-              const ab = ABILITIES[pendingPower.abilityId]!
+-              // pendingPower is only ever armed for single-target damage
+-              // powers (see power.used above), so the row carries these.
+-              const stat = modded(pendingPower.actor, ab.stat!,
++              const ab = pendingPower
++              // pendingPower is only ever armed for a single-target statDamage power
++              // (see power.used above), and carries that effect's numbers.
++              const stat = modded(pendingPower.actor, ab.stat,
+               ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision, e.turn)
+               const mit = ab.damageType === 'physical' ? tg.armor : ab.damageType === 'magic' ? tg.resist : 0
+@@ -374,7 +384,7 @@ describe('independent audit of logged battles', () => {
+               // landing (2026-08-20): the event names what a pool absorbed, and
+               // the pipeline subtracts it before mitigation.
+-              const expected = Math.max(0, ab.bonus! + stat - penaltyOf(pendingPower.actor)
++              const expected = Math.max(0, ab.bonus + stat - penaltyOf(pendingPower.actor)
+                 - ((e['absorbed'] as number) ?? 0) - mit)
+-              expect((e['amount'] as number) + (e['overkill'] as number), `${ab.id} damage`).toBe(expected)
++              expect((e['amount'] as number) + (e['overkill'] as number), `${ab.abilityId} damage`).toBe(expected)
+               checkedDamage++
+               pendingPower = null
+diff --git a/test/battle-commands.test.ts b/test/battle-commands.test.ts
+index 1ee866c..3afadc7 100644
+--- a/test/battle-commands.test.ts
++++ b/test/battle-commands.test.ts
+@@ -63,5 +63,5 @@ describe('plumbing.battle-commands', () => {
+     const ctx = fixture()
+     const id = 'power.test-command-heal'
+-    ctx.actions = { ...ctx.actions, [id]: { id, name: 'Command healing fixture', staminaCost: 1, cooldown: 1, range: 0, effect: 'heal', heal: 4 } }
++    ctx.actions = { ...ctx.actions, [id]: { id, name: 'Command healing fixture', staminaCost: 1, cooldown: 1, range: 0, target: { select: 'unit', side: 'ally' }, effects: [{ kind: 'heal', amount: 4 }] } }   // Law 10, fix.one-effect-vocabulary (2026-10-01): the fixture power is an effects list — the legacy power shape it used is retired; same power, same assertions.
+     grant(ctx, id); ctx.state.units[0]!.hp -= 6
+     const direct = fullFork(ctx)
+@@ -235,5 +235,5 @@ describe('plumbing.battle-commands', () => {
+     if (kind === 'power') {
+       id = 'power.test-command-damage'
+-      ctx.actions = { ...ctx.actions, [id]: { id, name: 'Finishing fixture', staminaCost: 0, cooldown: 0, range: 1, stat: 'strength', bonus: 0, damageType: 'physical' } }
++      ctx.actions = { ...ctx.actions, [id]: { id, name: 'Finishing fixture', staminaCost: 0, cooldown: 0, range: 1, target: { select: 'unit', side: 'enemy' }, effects: [{ kind: 'statDamage', stat: 'strength', bonus: 0, damageType: 'physical' }] } }   // Law 10, fix.one-effect-vocabulary (2026-10-01): the fixture power is an effects list — the legacy power shape it used is retired; same power, same assertions.
+       grant(ctx, id)
+     }
+@@ -298,5 +298,5 @@ describe('plumbing.battle-commands', () => {
+     if (kind === 'power') {
+       id = 'power.test-command-target'
+-      ctx.actions = { ...ctx.actions, [id]: { id, name: 'Target fixture', staminaCost: 0, cooldown: 0, range: 1, stat: 'strength', bonus: 0, damageType: 'physical' } }
++      ctx.actions = { ...ctx.actions, [id]: { id, name: 'Target fixture', staminaCost: 0, cooldown: 0, range: 1, target: { select: 'unit', side: 'enemy' }, effects: [{ kind: 'statDamage', stat: 'strength', bonus: 0, damageType: 'physical' }] } }   // Law 10, fix.one-effect-vocabulary (2026-10-01): the fixture power is an effects list — the legacy power shape it used is retired; same power, same assertions.
+       grant(ctx, id)
+     }
+@@ -313,5 +313,5 @@ describe('plumbing.battle-commands', () => {
+     applyStatus(ctx, 0, taunt, 1, 'test', 1)
+     const id = 'power.test-command-self'
+-    ctx.actions = { ...ctx.actions, [id]: { id, name: 'Self fixture', staminaCost: 0, cooldown: 0, range: 0, free: true, effect: 'heal', heal: 1 } }
++    ctx.actions = { ...ctx.actions, [id]: { id, name: 'Self fixture', staminaCost: 0, cooldown: 0, range: 0, free: true, target: { select: 'unit', side: 'ally' }, effects: [{ kind: 'heal', amount: 1 }] } }   // Law 10, fix.one-effect-vocabulary (2026-10-01): the fixture power is an effects list — the legacy power shape it used is retired; same power, same assertions.
+     grant(ctx, id)
+     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: id, target: 0 }))).toEqual({ ok: true })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 64a5e3d..2e3ce86 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -212,4 +212,14 @@ const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
+ // (1). A `changed` case is checked here and skips the older layers.
+ const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-flight.json', import.meta.url), 'utf8'))
++// fix.one-effect-vocabulary (2026-10-01), Law 10: one effect union and one interpreter (the duplication review ruled
++// 2026-09-28, "fix as proposed"). Every case frozen here (tools/capture-one-effect-cursor.mts). Moved by log text only —
++// the Holy Symbol's Heal and the TEST Arcane Bolt are effects lists, so their power.used names its targets (was: `heal`,
++// and the Bolt's ledger, which now rides its power.hit): showcase.alpha-team, showcase.gash-variant,
++// test.props-viewer-ranged-zoc, and test.mage-kindle (its state differs only by the event counter, one power.hit more;
++// RNG and result unchanged). Moved for real, a row whose compiled meaning was wrong: showcase.prologue-enemies — the
++// Lieutenant Demon's "+1 Health" aura was a Max Health stat modifier nothing reads, and now raises Max Health and
++// Health through the one interpreter, as a power's or a badge's always did. A `changed` case is checked here and skips
++// the older layers.
++const oneEffectGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-effect.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -329,5 +339,8 @@ describe('resumable battle cursor', () => {
+       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const fireImpFlightMoved = fireImpFlightExpected?.changed === true
++      const oneEffectExpected = oneEffectGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a one-effect-moved case skips the fire-imp-flight layer too (fix.one-effect-vocabulary 2026-10-01)
++      const oneEffectMoved = oneEffectExpected?.changed === true
++      const fireImpFlightMoved = fireImpFlightExpected?.changed === true || oneEffectMoved
+       // was: const kiteAloneMoved = kiteAloneExpected?.changed === true — a fire-imp-flight-moved case skips the kite-alone layer too (content.fire-imp-flight 2026-10-01)
+       const kiteAloneMoved = kiteAloneExpected?.changed === true || fireImpFlightMoved
+@@ -398,5 +411,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (fireImpFlightExpected) {
++        if (oneEffectExpected) {
++        expect(hash(ctx.events), 'full one-effect events').toBe(oneEffectExpected.events)
++        expect(hash(ctx.state), 'full one-effect state').toBe(oneEffectExpected.state)
++        expect(hash(ctx.rng.log), 'full one-effect RNG').toBe(oneEffectExpected.rng)
++        expect(result).toEqual(oneEffectExpected.result)
++        }
++        // was: if (fireImpFlightExpected) { — fix.one-effect-vocabulary (2026-10-01): a one-effect-moved case is checked above instead
++        if (fireImpFlightExpected && !oneEffectMoved) {
+         expect(hash(ctx.events), 'full fire-imp-flight events').toBe(fireImpFlightExpected.events)
+         expect(hash(ctx.state), 'full fire-imp-flight state').toBe(fireImpFlightExpected.state)
+diff --git a/test/burst-resolution.test.ts b/test/burst-resolution.test.ts
+index c947487..502e646 100644
+--- a/test/burst-resolution.test.ts
++++ b/test/burst-resolution.test.ts
+@@ -367,5 +367,5 @@ for (const id of ['power.bowmaster.rain-of-arrows', 'power.fire-master.fireball'
+ it('published travelling area damage cannot bypass the burst registry', () => {
+   for (const a of Object.values(ACTIONS)) {
+-    expect(a.target?.select === 'area' && a.target.origin === 'target' && a.effects?.some(e => e.kind === 'damage'), a.id).not.toBe(true)
++    expect(a.target?.select === 'area' && a.target.origin === 'target' && a.effects?.some(e => e.kind === 'statDamage'), a.id).not.toBe(true)   // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (damage (stat) -> statDamage); the assertion is unchanged.
+   }
+ })
+diff --git a/test/crit.test.ts b/test/crit.test.ts
+index 49e7f93..9c4ab46 100644
+--- a/test/crit.test.ts
++++ b/test/crit.test.ts
+@@ -40,15 +40,17 @@ describe('the chart arrives as ruled data', () => {
+     // number, so the test asserts the SHAPE (a Bleed status with a positive
+     // magnitude) and lets the pack carry whatever the Codex says.
+-    expect(rowOf('bleeding').effects).toEqual([{ kind: 'status', statusId: 'status.bleed', value: expect.any(Number) }])
++    // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (status -> status.apply); the assertion is unchanged.
++    expect(rowOf('bleeding').effects).toEqual([{ kind: 'status.apply', statusId: 'status.bleed', value: expect.any(Number) }])
+     expect((rowOf('bleeding').effects[0] as { value: number }).value).toBeGreaterThan(0)
+     // fix.dazed-split (2026-09-02): the chart's Dazed ROW applies
+     // status.powers-locked — the Dazed STATUS is a different thing (Andrew:
+     // "there is a critical effect, and then there is a status effect").
+-    expect(rowOf('dazed').effects).toEqual([{ kind: 'status', statusId: 'status.powers-locked', value: 3 }])
++    // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (status, loseStamina, push -> status.apply, stamina.drain, knockback); the assertion is unchanged.
++    expect(rowOf('dazed').effects).toEqual([{ kind: 'status.apply', statusId: 'status.powers-locked', value: 3 }])
+     expect(rowOf('nerve-struck').effects).toEqual([{ kind: 'loseMaxHp', value: 2 }])
+-    expect(rowOf('winded').effects).toEqual([{ kind: 'loseStamina', value: 4 }])
++    expect(rowOf('winded').effects).toEqual([{ kind: 'stamina.drain', value: 4 }])
+     // floors only where dictated
+     for (const e of rowOf('guard-broken').effects) expect((e as { floor?: number }).floor).toBe(0)
+-    expect(rowOf('knocked-sprawling').effects.some((e) => e.kind === 'push')).toBe(true)
++    expect(rowOf('knocked-sprawling').effects.some((e) => e.kind === 'knockback')).toBe(true)
+   })
+ 
+diff --git a/test/elemental-resists.test.ts b/test/elemental-resists.test.ts
+index 386f376..fd08a76 100644
+--- a/test/elemental-resists.test.ts
++++ b/test/elemental-resists.test.ts
+@@ -96,5 +96,6 @@ describe('elemental bounds, data folds and strict status typing',()=>{
+  it('loader rejects unsupported types and malformed named defense modifiers',()=>{
+   expect(()=>validateDamageMetadata({id:'bad',damageType:'holy'})).toThrow(/damage type/)
+-  expect(()=>validateDamageMetadata({id:'bad',effects:[{kind:'selfDamage',amount:2,damageType:'holy'} as never]})).toThrow(/damage type/)
++  // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (selfDamage -> damage, who: 'self'); the assertion is unchanged.
++  expect(()=>validateDamageMetadata({id:'bad',effects:[{kind:'damage',amount:2,damageType:'holy',who:'self'} as never]})).toThrow(/damage type/)
+   for(const key of ['fireResist','poisonResist','shadowResist']){
+    for(const value of [1.5,Infinity,'3',null])expect(()=>validateNamedResists({[key]:value},'test')).toThrow(/integer/)
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index 2f5130e..bcba10f 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -1,5 +1,5 @@
+ // The three S31 item powers — capability.item-powers (2026-08-27).
+ //
+-// AbilityDef speaks heal / selfGuard / blast damage now, each copied from its
++// AbilityDef speaks heal / selfGuard / blast damage now (effects lists since fix.one-effect-vocabulary, 2026-10-01), each copied from its
+ // EXACT authored text: Heal "1 + 2 x Spirit" (partySpirit per GAME-DESIGN §5's
+ // scaling law), Block "4 + your Armor, lose 5 Dodge for the rest of the
+@@ -21,6 +21,8 @@ const SC = 'showcase.alpha-team'
+ describe('the pack carries the three powers, faithfully', () => {
+   it('Heal, Block and Storm exist with their authored numbers', () => {
++    // Law 10, fix.one-effect-vocabulary (2026-10-01): the Heal is an effects list now — the retired 'heal' shape's
++    // numbers are its heal effect's, one ally, unchanged. was: { effect: 'heal', ..., heal: { scale: 'partySpirit', base: 1, mult: 2 } }
+     expect(ABILITIES['power.holy-symbol.heal']).toMatchObject({
+-      effect: 'heal', range: 6, staminaCost: 1, heal: { scale: 'partySpirit', base: 1, mult: 2 },
++      range: 6, staminaCost: 1, target: { select: 'unit', side: 'ally' }, effects: [{ kind: 'heal', amount: { scale: 'partySpirit', base: 1, mult: 2 } }],
+     })
+     // Law 10, 2026-09-23 (v2.shields): Knight Block (selfGuard) retired with item.knight-shield in
+diff --git a/test/one-action-type.test.ts b/test/one-action-type.test.ts
+index 96519d8..a2e36a5 100644
+--- a/test/one-action-type.test.ts
++++ b/test/one-action-type.test.ts
+@@ -78,5 +78,6 @@ describe('the limits are one rule on every action', () => {
+   })
+ 
+-  it('a POWER carries a movement rider (gainStamina) and resolves it through the effects path', () => {
++  // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (gainStamina -> stamina.gain); the assertion is unchanged.
++  it('a POWER carries a movement rider (stamina.gain) and resolves it through the effects path', () => {
+     const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+     const g = ctx.state.units[0]!
+diff --git a/test/pack-moves.test.ts b/test/pack-moves.test.ts
+index 7b7102a..300405e 100644
+--- a/test/pack-moves.test.ts
++++ b/test/pack-moves.test.ts
+@@ -40,6 +40,10 @@ describe('the rows come from authored content and the explicit test receptacle',
+       expect([move.name, move.staminaCost, move.cooldown]).toEqual([row.name, row.staminaCost, row.cooldown])
+     }
+-    // the two the engine cannot express, by name — when one lands, this is the finding
+-    expect([...gapIds].sort()).toEqual(['power.charging-run', 'power.pray'])
++    // the ones the engine cannot express, by name — when one lands, this is the finding
++    // Law 10, fix.one-effect-vocabulary (2026-10-01): Charging Run landed — its "+3 Strength until the end of your
++    // Activation" is the one duration set's endOfActivation (C20), so it loads as a move and leaves the gap list.
++    // was: expect([...gapIds].sort()).toEqual(['power.charging-run', 'power.pray'])
++    expect([...gapIds].sort()).toEqual(['power.pray'])
++    expect(MOVES['power.charging-run']!.effects).toContainEqual({ kind: 'statMod', stat: 'strength', value: 3, until: 'endOfActivation' })
+     expect(Object.keys(MOVES)).toEqual(Object.keys(packMoves()))
+   })
+@@ -65,5 +69,6 @@ describe('the rows come from authored content and the explicit test receptacle',
+         expect(m.effects).toContainEqual({ kind: 'statMod', stat: 'strength', value: parseInt(r.description.match(/gain \+(\d) Strength/)![1]!, 10), until: 'endOfTurn' })
+       }
+-      if (/Gain (\d) Stamina\./.test(r.description)) expect(m.effects).toContainEqual({ kind: 'gainStamina', value: parseInt(r.description.match(/Gain (\d) Stamina\./)![1]!, 10) })
++      // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (gainStamina -> stamina.gain, the mover's own); the assertion is unchanged.
++      if (/Gain (\d) Stamina\./.test(r.description)) expect(m.effects).toContainEqual({ kind: 'stamina.gain', value: parseInt(r.description.match(/Gain (\d) Stamina\./)![1]!, 10), who: 'self' })
+       if (/Lose (\d) Stamina Max/.test(r.description)) expect(m.effects).toContainEqual({ kind: 'loseMaxStamina', value: parseInt(r.description.match(/Lose (\d) Stamina Max/)![1]!, 10) })
+     }
+diff --git a/test/prior-art.test.ts b/test/prior-art.test.ts
+index 8582b03..8c9a70d 100644
+--- a/test/prior-art.test.ts
++++ b/test/prior-art.test.ts
+@@ -124,6 +124,8 @@ describe('tool.prior-art-audit — the rules of the flags', () => {
+     const here = fileURLToPath(new URL('../../', import.meta.url))
+     for (const r of rules) for (const f of r.files) expect(statSync(join(here, f)).isFile(), f).toBe(true)
+-    const trigger = inventoryOf({ 'engine/src/core/trigger.ts': readFileSync(join(here, 'engine/src/core/trigger.ts'), 'utf8') }, rules)
+-    expect(trigger.files['engine/src/core/trigger.ts']!.vocab.find((v) => v.name === 'TriggerEffect.kind')?.members).toContain('status.apply')
++    // Law 10, fix.one-effect-vocabulary (2026-10-01): the one Effect union lives in types.ts (EffectBody.kind), where TriggerEffect.kind in trigger.ts stood; the assertion is unchanged.
++    // was: const trigger = inventoryOf({ 'engine/src/core/trigger.ts': ... }); expect(...vocab.find((v) => v.name === 'TriggerEffect.kind')?.members).toContain('status.apply')
++    const types = inventoryOf({ 'engine/src/core/types.ts': readFileSync(join(here, 'engine/src/core/types.ts'), 'utf8') }, rules)
++    expect(types.files['engine/src/core/types.ts']!.vocab.find((v) => v.name === 'EffectBody.kind')?.members).toContain('status.apply')
+     expect([inScope('engine/src/core/ground.ts'), inScope('engine/src/content/generated/pack.ts'), inScope('engine/test/x.test.ts'), inScope('content/mkenginepack.mjs'), inScope('content/test/a.mjs'), inScope('viewer/tools/a.test.mjs')]).toEqual([true, false, false, true, false, false])
+   })
+diff --git a/test/protection-universal.test.ts b/test/protection-universal.test.ts
+index c322540..03d5ea0 100644
+--- a/test/protection-universal.test.ts
++++ b/test/protection-universal.test.ts
+@@ -13,4 +13,5 @@ const rows = [['physical', 'armor'], ['magic', 'resist'], ['fire', 'fireResist']
+ const rig = () => createCustomBattle([{type: 'test-warrior', hex: 85}], [{type: 'test-zombie', hex: 86}])
+ 
++// Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (selfDamage -> damage, who: 'self' — flat damage on the caster); the assertion is unchanged.
+ describe('rule.protection-universal', () => {
+   for (const targetId of [0, 1]) for (const [type, defense] of rows) for (const path of ['tick', 'trigger']) {
+@@ -49,5 +50,5 @@ describe('rule.protection-universal', () => {
+       if (defense) Object.assign(u, {[defense]: 2})
+       ctx.actions = {...ctx.actions, [id]: {...ctx.actions['power.test-second-wind']!, id,
+-        effects: [{kind: 'selfDamage', amount: 8, damageType: type}]}}
++        effects: [{kind: 'damage', amount: 8, damageType: type, who: 'self'}]}}
+       u.actions.push(id); beginActivation(ctx, u.id, 'test')
+       applyStatus(ctx, u.id, 'status.protection', 5, 'test')
+@@ -65,5 +66,5 @@ describe('rule.protection-universal', () => {
+     u.actions.push(id); u.stamina = 99; beginActivation(ctx, u.id, 'test')
+     applyStatus(ctx, u.id, 'status.protection', 100, 'test')
+-    const amount = ctx.actions[id]!.effects!.find(e => e.kind === 'selfDamage')!.amount as number
++    const amount = (ctx.actions[id]!.effects!.find(e => e.kind === 'damage' && e.who === 'self') as { amount: number }).amount
+     const hp = u.hp
+     expect(previewPower(ctx, u.id, u.id, id)).toMatchObject({selfDamage: 0, selfDamageApplied: 0})
+@@ -76,6 +77,6 @@ describe('rule.protection-universal', () => {
+     const ctx = rig(), u = ctx.state.units[0]!, id = 'power.test-double-self'
+     ctx.actions = {...ctx.actions, [id]: {...ctx.actions['power.test-second-wind']!, id, effects: [
+-      {kind: 'selfDamage', amount: 4, damageType: 'true'},
+-      {kind: 'selfDamage', amount: 4, damageType: 'true'},
++      {kind: 'damage', amount: 4, damageType: 'true', who: 'self'},
++      {kind: 'damage', amount: 4, damageType: 'true', who: 'self'},
+     ]}}
+     u.actions.push(id); beginActivation(ctx, u.id, 'test')
+@@ -109,5 +110,5 @@ describe('rule.protection-universal', () => {
+     ctx.actions = {...ctx.actions, [id]: {...ctx.actions['power.test-second-wind']!, id, effects: [
+       {kind: 'status.apply', statusId: 'status.protection', value: 2},
+-      {kind: 'selfDamage', amount: 5, damageType: 'fire'},
++      {kind: 'damage', amount: 5, damageType: 'fire', who: 'self'},
+     ]}}
+     u.actions.push(id); beginActivation(ctx, u.id, 'test')
+diff --git a/test/wrong-home.test.ts b/test/wrong-home.test.ts
+index 4b0278b..7c35719 100644
+--- a/test/wrong-home.test.ts
++++ b/test/wrong-home.test.ts
+@@ -17,5 +17,10 @@ describe('tool.wrong-home-audit — today\'s tree', () => {
+   })
+   it('lists a content name the engine\'s logic reads, with its Codex row (the review\'s E6)', () => {
+-    const p = list.find((x) => x.id === 'status.protection' && x.file === 'engine/src/core/ability.ts')!
++    // Law 10, fix.one-effect-vocabulary (2026-10-01): E6 is FIXED — ability.ts no longer names status.protection (Block's
++    // Protection is its own row's status.apply), so today's tree no longer lists it; the audit's catch is checked on the
++    // very line that stood there. Same two assertions, on that line.
++    // was: const p = list.find((x) => x.id === 'status.protection' && x.file === 'engine/src/core/ability.ts')!
++    expect(list.find((x) => x.id === 'status.protection' && x.file === 'engine/src/core/ability.ts')).toBeUndefined()
++    const p = scanEngineFile('engine/src/core/ability.ts', "      applyStatus(ctx, userId, 'status.protection', protection, a.id)\n", ctx).find((x) => x.id === 'status.protection')!
+     expect(p.what).toBe('content name in engine logic')
+     expect(p.owner).toMatch(/^content\/settled\.json\.statuses\[\d+\]$/)
+```
+</details>
 ## viewer.unit-card-bar — LANDED `90d261a`
 2026-10-02 01:37
 
@@ -20542,6 +20935,17 @@ Filed without changesBaseline: the item's own ruled content moves the control ba
   PASS  brought its own tests — test/badge-surge-at-fielding.test.ts, test/battle-cursor.test.ts, test/afflictions-at-zero-content.test.ts, test/fixtures/battle-cursor-afflictions-at-zero.json
   WARN  existing tests untouched — DELETED LINES in test/badge-surge-at-fielding.test.ts (-2), test/battle-cursor.test.ts (-2) — will land FLAGGED for review
   PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands 2469419a->3f1de3b1, map.thicket 4641a852->dc25f052, map.proving.open a0b7fce3->ab65fcfd, map.proving.ridge 44f4ae17->ed91f839, map.proving.ford 2471073b->d67d3da5, map.proving.copse 4899bf01->36d6dfbc, map.proving.ruin e7dfa711->4714f062, map.courtyard 79a2b1dd->ca1d4ab2, map.floodplain 2e0fbbcb->27fa59e7, test.map.embers 533d2327->f60bc6e5, test.map.duel-8 400e8d3a->a48f132c, test.map.dungeon-16x8 0ec15564->cc69f157, test.map.horde-24 2978af63->40eea6da, test.map.journey-20x10 67a9ca83->fd9f428e, test.map.authored-40x40 93d34098->bf38e29c, test.map.high-prop-single 881249cb->d40bb5dc, test.map.high-prop-multi 5b67f74b->7c986f2d, test.map.well-shove 0c8e5836->6a1922f5
+## fix.turn-mods-expire — LANDED `7a54e06` **NEEDS REVIEW**
+2026-10-02 03:16
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:628
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/turn-mods-expire.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-turn-mods.json, test/turn-mods-expire.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open fb33c9b3->b52001ce, map.ridge d97cc16c->ef8ade8b, map.flanks 5da97881->9a0e1af5, map.highlands e1fec0c6->1808f2ff, map.field b854bfb1->1595c9e3, map.thicket 3b36d5fe->c940531c, map.proving.open 848bd921->8ec16bb4, map.proving.ridge b6976181->c2170cba, map.proving.ford 44800fd1->c624f5b2, map.proving.copse f9006c34->7186d7b3, map.proving.ruin e48999bd->35c3f672, map.courtyard 725a276f->7cd69661, map.floodplain a178cce2->dc60e6f7, test.map.embers 11c53ad6->9a5206b2, test.map.showcase b3578e55->0eff263f, test.map.duel-8 23d1af2e->e60a1dcd, test.map.dungeon-16x8 7b5784ef->2ef77e0b, test.map.horde-24 d7ebc053->aa3cf714, test.map.journey-20x10 9f6fcee0->bd234151, test.map.authored-40x40 d66560f0->1b12dcc8, test.map.high-prop-single df6087d0->bf80d63f, test.map.high-prop-multi 5ddfb2cc->4602eb0f, test.map.well-shove dc4d42d7->51509cb8
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -20550,6 +20954,10 @@ Filed without changesBaseline: the item's own ruled content moves the control ba
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without badge.rotting-flesh,badge.fragile — they genuinely test it
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
 <details><summary>Existing tests were edited — review this diff</summary>
 
@@ -20627,3 +21035,66 @@ index 321ca31..4a27bbf 100644
          expect(hash(ctx.state), 'full codex-numbers state').toBe(codexNumbersExpected.state)
 ```
 </details>
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index d565a33..fb7f33d 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -230,4 +230,12 @@ const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
+ // the older layers.
+ const oneEffectGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-effect.json', import.meta.url), 'utf8'))
++// fix.turn-mods-expire (2026-10-01; reported by Andrew, the Leap's +2 Strength stayed on the screen), Law 10: a mod "until
++// the end of the Turn" leaves the unit as the Turn ends, with a statmod.expired line (Law 3) — it was only filtered at
++// read. Every case frozen here (tools/capture-turn-mods-cursor.mts). Moved by those lines and the mods leaving the unit's
++// state only — RNG and result unchanged in every one (effective stats were already filtered): showcase.assembled-party,
++// showcase.gash-variant, showcase.kiln, showcase.rime, showcase.supper, test.block-a, test.damage-packets,
++// test.opening-cathedral, test.opening-gates, progression-surge-0 and progression-surge-2. A `changed` case is checked
++// here and skips the older layers.
++const turnModsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-turn-mods.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -349,5 +357,8 @@ describe('resumable battle cursor', () => {
+       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const oneEffectExpected = oneEffectGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const oneEffectMoved = oneEffectExpected?.changed === true
++      const turnModsExpected = turnModsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const turnModsMoved = turnModsExpected?.changed === true
++      // was: const oneEffectMoved = oneEffectExpected?.changed === true — a turn-mods-moved case skips the one-effect layer too (fix.turn-mods-expire 2026-10-01)
++      const oneEffectMoved = oneEffectExpected?.changed === true || turnModsMoved
+       // was: const codexNumbersMoved = codexNumbersExpected?.changed === true — a one-effect-moved case skips the codex-numbers layer too (fix.one-effect-vocabulary 2026-10-01)
+       const codexNumbersMoved = codexNumbersExpected?.changed === true || oneEffectMoved
+@@ -422,5 +433,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (oneEffectExpected) {
++        if (turnModsExpected) {
++        expect(hash(ctx.events), 'full turn-mods events').toBe(turnModsExpected.events)
++        expect(hash(ctx.state), 'full turn-mods state').toBe(turnModsExpected.state)
++        expect(hash(ctx.rng.log), 'full turn-mods RNG').toBe(turnModsExpected.rng)
++        expect(result).toEqual(turnModsExpected.result)
++        }
++        // was: if (oneEffectExpected) { — fix.turn-mods-expire (2026-10-01): a turn-mods-moved case is checked above instead
++        if (oneEffectExpected && !turnModsMoved) {
+         expect(hash(ctx.events), 'full one-effect events').toBe(oneEffectExpected.events)
+         expect(hash(ctx.state), 'full one-effect state').toBe(oneEffectExpected.state)
+```
+</details>
+
+## viewer.live-stat-mods — LANDED `c56a2d1`
+2026-10-02 03:23
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:979
+  PASS  typecheck
+  PASS  the item's own tests — test/live-stat-mods.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/live-stat-mods.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

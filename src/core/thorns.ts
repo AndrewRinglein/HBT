@@ -25,9 +25,8 @@
 
 import type { AttackDef, Ctx, Unit } from './types.js'
 import { effective } from './stats.js'
-import { flatDamage } from './mitigation.js'
-import { incomingAbsorb, spendAbsorb } from './status.js'
-import { applyDamage, emit, unit } from './mutate.js'
+import { dealDirectDamage } from './status.js'
+import { emit, unit } from './mutate.js'
 
 /** A unit's Thorns magnitude — never negative. */
 export function thornsOf(ctx: Ctx, u: Unit): number {
@@ -53,14 +52,9 @@ export function reflectThorns(ctx: Ctx, attackerId: number, targetId: number, a:
   const at = unit(ctx, attackerId)
   if (at.lifeState !== 'standing' || at.hp <= 0) return
   const causeId = a.id
-  const damage = flatDamage(ctx, at, n, 'true', incomingAbsorb(ctx, at))
-  emit(ctx, 'thorns.reflected', causeId, {
-    actor: targetId, target: attackerId, attackId: a.id, thorns: n,
-    amount: damage.value, ...(damage.absorbed ? { absorbed: damage.absorbed } : {}),
-  })
-  if (damage.absorbed > 0) spendAbsorb(ctx, attackerId, damage.absorbed, causeId)
-  applyDamage(ctx, attackerId, damage.value, causeId, {
-    actor: targetId, damageType: 'true', thorns: true, attackId: a.id,
-    ...(damage.absorbed ? { absorbed: damage.absorbed } : {}),
-  })
+  dealDirectDamage(ctx, attackerId, n, 'true', causeId, { actor: targetId, damageType: 'true', thorns: true, attackId: a.id },
+    (damage) => emit(ctx, 'thorns.reflected', causeId, {
+      actor: targetId, target: attackerId, attackId: a.id, thorns: n,
+      amount: damage.value, ...(damage.absorbed ? { absorbed: damage.absorbed } : {}),
+    }))
 }

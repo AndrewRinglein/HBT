@@ -218,12 +218,32 @@ const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // Moved for real, the ruling working: the 31 cases where a crit roll goes the other way. A `changed` case is checked here
 // and skips the older layers.
 const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-codex-numbers.json', import.meta.url), 'utf8'))
+// fix.one-effect-vocabulary (2026-10-01), Law 10: one effect union and one interpreter (the duplication review ruled
+// 2026-09-28, "fix as proposed"). Every case frozen here (tools/capture-one-effect-cursor.mts). Moved by log text only —
+// the Holy Symbol's Heal and the TEST Arcane Bolt are effects lists, so their power.used names its targets (was: `heal`,
+// and the Bolt's ledger, which now rides its power.hit): showcase.alpha-team, showcase.gash-variant,
+// test.props-viewer-ranged-zoc, and test.mage-kindle (its state differs only by the event counter, one power.hit more;
+// RNG and result unchanged). Moved for real, a row whose compiled meaning was wrong: showcase.prologue-enemies and
+// test.opening-gates — the Lieutenant Demon's "+1 Health" aura was a Max Health stat modifier nothing reads, and now
+// raises Max Health and Health through the one interpreter, as a power's or a badge's always did. Captured over the
+// fix.codex-numbers layer (combined 2026-10-01). A `changed` case is checked here and skips
+// the older layers.
+const oneEffectGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-effect.json', import.meta.url), 'utf8'))
+// fix.turn-mods-expire (2026-10-01; reported by Andrew, the Leap's +2 Strength stayed on the screen), Law 10: a mod "until
+// the end of the Turn" leaves the unit as the Turn ends, with a statmod.expired line (Law 3) — it was only filtered at
+// read. Every case frozen here (tools/capture-turn-mods-cursor.mts). Moved by those lines and the mods leaving the unit's
+// state only — RNG and result unchanged in every one (effective stats were already filtered): showcase.assembled-party,
+// showcase.gash-variant, showcase.kiln, showcase.rime, showcase.supper, test.block-a, test.damage-packets,
+// test.opening-cathedral, test.opening-gates, progression-surge-0 and progression-surge-2. A `changed` case is checked
+// here and skips the older layers.
+const turnModsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-turn-mods.json', import.meta.url), 'utf8'))
 // content.afflictions-at-zero (2026-10-01), Law 10: Rotting Flesh carries +5 bleed-out (DECISIONS.md 2026-10-01 'bleed-out is a
 // stat on every player unit, 5; Rotting Flesh +5') and the four afflictions name what happens at 0 Health as gaps ('the
 // afflictions at 0 Health'). Every case frozen here (tools/capture-afflictions-at-zero-cursor.mts). Moved by log TEXT only —
 // a Rotting Flesh badge.gained line names its +5 as waiting for the next fielding, and the afflictions' gap lists grew; state,
-// RNG and result unchanged (movedOnlyText): showcase.prologue-party, showcase.waystation, test.opening-cavern-trail,
-// test.vampire-bite. test.afflictions-at-zero is new. A `changed` case is checked here and skips the older layers.
+// RNG and result unchanged (movedOnlyText): showcase.prologue-party, showcase.waystation, test.opening-cathedral,
+// test.opening-cavern-trail, test.vampire-bite. test.afflictions-at-zero is new. Captured over the fix.turn-mods-expire
+// layer (combined 2026-10-02). A `changed` case is checked here and skips the older layers.
 const afflictionsAtZeroGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -344,9 +364,15 @@ describe('resumable battle cursor', () => {
       const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true
       const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      // was: const codexNumbersMoved = codexNumbersExpected?.changed === true — an afflictions-at-zero-moved case skips the codex-numbers layer too (content.afflictions-at-zero 2026-10-01)
-      const codexNumbersMoved = codexNumbersExpected?.changed === true || afflictionsAtZeroMoved
       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const oneEffectExpected = oneEffectGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const turnModsExpected = turnModsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      // was: const turnModsMoved = turnModsExpected?.changed === true — an afflictions-at-zero-moved case skips the turn-mods layer too (content.afflictions-at-zero 2026-10-01)
+      const turnModsMoved = turnModsExpected?.changed === true || afflictionsAtZeroMoved
+      // was: const oneEffectMoved = oneEffectExpected?.changed === true — a turn-mods-moved case skips the one-effect layer too (fix.turn-mods-expire 2026-10-01)
+      const oneEffectMoved = oneEffectExpected?.changed === true || turnModsMoved
+      // was: const codexNumbersMoved = codexNumbersExpected?.changed === true — a one-effect-moved case skips the codex-numbers layer too (fix.one-effect-vocabulary 2026-10-01)
+      const codexNumbersMoved = codexNumbersExpected?.changed === true || oneEffectMoved
       // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a codex-numbers-moved case skips the fire-imp-flight layer too (fix.codex-numbers 2026-10-01)
       const fireImpFlightMoved = fireImpFlightExpected?.changed === true || codexNumbersMoved
       // was: const kiteAloneMoved = kiteAloneExpected?.changed === true — a fire-imp-flight-moved case skips the kite-alone layer too (content.fire-imp-flight 2026-10-01)
@@ -423,8 +449,22 @@ describe('resumable battle cursor', () => {
         expect(hash(ctx.rng.log), 'full afflictions-at-zero RNG').toBe(afflictionsAtZeroExpected.rng)
         expect(result).toEqual(afflictionsAtZeroExpected.result)
         }
-        // was: if (codexNumbersExpected) { — content.afflictions-at-zero (2026-10-01): an afflictions-at-zero-moved case is checked above instead
-        if (codexNumbersExpected && !afflictionsAtZeroMoved) {
+        // was: if (turnModsExpected) { — content.afflictions-at-zero (2026-10-01): an afflictions-at-zero-moved case is checked above instead
+        if (turnModsExpected && !afflictionsAtZeroMoved) {
+        expect(hash(ctx.events), 'full turn-mods events').toBe(turnModsExpected.events)
+        expect(hash(ctx.state), 'full turn-mods state').toBe(turnModsExpected.state)
+        expect(hash(ctx.rng.log), 'full turn-mods RNG').toBe(turnModsExpected.rng)
+        expect(result).toEqual(turnModsExpected.result)
+        }
+        // was: if (oneEffectExpected) { — fix.turn-mods-expire (2026-10-01): a turn-mods-moved case is checked above instead
+        if (oneEffectExpected && !turnModsMoved) {
+        expect(hash(ctx.events), 'full one-effect events').toBe(oneEffectExpected.events)
+        expect(hash(ctx.state), 'full one-effect state').toBe(oneEffectExpected.state)
+        expect(hash(ctx.rng.log), 'full one-effect RNG').toBe(oneEffectExpected.rng)
+        expect(result).toEqual(oneEffectExpected.result)
+        }
+        // was: if (codexNumbersExpected) { — fix.one-effect-vocabulary (2026-10-01): a one-effect-moved case is checked above instead
+        if (codexNumbersExpected && !oneEffectMoved) {
         expect(hash(ctx.events), 'full codex-numbers events').toBe(codexNumbersExpected.events)
         expect(hash(ctx.state), 'full codex-numbers state').toBe(codexNumbersExpected.state)
         expect(hash(ctx.rng.log), 'full codex-numbers RNG').toBe(codexNumbersExpected.rng)

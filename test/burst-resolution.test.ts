@@ -366,7 +366,7 @@ for (const id of ['power.bowmaster.rain-of-arrows', 'power.fire-master.fireball'
 
 it('published travelling area damage cannot bypass the burst registry', () => {
   for (const a of Object.values(ACTIONS)) {
-    expect(a.target?.select === 'area' && a.target.origin === 'target' && a.effects?.some(e => e.kind === 'damage'), a.id).not.toBe(true)
+    expect(a.target?.select === 'area' && a.target.origin === 'target' && a.effects?.some(e => e.kind === 'statDamage'), a.id).not.toBe(true)   // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (damage (stat) -> statDamage); the assertion is unchanged.
   }
 })
 

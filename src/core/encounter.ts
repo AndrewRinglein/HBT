@@ -24,9 +24,8 @@ import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './typ
 import type { HexId } from './hex.js'
 import { arrivalUid } from './identity.js'
 import { applyBadges } from './items.js'
-import { applyDamage, bindAiRule, emit, gainPower, paintLayer, placeCorpse, setOutcome } from './mutate.js'
-import { applyStatus, incomingAbsorb, spendAbsorb } from './status.js'
-import { flatDamage } from './mitigation.js'
+import { bindAiRule, emit, gainPower, paintLayer, placeCorpse, setOutcome } from './mutate.js'
+import { applyStatus, dealDirectDamage } from './status.js'
 import { fallNight } from './vision.js'
 import { draw, rollBelow } from './rng.js'
 import { settle } from './settle.js'
@@ -355,10 +354,7 @@ export function landFalls(ctx: Ctx): void {
       if (u.lifeState !== 'standing' || ctx.state.outcome) continue
       if ((f.damage ?? 0) > 0) {
         // Law 1: the one damage function for damage no attack carries — as the ground's hazard is dealt
-        const r = flatDamage(ctx, u, f.damage!, f.damageType ?? 'physical', incomingAbsorb(ctx, u))
-        if (r.absorbed > 0) spendAbsorb(ctx, id, r.absorbed, f.id)
-        applyDamage(ctx, id, r.value, f.id, { actor: null, damageType: f.damageType ?? 'physical', hex: u.hex,
-          ...(r.resisted ? { resisted: r.resisted } : {}), ...(r.absorbed ? { absorbed: r.absorbed } : {}) })
+        dealDirectDamage(ctx, id, f.damage!, f.damageType ?? 'physical', f.id, { actor: null, damageType: f.damageType ?? 'physical', hex: u.hex })
       }
       for (const [sid, k] of f.applies ?? []) applyStatus(ctx, id, sid, k, f.id)
     }

@@ -39,17 +39,19 @@ describe('the chart arrives as ruled data', () => {
     // chart row became "gain 4 Bleed" in settled.json. The Codex owns that
     // number, so the test asserts the SHAPE (a Bleed status with a positive
     // magnitude) and lets the pack carry whatever the Codex says.
-    expect(rowOf('bleeding').effects).toEqual([{ kind: 'status', statusId: 'status.bleed', value: expect.any(Number) }])
+    // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (status -> status.apply); the assertion is unchanged.
+    expect(rowOf('bleeding').effects).toEqual([{ kind: 'status.apply', statusId: 'status.bleed', value: expect.any(Number) }])
     expect((rowOf('bleeding').effects[0] as { value: number }).value).toBeGreaterThan(0)
     // fix.dazed-split (2026-09-02): the chart's Dazed ROW applies
     // status.powers-locked — the Dazed STATUS is a different thing (Andrew:
     // "there is a critical effect, and then there is a status effect").
-    expect(rowOf('dazed').effects).toEqual([{ kind: 'status', statusId: 'status.powers-locked', value: 3 }])
+    // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (status, loseStamina, push -> status.apply, stamina.drain, knockback); the assertion is unchanged.
+    expect(rowOf('dazed').effects).toEqual([{ kind: 'status.apply', statusId: 'status.powers-locked', value: 3 }])
     expect(rowOf('nerve-struck').effects).toEqual([{ kind: 'loseMaxHp', value: 2 }])
-    expect(rowOf('winded').effects).toEqual([{ kind: 'loseStamina', value: 4 }])
+    expect(rowOf('winded').effects).toEqual([{ kind: 'stamina.drain', value: 4 }])
     // floors only where dictated
     for (const e of rowOf('guard-broken').effects) expect((e as { floor?: number }).floor).toBe(0)
-    expect(rowOf('knocked-sprawling').effects.some((e) => e.kind === 'push')).toBe(true)
+    expect(rowOf('knocked-sprawling').effects.some((e) => e.kind === 'knockback')).toBe(true)
   })
 
   it('the crit fields and unit crit/luck came through the pipeline', () => {
