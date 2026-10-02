@@ -43627,6 +43627,157 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "encounter.opening.cathedral": {
+      "id": "encounter.opening.cathedral",
+      "name": "Cathedral",
+      "mapId": "map.opening.cathedral",
+      "board": {
+        "width": 20,
+        "height": 40
+      },
+      "setup": [
+        {
+          "unit": "unit.necromancer",
+          "at": {
+            "col": 10,
+            "row": 3
+          }
+        },
+        {
+          "unit": "unit.skeletal-archer",
+          "at": {
+            "col": 11,
+            "row": 4
+          }
+        },
+        {
+          "unit": "unit.skeleton",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 8,
+              "row": 5
+            },
+            {
+              "col": 12,
+              "row": 5
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.ghoul",
+              "at": {
+                "col": 0,
+                "row": 22
+              }
+            },
+            {
+              "unit": "unit.ghoul",
+              "at": {
+                "col": 19,
+                "row": 22
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 4,
+        "at": {
+          "near": {
+            "col": 10,
+            "row": 37
+          },
+          "range": 2
+        }
+      },
+      "paint": [
+        {
+          "layer": "layer.weak",
+          "hexes": [
+            143,
+            145,
+            147,
+            149,
+            151,
+            152,
+            153,
+            155,
+            252,
+            254,
+            255,
+            258,
+            263,
+            264,
+            265,
+            364,
+            365,
+            367,
+            372,
+            373,
+            437,
+            483,
+            485,
+            498,
+            610,
+            623,
+            624,
+            625,
+            631,
+            632,
+            633,
+            635,
+            682
+          ]
+        }
+      ],
+      "remains": [
+        {
+          "id": "trigger.cathedral.remains",
+          "typeId": "unit.zombie",
+          "hexes": [
+            143,
+            145,
+            147,
+            149,
+            151,
+            152,
+            153,
+            155,
+            252,
+            254,
+            255,
+            258,
+            263,
+            264,
+            265,
+            364,
+            365,
+            367,
+            372,
+            373,
+            437,
+            483,
+            485,
+            498,
+            610,
+            623,
+            624,
+            625,
+            631,
+            632,
+            633,
+            635,
+            682
+          ]
+        }
+      ]
+    },
     "encounter.caravan-aftermath": {
       "id": "encounter.caravan-aftermath",
       "name": "Caravan Aftermath",

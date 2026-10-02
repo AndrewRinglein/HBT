@@ -20255,3 +20255,23 @@ index ca4bebd..edf74cd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.gates — they genuinely test it
+
+## encounter.opening.cathedral — LANDED `b884eaf`
+2026-10-02 00:28
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:1836 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-cathedral.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.cathedral: 75 log lines, 75 fired, 73 changed state
+  PASS  brought its own tests — test/opening-cathedral.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.cathedral — they genuinely test it

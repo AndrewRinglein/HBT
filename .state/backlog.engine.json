@@ -4913,7 +4913,9 @@
   "probeIds": [
    "encounter.opening.cathedral"
   ],
-  "note": "Cut 2026-09-28. Switches: the side-door hexes and the heroes' start hexes (Claude's reading on the Ground Check)."
+  "note": "Cut 2026-09-28. Switches: the side-door hexes and the heroes' start hexes (Claude's reading on the Ground Check).",
+  "status": "done",
+  "sha": "b884eaf"
  },
  {
   "id": "kingdom.encounter-battles",
