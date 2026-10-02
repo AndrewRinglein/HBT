@@ -62,6 +62,6 @@ describe('the facts the viewer reads from the engine', () => {
   it('the viewer: the Charge and Stand on the bar, danger 4, Weak\'s look, the Surge\'s movement', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/reads-engine.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
     expect(out).toMatch(/# fail 0/)
-    expect(out).toMatch(process.env.VIEWER_PAGE ? /# pass 9/ : /# pass 8/)
+    expect(out).toMatch(process.env.VIEWER_PAGE ? /# pass 10/ : /# pass 9/) // fix.danger-skips-charge added one
   }, 170000)
 })
