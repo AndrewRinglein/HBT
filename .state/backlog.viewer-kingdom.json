@@ -185,15 +185,43 @@
   "sha": "93cc928"
  },
  {
+  "id": "kingdom.sandbox-campaign-heroes",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "kingdom.opening-loop-three, part 1 of 4 (filed 2026-10-01 by the kingdom chat, from PLAYABLE-OPENING-PLAN.md item 12). The sandbox fields an encounter with campaign Hero rows, not only hero ids: kingdom/src/core/sandbox.ts createSandbox takes Hero records (level, specialty, levelPick, equipped and used, wound, badges) and hands them to makeBattleState unchanged, so the hero who plays battle 2 is the hero battle 1 left behind. ?play=<id>[&heroes=...] keeps working exactly as now (rows built from SANDBOX_HEROES).",
+  "expect": "A sandbox encounter fielded with a level-2 hero carrying a swapped item and a wound shows that level, item and wound on the engine unit (its stats and grants as makeBattleState fields them); ?play= battles are unchanged."
+ },
+ {
+  "id": "kingdom.encounter-result-fold",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "needs": [
+   "kingdom.sandbox-campaign-heroes"
+  ],
+  "spec": "kingdom.opening-loop-three, part 2 of 4; V2-ROADMAP.md R8 (the battle-to-Kingdom result seam) for encounters. kingdom/src/core/seam.ts makeBattleResult keys rows by the engine unit uid (unit.enter uid), not entry order: the deployed heroes by the uids the spec hands the engine (heroUids), the encounter enemies and the hero-side civilians from the log, schedule arrivals and raised units (unit.enter arrived) as their own rows, never keyed to the roster. A finished sandbox encounter folds to an EngagementResult that resolveReckoning and applyBattleResult accept for an Engagement naming that encounter (wounds, XP, deaths written to the campaign once; a second apply refused).",
+  "expect": "An Orphanage battle played in the sandbox folds without error (civilians, Turn 4/5 arrivals); reordered or noncontiguous hero uids key the right heroes; an arrival is never a roster hero; applying the result writes each deployed hero exactly once and a second apply throws."
+ },
+ {
+  "id": "kingdom.opening-rewards",
+  "kind": "kingdom",
+  "shape": "rule",
+  "needs": [
+   "kingdom.encounter-result-fold"
+  ],
+  "spec": "kingdom.opening-loop-three, part 3 of 4. The opening's rewards as ruled (engine DECISIONS.md 2026-09-28 'the opening's rewards' and the XP curve; KINGDOM-V2-2026-09-07.md 'Sword after battle 2; item choice starts after battle 3'): the Orphanage pays 20 XP to each hero who fought, whatever happened, so they reach level 2 (curve 20, 50, 100, 170, 270, 400); after battle 2 the party receives item.longsword.flaming (a Warrior or Paladin may take it); after battle 3 the standing one-of-three item draw; level-ups offered when earned. Wounds carry; fatigue does not.",
+  "expect": "After a won Orphanage every hero who fought is level 2 with a level-up to take; after a won Lumberjack House the Flaming Longsword is offered to a Warrior or Paladin; after a won Bridge three items are offered and one is kept; a hero wounded in battle 1 enters battle 2 wounded; nobody is fatigued."
+ },
+ {
   "id": "kingdom.opening-loop-three",
   "kind": "kingdom",
   "shape": "plumbing",
   "needs": [
    "kingdom.abbotown-map",
    "viewer.opening-cast",
-   "encounter.opening.bridge-ai"
+   "encounter.opening.bridge-ai-refiled",
+   "kingdom.opening-rewards"
   ],
-  "spec": "PLAYABLE-OPENING-PLAN.md item 12. Ruled 2026-09-29: one page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards (the Orphanage's 20 XP, the Flaming Longsword after battle 2, the item choice after battle 3, level-ups, wounds carried; no tactics) -> map, for the first three battles; a lost battle is replayed with the same party. Narrows kingdom.opening-loop to three battles.",
+  "spec": "PLAYABLE-OPENING-PLAN.md item 12. Ruled 2026-09-29: one page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards (the Orphanage's 20 XP, the Flaming Longsword after battle 2, the item choice after battle 3, level-ups, wounds carried; no tactics) -> map, for the first three battles; a lost battle is replayed with the same party. Narrows kingdom.opening-loop to three battles. Part 4 of 4 (narrowed 2026-10-01 by the kingdom chat): the page chain alone - map -> first hero / draft -> equip -> battle -> rewards and level-ups -> map, three times, a loss offering the same battle with the same party - on parts 1-3. needs: encounter.opening.bridge-ai was abandoned and re-filed as encounter.opening.bridge-ai-refiled (Andrew 2026-09-30 'Park, abandon, re-file').",
   "expect": "Andrew plays from the Orphanage through the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled."
  },
  {
