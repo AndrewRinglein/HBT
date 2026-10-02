@@ -325,7 +325,8 @@ export function floatHue(c) {
 export function pushFloat(V, hex, text, col, o = {}) {
   if (hex == null) return
   const L = V.layers
-  if (!L.floatL) { L.floatL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none'); V.dom.stage.appendChild(L.floatL) }
+  /* viewer.characters-unfaded: the floats ride above the bodies (#stageTop, the stage's twin), never under them */
+  if (!L.floatL) { L.floatL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none'); (V.dom.stageTop || V.dom.stage).appendChild(L.floatL) }
   const p = V.data.POS[hex]; if (!p) return
   const slot = (L.FLOAT_SLOTS[hex] = (L.FLOAT_SLOTS[hex] ?? -1) + 1)
   const life = o.crit ? 1900 : o.big ? 1500 : 1200
@@ -1281,14 +1282,25 @@ export function applyCam(V, opts = {}) {
     /* a board with no decorative surroundings (viewer SWITCHES cameraPanNoVoid): unturned and tactical, the view also
        stays on the board where the board is the larger — the rule before 2026-10-01 — so no empty background opens beside
        it; the preview's looser bound is for a scene whose surroundings fill that space */
-    if (!surrounded(V) && !yaw && stance === 'tactical') {
-      const ox = bw <= halfW * 2 ? [bw / 2, bw / 2] : [halfW, bw - halfW]
-      const oy = bh + top <= halfH * 2 ? [bh / 2, bh / 2] : [halfH - top, bh - halfH]   // smaller than the view: the whole-map fit's centre
+    /* viewer.xcom-camera: at every quarter turn, the arrow keys' only turns — the view's half-extents on the board's axes
+       swap at 90° and 270°; the standee's overhang is the unturned view's north */
+    const quarter = Math.abs(((yaw % 90) + 90) % 90) < 1e-6, odd = quarter && Math.round(yaw / 90) % 2 !== 0
+    if (!surrounded(V) && quarter && stance === 'tactical') {
+      const hx = odd ? halfH : halfW, hy = odd ? halfW : halfH, tt = yaw ? 0 : top
+      const ox = bw <= hx * 2 ? [bw / 2, bw / 2] : [hx, bw - hx]
+      const oy = bh + tt <= hy * 2 ? [bh / 2, bh / 2] : [hy - tt, bh - hy]   // smaller than the view: the whole-map fit's centre
       xlo = Math.max(xlo, ox[0]); xhi = Math.min(xhi, ox[1]); if (xlo > xhi) xlo = xhi = (ox[0] + ox[1]) / 2
       ylo = Math.max(ylo, oy[0]); yhi = Math.min(yhi, oy[1]); if (ylo > yhi) ylo = yhi = (oy[0] + oy[1]) / 2
     }
     f.x = Math.min(Math.max(f.x, xlo), xhi); f.y = Math.min(Math.max(f.y, ylo), yhi)
   }
+  /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): a new activation centres the map on the
+     one acting — the board's own acting unit, in a replay as in a game */
+  const acting = S.activeId != null ? S.U[S.activeId] : null
+  if (!fit && !opts.focus && !opts.pan && acting && acting.life === 'standing' && view.centredOn !== S.activeId && POS[acting.hex]) {
+    view.centredOn = S.activeId; opts = { ...opts, focus: POS[acting.hex] }
+    /* the first activation's centring is where the battle opens: the starting view a reset returns to */
+    if (!view.homeCentred) { view.homeCentred = true; view.home = null } }
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
   else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound() }
   else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound() }      // Focus selected unit: centred, on purpose
@@ -1311,7 +1323,9 @@ export function applyCam(V, opts = {}) {
   }
   /* written back only when moved, so a camera that did not move keeps its exact numbers. A whole-map view (not the peek,
      not the harness's fit) remembers its centre, so what follows it — a drag, a turn, Inspect — starts from the view seen */
-  if (!fit) { if (f.x !== f0.x) camF.x = f.x; if (f.y !== f0.y) camF.y = f.y / k }
+  /* viewer.xcom-camera: a turn shows the view its bound allows but keeps the centre it turned about, so four quarter turns
+     come round to exactly the view they left (the bound swaps its axes at 90° and 270°) */
+  if (!fit && !opts.turn) { if (f.x !== f0.x) camF.x = f.x; if (f.y !== f0.y) camF.y = f.y / k }
   else if (view.overview && !view.peek && view.zoom !== 'fit') { camF.x = bw / 2; camF.y = bh / 2 / k }
   const cx = fit ? bw / 2 : f.x, cy = fit ? bh / 2 : f.y                             // a fit shows the whole board, centred
   if (!fit && !view.home && camF.x != null) view.home = { x: camF.x, y: camF.y }     // the starting view Reset returns to
@@ -1323,7 +1337,7 @@ export function applyCam(V, opts = {}) {
   if (V.dom.hud) { const u = S.U[subjectOf(V)]
     const what = view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit'
       : (stance === 'inspect' ? 'Inspect · free exploration' : stance === 'overhead' ? 'Overhead' : 'Tactical camera · ' + Math.round(elevationOfTilt(tilt)) + '°') + (view.overview ? ' · whole map' : '')
-    V.dom.hud.textContent = what + ' · drag to turn and tilt · right-drag to pan · wheel to zoom · Q/E turn · hold Z to peek' + (u ? ' · on ' + u.name : '') }
+    V.dom.hud.textContent = what + ' · ←/→ turn 90° · wheel to look closer · point at an edge to scroll' + (u ? ' · on ' + u.name : '') }
 }
 /* ── the glide (the 1.1 s half-speed camera glide of 2026-09-01, which was the stage's CSS transition) is now the
    camera's own: the pose eases to its target and every frame of it is one real camera, so the 3D scene and the board
@@ -1366,11 +1380,14 @@ export function stopGlide(V) {
 export function showPose(V, pose) {
   const { W, H } = viewportOf(V), A = boardAffine(V)
   V.camera3d = orbitCamera(A, pose, { w: W, h: H }, V.camera3d || undefined)
-  const st = V.dom.stage.style
-  st.transformOrigin = '0 0 0'
-  st.transform = matrix3d(stageMatrix(A, V.camera3d, { w: V.data.F.w, h: V.data.F.h }))
-  st.setProperty('--anti', (-pose.tilt) + 'deg'); st.setProperty('--unspin', (pose.yaw ? -pose.yaw : 0) + 'deg')
-  st.setProperty('--aniso', String(anisoOf(A)))
+  const m = matrix3d(stageMatrix(A, V.camera3d, { w: V.data.F.w, h: V.data.F.h }))
+  /* the stage and its twin above the bodies (viewer.characters-unfaded) are drawn through the one camera */
+  for (const s of [V.dom.stage, V.dom.stageTop]) { if (!s) continue
+    const st = s.style
+    st.transformOrigin = '0 0 0'
+    st.transform = m
+    st.setProperty('--anti', (-pose.tilt) + 'deg'); st.setProperty('--unspin', (pose.yaw ? -pose.yaw : 0) + 'deg')
+    st.setProperty('--aniso', String(anisoOf(A))) }
   V.camShown = pose; V.camVersion = (V.camVersion || 0) + 1
 }
 /* ── the turned camera (viewer.painted-board; engine DECISIONS.md 2026-09-29 "the playable battle
@@ -1408,7 +1425,7 @@ export function turnCam(V, { yaw = 0, tilt = 0, zoom = 1 } = {}) {
   if (yaw) c.yaw = turnedBy(c.yaw || 0, yaw)
   if (tilt) { const [lo, hi] = tiltLimits(camStance(V)); c.tilt = Math.min(hi, Math.max(lo, tiltOf(V) + tilt)) }
   if (zoom !== 1) c.zoom = c.zoom * zoom
-  applyCam(V); drawEdges(V)
+  applyCam(V, yaw && !tilt && zoom === 1 ? { turn: true } : {}); drawEdges(V)
 }
 /** Reset: back to the starting angled view — 40° above the ground, no turn, 1× zoom, the camera where the battle opened;
     Overhead and Inspect are left */
@@ -1416,6 +1433,27 @@ export function resetCam(V) {
   V.view.cam = homeCam(); V.view.overhead = null; V.view.inspect = null; V.view.overview = false
   V.view.camF = V.view.home ? { x: V.view.home.x, y: V.view.home.y } : { x: null, y: null }
   applyCam(V); drawEdges(V)
+}
+/** viewer.xcom-camera: the map centred on a unit at the standard zoom (the proposed hero, an ability chosen) */
+export function centreOn(V, id) {
+  const u = V.S.U[id]; if (!u || u.life === 'dead' || !V.data.POS[u.hex]) return
+  V.view.overview = false; V.view.peek = false
+  applyCam(V, { focus: V.data.POS[u.hex] }); drawEdges(V)
+}
+/** viewer.xcom-camera: the wheel looks nearer or farther, within POLICY.ZOOM_FAR..ZOOM_NEAR of the standard zoom, and
+    springs back to it once the wheel is still ("it snaps back to the standard zoom as soon as you stop pressing") */
+export function lookCloser(V, deltaY) {
+  const c = V.view.cam || (V.view.cam = homeCam()), std = homeCam().zoom
+  c.zoom = Math.min(std * POLICY.ZOOM_NEAR, Math.max(std * POLICY.ZOOM_FAR, c.zoom * Math.exp(-deltaY * CAM.WHEEL)))
+  V.view.overview = false; applyCam(V); drawEdges(V)
+  if (V.zoomRest != null) clearTimeout(V.zoomRest)
+  V.zoomRest = setTimeout(() => { V.zoomRest = null; if (!V.view.cam) return; V.view.cam.zoom = std; applyCam(V); drawEdges(V) }, POLICY.ZOOM_REST_MS)
+}
+/** viewer.xcom-camera: the map scrolls toward the edge the pointer is at (dir: -1, 0 or 1 across and down the screen) for
+    `dt` seconds ("When you mouse or point past the edge of a map, the map just scrolls") */
+export function edgeScroll(V, dir, dt) {
+  const step = POLICY.EDGE_SCROLL_SPEED * dt, d = unturn(V, dir.x * step, dir.y * step)
+  applyCam(V, { pan: { x: d.x, y: d.y / isoK(V) } }); drawEdges(V)
 }
 const snapshot = V => ({ cam: { ...V.view.cam }, camF: { ...V.view.camF }, overview: !!V.view.overview, overhead: V.view.overhead || null })
 function restore(V, s) { V.view.cam = { ...s.cam }; V.view.camF = { ...s.camF }; V.view.overview = s.overview; V.view.overhead = s.overhead }
@@ -1571,16 +1609,16 @@ export function clickHex(V, hex) {
   if (T && T.legalHexes.includes(hex)) { V.offerHexClick(hex, V.targetingGeneration()); return }
   if (V.play) V.offerPlay({ kind: 'hex', hex })
 }
-/** wire drag, wheel, arrow keys, the peek key, Reset and the pointer's pick; returns an unbind for dispose().
-    viewer.painted-board (engine DECISIONS.md 2026-09-29): a LEFT drag turns (across) and tilts (up and
-    down), a RIGHT drag grabs the map and moves it ("right-click to grab the map and move"; the middle
-    button pans too), the wheel zooms, Reset returns the starting angled view (viewer SWITCHES cameraDrag). */
+/** wire the wheel, the arrow keys, the edge scroll, the double-click and the pointer's pick; returns an unbind for dispose().
+    viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera', replacing viewer.painted-board's drags and
+    viewer.tactical-camera's bar): one fixed angle and zoom; the arrow keys turn a quarter; the wheel looks closer and
+    springs back; the pointer at an edge scrolls; a right-click (no drag) steps the plan back (viewer SWITCHES xcom*). */
 export function bindCamera(V) {
   const wrap = V.dom.stage.parentNode; if (!wrap || !wrap.addEventListener) return () => {}
   let drag = null, dragged = false, pointed
   V.clickSuppressed = e => e.detail !== 0 && dragged
   const down = e => { if (e.button !== 0 && e.button !== 1 && e.button !== 2) return; dragged = false
-    drag = { x: e.clientX, y: e.clientY, originX: e.clientX, originY: e.clientY, turn: e.button === 0 }; wrap.style.cursor = 'grabbing' }
+    drag = { x: e.clientX, y: e.clientY, originX: e.clientX, originY: e.clientY } }
   /* the pointer over the board: point at what is under it (offered once per change), and say so with the cursor */
   const hover = e => {
     const at = pointerAt(V, e), hit = at ? pickAt(V, at.x, at.y) : null
@@ -1590,26 +1628,29 @@ export function bindCamera(V) {
     const hex = hit ? hit.hex : null
     if (hex !== pointed) { pointed = hex; V.offerPlay({ kind: 'point', hex }) }
   }
-  const move = e => { if (!drag) { hover(e); return }
+  /* viewer.xcom-camera: the pointer at the board's edge scrolls the map that way, a frame at a time, until it leaves the edge */
+  let edge = null, edgeRaf = null, edgeT = 0
+  const edgeStep = () => { edgeRaf = null; if (!edge) return
+    const now = clockOf(V), dt = Math.min(.05, Math.max(0, (now - edgeT) / 1000)); edgeT = now
+    if (dt > 0) edgeScroll(V, edge, dt)
+    edgeRaf = requestAnimationFrame(edgeStep) }
+  const edgeAt = e => {
+    if (!wrap.getBoundingClientRect) return null
+    const r = wrap.getBoundingClientRect(), B = POLICY.EDGE_SCROLL_PX, x = e.clientX - r.left, y = e.clientY - r.top
+    if (!(r.width > 0 && r.height > 0)) return null
+    const dx = x < B ? -1 : x > r.width - B ? 1 : 0, dy = y < B ? -1 : y > r.height - B ? 1 : 0
+    return dx || dy ? { x: dx, y: dy } : null }
+  const edgeTo = dir => { edge = dir
+    if (edge && edgeRaf == null && typeof requestAnimationFrame === 'function') { edgeT = clockOf(V); edgeRaf = requestAnimationFrame(edgeStep) } }
+  const move = e => { edgeTo(edgeAt(e)); if (!drag) { hover(e); return }
     // Screen-pixel threshold from pointerdown: jitter is a click, a real drag
     // applies its full displacement once and then continues incrementally.
     const travel = Math.hypot(e.clientX - drag.originX, e.clientY - drag.originY)
+    /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01): no grab-drag, no free turn or tilt — a press that wanders is
+       still not a click (4 px), and moves nothing */
     if (!dragged && travel < 4) return
-    /* viewer.tactical-camera: from Overhead a left drag unlocks the tilt (at the steepest tactical angle) only past 5 px of
-       travel; a click, or a press that wanders less, leaves Overhead as it is */
-    if (!dragged && drag.turn && V.view.overhead) { if (travel <= POLICY.DRAG_PX) return; V.view.overhead = null; V.view.overview = false; V.view.cam.tilt = TILT.MIN }
-    /* the host may scale the whole component (the harness fits 1920 to the
-       window): screen px → component px is the root's rect over its layout width */
-    const sq = squash(V), k = isoK(V), scale = (V.dom.root.getBoundingClientRect && V.dom.root.offsetWidth) ? (V.dom.root.getBoundingClientRect().width / V.dom.root.offsetWidth || 1) : 1
-    const sx = (e.clientX - drag.x) / scale, sy = (e.clientY - drag.y) / scale
-    drag = { ...drag, x: e.clientX, y: e.clientY }
-    if (!sx && !sy) return
-    /* a drag follows the pointer, not the 1.1 s glide; the glide comes back on release */
-    dragged = true; V.view.dragging = true
-    if (drag.turn) { turnCam(V, { yaw: sx * CAM.YAW_PER_PX, tilt: -sy * CAM.TILT_PER_PX }); return }
-    const z = (V.view.cam && V.view.cam.zoom) || 1, d = unturn(V, sx / z, sy / (z * sq))     // iso px under the pointer
-    applyCam(V, { pan: { x: -d.x, y: -d.y / k } }); drawEdges(V) }
-  const up = e => { const released = drag; drag = null; wrap.style.cursor = ''; V.view.dragging = false
+    dragged = true }
+  const up = e => { const released = drag; drag = null; wrap.style.cursor = ''
     /* viewer.play-input: a right-click that did not drag the map steps the plan back one stage (UI-BUILD-NOTES §5) */
     if (e && e.button === 2 && released && !dragged && V.play) V.offerPlay({ kind: 'back' }) }
   /* a click lands on what the camera's ray meets — a unit's body or a hex — at any angle (a keyboard press on a
@@ -1624,39 +1665,32 @@ export function bindCamera(V) {
   }
   /* the right button is the map's grab, never the browser's menu */
   const menu = e => { e.preventDefault() }
-  const wheel = e => { if (!e.deltaY) return; e.preventDefault(); turnCam(V, { zoom: Math.exp(-e.deltaY * CAM.WHEEL) }) }
+  const wheel = e => { if (!e.deltaY) return; e.preventDefault(); lookCloser(V, e.deltaY) }
+  /* viewer.xcom-camera: a double-click on a unit's body chooses it to act next (the host decides whether it may) */
+  const dbl = e => { if (!V.play || !V.inputActive()) return
+    const at = pointerAt(V, e), hit = at ? pickAt(V, at.x, at.y) : null
+    if (hit && hit.unit != null) V.offerPlay({ kind: 'choose', id: hit.unit }) }
   /* keys act only while the pointer is over the board or the component has
      focus — two viewers on one page must not both pan, and a host page keeps
      its arrow keys (review 2026-09-03) */
   let over = false
-  const enter = () => { over = true }, leave = () => { over = false; up(); pointed = undefined; if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
+  const enter = () => { over = true }, leave = () => { over = false; edgeTo(null); up(); pointed = undefined; if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
   const key = e => {
     if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return
     if (!over && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
-    const STEP = 120
-    const pan = (x, y) => { const d = unturn(V, x, y); applyCam(V, { pan: { x: d.x, y: d.y / isoK(V) } }); drawEdges(V) }
-    if (e.key === 'ArrowLeft') pan(-STEP, 0)
-    else if (e.key === 'ArrowRight') pan(STEP, 0)
-    else if (e.key === 'ArrowUp') pan(0, -STEP)
-    else if (e.key === 'ArrowDown') pan(0, STEP)
-    else if (e.key.toLowerCase() === PEEK_KEY && !e.repeat) { V.view.peek = true; applyCam(V); drawEdges(V) }
-    else if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey && !e.altKey) cameraView(V, 'left')     /* Q / E: one hex side round */
-    else if ((e.key === 'e' || e.key === 'E') && !e.ctrlKey && !e.metaKey && !e.altKey) cameraView(V, 'right')
-    else if (e.key === 'Home') cameraView(V, 'reset')
+    /* viewer.xcom-camera: the arrow keys turn the view a quarter (Q / E as well); there is no tilt, pan key, peek or Reset */
+    const plain = !e.ctrlKey && !e.metaKey && !e.altKey
+    if ((e.key === 'ArrowLeft' || e.key === 'q' || e.key === 'Q') && plain && !e.repeat) cameraView(V, 'left')
+    else if ((e.key === 'ArrowRight' || e.key === 'e' || e.key === 'E') && plain && !e.repeat) cameraView(V, 'right')
     else if (e.key === 'Escape' && V.play && !V.asking) V.offerPlay({ kind: 'back' })   /* ESC behaves as the right-click (UI-BUILD-NOTES §5) */
     else if (e.key === 'Escape' && V.asking) return   /* viewer.play-chrome: the End Turn pop-up takes its own Esc (chrome.js) */
     else return
     e.preventDefault()
   }
-  const keyup = e => { if (e.key.toLowerCase() === PEEK_KEY) { V.view.peek = false; applyCam(V); drawEdges(V) } }
-  /* the camera bar (viewer.tactical-camera): each button is the camera's own, never the board's drag or click */
-  const camButtons = wrap.querySelectorAll ? [...wrap.querySelectorAll('#camBar button')].filter(b => b.getAttribute('data-cam')) : []
-  const btnDown = e => { e.stopPropagation() }
-  const btnClicks = camButtons.map(b => { const kind = b.getAttribute('data-cam'); return e => { e.stopPropagation(); if (b.getAttribute('aria-disabled') !== 'true') cameraView(V, kind) } })
-  camButtons.forEach((b, i) => { b.addEventListener('pointerdown', btnDown); b.addEventListener('click', btnClicks[i]) })
-  const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['click',click]]
+  const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['click',click],['dblclick',dbl]]
   for (const [type, fn] of bound) wrap.addEventListener(type, fn, type === 'wheel' ? { passive: false } : undefined)
-  document.addEventListener('keydown', key); document.addEventListener('keyup', keyup)
-  return () => { document.removeEventListener('keydown', key); document.removeEventListener('keyup', keyup); for (const [type, fn] of bound) wrap.removeEventListener(type, fn)
-    camButtons.forEach((b, i) => { b.removeEventListener('pointerdown', btnDown); b.removeEventListener('click', btnClicks[i]) }) }
+  document.addEventListener('keydown', key)
+  return () => { edgeTo(null); if (edgeRaf != null && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(edgeRaf)
+    if (V.zoomRest != null) { clearTimeout(V.zoomRest); V.zoomRest = null }
+    document.removeEventListener('keydown', key); for (const [type, fn] of bound) wrap.removeEventListener(type, fn) }
 }

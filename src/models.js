@@ -117,18 +117,47 @@ export async function loadLook(look, platform = {}) {
   return { look, scene: model.scene, clips: Object.fromEntries(entries), props }
 }
 
-/* a held prop (the bow): at the grip between the middle and ring fingers, turned along the forearm at the
-   motion it was fitted on — the battle demo's own fit (oathblade-armor/rebuild/purchased-stage-equipment.js) */
-function fitProp(root, p, clips, pose, reference) {
+/* a held prop: at the grip between the middle and ring fingers, in the hand it is held in, each fit as its owner fits it
+   (tools/character-models.mjs DEMO_HELD, viewer.weapons-in-hand):
+     forearm (the bow) — turned along the forearm at the motion it was fitted on; turned (the sword, the mace) — a quarter
+     turn about the hand; square (the shield) — square to the hand at the motion it was fitted on, at its offset: the battle
+     demo's own fits (oathblade-armor/rebuild/purchased-stage-equipment.js)
+     tester — the weapon tester's palm-centred socket, flipped to the palm, the weapon's long axis on the socket's, at its
+     stored grip, scale and roll (weapon-card-models/tester/equipment.js select, adjust) */
+function fitProp(root, p, clips, pose, reference, i) {
   const bone = n => root.getObjectByName('CC_Base_' + p.hand + '_' + n)
   const hand = bone('Hand'), mid = bone('Mid1'), ring = bone('Ring1'), fore = bone('Forearm')
   if (!hand || !mid || !ring || !fore) throw new Error(`${p.path}: the rig has no ${p.hand} hand to hold it`)
   const V = () => new THREE.Vector3()
   pose(reference)
-  const s = hand.getWorldScale(V()).x
-  const grip = hand.worldToLocal(mid.getWorldPosition(V())).add(hand.worldToLocal(ring.getWorldPosition(V()))).multiplyScalar(.5).add(new THREE.Vector3((p.hand === 'R' ? -.012 : .012) / s, 0, 0))
-  const socket = new THREE.Group(); socket.position.copy(grip); socket.scale.setScalar(1 / s); hand.add(socket)
-  const held = p.scene.clone(true); held.traverse(o => { if (o.isMesh) { o.castShadow = false; o.frustumCulled = false } }); socket.add(held)
+  const s = hand.getWorldScale(V()).x, local = b => hand.worldToLocal(b.getWorldPosition(V()))
+  const grip = local(mid).add(local(ring)).multiplyScalar(.5).add(new THREE.Vector3((p.hand === 'R' ? -.012 : .012) / s, 0, 0))
+  const socket = new THREE.Group(); socket.name = `held:${i}:${p.item ?? p.path}`; socket.position.copy(grip); socket.scale.setScalar(1 / s); hand.add(socket)
+  const source = p.node ? p.scene.getObjectByName(p.node) : p.scene
+  if (!source) throw new Error(`${p.path} has no ${p.node} to hold`)
+  const held = source.clone(true); held.traverse(o => { if (o.isMesh) { o.castShadow = false; o.frustumCulled = false } })
+  if (p.fit === 'turned') { socket.rotation.z = Math.PI / 2; socket.add(held); return }
+  if (p.fit === 'square') {
+    const clip = clips[p.calibrate.motion]; pose(clip, clip.duration * p.calibrate.at)
+    socket.quaternion.copy(hand.getWorldQuaternion(new THREE.Quaternion()).invert())
+    held.position.fromArray(p.at); socket.add(held); return
+  }
+  if (p.fit === 'tester') {
+    socket.position.x += (p.hand === 'R' ? -.0011 : .0006) / s; socket.position.y += (p.hand === 'R' ? -.0007 : -.003) / s
+    const index = bone('Index1'), pinky = bone('Pinky1')
+    if (!index || !pinky) throw new Error(`${p.path}: the rig's ${p.hand} hand has no fingers to face it by`)
+    const flip = local(index).sub(local(pinky)).z < 0 ? Math.PI : 0
+    socket.quaternion.setFromEuler(new THREE.Euler(0, flip, Math.PI / 2))
+    const normalized = new THREE.Group(), adjust = new THREE.Group()
+    if (p.preNormalized) normalized.add(held)
+    else {
+      /* the source's +Y is the long axis: a quarter turn about X puts the tip on +Z; the raw grip (x, y, z) goes with it */
+      const orient = new THREE.Group(); orient.rotation.x = Math.PI / 2; orient.add(held); normalized.add(orient)
+      normalized.scale.setScalar(p.scale); const [x, y, z] = p.grip; normalized.position.set(-x * p.scale, y * p.scale, z * p.scale)
+    }
+    adjust.rotation.set(0, 0, THREE.MathUtils.degToRad(p.roll || 0)); adjust.add(normalized); socket.add(adjust); return
+  }
+  socket.add(held)
   const clip = clips[p.calibrate.motion]; pose(clip, clip.duration * p.calibrate.at)
   const forward = hand.getWorldPosition(V()).sub(fore.getWorldPosition(V())).normalize()
   const right = new THREE.Vector3(0, 1, 0).cross(forward).normalize(), up = forward.clone().cross(right).normalize()
@@ -175,7 +204,7 @@ export function createBody(loaded, appearanceOptions = {}) {
   const mixer = new THREE.AnimationMixer(root)
   const reference = clips.idle || clips.attack || Object.values(clips)[0]
   const pose = (clip, time = 0) => { mixer.stopAllAction(); const a = mixer.clipAction(clip); a.reset().play(); a.time = time; mixer.update(0); root.updateMatrixWorld(true) }
-  for (const p of loaded.props || []) fitProp(root, p, clips, pose, reference)
+  for (const [i, p] of (loaded.props || []).entries()) fitProp(root, p, clips, pose, reference, i)
   pose(reference)
   let pivot = root.getObjectByName(look.pivot)
   if (!pivot) { const clean = s => s.replace(/[^a-z0-9]/gi, '').toLowerCase(); root.traverse(o => { if (!pivot && clean(o.name) === clean(look.pivot)) pivot = o }) }
@@ -394,6 +423,14 @@ export function createCast(V, scene, toWorld, platform = {}) {
     /** how tall a unit's body stands, in board px (viewer.under-unit: the acting arrow and the body effects ride its head) */
     heightPx: id => { const B = bodies.get(id); return B ? B.standingHeight() * PX_PER_M : null },
     body: id => bodies.get(id) || null,
+    /** viewer.xcom-camera: where each standing body is to be seen — its chest and its head, in the scene — and its feet */
+    aims() {
+      const out = []
+      for (const B of bodies.values()) { if (B.life !== 'standing') continue
+        const p = B.stage.position, h = B.standingHeight()
+        out.push({ feet: p.y, at: new THREE.Vector3(p.x, p.y + h * .55, p.z) }, { feet: p.y, at: new THREE.Vector3(p.x, p.y + h * .9, p.z) }) }
+      return out
+    },
     /** the fold's lunge: the attacker strikes, turned toward its target — a bow's shot when it has one; a look with
         neither leans toward it (the shot itself is the board's projectile, fx.attack) */
     strike(a, t, kind) {

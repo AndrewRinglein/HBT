@@ -263,3 +263,64 @@ each walk restarted its clip from 0 under a 0.25 s crossfade from idle — the h
 | `walkPace` | How long does a traversal take per hex? | **`DUR.moved` = 600 ms per hex walked (a flight: per hex of the engine's `move.begin` `hexes`), no floor or ceiling.** | The pump owns time (Law 3); the duration grows with the walk. A hex is ~2.6–2.9 m on the painted boards: 4.5 m/s, about 3× the humanoids' walk clip. | provisional — 2026-10-01 |
 | `walkStride` | How is a walk clip timed to the board? | **The clip advances (metres covered this frame) ÷ (its ground speed) clip seconds a frame, so it moves one stride per stride length whatever the pace or the easing. Ground speed is measured from the clip on the body (models.js groundSpeed): a root-motion clip by its pivot's travel over the clip, an in-place walk by a planted foot's slide under the hips; unreadable → its own pace, as before.** | Andrew: the feet must not slide. Measured: humanoids and civilians ~1.4–1.5 m/s, the orphan child 0.83, the oathblade walk forward and the zombies' slow walk 0.56, the imps 1.12 walking and 2.39 flying — so at `walkPace` the slow clips play ~8× fast. | provisional — 2026-10-01 |
 | `walkLoop` | The oathblade's walk forward starts and stops inside its clip. | **It loops whole; its start and stop pass in ~0.1 s each at the board's pace.** | Trimming a clip to its steady stride is look work on the clip, not on the board. | provisional — 2026-10-01 |
+
+## viewer.weapons-in-hand — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01, Andrew: "The characters are not holding weapons. The whole idea of having 3D weapons is so
+they're holding weapons." · "we don't have weapons. I don't see any weapons." Why none were seen: every hero but the rangers
+wore the oathblade look with nothing in its hands — the pack fitted only the archer row's bow, and keyed it to the roster row,
+not to the hero's kit.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `heldModels` | Which 3D model is each held item of a kit? Nothing recorded ties a game item to a weapon model. | **By name (tools/character-models.mjs `HELD`):** longsword → the demo's sword; iron mace → the demo's mace; kite, tower and round shields → the demo's shield; elfbow, shortbow, longbow → the flexible bow; greatsword, war axe, halberd, fire and frost staffs, the obsidian-fang dagger → the weapon tester's greatsword, axe, halberd, magic staff and dagger; the daggers → a dagger in each hand. **Listed, not drawn (`unheld`):** the holy texts, the holy symbol, the throwing knives and the hand crossbow. | The ruling asks for the kit's weapon; the names match one for one. The crossbow's model (`crossbow-equipped.glb`) has no fit in any owner, and the other three have no model at all, so drawing anything there would be faking. | Default — Andrew may re-map any row |
+| `heldFits` | How is each model held? No 3D weapon fit is accepted by a person (weapon-card-models/README.md). | **Each with its owner's own fit:** the sword, mace, shield and bow with the battle demo's fits on this very body (`purchased-stage-equipment.js`, as `assets/battle-demo/actors.mjs` uses them: the shield squared to the hand at the strike); the tester's weapons with the tester's socket (`tester/equipment.js`: palm-centred grip, hand flip, the weapon's stored grip, scale and roll) and **no fitted finger pose** — `finger-grips.json` was fitted on the tester's body, and production-lessons.json (preserve-primary-grip) says a grip does not certify another body. The mace takes the sword's fit: both sit on the same haft at the same origin in `15-weapons.glb`. The demo's shield straps and bowstring are not drawn. | Reuse the method, never another body's numbers (PRODUCTION-START.md). The demo fits are the only ones made on the oathblade body. | Default — visual acceptance is Andrew's |
+| `heldHands` | Which hand holds what? | **A shield or a bow in the left hand (their fits are the left hand's); the first other weapon in the right, a second in the left; a pair in both.** Two-handed weapons are held in the right hand only. | The demo and the tester hold the main weapon in the right hand; neither has a two-hand fit for these clips (the staff's two-hand support is one clip's, staff-grips.json). | Default |
+| `heldLookId` | Heroes of one class share a body but now hold different things; the page loads a look once by its id. | **A look whose held set differs from its roster row's equipment is its own look, `<row>+<models>` (`oathblade+greatsword`, `oathblade+empty-handed`); the paladins' sword and shield and the rangers' bow keep `oathblade` and `archer`.** | One id, one held set (tools/weapons-in-hand.test.mjs). Each armed look parses the body once more. | Default |
+| `heldWeight` | The tester's weapons are 49–81 MB each (4K painted maps). | **Loaded as they are.** A party of six may fetch a few hundred MB from the local server the first time. | The files are the approved bytes (hashed); a lighter export is the art pipeline's, not the viewer's. | Default — say if the load is too slow |
+
+## viewer.xcom-camera — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 'the XCOM-style camera' (Andrew): "one fixed angle and zoom. No tilt, no free rotation. The
+arrow keys rotate 90 degrees." · wheel zoom that springs back · edge scroll, no grab-drag, no Reset · the queue · the portrait
+· "Anything blocking the view of a character is highly translucent" · "End Turn far less prominent than End Activation".
+Replaces viewer.painted-board's drags (`cameraDrag`) and viewer.tactical-camera's bar and tilt range (`cameraBar`,
+`cameraPolicy`'s 40–75° and 60° turns); the Overhead, Inspect, Whole map and Focus views stay as hosts' calls (`v.camera`).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `xcomAngle` | Which fixed angle and zoom? | **The accepted Angled view, 40° above the ground, at the standard zoom (1×, clamped to the board's fit as before).** | The caravan preview's start, accepted 2026-10-01; the ruling names no other. | Default — Andrew may name another |
+| `xcomWheel` | How far does the wheel go, and when does it spring back? | **0.75× to 1.4× of the standard zoom; back to it 600 ms after the last wheel step.** | "a limited amount … snaps back as soon as you stop pressing". | Default |
+| `xcomEdge` | What is "pointing past the map edge"? | **The pointer within 18 px of the board's edge scrolls the map that way at 700 board px a second; it stops when the pointer leaves the edge or the board.** The board's pan bound still holds, and at every quarter turn the view stays on the board where the board is the larger. A turn keeps the centre it turned about (four quarters come back exactly). | A browser cannot follow a pointer past the window; the board's edge is the screen's edge in the full-screen battle. | Default |
+| `xcomKeys` | Which keys turn? | **← and → (and Q, E) turn 90°; ↑ and ↓ do nothing; Home no longer resets; hold-Z peek is gone.** Right-click and Esc still step the plan back. | "The arrow keys rotate 90 degrees"; "No Reset needed"; the peek was a zoom past the limit. | Default |
+| `xcomCentre` | When does the map centre? | **On every new activation (the board's acting unit — in a replay as in a game; the first one is the view a reset returns to), on the host's proposed hero (`centre(id)`), and on clicking an ability (the unit whose bar it is).** Looking at another unit still never moves it. | "the map centered on them"; "Clicking an ability re-centers on the acting unit". | Default |
+| `xcomPortrait` | Which portrait, where? | **The card of whose panel it is (subject.js), 171 × 256 px in the board's lower-left corner; the play log moves right of it (left 185 px).** | "A character portrait in the lower-left corner, as tall as the ability bar" (256 px). | Default |
+| `xcomEnds` | How much less prominent is End Turn? | **End activation: the large gold button (17 px type, three shares of the row); End Turn: a small quiet button (10 px) at its side.** The End Turn pop-up's own confirm keeps its gold. | "End Turn far less prominent than End Activation." | Default |
+| `xcomSeeThrough` | What is "blocking the view", and how translucent? | **Any scene mesh crossing the line from the camera to a standing body's chest or head, above its waist and short of it, is drawn at 0.18 opacity (its own copy of its material), and solid again when it hides nothing; foliage counts; pieces the scene draws see-through itself (opacity under 1, or not normally blended: fire, smoke) do not; an instanced Atlas part fades whole. Looked for at most every 120 ms while anything moves.** | "highly translucent". Pieces share materials, so a copy keeps the rest of the scene solid. | Default |
+| `xcomDoubleClick` | What does a double-click on a body do? | **Offers `{kind:'choose', id}` to the host (the kingdom makes that hero the next to act).** The top bar's double-click is viewer.unit-card-bar's. | "Double-click a character in the top bar or on the map to change it"; the card bar is the next item. | Default |
+
+## viewer.unit-card-bar — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 (Andrew): "We also need a character selector bar above the screen, the way it is in the visual
+playback … And I can use that to target things as well as clicking on them." The strip was `harness.js`'s (ruled out of the
+game 2026-09-01); it is the component's now (`src/rail.js`), so the standalone page draws none of its own.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `railOrder` | Which order, left to right? | **Ascending unit id — heroes, civilians and enemies as the board lists them (the queue of viewer.xcom-camera walks it).** | "the next in the character bar, left to right, civilians included"; the strip's order since 2026-09-01. | Default |
+| `railClick` | What does a card do? | **A click is the click on that unit's body (board.js `clickUnit`: the panel, the targeting host, the play host's `{kind:'unit'}` — the same event); a double-click offers `{kind:'choose'}`.** | "use that to target things as well as clicking on them"; "Double-click a character in the top bar … to change it". | Default |
+| `railLook` | How does it look? | **The strip as it was: each unit's token on a small card, gold under a hero, violet under an enemy, the one acting lit, those who acted greyed with ✓, the fallen dark with ✝; the card looked at outlined.** | "the way it is in the visual playback". | Default |
+
+## viewer.characters-unfaded — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 (Andrew): "these characters are faded, like they're ghost-like, because there are other competing
+things. The characters are the stars. They should not be faded, especially not one that's selected." Why they were faded: the
+board's marks — the grid, the side rings, the shadow blob, the acting glow and sweep, the selection ring, aura and painted-layer
+tiles (darkness .78, poison .85), the plan's hatching and tiles — are DOM on `#stage`, drawn OVER the scene's canvas with no
+depth, so every mark whose screen area a body stands up into lay across it. Nothing in the 3D scene was transparent.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `unfadedLayer` | How do the bodies get above the marks and still stand behind walls? | **A second WebGL canvas, `.terrain3d-bodies`, between `#stage` (the marks) and `#stageTop` (the floats): each frame it takes the scene's depth from its solid pieces only (no colour; what is see-through hides nothing), then draws the bodies alone with every light.** The scene's own canvas no longer draws bodies. A host whose renderer is a stand-in (a test) keeps the one canvas. | Depth is the only honest way to keep "a wall hides a body" while no mark covers one; a CSS trick on the DOM cannot know depth. | Default |
+| `unfadedFloats` | The floats were on `#stage`, now under the bodies. | **They ride `#stageTop`, the stage's twin (same size, same camera matrix, same billboard variables), above the bodies.** The names, bars and rings stay on the board, under the bodies. | A damage number must never hide behind the body it is about; the marks are what faded the bodies. | Default |
+| `unfadedKey` | How is "the selected one" brightest? | **A warm point light (#fff1d8, intensity 9, reach 5 m) rides the body whose panel it is (subject.js), 1.25 of its height up and 0.6 toward the camera; it lights the bodies only.** | "especially not one that's selected". | Default — the look is Andrew's |

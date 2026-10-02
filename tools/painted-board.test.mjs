@@ -29,7 +29,11 @@ test('battle 1 opens on the riverside painted scene: the address names the map, 
   assert.equal(V.data.F.width, 20); assert.equal(H.viewer.events.find(e => e.type === 'map.loaded').mapId, 'map.opening.orphanage')
   assert.equal(V.data.atlas && V.data.atlas.kind, 'painted', 'the Orphanage battle is drawn on a painted scene')
   assert.equal(V.data.atlas.scene, 'orphanage-riverside')
-  assert.ok(V.dom.root.querySelector('#camReset'), 'the board carries a Reset button')
+  /* Law 10 (viewer.xcom-camera, 2026-10-01): was "the board carries a Reset button". Andrew (engine DECISIONS.md 2026-10-01
+     'the XCOM-style camera'): "no Reset needed", "A character portrait in the lower-left corner" — the board carries no
+     camera bar, and the portrait in its place */
+  assert.equal(V.dom.root.querySelector('#camReset'), null, 'no camera bar: no Reset button')
+  assert.ok(V.dom.root.querySelector('#unitPortrait'), 'the portrait in the lower-left corner')
   /* its hero was built with two unit.modified lines (the opening's first hero, the crucible roll): folded as stated */
   const mods = H.viewer.events.filter(e => e.type === 'unit.modified'), hero = V.S.U[mods[0].actor]
   assert.equal(hero.maxHp, mods.at(-1).maxHp); assert.equal(hero.hp, mods.at(-1).hp)
@@ -87,7 +91,12 @@ test('the painted driver loads only the measured scene, lights it as reviewed, a
   driver.dispose()
 })
 
-test('the camera turns, tilts, zooms and pans by drag, wheel and call, and Reset returns the starting angled view', () => {
+/* Law 10 (viewer.xcom-camera, 2026-10-01): was "the camera turns, tilts, zooms and pans by drag, wheel and call, and Reset returns
+   the starting angled view". Andrew (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): "one fixed angle and zoom. No
+   tilt, no free rotation. The arrow keys rotate 90 degrees." · "no grab-drag" · "The mouse wheel zooms a limited amount and
+   snaps back". The turn, the zoom, the pan and the reset by call are kept (the hosts' and the tests' API); the tilt stays at
+   the fixed angle; no drag moves the camera; the wheel looks nearer (its spring back: tools/xcom-camera.test.mjs) */
+test('the camera turns, zooms and pans by call, holds its one angle, moves for no drag, looks nearer by the wheel, and resets', () => {
   const w = boot('#map.opening.orphanage'), H = w.__battleView.harness, v = H.viewer, V = v._V, stage = V.dom.stage, wrap = stage.parentNode
   /* viewer.true-3d-camera (engine DECISIONS.md 2026-09-30 "a true 3D battle: an orbit camera"): the turn, the tilt and the zoom are
      the one camera's (V.camera3d), which the stage is drawn through — these read rotateX(49.3deg), rotateZ(30deg) and
@@ -102,21 +111,21 @@ test('the camera turns, tilts, zooms and pans by drag, wheel and call, and Reset
   const start = stage.style.transform, anti = stage.style.getPropertyValue('--anti'), d0 = off().length()
   assert.match(start, /^matrix3d\(/, 'the stage is drawn through the camera'); close(tiltNow(), 90 - 40, 'the starting tilt: 40 degrees above the ground'); close(yawNow(), 0, 'the starting view is not turned')
   v.turn(30); close(yawNow(), 30, 'turned 30 degrees about the focus'); assert.equal(stage.style.getPropertyValue('--unspin'), '-30deg', 'billboards undo the turn')
-  v.tilt(-12); close(tiltNow(), 50 - 12, 'tilted 12 degrees up')
+  v.tilt(-12); close(tiltNow(), 50, 'no tilt: the one fixed angle')
   v.zoom(1.5); close(off().length(), d0 / 1.5, 'zoomed: 1.5 times nearer')
   const camF = { ...V.view.camF }; v.pan(60, 30); assert.notDeepEqual(V.view.camF, camF)
   assert.notEqual(stage.style.transform, start)
-  /* the pointer: a left drag turns and tilts, a right drag grabs the map, the wheel zooms, the right button opens no menu */
+  /* the pointer: no drag turns, tilts or moves the map; the wheel looks nearer; the right button opens no menu */
   const cam = { ...V.view.cam }
   fire(wrap, 'pointerdown', { button: 0, clientX: 100, clientY: 100 }); fire(wrap, 'pointermove', { clientX: 140, clientY: 90 }); fire(wrap, 'pointerup')
-  assert.notEqual(V.view.cam.yaw, cam.yaw, 'a left drag turns'); assert.notEqual(V.view.cam.tilt, cam.tilt, 'a left drag tilts')
+  assert.deepEqual(V.view.cam, cam, 'a left drag neither turns nor tilts')
   const before = { ...V.view.camF }
   fire(wrap, 'pointerdown', { button: 2, clientX: 100, clientY: 100 }); fire(wrap, 'pointermove', { clientX: 150, clientY: 130 }); fire(wrap, 'pointerup')
-  assert.notDeepEqual(V.view.camF, before, 'a right drag moves the map')
-  const z = V.view.cam.zoom; assert.equal(fire(wrap, 'wheel', { deltaY: -200 }), 1); assert.ok(V.view.cam.zoom > z, 'the wheel zooms in')
+  assert.deepEqual(V.view.camF, before, 'a right drag does not grab the map')
+  v.resetView(); const z = V.view.cam.zoom; assert.equal(fire(wrap, 'wheel', { deltaY: -200 }), 1); assert.ok(V.view.cam.zoom > z, 'the wheel looks nearer (from the standard zoom)')
   assert.equal(fire(wrap, 'contextmenu'), 1)
-  /* Reset: the button on the board */
-  fire(V.dom.root.querySelector('#camReset'), 'click')
+  /* the reset, by call (there is no button) */
+  v.resetView()
   assert.equal(stage.style.transform, start, 'Reset returns exactly the starting view')
   assert.deepEqual(V.view.cam, { yaw: 0, tilt: 50, zoom: 1 })
   assert.equal(stage.style.getPropertyValue('--anti'), anti); assert.equal(stage.style.getPropertyValue('--unspin'), '0deg')

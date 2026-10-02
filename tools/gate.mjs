@@ -59,17 +59,15 @@ const TEST_PARTS = 2
 const PARTS = ['checks', ...Array.from({ length: SLICES }, (_, i) => `verify ${i + 1}/${SLICES}`), ...Array.from({ length: TEST_PARTS }, (_, i) => `tests ${i + 1}/${TEST_PARTS}`)]
 
 /* the working tree as `git add -A` would commit it, through a throwaway index;
-   .build/ (the record, the candidate) leaves the hash staged or not */
+   .build/ (the record, the candidate) and BATTLE-VIEWER.html (what --land writes) leave the hash staged or not */
 function treeHash() {
   const idx = join(tmpdir(), `vgate-index-${process.pid}-${Date.now()}`)
   try { copyFileSync(resolve(execSync('git rev-parse --git-path index', { encoding: 'utf8' }).trim()), idx) } catch {}
   const env = { ...process.env, GIT_INDEX_FILE: idx }
   try {
     execSync('git add -A -- .', { env, stdio: 'pipe' })   // .build/ is gitignored; a ":!.build" pathspec makes git refuse
-    execSync('git rm -r -q --cached --ignore-unmatch -- .build', { env, stdio: 'pipe' })
-    // the page is the gate's OUTPUT, never an input: --land writes it and then re-hashes the tree, so a tree that
-    // counted it refused every landing that changed the page (since f461451, 2026-10-01)
-    execSync('git rm -q --cached --ignore-unmatch -- BATTLE-VIEWER.html', { env, stdio: 'pipe' })
+    /* the page is the gate's output, not its input: --land writing it must not change the tree it was verified on (GBH SWITCHES gate.pageOutsideTree) */
+    execSync('git rm -r -q --cached --ignore-unmatch -- .build BATTLE-VIEWER.html', { env, stdio: 'pipe' })
     return execSync('git write-tree', { env, encoding: 'utf8' }).trim()
   } finally { try { rmSync(idx, { force: true }) } catch {} }
 }
@@ -78,7 +76,7 @@ const sha256 = f => createHash('sha256').update(readFileSync(f)).digest('hex')
 const secs = t0 => Math.round((Date.now() - t0) / 1000)
 
 /* ── 1–2b · the static checks ───────────────────────────────────────────── */
-function checks() {
+function checks(rec) {
   /* 1 · the door probe */
   {
     const offenders = []
@@ -128,8 +126,11 @@ function checks() {
   catch { fail('typecheck') }
   try { execFileSync('node', ['--test', 'tools/fakedom.test.mjs', 'tools/runtime-metadata.test.mjs', 'tools/elemental-display.test.mjs', 'tools/damage-packets.test.mjs', 'tools/bursts.test.mjs', 'tools/loadout-swap.test.mjs', 'tools/item-uses.test.mjs', 'tools/prop-destroy.test.mjs', 'tools/vocabulary.test.mjs'], { stdio: 'inherit' }) }
   catch { fail('runtime metadata isolation or tool catalog validation') }
-  /* 2a · test/ — the viewer's page tests against the engine's content, run on the engine's vitest */
-  try { execFileSync('node', ['../engine/node_modules/vitest/vitest.mjs', 'run', '--dir', 'test', '--reporter=dot'], { stdio: 'inherit' }) }
+  /* 2a · test/ — the viewer's page tests against the engine's content, run on the engine's vitest, against THIS tree's
+     candidate page (built once per tree, as the tests parts use it): the landed page cannot carry the change being gated
+     (GBH SWITCHES gate.checksOnCandidate) */
+  candidate(rec)
+  try { execFileSync('node', ['../engine/node_modules/vitest/vitest.mjs', 'run', '--dir', 'test', '--reporter=dot'], { stdio: 'inherit', env: { ...process.env, VIEWER_PAGE: resolve(CANDIDATE) } }) }
   catch { fail('test/ — the page tests against the engine') }
   /* 2b · the engine's map list, through the door, against both dumps */
   {
@@ -204,7 +205,7 @@ function runPart(name) {
   if (!rec || rec.tree !== tree || rec.slices !== SLICES) rec = { tree, slices: SLICES, parts: {} }   // a new tree: no parts, no candidate
   let r
   try {
-    if (name === 'checks') { checks(); r = { ok: true } }
+    if (name === 'checks') { checks(rec); r = { ok: true } }
     else if (name.startsWith('tests ')) r = pageTests(+name.match(/^tests (\d+)\//)[1], rec)
     else r = verifySlice(+name.match(/^verify (\d+)\//)[1], rec)
   } catch (e) { if (!(e instanceof GateFail)) throw e; r = { ok: false, why: e.message } }

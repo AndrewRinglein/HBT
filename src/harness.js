@@ -26,7 +26,8 @@ export function startHarness(mountEl, lib) {
 
   /* ── the chrome, built once ────────────────────────────────────────── */
   const top = document.createElement('div'); top.style.display = 'contents'
-  top.innerHTML = `<div id="rail"></div><div id="seedline"></div>`
+  /* viewer.unit-card-bar (2026-10-01): the unit-card strip is the component's own now (src/rail.js), in the game as here */
+  top.innerHTML = `<div id="seedline"></div>`
   const transport = document.createElement('div'); transport.id = 'transport'
   transport.innerHTML = `
       <button class="tbtn on" id="playBtn">&#10074;&#10074; Pause</button>
@@ -62,7 +63,7 @@ export function startHarness(mountEl, lib) {
     if (viewer) viewer.dispose()
     cur = i
     viewer = mountBattleViewer(mountEl, data, {
-      onCursor(c, e) { q('#scrub').value = String(c); markLog(c - 1); drawRail(); foot(c) },
+      onCursor(c, e) { q('#scrub').value = String(c); markLog(c - 1); foot(c) },
       onPlayState: setPlayBtn,
       onDrain() { viewer.pause() },                       // a replay's end reads as paused
       onError(err) { q('#seedline').innerHTML += `<br><b style="color:#ff8f8f">RUN INVALID: ${err.message}</b>` },
@@ -84,7 +85,6 @@ export function startHarness(mountEl, lib) {
     updatePicker(extra ? -1 : i, b.label)
     if (doc) doc.innerHTML = intro(b)
     viewer.push(EV)
-    drawRail()
   }
   /* the event counter: replay knowledge, so it is the harness's line, in the
      panel's foot slot (Law 5 — review 2026-09-03) */
@@ -107,19 +107,6 @@ export function startHarness(mountEl, lib) {
       `every frame folds out of <b>${bt.events.length} events</b> the engine emitted &mdash; seed ${bt.seed.replicate ?? bt.seed.scenarioId} on <code>${initialMapId(bt.seed)}</code> (${board}${deploy}), ` +
       `engine <code>${bt.engineCommit}</code>, ${OUTNAME[bt.outcome] || bt.outcome} in ${bt.turns} turns.${gaps} Pick another battle from the dropdown, or drop an ` +
       `<code>export-battle.mts</code> file anywhere on the page. Nothing is scripted: HP, movement, statuses, downs and deaths are all read from the log.`
-  }
-
-  /* ── the unit rail: replay-only, cut from the game (ruled 2026-09-01) ── */
-  function drawRail() {
-    const rail = q('#rail'); if (!rail || !viewer) return
-    const S = viewer.state, ART = viewer.art, ASSETS = viewer.assets
-    rail.innerHTML = Object.values(S.U).map(u => {
-      const a = ART[u.typeId] || ART._pending
-      const acted = !!S.acted[u.id]
-      return `<div class="railchip ${u.side}${u.id === S.activeId ? ' now' : ''}${acted ? ' done' : ''}${u.life === 'dead' ? ' gone' : ''}" data-i="${u.id}" title="${u.name}">
-      <span class="railno">${u.life === 'dead' ? '✝' : acted ? '✓' : u.id === S.activeId ? '▸' : ''}</span>
-      <img src="${ASSETS[a.token]}" alt=""></div>` }).join('')
-    rail.querySelectorAll('.railchip').forEach(ch => ch.addEventListener('click', () => viewer.inspect(+ch.dataset.i)))
   }
 
   function markLog(evIdx) {

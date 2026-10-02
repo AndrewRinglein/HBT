@@ -64,7 +64,10 @@ describe("battles 2 and 3's cast in the new screen", () => {
       const look = models[t]?.looks[0]
       expect(look, t).toBeDefined()
       for (const m of RULED) expect(look!.motions[m], `${t} ${m}`).toBeDefined()
-      if (byClass.has(cls[0]!)) expect(look!.id, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.id)
+      /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was the look's id. Andrew: "The characters are not holding weapons";
+         each hero now holds its own kit, so a look's id names its held set too (oathblade+greatsword) — the outfit, which
+         is what this asks, is the body file */
+      if (byClass.has(cls[0]!)) expect(look!.model.path, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.model.path)
     }
   })
   it('every file is the one its hash names', () => {

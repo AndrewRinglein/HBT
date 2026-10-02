@@ -19,7 +19,7 @@ export const POLICY = Object.freeze({
   ELEVATION_MAX: 75,            // tactical: never steeper (Overhead is its own toggle)
   WHOLE_ELEVATION: 55,          // Whole map: the board fitted from this angle, unturned (the preview's)
   ANGLE_STEP: 10,               // Lower angle / Raise angle
-  TURN_STEP: 60,                // Q / E and the turn buttons: one hex side
+  TURN_STEP: 90,                // viewer.xcom-camera: the arrow keys (and Q / E) turn a quarter (was 60, one hex side)
   INSPECT_ELEVATION_MIN: 3,     // Inspect: broader exploration
   INSPECT_ELEVATION_MAX: 89,
   DRAG_PX: 5,                   // from Overhead a left drag past it unlocks the tilt (a board click stays 4 px, board.js)
@@ -29,6 +29,13 @@ export const POLICY = Object.freeze({
   INSPECT_FIGURE_SHARE: 1,      // Inspect nearest: a figure may fill the view
   PAN_FREEDOM: 1.5,             // how fast the pan bound opens as the camera comes nearer than the fit
   EDGE_ROOM: 60,                // board px the pan may go past the first and last rows (a head above, a name and bars below)
+  /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): one fixed angle and zoom — the Angled view
+     at the standard zoom — the wheel looks a little nearer or farther and springs back, the map scrolls at its edges */
+  ZOOM_NEAR: 1.4,               // the wheel's nearest, against the standard zoom
+  ZOOM_FAR: .75,                // the wheel's farthest
+  ZOOM_REST_MS: 600,            // the wheel still this long: back to the standard zoom
+  EDGE_SCROLL_PX: 18,           // the pointer within this of the board's edge scrolls the map that way
+  EDGE_SCROLL_SPEED: 700,       // board px a second
 })
 export const tiltOfElevation = e => 90 - e
 export const elevationOfTilt = t => 90 - t
@@ -70,8 +77,9 @@ export function zoomLimits(stance, fit, viewport, figure) {
   if (stance === 'inspect') return [fit / POLICY.INSPECT_FAR, nearZoom(viewport, figure, POLICY.INSPECT_FIGURE_SHARE, fit)]
   return [fit, nearZoom(viewport, figure, POLICY.FIGURE_SHARE, fit)]
 }
-/** the tilt limits for a stance (degrees from straight down) */
-export const tiltLimits = stance => stance === 'overhead' ? [0, 0] : stance === 'inspect' ? [TILT.INSPECT_MIN, TILT.INSPECT_MAX] : [TILT.MIN, TILT.MAX]
+/** the tilt limits for a stance (degrees from straight down). viewer.xcom-camera: the tactical camera is one fixed angle,
+    the Angled view's ("no tilt") */
+export const tiltLimits = stance => stance === 'overhead' ? [0, 0] : stance === 'inspect' ? [TILT.INSPECT_MIN, TILT.INSPECT_MAX] : [TILT.START, TILT.START]
 /** the pan bound on one axis: pinned to the middle at the whole-map fit, opening to [min, max] as the camera comes nearer
     (the preview's panLimit, in zoom: distance / maximum = fit / zoom) */
 export function panRange(min, max, zoom, fit) {
