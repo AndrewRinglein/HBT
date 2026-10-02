@@ -91,16 +91,23 @@ export function moveHexes(a, u, D) {
    stat + bonus the ledger showed. The fallback duplicates engine math. */
 export function dmgOf(a, u, D) {
   if (isBurst(a)) return null
-  const live = u && u.dmgSeen ? u.dmgSeen[a.id] : undefined
-  if (live != null) return { n: live, live: true }
   /* an attack's stat and bonus live under `attack` since 26fa562; a legacy
      power shape still carries them on the row */
   const p = a.attack || a
+  const live = u && u.dmgSeen ? u.dmgSeen[a.id] : undefined
+  /* viewer.live-stat-mods (2026-10-01; Andrew: "None of the attacks have their damage modified by the
+     Strength" after a Leap): the seen number moves by whatever the attack's stat has gained or lost
+     since it was seen (fold's dmgSeenMods); with nothing recorded it stands as seen */
+  if (live != null) {
+    const then = p.stat != null && u.dmgSeenMods && u.dmgSeenMods[a.id] ? (u.dmgSeenMods[a.id][p.stat] || 0) : null
+    return { n: then == null ? live : Math.max(0, live + modOf(u, p.stat) - then), live: true }
+  }
   // A scalar base is not the total of a multi-packet attack. Wait for the
   // engine's observed damageOnHit; authored packet rows remain visible below.
   if (p.secondaryDamage?.length) return null
   const statv = p.stat != null ? ((D.UD || {})[u && u.typeId] || {})[p.stat] : undefined
-  if (statv != null) return { n: Math.max(0, statv + (p.bonus || 0)), live: false }
+  // viewer.live-stat-mods: the sheet's stat plus the unit's live modifiers to it (an item's, a Leap's)
+  if (statv != null) return { n: Math.max(0, statv + modOf(u, p.stat) + (p.bonus || 0)), live: false }
   return null
 }
 
@@ -129,11 +136,18 @@ export function effectWord(ef, D, SN) {
     case 'status.remove':  return { word: 'Remove ' + shortStatus(ef.statusId, SN), val: ef.value, statusId: ef.statusId }
     case 'badge.grant':    return { word: (BD[ef.badgeId] || {}).name || String(ef.badgeId || '').replace(/^badge\./, ''), badge: true }
     case 'damage':         return { word: (ef.damageType ? ef.damageType + ' damage' : 'Damage'), val: ef.amount ?? ef.value }
+    case 'statDamage':    return { word: (ef.damageType ? ef.damageType + ' damage' : 'Damage'), val: ef.bonus }
     case 'burstScale':     return { word: 'Burst damage percentage', val: ef.percent }
     case 'heal':           return { word: 'Heal', val: ef.amount ?? ef.value }
     case 'knockback':      return { word: 'Knockback', val: ef.hexes ?? ef.value }
     case 'statMod':        return { word: (STATSHORT[ef.stat] || ef.stat), val: ef.value, signed: true }
     case 'stamina.drain':  return { word: 'Stamina drain', val: ef.value }
+    case 'stamina.gain':   return { word: 'Stamina', val: ef.value, signed: true }
+    case 'loseMaxStamina': return { word: 'Max Stam', val: -Math.abs(ef.value), signed: true }
+    case 'loseMaxHp':      return { word: 'Max Health', val: -Math.abs(ef.value), signed: true }
+    case 'stand':          return { word: 'Stand up' }
+    case 'reveal':         return { word: 'Reveal' }
+    case 'corpse.eat':     return { word: 'Eats a corpse', val: ef.radius, radius: true }
     case 'power.gain':     return { word: 'Power', val: ef.value, signed: true }
     case 'layer.paint':    return { word: layerName(ef.layer) + ' ground', val: ef.radius, radius: true }
     case 'corpse.raise':   return { word: 'Raises a corpse', val: ef.radius, radius: true }
@@ -197,7 +211,7 @@ export function triggersFor(u, a, D, SN, stStyle) {
   if (a.kind === 'move') {
     /* a move's riders ARE the buff/debuff layer — same green/red as the stat block */
     for (const e of (a.effects || (a.move || {}).effects || [])) {
-      if (e.kind === 'gainStamina')        out.push({ word: 'Stamina ' + sgn(e.value), hue: MOD_UP, chance: 100 })
+      if (e.kind === 'stamina.gain')       out.push({ word: 'Stamina ' + sgn(e.value), hue: MOD_UP, chance: 100 })
       else if (e.kind === 'loseMaxStamina') out.push({ word: 'Max Stam ' + sgn(-Math.abs(e.value)), hue: MOD_DOWN, chance: 100 })
       else if (e.kind === 'statMod')        out.push({ word: (STATSHORT[e.stat] || e.stat) + ' ' + sgn(e.value),
                                                         hue: e.value > 0 ? MOD_UP : MOD_DOWN, chance: 100 })
