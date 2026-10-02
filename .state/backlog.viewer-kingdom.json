@@ -36,7 +36,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding weapons.' · 'we don't have weapons. I don't see any weapons.' Every 3D body holds the 3D weapon of its kit in its hand socket (assets/characters/oathblade-armor/generated/rebuild/weapon-audition/equipment/ has bow-flexible.glb; read assets/characters/PRODUCTION-START.md and production-lessons.json first, and the skills AGENTS.md names for equipment placement).",
   "expect": "In the sandbox every hero whose kit names a weapon with a 3D model holds it in hand through idle, walk and attack; a weapon without a model is listed, not faked.",
-  "attempts": 1
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "3d26873"
  },
  {
   "id": "viewer.real-bodies",

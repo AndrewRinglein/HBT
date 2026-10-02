@@ -20255,3 +20255,95 @@ index ca4bebd..edf74cd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.gates — they genuinely test it
+
+## viewer.weapons-in-hand — LANDED `3d26873` **NEEDS REVIEW**
+2026-10-02 00:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-cast.test.ts, test/weapons-in-hand.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/opening-cast.test.ts, viewer/test/weapons-in-hand.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-cast.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+d9a0161
+
+diff --git a/test/opening-cast.test.ts b/test/opening-cast.test.ts
+index 82c7a3c..f87dba0 100644
+--- a/test/opening-cast.test.ts
++++ b/test/opening-cast.test.ts
+@@ -65,5 +65,8 @@ describe("battles 2 and 3's cast in the new screen", () => {
+       expect(look, t).toBeDefined()
+       for (const m of RULED) expect(look!.motions[m], `${t} ${m}`).toBeDefined()
+-      if (byClass.has(cls[0]!)) expect(look!.id, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.id)
++      /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was the look's id. Andrew: "The characters are not holding weapons";
++         each hero now holds its own kit, so a look's id names its held set too (oathblade+greatsword) — the outfit, which
++         is what this asks, is the body file */
++      if (byClass.has(cls[0]!)) expect(look!.model.path, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.model.path)
+     }
+   })
+diff --git a/test/weapons-in-hand.test.ts b/test/weapons-in-hand.test.ts
+new file mode 100644
+index 0000000..f33760c
+--- /dev/null
++++ b/test/weapons-in-hand.test.ts
+@@ -0,0 +1,44 @@
++// viewer.weapons-in-hand (engine backlog; DECISIONS.md 2026-10-01 'the camera redesigned on the caravan preview; ... what is
++// queued after it'). Andrew: "The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding
++// weapons." Expect: "In the sandbox every hero whose kit names a weapon with a 3D model holds it in hand through idle, walk and
++// attack; a weapon without a model is listed, not faked." The engine's side: every held item (a weapon or a shield) of every
++// base hero's kit is, in the character pack, either a model in that hero's hand or listed as having none — so a new weapon in
++// a kit shows up here, not as an empty hand. The viewer's half (../viewer/tools/weapons-in-hand.test.mjs) stands each body
++// up from the approved files and follows the weapon through the motions. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { UNITS, ITEMS } from '../../engine/src/content/index.js'
++
++type Prop = { path: string, sha256: string, hand: string, item: string, model: string }
++type Look = { id: string, props: Prop[], unheld?: string[] }
++const pack = (): Record<string, { typeId: string, looks: Look[] }> => JSON.parse(execFileSync(process.execPath, ['../viewer/tools/character-models.mjs', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24 }))
++const HELD = new Set(['weapon', 'shield'])
++
++describe('the weapons of the kit, in hand', () => {
++  const models = pack()
++  const heroes = Object.keys(UNITS).filter((t) => t.startsWith('hero.base.'))
++  it('every held item of every base hero is a model in its hand or listed as having none', () => {
++    expect(heroes.length).toBeGreaterThan(20)
++    for (const typeId of heroes) {
++      const held = ((UNITS as Record<string, any>)[typeId].defaultItems ?? []).filter((i: string) => HELD.has((ITEMS as Record<string, any>)[i]?.itemClass))
++      for (const look of models[typeId]!.looks) {
++        const shown = new Set(look.props.map((p) => p.item)), listed = new Set(look.unheld ?? [])
++        for (const item of held) expect(shown.has(item) !== listed.has(item), `${typeId}: ${item} is held or listed, not both`).toBe(true)
++        for (const item of [...shown, ...listed]) expect(held, `${typeId}: ${item} is in its kit`).toContain(item)
++      }
++    }
++  })
++  it('a sword-and-shield paladin holds both, a greatsword is held, the priest\'s book is listed', () => {
++    const look = (t: string) => models[t]!.looks[0]!
++    expect(look('hero.base.paladin-shiney').props.map((p) => [p.item, p.hand])).toEqual([['item.longsword', 'R'], ['item.kite-shield', 'L']])
++    expect(look('hero.base.paladin-dark').props.map((p) => [p.item, p.hand])).toEqual([['item.greatsword', 'R']])
++    expect(look('hero.base.rogue-skull').props.map((p) => [p.item, p.hand])).toEqual([['item.daggers', 'R'], ['item.daggers', 'L']])
++    expect(look('hero.base.priest-pauper').props).toEqual([])
++    expect(look('hero.base.priest-pauper').unheld).toEqual(['item.holy-texts'])
++    expect(look('hero.base.warrior-brawler').props).toEqual([])
++  })
++  it('the viewer page: each weapon rides its hand through idle, walk and attack', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/weapons-in-hand.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/# pass 2/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++})
+```
+</details>
