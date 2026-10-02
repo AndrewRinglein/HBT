@@ -376,7 +376,7 @@
   "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the afflictions at 0 Health'): 'The first time someone gets any one of the four main status afflictions, we need to pop up before and after art for that character with an explanation' / 'There is a before/after pop-up mid-battle that will explain what just happened with the card art of both before and after.' The first time a hero gains Vampirism, Lycanthropy, Possession or Rotting Flesh, the battle pauses on a pop-up with the hero's card art before and after, the stat changes, the drawbacks, and what happens at 0 Health (three of them most likely turn the hero into an enemy unless Luck holds; Possession raises a Ghost; Rotting Flesh falls and gains Fragile). Most heroes have before/after art; a hero without it is listed, not faked. Kingdom and viewer commit in their own repositories.",
   "expect": "In a sandbox battle where a hero is first afflicted, the pop-up shows that hero's before and after art and the three explanations, and the battle resumes when it is closed.",
   "needs": [
-   "rule.afflictions-at-zero"
+   "rule.afflictions-at-zero-refiled-2"
   ],
   "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4)."
  },
