@@ -2125,6 +2125,95 @@
    ]
   },
   {
+   "id": "encounter.opening.cathedral",
+   "name": "Cathedral",
+   "map": "map.opening.cathedral",
+   "board": {
+    "width": 20,
+    "height": 40
+   },
+   "note": "The opening, battle 6 (engine DECISIONS.md 2026-09-28 'Gates is the Curse; the Cathedral has a Necromancer raising the dead' and 'the Cathedral encounter': \"Let's have the necromancer raise two per turn. Let's do the rest of the things you proposed. ... When the body is raised, the cursed ground stays. I like your proposal. The skeleton archer is up on the altar.\"). The Necromancer at the altar on the raised sanctuary raises two bodies a turn (reach 10; its own row's Raise, fix.raise-two); one Skeleton Archer up on the altar; two Skeletons before it. The remains - every remains hex on the Ground Check, 33 - are corpses laid at setup (capability.placed-remains) on cursed ground (layer.weak), both read from the map's own cursed list (gen/opening-maps.json), never retyped; a raised or eaten body's cursed ground stays (the paint is the ground, engine SWITCHES.md placedRemainsPaint). Turn 5: two Ghouls through the side doors; they eat corpses. Victory: clear the map (carried default); killing the Necromancer stops the raising. No turn limit. Hexes are the Ground Check's markers (assets/battle-atlas/opening-ground-proposal-2026-09-28.json); the heroes' zone, (10,37) r2 at the nave's south end, and the bodies being Zombie remains are Claude's readings (engine SWITCHES.md openingHeroZonesCathedral, openingCathedralRemainsBody).",
+   "heroZone": {
+    "count": 4,
+    "at": {
+     "near": {
+      "col": 10,
+      "row": 37
+     },
+     "range": 2
+    }
+   },
+   "setup": [
+    {
+     "unit": "unit.necromancer",
+     "at": {
+      "col": 10,
+      "row": 3
+     },
+     "note": "at the altar on the raised sanctuary"
+    },
+    {
+     "unit": "unit.skeletal-archer",
+     "at": {
+      "col": 11,
+      "row": 4
+     },
+     "note": "up on the altar"
+    },
+    {
+     "unit": "unit.skeleton",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 8,
+       "row": 5
+      },
+      {
+       "col": 12,
+       "row": 5
+      }
+     ],
+     "note": "before the altar"
+    },
+    {
+     "corpses": 33,
+     "id": "trigger.cathedral.remains",
+     "typeId": "unit.zombie",
+     "ground": "cursed",
+     "note": "every remains hex on the Ground Check (the map's cursed ground)"
+    }
+   ],
+   "paint": [
+    {
+     "layer": "layer.weak",
+     "ground": "cursed"
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.ghoul",
+       "at": {
+        "col": 0,
+        "row": 22
+       },
+       "note": "through the west side door"
+      },
+      {
+       "unit": "unit.ghoul",
+       "at": {
+        "col": 19,
+        "row": 22
+       },
+       "note": "through the east side door"
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "encounter.caravan-aftermath",
    "name": "Caravan Aftermath",
    "map": "map.caravan-aftermath",

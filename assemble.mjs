@@ -1,6 +1,6 @@
 import { validateBurst } from './burst-schema.mjs';
 import fs from 'fs';
-import { readPainted, resolvePaint } from './mkpaintedmaps.mjs';
+import { readGround, resolvePaint } from './mkpaintedmaps.mjs';
 import { validateMap, validateEncounterBoard } from './map-schema.mjs';
 const G='gen/', R=p=>JSON.parse(fs.readFileSync(G+p,'utf8'));
 const STATS=new Set(['strength','precision','accuracy','crit','luck','reach','dodge','vision','armor','resist','fireResist','poisonResist','shadowResist','coldResist','block','rangedBlock','health','magic','spirit','toughness','movement','staminaMax','staminaRegen','surge','itemSlots','deathbedFighting','corruption','favor','bleedOutTurns']);
@@ -48,7 +48,7 @@ out.maps=R('maps.json').maps;
 if(fs.existsSync(G+'opening-maps.json')) out.maps.push(...R('opening-maps.json').maps);
 // map.caravan-aftermath (2026-10-01): maps compiled from a painted scene's measured navigation by mkpaintedmaps.mjs
 // (gen/painted-maps.json, generated) — the same shipping lane; their ground lists fill the encounters' paint below.
-const painted=readPainted();
+const painted=readGround();   // the painted scenes' ground and the opening maps' cursed hexes
 if(painted) out.maps.push(...painted.maps);
 // ---- heroes, extracted mechanically from hell-tcg's five creation paths
 out.heroes=R('heroes.json');

@@ -59,7 +59,9 @@ test('V2 audit exceptions remain narrow',()=>{
  const changed=candidate(edit=>edit('gen/rogue.json',rows=>{rows.specialties.find(x=>x.id==='specialty.poison-master').statModifiers.poisonResist=4}),true);assert.match(changed.stdout,/specialty-too-many-stats/);
 });
 
-for (const kind of ['damage', 'selfDamage']) test('compiler rejects unknown ' + kind + ' effect type', () => {
+// engine fix.one-effect-vocabulary (2026-10-01): the two damage kinds are `damage` (flat; a power's cost to its caster is
+// `damage` with who: 'self' — `selfDamage` is gone) and `statDamage`; both still reject an unknown type. was: ['damage', 'selfDamage']
+for (const kind of ['damage', 'statDamage']) test('compiler rejects unknown ' + kind + ' effect type', () => {
   const run = candidate(edit => edit('test/abilities.json', rows => {
     rows[1].effects = [{kind, amount: 2, stat: 'magic', bonus: 0, damageType: 'holy'}];
   }));
