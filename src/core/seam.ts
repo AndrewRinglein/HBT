@@ -17,7 +17,7 @@
 // No campaign code. `makeBattleState(campaign, engagement, seed) → BattleOptions`
 // is M1's; it will produce an EngagementSpec and call battleOptionsOf.
 
-import { createBattle, runBattle, LEVELS, BADGES, rosterUids, isUnitUid } from '../engine.js'
+import { createBattle, runBattle, LEVELS, BADGES, RULE_BADGES, rosterUids, isUnitUid } from '../engine.js'
 import type { BattleOptions, Event, Outcome, Side, HeroProgress } from '../engine.js'
 import { atlasFieldingOf } from '../content/atlas.js'
 import { itemOf } from '../content/items.js'
@@ -25,6 +25,16 @@ import { fieldedModsOfRows, type FieldedMods } from './sets.js'
 import { fieldedItemsOf, instanceSlotsOf } from './loadout.js'
 
 const combatBadges = (badges: readonly string[] = []) => badges.filter(id => Object.hasOwn(BADGES, id))
+/**
+ * kingdom.opening-rewards — closes SWITCHES.md sandboxWoundFielded: a hero carrying a wound (the campaign's level,
+ * hero.wound ≥ 1 — GAME-ARCHITECTURE.md §4.2 "Wounds are not badges") is fielded with the engine's Wounded badge
+ * (its rule-badge role): "the in-battle wound level IS the Wounded badge's penalties applied in the battle"
+ * (engine/DECISIONS.md, the Deathbed ruling). The level stays the campaign's; only the fielding carries the badge, once.
+ */
+const fieldedBadges = (h: { badges?: readonly string[]; wound?: number }) => {
+  const out = combatBadges(h.badges)
+  return (h.wound ?? 0) >= 1 && !out.includes(RULE_BADGES.wounded) ? [...out, RULE_BADGES.wounded] : out
+}
 
 /** A campaign-free fielding: everything a battle needs, nothing about a Campaign. */
 export type EngagementSpec = {
@@ -152,7 +162,7 @@ export type EngagementResult = {
  * battle condition arrive here when those systems exist.
  */
 export function makeBattleState(
-  roster: Readonly<Record<string, { unitType: string; badges?: readonly string[]; equipped?: readonly string[]; used?: readonly number[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
+  roster: Readonly<Record<string, { unitType: string; badges?: readonly string[]; wound?: number; equipped?: readonly string[]; used?: readonly number[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
   engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number; heroUids?: readonly number[] },
 ): EngagementSpec {
   const rows = engagement.deployed.map((heroId) => {
@@ -165,7 +175,7 @@ export function makeBattleState(
   // engine's own numbering of a fielding that names none (rosterUids), so an unnamed fielding is the battle it was
   const heroUids = engagement.heroUids ? [...engagement.heroUids] : rosterUids(heroes.length, 0, {}).heroes
   if (heroUids.length !== heroes.length || heroUids.some((u) => !isUnitUid(u)) || new Set(heroUids).size !== heroUids.length) throw new Error(`${engagement.id}: hero uids [${heroUids.join(', ')}] are not ${heroes.length} distinct unsigned 32-bit integers`)
-  const heroBadges = rows.map(h => combatBadges(h.badges))
+  const heroBadges = rows.map(fieldedBadges)
   // the sets, resolved here — "looked up when the players are being built and shipped to combat"
   const heroMods = rows.map((h) => fieldedModsOfRows((h.equipped ?? []).map(itemOf)))
   // what is equipped is what is fielded — a hero row without `equipped` (a bare fielding) keeps its kit

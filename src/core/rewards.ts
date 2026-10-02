@@ -7,15 +7,20 @@
 // keyed by the Engagement (Law 4) — a reload shows the same three. Only a WON
 // battle offers one; a loss "costs wounds and pays no Salvage" and no draft.
 //
-// Level-up: thresholds from the ruled soft curve (src/content/levels.ts); a
-// level is +1 and nothing else until specialties arrive.
+// A battle with a row in src/content/encounter-rewards.ts (kingdom.opening-rewards) offers what its row says instead:
+// nothing, or one item that a hero of the row's classes takes — onto that hero, not into the stash.
+//
+// Level-up: thresholds from the ruled curve (src/content/levels.ts); a level
+// is the codex row's grants, and the first chooses the specialty.
 
 import type { CampaignState, HeroId } from './campaign.js'
-import { type Ctx, setRewardOffer, applyTakeReward, applyLevel, applySpecialty, setCursor } from './mutate.js'
+import { type Ctx, setRewardOffer, applyTakeReward, applyEquip, applyLevel, applySpecialty, setCursor } from './mutate.js'
 import { levelRowOf, specialtiesOf, specialtyOf, type SpecialtyRow, type LevelRow } from '../content/progress.js'
 import { SWITCHES } from '../content/switches.js'
 import { rollOf } from './rng.js'
-import { REWARDS, REWARD_ODDS, rewardOf, type RewardRow } from '../content/rewards.js'
+import { REWARDS, REWARD_ODDS, slotOf, type RewardRow } from '../content/rewards.js'
+import { encounterRewardOf } from '../content/encounter-rewards.js'
+import { whyNotFit } from './loadout.js'
 import { itemOf } from '../content/items.js'
 import { rewardDrawOf } from './charter.js'
 import { CUP_IDS } from '../content/cups.js'
@@ -46,17 +51,68 @@ function classOfRoll(r: number): string {
   throw new Error(`rewards odds sum to ${at}, not 100`)
 }
 
+/**
+ * kingdom.opening-rewards: what a won battle offers — its row's (src/content/encounter-rewards.ts): nothing, or one
+ * item, offered only when some hero may take it (SWITCHES.md openingItemTakers); without a row, or with a 'draw' row,
+ * the standing draw. Pure.
+ */
+export function resolveBattleOffer(campaign: CampaignState, engagementId: string): string[] | null {
+  const offer = encounterRewardOf(engagementId)?.offer
+  if (!offer || offer.kind === 'draw') return resolveRewardDraw(campaign, engagementId)
+  if (offer.kind === 'none') return null
+  return takersOf(campaign, offer.itemId, offer.takers).length ? [offer.itemId] : null
+}
+
+/** The item the cursor's battle offers to named classes, or null — read from the row of the Engagement on the cursor. */
+function namedTakerOffer(campaign: CampaignState): { itemId: string; takers: readonly string[] } | null {
+  const id = campaign.cursor.engagement?.id
+  const offer = id === undefined ? undefined : encounterRewardOf(id)?.offer
+  return offer?.kind === 'item' ? offer : null
+}
+
+/** Who may take `itemId`: alive, of one of `takers`' classes, and it fits beside what they carry. Sorted (Law 6). */
+function takersOf(campaign: CampaignState, itemId: string, takers: readonly string[]): HeroId[] {
+  return Object.values(campaign.roster)
+    .filter((h) => h.lifeState === 'alive' && h.classes.some((c) => takers.includes(c)) && whyNotFit(campaign, h.id, [...h.equipped, itemId]) === null)
+    .map((h) => h.id).sort()
+}
+
+/** Who may take this reward — empty for a reward that goes to the stash. */
+export function listRewardTakers(campaign: CampaignState, itemId: string): HeroId[] {
+  const named = namedTakerOffer(campaign)
+  return named && named.itemId === itemId ? takersOf(campaign, itemId, named.takers) : []
+}
+
 export function listRewardOffers(campaign: CampaignState): RewardRow[] {
-  return (campaign.cursor.rewardOffer ?? []).map(rewardOf)
+  // an offered item outside the draw's pool (a row's own item) is shown as the pool shows its rows
+  return (campaign.cursor.rewardOffer ?? []).map((id) => REWARDS.find((r) => r.id === id) ?? offerRowOf(id))
+}
+const offerRowOf = (id: string): RewardRow => { const r = itemOf(id); return { id: r.id, name: r.name, tier: r.tier, slot: slotOf(r) } }
+
+/** Why this reward cannot be taken (by this hero) — or null. A row's named-class item names its taker; a drawn item names none. */
+export function whyNotTakeReward(campaign: CampaignState, itemId: string, heroId?: HeroId): string | null {
+  if (campaign.cursor.step !== 'rewards' || !(campaign.cursor.rewardOffer ?? []).includes(itemId)) return `'${itemId}' is not on offer at step '${campaign.cursor.step}' — ${(campaign.cursor.rewardOffer ?? []).join(', ') || 'nothing is'}`
+  const named = namedTakerOffer(campaign)
+  if (named && named.itemId === itemId) {
+    const may = takersOf(campaign, itemId, named.takers)
+    if (heroId === undefined) return `'${itemId}' is taken by a hero of ${named.takers.join(' or ')} — name one of ${may.join(', ') || 'nobody'}`
+    if (!may.includes(heroId)) return `'${heroId}' cannot take '${itemId}' — it is for ${named.takers.join(' or ')}, alive, with room for it; ${may.join(', ') || 'nobody'} may`
+    return null
+  }
+  if (heroId !== undefined) return `'${itemId}' goes to the stash — it names no hero`
+  return null
 }
 
-export function canTakeReward(campaign: CampaignState, itemId: string): boolean {
-  return campaign.cursor.step === 'rewards' && (campaign.cursor.rewardOffer ?? []).includes(itemId)
+export function canTakeReward(campaign: CampaignState, itemId: string, heroId?: HeroId): boolean {
+  return whyNotTakeReward(campaign, itemId, heroId) === null
 }
 
-export function performTakeReward(ctx: Ctx, itemId: string, causeId: string): void {
-  if (!canTakeReward(ctx.campaign, itemId)) throw new Error(`performTakeReward refused: '${itemId}' is not on offer at step '${ctx.campaign.cursor.step}' — ${(ctx.campaign.cursor.rewardOffer ?? []).join(', ') || 'nothing is'}`)
+/** Take the reward: into the stash — or, a row's named-class item, onto the hero who takes it. */
+export function performTakeReward(ctx: Ctx, itemId: string, causeId: string, heroId?: HeroId): void {
+  const why = whyNotTakeReward(ctx.campaign, itemId, heroId)
+  if (why) throw new Error(`performTakeReward refused: ${why}`)
   applyTakeReward(ctx, itemId, causeId)
+  if (heroId !== undefined) applyEquip(ctx, heroId, itemId, causeId)
   const next = listLevelUps(ctx.campaign).length ? 'levelUp' : 'open'
   setCursor(ctx, next === 'open' ? { step: 'open', engagement: null, battle: null } : { step: next }, causeId)
 }

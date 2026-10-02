@@ -1,0 +1,168 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+xxxxxxx·
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-rewards.test.ts > kingdom.opening-rewards — the opening pays as ruled > the XP curve is the ruled one: level 2 at 20, then 50, 100, 170, 270, 400
+AssertionError: expected [ 20, 100, 250, 500 ] to deeply equal [ 20, 50, 100, 170, 270, 400 ]
+
+- Expected
++ Received
+
+  [
+    20,
+-   50,
+    100,
+-   170,
+-   270,
+-   400,
++   250,
++   500,
+  ]
+
+ ❯ test/opening-rewards.test.ts:73:39
+     71| describe('kingdom.opening-rewards — the opening pays as ruled', () => {
+     72|   it('the XP curve is the ruled one: level 2 at 20, then 50, 100, 170,…
+     73|     expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 50, 100, 170, 270, …
+       |                                       ^
+     74|   })
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/opening-rewards.test.ts > kingdom.opening-rewards — the opening pays as ruled > after a won Orphanage every hero who fought is level 2 with a level-up to take — the specialty chosen there; nobody is fatigued
+AssertionError: expected [ …(3) ] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+  [
+    [
+      "hero.base.warrior-iron",
+-     20,
++     12,
+      false,
+    ],
+    [
+      "hero.base.priest-armored",
+-     20,
+-     false,
++     19,
++     true,
+    ],
+    [
+      "hero.base.ranger-aggressive",
+-     20,
++     18,
+      false,
+    ],
+  ]
+
+ ❯ test/opening-rewards.test.ts:83:66
+     81|     const { reckoning } = decide(ctx, result)
+     82|     // 20 each, whatever the kills or the length: the formula and the …
+     83|     expect(reckoning.heroes.map((h) => [h.heroId, h.xp, h.mvp])).toEqu…
+       |                                                                  ^
+     84|     applyBattleResult(ctx, e, result, reckoning)
+     85|     noFatigue(ctx)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/opening-rewards.test.ts > kingdom.opening-rewards — the opening pays as ruled > the Orphanage pays 20 no matter what — a lost one too; the dead get nothing
+AssertionError: expected [ [ 20, 1 ], [ 10, 1 ], [ 10, 1 ] ] to deeply equal [ [ 20, 1 ], [ 20, 1 ], [ 20, 1 ] ]
+
+- Expected
++ Received
+
+@@ -2,13 +2,13 @@
+    [
+      20,
+      1,
+    ],
+    [
+-     20,
++     10,
+      1,
+    ],
+    [
+-     20,
++     10,
+      1,
+    ],
+  ]
+
+ ❯ test/opening-rewards.test.ts:109:58
+    107|     const lost = panelResult(ctx, false)
+    108|     const { reckoning } = decide(ctx, lost)
+    109|     expect(reckoning.heroes.map((h) => [h.xp, h.wound])).toEqual(DEPLO…
+       |                                                          ^
+    110|     const ctx2 = atOrphanage()
+    111|     const { result } = playIt(ctx2, 1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/opening-rewards.test.ts > kingdom.opening-rewards — the opening pays as ruled > a hero wounded in battle 1 enters battle 2 wounded — the level is fielded as the engine's Wounded
+Error: performLeaveLevelUp refused: the cursor is at 'rewards'
+ ❯ performLeaveLevelUp src/core/rewards.ts:145:53
+    143| /** Leave the level-up step for the Week, levelled or not — a level wa…
+    144| export function performLeaveLevelUp(ctx: Ctx, causeId: string): void {
+    145|   if (ctx.campaign.cursor.step !== 'levelUp') throw new Error(`perform…
+       |                                                     ^
+    146|   setCursor(ctx, { step: 'open', engagement: null, battle: null }, cau…
+    147| }
+ ❯ test/opening-rewards.test.ts:126:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/opening-rewards.test.ts > kingdom.opening-rewards — the opening pays as ruled > after a won Lumberjack House the Flaming Longsword is offered, and only a Warrior or a Paladin takes it
+Error: performLeaveLevelUp refused: the cursor is at 'rewards'
+ ❯ performLeaveLevelUp src/core/rewards.ts:145:53
+    143| /** Leave the level-up step for the Week, levelled or not — a level wa…
+    144| export function performLeaveLevelUp(ctx: Ctx, causeId: string): void {
+    145|   if (ctx.campaign.cursor.step !== 'levelUp') throw new Error(`perform…
+       |                                                     ^
+    146|   setCursor(ctx, { step: 'open', engagement: null, battle: null }, cau…
+    147| }
+ ❯ test/opening-rewards.test.ts:148:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/opening-rewards.test.ts > kingdom.opening-rewards — the opening pays as ruled > a Paladin may take it; with neither a Warrior nor a Paladin, nobody is offered it
+AssertionError: expected 'rewards' to be 'open' // Object.is equality
+
+Expected: "open"
+Received: "rewards"
+
+ ❯ toNext test/opening-rewards.test.ts:48:36
+     46| /** From the Week's open step to the next battle of the opening, `depl…
+     47| function toNext(ctx: Ctx, id: string, deploy: readonly string[]): Enga…
+     48|   expect(ctx.campaign.cursor.step).toBe('open')
+       |                                    ^
+     49|   setCursor(ctx, { engagement: engagementAt(ctx.campaign.cursor.engage…
+     50|   toEquip(ctx, deploy)
+ ❯ lumberjackWon test/opening-rewards.test.ts:177:7
+ ❯ test/opening-rewards.test.ts:182:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/opening-rewards.test.ts > kingdom.opening-rewards — the opening pays as ruled > after a won Bridge three items are offered and one is kept
+Error: performLeaveLevelUp refused: the cursor is at 'rewards'
+ ❯ performLeaveLevelUp src/core/rewards.ts:145:53
+    143| /** Leave the level-up step for the Week, levelled or not — a level wa…
+    144| export function performLeaveLevelUp(ctx: Ctx, causeId: string): void {
+    145|   if (ctx.campaign.cursor.step !== 'levelUp') throw new Error(`perform…
+       |                                                     ^
+    146|   setCursor(ctx, { step: 'open', engagement: null, battle: null }, cau…
+    147| }
+ ❯ test/opening-rewards.test.ts:196:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 1 passed (8)
+   Start at  18:36:12
+   Duration  8.88s (transform 6.74s, setup 0ms, import 8.32s, tests 342ms, environment 0ms)
+

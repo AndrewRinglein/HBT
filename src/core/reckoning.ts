@@ -18,7 +18,8 @@
 //   XP    15 − enemy phases (speed bonus, SKELETON-NOTES.md B6) + 3 per kill
 //         (3-UNITS-SETTLED.md "3 / 6 / 9 per kill by rank" — rank 1 until enemy
 //         rows carry a rank) + 10 to the MVP, a weighted roll on a named cup
-//         (B7). Never below 0.
+//         (B7). Never below 0. A battle whose row (src/content/encounter-rewards.ts)
+//         fixes its XP pays exactly that instead (kingdom.opening-rewards).
 //   Wound downed and alive → Wounded (1); dead → dead; untouched → 0. The
 //         Deathbed is OUT of the slice (THIN-SLICE-IMPLEMENTATION.md §8), so
 //         "down-and-out resolves to plain wounds" — SWITCHES.md, wound.fromDowned.
@@ -40,9 +41,10 @@ import { instanceSlotsOf } from './loadout.js'
 import { itemOf } from '../content/items.js'
 import { performRollAbsences } from './absence.js'
 import { performLose } from './map.js'
-import { resolveRewardDraw, performExitReckoning } from './rewards.js'
+import { resolveBattleOffer, performExitReckoning } from './rewards.js'
 import { performResolvePrologue } from './opening.js'
 import { engagementKindOf } from '../content/engagements.js'
+import { encounterRewardOf } from '../content/encounter-rewards.js'
 import { PAYOUTS } from '../content/payouts.js'
 import { SWITCHES } from '../content/switches.js'
 import { CUP_IDS } from '../content/cups.js'
@@ -79,6 +81,10 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   resolveBattleQuest(campaign, engagement)
   const won = result.outcome === 'heroClear'
   const speed = Math.max(0, 15 - result.enemyPhases)
+  // kingdom.opening-rewards: a battle whose row fixes its XP pays exactly that to each deployed hero who lives, whatever
+  // the outcome, kills or length — the formula and the MVP's +10 do not apply ("20 XP no matter what", DECISIONS.md
+  // 2026-09-28; SWITCHES.md openingFixedXp)
+  const fixedXp = encounterRewardOf(engagement.id)?.xp
 
   // kingdom.encounter-result-fold: only the roster rows are the deployed heroes — an encounter's civilians and its
   // arrivals (a `role`) are never keyed to engagement.deployed
@@ -93,7 +99,7 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
     // this battle did.
     return {
       heroId,
-      xp: dead ? 0 : speed + 3 * u.kills,
+      xp: dead ? 0 : fixedXp ?? speed + 3 * u.kills,
       // kingdom.encounter-result-fold: a hero who stood again at the Deathbed is Wounded in the battle — the same plain
       // wound as one who went down (SWITCHES.md foldDeathbedStood)
       wound: dead ? 0 : Math.max(hero.wound, u.downed || u.stood ? SWITCHES.woundFromDowned : 0),
@@ -105,7 +111,7 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   // MVP — "chosen randomly among all of the heroes… the more experience points
   // a hero got, the higher their chance" (B7). A weighted roll, keyed by the
   // Engagement, on its own cup. Nobody alive → no MVP.
-  const alive = heroes.filter((h) => !h.dead)
+  const alive = fixedXp === undefined ? heroes.filter((h) => !h.dead) : []
   const weight = alive.reduce((s, h) => s + h.xp + 1, 0)
   if (alive.length) {
     let at = rollOf(campaign, CUP_IDS.mvp, [engagement.id]) % weight
@@ -169,25 +175,29 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   })
 
   const cause = engagement.id
+  // kingdom.opening-rewards: "wounds apply, fatigue does not" (DECISIONS.md 2026-09-28) — a battle whose row says it
+  // does not fatigue marks nobody fought this Week and rolls no absences, as the prologue's never did
+  const fatigues = engagement.prologue === undefined && (encounterRewardOf(engagement.id)?.fatigues ?? true)
   for (const id of engagement.deployed) {
     if (c.assignments[id]?.kind === 'engagement') applyRelease(ctx, id, 'field', cause)
   }
-  if (engagement.prologue === undefined) setFoughtThisWeek(ctx, [...c.foughtThisWeek, ...engagement.deployed], cause)
+  if (fatigues) setFoughtThisWeek(ctx, [...c.foughtThisWeek, ...engagement.deployed], cause)
   for (const h of reckoning.heroes) {
     if (h.dead) { setHeroDead(ctx, h.heroId, cause); continue }
     if (h.xp > 0) applyXp(ctx, h.heroId, h.xp, cause)
     if (h.wound !== c.roster[h.heroId]!.wound) setWound(ctx, h.heroId, h.wound, cause)
   }
   for (const x of instanceUses) applyInstanceUse(ctx, x.heroId, x.slot, x.itemId, x.used, cause)
-  if (engagement.prologue === undefined) performRollAbsences(ctx, engagement.deployed, cause)
+  if (fatigues) performRollAbsences(ctx, engagement.deployed, cause)
   if (reckoning.renown > 0) applyRenown(ctx, reckoning.renown, cause)
   setEngagementResolved(ctx, engagement.id, reckoning.won, cause)
   if (reckoning.claim) applyClaim(ctx, reckoning.claim, cause)
   if (reckoning.lose) performLose(ctx, reckoning.lose, cause)
   for (const g of reckoning.grants) if (g.amount > 0) applyGrant(ctx, g.currency, g.amount, cause)
-  // a won battle earns its draft — three drawn on cup.reward, keyed by the Engagement
+  // a won battle earns its draft — three drawn on cup.reward, keyed by the Engagement — or what its row offers instead
+  // (kingdom.opening-rewards: nothing, or one item a hero of the row's classes takes)
   const questReward = quest ? performCompleteQuest(ctx, quest, result.outcome === 'heroClear', cause) : null
-  setRewardOffer(ctx, reckoning.won && kind.rewards === 'battle' ? resolveRewardDraw(c, engagement.id) : null, cause)
+  setRewardOffer(ctx, reckoning.won && kind.rewards === 'battle' ? resolveBattleOffer(c, engagement.id) : null, cause)
   // Keep a quest tally in the save so its recap remains truthful after reload.
   setCursor(ctx, { step: 'reckoning', prepStep: null, battle: questReward ? { resultSet: true, result, reckoning, questReward } : null, fought: c.cursor.fought + 1 }, cause)
   // the opening: the next battle is owed — or, lost before the Kingdom Territory, the run is over

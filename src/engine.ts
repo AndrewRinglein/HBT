@@ -39,6 +39,9 @@ export { UNITS } from '../../engine/src/content/index.js'
 export { LEVELS } from '../../engine/src/content/index.js'
 // Read-only combat badge IDs at the campaign seam; story badges stay in the roster.
 export { BADGES } from '../../engine/src/content/index.js'
+// Widened 2026-10-01 for kingdom.opening-rewards (SWITCHES.md sandboxWoundFielded): the engine's rule-badge roles, so the
+// seam fields a campaign wound level as the engine's own Wounded badge without spelling its id.
+export { RULE_BADGES } from '../../engine/src/content/index.js'
 // Widened 2026-09-03 for the Equip screen (screens.equip-stats): the engine's own
 // fielded unit — the bare row with items and progress folded by the one function — so
 // the numbers on the card are the numbers the battle would field. Read-only.
