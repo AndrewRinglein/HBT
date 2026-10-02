@@ -1,5 +1,16 @@
 [
  {
+  "id": "fix.danger-skips-charge",
+  "kind": "viewer",
+  "shape": "rule",
+  "needs": [
+   "viewer.reads-engine"
+  ],
+  "spec": "Ruled 2026-10-02 (Andrew, engine DECISIONS.md 'the fast zombie's danger marker reads 3, not its Charge's 4'): \"You can change it to 3.\" viewer.reads-engine made the danger marker read each unit's first attack in the engine's order, so the fast zombie read its Charge's 4. The marker reads the unit's first attack that is not a Charge, by the engine's classification already in static.json actionKinds (isCharge); a unit whose only attacks are Charges keeps its first. No hand table, no Codex field. viewer SWITCHES dangerFirstAttack is marked settled by the ruling. Prior art: viewer src/projection.js's dmgOf-on-first-attack (viewer.reads-engine) - this changes which attack it picks, it adds no concept.",
+  "expect": "The fast zombie's danger reads 3; the zombie reads 3; the test zombies still read 4.",
+  "changesBaseline": false
+ },
+ {
   "id": "viewer.male-hero-outfits",
   "kind": "viewer",
   "shape": "plumbing",
