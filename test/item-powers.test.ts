@@ -1,6 +1,6 @@
 // The three S31 item powers — capability.item-powers (2026-08-27).
 //
-// AbilityDef speaks heal / selfGuard / blast damage now, each copied from its
+// AbilityDef speaks heal / selfGuard / blast damage now (effects lists since fix.one-effect-vocabulary, 2026-10-01), each copied from its
 // EXACT authored text: Heal "1 + 2 x Spirit" (partySpirit per GAME-DESIGN §5's
 // scaling law), Block "4 + your Armor, lose 5 Dodge for the rest of the
 // Battle. Every use costs another 5", Storm "your Magic + 1 to every unit in
@@ -20,8 +20,10 @@ const SC = 'showcase.alpha-team'
 
 describe('the pack carries the three powers, faithfully', () => {
   it('Heal, Block and Storm exist with their authored numbers', () => {
+    // Law 10, fix.one-effect-vocabulary (2026-10-01): the Heal is an effects list now — the retired 'heal' shape's
+    // numbers are its heal effect's, one ally, unchanged. was: { effect: 'heal', ..., heal: { scale: 'partySpirit', base: 1, mult: 2 } }
     expect(ABILITIES['power.holy-symbol.heal']).toMatchObject({
-      effect: 'heal', range: 6, staminaCost: 1, heal: { scale: 'partySpirit', base: 1, mult: 2 },
+      range: 6, staminaCost: 1, target: { select: 'unit', side: 'ally' }, effects: [{ kind: 'heal', amount: { scale: 'partySpirit', base: 1, mult: 2 } }],
     })
     // Law 10, 2026-09-23 (v2.shields): Knight Block (selfGuard) retired with item.knight-shield in
     // V2 R1; Osric's kit carries the Kite Shield, whose Lock Shields replaces it here. The claims —

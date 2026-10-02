@@ -68,6 +68,8 @@ export const DMG = {
    * (SWITCHES.md 'station.vs-target', vsTargetStation).
    */
   VS_TARGET: 400,
+  /** V2 bursts: an onBurst/self save scales the burst's damage by a percent, after cover and before Protection (fix.one-effect-vocabulary: was the literal 545 in burst.ts). */
+  BURST_SAVE: 545,
   CRIT: 450,
   /** v2.prone (§10): flat ±N after the crit multiplier, like cover (SWITCHES.md proneStationOrder). */
   PRONE: 500,
@@ -212,7 +214,7 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   for (const { statusId, rule } of proneRulesOf(ctx, target)) v = step(ledger, ACC.PRONE, 'TARGET_PRONE', statusId, v, v + rule.accuracyAgainst)
   // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
   if (a.attack.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.attack.accuracy)
-  if (a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-20)
+  if (a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-LOW_COVER_ACCURACY)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
   // the house's +5 Dodge against that enemy — its own row, naming the house (Law 12)
@@ -378,24 +380,49 @@ export type DamagePacket = {
 }
 export type AttackDamagePlan = {readonly packets:readonly DamagePacket[];readonly value:number;readonly absorbed:number}
 
+/**
+ * The cited low-cover accuracy (COMBAT-V2-DESIGN §5: "−20 accuracy and −1 damage for ranged ... from low props
+ * between attacker and target"). The ledger's COVER row carries it; the miss event reads it back from there.
+ */
+export const LOW_COVER_ACCURACY = 20
+
+/** One packet a planner resolves: its id and type, and how it finishes against the Protection still unspent and the first physical packet's Frost. */
+export type PacketRow = { readonly id: string; readonly damageType: import('./types.js').DamageType; readonly finish: (available: number, frost: number) => ResolvedDamage }
+
+/**
+ * THE ONE PACKET PLANNER — fix.one-effect-vocabulary (2026-10-01; the duplication review: the attack's and the
+ * burst's planners were ~80% the same). Packets in order against one running Protection pool; Frost on the
+ * first physical packet only; every packet's ledger and conservation checked; the one DamagePacket shape. What
+ * differs — an attack's base and secondary rows, a burst's cover budget and saves — is each row's `finish`.
+ * No hooks, dice or mutations.
+ */
+export function planPackets(ctx: Ctx, tg: Unit, source: string, rows: readonly PacketRow[]): AttackDamagePlan {
+  const packets: DamagePacket[] = []
+  let available = incomingAbsorb(ctx, tg), physicalSeen = false
+  for (const row of rows) {
+    const frost = row.damageType === 'physical' && !physicalSeen ? incomingPhysicalBonus(ctx, tg) : 0
+    if (row.damageType === 'physical') physicalSeen = true
+    const d = row.finish(available, frost)
+    if (d.ledger.reduce((n, r) => n + r.delta, 0) !== d.value || d.raw - d.absorbed + d.mitigationDelta + d.floorAdjustment !== d.value) throw Error(`packet damage ledger does not reconcile (${source} ${row.id})`)
+    packets.push({ id: row.id, source, damageType: row.damageType, raw: d.raw, absorbed: d.absorbed, defense: d.defense, mitigationDelta: d.mitigationDelta, floorAdjustment: d.floorAdjustment, resisted: d.resisted, resolved: d.value, ledger: d.ledger })
+    available -= d.absorbed
+  }
+  return { packets, value: packets.reduce((n, p) => n + p.resolved, 0), absorbed: packets.reduce((n, p) => n + p.absorbed, 0) }
+}
+
 /** No hooks, dice or mutations. Confirmed crit is separate from damage-head count. */
 export function planAttackDamage(ctx:Ctx,at:Unit,tg:Unit,a:AttackDef,heads:number,critical:boolean):AttackDamagePlan {
-  const metadata=attackPacketFields(a.attack),packets:DamagePacket[]=[]
-  let available=incomingAbsorb(ctx,tg),physicalSeen=a.attack.damageType==='physical'
-  const add=(id:string,type:import('./types.js').DamageType,d:ResolvedDamage)=>{
-    if(d.ledger.reduce((n,r)=>n+r.delta,0)!==d.value||d.raw-d.absorbed+d.mitigationDelta+d.floorAdjustment!==d.value)throw Error('packet damage ledger does not reconcile')
-    packets.push({id,source:a.id,damageType:type,raw:d.raw,absorbed:d.absorbed,defense:d.defense,mitigationDelta:d.mitigationDelta,floorAdjustment:d.floorAdjustment,resisted:d.resisted,resolved:d.value,ledger:d.ledger})
-    available-=d.absorbed
-  }
-  add('base',a.attack.damageType,resolveDamage(ctx,at,tg,damageSourceOfAttack(a),heads,outgoingPenalty(ctx,at),available))
+  const metadata=attackPacketFields(a.attack)
+  // the base packet resolves its own Frost inside resolveDamage (the frost argument is unused for it)
+  const rows:PacketRow[]=[{id:'base',damageType:a.attack.damageType,finish:(available)=>resolveDamage(ctx,at,tg,damageSourceOfAttack(a),heads,outgoingPenalty(ctx,at),available)}]
   for(const row of metadata.secondaryDamage??[]){
     if(row.when==='crit'&&!critical)continue
-    const frost=row.damageType==='physical'&&!physicalSeen?incomingPhysicalBonus(ctx,tg):0
-    if(row.damageType==='physical')physicalSeen=true
-    const ledger:LedgerRow[]=[{station:DMG.DECLARE,name:'DECLARE',effectId:a.id,before:0,after:row.amount,delta:row.amount}]
-    add(row.id,row.damageType,finishDamage(ctx,tg,{damageType:row.damageType,armorPenetration:metadata.armorPenetration??0},ledger,row.amount,available,frost,armorGuard(ctx,at,tg)))
+    rows.push({id:row.id,damageType:row.damageType,finish:(available,frost)=>{
+      const ledger:LedgerRow[]=[{station:DMG.DECLARE,name:'DECLARE',effectId:a.id,before:0,after:row.amount,delta:row.amount}]
+      return finishDamage(ctx,tg,{damageType:row.damageType,armorPenetration:metadata.armorPenetration??0},ledger,row.amount,available,frost,armorGuard(ctx,at,tg))
+    }})
   }
-  return {packets,value:packets.reduce((n,p)=>n+p.resolved,0),absorbed:packets.reduce((n,p)=>n+p.absorbed,0)}
+  return planPackets(ctx,tg,a.id,rows)
 }
 
 /** Reserve at the damage rung; onHit sees only the unreserved pool. */
@@ -556,12 +583,19 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
  * ("Base Crit varies by enemy"), plus the weapon's crit field ("Crit from
  * gear"), plus surplus final accuracy over 100 at 1 per 4 — minus the
  * TARGET's Luck ("your resistance to taking one"). Floor 0.
+ *
+ * fix.codex-numbers (2026-10-01; DECISIONS.md 2026-09-28 "the duplication review, ruled",
+ * finding C1, Andrew: "Crit base 3 should be counted once."): the 3 is the rule and lives
+ * here only. A row's `crit` is the unit's own addition to it; the Codex authors totals (a
+ * warrior 3, a rogue 5) and the converter publishes total − CRIT_BASE, read from the
+ * engine's vocabulary export (ruleBases), so the base is never counted twice.
  */
+export const CRIT_BASE = 3
 function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, a?: AttackDef): number {
   if (!ctx.cfg.switches.critEnabled) return 0
   const surplus = finalAcc > 100 ? Math.trunc((finalAcc - 100) / 4) : 0
   const gear = a?.attack.crit ?? 0
-  return Math.max(0, 3 + effective(ctx, attacker, 'crit').value + gear + surplus
+  return Math.max(0, CRIT_BASE + effective(ctx, attacker, 'crit').value + gear + surplus
     - effective(ctx, target, 'luck').value)
 }
 
@@ -698,9 +732,11 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
 
   if (!hit) {
     const covered = pv.accLedger.some(r=>r.name==='COVER')
+    // fix.one-effect-vocabulary: the cover penalty is the ledger's own COVER row (LOW_COVER_ACCURACY), never a retyped 20
+    const coverPenalty = -pv.accLedger.filter(r=>r.name==='COVER').reduce((n,r)=>n+r.delta,0)
     const dodgeBand = pv.accLedger.filter(r=>r.name==='TARGET_DODGE').reduce((n,r)=>n-r.delta,0)
-    const coverMiss = covered && roll<=Math.min(100,pv.accuracy+20) && roll<=100-Math.max(0,dodgeBand)
-    emit(ctx, 'attack.miss', a.id, { actor: attackerId, target: targetId, roll, hitChance: pv.hitChance, ...(covered?{cover:coverMiss,coverPenalty:20,missCause:roll>100-Math.max(0,dodgeBand)?'dodge':coverMiss?'cover':'accuracy'}:{}) })
+    const coverMiss = covered && roll<=Math.min(100,pv.accuracy+coverPenalty) && roll<=100-Math.max(0,dodgeBand)
+    emit(ctx, 'attack.miss', a.id, { actor: attackerId, target: targetId, roll, hitChance: pv.hitChance, ...(covered?{cover:coverMiss,coverPenalty,missCause:roll>100-Math.max(0,dodgeBand)?'dodge':coverMiss?'cover':'accuracy'}:{}) })
     // The CALLER settles after performAttack (see ai/modes.ts) — including after a
     // miss, so an onMiss trigger that deals damage is picked up there. Settling here
     // too would nest a settle inside the caller's, which the reentrancy guard turns

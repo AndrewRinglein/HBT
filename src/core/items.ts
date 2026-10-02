@@ -26,7 +26,7 @@ export type Applied = {
 /** v2.swap: a foldable stat whose absent value is not 0. */
 export const FOLD_BASE: Readonly<Record<string, number>> = { swapCost: 1 }
 
-export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
+export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03   // bleedOutTurns, deathbedFighting: fix.codex-numbers, 2026-10-01 (review finding C9)
 
 /**
  * The default AI of a kit — the ONE place it is derived (plumbing.vocabulary-export, review
@@ -104,6 +104,7 @@ export function applyItems(
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
     ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
+    ...(stats['bleedOutTurns'] ? { bleedOutTurns: stats['bleedOutTurns'] } : {}), ...(stats['deathbedFighting'] ? { deathbedFighting: stats['deathbedFighting'] } : {}),
     attacks: attackIds,
     abilities: [...abilities, ...base.abilities.filter((a) => !abilities.includes(a))],
     triggers,
@@ -192,6 +193,7 @@ export function applyProgress(
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
     ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
+    ...(stats['bleedOutTurns'] ? { bleedOutTurns: stats['bleedOutTurns'] } : {}), ...(stats['deathbedFighting'] ? { deathbedFighting: stats['deathbedFighting'] } : {}),
     abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
   }
 }
@@ -252,6 +254,7 @@ export function applyBadges(
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
     ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
+    ...(stats['bleedOutTurns'] ? { bleedOutTurns: stats['bleedOutTurns'] } : {}), ...(stats['deathbedFighting'] ? { deathbedFighting: stats['deathbedFighting'] } : {}),
     attacks, abilities, triggers,
     badges: [...seen],
   }

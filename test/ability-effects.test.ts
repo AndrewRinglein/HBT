@@ -16,7 +16,7 @@ import { effective } from '../src/core/stats.js'
 import { ABILITIES, BURSTS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { hexId } from './board16.js'
-import type { AbilityEffect } from '../src/core/types.js'
+import type { Effect } from '../src/core/types.js'
 
 const AEGIS = 'power.sacred-shield.aegis'
 const CIRCLE = 'power.shepherd.circle-of-healing'
@@ -33,7 +33,7 @@ function board(powers: string[]) {
   w.actions.push(...powers); w.stamina = 99
   return { ctx, w, m, z: ctx.state.units[2]! }
 }
-const eff = (id: string, kind: AbilityEffect['kind']) => ABILITIES[id]!.effects!.find((e) => e.kind === kind)!
+const eff = (id: string, kind: Effect['kind']) => ABILITIES[id]!.effects!.find((e) => e.kind === kind)!
 
 describe('the effect vocabulary, one row each', () => {
   it('status.apply with a Spirit-scaled value — Aegis gives the target Protection 3 + Spirit', () => {
@@ -63,7 +63,8 @@ describe('the effect vocabulary, one row each', () => {
     const before = w.hp, magic = effective(ctx, w, 'magic').value
     beginActivation(ctx, w.id, 'test')
     usePower(ctx, w.id, w.id, MIGHT)
-    const dmg = eff(MIGHT, 'selfDamage') as { amount: number }
+    // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (selfDamage -> damage, who: 'self'); the assertion is unchanged.
+    const dmg = eff(MIGHT, 'damage') as { amount: number }
     const mod = eff(MIGHT, 'statMod') as { value: number }
     expect(w.hp).toBe(before - dmg.amount)
     expect(effective(ctx, w, 'magic').value).toBe(magic + mod.value)

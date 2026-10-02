@@ -16,7 +16,12 @@ describe('tool.wrong-home-audit — today\'s tree', () => {
     expect(drake.line).toBeGreaterThan(0)
   })
   it('lists a content name the engine\'s logic reads, with its Codex row (the review\'s E6)', () => {
-    const p = list.find((x) => x.id === 'status.protection' && x.file === 'engine/src/core/ability.ts')!
+    // Law 10, fix.one-effect-vocabulary (2026-10-01): E6 is FIXED — ability.ts no longer names status.protection (Block's
+    // Protection is its own row's status.apply), so today's tree no longer lists it; the audit's catch is checked on the
+    // very line that stood there. Same two assertions, on that line.
+    // was: const p = list.find((x) => x.id === 'status.protection' && x.file === 'engine/src/core/ability.ts')!
+    expect(list.find((x) => x.id === 'status.protection' && x.file === 'engine/src/core/ability.ts')).toBeUndefined()
+    const p = scanEngineFile('engine/src/core/ability.ts', "      applyStatus(ctx, userId, 'status.protection', protection, a.id)\n", ctx).find((x) => x.id === 'status.protection')!
     expect(p.what).toBe('content name in engine logic')
     expect(p.owner).toMatch(/^content\/settled\.json\.statuses\[\d+\]$/)
   })

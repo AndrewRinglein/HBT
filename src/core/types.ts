@@ -209,47 +209,91 @@ export type EncounterAiRule =
   | { readonly id: string; readonly rule: 'coordinate'; readonly units?: readonly string[]; readonly focus: readonly AiTier[] }
 
 /**
- * What a power DOES, one effect at a time — ability.effects (2026-09-03).
- * The trigger effect vocabulary (status.apply / status.remove / damage /
- * knockback) plus what class powers say and triggers never do: heal, a stat
- * modifier with a lifetime, and damage the caster takes. Each effect lands on
- * the power's resolved targets (`AbilityDef.target`), or on the caster when
- * `who: 'self'`. Plain data, compiled by the converter from the Codex's exact
- * sentences; a clause it cannot compile is a named gap on the row.
+ * THE ONE EFFECT VOCABULARY — fix.one-effect-vocabulary (2026-10-01; the duplication review ruled
+ * 2026-09-28, findings E5–E8, C7, C13, C14, C20: "fix as proposed"). What anything DOES, one effect at
+ * a time: a trigger's effect, a power's effect list, a move's riders and a Critical Injury Chart row's
+ * effects are all this one union, applied by the one `applyEffect` (trigger.ts). Before it there were
+ * four unions (TriggerEffect, AbilityEffect, MoveEffect, CritEffect) and four interpreters, and the
+ * same mutator under two names (stamina.gain/gainStamina, stamina.drain/loseStamina, knockback/push,
+ * status.apply/status). Plain data, compiled by the converter from the Codex's exact sentences; a clause
+ * it cannot compile is a named gap on the row.
+ *
+ * Two damage kinds, kept distinct: `damage` is flat typed damage through Protection and the type's
+ * defense (dealDirectDamage — a weapon's fire, a power's cost to its caster); `statDamage` is a
+ * stat + bonus hit run through THE damage pipeline (Law 1).
+ *
+ * `who: 'self'` lands an effect on the one acting whatever the targeting says (Fortify: "every ally
+ * within 3 gains +1 Armor; YOU gain +3 Health"; a power's cost in HP; a move's riders).
  */
-export type AbilityEffect =
+export type Effect = EffectBody & { readonly who?: 'self' | 'target' }
+/**
+ * How long a stat modifier lasts — one set for every effect (C20): `endOfTurn` = this Turn;
+ * `endOfNextTurn` = "until the end of your next Turn"; `endOfActivation` = "until the end of your
+ * Activation" (C20: the holder's current one, or its next when it is not acting — it was read as the Turn); `endOfNextActivation` =
+ * "until the end of your next Activation" (the holder's); `battle` = the rest of the Battle.
+ */
+export const STAT_MOD_UNTIL = ['endOfTurn', 'endOfNextTurn', 'endOfActivation', 'endOfNextActivation', 'battle'] as const
+export type StatModUntil = (typeof STAT_MOD_UNTIL)[number]
+type EffectBody =
   | {
-      readonly kind: 'damage'
+      readonly kind: 'statDamage'
       readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'
       readonly bonus: number
       readonly damageType: DamageType
       /** 'always' strikes allies whatever the areaHitsAllies switch says (the row said "ally or enemy"). */
       readonly allies?: 'always' | 'never'
     }
+  | { readonly kind: 'damage'; readonly amount: import('./trigger.js').ValueSpec; readonly damageType: DamageType }
   | { readonly kind: 'heal'; readonly amount: import('./trigger.js').ValueSpec }
   | { readonly kind: 'status.apply'; readonly statusId: string; readonly value: import('./trigger.js').ValueSpec }
+  /** Every point of the status, or `value` points of it ("remove 1 Poison") — from any source. */
   | { readonly kind: 'status.remove'; readonly statusId: string; readonly value?: number }
   | {
       readonly kind: 'statMod'
       readonly stat: import('./stats.js').StatName
       readonly value: number
-      /** endOfTurn = this Turn; endOfNextTurn = "until the end of your next Turn"; endOfNextActivation = "until the end of your next Activation" (the holder's); battle = the rest of the Battle. */
-      readonly until: 'endOfTurn' | 'endOfNextTurn' | 'endOfNextActivation' | 'battle'
-      readonly who?: 'self' | 'target'
+      readonly until: StatModUntil
+      /** The chart's "minimum N": a loss clamped at application against the current effective value. */
+      readonly floor?: number
     }
-  | { readonly kind: 'selfDamage'; readonly amount: number; readonly damageType: DamageType }
-  /** capability.charges (2026-09-03): "regain N Stamina" — the Rations. */
+  /** "regain N Stamina" — the Rations; "gain 1 Stamina" — Focus's rider. */
   | { readonly kind: 'stamina.gain'; readonly value: number }
+  /** capability.target-stamina-loss (ENEMY-REVIEW P8): Shriek, Necro Bolt, Mesmerize; the chart's Winded. Floors at 0. */
+  | { readonly kind: 'stamina.drain'; readonly value: import('./trigger.js').ValueSpec }
+  /** Devotion's "lose 1 Stamina Max for the rest of the Battle" — the one acting's own. */
+  | { readonly kind: 'loseMaxStamina'; readonly value: number }
+  /** The chart's lost Max Health. */
+  | { readonly kind: 'loseMaxHp'; readonly value: number }
+  /** v2.prone (COMBAT-V2-DESIGN §10): stand up — removes every prone status; the one acting's own. */
+  | { readonly kind: 'stand' }
+  /**
+   * Forced movement, Knockback only (capability.knockback 2026-08-27; CODEX §12 bans pulls, pushes and
+   * swaps beyond it): `value` hexes directly away from the one acting — the halberd's push, the chart's
+   * Knocked Sprawling.
+   */
   | { readonly kind: 'knockback'; readonly value: import('./trigger.js').ValueSpec }
+  /**
+   * badge.afflictions (2026-09-04): the bestiary's "inflict an affliction". content.afflictions-revised
+   * (2026-09-29): `withBadgeIds` are granted WITH the first, on the same roll, only when it is newly granted.
+   */
+  | { readonly kind: 'badge.grant'; readonly badgeId: string; readonly withBadgeIds?: readonly string[] }
+  /** capability.power-pool (2026-09-03): "add power", "gain Power". Side-wide, never per unit. */
+  | { readonly kind: 'power.gain'; readonly value: import('./trigger.js').ValueSpec }
+  /**
+   * capability.corpses (2026-09-03): raise `count` corpses (absent = one, SWITCHES.md raiseCountDefault)
+   * within `radius` as `unit`, nearest first, ties by the lower corpse id (Law 6). A summon; leaves no corpse.
+   */
+  | { readonly kind: 'corpse.raise'; readonly unit: string; readonly radius: number; readonly count?: number }
+  /** capability.corpses: remove every corpse within `radius`, healing the one acting `healPer` each (Consume the Fallen). */
+  | { readonly kind: 'corpse.consume'; readonly radius: number; readonly healPer: number }
   /** capability.corpses: eat one corpse within `radius` — heal and battle-long stat gains to the eater. Refused (canUsePower) when none is in reach. */
   | { readonly kind: 'corpse.eat'; readonly radius: number; readonly heal: number; readonly mods: Readonly<Partial<Record<import('./stats.js').StatName, number>>>; readonly maxHp?: number }
-  /**
-   * capability.stealth (2026-09-28): "whenever a reveal effect finds you" — on each
-   * resolved target of the OTHER side, every status that breaks on a reveal is
-   * broken. The radius is the power's own area targeting; a reveal is not an
-   * attack, so it breaks nothing else (SWITCHES.md stealthRevealShape).
-   */
+  /** capability.vision / ground-layers: paint `layer` in `radius` around the one acting ('self') or the target ('target'). */
+  | { readonly kind: 'layer.paint'; readonly layer: string; readonly radius: number; readonly origin: 'self' | 'target' }
+  /** capability.stealth (2026-09-28): on each resolved target of the OTHER side, every status that breaks on a reveal is broken. */
   | { readonly kind: 'reveal' }
+  /** V2 bursts: an onBurst/self trigger scales the burst's damage by `percent` (read by fireTriggers, never applied to a unit). */
+  | { readonly kind: 'burstScale'; readonly percent: number }
 
 /**
  * THE ONE ACTION TYPE — refactor.one-action-type (2026-09-04). Ruled three
@@ -311,18 +355,11 @@ export type ActionDef = {
   /**
    * ability.effects (2026-09-03): the effect list and the ONE targeting
    * vocabulary (target.ts). When `effects` is present the three legacy power
-   * shapes below are not consulted. Movement riders (MoveEffect) live here too.
+   * shapes below are not consulted. Movement riders live here too — the one Effect union.
    */
-  readonly effects?: readonly ActionEffect[]
-  // ── the legacy power shapes (capability.item-powers, 2026-08-27) — read only when `effects` is absent ──
-  /** Damage = this stat + bonus. Required on damage powers; absent on the rest. */
-  readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'
-  readonly bonus?: number
-  readonly damageType?: DamageType
-  /** Absent = 'damage' on a power without `effects`. 'heal' restores HP (`heal`); 'selfGuard' is the Knight Shield's Block (`guard`). */
-  readonly effect?: 'damage' | 'heal' | 'selfGuard'
-  readonly heal?: import('./trigger.js').ValueSpec
-  readonly guard?: { readonly protectionBase: number; readonly protectionPerArmor: number; readonly dodgeLoss: number }
+  readonly effects?: readonly Effect[]
+  // fix.one-effect-vocabulary (2026-10-01): the legacy power shapes (effect/stat/bonus/damageType/heal/guard,
+  // capability.item-powers 2026-08-27) are retired — every power is its `effects` list.
   /** What the Codex row says that the engine cannot do. Never silently half-real. */
   readonly gaps?: readonly string[]
   /**
@@ -544,39 +581,9 @@ export type MoveDef = ActionDef & { readonly move: MoveProfile }
 /** An action seen as a power: the effects path's view. Every action is one. */
 export type AbilityDef = ActionDef
 
-/** Every effect kind an action may carry — the power effects and the movement riders, one list. */
-export type ActionEffect = AbilityEffect | MoveEffect
-/** plumbing.vocabulary-export: the effect kinds a power (`AbilityEffect`) and a move rider (`MoveEffect`) may say — pack.ts validates against these, never a copy. */
-export const ABILITY_EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'stamina.gain', 'knockback', 'corpse.eat', 'reveal'] as const satisfies readonly AbilityEffect['kind'][]
-export type AbilityEffectKindsCovered = Assert<Covers<AbilityEffect['kind'], typeof ABILITY_EFFECT_KINDS>>
-export const MOVE_EFFECT_KINDS = ['gainStamina', 'loseMaxStamina', 'stand', 'statMod'] as const satisfies readonly MoveEffect['kind'][]
-export type MoveEffectKindsCovered = Assert<Covers<MoveEffect['kind'], typeof MOVE_EFFECT_KINDS>>
-
-/**
- * What a movement power DOES beyond moving — the rider on a bonus move.
- * Added 2026-08-25 (movement.bonus-actions): the S17 half-step split gave the
- * cohort powers MoveDef could not say — Leap's "+2 Strength until the end of
- * the Turn", Focus's "gain 1 Stamina", Devotion's "lose 1 Stamina Max for the
- * rest of the Battle, and gain 2 Stamina". Plain data resolved through the
- * mutators; the engine knows the KINDS, content supplies the rows. (Bastion's
- * compiler failed on exactly these clauses — "no pattern" — which is what a
- * missing capability looks like from the other side.)
- */
-export type MoveEffect =
-  | { readonly kind: 'gainStamina'; readonly value: number }
-  | { readonly kind: 'loseMaxStamina'; readonly value: number }
-  /**
-   * v2.prone (COMBAT-V2-DESIGN §10): stand up — removes every prone status the
-   * unit holds. A move carrying it is legal only while prone (action.ts).
-   */
-  | { readonly kind: 'stand' }
-  | {
-      readonly kind: 'statMod'
-      readonly stat: import('./stats.js').StatName
-      readonly value: number
-      /** endOfTurn = expires when this Turn ends; battle = permanent this battle. */
-      readonly until: 'endOfTurn' | 'battle'
-    }
+/** plumbing.vocabulary-export: every effect kind, checked against the union by tsc — snapshot validation, pack validation and the exported vocabulary read it, never a copy. */
+export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
+export type EffectKindsCovered = Assert<Covers<Effect['kind'], typeof EFFECT_KINDS>>
 
 
 /**
@@ -646,17 +653,10 @@ export type ScenarioDef = {
  * effect is battle-only; the chart never mints permanence (that is the
  * Deathbed pipeline's alone).
  */
-export type CritEffect =
-  | { readonly kind: 'statMod'; readonly stat: import('./stats.js').StatName; readonly value: number; readonly floor?: number }
-  | { readonly kind: 'status'; readonly statusId: string; readonly value: number }
-  | { readonly kind: 'push'; readonly hexes: number }
-  | { readonly kind: 'loseStamina'; readonly value: number }
-  | { readonly kind: 'loseMaxHp'; readonly value: number }
-
 export type CritRow = {
   readonly key: string
   readonly name: string
-  readonly effects: readonly CritEffect[]
+  readonly effects: readonly Effect[]
 }
 
 /**
@@ -872,6 +872,20 @@ export type UnitDef = {
   /** v2.swap (COMBAT-V2 §11.2, 2026-09-24): the loadout swap's stamina cost. Absent = 1 (the rule's default). */
   readonly swapCost?: number
   /**
+   * fix.codex-numbers (2026-10-01, review finding C9): the unit's own addition to the
+   * bleed-out counter (BLEED_OUT_COUNTER, settle.ts) — Death Seeker −3, Survivor +3, Thick
+   * Blooded +5 ("Turns to Bleed out", the Codex's bleedOutTurns). Folded at fielding. Absent = 0.
+   */
+  readonly bleedOutTurns?: number
+  /** fix.codex-numbers (C9): the unit's own addition to Deathbed Fighting (20 + 5 × Toughness, settle.ts) — a level pick, an item. Absent = 0. */
+  readonly deathbedFighting?: number
+  /**
+   * fix.codex-numbers (2026-10-01, review finding K7): the Codex enemy tier (1, 2, 3). The
+   * engine never reads it; the pack carries it beside `xpByTier` so the kingdom can pay XP by
+   * tier (DECISIONS.md 2026-09-28: "XP per kill is 2 / 5 / 15 by tier"). Absent on heroes.
+   */
+  readonly tier?: number
+  /**
    * capability.auras (2026-09-03), COMBAT-DESIGN §5 / Design Law 27 "auras
    * lend, they never give": a radius around this unit granting stat modifiers
    * to units inside it WHILE they are inside — derived on read like terrain,
@@ -951,6 +965,10 @@ export type Unit = {
   thorns?: number
   /** v2.swap: the folded swap cost; absent = 1 (read through the `swapCost` stat). */
   swapCost?: number
+  /** fix.codex-numbers: the folded bleed-out addition (see UnitDef); absent = 0. Not `bleedOut`, which is the running counter. */
+  bleedOutTurns?: number
+  /** fix.codex-numbers: the folded Deathbed Fighting addition (see UnitDef); absent = 0. */
+  deathbedFighting?: number
   /** v2.swap (COMBAT-V2 §11.2): the one swap of this activation is spent. Absent = not spent; cleared at activation start and by a Surge. */
   swapUsed?: boolean
   /** capability.auras: this unit's auras, own frozen copies (plain data). */

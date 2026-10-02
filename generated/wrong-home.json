@@ -46,70 +46,63 @@
   {
    "what": "Codex row typed in the engine",
    "file": "engine/src/content/scenarios.ts",
-   "line": 702,
+   "line": 749,
    "id": "prop.test.barrels",
    "owner": "the Codex's prop rows — no row yet"
   },
   {
    "what": "Codex row typed in the engine",
    "file": "engine/src/content/scenarios.ts",
-   "line": 702,
+   "line": 749,
    "id": "prop.test.stone-wall",
    "owner": "the Codex's prop rows — no row yet"
   },
   {
    "what": "Codex row typed in the engine",
    "file": "engine/src/content/scenarios.ts",
-   "line": 721,
+   "line": 768,
    "id": "prop.test.sign",
    "owner": "the Codex's prop rows — no row yet"
   },
   {
    "what": "Codex row typed in the engine",
    "file": "engine/src/content/scenarios.ts",
-   "line": 743,
+   "line": 790,
    "id": "prop.crates",
    "owner": "the Codex's prop rows — no row yet"
   },
   {
    "what": "Codex row typed in the engine",
    "file": "engine/src/content/scenarios.ts",
-   "line": 748,
+   "line": 795,
    "id": "prop.fence",
    "owner": "the Codex's prop rows — no row yet"
   },
   {
    "what": "Codex row typed in the engine",
    "file": "engine/src/content/scenarios.ts",
-   "line": 753,
+   "line": 800,
    "id": "prop.corridor-wall",
    "owner": "the Codex's prop rows — no row yet"
   },
   {
    "what": "Codex row typed in the engine",
    "file": "engine/src/content/scenarios.ts",
-   "line": 758,
+   "line": 805,
    "id": "prop.diagonal-wall",
    "owner": "the Codex's prop rows — no row yet"
   },
   {
    "what": "content name in engine logic",
-   "file": "engine/src/core/ability.ts",
-   "line": 219,
-   "id": "status.protection",
-   "owner": "content/settled.json.statuses[10]"
-  },
-  {
-   "what": "content name in engine logic",
    "file": "engine/src/core/setup.ts",
-   "line": 217,
+   "line": 218,
    "id": "map.open",
    "owner": "content/hbt-content.json.maps[0]"
   },
   {
    "what": "content name in engine logic",
    "file": "engine/src/core/setup.ts",
-   "line": 553,
+   "line": 554,
    "id": "map.open",
    "owner": "content/hbt-content.json.maps[0]"
   },

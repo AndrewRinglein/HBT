@@ -4932,7 +4932,9 @@
   "probeIds": [
    "encounter.opening.cathedral"
   ],
-  "note": "Cut 2026-09-28. Switches: the side-door hexes and the heroes' start hexes (Claude's reading on the Ground Check)."
+  "note": "Cut 2026-09-28. Switches: the side-door hexes and the heroes' start hexes (Claude's reading on the Ground Check).",
+  "status": "done",
+  "sha": "b884eaf"
  },
  {
   "id": "kingdom.encounter-battles",
@@ -5020,8 +5022,11 @@
   ],
   "spec": "Duplication review 2026-09-28, findings E5 E6 E7 E8 C7 C13 C14 C20. One effect union and one applyEffect used by actions, triggers, move riders and crit rows; one name per mutator (stamina.gain/gainStamina, stamina.drain/loseStamina, knockback/push, status.apply/status); one duration set for statMod including end of Activation; flat damage and stat damage stay two distinct kinds in the one union; snapshot validation reads the union. The legacy power fields (effect/stat/bonus/heal/guard) retire: the converter emits effects for every power and selfGuard becomes status.apply Protection + statMod, so core names no status id. One dealDirectDamage for the six inline absorb->flatDamage->spend->applyDamage copies; one packet planner shared by attack and burst; cited LOW_COVER_ACCURACY read from the ledger by the miss event; DMG.BURST_SAVE and BURST_LOW_COVER_ABSORB. Then rewrite Creeping Blight to paint layer.poisoned. Prior art: trigger.ts applyEffect is the survivor.",
   "expect": "grep finds one effect interpreter and one direct-damage function; every existing battle byte-identical except rows whose compiled meaning was wrong (C20's end-of-Activation, stated in the landing); 'remove N of a status' works from a trigger; power.holy-symbol.heal resolves through effects.",
-  "changesBaseline": false,
-  "note": "Law 1 / 2 area — say so in the commit. If any control battle moves, the item names which row and why."
+  "changesBaseline": true,
+  "note": "Law 1 / 2 area — say so in the commit. If any control battle moves, the item names which row and why. 2026-10-01 (the chat landing it): changesBaseline set true because the control battles moved by log text only — the Holy Symbol's Heal resolves through effects (the expect), so its power.used names `targets` where it named `heal`; state, RNG and result identical in all 575 control battles. The gate's own refusal names this remedy.",
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "bfbeebe"
  },
  {
   "id": "fix.one-hero-assembly",
@@ -5150,5 +5155,16 @@
    "badge.fragile"
   ],
   "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4). Replaces 2026-09-04 'Deathbed Fighting, REVERSED' for afflicted heroes only."
+ },
+ {
+  "id": "fix.turn-mods-expire",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Reported 2026-10-01 (Andrew, playing the Lumberjack House): the Warrior's Leap gives +2 Strength; the stat window showed +2. A stat modifier that lasts 'until the end of the Turn' (Leap's +2 Strength; every endOfTurn/endOfNextTurn statMod) is stored with expiresAtTurn and only FILTERED at read (stats.ts modsFor) — it is never removed from the unit and no event says it ended, so anything that reads the log (the viewer folds statmod.added and drops a modifier only on statmod.expired) shows it for the rest of the Battle. Law 3: every state change through a mutator, and every mutator emits an event. As the Turn ends (beginTurn, before the number moves), remove every mod whose expiresAtTurn has come, one statmod.expired per mod, units by id (Law 6). Prior art: mutate.ts expireActivationMods, the same removal for expiresAfterActivation at End of Activation — extended to the Turn, not a second shape.",
+  "expect": "After a Leap, the Warrior's +2 Strength mod is gone from the unit when the next Turn begins and the log carries statmod.expired for it (stat strength, value 2, source power.leap) in the Turn it was added; effective Strength is unchanged at every read (it was already filtered); the control battles move by those lines only (state: the expired mods leave u.mods).",
+  "changesBaseline": true,
+  "note": "Reported by Andrew 2026-10-01 with viewer.live-stat-mods (the stat window and the attack numbers).",
+  "status": "done-needs-review",
+  "sha": "7a54e06"
  }
 ]

@@ -4,6 +4,11 @@
 // Regenerate:  cd content && node assemble.mjs && node mkenginepack.mjs
 export const UNIT_PACK = {
   "note": "Ruled 2026-08-20: the standard engine test party — six heroes, one per class, COPIED from live Codex heroes so they can be tweaked without touching the originals. Clearly differentiated: test- typeIds, (TEST) names, never ships. The engine reads these through the generated pack (mkenginepack.mjs) — nothing hand-typed engine-side. Testing-lane riders travel on the cohort and retire one by one as published sources land; the Sky Pirate's own Cutlass bleed already retires test.ranger.serrated-arrows.",
+  "xpByTier": {
+    "1": 2,
+    "2": 5,
+    "3": 15
+  },
   "heroes": [
     {
       "typeId": "test-oathblade",
@@ -105,6 +110,7 @@ export const UNIT_PACK = {
       "accuracy": 78,
       "dodge": 0,
       "toughness": 3,
+      "crit": 2,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -477,6 +483,7 @@ export const UNIT_PACK = {
       "typeId": "unit.balrog",
       "name": "Balrog",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 23,
       "armor": 3,
       "resist": 2,
@@ -537,12 +544,13 @@ export const UNIT_PACK = {
       "typeId": "unit.bloodhound",
       "name": "Bloodhound",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 4,
       "armor": 0,
       "resist": 0,
       "accuracy": 90,
       "dodge": 20,
-      "crit": 10,
+      "crit": 7,
       "strength": 3,
       "precision": 0,
       "magic": 0,
@@ -571,6 +579,7 @@ export const UNIT_PACK = {
       "typeId": "unit.bone-dragon",
       "name": "Bone Dragon",
       "side": "enemy",
+      "tier": 3,
       "maxHp": 25,
       "armor": 5,
       "resist": 2,
@@ -661,6 +670,7 @@ export const UNIT_PACK = {
       "typeId": "unit.bruiser-demon",
       "name": "Bruiser Demon",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 20,
       "armor": 4,
       "resist": 1,
@@ -710,12 +720,13 @@ export const UNIT_PACK = {
       "typeId": "unit.dark-sniper",
       "name": "Dark Sniper",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 19,
       "armor": 0,
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
-      "crit": 10,
+      "crit": 7,
       "strength": 2,
       "precision": 6,
       "magic": 0,
@@ -798,12 +809,13 @@ export const UNIT_PACK = {
       "typeId": "unit.demon-hound",
       "name": "Demon Hound",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 10,
       "armor": 0,
       "resist": 0,
       "accuracy": 80,
       "dodge": 20,
-      "crit": 10,
+      "crit": 7,
       "strength": 4,
       "precision": 0,
       "magic": 0,
@@ -869,12 +881,13 @@ export const UNIT_PACK = {
       "typeId": "unit.doombringer",
       "name": "Doombringer",
       "side": "enemy",
+      "tier": 3,
       "maxHp": 25,
       "armor": 2,
       "resist": 1,
       "accuracy": 60,
       "dodge": -20,
-      "crit": 25,
+      "crit": 22,
       "strength": 6,
       "precision": 0,
       "magic": 0,
@@ -957,11 +970,13 @@ export const UNIT_PACK = {
       "typeId": "unit.eyeblight",
       "name": "Eyeblight",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 17,
       "armor": 1,
       "resist": 2,
       "accuracy": 110,
       "dodge": 0,
+      "crit": -3,
       "luck": 50,
       "strength": 2,
       "precision": 1,
@@ -1031,6 +1046,7 @@ export const UNIT_PACK = {
       "typeId": "unit.fast-zombie",
       "name": "Fast Zombie",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 5,
       "armor": 0,
       "resist": 0,
@@ -1063,6 +1079,7 @@ export const UNIT_PACK = {
       "typeId": "unit.fire-imp",
       "name": "Fire Imp",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 9,
       "armor": 0,
       "resist": 0,
@@ -1127,6 +1144,7 @@ export const UNIT_PACK = {
       "typeId": "unit.ghost",
       "name": "Ghost",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 4,
       "armor": 0,
       "resist": 0,
@@ -1171,6 +1189,7 @@ export const UNIT_PACK = {
       "typeId": "unit.ghoul",
       "name": "Ghoul",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 9,
       "armor": 0,
       "resist": 0,
@@ -1259,12 +1278,13 @@ export const UNIT_PACK = {
       "typeId": "unit.hellhound",
       "name": "Hellhound",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 8,
       "armor": 0,
       "resist": 0,
       "accuracy": 70,
       "dodge": 10,
-      "crit": 10,
+      "crit": 7,
       "strength": 4,
       "precision": 0,
       "magic": 0,
@@ -1332,6 +1352,7 @@ export const UNIT_PACK = {
       "typeId": "unit.imp",
       "name": "Imp",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 7,
       "armor": 0,
       "resist": 0,
@@ -1379,12 +1400,13 @@ export const UNIT_PACK = {
       "typeId": "unit.imp-master",
       "name": "Imp Master",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 9,
       "armor": 0,
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
-      "crit": 10,
+      "crit": 7,
       "strength": 4,
       "precision": 4,
       "magic": 0,
@@ -1440,11 +1462,13 @@ export const UNIT_PACK = {
       "typeId": "unit.iron-colossus",
       "name": "Iron Colossus",
       "side": "enemy",
+      "tier": 3,
       "maxHp": 30,
       "armor": 6,
       "resist": 0,
       "accuracy": 80,
       "dodge": -30,
+      "crit": -3,
       "strength": 10,
       "precision": 0,
       "magic": 0,
@@ -1475,12 +1499,13 @@ export const UNIT_PACK = {
       "typeId": "unit.lieutenant-demon",
       "name": "Lieutenant Demon",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 15,
       "armor": 2,
       "resist": 0,
       "accuracy": 60,
       "dodge": 10,
-      "crit": 5,
+      "crit": 2,
       "strength": 5,
       "precision": 4,
       "magic": 0,
@@ -1579,6 +1604,7 @@ export const UNIT_PACK = {
       "typeId": "unit.necromancer",
       "name": "Necromancer",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 11,
       "armor": 0,
       "resist": 1,
@@ -1684,12 +1710,13 @@ export const UNIT_PACK = {
       "typeId": "unit.nightstalker",
       "name": "Nightstalker",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 7,
       "armor": 0,
       "resist": 0,
       "accuracy": 90,
       "dodge": 0,
-      "crit": 10,
+      "crit": 7,
       "strength": 7,
       "precision": 0,
       "magic": 0,
@@ -1716,6 +1743,7 @@ export const UNIT_PACK = {
       "typeId": "unit.poison-imp",
       "name": "Poison Imp",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 9,
       "armor": 0,
       "resist": 0,
@@ -1780,13 +1808,14 @@ export const UNIT_PACK = {
       "typeId": "unit.powerful-imp",
       "name": "Powerful Imp",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 11,
       "armor": 0,
       "resist": 0,
       "fireResist": 1,
       "accuracy": 90,
       "dodge": 5,
-      "crit": 5,
+      "crit": 2,
       "strength": 4,
       "precision": 5,
       "magic": 0,
@@ -1828,12 +1857,13 @@ export const UNIT_PACK = {
       "typeId": "unit.shadow-sorcerer",
       "name": "Shadow Sorcerer",
       "side": "enemy",
+      "tier": 3,
       "maxHp": 22,
       "armor": 0,
       "resist": 2,
       "accuracy": 130,
       "dodge": 0,
-      "crit": 7,
+      "crit": 4,
       "luck": 7,
       "strength": 5,
       "precision": 6,
@@ -1971,6 +2001,7 @@ export const UNIT_PACK = {
       "typeId": "unit.skeletal-archer",
       "name": "Skeleton Archer",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 5,
       "armor": 1,
       "resist": 0,
@@ -2017,6 +2048,7 @@ export const UNIT_PACK = {
       "typeId": "unit.skeleton",
       "name": "Skeleton",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 5,
       "armor": 1,
       "resist": 0,
@@ -2062,6 +2094,7 @@ export const UNIT_PACK = {
       "typeId": "unit.skeleton-spider",
       "name": "Skeleton Spider",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 14,
       "armor": 0,
       "resist": 3,
@@ -2157,6 +2190,7 @@ export const UNIT_PACK = {
       "typeId": "unit.soldier",
       "name": "Soldier",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 10,
       "armor": 2,
       "resist": 0,
@@ -2204,6 +2238,7 @@ export const UNIT_PACK = {
       "typeId": "unit.strong-skeleton",
       "name": "Strong Skeleton",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 9,
       "armor": 1,
       "resist": 0,
@@ -2249,6 +2284,7 @@ export const UNIT_PACK = {
       "typeId": "unit.strong-zombie",
       "name": "Strong Zombie",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 10,
       "armor": 1,
       "resist": 0,
@@ -2280,6 +2316,7 @@ export const UNIT_PACK = {
       "typeId": "unit.terror-imp",
       "name": "Terror Imp",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 9,
       "armor": 0,
       "resist": 0,
@@ -2342,12 +2379,13 @@ export const UNIT_PACK = {
       "typeId": "unit.vampire",
       "name": "Vampire",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 15,
       "armor": 0,
       "resist": 0,
       "accuracy": 85,
       "dodge": 10,
-      "crit": 7,
+      "crit": 4,
       "strength": 6,
       "precision": 4,
       "magic": 0,
@@ -2456,12 +2494,13 @@ export const UNIT_PACK = {
       "typeId": "unit.vampire-lord",
       "name": "Vampire Lord",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 25,
       "armor": 1,
       "resist": 3,
       "accuracy": 95,
       "dodge": 15,
-      "crit": 12,
+      "crit": 9,
       "strength": 8,
       "precision": 6,
       "magic": 0,
@@ -2611,6 +2650,7 @@ export const UNIT_PACK = {
       "typeId": "unit.werewolf",
       "name": "Werewolf",
       "side": "enemy",
+      "tier": 2,
       "maxHp": 13,
       "armor": 1,
       "resist": 0,
@@ -2667,6 +2707,7 @@ export const UNIT_PACK = {
       "typeId": "unit.zombie",
       "name": "Zombie",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 5,
       "armor": 0,
       "resist": 0,
@@ -2724,6 +2765,7 @@ export const UNIT_PACK = {
       "typeId": "unit.zombie-burning",
       "name": "Burning Zombie",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 5,
       "armor": 0,
       "resist": 0,
@@ -2768,12 +2810,13 @@ export const UNIT_PACK = {
       "typeId": "unit.zombie-hound",
       "name": "Zombie Hound",
       "side": "enemy",
+      "tier": 1,
       "maxHp": 5,
       "armor": 0,
       "resist": 0,
       "accuracy": 75,
       "dodge": 10,
-      "crit": 10,
+      "crit": 7,
       "strength": 3,
       "precision": 0,
       "magic": 0,
@@ -7938,12 +7981,20 @@ export const UNIT_PACK = {
       "staminaCost": 1,
       "cooldown": 0,
       "range": 6,
-      "effect": "heal",
-      "heal": {
-        "scale": "partySpirit",
-        "base": 1,
-        "mult": 2
-      }
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "partySpirit",
+            "base": 1,
+            "mult": 2
+          }
+        }
+      ]
     },
     "power.loaded-dice-of-mirran.use": {
       "id": "power.loaded-dice-of-mirran.use",
@@ -8256,26 +8307,23 @@ export const UNIT_PACK = {
           "kind": "statMod",
           "stat": "strength",
           "value": 2,
-          "until": "endOfTurn",
+          "until": "endOfActivation",
           "who": "self"
         },
         {
           "kind": "statMod",
           "stat": "crit",
           "value": 20,
-          "until": "endOfTurn",
+          "until": "endOfActivation",
           "who": "self"
         },
         {
           "kind": "statMod",
           "stat": "accuracy",
           "value": -20,
-          "until": "endOfTurn",
+          "until": "endOfActivation",
           "who": "self"
         }
-      ],
-      "gaps": [
-        "\"until the end of your Activation\" is read as until the end of the Turn"
       ]
     },
     "power.strength-potion.use": {
@@ -8579,7 +8627,6 @@ export const UNIT_PACK = {
       "accuracy": 72,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -8620,7 +8667,6 @@ export const UNIT_PACK = {
       "accuracy": 72,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -8662,7 +8708,6 @@ export const UNIT_PACK = {
       "accuracy": 72,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 3,
       "precision": 1,
       "magic": 0,
@@ -8704,6 +8749,7 @@ export const UNIT_PACK = {
       "accuracy": 72,
       "dodge": 0,
       "toughness": 2,
+      "crit": -3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -8745,7 +8791,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 4,
       "magic": 0,
@@ -8786,7 +8831,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 5,
       "magic": 0,
@@ -8827,7 +8871,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 4,
       "magic": 0,
@@ -8868,7 +8911,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 5,
       "magic": 0,
@@ -8909,7 +8951,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 3,
-      "crit": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -8951,7 +8992,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 3,
-      "crit": 3,
       "strength": 4,
       "precision": 4,
       "magic": 0,
@@ -8991,7 +9031,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 3,
-      "crit": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -9032,7 +9071,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 3,
-      "crit": 3,
       "strength": 5,
       "precision": 3,
       "magic": 0,
@@ -9073,7 +9111,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 3,
       "magic": 2,
@@ -9114,7 +9151,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 5,
       "magic": 2,
@@ -9155,7 +9191,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 3,
       "magic": 3,
@@ -9196,7 +9231,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 3,
       "magic": 2,
@@ -9237,7 +9271,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 2,
       "precision": 3,
       "magic": 0,
@@ -9278,7 +9311,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 2,
       "precision": 3,
       "magic": 0,
@@ -9320,7 +9352,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 2,
       "precision": 3,
       "magic": -1,
@@ -9361,7 +9392,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 3,
       "precision": 3,
       "magic": 0,
@@ -9403,7 +9433,7 @@ export const UNIT_PACK = {
       "accuracy": 78,
       "dodge": 5,
       "toughness": 2,
-      "crit": 5,
+      "crit": 2,
       "strength": 6,
       "precision": 4,
       "magic": 0,
@@ -9445,7 +9475,7 @@ export const UNIT_PACK = {
       "accuracy": 78,
       "dodge": 5,
       "toughness": 2,
-      "crit": 5,
+      "crit": 2,
       "strength": 4,
       "precision": 4,
       "magic": 0,
@@ -9486,7 +9516,7 @@ export const UNIT_PACK = {
       "accuracy": 78,
       "dodge": 5,
       "toughness": 2,
-      "crit": 5,
+      "crit": 2,
       "strength": 4,
       "precision": 4,
       "magic": 0,
@@ -9527,7 +9557,7 @@ export const UNIT_PACK = {
       "accuracy": 78,
       "dodge": 5,
       "toughness": 2,
-      "crit": 5,
+      "crit": 2,
       "strength": 4,
       "precision": 5,
       "magic": 0,
@@ -9568,7 +9598,7 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 3,
-      "crit": 20,
+      "crit": 17,
       "luck": 10,
       "strength": 2,
       "precision": 2,
@@ -9607,7 +9637,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 4,
       "precision": 1,
       "magic": 0,
@@ -9645,7 +9674,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "luck": 2,
       "strength": 3,
       "precision": 2,
@@ -9684,7 +9712,7 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 2,
-      "crit": 8,
+      "crit": 5,
       "luck": 7,
       "strength": 2,
       "precision": 2,
@@ -9723,7 +9751,7 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 2,
-      "crit": 4,
+      "crit": 1,
       "luck": 10,
       "strength": 4,
       "precision": 4,
@@ -9762,7 +9790,6 @@ export const UNIT_PACK = {
       "accuracy": 65,
       "dodge": 10,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 2,
       "magic": 0,
@@ -9801,7 +9828,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 0,
       "precision": 0,
       "magic": 0,
@@ -9839,7 +9865,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 2,
       "precision": 2,
       "magic": 0,
@@ -9877,7 +9902,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 1,
       "precision": 2,
       "magic": 0,
@@ -9915,7 +9939,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 1,
       "precision": 3,
       "magic": 0,
@@ -9953,7 +9976,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 2,
       "precision": 2,
       "magic": 0,
@@ -9991,7 +10013,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 4,
       "precision": 2,
       "magic": 0,
@@ -10029,7 +10050,7 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 1,
-      "crit": 5,
+      "crit": 2,
       "strength": 3,
       "precision": 2,
       "magic": 0,
@@ -10067,7 +10088,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 3,
       "precision": 3,
       "magic": 0,
@@ -10105,7 +10125,6 @@ export const UNIT_PACK = {
       "accuracy": 70,
       "dodge": 0,
       "toughness": 4,
-      "crit": 3,
       "strength": 4,
       "precision": 5,
       "magic": 0,
@@ -10145,7 +10164,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 5,
       "precision": 3,
       "magic": 0,
@@ -10236,7 +10254,7 @@ export const UNIT_PACK = {
       "accuracy": 78,
       "dodge": 0,
       "toughness": 3,
-      "crit": 5,
+      "crit": 2,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -10292,7 +10310,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 5,
       "toughness": 2,
-      "crit": 3,
       "strength": 3,
       "precision": 4,
       "magic": 0,
@@ -10347,7 +10364,6 @@ export const UNIT_PACK = {
       "accuracy": 75,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 0,
       "precision": 3,
       "magic": 2,
@@ -10414,7 +10430,6 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 0,
       "toughness": 1,
-      "crit": 3,
       "strength": 3,
       "precision": 3,
       "magic": 0,
@@ -10456,7 +10471,6 @@ export const UNIT_PACK = {
       "accuracy": 72,
       "dodge": 0,
       "toughness": 2,
-      "crit": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -10500,12 +10514,14 @@ export const UNIT_PACK = {
           {
             "kind": "statMod",
             "stat": "vision",
-            "value": -4
+            "value": -4,
+            "until": "battle"
           },
           {
             "kind": "statMod",
             "stat": "accuracy",
-            "value": -30
+            "value": -30,
+            "until": "battle"
           }
         ]
       },
@@ -10516,7 +10532,8 @@ export const UNIT_PACK = {
           {
             "kind": "statMod",
             "stat": "movement",
-            "value": -3
+            "value": -3,
+            "until": "battle"
           }
         ]
       },
@@ -10527,12 +10544,14 @@ export const UNIT_PACK = {
           {
             "kind": "statMod",
             "stat": "strength",
-            "value": -2
+            "value": -2,
+            "until": "battle"
           },
           {
             "kind": "statMod",
             "stat": "precision",
-            "value": -2
+            "value": -2,
+            "until": "battle"
           }
         ]
       },
@@ -10541,7 +10560,7 @@ export const UNIT_PACK = {
         "name": "Bleeding",
         "effects": [
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.bleed",
             "value": 4
           }
@@ -10552,7 +10571,7 @@ export const UNIT_PACK = {
         "name": "Dazed",
         "effects": [
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.powers-locked",
             "value": 3
           }
@@ -10563,12 +10582,12 @@ export const UNIT_PACK = {
         "name": "Stunned",
         "effects": [
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.stun",
             "value": 1
           },
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.weak",
             "value": 3
           }
@@ -10579,11 +10598,11 @@ export const UNIT_PACK = {
         "name": "Knocked Sprawling",
         "effects": [
           {
-            "kind": "push",
-            "hexes": 1
+            "kind": "knockback",
+            "value": 1
           },
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.slow",
             "value": 2
           }
@@ -10594,7 +10613,7 @@ export const UNIT_PACK = {
         "name": "Winded",
         "effects": [
           {
-            "kind": "loseStamina",
+            "kind": "stamina.drain",
             "value": 4
           }
         ]
@@ -10607,18 +10626,21 @@ export const UNIT_PACK = {
             "kind": "statMod",
             "stat": "armor",
             "value": -2,
+            "until": "battle",
             "floor": 0
           },
           {
             "kind": "statMod",
             "stat": "resist",
             "value": -1,
+            "until": "battle",
             "floor": 0
           },
           {
             "kind": "statMod",
             "stat": "dodge",
             "value": -10,
+            "until": "battle",
             "floor": 0
           }
         ]
@@ -10889,8 +10911,9 @@ export const UNIT_PACK = {
       "budgetMod": 0,
       "effects": [
         {
-          "kind": "gainStamina",
-          "value": 1
+          "kind": "stamina.gain",
+          "value": 1,
+          "who": "self"
         }
       ],
       "staminaCost": 0,
@@ -10909,8 +10932,9 @@ export const UNIT_PACK = {
           "value": 1
         },
         {
-          "kind": "gainStamina",
-          "value": 2
+          "kind": "stamina.gain",
+          "value": 2,
+          "who": "self"
         }
       ],
       "staminaCost": 0,
@@ -10949,6 +10973,23 @@ export const UNIT_PACK = {
       "free": false,
       "shape": "flight",
       "budgetMod": 1,
+      "staminaCost": 2,
+      "cooldown": 0
+    },
+    "power.charging-run": {
+      "id": "power.charging-run",
+      "name": "Charging Run",
+      "free": false,
+      "shape": "path",
+      "budgetMod": 2,
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 3,
+          "until": "endOfActivation"
+        }
+      ],
       "staminaCost": 2,
       "cooldown": 0
     },
@@ -14882,10 +14923,7 @@ export const UNIT_PACK = {
       "abilities": [
         "power.frenzy-potion.use"
       ],
-      "triggers": [],
-      "gaps": [
-        "power.frenzy-potion.use: \"until the end of your Activation\" is read as until the end of the Turn — item active clause"
-      ]
+      "triggers": []
     },
     "item.strength-potion": {
       "id": "item.strength-potion",
@@ -19369,10 +19407,19 @@ export const UNIT_PACK = {
       "power.test-mage.bolt": {
         "id": "power.test-mage.bolt",
         "name": "Arcane Bolt (TEST)",
-        "stat": "magic",
-        "bonus": 6,
-        "damageType": "magic",
         "range": 10,
+        "target": {
+          "select": "unit",
+          "side": "enemy"
+        },
+        "effects": [
+          {
+            "kind": "statDamage",
+            "stat": "magic",
+            "bonus": 6,
+            "damageType": "magic"
+          }
+        ],
         "staminaCost": 1,
         "cooldown": 6
       },
@@ -19389,8 +19436,9 @@ export const UNIT_PACK = {
         },
         "effects": [
           {
-            "kind": "gainStamina",
-            "value": 2
+            "kind": "stamina.gain",
+            "value": 2,
+            "who": "self"
           }
         ]
       },
@@ -19406,13 +19454,13 @@ export const UNIT_PACK = {
         },
         "effects": [
           {
-            "kind": "damage",
+            "kind": "statDamage",
             "stat": "magic",
             "bonus": 5,
             "damageType": "magic"
           },
           {
-            "kind": "damage",
+            "kind": "statDamage",
             "stat": "magic",
             "bonus": 5,
             "damageType": "magic"
@@ -19435,7 +19483,7 @@ export const UNIT_PACK = {
             "statusId": "status.protection"
           },
           {
-            "kind": "damage",
+            "kind": "statDamage",
             "stat": "magic",
             "bonus": 7,
             "damageType": "magic"
@@ -20473,9 +20521,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 2,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         },
         {
           "kind": "statMod",
@@ -21663,9 +21712,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 3,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ],
       "gaps": [
@@ -21696,9 +21746,10 @@ export const UNIT_PACK = {
           }
         },
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 8,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ]
     },
@@ -22541,9 +22592,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 3,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         },
         {
           "kind": "statMod",
@@ -22703,9 +22755,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 4,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         },
         {
           "kind": "statMod",
@@ -23030,18 +23083,19 @@ export const UNIT_PACK = {
       "warmup": 2,
       "range": 5,
       "target": {
-        "select": "area",
-        "side": "any",
-        "radius": 1,
-        "origin": "target"
+        "select": "unit",
+        "side": "any"
       },
-      "effects": [],
+      "effects": [
+        {
+          "kind": "layer.paint",
+          "layer": "layer.poisoned",
+          "radius": 1,
+          "origin": "target"
+        }
+      ],
       "gaps": [
-        "targets 'a hex within 5' — engine centres the blast on a UNIT",
-        "unparsed: Those seven hexes become poisoned",
-        "unparsed: Any unit that begins its Turn on poisoned ground gains 2 Poison and 1 Weak — all",
-        "needs capability: a third terrain status alongside burning and frost — 'blighted', which applies statuses on turn-start rather than ticking damage",
-        "no effect compiled — the power is inert"
+        "targets 'a hex within 5' — engine centres the blast on a UNIT"
       ]
     },
     "power.wild-shaper.wild-growth": {
@@ -23594,9 +23648,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 5,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ],
       "gaps": [
@@ -23695,9 +23750,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 8,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ],
       "gaps": [
@@ -24239,9 +24295,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 6,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ],
       "gaps": [
@@ -27267,10 +27324,9 @@ export const UNIT_PACK = {
             {
               "resist": 1
             },
-            {}
-          ],
-          "gaps": [
-            "choice deathbedFighting: no engine stat"
+            {
+              "deathbedFighting": 20
+            }
           ]
         },
         {
@@ -35639,16 +35695,14 @@ export const UNIT_PACK = {
         "armor": 1,
         "movement": -1,
         "maxStamina": 2,
-        "maxHp": 4
+        "maxHp": 4,
+        "deathbedFighting": 10
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.heavy-chain",
-      "enchant": "enchant.enduring",
-      "gaps": [
-        "enchant stat deathbedFighting 10: no engine stat"
-      ]
+      "enchant": "enchant.enduring"
     },
     "item.heavy-chain.might": {
       "id": "item.heavy-chain.might",
@@ -35905,16 +35959,14 @@ export const UNIT_PACK = {
         "luck": 5,
         "dodge": 5,
         "maxHp": 5,
-        "maxStamina": 2
+        "maxStamina": 2,
+        "deathbedFighting": 10
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.creature-hide",
-      "enchant": "enchant.enduring",
-      "gaps": [
-        "enchant stat deathbedFighting 10: no engine stat"
-      ]
+      "enchant": "enchant.enduring"
     },
     "item.guardians-mail.runed": {
       "id": "item.guardians-mail.runed",
@@ -36040,16 +36092,14 @@ export const UNIT_PACK = {
         "resist": 1,
         "movement": -1,
         "maxStamina": 1,
-        "maxHp": 4
+        "maxHp": 4,
+        "deathbedFighting": 10
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.guardians-mail",
-      "enchant": "enchant.enduring",
-      "gaps": [
-        "enchant stat deathbedFighting 10: no engine stat"
-      ]
+      "enchant": "enchant.enduring"
     },
     "item.plated-armor.runed": {
       "id": "item.plated-armor.runed",
@@ -36363,16 +36413,14 @@ export const UNIT_PACK = {
       "statModifiers": {
         "armor": 1,
         "maxHp": 7,
-        "maxStamina": 2
+        "maxStamina": 2,
+        "deathbedFighting": 10
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "base": "item.soaked-plate",
-      "enchant": "enchant.enduring",
-      "gaps": [
-        "enchant stat deathbedFighting 10: no engine stat"
-      ]
+      "enchant": "enchant.enduring"
     },
     "item.soaked-plate.might": {
       "id": "item.soaked-plate.might",
@@ -43627,6 +43675,157 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "encounter.opening.cathedral": {
+      "id": "encounter.opening.cathedral",
+      "name": "Cathedral",
+      "mapId": "map.opening.cathedral",
+      "board": {
+        "width": 20,
+        "height": 40
+      },
+      "setup": [
+        {
+          "unit": "unit.necromancer",
+          "at": {
+            "col": 10,
+            "row": 3
+          }
+        },
+        {
+          "unit": "unit.skeletal-archer",
+          "at": {
+            "col": 11,
+            "row": 4
+          }
+        },
+        {
+          "unit": "unit.skeleton",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 8,
+              "row": 5
+            },
+            {
+              "col": 12,
+              "row": 5
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.ghoul",
+              "at": {
+                "col": 0,
+                "row": 22
+              }
+            },
+            {
+              "unit": "unit.ghoul",
+              "at": {
+                "col": 19,
+                "row": 22
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 4,
+        "at": {
+          "near": {
+            "col": 10,
+            "row": 37
+          },
+          "range": 2
+        }
+      },
+      "paint": [
+        {
+          "layer": "layer.weak",
+          "hexes": [
+            143,
+            145,
+            147,
+            149,
+            151,
+            152,
+            153,
+            155,
+            252,
+            254,
+            255,
+            258,
+            263,
+            264,
+            265,
+            364,
+            365,
+            367,
+            372,
+            373,
+            437,
+            483,
+            485,
+            498,
+            610,
+            623,
+            624,
+            625,
+            631,
+            632,
+            633,
+            635,
+            682
+          ]
+        }
+      ],
+      "remains": [
+        {
+          "id": "trigger.cathedral.remains",
+          "typeId": "unit.zombie",
+          "hexes": [
+            143,
+            145,
+            147,
+            149,
+            151,
+            152,
+            153,
+            155,
+            252,
+            254,
+            255,
+            258,
+            263,
+            264,
+            265,
+            364,
+            365,
+            367,
+            372,
+            373,
+            437,
+            483,
+            485,
+            498,
+            610,
+            623,
+            624,
+            625,
+            631,
+            632,
+            633,
+            635,
+            682
+          ]
+        }
+      ]
+    },
     "encounter.caravan-aftermath": {
       "id": "encounter.caravan-aftermath",
       "name": "Caravan Aftermath",
@@ -44914,36 +45113,39 @@ export const UNIT_PACK = {
     "badge.death-seeker": {
       "id": "badge.death-seeker",
       "name": "Death Seeker",
-      "statModifiers": {},
+      "statModifiers": {
+        "bleedOutTurns": -3
+      },
       "grants": [],
       "flags": {},
+      "deathbedFighting": 40,
       "gaps": [
         "Lucky -10",
         "Health -2",
-        "Turns to Bleed out -3.  Deathbed +40.   OTD: gain 2 stamina"
+        "OTD: gain 2 stamina"
       ]
     },
     "badge.survivor": {
       "id": "badge.survivor",
       "name": "Survivor",
-      "statModifiers": {},
+      "statModifiers": {
+        "bleedOutTurns": 3
+      },
       "grants": [],
       "flags": {},
+      "deathbedFighting": 20,
       "gaps": [
-        "3 extra turns to bleed out",
-        "deathbed +20",
         "toughtness+2"
       ]
     },
     "badge.thick-blooded": {
       "id": "badge.thick-blooded",
       "name": "Thick Blooded",
-      "statModifiers": {},
+      "statModifiers": {
+        "bleedOutTurns": 5
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "5 extra turns to bleed out"
-      ]
+      "flags": {}
     },
     "badge.stocky": {
       "id": "badge.stocky",
@@ -44995,7 +45197,8 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "onsurvive: +2 supplies.  Surge pool +30"
+        "onsurvive: +2 supplies",
+        "Surge pool +30"
       ]
     },
     "badge.pacifist": {
@@ -45005,7 +45208,8 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "S-3 P -3.  Karma 4",
+        "S-3 P -3",
+        "Karma 4",
         "Luck +20",
         "Stamina Regen +1"
       ]
@@ -45533,7 +45737,8 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "Gains a free action — Stabilize: pause an ally bleeding out. Costs 1 Stamina",
+        "Gains a free action — Stabilize: pause an ally bleeding out",
+        "Costs 1 Stamina",
         "cooldown 1."
       ]
     },
@@ -45586,7 +45791,8 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "Counts as a Demon. All heroes lose 1 Resist and gain 3 Corruption",
+        "Counts as a Demon",
+        "All heroes lose 1 Resist and gain 3 Corruption",
         "the wearer gains 3 Resist and onHit: Burn 1."
       ]
     },

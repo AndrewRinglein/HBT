@@ -9,15 +9,16 @@
   },
   {
    "concept": "direct typed damage",
-   "owner": "the one damage function (engine/src/core/pipeline.ts, mitigation.ts, mutate.ts)",
-   "files": ["engine/src/core/pipeline.ts", "engine/src/core/mitigation.ts", "engine/src/core/mutate.ts"],
+   "owner": "dealDirectDamage (engine/src/core/status.ts) over the one damage function (engine/src/core/pipeline.ts, mitigation.ts, mutate.ts) — fix.one-effect-vocabulary, 2026-10-01",
+   "files": ["engine/src/core/status.ts", "engine/src/core/pipeline.ts", "engine/src/core/mitigation.ts", "engine/src/core/mutate.ts"],
    "calls": ["flatDamage", "spendAbsorb", "applyDamage"]
   },
   {
    "concept": "applying an effect",
-   "owner": "applyEffect, the one interpreter (engine/src/core/trigger.ts)",
-   "files": ["engine/src/core/trigger.ts"],
-   "literalsFrom": "engine/src/core/trigger.ts#TriggerEffect.kind"
+   "owner": "applyEffect, the one interpreter (engine/src/core/trigger.ts); the one Effect union (engine/src/core/types.ts) — fix.one-effect-vocabulary, 2026-10-01",
+   "files": ["engine/src/core/trigger.ts", "engine/src/core/types.ts"],
+   "literalsFrom": "engine/src/core/types.ts#EffectBody.kind",
+   "literalsWere": ["engine/src/core/trigger.ts#TriggerEffect.kind"]
   },
   {
    "concept": "counting hands",

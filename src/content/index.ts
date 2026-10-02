@@ -4,7 +4,7 @@
 
 import type { AbilityDef, ActionDef, AttackDef, UnitDef } from '../core/types.js'
 import { disabledIds, omitDisabled, stripDisabledTriggers } from './disable.js'
-import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packDerivedItems, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
+import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packXpByTier, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packDerivedItems, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
 import { MOVES } from './moves.js'
 import { AI_MODE_ROWS } from './ai-modes.js'
 import { defaultAiOf } from '../core/items.js'
@@ -243,6 +243,8 @@ export const ACTIONS: Readonly<Record<string, ActionDef>> = { ...ATTACKS, ...ABI
 // omitDisabled: rows carry keys, not ids; the kill seam for crits is the
 // critEnabled switch itself.
 export const CRIT_CHART = packCritChart()
+/** fix.codex-numbers (K7): XP per kill by enemy tier (2 / 5 / 15), the Codex's, for the kingdom to pay by. */
+export const XP_BY_TIER = packXpByTier()
 // The item registry — pack.items (2026-09-02). Every Codex item row, validated
 // against the attacks and abilities it grants. On Ctx so the kill-switch seam
 // (CF_DISABLE_IDS) reaches an item id like any other.

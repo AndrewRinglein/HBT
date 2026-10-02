@@ -13,6 +13,7 @@ import { describe, expect, it } from 'vitest'
 import { createBattle, fieldedDef } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyItems } from '../src/core/items.js'
+import { CRIT_BASE } from '../src/core/pipeline.js'
 import { ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 
@@ -32,7 +33,14 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     const differ: Record<string, string[]> = {}
     for (const [id, row] of Object.entries(o)) {
       const f = shape(fieldedDef(id) as unknown as Record<string, unknown>)
-      const r = shape(row)
+      // Law 10, 2026-10-01 (fix.codex-numbers; DECISIONS.md 2026-09-28 "the duplication review, ruled",
+      // finding C1: "Crit base 3 should be counted once"): the frozen oracle holds crit as the Codex
+      // TOTAL (a warrior 3), which the engine then added its own 3 to. A row now carries the total less
+      // CRIT_BASE. The oracle stays frozen; its crit is read as that same difference, so the comparison
+      // still says whether the FOLD moved — no assertion below is loosened.
+      const critOver = ((row['crit'] as number | undefined) ?? 0) - CRIT_BASE
+      const { crit: _frozenCrit, ...frozen } = row
+      const r = shape(critOver ? { ...frozen, crit: critOver } : frozen)
       // fix.unit-tags (2026-09-03): the oracle predates the collapse of
       // `attributes` into `tags` (Law 11); the field no longer exists.
       // Hero assembly (2026-09-03): rows carry their class on `tags` now
@@ -94,7 +102,7 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       'hero.base.rogue-raven': ['maxHp'],
     })
     for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
-    expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
+    expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
   })
 

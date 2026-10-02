@@ -377,8 +377,10 @@ export function flagsFor({ before, after, whole, rules }) {
     const owners = new Set(r.files)
     let literals = []
     if (r.literalsFrom) {
-      const [f, name] = r.literalsFrom.split('#')
-      const list = (whole.files[f] ?? EMPTY).vocab.find((x) => x.name === name)
+      // `literalsWere`: where the list lived before it moved (fix.one-effect-vocabulary, 2026-10-01: the effect
+      // kinds left trigger.ts's TriggerEffect for types.ts's one Effect union) — so a tree from before the move,
+      // the review's pinned one, still reads its own list. The live tree must have `literalsFrom` (the test says so).
+      const list = [r.literalsFrom, ...(r.literalsWere ?? [])].map((at) => { const [f, name] = at.split('#'); return (whole.files[f] ?? EMPTY).vocab.find((x) => x.name === name) }).find(Boolean)
       if (!list) throw new Error(`prior-art-funnels.json: '${r.concept}' reads its literals from ${r.literalsFrom}, which the inventory does not have`)
       literals = list.members
     }
@@ -421,6 +423,7 @@ export function heldVerdict(lines, named, { clean, marker, named: namedNote, mor
 
 // ── clones (jscpd) ─────────────────────────────────────────────────────────────
 export const JSCPD = join(HERE, 'jscpd', 'node_modules', 'jscpd', 'bin', 'jscpd')
+const JSCPD_API = join(HERE, 'jscpd', 'node_modules', 'jscpd', 'dist', 'src', 'index.js')
 const JSCPD_FORMATS = { format: ['typescript', 'javascript'], formatsExts: { typescript: ['ts', 'mts', 'cts'], javascript: ['js', 'mjs', 'cjs'] } }
 /** jscpd over the files given (paths relative to root): every exact clone, both fragments. */
 export function clonesOf(files, root = ROOT) {
@@ -428,8 +431,12 @@ export function clonesOf(files, root = ROOT) {
   const out = mkdtempSync(join(tmpdir(), 'prior-art-'))
   try {
     const cfg = join(out, 'jscpd.json')
-    writeFileSync(cfg, JSON.stringify({ path: files.map((f) => join(root, f)), reporters: ['json'], output: out, silent: true, gitignore: false, ...JSCPD_FORMATS }))
-    execFileSync(process.execPath, [JSCPD, '--config', cfg], { cwd: root, stdio: 'pipe' })
+    // jscpd's API, not its --config: the CLI path.resolve()s every configured path, which on
+    // Windows is a backslashed absolute path its glob reads as escapes, so no file matched and no
+    // report was written. Here the paths stay relative to root (the child's cwd), '/'-separated.
+    writeFileSync(cfg, JSON.stringify({ path: files.map((f) => f.split(sep).join('/')), reporters: ['json'], output: out, silent: true, gitignore: false, ...JSCPD_FORMATS }))
+    const run = "const o = JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')); require(process.argv[2]).detectClones(o).catch((e) => { console.error(e); process.exit(1) })"
+    execFileSync(process.execPath, ['-e', run, cfg, JSCPD_API], { cwd: root, stdio: 'pipe' })
     const r = JSON.parse(readFileSync(join(out, 'jscpd-report.json'), 'utf8'))
     const rel = (n) => relative(root, join(root, n)).split(sep).join('/')
     return r.duplicates.map((d) => {

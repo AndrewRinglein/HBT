@@ -9,7 +9,7 @@
 import type { HexId } from './../core/hex.js'
 import { livingEnemies, movementOptions, moveStaminaCost, nearestEnemy, stepRangeOf, usableMoves as readyMoves } from './../core/movement.js'
 import { executeAction, legalActions, type ActionRequest } from './../core/commands.js'
-import type { AttackDef, MoveDef } from './../core/types.js'
+import type { ActionDef, AttackDef, MoveDef } from './../core/types.js'
 import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, isCharge, movesOf, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
 import { attackDef, attackReachesHex, preview, reachOf } from './../core/pipeline.js'
 import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
@@ -475,11 +475,18 @@ function dumbMelee(decision: Decision, u: Unit): void {
  * action. Damage powers are not handled here — the kite's own power block
  * already weighs those against the staff.
  */
+/**
+ * fix.one-effect-vocabulary (2026-10-01): the heal this procedure plays, read off the effects list now that
+ * the legacy 'heal' shape is retired — a power that spends the primary, is aimed at one ally and only
+ * heals (the Holy Symbol's Heal). effectsPower leaves exactly these to it (SWITCHES.md aiSupportHealShape).
+ */
+export const isSupportHeal = (a: ActionDef): boolean => !a.free && a.target?.select === 'unit' && a.target.side === 'ally'
+  && !!a.effects?.length && a.effects.every((e) => e.kind === 'heal')
 function supportPower(decision: Decision, u: Unit): boolean {
   const ctx = decision.ctx
   for (const a of powersOf(ctx, u)) {
     const id = a.id
-    if (a.effect === 'heal') {
+    if (isSupportHeal(a)) {
       // ai.scorer: the row's heal tiers rank the wounded (listed by id, Law 6)
       const wounded = ctx.state.units.filter((o) => o.side === u.side && o.lifeState === 'standing'
         && legalTarget(decision, u.id, o.id, id) && o.maxHp - o.hp > 0).sort((a, b) => a.id - b.id)
@@ -493,12 +500,9 @@ function supportPower(decision: Decision, u: Unit): boolean {
         }
       }
     }
-    if (a.effect === 'selfGuard' && legalTarget(decision, u.id, u.id, id)) {
-      if (adjacentEnemies(decision, u).length >= 2) {
-        act(decision, { actor: u.id, target: u.id, actionId: id }, { choice: 'rule.self-guard' })
-        return true
-      }
-    }
+    // was: if (a.effect === 'selfGuard' && ...) — rule.self-guard: no row has carried the selfGuard shape since
+    // the Knight Shield retired (2026-09-23), and Block now compiles to an effects list, played by
+    // effectsPower like every other self power (fix.one-effect-vocabulary, 2026-10-01).
   }
   return false
 }
@@ -527,7 +531,7 @@ function effectsPower(decision: Decision, u: Unit, when: 'free' | 'primary' | 'o
   const ctx = decision.ctx
   for (const a of powersOf(ctx, u)) {
     const id = a.id
-    if (!a.effects || a.effects.length === 0) continue
+    if (!a.effects || a.effects.length === 0 || isSupportHeal(a)) continue
     if (when === 'feast') {
       // capability.corpses (2026-09-03): a body in reach is eaten BEFORE the
       // swing — the Ghoul economy runs on it (SWITCHES.md aiEatsBeforeBiting).
@@ -546,10 +550,11 @@ function effectsPower(decision: Decision, u: Unit, when: 'free' | 'primary' | 'o
     } else if ((when === 'free') !== !!a.free) continue
     const kinds = new Set(a.effects.map((e) => e.kind))
     const t = a.target ?? { select: 'self' as const, side: 'any' as const }
-    const selfDamage = a.effects.reduce((n, e) => n + (e.kind === 'selfDamage' ? e.amount : 0), 0)
+    // what the power costs its caster in HP — a flat damage said on the caster (fix.one-effect-vocabulary: was 'selfDamage')
+    const selfDamage = a.effects.reduce((n, e) => n + (e.kind === 'damage' && e.who === 'self' && typeof e.amount === 'number' ? e.amount : 0), 0)
     if (selfDamage > 0 && u.hp <= selfDamage * 2) continue
-    if (kinds.has('damage') && t.side === 'enemy') continue   // the damage block's job
-    if (kinds.has('damage') && t.select === 'area' && (t.origin ?? 'self') === 'target') continue
+    if (kinds.has('statDamage') && t.side === 'enemy') continue   // the damage block's job
+    if (kinds.has('statDamage') && t.select === 'area' && (t.origin ?? 'self') === 'target') continue
     const legal = (o: Unit) => legalTarget(decision, u.id, o.id, id)
     if (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self' && t.side !== 'enemy')) {
       if (!legal(u)) continue
@@ -709,7 +714,7 @@ function rangedKite(decision: Decision, u: Unit): void {
   // such a power is ready and affordable; off = weapon reach, as before.
   const powerRange = ctx.cfg.switches.aiKiteHoldsAtPowerRange
     ? [...powersOf(ctx, u), ...burstsOf(ctx, u)].filter((a) =>
-        (a.burst ? a.burst.side !== 'ally' && a.burst.packets.length > 0 : a.effects ? (a.target?.side !== 'ally' && a.target?.select !== 'self') : (a.effect ?? 'damage') === 'damage')
+        (a.burst ? a.burst.side !== 'ally' && a.burst.packets.length > 0 : a.target?.side !== 'ally' && a.target?.select !== 'self')
         && actionReady(ctx, u, a) && u.stamina >= a.staminaCost)
       .reduce((m, a) => Math.min(m, a.range), Infinity)
     : Infinity
@@ -898,7 +903,7 @@ function valueHunter(decision: Decision, u: Unit): void {
   // Worth nothing is no plan.
   const heals: Plan[] = []
   for (const a of powersOf(ctx, u)) {
-    if (!(a.effect === 'heal' || a.effects?.some((e) => e.kind === 'heal'))) continue
+    if (!a.effects?.some((e) => e.kind === 'heal')) continue
     for (const o of allies(ctx, u).concat([u])) if (legalTarget(decision, u.id, o.id, a.id)) heals.push({ actionId: a.id, target: o.id })
   }
   heals.sort((x, y) => x.target! - y.target!)

@@ -9,7 +9,8 @@ import { decodeProps, decodeFloor } from './props.js'
 import { decodeEntries } from '../content/maps.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
-import { validateTrigger, TRIGGER_EFFECT_KINDS, type Trigger } from './trigger.js'
+import { validateTrigger, type Trigger } from './trigger.js'
+import { EFFECT_KINDS, STAT_MOD_UNTIL } from './types.js'
 import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx } from './types.js'
 
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'aiModes' | 'units' | 'arrive'>
@@ -113,7 +114,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     if (u.incomingAttackOrdinal !== undefined) requireThat(integer(u.incomingAttackOrdinal, 1, 0xffffffff), 'incoming attack ordinal')
     if (u.burstOrdinal !== undefined) requireThat(integer(u.burstOrdinal, 1), 'burst ordinal')
     for (const k of ['hp', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'movement', 'reach', 'stamina', 'maxStamina', 'staminaRegen', 'bleedOut', 'toughness', 'surge', 'surgeChance', 'vision', 'movePointsLeft', 'activationOrdinal', 'attackOrdinal', 'deathbedOrdinal']) requireThat(integer(u[k]), `unit ${k}`)
-    for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'thorns', 'swapCost']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)
+    for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)   // bleedOutTurns, deathbedFighting: fix.codex-numbers
     requireThat(u.swapUsed === undefined || typeof u.swapUsed === 'boolean', 'unit swapUsed')   // v2.swap
     if (u.loadout !== undefined) {   // v2.loadout: hands and stowed, item instances
       record(u.loadout)
@@ -151,11 +152,11 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(typeof t.id === 'string' && typeof t.source === 'string', 'trigger identity')
       validateTrigger(t as Trigger)
       const e = t.effect
-      requireThat((TRIGGER_EFFECT_KINDS as readonly string[]).includes(e.kind), 'trigger effect')   // plumbing.vocabulary-export: the list, not a copy
+      requireThat((EFFECT_KINDS as readonly string[]).includes(e.kind), 'trigger effect')   // fix.one-effect-vocabulary: the one union's list, not a copy
       if (['status.apply', 'status.remove'].includes(e.kind)) requireThat(typeof e.statusId === 'string' && Object.hasOwn(runtime.statuses, e.statusId), 'trigger status')
       if (e.kind === 'badge.grant') requireThat(typeof e.badgeId === 'string' && Object.hasOwn(runtime.badges, e.badgeId) && (e.withBadgeIds === undefined || (Array.isArray(e.withBadgeIds) && e.withBadgeIds.every((w: unknown) => typeof w === 'string' && Object.hasOwn(runtime.badges, w)))), 'trigger badge')
-      if (e.kind === 'damage') requireThat(isDamageType(e.damageType), 'trigger damage type')
-      if (e.kind === 'statMod') requireThat(typeof e.stat === 'string' && isStatName(e.stat) && integer(e.value) && ['battle', 'endOfTurn'].includes(e.until), 'trigger modifier')
+      if (e.kind === 'damage' || e.kind === 'statDamage') requireThat(isDamageType(e.damageType), 'trigger damage type')
+      if (e.kind === 'statMod') requireThat(typeof e.stat === 'string' && isStatName(e.stat) && integer(e.value) && (STAT_MOD_UNTIL as readonly string[]).includes(e.until), 'trigger modifier')
       if (['status.apply', 'knockback', 'power.gain', 'stamina.drain', 'damage', 'heal'].includes(e.kind)) {
         const v = ['damage', 'heal'].includes(e.kind) ? e.amount : e.value
         if (typeof v === 'number') requireThat(integer(v), 'trigger amount')

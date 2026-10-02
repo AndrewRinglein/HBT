@@ -14,6 +14,7 @@ import { forcedTargetOf, hiddenFrom, incomingAbsorb, isBlocked, isProne, isRoote
 import { canAttack, performAttack, preview } from './pipeline.js'
 import { knockImmunity } from './kdb.js'
 import { thornsOf } from './thorns.js'
+import { applyEffect } from './trigger.js'
 import { settle } from './settle.js'
 import { enterGround } from './ground.js'
 import { anyStructure, passableFor, structureAt, structureStepCost } from './structure.js'
@@ -357,22 +358,11 @@ export function stepRangeOf(power: MoveDef): number {
 }
 
 /**
- * Apply a bonus move's riders, after the step resolved. Plain rows through the
- * mutators — the mechanism knows the kinds, content supplies the values.
- * `endOfTurn` = expiresAtTurn turn+1, matching modsFor's `turn < expiresAtTurn`.
+ * Apply a bonus move's riders, after the step resolved — the mover's own, through THE one effect
+ * interpreter (fix.one-effect-vocabulary, 2026-10-01; this was a third interpreter of its own).
  */
 function applyMoveEffects(ctx: Ctx, unitId: number, power: MoveDef): void {
-  for (const ef of power.effects ?? []) {
-    if (ef.kind === 'stand') standUp(ctx, unitId, power.id)
-    else if (ef.kind === 'gainStamina') gainStamina(ctx, unitId, ef.value, power.id)
-    else if (ef.kind === 'loseMaxStamina') loseMaxStamina(ctx, unitId, ef.value, power.id)
-    else if (ef.kind === 'statMod') {
-      addStatMod(ctx, unitId, {
-        stat: ef.stat, op: 'add', value: ef.value, source: power.id, scope: 'unit',
-        ...(ef.until === 'endOfTurn' ? { expiresAtTurn: ctx.state.turn + 1 } : {}),
-      }, power.id)
-    }
-  }
+  for (const ef of power.effects ?? []) applyEffect(ctx, ef, { causeId: power.id, actor: unitId }, unitId)
 }
 
 export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: MoveDef, slot?: import('./types.js').ActionSlot): boolean {

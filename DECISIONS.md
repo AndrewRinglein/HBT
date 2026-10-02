@@ -3806,3 +3806,25 @@ Ruled, the queue order:
 2. **Movements needed now** — engine queue: `movement.swap-and-shields`, then `movement.inventory`.
 3. **Six-battle run** — engine: Gates (`encounter.opening.gates`, landed), Bridge AI (`encounter.opening.bridge-ai-refiled`, landed, awaiting review), the Cathedral (`encounter.opening.cathedral`, next in the engine queue after the movements); then kingdom: `kingdom.opening-run-six`, which grows `kingdom.opening-loop-three` to six with saving and supersedes it and `kingdom.opening-loop` (both to be abandoned from a terminal; `kingdom.opening-loop-three` still needs the abandoned `encounter.opening.bridge-ai` and can never start).
 4. **Affliction changes** — `content.afflictions-at-zero`, then `rule.afflictions-at-zero`, then `viewer.affliction-pop-up`.
+
+## 2026-10-01 — the first look at the XCOM camera, the weapons and the bodies: heroes face right, enemies left; a little more zoom; the edge scroll
+
+Andrew, in the viewer chat, after playing the sandbox (viewer.weapons-in-hand, viewer.xcom-camera, viewer.unit-card-bar, viewer.characters-unfaded landed):
+
+“The enemies should be facing to the left, and the heroes should be facing to the right. Only one hero has a weapon, which is an axe. I see an axe, and I see a shield, and I see someone else with just a shield.    I think the zoom-in and zoom-out should go a little bit further than the 0.75 and 1.4, but that is approximately what I wanted. The pointing-to-scroll on the map does not work very well. If you point to the edge, you sometimes get some movement.”
+
+Ruled (the readings, the viewer chat's; Andrew to confirm):
+
+- **Heroes face right, enemies face left** — at rest, every body faces its side's way across the board (heroes east, toward the enemy; enemies west); civilians are the heroes' side. Walking it faces where it walks, striking it faces its target, and it turns back when it is idle again.
+- **The wheel goes a little further** than 0.75×–1.4× of the standard zoom; it still springs back.
+- **Pointing to scroll must work every time** the pointer is at the edge.
+
+What he saw, measured the same evening (battle 1, the Orphanage): the Iron Dwarf holds the tower shield and the war axe, the Battle Chaplain the round shield — his Holy Texts have no 3D model (listed, not faked: viewer SWITCHES heldModels) — and the Hunter holds the longbow in his left hand, edge-on to the fixed camera, so it reads as a thin stick. Why the edge scroll seldom moved: on a board smaller than the view the pan was pinned to the board's middle (viewer SWITCHES cameraPanNoVoid), and the board's edge is not the screen's edge in the battle screen (the bar, the panel and the ability bar surround it).
+
+Filed: `viewer.side-facing`, `viewer.xcom-camera-tuning` — first in the viewer queue.
+
+Andrew, minutes later, the same chat:
+
+“Every unit faces the direction it walks, and when a unit moves next to another unit, the unit, if it's an enemy, should turn to face them. If a zombie walks up to you, you turn to face the zombie. If you walk up to a zombie, it turns to face you. If someone then walks up from another hex, it turns to face them. You also turn to face anybody who attacks you.”
+
+Ruled: **a body's facing is kept, not reset.** It starts facing its side's way (heroes right, enemies left); it faces where it walks; **when an enemy steps next to it, it turns to face that enemy** (the latest to arrive wins); **it turns to face anyone who attacks it**; striking, it faces its target. Replaces the reading above that a body "turns back when it is idle".

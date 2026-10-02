@@ -12,6 +12,7 @@ const rows = [['physical', 'armor'], ['magic', 'resist'], ['fire', 'fireResist']
   ['poison', 'poisonResist'], ['shadow', 'shadowResist'], ['true', null]] as const
 const rig = () => createCustomBattle([{type: 'test-warrior', hex: 85}], [{type: 'test-zombie', hex: 86}])
 
+// Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (selfDamage -> damage, who: 'self' — flat damage on the caster); the assertion is unchanged.
 describe('rule.protection-universal', () => {
   for (const targetId of [0, 1]) for (const [type, defense] of rows) for (const path of ['tick', 'trigger']) {
     it(`${path} ${type} damage consumes both pools before defense on side ${targetId}`, () => {
@@ -48,7 +49,7 @@ describe('rule.protection-universal', () => {
       Object.assign(u, {armor: 0, resist: 0, fireResist: 0, poisonResist: 0, shadowResist: 0})
       if (defense) Object.assign(u, {[defense]: 2})
       ctx.actions = {...ctx.actions, [id]: {...ctx.actions['power.test-second-wind']!, id,
-        effects: [{kind: 'selfDamage', amount: 8, damageType: type}]}}
+        effects: [{kind: 'damage', amount: 8, damageType: type, who: 'self'}]}}
       u.actions.push(id); beginActivation(ctx, u.id, 'test')
       applyStatus(ctx, u.id, 'status.protection', 5, 'test')
       const before = structuredClone({state: ctx.state, events: ctx.events, rng: ctx.rng})
@@ -64,7 +65,7 @@ describe('rule.protection-universal', () => {
     const ctx = rig(), u = ctx.state.units[0]!, id = 'power.fire-master.eldritch-might'
     u.actions.push(id); u.stamina = 99; beginActivation(ctx, u.id, 'test')
     applyStatus(ctx, u.id, 'status.protection', 100, 'test')
-    const amount = ctx.actions[id]!.effects!.find(e => e.kind === 'selfDamage')!.amount as number
+    const amount = (ctx.actions[id]!.effects!.find(e => e.kind === 'damage' && e.who === 'self') as { amount: number }).amount
     const hp = u.hp
     expect(previewPower(ctx, u.id, u.id, id)).toMatchObject({selfDamage: 0, selfDamageApplied: 0})
     usePower(ctx, u.id, u.id, id)
@@ -75,8 +76,8 @@ describe('rule.protection-universal', () => {
   it('successive self damage effects preview the remaining shared pool', () => {
     const ctx = rig(), u = ctx.state.units[0]!, id = 'power.test-double-self'
     ctx.actions = {...ctx.actions, [id]: {...ctx.actions['power.test-second-wind']!, id, effects: [
-      {kind: 'selfDamage', amount: 4, damageType: 'true'},
-      {kind: 'selfDamage', amount: 4, damageType: 'true'},
+      {kind: 'damage', amount: 4, damageType: 'true', who: 'self'},
+      {kind: 'damage', amount: 4, damageType: 'true', who: 'self'},
     ]}}
     u.actions.push(id); beginActivation(ctx, u.id, 'test')
     applyStatus(ctx, u.id, 'status.protection', 5, 'test')
@@ -108,7 +109,7 @@ describe('rule.protection-universal', () => {
     u.hp = 1; u.fireResist = 1
     ctx.actions = {...ctx.actions, [id]: {...ctx.actions['power.test-second-wind']!, id, effects: [
       {kind: 'status.apply', statusId: 'status.protection', value: 2},
-      {kind: 'selfDamage', amount: 5, damageType: 'fire'},
+      {kind: 'damage', amount: 5, damageType: 'fire', who: 'self'},
     ]}}
     u.actions.push(id); beginActivation(ctx, u.id, 'test')
     const before = structuredClone({state: ctx.state, events: ctx.events, rng: ctx.rng})

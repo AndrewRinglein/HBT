@@ -10,6 +10,7 @@
 // schedule is a finding, never a patch. Pure: the caller reads the file.
 
 import type { HeroProgress, UnitDef } from '../core/types.js'
+import { CRIT_BASE } from '../core/pipeline.js'
 
 export type ScheduleHero = {
   readonly id: string
@@ -91,12 +92,19 @@ export function rosterOptionsOf(schedule: Schedule, battle: number, items?: Read
   }
 }
 
+/**
+ * fix.codex-numbers (2026-10-01, review finding C1): the schedule writes crit as the Codex does, a
+ * TOTAL (a warrior 3); the row carries the unit's own addition over the engine's base. The base is
+ * added back before comparing, so the two still speak about the same number.
+ */
+const SCHEDULE_TOTAL_OVER: Readonly<Record<string, number>> = { crit: CRIT_BASE }
+
 /** Where a fielded def and the schedule's block disagree, stat by stat. Empty = agreement. */
 export function disagreements(def: UnitDef, stats: Readonly<Record<string, number>>): { stat: string; engine: number; schedule: number }[] {
   const out: { stat: string; engine: number; schedule: number }[] = []
   for (const [word, key] of Object.entries(SCHEDULE_STAT)) {
     if (!(word in stats)) continue
-    const engine = (def[key] as number | undefined) ?? 0
+    const engine = ((def[key] as number | undefined) ?? 0) + (SCHEDULE_TOTAL_OVER[word] ?? 0)
     if (engine !== stats[word]) out.push({ stat: word, engine, schedule: stats[word]! })
   }
   return out

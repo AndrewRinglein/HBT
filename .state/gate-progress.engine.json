@@ -1,24 +1,24 @@
 {
- "id": "encounter.opening.gates",
- "tree": "80634ddb1be1b54a77d1696e27bb62e85b36da03",
- "ctx": "f83aeaf1581038cdffb68b2382ae959c06723d1c",
+ "id": "fix.turn-mods-expire",
+ "tree": "4171576b4ee65e2f6e6d73b06e8253e7eb02f7e6",
+ "ctx": "fe9e640c98e09af34208cdae8ef34d7f95c3bd8f",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 329,
-  "typecheck": 1898,
-  "the item's own tests": 3396,
-  "gate 1 — the id appears in a real battle": 3680,
-  "brought its own tests": 50,
+  "not already decided": 344,
+  "typecheck": 1563,
+  "the item's own tests": 8679,
+  "gate 1 — the id appears in a real battle": 0,
+  "brought its own tests": 35,
   "existing tests untouched": 0,
-  "control battles unchanged": 35990,
-  "content has a published source": 129,
-  "hardcode scan — core knows mechanisms, never names": 44,
+  "control battles unchanged": 36623,
+  "content has a published source": 128,
+  "hardcode scan — core knows mechanisms, never names": 38,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 55,
-  "naming — no banned words invented": 161,
-  "kill switch — the tests fail without the content": 2446
+  "naming — new content ids use declared kinds": 33,
+  "naming — no banned words invented": 114,
+  "kill switch — the tests fail without the content": 0
  }
 }
