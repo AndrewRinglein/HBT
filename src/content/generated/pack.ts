@@ -43529,6 +43529,104 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "encounter.opening.gates": {
+      "id": "encounter.opening.gates",
+      "name": "Gates",
+      "mapId": "map.opening.gates",
+      "board": {
+        "width": 20,
+        "height": 50
+      },
+      "setup": [
+        {
+          "unit": "unit.bruiser-demon",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 8,
+              "row": 36
+            },
+            {
+              "col": 10,
+              "row": 36
+            }
+          ]
+        },
+        {
+          "unit": "unit.poison-imp",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 4,
+              "row": 37
+            },
+            {
+              "col": 6,
+              "row": 36
+            }
+          ]
+        },
+        {
+          "unit": "unit.powerful-imp",
+          "at": {
+            "col": 10,
+            "row": 31
+          }
+        },
+        {
+          "unit": "unit.lieutenant-demon",
+          "at": {
+            "col": 9,
+            "row": 33
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 7,
+          "spawn": [
+            {
+              "unit": "unit.imp",
+              "at": {
+                "col": 10,
+                "row": 0
+              }
+            },
+            {
+              "unit": "unit.imp",
+              "at": {
+                "col": 10,
+                "row": 49
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 4,
+        "at": {
+          "near": {
+            "col": 10,
+            "row": 45
+          },
+          "range": 2
+        }
+      },
+      "falls": [
+        {
+          "id": "trigger.gates.curse-strike",
+          "turn": 4,
+          "areas": 7,
+          "layer": "layer.weak",
+          "applies": [
+            [
+              "status.weak",
+              3
+            ]
+          ]
+        }
+      ]
+    },
     "encounter.caravan-aftermath": {
       "id": "encounter.caravan-aftermath",
       "name": "Caravan Aftermath",

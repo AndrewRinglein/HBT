@@ -4895,7 +4895,9 @@
   "probeIds": [
    "encounter.opening.gates"
   ],
-  "note": "Cut 2026-09-28. 'Retreating is a loss' cannot happen: retreat is not built (src/core/types.ts 61-70). Switch: the heroes' start hexes (up the approach from the south)."
+  "note": "Cut 2026-09-28. 'Retreating is a loss' cannot happen: retreat is not built (src/core/types.ts 61-70). Switch: the heroes' start hexes (up the approach from the south).",
+  "status": "done",
+  "sha": "8049f8b"
  },
  {
   "id": "encounter.opening.cathedral",

@@ -210,6 +210,11 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.opening.cavern-trail', encounterId: 'encounter.opening.cavern-trail', openingPosition: 4,
     heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
   },
+  'test.opening-gates': {
+    id: 'test.opening-gates', note: 'The opening, battle 5: encounter.opening.gates (the Curse, with the curse strike) on map.opening.gates with the party drafted by then (six heroes, one with the Flaming Longsword).',
+    mapId: 'map.opening.gates', encounterId: 'encounter.opening.gates', openingPosition: 5,
+    heroes: [], heroHexes: [], enemies: [], enemyHexes: [], replicate: 0,
+  },
   'test.area-fall-curse': {
     id: 'test.area-fall-curse', note: 'TEST: the same fielding under test.fall.curse — the curse strike (3 Weak, cursed ground). No campaign claim.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.curse-strike',
