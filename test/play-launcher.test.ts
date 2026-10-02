@@ -20,6 +20,10 @@ describe('the game plays from a link: the launcher', () => {
     // Law 10, viewer.caravan-scene (2026-10-01; DECISIONS.md 2026-10-01 "the caravan's fight" — "so it can be played in the
     // sandbox"): the sandbox plays the caravan aftermath too (kingdom SWITCHES sandboxCaravan), after the opening's four.
     // was: expect(out).toMatch(/play launcher: 4 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail\).*passed/)
-    expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
+    // Law 10, kingdom.abbotown-map rebuild (2026-10-01): the engine chat landed encounter.opening.gates (engine 817b21d,
+    // Battle 5, Gates); the sandbox plays every encounter.opening.* row, so the launcher gains the Gates in the opening's
+    // order, before the caravan. The rule is unchanged: one card per playable battle, in that order.
+    // was: expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
+    expect(out).toMatch(/play launcher: 6 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Caravan Aftermath\).*passed/)
   }, 60000)
 })

@@ -6,6 +6,9 @@ import {burstForecast} from './burst-forecast.js'
 import {sandboxTargetingOf} from './sandbox-targeting.js'
 import {controllerOf,validateBattleCommand,type BattleCommand} from '../engine.js'
 import {createPlayInput,type PlayEvent} from './play-input.js'
+import {ABBOTOWN_MAP} from '../content/conquest.js'
+import {conquestProgress,takeSection,wonOutcome} from '../core/conquest.js'
+import {conquestMapHTML} from './conquest-map.js'
 
 declare const __BATTLE_VIEW_DATA__:Record<string,unknown>
 declare const __BUILD_SHA__:string
@@ -39,16 +42,32 @@ const boardOnly=()=>session?.config.encounterId!==undefined
     error, a stopped battle, the outcome). The launcher is the other view, reached by the Launcher button; a free battle
     keeps the launcher page with its controls (kingdom SWITCHES.md battleView*) */
 let launcher=false
-const battleView=()=>!!session&&boardOnly()&&!launcher
+/** kingdom.abbotown-map (PLAYABLE-OPENING-PLAN.md item 11; engine DECISIONS.md 2026-09-29 "the playable opening"): ?map
+    opens the Retaking Abbotown map — a sitting. Taken sections are held in this page's memory for the sitting ("One
+    sitting is enough for now": no save); &taken=<encounter ids> seeds it. Only the next section fields a battle, as ?play=
+    does; a hero win there takes it, and the outcome offers Back to the map, as a loss does (a lost opening battle is
+    replayed). kingdom SWITCHES.md conquestMapPage, conquestTakenSeed */
+let mapSitting=false,mapOpen=false,taken:string[]=[]
+const mapOrder=ABBOTOWN_MAP.sections.map(s=>s.encounterId)
+function drawMap(){
+ const host=q('conquest')
+ host.innerHTML=conquestMapHTML({map:ABBOTOWN_MAP,progress:conquestProgress(mapOrder,taken),playable:SANDBOX_ENCOUNTERS.map(e=>e.id)})
+ host.querySelectorAll<HTMLElement>('[data-act="field"]').forEach(el=>el.addEventListener('keydown',(e:Event)=>{const k=(e as KeyboardEvent).key;if(k==='Enter'||k===' '){e.preventDefault?.();action('field',el.dataset.id)}}))
+ bind(host)
+}
+const battleView=()=>!!session&&boardOnly()&&!launcher&&!mapOpen
 const show=(el:Element|null,on:boolean)=>{if(!el)return;if(on)el.removeAttribute('hidden');else el.setAttribute('hidden','')}
 function layout(){
+ if(mapOpen)document.body.classList.add('map-view');else document.body.classList.remove('map-view')
+ show(q('conquest'),mapOpen)
+ if(mapOpen){document.body.classList.remove('battle-view');for(const el of [root.querySelector('header'),q('setup'),q('commands'),q('battleNav'),q('battle'),q('transfer'),root.querySelector('footer')])show(el,false);return}
  const on=battleView(),say=!!(error||fault||session?.ctx.state.outcome)
  if(on)document.body.classList.add('battle-view');else document.body.classList.remove('battle-view')
  for(const el of [root.querySelector('header'),q('setup'),q('transfer'),root.querySelector('footer')])show(el,!on)
  show(q('commands'),!on||say);show(q('battleNav'),on);show(q('battle'),!(session&&boardOnly()&&launcher))
  surface?.refit()
 }
-root.innerHTML=`<header><h1>Battle Sandbox</h1><p>Command the heroes against AI enemies on an authored battlefield.</p><a href="SLICE.html">Kingdom</a> · <a href="../viewer/BATTLE-VIEWER.html">Battle Viewer</a> · <a href="../assets/battle-atlas/index.html">Battle Atlas</a></header><section id="setup"></section><section id="commands" aria-live="polite"></section><nav id="battleNav" hidden><button data-act="launcher" title="The launcher: field another battle, save or replay">Launcher</button></nav><div id="battle"></div><section id="transfer"><h2>Save and replay</h2><p>Save keeps the full battle for resuming. Replay JSON opens in the Battle Viewer.</p><button data-act="save">Save battle</button> <button data-act="resume">Resume saved battle</button> <button data-act="export">Export replay JSON</button> <button data-act="import">Resume pasted save</button><label for="transferText">Battle save / replay JSON</label><textarea id="transferText" rows="5" spellcheck="false"></textarea></section><footer>Kingdom ${escape(__BUILD_SHA__)} · engine ${escape(__ENGINE_PROVENANCE__.engineCommit)}${__ENGINE_PROVENANCE__.engineDirty?' (dirty source)':''}</footer>`
+root.innerHTML=`<section id="conquest" hidden></section><header><h1>Battle Sandbox</h1><p>Command the heroes against AI enemies on an authored battlefield.</p><a href="SLICE.html">Kingdom</a> · <a href="BATTLE-SANDBOX.html?map">Retaking Abbotown</a> ·<a href="../viewer/BATTLE-VIEWER.html">Battle Viewer</a> · <a href="../assets/battle-atlas/index.html">Battle Atlas</a></header><section id="setup"></section><section id="commands" aria-live="polite"></section><nav id="battleNav" hidden><button data-act="launcher" title="The launcher: field another battle, save or replay">Launcher</button></nav><div id="battle"></div><section id="transfer"><h2>Save and replay</h2><p>Save keeps the full battle for resuming. Replay JSON opens in the Battle Viewer.</p><button data-act="save">Save battle</button> <button data-act="resume">Resume saved battle</button> <button data-act="export">Export replay JSON</button> <button data-act="import">Resume pasted save</button><label for="transferText">Battle save / replay JSON</label><textarea id="transferText" rows="5" spellcheck="false"></textarea></section><footer>Kingdom ${escape(__BUILD_SHA__)} · engine ${escape(__ENGINE_PROVENANCE__.engineCommit)}${__ENGINE_PROVENANCE__.engineDirty?' (dirty source)':''}</footer>`
 const q=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T
 const options=(rows:readonly {id:string;name:string}[],selected:string)=>rows.map(r=>`<option value="${escape(r.id)}"${r.id===selected?' selected':''}>${escape(r.name)}</option>`).join('')
 const attached=(host:HTMLElement,el:HTMLElement)=>root.contains(host)&&host.contains(el)
@@ -114,7 +133,12 @@ function controls(){
  const label=(c:SandboxChoice)=>'destination' in c.command?`Hex ${c.command.destination} (${session!.ctx.geo.colOf(c.command.destination)}, ${session!.ctx.geo.rowOf(c.command.destination)})`:'hex' in c.command?`Prop at hex ${c.command.hex} (${session!.ctx.geo.colOf(c.command.hex)}, ${session!.ctx.geo.rowOf(c.command.hex)})`:'centre' in c.command?`Centre hex ${c.command.centre} (${session!.ctx.geo.colOf(c.command.centre)}, ${session!.ctx.geo.rowOf(c.command.centre)})`:session!.ctx.state.units[c.command.target]!.name+' · hex '+session!.ctx.state.units[c.command.target]!.hex
  // encounter.area-fall: the areas marked to fall, shown from their area.marked line until they land
  const marked=session&&!session.ctx.state.outcome?sandboxMarkedAreas(session):[]
- const nav=session&&boardOnly()?launcher?'<p><button data-act="battle">Return to the battle</button></p>':session.ctx.state.outcome?'<p><button data-act="launcher">Back to the launcher</button></p>':'':''
+ // kingdom.abbotown-map: in a map sitting a hero win takes its section (only the next one — core/conquest.ts takeSection),
+ // and every outcome offers the map; the section is named as retaken, or as waiting to be fought again
+ const ended=session?.ctx.state.outcome,mapBattle=mapSitting&&!!session&&boardOnly()&&mapOrder.includes(session.config.encounterId!)
+ if(mapBattle&&wonOutcome(ended))taken=takeSection(mapOrder,taken,session!.config.encounterId!)
+ const sectionName=mapBattle?ABBOTOWN_MAP.sections.find(s=>s.encounterId===session!.config.encounterId)!.name:''
+ const nav=session&&boardOnly()?launcher?'<p><button data-act="battle">Return to the battle</button></p>':ended?mapBattle?`<p id="mapOutcome">${escape(sectionName)} ${wonOutcome(ended)&&taken.includes(session.config.encounterId!)?'is retaken.':wonOutcome(ended)?'is won.':'is not taken — it waits on the map to be fought again.'}</p><p><button data-act="map">Back to the map</button></p>`:'<p><button data-act="launcher">Back to the launcher</button></p>':'':''
  const markedNote=marked.map(m=>`<p id="markedAreas" role="status">Marked to fall after Turn ${m.landsAfterTurn}'s Player Phase (${escape(m.fall)}): hexes ${m.hexes.map(h=>`${h} (${session!.ctx.geo.colOf(h)}, ${session!.ctx.geo.rowOf(h)})`).join(', ')}</p>`).join('')
  q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?.name??'Resolving battle')}`:'Start a battle to play'}</h2>${nav}${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${board?'':`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}`}${busy||fault?'':'<p id="playHelp">On the board: click a hero to act · click a hex for a ghost, click it again to move · click an action on the bar, point at an enemy for the forecast, click it, click again to confirm · right-click (or Esc) steps back'+(board?' · End activation ends a hero who will not act again; End Turn ends the Player Phase.':'.')+'</p>'}${board?'':`${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`}`:''}`
  changeListener(q('commands'),q<HTMLSelectElement>('actor'),()=>{selectedActor=q<HTMLSelectElement>('actor').value;controls()},'selecting')
@@ -144,10 +168,10 @@ function install(next:Sandbox){
  },onDrain:()=>{if(epoch!==generation)return;busy=false;controls()},onError:(e:Error)=>{if(epoch!==generation)return;fault=e.message;error=fault;busy=false;controls()}},{fill:battleView})
  const staging=document.createElement('div'),view=viewSandbox(next)
  try{candidate.mount(staging,view)}catch(e){candidate.dispose();throw e}
- generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false
+ generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;mapOpen=false
  surface.mount(q('battle'),view);controls()
 }
-function action(act:string){let mayHaveMutated=false;try{
+function action(act:string,id?:string){let mayHaveMutated=false;try{
  error=''
  if(fault&&['select','execute','end','swap','skip','save','export'].includes(act))throw Error('Battle is stopped. Reset or resume a saved battle to continue.')
  if(act==='start')install(createSandbox(config))
@@ -155,6 +179,9 @@ function action(act:string){let mayHaveMutated=false;try{
  else if(act==='hero-add'||act==='enemy-add'){const key=act==='hero-add'?'heroes':'enemies',max=key==='heroes'?6:15;if(config[key].length>=max)throw Error('Roster limit reached');config[key].push(key==='heroes'?SANDBOX_HEROES[0]!.id:SANDBOX_ENEMIES[0]!.id);setup()}
  else if(act==='hero-remove'||act==='enemy-remove'){const key=act==='hero-remove'?'heroes':'enemies';if(config[key].length<=1)throw Error('Keep at least one unit');config[key].pop();setup()}
  else if(act==='import'||act==='resume'){const data=act==='import'?q<HTMLTextAreaElement>('transferText').value:localStorage.getItem('hbt-sandbox');if(!data)throw Error('No saved battle');install(restoreSandbox(data))}
+ // kingdom.abbotown-map: the next section fields its encounter exactly as ?play= does; the map comes back after a battle
+ else if(act==='field'){const st=conquestProgress(mapOrder,taken).find(p=>p.id===id)?.state;if(!mapSitting||st!=='next'||!SANDBOX_ENCOUNTERS.some(e=>e.id===id))throw Error('Only the next section can be fought');config.encounterId=id!;setup();install(createSandbox(config))}
+ else if(act==='map'){if(!mapSitting)throw Error('Open the map with ?map');mapOpen=true;launcher=false;drawMap()}
  else if(act==='launcher'||act==='battle'){if(!session)throw Error('Start a battle first');launcher=act==='launcher'}
  else if(act==='skip'){surface?.viewer?.pause();surface?.viewer?.seek(session!.ctx.events.length);busy=false;controls()}
  else {if(!session)throw Error('Start a battle first')
@@ -170,13 +197,18 @@ function action(act:string){let mayHaveMutated=false;try{
  }
  controls()
  }catch(e){error=(e as Error).message;if(mayHaveMutated){fault=error;busy=false}controls()}}
-function bind(host:HTMLElement){host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',()=>{if(!attached(host,el)||el.hasAttribute('disabled'))return;action(el.dataset.act!)}))}
+function bind(host:HTMLElement){host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',()=>{if(!attached(host,el)||el.hasAttribute('disabled'))return;action(el.dataset.act!,el.dataset.id)}))}
 bind(q('transfer'));bind(q('battleNav'));setup();controls()
 // viewer.play-input: ?play=<encounter id>[&heroes=<hero id>,…] fields that encounter at once — the playable opening's
 // battles open straight onto the board (kingdom SWITCHES.md playInputOpenOn)
 {const params=typeof location!=='undefined'&&location.search?new URLSearchParams(location.search):null,want=params?.get('play')
  if(want&&SANDBOX_ENCOUNTERS.some(e=>e.id===want)){config.encounterId=want
   const heroes=(params!.get('heroes')??'').split(',').filter(id=>SANDBOX_HEROES.some(h=>h.id===id)).slice(0,6);if(heroes.length)config.heroes=heroes
-  setup();action('start')}}
+  setup();action('start')}
+ // kingdom.abbotown-map: ?map[&taken=<encounter id>,…][&heroes=<hero id>,…] opens the Retaking Abbotown map for a sitting
+ if(!want&&params?.has('map')){mapSitting=true;mapOpen=true
+  taken=mapOrder.filter(id=>(params.get('taken')??'').split(',').includes(id))
+  const heroes=(params.get('heroes')??'').split(',').filter(id=>SANDBOX_HEROES.some(h=>h.id===id)).slice(0,6);if(heroes.length)config.heroes=heroes
+  drawMap();controls()}}
 // A read-only integration handle for the built-page smoke; commands still use UI listeners.
 Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation}}})
