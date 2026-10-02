@@ -485,6 +485,7 @@ for(const h of heroes){
       for(const k of Object.keys(sb.derived||{})) if(!(k in base)) d[k]=h.derivedBase[k];
       if(Object.keys(d).length){ h.derivedDeltas=d; h.derivedDeltaWhy=sb.why; } }
     if(sb.kit) h.kit=sb.kit;
+    if(sb.kitWhy) h.notes.push('Kit: '+sb.kitWhy);
     if(sb.authoredTriggers) h.authoredTriggers=[...(h.authoredTriggers||[]), ...sb.authoredTriggers.map(x=>({...x,authored:true}))];
     if(sb.survivalReward) h.survivalReward=sb.survivalReward;
     if(sb.grantsTactics){ h.grantsTactics=sb.grantsTactics; h.grantsTacticsNote=sb.grantsTacticsNote; }
@@ -521,6 +522,18 @@ for(const h of heroes){
       armed++;
     }
     console.log('civilian weapons: '+armed+' armed, '+already+' already carried one');
+  }
+  // PLACED WITH ITS KIT — ruled 2026-10-02 (engine DECISIONS.md 'the Net is a trinket with no hands; the
+  // orphans and the school teacher start with a knife'): "The Orphanage, Orphanage, and the school teacher should
+  // start with a knife each." A civilian named here fields its kit wherever an encounter places it; every other
+  // placed civilian is fielded authored whole (engine SWITCHES arrivalKit). mkenginepack reads hero.placedWithKit.
+  for(const id of (CR.placedWithKit||{}).ids||[]){
+    const h=heroes.find(x=>x.id===id);
+    if(!h){problems.push('civilian-rulings placedWithKit: no hero '+id);continue;}
+    if(h.class!=='class.civilian'){problems.push('civilian-rulings placedWithKit: '+id+' is '+h.class+', not a civilian');continue;}
+    if(!(h.kit||[]).length){problems.push('civilian-rulings placedWithKit: '+id+' carries no kit to field');continue;}
+    h.placedWithKit=true;
+    h.notes.push('Fields its kit wherever an encounter places it — ruled 2026-10-02.');
   }
   for(const [id,a] of Object.entries(CR.art||{})){
     if(id.startsWith('_'))continue;

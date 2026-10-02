@@ -159,7 +159,7 @@
     "luck": 10
    },
    "kit": [
-    "item.pile-of-rocks"
+    "item.dagger"
    ],
    "authoredTriggers": [
     {
@@ -189,7 +189,8 @@
     "currency": "Faith",
     "value": 2,
     "needsCapability": "battle-outcome reward — surviving is not a combat hook; this pays from the encounter outcome into the kingdom purse. Faith is a live currency (KINGDOM-DESIGN: Pray, quest rewards)."
-   }
+   },
+   "kitWhy": "Ruled 2026-10-02 (engine DECISIONS.md 'the Net is a trinket with no hands; the orphans and the school teacher start with a knife'), Andrew: \"The Orphanage, Orphanage, and the school teacher should start with a knife each.\" / \"Dagger is fine.\" The knife is item.dagger, in place of item.pile-of-rocks (fix.orphans-teacher-knife)."
   },
   "hero.fixed.lumberjack-and-wife": {
    "why": "Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day.",
@@ -429,5 +430,12 @@
    "civilian.farmer": "item.pitchfork"
   },
   "overrides": {}
+ },
+ "placedWithKit": {
+  "_note": "Ruled 2026-10-02 (engine DECISIONS.md 'the Net is a trinket with no hands; the orphans and the school teacher start with a knife'), Andrew: \"The Orphanage, Orphanage, and the school teacher should start with a knife each.\" A civilian named here fields its kit wherever an encounter places it (a setup unit or a scheduled arrival); every other placed civilian is fielded authored whole, with Punch (engine SWITCHES arrivalKit). build-heroes.mjs sets placedWithKit on the hero; mkenginepack.mjs carries it onto the unit row (fix.orphans-teacher-knife).",
+  "ids": [
+   "hero.fixed.orphans",
+   "hero.fixed.school-teacher"
+  ]
  }
 }

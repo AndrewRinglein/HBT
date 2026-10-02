@@ -186,7 +186,9 @@
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Renamed \"Orphan Children\" -> \"Orphan Child\", ruled 2026-08-25.",
     "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
+    "Kit: Ruled 2026-10-02 (engine DECISIONS.md 'the Net is a trinket with no hands; the orphans and the school teacher start with a knife'), Andrew: \"The Orphanage, Orphanage, and the school teacher should start with a knife each.\" / \"Dagger is fine.\" The knife is item.dagger, in place of item.pile-of-rocks (fix.orphans-teacher-knife).",
     "Stat block dictated 2026-08-25: Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls.",
+    "Fields its kit wherever an encounter places it — ruled 2026-10-02.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -224,7 +226,7 @@
    },
    "derivedDeltaWhy": "Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls.",
    "kit": [
-    "item.pile-of-rocks"
+    "item.dagger"
    ],
    "authoredTriggers": [
     {
@@ -256,6 +258,7 @@
     "value": 2,
     "needsCapability": "battle-outcome reward — surviving is not a combat hook; this pays from the encounter outcome into the kingdom purse. Faith is a live currency (KINGDOM-DESIGN: Pray, quest rewards)."
    },
+   "placedWithKit": true,
    "artSlug": "orphan-child",
    "hexArt": [
     "art/heroes/orphan-child/hex/l1_1024.png",
@@ -4153,7 +4156,8 @@
     "maxRuneSlots 2 has no HoBaT stat; blood runes are items here.",
     "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
     "Stat block dictated 2026-08-25: School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon.",
-    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon.",
+    "Fields its kit wherever an encounter places it — ruled 2026-10-02."
    ],
    "specialty": {
     "name": "Educator",
@@ -4201,6 +4205,7 @@
     "phase": 1,
     "needsCapability": "THE HAND (stub for now, ruled 2026-08-25): Draw belongs to The Hand — the card system beyond the slice (slice ruling 1 skips cards entirely). Recorded verbatim; wires up when The Hand exists."
    },
+   "placedWithKit": true,
    "artSlug": "schoolteacher",
    "hexArt": [
     "art/heroes/schoolteacher/hex/l1_1024.png",
