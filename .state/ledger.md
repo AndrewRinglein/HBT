@@ -22191,6 +22191,16 @@ Filed with changesBaseline true, but the work it specifies is neutral on the con
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — test/battle-cursor.test.ts, test/fix-masterwork-scope.test.ts, test/fixtures/battle-cursor-one-hero-assembly.json, test/one-hero-assembly.test.ts
   WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/fix-masterwork-scope.test.ts (-2) — will land FLAGGED for review
+## viewer.reads-engine — LANDED `84dc7f1`
+2026-10-02 08:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\THREE-PACKAGES-PLAN.md:211
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.reads-engine.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.reads-engine.test.ts
+  PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names

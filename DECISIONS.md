@@ -3879,3 +3879,13 @@ Ruled:
 
 - **A shield power — any power aimed at its own user — fires on a double-click on its button in the action bar.** movement.swap-and-shields shipped click-the-button-then-click-it-again (kingdom SWITCHES `playInputSelfPower`); in Andrew's play neither that, a double-click, nor clicking the button then the hero did anything. Filed: `fix.shield-power-double-click`.
 - **The Leap's +2 Strength now shows and counts** (viewer.live-stat-mods, confirmed by play).
+
+## 2026-10-02 — the fast zombie's danger marker reads 3, not its Charge's 4
+
+Andrew, in the viewer chat, told that viewer.reads-engine retired the viewer's hand-typed danger table (finding V2) and the marker now reads each unit's first attack in the engine's order — 4 for the fast zombie, whose first attack is its Charge (Strength 3 + 1), against the 3 ruled 2026-09-01 ("zombies at 3") — and asked whether it stays 4 or a Codex field names each unit's signature attack (viewer SWITCHES `dangerFirstAttack`):
+
+“You can change it to 3.”
+
+Ruled:
+
+- **The fast zombie's danger marker reads 3.** Read as: the marker reads the unit's first attack that is not a Charge, from the engine's own classification (static.json `actionKinds`); a unit whose only attacks are Charges keeps its first. No hand table returns and no Codex field is added. viewer SWITCHES `dangerFirstAttack` is settled by this entry. Filed: `fix.danger-skips-charge`.

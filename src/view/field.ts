@@ -10,6 +10,9 @@ import { terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
 } from '../content/terrain.js'
 
 const HEXW = 128, HEXH = 132, COL = 128, ROW = 96, ODD = 64, TILT = 49.3
+/** The board-space layout every field carries, exported so a reader of the dumps compares against the engine's
+    numbers instead of typing them (viewer.reads-engine, review V14: viewer/tools/dump-fields.mjs held 49.3 and 128). */
+export const FIELD_GEOMETRY = Object.freeze({ hexW: HEXW, hexH: HEXH, colStep: COL, rowStep: ROW, oddOffset: ODD, tilt: TILT })
 const groundValues = Object.values(TERRAIN).filter(t => t !== TERRAIN.IMPASSABLE)
 const terrainNumbers = new Map(groundValues.map(t => [terrainIdOf(t), t]))
 function record(value: unknown, label: string): Record<string, any> {
