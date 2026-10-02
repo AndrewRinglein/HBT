@@ -23,10 +23,14 @@ import { damageSourceOfAttack, resolveDamage } from '../src/core/pipeline.js'
 import { ATTACKS, ITEMS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 
-type KingdomRow = { id: string; tier: number; base: string | null; enchant: string | null; source: string; itemClass: string }
+// Law 10, 2026-10-02 (kingdom.reads-engine, review finding K2): the kingdom no longer derives its own Forge rows (its
+// mk-items steps 2-4 retired) — its rows ARE these, joined to the codex items' campaign fields, which its generated file
+// carries one per codex item. "Every id the kingdom generates resolves" becomes: it generates no derived id, every id it
+// carries is an engine item, and every Forge row's base is one it carries — so the two cannot drift apart again.
+type KingdomRow = { id: string }
 const kingdomRows = (): KingdomRow[] => {
   const text = readFileSync(join(__dirname, '..', '..', 'kingdom', 'src', 'content', 'generated', 'items.ts'), 'utf8')
-  return [...text.matchAll(/^ {2}(\{.*\}),$/gm)].map((m) => JSON.parse(m[1]!) as KingdomRow)
+  return [...text.matchAll(/^ {2}(\{.*\}),$/gm)].map((m) => JSON.parse(m[1]!) as KingdomRow).filter((r) => r.id.startsWith('item.'))   // the item rows, not the enchants' campaign rows
 }
 type Derived = { base?: string; enchant?: string }
 const provenance = (id: string): Derived => ITEMS[id] as unknown as Derived
@@ -38,22 +42,23 @@ const fielded = (hero: string, items: string[]) => {
 }
 
 describe('the Forge rows resolve in the engine', () => {
-  it('every id the kingdom generates is an item in ITEMS — codex, masterwork, enchanted and tier-3 alike', () => {
+  it('every id the kingdom generates is an item in ITEMS, and it generates no derived row of its own', () => {
     const rows = kingdomRows()
-    expect(rows.filter((r) => r.source === 'masterwork').length).toBeGreaterThan(0)
-    expect(rows.filter((r) => r.source === 'enchanted').length).toBeGreaterThan(0)
-    const missing = rows.map((r) => r.id).filter((id) => !ITEMS[id])
-    expect(missing).toEqual([])
+    expect(rows.length).toBeGreaterThan(0)
+    expect(rows.map((r) => r.id).filter((id) => !ITEMS[id])).toEqual([])
+    expect(rows.filter((r) => provenance(r.id).base)).toEqual([])
   })
 
-  it('every Forge row is tier 2 and names the same base and enchant the kingdom does', () => {
-    for (const r of kingdomRows().filter((x) => x.source === 'masterwork' || x.source === 'enchanted')) {
-      const it = ITEMS[r.id]!
-      expect(it.tier, r.id).toBe(2)
-      expect(it.itemClass, r.id).toBe(r.itemClass)
-      expect(provenance(r.id).base, r.id).toBe(r.base)
-      expect(provenance(r.id).enchant ?? null, r.id).toBe(r.enchant)
-      expect(ITEMS[r.base!]!.tier, `${r.id}'s base is tier 1`).toBe(1)
+  it('every Forge row is tier 2, its base tier 1 and one the kingdom carries campaign fields for', () => {
+    const carried = new Set(kingdomRows().map((r) => r.id))
+    const forge = Object.values(ITEMS).filter((it) => provenance(it.id).base && it.tier === 2)
+    expect(forge.some((it) => !provenance(it.id).enchant)).toBe(true)
+    expect(forge.some((it) => provenance(it.id).enchant)).toBe(true)
+    for (const it of forge) {
+      const b = provenance(it.id).base!
+      expect(ITEMS[b]!.tier, `${it.id}'s base is tier 1`).toBe(1)
+      expect(ITEMS[b]!.itemClass, it.id).toBe(it.itemClass)
+      expect(carried.has(b), `${it.id}'s base ${b} has the kingdom's campaign fields`).toBe(true)
     }
   })
 })

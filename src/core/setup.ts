@@ -4,7 +4,7 @@ import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, UnitMods, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ACTIONS, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft } from './items.js'
+import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft, foldStats } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { paintGround } from './ground.js'
 import { STATUSES } from '../content/statuses.js'
@@ -244,6 +244,20 @@ export function fieldedDef(typeId: string, opts: FieldOptions | readonly string[
   return assemble(bare, progress ? { ...o, progress } : o, `fieldedDef(${typeId})`, 0).def
 }
 const isItemList = (o: FieldOptions | readonly string[]): o is readonly string[] => Array.isArray(o)
+
+/**
+ * The unit AS THE BATTLE FIELDS IT, its unit mods included — a preview's numbers (kingdom.reads-engine, review
+ * finding K3: the Equip card added the set bonuses itself, with its own stat map, and the battle never got them).
+ * fieldedDef's def, then each of `heroMods`' stat mods added as the battle adds them (applyUnitMods: the pools to the
+ * unit, every other stat as a unit mod — the same sum). A preview only: the battle applies the mods to the unit,
+ * never to its def (SWITCHES.md heroModsInPreview), so fieldedDef stays the def the battle makes.
+ */
+export function fieldedPreview(typeId: string, opts: FieldOptions = {}): UnitDef {
+  const def = fieldedDef(typeId, opts)
+  const delta: Record<string, number> = {}
+  for (const m of opts.heroMods?.stats ?? []) delta[m.stat] = (delta[m.stat] ?? 0) + m.add
+  return foldStats(def, delta, `fieldedPreview(${typeId})`)
+}
 
 /** The name a unit is called by when its row names none: its typeId's last segment, title-cased — the one label (review E14). */
 export function unitLabel(typeId: string): string {

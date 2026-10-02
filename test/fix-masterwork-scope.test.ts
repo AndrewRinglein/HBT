@@ -29,10 +29,13 @@ const isShield = (c: CodexItem) => (c.tags ?? []).includes('shield') || c.itemCl
 const takesMasterwork = (c: CodexItem) => Number(c.tier) === 1 &&
   (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && c.classRestriction !== 'class.beast' && (c.hands === 1 || c.hands === 2)))
 
-type KingdomRow = { id: string; base: string | null; enchant: string | null; source: string }
+// Law 10, 2026-10-02 (kingdom.reads-engine, review finding K2): the kingdom's rows ARE the engine's (its mk-items no longer
+// derives masterwork rows); its generated file carries one campaign row per codex item. The last test holds the claim —
+// one set of masterwork ids — by checking the kingdom derives none and carries every masterwork row's base.
+type KingdomRow = { id: string }
 const kingdomRows = (): KingdomRow[] => {
   const text = readFileSync(join(__dirname, '..', '..', 'kingdom', 'src', 'content', 'generated', 'items.ts'), 'utf8')
-  return [...text.matchAll(/^ {2}(\{.*\}),$/gm)].map((m) => JSON.parse(m[1]!) as KingdomRow)
+  return [...text.matchAll(/^ {2}(\{.*\}),$/gm)].map((m) => JSON.parse(m[1]!) as KingdomRow).filter((r) => r.id.startsWith('item.'))   // the item rows, not the enchants' campaign rows
 }
 type Derived = { base?: string; enchant?: string }
 const derived = () => Object.values(ITEMS).filter((it) => (it as unknown as Derived).base && it.tier === 2) as unknown as (Derived & { id: string })[]
@@ -83,10 +86,11 @@ describe('masterwork reaches one-handers and shields', () => {
     expect(bad).toEqual([])
   })
 
-  it('the kingdom and the engine hold the same masterwork ids, in both directions', () => {
-    const k = kingdomRows().filter((r) => r.source === 'masterwork').map((r) => r.id).sort()
-    const e = derived().filter((d) => !d.enchant).map((d) => d.id).sort()
-    expect(k).toContain('item.longsword.masterwork')
-    expect(k).toEqual(e)
+  it("the kingdom and the engine hold the same masterwork ids: the kingdom derives none, and carries every one's base", () => {
+    const carried = new Set(kingdomRows().map((r) => r.id))
+    const e = derived().filter((d) => !d.enchant)
+    expect(e.map((d) => d.id)).toContain('item.longsword.masterwork')
+    expect([...carried].filter((id) => id.endsWith('.masterwork'))).toEqual([])
+    for (const d of e) expect(carried.has(d.base!), d.id).toBe(true)
   })
 })

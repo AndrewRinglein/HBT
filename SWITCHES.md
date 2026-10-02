@@ -1823,3 +1823,13 @@ weapon that is zero-handed."). Probe `test/one-hero-assembly.test.ts`. Filed as 
 Beast/enemy kits over two hands after the change: **none.** 52 engine rows checked (every enemy-side row and every
 class.beast row in UNITS), 240 Codex bestiary rows and the four class.beast heroes: no beast or enemy carries a kit, no
 enemy swings a weapon row's attacks, and no unit is handed a natural weapon.
+
+## kingdom.reads-engine — what the engine opens to the kingdom, 2026-10-02
+
+The kingdom's switches for this item are in `../kingdom/SWITCHES.md` (§ kingdom.reads-engine); these are the engine's.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `fieldedPreviewMods` | The Equip card must show the battle's numbers for a set-bonus hero (K3), and fieldedDef does not fold `heroMods` (`heroModsInPreview`). How does a preview read them? | **A second read, `fieldedPreview(typeId, opts)`: fieldedDef's def with each heroMods stat mod added by the one fold (foldStats) — the same sum the battle's applyUnitMods makes on the unit. fieldedDef is unchanged.** | Folding them into fieldedDef would count them twice in the battle, which applies them after fielding; a preview function keeps one def and one sum. | provisional — 2026-10-02 |
+| `usesPerBattleMax` | An item's uses for the kingdom (K8) when its powers carry different counts? | **The most any of its powers has (`usesPerBattleOf`); none = permanent (null).** | itemUsesOf marks an instance spent only when every power is; the kingdom keeps one count per instance. No pack row has two such powers today. | provisional — 2026-10-02 |
+| `netUsesOnAttack` | The Net (`netIsAPower`: a trinket) is one-use, but its only grant is an attack and it authors no active of its own. Where do its uses go? | **On the attack it grants (`attack.net.cast` uses 1) — content/mkenginepack.mjs, for any one-use row that grants an attack and has no stamina or targets of its own; refused if the attack already carries a different count.** | The engine reads an item's uses off the powers it grants (`itemUsesSource`); only item.net is such a row. | provisional — 2026-10-02 |

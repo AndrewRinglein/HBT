@@ -42,8 +42,12 @@ const STREAM_ID: Record<Stream, number> = Object.fromEntries(
   STREAMS.map((s, i) => [s, i + 1]),
 ) as Record<Stream, number>
 
-/** FNV-1a over a list of integers. */
-function fnv1a(values: readonly number[]): number {
+/**
+ * FNV-1a over a list of integers. Exported (kingdom.reads-engine, review finding K12): the kingdom's
+ * campaign rolls hash with this one function instead of a copy of it; its dice stay its own (its own
+ * cups and keys), only the hash is shared.
+ */
+export function fnv1a(values: readonly number[]): number {
   let h = 0x811c9dc5
   for (const v of values) {
     // four bytes, low to high

@@ -5047,7 +5047,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 3,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "uses": 1
     },
     "attack.barbarian-bow.power-shot": {
       "id": "attack.barbarian-bow.power-shot",
@@ -12711,10 +12712,6 @@ export const UNIT_PACK = {
           "source": "item.net",
           "onlyWithAttack": "attack.net.cast"
         }
-      ],
-      "gaps": [
-        "active:  — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.thick-hide": {
@@ -44125,6 +44122,19 @@ export const UNIT_PACK = {
       "statModifiers": {
         "maxStamina": -2,
         "surge": -1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.fatigued": {
+      "id": "badge.fatigued",
+      "name": "Fatigued",
+      "statModifiers": {
+        "strength": -1,
+        "precision": -1,
+        "accuracy": -5,
+        "dodge": -5,
+        "maxStamina": -1
       },
       "grants": [],
       "flags": {}

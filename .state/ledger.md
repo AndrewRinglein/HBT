@@ -22399,3 +22399,131 @@ index a6f36c8..daa02cb 100644
  })
 ```
 </details>
+
+## kingdom.reads-engine — LANDED `8efa315` **NEEDS REVIEW**
+2026-10-02 12:35
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1833 · ..\GEAR-IMPLEMENTATION.md:330
+  PASS  typecheck
+  PASS  the item's own tests — test/fix-masterwork-scope.test.ts, test/pack-derived-rows.test.ts, test/pack-items.test.ts, test/kingdom-reads-engine.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/fix-masterwork-scope.test.ts, test/pack-derived-rows.test.ts, test/pack-items.test.ts, test/kingdom-reads-engine.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/fix-masterwork-scope.test.ts (-7), test/pack-derived-rows.test.ts (-15), test/pack-items.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/fix-masterwork-scope.test.ts b/test/fix-masterwork-scope.test.ts
+index 7aeef91..f932bc2 100644
+--- a/test/fix-masterwork-scope.test.ts
++++ b/test/fix-masterwork-scope.test.ts
+@@ -30,8 +30,11 @@ const takesMasterwork = (c: CodexItem) => Number(c.tier) === 1 &&
+   (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && c.classRestriction !== 'class.beast' && (c.hands === 1 || c.hands === 2)))
+ 
+-type KingdomRow = { id: string; base: string | null; enchant: string | null; source: string }
++// Law 10, 2026-10-02 (kingdom.reads-engine, review finding K2): the kingdom's rows ARE the engine's (its mk-items no longer
++// derives masterwork rows); its generated file carries one campaign row per codex item. The last test holds the claim —
++// one set of masterwork ids — by checking the kingdom derives none and carries every masterwork row's base.
++type KingdomRow = { id: string }
+ const kingdomRows = (): KingdomRow[] => {
+   const text = readFileSync(join(__dirname, '..', '..', 'kingdom', 'src', 'content', 'generated', 'items.ts'), 'utf8')
+-  return [...text.matchAll(/^ {2}(\{.*\}),$/gm)].map((m) => JSON.parse(m[1]!) as KingdomRow)
++  return [...text.matchAll(/^ {2}(\{.*\}),$/gm)].map((m) => JSON.parse(m[1]!) as KingdomRow).filter((r) => r.id.startsWith('item.'))   // the item rows, not the enchants' campaign rows
+ }
+ type Derived = { base?: string; enchant?: string }
+@@ -84,9 +87,10 @@ describe('masterwork reaches one-handers and shields', () => {
+   })
+ 
+-  it('the kingdom and the engine hold the same masterwork ids, in both directions', () => {
+-    const k = kingdomRows().filter((r) => r.source === 'masterwork').map((r) => r.id).sort()
+-    const e = derived().filter((d) => !d.enchant).map((d) => d.id).sort()
+-    expect(k).toContain('item.longsword.masterwork')
+-    expect(k).toEqual(e)
++  it("the kingdom and the engine hold the same masterwork ids: the kingdom derives none, and carries every one's base", () => {
++    const carried = new Set(kingdomRows().map((r) => r.id))
++    const e = derived().filter((d) => !d.enchant)
++    expect(e.map((d) => d.id)).toContain('item.longsword.masterwork')
++    expect([...carried].filter((id) => id.endsWith('.masterwork'))).toEqual([])
++    for (const d of e) expect(carried.has(d.base!), d.id).toBe(true)
+   })
+ })
+diff --git a/test/pack-derived-rows.test.ts b/test/pack-derived-rows.test.ts
+index 3bbb791..b313c89 100644
+--- a/test/pack-derived-rows.test.ts
++++ b/test/pack-derived-rows.test.ts
+@@ -24,8 +24,12 @@ import { ATTACKS, ITEMS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ 
+-type KingdomRow = { id: string; tier: number; base: string | null; enchant: string | null; source: string; itemClass: string }
++// Law 10, 2026-10-02 (kingdom.reads-engine, review finding K2): the kingdom no longer derives its own Forge rows (its
++// mk-items steps 2-4 retired) — its rows ARE these, joined to the codex items' campaign fields, which its generated file
++// carries one per codex item. "Every id the kingdom generates resolves" becomes: it generates no derived id, every id it
++// carries is an engine item, and every Forge row's base is one it carries — so the two cannot drift apart again.
++type KingdomRow = { id: string }
+ const kingdomRows = (): KingdomRow[] => {
+   const text = readFileSync(join(__dirname, '..', '..', 'kingdom', 'src', 'content', 'generated', 'items.ts'), 'utf8')
+-  return [...text.matchAll(/^ {2}(\{.*\}),$/gm)].map((m) => JSON.parse(m[1]!) as KingdomRow)
++  return [...text.matchAll(/^ {2}(\{.*\}),$/gm)].map((m) => JSON.parse(m[1]!) as KingdomRow).filter((r) => r.id.startsWith('item.'))   // the item rows, not the enchants' campaign rows
+ }
+ type Derived = { base?: string; enchant?: string }
+@@ -39,20 +43,21 @@ const fielded = (hero: string, items: string[]) => {
+ 
+ describe('the Forge rows resolve in the engine', () => {
+-  it('every id the kingdom generates is an item in ITEMS — codex, masterwork, enchanted and tier-3 alike', () => {
++  it('every id the kingdom generates is an item in ITEMS, and it generates no derived row of its own', () => {
+     const rows = kingdomRows()
+-    expect(rows.filter((r) => r.source === 'masterwork').length).toBeGreaterThan(0)
+-    expect(rows.filter((r) => r.source === 'enchanted').length).toBeGreaterThan(0)
+-    const missing = rows.map((r) => r.id).filter((id) => !ITEMS[id])
+-    expect(missing).toEqual([])
++    expect(rows.length).toBeGreaterThan(0)
++    expect(rows.map((r) => r.id).filter((id) => !ITEMS[id])).toEqual([])
++    expect(rows.filter((r) => provenance(r.id).base)).toEqual([])
+   })
+ 
+-  it('every Forge row is tier 2 and names the same base and enchant the kingdom does', () => {
+-    for (const r of kingdomRows().filter((x) => x.source === 'masterwork' || x.source === 'enchanted')) {
+-      const it = ITEMS[r.id]!
+-      expect(it.tier, r.id).toBe(2)
+-      expect(it.itemClass, r.id).toBe(r.itemClass)
+-      expect(provenance(r.id).base, r.id).toBe(r.base)
+-      expect(provenance(r.id).enchant ?? null, r.id).toBe(r.enchant)
+-      expect(ITEMS[r.base!]!.tier, `${r.id}'s base is tier 1`).toBe(1)
++  it('every Forge row is tier 2, its base tier 1 and one the kingdom carries campaign fields for', () => {
++    const carried = new Set(kingdomRows().map((r) => r.id))
++    const forge = Object.values(ITEMS).filter((it) => provenance(it.id).base && it.tier === 2)
++    expect(forge.some((it) => !provenance(it.id).enchant)).toBe(true)
++    expect(forge.some((it) => provenance(it.id).enchant)).toBe(true)
++    for (const it of forge) {
++      const b = provenance(it.id).base!
++      expect(ITEMS[b]!.tier, `${it.id}'s base is tier 1`).toBe(1)
++      expect(ITEMS[b]!.itemClass, it.id).toBe(it.itemClass)
++      expect(carried.has(b), `${it.id}'s base ${b} has the kingdom's campaign fields`).toBe(true)
+     }
+   })
+diff --git a/test/pack-items.test.ts b/test/pack-items.test.ts
+index f2e5031..b83876c 100644
+--- a/test/pack-items.test.ts
++++ b/test/pack-items.test.ts
+@@ -95,5 +95,8 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+         const compiled = it.abilities.some((a) => ABILITIES[a]?.effects !== undefined)
+         const gapped = it.gaps?.some((x) => x.startsWith('active:') || x.startsWith('uses:'))
+-        expect(compiled || gapped, `${id} is activated: compiled or gapped`).toBe(true)
++        // Law 10, 2026-10-02 (kingdom.reads-engine, K8; SWITCHES netUsesOnAttack): a one-use row whose only grant is an
++        // attack (the Net) pays its uses from that attack — a third way to be neither silent nor missing
++        const onAttack = cu !== undefined && it.grants.length > 0 && it.grants.every((a) => (ATTACKS[a]?.uses ?? 0) > 0)
++        expect(compiled || gapped || onAttack, `${id} is activated: compiled, gapped, or its attack carries its uses`).toBe(true)
+         if (compiled && cu !== undefined) expect(it.abilities.some((a) => (ABILITIES[a]?.uses ?? 0) > 0), `${id} carries its uses`).toBe(true)
+       }
+```
+</details>

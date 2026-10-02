@@ -94,7 +94,10 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
       if (c.stamina !== undefined || c.targets || cu !== undefined) {
         const compiled = it.abilities.some((a) => ABILITIES[a]?.effects !== undefined)
         const gapped = it.gaps?.some((x) => x.startsWith('active:') || x.startsWith('uses:'))
-        expect(compiled || gapped, `${id} is activated: compiled or gapped`).toBe(true)
+        // Law 10, 2026-10-02 (kingdom.reads-engine, K8; SWITCHES netUsesOnAttack): a one-use row whose only grant is an
+        // attack (the Net) pays its uses from that attack — a third way to be neither silent nor missing
+        const onAttack = cu !== undefined && it.grants.length > 0 && it.grants.every((a) => (ATTACKS[a]?.uses ?? 0) > 0)
+        expect(compiled || gapped || onAttack, `${id} is activated: compiled, gapped, or its attack carries its uses`).toBe(true)
         if (compiled && cu !== undefined) expect(it.abilities.some((a) => (ABILITIES[a]?.uses ?? 0) > 0), `${id} carries its uses`).toBe(true)
       }
     }

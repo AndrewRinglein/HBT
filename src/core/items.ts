@@ -64,6 +64,29 @@ export function handsOf(item: ItemDef): number {
 /** Two hands — the most weapons and shields a unit holds (COMBAT-V2 §11.1). */
 export const HANDS = 2
 
+/**
+ * What of a carried list goes into the hands and what is stowed — kingdom.reads-engine (review finding K4: the
+ * kingdom counted hands its own way). In list order a weapon or shield takes its hands (handsOf) while they last;
+ * one past the hands is stowed, granting nothing until swapped in (COMBAT-V2 §11.1); every other item works from
+ * its own slot and is handed. `order` numbers the instances as a fielding does — the handed, then the stowed
+ * (loadoutOf's `<uid>/<n>`) — each as its index in `ids`. Pure; loud on an unknown id (Law 9).
+ */
+export function splitHandsOf(ids: readonly string[], items: Readonly<Record<string, ItemDef>>): { handed: string[]; stowed: string[]; order: number[] } {
+  const handed: number[] = [], stowed: number[] = []
+  let hands = 0
+  ids.forEach((id, k) => {
+    const it = items[id]
+    if (!it) throw new Error(`splitHandsOf: '${id}' is not an item in the registry`)
+    const h = handsOf(it)
+    if (HELD_CLASSES.includes(it.itemClass)) {
+      if (hands + h > HANDS) { stowed.push(k); return }
+      hands += h
+    }
+    handed.push(k)
+  })
+  return { handed: handed.map((k) => ids[k]!), stowed: stowed.map((k) => ids[k]!), order: [...handed, ...stowed] }
+}
+
 
 /**
  * The default AI of a kit — the ONE place it is derived (plumbing.vocabulary-export, review
@@ -148,6 +171,13 @@ export function applyItems(
 // anything unknown: a level past the table, a specialty of another class, a
 // pick that is not one of the options, a power that is not in the registry.
 
+/**
+ * The level a specialty is chosen at — the first level-up, 1 → 2, on every table (Codex levels.rules.specialty:
+ * "The specialty is chosen at the FIRST level-up — reaching level 2 — for every class"). A hero at or past it holds
+ * one. One number, read by applyProgress and by the kingdom's level-up screen (kingdom.reads-engine, review K15).
+ */
+export const SPECIALTY_LEVEL = 2
+
 export type LevelTableLike = { readonly id: string; readonly rows: readonly { readonly level: number; readonly grants: Readonly<Record<string, number>>; readonly choice?: readonly Readonly<Record<string, number>>[] }[] }
 export type SpecialtyLike = { readonly id: string; readonly class: string; readonly statModifiers: Readonly<Record<string, number>> }
 
@@ -191,7 +221,7 @@ export function applyProgress(
     }
   }
   if (progress.levelFivePick && !pickTaken) throw new Error(`${where}: ${base.typeId} names a level-5 pick at level ${progress.level}`)
-  if (progress.level >= 2) {
+  if (progress.level >= SPECIALTY_LEVEL) {
     if (!progress.specialtyId) throw new Error(`${where}: ${base.typeId} is level ${progress.level} and has no specialty — it is chosen at the first level-up`)
     const sp = specialties[progress.specialtyId]
     if (!sp) throw new Error(`${where}: ${base.typeId} names specialty '${progress.specialtyId}', which is not in the registry`)
@@ -309,16 +339,31 @@ export function itemUsesOf(
     if (!row) throw new Error(`${where}: ${base.typeId} carries '${id}', which is not an item in the registry`)
     const k = used?.[n] ?? 0
     if (!Number.isSafeInteger(k) || k < 0) throw new Error(`${where}: ${base.typeId}'s '${id}' is handed ${String(k)} uses spent — a count is a whole number`)
-    const powers = [...row.grants, ...row.abilities].filter((a, j, all) => all.indexOf(a) === j && (actions[a]?.uses ?? 0) > 0)
+    const powers = usedPowersOf(row, actions)
     if (!powers.length) { if (k > 0) throw new Error(`${where}: ${base.typeId}'s '${id}' is handed ${k} uses spent, but it has no uses — a permanent item is never spent`); return }
-    for (const a of powers) {
-      const total = actions[a]!.uses!
+    for (const { actionId: a, uses: total } of powers) {
       if (k > total) throw new Error(`${where}: ${base.typeId}'s '${id}' is handed ${k} uses spent of '${a}', which had only ${total}`)
       entries.push({ instanceId: `${uid}/${n}`, itemId: id, actionId: a, left: total - k, used: 0 })
     }
     if (entries.filter((e) => e.instanceId === `${uid}/${n}`).every((e) => e.left === 0)) spent.add(n)
   })
   return { entries, spent }
+}
+
+/**
+ * The powers a carried row pays uses of — its granted actions and abilities that carry `uses`, each with
+ * its count per battle, in grant order. The one reading: itemUsesOf above, and the kingdom's shop, restock
+ * and Reckoning through usesPerBattleOf (kingdom.reads-engine, review finding K8 — "an item's number of
+ * uses is kept twice"). An item whose powers carry no uses is permanent.
+ */
+export function usedPowersOf(row: ItemDef, actions: Readonly<Record<string, ActionDef>>): readonly { readonly actionId: string; readonly uses: number }[] {
+  return [...row.grants, ...row.abilities].filter((a, j, all) => all.indexOf(a) === j && (actions[a]?.uses ?? 0) > 0).map((a) => ({ actionId: a, uses: actions[a]!.uses! }))
+}
+
+/** The uses a carried instance of `row` has per battle — the most any of its powers has (an instance is spent when every power is) — or null, a permanent item. */
+export function usesPerBattleOf(row: ItemDef, actions: Readonly<Record<string, ActionDef>>): number | null {
+  const powers = usedPowersOf(row, actions)
+  return powers.length ? Math.max(...powers.map((p) => p.uses)) : null
 }
 
 /** Can this instance pay now? An item worked from its own slot always; a weapon or shield only while in hand. */
