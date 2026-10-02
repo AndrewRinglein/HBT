@@ -38,30 +38,46 @@ test('the wheel looks a little nearer or farther and springs back to the standar
   assert.equal(V.view.cam.zoom, 1, 'the standard zoom')
   fire(wrap, 'wheel', { deltaY: -300 }); const near = V.view.cam.zoom
   assert.ok(near > 1, `nearer: ${near}`)
+  /* Law 10 (viewer.xcom-camera-tuning, 2026-10-01): was 1.4× and .75× — Andrew: "the zoom-in and zoom-out should go a little
+     bit further than the 0.75 and 1.4"; now 1.8× and .6× (the board's own limits still hold inside them) */
   for (let i = 0; i < 20; i++) fire(wrap, 'wheel', { deltaY: -300 })
-  assert.ok(Math.abs(V.view.cam.zoom - 1.4) < 1e-9, `never nearer than 1.4×: ${V.view.cam.zoom}`)
+  assert.ok(V.view.cam.zoom > 1.4 && V.view.cam.zoom <= 1.8 + 1e-9, `nearer than 1.4×, never nearer than 1.8×: ${V.view.cam.zoom}`)
   w._flush(300); assert.ok(V.view.cam.zoom > 1, 'still while the wheel turns (300 ms)')
   w._flush(400); assert.equal(V.view.cam.zoom, 1, 'still for 600 ms: back to the standard zoom')
   for (let i = 0; i < 20; i++) fire(wrap, 'wheel', { deltaY: 300 })
-  assert.ok(V.view.cam.zoom < 1 && V.view.cam.zoom >= .75 - 1e-9, `farther, never past .75×: ${V.view.cam.zoom}`)
+  assert.ok(V.view.cam.zoom < .75 && V.view.cam.zoom >= .6 - 1e-9, `farther than .75×, never past .6×: ${V.view.cam.zoom}`)
   w._flush(700); assert.equal(V.view.cam.zoom, 1, 'and back')
   v.dispose()
 })
 
-test('the pointer at the board\'s edge scrolls the map that way; away from the edge, or off the board, it stops', () => {
-  const { w, v, V } = boot(), wrap = V.dom.stage.parentNode
-  v.seek(activations[0][1] + 1); v.zoom(1.4)                      /* nearer than the fit, so the bound lets the view roam */
-  fire(wrap, 'pointerenter'); fire(wrap, 'pointermove', { clientX: 50, clientY: 50 }); w._flush(200)
+/* Law 10 (viewer.xcom-camera-tuning, 2026-10-01): was "the pointer at the board's edge scrolls the map that way; away from the
+   edge, or off the board, it stops", nearer than the fit (1.4×) and read on the board alone. Andrew: "If you point to the edge,
+   you sometimes get some movement." Now at the standard zoom, read over the whole battle (its root), the screen's edge too;
+   kept: the board's edges scroll their way, away from the edges it stops, out of the battle it stops */
+test('the pointer at the board\'s edge, or the screen\'s, scrolls the map that way every time; away from the edges, or out of the battle, it stops', () => {
+  const { w, v, V } = boot(), root = V.dom.root
+  v.seek(activations[0][1] + 1)
+  const at = (x, y) => fire(root, 'pointermove', { clientX: x, clientY: y })
+  at(50, 50); w._flush(200)
   const mid = { ...V.view.camF }
-  fire(wrap, 'pointermove', { clientX: 50, clientY: 99 }); w._flush(200)       /* the fake wrap is 100 px square: the bottom edge */
+  at(50, 99); w._flush(200)                                    /* the fake board is 100 px square: its bottom edge */
   const down = { ...V.view.camF }
-  assert.ok(down.y > mid.y, `the bottom edge scrolls south: ${mid.y} -> ${down.y}`); assert.equal(down.x, mid.x, 'and only south')
-  fire(wrap, 'pointermove', { clientX: 1, clientY: 50 }); w._flush(200)
+  assert.ok(down.y > mid.y, `the bottom edge scrolls south at the standard zoom: ${mid.y} -> ${down.y}`); assert.equal(down.x, mid.x, 'and only south')
+  at(1, 50); w._flush(200)
   assert.ok(V.view.camF.x < down.x, 'the left edge scrolls west')
-  fire(wrap, 'pointermove', { clientX: 50, clientY: 50 }); const held = { ...V.view.camF }; w._flush(500)
+  at(50, 50); const held = { ...V.view.camF }; w._flush(500)
   assert.deepEqual(V.view.camF, held, 'away from the edge: it stops')
-  fire(wrap, 'pointermove', { clientX: 99, clientY: 50 }); fire(wrap, 'pointerleave'); const left = { ...V.view.camF }; w._flush(500)
-  assert.deepEqual(V.view.camF, left, 'off the board: it stops')
+  /* over the battle but off the board (the panel, the bars): the screen's right edge (the window is 1920 wide) */
+  at(1915, 500); w._flush(300)
+  assert.ok(V.view.camF.x > held.x, 'the screen\'s right edge scrolls east')
+  const east = { ...V.view.camF }; at(1000, 500); w._flush(300)
+  assert.deepEqual(V.view.camF, east, 'off the board and away from the screen\'s edge: nothing')
+  at(1919, 500); fire(root, 'pointerleave', { clientX: 1919, clientY: 500 }); const out = V.view.camF.x; w._flush(200)
+  assert.ok(V.view.camF.x > out, 'leaving through the screen\'s edge keeps pointing past it')
+  at(1000, 500); fire(root, 'pointerleave', { clientX: 1000, clientY: 500 }); const gone = { ...V.view.camF }; w._flush(300)
+  assert.deepEqual(V.view.camF, gone, 'out of the battle elsewhere: it stops')
+  for (let i = 0; i < 400; i++) { at(1915, 500); w._flush(50) }
+  assert.ok(Math.abs(V.view.camF.x - V.data.F.w) < 1e-6, `held at the edge it scrolls until the board's edge is in the middle, and no further: ${V.view.camF.x} vs ${V.data.F.w}`)
   v.dispose()
 })
 

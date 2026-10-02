@@ -31,10 +31,11 @@ export const POLICY = Object.freeze({
   EDGE_ROOM: 60,                // board px the pan may go past the first and last rows (a head above, a name and bars below)
   /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): one fixed angle and zoom — the Angled view
      at the standard zoom — the wheel looks a little nearer or farther and springs back, the map scrolls at its edges */
-  ZOOM_NEAR: 1.4,               // the wheel's nearest, against the standard zoom
-  ZOOM_FAR: .75,                // the wheel's farthest
+  ZOOM_NEAR: 1.8,               // the wheel's nearest, against the standard zoom (was 1.4: "a little bit further", 2026-10-01)
+  ZOOM_FAR: .6,                 // the wheel's farthest (was .75)
   ZOOM_REST_MS: 600,            // the wheel still this long: back to the standard zoom
-  EDGE_SCROLL_PX: 18,           // the pointer within this of the board's edge scrolls the map that way
+  EDGE_SCROLL_PX: 36,           // the pointer within this of the board's edge scrolls the map that way (was 18)
+  EDGE_WINDOW_PX: 14,           // or within this of the screen's edge while it is over the battle (viewer.xcom-camera-tuning)
   EDGE_SCROLL_SPEED: 700,       // board px a second
 })
 export const tiltOfElevation = e => 90 - e

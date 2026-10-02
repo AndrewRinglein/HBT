@@ -336,3 +336,17 @@ moves next to another unit, the unit, if it's an enemy, should turn to face them
 | `facingStart` | Which way is "right"? | **The board's east (+x), read off the board's own map into the scene: heroes and civilians face it, enemies face west, from the moment the body stands.** | Heroes deploy west and enemies east; at the unturned camera east is the screen's right. | Default |
 | `facingStepUp` | When does a unit "move next to" another? | **Each time a standing unit's hex changes (each step of a walk, as the fold says it), every standing unit of the other side at the engine's distance 1 from its new hex turns toward that hex; the latest wins.** Friends turn no one. The walker keeps facing its way. | "If someone then walks up from another hex, it turns to face them." The distance is the engine's (`V.data.distance`), never the viewer's. | Default |
 | `facingAttacked` | When does a unit turn to its attacker? | **On the strike itself (the fold's lunge cue), hit or miss; the striker faces its target.** Facing is kept afterwards — nothing turns back. | "You also turn to face anybody who attacks you." | Default |
+
+## viewer.xcom-camera-tuning — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 'the first look at the XCOM camera, the weapons and the bodies' (Andrew): "the zoom-in and zoom-out
+should go a little bit further than the 0.75 and 1.4" · "The pointing-to-scroll on the map does not work very well. If you point
+to the edge, you sometimes get some movement." Why it seldom moved: on a board smaller than the view (the Orphanage at the standard
+zoom) the pan was pinned to the board's middle (`cameraPanNoVoid` and the fit-opened pan range), and in the battle screen the
+board's edges meet the bar, the panel and the ability bar, not the screen's edge.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `xcomWheel` (revised) | How far does the wheel go? | **0.6× to 1.8× of the standard zoom** (was 0.75–1.4), inside the board's own fit and the figure's nearest; still back 600 ms after the last step. | "a little bit further". | Default |
+| `xcomRoam` | How far may the view go? | **Its centre may reach any point of the board, at any zoom (the rows a little past, for heads and labels); Overhead keeps the whole-map framing.** `cameraPanNoVoid` is retired: past the board's edge the scene's ground, or its background, shows. | Pointing at an edge must move the map every time; the pin was what stopped it. | Default |
+| `xcomEdge` (revised) | Which edges scroll? | **The board's (within 36 px, was 18), and the screen's (within 14 px) wherever the pointer is over the battle; leaving the battle stops it, unless it left through the screen's edge.** | The battle screen's board does not reach the screen's edge on any side. | Default |
