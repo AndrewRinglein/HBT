@@ -6,6 +6,23 @@ import {burstForecast} from './burst-forecast.js'
 import {sandboxTargetingOf} from './sandbox-targeting.js'
 import {controllerOf,validateBattleCommand,type BattleCommand} from '../engine.js'
 import {createPlayInput,type PlayEvent} from './play-input.js'
+import {ABBOTOWN_MAP} from '../content/conquest.js'
+import {conquestProgress,takeSection,nextSection} from '../core/conquest.js'
+import {conquestMapHTML} from './conquest-map.js'
+import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBattle,draftsOwedOf} from '../core/opening.js'
+import {makeCtx,setBattleOutcome,type Ctx} from '../core/mutate.js'
+import {performAdvancePrep,performDeploy,listDeployable,deployLimitOf} from '../core/prep.js'
+import {resolveReckoning,applyBattleResult,performExitBattle} from '../core/reckoning.js'
+import {performTakeReward,listRewardTakers,performLevelUp,performLeaveLevelUp} from '../core/rewards.js'
+import {performEquip,performUnequip} from '../core/shop.js'
+import {sandboxResult} from '../core/sandbox.js'
+import {groupOf} from '../content/classes.js'
+import {itemOf} from '../content/items.js'
+import {encounterDef} from '../engine.js'
+import {equipPage} from './equip.js'
+import {draftScreen} from './draft.js'
+import {recapScreen,mountRecap,rewardsScreen,mountRewards,levelUpScreen,mountLevelUp,toggleMute,type LastBattle,type Cleanup} from './after.js'
+import {fontFaces} from './art.js'
 
 declare const __BATTLE_VIEW_DATA__:Record<string,unknown>
 declare const __BUILD_SHA__:string
@@ -43,16 +60,137 @@ const boardOnly=()=>session?.config.encounterId!==undefined
     error, a stopped battle, the outcome). The launcher is the other view, reached by the Launcher button; a free battle
     keeps the launcher page with its controls (kingdom SWITCHES.md battleView*) */
 let launcher=false
-const battleView=()=>!!session&&boardOnly()&&!launcher
+/** kingdom.abbotown-map (PLAYABLE-OPENING-PLAN.md item 11; engine DECISIONS.md 2026-09-29 "the playable opening"): ?map
+    opens the Retaking Abbotown map — a sitting. Taken sections are held in this page's memory for the sitting ("One
+    sitting is enough for now": no save); &taken=<encounter ids> seeds it. Only the next section fields a battle, as ?play=
+    does; a hero win there takes it, and the outcome offers Back to the map, as a loss does (a lost opening battle is
+    replayed). kingdom SWITCHES.md conquestMapPage, conquestTakenSeed */
+let mapSitting=false,mapOpen=false,taken:string[]=[]
+const mapOrder=ABBOTOWN_MAP.sections.map(s=>s.encounterId)
+function drawMap(){
+ const host=q('conquest')
+ host.innerHTML=conquestMapHTML({map:ABBOTOWN_MAP,progress:conquestProgress(mapOrder,taken),playable:SANDBOX_ENCOUNTERS.map(e=>e.id)})
+ host.querySelectorAll<HTMLElement>('[data-act="field"]').forEach(el=>el.addEventListener('keydown',(e:Event)=>{const k=(e as KeyboardEvent).key;if(k==='Enter'||k===' '){e.preventDefault?.();action('field',el.dataset.id)}}))
+ bind(host)
+}
+/** kingdom.opening-loop-three (PLAYABLE-OPENING-PLAN.md item 12; engine DECISIONS.md 2026-09-29 "the playable opening": "one
+    page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards -> map"): the ?map sitting is a
+    Campaign held in this page's memory — no save ("One sitting is enough for now"). The next section begins the chain: the
+    draft owed (core/opening.ts, the ruled cadence), Combat Prep walked to Equip with the whole party sent (no tactics), the
+    encounter's battle fielded with the campaign's own Hero rows, then the one writer, the recap, the rewards and the
+    level-ups (the copied Hell-TCG screens, ui/after.ts), and the map again. A lost battle is offered again with the same
+    party, wounds kept. Every step is a perform* call; the page decides nothing. kingdom SWITCHES.md opening* */
+type Sitting={ctx:Ctx;lastBattle:LastBattle|null;levelHero:string|null;picked:string|null;giving:string|null;mounted:Cleanup|null}
+let sitting:Sitting|null=null,campaignOpen=false
+const sitCause='sitting'
+const sectionOf=(id:string)=>ABBOTOWN_MAP.sections.find(s=>s.encounterId===id)
+/** a battle on the board is the campaign's when it is the cursor's battle, with exactly the party and rows it was fielded with */
+function isCampaignBattle(s:Sandbox){
+ const c=sitting?.ctx.campaign,e=c?.cursor.engagement
+ if(!c||!e||c.cursor.step!=='battle'||c.cursor.battle?.resultSet||s.config.encounterId!==e.id)return false
+ return JSON.stringify(s.config.heroes)===JSON.stringify(e.deployed)&&JSON.stringify(s.config.heroRows)===JSON.stringify(e.deployed.map(id=>c.roster[id]))
+}
+/** the next section: the drafts owed first, then its battle */
+function beginSection(id:string){
+ const ctx=sitting!.ctx
+ if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else fieldBattle(id)
+ mapOpen=false;campaignOpen=true;drawCampaign()
+}
+/** the opening battle as its encounter, Combat Prep walked to Equip: Reveal and the War Council passed (no tactics), the
+    party sent — every living hero free to fight, civilians stay home (kingdom SWITCHES.md openingDeployAll) */
+function fieldBattle(id:string){
+ const ctx=sitting!.ctx
+ performFieldOpeningBattle(ctx,{id,mapId:encounterDef(id).mapId!,kind:ABBOTOWN_MAP.engagementKind},sitCause)
+ while(ctx.campaign.cursor.prepStep!=='deploy')performAdvancePrep(ctx,sitCause)
+ const c=ctx.campaign
+ for(const h of listDeployable(c).filter(h=>groupOf(c.roster[h]!.classes)==='hero').slice(0,deployLimitOf(c)))performDeploy(ctx,h,sitCause)
+ performAdvancePrep(ctx,sitCause)
+}
+/** Equip's To the battle: the cursor goes to the battle and the encounter is fielded with the campaign's rows */
+function startCampaignBattle(){
+ const c=sitting!.ctx.campaign,e=c.cursor.engagement!
+ campaignOpen=false;clearCampaign()
+ install(createSandbox({mapId:e.mapId,heroes:[...e.deployed],heroRows:e.deployed.map(id=>structuredClone(c.roster[id]!)),enemies:[],seed:e.seed,encounterId:e.id}))
+}
+/** the outcome's Continue: the battle folded (core/sandbox.ts), the Reckoning proposed and written by the one writer */
+function reckon(){
+ if(!session||!session.ctx.state.outcome||!isCampaignBattle(session))throw Error('There is no finished campaign battle to reckon')
+ const ctx=sitting!.ctx,e=ctx.campaign.cursor.engagement!,r=sandboxResult(session),k=resolveReckoning(ctx.campaign,e,r)
+ setBattleOutcome(ctx,r,k,sitCause)
+ sitting!.lastBattle={engagementId:e.id,result:r,reckoning:k}
+ applyBattleResult(ctx,e,r,k)
+ if(k.won)taken=takeSection(mapOrder,taken,e.id)
+ surface?.dispose();surface=null;session=null;busy=false;generation++
+ campaignOpen=true;drawCampaign()
+}
+/** after a step of the reckoning: the map once the cursor is back at the open step, else the next screen */
+function onward(){
+ if(sitting!.ctx.campaign.cursor.step==='open'){campaignOpen=false;clearCampaign();mapOpen=true;drawMap();layout()}
+ else drawCampaign()
+}
+function clearCampaign(){if(sitting?.mounted){sitting.mounted();sitting.mounted=null}q('campaign').innerHTML=''}
+function campaignAct(act:string,el:HTMLElement){
+ const s=sitting!,ctx=s.ctx,c=ctx.campaign,id=el.dataset.id
+ if(act==='draft'){performDraft(ctx,id!,sitCause);if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else fieldBattle(nextSection(mapOrder,taken)!);drawCampaign()}
+ else if(act==='pick'){s.picked=s.picked===id?null:id!;drawCampaign()}
+ else if(act==='drop'){performEquip(ctx,id!,el.dataset.item!,sitCause,el.dataset.displace);s.picked=null;drawCampaign()}
+ else if(act==='unequip'){performUnequip(ctx,id!,el.dataset.item!,sitCause);drawCampaign()}
+ else if(act==='advance'){performAdvancePrep(ctx,sitCause);if(ctx.campaign.cursor.step==='battle')startCampaignBattle();else drawCampaign()}
+ else if(act==='exit'){if(c.cursor.step==='reckoning')performExitBattle(ctx,sitCause);else if(c.cursor.step==='levelUp')performLeaveLevelUp(ctx,sitCause);else return;onward()}
+ else if(act==='level-hero'){s.levelHero=id!;drawCampaign()}
+ else if(act==='give'){const item=s.giving;if(!item)throw Error('No reward is waiting for its carrier');performTakeReward(ctx,item,sitCause,id!);s.giving=null;onward()}
+ else if(act==='mute')toggleMute()
+}
+/** a reward chosen on the rewards page: into the stash — or, an item that names its takers, to the hero chosen for it */
+function takeReward(itemId:string){
+ const s=sitting!
+ if(listRewardTakers(s.ctx.campaign,itemId).length){s.giving=itemId;drawCampaign();return}
+ performTakeReward(s.ctx,itemId,sitCause);onward()
+}
+/** who carries an item that names its takers — a Warrior or a Paladin for the Flaming Longsword (content/encounter-rewards.ts) */
+function giveChoice(itemId:string){
+ const c=sitting!.ctx.campaign
+ return `<div class="giveChoice" role="dialog" aria-label="Who carries it"><h2>Who carries the ${escape(itemOf(itemId).name)}?</h2><p>${listRewardTakers(c,itemId).map(h=>`<button data-act="give" data-id="${escape(h)}">${escape(c.roster[h]!.name)} · ${escape(c.roster[h]!.classes.map(x=>x.replace('class.','')).join(', '))}</button>`).join(' ')}</p></div>`
+}
+function drawCampaign(){
+ const s=sitting!,c=s.ctx.campaign,host=q('campaign')
+ if(s.mounted){s.mounted();s.mounted=null}
+ const say=error?`<p class="sittingError" role="alert">${escape(error)}</p>`:''
+ let html='',mount:((hx:HTMLElement)=>Cleanup)|null=null
+ if(s.levelHero){const who=s.levelHero
+  html=levelUpScreen(c,who,'rewards',{specialtyOwed:true})
+  mount=hx=>mountLevelUp(hx,choice=>{try{performLevelUp(s.ctx,who,sitCause,choice)}catch(e){error=(e as Error).message}},()=>{s.levelHero=null;drawCampaign()})}
+ else if(c.cursor.step==='draft')html=`<div class="sliceView">${draftScreen(c)}</div>`
+ else if(c.cursor.step==='prep'&&c.cursor.prepStep==='equip'){const e=c.cursor.engagement!;html=`<div class="sliceView">${equipPage(c,e.deployed,{where:'prep',picked:s.picked,engagementId:sectionOf(e.id)?.name??e.id,canAdvance:true})}</div>`}
+ else if(c.cursor.step==='reckoning'){html=recapScreen(c,s.ctx.events,s.lastBattle);mount=hx=>mountRecap(hx,()=>act(()=>campaignAct('exit',hx)))}
+ else if(c.cursor.step==='rewards'||c.cursor.step==='levelUp'){html=rewardsScreen(c,s.ctx.events,s.lastBattle)+(s.giving?giveChoice(s.giving):'');mount=hx=>mountRewards(hx,id=>act(()=>takeReward(id)))}
+ else html=`<div class="sliceView"><p>The Campaign is at ${escape(c.cursor.step)}.</p></div>`
+ host.innerHTML=say+html
+ host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',(ev:Event)=>{
+  // the innermost [data-act] under the pointer acts — a × inside a slot is the ×, not the slot (as slice.ts)
+  const t=ev?.target as HTMLElement|undefined;if(t?.closest&&t.closest('[data-act]')!==el)return
+  if(!attached(host,el)||el.hasAttribute('disabled'))return
+  act(()=>campaignAct(el.dataset.act!,el))
+ }))
+ const hx=host.querySelector<HTMLElement>('.hx');if(hx&&mount)s.mounted=mount(hx)
+ layout()
+}
+/** a campaign step: a refusal (Law 9) is said on the screen, never swallowed */
+function act(f:()=>void){error='';try{f()}catch(e){error=(e as Error).message;if(campaignOpen)drawCampaign();else{if(mapOpen)drawMap();layout()}}}
+const battleView=()=>!!session&&boardOnly()&&!launcher&&!mapOpen&&!campaignOpen
 const show=(el:Element|null,on:boolean)=>{if(!el)return;if(on)el.removeAttribute('hidden');else el.setAttribute('hidden','')}
 function layout(){
+ if(mapOpen)document.body.classList.add('map-view');else document.body.classList.remove('map-view')
+ if(campaignOpen&&!mapOpen)document.body.classList.add('campaign-view');else document.body.classList.remove('campaign-view')
+ show(q('conquest'),mapOpen);show(q('campaign'),campaignOpen&&!mapOpen);show(q('sittingError'),mapOpen&&!!error)
+ if(mapOpen||campaignOpen){q('sittingError').textContent=error;document.body.classList.remove('battle-view');for(const el of [root.querySelector('header'),q('setup'),q('commands'),q('battleNav'),q('battle'),q('transfer'),root.querySelector('footer')])show(el,false);return}
  const on=battleView(),say=!!(error||fault||session?.ctx.state.outcome)
  if(on)document.body.classList.add('battle-view');else document.body.classList.remove('battle-view')
  for(const el of [root.querySelector('header'),q('setup'),q('transfer'),root.querySelector('footer')])show(el,!on)
  show(q('commands'),!on||say);show(q('battleNav'),on);show(q('battle'),!(session&&boardOnly()&&launcher))
  surface?.refit()
 }
-root.innerHTML=`<header><h1>Battle Sandbox</h1><p>Command the heroes against AI enemies on an authored battlefield.</p><a href="SLICE.html">Kingdom</a> · <a href="../viewer/BATTLE-VIEWER.html">Battle Viewer</a> · <a href="../assets/battle-atlas/index.html">Battle Atlas</a></header><section id="setup"></section><section id="commands" aria-live="polite"></section><nav id="battleNav" hidden><button data-act="launcher" title="The launcher: field another battle, save or replay">Launcher</button></nav><div id="battle"></div><section id="transfer"><h2>Save and replay</h2><p>Save keeps the full battle for resuming. Replay JSON opens in the Battle Viewer.</p><button data-act="save">Save battle</button> <button data-act="resume">Resume saved battle</button> <button data-act="export">Export replay JSON</button> <button data-act="import">Resume pasted save</button><label for="transferText">Battle save / replay JSON</label><textarea id="transferText" rows="5" spellcheck="false"></textarea></section><footer>Kingdom ${escape(__BUILD_SHA__)} · engine ${escape(__ENGINE_PROVENANCE__.engineCommit)}${__ENGINE_PROVENANCE__.engineDirty?' (dirty source)':''}</footer>`
+root.innerHTML=`<section id="conquest" hidden></section><section id="campaign" hidden></section><p id="sittingError" class="sittingError" role="alert" hidden></p><header><h1>Battle Sandbox</h1><p>Command the heroes against AI enemies on an authored battlefield.</p><a href="SLICE.html">Kingdom</a> · <a href="BATTLE-SANDBOX.html?map">Retaking Abbotown</a> ·<a href="../viewer/BATTLE-VIEWER.html">Battle Viewer</a> · <a href="../assets/battle-atlas/index.html">Battle Atlas</a></header><section id="setup"></section><section id="commands" aria-live="polite"></section><nav id="battleNav" hidden><button data-act="launcher" title="The launcher: field another battle, save or replay">Launcher</button></nav><div id="battle"></div><section id="transfer"><h2>Save and replay</h2><p>Save keeps the full battle for resuming. Replay JSON opens in the Battle Viewer.</p><button data-act="save">Save battle</button> <button data-act="resume">Resume saved battle</button> <button data-act="export">Export replay JSON</button> <button data-act="import">Resume pasted save</button><label for="transferText">Battle save / replay JSON</label><textarea id="transferText" rows="5" spellcheck="false"></textarea></section><footer>Kingdom ${escape(__BUILD_SHA__)} · engine ${escape(__ENGINE_PROVENANCE__.engineCommit)}${__ENGINE_PROVENANCE__.engineDirty?' (dirty source)':''}</footer>`
 const q=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T
 const options=(rows:readonly {id:string;name:string}[],selected:string)=>rows.map(r=>`<option value="${escape(r.id)}"${r.id===selected?' selected':''}>${escape(r.name)}</option>`).join('')
 const attached=(host:HTMLElement,el:HTMLElement)=>root.contains(host)&&host.contains(el)
@@ -118,7 +256,13 @@ function controls(){
  const label=(c:SandboxChoice)=>'destination' in c.command?`Hex ${c.command.destination} (${session!.ctx.geo.colOf(c.command.destination)}, ${session!.ctx.geo.rowOf(c.command.destination)})`:'hex' in c.command?`Prop at hex ${c.command.hex} (${session!.ctx.geo.colOf(c.command.hex)}, ${session!.ctx.geo.rowOf(c.command.hex)})`:'centre' in c.command?`Centre hex ${c.command.centre} (${session!.ctx.geo.colOf(c.command.centre)}, ${session!.ctx.geo.rowOf(c.command.centre)})`:session!.ctx.state.units[c.command.target]!.name+' · hex '+session!.ctx.state.units[c.command.target]!.hex
  // encounter.area-fall: the areas marked to fall, shown from their area.marked line until they land
  const marked=session&&!session.ctx.state.outcome?sandboxMarkedAreas(session):[]
- const nav=session&&boardOnly()?launcher?'<p><button data-act="battle">Return to the battle</button></p>':session.ctx.state.outcome?'<p><button data-act="launcher">Back to the launcher</button></p>':'':''
+ // kingdom.abbotown-map: in a map sitting a hero win takes its section (only the next one — core/conquest.ts takeSection),
+ // and every outcome offers the map; the section is named as retaken, or as waiting to be fought again
+ // kingdom.opening-loop-three: in the sitting the campaign's battle ends in its reckoning — Continue folds it and writes it
+ // (the map comes after the rewards); a won one retakes its section, a lost one waits on the map for the same party
+ const ended=session?.ctx.state.outcome,mapBattle=!!session&&!!ended&&isCampaignBattle(session)
+ const sectionName=mapBattle?sectionOf(session!.config.encounterId!)!.name:''
+ const nav=session&&boardOnly()?launcher?'<p><button data-act="battle">Return to the battle</button></p>':ended?mapBattle?`<p id="mapOutcome">${escape(sectionName)} ${ended==='heroClear'?'is retaken.':'is not taken — it waits on the map to be fought again, by the same party.'}</p><p><button data-act="reckon">Continue to the reckoning →</button></p>`:'<p><button data-act="launcher">Back to the launcher</button></p>':'':''
  const markedNote=marked.map(m=>`<p id="markedAreas" role="status">Marked to fall after Turn ${m.landsAfterTurn}'s Player Phase (${escape(m.fall)}): hexes ${m.hexes.map(h=>`${h} (${session!.ctx.geo.colOf(h)}, ${session!.ctx.geo.rowOf(h)})`).join(', ')}</p>`).join('')
  q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?.name??'Resolving battle')}`:'Start a battle to play'}</h2>${nav}${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${board?'':`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}`}${busy||fault?'':'<p id="playHelp">On the board: click a hero to act · click a hex for a ghost, click it again to move · click an action on the bar, point at an enemy for the forecast, click it, click again to confirm · right-click (or Esc) steps back'+(board?' · End activation ends a hero who will not act again; End Turn ends the Player Phase.':'.')+'</p>'}${board?'':`${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`}`:''}`
  changeListener(q('commands'),q<HTMLSelectElement>('actor'),()=>{selectedActor=q<HTMLSelectElement>('actor').value;controls()},'selecting')
@@ -148,17 +292,21 @@ function install(next:Sandbox){
  },onDrain:()=>{if(epoch!==generation)return;busy=false;controls()},onError:(e:Error)=>{if(epoch!==generation)return;fault=e.message;error=fault;busy=false;controls()}},{fill:battleView})
  const staging=document.createElement('div'),view=viewSandbox(next)
  try{candidate.mount(staging,view)}catch(e){candidate.dispose();throw e}
- generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;shownProposal=null
+ generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;mapOpen=false;campaignOpen=false;shownProposal=null
  surface.mount(q('battle'),view);controls()
 }
-function action(act:string){let mayHaveMutated=false;try{
+function action(act:string,id?:string){let mayHaveMutated=false;try{
  error=''
- if(fault&&['select','execute','end','swap','skip','save','export'].includes(act))throw Error('Battle is stopped. Reset or resume a saved battle to continue.')
+ if(fault&&['select','execute','end','swap','skip','save','export','reckon'].includes(act))throw Error('Battle is stopped. Reset or resume a saved battle to continue.')
  if(act==='start')install(createSandbox(config))
  else if(act==='reset'){if(!session)throw Error('Start a battle first');install(createSandbox(session.config))}
  else if(act==='hero-add'||act==='enemy-add'){const key=act==='hero-add'?'heroes':'enemies',max=key==='heroes'?6:15;if(config[key].length>=max)throw Error('Roster limit reached');config[key].push(key==='heroes'?SANDBOX_HEROES[0]!.id:SANDBOX_ENEMIES[0]!.id);setup()}
  else if(act==='hero-remove'||act==='enemy-remove'){const key=act==='hero-remove'?'heroes':'enemies';if(config[key].length<=1)throw Error('Keep at least one unit');config[key].pop();setup()}
  else if(act==='import'||act==='resume'){const data=act==='import'?q<HTMLTextAreaElement>('transferText').value:localStorage.getItem('hbt-sandbox');if(!data)throw Error('No saved battle');install(restoreSandbox(data))}
+ // kingdom.abbotown-map: the next section fields its encounter exactly as ?play= does; the map comes back after a battle
+ else if(act==='field'){const st=conquestProgress(mapOrder,taken).find(p=>p.id===id)?.state;if(!mapSitting||!sitting||st!=='next'||!SANDBOX_ENCOUNTERS.some(e=>e.id===id))throw Error('Only the next section can be fought');beginSection(id!);return}
+ else if(act==='reckon'){reckon();return}
+ else if(act==='map'){if(!mapSitting)throw Error('Open the map with ?map');mapOpen=true;launcher=false;drawMap()}
  else if(act==='launcher'||act==='battle'){if(!session)throw Error('Start a battle first');launcher=act==='launcher'}
  else if(act==='skip'){surface?.viewer?.pause();surface?.viewer?.seek(session!.ctx.events.length);busy=false;controls()}
  else {if(!session)throw Error('Start a battle first')
@@ -174,13 +322,22 @@ function action(act:string){let mayHaveMutated=false;try{
  }
  controls()
  }catch(e){error=(e as Error).message;if(mayHaveMutated){fault=error;busy=false}controls()}}
-function bind(host:HTMLElement){host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',()=>{if(!attached(host,el)||el.hasAttribute('disabled'))return;action(el.dataset.act!)}))}
+function bind(host:HTMLElement){host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',()=>{if(!attached(host,el)||el.hasAttribute('disabled'))return;action(el.dataset.act!,el.dataset.id)}))}
 bind(q('transfer'));bind(q('battleNav'));setup();controls()
 // viewer.play-input: ?play=<encounter id>[&heroes=<hero id>,…] fields that encounter at once — the playable opening's
 // battles open straight onto the board (kingdom SWITCHES.md playInputOpenOn)
 {const params=typeof location!=='undefined'&&location.search?new URLSearchParams(location.search):null,want=params?.get('play')
  if(want&&SANDBOX_ENCOUNTERS.some(e=>e.id===want)){config.encounterId=want
   const heroes=(params!.get('heroes')??'').split(',').filter(id=>SANDBOX_HEROES.some(h=>h.id===id)).slice(0,6);if(heroes.length)config.heroes=heroes
-  setup();action('start')}}
+  setup();action('start')}
+ // kingdom.abbotown-map: ?map[&taken=<encounter id>,…][&heroes=<hero id>,…] opens the Retaking Abbotown map for a sitting
+ // kingdom.opening-loop-three: the sitting's Campaign — a new one from nothing, its seed the page's own at opening (as
+ // SLICE.html's new Campaign) or &seed=<n> (kingdom SWITCHES.md openingSittingSeed); its heroes are drafted, not chosen
+ if(!want&&params?.has('map')){mapSitting=true;mapOpen=true
+  taken=mapOrder.filter(id=>(params.get('taken')??'').split(',').includes(id))
+  const seed=Number(params.get('seed')??NaN)
+  sitting={ctx:makeCtx(makeNewCampaign(Number.isSafeInteger(seed)&&seed>=0?seed:Math.floor(Math.random()*1e9))),lastBattle:null,levelHero:null,picked:null,giving:null,mounted:null}
+  {const ff=fontFaces();if(ff){const st=document.createElement('style');st.textContent=ff;document.head.appendChild(st)}}
+  drawMap();controls()}}
 // A read-only integration handle for the built-page smoke; commands still use UI listeners.
-Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation}}})
+Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation},get campaign(){return sitting?structuredClone(sitting.ctx.campaign):null}}})

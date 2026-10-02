@@ -14,7 +14,8 @@ El.prototype.removeAttribute=function(key){delete this.attrs[key]}
 Object.defineProperties(El.prototype,{
  els:{get(){return this.querySelectorAll('[data-act]')},configurable:true},
  handlers:{get(){return Object.fromEntries(Object.entries(this.listeners).map(([key,list])=>[key,(event={})=>list.forEach(f=>f({target:this,preventDefault(){},stopPropagation(){},...event}))]))},configurable:true},
- disabled:{get(){return this.hasAttribute('disabled')},configurable:true},
+ // settable, as a button's is (kingdom.opening-loop-three: the level-up sheet enables its Confirm by assignment)
+ disabled:{get(){return this.hasAttribute('disabled')},set(on){if(on)this.setAttribute('disabled','');else this.removeAttribute('disabled')},configurable:true},
 })
 export function dom(){const w=makeWindow();w.removeEventListener=()=>{};const store=new Map();w.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)};return{w,store}}
 // opts (viewer.battle-full-screen): search — the page's location.search, e.g. '?play=encounter.opening.orphanage'; width and

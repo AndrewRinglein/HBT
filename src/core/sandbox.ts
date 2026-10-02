@@ -3,32 +3,44 @@ import {encounterDef,createBattle,advanceBattle,completeActionCycle,runActivatio
 import type {Ctx,BattleOptions,BattleCommand,ControlPolicy} from '../engine.js'
 import {SANDBOX_HEROES,SANDBOX_ENEMIES,SANDBOX_ENCOUNTERS} from '../content/sandbox.js'
 import {atlasFieldingOf,type AtlasBinding} from '../content/atlas.js'
-import {makeBattleState,battleOptionsOf} from './seam.js'
+import {makeBattleState,battleOptionsOf,makeBattleResult,type EngagementResult} from './seam.js'
+import type {Hero} from './campaign.js'
 import {compileAtlasCombat,canonicalJSON} from '../../../tools/battle-atlas/combat-compiler.mjs'
 
 /**
  * `encounterId` (kingdom.encounter-battles, engine 2026-09-28): play an engine encounter instead of a free
  * battle — its map, its units, its schedule, its civilians and its outcome are the encounter's; `mapId`
  * and `enemies` are ignored. The heroes are the player's; everyone else, civilians included, the AI's.
+ *
+ * `heroRows` (kingdom.sandbox-campaign-heroes, part 1 of kingdom.opening-loop-three): the heroes as campaign Hero
+ * rows — level, specialty, levelPick, equipped and used, wound, badges — handed to makeBattleState unchanged, so
+ * the hero who plays battle 2 is the hero battle 1 left behind. `heroes` names the rows' ids, in order. Absent,
+ * the rows are built fresh from SANDBOX_HEROES (?play= and ?heroes=, exactly as before).
  */
-export type SandboxConfig={mapId:string;heroes:string[];enemies:string[];seed:number;encounterId?:string}
+export type SandboxConfig={mapId:string;heroes:string[];enemies:string[];seed:number;encounterId?:string;heroRows?:Hero[]}
 export type Sandbox={config:SandboxConfig;setup:BattleOptions;ctx:Ctx;policy:ControlPolicy;atlasScene?:AtlasBinding}
 /** A free battle always stands on an authored Atlas battlefield. */
 export type AtlasSandbox=Sandbox&{atlasScene:AtlasBinding}
 type ActionCommand=Extract<BattleCommand,{kind:'action'}>
 export type SandboxChoice={name:string;cost:number;command:ActionCommand;preview:Record<string,unknown>|null;path:number[]}
+/** Which heroes are known: the sandbox's presets, or — given campaign rows — exactly the rows, named in order. */
+function heroesKnown(config:SandboxConfig){
+ if(config.heroRows===undefined)return config.heroes.every(id=>SANDBOX_HEROES.some(h=>h.id===id))
+ if(!Array.isArray(config.heroRows)||config.heroRows.length!==config.heroes.length||config.heroRows.some((h,i)=>h?.id!==config.heroes[i]))throw Error('Hero rows and heroes disagree')
+ return true
+}
 function configured(config:SandboxConfig){
  if(!config||!Number.isSafeInteger(config.seed)||config.seed<0||config.seed>2147483647)throw Error('Seed must be an integer from 0 to 2147483647')
  if(config.encounterId!==undefined){
   if(!SANDBOX_ENCOUNTERS.some(e=>e.id===config.encounterId))throw Error('Choose an available encounter')
   if(!Array.isArray(config.heroes)||config.heroes.length<1||config.heroes.length>6)throw Error('Choose 1–6 heroes')
-  if(config.heroes.some(id=>!SANDBOX_HEROES.some(h=>h.id===id)))throw Error('Unknown hero')
+  if(!heroesKnown(config))throw Error('Unknown hero')
   return null
  }
  const field=atlasFieldingOf(config.mapId);if(!field)throw Error('Choose an available Atlas battlefield')
  if(!Array.isArray(config.heroes)||config.heroes.length<1||config.heroes.length>6)throw Error('Choose 1–6 heroes')
  if(!Array.isArray(config.enemies)||config.enemies.length<1||config.enemies.length>15)throw Error('Choose 1–15 enemies')
- if(config.heroes.some(id=>!SANDBOX_HEROES.some(h=>h.id===id))||config.enemies.some(id=>!SANDBOX_ENEMIES.some(e=>e.id===id)))throw Error('Unknown hero or enemy')
+ if(!heroesKnown(config)||config.enemies.some(id=>!SANDBOX_ENEMIES.some(e=>e.id===id)))throw Error('Unknown hero or enemy')
  return field
 }
 /**
@@ -40,12 +52,28 @@ export function playerPolicy(ctx:{state:{units:readonly {uid:number;side:string}
 export function createSandbox(config:SandboxConfig&{encounterId?:undefined}):AtlasSandbox
 export function createSandbox(config:SandboxConfig):Sandbox
 export function createSandbox(config:SandboxConfig):Sandbox{
- const field=configured(config),roster=Object.fromEntries(config.heroes.map((id,i)=>['hero-'+i,structuredClone(SANDBOX_HEROES.find(h=>h.id===id)!)]))
+ const {field,encounter,spec}=sandboxSpec(config)
+ const setup:BattleOptions=encounter?{...battleOptionsOf(spec),encounter}:battleOptionsOf(spec),ctx=createBattle(setup)
+ return {config:structuredClone(config),setup,ctx,policy:playerPolicy(ctx),...(field?{atlasScene:field.atlasScene}:{})}
+}
+/** The fielding a config names: the roster keyed `hero-0`… in order, through makeBattleState — one place, so the fold reads the spec the battle was fielded from. */
+function sandboxSpec(config:SandboxConfig){
+ const field=configured(config),roster=Object.fromEntries((config.heroRows??config.heroes.map(id=>SANDBOX_HEROES.find(h=>h.id===id)!)).map((h,i)=>['hero-'+i,structuredClone(h)]))
  // an encounter: the engine's own row fields its map, units and schedule; the heroes stand in its hero zone
  const encounter=config.encounterId!==undefined?encounterDef(config.encounterId):null
  const spec=makeBattleState(roster,encounter?{id:encounter.id,mapId:encounter.mapId??(()=>{throw Error(`encounter '${encounter.id}' names no map`)})(),enemies:[],deployed:Object.keys(roster),seed:config.seed}:{id:field!.id,mapId:config.mapId,enemies:config.enemies,deployed:Object.keys(roster),seed:config.seed})
- const setup:BattleOptions=encounter?{...battleOptionsOf(spec),encounter}:battleOptionsOf(spec),ctx=createBattle(setup)
- return {config:structuredClone(config),setup,ctx,policy:playerPolicy(ctx),...(field?{atlasScene:field.atlasScene}:{})}
+ return {field,encounter,spec}
+}
+/**
+ * kingdom.encounter-result-fold (kingdom.opening-loop-three part 2 of 4; V2-ROADMAP R8): a finished sandbox battle, folded
+ * to the EngagementResult the Reckoning takes — its rows keyed by uid, hero row i the config's heroes[i] (so, given campaign
+ * rows, the Engagement's deployed[i]); an encounter's own units and its arrivals are rows of their own. Its id is the
+ * encounter's (or the battlefield's). An unfinished battle is refused (Law 9).
+ */
+export function sandboxResult(s:Sandbox):EngagementResult{
+ const {spec}=sandboxSpec(s.config)
+ if(s.setup.heroUids!==undefined&&canonicalJSON(s.setup.heroUids)!==canonicalJSON(spec.heroUids))throw Error('Saved setup and configuration disagree: heroUids')
+ return makeBattleResult(spec,s.ctx.events)
 }
 /**
  * The fall areas marked and not yet landed (engine encounter.area-fall): each area.marked line without its

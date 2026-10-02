@@ -1,0 +1,61 @@
+# kingdom.opening-loop-three red — src/ and BATTLE-SANDBOX.html as committed at 333cf3c (stashed), the probe as written
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+ FAIL  test/opening-loop-three.test.ts > kingdom.opening-loop-three — the opening fielded as its encounters > a won battle advances the opening, pays its row and rescues the civilians who lived — never the dead
+TypeError: performFieldOpeningBattle is not a function
+ ❯ fielded test/opening-loop-three.test.ts:35:3
+     33| }
+     34| function fielded(ctx: Ctx, id: string): Ctx {
+     35|   performFieldOpeningBattle(ctx, battleOf(id), 'test')
+       |   ^
+     36|   performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
+     37|   for (const h of Object.keys(ctx.campaign.roster).filter((h) => !ctx.…
+ ❯ atOrphanage test/opening-loop-three.test.ts:32:10
+ ❯ test/opening-loop-three.test.ts:81:17
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+ FAIL  test/opening-loop-three.test.ts > kingdom.opening-loop-three — the opening fielded as its encounters > a lost opening battle is replayed: the Campaign goes on, nothing advances, nobody is rescued, the wounds stay
+TypeError: performFieldOpeningBattle is not a function
+ ❯ fielded test/opening-loop-three.test.ts:35:3
+     33| }
+     34| function fielded(ctx: Ctx, id: string): Ctx {
+     35|   performFieldOpeningBattle(ctx, battleOf(id), 'test')
+       |   ^
+     36|   performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
+     37|   for (const h of Object.keys(ctx.campaign.roster).filter((h) => !ctx.…
+ ❯ atOrphanage test/opening-loop-three.test.ts:32:10
+ ❯ test/opening-loop-three.test.ts:99:17
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+ FAIL  test/opening-loop-three.test.ts > kingdom.opening-loop-three — the opening fielded as its encounters > the next battle is refused until its drafts are taken; the cadence is 1, then 2 after battle 1
+TypeError: performFieldOpeningBattle is not a function
+ ❯ fielded test/opening-loop-three.test.ts:35:3
+     33| }
+     34| function fielded(ctx: Ctx, id: string): Ctx {
+     35|   performFieldOpeningBattle(ctx, battleOf(id), 'test')
+       |   ^
+     36|   performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
+     37|   for (const h of Object.keys(ctx.campaign.roster).filter((h) => !ctx.…
+ ❯ atOrphanage test/opening-loop-three.test.ts:32:10
+ ❯ test/opening-loop-three.test.ts:115:17
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+ FAIL  test/opening-loop-three.test.ts > kingdom.opening-loop-three — the opening fielded as its encounters > the page: map -> draft -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; a loss offered again with the same party
+Error: Command failed: C:\Program Files\nodejs\node.exe tools/opening-loop-three.verify.mjs BATTLE-SANDBOX.html
+file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-loop-three.verify.mjs:60
+const heroIds=()=>Object.values(camp().roster).filter(h=>!h.classes.includes('class.civilian')).map(h=>h.id).sort()
+                                      ^
+TypeError: Cannot read properties of undefined (reading 'roster')
+    at heroIds (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-loop-three.verify.mjs:60:39)
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-loop-three.verify.mjs:145:18
+Node.js v24.12.0
+ ❯ heroIds tools/opening-loop-three.verify.mjs:60:39
+ ❯ tools/opening-loop-three.verify.mjs:145:18
+ ❯ test/opening-loop-three.test.ts:122:17
+    120|
+    121|   it('the page: map -> draft -> equip -> battle -> reckoning, rewards,…
+    122|     const out = execFileSync(process.execPath, ['tools/opening-loop-th…
+       |                 ^
+    123|     expect(out).toMatch(/opening loop three: .*passed/)
+    124|   }, 600000)
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  19:34:30
+   Duration  6.04s (transform 3.16s, setup 0ms, import 4.43s, tests 1.45s, environment 0ms)

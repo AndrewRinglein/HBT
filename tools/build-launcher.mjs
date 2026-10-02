@@ -6,7 +6,8 @@
 // one's place in the opening is its engine scenario's openingPosition; what it fields is the engine's encounter (setup
 // and schedule), named by the engine's units; its picture is its 3D map's review render (the scene the opening ground
 // proposal names for it); whether it stands on that 3D map in the battle screen is the viewer's painted pack. Nothing
-// here is typed by hand. Each card opens BATTLE-SANDBOX.html?play=<encounter id>.
+// here is typed by hand. Each card opens BATTLE-SANDBOX.html?play=<encounter id>. The Retaking Abbotown map
+// (kingdom.abbotown-map) is BATTLE-SANDBOX.html?map, linked beside the free battle and the recorded battles.
 //
 //   node tools/build-launcher.mjs [out]      (default PLAY.html) — generated, never hand-edit
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
@@ -83,14 +84,15 @@ h1{font-family:Spectral,serif;font-weight:600;font-size:44px;margin:8px 0 6px}he
 h2{font-family:Spectral,serif;font-weight:600;font-size:30px;margin:0 0 4px}
 .foes{margin:0;color:var(--ink);font-size:16px;line-height:1.45}.foes span{display:inline-block;width:64px;color:var(--dim);text-transform:uppercase;font-size:12px;letter-spacing:.12em}.foes i{color:var(--dim);font-style:normal}
 .go{margin-top:auto;align-self:flex-end;padding-top:12px;color:var(--gold);font-weight:700;font-size:18px;letter-spacing:.06em}
-.more{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+.more{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:22px}
 .more a{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 22px;transition:border-color .15s}
 .more a:hover,.more a:focus-visible{border-color:var(--gold);outline:none}.more b{font-family:Spectral,serif;font-size:22px;font-weight:600;display:block}.more span{color:var(--dim)}
 @media (max-width:640px){.grid{grid-template-columns:1fr}.more{grid-template-columns:1fr}h1{font-size:34px}}
 </style></head><body><main>
 <header><div class="house">Heroes of Blight and Tragic</div><h1>Choose a battle</h1><p>The opening's battles, in order. Click one to play it.</p></header>
 <section class="grid">${battles.map(card).join('\n')}</section>
-<section class="more"><a href="../kingdom/BATTLE-SANDBOX.html" data-more="free"><b>Free battle</b><span>Pick the heroes, the foes and the map yourself.</span></a>
+<section class="more"><a href="../kingdom/BATTLE-SANDBOX.html?map" data-more="map"><b>Retaking Abbotown</b><span>The opening's map: the sections taken, the next to fight. Click the next to play it.</span></a>
+<a href="../kingdom/BATTLE-SANDBOX.html" data-more="free"><b>Free battle</b><span>Pick the heroes, the foes and the map yourself.</span></a>
 <a href="../viewer/BATTLE-VIEWER.html" data-more="replays"><b>Recorded battles</b><span>Watch battles the engine has played, turn by turn.</span></a></section>
 </main></body></html>`
 const out=process.argv[2]??'PLAY.html';writeFileSync(out,html)
