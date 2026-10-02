@@ -310,6 +310,16 @@ export function createCast(V, scene, toWorld, platform = {}) {
   const headLoads = new Map()
   /* board px per scene metre, upward: the scene's own map (the inverse of toWorld), its y axis -> the board's z */
   const up = toWorld.clone().invert().elements, PX_PER_M = Math.hypot(up[4], up[5], up[6])
+  /* viewer.side-facing (engine DECISIONS.md 2026-10-01, Andrew: "The enemies should be facing to the left, and the heroes should
+     be facing to the right." · "Every unit faces the direction it walks, and when a unit moves next to another unit, the unit,
+     if it's an enemy, should turn to face them. … If someone then walks up from another hex, it turns to face them. You also
+     turn to face anybody who attacks you."): a body starts facing its side's way across the board — the heroes (civilians
+     among them) east, toward the enemy, the enemies west, read off the board's own map (board +x into the scene) — and keeps
+     its facing: where it walks, toward an enemy that steps next to it (the engine's own distance, V.data.distance; the latest
+     wins), toward whoever attacks it, toward its target when it strikes */
+  const e0 = new THREE.Vector3(0, 0, 0).applyMatrix4(toWorld), e1 = new THREE.Vector3(100, 0, 0).applyMatrix4(toWorld)
+  const EAST = Math.atan2(e1.x - e0.x, e1.z - e0.z)
+  const restFace = u => u.side === 'enemy' ? wrapAngle(EAST + Math.PI) : EAST
   group.name = 'characters'; scene.add(group)
   const readStyle = platform.readStyle || (el => getComputedStyle(el))
   const load = platform.load || (look => loadLook(look, { ...platform, cancelled: () => disposed }))
@@ -355,6 +365,8 @@ export function createCast(V, scene, toWorld, platform = {}) {
     out.set(x, y, zOf(s.transform || el.style.transform)).applyMatrix4(toWorld); return true
   }
   const drop = id => { bodies.get(id)?.dispose(); bodies.delete(id) }
+  const faceToward = (B, p) => { const dx = p.x - B.stage.position.x, dz = p.z - B.stage.position.z; if (dx * dx + dz * dz > 1e-8) B.face = Math.atan2(dx, dz) }
+  const hexWorld = h => { const p = V.data.POS?.[h]; return p ? new THREE.Vector3(p.px, p.py, 0).applyMatrix4(toWorld) : null }
   const whereIs = (id, out) => { const B = bodies.get(id); if (B) return out.copy(B.stage.position); const u = V.S.U[id], el = u && anchorOf(u); return el && place(el, out) ? out : null }
   const rest = (B, life) => life === 'standing' ? (B.has('idle') ? 'idle' : null) : 'death'
   function frame(dt) {
@@ -363,6 +375,20 @@ export function createCast(V, scene, toWorld, platform = {}) {
     const step = V.fx?.paused ? 0 : dt * (V.speed || 1)
     let changed = false
     const kept = new Set()
+    /* viewer.side-facing: a unit standing on a new hex makes every enemy now next to it turn to face it */
+    const dist = V.data.distance
+    if (dist) for (const m of Object.values(V.S.U)) {
+      const M = bodies.get(m.id); if (!M || m.life !== 'standing') continue
+      if (M.hex != null && M.hex !== m.hex) {
+        const at = hexWorld(m.hex)
+        if (at) for (const o of Object.values(V.S.U)) {
+          const O = bodies.get(o.id)
+          if (!O || o.id === m.id || o.life !== 'standing' || o.side === m.side || dist(o.hex, m.hex) !== 1) continue
+          faceToward(O, at)
+        }
+      }
+      M.hex = m.hex
+    }
     for (const u of Object.values(V.S.U)) {
       const binding = modelBinding(u.typeId, V.data.models); if (!binding) continue
       const look = lookFor(binding, u.id), entry = want(look)
@@ -377,6 +403,7 @@ export function createCast(V, scene, toWorld, platform = {}) {
         try { body = createBody(entry.loaded, {registry:platform.registry,loadHead:platform.loadHead||loadHead,onError:error=>platform.onError?.(look,error,{appearance:true})}) } catch (err) { entry.state = 'failed'; entry.error = err; platform.onError?.(look, err); continue }
         group.add(body.stage); bodies.set(u.id, body); changed = true
         body.life = u.life; const r = rest(body, u.life); if (r) body.play(r, { snap: true })
+        body.face = body.yaw = restFace(u); body.hex = u.hex
         if (el) place(el, body.stage.position)
         body.last = body.stage.position.clone()
       }
@@ -437,8 +464,9 @@ export function createCast(V, scene, toWorld, platform = {}) {
       const A = bodies.get(a); if (!A || V.S.U[a]?.life !== 'standing') return
       if (!A.play(kind === 'ranged' && A.has('ranged') ? 'ranged' : 'attack')) A.lungeStart()
       const p = whereIs(t, new THREE.Vector3()); if (!p) return
-      const dx = p.x - A.stage.position.x, dz = p.z - A.stage.position.z
-      if (dx * dx + dz * dz > 1e-8) A.face = Math.atan2(dx, dz)
+      faceToward(A, p)
+      /* viewer.side-facing: "You also turn to face anybody who attacks you" */
+      const T = bodies.get(t); if (T && V.S.U[t]?.life === 'standing') faceToward(T, A.stage.position)
     },
     /** the fold's flash (damage landed): the hit reaction, or a recoil where the look has none */
     flinch(id) {
@@ -447,7 +475,7 @@ export function createCast(V, scene, toWorld, platform = {}) {
     },
     /** a seek: every body at its resting pose now — the dead and the downed at the death's end */
     snap() {
-      for (const [id, B] of bodies) { const u = V.S.U[id]; if (!u) continue; B.setAfflictions(u); B.life = u.life; const r = rest(B, u.life); if (r) B.play(r, { snap: true }); B.yaw = B.face }
+      for (const [id, B] of bodies) { const u = V.S.U[id]; if (!u) continue; B.setAfflictions(u); B.life = u.life; const r = rest(B, u.life); if (r) B.play(r, { snap: true }); B.yaw = B.face; B.hex = u.hex }
     },
     dispose() {
       if (disposed) return; disposed = true

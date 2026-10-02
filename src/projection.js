@@ -1,5 +1,5 @@
 // Current damage markers only; future status resolution belongs to the engine.
-import { kitOf } from './actions.js'
+import { dmgOf, kitOf } from './actions.js'
 
 /* ── DANGER MARKER (UI-BUILD-NOTES §1) ─────────────────────────────────────
    The signature damage is AUTHORED per bestiary entry — a stable, learnable
@@ -16,8 +16,10 @@ export function dangerOf(u, D) {
   const A = DANGER_AUTHORED[u.typeId]; if (A) return A
   const UD = D.UD || {}
   const d = UD[u.typeId] || {}; const a = kitOf(u, D).attacks[0]; if (!a) return null      // the weapon in hand: the kit's first grant
-  const live = u.dmgSeen ? u.dmgSeen[a.id] : undefined
+  // viewer.live-stat-mods (2026-10-01): the action bar's own number — the seen damage moved by the stat's live
+  // modifiers since, or the sheet's stat plus them — so the marker and the bar never disagree
+  const shown = dmgOf(a, u, D)
   const statv = a.stat != null ? d[a.stat] : undefined
-  const n = live != null ? live : statv != null ? Math.max(0, statv + (a.bonus || 0)) : null
+  const n = shown ? shown.n : statv != null ? Math.max(0, statv + (a.bonus || 0)) : null
   return n == null ? null : { n, kind: a.kind === 'ranged' ? 'ranged' : 'melee' }
 }

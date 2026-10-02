@@ -46,7 +46,11 @@ export function drawPanel(V) {
   const stat = (label, value, statKey) => {
     const dlt = statKey ? modOf(u, statKey) : 0
     const col = dlt > 0 ? MOD_UP : dlt < 0 ? MOD_DOWN : '#e8e5dc'
-    const shown = value == null ? '—' : (statKey && PCT.has(statKey) ? String(value) + '%' : String(value))
+    /* viewer.live-stat-mods (2026-10-01; Andrew: the Leap "showed a +2 ... a green 4 for the Strength, but the
+       Strength should have gone to 6"): the sheet is the bare unit; the number shown is the sheet plus every live
+       modifier (an item's, a Leap's) — the change itself stays beside it */
+    const now = value == null ? null : value + dlt
+    const shown = now == null ? '—' : (statKey && PCT.has(statKey) ? String(now) + '%' : String(now))
     const dl = dlt === 0 ? '' : `<em>${sgn(dlt)}</em>`
     return `<div class="stRow"><span class="stN">${label}</span><span class="stV" style="color:${col}">${dl}${shown}</span></div>`
   }
