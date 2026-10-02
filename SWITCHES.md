@@ -298,3 +298,15 @@ Replaces viewer.painted-board's drags (`cameraDrag`) and viewer.tactical-camera'
 | `xcomEnds` | How much less prominent is End Turn? | **End activation: the large gold button (17 px type, three shares of the row); End Turn: a small quiet button (10 px) at its side.** The End Turn pop-up's own confirm keeps its gold. | "End Turn far less prominent than End Activation." | Default |
 | `xcomSeeThrough` | What is "blocking the view", and how translucent? | **Any scene mesh crossing the line from the camera to a standing body's chest or head, above its waist and short of it, is drawn at 0.18 opacity (its own copy of its material), and solid again when it hides nothing; foliage counts; pieces the scene draws see-through itself (opacity under 1, or not normally blended: fire, smoke) do not; an instanced Atlas part fades whole. Looked for at most every 120 ms while anything moves.** | "highly translucent". Pieces share materials, so a copy keeps the rest of the scene solid. | Default |
 | `xcomDoubleClick` | What does a double-click on a body do? | **Offers `{kind:'choose', id}` to the host (the kingdom makes that hero the next to act).** The top bar's double-click is viewer.unit-card-bar's. | "Double-click a character in the top bar or on the map to change it"; the card bar is the next item. | Default |
+
+## viewer.unit-card-bar — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 (Andrew): "We also need a character selector bar above the screen, the way it is in the visual
+playback … And I can use that to target things as well as clicking on them." The strip was `harness.js`'s (ruled out of the
+game 2026-09-01); it is the component's now (`src/rail.js`), so the standalone page draws none of its own.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `railOrder` | Which order, left to right? | **Ascending unit id — heroes, civilians and enemies as the board lists them (the queue of viewer.xcom-camera walks it).** | "the next in the character bar, left to right, civilians included"; the strip's order since 2026-09-01. | Default |
+| `railClick` | What does a card do? | **A click is the click on that unit's body (board.js `clickUnit`: the panel, the targeting host, the play host's `{kind:'unit'}` — the same event); a double-click offers `{kind:'choose'}`.** | "use that to target things as well as clicking on them"; "Double-click a character in the top bar … to change it". | Default |
+| `railLook` | How does it look? | **The strip as it was: each unit's token on a small card, gold under a hero, violet under an enemy, the one acting lit, those who acted greyed with ✓, the fallen dark with ✝; the card looked at outlined.** | "the way it is in the visual playback". | Default |

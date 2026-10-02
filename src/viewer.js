@@ -45,6 +45,7 @@ import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo } from './fold.js'
 import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
+import { drawRail } from './rail.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
 import { prepareBattleField } from './engine.ts'
@@ -100,6 +101,7 @@ const TEMPLATE = `
   <div id="left">
     <div id="topbar">
       <div id="turnchip">Turn 1</div><div id="phasechip">Hero Phase</div><div id="encchip" style="display:none"></div><div id="powerchip" style="display:none" title="the enemy side's Power pool"></div>
+      <div id="rail" role="toolbar" aria-label="Units"></div>
       <div data-slot="top" style="display:contents"></div>
     </div>
     <div id="boardwrap"><div id="stage"></div>
@@ -127,7 +129,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const now = opts.now || (typeof performance !== 'undefined' && typeof performance.now === 'function' ? () => performance.now() : () => Date.now())
   root.innerHTML = TEMPLATE
   const q = s => root.querySelector(s)
-  const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), portrait: q('#unitPortrait'), panel: q('#panel'),
+  const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), portrait: q('#unitPortrait'), rail: q('#rail'), panel: q('#panel'),
     stambar: q('#stambar'), actionbar: q('#actionbar'), turnchip: q('#turnchip'), phasechip: q('#phasechip'),
     encchip: q('#encchip'), powerchip: q('#powerchip'), playNote: q('#playNote'),
     slots: { top: q('[data-slot=top]'), transport: q('[data-slot=transport]'), bottom: q('[data-slot=bottom]') } }
@@ -190,7 +192,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     syncLayers(V); syncCorpses(V); syncAuras(V)
     drawAim(V); drawTargeting(V)
     syncUnits(V); syncPlayInput(V); drawPlay(V)
-    drawPanel(V); drawPortrait(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
+    drawPanel(V); drawPortrait(V); drawRail(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
   }
   V.render = render
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
