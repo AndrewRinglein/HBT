@@ -18,10 +18,23 @@ const cell = (k, v, col) => `<div class="acCell"><span class="k">${k}</span><spa
 /* stamina, directly above the action bar — one pip per point (ruled 2026-09-01) */
 export function drawStam(V) {
   const el2 = V.dom.stambar; if (!el2) return
-  const u = V.S.U[subjectOf(V)]
+  const id = subjectOf(V), u = V.S.U[id]
   if (!u || !u.maxStam) { el2.innerHTML = ''; return }
   const pips = Array.from({ length: u.maxStam }, (_, i) => `<i class="sPip${i < u.stam ? ' on' : ''}"></i>`).join('')
-  el2.innerHTML = `<div class="cell1"><span class="lab">Stamina</span><span class="track">${pips}</span><span class="num">${u.stam} / ${u.maxStam}</span></div>`
+  el2.innerHTML = `<div class="cell1"><span class="lab">Stamina</span><span class="track">${pips}</span><span class="num">${u.stam} / ${u.maxStam}</span></div>` + swapHTML(V, id)
+  /* movement.swap-and-shields: a hand list clicked is offered to the host, which gives the engine its swap command */
+  el2.querySelectorAll('.swBtn').forEach(b => b.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation()
+    V.offerPlay({ kind: 'swap', index: Number(b.dataset.swap), unit: id }) }))
+}
+/* movement.swap-and-shields (engine DECISIONS.md 2026-10-01 'the movements'): the swap on the action bar — beside the stamina
+   it is paid from, over the bar's attack and power columns: one button per hand list the host says the engine would take,
+   the engine's cost, or with none to make the engine's own reason. Only for the hero the host is planning with; a host
+   that hands no swap fact (a hero with nothing to swap, or no host at all) gets none (viewer SWITCHES swapStrip). */
+function swapHTML(V, id) {
+  const P = V.play, sw = P && P.actor === id ? P.swap : null
+  if (!sw) return ''
+  const btns = sw.choices.map((c, i) => `<button type="button" class="swBtn" data-swap="${i}" title="Swap: hold ${escape(c.label)} afterwards">${escape(c.label)}</button>`).join('')
+  return `<div class="swapCell"><span class="lab">Swap</span>${btns}${sw.choices.length ? `<span class="swCost">${sw.cost} stamina</span>` : `<span class="swWhy">${escape(sw.why || '')}</span>`}</div>`
 }
 
 export function drawBar(V) {

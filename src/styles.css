@@ -461,6 +461,14 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 #stambar .num{font:700 15px ui-monospace,monospace;color:#e8e5dc;flex:0 0 auto;
   font-variant-numeric:tabular-nums}
 #stambar .who{font:600 12px 'Barlow Semi Condensed',sans-serif;color:#6f6857;flex:0 0 auto}
+/* movement.swap-and-shields: the swap, in the strip's other two columns — over the attacks and powers it changes */
+#stambar .swapCell{grid-column:2 / span 2;display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden}
+#stambar .swBtn{font:600 12px/1 'Barlow Semi Condensed',sans-serif;letter-spacing:.04em;color:#e8e5dc;background:#1c1811;
+  border:1px solid var(--brass);border-radius:2px;padding:4px 9px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
+#stambar .swBtn:hover{background:#2a2110}
+#stambar .swBtn:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+#stambar .swCost{font:700 12px ui-monospace,monospace;color:#a9a394;flex:0 0 auto}
+#stambar .swWhy{font:600 12px 'Barlow Semi Condensed',sans-serif;color:#6f6857;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 /* the weapon, shown only when two actions share a display name */
 .acFrom{font-weight:600;font-size:11px;color:#7f7869;margin-left:6px;letter-spacing:.04em}
 .acTag{font:600 10px/1 'Barlow Semi Condensed',sans-serif;letter-spacing:.05em;

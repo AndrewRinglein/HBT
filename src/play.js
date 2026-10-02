@@ -13,13 +13,18 @@ const KEYS = ['actor', 'slot', 'reach', 'zoc', 'path', 'provokes', 'ghost', 'thr
    list is what the pop-up asks about), null or absent when it may not; endActivation true while the acting hero's
    activation may be ended (a paid primary ends it by itself — engine rule.primary-ends-activation). */
 const ENDING_KEYS = ['endTurn', 'endActivation']
+/* movement.swap-and-shields (engine DECISIONS.md 2026-10-01 'the movements': "weapon swap and shield actions are part of
+   what's needed now"): the swap, optional too — {cost, choices: [{label}], why} while the acting hero carries something
+   to swap: the hand lists the engine would take (a click offers {kind:'swap', index, unit} back), the engine's swapCost,
+   and when there is none to make the engine's own reason. Null or absent: no swap on the bar. */
+const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap']
 const AIM_KEYS = ['from', 'to', 'target', 'hit', 'dmg', 'hpAfter', 'lethal', 'locked']
 export function playFacts(value, positions) {
   const fail = why => { throw new Error('invalid play facts: ' + why) }
   if (value === null) return null
   const object = (v, keys, what) => {
     if (!v || typeof v !== 'object' || Object.getPrototypeOf(v) !== Object.prototype) fail(what + ' is not a plain object')
-    const names = Object.keys(v), optional = keys === KEYS ? ENDING_KEYS : []
+    const names = Object.keys(v), optional = keys === KEYS ? OPTIONAL_KEYS : []
     if (keys.some(k => !Object.hasOwn(v, k)) || names.some(k => !keys.includes(k) && !optional.includes(k))) fail(what + ' must carry exactly ' + keys.join(', ') + (optional.length ? ' (and may carry ' + optional.join(', ') + ')' : ''))
   }
   const int = (v, what) => { if (!Number.isInteger(v)) fail(what + ' is not an integer'); return v }
@@ -50,6 +55,12 @@ export function playFacts(value, positions) {
     if (new Set(ids).size !== ids.length) fail('endTurn.yetToAct repeats a unit')
     endTurn = { yetToAct: ids } }
   if (v.endActivation !== undefined && typeof v.endActivation !== 'boolean') fail('endActivation is a boolean')
-  return { endTurn, endActivation: v.endActivation === true, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach: hexes(v.reach, 'reach'), zoc: hexes(v.zoc, 'zoc'),
+  let swap = null
+  if (v.swap != null) { object(v.swap, ['cost', 'choices', 'why'], 'swap')
+    if (!Array.isArray(v.swap.choices)) fail('swap.choices is not an array')
+    const choices = v.swap.choices.map((c, i) => { object(c, ['label'], 'swap.choices[' + i + ']'); if (typeof c.label !== 'string' || !c.label) fail('swap.choices[' + i + '].label'); return { label: c.label } })
+    if (v.swap.why !== null && typeof v.swap.why !== 'string') fail('swap.why')
+    swap = { cost: int(v.swap.cost, 'swap.cost'), choices, why: v.swap.why } }
+  return { endTurn, endActivation: v.endActivation === true, swap, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach: hexes(v.reach, 'reach'), zoc: hexes(v.zoc, 'zoc'),
     path: hexes(v.path, 'path', false), provokes: hexes(v.provokes, 'provokes'), ghost, threat, targets: hexes(v.targets, 'targets'), aim, note: v.note }
 }

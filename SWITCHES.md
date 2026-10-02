@@ -350,3 +350,13 @@ board's edges meet the bar, the panel and the ability bar, not the screen's edge
 | `xcomWheel` (revised) | How far does the wheel go? | **0.6× to 1.8× of the standard zoom** (was 0.75–1.4), inside the board's own fit and the figure's nearest; still back 600 ms after the last step. | "a little bit further". | Default |
 | `xcomRoam` | How far may the view go? | **Its centre may reach any point of the board, at any zoom (the rows a little past, for heads and labels); Overhead keeps the whole-map framing.** `cameraPanNoVoid` is retired: past the board's edge the scene's ground, or its background, shows. | Pointing at an edge must move the map every time; the pin was what stopped it. | Default |
 | `xcomEdge` (revised) | Which edges scroll? | **The board's (within 36 px, was 18), and the screen's (within 14 px) wherever the pointer is over the battle; leaving the battle stops it, unless it left through the screen's edge.** | The battle screen's board does not reach the screen's edge on any side. | Default |
+
+## movement.swap-and-shields — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 'the movements' (Andrew: "weapon swap and shield actions are part of what's needed now"). Page
+test `tools/swap-bar.test.mjs`; the played battle: engine `test/movement-swap-and-shields.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `swapStrip` | Where on the action bar is the swap? | **In the stamina strip directly above the bar, in its two columns over the attacks and powers: "Swap", one button per hand list the host offers (its label), then the engine's cost ("1 stamina"), or — with none to make — the engine's reason in place of the buttons. Only for the hero the host is planning with (`play.actor`); no swap fact, no strip.** | The swap is paid from the stamina beside it and changes the attack and power columns below it; the 12 slots stay the hero's actions. | Default |
+| `swapShieldMotions` | Which body motion plays for the swap and for a shield power? | **None — listed, not faked.** The motion words a look carries are idle, move, flight, attack, ranged, hit, death (`tools/character-models.mjs` MOTIONS). Missing: **swap** (no draw or stow clip among the approved or selected motions) and **guard** for the six shield powers (the Oathblade body's `shield_blockleft` is bound as its `hit` reaction, the battle demo's `block`; playing it for a power would need a new motion word, which is not a chat's to name). The row lights (FIRING) and the log names each. | Engine DECISIONS.md 2026-09-30 'a bunch of motions': "a lacking motion is filled from the approved or selected motions where one fits, and is still listed where none does". | Default |
