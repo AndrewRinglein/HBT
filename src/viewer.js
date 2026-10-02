@@ -16,6 +16,8 @@
      layers   — ground layer number -> name (static.json.layers)
      actionKinds — actionId -> 'charge'|'attack'|'move'|'burst'|'power', the engine's classification (static.json)
      statusRows  — statusId -> {flags, tickDamageType?, standAction?}, each status's behaviour (static.json)
+     itemClasses — itemId -> the engine's item class (weapon, shield, …; static.json): a power a held shield grants raises the
+                   shield (viewer.shield-guard-motion); a host that hands none gets no raised shield
      layerStatus · terrainApplies — what each painted layer and ground applies (static.json)
      artmap   — typeId -> {token, card, aspect, height}; assets — file -> data URI / URL
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
@@ -146,7 +148,7 @@ export function mountBattleViewer(root, data, opts = {}) {
       LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {},
       /* viewer.reads-engine: what each action IS (the engine's predicates) and what each status DOES (its row's flags) */
-      KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
+      KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ITEM_CLASSES: data.itemClasses || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
       /* viewer.true-3d-camera: the board's map from the scene's metres to board px — the battle's 3D scene's own, else the
          flat board's (camera3d.js); the one camera, the stage and the 3D layer all stand on it */
       boardAffine: atlas ? (atlas.kind === 'painted' ? paintedToCSS(atlas) : worldToCSS(atlas, F)) : flatAffine(F),
@@ -161,7 +163,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     fx: { FX: null, timers: new Set(), nodes: new Set(), injuryQ: [], paused: null },
     playing: false, speed: 1, timer: null, invalid: null,
   }
-  const ctx = () => ({ UD: V.data.UD, SN: V.data.SN })
+  const ctx = () => ({ UD: V.data.UD, SN: V.data.SN, IC: V.data.ITEM_CLASSES })
   /* the BEAT clock: wall time scaled by playback speed, so a row that lights
      for 1600 beat-ms lights for the same number of beats at ×⅓ and ×4. The fold
      stamps its `until`s from this, and the draw compares against it. */

@@ -30,7 +30,8 @@ export async function readCatalog() {
     // isAttack, isMove, isBurst, isPower — read at dump time, so the viewer keeps no copy of the predicates
     import('../../engine/src/core/action.js'),
   ])
-  return { UNITS: content.UNITS, ACTIONS: content.ACTIONS, ATTACKS: content.ATTACKS,
+  // viewer.shield-guard-motion: ITEMS for each item's own class (ItemDef.itemClass) — which powers a shield grants
+  return { UNITS: content.UNITS, ACTIONS: content.ACTIONS, ATTACKS: content.ATTACKS, ITEMS: content.ITEMS,
     ABILITIES: content.ABILITIES, BADGES: content.BADGES, MOVES: moves.MOVES,
     STATUSES: statuses.STATUSES, MAPS: maps.MAPS, LAYER_IDS: maps.LAYER_IDS, VOCABULARY: vocabulary.engineVocabulary(),
     ACTION_KIND: { isCharge: action.isCharge, isAttack: action.isAttack, isMove: action.isMove, isBurst: action.isBurst, isPower: action.isPower } }
