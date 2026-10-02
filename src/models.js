@@ -196,6 +196,15 @@ export function groundSpeed(clip, { pose, root, stage, pivot, feet, height, inPl
   return v > 1e-3 ? v : null
 }
 
+/* one unlit twin per source material, shared by every body cloned from it (the clones share their materials too) */
+const unlitTwins = new WeakMap()
+const unlitOf = m => {
+  if (m.isMeshBasicMaterial) return m
+  if (!unlitTwins.has(m)) unlitTwins.set(m, Object.assign(new THREE.MeshBasicMaterial({ map: m.map || m.emissiveMap || null,
+    color: m.map ? m.color : m.emissiveMap ? m.emissive : m.color, side: THREE.DoubleSide, toneMapped: false }), { name: m.name }))
+  return unlitTwins.get(m)
+}
+
 /** one unit's body: the rig cloned, scaled to the roster's stature, its motions ready */
 export function createBody(loaded, appearanceOptions = {}) {
   const { look, clips } = loaded
@@ -203,11 +212,15 @@ export function createBody(loaded, appearanceOptions = {}) {
   /* viewer.real-bodies: a wardrobe body's under-suit is a material of its body parts, hidden beneath the outfit as its owners hide
      it (outfits/eve/serpent-armhole.html, hero-transformations/battle.mjs) */
   const hiddenMaterials = new Set(look.hiddenMaterials || [])
+  /* viewer.male-hero-outfits: an approved male outfit's main paint is drawn unlit, as its preview draws it (hero-outfits
+     motion/viewer.mjs: its base colour, double-sided, not tone-mapped); a mesh of several parts is named by its node */
+  const unlit = new Set(look.unlit || [])
   root.traverse(o => {
     if (hidden.has(o.name)) o.visible = false
     if (o.isMesh) {
       o.castShadow = false; o.receiveShadow = true; o.frustumCulled = false; meshes.push(o)
       if (hiddenMaterials.size) for (const m of [].concat(o.material)) if (hiddenMaterials.has(m.name)) { m.visible = false; m.depthWrite = false }
+      if (unlit.has(o.name) || unlit.has(o.parent?.name)) o.material = Array.isArray(o.material) ? o.material.map(unlitOf) : unlitOf(o.material)
     }
   })
   const mixer = new THREE.AnimationMixer(root)

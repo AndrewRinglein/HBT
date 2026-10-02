@@ -194,5 +194,7 @@ test('the approved files load: each new look stands its height, binds every moti
   /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was one 'oathblade' — battles 2 and 3's Rose, Chaplain and Veteran now hold
      their kits' dagger, shield and halberd, each its own look (viewer SWITCHES heldLookId) */
   /* Law 10 (viewer.real-bodies, 2026-10-01): was 'oathblade+dagger' — the Rose now stands in her own outfit, holding her dagger */
-  assert.deepEqual([...seen].slice(3).sort(), ['fire-imp', 'imp', 'oathblade+halberd', 'oathblade+shield', 'rogue-rose', 'skeletal-archer', 'strong-skeleton'])
+  /* Law 10 (viewer.male-hero-outfits, 2026-10-01): was 'oathblade+shield' — the Battle Chaplain now stands in his own approved outfit
+     (Andrew: "Number two, yes, that's quite important."), holding his shield (tools/male-hero-outfits.test.mjs) */
+  assert.deepEqual([...seen].slice(3).sort(), ['fire-imp', 'imp', 'oathblade+halberd', 'priest-armored', 'rogue-rose', 'skeletal-archer', 'strong-skeleton'])
 })

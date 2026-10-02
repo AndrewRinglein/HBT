@@ -55,6 +55,9 @@ test('each hero stands in its own body where the project holds one; the rest kee
     assert.equal(look.identity, identity)
     assert.equal(sha(look.model.path), look.model.sha256, look.model.path)
     if (profile) assert.deepEqual(look.model, profile.model, `${t}: the fitted body its identity's profile names`)
+    /* Law 10 (viewer.male-hero-outfits, 2026-10-01): a third own body — a male hero's approved outfit, imported (Andrew: "Number two,
+       yes, that's quite important."); its bytes against the approval's manifest are tools/male-hero-outfits.test.mjs's */
+    else if (look.body.record === 'assets/characters/hero-outfits/import.json') assert.ok(look.model.path.startsWith('assets/characters/hero-outfits/'), t)
     else {
       /* her own outfit, in the version the record beside it names */
       assert.ok(look.model.path.startsWith(WARDROBE + identity + '/'), `${t}: her own outfit (${look.model.path})`)
@@ -75,7 +78,8 @@ test('each hero stands in its own body where the project holds one; the rest kee
   const ownOf = t => pack[t].looks[0].body?.own === true, headOf = t => pack[t].looks[0].body?.head
   assert.deepEqual(['paladin-hunk', 'mage-thinking'].map(i => ownOf('hero.base.' + i)), [true, true])
   assert.deepEqual(['mage-thinking', 'rogue-raven', 'rogue-snake'].map(i => headOf('hero.base.' + i)), ['own', 'own', 'own'])
-  assert.deepEqual(['ranger-scantily', 'rogue-rose', 'priest-armored', 'warrior-fearsome'].map(i => ownOf('hero.base.' + i)), [true, true, false, false])
+  /* Law 10 (viewer.male-hero-outfits, 2026-10-01): the Battle Chaplain was false — he now stands in his own approved outfit */
+  assert.deepEqual(['ranger-scantily', 'rogue-rose', 'priest-armored', 'warrior-fearsome'].map(i => ownOf('hero.base.' + i)), [true, true, true, false])
 })
 
 const location = { protocol: 'http:', href: 'http://127.0.0.1:4230/viewer/BATTLE-VIEWER.html' }

@@ -39,6 +39,10 @@
 // the Poison Imp, the Skeleton, the Necromancer and the Demon Lieutenant in their approved bodies. A hero with no body of its own
 // keeps its class's placeholder and says so (`body.own: false`, `body.lacks`); a unit type with no approved body is in UNBODIED.
 //
+// viewer.male-hero-outfits (engine DECISIONS.md 2026-10-01 'the approved male hero outfits come into the project') stands the Black
+// Oath, Dawnblade, Court Champion and the four priests each in his own approved outfit, imported into assets/characters/hero-outfits
+// (MALE_OUTFITS below), replacing the Oathblade placeholder; his own head has no fit, so it is listed (`body.lacks`).
+//
 //   node tools/character-models.mjs --json      print the pack (test/character-models.test.ts reads it)
 //   node tools/character-models.mjs --list      who stands in what, and what is listed (viewer.real-bodies)
 import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
@@ -145,6 +149,15 @@ const OWN_FILL = { female: { death: 'fall' }, male: { hit: 'block', death: 'fall
 const UNDER_SUIT = '_UnderSuit'
 /* where an approved outfit of a hero lies outside this folder: the combined review's catalog (approved-review/catalog.json) */
 const REVIEW = 'assets/characters/oathblade-armor/rebuild/approved-review/catalog.json'
+/* viewer.male-hero-outfits (engine DECISIONS.md 2026-10-01 'the approved male hero outfits come into the project', Andrew: "Number
+   two, yes, that's quite important."): the approved male outfits (Black Oath, Dawnblade, Court Champion, the four priests), imported
+   from their production folder with the records that approve them (hero-outfits/import.json, viewer SWITCHES maleOutfits*): each
+   on the medium male body — the Oathblade's — shown as the approved preview shows it (hero-outfits motion/viewer.mjs): the painted
+   outfit, of the body only its head (none where the outfit is a whole figure), the outfit's main paint unlit; moved by the preview's
+   own medium clips, which are the Oathblade's ActorCore files byte for byte. */
+const MALE_OUTFITS = 'assets/characters/hero-outfits/import.json'
+const MALE_OUTFIT_CLIPS = { idle: 'idle_ready', move: 'walkforward01', attack: 'atk_slashdown', hit: 'shield_blockleft', death: 'arrow-hit-die' }
+const OUTFIT_LIT = /^Painted_(Glove|Cuff|Joint|Exposed)/
 /** every binding: the named unit types, each civilian of battles 1-3, then each hero.base.* of the engine's sheet by its one class tag */
 export function bindings(units = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')).units) {
   const all = { ...BINDINGS }
@@ -295,6 +308,7 @@ function ownBody(identity, registry, roster) {
   }
   const gender = roster.find(c => c.id === identity)?.gender
   const dir = WARDROBE + 'outfits/eve/' + identity + '/'
+  if (gender === 'male') return maleOutfit(identity)
   if (gender !== 'female' || !existsSync(resolve(ROOT, dir))) return null
   const version = OUTFIT_VERSION[identity] ?? OUTFIT_DEFAULT, record = dir + version + '/' + (OUTFIT_RECORD[version] ?? 'record.json')
   const r = JSON.parse(readFileSync(resolve(ROOT, record), 'utf8')), out = (r.exports || []).find(x => x.file === 'wardrobe-rigged.glb')
@@ -302,6 +316,25 @@ function ownBody(identity, registry, roster) {
   const path = dir + version + '/wardrobe-rigged.glb'
   if (digest(path) !== out.outputSHA256) throw new Error(`${identity}: ${path} is not the outfit ${record} names`)
   return { family: 'female', model: { path, sha256: out.outputSHA256 }, record, fit: r.status }
+}
+/** viewer.male-hero-outfits: a male hero's own approved outfit (MALE_OUTFITS above), or null — its bytes checked against the
+    approval's own baseline manifest, the approval checked to name him */
+function maleOutfit(identity) {
+  const rec = JSON.parse(readFileSync(resolve(ROOT, MALE_OUTFITS), 'utf8')), o = rec.outfits?.[identity]
+  if (!o) return null
+  const base = posix.dirname(MALE_OUTFITS) + '/', read = f => {
+    const path = base + f
+    if (digest(path) !== rec.records?.files?.[f]) throw new Error(`${identity}: ${path} is not the record ${MALE_OUTFITS} copied`)
+    return JSON.parse(readFileSync(resolve(ROOT, path), 'utf8'))
+  }
+  const approval = read(rec.approval.record)
+  if (approval.status !== 'approved' || !approval.outfits.includes(identity)) throw new Error(`${identity}: ${rec.approval.record} does not approve it`)
+  const manifest = read(posix.dirname(rec.approval.record) + '/' + posix.basename(approval.baselineManifest))
+  const entry = manifest.files.find(f => f.path.replace(/\\/g, '/').endsWith('/hero-outfits/' + o.source))
+  if (!entry || entry.sha256.toLowerCase() !== o.model.sha256) throw new Error(`${identity}: ${o.source} is not in the approval's baseline manifest with that hash`)
+  if (digest(o.model.path) !== o.model.sha256) throw new Error(`${identity}: ${o.model.path} is not the outfit ${MALE_OUTFITS} names`)
+  return { family: 'male', outfit: { head: o.head, rec }, model: { path: o.model.path, sha256: o.model.sha256 }, record: MALE_OUTFITS,
+    fit: `approved ${approval.recordedAt.slice(0, 10)} as presented in its movement preview (${approval.scope.split(',')[0]}); in the battle screen a candidate` }
 }
 /** viewer.real-bodies: what a hero standing in its class's placeholder has elsewhere, and so lacks here */
 function placeholderLacks(identity, review) {
@@ -330,6 +363,7 @@ export async function packCharacterModels() {
     const frame = catalog.find(a => a.id === FAMILY_FRAME[own.family])
     if (!frame) throw new Error(`${typeId}: the battle demo's roster has no '${FAMILY_FRAME[own.family]}' to stand a ${own.family} body by`)
     const g = glbJSON(own.model.path), heads = (g.nodes || []).filter(n => n.extras?.headVariant).map(n => ({ name: n.name, variant: n.extras.headVariant }))
+    if (own.outfit) return outfitLook(typeId, bind, own, frame, g)
     const head = !heads.length || heads.some(h => h.variant === bind.hero) ? bind.hero : 'original'
     const look = {
       id: bind.hero, identity: bind.hero, name: roster.find(c => c.id === bind.hero)?.name ?? registry.characters[bind.hero].name,
@@ -346,6 +380,34 @@ export async function packCharacterModels() {
     } else for (const [motion, clip] of Object.entries(PROFILE_CLIPS[own.family] || {})) look.motions[motion] = { path: own.model.path, sha256: own.model.sha256, clip: clipIn(own.model.path, clip) }
     const bow = bind.items.some(i => HELD[i]?.demo === 'bow')
     for (const [motion, name] of Object.entries({ ...OWN_FILL[own.family], ...(bow ? { ranged: 'bow' } : {}) })) if (!look.motions[motion]) look.motions[motion] = selected(name, own.model.path, catalog)
+    const { props, unheld } = heldProps(typeId, bind.items, look.motions)
+    look.props = props; look.unheld = unheld
+    look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
+    return look
+  }
+  /* viewer.male-hero-outfits: a male hero in his own approved outfit, as its preview shows it (MALE_OUTFITS above) */
+  const outfitLook = (typeId, bind, own, frame, g) => {
+    const { head, rec } = own.outfit, meshes = (g.nodes || []).filter(n => n.mesh != null).map(n => n.name)
+    if (!meshes.some(n => n.startsWith('Painted_'))) throw new Error(`${typeId}: ${own.model.path} has no painted outfit`)
+    if (head === 'body' && !meshes.includes('Body_Head')) throw new Error(`${typeId}: ${own.model.path} has no Body_Head to show`)
+    const look = {
+      id: bind.hero, identity: bind.hero, name: roster.find(c => c.id === bind.hero)?.name ?? registry.characters[bind.hero].name,
+      height: frame.height, pivot: frame.pivot, model: own.model, motions: {},
+      hidden: meshes.filter(n => n.startsWith('Body_') && !(head === 'body' && n === 'Body_Head')),
+      unlit: meshes.filter(n => n.startsWith('Painted_') && !OUTFIT_LIT.test(n)),
+      props: [],
+      body: { own: true, record: own.record, fit: own.fit, head,
+        lacks: `its own head: his head (approved-review/catalog.json head-${bind.hero}) is a design with no fit on this body; it shows ${head === 'body' ? "the body's own head" : "the outfit figure's own head"}` },
+    }
+    const bones = new Set((g.nodes || []).map(n => n.name))
+    for (const [motion, clip] of Object.entries(MALE_OUTFIT_CLIPS)) {
+      const c = rec.clips?.[clip]
+      if (!c || !/^[0-9a-f]{64}$/.test(c.sha256 || '') || digest(c.path) !== c.sha256) throw new Error(`${typeId}: ${c?.path ?? clip} is not the clip ${MALE_OUTFITS} names`)
+      const name = clipIn(c.path), lacks = movedBy(c.path, name).filter(n => !bones.has(n))
+      if (lacks.length) throw new Error(`${typeId}: ${clip} moves ${lacks.length} bones ${own.model.path} lacks (${lacks.slice(0, 3).join(', ')})`)
+      look.motions[motion] = { path: c.path, sha256: c.sha256, clip: name }
+    }
+    if (bind.items.some(i => HELD[i]?.demo === 'bow')) look.motions.ranged = selected('bow', own.model.path, catalog)
     const { props, unheld } = heldProps(typeId, bind.items, look.motions)
     look.props = props; look.unheld = unheld
     look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
