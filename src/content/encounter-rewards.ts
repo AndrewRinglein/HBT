@@ -16,8 +16,8 @@
 // KINGDOM-V2-2026-09-07.md "Opening onboarding and rewards": "Sword after battle 2; item choice starts after battle 3";
 // battle 1 has no reward beyond its hero progression.
 //
-// The Cathedral (battle 6) has no engine encounter yet; its row comes with it. Battles 4 and 5 are paid by the
-// standing draw ("item choice starts after battle 3") — kingdom SWITCHES.md openingLaterRewards.
+// Battles 4, 5 and 6 are paid by the standing draw ("item choice starts after battle 3") — kingdom SWITCHES.md
+// openingLaterRewards; the Cathedral's row came with its engine encounter (kingdom.opening-run-six, openingCathedralReward).
 
 import { omitDisabled } from './disable.js'
 
@@ -56,6 +56,10 @@ const RAW: readonly EncounterRewardRow[] = [
     source: "KINGDOM-V2 'item choice starts after battle 3'; DECISIONS.md 'wounds apply, fatigue does not'" },
   { id: 'encounter.opening.gates', encounterId: 'encounter.opening.gates', offer: { kind: 'draw' }, fatigues: false, replayed: true,
     source: "KINGDOM-V2 'item choice starts after battle 3'; DECISIONS.md 'wounds apply, fatigue does not'" },
+  // kingdom.opening-run-six: battle 6 joined the engine (encounter.opening.cathedral); paid as battles 4 and 5 are
+  // (kingdom SWITCHES.md openingCathedralReward)
+  { id: 'encounter.opening.cathedral', encounterId: 'encounter.opening.cathedral', offer: { kind: 'draw' }, fatigues: false, replayed: true,
+    source: "KINGDOM-V2 'item choice starts after battle 3'; DECISIONS.md 'wounds apply, fatigue does not' · 2026-10-01 'there should be battle rewards, experience points, levels, and equipping inside of our sixth loop'" },
 ]
 
 export const ENCOUNTER_REWARDS: readonly EncounterRewardRow[] = omitDisabled(RAW)

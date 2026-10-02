@@ -17,11 +17,13 @@ Object.defineProperties(El.prototype,{
  // settable, as a button's is (kingdom.opening-loop-three: the level-up sheet enables its Confirm by assignment)
  disabled:{get(){return this.hasAttribute('disabled')},set(on){if(on)this.setAttribute('disabled','');else this.removeAttribute('disabled')},configurable:true},
 })
-export function dom(){const w=makeWindow();w.removeEventListener=()=>{};const store=new Map();w.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)};return{w,store}}
+// kingdom.opening-run-six: a store handed in is that browser's — a page closed and opened again reads what it kept
+export function dom(store=new Map()){const w=makeWindow();w.removeEventListener=()=>{};w.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)};return{w,store}}
 // opts (viewer.battle-full-screen): search — the page's location.search, e.g. '?play=encounter.opening.orphanage'; width and
-// height — the window's inner size (fakedom's default is 1920x1080)
+// height — the window's inner size (fakedom's default is 1920x1080); store — the browser's storage (a Map) to open with,
+// as a page reopened in the same browser (kingdom.opening-run-six)
 export function bootSlice(file='SLICE.html',opts={}){
- const {w,store}=dom();if(opts.width)w.innerWidth=opts.width;if(opts.height)w.innerHeight=opts.height;w.location={search:opts.search??''}
+ const {w,store}=dom(opts.store);if(opts.width)w.innerWidth=opts.width;if(opts.height)w.innerHeight=opts.height;w.location={search:opts.search??''}
  const root=w.document.createElement('div');root.id='app';w.document.body.appendChild(root)
  const html=readFileSync(file,'utf8'),script=html.slice(html.lastIndexOf('<script>')+8,html.lastIndexOf('</script>'))
  const names=['window','document','globalThis','self','localStorage','requestAnimationFrame','cancelAnimationFrame','setTimeout','clearTimeout','setInterval','clearInterval','getComputedStyle','performance','HTMLElement','Element','location']

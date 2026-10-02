@@ -9,7 +9,8 @@ import {createPlayInput,type PlayEvent} from './play-input.js'
 import {ABBOTOWN_MAP} from '../content/conquest.js'
 import {conquestProgress,takeSection,nextSection} from '../core/conquest.js'
 import {conquestMapHTML} from './conquest-map.js'
-import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBattle,draftsOwedOf} from '../core/opening.js'
+import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBattle,draftsOwedOf,openingBattlesWonOf} from '../core/opening.js'
+import {readRun,writeRun} from './opening-run.js'
 import {makeCtx,setBattleOutcome,type Ctx} from '../core/mutate.js'
 import {performAdvancePrep,performDeploy,listDeployable,deployLimitOf} from '../core/prep.js'
 import {resolveReckoning,applyBattleResult,performExitBattle} from '../core/reckoning.js'
@@ -69,9 +70,15 @@ let mapSitting=false,mapOpen=false,taken:string[]=[]
 const mapOrder=ABBOTOWN_MAP.sections.map(s=>s.encounterId)
 function drawMap(){
  const host=q('conquest')
- host.innerHTML=conquestMapHTML({map:ABBOTOWN_MAP,progress:conquestProgress(mapOrder,taken),playable:SANDBOX_ENCOUNTERS.map(e=>e.id)})
+ host.innerHTML=conquestMapHTML({map:ABBOTOWN_MAP,progress:conquestProgress(mapOrder,taken),playable:SANDBOX_ENCOUNTERS.map(e=>e.id)})+(sitting?runFooter():'')
+ persist()
  host.querySelectorAll<HTMLElement>('[data-act="field"]').forEach(el=>el.addEventListener('keydown',(e:Event)=>{const k=(e as KeyboardEvent).key;if(k==='Enter'||k===' '){e.preventDefault?.();action('field',el.dataset.id)}}))
  bind(host)
+}
+/** kingdom.opening-run-six: under the map, what the run is — saved, how to come back, the end once Abbotown is retaken */
+function runFooter(){
+ const done=nextSection(mapOrder,taken)===null
+ return `<p class="runNote" id="runNote">${runNote?`<b>${escape(runNote)}</b> `:''}${done?'<b>Abbotown is retaken — the opening run is complete.</b> ':''}The run is saved after every step: close the page at any time, and Retaking Abbotown opens where you left it. <a href="PLAY.html" data-run="launcher">Launcher</a> · <a href="BATTLE-SANDBOX.html?map&amp;new" data-run="new">Start a new run</a></p>`
 }
 /** kingdom.opening-loop-three (PLAYABLE-OPENING-PLAN.md item 12; engine DECISIONS.md 2026-09-29 "the playable opening": "one
     page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards -> map"): the ?map sitting is a
@@ -83,6 +90,12 @@ function drawMap(){
 type Sitting={ctx:Ctx;lastBattle:LastBattle|null;levelHero:string|null;picked:string|null;giving:string|null;mounted:Cleanup|null}
 let sitting:Sitting|null=null,campaignOpen=false
 const sitCause='sitting'
+/** kingdom.opening-run-six (engine DECISIONS.md 2026-10-01 'one continuous run through the first six battles, saved'): the
+    run is kept after every step the page takes — a battle written, a reward kept, a level taken, a draft, an equip — and
+    ?map reopened goes on from there (ui/opening-run.ts; kingdom SWITCHES.md openingRunSave*) */
+const runStore=()=>typeof localStorage!=='undefined'?localStorage:null
+function persist(){if(sitting)writeRun(runStore(),sitting.ctx.campaign,sitting.lastBattle)}
+let runNote=''
 const sectionOf=(id:string)=>ABBOTOWN_MAP.sections.find(s=>s.encounterId===id)
 /** a battle on the board is the campaign's when it is the cursor's battle, with exactly the party and rows it was fielded with */
 function isCampaignBattle(s:Sandbox){
@@ -109,7 +122,7 @@ function fieldBattle(id:string){
 /** Equip's To the battle: the cursor goes to the battle and the encounter is fielded with the campaign's rows */
 function startCampaignBattle(){
  const c=sitting!.ctx.campaign,e=c.cursor.engagement!
- campaignOpen=false;clearCampaign()
+ campaignOpen=false;clearCampaign();persist()
  install(createSandbox({mapId:e.mapId,heroes:[...e.deployed],heroRows:e.deployed.map(id=>structuredClone(c.roster[id]!)),enemies:[],seed:e.seed,encounterId:e.id}))
 }
 /** the outcome's Continue: the battle folded (core/sandbox.ts), the Reckoning proposed and written by the one writer */
@@ -159,7 +172,7 @@ function drawCampaign(){
  let html='',mount:((hx:HTMLElement)=>Cleanup)|null=null
  if(s.levelHero){const who=s.levelHero
   html=levelUpScreen(c,who,'rewards',{specialtyOwed:true})
-  mount=hx=>mountLevelUp(hx,choice=>{try{performLevelUp(s.ctx,who,sitCause,choice)}catch(e){error=(e as Error).message}},()=>{s.levelHero=null;drawCampaign()})}
+  mount=hx=>mountLevelUp(hx,choice=>{try{performLevelUp(s.ctx,who,sitCause,choice);persist()}catch(e){error=(e as Error).message}},()=>{s.levelHero=null;drawCampaign()})}
  else if(c.cursor.step==='draft')html=`<div class="sliceView">${draftScreen(c)}</div>`
  else if(c.cursor.step==='prep'&&c.cursor.prepStep==='equip'){const e=c.cursor.engagement!;html=`<div class="sliceView">${equipPage(c,e.deployed,{where:'prep',picked:s.picked,engagementId:sectionOf(e.id)?.name??e.id,canAdvance:true})}</div>`}
  else if(c.cursor.step==='reckoning'){html=recapScreen(c,s.ctx.events,s.lastBattle);mount=hx=>mountRecap(hx,()=>act(()=>campaignAct('exit',hx)))}
@@ -173,7 +186,7 @@ function drawCampaign(){
   act(()=>campaignAct(el.dataset.act!,el))
  }))
  const hx=host.querySelector<HTMLElement>('.hx');if(hx&&mount)s.mounted=mount(hx)
- layout()
+ persist();layout()
 }
 /** a campaign step: a refusal (Law 9) is said on the screen, never swallowed */
 function act(f:()=>void){error='';try{f()}catch(e){error=(e as Error).message;if(campaignOpen)drawCampaign();else{if(mapOpen)drawMap();layout()}}}
@@ -333,11 +346,24 @@ bind(q('transfer'));bind(q('battleNav'));setup();controls()
  // kingdom.abbotown-map: ?map[&taken=<encounter id>,…][&heroes=<hero id>,…] opens the Retaking Abbotown map for a sitting
  // kingdom.opening-loop-three: the sitting's Campaign — a new one from nothing, its seed the page's own at opening (as
  // SLICE.html's new Campaign) or &seed=<n> (kingdom SWITCHES.md openingSittingSeed); its heroes are drafted, not chosen
+ // kingdom.opening-run-six: the run kept in this browser is read back and goes on where it stood — the map, the screen it
+ // was on, or (left mid-battle) that battle from its start; &new, or a named &seed, starts a new run in its place
+ // (kingdom SWITCHES.md openingRunResume, openingRunMidBattle, openingRunNew)
  if(!want&&params?.has('map')){mapSitting=true;mapOpen=true
-  taken=mapOrder.filter(id=>(params.get('taken')??'').split(',').includes(id))
-  const seed=Number(params.get('seed')??NaN)
-  sitting={ctx:makeCtx(makeNewCampaign(Number.isSafeInteger(seed)&&seed>=0?seed:Math.floor(Math.random()*1e9))),lastBattle:null,levelHero:null,picked:null,giving:null,mounted:null}
+  const seed=Number(params.get('seed')??NaN),fresh=params.has('new')||params.has('seed')
+  const kept=fresh?{run:null,why:''}:readRun(runStore())
+  if(kept.why)runNote=`The saved run could not be read (${kept.why}); a new run is started.`
   {const ff=fontFaces();if(ff){const st=document.createElement('style');st.textContent=ff;document.head.appendChild(st)}}
-  drawMap();controls()}}
+  if(kept.run){
+   sitting={ctx:makeCtx(kept.run.campaign),lastBattle:kept.run.lastBattle,levelHero:null,picked:null,giving:null,mounted:null}
+   taken=mapOrder.slice(0,openingBattlesWonOf(kept.run.campaign))
+   const step=kept.run.campaign.cursor.step
+   if(step==='battle'){mapOpen=false;startCampaignBattle()}
+   else if(step==='open'){drawMap();controls()}
+   else{mapOpen=false;campaignOpen=true;controls();drawCampaign()}
+  }else{
+   taken=mapOrder.filter(id=>(params.get('taken')??'').split(',').includes(id))
+   sitting={ctx:makeCtx(makeNewCampaign(Number.isSafeInteger(seed)&&seed>=0?seed:Math.floor(Math.random()*1e9))),lastBattle:null,levelHero:null,picked:null,giving:null,mounted:null}
+   drawMap();controls()}}}
 // A read-only integration handle for the built-page smoke; commands still use UI listeners.
 Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation},get campaign(){return sitting?structuredClone(sitting.ctx.campaign):null}}})

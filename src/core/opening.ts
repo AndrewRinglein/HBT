@@ -64,6 +64,16 @@ export function draftsOwedOf(campaign: CampaignState): number {
   return Math.max(0, target - have)
 }
 
+/**
+ * kingdom.opening-run-six: how many of the opening's battles are won — the cursor's battle number less one (a won battle
+ * moves the cursor on; a lost one, replayed, does not — performResolvePrologue). A reopened run's map takes that many
+ * sections from its start.
+ */
+export function openingBattlesWonOf(campaign: CampaignState): number {
+  if (campaign.cursor.prologue === null) throw new Error('openingBattlesWonOf refused: the opening is done')
+  return campaign.cursor.prologue - 1
+}
+
 export function isOpeningDone(campaign: CampaignState): boolean {
   return campaign.cursor.prologue === null
 }
