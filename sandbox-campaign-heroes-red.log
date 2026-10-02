@@ -1,0 +1,63 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+ ❯ test/sandbox-campaign-heroes.test.ts (4 tests | 3 failed) 75ms
+     × a level-2 hero with a swapped item and a wound fields with that level, item and wound 3ms
+     × the rows survive a save and a restore 1ms
+     × refuses rows that disagree with the heroes named, or none, or more than six 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/sandbox-campaign-heroes.test.ts > kingdom.sandbox-campaign-heroes — the sandbox fields campaign Hero rows > a level-2 hero with a swapped item and a wound fields with that level, item and wound
+Error: Unknown hero
+ ❯ configured src/core/sandbox.ts:25:71
+     23|   if(!SANDBOX_ENCOUNTERS.some(e=>e.id===config.encounterId))throw Erro…
+     24|   if(!Array.isArray(config.heroes)||config.heroes.length<1||config.her…
+     25|   if(config.heroes.some(id=>!SANDBOX_HEROES.some(h=>h.id===id)))throw …
+       |                                                                       ^
+     26|   return null
+     27|  }
+ ❯ createSandbox src/core/sandbox.ts:43:14
+ ❯ test/sandbox-campaign-heroes.test.ts:30:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/sandbox-campaign-heroes.test.ts > kingdom.sandbox-campaign-heroes — the sandbox fields campaign Hero rows > the rows survive a save and a restore
+Error: Unknown hero
+ ❯ configured src/core/sandbox.ts:25:71
+     23|   if(!SANDBOX_ENCOUNTERS.some(e=>e.id===config.encounterId))throw Erro…
+     24|   if(!Array.isArray(config.heroes)||config.heroes.length<1||config.her…
+     25|   if(config.heroes.some(id=>!SANDBOX_HEROES.some(h=>h.id===id)))throw …
+       |                                                                       ^
+     26|   return null
+     27|  }
+ ❯ createSandbox src/core/sandbox.ts:43:14
+ ❯ test/sandbox-campaign-heroes.test.ts:54:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/sandbox-campaign-heroes.test.ts > kingdom.sandbox-campaign-heroes — the sandbox fields campaign Hero rows > refuses rows that disagree with the heroes named, or none, or more than six
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/sandbox-campaign-heroes.test.ts:71:82
+     69|   it('refuses rows that disagree with the heroes named, or none, or mo…
+     70|     const row = leftBehind()
+     71|     expect(() => createSandbox({ ...PLAY, heroes: [WARRIOR], heroRows:…
+       |                                                                                  ^
+     72|     expect(() => createSandbox({ ...PLAY, heroes: [], heroRows: [] }))…
+     73|     const seven = Array.from({ length: 7 }, (_, i) => ({ ...fresh(WARR…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  18:08:41
+   Duration  4.28s (transform 3.06s, setup 0ms, import 4.07s, tests 75ms, environment 0ms)
+
