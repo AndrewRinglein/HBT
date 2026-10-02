@@ -5199,5 +5199,19 @@
   "note": "Reported by Andrew 2026-10-01 with viewer.live-stat-mods (the stat window and the attack numbers).",
   "status": "done-needs-review",
   "sha": "7a54e06"
+ },
+ {
+  "id": "fix.orphans-teacher-knife",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.one-hero-assembly-refiled"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage"
+  ],
+  "changesBaseline": true,
+  "spec": "Ruled 2026-10-02 (Andrew, engine DECISIONS.md 'the Net is a trinket with no hands; the orphans and the school teacher start with a knife'): 'The Orphanage, Orphanage, and the school teacher should start with a knife each.' The knife is item.dagger (no knife row exists; the teacher's Codex kit already names it). (1) content/gen/heroes.json: hero.fixed.orphans' kit becomes [item.dagger] in place of item.pile-of-rocks; rebuild the Codex and the engine pack. (2) The orphans and the school teacher field their kit wherever an encounter places them (setup units and arrivals), through the one assembler fieldedDef (fix.one-hero-assembly-refiled) — not a second kit path. engine SWITCHES arrivalKit stands for every other placed civilian (school children, farmer, lumberjack and wife, the Supper's villagers): they keep fighting as authored. Prior art: fieldedDef's kit handling for createBattle; arrivals in src/core/encounter.ts. Rebuild the kingdom pages the change makes stale.",
+  "expect": "In encounter.opening.orphanage every orphan and in its encounter the school teacher fields item.dagger and attacks with attack.dagger.stab, not Punch; a school child placed by an encounter still fights with Punch; the opening's control battles move."
  }
 ]
