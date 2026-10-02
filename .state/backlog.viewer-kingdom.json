@@ -1,5 +1,19 @@
 [
  {
+  "id": "viewer.side-facing",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the first look at the XCOM camera, the weapons and the bodies'): 'The enemies should be facing to the left, and the heroes should be facing to the right.' At rest every body faces its side's way across the board (heroes, civilians among them, east; enemies west); walking it faces where it walks, striking its target, and it turns back when idle.",
+  "expect": "In the sandbox at the start every hero (and civilian) faces right and every enemy left; after a walk or a strike each turns back to its side's way."
+ },
+ {
+  "id": "viewer.xcom-camera-tuning",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the first look at the XCOM camera, the weapons and the bodies'): 'the zoom-in and zoom-out should go a little bit further than the 0.75 and 1.4' · 'The pointing-to-scroll on the map does not work very well. If you point to the edge, you sometimes get some movement.' The wheel reaches further and still springs back; the pointer at the board's edge, or at the screen's edge over the battle, always scrolls — the view may centre any point of the board.",
+  "expect": "In the sandbox the wheel goes past 0.75x and 1.4x and springs back; holding the pointer at any edge of the board or the screen scrolls the map that way every time, until the view reaches the board's edge."
+ },
+ {
   "id": "viewer.xcom-camera",
   "kind": "viewer",
   "shape": "plumbing",
