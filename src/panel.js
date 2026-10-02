@@ -12,6 +12,19 @@ export const HOOKLBL = { onHit: 'ON HIT', onBlock: 'ON BLOCK', onAttack: 'ON ATT
   onTakingDamage: 'WHEN HIT', onKill: 'ON KILL', onDeath: 'ON DEATH', onMiss: 'ON MISS',
   onBurst: 'ON BURST', onCrit: 'ON CRIT', startOfBattle: 'BATTLE START', onActivationEnd: 'ACTIVATION END' }
 
+/* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera': "A character portrait in the lower-left
+   corner, as tall as the ability bar"): the card of whose panel it is — the one rule, subject.js — over the board's
+   lower-left corner */
+export function drawPortrait(V) {
+  const P = V.dom.portrait; if (!P) return
+  const { S, data: { ARTMAP, ASSETS } } = V, u = S.U[subjectOf(V)]
+  const card = u ? ASSETS[(ARTMAP[u.typeId] || {}).card] : null
+  if (!card) { P.style.display = 'none'; return }
+  const img = P.querySelector('img'); if (!img) return
+  if (img.getAttribute('src') !== card) img.setAttribute('src', card)
+  P.className = u.side === 'enemy' ? 'enemy' : ''
+  P.style.display = ''
+}
 export function drawPanel(V) {
   const P = V.dom.panel; if (!P) return
   const { S, view, data: { UD, SN, POS, F, ARTMAP, ASSETS } } = V

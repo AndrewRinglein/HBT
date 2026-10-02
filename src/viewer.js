@@ -43,8 +43,8 @@ import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
 import {worldToCSS} from './terrain-scene.js'
 import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState } from './board.js'
-import { drawPanel } from './panel.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn } from './board.js'
+import { drawPanel, drawPortrait } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
 import { prepareBattleField } from './engine.ts'
@@ -104,19 +104,8 @@ const TEMPLATE = `
     </div>
     <div id="boardwrap"><div id="stage"></div>
       <canvas id="vfxC" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:35"></canvas>
-      <div id="camHud" class="mono" style="position:absolute;left:14px;bottom:52px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div>
-      <div id="camBar" role="toolbar" aria-label="Camera">
-        <button id="camReset" type="button" data-cam="reset" title="Return to the starting angled view (Home)">Reset view</button>
-        <button type="button" data-cam="whole" title="Fit the whole battlefield">Whole map</button>
-        <button type="button" data-cam="angled" title="40 degrees above the ground">Angled view</button>
-        <button type="button" data-cam="lower" title="Lower the camera 10 degrees">Lower angle</button>
-        <button type="button" data-cam="raise" title="Raise the camera 10 degrees">Raise angle</button>
-        <button type="button" data-cam="overhead" aria-pressed="false" title="Straight down; press again to go back">Overhead</button>
-        <button type="button" data-cam="left" aria-label="Turn left" title="Turn left (Q)">&#8630;</button>
-        <button type="button" data-cam="right" aria-label="Turn right" title="Turn right (E)">&#8631;</button>
-        <button type="button" data-cam="focus" title="Centre the camera on the selected unit">Focus selected unit</button>
-        <button type="button" data-cam="inspect" aria-pressed="false" title="Explore freely; press again to return">Inspect</button>
-      </div>
+      <div id="camHud" class="mono" style="position:absolute;left:185px;bottom:10px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div>
+      <div id="unitPortrait" aria-hidden="true" style="display:none"><img alt=""></div>
       <div id="playNote" role="status" style="display:none"></div></div>
     <div data-slot="transport" style="display:contents"></div>
     <div id="stambar"></div>
@@ -138,7 +127,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const now = opts.now || (typeof performance !== 'undefined' && typeof performance.now === 'function' ? () => performance.now() : () => Date.now())
   root.innerHTML = TEMPLATE
   const q = s => root.querySelector(s)
-  const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), camBar: q('#camBar'), panel: q('#panel'),
+  const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), portrait: q('#unitPortrait'), panel: q('#panel'),
     stambar: q('#stambar'), actionbar: q('#actionbar'), turnchip: q('#turnchip'), phasechip: q('#phasechip'),
     encchip: q('#encchip'), powerchip: q('#powerchip'), playNote: q('#playNote'),
     slots: { top: q('[data-slot=top]'), transport: q('[data-slot=transport]'), bottom: q('[data-slot=bottom]') } }
@@ -201,7 +190,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     syncLayers(V); syncCorpses(V); syncAuras(V)
     drawAim(V); drawTargeting(V)
     syncUnits(V); syncPlayInput(V); drawPlay(V)
-    drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
+    drawPanel(V); drawPortrait(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
   }
   V.render = render
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
@@ -478,6 +467,8 @@ export function mountBattleViewer(root, data, opts = {}) {
     setZoom(z) { V.view.zoom = z; applyCam(V); drawEdges(V) },
     setBare(b) { V.view.bare = b; render() },
     inspect(id) { V.view.inspectId = id; render() },
+    /* viewer.xcom-camera: the map centred on a unit at the standard zoom (the host's proposed hero) */
+    centre(id) { centreOn(V, id) },
     get cursor() { return V.cursor }, get events() { return V.EV }, get state() { return V.S },
     get playing() { return V.playing }, get view() { return V.view }, get invalid() { return V.invalid },
     get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
