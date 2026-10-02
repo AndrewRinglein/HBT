@@ -1,25 +1,98 @@
 {
- "id": "viewer.characters-unfaded",
- "tree": "5f1ad69b9d6f78924adf8e7d6839cac5f0cd0ed5+ae6bb300ba3af910ab082392ef78b45abe5e8b3f",
- "ctx": "80091f3ef71d441ffc3ee5514b90ca2a1d50c638",
- "results": {},
+ "id": "kingdom.opening-loop-three",
+ "tree": "9b5c951965840d20f1196899baaa85aa105713e9+302e24850c9760142ee2ef5b71adf163eed9a58f",
+ "ctx": "6cb47c70ab95809a9506ea805772fe20211661b8",
+ "results": {
+  "dependencies landed": {
+   "ok": true,
+   "note": ""
+  },
+  "not already decided": {
+   "ok": false,
+   "warn": true,
+   "note": "4 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3537 · DECISIONS.md:3807"
+  },
+  "typecheck": {
+   "ok": true,
+   "note": ""
+  },
+  "the item's own tests": {
+   "ok": true,
+   "note": "test/opening-loop-three.test.ts, test/isc-039.test.ts, test/opening-rewards.test.ts, test/encounter-result-fold.test.ts, test/sandbox-campaign-heroes.test.ts"
+  },
+  "gate 1 — the id appears in a real battle": {
+   "ok": true,
+   "note": "engine-only plumbing, no probeIds — not applicable"
+  },
+  "brought its own tests": {
+   "ok": true,
+   "note": "kingdom/test/opening-loop-three.test.ts, kingdom/test/isc-039.test.ts, kingdom/test/opening-rewards.test.ts, kingdom/test/encounter-result-fold.test.ts, kingdom/test/sandbox-campaign-heroes.test.ts"
+  },
+  "existing tests untouched": {
+   "ok": false,
+   "warn": true,
+   "note": "DELETED LINES in test/isc-039.test.ts (-7) — will land FLAGGED for review"
+  },
+  "control battles unchanged": {
+   "ok": true,
+   "note": ""
+  },
+  "content has a published source": {
+   "ok": true,
+   "warn": false,
+   "note": "53 ids without a published source (43 awaiting publication from earlier items — see audit)",
+   "invented": 53
+  },
+  "hardcode scan — core knows mechanisms, never names": {
+   "ok": true,
+   "note": ""
+  },
+  "prior art — nothing new copies what exists": {
+   "ok": true,
+   "warn": false,
+   "note": "fast — wrap runs it over the whole tree; --full runs it here"
+  },
+  "wrong home — nothing another package owns": {
+   "ok": true,
+   "warn": false,
+   "note": "fast — wrap runs it over the whole tree; --full runs it here"
+  },
+  "generalizes — the second instance costs zero engine code": {
+   "ok": true,
+   "note": "shape 'plumbing' — not a mechanism, exempt"
+  },
+  "naming — new content ids use declared kinds": {
+   "ok": true,
+   "note": ""
+  },
+  "naming — no banned words invented": {
+   "ok": true,
+   "warn": false,
+   "note": "",
+   "review": false
+  },
+  "kill switch — the tests fail without the content": {
+   "ok": true,
+   "note": "no content id to disable — engine plumbing, not applicable"
+  }
+ },
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 267,
-  "typecheck": 1750,
+  "not already decided": 376,
+  "typecheck": 2323,
   "the item's own tests ▸ test/additions.test.ts": 86473,
   "the item's own tests ▸ test/integration.test.ts": 25873,
   "the item's own tests ▸ test/gate-resume.test.ts": 5222,
-  "the item's own tests": 2131,
-  "gate 1 — the id appears in a real battle": 0,
-  "brought its own tests": 117,
+  "the item's own tests": 15814,
+  "gate 1 — the id appears in a real battle": 1,
+  "brought its own tests": 374,
   "existing tests untouched": 0,
-  "control battles unchanged": 35500,
-  "content has a published source": 158,
-  "hardcode scan — core knows mechanisms, never names": 46,
+  "control battles unchanged": 67376,
+  "content has a published source": 794,
+  "hardcode scan — core knows mechanisms, never names": 70,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 44,
-  "naming — no banned words invented": 137,
+  "naming — new content ids use declared kinds": 61,
+  "naming — no banned words invented": 199,
   "kill switch — the tests fail without the content": 0,
   "the item's own tests ▸ test/terrain.test.ts": 13047,
   "the item's own tests ▸ test/cowork-test-timeout.test.ts": 5171,
