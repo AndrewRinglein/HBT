@@ -23,7 +23,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'We also need a character selector bar above the screen, the way it is in the visual playback. You have all the heroes and enemies as tiny little cards above the screen. That should still be there. And I can use that to target things as well as clicking on them.' The replay's unit-card strip (the topbar portraits) in the live battle and the Kingdom host; a card click is the unit click (select a hero to act; with an attack chosen, target that unit through the play input).",
-  "expect": "In the sandbox the strip of every unit's card sits above the board; clicking a hero's card starts its activation; with an attack chosen, clicking an enemy's card aims and confirms exactly as clicking its body."
+  "expect": "In the sandbox the strip of every unit's card sits above the board; clicking a hero's card starts its activation; with an attack chosen, clicking an enemy's card aims and confirms exactly as clicking its body.",
+  "status": "done",
+  "sha": "90d261a"
  },
  {
   "id": "viewer.characters-unfaded",
