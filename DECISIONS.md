@@ -3846,6 +3846,16 @@ Ruled:
 
 Not ruled (2): the content chat does not wrap while the engine chat is working — `wrap.mjs` writes the package's one Now line.
 
+## 2026-10-01 — the approved male hero outfits come into the project
+
+Andrew, in the viewer chat, answering its questions after viewer.real-bodies landed:
+
+“Number two, yes, that's quite important.   1 yes, 3 yes.”
+
+The question, as asked (2): "Should the six male heroes' approved outfits, stored outside the project, be brought into `assets/characters` so they can be bound?" The outfits are the approved hero outfits under `C:/Users/aring/.codex/visualizations/2026/09/21/01a0c621-e68f-7781-abe3-7b2ec04afda2/hero-outfits/` (`motion/`, approved-review/catalog.json), which viewer.real-bodies left unused (viewer SWITCHES `realBodiesMaleOutfits`) because the page streams only from the project root.
+
+Ruled: **the approved male hero outfits are imported into `assets/characters`** (PRODUCTION-START.md's rules; only the approved files, not the 16 GB working folder) **and each hero bound to his own**, replacing the Oathblade stand-in. "Quite important." Filed: `viewer.male-hero-outfits`. (1) and (3) answered yes: merge the worker copy back after it, then wrap.
+
 ## 2026-10-01 — a shield power plays a raise-the-shield motion; the Leap report was the Orphanage
 
 Andrew, in the engine chat, after movement.swap-and-shields landed with the shield powers' motion listed as missing (viewer SWITCHES `swapShieldMotions`):

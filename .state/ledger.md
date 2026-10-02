@@ -20256,6 +20256,16 @@ index ca4bebd..edf74cd 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.gates — they genuinely test it
 
+## kingdom.abbotown-map — LANDED `93cc928` **NEEDS REVIEW**
+2026-10-02 00:53
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/play-launcher.test.ts, test/abbotown-map.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/play-launcher.test.ts, kingdom/test/abbotown-map.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/play-launcher.test.ts (-1) — will land FLAGGED for review
 ## encounter.opening.cathedral — LANDED `b884eaf`
 2026-10-02 00:28
 
@@ -20325,6 +20335,21 @@ Filed 2026-09-28 with no probeIds: gate 1 probes 'fix.codex-numbers', which is n
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
+diff --git a/test/play-launcher.test.ts b/test/play-launcher.test.ts
+index 1346c97..b7a62b3 100644
+--- a/test/play-launcher.test.ts
++++ b/test/play-launcher.test.ts
+@@ -21,5 +21,9 @@ describe('the game plays from a link: the launcher', () => {
+     // sandbox"): the sandbox plays the caravan aftermath too (kingdom SWITCHES sandboxCaravan), after the opening's four.
+     // was: expect(out).toMatch(/play launcher: 4 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail\).*passed/)
+-    expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
++    // Law 10, kingdom.abbotown-map rebuild (2026-10-01): the engine chat landed encounter.opening.gates (engine 817b21d,
++    // Battle 5, Gates); the sandbox plays every encounter.opening.* row, so the launcher gains the Gates in the opening's
++    // order, before the caravan. The rule is unchanged: one card per playable battle, in that order.
++    // was: expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
++    expect(out).toMatch(/play launcher: 6 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Caravan Aftermath\).*passed/)
+   }, 60000)
+ })
 diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
 index 64a5e3d..321ca31 100644
 --- a/test/battle-cursor.test.ts
@@ -20492,6 +20517,15 @@ index 0000000..f33760c
 ```
 </details>
 
+## kingdom.sandbox-campaign-heroes — LANDED `9dd6d03`
+2026-10-02 01:10
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: HANDOFF.md:11 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/sandbox-campaign-heroes.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/sandbox-campaign-heroes.test.ts
 ## viewer.xcom-camera — LANDED `6fe0c3f`
 2026-10-02 01:25
 
@@ -20512,6 +20546,15 @@ index 0000000..f33760c
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## kingdom.encounter-result-fold — LANDED `7154e00`
+2026-10-02 01:27
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · DECISIONS.md:3341
+  PASS  typecheck
+  PASS  the item's own tests — test/encounter-result-fold.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/encounter-result-fold.test.ts
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
@@ -20899,6 +20942,16 @@ index 4b0278b..7c35719 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## kingdom.opening-rewards — LANDED `70f10e3` **NEEDS REVIEW**
+2026-10-02 01:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3341
+  PASS  typecheck
+  PASS  the item's own tests — test/isc-039.test.ts, test/opening-rewards.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 10 log lines, 10 fired, 6 changed state · encounter.opening.lumberjack: 13 log lines, 13 fired, 9 changed state · encounter.opening.bridge: 11 log lines, 11 fired, 7 changed state
+  PASS  brought its own tests — kingdom/test/isc-039.test.ts, kingdom/test/opening-rewards.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-039.test.ts (-7) — will land FLAGGED for review
 ## viewer.characters-unfaded — LANDED `dfa2245`
 2026-10-02 01:47
 
@@ -20914,6 +20967,56 @@ index 4b0278b..7c35719 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — encounter.opening.orphanage live · encounter.opening.lumberjack live · encounter.opening.bridge live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage,encounter.opening.lumberjack,encounter.opening.bridge — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-039.test.ts b/test/isc-039.test.ts
+index 6d125d7..d66da21 100644
+--- a/test/isc-039.test.ts
++++ b/test/isc-039.test.ts
+@@ -1,5 +1,8 @@
+-// ISC-039 — canLevelUp is true at 20, 100 and 250 XP and performLevelUp raises
++// ISC-039 — canLevelUp is true at each ruled threshold and performLevelUp raises
+ // the level by exactly one; below the threshold it is refused.
+-// GLOSSARY.md "Level thresholds 20 · 100 · 250 · 500 — soft" · SKELETON-SETTLED.md:114
++// was: GLOSSARY.md "Level thresholds 20 · 100 · 250 · 500 — soft" · SKELETON-SETTLED.md:114 — the curve was re-ruled
++// 2026-09-28 (Andrew, engine/DECISIONS.md 'levels by XP at 20, 50, 100, 170, 270, 400'; GLOSSARY.md's row follows) and
++// src/content/levels.ts takes it in kingdom.opening-rewards (Law 10): the rule — refused below, one level at a time,
++// stopped at the next threshold — is unchanged; only the numbers are the new curve's.
+ import { describe, it, expect } from 'vitest'
+ import { loadFixture } from './walk.js'
+@@ -10,6 +13,8 @@ const H = 'hero.base.priest-armored'
+ 
+ describe('ISC-039 — the ruled thresholds', () => {
+-  it('20 · 100 · 250 · 500, one level at a time, refused below', () => {
+-    expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 100, 250, 500])
++  // was: it('20 · 100 · 250 · 500, one level at a time, refused below'
++  it('20 · 50 · 100 · 170 · 270 · 400, one level at a time, refused below', () => {
++    // was: expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 100, 250, 500]) — the 2026-09-28 curve
++    expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 50, 100, 170, 270, 400])
+     const ctx = loadFixture((c) => { c.roster[H]!.xp = 19 })
+     expect(canLevelUp(ctx.campaign, H)).toBe(false)
+@@ -20,9 +25,10 @@ describe('ISC-039 — the ruled thresholds', () => {
+     performLevelUp(ctx, H, 'test')
+     expect(ctx.campaign.roster[H]!.level).toBe(2)
+-    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // 100 next
+-    ctx.campaign.roster[H]!.xp = 260
++    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // was: 100 next — now 50 next
++    // was: ctx.campaign.roster[H]!.xp = 260 — two levels short of the next threshold on the new curve (50, 100; 170 next)
++    ctx.campaign.roster[H]!.xp = 160
+     performLevelUp(ctx, H, 'test'); expect(ctx.campaign.roster[H]!.level).toBe(3)
+     performLevelUp(ctx, H, 'test'); expect(ctx.campaign.roster[H]!.level).toBe(4)
+-    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // 500 next
++    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // was: 500 next — now 170 next
+     expect(ctx.events.filter((e) => e.type === 'hero.leveled').map((e) => e['level'])).toEqual([2, 3, 4])
+   })
+```
+</details>
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -21099,6 +21202,16 @@ index d565a33..fb7f33d 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## kingdom.opening-loop-three — LANDED `6082706` **NEEDS REVIEW**
+2026-10-02 04:38
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3537 · SWITCHES.md:1756
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-loop-three.test.ts, test/isc-039.test.ts, test/opening-rewards.test.ts, test/encounter-result-fold.test.ts, test/sandbox-campaign-heroes.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/opening-loop-three.test.ts, kingdom/test/isc-039.test.ts, kingdom/test/opening-rewards.test.ts, kingdom/test/encounter-result-fold.test.ts, kingdom/test/sandbox-campaign-heroes.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-039.test.ts (-7) — will land FLAGGED for review
 ## movement.swap-and-shields — LANDED `236e5ad`
 2026-10-02 04:57
 
@@ -21136,6 +21249,817 @@ index d565a33..fb7f33d 100644
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
+be35831
+
+diff --git a/test/opening-loop-three.test.ts b/test/opening-loop-three.test.ts
+new file mode 100644
+index 0000000..fa2d32e
+--- /dev/null
++++ b/test/opening-loop-three.test.ts
+@@ -0,0 +1,125 @@
++// kingdom.opening-loop-three, part 4 of 4 (PLAYABLE-OPENING-PLAN.md item 12; engine DECISIONS.md 2026-09-29 "the playable
++// opening"; 2026-09-28 'answers to the 22 questions': "Any of these six battles, you replay it if you lose it. We're going
++// to have wounds, but not fatigue. We're going to pick up civilians."). Expect: "Andrew plays from the Orphanage through
++// the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled."
++//
++// The mechanism (src/core/opening.ts): an opening battle is fielded as its engine encounter once the draft cadence is
++// met; a lost one whose rewards row says `replayed` ends nothing and advances nothing; a won one rescues the civilians
++// who lived. The page half (tools/opening-loop-three.verify.mjs) plays the COMMITTED sandbox opened with ?map: map ->
++// draft -> equip -> battle -> reckoning, rewards, level-ups -> map, three times.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { makeNewCampaign, performAdvanceOpening, performDraft, performFieldOpeningBattle, listDraftOffers, draftsOwedOf } from '../src/core/opening.js'
++import { makeCtx, setBattleOutcome, type Ctx } from '../src/core/mutate.js'
++import { performAdvancePrep, performDeploy } from '../src/core/prep.js'
++import { createSandbox, sandboxResult } from '../src/core/sandbox.js'
++import { resolveReckoning, applyBattleResult, performExitBattle } from '../src/core/reckoning.js'
++import { performLeaveLevelUp } from '../src/core/rewards.js'
++import { withUnitFate } from '../src/core/result.js'
++import type { EngagementResult } from '../src/core/seam.js'
++import { ABBOTOWN_MAP } from '../src/content/conquest.js'
++import { runBattle, encounterDef } from '../src/engine.js'
++
++const ORPHANAGE = 'encounter.opening.orphanage'
++const LUMBERJACK = 'encounter.opening.lumberjack'
++const battleOf = (id: string) => ({ id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind })
++
++/** A new Campaign with its first hero drafted, the Orphanage fielded and walked to the battle step. */
++function atOrphanage(seed = 5): Ctx {
++  const ctx = makeCtx(makeNewCampaign(seed))
++  performAdvanceOpening(ctx, 'test')
++  performDraft(ctx, listDraftOffers(ctx.campaign)[0]!.id, 'test')
++  return fielded(ctx, ORPHANAGE)
++}
++function fielded(ctx: Ctx, id: string): Ctx {
++  performFieldOpeningBattle(ctx, battleOf(id), 'test')
++  performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
++  for (const h of Object.keys(ctx.campaign.roster).filter((h) => !ctx.campaign.roster[h]!.classes.includes('class.civilian'))) performDeploy(ctx, h, 'test')
++  performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
++  expect(ctx.campaign.cursor.step).toBe('battle')
++  return ctx
++}
++/** The battle on the cursor played out by the engine's AI with the campaign's rows, folded. */
++function played(ctx: Ctx, seed = 1): EngagementResult {
++  const e = ctx.campaign.cursor.engagement!
++  const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed, encounterId: e.id })
++  runBattle(s.ctx)
++  return sandboxResult(s)
++}
++function write(ctx: Ctx, r: EngagementResult): void {
++  const e = ctx.campaign.cursor.engagement!
++  const k = resolveReckoning(ctx.campaign, e, r)
++  setBattleOutcome(ctx, r, k, 'test')
++  applyBattleResult(ctx, e, r, k)
++}
++/** Out of the reckoning, past the level-ups left waiting (a level waits; XP is never lost), to the open step. */
++function toOpen(ctx: Ctx): void {
++  performExitBattle(ctx, 'test')
++  if (ctx.campaign.cursor.step === 'levelUp') performLeaveLevelUp(ctx, 'test')
++  expect(ctx.campaign.cursor.step).toBe('open')
++}
++/** The same battle, lost: every hero-side unit down (the party and the civilians), a wipe. */
++const lost = (r: EngagementResult): EngagementResult => {
++  let out: EngagementResult = { ...r, outcome: 'wipe' }
++  for (const u of r.units) if (u.side === 'hero' && u.lifeState !== 'dead') out = withUnitFate(out, 'hero', u.index, { lifeState: 'downed' })
++  return out
++}
++
++describe('kingdom.opening-loop-three — the opening fielded as its encounters', () => {
++  it('an opening battle is its engine encounter, numbered by the opening; refused while a draft is owed', () => {
++    const ctx = makeCtx(makeNewCampaign(5))
++    expect(draftsOwedOf(ctx.campaign)).toBe(1)
++    expect(() => performFieldOpeningBattle(ctx, battleOf(ORPHANAGE), 'test')).toThrow(/refused: 1 to draft/)
++    performAdvanceOpening(ctx, 'test')
++    performDraft(ctx, listDraftOffers(ctx.campaign)[0]!.id, 'test')
++    const e = performFieldOpeningBattle(ctx, battleOf(ORPHANAGE), 'test')
++    expect([e.id, e.prologue, e.territoryId, e.enemies, e.mapId]).toEqual([ORPHANAGE, 1, null, [], encounterDef(ORPHANAGE).mapId])
++    expect([ctx.campaign.cursor.step, ctx.campaign.cursor.prepStep]).toEqual(['prep', 'reveal'])
++  })
++
++  it('a won battle advances the opening, pays its row and rescues the civilians who lived — never the dead', () => {
++    const ctx = atOrphanage()
++    const r = played(ctx)
++    expect(r.outcome).toBe('heroClear')
++    const civ = r.units.filter((u) => u.side === 'hero' && u.role === 'encounter')
++    expect(civ.map((u) => u.typeId).sort()).toEqual(['hero.fixed.orphans', 'hero.fixed.school-teacher'])
++    // one lives, one dies: only the living one joins
++    const i = r.units.indexOf(civ[0]!), j = r.units.indexOf(civ[1]!)
++    const fates = (x: EngagementResult) => ({ ...x, units: x.units.map((u, k) => k === i ? { ...u, lifeState: 'standing' as const, dead: false } : k === j ? { ...u, lifeState: 'dead' as const, dead: true } : u) })
++    write(ctx, fates(r))
++    expect(ctx.campaign.cursor.prologue).toBe(2)
++    const civilians = Object.values(ctx.campaign.roster).filter((h) => h.classes.includes('class.civilian'))
++    expect(civilians.map((h) => h.unitType)).toEqual([civ[0]!.typeId])
++    expect(civilians[0]!.name).toBe(civ[0]!.typeId === 'hero.fixed.orphans' ? 'Orphan Child' : 'School Teacher')
++    expect(Object.values(ctx.campaign.roster).filter((h) => !h.classes.includes('class.civilian')).every((h) => h.xp === 20)).toBe(true)
++    expect(draftsOwedOf(ctx.campaign)).toBe(2)
++  })
++
++  it('a lost opening battle is replayed: the Campaign goes on, nothing advances, nobody is rescued, the wounds stay', () => {
++    const ctx = atOrphanage()
++    write(ctx, lost(played(ctx)))
++    expect(ctx.campaign.ended).toBeNull()
++    expect(ctx.campaign.cursor.prologue).toBe(1)
++    expect(Object.values(ctx.campaign.roster).filter((h) => h.classes.includes('class.civilian'))).toEqual([])
++    expect(draftsOwedOf(ctx.campaign)).toBe(0)
++    const party = ctx.campaign.cursor.engagement!.deployed
++    expect(party.every((id) => ctx.campaign.roster[id]!.wound === 1)).toBe(true)
++    // out through the level-ups (the Orphanage pays its 20 on a loss too) to the open step, and the same battle again
++    toOpen(ctx)
++    fielded(ctx, ORPHANAGE)
++    expect(ctx.campaign.cursor.engagement!.deployed).toEqual(party)
++    expect(ctx.campaign.cursor.engagement!.seed).toBe(1)
++  })
++
++  it('the next battle is refused until its drafts are taken; the cadence is 1, then 2 after battle 1', () => {
++    const ctx = atOrphanage()
++    write(ctx, played(ctx))
++    toOpen(ctx)
++    expect(() => performFieldOpeningBattle(ctx, battleOf(LUMBERJACK), 'test')).toThrow(/refused: 2 to draft before battle 2/)
++  })
++
++  it('the page: map -> draft -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; a loss offered again with the same party', () => {
++    const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/opening loop three: .*passed/)
++  }, 600000)
++})
+79f3a6c
+
+diff --git a/test/isc-039.test.ts b/test/isc-039.test.ts
+index 6d125d7..d66da21 100644
+--- a/test/isc-039.test.ts
++++ b/test/isc-039.test.ts
+@@ -1,5 +1,8 @@
+-// ISC-039 — canLevelUp is true at 20, 100 and 250 XP and performLevelUp raises
++// ISC-039 — canLevelUp is true at each ruled threshold and performLevelUp raises
+ // the level by exactly one; below the threshold it is refused.
+-// GLOSSARY.md "Level thresholds 20 · 100 · 250 · 500 — soft" · SKELETON-SETTLED.md:114
++// was: GLOSSARY.md "Level thresholds 20 · 100 · 250 · 500 — soft" · SKELETON-SETTLED.md:114 — the curve was re-ruled
++// 2026-09-28 (Andrew, engine/DECISIONS.md 'levels by XP at 20, 50, 100, 170, 270, 400'; GLOSSARY.md's row follows) and
++// src/content/levels.ts takes it in kingdom.opening-rewards (Law 10): the rule — refused below, one level at a time,
++// stopped at the next threshold — is unchanged; only the numbers are the new curve's.
+ import { describe, it, expect } from 'vitest'
+ import { loadFixture } from './walk.js'
+@@ -10,6 +13,8 @@ const H = 'hero.base.priest-armored'
+ 
+ describe('ISC-039 — the ruled thresholds', () => {
+-  it('20 · 100 · 250 · 500, one level at a time, refused below', () => {
+-    expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 100, 250, 500])
++  // was: it('20 · 100 · 250 · 500, one level at a time, refused below'
++  it('20 · 50 · 100 · 170 · 270 · 400, one level at a time, refused below', () => {
++    // was: expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 100, 250, 500]) — the 2026-09-28 curve
++    expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 50, 100, 170, 270, 400])
+     const ctx = loadFixture((c) => { c.roster[H]!.xp = 19 })
+     expect(canLevelUp(ctx.campaign, H)).toBe(false)
+@@ -20,9 +25,10 @@ describe('ISC-039 — the ruled thresholds', () => {
+     performLevelUp(ctx, H, 'test')
+     expect(ctx.campaign.roster[H]!.level).toBe(2)
+-    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // 100 next
+-    ctx.campaign.roster[H]!.xp = 260
++    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // was: 100 next — now 50 next
++    // was: ctx.campaign.roster[H]!.xp = 260 — two levels short of the next threshold on the new curve (50, 100; 170 next)
++    ctx.campaign.roster[H]!.xp = 160
+     performLevelUp(ctx, H, 'test'); expect(ctx.campaign.roster[H]!.level).toBe(3)
+     performLevelUp(ctx, H, 'test'); expect(ctx.campaign.roster[H]!.level).toBe(4)
+-    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // 500 next
++    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // was: 500 next — now 170 next
+     expect(ctx.events.filter((e) => e.type === 'hero.leveled').map((e) => e['level'])).toEqual([2, 3, 4])
+   })
+diff --git a/test/opening-rewards.test.ts b/test/opening-rewards.test.ts
+new file mode 100644
+index 0000000..52e312d
+--- /dev/null
++++ b/test/opening-rewards.test.ts
+@@ -0,0 +1,220 @@
++// kingdom.opening-rewards (kingdom.opening-loop-three part 3 of 4). The opening's rewards as ruled — engine DECISIONS.md
++// 2026-09-28 'the Orphanage pays 20 XP no matter what' ("Make it so they get 20 XP no matter what, so they get a level"),
++// 'levels by XP at 20, 50, 100, 170, 270, 400', 'the opening's party levels up; the Flaming Longsword is a Warrior's or
++// a Paladin's; the Bridge gives a reward', 'answers to the 22 questions' ("wounds apply, fatigue does not"); and
++// KINGDOM-V2-2026-09-07.md "Sword after battle 2; item choice starts after battle 3".
++// Expect: "After a won Orphanage every hero who fought is level 2 with a level-up to take; after a won Lumberjack House
++// the Flaming Longsword is offered to a Warrior or Paladin; after a won Bridge three items are offered and one is kept;
++// a hero wounded in battle 1 enters battle 2 wounded; nobody is fatigued."
++// The rules are content rows keyed by encounter id (src/content/encounter-rewards.ts); src/core names no encounter.
++import { describe, it, expect } from 'vitest'
++import { readFileSync, readdirSync } from 'node:fs'
++import { loadFixture, toEquip, decide, panelResult } from './walk.js'
++import { performAdvancePrep } from '../src/core/prep.js'
++import { createSandbox, sandboxResult } from '../src/core/sandbox.js'
++import { makeBattleState } from '../src/core/seam.js'
++import { withUnitFate } from '../src/core/result.js'
++import { applyBattleResult, performExitBattle } from '../src/core/reckoning.js'
++import { listLevelUps, viewLevelUp, performLevelUp, performLeaveLevelUp, listRewardOffers, canTakeReward, performTakeReward } from '../src/core/rewards.js'
++import { setCursor, type Ctx } from '../src/core/mutate.js'
++import type { CampaignState, Engagement } from '../src/core/campaign.js'
++import { LEVEL_THRESHOLDS } from '../src/content/levels.js'
++import { REWARDS } from '../src/content/rewards.js'
++import { ENCOUNTER_REWARDS } from '../src/content/encounter-rewards.js'
++import { RECOVERY_BADGES } from '../src/content/recovery.js'
++import { runBattle, encounterDef, ENCOUNTERS } from '../src/engine.js'
++
++const ORPHANAGE = 'encounter.opening.orphanage'
++const LUMBERJACK = 'encounter.opening.lumberjack'
++const BRIDGE = 'encounter.opening.bridge'
++const SWORD = 'item.longsword.flaming'
++const WARRIOR = 'hero.base.warrior-iron', PRIEST = 'hero.base.priest-armored', RANGER = 'hero.base.ranger-aggressive', PALADIN = 'hero.base.paladin-shiney'
++const DEPLOY = [WARRIOR, PRIEST, RANGER]
++
++/** The opening's battle as an Engagement on no Territory (as the prologue's first battles), its id the encounter's. */
++const engagementAt = (base: Engagement, id: string): Engagement => ({ ...base, id, territoryId: null, mapId: encounterDef(id).mapId!, enemies: [], deployed: [], seed: 1 })
++
++/** The fixture at the first battle's prep, re-pointed at the Orphanage, `deploy` sent. */
++function atOrphanage(deploy: readonly string[] = DEPLOY, edit?: (c: CampaignState) => void): Ctx {
++  const ctx = loadFixture((c) => { c.cursor.engagement = engagementAt(c.cursor.engagement!, ORPHANAGE); edit?.(c) })
++  toEquip(ctx, deploy)
++  performAdvancePrep(ctx, 'test')
++  expect(ctx.campaign.cursor.step).toBe('battle')
++  return ctx
++}
++
++/** From the Week's open step to the next battle of the opening, `deploy` sent (the page chain is part 4's). */
++function toNext(ctx: Ctx, id: string, deploy: readonly string[]): Engagement {
++  expect(ctx.campaign.cursor.step).toBe('open')
++  setCursor(ctx, { engagement: engagementAt(ctx.campaign.cursor.engagement ?? loadFixture().campaign.cursor.engagement!, id), fought: 0 }, 'test')
++  toEquip(ctx, deploy)
++  performAdvancePrep(ctx, 'test')
++  expect(ctx.campaign.cursor.step).toBe('battle')
++  return ctx.campaign.cursor.engagement!
++}
++
++/** Play the battle on the cursor in the sandbox with the campaign's own Hero rows, and fold it. */
++function playIt(ctx: Ctx, seed: number) {
++  const e = ctx.campaign.cursor.engagement!
++  const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed, encounterId: e.id })
++  runBattle(s.ctx)
++  return { s, result: sandboxResult(s) }
++}
++
++/** Nobody is fatigued: no absences, no recovery badge, the Week's fought list untouched. */
++function noFatigue(ctx: Ctx) {
++  expect(ctx.campaign.unavailable).toEqual([])
++  expect(ctx.campaign.foughtThisWeek).toEqual([])
++  for (const h of Object.values(ctx.campaign.roster)) for (const b of RECOVERY_BADGES) expect(h.badges).not.toContain(b)
++}
++
++describe('kingdom.opening-rewards — the opening pays as ruled', () => {
++  it('the XP curve is the ruled one: level 2 at 20, then 50, 100, 170, 270, 400', () => {
++    expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 50, 100, 170, 270, 400])
++  })
++
++  it('after a won Orphanage every hero who fought is level 2 with a level-up to take — the specialty chosen there; nobody is fatigued', () => {
++    const ctx = atOrphanage()
++    const { result } = playIt(ctx, 1)
++    expect(result.outcome).toBe('heroClear')
++    const e = ctx.campaign.cursor.engagement!
++    const { reckoning } = decide(ctx, result)
++    // 20 each, whatever the kills or the length: the formula and the MVP's +10 do not apply
++    expect(reckoning.heroes.map((h) => [h.heroId, h.xp, h.mvp])).toEqual(DEPLOY.map((id) => [id, 20, false]))
++    applyBattleResult(ctx, e, result, reckoning)
++    noFatigue(ctx)
++    // battle 1 has no item reward: the Reckoning goes straight to the level-ups
++    expect(ctx.campaign.cursor.rewardOffer).toBeNull()
++    performExitBattle(ctx, 'test')
++    expect(ctx.campaign.cursor.step).toBe('levelUp')
++    expect(listLevelUps(ctx.campaign)).toEqual([...DEPLOY].sort())
++    for (const id of DEPLOY) {
++      const v = viewLevelUp(ctx.campaign, id)
++      expect([v.from, v.to, v.needsSpecialty]).toEqual([1, 2, true])
++      expect(v.specialtyOffers.length).toBeGreaterThan(0)
++      performLevelUp(ctx, id, 'test', { specialtyId: v.specialtyOffers[0]!.id })
++      const h = ctx.campaign.roster[id]!
++      expect([h.level, h.specialty]).toEqual([2, v.specialtyOffers[0]!.id])
++    }
++    expect(listLevelUps(ctx.campaign)).toEqual([])
++    // and the level is fielded: battle 2 sees level 2 and the specialty
++    const spec = makeBattleState(ctx.campaign.roster, { id: LUMBERJACK, mapId: encounterDef(LUMBERJACK).mapId!, enemies: [], deployed: DEPLOY, seed: 1 })
++    expect(spec.heroProgress!.map((p) => p?.level)).toEqual([2, 2, 2])
++  })
++
++  it('the Orphanage pays 20 no matter what — a lost one too; the dead get nothing', () => {
++    const ctx = atOrphanage()
++    const lost = panelResult(ctx, false)
++    const { reckoning } = decide(ctx, lost)
++    expect(reckoning.heroes.map((h) => [h.xp, h.wound])).toEqual(DEPLOY.map(() => [20, 1]))
++    const ctx2 = atOrphanage()
++    const { result } = playIt(ctx2, 1)
++    const oneDead = withUnitFate(result, 'hero', 1, { lifeState: 'dead' })
++    const { reckoning: k2 } = decide(ctx2, oneDead)
++    expect(k2.heroes.map((h) => h.xp)).toEqual([20, 0, 20])
++  })
++
++  it('a hero wounded in battle 1 enters battle 2 wounded — the level is fielded as the engine\'s Wounded', () => {
++    const ctx = atOrphanage()
++    const { result } = playIt(ctx, 1)
++    // the warrior went down in battle 1 and was got back up: the Reckoning's plain wound
++    const downed = withUnitFate(result, 'hero', 0, { lifeState: 'downed' })
++    const { reckoning } = decide(ctx, downed)
++    expect(reckoning.heroes[0]).toMatchObject({ heroId: WARRIOR, wound: 1 })
++    applyBattleResult(ctx, ctx.campaign.cursor.engagement!, downed, reckoning)
++    performExitBattle(ctx, 'test')
++    performLeaveLevelUp(ctx, 'test')
++    const w = ctx.campaign.roster[WARRIOR]!
++    expect(w.wound).toBe(1)
++    // the wound is a level, never a badge on the Hero (GAME-ARCHITECTURE.md §4.2)
++    expect(w.badges).not.toContain('badge.wounded')
++    toNext(ctx, LUMBERJACK, DEPLOY)
++    const { s } = playIt(ctx, 1)
++    const unitOf = (sb: typeof s, typeId: string) => sb.ctx.state.units.find((u) => u.side === 'hero' && u.typeId === typeId)!
++    expect(unitOf(s, WARRIOR).badges).toContain('badge.wounded')
++    expect(unitOf(s, PRIEST).badges).not.toContain('badge.wounded')
++    // the same hero whole fields without it, and with more Health
++    const whole = createSandbox({ mapId: s.config.mapId, heroes: [...DEPLOY], heroRows: DEPLOY.map((id) => ({ ...structuredClone(ctx.campaign.roster[id]!), wound: 0 })), enemies: [], seed: 1, encounterId: LUMBERJACK })
++    expect(unitOf(whole, WARRIOR).badges).not.toContain('badge.wounded')
++    expect(unitOf(s, WARRIOR).maxHp).toBeLessThan(unitOf(whole, WARRIOR).maxHp)
++  })
++
++  it('after a won Lumberjack House the Flaming Longsword is offered, and only a Warrior or a Paladin takes it', () => {
++    const ctx = atOrphanage()
++    const r1 = playIt(ctx, 1)
++    const k1 = decide(ctx, r1.result)
++    applyBattleResult(ctx, ctx.campaign.cursor.engagement!, r1.result, k1.reckoning)
++    performExitBattle(ctx, 'test')
++    performLeaveLevelUp(ctx, 'test')
++    toNext(ctx, LUMBERJACK, DEPLOY)
++    const won = panelResult(ctx, true)
++    const k2 = decide(ctx, won)
++    applyBattleResult(ctx, ctx.campaign.cursor.engagement!, won, k2.reckoning)
++    noFatigue(ctx)
++    expect(ctx.campaign.cursor.rewardOffer).toEqual([SWORD])
++    performExitBattle(ctx, 'test')
++    expect(ctx.campaign.cursor.step).toBe('rewards')
++    expect(listRewardOffers(ctx.campaign).map((r) => r.id)).toEqual([SWORD])
++    // it names its taker: nobody, or a Priest or a Ranger, is refused
++    expect(canTakeReward(ctx.campaign, SWORD)).toBe(false)
++    expect(canTakeReward(ctx.campaign, SWORD, RANGER)).toBe(false)
++    expect(() => performTakeReward(ctx, SWORD, 'test', PRIEST)).toThrow(/refused/)
++    expect(() => performTakeReward(ctx, SWORD, 'test')).toThrow(/refused/)
++    expect(canTakeReward(ctx.campaign, SWORD, WARRIOR)).toBe(true)
++    performTakeReward(ctx, SWORD, 'test', WARRIOR)
++    expect(ctx.campaign.roster[WARRIOR]!.equipped).toContain(SWORD)
++    expect(ctx.campaign.stash).not.toContain(SWORD)
++    expect(ctx.campaign.cursor.rewardOffer).toBeNull()
++  })
++
++  it('a Paladin may take it; with neither a Warrior nor a Paladin, nobody is offered it', () => {
++    const lumberjackWon = (deploy: readonly string[], edit?: (c: CampaignState) => void) => {
++      const ctx = atOrphanage(deploy, edit)
++      const r1 = playIt(ctx, 1)
++      applyBattleResult(ctx, ctx.campaign.cursor.engagement!, r1.result, decide(ctx, r1.result).reckoning)
++      performExitBattle(ctx, 'test')
++      if (ctx.campaign.cursor.step === 'levelUp') performLeaveLevelUp(ctx, 'test')
++      toNext(ctx, LUMBERJACK, deploy)
++      const won = panelResult(ctx, true)
++      applyBattleResult(ctx, ctx.campaign.cursor.engagement!, won, decide(ctx, won).reckoning)
++      return ctx
++    }
++    const withPaladin = lumberjackWon([PALADIN, PRIEST, RANGER], (c) => { delete c.roster[WARRIOR] })
++    expect(withPaladin.campaign.cursor.rewardOffer).toEqual([SWORD])
++    performExitBattle(withPaladin, 'test')
++    performTakeReward(withPaladin, SWORD, 'test', PALADIN)
++    expect(withPaladin.campaign.roster[PALADIN]!.equipped).toContain(SWORD)
++    const neither = lumberjackWon([PRIEST, RANGER], (c) => { delete c.roster[WARRIOR]; delete c.roster[PALADIN] })
++    expect(neither.campaign.cursor.rewardOffer).toBeNull()
++  })
++
++  it('after a won Bridge three items are offered and one is kept', () => {
++    const ctx = atOrphanage()
++    const r1 = playIt(ctx, 1)
++    applyBattleResult(ctx, ctx.campaign.cursor.engagement!, r1.result, decide(ctx, r1.result).reckoning)
++    performExitBattle(ctx, 'test')
++    performLeaveLevelUp(ctx, 'test')
++    toNext(ctx, BRIDGE, DEPLOY)
++    const won = panelResult(ctx, true)
++    applyBattleResult(ctx, ctx.campaign.cursor.engagement!, won, decide(ctx, won).reckoning)
++    noFatigue(ctx)
++    const offer = ctx.campaign.cursor.rewardOffer!
++    expect(offer).toHaveLength(3)
++    expect(new Set(offer).size).toBe(3)
++    for (const id of offer) expect(REWARDS.some((r) => r.id === id)).toBe(true)
++    performExitBattle(ctx, 'test')
++    expect(ctx.campaign.cursor.step).toBe('rewards')
++    performTakeReward(ctx, offer[1]!, 'test')
++    expect(ctx.campaign.stash).toEqual([offer[1]])
++  })
++
++  it('the rows are content keyed by the engine\'s encounter ids; src/core names none', () => {
++    for (const row of ENCOUNTER_REWARDS) expect(Object.keys(ENCOUNTERS)).toContain(row.encounterId)
++    for (const id of [ORPHANAGE, LUMBERJACK, BRIDGE]) expect(ENCOUNTER_REWARDS.some((r) => r.encounterId === id)).toBe(true)
++    for (const f of readdirSync('src/core')) {
++      const text = readFileSync(`src/core/${f}`, 'utf8')
++      for (const row of ENCOUNTER_REWARDS) expect(text.includes(row.encounterId), `src/core/${f} names ${row.encounterId}`).toBe(false)
++      expect(text.includes(SWORD), `src/core/${f} names ${SWORD}`).toBe(false)
++    }
++  })
++})
+d440c00
+
+diff --git a/test/encounter-result-fold.test.ts b/test/encounter-result-fold.test.ts
+new file mode 100644
+index 0000000..442d6cc
+--- /dev/null
++++ b/test/encounter-result-fold.test.ts
+@@ -0,0 +1,179 @@
++// kingdom.encounter-result-fold (kingdom.opening-loop-three part 2 of 4; V2-ROADMAP.md R8, the battle-to-Kingdom result
++// seam, for encounters). makeBattleResult keys rows by the engine unit's uid (unit.enter uid), not by entry order: the
++// deployed heroes by the uids the spec hands the engine (heroUids), the encounter's own units (its enemies, the hero-side
++// civilians) and the arrivals (a schedule row, a raised corpse — unit.enter `arrived`) as their own rows, never keyed to
++// the roster. A finished sandbox encounter folds to an EngagementResult that resolveReckoning and applyBattleResult take
++// for an Engagement naming that encounter: each deployed hero written once, a second apply refused.
++// Expect: "An Orphanage battle played in the sandbox folds without error (civilians, Turn 4/5 arrivals); reordered or
++// noncontiguous hero uids key the right heroes; an arrival is never a roster hero; applying the result writes each
++// deployed hero exactly once and a second apply throws."
++import { describe, it, expect } from 'vitest'
++import { loadFixture, toEquip, decide } from './walk.js'
++import { performAdvancePrep } from '../src/core/prep.js'
++import { createSandbox, sandboxResult } from '../src/core/sandbox.js'
++import { makeBattleState, battleOptionsOf, makeBattleResult, resolveEngagement, type EngagementResult } from '../src/core/seam.js'
++import { validateResult } from '../src/core/result.js'
++import { applyBattleResult } from '../src/core/reckoning.js'
++import { saveOf } from '../src/core/campaign.js'
++import { createBattle, runBattle, encounterDef } from '../src/engine.js'
++import type { Ctx as Battle, Event } from '../src/engine.js'
++
++const ENC = 'encounter.opening.orphanage'
++/** Deployed out of roster order, on purpose: row i must be deployed[i], whatever the roster's order. */
++const DEPLOY = ['hero.base.warrior-iron', 'hero.base.priest-armored', 'hero.base.ranger-aggressive']
++
++/** The fixture's Engagement, re-pointed at the Orphanage: its id and map are the encounter's; the encounter owns the enemies. */
++function atOrphanage() {
++  const ctx = loadFixture((c) => {
++    const e = c.cursor.engagement!
++    c.cursor.engagement = { ...e, id: ENC, mapId: encounterDef(ENC).mapId!, enemies: [] }
++  })
++  toEquip(ctx, DEPLOY)
++  performAdvancePrep(ctx, 'test')
++  expect(ctx.campaign.cursor.step).toBe('battle')
++  expect(ctx.campaign.cursor.engagement!.deployed).toEqual(DEPLOY)
++  return ctx
++}
++
++const enters = (events: readonly Event[]) => events.filter((e) => e.type === 'unit.enter')
++/** The rows the fold names that are not the roster's. */
++const extras = (r: EngagementResult) => r.units.filter((u) => (u as { role?: string }).role !== undefined)
++
++/** Every roster hero row is the engine unit its uid names, and that unit is deployed[index]'s. */
++function rosterKeyed(r: EngagementResult, battle: Battle, uids: readonly number[], deployed: readonly string[], unitTypeOf: (id: string) => string) {
++  const roster = r.units.filter((u) => u.side === 'hero' && (u as { role?: string }).role === undefined)
++  expect(roster.map((u) => u.index)).toEqual(deployed.map((_, i) => i))
++  for (const row of roster) {
++    const uid = (row as { uid?: number }).uid
++    expect(uid).toBe(uids[row.index])
++    const unit = battle.state.units.find((u) => u.uid === uid)!
++    expect(row.typeId).toBe(unit.typeId)
++    expect(row.typeId).toBe(unitTypeOf(deployed[row.index]!))
++    expect(row.name).toBe(unit.name)
++    expect(row.lifeState).toBe(unit.lifeState === 'dead' ? 'dead' : unit.lifeState === 'downed' ? 'downed' : 'standing')
++  }
++}
++
++describe('kingdom.encounter-result-fold — an encounter battle folds by uid and settles once', () => {
++  it('an Orphanage battle played in the sandbox folds: civilians and arrivals are their own rows, never the roster', () => {
++    const ctx = atOrphanage()
++    const e = ctx.campaign.cursor.engagement!
++    const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed: e.seed, encounterId: ENC })
++    expect(() => sandboxResult(s)).toThrow(/battle\.end|did not finish/)
++    runBattle(s.ctx)
++    const r = sandboxResult(s)
++    expect(r.id).toBe(ENC)
++    // the engine's own identities, handed over explicitly and read back by uid
++    const uids = s.setup.heroUids as number[]
++    expect(uids).toHaveLength(DEPLOY.length)
++    rosterKeyed(r, s.ctx, uids, e.deployed, (id) => ctx.campaign.roster[id]!.unitType)
++    // every unit the log entered is one row, keyed by its uid
++    const entered = enters(s.ctx.events)
++    expect(r.units.map((u) => (u as { uid?: number }).uid).sort((a, b) => a! - b!)).toEqual(entered.map((x) => x['uid'] as number).sort((a, b) => a - b))
++    // the civilians: hero-side, the encounter's own, not the roster's
++    const civilians = extras(r).filter((u) => u.side === 'hero')
++    expect(civilians.map((u) => u.typeId).sort()).toEqual(['hero.fixed.orphans', 'hero.fixed.school-teacher'])
++    for (const u of civilians) expect((u as { role?: string }).role).toBe('encounter')
++    // the arrivals: every unit that entered after the battle began, each its own row with role 'arrival'
++    const late = entered.filter((x) => x.turn > 0)
++    expect(late.length).toBeGreaterThanOrEqual(2)
++    for (const x of late) {
++      const row = r.units.find((u) => (u as { uid?: number }).uid === x['uid'])!
++      expect((row as { role?: string }).role).toBe('arrival')
++    }
++    // an arrival is never a roster hero: the Reckoning names exactly the deployed heroes
++    const { reckoning } = decide(ctx, r)
++    expect(reckoning.heroes.map((h) => h.heroId)).toEqual(DEPLOY)
++  })
++
++  it('reordered, noncontiguous hero uids key the right heroes', () => {
++    const ctx = atOrphanage()
++    const e = ctx.campaign.cursor.engagement!
++    for (const heroUids of [[301, 7, 200], [102, 101, 100], [0, 4000000000, 55]]) {
++      const spec = makeBattleState(ctx.campaign.roster, { ...e, heroUids })
++      expect(spec.heroUids).toEqual(heroUids)
++      const battle = createBattle({ ...battleOptionsOf(spec), encounter: encounterDef(ENC) })
++      runBattle(battle)
++      const r = makeBattleResult(spec, battle.events)
++      rosterKeyed(r, battle, heroUids, e.deployed, (id) => ctx.campaign.roster[id]!.unitType)
++      expect(extras(r).length).toBeGreaterThanOrEqual(4)
++      for (const u of extras(r)) expect(heroUids).not.toContain((u as { uid?: number }).uid)
++      const { reckoning } = decide(atOrphanage(), r)
++      expect(reckoning.heroes.map((h) => h.heroId)).toEqual(DEPLOY)
++    }
++  })
++
++  it('kills by and of the encounter\'s units are credited like any other opposing unit', () => {
++    const ctx = atOrphanage()
++    const e = ctx.campaign.cursor.engagement!
++    const spec = makeBattleState(ctx.campaign.roster, e)
++    const battle = createBattle({ ...battleOptionsOf(spec), encounter: encounterDef(ENC) })
++    runBattle(battle)
++    const r = makeBattleResult(spec, battle.events)
++    // independently from the log: each opposing death to zero is credited to whoever last brought it to zero
++    const sideOf = new Map(enters(battle.events).map((x) => [x.actor!, x['side'] as string]))
++    const last = new Map<number, number | null>()
++    const want = new Map<number, number>()
++    for (const x of battle.events) {
++      if (x.type === 'damage.applied' && (x['hpAfter'] as number) <= 0) last.set(x.target!, x.actor)
++      if ((x.type === 'life.dead' || x.type === 'life.downed') && x['reason'] === 'hp0') {
++        const by = last.get(x.target!)
++        if (by !== null && by !== undefined && sideOf.get(by) !== undefined && sideOf.get(by) !== sideOf.get(x.target!)) want.set(by, (want.get(by) ?? 0) + 1)
++      }
++    }
++    expect([...want.values()].reduce((a, b) => a + b, 0)).toBeGreaterThan(0)
++    for (const u of r.units) expect(u.kills).toBe(want.get(u.unitId) ?? 0)
++  })
++
++  it('the Deathbed\'s two ways past "downed": a Wounded hero dies outright, a hero stands again Wounded — both reach the wound', () => {
++    // fielded Wounded (badge.wounded, SWITCHES sandboxWoundFielded), zero is death with no bleed-out and no life.downed
++    const { result: died, events } = resolveEngagement({ id: 'test.fold.wounded-dies', mapId: 'map.open', heroes: ['test-dusk-hawk'], enemies: Array.from({ length: 8 }, () => 'test-zombie'), seed: 0, heroBadges: [['badge.wounded']] })
++    expect(events.some((x) => x.type === 'life.dead' && x['reason'] === 'wounded')).toBe(true)
++    expect(events.some((x) => x.type === 'life.downed')).toBe(false)
++    expect(died.units[0]).toMatchObject({ lifeState: 'dead', dead: true, downed: true })
++    expect(() => validateResult(died)).not.toThrow()
++    // stood again at the Deathbed: never downed, but Wounded in the battle — the Reckoning's plain wound, as for one who went down
++    const { result: stood, events: ev2 } = resolveEngagement({ id: 'test.fold.stood', mapId: 'map.open', heroes: ['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk', 'test-air-mage', 'test-lucius', 'test-osric'], enemies: ['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'], seed: 0 })
++    const up = ev2.filter((x) => x.type === 'deathbed.stood').map((x) => x.target)
++    expect(up.length).toBeGreaterThan(0)
++    for (const u of stood.units) expect(u.stood === true).toBe(up.includes(u.unitId))
++    const ctx = atOrphanage()
++    const e = ctx.campaign.cursor.engagement!
++    const battle = createBattle({ ...battleOptionsOf(makeBattleState(ctx.campaign.roster, e)), encounter: encounterDef(ENC) })
++    runBattle(battle)
++    const r = makeBattleResult(makeBattleState(ctx.campaign.roster, e), battle.events)
++    const first = r.units.find((u) => u.side === 'hero' && u.index === 0)!
++    const set = { ...r, units: r.units.map((u) => (u === first ? { ...u, lifeState: 'standing' as const, downed: false, dead: false, stood: true as const } : u)) }
++    expect(validateResult(set)).toBe(set)
++    const { reckoning } = decide(ctx, set)
++    expect(reckoning.heroes[0]).toMatchObject({ heroId: DEPLOY[0], wound: 1, dead: false })
++  })
++
++  it('applying the result writes each deployed hero exactly once, and a second apply is refused', () => {
++    const ctx = atOrphanage()
++    const e = ctx.campaign.cursor.engagement!
++    const before = structuredClone(ctx.campaign.roster)
++    const spec = makeBattleState(ctx.campaign.roster, { ...e, heroUids: [301, 7, 200] })
++    const battle = createBattle({ ...battleOptionsOf(spec), encounter: encounterDef(ENC) })
++    runBattle(battle)
++    const r = makeBattleResult(spec, battle.events)
++    const { result, reckoning } = decide(ctx, r)
++    const from = ctx.events.length
++    applyBattleResult(ctx, e, result, reckoning)
++    const wrote = ctx.events.slice(from)
++    for (const h of reckoning.heroes) {
++      const hero = ctx.campaign.roster[h.heroId]!
++      for (const type of ['xp.gained', 'hero.wounded', 'hero.died']) expect(wrote.filter((x) => x.type === type && x['heroId'] === h.heroId).length).toBeLessThanOrEqual(1)
++      if (h.dead) { expect(hero.lifeState).toBe('dead'); continue }
++      expect(hero.xp).toBe(before[h.heroId]!.xp + h.xp)
++      expect(hero.wound).toBe(h.wound)
++    }
++    // nobody but the deployed heroes was written: the civilians and arrivals never reach the roster
++    for (const x of wrote.filter((x) => ['xp.gained', 'hero.wounded', 'hero.died'].includes(x.type))) expect(DEPLOY).toContain(x['heroId'])
++    expect(Object.keys(ctx.campaign.roster).sort()).toEqual(Object.keys(before).sort())
++    // a second apply is refused, and writes nothing
++    const snapshot = saveOf(ctx.campaign)
++    expect(() => applyBattleResult(ctx, e, result, reckoning)).toThrow(/refused/)
++    expect(saveOf(ctx.campaign)).toBe(snapshot)
++  })
++})
+b3a34a4
+
+diff --git a/test/sandbox-campaign-heroes.test.ts b/test/sandbox-campaign-heroes.test.ts
+new file mode 100644
+index 0000000..d190fa2
+--- /dev/null
++++ b/test/sandbox-campaign-heroes.test.ts
+@@ -0,0 +1,76 @@
++// kingdom.sandbox-campaign-heroes (kingdom.opening-loop-three part 1 of 4; PLAYABLE-OPENING-PLAN.md item 12):
++// the sandbox fields an encounter with campaign Hero rows, not only hero ids — createSandbox takes the rows
++// (level, specialty, levelPick, equipped and used, wound, badges) and hands them to makeBattleState unchanged,
++// so the hero who plays battle 2 is the hero battle 1 left behind. ?play=<id>[&heroes=…] is unchanged: its rows
++// are still built from SANDBOX_HEROES.
++import { describe, it, expect } from 'vitest'
++import { createSandbox, saveSandbox, restoreSandbox, type SandboxConfig } from '../src/core/sandbox.js'
++import { SANDBOX_DEFAULT, SANDBOX_HEROES } from '../src/content/sandbox.js'
++import { makeBattleState, battleOptionsOf } from '../src/core/seam.js'
++import type { Hero } from '../src/core/campaign.js'
++import { encounterDef } from '../src/engine.js'
++
++const ENCOUNTER = 'encounter.opening.orphanage'
++const WARRIOR = 'hero.base.warrior-iron'
++const fresh = (id: string): Hero => structuredClone(SANDBOX_HEROES.find((h) => h.id === id)!)
++/** Battle 1 left this warrior behind: level 2 with its specialty, the war axe swapped for a longsword, a spent use, and Wounded. */
++function leftBehind(): Hero {
++  const h = fresh(WARRIOR)
++  const axe = h.equipped.indexOf('item.war-axe')
++  expect(axe).toBeGreaterThanOrEqual(0)
++  h.equipped[axe] = 'item.longsword'
++  return { ...h, id: 'hero.campaign-0', level: 2, xp: 0, specialty: 'specialty.champion', wound: 1, badges: ['badge.wounded'] }
++}
++const PLAY: SandboxConfig = { mapId: SANDBOX_DEFAULT.mapId, heroes: [WARRIOR], enemies: [], seed: 3, encounterId: ENCOUNTER }
++const heroUnit = (config: SandboxConfig) => createSandbox(config).ctx.state.units.find((u) => u.side === 'hero' && u.typeId === WARRIOR)!
++
++describe('kingdom.sandbox-campaign-heroes — the sandbox fields campaign Hero rows', () => {
++  it('a level-2 hero with a swapped item and a wound fields with that level, item and wound', () => {
++    const row = leftBehind()
++    const campaign = createSandbox({ ...PLAY, heroes: [row.id], heroRows: [row] })
++    const u = campaign.ctx.state.units.find((x) => x.side === 'hero' && x.typeId === WARRIOR)!
++    const plain = heroUnit(PLAY)
++    // the setup is exactly what makeBattleState makes of the row — handed over unchanged
++    const spec = makeBattleState({ 'hero-0': row }, { id: ENCOUNTER, mapId: encounterDef(ENCOUNTER).mapId!, enemies: [], deployed: ['hero-0'], seed: PLAY.seed })
++    const expected = battleOptionsOf(spec)
++    expect(campaign.setup.heroProgress).toEqual(expected.heroProgress)
++    expect(campaign.setup.heroItems).toEqual(expected.heroItems)
++    expect(campaign.setup.heroBadges).toEqual([['badge.wounded']])
++    expect(campaign.setup.heroProgress).toEqual([expect.objectContaining({ level: 2, specialtyId: 'specialty.champion' })])
++    // the level: the level-2 row's grants and the specialty's modifiers are on the unit, and the plain hero has neither
++    expect(plain.surge ?? 0).toBeLessThan(u.surge ?? 0)
++    expect(u.maxHp).toBeGreaterThan(plain.maxHp)
++    // the item: the longsword is carried, the war axe is not; the ?play= hero still carries the axe
++    const carried = (x: typeof u) => [...(x.loadout?.hands ?? []), ...(x.loadout?.stowed ?? [])].map((i) => i.itemId)
++    expect(carried(u)).toContain('item.longsword')
++    expect(carried(u)).not.toContain('item.war-axe')
++    expect(carried(plain)).toContain('item.war-axe')
++    // the wound: Wounded is on the engine unit, not on the plain hero
++    expect(u.badges).toContain('badge.wounded')
++    expect(plain.badges).not.toContain('badge.wounded')
++  })
++
++  it('the rows survive a save and a restore', () => {
++    const row = leftBehind(), s = createSandbox({ ...PLAY, heroes: [row.id], heroRows: [row] })
++    const back = restoreSandbox(saveSandbox(s))
++    expect(back.setup.heroProgress).toEqual(s.setup.heroProgress)
++    expect(back.ctx.state.units.find((x) => x.side === 'hero')!.badges).toContain('badge.wounded')
++  })
++
++  it('?play= battles are unchanged: the rows built from SANDBOX_HEROES field the same battle as the ids', () => {
++    for (const heroes of [[WARRIOR], [...SANDBOX_DEFAULT.heroes]]) {
++      const byId = createSandbox({ ...PLAY, heroes }), byRow = createSandbox({ ...PLAY, heroes, heroRows: heroes.map(fresh) })
++      expect(byRow.setup).toEqual(byId.setup)
++      expect(byRow.ctx.events).toEqual(byId.ctx.events)
++      expect(byId.config.heroRows).toBeUndefined()
++    }
++  })
++
++  it('refuses rows that disagree with the heroes named, or none, or more than six', () => {
++    const row = leftBehind()
++    expect(() => createSandbox({ ...PLAY, heroes: [WARRIOR], heroRows: [row] })).toThrow(/Hero rows/)
++    expect(() => createSandbox({ ...PLAY, heroes: [], heroRows: [] })).toThrow()
++    const seven = Array.from({ length: 7 }, (_, i) => ({ ...fresh(WARRIOR), id: 'hero.c' + i }))
++    expect(() => createSandbox({ ...PLAY, heroes: seven.map((h) => h.id), heroRows: seven })).toThrow()
++  })
++})
+```
+</details>
+
+## viewer.side-facing — LANDED `b845b2c`
+2026-10-02 04:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: HANDOFF.md:56
+  PASS  typecheck
+  PASS  the item's own tests — test/side-facing.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/side-facing.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.xcom-camera-tuning — LANDED `53bbc45`
+2026-10-02 04:50
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3734 · HANDOFF.md:56
+  PASS  typecheck
+  PASS  the item's own tests — test/xcom-camera-tuning.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/xcom-camera-tuning.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.real-bodies — LANDED `fcc9a53` **NEEDS REVIEW**
+2026-10-02 05:17
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3315 · DECISIONS.md:3734
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-cast.test.ts, test/real-bodies.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/opening-cast.test.ts, viewer/test/real-bodies.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-cast.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+754c307
+
+diff --git a/test/opening-cast.test.ts b/test/opening-cast.test.ts
+index f87dba0..c10ec32 100644
+--- a/test/opening-cast.test.ts
++++ b/test/opening-cast.test.ts
+@@ -13,5 +13,5 @@ import { UNITS, ENCOUNTERS, ACTIONS } from '../../engine/src/content/index.js'
+ 
+ type Ref = { path: string, sha256: string, clip?: string }
+-type Look = { id: string, model: Ref, motions: Record<string, Ref>, missing: string[], props: Ref[] }
++type Look = { id: string, model: Ref, motions: Record<string, Ref>, missing: string[], props: Ref[], body?: { own: boolean, lacks?: string } }
+ const models: Record<string, { typeId: string, looks: Look[] }> = JSON.parse(execFileSync(process.execPath, ['../viewer/tools/character-models.mjs', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24 }))
+ const RULED = ['idle', 'move', 'attack', 'hit', 'death']
+@@ -68,4 +68,8 @@ describe("battles 2 and 3's cast in the new screen", () => {
+          each hero now holds its own kit, so a look's id names its held set too (oathblade+greatsword) — the outfit, which
+          is what this asks, is the body file */
++      /* Law 10 (viewer.real-bodies, 2026-10-01): was every hero, by class. Andrew: "don't we have more 3D things we can use? ...
++         the idea is to rig this up" — a hero with a body of its own stands in it (test/real-bodies.test.ts); the class outfit
++         rule holds for the heroes still in their class's placeholder */
++      if (look!.body?.own) continue
+       if (byClass.has(cls[0]!)) expect(look!.model.path, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.model.path)
+     }
+diff --git a/test/real-bodies.test.ts b/test/real-bodies.test.ts
+new file mode 100644
+index 0000000..94f56e9
+--- /dev/null
++++ b/test/real-bodies.test.ts
+@@ -0,0 +1,23 @@
++// viewer.real-bodies (engine backlog; DECISIONS.md 2026-10-01 'the camera redesigned on the caravan preview; ... what is queued
++// after it', Andrew: "I said we could use placeholders, but don't we have more 3D things we can use? ... the idea is to rig this
++// up."). The engine's side: the opening's six encounters and the caravan field the unit types the viewer's pack must bind or list
++// (the content's encounter rows). The viewer's half (../viewer/tools/real-bodies.test.mjs) reads the pack against the records
++// that own each body and stands the new bodies up from their files. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++
++describe('every hero and enemy of the opening and the caravan stands in its own body, or is listed', () => {
++  it('the opening and the caravan field the Bloodhound and the cast the viewer binds', () => {
++    const raw = JSON.parse(readFileSync('../content/gen/encounters.json', 'utf8'))
++    const rows = (Array.isArray(raw) ? raw : raw.encounters ?? Object.values(raw)).flat()
++      .filter((e: any) => /^encounter\.(opening\.|caravan-aftermath$)/.test(e?.id || ''))
++    const types = new Set(rows.flatMap((e: any) => JSON.stringify(e).match(/"unit\.[a-z0-9.-]+"/g) || []).map((s: string) => s.slice(1, -1)))
++    expect(rows.length).toBeGreaterThanOrEqual(7)
++    expect(types.has('unit.bloodhound')).toBe(true)
++  })
++  it('the viewer: bound or listed, never both; each hero in its own body or its placeholder saying what it lacks; the new bodies stand up from their files', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/real-bodies.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 3/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++})
+```
+</details>
+
+## viewer.male-hero-outfits — LANDED `e2bd9ae`
+2026-10-02 05:46
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3857 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/male-hero-outfits.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/male-hero-outfits.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
 index a0e9c72..5b7b1fd 100644
 --- a/test/battle-cursor.test.ts
