@@ -22276,5 +22276,126 @@ index 2c51eba..7aeef91 100644
 +  (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && c.classRestriction !== 'class.beast' && (c.hands === 1 || c.hands === 2)))
  
  type KingdomRow = { id: string; base: string | null; enchant: string | null; source: string }
+## fix.danger-skips-charge — LANDED `109aeb0` **NEEDS REVIEW**
+2026-10-02 08:43
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1756 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/fix.danger-skips-charge.test.ts, test/viewer.reads-engine.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.fast-zombie: 6 log lines, 6 fired, 5 changed state · unit.iron-colossus: 4 log lines, 4 fired, 3 changed state
+  PASS  brought its own tests — viewer/test/fix.danger-skips-charge.test.ts, viewer/test/viewer.reads-engine.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/fix.danger-skips-charge.test.ts (-2), test/viewer.reads-engine.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — unit.fast-zombie live · unit.iron-colossus live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.fast-zombie,unit.iron-colossus — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+4760ddf
+
+diff --git a/test/fix.danger-skips-charge.test.ts b/test/fix.danger-skips-charge.test.ts
+index 2365d76..0af2d3d 100644
+--- a/test/fix.danger-skips-charge.test.ts
++++ b/test/fix.danger-skips-charge.test.ts
+@@ -3,5 +3,6 @@
+ // engine's own classification (isCharge, dumped as static.json actionKinds); a unit whose only attacks are Charges keeps
+ // its first. The engine's side: the fast zombie's first attack is its Charge (Strength 3 + 1) and its first non-Charge is
+-// its claw (Strength 3 + 0); the zombie's claw is 3; the test zombies' bite 4. The viewer's half
++// its claw (Strength 3 + 0); the iron colossus, the second unit leading with a Charge, 11 and 10 (its Clobber); the
++// zombie's claw is 3; the test zombies' bite 4. The viewer's half
+ // (../viewer/tools/reads-engine.test.mjs, 'fix.danger-skips-charge') asks the viewer for the same readings. Imports no page code.
+ import { describe, it, expect } from 'vitest'
+@@ -27,4 +28,13 @@ describe('the danger marker skips a Charge', () => {
+     expect(hit('unit.fast-zombie', first.id)).toBe(3)
+   })
++  it('the iron colossus, the second unit leading with a Charge: its Charge 11, its first non-Charge (Clobber) 10', () => {
++    const ctx = createCustomBattle([{ type: 'test-warrior', hex: 85 }], [{ type: 'unit.iron-colossus', hex: 200 }])
++    const atk = attacksOf(ctx, ctx.state.units[1]!)
++    expect(isCharge(atk[0]!)).toBe(true)
++    expect(hit('unit.iron-colossus', atk[0]!.id)).toBe(11)
++    const first = atk.find((a) => !isCharge(a))!
++    expect(first.id).toBe('move.iron-colossus.clobber')
++    expect(hit('unit.iron-colossus', first.id)).toBe(10)
++  })
+   it('the zombie reads 3, the test zombies 4 — none of them leads with a Charge', () => {
+     expect(UNITS['unit.zombie']!.attacks[0]).toBe('attack.zombie.claw')
+@@ -36,5 +46,5 @@ describe('the danger marker skips a Charge', () => {
+     }
+   })
+-  it('the viewer: the fast zombie\'s marker reads 3, the zombie 3, the test zombies 4', () => {
++  it('the viewer: the fast zombie\'s marker reads 3, the zombie 3, the test zombies 4, the iron colossus 10', () => {
+     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/reads-engine.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
+     expect(out).toMatch(/# fail 0/)
+7dbb7f3
+
+diff --git a/test/fix.danger-skips-charge.test.ts b/test/fix.danger-skips-charge.test.ts
+new file mode 100644
+index 0000000..2365d76
+--- /dev/null
++++ b/test/fix.danger-skips-charge.test.ts
+@@ -0,0 +1,44 @@
++// fix.danger-skips-charge (ruled 2026-10-02, Andrew, engine/DECISIONS.md 'the fast zombie's danger marker reads 3, not its
++// Charge's 4': "You can change it to 3."). The danger marker reads the unit's first attack that is not a Charge, by the
++// engine's own classification (isCharge, dumped as static.json actionKinds); a unit whose only attacks are Charges keeps
++// its first. The engine's side: the fast zombie's first attack is its Charge (Strength 3 + 1) and its first non-Charge is
++// its claw (Strength 3 + 0); the zombie's claw is 3; the test zombies' bite 4. The viewer's half
++// (../viewer/tools/reads-engine.test.mjs, 'fix.danger-skips-charge') asks the viewer for the same readings. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { createCustomBattle } from '../../engine/src/core/setup.js'
++import { attacksOf, isCharge } from '../../engine/src/core/action.js'
++import { ACTIONS, UNITS } from '../../engine/src/content/index.js'
++
++const hit = (typeId: string, actionId: string) => {
++  const u = UNITS[typeId] as unknown as Record<string, number>, a = ACTIONS[actionId]!.attack!
++  return u[a.stat!]! + (a.bonus ?? 0)
++}
++
++describe('the danger marker skips a Charge', () => {
++  it('the fast zombie: first attack its Charge (4), first non-Charge its claw (3)', () => {
++    const ctx = createCustomBattle([{ type: 'test-warrior', hex: 85 }], [{ type: 'unit.fast-zombie', hex: 200 }])
++    const atk = attacksOf(ctx, ctx.state.units[1]!)
++    expect(isCharge(atk[0]!)).toBe(true)
++    expect(atk[0]!.id).toBe('move.fast-zombie.charge')
++    expect(hit('unit.fast-zombie', atk[0]!.id)).toBe(4)
++    const first = atk.find((a) => !isCharge(a))!
++    expect(first.id).toBe('attack.zombie.claw')
++    expect(hit('unit.fast-zombie', first.id)).toBe(3)
++  })
++  it('the zombie reads 3, the test zombies 4 — none of them leads with a Charge', () => {
++    expect(UNITS['unit.zombie']!.attacks[0]).toBe('attack.zombie.claw')
++    expect(hit('unit.zombie', 'attack.zombie.claw')).toBe(3)
++    for (const t of ['test-zombie', 'test-zombie-burning']) {
++      const a0 = UNITS[t]!.attacks[0]!
++      expect(isCharge(ACTIONS[a0]!)).toBe(false)
++      expect(hit(t, a0)).toBe(4)
++    }
++  })
++  it('the viewer: the fast zombie\'s marker reads 3, the zombie 3, the test zombies 4', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/reads-engine.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# fail 0/)
++    expect(out).toMatch(/\nok \d+ - fix\.danger-skips-charge /)
++    if (process.env.VIEWER_PAGE) expect(out).toMatch(/\nok \d+ - the page carries the engine's tables\n/)
++  }, 170000)
++})
+diff --git a/test/viewer.reads-engine.test.ts b/test/viewer.reads-engine.test.ts
+index a6f36c8..daa02cb 100644
+--- a/test/viewer.reads-engine.test.ts
++++ b/test/viewer.reads-engine.test.ts
+@@ -63,5 +63,5 @@ describe('the facts the viewer reads from the engine', () => {
+     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/reads-engine.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
+     expect(out).toMatch(/# fail 0/)
+-    expect(out).toMatch(process.env.VIEWER_PAGE ? /# pass 9/ : /# pass 8/)
++    expect(out).toMatch(process.env.VIEWER_PAGE ? /# pass 10/ : /# pass 9/) // fix.danger-skips-charge added one
+   }, 170000)
+ })
 ```
 </details>
