@@ -133,4 +133,8 @@ export const ENGINE_EVENTS = [
   'life.standing', 'life.downed', 'life.dead',
   // widened 2026-10-01 (kingdom.encounter-result-fold): a hero who stood again at the Deathbed is Wounded in the battle
   'deathbed.stood',
+  // widened 2026-10-02 (engine rule.afflictions-at-zero-refiled-2): a badge an affliction's 0-Health rule gave a hero
+  // (badge.gained with atZeroOf — Rotting Flesh's Fragile) is carried after the battle; a hero that ended the battle
+  // transformed onto the enemy side is back to normal after it (unit.transformed, unit.reverted)
+  'badge.gained', 'unit.transformed', 'unit.reverted',
 ] as const

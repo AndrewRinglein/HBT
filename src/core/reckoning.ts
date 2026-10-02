@@ -40,6 +40,7 @@ import { validateResult } from './result.js'
 import {
   type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
   setFoughtThisWeek, applyRelease, setEngagementResolved, applyClaim, setCursor, setRewardOffer, applyRestock, applyInstanceUse,
+  setHeroBadges,
 } from './mutate.js'
 import { instanceSlotsOf } from './loadout.js'
 import { itemOf } from '../content/items.js'
@@ -62,6 +63,11 @@ export type HeroReckoning = {
   wound: number
   dead: boolean
   mvp: boolean
+  /**
+   * engine rule.afflictions-at-zero-refiled-2 (2026-10-02): badges the battle leaves the hero with, added to what it carries
+   * — Rotting Flesh's Fragile, one per time it was taken to 0 ("it will just accumulate"). Absent when none, or dead.
+   */
+  badges?: string[]
 }
 
 export type Grant = { currency: string; amount: number }
@@ -151,6 +157,8 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
       wound: dead ? 0 : Math.max(hero.wound, u.downed || u.stood ? SWITCHES.woundFromDowned : 0),
       dead,
       mvp: false,
+      // engine rule.afflictions-at-zero-refiled-2: Fragile, gained at 0 Health, is "a permanent consequence" — carried
+      ...(!dead && u.carried?.length ? { badges: [...u.carried] } : {}),
     }
   })
 
@@ -201,6 +209,7 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   for (const h of reckoning.heroes) {
     if (!engagement.deployed.includes(h.heroId)) throw new Error(`applyBattleResult refused: the Reckoning names '${h.heroId}', who was not deployed`)
     if (!Number.isInteger(h.xp) || h.xp < 0 || !Number.isInteger(h.wound) || h.wound < 0 || h.wound > 3) throw new Error(`applyBattleResult refused: '${h.heroId}' xp ${h.xp}, wound ${h.wound}`)
+    if (h.badges !== undefined && (h.dead || !Array.isArray(h.badges) || h.badges.some((b) => typeof b !== 'string' || !b))) throw new Error(`applyBattleResult refused: '${h.heroId}' carries badges [${String(h.badges)}] out of the battle`)
   }
   for (const g of reckoning.grants) if (!(g.currency in c.purse) || !Number.isInteger(g.amount) || g.amount < 0) throw new Error(`applyBattleResult refused: grant ${g.amount} of '${g.currency}'`)
   // v2.item-uses: each instance's spend, mapped to its hero and equipped slot — checked before anything is written
@@ -226,6 +235,8 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
     if (h.dead) { setHeroDead(ctx, h.heroId, cause); continue }
     if (h.xp > 0) applyXp(ctx, h.heroId, h.xp, cause)
     if (h.wound !== c.roster[h.heroId]!.wound) setWound(ctx, h.heroId, h.wound, cause)
+    // engine rule.afflictions-at-zero-refiled-2: Fragile stacks — each one gained is another on the roster
+    if (h.badges?.length) setHeroBadges(ctx, h.heroId, [...c.roster[h.heroId]!.badges, ...h.badges], cause)
   }
   for (const x of instanceUses) applyInstanceUse(ctx, x.heroId, x.slot, x.itemId, x.used, cause)
   if (fatigues) performRollAbsences(ctx, engagement.deployed, cause)

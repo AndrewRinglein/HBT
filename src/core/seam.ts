@@ -136,6 +136,19 @@ export type UnitTally = {
    * Wounded in the battle. Present only when true; a hero-side row's. SWITCHES.md foldDeathbedStood.
    */
   readonly stood?: true
+  /**
+   * engine rule.afflictions-at-zero-refiled-2 (2026-10-02; engine DECISIONS.md 2026-10-01 'the afflictions at 0 Health'):
+   * the badges an affliction's 0-Health rule gave this hero in the battle (badge.gained with `atZeroOf` — Rotting
+   * Flesh's Fragile, "a permanent consequence every time you're taken down"), one per gain, in order. The Reckoning
+   * carries them onto the roster. Present only when there is one; a roster hero row's.
+   */
+  readonly carried?: readonly string[]
+  /**
+   * engine rule.afflictions-at-zero-refiled-2: the hero ended the battle transformed on the other side (Vampirism or
+   * Lycanthropy at 0 Health, its Luck roll failed, never beaten down) — standing, not one of the heroes the battle was
+   * won or lost by, and "back to normal" after it (engine DECISIONS.md 2026-10-01). Present only when true.
+   */
+  readonly turned?: true
 }
 
 /**
@@ -280,7 +293,7 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
  */
 export function makeBattleResult(spec: EngagementSpec, events: readonly Event[]): EngagementResult {
   type Row = {
-    side: Side; index: number; unitId: number; uid: number; role?: TallyRole; typeId: string; name: string; stood?: true; killed?: string[]
+    side: Side; index: number; unitId: number; uid: number; role?: TallyRole; typeId: string; name: string; stood?: true; killed?: string[]; carried?: string[]; turned?: true
     downed: boolean; dead: boolean; lifeState: 'standing' | 'downed' | 'dead'
     damageTaken: number; damageDealt: number; kills: number
   }
@@ -393,6 +406,27 @@ export function makeBattleResult(spec: EngagementSpec, events: readonly Event[])
         // battle (engine settle.ts), so the Reckoning's wound rule reaches it (SWITCHES.md foldDeathbedStood)
         const row = byUnit.get(e.target!)
         if (row && row.side === 'hero') row.stood = true
+        break
+      }
+      case 'badge.gained': {
+        // engine rule.afflictions-at-zero-refiled-2: a badge an affliction's 0-Health rule gave a roster hero is carried
+        // after the battle (Fragile); a badge gained any other way is the battle's (a bite's affliction, Wounded)
+        if (e['atZeroOf'] === undefined) break
+        const row = byUnit.get(e.actor!)
+        if (row && row.side === 'hero' && row.role === undefined) (row.carried ??= []).push(e['badgeId'] as string)
+        break
+      }
+      case 'unit.transformed': {
+        // engine rule.afflictions-at-zero-refiled-2: a hero row that went over to the other side, until it falls back
+        const row = byUnit.get(e.actor!)
+        if (row && e['side'] !== row.side) row.turned = true
+        break
+      }
+      case 'unit.reverted': {
+        // beaten down on the other side, it falls in its own form (life.downed follows); at the battle's end it is the
+        // hero again, standing — still the row that ended the battle turned
+        const row = byUnit.get(e.actor!)
+        if (row && e['reason'] === 'fell') delete row.turned
         break
       }
       case 'life.standing': {

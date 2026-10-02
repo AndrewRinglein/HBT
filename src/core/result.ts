@@ -105,6 +105,9 @@ export function validateResult(r: EngagementResult, expected?: { heroes: number;
     // kingdom.reads-engine (K7): the victims a row names are its kills, one each
     if (u.killed !== undefined && (!Array.isArray(u.killed) || u.killed.length !== u.kills || u.killed.some((k: unknown) => typeof k !== 'string' || !k))) throw new Error(`${p}.killed: names ${Array.isArray(u.killed) ? u.killed.length : 'no list of'} victims for ${u.kills} kills`)
     if (u.stood !== undefined && (u.stood !== true || u.side !== 'hero')) throw new Error(`${p}.stood: only a hero-side row stands again at the Deathbed, and only true is written`)
+    if (u.turned !== undefined && (u.turned !== true || u.side !== 'hero' || u.lifeState !== 'standing')) throw new Error(`${p}.turned: only a standing hero-side row ends a battle turned, and only true is written`)
+    // engine rule.afflictions-at-zero-refiled-2: what an affliction's 0-Health rule gave a roster hero, carried after the battle
+    if (u.carried !== undefined && (u.side !== 'hero' || u.role !== undefined || !Array.isArray(u.carried) || !u.carried.length || u.carried.some((b: unknown) => typeof b !== 'string' || !b))) throw new Error(`${p}.carried: only a roster hero row carries badges out of the battle, a non-empty list of badge ids`)
     if (u.role !== undefined) {
       if (!TALLY_ROLES.includes(u.role)) throw new Error(`${p}.role: '${String(u.role)}' is not one of ${TALLY_ROLES.join(' | ')}`)
       if (u.uid === undefined) throw new Error(`${p}: a row that is not the roster's ('${u.role}') carries no uid`)
@@ -147,7 +150,9 @@ export function validateResult(r: EngagementResult, expected?: { heroes: number;
   // The outcome and the rows must agree, whichever hand wrote them.
   const heroes = r.units.filter((u) => u.side === 'hero')
   const enemies = r.units.filter((u) => u.side === 'enemy')
-  if (r.outcome === 'wipe' && heroes.some((u) => u.lifeState === 'standing')) throw new Error('result: a wipe with a hero still standing')
+  // engine rule.afflictions-at-zero-refiled-2: a hero that ended the battle turned to the enemy side stands, but the battle
+  // was lost without it (engine settle.ts counts the hero side's standing)
+  if (r.outcome === 'wipe' && heroes.some((u) => u.lifeState === 'standing' && !u.turned)) throw new Error('result: a wipe with a hero still standing')
   if (r.outcome === 'heroClear' && enemies.some((u) => u.lifeState !== 'dead')) throw new Error('result: heroClear with an enemy still alive')
   return r
 }
