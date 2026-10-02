@@ -104,7 +104,7 @@ const TEMPLATE = `
       <div id="rail" role="toolbar" aria-label="Units"></div>
       <div data-slot="top" style="display:contents"></div>
     </div>
-    <div id="boardwrap"><div id="stage"></div>
+    <div id="boardwrap"><div id="stage"></div><div id="stageTop"></div>
       <canvas id="vfxC" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:35"></canvas>
       <div id="camHud" class="mono" style="position:absolute;left:185px;bottom:10px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div>
       <div id="unitPortrait" aria-hidden="true" style="display:none"><img alt=""></div>
@@ -129,7 +129,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const now = opts.now || (typeof performance !== 'undefined' && typeof performance.now === 'function' ? () => performance.now() : () => Date.now())
   root.innerHTML = TEMPLATE
   const q = s => root.querySelector(s)
-  const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), portrait: q('#unitPortrait'), rail: q('#rail'), panel: q('#panel'),
+  const dom = { root, stage: q('#stage'), stageTop: q('#stageTop'), canvas: q('#vfxC'), hud: q('#camHud'), portrait: q('#unitPortrait'), rail: q('#rail'), panel: q('#panel'),
     stambar: q('#stambar'), actionbar: q('#actionbar'), turnchip: q('#turnchip'), phasechip: q('#phasechip'),
     encchip: q('#encchip'), powerchip: q('#powerchip'), playNote: q('#playNote'),
     slots: { top: q('[data-slot=top]'), transport: q('[data-slot=transport]'), bottom: q('[data-slot=bottom]') } }
@@ -171,8 +171,10 @@ export function mountBattleViewer(root, data, opts = {}) {
 
   /* the stage is sized and centred once; without this it is a zero-size point
      and rotateX pivots around the wrong origin (the quarter-screen bug) */
-  dom.stage.style.width = F.w + 'px'; dom.stage.style.height = F.h + 'px'
-  dom.stage.style.marginLeft = (-F.w / 2) + 'px'; dom.stage.style.marginTop = (-F.h / 2) + 'px'
+  /* viewer.characters-unfaded: the floats' layer above the bodies is the stage's twin, drawn through the same camera */
+  for (const s of [dom.stage, dom.stageTop]) { if (!s) continue
+    s.style.width = F.w + 'px'; s.style.height = F.h + 'px'
+    s.style.marginLeft = (-F.w / 2) + 'px'; s.style.marginTop = (-F.h / 2) + 'px' }
   dom.stage.style.transition = 'none'                // born TILTED — the camera's glide (board.js) starts after first paint
   ensureKeyframes()
   /* the icon sprite is the component's: one per document, whoever mounts */

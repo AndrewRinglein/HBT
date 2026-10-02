@@ -517,11 +517,15 @@ html,body{margin:0;background:#08090b;color:var(--ink);
    projection is mirrored by its camera; outer page-fit scales both once. */
 .terrain3d-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 #stage{z-index:1}
+/* viewer.characters-unfaded (engine DECISIONS.md 2026-10-01: "The characters are the stars. They should not be faded"): the
+   bodies' own canvas sits above the board's marks (z 2, terrain3d.js); the floats ride the stage's twin above it */
+.terrain3d-bodies{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+#stageTop{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform-origin:0 0 0;pointer-events:none;z-index:3}
 .terrain3d-ready #stage .cell{background-image:none !important}
 .terrain3d-ready #stage .props{visibility:hidden}
 /* viewer.true-3d-camera: "no other map loads first" — until the battle's own 3D scene is ready, and when it cannot be
    drawn, the board is not shown (no flat swatch board in its place); a plain line says why */
-.terrain3d-loading #stage,.terrain3d-failed #stage,.terrain3d-loading .edgeL,.terrain3d-failed .edgeL{visibility:hidden}
+.terrain3d-loading #stage,.terrain3d-failed #stage,.terrain3d-loading #stageTop,.terrain3d-failed #stageTop,.terrain3d-loading .edgeL,.terrain3d-failed .edgeL{visibility:hidden}
 #terrainLoading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:45;max-width:70%;text-align:center;color:#e6dcbc;font-size:20px;line-height:1.4;background:rgba(14,12,9,.88);padding:14px 26px;border:1px solid #4a3a1c;border-radius:3px;pointer-events:none}
 #terrainStatus{position:absolute;right:14px;bottom:10px;z-index:50;background:#14120e;color:#d8cfae;padding:4px 10px;border:1px solid #4a3a1c;font-size:12px;max-width:65%}
 #battleDD{position:relative;width:min(760px,100%);margin:12px 0;z-index:1000}

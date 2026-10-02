@@ -325,7 +325,8 @@ export function floatHue(c) {
 export function pushFloat(V, hex, text, col, o = {}) {
   if (hex == null) return
   const L = V.layers
-  if (!L.floatL) { L.floatL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none'); V.dom.stage.appendChild(L.floatL) }
+  /* viewer.characters-unfaded: the floats ride above the bodies (#stageTop, the stage's twin), never under them */
+  if (!L.floatL) { L.floatL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none'); (V.dom.stageTop || V.dom.stage).appendChild(L.floatL) }
   const p = V.data.POS[hex]; if (!p) return
   const slot = (L.FLOAT_SLOTS[hex] = (L.FLOAT_SLOTS[hex] ?? -1) + 1)
   const life = o.crit ? 1900 : o.big ? 1500 : 1200
@@ -1379,11 +1380,14 @@ export function stopGlide(V) {
 export function showPose(V, pose) {
   const { W, H } = viewportOf(V), A = boardAffine(V)
   V.camera3d = orbitCamera(A, pose, { w: W, h: H }, V.camera3d || undefined)
-  const st = V.dom.stage.style
-  st.transformOrigin = '0 0 0'
-  st.transform = matrix3d(stageMatrix(A, V.camera3d, { w: V.data.F.w, h: V.data.F.h }))
-  st.setProperty('--anti', (-pose.tilt) + 'deg'); st.setProperty('--unspin', (pose.yaw ? -pose.yaw : 0) + 'deg')
-  st.setProperty('--aniso', String(anisoOf(A)))
+  const m = matrix3d(stageMatrix(A, V.camera3d, { w: V.data.F.w, h: V.data.F.h }))
+  /* the stage and its twin above the bodies (viewer.characters-unfaded) are drawn through the one camera */
+  for (const s of [V.dom.stage, V.dom.stageTop]) { if (!s) continue
+    const st = s.style
+    st.transformOrigin = '0 0 0'
+    st.transform = m
+    st.setProperty('--anti', (-pose.tilt) + 'deg'); st.setProperty('--unspin', (pose.yaw ? -pose.yaw : 0) + 'deg')
+    st.setProperty('--aniso', String(anisoOf(A))) }
   V.camShown = pose; V.camVersion = (V.camVersion || 0) + 1
 }
 /* ── the turned camera (viewer.painted-board; engine DECISIONS.md 2026-09-29 "the playable battle

@@ -310,3 +310,17 @@ game 2026-09-01); it is the component's now (`src/rail.js`), so the standalone p
 | `railOrder` | Which order, left to right? | **Ascending unit id — heroes, civilians and enemies as the board lists them (the queue of viewer.xcom-camera walks it).** | "the next in the character bar, left to right, civilians included"; the strip's order since 2026-09-01. | Default |
 | `railClick` | What does a card do? | **A click is the click on that unit's body (board.js `clickUnit`: the panel, the targeting host, the play host's `{kind:'unit'}` — the same event); a double-click offers `{kind:'choose'}`.** | "use that to target things as well as clicking on them"; "Double-click a character in the top bar … to change it". | Default |
 | `railLook` | How does it look? | **The strip as it was: each unit's token on a small card, gold under a hero, violet under an enemy, the one acting lit, those who acted greyed with ✓, the fallen dark with ✝; the card looked at outlined.** | "the way it is in the visual playback". | Default |
+
+## viewer.characters-unfaded — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 (Andrew): "these characters are faded, like they're ghost-like, because there are other competing
+things. The characters are the stars. They should not be faded, especially not one that's selected." Why they were faded: the
+board's marks — the grid, the side rings, the shadow blob, the acting glow and sweep, the selection ring, aura and painted-layer
+tiles (darkness .78, poison .85), the plan's hatching and tiles — are DOM on `#stage`, drawn OVER the scene's canvas with no
+depth, so every mark whose screen area a body stands up into lay across it. Nothing in the 3D scene was transparent.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `unfadedLayer` | How do the bodies get above the marks and still stand behind walls? | **A second WebGL canvas, `.terrain3d-bodies`, between `#stage` (the marks) and `#stageTop` (the floats): each frame it takes the scene's depth from its solid pieces only (no colour; what is see-through hides nothing), then draws the bodies alone with every light.** The scene's own canvas no longer draws bodies. A host whose renderer is a stand-in (a test) keeps the one canvas. | Depth is the only honest way to keep "a wall hides a body" while no mark covers one; a CSS trick on the DOM cannot know depth. | Default |
+| `unfadedFloats` | The floats were on `#stage`, now under the bodies. | **They ride `#stageTop`, the stage's twin (same size, same camera matrix, same billboard variables), above the bodies.** The names, bars and rings stay on the board, under the bodies. | A damage number must never hide behind the body it is about; the marks are what faded the bodies. | Default |
+| `unfadedKey` | How is "the selected one" brightest? | **A warm point light (#fff1d8, intensity 9, reach 5 m) rides the body whose panel it is (subject.js), 1.25 of its height up and 0.6 toward the camera; it lights the bodies only.** | "especially not one that's selected". | Default — the look is Andrew's |
