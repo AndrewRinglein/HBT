@@ -52,6 +52,27 @@ const painted=readGround();   // the painted scenes' ground and the opening maps
 if(painted) out.maps.push(...painted.maps);
 // ---- heroes, extracted mechanically from hell-tcg's five creation paths
 out.heroes=R('heroes.json');
+// ---- Angela's hero rulings (settled.json "heroes"): overrides applied onto the
+// mechanically-ported blocks — where she has dictated a block, hers wins (2026-08-20,
+// the Beast redesigns). Lost at 6b23dd7 and RESTORED 2026-10-01 (fix.codex-numbers,
+// duplication review findings C5 and C21) from assemble.HEAD.mjs / settled.HEAD.json,
+// which are then gone. A derived stat she dictated away from the class baseline is
+// DECLARED (derivedDeltas), the way build-heroes declares one, so audit R23 reads it as
+// a decision, not drift.
+for(const o of (settled.heroes||[])){
+  const h=out.heroes.heroes.find(x=>x.id===o.id);
+  if(!h){ prob.push('settled hero ruling: unknown id '+o.id); continue; }
+  h.ported={...h.ported, ...(o.ported||{})};
+  h.derivedBase={...h.derivedBase, ...(o.derivedBase||{})};
+  if(o.authoredTriggers) h.authoredTriggers=[...(h.authoredTriggers||[]), ...o.authoredTriggers.map(t=>({...t, authored:true}))];
+  if(o.namedSpecials) h.namedSpecials=o.namedSpecials;
+  if(o.attacks) h.attacks=o.attacks;
+  h.notes=[...(h.notes||[]), ...(o.notes||[])];
+  const base=(cl.classes.find(c=>c.id===h.class)||{}).derivedBase||{};
+  const d={...(h.derivedDeltas||{})};
+  for(const k of Object.keys(o.derivedBase||{})) if(k in base){ if(h.derivedBase[k]!==base[k]) d[k]=h.derivedBase[k]-base[k]; else delete d[k]; }
+  if(Object.keys(d).length){ h.derivedDeltas=d; h.derivedDeltaWhy='Dictated by '+(o.by||'Angela')+' '+(o.ruled||'')+' (settled.json heroes).'; }
+}
 // ---- the TEST COHORT (settled.json testCohort): the standard engine test party — six
 // clones of live heroes plus test enemies, resolved so the Codex renders them and
 // mkenginepack.mjs can export them. A clone copies its source hero at assemble time;
@@ -242,6 +263,11 @@ if(out.encounters){
     r.layers=names;
   }
   if(seen!==1) prob.push(`rule.ground-layers: expected one row, found ${seen}`);
+  // fix.codex-numbers (2026-10-01; findings C1 C2 C9): the engine's own bases under crit, vision,
+  // bleed-out and Deathbed Fighting, so the Codex browser shows the engine-derived value
+  // (Deathbed Fighting = 20 + 5 x Toughness + the unit's own) instead of a third copy of the formula.
+  out.ruleBases=V.ruleBases;
+  if(!out.ruleBases) prob.push('the engine vocabulary has no ruleBases — regenerate ../engine/generated/vocabulary.json');
 }
 // Validation must preserve the last usable assembly on failure.
 if (!prob.length) fs.writeFileSync('hbt-content.json', JSON.stringify(out));

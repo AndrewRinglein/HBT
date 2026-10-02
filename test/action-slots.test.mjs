@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { copyRuntime } from './workspace.mjs';
 
 const source = path.resolve(import.meta.dirname, '..');
 const livePack = path.resolve(source, '../engine/src/content/generated/pack.ts');
@@ -14,7 +15,7 @@ function candidate(change) {
   try {
     fs.mkdirSync(work);
     fs.mkdirSync(path.join(root, 'engine/src/content/generated'), { recursive: true }); fs.mkdirSync(path.join(root, 'engine/generated'), { recursive: true }); fs.copyFileSync(path.join(source, '../engine/generated/vocabulary.json'), path.join(root, 'engine/generated/vocabulary.json'));   // the engine's vocabulary the converter reads (plumbing.vocabulary-export)
-    for (const name of ['mkenginepack.mjs', 'map-schema.mjs','burst-schema.mjs','mkpaintedmaps.mjs', 'hbt-content.json', 'settled.json']) fs.copyFileSync(path.join(source, name), path.join(work, name));
+    copyRuntime(source, work, ['mkenginepack.mjs'], ['hbt-content.json', 'settled.json']);   // the scripts and every module they import (test/workspace.mjs)
     for (const name of ['gen', 'test']) fs.cpSync(path.join(source, name), path.join(work, name), { recursive: true, filter: p => !fs.statSync(p).isFile() || p.endsWith('.json') });
     const edit = (name, fn) => { const p = path.join(work, name); const row = JSON.parse(fs.readFileSync(p, 'utf8')); fn(row); fs.writeFileSync(p, JSON.stringify(row)); };
     change(edit);

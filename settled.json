@@ -782,7 +782,7 @@
    "tags": [],
    "description": "Movement action. Move up to your Movement + 1, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way. Costs 2 Stamina.",
    "intent": "The vampire's flight: a hex further than anyone else, at a price.",
-   "source": "2026-09-29: \"They gain the power of flight. Which uses movement +1 as a flight power\" · \"Let's have the Vampirism flight cost 2. Stamina.\" Granted by badge.vampirism. Ruled 2026-09-29 (Andrew, engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
+   "source": "2026-09-29: \"They gain the power of flight. Which uses movement +1 as a flight power\" · \"Let's have the Vampirism flight cost 2. Stamina.\" Granted by badge.vampirism. Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
   },
   {
    "id": "rule.karma-decay",
@@ -2224,5 +2224,91 @@
    "dazed",
    "confusion"
   ]
- }
+ },
+ "_heroes": "Angela's hero rulings, applied by assemble.mjs onto the mechanically-ported blocks: where she has dictated a block, hers wins (2026-08-20, the Beast pen; engine DECISIONS.md 2026-08-20 'the Beast pen are PLAYER beasts; the Codex is where content changes land'). Lost at 6b23dd7 (a merge of another chat's rulings dropped the overlay) and RESTORED 2026-10-01 from settled.HEAD.json by fix.codex-numbers (duplication review findings C5, C21). The Shadow Hound Puppy has no row: it is a hero (ruled 2026-08-21) whose block is still pending her dictation. Restored with the venom as an authoredTriggers row, the shape every authored hero rider uses (the hell-tcg object keyed by hook was cut 2026-08-22, audit hero-carries-an-unported-trigger-object): the same 3 Poison on a fang hit. The drake's empty hook object is dropped.",
+ "heroes": [
+  {
+   "id": "hero.fixed.spirit-snake",
+   "ruled": "2026-08-20",
+   "by": "Angela",
+   "ported": {
+    "strength": 2,
+    "precision": 0,
+    "armor": 0,
+    "health": 4,
+    "resist": 2,
+    "dodge": 50,
+    "magic": 0,
+    "spirit": 0
+   },
+   "derivedBase": {
+    "accuracy": 110,
+    "movement": 8,
+    "staminaMax": 8
+   },
+   "namedSpecials": [
+    {
+     "name": "Venomous",
+     "description": "onHit your fang attacks apply 3 Poison."
+    }
+   ],
+   "attacks": [
+    "attack.fangs.bite"
+   ],
+   "notes": [
+    "2026-08-20 Angela, full redesign — the ported block was not her design: Health 4, Dodge 50, Move 8, Accuracy 110, Armor 0, Resist 2, Strength 2, Precision 0, Magic 0, Spirit 0, Stamina 8; venom is 3 Poison on hit. Zero Item Slots and NO weapon slots — a Beast carries nothing."
+   ],
+   "authoredTriggers": [
+    {
+     "hook": "onHit",
+     "name": "Venomous",
+     "targets": "the target",
+     "onlyWithAttack": "attack.fangs.bite",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hero.fixed.green-drake",
+   "ruled": "2026-08-20",
+   "by": "Angela",
+   "ported": {
+    "strength": 4,
+    "precision": 3,
+    "armor": 2,
+    "health": 12,
+    "resist": 1,
+    "magic": 0,
+    "spirit": 0
+   },
+   "derivedBase": {
+    "accuracy": 65,
+    "movement": 5
+   },
+   "namedSpecials": [
+    {
+     "name": "Flight",
+     "description": "A movement power: move +0 as flight for 1 Stamina (atomic, per the Flight ruling)."
+    },
+    {
+     "name": "Wingborne Stride",
+     "description": "The regular movement power: movement 5 for 1 Stamina."
+    }
+   ],
+   "attacks": [
+    "attack.drake.poison-breath",
+    "attack.drake.snap"
+   ],
+   "notes": [
+    "2026-08-20 Angela, full redesign — the ported block (and Dragon Fire) was not her design: Health 12, Armor 2, Resist 1, Strength 4, Precision 3, Magic 0, Spirit 0, Accuracy 65; reach 2. Two movement powers: Flight (+0 move, 1 Stamina) and regular (movement 5, 1 Stamina). Attacks: Poison Breath and Snap. Zero Item Slots and no weapon slots.",
+    "The dictated block replaces the ported numbers, and with them the 2026-08-25 Child compensation (+1 Strength, +1 Precision, +4 Health), which was added to the ported block (engine SWITCHES.md dictatedBlockOverCompensation, 2026-10-01)."
+   ]
+  }
+ ]
 }

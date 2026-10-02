@@ -4,13 +4,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
+import { copyRuntime } from './workspace.mjs';
 const source=path.resolve(import.meta.dirname,'..');
 function candidate(change){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'hobat-bursts-')),work=path.join(root,'content');
  const live=path.resolve(source,'../engine/src/content/generated/pack.ts'),before=fs.readFileSync(live);
  try{
   fs.mkdirSync(work);fs.mkdirSync(path.join(root,'engine/src/content/generated'),{recursive:true});fs.mkdirSync(path.join(root, 'engine/generated'), { recursive: true }); fs.copyFileSync(path.join(source, '../engine/generated/vocabulary.json'), path.join(root, 'engine/generated/vocabulary.json'));   // the engine's vocabulary the converter reads (plumbing.vocabulary-export)
-  for(const file of ['assemble.mjs','mkenginepack.mjs','map-schema.mjs','burst-schema.mjs','mkpaintedmaps.mjs','hbt-content.json','settled.json'])fs.copyFileSync(path.join(source,file),path.join(work,file));
+  copyRuntime(source,work,['assemble.mjs','mkenginepack.mjs'],['hbt-content.json','settled.json']);   // the scripts and every module they import (test/workspace.mjs)
   for(const dir of ['gen','test'])fs.cpSync(path.join(source,dir),path.join(work,dir),{recursive:true,filter:p=>!fs.statSync(p).isFile()||p.endsWith('.json')});
   const edit=(file,fn)=>{const p=path.join(work,file),data=JSON.parse(fs.readFileSync(p,'utf8'));fn(data);fs.writeFileSync(p,JSON.stringify(data))};
   change(edit);
