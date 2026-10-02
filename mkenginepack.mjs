@@ -378,6 +378,11 @@ const ELEMENT_RESIST = { fire: 'fireResist', burn: 'fireResist', cold: 'coldResi
 const BADGE_FLAGS_STRUCTURED = new Set(['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']);
 function compileBadge(row) {
   const mods = {}; const grants = []; const flags = {}; const gaps = [];
+  // content.afflictions-at-zero (2026-10-01; engine DECISIONS.md 'the afflictions at 0 Health'): what an affliction does at
+  // 0 Health (`atZero`) and a badge that stacks (`stacks`, Fragile) are the row's structured facts the engine cannot yet act
+  // on — named gaps on the compiled row until rule.afflictions-at-zero builds them, never dropped.
+  if (row.atZero?.text) gaps.push(`at 0 Health: ${row.atZero.text} (rule.afflictions-at-zero)`);
+  if (row.stacks === true) gaps.push('stacks with no limit: each gain is another (rule.afflictions-at-zero; a badge held twice is once today)');
   // STRUCTURED FIELDS WIN, and they suppress the prose-only gap. A row that states its
   // numbers as data is finished; parsing its payload again could only disagree with itself.
   // Deathbed Fighting REVERSED, 2026-09-04: badge.hero and badge.wounded are the two rows

@@ -71,7 +71,7 @@ for(const o of (settled.heroes||[])){
   const base=(cl.classes.find(c=>c.id===h.class)||{}).derivedBase||{};
   const d={...(h.derivedDeltas||{})};
   for(const k of Object.keys(o.derivedBase||{})) if(k in base){ if(h.derivedBase[k]!==base[k]) d[k]=h.derivedBase[k]-base[k]; else delete d[k]; }
-  if(Object.keys(d).length){ h.derivedDeltas=d; h.derivedDeltaWhy='Dictated by '+(o.by||'Angela')+' '+(o.ruled||'')+' (settled.json heroes).'; }
+  if(Object.keys(d).length){ h.derivedDeltas=d; h.derivedDeltaWhy='Dictated '+(o.ruled||'')+' (settled.json heroes; R17: what and when, never who).'; }
 }
 // ---- the TEST COHORT (settled.json testCohort): the standard engine test party — six
 // clones of live heroes plus test enemies, resolved so the Codex renders them and
