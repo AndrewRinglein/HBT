@@ -1787,3 +1787,17 @@ Noticed, changed with a written reason (Law 10): the Lieutenant Demon's "+1 Heal
 compiled. Through the one interpreter a `statMod` on Max Health moves Max Health by its mutator, as a power's and a
 badge's always did, so the aura now works: `showcase.prologue-enemies` moves (battle-cursor layer
 `test/fixtures/battle-cursor-one-effect.json`).
+
+## movement.inventory — every movement identified, 2026-10-01
+
+The source: engine DECISIONS.md 2026-10-01 'the movements' (Andrew: "1. Identify all of the movements."). Identifying only:
+`generated/movements.{json,md}`, written by `tools/movements.mts`; probe `test/movement-inventory.test.ts`. The findings of
+movement.swap-and-shields are carried as missing: the swap's draw or stow (no clip, no ruling) and the six shield powers'
+motion (ruled 2026-10-01 'a shield power plays a raise-the-shield motion', engine b91a3f7; filed as viewer.shield-guard-motion).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `movementWeaponClass` | What is a "weapon class"? | **A base weapon row (an item with no `base`); its tiered and enchanted variants fold into it, and a variant's own attack (`attack.war-axe.chop.heavy`) folds into its base attack's row** (counted as variants). Natural weapons (`class.beast`) are listed, noted as natural. | A variant swings the same weapon with other numbers; it moves the same way. | provisional — 2026-10-01 |
+| `movementPlayerHolds` | Which actions can "a player unit hold"? | **Every action a non-test item grants, every class power, every badge grant, every attack, power and move on a non-test hero-side unit type (heroes, the Alpha Team, civilians, the player beasts), and every non-test movement power** — a movement power nothing grants today is listed with that note. | The ruling asks for every movement the content needs; a power in the pack is content whether or not a hero carries it yet. | provisional — 2026-10-01 |
+| `movementMotionRule` | Which motion does an action play? | **The viewer's own rules today:** melee `attack`; ranged `ranged`, else the body strikes (`attack`, a stand-in); a walk `move`; a flight `flight`, else it walks (a stand-in); a power, a burst, a move in place and the swap play no body motion. Read on the hero bodies the drafted heroes wear (viewer CLASS_LOOKS: Oathblade, Archer). A row is played (every body has its word), partial (some body plays a stand-in), or missing. | viewer src/models.js strike and frame, src/fold.js power.used / burst.declared / loadout.swapped. No motion word is invented (a new one is Angela's). | provisional — 2026-10-01 |
+| `movementSelectedFits` | Which selected performance is named for a row with no motion? | **By the use it was selected for (free-motion-study/selections.json, 2026-09-29): Consume ("Drink or consume") for an item use consumed on use aimed at the user or an ally; Stand up (LayToIdle) for a movement power that stands the unit up; the casting gesture (Spell_Simple_Shoot) for any other power or burst.** Named, never bound; shield powers carry their ruling instead. The evasive roll is named for nothing — its record says its action "is not yet decided". | The record's own words for each clip; binding is the viewer's and may need a motion word. | provisional — 2026-10-01 |

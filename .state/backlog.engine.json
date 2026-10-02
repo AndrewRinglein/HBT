@@ -18,7 +18,9 @@
   "needs": [
    "movement.swap-and-shields"
   ],
-  "note": "Andrew 2026-10-01: second in the engine queue, after movement.swap-and-shields (DECISIONS.md 'the order', item 2)."
+  "note": "Andrew 2026-10-01: second in the engine queue, after movement.swap-and-shields (DECISIONS.md 'the order', item 2).",
+  "status": "done",
+  "sha": "9db4665"
  },
  {
   "id": "fix.suite-after-caravan",
