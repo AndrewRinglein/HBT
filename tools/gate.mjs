@@ -153,6 +153,14 @@ const backlog = readBacklog()
 const item = backlog.find((b) => b.id === id)
 if (!item) { console.error(`no backlog item '${id}'`); process.exit(2) }
 const PROGRESS = progressFor(item)
+// Where the item's own tests live (Andrew, 2026-10-01, engine 33c3f8b: the viewer's and the
+// kingdom's page tests moved out of engine/test to viewer/test and kingdom/test). A viewer or
+// kingdom item brings its tests in that package's test/, its own git repository; they run on the
+// engine's vitest from there, as that package's `npm test` does (GBH SWITCHES gate.testsHome).
+const TESTS_HOME = { viewer: '../viewer', kingdom: '../kingdom' }[item.kind] ?? '.'
+const IN_HOME = { cwd: TESTS_HOME }
+const VITEST = TESTS_HOME === '.' ? 'npx vitest run' : 'node ../engine/node_modules/vitest/vitest.mjs run'
+const HOME_DIR = TESTS_HOME === '.' ? '' : `${TESTS_HOME.slice(3)}/`
 
 const checks = []
 let ok = true
@@ -228,11 +236,11 @@ check('typecheck', () => {
 // The item's own tests, not the full suite (Andrew, 2026-09-23, DECISIONS.md "less
 // process per feature"). The full suite runs once per chat as the four shards, and
 // `wrap` refuses until all four passed on the final tree.
-const touchedTests = () => testFilesIn(sh('git status --porcelain --untracked-files=all'))
+const touchedTests = () => testFilesIn(sh('git status --porcelain --untracked-files=all', IN_HOME))
 check("the item's own tests", () => {
   const files = touchedTests()
   if (!files.length) return { ok: false, note: 'no test file touched' }
-  const r = vitestFiles("the item's own tests", files, (cmd) => runDiagnosticCommand(cmd, `gate-item-tests-${id}`))
+  const r = vitestFiles("the item's own tests", files, (cmd) => runDiagnosticCommand(cmd, `gate-item-tests-${id}`, IN_HOME))
   if (!r) return { deferred: true }
   return { ok: r.ok, note: r.ok ? files.join(', ') : `${files.join(', ')} — ${r.note}` }
 }, { split: true })
@@ -259,14 +267,14 @@ check('gate 1 — the id appears in a real battle', () => {
 })
 
 check('brought its own tests', () => {
-  const files = sh('git status --porcelain').split('\n').filter(Boolean).map((l) => l.slice(3))
+  const files = sh('git status --porcelain --untracked-files=all', IN_HOME).split('\n').filter(Boolean).map((l) => l.slice(3))
   const touched = files.filter((f) => f.startsWith('test/'))
-  return { ok: touched.length > 0, note: touched.length ? touched.join(', ') : 'no test file touched' }
+  return { ok: touched.length > 0, note: touched.length ? touched.map((f) => HOME_DIR + f).join(', ') : `no test file touched in ${HOME_DIR}test/` }
 })
 
 // A new mechanic may ADD tests. Editing tests that already passed is the classic
 // way an autonomous loop launders a failure into a success.
-const weakened = (tryRun('git diff --numstat -- test/').out.trim() || '')
+const weakened = (tryRun('git diff --numstat -- test/', IN_HOME).out.trim() || '')
   .split('\n').filter(Boolean)
   .map((l) => { const [add, del, file] = l.split('\t'); return { file, add: +add, del: +del } })
   .filter((f) => f.del > 0)
@@ -277,7 +285,7 @@ flag('existing tests untouched', () => ({
 // Edited tests still land for Angela's review (Law 10); that is not a seal.
 let needsReview = weakened.length > 0
 let pendingGolden = null
-const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/').out : ''
+const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/', IN_HOME).out : ''
 
 check('control battles unchanged', () => {
   const r = tryRun('npx tsx tools/baseline.mts')
@@ -477,7 +485,7 @@ check('kill switch — the tests fail without the content', () => {
   if ((item.shape === 'plumbing' && !item.probeIds) || ids.length === 0) return { ok: true, note: 'no content id to disable — engine plumbing, not applicable' }
   // fast: the test files the item ADDED — its own verify scenario, not an existing battle
   // file it happened to edit; every touched file when it added none. --full: every touched file.
-  const files = killSwitchFiles(sh('git status --porcelain --untracked-files=all'), FULL)
+  const files = killSwitchFiles(sh('git status --porcelain --untracked-files=all', IN_HOME), FULL)
   if (files.length === 0) return { ok: true, note: 'no touched test files (brought-its-own-tests already failed)' }
   // The env goes through execSync's `env` option, not a `VAR=x cmd` prefix —
   // that prefix is bash-only, and under cmd.exe this check would "fail" because
@@ -485,7 +493,7 @@ check('kill switch — the tests fail without the content', () => {
   // gate that fails for that reason PASSES the item (it expects failure), so
   // the tautology check would have been silently inert on Windows.
   const r = vitestFiles('kill switch — the tests fail without the content', files,
-    (cmd) => tryRun(cmd, { env: { ...process.env, CF_DISABLE_IDS: ids.join(',') } }))
+    (cmd) => tryRun(cmd, { ...IN_HOME, env: { ...process.env, CF_DISABLE_IDS: ids.join(',') } }))
   if (!r) return { deferred: true }
   if (r.ok) {
     return { ok: false, note: `TAUTOLOGICAL — the touched tests PASS with ${ids.join(',')} disabled. They would have passed before the feature existed. Assert something the content actually causes.` }
@@ -494,7 +502,8 @@ check('kill switch — the tests fail without the content', () => {
 }, { split: true })
 
 // ── run the checks: replay what passed on this tree, run the rest, honour the budget ──
-const tree = treeHash()
+// a viewer or kingdom item's tests are judged on that package's tree too: an edit there discards the record
+const tree = TESTS_HOME === '.' ? treeHash() : `${treeHash()}+${treeHash(TESTS_HOME)}`
 let progress = (() => {
   let raw = null
   try { raw = JSON.parse(readFileSync(PROGRESS, 'utf8')) } catch {}
@@ -518,13 +527,13 @@ if (recordedCount()) console.log(`  resuming: ${recordedCount()} of ${CHECKS.len
  */
 let ranFresh = 0
 function vitestFiles(checkName, files, run) {
-  if (BUDGET === Infinity) return run(`npx vitest run ${files.join(' ')} --reporter=dot`)
+  if (BUDGET === Infinity) return run(`${VITEST} ${files.join(' ')} --reporter=dot`)
   for (const f of files) {
     const key = `${checkName} ▸ ${f}`
     if (recall(progress, key)) continue
     if (stopBefore({ elapsedMs: Date.now() - T0, budgetMs: BUDGET, estimateMs: progress.durations[key], ranFresh })) return null
     const t = Date.now()
-    const r = run(`npx vitest run ${f} --reporter=dot`)
+    const r = run(`${VITEST} ${f} --reporter=dot`)
     ranFresh++
     progress = record(progress, key, { ok: r.ok }, Date.now() - t); saveProgress()
     if (!r.ok) return r
