@@ -688,8 +688,7 @@
     "text": "No Deathbed Fighting roll. The hero transforms into a Werewolf (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal."
    },
    "afflictionArt": "lycanthropy",
-   "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health.",
-   "needsCapability": "rule.afflictions-at-zero — at 0 Health: No Deathbed Fighting roll."
+   "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health."
   },
   {
    "id": "badge.many-pockets",
@@ -838,8 +837,7 @@
     "text": "No Deathbed Fighting roll. The hero goes down and bleeds out, and a Ghost with the hero's image (Ghost stats) is summoned on the hero's hex as an enemy unit."
    },
    "afflictionArt": "possession",
-   "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health.",
-   "needsCapability": "rule.afflictions-at-zero — at 0 Health: No Deathbed Fighting roll."
+   "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health."
   },
   {
    "id": "badge.quick-study",
@@ -952,8 +950,7 @@
     "text": "Deathbed Fighting as normal (its +20 kept), and the hero gains Fragile (−1 maximum Health) each time it is taken to 0 — permanent, stacking with no limit."
    },
    "afflictionArt": "rotting-flesh",
-   "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health.",
-   "needsCapability": "rule.afflictions-at-zero — at 0 Health: Deathbed Fighting as normal (its +20 kept), and the hero gains Fragile (−1 maximum Health) each time it is taken to 0 — permanent, stacking with no limit.."
+   "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health."
   },
   {
    "id": "badge.scarred-hide",
@@ -1263,8 +1260,7 @@
     "text": "No Deathbed Fighting roll. The hero transforms into a Vampire (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal."
    },
    "afflictionArt": "vampirism",
-   "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health.",
-   "needsCapability": "rule.afflictions-at-zero — at 0 Health: No Deathbed Fighting roll."
+   "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health."
   },
   {
    "id": "badge.cold-heart",
@@ -1295,7 +1291,6 @@
    "stacks": true,
    "rollable": false,
    "note": "Gained by a Rotting Flesh hero each time it is taken to 0 Health (badge.rotting-flesh atZero). Every gain is another −1 maximum Health: it accumulates with no limit and is never removed. Acquired in game, never rolled.",
-   "needsCapability": "rule.afflictions-at-zero — a badge held more than once: each gain stacks (a badge held twice is once today).",
    "source": "2026-10-01: \"if you're rotting flesh and you're taken to zero, you're going to gain a badge: Fragile. Gives you -1 maximum health. So there's a permanent consequence every time you're taken down and it will just accumulate.\" · \"Fragile keeps stacking with no limit.\" Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Filed as content.afflictions-at-zero."
   },
   {

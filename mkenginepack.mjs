@@ -364,13 +364,31 @@ const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment', 'cannot be knocke
 // (Karma, Weak) has no resist — a named gap. Replaces rule.badge-immunity's status-refusing immunity (removed).
 const ELEMENT_RESIST = { fire: 'fireResist', burn: 'fireResist', cold: 'coldResist', frost: 'coldResist', poison: 'poisonResist' };
 const BADGE_FLAGS_STRUCTURED = new Set(['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']);
+// rule.afflictions-at-zero (2026-10-02; engine DECISIONS.md 2026-10-01 'the afflictions at 0 Health'): what an affliction
+// does at 0 Health (`atZero`) and a badge that stacks (`stacks`, Fragile) compile onto the badge as data the engine's settle
+// reads — named gaps (content.afflictions-at-zero) until the engine built them. The ruled `text` stays on the Codex row;
+// the compiled row carries the structured facts only: whether the Deathbed roll is made, the unit the hero transforms into
+// on a Luck roll, the unit raised and its side, the badge gained. A field the engine does not read is refused, never passed.
+const AT_ZERO_FIELDS = new Set(['deathbedFighting', 'transformsInto', 'luckRoll', 'raises', 'raisedSide', 'gains', 'text']);
+function compileAtZero(row) {
+  const out = {};
+  if (row.stacks === true) out.stacks = true;
+  const z = row.atZero;
+  if (z === undefined) return out;
+  for (const k of Object.keys(z)) if (!AT_ZERO_FIELDS.has(k)) throw new Error(`badge ${row.id}: atZero carries '${k}', which the engine does not read`);
+  if (typeof z.deathbedFighting !== 'boolean') throw new Error(`badge ${row.id}: atZero.deathbedFighting must say whether the Deathbed roll is made`);
+  if (z.transformsInto !== undefined && (typeof z.transformsInto !== 'string' || z.luckRoll !== true)) throw new Error(`badge ${row.id}: atZero.transformsInto names a unit and rolls Luck`);
+  if (z.raises !== undefined && (typeof z.raises !== 'string' || !['hero', 'enemy'].includes(z.raisedSide))) throw new Error(`badge ${row.id}: atZero.raises names a unit and the side it stands on`);
+  if (z.gains !== undefined && typeof z.gains !== 'string') throw new Error(`badge ${row.id}: atZero.gains names a badge`);
+  out.atZero = { deathbedFighting: z.deathbedFighting,
+    ...(z.transformsInto !== undefined ? { transformsInto: z.transformsInto, luckRoll: true } : {}),
+    ...(z.raises !== undefined ? { raises: z.raises, raisedSide: z.raisedSide } : {}),
+    ...(z.gains !== undefined ? { gains: z.gains } : {}) };
+  return out;
+}
 function compileBadge(row) {
   const mods = {}; const grants = []; const flags = {}; const gaps = [];
-  // content.afflictions-at-zero (2026-10-01; engine DECISIONS.md 'the afflictions at 0 Health'): what an affliction does at
-  // 0 Health (`atZero`) and a badge that stacks (`stacks`, Fragile) are the row's structured facts the engine cannot yet act
-  // on — named gaps on the compiled row until rule.afflictions-at-zero builds them, never dropped.
-  if (row.atZero?.text) gaps.push(`at 0 Health: ${row.atZero.text} (rule.afflictions-at-zero)`);
-  if (row.stacks === true) gaps.push('stacks with no limit: each gain is another (rule.afflictions-at-zero; a badge held twice is once today)');
+  const atZero = compileAtZero(row);
   // STRUCTURED FIELDS WIN, and they suppress the prose-only gap. A row that states its
   // numbers as data is finished; parsing its payload again could only disagree with itself.
   // Deathbed Fighting REVERSED, 2026-09-04: badge.hero and badge.wounded are the two rows
@@ -391,7 +409,7 @@ function compileBadge(row) {
       if (v) flags[k] = true;
     }
     for (const g of (row.grants || [])) grants.push(g);
-    return { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(gaps.length ? { gaps } : {}) };
+    return { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...atZero, ...(gaps.length ? { gaps } : {}) };
   }
   const payload = String(row.payload || '').replace(/\*\*/g, '');
   // rule.badge-deathbed-fighting (2026-09-29, Andrew, engine DECISIONS.md 'Possession's Surge loads at fielding;
@@ -435,7 +453,7 @@ function compileBadge(row) {
   }
   // the engine's deathbed stat rides the modifiers map under its own name
   const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(deathbed ? { deathbedFighting: deathbed } : {}),
-    ...(gaps.length ? { gaps } : {}) };
+    ...atZero, ...(gaps.length ? { gaps } : {}) };
   return out;
 }
 const badges = {};
