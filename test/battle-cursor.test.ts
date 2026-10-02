@@ -211,6 +211,13 @@ const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
 // Imp — showcase.kiln (4), showcase.prologue-enemies (1), test.opening-bridge (2 scheduled) and test.props-viewer-ranged-zoc
 // (1). A `changed` case is checked here and skips the older layers.
 const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-flight.json', import.meta.url), 'utf8'))
+// fix.codex-numbers (2026-10-01), Law 10: crit base 3 is counted once (DECISIONS.md 2026-09-28 "the duplication review,
+// ruled", finding C1: "Crit base 3 should be counted once.") — the pack carries each unit's Codex crit total less the
+// engine's 3, so every hero and every enemy with an authored crit rolls 3 points less than the double count did; bleed-out
+// and Deathbed fold as stats and enemy rows carry their tier. Every case frozen here (tools/capture-codex-numbers-cursor.mts).
+// Moved for real, the ruling working: the 31 cases where a crit roll goes the other way. A `changed` case is checked here
+// and skips the older layers.
+const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-codex-numbers.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -327,8 +334,11 @@ describe('resumable battle cursor', () => {
       const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const codexNumbersMoved = codexNumbersExpected?.changed === true
       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const fireImpFlightMoved = fireImpFlightExpected?.changed === true
+      // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a codex-numbers-moved case skips the fire-imp-flight layer too (fix.codex-numbers 2026-10-01)
+      const fireImpFlightMoved = fireImpFlightExpected?.changed === true || codexNumbersMoved
       // was: const kiteAloneMoved = kiteAloneExpected?.changed === true — a fire-imp-flight-moved case skips the kite-alone layer too (content.fire-imp-flight 2026-10-01)
       const kiteAloneMoved = kiteAloneExpected?.changed === true || fireImpFlightMoved
       // was: const resistOneWayMoved = resistOneWayExpected?.changed === true — a kite-alone-moved case skips the resist-one-way layer too (encounter.opening.bridge-ai 2026-09-30)
@@ -397,7 +407,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (fireImpFlightExpected) {
+        if (codexNumbersExpected) {
+        expect(hash(ctx.events), 'full codex-numbers events').toBe(codexNumbersExpected.events)
+        expect(hash(ctx.state), 'full codex-numbers state').toBe(codexNumbersExpected.state)
+        expect(hash(ctx.rng.log), 'full codex-numbers RNG').toBe(codexNumbersExpected.rng)
+        expect(result).toEqual(codexNumbersExpected.result)
+        }
+        // was: if (fireImpFlightExpected) { — fix.codex-numbers (2026-10-01): a codex-numbers-moved case is checked above instead
+        if (fireImpFlightExpected && !codexNumbersMoved) {
         expect(hash(ctx.events), 'full fire-imp-flight events').toBe(fireImpFlightExpected.events)
         expect(hash(ctx.state), 'full fire-imp-flight state').toBe(fireImpFlightExpected.state)
         expect(hash(ctx.rng.log), 'full fire-imp-flight RNG').toBe(fireImpFlightExpected.rng)

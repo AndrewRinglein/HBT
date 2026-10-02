@@ -57,7 +57,7 @@ export function settle(ctx: Ctx, causeId: string): void {
               // fights on — Wounded, a fresh (lower) bar, a breath of stamina
             } else if (verdict === 'bleeds') {
               setLifeState(ctx, u.id, 'downed', causeId, { reason: 'hp0' })
-              setBleedOut(ctx, u.id, BLEED_OUT_COUNTER, causeId)
+              setBleedOut(ctx, u.id, bleedOutCounterOf(u), causeId)
             } else {
               // 'dies': Wounded already, or no Hero badge — dead and a corpse, no bleed-out
               setLifeState(ctx, u.id, 'dead', causeId, { reason: verdict === 'dies-wounded' ? 'wounded' : 'fell' })
@@ -163,8 +163,27 @@ export function advanceBleedOuts(ctx: Ctx): void {
  * wounded badge the pack lacks is a named gap on the STOOD line, never a
  * silent skip (the numbers are content's — 4-BADGES-SETTLED owes the row).
  */
-export function deathbedFighting(u: { toughness: number }, fromBadges: number = 0): number {
-  return 20 + 5 * u.toughness + fromBadges
+export const DEATHBED_BASE = 20
+export const DEATHBED_PER_TOUGHNESS = 5
+/**
+ * fix.codex-numbers (2026-10-01; DECISIONS.md 2026-09-28 "the duplication review, ruled",
+ * finding C9): the formula stays the engine's; `deathbedFighting` is the unit's own folded
+ * addition — the Codex base, a level pick ("+20 Deathbed Fighting", the Priest's level-5
+ * option), an item — on top of it. A BADGE's points keep riding the badge's own field and
+ * are read at the roll (rule.badge-deathbed-fighting), so one gained mid-battle counts
+ * (SWITCHES.md deathbedBadgePoints).
+ */
+export function deathbedFighting(u: { toughness: number; deathbedFighting?: number }, fromBadges: number = 0): number {
+  return DEATHBED_BASE + DEATHBED_PER_TOUGHNESS * u.toughness + (u.deathbedFighting ?? 0) + fromBadges
+}
+/**
+ * fix.codex-numbers (C9): the counter a downed hero starts at — the ruled 5 plus the unit's
+ * own `bleedOutTurns` (Death Seeker −3, Survivor +3, Thick Blooded +5, folded at fielding).
+ * At least 1: a counter that starts at 0 would kill on the same settle that downed the hero,
+ * which no badge says (SWITCHES.md bleedOutFloor).
+ */
+export function bleedOutCounterOf(u: { bleedOutTurns?: number }): number {
+  return Math.max(1, BLEED_OUT_COUNTER + (u.bleedOutTurns ?? 0))
 }
 /**
  * rule.badge-deathbed-fighting (2026-09-29, Andrew, DECISIONS.md 'Possession's Surge loads at fielding; the

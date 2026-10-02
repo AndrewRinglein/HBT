@@ -20255,3 +20255,132 @@ index ca4bebd..edf74cd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.gates — they genuinely test it
+
+## fix.codex-numbers — ABANDONED
+2026-10-02 00:47
+
+Filed 2026-09-28 with no probeIds: gate 1 probes 'fix.codex-numbers', which is not a content id and never appears in a battle (probe.mts: 'never appears in any log'), and the kill switch disables nothing, so the item can never pass as filed. The work is done and parked (engine git stash), not discarded. Re-filed as fix.codex-numbers-refiled with probeIds unit.bloodhound and hero.base.rogue-raven, two rows whose crit the item changes - the precedent Andrew ruled 2026-09-30 for encounter.opening.bridge-ai ('Park, abandon, re-file').
+
+## fix.codex-numbers-refiled — LANDED `81fed36` **NEEDS REVIEW**
+2026-10-02 00:52
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1753 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/crit.test.ts, test/items-per-unit.test.ts, test/codex-numbers.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.bloodhound: 18 log lines, 18 fired, 15 changed state · hero.base.rogue-raven: 5 log lines, 5 fired, 4 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/crit.test.ts, test/items-per-unit.test.ts, test/codex-numbers.test.ts, test/fixtures/battle-cursor-codex-numbers.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/crit.test.ts (-3), test/items-per-unit.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 586dd2b2->704acf4a, map.ridge 5f203320->4ce10af5, map.flanks 62501d02->7d26f30d, map.highlands 87ae61ed->2469419a, map.field e3208d6c->12d16ef9, map.thicket 9b35fa93->4641a852, map.proving.open ca8f206b->a0b7fce3, map.proving.ridge 113785a4->44f4ae17, map.proving.ford 98fb20b4->2471073b, map.proving.copse 7176496f->4899bf01, map.proving.ruin 7882854b->e7dfa711, map.courtyard 86c2de4f->79a2b1dd, map.floodplain 5a3493f2->2e0fbbcb, test.map.embers 6795745a->533d2327, test.map.showcase 5e0449c9->a5d3f809, test.map.duel-8 c389e368->400e8d3a, test.map.dungeon-16x8 54d4adc0->0ec15564, test.map.horde-24 fffde918->2978af63, test.map.journey-20x10 6028880d->67a9ca83, test.map.authored-40x40 fc98a0c5->93d34098, test.map.high-prop-single 9fba144d->881249cb, test.map.high-prop-multi a2f14f8c->5b67f74b, test.map.well-shove 0e40ee04->0c8e5836
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'numbers' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.bloodhound,hero.base.rogue-raven — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 64a5e3d..321ca31 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -212,4 +212,11 @@ const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
+ // (1). A `changed` case is checked here and skips the older layers.
+ const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-flight.json', import.meta.url), 'utf8'))
++// fix.codex-numbers (2026-10-01), Law 10: crit base 3 is counted once (DECISIONS.md 2026-09-28 "the duplication review,
++// ruled", finding C1: "Crit base 3 should be counted once.") — the pack carries each unit's Codex crit total less the
++// engine's 3, so every hero and every enemy with an authored crit rolls 3 points less than the double count did; bleed-out
++// and Deathbed fold as stats and enemy rows carry their tier. Every case frozen here (tools/capture-codex-numbers-cursor.mts).
++// Moved for real, the ruling working: the 31 cases where a crit roll goes the other way. A `changed` case is checked here
++// and skips the older layers.
++const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-codex-numbers.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -328,6 +335,9 @@ describe('resumable battle cursor', () => {
+       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const codexNumbersMoved = codexNumbersExpected?.changed === true
+       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const fireImpFlightMoved = fireImpFlightExpected?.changed === true
++      // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a codex-numbers-moved case skips the fire-imp-flight layer too (fix.codex-numbers 2026-10-01)
++      const fireImpFlightMoved = fireImpFlightExpected?.changed === true || codexNumbersMoved
+       // was: const kiteAloneMoved = kiteAloneExpected?.changed === true — a fire-imp-flight-moved case skips the kite-alone layer too (content.fire-imp-flight 2026-10-01)
+       const kiteAloneMoved = kiteAloneExpected?.changed === true || fireImpFlightMoved
+@@ -398,5 +408,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (fireImpFlightExpected) {
++        if (codexNumbersExpected) {
++        expect(hash(ctx.events), 'full codex-numbers events').toBe(codexNumbersExpected.events)
++        expect(hash(ctx.state), 'full codex-numbers state').toBe(codexNumbersExpected.state)
++        expect(hash(ctx.rng.log), 'full codex-numbers RNG').toBe(codexNumbersExpected.rng)
++        expect(result).toEqual(codexNumbersExpected.result)
++        }
++        // was: if (fireImpFlightExpected) { — fix.codex-numbers (2026-10-01): a codex-numbers-moved case is checked above instead
++        if (fireImpFlightExpected && !codexNumbersMoved) {
+         expect(hash(ctx.events), 'full fire-imp-flight events').toBe(fireImpFlightExpected.events)
+         expect(hash(ctx.state), 'full fire-imp-flight state').toBe(fireImpFlightExpected.state)
+diff --git a/test/crit.test.ts b/test/crit.test.ts
+index 49e7f93..5c9cce3 100644
+--- a/test/crit.test.ts
++++ b/test/crit.test.ts
+@@ -11,5 +11,5 @@ import { previewBurst } from '../src/core/burst.js'
+ // accuracy − target Luck.
+ import { describe, expect, it } from 'vitest'
+-import { preview } from '../src/core/pipeline.js'
++import { preview, CRIT_BASE } from '../src/core/pipeline.js'
+ import { rollCritEffect } from '../src/core/crit.js'
+ import { rollBelow } from '../src/core/rng.js'
+@@ -55,7 +55,12 @@ describe('the chart arrives as ruled data', () => {
+   it('the crit fields and unit crit/luck came through the pipeline', () => {
+     expect(ATTACKS['attack.dagger.stab']!.attack.crit).toBe(5)
+-    expect(UNITS['unit.bloodhound']!.crit).toBe(10)
++    // Law 10 rewrite 2026-10-01 (fix.codex-numbers; DECISIONS.md 2026-09-28 "the duplication review,
++    // ruled", finding C1, Andrew: "Crit base 3 should be counted once."): the Codex authors crit as a
++    // TOTAL (the Bloodhound 10, the Orphan Child 20) and the engine adds its own base 3, so this file
++    // locked in a double count — a total of 13 and 23. The pack now carries total − CRIT_BASE, and the
++    // row is asserted as that difference, read off the engine's base rather than retyped.
++    expect(UNITS['unit.bloodhound']!.crit).toBe(10 - CRIT_BASE)
+     expect(UNITS['unit.bruiser-demon']!.luck).toBe(5)
+-    expect(UNITS['hero.fixed.orphans']!.crit).toBe(20)
++    expect(UNITS['hero.fixed.orphans']!.crit).toBe(20 - CRIT_BASE)
+   })
+ })
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index e73d5ff..1aa38b3 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -14,4 +14,5 @@ import { createBattle, fieldedDef } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { applyItems } from '../src/core/items.js'
++import { CRIT_BASE } from '../src/core/pipeline.js'
+ import { ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+@@ -33,5 +34,12 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+     for (const [id, row] of Object.entries(o)) {
+       const f = shape(fieldedDef(id) as unknown as Record<string, unknown>)
+-      const r = shape(row)
++      // Law 10, 2026-10-01 (fix.codex-numbers; DECISIONS.md 2026-09-28 "the duplication review, ruled",
++      // finding C1: "Crit base 3 should be counted once"): the frozen oracle holds crit as the Codex
++      // TOTAL (a warrior 3), which the engine then added its own 3 to. A row now carries the total less
++      // CRIT_BASE. The oracle stays frozen; its crit is read as that same difference, so the comparison
++      // still says whether the FOLD moved — no assertion below is loosened.
++      const critOver = ((row['crit'] as number | undefined) ?? 0) - CRIT_BASE
++      const { crit: _frozenCrit, ...frozen } = row
++      const r = shape(critOver ? { ...frozen, crit: critOver } : frozen)
+       // fix.unit-tags (2026-09-03): the oracle predates the collapse of
+       // `attributes` into `tags` (Law 11); the field no longer exists.
+@@ -95,5 +103,5 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+     })
+     for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
+-    expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
++    expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
+     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
+   })
+```
+</details>

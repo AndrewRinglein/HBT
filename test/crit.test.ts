@@ -10,7 +10,7 @@ import { previewBurst } from '../src/core/burst.js'
 // heroes, 50 against enemies. Chance = 3 + unit Crit + weapon crit + surplus
 // accuracy − target Luck.
 import { describe, expect, it } from 'vitest'
-import { preview } from '../src/core/pipeline.js'
+import { preview, CRIT_BASE } from '../src/core/pipeline.js'
 import { rollCritEffect } from '../src/core/crit.js'
 import { rollBelow } from '../src/core/rng.js'
 import { effective } from '../src/core/stats.js'
@@ -54,9 +54,14 @@ describe('the chart arrives as ruled data', () => {
 
   it('the crit fields and unit crit/luck came through the pipeline', () => {
     expect(ATTACKS['attack.dagger.stab']!.attack.crit).toBe(5)
-    expect(UNITS['unit.bloodhound']!.crit).toBe(10)
+    // Law 10 rewrite 2026-10-01 (fix.codex-numbers; DECISIONS.md 2026-09-28 "the duplication review,
+    // ruled", finding C1, Andrew: "Crit base 3 should be counted once."): the Codex authors crit as a
+    // TOTAL (the Bloodhound 10, the Orphan Child 20) and the engine adds its own base 3, so this file
+    // locked in a double count — a total of 13 and 23. The pack now carries total − CRIT_BASE, and the
+    // row is asserted as that difference, read off the engine's base rather than retyped.
+    expect(UNITS['unit.bloodhound']!.crit).toBe(10 - CRIT_BASE)
     expect(UNITS['unit.bruiser-demon']!.luck).toBe(5)
-    expect(UNITS['hero.fixed.orphans']!.crit).toBe(20)
+    expect(UNITS['hero.fixed.orphans']!.crit).toBe(20 - CRIT_BASE)
   })
 })
 

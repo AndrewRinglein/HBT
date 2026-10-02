@@ -1,0 +1,24 @@
+{
+ "id": "fix.codex-numbers-refiled",
+ "tree": "b10e9a6a9e1e869c4fe26dd8aeacdae535b965d9",
+ "ctx": "1f14f43ddfd757cb6ee3d2a3dfe58b57c782d0e8",
+ "results": {},
+ "durations": {
+  "dependencies landed": 0,
+  "not already decided": 603,
+  "typecheck": 2151,
+  "the item's own tests": 10344,
+  "gate 1 — the id appears in a real battle": 8378,
+  "brought its own tests": 64,
+  "existing tests untouched": 0,
+  "control battles unchanged": 48593,
+  "content has a published source": 154,
+  "hardcode scan — core knows mechanisms, never names": 63,
+  "prior art — nothing new copies what exists": 0,
+  "wrong home — nothing another package owns": 1,
+  "generalizes — the second instance costs zero engine code": 0,
+  "naming — new content ids use declared kinds": 74,
+  "naming — no banned words invented": 212,
+  "kill switch — the tests fail without the content": 3049
+ }
+}

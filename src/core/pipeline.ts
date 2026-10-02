@@ -556,12 +556,19 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
  * ("Base Crit varies by enemy"), plus the weapon's crit field ("Crit from
  * gear"), plus surplus final accuracy over 100 at 1 per 4 — minus the
  * TARGET's Luck ("your resistance to taking one"). Floor 0.
+ *
+ * fix.codex-numbers (2026-10-01; DECISIONS.md 2026-09-28 "the duplication review, ruled",
+ * finding C1, Andrew: "Crit base 3 should be counted once."): the 3 is the rule and lives
+ * here only. A row's `crit` is the unit's own addition to it; the Codex authors totals (a
+ * warrior 3, a rogue 5) and the converter publishes total − CRIT_BASE, read from the
+ * engine's vocabulary export (ruleBases), so the base is never counted twice.
  */
+export const CRIT_BASE = 3
 function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, a?: AttackDef): number {
   if (!ctx.cfg.switches.critEnabled) return 0
   const surplus = finalAcc > 100 ? Math.trunc((finalAcc - 100) / 4) : 0
   const gear = a?.attack.crit ?? 0
-  return Math.max(0, 3 + effective(ctx, attacker, 'crit').value + gear + surplus
+  return Math.max(0, CRIT_BASE + effective(ctx, attacker, 'crit').value + gear + surplus
     - effective(ctx, target, 'luck').value)
 }
 

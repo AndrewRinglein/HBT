@@ -82,7 +82,7 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
       && !r.typeId.startsWith('alpha-')) {
       throw new Error(`unit pack: '${r.typeId}' is not test- / unit.* / hero.* / alpha- — the pack must stay clearly differentiated (Angela 2026-08-20)`)
     }
-    for(const key of ['fireResist','poisonResist','shadowResist','coldResist','block','rangedBlock'] as const)if(r[key]!==undefined&&!Number.isSafeInteger(r[key]))throw Error(`unit pack: invalid ${key} on '${r.typeId}'`)
+    for(const key of ['fireResist','poisonResist','shadowResist','coldResist','block','rangedBlock','bleedOutTurns','deathbedFighting','tier'] as const)if(r[key]!==undefined&&!Number.isSafeInteger(r[key]))throw Error(`unit pack: invalid ${key} on '${r.typeId}'`)   // bleedOutTurns, deathbedFighting, tier: fix.codex-numbers
     for (const t of r.triggers ?? []) validateTrigger(t)
     for (const m of r.moves) {
       if (!/^power\./.test(m)) {
@@ -135,6 +135,22 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
  * The Critical Injury Chart — station.crit (2026-08-27). Ruled data, not a
  * content kind: keys are stable log keys, never ids. Validated loudly.
  */
+/**
+ * fix.codex-numbers (2026-10-01, review finding K7; DECISIONS.md 2026-09-28 "XP per kill is 2 / 5 / 15
+ * by tier"): the Codex's XP price per enemy tier, published beside each enemy row's `tier`. The engine
+ * never reads either; the kingdom pays by them. Loud on a malformed list (Law 9).
+ */
+export function packXpByTier(): Readonly<Record<number, number>> {
+  const raw = (UNIT_PACK as { xpByTier?: Readonly<Record<string, number>> }).xpByTier
+  if (!raw) throw new Error('unit pack: no xpByTier — regenerate the pack (content/mkenginepack.mjs), never patch it by hand')
+  const out: Record<number, number> = {}
+  for (const [k, v] of Object.entries(raw)) {
+    if (!/^[1-9]$/.test(k) || !Number.isSafeInteger(v) || v < 0) throw new Error(`unit pack: xpByTier '${k}': ${String(v)} is not a tier and a whole XP price`)
+    out[Number(k)] = v
+  }
+  return out
+}
+
 export function packCritChart(): readonly CritRow[] {
   const raw = (UNIT_PACK as { critChart?: { rows?: readonly CritRow[] } }).critChart?.rows ?? []
   const seen = new Set<string>()

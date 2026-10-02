@@ -1,5 +1,20 @@
 [
  {
+  "id": "fix.codex-numbers-refiled",
+  "kind": "content",
+  "shape": "numbers",
+  "spec": "Re-files fix.codex-numbers (abandoned 2026-10-01: filed without probeIds, so gate 1 could never pass; the 2026-09-30 precedent, Andrew: \"Park, abandon, re-file\"). Duplication review 2026-09-28, findings C1 C2 C5 C8 C9 C21 K7. Andrew: 'Crit base 3 should be counted once.' '2, 5, 15 XP by tier.' (1) Crit: the engine's base 3 (pipeline.ts critChanceOf) is the rule; the converter publishes each unit's authored crit minus 3 (hero rogue +2, warrior 0); enemy crit values authored as totals are published the same way — list every enemy row whose crit changes in the landing (C1). (2) Vision: the engine's 6 is ruled (DECISIONS 2026-09-03); Codex derivedBase.vision becomes a delta of 0 for every class, and the converter emits it or names a gap (C2). (3) Bleed-out and Deathbed: keep the engine formulas; bleedOut and a Deathbed bonus become foldable stats the Codex base and the badges (Death Seeker, Survivor, Thick Blooded) feed; the Codex browser reads an engine-derived value (C9). (4) The 2026-09-02 price ladder goes into gen/classes.json stats; checklevels, build-viewer and mklevelsmd read D.stats (C8). (5) Restore Angela's 2026-08-20 beast rulings (spirit-snake, green-drake, shadow-hound-puppy) into settled.json + assemble.mjs, then delete assemble.HEAD.mjs and settled.HEAD.json (C5, C21). (6) Publish enemy tier and xpByTier 2/5/15 so the kingdom can pay XP by tier (K7). Prior art: the engine bases ride the vocabulary export (plumbing.vocabulary-export, ruleBases) - no second list; bleedOutTurns and deathbedFighting join FOLDABLE, the one fold; a badge keeps its Deathbed points on its own field, read at the roll (rule.badge-deathbed-fighting), so nothing counts twice. Engine rule: DECISIONS.md 2026-09-28 \"the duplication review, ruled\" - crit base 3 counted once (CRIT_BASE), vision 6 for everyone (BATTLEFIELD_VISION), bleed-out 5 and Deathbed 20 + 5 x Toughness (settle.ts); tier and xpByTier are carried for the kingdom, never read by the engine.",
+  "expect": "A level-1 warrior's crit chance is 3 and a rogue's 5 before gear; test/crit.test.ts updated with the written reason; every hero sees 6; a Death Seeker bleeds out in 2; LEVEL-TABLES.md shows one ladder; the Codex beast rows match the dictated numbers; the engine pack carries tier on enemy rows.",
+  "probeIds": [
+   "unit.bloodhound",
+   "hero.base.rogue-raven"
+  ],
+  "changesBaseline": true,
+  "note": "declared to change the control battle (every crit roll moves by the base the double count added). probeIds: two rows whose crit the item changes - the Bloodhound 10 to 7, the Raven rogue 5 to 2.",
+  "status": "done-needs-review",
+  "sha": "81fed36"
+ },
+ {
   "id": "encounter.caravan-aftermath",
   "kind": "content",
   "shape": "data",
@@ -605,7 +620,10 @@
   "shape": "numbers",
   "spec": "Duplication review 2026-09-28, findings C1 C2 C5 C8 C9 C21 K7. Andrew: 'Crit base 3 should be counted once.' '2, 5, 15 XP by tier.' (1) Crit: the engine's base 3 (pipeline.ts critChanceOf) is the rule; the converter publishes each unit's authored crit minus 3 (hero rogue +2, warrior 0); enemy crit values authored as totals are published the same way — list every enemy row whose crit changes in the landing (C1). (2) Vision: the engine's 6 is ruled (DECISIONS 2026-09-03); Codex derivedBase.vision becomes a delta of 0 for every class, and the converter emits it or names a gap (C2). (3) Bleed-out and Deathbed: keep the engine formulas; bleedOut and a Deathbed bonus become foldable stats the Codex base and the badges (Death Seeker, Survivor, Thick Blooded) feed; the Codex browser reads an engine-derived value (C9). (4) The 2026-09-02 price ladder goes into gen/classes.json stats; checklevels, build-viewer and mklevelsmd read D.stats (C8). (5) Restore Angela's 2026-08-20 beast rulings (spirit-snake, green-drake, shadow-hound-puppy) into settled.json + assemble.mjs, then delete assemble.HEAD.mjs and settled.HEAD.json (C5, C21). (6) Publish enemy tier and xpByTier 2/5/15 so the kingdom can pay XP by tier (K7).",
   "expect": "A level-1 warrior's crit chance is 3 and a rogue's 5 before gear; test/crit.test.ts updated with the written reason; every hero sees 6; a Death Seeker bleeds out in 2; LEVEL-TABLES.md shows one ladder; the Codex beast rows match the dictated numbers; the engine pack carries tier on enemy rows.",
-  "changesBaseline": true
+  "changesBaseline": true,
+  "status": "failed",
+  "failedAt": "2026-10-02 00:47",
+  "reason": "Filed 2026-09-28 with no probeIds: gate 1 probes 'fix.codex-numbers', which is not a content id and never appears in a battle (probe.mts: 'never appears in any log'), and the kill switch disables nothing, so the item can never pass as filed. The work is done and parked (engine git stash), not discarded. Re-filed as fix.codex-numbers-refiled with probeIds unit.bloodhound and hero.base.rogue-raven, two rows whose crit the item changes - the precedent Andrew ruled 2026-09-30 for encounter.opening.bridge-ai ('Park, abandon, re-file')."
  },
  {
   "id": "content.peddlers-vest",
