@@ -20,11 +20,21 @@ import type { StatusDef } from '../core/status.js'
 // lists (core/types.ts, core/items.ts), never copies — review findings C10 (five stat lists here,
 // the aura one missing vision, thorns and swapCost) and the effect-kind copy that stood here.
 import { EFFECT_KINDS as ENGINE_EFFECT_KINDS } from '../core/types.js'
-import { FOLDABLE } from '../core/items.js'
+import { FOLDABLE, HELD_CLASSES, handsOf } from '../core/items.js'
 import { validateEffect } from '../core/trigger.js'
 // fix.one-effect-vocabulary (2026-10-01): one effect list for powers, moves and the chart alike
 const EFFECT_KINDS: readonly string[] = ENGINE_EFFECT_KINDS
 const STATS: readonly string[] = FOLDABLE
+
+/**
+ * fix.one-hero-assembly (2026-10-02; review E13, K4). Ruled 2026-09-28, Andrew: "There should be
+ * no weapon that is zero-handed." A weapon or shield takes a whole number of hands, at least one;
+ * an item worn from its own slot takes none. Read through core's handsOf, the one reading.
+ */
+function validateHands(it: ItemDef, where: string): void {
+  if (!Number.isSafeInteger(it.hands) || it.hands < 0) throw new Error(`${where}: '${it.id}' takes ${String(it.hands)} hands — a whole number`)
+  if (HELD_CLASSES.includes(it.itemClass) && handsOf(it) < 1) throw new Error(`${where}: '${it.id}' is a ${it.itemClass} that takes ${it.hands} hands — every weapon and shield takes at least one hand (ruled 2026-09-28)`)
+}
 export function validateActionMetadata(row: { readonly id: string; readonly slot?: unknown; readonly free?: unknown }): void {
   if (row.slot !== undefined && !['movement', 'primary', 'either'].includes(row.slot as string)) throw new Error(`unit pack: invalid action slot '${String(row.slot)}' on '${row.id}'`)
   if (row.free !== undefined && typeof row.free !== 'boolean') throw new Error(`unit pack: invalid free action flag on '${row.id}'`)
@@ -366,14 +376,17 @@ export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
  * as its source, and every stat key one the engine has. `gaps` is carried as
  * the row's own list of what it cannot yet do.
  */
-export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {}): Readonly<Record<string, ItemDef>> {
-  const raw = (UNIT_PACK as { items?: Readonly<Record<string, ItemDef>> }).items ?? {}
+export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>, bursts: Readonly<Record<string, BurstDef>> = {},
+  /** The rows to validate — the pack's own unless a test hands others (fix.one-hero-assembly). */
+  rows?: Readonly<Record<string, ItemDef>>): Readonly<Record<string, ItemDef>> {
+  const raw = rows ?? (UNIT_PACK as { items?: Readonly<Record<string, ItemDef>> }).items ?? {}
   const CLASSES = ['weapon', 'shield', 'armor', 'trinket', 'relic', 'idol', 'bloodrune', 'consumable']
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id) throw new Error(`item pack: key '${k}' names id '${it.id}'`)
     if (!k.startsWith('item.')) throw new Error(`item pack: '${k}' is not an item.* id`)
     if (!CLASSES.includes(it.itemClass)) throw new Error(`item pack: '${k}' has itemClass '${String(it.itemClass)}'`)
     for (const f of ['tier', 'hands', 'slots'] as const) if (typeof it[f] !== 'number') throw new Error(`item pack: '${k}' is missing ${f}`)
+    validateHands(it, 'item pack')
     validateNamedResists(it.statModifiers, k)
     for (const [s, v] of Object.entries(it.statModifiers)) {
       if (!STATS.includes(s)) throw new Error(`item pack: '${k}' modifies '${s}', which is not an engine stat — the converter must gap it, never pass it`)
@@ -510,6 +523,7 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
   for (const [k, it] of Object.entries(raw)) {
     if (k !== it.id || !k.startsWith('item.')) throw new Error(`enchanted: bad key '${k}'`)
     if (typeof it.base !== 'string' || typeof it.enchant !== 'string') throw new Error(`enchanted: '${k}' does not name its base and enchant`)
+    validateHands(it, 'enchanted')
     validateNamedResists(it.statModifiers, k)
     for (const [s, v] of Object.entries(it.statModifiers)) {
       if (!STATS.includes(s) || typeof v !== 'number') throw new Error(`enchanted: '${k}' modifies '${s}' — not an engine stat`)
@@ -543,6 +557,7 @@ export function packDerivedItems(items: Readonly<Record<string, ItemDef>>, attac
     if (!base || base.tier !== 1) throw new Error(`derived items: '${k}' names base '${String(it.base)}', which is not a tier-1 pack item`)
     if (it.enchant !== undefined && (typeof it.enchant !== 'string' || !it.enchant.startsWith('enchant.'))) throw new Error(`derived items: '${k}' names enchant '${String(it.enchant)}'`)
     if (it.itemClass !== base.itemClass || it.hands !== base.hands || it.slots !== base.slots) throw new Error(`derived items: '${k}' does not keep its base's physical facts`)
+    validateHands(it, 'derived items')
     validateNamedResists(it.statModifiers, k)
     for (const [s, v] of Object.entries(it.statModifiers)) {
       if (!STATS.includes(s) || typeof v !== 'number') throw new Error(`derived items: '${k}' modifies '${s}' — not an engine stat`)

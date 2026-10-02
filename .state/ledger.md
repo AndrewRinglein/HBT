@@ -22175,3 +22175,96 @@ index ecf37b9..bde7689 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.one-hero-assembly — ABANDONED
+2026-10-02 08:37
+
+Filed with changesBaseline true, but the work it specifies is neutral on the control battles (byte-identical: no control unit carries a natural weapon, an enemy-row badge, an unnamed row or a fixture fielding), so the gate's consequence check can never pass. Parked, abandoned and re-filed as fix.one-hero-assembly-refiled without the declaration (SWITCHES.md oneHeroAssemblyRefiled; precedent afflictionsRefiled, 2026-10-01).
+
+## fix.one-hero-assembly-refiled — LANDED `6674076` **NEEDS REVIEW**
+2026-10-02 08:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1812 · ..\GEAR-IMPLEMENTATION.md:330
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/fix-masterwork-scope.test.ts, test/one-hero-assembly.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fix-masterwork-scope.test.ts, test/fixtures/battle-cursor-one-hero-assembly.json, test/one-hero-assembly.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/fix-masterwork-scope.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 5b7b1fd..a380a53 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -252,4 +252,11 @@ const afflictionsAtZeroGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
+ // checked here and skips the older layers.
+ const bridgeDeckGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bridge-deck.json', import.meta.url), 'utf8'))
++// fix.one-hero-assembly (2026-10-02; DECISIONS.md 2026-09-28 'the duplication review, ruled', E10-E14), Law 10: one assembler
++// fields every unit, and one mutator (enterUnit) announces it. Every case frozen here (tools/capture-one-hero-assembly-cursor.mts).
++// Moved by log lines and the state's event counter only — RNG and result unchanged in both: test.thorns (its enemy-side rows'
++// own badges now say so, a unit.badged line each, Law 12) and legacy-surge-cap (the fixture hero carries its kit as a loadout
++// and its badge.hero, with their unit.equipped and unit.badged lines, as a scenario hero does). A `changed` case is checked
++// here and skips the older layers.
++const oneHeroAssemblyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-hero-assembly.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -369,5 +376,8 @@ describe('resumable battle cursor', () => {
+       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const bridgeDeckMoved = bridgeDeckExpected?.changed === true
++      const oneHeroAssemblyExpected = oneHeroAssemblyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true
++      // was: const bridgeDeckMoved = bridgeDeckExpected?.changed === true — a one-hero-assembly-moved case skips the bridge-deck layer too (fix.one-hero-assembly 2026-10-02)
++      const bridgeDeckMoved = bridgeDeckExpected?.changed === true || oneHeroAssemblyMoved
+       const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true — a bridge-deck-moved case skips the afflictions-at-zero layer too (content.bridge-deck-pack 2026-10-01)
+@@ -453,5 +463,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (bridgeDeckExpected) {
++        if (oneHeroAssemblyExpected) {
++        expect(hash(ctx.events), 'full one-hero-assembly events').toBe(oneHeroAssemblyExpected.events)
++        expect(hash(ctx.state), 'full one-hero-assembly state').toBe(oneHeroAssemblyExpected.state)
++        expect(hash(ctx.rng.log), 'full one-hero-assembly RNG').toBe(oneHeroAssemblyExpected.rng)
++        expect(result).toEqual(oneHeroAssemblyExpected.result)
++        }
++        // was: if (bridgeDeckExpected) { — fix.one-hero-assembly (2026-10-02): a one-hero-assembly-moved case is checked above instead
++        if (bridgeDeckExpected && !oneHeroAssemblyMoved) {
+         expect(hash(ctx.events), 'full bridge-deck events').toBe(bridgeDeckExpected.events)
+         expect(hash(ctx.state), 'full bridge-deck state').toBe(bridgeDeckExpected.state)
+diff --git a/test/fix-masterwork-scope.test.ts b/test/fix-masterwork-scope.test.ts
+index 2c51eba..7aeef91 100644
+--- a/test/fix-masterwork-scope.test.ts
++++ b/test/fix-masterwork-scope.test.ts
+@@ -18,11 +18,15 @@ import { ITEMS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ 
+-type CodexItem = { id: string; itemClass: string; tier: number | string; hands?: number; tags?: string[] }
++type CodexItem = { id: string; itemClass: string; tier: number | string; hands?: number; tags?: string[]; classRestriction?: string | null }
+ const codex = (): CodexItem[] =>
+   (JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'hbt-content.json'), 'utf8')) as { items: CodexItem[] }).items
+ const isShield = (c: CodexItem) => (c.tags ?? []).includes('shield') || c.itemClass === 'shield'
+ // GEAR-DESIGN.md §3 as corrected 2026-09-25: two-handers, one-handers, shields and armor.
++// fix.one-hero-assembly (2026-10-02), Law 10: a natural weapon took hands 0, which is how this rule kept it out; every weapon
++// now takes at least one hand (DECISIONS.md 2026-09-28, "There should be no weapon that is zero-handed"), so the natural
++// weapon — a beast's body part, class.beast — is kept out by name, as the test's own title says (SWITCHES.md naturalWeaponMasterwork).
++// was: (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && (c.hands === 1 || c.hands === 2)))
+ const takesMasterwork = (c: CodexItem) => Number(c.tier) === 1 &&
+-  (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && (c.hands === 1 || c.hands === 2)))
++  (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && c.classRestriction !== 'class.beast' && (c.hands === 1 || c.hands === 2)))
+ 
+ type KingdomRow = { id: string; base: string | null; enchant: string | null; source: string }
+```
+</details>

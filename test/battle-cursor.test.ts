@@ -251,6 +251,13 @@ const afflictionsAtZeroGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
 // working: exactly the one case fought on the Bridge, test.opening-bridge (state, RNG and result). A `changed` case is
 // checked here and skips the older layers.
 const bridgeDeckGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bridge-deck.json', import.meta.url), 'utf8'))
+// fix.one-hero-assembly (2026-10-02; DECISIONS.md 2026-09-28 'the duplication review, ruled', E10-E14), Law 10: one assembler
+// fields every unit, and one mutator (enterUnit) announces it. Every case frozen here (tools/capture-one-hero-assembly-cursor.mts).
+// Moved by log lines and the state's event counter only — RNG and result unchanged in both: test.thorns (its enemy-side rows'
+// own badges now say so, a unit.badged line each, Law 12) and legacy-surge-cap (the fixture hero carries its kit as a loadout
+// and its badge.hero, with their unit.equipped and unit.badged lines, as a scenario hero does). A `changed` case is checked
+// here and skips the older layers.
+const oneHeroAssemblyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-hero-assembly.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -368,7 +375,10 @@ describe('resumable battle cursor', () => {
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const bridgeDeckMoved = bridgeDeckExpected?.changed === true
+      const oneHeroAssemblyExpected = oneHeroAssemblyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true
+      // was: const bridgeDeckMoved = bridgeDeckExpected?.changed === true — a one-hero-assembly-moved case skips the bridge-deck layer too (fix.one-hero-assembly 2026-10-02)
+      const bridgeDeckMoved = bridgeDeckExpected?.changed === true || oneHeroAssemblyMoved
       const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true — a bridge-deck-moved case skips the afflictions-at-zero layer too (content.bridge-deck-pack 2026-10-01)
       const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true || bridgeDeckMoved
@@ -452,7 +462,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (bridgeDeckExpected) {
+        if (oneHeroAssemblyExpected) {
+        expect(hash(ctx.events), 'full one-hero-assembly events').toBe(oneHeroAssemblyExpected.events)
+        expect(hash(ctx.state), 'full one-hero-assembly state').toBe(oneHeroAssemblyExpected.state)
+        expect(hash(ctx.rng.log), 'full one-hero-assembly RNG').toBe(oneHeroAssemblyExpected.rng)
+        expect(result).toEqual(oneHeroAssemblyExpected.result)
+        }
+        // was: if (bridgeDeckExpected) { — fix.one-hero-assembly (2026-10-02): a one-hero-assembly-moved case is checked above instead
+        if (bridgeDeckExpected && !oneHeroAssemblyMoved) {
         expect(hash(ctx.events), 'full bridge-deck events').toBe(bridgeDeckExpected.events)
         expect(hash(ctx.state), 'full bridge-deck state').toBe(bridgeDeckExpected.state)
         expect(hash(ctx.rng.log), 'full bridge-deck RNG').toBe(bridgeDeckExpected.rng)

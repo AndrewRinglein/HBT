@@ -4426,46 +4426,6 @@
   {
    "group": "weapon",
    "content": [
-    "item.net"
-   ],
-   "action": "attack.net.cast",
-   "name": "Cast",
-   "kind": "ranged",
-   "engine": "yes",
-   "bar": "attack",
-   "motion": "ranged",
-   "bodies": {
-    "Ancient Elf": "Purchased archery-crouch-shot-mid",
-    "Archive Scholar": "stand-in: attack (Purchased atk_slashdown)",
-    "Barefoot Mendicant": "stand-in: attack (Purchased atk_slashdown)",
-    "Battle Chaplain": "stand-in: attack (Purchased atk_slashdown)",
-    "Black Oath": "stand-in: attack (Purchased atk_slashdown)",
-    "Cathedral Bishop": "stand-in: attack (Purchased atk_slashdown)",
-    "Court Champion": "stand-in: attack (Purchased atk_slashdown)",
-    "Crimson Sorceress": "stand-in: attack (Purchased atk_slashdown)",
-    "Dawnblade": "stand-in: attack (Purchased atk_slashdown)",
-    "Emberwright": "stand-in: attack (Purchased atk_slashdown)",
-    "Forest Elf": "Purchased archery-crouch-shot-mid",
-    "Forest Fey": "Purchased archery-crouch-shot-mid",
-    "Hunter": "Purchased archery-crouch-shot-mid",
-    "Lion of the Host": "stand-in: attack (atk_slashdown)",
-    "Oathblade": "stand-in: attack (Purchased atk_slashdown)",
-    "Pyre Witch": "stand-in: attack (Purchased atk_slashdown)",
-    "Rune-Marked Ascetic": "stand-in: attack (Purchased atk_slashdown)",
-    "The Raven": "stand-in: attack (Purchased atk_slashdown)",
-    "The Rose": "stand-in: attack (Purchased atk_slashdown)",
-    "The Serpent": "stand-in: attack (Purchased atk_slashdown)",
-    "The Skull": "stand-in: attack (Purchased atk_slashdown)"
-   },
-   "motionStatus": "partial",
-   "selected": null,
-   "ruling": null,
-   "note": null,
-   "variants": 0
-  },
-  {
-   "group": "weapon",
-   "content": [
     "item.obsidian-fang-dagger"
    ],
    "action": "attack.obsidian-fang-dagger.fang",
@@ -8814,6 +8774,46 @@
     "clip": "Spell_Simple_Shoot",
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
+   "ruling": null,
+   "note": null,
+   "variants": 0
+  },
+  {
+   "group": "item-use",
+   "content": [
+    "item.net"
+   ],
+   "action": "attack.net.cast",
+   "name": "Cast",
+   "kind": "ranged",
+   "engine": "yes",
+   "bar": "attack",
+   "motion": "ranged",
+   "bodies": {
+    "Ancient Elf": "Purchased archery-crouch-shot-mid",
+    "Archive Scholar": "stand-in: attack (Purchased atk_slashdown)",
+    "Barefoot Mendicant": "stand-in: attack (Purchased atk_slashdown)",
+    "Battle Chaplain": "stand-in: attack (Purchased atk_slashdown)",
+    "Black Oath": "stand-in: attack (Purchased atk_slashdown)",
+    "Cathedral Bishop": "stand-in: attack (Purchased atk_slashdown)",
+    "Court Champion": "stand-in: attack (Purchased atk_slashdown)",
+    "Crimson Sorceress": "stand-in: attack (Purchased atk_slashdown)",
+    "Dawnblade": "stand-in: attack (Purchased atk_slashdown)",
+    "Emberwright": "stand-in: attack (Purchased atk_slashdown)",
+    "Forest Elf": "Purchased archery-crouch-shot-mid",
+    "Forest Fey": "Purchased archery-crouch-shot-mid",
+    "Hunter": "Purchased archery-crouch-shot-mid",
+    "Lion of the Host": "stand-in: attack (atk_slashdown)",
+    "Oathblade": "stand-in: attack (Purchased atk_slashdown)",
+    "Pyre Witch": "stand-in: attack (Purchased atk_slashdown)",
+    "Rune-Marked Ascetic": "stand-in: attack (Purchased atk_slashdown)",
+    "The Raven": "stand-in: attack (Purchased atk_slashdown)",
+    "The Rose": "stand-in: attack (Purchased atk_slashdown)",
+    "The Serpent": "stand-in: attack (Purchased atk_slashdown)",
+    "The Skull": "stand-in: attack (Purchased atk_slashdown)"
+   },
+   "motionStatus": "partial",
+   "selected": null,
    "ruling": null,
    "note": null,
    "variants": 0

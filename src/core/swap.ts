@@ -18,11 +18,9 @@
 import { emit, spendStamina } from './mutate.js'
 import { effective } from './stats.js'
 import { isBlocked } from './status.js'
-import { FOLD_BASE, HELD_CLASSES, instanceUsesLeft } from './items.js'
+import { FOLDABLE, HANDS, HELD_CLASSES, handsOf, instanceUsesLeft, unfoldedOf } from './items.js'
 import type { Ctx, ItemDef, ItemInstance, Unit } from './types.js'
 import type { Trigger } from './trigger.js'
-
-const HANDS = 2
 
 /** What the swap costs this unit now — the swapCost stat, never below 0. */
 export function swapCostOf(ctx: Ctx, u: Unit): number {
@@ -51,7 +49,7 @@ export function canSwap(ctx: Ctx, actor: number, hands: readonly string[]): stri
     if (!inst) return `the unit does not carry '${id}'`
     const row = ctx.items[inst.itemId]
     if (!row || !HELD_CLASSES.includes(row.itemClass)) return `'${id}' is not a weapon or shield`
-    used += Math.max(1, row.hands)
+    used += handsOf(row)
   }
   if (used > HANDS) return 'more than two hands of weapons and shields'
   const now = u.loadout.hands.map((i) => i.instanceId)
@@ -65,7 +63,9 @@ function fold(u: Unit, row: ItemDef, sign: 1 | -1): void {
   const rec = u as unknown as Record<string, number | undefined>
   for (const [k, v] of Object.entries(row.statModifiers)) {
     if (typeof v !== 'number' || v === 0) continue
-    const unset = FOLD_BASE[k] ?? 0
+    // the fold applyItems makes (foldStats), read the same way — a stat the engine cannot fold is refused at load
+    if (!(FOLDABLE as readonly string[]).includes(k)) throw new Error(`swap: '${row.id}' modifies '${k}', which the engine cannot fold`)
+    const unset = unfoldedOf(k)
     const next = (rec[k] ?? unset) + sign * v
     // an optional field absent at fielding stays absent while it holds its unfolded value
     if (rec[k] === undefined && next === unset) continue

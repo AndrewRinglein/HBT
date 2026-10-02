@@ -28,6 +28,43 @@ export const FOLD_BASE: Readonly<Record<string, number>> = { swapCost: 1 }
 
 export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03   // bleedOutTurns, deathbedFighting: fix.codex-numbers, 2026-10-01 (review finding C9)
 
+/** The value a foldable stat holds when nothing has folded onto it — 0, or FOLD_BASE's (swapCost 1). */
+export function unfoldedOf(k: string): number {
+  return FOLD_BASE[k] ?? 0
+}
+
+/** The stats every fold writes and every unit carries — never absent on a def. */
+const ALWAYS: readonly string[] = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen']
+
+/**
+ * fix.one-hero-assembly (review E12): THE fold — items, progress and badges each add their
+ * modifiers here, never by a copy of their own. `delta` is per FOLDABLE stat; anything else
+ * is refused (Law 9). An optional stat the row did not author stays absent while it holds its
+ * unfolded value (a bare body's snapshot is unchanged); one the row did author is always written.
+ */
+export function foldStats(base: UnitDef, delta: Readonly<Record<string, number>>, where: string): UnitDef {
+  const rec = base as unknown as Record<string, number | undefined>
+  const out: Record<string, number> = {}
+  for (const k of Object.keys(delta)) if (!(FOLDABLE as readonly string[]).includes(k)) throw new Error(`${where}: '${k}' is not a stat the engine can fold`)
+  for (const k of FOLDABLE) {
+    const v = (rec[k] ?? unfoldedOf(k)) + (delta[k] ?? 0)
+    if (ALWAYS.includes(k) || rec[k] !== undefined || v !== unfoldedOf(k)) out[k] = v
+  }
+  return { ...base, ...out } as UnitDef
+}
+
+/** v2.loadout: the item classes held in hands (V2 §11.1). Everything else works from its own slot. */
+export const HELD_CLASSES: readonly string[] = ['weapon', 'shield']
+
+/** The hands a weapon or shield takes; a worn item takes none (fix.one-hero-assembly, review E13). */
+export function handsOf(item: ItemDef): number {
+  return HELD_CLASSES.includes(item.itemClass) ? item.hands : 0
+}
+
+/** Two hands — the most weapons and shields a unit holds (COMBAT-V2 §11.1). */
+export const HANDS = 2
+
+
 /**
  * The default AI of a kit — the ONE place it is derived (plumbing.vocabulary-export, review
  * finding C16: the converter derived it three more times). A kit with any ranged attack kites;
@@ -49,8 +86,7 @@ export function applyItems(
   const grants: string[] = []
   const abilities: string[] = []
   const triggers = [...(base.triggers ?? [])]
-  const stats: Record<string, number> = {}
-  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? FOLD_BASE[k] ?? 0
+  const delta: Record<string, number> = {}
   const worn: Applied['worn'][number][] = []
   const seen = new Set<string>()
   for (const id of itemIds) {
@@ -71,13 +107,14 @@ export function applyItems(
     // plumbing.shield-class (V2 R1, 2026-09-23): a shield is held, and shares the
     // two hands with weapons. Folding its Block and granting its powers only here,
     // for what is handed to the unit, is what keeps a stowed shield inert.
-    if (it.itemClass === 'weapon' || it.itemClass === 'shield') { hands += it.hands; if (hands > 2) throw new Error(`${where}: ${base.typeId} would hold more than two hands of weapons and shields (${itemIds.join(', ')})`) }
+    hands += handsOf(it)
+    if (hands > HANDS) throw new Error(`${where}: ${base.typeId} would hold more than two hands of weapons and shields (${itemIds.join(', ')})`)
     if (it.itemClass === 'armor') { armors += 1; if (armors > 1) throw new Error(`${where}: ${base.typeId} would wear two armors`) }
     const mods: Record<string, number> = {}
     for (const [k, v] of Object.entries(it.statModifiers)) {
       if (typeof v !== 'number' || !(FOLDABLE as readonly string[]).includes(k)) throw new Error(`${where}: item '${id}' modifies '${k}', which the engine cannot fold`)
       if ((k === 'block' || k === 'rangedBlock') && !Number.isSafeInteger(v)) throw Error(`${where}: item '${id}' has invalid ${k}`)
-      stats[k] = (stats[k] ?? 0) + v
+      delta[k] = (delta[k] ?? 0) + v
       mods[k] = v
     }
     for (const a of it.grants) {
@@ -91,20 +128,7 @@ export function applyItems(
   const attackIds = [...grants, ...base.attacks.filter((a) => !grants.includes(a))]
   const anyRanged = attackIds.some((a) => attacks[a]?.attack?.kind === 'ranged')
   const def: UnitDef = {
-    ...base,
-    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
-    ...(base.block !== undefined || stats['block'] ? {block: stats['block']!} : {}),
-    ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
-    ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
-    ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
-    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}),
-    ...(base.coldResist !== undefined || stats['coldResist'] ? {coldResist: stats['coldResist']!} : {}), dodge: stats['dodge']!,
-    strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
-    reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
-    maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
-    ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
-    ...(stats['bleedOutTurns'] ? { bleedOutTurns: stats['bleedOutTurns'] } : {}), ...(stats['deathbedFighting'] ? { deathbedFighting: stats['deathbedFighting'] } : {}),
+    ...foldStats(base, delta, `${where}: ${base.typeId}'s items`),
     attacks: attackIds,
     abilities: [...abilities, ...base.abilities.filter((a) => !abilities.includes(a))],
     triggers,
@@ -140,15 +164,14 @@ export function applyProgress(
 ): UnitDef {
   const table = levels[tableId]
   if (!table) throw new Error(`${where}: ${base.typeId} levels on '${tableId}', and the pack has no such level table`)
-  const stats: Record<string, number> = {}
-  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? FOLD_BASE[k] ?? 0
+  const delta: Record<string, number> = {}
   const add = (k: string, v: number, src: string) => {
     if (!(FOLDABLE as readonly string[]).includes(k)) {
       // itemSlots and surge are campaign quantities the engine does not fold; anything else is an error
       if (k === 'itemSlots') return
       throw new Error(`${where}: ${src} grants '${k}', which the engine cannot fold`)
     }
-    stats[k] = (stats[k] ?? 0) + v
+    delta[k] = (delta[k] ?? 0) + v
   }
   if (!Number.isInteger(progress.level) || progress.level < 1) throw new Error(`${where}: ${base.typeId} level ${progress.level} is not a level`)
   const maxLevel = table.rows.reduce((m, r) => Math.max(m, r.level), 1)
@@ -176,24 +199,11 @@ export function applyProgress(
     for (const [k, v] of Object.entries(sp.statModifiers)) add(k, v, sp.id)
   } else if (progress.specialtyId) throw new Error(`${where}: ${base.typeId} is level 1 and names a specialty`)
   // capability.surge: "Surge always EQUALS the character level" (heroes.json rules) — added to whatever the row and the specialty grant
-  stats['surge'] = (stats['surge'] ?? 0) + progress.level
+  delta['surge'] = (delta['surge'] ?? 0) + progress.level
   const powers = [...(progress.powers ?? [])]
   for (const p of powers) if (!abilities[p] || abilities[p].attack || abilities[p].move) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
   return {
-    ...base,
-    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
-    ...(base.block !== undefined || stats['block'] ? {block: stats['block']!} : {}),
-    ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
-    ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
-    ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
-    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}),
-    ...(base.coldResist !== undefined || stats['coldResist'] ? {coldResist: stats['coldResist']!} : {}), dodge: stats['dodge']!,
-    strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
-    reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
-    maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
-    ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
-    ...(stats['bleedOutTurns'] ? { bleedOutTurns: stats['bleedOutTurns'] } : {}), ...(stats['deathbedFighting'] ? { deathbedFighting: stats['deathbedFighting'] } : {}),
+    ...foldStats(base, delta, `${where}: ${base.typeId}'s progress`),
     abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
   }
 }
@@ -217,8 +227,7 @@ export function applyBadges(
   badges: Readonly<Record<string, BadgeDef>>,
   where: string,
 ): Badged {
-  const stats: Record<string, number> = {}
-  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? FOLD_BASE[k] ?? 0
+  const delta: Record<string, number> = {}
   const attacks = [...base.attacks]
   const abilities = [...base.abilities]
   const triggers = [...(base.triggers ?? [])]
@@ -232,7 +241,7 @@ export function applyBadges(
     const mods: Record<string, number> = {}
     for (const [k, v] of Object.entries(b.statModifiers)) {
       if (typeof v !== 'number' || !(FOLDABLE as readonly string[]).includes(k)) throw new Error(`${where}: badge '${id}' modifies '${k}', which the engine cannot fold`)
-      stats[k] = (stats[k] ?? 0) + v
+      delta[k] = (delta[k] ?? 0) + v
       mods[k] = v
     }
     // a granted id is an attack or a power; the registry it lives in decides which list it joins at makeUnit — both lists feed the one action list
@@ -241,28 +250,12 @@ export function applyBadges(
     worn.push({ badgeId: id, grants: [...b.grants], mods, ...(b.gaps ? { gaps: b.gaps } : {}) })
   }
   const def: UnitDef = {
-    ...base,
-    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!,
-    ...(base.block !== undefined || stats['block'] ? {block: stats['block']!} : {}),
-    ...(base.rangedBlock !== undefined || stats['rangedBlock'] ? {rangedBlock: stats['rangedBlock']!} : {}),
-    ...(base.fireResist !== undefined || stats['fireResist'] ? {fireResist: stats['fireResist']!} : {}),
-    ...(base.poisonResist !== undefined || stats['poisonResist'] ? {poisonResist: stats['poisonResist']!} : {}),
-    ...(base.shadowResist !== undefined || stats['shadowResist'] ? {shadowResist: stats['shadowResist']!} : {}),
-    ...(base.coldResist !== undefined || stats['coldResist'] ? {coldResist: stats['coldResist']!} : {}), dodge: stats['dodge']!,
-    strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
-    reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
-    maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
-    ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}), ...(stats['thorns'] ? { thorns: stats['thorns'] } : {}), ...(stats['swapCost'] !== 1 ? { swapCost: stats['swapCost']! } : {}),
-    ...(stats['bleedOutTurns'] ? { bleedOutTurns: stats['bleedOutTurns'] } : {}), ...(stats['deathbedFighting'] ? { deathbedFighting: stats['deathbedFighting'] } : {}),
+    ...foldStats(base, delta, `${where}: ${base.typeId}'s badges`),
     attacks, abilities, triggers,
     badges: [...seen],
   }
   return { def, worn }
 }
-
-/** v2.loadout: the item classes held in hands (V2 §11.1). Everything else works from its own slot. */
-export const HELD_CLASSES: readonly string[] = ['weapon', 'shield']
 
 /**
  * v2.loadout (COMBAT-V2 §11.1): what a hero carries in its hands and stows in its

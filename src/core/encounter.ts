@@ -23,14 +23,13 @@
 import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './types.js'
 import type { HexId } from './hex.js'
 import { arrivalUid } from './identity.js'
-import { applyBadges } from './items.js'
 import { bindAiRule, emit, gainPower, paintLayer, placeCorpse, setOutcome } from './mutate.js'
 import { applyStatus, dealDirectDamage } from './status.js'
 import { fallNight } from './vision.js'
 import { draw, rollBelow } from './rng.js'
 import { settle } from './settle.js'
 import { HOOKS, fireTriggers } from './trigger.js'
-import { makeUnit } from './setup.js'
+import { fieldArrival, unitLabel } from './setup.js'
 import { IMPASSABLE, layerOfId, moveCostOf, takesEntry } from '../content/maps.js'
 import { paintGround } from './ground.js'
 import { rulesSideOf } from './side.js'
@@ -91,19 +90,12 @@ export function arrive(ctx: Ctx, def: UnitDef, want: HexId, causeId: string, nam
   if (hex === null) throw new Error(`${causeId}: no free hex anywhere for ${def.typeId} — the board is full`)
   const id = ctx.state.units.length
   names[def.typeId] = (names[def.typeId] ?? 0) + 1
-  const label = def.typeId.split('.').pop()!.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
   // Sparse caller identities and dead units remain reserved. Read state, not
   // a process counter, so restoring a battle cannot reuse an identity.
   const uid = arrivalUid(ctx.state)
-  // badge.mechanism: a row's own badges fold on arrival as at fielding
-  const folded = def.badges?.length ? applyBadges(def, def.badges, ctx.badges, causeId).def : def
-  const u = makeUnit(id, uid, `${def.name ?? label} ${names[def.typeId]}`, folded, hex)
-  ctx.state.units.push(u)
-  emit(ctx, 'unit.enter', def.typeId.includes('.') ? def.typeId : `unit.${def.typeId}`, {
-    actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
-    role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
-    stamina: u.stamina, maxStamina: u.maxStamina, terrain: ctx.state.terrain[u.hex], arrived: causeId,
-  })
+  // fix.one-hero-assembly: the one assembler (the row's own badges fold on arrival as at
+  // fielding), the one label, the one unit.enter — naming what brought it
+  const u = fieldArrival(ctx, def, id, uid, `${def.name ?? unitLabel(def.typeId)} ${names[def.typeId]}`, hex, causeId)
   if (hex !== want) emit(ctx, 'unit.shunted', causeId, { actor: u.id, wanted: want, hex, wantedCol: ctx.geo.colOf(want), wantedRow: ctx.geo.rowOf(want) })
   // one-time on arrival — capability.power-pool: "a unit adds X when it enters, and the X stays after it dies"
   if (def.powerOnArrival && rulesSideOf(ctx, u) === 'enemy') gainPower(ctx, def.powerOnArrival, def.typeId, { kind: 'arrival', actor: u.id })

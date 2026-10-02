@@ -17,13 +17,17 @@ import { createBattle, fieldedDef } from '../src/core/setup.js'
 import { ITEMS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 
-type CodexItem = { id: string; itemClass: string; tier: number | string; hands?: number; tags?: string[] }
+type CodexItem = { id: string; itemClass: string; tier: number | string; hands?: number; tags?: string[]; classRestriction?: string | null }
 const codex = (): CodexItem[] =>
   (JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'hbt-content.json'), 'utf8')) as { items: CodexItem[] }).items
 const isShield = (c: CodexItem) => (c.tags ?? []).includes('shield') || c.itemClass === 'shield'
 // GEAR-DESIGN.md §3 as corrected 2026-09-25: two-handers, one-handers, shields and armor.
+// fix.one-hero-assembly (2026-10-02), Law 10: a natural weapon took hands 0, which is how this rule kept it out; every weapon
+// now takes at least one hand (DECISIONS.md 2026-09-28, "There should be no weapon that is zero-handed"), so the natural
+// weapon — a beast's body part, class.beast — is kept out by name, as the test's own title says (SWITCHES.md naturalWeaponMasterwork).
+// was: (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && (c.hands === 1 || c.hands === 2)))
 const takesMasterwork = (c: CodexItem) => Number(c.tier) === 1 &&
-  (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && (c.hands === 1 || c.hands === 2)))
+  (isShield(c) || c.itemClass === 'armor' || (c.itemClass === 'weapon' && c.classRestriction !== 'class.beast' && (c.hands === 1 || c.hands === 2)))
 
 type KingdomRow = { id: string; base: string | null; enchant: string | null; source: string }
 const kingdomRows = (): KingdomRow[] => {

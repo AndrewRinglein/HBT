@@ -219,6 +219,30 @@ export function grantBadge(ctx: Ctx, id: number, badgeId: string, causeId: strin
  * unit and read at DMG.DECLARE. Zero values are dropped. Inputs are validated by the
  * fielding (setup.ts) before this runs.
  */
+/**
+ * fix.one-hero-assembly (2026-10-02; review E14): THE unit.enter — every unit that comes onto the
+ * board, fielded at setup, fielded by a fixture or arriving mid-battle, is announced by this one
+ * line in this one shape. A dotted typeId is already a full Codex id and names itself; a bare one
+ * keeps the historic `unit.` prefix (2026-08-26). The optional fields are absent when they say
+ * nothing, so a plain unit's line is what it always was.
+ */
+export function enterUnit(ctx: Ctx, id: number, arrived?: string): void {
+  const u = unit(ctx, id)
+  emit(ctx, 'unit.enter', u.typeId.includes('.') ? u.typeId : `unit.${u.typeId}`, {
+    actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
+    role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
+    stamina: u.stamina, maxStamina: u.maxStamina, terrain: ctx.state.terrain[u.hex],
+    // proving.side-override: a unit fielded against its row's side says so (Law 12)
+    ...(u.rowSide !== u.side ? { rowSide: u.rowSide } : {}),
+    // v2.loadout: unit.equipped means in hand (V2 §15.2); the stowed are named here
+    ...(u.loadout?.stowed.length ? { stowed: u.loadout.stowed.map((x) => ({ ...x })) } : {}),
+    // v2.item-uses: the instances carried in already spent, named once here (Law 12)
+    ...(u.itemUses?.some((e) => e.left === 0) ? { spent: [...new Set(u.itemUses.filter((e) => u.itemUses!.filter((x) => x.instanceId === e.instanceId).every((x) => x.left === 0)).map((e) => e.instanceId))] } : {}),
+    // encounter.runner: a unit that arrives names what brought it
+    ...(arrived !== undefined ? { arrived } : {}),
+  })
+}
+
 export function applyUnitMods(ctx: Ctx, id: number, mods: UnitMods): void {
   const u = unit(ctx, id)
   const sources: string[] = []

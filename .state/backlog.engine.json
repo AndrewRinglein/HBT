@@ -1,5 +1,18 @@
 [
  {
+  "id": "fix.one-hero-assembly-refiled",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Re-files fix.one-hero-assembly (abandoned 2026-10-02: filed with changesBaseline true, but the work is neutral on the control battles; engine SWITCHES.md oneHeroAssemblyRefiled). Duplication review 2026-09-28, findings E10 E11 E12 E13 E14. Andrew: 'There should be no weapon that is zero-handed.' (1) One assembler: fieldedDef(typeId, {items, stowed, used, progress, badges, heroMods}) that createBattle and createCustomBattle both call, so the Equip preview and the battle cannot disagree (E10, E11). (2) One foldStats helper for items, progress and badges; swap's fold reads FOLDABLE/FOLD_BASE the same way (E12). (3) One HANDS constant and one handsOf(item) in core; every weapon takes at least one hand — the Codex rows with hands 0 (claws, fangs, hooves, horns, tail, breath and their forge variants) become 1, and the pack loader refuses hands 0; progression.ts's HELD copy goes (E13). Check every beast/enemy kit for more than two hands after the change and list any in the landing. (4) One enterUnit mutator building unit.enter; one name-label function (E14).",
+  "expect": "fieldedDef and createBattle return the same def for the same options; a zero-hand item fails the pack load; a fixture hero carries badge.hero; one unit.enter shape for fielded, arrived and custom units.",
+  "needs": [
+   "plumbing.vocabulary-export"
+  ],
+  "note": "Neutral on the control battles (byte-identical): no control unit carries a natural weapon, an enemy-row badge, an unnamed row or a fixture fielding. Zero-hand retirement may push a natural-weapon enemy past two hands; the landing names each such row for Andrew rather than inventing a fix.",
+  "status": "done-needs-review",
+  "sha": "6674076"
+ },
+ {
   "id": "fix.shield-power-double-click",
   "kind": "fix",
   "shape": "plumbing",
@@ -5055,14 +5068,17 @@
   "spec": "Duplication review 2026-09-28, findings E10 E11 E12 E13 E14. Andrew: 'There should be no weapon that is zero-handed.' (1) One assembler: fieldedDef(typeId, {items, stowed, used, progress, badges, heroMods}) that createBattle and createCustomBattle both call, so the Equip preview and the battle cannot disagree (E10, E11). (2) One foldStats helper for items, progress and badges; swap's fold reads FOLDABLE/FOLD_BASE the same way (E12). (3) One HANDS constant and one handsOf(item) in core; every weapon takes at least one hand — the Codex rows with hands 0 (claws, fangs, hooves, horns, tail, breath and their forge variants) become 1, and the pack loader refuses hands 0; progression.ts's HELD copy goes (E13). Check every beast/enemy kit for more than two hands after the change and list any in the landing. (4) One enterUnit mutator building unit.enter; one name-label function (E14).",
   "expect": "fieldedDef and createBattle return the same def for the same options; a zero-hand item fails the pack load; a fixture hero carries badge.hero; one unit.enter shape for fielded, arrived and custom units.",
   "changesBaseline": true,
-  "note": "Zero-hand retirement may push a natural-weapon enemy past two hands; the landing names each such row for Andrew rather than inventing a fix."
+  "note": "Zero-hand retirement may push a natural-weapon enemy past two hands; the landing names each such row for Andrew rather than inventing a fix.",
+  "status": "failed",
+  "failedAt": "2026-10-02 08:37",
+  "reason": "Filed with changesBaseline true, but the work it specifies is neutral on the control battles (byte-identical: no control unit carries a natural weapon, an enemy-row badge, an unnamed row or a fixture fielding), so the gate's consequence check can never pass. Parked, abandoned and re-filed as fix.one-hero-assembly-refiled without the declaration (SWITCHES.md oneHeroAssemblyRefiled; precedent afflictionsRefiled, 2026-10-01)."
  },
  {
   "id": "kingdom.reads-engine",
   "kind": "engine",
   "shape": "plumbing",
   "needs": [
-   "fix.one-hero-assembly",
+   "fix.one-hero-assembly-refiled",
    "fix.codex-numbers-refiled"
   ],
   "spec": "Duplication review 2026-09-28, findings K1-K18 and V10 (kingdom half). Andrew: 'The wound badge should weaken the hero in battle, which is either something you can start with or acquire if you trigger deathbed fighting.' The kingdom stops keeping second copies of engine facts: level table by levelTableOf (civilians on their type tables) (K1, V10); item packs published once from the engine's compiled rows plus campaign fields, mk-items steps 1-4 retired (K2); set bonuses passed as heroMods (K3); hands and held classes from the engine (K4); item uses from the granted power (K8); heroes built from engine rows like sandboxHeroesOf, Lucius/Osric resolved (K9); wounds are badge.wounded — carried into battle via heroBadges, and a badge gained at Deathbed kept after the battle; badge.fatigued/exhausted added to the Codex (K10); stat labels keyed by engine names (K11); the hash from the engine (K12); prologue battles are Codex encounters, outcomes from the engine (K5, K6); XP by tier 2/5/15 (K7); draft card from fieldedDef (K14); LEVELS/SPECIALTIES/kits through engine.ts (K15); classes generated (K17); one level-up loop in autoplay (K18).",

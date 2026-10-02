@@ -10,7 +10,7 @@ import { paintGround } from './ground.js'
 import { STATUSES } from '../content/statuses.js'
 import { AI_MODE_ROWS } from '../content/ai-modes.js'
 import { triggersFrom } from './trigger.js'
-import { applyUnitMods, emit, gainPower } from './mutate.js'
+import { applyUnitMods, emit, enterUnit, gainPower } from './mutate.js'
 import { isStatName } from './stats.js'
 import { arrive, heroDeployHexes, placeSetup } from './encounter.js'
 import { rulesSideOf } from './side.js'
@@ -174,19 +174,147 @@ export function terrainCensus(terrain: readonly number[]): Record<string, number
 }
 
 /**
- * The unit AS FIELDED: the bare row with its items applied — the Codex
- * default kit, or the list handed in. seam.items-per-unit (2026-09-02). This
- * is the one function a preview (the kingdom's Equip screen, a tooltip) and
- * the battle both read, so they cannot disagree about what a hero carries.
+ * What a fielding hands one unit — fix.one-hero-assembly (2026-10-02; review E10, E11): the
+ * one shape createBattle, createCustomBattle and a preview hand the one assembler. Every
+ * field absent = the row as the Codex fields it (its default kit, its own badges, level 1).
  */
-export function fieldedDef(typeId: string, items?: readonly string[], progress?: HeroProgress): UnitDef {
+export type FieldOptions = {
+  /** The items handed, in hand order; absent = the row's Codex default kit (seam.items-per-unit). */
+  readonly items?: readonly string[]
+  /** v2.loadout: the weapons and shields stowed in item slots — they grant nothing. */
+  readonly stowed?: readonly string[]
+  /** v2.item-uses: per carried instance (handed, then stowed), the uses spent before this battle. */
+  readonly used?: readonly number[]
+  /** Hero assembly (2026-09-03): level, specialty, the level-5 pick, the drafted powers. */
+  readonly progress?: HeroProgress
+  /** badge.mechanism: the badges handed in, added to the row's own. */
+  readonly badges?: readonly string[]
+  /** seam.unit-mods: checked here, where the kit is known; applied to the unit as unit mods, never folded into the def. */
+  readonly heroMods?: UnitMods
+}
+
+/** One unit assembled — the def and what each fold put on it, for the log lines that say so (Law 12). */
+type Assembled = {
+  readonly bare: UnitDef
+  readonly grown: UnitDef
+  readonly def: UnitDef
+  readonly itemIds: readonly string[]
+  readonly stowedIds: readonly string[]
+  /** Handed instances carried whole — the ones that fold. */
+  readonly kept: readonly number[]
+  readonly worn: Applied['worn']
+  readonly badged: Badged['worn']
+  readonly uses: ReturnType<typeof itemUsesOf>
+}
+
+/**
+ * THE assembler (fix.one-hero-assembly; review E10, E11). Progress folds on the bare row, then
+ * the items carried whole, then the row's own badges and those handed in — each through its one
+ * fold (items.ts foldStats). `kitted: false` is a row authored whole: an enemy's ("Enemies carry
+ * no items; their rows are authored whole") or an encounter arrival's — no item is applied.
+ */
+function assemble(bare: UnitDef, opts: FieldOptions, where: string, uid: number, kitted = true, badgeRows: Readonly<Record<string, import('./types.js').BadgeDef>> = BADGES): Assembled {
+  const itemIds = kitted ? opts.items ?? bare.defaultItems ?? [] : []
+  const stowedIds = kitted ? opts.stowed ?? [] : []
+  if (!kitted && (opts.items?.length || opts.stowed?.length)) throw new Error(`${where}: ${bare.typeId} is fielded authored whole and cannot be handed items`)
+  // Hero assembly (2026-09-03): level, specialty and drafted powers fold on BEFORE the items,
+  // so the kit sees the grown hero. No progress = the bare row.
+  const grown = opts.progress ? applyProgress(bare, opts.progress, classOf(bare), LEVELS, SPECIALTIES, ACTIONS, where, levelTableOf(bare)) : bare
+  // v2.item-uses: an instance handed in with no uses left is carried spent — it folds nothing and
+  // grants nothing ("the re-field skips it", DUNGEON-MODE-2026-09-07 §4). Ordinals count every item.
+  const uses = itemUsesOf(grown, uid, [...itemIds, ...stowedIds], opts.used, ITEMS, ACTIONS, where)
+  const kept = itemIds.flatMap((_, n) => (uses.spent.has(n) ? [] : [n]))
+  const items = kitted ? applyItems(grown, kept.map((n) => itemIds[n]!), ITEMS, ACTIONS, where) : { def: grown, worn: [] }
+  // badge.mechanism (2026-09-04): the row's own badges plus those handed in, folded after the kit
+  const badges = applyBadges(items.def, [...(items.def.badges ?? []), ...(opts.badges ?? [])], badgeRows, where)
+  if (opts.heroMods) checkUnitMods(opts.heroMods, badges.def, [...itemIds, ...stowedIds], `${where}: ${bare.typeId}`)
+  return { bare, grown, def: badges.def, itemIds, stowedIds, kept, worn: items.worn, badged: badges.worn, uses }
+}
+
+/**
+ * The unit AS FIELDED — the one function a preview (the kingdom's Equip screen, a tooltip) and
+ * the battle both read, so they cannot disagree about what a hero carries (seam.items-per-unit,
+ * 2026-09-02; one assembler since fix.one-hero-assembly, 2026-10-02). The older positional form
+ * `fieldedDef(typeId, items, progress)` is the same call with `{ items, progress }`.
+ */
+export function fieldedDef(typeId: string, opts: FieldOptions | readonly string[] = {}, progress?: HeroProgress): UnitDef {
   const bare = UNITS[typeId]
   if (!bare) throw new Error(`fieldedDef: unknown unit '${typeId}'`)
-  // Hero assembly (2026-09-03): level, specialty and drafted powers fold on
-  // BEFORE the items, so the kit sees the grown hero. No progress = the bare
-  // row, so every fielding that says nothing is unchanged.
-  const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ACTIONS, `fieldedDef(${typeId})`, levelTableOf(bare)) : bare
-  return applyItems(grown, items ?? bare.defaultItems ?? [], ITEMS, ACTIONS, `fieldedDef(${typeId})`).def
+  const o: FieldOptions = isItemList(opts) ? { items: opts } : opts
+  return assemble(bare, progress ? { ...o, progress } : o, `fieldedDef(${typeId})`, 0).def
+}
+const isItemList = (o: FieldOptions | readonly string[]): o is readonly string[] => Array.isArray(o)
+
+/** The name a unit is called by when its row names none: its typeId's last segment, title-cased — the one label (review E14). */
+export function unitLabel(typeId: string): string {
+  return typeId.split('.').pop()!.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
+}
+
+/** What fielding put on one unit, for the lines that follow its unit.enter. */
+type Fielded = { readonly unit: Unit; readonly equipped: readonly (Applied['worn'][number] & { instanceId: string })[]; readonly badged: Badged['worn']
+  readonly grown?: { table: string; level: number; specialtyId?: string; mods: Record<string, number> }; readonly mods?: UnitMods }
+
+/** Make the unit an assembly describes: its loadout and its item uses, as instances. */
+function fieldUnit(id: number, uid: number, name: string, a: Assembled, hex: number, opts: FieldOptions, where: string): Fielded {
+  // v2.loadout: the hands and the stowed, as instances. Only a unit that carries something has a
+  // loadout (a bare row's snapshot is unchanged).
+  const { loadout, instanceIds } = loadoutOf(a.grown, uid, a.itemIds, a.stowedIds, ITEMS, where, a.uses.spent)
+  const made = makeUnit(id, uid, name, a.def, hex)
+  if (a.itemIds.length || loadout.stowed.length) made.loadout = loadout
+  if (a.uses.entries.length) {
+    // usesLeft of an item-granted power = the row's own uses (a power the bare row or a
+    // badge already grants) + what the instances in reach can pay (SWITCHES.md itemUsesPool)
+    made.itemUses = a.uses.entries
+    const own = new Set([...a.grown.attacks, ...a.grown.abilities, ...a.grown.moves, ...a.badged.flatMap((w) => w.grants)])
+    for (const act of [...new Set(a.uses.entries.map((e) => e.actionId))]) {
+      const n = (own.has(act) ? ACTIONS[act]!.uses! : 0) + instanceUsesLeft(ITEMS, made, act)
+      if (n > 0) made.usesLeft[act] = n; else delete made.usesLeft[act]
+    }
+  }
+  let grown: Fielded['grown']
+  if (opts.progress) {
+    // progression.level-table-by-type (2026-09-03), Law 12: the log says which TABLE grew this
+    // hero and by how much — a farmer on civilian.farmer and an orphan on class.civilian are told apart.
+    const mods: Record<string, number> = {}
+    for (const k of FOLDABLE) {
+      const delta = ((a.grown as unknown as Record<string, number | undefined>)[k] ?? 0) - ((a.bare as unknown as Record<string, number | undefined>)[k] ?? 0)
+      if (delta !== 0) mods[k] = delta
+    }
+    grown = { table: levelTableOf(a.bare), level: opts.progress.level, ...(opts.progress.specialtyId ? { specialtyId: opts.progress.specialtyId } : {}), mods }
+  }
+  return {
+    unit: made,
+    equipped: a.worn.map((w, j) => ({ ...w, instanceId: instanceIds[a.kept[j]!]! })),
+    badged: a.badged,
+    ...(grown ? { grown } : {}),
+    ...(opts.heroMods ? { mods: opts.heroMods } : {}),
+  }
+}
+
+/**
+ * A fielded unit's lines, in the one order: unit.enter (the one mutator, enterUnit), one
+ * unit.equipped per item in hand (cause = the item), unit.grown (cause = the table), one
+ * unit.badged per badge (cause = the badge), then its unit mods (one unit.modified per source).
+ */
+function announce(ctx: Ctx, f: Fielded, arrived?: string): void {
+  const u = f.unit
+  enterUnit(ctx, u.id, arrived)
+  for (const w of f.equipped) emit(ctx, 'unit.equipped', w.itemId, { actor: u.id, itemId: w.itemId, instanceId: w.instanceId, grants: w.grants, abilities: w.abilities, mods: w.mods, ...(w.gaps ? { gaps: w.gaps } : {}) })
+  if (f.grown) emit(ctx, 'unit.grown', f.grown.table, { actor: u.id, table: f.grown.table, level: f.grown.level, ...(f.grown.specialtyId ? { specialtyId: f.grown.specialtyId } : {}), mods: f.grown.mods })
+  for (const w of f.badged) emit(ctx, 'unit.badged', w.badgeId, { actor: u.id, badgeId: w.badgeId, grants: w.grants, mods: w.mods, flags: BADGES[w.badgeId]?.flags ?? {}, ...(w.gaps ? { gaps: w.gaps } : {}) })
+  if (f.mods) applyUnitMods(ctx, u.id, f.mods)
+}
+
+/**
+ * Field one unit mid-battle — an encounter's setup unit or a scheduled arrival (encounter.ts
+ * arrive). The same assembler as every other fielding; its row is authored whole (no kit), as an
+ * arrival's always was. The unit is pushed onto the board and its lines emitted, `arrived` named.
+ */
+export function fieldArrival(ctx: Ctx, def: UnitDef, id: number, uid: number, name: string, hex: number, causeId: string): Unit {
+  const f = fieldUnit(id, uid, name, assemble(def, {}, causeId, uid, false, ctx.badges), hex, {}, causeId)
+  ctx.state.units.push(f.unit)
+  announce(ctx, f, causeId)
+  return f.unit
 }
 
 /** The class a hero row belongs to, read off its tags (`class.<x>`) — hero assembly. */
@@ -378,121 +506,52 @@ export function createBattle(opts: BattleOptions): Ctx {
   }
 
   let id = 0
-  const equipped: { unitId: number; worn: (Applied['worn'][number] & { instanceId: string })[] }[] = []
-  const grownLog: { unitId: number; table: string; level: number; specialtyId?: string; mods: Record<string, number> }[] = []
-  const badgedLog: { unitId: number; worn: Badged['worn'] }[] = []
-  const modsLog: { unitId: number; mods: UnitMods }[] = []
+  const fielded: { f: Fielded }[] = []
   // Names come from the DEF (the pack carries Codex names like "Oathblade
-  // (TEST)"); a def without one falls back to its title-cased typeId. The old
-  // hand-typed NAMES map died with the hand-typed party (2026-08-20).
-  const label = (t: string) => t.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
+  // (TEST)"); a def without one falls back to its label (unitLabel, the one).
   const LETTERS = 'ABCDEFGH'
   const seen: Record<string, number> = {}
   // encounter.runner: an encounter may name where the heroes deploy
   heroes.forEach((t, i) => {
     const hex = heroDeploy[i]!
-    const bare = onSide(def(t), 'hero')
-    // Items at fielding (seam.items-per-unit): what the options hand this
-    // hero, else the row's Codex default kit, else nothing — applied by the
-    // one function before the unit is made. Enemies never take this path.
-    const itemIds = opts.heroItems?.[i] ?? bare.defaultItems ?? []
-    const progress = opts.heroProgress?.[i]
-    const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ACTIONS, where, levelTableOf(bare)) : bare
-    // v2.item-uses: the uses each carried instance has left; one handed in with none left
-    // is carried spent — it folds nothing and grants nothing ("the re-field skips it",
-    // DUNGEON-MODE-2026-09-07 §4). Instance ordinals count every item, spent or not.
     const uid = identities.heroes[i]!
-    const stowedIds = opts.heroStowed?.[i] ?? []
-    const uses = itemUsesOf(grown, uid, [...itemIds, ...stowedIds], opts.heroItemsUsed?.[i], ITEMS, ACTIONS, where)
-    const kept = itemIds.flatMap((_, n) => (uses.spent.has(n) ? [] : [n]))
-    const kitted = applyItems(grown, kept.map((n) => itemIds[n]!), ITEMS, ACTIONS, where)
-    // badge.mechanism (2026-09-04): the row's own badges plus the list handed
-    // over for this hero, folded after the kit so a badge sees the kitted hero
-    const badgeIds = [...(kitted.def.badges ?? []), ...(opts.heroBadges?.[i] ?? [])]
-    const badged = applyBadges(kitted.def, badgeIds, BADGES, where)
-    const d = badged.def, worn = kitted.worn
-    badgedLog.push({ unitId: id, worn: badged.worn })
+    // fix.one-hero-assembly: what the options hand this hero, through the one assembler —
+    // the same call fieldedDef makes, so a preview and the battle field the same hero.
+    const o: FieldOptions = {
+      ...(opts.heroItems?.[i] !== undefined ? { items: opts.heroItems[i] } : {}),
+      ...(opts.heroStowed?.[i] !== undefined ? { stowed: opts.heroStowed[i] } : {}),
+      ...(opts.heroItemsUsed?.[i] !== undefined ? { used: opts.heroItemsUsed[i] } : {}),
+      ...(opts.heroProgress?.[i] !== undefined ? { progress: opts.heroProgress[i] } : {}),
+      ...(opts.heroBadges?.[i] !== undefined ? { badges: opts.heroBadges[i] } : {}),
+      ...(opts.heroMods?.[i] !== undefined ? { heroMods: opts.heroMods[i] } : {}),
+    }
+    const a = assemble(onSide(def(t), 'hero'), o, where, uid)
     seen[t] = (seen[t] ?? 0)
-    const nm = `${d.name ?? label(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
+    const nm = `${a.def.name ?? unitLabel(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
     seen[t]!++
-    // v2.loadout: the hands and the stowed, as instances. Only a hero that
-    // carries something has a loadout (a bare row's snapshot is unchanged).
-    const { loadout, instanceIds } = loadoutOf(grown, uid, itemIds, stowedIds, ITEMS, where, uses.spent)
-    const made = makeUnit(id, uid, nm, d, hex)
-    if (itemIds.length || loadout.stowed.length) made.loadout = loadout
-    if (uses.entries.length) {
-      // usesLeft of an item-granted power = the row's own uses (a power the bare row or a
-      // badge already grants) + what the instances in reach can pay (SWITCHES.md itemUsesPool)
-      made.itemUses = uses.entries
-      const own = new Set([...grown.attacks, ...grown.abilities, ...grown.moves, ...badged.worn.flatMap((w) => w.grants)])
-      for (const a of [...new Set(uses.entries.map((e) => e.actionId))]) {
-        const n = (own.has(a) ? ACTIONS[a]!.uses! : 0) + instanceUsesLeft(ITEMS, made, a)
-        if (n > 0) made.usesLeft[a] = n; else delete made.usesLeft[a]
-      }
-    }
-    state.units.push(made)
-    // seam.unit-mods: checked here, where the hero's kit is known; applied after its log lines
-    const unitMods = opts.heroMods?.[i]
-    if (unitMods) { checkUnitMods(unitMods, d, [...itemIds, ...stowedIds], `${where}: hero ${i} (${t})`); modsLog.push({ unitId: id, mods: unitMods }) }
-    equipped.push({ unitId: id, worn: worn.map((w, j) => ({ ...w, instanceId: instanceIds[kept[j]!]! })) })
-    if (progress) {
-      // progression.level-table-by-type (2026-09-03), Law 12: the log says
-      // which TABLE grew this hero and by how much — a farmer on
-      // civilian.farmer and an orphan on class.civilian are told apart here.
-      const mods: Record<string, number> = {}
-      for (const k of FOLDABLE) {
-        const delta = ((grown as unknown as Record<string, number | undefined>)[k] ?? 0) - ((bare as unknown as Record<string, number | undefined>)[k] ?? 0)
-        if (delta !== 0) mods[k] = delta
-      }
-      grownLog.push({ unitId: id, table: levelTableOf(bare), level: progress.level, ...(progress.specialtyId ? { specialtyId: progress.specialtyId } : {}), mods })
-    }
+    const f = fieldUnit(id, uid, nm, a, hex, o, where)
+    state.units.push(f.unit)
+    fielded.push({ f })
     id++
   })
   const seenEnemy: Record<string, number> = {}
   enemies.forEach((t, i) => {
     const hex = opts.enemyHexes?.[i] ?? enemyDeploy[i]!
-    // Named from the def (Codex name) or the typeId, counted per type — Law 12:
-    // the log names what a thing IS.
-    // badge.mechanism: an enemy row's own badges fold at fielding too (an innate affliction, a named one)
-    const row = onSide(def(t), 'enemy')
-    const d = (row.badges?.length ? applyBadges(row, row.badges, BADGES, where).def : row)
+    const uid = identities.enemies[i]!
+    // Named from the def (Codex name) or the typeId, counted per type — Law 12: the log names
+    // what a thing IS. An enemy's row is authored whole (no kit); its own badges fold at fielding.
+    const a = assemble(onSide(def(t), 'enemy'), {}, where, uid, false)
     seenEnemy[t] = (seenEnemy[t] ?? 0) + 1
-    state.units.push(makeUnit(id, identities.enemies[i]!, `${d.name ?? label(t)} ${seenEnemy[t]}`, d, hex))
+    const f = fieldUnit(id, uid, `${a.def.name ?? unitLabel(t)} ${seenEnemy[t]}`, a, hex, {}, where)
+    state.units.push(f.unit)
+    fielded.push({ f })
     id++
   })
 
-  for (const u of state.units) {
-    // A dotted typeId is already a full Codex id and names itself; bare
-    // typeIds keep the historic prefix. (2026-08-26 — keeps the prefix from
-    // doubling in every log line for pack units keyed by full id.)
-    emit(ctx, 'unit.enter', u.typeId.includes('.') ? u.typeId : `unit.${u.typeId}`, {
-      actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
-      role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
-      stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
-      // proving.side-override: a unit fielded against its row's side says so (Law 12)
-      ...(u.rowSide !== u.side ? { rowSide: u.rowSide } : {}),
-      // v2.loadout: unit.equipped means in hand (V2 §15.2); the stowed are named here
-      ...(u.loadout?.stowed.length ? { stowed: u.loadout.stowed.map((x) => ({ ...x })) } : {}),
-      // v2.item-uses: the instances carried in already spent, named once here (Law 12)
-      ...(u.itemUses?.some((e) => e.left === 0) ? { spent: [...new Set(u.itemUses.filter((e) => u.itemUses!.filter((x) => x.instanceId === e.instanceId).every((x) => x.left === 0)).map((e) => e.instanceId))] } : {}),
-    })
-    // seam.items-per-unit: one unit.equipped per (unit, item), after the
-    // unit's own enter line — the log says why the Hunter shoots and why his
-    // Health is 9 (Law 12). Cause = the item.
-    for (const w of equipped.find((e) => e.unitId === u.id)?.worn ?? []) {
-      emit(ctx, 'unit.equipped', w.itemId, { actor: u.id, itemId: w.itemId, instanceId: w.instanceId, grants: w.grants, abilities: w.abilities, mods: w.mods, ...(w.gaps ? { gaps: w.gaps } : {}) })
-    }
-    // progression.level-table-by-type: one unit.grown per grown hero, cause = the table
-    const g = grownLog.find((e) => e.unitId === u.id)
-    if (g) emit(ctx, 'unit.grown', g.table, { actor: u.id, table: g.table, level: g.level, ...(g.specialtyId ? { specialtyId: g.specialtyId } : {}), mods: g.mods })
-    // badge.mechanism: one unit.badged per (unit, badge), cause = the badge (Law 12)
-    for (const w of badgedLog.find((e) => e.unitId === u.id)?.worn ?? []) {
-      emit(ctx, 'unit.badged', w.badgeId, { actor: u.id, badgeId: w.badgeId, grants: w.grants, mods: w.mods, flags: BADGES[w.badgeId]?.flags ?? {}, ...(w.gaps ? { gaps: w.gaps } : {}) })
-    }
-    // seam.unit-mods: one unit.modified per (unit, source), after the kit and badge lines
-    const um = modsLog.find((e) => e.unitId === u.id)
-    if (um) applyUnitMods(ctx, u.id, um.mods)
+  for (const { f } of fielded) {
+    announce(ctx, f)
     // capability.power-pool (2026-09-03): a unit fielded at setup arrives too
+    const u = f.unit
     const arrival = UNITS[u.typeId]?.powerOnArrival
     if (arrival && rulesSideOf(ctx, u) === 'enemy') gainPower(ctx, arrival, u.typeId, { kind: 'arrival', actor: u.id })
   }
@@ -562,20 +621,25 @@ export function createCustomBattle(
   prepareCover(ctx)
   for (const p of decoded.paint ?? []) paintGround(ctx, p.hexes, p.layer, mapId)   // the map's painted ground, as createBattle
   let id = 0
-  // Custom battles field the row's default kit too (seam.items-per-unit) —
-  // a fixture hero is the same hero as a scenario hero.
-  heroes.forEach((h, i) => { state.units.push(makeUnit(id, identities.heroes[i]!, `H${i}`, applyItems(UNITS[h.type]!, UNITS[h.type]!.defaultItems ?? [], ITEMS, ACTIONS, 'custom battle').def, h.hex)); id++ })
-  enemies.forEach((e, i) => { const d = UNITS[e.type]!; state.units.push(makeUnit(id, identities.enemies[i]!, `E${i}`, d.badges?.length ? applyBadges(d, d.badges, BADGES, 'custom battle').def : d, e.hex)); id++ })
-  for (const u of state.units) {
-    // A dotted typeId is already a full Codex id and names itself; bare
-    // typeIds keep the historic prefix. (2026-08-26 — keeps the prefix from
-    // doubling in every log line for pack units keyed by full id.)
-    emit(ctx, 'unit.enter', u.typeId.includes('.') ? u.typeId : `unit.${u.typeId}`, {
-      actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
-      role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
-      stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
-    })
-  }
+  // A fixture hero is the same hero as a scenario hero (seam.items-per-unit; one assembler since
+  // fix.one-hero-assembly): its row, its default kit as a loadout, its own badges (badge.hero) —
+  // the call fieldedDef makes. An enemy's row is authored whole, as in createBattle.
+  const fielded: Fielded[] = []
+  heroes.forEach((h, i) => {
+    const row = UNITS[h.type]
+    if (!row) throw new Error(`custom battle: unknown unit typeId '${h.type}'`)
+    const uid = identities.heroes[i]!
+    const f = fieldUnit(id, uid, `H${i}`, assemble(row, {}, 'custom battle', uid), h.hex, {}, 'custom battle')
+    state.units.push(f.unit); fielded.push(f); id++
+  })
+  enemies.forEach((e, i) => {
+    const row = UNITS[e.type]
+    if (!row) throw new Error(`custom battle: unknown unit typeId '${e.type}'`)
+    const uid = identities.enemies[i]!
+    const f = fieldUnit(id, uid, `E${i}`, assemble(row, {}, 'custom battle', uid, false), e.hex, {}, 'custom battle')
+    state.units.push(f.unit); fielded.push(f); id++
+  })
+  for (const f of fielded) announce(ctx, f)
   emit(ctx, 'map.loaded', mapId, { mapId, width: board.width, height: board.height, deploy: deployOf(mapId), ...terrainCensus(state.terrain), props: structuredClone(state.props), ...(state.floor?{floor:[...state.floor]}:{}), ...(state.entries?{entries:structuredClone(state.entries)}:{}) })
   return ctx
 }

@@ -11,6 +11,7 @@
 
 import type { HeroProgress, UnitDef } from '../core/types.js'
 import { CRIT_BASE } from '../core/pipeline.js'
+import { HELD_CLASSES } from '../core/items.js'
 
 export type ScheduleHero = {
   readonly id: string
@@ -58,15 +59,14 @@ export function pickOf(pick: Readonly<Record<string, number>>): Record<string, n
  * `stowedWeapons`, and the stats the schedule counted from them surface as
  * stat disagreements. Not patched: it is the schedule's rule to settle.
  */
-/** Item classes that are held in hands, never worn from an item slot. */
-const HELD: readonly string[] = ['weapon', 'shield']
+// Item classes held in hands are core's HELD_CLASSES — the one list (fix.one-hero-assembly, review E13).
 export function itemsOf(h: ScheduleHero, items?: Readonly<Record<string, { itemClass: string }>>): string[] {
   // A shield in an item slot is stowed like a slot weapon (plumbing.shield-class, V2 R1).
-  const slots = items ? h.equipment.slots.filter((i) => !HELD.includes(items[i.id]?.itemClass ?? '')) : h.equipment.slots
+  const slots = items ? h.equipment.slots.filter((i) => !HELD_CLASSES.includes(items[i.id]?.itemClass ?? '')) : h.equipment.slots
   return [...h.equipment.hands.map((i) => i.id), ...(h.equipment.armor ? [h.equipment.armor.id] : []), ...slots.map((i) => i.id)]
 }
 export function stowedWeapons(h: ScheduleHero, items: Readonly<Record<string, { itemClass: string }>>): string[] {
-  return h.equipment.slots.filter((i) => HELD.includes(items[i.id]?.itemClass ?? '')).map((i) => i.id)
+  return h.equipment.slots.filter((i) => HELD_CLASSES.includes(items[i.id]?.itemClass ?? '')).map((i) => i.id)
 }
 
 export function progressOf(h: ScheduleHero): HeroProgress {
