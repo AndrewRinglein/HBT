@@ -641,7 +641,7 @@
    "payload": "+2 Str, +2 Move, +2 Stamina, −5 Crit, −1 Spirit · `startOfBattle`: regeneration 5 · `onAttack`: +1 Strength · deploying the hero costs 2 Supplies",
    "category": "SIGNATURE",
    "group": "",
-   "source": " | 2026-08-25 workbook review: rarity->affliction | 2026-09-29: \"a lycanthrope hero also has a cost of 2 supplies to deploy.\" Ruled 2026-09-29 (Andrew, engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
+   "source": " | 2026-08-25 workbook review: rarity->affliction | 2026-09-29: \"a lycanthrope hero also has a cost of 2 supplies to deploy.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
   },
   {
    "id": "badge.many-pockets",
@@ -782,7 +782,7 @@
    "payload": "+2 Magic, +1 Resist, +3 Vision, −10 Surge · `startOfBattle`: −2 card draw · −10 Deathbed Fighting · deploying the hero costs 3 Mana",
    "category": "SIGNATURE",
    "group": "",
-   "source": " | 2026-09-29: \"Possessed hero costs 3 magic crystals to deploy.\" (Mana) · \"Possession gives -10.\" (Deathbed Fighting) · \"Possession gives -10 to action surge per turn.\" Ruled 2026-09-29 (Andrew, engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
+   "source": " | 2026-09-29: \"Possessed hero costs 3 magic crystals to deploy.\" (Mana) · \"Possession gives -10.\" (Deathbed Fighting) · \"Possession gives -10 to action surge per turn.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
   },
   {
    "id": "badge.quick-study",
@@ -888,7 +888,7 @@
    "category": "SIGNATURE",
    "group": "",
    "statModifiers": [],
-   "source": " | 2026-08-25 workbook review: payload edited | 2026-09-29: \"Writing flesh gives +20%.\" (to Deathbed Fighting) Ruled 2026-09-29 (Andrew, engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
+   "source": " | 2026-08-25 workbook review: payload edited | 2026-09-29: \"Writing flesh gives +20%.\" (to Deathbed Fighting) Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
   },
   {
    "id": "badge.scarred-hide",
@@ -1187,7 +1187,7 @@
    "payload": "+2 Strength, +1 Precision, +3 Health, +1 Resist, +1 Magic, −1 Spirit · grants `power.flight-vampiric` · on a melee hit: heal 2 · +15 Deathbed Fighting · deploying the hero costs 3 Faith · the hero gains half experience",
    "category": "SIGNATURE",
    "group": "",
-   "source": " | 2026-08-25 workbook review: rarity->affliction | 2026-09-29: rewritten whole — \"They get +2 strength, +1 precision, +3 health, +1 resist. -1 spirit. They gain on melee hit. They heal 2. +1 magic. They gain the power of flight. Which uses movement +1 as a flight power\" · \"Deploying a vampire costs 3 faith. Vampires only gain half experience points.\" · \"Vampirism gives +15% to deathbed fighting.\" · \"when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism\" (inflictedWith). The undefined power.vampirism.blood-drain is gone. Ruled 2026-09-29 (Andrew, engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised.",
+   "source": " | 2026-08-25 workbook review: rarity->affliction | 2026-09-29: rewritten whole — \"They get +2 strength, +1 precision, +3 health, +1 resist. -1 spirit. They gain on melee hit. They heal 2. +1 magic. They gain the power of flight. Which uses movement +1 as a flight power\" · \"Deploying a vampire costs 3 faith. Vampires only gain half experience points.\" · \"Vampirism gives +15% to deathbed fighting.\" · \"when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism\" (inflictedWith). The undefined power.vampirism.blood-drain is gone. Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised.",
    "inflictedWith": [
     "badge.cold-heart"
    ]
@@ -1201,7 +1201,7 @@
    "payload": "+2 Health · immune to Karma · immune to Cold (cold damage and the Frost status)",
    "rollable": false,
    "note": "Granted with Vampirism, on the same roll, when Vampirism is inflicted — only to the afflicted; enemy Vampires do not carry it. Cold is an element as Fire is: fire resistance resists fire damage and the Burn status, so immunity to Cold is immunity to cold damage and the Frost status.",
-   "source": "2026-09-29: \"Vampires also gain the Cold Heart badge. Cold Hard badge gives Immune to Karma 2, Immune to Cold 2, and +2 Health.\" · \"I meant immune to Karma, too.\" · \"it resists both frost status and cold damage.\" · \"Cold Heart is only those who get afflicted.\" Ruled 2026-09-29 (Andrew, engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
+   "source": "2026-09-29: \"Vampires also gain the Cold Heart badge. Cold Hard badge gives Immune to Karma 2, Immune to Cold 2, and +2 Health.\" · \"I meant immune to Karma, too.\" · \"it resists both frost status and cold damage.\" · \"Cold Heart is only those who get afflicted.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
   },
   {
    "id": "badge.vengeful",

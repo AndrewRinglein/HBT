@@ -29,7 +29,11 @@ for(const e of all){
     if(g.hook&&!HOOKS.has(g.hook)) add('unknown-hook',e.name,g.hook);
   }
   // R31 no zone of control — taxing movement out of a hex is a subsystem. Ruled 2026-08-20.
-  if(/zone of control|extra Movement to leave|leaving one provokes|Moves? out of a hex inside|extra Movement (?:when |on )?leaving|spends? \d+ extra Movement leaving|to leave the hex/i.test(t))
+  // Zones of control themselves are ruled in (COMBAT-DESIGN.md "Space — zones of control",
+  // 2026-08-20: adjacency provokes an attack of opportunity), and a walk that ignores them is
+  // capability.move-ignores-zoc (2026-09-28), so naming one is not a finding; the leave-tax
+  // wording below is. fix.publish-audit, 2026-10-01 (GBH SWITCHES audit.zocWording).
+  if(/extra Movement to leave|leaving one provokes|Moves? out of a hex inside|extra Movement (?:when |on )?leaving|spends? \d+ extra Movement leaving|to leave the hex/i.test(t))
     add('zone-of-control',e.name,t.slice(0,80));
   // R33 no naming function — ruled 2026-08-20. You do not use a power and then choose
   // again inside it. The choice is the power, or it is the target.
@@ -380,12 +384,17 @@ if(D.encounters){
       if(o.unit&&(o.at||o.hexes)) for(const p of (o.hexes||[o.at])) if(p&&typeof p.col==='number') cols.push(p.col);
       for(const k of Object.keys(o)) w(o[k]); };
     w(r.setup); w(r.schedule);
-    if(cols.length){
+    // The west/east sides are the 2026-09-04 rotation's, on boards at least as wide as tall. A
+    // taller board is laid out along its rows (map.opening.gates, 20x50: heroes south, the abbey's
+    // defenders north — ruled 2026-09-28, engine DECISIONS.md 'Gates is the Curse'), so the
+    // column test does not apply. fix.publish-audit, 2026-10-01 (GBH SWITCHES audit.tallBoardSides).
+    const sided=b.height<=b.width;
+    if(sided&&cols.length){
       const mean=cols.reduce((s,v)=>s+v,0)/cols.length;
       if(mean < (b.width-1)/2 - 1) add('encounter-units-skew-west',r.name||r.id,`mean col ${mean.toFixed(1)} on a ${b.width}-wide board — enemies deploy EAST; check this row was re-authored`);
     }
     const hz=r.heroZone&&r.heroZone.at&&(r.heroZone.at.near||r.heroZone.at);
-    if(hz&&typeof hz.col==='number'&&hz.col>(b.width-1)/2) add('hero-zone-is-not-west',r.name||r.id,`hero zone at col ${hz.col} on a ${b.width}-wide board`);
+    if(sided&&hz&&typeof hz.col==='number'&&hz.col>(b.width-1)/2) add('hero-zone-is-not-west',r.name||r.id,`hero zone at col ${hz.col} on a ${b.width}-wide board`);
     if(r.band&&r.band.axis!=='col') add('band-still-walks-rows',r.name||r.id,'the board turned ninety degrees; the band did not');
   }
 }

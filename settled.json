@@ -782,7 +782,7 @@
    "tags": [],
    "description": "Movement action. Move up to your Movement + 1, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way. Costs 2 Stamina.",
    "intent": "The vampire's flight: a hex further than anyone else, at a price.",
-   "source": "2026-09-29: \"They gain the power of flight. Which uses movement +1 as a flight power\" · \"Let's have the Vampirism flight cost 2. Stamina.\" Granted by badge.vampirism. Ruled 2026-09-29 (Andrew, engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
+   "source": "2026-09-29: \"They gain the power of flight. Which uses movement +1 as a flight power\" · \"Let's have the Vampirism flight cost 2. Stamina.\" Granted by badge.vampirism. Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised."
   },
   {
    "id": "rule.karma-decay",
