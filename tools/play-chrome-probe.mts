@@ -80,7 +80,8 @@ export function playChromeProbe(seed=1):ChromeRecord{
      enemyActivationsAfter:ev.filter(e=>e.type==='activation.begin'&&unitOf(e.actor as number).side==='enemy').length,turnAfter:s.ctx.state.turn,cursorAfter:s.ctx.battleCursor?.at??null}
     continue}
    const id=end.yetToAct[0];if(id===undefined)throw Error('selecting, but no hero yet to act')
-   if(!P.input({kind:'unit',id,hex:unitOf(id).hex}))throw Error(`clicking ${unitOf(id).name} did not start its activation`)
+   /* Law 10 (viewer.xcom-camera, 2026-10-01): engine DECISIONS.md 2026-10-01 'the XCOM-style camera', Andrew: "Double-click a character in the top bar or on the map to change it" — a hero other than the one proposed is picked by a double-click (choose), then clicked; a click alone no longer starts any hero but the proposed one */
+   P.input({kind:'choose',id});if(!P.input({kind:'unit',id,hex:unitOf(id).hex}))throw Error(`clicking ${unitOf(id).name} did not start its activation`)
    turnRow(turn).heroActivations++
    continue}
   if(c.at!=='acting'||c.actor===null)throw Error('the sandbox stopped at '+c.at)
