@@ -22663,3 +22663,88 @@ index 1aa38b3..cab4e00 100644
        'hero.fixed.farmer': ['attacks'],
 ```
 </details>
+
+## fix.opening-levels — LANDED `0fdeb96` **NEEDS REVIEW**
+2026-10-02 19:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/opening-gates.test.ts, test/opening-levels.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 10 log lines, 10 fired, 6 changed state · encounter.opening.cavern-trail: 12 log lines, 12 fired, 9 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/opening-gates.test.ts, test/fixtures/battle-cursor-opening-levels.json, test/opening-levels.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/opening-gates.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage,encounter.opening.cavern-trail — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 1d01bbc..fdfa12f 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -266,4 +266,11 @@ const oneHeroAssemblyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle
+ // showcase.two-zombies-and-a-child and test.opening-orphanage. A `changed` case is checked here and skips the older layers.
+ const orphansKnifeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphans-teacher-knife.json', import.meta.url), 'utf8'))
++// fix.opening-levels (2026-10-02; DECISIONS.md 2026-09-28 'the opening's party levels up; the Flaming Longsword is a Warrior's or a
++// Paladin's; the Bridge gives a reward': "it only is going to help the paladin or the warrior"), Law 10: the opening's sword goes
++// only to a drafted Warrior or Paladin, and to nobody when neither is drafted (openingHolderOf). Every case frozen here
++// (tools/capture-opening-levels-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the four cases
++// that field the sword on their default replicate's party — test.opening-bridge, -cavern-trail, -gates and -cathedral, whose
++// sword was on a hero of another class. A `changed` case is checked here and skips the older layers.
++const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-levels.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -384,5 +391,8 @@ describe('resumable battle cursor', () => {
+       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const orphansKnifeMoved = orphansKnifeExpected?.changed === true
++      const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const openingLevelsMoved = openingLevelsExpected?.changed === true
++      // was: const orphansKnifeMoved = orphansKnifeExpected?.changed === true — an opening-levels-moved case skips the orphans-teacher-knife layer too (fix.opening-levels 2026-10-02)
++      const orphansKnifeMoved = orphansKnifeExpected?.changed === true || openingLevelsMoved
+       const oneHeroAssemblyExpected = oneHeroAssemblyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true — an orphans-knife-moved case skips the one-hero-assembly layer too (fix.orphans-teacher-knife 2026-10-02)
+@@ -473,5 +483,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (orphansKnifeExpected) {
++        if (openingLevelsExpected) {
++        expect(hash(ctx.events), 'full opening-levels events').toBe(openingLevelsExpected.events)
++        expect(hash(ctx.state), 'full opening-levels state').toBe(openingLevelsExpected.state)
++        expect(hash(ctx.rng.log), 'full opening-levels RNG').toBe(openingLevelsExpected.rng)
++        expect(result).toEqual(openingLevelsExpected.result)
++        }
++        // was: if (orphansKnifeExpected) { — fix.opening-levels (2026-10-02): an opening-levels-moved case is checked above instead
++        if (orphansKnifeExpected && !openingLevelsMoved) {
+         expect(hash(ctx.events), 'full orphans-teacher-knife events').toBe(orphansKnifeExpected.events)
+         expect(hash(ctx.state), 'full orphans-teacher-knife state').toBe(orphansKnifeExpected.state)
+diff --git a/test/opening-gates.test.ts b/test/opening-gates.test.ts
+index 9e3e4e7..993b743 100644
+--- a/test/opening-gates.test.ts
++++ b/test/opening-gates.test.ts
+@@ -13,8 +13,12 @@ import { arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
+ 
+ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger.gates.curse-strike'
+-// Replicate 7: the curse lands on a hero and the battle runs past Turn 7, so both Imps arrive.
++// Replicate 3: the curse lands on a hero and the battle runs past Turn 7, so both Imps arrive.
+ // No replicate is won untouched on the party drafted by battle 5 (0 of 200, 2026-10-01 — the 2026-09-29
+ // count "Gates 0" before the upgrades, DECISIONS.md "the battles might be too hard").
+-const SEEN = 7
++// Law 10, fix.opening-levels (2026-10-02): the Flaming Longsword goes only to a Warrior or a Paladin (Andrew 2026-09-28: "it only
++// is going to help the paladin or the warrior"), so replicate 7's sword moved from its Rogue to its Paladin and that battle's
++// curse lands on nobody (0 hit; replicates 0-39 searched). Replicate 3 is the first whose curse lands on a hero and runs past Turn 7.
++// was: const SEEN = 7
++const SEEN = 3
+ describe('encounter.opening.gates', () => {
+   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
+```
+</details>

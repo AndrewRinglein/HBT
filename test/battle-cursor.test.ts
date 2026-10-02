@@ -265,6 +265,13 @@ const oneHeroAssemblyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle
 // (state, RNG and result): exactly the four cases that field an Orphan Child — showcase.civilians, showcase.farmers-grown,
 // showcase.two-zombies-and-a-child and test.opening-orphanage. A `changed` case is checked here and skips the older layers.
 const orphansKnifeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphans-teacher-knife.json', import.meta.url), 'utf8'))
+// fix.opening-levels (2026-10-02; DECISIONS.md 2026-09-28 'the opening's party levels up; the Flaming Longsword is a Warrior's or a
+// Paladin's; the Bridge gives a reward': "it only is going to help the paladin or the warrior"), Law 10: the opening's sword goes
+// only to a drafted Warrior or Paladin, and to nobody when neither is drafted (openingHolderOf). Every case frozen here
+// (tools/capture-opening-levels-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the four cases
+// that field the sword on their default replicate's party — test.opening-bridge, -cavern-trail, -gates and -cathedral, whose
+// sword was on a hero of another class. A `changed` case is checked here and skips the older layers.
+const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-levels.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -383,7 +390,10 @@ describe('resumable battle cursor', () => {
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const orphansKnifeMoved = orphansKnifeExpected?.changed === true
+      const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const openingLevelsMoved = openingLevelsExpected?.changed === true
+      // was: const orphansKnifeMoved = orphansKnifeExpected?.changed === true — an opening-levels-moved case skips the orphans-teacher-knife layer too (fix.opening-levels 2026-10-02)
+      const orphansKnifeMoved = orphansKnifeExpected?.changed === true || openingLevelsMoved
       const oneHeroAssemblyExpected = oneHeroAssemblyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true — an orphans-knife-moved case skips the one-hero-assembly layer too (fix.orphans-teacher-knife 2026-10-02)
       const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true || orphansKnifeMoved
@@ -472,7 +482,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (orphansKnifeExpected) {
+        if (openingLevelsExpected) {
+        expect(hash(ctx.events), 'full opening-levels events').toBe(openingLevelsExpected.events)
+        expect(hash(ctx.state), 'full opening-levels state').toBe(openingLevelsExpected.state)
+        expect(hash(ctx.rng.log), 'full opening-levels RNG').toBe(openingLevelsExpected.rng)
+        expect(result).toEqual(openingLevelsExpected.result)
+        }
+        // was: if (orphansKnifeExpected) { — fix.opening-levels (2026-10-02): an opening-levels-moved case is checked above instead
+        if (orphansKnifeExpected && !openingLevelsMoved) {
         expect(hash(ctx.events), 'full orphans-teacher-knife events').toBe(orphansKnifeExpected.events)
         expect(hash(ctx.state), 'full orphans-teacher-knife state').toBe(orphansKnifeExpected.state)
         expect(hash(ctx.rng.log), 'full orphans-teacher-knife RNG').toBe(orphansKnifeExpected.rng)

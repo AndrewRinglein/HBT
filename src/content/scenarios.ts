@@ -27,7 +27,7 @@ import type { EncounterDef, ScenarioDef } from '../core/types.js'
 import { omitDisabled } from './disable.js'
 import { ENCOUNTERS, UNITS } from './index.js'
 import { MAPS } from './maps.js'
-import { openingPartyOf } from './opening-party.js'
+import { openingPartyOf, type OpeningCarry } from './opening-party.js'
 
 // Published TEST rows, not duplicated authored terrain. A disabled source map
 // removes only its dependent direct scenario; unrelated imports remain usable.
@@ -828,10 +828,13 @@ export const SCENARIOS = omitDisabled(RAW_SCENARIOS)
  * A scenario as createBattle options. `replicate` defaults to the scenario's own; an opening
  * scenario (fix.opening-party) drafts its party for the replicate asked, so a sweep over
  * replicates passes it HERE — spreading a different replicate over the result keeps the party
- * the scenario's own replicate drafted.
+ * the scenario's own replicate drafted. A carry (fix.opening-levels) is what the replicate's earlier
+ * battles gave the party: levels and items, fielded instead of the builder's fixed ones.
  */
-export function scenarioOptions(s: ScenarioDef, replicate: number = s.replicate) {
-  const party = s.openingPosition ? openingPartyOf(s.openingPosition, replicate) : null
+export function scenarioOptions(s: ScenarioDef, replicate: number = s.replicate, carry?: OpeningCarry) {
+  // fix.opening-levels: a carry (the kingdom's run through the opening) fields each drafted hero at its level, with its items
+  if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}' is no opening position — a carry has nothing to field`)
+  const party = s.openingPosition ? openingPartyOf(s.openingPosition, replicate, carry) : null
   const heroItems = party ? party.heroItems : s.heroItems
   return {
     scenarioId: s.id,

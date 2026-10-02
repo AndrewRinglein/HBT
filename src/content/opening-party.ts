@@ -19,7 +19,8 @@ import OPENING from '../../../progression/OPENING-PARTY.json' with { type: 'json
 import type { HeroProgress, UnitMods } from '../core/types.js'
 import { makeRng, roll100, rollBelow, rootSeedOf, sample, type Rng } from '../core/rng.js'
 import { isStatName, type StatName } from '../core/stats.js'
-import { ITEMS, UNITS } from './index.js'
+import { ACTIONS, ITEMS, LEVELS, UNITS } from './index.js'
+import { fieldedDef, levelTableOf } from '../core/setup.js'
 
 export type OpeningPosition = {
   readonly position: number
@@ -216,36 +217,144 @@ export function openingDraftOf(replicate: number, count: number): string[] {
   return openingHeroesOf(replicate, count).map((h) => h.id)
 }
 
+// ---------- the carry (fix.opening-levels, 2026-10-02) ----------
+// Ruled 2026-09-28 (Andrew, DECISIONS.md 'the opening's party levels up; the Flaming Longsword is a Warrior's or a
+// Paladin's; the Bridge gives a reward' and 'levels by XP at 20, 50, 100, 170, 270, 400'): "They need to be leveling
+// up." · "it only is going to help the paladin or the warrior." · "On battle 3, which is the bridge, we should be giving
+// another reward, which can help."
+//
+// Prior art, extended not duplicated: the XP a battle pays and the level it reaches are the KINGDOM's (reckoning.ts
+// battleXpOf, levels.ts LEVEL_THRESHOLDS; DECISIONS.md 2026-09-28 "the XP rewards are in the kingdom, not the
+// engine"), and so are the rewards (encounter-rewards.ts, the standing draw resolveRewardDraw). The engine imports
+// nothing (Law 5), so the kingdom carries a replicate through the opening (kingdom/src/sim/opening-run.ts) and hands
+// each battle's party back here as an OpeningCarry — levels and items, never XP. This file only FIELDS it: the level
+// through heroProgress (applyProgress, the one fold), the items through heroItems (applyItems, the one legality). Who
+// holds an item and which of three cards a player keeps are the engine's because they read the engine's rows and the
+// draft's weighted score (fix.opening-draft, OPENING-PARTY.json draftScore) — SWITCHES.md openingRewardPick.
+
+/** What a replicate's earlier battles gave each drafted hero, by draft ordinal: the level its XP reached and what it holds. */
+export type OpeningCarry = {
+  /** The level each drafted hero has reached; a hero past the list (drafted since) is level 1. */
+  readonly levels: readonly number[]
+  /** The items each drafted hero holds in place of its kit; undefined = its Codex kit. */
+  readonly items: readonly (readonly string[] | undefined)[]
+}
+
+/** Who may take a carried item, by class — OPENING-PARTY.json `takers` (build-schedule.mjs; the kingdom's reward row is the other half, checked agreeing by kingdom/test/opening-levels.test.ts). */
+export const OPENING_TAKERS: Readonly<Record<string, readonly string[]>> = OPENING.takers
+
+/** The stat a list's first weapon attacks with (strength, precision, magic, spirit), or undefined with no weapon. */
+const attackStatOf = (itemIds: readonly string[]): string | undefined => {
+  for (const k of itemIds) {
+    const it = ITEMS[k]
+    if (it?.itemClass !== 'weapon') continue
+    for (const g of it.grants ?? []) { const a = ACTIONS[g]?.attack; if (a) return a.stat }
+  }
+  return undefined
+}
+
 /**
- * The party at `position` for `replicate`, as createBattle options: the drafted heroes, each on its
- * own kit, and each carried item on the first drafted hero who can wield it (SWITCHES.md
- * openingCarriedHolder), taking the place of that hero's kit weapons — its shield and armour stay;
- * a result the hands cannot hold is refused by applyItems, the one legality. A hero above level 1
- * (fix.opening-first-level: the XP the builder wrote, on the ruled curve) takes its level through
- * heroProgress — applyProgress folds the class table and the specialty chosen at level 2.
+ * `itemId` on a hero now holding `held` (undefined = its kit): a weapon takes the place of the held weapons, an armour
+ * of the held armour, a shield of the held shields; anything else is added — as SWITCHES.md openingCarriedHolder put
+ * the sword: the kit's shield and armour stay beside a weapon.
  */
-export function openingPartyOf(position: number, replicate: number): { heroes: string[]; heroItems: (string[] | undefined)[]; heroProgress: (HeroProgress | undefined)[]; heroBadges: (string[] | undefined)[]; heroMods: (UnitMods | undefined)[] } {
+export function withOpeningItem(typeId: string, held: readonly string[] | undefined, itemId: string): string[] {
+  const item = ITEMS[itemId]
+  if (!item) throw new Error(`opening: carried item '${itemId}' is not in the content`)
+  const now = [...(held ?? UNITS[typeId]!.defaultItems ?? [])]
+  if (item.itemClass === 'weapon') return [itemId, ...now.filter((k) => ITEMS[k]?.itemClass !== 'weapon')]
+  if (item.itemClass === 'armor' || item.itemClass === 'shield') return [...now.filter((k) => ITEMS[k]?.itemClass !== item.itemClass), itemId]
+  return [...now, itemId]
+}
+
+/**
+ * The hero's items with `itemId`, or null when it may not take it: its class among `takers` (when the item has
+ * takers), the row's classRestriction, a weapon that attacks with the stat its own weapon does (a bow never to a
+ * sword hand; a hero with no weapon, the Brawler, takes any), and fielded legally (fieldedDef — applyItems, the one legality: hands, slots, armour).
+ */
+function canHold(typeId: string, held: readonly string[] | undefined, itemId: string, takers?: readonly string[]): string[] | null {
+  const item = ITEMS[itemId]!
+  const tags = UNITS[typeId]!.tags ?? []
+  if (takers && !takers.some((t) => tags.includes(t))) return null
+  if (item.classRestriction && !tags.includes(item.classRestriction)) return null
+  const own = attackStatOf(held ?? UNITS[typeId]!.defaultItems ?? [])
+  if (item.itemClass === 'weapon' && own !== undefined && attackStatOf([itemId]) !== own) return null
+  const next = withOpeningItem(typeId, held, itemId)
+  try { fieldedDef(typeId, { items: next }) } catch { return null }
+  return next
+}
+
+/** The first drafted hero (draft order) who may hold `itemId`, and its items with it — or null: nobody (the Flaming Longsword with no Warrior or Paladin drafted). */
+export function openingHolderOf(itemId: string, heroes: readonly string[], held: readonly (readonly string[] | undefined)[], takers: readonly string[] | undefined = OPENING_TAKERS[itemId]): { holder: number; items: string[] } | null {
+  for (let n = 0; n < heroes.length; n++) {
+    const items = canHold(heroes[n]!, held[n], itemId, takers)
+    if (items) return { holder: n, items }
+  }
+  return null
+}
+
+/** An item's worth to a hero: its class's draft weights (OPENING-PARTY.json draftScore) over the item's stat modifiers. */
+const WORD_OF: Readonly<Record<string, string>> = Object.fromEntries(Object.entries(STAT_OF).map(([w, s]) => [s, w]))
+export function openingItemScoreOf(typeId: string, itemId: string): number {
+  const w = SCORE.weights[classOfRow(typeId) ?? ''] ?? {}
+  let s = 0
+  for (const [stat, v] of Object.entries(ITEMS[itemId]!.statModifiers ?? {})) s += (w[WORD_OF[stat] ?? stat] ?? 0) * (v as number)
+  return s
+}
+
+/**
+ * Three reward cards, one kept "as a player would" (SWITCHES.md openingRewardPick): every card on every hero who may
+ * hold it, scored by that hero's class's draft weights over the item's stat modifiers; the best pair is kept, a tie to
+ * the earlier card, then the earlier hero (Law 6). Null when no card fits anyone.
+ */
+export function openingRewardPickOf(offers: readonly string[], heroes: readonly string[], held: readonly (readonly string[] | undefined)[]): { itemId: string; holder: number; items: string[]; score: number } | null {
+  let best: { itemId: string; holder: number; items: string[]; score: number } | null = null
+  for (const itemId of offers) {
+    if (!ITEMS[itemId]) throw new Error(`opening: reward card '${itemId}' is not in the content`)
+    for (let n = 0; n < heroes.length; n++) {
+      const items = canHold(heroes[n]!, held[n], itemId)
+      if (!items) continue
+      const score = openingItemScoreOf(heroes[n]!, itemId)
+      if (!best || score > best.score) best = { itemId, holder: n, items, score }
+    }
+  }
+  return best
+}
+
+/**
+ * A drafted hero's progress at `level`: its class's specialty from level 2 (SWITCHES.md openingSpecialty), the
+ * level-5 row's first option once reached (SWITCHES.md openingLevelFivePick — the kingdom's autoplay default), and no
+ * drafted powers (the kingdom's level-up grants none).
+ */
+function progressAt(id: string, level: number, where: string): HeroProgress | undefined {
+  if (level === 1) return undefined
+  const cls = (UNITS[id]!.tags ?? []).find((t) => t in SPECIALTY_OF)
+  if (!cls) throw new Error(`${where}: ${id} has no class with a specialty in progression/OPENING-PARTY.json`)
+  const pickRow = (LEVELS[levelTableOf(UNITS[id]!)]?.rows ?? []).find((r) => r.choice && r.level <= level)
+  return { level, specialtyId: SPECIALTY_OF[cls]!, ...(pickRow?.choice ? { levelFivePick: pickRow.choice[0]! } : {}), powers: [] }
+}
+
+/**
+ * The party at `position` for `replicate`, as createBattle options: the drafted heroes, each on its own kit. Without a
+ * carry, each hero is at the level the builder's fixed XP reaches (fix.opening-first-level: the Orphanage's 20) and
+ * each item OPENING-PARTY.json carries is on the first drafted hero who may take it (openingHolderOf — its takers, so
+ * the Flaming Longsword only on a Warrior or a Paladin, and on nobody when neither is drafted; fix.opening-levels).
+ * With a carry (the kingdom's run through the opening), each hero's level and items are the carry's.
+ */
+export function openingPartyOf(position: number, replicate: number, carry?: OpeningCarry): { heroes: string[]; heroItems: (string[] | undefined)[]; heroProgress: (HeroProgress | undefined)[]; heroBadges: (string[] | undefined)[]; heroMods: (UnitMods | undefined)[] } {
   const at = OPENING_POSITIONS.find((p) => p.position === position)
   if (!at) throw new Error(`opening: no position ${position} — progression/OPENING-PARTY.json has ${OPENING_POSITIONS.map((p) => p.position).join(', ')}`)
   const drafted = openingHeroesOf(replicate, at.drafted)
   const heroes = drafted.map((h) => h.id)
-  const heroProgress = heroes.map((id, n): HeroProgress | undefined => {
-    const level = at.levels[n] ?? 1
-    if (level === 1) return undefined
-    // level 3 brings the first class power, which nothing here chooses yet — refused, not guessed (fix.opening-levels)
-    if (level > 2) throw new Error(`opening position ${position}: draft ${n + 1} is level ${level} — powers from level 3 are fix.opening-levels'`)
-    const cls = (UNITS[id]!.tags ?? []).find((t) => t in SPECIALTY_OF)
-    if (!cls) throw new Error(`opening position ${position}: ${id} has no class with a specialty in progression/OPENING-PARTY.json`)
-    return { level, specialtyId: SPECIALTY_OF[cls]!, powers: [] }
-  })
-  const heroItems: (string[] | undefined)[] = heroes.map(() => undefined)
-  for (const itemId of at.carried) {
-    const item = ITEMS[itemId]
-    if (!item) throw new Error(`opening position ${position}: carried item '${itemId}' is not in the content`)
-    const i = heroes.findIndex((id, n) => heroItems[n] === undefined && (!item.classRestriction || (UNITS[id]!.tags ?? []).includes(item.classRestriction)))
-    if (i < 0) throw new Error(`opening position ${position}: no drafted hero can wield '${itemId}'`)
-    const kit = UNITS[heroes[i]!]!.defaultItems ?? []
-    heroItems[i] = [itemId, ...kit.filter((k) => ITEMS[k]?.itemClass !== 'weapon')]
+  const where = `opening position ${position}`
+  if (carry && (carry.levels.length > heroes.length || carry.items.length > heroes.length)) throw new Error(`${where}: the carry names ${Math.max(carry.levels.length, carry.items.length)} heroes, but ${heroes.length} are drafted`)
+  const heroProgress = heroes.map((id, n) => progressAt(id, (carry ? carry.levels[n] : at.levels[n]) ?? 1, where))
+  const heroItems: (string[] | undefined)[] = heroes.map((_, n) => (carry?.items[n] ? [...carry.items[n]!] : undefined))
+  if (!carry) {
+    for (const itemId of at.carried) {
+      const got = openingHolderOf(itemId, heroes, heroItems)
+      if (got) heroItems[got.holder] = got.items
+    }
   }
   // fix.opening-draft: each hero's badges and rolled points, identical at every position (the same replicate, the same draws)
   const heroBadges = drafted.map((h) => (h.badges.length ? [...h.badges] : undefined))

@@ -12,10 +12,14 @@ import { layerOfId } from '../src/content/maps.js'
 import { arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
 
 const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger.gates.curse-strike'
-// Replicate 7: the curse lands on a hero and the battle runs past Turn 7, so both Imps arrive.
+// Replicate 3: the curse lands on a hero and the battle runs past Turn 7, so both Imps arrive.
 // No replicate is won untouched on the party drafted by battle 5 (0 of 200, 2026-10-01 — the 2026-09-29
 // count "Gates 0" before the upgrades, DECISIONS.md "the battles might be too hard").
-const SEEN = 7
+// Law 10, fix.opening-levels (2026-10-02): the Flaming Longsword goes only to a Warrior or a Paladin (Andrew 2026-09-28: "it only
+// is going to help the paladin or the warrior"), so replicate 7's sword moved from its Rogue to its Paladin and that battle's
+// curse lands on nobody (0 hit; replicates 0-39 searched). Replicate 3 is the first whose curse lands on a hero and runs past Turn 7.
+// was: const SEEN = 7
+const SEEN = 3
 describe('encounter.opening.gates', () => {
   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
     const e = encounterDef(ENC)

@@ -1,24 +1,24 @@
 {
- "id": "fix.orphans-teacher-knife-refiled",
- "tree": "7a112b4df8a283f5f37ef70660c7a98a92736e5f",
- "ctx": "88d863b942d5f147c4ac470e0d72c63d5a9d8c47",
+ "id": "fix.opening-levels",
+ "tree": "721b80714f68bcd22785c9d72af7ff4b9b7ba70c",
+ "ctx": "2e79b66b16201bd501d300a13f99fcad6ef7b87b",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 288,
-  "typecheck": 1517,
-  "the item's own tests": 8304,
-  "gate 1 — the id appears in a real battle": 1695,
-  "brought its own tests": 35,
+  "not already decided": 418,
+  "typecheck": 1584,
+  "the item's own tests": 11683,
+  "gate 1 — the id appears in a real battle": 4842,
+  "brought its own tests": 38,
   "existing tests untouched": 0,
-  "control battles unchanged": 34546,
-  "content has a published source": 86,
+  "control battles unchanged": 51294,
+  "content has a published source": 99,
   "hardcode scan — core knows mechanisms, never names": 36,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 39,
-  "naming — no banned words invented": 119,
-  "kill switch — the tests fail without the content": 2245
+  "naming — new content ids use declared kinds": 41,
+  "naming — no banned words invented": 124,
+  "kill switch — the tests fail without the content": 6441
  }
 }
