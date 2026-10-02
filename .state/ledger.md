@@ -20266,6 +20266,32 @@ index ca4bebd..edf74cd 100644
   PASS  gate 1 — the id appears in a real battle — encounter.opening.cathedral: 75 log lines, 75 fired, 73 changed state
   PASS  brought its own tests — test/opening-cathedral.test.ts
   PASS  existing tests untouched
+## fix.codex-numbers — ABANDONED
+2026-10-02 00:47
+
+Filed 2026-09-28 with no probeIds: gate 1 probes 'fix.codex-numbers', which is not a content id and never appears in a battle (probe.mts: 'never appears in any log'), and the kill switch disables nothing, so the item can never pass as filed. The work is done and parked (engine git stash), not discarded. Re-filed as fix.codex-numbers-refiled with probeIds unit.bloodhound and hero.base.rogue-raven, two rows whose crit the item changes - the precedent Andrew ruled 2026-09-30 for encounter.opening.bridge-ai ('Park, abandon, re-file').
+
+## fix.codex-numbers-refiled — LANDED `81fed36` **NEEDS REVIEW**
+2026-10-02 00:52
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1753 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/crit.test.ts, test/items-per-unit.test.ts, test/codex-numbers.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.bloodhound: 18 log lines, 18 fired, 15 changed state · hero.base.rogue-raven: 5 log lines, 5 fired, 4 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/crit.test.ts, test/items-per-unit.test.ts, test/codex-numbers.test.ts, test/fixtures/battle-cursor-codex-numbers.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/crit.test.ts (-3), test/items-per-unit.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 586dd2b2->704acf4a, map.ridge 5f203320->4ce10af5, map.flanks 62501d02->7d26f30d, map.highlands 87ae61ed->2469419a, map.field e3208d6c->12d16ef9, map.thicket 9b35fa93->4641a852, map.proving.open ca8f206b->a0b7fce3, map.proving.ridge 113785a4->44f4ae17, map.proving.ford 98fb20b4->2471073b, map.proving.copse 7176496f->4899bf01, map.proving.ruin 7882854b->e7dfa711, map.courtyard 86c2de4f->79a2b1dd, map.floodplain 5a3493f2->2e0fbbcb, test.map.embers 6795745a->533d2327, test.map.showcase 5e0449c9->a5d3f809, test.map.duel-8 c389e368->400e8d3a, test.map.dungeon-16x8 54d4adc0->0ec15564, test.map.horde-24 fffde918->2978af63, test.map.journey-20x10 6028880d->67a9ca83, test.map.authored-40x40 fc98a0c5->93d34098, test.map.high-prop-single 9fba144d->881249cb, test.map.high-prop-multi a2f14f8c->5b67f74b, test.map.well-shove 0e40ee04->0c8e5836
+## viewer.weapons-in-hand — LANDED `3d26873` **NEEDS REVIEW**
+2026-10-02 00:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-cast.test.ts, test/weapons-in-hand.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/opening-cast.test.ts, viewer/test/weapons-in-hand.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-cast.test.ts (-1) — will land FLAGGED for review
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -20287,6 +20313,196 @@ index ca4bebd..edf74cd 100644
   PASS  brought its own tests — test/ability-effects.test.ts, test/additions.test.ts, test/audit.test.ts, test/battle-commands.test.ts, test/battle-cursor.test.ts, test/burst-resolution.test.ts, test/crit.test.ts, test/elemental-resists.test.ts, test/item-powers.test.ts, test/one-action-type.test.ts, test/pack-moves.test.ts, test/prior-art.test.ts, test/protection-universal.test.ts, test/wrong-home.test.ts, test/fixtures/battle-cursor-one-effect.json, test/one-effect-vocabulary.test.ts
   WARN  existing tests untouched — DELETED LINES in test/ability-effects.test.ts (-3), test/additions.test.ts (-1), test/audit.test.ts (-14), test/battle-commands.test.ts (-4), test/battle-cursor.test.ts (-2), test/burst-resolution.test.ts (-1), test/crit.test.ts (-4), test/elemental-resists.test.ts (-1), test/item-powers.test.ts (-2), test/one-action-type.test.ts (-1), test/pack-moves.test.ts (-3), test/prior-art.test.ts (-2), test/protection-universal.test.ts (-5), test/wrong-home.test.ts (-1) — will land FLAGGED for review
   PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 586dd2b2->983d18c3, map.ridge 5f203320->18c4d691, map.flanks 62501d02->985e06ac, map.highlands 87ae61ed->bd615103, map.field e3208d6c->1a8f8f94, map.thicket 9b35fa93->2870f4ef, map.proving.open ca8f206b->aedbd5e7, map.proving.ridge 113785a4->b1cf3676, map.proving.ford 98fb20b4->682c5a04, map.proving.copse 7176496f->482a63b4, map.proving.ruin 7882854b->6c74ca06, map.courtyard 86c2de4f->9c9625e9, map.floodplain 5a3493f2->c850c8cb, test.map.embers 6795745a->26fe6085, test.map.showcase 5e0449c9->9519c5bd, test.map.duel-8 c389e368->8fd5a5c4, test.map.dungeon-16x8 54d4adc0->93ac941b, test.map.horde-24 fffde918->e7aa772e, test.map.journey-20x10 6028880d->c7a6819c, test.map.authored-40x40 fc98a0c5->db525dbf, test.map.high-prop-single 9fba144d->0c47694f, test.map.high-prop-multi a2f14f8c->4b290d55, test.map.well-shove 0e40ee04->d264c02d
+  PASS  generalizes — the second instance costs zero engine code — shape 'numbers' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.bloodhound,hero.base.rogue-raven — they genuinely test it
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 64a5e3d..321ca31 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -212,4 +212,11 @@ const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
+ // (1). A `changed` case is checked here and skips the older layers.
+ const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-flight.json', import.meta.url), 'utf8'))
++// fix.codex-numbers (2026-10-01), Law 10: crit base 3 is counted once (DECISIONS.md 2026-09-28 "the duplication review,
++// ruled", finding C1: "Crit base 3 should be counted once.") — the pack carries each unit's Codex crit total less the
++// engine's 3, so every hero and every enemy with an authored crit rolls 3 points less than the double count did; bleed-out
++// and Deathbed fold as stats and enemy rows carry their tier. Every case frozen here (tools/capture-codex-numbers-cursor.mts).
++// Moved for real, the ruling working: the 31 cases where a crit roll goes the other way. A `changed` case is checked here
++// and skips the older layers.
++const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-codex-numbers.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -328,6 +335,9 @@ describe('resumable battle cursor', () => {
+       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const codexNumbersMoved = codexNumbersExpected?.changed === true
+       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const fireImpFlightMoved = fireImpFlightExpected?.changed === true
++      // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a codex-numbers-moved case skips the fire-imp-flight layer too (fix.codex-numbers 2026-10-01)
++      const fireImpFlightMoved = fireImpFlightExpected?.changed === true || codexNumbersMoved
+       // was: const kiteAloneMoved = kiteAloneExpected?.changed === true — a fire-imp-flight-moved case skips the kite-alone layer too (content.fire-imp-flight 2026-10-01)
+       const kiteAloneMoved = kiteAloneExpected?.changed === true || fireImpFlightMoved
+@@ -398,5 +408,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (fireImpFlightExpected) {
++        if (codexNumbersExpected) {
++        expect(hash(ctx.events), 'full codex-numbers events').toBe(codexNumbersExpected.events)
++        expect(hash(ctx.state), 'full codex-numbers state').toBe(codexNumbersExpected.state)
++        expect(hash(ctx.rng.log), 'full codex-numbers RNG').toBe(codexNumbersExpected.rng)
++        expect(result).toEqual(codexNumbersExpected.result)
++        }
++        // was: if (fireImpFlightExpected) { — fix.codex-numbers (2026-10-01): a codex-numbers-moved case is checked above instead
++        if (fireImpFlightExpected && !codexNumbersMoved) {
+         expect(hash(ctx.events), 'full fire-imp-flight events').toBe(fireImpFlightExpected.events)
+         expect(hash(ctx.state), 'full fire-imp-flight state').toBe(fireImpFlightExpected.state)
+diff --git a/test/crit.test.ts b/test/crit.test.ts
+index 49e7f93..5c9cce3 100644
+--- a/test/crit.test.ts
++++ b/test/crit.test.ts
+@@ -11,5 +11,5 @@ import { previewBurst } from '../src/core/burst.js'
+ // accuracy − target Luck.
+ import { describe, expect, it } from 'vitest'
+-import { preview } from '../src/core/pipeline.js'
++import { preview, CRIT_BASE } from '../src/core/pipeline.js'
+ import { rollCritEffect } from '../src/core/crit.js'
+ import { rollBelow } from '../src/core/rng.js'
+@@ -55,7 +55,12 @@ describe('the chart arrives as ruled data', () => {
+   it('the crit fields and unit crit/luck came through the pipeline', () => {
+     expect(ATTACKS['attack.dagger.stab']!.attack.crit).toBe(5)
+-    expect(UNITS['unit.bloodhound']!.crit).toBe(10)
++    // Law 10 rewrite 2026-10-01 (fix.codex-numbers; DECISIONS.md 2026-09-28 "the duplication review,
++    // ruled", finding C1, Andrew: "Crit base 3 should be counted once."): the Codex authors crit as a
++    // TOTAL (the Bloodhound 10, the Orphan Child 20) and the engine adds its own base 3, so this file
++    // locked in a double count — a total of 13 and 23. The pack now carries total − CRIT_BASE, and the
++    // row is asserted as that difference, read off the engine's base rather than retyped.
++    expect(UNITS['unit.bloodhound']!.crit).toBe(10 - CRIT_BASE)
+     expect(UNITS['unit.bruiser-demon']!.luck).toBe(5)
+-    expect(UNITS['hero.fixed.orphans']!.crit).toBe(20)
++    expect(UNITS['hero.fixed.orphans']!.crit).toBe(20 - CRIT_BASE)
+   })
+ })
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index e73d5ff..1aa38b3 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -14,4 +14,5 @@ import { createBattle, fieldedDef } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { applyItems } from '../src/core/items.js'
++import { CRIT_BASE } from '../src/core/pipeline.js'
+ import { ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+@@ -33,5 +34,12 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+     for (const [id, row] of Object.entries(o)) {
+       const f = shape(fieldedDef(id) as unknown as Record<string, unknown>)
+-      const r = shape(row)
++      // Law 10, 2026-10-01 (fix.codex-numbers; DECISIONS.md 2026-09-28 "the duplication review, ruled",
++      // finding C1: "Crit base 3 should be counted once"): the frozen oracle holds crit as the Codex
++      // TOTAL (a warrior 3), which the engine then added its own 3 to. A row now carries the total less
++      // CRIT_BASE. The oracle stays frozen; its crit is read as that same difference, so the comparison
++      // still says whether the FOLD moved — no assertion below is loosened.
++      const critOver = ((row['crit'] as number | undefined) ?? 0) - CRIT_BASE
++      const { crit: _frozenCrit, ...frozen } = row
++      const r = shape(critOver ? { ...frozen, crit: critOver } : frozen)
+       // fix.unit-tags (2026-09-03): the oracle predates the collapse of
+       // `attributes` into `tags` (Law 11); the field no longer exists.
+@@ -95,5 +103,5 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+     })
+     for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
+-    expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
++    expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
+     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
+   })
+d9a0161
+
+diff --git a/test/opening-cast.test.ts b/test/opening-cast.test.ts
+index 82c7a3c..f87dba0 100644
+--- a/test/opening-cast.test.ts
++++ b/test/opening-cast.test.ts
+@@ -65,5 +65,8 @@ describe("battles 2 and 3's cast in the new screen", () => {
+       expect(look, t).toBeDefined()
+       for (const m of RULED) expect(look!.motions[m], `${t} ${m}`).toBeDefined()
+-      if (byClass.has(cls[0]!)) expect(look!.id, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.id)
++      /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was the look's id. Andrew: "The characters are not holding weapons";
++         each hero now holds its own kit, so a look's id names its held set too (oathblade+greatsword) — the outfit, which
++         is what this asks, is the body file */
++      if (byClass.has(cls[0]!)) expect(look!.model.path, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.model.path)
+     }
+   })
+diff --git a/test/weapons-in-hand.test.ts b/test/weapons-in-hand.test.ts
+new file mode 100644
+index 0000000..f33760c
+--- /dev/null
++++ b/test/weapons-in-hand.test.ts
+@@ -0,0 +1,44 @@
++// viewer.weapons-in-hand (engine backlog; DECISIONS.md 2026-10-01 'the camera redesigned on the caravan preview; ... what is
++// queued after it'). Andrew: "The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding
++// weapons." Expect: "In the sandbox every hero whose kit names a weapon with a 3D model holds it in hand through idle, walk and
++// attack; a weapon without a model is listed, not faked." The engine's side: every held item (a weapon or a shield) of every
++// base hero's kit is, in the character pack, either a model in that hero's hand or listed as having none — so a new weapon in
++// a kit shows up here, not as an empty hand. The viewer's half (../viewer/tools/weapons-in-hand.test.mjs) stands each body
++// up from the approved files and follows the weapon through the motions. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { UNITS, ITEMS } from '../../engine/src/content/index.js'
++
++type Prop = { path: string, sha256: string, hand: string, item: string, model: string }
++type Look = { id: string, props: Prop[], unheld?: string[] }
++const pack = (): Record<string, { typeId: string, looks: Look[] }> => JSON.parse(execFileSync(process.execPath, ['../viewer/tools/character-models.mjs', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24 }))
++const HELD = new Set(['weapon', 'shield'])
++
++describe('the weapons of the kit, in hand', () => {
++  const models = pack()
++  const heroes = Object.keys(UNITS).filter((t) => t.startsWith('hero.base.'))
++  it('every held item of every base hero is a model in its hand or listed as having none', () => {
++    expect(heroes.length).toBeGreaterThan(20)
++    for (const typeId of heroes) {
++      const held = ((UNITS as Record<string, any>)[typeId].defaultItems ?? []).filter((i: string) => HELD.has((ITEMS as Record<string, any>)[i]?.itemClass))
++      for (const look of models[typeId]!.looks) {
++        const shown = new Set(look.props.map((p) => p.item)), listed = new Set(look.unheld ?? [])
++        for (const item of held) expect(shown.has(item) !== listed.has(item), `${typeId}: ${item} is held or listed, not both`).toBe(true)
++        for (const item of [...shown, ...listed]) expect(held, `${typeId}: ${item} is in its kit`).toContain(item)
++      }
++    }
++  })
++  it('a sword-and-shield paladin holds both, a greatsword is held, the priest\'s book is listed', () => {
++    const look = (t: string) => models[t]!.looks[0]!
++    expect(look('hero.base.paladin-shiney').props.map((p) => [p.item, p.hand])).toEqual([['item.longsword', 'R'], ['item.kite-shield', 'L']])
++    expect(look('hero.base.paladin-dark').props.map((p) => [p.item, p.hand])).toEqual([['item.greatsword', 'R']])
++    expect(look('hero.base.rogue-skull').props.map((p) => [p.item, p.hand])).toEqual([['item.daggers', 'R'], ['item.daggers', 'L']])
++    expect(look('hero.base.priest-pauper').props).toEqual([])
++    expect(look('hero.base.priest-pauper').unheld).toEqual(['item.holy-texts'])
++    expect(look('hero.base.warrior-brawler').props).toEqual([])
++  })
++  it('the viewer page: each weapon rides its hand through idle, walk and attack', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/weapons-in-hand.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/# pass 2/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++})
+```
+</details>
+
+## viewer.xcom-camera — LANDED `6fe0c3f`
+2026-10-02 01:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3734 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/xcom-camera.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/xcom-camera.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -20663,3 +20879,42 @@ index 4b0278b..7c35719 100644
      expect(p.owner).toMatch(/^content\/settled\.json\.statuses\[\d+\]$/)
 ```
 </details>
+## viewer.unit-card-bar — LANDED `90d261a`
+2026-10-02 01:37
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · DECISIONS.md:3734
+  PASS  typecheck
+  PASS  the item's own tests — test/unit-card-bar.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/unit-card-bar.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.characters-unfaded — LANDED `dfa2245`
+2026-10-02 01:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/characters-unfaded.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/characters-unfaded.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

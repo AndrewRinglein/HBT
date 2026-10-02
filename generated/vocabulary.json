@@ -26,10 +26,19 @@
   "surge",
   "vision",
   "thorns",
-  "swapCost"
+  "swapCost",
+  "bleedOutTurns",
+  "deathbedFighting"
  ],
  "statBase": {
   "swapCost": 1
+ },
+ "ruleBases": {
+  "crit": 3,
+  "vision": 6,
+  "bleedOutTurns": 5,
+  "deathbedFighting": 20,
+  "deathbedPerToughness": 5
  },
  "resolvable": [
   "strength",

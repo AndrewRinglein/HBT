@@ -42,6 +42,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     vision: def.vision ?? 0,
     ...(def.thorns ? { thorns: def.thorns } : {}),   // v2.thorns: absent on a bare body (snapshots unchanged)
     ...(def.swapCost !== undefined && def.swapCost !== 1 ? { swapCost: def.swapCost } : {}),   // v2.swap: absent = 1
+    ...(def.bleedOutTurns ? { bleedOutTurns: def.bleedOutTurns } : {}), ...(def.deathbedFighting ? { deathbedFighting: def.deathbedFighting } : {}),   // fix.codex-numbers: absent = 0 (snapshots unchanged)
     auras: (def.auras ?? []).map((a) => ({ ...a })),
     summoned: false,
     // refactor.one-action-type (2026-09-04): ONE list — attacks, powers,

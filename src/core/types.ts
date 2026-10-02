@@ -872,6 +872,20 @@ export type UnitDef = {
   /** v2.swap (COMBAT-V2 §11.2, 2026-09-24): the loadout swap's stamina cost. Absent = 1 (the rule's default). */
   readonly swapCost?: number
   /**
+   * fix.codex-numbers (2026-10-01, review finding C9): the unit's own addition to the
+   * bleed-out counter (BLEED_OUT_COUNTER, settle.ts) — Death Seeker −3, Survivor +3, Thick
+   * Blooded +5 ("Turns to Bleed out", the Codex's bleedOutTurns). Folded at fielding. Absent = 0.
+   */
+  readonly bleedOutTurns?: number
+  /** fix.codex-numbers (C9): the unit's own addition to Deathbed Fighting (20 + 5 × Toughness, settle.ts) — a level pick, an item. Absent = 0. */
+  readonly deathbedFighting?: number
+  /**
+   * fix.codex-numbers (2026-10-01, review finding K7): the Codex enemy tier (1, 2, 3). The
+   * engine never reads it; the pack carries it beside `xpByTier` so the kingdom can pay XP by
+   * tier (DECISIONS.md 2026-09-28: "XP per kill is 2 / 5 / 15 by tier"). Absent on heroes.
+   */
+  readonly tier?: number
+  /**
    * capability.auras (2026-09-03), COMBAT-DESIGN §5 / Design Law 27 "auras
    * lend, they never give": a radius around this unit granting stat modifiers
    * to units inside it WHILE they are inside — derived on read like terrain,
@@ -951,6 +965,10 @@ export type Unit = {
   thorns?: number
   /** v2.swap: the folded swap cost; absent = 1 (read through the `swapCost` stat). */
   swapCost?: number
+  /** fix.codex-numbers: the folded bleed-out addition (see UnitDef); absent = 0. Not `bleedOut`, which is the running counter. */
+  bleedOutTurns?: number
+  /** fix.codex-numbers: the folded Deathbed Fighting addition (see UnitDef); absent = 0. */
+  deathbedFighting?: number
   /** v2.swap (COMBAT-V2 §11.2): the one swap of this activation is spent. Absent = not spent; cleared at activation start and by a Surge. */
   swapUsed?: boolean
   /** capability.auras: this unit's auras, own frozen copies (plain data). */

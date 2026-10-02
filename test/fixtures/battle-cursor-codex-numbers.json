@@ -1,10 +1,10 @@
 {
-  "sourceCommit": "fix.one-effect-vocabulary",
-  "note": "the one effect union and interpreter (fix.one-effect-vocabulary). Cases marked changed differ from the fix.codex-numbers capture; movedOnlyText means state, RNG and result are unchanged.",
+  "sourceCommit": "fix.codex-numbers",
+  "note": "crit is counted once: the pack carries each unit's Codex total less the engine's base 3 (DECISIONS.md 2026-09-28 \"the duplication review, ruled\", finding C1); bleed-out and Deathbed fold as stats; enemy rows carry their tier. Cases marked changed differ from the content.fire-imp-flight capture; movedOnlyText means state, RNG and result are unchanged.",
   "cases": [
     {
       "id": "showcase.alpha-team",
-      "events": "55b7f8e2407a6b1d0dd5fe8432d8bfe5cd2c3414a681a598aaf268fdd6912af3",
+      "events": "14a002c55516e88e45d6a946b121d828bd27d0db29d8aced8c4c700dc90c948f",
       "state": "4c4fa2adc592fe271cba34b1c4e08b338f351af6f46eaf8fad189b8d4e85b128",
       "rng": "407df41179a23d823b4e3f3dcae0a24642f66a9db769304ec20b9727464393fb",
       "result": {
@@ -13,7 +13,7 @@
         "usesSpent": []
       },
       "changed": true,
-      "movedOnlyText": true
+      "movedOnlyText": false
     },
     {
       "id": "showcase.arc-variant",
@@ -43,7 +43,8 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.badged",
@@ -79,7 +80,8 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.eve-24-a",
@@ -91,7 +93,8 @@
         "turns": 2,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.eve-24-b",
@@ -103,7 +106,8 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.farmers-grown",
@@ -115,7 +119,8 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.flight-bonuses",
@@ -131,7 +136,7 @@
     },
     {
       "id": "showcase.gash-variant",
-      "events": "5a0cf2e9dc54d83e9597391316b5d4c0f831f913c5581944244f87004f4d1370",
+      "events": "9007e5c814d301bb22056161394901ceeb775e81bc1316b7a6bc76ec008db96d",
       "state": "80dcc0408df4cc73b4e0c7dd5ccb73addac1f4dd4baf28044f55e9f4436ed739",
       "rng": "9d0050a106e291c977206be07e51af392f2d392fcd365eaa8455451811f7d004",
       "result": {
@@ -140,7 +145,7 @@
         "usesSpent": []
       },
       "changed": true,
-      "movedOnlyText": true
+      "movedOnlyText": false
     },
     {
       "id": "showcase.horrors",
@@ -152,7 +157,8 @@
         "turns": 8,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.item-powers",
@@ -164,7 +170,8 @@
         "turns": 1,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.kiln",
@@ -176,7 +183,8 @@
         "turns": 5,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.knockback-two",
@@ -234,8 +242,8 @@
     },
     {
       "id": "showcase.prologue-enemies",
-      "events": "2a6379e484ce13c8316d265121e922d0a1a057fa8842f80fe18616dd4df085c7",
-      "state": "5624e185eac18f8a20397b4093805ce09f1b0ab926e3c01d0fbc4f5b22489ba2",
+      "events": "951f49edc45f6d688afeb2a6a1c25b5189f43d7d14399be87d2825ac7f567dfd",
+      "state": "7dd29cefe6076a31f8b6f50c759395b64ce44b719c9a9903f79e7dff4aacbed5",
       "rng": "6da14f4bb95c7ca1c351ca82189fe86db2b0b4f187b388c7ec2e321ce8acf0a6",
       "result": {
         "outcome": "wipe",
@@ -255,7 +263,8 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.rime",
@@ -267,7 +276,8 @@
         "turns": 12,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.supper",
@@ -279,7 +289,8 @@
         "turns": 6,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.surge-flight-ladder",
@@ -303,7 +314,8 @@
         "turns": 2,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.two-zombies-and-a-child",
@@ -315,7 +327,8 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.waystation",
@@ -440,7 +453,8 @@
           }
         ]
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "showcase.wounded-entry",
@@ -548,7 +562,8 @@
         "turns": 7,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.charge-a",
@@ -572,7 +587,8 @@
         "turns": 1,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.cover-crates",
@@ -805,7 +821,8 @@
           }
         ]
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.kdb",
@@ -839,16 +856,15 @@
     },
     {
       "id": "test.mage-kindle",
-      "events": "b3fde0cf6a7c1aed849bbd4e39712d3cd0c22942d21eb30fac2b417316889176",
-      "state": "bbeb64250280a0f26e8126ca3f6085504ead77b4ea62f10fef808bc36c16d20f",
+      "events": "f8a8b4ef61322e282daa4135a245b4a4385245de65a7c30e3a5516a1d3c181ca",
+      "state": "8edd9cdfc310786d652a5e2e6fb466814d7aef18502e0f74333049e32f4de87f",
       "rng": "590c3dfb900cd62c7e09deff4ba13d775a464a53bfdaefcf61c90cf1ed6e007b",
       "result": {
         "outcome": "heroClear",
         "turns": 5,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.mode-change-a",
@@ -884,19 +900,8 @@
         "turns": 6,
         "usesSpent": []
       },
-      "changed": false
-    },
-    {
-      "id": "test.opening-cathedral",
-      "events": "e8037602cd3a2eeb63e01ec2d985186c786a9ce708d14a5900687b22c3c1ae8a",
-      "state": "bda53dae1cfc0ab9e2288dfa252e588f3c293656c8f48dd50327dc34d2c1dcce",
-      "rng": "426bee0aa9b9ad2566b5ef7a318aa09e372c67174d52dc691430c25080cebb9f",
-      "result": {
-        "outcome": "wipe",
-        "turns": 12,
-        "usesSpent": []
-      },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.opening-cavern-trail",
@@ -908,20 +913,20 @@
         "turns": 10,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.opening-gates",
-      "events": "1b4426737d84d7784dfff66b1449830637257b838d0fc773ef9457f118609c6a",
-      "state": "b14519c49ec28901bf222f8706273263b380ef4cf4f71a1368ed222d9a0e9ab4",
+      "events": "5c38b324632834f370ed9cad5528b6ad01f21b8b498df8fc150a91ee38ae0d13",
+      "state": "84eb3c2db8dbb287a26457c89db7c43cb8580b09e19b76043788d2d4e324444e",
       "rng": "257082714e212ba5a2f48fb92f3f90968d84ca1d95f2fbc5e73f7c91e061d740",
       "result": {
         "outcome": "wipe",
         "turns": 6,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.opening-lumberjack",
@@ -933,7 +938,8 @@
         "turns": 8,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.opening-orphanage",
@@ -945,7 +951,8 @@
         "turns": 10,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.opening-units",
@@ -957,7 +964,8 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.placed-remains-a",
@@ -1021,7 +1029,7 @@
     },
     {
       "id": "test.props-viewer-ranged-zoc",
-      "events": "6a7e5a8b35113925e577d56c26dc019722b36d34527208825287943af6ed7e74",
+      "events": "012b4798d6f2ef11e0eac86ad5be043a555b4e18d40bdc79ec0bdc953220ba15",
       "state": "5431550553dd962fc677be350dd0256542982b3af8f928fb7cf24cf15f9aee58",
       "rng": "466c3ca0c3b34696e07bb9ae0cb648999f12ef23a0b61bac5bfe46e3c76b84d6",
       "result": {
@@ -1030,7 +1038,7 @@
         "usesSpent": []
       },
       "changed": true,
-      "movedOnlyText": true
+      "movedOnlyText": false
     },
     {
       "id": "test.raise-one",
@@ -1114,7 +1122,8 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.thin-sign",
@@ -1150,7 +1159,8 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "test.vs-target-a",
@@ -1198,7 +1208,8 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "progression-surge-1",
@@ -1210,7 +1221,8 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "progression-surge-2",
@@ -1222,7 +1234,8 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": false
+      "changed": true,
+      "movedOnlyText": false
     },
     {
       "id": "legacy-surge-cap",

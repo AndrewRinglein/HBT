@@ -1,5 +1,29 @@
 [
  {
+  "id": "viewer.side-facing",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the first look at the XCOM camera, the weapons and the bodies'): 'The enemies should be facing to the left, and the heroes should be facing to the right.' At rest every body faces its side's way across the board (heroes, civilians among them, east; enemies west); walking it faces where it walks, striking its target, and it turns back when idle.",
+  "expect": "In the sandbox at the start every hero (and civilian) faces right and every enemy left; after a walk or a strike each turns back to its side's way."
+ },
+ {
+  "id": "viewer.xcom-camera-tuning",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the first look at the XCOM camera, the weapons and the bodies'): 'the zoom-in and zoom-out should go a little bit further than the 0.75 and 1.4' · 'The pointing-to-scroll on the map does not work very well. If you point to the edge, you sometimes get some movement.' The wheel reaches further and still springs back; the pointer at the board's edge, or at the screen's edge over the battle, always scrolls — the view may centre any point of the board.",
+  "expect": "In the sandbox the wheel goes past 0.75x and 1.4x and springs back; holding the pointer at any edge of the board or the screen scrolls the map that way every time, until the view reaches the board's edge."
+ },
+ {
+  "id": "viewer.xcom-camera",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the XCOM-style camera'): 'I want to fully replace the camera with an XCOM-style camera. So no tilt, no free rotation.' Replaces the orbit controls (2026-09-30 'a true 3D battle') and viewer.tactical-camera's caravan camera (viewer/src/camera-policy.js) for every battle. One fixed angle and zoom; the arrow keys rotate 90 degrees; the mouse wheel zooms a limited amount and snaps back to standard when it stops; pointing past the map edge scrolls the map, no grab-drag, no Reset needed. One character is auto-selected at the start with the map centered on them; when its activation ends, the next in the character bar left to right, civilians included; double-clicking a character in the top bar or on the map changes it. A character portrait in the lower-left corner, as tall as the ability bar; clicking an ability re-centers on the acting unit. Anything blocking the view of a character is highly translucent. End Turn far less prominent than End Activation. The 3D board and bodies stay in true perspective.",
+  "expect": "In the sandbox (http://127.0.0.1:4230/play): no tilt or free rotation; each arrow key turns the view exactly 90 degrees; the wheel zooms and springs back to the standard zoom; the pointer at the screen edge scrolls; the first character is selected and centered at the start and the next in the bar, civilians included, after each activation ends; a double-click on a card or a body selects that unit; the portrait sits lower left at the ability bar's height; clicking an ability centers the actor; a wall or roof between camera and a character is see-through; End Turn is visibly smaller than End Activation.",
+  "note": "Andrew 2026-10-01 ('the most important things are the camera and the movements'): first in the viewer queue, ahead of viewer.unit-card-bar, viewer.characters-unfaded, viewer.weapons-in-hand and viewer.real-bodies (DECISIONS.md 'the order'). The top bar this queue walks is viewer.unit-card-bar's; until it lands, the order is that bar's order as the board knows it.",
+  "status": "done",
+  "sha": "6fe0c3f"
+ },
+ {
   "id": "viewer.walk-in-step",
   "kind": "viewer",
   "shape": "plumbing",
@@ -9,25 +33,32 @@
   "sha": "d2e4344"
  },
  {
-  "id": "viewer.weapons-in-hand",
+  "id": "viewer.unit-card-bar",
   "kind": "viewer",
   "shape": "plumbing",
-  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding weapons.' · 'we don't have weapons. I don't see any weapons.' Every 3D body holds the 3D weapon of its kit in its hand socket (assets/characters/oathblade-armor/generated/rebuild/weapon-audition/equipment/ has bow-flexible.glb; read assets/characters/PRODUCTION-START.md and production-lessons.json first, and the skills AGENTS.md names for equipment placement).",
-  "expect": "In the sandbox every hero whose kit names a weapon with a 3D model holds it in hand through idle, walk and attack; a weapon without a model is listed, not faked."
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'We also need a character selector bar above the screen, the way it is in the visual playback. You have all the heroes and enemies as tiny little cards above the screen. That should still be there. And I can use that to target things as well as clicking on them.' The replay's unit-card strip (the topbar portraits) in the live battle and the Kingdom host; a card click is the unit click (select a hero to act; with an attack chosen, target that unit through the play input).",
+  "expect": "In the sandbox the strip of every unit's card sits above the board; clicking a hero's card starts its activation; with an attack chosen, clicking an enemy's card aims and confirms exactly as clicking its body.",
+  "status": "done",
+  "sha": "90d261a"
  },
  {
   "id": "viewer.characters-unfaded",
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'these characters are faded, like they're ghost-like, because there are other competing things. The characters are the stars. They should not be faded, especially not one that's selected.' Find what dims the bodies (the board's DOM overlays over the WebGL canvas, the marks, opacity on standees, the lighting) and draw every body at full strength, the selected one never under anything.",
-  "expect": "Side-by-side screenshots: every body drawn at full strength over the ground marks; the selected body brightest; nothing semi-transparent over a body."
+  "expect": "Side-by-side screenshots: every body drawn at full strength over the ground marks; the selected body brightest; nothing semi-transparent over a body.",
+  "status": "done",
+  "sha": "dfa2245"
  },
  {
-  "id": "viewer.unit-card-bar",
+  "id": "viewer.weapons-in-hand",
   "kind": "viewer",
   "shape": "plumbing",
-  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'We also need a character selector bar above the screen, the way it is in the visual playback. You have all the heroes and enemies as tiny little cards above the screen. That should still be there. And I can use that to target things as well as clicking on them.' The replay's unit-card strip (the topbar portraits) in the live battle and the Kingdom host; a card click is the unit click (select a hero to act; with an attack chosen, target that unit through the play input).",
-  "expect": "In the sandbox the strip of every unit's card sits above the board; clicking a hero's card starts its activation; with an attack chosen, clicking an enemy's card aims and confirms exactly as clicking its body."
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding weapons.' · 'we don't have weapons. I don't see any weapons.' Every 3D body holds the 3D weapon of its kit in its hand socket (assets/characters/oathblade-armor/generated/rebuild/weapon-audition/equipment/ has bow-flexible.glb; read assets/characters/PRODUCTION-START.md and production-lessons.json first, and the skills AGENTS.md names for equipment placement).",
+  "expect": "In the sandbox every hero whose kit names a weapon with a 3D model holds it in hand through idle, walk and attack; a weapon without a model is listed, not faked.",
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "3d26873"
  },
  {
   "id": "viewer.real-bodies",
@@ -233,5 +264,30 @@
   "expect": "The fast zombie's Charge shows in its action bar; a prone unit shows Stand; the test zombies' danger reads 4; status.weak plays Weak's style; after a Surge the movement numeral is the engine's.",
   "changesBaseline": false,
   "note": "Batch with the next viewer work."
+ },
+ {
+  "id": "kingdom.opening-run-six",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'one continuous run through the first six battles'): 'We need a continuous play experience that goes through the first six levels ... It does have to save correctly ... We're not ever going to the kingdom map in these first six fights.' / 'you can continue from the next battle.' / 'there should be battle rewards, experience points, levels, and equipping inside of our sixth loop.' Grows kingdom.opening-loop-three to six: one continuous run on the Retaking Abbotown map (kingdom.abbotown-map) through Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates and Cathedral - the first hero selection, the draft, battle rewards, experience, levels and equipping between battles, never the kingdom map. The run saves after each battle and, reopened, continues from the next battle. The rulings 2026-09-28 and 2026-09-29 on the opening still hold where this does not replace them (rewards, the Flaming Longsword after battle 2, XP levels, wounds carried, a lost battle replayed with the same party, no tactics). Kingdom commits in its own repository.",
+  "expect": "From http://127.0.0.1:4230/play Andrew starts a run, picks the first hero, drafts, equips and plays the Orphanage through the Cathedral without the kingdom map; closing the page after battle 3 and reopening it continues at battle 4 with the same party, items, XP and levels; losing a battle offers it again with the same party.",
+  "needs": [
+   "kingdom.abbotown-map",
+   "encounter.opening.bridge-ai-refiled",
+   "encounter.opening.gates",
+   "encounter.opening.cathedral"
+  ],
+  "note": "Andrew 2026-10-01: third in the order (DECISIONS.md 'the order', item 3), after the camera and the movements. Supersedes kingdom.opening-loop-three (which still needs the abandoned encounter.opening.bridge-ai and can never start) and kingdom.opening-loop (the engine queue's 2026-09-28 six-battle loop, 'one sitting') - abandon both from a terminal."
+ },
+ {
+  "id": "viewer.affliction-pop-up",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the afflictions at 0 Health'): 'The first time someone gets any one of the four main status afflictions, we need to pop up before and after art for that character with an explanation' / 'There is a before/after pop-up mid-battle that will explain what just happened with the card art of both before and after.' The first time a hero gains Vampirism, Lycanthropy, Possession or Rotting Flesh, the battle pauses on a pop-up with the hero's card art before and after, the stat changes, the drawbacks, and what happens at 0 Health (three of them most likely turn the hero into an enemy unless Luck holds; Possession raises a Ghost; Rotting Flesh falls and gains Fragile). Most heroes have before/after art; a hero without it is listed, not faked. Kingdom and viewer commit in their own repositories.",
+  "expect": "In a sandbox battle where a hero is first afflicted, the pop-up shows that hero's before and after art and the three explanations, and the battle resumes when it is closed.",
+  "needs": [
+   "rule.afflictions-at-zero"
+  ],
+  "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4)."
  }
 ]
