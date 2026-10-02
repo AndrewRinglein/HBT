@@ -89,19 +89,52 @@ export function killXpOf(u: Pick<EngagementResult['units'][number], 'kills' | 'k
   return priced.reduce((s, n) => s + n, 0) + (u.kills - priced.length) * lowest
 }
 
-export function resolveReckoning(campaign: CampaignState, engagement: Engagement, result: EngagementResult): Reckoning {
-  const kind = engagementKindOf(engagement.kind)
-  resolveBattleQuest(campaign, engagement)
-  const won = result.outcome === 'heroClear'
+/**
+ * The XP one battle pays each hero-side ROSTER row of its result, before the MVP — the one formula: resolveReckoning reads
+ * it, and so does the opening's carry (src/sim/opening-run.ts, fix.opening-levels 2026-10-02), so the levels the engine's
+ * opening probe fields come from the kingdom's XP (engine DECISIONS.md 2026-09-28: "the XP rewards are in the kingdom, not
+ * the engine"). The dead earn nothing; a battle whose row fixes its XP pays exactly that; else the speed bonus and each
+ * kill priced by its victim's tier. Rows in result order. Pure.
+ */
+export function battleXpOf(engagementId: string, result: EngagementResult): { index: number; xp: number; dead: boolean }[] {
   const speed = Math.max(0, 15 - result.enemyPhases)
   // kingdom.opening-rewards: a battle whose row fixes its XP pays exactly that to each deployed hero who lives, whatever
   // the outcome, kills or length — the formula and the MVP's +10 do not apply ("20 XP no matter what", DECISIONS.md
   // 2026-09-28; SWITCHES.md openingFixedXp)
-  const fixedXp = encounterRewardOf(engagement.id)?.xp
-
+  const fixedXp = encounterRewardOf(engagementId)?.xp
   // kingdom.encounter-result-fold: only the roster rows are the deployed heroes — an encounter's civilians and its
   // arrivals (a `role`) are never keyed to engagement.deployed
-  const heroes: HeroReckoning[] = result.units.filter((u) => u.side === 'hero' && u.role === undefined).map((u) => {
+  return result.units.filter((u) => u.side === 'hero' && u.role === undefined).map((u) => {
+    const dead = u.lifeState === 'dead'
+    return { index: u.index, xp: dead ? 0 : fixedXp ?? speed + killXpOf(u), dead }
+  })
+}
+
+/** The MVP's prize on top of its battle's XP (B7). */
+export const MVP_XP = 10
+
+/**
+ * MVP — "chosen randomly among all of the heroes… the more experience points a hero got, the higher their chance" (B7):
+ * a weighted roll over the living, each weighing its XP + 1; `roll` is the caller's, from its own cup, drawn only when there is an MVP to choose. The position in
+ * `xps` of the MVP — or null when nobody lives, or the battle's row fixes its XP (no MVP then). Pure.
+ */
+export function mvpOf(engagementId: string, xps: readonly { readonly xp: number; readonly dead: boolean }[], roll: () => number): number | null {
+  if (encounterRewardOf(engagementId)?.xp !== undefined) return null
+  const alive = xps.flatMap((h, i) => (h.dead ? [] : [{ xp: h.xp, i }]))
+  if (!alive.length) return null
+  let at = roll() % alive.reduce((s, h) => s + h.xp + 1, 0)
+  for (const h of alive) { at -= h.xp + 1; if (at < 0) return h.i }
+  return null
+}
+
+export function resolveReckoning(campaign: CampaignState, engagement: Engagement, result: EngagementResult): Reckoning {
+  const kind = engagementKindOf(engagement.kind)
+  resolveBattleQuest(campaign, engagement)
+  const won = result.outcome === 'heroClear'
+  // fix.opening-levels (engine, 2026-10-02): the XP is battleXpOf's and the MVP mvpOf's — the one formula, read here too
+  const xps = battleXpOf(engagement.id, result)
+
+  const heroes: HeroReckoning[] = result.units.filter((u) => u.side === 'hero' && u.role === undefined).map((u, k) => {
     const heroId = engagement.deployed[u.index]
     if (!heroId) throw new Error(`${engagement.id}: result names hero row ${u.index} but only ${engagement.deployed.length} were deployed`)
     const dead = u.lifeState === 'dead'
@@ -112,7 +145,7 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
     // this battle did.
     return {
       heroId,
-      xp: dead ? 0 : fixedXp ?? speed + killXpOf(u),
+      xp: xps[k]!.xp,
       // kingdom.encounter-result-fold: a hero who stood again at the Deathbed is Wounded in the battle — the same plain
       // wound as one who went down (SWITCHES.md foldDeathbedStood)
       wound: dead ? 0 : Math.max(hero.wound, u.downed || u.stood ? SWITCHES.woundFromDowned : 0),
@@ -121,15 +154,9 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
     }
   })
 
-  // MVP — "chosen randomly among all of the heroes… the more experience points
-  // a hero got, the higher their chance" (B7). A weighted roll, keyed by the
-  // Engagement, on its own cup. Nobody alive → no MVP.
-  const alive = fixedXp === undefined ? heroes.filter((h) => !h.dead) : []
-  const weight = alive.reduce((s, h) => s + h.xp + 1, 0)
-  if (alive.length) {
-    let at = rollOf(campaign, CUP_IDS.mvp, [engagement.id]) % weight
-    for (const h of alive) { at -= h.xp + 1; if (at < 0) { h.mvp = true; h.xp += 10; break } }
-  }
+  // MVP — mvpOf, a weighted roll keyed by the Engagement, on its own cup. Nobody alive → no MVP.
+  const mvp = mvpOf(engagement.id, heroes, () => rollOf(campaign, CUP_IDS.mvp, [engagement.id]))
+  if (mvp !== null) { heroes[mvp]!.mvp = true; heroes[mvp]!.xp += MVP_XP }
 
   // a prologue battle may take no ground (content/prologue.ts): no claim, no
   // loss, and a first-claim payout has nothing to be first about

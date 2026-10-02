@@ -98,6 +98,13 @@ export { zocHoldersAt } from '../../engine/src/core/movement.js'
 // the heroes that have not acted — the End Turn pop-up's question ("If you have anybody who has not acted, it should pop
 // up"). A read-only query; End Turn itself is the engine's `end-player-phase` command.
 export { heroesYetToAct } from '../../engine/src/core/commands.js'
+// Widened 2026-10-02 for fix.opening-levels (engine DECISIONS.md 2026-09-28 'the opening's party levels up; the Flaming
+// Longsword is a Warrior's or a Paladin's; the Bridge gives a reward'): the engine's opening party — its six positions, the
+// party a replicate drafts and fields at each (given what the earlier battles carried), who may hold a carried item and which
+// of three reward cards a player keeps. Read-only content functions; src/sim/opening-run.ts carries XP and levels by the
+// kingdom's own rules and hands them back as an OpeningCarry.
+export { OPENING_POSITIONS, OPENING_TAKERS, openingPartyOf, openingHolderOf, openingRewardPickOf } from '../../engine/src/content/opening-party.js'
+export type { OpeningCarry } from '../../engine/src/content/opening-party.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing
