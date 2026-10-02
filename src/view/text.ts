@@ -95,7 +95,11 @@ export function renderRoster(units: Map<number, UnitView>): string {
     .join('  ')
 }
 
-/** L3 — one line per meaningful event, with the damage waterfall spelled out. */
+/**
+ * L3 — one line per meaningful event, with the damage waterfall spelled out. A DEBUG DUMP for the CLI
+ * (viewer.reads-engine, review V11): the player's sentence table is the viewer's (viewer/src/log.js), and
+ * this file keeps no copy of it — only the ledger lines a developer reads.
+ */
 export function renderLog(events: Event[], names: Map<number, string>): string[] {
   const out: string[] = []
   let lastHit: Event | null = null
@@ -158,7 +162,10 @@ export function renderLog(events: Event[], names: Map<number, string>): string[]
       case 'activation.idle':
         out.push(`    ${who(e.actor)} holds (${e['reason']})`)
         break
-      case 'life.downed': out.push(`    *** ${who(e.target)} GOES DOWN (bleed-out 3)`); break
+      // viewer.reads-engine (review V11): the counter is the engine's, never a literal — the CLI once printed
+      // a stale 'bleed-out 3' when the rule is 5 (BLEED_OUT_COUNTER). bleedout.set states it, its own line below.
+      case 'life.downed': out.push(`    *** ${who(e.target)} GOES DOWN`); break
+      case 'bleedout.set': out.push(`    ${who(e.target)} bleed-out ${e['bleedOut']}`); break
       case 'life.dead':
         out.push(`    *** ${who(e.target)} ${e['reason'] === 'bledOut' ? 'BLEEDS OUT' : 'DIES'}`)
         break
