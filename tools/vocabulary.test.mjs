@@ -19,8 +19,9 @@ test("the action bar's attack hooks are the engine's attacker hooks", () => {
   assert.deepEqual([...ATTACK_HOOKS].sort(), [...V.attackerHooks].sort())
 })
 
-test('every trigger effect kind has a word', () => {
-  const unnamed = V.triggerEffectKinds.filter((kind) => effectWord({ kind, statusId: 'status.burn', value: 1 }, {}, {})?.unknown)
+// engine fix.one-effect-vocabulary (2026-10-01): one effect list for triggers, powers, moves and the chart — every kind has a word
+test('every effect kind has a word', () => {
+  const unnamed = V.effectKinds.filter((kind) => effectWord({ kind, statusId: 'status.burn', value: 1 }, {}, {})?.unknown)
   assert.deepEqual(unnamed, [])
 })
 

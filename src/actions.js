@@ -129,11 +129,18 @@ export function effectWord(ef, D, SN) {
     case 'status.remove':  return { word: 'Remove ' + shortStatus(ef.statusId, SN), val: ef.value, statusId: ef.statusId }
     case 'badge.grant':    return { word: (BD[ef.badgeId] || {}).name || String(ef.badgeId || '').replace(/^badge\./, ''), badge: true }
     case 'damage':         return { word: (ef.damageType ? ef.damageType + ' damage' : 'Damage'), val: ef.amount ?? ef.value }
+    case 'statDamage':    return { word: (ef.damageType ? ef.damageType + ' damage' : 'Damage'), val: ef.bonus }
     case 'burstScale':     return { word: 'Burst damage percentage', val: ef.percent }
     case 'heal':           return { word: 'Heal', val: ef.amount ?? ef.value }
     case 'knockback':      return { word: 'Knockback', val: ef.hexes ?? ef.value }
     case 'statMod':        return { word: (STATSHORT[ef.stat] || ef.stat), val: ef.value, signed: true }
     case 'stamina.drain':  return { word: 'Stamina drain', val: ef.value }
+    case 'stamina.gain':   return { word: 'Stamina', val: ef.value, signed: true }
+    case 'loseMaxStamina': return { word: 'Max Stam', val: -Math.abs(ef.value), signed: true }
+    case 'loseMaxHp':      return { word: 'Max Health', val: -Math.abs(ef.value), signed: true }
+    case 'stand':          return { word: 'Stand up' }
+    case 'reveal':         return { word: 'Reveal' }
+    case 'corpse.eat':     return { word: 'Eats a corpse', val: ef.radius, radius: true }
     case 'power.gain':     return { word: 'Power', val: ef.value, signed: true }
     case 'layer.paint':    return { word: layerName(ef.layer) + ' ground', val: ef.radius, radius: true }
     case 'corpse.raise':   return { word: 'Raises a corpse', val: ef.radius, radius: true }
@@ -197,7 +204,7 @@ export function triggersFor(u, a, D, SN, stStyle) {
   if (a.kind === 'move') {
     /* a move's riders ARE the buff/debuff layer — same green/red as the stat block */
     for (const e of (a.effects || (a.move || {}).effects || [])) {
-      if (e.kind === 'gainStamina')        out.push({ word: 'Stamina ' + sgn(e.value), hue: MOD_UP, chance: 100 })
+      if (e.kind === 'stamina.gain')       out.push({ word: 'Stamina ' + sgn(e.value), hue: MOD_UP, chance: 100 })
       else if (e.kind === 'loseMaxStamina') out.push({ word: 'Max Stam ' + sgn(-Math.abs(e.value)), hue: MOD_DOWN, chance: 100 })
       else if (e.kind === 'statMod')        out.push({ word: (STATSHORT[e.stat] || e.stat) + ' ' + sgn(e.value),
                                                         hue: e.value > 0 ? MOD_UP : MOD_DOWN, chance: 100 })
