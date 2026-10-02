@@ -360,3 +360,13 @@ test `tools/swap-bar.test.mjs`; the played battle: engine `test/movement-swap-an
 |---|---|---|---|---|
 | `swapStrip` | Where on the action bar is the swap? | **In the stamina strip directly above the bar, in its two columns over the attacks and powers: "Swap", one button per hand list the host offers (its label), then the engine's cost ("1 stamina"), or — with none to make — the engine's reason in place of the buttons. Only for the hero the host is planning with (`play.actor`); no swap fact, no strip.** | The swap is paid from the stamina beside it and changes the attack and power columns below it; the 12 slots stay the hero's actions. | Default |
 | `swapShieldMotions` | Which body motion plays for the swap and for a shield power? | **None — listed, not faked.** The motion words a look carries are idle, move, flight, attack, ranged, hit, death (`tools/character-models.mjs` MOTIONS). Missing: **swap** (no draw or stow clip among the approved or selected motions) and **guard** for the six shield powers (the Oathblade body's `shield_blockleft` is bound as its `hit` reaction, the battle demo's `block`; playing it for a power would need a new motion word, which is not a chat's to name). The row lights (FIRING) and the log names each. | Engine DECISIONS.md 2026-09-30 'a bunch of motions': "a lacking motion is filled from the approved or selected motions where one fits, and is still listed where none does". | Default |
+
+## fix.shield-power-double-click — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 'a self power fires on a double-click on its bar button' (Andrew: "I should be able to
+double-click on it in the bar and have it activate."). Page test `tools/bar-dblclick.test.mjs`; the real mouse on the built
+sandbox: engine `test/fix-shield-power-double-click.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `barDoubleClick` | What does the action bar offer the host for a double-click on a row, and what when the host is resolving at the second click? | **The row is offered again, by its `dblclick` (`{kind:'slot', actionId, unit}` — the same as a second click); the pair's second click (`detail` 2) is not offered on its own. While the host hands no plan facts (it is playing what the first click began), the double-click is held and offered once when the facts come back; a scrub, a fault or disposal drops it.** | The first click on a proposed hero's bar begins its activation, and the host clears its facts while that plays (~0.75 s on the built page), so the second click of a real double-click reached a still bar and was dropped — Andrew's double-click did nothing. A distinct host event for a double-click would be a second way of saying "chosen again". | Default |

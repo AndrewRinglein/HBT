@@ -225,7 +225,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   }
   V.targetingGeneration = () => targetingGeneration
   /* viewer.play-input: the host's plan facts (src/play.js) and the offer of what the mouse did */
-  V.play = null
+  V.play = null; V.heldPlay = null
   V.offerPlay = input => {
     if (!V.inputActive() || !V.play || !opts.onPlay) return false
     try { return opts.onPlay(input) === true } catch (err) { return fault(err) }
@@ -238,6 +238,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     const next = playFacts(value, V.data.POS)   // validate/detach the WHOLE payload before mutation
     V.play = next
     try { syncPlayInput(V); drawPlay(V); drawBar(V); drawStam(V); chrome.sync() } catch (err) { fault(err) }
+    /* fix.shield-power-double-click: a double-click on the bar held while the host resolved is offered now, once (actionbar.js) */
+    const held = V.heldPlay; V.heldPlay = null
+    if (held && V.play) V.offerPlay(held)
   }
   function clearTargeting() { targetingGeneration++; V.targeting = null; V.layers.targeting?.remove(); V.layers.targeting = null }
   function setTargeting(value) {
@@ -255,7 +258,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   }
   function fault(err) {
     if (V.invalid) throw V.invalid
-    clearTargeting(); V.play = null; V.layers.playInput?.remove(); V.layers.playInput = null; V.layers.play?.remove(); V.layers.play = null
+    clearTargeting(); V.play = null; V.heldPlay = null; V.layers.playInput?.remove(); V.layers.playInput = null; V.layers.play?.remove(); V.layers.play = null
     V.invalid = err; V.playing = false; cancelBurst(); cancelOpportunityLabel(); cancelBeats(V)
     if (V.timer != null) { clearTimeout(V.timer); V.timer = null }
     if (opts.onPlayState) opts.onPlayState(false)
@@ -420,7 +423,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (V.timer) { clearTimeout(V.timer); V.timer = null }
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
     V.S = foldTo(V.EV, V.cursor, ctx())
-    clearTargeting(); V.play = null; cancelBurst(); cancelOpportunityLabel(); cancelBeats(V); clearFloats(V)
+    clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); cancelBeats(V); clearFloats(V)
     V.view.burstVisible = !!V.S.BURST
     V.view.inspectId = null                       // a click from before the scrub must not outrank the actor after it
     for (const E of V.layers.UEL.values()) { if (E.walk) { E.walk.cancel(); E.walk = null } E.root.style.transition = 'none' }
@@ -484,7 +487,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.tactical-camera: the camera's named views — angled, lower, raise, left, right, whole, overhead, inspect, focus,
        reset — and what it is doing (stance, elevation, turn, zoom) */
     camera(kind) { cameraView(V, kind) }, get cameraState() { return cameraState(V) },
-    dispose() { disposed = true; stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

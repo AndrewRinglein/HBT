@@ -114,8 +114,18 @@ export function drawBar(V) {
     drawBar(V)
   }))
   /* viewer.play-input: clicking a row offers that action to the host — it chooses it for the acting hero or ignores it */
+  /* fix.shield-power-double-click (engine DECISIONS.md 2026-10-01 'a self power fires on a double-click on its bar button'):
+     a double-click is the row offered a second time, by its dblclick — the second click of the pair (detail 2) is not offered
+     on its own, so a row is never offered three times. When the first click set the host resolving (it began the hero's
+     activation, so there are no plan facts and the bar is still), the double-click is held and offered once the host hands
+     its facts back (viewer SWITCHES barDoubleClick) */
   bar.querySelectorAll('.acRow').forEach(r => { if (!r.dataset.act) return
-    r.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation(); const unit = subjectOf(V); V.offerPlay({ kind: 'slot', actionId: r.dataset.act, unit })
+    r.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation(); if (ev.detail > 1) return
+      V.heldPlay = null
+      const unit = subjectOf(V); V.offerPlay({ kind: 'slot', actionId: r.dataset.act, unit })
       /* viewer.xcom-camera: "Clicking an ability re-centers on the acting unit" — the one whose bar it is, the one the host acts with */
-      centreOn(V, unit) }) })
+      centreOn(V, unit) })
+    r.addEventListener('dblclick', ev => { ev.stopPropagation()
+      const offer = { kind: 'slot', actionId: r.dataset.act, unit: subjectOf(V) }
+      if (V.play) V.offerPlay(offer); else if (V.inputActive()) V.heldPlay = offer }) })
 }
