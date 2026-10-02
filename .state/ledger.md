@@ -20382,6 +20382,15 @@ index 0000000..f33760c
   PASS  the item's own tests — test/sandbox-campaign-heroes.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/sandbox-campaign-heroes.test.ts
+## viewer.xcom-camera — LANDED `6fe0c3f`
+2026-10-02 01:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3734 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/xcom-camera.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/xcom-camera.test.ts
   PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
@@ -20402,6 +20411,15 @@ index 0000000..f33760c
   PASS  the item's own tests — test/encounter-result-fold.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/encounter-result-fold.test.ts
+## viewer.unit-card-bar — LANDED `90d261a`
+2026-10-02 01:37
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · DECISIONS.md:3734
+  PASS  typecheck
+  PASS  the item's own tests — test/unit-card-bar.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/unit-card-bar.test.ts
   PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
@@ -20423,6 +20441,16 @@ index 0000000..f33760c
   PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 10 log lines, 10 fired, 6 changed state · encounter.opening.lumberjack: 13 log lines, 13 fired, 9 changed state · encounter.opening.bridge: 11 log lines, 11 fired, 7 changed state
   PASS  brought its own tests — kingdom/test/isc-039.test.ts, kingdom/test/opening-rewards.test.ts
   WARN  existing tests untouched — DELETED LINES in test/isc-039.test.ts (-7) — will land FLAGGED for review
+## viewer.characters-unfaded — LANDED `dfa2245`
+2026-10-02 01:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/characters-unfaded.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/characters-unfaded.test.ts
+  PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -20478,3 +20506,7 @@ index 6d125d7..d66da21 100644
    })
 ```
 </details>
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
