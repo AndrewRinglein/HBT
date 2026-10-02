@@ -41,6 +41,7 @@ function packetFields(row){
 import fs from 'fs';
 import { readGround, resolvePaint } from './mkpaintedmaps.mjs';
 import { compileMaps, validateEncounterBoard } from './map-schema.mjs';
+import { STAT_OF, statOf } from './stat-words.mjs';
 const D = JSON.parse(fs.readFileSync('hbt-content.json', 'utf8'));
 // ── THE ENGINE'S VOCABULARY (plumbing.vocabulary-export, engine 2026-09-28) ────
 // Read, never copied: ../engine/generated/vocabulary.json is written by the engine
@@ -50,24 +51,10 @@ const D = JSON.parse(fs.readFileSync('hbt-content.json', 'utf8'));
 const VOCAB = JSON.parse(fs.readFileSync('../engine/generated/vocabulary.json', 'utf8'));
 const ENGINE_HOOKS = new Set(VOCAB.hooks);
 const FOLDABLE_STATS = new Set(VOCAB.stats), RESOLVABLE_STATS = new Set(VOCAB.resolvable);
-// Codex stat word (any case) -> engine stat. THE ONE MAP; every value is checked against the
-// engine's export below, so a stat the engine renames or drops fails the build, loudly.
-const STAT_OF = {
-  str: 'strength', strength: 'strength', pre: 'precision', precision: 'precision', magic: 'magic', spirit: 'spirit',
-  acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist',
-  fireresist: 'fireResist', poisonresist: 'poisonResist', shadowresist: 'shadowResist', coldresist: 'coldResist', 'cold resist': 'coldResist', block: 'block',
-  rangedblock: 'rangedBlock', 'ranged block': 'rangedBlock', move: 'movement', movement: 'movement', reach: 'reach',
-  health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp',
-  staminamax: 'maxStamina', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
-  staminaregen: 'staminaRegen', 'stamina regen': 'staminaRegen', regen: 'staminaRegen',
-  crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision', thorns: 'thorns',
-  // fix.codex-numbers (2026-10-01, finding C9): the bleed-out and Deathbed stats fold like any other
-  bleedoutturns: 'bleedOutTurns', 'bleed-out turns': 'bleedOutTurns', 'turns to bleed out': 'bleedOutTurns',
-  deathbedfighting: 'deathbedFighting', 'deathbed fighting': 'deathbedFighting',
-};
+// Codex stat word (any case) -> engine stat: THE ONE MAP, ./stat-words.mjs (kingdom.reads-engine, 2026-10-02 — the
+// kingdom's item rows read it too, review finding K11). Every value is checked against the engine's export here, so a
+// stat the engine renames or drops fails the build, loudly.
 for (const [w, st] of Object.entries(STAT_OF)) if (!FOLDABLE_STATS.has(st)) throw new Error(`mkenginepack: STAT_OF maps '${w}' to '${st}', which is not an engine stat (../engine/generated/vocabulary.json)`);
-/** A Codex stat word as the engine stat a fold (item, badge, level, specialty, aura) may carry, else undefined. */
-const statOf = (w) => w == null ? undefined : STAT_OF[String(w).toLowerCase().replace(/\s+/g, ' ')];
 /** The same, only when the stat pipeline can modify it at runtime (a statMod) — surge and toughness cannot. */
 const modStatOf = (w) => { const st = statOf(w); return st && RESOLVABLE_STATS.has(st) ? st : undefined; };
 // ── THE RULE BASES (fix.codex-numbers, 2026-10-01; DECISIONS.md 2026-09-28 "the duplication review,
@@ -1513,7 +1500,19 @@ function compileItems() {
     // `free` where the sentence opens "Free". Compiled by exact sentence through
     // the effect vocabulary; a sentence it cannot read is a gap ON THE ROW and
     // the item ships without the power, never with a guessed one.
-    if (row.stamina !== undefined || row.targets || row.uses !== undefined) {
+    // kingdom.reads-engine (2026-10-02; review finding K8, engine SWITCHES.md netIsAPower): a one-use row that grants an
+    // ATTACK and authors no active of its own (no stamina, no targets) — the Net: "Net is just a power, and it's a one-time
+    // use" — pays its uses from that attack, so the attack carries them. The engine reads an item's uses off the powers it
+    // grants (SWITCHES.md itemUsesSource), and the kingdom reads them back from there, never from a second copy.
+    const usesOnAttack = row.uses !== undefined && row.stamina === undefined && !row.targets && grants.length > 0;
+    if (usesOnAttack) {
+      const n = typeof row.uses === 'number' ? row.uses : (row.uses.perBattle ?? row.uses.count ?? 1);
+      for (const aid of grants) {
+        const prior = authoredAttacks[aid].uses;
+        if (prior !== undefined && prior !== n) throw new Error(`mkenginepack: ${it.id} pays ${n} uses from ${aid}, which already carries ${prior}`);
+        authoredAttacks[aid] = { ...authoredAttacks[aid], uses: n };
+      }
+    } else if (row.stamina !== undefined || row.targets || row.uses !== undefined) {
       const pw = compileItemActive(it, row);
       if (pw) { authoredAbilities[pw.id] = pw; abilities.push(pw.id); for (const gg of pw.gaps || []) g(`${pw.id}: ${gg}`, 'item active clause'); }
       else g(`active: ${String(row.description || '').slice(0, 50)}`, 'an ability with charges/targets — capability.consumables');
@@ -1529,7 +1528,7 @@ function compileItems() {
     const vsTarget = slayerRules(row.slayer, it.id);
     // one-use rows (the Waystation, 2026-09-02): a charge is spent IN battle —
     // the same missing capability as an activated item.
-    if (row.uses !== undefined && !abilities.some((a) => authoredAbilities[a]?.uses)) g(`uses: ${JSON.stringify(row.uses)} — no active compiled to carry the charge`, 'charges spent in battle — capability.consumables');
+    if (row.uses !== undefined && !abilities.some((a) => authoredAbilities[a]?.uses) && !grants.some((a) => authoredAttacks[a]?.uses)) g(`uses: ${JSON.stringify(row.uses)} — no active compiled to carry the charge`, 'charges spent in battle — capability.consumables');
     out[it.id] = {
       id: it.id, name: it.name, itemClass: it.itemClass, tier: it.tier ?? 0, hands: it.hands ?? 0, slots: it.slots ?? 0,
       ...(it.classRestriction ? { classRestriction: it.classRestriction } : {}),

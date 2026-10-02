@@ -437,16 +437,6 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.net",
-   "what": "active: ",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.net",
-   "what": "uses: 1 — no active compiled to carry the charge",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
    "unit": "item.peddlers-vest",
    "what": "statModifier 'itemSlots' 1",
    "needs": "stat: itemSlots (no UnitDef field)"

@@ -265,6 +265,45 @@
    "group": ""
   },
   {
+   "id": "badge.fatigued",
+   "name": "Fatigued",
+   "rarity": "",
+   "payload": "−1 Strength · −1 Precision · −5 Accuracy · −5 Dodge · −1 Stamina Max",
+   "payloadIsData": true,
+   "category": "FATIGUE & CONDITION",
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "precision",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "accuracy",
+     "op": "add",
+     "value": -5
+    },
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": -5
+    },
+    {
+     "stat": "staminaMax",
+     "op": "add",
+     "value": -1
+    }
+   ],
+   "rollable": false,
+   "note": "Held from a battle's fatigue roll until a Week of Rest clears it; Fatigued while already Fatigued becomes Exhausted. The kingdom carries it into battle (heroBadges).",
+   "source": "KINGDOM-V2-2026-09-07.md §'Fatigue': \"badge.fatigued (new) — a penalty while carried: −1 Strength · −1 Precision · −5 Accuracy · −5 Dodge · −1 Max Stamina (the last read from '−1 max fatigue'; confirm — §7)\"; rulings 2026-09-10 (Rest clears Fatigued and Exhausted). Added to the Codex 2026-10-02 by kingdom.reads-engine (duplication review finding K10: 'badge.fatigued is not a Codex badge'); the fifth entry stays KINGDOM-V2's reading, still asked there (§7 item 5)."
+  },
+  {
    "id": "badge.feeble",
    "name": "Feeble",
    "rarity": "common",

@@ -431,17 +431,20 @@ const TABS=[
      dodge:'Dodge',vision:'Vision',armor:'Armor',resist:'Resist',health:'Health',magic:'Magic',
      spirit:'Spirit',toughness:'Tough',movement:'Move',staminaMax:'Stam',staminaRegen:'Regen',
      surge:'Surge',itemSlots:'Slots'};
-   const tableFor=c=>(LV.classes.find(x=>x.id===c)||null);
+   // a civilian levels on its TYPE table when its row names one (levels.rules.civilianTypes; the engine's levelTableOf) —
+   // kingdom.reads-engine (review finding V10): the browser read the class table for every civilian
+   const tableFor=id=>(LV.classes.find(x=>x.id===id)||(LV.civilianTypes||[]).find(x=>x.id===id)||null);
    // ported + derived baseline + every level row from 2 up to the chosen level
    function statsAt(h,L){
      const v={},src={};
      for(const [k,n] of Object.entries(h.derivedBase||{})){ v[k]=n; src[k]='derived'; }
      for(const [k,n] of Object.entries(h.ported||{})){ v[k]=n; src[k]='ported'; }
-     const t=tableFor(h.class); let gained=0;
+     const t=tableFor(h.levelTable||h.class); let gained=0;
      if(t) for(const r of t.rows){ if(r.level<2||r.level>L) continue;
        for(const [k,n] of Object.entries(r.grants||{})){ v[k]=(v[k]||0)+n; src[k]='fromlevel'; gained++; }
        for(const [k,n] of Object.entries(t.freebie||{})){ v[k]=(v[k]||0)+n; src[k]='fromlevel'; gained++; } }
-     v.surge=L; src.surge='derived';
+     // Surge EQUALS the level, added to what the row and the table grant — the engine's applyProgress (V10: was overwritten)
+     v.surge=(v.surge||0)+L; src.surge='derived';
      // Vision as the engine reads it: its 6 plus the hero's own (fix.codex-numbers; the Codex value is a delta, finding C2)
      v.vision=D.ruleBases.vision+(v.vision||0);
      for(const k of ORDER) if(v[k]==null){ v[k]=0; src[k]=src[k]||'derived'; }
