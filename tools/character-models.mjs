@@ -43,6 +43,12 @@
 // Oath, Dawnblade, Court Champion and the four priests each in his own approved outfit, imported into assets/characters/hero-outfits
 // (MALE_OUTFITS below), replacing the Oathblade placeholder; his own head has no fit, so it is listed (`body.lacks`).
 //
+// viewer.shield-guard-motion (engine DECISIONS.md 2026-10-01 'a shield power plays a raise-the-shield motion', Andrew: "When they
+// play shield power, they should raise the shield animation.") gives every body that holds a shield - an item of the engine's class
+// `shield` in its kit (static.json itemClasses) - the motion word `guard` (viewer SWITCHES guardWord): the raise-the-shield clip,
+// the Oathblade body's shield_blockleft (GUARD below), from the body's own clip set where it has one, else borrowed as its hit is.
+// Its hit reaction is unchanged. A shield holder with no such clip lists `guard` as missing, and --list names it.
+//
 //   node tools/character-models.mjs --json      print the pack (test/character-models.test.ts reads it)
 //   node tools/character-models.mjs --list      who stands in what, and what is listed (viewer.real-bodies)
 import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
@@ -54,8 +60,12 @@ const PKG = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const ROOT = resolve(PKG, '..')
 /* the viewer's motion words, in the ruling's order (DECISIONS.md 2026-09-29: "idle, move, attack, hit reaction
    and death"; "heroes ... whatever their weapon's powers need" — a bow's shot is `ranged`) */
-export const MOTIONS = ['idle', 'move', 'flight', 'attack', 'ranged', 'hit', 'death']
+export const MOTIONS = ['idle', 'move', 'flight', 'attack', 'ranged', 'hit', 'guard', 'death']
 export const RULED = ['idle', 'move', 'attack', 'hit', 'death']
+/* viewer.shield-guard-motion: the raise-the-shield clip, by its ActorCore name - the Oathblade body's shield_blockleft (engine
+   DECISIONS.md 2026-10-01: "The one clip that exists is the Oathblade body's shield_blockleft"); the battle demo's roster calls
+   it `block`, the wardrobe and the approved outfits by this name */
+const GUARD = 'shield_blockleft'
 /* the battle demo's roster keys -> the viewer's (the demo plays `block` as the struck unit's reaction:
    assets/battle-demo/main.mjs, `a===target&&step.kind==='melee'&&blocked` -> sample('block')) */
 const ROSTER_KEY = { idle: 'idle', move: 'move', flight: 'flight', melee: 'attack', ranged: 'ranged', block: 'hit', death: 'death' }
@@ -178,13 +188,19 @@ export function bindings(units = JSON.parse(readFileSync(resolve(PKG, 'generated
   }
   return all
 }
-/* what a unit type's sheet asks of its body beyond the ruled five: a shot for a ranged attack, a flight for a flight power */
-function asked(sheet) {
+/* what a unit type's sheet asks of its body beyond the ruled five: a shot for a ranged attack, a flight for a flight power, a
+   raised shield for a shield in its kit (viewer.shield-guard-motion: the engine's item class, static.json itemClasses) */
+function asked(sheet, classes) {
   const extra = []
   if ((sheet?.attacks || []).some(a => a.attack?.kind === 'ranged')) extra.push('ranged')
   if ((sheet?.moves || []).some(m => m.move?.shape === 'flight')) extra.push('flight')
+  if (holdsShield(sheet, classes)) extra.push('guard')
   return extra
 }
+/** viewer.shield-guard-motion: the unit type's kit holds an item the engine classes a shield */
+const holdsShield = (sheet, classes) => (sheet?.defaultItems || []).some(i => classes[i] === 'shield')
+/** the raise-the-shield clip, checked to be it */
+const guardRef = (ref, who) => { if (!ref.path.includes('/' + GUARD + '/')) throw new Error(`${who}: ${ref.path} is not the ${GUARD} clip`); return ref }
 /* the battle demo's `male` family shows its armour but the cloak, and of the body only the head and hands
    (assets/battle-demo/actors.mjs prepareVisibility) */
 const FAMILY_HIDES = { male: n => n.startsWith('Armor_') ? n === 'Armor_Cloak' : n.startsWith('Body_') ? !(n === 'Body_Head' || n.includes('Hand')) : false }
@@ -352,7 +368,10 @@ function demoProp(typeId, model, hand) {
 
 export async function packCharacterModels() {
   const { catalog } = await import(pathToFileURL(resolve(ROOT, 'assets/battle-demo/roster.mjs')).href)
-  const units = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')).units
+  const statics = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')), units = statics.units
+  /* viewer.shield-guard-motion: the engine's item classes (npm run static) - which kits hold a shield */
+  const classes = statics.itemClasses
+  if (!classes) throw new Error('generated/static.json carries no itemClasses: re-dump it (npm run static)')
   const artmap = JSON.parse(readFileSync(resolve(PKG, 'generated/art/manifest.json'), 'utf8')).artmap
   const roster = JSON.parse(readFileSync(resolve(ROOT, ROSTER), 'utf8')).characters
   const registry = JSON.parse(readFileSync(resolve(ROOT, REGISTRY), 'utf8'))
@@ -380,9 +399,14 @@ export async function packCharacterModels() {
     } else for (const [motion, clip] of Object.entries(PROFILE_CLIPS[own.family] || {})) look.motions[motion] = { path: own.model.path, sha256: own.model.sha256, clip: clipIn(own.model.path, clip) }
     const bow = bind.items.some(i => HELD[i]?.demo === 'bow')
     for (const [motion, name] of Object.entries({ ...OWN_FILL[own.family], ...(bow ? { ranged: 'bow' } : {}) })) if (!look.motions[motion]) look.motions[motion] = selected(name, own.model.path, catalog)
+    /* viewer.shield-guard-motion: a shield holder raises it - the wardrobe's own shield_blockleft; a male body the Oathblade's, borrowed */
+    if (holdsShield(units[typeId], classes)) {
+      if (own.family === 'female') { const path = WARDROBE + 'motions/' + GUARD + '/female-motion.glb'; look.motions.guard = { path, sha256: digest(path), clip: clipIn(path) } }
+      else if (own.family === 'male') look.motions.guard = guardRef(selected('block', own.model.path, catalog), typeId)
+    }
     const { props, unheld } = heldProps(typeId, bind.items, look.motions)
     look.props = props; look.unheld = unheld
-    look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
+    look.missing = [...RULED, ...asked(units[typeId], classes)].filter(m => !look.motions[m])
     return look
   }
   /* viewer.male-hero-outfits: a male hero in his own approved outfit, as its preview shows it (MALE_OUTFITS above) */
@@ -408,9 +432,15 @@ export async function packCharacterModels() {
       look.motions[motion] = { path: c.path, sha256: c.sha256, clip: name }
     }
     if (bind.items.some(i => HELD[i]?.demo === 'bow')) look.motions.ranged = selected('bow', own.model.path, catalog)
+    /* viewer.shield-guard-motion: a shield holder raises it - the approved preview's own medium shield_blockleft */
+    if (holdsShield(units[typeId], classes)) {
+      const c = rec.clips?.[GUARD]
+      if (!c || !/^[0-9a-f]{64}$/.test(c.sha256 || '') || digest(c.path) !== c.sha256) throw new Error(`${typeId}: ${c?.path ?? GUARD} is not the clip ${MALE_OUTFITS} names`)
+      look.motions.guard = guardRef({ path: c.path, sha256: c.sha256, clip: clipIn(c.path) }, typeId)
+    }
     const { props, unheld } = heldProps(typeId, bind.items, look.motions)
     look.props = props; look.unheld = unheld
-    look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
+    look.missing = [...RULED, ...asked(units[typeId], classes)].filter(m => !look.motions[m])
     return look
   }
   const pack = {}
@@ -482,6 +512,9 @@ export async function packCharacterModels() {
           const path = m.file ? rel(m.file) : look.model.path
           look.motions[motion] = { path, sha256: path === look.model.path ? look.model.sha256 : digest(path), clip: clipIn(path, m.name) }
         }
+        /* viewer.shield-guard-motion: a shield holder raises it - the row's own `block` where that is the shield_blockleft clip */
+        if (holdsShield(units[typeId], classes) && row.clips.block?.file && rel(row.clips.block.file).includes('/' + GUARD + '/'))
+          look.motions.guard = guardRef({ ...look.motions.hit }, typeId)
         const meshes = (glbJSON(look.model.path).nodes || []).filter(n => n.mesh != null).map(n => n.name)
         const hides = FAMILY_HIDES[row.family]
         if (hides) look.hidden = meshes.filter(hides)
@@ -502,7 +535,7 @@ export async function packCharacterModels() {
       for (const [motion, clip] of Object.entries(bind.own || {})) if (!look.motions[motion]) look.motions[motion] = { path: look.model.path, sha256: look.model.sha256, clip: clipIn(look.model.path, clip) }
       for (const [motion, name] of Object.entries(bind.fill || {})) if (!look.motions[motion]) look.motions[motion] = selected(name, look.model.path, catalog)
       if (!(look.height > 0) || typeof look.pivot !== 'string') throw new Error(`${typeId} ${id}: no height or pivot in the roster`)
-      look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
+      look.missing = [...RULED, ...asked(units[typeId], classes)].filter(m => !look.motions[m])
       return look
     })
     pack[typeId] = { typeId, looks }
@@ -518,4 +551,7 @@ if (main && process.argv.includes('--list')) {
   for (const [typeId, { looks }] of Object.entries(pack)) for (const l of looks)
     console.log(`${typeId.padEnd(32)} ${l.body?.own === false ? 'PLACEHOLDER ' + l.id : l.model.path}${l.body?.lacks ? '\n' + ' '.repeat(33) + 'lacks ' + l.body.lacks : ''}${l.missing.length ? '\n' + ' '.repeat(33) + 'motions missing: ' + l.missing.join(', ') : ''}`)
   for (const [typeId, why] of Object.entries(UNBODIED)) console.log(`${typeId.padEnd(32)} LISTED - ${why}`)
+  /* viewer.shield-guard-motion: every body holding a shield with no raise-the-shield clip, by name (listed, not faked) */
+  const lacking = Object.entries(pack).filter(([, { looks }]) => looks.some(l => l.missing.includes('guard'))).map(([t]) => t)
+  console.log(`shield holders without a raise-the-shield clip: ${lacking.join(', ') || 'none'}`)
 }

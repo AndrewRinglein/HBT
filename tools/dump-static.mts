@@ -6,7 +6,7 @@
 // at runtime. Never hand-edit the output.
 import { writeFileSync } from 'node:fs'
 import { codeStamp } from '../../engine/tools/code-stamp.mjs'
-import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, groundApplies, actionKinds, statusRows } from '../src/sheet.js'
+import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, groundApplies, actionKinds, statusRows, itemClasses } from '../src/sheet.js'
 import { readCatalog } from '../src/engine.js'
 const { MAPS } = await readCatalog()
 
@@ -19,6 +19,8 @@ const out = { engineCommit, engineDirty: dirty, maps: MAPS.map((m) => m.id), uni
   attacks: attackTable(), abilities: abilityTable(), actions: actionTable(), badges: badgeTable(),
   layers: layerNames(), ...groundApplies(),
   /* viewer.reads-engine (review V1, V5): the engine's classification of every action and each status's behaviour */
-  actionKinds: actionKinds(), statusRows: statusRows() }
+  actionKinds: actionKinds(), statusRows: statusRows(),
+  /* viewer.shield-guard-motion: each item's own class — a power a held shield grants raises the shield */
+  itemClasses: itemClasses() }
 writeFileSync('generated/static.json', JSON.stringify(out))
-console.log(`static.json: ${out.maps.length} maps · ${Object.keys(out.units).length} units · ${Object.keys(out.statuses).length} statuses · ${Object.keys(out.actions).length} actions · ${Object.keys(out.badges).length} badges · engine ${engineCommit}${dirty ? ' (DIRTY tree)' : ''}`)
+console.log(`static.json: ${out.maps.length} maps · ${Object.keys(out.units).length} units · ${Object.keys(out.statuses).length} statuses · ${Object.keys(out.actions).length} actions · ${Object.keys(out.badges).length} badges · ${Object.keys(out.itemClasses).length} items · engine ${engineCommit}${dirty ? ' (DIRTY tree)' : ''}`)

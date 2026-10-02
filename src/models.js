@@ -5,7 +5,7 @@
    (the death motion's end). An unconscious (downed) unit is the same, with a bleed-out counter."
    Which look a unit type wears, which file and clip is each motion, and every file's hash are the pack's
    (tools/character-models.mjs). This module only draws: a model stands where its token stands (board.js owns
-   every position and every walk), plays what the fold's cues say (lunge -> attack, flash -> hit), and lies
+   every position and every walk), plays what the fold's cues say (lunge -> attack, flash -> hit, guard -> guard), and lies
    down when the fold says the unit is downed or dead. It decides nothing and computes no game number. */
 import * as THREE from 'three'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
@@ -494,6 +494,12 @@ export function createCast(V, scene, toWorld, platform = {}) {
     flinch(id) {
       const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing') return
       if (B.has('hit')) B.play('hit'); else B.recoilStart()
+    },
+    /** viewer.shield-guard-motion: the fold's guard (a shield power used) — the body raises its shield, once, and returns to its rest;
+        a body with no raise-the-shield clip plays nothing (it is listed: tools/character-models.mjs --list) */
+    guard(id) {
+      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing') return
+      B.play('guard')
     },
     /** a seek: every body at its resting pose now — the dead and the downed at the death's end */
     snap() {

@@ -700,6 +700,7 @@ export function playCues(V, cues) {
       /* the models strike and flinch on the same cues the standees lunge and flash on (viewer.character-models) */
       case 'lunge': lunge(V, c.a, c.t); V.cast?.strike(c.a, c.t, c.kind); break
       case 'flash': hitFlash(V, c.id); V.cast?.flinch(c.id); break
+      case 'guard': V.cast?.guard(c.id); break                   // viewer.shield-guard-motion: the body raises its shield
       case 'hitstop': hitstop(V, c.ms); break
       case 'float': pushFloat(V, c.hex, c.text, floatHue(c, V.data), c); break
       case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg, c.crit); break

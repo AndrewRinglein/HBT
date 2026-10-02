@@ -681,6 +681,11 @@ export function fold(S, e, ctx, now = 0) {
     case 'power.used':
       S.BURST = null
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
+      /* viewer.shield-guard-motion (engine DECISIONS.md 2026-10-01, Andrew: "When they play shield power, they should raise the
+         shield animation."): a power the user's held shield granted — its kit row's own grant (unit.equipped), the item's class the
+         engine's (ctx.IC, static.json itemClasses) — raises the shield on the body */
+      if (e.causeId && U[e.actor] && ctx.IC && U[e.actor].kit.held.some(h => (h.abilities.includes(e.causeId) || h.grants.includes(e.causeId)) && ctx.IC[h.itemId] === 'shield'))
+        cue('guard', { id: e.actor, power: e.causeId })
       if (e.target != null && U[e.target] && e.target !== e.actor) cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
       else {
         /* the power's own effect from the sheet, never a guess: selfGuard reads as

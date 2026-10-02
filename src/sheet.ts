@@ -10,7 +10,7 @@
 // FIRST entry in tools/exemptions.json — EXEMPTION sheet. It reads content only, through the
 // door, and computes nothing: every field is copied from a definition.
 import { readCatalog } from './engine.js'
-const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY, ACTION_KIND } = await readCatalog()
+const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY, ACTION_KIND, ITEMS } = await readCatalog()
 
 const plain = (o: unknown) => (o ? JSON.parse(JSON.stringify(o)) : undefined)
 const many = (ids: readonly string[] | undefined, table: Record<string, unknown>) =>
@@ -67,6 +67,15 @@ export function abilityTable(): Record<string, unknown> { return plain(ABILITIES
 export function actionTable(): Record<string, unknown> { return plain(ACTIONS) ?? {} }
 /** every badge by id — name, statModifiers, grants, flags (badge.mechanism 2e76ede) */
 export function badgeTable(): Record<string, unknown> { return plain(BADGES) ?? {} }
+
+/** viewer.shield-guard-motion (engine DECISIONS.md 2026-10-01 'a shield power plays a raise-the-shield motion'): every item's own
+    class (ItemDef.itemClass — weapon, shield, armor, …), copied. A power a held `shield` grants is a shield power: the body raises
+    its shield for it (tools/character-models.mjs, src/fold.js power.used). */
+export function itemClasses(): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const [id, item] of Object.entries(ITEMS) as [string, any][]) out[id] = item.itemClass
+  return out
+}
 
 /** The ground layers by number — 1 burning · 2 frost · 3 poisoned · 4 darkness —
     read from the engine, never typed (Law 4). */
