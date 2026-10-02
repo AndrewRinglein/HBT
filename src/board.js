@@ -1277,21 +1277,12 @@ export function applyCam(V, opts = {}) {
      takes priority over blindly copying the preview's ground-only pan clamp"). */
   const bound = () => {
     const X = [0, bw], Y = [-POLICY.EDGE_ROOM, bh + POLICY.EDGE_ROOM]
-    let [xlo, xhi] = stance === 'inspect' ? X : panRange(X[0], X[1], s, fitZ)
-    let [ylo, yhi] = stance === 'inspect' ? Y : panRange(Y[0], Y[1], s, fitZ)
-    /* a board with no decorative surroundings (viewer SWITCHES cameraPanNoVoid): unturned and tactical, the view also
-       stays on the board where the board is the larger — the rule before 2026-10-01 — so no empty background opens beside
-       it; the preview's looser bound is for a scene whose surroundings fill that space */
-    /* viewer.xcom-camera: at every quarter turn, the arrow keys' only turns — the view's half-extents on the board's axes
-       swap at 90° and 270°; the standee's overhang is the unturned view's north */
-    const quarter = Math.abs(((yaw % 90) + 90) % 90) < 1e-6, odd = quarter && Math.round(yaw / 90) % 2 !== 0
-    if (!surrounded(V) && quarter && stance === 'tactical') {
-      const hx = odd ? halfH : halfW, hy = odd ? halfW : halfH, tt = yaw ? 0 : top
-      const ox = bw <= hx * 2 ? [bw / 2, bw / 2] : [hx, bw - hx]
-      const oy = bh + tt <= hy * 2 ? [bh / 2, bh / 2] : [hy - tt, bh - hy]   // smaller than the view: the whole-map fit's centre
-      xlo = Math.max(xlo, ox[0]); xhi = Math.min(xhi, ox[1]); if (xlo > xhi) xlo = xhi = (ox[0] + ox[1]) / 2
-      ylo = Math.max(ylo, oy[0]); yhi = Math.min(yhi, oy[1]); if (ylo > yhi) ylo = yhi = (oy[0] + oy[1]) / 2
-    }
+    /* viewer.xcom-camera-tuning (engine DECISIONS.md 2026-10-01, Andrew: "The pointing-to-scroll on the map does not work very
+       well. If you point to the edge, you sometimes get some movement."): the view may centre ANY point of the board, at any
+       zoom, as Inspect always could — the pan was pinned to the board's middle on a board smaller than the view (viewer
+       SWITCHES cameraPanNoVoid, retired), so pointing at an edge mostly moved nothing. Overhead keeps the whole-map framing. */
+    const [xlo, xhi] = stance === 'overhead' ? panRange(X[0], X[1], s, fitZ) : X
+    const [ylo, yhi] = stance === 'overhead' ? panRange(Y[0], Y[1], s, fitZ) : Y
     f.x = Math.min(Math.max(f.x, xlo), xhi); f.y = Math.min(Math.max(f.y, ylo), yhi)
   }
   /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): a new activation centres the map on the
@@ -1637,12 +1628,23 @@ export function bindCamera(V) {
   const edgeAt = e => {
     if (!wrap.getBoundingClientRect) return null
     const r = wrap.getBoundingClientRect(), B = POLICY.EDGE_SCROLL_PX, x = e.clientX - r.left, y = e.clientY - r.top
-    if (!(r.width > 0 && r.height > 0)) return null
+    if (!(r.width > 0 && r.height > 0) || x < 0 || y < 0 || x > r.width || y > r.height) return null
     const dx = x < B ? -1 : x > r.width - B ? 1 : 0, dy = y < B ? -1 : y > r.height - B ? 1 : 0
     return dx || dy ? { x: dx, y: dy } : null }
+  /* viewer.xcom-camera-tuning: in the battle screen the board's edges meet the bar, the panel and the ability bar, not the
+     screen's — so the screen's own edge scrolls too, wherever over the battle the pointer meets it */
+  const edgeOfScreen = e => {
+    const W = typeof window !== 'undefined' ? window.innerWidth : 0, H = typeof window !== 'undefined' ? window.innerHeight : 0, B = POLICY.EDGE_WINDOW_PX
+    if (!(W > 0 && H > 0)) return null
+    const dx = e.clientX < B ? -1 : e.clientX > W - B ? 1 : 0, dy = e.clientY < B ? -1 : e.clientY > H - B ? 1 : 0
+    return dx || dy ? { x: dx, y: dy } : null }
+  const root = V.dom.root
+  const rootMove = e => edgeTo(edgeAt(e) || edgeOfScreen(e))
+  /* leaving the battle stops it — unless it left through the screen's edge, where the pointer is still pointing past it */
+  const rootLeave = e => { if (!edgeOfScreen(e)) edgeTo(null) }
   const edgeTo = dir => { edge = dir
     if (edge && edgeRaf == null && typeof requestAnimationFrame === 'function') { edgeT = clockOf(V); edgeRaf = requestAnimationFrame(edgeStep) } }
-  const move = e => { edgeTo(edgeAt(e)); if (!drag) { hover(e); return }
+  const move = e => { if (!drag) { hover(e); return }
     // Screen-pixel threshold from pointerdown: jitter is a click, a real drag
     // applies its full displacement once and then continues incrementally.
     const travel = Math.hypot(e.clientX - drag.originX, e.clientY - drag.originY)
@@ -1674,7 +1676,7 @@ export function bindCamera(V) {
      focus — two viewers on one page must not both pan, and a host page keeps
      its arrow keys (review 2026-09-03) */
   let over = false
-  const enter = () => { over = true }, leave = () => { over = false; edgeTo(null); up(); pointed = undefined; if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
+  const enter = () => { over = true }, leave = () => { over = false; up(); pointed = undefined; if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
   const key = e => {
     if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return
     if (!over && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
@@ -1690,7 +1692,8 @@ export function bindCamera(V) {
   const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['click',click],['dblclick',dbl]]
   for (const [type, fn] of bound) wrap.addEventListener(type, fn, type === 'wheel' ? { passive: false } : undefined)
   document.addEventListener('keydown', key)
-  return () => { edgeTo(null); if (edgeRaf != null && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(edgeRaf)
+  if (root && root.addEventListener) { root.addEventListener('pointermove', rootMove); root.addEventListener('pointerleave', rootLeave) }
+  return () => { edgeTo(null); if (root && root.removeEventListener) { root.removeEventListener('pointermove', rootMove); root.removeEventListener('pointerleave', rootLeave) } if (edgeRaf != null && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(edgeRaf)
     if (V.zoomRest != null) { clearTimeout(V.zoomRest); V.zoomRest = null }
     document.removeEventListener('keydown', key); for (const [type, fn] of bound) wrap.removeEventListener(type, fn) }
 }

@@ -298,18 +298,19 @@ test('Whole map fits the original board — every hex and a standing figure on i
   v.dispose()
 })
 
-test('the pan is bounded by the board: pinned at the whole-map fit, roaming it when nearer, never off it', () => {
+/* Law 10 (viewer.xcom-camera-tuning, 2026-10-01): was "the pan is bounded by the board: pinned at the whole-map fit, roaming it
+   when nearer, never off it" with the view's edge stopping at the board's (SWITCHES cameraPanNoVoid). Andrew (engine
+   DECISIONS.md 2026-10-01 'the first look at the XCOM camera'): "The pointing-to-scroll on the map does not work very well" —
+   the pin is what stopped it. The rule kept: never off the board; the centre may now reach any point of it, at any zoom. */
+test('the view may centre any point of the board — at the standard zoom, nearer, turned — and never past it', () => {
   const { v, V } = boot(), F = V.data.F
-  press(v, 'whole'); const at = { x: V.camTarget.x, y: V.camTarget.y }
-  v.pan(5000, 5000); assert.deepEqual({ x: V.camTarget.x, y: V.camTarget.y }, at, 'at the fit the board is pinned in the middle')
-  v.zoom(100)
-  /* this board has no decorative surroundings: unturned, the view's own edge stops at the board's (SWITCHES cameraPanNoVoid) */
-  const halfW = 1920 / 2 / V.camTarget.zoom
-  v.pan(-1e5, -1e5); near(V.camTarget.x, halfW, 1e-6, 'near, the view comes to the left edge and no further')
-  v.pan(1e5, 1e5); near(V.camTarget.x, F.w - halfW, 1e-6, 'and to the right edge, never past it'); assert.ok(V.camTarget.y <= F.h, 'nor past the bottom')
-  /* turned, the preview's bound alone: the view's centre roams to the board's edge, never past it */
-  v.turn(60); v.pan(-1e5, 0); const left = V.camTarget.x; v.pan(1e5, 0); const right = V.camTarget.x
-  assert.ok(left >= -1e-6 && left < halfW && right <= F.w + 1e-6 && right > F.w - halfW, `turned: ${left} .. ${right}`)
+  for (const [yaw, zoom] of [[0, 1], [0, 1.6], [90, 1], [180, .8]]) {
+    v.resetView(); if (yaw) v.turn(yaw); if (zoom !== 1) v.zoom(zoom)
+    v.pan(-1e5, -1e5); near(V.camTarget.x, 0, 1e-6, `${yaw}°, ${zoom}x: the centre reaches the left edge`)
+    assert.ok(V.camTarget.y <= 0 && V.camTarget.y >= -200, `and the top (${V.camTarget.y.toFixed(0)})`)
+    v.pan(1e5, 1e5); near(V.camTarget.x, F.w, 1e-6, `${yaw}°, ${zoom}x: and the right edge, never past it`)
+    assert.ok(V.camTarget.y >= F.h && V.camTarget.y <= F.h + 200, `and the bottom (${V.camTarget.y.toFixed(0)})`)
+  }
   v.dispose()
 })
 
