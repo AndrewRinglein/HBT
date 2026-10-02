@@ -92,6 +92,13 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.frost-resistant', note: 'TEST: a warrior wearing badge.frost-resistant (+1 Cold Resist) against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], heroBadges: [['badge.frost-resistant']], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
   },
+  // content.afflictions-at-zero (2026-10-01, DECISIONS.md 'the afflictions at 0 Health' and 'bleed-out is a stat on every
+  // player unit, 5; Rotting Flesh +5'): a warrior carrying Rotting Flesh (+5 bleed-out) and one carrying Fragile (−1 maximum
+  // Health), so both Codex rows are fielded in a real battle. TEST fielding of Codex rows.
+  'test.afflictions-at-zero': {
+    id: 'test.afflictions-at-zero', note: 'TEST: a warrior with badge.rotting-flesh and a warrior with badge.fragile against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], heroBadges: [['badge.rotting-flesh'], ['badge.fragile']], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
+  },
   // content.ghost (2026-09-29, Andrew, DECISIONS.md "the Ghost as the bestiary has it; ..."): two Ghosts, fielded in a
   // real battle. TEST fielding of a Codex row. (Their Attack possesses on 15% of hits — content.ghost-possess-on-attack.)
   'test.ghost': {

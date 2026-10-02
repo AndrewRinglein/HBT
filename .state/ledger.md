@@ -21022,6 +21022,22 @@ index 6d125d7..d66da21 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## content.afflictions-at-zero — ABANDONED
+2026-10-02 02:17
+
+Filed without changesBaseline: the item's own ruled content moves the control battles' event logs (a Zombie-inflicted Rotting Flesh's badge.gained line now lists its +5 bleed-out and its at-0-Health gap; log text only, the same lines in 18 control maps), so 'control battles unchanged' can never pass as filed. The work is done and parked (engine git stash), not discarded; content 42f64c6 is committed. Re-filed as content.afflictions-at-zero-refiled with changesBaseline true and the same probeIds - the precedent ruled 2026-09-30 for encounter.opening.bridge-ai ('Park, abandon, re-file').
+
+## content.afflictions-at-zero-refiled — LANDED `950c829` **NEEDS REVIEW**
+2026-10-02 02:18
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1763 · SWITCHES.md:1759
+  PASS  typecheck
+  PASS  the item's own tests — test/badge-surge-at-fielding.test.ts, test/battle-cursor.test.ts, test/afflictions-at-zero-content.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.rotting-flesh: 1 log lines, 1 fired, 1 changed state · badge.fragile: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/badge-surge-at-fielding.test.ts, test/battle-cursor.test.ts, test/afflictions-at-zero-content.test.ts, test/fixtures/battle-cursor-afflictions-at-zero.json
+  WARN  existing tests untouched — DELETED LINES in test/badge-surge-at-fielding.test.ts (-2), test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands 2469419a->3f1de3b1, map.thicket 4641a852->dc25f052, map.proving.open a0b7fce3->ab65fcfd, map.proving.ridge 44f4ae17->ed91f839, map.proving.ford 2471073b->d67d3da5, map.proving.copse 4899bf01->36d6dfbc, map.proving.ruin e7dfa711->4714f062, map.courtyard 79a2b1dd->ca1d4ab2, map.floodplain 2e0fbbcb->27fa59e7, test.map.embers 533d2327->f60bc6e5, test.map.duel-8 400e8d3a->a48f132c, test.map.dungeon-16x8 0ec15564->cc69f157, test.map.horde-24 2978af63->40eea6da, test.map.journey-20x10 67a9ca83->fd9f428e, test.map.authored-40x40 93d34098->bf38e29c, test.map.high-prop-single 881249cb->d40bb5dc, test.map.high-prop-multi 5b67f74b->7c986f2d, test.map.well-shove 0c8e5836->6a1922f5
 ## fix.turn-mods-expire — LANDED `7a54e06` **NEEDS REVIEW**
 2026-10-02 03:16
 
@@ -21037,6 +21053,10 @@ index 6d125d7..d66da21 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.rotting-flesh,badge.fragile — they genuinely test it
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -21045,6 +21065,79 @@ index 6d125d7..d66da21 100644
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
+diff --git a/test/badge-surge-at-fielding.test.ts b/test/badge-surge-at-fielding.test.ts
+index 4d68310..a7fa10c 100644
+--- a/test/badge-surge-at-fielding.test.ts
++++ b/test/badge-surge-at-fielding.test.ts
+@@ -24,11 +24,23 @@ describe('a badge\'s Surge folds at fielding, never mid-battle', () => {
+   })
+ 
+-  it('a badge with no such stat names nothing: Rotting Flesh\'s gain line carries no atFielding', () => {
++  // Law 10, content.afflictions-at-zero (2026-10-01; DECISIONS.md 'bleed-out is a stat on every player unit, 5; Rotting
++  // Flesh +5'): Rotting Flesh gained a stat the runtime never resolves (+5 bleed-out), so it no longer has "no such stat".
++  // The claim is kept on a badge that still has none (Vampirism), and Rotting Flesh now names its one fielding-only stat.
++  // was: it('a badge with no such stat names nothing: Rotting Flesh\'s gain line carries no atFielding', () => {
++  // was:   grantBadge(ctx, ctx.state.units[0]!.id, 'badge.rotting-flesh', 'test') … expect('atFielding' in gained).toBe(false)
++  it('a badge with no such stat names nothing: Vampirism\'s gain line carries no atFielding', () => {
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+-    grantBadge(ctx, ctx.state.units[0]!.id, 'badge.rotting-flesh', 'test')
++    grantBadge(ctx, ctx.state.units[0]!.id, 'badge.vampirism', 'test')
+     const gained = ctx.events.find((e) => e.type === 'badge.gained')!
+     expect('atFielding' in gained).toBe(false)
+   })
+ 
++  it('Rotting Flesh granted mid-battle names its +5 bleed-out as waiting for the next fielding, and nothing else', () => {
++    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
++    grantBadge(ctx, ctx.state.units[0]!.id, 'badge.rotting-flesh', 'test')
++    const gained = ctx.events.find((e) => e.type === 'badge.gained')!
++    expect(gained['atFielding']).toEqual({ bleedOutTurns: 5 })
++  })
++
+   it('fielded already Possessed (the next battle), the hero carries its −10 Surge', () => {
+     const opts = (heroBadges: string[][]) => ({ replicate: 0, mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [85], enemies: ['test-zombie'], enemyHexes: [140], enemyCount: 1, heroBadges })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 321ca31..4a27bbf 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -219,4 +219,11 @@ const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
+ // and skips the older layers.
+ const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-codex-numbers.json', import.meta.url), 'utf8'))
++// content.afflictions-at-zero (2026-10-01), Law 10: Rotting Flesh carries +5 bleed-out (DECISIONS.md 2026-10-01 'bleed-out is a
++// stat on every player unit, 5; Rotting Flesh +5') and the four afflictions name what happens at 0 Health as gaps ('the
++// afflictions at 0 Health'). Every case frozen here (tools/capture-afflictions-at-zero-cursor.mts). Moved by log TEXT only —
++// a Rotting Flesh badge.gained line names its +5 as waiting for the next fielding, and the afflictions' gap lists grew; state,
++// RNG and result unchanged (movedOnlyText): showcase.prologue-party, showcase.waystation, test.opening-cavern-trail,
++// test.vampire-bite. test.afflictions-at-zero is new. A `changed` case is checked here and skips the older layers.
++const afflictionsAtZeroGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -335,6 +342,9 @@ describe('resumable battle cursor', () => {
+       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true
+       const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const codexNumbersMoved = codexNumbersExpected?.changed === true
++      // was: const codexNumbersMoved = codexNumbersExpected?.changed === true — an afflictions-at-zero-moved case skips the codex-numbers layer too (content.afflictions-at-zero 2026-10-01)
++      const codexNumbersMoved = codexNumbersExpected?.changed === true || afflictionsAtZeroMoved
+       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a codex-numbers-moved case skips the fire-imp-flight layer too (fix.codex-numbers 2026-10-01)
+@@ -408,5 +418,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (codexNumbersExpected) {
++        if (afflictionsAtZeroExpected) {
++        expect(hash(ctx.events), 'full afflictions-at-zero events').toBe(afflictionsAtZeroExpected.events)
++        expect(hash(ctx.state), 'full afflictions-at-zero state').toBe(afflictionsAtZeroExpected.state)
++        expect(hash(ctx.rng.log), 'full afflictions-at-zero RNG').toBe(afflictionsAtZeroExpected.rng)
++        expect(result).toEqual(afflictionsAtZeroExpected.result)
++        }
++        // was: if (codexNumbersExpected) { — content.afflictions-at-zero (2026-10-01): an afflictions-at-zero-moved case is checked above instead
++        if (codexNumbersExpected && !afflictionsAtZeroMoved) {
+         expect(hash(ctx.events), 'full codex-numbers events').toBe(codexNumbersExpected.events)
+         expect(hash(ctx.state), 'full codex-numbers state').toBe(codexNumbersExpected.state)
+```
+</details>
 diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
 index d565a33..fb7f33d 100644
 --- a/test/battle-cursor.test.ts
