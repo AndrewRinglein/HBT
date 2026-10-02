@@ -682,6 +682,8 @@
   ],
   "changesBaseline": false,
   "spec": "Ruled 2026-09-30 (DECISIONS.md 'the Bridge's northern branch is walkable; the deck hexes marked X are deck'), filed 2026-10-01 (DECISIONS.md 'an enemy's crit chance stops at 0; the Bridge deck goes into the pack; ...'). content/gen/opening-maps.json already carries the walkable deck (content 57711eb, source only: map.opening.bridge's deck obstacles on rows 6-9 between columns 23 and 32 are open ground; the four standing shafts stay). Run the pipeline (assemble -> build-viewer -> mkenginepack) so the engine pack's map.opening.bridge matches it, with its gap lists (gen/class-power-gaps.json, gen/enemy-pack-gaps.json) if they move; re-dump the viewer's generated/static.json and fields.json. Battle 3 (encounter.opening.bridge-ai-refiled) is re-run: it must still end on every seed. Battle-cursor cases that field the Bridge (test.opening-bridge) move: a new golden layer with its capture tool, as the earlier layers did (Law 10). Prior art: content.fire-imp-flight and encounter.opening.bridge-ai (the same map and pipeline); no new mechanism.",
-  "expect": "The engine's map.opening.bridge has open ground where the source grid does (no x on the northern branch's deck); a unit can stand on the northern branch; battle 3 still reaches a result on every seed; the content suite passes and expect.mjs stays at 4; the viewer dumps carry the new map."
+  "expect": "The engine's map.opening.bridge has open ground where the source grid does (no x on the northern branch's deck); a unit can stand on the northern branch; battle 3 still reaches a result on every seed; the content suite passes and expect.mjs stays at 4; the viewer dumps carry the new map.",
+  "status": "done-needs-review",
+  "sha": "1be6acb"
  }
 ]

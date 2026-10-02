@@ -16,8 +16,12 @@ import { AI_MODE_ROWS } from '../src/content/ai-modes.js'
 import { arrivals, arrivedAt, deterministic, openingBattle } from './opening-helpers.js'
 
 const S = 'test.opening-bridge', SEEDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-// Replicate 49 is a battle the heroes win (1 of replicates 0-99).
-const WIN = 49
+// Law 10, content.bridge-deck-pack (2026-10-01): the walkable deck (DECISIONS.md 2026-09-30, the northern branch
+// included) moves every battle; replicate 4 is now the one the heroes win of replicates 0-99 (still 99 wipes, 1 win,
+// every seed a result). The claim — the battle is won when the last enemy dies — is unchanged; only the seed moved.
+// was: // Replicate 49 is a battle the heroes win (1 of replicates 0-99).
+// was: const WIN = 49
+const WIN = 4
 const IMPS = new Set(['unit.imp', 'unit.fire-imp'])
 describe('encounter.opening.bridge', () => {
   it('carries the ruled cast: four Imps on the far bank, then a Fire Imp, an Imp and a Fire Imp', () => {

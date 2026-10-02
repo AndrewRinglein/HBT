@@ -245,6 +245,12 @@ const turnModsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor
 // test.opening-cavern-trail, test.vampire-bite. test.afflictions-at-zero is new. Captured over the fix.turn-mods-expire
 // layer (combined 2026-10-02). A `changed` case is checked here and skips the older layers.
 const afflictionsAtZeroGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero.json', import.meta.url), 'utf8'))
+// content.bridge-deck-pack (2026-10-01), Law 10: the engine pack's map.opening.bridge takes the walkable deck (DECISIONS.md
+// 2026-09-30 'the Bridge's northern branch is walkable; the deck hexes marked X are deck') — seven deck hexes that were
+// obstacles are open ground. Every case frozen here (tools/capture-bridge-deck-cursor.mts). Moved for real, the ruling
+// working: exactly the one case fought on the Bridge, test.opening-bridge (state, RNG and result). A `changed` case is
+// checked here and skips the older layers.
+const bridgeDeckGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bridge-deck.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -361,8 +367,11 @@ describe('resumable battle cursor', () => {
       const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const bridgeDeckMoved = bridgeDeckExpected?.changed === true
       const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true
+      // was: const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true — a bridge-deck-moved case skips the afflictions-at-zero layer too (content.bridge-deck-pack 2026-10-01)
+      const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true || bridgeDeckMoved
       const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const oneEffectExpected = oneEffectGolden.cases.find((row:{id:string})=>row.id===fixture.id)
@@ -443,7 +452,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (afflictionsAtZeroExpected) {
+        if (bridgeDeckExpected) {
+        expect(hash(ctx.events), 'full bridge-deck events').toBe(bridgeDeckExpected.events)
+        expect(hash(ctx.state), 'full bridge-deck state').toBe(bridgeDeckExpected.state)
+        expect(hash(ctx.rng.log), 'full bridge-deck RNG').toBe(bridgeDeckExpected.rng)
+        expect(result).toEqual(bridgeDeckExpected.result)
+        }
+        // was: if (afflictionsAtZeroExpected) { — content.bridge-deck-pack (2026-10-01): a bridge-deck-moved case is checked above instead
+        if (afflictionsAtZeroExpected && !bridgeDeckMoved) {
         expect(hash(ctx.events), 'full afflictions-at-zero events').toBe(afflictionsAtZeroExpected.events)
         expect(hash(ctx.state), 'full afflictions-at-zero state').toBe(afflictionsAtZeroExpected.state)
         expect(hash(ctx.rng.log), 'full afflictions-at-zero RNG').toBe(afflictionsAtZeroExpected.rng)
