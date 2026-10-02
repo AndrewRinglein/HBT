@@ -189,7 +189,9 @@
   "kind": "kingdom",
   "shape": "plumbing",
   "spec": "kingdom.opening-loop-three, part 1 of 4 (filed 2026-10-01 by the kingdom chat, from PLAYABLE-OPENING-PLAN.md item 12). The sandbox fields an encounter with campaign Hero rows, not only hero ids: kingdom/src/core/sandbox.ts createSandbox takes Hero records (level, specialty, levelPick, equipped and used, wound, badges) and hands them to makeBattleState unchanged, so the hero who plays battle 2 is the hero battle 1 left behind. ?play=<id>[&heroes=...] keeps working exactly as now (rows built from SANDBOX_HEROES).",
-  "expect": "A sandbox encounter fielded with a level-2 hero carrying a swapped item and a wound shows that level, item and wound on the engine unit (its stats and grants as makeBattleState fields them); ?play= battles are unchanged."
+  "expect": "A sandbox encounter fielded with a level-2 hero carrying a swapped item and a wound shows that level, item and wound on the engine unit (its stats and grants as makeBattleState fields them); ?play= battles are unchanged.",
+  "status": "done",
+  "sha": "9dd6d03"
  },
  {
   "id": "kingdom.encounter-result-fold",
