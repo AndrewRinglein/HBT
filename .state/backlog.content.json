@@ -671,5 +671,17 @@
   "status": "failed",
   "failedAt": "2026-10-02 02:17",
   "reason": "Filed without changesBaseline: the item's own ruled content moves the control battles' event logs (a Zombie-inflicted Rotting Flesh's badge.gained line now lists its +5 bleed-out and its at-0-Health gap; log text only, the same lines in 18 control maps), so 'control battles unchanged' can never pass as filed. The work is done and parked (engine git stash), not discarded; content 42f64c6 is committed. Re-filed as content.afflictions-at-zero-refiled with changesBaseline true and the same probeIds - the precedent ruled 2026-09-30 for encounter.opening.bridge-ai ('Park, abandon, re-file')."
+ },
+ {
+  "id": "content.bridge-deck-pack",
+  "kind": "content",
+  "shape": "data",
+  "needs": [],
+  "probeIds": [
+   "map.opening.bridge"
+  ],
+  "changesBaseline": false,
+  "spec": "Ruled 2026-09-30 (DECISIONS.md 'the Bridge's northern branch is walkable; the deck hexes marked X are deck'), filed 2026-10-01 (DECISIONS.md 'an enemy's crit chance stops at 0; the Bridge deck goes into the pack; ...'). content/gen/opening-maps.json already carries the walkable deck (content 57711eb, source only: map.opening.bridge's deck obstacles on rows 6-9 between columns 23 and 32 are open ground; the four standing shafts stay). Run the pipeline (assemble -> build-viewer -> mkenginepack) so the engine pack's map.opening.bridge matches it, with its gap lists (gen/class-power-gaps.json, gen/enemy-pack-gaps.json) if they move; re-dump the viewer's generated/static.json and fields.json. Battle 3 (encounter.opening.bridge-ai-refiled) is re-run: it must still end on every seed. Battle-cursor cases that field the Bridge (test.opening-bridge) move: a new golden layer with its capture tool, as the earlier layers did (Law 10). Prior art: content.fire-imp-flight and encounter.opening.bridge-ai (the same map and pipeline); no new mechanism.",
+  "expect": "The engine's map.opening.bridge has open ground where the source grid does (no x on the northern branch's deck); a unit can stand on the northern branch; battle 3 still reaches a result on every seed; the content suite passes and expect.mjs stays at 4; the viewer dumps carry the new map."
  }
 ]

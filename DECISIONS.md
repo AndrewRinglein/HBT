@@ -3828,3 +3828,20 @@ Andrew, minutes later, the same chat:
 “Every unit faces the direction it walks, and when a unit moves next to another unit, the unit, if it's an enemy, should turn to face them. If a zombie walks up to you, you turn to face the zombie. If you walk up to a zombie, it turns to face you. If someone then walks up from another hex, it turns to face them. You also turn to face anybody who attacks you.”
 
 Ruled: **a body's facing is kept, not reset.** It starts facing its side's way (heroes right, enemies left); it faces where it walks; **when an enemy steps next to it, it turns to face that enemy** (the latest to arrive wins); **it turns to face anyone who attacks it**; striking, it faces its target. Replaces the reading above that a body "turns back when it is idle".
+
+## 2026-10-01 — an enemy's crit chance stops at 0; the Bridge deck goes into the pack; the abandoned ids' dependants are repointed
+
+Andrew, in the content chat, answering its questions after fix.codex-numbers and content.afflictions-at-zero combined:
+
+“3. Enemy creatures stop at 0.  2. The engine chat's not finished.
+4. Yes.1 Yes.”
+
+The questions, as asked: (3) "Iron Colossus and Eyeblight now have a crit of −3. Should an enemy's crit stop at 0?"; (1) "Should I file the Bridge deck rebuild (the 2026-09-30 ruling) as a content item, so the pack and battle 3 get the walkable deck?"; (4) "Both afflictions items, `rule.afflictions-at-zero` and `kingdom.reads-engine`, still list the abandoned original ids as prerequisites, and no tool can repoint them. Should the engine chat fix those?"
+
+Ruled:
+
+- **An enemy creature's crit chance stops at 0.** Already how the engine works, so nothing is built: −3 is the published crit *modifier* (fix.codex-numbers publishes the authored total − CRIT_BASE, SWITCHES enemyCritIsTotal), and the chance is `max(0, CRIT_BASE + crit + gear + surplus − luck)` (src/core/pipeline.ts critChanceOf), so Iron Colossus and Eyeblight crit at 0, never below. The content chat's question named the modifier as if it were the chance.
+- **The Bridge deck rebuild is filed as a content item** — content/gen/opening-maps.json already carries the walkable deck (content 57711eb, source only, from the 2026-09-30 ruling 'the Bridge's northern branch is walkable'); the pack and battle 3 follow through the pipeline. Filed: `content.bridge-deck-pack`.
+- **The engine chat repoints the dependants of abandoned-and-re-filed items** — `rule.afflictions-at-zero` needs `content.afflictions-at-zero` (re-filed as `content.afflictions-at-zero-refiled`), `kingdom.reads-engine` needs `fix.codex-numbers` (re-filed as `fix.codex-numbers-refiled`); no tool edits an existing item's `needs` today, and the backlog is never hand-edited.
+
+Not ruled (2): the content chat does not wrap while the engine chat is working — `wrap.mjs` writes the package's one Now line.
