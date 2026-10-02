@@ -21109,6 +21109,16 @@ index d565a33..fb7f33d 100644
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — test/movement-swap-and-shields.test.ts
   PASS  existing tests untouched
+## content.bridge-deck-pack — LANDED `1be6acb` **NEEDS REVIEW**
+2026-10-02 05:03
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1766 · SWITCHES.md:1454
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/fire-imp-flight.test.ts, test/opening-bridge.test.ts, test/bridge-deck-pack.test.ts
+  PASS  gate 1 — the id appears in a real battle — map.opening.bridge: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fire-imp-flight.test.ts, test/opening-bridge.test.ts, test/bridge-deck-pack.test.ts, test/fixtures/battle-cursor-bridge-deck.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/fire-imp-flight.test.ts (-1), test/opening-bridge.test.ts (-2) — will land FLAGGED for review
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -21118,3 +21128,86 @@ index d565a33..fb7f33d 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without map.opening.bridge — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index a0e9c72..5b7b1fd 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -246,4 +246,10 @@ const turnModsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor
+ // layer (combined 2026-10-02). A `changed` case is checked here and skips the older layers.
+ const afflictionsAtZeroGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero.json', import.meta.url), 'utf8'))
++// content.bridge-deck-pack (2026-10-01), Law 10: the engine pack's map.opening.bridge takes the walkable deck (DECISIONS.md
++// 2026-09-30 'the Bridge's northern branch is walkable; the deck hexes marked X are deck') — seven deck hexes that were
++// obstacles are open ground. Every case frozen here (tools/capture-bridge-deck-cursor.mts). Moved for real, the ruling
++// working: exactly the one case fought on the Bridge, test.opening-bridge (state, RNG and result). A `changed` case is
++// checked here and skips the older layers.
++const bridgeDeckGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-bridge-deck.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -362,6 +368,9 @@ describe('resumable battle cursor', () => {
+       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const bridgeDeckMoved = bridgeDeckExpected?.changed === true
+       const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true
++      // was: const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true — a bridge-deck-moved case skips the afflictions-at-zero layer too (content.bridge-deck-pack 2026-10-01)
++      const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true || bridgeDeckMoved
+       const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+@@ -444,5 +453,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (afflictionsAtZeroExpected) {
++        if (bridgeDeckExpected) {
++        expect(hash(ctx.events), 'full bridge-deck events').toBe(bridgeDeckExpected.events)
++        expect(hash(ctx.state), 'full bridge-deck state').toBe(bridgeDeckExpected.state)
++        expect(hash(ctx.rng.log), 'full bridge-deck RNG').toBe(bridgeDeckExpected.rng)
++        expect(result).toEqual(bridgeDeckExpected.result)
++        }
++        // was: if (afflictionsAtZeroExpected) { — content.bridge-deck-pack (2026-10-01): a bridge-deck-moved case is checked above instead
++        if (afflictionsAtZeroExpected && !bridgeDeckMoved) {
+         expect(hash(ctx.events), 'full afflictions-at-zero events').toBe(afflictionsAtZeroExpected.events)
+         expect(hash(ctx.state), 'full afflictions-at-zero state').toBe(afflictionsAtZeroExpected.state)
+diff --git a/test/fire-imp-flight.test.ts b/test/fire-imp-flight.test.ts
+index 92b9659..b70044d 100644
+--- a/test/fire-imp-flight.test.ts
++++ b/test/fire-imp-flight.test.ts
+@@ -29,5 +29,10 @@ describe('content.fire-imp-flight', () => {
+       for (const e of ctx.events) {
+         if (e.type !== 'move.begin' || !fireImps.has(e.actor!)) continue
+-        // a Fire Imp's every move is the flight power — it has no other
++        // Law 10, content.bridge-deck-pack (2026-10-01): with the deck walkable, a hero reaches a Fire Imp on replicate 1 and
++        // its greatsword knocks it prone, so it rises with power.stand-up — the universal rise, in place (0 hexes). The claim
++        // is unchanged: every move BETWEEN hexes is the flight power; the rise is checked to go nowhere.
++        // was: // a Fire Imp's every move is the flight power — it has no other
++        // was: expect(e.causeId, `replicate ${r}: Fire Imp moved by ${e.causeId}`).toBe('power.flight')
++        if (e.causeId === 'power.stand-up') { expect(e['to'], `replicate ${r}: a Fire Imp's rise moved it`).toBe(e['from']); continue }
+         expect(e.causeId, `replicate ${r}: Fire Imp moved by ${e.causeId}`).toBe('power.flight')
+         flights++
+diff --git a/test/opening-bridge.test.ts b/test/opening-bridge.test.ts
+index ecf37b9..bde7689 100644
+--- a/test/opening-bridge.test.ts
++++ b/test/opening-bridge.test.ts
+@@ -17,6 +17,10 @@ import { arrivals, arrivedAt, deterministic, openingBattle } from './opening-hel
+ 
+ const S = 'test.opening-bridge', SEEDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+-// Replicate 49 is a battle the heroes win (1 of replicates 0-99).
+-const WIN = 49
++// Law 10, content.bridge-deck-pack (2026-10-01): the walkable deck (DECISIONS.md 2026-09-30, the northern branch
++// included) moves every battle; replicate 4 is now the one the heroes win of replicates 0-99 (still 99 wipes, 1 win,
++// every seed a result). The claim — the battle is won when the last enemy dies — is unchanged; only the seed moved.
++// was: // Replicate 49 is a battle the heroes win (1 of replicates 0-99).
++// was: const WIN = 49
++const WIN = 4
+ const IMPS = new Set(['unit.imp', 'unit.fire-imp'])
+ describe('encounter.opening.bridge', () => {
+```
+</details>
