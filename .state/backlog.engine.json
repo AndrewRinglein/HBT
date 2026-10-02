@@ -5155,5 +5155,16 @@
    "badge.fragile"
   ],
   "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4). Replaces 2026-09-04 'Deathbed Fighting, REVERSED' for afflicted heroes only."
+ },
+ {
+  "id": "fix.turn-mods-expire",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Reported 2026-10-01 (Andrew, playing the Lumberjack House): the Warrior's Leap gives +2 Strength; the stat window showed +2. A stat modifier that lasts 'until the end of the Turn' (Leap's +2 Strength; every endOfTurn/endOfNextTurn statMod) is stored with expiresAtTurn and only FILTERED at read (stats.ts modsFor) — it is never removed from the unit and no event says it ended, so anything that reads the log (the viewer folds statmod.added and drops a modifier only on statmod.expired) shows it for the rest of the Battle. Law 3: every state change through a mutator, and every mutator emits an event. As the Turn ends (beginTurn, before the number moves), remove every mod whose expiresAtTurn has come, one statmod.expired per mod, units by id (Law 6). Prior art: mutate.ts expireActivationMods, the same removal for expiresAfterActivation at End of Activation — extended to the Turn, not a second shape.",
+  "expect": "After a Leap, the Warrior's +2 Strength mod is gone from the unit when the next Turn begins and the log carries statmod.expired for it (stat strength, value 2, source power.leap) in the Turn it was added; effective Strength is unchanged at every read (it was already filtered); the control battles move by those lines only (state: the expired mods leave u.mods).",
+  "changesBaseline": true,
+  "note": "Reported by Andrew 2026-10-01 with viewer.live-stat-mods (the stat window and the attack numbers).",
+  "status": "done-needs-review",
+  "sha": "7a54e06"
  }
 ]

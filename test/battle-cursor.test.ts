@@ -229,6 +229,14 @@ const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
 // fix.codex-numbers layer (combined 2026-10-01). A `changed` case is checked here and skips
 // the older layers.
 const oneEffectGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-effect.json', import.meta.url), 'utf8'))
+// fix.turn-mods-expire (2026-10-01; reported by Andrew, the Leap's +2 Strength stayed on the screen), Law 10: a mod "until
+// the end of the Turn" leaves the unit as the Turn ends, with a statmod.expired line (Law 3) — it was only filtered at
+// read. Every case frozen here (tools/capture-turn-mods-cursor.mts). Moved by those lines and the mods leaving the unit's
+// state only — RNG and result unchanged in every one (effective stats were already filtered): showcase.assembled-party,
+// showcase.gash-variant, showcase.kiln, showcase.rime, showcase.supper, test.block-a, test.damage-packets,
+// test.opening-cathedral, test.opening-gates, progression-surge-0 and progression-surge-2. A `changed` case is checked
+// here and skips the older layers.
+const turnModsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-turn-mods.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -348,7 +356,10 @@ describe('resumable battle cursor', () => {
       const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const oneEffectExpected = oneEffectGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const oneEffectMoved = oneEffectExpected?.changed === true
+      const turnModsExpected = turnModsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const turnModsMoved = turnModsExpected?.changed === true
+      // was: const oneEffectMoved = oneEffectExpected?.changed === true — a turn-mods-moved case skips the one-effect layer too (fix.turn-mods-expire 2026-10-01)
+      const oneEffectMoved = oneEffectExpected?.changed === true || turnModsMoved
       // was: const codexNumbersMoved = codexNumbersExpected?.changed === true — a one-effect-moved case skips the codex-numbers layer too (fix.one-effect-vocabulary 2026-10-01)
       const codexNumbersMoved = codexNumbersExpected?.changed === true || oneEffectMoved
       // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a codex-numbers-moved case skips the fire-imp-flight layer too (fix.codex-numbers 2026-10-01)
@@ -421,7 +432,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (oneEffectExpected) {
+        if (turnModsExpected) {
+        expect(hash(ctx.events), 'full turn-mods events').toBe(turnModsExpected.events)
+        expect(hash(ctx.state), 'full turn-mods state').toBe(turnModsExpected.state)
+        expect(hash(ctx.rng.log), 'full turn-mods RNG').toBe(turnModsExpected.rng)
+        expect(result).toEqual(turnModsExpected.result)
+        }
+        // was: if (oneEffectExpected) { — fix.turn-mods-expire (2026-10-01): a turn-mods-moved case is checked above instead
+        if (oneEffectExpected && !turnModsMoved) {
         expect(hash(ctx.events), 'full one-effect events').toBe(oneEffectExpected.events)
         expect(hash(ctx.state), 'full one-effect state').toBe(oneEffectExpected.state)
         expect(hash(ctx.rng.log), 'full one-effect RNG').toBe(oneEffectExpected.rng)

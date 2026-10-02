@@ -278,6 +278,22 @@ export function expireActivationMods(ctx: Ctx, id: number, causeId: string): voi
 }
 
 /**
+ * fix.turn-mods-expire (2026-10-01; reported by Andrew — the Leap's +2 Strength stayed on the screen): as the Turn
+ * ends, remove every mod that lasted "until the end of the Turn" (expiresAtTurn reached by the next Turn's number),
+ * one `statmod.expired` per mod, units by id (Law 6), logged in the Turn that is ending. They were only filtered at
+ * read (stats.ts modsFor), so nothing in the log said they ended (Law 3). The Turn's twin of expireActivationMods.
+ */
+export function expireTurnMods(ctx: Ctx, causeId: string): void {
+  const next = ctx.state.turn + 1
+  for (const u of ctx.state.units) {
+    const gone = u.mods.filter((m) => m.expiresAtTurn !== undefined && m.expiresAtTurn <= next)
+    if (!gone.length) continue
+    u.mods = u.mods.filter((m) => !gone.includes(m))
+    for (const m of gone) emit(ctx, 'statmod.expired', causeId, { actor: u.id, stat: m.stat, op: m.op, value: m.value, source: m.source })
+  }
+}
+
+/**
  * Stamina DRAIN — station.crit (2026-08-27), the chart's Winded row: "lose 4
  * Stamina, to a minimum of 0." Not spendStamina, which throws on shortfall —
  * a drain takes what is there and floors at zero, as dictated.
@@ -558,6 +574,7 @@ export function setPhase(ctx: Ctx, phase: Ctx['state']['phase'], causeId: string
 }
 
 export function beginTurn(ctx: Ctx, causeId: string): void {
+  expireTurnMods(ctx, causeId)
   ctx.state.turn += 1
   emit(ctx, 'turn.begin', causeId, { turn: ctx.state.turn })
 }

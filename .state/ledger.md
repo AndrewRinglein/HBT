@@ -20918,3 +20918,70 @@ index 4b0278b..7c35719 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.turn-mods-expire — LANDED `7a54e06` **NEEDS REVIEW**
+2026-10-02 03:16
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:628
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/turn-mods-expire.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-turn-mods.json, test/turn-mods-expire.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open fb33c9b3->b52001ce, map.ridge d97cc16c->ef8ade8b, map.flanks 5da97881->9a0e1af5, map.highlands e1fec0c6->1808f2ff, map.field b854bfb1->1595c9e3, map.thicket 3b36d5fe->c940531c, map.proving.open 848bd921->8ec16bb4, map.proving.ridge b6976181->c2170cba, map.proving.ford 44800fd1->c624f5b2, map.proving.copse f9006c34->7186d7b3, map.proving.ruin e48999bd->35c3f672, map.courtyard 725a276f->7cd69661, map.floodplain a178cce2->dc60e6f7, test.map.embers 11c53ad6->9a5206b2, test.map.showcase b3578e55->0eff263f, test.map.duel-8 23d1af2e->e60a1dcd, test.map.dungeon-16x8 7b5784ef->2ef77e0b, test.map.horde-24 d7ebc053->aa3cf714, test.map.journey-20x10 9f6fcee0->bd234151, test.map.authored-40x40 d66560f0->1b12dcc8, test.map.high-prop-single df6087d0->bf80d63f, test.map.high-prop-multi 5ddfb2cc->4602eb0f, test.map.well-shove dc4d42d7->51509cb8
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index d565a33..fb7f33d 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -230,4 +230,12 @@ const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
+ // the older layers.
+ const oneEffectGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-effect.json', import.meta.url), 'utf8'))
++// fix.turn-mods-expire (2026-10-01; reported by Andrew, the Leap's +2 Strength stayed on the screen), Law 10: a mod "until
++// the end of the Turn" leaves the unit as the Turn ends, with a statmod.expired line (Law 3) — it was only filtered at
++// read. Every case frozen here (tools/capture-turn-mods-cursor.mts). Moved by those lines and the mods leaving the unit's
++// state only — RNG and result unchanged in every one (effective stats were already filtered): showcase.assembled-party,
++// showcase.gash-variant, showcase.kiln, showcase.rime, showcase.supper, test.block-a, test.damage-packets,
++// test.opening-cathedral, test.opening-gates, progression-surge-0 and progression-surge-2. A `changed` case is checked
++// here and skips the older layers.
++const turnModsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-turn-mods.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -349,5 +357,8 @@ describe('resumable battle cursor', () => {
+       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const oneEffectExpected = oneEffectGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const oneEffectMoved = oneEffectExpected?.changed === true
++      const turnModsExpected = turnModsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const turnModsMoved = turnModsExpected?.changed === true
++      // was: const oneEffectMoved = oneEffectExpected?.changed === true — a turn-mods-moved case skips the one-effect layer too (fix.turn-mods-expire 2026-10-01)
++      const oneEffectMoved = oneEffectExpected?.changed === true || turnModsMoved
+       // was: const codexNumbersMoved = codexNumbersExpected?.changed === true — a one-effect-moved case skips the codex-numbers layer too (fix.one-effect-vocabulary 2026-10-01)
+       const codexNumbersMoved = codexNumbersExpected?.changed === true || oneEffectMoved
+@@ -422,5 +433,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (oneEffectExpected) {
++        if (turnModsExpected) {
++        expect(hash(ctx.events), 'full turn-mods events').toBe(turnModsExpected.events)
++        expect(hash(ctx.state), 'full turn-mods state').toBe(turnModsExpected.state)
++        expect(hash(ctx.rng.log), 'full turn-mods RNG').toBe(turnModsExpected.rng)
++        expect(result).toEqual(turnModsExpected.result)
++        }
++        // was: if (oneEffectExpected) { — fix.turn-mods-expire (2026-10-01): a turn-mods-moved case is checked above instead
++        if (oneEffectExpected && !turnModsMoved) {
+         expect(hash(ctx.events), 'full one-effect events').toBe(oneEffectExpected.events)
+         expect(hash(ctx.state), 'full one-effect state').toBe(oneEffectExpected.state)
+```
+</details>
