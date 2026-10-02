@@ -23,6 +23,9 @@ describe('the game plays from a link: the launcher', () => {
     // Law 10, encounter.opening.gates (engine 817b21d, 2026-10-01): Gates joins the opening as battle 5, so the sandbox's list
     // (the engine's encounters, in opening order) carries it before the caravan — the claim is unchanged, the list grows.
     // was: expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
-    expect(out).toMatch(/play launcher: 6 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Caravan Aftermath\).*passed/)
+    // Law 10, encounter.opening.cathedral (engine, 2026-10-01): the Cathedral joins the opening as battle 6, after Gates and
+    // before the caravan — the claim is unchanged, the list grows.
+    // was: expect(out).toMatch(/play launcher: 6 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Caravan Aftermath\).*passed/)
+    expect(out).toMatch(/play launcher: 7 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Cathedral, Caravan Aftermath\).*passed/)
   }, 60000)
 })
