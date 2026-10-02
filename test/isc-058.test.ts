@@ -18,8 +18,13 @@ import { ITEMS, itemOf, isShield } from '../src/content/items.js'
 import { SWITCHES } from '../src/content/switches.js'
 import type { CampaignState } from '../src/core/campaign.js'
 
+// fix.one-hero-assembly-refiled (engine, 2026-10-02), Law 10: a natural weapon took hands 0, which is how this rule kept
+// it out; every weapon now takes at least one hand (engine DECISIONS.md 2026-09-28, "There should be no weapon that is
+// zero-handed"), so a beast's body part (class.beast) is kept out by name, as tools/mk-items.mjs does (engine SWITCHES.md
+// naturalWeaponMasterwork).
+// was: (isShield(b) || b.itemClass === 'armor' || (b.itemClass === 'weapon' && (b.hands === 1 || b.hands === 2)))
 const takesMasterwork = (b: ReturnType<typeof itemOf>) => b.tier === 1 &&
-  (isShield(b) || b.itemClass === 'armor' || (b.itemClass === 'weapon' && (b.hands === 1 || b.hands === 2)))
+  (isShield(b) || b.itemClass === 'armor' || (b.itemClass === 'weapon' && b.classRestriction !== 'class.beast' && (b.hands === 1 || b.hands === 2)))
 
 const RIDGE = 'territory.ruined-kingdom.ridge', FORGE = 'building.forge'
 const ALL = ['repair', 'blades', 'bows', 'shields', 'light', 'mail', 'exotic-arms', 'plate', 'masterworks', 'enchanted']

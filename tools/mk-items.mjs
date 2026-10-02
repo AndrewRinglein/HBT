@@ -106,13 +106,15 @@ for (const i of codex.items) rows.push(rowOfCodex(i))
 
 // 2. masterwork — tier-1 two-handers, one-handers, shields and armor, +1 Max Stamina,
 //    tier 2. Andrew 2026-09-25 (engine DECISIONS.md): "It can also apply to a shield. It
-//    can also apply to a one-hander." A natural weapon (hands 0) is none of these. The
-//    engine pack derives the same rows by the same rule (content/mkenginepack.mjs).
+//    can also apply to a one-hander." A beast's body part (class.beast) is none of these —
+//    it took hands 0 until 2026-10-02, when every weapon took at least one hand
+//    (fix.one-hero-assembly; engine SWITCHES.md naturalWeaponMasterwork). The engine pack
+//    derives the same rows by the same rule (content/mkenginepack.mjs).
 for (const i of codex.items) {
   const base = rowOfCodex(i)
   if (base.tier !== 1) continue
   const isShield = base.tags.includes('shield')
-  const handed = base.itemClass === 'weapon' && (base.hands === 1 || base.hands === 2)
+  const handed = base.itemClass === 'weapon' && base.classRestriction !== 'class.beast' && (base.hands === 1 || base.hands === 2)
   if (!(isShield || handed || base.itemClass === 'armor')) continue
   rows.push({
     ...base, id: `${base.id}.masterwork`, name: `Masterwork ${base.name}`, tier: 2,
