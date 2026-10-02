@@ -17,7 +17,7 @@
     "accuracy": 75,
     "crit": 3,
     "luck": 0,
-    "vision": 6,
+    "vision": 0,
     "movement": 5,
     "staminaMax": 5,
     "staminaRegen": 1,
@@ -40,7 +40,7 @@
     "accuracy": 80,
     "crit": 3,
     "luck": 0,
-    "vision": 8,
+    "vision": 0,
     "movement": 5,
     "staminaMax": 5,
     "staminaRegen": 1,
@@ -64,7 +64,7 @@
     "accuracy": 78,
     "crit": 5,
     "luck": 0,
-    "vision": 7,
+    "vision": 0,
     "movement": 5,
     "staminaMax": 5,
     "staminaRegen": 1,
@@ -87,7 +87,7 @@
     "accuracy": 75,
     "crit": 3,
     "luck": 0,
-    "vision": 7,
+    "vision": 0,
     "movement": 5,
     "staminaMax": 5,
     "staminaRegen": 1,
@@ -110,7 +110,7 @@
     "accuracy": 80,
     "crit": 3,
     "luck": 0,
-    "vision": 6,
+    "vision": 0,
     "movement": 5,
     "staminaMax": 5,
     "staminaRegen": 1,
@@ -134,7 +134,7 @@
     "accuracy": 72,
     "crit": 3,
     "luck": 0,
-    "vision": 6,
+    "vision": 0,
     "movement": 5,
     "staminaMax": 5,
     "staminaRegen": 1,
@@ -154,7 +154,7 @@
     "accuracy": 70,
     "crit": 3,
     "luck": 0,
-    "vision": 6,
+    "vision": 0,
     "movement": 5,
     "staminaMax": 5,
     "staminaRegen": 1,
@@ -179,7 +179,7 @@
     "accuracy": 72,
     "crit": 3,
     "luck": 0,
-    "vision": 7,
+    "vision": 0,
     "movement": 6,
     "staminaMax": 5,
     "staminaRegen": 1,
@@ -189,105 +189,135 @@
  ],
  "stats": [
   {
+   "id": "strength",
    "name": "Strength",
    "does": "melee damage only — never to-hit",
    "value": 1
   },
   {
+   "id": "precision",
    "name": "Precision",
    "does": "ranged damage only — never to-hit",
    "value": 1
   },
   {
+   "id": "accuracy",
    "name": "Accuracy",
    "does": "the core roll. surplus over 100 becomes Crit at ÷4",
-   "value": 0.2,
-   "note": "loses value as you stack it"
+   "value": 0.16666666666666666,
+   "note": "loses value as you stack it. Re-ruled 2026-09-02: \"6 dodge or 6 accuracy are both worth 1\" (was 0.2)."
   },
   {
+   "id": "crit",
    "name": "Crit",
    "does": "chance to land one. base 3",
-   "value": 0.2
+   "value": 0.2,
+   "note": "Not named in the 2026-09-02 re-rule; stays at 0.2 pending one."
   },
   {
+   "id": "luck",
    "name": "Luck",
    "does": "flat subtraction from the ATTACKER's crit chance",
-   "value": 0.2
+   "value": 0.2,
+   "note": "Not named in the 2026-09-02 re-rule; stays at 0.2 pending one."
   },
   {
+   "id": "reach",
    "name": "Reach",
    "does": "ranged weapons only. melee gains nothing",
    "value": 0.5
   },
   {
+   "id": "dodge",
    "name": "Dodge",
    "does": "flat to-hit penalty on the attacker",
-   "value": 0.3,
-   "note": "GAINS value as you stack it — +100 Dodge would break the game"
+   "value": 0.16666666666666666,
+   "note": "GAINS value as you stack it — +100 Dodge would break the game. Re-ruled 2026-09-02: \"6 dodge or 6 accuracy are both worth 1\" (was 0.3)."
   },
   {
+   "id": "vision",
    "name": "Vision",
    "does": "a radius, base 6. bites in darkness, fog and stealth-detection",
-   "value": 0.2
+   "value": 0.2,
+   "note": "Not named in the 2026-09-02 re-rule; stays at 0.2 pending one."
   },
   {
+   "id": "armor",
    "name": "Armor",
    "does": "flat mitigation, physical",
-   "value": 2
+   "value": 1.5,
+   "note": "Re-ruled 2026-09-02: \"Armor and resist are both worth 1.5\" (was 2). ARMOR'S VALUE ESCALATES with each point — flat mitigation approaches full negation against small hits — so 1.5 is a FLOOR for pricing, not the true value of a high-armor item."
   },
   {
+   "id": "resist",
    "name": "Resist",
    "does": "flat mitigation of magic damage only; Burn and Poison use their named elemental resist",
-   "value": 2,
-   "note": "V2 section8 devalues Magic Resist; numeric balance valuation is not retuned in this mechanism migration."
+   "value": 1.5,
+   "note": "Re-ruled 2026-09-02: \"Armor and resist are both worth 1.5\" (was 2). V2 section8 devalues Magic Resist; numeric balance valuation is not retuned in this mechanism migration."
   },
   {
+   "id": "health",
    "name": "Health",
    "does": "max. resets every Battle",
    "value": 0.5
   },
   {
+   "id": "magic",
    "name": "Magic",
    "does": "scales off the PARTY-WIDE SUM",
    "value": 1.5
   },
   {
+   "id": "spirit",
    "name": "Spirit",
    "does": "scales off the PARTY-WIDE SUM",
    "value": 1.5
   },
   {
+   "id": "toughness",
    "name": "Toughness",
    "does": "injury capacity, and the base for Deathbed Fighting",
    "value": 0.4,
    "note": "injury capacity, and the base for Deathbed Fighting"
   },
   {
+   "id": "movement",
    "name": "Movement",
    "does": "hexes per move action. heroes 5, enemies 4",
-   "value": 0.7
+   "value": 1,
+   "note": "Re-ruled 2026-09-02, the same day: Movement is 1.0, not 0.7."
   },
   {
+   "id": "staminaMax",
    "name": "Stamina Max",
    "does": "the throttle. a level-1 hero has 5",
    "value": 0.3
   },
   {
+   "id": "staminaRegen",
    "name": "Stamina Regen",
    "does": "THE SACRED STAT. hard-caps around 3",
    "value": 2,
    "note": "THE SACRED STAT. as expensive as Armor, and it hard-caps at 3"
   },
   {
+   "id": "surge",
    "name": "Surge",
    "does": "base value equals the character's level",
    "value": 0.15,
    "note": "fine to modify — it is not a sacred stat"
   },
   {
+   "id": "itemSlots",
    "name": "Item Slots",
    "does": "accessories beyond the two hands",
    "value": 0.67
+  },
+  {
+   "id": "deathbedFighting",
+   "name": "Deathbed Fighting",
+   "does": "points on the Deathbed roll, on top of 20 + 5 x Toughness",
+   "value": 0.1
   },
   {
    "id": "bleedOutTurns",
@@ -351,14 +381,15 @@
  "_derivedBase": "The six stats no hero has a source for - accuracy, crit, luck, vision, movement, staminaMax, staminaRegen - as a per-class level-1 baseline. Moved out of build-heroes.mjs and into the data 2026-08-21 so audit.mjs R23 can enforce it: content/ OWNS the derived stats, ruled 2026-08-21, and every hero must match its class exactly.",
  "_derivation": {
   "accuracy": "No source. Level-1 baseline by class: Priest and Ranger 80 (both are built to hit reliably), Rogue 78, Warrior and Mage 75, Paladin 72 (heavy and slow), Civilian 70 (untrained). Level rows add roughly +5 a level, so a level-10 hero lands near the 100 mark where surplus starts converting to Crit at ÷4.",
-  "crit": "Base 3 — documented in the stat sheet. Rogue starts at 5, the only class whose identity is landing one.",
+  "crit": "Base 3 — the engine's (CRIT_BASE), counted once (Andrew 2026-09-28: 'Crit base 3 should be counted once'). The Codex keeps the total a hero starts with — 3, Rogue 5, the only class whose identity is landing one — and the converter publishes total − 3.",
   "luck": "No source, and a rare grant in the level tables. Everyone starts at 0.",
-  "vision": "Base radius 6 — documented. Ranger 8 and Rogue 7 and Mage 7, the three classes that trade on seeing first.",
+  "vision": "A delta on the battlefield's 6, and 0 for every class. The 6 is the engine's (BATTLEFIELD_VISION; ruled 2026-09-03, engine DECISIONS.md: everyone has a vision of 6, even though the stat is 0); the old class values (Ranger 8, Rogue and Mage 7) were totals the engine never read. fix.codex-numbers, 2026-10-01 (duplication review finding C2).",
   "movement": "5 — documented. Heroes 5, enemies 4.",
   "staminaMax": "5 at level 1 — documented. Civilian 0: a Civilian has no stamina bar.",
   "staminaRegen": "1 at level 1 — documented, and it hard-caps at 3. Civilian 0.",
   "surge": "Not a baseline at all — Surge always EQUALS the character level. Documented rule, computed, never stored.",
   "toughness": "Ported, not derived: hell-tcg maxAfflictions IS injury capacity, which is what Toughness means here.",
   "deathbedFighting": "Derived, never stored: 20 + 5 x Toughness."
- }
+ },
+ "_stats": "THE STAT VALUE LADDER — the one copy. Re-ruled 2026-09-02 (\"Armor and resist are both worth 1.5. Health is worth 0.5. Precision and strength are worth 1. And then 6 dodge or 6 accuracy are both worth 1.\" Same day: Movement is 1.0, not 0.7). checklevels.mjs, build-viewer.mjs and mklevelsmd.mjs read it from hbt-content.json stats (fix.codex-numbers, 2026-10-01; duplication review finding C8). A row with no value is not on the ladder."
 }

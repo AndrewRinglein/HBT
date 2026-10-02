@@ -442,12 +442,17 @@ const TABS=[
        for(const [k,n] of Object.entries(r.grants||{})){ v[k]=(v[k]||0)+n; src[k]='fromlevel'; gained++; }
        for(const [k,n] of Object.entries(t.freebie||{})){ v[k]=(v[k]||0)+n; src[k]='fromlevel'; gained++; } }
      v.surge=L; src.surge='derived';
+     // Vision as the engine reads it: its 6 plus the hero's own (fix.codex-numbers; the Codex value is a delta, finding C2)
+     v.vision=D.ruleBases.vision+(v.vision||0);
      for(const k of ORDER) if(v[k]==null){ v[k]=0; src[k]=src[k]||'derived'; }
      return {v,src,gained,hasTable:!!t};
    }
    const card=(h,L)=>{
      const {v,src,hasTable}=statsAt(h,L);
-     const db=20+5*(v.toughness||0);
+     // Deathbed Fighting and Vision as the ENGINE derives them (fix.codex-numbers; finding C9): its bases ride
+     // the Codex as ruleBases (assemble.mjs, from the engine's vocabulary export) — no third copy of the formula
+     const RB=D.ruleBases;
+     const db=RB.deathbedFighting+RB.deathbedPerToughness*(v.toughness||0)+(v.deathbedFighting||0);
      const key=ART_OF[h.id];
      return '<div class="hero">'+
        (key?'<div class="hero-artbox" data-a="'+key+'"><img class="hero-art" data-a="'+key+'" alt="'+esc(h.name)+'" loading="lazy"></div>'
@@ -461,7 +466,8 @@ const TABS=[
        '<div class="sblock">'+ORDER.map(k=>'<div class="s '+src[k]+(v[k]?'':' zero')+'">'+
          '<div class="sv">'+v[k]+'</div><div class="sl">'+SHORT[k]+'</div></div>').join('')+'</div>'+
        '<div style="font-size:11px;color:var(--dim)">Deathbed Fighting <b style="color:var(--gold)">'+db+
-       '</b> <span style="opacity:.7">(20 + 5 x Toughness)</span>'+
+       '</b> <span style="opacity:.7">('+RB.deathbedFighting+' + '+RB.deathbedPerToughness+' x Toughness)</span>'+
+       ' &middot; Bleed-out <b style="color:var(--gold)">'+Math.max(1,v.bleedOutTurns??RB.bleedOutTurns)+'</b> <span style="opacity:.7">turns</span>'+
        (hasTable?'':' &middot; <span style="color:#ef9a9a">no level table — nothing scales</span>')+'</div>'+
        (h.damageType?'<div style="margin-top:5px"><span class="pill">'+esc(h.damageType)+' damage</span></div>':'')+
        (h.templateName&&h.variantsOf>1?'<div class="trig"><b>template</b> '+esc(h.templateName)+' &middot; shared with '+(h.variantsOf-1)+' other'+(h.variantsOf===2?'':'s')+'</div>':'')+
@@ -527,9 +533,8 @@ const TABS=[
  {id:'levels',label:'Level Tables',n:(D.levels&&D.levels.classes?D.levels.classes.length:0),render(){
    const L=D.levels, BIG=new Set(['armor','resist','magic','spirit']),
          OFF=new Set([]),
-         V={strength:1,precision:1,accuracy:.2,crit:.2,luck:.2,reach:.5,dodge:.3,vision:.2,
-            armor:2,resist:2,health:.5,magic:1.5,spirit:1.5,itemSlots:.67,deathbedFighting:.1,
-            movement:.7,staminaMax:.3,staminaRegen:2,surge:.15,toughness:.4};
+         // the ladder is the Codex's stats table — one copy (fix.codex-numbers, 2026-10-01; finding C8)
+         V=Object.fromEntries(D.stats.filter(s=>s.id&&typeof s.value==='number').map(s=>[s.id,s.value]));
    const nice=k=>k.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase());
    const price=g=>Object.entries(g||{}).reduce((n,[k,v])=>n+(OFF.has(k)?0:(V[k]||0)*v),0);
    const gp=(k,v)=>'<span class="g '+(OFF.has(k)?'off':BIG.has(k)?'big':'')+'">+'+v+' '+esc(nice(k))+'</span>';

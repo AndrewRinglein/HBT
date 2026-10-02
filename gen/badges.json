@@ -1747,8 +1747,7 @@
    "payload": "Lucky -10, Health -2, Turns to Bleed out -3.  Deathbed +40.   OTD: gain 2 stamina",
    "statModifiers": [],
    "rollable": true,
-   "source": "Authored in the 2026-08-25 badge workbook review.",
-   "needsCapability": "stat bleedOutTurns — new hero stat, base 5 (ruled 2026-08-25)"
+   "source": "Authored in the 2026-08-25 badge workbook review."
   },
   {
    "id": "badge.survivor",
@@ -1758,7 +1757,6 @@
    "statModifiers": [],
    "rollable": true,
    "source": "Authored in the 2026-08-25 badge workbook review. Supersedes the earlier badge.survivor (+1 Toughness, −1 Strength).",
-   "needsCapability": "stat bleedOutTurns — new hero stat, base 5 (ruled 2026-08-25)",
    "note": "Coexists with a same-name concept elsewhere by ruling."
   },
   {
@@ -1768,8 +1766,7 @@
    "payload": "5 extra turns to bleed out",
    "statModifiers": [],
    "rollable": true,
-   "source": "Authored in the 2026-08-25 badge workbook review.",
-   "needsCapability": "stat bleedOutTurns — new hero stat, base 5 (ruled 2026-08-25)"
+   "source": "Authored in the 2026-08-25 badge workbook review."
   },
   {
    "id": "badge.stocky",

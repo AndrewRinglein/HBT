@@ -61,12 +61,29 @@ const STAT_OF = {
   staminamax: 'maxStamina', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
   staminaregen: 'staminaRegen', 'stamina regen': 'staminaRegen', regen: 'staminaRegen',
   crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision', thorns: 'thorns',
+  // fix.codex-numbers (2026-10-01, finding C9): the bleed-out and Deathbed stats fold like any other
+  bleedoutturns: 'bleedOutTurns', 'bleed-out turns': 'bleedOutTurns', 'turns to bleed out': 'bleedOutTurns',
+  deathbedfighting: 'deathbedFighting', 'deathbed fighting': 'deathbedFighting',
 };
 for (const [w, st] of Object.entries(STAT_OF)) if (!FOLDABLE_STATS.has(st)) throw new Error(`mkenginepack: STAT_OF maps '${w}' to '${st}', which is not an engine stat (../engine/generated/vocabulary.json)`);
 /** A Codex stat word as the engine stat a fold (item, badge, level, specialty, aura) may carry, else undefined. */
 const statOf = (w) => w == null ? undefined : STAT_OF[String(w).toLowerCase().replace(/\s+/g, ' ')];
 /** The same, only when the stat pipeline can modify it at runtime (a statMod) — surge and toughness cannot. */
 const modStatOf = (w) => { const st = statOf(w); return st && RESOLVABLE_STATS.has(st) ? st : undefined; };
+// ── THE RULE BASES (fix.codex-numbers, 2026-10-01; DECISIONS.md 2026-09-28 "the duplication review,
+// ruled", findings C1 C2 C9) ─ the engine adds a unit's crit to 3, its vision to 6, its bleedOutTurns
+// to 5. The Codex authors crit and bleed-out as TOTALS (a rogue's 5, every hero's 5 turns), so a total
+// is published as total − the engine's base, read from the engine's export — "Crit base 3 should be
+// counted once." Vision is authored as the delta itself (0 for every class).
+const RULE = VOCAB.ruleBases;
+if (!RULE || ['crit', 'vision', 'bleedOutTurns'].some((k) => !Number.isSafeInteger(RULE[k]))) throw new Error('mkenginepack: ../engine/generated/vocabulary.json has no ruleBases — regenerate it (engine tools/vocabulary.mts)');
+/** A Codex total as the unit's own addition over the engine's base; an absent total is the base itself. */
+const overRule = (stat, total) => (total === undefined || total === null ? 0 : total - RULE[stat]);
+/** A hero row's crit, vision and bleed-out, from its Codex derived and ported blocks — one place for every hero lane. */
+function heroRuleStats(d, p) {
+  const crit = overRule('crit', d.crit ?? p.crit), bleed = overRule('bleedOutTurns', d.bleedOutTurns ?? p.bleedOutTurns), vision = d.vision ?? p.vision ?? 0;
+  return { ...(crit ? { crit } : {}), ...(vision ? { vision } : {}), ...(bleed ? { bleedOutTurns: bleed } : {}) };
+}
 if (!D.testCohort) { console.error('mkenginepack: no testCohort in hbt-content.json — run assemble.mjs first.'); process.exit(1); }
 
 // Slots are authored action restrictions, independent of their effect profile.
@@ -109,6 +126,7 @@ const heroes = D.testCohort.heroes.map((h) => {
     typeId: h.typeId, name: h.name, side: 'hero', copyOf: h.copyOf,
     maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...optionalCombatStats(p),
     accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
+    ...heroRuleStats(d, p),   // fix.codex-numbers: the cohort clones carry their source's crit too
     strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
     role: e.role, movement: d.movement, reach: p.reach ?? 0,
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
@@ -390,18 +408,25 @@ function compileBadge(row) {
   let deathbed = 0;
   const auraRow = /\baura\b/i.test(payload);
   if (!payload || /prose only/i.test(payload)) gaps.push(payload ? 'payload is prose only — the numbers are owed' : 'no payload');
-  else for (const raw of payload.split(/\s*[·;]\s*|,\s*(?![^()]*\))/)) {
+  // fix.codex-numbers (2026-10-01): a sentence is a clause too — "Turns to Bleed out -3.  Deathbed +40.   OTD: …" (Death Seeker)
+  else for (const raw of payload.split(/\s*[·;]\s*|,\s*(?![^()]*\))|\.\s+/)) {
     const clause = raw.trim(); if (!clause) continue;
     let m;
-    if (!auraRow && ((m = clause.match(/^([+−-]\s*\d+)\s+Deathbed Fighting$/i)) || (m = clause.match(/^Deathbed Fighting\s+([+−-]\s*\d+)$/i)))) {
+    // fix.codex-numbers (C9): "Deathbed +40" (Death Seeker), "deathbed +20" (Survivor) are the same points, spelled short
+    if (!auraRow && ((m = clause.match(/^([+−-]\s*\d+)\s+Deathbed(?: Fighting)?$/i)) || (m = clause.match(/^Deathbed(?: Fighting)?\s*([+−-]\s*\d+)$/i)))) {
       deathbed += parseInt(m[1].replace('−', '-').replace(/\s+/g, ''), 10); continue;
+    }
+    // fix.codex-numbers (C9): "Turns to Bleed out -3" (Death Seeker), "3 extra turns to bleed out" (Survivor, Thick Blooded)
+    if (!auraRow && ((m = clause.match(/^Turns to Bleed out\s*([+−-]\s*\d+)$/i)) || (m = clause.match(/^(\d+) extra turns to bleed out$/i)))) {
+      mods.bleedOutTurns = (mods.bleedOutTurns ?? 0) + parseInt(m[1].replace('−', '-').replace(/\s+/g, ''), 10); continue;
     }
     if ((m = clause.match(/^([+−-]\s*\d+)\s+(.+)$/))) {
       const v = parseInt(m[1].replace('−', '-').replace(/\s+/g, ''), 10);
       // "+1 S, P, reach, H" — one number, several stats
       const words = m[2].split(/\s*,\s*|\s+and\s+/).map((w) => w.trim().toLowerCase());
       let ok = true;
-      for (const w of words) { const st = statOf(w); if (!st) { ok = false; break } }
+      // a badge's Deathbed points ride its own field, read at the roll (engine SWITCHES.md deathbedBadgePoints) — never a folded stat
+      for (const w of words) { const st = statOf(w); if (!st || st === 'deathbedFighting') { ok = false; break } }
       if (ok) { for (const w of words) { const st = statOf(w); mods[st] = (mods[st] ?? 0) + v } continue }
     }
     if ((m = clause.match(/^grants\s+`?(power\.[a-z0-9.-]+)`?$/i))) { grants.push(m[1]); continue }
@@ -757,9 +782,14 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   const unitMoves = zocWalk ?? (movePowers.length === 1 && moves[movePowers[0]] ? movePowers : ['power.move']);
   authoredEnemies.push({
     typeId: id, name: u.name, side: 'enemy',
+    // fix.codex-numbers (finding K7): the Codex tier rides the row, so the kingdom can pay xpByTier (2 / 5 / 15)
+    ...(u.tier !== undefined ? { tier: u.tier } : {}),
     maxHp: st.health, armor: st.armor ?? 0, resist: st.resist ?? 0, ...optionalCombatStats(st),
     accuracy: st.accuracy, dodge: st.dodge ?? 0,
-    ...(st.crit ? { crit: st.crit } : {}), ...(st.luck ? { luck: st.luck } : {}), // station.crit 2026-08-27
+    // station.crit 2026-08-27. An enemy's authored crit is its TOTAL (the Eyeblight's "Crit 0, so the surplus is its
+    // only crit"; COMBAT-DESIGN "some enemies crit far above the base 3"): published over the engine's base like a
+    // hero's (fix.codex-numbers; engine SWITCHES.md enemyCritIsTotal). No authored crit is the base itself.
+    ...(overRule('crit', st.crit) ? { crit: overRule('crit', st.crit) } : {}), ...(st.luck ? { luck: st.luck } : {}),
     strength: st.strength ?? 0, precision: st.precision ?? 0, magic: st.magic ?? 0, spirit: st.spirit ?? 0,
     // Mechanical mapping, not design: a unit kites when its ranged attacks
     // are at least as many as its melee ones; the rest close. Was "any ranged
@@ -1039,7 +1069,7 @@ for (const id of PARTY) {
     typeId: id, name: h.name, side: 'hero',
     maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...optionalCombatStats(p),
     accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
-    ...((d.crit ?? p.crit) ? { crit: d.crit ?? p.crit } : {}), ...((d.luck ?? p.luck) ? { luck: d.luck ?? p.luck } : {}), // station.crit
+    ...heroRuleStats(d, p), ...((d.luck ?? p.luck) ? { luck: d.luck ?? p.luck } : {}), // station.crit; crit over the engine's base (fix.codex-numbers)
     strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
     // role and ai derived from the DEFAULT kit's attacks — the engine derives
     // them again from whatever kit it is handed (seam.items-per-unit)
@@ -1137,7 +1167,7 @@ const alphaTeam = [];
       typeId: id, name: h.name, side: 'hero',
       maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0, ...optionalCombatStats(p),
       accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
-      ...(d.crit ?? p.crit ? { crit: d.crit ?? p.crit } : {}), ...(d.luck ?? p.luck ? { luck: d.luck ?? p.luck } : {}), // station.crit 2026-08-27
+      ...heroRuleStats(d, p), ...(d.luck ?? p.luck ? { luck: d.luck ?? p.luck } : {}), // station.crit 2026-08-27; crit over the engine's base (fix.codex-numbers)
       strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
       role: anyRanged ? 'ranged' : 'melee',
       movement: d.movement, reach: p.reach ?? 0,
@@ -1230,7 +1260,7 @@ for (const id of CIVILIANS) {
     typeId: id, name: h.name, side: 'hero',
     maxHp: p2.health, armor: p2.armor ?? 0, resist: p2.resist ?? 0, ...optionalCombatStats(p2),
     accuracy: d2.accuracy, dodge: p2.dodge ?? 0, ...(p2.toughness ? { toughness: p2.toughness } : {}),
-    ...(d2.crit ?? p2.crit ? { crit: d2.crit ?? p2.crit } : {}), ...(d2.luck ?? p2.luck ? { luck: d2.luck ?? p2.luck } : {}), // station.crit 2026-08-27
+    ...heroRuleStats(d2, p2), ...(d2.luck ?? p2.luck ? { luck: d2.luck ?? p2.luck } : {}), // station.crit 2026-08-27; crit over the engine's base (fix.codex-numbers)
     strength: p2.strength ?? 0, precision: p2.precision ?? 0, magic: p2.magic ?? 0, spirit: p2.spirit ?? 0,
     role: anyRanged ? 'ranged' : 'melee',
     movement: d2.movement, reach: p2.reach ?? 0,
@@ -1844,7 +1874,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'aiChanges', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);   // aiChanges: ai.mode-change (engine, 2026-09-26)
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'vision', 'bleedOutTurns', 'deathbedFighting', 'tier', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'aiChanges', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);   // aiChanges: ai.mode-change (engine, 2026-09-26)
 const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
@@ -2075,7 +2105,11 @@ moveBursts(authoredAttacks, authoredBursts); moveBursts(authoredAbilities, autho
 moveBursts(test.attacks, testBursts); moveBursts(test.abilities, testBursts);
 test.bursts = testBursts;
 
-const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
+// fix.codex-numbers (finding K7; DECISIONS.md 2026-09-28: "XP per kill is 2 / 5 / 15 by tier"): the price list rides the pack beside the tiers
+const xpByTier = AUTH.xpByTier;
+if (!xpByTier || Object.keys(xpByTier).some((k) => !/^[1-9]$/.test(k)) || Object.values(xpByTier).some((v) => !Number.isSafeInteger(v) || v < 0)) throw new Error('gen/enemies-authored.json: xpByTier must map tiers to whole XP');
+for (const u of authoredEnemies) if (u.tier !== undefined && xpByTier[u.tier] === undefined) throw new Error(`${u.typeId}: tier ${u.tier} has no price in xpByTier`);
+const pack = { note: D.testCohort.note, xpByTier, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
   classPowers, specialties, levels, enchanted, derivedItems, encounters, badges, maps };
 
 for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test.attacks, test.abilities, test.moves]) {

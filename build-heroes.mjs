@@ -43,12 +43,13 @@ const CLASSMAP={Warrior:'class.warrior',Ranger:'class.ranger',Rogue:'class.rogue
 // the derived stats, and the Crucible values that disagreed are superseded, not reconciled.
 const CLASSES_JSON=JSON.parse(fs.readFileSync("gen/classes.json","utf8"));
 const DERIVED_BASE=Object.fromEntries(CLASSES_JSON.classes.filter(c=>c.derivedBase).map(c=>[c.id,c.derivedBase]));
-DERIVED_BASE._unmapped={accuracy:75,crit:3,luck:0,vision:6,movement:5,staminaMax:5,staminaRegen:1};
+DERIVED_BASE._unmapped={accuracy:75,crit:3,luck:0,vision:0,movement:5,staminaMax:5,staminaRegen:1};   // vision is a delta on the engine's 6 (fix.codex-numbers, 2026-10-01)
 const DERIVATION={
   accuracy:'No source. Level-1 baseline by class: Priest and Ranger 80 (both are built to hit reliably), Rogue 78, Warrior and Mage 75, Paladin 72 (heavy and slow), Civilian 70 (untrained). Level rows add roughly +5 a level, so a level-10 hero lands near the 100 mark where surplus starts converting to Crit at ÷4.',
-  crit:'Base 3 — documented in the stat sheet. Rogue starts at 5, the only class whose identity is landing one.',
+  // crit and vision: gen/classes.json _derivation is their one text (fix.codex-numbers, 2026-10-01; findings C1 C2)
+  crit:CLASSES_JSON._derivation.crit,
   luck:'No source, and a rare grant in the level tables. Everyone starts at 0.',
-  vision:'Base radius 6 — documented. Ranger 8 and Rogue 7 and Mage 7, the three classes that trade on seeing first.',
+  vision:CLASSES_JSON._derivation.vision,
   movement:'5 — documented. Heroes 5, enemies 4.',
   staminaMax:'5 at level 1 — documented. Civilian 0: a Civilian has no stamina bar.',
   staminaRegen:'1 at level 1 — documented, and it hard-caps at 3. Civilian 0.',

@@ -23,9 +23,11 @@ under **Level Tables**. `content/audit.mjs` enforces every rule below.
 
 **Civilian** — REVERSED 2026-09-03. Civilians DO have a stamina bar and always did at level 1 — every civilian hero row already carried staminaMax 5 and staminaRegen 1, identical to the Eve heroes. What was missing was the progression: the level tables granted none, and three checkers plus this rules block forbade it. Civilians now gain +3 Stamina Max (L2, L4, L8) and +2 Stamina Regen (L6, L9), the same shape as the Ranger, Rogue, Mage, Priest and Paladin. That closes the 4.9-point gap the exemption used to cost and moves the civilian tables from the high 20s into the low 30s, at the bottom of the combat-class band. Item Slots remain the civilian signature — it still ends with more slots than any other class.
 
-**Budget** — Each row is priced on the stat ladder: Armor/Resist and Stamina Regen 2.0 · Magic/Spirit 1.5 · Strength/Precision 1.0 · Movement 0.7 · Item Slots 0.67 · Health/Reach 0.5 · Toughness 0.4 · Dodge 0.3 · Stamina Max 0.3 · Accuracy/Crit/Luck/Vision 0.2 · Surge 0.15. Rows run 2.2 to 6.5; the dictated Warrior's own ceiling is L7 at 6.40. Classes land 30 to 40 across the whole run.
+**Budget** — Each row is priced on the stat ladder, whose one copy is the Codex stats table (gen/classes.json stats; rendered below the rules), re-ruled 2026-09-02: Armor and Resist 1.5, Dodge and Accuracy 1/6, Movement 1.0, and Armor's price is a floor because its value escalates with each point. checklevels.mjs prices every row against it and flags an authored row above 6.6. Classes land 33 to 37 across the whole run (checklevels.mjs, 2026-10-01).
 
-**Off Ladder** — Nothing is off the ladder any more. priced the last five 2026-08-20: Movement 0.7, Stamina Max 0.3, Stamina Regen 2.0, Surge 0.15, Toughness 0.4. (Movement re-ruled to 1.0 on 2026-09-02.) Stamina Regen at 2.0 is the one that reshapes these tables — it is as expensive as Armor and every class gets exactly two, CIVILIANS INCLUDED as of 2026-09-03.
+**The ladder** — STAMINA REGEN 2 · Armor 1.5 · Resist 1.5 · Magic 1.5 · Spirit 1.5 · Strength 1 · Precision 1 · Movement 1 · Item Slots 0.67 · Reach 0.5 · Health 0.5 · Toughness 0.4 · Stamina Max 0.3 · Crit 0.2 · Luck 0.2 · Vision 0.2 · Accuracy 1/6 · Dodge 1/6 · Surge 0.15 · Deathbed Fighting 0.1
+
+**Off Ladder** — Nothing is off the ladder any more. The last five — Movement, Stamina Max, Stamina Regen, Surge, Toughness — were priced 2026-08-20 (Movement re-ruled to 1.0 on 2026-09-02). Stamina Regen at 2.0 is the one that reshapes these tables — the dearest stat on the ladder — and every class gets exactly two, CIVILIANS INCLUDED as of 2026-09-03.
 
 **Movement** — Movement is granted sparingly and never to a Mage or a Priest. Warrior L4 · Rogue L3 and L6 · Ranger L6 · Civilian L9 · Paladin L10, because armour should be the last thing that learns to run. Ruled by 2026-08-20. Beast L3 and L7 — two, like the Rogue, because a Beast that cannot close is not a Beast.
 
@@ -46,24 +48,24 @@ under **Level Tables**. `content/audit.mjs` enforces every rule below.
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Stamina Max · +1 Item Slots · +5 Accuracy | 2.5 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Stamina Max · +1 Item Slots · +5 Accuracy | 2.3 |
 | **3** | +1 Health · +1 Strength · +1 Item Slots · +2 Crit | 2.6 |
-| **4** | +1 Health · +1 Precision · +1 Reach · +1 Stamina Max · +1 Resist · +5 Dodge · +1 Movement | 6.5 |
-| **5** | +1 Health<br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*Dictated as a bare list of five stat names — 'they definitely get a choice of a bunch of big things'. Magnitudes set to match the Ranger's dictated L5 list, which is the only place magnitudes were given.* | 3.5 |
-| **6** | +1 Health · +1 STAMINA REGEN · +1 Item Slots · +5 Accuracy · +2 Luck | 4.6 |
-| **7** | +1 Health · +1 Strength · +1 Precision · +1 Armor · +1 Stamina Max · +2 Crit · +5 Dodge | 6.7 |
-| **8** | +1 Health · +1 Strength · +1 Item Slots · +4 Accuracy · +1 Crit · +2 Dodge | 3.8 |
-| **9** | +1 Health · +1 Precision · +1 Reach · +1 Stamina Max · +5 Dodge · +2 Luck | 4.2 |
-| **10** | +1 Health · +1 Strength · +1 STAMINA REGEN · +1 Item Slots · +5 Accuracy · +2 Crit | 5.6 |
+| **4** | +1 Health · +1 Precision · +1 Reach · +1 Stamina Max · +1 Resist · +5 Dodge · +1 Movement | 5.6 |
+| **5** | +1 Health<br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*Dictated as a bare list of five stat names — 'they definitely get a choice of a bunch of big things'. Magnitudes set to match the Ranger's dictated L5 list, which is the only place magnitudes were given.* | 3.0 |
+| **6** | +1 Health · +1 STAMINA REGEN · +1 Item Slots · +5 Accuracy · +2 Luck | 4.4 |
+| **7** | +1 Health · +1 Strength · +1 Precision · +1 Armor · +1 Stamina Max · +2 Crit · +5 Dodge | 5.5 |
+| **8** | +1 Health · +1 Strength · +1 Item Slots · +4 Accuracy · +1 Crit · +2 Dodge | 3.4 |
+| **9** | +1 Health · +1 Precision · +1 Reach · +1 Stamina Max · +5 Dodge · +2 Luck | 3.5 |
+| **10** | +1 Health · +1 Strength · +1 STAMINA REGEN · +1 Item Slots · +5 Accuracy · +2 Crit | 5.4 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+17 Dodge · +9 Health · +4 Strength · +2 STAMINA REGEN · +19 Accuracy · +5 Item Slots · +3 Precision · +1 Resist · +1 Armor · +7 Crit · +4 Stamina Max · +2 Reach · +4 Luck · +1 Movement
++9 Health · +4 Strength · +2 STAMINA REGEN · +5 Item Slots · +19 Accuracy · +3 Precision · +17 Dodge · +1 Resist · +1 Armor · +7 Crit · +4 Stamina Max · +2 Reach · +1 Movement · +4 Luck
 no off-ladder grants
 ```
 
-Ladder total across the run: **39.9**
+Ladder total across the run: **35.8**
 
 ---
 
@@ -76,24 +78,24 @@ Ladder total across the run: **39.9**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Precision · +1 Resist · +5 Accuracy · +3 Dodge | 4.9 |
-| **3** | +1 Strength · +1 Reach · +1 Health · +1 Stamina Max · +1 Resist · +1 Item Slots · +3 Crit | 5.6 |
-| **4** | +1 Precision · +1 Health · +7 Accuracy · +2 Dodge · +1 Luck | 3.7 |
-| **5** | +1 Stamina Max · +2 Accuracy · +1 Crit · +1 Dodge · +1 Luck<br>**CHOOSE ONE:** +2 Precision / +5 Health / +15 Accuracy / +1 Armor / +1 Resist / +2 Magic / +8 Crit<br>*Dictated with magnitudes — the only L5 list that was.* | 4.4 |
-| **6** | +1 Strength · +1 Reach · +1 STAMINA REGEN · +5 Dodge · +1 Movement | 5.7 |
-| **7** | +1 Precision · +1 Reach · +1 Vision · +5 Accuracy · +3 Dodge<br>*authored — not dictated* | 3.6 |
-| **8** | +1 Strength · +1 Item Slots · +1 Stamina Max · +3 Crit · +2 Dodge<br>*authored — not dictated* | 3.2 |
-| **9** | +1 Precision · +1 Health · +1 Vision · +5 Accuracy · +2 Dodge · +1 Luck<br>*authored — not dictated* | 3.5 |
-| **10** | +1 Precision · +1 Reach · +1 STAMINA REGEN · +1 Item Slots · +5 Dodge · +2 Crit<br>*authored — not dictated* | 6.1 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Precision · +1 Resist · +5 Accuracy · +3 Dodge | 3.8 |
+| **3** | +1 Strength · +1 Reach · +1 Health · +1 Stamina Max · +1 Resist · +1 Item Slots · +3 Crit | 5.1 |
+| **4** | +1 Precision · +1 Health · +7 Accuracy · +2 Dodge · +1 Luck | 3.2 |
+| **5** | +1 Stamina Max · +2 Accuracy · +1 Crit · +1 Dodge · +1 Luck<br>**CHOOSE ONE:** +2 Precision / +5 Health / +15 Accuracy / +1 Armor / +1 Resist / +2 Magic / +8 Crit<br>*Dictated with magnitudes — the only L5 list that was.* | 4.2 |
+| **6** | +1 Strength · +1 Reach · +1 STAMINA REGEN · +5 Dodge · +1 Movement | 5.3 |
+| **7** | +1 Precision · +1 Reach · +1 Vision · +5 Accuracy · +3 Dodge<br>*authored — not dictated* | 3.0 |
+| **8** | +1 Strength · +1 Item Slots · +1 Stamina Max · +3 Crit · +2 Dodge<br>*authored — not dictated* | 2.9 |
+| **9** | +1 Precision · +1 Health · +1 Vision · +5 Accuracy · +2 Dodge · +1 Luck<br>*authored — not dictated* | 3.1 |
+| **10** | +1 Precision · +1 Reach · +1 STAMINA REGEN · +1 Item Slots · +5 Dodge · +2 Crit<br>*authored — not dictated* | 5.4 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+23 Dodge · +5 Precision · +24 Accuracy · +2 Resist · +2 STAMINA REGEN · +3 Strength · +3 Item Slots · +4 Reach · +9 Crit · +3 Health · +3 Stamina Max · +1 Movement · +3 Luck · +2 Vision
++5 Precision · +24 Accuracy · +2 STAMINA REGEN · +23 Dodge · +2 Resist · +3 Strength · +3 Item Slots · +4 Reach · +9 Crit · +3 Health · +1 Movement · +3 Stamina Max · +3 Luck · +2 Vision
 no off-ladder grants
 ```
 
-Ladder total across the run: **40.6**
+Ladder total across the run: **36.0**
 
 ---
 
@@ -106,24 +108,24 @@ Ladder total across the run: **40.6**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Precision · +1 Stamina Max · +5 Accuracy · +3 Dodge · +2 Crit | 3.6 |
-| **3** | +1 Strength · +1 Item Slots · +1 Health · +3 Crit · +3 Dodge · +1 Movement | 4.4 |
-| **4** | +1 Precision · +1 Stamina Max · +5 Accuracy · +4 Crit · +2 Luck | 3.5 |
-| **5** | +1 Item Slots · +2 Accuracy · +2 Crit<br>**CHOOSE ONE:** +2 Precision / +2 Strength / +10 Crit / +10 Dodge / +5 Health / +1 Resist / +15 Accuracy | 4.5 |
-| **6** | +1 Precision · +1 STAMINA REGEN · +5 Dodge · +3 Crit · +1 Movement | 5.8 |
-| **7** | +1 Strength · +1 Precision · +1 Item Slots · +5 Accuracy · +3 Crit | 4.3 |
-| **8** | +1 Precision · +1 Stamina Max · +1 Vision · +5 Dodge · +2 Luck | 3.4 |
-| **9** | +1 Strength · +1 Health · +1 Item Slots · +5 Accuracy · +4 Crit · +2 Dodge | 4.6 |
-| **10** | +1 Precision · +1 STAMINA REGEN · +1 Resist · +3 Dodge · +3 Crit<br>*The single Resist grant of the run — a rogue with no Resist at all is free food for any mage, and this is the cheapest place to fix that.* | 6.5 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Precision · +1 Stamina Max · +5 Accuracy · +3 Dodge · +2 Crit | 3.0 |
+| **3** | +1 Strength · +1 Item Slots · +1 Health · +3 Crit · +3 Dodge · +1 Movement | 4.3 |
+| **4** | +1 Precision · +1 Stamina Max · +5 Accuracy · +4 Crit · +2 Luck | 3.3 |
+| **5** | +1 Item Slots · +2 Accuracy · +2 Crit<br>**CHOOSE ONE:** +2 Precision / +2 Strength / +10 Crit / +10 Dodge / +5 Health / +1 Resist / +15 Accuracy | 3.9 |
+| **6** | +1 Precision · +1 STAMINA REGEN · +5 Dodge · +3 Crit · +1 Movement | 5.4 |
+| **7** | +1 Strength · +1 Precision · +1 Item Slots · +5 Accuracy · +3 Crit | 4.1 |
+| **8** | +1 Precision · +1 Stamina Max · +1 Vision · +5 Dodge · +2 Luck | 2.7 |
+| **9** | +1 Strength · +1 Health · +1 Item Slots · +5 Accuracy · +4 Crit · +2 Dodge | 4.1 |
+| **10** | +1 Precision · +1 STAMINA REGEN · +1 Resist · +3 Dodge · +3 Crit<br>*The single Resist grant of the run — a rogue with no Resist at all is free food for any mage, and this is the cheapest place to fix that.* | 5.6 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+21 Dodge · +6 Precision · +24 Crit · +22 Accuracy · +2 STAMINA REGEN · +3 Strength · +4 Item Slots · +1 Resist · +2 Movement · +2 Health · +3 Stamina Max · +4 Luck · +1 Vision
++6 Precision · +24 Crit · +2 STAMINA REGEN · +22 Accuracy · +21 Dodge · +3 Strength · +4 Item Slots · +2 Movement · +1 Resist · +2 Health · +3 Stamina Max · +4 Luck · +1 Vision
 no off-ladder grants
 ```
 
-Ladder total across the run: **40.5**
+Ladder total across the run: **36.5**
 
 ---
 
@@ -136,24 +138,24 @@ Ladder total across the run: **40.5**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Magic · +1 Stamina Max · +5 Accuracy · +1 Vision | 3.0 |
-| **3** | +1 Precision · +1 Health · +1 Resist · +1 Item Slots · +2 Crit | 4.6 |
-| **4** | +1 Magic · +1 Stamina Max · +5 Accuracy · +3 Dodge | 3.7 |
-| **5** | +1 Item Slots · +2 Accuracy · +1 Dodge<br>**CHOOSE ONE:** +2 Magic / +2 Precision / +5 Health / +15 Accuracy / +1 Armor / +1 Resist / +2 Vision | 4.4 |
-| **6** | +1 Precision · +1 STAMINA REGEN · +1 Vision · +5 Accuracy | 4.2 |
-| **7** | +1 Magic · +1 Resist · +1 Stamina Max · +2 Crit | 4.2 |
-| **8** | +1 Precision · +1 Health · +1 Item Slots · +5 Accuracy · +3 Dodge | 4.1 |
-| **9** | +1 Precision · +1 Vision · +5 Accuracy · +2 Crit · +2 Dodge | 3.2 |
-| **10** | +1 Magic · +1 STAMINA REGEN · +1 Precision · +1 Item Slots · +5 Accuracy | 6.2 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Magic · +1 Stamina Max · +5 Accuracy · +1 Vision | 2.8 |
+| **3** | +1 Precision · +1 Health · +1 Resist · +1 Item Slots · +2 Crit | 4.1 |
+| **4** | +1 Magic · +1 Stamina Max · +5 Accuracy · +3 Dodge | 3.1 |
+| **5** | +1 Item Slots · +2 Accuracy · +1 Dodge<br>**CHOOSE ONE:** +2 Magic / +2 Precision / +5 Health / +15 Accuracy / +1 Armor / +1 Resist / +2 Vision | 4.2 |
+| **6** | +1 Precision · +1 STAMINA REGEN · +1 Vision · +5 Accuracy | 4.0 |
+| **7** | +1 Magic · +1 Resist · +1 Stamina Max · +2 Crit | 3.7 |
+| **8** | +1 Precision · +1 Health · +1 Item Slots · +5 Accuracy · +3 Dodge | 3.5 |
+| **9** | +1 Precision · +1 Vision · +5 Accuracy · +2 Crit · +2 Dodge | 2.8 |
+| **10** | +1 Magic · +1 STAMINA REGEN · +1 Precision · +1 Item Slots · +5 Accuracy | 6.0 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+32 Accuracy · +4 Magic · +5 Precision · +2 Resist · +2 STAMINA REGEN · +9 Dodge · +4 Item Slots · +6 Crit · +2 Health · +3 Stamina Max · +3 Vision
++4 Magic · +32 Accuracy · +5 Precision · +2 STAMINA REGEN · +2 Resist · +4 Item Slots · +9 Dodge · +6 Crit · +2 Health · +3 Stamina Max · +3 Vision
 no off-ladder grants
 ```
 
-Ladder total across the run: **37.5**
+Ladder total across the run: **34.2**
 
 ---
 
@@ -166,24 +168,24 @@ Ladder total across the run: **37.5**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Spirit · +1 Health · +1 Stamina Max · +5 Accuracy | 3.3 |
-| **3** | +1 Precision · +1 Resist · +1 Item Slots · +1 Health · +3 Accuracy | 4.8 |
-| **4** | +1 Spirit · +1 Stamina Max · +5 Accuracy · +1 Toughness | 3.2 |
-| **5** | +1 Item Slots · +3 Accuracy · +1 Dodge<br>**CHOOSE ONE:** +2 Spirit / +2 Precision / +5 Health / +15 Accuracy / +1 Armor / +1 Resist / +20 Deathbed Fighting<br>*The Deathbed option is the only place on any table where a level grants Deathbed Fighting directly. Deathbed is derived, 20 + 5x Toughness, so this is a flat modifier hanging off the level row, exactly as a badge would.* | 4.6 |
-| **6** | +1 Precision · +1 STAMINA REGEN · +1 Health · +5 Accuracy | 4.5 |
-| **7** | +1 Spirit · +1 Resist · +1 Stamina Max · +2 Crit | 4.2 |
-| **8** | +1 Precision · +1 Health · +1 Item Slots · +5 Accuracy · +2 Dodge | 3.8 |
-| **9** | +1 Spirit · +1 Toughness · +5 Accuracy · +2 Dodge · +1 Luck | 3.7 |
-| **10** | +1 Precision · +1 STAMINA REGEN · +1 Health · +1 Item Slots · +5 Accuracy · +2 Crit | 5.6 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Spirit · +1 Health · +1 Stamina Max · +5 Accuracy | 3.1 |
+| **3** | +1 Precision · +1 Resist · +1 Item Slots · +1 Health · +3 Accuracy | 4.2 |
+| **4** | +1 Spirit · +1 Stamina Max · +5 Accuracy · +1 Toughness | 3.0 |
+| **5** | +1 Item Slots · +3 Accuracy · +1 Dodge<br>**CHOOSE ONE:** +2 Spirit / +2 Precision / +5 Health / +15 Accuracy / +1 Armor / +1 Resist / +20 Deathbed Fighting<br>*The Deathbed option is the only place on any table where a level grants Deathbed Fighting directly. Deathbed is derived, 20 + 5x Toughness, so this is a flat modifier hanging off the level row, exactly as a badge would.* | 4.3 |
+| **6** | +1 Precision · +1 STAMINA REGEN · +1 Health · +5 Accuracy | 4.3 |
+| **7** | +1 Spirit · +1 Resist · +1 Stamina Max · +2 Crit | 3.7 |
+| **8** | +1 Precision · +1 Health · +1 Item Slots · +5 Accuracy · +2 Dodge | 3.3 |
+| **9** | +1 Spirit · +1 Toughness · +5 Accuracy · +2 Dodge · +1 Luck | 3.3 |
+| **10** | +1 Precision · +1 STAMINA REGEN · +1 Health · +1 Item Slots · +5 Accuracy · +2 Crit | 5.4 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+36 Accuracy · +4 Spirit · +4 Precision · +2 Resist · +2 STAMINA REGEN · +4 Item Slots · +5 Health · +5 Dodge · +3 Stamina Max · +2 Toughness · +4 Crit · +1 Luck
++4 Spirit · +36 Accuracy · +4 Precision · +2 STAMINA REGEN · +2 Resist · +4 Item Slots · +5 Health · +3 Stamina Max · +5 Dodge · +2 Toughness · +4 Crit · +1 Luck
 no off-ladder grants
 ```
 
-Ladder total across the run: **37.6**
+Ladder total across the run: **34.7**
 
 ---
 
@@ -196,24 +198,24 @@ Ladder total across the run: **37.6**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Armor · +1 Health · +5 Accuracy | 3.5 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Armor · +1 Health · +5 Accuracy | 2.8 |
 | **3** | +1 Strength · +1 Health · +1 Stamina Max · +1 Item Slots · +2 Crit | 2.9 |
-| **4** | +1 Resist · +1 Health · +1 Toughness · +3 Accuracy | 3.5 |
-| **5** | +1 Health · +1 Stamina Max · +2 Accuracy · +2 Luck<br>**CHOOSE ONE:** +2 Strength / +1 Armor / +1 Resist / +5 Health / +2 Spirit / +15 Accuracy | 4.6 |
-| **6** | +1 Strength · +1 STAMINA REGEN · +1 Health · +1 Toughness · +3 Accuracy | 4.5 |
-| **7** | +1 Armor · +1 Health · +1 Stamina Max · +2 Crit · +2 Luck | 3.6 |
-| **8** | +1 Strength · +1 Health · +1 Item Slots · +5 Accuracy · +1 Toughness | 3.6 |
-| **9** | +1 Resist · +1 Health · +3 Accuracy · +2 Dodge · +1 Luck | 3.9 |
-| **10** | +1 Strength · +1 STAMINA REGEN · +1 Armor · +1 Health · +1 Accuracy · +1 Movement | 6.4 |
+| **4** | +1 Resist · +1 Health · +1 Toughness · +3 Accuracy | 2.9 |
+| **5** | +1 Health · +1 Stamina Max · +2 Accuracy · +2 Luck<br>**CHOOSE ONE:** +2 Strength / +1 Armor / +1 Resist / +5 Health / +2 Spirit / +15 Accuracy | 4.5 |
+| **6** | +1 Strength · +1 STAMINA REGEN · +1 Health · +1 Toughness · +3 Accuracy | 4.4 |
+| **7** | +1 Armor · +1 Health · +1 Stamina Max · +2 Crit · +2 Luck | 3.1 |
+| **8** | +1 Strength · +1 Health · +1 Item Slots · +5 Accuracy · +1 Toughness | 3.4 |
+| **9** | +1 Resist · +1 Health · +3 Accuracy · +2 Dodge · +1 Luck | 3.0 |
+| **10** | +1 Strength · +1 STAMINA REGEN · +1 Armor · +1 Health · +1 Accuracy · +1 Movement | 6.2 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+3 Armor · +9 Health · +22 Accuracy · +4 Strength · +2 Resist · +2 STAMINA REGEN · +2 Item Slots · +3 Toughness · +5 Luck · +3 Stamina Max · +4 Crit · +1 Movement · +2 Dodge
++3 Armor · +9 Health · +4 Strength · +2 STAMINA REGEN · +22 Accuracy · +2 Resist · +2 Item Slots · +3 Toughness · +5 Luck · +1 Movement · +3 Stamina Max · +4 Crit · +2 Dodge
 no off-ladder grants
 ```
 
-Ladder total across the run: **36.4**
+Ladder total across the run: **33.2**
 
 ---
 
@@ -226,24 +228,24 @@ Ladder total across the run: **36.4**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Item Slots · +5 Accuracy · +1 Stamina Max | 2.5 |
-| **3** | +1 Strength · +1 Health · +1 Item Slots · +3 Accuracy | 2.8 |
-| **4** | +1 Precision · +1 Health · +1 Resist · +3 Dodge · +1 Stamina Max | 4.7 |
-| **5** | +1 Item Slots · +3 Accuracy · +1 Luck<br>**CHOOSE ONE:** +2 Strength / +2 Precision / +5 Health / +15 Accuracy / +1 Armor / +1 Resist / +2 Magic / +2 Spirit / +10 Dodge / +8 Crit | 4.5 |
-| **6** | +1 Health · +1 Item Slots · +1 Vision · +5 Accuracy · +2 Crit · +1 STAMINA REGEN | 4.8 |
-| **7** | +1 Strength · +1 Precision · +1 Health · +3 Dodge | 3.4 |
-| **8** | +1 Armor · +1 Item Slots · +3 Accuracy · +1 Luck · +1 Stamina Max | 3.8 |
-| **9** | +1 Health · +1 Toughness · +5 Accuracy · +2 Crit · +2 Dodge · +1 Movement · +1 STAMINA REGEN | 5.6 |
-| **10** | +1 Strength · +1 Precision · +1 Item Slots · +1 Health · +5 Accuracy | 4.2 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Item Slots · +5 Accuracy · +1 Stamina Max | 2.3 |
+| **3** | +1 Strength · +1 Health · +1 Item Slots · +3 Accuracy | 2.7 |
+| **4** | +1 Precision · +1 Health · +1 Resist · +3 Dodge · +1 Stamina Max | 3.8 |
+| **5** | +1 Item Slots · +3 Accuracy · +1 Luck<br>**CHOOSE ONE:** +2 Strength / +2 Precision / +5 Health / +15 Accuracy / +1 Armor / +1 Resist / +2 Magic / +2 Spirit / +10 Dodge / +8 Crit | 4.4 |
+| **6** | +1 Health · +1 Item Slots · +1 Vision · +5 Accuracy · +2 Crit · +1 STAMINA REGEN | 4.6 |
+| **7** | +1 Strength · +1 Precision · +1 Health · +3 Dodge | 3.0 |
+| **8** | +1 Armor · +1 Item Slots · +3 Accuracy · +1 Luck · +1 Stamina Max | 3.2 |
+| **9** | +1 Health · +1 Toughness · +5 Accuracy · +2 Crit · +2 Dodge · +1 Movement · +1 STAMINA REGEN | 5.5 |
+| **10** | +1 Strength · +1 Precision · +1 Item Slots · +1 Health · +5 Accuracy | 4.0 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+29 Accuracy · +6 Item Slots · +2 STAMINA REGEN · +7 Health · +3 Strength · +3 Precision · +8 Dodge · +1 Resist · +1 Armor · +3 Stamina Max · +4 Crit · +1 Movement · +2 Luck · +1 Toughness · +1 Vision
++29 Accuracy · +6 Item Slots · +2 STAMINA REGEN · +7 Health · +3 Strength · +3 Precision · +1 Resist · +1 Armor · +8 Dodge · +1 Movement · +3 Stamina Max · +4 Crit · +2 Luck · +1 Toughness · +1 Vision
 no off-ladder grants
 ```
 
-Ladder total across the run: **36.1**
+Ladder total across the run: **33.4**
 
 ---
 
@@ -256,24 +258,24 @@ Ladder total across the run: **36.1**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +2 Health · +1 Strength · +1 Stamina Max · +5 Accuracy | 3.3 |
-| **3** | +2 Health · +1 Movement · +1 Toughness · +3 Crit | 2.7 |
-| **4** | +2 Health · +1 Strength · +1 Armor · +5 Dodge | 5.5 |
-| **5** | +2 Health<br>**CHOOSE ONE:** +2 Strength / +6 Health / +1 Armor / +1 Resist / +1 Reach / +15 Dodge<br>*No Item Slot option, because the Beast never gets one. Reach is on the list instead — it is the stat that changes how a Beast plays.* | 5.5 |
-| **6** | +2 Health · +1 STAMINA REGEN · +1 Reach · +5 Accuracy | 4.5 |
-| **7** | +2 Health · +1 Strength · +1 Movement · +1 Toughness · +3 Crit | 3.7 |
-| **8** | +2 Health · +1 Precision · +1 Resist · +5 Dodge | 5.5 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +2 Health · +1 Strength · +1 Stamina Max · +5 Accuracy | 3.1 |
+| **3** | +2 Health · +1 Movement · +1 Toughness · +3 Crit | 3.0 |
+| **4** | +2 Health · +1 Strength · +1 Armor · +5 Dodge | 4.3 |
+| **5** | +2 Health<br>**CHOOSE ONE:** +2 Strength / +6 Health / +1 Armor / +1 Resist / +1 Reach / +15 Dodge<br>*No Item Slot option, because the Beast never gets one. Reach is on the list instead — it is the stat that changes how a Beast plays.* | 4.0 |
+| **6** | +2 Health · +1 STAMINA REGEN · +1 Reach · +5 Accuracy | 4.3 |
+| **7** | +2 Health · +1 Strength · +1 Movement · +1 Toughness · +3 Crit | 4.0 |
+| **8** | +2 Health · +1 Precision · +1 Resist · +5 Dodge | 4.3 |
 | **9** | +2 Health · +1 Strength · +1 Reach · +1 Stamina Max · +3 Luck | 3.4 |
-| **10** | +2 Health · +1 STAMINA REGEN · +1 Armor · +5 Accuracy | 6.0 |
+| **10** | +2 Health · +1 STAMINA REGEN · +1 Armor · +5 Accuracy | 5.3 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+18 Health · +4 Strength · +2 Armor · +2 STAMINA REGEN · +15 Accuracy · +10 Dodge · +1 Resist · +2 Movement · +6 Crit · +2 Reach · +1 Precision · +2 Toughness · +3 Luck · +2 Stamina Max
++18 Health · +4 Strength · +2 STAMINA REGEN · +2 Armor · +15 Accuracy · +2 Movement · +10 Dodge · +1 Resist · +6 Crit · +2 Reach · +1 Precision · +2 Toughness · +3 Luck · +2 Stamina Max
 no off-ladder grants
 ```
 
-Ladder total across the run: **40.1**
+Ladder total across the run: **35.9**
 
 ---
 
@@ -287,23 +289,23 @@ Ladder total across the run: **40.1**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Item Slots · +1 Stamina Max | 1.5 |
-| **3** | +1 Strength · +1 Health · +1 Item Slots · +5 Dodge · +5 Accuracy | 4.7 |
-| **4** | +1 Precision · +1 Health · +1 Resist · +5 Crit · +2 Luck · +5 Accuracy · +1 Stamina Max | 6.2 |
-| **5** | <br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*"A similar choice to that of a warrior" — the Warrior L5 list verbatim.* | 3.0 |
-| **6** | +1 Strength · +1 Health · +5 Crit · +2 Luck · +5 Accuracy · +1 STAMINA REGEN | 5.9 |
-| **7** | +1 Precision · +1 Health · +1 Item Slots · +2 Dodge · +3 Accuracy | 3.4 |
-| **8** | +1 Strength · +1 Health · +5 Crit · +2 Luck · +3 Accuracy · +1 Stamina Max | 3.8 |
-| **9** | +1 Precision · +1 Health · +1 Item Slots · +2 Dodge · +2 Accuracy · +1 STAMINA REGEN | 5.2 |
-| **10** | +1 Health · +1 Resist · +5 Crit · +2 Luck · +2 Accuracy | 4.3 |
+| **3** | +1 Strength · +1 Health · +1 Item Slots · +5 Dodge · +5 Accuracy | 3.8 |
+| **4** | +1 Precision · +1 Health · +1 Resist · +5 Crit · +2 Luck · +5 Accuracy · +1 Stamina Max | 5.5 |
+| **5** | <br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*"A similar choice to that of a warrior" — the Warrior L5 list verbatim.* | 2.5 |
+| **6** | +1 Strength · +1 Health · +5 Crit · +2 Luck · +5 Accuracy · +1 STAMINA REGEN | 5.7 |
+| **7** | +1 Precision · +1 Health · +1 Item Slots · +2 Dodge · +3 Accuracy | 3.0 |
+| **8** | +1 Strength · +1 Health · +5 Crit · +2 Luck · +3 Accuracy · +1 Stamina Max | 3.7 |
+| **9** | +1 Precision · +1 Health · +1 Item Slots · +2 Dodge · +2 Accuracy · +1 STAMINA REGEN | 4.8 |
+| **10** | +1 Health · +1 Resist · +5 Crit · +2 Luck · +2 Accuracy | 3.7 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+25 Accuracy · +8 Health · +2 Resist · +20 Crit · +2 STAMINA REGEN · +3 Strength · +3 Precision · +9 Dodge · +4 Item Slots · +8 Luck · +3 Stamina Max
++25 Accuracy · +8 Health · +20 Crit · +2 STAMINA REGEN · +3 Strength · +3 Precision · +2 Resist · +4 Item Slots · +8 Luck · +9 Dodge · +3 Stamina Max
 no off-ladder grants
 ```
 
-Ladder total across the run: **37.9**
+Ladder total across the run: **34.3**
 
 ---
 
@@ -317,23 +319,23 @@ Ladder total across the run: **37.9**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Item Slots · +1 Stamina Max | 1.5 |
-| **3** | +5 Accuracy · +5 Crit · +1 Health · +1 Precision | 3.5 |
-| **4** | +5 Accuracy · +5 Crit · +1 Health · +1 Resist · +1 Stamina Max | 4.8 |
-| **5** | +3 Accuracy · +1 Item Slots<br>**CHOOSE ONE:** +2 Precision / +15 Accuracy / +8 Crit / +1 Resist / +5 Health<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.3 |
-| **6** | +5 Accuracy · +5 Crit · +1 Health · +2 Luck · +1 Precision · +1 STAMINA REGEN | 5.9 |
-| **7** | +3 Accuracy · +5 Crit · +1 Health · +1 Item Slots · +1 Precision | 3.8 |
-| **8** | +3 Accuracy · +5 Crit · +1 Health · +2 Luck · +1 Resist · +1 Stamina Max | 4.8 |
-| **9** | +3 Accuracy · +5 Crit · +1 Health · +1 Item Slots · +1 Precision · +1 STAMINA REGEN | 5.8 |
-| **10** | +3 Accuracy · +10 Crit · +1 Health · +2 Luck | 3.5 |
+| **3** | +5 Accuracy · +5 Crit · +1 Health · +1 Precision | 3.3 |
+| **4** | +5 Accuracy · +5 Crit · +1 Health · +1 Resist · +1 Stamina Max | 4.1 |
+| **5** | +3 Accuracy · +1 Item Slots<br>**CHOOSE ONE:** +2 Precision / +15 Accuracy / +8 Crit / +1 Resist / +5 Health<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 3.7 |
+| **6** | +5 Accuracy · +5 Crit · +1 Health · +2 Luck · +1 Precision · +1 STAMINA REGEN | 5.7 |
+| **7** | +3 Accuracy · +5 Crit · +1 Health · +1 Item Slots · +1 Precision | 3.7 |
+| **8** | +3 Accuracy · +5 Crit · +1 Health · +2 Luck · +1 Resist · +1 Stamina Max | 4.2 |
+| **9** | +3 Accuracy · +5 Crit · +1 Health · +1 Item Slots · +1 Precision · +1 STAMINA REGEN | 5.7 |
+| **10** | +3 Accuracy · +10 Crit · +1 Health · +2 Luck | 3.4 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+40 Crit · +30 Accuracy · +8 Health · +4 Precision · +2 Resist · +2 STAMINA REGEN · +4 Item Slots · +6 Luck · +3 Stamina Max
++40 Crit · +30 Accuracy · +8 Health · +4 Precision · +2 STAMINA REGEN · +2 Resist · +4 Item Slots · +6 Luck · +3 Stamina Max
 no off-ladder grants
 ```
 
-Ladder total across the run: **37.8**
+Ladder total across the run: **35.3**
 
 ---
 
@@ -347,14 +349,14 @@ Ladder total across the run: **37.8**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +2 Luck · +1 Stamina Max | 1.2 |
-| **3** | +3 Accuracy · +5 Dodge · +1 Health · +2 Luck | 3.0 |
-| **4** | +5 Crit · +5 Dodge · +1 Health · +1 Item Slots · +3 Luck · +1 Stamina Max | 4.6 |
-| **5** | +5 Dodge · +2 Luck<br>**CHOOSE ONE:** +10 Dodge / +5 Health / +8 Crit / +5 Luck / +15 Accuracy<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.9 |
-| **6** | +5 Crit · +5 Dodge · +1 Health · +3 Luck · +1 Precision · +1 STAMINA REGEN | 6.6 |
-| **7** | +3 Accuracy · +5 Dodge · +1 Health · +1 Item Slots · +2 Luck | 3.7 |
-| **8** | +5 Crit · +5 Dodge · +1 Health · +3 Luck · +1 Precision · +1 Stamina Max | 4.9 |
-| **9** | +3 Accuracy · +5 Dodge · +1 Health · +1 Item Slots · +2 Luck · +1 STAMINA REGEN | 5.7 |
-| **10** | +10 Crit · +5 Dodge · +1 Health · +4 Luck · +1 Precision | 5.8 |
+| **3** | +3 Accuracy · +5 Dodge · +1 Health · +2 Luck | 2.2 |
+| **4** | +5 Crit · +5 Dodge · +1 Health · +1 Item Slots · +3 Luck · +1 Stamina Max | 3.9 |
+| **5** | +5 Dodge · +2 Luck<br>**CHOOSE ONE:** +10 Dodge / +5 Health / +8 Crit / +5 Luck / +15 Accuracy<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 3.7 |
+| **6** | +5 Crit · +5 Dodge · +1 Health · +3 Luck · +1 Precision · +1 STAMINA REGEN | 5.9 |
+| **7** | +3 Accuracy · +5 Dodge · +1 Health · +1 Item Slots · +2 Luck | 2.9 |
+| **8** | +5 Crit · +5 Dodge · +1 Health · +3 Luck · +1 Precision · +1 Stamina Max | 4.2 |
+| **9** | +3 Accuracy · +5 Dodge · +1 Health · +1 Item Slots · +2 Luck · +1 STAMINA REGEN | 4.9 |
+| **10** | +10 Crit · +5 Dodge · +1 Health · +4 Luck · +1 Precision | 5.1 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
@@ -363,7 +365,7 @@ Ladder total across the run: **37.8**
 no off-ladder grants
 ```
 
-Ladder total across the run: **40.3**
+Ladder total across the run: **34.2**
 
 ---
 
@@ -377,23 +379,23 @@ Ladder total across the run: **40.3**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Vision · +1 Stamina Max | 1.0 |
-| **3** | +3 Accuracy · +1 Health · +1 Magic · +1 Vision | 2.8 |
-| **4** | +3 Accuracy · +1 Health · +1 Resist · +1 Spirit · +1 Stamina Max | 4.9 |
+| **3** | +3 Accuracy · +1 Health · +1 Magic · +1 Vision | 2.7 |
+| **4** | +3 Accuracy · +1 Health · +1 Resist · +1 Spirit · +1 Stamina Max | 4.3 |
 | **5** | +1 Item Slots · +1 Vision<br>**CHOOSE ONE:** +2 Magic / +2 Spirit / +1 Resist / +5 Health / +15 Accuracy<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 3.9 |
-| **6** | +3 Accuracy · +5 Crit · +1 Health · +1 Magic · +1 STAMINA REGEN | 5.6 |
-| **7** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Spirit | 3.3 |
+| **6** | +3 Accuracy · +5 Crit · +1 Health · +1 Magic · +1 STAMINA REGEN | 5.5 |
+| **7** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Spirit | 3.2 |
 | **8** | +5 Crit · +1 Health · +1 Magic · +1 Vision · +1 Stamina Max | 3.5 |
-| **9** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Spirit · +1 STAMINA REGEN | 5.3 |
-| **10** | +3 Accuracy · +5 Crit · +1 Health · +1 Magic · +1 Resist | 5.6 |
+| **9** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Spirit · +1 STAMINA REGEN | 5.2 |
+| **10** | +3 Accuracy · +5 Crit · +1 Health · +1 Magic · +1 Resist | 5.0 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+4 Magic · +3 Spirit · +8 Health · +2 Resist · +2 STAMINA REGEN · +18 Accuracy · +15 Crit · +3 Item Slots · +3 Stamina Max · +4 Vision
++4 Magic · +3 Spirit · +8 Health · +2 STAMINA REGEN · +18 Accuracy · +2 Resist · +15 Crit · +3 Item Slots · +3 Stamina Max · +4 Vision
 no off-ladder grants
 ```
 
-Ladder total across the run: **35.8**
+Ladder total across the run: **34.2**
 
 ---
 
@@ -407,23 +409,23 @@ Ladder total across the run: **35.8**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Item Slots · +1 Stamina Max | 1.5 |
-| **3** | +1 Armor · +1 Health · +1 Item Slots · +1 Strength | 4.2 |
-| **4** | +3 Accuracy · +1 Health · +1 Resist · +1 Stamina Max | 3.4 |
+| **3** | +1 Armor · +1 Health · +1 Item Slots · +1 Strength | 3.7 |
+| **4** | +3 Accuracy · +1 Health · +1 Resist · +1 Stamina Max | 2.8 |
 | **5** | +1 Item Slots · +1 Strength<br>**CHOOSE ONE:** +1 Armor / +2 Strength / +5 Health / +1 Resist / +8 Crit<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.2 |
-| **6** | +3 Accuracy · +1 Armor · +1 Health · +1 Strength · +1 STAMINA REGEN | 6.1 |
-| **7** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Toughness | 2.2 |
-| **8** | +1 Armor · +5 Crit · +1 Health · +1 Strength · +1 Stamina Max | 4.8 |
-| **9** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Resist · +1 STAMINA REGEN | 5.8 |
-| **10** | +1 Armor · +1 Health · +2 Luck · +1 Resist · +1 Strength | 5.9 |
+| **6** | +3 Accuracy · +1 Armor · +1 Health · +1 Strength · +1 STAMINA REGEN | 5.5 |
+| **7** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Toughness | 2.1 |
+| **8** | +1 Armor · +5 Crit · +1 Health · +1 Strength · +1 Stamina Max | 4.3 |
+| **9** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Resist · +1 STAMINA REGEN | 5.2 |
+| **10** | +1 Armor · +1 Health · +2 Luck · +1 Resist · +1 Strength | 4.9 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+4 Armor · +3 Resist · +5 Strength · +8 Health · +2 STAMINA REGEN · +5 Item Slots · +12 Accuracy · +5 Crit · +3 Stamina Max · +1 Toughness · +2 Luck
++4 Armor · +5 Strength · +3 Resist · +8 Health · +2 STAMINA REGEN · +5 Item Slots · +12 Accuracy · +5 Crit · +3 Stamina Max · +1 Toughness · +2 Luck
 no off-ladder grants
 ```
 
-Ladder total across the run: **37.9**
+Ladder total across the run: **34.0**
 
 ---
 
@@ -437,23 +439,23 @@ Ladder total across the run: **37.9**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Item Slots · +2 Luck · +1 Stamina Max | 1.9 |
-| **3** | +3 Accuracy · +1 Health · +1 Item Slots · +3 Luck · +1 Precision | 3.4 |
-| **4** | +3 Dodge · +1 Health · +1 Item Slots · +2 Luck · +1 Resist · +1 Stamina Max | 4.8 |
-| **5** | +3 Accuracy · +1 Item Slots · +2 Luck<br>**CHOOSE ONE:** +5 Health / +15 Accuracy / +5 Luck / +10 Dodge / +1 Resist<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.7 |
-| **6** | +3 Accuracy · +1 Health · +1 Item Slots · +3 Luck · +1 Precision · +1 STAMINA REGEN | 5.4 |
-| **7** | +1 Armor · +3 Dodge · +1 Health · +2 Luck · +1 Precision | 4.8 |
-| **8** | +3 Accuracy · +1 Health · +1 Item Slots · +3 Luck · +1 Precision · +1 Stamina Max | 3.7 |
-| **9** | +1 Health · +1 Item Slots · +2 Luck · +1 Movement · +1 STAMINA REGEN | 4.3 |
-| **10** | +3 Accuracy · +5 Crit · +1 Health · +3 Luck · +1 Precision | 3.7 |
+| **3** | +3 Accuracy · +1 Health · +1 Item Slots · +3 Luck · +1 Precision | 3.3 |
+| **4** | +3 Dodge · +1 Health · +1 Item Slots · +2 Luck · +1 Resist · +1 Stamina Max | 3.9 |
+| **5** | +3 Accuracy · +1 Item Slots · +2 Luck<br>**CHOOSE ONE:** +5 Health / +15 Accuracy / +5 Luck / +10 Dodge / +1 Resist<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.1 |
+| **6** | +3 Accuracy · +1 Health · +1 Item Slots · +3 Luck · +1 Precision · +1 STAMINA REGEN | 5.3 |
+| **7** | +1 Armor · +3 Dodge · +1 Health · +2 Luck · +1 Precision | 3.9 |
+| **8** | +3 Accuracy · +1 Health · +1 Item Slots · +3 Luck · +1 Precision · +1 Stamina Max | 3.6 |
+| **9** | +1 Health · +1 Item Slots · +2 Luck · +1 Movement · +1 STAMINA REGEN | 4.6 |
+| **10** | +3 Accuracy · +5 Crit · +1 Health · +3 Luck · +1 Precision | 3.6 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+5 Precision · +7 Item Slots · +22 Luck · +8 Health · +2 STAMINA REGEN · +15 Accuracy · +1 Resist · +1 Armor · +6 Dodge · +5 Crit · +3 Stamina Max · +1 Movement
++5 Precision · +7 Item Slots · +22 Luck · +8 Health · +2 STAMINA REGEN · +15 Accuracy · +1 Resist · +1 Armor · +6 Dodge · +1 Movement · +5 Crit · +3 Stamina Max
 no off-ladder grants
 ```
 
-Ladder total across the run: **36.5**
+Ladder total across the run: **34.0**
 
 ---
 
@@ -467,23 +469,23 @@ Ladder total across the run: **36.5**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +2 Health · +1 Toughness · +1 Stamina Max | 1.7 |
-| **3** | +1 Armor · +3 Dodge · +2 Health · +1 Toughness | 4.3 |
-| **4** | +3 Accuracy · +2 Health · +1 Resist · +1 Strength · +1 Stamina Max | 4.9 |
-| **5** | +3 Dodge · +1 Health · +1 Toughness<br>**CHOOSE ONE:** +5 Health / +1 Resist / +1 Armor / +10 Dodge / +15 Accuracy<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.8 |
-| **6** | +3 Accuracy · +1 Armor · +2 Health · +1 Toughness · +1 STAMINA REGEN | 6.0 |
-| **7** | +3 Dodge · +2 Health · +1 Item Slots · +1 Strength | 3.6 |
-| **8** | +3 Accuracy · +2 Health · +1 Resist · +1 Toughness · +1 Stamina Max | 4.3 |
-| **9** | +1 Armor · +3 Dodge · +2 Health · +1 Item Slots · +1 STAMINA REGEN | 6.6 |
-| **10** | +3 Accuracy · +2 Health · +2 Luck · +1 Strength · +1 Toughness | 3.4 |
+| **3** | +1 Armor · +3 Dodge · +2 Health · +1 Toughness | 3.4 |
+| **4** | +3 Accuracy · +2 Health · +1 Resist · +1 Strength · +1 Stamina Max | 4.3 |
+| **5** | +3 Dodge · +1 Health · +1 Toughness<br>**CHOOSE ONE:** +5 Health / +1 Resist / +1 Armor / +10 Dodge / +15 Accuracy<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 3.9 |
+| **6** | +3 Accuracy · +1 Armor · +2 Health · +1 Toughness · +1 STAMINA REGEN | 5.4 |
+| **7** | +3 Dodge · +2 Health · +1 Item Slots · +1 Strength | 3.2 |
+| **8** | +3 Accuracy · +2 Health · +1 Resist · +1 Toughness · +1 Stamina Max | 3.7 |
+| **9** | +1 Armor · +3 Dodge · +2 Health · +1 Item Slots · +1 STAMINA REGEN | 5.7 |
+| **10** | +3 Accuracy · +2 Health · +2 Luck · +1 Strength · +1 Toughness | 3.3 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+17 Health · +3 Armor · +2 Resist · +2 STAMINA REGEN · +12 Dodge · +3 Strength · +6 Toughness · +12 Accuracy · +2 Item Slots · +3 Stamina Max · +2 Luck
++17 Health · +3 Armor · +2 STAMINA REGEN · +2 Resist · +3 Strength · +6 Toughness · +12 Dodge · +12 Accuracy · +2 Item Slots · +3 Stamina Max · +2 Luck
 no off-ladder grants
 ```
 
-Ladder total across the run: **39.5**
+Ladder total across the run: **34.5**
 
 ---
 
@@ -496,24 +498,24 @@ Ladder total across the run: **39.5**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +5 Accuracy · +1 Health · +1 Stamina Max | 1.8 |
-| **3** | +5 Accuracy · +1 Armor · +1 Health · +1 Strength | 4.5 |
-| **4** | +5 Accuracy · +1 Health · +1 Reach · +1 Stamina Max | 2.3 |
-| **5** | +3 Accuracy · +1 Strength<br>**CHOOSE ONE:** +2 Strength / +1 Armor / +15 Accuracy / +5 Health / +1 Resist<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.6 |
-| **6** | +5 Accuracy · +1 Armor · +1 Health · +1 Strength · +1 STAMINA REGEN | 6.5 |
-| **7** | +3 Accuracy · +5 Crit · +1 Health · +1 Item Slots | 2.8 |
-| **8** | +3 Accuracy · +1 Armor · +1 Health · +1 Strength · +1 Stamina Max | 4.4 |
-| **9** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Resist · +1 STAMINA REGEN | 5.8 |
-| **10** | +5 Accuracy · +5 Crit · +1 Health · +1 Resist · +1 Strength | 5.5 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +5 Accuracy · +1 Health · +1 Stamina Max | 1.6 |
+| **3** | +5 Accuracy · +1 Armor · +1 Health · +1 Strength | 3.8 |
+| **4** | +5 Accuracy · +1 Health · +1 Reach · +1 Stamina Max | 2.1 |
+| **5** | +3 Accuracy · +1 Strength<br>**CHOOSE ONE:** +2 Strength / +1 Armor / +15 Accuracy / +5 Health / +1 Resist<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.0 |
+| **6** | +5 Accuracy · +1 Armor · +1 Health · +1 Strength · +1 STAMINA REGEN | 5.8 |
+| **7** | +3 Accuracy · +5 Crit · +1 Health · +1 Item Slots | 2.7 |
+| **8** | +3 Accuracy · +1 Armor · +1 Health · +1 Strength · +1 Stamina Max | 3.8 |
+| **9** | +3 Accuracy · +1 Health · +1 Item Slots · +1 Resist · +1 STAMINA REGEN | 5.2 |
+| **10** | +5 Accuracy · +5 Crit · +1 Health · +1 Resist · +1 Strength | 4.8 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+37 Accuracy · +3 Armor · +5 Strength · +8 Health · +2 STAMINA REGEN · +2 Resist · +10 Crit · +2 Item Slots · +3 Stamina Max · +1 Reach
++37 Accuracy · +5 Strength · +3 Armor · +8 Health · +2 STAMINA REGEN · +2 Resist · +10 Crit · +2 Item Slots · +3 Stamina Max · +1 Reach
 no off-ladder grants
 ```
 
-Ladder total across the run: **38.1**
+Ladder total across the run: **33.9**
 
 ---
 
@@ -526,15 +528,15 @@ Ladder total across the run: **38.1**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +3 Accuracy · +3 Dodge · +1 Health · +1 Stamina Max | 2.3 |
-| **3** | +3 Accuracy · +5 Dodge · +1 Health · +1 Strength | 3.6 |
-| **4** | +3 Dodge · +1 Health · +1 Movement · +1 Precision · +1 Stamina Max | 3.4 |
-| **5** | +3 Accuracy · +1 Item Slots · +1 Strength<br>**CHOOSE ONE:** +10 Dodge / +5 Health / +2 Strength / +15 Accuracy / +8 Crit<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 5.3 |
-| **6** | +3 Accuracy · +5 Dodge · +1 Health · +1 Strength · +1 STAMINA REGEN | 5.6 |
-| **7** | +3 Dodge · +1 Health · +1 Item Slots · +1 Precision · +1 Reach | 3.6 |
-| **8** | +3 Accuracy · +5 Dodge · +1 Health · +1 Movement · +1 Strength · +1 Stamina Max | 4.6 |
-| **9** | +5 Crit · +3 Dodge · +1 Health · +1 Item Slots · +1 Strength · +1 STAMINA REGEN | 6.1 |
-| **10** | +3 Accuracy · +5 Dodge · +1 Health · +2 Luck · +1 Precision | 4.0 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +3 Accuracy · +3 Dodge · +1 Health · +1 Stamina Max | 1.8 |
+| **3** | +3 Accuracy · +5 Dodge · +1 Health · +1 Strength | 2.8 |
+| **4** | +3 Dodge · +1 Health · +1 Movement · +1 Precision · +1 Stamina Max | 3.3 |
+| **5** | +3 Accuracy · +1 Item Slots · +1 Strength<br>**CHOOSE ONE:** +10 Dodge / +5 Health / +2 Strength / +15 Accuracy / +8 Crit<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.7 |
+| **6** | +3 Accuracy · +5 Dodge · +1 Health · +1 Strength · +1 STAMINA REGEN | 4.8 |
+| **7** | +3 Dodge · +1 Health · +1 Item Slots · +1 Precision · +1 Reach | 3.2 |
+| **8** | +3 Accuracy · +5 Dodge · +1 Health · +1 Movement · +1 Strength · +1 Stamina Max | 4.1 |
+| **9** | +5 Crit · +3 Dodge · +1 Health · +1 Item Slots · +1 Strength · +1 STAMINA REGEN | 5.7 |
+| **10** | +3 Accuracy · +5 Dodge · +1 Health · +2 Luck · +1 Precision | 3.2 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
@@ -543,7 +545,7 @@ Ladder total across the run: **38.1**
 no off-ladder grants
 ```
 
-Ladder total across the run: **38.4**
+Ladder total across the run: **33.6**
 
 ---
 
@@ -557,23 +559,23 @@ Ladder total across the run: **38.4**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +2 Luck · +1 Stamina Max | 1.2 |
-| **3** | +3 Accuracy · +1 Health · +2 Luck · +1 Precision · +1 Spirit | 4.0 |
-| **4** | +3 Dodge · +1 Health · +1 Item Slots · +3 Luck · +1 Stamina Max | 3.0 |
+| **3** | +3 Accuracy · +1 Health · +2 Luck · +1 Precision · +1 Spirit | 3.9 |
+| **4** | +3 Dodge · +1 Health · +1 Item Slots · +3 Luck · +1 Stamina Max | 2.6 |
 | **5** | +2 Luck · +1 Spirit<br>**CHOOSE ONE:** +2 Spirit / +5 Luck / +5 Health / +15 Accuracy / +10 Dodge<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.9 |
-| **6** | +3 Accuracy · +1 Health · +3 Luck · +1 Precision · +1 STAMINA REGEN | 4.7 |
-| **7** | +3 Dodge · +1 Health · +1 Item Slots · +1 Spirit | 3.6 |
+| **6** | +3 Accuracy · +1 Health · +3 Luck · +1 Precision · +1 STAMINA REGEN | 4.6 |
+| **7** | +3 Dodge · +1 Health · +1 Item Slots · +1 Spirit | 3.2 |
 | **8** | +5 Crit · +1 Health · +3 Luck · +1 Precision · +1 Stamina Max | 3.4 |
-| **9** | +3 Accuracy · +1 Health · +1 Item Slots · +2 Luck · +1 STAMINA REGEN | 4.2 |
-| **10** | +3 Accuracy · +5 Crit · +1 Health · +3 Luck · +1 Resist · +1 Spirit | 6.2 |
+| **9** | +3 Accuracy · +1 Health · +1 Item Slots · +2 Luck · +1 STAMINA REGEN | 4.1 |
+| **10** | +3 Accuracy · +5 Crit · +1 Health · +3 Luck · +1 Resist · +1 Spirit | 5.6 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+4 Spirit · +8 Health · +20 Luck · +2 STAMINA REGEN · +3 Precision · +12 Accuracy · +3 Item Slots · +10 Crit · +1 Resist · +6 Dodge · +3 Stamina Max
++4 Spirit · +8 Health · +20 Luck · +2 STAMINA REGEN · +3 Precision · +3 Item Slots · +12 Accuracy · +10 Crit · +1 Resist · +6 Dodge · +3 Stamina Max
 no off-ladder grants
 ```
 
-Ladder total across the run: **35.1**
+Ladder total across the run: **33.4**
 
 ---
 
@@ -586,24 +588,24 @@ Ladder total across the run: **35.1**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Resist · +1 Stamina Max | 2.8 |
-| **3** | +2 Health · +1 Precision · +1 Item Slots · +3 Accuracy | 3.3 |
-| **4** | +1 Strength · +1 Health · +1 Resist · +1 Stamina Max | 3.8 |
-| **5** | +1 Health · +1 Item Slots<br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.2 |
-| **6** | +1 Armor · +2 Health · +3 Accuracy · +1 STAMINA REGEN | 5.6 |
-| **7** | +1 Strength · +1 Health · +1 Item Slots · +3 Dodge · +5 Crit | 4.1 |
-| **8** | +2 Health · +1 Resist · +3 Accuracy · +1 Stamina Max | 3.9 |
-| **9** | +1 Armor · +1 Health · +1 Toughness · +1 STAMINA REGEN | 4.9 |
-| **10** | +1 Strength · +2 Health · +1 Resist · +1 Item Slots · +3 Accuracy · +2 Luck | 5.7 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Resist · +1 Stamina Max | 2.3 |
+| **3** | +2 Health · +1 Precision · +1 Item Slots · +3 Accuracy | 3.2 |
+| **4** | +1 Strength · +1 Health · +1 Resist · +1 Stamina Max | 3.3 |
+| **5** | +1 Health · +1 Item Slots<br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 3.7 |
+| **6** | +1 Armor · +2 Health · +3 Accuracy · +1 STAMINA REGEN | 5.0 |
+| **7** | +1 Strength · +1 Health · +1 Item Slots · +3 Dodge · +5 Crit | 3.7 |
+| **8** | +2 Health · +1 Resist · +3 Accuracy · +1 Stamina Max | 3.3 |
+| **9** | +1 Armor · +1 Health · +1 Toughness · +1 STAMINA REGEN | 4.4 |
+| **10** | +1 Strength · +2 Health · +1 Resist · +1 Item Slots · +3 Accuracy · +2 Luck | 5.1 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+4 Resist · +13 Health · +2 Armor · +2 STAMINA REGEN · +3 Strength · +4 Item Slots · +12 Accuracy · +1 Precision · +5 Crit · +3 Stamina Max · +3 Dodge · +1 Toughness · +2 Luck
++13 Health · +4 Resist · +2 STAMINA REGEN · +3 Strength · +2 Armor · +4 Item Slots · +12 Accuracy · +1 Precision · +5 Crit · +3 Stamina Max · +3 Dodge · +1 Toughness · +2 Luck
 no off-ladder grants
 ```
 
-Ladder total across the run: **38.2**
+Ladder total across the run: **33.9**
 
 ---
 
@@ -616,24 +618,24 @@ Ladder total across the run: **38.2**
 | Lv | Grants | Ladder |
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
-| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +5 Dodge · +1 Stamina Max | 2.3 |
-| **3** | +1 Health · +5 Dodge · +1 Resist · +1 Vision | 4.2 |
-| **4** | +1 Health · +5 Dodge · +1 Spirit · +1 Stamina Max | 3.8 |
-| **5** | +5 Dodge · +1 Vision<br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.7 |
-| **6** | +1 Health · +5 Dodge · +1 Resist · +1 STAMINA REGEN | 6.0 |
-| **7** | +1 Health · +5 Dodge · +1 Spirit · +1 Item Slots | 4.2 |
-| **8** | +1 Health · +5 Dodge · +1 Resist · +5 Crit · +1 Stamina Max | 5.3 |
-| **9** | +5 Dodge · +1 Spirit · +1 Movement · +1 STAMINA REGEN | 5.7 |
-| **10** | +1 Health · +5 Dodge · +1 Resist · +1 Spirit · +5 Crit | 6.5 |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +5 Dodge · +1 Stamina Max | 1.6 |
+| **3** | +1 Health · +5 Dodge · +1 Resist · +1 Vision | 3.0 |
+| **4** | +1 Health · +5 Dodge · +1 Spirit · +1 Stamina Max | 3.1 |
+| **5** | +5 Dodge · +1 Vision<br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 3.5 |
+| **6** | +1 Health · +5 Dodge · +1 Resist · +1 STAMINA REGEN | 4.8 |
+| **7** | +1 Health · +5 Dodge · +1 Spirit · +1 Item Slots | 3.5 |
+| **8** | +1 Health · +5 Dodge · +1 Resist · +5 Crit · +1 Stamina Max | 4.1 |
+| **9** | +5 Dodge · +1 Spirit · +1 Movement · +1 STAMINA REGEN | 5.3 |
+| **10** | +1 Health · +5 Dodge · +1 Resist · +1 Spirit · +5 Crit | 5.3 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+45 Dodge · +4 Resist · +4 Spirit · +2 STAMINA REGEN · +7 Health · +10 Crit · +3 Stamina Max · +1 Movement · +1 Item Slots · +2 Vision
++45 Dodge · +4 Resist · +4 Spirit · +2 STAMINA REGEN · +7 Health · +10 Crit · +1 Movement · +3 Stamina Max · +1 Item Slots · +2 Vision
 no off-ladder grants
 ```
 
-Ladder total across the run: **42.7**
+Ladder total across the run: **34.5**
 
 ---
 
@@ -647,23 +649,23 @@ Ladder total across the run: **42.7**
 |---|---|---|
 | **1** | *the starting line — no level-up happens here* | — |
 | **2** | **CHOOSE YOUR SPECIALTY** · +2 Health · +1 Toughness · +1 Stamina Max | 1.7 |
-| **3** | +1 Armor · +2 Health · +1 Toughness · +1 Strength | 4.4 |
-| **4** | +2 Health · +1 Resist · +1 Toughness · +1 Stamina Max | 3.7 |
-| **5** | +2 Health · +1 Toughness<br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 4.4 |
-| **6** | +1 Armor · +2 Health · +1 Strength · +1 STAMINA REGEN | 6.0 |
-| **7** | +2 Health · +1 Toughness · +1 Item Slots · +3 Accuracy | 2.7 |
-| **8** | +1 Armor · +2 Health · +1 Resist · +1 Stamina Max | 5.3 |
+| **3** | +1 Armor · +2 Health · +1 Toughness · +1 Strength | 3.9 |
+| **4** | +2 Health · +1 Resist · +1 Toughness · +1 Stamina Max | 3.2 |
+| **5** | +2 Health · +1 Toughness<br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*The Warrior L5 list verbatim — ruled 2026-09-03: "for number 6, I was saying the L5 choice is the Warrior list." That closes the soft flag on every civilian type table.* | 3.9 |
+| **6** | +1 Armor · +2 Health · +1 Strength · +1 STAMINA REGEN | 5.5 |
+| **7** | +2 Health · +1 Toughness · +1 Item Slots · +3 Accuracy | 2.6 |
+| **8** | +1 Armor · +2 Health · +1 Resist · +1 Stamina Max | 4.3 |
 | **9** | +2 Health · +1 Strength · +1 Toughness · +1 STAMINA REGEN | 4.4 |
-| **10** | +1 Armor · +2 Health · +1 Strength · +1 Toughness · +3 Accuracy | 5.0 |
+| **10** | +1 Armor · +2 Health · +1 Strength · +1 Toughness · +3 Accuracy | 4.4 |
 
 **At level 10**, before the L5 pick and before any badge, origin, item or specialty:
 
 ```
-+18 Health · +4 Armor · +4 Strength · +2 Resist · +2 STAMINA REGEN · +7 Toughness · +6 Accuracy · +3 Stamina Max · +1 Item Slots
++18 Health · +4 Armor · +4 Strength · +2 STAMINA REGEN · +2 Resist · +7 Toughness · +6 Accuracy · +3 Stamina Max · +1 Item Slots
 no off-ladder grants
 ```
 
-Ladder total across the run: **37.6**
+Ladder total across the run: **33.9**
 
 ---
 
