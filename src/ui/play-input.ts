@@ -17,14 +17,18 @@
 // Double-click a character in the top bar or on the map to change it."): while the engine waits for a choice, the next
 // hero is PROPOSED here — never begun, since an activation once begun cannot be taken back and runs its start — and the
 // player's first order to it (a click on it, or an action on the bar) begins it (kingdom SWITCHES playQueue*).
-import {sandboxChoices,sandboxActivationChoices,type Sandbox,type SandboxChoice} from '../core/sandbox.js'
+import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
 import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,actionReach} from '../engine.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
-export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}
+export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
-export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null}
+export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null}
+/** movement.swap-and-shields: the swap on the board's action bar — the engine's legal hand lists to hold afterwards (by
+    label, in the sandbox's order; a click names one by its index), the engine's swapCostOf, and with none to make the
+    engine's own reason (viewer src/play.js's optional swap fact; kingdom SWITCHES playInputSwap) */
+export type PlaySwap={cost:number;choices:{label:string}[];why:string|null}
 export type CommandResult={ok:true}|{ok:false;reason:string}
 /** viewer.play-chrome: what the viewer's End Turn and End activation may do (viewer src/play.js's optional ending facts) */
 export type PlayEnding={endTurn:{yetToAct:number[]}|null;endActivation:boolean}
@@ -41,9 +45,16 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  let owner:string|null=null,proposed:number|null=null,last:number|null=null
  const shown:Shown[]=[]
  // per engine sequence number: the validated choices, the ghost's forecast, each enemy's reach, the hatching
- let cacheSeq=-1,cache:{choices?:SandboxChoice[];forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
+ let cacheSeq=-1,cache:{choices?:SandboxChoice[];swap?:SandboxSwapOffer;forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
  const cached=(s:Sandbox)=>{if(s.ctx.state.seq!==cacheSeq){cacheSeq=s.ctx.state.seq;cache={}}return cache}
  const choicesOf=(s:Sandbox)=>{const c=cached(s);return c.choices??=sandboxChoices(s)}
+ /** the engine's swap for the hero acting (kingdom core sandboxSwapChoices: every hand list validateBattleCommand takes) */
+ const swapOf=(s:Sandbox)=>{const c=cached(s);return c.swap??=sandboxSwapChoices(s)}
+ /** the swap fact: none while no hero acts or for a hero who carries nothing to swap; else the offer, or the engine's reason */
+ const swapFact=(s:Sandbox):PlaySwap|null=>{const o=swapOf(s);if(o.cost===null||(!o.choices.length&&!o.why))return null
+  return {cost:o.cost,choices:o.choices.map(c=>({label:c.label})),why:o.choices.length?null:o.why}}
+ /** a power aimed at the one using it alone (Lock Shields, Raise Guard, Cover …: the row's target is `self`) */
+ const selfOnly=(s:Sandbox,id:string)=>(s.ctx.actions[id]?.target as {select?:string}|undefined)?.select==='self'
  /** the human hero now acting, or null */
  const actorOf=(s:Sandbox)=>{const c=s.ctx.battleCursor;return !s.ctx.state.outcome&&c?.at==='acting'&&c.actor!=null&&controllerOf(s.ctx,c.actor,s.policy)==='human'?c.actor:null}
  /** a new activation forgets the last one's plan */
@@ -148,7 +159,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const threat=chosen===null&&point!==null?threatAt(s,point):null
   if(actor===null)return {...empty,threat}
   const here=s.ctx.state.units[actor]!.hex
-  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null}
+  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s)}
   const mv=moveOf(s,actor)
   if(mv){f.slot=mv.actionId
    f.reach=asc(mv.choices.map(c=>(c.command as {destination:number}).destination))
@@ -209,6 +220,12 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   if(e.kind==='end-activation'){if(actor===null)return false
    const r=run({kind:'end-cycle',actor,expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;if(r.ok)done();return r.ok}
   if(e.kind==='point'){point=e.hex;return true}
+  /* movement.swap-and-shields: a hand list chosen on the bar's swap strip is the engine's swap command — before the primary,
+     once per activation, at its swapCost; refused (with the engine's reason) when the engine would not take it */
+  if(e.kind==='swap'){if(actor===null||e.unit!==actor)return false
+   const o=swapOf(s),c=o.choices[e.index]
+   if(!c){note=o.why?'Swap: '+o.why+'.':null;return false}
+   const r=run(c.command);note=r.ok?null:r.reason;if(r.ok)done();return r.ok}
   if(e.kind==='back'){note=null
    // right-click steps back ONE stage: the aim, then the ghost, then the chosen action (UI-BUILD-NOTES §5)
    if(aim?.locked){aim=null;return true}
@@ -233,9 +250,15 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     if(standsStill(s,actor,mv.choices)){const c=mv.choices[0]!;ghost={actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost
      note=`${a.name}: click it again, or the hero, to use it.`;return true}
     note=null;return true}
+   /* movement.swap-and-shields: a power aimed at the hero alone (the shields' powers) is used from the bar like a power that
+      goes nowhere — chosen, it is aimed at the hero at once; chosen again (or the hero clicked) it is used (kingdom SWITCHES
+      playInputSelfPower) */
+   if(chosen===e.actionId&&aim?.locked&&selfOnly(s,e.actionId)){const u=usesOf(s,actor).find(x=>x.hex===aim!.hex&&x.key==='target'&&x.value===actor);if(u)return confirmUse(s,actor,u)}
    /* chosen even with nothing in reach — its arrow still shows how far it reaches (engine DECISIONS.md 2026-10-01); right-click
       takes it back (kingdom SWITCHES playInputAimReach) */
    chosen=e.actionId;aim=null
+   if(selfOnly(s,e.actionId)){const u=usesOf(s,actor).find(x=>x.key==='target'&&x.value===actor)
+    if(u){aim={hex:u.hex,locked:true};note=`${a.name}: click it again, or the hero, to use it.`;return true}}
    note=usesOf(s,actor).length?null:`${a.name}: nothing in reach${ghost?' from the ghost':''}.`;return true}
   if(e.kind==='unit'){
    /* viewer.xcom-camera: a click on the proposed hero begins it; another hero is only looked at (a double-click chooses it) */
