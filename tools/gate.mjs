@@ -59,14 +59,15 @@ const TEST_PARTS = 2
 const PARTS = ['checks', ...Array.from({ length: SLICES }, (_, i) => `verify ${i + 1}/${SLICES}`), ...Array.from({ length: TEST_PARTS }, (_, i) => `tests ${i + 1}/${TEST_PARTS}`)]
 
 /* the working tree as `git add -A` would commit it, through a throwaway index;
-   .build/ (the record, the candidate) leaves the hash staged or not */
+   .build/ (the record, the candidate) and BATTLE-VIEWER.html (what --land writes) leave the hash staged or not */
 function treeHash() {
   const idx = join(tmpdir(), `vgate-index-${process.pid}-${Date.now()}`)
   try { copyFileSync(resolve(execSync('git rev-parse --git-path index', { encoding: 'utf8' }).trim()), idx) } catch {}
   const env = { ...process.env, GIT_INDEX_FILE: idx }
   try {
     execSync('git add -A -- .', { env, stdio: 'pipe' })   // .build/ is gitignored; a ":!.build" pathspec makes git refuse
-    execSync('git rm -r -q --cached --ignore-unmatch -- .build', { env, stdio: 'pipe' })
+    /* the page is the gate's output, not its input: --land writing it must not change the tree it was verified on (GBH SWITCHES gate.pageOutsideTree) */
+    execSync('git rm -r -q --cached --ignore-unmatch -- .build BATTLE-VIEWER.html', { env, stdio: 'pipe' })
     return execSync('git write-tree', { env, encoding: 'utf8' }).trim()
   } finally { try { rmSync(idx, { force: true }) } catch {} }
 }
