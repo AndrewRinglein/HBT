@@ -1,92 +1,98 @@
-# engine — handoff 2026-10-02 03:33
+# engine — handoff 2026-10-02 07:45
 
 *Produced by tools/handoff.mjs from .state/now.json, which tools/wrap.mjs writes. The only handwritten line is the Now line, given to wrap as its argument. The rest is what start.mjs printed and what git holds. Read by `start engine` — not by a chat, directly.*
 
-engine — next movement.swap-and-shields, 269 of 322 landed · 30 await review · 16 pending
-Now: encounter.opening.gates, encounter.opening.cathedral, fix.one-effect-vocabulary, fix.turn-mods-expire, viewer.live-stat-mods — the opening's battles 5 and 6, one effect vocabulary, and Andrew's Leap report. Landed: Gates (the Curse: six defenders, the curse strike on Turn 4, two Imps on Turn 7) and Cathedral (the Necromancer raising two a turn over the 33 remains, Ghouls on Turn 5) — both 0 wins on the level-1 party, as recorded before the upgrades; one Effect union and one applyEffect for triggers, powers, move riders and chart rows, one dealDirectDamage, one packet planner, legacy power fields retired, C20 end of Activation (Frenzy Potion, Charging Run), Creeping Blight paints layer.poisoned, the Lieutenant Demon's +1 Health aura now works; a Turn-long mod leaves with statmod.expired; the stat window shows sheet + live modifiers (Move 4, Accuracy 55%, Max HP 16 for the Iron Dwarf, Strength 6 after a Leap) and attack numbers move with them. Combined from HBT-worker-engine; every suite green. Tried: nothing abandoned. Next: Andrew - which 'modifier log' did not show the Leap (the panel's Modifiers list, the battle log, or the attack forecast)?; then the queue's top, movement.swap-and-shields.
-New chat with Heroes of Blight and Tragic — engine: take the top of the queue (movement.swap-and-shields, then fix.one-hero-assembly)
+engine — next fix.one-hero-assembly, 283 of 330 landed · 36 await review · 9 pending
+Now: movement.swap-and-shields, movement.inventory, fix.shield-power-double-click, plus add-item --repoint — the movements Andrew asked for now, the list of all of them, and his shield-power report. Landed: the weapon/shield swap on the board's bar (swapCost paid, a second swap refused, the log names it); the six shield powers fire from the bar on a double-click, or button then hero (the first click's playback swallowed the second; a looked-at hero's bar ignored clicks — the earlier test drove a fake page); engine/generated/movements.md, 'Missing: 357 of 521 movements'; add-item --repoint moved three dependants off abandoned ids (rule.afflictions-at-zero now in the queue). Andrew ruled: the Leap fix holds (report was the Orphanage); every shield power plays a raise-the-shield motion (filed viewer.shield-guard-motion); a self power fires on a double-click. Combined from HBT-worker-engine; every suite green. Tried: nothing abandoned; combine failed three times on 5 s test timeouts under load from other chats (task suggested). Next: Andrew to try the shield powers in the Orphanage; then the queue's top, fix.one-hero-assembly.
+New chat with Heroes of Blight and Tragic — engine: take the top of the queue (fix.one-hero-assembly, then fix.opening-levels)
   start engine
-Last landing: 2026-10-02 03:23 (viewer.live-stat-mods). Previous chat ended: on a wrap, 2026-10-02 03:33
-Ungated since last wrap: 26
-  7ceef6d 2026-10-01 19:49 Andrew Ring — combine: engine master 2293446 into this copy
-  46741f1 2026-10-01 19:49 Andrew Ring — combine: engine master 64224bc into this copy (fix.one-effect-vocabulary's worker). Conflicts: tools
-  2293446 2026-10-01 19:41 Andrew Ring — .state/shards.json: the gate's shard record for the current tree (combine and suite runs, 2026-10-01
-  9ace124 2026-10-01 19:28 Andrew Ring — DECISIONS.md: Andrew - facing is kept: a unit faces where it walks, turns to face an enemy that step
-  64224bc 2026-10-01 19:25 Andrew Ring — DECISIONS.md: Andrew's first look at the XCOM camera, the weapons and the bodies (2026-10-01) - hero
-  de74bb4 2026-10-01 18:50 Andrew Ring — combine: engine master fc485ad into this copy
-  6608e05 2026-10-01 18:40 Andrew Ring — combine: engine master ab6db71 into this copy
-  1172405 2026-10-01 18:40 Andrew Ring — tools/prior-art.mjs: jscpd finds clones on Windows - clonesOf calls jscpd's detectClones API in a ch
-  0f89150 2026-10-01 18:03 Andrew Ring — test: opening-party counts five opening scenarios - Gates joined as battle 5
-  da304d0 2026-10-01 17:52 Andrew Ring — combine: engine master c1db5b7 into this copy
-  7cf0693 2026-10-01 17:47 Andrew Ring — gate: a viewer or kingdom item's tests may already be committed in its package (its gate builds from
-  f1a69e1 2026-10-01 17:45 Andrew Ring — DECISIONS.md: Andrew's 2026-10-01 rulings - the afflictions at 0 Health, bleed-out as a stat, the XC
-  05bbdc2 2026-10-01 17:40 Andrew Ring — gate: a viewer or kingdom item's tests run with --dir test (a filter alone also matched parked copie
-  7d28496 2026-10-01 17:38 Andrew Ring — prior-art: call jscpd's library from the root with relative, forward-slash paths — its CLI resolved 
-  b5d1013 2026-10-01 17:36 Andrew Ring — encounter.opening.cathedral follow-up: Law 10, opening-party.test.ts's list of opening scenarios gai
-  94aaf0d 2026-10-01 17:22 Andrew Ring — gate: the ignored-files pathspec in double quotes — execSync runs cmd.exe on Windows, which passes s
-  817b791 2026-10-01 17:19 Andrew Ring — gate: a viewer or kingdom item's own tests are read, run and hashed in that package's test/ — since 
-  b5f084c 2026-10-01 15:40 Andrew Ring — tools/engine-modules.mjs: find the engine's installed libraries from any copy of the folder (HOBAT_E
-  33c3f8b 2026-10-01 15:37 Andrew Ring — Move the viewer and kingdom page tests out of engine/test: six to viewer/test, seven to kingdom/test
-  c76fe55 2026-10-01 15:34 Andrew Ring — .gitattributes: ledger.md and gauntlet-log.jsonl merge as a union — both workers' appended lines are
-  b792bd6 2026-10-01 15:33 Andrew Ring — gate and wrap commit only the files the item touched, never git add -A (tools/commit-only.mjs) (Andr
-  2a33aa7 2026-10-01 15:31 Andrew Ring — One to-do list and one gate progress file per area: .state/backlog.<area>.json and .state/gate-progr
-  803cede 2026-10-01 15:21 Andrew Ring — start.mjs: list every commit since the last wrap that did not go through the gate (not authored by c
-  0b4523f 2026-10-01 15:21 Andrew Ring — wrap writes only .state/now.json; tools/handoff.mjs produces HANDOFF.md and STATE-ROW.md from it — n
-  9892083 2026-10-01 15:19 Andrew Ring — gate: the landing's gauntlet-log line goes into the landing commit (logged before the amend), not a 
-  49b7dca 2026-10-01 15:18 Andrew Ring — tools/code-stamp.mjs: the engine's code stamp — a hash of src/, the two tools the viewer runs and th
+Last landing: 2026-10-02 06:19 (fix.shield-power-double-click). Previous chat ended: on a wrap, 2026-10-02 07:45
+Ungated since last wrap: 27
+  e2e78ed 2026-10-01 23:33 Andrew Ring — .state/shards.json: the engine suite (1/1) passed on the merged tree b5b478d095 (fix.shield-power-do
+  a3f41c5 2026-10-01 23:22 Andrew Ring — combine: engine master 6ae3895 into this copy
+  ab7c1ee 2026-10-01 23:22 Andrew Ring — .state/shards.json: the engine suite (1/1) passed on tree 6820a1637e after fix.shield-power-double-c
+  6ae3895 2026-10-01 23:06 Andrew Ring — generated/movements.{json,md} regenerated (npx tsx tools/movements.mts) on the combined copy
+  a399fb5 2026-10-01 23:01 Andrew Ring — combine: engine master 5f5a128 into this copy
+  0431b7a 2026-10-01 22:48 Andrew Ring — combine: engine master 8bda948 into this copy
+  5f5a128 2026-10-01 22:40 Andrew Ring — combine: engine master 8bda948 into this copy
+  16ce210 2026-10-01 22:39 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1) passed on tree bad62064ce after movement.inventory
+  8bda948 2026-10-01 22:36 Andrew Ring — DECISIONS.md: Andrew's 2026-10-01 play report - a self power fires on a double-click on its bar butt
+  b91a3f7 2026-10-01 22:30 Andrew Ring — DECISIONS.md: Andrew's 2026-10-01 answers in the engine chat - every shield power plays a raise-the-
+  b68912b 2026-10-01 22:29 Andrew Ring — DECISIONS.md: Andrew - the approved male hero outfits come into the project, 'quite important' (2026
+  8bd0f64 2026-10-01 22:19 Andrew Ring — combine: engine master a8594f2 into this copy
+  a8594f2 2026-10-01 22:04 Andrew Ring — combine: engine master 841e60b into this copy
+  b3d6169 2026-10-01 22:01 Andrew Ring — combine: engine master 841e60b into this copy
+  007ac44 2026-10-01 22:00 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1) passed on tree a5b77d0fd9 after movement.swap-and-
+  841e60b 2026-10-01 21:56 Andrew Ring — tools/add-item.mjs --repoint <abandoned> <refiled>: a pending item's needs move from an abandoned id
+  2b1443a 2026-10-01 21:54 Andrew Ring — combine: engine master 29916c1 into this copy
+  29916c1 2026-10-01 21:54 Andrew Ring — DECISIONS.md: Andrew's 2026-10-01 answers to the content chat - an enemy's crit chance stops at 0 (a
+  b29645e 2026-10-01 21:42 Andrew Ring — combine: engine master 78e999f into this copy (content.afflictions-at-zero-refiled's worker). Confli
+  6614e62 2026-10-01 21:36 Andrew Ring — Merge main (master) into worker/kingdom
+  47f5775 2026-10-01 21:35 Andrew Ring — kingdom.opening-loop-three: the gate's check records - check passed on attempt 1 (2026-10-02 02:37, 
+  78e999f 2026-10-01 21:34 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1) passed on tree 0b8427f (2026-10-02)
+  4a1e0c4 2026-10-01 19:37 Andrew Ring — combine: engine master 9ace124 into this copy
+  ed81366 2026-10-01 19:28 Andrew Ring — combine: engine master 64224bc into this copy
+  2230e4c 2026-10-01 18:48 Andrew Ring — Merge main (master) into worker/kingdom
+  c2cad4c 2026-10-01 18:06 Andrew Ring — backlog.viewer-kingdom: kingdom.opening-loop-three split into four - kingdom.sandbox-campaign-heroes
+  91753b3 2026-10-01 17:55 Andrew Ring — Merge main (c1db5b7) into worker/kingdom: gate-progress.viewer-kingdom.json takes main's record (a l
 Yours: (2026-09-02) Note, no action needed: — look: GAME-BUILDER.html
-Queue: movement.swap-and-shields [movement · plumbing], then fix.one-hero-assembly [engine · plumbing], then fix.opening-levels [engine · data] (+6 more)
-Delegate: movement.swap-and-shields [movement · plumbing] — not yet gated; fix.one-hero-assembly [engine · plumbing] — not yet gated; fix.opening-levels [engine · data] — not yet gated; viewer.side-facing [viewer · plumbing] — not yet gated; viewer.xcom-camera-tuning [viewer · plumbing] — not yet gated; viewer.real-bodies [viewer · plumbing] — not yet gated; kingdom.abbotown-map [kingdom · plumbing] — not yet gated; viewer.reads-engine [viewer · plumbing] — not yet gated; content.afflictions-at-zero [content · data] — not yet gated
-Blocked: movement.inventory needs movement.swap-and-shields; kingdom.opening-loop needs encounter.opening.bridge; kingdom.reads-engine needs fix.one-hero-assembly, fix.codex-numbers; rule.afflictions-at-zero needs content.afflictions-at-zero; kingdom.opening-loop-three needs kingdom.abbotown-map, encounter.opening.bridge-ai; kingdom.opening-run-six needs kingdom.abbotown-map; viewer.affliction-pop-up needs rule.afflictions-at-zero
+Queue: fix.one-hero-assembly [engine · plumbing], then fix.opening-levels [engine · data], then rule.afflictions-at-zero [engine · rule] (+3 more)
+Delegate: fix.one-hero-assembly [engine · plumbing] — not yet gated; fix.opening-levels [engine · data] — not yet gated; rule.afflictions-at-zero [engine · rule] — not yet gated; viewer.reads-engine [viewer · plumbing] — not yet gated; kingdom.opening-run-six [kingdom · plumbing] — not yet gated; viewer.shield-guard-motion [viewer · plumbing] — not yet gated
+Blocked: kingdom.opening-loop needs encounter.opening.bridge; kingdom.reads-engine needs fix.one-hero-assembly; viewer.affliction-pop-up needs rule.afflictions-at-zero
 Calls since last wrap: none
-Stack for movement.swap-and-shields:
+Stack for fix.one-hero-assembly:
   the item's `spec` and `expect` — `node tools/next.mjs` — before any source file
   ENGINE-CONSTITUTION.md — the law the item touches · **the Iron Gauntlet, above, before `--land`**: kill switch, hardcode scan, generalization, consequence, naming
   `node tools/decided.mjs "<the question>"` before asking anything · SWITCHES.md before deciding anything
   src/core and the mutator that owns the field · test/ — the probe before the prose
 
-## The chat's commits since the last wrap (7d6e8bd)
+## The chat's commits since the last wrap (1bd20f0)
 
-- 4f92b86 2026-10-01 20:23 viewer.live-stat-mods: Reported 2026-10-01 (Andrew, playing the Lumberjack House): "The Leap fr
-- 3d96849 2026-10-01 20:16 fix.turn-mods-expire: Reported 2026-10-01 (Andrew, playing the Lumberjack House): the Warrior'
-- 7ceef6d 2026-10-01 19:49 combine: engine master 2293446 into this copy
-- 46741f1 2026-10-01 19:49 combine: engine master 64224bc into this copy (fix.one-effect-vocabulary's worker). Conflicts: tools/prior-art.mjs takes master's jscpd fix (1172405, the same fix as this copy's 7d28496); opening-party.test.ts keeps master's Gates line and adds the Cathedral; SWITCHES.md keeps both sections; battle-cursor.test.ts layers one-effect over fix.codex-numbers (fixture re-captured over battle-cursor-codex-numbers.json: test.opening-gates also moves, the Lieutenant Demon's aura); .state/baseline.hash and generated/vocabulary.json regenerated; the pack rebuilt from the merged content. Engine suite: 2425 pass.
-- 2293446 2026-10-01 19:41 .state/shards.json: the gate's shard record for the current tree (combine and suite runs, 2026-10-01)
-- 9ace124 2026-10-01 19:28 DECISIONS.md: Andrew - facing is kept: a unit faces where it walks, turns to face an enemy that steps next to it (the latest wins) and anyone who attacks it (2026-10-01); viewer.side-facing's spec follows
-- 64224bc 2026-10-01 19:25 DECISIONS.md: Andrew's first look at the XCOM camera, the weapons and the bodies (2026-10-01) - heroes face right, enemies left; the wheel a little further; the edge scroll must work; their items filed (viewer.side-facing, viewer.xcom-camera-tuning)
-- ad2c738 2026-10-01 19:00 fix.one-effect-vocabulary: Duplication review 2026-09-28, findings E5 E6 E7 E8 C7 C13 C14 C20. One
-- de74bb4 2026-10-01 18:50 combine: engine master fc485ad into this copy
-- fc485ad 2026-10-01 18:47 viewer.characters-unfaded: Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the car
-- 6608e05 2026-10-01 18:40 combine: engine master ab6db71 into this copy
-- 1172405 2026-10-01 18:40 tools/prior-art.mjs: jscpd finds clones on Windows - clonesOf calls jscpd's detectClones API in a child, not the CLI's --config
-- ab6db71 2026-10-01 18:38 viewer.unit-card-bar: Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the car
-- 47fb74c 2026-10-01 18:25 viewer.xcom-camera: Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the XCOM-style camera'):
-- 0f89150 2026-10-01 18:03 test: opening-party counts five opening scenarios - Gates joined as battle 5
-- da304d0 2026-10-01 17:52 combine: engine master c1db5b7 into this copy
-- ed8812e 2026-10-01 17:52 fix.codex-numbers-refiled: Re-files fix.codex-numbers (abandoned 2026-10-01: filed without probeIds
-- c1db5b7 2026-10-01 17:48 viewer.weapons-in-hand: Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the car
-- 7cf0693 2026-10-01 17:47 gate: a viewer or kingdom item's tests may already be committed in its package (its gate builds from that commit) - that package's commits naming the item count as touched for its own tests, brought-its-own-tests, existing-tests-untouched and the kill switch (GBH SWITCHES gate.testsHome)
-- f1a69e1 2026-10-01 17:45 DECISIONS.md: Andrew's 2026-10-01 rulings - the afflictions at 0 Health, bleed-out as a stat, the XCOM-style camera, the movements, the six-battle run, the order; their items filed
-- 05bbdc2 2026-10-01 17:40 gate: a viewer or kingdom item's tests run with --dir test (a filter alone also matched parked copies under scratch/), and their diagnostics stay in engine/runs, not in the package's tree the gate is hashing (GBH SWITCHES gate.testsHome)
-- 7d28496 2026-10-01 17:38 prior-art: call jscpd's library from the root with relative, forward-slash paths — its CLI resolved the config's paths to absolute backslashed ones, which its glob read as escapes, so on Windows it matched no file, wrote no report, and the clone check (and test/prior-art.test.ts 'jscpd finds a function copied into another package') failed with ENOENT on jscpd-report.json on Andrew's PC.
-- b5d1013 2026-10-01 17:36 encounter.opening.cathedral follow-up: Law 10, opening-party.test.ts's list of opening scenarios gains test.opening-gates and test.opening-cathedral (battles 5 and 6, positions 5 and 6) — the list grows as the Bridge's did on 2026-09-30, and every assertion on it (an opening position, no named heroes, no Alpha hero over five replicates) now runs on both. The fast gate ran only each item's own tests; the full suite found it.
-- 37242d7 2026-10-01 17:28 encounter.opening.cathedral: Battle 6, Cathedral (DECISIONS.md 2026-09-28 'the Cathedral encounter').
-- 817b21d 2026-10-01 17:22 encounter.opening.gates: Battle 5, Gates - the old Curse encounter (DECISIONS.md 2026-09-28 'Gate
-- 94aaf0d 2026-10-01 17:22 gate: the ignored-files pathspec in double quotes — execSync runs cmd.exe on Windows, which passes single quotes through literally, so git refused ':!tools/jscpd/node_modules' as an invalid path and every --land on Andrew's PC was refused with that error as its "ignored files" list. Double quotes work in cmd and sh alike.
-- 817b791 2026-10-01 17:19 gate: a viewer or kingdom item's own tests are read, run and hashed in that package's test/ — since 33c3f8b moved them there, no such item could pass 'brought its own tests' (GBH SWITCHES gate.testsHome)
-- b5f084c 2026-10-01 15:40 tools/engine-modules.mjs: find the engine's installed libraries from any copy of the folder (HOBAT_ENGINE_MODULES, this copy, the main worktree, a local clone's origin) and link engine/node_modules to them (Andrew, 2026-10-01)
-- 33c3f8b 2026-10-01 15:37 Move the viewer and kingdom page tests out of engine/test: six to viewer/test, seven to kingdom/test (Andrew, 2026-10-01)
-- c76fe55 2026-10-01 15:34 .gitattributes: ledger.md and gauntlet-log.jsonl merge as a union — both workers' appended lines are kept, no conflict (Andrew, 2026-10-01)
-- b792bd6 2026-10-01 15:33 gate and wrap commit only the files the item touched, never git add -A (tools/commit-only.mjs) (Andrew, 2026-10-01)
-- 2a33aa7 2026-10-01 15:31 One to-do list and one gate progress file per area: .state/backlog.<area>.json and .state/gate-progress.<area>.json for engine, viewer-kingdom, content, art (tools/backlog.mjs) — so workers in different areas never write the same list (Andrew, 2026-10-01)
-- 803cede 2026-10-01 15:21 start.mjs: list every commit since the last wrap that did not go through the gate (not authored by combat-framework) (Andrew, 2026-10-01)
-- 0b4523f 2026-10-01 15:21 wrap writes only .state/now.json; tools/handoff.mjs produces HANDOFF.md and STATE-ROW.md from it — no archive copy and no wraps.json, git holds both (Andrew, 2026-10-01)
-- 9892083 2026-10-01 15:19 gate: the landing's gauntlet-log line goes into the landing commit (logged before the amend), not a commit of its own (Andrew, 2026-10-01)
-- 49b7dca 2026-10-01 15:18 tools/code-stamp.mjs: the engine's code stamp — a hash of src/, the two tools the viewer runs and the lockfile at HEAD; export-battle stamps it instead of HEAD, so a ruling re-exports byte-identical battles (Andrew, 2026-10-01)
+- e2e78ed 2026-10-01 23:33 .state/shards.json: the engine suite (1/1) passed on the merged tree b5b478d095 (fix.shield-power-double-click)
+- a3f41c5 2026-10-01 23:22 combine: engine master 6ae3895 into this copy
+- ab7c1ee 2026-10-01 23:22 .state/shards.json: the engine suite (1/1) passed on tree 6820a1637e after fix.shield-power-double-click
+- b6518a0 2026-10-01 23:19 fix.shield-power-double-click: Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'a self power fires on a d
+- 6ae3895 2026-10-01 23:06 generated/movements.{json,md} regenerated (npx tsx tools/movements.mts) on the combined copy
+- a399fb5 2026-10-01 23:01 combine: engine master 5f5a128 into this copy
+- 0431b7a 2026-10-01 22:48 combine: engine master 8bda948 into this copy
+- 2eaa1b8 2026-10-01 22:46 viewer.male-hero-outfits: Ruled 2026-10-01 (Andrew, DECISIONS.md 'the approved male hero outfits c
+- 5f5a128 2026-10-01 22:40 combine: engine master 8bda948 into this copy
+- 16ce210 2026-10-01 22:39 .state/shards.json: the whole suite (--shard 1/1) passed on tree bad62064ce after movement.inventory
+- 779104a 2026-10-01 22:37 movement.inventory: Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the movements'): 'We need
+- 8bda948 2026-10-01 22:36 DECISIONS.md: Andrew's 2026-10-01 play report - a self power fires on a double-click on its bar button (filed fix.shield-power-double-click, top of the queue); the Leap fix holds
+- b91a3f7 2026-10-01 22:30 DECISIONS.md: Andrew's 2026-10-01 answers in the engine chat - every shield power plays a raise-the-shield motion (filed viewer.shield-guard-motion); the Leap report came from the Orphanage, not the Lumberjack House
+- b68912b 2026-10-01 22:29 DECISIONS.md: Andrew - the approved male hero outfits come into the project, 'quite important' (2026-10-01); filed viewer.male-hero-outfits at the top of the viewer-kingdom queue
+- 8bd0f64 2026-10-01 22:19 combine: engine master a8594f2 into this copy
+- 89dcded 2026-10-01 22:17 viewer.real-bodies: Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the car
+- a8594f2 2026-10-01 22:04 combine: engine master 841e60b into this copy
+- 1f58af4 2026-10-01 22:03 content.bridge-deck-pack: Ruled 2026-09-30 (DECISIONS.md 'the Bridge's northern branch is walkable
+- b3d6169 2026-10-01 22:01 combine: engine master 841e60b into this copy
+- 007ac44 2026-10-01 22:00 .state/shards.json: the whole suite (--shard 1/1) passed on tree a5b77d0fd9 after movement.swap-and-shields
+- b309bd2 2026-10-01 21:57 movement.swap-and-shields: Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the movements'): 'weapon
+- 841e60b 2026-10-01 21:56 tools/add-item.mjs --repoint <abandoned> <refiled>: a pending item's needs move from an abandoned id to its re-filed one (Andrew, 2026-10-01, DECISIONS 'the abandoned ids' dependants are repointed')
+- 2b1443a 2026-10-01 21:54 combine: engine master 29916c1 into this copy
+- 29916c1 2026-10-01 21:54 DECISIONS.md: Andrew's 2026-10-01 answers to the content chat - an enemy's crit chance stops at 0 (already the engine's floor; nothing built), the Bridge deck goes into the pack (filed content.bridge-deck-pack), the engine chat repoints the abandoned ids' dependants
+- dd3b0d9 2026-10-01 21:50 viewer.xcom-camera-tuning: Ruled 2026-10-01 (Andrew, DECISIONS.md 'the first look at the XCOM camer
+- e7e1b45 2026-10-01 21:47 viewer.side-facing: Ruled 2026-10-01 (Andrew, DECISIONS.md 'the first look at the XCOM camer
+- b29645e 2026-10-01 21:42 combine: engine master 78e999f into this copy (content.afflictions-at-zero-refiled's worker). Conflicts resolved:
+- aca491d 2026-10-01 21:38 kingdom.opening-loop-three: PLAYABLE-OPENING-PLAN.md item 12. Ruled 2026-09-29: one page, one sittin
+- 6614e62 2026-10-01 21:36 Merge main (master) into worker/kingdom
+- 47f5775 2026-10-01 21:35 kingdom.opening-loop-three: the gate's check records - check passed on attempt 1 (2026-10-02 02:37, 16 checks recorded in gate-progress.viewer-kingdom.json; gauntlet-log line appended). Check only: the item is not landed (no --land run); its kingdom work is kingdom be35831 on worker/kingdom.
+- 78e999f 2026-10-01 21:34 .state/shards.json: the whole suite (--shard 1/1) passed on tree 0b8427f (2026-10-02)
+- 4a1e0c4 2026-10-01 19:37 combine: engine master 9ace124 into this copy
+- ed81366 2026-10-01 19:28 combine: engine master 64224bc into this copy
+- ea43b1e 2026-10-01 19:18 content.afflictions-at-zero-refiled: Re-files content.afflictions-at-zero (abandoned 2026-10-01: filed withou
+- 2230e4c 2026-10-01 18:48 Merge main (master) into worker/kingdom
+- 88e47ec 2026-10-01 18:47 kingdom.opening-rewards: kingdom.opening-loop-three, part 3 of 4. The opening's rewards as ruled
+- 06b9dfb 2026-10-01 18:27 kingdom.encounter-result-fold: kingdom.opening-loop-three, part 2 of 4; V2-ROADMAP.md R8 (the battle-to
+- bb21347 2026-10-01 18:10 kingdom.sandbox-campaign-heroes: kingdom.opening-loop-three, part 1 of 4 (filed 2026-10-01 by the kingdom
+- c2cad4c 2026-10-01 18:06 backlog.viewer-kingdom: kingdom.opening-loop-three split into four - kingdom.sandbox-campaign-heroes, kingdom.encounter-result-fold (V2-ROADMAP R8 for encounters), kingdom.opening-rewards, and the page chain; its needs re-pointed from the abandoned encounter.opening.bridge-ai to encounter.opening.bridge-ai-refiled
+- 91753b3 2026-10-01 17:55 Merge main (c1db5b7) into worker/kingdom: gate-progress.viewer-kingdom.json takes main's record (a landing's scratch progress, cleared on landing)
+- ccdc42f 2026-10-01 17:53 kingdom.abbotown-map: PLAYABLE-OPENING-PLAN.md item 11. Ruled 2026-09-29: the Retaking Abbotow
 
 ## Next chat
 
-New chat with Heroes of Blight and Tragic — engine: take the top of the queue (movement.swap-and-shields, then fix.one-hero-assembly)
+New chat with Heroes of Blight and Tragic — engine: take the top of the queue (fix.one-hero-assembly, then fix.opening-levels)
 ```
 start engine
 ```
