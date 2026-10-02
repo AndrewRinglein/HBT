@@ -3822,3 +3822,9 @@ Ruled (the readings, the viewer chat's; Andrew to confirm):
 What he saw, measured the same evening (battle 1, the Orphanage): the Iron Dwarf holds the tower shield and the war axe, the Battle Chaplain the round shield — his Holy Texts have no 3D model (listed, not faked: viewer SWITCHES heldModels) — and the Hunter holds the longbow in his left hand, edge-on to the fixed camera, so it reads as a thin stick. Why the edge scroll seldom moved: on a board smaller than the view the pan was pinned to the board's middle (viewer SWITCHES cameraPanNoVoid), and the board's edge is not the screen's edge in the battle screen (the bar, the panel and the ability bar surround it).
 
 Filed: `viewer.side-facing`, `viewer.xcom-camera-tuning` — first in the viewer queue.
+
+Andrew, minutes later, the same chat:
+
+“Every unit faces the direction it walks, and when a unit moves next to another unit, the unit, if it's an enemy, should turn to face them. If a zombie walks up to you, you turn to face the zombie. If you walk up to a zombie, it turns to face you. If someone then walks up from another hex, it turns to face them. You also turn to face anybody who attacks you.”
+
+Ruled: **a body's facing is kept, not reset.** It starts facing its side's way (heroes right, enemies left); it faces where it walks; **when an enemy steps next to it, it turns to face that enemy** (the latest to arrive wins); **it turns to face anyone who attacks it**; striking, it faces its target. Replaces the reading above that a body "turns back when it is idle".
