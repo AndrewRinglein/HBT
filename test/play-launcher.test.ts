@@ -20,6 +20,9 @@ describe('the game plays from a link: the launcher', () => {
     // Law 10, viewer.caravan-scene (2026-10-01; DECISIONS.md 2026-10-01 "the caravan's fight" — "so it can be played in the
     // sandbox"): the sandbox plays the caravan aftermath too (kingdom SWITCHES sandboxCaravan), after the opening's four.
     // was: expect(out).toMatch(/play launcher: 4 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail\).*passed/)
-    expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
+    // Law 10, encounter.opening.gates (engine 817b21d, 2026-10-01): Gates joins the opening as battle 5, so the sandbox's list
+    // (the engine's encounters, in opening order) carries it before the caravan — the claim is unchanged, the list grows.
+    // was: expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
+    expect(out).toMatch(/play launcher: 6 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Caravan Aftermath\).*passed/)
   }, 60000)
 })
