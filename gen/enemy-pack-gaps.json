@@ -7,11 +7,6 @@
    "needs": "no Faith quantity in the engine"
   },
   {
-   "unit": "power.charging-run",
-   "what": "Charging Run: A full movement action: move up to your Movement +2, and gain +3 Stren…",
-   "needs": "a statMod that expires at End of Activation (MoveEffect.until knows endOfTurn | battle only)"
-  },
-  {
    "unit": "unit.balrog",
    "what": "(unit) onTakingDamage: set a ground layer",
    "needs": "set a ground layer"
@@ -834,11 +829,6 @@
   {
    "unit": "item.burning-oil",
    "what": "power.burning-oil.use: and the hex it stands on gains Burning — a painted layer from a power (not yet an ability effect)",
-   "needs": "item active clause"
-  },
-  {
-   "unit": "item.frenzy-potion",
-   "what": "power.frenzy-potion.use: \"until the end of your Activation\" is read as until the end of the Turn",
    "needs": "item active clause"
   },
   {

@@ -296,7 +296,7 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
   // the Codex's rows the engine loads (settled.json statuses -> the pack), not an engine word list.
   const VOCAB=JSON.parse(fs.readFileSync('../engine/generated/vocabulary.json','utf8'));
   const ENGINE_HOOKS=VOCAB.hooks;
-  const ENGINE_EFFECTS=VOCAB.triggerEffectKinds;
+  const ENGINE_EFFECTS=VOCAB.effectKinds;   // engine fix.one-effect-vocabulary (2026-10-01): one effect list for every carrier
   const LEGACY_COVERAGE_EFFECTS=['status.apply','status.remove','damage'];
   const ENGINE_STATUSES=new Set((JSON.parse(fs.readFileSync('settled.json','utf8')).statuses||[]).map(r=>r.id));
   const seenHooks=new Set(), seenEffects=new Set();

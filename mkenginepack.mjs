@@ -289,14 +289,15 @@ const MOVE_SHAPES = [
 ];
 const MOVE_RIDERS = [
   [/You gain \+(\d) Strength until the end of the Turn\./, (m) => ({ kind: 'statMod', stat: 'strength', value: parseInt(m[1], 10), until: 'endOfTurn' })],
-  [/(?:^|\. )Gain (\d) Stamina\./, (m) => ({ kind: 'gainStamina', value: parseInt(m[1], 10) })],
+  [/(?:^|\. )Gain (\d) Stamina\./, (m) => ({ kind: 'stamina.gain', value: parseInt(m[1], 10), who: 'self' })],
   // v2.prone (2026-09-23): "Stand up from Prone." — legal only while prone (the engine's rule for a stand effect)
   [/(?:^|\. )Stand up from Prone\./, () => ({ kind: 'stand' })],
-  [/Lose (\d) Stamina Max for the rest of the Battle, and gain (\d) Stamina\./, (m) => [{ kind: 'loseMaxStamina', value: parseInt(m[1], 10) }, { kind: 'gainStamina', value: parseInt(m[2], 10) }]],
+  [/Lose (\d) Stamina Max for the rest of the Battle, and gain (\d) Stamina\./, (m) => [{ kind: 'loseMaxStamina', value: parseInt(m[1], 10) }, { kind: 'stamina.gain', value: parseInt(m[2], 10), who: 'self' }]],
+  // C20 (engine fix.one-effect-vocabulary, 2026-10-01): the one duration set says end of Activation — this was a MOVE_GAP
+  [/gain \+(\d) Strength until the end of your Activation/, (m) => ({ kind: 'statMod', stat: 'strength', value: parseInt(m[1], 10), until: 'endOfActivation' })],
 ];
 const MOVE_GAPS = [
   [/gain (\d) Faith/, 'no Faith quantity in the engine'],
-  [/gain \+(\d) Strength until the end of your Activation/, "a statMod that expires at End of Activation (MoveEffect.until knows endOfTurn | battle only)"],
 ];
 function compileMoves(powers) {
   const out = {};
@@ -515,7 +516,8 @@ function compileTrigger(t, unitId, attackId) {
         effect: { kind: 'layer.paint', layer: 'layer.' + ef.layer, radius: ef.radius, origin: ef.origin === 'self' || !ef.origin ? 'self' : 'target' }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
     } else if (/^grant a stat (for the Battle|until end of your Activation)$/.test(ef.effect) && modStatOf(ef.stat)) {
       // statMod trigger effects (2026-09-03): "grant a stat for the Battle" — Blight the Eye's −2 Vision, −10 Accuracy
-      const until = /Battle/.test(ef.effect) ? 'battle' : 'endOfTurn';
+      // C20 (engine fix.one-effect-vocabulary, 2026-10-01): "until end of your Activation" is end of Activation, never the Turn
+      const until = /Battle/.test(ef.effect) ? 'battle' : 'endOfActivation';
       const select = ef.target === 'self' ? 'self' : areaSelect ?? 'target';
       // a stat grant BEFORE the damage is computed (onAttack, onCrit) would change the number the preview promised — Law 1: damage-changing effects are stations, not triggers
       if (t.hook === 'onAttack' || t.hook === 'onCrit') { gap(unitId, `${where} ${t.hook}: ${ef.effect} (${ef.stat}) — a pre-damage stat grant is a STATION question (Law 1)`, 'trigger-effect: statMod before damage'); continue; }
@@ -887,10 +889,14 @@ function settledAttackExtras(a, unitId) {
 // three authored S31 shapes, parsed from their EXACT settled text and never
 // invented. Anything else stays a named gap.
 //   Heal:  "Heal the target for B + M x Spirit." / "one ally within R hexes"
-//          -> effect 'heal', ValueSpec partySpirit (GAME-DESIGN §5's law:
-//          Spirit effects scale off the party-wide sum).
+//          -> a heal effect on one ally, ValueSpec partySpirit (GAME-DESIGN §5's
+//          law: Spirit effects scale off the party-wide sum).
 //   Block: "Gain Protection equal to B + your Armor, and lose D Dodge for the
-//          rest of the Battle." / "self" -> effect 'selfGuard'.
+//          rest of the Battle." / "self" -> status.apply Protection (B + the
+//          caster's own Armor, ValueSpec 'stat') and a battle-long Dodge statMod.
+// fix.one-effect-vocabulary (engine, 2026-10-01): every power is an effects list now —
+// the legacy power fields (effect/stat/bonus/heal/guard) are retired, and core names
+// no status id (Block's Protection is this row's, not the engine's).
 //   Storm: "Deal magic damage equal to your Magic + B to every unit in the
 //          blast." / "a hex within R hexes and every hex adjacent to it"
 //          -> a damage power with area 'blast1'. The engine centres the blast
@@ -903,13 +909,14 @@ function compiledPowerOf(p, unitId) {
   let m, r;
   if ((m = desc.match(/^Heal the target for (\d+) \+ (\d+) x Spirit\./))
     && (r = tgt.match(/^one ally within (\d+) hexes$/))) {
-    return { ...base, range: parseInt(r[1], 10), effect: 'heal',
-      heal: { scale: 'partySpirit', base: parseInt(m[1], 10), mult: parseInt(m[2], 10) } };
+    return { ...base, range: parseInt(r[1], 10), target: { select: 'unit', side: 'ally' },
+      effects: [{ kind: 'heal', amount: { scale: 'partySpirit', base: parseInt(m[1], 10), mult: parseInt(m[2], 10) } }] };
   }
   if ((m = desc.match(/^Gain Protection equal to (\d+) \+ your Armor, and lose (\d+) Dodge for the rest of the Battle\./))
     && tgt === 'self') {
-    return { ...base, range: 0, effect: 'selfGuard',
-      guard: { protectionBase: parseInt(m[1], 10), protectionPerArmor: 1, dodgeLoss: parseInt(m[2], 10) } };
+    return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects: [
+      { kind: 'status.apply', statusId: 'status.protection', value: { scale: 'stat', stat: 'armor', base: parseInt(m[1], 10), mult: 1 } },
+      { kind: 'statMod', stat: 'dodge', value: -parseInt(m[2], 10), until: 'battle', who: 'self' }] };
   }
   // V2 shields (2026-09-23): "Gain +10 Block, +10 Ranged Block and +1 Armor until the
   // end of your next Activation." — a self statMod list with the holder's-activation lifetime.
@@ -1280,7 +1287,7 @@ function compileCritChart(chart) {
         if (statName === 'Max Health') { effects.push({ kind: 'loseMaxHp', value: parseInt(m[1], 10) }); continue; }
         const stat = modStatOf(statName);
         if (!stat) { gap('critChart', `${r.key}: -${m[1]} ${statName}`, statName === 'Surge' ? 'no surge quantity in the engine' : 'stat: ' + statName); continue; }
-        effects.push({ kind: 'statMod', stat, value: -parseInt(m[1], 10), ...(floored ? { floor: 0 } : {}) });
+        effects.push({ kind: 'statMod', stat, value: -parseInt(m[1], 10), until: 'battle', ...(floored ? { floor: 0 } : {}) });
       } else if ((m = clause.match(/^(\d+) turns?$/))) {
         const prev = effects[effects.length - 1];
         if (prev && prev.statusId === POWERS_LOCKED && prev.value === 0) prev.value = parseInt(m[1], 10);
@@ -1288,11 +1295,11 @@ function compileCritChart(chart) {
       } else if ((m = clause.match(/^gain (\d+) ([A-Za-z]+)$/)) || (m = clause.match(/^(\d+) ([A-Za-z]+)$/))) {
         const status = m[2].toLowerCase();
         if (!STATUS_OK.has(status) && status !== 'dazed') { gap('critChart', `${r.key}: ${clause}`, 'status: ' + status); continue; }
-        effects.push({ kind: 'status', statusId: 'status.' + status, value: parseInt(m[1], 10) });
+        effects.push({ kind: 'status.apply', statusId: 'status.' + status, value: parseInt(m[1], 10) });
       } else if ((m = clause.match(/^pushed (\d+) hex(?:es)?$/))) {
-        effects.push({ kind: 'push', hexes: parseInt(m[1], 10) });
+        effects.push({ kind: 'knockback', value: parseInt(m[1], 10) });
       } else if ((m = clause.match(/^lose (\d+) Stamina$/))) {
-        effects.push({ kind: 'loseStamina', value: parseInt(m[1], 10) });
+        effects.push({ kind: 'stamina.drain', value: parseInt(m[1], 10) });
       } else if ((m = clause.match(/^loses access to class powers$/))) {
         // "loses access to class powers, 3 turns" — the duration arrives as
         // the next clause; handled above. The chart's Dazed row and the Dazed
@@ -1300,7 +1307,7 @@ function compileCritChart(chart) {
         // critical effect, and then there is a status effect"), so the row
         // applies status.powers-locked — the Codex row whose one sentence is
         // exactly this clause. Rename there and here, nowhere else.
-        effects.push({ kind: 'status', statusId: POWERS_LOCKED, value: 0 });
+        effects.push({ kind: 'status.apply', statusId: POWERS_LOCKED, value: 0 });
       } else {
         gap('critChart', `${r.key}: '${clause}'`, 'unparsed chart clause');
       }
@@ -1382,7 +1389,7 @@ function compileItemActive(it, row) {
     if ((m = s0.match(/^Each ally within \d+ hexes, including you, heals (\d+) \+ Spirit$/))) { effects.push({ kind: 'heal', amount: SP(+m[1]) }); continue; }
     if ((m = s0.match(/^Each ally within \d+ hexes, including you, removes all Stun and all Weak and gains \+(\d+) Resist for the rest of the Battle$/))) { effects.push({ kind: 'status.remove', statusId: 'status.stun' }); effects.push({ kind: 'status.remove', statusId: 'status.weak' }); effects.push({ kind: 'statMod', stat: 'resist', value: +m[1], until: 'battle' }); continue; }
     if ((m = s0.match(/^gain \+(\d+) ([A-Z][a-z]+) and lose (\d+) ([A-Z][a-z]+) for the rest of the Battle$/))) { effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'battle', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[4]), value: -m[3], until: 'battle', who: 'self' }); continue; }
-    if ((m = s0.match(/^until the end of your Activation, gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+), and lose (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'endOfTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[4]), value: +m[3], until: 'endOfTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[6]), value: -m[5], until: 'endOfTurn', who: 'self' }); gaps.push('"until the end of your Activation" is read as until the end of the Turn'); continue; }
+    if ((m = s0.match(/^until the end of your Activation, gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+), and lose (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'endOfActivation', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[4]), value: +m[3], until: 'endOfActivation', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[6]), value: -m[5], until: 'endOfActivation', who: 'self' }); continue; }   // C20 (engine fix.one-effect-vocabulary, 2026-10-01): was read as the end of the Turn, with a gap
     if ((m = s0.match(/^the target gains \+(\d+) Movement for the rest of the Battle and loses (\d+) Root and (\d+) Slow$/))) { effects.push({ kind: 'statMod', stat: 'movement', value: +m[1], until: 'battle' }); effects.push({ kind: 'status.remove', statusId: 'status.root', value: +m[2] }); effects.push({ kind: 'status.remove', statusId: 'status.slow', value: +m[3] }); continue; }
     if ((m = s0.match(/^Until the end of your next Turn, your attacks gain \+(\d+) Accuracy$/))) { effects.push({ kind: 'statMod', stat: 'accuracy', value: +m[1], until: 'endOfNextTurn', who: 'self' }); continue; }
     if ((m = s0.match(/^Until the end of your next Turn you gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: modStatOf(m[2]), value: +m[1], until: 'endOfNextTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: modStatOf(m[4]), value: +m[3], until: 'endOfNextTurn', who: 'self' }); continue; }
@@ -1548,13 +1555,16 @@ function compileSentences(desc) {
   for (const sRaw of parts) {
     const s0 = sRaw.replace(/\.$/, '');
     let m;
+    // engine fix.one-effect-vocabulary (2026-10-01): "become poisoned ground" — the one ground shape (DECISIONS.md
+    // 2026-09-03), painted by the one layer.paint effect around the aimed unit (compileClassPower aims it at one)
+    if ((m = s0.match(/^Those seven hexes become (burning|poisoned) ground$/))) { effects.push({ kind: 'layer.paint', layer: 'layer.' + m[1], radius: 1, origin: 'target' }); continue; }
     if ((m = s0.match(/^Deal (\d+) \+ (Magic|Spirit|Strength|Precision) (magic|physical|fire|poison|shadow|true) damage to every unit in the blast(?:, (.*))?$/))) {
-      effects.push({ kind: 'damage', stat: m[2].toLowerCase(), bonus: +m[1], damageType: m[3] });
+      effects.push({ kind: 'statDamage', stat: m[2].toLowerCase(), bonus: +m[1], damageType: m[3] });
       if (m[4]) gaps.push(`rider: ${m[4]}`);
       continue;
     }
     if ((m = s0.match(/^Every unit in those hexes, ally or enemy, takes (Precision|Strength|Magic|Spirit) - (\d+) (physical|magic|fire|poison|shadow|true) damage(?:, .*)?$/))) {
-      effects.push({ kind: 'damage', stat: m[1].toLowerCase(), bonus: -m[2], damageType: m[3], allies: 'always' }); continue;
+      effects.push({ kind: 'statDamage', stat: m[1].toLowerCase(), bonus: -m[2], damageType: m[3], allies: 'always' }); continue;
     }
     if ((m = s0.match(/^Heal every ally within (\d+) hexes for (\d+) \+ Spirit(?: — .*)?$/))) { effects.push({ kind: 'heal', amount: SPIRIT(+m[2]) }); continue; }
     if ((m = s0.match(/^[Hh]eal (?:the target|it) (?:for )?(\d+) \+ Spirit$/))) { effects.push({ kind: 'heal', amount: SPIRIT(+m[1]) }); continue; }
@@ -1570,7 +1580,7 @@ function compileSentences(desc) {
       continue;
     }
     if ((m = s0.match(/^Take (\d+) true damage and gain \+(\d+) (Strength|Magic|Spirit|Precision) for the rest of the Battle(?:; .*)?$/))) {
-      effects.push({ kind: 'selfDamage', amount: +m[1], damageType: 'true' });
+      effects.push({ kind: 'damage', amount: +m[1], damageType: 'true', who: 'self' });
       effects.push({ kind: 'statMod', stat: m[3].toLowerCase(), value: +m[2], until: 'battle', who: 'self' }); continue;
     }
     if ((m = s0.match(/^Every ally within \d+ hexes gains \+(\d+) (Armor|Resist|Strength|Dodge|Accuracy) for the rest of the Battle$/))) {
@@ -1583,7 +1593,7 @@ function compileSentences(desc) {
       if (m[5]) gaps.push(`stance rider: ${m[5]}`);
       continue;
     }
-    if ((m = s0.match(/^[Tt]ake (\d+) true damage$/))) { effects.push({ kind: 'selfDamage', amount: +m[1], damageType: 'true' }); continue; }
+    if ((m = s0.match(/^[Tt]ake (\d+) true damage$/))) { effects.push({ kind: 'damage', amount: +m[1], damageType: 'true', who: 'self' }); continue; }
     if (/^(Free|No roll, no crit)$/.test(s0)) continue;   // markers the row's fields already carry
     // flavour and explanation sentences — not rules
     if (/^(Read that|It makes no attack|It does not roll|It never rolls|It does not spend|It costs nothing|Cheap and|Put it on|Thrown into|Because Magic|Your cheap|Anyone carrying Burn|about \d|as an area effect)/.test(s0)) continue;
@@ -1615,15 +1625,18 @@ function compileClassPower(p, cls) {
   if (p.needsCapability) gaps.push(`needs capability: ${p.needsCapability}`);
   if (p.burst) {
     const burst = validateBurst(p.burst);
-    if (!tg.hexGap || p.modifies || effects.some(e => e.kind !== 'damage')) throw Error(`Class burst '${p.id}' has incompatible targeting/effects`);
+    if (!tg.hexGap || p.modifies || effects.some(e => e.kind !== 'statDamage')) throw Error(`Class burst '${p.id}' has incompatible targeting/effects`);
     if (burst.shape.kind !== 'radius' || burst.shape.radius !== tg.target.radius || burst.side !== tg.target.side
       || burst.heal !== undefined || burst.requireTags !== undefined || burst.packets.length !== effects.length
       || burst.packets.some((packet, i) => packet.stat !== effects[i].stat || packet.amount !== effects[i].bonus || packet.damageType !== effects[i].damageType)) throw Error(`Class burst '${p.id}' disagrees with its authored base payload`);
     return { ...base, range: tg.range, burst, source: 'class', ...(gaps.length ? { gaps } : {}) };
   }
-  if (tg.target.select === 'area' && tg.target.origin === 'target' && effects.some(e => e.kind === 'damage')) throw Error(`Travelling area damage '${p.id}' requires an explicit burst profile`);
+  if (tg.target.select === 'area' && tg.target.origin === 'target' && effects.some(e => e.kind === 'statDamage')) throw Error(`Travelling area damage '${p.id}' requires an explicit burst profile`);
   if (!effects.length) gaps.push('no effect compiled — the power is inert');
-  return { ...base, range: tg.range, target: tg.target, effects, ...(gaps.length ? { gaps } : {}) };
+  // a power that only paints the hex area paints it ONCE, around the one unit it is aimed at — an area
+  // target would paint once per unit standing in it (engine fix.one-effect-vocabulary, 2026-10-01)
+  const target = tg.hexGap && effects.length && effects.every((e) => e.kind === 'layer.paint' && e.origin === 'target' && e.radius === tg.target.radius) ? { select: 'unit', side: 'any' } : tg.target;
+  return { ...base, range: tg.range, target, effects, ...(gaps.length ? { gaps } : {}) };
 }
 
 const classPowers = {};
@@ -2086,7 +2099,7 @@ for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test
     actionSlot(row);
     if (row.damageType !== undefined) damageType(row.damageType);
     for (const effect of row.effects || []) {
-      if (effect.kind === 'damage' || effect.kind === 'selfDamage') damageType(effect.damageType);
+      if (effect.kind === 'damage' || effect.kind === 'statDamage') damageType(effect.damageType);
     }
   }
 }
