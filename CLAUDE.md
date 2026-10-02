@@ -50,6 +50,26 @@ the page stamps the sources' sha.
 **Commit at the end of every session** — `git add -A && git commit` from
 `viewer/`. Until 2026-09-02 a week of this work had no history.
 
+**The queue and landing a `viewer.*` item** (written 2026-10-01). There is no `start.mjs`
+here yet: the queue is `../engine/.state/backlog.viewer-kingdom.json`, and its top is
+printed by `cd ../engine && node tools/next.mjs --area viewer-kingdom`. Work in the
+viewer-and-kingdom worker copy (rule 32), never in the main folder: the engine gate
+commits every changed engine file, including other chats' changes. Land in this order:
+1. Commit the viewer sources first, with the item id in the message. The candidate page
+   stamps viewer HEAD, so gate parts run before that commit go stale.
+2. `node tools/gate.mjs --part checks`, then `--part verify k/4`, then `--part tests k/2`,
+   then `--land`, then commit `BATTLE-VIEWER.html` on its own. Never edit a viewer file
+   while the parts run, because they hash the tree.
+3. The item's engine-side test is `test/<item>.test.ts`. It runs the `tools/*.test.mjs`
+   page test with `VIEWER_PAGE ?? ''`.
+4. Rebuild `../kingdom` BATTLE-SANDBOX.html and SLICE.html, then commit kingdom. The build
+   refuses if the `generated/*.json` stamp is not the engine's: re-dump with `npm run static`
+   and `node tools/dump-fields.mjs`. The build spawns `python3` with Pillow. Here that is
+   Python 3.12 only, so put a `python3.exe` copy of it first on PATH and set
+   `PYTHONHOME` to it.
+5. `cd ../engine && node tools/gate.mjs <item>`, then `--land`. The gate finds the test
+   through the commits that name the item.
+
 ---
 
 ## Where things live
