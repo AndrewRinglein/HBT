@@ -57,10 +57,17 @@ describe('movement.inventory — every movement the content needs, in one genera
     const shields = inv.rows.filter((r) => r.group === 'shield')
     expect(new Set(shields.map((r) => r.action))).toEqual(new Set(['power.kite-shield.shield-wall', 'power.kite-shield.raise-guard', 'power.round-shield.turn-aside',
       'power.round-shield.brace', 'power.tower-shield.cover', 'power.tower-shield.stand-tall']))
+    // Law 10, 2026-10-02 (viewer.shield-guard-motion): the ruled raise-the-shield motion is built — the motion word `guard`, the
+    // Oathblade body's shield_blockleft, bound on every body a shield-holding hero wears (viewer SWITCHES guardWord, guardHolders) —
+    // so a shield power is no longer missing: it plays `guard` where a shield is held, partial across the hero bodies. Was
+    // ['yes', 'power', null, 'missing'] while the build was filed and not done.
     for (const r of shields) {
-      expect([r.engine, r.bar, r.motion, r.motionStatus], r.action!).toEqual(['yes', 'power', null, 'missing'])
+      expect([r.engine, r.bar, r.motion, r.motionStatus], r.action!).toEqual(['yes', 'power', 'guard', 'partial'])
       expect(r.ruling, r.action!).toMatch(/a shield power plays a raise-the-shield motion/)
       expect(r.ruling, r.action!).toMatch(/viewer\.shield-guard-motion/)
+      for (const body of ['Lion of the Host', 'Dawnblade', 'Court Champion', 'Battle Chaplain', 'Oathblade'])
+        expect(r.bodies[body], `${r.action} on ${body}`).toMatch(/shield_blockleft$/)
+      expect(Object.entries(r.bodies).filter(([, c]) => c !== null).every(([, c]) => /shield_blockleft$/.test(c!)), r.action!).toBe(true)
     }
   })
 
