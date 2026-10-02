@@ -289,5 +289,17 @@
    "rule.afflictions-at-zero"
   ],
   "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4)."
+ },
+ {
+  "id": "viewer.live-stat-mods",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Reported 2026-10-01 (Andrew, playing the Lumberjack House): \"The Leap from a Warrior gives +2 Strength. It did not show in the modifier log. It did show in the stat window. It showed a +2. It showed a green 4 for the Strength, but the Strength should have gone to 6. None of the attacks have their damage modified by the Strength.\" The engine applies it (the hit is 2 harder); the viewer did not show it. The viewer's sheet (UD) is the bare unit; every live modifier — an item's (the Iron Dwarf's mail: Max HP +4, Move -1, Accuracy -20), a Leap's — arrives as statmod lines folded onto the unit. (1) The stat window printed the sheet's number with the change beside it: it shows the sheet plus the modifiers (panel.js stat). (2) An attack's number was the last damage seen, or the sheet's stat + bonus: the seen number now moves by whatever the attack's stat gained or lost since it was seen (fold.js dmgSeenMods), and the sheet fallback counts the modifiers (actions.js dmgOf); the danger marker reads the same (projection.js dangerOf). (3) With fix.turn-mods-expire the Leap's +2 leaves the screen when the Turn ends. Prior art: actions.js modOf, the one sum of a unit's folded modifiers (mvOf already adds it to movement) — reused, not copied.",
+  "expect": "After a Leap the Warrior's stat window reads Strength 6 (+2) — and Move, Accuracy, Max HP read the sheet plus the mail's modifiers; the action bar's Chop/Hack numbers rise by 2, and fall back when the Turn ends; the engine's own hit is 2 harder.",
+  "needs": [
+   "fix.turn-mods-expire"
+  ],
+  "status": "done",
+  "sha": "c56a2d1"
  }
 ]
