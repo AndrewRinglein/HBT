@@ -1,5 +1,12 @@
 [
  {
+  "id": "viewer.male-hero-outfits",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the approved male hero outfits come into the project'): 'Number two, yes, that's quite important.' The approved male hero outfits (Black Oath, Dawnblade, Court Champion, the four priests; viewer SWITCHES realBodiesMaleOutfits) are outside the project under C:/Users/aring/.codex/visualizations/2026/09/21/01a0c621-e68f-7781-abe3-7b2ec04afda2/hero-outfits/ (motion/, approved-review/catalog.json). Import only the approved files into assets/characters following assets/characters/PRODUCTION-START.md and its records, then bind each hero to his own outfit in viewer/tools/character-models.mjs, replacing the Oathblade placeholder. A hero whose own head is not fitted keeps the body's head and lists it (SWITCHES realBodiesHeads).",
+  "expect": "In the sandbox the Black Oath, Dawnblade, Court Champion and the four priests each stand in their own approved outfit with every ruled motion; the files load from the project root in the main folder as well as the worker copy; character-models --list no longer lists their outfits as missing."
+ },
+ {
   "id": "viewer.side-facing",
   "kind": "viewer",
   "shape": "plumbing",
