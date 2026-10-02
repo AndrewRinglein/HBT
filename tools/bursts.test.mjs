@@ -36,12 +36,16 @@ test('real burst declaration preserves detached engine footprint/UIDs and clears
 
 test('burst action details show authored packets, filter, shape and healing without scalar guesses or attack hooks',()=>{
  const row={...fixture.cases[0].action,burst:{...fixture.cases[0].action.burst,requireTags:['undead'],heal:7}}
- assert.equal(kindOf(row),'burst')
- const detail=effectTag(row,{}, {},{})
+ // viewer.reads-engine (review V1): what a row IS is the engine's classification (static.json actionKinds), and the bar's
+ // row carries it as its kind — the helpers read that, never the row's shape
+ const KINDS=JSON.parse(readFileSync(new URL('../generated/static.json',import.meta.url))).actionKinds
+ assert.equal(kindOf(row,{KINDS}),'burst')
+ const bar=actionsOf({typeId:'caster'},{UD:{caster:{abilities:[row]}},KINDS})[0]
+ assert.equal(bar.kind,'burst')
+ const detail=effectTag(bar,{}, {},{})
  for(const part of ['radius 1','enemy','undead','4 fire','3 shadow','heal 7'])assert.ok(detail.includes(part),part)
- assert.equal(dmgOf(row,{dmgSeen:{[row.id]:99}},{}),null)
- assert.deepEqual(triggersFor({typeId:'caster'},row,{UD:{caster:{triggers:[{hook:'onHit',effect:{kind:'damage',amount:3}}]}}},{},()=>({hue:'#fff'})),[])
- assert.equal(actionsOf({typeId:'caster'},{UD:{caster:{abilities:[row]}}})[0].kind,'burst')
+ assert.equal(dmgOf(bar,{dmgSeen:{[row.id]:99}},{}),null)
+ assert.deepEqual(triggersFor({typeId:'caster'},bar,{UD:{caster:{triggers:[{hook:'onHit',effect:{kind:'damage',amount:3}}]}}},{},()=>({hue:'#fff'})),[])
  assert.deepEqual(effectWord({kind:'burstScale',percent:50},{},{}),{word:'Burst damage percentage',val:50})
 })
 

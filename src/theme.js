@@ -14,22 +14,25 @@ export const TSWATCH = { 'terrain.open': 'hexPlains', 'terrain.forest': 'hexFore
   'terrain.desert': 'hexDirt', 'terrain.ruins': 'hexScrub',
   'terrain.wall': 'hexMountain', 'terrain.tower': 'hexMountain', 'terrain.house': 'hexDirt' }
 
+/* ONE status → style map (viewer.reads-engine, review V5): each status's hue, its glyph and `vfx` — the canvas effect
+   hexvfx.js plays when it is applied or ticks, ringed in the status's OWN hue. There were three disagreeing tables
+   (this one, board.js's VSTYLE and VFX_STATUS below it), so real Weak played Protection's gold and Frost Slow's blue. */
 export const STYLE = {   // one hue per status, everywhere — pips, VFX, chips, panel (Law 6)
-  'status.poison': { hue: '#8ed14f', gl: 'circle(50%)' },
-  'status.burn': { hue: '#ff9d3c', gl: 'polygon(50% 0,72% 28%,66% 47%,86% 40%,80% 76%,50% 100%,20% 76%,26% 42%,42% 50%)' },
-  'status.bleed': { hue: '#e05252', gl: 'polygon(50% 0,86% 56%,74% 92%,26% 92%,14% 56%)' },
-  'status.regeneration': { hue: '#3fd0c9', gl: 'polygon(8% 8%,92% 8%,92% 92%,8% 92%)', sq: true },
-  'status.stun': { hue: '#f5d442', gl: 'polygon(50% 0,62% 34%,98% 35%,69% 57%,79% 91%,50% 70%,21% 91%,31% 57%,2% 35%,38% 34%)' },
-  'status.weak': { hue: '#b48ae0', gl: 'polygon(0 0,100% 0,54% 46%,100% 100%,0 100%,46% 54%)' },
-  'status.slow': { hue: '#6fb3df', gl: 'polygon(0 12%,100% 12%,50% 100%)' },
-  'status.protection': { hue: '#e8c35a', gl: 'polygon(50% 0,100% 18%,100% 58%,50% 100%,0 58%,0 18%)' },
+  'status.poison': { hue: '#8ed14f', gl: 'circle(50%)', vfx: 'poison' },
+  'status.burn': { hue: '#ff9d3c', gl: 'polygon(50% 0,72% 28%,66% 47%,86% 40%,80% 76%,50% 100%,20% 76%,26% 42%,42% 50%)', vfx: 'burn' },
+  'status.bleed': { hue: '#e05252', gl: 'polygon(50% 0,86% 56%,74% 92%,26% 92%,14% 56%)', vfx: 'bleed' },
+  'status.regeneration': { hue: '#3fd0c9', gl: 'polygon(8% 8%,92% 8%,92% 92%,8% 92%)', sq: true, vfx: 'regen' },
+  'status.stun': { hue: '#f5d442', gl: 'polygon(50% 0,62% 34%,98% 35%,69% 57%,79% 91%,50% 70%,21% 91%,31% 57%,2% 35%,38% 34%)', vfx: 'shadow' },
+  'status.weak': { hue: '#b48ae0', gl: 'polygon(0 0,100% 0,54% 46%,100% 100%,0 100%,46% 54%)', vfx: 'affliction' },
+  'status.slow': { hue: '#6fb3df', gl: 'polygon(0 12%,100% 12%,50% 100%)', vfx: 'frost' },
+  'status.protection': { hue: '#e8c35a', gl: 'polygon(50% 0,100% 18%,100% 58%,50% 100%,0 58%,0 18%)', vfx: 'weak' },
   /* PROVISIONAL hues (2026-09-03, Angela: assign now, flag for Andrew) for the
      seven Codex statuses the engine landed that day — before this they fell
      back to Poison's green, which Law 6 forbids. Re-rule freely. */
-  'status.frost': { hue: '#bfe6ff', gl: 'polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)', provisional: true },
-  'status.karma': { hue: '#f6e7c1', gl: 'circle(50%)', provisional: true },
+  'status.frost': { hue: '#bfe6ff', gl: 'polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)', vfx: 'frost', provisional: true },
+  'status.karma': { hue: '#f6e7c1', gl: 'circle(50%)', vfx: 'karma', provisional: true },
   'status.taunt': { hue: '#ff7ab3', gl: 'polygon(50% 0,100% 50%,50% 100%,0 50%)', provisional: true },
-  'status.shadow': { hue: '#6e5bd9', gl: 'circle(50%)', provisional: true },
+  'status.shadow': { hue: '#6e5bd9', gl: 'circle(50%)', vfx: 'shadow', provisional: true },
   'status.confusion': { hue: '#d98cff', gl: 'polygon(20% 0,80% 0,100% 50%,80% 100%,20% 100%,0 50%)', provisional: true },
   'status.root': { hue: '#9c6b3f', gl: 'polygon(50% 0,100% 100%,0 100%)', provisional: true },
   'status.dazed': { hue: '#d9d26e', gl: 'circle(50%)', provisional: true },
@@ -52,9 +55,26 @@ export const layerHue = (name, layerStatus = {}) => layerStatus[name] && STYLE[l
    what goes overhead, and make it red"). Was the wound-level blood, which the
    engine's deathbed reversal deleted — same slot, new owner. */
 export const BLOOD_HUE = '#c62828'
-export const stStyle = id => STYLE[String(id).replace(/^test\./, '').replace(/daze$/, 'status.stun')
-  .replace(/hobble$/, 'status.slow').replace(/ward$/, 'status.protection')
-  .replace(/enfeeble$/, 'status.weak').replace(/^status\.floored$/, 'status.prone')] || { hue: '#8ed14f', gl: 'circle(50%)' }
+/* A status with no row of its own wears the look of the one it IS (viewer.reads-engine, review V5) — never a
+   string rewrite (the old unanchored /daze$/ made test.status.daze "status.status.stun", which fell back to Poison's
+   green). Anchored first: test.status.X is status.X where that exists. Then DERIVED from the engine: of the rows in
+   STYLE, the one whose behaviour — its true flags and the damage type it ticks (D.STATUS_ROWS, static.json statusRows,
+   copied from the engine's status rows) — holds ALL of this status's, with the fewest besides; a tie names none. The
+   testing lane's Daze blocks action as Stun does, its Hobble slows as Slow does, its Ward absorbs as Protection does,
+   its Enfeeble weakens as Weak does, its Gash bleeds as Bleed does, its Floored floors as Prone does — read, not typed. */
+const traits = r => r ? [...(r.flags || []), ...(r.tickDamageType ? ['tick:' + r.tickDamageType] : [])] : null
+export function styleIdOf(id, D) {
+  const sid = String(id)
+  if (STYLE[sid]) return sid
+  const anchored = /^test.(status..+)$/.exec(sid)
+  if (anchored && STYLE[anchored[1]]) return anchored[1]
+  const ROWS = (D && D.STATUS_ROWS) || {}, mine = traits(ROWS[sid])
+  if (!mine || !mine.length) return null
+  const like = Object.keys(STYLE).map(k => [k, traits(ROWS[k])]).filter(([, t]) => t && mine.every(x => t.includes(x)))
+    .map(([k, t]) => [k, t.length - mine.length]).sort((x, y) => x[1] - y[1])
+  return like.length && (like.length === 1 || like[0][1] < like[1][1]) ? like[0][0] : null
+}
+export const stStyle = (id, D) => STYLE[styleIdOf(id, D)] || { hue: '#8ed14f', gl: 'circle(50%)' }
 
 /* UNDER THE UNIT (viewer.under-unit, engine DECISIONS.md 2026-09-29 "the playable battle screen"): "we don't need
    poison or burn icons on the units because we can display that on the unit directly" · "Slow does not need
@@ -62,8 +82,7 @@ export const stStyle = id => STYLE[String(id).replace(/^test\./, '').replace(/da
    has" · "Stun should be shown on a character". Each list names the engine's statuses that behave so — the testing
    lane's Daze blocks action as Stun does, its Hobble reduces movement as Slow does — and engine
    test/under-unit.test.ts asserts every list is exactly the engine's (blocksAction · tickDamageType fire ·
-   tickDamageType poison · reducesMovement), so a new or renamed status shows up there. (Not read through stStyle:
-   its test-lane aliases resolve to "status.status.stun" and fall back to Poison's look — a standing bug, reported.) */
+   tickDamageType poison · reducesMovement), so a new or renamed status shows up there. */
 export const UNDER_UNIT = { body: { stun: ['status.stun', 'test.status.daze'], burn: ['status.burn'], poison: ['status.poison'] },
   movementOnly: ['status.slow', 'test.status.hobble'] }
 /** the body effect a status is drawn as (stun · burn · poison), or null when it is an icon */
@@ -106,11 +125,6 @@ export const rgb = hex => { const n = parseInt(hex.slice(1), 16); return `${n >>
 export const SIDE_TINT = { hero: '#e0b95e', enemy: '#a964d8' }
 export const SIDE_GLOW = { hero: '224,185,94', enemy: '169,100,216' }
 
-/** the status a VFX style name stands for, so the canvas palette can be
-    patched from this file — hexvfx.js ships its own colours, and Law 6 says
-    they must be these */
-export const VFX_STATUS = { poison: 'status.poison', burn: 'status.burn', bleed: 'status.bleed',
-  regen: 'status.regeneration', shadow: 'status.stun', frost: 'status.slow', affliction: 'status.weak', weak: 'status.protection' }
 
 // Visual terrain tint only; status effects retain their existing recipes.
 export const TERRAIN_3D_TINT = { 'terrain.forest': '#72825a', 'terrain.woodland': '#72825a', 'terrain.rocky': '#aaa095', 'terrain.rocky-hills': '#aaa095' }

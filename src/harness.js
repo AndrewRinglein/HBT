@@ -51,6 +51,7 @@ export function startHarness(mountEl, lib) {
     return {
       field, fieldMapId: mapId, initialEvents: b.battle.events, units: lib.static.units, statuses: lib.static.statuses, absorbingStatuses: lib.static.absorbingStatuses,
       actions: lib.static.actions, badges: lib.static.badges, layers: lib.static.layers,
+      actionKinds: lib.static.actionKinds, statusRows: lib.static.statusRows, layerStatus: lib.static.layerStatus, terrainApplies: lib.static.terrainApplies,
       artmap: lib.art.artmap, assets: lib.art.assets, glyphs: lib.glyphs,
       atlasScene: b.battle.atlasScene, atlasCatalog: lib.atlas,
       meta: { label: b.label, seed: b.battle.seed, engineCommit: b.battle.engineCommit, outcome: b.battle.outcome, turns: b.battle.turns },

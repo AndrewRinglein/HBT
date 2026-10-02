@@ -781,16 +781,21 @@ if (SINGLES) {
     if (arrivals.length) { const [e, i] = arrivals[0]; v.seek(i); v.step()
       const E = V.layers.UEL.get(e.actor)
       check(E && E.bb.animations && E.bb.animations.length > 0, `${label}: the arrival of ${e.name} played no drop-in (the token did not exist when the cue played?)`) }
-    /* the kit: a unit with unit.equipped shows its granted attacks in the bar, and its resting movement is the sheet's plus the kit's */
+    /* the kit: a unit with unit.equipped shows its granted attacks in the bar, and its resting movement is the ENGINE's —
+       viewer.reads-engine (review V6): the oracle was the viewer's own formula (sheet + kit), so it could never catch the
+       formula. The engine's movement at an activation's start is in its own log: when activation.begin names neither a
+       reduced budget (movePoints) nor a lending source (movementMods), the unit moves on its full fielded movement, and
+       that activation's first step states it — movePointsLeft + cost − bonusPaid (moveUnit). The numeral the unit rested
+       at just before is compared with that. */
     const eq = byType(EV, 'unit.equipped').find(([e]) => (e.grants || []).length)
     if (eq) { const [e] = eq
       v.seek(bb + 1); v.inspect(e.actor); v.render()
       check(V.dom.actionbar.innerHTML.includes(`data-act="${e.grants[0]}"`), `${label}: the action bar lacks the granted attack ${e.grants[0]} for unit ${e.actor}`)
-      const u = v.state.U[e.actor], sheet = LIB.static.units[u.typeId]
-      /* the kit's AND the growth's movement deltas (unit.equipped, unit.grown — engine 5603c40) */
-      const kitMv = [...byType(EV, 'unit.equipped'), ...byType(EV, 'unit.grown')].filter(([x]) => x.actor === e.actor).reduce((n, [x]) => n + ((x.mods || {}).movement || 0), 0)
-      const E = V.layers.UEL.get(e.actor)
-      if (sheet && sheet.movement != null && E.mv.style.display !== 'none') check(+E.mv.textContent === Math.max(0, sheet.movement + kitMv), `${label}: unit ${e.actor} rests at movement ${E.mv.textContent}, the sheet says ${sheet.movement} and the kit and growth ${kitMv}`)
+      const at = EV.findIndex((x, i) => i > bb && x.type === 'activation.begin' && x.actor === e.actor && x.movePoints == null && !x.movementMods)
+      const end = at < 0 ? -1 : EV.findIndex((x, i) => i > at && (x.type === 'activation.end' || x.type === 'surge.hit') && x.actor === e.actor)
+      const step = at < 0 ? -1 : EV.findIndex((x, i) => i > at && (end < 0 || i < end) && x.type === 'moved' && x.actor === e.actor)
+      if (step > 0) { v.seek(at); v.render(); const E = V.layers.UEL.get(e.actor), m = EV[step], engineMv = m.movePointsLeft + m.cost - (m.bonusPaid || 0)
+        if (E.mv.style.display !== 'none') check(+E.mv.textContent === engineMv, `${label}: unit ${e.actor} rests at movement ${E.mv.textContent}; the engine's first step of its next activation (${step}) says it started on ${engineMv}`) }
       /* the kit is not a buff: no chevron from item.* sources alone */
       const St = foldTo(EV, bb + 1, CTX)
       if ((St.U[e.actor].mods || []).every(m => m.fielded)) check(!/polygon\(50% 12%|polygon\(50% 88%/.test(E.badges.innerHTML), `${label}: unit ${e.actor} wears a chevron for its kit alone`) }
@@ -919,6 +924,14 @@ if (SINGLES) {
       const wrap = V.dom.stage.parentNode
       check(wrap.querySelector('.banner'), `${label}: no banner after ${t}`)
       win._flush(2000); check(!wrap.querySelector('.banner'), `${label}: the ${t} banner did not leave`) }
+    /* the movement numeral during an activation is the engine's own budget: activation.begin's movePoints, each step's
+       movePointsLeft, and — viewer.reads-engine (review V7) — after a Surge, surge.hit's movePoints */
+    for (const [e, i] of [...byType(EV, 'moved').slice(0, 3), ...byType(EV, 'surge.hit').slice(0, 2), ...byType(EV, 'activation.begin').filter(([x]) => x.movePoints != null).slice(0, 2)]) {
+      const want = e.type === 'moved' ? e.movePointsLeft : e.movePoints
+      v.seek(i + 1); v.render(); const E = V.layers.UEL.get(e.actor), u = v.state.U[e.actor]
+      if (!E || !u || u.life !== 'standing' || v.state.activeId !== e.actor) continue
+      check(u.activeMv === want, `${label}: after ${e.type} at ${i} unit ${e.actor} folds movement ${u.activeMv}, the engine says ${want}`)
+      if (want > 0) check(E.mv.style.display !== 'none' && +E.mv.textContent === want, `${label}: after ${e.type} at ${i} unit ${e.actor}'s movement numeral reads ${E.mv.style.display === 'none' ? 'nothing' : E.mv.textContent}, the engine says ${want}`) }
     /* Surge: the float, and the hero acts again with no activation.begin between */
     for (const [e, i] of byType(EV, 'surge.hit').slice(0, 2)) {
       const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'float' && c.kind === 'surge'), `${label}: surge.hit at ${i} cued no SURGE!`)
@@ -930,14 +943,15 @@ if (SINGLES) {
     { const enc = EV.find(e => e.type === 'encounter.begin'); v.seek(bb + 1); v.render()
       if (enc) check(V.dom.encchip.textContent === enc.name, `${label}: the encounter chip reads "${V.dom.encchip.textContent}", the encounter is "${enc.name}"`)
       else check(V.dom.encchip.style.display === 'none', `${label}: an encounter chip with no encounter`) }
-    /* auras: tiles round every standing holder, from the engine's distance table; none once the holder falls */
+    /* auras: tiles round every standing holder, from the engine's distance table — its own hex included, as the engine's
+       auraMods counts the holder inside its own aura (review V8); none once the holder falls */
     { const distance = V.data.distance, n = V.data.POS.length
       const holders = Object.values(Send.U).filter(u => ((LIB.static.units[u.typeId] || {}).auras || []).length)
       for (const h of holders.slice(0, 2)) {
         const enter = EV.findIndex(e => e.type === 'unit.enter' && e.actor === h.id)
         const at = Math.max(bb + 1, enter + 1); v.seek(at); v.render()
         const u = v.state.U[h.id]; const auras = LIB.static.units[u.typeId].auras
-        const want = new Set(); for (const a of auras) for (let x = 0; x < n; x++) { const d = distance(u.hex, x); if (d > 0 && d <= a.radius) want.add(x + '|' + a.side) }
+        const want = new Set(); for (const a of auras) for (let x = 0; x < n; x++) { const d = distance(u.hex, x); if (d <= a.radius) want.add(x + '|' + a.side) }
         const tiles = V.layers.AURA ? V.layers.AURA.size : 0
         /* `===`, not `>=`: a runaway radius or a tile left over from a previous
            frame passed the old assertion while its message claimed equality

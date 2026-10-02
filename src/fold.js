@@ -640,10 +640,15 @@ export function fold(S, e, ctx, now = 0) {
       if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'obliterated', text: 'OBLITERATED', big: true })
       break
     /* ── Surge, Power (§5) ──────────────────────────────────────────────── */
-    case 'surge.checked': if (U[e.actor]) U[e.actor].surgeChance = e.chance; break
+    /* viewer.reads-engine (review V7): the amount the engine kept is its `after` (fix.surge-spend: a Surge
+       takes away 100, it does not empty the amount); the movement a Surge restores is surge.hit's movePoints */
+    case 'surge.checked': if (U[e.actor]) U[e.actor].surgeChance = e.after ?? e.chance; break
     case 'surge.hit':
-      /* the hero acts AGAIN inside the same activation */
-      if (U[e.actor]) { U[e.actor].surgeChance = 0; U[e.actor].moveUsed = false; U[e.actor].primaryUsed = false; cue('float', { hex: U[e.actor].hex, kind: 'surge', text: 'SURGE!', big: true }) }
+      /* the hero acts AGAIN inside the same activation: the engine reopened both slots (reopenSurgeCycle —
+         it emits no action.spent for the reopening, so this event is the statement) and restored its movement */
+      if (U[e.actor]) { if (e.after != null) U[e.actor].surgeChance = e.after
+        U[e.actor].activeMv = e.movePoints ?? U[e.actor].activeMv
+        U[e.actor].moveUsed = false; U[e.actor].primaryUsed = false; cue('float', { hex: U[e.actor].hex, kind: 'surge', text: 'SURGE!', big: true }) }
       break
     case 'power.gained':
       /* the enemy side's Power pool rose — a side-wide number, not a unit's */
@@ -681,7 +686,7 @@ export function fold(S, e, ctx, now = 0) {
         /* the power's own effect from the sheet, never a guess: selfGuard reads as
            protection, heal as heal, anything else gets no status flourish */
         const def = e.causeId && U[e.actor] ? ((UD[U[e.actor].typeId] || {}).abilities || []).find(p => p.id === e.causeId) : null
-        const fx = def && def.effect === 'selfGuard' ? 'protection' : def && def.effect === 'heal' ? 'heal' : null
+        const fx = def && def.effect === 'selfGuard' ? 'status.protection' : def && def.effect === 'heal' ? 'heal' : null
         if (fx) cue('fx.status', { id: e.actor, style: fx })
       }
       break

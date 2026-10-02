@@ -81,9 +81,9 @@ src/fold.js        PURE: state × event → state + cues. No DOM, no clock. The 
 src/viewer.js      mountBattleViewer(el, data, opts) → {push, seek, play, pause, step, dispose, …}; the pump, DUR
 src/board.js       the DOM half of the board: ground, painted layers, corpses, auras, tokens, floats, banners, hexVFX bridge, camera
 src/panel.js       the focus panel          src/actionbar.js   the 12-slot bar + stamina strip
-src/actions.js     what an action does/triggers (pure)      src/projection.js   tick projection + danger (pure, exempt)
+src/actions.js     what an action does/triggers (pure)      src/projection.js   the danger marker (pure; the bar's number)
 src/icons.js       the RPG Awesome sprite + the four ability glyphs      src/theme.js   ONE hue per status
-src/log.js         the log sentences (pure)  src/hexvfx.js  the canvas VFX library (its palette is patched from theme.js at mount)
+src/log.js         the log sentences (pure)  src/hexvfx.js  the canvas VFX library (a status effect is ringed in its theme.js hue per call)
 src/subject.js     the ONE rule for whose panel/bar/camera it is
 src/harness.js     the REPLAY page only: dropdown, transport, rail, log, file-drop, page fit
 src/main.js        the standalone entry      src/page.html  its shell      src/styles.css  the stylesheet

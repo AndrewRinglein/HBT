@@ -10,7 +10,7 @@
 // FIRST entry in tools/exemptions.json — EXEMPTION sheet. It reads content only, through the
 // door, and computes nothing: every field is copied from a definition.
 import { readCatalog } from './engine.js'
-const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY } = await readCatalog()
+const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY, ACTION_KIND } = await readCatalog()
 
 const plain = (o: unknown) => (o ? JSON.parse(JSON.stringify(o)) : undefined)
 const many = (ids: readonly string[] | undefined, table: Record<string, unknown>) =>
@@ -101,4 +101,37 @@ export function statusNames(): Record<string, string> {
 /** Read-only status metadata for drawing current shield counters. */
 export function absorbingStatusIds(): string[] {
   return Object.entries(STATUSES).filter(([, row]) => row.reducesIncomingDamage).map(([id]) => id)
+}
+
+/**
+ * viewer.reads-engine (review V1): what each action IS, in the engine's own words — its predicates
+ * (core/action.ts), never the viewer's: 'charge' (an attack and a move at once — "Move 3, do damage";
+ * one of the unit's attacks, never a destination walk), 'attack', 'move', 'burst' or 'power'. The
+ * action bar sorts a unit's kit by this table and keeps no copy of the predicates.
+ */
+export function actionKinds(): Record<string, 'charge' | 'attack' | 'move' | 'burst' | 'power'> {
+  const out: Record<string, 'charge' | 'attack' | 'move' | 'burst' | 'power'> = {}
+  const K = ACTION_KIND
+  for (const [id, a] of Object.entries(ACTIONS) as [string, any][])
+    out[id] = K.isCharge(a) ? 'charge' : K.isAttack(a) ? 'attack' : K.isMove(a) ? 'move' : K.isBurst(a) ? 'burst' : 'power'
+  for (const [id, k] of Object.entries(out)) if (k === 'power' && !K.isPower((ACTIONS as any)[id])) throw new Error(`actionKinds: ${id} is none of the engine's kinds`)
+  return out
+}
+
+/**
+ * viewer.reads-engine (review V1, V5): each status's behaviour, copied from its engine row — the
+ * flags that are `true`, the damage type it ticks (tickDamageType: Burn fire, Poison poison, Bleed
+ * true) and, for a prone status, the action it grants while held (prone.standAction — "Stand"
+ * appears only while prone). The board's tick effect reads the tick, the bar reads the stand action,
+ * and a testing-lane status wears the look of the real status that behaves exactly as it does.
+ */
+export type StatusRow = { flags: string[]; tickDamageType?: string; standAction?: string }
+export function statusRows(): Record<string, StatusRow> {
+  const out: Record<string, StatusRow> = {}
+  for (const [id, s] of Object.entries(STATUSES) as [string, any][]) {
+    const flags = Object.keys(s).filter((k) => s[k] === true).sort()
+    if (s.prone) flags.push('prone')
+    out[id] = { flags: flags.sort(), ...(s.tickDamageType ? { tickDamageType: s.tickDamageType } : {}), ...(s.prone?.standAction ? { standAction: s.prone.standAction } : {}) }
+  }
+  return out
 }

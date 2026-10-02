@@ -2,24 +2,17 @@
 import { dmgOf, kitOf } from './actions.js'
 
 /* ── DANGER MARKER (UI-BUILD-NOTES §1) ─────────────────────────────────────
-   The signature damage is AUTHORED per bestiary entry — a stable, learnable
-   rating. Content has no field for it yet, so zombies are hardcoded (ruled
-   2026-09-01); it moves to the bestiary row the moment one exists. Heroes
-   carry one too: the first attack — the weapon in hand — live damageOnHit
-   once shown, else stat + bonus.
-   EXEMPTION danger (tools/exemptions.json): the stat + bonus fallback. */
-export const DANGER_AUTHORED = {
-  'unit.zombie': { n: 3, kind: 'melee' }, 'unit.fast-zombie': { n: 3, kind: 'melee' },
-  'test-zombie': { n: 3, kind: 'melee' }, 'test-zombie-burning': { n: 3, kind: 'melee' },
-}
+   The signature damage — a stable, learnable rating. Content has no field
+   naming a unit's signature attack, so the marker reads the unit's FIRST
+   attack in the engine's own order (the kit's first grant — the weapon in hand
+   — then the row's), and its number is the action bar's: dmgOf, the engine's
+   damageOnHit once seen, else the sheet's stat plus its live modifiers plus the
+   bonus (EXEMPTION dmg-fallback). viewer.reads-engine (review V2): the hand
+   table of four typeIds is gone — it said 3 where the engine deals the test
+   zombies 4 — and so is this file's own fallback, which read pre-one-action-
+   type fields that no longer exist. The glyph is the attack profile's kind. */
 export function dangerOf(u, D) {
-  const A = DANGER_AUTHORED[u.typeId]; if (A) return A
-  const UD = D.UD || {}
-  const d = UD[u.typeId] || {}; const a = kitOf(u, D).attacks[0]; if (!a) return null      // the weapon in hand: the kit's first grant
-  // viewer.live-stat-mods (2026-10-01): the action bar's own number — the seen damage moved by the stat's live
-  // modifiers since, or the sheet's stat plus them — so the marker and the bar never disagree
+  const a = kitOf(u, D).attacks[0]; if (!a) return null
   const shown = dmgOf(a, u, D)
-  const statv = a.stat != null ? d[a.stat] : undefined
-  const n = shown ? shown.n : statv != null ? Math.max(0, statv + (a.bonus || 0)) : null
-  return n == null ? null : { n, kind: a.kind === 'ranged' ? 'ranged' : 'melee' }
+  return shown ? { n: shown.n, kind: (a.attack || {}).kind === 'ranged' ? 'ranged' : 'melee' } : null
 }

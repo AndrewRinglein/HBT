@@ -22,7 +22,7 @@ function boot({ host = true } = {}) {
   const B = w.__battleView, L = B.lib; B.harness.dispose()
   const mapId = battle1.events.find(e => e.type === 'map.loaded').mapId
   const data = { field: L.fields[mapId], fieldMapId: mapId, initialEvents: battle1.events, units: L.static.units, statuses: L.static.statuses, absorbingStatuses: L.static.absorbingStatuses,
-    actions: L.static.actions, badges: L.static.badges, layers: L.static.layers, artmap: L.art.artmap, assets: L.art.assets, glyphs: L.glyphs, meta: { seed: battle1.seed } }
+    actions: L.static.actions, badges: L.static.badges, layers: L.static.layers, actionKinds: L.static.actionKinds, statusRows: L.static.statusRows, artmap: L.art.artmap, assets: L.art.assets, glyphs: L.glyphs, meta: { seed: battle1.seed } }
   const el = w.document.createElement('div'); w.document.body.appendChild(el)
   const seen = [], v = B.mount(el, data, { autoplay: false, ...(host ? { onPlay: e => { seen.push(e); return true } } : {}) })
   v.push(battle1.events)

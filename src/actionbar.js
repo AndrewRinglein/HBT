@@ -80,7 +80,7 @@ export function drawBar(V) {
     const usesLeft = u.charges && u.charges[a.id] != null ? u.charges[a.id] : a.uses
     const acc = a.isAttack ? (base != null ? base : '—') : '—'
     const tag = effectTag(a, u, D, SN)
-    const trg = triggersFor(u, a, D, SN, stStyle)
+    const trg = triggersFor(u, a, D, SN, id => stStyle(id, D))
     const tkey = u.id + '|' + a.id, topen = view.TRG_OPEN.has(tkey)
     const hidden = Math.max(0, trg.length - TRG_SHOWN)
     const vis = topen ? trg : trg.slice(0, TRG_SHOWN)
@@ -95,9 +95,9 @@ export function drawBar(V) {
       <div class="acMain">
         <div class="acL1">${icoHTML(a)}
           <span class="acName">${escape(a.name || a.id)}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>
-          ${tag ? `<span class="acTag${a.burst ? ' burstTag' : ''}" title="${escape(tag)}">${escape(tag)}</span>` : ''}</div>
+          ${tag ? `<span class="acTag${a.kind === 'burst' ? ' burstTag' : ''}" title="${escape(tag)}">${escape(tag)}</span>` : ''}</div>
         <div class="acL2">
-          ${a.burst ? cell('TYPE', 'BURST') : cell('ACC', acc)}${cell('RNG', rng)}
+          ${a.kind === 'burst' ? cell('TYPE', 'BURST') : cell('ACC', acc)}${cell('RNG', rng)}
           ${cell('DMG', dmg, (a.attack || a).damageType && dmg !== '—' ? actHue(a).col : null)}${cell('STA', stam != null ? stam : '—')}
         </div>
       </div>

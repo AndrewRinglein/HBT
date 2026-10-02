@@ -14,6 +14,9 @@
      actions  — the ONE action registry a grant of any kind resolves against (static.json)
      badges   — badgeId -> {name, statModifiers, grants, flags}
      layers   — ground layer number -> name (static.json.layers)
+     actionKinds — actionId -> 'charge'|'attack'|'move'|'burst'|'power', the engine's classification (static.json)
+     statusRows  — statusId -> {flags, tickDamageType?, standAction?}, each status's behaviour (static.json)
+     layerStatus · terrainApplies — what each painted layer and ground applies (static.json)
      artmap   — typeId -> {token, card, aspect, height}; assets — file -> data URI / URL
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
      meta     — {label, seed, engineCommit, outcome, turns} for the HUD; outcome/turns
@@ -141,7 +144,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     dom, now,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ABSORBING_STATUSES: data.absorbingStatuses || [],
       LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
-      ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
+      ACT: data.actions || {}, BADGES: data.badges || {},
+      /* viewer.reads-engine: what each action IS (the engine's predicates) and what each status DOES (its row's flags) */
+      KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
       /* viewer.true-3d-camera: the board's map from the scene's metres to board px — the battle's 3D scene's own, else the
          flat board's (camera3d.js); the one camera, the stage and the 3D layer all stand on it */
       boardAffine: atlas ? (atlas.kind === 'painted' ? paintedToCSS(atlas) : worldToCSS(atlas, F)) : flatAffine(F),

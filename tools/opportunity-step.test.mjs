@@ -18,7 +18,7 @@ function boot(name='stopped',options={}){
  if(process.env.VIEWER_PAGE){const html=readFileSync(process.env.VIEWER_PAGE,'utf8'),m=html.match(/<script>([\s\S]*)<\/script>\s*$/);w.document.body.innerHTML=html.slice(0,m.index).replace(/<style>[\s\S]*?<\/style>/,'').replace(/<!--[\s\S]*?-->/g,'');run(m[1]);w.__battleView.harness.dispose();mount=w.__battleView.mount}
  else {if(!source)source=require('../../engine/node_modules/esbuild').buildSync({stdin:{contents:"import {mountBattleViewer} from './src/viewer.js';window.__mount=mountBattleViewer",resolveDir:process.cwd()},nodePaths:['node_modules'],bundle:true,write:false,platform:'browser',format:'iife'}).outputFiles[0].text;run(source);mount=w.__mount}
  const host=w.document.createElement('div');w.document.body.appendChild(host)
- const v=mount(host,{initialEvents:c.events,fieldMapId:c.seed.mapId,field:read('generated/fields.json')[c.seed.mapId],units:statics.units,statuses:statics.statuses,absorbingStatuses:statics.absorbingStatuses,actions:statics.actions,badges:statics.badges,layers:statics.layers,artmap:art.artmap,assets:{},meta:{seed:c.seed}},{autoplay:false})
+ const v=mount(host,{initialEvents:c.events,fieldMapId:c.seed.mapId,field:read('generated/fields.json')[c.seed.mapId],units:statics.units,statuses:statics.statuses,absorbingStatuses:statics.absorbingStatuses,actions:statics.actions,badges:statics.badges,layers:statics.layers,actionKinds:statics.actionKinds,statusRows:statics.statusRows,artmap:art.artmap,assets:{},meta:{seed:c.seed}},{autoplay:false})
  v.push(c.events);const index=c.events.findIndex(e=>e.type==='aoo.provoked');assert.ok(index>=0);v.seek(index)
  return{v,w,c,index,e:c.events[index]}
 }

@@ -103,7 +103,10 @@ const { outputFiles, warnings, metafile } = esbuild.buildSync({
          badge table (§12). The `attacks`/`abilities` views are a PROVEN SUBSET of `actions` and were
          shipped unread for a day: 155 KB of the page for nothing (REVIEW §D9, 2026-09-04). */
       actions: statics.actions, badges: statics.badges,
-      layers: statics.layers }),
+      layers: statics.layers,
+      /* viewer.reads-engine (review V1, V5): the engine's classification of every action and each status's behaviour; and
+         what each painted layer and ground applies (fix.ground-one-funnel's tables, which the page never carried) */
+      actionKinds: statics.actionKinds, statusRows: statics.statusRows, layerStatus: statics.layerStatus, terrainApplies: statics.terrainApplies }),
     __BUNDLED_FIELDS__: JSON.stringify(Object.fromEntries(Object.entries(fields).filter(([k]) => !k.startsWith('_')))),
     __BUNDLED_ART__: JSON.stringify({ artmap: manifest.artmap, assets }),
     __BUNDLED_BATTLES__: JSON.stringify(battles),
