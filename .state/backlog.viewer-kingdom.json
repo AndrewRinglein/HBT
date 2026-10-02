@@ -32,7 +32,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'these characters are faded, like they're ghost-like, because there are other competing things. The characters are the stars. They should not be faded, especially not one that's selected.' Find what dims the bodies (the board's DOM overlays over the WebGL canvas, the marks, opacity on standees, the lighting) and draw every body at full strength, the selected one never under anything.",
-  "expect": "Side-by-side screenshots: every body drawn at full strength over the ground marks; the selected body brightest; nothing semi-transparent over a body."
+  "expect": "Side-by-side screenshots: every body drawn at full strength over the ground marks; the selected body brightest; nothing semi-transparent over a body.",
+  "status": "done",
+  "sha": "dfa2245"
  },
  {
   "id": "viewer.weapons-in-hand",
