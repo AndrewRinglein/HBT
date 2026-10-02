@@ -20272,6 +20272,17 @@ Filed 2026-09-28 with no probeIds: gate 1 probes 'fix.codex-numbers', which is n
   PASS  brought its own tests — test/battle-cursor.test.ts, test/crit.test.ts, test/items-per-unit.test.ts, test/codex-numbers.test.ts, test/fixtures/battle-cursor-codex-numbers.json
   WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/crit.test.ts (-3), test/items-per-unit.test.ts (-2) — will land FLAGGED for review
   PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 586dd2b2->704acf4a, map.ridge 5f203320->4ce10af5, map.flanks 62501d02->7d26f30d, map.highlands 87ae61ed->2469419a, map.field e3208d6c->12d16ef9, map.thicket 9b35fa93->4641a852, map.proving.open ca8f206b->a0b7fce3, map.proving.ridge 113785a4->44f4ae17, map.proving.ford 98fb20b4->2471073b, map.proving.copse 7176496f->4899bf01, map.proving.ruin 7882854b->e7dfa711, map.courtyard 86c2de4f->79a2b1dd, map.floodplain 5a3493f2->2e0fbbcb, test.map.embers 6795745a->533d2327, test.map.showcase 5e0449c9->a5d3f809, test.map.duel-8 c389e368->400e8d3a, test.map.dungeon-16x8 54d4adc0->0ec15564, test.map.horde-24 fffde918->2978af63, test.map.journey-20x10 6028880d->67a9ca83, test.map.authored-40x40 fc98a0c5->93d34098, test.map.high-prop-single 9fba144d->881249cb, test.map.high-prop-multi a2f14f8c->5b67f74b, test.map.well-shove 0e40ee04->0c8e5836
+## viewer.weapons-in-hand — LANDED `3d26873` **NEEDS REVIEW**
+2026-10-02 00:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · HANDOFF.md:6
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-cast.test.ts, test/weapons-in-hand.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/opening-cast.test.ts, viewer/test/weapons-in-hand.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-cast.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -20280,6 +20291,10 @@ Filed 2026-09-28 with no probeIds: gate 1 probes 'fix.codex-numbers', which is n
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without unit.bloodhound,hero.base.rogue-raven — they genuinely test it
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
 <details><summary>Existing tests were edited — review this diff</summary>
 
@@ -20382,5 +20397,71 @@ index e73d5ff..1aa38b3 100644
 +    expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
      expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
    })
+d9a0161
+
+diff --git a/test/opening-cast.test.ts b/test/opening-cast.test.ts
+index 82c7a3c..f87dba0 100644
+--- a/test/opening-cast.test.ts
++++ b/test/opening-cast.test.ts
+@@ -65,5 +65,8 @@ describe("battles 2 and 3's cast in the new screen", () => {
+       expect(look, t).toBeDefined()
+       for (const m of RULED) expect(look!.motions[m], `${t} ${m}`).toBeDefined()
+-      if (byClass.has(cls[0]!)) expect(look!.id, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.id)
++      /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was the look's id. Andrew: "The characters are not holding weapons";
++         each hero now holds its own kit, so a look's id names its held set too (oathblade+greatsword) — the outfit, which
++         is what this asks, is the body file */
++      if (byClass.has(cls[0]!)) expect(look!.model.path, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.model.path)
+     }
+   })
+diff --git a/test/weapons-in-hand.test.ts b/test/weapons-in-hand.test.ts
+new file mode 100644
+index 0000000..f33760c
+--- /dev/null
++++ b/test/weapons-in-hand.test.ts
+@@ -0,0 +1,44 @@
++// viewer.weapons-in-hand (engine backlog; DECISIONS.md 2026-10-01 'the camera redesigned on the caravan preview; ... what is
++// queued after it'). Andrew: "The characters are not holding weapons. The whole idea of having 3D weapons is so they're holding
++// weapons." Expect: "In the sandbox every hero whose kit names a weapon with a 3D model holds it in hand through idle, walk and
++// attack; a weapon without a model is listed, not faked." The engine's side: every held item (a weapon or a shield) of every
++// base hero's kit is, in the character pack, either a model in that hero's hand or listed as having none — so a new weapon in
++// a kit shows up here, not as an empty hand. The viewer's half (../viewer/tools/weapons-in-hand.test.mjs) stands each body
++// up from the approved files and follows the weapon through the motions. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { UNITS, ITEMS } from '../../engine/src/content/index.js'
++
++type Prop = { path: string, sha256: string, hand: string, item: string, model: string }
++type Look = { id: string, props: Prop[], unheld?: string[] }
++const pack = (): Record<string, { typeId: string, looks: Look[] }> => JSON.parse(execFileSync(process.execPath, ['../viewer/tools/character-models.mjs', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24 }))
++const HELD = new Set(['weapon', 'shield'])
++
++describe('the weapons of the kit, in hand', () => {
++  const models = pack()
++  const heroes = Object.keys(UNITS).filter((t) => t.startsWith('hero.base.'))
++  it('every held item of every base hero is a model in its hand or listed as having none', () => {
++    expect(heroes.length).toBeGreaterThan(20)
++    for (const typeId of heroes) {
++      const held = ((UNITS as Record<string, any>)[typeId].defaultItems ?? []).filter((i: string) => HELD.has((ITEMS as Record<string, any>)[i]?.itemClass))
++      for (const look of models[typeId]!.looks) {
++        const shown = new Set(look.props.map((p) => p.item)), listed = new Set(look.unheld ?? [])
++        for (const item of held) expect(shown.has(item) !== listed.has(item), `${typeId}: ${item} is held or listed, not both`).toBe(true)
++        for (const item of [...shown, ...listed]) expect(held, `${typeId}: ${item} is in its kit`).toContain(item)
++      }
++    }
++  })
++  it('a sword-and-shield paladin holds both, a greatsword is held, the priest\'s book is listed', () => {
++    const look = (t: string) => models[t]!.looks[0]!
++    expect(look('hero.base.paladin-shiney').props.map((p) => [p.item, p.hand])).toEqual([['item.longsword', 'R'], ['item.kite-shield', 'L']])
++    expect(look('hero.base.paladin-dark').props.map((p) => [p.item, p.hand])).toEqual([['item.greatsword', 'R']])
++    expect(look('hero.base.rogue-skull').props.map((p) => [p.item, p.hand])).toEqual([['item.daggers', 'R'], ['item.daggers', 'L']])
++    expect(look('hero.base.priest-pauper').props).toEqual([])
++    expect(look('hero.base.priest-pauper').unheld).toEqual(['item.holy-texts'])
++    expect(look('hero.base.warrior-brawler').props).toEqual([])
++  })
++  it('the viewer page: each weapon rides its hand through idle, walk and attack', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/weapons-in-hand.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/# pass 2/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++})
 ```
 </details>

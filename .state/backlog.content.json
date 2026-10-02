@@ -640,5 +640,17 @@
   ],
   "status": "done-needs-review",
   "sha": "3b94bc3"
+ },
+ {
+  "id": "content.afflictions-at-zero",
+  "kind": "content",
+  "shape": "data",
+  "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the afflictions at 0 Health' and 'bleed-out is a stat on every player unit'). The content half: every 2026-09-29 affliction drawback and deploy cost stays ('let's leave in'). Author the badge Fragile ('-1 maximum health ... it will just accumulate'): -1 maximum Health, stacking with no limit, permanent. Rotting Flesh: +5 bleed-out ('another stat, which is +5 to the bleed out timer'). Record on the Vampirism, Lycanthropy and Possession rows what happens at 0 Health (transform into unit.vampire / unit.werewolf on a Luck roll; raise unit.ghost with the hero's image) and on Rotting Flesh (Deathbed Fighting as normal, gain Fragile); the before/after card art each hero has, for the pop-up. What the engine cannot yet do is a named gap on the row (rule.afflictions-at-zero), never dropped.",
+  "expect": "The pack carries badge.fragile (-1 maximum Health, stackable) and Rotting Flesh's +5 bleed-out; the four affliction rows keep every 2026-09-29 stat and deploy cost; content-check passes.",
+  "probeIds": [
+   "badge.rotting-flesh",
+   "badge.fragile"
+  ],
+  "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4) - content, then rule.afflictions-at-zero, then viewer.affliction-pop-up."
  }
 ]
