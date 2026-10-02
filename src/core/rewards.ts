@@ -11,7 +11,7 @@
 // nothing, or one item that a hero of the row's classes takes — onto that hero, not into the stash.
 //
 // Level-up: thresholds from the ruled curve (src/content/levels.ts); a level
-// is the codex row's grants, and the first chooses the specialty.
+// is the engine's level row's grants (the hero's own table — levelTableOf), and the first chooses the specialty.
 
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, setRewardOffer, applyTakeReward, applyEquip, applyLevel, applySpecialty, setCursor } from './mutate.js'
@@ -25,6 +25,7 @@ import { itemOf } from '../content/items.js'
 import { rewardDrawOf } from './charter.js'
 import { CUP_IDS } from '../content/cups.js'
 import { xpForLevel } from '../content/levels.js'
+import { UNITS, levelTableOf, classOf } from '../engine.js'
 
 /**
  * The draw for an Engagement — pure, so the same battle always offers the same
@@ -131,13 +132,19 @@ export function listLevelUps(campaign: CampaignState): HeroId[] {
   return Object.keys(campaign.roster).filter((id) => canLevelUp(campaign, id)).sort()
 }
 
-/** The class whose table a hero levels on — the first of its classes (a multi-class hero's table is unruled; SWITCHES would own it). */
-export const levelClassOf = (campaign: CampaignState, heroId: HeroId): string => {
+/**
+ * The table a hero levels on and the class its specialty is of — the ENGINE's (levelTableOf, classOf over the hero's
+ * unit row): a civilian levels on its type table (civilian.farmer) and takes a class.civilian specialty. kingdom.reads-
+ * engine (review finding K1): this read the first of the hero's classes, so the level-up screen showed the class
+ * table's grants and options while the battle folded the type table's, and a pick made from the class options made
+ * the engine refuse to field the hero.
+ */
+export const levelTableOfHero = (campaign: CampaignState, heroId: HeroId): { table: string; classId: string } => {
   const h = campaign.roster[heroId]
   if (!h) throw new Error(`no hero '${heroId}'`)
-  const cls = h.classes[0]
-  if (!cls) throw new Error(`${heroId} has no class — no level table to read`)
-  return cls
+  const def = UNITS[h.unitType]
+  if (!def) throw new Error(`${heroId} fields as '${h.unitType}', which is no engine unit — no level table to read`)
+  return { table: levelTableOf(def), classId: classOf(def) }
 }
 
 /** What the next level does (screens.after-battle, G12): the row's grants, the specialty offer at the codex's level, the level-5 pick. Pure. */
@@ -156,12 +163,12 @@ export type LevelUpView = {
 export function viewLevelUp(campaign: CampaignState, heroId: HeroId): LevelUpView {
   const h = campaign.roster[heroId]
   if (!h) throw new Error(`no hero '${heroId}'`)
-  const cls = levelClassOf(campaign, heroId)
-  const row = levelRowOf(cls, h.level + 1)
+  const { table, classId } = levelTableOfHero(campaign, heroId)
+  const row = levelRowOf(table, h.level + 1)
   const needsSpecialty = row.specialty && !h.specialty
   return {
     heroId, from: h.level, to: h.level + 1, row,
-    needsSpecialty, specialtyOffers: needsSpecialty ? specialtiesOf(cls) : [],
+    needsSpecialty, specialtyOffers: needsSpecialty ? specialtiesOf(classId) : [],
     pickOptions: row.choice ?? null,
     specialty: h.specialty ? specialtyOf(h.specialty) : null,
   }
@@ -179,7 +186,7 @@ export function whyNotLevelUp(campaign: CampaignState, heroId: HeroId, choice: L
   if (v.needsSpecialty) {
     // the offer is made once; a level taken without a name DECLINES it unless the switch says it must be answered
     if (!choice.specialtyId && SWITCHES.levelUpSpecialtyRequired) return `reaching level ${v.to} chooses a specialty — name one of ${v.specialtyOffers.map((s) => s.id).join(', ')}`
-    if (choice.specialtyId && !v.specialtyOffers.some((s) => s.id === choice.specialtyId)) return `'${choice.specialtyId}' is not a ${levelClassOf(campaign, heroId)} specialty`
+    if (choice.specialtyId && !v.specialtyOffers.some((s) => s.id === choice.specialtyId)) return `'${choice.specialtyId}' is not a ${levelTableOfHero(campaign, heroId).classId} specialty`
   } else if (choice.specialtyId) return `the specialty is chosen once, at the first level-up — ${campaign.roster[heroId]!.name} already ${campaign.roster[heroId]!.specialty ? 'holds ' + campaign.roster[heroId]!.specialty : 'passed it'}`
   if (v.pickOptions) {
     if (choice.pick === undefined) return `level ${v.to} picks one of ${v.pickOptions.length} — name its index`

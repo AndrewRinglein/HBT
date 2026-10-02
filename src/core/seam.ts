@@ -17,11 +17,11 @@
 // No campaign code. `makeBattleState(campaign, engagement, seed) → BattleOptions`
 // is M1's; it will produce an EngagementSpec and call battleOptionsOf.
 
-import { createBattle, runBattle, LEVELS, BADGES, RULE_BADGES, rosterUids, isUnitUid } from '../engine.js'
-import type { BattleOptions, Event, Outcome, Side, HeroProgress } from '../engine.js'
+import { createBattle, runBattle, LEVELS, BADGES, RULE_BADGES, rosterUids, isUnitUid, UNITS, levelTableOf, fieldedPreview } from '../engine.js'
+import type { BattleOptions, Event, Outcome, Side, HeroProgress, UnitDef } from '../engine.js'
 import { atlasFieldingOf } from '../content/atlas.js'
 import { itemOf } from '../content/items.js'
-import { fieldedModsOfRows, type FieldedMods } from './sets.js'
+import { fieldedModsOfRows, hasMods, type FieldedMods } from './sets.js'
 import { fieldedItemsOf, instanceSlotsOf } from './loadout.js'
 
 const combatBadges = (badges: readonly string[] = []) => badges.filter(id => Object.hasOwn(BADGES, id))
@@ -57,10 +57,10 @@ export type EngagementSpec = {
   readonly seed: number
   /**
    * sets.resolve (G8, 2026-09-03): what each hero's sets resolved to — unit-stat
-   * mods and per-weapon damage, plain numbers, parallel to `heroes`. Resolved when
+   * mods and per-weapon damage, as the engine's unit mods, parallel to `heroes`. Resolved when
    * the hero is built for battle and WRITTEN here, never recomputed in battle
    * (2-ACTIONS-SETTLED.md 2026-09-02). Absent for a fielding named without a roster.
-   * The engine's seam.unit-mods is unlanded, so battleOptionsOf cannot pass these yet.
+   * kingdom.reads-engine (review finding K3): handed to the engine as BattleOptions.heroMods — fought, not only shown.
    */
   readonly heroMods?: readonly FieldedMods[]
   /**
@@ -125,6 +125,12 @@ export type UnitTally = {
    * going down. Bleeding out is credited to nobody: the clock did that.
    */
   readonly kills: number
+  /**
+   * kingdom.reads-engine (review finding K7): the typeId of each opposing unit this unit's damage reduced to zero, in
+   * the order they fell — the Reckoning prices a kill by its victim's tier. Present when the fold wrote it (kills > 0);
+   * a row the panel set names no victims.
+   */
+  readonly killed?: readonly string[]
   /**
    * kingdom.encounter-result-fold: went to zero and stood again at the Deathbed (deathbed.stood) — never downed, but
    * Wounded in the battle. Present only when true; a hero-side row's. SWITCHES.md foldDeathbedStood.
@@ -199,19 +205,43 @@ export function makeBattleState(
  * level table, so the option's stat names have one owner (the pack). Null at level 1
  * with nothing chosen.
  */
-export function progressOf(h: { classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }): HeroProgress | null {
+export function progressOf(h: { unitType: string; level?: number; specialty?: string | null; levelPick?: number | null }): HeroProgress | null {
   const level = h.level ?? 1
   if (level <= 1 && !h.specialty) return null
   const out: { level: number; specialtyId?: string; levelFivePick?: Readonly<Record<string, number>> } = { level }
   if (h.specialty) out.specialtyId = h.specialty
   if (h.levelPick !== null && h.levelPick !== undefined) {
-    const cls = h.classes?.[0]
-    const choice = cls ? LEVELS[cls]?.rows.find((r) => r.choice)?.choice : undefined
+    // kingdom.reads-engine (review finding K1): the hero's OWN table — the engine's levelTableOf over its unit row (a
+    // civilian's type table, civilian.farmer) — never the first of its classes
+    const def = UNITS[h.unitType]
+    const table = def ? levelTableOf(def) : undefined
+    const choice = table ? LEVELS[table]?.rows.find((r) => r.choice)?.choice : undefined
     const opt = choice?.[h.levelPick]
-    if (!opt) throw new Error(`progress: pick ${h.levelPick} names no option on ${cls ?? 'no class'}'s choice row in the engine's level table`)
+    if (!opt) throw new Error(`progress: pick ${h.levelPick} names no option on ${table ?? `'${h.unitType}' (no engine unit)`}'s choice row in the engine's level table`)
     out.levelFivePick = opt
   }
   return out
+}
+
+/** A roster hero as the preview needs it — what makeBattleState reads of one. */
+type FieldedHero = { unitType: string; badges?: readonly string[]; wound?: number; equipped: readonly string[]; used?: readonly number[]; level?: number; specialty?: string | null; levelPick?: number | null }
+
+/**
+ * The hero AS THE BATTLE WOULD FIELD IT — the engine's fieldedPreview over exactly what makeBattleState hands the
+ * engine for this hero (its items in hand and stowed, the uses spent, its progress, its badges, its set bonuses as
+ * unit mods) — and the same hero with no gear and no set bonus, for the card's ±. kingdom.reads-engine (review
+ * finding K3): the Equip card added the set bonuses itself, with its own stat map, while the battle fought without
+ * them; now the card and the battle are one function's numbers.
+ */
+export function fieldedPreviewOf(h: FieldedHero): { now: UnitDef; bare: UnitDef } {
+  const { fielded, stowed } = fieldedItemsOf(h.equipped)
+  const progress = progressOf(h) ?? undefined
+  const badges = fieldedBadges(h)
+  const heroMods = fieldedModsOfRows(h.equipped.map(itemOf))
+  const used = h.used?.some((n) => n > 0) ? instanceSlotsOf(h.equipped).map((k) => h.used?.[k] ?? 0) : undefined
+  const now = fieldedPreview(h.unitType, { items: fielded, stowed, ...(used ? { used } : {}), ...(progress ? { progress } : {}), badges, ...(hasMods(heroMods) ? { heroMods } : {}) })
+  const bare = fieldedPreview(h.unitType, { items: [], ...(progress ? { progress } : {}), badges })
+  return { now, bare }
 }
 
 /** The joint §4.1 names: a spec becomes the engine's own options, nothing more. */
@@ -236,7 +266,8 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
     // v2.item-uses: the uses already spent ride along; the engine carries a spent instance spent
     ...(spec.heroItemsUsed ? { heroItemsUsed: spec.heroItemsUsed.map((l) => [...l]) } : {}),
     ...(spec.heroBadges?.some(l=>combatBadges(l).length) ? { heroBadges: spec.heroBadges.map(combatBadges) } : {}),
-    // heroMods wait on the engine's seam.unit-mods — resolved and recorded on the spec, not fought
+    // sets.resolve: the set bonuses, fought (seam.unit-mods; kingdom.reads-engine, review finding K3) — only when a hero has any
+    ...(spec.heroMods?.some(hasMods) ? { heroMods: spec.heroMods.map((m) => (hasMods(m) ? m : undefined)) } : {}),
     ...(spec.heroProgress ? { heroProgress: spec.heroProgress.map((p) => p ?? undefined) } : {}),
   }
 }
@@ -249,7 +280,7 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
  */
 export function makeBattleResult(spec: EngagementSpec, events: readonly Event[]): EngagementResult {
   type Row = {
-    side: Side; index: number; unitId: number; uid: number; role?: TallyRole; typeId: string; name: string; stood?: true
+    side: Side; index: number; unitId: number; uid: number; role?: TallyRole; typeId: string; name: string; stood?: true; killed?: string[]
     downed: boolean; dead: boolean; lifeState: 'standing' | 'downed' | 'dead'
     damageTaken: number; damageDealt: number; kills: number
   }
@@ -353,7 +384,7 @@ export function makeBattleResult(spec: EngagementSpec, events: readonly Event[])
         if (e['reason'] === 'hp0') {
           const killer = lastToZero.get(row.unitId)
           const by = killer === null || killer === undefined ? null : byUnit.get(killer)
-          if (by && by.side !== row.side) by.kills++
+          if (by && by.side !== row.side) { by.kills++; (by.killed ??= []).push(row.typeId) }
         }
         break
       }

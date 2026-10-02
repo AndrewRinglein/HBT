@@ -1,20 +1,17 @@
 import type {Hero} from '../core/campaign.js'
-import {HERO_KITS,HERO_ITEM_SLOTS} from './generated/kits.js'
+import {HERO_ITEM_SLOTS} from './generated/kits.js'
+import {heroOfRow} from './heroes.js'
 import {atlasFieldings} from './atlas.js'
 import {UNITS,ENCOUNTERS,type UnitDef} from '../engine.js'
 
 export const SANDBOX_MAPS=atlasFieldings().map(r=>({id:r.id,name:r.name}))
-/** Authored standalone presets; campaign drafting keeps its own explicit pool. */
-export function sandboxHeroesOf(units:Readonly<Record<string,UnitDef>>=UNITS,kits:Readonly<Record<string,readonly string[]>>=HERO_KITS,slots:Readonly<Record<string,number>>=HERO_ITEM_SLOTS):Hero[]{
- return Object.keys(units).filter(id=>id.startsWith('hero.base.')).sort().map(id=>{
-  const unit=units[id]!,kit=kits[id],itemSlots=slots[id]
-  if(!kit)throw Error(`sandbox hero '${id}' has no authored kit`)
-  if(itemSlots===undefined||!Number.isInteger(itemSlots)||itemSlots<0)throw Error(`sandbox hero '${id}' has no valid authored itemSlots`)
-  const classes=unit.tags?.filter(t=>t.startsWith('class.'))??[]
-  if(classes.length!==1)throw Error(`sandbox hero '${id}' requires one authored class tag`)
-  if(!unit.name?.trim())throw Error(`sandbox hero '${id}' has no authored name`)
-  return {id,name:unit.name,classes:[...classes],unitType:id,equipped:[...kit],itemSlots,level:1,xp:0,wound:0,lifeState:'alive',badges:[],corruption:0}
- })
+/**
+ * Authored standalone presets; campaign drafting keeps its own explicit pool. kingdom.reads-engine (review finding K9):
+ * built by the one builder the campaign pool uses (heroes.ts heroOfRow) — engine row, its defaultItems kit, the codex's
+ * item slots — so the sandbox and the campaign cannot field one hero two ways.
+ */
+export function sandboxHeroesOf(units:Readonly<Record<string,UnitDef>>=UNITS,slots:Readonly<Record<string,number>>=HERO_ITEM_SLOTS):Hero[]{
+ return Object.keys(units).filter(id=>id.startsWith('hero.base.')).sort().map(id=>heroOfRow(id,units,slots))
 }
 export const SANDBOX_HEROES=sandboxHeroesOf()
 // Standard published enemy bodies; this roster is content, not a rule.

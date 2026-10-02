@@ -11,6 +11,7 @@
 
 import type { CampaignState, HeroId } from './campaign.js'
 import { itemOf, type ItemRow } from '../content/items.js'
+import type { UnitMods } from '../engine.js'
 
 /** One triggered set on one hero: the item that pays, what it counted, and what it paid. */
 export type SetLine = {
@@ -97,9 +98,19 @@ export function heroModsOf(campaign: CampaignState, heroId: HeroId): HeroMods {
   return heroModsOfRows(h.equipped.map(itemOf))
 }
 
-/** The fielding's share: the set numbers alone, plain data, parallel to the deployed list. Items' own modifiers travel as the items (seam.loadout). */
-export type FieldedMods = { readonly stats: Readonly<Record<string, number>>; readonly weapons: Readonly<Record<string, number>> }
+/**
+ * The fielding's share: the set numbers alone, as the engine's unit mods (BattleOptions.heroMods, seam.unit-mods) —
+ * each stat and each weapon bonus naming the item that pays it as its source. Items' own modifiers travel as the
+ * items (seam.loadout). kingdom.reads-engine (review finding K3): resolved here and FOUGHT — the battle applies them,
+ * and the Equip card reads the engine's preview of them (fieldedPreview), never a sum of its own.
+ */
+export type FieldedMods = UnitMods
+type ModStat = NonNullable<UnitMods['stats']>[number]['stat']
 export function fieldedModsOfRows(worn: readonly ItemRow[]): FieldedMods {
-  const m = heroModsOfRows(worn)
-  return { stats: m.sets, weapons: m.weapons }
+  const lines = resolveSetsOf(worn)
+  const stats = lines.flatMap((l) => Object.keys(l.stats).sort().filter((k) => l.stats[k] !== 0).map((k) => ({ stat: k as ModStat, add: l.stats[k]!, source: l.itemId })))
+  const attacks = lines.filter((l) => l.attackDamage !== 0).map((l) => ({ itemId: l.itemId, damage: l.attackDamage, source: l.itemId }))
+  return { ...(stats.length ? { stats } : {}), ...(attacks.length ? { attacks } : {}) }
 }
+/** Does a fielding's share change anything? */
+export const hasMods = (m: FieldedMods | undefined): boolean => !!m && !!((m.stats?.length ?? 0) + (m.attacks?.length ?? 0))

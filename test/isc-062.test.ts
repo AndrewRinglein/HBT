@@ -16,8 +16,9 @@ const CHAINS = 'item.chains-of-the-wrathful', CHAIN_ARMOR = 'item.chains-of-the-
 /** A row that exists nowhere in the codex — the reserved test kind, so the at-count shape is proven before content authors one. */
 const row = (id: string, tags: string[], setBonus: ItemRow['setBonus'], itemClass: ItemRow['itemClass'] = 'trinket'): ItemRow => ({
   id, name: id, itemClass, tier: 1, hands: itemClass === 'weapon' ? 1 : 0, slots: 1, classRestriction: null, tags, sets: [], setBonus,
-  uses: null, waystationBand: null, price: {}, equipCost: {}, statModifiers: {}, attackModifiers: {}, grants: [], base: null, enchant: null, source: 'codex',
+  uses: null, waystationBand: null, price: {}, equipCost: {}, statModifiers: {}, grants: [], base: null, enchant: null, source: 'codex',
 })
+/* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K2): ItemRow lost attackModifiers — an enchant's attack numbers are the engine's, on its copied attack rows; the claim is unchanged. */
 
 describe('ISC-062 — sets resolve over what is equipped', () => {
   it('per-other: the Chains of the Wrathful pay +1 Precision per OTHER chain item worn; the stash counts for nothing', () => {

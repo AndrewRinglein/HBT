@@ -16,9 +16,10 @@ import { loadoutOf, canEquip, whyNotEquip, canUnequip, equipCostOf } from '../co
 import { heroModsOf, type SetLine } from '../core/sets.js'
 import { itemOf, isShield, type ItemRow } from '../content/items.js'
 import { fieldedItemsOf } from '../core/loadout.js'
-import { progressOf } from '../core/seam.js'
-import { fieldedDef, type UnitDef } from '../engine.js'
+import { fieldedPreviewOf } from '../core/seam.js'
+import type { UnitDef } from '../engine.js'
 import { portraitIdOf, portraitOf } from './art.js'
+import { statLabelOf } from '../content/stat-labels.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
 
@@ -37,14 +38,14 @@ const sign = (n: number) => `${n > 0 ? '+' : ''}${n}`
 
 /** "chain set bonus from Chains of the Wrathful: +2 precision (2 other chain items)". */
 export function setLineOf(l: SetLine): string {
-  const paid = [...Object.entries(l.stats).map(([k, n]) => `${sign(n)} ${k}`), ...(l.attackDamage ? [`${sign(l.attackDamage)} damage on this weapon`] : [])].join(', ')
+  const paid = [...Object.entries(l.stats).map(([k, n]) => `${sign(n)} ${statLabelOf(k).toLowerCase()}`), ...(l.attackDamage ? [`${sign(l.attackDamage)} damage on this weapon`] : [])].join(', ')
   return `${l.tag} set bonus from ${itemOf(l.itemId).name}: ${paid} (${l.count} ${l.shape === 'per-other' ? `other ${l.tag} item${l.count === 1 ? '' : 's'}` : `${l.tag} items worn`})`
 }
 
 /** The red/green deltas one hero's gear makes — items and sets together. */
 export function deltasOf(c: CampaignState, heroId: string): string {
   const m = heroModsOf(c, heroId)
-  const stat = (k: string, n: number) => `<span class="delta ${n > 0 ? 'won' : 'lost'}">${sign(n)} ${esc(k)}</span>`
+  const stat = (k: string, n: number) => `<span class="delta ${n > 0 ? 'won' : 'lost'}">${sign(n)} ${esc(statLabelOf(k).toLowerCase())}</span>`
   const parts = [...Object.entries(m.total).map(([k, n]) => stat(k, n)), ...Object.entries(m.weapons).map(([id, n]) => stat(`damage · ${itemOf(id).name}`, n))]
   return parts.join(' ') || '<span class="meta">no change from gear</span>'
 }
@@ -53,9 +54,11 @@ export function deltasOf(c: CampaignState, heroId: string): string {
  * The stat block, the battle viewer's (viewer/src/panel.js): two columns, label left,
  * the value right in monospace with a small ± in front when gear or a set moved it,
  * % on Accuracy, Dodge and Crit. The numbers are the ENGINE's own fielded unit —
- * fieldedDef(typeId, what is handed over, progress) — so the card shows what the
- * battle would field; the set bonuses (resolved here, not yet fought) are added on
- * top and counted in the ±. A row the engine has no item for is said, not hidden.
+ * fieldedPreview over what the battle is handed (items, progress, badges, the set
+ * bonuses as unit mods; seam.ts fieldedPreviewOf) — so the card shows what the battle
+ * fields, and the ± is gear and sets against the same hero bare. A row the engine has
+ * no item for is said, not hidden. (kingdom.reads-engine, review K3 and K11: the card
+ * kept its own stat map and added the sets itself, which the battle never fought.)
  */
 export const STAT_ROWS: readonly [label: string, key: keyof UnitDef & string][] = [
   ['Move', 'movement'], ['Armor', 'armor'], ['Resist', 'resist'], ['Dodge', 'dodge'], ['Max HP', 'maxHp'],
@@ -64,22 +67,16 @@ export const STAT_ROWS: readonly [label: string, key: keyof UnitDef & string][] 
   ['Thorns', 'thorns'],
 ]
 const PCT = new Set(['accuracy', 'dodge', 'crit'])
-/** The codex's stat names the set payloads use, as the engine's def names them. */
-const ENGINE_STAT: Readonly<Record<string, string>> = { health: 'maxHp', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen' }
 
 export function statBlock(c: CampaignState, heroId: string): string {
   const h = c.roster[heroId]!
-  const progress = progressOf(h) ?? undefined
-  const { fielded, stowed } = fieldedItemsOf(h.equipped)
+  const { stowed } = fieldedItemsOf(h.equipped)
   let now: UnitDef, bare: UnitDef
-  try { now = fieldedDef(h.unitType, fielded, progress); bare = fieldedDef(h.unitType, [], progress) }
+  try { ({ now, bare } = fieldedPreviewOf(h)) }
   catch (e) { return `<div class="stats gap"><b>the engine cannot field this gear</b> — ${esc((e as Error).message)}</div>` }
-  const sets = heroModsOf(c, heroId).sets
-  const setOn: Record<string, number> = {}
-  for (const [k, n] of Object.entries(sets)) setOn[ENGINE_STAT[k] ?? k] = (setOn[ENGINE_STAT[k] ?? k] ?? 0) + n
   const rows = STAT_ROWS.map(([label, key]) => {
     const base = (bare[key] as number | undefined) ?? 0
-    const value = ((now[key] as number | undefined) ?? 0) + (setOn[key] ?? 0)
+    const value = (now[key] as number | undefined) ?? 0
     const d = value - base
     return `<div class="stRow"><span class="stN">${esc(label)}</span><span class="stV${d > 0 ? ' up' : d < 0 ? ' down' : ''}">${d ? `<em>${sign(d)}</em>` : ''}${value}${PCT.has(key) ? '%' : ''}</span></div>`
   })

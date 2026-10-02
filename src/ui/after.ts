@@ -34,6 +34,8 @@ import type { EngagementResult } from '../core/seam.js'
 import type { Reckoning } from '../core/reckoning.js'
 import type { KingdomEvent } from '../core/mutate.js'
 import { listRewardOffers, listLevelUps, viewLevelUp, canLevelUp } from '../core/rewards.js'
+import { hashOf } from '../core/rng.js'
+import { statLabelOf } from '../content/stat-labels.js'
 import { xpForLevel } from '../content/levels.js'
 import { woundNameOf } from '../content/wounds.js'
 import { itemOf } from '../content/items.js'
@@ -45,8 +47,6 @@ const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const sign = (n: number) => `${n > 0 ? '+' : ''}${n}`
 const q = (root: ParentNode, sel: string) => root.querySelector<HTMLElement>(sel)
 const qa = (root: ParentNode, sel: string) => [...root.querySelectorAll<HTMLElement>(sel)]
-/** A small stable hash — a quote is a view choice keyed by the battle, never a Campaign roll (Law 4 is for rules). */
-const hashOf = (s: string): number => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0 } return h >>> 0 }
 const muteButton = () => `<button class="mute" data-act="mute">${isMuted() ? 'sound off' : 'sound on'}</button>`
 
 export type LastBattle = { engagementId: string; result: EngagementResult; reckoning: Reckoning }
@@ -71,7 +71,8 @@ const STINGER_PITCH: Record<Outcome, number> = { decisive: 1.0, standard: 0.95, 
 
 /** getQuote (combatQuotes.js 407–417): 70% personality with the outcome bucket, else the class pool, else the fallback. HoBaT heroes carry no personality yet, so the class pool is the path taken. */
 export function quoteOf(bank: QuoteBank, hero: { classes: string[]; personality?: string }, outcome: string, key: string): string {
-  const r = hashOf(key)
+  // a quote is a view choice keyed by the battle, never a Campaign roll (Law 4 is for rules): the one hash, no cup
+  const r = hashOf([key])
   const pool = hero.personality ? bank.personality[hero.personality]?.[outcome] : undefined
   if (pool?.length && (r % 100) < 70) return pool[(r >>> 8) % pool.length]!
   const cls = bank.class[hero.classes[0] ?? '']
@@ -206,7 +207,7 @@ export function rewardsScreen(c: CampaignState, events: readonly KingdomEvent[],
   const cards = offers.map((o, i) => {
     const r = itemOf(o.id)
     const tier = Math.max(0, Math.min(6, r.tier))
-    const facts = [r.itemClass === 'weapon' ? `${Math.max(1, r.hands)}-hand` : null, r.classRestriction ? r.classRestriction.replace('class.', '') + ' only' : null, Object.entries(r.statModifiers).map(([k, n]) => `${sign(n)} ${k}`).join(' ') || null, r.grants.length ? `${r.grants.length} attack${r.grants.length === 1 ? '' : 's'}/power${r.grants.length === 1 ? '' : 's'}` : null, r.setBonus ? `${r.setBonus.tag} set` : null].filter(Boolean).join(' · ')
+    const facts = [r.itemClass === 'weapon' ? `${Math.max(1, r.hands)}-hand` : null, r.classRestriction ? r.classRestriction.replace('class.', '') + ' only' : null, Object.entries(r.statModifiers).map(([k, n]) => `${sign(n)} ${label(k)}`).join(' ') || null, r.grants.length ? `${r.grants.length} attack${r.grants.length === 1 ? '' : 's'}/power${r.grants.length === 1 ? '' : 's'}` : null, r.setBonus ? `${r.setBonus.tag} set` : null].filter(Boolean).join(' · ')
     return `<div class="reward-card-wrapper" data-index="${i}">
       <div class="reward-card face-down" data-index="${i}" data-id="${esc(o.id)}" data-tier="${tier}" ${back ? `style="--card-back:url(${back})"` : ''}>
         <div class="reward-card-art">no art yet</div>
@@ -332,8 +333,7 @@ export function mountRewards(root: HTMLElement, onConfirm: (itemId: string) => v
 // THE LEVEL-UP — levelup.html
 // ─────────────────────────────────────────────────────────────────────────────
 
-const STAT_LABEL: Record<string, string> = { health: 'Health', staminaMax: 'Max Stamina', staminaRegen: 'Stamina Regen', itemSlots: 'Item Slot', accuracy: 'Accuracy', crit: 'Crit', strength: 'Strength', precision: 'Precision', magic: 'Magic', spirit: 'Spirit', armor: 'Armor', resist: 'Resist', dodge: 'Dodge', reach: 'Reach', movement: 'Movement', luck: 'Luck', vision: 'Vision', toughness: 'Toughness', surge: 'Surge', thorns: 'Thorns' }
-const label = (k: string) => STAT_LABEL[k] ?? k
+const label = statLabelOf
 
 /**
  * `o.specialtyOwed` (kingdom.opening-loop-three): the sheet offers no level without a specialty — the sandbox's opening

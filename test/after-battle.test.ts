@@ -82,7 +82,8 @@ describe('after the battle', () => {
     const v = viewLevelUp(ctx.campaign, DWARF)
     expect(v.to).toBe(2)
     expect(v.row.grants).toEqual(levelRowOf('class.warrior', 2).grants)
-    expect(v.row.grants['health']).toBe(2)                            // the row's +1 plus the Warrior freebie
+    // Law 10, 2026-10-02 (kingdom.reads-engine, K15): the row is the engine's, in its stat names (Health is maxHp)
+    expect(v.row.grants['maxHp']).toBe(2)                             // the row's +1 plus the Warrior freebie
     expect(v.row.grants['itemSlots']).toBe(1)
     expect(v.needsSpecialty).toBe(true)
     expect(v.specialtyOffers.map((s) => s.id)).toEqual(specialtiesOf('class.warrior').map((s) => s.id))

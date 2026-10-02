@@ -47,6 +47,19 @@ export { RULE_BADGES } from '../../engine/src/content/index.js'
 // the numbers on the card are the numbers the battle would field. Read-only.
 export { fieldedDef } from '../../engine/src/core/setup.js'
 export type { UnitDef } from '../../engine/src/core/types.js'
+// Widened 2026-10-02 (kingdom.reads-engine; engine DECISIONS.md "the duplication review, ruled", findings K1-K18):
+// the kingdom stops keeping second copies of engine facts and reads them here. Read-only rows and pure functions:
+//   levelTableOf, classOf — the table a hero levels on (a civilian on its type table) and its class (K1)
+//   LEVELS (above), SPECIALTIES, SPECIALTY_LEVEL — the level rows, the specialties, the level a specialty is chosen at (K15)
+//   fieldedPreview, FieldOptions, UnitMods — the unit as the battle fields it, set bonuses (heroMods) included (K3, K14)
+//   ITEMS, ACTIONS, HANDS, HELD_CLASSES, handsOf, splitHandsOf, usesPerBattleOf — the compiled item rows, hands, uses (K2, K4, K8)
+//   XP_BY_TIER — XP per kill by enemy tier, the Codex's 2 / 5 / 15 (K7) · fnv1a — the one hash (K12)
+export { fieldedPreview, levelTableOf, classOf } from '../../engine/src/core/setup.js'
+export type { FieldOptions } from '../../engine/src/core/setup.js'
+export type { UnitMods, ItemDef } from '../../engine/src/core/types.js'
+export { SPECIALTIES, ITEMS, ACTIONS, XP_BY_TIER } from '../../engine/src/content/index.js'
+export { SPECIALTY_LEVEL, HANDS, HELD_CLASSES, handsOf, splitHandsOf, usesPerBattleOf } from '../../engine/src/core/items.js'
+export { fnv1a } from '../../engine/src/core/rng.js'
 // Human sandbox host: public lifecycle/commands and read-only previews only.
 // The passive viewer's separate door remains metadata-only.
 export { advanceBattle, completeActionCycle } from '../../engine/src/core/battle.js'

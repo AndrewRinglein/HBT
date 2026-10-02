@@ -1,245 +1,151 @@
 #!/usr/bin/env node
-// The kingdom's item rows, generated from the codex — G2 of GEAR-IMPLEMENTATION.md.
+// The kingdom's item fields, generated from the codex — G2 of GEAR-IMPLEMENTATION.md.
 //
 //   node tools/mk-items.mjs [--codex ../content/hbt-content.json] [--combos ../content/gen/tier3-combinations.json] [--out-dir src/content/generated]
 //
-// Reads content/hbt-content.json (items, enchants, kits) and the hand-authored tier-3
-// combinations, writes src/content/generated/items.ts. The kingdom never types an item
-// row by hand (CLAUDE.md: "Never hand-edit generated/"); when the content session lands
-// new rows — the tier-2 enchants, the Waystation's items, the set fields — this runs
-// again and the rows follow. Deterministic: the same inputs give the same file, byte for
-// byte (ISC-051 checks that).
+// kingdom.reads-engine (2026-10-02; engine DECISIONS.md "the duplication review, ruled", findings K2 K8 K11 K15):
+// an item's BATTLE facts — its class, tier, hands, slots, restriction, the stats it folds, what it grants, the uses
+// its powers carry, and every Forge-derived row (masterwork, the buyable enchants, the tier-3 combinations) — are the
+// engine's compiled rows, read through src/engine.ts by src/content/items.ts. This tool used to build its own copy
+// of every row by the same rules (its steps 1-4) and the copies disagreed (94 rows' stats, 212 rows' grants). It now
+// writes only what the engine does not carry: the CAMPAIGN fields of each codex item.
 //
-// What it makes, in order:
-//   1. every codex item, as it is;
-//   2. a MASTERWORK row for every tier-1 two-hander, one-hander, shield and armor
-//      (GEAR-DESIGN.md §3: +1 Max Stamina, tier 2; widened 2026-09-25, Andrew, engine
-//      DECISIONS.md "masterwork: one-handers and shields too") — the rule is settled, so
-//      the rows are derived, not authored;
-//   3. an ENCHANTED row for every tier-1 base × every codex enchant flagged `buyable`
-//      (the nine tier-2 enchants, once the content session lands them; none today);
-//   4. the tier-3 combinations from content/gen/tier3-combinations.json, checked
-//      against the codex: an unknown base is a refusal (Law 9); an unknown enchant is a
-//      NAMED GAP (generated/items-gaps.json) until the content session lands it.
+// What it makes:
+//   1. items.ts — per codex item: its tags and the sets they make, its set bonus (payload keys in the engine's stat
+//      names — content/stat-words.mjs, the one map — or attackDamage), the Waystation band and price, the equip
+//      cost, the codex's `uses` (read only where the engine names its uses a gap), and the stat words the engine
+//      has no stat for (itemSlots, corruption) — keyed by the codex word. Per codex enchant: the same stat words.
+//   2. items-gaps.json — the tier-3 combinations checked against the codex: an unknown base is a refusal (Law 9);
+//      an unknown enchant is a NAMED GAP until the content session lands it.
+//   3. kits.ts — each codex hero's general item slots (heroes[].ported.itemSlots) and the heroes whose kit is only
+//      pinned. A hero's KIT is its engine row's defaultItems (content/heroes.ts heroKitOf), not a copy here.
+//   4. kits-gaps.json — the pool heroes with no kit (tools/kit-gaps.mts).
 //
-// A row's shape is src/content/items.ts's ItemRow. Costs: the codex's equipCost keys
-// (faith, manaCrystals) become currency ids. `uses` is the codex's `uses` when it exists
-// (the Waystation rows will carry it), else null — a permanent item.
+// Deterministic: the same inputs give the same files, byte for byte (ISC-051 checks that).
 
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { statOf } from '../../content/stat-words.mjs'
 
 const argv = process.argv.slice(2)
 const val = (f, d) => { const i = argv.indexOf(f); return i >= 0 ? argv[i + 1] : d }
 const CODEX = val('--codex', '../content/hbt-content.json')
 const COMBOS = val('--combos', '../content/gen/tier3-combinations.json')
 const OUT_DIR = val('--out-dir', 'src/content/generated')
-const OUT = join(OUT_DIR, 'items.ts')
 const PACKAGE = fileURLToPath(new URL('../', import.meta.url))
 
 const codex = JSON.parse(readFileSync(CODEX, 'utf8'))
 const combos = JSON.parse(readFileSync(COMBOS, 'utf8'))
 const byId = new Map(codex.items.map((i) => [i.id, i]))
 const enchants = new Map(codex.enchants.map((e) => [e.id, e]))
+const fail = (msg) => { console.error(`mk-items: ${msg}`); process.exit(1) }
+/** Stable key order, so the file is byte-stable. */
+const sorted = (o) => Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[k]]))
 
-// A set is a TAG plus a `setBonus` block on the item that cares (GEAR-DESIGN.md §5,
-// resolved 2026-09-03) — so the set tags are the tags any codex setBonus names, and a
-// row's `sets` are those of its tags. Nothing here knows a tag by name.
+// A set is a TAG plus a `setBonus` block on the item that cares (GEAR-DESIGN.md §5, resolved 2026-09-03) — so the set
+// tags are the tags any codex setBonus names, and a row's `sets` are those of its tags. Nothing here knows a tag by name.
 const SET_TAGS = new Set(codex.items.map((i) => i.setBonus?.tag).filter(Boolean))
-const setBonusOf = (sb) => {
+/** A set payload in the engine's stat names (the battle receives it as heroMods); attackDamage is this weapon's own. */
+const payloadOf = (o, where) => sorted(Object.fromEntries(Object.entries(o).map(([k, v]) => {
+  if (k === 'attackDamage') return [k, v]
+  const st = statOf(k)
+  if (!st) fail(`${where}: set payload '${k}' is no engine stat (content/stat-words.mjs)`)
+  return [st, v]
+})))
+const setBonusOf = (sb, where) => {
   if (!sb) return null
   if (typeof sb.tag !== 'string') fail(`setBonus without a tag: ${JSON.stringify(sb)}`)
   const out = { tag: sb.tag }
-  if (sb.each) out.each = sorted(sb.each)
-  if (sb.at !== undefined) { if (!Number.isInteger(sb.at) || !sb.once) fail(`setBonus at-count on '${sb.tag}' needs integer at and once{}`); out.at = sb.at; out.once = sorted(sb.once) }
+  if (sb.each) out.each = payloadOf(sb.each, where)
+  if (sb.at !== undefined) { if (!Number.isInteger(sb.at) || !sb.once) fail(`setBonus at-count on '${sb.tag}' needs integer at and once{}`); out.at = sb.at; out.once = payloadOf(sb.once, where) }
   if (!out.each && out.at === undefined) fail(`setBonus on '${sb.tag}' pays nothing — each{} or at/once{}`)
   return out
 }
 
 const CURRENCY = { faith: 'currency.faith', manaCrystals: 'currency.mana', supplies: 'currency.supplies', salvage: 'currency.salvage' }
-const fail = (msg) => { console.error(`mk-items: ${msg}`); process.exit(1) }
-
-const tierOf = (t) => { const n = Number(t); if (!Number.isInteger(n)) fail(`tier '${t}' is not an integer`); return n }
 const costOf = (ec) => {
   const out = {}
   for (const [k, v] of Object.entries(ec ?? {})) { const c = CURRENCY[k]; if (!c) fail(`equipCost key '${k}' names no currency`); out[c] = v }
-  return out
+  return sorted(out)
 }
-const sum = (a, b) => { const o = { ...a }; for (const [k, v] of Object.entries(b ?? {})) o[k] = (o[k] ?? 0) + v; return o }
-/** Stable key order, so the file is byte-stable. */
-const sorted = (o) => Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[k]]))
+/** The codex stat words the engine has no stat for — campaign quantities (itemSlots, corruption), keyed by the word. */
+const campaignModsOf = (mods) => sorted(Object.fromEntries(Object.entries(mods ?? {}).filter(([k]) => !statOf(k))))
 
-/**
- * v2.thorns (engine 88064ac, content 02f93ef, 2026-09-24): Thorns is a STAT. The engine
- * pack (content/mkenginepack.mjs) reads an onTakingDamage trigger whose effect is exactly
- * "Thorns N" as statModifiers.thorns += N — for items and enchants alike — and leaves a
- * trigger with riders ("Thorns 2, and the attacker gains 2 Poison") a named gap. The
- * kingdom's rows follow the same rule, so the card says what the battle fields.
- */
-const withThorns = (mods, triggers) => {
-  const o = { ...(mods ?? {}) }
-  for (const t of triggers ?? []) {
-    const m = t.hook === 'onTakingDamage' && typeof t.effect === 'string' ? t.effect.match(/^Thorns (\d+)$/) : null
-    if (m) o.thorns = (o.thorns ?? 0) + Number(m[1])
-  }
-  return o
-}
-
-function rowOfCodex(i) {
-  return {
-    id: i.id, name: i.name, itemClass: i.itemClass, tier: tierOf(i.tier),
-    hands: i.hands ?? 0, slots: i.slots ?? 0, classRestriction: i.classRestriction ?? null,
-    tags: [...(i.tags ?? [])].sort(), sets: [...(i.tags ?? [])].filter((t) => SET_TAGS.has(t)).sort(), setBonus: setBonusOf(i.setBonus),
-    uses: i.uses ?? null, equipCost: sorted(costOf(i.equipCost)),
-    // the Waystation's catalog: which band opens the row, and what it costs there (GEAR-DESIGN.md §4)
-    waystationBand: i.waystationBand ?? null, price: sorted(costOf(i.price)),
-    statModifiers: sorted(withThorns(i.statModifiers, i.triggers)), attackModifiers: sorted(i.attackModifiers ?? {}), grants: [...(i.grants ?? [])],
-    base: null, enchant: null, source: 'codex',
-  }
-}
-
-const rows = []
-for (const i of codex.items) rows.push(rowOfCodex(i))
-
-// 2. masterwork — tier-1 two-handers, one-handers, shields and armor, +1 Max Stamina,
-//    tier 2. Andrew 2026-09-25 (engine DECISIONS.md): "It can also apply to a shield. It
-//    can also apply to a one-hander." A beast's body part (class.beast) is none of these —
-//    it took hands 0 until 2026-10-02, when every weapon took at least one hand
-//    (fix.one-hero-assembly; engine SWITCHES.md naturalWeaponMasterwork). The engine pack
-//    derives the same rows by the same rule (content/mkenginepack.mjs).
-for (const i of codex.items) {
-  const base = rowOfCodex(i)
-  if (base.tier !== 1) continue
-  const isShield = base.tags.includes('shield')
-  const handed = base.itemClass === 'weapon' && base.classRestriction !== 'class.beast' && (base.hands === 1 || base.hands === 2)
-  if (!(isShield || handed || base.itemClass === 'armor')) continue
-  rows.push({
-    ...base, id: `${base.id}.masterwork`, name: `Masterwork ${base.name}`, tier: 2,
-    statModifiers: sorted(sum(base.statModifiers, { staminaMax: 1 })),
-    base: base.id, enchant: null, source: 'masterwork',
-  })
-}
-
-// 3. enchanted — tier-1 base × buyable enchant, when the codex has buyable enchants
-const applies = (base, e) => {
-  const tags = new Set(base.tags)
-  const ranged = ['bow', 'crossbow', 'sling', 'thrown', 'staff', 'wand', 'book'].some((t) => tags.has(t))
-  for (const t of e.appliesToTags ?? []) {
-    if (t === 'armor' && base.itemClass === 'armor') return true
-    if (t === 'shield' && tags.has('shield')) return true
-    if (t === 'weapons' && base.itemClass === 'weapon' && !tags.has('shield')) return true
-    if (t === 'ranged' && base.itemClass === 'weapon' && ranged) return true
-    if (t === 'melee' && base.itemClass === 'weapon' && !ranged && !tags.has('shield')) return true
-    if (tags.has(t)) return true
-  }
-  return false
-}
-for (const i of codex.items) {
-  const base = rowOfCodex(i)
-  if (base.tier !== 1 || base.tags.includes('shield')) continue
-  for (const e of codex.enchants) {
-    if (!e.buyable || !applies(base, e)) continue
-    const word = e.name ?? e.id.replace(/^enchant\./, '')
-    rows.push({
-      ...base, id: `${base.id}.${e.id.replace(/^enchant\./, '')}`, name: `${word} ${base.name}`, tier: 2,
-      statModifiers: sorted(sum(base.statModifiers, withThorns(e.statModifiers, e.triggers))), attackModifiers: sorted(sum(base.attackModifiers, e.attackModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
-      base: base.id, enchant: e.id, source: 'enchanted',
-    })
-  }
-}
-
-// 4. the tier-3 combinations — authored by hand, checked here. An unknown BASE is a
-// typo and a refusal. An unknown ENCHANT is the content session's row not yet landed
-// (the 2026-09-02 renames and additions — destroying, rooting, gale …): the
-// combination is NOT emitted and is written to generated/items-gaps.json, named, so
-// the count of what is missing is visible and nothing is rounded to a wrong row.
-const gaps = []
-for (const c of combos) {
-  const b = byId.get(c.base)
-  const e = enchants.get(c.enchant)
-  if (!b) fail(`combination '${c.id}' names base '${c.base}', which is not in the codex`)
-  if (!e) { gaps.push({ id: c.id, needs: c.enchant, why: 'enchant not in the codex yet' }); continue }
-  const base = rowOfCodex(b)
-  rows.push({
-    ...base, id: c.id, name: c.name, tier: 3,
-    statModifiers: sorted(sum(base.statModifiers, withThorns(e.statModifiers, e.triggers))), attackModifiers: sorted(sum(base.attackModifiers, e.attackModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
-    base: base.id, enchant: e.id, source: 'combination',
-  })
-}
-
-// ids unique; sorted by id so the file is stable and registry order is never a tiebreak
+const rows = codex.items.map((i) => ({
+  id: i.id,
+  tags: [...(i.tags ?? [])].sort(), sets: [...(i.tags ?? [])].filter((t) => SET_TAGS.has(t)).sort(), setBonus: setBonusOf(i.setBonus, i.id),
+  // the Waystation's catalog: which band opens the row, and what it costs there (GEAR-DESIGN.md §4)
+  waystationBand: i.waystationBand ?? null, price: costOf(i.price), equipCost: costOf(i.equipCost),
+  uses: i.uses ?? null, campaignMods: campaignModsOf(i.statModifiers),
+})).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+const enchantRows = codex.enchants.map((e) => ({ id: e.id, campaignMods: campaignModsOf(e.statModifiers) }))
+  .filter((e) => Object.keys(e.campaignMods).length).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
 const seen = new Set()
 for (const r of rows) { if (seen.has(r.id)) fail(`duplicate item id '${r.id}'`); seen.add(r.id) }
-rows.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
 
-const counts = {}
-for (const r of rows) counts[r.source] = (counts[r.source] ?? 0) + 1
-const header = `// GENERATED by tools/mk-items.mjs from ${CODEX} and ${COMBOS}. Never hand-edit; regenerate.
-// ${rows.length} rows: ${Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(' · ')}.
+// the tier-3 combinations — authored by hand, checked here. An unknown BASE is a typo and a refusal. An unknown
+// ENCHANT is the content session's row not yet landed: written to items-gaps.json, named, so the count of what is
+// missing is visible and nothing is rounded to a wrong row.
+const gaps = []
+for (const c of combos) {
+  if (!byId.get(c.base)) fail(`combination '${c.id}' names base '${c.base}', which is not in the codex`)
+  if (!enchants.get(c.enchant)) gaps.push({ id: c.id, needs: c.enchant, why: 'enchant not in the codex yet' })
+}
+
+const header = `// GENERATED by tools/mk-items.mjs from ${CODEX}. Never hand-edit; regenerate.
+// ${rows.length} codex items' campaign fields · ${enchantRows.length} enchants with a campaign stat.
 //
-// The kingdom's items are the codex's. The shape is src/content/items.ts's ItemRow.
+// The item's battle facts are the engine's compiled rows; src/content/items.ts joins these fields to them (ItemRow).
 
-import type { ItemRow } from '../items.js'
+import type { CampaignItemRow, CampaignEnchantRow } from '../items.js'
 
-export const ITEM_ROWS: readonly ItemRow[] = [
+export const ITEM_CAMPAIGN_ROWS: readonly CampaignItemRow[] = [
+${rows.map((r) => '  ' + JSON.stringify(r) + ',').join('\n')}
+]
+
+export const ENCHANT_CAMPAIGN_ROWS: readonly CampaignEnchantRow[] = [
+${enchantRows.map((r) => '  ' + JSON.stringify(r) + ',').join('\n')}
+]
 `
-const body = rows.map((r) => '  ' + JSON.stringify(r) + ',').join('\n')
 
-// 5. the kits — what each codex hero wears at entry (G3). A plain array on the hero
-// row is the full kit (heroKits override, or a civilian's dictated tool); {pinned}
-// pins part and leaves the class draw as a SPEC the kingdom does not roll; null is
-// no kit at all. Every kit item must be a row above (Law 9).
-const kits = {}
+// the kits' campaign half — what each codex hero's slot model needs. The kit itself is the engine row's defaultItems.
 const kitSpecs = []
 for (const h of codex.heroes.heroes) {
   const k = h.kit
-  if (Array.isArray(k)) { for (const id of k) if (!seen.has(id)) fail(`hero '${h.id}' wears '${id}', which is no item row`); kits[h.id] = [...k] }
-  else if (k && Array.isArray(k.pinned)) {
-    for (const id of k.pinned) if (!seen.has(id)) fail(`hero '${h.id}' pins '${id}', which is no item row`)
-    kitSpecs.push({ id: h.id, pinned: k.pinned, why: 'the class-draw remainder is a SPEC; the roll belongs to the draft' })
-  }
+  if (k && !Array.isArray(k) && Array.isArray(k.pinned)) kitSpecs.push({ id: h.id, pinned: k.pinned })
 }
-const kitLines = Object.keys(kits).sort().map((id) => `  ${JSON.stringify(id)}: ${JSON.stringify(kits[id])},`).join('\n')
-const kitText = `// GENERATED by tools/mk-items.mjs from ${CODEX} (heroes[].kit). Never hand-edit; regenerate.
-// ${Object.keys(kits).length} heroes with a full kit; ${kitSpecs.length} with a pinned part and a draw still owed (kits-specs below).
+const kitText = `// GENERATED by tools/mk-items.mjs from ${CODEX} (heroes[]). Never hand-edit; regenerate.
+// ${codex.heroes.heroes.filter((h) => Number.isInteger(h.ported?.itemSlots)).length} heroes' item slots; ${kitSpecs.length} with a pinned part and a draw still owed (KIT_SPECS).
 //
-// What a hero wears at entry — hbt-content.json heroKits (2026-08-27b: all 24 Eve heroes
-// carry FULL kits) and the civilians' dictated tools. A hero absent here has no kit.
-
-export const HERO_KITS: Readonly<Record<string, readonly string[]>> = {
-${kitLines}
-}
+// A hero's kit is its engine row's defaultItems (src/content/heroes.ts heroKitOf — kingdom.reads-engine, review K15).
 
 /** Heroes whose kit is only partly pinned — the remainder is a class draw the kingdom does not roll. */
-export const KIT_SPECS: readonly { readonly id: string; readonly pinned: readonly string[] }[] = ${JSON.stringify(kitSpecs.map(({ id, pinned }) => ({ id, pinned })))}
+export const KIT_SPECS: readonly { readonly id: string; readonly pinned: readonly string[] }[] = ${JSON.stringify(kitSpecs)}
 
 /** General item slots per codex hero (heroes[].ported.itemSlots) — hands and the armor slot are not counted. */
 export const HERO_ITEM_SLOTS: Readonly<Record<string, number>> = {
 ${codex.heroes.heroes.filter((h) => Number.isInteger(h.ported?.itemSlots)).map((h) => `  ${JSON.stringify(h.id)}: ${h.ported.itemSlots},`).join('\n')}
 }
 `
-// Derive the pool report from THESE kits, before touching any output. The child
-// reads only the canonical pool identities; it never publishes or reads its
-// kit availability from an older generated kit file.
+// Derive the pool report from THESE specs, before touching any output. The child reads the pool and the engine's kits.
 const kitGaps = JSON.parse(execFileSync(process.execPath, [
   fileURLToPath(new URL('../../engine/node_modules/tsx/dist/cli.mjs', import.meta.url)),
   fileURLToPath(new URL('./kit-gaps.mts', import.meta.url)), '--candidate',
-], { cwd: PACKAGE, encoding: 'utf8', input: JSON.stringify({ kits, kitSpecs }) }))
+], { cwd: PACKAGE, encoding: 'utf8', input: JSON.stringify({ kitSpecs }) }))
 const artifacts = {
-  'items.ts': header + body + '\n]\n',
+  'items.ts': header,
   'items-gaps.json': JSON.stringify({ generatedBy: 'tools/mk-items.mjs', count: gaps.length, gaps }, null, 1) + '\n',
   'kits.ts': kitText,
   'kits-gaps.json': JSON.stringify(kitGaps, null, 1) + '\n',
 }
-// No validation or subprocess remains after the first write. A rejected
-// candidate leaves all four previous artifacts intact, including the live set
-// when the default output directory was requested.
+// No validation or subprocess remains after the first write. A rejected candidate leaves all four previous
+// artifacts intact, including the live set when the default output directory was requested.
 mkdirSync(OUT_DIR, { recursive: true })
 for (const [name, contents] of Object.entries(artifacts)) writeFileSync(join(OUT_DIR, name), contents)
-console.log(`${join(OUT_DIR, 'kits.ts')} — ${Object.keys(kits).length} kits, ${kitSpecs.length} pinned specs`)
+console.log(`${join(OUT_DIR, 'kits.ts')} — ${kitSpecs.length} pinned specs`)
 console.log(`${join(OUT_DIR, 'kits-gaps.json')} — ${kitGaps.pool.length} pool hero(es) without a kit`)
 if (gaps.length) console.log(`${gaps.length} combination(s) wait on enchants the codex does not have yet — ${join(OUT_DIR, 'items-gaps.json')}`)
-console.log(`${OUT} — ${rows.length} rows (${Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(', ')})`)
+console.log(`${join(OUT_DIR, 'items.ts')} — ${rows.length} items' campaign fields, ${enchantRows.length} enchants'`)

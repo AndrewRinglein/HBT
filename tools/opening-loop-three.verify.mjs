@@ -52,7 +52,12 @@ function playedOut(config,won,how,partyAlive=true){
  throw Error(`no seed from 1 to 1500 ends ${config.encounterId} ${won?'won':'lost'}${partyAlive?' with the party alive':''}`)
 }
 
-const v=bootSlice(page,{search:'?map&seed=11'}),w=v.w,root=v.root,handle=w.__sandbox
+/* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K7): the run's seed 11 → 15. XP per kill became the victim's
+   tier's (2 / 5 / 15 — engine DECISIONS.md 2026-09-28) instead of 3, and seed 11's party reaches the Bridge with the
+   Rune-Marked Ascetic at 18 XP — level 1, two short of 20 — and its 'hold' play wins none of its 1500 Bridge seeds.
+   Seed 12 wins it, but only after ~20 minutes of seeds; seed 15 wins it on Bridge seed 2. What this page test holds —
+   the loop's flow through three battles — is unchanged; the Bridge's balance under the ruled XP is reported to Andrew. */
+const v=bootSlice(page,{search:'?map&seed=15'}),w=v.w,root=v.root,handle=w.__sandbox
 const camp=()=>handle.campaign
 const byId=id=>root.querySelector('#'+id)
 const shown=id=>{const el=byId(id);return !!el&&!el.hasAttribute('hidden')}

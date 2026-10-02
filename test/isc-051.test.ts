@@ -10,7 +10,8 @@ import { join } from 'node:path'
 import { ITEMS, itemOf } from '../src/content/items.js'
 import { REWARDS } from '../src/content/rewards.js'
 import { HERO_POOL, CIVILIANS } from '../src/content/heroes.js'
-import { HERO_KITS, HERO_ITEM_SLOTS } from '../src/content/generated/kits.js'
+import { HERO_ITEM_SLOTS } from '../src/content/generated/kits.js'
+import { HERO_KITS } from '../src/content/heroes.js'
 
 const codex = JSON.parse(readFileSync('../content/hbt-content.json', 'utf8'))
 const combos = JSON.parse(readFileSync('../content/gen/tier3-combinations.json', 'utf8')) as { id: string; base: string; enchant: string }[]
@@ -58,11 +59,16 @@ describe('ISC-051 — the item rows are the codex\'s, generated', () => {
       for (const id of items) expect(() => itemOf(id), `${h.id} → ${id}`).not.toThrow()
     }
   })
-  it('publishes every authored full kit and item-slot count, including units beyond the current draft pool', () => {
+  it('publishes every authored item-slot count, including units beyond the current draft pool; every kit the engine fields is the codex kit', () => {
     // Current flat content owns these rows even while the kingdom draft pool
-    // and engine catalogue are smaller. Publishing a kit does not field a unit.
+    // and engine catalogue are smaller. Publishing a slot count does not field a unit.
+    /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K15): the kingdom no longer publishes its own copy of
+       the kits — a hero's kit is its engine row's defaultItems (the codex kit the pack compiled), read through the door.
+       What this held — the kingdom's kits are the codex's — is held for every kit the engine fields. */
     const heroes = codex.heroes.heroes as { id: string; kit: string[] | { pinned: string[] } | null; ported?: { itemSlots?: number } }[]
-    expect(HERO_KITS).toEqual(Object.fromEntries(heroes.filter((h) => Array.isArray(h.kit)).map((h) => [h.id, h.kit])))
+    const fielded = Object.keys(HERO_KITS)
+    expect(fielded.length).toBeGreaterThan(0)
+    for (const id of fielded) expect(HERO_KITS[id], id).toEqual(heroes.find((h) => h.id === id)?.kit)
     expect(HERO_ITEM_SLOTS).toEqual(Object.fromEntries(heroes.filter((h) => Number.isInteger(h.ported?.itemSlots)).map((h) => [h.id, h.ported!.itemSlots])))
   })
   it('every combination is a tier-3 row carrying its base and enchant, or a NAMED gap on an enchant the codex lacks; the reward pool is a filter over the rows', () => {

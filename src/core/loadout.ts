@@ -10,17 +10,18 @@
 // your attack option" — and the rest follow. This file never writes.
 
 import type { CampaignState, HeroId } from './campaign.js'
-import { itemOf, isShield, type ItemRow } from '../content/items.js'
-import { SWITCHES } from '../content/switches.js'
-
-export const HANDS = 2
+import { itemOf, engineItemOf, type ItemRow } from '../content/items.js'
+import { HANDS, HELD_CLASSES, handsOf, splitHandsOf, ITEMS as ENGINE_ITEMS } from '../engine.js'
 
 /**
- * What the two hands hold, counted exactly as the engine's applyItems counts them
- * (V2 R1, 2026-09-23): weapon class and shield class. A shield past the hands is
- * carried, never fielded — no backpack shield grants its Block or powers.
+ * What the two hands hold — the engine's held classes, weapon and shield (V2 R1, 2026-09-23). A shield past the
+ * hands is carried, never fielded — no backpack shield grants its Block or powers. kingdom.reads-engine (review
+ * finding K4): the hands, the held classes and the hand count are the engine's (HANDS, HELD_CLASSES, handsOf),
+ * read through the door; this file kept its own copies and counted a 0-hand weapon as 1.
  */
-export const isHandItemClass = (row: ItemRow): boolean => row.itemClass === 'weapon' || row.itemClass === 'shield'
+export const isHandItemClass = (row: ItemRow): boolean => HELD_CLASSES.includes(row.itemClass)
+/** The hands an item takes, as the engine counts them. */
+const handsTaken = (id: string): number => handsOf(engineItemOf(id))
 
 export type Loadout = {
   /** Weapons and shields in the hands, in order — the first is the right hand. */
@@ -36,7 +37,7 @@ export type Loadout = {
 /** Item slots an item costs in the general slots: a weapon its hands; armor none (its own slot); everything else one. The codex's `slots` on a Bloodrune (0) is outdated — ruled 2026-09-02, "everything here takes a slot". */
 export function slotCostOf(row: ItemRow): number {
   if (row.itemClass === 'armor') return 0
-  if (isHandItemClass(row)) return Math.max(1, row.hands)
+  if (isHandItemClass(row)) return handsTaken(row.id)
   return 1
 }
 
@@ -54,8 +55,7 @@ export function placeOf(campaign: CampaignState, heroId: HeroId, equipped: reado
     const row = itemOf(id)
     out.counts[row.itemClass] = (out.counts[row.itemClass] ?? 0) + 1
     if (row.itemClass === 'armor') { if (out.armor === null) { out.armor = id; continue } out.items.push(id); continue }
-    const isHandItem = isHandItemClass(row) || isShield(row)
-    if (isHandItem && out.handsUsed + Math.max(1, row.hands) <= HANDS) { out.hands.push(id); out.handsUsed += Math.max(1, row.hands); continue }
+    if (isHandItemClass(row) && out.handsUsed + handsTaken(id) <= HANDS) { out.hands.push(id); out.handsUsed += handsTaken(id); continue }
     out.items.push(id)
     out.itemSlots.used += slotCostOf(row)
   }
@@ -100,18 +100,8 @@ export function whyNotFit(campaign: CampaignState, heroId: HeroId, equipped: rea
  * SWITCHES.spareWeapons is retired, COMBAT-V2 §18.)
  */
 export function fieldedItemsOf(equipped: readonly string[]): { fielded: string[]; stowed: string[] } {
-  const fielded: string[] = [], stowed: string[] = []
-  let hands = 0
-  for (const id of equipped) {
-    const row = itemOf(id)
-    if (isHandItemClass(row)) {
-      const h = Math.max(1, row.hands)
-      if (hands + h > HANDS) { stowed.push(id); continue }
-      hands += h
-    }
-    fielded.push(id)
-  }
-  return { fielded, stowed }
+  const { handed, stowed } = splitHandsOf(equipped, ENGINE_ITEMS)
+  return { fielded: handed, stowed }
 }
 
 /**
@@ -121,16 +111,5 @@ export function fieldedItemsOf(equipped: readonly string[]): { fielded: string[]
  * instance, in the kingdom, is a hero's equipped slot.
  */
 export function instanceSlotsOf(equipped: readonly string[]): number[] {
-  const fielded: number[] = [], stowed: number[] = []
-  let hands = 0
-  equipped.forEach((id, k) => {
-    const row = itemOf(id)
-    if (isHandItemClass(row)) {
-      const h = Math.max(1, row.hands)
-      if (hands + h > HANDS) { stowed.push(k); return }
-      hands += h
-    }
-    fielded.push(k)
-  })
-  return [...fielded, ...stowed]
+  return splitHandsOf(equipped, ENGINE_ITEMS).order
 }

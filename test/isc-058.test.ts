@@ -49,7 +49,8 @@ describe('ISC-058 — masterwork and enchanted', () => {
       if (row.source === 'masterwork') {
         const base = costOfItem(ctx.campaign, row.base!)['currency.supplies']!
         expect(cost['currency.supplies']).toBe(Math.floor((base * 3) / 2))
-        expect(row.statModifiers['staminaMax']).toBe((itemOf(row.base!).statModifiers['staminaMax'] ?? 0) + 1)
+        // Law 10, 2026-10-02 (kingdom.reads-engine, K2 K11): the rows are the engine's, in its stat names — Max Stamina is maxStamina
+        expect(row.statModifiers['maxStamina']).toBe((itemOf(row.base!).statModifiers['maxStamina'] ?? 0) + 1)
         expect(takesMasterwork(itemOf(row.base!)), row.id).toBe(true)
       }
       if (row.source === 'enchanted') {

@@ -5,6 +5,7 @@
 // ruling 2026-09-01 · SKELETON-NOTES.md B6/B7 · KINGDOM-DESIGN.md §3A
 
 import { describe, it, expect } from 'vitest'
+import { XP_BY_TIER } from '../src/engine.js'
 import { readFileSync } from 'node:fs'
 import { campaignOf, assertPlainData } from '../src/core/campaign.js'
 import { makeCtx, setBattleOutcome } from '../src/core/mutate.js'
@@ -45,7 +46,9 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
     expect(k.won).toBe(true)
     expect(k.heroes.map((h) => h.heroId)).toEqual(e.deployed)
     const base = 15 - 4
-    expect(k.heroes[0]!.xp - (k.heroes[0]!.mvp ? 10 : 0)).toBe(base + 3 * 2)
+    // Law 10, 2026-10-02 (kingdom.reads-engine, review finding K7): XP per kill is 2 / 5 / 15 by the victim's tier (engine
+    // DECISIONS.md 2026-09-28, the engine's XP_BY_TIER), not 3; a kill the panel does not name is priced at the lowest tier
+    expect(k.heroes[0]!.xp - (k.heroes[0]!.mvp ? 10 : 0)).toBe(base + 2 * XP_BY_TIER[1]!)
     expect(k.heroes[1]!.wound).toBe(SWITCHES.woundFromDowned)
     expect(k.heroes[2]!.wound).toBe(0)
     expect(k.heroes.filter((h) => h.mvp).length).toBe(1)

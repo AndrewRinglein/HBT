@@ -139,8 +139,8 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
 // v2.sandbox-base-roster: authored content, not additions to the campaign draft pool.
 import {SANDBOX_HEROES,sandboxHeroesOf} from '../src/content/sandbox.js'
 import {UNITS} from '../src/engine.js'
-import {HERO_KITS,HERO_ITEM_SLOTS} from '../src/content/generated/kits.js'
-import {HERO_POOL} from '../src/content/heroes.js'
+import {HERO_ITEM_SLOTS} from '../src/content/generated/kits.js'
+import {HERO_POOL,HERO_KITS} from '../src/content/heroes.js'
 
 describe('ISC-069 — all24 authored standalone base heroes',()=>{
  it('fields every authored base hero with canonical name/class/kit and actual resolved actions',()=>{
@@ -154,14 +154,17 @@ describe('ISC-069 — all24 authored standalone base heroes',()=>{
    const bursts=u.actions.filter(id=>s.ctx.actions[id]!.burst!==undefined);if(bursts.length)burstKits[h.id]=bursts
   }
   expect(burstKits).toEqual({'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']})
-  expect(HERO_POOL).toHaveLength(5);expect(HERO_POOL.find(h=>h.id==='hero.base.priest-scantily')!.unitType).toBe('alpha-lucius')
+  /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K9; kingdom SWITCHES.md poolHeroesAreRows): the campaign pool's two
+     alpha-clone aliases are resolved — each pool hero fields as its own row, built by the sandbox's one builder. */
+  expect(HERO_POOL).toHaveLength(5);for(const h of HERO_POOL)expect(h).toEqual(SANDBOX_HEROES.find(s=>s.id===h.id))
  })
  it('refuses named missing kit, slot, name or class rather than omitting an authored hero',()=>{
   const id='hero.base.mage-fireaura',units={[id]:UNITS[id]!}
-  expect(()=>sandboxHeroesOf(units,{},HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*kit'))
-  expect(()=>sandboxHeroesOf(units,HERO_KITS,{})).toThrow(new RegExp(id+'.*itemSlots'))
-  expect(()=>sandboxHeroesOf({[id]:{...UNITS[id]!,tags:['hero']}},HERO_KITS,HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*class'))
-  expect(()=>sandboxHeroesOf({[id]:{...UNITS[id]!,name:''}},HERO_KITS,HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*name'))
+  /* Law 10, 2026-10-02 (kingdom.reads-engine, K15): the kit is the engine row's defaultItems, so a missing kit is a row without one */
+  expect(()=>sandboxHeroesOf({[id]:{...UNITS[id]!,defaultItems:[]}},HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*kit'))
+  expect(()=>sandboxHeroesOf(units,{})).toThrow(new RegExp(id+'.*itemSlots'))
+  expect(()=>sandboxHeroesOf({[id]:{...UNITS[id]!,tags:['hero']}},HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*class'))
+  expect(()=>sandboxHeroesOf({[id]:{...UNITS[id]!,name:''}},HERO_ITEM_SLOTS)).toThrow(new RegExp(id+'.*name'))
  })
  it('duplicates are independently cloned, keep distinct stable UIDs, and save deterministically on frozen Atlas',()=>{
   const id='hero.base.warrior-barbarian',config={...SANDBOX_DEFAULT,heroes:[id,id],enemies:['unit.zombie']},a=createSandbox(config),b=createSandbox(config)

@@ -4,14 +4,17 @@
 // data-id, and data-classes for its classes; the host binds them.
 import type { CampaignState } from '../core/campaign.js'
 import { listDraftOffers, draftsOwedOf, draftedCountOf } from '../core/opening.js'
-import { UNITS } from '../engine.js'
+import { fieldedPreviewOf } from '../core/seam.js'
+import type { HeroRow } from '../content/heroes.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
 
 export function draftScreen(c: CampaignState): string {
   const offers = listDraftOffers(c)
-  const kit = (unitType: string) => (UNITS[unitType]?.attacks ?? []).map((a) => a.replace(/^attack\./, '').replace(/\./g, ' ')).join(', ')
+  // kingdom.reads-engine (review finding K14): what the hero carries is the fielded kit's attacks — the engine's own
+  // fielded unit (fieldedPreviewOf) — not the bare row's (a Hunter who enters with a longbow showed "carries punch")
+  const kit = (h: HeroRow) => fieldedPreviewOf(h).now.attacks.map((a) => a.replace(/^attack\./, '').replace(/\./g, ' ')).join(', ')
   return `<h2>The draft — ${draftedCountOf(c) === 0 ? 'your first hero' : `hero ${draftedCountOf(c) + 1} of six`}</h2>
     <p class="meta">Three come to the fire. You see who they are — never their numbers. ${draftsOwedOf(c) > 1 ? `${draftsOwedOf(c)} to draft before the next battle.` : ''}</p>
-    <div class="card"><div class="pick">${offers.map((h) => `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}"><b>${esc(h.name)}</b><small>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · carries ${esc(kit(h.unitType) || 'nothing yet')}</small></div>`).join('')}</div></div>`
+    <div class="card"><div class="pick">${offers.map((h) => `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}"><b>${esc(h.name)}</b><small>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · carries ${esc(kit(h) || 'nothing yet')}</small></div>`).join('')}</div></div>`
 }

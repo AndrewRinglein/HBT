@@ -3,28 +3,25 @@
 // Math.random, no clock. A cup's root lives in campaign.cups (plain data); a
 // roll is a hash of that root and the structural keys the caller names.
 //
-// Same construction as the engine's src/core/rng.ts (FNV-1a over integers),
-// kept separate because the two altitudes must not share dice: a Campaign
-// roll must never shift a Battle's.
+// The hash is the engine's own (src/core/rng.ts fnv1a, read through the door — kingdom.reads-engine, review
+// finding K12: this file kept a copy of it). The dice stay separate: a Campaign roll hashes a campaign cup's root
+// and the kingdom's own keys, never a battle's stream, so a Campaign roll never shifts a Battle's. The engine
+// finishes its battle rolls with a splitmix32 finaliser; the kingdom's rolls are the bare hash, as they always
+// were, so no Campaign draw moves (kingdom SWITCHES.md kingdomHashFinaliser).
 
 import type { CampaignState } from './campaign.js'
-
-function fnv1a(values: readonly number[]): number {
-  let h = 0x811c9dc5
-  for (const v of values) {
-    for (let b = 0; b < 4; b++) {
-      h ^= (v >>> (b * 8)) & 0xff
-      h = Math.imul(h, 0x01000193) >>> 0
-    }
-  }
-  return h >>> 0
-}
+import { fnv1a } from '../engine.js'
 
 function codes(key: string | number): number[] {
   if (typeof key === 'number') return [key | 0]
   const out: number[] = [key.length]
   for (let i = 0; i < key.length; i++) out.push(key.charCodeAt(i))
   return out
+}
+
+/** A stable 32-bit hash of keys — for a view's choice (the recap's quote), never a rule: no cup, so no Campaign draw. */
+export function hashOf(keys: readonly (string | number)[]): number {
+  return fnv1a(keys.flatMap(codes))
 }
 
 /** A 32-bit roll for `keys` on `cup`. The same keys always give the same roll. */

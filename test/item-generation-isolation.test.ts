@@ -44,25 +44,30 @@ describe('item generation isolation', () => {
     expect(bytes(live)).toEqual(liveBefore)
   })
 
-  it('reports kit gaps from candidate kits, including a newly missing pool kit', () => {
+  /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K15): a hero's kit is its engine row's defaultItems, read
+     through the door — the generator no longer publishes kits, so a candidate codex cannot remove one. What the
+     candidate still decides is the pinned-kit report, and that is checked from the candidate, not the live module. */
+  it('reports pinned kit specs from the candidate codex, including a newly pinned pool kit', () => {
     const t = setup()
     const hero = t.codex.heroes.heroes.find((h: { id: string }) => h.id === 'hero.base.ranger-aggressive')
-    hero.kit = null
+    hero.kit = { pinned: ['item.longbow'] }
     const result = t.run()
     expect(result.status, result.stderr).toBe(0)
     const gaps = JSON.parse(readFileSync(join(t.out, 'kits-gaps.json'), 'utf8'))
-    expect(gaps.pool).toContain(hero.id)
+    expect(gaps.pinnedSpecs).toContain(hero.id)
   })
 
-  it('validates the last hero kit before replacing any output; failure preserves live and candidate bytes', () => {
+  /* Law 10, 2026-10-02 (kingdom.reads-engine, K2 K15): the generator no longer checks kit items (the kit is the engine
+     row's); it refuses a set payload naming no engine stat — the same claim: a refusal replaces nothing. */
+  it('validates every set payload before replacing any output; failure preserves live and candidate bytes', () => {
     const t = setup()
     mkdirSync(t.out)
     for (const name of names) writeFileSync(join(t.out, name), `candidate sentinel: ${name}\n`)
     const before = bytes(t.published), liveBefore = bytes(live), candidateBefore = bytes(t.out)
-    t.codex.heroes.heroes.at(-1).kit = ['item.no-such-kit-item']
+    t.codex.items.at(-1).setBonus = { tag: 'no-such-set', each: { 'no-such-stat': 1 } }
     const result = t.run()
     expect(result.status).not.toBe(0)
-    expect(result.stderr).toContain('item.no-such-kit-item')
+    expect(result.stderr).toContain('no-such-stat')
     expect(bytes(t.published)).toEqual(before)
     expect(bytes(t.out)).toEqual(candidateBefore)
     expect(bytes(live)).toEqual(liveBefore)

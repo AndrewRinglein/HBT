@@ -15,10 +15,13 @@
 // (ISC-014). Everything it writes goes through src/core/mutate.ts and emits.
 //
 // Numbers are SOFT and every one has an owner or a switch:
-//   XP    15 − enemy phases (speed bonus, SKELETON-NOTES.md B6) + 3 per kill
-//         (3-UNITS-SETTLED.md "3 / 6 / 9 per kill by rank" — rank 1 until enemy
-//         rows carry a rank) + 10 to the MVP, a weighted roll on a named cup
-//         (B7). Never below 0. A battle whose row (src/content/encounter-rewards.ts)
+//   XP    15 − enemy phases (speed bonus, SKELETON-NOTES.md B6) + each kill priced
+//         by its victim's tier — the engine's XP_BY_TIER, the Codex's 2 / 5 / 15
+//         (engine DECISIONS.md 2026-09-28 "XP per kill is 2 / 5 / 15 by tier";
+//         kingdom.reads-engine, review finding K7: this was 3 per kill, typed here)
+//         + 10 to the MVP, a weighted roll on a named cup (B7). Never below 0. A
+//         kill the result does not name (the panel's), or a victim with no tier,
+//         is priced at the lowest tier (kingdom SWITCHES.md killXpUnnamed). A battle whose row (src/content/encounter-rewards.ts)
 //         fixes its XP pays exactly that instead (kingdom.opening-rewards).
 //   Wound downed and alive → Wounded (1); dead → dead; untouched → 0. The
 //         Deathbed is OUT of the slice (THIN-SLICE-IMPLEMENTATION.md §8), so
@@ -32,6 +35,7 @@
 import type { CampaignState, Engagement, HeroId, TerritoryId } from './campaign.js'
 import type { EngagementResult } from './seam.js'
 import { rollOf } from './rng.js'
+import { UNITS, XP_BY_TIER } from '../engine.js'
 import { validateResult } from './result.js'
 import {
   type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
@@ -76,6 +80,15 @@ export type Reckoning = {
   grants: Grant[]
 }
 
+/** The XP a row's kills pay — each victim's tier priced by the engine's XP_BY_TIER; an unnamed kill or an untiered victim at the lowest tier. */
+export function killXpOf(u: Pick<EngagementResult['units'][number], 'kills' | 'killed'>): number {
+  const tiers = Object.keys(XP_BY_TIER).map(Number).sort((a, b) => a - b)
+  const lowest = XP_BY_TIER[tiers[0]!]
+  if (lowest === undefined) throw new Error('XP_BY_TIER prices no tier — the pack carries no xpByTier')
+  const priced = (u.killed ?? []).map((typeId) => { const tier = UNITS[typeId]?.tier; return tier === undefined ? lowest : XP_BY_TIER[tier] ?? lowest })
+  return priced.reduce((s, n) => s + n, 0) + (u.kills - priced.length) * lowest
+}
+
 export function resolveReckoning(campaign: CampaignState, engagement: Engagement, result: EngagementResult): Reckoning {
   const kind = engagementKindOf(engagement.kind)
   resolveBattleQuest(campaign, engagement)
@@ -99,7 +112,7 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
     // this battle did.
     return {
       heroId,
-      xp: dead ? 0 : fixedXp ?? speed + 3 * u.kills,
+      xp: dead ? 0 : fixedXp ?? speed + killXpOf(u),
       // kingdom.encounter-result-fold: a hero who stood again at the Deathbed is Wounded in the battle — the same plain
       // wound as one who went down (SWITCHES.md foldDeathbedStood)
       wound: dead ? 0 : Math.max(hero.wound, u.downed || u.stood ? SWITCHES.woundFromDowned : 0),

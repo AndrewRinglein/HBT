@@ -47,8 +47,10 @@ export function withUnitFate(r: EngagementResult, side: Side, index: number, fat
   const units = r.units.map((u) => {
     if (u.side !== side || u.index !== index) return u
     const lifeState = fate.lifeState ?? u.lifeState
+    // kingdom.reads-engine (K7): a panel that sets a row's kills names no victims — the fold's list goes with the old count
+    const { killed: _killed, ...rest } = u
     return {
-      ...u, ...fate, lifeState,
+      ...(fate.kills === undefined || fate.kills === u.kills ? u : rest), ...fate, lifeState,
       dead: lifeState === 'dead',
       // A hero who is dead went down first, and one who stands may still have
       // been down; an enemy has no consequence stack — zero is simply dead
@@ -100,6 +102,8 @@ export function validateResult(r: EngagementResult, expected?: { heroes: number;
       if (uids.has(u.uid)) throw new Error(`${p}: uid ${u.uid} appears twice`)
       uids.add(u.uid)
     }
+    // kingdom.reads-engine (K7): the victims a row names are its kills, one each
+    if (u.killed !== undefined && (!Array.isArray(u.killed) || u.killed.length !== u.kills || u.killed.some((k: unknown) => typeof k !== 'string' || !k))) throw new Error(`${p}.killed: names ${Array.isArray(u.killed) ? u.killed.length : 'no list of'} victims for ${u.kills} kills`)
     if (u.stood !== undefined && (u.stood !== true || u.side !== 'hero')) throw new Error(`${p}.stood: only a hero-side row stands again at the Deathbed, and only true is written`)
     if (u.role !== undefined) {
       if (!TALLY_ROLES.includes(u.role)) throw new Error(`${p}.role: '${String(u.role)}' is not one of ${TALLY_ROLES.join(' | ')}`)

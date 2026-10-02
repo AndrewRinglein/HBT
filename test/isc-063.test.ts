@@ -52,13 +52,21 @@ describe('ISC-063 — resolved at fielding, shown before the battle', () => {
     const spec = makeBattleState(ctx.campaign.roster, e)
     const at = e.deployed.indexOf(CHAPLAIN)
     expect(spec.heroMods).toHaveLength(e.deployed.length)
-    expect(spec.heroMods![at]).toEqual({ stats: { precision: 2 }, weapons: {} })
-    expect(spec.heroMods![e.deployed.indexOf(DWARF)]).toEqual({ stats: {}, weapons: {} })
+    /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K3): the fielding's share is the engine's own unit-mod
+       shape now (BattleOptions.heroMods — each stat naming the item that pays it), and the options hand it to the engine:
+       the sets are fought, not only shown. The claim — resolved numbers, plain data, the prep view's, never set logic — is unchanged. */
+    expect(spec.heroMods![at]).toEqual({ stats: [{ stat: 'precision', add: 2, source: CHAINS }] })
+    expect(spec.heroMods![e.deployed.indexOf(DWARF)]).toEqual({})
     expect(JSON.parse(JSON.stringify(spec.heroMods))).toEqual(spec.heroMods)
-    for (const n of Object.values(spec.heroMods![at]!.stats)) expect(Number.isInteger(n)).toBe(true)
+    for (const m of spec.heroMods![at]!.stats!) expect(Number.isInteger(m.add)).toBe(true)
     // the same numbers the prep view showed, in the same order the heroes are fielded
-    expect(spec.heroMods![at]!.stats).toEqual(heroModsOf(ctx.campaign, CHAPLAIN).sets)
-    // the options hand the engine what it can take today; nothing in them is a tag or a set
-    expect(JSON.stringify(battleOptionsOf(spec))).not.toMatch(/setBonus|"tag"/)
+    const summed: Record<string, number> = {}
+    for (const m of spec.heroMods![at]!.stats!) summed[m.stat] = (summed[m.stat] ?? 0) + m.add
+    expect(summed).toEqual(heroModsOf(ctx.campaign, CHAPLAIN).sets)
+    // the options hand the engine the numbers, per hero; nothing in them is a tag or a set
+    const opts = battleOptionsOf(spec)
+    expect(opts.heroMods![at]).toEqual(spec.heroMods![at])
+    expect(opts.heroMods![e.deployed.indexOf(DWARF)]).toBeUndefined()
+    expect(JSON.stringify(opts)).not.toMatch(/setBonus|"tag"/)
   })
 })

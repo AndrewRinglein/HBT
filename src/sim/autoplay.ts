@@ -134,17 +134,8 @@ export function playEngagement(ctx: Ctx, d: Decisions, causeId: string): void {
   applyBattleResult(ctx, e, result, reckoning)
   performExitBattle(ctx, causeId)
   if (c.cursor.step === 'rewards') performTakeReward(ctx, d.reward(c, listRewardOffers(c).map((r) => r.id)), causeId)
-  if (c.cursor.step === 'levelUp') {
-    for (const h of listLevelUps(c)) {
-      const v = viewLevelUp(c, h)
-      const choice: { specialtyId?: string; pick?: number } = {}
-      const sp = v.needsSpecialty ? d.specialty(c, h, v.specialtyOffers.map((s) => s.id)) : undefined
-      if (sp) choice.specialtyId = sp
-      if (v.pickOptions) choice.pick = d.levelPick(c, h, v.pickOptions.length)
-      performLevelUp(ctx, h, causeId, choice)
-    }
-    performLeaveLevelUp(ctx, causeId)
-  }
+  // kingdom.reads-engine (review finding K18): the one level-up loop — this held a second copy of playLevelUps' body
+  if (c.cursor.step === 'levelUp') playLevelUps(ctx, d, causeId)
 }
 
 /** Advance one Stage — or one step of the opening — taking what it offers first if the decisions say so. */
