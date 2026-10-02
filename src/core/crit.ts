@@ -21,7 +21,7 @@ import { rollBelow } from './rng.js'
 import { addStatMod, drainStamina, emit, loseMaxHp, unit } from './mutate.js'
 import { applyStatus } from './status.js'
 import { effective } from './stats.js'
-import { executeKnockback } from './movement.js'
+import { applyEffect } from './trigger.js'
 
 /**
  * Roll the d10 and apply one chart row to `targetId`. Returns the row's key.
@@ -55,40 +55,9 @@ export function rollCritEffect(ctx: Ctx, attackerId: number, targetId: number, o
   const row = chart[i]!
   emit(ctx, 'crit.effect', causeId, { actor: attackerId, target: targetId, key: row.key, name: row.name, roll: i })
 
-  for (const e of row.effects) {
-    switch (e.kind) {
-      case 'statMod': {
-        // "Stat losses floor where the row says 'minimum 0'; nothing else
-        // floors." A floored loss is clamped AT APPLICATION against the
-        // current effective value — Guard Broken cannot push Armor below 0,
-        // and a later Armor buff still adds on top of what remains.
-        let value = e.value
-        if (e.floor !== undefined && value < 0) {
-          const now = effective(ctx, tg, e.stat).value
-          value = -Math.min(now - e.floor, -value)
-          if (value > 0) value = 0 // already at or below the floor: nothing to take
-        }
-        if (value !== 0) {
-          addStatMod(ctx, targetId, { stat: e.stat, op: 'add', value, source: row.key, scope: 'unit' }, causeId)
-        }
-        break
-      }
-      case 'status':
-        applyStatus(ctx, targetId, e.statusId, e.value, causeId)
-        break
-      case 'push':
-        // Knocked Sprawling — forced movement was built the same day
-        // (capability.knockback), so the push LANDS: directly away from the
-        // attacker, blocked pushes fizzle loudly, exactly the Hack's rules.
-        executeKnockback(ctx, attackerId, targetId, e.hexes, causeId)
-        break
-      case 'loseStamina':
-        drainStamina(ctx, targetId, e.value, causeId)
-        break
-      case 'loseMaxHp':
-        loseMaxHp(ctx, targetId, e.value, causeId)
-        break
-    }
-  }
+  // fix.one-effect-vocabulary (2026-10-01): the row's effects through THE one interpreter — the
+  // attacker acts (Knocked Sprawling is pushed directly away from it), the row's key is a stat
+  // modifier's source, and a chart status is nobody's (no `by`).
+  for (const e of row.effects) applyEffect(ctx, e, { causeId, actor: attackerId, modSource: row.key }, targetId)
   return row.key
 }

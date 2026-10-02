@@ -4,29 +4,21 @@
 // It does not roll to hit — Design Law 23: if it rolls, it can crit; if it
 // doesn't roll, it can't. `powerRollsToHit` is a switch if that should change.
 //
-// capability.item-powers (2026-08-27): AbilityDef speaks three shapes now,
-// copied from the authored S31 item powers and never invented —
-//   damage      the single-target Arcane-Bolt shape. V2 Storm is a burst
-//               profile resolved in burst.ts, not this power path.
-//   heal        the Holy Symbol's Heal ("Heal the target for 1 + 2 x Spirit"
-//               — a ValueSpec, so Spirit uses the party-wide sum per
-//               GAME-DESIGN §5's scaling law)
-//   selfGuard   the Knight Shield's Block ("Gain Protection equal to 4 + your
-//               Armor, and lose 5 Dodge for the rest of the Battle. Every use
-//               costs another 5 Dodge")
+// What a power DOES is its effects list (ability.effects, 2026-09-03), applied in row order to its
+// resolved targets by THE one effect interpreter (trigger.ts applyEffect). fix.one-effect-vocabulary
+// (2026-10-01) retired the three legacy shapes this file once spoke (capability.item-powers,
+// 2026-08-27 — damage, heal, selfGuard): the Holy Symbol's Heal and the TEST Arcane Bolt are effects
+// lists now, and Block's Protection is its row's status.apply.
 
-import { flatDamage } from './mitigation.js'
-import type { AbilityDef, ActionEffect, Ctx, Unit } from './types.js'
-import { addStatMod, applyDamage, applyHealing, breakStatuses, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, loseMaxStamina, removeCorpse, removeStatus, reduceStatus, standUp, unit } from './mutate.js'
+import type { AbilityDef, Ctx, Unit } from './types.js'
+import { breakStatuses, corpsesNear, emit, unit } from './mutate.js'
 import { actionReady, isPower, spendAction , resolveActionSlot } from './action.js'
 export { readyOn, isReady } from './action.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
-import { executeKnockback } from './movement.js'
 import { resolveDamage } from './pipeline.js'
 import type { DamageSource } from './pipeline.js'
-import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb, untargetableBy } from './status.js'
-import { valueOf } from './trigger.js'
-import { effective } from './stats.js'
+import { incomingAbsorb, outgoingPenalty, untargetableBy } from './status.js'
+import { applyEffect } from './trigger.js'
 import { canSee } from './vision.js'
 import { forkBattle } from './fork.js'
 
@@ -37,20 +29,18 @@ export function abilityDef(ctx: Ctx, id: string): AbilityDef {
   return a
 }
 
-/** The power's effect kind. Absent = 'damage', so every pre-existing row is unchanged. */
-export function effectOf(a: AbilityDef): 'damage' | 'heal' | 'selfGuard' {
-  return a.effect ?? 'damage'
-}
-
-/** A damage power's DamageSource — loud when a non-damage power is asked for one. */
+/**
+ * A power's one stat-damage effect as THE pipeline's DamageSource — loud when it has none.
+ * fix.one-effect-vocabulary (2026-10-01): read off the effects list; the legacy stat/bonus/damageType
+ * fields it read before are retired.
+ */
 function damageSourceOf(a: AbilityDef): DamageSource {
-  if (effectOf(a) !== 'damage' || a.stat === undefined || a.bonus === undefined || a.damageType === undefined) {
-    throw new Error(`ability '${a.id}' is not a damage power — its row carries no stat/bonus/damageType`)
-  }
-  return { id: a.id, stat: a.stat, bonus: a.bonus, damageType: a.damageType }
+  const e = a.effects?.find((x) => x.kind === 'statDamage')
+  if (!e || e.kind !== 'statDamage') throw new Error(`ability '${a.id}' is not a damage power — its effects carry no statDamage`)
+  return { id: a.id, stat: e.stat, bonus: e.bonus, damageType: e.damageType }
 }
 
-/** The one legality answer for powers (Law 2). Target side depends on the effect kind. */
+/** The one legality answer for powers (Law 2). Legality is the ONE targeting vocabulary. */
 export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityId: string, slot?: import('./types.js').ActionSlot): boolean {
   const u = unit(ctx, userId)
   const tg = unit(ctx, targetId)
@@ -64,61 +54,44 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   }
   // capability.vision: an enemy you cannot see is not a target
   if (tg.side !== u.side && !ctx.cfg.switches.targetUnseen && !canSee(ctx, u, tg)) return false
-  // capability.stealth (2026-09-28): a power AIMED at a foe — one unit, an area
-  // centred on it, or the legacy single-target bolt — may not name an untargetable
-  // one. An area from the caster is aimed at nobody, and still reaches it
+  // capability.stealth (2026-09-28): a power AIMED at a foe — one unit, or an area centred on it — may
+  // not name an untargetable one. An area from the caster is aimed at nobody, and still reaches it
   // (SWITCHES.md stealthPowerAim).
-  const aimedAt = !a.effects || a.target?.select === 'unit' || (a.target?.select === 'area' && a.target.origin === 'target')
+  const aimedAt = a.target?.select === 'unit' || (a.target?.select === 'area' && a.target.origin === 'target')
   if (aimedAt && untargetableBy(ctx, u, tg)) return false
   // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses
   if (!actionReady(ctx, u, a)) return false
-  if (a.effects) {
-    // capability.corpses: a power that eats needs a body in reach — legality, not a fizzle
-    for (const e of a.effects) if (e.kind === 'corpse.eat' && corpsesNear(ctx, u.hex, e.radius).length === 0) return false
-    // ability.effects (2026-09-03): legality is the ONE targeting vocabulary.
-    const t = a.target ?? { select: 'self', side: 'any' as const }
-    if (t.select === 'self') { if (targetId !== userId) return false }
-    else if (t.select === 'unit') {
+  const effects = a.effects ?? []
+  // capability.corpses: a power that eats needs a body in reach — legality, not a fizzle
+  for (const e of effects) if (e.kind === 'corpse.eat' && corpsesNear(ctx, u.hex, e.radius).length === 0) return false
+  // ability.effects (2026-09-03): legality is the ONE targeting vocabulary.
+  const t = a.target ?? { select: 'self', side: 'any' as const }
+  if (t.select === 'self') { if (targetId !== userId) return false }
+  else if (t.select === 'unit') {
+    if (t.side === 'ally' && u.side !== tg.side) return false
+    if (t.side === 'enemy' && u.side === tg.side) return false
+    // healIncludesSelf (SWITCHES.md, 2026-08-27): "one ally" includes the caster unless the switch says no —
+    // kept when the Holy Symbol's Heal moved from the retired 'heal' shape to its effects list
+    if (targetId === userId && !ctx.cfg.switches.healIncludesSelf && effects.some((e) => e.kind === 'heal')) return false
+    if (!hasAnyTarget(ctx, u, t, a.range) || resolveTargets(ctx, u, t, targetId).length === 0) return false
+  } else {
+    // an area measures from its origin — self needs nobody aimed at; target does
+    if ((t.origin ?? 'self') === 'target') {
       if (t.side === 'ally' && u.side !== tg.side) return false
       if (t.side === 'enemy' && u.side === tg.side) return false
-      if (!hasAnyTarget(ctx, u, t, a.range) || resolveTargets(ctx, u, t, targetId).length === 0) return false
-    } else {
-      // an area measures from its origin — self needs nobody aimed at; target does
-      if ((t.origin ?? 'self') === 'target') {
-        if (t.side === 'ally' && u.side !== tg.side) return false
-        if (t.side === 'enemy' && u.side === tg.side) return false
-      }
-      const aim = (t.origin ?? 'self') === 'target' ? targetId : userId
-      if (resolveTargets(ctx, u, t, aim).length === 0) return false
     }
-    if (resolveActionSlot(ctx, u, a, slot) === null) return false
-    return (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self')) ? true : ctx.geo.distance(u.hex, tg.hex) <= a.range
-  }
-  switch (effectOf(a)) {
-    case 'damage':
-      if (u.side === tg.side) return false
-      break
-    case 'heal':
-      // "one ally within 6 hexes" — an ally, and whether that includes the
-      // caster is the healIncludesSelf switch (default yes).
-      if (u.side !== tg.side) return false
-      if (targetId === userId && !ctx.cfg.switches.healIncludesSelf) return false
-      break
-    case 'selfGuard':
-      if (targetId !== userId) return false
-      break
+    const aim = (t.origin ?? 'self') === 'target' ? targetId : userId
+    if (resolveTargets(ctx, u, t, aim).length === 0) return false
   }
   if (resolveActionSlot(ctx, u, a, slot) === null) return false
-  return ctx.geo.distance(u.hex, tg.hex) <= a.range
+  return (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self')) ? true : ctx.geo.distance(u.hex, tg.hex) <= a.range
 }
 
 /**
  * LAW 1, RESTORED (2026-08-20). This WAS a second damage pipeline — DECLARE →
  * SOURCE_STAT → MITIGATION → FLOOR, hand-rolled, skipping SOURCE_STATUS, CRIT and
- * PROTECTION. So Weakness would not have reduced a power and Protection would not
- * have absorbed one, and the two pipelines would have drifted the first time a
- * station changed. Now it is a call into THE pipeline with crit forced false
- * (Design Law 23: powers do not roll, so they cannot crit).
+ * PROTECTION. Now it is a call into THE pipeline with crit forced false (Design
+ * Law 23: powers do not roll, so they cannot crit), for the power's statDamage effect.
  */
 export function resolvePowerDamage(
   ctx: Ctx, user: Unit, target: Unit, a: AbilityDef, outPenalty = 0, absorbAvailable = 0,
@@ -126,56 +99,47 @@ export function resolvePowerDamage(
   return resolveDamage(ctx, user, target, damageSourceOf(a), false, outPenalty, absorbAvailable)
 }
 
-/** The heal amount, resolved. One place, so the preview and the use agree (Law 1). */
-export function resolveHealAmount(ctx: Ctx, user: Unit, a: AbilityDef): number {
-  if (a.heal === undefined) throw new Error(`ability '${a.id}' has effect 'heal' but no heal spec — regenerate the pack`)
-  return valueOf(ctx, user, a.heal)
-}
-
-/** Block's protection: base + perArmor x effective Armor ("4 + your Armor"). */
-export function resolveGuardAmount(ctx: Ctx, user: Unit, a: AbilityDef): number {
-  if (a.guard === undefined) throw new Error(`ability '${a.id}' has effect 'selfGuard' but no guard spec — regenerate the pack`)
-  return a.guard.protectionBase + a.guard.protectionPerArmor * effective(ctx, user, 'armor').value
-}
-
 export function previewPower(ctx: Ctx, userId: number, targetId: number, abilityId: string) {
   const a = abilityDef(ctx, abilityId)
-  const u = unit(ctx, userId)
-  const tg = unit(ctx, targetId)
-  if (a.effects) {
-    // Law 1: run the ordered effects, including all resolved area targets.
-    // The fork consumes its own pools and applies preceding status/stat changes;
-    // neither its events nor any lookahead rolls escape into the live battle.
-    const dry = forkBattle(ctx)
-    performEffects(dry, userId, targetId, a)
-    let damage = 0, heal = 0, healingApplied = 0, selfDamage = 0, selfDamageApplied = 0
-    for (const e of dry.events) {
-      if (e.type === 'damage.applied' && e.target === userId && e.causeId === a.id) {
-        selfDamageApplied += e['amount'] as number
-        selfDamage += (e['amount'] as number) + (e['overkill'] as number)
-      }
-      if (e.target !== targetId || e.causeId !== a.id) continue
-      if (e.type === 'power.hit') {
-        damage += (e['ledger'] as { delta: number }[]).reduce((sum, r) => sum + r.delta, 0)
-      } else if (e.type === 'heal.applied') {
-        heal += e['asked'] as number
-        healingApplied += e['amount'] as number
-      }
+  // Law 0, measured (fix.one-effect-vocabulary, 2026-10-01): a power whose one effect is a statDamage on the
+  // unit it is aimed at needs no fork — the fork would make exactly this one pipeline call (Law 1), and cloning
+  // the battle for it cost the TEST cohort's battles 30% (771 → 1006 ms for 20; the AI previews it per candidate).
+  const only = a.effects?.length === 1 ? a.effects[0]! : undefined
+  if (only?.kind === 'statDamage' && only.who !== 'self' && a.target?.select === 'unit') {
+    const u = unit(ctx, userId), tg = unit(ctx, targetId)
+    const lands = tg.lifeState === 'standing' && powerTargetsOf(ctx, userId, targetId, a).includes(targetId)
+      && !(tg.side === u.side && (only.allies ?? 'always') === 'never')
+    const damage = lands ? resolvePowerDamage(ctx, u, tg, a, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg)).value : 0
+    return { damage, heal: 0, healingApplied: 0, selfDamage: 0, selfDamageApplied: 0, hitChance: 100 }
+  }
+  // Law 1: run the ordered effects, including all resolved area targets.
+  // The fork consumes its own pools and applies preceding status/stat changes;
+  // neither its events nor any lookahead rolls escape into the live battle.
+  // Law 0, measured (fix.one-effect-vocabulary): a heal-only power aimed at one unit changes only that unit, so it
+  // runs on the attack preview's private target-only fork (pipeline.ts previewAttackDamage) — the same effects,
+  // without cloning the battle the AI previews it in every activation (the audit's battles: 22.5 s → 26 s with the clone).
+  const healOnly = a.target?.select === 'unit' && !!a.effects?.length && a.effects.every((e) => e.kind === 'heal' && e.who !== 'self')
+  let dry: Ctx
+  if (healOnly) {
+    const units = [...ctx.state.units]; units[targetId] = structuredClone(unit(ctx, targetId))
+    dry = { ...ctx, state: { ...ctx.state, units }, events: [] }
+  } else dry = forkBattle(ctx)
+  performEffects(dry, userId, targetId, a)
+  let damage = 0, heal = 0, healingApplied = 0, selfDamage = 0, selfDamageApplied = 0
+  for (const e of dry.events) {
+    if (e.type === 'damage.applied' && e.target === userId && e.causeId === a.id) {
+      selfDamageApplied += e['amount'] as number
+      selfDamage += (e['amount'] as number) + (e['overkill'] as number)
     }
-    return { damage, heal, healingApplied, selfDamage, selfDamageApplied, hitChance: 100 }
+    if (e.target !== targetId || e.causeId !== a.id) continue
+    if (e.type === 'power.hit') {
+      damage += (e['ledger'] as { delta: number }[]).reduce((sum, r) => sum + r.delta, 0)
+    } else if (e.type === 'heal.applied') {
+      heal += e['asked'] as number
+      healingApplied += e['amount'] as number
+    }
   }
-  switch (effectOf(a)) {
-    case 'heal':
-      return { damage: 0, heal: resolveHealAmount(ctx, u, a), hitChance: 100 }
-    case 'selfGuard':
-      return { damage: 0, protection: resolveGuardAmount(ctx, u, a), hitChance: 100 }
-    default:
-      // Law 1's sibling: the preview runs the identical pipeline, penalties and all.
-      return {
-        damage: resolvePowerDamage(ctx, u, tg, a, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg)).value,
-        hitChance: 100,
-      }
-  }
+  return { damage, heal, healingApplied, selfDamage, selfDamageApplied, hitChance: 100 }
 }
 
 export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: string, slot?: import('./types.js').ActionSlot): { damage: number } {
@@ -185,76 +149,15 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
   if (!canUsePower(ctx, userId, targetId, abilityId, slot)) {
     throw new Error(`illegal power: ${u.name} -> ${tg.name} with ${abilityId}`)
   }
-
   // refactor.one-action-type: THE ONE SPEND — stamina, the primary (unless free), the cooldown, a use.
-  // Before this the cooldown was written after the effects and one Turn short (see action.ts).
   spendAction(ctx, userId, a, resolveActionSlot(ctx, u, a, slot)!)
   // capability.stealth (2026-09-28): "It breaks the moment you use ... a power" —
   // before the power's effects, so a power that grants stealth grants it afresh
   // (Vanish in Shadow: "another power"). A movement is not a power (movement.ts
   // never calls this): SWITCHES.md stealthMovement.
   breakStatuses(ctx, userId, 'power', a.id)
-
-  let total = 0
-  if (a.effects) {
-    total = performEffects(ctx, userId, targetId, a)
-    return { damage: total }
-  }
-  switch (effectOf(a)) {
-    case 'heal': {
-      const amount = resolveHealAmount(ctx, u, a)
-      emit(ctx, 'power.used', a.id, {
-        actor: userId, target: targetId, abilityId, name: a.name,
-        distance: ctx.geo.distance(u.hex, tg.hex), heal: amount,
-      })
-      applyHealing(ctx, targetId, amount, a.id)
-      break
-    }
-    case 'selfGuard': {
-      const protection = resolveGuardAmount(ctx, u, a)
-      emit(ctx, 'power.used', a.id, {
-        actor: userId, target: targetId, abilityId, name: a.name,
-        protection, dodgeLoss: a.guard!.dodgeLoss,
-      })
-      applyStatus(ctx, userId, 'status.protection', protection, a.id)
-      // "lose 5 Dodge for the rest of the Battle. Every use costs another 5"
-      // — a permanent (battle-length) stat mod, one more each use, no cap:
-      // the authored escalation needs no counter, it simply applies again.
-      addStatMod(ctx, userId,
-        { stat: 'dodge', op: 'add', value: -a.guard!.dodgeLoss, source: a.id, scope: 'unit' }, a.id)
-      break
-    }
-    default: {
-      {
-        // The original bolt path, byte-for-byte: one power.used event carrying
-        // the ledger. The control baselines and the replay viewer both speak
-        // this shape, and a single-target power gained nothing from the loop.
-        const dmg = resolvePowerDamage(ctx, u, tg, a, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg))
-        const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
-        if (summed !== dmg.value) throw new Error(`power ledger does not reconcile: ${summed} vs ${dmg.value}`)
-        const pv = previewPower(ctx, userId, targetId, abilityId)
-        if (pv.damage !== dmg.value) throw new Error(`power preview/applied mismatch: ${pv.damage} vs ${dmg.value}`)
-        emit(ctx, 'power.used', a.id, {
-          actor: userId, target: targetId, abilityId, name: a.name,
-          distance: ctx.geo.distance(u.hex, tg.hex),
-          ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
-        })
-        // Spend what the pipeline said Protection would absorb — same order as attacks.
-        if (dmg.absorbed > 0) spendAbsorb(ctx, targetId, dmg.absorbed, a.id)
-        applyDamage(ctx, targetId, dmg.value, a.id,
-          dmg.absorbed > 0
-            ? { actor: userId, abilityId, damageType: a.damageType, absorbed: dmg.absorbed }
-            : { actor: userId, abilityId, damageType: a.damageType })
-        total = dmg.value
-        break
-      }
-
-    }
-  }
-
-  return { damage: total }
+  return { damage: performEffects(ctx, userId, targetId, a) }
 }
-
 
 // ── ability.effects (2026-09-03) ────────────────────────────────────────────
 // The effect list, applied in row order to the power's resolved targets. Every
@@ -272,12 +175,6 @@ export function powerTargetsOf(ctx: Ctx, userId: number, targetId: number, a: Ab
   return resolveTargets(ctx, u, t, aim)
 }
 
-function expiresAtOf(ctx: Ctx, until: 'endOfTurn' | 'endOfNextTurn' | 'endOfNextActivation' | 'battle'): number | undefined {
-  // `endOfTurn` = expiresAtTurn turn+1, matching modsFor's `turn < expiresAtTurn`
-  // (movement.ts, 2026-08-25). endOfNextTurn is one further.
-  return until === 'endOfTurn' ? ctx.state.turn + 1 : until === 'endOfNextTurn' ? ctx.state.turn + 2 : undefined
-}
-
 function performEffects(ctx: Ctx, userId: number, targetId: number, a: AbilityDef): number {
   const u = unit(ctx, userId)
   const targets = powerTargetsOf(ctx, userId, targetId, a)
@@ -287,102 +184,12 @@ function performEffects(ctx: Ctx, userId: number, targetId: number, a: AbilityDe
   })
   let total = 0
   for (const e of a.effects!) {
-    const onSelf = e.kind === 'selfDamage' || (e.kind === 'statMod' && 'who' in e && e.who === 'self')
-      // the movement riders (gainStamina, loseMaxStamina) are the mover's own — on a power they are the user's too
-      || e.kind === 'gainStamina' || e.kind === 'loseMaxStamina' || e.kind === 'stand'
-    const ids = onSelf ? [userId] : targets
-    for (const id of ids) total += applyOne(ctx, userId, id, a, e)
+    // `who: 'self'` and the kinds that are only ever the one acting's own (a move's riders, on a power too)
+    const ids = e.who === 'self' || e.kind === 'loseMaxStamina' || e.kind === 'stand' ? [userId] : targets
+    for (const id of ids) {
+      if (unit(ctx, id).lifeState !== 'standing') continue
+      total += applyEffect(ctx, e, { causeId: a.id, actor: userId, by: userId, abilityId: a.id }, id)
+    }
   }
   return total
-}
-
-function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: ActionEffect): number {
-  const u = unit(ctx, userId)
-  const tg = unit(ctx, id)
-  if (tg.lifeState !== 'standing') return 0
-  switch (e.kind) {
-    case 'damage': {
-      if (tg.side === u.side) {
-        const allies = e.allies ?? 'always'
-        if (allies === 'never') return 0
-      }
-      const dmg = resolveDamage(ctx, u, tg, { id: a.id, stat: e.stat, bonus: e.bonus, damageType: e.damageType }, false, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg))
-      const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
-      if (summed !== dmg.value) throw new Error(`power ledger does not reconcile: ${summed} vs ${dmg.value}`)
-      emit(ctx, 'power.hit', a.id, { actor: userId, target: id, ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })) })
-      if (dmg.absorbed > 0) spendAbsorb(ctx, id, dmg.absorbed, a.id)
-      applyDamage(ctx, id, dmg.value, a.id, dmg.absorbed > 0
-        ? { actor: userId, abilityId: a.id, damageType: e.damageType, absorbed: dmg.absorbed }
-        : { actor: userId, abilityId: a.id, damageType: e.damageType })
-      return dmg.value
-    }
-    case 'heal': {
-      applyHealing(ctx, id, valueOf(ctx, u, e.amount), a.id)
-      return 0
-    }
-    case 'status.apply': {
-      const v = valueOf(ctx, u, e.value)
-      if (v > 0) applyStatus(ctx, id, e.statusId, v, a.id, userId)
-      return 0
-    }
-    case 'status.remove': {
-      if (e.value === undefined) removeStatus(ctx, id, e.statusId, a.id)
-      else reduceStatus(ctx, id, e.statusId, e.value, a.id)
-      return 0
-    }
-    case 'statMod': {
-      // Max Health is the one stat the pipeline does not resolve (u.maxHp is
-      // read raw by the healing cap and the crit chart) — it moves by mutator,
-      // battle-long, like its loss does.
-      if (e.stat === 'maxHp') { if (e.value > 0) gainMaxHp(ctx, id, e.value, a.id); else loseMaxHp(ctx, id, -e.value, a.id); return 0 }
-      const expiresAtTurn = expiresAtOf(ctx, e.until)
-      // "until the end of your next Activation": the holder's next one. Mid-activation
-      // the actor's ordinal is the current one; anyone else's is the last one — +1 either way.
-      const expiresAfterActivation = e.until === 'endOfNextActivation' ? tg.activationOrdinal + 1 : undefined
-      addStatMod(ctx, id, { stat: e.stat, op: 'add', value: e.value, source: a.id, scope: 'unit',
-        ...(expiresAtTurn !== undefined ? { expiresAtTurn } : {}),
-        ...(expiresAfterActivation !== undefined ? { expiresAfterActivation } : {}) }, a.id)
-      return 0
-    }
-    case 'selfDamage': {
-      const damage = flatDamage(ctx, tg, e.amount, e.damageType, incomingAbsorb(ctx, tg))
-      if (damage.absorbed > 0) spendAbsorb(ctx, id, damage.absorbed, a.id)
-      applyDamage(ctx, id, damage.value, a.id, {
-        actor: userId, abilityId: a.id, damageType: e.damageType,
-        ...(damage.resisted ? { resisted: damage.resisted } : {}),
-        ...(damage.absorbed ? { absorbed: damage.absorbed } : {}),
-      })
-      return 0
-    }
-    case 'stamina.gain': {
-      gainStamina(ctx, id, e.value, a.id)
-      return 0
-    }
-    // the movement riders, reachable from any action now (ONE ACTION TYPE, 2026-09-04)
-    case 'gainStamina': { gainStamina(ctx, id, e.value, a.id); return 0 }
-    case 'loseMaxStamina': { loseMaxStamina(ctx, id, e.value, a.id); return 0 }
-    case 'stand': { standUp(ctx, id, a.id); return 0 }   // v2.prone — the user's own, like the movement riders
-    case 'knockback': {
-      const v = valueOf(ctx, u, e.value)
-      if (v > 0) executeKnockback(ctx, userId, id, v, a.id)
-      return 0
-    }
-    case 'reveal': {
-      // capability.stealth: a reveal finds units of the other side only — its own
-      // side's stealth is not what it hunts (SWITCHES.md stealthRevealSide)
-      if (tg.side !== u.side) breakStatuses(ctx, id, 'reveal', a.id)
-      return 0
-    }
-    case 'corpse.eat': {
-      // capability.corpses: the Ghoul's Eat Corpse — one body within reach, nearest first
-      const c = corpsesNear(ctx, u.hex, e.radius)[0]
-      if (!c) return 0
-      removeCorpse(ctx, c.id, a.id, 'eaten', userId)
-      emit(ctx, 'corpse.eaten', a.id, { actor: userId, corpse: c.id, of: c.typeId })
-      applyHealing(ctx, userId, e.heal, a.id)
-      for (const [stat, value] of Object.entries(e.mods)) if (value) addStatMod(ctx, userId, { stat: stat as import('./stats.js').StatName, op: 'add', value, source: a.id, scope: 'unit' }, a.id)
-      if (e.maxHp) gainMaxHp(ctx, userId, e.maxHp, a.id)
-      return 0
-    }
-  }
 }

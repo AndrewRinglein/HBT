@@ -12,8 +12,8 @@
 // LifeState, LAYER_IDS, GLYPH). This module adds no concept; it removes the copies.
 import { FOLDABLE, FOLD_BASE } from './items.js'
 import { STAT_NAMES } from './stats.js'
-import { ATTACKER_HOOKS, HOOKS, TRIGGER_EFFECT_KINDS } from './trigger.js'
-import { ABILITY_EFFECT_KINDS, DAMAGE_TYPES, LIFE_STATES, MOVE_EFFECT_KINDS, OUTCOMES } from './types.js'
+import { ATTACKER_HOOKS, HOOKS } from './trigger.js'
+import { DAMAGE_TYPES, EFFECT_KINDS, LIFE_STATES, OUTCOMES, STAT_MOD_UNTIL } from './types.js'
 import { EVENT_TYPES } from './mutate.js'
 import { GLYPH, GLYPH_LAYER, LAYER_IDS, appliesOnActivationEndOf, appliesOnEnterOf, layerAppliesOnActivationEnd, layerAppliesOnEnter, terrainIdOf } from '../content/terrain.js'
 
@@ -27,9 +27,10 @@ export type EngineVocabulary = {
   readonly hooks: readonly string[]
   /** The hooks that fire on the attacker's own triggers inside its attack. */
   readonly attackerHooks: readonly string[]
-  readonly triggerEffectKinds: readonly string[]
-  readonly abilityEffectKinds: readonly string[]
-  readonly moveEffectKinds: readonly string[]
+  /** fix.one-effect-vocabulary (2026-10-01): THE effect kinds — a trigger's, a power's, a move's and a chart row's are one list. */
+  readonly effectKinds: readonly string[]
+  /** How long a stat modifier may last — one set for every effect. */
+  readonly statModUntil: readonly string[]
   readonly outcomes: readonly string[]
   readonly lifeStates: readonly string[]
   /** Every event type the engine emits; `life.<state>` is spelled out. */
@@ -49,9 +50,8 @@ export function engineVocabulary(): EngineVocabulary {
     resolvable: [...STAT_NAMES],
     hooks: [...HOOKS],
     attackerHooks: [...ATTACKER_HOOKS],
-    triggerEffectKinds: [...TRIGGER_EFFECT_KINDS],
-    abilityEffectKinds: [...ABILITY_EFFECT_KINDS],
-    moveEffectKinds: [...MOVE_EFFECT_KINDS],
+    effectKinds: [...EFFECT_KINDS],
+    statModUntil: [...STAT_MOD_UNTIL],
     outcomes: [...OUTCOMES],
     lifeStates: [...LIFE_STATES],
     events: [...EVENT_TYPES, ...LIFE_STATES.map((s) => `life.${s}`)],

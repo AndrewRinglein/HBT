@@ -61,7 +61,8 @@ describe('independent audit of logged battles', () => {
       const prone = new Map<number, { accuracyAgainst: number; dodge: number; damageAgainst: number; accuracy: number; damage: number }>()
       const kdbCauses = new Set<string>()
       let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number; seq: number; proneDamage?: number } | null = null
-      let pendingPower: { actor: number; target: number; abilityId: string } | null = null
+      let pendingPower: { actor: number; target: number; abilityId: string; stat: 'strength' | 'precision' | 'magic' | 'spirit'; bonus: number; damageType: string } | null = null
+      let pendingHeal: string | null = null
 
       for (const e of ctx.events) {
         switch (e.type) {
@@ -317,6 +318,11 @@ describe('independent audit of logged battles', () => {
             break
           }
 
+          case 'heal.applied': {
+            if (pendingHeal && e.causeId === pendingHeal) { expect(e['asked'] as number, `${pendingHeal} heals a stated amount`).toBeGreaterThan(0); pendingHeal = null }
+            break
+          }
+
           case 'power.used': {
             const at = UNITS[type.get(e.actor!)!]!
             const ab = ABILITIES[e['abilityId'] as string]!
@@ -334,14 +340,18 @@ describe('independent audit of logged battles', () => {
             // v2.shields (2026-09-23), extended: an effect-list power (the shield guards —
             // statMods with a lifetime) lands its effects through statmod.added, not a
             // damage.applied; only a row with no effect list is a bolt to recompute.
-            if (!ab.effects && (ab.effect ?? 'damage') === 'damage') {
-              pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
+            // Law 10, fix.one-effect-vocabulary (2026-10-01): the legacy shapes retired, so the three checks
+            // follow the rows to their effects lists — extended, never weakened. A single-target power whose
+            // one effect is a statDamage (the TEST Arcane Bolt) arms the same recompute; a heal power's
+            // heal.applied must ask a stated amount (was: power.used's `heal` field); a self power lands on its
+            // caster (was: selfGuard only — no row has carried that shape since 2026-09-23).
+            // was: if (!ab.effects && (ab.effect ?? 'damage') === 'damage') { pendingPower = {...} } else { heal / selfGuard checks }
+            const only = ab.effects?.length === 1 ? ab.effects[0]! : undefined
+            if (only?.kind === 'statDamage' && ab.target?.select === 'unit') {
+              pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id, stat: only.stat, bonus: only.bonus, damageType: only.damageType }
             } else {
-              if (ab.effect === 'heal') expect(e['heal'] as number, `${ab.id} heals a stated amount`).toBeGreaterThan(0)
-              if (ab.effect === 'selfGuard') {
-                expect(e.target, 'selfGuard lands on its caster').toBe(e.actor)
-                expect(e['protection'] as number, `${ab.id} states its protection`).toBeGreaterThan(0)
-              }
+              if (ab.effects?.some((x) => x.kind === 'heal')) pendingHeal = ab.id
+              if (ab.target?.select === 'self') expect(e.target, `${ab.id} lands on its caster`).toBe(e.actor)
               pendingPower = null
             }
             pending = null
@@ -364,18 +374,18 @@ describe('independent audit of logged battles', () => {
             if (pendingPower) {
               const at = UNITS[type.get(pendingPower.actor)!]!
               const tg = UNITS[type.get(pendingPower.target)!]!
-              const ab = ABILITIES[pendingPower.abilityId]!
-              // pendingPower is only ever armed for single-target damage
-              // powers (see power.used above), so the row carries these.
-              const stat = modded(pendingPower.actor, ab.stat!,
+              const ab = pendingPower
+              // pendingPower is only ever armed for a single-target statDamage power
+              // (see power.used above), and carries that effect's numbers.
+              const stat = modded(pendingPower.actor, ab.stat,
               ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision, e.turn)
               const mit = ab.damageType === 'physical' ? tg.armor : ab.damageType === 'magic' ? tg.resist : 0
               // The auditor learned PROTECTION with the status.protection
               // landing (2026-08-20): the event names what a pool absorbed, and
               // the pipeline subtracts it before mitigation.
-              const expected = Math.max(0, ab.bonus! + stat - penaltyOf(pendingPower.actor)
+              const expected = Math.max(0, ab.bonus + stat - penaltyOf(pendingPower.actor)
                 - ((e['absorbed'] as number) ?? 0) - mit)
-              expect((e['amount'] as number) + (e['overkill'] as number), `${ab.id} damage`).toBe(expected)
+              expect((e['amount'] as number) + (e['overkill'] as number), `${ab.abilityId} damage`).toBe(expected)
               checkedDamage++
               pendingPower = null
               break

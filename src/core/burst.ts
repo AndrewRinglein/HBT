@@ -7,10 +7,10 @@ import { eligible } from './target.js'
 import { attackLineClear, segmentCrossesCell } from './los.js'
 import { centerPoint, segmentCrossesPolygon } from './geometry.js'
 import { canSeeHex } from './vision.js'
-import { incomingAbsorb, incomingPhysicalBonus, isBlocked, outgoingPenalty, spendAbsorb } from './status.js'
+import { isBlocked, outgoingPenalty, spendAbsorb } from './status.js'
 import { applyAttackPackets, applyHealing, beginBurst, breakStatuses, damageProp, emit, unit } from './mutate.js'
 import { propsTouching } from './props.js'
-import { DMG, finishDamage, resolveSourceDamage, type DamagePacket, type LedgerRow } from './pipeline.js'
+import { DMG, finishDamage, planPackets, resolveSourceDamage, type LedgerRow, type PacketRow } from './pipeline.js'
 import { fireTriggers, HOOKS, type BurstAdjustment } from './trigger.js'
 import { settle } from './settle.js'
 import { kdbForecast, resolveKdb } from './kdb.js'
@@ -72,25 +72,27 @@ function append(ledger: LedgerRow[], station: number, name: string, effectId: st
   return after
 }
 
+/**
+ * The cited burst cover (COMBAT-V2-DESIGN §7.3: "Each low cover crossed costs 2 damage, and it stacks") — one
+ * budget per recipient, spent across the burst's packets in order (fix.one-effect-vocabulary: was the literal 2).
+ */
+export const BURST_LOW_COVER_ABSORB = 2
+
+/** A recipient's packets through THE one packet planner (pipeline.ts planPackets); the cover budget and the saves are its rows' own. */
 function planDamage(ctx: Ctx, target: Unit, a: BurstDef, prepared: ReturnType<typeof prepare>, low: readonly string[], adjustments: readonly BurstAdjustment[]) {
-  let coverBudget = low.length * 2, available = incomingAbsorb(ctx, target), physicalSeen = false
-  const packets: DamagePacket[] = []
-  for (const p of prepared.payload) {
+  const budget = low.length * BURST_LOW_COVER_ABSORB
+  let coverBudget = budget
+  const rows: PacketRow[] = prepared.payload.map((p) => ({ id: p.id, damageType: p.damageType, finish: (available, frost) => {
     const ledger = p.ledger.map(r => ({ ...r }))
     let value = p.value
     const coverLoss = Math.min(coverBudget, Math.max(0, value))
     coverBudget -= coverLoss
     if (coverLoss) value = append(ledger, DMG.COVER, 'BURST_COVER', low.join(','), value, value - coverLoss)
-    const frost = p.damageType === 'physical' && !physicalSeen ? incomingPhysicalBonus(ctx, target) : 0
-    if (p.damageType === 'physical') physicalSeen = true
-    for (const adjustment of adjustments) value = append(ledger, 545, 'BURST_SAVE', adjustment.id, value, Math.floor(value * adjustment.percent / 100))
-    const d = finishDamage(ctx, target, { damageType: p.damageType }, ledger, value, available, frost)
-    available -= d.absorbed
-    if (d.ledger.reduce((n, r) => n + r.delta, 0) !== d.value || d.raw - d.absorbed + d.mitigationDelta + d.floorAdjustment !== d.value) throw Error('burst packet conservation failed')
-    packets.push({ id: p.id, source: a.id, damageType: p.damageType, raw: d.raw, absorbed: d.absorbed, defense: d.defense,
-      mitigationDelta: d.mitigationDelta, floorAdjustment: d.floorAdjustment, resisted: d.resisted, resolved: d.value, ledger: d.ledger })
-  }
-  return { coverDamage: low.length * 2 - coverBudget, packets, value: packets.reduce((n, p) => n + p.resolved, 0), absorbed: packets.reduce((n, p) => n + p.absorbed, 0) }
+    for (const adjustment of adjustments) value = append(ledger, DMG.BURST_SAVE, 'BURST_SAVE', adjustment.id, value, Math.floor(value * adjustment.percent / 100))
+    return finishDamage(ctx, target, { damageType: p.damageType }, ledger, value, available, frost)
+  } }))
+  const plan = planPackets(ctx, target, a.id, rows)
+  return { coverDamage: budget - coverBudget, ...plan }
 }
 
 function applyPlan(ctx: Ctx, actor: number, target: number, a: BurstDef, plan: ReturnType<typeof planDamage>) {
@@ -135,7 +137,7 @@ export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: st
     const target = unit(ctx, t.id)
     if (target.uid !== t.uid || target.lifeState !== 'standing' || target.hp <= 0) continue
     if (t.shielded.length) { emit(ctx, 'burst.shielded', a.id, { actor: actorId, target: t.id, hex: t.hex, props: t.shielded }); continue }
-    const exposed = prepared.payload.reduce((n, p) => n + Math.max(0, p.value), 0) > t.low.length * 2
+    const exposed = prepared.payload.reduce((n, p) => n + Math.max(0, p.value), 0) > t.low.length * BURST_LOW_COVER_ABSORB
     const adjustments = exposed ? fireTriggers(ctx, 'onBurst', { ownerId: t.id, targetId: actorId, causeId: a.id, ordinal, keyTag: HOOKS.indexOf('onBurst') }) : []
     if (target.lifeState !== 'standing' || target.hp <= 0) continue
     const plan = planDamage(ctx, target, a, prepared, t.low, adjustments)

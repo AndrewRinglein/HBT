@@ -19,9 +19,11 @@ import type { StatusDef } from '../core/status.js'
 // plumbing.vocabulary-export (2026-09-28): the effect kinds and the stat names are the engine's
 // lists (core/types.ts, core/items.ts), never copies — review findings C10 (five stat lists here,
 // the aura one missing vision, thorns and swapCost) and the effect-kind copy that stood here.
-import { ABILITY_EFFECT_KINDS } from '../core/types.js'
+import { EFFECT_KINDS as ENGINE_EFFECT_KINDS } from '../core/types.js'
 import { FOLDABLE } from '../core/items.js'
-const EFFECT_KINDS: readonly string[] = ABILITY_EFFECT_KINDS
+import { validateEffect } from '../core/trigger.js'
+// fix.one-effect-vocabulary (2026-10-01): one effect list for powers, moves and the chart alike
+const EFFECT_KINDS: readonly string[] = ENGINE_EFFECT_KINDS
 const STATS: readonly string[] = FOLDABLE
 export function validateActionMetadata(row: { readonly id: string; readonly slot?: unknown; readonly free?: unknown }): void {
   if (row.slot !== undefined && !['movement', 'primary', 'either'].includes(row.slot as string)) throw new Error(`unit pack: invalid action slot '${String(row.slot)}' on '${row.id}'`)
@@ -33,10 +35,11 @@ export function validateNamedResists(stats: Readonly<Record<string, unknown>>, w
   }
 }
 
-export function validateDamageMetadata(row: {readonly id:string; readonly damageType?:unknown; readonly effects?:readonly import('../core/types.js').ActionEffect[]}) {
+export function validateDamageMetadata(row: {readonly id:string; readonly damageType?:unknown; readonly effects?:readonly import('../core/types.js').Effect[]}) {
   if (row.damageType !== undefined && !isDamageType(row.damageType)) throw new Error(`unit pack: invalid damage type on '${row.id}'`)
   for (const effect of row.effects ?? []) {
-    if ((effect.kind === 'damage' || effect.kind === 'selfDamage') && !isDamageType(effect.damageType)) throw new Error(`unit pack: invalid effect damage type on '${row.id}'`)
+    if ((effect.kind === 'damage' || effect.kind === 'statDamage') && !isDamageType(effect.damageType)) throw new Error(`unit pack: invalid effect damage type on '${row.id}'`)
+    validateEffect(effect, `unit pack: '${row.id}'`)
   }
 }
 
@@ -119,14 +122,11 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     validateActionMetadata(a)
     validateDamageMetadata(a)
     if (k !== a.id) throw new Error(`unit pack: ability key '${k}' names id '${a.id}'`)
-    // an effect-list power (ability.effects) is validated by its list, not the three legacy shapes
-    if (a.effects) { for (const e of a.effects) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`); continue }
-    const kind = a.effect ?? 'damage'
-    if (kind === 'damage' && (a.stat === undefined || a.bonus === undefined || a.damageType === undefined)) {
-      throw new Error(`unit pack: damage power '${k}' is missing stat/bonus/damageType — regenerate the pack`)
-    }
-    if (kind === 'heal' && a.heal === undefined) throw new Error(`unit pack: heal power '${k}' has no heal spec — regenerate the pack`)
-    if (kind === 'selfGuard' && a.guard === undefined) throw new Error(`unit pack: selfGuard power '${k}' has no guard spec — regenerate the pack`)
+    // fix.one-effect-vocabulary (2026-10-01): every power is its effects list (or a burst profile); the legacy
+    // shapes (effect/stat/bonus/heal/guard) are retired, and a row still carrying one is refused
+    for (const f of ['effect', 'stat', 'bonus', 'heal', 'guard']) if ((a as Record<string, unknown>)[f] !== undefined) throw new Error(`unit pack: power '${k}' carries the retired legacy field '${f}' — regenerate the pack`)
+    if (!a.effects && !a.burst) throw new Error(`unit pack: power '${k}' carries no effects list — regenerate the pack`)
+    for (const e of a.effects ?? []) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
   }
   return raw
 }
@@ -143,9 +143,10 @@ export function packCritChart(): readonly CritRow[] {
     if (seen.has(r.key)) throw new Error(`crit chart: duplicate key '${r.key}'`)
     seen.add(r.key)
     for (const e of r.effects) {
-      if (!['statMod', 'status', 'push', 'loseStamina', 'loseMaxHp'].includes(e.kind)) {
+      if (!EFFECT_KINDS.includes(e.kind)) {
         throw new Error(`crit chart: row '${r.key}' carries unknown effect kind '${(e as { kind: string }).kind}' — regenerate the pack`)
       }
+      validateEffect(e, `crit chart: row '${r.key}'`)
     }
   }
   return raw
@@ -241,7 +242,7 @@ export type PackAttackRow = {
 export type PackMoveRow = {
   readonly slot?: ActionDef['slot']; readonly free?: boolean
   readonly id: string; readonly name: string; readonly shape: 'path' | 'sidestep' | 'flight'; readonly stepRange?: number
-  readonly effects?: readonly import('../core/types.js').MoveEffect[]; readonly staminaCost: number; readonly budgetMod: number
+  readonly effects?: readonly import('../core/types.js').Effect[]; readonly staminaCost: number; readonly budgetMod: number
   readonly cooldown: number; readonly warmup?: number; readonly uses?: number
   /** capability.move-ignores-zoc: a walk that provokes no attack of opportunity (MoveProfile.ignoresZoc). */
   readonly ignoresZoc?: boolean
@@ -299,7 +300,8 @@ export function packMoves(): Readonly<Record<string, MoveDef>> {
     // already provokes nothing, and flight has its own rule (SWITCHES.md ignoresZocPathOnly)
     if (m.ignoresZoc !== undefined && (m.ignoresZoc !== true || m.shape !== 'path')) throw new Error(`unit pack: move '${k}' carries ignoresZoc '${String(m.ignoresZoc)}' on a '${m.shape}' move — true, on a path-shaped walk, or absent`)
     for (const e of m.effects ?? []) {
-      if (!['gainStamina', 'loseMaxStamina', 'statMod', 'stand'].includes(e.kind)) throw new Error(`unit pack: move '${k}' carries unknown effect kind '${(e as { kind: string }).kind}'`)
+      if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: move '${k}' carries unknown effect kind '${(e as { kind: string }).kind}'`)
+      validateEffect(e, `unit pack: move '${k}'`)
     }
   }
   return Object.fromEntries(Object.entries(raw).map(([k, r]) => [k, liftMove(r)]))

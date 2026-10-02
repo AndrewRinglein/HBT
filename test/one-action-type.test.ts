@@ -77,7 +77,8 @@ describe('the limits are one rule on every action', () => {
     expect(actionReady(ctx, g, ACTIONS[ONCE]!)).toBe(false)
   })
 
-  it('a POWER carries a movement rider (gainStamina) and resolves it through the effects path', () => {
+  // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (gainStamina -> stamina.gain); the assertion is unchanged.
+  it('a POWER carries a movement rider (stamina.gain) and resolves it through the effects path', () => {
     const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
     const g = ctx.state.units[0]!
     g.stamina = 1

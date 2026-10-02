@@ -1,24 +1,24 @@
 {
- "id": "encounter.opening.cathedral",
- "tree": "5be695f4f476999a4f40bc1e2cde8795c01e94a8",
- "ctx": "2a11523147daefc803a6c80cf0ed6da6d58f934d",
+ "id": "fix.one-effect-vocabulary",
+ "tree": "588dea5aa9bfa491d5f302fd9d0651d2592d841f",
+ "ctx": "64e0636aff67030a03d7fbead1432ac6c955a22a",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 251,
-  "typecheck": 1702,
-  "the item's own tests": 6198,
-  "gate 1 — the id appears in a real battle": 4754,
-  "brought its own tests": 51,
+  "not already decided": 427,
+  "typecheck": 1665,
+  "the item's own tests": 96590,
+  "gate 1 — the id appears in a real battle": 0,
+  "brought its own tests": 63,
   "existing tests untouched": 0,
-  "control battles unchanged": 38194,
-  "content has a published source": 133,
-  "hardcode scan — core knows mechanisms, never names": 46,
+  "control battles unchanged": 39011,
+  "content has a published source": 143,
+  "hardcode scan — core knows mechanisms, never names": 66,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 1,
-  "naming — new content ids use declared kinds": 54,
-  "naming — no banned words invented": 158,
-  "kill switch — the tests fail without the content": 2461
+  "naming — new content ids use declared kinds": 66,
+  "naming — no banned words invented": 209,
+  "kill switch — the tests fail without the content": 0
  }
 }

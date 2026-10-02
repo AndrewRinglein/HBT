@@ -211,6 +211,16 @@ const kiteAloneGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
 // Imp — showcase.kiln (4), showcase.prologue-enemies (1), test.opening-bridge (2 scheduled) and test.props-viewer-ranged-zoc
 // (1). A `changed` case is checked here and skips the older layers.
 const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-flight.json', import.meta.url), 'utf8'))
+// fix.one-effect-vocabulary (2026-10-01), Law 10: one effect union and one interpreter (the duplication review ruled
+// 2026-09-28, "fix as proposed"). Every case frozen here (tools/capture-one-effect-cursor.mts). Moved by log text only —
+// the Holy Symbol's Heal and the TEST Arcane Bolt are effects lists, so their power.used names its targets (was: `heal`,
+// and the Bolt's ledger, which now rides its power.hit): showcase.alpha-team, showcase.gash-variant,
+// test.props-viewer-ranged-zoc, and test.mage-kindle (its state differs only by the event counter, one power.hit more;
+// RNG and result unchanged). Moved for real, a row whose compiled meaning was wrong: showcase.prologue-enemies — the
+// Lieutenant Demon's "+1 Health" aura was a Max Health stat modifier nothing reads, and now raises Max Health and
+// Health through the one interpreter, as a power's or a badge's always did. A `changed` case is checked here and skips
+// the older layers.
+const oneEffectGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-effect.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -328,7 +338,10 @@ describe('resumable battle cursor', () => {
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const fireImpFlightMoved = fireImpFlightExpected?.changed === true
+      const oneEffectExpected = oneEffectGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a one-effect-moved case skips the fire-imp-flight layer too (fix.one-effect-vocabulary 2026-10-01)
+      const oneEffectMoved = oneEffectExpected?.changed === true
+      const fireImpFlightMoved = fireImpFlightExpected?.changed === true || oneEffectMoved
       // was: const kiteAloneMoved = kiteAloneExpected?.changed === true — a fire-imp-flight-moved case skips the kite-alone layer too (content.fire-imp-flight 2026-10-01)
       const kiteAloneMoved = kiteAloneExpected?.changed === true || fireImpFlightMoved
       // was: const resistOneWayMoved = resistOneWayExpected?.changed === true — a kite-alone-moved case skips the resist-one-way layer too (encounter.opening.bridge-ai 2026-09-30)
@@ -397,7 +410,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (fireImpFlightExpected) {
+        if (oneEffectExpected) {
+        expect(hash(ctx.events), 'full one-effect events').toBe(oneEffectExpected.events)
+        expect(hash(ctx.state), 'full one-effect state').toBe(oneEffectExpected.state)
+        expect(hash(ctx.rng.log), 'full one-effect RNG').toBe(oneEffectExpected.rng)
+        expect(result).toEqual(oneEffectExpected.result)
+        }
+        // was: if (fireImpFlightExpected) { — fix.one-effect-vocabulary (2026-10-01): a one-effect-moved case is checked above instead
+        if (fireImpFlightExpected && !oneEffectMoved) {
         expect(hash(ctx.events), 'full fire-imp-flight events').toBe(fireImpFlightExpected.events)
         expect(hash(ctx.state), 'full fire-imp-flight state').toBe(fireImpFlightExpected.state)
         expect(hash(ctx.rng.log), 'full fire-imp-flight RNG').toBe(fireImpFlightExpected.rng)

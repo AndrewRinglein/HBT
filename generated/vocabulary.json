@@ -80,38 +80,34 @@
   "onDamage",
   "onKill"
  ],
- "triggerEffectKinds": [
-  "burstScale",
+ "effectKinds": [
+  "statDamage",
+  "damage",
+  "heal",
   "status.apply",
   "status.remove",
-  "damage",
+  "statMod",
+  "stamina.gain",
+  "stamina.drain",
+  "loseMaxStamina",
+  "loseMaxHp",
+  "stand",
   "knockback",
   "badge.grant",
   "power.gain",
-  "heal",
   "corpse.raise",
   "corpse.consume",
-  "statMod",
-  "stamina.drain",
-  "layer.paint"
- ],
- "abilityEffectKinds": [
-  "damage",
-  "heal",
-  "status.apply",
-  "status.remove",
-  "statMod",
-  "selfDamage",
-  "stamina.gain",
-  "knockback",
   "corpse.eat",
-  "reveal"
+  "layer.paint",
+  "reveal",
+  "burstScale"
  ],
- "moveEffectKinds": [
-  "gainStamina",
-  "loseMaxStamina",
-  "stand",
-  "statMod"
+ "statModUntil": [
+  "endOfTurn",
+  "endOfNextTurn",
+  "endOfActivation",
+  "endOfNextActivation",
+  "battle"
  ],
  "outcomes": [
   "heroClear",

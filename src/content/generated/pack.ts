@@ -7938,12 +7938,20 @@ export const UNIT_PACK = {
       "staminaCost": 1,
       "cooldown": 0,
       "range": 6,
-      "effect": "heal",
-      "heal": {
-        "scale": "partySpirit",
-        "base": 1,
-        "mult": 2
-      }
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "partySpirit",
+            "base": 1,
+            "mult": 2
+          }
+        }
+      ]
     },
     "power.loaded-dice-of-mirran.use": {
       "id": "power.loaded-dice-of-mirran.use",
@@ -8256,26 +8264,23 @@ export const UNIT_PACK = {
           "kind": "statMod",
           "stat": "strength",
           "value": 2,
-          "until": "endOfTurn",
+          "until": "endOfActivation",
           "who": "self"
         },
         {
           "kind": "statMod",
           "stat": "crit",
           "value": 20,
-          "until": "endOfTurn",
+          "until": "endOfActivation",
           "who": "self"
         },
         {
           "kind": "statMod",
           "stat": "accuracy",
           "value": -20,
-          "until": "endOfTurn",
+          "until": "endOfActivation",
           "who": "self"
         }
-      ],
-      "gaps": [
-        "\"until the end of your Activation\" is read as until the end of the Turn"
       ]
     },
     "power.strength-potion.use": {
@@ -10500,12 +10505,14 @@ export const UNIT_PACK = {
           {
             "kind": "statMod",
             "stat": "vision",
-            "value": -4
+            "value": -4,
+            "until": "battle"
           },
           {
             "kind": "statMod",
             "stat": "accuracy",
-            "value": -30
+            "value": -30,
+            "until": "battle"
           }
         ]
       },
@@ -10516,7 +10523,8 @@ export const UNIT_PACK = {
           {
             "kind": "statMod",
             "stat": "movement",
-            "value": -3
+            "value": -3,
+            "until": "battle"
           }
         ]
       },
@@ -10527,12 +10535,14 @@ export const UNIT_PACK = {
           {
             "kind": "statMod",
             "stat": "strength",
-            "value": -2
+            "value": -2,
+            "until": "battle"
           },
           {
             "kind": "statMod",
             "stat": "precision",
-            "value": -2
+            "value": -2,
+            "until": "battle"
           }
         ]
       },
@@ -10541,7 +10551,7 @@ export const UNIT_PACK = {
         "name": "Bleeding",
         "effects": [
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.bleed",
             "value": 4
           }
@@ -10552,7 +10562,7 @@ export const UNIT_PACK = {
         "name": "Dazed",
         "effects": [
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.powers-locked",
             "value": 3
           }
@@ -10563,12 +10573,12 @@ export const UNIT_PACK = {
         "name": "Stunned",
         "effects": [
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.stun",
             "value": 1
           },
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.weak",
             "value": 3
           }
@@ -10579,11 +10589,11 @@ export const UNIT_PACK = {
         "name": "Knocked Sprawling",
         "effects": [
           {
-            "kind": "push",
-            "hexes": 1
+            "kind": "knockback",
+            "value": 1
           },
           {
-            "kind": "status",
+            "kind": "status.apply",
             "statusId": "status.slow",
             "value": 2
           }
@@ -10594,7 +10604,7 @@ export const UNIT_PACK = {
         "name": "Winded",
         "effects": [
           {
-            "kind": "loseStamina",
+            "kind": "stamina.drain",
             "value": 4
           }
         ]
@@ -10607,18 +10617,21 @@ export const UNIT_PACK = {
             "kind": "statMod",
             "stat": "armor",
             "value": -2,
+            "until": "battle",
             "floor": 0
           },
           {
             "kind": "statMod",
             "stat": "resist",
             "value": -1,
+            "until": "battle",
             "floor": 0
           },
           {
             "kind": "statMod",
             "stat": "dodge",
             "value": -10,
+            "until": "battle",
             "floor": 0
           }
         ]
@@ -10889,8 +10902,9 @@ export const UNIT_PACK = {
       "budgetMod": 0,
       "effects": [
         {
-          "kind": "gainStamina",
-          "value": 1
+          "kind": "stamina.gain",
+          "value": 1,
+          "who": "self"
         }
       ],
       "staminaCost": 0,
@@ -10909,8 +10923,9 @@ export const UNIT_PACK = {
           "value": 1
         },
         {
-          "kind": "gainStamina",
-          "value": 2
+          "kind": "stamina.gain",
+          "value": 2,
+          "who": "self"
         }
       ],
       "staminaCost": 0,
@@ -10949,6 +10964,23 @@ export const UNIT_PACK = {
       "free": false,
       "shape": "flight",
       "budgetMod": 1,
+      "staminaCost": 2,
+      "cooldown": 0
+    },
+    "power.charging-run": {
+      "id": "power.charging-run",
+      "name": "Charging Run",
+      "free": false,
+      "shape": "path",
+      "budgetMod": 2,
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 3,
+          "until": "endOfActivation"
+        }
+      ],
       "staminaCost": 2,
       "cooldown": 0
     },
@@ -14882,10 +14914,7 @@ export const UNIT_PACK = {
       "abilities": [
         "power.frenzy-potion.use"
       ],
-      "triggers": [],
-      "gaps": [
-        "power.frenzy-potion.use: \"until the end of your Activation\" is read as until the end of the Turn — item active clause"
-      ]
+      "triggers": []
     },
     "item.strength-potion": {
       "id": "item.strength-potion",
@@ -19369,10 +19398,19 @@ export const UNIT_PACK = {
       "power.test-mage.bolt": {
         "id": "power.test-mage.bolt",
         "name": "Arcane Bolt (TEST)",
-        "stat": "magic",
-        "bonus": 6,
-        "damageType": "magic",
         "range": 10,
+        "target": {
+          "select": "unit",
+          "side": "enemy"
+        },
+        "effects": [
+          {
+            "kind": "statDamage",
+            "stat": "magic",
+            "bonus": 6,
+            "damageType": "magic"
+          }
+        ],
         "staminaCost": 1,
         "cooldown": 6
       },
@@ -19389,8 +19427,9 @@ export const UNIT_PACK = {
         },
         "effects": [
           {
-            "kind": "gainStamina",
-            "value": 2
+            "kind": "stamina.gain",
+            "value": 2,
+            "who": "self"
           }
         ]
       },
@@ -19406,13 +19445,13 @@ export const UNIT_PACK = {
         },
         "effects": [
           {
-            "kind": "damage",
+            "kind": "statDamage",
             "stat": "magic",
             "bonus": 5,
             "damageType": "magic"
           },
           {
-            "kind": "damage",
+            "kind": "statDamage",
             "stat": "magic",
             "bonus": 5,
             "damageType": "magic"
@@ -19435,7 +19474,7 @@ export const UNIT_PACK = {
             "statusId": "status.protection"
           },
           {
-            "kind": "damage",
+            "kind": "statDamage",
             "stat": "magic",
             "bonus": 7,
             "damageType": "magic"
@@ -20473,9 +20512,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 2,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         },
         {
           "kind": "statMod",
@@ -21663,9 +21703,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 3,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ],
       "gaps": [
@@ -21696,9 +21737,10 @@ export const UNIT_PACK = {
           }
         },
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 8,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ]
     },
@@ -22541,9 +22583,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 3,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         },
         {
           "kind": "statMod",
@@ -22703,9 +22746,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 4,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         },
         {
           "kind": "statMod",
@@ -23030,18 +23074,19 @@ export const UNIT_PACK = {
       "warmup": 2,
       "range": 5,
       "target": {
-        "select": "area",
-        "side": "any",
-        "radius": 1,
-        "origin": "target"
+        "select": "unit",
+        "side": "any"
       },
-      "effects": [],
+      "effects": [
+        {
+          "kind": "layer.paint",
+          "layer": "layer.poisoned",
+          "radius": 1,
+          "origin": "target"
+        }
+      ],
       "gaps": [
-        "targets 'a hex within 5' — engine centres the blast on a UNIT",
-        "unparsed: Those seven hexes become poisoned",
-        "unparsed: Any unit that begins its Turn on poisoned ground gains 2 Poison and 1 Weak — all",
-        "needs capability: a third terrain status alongside burning and frost — 'blighted', which applies statuses on turn-start rather than ticking damage",
-        "no effect compiled — the power is inert"
+        "targets 'a hex within 5' — engine centres the blast on a UNIT"
       ]
     },
     "power.wild-shaper.wild-growth": {
@@ -23594,9 +23639,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 5,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ],
       "gaps": [
@@ -23695,9 +23741,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 8,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ],
       "gaps": [
@@ -24239,9 +24286,10 @@ export const UNIT_PACK = {
       },
       "effects": [
         {
-          "kind": "selfDamage",
+          "kind": "damage",
           "amount": 6,
-          "damageType": "true"
+          "damageType": "true",
+          "who": "self"
         }
       ],
       "gaps": [

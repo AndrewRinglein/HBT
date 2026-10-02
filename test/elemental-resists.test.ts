@@ -95,7 +95,8 @@ describe('elemental bounds, data folds and strict status typing',()=>{
  })
  it('loader rejects unsupported types and malformed named defense modifiers',()=>{
   expect(()=>validateDamageMetadata({id:'bad',damageType:'holy'})).toThrow(/damage type/)
-  expect(()=>validateDamageMetadata({id:'bad',effects:[{kind:'selfDamage',amount:2,damageType:'holy'} as never]})).toThrow(/damage type/)
+  // Law 10, fix.one-effect-vocabulary (2026-10-01): the one effect union renames the kind (selfDamage -> damage, who: 'self'); the assertion is unchanged.
+  expect(()=>validateDamageMetadata({id:'bad',effects:[{kind:'damage',amount:2,damageType:'holy',who:'self'} as never]})).toThrow(/damage type/)
   for(const key of ['fireResist','poisonResist','shadowResist']){
    for(const value of [1.5,Infinity,'3',null])expect(()=>validateNamedResists({[key]:value},'test')).toThrow(/integer/)
    expect(()=>validateNamedResists({[key]:-2},'test')).not.toThrow()

@@ -19,9 +19,8 @@
 // where a flier meets the ground it chose.
 import type { Ctx } from './types.js'
 import { appliesOnActivationEndOf, appliesOnEnterOf, hazardOf, layerAppliesOnActivationEnd, layerAppliesOnEnter, layerIdOf, stripsOnActivationEndOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
-import { applyDamage, layerAt, paintLayer, unit } from './mutate.js'
-import { flatDamage } from './mitigation.js'
-import { applyStatus, incomingAbsorb, reduceStatus, spendAbsorb } from './status.js'
+import { layerAt, paintLayer, unit } from './mutate.js'
+import { applyStatus, dealDirectDamage, reduceStatus } from './status.js'
 
 /**
  * The hazard of the ground at `hex`, dealt to the unit standing there: direct typed damage through
@@ -35,14 +34,7 @@ export function applyGroundHazard(ctx: Ctx, unitId: number, hex: number): boolea
   const t = ctx.state.terrain[hex] ?? 0
   const h = hazardOf(t)
   if (!h || h.damage <= 0) return false
-  const r = flatDamage(ctx, u, h.damage, h.damageType, incomingAbsorb(ctx, u))
-  const cause = terrainIdOf(t)
-  if (r.absorbed > 0) spendAbsorb(ctx, unitId, r.absorbed, cause)
-  applyDamage(ctx, unitId, r.value, cause, {
-    actor: null, damageType: h.damageType, hazard: true, hex,
-    ...(r.resisted ? { resisted: r.resisted } : {}),
-    ...(r.absorbed ? { absorbed: r.absorbed } : {}),
-  })
+  const r = dealDirectDamage(ctx, unitId, h.damage, h.damageType, terrainIdOf(t), { actor: null, damageType: h.damageType, hazard: true, hex })
   return r.value > 0
 }
 

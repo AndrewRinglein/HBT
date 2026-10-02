@@ -24,17 +24,18 @@
 //   4. Damage resolves through shared stations at its declared lifecycle rung.
 //      Hooks can change that state; public forecasts never peek at future rolls.
 
-import { incomingAbsorb, spendAbsorb } from './status.js'
-import { flatDamage } from './mitigation.js'
-import { isDamageType } from './types.js'
-import type { Ctx, Unit, DamageType } from './types.js'
+import { isDamageType, STAT_MOD_UNTIL } from './types.js'
+import type { Ctx, Effect, StatModUntil, Unit } from './types.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
-import { addStatMod, applyDamage, applyHealing, corpsesNear, drainStamina, emit, gainPower, grantBadge, removeCorpse, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, breakStatuses, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
-import { applyStatus, removeStatus } from './status.js'
+import { applyStatus, dealDirectDamage, incomingAbsorb, outgoingPenalty, removeStatus, spendAbsorb } from './status.js'
+import { resolveDamage } from './pipeline.js'
+import { effective } from './stats.js'
+import type { StatName } from './stats.js'
 import { executeKnockback } from './movement.js'
 import { rulesSideOf } from './side.js'
 
@@ -128,75 +129,28 @@ export type ValueSpec =
       readonly base?: number
       readonly round?: 'up' | 'down'
     }
-
-/** WHAT it does. */
-export type TriggerEffect =
-  | { readonly kind: 'burstScale'; readonly percent: number }
-  | { readonly kind: 'status.apply'; readonly statusId: string; readonly value: ValueSpec }
-  | { readonly kind: 'status.remove'; readonly statusId: string }
-  | { readonly kind: 'damage'; readonly amount: ValueSpec; readonly damageType: DamageType }
   /**
-   * Forced movement, Knockback only (capability.knockback 2026-08-27; CODEX
-   * §12 bans pulls, pushes and swaps beyond it). `value` hexes directly away
-   * from the trigger's OWNER — the halberd's "push the target 1 hex directly
-   * away from you" made data.
-   */
-  | { readonly kind: 'knockback'; readonly value: ValueSpec }
-  /**
-   * badge.afflictions (2026-09-04): "Vampires, werewolves, and undead sometimes
-   * afflict their targets with a badge. Same with ghosts and things that can
-   * add possession." The bestiary's "inflict an affliction" made data — the
-   * badge id is the row's; the engine grants it through grantBadge.
+   * fix.one-effect-vocabulary (2026-10-01): base + mult x the ACTING unit's own effective `stat` / div
+   * (§5: "every other stat scales off the acting unit alone") — Block's "Protection equal to 4 + your
+   * Armor", which the retired selfGuard shape carried as protectionBase/protectionPerArmor.
    */
   | {
-    readonly kind: 'badge.grant'; readonly badgeId: string
-    /**
-     * content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'):
-     * "when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism."
-     * Badges granted WITH the first, on the same roll, in the order the row lists them —
-     * only when the first is newly granted. Not a badge granting a badge: the affliction does.
-     */
-    readonly withBadgeIds?: readonly string[]
-  }
-  /** capability.power-pool (2026-09-03): the clock and the condition — "add power", "gain Power". Side-wide, never per unit. */
-  | { readonly kind: 'power.gain'; readonly value: ValueSpec }
-  /** capability.auras (2026-09-03): the End-of-Activation pulse — the Necromancer's "heal 3" to allies within 2. */
-  | { readonly kind: 'heal'; readonly amount: ValueSpec }
-  /**
-   * capability.corpses (2026-09-03): raise ONE corpse within `radius` as `unit`
-   * (the Necromancer: "raise one corpse as a Zombie" — radius assumed its aura's
-   * 2, the encounter session's reading, SWITCHES.md corpseRaiseRadius). The
-   * raised unit is a SUMMON and leaves no corpse. Nearest corpse first.
-   * fix.raise-two (2026-09-28; DECISIONS.md "the Cathedral encounter": "Let's have the
-   * necromancer raise two per turn."): `count` bodies per firing, the nearest first, ties by
-   * the lower corpse id (Law 6). Absent = one (SWITCHES.md raiseCountDefault).
-   */
-  | { readonly kind: 'corpse.raise'; readonly unit: string; readonly radius: number; readonly count?: number }
-  /** capability.corpses: remove every corpse within `radius`, healing the owner `healPer` each (the Spider's Consume the Fallen). */
-  | { readonly kind: 'corpse.consume'; readonly radius: number; readonly healPer: number }
-  /**
-   * A stat modifier with a lifetime (2026-09-03, with capability.vision): the
-   * bestiary's "grant a stat for the Battle" (Blight the Eye: −2 Vision, −10
-   * Accuracy) and "until end of your Activation". Through addStatMod, so the
-   * ledger names the trigger.
-   */
-  | { readonly kind: 'statMod'; readonly stat: import('./stats.js').StatName; readonly value: number; readonly until: 'battle' | 'endOfTurn' }
-  /** capability.target-stamina-loss (2026-09-03), ENEMY-REVIEW P8: "the existing stamina loss, aimed at a target" — Shriek, Necro Bolt, Mesmerize. Through drainStamina, floors at 0. */
-  | { readonly kind: 'stamina.drain'; readonly value: ValueSpec }
-  /** capability.vision / ground-layers: paint `layer` in `radius` around the owner ('self') or the hook's target ('target') — Nightfall, The Dark Rushes In. */
-  | { readonly kind: 'layer.paint'; readonly layer: string; readonly radius: number; readonly origin: 'self' | 'target' }
+      readonly scale: 'stat'
+      readonly stat: StatName
+      readonly div?: number
+      readonly mult?: number
+      readonly base?: number
+      readonly round?: 'up' | 'down'
+    }
 
-/** plumbing.vocabulary-export: every trigger effect kind, checked against the union by tsc — snapshot validation and the exported vocabulary read it. */
-export const TRIGGER_EFFECT_KINDS = ['burstScale', 'status.apply', 'status.remove', 'damage', 'knockback', 'badge.grant', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'stamina.drain', 'layer.paint'] as const satisfies readonly TriggerEffect['kind'][]
-export type TriggerEffectKindsCovered = import('./types.js').Assert<import('./types.js').Covers<TriggerEffect['kind'], typeof TRIGGER_EFFECT_KINDS>>
-
+/** WHAT it does — the one Effect union (types.ts, fix.one-effect-vocabulary). */
 export type Trigger = {
   readonly id: string
   readonly hook: Hook
   /** Integer percent, 0..100 (Law 7). */
   readonly chance: number
   readonly select: TriggerTarget
-  readonly effect: TriggerEffect
+  readonly effect: Effect
   /** Which class / item / badge granted it. §5: no dedup, so two sources both fire. */
   readonly source: string
   /**
@@ -217,6 +171,18 @@ export type Trigger = {
 }
 
 // ── validation, at load ─────────────────────────────────────────────────────
+
+/**
+ * fix.one-effect-vocabulary (2026-10-01): what one effect may say, whoever carries it — a trigger, a
+ * power, a move, a chart row. Loudly, at load (§5).
+ */
+export function validateEffect(e: Effect, where: string): void {
+  if ((e.kind === 'damage' || e.kind === 'statDamage') && !isDamageType(e.damageType)) throw new Error(`${where}: unknown damage type`)
+  if (e.kind === 'statMod' && !(STAT_MOD_UNTIL as readonly string[]).includes(e.until)) throw new Error(`${where}: a stat modifier lasts ${STAT_MOD_UNTIL.join(' | ')}, got '${e.until}'`)
+  // fix.raise-two (2026-09-28): how many a raise takes is a whole number, one or more — never zero, never a fraction
+  if (e.kind === 'corpse.raise' && e.count !== undefined && (!Number.isSafeInteger(e.count) || e.count < 1)) throw Error(`${where}: a raise's count is an integer, 1 or more`)
+  if (e.kind === 'burstScale' && (!Number.isSafeInteger(e.percent) || e.percent < 0 || e.percent > 100)) throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
+}
 
 /**
  * §5: "The new engine errors loudly on unknown targets." Loudly, and at load —
@@ -245,12 +211,11 @@ export function validateTrigger(t: Trigger): void {
   if (needsTarget && !HAS_TARGET.has(t.hook)) {
     throw new Error(`${where}: hook '${t.hook}' has no target, so select:'target' can never resolve`)
   }
-  // fix.raise-two (2026-09-28): how many a raise takes is a whole number, one or more — never zero, never a fraction
-  if (t.effect.kind === 'corpse.raise' && t.effect.count !== undefined && (!Number.isSafeInteger(t.effect.count) || t.effect.count < 1)) throw Error(`${where}: a raise's count is an integer, 1 or more`)
-  if (t.effect.kind === 'burstScale' && (t.hook !== 'onBurst' || t.select !== 'self' || !Number.isSafeInteger(t.effect.percent) || t.effect.percent < 0 || t.effect.percent > 100)) throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
+  if (t.effect.kind === 'burstScale' && t.select !== 'self') throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
   if (t.hook === 'onBurst' && t.onlyWithAttack !== undefined) throw Error(`${where}: onBurst cannot be attack-scoped`)
   if (t.role !== undefined && (t.hook !== 'onBlock' || !['defender', 'attacker'].includes(t.role))) throw Error(`${where}: role is 'defender' or 'attacker', on onBlock only`)
-  if(t.effect.kind==='damage'&&!isDamageType(t.effect.damageType))throw new Error(`${where}: unknown damage type`)
+  validateEffect(t.effect, where)
+  if (t.effect.kind === 'burstScale' && t.hook !== 'onBurst') throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
   if (!t.source) throw new Error(`${where}: every trigger names the source that granted it`)
 }
 
@@ -318,6 +283,10 @@ export const partySpiritSum = (ctx: Ctx, side: Unit['side']) => partySum(ctx, si
 
 export function valueOf(ctx: Ctx, owner: Unit, spec: ValueSpec): number {
   if (typeof spec === 'number') return spec
+  if (spec.scale === 'stat') {
+    const scaled = (effective(ctx, owner, spec.stat).value * (spec.mult ?? 1)) / (spec.div ?? 1)
+    return (spec.base ?? 0) + (spec.round === 'up' ? Math.ceil(scaled) : Math.trunc(scaled))   // Law 7, one stated rounding
+  }
   if (spec.scale === 'power') {
     // the pool is the ENEMY side's; a hero-side owner reads 0 (nearest, 0.5 up — ENEMY-REVIEW P1)
     const pool = rulesSideOf(ctx, owner) === 'enemy' ? (ctx.state.power ?? 0) : 0   // proving.mirror-row-rules
@@ -451,118 +420,193 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): BurstAdjust
     if (t.effect.kind === 'burstScale') {
       adjustments.push({ id: t.id, percent: t.effect.percent })
       emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: owner.id, effect: t.effect.kind, percent: t.effect.percent })
-    } else for (const id of selectOf(ctx, t, fc)) applyEffect(ctx, t, owner, id)
+    } else for (const id of selectOf(ctx, t, fc)) fireOn(ctx, t, owner, id)
   }
   return adjustments
 }
 
-function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void {
+/**
+ * One trigger landing on one unit. Nothing lands on the dead except a painted layer (the Eyeblight's
+ * "The Dark Rushes In", onDeath); every firing logs trigger.fired naming its effect and the resolved
+ * numbers; THE one applyEffect does the rest.
+ */
+function fireOn(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void {
   const tg = ctx.state.units[targetId]
   if (!tg) return
-  const e = t.effect
-  // a dying unit may still paint the ground (the Eyeblight's "The Dark Rushes In", onDeath); nothing else lands on the dead
-  if (tg.lifeState === 'dead' && e.kind !== 'layer.paint') return
+  if (tg.lifeState === 'dead' && t.effect.kind !== 'layer.paint') return
+  applyEffect(ctx, t.effect, { causeId: t.id, actor: owner.id, by: owner.id }, targetId,
+    (fields) => emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: t.effect.kind, ...fields }))
+}
 
+/** On whose behalf, and under which cause, an effect is applied. */
+export type EffectSource = {
+  /** The cause every event names — the trigger, the power, the move, the attack. */
+  readonly causeId: string
+  /** The one acting: values scale off it, knockback is directly away from it, corpses are measured from it. */
+  readonly actor: number
+  /** Whose status this is (status.applied `by`); absent = nobody's (a chart row's). */
+  readonly by?: number
+  /** A power's id, named on the damage it deals. */
+  readonly abilityId?: string
+  /** A stat modifier's source when it is not the cause (a chart row's key). */
+  readonly modSource?: string
+}
+
+/** When a stat modifier with this lifetime goes (StatModUntil, types.ts). */
+function expiryOf(ctx: Ctx, holder: Unit, until: StatModUntil): { expiresAtTurn?: number; expiresAfterActivation?: number } {
+  switch (until) {
+    // `endOfTurn` = expiresAtTurn turn+1, matching modsFor's `turn < expiresAtTurn` (movement.ts, 2026-08-25)
+    case 'endOfTurn': return { expiresAtTurn: ctx.state.turn + 1 }
+    case 'endOfNextTurn': return { expiresAtTurn: ctx.state.turn + 2 }
+    // C20, "until the end of your Activation": the holder's current ordinal. Mid-Activation it goes when this one
+    // ends; a holder not acting has already ended that one, so it goes when its next one ends (expiry reads <=).
+    case 'endOfActivation': return { expiresAfterActivation: holder.activationOrdinal }
+    case 'endOfNextActivation': return { expiresAfterActivation: holder.activationOrdinal + 1 }
+    case 'battle': return {}
+  }
+}
+
+/**
+ * THE ONE EFFECT INTERPRETER — fix.one-effect-vocabulary (2026-10-01). Prior art: this function, which was
+ * the trigger's; the power's applyOne (ability.ts), the move's applyMoveEffects (movement.ts) and the
+ * chart's row loop (crit.ts) are folded into it. Applies one effect to one unit, every number through the
+ * mutators. The caller guards life (a trigger lands on the downed, a power on the standing only) and routes
+ * `who`; `announce`, when given, receives the effect's resolved numbers at the moment the trigger log has
+ * always named them. Returns the damage a `statDamage` dealt (a power totals it), otherwise 0.
+ */
+export function applyEffect(ctx: Ctx, e: Effect, src: EffectSource, targetId: number, announce?: (fields: Record<string, unknown>) => void): number {
+  const actor = unit(ctx, src.actor)
+  const tg = unit(ctx, targetId)
+  const say = announce ?? (() => {})
+  const cause = src.causeId
+  const named = src.abilityId ? { abilityId: src.abilityId } : {}
   switch (e.kind) {
-    case 'status.apply': {
-      const v = valueOf(ctx, owner, e.value)
-      emit(ctx, 'trigger.fired', t.id, {
-        actor: owner.id, target: targetId, effect: e.kind, statusId: e.statusId, value: v,
-      })
-      if (v > 0) applyStatus(ctx, targetId, e.statusId, v, t.id, owner.id)
-      break
-    }
-    case 'status.remove': {
-      emit(ctx, 'trigger.fired', t.id, {
-        actor: owner.id, target: targetId, effect: e.kind, statusId: e.statusId,
-      })
-      removeStatus(ctx, targetId, e.statusId, t.id)
-      break
+    case 'statDamage': {
+      if (tg.side === actor.side && (e.allies ?? 'always') === 'never') return 0
+      // Law 1: THE pipeline, crit forced false (Design Law 23: what does not roll cannot crit)
+      const dmg = resolveDamage(ctx, actor, tg, { id: cause, stat: e.stat, bonus: e.bonus, damageType: e.damageType }, false, outgoingPenalty(ctx, actor), incomingAbsorb(ctx, tg))
+      const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
+      if (summed !== dmg.value) throw new Error(`power ledger does not reconcile: ${summed} vs ${dmg.value}`)
+      emit(ctx, 'power.hit', cause, { actor: src.actor, target: targetId, ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })) })
+      if (dmg.absorbed > 0) spendAbsorb(ctx, targetId, dmg.absorbed, cause)
+      applyDamage(ctx, targetId, dmg.value, cause, { actor: src.actor, ...named, damageType: e.damageType, ...(dmg.absorbed > 0 ? { absorbed: dmg.absorbed } : {}) })
+      return dmg.value
     }
     case 'damage': {
-      const v = valueOf(ctx, owner, e.amount)
-      emit(ctx, 'trigger.fired', t.id, {
-        actor: owner.id, target: targetId, effect: e.kind, amount: v, damageType: e.damageType,
-      })
-      if (v > 0) {
-        const target = unit(ctx, targetId)
-        const damage = flatDamage(ctx, target, v, e.damageType, incomingAbsorb(ctx, target))
-        if (damage.absorbed > 0) spendAbsorb(ctx, targetId, damage.absorbed, t.id)
-        applyDamage(ctx, targetId, damage.value, t.id, {
-          actor: owner.id, damageType: e.damageType,
-          ...(damage.resisted ? { resisted: damage.resisted } : {}),
-          ...(damage.absorbed ? { absorbed: damage.absorbed } : {}),
-        })
-      }
-      break
+      const v = valueOf(ctx, actor, e.amount)
+      say({ amount: v, damageType: e.damageType })
+      if (v > 0) dealDirectDamage(ctx, targetId, v, e.damageType, cause, { actor: src.actor, ...named, damageType: e.damageType })
+      return 0
     }
+    case 'heal': {
+      const v = valueOf(ctx, actor, e.amount)
+      say({ amount: v })
+      if (v > 0) applyHealing(ctx, targetId, v, cause)
+      return 0
+    }
+    case 'status.apply': {
+      const v = valueOf(ctx, actor, e.value)
+      say({ statusId: e.statusId, value: v })
+      if (v > 0) applyStatus(ctx, targetId, e.statusId, v, cause, src.by)
+      return 0
+    }
+    case 'status.remove': {
+      say({ statusId: e.statusId, ...(e.value !== undefined ? { value: e.value } : {}) })
+      if (e.value === undefined) removeStatus(ctx, targetId, e.statusId, cause)
+      else reduceStatus(ctx, targetId, e.statusId, e.value, cause)
+      return 0
+    }
+    case 'statMod': {
+      say({ stat: e.stat, value: e.value, until: e.until })
+      // Max Health is the one stat the pipeline does not resolve (u.maxHp is read raw by the healing cap and
+      // the crit chart) — it moves by mutator, battle-long, like its loss does.
+      if (e.stat === 'maxHp') { if (e.value > 0) gainMaxHp(ctx, targetId, e.value, cause); else loseMaxHp(ctx, targetId, -e.value, cause); return 0 }
+      let value = e.value
+      // "Stat losses floor where the row says 'minimum 0'; nothing else floors." Clamped AT APPLICATION
+      // against the current effective value — Guard Broken cannot push Armor below 0, and a later bonus
+      // still adds on top of what remains.
+      if (e.floor !== undefined && value < 0) {
+        value = Math.min(0, -Math.min(effective(ctx, tg, e.stat).value - e.floor, -value))
+        if (value === 0) return 0
+      }
+      addStatMod(ctx, targetId, { stat: e.stat, op: 'add', value, source: src.modSource ?? cause, scope: 'unit', ...expiryOf(ctx, tg, e.until) }, cause)
+      return 0
+    }
+    case 'stamina.gain': gainStamina(ctx, targetId, e.value, cause); return 0
+    case 'stamina.drain': {
+      const v = valueOf(ctx, actor, e.value)
+      say({ value: v })
+      if (v > 0) drainStamina(ctx, targetId, v, cause)
+      return 0
+    }
+    case 'loseMaxStamina': loseMaxStamina(ctx, targetId, e.value, cause); return 0
+    case 'loseMaxHp': loseMaxHp(ctx, targetId, e.value, cause); return 0
+    case 'stand': standUp(ctx, targetId, cause); return 0
     case 'knockback': {
-      const v = valueOf(ctx, owner, e.value)
-      emit(ctx, 'trigger.fired', t.id, {
-        actor: owner.id, target: targetId, effect: e.kind, value: v,
-      })
-      if (v > 0) executeKnockback(ctx, owner.id, targetId, v, t.id)
-      break
+      const v = valueOf(ctx, actor, e.value)
+      say({ value: v })
+      if (v > 0) executeKnockback(ctx, src.actor, targetId, v, cause)
+      return 0
     }
     case 'badge.grant': {
       // badge.afflictions: only a standing unit can be afflicted; a badge already carried is not granted twice (grantBadge says so)
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, badgeId: e.badgeId, ...(e.withBadgeIds?.length ? { withBadgeIds: [...e.withBadgeIds] } : {}) })
-      if (unit(ctx, targetId).lifeState === 'standing' && grantBadge(ctx, targetId, e.badgeId, t.id)) {
-        for (const w of e.withBadgeIds ?? []) grantBadge(ctx, targetId, w, t.id)
+      say({ badgeId: e.badgeId, ...(e.withBadgeIds?.length ? { withBadgeIds: [...e.withBadgeIds] } : {}) })
+      if (tg.lifeState === 'standing' && grantBadge(ctx, targetId, e.badgeId, cause)) {
+        for (const w of e.withBadgeIds ?? []) grantBadge(ctx, targetId, w, cause)
       }
-      break
-    }
-    case 'heal': {
-      const v = valueOf(ctx, owner, e.amount)
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, amount: v })
-      if (v > 0) applyHealing(ctx, targetId, v, t.id)
-      break
-    }
-    case 'corpse.raise': {
-      const near = corpsesNear(ctx, owner.hex, e.radius)
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, corpsesInReach: near.length })
-      if (!near.length) break
-      const def = ctx.units?.[e.unit]
-      if (!def) throw new Error(`trigger '${t.id}' raises '${e.unit}', which is not a unit in the registry`)
-      if (!ctx.arrive) throw new Error(`trigger '${t.id}' raises a corpse but this battle cannot field arrivals (no ctx.arrive)`)
-      // fix.raise-two: the `count` nearest, in corpsesNear's order (nearest, then lower id — Law 6)
-      for (const c of near.slice(0, e.count ?? 1)) {
-        removeCorpse(ctx, c.id, t.id, 'raised', owner.id)
-        const raised = ctx.arrive(ctx, def, c.hex, t.id)
-        raised.summoned = true
-        emit(ctx, 'unit.raised', t.id, { actor: owner.id, raised: raised.id, from: c.typeId, hex: raised.hex })
-      }
-      break
-    }
-    case 'corpse.consume': {
-      const near = corpsesNear(ctx, owner.hex, e.radius)
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, corpses: near.length })
-      for (const c of near) removeCorpse(ctx, c.id, t.id, 'consumed', owner.id)
-      if (near.length) applyHealing(ctx, owner.id, near.length * e.healPer, t.id)
-      break
-    }
-    case 'stamina.drain': {
-      const v = valueOf(ctx, owner, e.value)
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, value: v })
-      if (v > 0) drainStamina(ctx, targetId, v, t.id)
-      break
-    }
-    case 'statMod': {
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, stat: e.stat, value: e.value, until: e.until })
-      addStatMod(ctx, targetId, { stat: e.stat, op: 'add', value: e.value, source: t.id, scope: 'unit', ...(e.until === 'endOfTurn' ? { expiresAtTurn: ctx.state.turn + 1 } : {}) }, t.id)
-      break
-    }
-    case 'layer.paint': {
-      const centre = e.origin === 'target' ? tg.hex : owner.hex
-      const n = paintRadius(ctx, centre, e.radius, layerOfId(e.layer), t.id)
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, layer: e.layer, radius: e.radius, hexes: n })
-      break
+      return 0
     }
     case 'power.gain': {
-      const v = valueOf(ctx, owner, e.value)
-      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, value: v })
-      if (rulesSideOf(ctx, owner) === 'enemy' && v > 0) gainPower(ctx, v, t.id, { actor: owner.id })   // proving.mirror-row-rules
-      break
+      const v = valueOf(ctx, actor, e.value)
+      say({ value: v })
+      if (rulesSideOf(ctx, actor) === 'enemy' && v > 0) gainPower(ctx, v, cause, { actor: src.actor })   // proving.mirror-row-rules
+      return 0
     }
+    case 'corpse.raise': {
+      const near = corpsesNear(ctx, actor.hex, e.radius)
+      say({ corpsesInReach: near.length })
+      if (!near.length) return 0
+      const def = ctx.units?.[e.unit]
+      if (!def) throw new Error(`'${cause}' raises '${e.unit}', which is not a unit in the registry`)
+      if (!ctx.arrive) throw new Error(`'${cause}' raises a corpse but this battle cannot field arrivals (no ctx.arrive)`)
+      // fix.raise-two: the `count` nearest, in corpsesNear's order (nearest, then lower id — Law 6)
+      for (const c of near.slice(0, e.count ?? 1)) {
+        removeCorpse(ctx, c.id, cause, 'raised', src.actor)
+        const raised = ctx.arrive(ctx, def, c.hex, cause)
+        raised.summoned = true
+        emit(ctx, 'unit.raised', cause, { actor: src.actor, raised: raised.id, from: c.typeId, hex: raised.hex })
+      }
+      return 0
+    }
+    case 'corpse.consume': {
+      const near = corpsesNear(ctx, actor.hex, e.radius)
+      say({ corpses: near.length })
+      for (const c of near) removeCorpse(ctx, c.id, cause, 'consumed', src.actor)
+      if (near.length) applyHealing(ctx, src.actor, near.length * e.healPer, cause)
+      return 0
+    }
+    case 'corpse.eat': {
+      // capability.corpses: the Ghoul's Eat Corpse — one body within reach, nearest first
+      const c = corpsesNear(ctx, actor.hex, e.radius)[0]
+      if (!c) return 0
+      removeCorpse(ctx, c.id, cause, 'eaten', src.actor)
+      emit(ctx, 'corpse.eaten', cause, { actor: src.actor, corpse: c.id, of: c.typeId })
+      applyHealing(ctx, src.actor, e.heal, cause)
+      for (const [stat, value] of Object.entries(e.mods)) if (value) addStatMod(ctx, src.actor, { stat: stat as StatName, op: 'add', value, source: cause, scope: 'unit' }, cause)
+      if (e.maxHp) gainMaxHp(ctx, src.actor, e.maxHp, cause)
+      return 0
+    }
+    case 'layer.paint': {
+      const n = paintRadius(ctx, e.origin === 'target' ? tg.hex : actor.hex, e.radius, layerOfId(e.layer), cause)
+      say({ layer: e.layer, radius: e.radius, hexes: n })
+      return 0
+    }
+    case 'reveal': {
+      // capability.stealth: a reveal finds units of the other side only — its own side's stealth is not what it hunts (SWITCHES.md stealthRevealSide)
+      if (tg.side !== actor.side) breakStatuses(ctx, targetId, 'reveal', cause)
+      return 0
+    }
+    case 'burstScale':
+      throw new Error(`'${cause}': burst scaling is read by fireTriggers on onBurst, never applied to a unit`)
   }
 }

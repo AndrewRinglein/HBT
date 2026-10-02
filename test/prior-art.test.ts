@@ -123,8 +123,10 @@ describe('tool.prior-art-audit — the rules of the flags', () => {
   it('the ruled funnels name files that exist and a literal list the engine has', () => {
     const here = fileURLToPath(new URL('../../', import.meta.url))
     for (const r of rules) for (const f of r.files) expect(statSync(join(here, f)).isFile(), f).toBe(true)
-    const trigger = inventoryOf({ 'engine/src/core/trigger.ts': readFileSync(join(here, 'engine/src/core/trigger.ts'), 'utf8') }, rules)
-    expect(trigger.files['engine/src/core/trigger.ts']!.vocab.find((v) => v.name === 'TriggerEffect.kind')?.members).toContain('status.apply')
+    // Law 10, fix.one-effect-vocabulary (2026-10-01): the one Effect union lives in types.ts (EffectBody.kind), where TriggerEffect.kind in trigger.ts stood; the assertion is unchanged.
+    // was: const trigger = inventoryOf({ 'engine/src/core/trigger.ts': ... }); expect(...vocab.find((v) => v.name === 'TriggerEffect.kind')?.members).toContain('status.apply')
+    const types = inventoryOf({ 'engine/src/core/types.ts': readFileSync(join(here, 'engine/src/core/types.ts'), 'utf8') }, rules)
+    expect(types.files['engine/src/core/types.ts']!.vocab.find((v) => v.name === 'EffectBody.kind')?.members).toContain('status.apply')
     expect([inScope('engine/src/core/ground.ts'), inScope('engine/src/content/generated/pack.ts'), inScope('engine/test/x.test.ts'), inScope('content/mkenginepack.mjs'), inScope('content/test/a.mjs'), inScope('viewer/tools/a.test.mjs')]).toEqual([true, false, false, true, false, false])
   })
 })
