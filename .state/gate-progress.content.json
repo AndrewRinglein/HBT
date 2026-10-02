@@ -1,24 +1,24 @@
 {
- "id": "fix.codex-numbers-refiled",
- "tree": "b10e9a6a9e1e869c4fe26dd8aeacdae535b965d9",
- "ctx": "1f14f43ddfd757cb6ee3d2a3dfe58b57c782d0e8",
+ "id": "content.afflictions-at-zero-refiled",
+ "tree": "cab3e17f9942ffdfd95125b4d69e17cfff24424e",
+ "ctx": "b44b07ebb7fe489d4107ed01e40bf3e665078ef6",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 603,
-  "typecheck": 2151,
-  "the item's own tests": 10344,
-  "gate 1 — the id appears in a real battle": 8378,
-  "brought its own tests": 64,
+  "not already decided": 316,
+  "typecheck": 1624,
+  "the item's own tests": 7755,
+  "gate 1 — the id appears in a real battle": 3299,
+  "brought its own tests": 53,
   "existing tests untouched": 0,
-  "control battles unchanged": 48593,
-  "content has a published source": 154,
-  "hardcode scan — core knows mechanisms, never names": 63,
+  "control battles unchanged": 41599,
+  "content has a published source": 136,
+  "hardcode scan — core knows mechanisms, never names": 47,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 1,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 74,
-  "naming — no banned words invented": 212,
-  "kill switch — the tests fail without the content": 3049
+  "naming — new content ids use declared kinds": 58,
+  "naming — no banned words invented": 187,
+  "kill switch — the tests fail without the content": 2453
  }
 }

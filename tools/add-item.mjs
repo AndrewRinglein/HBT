@@ -2,6 +2,10 @@
 // Add pending work only. Gate/review remain the only writers of verdict fields.
 // node tools/add-item.mjs spec.json [--backlog <file>] [--first]
 // --first puts the new items at the top of the queue (next.mjs takes backlog order).
+// node tools/add-item.mjs --repoint <abandoned> <refiled> [--backlog <file>]
+//   every pending item whose `needs` names the abandoned id (status failed) names the
+//   re-filed one instead (Andrew, 2026-10-01, DECISIONS 'the abandoned ids' dependants
+//   are repointed'). Landed and abandoned items keep their needs: those are history.
 // Each item goes into its own area's list, .state/backlog.<area>.json (tools/backlog.mjs);
 // --backlog <file> writes every item into that one file instead.
 import { readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs'
@@ -49,35 +53,77 @@ function validate(items, existing) {
   for (const item of items) visit(item.id)
 }
 
+const pending = (item) => item.status === undefined
+
+function repoint(all, from, to) {
+  const byId = new Map(all.map((item) => [item.id, item]))
+  if (byId.get(from)?.status !== 'failed') throw new Error(`--repoint: ${from} is not an abandoned item`)
+  if (!byId.has(to) || byId.get(to).status === 'failed') throw new Error(`--repoint: ${to} is not a live item`)
+  const changed = all.filter((item) => pending(item) && item.needs?.includes(from))
+  if (!changed.length) throw new Error(`--repoint: no pending item needs ${from}`)
+  const rows = changed.map((item) => ({ ...item, needs: [...new Set(item.needs.map((id) => (id === from ? to : id)))] }))
+  for (const row of rows) if (row.needs.includes(row.id)) throw new Error(`self dependency: ${row.id}`)
+  const next = new Map(byId); for (const row of rows) next.set(row.id, row)
+  const visited = new Set(), visiting = new Set()
+  const visit = (id) => {
+    if (visiting.has(id)) throw new Error(`dependency cycle: ${id}`)
+    if (visited.has(id)) return
+    visiting.add(id); for (const d of next.get(id)?.needs ?? []) visit(d); visiting.delete(id); visited.add(id)
+  }
+  for (const row of rows) visit(row.id)
+  return rows
+}
+
 try {
-  const first = process.argv.includes('--first')
-  const args = process.argv.slice(2).filter(a => a !== '--first')
-  if (!(args.length === 1 || (args.length === 3 && args[1] === '--backlog'))) throw new Error('usage: node tools/add-item.mjs spec.json [--backlog path] [--first]')
-  const input = JSON.parse(readFileSync(args[0], 'utf8'))
-  const items = Array.isArray(input) ? input : [input]
-  // one file (--backlog, or an old single .state/backlog.json), or each item's area's list
-  const single = args[2] ?? (backlogFiles().length === 1 ? backlogFiles()[0] : null)
-  const snapshot = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : '[]')
-  if (single) {
-    const original = readFileSync(single, 'utf8')
-    validate(items, JSON.parse(original))
-    if (readFileSync(single, 'utf8') !== original) throw new Error('backlog changed during validation; retry')
-    put(single, JSON.parse(original), items)
+  const at = process.argv.indexOf('--repoint')
+  if (at !== -1) {
+    const [from, to] = process.argv.slice(at + 1, at + 3)
+    const b = process.argv.indexOf('--backlog')
+    if (!from || !to || from.startsWith('--') || to.startsWith('--') || (b !== -1 && !process.argv[b + 1])) throw new Error('usage: node tools/add-item.mjs --repoint <abandoned> <refiled> [--backlog path]')
+    const single = b !== -1 ? process.argv[b + 1] : (backlogFiles().length === 1 ? backlogFiles()[0] : null)
+    const files = single ? [single] : backlogFiles().filter((f) => existsSync(f))
+    const originals = new Map(files.map((f) => [f, readFileSync(f, 'utf8')]))
+    const rows = repoint(single ? JSON.parse(originals.get(single)) : readBacklog(), from, to)
+    for (const [f, text] of originals) if (readFileSync(f, 'utf8') !== text) throw new Error('backlog changed during validation; retry')
+    const byId = new Map(rows.map((row) => [row.id, row]))
+    for (const [f, text] of originals) {
+      const list = JSON.parse(text)
+      if (!list.some((item) => byId.has(item.id))) continue
+      const temporary = `${f}.${process.pid}.pending`
+      writeFileSync(temporary, JSON.stringify(list.map((item) => byId.get(item.id) ?? item), null, 1) + '\n', { flag: 'wx' })
+      renameSync(temporary, f)
+    }
+    console.log(`Repointed ${from} -> ${to} in: ${rows.map((row) => row.id).join(', ')}`)
   } else {
-    const groups = new Map()
-    for (const item of items) { const f = backlogFile(areaOf(item)); groups.set(f, [...(groups.get(f) ?? []), item]) }
-    const originals = new Map([...groups.keys()].map((f) => [f, snapshot(f)]))
-    validate(items, readBacklog())   // ids and needs are checked against every area
-    // Validate the whole batch before any write. Refuse a stale source snapshot.
-    for (const [f, text] of originals) if (snapshot(f) !== text) throw new Error('backlog changed during validation; retry')
-    for (const [f, group] of groups) put(f, JSON.parse(originals.get(f)), group)
+    const first = process.argv.includes('--first')
+    const args = process.argv.slice(2).filter(a => a !== '--first')
+    if (!(args.length === 1 || (args.length === 3 && args[1] === '--backlog'))) throw new Error('usage: node tools/add-item.mjs spec.json [--backlog path] [--first]')
+    const input = JSON.parse(readFileSync(args[0], 'utf8'))
+    const items = Array.isArray(input) ? input : [input]
+    // one file (--backlog, or an old single .state/backlog.json), or each item's area's list
+    const single = args[2] ?? (backlogFiles().length === 1 ? backlogFiles()[0] : null)
+    const snapshot = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : '[]')
+    if (single) {
+      const original = readFileSync(single, 'utf8')
+      validate(items, JSON.parse(original))
+      if (readFileSync(single, 'utf8') !== original) throw new Error('backlog changed during validation; retry')
+      put(single, JSON.parse(original), items)
+    } else {
+      const groups = new Map()
+      for (const item of items) { const f = backlogFile(areaOf(item)); groups.set(f, [...(groups.get(f) ?? []), item]) }
+      const originals = new Map([...groups.keys()].map((f) => [f, snapshot(f)]))
+      validate(items, readBacklog())   // ids and needs are checked against every area
+      // Validate the whole batch before any write. Refuse a stale source snapshot.
+      for (const [f, text] of originals) if (snapshot(f) !== text) throw new Error('backlog changed during validation; retry')
+      for (const [f, group] of groups) put(f, JSON.parse(originals.get(f)), group)
+    }
+    function put(path, existing, added) {
+      const temporary = `${path}.${process.pid}.pending`
+      writeFileSync(temporary, JSON.stringify(first ? [...added, ...existing] : [...existing, ...added], null, 1) + '\n', { flag: 'wx' })
+      renameSync(temporary, path)
+    }
+    console.log(`Added ${items.length} pending item(s): ${items.map(item => item.id).join(', ')}`)
   }
-  function put(path, existing, added) {
-    const temporary = `${path}.${process.pid}.pending`
-    writeFileSync(temporary, JSON.stringify(first ? [...added, ...existing] : [...existing, ...added], null, 1) + '\n', { flag: 'wx' })
-    renameSync(temporary, path)
-  }
-  console.log(`Added ${items.length} pending item(s): ${items.map(item => item.id).join(', ')}`)
 } catch (error) {
   console.error(`add-item: ${error.message}`)
   process.exitCode = 1

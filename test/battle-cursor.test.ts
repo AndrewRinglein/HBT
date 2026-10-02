@@ -237,6 +237,14 @@ const oneEffectGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curso
 // test.opening-cathedral, test.opening-gates, progression-surge-0 and progression-surge-2. A `changed` case is checked
 // here and skips the older layers.
 const turnModsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-turn-mods.json', import.meta.url), 'utf8'))
+// content.afflictions-at-zero (2026-10-01), Law 10: Rotting Flesh carries +5 bleed-out (DECISIONS.md 2026-10-01 'bleed-out is a
+// stat on every player unit, 5; Rotting Flesh +5') and the four afflictions name what happens at 0 Health as gaps ('the
+// afflictions at 0 Health'). Every case frozen here (tools/capture-afflictions-at-zero-cursor.mts). Moved by log TEXT only —
+// a Rotting Flesh badge.gained line names its +5 as waiting for the next fielding, and the afflictions' gap lists grew; state,
+// RNG and result unchanged (movedOnlyText): showcase.prologue-party, showcase.waystation, test.opening-cathedral,
+// test.opening-cavern-trail, test.vampire-bite. test.afflictions-at-zero is new. Captured over the fix.turn-mods-expire
+// layer (combined 2026-10-02). A `changed` case is checked here and skips the older layers.
+const afflictionsAtZeroGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -353,11 +361,14 @@ describe('resumable battle cursor', () => {
       const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true
       const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const oneEffectExpected = oneEffectGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const turnModsExpected = turnModsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const turnModsMoved = turnModsExpected?.changed === true
+      // was: const turnModsMoved = turnModsExpected?.changed === true — an afflictions-at-zero-moved case skips the turn-mods layer too (content.afflictions-at-zero 2026-10-01)
+      const turnModsMoved = turnModsExpected?.changed === true || afflictionsAtZeroMoved
       // was: const oneEffectMoved = oneEffectExpected?.changed === true — a turn-mods-moved case skips the one-effect layer too (fix.turn-mods-expire 2026-10-01)
       const oneEffectMoved = oneEffectExpected?.changed === true || turnModsMoved
       // was: const codexNumbersMoved = codexNumbersExpected?.changed === true — a one-effect-moved case skips the codex-numbers layer too (fix.one-effect-vocabulary 2026-10-01)
@@ -432,7 +443,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (turnModsExpected) {
+        if (afflictionsAtZeroExpected) {
+        expect(hash(ctx.events), 'full afflictions-at-zero events').toBe(afflictionsAtZeroExpected.events)
+        expect(hash(ctx.state), 'full afflictions-at-zero state').toBe(afflictionsAtZeroExpected.state)
+        expect(hash(ctx.rng.log), 'full afflictions-at-zero RNG').toBe(afflictionsAtZeroExpected.rng)
+        expect(result).toEqual(afflictionsAtZeroExpected.result)
+        }
+        // was: if (turnModsExpected) { — content.afflictions-at-zero (2026-10-01): an afflictions-at-zero-moved case is checked above instead
+        if (turnModsExpected && !afflictionsAtZeroMoved) {
         expect(hash(ctx.events), 'full turn-mods events').toBe(turnModsExpected.events)
         expect(hash(ctx.state), 'full turn-mods state').toBe(turnModsExpected.state)
         expect(hash(ctx.rng.log), 'full turn-mods RNG').toBe(turnModsExpected.rng)

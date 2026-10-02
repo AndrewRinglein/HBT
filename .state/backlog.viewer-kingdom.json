@@ -209,7 +209,7 @@
   "needs": [
    "kingdom.abbotown-map",
    "viewer.opening-cast",
-   "encounter.opening.bridge-ai"
+   "encounter.opening.bridge-ai-refiled"
   ],
   "spec": "PLAYABLE-OPENING-PLAN.md item 12. Ruled 2026-09-29: one page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards (the Orphanage's 20 XP, the Flaming Longsword after battle 2, the item choice after battle 3, level-ups, wounds carried; no tactics) -> map, for the first three battles; a lost battle is replayed with the same party. Narrows kingdom.opening-loop to three battles.",
   "expect": "Andrew plays from the Orphanage through the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled."
