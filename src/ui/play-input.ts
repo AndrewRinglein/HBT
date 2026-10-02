@@ -233,8 +233,13 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    if(chosen!==null){chosen=null;aim=null;return true}
    return false}
   if(e.kind==='slot'){
-   /* viewer.xcom-camera: an action chosen on the proposed hero's bar begins its activation, then is chosen */
-   if(actor===null){const p=proposal();if(p===null||e.unit!==p||!begin(s,p))return false;actor=sync(s);if(actor===null)return true}
+   /* viewer.xcom-camera: an action chosen on the proposed hero's bar begins its activation, then is chosen.
+      fix.shield-power-double-click (engine DECISIONS.md 2026-10-01 'a self power fires on a double-click on its bar button'):
+      so does one chosen on the bar of a hero only looked at, when the engine would let it begin now — the bar shown is
+      that hero's, and its order makes it the next (kingdom SWITCHES playQueueBarOrder) */
+   if(actor===null){const p=proposal();if(p===null||e.unit===null)return false
+    if(e.unit!==p){if(!queueOf(s).includes(e.unit))return false;proposed=e.unit}
+    if(!begin(s,e.unit))return false;actor=sync(s);if(actor===null)return true}
    if(e.unit!==actor)return false
    const u=s.ctx.state.units[actor]!
    if(!u.actions.includes(e.actionId)||!s.ctx.actions[e.actionId])return false

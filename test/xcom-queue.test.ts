@@ -46,6 +46,26 @@ describe('the next to act, proposed in the character bar\'s order', () => {
     expect(P.facts().slot).toBe(move)
     expect(P.facts().reach.length, 'its walk is drawn at once').toBeGreaterThan(0)
   })
+  /* fix.shield-power-double-click (engine DECISIONS.md 2026-10-01 'a self power fires on a double-click on its bar button'):
+     the bar shows the hero last looked at; an action chosen there begins that hero when the engine lets it begin (kingdom
+     SWITCHES playQueueBarOrder) — an enemy's bar, or a hero who may not begin, is refused */
+  it('an action chosen on the bar of a hero only looked at begins that hero and is chosen', () => {
+    const { s, P } = start(), q = eligible(s), other = q[1]!
+    expect(other).not.toBe(P.proposal())
+    const act = s.ctx.state.units[other]!.actions.find((id) => isMove(s.ctx.actions[id]!))!
+    expect(P.input({ kind: 'unit', id: other, hex: s.ctx.state.units[other]!.hex }), 'a click only looks').toBe(false)
+    expect(P.input({ kind: 'slot', actionId: act, unit: other })).toBe(true)
+    expect([s.ctx.battleCursor?.at, s.ctx.battleCursor?.actor]).toEqual(['acting', other])
+    expect(P.facts().slot).toBe(act)
+  })
+  it('an action on the bar of a unit the engine would not let begin is refused and begins nothing', () => {
+    const { s, P } = start(), enemy = s.ctx.state.units.find((u) => u.side === 'enemy')
+    if (!enemy) return
+    const n = s.ctx.events.length
+    expect(P.input({ kind: 'slot', actionId: enemy.actions[0]!, unit: enemy.id })).toBe(false)
+    expect(s.ctx.events.length).toBe(n)
+    expect(s.ctx.battleCursor?.at).toBe('selecting')
+  })
   it('when an activation ends, the next to its right in the bar is proposed, round to the left end', () => {
     const { s, P } = start(), q = eligible(s)
     const mid = q[1]!

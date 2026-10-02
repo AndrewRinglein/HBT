@@ -62,3 +62,24 @@ describe('a shield power from the bar: chosen, then chosen again', () => {
     })
   }
 })
+
+/* fix.shield-power-double-click (engine DECISIONS.md 2026-10-01 'a self power fires on a double-click on its bar button'):
+   Andrew looked at the Battle Chaplain while the Iron Dwarf was proposed, and nothing on its bar did anything. A shield power
+   on the bar of a hero only looked at begins it and is aimed at it; chosen again (the double-click's second offer), it is
+   used (kingdom SWITCHES playQueueBarOrder). The real mouse on the built page is engine test/fix-shield-power-double-click.test.ts. */
+describe('a shield power on the bar of a hero only looked at', () => {
+  it('begins that hero, is aimed at it, and the second offer uses it', () => {
+    const s = createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' })
+    advanceSandbox(s)
+    const P = createPlayInput(() => s, (c) => commandSandbox(s, c))
+    const chaplain = s.ctx.state.units.find((u) => u.typeId === 'hero.base.priest-armored')!, power = 'power.round-shield.turn-aside'
+    expect(P.proposal()).not.toBe(chaplain.id)
+    const stamina = chaplain.stamina, n = s.ctx.events.length
+    expect(P.input({ kind: 'slot', actionId: power, unit: chaplain.id })).toBe(true)
+    expect([s.ctx.battleCursor?.at, s.ctx.battleCursor?.actor]).toEqual(['acting', chaplain.id])
+    expect(P.facts().note).toBe(`${s.ctx.actions[power]!.name}: click it again, or the hero, to use it.`)
+    expect(P.input({ kind: 'slot', actionId: power, unit: chaplain.id })).toBe(true)
+    expect(s.ctx.events.slice(n).find((e) => e.type === 'power.used')).toMatchObject({ actor: chaplain.id, causeId: power })
+    expect(s.ctx.state.units[chaplain.id]!.stamina).toBe(stamina - s.ctx.actions[power]!.staminaCost!)
+  })
+})
