@@ -90,7 +90,8 @@ test('the cast: a bound unit is its model standing on its token; an unbound unit
   const worn = A.lookFor(pack['unit.zombie'], zombie.id)
   assert.equal(worn.id, pack['unit.zombie'].looks[zombie.id % 2].id, 'the Zombies wear the approved looks in turn')
   /* Law 10 (viewer.every-model): was ['archer', zombie] and 2 — the School Teacher is now a model too */
-  assert.deepEqual([...new Set(loads)].sort(), ['archer', 'school-teacher', worn.id].sort(), 'only the looks on the board load, each once')
+  /* Law 10 (viewer.real-bodies, 2026-10-01): was 'archer' — the Forest Elf now stands in her own body (tools/real-bodies.test.mjs) */
+  assert.deepEqual([...new Set(loads)].sort(), ['ranger-scantily', 'school-teacher', worn.id].sort(), 'only the looks on the board load, each once')
   assert.equal(loads.length, 3)
   V.render()
   assert.equal(V.layers.UEL.get(zombie.id).img.style.opacity, '0', 'a modelled unit hides its standee, keeps its ring and bars')
@@ -175,7 +176,8 @@ test('the approved files load: every look stands its height, carries every bound
   const battle1Looks = new Map()
   /* viewer.every-model: battle 1's civilians' bodies are loaded by tools/every-model.test.mjs, not twice */
   for (const t of typesIn(battle1)) if (!CIVILIANS.includes(t)) for (const look of pack[t]?.looks || []) battle1Looks.set(look.id, look)
-  assert.deepEqual([...battle1Looks.keys()].sort(), ['archer', 'plague-zombie', 'woman-blonde'])
+  /* Law 10 (viewer.real-bodies, 2026-10-01): was 'archer' — the Forest Elf now stands in her own outfit on the slender body */
+  assert.deepEqual([...battle1Looks.keys()].sort(), ['plague-zombie', 'ranger-scantily', 'woman-blonde'])
   for (const look of battle1Looks.values()) {
     const loaded = await A.loadLook(look, { location, fetch, textures: false })
     assert.deepEqual(Object.keys(loaded.clips).sort(), Object.keys(look.motions).sort(), look.id)

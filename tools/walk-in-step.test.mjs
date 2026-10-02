@@ -101,7 +101,8 @@ test('the traversal takes the same time per hex walked: it grows with N, no floo
 })
 
 for (const [label, hash, b, type] of [
-  ['the Orphanage: the ranger (the archer look\'s walk forward, root motion)', '#map.opening.orphanage', orphanage, 'hero.base.ranger-scantily'],
+  /* viewer.real-bodies (2026-10-01): the ranger now walks her own outfit's walk forward (the slender wardrobe's), not the archer look's */
+  ['the Orphanage: the ranger (her own body\'s walk forward, root motion)', '#map.opening.orphanage', orphanage, 'hero.base.ranger-scantily'],
   ['the Orphanage: the School Teacher (an in-place walk)', '#map.opening.orphanage', orphanage, 'hero.fixed.school-teacher'],
   ['the Bridge: the armoured priest (the oathblade\'s walk forward)', '#map.opening.bridge', bridge, 'hero.base.priest-armored'],
 ]) test(`${label} walks its clip throughout, its feet on the ground`, async () => {

@@ -200,7 +200,16 @@ export function groundSpeed(clip, { pose, root, stage, pivot, feet, height, inPl
 export function createBody(loaded, appearanceOptions = {}) {
   const { look, clips } = loaded
   const root = cloneRig(loaded.scene), hidden = new Set(look.hidden || []), meshes = []
-  root.traverse(o => { if (hidden.has(o.name)) o.visible = false; if (o.isMesh) { o.castShadow = false; o.receiveShadow = true; o.frustumCulled = false; meshes.push(o) } })
+  /* viewer.real-bodies: a wardrobe body's under-suit is a material of its body parts, hidden beneath the outfit as its owners hide
+     it (outfits/eve/serpent-armhole.html, hero-transformations/battle.mjs) */
+  const hiddenMaterials = new Set(look.hiddenMaterials || [])
+  root.traverse(o => {
+    if (hidden.has(o.name)) o.visible = false
+    if (o.isMesh) {
+      o.castShadow = false; o.receiveShadow = true; o.frustumCulled = false; meshes.push(o)
+      if (hiddenMaterials.size) for (const m of [].concat(o.material)) if (hiddenMaterials.has(m.name)) { m.visible = false; m.depthWrite = false }
+    }
+  })
   const mixer = new THREE.AnimationMixer(root)
   const reference = clips.idle || clips.attack || Object.values(clips)[0]
   const pose = (clip, time = 0) => { mixer.stopAllAction(); const a = mixer.clipAction(clip); a.reset().play(); a.time = time; mixer.update(0); root.updateMatrixWorld(true) }
