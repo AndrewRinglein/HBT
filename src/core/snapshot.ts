@@ -280,7 +280,9 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(c.phase === st.phase, 'cursor phase differs from state')
     if (c.at === 'battle-start') requireThat(begun === 0 && st.turn === 0 && c.actor === null && c.order.length === 0 && c.next === 0, 'battle already begun')
     else requireThat(begun === 1, 'battle must begin exactly once')
-    requireThat(c.order.every((id: number) => st.units[id].side === c.phase), 'cursor order side')
+    // rule.afflictions-at-zero: a hero that changed sides mid-Phase (transformed at 0 Health; fallen back into its own form, down;
+    // its own again at the battle's end) stays in the queue it was taken into, and is skipped (battle.ts)
+    requireThat(c.order.every((id: number) => { const u = st.units[id]; return u.side === c.phase || u.transformed !== undefined || u.lifeState !== 'standing' || st.outcome !== null }), 'cursor order side')
     if (['acting', 'surge-check', 'activation-end'].includes(c.at)) requireThat(c.actor !== null && c.next > 0 && c.order[c.next - 1] === c.actor, 'cursor actor')
     if (['selecting','activation-start'].includes(c.at)) {
       requireThat(c.actor === null && c.next < c.order.length, 'pending activation selection')

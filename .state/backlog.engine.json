@@ -1,5 +1,17 @@
 [
  {
+  "id": "fix.transformed-snapshot-order",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Found by the whole suite after rule.afflictions-at-zero-refiled-2 landed (test/battle-snapshot.test.ts, 'test.afflictions-at-zero-rule' resumes identically after every action cycle: 'Invalid battle snapshot: cursor order side'). A hero queued for a Phase that transforms onto the other side inside it (DECISIONS.md 2026-10-01 'the afflictions at 0 Health'), falls back into its own form, or is its own again at the battle's end stays in the queue it was taken into and is skipped (battle.ts; SWITCHES.md transformedMidPhase) - but restoreBattle refused the save. The validator accepts a queued unit whose side differs from the Phase when it is transformed, not standing, or the battle is over. Prior art: extends the snapshot validator's cursor checks (src/core/snapshot.ts); no new mechanism. Engine rule: SWITCHES.md transformedMidPhase (rule.afflictions-at-zero-refiled-2).",
+  "expect": "A battle saved mid-Player-Phase after a queued hero transformed onto the enemy side restores, and both the original and the restored battle end the Phase without activating it; test/battle-snapshot.test.ts passes on test.afflictions-at-zero-rule.",
+  "needs": [
+   "rule.afflictions-at-zero-refiled-2"
+  ],
+  "status": "done",
+  "sha": "6d5988e"
+ },
+ {
   "id": "rule.afflictions-at-zero-refiled-2",
   "kind": "engine",
   "shape": "rule",
