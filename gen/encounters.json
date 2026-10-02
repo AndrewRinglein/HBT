@@ -2019,6 +2019,112 @@
    ]
   },
   {
+   "id": "encounter.opening.gates",
+   "name": "Gates",
+   "map": "map.opening.gates",
+   "board": {
+    "width": 20,
+    "height": 50
+   },
+   "note": "The opening, battle 5, the Curse (engine DECISIONS.md 2026-09-28 'Gates is the Curse' and 'Gates’ curse strikes fall like the meteors; no Gates turn limit': \"Gates should use the old cursing counter, yeah?\" ... \"Gates' curses do fall that same way, yep. The meteor should hit, and everybody in the blast area should get 3 weak, and then weak should be applied on the ground. Date no longer needs a term 15 fail.\"). Six defenders in position: two Bruiser Demons holding the broken gate, two Poison Imps on the ruined tower and the wall walk, a Powerful Imp in the town lane and the Lieutenant Demon behind the gate; the curse strike on Turn 4 - seven 7-hex areas marked at the end of the Enemy Phase, landing after the next Player Phase: 3 Weak to every unit inside, the area becomes cursed ground (layer.weak); Turn 7, an Imp from the top (the abbey, north end) and one from the bottom (behind the heroes). Eight enemies. No turn limit (the old 15-turn loss is dropped). Victory: kill all enemies. Retreating is a loss as ruled, but retreat itself is skipped (ruling 2026-09-03), so the row carries none. Hexes are the Ground Check's markers (assets/battle-atlas/opening-ground-proposal-2026-09-28.json); the heroes' zone, (10,45) r2 on the southern approach, is Claude's reading (engine SWITCHES.md openingHeroZonesGates).",
+   "heroZone": {
+    "count": 4,
+    "at": {
+     "near": {
+      "col": 10,
+      "row": 45
+     },
+     "range": 2
+    }
+   },
+   "setup": [
+    {
+     "unit": "unit.bruiser-demon",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 8,
+       "row": 36
+      },
+      {
+       "col": 10,
+       "row": 36
+      }
+     ],
+     "note": "holding the broken gate"
+    },
+    {
+     "unit": "unit.poison-imp",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 4,
+       "row": 37
+      },
+      {
+       "col": 6,
+       "row": 36
+      }
+     ],
+     "note": "on the ruined tower and the wall walk"
+    },
+    {
+     "unit": "unit.powerful-imp",
+     "at": {
+      "col": 10,
+      "row": 31
+     },
+     "note": "in the town lane"
+    },
+    {
+     "unit": "unit.lieutenant-demon",
+     "at": {
+      "col": 9,
+      "row": 33
+     },
+     "note": "behind the gate"
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 7,
+     "spawn": [
+      {
+       "unit": "unit.imp",
+       "at": {
+        "col": 10,
+        "row": 0
+       },
+       "note": "from the top (the abbey end)"
+      },
+      {
+       "unit": "unit.imp",
+       "at": {
+        "col": 10,
+        "row": 49
+       },
+       "note": "from the bottom (behind the heroes)"
+      }
+     ]
+    }
+   ],
+   "falls": [
+    {
+     "id": "trigger.gates.curse-strike",
+     "turn": 4,
+     "areas": 7,
+     "layer": "layer.weak",
+     "applies": [
+      [
+       "status.weak",
+       3
+      ]
+     ],
+     "note": "the curse strike (engine DECISIONS.md 2026-09-28): falling like the meteors - seven 7-hex areas marked at the end of Turn 4's Enemy Phase, landing after the next Player Phase: 3 Weak to everyone inside, the area becomes cursed ground (layer.weak)"
+    }
+   ]
+  },
+  {
    "id": "encounter.caravan-aftermath",
    "name": "Caravan Aftermath",
    "map": "map.caravan-aftermath",
