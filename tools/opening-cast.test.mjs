@@ -84,7 +84,10 @@ test('every drafted hero wears its class outfit, with every ruled motion', () =>
   assert.ok(heroes.length >= 24)
   for (const t of heroes) {
     const cls = units[t].tags.find(x => x.startsWith('class.')), look = pack[t]?.looks[0]
-    assert.ok(look, t); assert.equal(look.id, CLASS_LOOKS[cls][0], `${t} (${cls})`)
+    /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was `look.id`. Andrew: "The characters are not holding weapons"; a hero
+       holding another set than its row's equipment is its own look, `<outfit>+<held>` (viewer SWITCHES heldLookId) — the
+       outfit is the id's first part */
+    assert.ok(look, t); assert.equal(look.id.split('+')[0], CLASS_LOOKS[cls][0], `${t} (${cls})`)
     for (const m of RULED) assert.ok(look.motions[m], `${t} ${m}`)
   }
 })
@@ -182,5 +185,7 @@ test('the approved files load: each new look stands its height, binds every moti
     assert.ok(down < .4 * up, `${look.id}'s death ends lying (head ${down.toFixed(2)} m, standing ${up.toFixed(2)} m)`)
     body.dispose()
   }
-  assert.deepEqual([...seen].slice(3).sort(), ['fire-imp', 'imp', 'oathblade', 'skeletal-archer', 'strong-skeleton'])
+  /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was one 'oathblade' — battles 2 and 3's Rose, Chaplain and Veteran now hold
+     their kits' dagger, shield and halberd, each its own look (viewer SWITCHES heldLookId) */
+  assert.deepEqual([...seen].slice(3).sort(), ['fire-imp', 'imp', 'oathblade+dagger', 'oathblade+halberd', 'oathblade+shield', 'skeletal-archer', 'strong-skeleton'])
 })

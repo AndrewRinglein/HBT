@@ -29,6 +29,10 @@
 // type's own sheet asks of it — a ranged attack with no shot motion, a flight power with no flight motion
 // (generated/static.json, the engine's sheet through the door).
 //
+// viewer.weapons-in-hand (engine DECISIONS.md 2026-10-01, Andrew: "The characters are not holding weapons. The whole idea of
+// having 3D weapons is so they're holding weapons.") puts each base hero's kit in its hands (HELD, viewer SWITCHES heldModels,
+// heldFits, heldHands): a held item with no fitted model is listed in the look's `unheld`, never drawn as another.
+//
 //   node tools/character-models.mjs --json      print the pack (test/character-models.test.ts reads it)
 import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
 import { createHash } from 'node:crypto'
@@ -101,7 +105,7 @@ export function bindings(units = JSON.parse(readFileSync(resolve(PKG, 'generated
     if (classes.length !== 1) throw new Error(`${typeId}: the sheet gives it ${classes.length} class tags, not one`)
     const looks = CLASS_LOOKS[classes[0]]
     if (!looks) throw new Error(`${typeId}: no outfit for ${classes[0]}`)
-    all[typeId] = { looks }
+    all[typeId] = { looks, items: sheet.defaultItems || [] }
   }
   return all
 }
@@ -118,6 +122,64 @@ const FAMILY_HIDES = { male: n => n.startsWith('Armor_') ? n === 'Armor_Cloak' :
 /* the demo's bow (purchased-stage-equipment.js: served from the Oathblade page's root, which is this folder) */
 const EQUIPMENT_ROOT = 'assets/characters/oathblade-armor/generated/rebuild/weapon-audition/equipment/'
 const PROPS = { bow: [{ file: 'bow-flexible.glb', hand: 'L', calibrate: { motion: 'ranged', at: 0.45 } }] }
+/* viewer.weapons-in-hand: the model each held item of a hero's kit is drawn as (viewer SWITCHES heldModels — by name: no record
+   ties a game item to a weapon model), and the fit it is held with, each fit used as its owner uses it (SWITCHES heldFits):
+     the battle demo's own equipment on this very body (oathblade-armor/rebuild/purchased-stage-equipment.js fitEquipment, which
+       assets/battle-demo/actors.mjs fits with the strike as its reference pose): `turned` - the sword (and the mace beside it in
+       15-weapons.glb, on the same haft) at the grip, a quarter turn about the hand; `square` - the shield square to the left hand
+       at the strike, at its offset; `forearm` - the flexible bow along the left forearm at the shot (PROPS above)
+     the medium weapon tester's socket (weapon-card-models/tester/equipment.js createEquipment) - `tester`: its palm-centred grip
+       and hand flip, the weapon's own stored grip, scale and roll (tester/weapons.json), and no fitted finger pose
+       (finger-grips.json is the tester's body's; production-lessons.json preserve-primary-grip)
+   None of these 3D fits is accepted by a person (weapon-card-models/README.md: "no 3D result is yet accepted"). */
+const TESTER = 'assets/characters/oathblade-armor/rebuild/candidates/weapon-card-models/tester/weapons.json'
+const DEMO_HELD = {
+  sword: { file: '15-weapons.glb', node: 'Weapon_sword', fit: 'turned' },
+  mace: { file: '15-weapons.glb', node: 'Weapon_mace', fit: 'turned' },
+  shield: { file: 'shield-equipped.glb', fit: 'square', at: [.06433, -.02698, .00630], calibrate: { motion: 'attack', at: 0 } },
+  bow: { file: 'bow-flexible.glb', fit: 'forearm', calibrate: { motion: 'ranged', at: 0.45 } },
+}
+export const HELD = {
+  'item.longsword': { demo: 'sword' }, 'item.iron-mace': { demo: 'mace' },
+  'item.kite-shield': { demo: 'shield' }, 'item.tower-shield': { demo: 'shield' }, 'item.round-shield': { demo: 'shield' },
+  'item.elfbow': { demo: 'bow' }, 'item.shortbow': { demo: 'bow' }, 'item.longbow': { demo: 'bow' },
+  'item.greatsword': { tester: 'greatsword' }, 'item.war-axe': { tester: 'axe' }, 'item.halberd': { tester: 'halberd' },
+  'item.fire-staff': { tester: 'magic-staff' }, 'item.frost-staff': { tester: 'magic-staff' },
+  'item.obsidian-fang-dagger': { tester: 'dagger' }, 'item.daggers': { tester: 'dagger', pair: true },
+}
+/* held items no fitted model exists for: listed on the look, never faked (the crossbow's model has no fit anywhere) */
+export const UNMODELLED = ['item.holy-texts', 'item.holy-symbol', 'item.throwing-knives', 'item.hand-crossbow']
+/* the held set a roster row's own equipment already is: such a look keeps the row's id */
+const ROSTER_HELD = { 'sword-shield': ['sword', 'shield'], bow: ['bow'] }
+/** a kit's held items as props, in the kit's order: the shield and the bow in the left hand (their fits are the left hand's),
+    the first other weapon in the right, a second in the left, a pair in both (viewer SWITCHES heldHands) */
+function heldProps(typeId, items, motions) {
+  const props = [], free = { R: true, L: true }
+  const tester = JSON.parse(readFileSync(resolve(ROOT, TESTER), 'utf8'))
+  const take = (item, model, hand) => {
+    if (!free[hand]) throw new Error(`${typeId}: no free ${hand} hand for ${item}`)
+    free[hand] = false
+    const h = HELD[item]
+    if (h.demo) {
+      const { file, ...fit } = DEMO_HELD[h.demo], path = EQUIPMENT_ROOT + file
+      if (fit.fit === 'turned' && hand !== 'R') throw new Error(`${typeId}: the demo's ${model} is fitted to the right hand only`)
+      if (fit.calibrate && !motions[fit.calibrate.motion]) throw new Error(`${typeId}: its ${model} is fitted on ${fit.calibrate.motion}, which it lacks`)
+      props.push({ path, sha256: digest(path), hand, item, model, ...fit })
+    } else {
+      const t = tester.find(w => w.id === h.tester)
+      if (!t) throw new Error(`${TESTER} has no '${h.tester}'`)
+      const path = 'assets/characters/oathblade-armor' + t.url
+      props.push({ path, sha256: digest(path), hand, item, model, fit: 'tester', ...(t.preNormalized ? { preNormalized: true } : { grip: t.grip, scale: t.scale }), roll: t.roll || 0 })
+    }
+  }
+  for (const item of items) if (HELD[item]) {
+    const model = HELD[item].demo ?? HELD[item].tester
+    if (HELD[item].pair) { take(item, model, 'R'); take(item, model, 'L') }
+    else if (model === 'shield' || model === 'bow') take(item, model, 'L')
+    else take(item, model, free.R ? 'R' : 'L')
+  }
+  return { props, unheld: items.filter(i => UNMODELLED.includes(i)) }
+}
 
 const rel = p => p.replace(/^\//, '')
 /* a roster path is absolute on Andrew's PC (C:\\...\\Heroes of Blight and Tragic\\assets\\...): the project-relative part */
@@ -221,7 +283,14 @@ export async function packCharacterModels() {
         const meshes = (glbJSON(look.model.path).nodes || []).filter(n => n.mesh != null).map(n => n.name)
         const hides = FAMILY_HIDES[row.family]
         if (hides) look.hidden = meshes.filter(hides)
-        for (const p of PROPS[row.equipment] || []) {
+        if (bind.items) {
+          /* viewer.weapons-in-hand: a hero holds its own kit, not its roster row's equipment; a look holding another set than
+             the row's is its own look (the page loads a look once, by its id) */
+          const { props, unheld } = heldProps(typeId, bind.items, look.motions)
+          look.props = props; look.unheld = unheld
+          const set = props.map(p => p.model), own = ROSTER_HELD[row.equipment] || []
+          if (set.join('+') !== own.join('+')) look.id = `${row.id}+${set.join('+') || 'empty-handed'}`
+        } else for (const p of PROPS[row.equipment] || []) {
           if (!look.motions[p.calibrate.motion]) throw new Error(`${typeId} ${id}: its ${row.equipment} is fitted on ${p.calibrate.motion}, which it lacks`)
           look.props.push({ path: EQUIPMENT_ROOT + p.file, sha256: digest(EQUIPMENT_ROOT + p.file), hand: p.hand, calibrate: p.calibrate })
         }
