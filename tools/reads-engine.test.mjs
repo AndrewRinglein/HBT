@@ -1,8 +1,8 @@
 // viewer.reads-engine (engine backlog; Duplication review 2026-09-28, findings V1 V2 V4 V5 V6 V7 V8 V11 V12 V13 V14; ruled
 // "fix as proposed" in engine/DECISIONS.md '2026-09-28 — the duplication review, ruled'). The viewer reads the engine's
 // facts instead of keeping copies of them. Expect: the fast zombie's Charge shows in its action bar; a prone unit shows
-// Stand; the test zombies' danger reads 4; status.weak plays Weak's style; after a Surge the movement numeral is the
-// engine's. Every table here is generated/static.json — the engine's own, dumped through the door. When VIEWER_PAGE names
+// Stand; the test zombies' danger reads 4 and the fast zombie's 3, its claw, not its Charge (fix.danger-skips-charge);
+// status.weak plays Weak's style; after a Surge the movement numeral is the engine's. Every table here is generated/static.json — the engine's own, dumped through the door. When VIEWER_PAGE names
 // a built page, the page is asked whether it carries the same tables.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -44,6 +44,21 @@ test('V2 — the danger marker is the bar\'s number: the test zombies read 4, th
   assert.deepEqual(dangerOf({ typeId: 'unit.zombie', st: {} }, D), { n: 3, kind: 'melee' })
   const src = readFileSync(new URL('../src/projection.js', import.meta.url), 'utf8')
   assert.doesNotMatch(src, /DANGER_AUTHORED|test-zombie/)
+})
+
+test('fix.danger-skips-charge — the marker skips a Charge by the engine\'s classification: the fast zombie reads 3, not its Charge\'s 4', () => {
+  // ruled 2026-10-02 (Andrew, engine DECISIONS.md 'the fast zombie's danger marker reads 3, not its Charge's 4'): "You can change it to 3."
+  assert.equal(ST.actionKinds['move.fast-zombie.charge'], 'charge')
+  assert.deepEqual(dangerOf({ typeId: 'unit.fast-zombie', st: {} }, D), { n: 3, kind: 'melee' })
+  assert.deepEqual(dangerOf({ typeId: 'unit.zombie', st: {} }, D), { n: 3, kind: 'melee' })
+  assert.deepEqual(dangerOf({ typeId: 'test-zombie', st: {} }, D), { n: 4, kind: 'melee' })
+  // the second unit that leads with a Charge, by data alone: the iron colossus reads its Clobber's 10, not its Charge's 11
+  assert.equal(ST.actionKinds['move.iron-colossus.charge'], 'charge')
+  assert.deepEqual(dangerOf({ typeId: 'unit.iron-colossus', st: {} }, D), { n: 10, kind: 'melee' })
+  // a unit whose only attacks are Charges keeps its first: strip the claw and the fast zombie reads its Charge again
+  const fz = ST.units['unit.fast-zombie']
+  const UD = { ...ST.units, 'unit.fast-zombie': { ...fz, attacks: fz.attacks.filter((a) => ST.actionKinds[a.id] === 'charge') } }
+  assert.deepEqual(dangerOf({ typeId: 'unit.fast-zombie', st: {} }, { ...D, UD }), { n: 4, kind: 'melee' })
 })
 
 test('V4 — one absorbing pool for the panel and the board: the sum of every absorbing status', () => {
@@ -101,4 +116,5 @@ test('the page carries the engine\'s tables', { skip: !process.env.VIEWER_PAGE }
   assert.ok(/"move\.fast-zombie\.charge":\s*"charge"/.test(page), 'the page classifies the fast zombie\'s Charge')
   assert.ok(/"?standAction"?:\s*"power\.stand-up"/.test(page), 'the page carries the prone status\'s stand action')
   assert.ok(/"?layerStatus"?:\s*\{\s*"layer\./.test(page), 'the page carries what each layer applies')
+  assert.ok(/function dangerOf\(u, D\) \{[^}]*?classOf\(x, D\) !== ["']charge["']/.test(page), 'the page\'s danger marker skips a Charge (fix.danger-skips-charge)')
 })
