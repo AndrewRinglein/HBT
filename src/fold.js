@@ -316,6 +316,10 @@ export function fold(S, e, ctx, now = 0) {
         /* the engine's OWN live damage for this attack — it carries Weak and
            every other live modifier; the action bar prints it, not a formula */
         if (e.damageOnHit != null) (U[e.actor].dmgSeen = U[e.actor].dmgSeen || {})[e.attackId] = e.damageOnHit
+        /* viewer.live-stat-mods (2026-10-01; Andrew: the Leap's +2 Strength left the attacks' numbers alone): the
+           attacker's live modifiers as that number was seen, so a later +2 (or its end) moves it */
+        if (e.damageOnHit != null) { const sums = {}; for (const m of U[e.actor].mods || []) sums[m.stat] = (sums[m.stat] || 0) + (m.value || 0);
+          (U[e.actor].dmgSeenMods = U[e.actor].dmgSeenMods || {})[e.attackId] = sums }
         S.FIRING = { unit: e.actor, ability: e.attackId, until: now + FIRE_MS }
         S.subjectId = e.target; S.subjectMode = 'target'
       } break

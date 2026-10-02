@@ -91,16 +91,23 @@ export function moveHexes(a, u, D) {
    stat + bonus the ledger showed. The fallback duplicates engine math. */
 export function dmgOf(a, u, D) {
   if (isBurst(a)) return null
-  const live = u && u.dmgSeen ? u.dmgSeen[a.id] : undefined
-  if (live != null) return { n: live, live: true }
   /* an attack's stat and bonus live under `attack` since 26fa562; a legacy
      power shape still carries them on the row */
   const p = a.attack || a
+  const live = u && u.dmgSeen ? u.dmgSeen[a.id] : undefined
+  /* viewer.live-stat-mods (2026-10-01; Andrew: "None of the attacks have their damage modified by the
+     Strength" after a Leap): the seen number moves by whatever the attack's stat has gained or lost
+     since it was seen (fold's dmgSeenMods); with nothing recorded it stands as seen */
+  if (live != null) {
+    const then = p.stat != null && u.dmgSeenMods && u.dmgSeenMods[a.id] ? (u.dmgSeenMods[a.id][p.stat] || 0) : null
+    return { n: then == null ? live : Math.max(0, live + modOf(u, p.stat) - then), live: true }
+  }
   // A scalar base is not the total of a multi-packet attack. Wait for the
   // engine's observed damageOnHit; authored packet rows remain visible below.
   if (p.secondaryDamage?.length) return null
   const statv = p.stat != null ? ((D.UD || {})[u && u.typeId] || {})[p.stat] : undefined
-  if (statv != null) return { n: Math.max(0, statv + (p.bonus || 0)), live: false }
+  // viewer.live-stat-mods: the sheet's stat plus the unit's live modifiers to it (an item's, a Leap's)
+  if (statv != null) return { n: Math.max(0, statv + modOf(u, p.stat) + (p.bonus || 0)), live: false }
   return null
 }
 
