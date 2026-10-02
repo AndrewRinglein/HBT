@@ -52,6 +52,9 @@ test('fix.danger-skips-charge — the marker skips a Charge by the engine\'s cla
   assert.deepEqual(dangerOf({ typeId: 'unit.fast-zombie', st: {} }, D), { n: 3, kind: 'melee' })
   assert.deepEqual(dangerOf({ typeId: 'unit.zombie', st: {} }, D), { n: 3, kind: 'melee' })
   assert.deepEqual(dangerOf({ typeId: 'test-zombie', st: {} }, D), { n: 4, kind: 'melee' })
+  // the second unit that leads with a Charge, by data alone: the iron colossus reads its Clobber's 10, not its Charge's 11
+  assert.equal(ST.actionKinds['move.iron-colossus.charge'], 'charge')
+  assert.deepEqual(dangerOf({ typeId: 'unit.iron-colossus', st: {} }, D), { n: 10, kind: 'melee' })
   // a unit whose only attacks are Charges keeps its first: strip the claw and the fast zombie reads its Charge again
   const fz = ST.units['unit.fast-zombie']
   const UD = { ...ST.units, 'unit.fast-zombie': { ...fz, attacks: fz.attacks.filter((a) => ST.actionKinds[a.id] === 'charge') } }
