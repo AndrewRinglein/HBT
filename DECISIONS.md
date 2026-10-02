@@ -3902,3 +3902,10 @@ Ruled:
 
 - **The Net (`item.net`) is a trinket with zero hands.** engine SWITCHES `netIsAPower` is settled by this entry, as provisional-landed in fix.one-hero-assembly-refiled.
 - **The Orphanage's orphans (`hero.fixed.orphans`) and the school teacher (`hero.fixed.school-teacher`) each start with a knife, and field it.** Read as: the knife is `item.dagger` — no knife row exists, and the teacher's Codex kit already names the Dagger; the orphans' kit becomes the Dagger in place of the pile of rocks (content/gen/heroes.json). It is fielded wherever an encounter places them. The other placed civilians (school children, farmer, lumberjack and wife, the Supper's villagers) are not named and stay as they are; engine SWITCHES `arrivalKit` stands for them. Filed: `fix.orphans-teacher-knife`.
+
+Andrew, on the follow-up questions ("Is the Dagger the knife you meant?" and "Should fix.orphans-teacher-knife go to the top of the queue?"):
+
+“Dagger is fine.   Should go to the top of the list.”
+
+- **The knife is `item.dagger`** — the reading above is confirmed; no knife row is made.
+- **`fix.orphans-teacher-knife` is the top of the engine queue** (re-added with `add-item --first`).
