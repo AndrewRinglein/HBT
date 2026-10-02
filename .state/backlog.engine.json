@@ -5,7 +5,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the movements'): 'weapon swap and shield actions are part of what's needed now' - the movements needed now for a playable battle. The engine already has both: the swap landed as v2.loadout-swap (dd468e3; v2.swap was closed as superseded) and the shield powers as v2.shields (aaf51a5). What is missing is playing them: the sandbox offers the swap only on its form controls, never on the 3D board (kingdom/src/ui/sandbox.ts:119 draws swapControl only when there is no board). Put the swap on the board's action bar (before the primary, paying swapCost stamina, the hands to hold chosen) and check that every shield power a fielded hero holds (Shield Wall, Raise Guard, Turn Aside, Brace, Cover, Stand Tall) is on the bar, aims and resolves; fix what does not. Each plays a motion where one fits (the approved or selected motions, 2026-09-30 'a bunch of motions'); a missing motion is listed, not faked. Kingdom and viewer commit in their own repositories.",
   "expect": "In a sandbox battle a hero with a stowed weapon or shield swaps from the action bar on the board before its primary, its stamina drops by its swapCost and the log shows loadout.swapped; a second swap in the activation is refused on the bar; a hero holding each of the three shields uses each of its two shield powers from the bar and the battle log names them.",
-  "note": "Andrew 2026-10-01: the top of the engine queue (DECISIONS.md 'the order', item 2). Filed with kind movement so it lands in the engine queue as asked, although the code it touches is the sandbox's and the viewer's."
+  "note": "Andrew 2026-10-01: the top of the engine queue (DECISIONS.md 'the order', item 2). Filed with kind movement so it lands in the engine queue as asked, although the code it touches is the sandbox's and the viewer's.",
+  "status": "done",
+  "sha": "236e5ad"
  },
  {
   "id": "movement.inventory",
