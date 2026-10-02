@@ -5,7 +5,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the XCOM-style camera'): 'I want to fully replace the camera with an XCOM-style camera. So no tilt, no free rotation.' Replaces the orbit controls (2026-09-30 'a true 3D battle') and viewer.tactical-camera's caravan camera (viewer/src/camera-policy.js) for every battle. One fixed angle and zoom; the arrow keys rotate 90 degrees; the mouse wheel zooms a limited amount and snaps back to standard when it stops; pointing past the map edge scrolls the map, no grab-drag, no Reset needed. One character is auto-selected at the start with the map centered on them; when its activation ends, the next in the character bar left to right, civilians included; double-clicking a character in the top bar or on the map changes it. A character portrait in the lower-left corner, as tall as the ability bar; clicking an ability re-centers on the acting unit. Anything blocking the view of a character is highly translucent. End Turn far less prominent than End Activation. The 3D board and bodies stay in true perspective.",
   "expect": "In the sandbox (http://127.0.0.1:4230/play): no tilt or free rotation; each arrow key turns the view exactly 90 degrees; the wheel zooms and springs back to the standard zoom; the pointer at the screen edge scrolls; the first character is selected and centered at the start and the next in the bar, civilians included, after each activation ends; a double-click on a card or a body selects that unit; the portrait sits lower left at the ability bar's height; clicking an ability centers the actor; a wall or roof between camera and a character is see-through; End Turn is visibly smaller than End Activation.",
-  "note": "Andrew 2026-10-01 ('the most important things are the camera and the movements'): first in the viewer queue, ahead of viewer.unit-card-bar, viewer.characters-unfaded, viewer.weapons-in-hand and viewer.real-bodies (DECISIONS.md 'the order'). The top bar this queue walks is viewer.unit-card-bar's; until it lands, the order is that bar's order as the board knows it."
+  "note": "Andrew 2026-10-01 ('the most important things are the camera and the movements'): first in the viewer queue, ahead of viewer.unit-card-bar, viewer.characters-unfaded, viewer.weapons-in-hand and viewer.real-bodies (DECISIONS.md 'the order'). The top bar this queue walks is viewer.unit-card-bar's; until it lands, the order is that bar's order as the board knows it.",
+  "status": "done",
+  "sha": "6fe0c3f"
  },
  {
   "id": "viewer.walk-in-step",
@@ -21,7 +23,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'We also need a character selector bar above the screen, the way it is in the visual playback. You have all the heroes and enemies as tiny little cards above the screen. That should still be there. And I can use that to target things as well as clicking on them.' The replay's unit-card strip (the topbar portraits) in the live battle and the Kingdom host; a card click is the unit click (select a hero to act; with an attack chosen, target that unit through the play input).",
-  "expect": "In the sandbox the strip of every unit's card sits above the board; clicking a hero's card starts its activation; with an attack chosen, clicking an enemy's card aims and confirms exactly as clicking its body."
+  "expect": "In the sandbox the strip of every unit's card sits above the board; clicking a hero's card starts its activation; with an attack chosen, clicking an enemy's card aims and confirms exactly as clicking its body.",
+  "status": "done",
+  "sha": "90d261a"
  },
  {
   "id": "viewer.characters-unfaded",
