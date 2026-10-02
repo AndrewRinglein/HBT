@@ -20412,3 +20412,69 @@ index 0000000..f33760c
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## kingdom.opening-rewards — LANDED `70f10e3` **NEEDS REVIEW**
+2026-10-02 01:47
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3341
+  PASS  typecheck
+  PASS  the item's own tests — test/isc-039.test.ts, test/opening-rewards.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 10 log lines, 10 fired, 6 changed state · encounter.opening.lumberjack: 13 log lines, 13 fired, 9 changed state · encounter.opening.bridge: 11 log lines, 11 fired, 7 changed state
+  PASS  brought its own tests — kingdom/test/isc-039.test.ts, kingdom/test/opening-rewards.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-039.test.ts (-7) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — encounter.opening.orphanage live · encounter.opening.lumberjack live · encounter.opening.bridge live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage,encounter.opening.lumberjack,encounter.opening.bridge — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-039.test.ts b/test/isc-039.test.ts
+index 6d125d7..d66da21 100644
+--- a/test/isc-039.test.ts
++++ b/test/isc-039.test.ts
+@@ -1,5 +1,8 @@
+-// ISC-039 — canLevelUp is true at 20, 100 and 250 XP and performLevelUp raises
++// ISC-039 — canLevelUp is true at each ruled threshold and performLevelUp raises
+ // the level by exactly one; below the threshold it is refused.
+-// GLOSSARY.md "Level thresholds 20 · 100 · 250 · 500 — soft" · SKELETON-SETTLED.md:114
++// was: GLOSSARY.md "Level thresholds 20 · 100 · 250 · 500 — soft" · SKELETON-SETTLED.md:114 — the curve was re-ruled
++// 2026-09-28 (Andrew, engine/DECISIONS.md 'levels by XP at 20, 50, 100, 170, 270, 400'; GLOSSARY.md's row follows) and
++// src/content/levels.ts takes it in kingdom.opening-rewards (Law 10): the rule — refused below, one level at a time,
++// stopped at the next threshold — is unchanged; only the numbers are the new curve's.
+ import { describe, it, expect } from 'vitest'
+ import { loadFixture } from './walk.js'
+@@ -10,6 +13,8 @@ const H = 'hero.base.priest-armored'
+ 
+ describe('ISC-039 — the ruled thresholds', () => {
+-  it('20 · 100 · 250 · 500, one level at a time, refused below', () => {
+-    expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 100, 250, 500])
++  // was: it('20 · 100 · 250 · 500, one level at a time, refused below'
++  it('20 · 50 · 100 · 170 · 270 · 400, one level at a time, refused below', () => {
++    // was: expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 100, 250, 500]) — the 2026-09-28 curve
++    expect(LEVEL_THRESHOLDS.slice(2)).toEqual([20, 50, 100, 170, 270, 400])
+     const ctx = loadFixture((c) => { c.roster[H]!.xp = 19 })
+     expect(canLevelUp(ctx.campaign, H)).toBe(false)
+@@ -20,9 +25,10 @@ describe('ISC-039 — the ruled thresholds', () => {
+     performLevelUp(ctx, H, 'test')
+     expect(ctx.campaign.roster[H]!.level).toBe(2)
+-    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // 100 next
+-    ctx.campaign.roster[H]!.xp = 260
++    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // was: 100 next — now 50 next
++    // was: ctx.campaign.roster[H]!.xp = 260 — two levels short of the next threshold on the new curve (50, 100; 170 next)
++    ctx.campaign.roster[H]!.xp = 160
+     performLevelUp(ctx, H, 'test'); expect(ctx.campaign.roster[H]!.level).toBe(3)
+     performLevelUp(ctx, H, 'test'); expect(ctx.campaign.roster[H]!.level).toBe(4)
+-    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // 500 next
++    expect(canLevelUp(ctx.campaign, H)).toBe(false)                      // was: 500 next — now 170 next
+     expect(ctx.events.filter((e) => e.type === 'hero.leveled').map((e) => e['level'])).toEqual([2, 3, 4])
+   })
+```
+</details>
