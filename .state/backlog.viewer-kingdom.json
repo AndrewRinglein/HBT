@@ -259,7 +259,9 @@
    "kingdom.opening-rewards"
   ],
   "spec": "PLAYABLE-OPENING-PLAN.md item 12. Ruled 2026-09-29: one page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards (the Orphanage's 20 XP, the Flaming Longsword after battle 2, the item choice after battle 3, level-ups, wounds carried; no tactics) -> map, for the first three battles; a lost battle is replayed with the same party. Narrows kingdom.opening-loop to three battles. Part 4 of 4 (narrowed 2026-10-01 by the kingdom chat): the page chain alone - map -> first hero / draft -> equip -> battle -> rewards and level-ups -> map, three times, a loss offering the same battle with the same party - on parts 1-3. needs: encounter.opening.bridge-ai was abandoned and re-filed as encounter.opening.bridge-ai-refiled (Andrew 2026-09-30 'Park, abandon, re-file').",
-  "expect": "Andrew plays from the Orphanage through the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled."
+  "expect": "Andrew plays from the Orphanage through the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled.",
+  "status": "done-needs-review",
+  "sha": "6082706"
  },
  {
   "id": "viewer.direct-map-initialization",
