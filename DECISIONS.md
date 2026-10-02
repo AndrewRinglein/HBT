@@ -3909,3 +3909,15 @@ Andrew, on the follow-up questions ("Is the Dagger the knife you meant?" and "Sh
 
 - **The knife is `item.dagger`** — the reading above is confirmed; no knife row is made.
 - **`fix.orphans-teacher-knife` is the top of the engine queue** (re-added with `add-item --first`).
+
+## 2026-10-02 — the opening run keeps its five-hero party; the hard battles wait for playtesting
+
+Andrew, in the kingdom chat, after kingdom.opening-run-six landed. The questions, as asked: (1) "Should growing the draft pool and the battle party beyond five heroes and four per battle be filed as its own item?"; (2) "Is it fine that the Bridge and the Gates are this hard for the opening party, or should that be looked at?"
+
+“1. We can leave this alone for now.
+2. Not a concern yet. I'm just trying to get functionality working, and then I'll test these battles and figure out how to tweak them.”
+
+Ruled:
+
+- **The opening run's party stays as it is: five heroes drafted, four deployed.** No item is filed to grow the kingdom's draft pool or the deploy limit. kingdom SWITCHES `openingRunPartyShort` stands as its default.
+- **The difficulty of the Bridge and the Gates is not tuned now.** Functionality comes first; Andrew will playtest the opening battles and tune them himself. No balance item is filed from the page probe's finding that the engine's AI rarely wins them with this party.
