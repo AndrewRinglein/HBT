@@ -3677,3 +3677,132 @@ Andrew, later the same night (queued with the rest; the links and the icon answe
 “The walking isn't very well timed or spaced based on the number of tiles that are being moved. I don't know how we sync that up better.   You're supposed to select your movement type. It's okay if it's the top one by default.  Then you can't target without an ability selected. If I am on my primary action part of a unit's activation, I automatically have a red arrow, but what is that red arrow for? I have to click an attack type, and the red arrow should only extend as far as whatever its range is. If I click someone who has a punch, it should have range 1, and if I point my arrow further away, only one space should go because it's got range 1.  Also, we still don't have other heroes. I don't know if that's in your queue or not (the way they look), and we don't have weapons. I don't see any weapons.”
 
 Ruled (the readings): **the movement type is chosen, the top one by default; no target is aimed until an attack is chosen; the aim arrow reaches no further than the chosen attack's range; the walk is timed to the hexes walked.** `../PLAY.vbs` stops any server on port 4230, starts this folder's, opens /play, and on its first run adds a Startup starter — the 2026-09-30 "starts with Windows", which had not been set up.
+
+## 2026-10-01 — the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up
+
+Andrew, in a planning chat the evening of 2026-10-01 (hand-off `tmp/andrew-rulings-2026-10-01.md`, now `archive/sessions/andrew-rulings-2026-10-01.md`):
+
+“Okay new idea: rather than a bunch of the negative consequences for werewolves and vampire badge heroes   Specifically the costs to bring them into play, but maybe also some. I don't remember what all the negatives are.   When a vampire- or werewolf-badged player unit goes to zero health, rather than making a deathbed check, they are going to transform into a werewolf or a vampire.   When they do this they are going to make a luck check.  If they are successful at rolling their luck, the player retains control of the werewolf or vampire. They have typical werewolf and vampire attack powers, but they're a player unit. They're at full health and have all the powers. If they are reduced to zero again, they fall to the ground dead in their original form.   Oh wait, no, that won't work. They fall to the ground unconscious in their original form.  There is no deathbed fighting check. The second time they're reduced to zero, they are reduced to zero and then they have their number of turns until they bleed out.  Most of the time they're going to become another enemy unit for you to fight.   If the battlefield is retreated while they're transformed, they are the same things as if they were abandoned.   Now if they succeeded, their luck, they're a strong unit under your control.  And there are no negative consequences at the end of the battle. We created transforming motions for this.   Now for being possessed: if a possessed character is knocked unconscious, they're going to spawn a ghost.  It's going to stand up from their body.   And that ghost is separate from them so the ghost is just an enemy unit.   They are still bleeding out on the ground.   I guess for rotting flesh I want to add another stat, which is +5 to the bleed out timer. The first time someone gets any one of the four main status afflictions, we need to pop up before and after art for that character with an explanation of both:
+They received a bunch of stat modifiers.
+There are many drawbacks.
+If they are taken to zero hit points, they will most likely transform into an enemy. That is true for three of them.
+If you're possessed, a ghost is going to rise from your body. If you're undead, you're just going to fall down.
+  I think, actually, if you're rotting flesh and you're taken to zero, you're going to gain a badge: Fragile. Gives you -1 maximum health.  So there's a permanent consequence every time you're taken down and it will just accumulate.   Whereas the other three provide threats to your party unless you make a luck roll, which point it ends up being a boon”
+
+Asked clarifying questions, the same evening:
+
+“Actually, I think I'm going to leave in those costs, so one, let's leave in   the luck stat is already a percentage, so it's just literally the percentage luck.  Someone who's stacked up luck might have 40. Someone might have 0.   3. Transformed hero went over to the enemy side, or not? If they went over to the enemy side, they have a bleed out. If they stayed on your side, they don't. They just die.  Because if it goes over to the enemy side, you basically need to beat them down, and then they're bleeding out. If they stay on your side, then it works a little bit like that, but fighting, they go to zero again. Character dies.   4. We're going to use the werewolf and vampire stats. No hero gear, just werewolf and vampire stats.   5. It can only happen once because there's no reversion.   Rotting flesh hero gets death in fighting. Fragile keeps stacking with no limit. … Possessed hero, correct. No deathbed roll. They just go down. They're bleeding out, and then a ghost with their image is going to appear. It's going to have ghost stats, and it will basically be summoned on their tile. There is a before/after pop-up mid-battle that will explain what just happened with the card art of both before and after.”
+
+“1. They're back to their normal self.  Transformation is once per battle, but there's no reason to author "Transformation is once per battle" because you can't transform when you've already been transformed.   Most heroes do have before-and-after card art”
+
+Ruled (the readings Andrew confirmed):
+
+- **All four afflictions keep every 2026-09-29 drawback, deploy costs included** (“let's leave in”).
+- **Vampirism / Lycanthropy, at 0 Health: no Deathbed Fighting roll.** The hero transforms into a Vampire / Werewolf — the bestiary's stats and powers, no hero gear — at full Health, and rolls Luck: the chance is the Luck stat as a percentage (Luck 40 = 40%; Luck 0 = always turns).
+  - **Success:** a player unit. At 0 Health again, the hero dies (no bleed-out).
+  - **Failure:** an enemy unit. Beaten to 0, it falls in the hero's original form and bleeds out (rescuable as any downed hero).
+  - **Retreat while transformed = abandoned.**
+  - **At battle end the hero is back to normal; no other consequence.** Once per battle by nature (no reversion mid-battle) — not authored as a rule.
+- **Possession, at 0 Health: no Deathbed roll.** The hero goes down and bleeds out, and a **Ghost with the hero's image is summoned on their hex, with Ghost stats, as an enemy**.
+- **Rotting Flesh, at 0 Health: Deathbed Fighting as normal (its +20 kept), and the hero gains the badge Fragile: −1 maximum Health, stacking with no limit, permanent.**
+- **The first time a hero gains any of the four afflictions, a mid-battle pop-up shows the hero's card art before and after**, and explains the stat changes, the drawbacks, and what happens at 0 Health. Most heroes have before/after art.
+
+Replaces, for afflicted heroes only: 2026-09-04 'Deathbed Fighting, REVERSED' — a Vampirism, Lycanthropy or Possession hero no longer rolls Deathbed Fighting at 0 Health, and a hero transformed on the player's side dies at 0 rather than bleeding out. 2026-09-29 'the four afflictions' stands in full (every stat, drawback and deploy cost); noted, not ruled: with no roll, the Vampirism +15 and Possession −10 Deathbed Fighting on those rows have nothing to act on.
+
+Filed: `content.afflictions-at-zero`, `rule.afflictions-at-zero`, `viewer.affliction-pop-up` (below, 'the order').
+
+## 2026-10-01 — bleed-out is a stat on every player unit, 5; Rotting Flesh +5
+
+Andrew, the same chat:
+
+“I guess for rotting flesh I want to add another stat, which is +5 to the bleed out timer.”
+
+“No, the standard bleed out right now is 5. It should be an attribute on every player unit, so it should take it from 5 to 10.”
+
+Ruled:
+
+- **Bleed-out is a stat on every player unit, standard 5.** **Rotting Flesh: +5 bleed-out (10).**
+
+Replaces: COMBAT-DESIGN.md §9's "a bleed-out counter starts, 3–4 phases" (now the stat; the document is updated). Keeps 2026-08-15 'Bleed-out: how long, and when does it resolve?' — five rounds — as the stat's standard value.
+
+Filed: with the afflictions (`content.afflictions-at-zero`, `rule.afflictions-at-zero`).
+
+## 2026-10-01 — the XCOM-style camera: one fixed angle and zoom, 90° turns, edge scroll, the character queue
+
+Andrew, the same chat:
+
+“Camera angle  When I go look at XCOM 2, which is a prestige game, best in class, the way it handles camera is that there's only one fixed zoom and angle.   When you mouse or point past the edge of a map, the map just scrolls. You don't need to grab and scroll the map.   Your characters are automatically selected in order.   You can zoom out or zoom in (in this case, I think, using the mouse wheel), but it snaps back to the standard zoom as soon as you stop pressing.   So it's only a temporary condition.  The way to rotate the screen is not through freehand rotation but through a fixed button. We'll just use the arrow keys, and it rotates the screen by 90°.  I think, to go along with the character focus, we're going to put a little character portrait in the lower-left-hand corner. That is the height of the current abilities.   You can look at different parts of the map by just looking around on the map, but if you click on any of the abilities below, it'll auto-center on your player unit.  We need a very high level of translucency for things that are blocking the camera view of the characters.   One character is automatically selected to start with and the map is centered on them.  When that character ends its activation, it goes to the next character and so we just have a queue of characters.   You can alter that by double-clicking on any character in the top mini-pane or on the map.   The end turn button needs to be way less prominent.   "End of activation" is used commonly. "End of turn" is used basically never.”
+
+Asked:
+
+“10. Yes, I want to fully replace the camera with an XCOM-style camera.   So no tilt, no free rotation. You only rotate by basically pressing a button. If you zoom in and zoom out, it has a snapback, so the zoom in and zoom out is actually pretty limited.   Yes, it should use the character bar from left to right with civilians included.”
+
+Ruled (the readings Andrew confirmed):
+
+- **XCOM-style: one fixed angle and zoom. No tilt, no free rotation. The arrow keys rotate 90 degrees.**
+- **The mouse wheel zooms a limited amount and snaps back to standard when you stop.**
+- **Pointing past the map edge scrolls the map; no grab-drag.**
+- **One character is auto-selected at the start, the map centered on them; when its activation ends, the next in the character bar, left to right, civilians included. Double-click a character in the top bar or on the map to change it.**
+- **A character portrait in the lower-left corner, as tall as the ability bar. Clicking an ability re-centers on the acting unit.**
+- **Anything blocking the view of a character is highly translucent.**
+- **End Turn far less prominent than End Activation.**
+
+Replaces: 2026-09-29 'the playable battle screen' — "Camera: rotate, zoom, tilt, and right-click-drag to move the map; a Reset button returns to the starting angled view" and "The hero who acts next is chosen by clicking it on the board" (now the queue, changed by double-click); 2026-09-30 'a true 3D battle' — the orbit controls ("rotates all the way around, tilts, zooms and pans"; the 3D board and bodies seen in true perspective stay); 2026-10-01 'the camera redesigned on the caravan preview' — "the accepted caravan camera is the camera of every battle" (viewer.tactical-camera). 2026-09-30's End Turn and End Activation in the lower right stay; End Turn is made far less prominent.
+
+Filed: `viewer.xcom-camera`, first in the viewer queue.
+
+## 2026-10-01 — the movements: every one identified, only the ones needed now built; weapon swap and shield actions are now
+
+Andrew, the same chat:
+
+“To-do for player units We need a really wide range of movement options for the player units to support different items and different powers.   And particularly different weapons, the shield A drink can work if there is a potion in inventory that is a power that is used.  We still need the switch function for weapon swap.”
+
+Asked:
+
+“12. We do need to do two separate things: 1. Identify all of the movements. 2. The movements we need right now, because I really want to get a playable version of this that looks like what it's supposed to. Doing all of the movements is going to be in the way of that.”
+
+“weapon swap and shield actions are part of what's needed now.”
+
+Ruled (the readings Andrew confirmed):
+
+- **Two separate items: (1) identify every movement the content needs; (2) build only the movements needed now for a playable battle — weapon swap and shield actions are in "now".** (Drinking a potion is not named as "now".)
+
+What is already there: the engine's swap landed as `v2.loadout-swap` (dd468e3; `v2.swap` was closed as superseded by it) and the shield powers as `v2.shields` (aaf51a5); the sandbox offers the swap only on its form controls, not on the 3D board (`kingdom/src/ui/sandbox.ts:119`). `move.actions` was closed 2026-09-25 as superseded by `movement.powers`. So "now" is the swap and the shield actions played in the battle; the list of every movement is new.
+
+Filed: `movement.swap-and-shields`, then `movement.inventory`, first in the engine queue.
+
+## 2026-10-01 — one continuous run through the first six battles, saved, never the kingdom map
+
+Andrew, the same chat:
+
+“We need a continuous play experience that goes through the first six levels, including:
+the first six fights with the map
+your first hero selection
+your drafting of the different heroes afterwards
+the rewards set for these first six battles
+It doesn't really have to touch the kingdom level. It does have to save correctly, but we're not leaving battle rewards or level. We're not ever going to the kingdom map in these first six fights.”
+
+Asked:
+
+“13. Yes, the retaking Abitame map.   13. Yes, you can continue from the next battle.   14. Some kind of typo. Basically, there should be battle rewards, experience points, levels, and equipping inside of our sixth loop.”
+
+Ruled (the readings Andrew confirmed):
+
+- **One continuous run through the first six battles on the Retaking Abbotown map** ("Abitame"): first hero selection, drafting, battle rewards, experience, levels, equipping; **never the kingdom map**; **it saves, and continues from the next battle.**
+
+Replaces: 2026-09-29 'the playable opening' — "Target: the first three battles" (now six) and "One sitting — no save and quit" (now saved, continued from the next battle); with it `kingdom.opening-loop` (2026-09-28, "in one sitting") and `kingdom.opening-loop-three`.
+
+Filed: `kingdom.opening-run-six` (below, 'the order').
+
+## 2026-10-01 — the order: the camera and the movements first, then the six-battle run, then the afflictions
+
+Andrew, the same chat:
+
+“weapon swap and shield actions are part of what's needed now. Actually, the most important things are the camera and the movements. The affliction changes and the six battle runners are less important. Those are to get the whole cycle going, to get everything in there, but I need a camera and working battles. I think there are a lot of other UI changes that have to happen.”
+
+Ruled, the queue order:
+
+1. **Camera and working battles** — viewer queue: `viewer.xcom-camera` first, then the already queued `viewer.unit-card-bar`, `viewer.characters-unfaded`, `viewer.weapons-in-hand`, `viewer.real-bodies` — reordered to the order Andrew listed them (asked and answered “yes”, 2026-10-01). More UI changes are expected to follow.
+2. **Movements needed now** — engine queue: `movement.swap-and-shields`, then `movement.inventory`.
+3. **Six-battle run** — engine: Gates (`encounter.opening.gates`, landed), Bridge AI (`encounter.opening.bridge-ai-refiled`, landed, awaiting review), the Cathedral (`encounter.opening.cathedral`, next in the engine queue after the movements); then kingdom: `kingdom.opening-run-six`, which grows `kingdom.opening-loop-three` to six with saving and supersedes it and `kingdom.opening-loop` (both to be abandoned from a terminal; `kingdom.opening-loop-three` still needs the abandoned `encounter.opening.bridge-ai` and can never start).
+4. **Affliction changes** — `content.afflictions-at-zero`, then `rule.afflictions-at-zero`, then `viewer.affliction-pop-up`.
