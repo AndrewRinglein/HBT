@@ -1430,7 +1430,7 @@
    "name": "Fangs",
    "itemClass": "weapon",
    "tier": 1,
-   "hands": 0,
+   "hands": 1,
    "slots": 0,
    "classRestriction": "class.beast",
    "tags": [
@@ -1445,7 +1445,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it. | 2026-10-02: hands 0 -> 1 BY RULING (2026-09-28, engine DECISIONS.md 'the duplication review, ruled': \"There should be no weapon that is zero-handed.\"; fix.one-hero-assembly). Every weapon takes at least one hand; the engine pack loader refuses hands 0.",
    "natural": true
   },
   {
@@ -1453,7 +1453,7 @@
    "name": "Claws",
    "itemClass": "weapon",
    "tier": 1,
-   "hands": 0,
+   "hands": 1,
    "slots": 0,
    "classRestriction": "class.beast",
    "tags": [
@@ -1467,14 +1467,14 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-27: brawl tag removed BY RULING — \"the claws are too powerful to be paired with the brawler.\" Kept on the weapon list."
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-27: brawl tag removed BY RULING — \"the claws are too powerful to be paired with the brawler.\" Kept on the weapon list. | 2026-10-02: hands 0 -> 1 BY RULING (2026-09-28, engine DECISIONS.md 'the duplication review, ruled': \"There should be no weapon that is zero-handed.\"; fix.one-hero-assembly). Every weapon takes at least one hand; the engine pack loader refuses hands 0."
   },
   {
    "id": "item.tail",
    "name": "Tail",
    "itemClass": "weapon",
    "tier": 1,
-   "hands": 0,
+   "hands": 1,
    "slots": 0,
    "classRestriction": "class.beast",
    "tags": [
@@ -1490,7 +1490,7 @@
    },
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it. | 2026-10-02: hands 0 -> 1 BY RULING (2026-09-28, engine DECISIONS.md 'the duplication review, ruled': \"There should be no weapon that is zero-handed.\"; fix.one-hero-assembly). Every weapon takes at least one hand; the engine pack loader refuses hands 0.",
    "natural": true
   },
   {
@@ -1498,7 +1498,7 @@
    "name": "Horns",
    "itemClass": "weapon",
    "tier": 1,
-   "hands": 0,
+   "hands": 1,
    "slots": 0,
    "classRestriction": "class.beast",
    "tags": [
@@ -1512,7 +1512,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it. | 2026-10-02: hands 0 -> 1 BY RULING (2026-09-28, engine DECISIONS.md 'the duplication review, ruled': \"There should be no weapon that is zero-handed.\"; fix.one-hero-assembly). Every weapon takes at least one hand; the engine pack loader refuses hands 0.",
    "natural": true
   },
   {
@@ -1520,7 +1520,7 @@
    "name": "Breath",
    "itemClass": "weapon",
    "tier": 2,
-   "hands": 0,
+   "hands": 1,
    "slots": 0,
    "classRestriction": "class.beast",
    "tags": [
@@ -1535,14 +1535,14 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-10-02: hands 0 -> 1 BY RULING (2026-09-28, engine DECISIONS.md 'the duplication review, ruled': \"There should be no weapon that is zero-handed.\"; fix.one-hero-assembly). Every weapon takes at least one hand; the engine pack loader refuses hands 0."
   },
   {
    "id": "item.hooves",
    "name": "Hooves",
    "itemClass": "weapon",
    "tier": 1,
-   "hands": 0,
+   "hands": 1,
    "slots": 0,
    "classRestriction": "class.beast",
    "tags": [
@@ -1558,7 +1558,7 @@
    },
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it. | 2026-10-02: hands 0 -> 1 BY RULING (2026-09-28, engine DECISIONS.md 'the duplication review, ruled': \"There should be no weapon that is zero-handed.\"; fix.one-hero-assembly). Every weapon takes at least one hand; the engine pack loader refuses hands 0.",
    "natural": true
   },
   {
@@ -1640,7 +1640,7 @@
   {
    "id": "item.net",
    "name": "Net",
-   "itemClass": "weapon",
+   "itemClass": "trinket",
    "tier": 0,
    "slots": 1,
    "hands": 0,
@@ -1660,7 +1660,7 @@
     "supplies": 7
    },
    "intent": "No hands, one throw, and the biggest thing on the field stops moving.",
-   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §4): the Waystation's common items — a fixed catalog, tier 0, unlocked by the building's bands, bought for Supplies or Mana Crystals, restocked after each Battle.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §4): the Waystation's common items — a fixed catalog, tier 0, unlocked by the building's bands, bought for Supplies or Mana Crystals, restocked after each Battle. | 2026-10-02: itemClass weapon -> trinket (fix.one-hero-assembly; engine SWITCHES.md netIsAPower). Two rulings meet here: \"Net needs no hands. Net is just a power, and it's a one-time use.\" (2-ACTIONS-SETTLED.md, 2026-09-02) and \"There should be no weapon that is zero-handed.\" (engine DECISIONS.md, 2026-09-28). Read together, the Net is not a weapon: it keeps no hands and works from its item slot, as every other Waystation one-use row does.",
    "uses": 1
   }
  ],

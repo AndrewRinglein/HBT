@@ -1801,9 +1801,13 @@ const derivedItems = {};
     const { vsTarget: baseVs, gaps: baseGaps, ...bare } = b;
     // 2. masterwork — tier-1 two-handers, one-handers, shields and armor, +1 Max Stamina,
     //    tier 2 (Andrew 2026-09-25: "It can also apply to a shield. It can also apply to
-    //    a one-hander."). A natural weapon (hands 0) is none of these.
+    //    a one-hander."). A beast's body part (class.beast — "beasts draw nothing — their
+    //    weapons are their bodies", 2026-08-27) is none of these: it took hands 0 until
+    //    2026-10-02, when every weapon took at least one hand (fix.one-hero-assembly; engine
+    //    SWITCHES.md naturalWeaponMasterwork), and gains no Forge row by that change.
     const hands = ci.hands ?? 0;
-    if (isShield || ci.itemClass === 'armor' || (ci.itemClass === 'weapon' && (hands === 1 || hands === 2))) {
+    const natural = ci.classRestriction === 'class.beast';
+    if (isShield || ci.itemClass === 'armor' || (ci.itemClass === 'weapon' && !natural && (hands === 1 || hands === 2))) {
       put({ ...bare, id: `${b.id}.masterwork`, name: `Masterwork ${b.name}`, tier: 2,
         statModifiers: { ...b.statModifiers, maxStamina: (b.statModifiers.maxStamina ?? 0) + 1 },
         ...(baseVs ? { vsTarget: baseVs } : {}), base: b.id, ...(baseGaps ? { gaps: baseGaps } : {}) });
