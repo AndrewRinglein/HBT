@@ -233,11 +233,11 @@ export function mountBattleViewer(root, data, opts = {}) {
   function clearPlay() { V.play = null; syncPlayInput(V); drawPlay(V); chrome.sync() }
   function setPlay(value) {
     if (disposed) throw new Error('viewer disposed')
-    if (value === null) { if (V.play) { clearPlay(); drawBar(V) } return }
+    if (value === null) { if (V.play) { clearPlay(); drawBar(V); drawStam(V) } return }
     if (V.invalid) throw new Error('viewer faulted')
     const next = playFacts(value, V.data.POS)   // validate/detach the WHOLE payload before mutation
     V.play = next
-    try { syncPlayInput(V); drawPlay(V); drawBar(V); chrome.sync() } catch (err) { fault(err) }
+    try { syncPlayInput(V); drawPlay(V); drawBar(V); drawStam(V); chrome.sync() } catch (err) { fault(err) }
   }
   function clearTargeting() { targetingGeneration++; V.targeting = null; V.layers.targeting?.remove(); V.layers.targeting = null }
   function setTargeting(value) {
