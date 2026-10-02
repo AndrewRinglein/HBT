@@ -3786,17 +3786,6 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "accuracy": -20
     },
-    "attack.pile-of-rocks.throw": {
-      "id": "attack.pile-of-rocks.throw",
-      "name": "Throw",
-      "kind": "ranged",
-      "damageType": "physical",
-      "bonus": -1,
-      "stat": "precision",
-      "reach": 3,
-      "staminaCost": 0,
-      "accuracy": 10
-    },
     "attack.lumberjack-axe.chop": {
       "id": "attack.lumberjack-axe.chop",
       "name": "Chop",
@@ -3828,6 +3817,17 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "accuracy": -5
+    },
+    "attack.pile-of-rocks.throw": {
+      "id": "attack.pile-of-rocks.throw",
+      "name": "Throw",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 0,
+      "accuracy": 10
     },
     "attack.hand-axe.chop": {
       "secondaryDamage": [
@@ -9605,7 +9605,7 @@ export const UNIT_PACK = {
       "precision": 2,
       "magic": 0,
       "spirit": 0,
-      "role": "ranged",
+      "role": "melee",
       "movement": 4,
       "reach": 1,
       "maxStamina": 5,
@@ -9625,8 +9625,9 @@ export const UNIT_PACK = {
       "levelTable": "civilian.child",
       "triggers": [],
       "defaultItems": [
-        "item.pile-of-rocks"
-      ]
+        "item.dagger"
+      ],
+      "placedWithKit": true
     },
     {
       "typeId": "hero.fixed.lumberjack-and-wife",
@@ -9740,7 +9741,8 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.dagger"
-      ]
+      ],
+      "placedWithKit": true
     },
     {
       "typeId": "hero.fixed.school-children",

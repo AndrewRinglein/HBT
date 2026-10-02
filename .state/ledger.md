@@ -22537,3 +22537,129 @@ index f2e5031..b83876c 100644
        }
 ```
 </details>
+
+## fix.orphans-teacher-knife — ABANDONED
+2026-10-02 13:28
+
+Filed with changesBaseline true, but the work is neutral on the control battles (byte-identical: the control panel fields no Orphan Child, School Teacher or encounter-placed civilian; the opening battles that move are not control battles), so the gate's consequence check can never pass. Parked, abandoned and re-filed as fix.orphans-teacher-knife-refiled without the declaration (SWITCHES.md orphansKnifeRefiled; precedent oneHeroAssemblyRefiled, 2026-10-02).
+
+## fix.orphans-teacher-knife-refiled — LANDED `781f9c5` **NEEDS REVIEW**
+2026-10-02 13:32
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1815 · SWITCHES.md:1848
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/civilians.test.ts, test/items-per-unit.test.ts, test/orphans-teacher-knife.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 10 log lines, 10 fired, 6 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/civilians.test.ts, test/items-per-unit.test.ts, test/fixtures/battle-cursor-orphans-teacher-knife.json, test/orphans-teacher-knife.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/civilians.test.ts (-4), test/items-per-unit.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index a380a53..1d01bbc 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -259,4 +259,11 @@ const bridgeDeckGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
+ // here and skips the older layers.
+ const oneHeroAssemblyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-hero-assembly.json', import.meta.url), 'utf8'))
++// fix.orphans-teacher-knife (2026-10-02; DECISIONS.md 2026-10-02 'the Net is a trinket with no hands; the orphans and the
++// school teacher start with a knife': "The Orphanage, Orphanage, and the school teacher should start with a knife each."),
++// Law 10: the Orphan Child's kit is the Dagger, and the orphans and the school teacher field their kit wherever an encounter
++// places them. Every case frozen here (tools/capture-orphans-teacher-knife-cursor.mts). Moved for real, the ruling working
++// (state, RNG and result): exactly the four cases that field an Orphan Child — showcase.civilians, showcase.farmers-grown,
++// showcase.two-zombies-and-a-child and test.opening-orphanage. A `changed` case is checked here and skips the older layers.
++const orphansKnifeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphans-teacher-knife.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -376,6 +383,9 @@ describe('resumable battle cursor', () => {
+       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const orphansKnifeMoved = orphansKnifeExpected?.changed === true
+       const oneHeroAssemblyExpected = oneHeroAssemblyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true
++      // was: const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true — an orphans-knife-moved case skips the one-hero-assembly layer too (fix.orphans-teacher-knife 2026-10-02)
++      const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true || orphansKnifeMoved
+       // was: const bridgeDeckMoved = bridgeDeckExpected?.changed === true — a one-hero-assembly-moved case skips the bridge-deck layer too (fix.one-hero-assembly 2026-10-02)
+       const bridgeDeckMoved = bridgeDeckExpected?.changed === true || oneHeroAssemblyMoved
+@@ -463,5 +473,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (oneHeroAssemblyExpected) {
++        if (orphansKnifeExpected) {
++        expect(hash(ctx.events), 'full orphans-teacher-knife events').toBe(orphansKnifeExpected.events)
++        expect(hash(ctx.state), 'full orphans-teacher-knife state').toBe(orphansKnifeExpected.state)
++        expect(hash(ctx.rng.log), 'full orphans-teacher-knife RNG').toBe(orphansKnifeExpected.rng)
++        expect(result).toEqual(orphansKnifeExpected.result)
++        }
++        // was: if (oneHeroAssemblyExpected) { — fix.orphans-teacher-knife (2026-10-02): an orphans-knife-moved case is checked above instead
++        if (oneHeroAssemblyExpected && !orphansKnifeMoved) {
+         expect(hash(ctx.events), 'full one-hero-assembly events').toBe(oneHeroAssemblyExpected.events)
+         expect(hash(ctx.state), 'full one-hero-assembly state').toBe(oneHeroAssemblyExpected.state)
+diff --git a/test/civilians.test.ts b/test/civilians.test.ts
+index 2937b08..69045c3 100644
+--- a/test/civilians.test.ts
++++ b/test/civilians.test.ts
+@@ -45,8 +45,14 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+   })
+ 
+-  it('the orphan throws rocks and the farmer jabs — paying what the rows author', () => {
++  it('the school children throw rocks and the farmer jabs — paying what the rows author', () => {
+     // Law 10, 2026-09-10: the Sep 5 ruling arms every civilian with universal
+     // Punch as well as their weapon. Exact lists still reject accidental extras.
+-    expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw', 'attack.punch'])
++    // Law 10, 2026-10-02 (fix.orphans-teacher-knife; DECISIONS.md 2026-10-02 'the Net is a trinket with no hands; the
++    // orphans and the school teacher start with a knife': "The Orphanage, Orphanage, and the school teacher should start
++    // with a knife each."): the Orphan Child's kit is the Dagger now, so the rock thrower here is the School Children
++    // (civilian.child, still armed with the pile of rocks). The claim — a civilian pays what the rows author — is unchanged.
++    // was: expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw', 'attack.punch'])
++    expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.dagger.stab', 'attack.punch'])
++    expect(fieldedDef('hero.fixed.school-children').attacks).toEqual(['attack.pile-of-rocks.throw', 'attack.punch'])
+     expect(ATTACKS['attack.pile-of-rocks.throw']).toMatchObject(
+       { range: 3, staminaCost: 0, attack: { kind: 'ranged', stat: 'precision' } })   // authored zero
+@@ -106,5 +112,9 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+   })
+ 
+-  it('the orphan throws when a zombie is in range — scripted, not seed-luck', () => {
++  it('a rock-thrower throws when a zombie is in range — scripted, not seed-luck', () => {
++    // Law 10, 2026-10-02 (fix.orphans-teacher-knife): the Orphan Child carries the Dagger now (DECISIONS.md 2026-10-02),
++    // so the thrower fielded below is the School Children, who still carry the pile of rocks. The claim — a civilian
++    // with a thrown weapon throws it when a zombie is in range — is unchanged.
++    // was: [{ type: 'hero.fixed.orphans', hex: hexId(5, 8) }]
+     // LAW 10 — 2026-08-27: in the open verify battles the orphan NEVER throws,
+     // and that is the kiter being RIGHT, not broken: her reach is 4 and a
+@@ -113,5 +123,5 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+     // it is deterministic — put a target in reach and run her activation.
+     const ctx = createCustomBattle(
+-      [{ type: 'hero.fixed.orphans', hex: hexId(5, 8) }],
++      [{ type: 'hero.fixed.school-children', hex: hexId(5, 8) }],
+       [{ type: 'unit.zombie', hex: hexId(8, 8) }],
+     )
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 1aa38b3..cab4e00 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -88,5 +88,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // Law 10, Sep 10: Sep 5 grants civilians universal Punch. Preserve the
+       // frozen oracle and name this exact authored addition, not a fold drift.
+-      'hero.fixed.orphans': ['attacks'],
++      // Law 10, fix.orphans-teacher-knife (2026-10-02; DECISIONS.md 2026-10-02 "The Orphanage, Orphanage, and the school
++      // teacher should start with a knife each."): her kit is the Dagger, not the pile of rocks — content moved, not the
++      // fold. The melee knife makes her role and ai melee (derived from the kit), and her row says placedWithKit.
++      // was: 'hero.fixed.orphans': ['attacks'],
++      'hero.fixed.orphans': ['role', 'ai', 'attacks', 'placedWithKit'],
+       'hero.fixed.lumberjack-and-wife': ['attacks'],
+       'hero.fixed.farmer': ['attacks'],
+```
+</details>

@@ -258,6 +258,13 @@ const bridgeDeckGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
 // and its badge.hero, with their unit.equipped and unit.badged lines, as a scenario hero does). A `changed` case is checked
 // here and skips the older layers.
 const oneHeroAssemblyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-hero-assembly.json', import.meta.url), 'utf8'))
+// fix.orphans-teacher-knife (2026-10-02; DECISIONS.md 2026-10-02 'the Net is a trinket with no hands; the orphans and the
+// school teacher start with a knife': "The Orphanage, Orphanage, and the school teacher should start with a knife each."),
+// Law 10: the Orphan Child's kit is the Dagger, and the orphans and the school teacher field their kit wherever an encounter
+// places them. Every case frozen here (tools/capture-orphans-teacher-knife-cursor.mts). Moved for real, the ruling working
+// (state, RNG and result): exactly the four cases that field an Orphan Child — showcase.civilians, showcase.farmers-grown,
+// showcase.two-zombies-and-a-child and test.opening-orphanage. A `changed` case is checked here and skips the older layers.
+const orphansKnifeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphans-teacher-knife.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -375,8 +382,11 @@ describe('resumable battle cursor', () => {
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const orphansKnifeMoved = orphansKnifeExpected?.changed === true
       const oneHeroAssemblyExpected = oneHeroAssemblyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true
+      // was: const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true — an orphans-knife-moved case skips the one-hero-assembly layer too (fix.orphans-teacher-knife 2026-10-02)
+      const oneHeroAssemblyMoved = oneHeroAssemblyExpected?.changed === true || orphansKnifeMoved
       // was: const bridgeDeckMoved = bridgeDeckExpected?.changed === true — a one-hero-assembly-moved case skips the bridge-deck layer too (fix.one-hero-assembly 2026-10-02)
       const bridgeDeckMoved = bridgeDeckExpected?.changed === true || oneHeroAssemblyMoved
       const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
@@ -462,7 +472,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (oneHeroAssemblyExpected) {
+        if (orphansKnifeExpected) {
+        expect(hash(ctx.events), 'full orphans-teacher-knife events').toBe(orphansKnifeExpected.events)
+        expect(hash(ctx.state), 'full orphans-teacher-knife state').toBe(orphansKnifeExpected.state)
+        expect(hash(ctx.rng.log), 'full orphans-teacher-knife RNG').toBe(orphansKnifeExpected.rng)
+        expect(result).toEqual(orphansKnifeExpected.result)
+        }
+        // was: if (oneHeroAssemblyExpected) { — fix.orphans-teacher-knife (2026-10-02): an orphans-knife-moved case is checked above instead
+        if (oneHeroAssemblyExpected && !orphansKnifeMoved) {
         expect(hash(ctx.events), 'full one-hero-assembly events').toBe(oneHeroAssemblyExpected.events)
         expect(hash(ctx.state), 'full one-hero-assembly state').toBe(oneHeroAssemblyExpected.state)
         expect(hash(ctx.rng.log), 'full one-hero-assembly RNG').toBe(oneHeroAssemblyExpected.rng)

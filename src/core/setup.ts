@@ -322,10 +322,12 @@ function announce(ctx: Ctx, f: Fielded, arrived?: string): void {
 /**
  * Field one unit mid-battle — an encounter's setup unit or a scheduled arrival (encounter.ts
  * arrive). The same assembler as every other fielding; its row is authored whole (no kit), as an
- * arrival's always was. The unit is pushed onto the board and its lines emitted, `arrived` named.
+ * arrival's always was (SWITCHES.md arrivalKit) — unless the row says it is placed with its kit
+ * (`placedWithKit`, fix.orphans-teacher-knife, ruled 2026-10-02): then its Codex default kit, as
+ * createBattle fields a hero. The unit is pushed onto the board and its lines emitted, `arrived` named.
  */
 export function fieldArrival(ctx: Ctx, def: UnitDef, id: number, uid: number, name: string, hex: number, causeId: string): Unit {
-  const f = fieldUnit(id, uid, name, assemble(def, {}, causeId, uid, false, ctx.badges), hex, {}, causeId)
+  const f = fieldUnit(id, uid, name, assemble(def, {}, causeId, uid, def.placedWithKit === true, ctx.badges), hex, {}, causeId)
   ctx.state.units.push(f.unit)
   announce(ctx, f, causeId)
   return f.unit

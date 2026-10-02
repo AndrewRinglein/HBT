@@ -87,7 +87,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       'alpha-air-mage': ['triggers'],
       // Law 10, Sep 10: Sep 5 grants civilians universal Punch. Preserve the
       // frozen oracle and name this exact authored addition, not a fold drift.
-      'hero.fixed.orphans': ['attacks'],
+      // Law 10, fix.orphans-teacher-knife (2026-10-02; DECISIONS.md 2026-10-02 "The Orphanage, Orphanage, and the school
+      // teacher should start with a knife each."): her kit is the Dagger, not the pile of rocks — content moved, not the
+      // fold. The melee knife makes her role and ai melee (derived from the kit), and her row says placedWithKit.
+      // was: 'hero.fixed.orphans': ['attacks'],
+      'hero.fixed.orphans': ['role', 'ai', 'attacks', 'placedWithKit'],
       'hero.fixed.lumberjack-and-wife': ['attacks'],
       'hero.fixed.farmer': ['attacks'],
       // Law 10, 2026-09-23 (v2.shields): the retired Knight Shield took its Shield Slam with it.

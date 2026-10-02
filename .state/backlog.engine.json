@@ -1,5 +1,21 @@
 [
  {
+  "id": "fix.orphans-teacher-knife-refiled",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.one-hero-assembly-refiled"
+  ],
+  "probeIds": [
+   "encounter.opening.orphanage"
+  ],
+  "spec": "Re-files fix.orphans-teacher-knife (abandoned 2026-10-02: filed with changesBaseline true, but the work is neutral on the control battles; engine SWITCHES.md orphansKnifeRefiled). Ruled 2026-10-02 (Andrew, engine DECISIONS.md 'the Net is a trinket with no hands; the orphans and the school teacher start with a knife'): 'The Orphanage, Orphanage, and the school teacher should start with a knife each.' The knife is item.dagger (no knife row exists; the teacher's Codex kit already names it). (1) content/gen/heroes.json: hero.fixed.orphans' kit becomes [item.dagger] in place of item.pile-of-rocks; rebuild the Codex and the engine pack. (2) The orphans and the school teacher field their kit wherever an encounter places them (setup units and arrivals), through the one assembler fieldedDef (fix.one-hero-assembly-refiled) — not a second kit path. engine SWITCHES arrivalKit stands for every other placed civilian (school children, farmer, lumberjack and wife, the Supper's villagers): they keep fighting as authored. Prior art: fieldedDef's kit handling for createBattle; arrivals in src/core/encounter.ts. Rebuild the kingdom pages the change makes stale.",
+  "expect": "In encounter.opening.orphanage every orphan and in its encounter the school teacher fields item.dagger and attacks with attack.dagger.stab, not Punch; a school child placed by an encounter still fights with Punch; the opening battles that field an Orphan Child move (test/battle-cursor.test.ts), the control battles do not.",
+  "note": "Neutral on the control battles (byte-identical): the control panel (tools/baseline.mts, MAP_PANEL) fields no Orphan Child, School Teacher or encounter-placed civilian. The opening battles move: test.opening-orphanage, showcase.civilians, showcase.farmers-grown, showcase.two-zombies-and-a-child.",
+  "status": "done-needs-review",
+  "sha": "781f9c5"
+ },
+ {
   "id": "fix.orphans-teacher-knife",
   "kind": "engine",
   "shape": "data",
@@ -11,7 +27,11 @@
   ],
   "changesBaseline": true,
   "spec": "Ruled 2026-10-02 (Andrew, engine DECISIONS.md 'the Net is a trinket with no hands; the orphans and the school teacher start with a knife'): 'The Orphanage, Orphanage, and the school teacher should start with a knife each.' The knife is item.dagger (no knife row exists; the teacher's Codex kit already names it). (1) content/gen/heroes.json: hero.fixed.orphans' kit becomes [item.dagger] in place of item.pile-of-rocks; rebuild the Codex and the engine pack. (2) The orphans and the school teacher field their kit wherever an encounter places them (setup units and arrivals), through the one assembler fieldedDef (fix.one-hero-assembly-refiled) — not a second kit path. engine SWITCHES arrivalKit stands for every other placed civilian (school children, farmer, lumberjack and wife, the Supper's villagers): they keep fighting as authored. Prior art: fieldedDef's kit handling for createBattle; arrivals in src/core/encounter.ts. Rebuild the kingdom pages the change makes stale.",
-  "expect": "In encounter.opening.orphanage every orphan and in its encounter the school teacher fields item.dagger and attacks with attack.dagger.stab, not Punch; a school child placed by an encounter still fights with Punch; the opening's control battles move."
+  "expect": "In encounter.opening.orphanage every orphan and in its encounter the school teacher fields item.dagger and attacks with attack.dagger.stab, not Punch; a school child placed by an encounter still fights with Punch; the opening's control battles move.",
+  "attempts": 1,
+  "status": "failed",
+  "failedAt": "2026-10-02 13:28",
+  "reason": "Filed with changesBaseline true, but the work is neutral on the control battles (byte-identical: the control panel fields no Orphan Child, School Teacher or encounter-placed civilian; the opening battles that move are not control battles), so the gate's consequence check can never pass. Parked, abandoned and re-filed as fix.orphans-teacher-knife-refiled without the declaration (SWITCHES.md orphansKnifeRefiled; precedent oneHeroAssemblyRefiled, 2026-10-02)."
  },
  {
   "id": "fix.one-hero-assembly-refiled",

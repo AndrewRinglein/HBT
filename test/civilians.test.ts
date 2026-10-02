@@ -44,10 +44,16 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
     expect(fieldedDef('hero.fixed.farmer').maxHp).toBe(7)
   })
 
-  it('the orphan throws rocks and the farmer jabs — paying what the rows author', () => {
+  it('the school children throw rocks and the farmer jabs — paying what the rows author', () => {
     // Law 10, 2026-09-10: the Sep 5 ruling arms every civilian with universal
     // Punch as well as their weapon. Exact lists still reject accidental extras.
-    expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw', 'attack.punch'])
+    // Law 10, 2026-10-02 (fix.orphans-teacher-knife; DECISIONS.md 2026-10-02 'the Net is a trinket with no hands; the
+    // orphans and the school teacher start with a knife': "The Orphanage, Orphanage, and the school teacher should start
+    // with a knife each."): the Orphan Child's kit is the Dagger now, so the rock thrower here is the School Children
+    // (civilian.child, still armed with the pile of rocks). The claim — a civilian pays what the rows author — is unchanged.
+    // was: expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw', 'attack.punch'])
+    expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.dagger.stab', 'attack.punch'])
+    expect(fieldedDef('hero.fixed.school-children').attacks).toEqual(['attack.pile-of-rocks.throw', 'attack.punch'])
     expect(ATTACKS['attack.pile-of-rocks.throw']).toMatchObject(
       { range: 3, staminaCost: 0, attack: { kind: 'ranged', stat: 'precision' } })   // authored zero
     expect(fieldedDef('hero.fixed.farmer').attacks).toEqual(['attack.pitchfork.jab', 'attack.punch'])
@@ -105,14 +111,18 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
     for (const id of CIVS) expect(acted.has(id), `${id} did nothing in any seed`).toBe(true)
   })
 
-  it('the orphan throws when a zombie is in range — scripted, not seed-luck', () => {
+  it('a rock-thrower throws when a zombie is in range — scripted, not seed-luck', () => {
+    // Law 10, 2026-10-02 (fix.orphans-teacher-knife): the Orphan Child carries the Dagger now (DECISIONS.md 2026-10-02),
+    // so the thrower fielded below is the School Children, who still carry the pile of rocks. The claim — a civilian
+    // with a thrown weapon throws it when a zombie is in range — is unchanged.
+    // was: [{ type: 'hero.fixed.orphans', hex: hexId(5, 8) }]
     // LAW 10 — 2026-08-27: in the open verify battles the orphan NEVER throws,
     // and that is the kiter being RIGHT, not broken: her reach is 4 and a
     // zombie threatens every hex she could shoot from, so she retreats while
     // the Lumberjack wins the fight. The claim "she can fight" is proven where
     // it is deterministic — put a target in reach and run her activation.
     const ctx = createCustomBattle(
-      [{ type: 'hero.fixed.orphans', hex: hexId(5, 8) }],
+      [{ type: 'hero.fixed.school-children', hex: hexId(5, 8) }],
       [{ type: 'unit.zombie', hex: hexId(8, 8) }],
     )
     const o = ctx.state.units[0]!
