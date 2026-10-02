@@ -333,6 +333,15 @@ export function fieldArrival(ctx: Ctx, def: UnitDef, id: number, uid: number, na
   return f.unit
 }
 
+/**
+ * rule.afflictions-at-zero (2026-10-02): the unit a row makes as a FORM — the one assembler, the row authored whole
+ * ("the bestiary's stats and powers, no hero gear"), its own badges folded — neither pushed onto the board nor
+ * announced: transformUnit lays it over the hero and names it in one line (unit.transformed). Ctx.formOf.
+ */
+export function formOf(ctx: Ctx, def: UnitDef, id: number, uid: number, name: string, hex: number, causeId: string): Unit {
+  return fieldUnit(id, uid, name, assemble(def, {}, causeId, uid, false, ctx.badges), hex, {}, causeId).unit
+}
+
 /** The class a hero row belongs to, read off its tags (`class.<x>`) — hero assembly. */
 export function classOf(def: UnitDef): string {
   const tag = (def.tags ?? []).find((t) => t.startsWith('class.'))
@@ -368,7 +377,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}), ...(decoded.entries?{entries:decoded.entries}:{}), units: [], outcome: null, seq: 0 }
   const initialMap = { ...(direct ? { terrain: [...state.terrain] } : {}), props: structuredClone(state.props), ...(state.floor?{floor:[...state.floor]}:{}), ...(state.entries?{entries:structuredClone(state.entries)}:{}) }
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES, aiModes: AI_MODE_ROWS, aiLog: [],
-    units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
+    units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}), formOf,
     ...(opts.encounter ? { encounter: direct ? structuredClone(opts.encounter) : opts.encounter } : {}) }
   prepareAttackLines(ctx)
   prepareCover(ctx)
@@ -632,7 +641,7 @@ export function createCustomBattle(
   const decoded = decodeMap(mapDef(mapId))
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, props: decoded.props, ...(decoded.floor?{floor:decoded.floor}:{}), ...(decoded.entries?{entries:decoded.entries}:{}), units: [], outcome: null, seq: 0 }
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES, aiModes: AI_MODE_ROWS, aiLog: [],
-    units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
+    units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}), formOf }
   prepareAttackLines(ctx)
   prepareCover(ctx)
   for (const p of decoded.paint ?? []) paintGround(ctx, p.hexes, p.layer, mapId)   // the map's painted ground, as createBattle

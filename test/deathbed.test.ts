@@ -182,14 +182,21 @@ describe('Deathbed Fighting from badges', () => {
     expect(BADGES['badge.possession']!.deathbedFighting).toBe(-10)
     expect(BADGES['badge.lycanthropy']!.deathbedFighting).toBeUndefined()
   })
+  // Law 10, rule.afflictions-at-zero (2026-10-02): this test rolled a Vampirism hero (35) and a Possessed one (10) and summed
+  // the two (Vampirism + Possession). DECISIONS.md 2026-10-01 'the afflictions at 0 Health' replaced the Deathbed rule for
+  // those afflictions — "no Deathbed Fighting roll" — and noted that their +15 and −10 have nothing to act on. The same
+  // claim (every badge's points, each named, in carry order) is now made with badges that still roll: Rotting Flesh
+  // (+20, "Deathbed Fighting as normal") and Second Wind (+10); the two afflictions are asserted to roll nothing.
   it('the chance is 20 + 5 × Toughness + every badge\'s points, each named on the line in carry order', () => {
     expect(deathbedFighting({ toughness: 3 }, 15)).toBe(50)
-    expect(roll(['badge.vampirism'])['chance']).toBe(35)
     expect(roll(['badge.rotting-flesh'])['chance']).toBe(40)
-    expect(roll(['badge.possession'])['chance']).toBe(10)
-    const both = roll(['badge.vampirism', 'badge.possession'], 2)
-    expect(both['chance']).toBe(20 + 10 + 15 - 10)
-    expect(both['sources']).toEqual([{ badgeId: 'badge.vampirism', value: 15 }, { badgeId: 'badge.possession', value: -10 }])
+    expect(roll(['badge.second-wind'])['chance']).toBe(30)
+    const both = roll(['badge.rotting-flesh', 'badge.second-wind'], 2)
+    expect(both['chance']).toBe(20 + 10 + 20 + 10)
+    expect(both['sources']).toEqual([{ badgeId: 'badge.rotting-flesh', value: 20 }, { badgeId: 'badge.second-wind', value: 10 }])
+    // was: expect(roll(['badge.vampirism'])['chance']).toBe(35) · expect(roll(['badge.possession'])['chance']).toBe(10)
+    expect(roll(['badge.vampirism'])).toBeUndefined()
+    expect(roll(['badge.possession'])).toBeUndefined()
   })
   it('still a percentage: never above 100; a unit with no such badge names no sources', () => {
     expect(roll(['badge.rotting-flesh'], 16)['chance']).toBe(100)

@@ -34,7 +34,7 @@ export const EVENT_TYPES = [
   'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
   'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
   'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
-  'unit.proned', 'unit.raised', 'unit.shunted', 'unit.stood', 'zoc.ignored',
+  'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.transformed', 'zoc.ignored',
 ] as const
 export type EventType = (typeof EVENT_TYPES)[number] | `life.${LifeState}`
 
@@ -182,25 +182,37 @@ export function loseMaxStamina(ctx: Ctx, id: number, amount: number, causeId: st
  * Max Stamina move by their own mutators, as they do for every other source.
  * A badge the unit already carries is not granted twice. Loud on an unknown id.
  */
-export function grantBadge(ctx: Ctx, id: number, badgeId: string, causeId: string): boolean {
+export function grantBadge(ctx: Ctx, id: number, badgeId: string, causeId: string, extra: Record<string, unknown> = {}): boolean {
   const u = unit(ctx, id)
   const b = ctx.badges[badgeId]
   if (!b) throw new Error(`grantBadge: '${badgeId}' is not a badge in the registry`)
-  if (u.badges.includes(badgeId)) { emit(ctx, 'badge.held', causeId, { actor: id, badgeId }); return false }
+  const again = u.badges.includes(badgeId)
+  // rule.afflictions-at-zero (2026-10-02): a badge that stacks (Fragile, "keeps stacking with no limit") is gained
+  // again — its stats once more, its grants and riders held once (applyBadges folds the copies the same way)
+  if (again && !b.stacks) { emit(ctx, 'badge.held', causeId, { actor: id, badgeId }); return false }
   u.badges.push(badgeId)
   // fix.badge-surge-at-fielding (2026-09-29, Andrew, DECISIONS.md 'Possession's Surge loads at fielding'):
   // "The -10 surge per turn cannot be relevant until the next battle. It can be loaded on load." A stat the
   // runtime never resolves (Surge, Toughness — read off the unit, folded at fielding) waits for the next
   // fielding; the gain line names it rather than adding a modifier nothing reads.
-  const atFielding = Object.fromEntries(Object.entries(b.statModifiers).filter(([stat, value]) => value && !isStatName(stat)))
-  emit(ctx, 'badge.gained', causeId, { actor: id, badgeId, name: b.name, mods: b.statModifiers, flags: b.flags, ...(b.gaps ? { gaps: b.gaps } : {}), ...(Object.keys(atFielding).length ? { atFielding } : {}) })
+  // rule.afflictions-at-zero: bleed-out is not one of them — the counter is read off the unit the moment it goes
+  // down (bleedOutCounterOf), as a badge's Deathbed points are read at the roll, so Rotting Flesh's +5 counts from
+  // its gain (SWITCHES.md bleedOutMidBattle; overturns rottingFleshBleedOutMidBattle).
+  const atFielding = Object.fromEntries(Object.entries(b.statModifiers).filter(([stat, value]) => value && !isStatName(stat) && stat !== 'bleedOutTurns'))
+  const held = u.badges.filter((x) => x === badgeId).length
+  emit(ctx, 'badge.gained', causeId, { actor: id, badgeId, name: b.name, mods: b.statModifiers, flags: b.flags, ...(b.gaps ? { gaps: b.gaps } : {}), ...(Object.keys(atFielding).length ? { atFielding } : {}),
+    // rule.afflictions-at-zero: an affliction (a badge with a 0-Health rule) names that rule — the first-affliction pop-up's line;
+    // a stacking badge names how many it is now
+    ...(b.atZero ? { atZero: { ...b.atZero } } : {}), ...(b.stacks ? { held } : {}), ...extra })
   for (const [stat, value] of Object.entries(b.statModifiers)) {
     if (!value) continue
     if (Object.hasOwn(atFielding, stat)) continue
     if (stat === 'maxHp') { if (value > 0) gainMaxHp(ctx, id, value, badgeId); else loseMaxHp(ctx, id, -value, badgeId); continue }
     if (stat === 'maxStamina') { if (value < 0) loseMaxStamina(ctx, id, -value, badgeId); else { u.maxStamina += value; emit(ctx, 'maxstamina.gained', badgeId, { target: id, amount: value, maxStamina: u.maxStamina }) }; continue }
+    if (stat === 'bleedOutTurns') { u.bleedOutTurns = (u.bleedOutTurns ?? 0) + value; if (u.bleedOutTurns === 0) delete u.bleedOutTurns; continue }   // named on the badge.gained line (mods)
     addStatMod(ctx, id, { stat: stat as import('./stats.js').StatName, op: 'add', value, source: badgeId, scope: 'unit' }, badgeId)
   }
+  if (again) return true
   for (const t of b.triggers ?? []) u.triggers.push({ ...t })
   for (const g of b.grants) if (!u.actions.includes(g) && ctx.actions[g]) u.actions.push(g)
   return true
@@ -509,6 +521,62 @@ export function setLifeState(ctx: Ctx, id: number, to: LifeState, causeId: strin
   emit(ctx, `life.${to}`, causeId, { ...extra, target: id, from, to })
 }
 
+/**
+ * rule.afflictions-at-zero (2026-10-02; DECISIONS.md 2026-10-01 'the afflictions at 0 Health'): the hero becomes
+ * `form` — "the bestiary's stats and powers, no hero gear", at full Health — on `side` (the Luck roll's verdict).
+ * The unit keeps what makes it this unit on this board: its id, uid, name and hex, its ordinals (every key it rolls
+ * on stays its own, Law 4) and its statuses (SWITCHES.md transformKeepsStatuses); what is left of this Activation is
+ * spent.
+ * Everything else is the form's. What it was is kept whole on `transformed.original`. One line (Law 3).
+ */
+export function transformUnit(ctx: Ctx, id: number, form: Unit, side: Side, badgeId: string, causeId: string, facts: Record<string, unknown>): void {
+  const u = unit(ctx, id)
+  if (u.transformed) throw new Error(`transformUnit: unit ${id} is already transformed into ${u.transformed.into}`)
+  const original = structuredClone(u) as Omit<Unit, 'transformed'>
+  const keep = {
+    id: u.id, uid: u.uid, name: u.name, hex: u.hex, side, rowSide: side, statuses: u.statuses,
+    activationOrdinal: u.activationOrdinal, attackOrdinal: u.attackOrdinal, deathbedOrdinal: u.deathbedOrdinal,
+    ...(u.incomingAttackOrdinal !== undefined ? { incomingAttackOrdinal: u.incomingAttackOrdinal } : {}),
+    ...(u.burstOrdinal !== undefined ? { burstOrdinal: u.burstOrdinal } : {}),
+    // the change takes what is left of this Activation, if it is the unit's own (SWITCHES.md transformEndsActivation)
+    moveUsed: true, primaryUsed: true, movePointsLeft: 0,
+    ...(u.swapUsed !== undefined ? { swapUsed: u.swapUsed } : {}),
+    summoned: u.summoned,
+  }
+  replaceUnit(u, { ...structuredClone(form), ...keep, transformed: { badgeId, into: form.typeId, original } })
+  emit(ctx, 'unit.transformed', causeId, { actor: id, badgeId, from: original.typeId, into: form.typeId, side, hp: u.hp, maxHp: u.maxHp, ...facts })
+}
+
+/**
+ * rule.afflictions-at-zero: the transformed hero falls back into its own form — the unit it was, whole, on the hex it
+ * stands on now, its ordinals and this Activation's budget carried forward, its statuses kept. `hp` is what it falls
+ * back with: 0 when it was beaten to 0 (it goes down or dies next, by the caller), its maximum at the end of the
+ * battle ("back to normal ... no other consequence").
+ */
+export function revertUnit(ctx: Ctx, id: number, reason: 'fell' | 'battleEnd', causeId: string): void {
+  const u = unit(ctx, id)
+  if (!u.transformed) throw new Error(`revertUnit: unit ${id} is not transformed`)
+  const t = u.transformed
+  const was = { typeId: u.typeId, side: u.side }
+  const carry = {
+    hex: u.hex, statuses: u.statuses,
+    activationOrdinal: u.activationOrdinal, attackOrdinal: u.attackOrdinal, deathbedOrdinal: u.deathbedOrdinal,
+    ...(u.incomingAttackOrdinal !== undefined ? { incomingAttackOrdinal: u.incomingAttackOrdinal } : {}),
+    ...(u.burstOrdinal !== undefined ? { burstOrdinal: u.burstOrdinal } : {}),
+    moveUsed: u.moveUsed, primaryUsed: u.primaryUsed, movePointsLeft: u.movePointsLeft,
+    ...(u.swapUsed !== undefined ? { swapUsed: u.swapUsed } : {}),
+  }
+  replaceUnit(u, { ...t.original, ...carry, hp: reason === 'battleEnd' ? Math.max(1, t.original.maxHp) : 0 } as Unit)
+  emit(ctx, 'unit.reverted', causeId, { actor: id, badgeId: t.badgeId, from: was.typeId, into: u.typeId, fromSide: was.side, side: u.side, reason, hp: u.hp, maxHp: u.maxHp })
+}
+
+/** Every field of `u` becomes `next`'s — the one object stays the one in state.units (a reference held elsewhere stays good). */
+function replaceUnit(u: Unit, next: Unit): void {
+  const rec = u as unknown as Record<string, unknown>
+  for (const k of Object.keys(rec)) if (!Object.hasOwn(next, k)) delete rec[k]
+  Object.assign(rec, next)
+}
+
 export function setBleedOut(ctx: Ctx, id: number, value: number, causeId: string): void {
   const u = unit(ctx, id)
   u.bleedOut = value
@@ -589,6 +657,9 @@ export function markPrimaryUsed(ctx: Ctx, id: number): void { unit(ctx, id).prim
 export function setOutcome(ctx: Ctx, outcome: Ctx['state']['outcome'], causeId: string): void {
   if (ctx.state.outcome) return
   ctx.state.outcome = outcome
+  // rule.afflictions-at-zero (2026-10-02): "At battle end the hero is back to normal; no other consequence" — every
+  // hero still standing in a transformed form falls back into its own, in unit order (Law 6), before the end is told
+  for (const u of ctx.state.units) if (u.transformed && u.lifeState === 'standing') revertUnit(ctx, u.id, 'battleEnd', 'battle.end')
   emit(ctx, 'battle.end', causeId, { outcome, turn: ctx.state.turn })
 }
 

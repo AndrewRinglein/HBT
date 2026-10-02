@@ -724,8 +724,43 @@ export type BadgeDef = {
    * mid-battle counts from then on.
    */
   readonly deathbedFighting?: number
+  /**
+   * rule.afflictions-at-zero (2026-10-02; DECISIONS.md 2026-10-01 'the afflictions at 0 Health'): what the
+   * carrier's 0 Health does when this badge is carried — read in settle, before the Deathbed roll. Absent = the
+   * Deathbed rule alone. Content names every unit and badge here; core reads the shape, never a name.
+   */
+  readonly atZero?: AtZeroRule
+  /**
+   * rule.afflictions-at-zero: each gain is another — Fragile "keeps stacking with no limit". Its stat
+   * modifiers fold once per copy carried; its grants and riders are held once. Absent = a badge held
+   * twice is once.
+   */
+  readonly stacks?: true
   readonly gaps?: readonly string[]
 }
+
+/**
+ * rule.afflictions-at-zero — an affliction badge's 0-Health rule, compiled from the Codex row's `atZero`.
+ * `deathbedFighting: false` — no Deathbed roll; `transformsInto` — the hero becomes that unit's row (no hero
+ * gear) at full Health and rolls Luck: success keeps it a player unit, failure turns it to the enemy side;
+ * `raises` — the hero goes down and bleeds out, and that unit arrives beside it on `raisedSide`; `gains` —
+ * the badge the hero gains each time it is taken to 0 (the gain the kingdom carries after the battle).
+ */
+export type AtZeroRule = {
+  readonly deathbedFighting: boolean
+  readonly transformsInto?: string
+  readonly luckRoll?: true
+  readonly raises?: string
+  readonly raisedSide?: Side
+  readonly gains?: string
+}
+
+/**
+ * rule.afflictions-at-zero: a hero transformed at 0 Health — the badge that did it, the row it became, and
+ * the unit it was, whole, to fall back into (a failed Luck roll beaten to 0, a kept form at 0 again, the end
+ * of the battle). Plain data (Law 5b).
+ */
+export type Transformed = { badgeId: string; into: string; original: Omit<Unit, 'transformed'> }
 
 export type ItemDef = {
   readonly id: string
@@ -1025,6 +1060,12 @@ export type Unit = {
   burstOrdinal?: number
   attackOrdinal: number
   deathbedOrdinal: number
+  /**
+   * rule.afflictions-at-zero (2026-10-02): the hero is in a transformed form (Vampirism, Lycanthropy at 0 Health)
+   * and what it was. Written only by transformUnit / revertUnit (unit.transformed / unit.reverted). Absent = its
+   * own form (snapshots unchanged).
+   */
+  transformed?: Transformed
   /**
    * v2.knockback-collisions (COMBAT-V2 §9.3): the id of the `consumes` prop a
    * collision drove this unit to 0 Health against. Written only by
@@ -1386,6 +1427,12 @@ export type Ctx = {
    * runner (which imports setup, which imports content: the cycle).
    */
   arrive?: (ctx: Ctx, def: UnitDef, hex: number, causeId: string) => Unit
+  /**
+   * rule.afflictions-at-zero (2026-10-02): the unit a row makes, assembled as an arrival is (the one assembler, the
+   * row authored whole, its own badges folded) but neither placed nor announced — the form a hero transforms into.
+   * Set by createBattle beside `arrive`, for the same reason (the trigger and settle layers cannot import setup).
+   */
+  formOf?: (ctx: Ctx, def: UnitDef, id: number, uid: number, name: string, hex: number, causeId: string) => Unit
   /**
    * preview.from-planned-hex: set only on a FORECAST fork (core/forecast.ts). The step loop
    * records each attack of opportunity here, with its preview, instead of rolling it, and walks

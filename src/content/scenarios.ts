@@ -99,6 +99,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.afflictions-at-zero', note: 'TEST: a warrior with badge.rotting-flesh and a warrior with badge.fragile against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], heroBadges: [['badge.rotting-flesh'], ['badge.fragile']], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], replicate: 0,
   },
+  // rule.afflictions-at-zero (2026-10-02, DECISIONS.md 2026-10-01 'the afflictions at 0 Health'): four warriors, one per
+  // affliction, against a pack of Werewolves that takes them to 0 — Vampirism and Lycanthropy transform on a Luck roll,
+  // Possession raises a Ghost, Rotting Flesh gains Fragile. TEST fielding of the Codex rows' 0-Health rules.
+  'test.afflictions-at-zero-rule': {
+    id: 'test.afflictions-at-zero-rule', note: 'TEST: four warriors (Vampirism, Lycanthropy, Possession, Rotting Flesh) against six Werewolves. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior', 'test-warrior', 'test-warrior', 'test-warrior'], heroHexes: [85, 100, 87, 102],
+    heroBadges: [['badge.vampirism'], ['badge.lycanthropy'], ['badge.possession'], ['badge.rotting-flesh']],
+    enemies: ['unit.werewolf', 'unit.werewolf', 'unit.werewolf', 'unit.werewolf', 'unit.werewolf', 'unit.werewolf'], enemyHexes: [86, 101, 116, 70, 71, 117], replicate: 0,
+  },
   // content.ghost (2026-09-29, Andrew, DECISIONS.md "the Ghost as the bestiary has it; ..."): two Ghosts, fielded in a
   // real battle. TEST fielding of a Codex row. (Their Attack possesses on 15% of hits — content.ghost-possess-on-attack.)
   'test.ghost': {

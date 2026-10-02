@@ -477,6 +477,8 @@ health is `bleedShedFromLanded` (SWITCHES.md).
 
 **Heroes** roll Deathbed at zero and either stand or fall.
 
+**An afflicted hero's 0-Health rule comes first** *(Andrew, DECISIONS.md 2026-10-01 'the afflictions at 0 Health'; rule.afflictions-at-zero-refiled, 2026-10-02)*: Vampirism and Lycanthropy roll no Deathbed — the hero becomes the Vampire or Werewolf at full Health and rolls Luck (kept: a player unit that dies at 0 again; failed: an enemy unit that, beaten to 0, falls in the hero's form and bleeds out); Possession rolls no Deathbed — the hero goes down and bleeds out and a Ghost rises beside it as an enemy; Rotting Flesh rolls as normal and gains Fragile on every zero. A hero still transformed when the battle ends is itself again. The bleed-out counter is the unit's stat — 5, plus its bleed-out (Rotting Flesh +5).
+
 **`lifeState` is an explicit field** — `Standing · Downed · Stabilized · Dead` — never inferred from `hp <= 0`. HP is clamped at 0 while Downed, and standing back up requires an explicit `reviveUnit` mutator. Without this, healing a downed hero for 4 leaves her flagged downed and bleeding out at 4 HP, and auto-standing on any heal makes a 1-point heal cancel the entire consequence stack.
 
 **A downed hero** is deliberately simple in the first model:

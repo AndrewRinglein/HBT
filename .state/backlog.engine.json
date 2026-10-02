@@ -1,5 +1,53 @@
 [
  {
+  "id": "rule.afflictions-at-zero-refiled-2",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Re-files rule.afflictions-at-zero-refiled (abandoned 2026-10-02: filed without variants, which a rule item must declare) and rule.afflictions-at-zero (abandoned 2026-10-02: filed without changesBaseline, while its own ruled rule moves the control battles - a Zombie-inflicted Rotting Flesh hero taken to 0 gains Fragile and bleeds out over 10); the 2026-09-30 precedent: \"Park, abandon, re-file\". Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the afflictions at 0 Health' and 'bleed-out is a stat on every player unit'). Bleed-out becomes a stat on every player unit, standard 5 ('It should be an attribute on every player unit'), foldable (Rotting Flesh +5). At 0 Health: Vampirism / Lycanthropy - no Deathbed Fighting roll; the hero transforms into unit.vampire / unit.werewolf (bestiary stats and powers, no hero gear) at full Health and rolls Luck (the Luck stat as a percentage; Luck 0 always turns). Success: a player unit; at 0 again it dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed = abandoned. At battle end the hero is back to normal, no other consequence. Possession - no Deathbed roll; the hero goes down and bleeds out and a unit.ghost with the hero's image is summoned on their hex as an enemy. Rotting Flesh - Deathbed Fighting as normal (+20 kept) and the hero gains badge.fragile. Emits events the viewer's pop-up can read (affliction gained for the first time; transformed; ghost raised; Fragile gained). The kingdom's half (Fragile carried after the battle; a transformed hero at retreat is abandoned; back to normal after) is in this item, kingdom committing in its own repository. Prior art: extends the Deathbed rule in settle.ts (the one place 0 Health is decided), the arrival seam (ctx.arrive, as corpse.raise summons a unit), grantBadge (badge.gained) and the one assembler (the form is made as fieldArrival makes an arrival, not announced); no transformation or side change existed. Engine rule: DECISIONS.md 2026-10-01 'the afflictions at 0 Health'; the badges' atZero and stacks are content's rows (content.afflictions-at-zero-refiled), read by shape.",
+  "expect": "A Vampirism hero at 0 Health with Luck 100 becomes a player-side Vampire at full Health and dies at 0 again with no bleed-out; with Luck 0 it becomes an enemy Vampire that, beaten to 0, is the downed hero bleeding out from its bleed-out stat; likewise Lycanthropy and the Werewolf; a possessed hero at 0 is downed with no Deathbed roll and a Ghost stands on its hex on the enemy side; a Rotting Flesh hero rolls Deathbed Fighting with +20, gains Fragile (-1 maximum Health) each time it is taken to 0, and bleeds out over 10; every other player unit bleeds out over 5.",
+  "needs": [
+   "content.afflictions-at-zero-refiled"
+  ],
+  "probeIds": [
+   "badge.vampirism",
+   "badge.lycanthropy",
+   "badge.possession",
+   "badge.rotting-flesh",
+   "badge.fragile"
+  ],
+  "changesBaseline": true,
+  "note": "Re-filed twice 2026-10-02 (SWITCHES.md afflictionsAtZeroRefiled): without changesBaseline, then without variants. Variants: Vampirism and Lycanthropy, one transformation with two rows (unit.vampire, unit.werewolf). Declared to change the control battles: map.highlands, map.thicket and the proving maps move - a Zombie's Rotting Flesh now gains Fragile at 0 and counts its +5 bleed-out from the gain. Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4). Replaces 2026-09-04 'Deathbed Fighting, REVERSED' for afflicted heroes only.",
+  "variants": [
+   "badge.vampirism",
+   "badge.lycanthropy"
+  ],
+  "status": "done-needs-review",
+  "sha": "a498f13"
+ },
+ {
+  "id": "rule.afflictions-at-zero-refiled",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Re-files rule.afflictions-at-zero (abandoned 2026-10-02: filed without changesBaseline, while its own ruled rule moves the control battles - a Zombie-inflicted Rotting Flesh hero taken to 0 gains Fragile and bleeds out over 10; the 2026-09-30 precedent: \"Park, abandon, re-file\"). Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the afflictions at 0 Health' and 'bleed-out is a stat on every player unit'). Bleed-out becomes a stat on every player unit, standard 5 ('It should be an attribute on every player unit'), foldable (Rotting Flesh +5). At 0 Health: Vampirism / Lycanthropy - no Deathbed Fighting roll; the hero transforms into unit.vampire / unit.werewolf (bestiary stats and powers, no hero gear) at full Health and rolls Luck (the Luck stat as a percentage; Luck 0 always turns). Success: a player unit; at 0 again it dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed = abandoned. At battle end the hero is back to normal, no other consequence. Possession - no Deathbed roll; the hero goes down and bleeds out and a unit.ghost with the hero's image is summoned on their hex as an enemy. Rotting Flesh - Deathbed Fighting as normal (+20 kept) and the hero gains badge.fragile. Emits events the viewer's pop-up can read (affliction gained for the first time; transformed; ghost raised; Fragile gained). The kingdom's half (Fragile carried after the battle; a transformed hero at retreat is abandoned; back to normal after) is in this item, kingdom committing in its own repository. Prior art: extends the Deathbed rule in settle.ts (the one place 0 Health is decided), the arrival seam (ctx.arrive, as corpse.raise summons a unit), grantBadge (badge.gained) and the one assembler (the form is made as fieldArrival makes an arrival, not announced); no transformation or side change existed. Engine rule: DECISIONS.md 2026-10-01 'the afflictions at 0 Health'; the badges' atZero and stacks are content's rows (content.afflictions-at-zero-refiled), read by shape.",
+  "expect": "A Vampirism hero at 0 Health with Luck 100 becomes a player-side Vampire at full Health and dies at 0 again with no bleed-out; with Luck 0 it becomes an enemy Vampire that, beaten to 0, is the downed hero bleeding out from its bleed-out stat; likewise Lycanthropy and the Werewolf; a possessed hero at 0 is downed with no Deathbed roll and a Ghost stands on its hex on the enemy side; a Rotting Flesh hero rolls Deathbed Fighting with +20, gains Fragile (-1 maximum Health) each time it is taken to 0, and bleeds out over 10; every other player unit bleeds out over 5.",
+  "needs": [
+   "content.afflictions-at-zero-refiled"
+  ],
+  "probeIds": [
+   "badge.vampirism",
+   "badge.lycanthropy",
+   "badge.possession",
+   "badge.rotting-flesh",
+   "badge.fragile"
+  ],
+  "changesBaseline": true,
+  "note": "Re-filed 2026-10-02 (SWITCHES.md afflictionsAtZeroRefiled). Declared to change the control battles: map.highlands, map.thicket and the proving maps move - a Zombie's Rotting Flesh now gains Fragile at 0 and counts its +5 bleed-out from the gain. Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4). Replaces 2026-09-04 'Deathbed Fighting, REVERSED' for afflicted heroes only.",
+  "attempts": 1,
+  "status": "failed",
+  "failedAt": "2026-10-02 19:55",
+  "reason": "Filed without variants: a 'rule' item must declare two or more ids that exercise the same mechanism with different data (the generalization check), and neither rule.afflictions-at-zero nor its re-file named any, so it can never pass as filed. Every other check passed (attempt 1). The work is parked (engine git stash), not discarded. Re-filed as rule.afflictions-at-zero-refiled-2 with variants badge.vampirism and badge.lycanthropy (one transformation, two rows) - the precedent ruled 2026-09-30 ('Park, abandon, re-file')."
+ },
+ {
   "id": "fix.orphans-teacher-knife-refiled",
   "kind": "engine",
   "shape": "data",
@@ -5225,7 +5273,10 @@
    "badge.rotting-flesh",
    "badge.fragile"
   ],
-  "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4). Replaces 2026-09-04 'Deathbed Fighting, REVERSED' for afflicted heroes only."
+  "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4). Replaces 2026-09-04 'Deathbed Fighting, REVERSED' for afflicted heroes only.",
+  "status": "failed",
+  "failedAt": "2026-10-02 19:48",
+  "reason": "Filed without changesBaseline: the item's own ruled rule moves the control battles (map.highlands, map.thicket and the proving maps move: a Zombie-inflicted Rotting Flesh hero taken to 0 gains Fragile and bleeds out over 10, a bitten hero transforms instead of rolling the Deathbed), so 'control battles unchanged' can never pass as filed. The work is parked (engine git stash), not discarded. Re-filed as rule.afflictions-at-zero-refiled with changesBaseline true and the same probeIds - the precedent ruled 2026-09-30 ('Park, abandon, re-file')."
  },
  {
   "id": "fix.turn-mods-expire",

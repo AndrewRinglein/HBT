@@ -13,7 +13,7 @@ import { validateTrigger, type Trigger } from './trigger.js'
 import { EFFECT_KINDS, STAT_MOD_UNTIL } from './types.js'
 import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx } from './types.js'
 
-export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'aiModes' | 'units' | 'arrive'>
+export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'aiModes' | 'units' | 'arrive' | 'formOf'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
 const RULES_VERSION = 'v2-migration.21' // Independent incoming block cups and reciprocal hook roles.
@@ -175,6 +175,13 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(typeof status.id === 'string' && Object.hasOwn(runtime.statuses, status.id) && integer(status.value, 0) && (status.by === undefined || unitId(status.by)), 'unit status')
     }
     requireThat(u.huntTarget === undefined || unitId(u.huntTarget), 'hunt target')
+    // rule.afflictions-at-zero: a transformed hero — the badge that did it, the row it became, and what it was
+    if (u.transformed !== undefined) {
+      record(u.transformed); record(u.transformed.original)
+      const t = u.transformed, o = t.original
+      requireThat(typeof t.badgeId === 'string' && Object.hasOwn(runtime.badges, t.badgeId) && t.into === u.typeId && runtime.formOf, 'unit transformed')
+      requireThat(o.id === u.id && o.uid === u.uid && typeof o.typeId === 'string' && phases.includes(o.side) && integer(o.maxHp, 1) && strings(o.badges) && strings(o.actions), 'unit transformed original')
+    }
     // ai.mode-change: the changes still to come — id, a known mode, integer conditions
     requireThat(u.aiChanges === undefined || (Array.isArray(u.aiChanges) && u.aiChanges.length > 0 && u.aiChanges.every((c: any) => { record(c); record(c.when); return typeof c.id === 'string' && typeof c.mode === 'string' && (c.when.hpBelow === undefined || integer(c.when.hpBelow, 1, 100)) && (c.when.fromTurn === undefined || integer(c.when.fromTurn, 1)) })), 'unit AI mode changes')
     // ai.encounter-rules: the encounter rules bound to the unit — ids the saved encounter carries
@@ -308,10 +315,10 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(STREAMS.includes(r.stream) && Array.isArray(r.keys) && r.keys.every((x: unknown) => integer(x)) && integer(r.value, 0, 0xffffffff), 'RNG record')
     requireThat(draw(rng, r.stream as Stream, ...r.keys) === r.value, 'RNG value differs')
   }
-  const { actions, statuses, critChart, items, badges, ruleBadges, aiModes, units, arrive } = runtime
+  const { actions, statuses, critChart, items, badges, ruleBadges, aiModes, units, arrive, formOf } = runtime
   const ctx: Ctx = {
     actions, statuses, critChart, items, badges, ruleBadges, aiModes, aiLog: [],
-    ...(units === undefined ? {} : { units }), ...(arrive === undefined ? {} : { arrive }),
+    ...(units === undefined ? {} : { units }), ...(arrive === undefined ? {} : { arrive }), ...(formOf === undefined ? {} : { formOf }),
     state: st as Ctx['state'], cfg: s.cfg as Ctx['cfg'], events: s.events as Ctx['events'], rng,
     geo: geometryOf(st.board as Ctx['state']['board']),
     ...(s.cursor === undefined ? {} : { battleCursor: s.cursor as BattleCursor }),

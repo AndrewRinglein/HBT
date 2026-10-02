@@ -229,7 +229,8 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
         if (c.next >= c.order.length) { c.at = 'phase-end'; break }
         if (ctx.state.outcome) { c.at = 'complete'; break }
         const next = ctx.state.units[c.order[c.next]!]!
-        if (next.lifeState !== 'standing') { c.next++; break }
+        // rule.afflictions-at-zero: a hero that changed sides mid-Phase (transformed at 0 Health) does not act in it (SWITCHES.md transformedMidPhase)
+        if (next.lifeState !== 'standing' || next.side !== c.phase) { c.next++; break }
         if (policy && !isBlocked(ctx,next) && controllerOf(ctx,next.id,policy)==='human' && !c.forgo?.includes(next.id)) c.at='selecting'
         else c.at='activation-start'
         break
@@ -245,7 +246,7 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
       case 'activation-start': {
         const id = c.order[c.next++]!
         const u = ctx.state.units[id]!
-        if (u.lifeState !== 'standing') { c.at='next-activation'; break }
+        if (u.lifeState !== 'standing' || u.side !== c.phase) { c.at='next-activation'; break }
         c.actor = id
         c.surgeLink = 0
         c.surged = false

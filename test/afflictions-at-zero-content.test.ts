@@ -14,9 +14,12 @@ const mods = (id: string) => BADGES[id]!.statModifiers as Record<string, number>
 const gaps = (id: string) => BADGES[id]!.gaps ?? []
 
 describe('Fragile and Rotting Flesh in the pack', () => {
-  it('badge.fragile is −1 maximum Health, and its stacking with no limit is named, not dropped', () => {
+  // Law 10, rule.afflictions-at-zero (2026-10-02): the stacking was a named gap until the engine half built it; the row now
+  // carries it as data (`stacks: true`) and the gap is gone. was: gaps('badge.fragile') names 'stacks with no limit'.
+  it('badge.fragile is −1 maximum Health, and it stacks with no limit', () => {
     expect(mods('badge.fragile')).toEqual({ maxHp: -1 })
-    expect(gaps('badge.fragile').some((g) => /stacks with no limit/.test(g) && /rule\.afflictions-at-zero/.test(g))).toBe(true)
+    expect(BADGES['badge.fragile']!.stacks).toBe(true)
+    expect(gaps('badge.fragile').some((g) => /stacks with no limit/.test(g))).toBe(false)
   })
 
   it('Rotting Flesh carries +5 bleed-out beside its 2026-09-29 numbers', () => {
@@ -41,12 +44,16 @@ describe('the four afflictions keep every 2026-09-29 stat and deploy cost, and n
     expect(gaps('badge.possession')).toEqual(expect.arrayContaining(['deploying the hero costs 3 Mana']))
   })
 
-  it('each row says what happens at 0 Health, a gap until rule.afflictions-at-zero', () => {
-    const atZero = (id: string) => gaps(id).find((g) => g.startsWith('at 0 Health:')) ?? ''
-    expect(atZero('badge.vampirism')).toMatch(/transforms into a Vampire.*rolls Luck.*rule\.afflictions-at-zero/)
-    expect(atZero('badge.lycanthropy')).toMatch(/transforms into a Werewolf.*rolls Luck.*rule\.afflictions-at-zero/)
-    expect(atZero('badge.possession')).toMatch(/bleeds out.*Ghost with the hero's image.*enemy.*rule\.afflictions-at-zero/)
-    expect(atZero('badge.rotting-flesh')).toMatch(/Deathbed Fighting as normal.*Fragile.*rule\.afflictions-at-zero/)
+  // Law 10, rule.afflictions-at-zero (2026-10-02): what each row does at 0 Health was a named gap ('at 0 Health: …
+  // (rule.afflictions-at-zero)') until the engine half built it. The rows now carry it as data the engine reads (`atZero`),
+  // and the gap is gone. was: atZero(id) matched the gap text, e.g. /transforms into a Vampire.*rolls Luck.*/.
+  it('each row says what happens at 0 Health, as data the engine reads', () => {
+    const atZeroGap = (id: string) => gaps(id).find((g) => g.startsWith('at 0 Health:'))
+    for (const id of ['badge.vampirism', 'badge.lycanthropy', 'badge.possession', 'badge.rotting-flesh']) expect(atZeroGap(id)).toBeUndefined()
+    expect(BADGES['badge.vampirism']!.atZero).toEqual({ deathbedFighting: false, transformsInto: 'unit.vampire', luckRoll: true })
+    expect(BADGES['badge.lycanthropy']!.atZero).toEqual({ deathbedFighting: false, transformsInto: 'unit.werewolf', luckRoll: true })
+    expect(BADGES['badge.possession']!.atZero).toEqual({ deathbedFighting: false, raises: 'unit.ghost', raisedSide: 'enemy' })
+    expect(BADGES['badge.rotting-flesh']!.atZero).toEqual({ deathbedFighting: true, gains: 'badge.fragile' })
   })
 })
 

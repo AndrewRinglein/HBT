@@ -272,6 +272,14 @@ const orphansKnifeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
 // that field the sword on their default replicate's party — test.opening-bridge, -cavern-trail, -gates and -cathedral, whose
 // sword was on a hero of another class. A `changed` case is checked here and skips the older layers.
 const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-levels.json', import.meta.url), 'utf8'))
+// rule.afflictions-at-zero-refiled-2 (2026-10-02; DECISIONS.md 2026-10-01 'the afflictions at 0 Health' and 'bleed-out is a stat on
+// every player unit, 5; Rotting Flesh +5'), Law 10: an affliction's 0-Health rule runs before the Deathbed (Vampirism and
+// Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile) and Rotting Flesh's +5 bleed-out
+// counts from its gain. Every case frozen here (tools/capture-afflictions-at-zero-rule-cursor.mts). Moved for real, the ruling
+// working (state, RNG and result): showcase.prologue-party and showcase.waystation, where a Zombie's Rotting Flesh hero is taken
+// to 0. Moved by log TEXT only: test.afflictions-at-zero and test.vampire-bite (the badge rows' at-0 gaps became data; an
+// affliction's badge.gained line names its rule). A `changed` case is checked here and skips the older layers.
+const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero-rule.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -390,8 +398,11 @@ describe('resumable battle cursor', () => {
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true
       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const openingLevelsMoved = openingLevelsExpected?.changed === true
+      // was: const openingLevelsMoved = openingLevelsExpected?.changed === true — an afflictions-at-zero-rule-moved case skips the opening-levels layer too (rule.afflictions-at-zero-refiled-2 2026-10-02)
+      const openingLevelsMoved = openingLevelsExpected?.changed === true || afflictionsAtZeroRuleMoved
       // was: const orphansKnifeMoved = orphansKnifeExpected?.changed === true — an opening-levels-moved case skips the orphans-teacher-knife layer too (fix.opening-levels 2026-10-02)
       const orphansKnifeMoved = orphansKnifeExpected?.changed === true || openingLevelsMoved
       const oneHeroAssemblyExpected = oneHeroAssemblyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
@@ -482,7 +493,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (openingLevelsExpected) {
+        if (afflictionsAtZeroRuleExpected) {
+        expect(hash(ctx.events), 'full afflictions-at-zero-rule events').toBe(afflictionsAtZeroRuleExpected.events)
+        expect(hash(ctx.state), 'full afflictions-at-zero-rule state').toBe(afflictionsAtZeroRuleExpected.state)
+        expect(hash(ctx.rng.log), 'full afflictions-at-zero-rule RNG').toBe(afflictionsAtZeroRuleExpected.rng)
+        expect(result).toEqual(afflictionsAtZeroRuleExpected.result)
+        }
+        // was: if (openingLevelsExpected) { — rule.afflictions-at-zero-refiled-2 (2026-10-02): an afflictions-at-zero-rule-moved case is checked above instead
+        if (openingLevelsExpected && !afflictionsAtZeroRuleMoved) {
         expect(hash(ctx.events), 'full opening-levels events').toBe(openingLevelsExpected.events)
         expect(hash(ctx.state), 'full opening-levels state').toBe(openingLevelsExpected.state)
         expect(hash(ctx.rng.log), 'full opening-levels RNG').toBe(openingLevelsExpected.rng)

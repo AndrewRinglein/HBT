@@ -35,11 +35,17 @@ describe('a badge\'s Surge folds at fielding, never mid-battle', () => {
     expect('atFielding' in gained).toBe(false)
   })
 
-  it('Rotting Flesh granted mid-battle names its +5 bleed-out as waiting for the next fielding, and nothing else', () => {
+  // Law 10, rule.afflictions-at-zero (2026-10-02): this asserted that Rotting Flesh's +5 bleed-out waits for the next
+  // fielding (atFielding { bleedOutTurns: 5 }) — content.afflictions-at-zero's provisional switch rottingFleshBleedOutMidBattle,
+  // which left the question to this item. Bleed-out is read off the unit the moment it goes down, as a badge's Deathbed
+  // points are read at the roll, so the +5 counts from the gain (SWITCHES.md bleedOutMidBattle) and nothing waits.
+  it('Rotting Flesh granted mid-battle carries its +5 bleed-out at once; nothing waits for the next fielding', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
     grantBadge(ctx, ctx.state.units[0]!.id, 'badge.rotting-flesh', 'test')
     const gained = ctx.events.find((e) => e.type === 'badge.gained')!
-    expect(gained['atFielding']).toEqual({ bleedOutTurns: 5 })
+    // was: expect(gained['atFielding']).toEqual({ bleedOutTurns: 5 })
+    expect('atFielding' in gained).toBe(false)
+    expect(ctx.state.units[0]!.bleedOutTurns).toBe(5)
   })
 
   it('fielded already Possessed (the next battle), the hero carries its −10 Surge', () => {

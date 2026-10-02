@@ -22748,3 +22748,170 @@ index 9e3e4e7..993b743 100644
    it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
 ```
 </details>
+
+## rule.afflictions-at-zero — ABANDONED
+2026-10-02 19:48
+
+Filed without changesBaseline: the item's own ruled rule moves the control battles (map.highlands, map.thicket and the proving maps move: a Zombie-inflicted Rotting Flesh hero taken to 0 gains Fragile and bleeds out over 10, a bitten hero transforms instead of rolling the Deathbed), so 'control battles unchanged' can never pass as filed. The work is parked (engine git stash), not discarded. Re-filed as rule.afflictions-at-zero-refiled with changesBaseline true and the same probeIds - the precedent ruled 2026-09-30 ('Park, abandon, re-file').
+
+## rule.afflictions-at-zero-refiled — ABANDONED
+2026-10-02 19:55
+
+Filed without variants: a 'rule' item must declare two or more ids that exercise the same mechanism with different data (the generalization check), and neither rule.afflictions-at-zero nor its re-file named any, so it can never pass as filed. Every other check passed (attempt 1). The work is parked (engine git stash), not discarded. Re-filed as rule.afflictions-at-zero-refiled-2 with variants badge.vampirism and badge.lycanthropy (one transformation, two rows) - the precedent ruled 2026-09-30 ('Park, abandon, re-file').
+
+## rule.afflictions-at-zero-refiled-2 — LANDED `a498f13` **NEEDS REVIEW**
+2026-10-02 19:59
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1766 · STATE-ROW.md:1
+  PASS  typecheck
+  PASS  the item's own tests — test/afflictions-at-zero-content.test.ts, test/badge-surge-at-fielding.test.ts, test/battle-cursor.test.ts, test/deathbed.test.ts, test/afflictions-at-zero.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.vampirism: 8 log lines, 8 fired, 6 changed state · badge.lycanthropy: 22 log lines, 22 fired, 13 changed state · badge.possession: 5 log lines, 5 fired, 5 changed state · badge.rotting-flesh: 1 log lines, 1 fired, 1 changed state · badge.fragile: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/afflictions-at-zero-content.test.ts, test/badge-surge-at-fielding.test.ts, test/battle-cursor.test.ts, test/deathbed.test.ts, test/afflictions-at-zero.test.ts, test/fixtures/battle-cursor-afflictions-at-zero-rule.json
+  WARN  existing tests untouched — DELETED LINES in test/afflictions-at-zero-content.test.ts (-8), test/badge-surge-at-fielding.test.ts (-2), test/battle-cursor.test.ts (-2), test/deathbed.test.ts (-5) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands 0939054e->04ddee2d, map.thicket 29755464->c6031170, map.proving.open 9ee634fe->396281e6, map.proving.ridge 6d95ac4c->b86b8a24, map.proving.ford 7fd70dce->05323666, map.proving.copse 0520a82e->d225b1e1, map.proving.ruin 49446eff->6da536d2, map.courtyard d16860aa->0c7cf00d, map.floodplain ba8b39c3->5c378345, test.map.embers aa3141c8->8c453a30, test.map.duel-8 2c9288e1->f88139ad, test.map.dungeon-16x8 9f32f8fa->f9d6a241, test.map.horde-24 6b22699b->f8312af8, test.map.journey-20x10 76e9e774->c7c65409, test.map.authored-40x40 bbf4e3c8->d8540413, test.map.high-prop-single 95e567be->0f8a4865, test.map.high-prop-multi 7fb0daa5->c2e90dfb, test.map.well-shove c94413c7->e08516ce
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — badge.vampirism live · badge.lycanthropy live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.vampirism,badge.lycanthropy,badge.possession,badge.rotting-flesh,badge.fragile — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/afflictions-at-zero-content.test.ts b/test/afflictions-at-zero-content.test.ts
+index 65d4d17..24dc8d8 100644
+--- a/test/afflictions-at-zero-content.test.ts
++++ b/test/afflictions-at-zero-content.test.ts
+@@ -15,7 +15,10 @@ const gaps = (id: string) => BADGES[id]!.gaps ?? []
+ 
+ describe('Fragile and Rotting Flesh in the pack', () => {
+-  it('badge.fragile is −1 maximum Health, and its stacking with no limit is named, not dropped', () => {
++  // Law 10, rule.afflictions-at-zero (2026-10-02): the stacking was a named gap until the engine half built it; the row now
++  // carries it as data (`stacks: true`) and the gap is gone. was: gaps('badge.fragile') names 'stacks with no limit'.
++  it('badge.fragile is −1 maximum Health, and it stacks with no limit', () => {
+     expect(mods('badge.fragile')).toEqual({ maxHp: -1 })
+-    expect(gaps('badge.fragile').some((g) => /stacks with no limit/.test(g) && /rule\.afflictions-at-zero/.test(g))).toBe(true)
++    expect(BADGES['badge.fragile']!.stacks).toBe(true)
++    expect(gaps('badge.fragile').some((g) => /stacks with no limit/.test(g))).toBe(false)
+   })
+ 
+@@ -42,10 +45,14 @@ describe('the four afflictions keep every 2026-09-29 stat and deploy cost, and n
+   })
+ 
+-  it('each row says what happens at 0 Health, a gap until rule.afflictions-at-zero', () => {
+-    const atZero = (id: string) => gaps(id).find((g) => g.startsWith('at 0 Health:')) ?? ''
+-    expect(atZero('badge.vampirism')).toMatch(/transforms into a Vampire.*rolls Luck.*rule\.afflictions-at-zero/)
+-    expect(atZero('badge.lycanthropy')).toMatch(/transforms into a Werewolf.*rolls Luck.*rule\.afflictions-at-zero/)
+-    expect(atZero('badge.possession')).toMatch(/bleeds out.*Ghost with the hero's image.*enemy.*rule\.afflictions-at-zero/)
+-    expect(atZero('badge.rotting-flesh')).toMatch(/Deathbed Fighting as normal.*Fragile.*rule\.afflictions-at-zero/)
++  // Law 10, rule.afflictions-at-zero (2026-10-02): what each row does at 0 Health was a named gap ('at 0 Health: …
++  // (rule.afflictions-at-zero)') until the engine half built it. The rows now carry it as data the engine reads (`atZero`),
++  // and the gap is gone. was: atZero(id) matched the gap text, e.g. /transforms into a Vampire.*rolls Luck.*/.
++  it('each row says what happens at 0 Health, as data the engine reads', () => {
++    const atZeroGap = (id: string) => gaps(id).find((g) => g.startsWith('at 0 Health:'))
++    for (const id of ['badge.vampirism', 'badge.lycanthropy', 'badge.possession', 'badge.rotting-flesh']) expect(atZeroGap(id)).toBeUndefined()
++    expect(BADGES['badge.vampirism']!.atZero).toEqual({ deathbedFighting: false, transformsInto: 'unit.vampire', luckRoll: true })
++    expect(BADGES['badge.lycanthropy']!.atZero).toEqual({ deathbedFighting: false, transformsInto: 'unit.werewolf', luckRoll: true })
++    expect(BADGES['badge.possession']!.atZero).toEqual({ deathbedFighting: false, raises: 'unit.ghost', raisedSide: 'enemy' })
++    expect(BADGES['badge.rotting-flesh']!.atZero).toEqual({ deathbedFighting: true, gains: 'badge.fragile' })
+   })
+ })
+diff --git a/test/badge-surge-at-fielding.test.ts b/test/badge-surge-at-fielding.test.ts
+index a7fa10c..a161157 100644
+--- a/test/badge-surge-at-fielding.test.ts
++++ b/test/badge-surge-at-fielding.test.ts
+@@ -36,9 +36,15 @@ describe('a badge\'s Surge folds at fielding, never mid-battle', () => {
+   })
+ 
+-  it('Rotting Flesh granted mid-battle names its +5 bleed-out as waiting for the next fielding, and nothing else', () => {
++  // Law 10, rule.afflictions-at-zero (2026-10-02): this asserted that Rotting Flesh's +5 bleed-out waits for the next
++  // fielding (atFielding { bleedOutTurns: 5 }) — content.afflictions-at-zero's provisional switch rottingFleshBleedOutMidBattle,
++  // which left the question to this item. Bleed-out is read off the unit the moment it goes down, as a badge's Deathbed
++  // points are read at the roll, so the +5 counts from the gain (SWITCHES.md bleedOutMidBattle) and nothing waits.
++  it('Rotting Flesh granted mid-battle carries its +5 bleed-out at once; nothing waits for the next fielding', () => {
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+     grantBadge(ctx, ctx.state.units[0]!.id, 'badge.rotting-flesh', 'test')
+     const gained = ctx.events.find((e) => e.type === 'badge.gained')!
+-    expect(gained['atFielding']).toEqual({ bleedOutTurns: 5 })
++    // was: expect(gained['atFielding']).toEqual({ bleedOutTurns: 5 })
++    expect('atFielding' in gained).toBe(false)
++    expect(ctx.state.units[0]!.bleedOutTurns).toBe(5)
+   })
+ 
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index fdfa12f..2521813 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -273,4 +273,12 @@ const orphansKnifeGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
+ // sword was on a hero of another class. A `changed` case is checked here and skips the older layers.
+ const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-levels.json', import.meta.url), 'utf8'))
++// rule.afflictions-at-zero-refiled-2 (2026-10-02; DECISIONS.md 2026-10-01 'the afflictions at 0 Health' and 'bleed-out is a stat on
++// every player unit, 5; Rotting Flesh +5'), Law 10: an affliction's 0-Health rule runs before the Deathbed (Vampirism and
++// Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile) and Rotting Flesh's +5 bleed-out
++// counts from its gain. Every case frozen here (tools/capture-afflictions-at-zero-rule-cursor.mts). Moved for real, the ruling
++// working (state, RNG and result): showcase.prologue-party and showcase.waystation, where a Zombie's Rotting Flesh hero is taken
++// to 0. Moved by log TEXT only: test.afflictions-at-zero and test.vampire-bite (the badge rows' at-0 gaps became data; an
++// affliction's badge.gained line names its rule). A `changed` case is checked here and skips the older layers.
++const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero-rule.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -391,6 +399,9 @@ describe('resumable battle cursor', () => {
+       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true
+       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const openingLevelsMoved = openingLevelsExpected?.changed === true
++      // was: const openingLevelsMoved = openingLevelsExpected?.changed === true — an afflictions-at-zero-rule-moved case skips the opening-levels layer too (rule.afflictions-at-zero-refiled-2 2026-10-02)
++      const openingLevelsMoved = openingLevelsExpected?.changed === true || afflictionsAtZeroRuleMoved
+       // was: const orphansKnifeMoved = orphansKnifeExpected?.changed === true — an opening-levels-moved case skips the orphans-teacher-knife layer too (fix.opening-levels 2026-10-02)
+       const orphansKnifeMoved = orphansKnifeExpected?.changed === true || openingLevelsMoved
+@@ -483,5 +494,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (openingLevelsExpected) {
++        if (afflictionsAtZeroRuleExpected) {
++        expect(hash(ctx.events), 'full afflictions-at-zero-rule events').toBe(afflictionsAtZeroRuleExpected.events)
++        expect(hash(ctx.state), 'full afflictions-at-zero-rule state').toBe(afflictionsAtZeroRuleExpected.state)
++        expect(hash(ctx.rng.log), 'full afflictions-at-zero-rule RNG').toBe(afflictionsAtZeroRuleExpected.rng)
++        expect(result).toEqual(afflictionsAtZeroRuleExpected.result)
++        }
++        // was: if (openingLevelsExpected) { — rule.afflictions-at-zero-refiled-2 (2026-10-02): an afflictions-at-zero-rule-moved case is checked above instead
++        if (openingLevelsExpected && !afflictionsAtZeroRuleMoved) {
+         expect(hash(ctx.events), 'full opening-levels events').toBe(openingLevelsExpected.events)
+         expect(hash(ctx.state), 'full opening-levels state').toBe(openingLevelsExpected.state)
+diff --git a/test/deathbed.test.ts b/test/deathbed.test.ts
+index 12769d2..bb5ecf8 100644
+--- a/test/deathbed.test.ts
++++ b/test/deathbed.test.ts
+@@ -183,12 +183,19 @@ describe('Deathbed Fighting from badges', () => {
+     expect(BADGES['badge.lycanthropy']!.deathbedFighting).toBeUndefined()
+   })
++  // Law 10, rule.afflictions-at-zero (2026-10-02): this test rolled a Vampirism hero (35) and a Possessed one (10) and summed
++  // the two (Vampirism + Possession). DECISIONS.md 2026-10-01 'the afflictions at 0 Health' replaced the Deathbed rule for
++  // those afflictions — "no Deathbed Fighting roll" — and noted that their +15 and −10 have nothing to act on. The same
++  // claim (every badge's points, each named, in carry order) is now made with badges that still roll: Rotting Flesh
++  // (+20, "Deathbed Fighting as normal") and Second Wind (+10); the two afflictions are asserted to roll nothing.
+   it('the chance is 20 + 5 × Toughness + every badge\'s points, each named on the line in carry order', () => {
+     expect(deathbedFighting({ toughness: 3 }, 15)).toBe(50)
+-    expect(roll(['badge.vampirism'])['chance']).toBe(35)
+     expect(roll(['badge.rotting-flesh'])['chance']).toBe(40)
+-    expect(roll(['badge.possession'])['chance']).toBe(10)
+-    const both = roll(['badge.vampirism', 'badge.possession'], 2)
+-    expect(both['chance']).toBe(20 + 10 + 15 - 10)
+-    expect(both['sources']).toEqual([{ badgeId: 'badge.vampirism', value: 15 }, { badgeId: 'badge.possession', value: -10 }])
++    expect(roll(['badge.second-wind'])['chance']).toBe(30)
++    const both = roll(['badge.rotting-flesh', 'badge.second-wind'], 2)
++    expect(both['chance']).toBe(20 + 10 + 20 + 10)
++    expect(both['sources']).toEqual([{ badgeId: 'badge.rotting-flesh', value: 20 }, { badgeId: 'badge.second-wind', value: 10 }])
++    // was: expect(roll(['badge.vampirism'])['chance']).toBe(35) · expect(roll(['badge.possession'])['chance']).toBe(10)
++    expect(roll(['badge.vampirism'])).toBeUndefined()
++    expect(roll(['badge.possession'])).toBeUndefined()
+   })
+   it('still a percentage: never above 100; a unit with no such badge names no sources', () => {
+```
+</details>

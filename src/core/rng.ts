@@ -34,6 +34,9 @@ export const STREAMS = [
   // which one is taken. Keyed (draft ordinal, 0 = the offer | 1 = the take) under a root seed from
   // the replicate alone, so a replicate's party grows by prefix across the six battles. Appended.
   'draft',
+  // rule.afflictions-at-zero (2026-10-02): the Luck roll a Vampirism or Lycanthropy hero makes when it transforms at
+  // 0 Health, in place of its Deathbed roll. Keyed (uid, the unit's Deathbed ordinal — its count of goes to 0). Appended.
+  'transform',
 ] as const
 
 export type Stream = (typeof STREAMS)[number]

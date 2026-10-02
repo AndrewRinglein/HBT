@@ -505,6 +505,17 @@ function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, 
     for (const t of b.triggers ?? []) { validateTrigger(t); if (t.source !== k) throw new Error(`${where}: badge '${k}' trigger '${t.id}' names source '${t.source}'`) }
     validateVsTarget(b.vsTarget, `${where}: badge '${k}'`)
     if (b.deathbedFighting !== undefined && !Number.isSafeInteger(b.deathbedFighting)) throw new Error(`${where}: badge '${k}' Deathbed Fighting is not a whole number`)
+    // rule.afflictions-at-zero (2026-10-02): the 0-Health rule's shape; the names it carries are checked where they are used (settle), loudly
+    if (b.stacks !== undefined && b.stacks !== true) throw new Error(`${where}: badge '${k}' stacks must be true or absent`)
+    if (b.atZero !== undefined) {
+      const z = b.atZero as unknown as Record<string, unknown>
+      for (const f of Object.keys(z)) if (!['deathbedFighting', 'transformsInto', 'luckRoll', 'raises', 'raisedSide', 'gains'].includes(f)) throw new Error(`${where}: badge '${k}' atZero carries unknown field '${f}'`)
+      if (typeof z.deathbedFighting !== 'boolean') throw new Error(`${where}: badge '${k}' atZero must say whether the Deathbed roll is made`)
+      if (z.transformsInto !== undefined && (typeof z.transformsInto !== 'string' || z.luckRoll !== true || z.deathbedFighting)) throw new Error(`${where}: badge '${k}' atZero transforms on a Luck roll, with no Deathbed roll`)
+      if (z.raises !== undefined && (typeof z.raises !== 'string' || !['hero', 'enemy'].includes(z.raisedSide as string) || z.deathbedFighting)) throw new Error(`${where}: badge '${k}' atZero raises a unit on a side, with no Deathbed roll`)
+      if (z.transformsInto !== undefined && z.raises !== undefined) throw new Error(`${where}: badge '${k}' atZero both transforms and raises`)
+      if (z.gains !== undefined && typeof z.gains !== 'string') throw new Error(`${where}: badge '${k}' atZero gains names a badge`)
+    }
   }
   return raw
 }

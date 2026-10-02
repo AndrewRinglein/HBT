@@ -263,17 +263,23 @@ export function applyBadges(
   const triggers = [...(base.triggers ?? [])]
   const worn: Badged['worn'][number][] = []
   const seen = new Set<string>()
+  const carried: string[] = []
   for (const id of badgeIds) {
     const b = badges[id]
     if (!b) throw new Error(`${where}: ${base.typeId} carries '${id}', which is not a badge in the registry`)
-    if (seen.has(id)) continue   // a badge is a fact about the unit; twice is once
+    const again = seen.has(id)
+    // a badge is a fact about the unit; twice is once — unless it stacks (rule.afflictions-at-zero: Fragile "keeps
+    // stacking with no limit"), when each copy folds its stats again and its grants and riders stay once
+    if (again && !b.stacks) continue
     seen.add(id)
+    carried.push(id)
     const mods: Record<string, number> = {}
     for (const [k, v] of Object.entries(b.statModifiers)) {
       if (typeof v !== 'number' || !(FOLDABLE as readonly string[]).includes(k)) throw new Error(`${where}: badge '${id}' modifies '${k}', which the engine cannot fold`)
       delta[k] = (delta[k] ?? 0) + v
       mods[k] = v
     }
+    if (again) { worn.push({ badgeId: id, grants: [], mods, ...(b.gaps ? { gaps: b.gaps } : {}) }); continue }
     // a granted id is an attack or a power; the registry it lives in decides which list it joins at makeUnit — both lists feed the one action list
     for (const g of b.grants) if (!attacks.includes(g) && !abilities.includes(g)) abilities.push(g)
     triggers.push(...(b.triggers ?? []))
@@ -282,7 +288,7 @@ export function applyBadges(
   const def: UnitDef = {
     ...foldStats(base, delta, `${where}: ${base.typeId}'s badges`),
     attacks, abilities, triggers,
-    badges: [...seen],
+    badges: carried,
   }
   return { def, worn }
 }
