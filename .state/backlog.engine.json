@@ -8,7 +8,9 @@
   "needs": [
    "movement.swap-and-shields"
   ],
-  "note": "Filed by the engine chat from Andrew's play report and ruling, 2026-10-01."
+  "note": "Filed by the engine chat from Andrew's play report and ruling, 2026-10-01.",
+  "status": "done",
+  "sha": "7acd763"
  },
  {
   "id": "movement.swap-and-shields",
