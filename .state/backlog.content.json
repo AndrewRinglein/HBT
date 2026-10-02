@@ -1,5 +1,20 @@
 [
  {
+  "id": "content.afflictions-at-zero-refiled",
+  "kind": "content",
+  "shape": "data",
+  "spec": "Re-files content.afflictions-at-zero (abandoned 2026-10-01: filed without changesBaseline, while its own ruled content moves the control battles' log text; the 2026-09-30 precedent: \"Park, abandon, re-file\"). Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the afflictions at 0 Health' and 'bleed-out is a stat on every player unit'). The content half: every 2026-09-29 affliction drawback and deploy cost stays ('let's leave in'). Author the badge Fragile ('-1 maximum health ... it will just accumulate'): -1 maximum Health, stacking with no limit, permanent. Rotting Flesh: +5 bleed-out ('another stat, which is +5 to the bleed out timer'). Record on the Vampirism, Lycanthropy and Possession rows what happens at 0 Health (transform into unit.vampire / unit.werewolf on a Luck roll; raise unit.ghost with the hero's image) and on Rotting Flesh (Deathbed Fighting as normal, gain Fragile); the before/after card art each hero has, for the pop-up. What the engine cannot yet do is a named gap on the row (rule.afflictions-at-zero), never dropped.",
+  "expect": "The pack carries badge.fragile (-1 maximum Health, stackable) and Rotting Flesh's +5 bleed-out; the four affliction rows keep every 2026-09-29 stat and deploy cost; content-check passes.",
+  "probeIds": [
+   "badge.rotting-flesh",
+   "badge.fragile"
+  ],
+  "changesBaseline": true,
+  "note": "declared to change the control battles: log text only (a Zombie-inflicted Rotting Flesh badge.gained line lists its +5 bleed-out and its at-0-Health gap; state, RNG and results unchanged). rule.afflictions-at-zero still needs the abandoned content.afflictions-at-zero - no tool edits an existing item's needs.",
+  "status": "done-needs-review",
+  "sha": "950c829"
+ },
+ {
   "id": "fix.codex-numbers-refiled",
   "kind": "content",
   "shape": "numbers",
@@ -651,6 +666,10 @@
    "badge.rotting-flesh",
    "badge.fragile"
   ],
-  "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4) - content, then rule.afflictions-at-zero, then viewer.affliction-pop-up."
+  "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4) - content, then rule.afflictions-at-zero, then viewer.affliction-pop-up.",
+  "attempts": 1,
+  "status": "failed",
+  "failedAt": "2026-10-02 02:17",
+  "reason": "Filed without changesBaseline: the item's own ruled content moves the control battles' event logs (a Zombie-inflicted Rotting Flesh's badge.gained line now lists its +5 bleed-out and its at-0-Health gap; log text only, the same lines in 18 control maps), so 'control battles unchanged' can never pass as filed. The work is done and parked (engine git stash), not discarded; content 42f64c6 is committed. Re-filed as content.afflictions-at-zero-refiled with changesBaseline true and the same probeIds - the precedent ruled 2026-09-30 for encounter.opening.bridge-ai ('Park, abandon, re-file')."
  }
 ]

@@ -23,11 +23,23 @@ describe('a badge\'s Surge folds at fielding, never mid-battle', () => {
     expect(gained['atFielding']).toEqual({ surge: -10 })
   })
 
-  it('a badge with no such stat names nothing: Rotting Flesh\'s gain line carries no atFielding', () => {
+  // Law 10, content.afflictions-at-zero (2026-10-01; DECISIONS.md 'bleed-out is a stat on every player unit, 5; Rotting
+  // Flesh +5'): Rotting Flesh gained a stat the runtime never resolves (+5 bleed-out), so it no longer has "no such stat".
+  // The claim is kept on a badge that still has none (Vampirism), and Rotting Flesh now names its one fielding-only stat.
+  // was: it('a badge with no such stat names nothing: Rotting Flesh\'s gain line carries no atFielding', () => {
+  // was:   grantBadge(ctx, ctx.state.units[0]!.id, 'badge.rotting-flesh', 'test') … expect('atFielding' in gained).toBe(false)
+  it('a badge with no such stat names nothing: Vampirism\'s gain line carries no atFielding', () => {
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+    grantBadge(ctx, ctx.state.units[0]!.id, 'badge.vampirism', 'test')
+    const gained = ctx.events.find((e) => e.type === 'badge.gained')!
+    expect('atFielding' in gained).toBe(false)
+  })
+
+  it('Rotting Flesh granted mid-battle names its +5 bleed-out as waiting for the next fielding, and nothing else', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
     grantBadge(ctx, ctx.state.units[0]!.id, 'badge.rotting-flesh', 'test')
     const gained = ctx.events.find((e) => e.type === 'badge.gained')!
-    expect('atFielding' in gained).toBe(false)
+    expect(gained['atFielding']).toEqual({ bleedOutTurns: 5 })
   })
 
   it('fielded already Possessed (the next battle), the hero carries its −10 Surge', () => {

@@ -218,6 +218,13 @@ const fireImpFlightGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // Moved for real, the ruling working: the 31 cases where a crit roll goes the other way. A `changed` case is checked here
 // and skips the older layers.
 const codexNumbersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-codex-numbers.json', import.meta.url), 'utf8'))
+// content.afflictions-at-zero (2026-10-01), Law 10: Rotting Flesh carries +5 bleed-out (DECISIONS.md 2026-10-01 'bleed-out is a
+// stat on every player unit, 5; Rotting Flesh +5') and the four afflictions name what happens at 0 Health as gaps ('the
+// afflictions at 0 Health'). Every case frozen here (tools/capture-afflictions-at-zero-cursor.mts). Moved by log TEXT only —
+// a Rotting Flesh badge.gained line names its +5 as waiting for the next fielding, and the afflictions' gap lists grew; state,
+// RNG and result unchanged (movedOnlyText): showcase.prologue-party, showcase.waystation, test.opening-cavern-trail,
+// test.vampire-bite. test.afflictions-at-zero is new. A `changed` case is checked here and skips the older layers.
+const afflictionsAtZeroGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -334,8 +341,11 @@ describe('resumable battle cursor', () => {
       const ghostColdExpected = ghostColdGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const resistOneWayExpected = resistOneWayGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kiteAloneExpected = kiteAloneGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const afflictionsAtZeroExpected = afflictionsAtZeroGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const afflictionsAtZeroMoved = afflictionsAtZeroExpected?.changed === true
       const codexNumbersExpected = codexNumbersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const codexNumbersMoved = codexNumbersExpected?.changed === true
+      // was: const codexNumbersMoved = codexNumbersExpected?.changed === true — an afflictions-at-zero-moved case skips the codex-numbers layer too (content.afflictions-at-zero 2026-10-01)
+      const codexNumbersMoved = codexNumbersExpected?.changed === true || afflictionsAtZeroMoved
       const fireImpFlightExpected = fireImpFlightGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const fireImpFlightMoved = fireImpFlightExpected?.changed === true — a codex-numbers-moved case skips the fire-imp-flight layer too (fix.codex-numbers 2026-10-01)
       const fireImpFlightMoved = fireImpFlightExpected?.changed === true || codexNumbersMoved
@@ -407,7 +417,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (codexNumbersExpected) {
+        if (afflictionsAtZeroExpected) {
+        expect(hash(ctx.events), 'full afflictions-at-zero events').toBe(afflictionsAtZeroExpected.events)
+        expect(hash(ctx.state), 'full afflictions-at-zero state').toBe(afflictionsAtZeroExpected.state)
+        expect(hash(ctx.rng.log), 'full afflictions-at-zero RNG').toBe(afflictionsAtZeroExpected.rng)
+        expect(result).toEqual(afflictionsAtZeroExpected.result)
+        }
+        // was: if (codexNumbersExpected) { — content.afflictions-at-zero (2026-10-01): an afflictions-at-zero-moved case is checked above instead
+        if (codexNumbersExpected && !afflictionsAtZeroMoved) {
         expect(hash(ctx.events), 'full codex-numbers events').toBe(codexNumbersExpected.events)
         expect(hash(ctx.state), 'full codex-numbers state').toBe(codexNumbersExpected.state)
         expect(hash(ctx.rng.log), 'full codex-numbers RNG').toBe(codexNumbersExpected.rng)

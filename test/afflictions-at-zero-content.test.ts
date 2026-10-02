@@ -1,0 +1,67 @@
+// content.afflictions-at-zero (2026-10-01) — the content half of DECISIONS.md 2026-10-01 'the afflictions at 0 Health'
+// and 'bleed-out is a stat on every player unit, 5; Rotting Flesh +5'.
+//
+// The pack carries badge.fragile (−1 maximum Health; its stacking a named gap until rule.afflictions-at-zero) and
+// Rotting Flesh's +5 bleed-out (5 to 10); the four affliction rows keep every 2026-09-29 stat and deploy cost ("let's
+// leave in"), and each names what happens at 0 Health as a gap the engine half closes. A plain hero bleeds out over 5.
+import { describe, expect, it } from 'vitest'
+import { createBattle } from '../src/core/setup.js'
+import { bleedOutCounterOf } from '../src/core/settle.js'
+import { BADGES } from '../src/content/index.js'
+import { SCENARIOS, scenarioOptions } from '../src/content/scenarios.js'
+
+const mods = (id: string) => BADGES[id]!.statModifiers as Record<string, number>
+const gaps = (id: string) => BADGES[id]!.gaps ?? []
+
+describe('Fragile and Rotting Flesh in the pack', () => {
+  it('badge.fragile is −1 maximum Health, and its stacking with no limit is named, not dropped', () => {
+    expect(mods('badge.fragile')).toEqual({ maxHp: -1 })
+    expect(gaps('badge.fragile').some((g) => /stacks with no limit/.test(g) && /rule\.afflictions-at-zero/.test(g))).toBe(true)
+  })
+
+  it('Rotting Flesh carries +5 bleed-out beside its 2026-09-29 numbers', () => {
+    expect(mods('badge.rotting-flesh')).toEqual({ maxHp: 8, armor: 1, movement: -2, accuracy: -10, poisonResist: 1, bleedOutTurns: 5 })
+    expect(BADGES['badge.rotting-flesh']!.deathbedFighting).toBe(20)
+  })
+})
+
+describe('the four afflictions keep every 2026-09-29 stat and deploy cost, and name what happens at 0 Health', () => {
+  it('stats, grants and Deathbed points are unchanged', () => {
+    expect(mods('badge.vampirism')).toEqual({ strength: 2, precision: 1, maxHp: 3, resist: 1, magic: 1, spirit: -1 })
+    expect(BADGES['badge.vampirism']!.grants).toEqual(['power.flight-vampiric'])
+    expect(BADGES['badge.vampirism']!.deathbedFighting).toBe(15)
+    expect(mods('badge.lycanthropy')).toEqual({ strength: 2, movement: 2, maxStamina: 2, crit: -5, spirit: -1 })
+    expect(mods('badge.possession')).toEqual({ magic: 2, resist: 1, vision: 3, surge: -10 })
+    expect(BADGES['badge.possession']!.deathbedFighting).toBe(-10)
+  })
+
+  it('the deploy costs and drawbacks the engine cannot yet act on stay named', () => {
+    expect(gaps('badge.vampirism')).toEqual(expect.arrayContaining(['deploying the hero costs 3 Faith', 'the hero gains half experience']))
+    expect(gaps('badge.lycanthropy')).toEqual(expect.arrayContaining(['deploying the hero costs 2 Supplies']))
+    expect(gaps('badge.possession')).toEqual(expect.arrayContaining(['deploying the hero costs 3 Mana']))
+  })
+
+  it('each row says what happens at 0 Health, a gap until rule.afflictions-at-zero', () => {
+    const atZero = (id: string) => gaps(id).find((g) => g.startsWith('at 0 Health:')) ?? ''
+    expect(atZero('badge.vampirism')).toMatch(/transforms into a Vampire.*rolls Luck.*rule\.afflictions-at-zero/)
+    expect(atZero('badge.lycanthropy')).toMatch(/transforms into a Werewolf.*rolls Luck.*rule\.afflictions-at-zero/)
+    expect(atZero('badge.possession')).toMatch(/bleeds out.*Ghost with the hero's image.*enemy.*rule\.afflictions-at-zero/)
+    expect(atZero('badge.rotting-flesh')).toMatch(/Deathbed Fighting as normal.*Fragile.*rule\.afflictions-at-zero/)
+  })
+})
+
+describe('fielded: bleed-out is a stat on every player unit, standard 5', () => {
+  it('the Rotting Flesh warrior bleeds out over 10, the Fragile warrior has 1 less maximum Health, a plain warrior bleeds out over 5', () => {
+    const ctx = createBattle(scenarioOptions(SCENARIOS['test.afflictions-at-zero']!))
+    const [rotting, fragile] = ctx.state.units.filter((u) => u.side === 'hero')
+    expect(rotting!.badges).toContain('badge.rotting-flesh')
+    expect(bleedOutCounterOf(rotting!)).toBe(10)
+    expect(fragile!.badges).toContain('badge.fragile')
+    expect(bleedOutCounterOf(fragile!)).toBe(5)
+    // the same fielding with no badges
+    const plain = createBattle({ mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], enemies: ['test-zombie', 'test-zombie'], enemyHexes: [86, 101], enemyCount: 2, replicate: 0 })
+    const bare = plain.state.units.filter((u) => u.side === 'hero')[1]!
+    expect(fragile!.maxHp).toBe(bare.maxHp - 1)
+    expect(bleedOutCounterOf(bare)).toBe(5)
+  })
+})
