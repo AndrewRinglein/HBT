@@ -365,5 +365,13 @@
   ],
   "status": "done",
   "sha": "c56a2d1"
+ },
+ {
+  "id": "viewer.shield-guard-motion",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'a shield power plays a raise-the-shield motion'): \"When they play shield power, they should raise the shield animation.\" Every shield power a hero uses on the board (Shield Wall, Raise Guard, Turn Aside, Brace, Cover, Stand Tall) plays a raise-the-shield motion on the hero's body. Today none does: viewer/tools/character-models.mjs MOTIONS has no such word, and the one clip that exists, the Oathblade body's shield_blockleft, is bound as its hit reaction (viewer SWITCHES swapShieldMotions). Extends the existing motion words and the viewer's power playback (movement.swap-and-shields put the powers on the bar); propose the word (guard was the one asked about) beside the existing ones, not a new kind. A body holding a shield with no such clip is listed, not faked (2026-09-30 'a bunch of motions'); assets/characters/PRODUCTION-START.md first. Kingdom's pages are rebuilt; each package commits in its own repository.",
+  "expect": "In a sandbox battle a hero holding a shield uses each of its shield powers from the bar and its body plays the raise-the-shield clip (the Oathblade body's shield_blockleft), not its hit reaction; the hit reaction is unchanged; a page test names the motion played per power, and every shield-holding body without the clip is listed by name.",
+  "note": "Filed by the engine chat from Andrew's ruling, 2026-10-01."
  }
 ]

@@ -28,7 +28,12 @@ describe('content.fire-imp-flight', () => {
       const fireImps = new Set(ctx.state.units.filter((u) => u.typeId === 'unit.fire-imp').map((u) => u.id))
       for (const e of ctx.events) {
         if (e.type !== 'move.begin' || !fireImps.has(e.actor!)) continue
-        // a Fire Imp's every move is the flight power — it has no other
+        // Law 10, content.bridge-deck-pack (2026-10-01): with the deck walkable, a hero reaches a Fire Imp on replicate 1 and
+        // its greatsword knocks it prone, so it rises with power.stand-up — the universal rise, in place (0 hexes). The claim
+        // is unchanged: every move BETWEEN hexes is the flight power; the rise is checked to go nowhere.
+        // was: // a Fire Imp's every move is the flight power — it has no other
+        // was: expect(e.causeId, `replicate ${r}: Fire Imp moved by ${e.causeId}`).toBe('power.flight')
+        if (e.causeId === 'power.stand-up') { expect(e['to'], `replicate ${r}: a Fire Imp's rise moved it`).toBe(e['from']); continue }
         expect(e.causeId, `replicate ${r}: Fire Imp moved by ${e.causeId}`).toBe('power.flight')
         flights++
         const a = centerPoint(board, e['from'] as number), b = centerPoint(board, e['to'] as number)

@@ -1,11 +1,24 @@
 [
  {
+  "id": "fix.shield-power-double-click",
+  "kind": "fix",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'a self power fires on a double-click on its bar button'), playing the Orphanage in kingdom/BATTLE-SANDBOX.html?play=encounter.opening.orphanage: \"The two shield powers do not work. I click on them. I don't think it understands target. If I double-click on them or click on them and click on the hero, neither one of those does anything. I should be able to double-click on it in the bar and have it activate.\" movement.swap-and-shields (kingdom 2052a88, viewer 62d1d76; kingdom SWITCHES playInputSelfPower) wired click-then-click-again; its page tests passed, yet in the real page nothing fires. First reproduce in the real built page with the Orphanage's shield-holding hero (a test that drives the page's bar the way a mouse does, dblclick included), find why the passing test missed it, then make a double-click on a self-aimed power's bar button fire it (stamina paid, the log names it). Clicking the button then the hero should also fire it, since Andrew tried it. Extends kingdom/src/ui/play-input.ts and viewer/src/actionbar.js; no new mechanism. Each package commits in its own repository; kingdom's pages are rebuilt.",
+  "expect": "In the Orphanage on the built sandbox page, double-clicking each shield power's button on the bar for the shield-holding hero fires it: its stamina drops, the battle log names the power, and the board shows its effect; clicking the button then the hero does the same; a page test drives both through real dblclick/click events and fails on the build before the fix.",
+  "needs": [
+   "movement.swap-and-shields"
+  ],
+  "note": "Filed by the engine chat from Andrew's play report and ruling, 2026-10-01."
+ },
+ {
   "id": "movement.swap-and-shields",
   "kind": "movement",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the movements'): 'weapon swap and shield actions are part of what's needed now' - the movements needed now for a playable battle. The engine already has both: the swap landed as v2.loadout-swap (dd468e3; v2.swap was closed as superseded) and the shield powers as v2.shields (aaf51a5). What is missing is playing them: the sandbox offers the swap only on its form controls, never on the 3D board (kingdom/src/ui/sandbox.ts:119 draws swapControl only when there is no board). Put the swap on the board's action bar (before the primary, paying swapCost stamina, the hands to hold chosen) and check that every shield power a fielded hero holds (Shield Wall, Raise Guard, Turn Aside, Brace, Cover, Stand Tall) is on the bar, aims and resolves; fix what does not. Each plays a motion where one fits (the approved or selected motions, 2026-09-30 'a bunch of motions'); a missing motion is listed, not faked. Kingdom and viewer commit in their own repositories.",
   "expect": "In a sandbox battle a hero with a stowed weapon or shield swaps from the action bar on the board before its primary, its stamina drops by its swapCost and the log shows loadout.swapped; a second swap in the activation is refused on the bar; a hero holding each of the three shields uses each of its two shield powers from the bar and the battle log names them.",
-  "note": "Andrew 2026-10-01: the top of the engine queue (DECISIONS.md 'the order', item 2). Filed with kind movement so it lands in the engine queue as asked, although the code it touches is the sandbox's and the viewer's."
+  "note": "Andrew 2026-10-01: the top of the engine queue (DECISIONS.md 'the order', item 2). Filed with kind movement so it lands in the engine queue as asked, although the code it touches is the sandbox's and the viewer's.",
+  "status": "done",
+  "sha": "236e5ad"
  },
  {
   "id": "movement.inventory",
@@ -5046,7 +5059,7 @@
   "shape": "plumbing",
   "needs": [
    "fix.one-hero-assembly",
-   "fix.codex-numbers"
+   "fix.codex-numbers-refiled"
   ],
   "spec": "Duplication review 2026-09-28, findings K1-K18 and V10 (kingdom half). Andrew: 'The wound badge should weaken the hero in battle, which is either something you can start with or acquire if you trigger deathbed fighting.' The kingdom stops keeping second copies of engine facts: level table by levelTableOf (civilians on their type tables) (K1, V10); item packs published once from the engine's compiled rows plus campaign fields, mk-items steps 1-4 retired (K2); set bonuses passed as heroMods (K3); hands and held classes from the engine (K4); item uses from the granted power (K8); heroes built from engine rows like sandboxHeroesOf, Lucius/Osric resolved (K9); wounds are badge.wounded — carried into battle via heroBadges, and a badge gained at Deathbed kept after the battle; badge.fatigued/exhausted added to the Codex (K10); stat labels keyed by engine names (K11); the hash from the engine (K12); prologue battles are Codex encounters, outcomes from the engine (K5, K6); XP by tier 2/5/15 (K7); draft card from fieldedDef (K14); LEVELS/SPECIALTIES/kits through engine.ts (K15); classes generated (K17); one level-up loop in autoplay (K18).",
   "expect": "A Farmer levels on civilian.farmer and its level-5 pick fields; the Equip card and the battle show the same numbers for a set-bonus hero; the Net is one-use in battle; a hero who stood at Deathbed fights the next battle Wounded; a tier-2 kill pays 5 XP.",
@@ -5145,7 +5158,7 @@
   "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the afflictions at 0 Health' and 'bleed-out is a stat on every player unit'). Bleed-out becomes a stat on every player unit, standard 5 ('It should be an attribute on every player unit'), foldable (Rotting Flesh +5). At 0 Health: Vampirism / Lycanthropy - no Deathbed Fighting roll; the hero transforms into unit.vampire / unit.werewolf (bestiary stats and powers, no hero gear) at full Health and rolls Luck (the Luck stat as a percentage; Luck 0 always turns). Success: a player unit; at 0 again it dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed = abandoned. At battle end the hero is back to normal, no other consequence. Possession - no Deathbed roll; the hero goes down and bleeds out and a unit.ghost with the hero's image is summoned on their hex as an enemy. Rotting Flesh - Deathbed Fighting as normal (+20 kept) and the hero gains badge.fragile. Emits events the viewer's pop-up can read (affliction gained for the first time; transformed; ghost raised; Fragile gained). The kingdom's half (Fragile carried after the battle; a transformed hero at retreat is abandoned; back to normal after) is in this item, kingdom committing in its own repository.",
   "expect": "A Vampirism hero at 0 Health with Luck 100 becomes a player-side Vampire at full Health and dies at 0 again with no bleed-out; with Luck 0 it becomes an enemy Vampire that, beaten to 0, is the downed hero bleeding out from its bleed-out stat; likewise Lycanthropy and the Werewolf; a possessed hero at 0 is downed with no Deathbed roll and a Ghost stands on its hex on the enemy side; a Rotting Flesh hero rolls Deathbed Fighting with +20, gains Fragile (-1 maximum Health) each time it is taken to 0, and bleeds out over 10; every other player unit bleeds out over 5.",
   "needs": [
-   "content.afflictions-at-zero"
+   "content.afflictions-at-zero-refiled"
   ],
   "probeIds": [
    "badge.vampirism",
