@@ -161,6 +161,12 @@ const TESTS_HOME = { viewer: '../viewer', kingdom: '../kingdom' }[item.kind] ?? 
 const IN_HOME = { cwd: TESTS_HOME }
 const VITEST = TESTS_HOME === '.' ? 'npx vitest run' : 'node ../engine/node_modules/vitest/vitest.mjs run --dir test'
 const HOME_DIR = TESTS_HOME === '.' ? '' : `${TESTS_HOME.slice(3)}/`
+// A package lands its sources in its own commit before the engine gate runs (its gate builds from
+// that commit), so its item tests may already be committed there: the package's commits that name
+// the item count as touched, in `git status --porcelain` form (A added, M modified).
+const homeCommitted = () => TESTS_HOME === '.' ? '' : sh(`git log --format= --name-status -F --grep="${id}" -- test/`, IN_HOME)
+  .split('\n').filter(Boolean).map((l) => { const [st, f] = l.split('\t'); return `${st === 'A' ? 'A ' : ' M'} ${f}` }).join('\n')
+const homePorcelain = () => [sh('git status --porcelain --untracked-files=all', IN_HOME), homeCommitted()].filter(Boolean).join('\n')
 
 const checks = []
 let ok = true
@@ -236,7 +242,7 @@ check('typecheck', () => {
 // The item's own tests, not the full suite (Andrew, 2026-09-23, DECISIONS.md "less
 // process per feature"). The full suite runs once per chat as the four shards, and
 // `wrap` refuses until all four passed on the final tree.
-const touchedTests = () => testFilesIn(sh('git status --porcelain --untracked-files=all', IN_HOME))
+const touchedTests = () => [...new Set(testFilesIn(homePorcelain()))]
 check("the item's own tests", () => {
   const files = touchedTests()
   if (!files.length) return { ok: false, note: 'no test file touched' }
@@ -267,14 +273,15 @@ check('gate 1 — the id appears in a real battle', () => {
 })
 
 check('brought its own tests', () => {
-  const files = sh('git status --porcelain --untracked-files=all', IN_HOME).split('\n').filter(Boolean).map((l) => l.slice(3))
-  const touched = files.filter((f) => f.startsWith('test/'))
+  const files = homePorcelain().split('\n').filter(Boolean).map((l) => l.slice(3))
+  const touched = [...new Set(files.filter((f) => f.startsWith('test/')))]
   return { ok: touched.length > 0, note: touched.length ? touched.map((f) => HOME_DIR + f).join(', ') : `no test file touched in ${HOME_DIR}test/` }
 })
 
 // A new mechanic may ADD tests. Editing tests that already passed is the classic
 // way an autonomous loop launders a failure into a success.
-const weakened = (tryRun('git diff --numstat -- test/', IN_HOME).out.trim() || '')
+const weakened = [tryRun('git diff --numstat -- test/', IN_HOME).out.trim(),
+  TESTS_HOME === '.' ? '' : tryRun(`git log --format= --numstat -F --grep="${id}" -- test/`, IN_HOME).out.trim()].filter(Boolean).join('\n')
   .split('\n').filter(Boolean)
   .map((l) => { const [add, del, file] = l.split('\t'); return { file, add: +add, del: +del } })
   .filter((f) => f.del > 0)
@@ -285,7 +292,8 @@ flag('existing tests untouched', () => ({
 // Edited tests still land for Angela's review (Law 10); that is not a seal.
 let needsReview = weakened.length > 0
 let pendingGolden = null
-const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/', IN_HOME).out : ''
+const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/', IN_HOME).out +
+  (TESTS_HOME === '.' ? '' : tryRun(`git log -p -U2 --format=%h -F --grep="${id}" -- test/`, IN_HOME).out) : ''
 
 check('control battles unchanged', () => {
   const r = tryRun('npx tsx tools/baseline.mts')
@@ -485,7 +493,7 @@ check('kill switch — the tests fail without the content', () => {
   if ((item.shape === 'plumbing' && !item.probeIds) || ids.length === 0) return { ok: true, note: 'no content id to disable — engine plumbing, not applicable' }
   // fast: the test files the item ADDED — its own verify scenario, not an existing battle
   // file it happened to edit; every touched file when it added none. --full: every touched file.
-  const files = killSwitchFiles(sh('git status --porcelain --untracked-files=all', IN_HOME), FULL)
+  const files = [...new Set(killSwitchFiles(homePorcelain(), FULL))]
   if (files.length === 0) return { ok: true, note: 'no touched test files (brought-its-own-tests already failed)' }
   // The env goes through execSync's `env` option, not a `VAR=x cmd` prefix —
   // that prefix is bash-only, and under cmd.exe this check would "fail" because
