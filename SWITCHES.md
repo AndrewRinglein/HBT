@@ -324,3 +324,15 @@ depth, so every mark whose screen area a body stands up into lay across it. Noth
 | `unfadedLayer` | How do the bodies get above the marks and still stand behind walls? | **A second WebGL canvas, `.terrain3d-bodies`, between `#stage` (the marks) and `#stageTop` (the floats): each frame it takes the scene's depth from its solid pieces only (no colour; what is see-through hides nothing), then draws the bodies alone with every light.** The scene's own canvas no longer draws bodies. A host whose renderer is a stand-in (a test) keeps the one canvas. | Depth is the only honest way to keep "a wall hides a body" while no mark covers one; a CSS trick on the DOM cannot know depth. | Default |
 | `unfadedFloats` | The floats were on `#stage`, now under the bodies. | **They ride `#stageTop`, the stage's twin (same size, same camera matrix, same billboard variables), above the bodies.** The names, bars and rings stay on the board, under the bodies. | A damage number must never hide behind the body it is about; the marks are what faded the bodies. | Default |
 | `unfadedKey` | How is "the selected one" brightest? | **A warm point light (#fff1d8, intensity 9, reach 5 m) rides the body whose panel it is (subject.js), 1.25 of its height up and 0.6 toward the camera; it lights the bodies only.** | "especially not one that's selected". | Default — the look is Andrew's |
+
+## viewer.side-facing — 2026-10-01
+
+Engine DECISIONS.md 2026-10-01 'the first look at the XCOM camera, the weapons and the bodies' (Andrew): "The enemies should be
+facing to the left, and the heroes should be facing to the right." · "Every unit faces the direction it walks, and when a unit
+moves next to another unit, the unit, if it's an enemy, should turn to face them. … You also turn to face anybody who attacks you."
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `facingStart` | Which way is "right"? | **The board's east (+x), read off the board's own map into the scene: heroes and civilians face it, enemies face west, from the moment the body stands.** | Heroes deploy west and enemies east; at the unturned camera east is the screen's right. | Default |
+| `facingStepUp` | When does a unit "move next to" another? | **Each time a standing unit's hex changes (each step of a walk, as the fold says it), every standing unit of the other side at the engine's distance 1 from its new hex turns toward that hex; the latest wins.** Friends turn no one. The walker keeps facing its way. | "If someone then walks up from another hex, it turns to face them." The distance is the engine's (`V.data.distance`), never the viewer's. | Default |
+| `facingAttacked` | When does a unit turn to its attacker? | **On the strike itself (the fold's lunge cue), hit or miss; the striker faces its target.** Facing is kept afterwards — nothing turns back. | "You also turn to face anybody who attacks you." | Default |
