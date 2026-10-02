@@ -21939,3 +21939,80 @@ index 0000000..d190fa2
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.real-bodies — LANDED `fcc9a53` **NEEDS REVIEW**
+2026-10-02 05:17
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3315 · DECISIONS.md:3734
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-cast.test.ts, test/real-bodies.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/opening-cast.test.ts, viewer/test/real-bodies.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-cast.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+754c307
+
+diff --git a/test/opening-cast.test.ts b/test/opening-cast.test.ts
+index f87dba0..c10ec32 100644
+--- a/test/opening-cast.test.ts
++++ b/test/opening-cast.test.ts
+@@ -13,5 +13,5 @@ import { UNITS, ENCOUNTERS, ACTIONS } from '../../engine/src/content/index.js'
+ 
+ type Ref = { path: string, sha256: string, clip?: string }
+-type Look = { id: string, model: Ref, motions: Record<string, Ref>, missing: string[], props: Ref[] }
++type Look = { id: string, model: Ref, motions: Record<string, Ref>, missing: string[], props: Ref[], body?: { own: boolean, lacks?: string } }
+ const models: Record<string, { typeId: string, looks: Look[] }> = JSON.parse(execFileSync(process.execPath, ['../viewer/tools/character-models.mjs', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24 }))
+ const RULED = ['idle', 'move', 'attack', 'hit', 'death']
+@@ -68,4 +68,8 @@ describe("battles 2 and 3's cast in the new screen", () => {
+          each hero now holds its own kit, so a look's id names its held set too (oathblade+greatsword) — the outfit, which
+          is what this asks, is the body file */
++      /* Law 10 (viewer.real-bodies, 2026-10-01): was every hero, by class. Andrew: "don't we have more 3D things we can use? ...
++         the idea is to rig this up" — a hero with a body of its own stands in it (test/real-bodies.test.ts); the class outfit
++         rule holds for the heroes still in their class's placeholder */
++      if (look!.body?.own) continue
+       if (byClass.has(cls[0]!)) expect(look!.model.path, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.model.path)
+     }
+diff --git a/test/real-bodies.test.ts b/test/real-bodies.test.ts
+new file mode 100644
+index 0000000..94f56e9
+--- /dev/null
++++ b/test/real-bodies.test.ts
+@@ -0,0 +1,23 @@
++// viewer.real-bodies (engine backlog; DECISIONS.md 2026-10-01 'the camera redesigned on the caravan preview; ... what is queued
++// after it', Andrew: "I said we could use placeholders, but don't we have more 3D things we can use? ... the idea is to rig this
++// up."). The engine's side: the opening's six encounters and the caravan field the unit types the viewer's pack must bind or list
++// (the content's encounter rows). The viewer's half (../viewer/tools/real-bodies.test.mjs) reads the pack against the records
++// that own each body and stands the new bodies up from their files. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++
++describe('every hero and enemy of the opening and the caravan stands in its own body, or is listed', () => {
++  it('the opening and the caravan field the Bloodhound and the cast the viewer binds', () => {
++    const raw = JSON.parse(readFileSync('../content/gen/encounters.json', 'utf8'))
++    const rows = (Array.isArray(raw) ? raw : raw.encounters ?? Object.values(raw)).flat()
++      .filter((e: any) => /^encounter\.(opening\.|caravan-aftermath$)/.test(e?.id || ''))
++    const types = new Set(rows.flatMap((e: any) => JSON.stringify(e).match(/"unit\.[a-z0-9.-]+"/g) || []).map((s: string) => s.slice(1, -1)))
++    expect(rows.length).toBeGreaterThanOrEqual(7)
++    expect(types.has('unit.bloodhound')).toBe(true)
++  })
++  it('the viewer: bound or listed, never both; each hero in its own body or its placeholder saying what it lacks; the new bodies stand up from their files', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/real-bodies.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 3/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++})
+```
+</details>

@@ -69,7 +69,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the camera redesigned on the caravan preview; ... what is queued after it'): 'I said we could use placeholders, but don't we have more 3D things we can use? We've done all kinds of different heads, all kinds of different armor. ... the idea is to rig this up. We have the things for everything, just about.' Today every base hero is the one oathblade.glb body. Inventory assets/characters (PRODUCTION-START.md first; APPROVED-CHARACTERS.md) and bind each unit to its own assembled body - heads, armour, outfits - and the Bloodhound to the hounds in assets/characters/wolf/. Character production rules in AGENTS.md apply.",
-  "expect": "Every hero and enemy of the opening's battles and the caravan stands in its own body; a unit with no approved parts is listed, not faked."
+  "expect": "Every hero and enemy of the opening's battles and the caravan stands in its own body; a unit with no approved parts is listed, not faked.",
+  "status": "done-needs-review",
+  "sha": "fcc9a53"
  },
  {
   "id": "kingdom.civilians-played",
