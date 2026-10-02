@@ -3845,3 +3845,27 @@ Ruled:
 - **The engine chat repoints the dependants of abandoned-and-re-filed items** — `rule.afflictions-at-zero` needs `content.afflictions-at-zero` (re-filed as `content.afflictions-at-zero-refiled`), `kingdom.reads-engine` needs `fix.codex-numbers` (re-filed as `fix.codex-numbers-refiled`); no tool edits an existing item's `needs` today, and the backlog is never hand-edited.
 
 Not ruled (2): the content chat does not wrap while the engine chat is working — `wrap.mjs` writes the package's one Now line.
+
+## 2026-10-01 — a shield power plays a raise-the-shield motion; the Leap report was the Orphanage
+
+Andrew, in the engine chat, after movement.swap-and-shields landed with the shield powers' motion listed as missing (viewer SWITCHES `swapShieldMotions`):
+
+“One, I did not. I have only played the orphanage.   When they play shield power, they should raise the shield animation.”
+
+The questions, as asked: (1) "Did Andrew play the Lumberjack House before or after 8:23 pm tonight?"; (2) "When a hero uses a shield power, should they play a raise-the-shield animation? The one that exists today, on the Oathblade body, plays only when that character is hit."
+
+Ruled:
+
+- **Every shield power plays a raise-the-shield motion** — Shield Wall, Raise Guard, Turn Aside, Brace, Cover, Stand Tall. This answers viewer SWITCHES `swapShieldMotions` for the shield powers (the swap's draw/stow motion stays listed as missing). The one clip that exists is the Oathblade body's `shield_blockleft`, today bound as its hit reaction; the motion word it plays under is proposed by the item that builds it (`guard` was the word asked about), and a body with no such clip is listed, not faked (2026-09-30 'a bunch of motions').
+- **The Leap report (viewer.live-stat-mods) came from the Orphanage, not the Lumberjack House** — Andrew has played only the Orphanage. The fix is in the battle screen every opening battle shares (kingdom BATTLE-SANDBOX.html rebuilt 2026-10-01 20:23, cc7a322), so it reaches the Orphanage too.
+
+## 2026-10-01 — a self power fires on a double-click on its bar button; the Leap fix holds
+
+Andrew, in the engine chat, playing the Orphanage after movement.swap-and-shields and viewer.live-stat-mods were combined:
+
+“Okay, Leap Strength modifier seems to work. The two shield powers do not work. I click on them. I don't think it understands target. If I double-click on them or click on them and click on the hero, neither one of those does anything. I should be able to double-click on it in the bar and have it activate.”
+
+Ruled:
+
+- **A shield power — any power aimed at its own user — fires on a double-click on its button in the action bar.** movement.swap-and-shields shipped click-the-button-then-click-it-again (kingdom SWITCHES `playInputSelfPower`); in Andrew's play neither that, a double-click, nor clicking the button then the hero did anything. Filed: `fix.shield-power-double-click`.
+- **The Leap's +2 Strength now shows and counts** (viewer.live-stat-mods, confirmed by play).

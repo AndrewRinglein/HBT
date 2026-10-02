@@ -1,5 +1,16 @@
 [
  {
+  "id": "fix.shield-power-double-click",
+  "kind": "fix",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'a self power fires on a double-click on its bar button'), playing the Orphanage in kingdom/BATTLE-SANDBOX.html?play=encounter.opening.orphanage: \"The two shield powers do not work. I click on them. I don't think it understands target. If I double-click on them or click on them and click on the hero, neither one of those does anything. I should be able to double-click on it in the bar and have it activate.\" movement.swap-and-shields (kingdom 2052a88, viewer 62d1d76; kingdom SWITCHES playInputSelfPower) wired click-then-click-again; its page tests passed, yet in the real page nothing fires. First reproduce in the real built page with the Orphanage's shield-holding hero (a test that drives the page's bar the way a mouse does, dblclick included), find why the passing test missed it, then make a double-click on a self-aimed power's bar button fire it (stamina paid, the log names it). Clicking the button then the hero should also fire it, since Andrew tried it. Extends kingdom/src/ui/play-input.ts and viewer/src/actionbar.js; no new mechanism. Each package commits in its own repository; kingdom's pages are rebuilt.",
+  "expect": "In the Orphanage on the built sandbox page, double-clicking each shield power's button on the bar for the shield-holding hero fires it: its stamina drops, the battle log names the power, and the board shows its effect; clicking the button then the hero does the same; a page test drives both through real dblclick/click events and fails on the build before the fix.",
+  "needs": [
+   "movement.swap-and-shields"
+  ],
+  "note": "Filed by the engine chat from Andrew's play report and ruling, 2026-10-01."
+ },
+ {
   "id": "movement.swap-and-shields",
   "kind": "movement",
   "shape": "plumbing",
