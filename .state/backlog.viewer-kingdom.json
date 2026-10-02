@@ -201,7 +201,9 @@
    "kingdom.sandbox-campaign-heroes"
   ],
   "spec": "kingdom.opening-loop-three, part 2 of 4; V2-ROADMAP.md R8 (the battle-to-Kingdom result seam) for encounters. kingdom/src/core/seam.ts makeBattleResult keys rows by the engine unit uid (unit.enter uid), not entry order: the deployed heroes by the uids the spec hands the engine (heroUids), the encounter enemies and the hero-side civilians from the log, schedule arrivals and raised units (unit.enter arrived) as their own rows, never keyed to the roster. A finished sandbox encounter folds to an EngagementResult that resolveReckoning and applyBattleResult accept for an Engagement naming that encounter (wounds, XP, deaths written to the campaign once; a second apply refused).",
-  "expect": "An Orphanage battle played in the sandbox folds without error (civilians, Turn 4/5 arrivals); reordered or noncontiguous hero uids key the right heroes; an arrival is never a roster hero; applying the result writes each deployed hero exactly once and a second apply throws."
+  "expect": "An Orphanage battle played in the sandbox folds without error (civilians, Turn 4/5 arrivals); reordered or noncontiguous hero uids key the right heroes; an arrival is never a roster hero; applying the result writes each deployed hero exactly once and a second apply throws.",
+  "status": "done",
+  "sha": "7154e00"
  },
  {
   "id": "kingdom.opening-rewards",
