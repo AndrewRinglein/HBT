@@ -70,12 +70,21 @@ export function resolvePaint(row, painted) {
     if (p.ground === undefined) return p;
     if (p.hexes !== undefined) throw new Error(`encounters ${row.id}: a paint names its hexes or its map's ground, never both`);
     const hexes = painted?.ground?.[row.map]?.[p.ground];
-    if (!hexes) throw new Error(`encounters ${row.id}: map ${row.map} carries no '${p.ground}' ground (gen/painted-maps.json)`);
+    if (!hexes) throw new Error(`encounters ${row.id}: map ${row.map} carries no '${p.ground}' ground (gen/painted-maps.json, gen/opening-maps.json)`);
     const { ground: _g, ...rest } = p;
     return { ...rest, hexes: [...hexes] };
   });
 }
 export const readPainted = () => (fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : null);
+// encounter.opening.cathedral (engine, 2026-10-01): the ground a paint or a remains entry may name — the painted scenes'
+// lists, plus the opening maps' cursed hexes (gen/opening-maps.json `cursed`, the Ground Check's '*'), so no row retypes them.
+export function readGround() {
+  const painted = readPainted(), OPEN = 'gen/opening-maps.json';
+  const cursed = fs.existsSync(OPEN) ? JSON.parse(fs.readFileSync(OPEN, 'utf8')).cursed ?? {} : {};
+  const ground = { ...(painted?.ground ?? {}) };
+  for (const [map, hexes] of Object.entries(cursed)) ground[map] = { ...(ground[map] ?? {}), cursed: hexes };
+  return { ...(painted ?? {}), ground };
+}
 
 if (process.argv[1]?.endsWith('mkpaintedmaps.mjs')) {
   const text = JSON.stringify(buildPaintedMaps(), null, 1) + '\n';

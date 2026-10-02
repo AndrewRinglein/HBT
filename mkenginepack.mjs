@@ -39,7 +39,7 @@ function packetFields(row){
 // party and enemies come from HERE — the Codex pipeline — not from hand-typed
 // rows. Deterministic output: same inputs, byte-identical pack.
 import fs from 'fs';
-import { readPainted, resolvePaint } from './mkpaintedmaps.mjs';
+import { readGround, resolvePaint } from './mkpaintedmaps.mjs';
 import { compileMaps, validateEncounterBoard } from './map-schema.mjs';
 const D = JSON.parse(fs.readFileSync('hbt-content.json', 'utf8'));
 // ── THE ENGINE'S VOCABULARY (plumbing.vocabulary-export, engine 2026-09-28) ────
@@ -132,7 +132,7 @@ const enemies = D.testCohort.enemies.map((z) => { const { copyOf, ...row } = z; 
 // invent — so the whole attack is a gap, not a number I picked.
 const AUTH = JSON.parse(fs.readFileSync('gen/enemies-authored.json', 'utf8'));
 const ENC = JSON.parse(fs.readFileSync('gen/encounters.json', 'utf8'));
-const PAINTED = readPainted();   // map.caravan-aftermath: the painted scenes' ground lists (mkpaintedmaps.mjs)
+const GROUND = readGround();   // encounter.opening.cathedral (2026-10-01): the same, plus the opening maps' cursed hexes — what a paint or remains entry may name
 const gaps = [];
 const gap = (unit, what, needs) => gaps.push({ unit, what, needs });
 
@@ -1973,8 +1973,11 @@ function compileEncounter(row) {
     if (s.corpses !== undefined) {
       if (typeof s.id !== 'string' || typeof s.typeId !== 'string') { gaps.push(`setup: ${s.corpses} corpses — ${s.note || 'capability.corpses'} (placed remains need an id and the body's unit, typeId)`); continue; }
       if (!packUnitIds.has(s.typeId)) { gaps.push(`setup: remains '${s.id}' are '${s.typeId}' — no such row in the pack, NOT placed`); continue; }
-      if (!Array.isArray(s.hexes) || s.hexes.length !== s.corpses || !board) throw new Error(`encounter ${row.id}: remains '${s.id}' name ${s.corpses} corpses and ${s.hexes?.length ?? 0} hexes — one hex each`);
-      remains.push({ id: s.id, typeId: s.typeId, hexes: s.hexes.map((h) => h.row * board.width + h.col) });
+      // encounter.opening.cathedral (2026-10-01): remains may name their map's ground (`ground`) instead of listing hexes
+      if (s.ground !== undefined && s.hexes !== undefined) throw new Error(`encounter ${row.id}: remains '${s.id}' name their hexes or their map's ground, never both`);
+      const ids = s.ground !== undefined ? GROUND.ground[row.map]?.[s.ground] : s.hexes?.map((h) => h.row * board.width + h.col);
+      if (!Array.isArray(ids) || ids.length !== s.corpses || !board) throw new Error(`encounter ${row.id}: remains '${s.id}' name ${s.corpses} corpses and ${ids?.length ?? 0} hexes${s.ground !== undefined ? ` (map ${row.map}'s '${s.ground}' ground)` : ''} — one hex each`);
+      remains.push({ id: s.id, typeId: s.typeId, hexes: [...ids] });
       continue;
     }
     if (!s.unit) { gaps.push(`setup entry without a unit: ${JSON.stringify(s).slice(0, 60)}`); continue; }
@@ -2016,8 +2019,8 @@ function compileEncounter(row) {
     ...(row.band.startRow !== undefined ? { startRow: row.band.startRow } : {}),
     ...(row.band.spare ? { spare: row.band.spare } : {}) } : undefined;
   if (row.band && row.band.axis === 'col') gaps.push('band walks the COLUMN axis (axis:col, startCol) — the engine must read it; a reader still expecting startRow gets undefined');
-  // map.caravan-aftermath (2026-10-01): a paint may name its map's ground (gen/painted-maps.json) instead of listing hexes
-  const paint = row.paint ? resolvePaint(row, PAINTED).map((p) => ({ layer: p.layer, hexes: p.hexes })) : undefined;
+  // map.caravan-aftermath (2026-10-01): a paint may name its map's ground (gen/painted-maps.json; the opening maps' cursed, 2026-10-01) instead of listing hexes
+  const paint = row.paint ? resolvePaint(row, GROUND).map((p) => ({ layer: p.layer, hexes: p.hexes })) : undefined;
   // The board ships (PROVING-PLAN Stage A3, 2026-09-04). Every row names it; a row that does
   // not is a hard gap, because a placement means nothing without the board it is placed on.
   return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),
