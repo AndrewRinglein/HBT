@@ -57,14 +57,15 @@ describe('the play input decides nothing on its own', () => {
   it('a slot on another unit\'s bar is not the hero\'s; right-click with nothing to undo is not taken', () => {
     const s = start(), P = createPlayInput(() => s, (c) => commandSandbox(s, c))
     const h = s.ctx.state.units[1]!, z = s.ctx.state.units.find((u) => u.side === 'enemy')!
-    expect(P.input({ kind: 'unit', id: h.id, hex: h.hex })).toBe(true)
+    /* Law 10 (viewer.xcom-camera, 2026-10-01): engine DECISIONS.md 2026-10-01 'the XCOM-style camera', Andrew: "Double-click a character in the top bar or on the map to change it" — a hero other than the one proposed is picked by a double-click (choose), then clicked; a click alone no longer starts any hero but the proposed one */
+    P.input({ kind: 'choose', id: h.id }); expect(P.input({ kind: 'unit', id: h.id, hex: h.hex })).toBe(true)
     expect(P.input({ kind: 'slot', actionId: 'attack.punch', unit: z.id })).toBe(false)
     expect(P.input({ kind: 'back' })).toBe(false)
   })
   it('a hex out of reach is not taken; every hex lit is one the engine validated', () => {
     const s = start(), P = createPlayInput(() => s, (c) => commandSandbox(s, c))
     const h = s.ctx.state.units[1]!
-    P.input({ kind: 'unit', id: h.id, hex: h.hex })
+    P.input({ kind: 'choose', id: h.id }); P.input({ kind: 'unit', id: h.id, hex: h.hex })   // Law 10 (viewer.xcom-camera): chosen, then clicked
     const f = P.facts(), off = [...Array(s.ctx.state.terrain.length).keys()].find((x) => !f.reach.includes(x) && x !== h.hex)!
     expect(P.input({ kind: 'hex', hex: off })).toBe(false)
     expect(f.ghost).toBeNull()

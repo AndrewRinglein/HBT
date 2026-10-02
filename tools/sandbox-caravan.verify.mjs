@@ -17,5 +17,6 @@ const units=S.ctx.state.units,W=S.ctx.geo.board.width
 assert.deepEqual(units.filter(u=>u.side==='enemy').map(u=>u.typeId).sort(),['unit.bloodhound','unit.bloodhound','unit.imp','unit.imp'])
 for(const u of units.filter(u=>u.side==='enemy'))assert.ok(u.hex%W>=29,`${u.typeId} at the east end`)
 for(const u of units.filter(u=>u.side==='hero'))assert.ok(u.hex%W<=3,`${u.typeId} at the west end`)
-assert.equal(w.document.querySelectorAll('#camBar').length,1,'the shared camera, one bar')
+/* Law 10 (viewer.xcom-camera, 2026-10-01): was one #camBar — the XCOM-style camera has no bar (engine DECISIONS.md 2026-10-01) */
+assert.equal(w.document.querySelectorAll('#camBar').length,0,'the shared camera, no bar')
 console.log('sandbox caravan: ?play=encounter.caravan-aftermath fields 2 Bloodhounds and 2 Imps east against the heroes west, on the caravan\'s painted scene with its surroundings, 11 fires and 31 cursed hexes, through the shared viewer passed')

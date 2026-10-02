@@ -33,7 +33,8 @@ export function probe(seed=1):ProbeRecord{
  const threat={unit:t.unit,shown:{move:t.move,hit:t.hit},engine:threatOf(s.ctx,zombie.id)}
  // 2. click a hero to act (the Hunter)
  const hunter=s.ctx.state.units.find(u=>u.typeId==='hero.base.ranger-aggressive')!
- P.input({kind:'unit',id:hunter.id,hex:hunter.hex})
+ /* Law 10 (viewer.xcom-camera, 2026-10-01): engine DECISIONS.md 2026-10-01 'the XCOM-style camera', Andrew: "Double-click a character in the top bar or on the map to change it" — a hero other than the one proposed is picked by a double-click (choose), then clicked; a click alone no longer starts any hero but the proposed one */
+ P.input({kind:'choose',id:hunter.id});P.input({kind:'unit',id:hunter.id,hex:hunter.hex})
  const selected={uid:hunter.uid,actor:s.ctx.battleCursor?.actor??null}
  // 3. the reach, the path to the hex pointed at, a ghost there, right-click (the ghost goes), the ghost again, confirm
  let f=F();const reach=f.reach
@@ -53,7 +54,7 @@ export function probe(seed=1):ProbeRecord{
  for(let guard=0;guard<400&&!s.ctx.state.outcome&&attacks.filter(a=>a.hit&&!a.crit&&a.landed).length<2;guard++){
   const c=s.ctx.battleCursor!
   if(c.at==='selecting'){const next=sandboxActivationChoices(s)[0];if(!next)throw Error('selecting, but no hero to choose')
-   const h=s.ctx.state.units.find(u=>u.uid===next.uid)!;if(!P.input({kind:'unit',id:h.id,hex:h.hex}))throw Error(`clicking ${h.name} did not start its activation`);continue}
+   const h=s.ctx.state.units.find(u=>u.uid===next.uid)!;P.input({kind:'choose',id:h.id});if(!P.input({kind:'unit',id:h.id,hex:h.hex}))throw Error(`clicking ${h.name} did not start its activation`);continue}
   const actor=c.actor!,me=s.ctx.state.units[actor]!
   const attack=me.actions.find(id=>id.startsWith('attack.')&&id!=='attack.punch')??'attack.punch'
   f=F()

@@ -17,8 +17,12 @@ assert.deepEqual(civilians.map(u=>u.typeId).sort(),['hero.fixed.orphans','hero.f
 const yet=V().play.endTurn.yetToAct
 for(const c of civilians)assert.ok(yet.includes(c.id),c.name+' is among those yet to act (End Turn names it)')
 const child=civilians.find(u=>u.typeId==='hero.fixed.orphans')
+/* Law 10 (viewer.xcom-camera, 2026-10-01): engine DECISIONS.md 2026-10-01 'the XCOM-style camera', Andrew: "Double-click a
+   character … to change it" — the Child, not the hero proposed first, is chosen by the double-click's offer (the board's
+   dblclick sends {kind:'choose'}), then clicked; a click alone starts only the proposed hero */
+V().offerPlay({kind:'choose',id:child.id});settle()
 figure(child.id).handlers.click({detail:1});settle()
-assert.equal(ctx().battleCursor.at,'acting');assert.equal(ctx().battleCursor.actor,child.id,'clicking the Orphan Child started its activation')
+assert.equal(ctx().battleCursor.at,'acting');assert.equal(ctx().battleCursor.actor,child.id,'choosing, then clicking, the Orphan Child started its activation')
 const reach=drawn('playReach');assert.ok(reach.length>0,'where the child can move is lit')
 const dest=reach.find(h=>!ctx().state.units.some(u=>u.hex===h&&u.lifeState!=='dead'))
 hexBtn(dest).handlers.pointerenter({});hexBtn(dest).handlers.click({detail:1});hexBtn(dest).handlers.click({detail:1});settle()

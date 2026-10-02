@@ -41,7 +41,8 @@ describe('the ending handed to the viewer', () => {
     const s = orphanage(), sent: string[] = []
     const P = createPlayInput(() => s, (c) => { sent.push(c.kind); return commandSandbox(s, c) })
     const first = s.ctx.state.units.find((u) => u.uid === s.policy.humanUnitUids[0])!
-    P.input({ kind: 'unit', id: first.id, hex: first.hex })
+    /* Law 10 (viewer.xcom-camera, 2026-10-01): engine DECISIONS.md 2026-10-01 'the XCOM-style camera', Andrew: "Double-click a character in the top bar or on the map to change it" — a hero other than the one proposed is picked by a double-click (choose), then clicked; a click alone no longer starts any hero but the proposed one */
+    P.input({ kind: 'choose', id: first.id }); P.input({ kind: 'unit', id: first.id, hex: first.hex })
     expect(s.ctx.battleCursor?.actor).toBe(first.id)
     const e = P.ending()
     expect(e.endActivation).toBe(true)

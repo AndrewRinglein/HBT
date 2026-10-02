@@ -31,7 +31,11 @@ function runPlay(command:BattleCommand){
 }
 /** the plan facts while a human can act; none while the resolved actions play, after a fault or at the outcome.
     viewer.play-chrome: with them the ending — End Turn (and who has not acted, for its pop-up) and End activation */
-function refreshPlay(){if(!surface?.viewer)return;surface.viewer.setPlay(!session||busy||fault||session.ctx.state.outcome?null:{...play.facts(),...play.ending()})}
+function refreshPlay(){if(!surface?.viewer)return;surface.viewer.setPlay(!session||busy||fault||session.ctx.state.outcome?null:{...play.facts(),...play.ending()})
+ /* viewer.xcom-camera: the hero proposed to act next is the one shown, the map centred on it */
+ const next=!session||busy||fault?null:play.proposal()
+ if(next!==shownProposal){shownProposal=next;if(next!==null){surface.viewer.inspect(next);surface.viewer.centre(next)}}}
+let shownProposal:number|null=null
 /** viewer.play-chrome (PLAYABLE-OPENING-PLAN.md item 8: "the Sandbox's dropdowns retired for these battles"): an encounter
     battle — every sandbox encounter is an opening battle (content/sandbox.ts SANDBOX_ENCOUNTERS) — is played on the board
     alone: no hero, action, target or swap dropdown, no Execute or End activation button (kingdom SWITCHES.md playChromeBoardOnly) */
@@ -168,7 +172,7 @@ function install(next:Sandbox){
  },onDrain:()=>{if(epoch!==generation)return;busy=false;controls()},onError:(e:Error)=>{if(epoch!==generation)return;fault=e.message;error=fault;busy=false;controls()}},{fill:battleView})
  const staging=document.createElement('div'),view=viewSandbox(next)
  try{candidate.mount(staging,view)}catch(e){candidate.dispose();throw e}
- generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;mapOpen=false
+ generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;mapOpen=false;shownProposal=null
  surface.mount(q('battle'),view);controls()
 }
 function action(act:string,id?:string){let mayHaveMutated=false;try{
