@@ -365,7 +365,9 @@
    "encounter.opening.gates",
    "encounter.opening.cathedral"
   ],
-  "note": "Andrew 2026-10-01: third in the order (DECISIONS.md 'the order', item 3), after the camera and the movements. Supersedes kingdom.opening-loop-three (which still needs the abandoned encounter.opening.bridge-ai and can never start) and kingdom.opening-loop (the engine queue's 2026-09-28 six-battle loop, 'one sitting') - abandon both from a terminal."
+  "note": "Andrew 2026-10-01: third in the order (DECISIONS.md 'the order', item 3), after the camera and the movements. Supersedes kingdom.opening-loop-three (which still needs the abandoned encounter.opening.bridge-ai and can never start) and kingdom.opening-loop (the engine queue's 2026-09-28 six-battle loop, 'one sitting') - abandon both from a terminal.",
+  "status": "done",
+  "sha": "642c139"
  },
  {
   "id": "viewer.affliction-pop-up",

@@ -22410,6 +22410,16 @@ index a6f36c8..daa02cb 100644
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — test/fix-masterwork-scope.test.ts, test/pack-derived-rows.test.ts, test/pack-items.test.ts, test/kingdom-reads-engine.test.ts
   WARN  existing tests untouched — DELETED LINES in test/fix-masterwork-scope.test.ts (-7), test/pack-derived-rows.test.ts (-15), test/pack-items.test.ts (-1) — will land FLAGGED for review
+## kingdom.opening-run-six — LANDED `642c139`
+2026-10-02 11:28
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3791 · DECISIONS.md:3807
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-run-six.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/opening-run-six.test.ts
+  PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
