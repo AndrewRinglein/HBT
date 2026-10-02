@@ -4,6 +4,7 @@ import {loadAtlasAssembly,atlasEnvironment} from './atlas-renderer.js'
 import {paintedHeights,paintedToCSS,loadPaintedScene,paintedEnvironment,PAINTED_EXPOSURE} from './painted.js'
 import {createCast} from './models.js'
 import {lens,orbitCamera} from './camera3d.js'
+import {subjectOf} from './subject.js'
 // The units drawn as 3D models stand in the same scene (viewer.character-models, models.js): board px -> scene by the inverse of the scene's own map
 // Two scene sources behind one board: an Atlas layout (atlas.js) or a painted scene (painted.js, viewer.painted-board)
 /* viewer.true-3d-camera (2026-09-30; engine DECISIONS.md "a true 3D battle: an orbit camera, …, no flash of another
@@ -59,6 +60,32 @@ export function seeThrough(group,camera,aims,faded=new Map()){
   faded.set(o,solid);o.material=Array.isArray(solid)?glass:glass[0];changed=true}
  return changed
 }
+/* viewer.characters-unfaded (engine DECISIONS.md 2026-10-01, Andrew: "these characters are faded, like they're ghost-like,
+   because there are other competing things. The characters are the stars. They should not be faded, especially not one
+   that's selected."): what faded them was the board — its grid, rings, glows, shadow blobs and painted tiles are DOM drawn
+   OVER the scene's canvas, with no depth, so every mark whose screen area a body stands up into lay across it. The bodies are
+   drawn on a canvas of their own ABOVE the board's marks: it first takes the scene's depth (the solid pieces only — what is
+   drawn see-through hides nothing), so a wall or a hill still hides a body behind it, then draws the bodies alone, at full
+   strength; the one whose panel it is (subject.js) carries a key light of its own and is the brightest (viewer SWITCHES
+   unfaded*). A host that cannot have a second canvas (a test's renderer) draws the bodies with the scene, as before. */
+export const KEY_LIGHT={color:0xfff1d8,intensity:9,distance:5}
+const DEPTH_ONLY=new THREE.MeshBasicMaterial({colorWrite:false})
+/** draw the bodies over the board: the scene's solid depth first, then the characters and the lights alone */
+export function drawBodies(renderer,scene,camera,characters){
+ const off=[],hide=o=>{if(o.visible){o.visible=false;off.push(o)}}
+ const bg=scene.background;scene.background=null
+ renderer.clear()
+ hide(characters)
+ scene.traverse(o=>{if(o.isMesh&&o.visible&&[].concat(o.material).some(m=>m.transparent||m.depthWrite===false))hide(o)})
+ scene.overrideMaterial=DEPTH_ONLY;renderer.render(scene,camera);scene.overrideMaterial=null
+ for(const o of off.splice(0))o.visible=true
+ /* then the bodies alone: every drawable but theirs put away, every light (the map's torches among them) left on */
+ const theirs=new Set();characters.traverse(o=>theirs.add(o))
+ scene.traverse(o=>{if((o.isMesh||o.isPoints||o.isLine||o.isSprite)&&!theirs.has(o))hide(o)})
+ renderer.render(scene,camera)
+ for(const o of off)o.visible=true
+ scene.background=bg
+}
 export function createDriver(V,onFailure,platform={}){
  if(!platform.Renderer&&typeof window.WebGL2RenderingContext==='undefined')throw Error('WebGL 2 unavailable')
  const wrap=V.dom.stage.parentNode,canvas=document.createElement('canvas');canvas.className='terrain3d-canvas';canvas.setAttribute('aria-hidden','true')
@@ -66,9 +93,17 @@ export function createDriver(V,onFailure,platform={}){
  wrap.insertBefore(canvas,V.dom.stage);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace
  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=painted(V.data.atlas)?PAINTED_EXPOSURE:1
  if(renderer.shadowMap){renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.shadowMap.autoUpdate=false}
+  /* viewer.characters-unfaded: the bodies' own canvas, above the board's marks (none where the host's renderer is a stand-in) */
+ const BodyRenderer=platform.BodyRenderer||(platform.Renderer?null:THREE.WebGLRenderer)
+ let bodies=null
+ if(BodyRenderer){const c=document.createElement('canvas');c.className='terrain3d-bodies';c.setAttribute('aria-hidden','true')
+  bodies=new BodyRenderer({canvas:c,antialias:true,alpha:true});wrap.insertBefore(c,V.dom.stage.nextSibling)
+  bodies.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));bodies.outputColorSpace=THREE.SRGBColorSpace
+  bodies.toneMapping=renderer.toneMapping;bodies.toneMappingExposure=renderer.toneMappingExposure;bodies.autoClear=false
+  if(bodies.setClearColor)bodies.setClearColor(0x000000,0)}
  /* the board's map (viewer.js sets it; a driver handed a bare board makes it the same way) */
  const scene=new THREE.Scene(),affine=V.data.boardAffine||(V.data.boardAffine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F))
- let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity
+ let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,key=null
  const faded=new Map()
  const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
@@ -91,13 +126,23 @@ export function createDriver(V,onFailure,platform={}){
   const camera=V.camera3d
   /* the board's camera moved (a turn, a pan, a frame of the glide): draw again */
   if(camera&&V.camVersion!==seen){seen=V.camVersion;dirty=true}
-  if(w>0&&h>0&&viewportKey!==w+'x'+h){renderer.setSize(w,h,false);viewportKey=w+'x'+h;dirty=true}
+  if(w>0&&h>0&&viewportKey!==w+'x'+h){renderer.setSize(w,h,false);bodies?.setSize(w,h,false);viewportKey=w+'x'+h;dirty=true}
   /* the lens follows the viewport's height; the stage's matrix does not depend on it */
   if(camera&&w>0&&h>0&&(camera.userData.viewport?.w!==w||camera.userData.viewport?.h!==h))lens(camera,{w,h})
   /* viewer.xcom-camera: what hides a body is see-through — looked for when anything moved, at most every SEE_EVERY ms */
   if(built?.group&&!V.seeThrough)V.seeThrough={faded,pieces:()=>solidPieces(built.group)}   // read-only: what is see-through now
   if(camera&&built?.group&&V.cast?.aims&&dirty&&t-sawThrough>=SEE_EVERY){sawThrough=t;if(seeThrough(built.group,camera,V.cast.aims(),faded))dirty=true}
-  if(dirty&&camera&&w>0&&h>0){renderer.render(scene,camera);dirty=false}raf=requestAnimationFrame(frame)
+  const characters=bodies?scene.getObjectByName('characters'):null
+  /* viewer.characters-unfaded: the key light rides the body whose panel it is, above it and toward the camera */
+  if(characters&&camera){const B=V.cast?.body(subjectOf(V))
+   if(!key){key=new THREE.PointLight(KEY_LIGHT.color,KEY_LIGHT.intensity,KEY_LIGHT.distance);key.name='subject-key';characters.add(key)}
+   key.visible=!!B
+   if(B){const h=B.standingHeight(),p=B.stage.position,to=camera.position.clone().sub(p).setY(0);if(to.lengthSq()>1e-9)to.normalize()
+    key.position.set(p.x+to.x*h*.6,p.y+h*1.25,p.z+to.z*h*.6)}}
+  if(dirty&&camera&&w>0&&h>0){
+   if(characters){characters.visible=false;renderer.render(scene,camera);characters.visible=true;drawBodies(bodies,scene,camera,characters)}
+   else renderer.render(scene,camera)
+   dirty=false}raf=requestAnimationFrame(frame)
  }catch(error){onFailure(error)}}
- return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove()}}
+ return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
 }
