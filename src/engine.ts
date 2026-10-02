@@ -20,6 +20,10 @@ export { SCENARIOS, scenarioOptions, scenarioDef } from '../../engine/src/conten
 // field one (its map, setup, schedule and civilians) through the same createBattle and commands.
 export { encounterDef } from '../../engine/src/content/scenarios.js'
 export { ENCOUNTERS } from '../../engine/src/content/index.js'
+// Widened 2026-10-01 (kingdom.encounter-result-fold, V2-ROADMAP R8): the engine's own unit identities, read-only —
+// rosterUids is the one rule that numbers a fielding's units, so makeBattleState hands the heroes' uids over
+// explicitly (BattleOptions.heroUids) without restating the numbering; isUnitUid is the engine's range check.
+export { rosterUids, isUnitUid } from '../../engine/src/core/identity.js'
 export type { EncounterDef } from '../../engine/src/core/types.js'
 // Widened 2026-09-01 for the battle screen (M3): the board's geometry and
 // terrain, and the unit rows' display names. Read-only content and geometry —
@@ -104,4 +108,6 @@ export const ENGINE_EVENTS = [
   'charge.spent',
   'damage.applied', 'heal.applied',
   'life.standing', 'life.downed', 'life.dead',
+  // widened 2026-10-01 (kingdom.encounter-result-fold): a hero who stood again at the Deathbed is Wounded in the battle
+  'deathbed.stood',
 ] as const

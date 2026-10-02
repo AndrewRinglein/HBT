@@ -1,0 +1,105 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+xxxxx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/encounter-result-fold.test.ts > kingdom.encounter-result-fold — an encounter battle folds by uid and settles once > an Orphanage battle played in the sandbox folds: civilians and arrivals are their own rows, never the roster
+AssertionError: expected [Function] to throw error matching /battle\.end|did not finish/ but got '(0 , __vite_ssr_import_3__.sandboxRes…'
+
+- Expected:
+/battle\.end|did not finish/
+
++ Received:
+"(0 , __vite_ssr_import_3__.sandboxResult) is not a function"
+
+ ❯ test/encounter-result-fold.test.ts:62:36
+     60|     const e = ctx.campaign.cursor.engagement!
+     61|     const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed],…
+     62|     expect(() => sandboxResult(s)).toThrow(/battle\.end|did not finish…
+       |                                    ^
+     63|     runBattle(s.ctx)
+     64|     const r = sandboxResult(s)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/encounter-result-fold.test.ts > kingdom.encounter-result-fold — an encounter battle folds by uid and settles once > reordered, noncontiguous hero uids key the right heroes
+AssertionError: expected undefined to deeply equal [ 301, 7, 200 ]
+
+- Expected:
+[
+  301,
+  7,
+  200,
+]
+
++ Received:
+undefined
+
+ ❯ test/encounter-result-fold.test.ts:94:29
+     92|     for (const heroUids of [[301, 7, 200], [102, 101, 100], [0, 400000…
+     93|       const spec = makeBattleState(ctx.campaign.roster, { ...e, heroUi…
+     94|       expect(spec.heroUids).toEqual(heroUids)
+       |                             ^
+     95|       const battle = createBattle({ ...battleOptionsOf(spec), encounte…
+     96|       runBattle(battle)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/encounter-result-fold.test.ts > kingdom.encounter-result-fold — an encounter battle folds by uid and settles once > kills by and of the encounter's units are credited like any other opposing unit
+Error: encounter.opening.orphanage: the engine fielded 'hero.fixed.orphans' as hero 3 but the spec names '(nothing)' — the fold cannot key rows to the roster
+ ❯ makeBattleResult src/core/seam.ts:234:17
+    232|         const typeId = e['typeId'] as string
+    233|         if (typeId !== expected) {
+    234|           throw new Error(`${spec.id}: the engine fielded '${typeId}' …
+       |                 ^
+    235|         }
+    236|         const row: Row = {
+ ❯ test/encounter-result-fold.test.ts:112:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/encounter-result-fold.test.ts > kingdom.encounter-result-fold — an encounter battle folds by uid and settles once > the Deathbed's two ways past "downed": a Wounded hero dies outright, a hero stands again Wounded — both reach the wound
+AssertionError: expected { side: 'hero', index: +0, …(9) } to match object { lifeState: 'dead', dead: true, …(1) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "dead": true,
+-   "downed": true,
++   "downed": false,
+    "lifeState": "dead",
+  }
+
+ ❯ test/encounter-result-fold.test.ts:133:27
+    131|     expect(events.some((x) => x.type === 'life.dead' && x['reason'] ==…
+    132|     expect(events.some((x) => x.type === 'life.downed')).toBe(false)
+    133|     expect(died.units[0]).toMatchObject({ lifeState: 'dead', dead: tru…
+       |                           ^
+    134|     expect(() => validateResult(died)).not.toThrow()
+    135|     // stood again at the Deathbed: never downed, but Wounded in the b…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/encounter-result-fold.test.ts > kingdom.encounter-result-fold — an encounter battle folds by uid and settles once > applying the result writes each deployed hero exactly once, and a second apply is refused
+Error: encounter.opening.orphanage: the engine fielded 'hero.fixed.orphans' as hero 3 but the spec names '(nothing)' — the fold cannot key rows to the roster
+ ❯ makeBattleResult src/core/seam.ts:234:17
+    232|         const typeId = e['typeId'] as string
+    233|         if (typeId !== expected) {
+    234|           throw new Error(`${spec.id}: the engine fielded '${typeId}' …
+       |                 ^
+    235|         }
+    236|         const row: Row = {
+ ❯ test/encounter-result-fold.test.ts:159:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  18:23:02
+   Duration  4.13s (transform 2.81s, setup 0ms, import 3.80s, tests 205ms, environment 0ms)
+

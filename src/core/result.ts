@@ -6,9 +6,11 @@
 // and the Reckoning never learns which it was given.
 //
 // Rows are keyed to the roster by position: hero row i is deployed[i], exactly
-// as the fold keys row i to spec.heroes[i]. That is the whole join.
+// as the fold keys row i to spec.heroes[i]. That is the whole join. A row with a
+// `role` (kingdom.encounter-result-fold: an encounter's own unit, an arrival) is
+// not the roster's and joins nothing; the panel never makes one.
 
-import type { EngagementResult, UnitTally } from './seam.js'
+import { TALLY_ROLES, type EngagementResult, type UnitTally } from './seam.js'
 import type { Outcome, Side } from '../engine.js'
 // plumbing.vocabulary-export (engine, 2026-09-28; review finding K6): the outcomes and life states
 // are the engine's lists, read through the door. The copy here had three of six outcomes, so an
@@ -75,6 +77,7 @@ export function validateResult(r: EngagementResult, expected?: { heroes: number;
   if (!Array.isArray(r.units)) throw new Error('result: units is not an array')
   const seen = new Set<string>()
   const ids = new Set<number>()
+  const uids = new Set<number>()
   r.units.forEach((u, i) => {
     const p = `result: units[${i}]`
     if (u.side !== 'hero' && u.side !== 'enemy') throw new Error(`${p}.side: '${String(u.side)}'`)
@@ -91,6 +94,17 @@ export function validateResult(r: EngagementResult, expected?: { heroes: number;
     seen.add(key)
     if (ids.has(u.unitId)) throw new Error(`${p}: unitId ${u.unitId} appears twice`)
     ids.add(u.unitId)
+    // kingdom.encounter-result-fold: the engine uid the fold keyed the row by, and why a row is not the roster's
+    if (u.uid !== undefined) {
+      nonNegInt(u.uid, `${p}.uid`)
+      if (uids.has(u.uid)) throw new Error(`${p}: uid ${u.uid} appears twice`)
+      uids.add(u.uid)
+    }
+    if (u.stood !== undefined && (u.stood !== true || u.side !== 'hero')) throw new Error(`${p}.stood: only a hero-side row stands again at the Deathbed, and only true is written`)
+    if (u.role !== undefined) {
+      if (!TALLY_ROLES.includes(u.role)) throw new Error(`${p}.role: '${String(u.role)}' is not one of ${TALLY_ROLES.join(' | ')}`)
+      if (u.uid === undefined) throw new Error(`${p}: a row that is not the roster's ('${u.role}') carries no uid`)
+    }
   })
   // Explicit order (Law 6): heroes first, then enemies, each by index.
   for (let i = 1; i < r.units.length; i++) {
@@ -98,9 +112,14 @@ export function validateResult(r: EngagementResult, expected?: { heroes: number;
     const ok = a.side === b.side ? a.index < b.index : a.side === 'hero'
     if (!ok) throw new Error(`result: units out of order at [${i}] — heroes first, then enemies, each by index`)
   }
+  // kingdom.encounter-result-fold: the roster rows — every row the panel sets; the fold's, less an encounter's own units and its arrivals
+  const roster = r.units.filter((u) => u.role === undefined)
   if (expected) {
-    const h = r.units.filter((u) => u.side === 'hero').length
-    const e = r.units.filter((u) => u.side === 'enemy').length
+    // was: every hero and enemy row was counted against the Engagement. An encounter fields units no Engagement names
+    // (its own enemies, the hero-side civilians, the arrivals), so only the roster rows are; a row that is not the
+    // roster's still passes every check above, and the outcome checks below read all of them.
+    const h = roster.filter((u) => u.side === 'hero').length
+    const e = roster.filter((u) => u.side === 'enemy').length
     if (h !== expected.heroes || e !== expected.enemies) throw new Error(`result: ${h} hero and ${e} enemy rows; the Engagement fielded ${expected.heroes} and ${expected.enemies}`)
     if (r.id !== expected.id) throw new Error(`result.id '${r.id}' is not the Engagement '${expected.id}'`)
   }
@@ -108,7 +127,8 @@ export function validateResult(r: EngagementResult, expected?: { heroes: number;
   if (r.itemUses !== undefined) {
     if (!Array.isArray(r.itemUses)) throw new Error('result: itemUses is not an array')
     const keys = new Set<string>()
-    const heroRows = r.units.filter((u) => u.side === 'hero').length
+    // was: every hero row. An item use is a roster hero's (the fold leaves out what an encounter's own unit spends).
+    const heroRows = roster.filter((u) => u.side === 'hero').length
     r.itemUses.forEach((x, i) => {
       const p = `result: itemUses[${i}]`
       nonNegInt(x.index, `${p}.index`); nonNegInt(x.instance, `${p}.instance`); nonNegInt(x.used, `${p}.used`)

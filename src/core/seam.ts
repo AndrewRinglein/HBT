@@ -17,7 +17,7 @@
 // No campaign code. `makeBattleState(campaign, engagement, seed) → BattleOptions`
 // is M1's; it will produce an EngagementSpec and call battleOptionsOf.
 
-import { createBattle, runBattle, LEVELS, BADGES } from '../engine.js'
+import { createBattle, runBattle, LEVELS, BADGES, rosterUids, isUnitUid } from '../engine.js'
 import type { BattleOptions, Event, Outcome, Side, HeroProgress } from '../engine.js'
 import { atlasFieldingOf } from '../content/atlas.js'
 import { itemOf } from '../content/items.js'
@@ -33,6 +33,13 @@ export type EngagementSpec = {
   readonly mapId: string
   /** Unit typeIds, hero side, in roster order — row i of the result is heroes[i]. */
   readonly heroes: readonly string[]
+  /**
+   * kingdom.encounter-result-fold (V2-ROADMAP R8): the engine uid each hero fields as, parallel to `heroes` — handed
+   * to the engine as BattleOptions.heroUids, and the key the fold reads a hero's row back by (unit.enter uid), so the
+   * row is heroes[i] whatever order the engine enters units in. Distinct unsigned 32-bit integers. Absent (a spec
+   * built by hand), the fold keys the hero side's non-arriving units in entry order, as before.
+   */
+  readonly heroUids?: readonly number[]
   readonly heroHexes?: readonly number[]
   readonly enemies: readonly string[]
   readonly enemyHexes?: readonly number[]
@@ -73,13 +80,28 @@ export type EngagementSpec = {
   readonly heroProgress?: readonly (HeroProgress | null)[]
 }
 
-/** One unit's tally, folded from the log. Order: heroes in spec order, then enemies. */
+/**
+ * kingdom.encounter-result-fold: why a row is not a roster row — `encounter`, one of the encounter's own units fielded
+ * at setup (its enemies, the hero-side civilians); `arrival`, a unit that entered after the battle began (a schedule
+ * row, a raised corpse). Read from unit.enter's `arrived` and whether a phase had begun. SWITCHES.md resultRowRole.
+ */
+export type TallyRole = 'encounter' | 'arrival'
+export const TALLY_ROLES: readonly TallyRole[] = ['encounter', 'arrival']
+
+/**
+ * One unit's tally, folded from the log. Order: heroes, then enemies; on each side the roster rows in spec order,
+ * then the rows that are not the roster's (`role`), in the order they entered.
+ */
 export type UnitTally = {
   readonly side: Side
-  /** Position in spec.heroes or spec.enemies. */
+  /** Position in spec.heroes or spec.enemies; for a row with a `role`, its place after the roster rows on its side. */
   readonly index: number
   /** The engine's unit id, for cross-reference into the log. */
   readonly unitId: number
+  /** The engine's unit uid (unit.enter uid) — the fold's key. Absent on a row the outcome panel set. */
+  readonly uid?: number
+  /** Absent: a roster row (spec.heroes / spec.enemies). Present: not the roster's, never keyed to a deployed hero. */
+  readonly role?: TallyRole
   readonly typeId: string
   readonly name: string
   /** Was ever downed. A hero can be downed and stand again; this remembers. */
@@ -93,6 +115,11 @@ export type UnitTally = {
    * going down. Bleeding out is credited to nobody: the clock did that.
    */
   readonly kills: number
+  /**
+   * kingdom.encounter-result-fold: went to zero and stood again at the Deathbed (deathbed.stood) — never downed, but
+   * Wounded in the battle. Present only when true; a hero-side row's. SWITCHES.md foldDeathbedStood.
+   */
+  readonly stood?: true
 }
 
 /**
@@ -126,7 +153,7 @@ export type EngagementResult = {
  */
 export function makeBattleState(
   roster: Readonly<Record<string, { unitType: string; badges?: readonly string[]; equipped?: readonly string[]; used?: readonly number[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
-  engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number },
+  engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number; heroUids?: readonly number[] },
 ): EngagementSpec {
   const rows = engagement.deployed.map((heroId) => {
     const h = roster[heroId]
@@ -134,6 +161,10 @@ export function makeBattleState(
     return h
   })
   const heroes = rows.map((h) => h.unitType)
+  // kingdom.encounter-result-fold: each deployed hero's engine uid, handed over explicitly — the caller's own, or the
+  // engine's own numbering of a fielding that names none (rosterUids), so an unnamed fielding is the battle it was
+  const heroUids = engagement.heroUids ? [...engagement.heroUids] : rosterUids(heroes.length, 0, {}).heroes
+  if (heroUids.length !== heroes.length || heroUids.some((u) => !isUnitUid(u)) || new Set(heroUids).size !== heroUids.length) throw new Error(`${engagement.id}: hero uids [${heroUids.join(', ')}] are not ${heroes.length} distinct unsigned 32-bit integers`)
   const heroBadges = rows.map(h => combatBadges(h.badges))
   // the sets, resolved here — "looked up when the players are being built and shipped to combat"
   const heroMods = rows.map((h) => fieldedModsOfRows((h.equipped ?? []).map(itemOf)))
@@ -144,7 +175,7 @@ export function makeBattleState(
   for (const h of rows) if (h.used && h.used.length !== (h.equipped?.length ?? -1)) throw new Error(`${engagement.id}: a hero's item uses (${h.used.length}) do not match its equipped items (${h.equipped?.length ?? 'none'})`)
   const heroItemsUsed = carried && rows.some((h) => h.used?.some((n) => n > 0)) ? rows.map((h) => instanceSlotsOf(h.equipped!).map((k) => h.used?.[k] ?? 0)) : null
   return {
-    id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed, heroMods,
+    id: engagement.id, mapId: engagement.mapId, heroes, heroUids, enemies: [...engagement.enemies], seed: engagement.seed, heroMods,
     ...(carried ? { heroItems: carried.map((c) => c.fielded), heroStowed: carried.map((c) => c.stowed) } : {}),
     ...(heroProgress.some((p) => p) ? { heroProgress } : {}),
     ...(heroItemsUsed ? { heroItemsUsed } : {}),
@@ -182,6 +213,8 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
     replicate: spec.seed,
     ...(authored ? { map: authored.setup.map, heroHexes: authored.deploymentSlots.heroes.slice(0,spec.heroes.length), enemyHexes: authored.deploymentSlots.enemies.slice(0,spec.enemies.length) } : { mapId: spec.mapId }),
     heroes: spec.heroes,
+    // kingdom.encounter-result-fold: the heroes' identities, so the fold reads each hero's row back by uid
+    ...(spec.heroUids ? { heroUids: [...spec.heroUids] } : {}),
     enemies: spec.enemies,
     enemyCount: spec.enemies.length,
     ...(spec.heroHexes ? { heroHexes: [...spec.heroHexes] } : {}),
@@ -206,40 +239,67 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
  */
 export function makeBattleResult(spec: EngagementSpec, events: readonly Event[]): EngagementResult {
   type Row = {
-    side: Side; index: number; unitId: number; typeId: string; name: string
+    side: Side; index: number; unitId: number; uid: number; role?: TallyRole; typeId: string; name: string; stood?: true
     downed: boolean; dead: boolean; lifeState: 'standing' | 'downed' | 'dead'
     damageTaken: number; damageDealt: number; kills: number
   }
   const rows: Row[] = []
   const byUnit = new Map<number, Row>()
+  const uids = new Set<number>()
+  /** kingdom.encounter-result-fold: the roster rows entered, by side — the key is the uid (heroes) or the entry order (spec.enemies). */
   const entered: Record<Side, number> = { hero: 0, enemy: 0 }
+  const heroSlot = spec.heroUids ? new Map(spec.heroUids.map((uid, i) => [uid, i] as const)) : null
+  if (spec.heroUids && (spec.heroUids.length !== spec.heroes.length || heroSlot!.size !== spec.heroes.length)) throw new Error(`${spec.id}: the spec's hero uids [${spec.heroUids.join(', ')}] are not ${spec.heroes.length} distinct identities, one per hero`)
+  const heroSeen = new Set<number>()
+  /** Has the battle begun (battle.begin)? A unit that arrives before it is the encounter's own; after it, an arrival. */
+  let begun = false
   /** Who last reduced each unit to zero — the damage event that mattered. */
   const lastToZero = new Map<number, number | null>()
   let outcome: Outcome | null = null
   let turns = 0
   let heroPhases = 0
   let enemyPhases = 0
-  /** v2.item-uses: hero unit id -> its uid, and the spend per `index/instance`. */
-  const uidOf = new Map<number, number>()
+  /** v2.item-uses: the spend per `index/instance`. */
   const spends = new Map<string, { index: number; instance: number; itemId: string; used: number }>()
 
   for (const e of events) {
     switch (e.type) {
+      case 'battle.begin':
+        begun = true
+        break
       case 'unit.enter': {
         const side = e['side'] as Side
-        const index = entered[side]++
-        const expected = (side === 'hero' ? spec.heroes : spec.enemies)[index]
         const typeId = e['typeId'] as string
-        if (typeId !== expected) {
-          throw new Error(`${spec.id}: the engine fielded '${typeId}' as ${side} ${index} but the spec names '${expected ?? '(nothing)'}' — the fold cannot key rows to the roster`)
+        const uid = e['uid']
+        if (!isUnitUid(uid)) throw new Error(`${spec.id}: the engine fielded '${typeId}' with no uid — the fold keys every row by its uid`)
+        if (uids.has(uid)) throw new Error(`${spec.id}: uid ${uid} entered twice`)
+        uids.add(uid)
+        let index = -1
+        let role: TallyRole | undefined
+        if (e['arrived'] !== undefined) {
+          // the encounter's own units (setup) and the arrivals (a schedule row, a raised corpse): their own rows, never the roster's
+          role = begun ? 'arrival' : 'encounter'
+        } else if (side === 'hero') {
+          index = heroSlot ? heroSlot.get(uid) ?? -1 : entered.hero
+          if (index < 0) throw new Error(`${spec.id}: the engine fielded '${typeId}' (uid ${uid}) on the heroes' side, but the spec hands no hero that uid and it did not arrive — the fold cannot key it to the roster`)
+          if (heroSeen.has(index)) throw new Error(`${spec.id}: hero ${index} entered twice`)
+          heroSeen.add(index)
+          entered.hero++
+        } else {
+          index = entered.enemy++
+        }
+        if (role === undefined) {
+          const expected = (side === 'hero' ? spec.heroes : spec.enemies)[index]
+          if (typeId !== expected) {
+            throw new Error(`${spec.id}: the engine fielded '${typeId}' as ${side} ${index} but the spec names '${expected ?? '(nothing)'}' — the fold cannot key rows to the roster`)
+          }
         }
         const row: Row = {
-          side, index, unitId: e.actor!, typeId, name: e['name'] as string,
+          side, index, unitId: e.actor!, uid, ...(role ? { role } : {}), typeId, name: e['name'] as string,
           downed: false, dead: false, lifeState: 'standing', damageTaken: 0, damageDealt: 0, kills: 0,
         }
         rows.push(row)
         byUnit.set(row.unitId, row)
-        if (side === 'hero') uidOf.set(row.unitId, e['uid'] as number)
         break
       }
       case 'charge.spent': {
@@ -248,9 +308,10 @@ export function makeBattleResult(spec: EngagementSpec, events: readonly Event[])
         const id = e['instanceId']
         if (id === undefined) break
         const row = byUnit.get(e.actor!)
-        const uid = uidOf.get(e.actor!)
+        // a unit that is not the roster's spends what the encounter gave it — nothing of the campaign's (SWITCHES.md resultRowRole)
+        if (row?.role !== undefined) break
         const m = typeof id === 'string' ? /^(\d+)\/(\d+)$/.exec(id) : null
-        if (!row || uid === undefined || !m || Number(m[1]) !== uid) throw new Error(`${spec.id}: charge.spent names item instance '${String(id)}', which is not one of hero unit ${e.actor}'s`)
+        if (!row || row.side !== 'hero' || !m || Number(m[1]) !== row.uid) throw new Error(`${spec.id}: charge.spent names item instance '${String(id)}', which is not one of hero unit ${e.actor}'s`)
         const key = `${row.index}/${m[2]}`
         const s = spends.get(key) ?? { index: row.index, instance: Number(m[2]), itemId: e['itemId'] as string, used: 0 }
         if (s.itemId !== e['itemId']) throw new Error(`${spec.id}: item instance '${id}' is named as both '${s.itemId}' and '${String(e['itemId'])}'`)
@@ -276,11 +337,21 @@ export function makeBattleResult(spec: EngagementSpec, events: readonly Event[])
         if (!row) break
         row.lifeState = e.type === 'life.dead' ? 'dead' : 'downed'
         if (e.type === 'life.dead') row.dead = true; else row.downed = true
+        // kingdom.encounter-result-fold: a hero-side unit that dies went down first — at the Deathbed it may die without
+        // bleeding (already Wounded, or no Hero badge: engine settle.ts 'dies'), with no life.downed (SWITCHES.md foldDeathbedDowned; withUnitFate's own rule)
+        if (e.type === 'life.dead' && row.side === 'hero') row.downed = true
         if (e['reason'] === 'hp0') {
           const killer = lastToZero.get(row.unitId)
           const by = killer === null || killer === undefined ? null : byUnit.get(killer)
           if (by && by.side !== row.side) by.kills++
         }
+        break
+      }
+      case 'deathbed.stood': {
+        // kingdom.encounter-result-fold: down to zero and stood again at the Deathbed — never downed, but Wounded in the
+        // battle (engine settle.ts), so the Reckoning's wound rule reaches it (SWITCHES.md foldDeathbedStood)
+        const row = byUnit.get(e.target!)
+        if (row && row.side === 'hero') row.stood = true
         break
       }
       case 'life.standing': {
@@ -298,7 +369,10 @@ export function makeBattleResult(spec: EngagementSpec, events: readonly Event[])
   if (entered.hero !== spec.heroes.length || entered.enemy !== spec.enemies.length) {
     throw new Error(`${spec.id}: the spec names ${spec.heroes.length} heroes and ${spec.enemies.length} enemies; the log entered ${entered.hero} and ${entered.enemy}`)
   }
-  // Explicit order (Law 6): heroes first, then enemies, each in spec order.
+  // the rows that are not the roster's take the places after the roster rows on their side, in the order they entered
+  const next: Record<Side, number> = { hero: spec.heroes.length, enemy: spec.enemies.length }
+  for (const r of rows) if (r.role !== undefined) r.index = next[r.side]++
+  // Explicit order (Law 6): heroes first, then enemies, each by index (indices are unique on a side).
   rows.sort((a, b) => (a.side === b.side ? a.index - b.index : a.side === 'hero' ? -1 : 1))
   const itemUses = [...spends.values()].sort((a, b) => a.index - b.index || a.instance - b.instance)
   return { id: spec.id, outcome, turns, heroPhases, enemyPhases, units: rows, events: events.length, ...(itemUses.length ? { itemUses } : {}) }
@@ -321,9 +395,12 @@ export function resolveEngagement(spec: EngagementSpec): { result: EngagementRes
     throw new Error(`${spec.id}: the engine reports ${engine.outcome} in ${engine.turns} turns; the log folds to ${result.outcome} in ${result.turns}`)
   }
   // v2.item-uses: the engine's per-instance report and the fold's must agree too
-  const engineSpent = (engine.itemUses ?? []).filter((x) => x.used > 0).map((x) => `${x.instanceId}:${x.itemId}:${x.used}`).sort()
-  const uids = ctx.state.units.filter((u) => u.side === 'hero').map((u) => u.uid)
-  const foldSpent = (result.itemUses ?? []).map((x) => `${uids[x.index]}/${x.instance}:${x.itemId}:${x.used}`).sort()
+  // kingdom.encounter-result-fold: a roster hero's instances, read by the row's own uid; what a unit that is not the
+  // roster's spent is the encounter's, not the campaign's, and the fold leaves it out (SWITCHES.md resultRowRole)
+  const uidOfHero = new Map(result.units.filter((u) => u.side === 'hero' && u.role === undefined).map((u) => [u.index, u.uid!] as const))
+  const notRoster = new Set(result.units.filter((u) => u.role !== undefined).map((u) => u.uid!))
+  const engineSpent = (engine.itemUses ?? []).filter((x) => x.used > 0 && !notRoster.has(Number(String(x.instanceId).split('/')[0]))).map((x) => `${x.instanceId}:${x.itemId}:${x.used}`).sort()
+  const foldSpent = (result.itemUses ?? []).map((x) => `${uidOfHero.get(x.index)}/${x.instance}:${x.itemId}:${x.used}`).sort()
   if (engineSpent.join() !== foldSpent.join()) throw new Error(`${spec.id}: the engine reports item uses [${engineSpent.join(', ')}]; the log folds to [${foldSpent.join(', ')}]`)
   return { result, events: ctx.events }
 }

@@ -3,7 +3,7 @@ import {encounterDef,createBattle,advanceBattle,completeActionCycle,runActivatio
 import type {Ctx,BattleOptions,BattleCommand,ControlPolicy} from '../engine.js'
 import {SANDBOX_HEROES,SANDBOX_ENEMIES,SANDBOX_ENCOUNTERS} from '../content/sandbox.js'
 import {atlasFieldingOf,type AtlasBinding} from '../content/atlas.js'
-import {makeBattleState,battleOptionsOf} from './seam.js'
+import {makeBattleState,battleOptionsOf,makeBattleResult,type EngagementResult} from './seam.js'
 import type {Hero} from './campaign.js'
 import {compileAtlasCombat,canonicalJSON} from '../../../tools/battle-atlas/combat-compiler.mjs'
 
@@ -52,12 +52,28 @@ export function playerPolicy(ctx:{state:{units:readonly {uid:number;side:string}
 export function createSandbox(config:SandboxConfig&{encounterId?:undefined}):AtlasSandbox
 export function createSandbox(config:SandboxConfig):Sandbox
 export function createSandbox(config:SandboxConfig):Sandbox{
+ const {field,encounter,spec}=sandboxSpec(config)
+ const setup:BattleOptions=encounter?{...battleOptionsOf(spec),encounter}:battleOptionsOf(spec),ctx=createBattle(setup)
+ return {config:structuredClone(config),setup,ctx,policy:playerPolicy(ctx),...(field?{atlasScene:field.atlasScene}:{})}
+}
+/** The fielding a config names: the roster keyed `hero-0`… in order, through makeBattleState — one place, so the fold reads the spec the battle was fielded from. */
+function sandboxSpec(config:SandboxConfig){
  const field=configured(config),roster=Object.fromEntries((config.heroRows??config.heroes.map(id=>SANDBOX_HEROES.find(h=>h.id===id)!)).map((h,i)=>['hero-'+i,structuredClone(h)]))
  // an encounter: the engine's own row fields its map, units and schedule; the heroes stand in its hero zone
  const encounter=config.encounterId!==undefined?encounterDef(config.encounterId):null
  const spec=makeBattleState(roster,encounter?{id:encounter.id,mapId:encounter.mapId??(()=>{throw Error(`encounter '${encounter.id}' names no map`)})(),enemies:[],deployed:Object.keys(roster),seed:config.seed}:{id:field!.id,mapId:config.mapId,enemies:config.enemies,deployed:Object.keys(roster),seed:config.seed})
- const setup:BattleOptions=encounter?{...battleOptionsOf(spec),encounter}:battleOptionsOf(spec),ctx=createBattle(setup)
- return {config:structuredClone(config),setup,ctx,policy:playerPolicy(ctx),...(field?{atlasScene:field.atlasScene}:{})}
+ return {field,encounter,spec}
+}
+/**
+ * kingdom.encounter-result-fold (kingdom.opening-loop-three part 2 of 4; V2-ROADMAP R8): a finished sandbox battle, folded
+ * to the EngagementResult the Reckoning takes — its rows keyed by uid, hero row i the config's heroes[i] (so, given campaign
+ * rows, the Engagement's deployed[i]); an encounter's own units and its arrivals are rows of their own. Its id is the
+ * encounter's (or the battlefield's). An unfinished battle is refused (Law 9).
+ */
+export function sandboxResult(s:Sandbox):EngagementResult{
+ const {spec}=sandboxSpec(s.config)
+ if(s.setup.heroUids!==undefined&&canonicalJSON(s.setup.heroUids)!==canonicalJSON(spec.heroUids))throw Error('Saved setup and configuration disagree: heroUids')
+ return makeBattleResult(spec,s.ctx.events)
 }
 /**
  * The fall areas marked and not yet landed (engine encounter.area-fall): each area.marked line without its

@@ -80,7 +80,9 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   const won = result.outcome === 'heroClear'
   const speed = Math.max(0, 15 - result.enemyPhases)
 
-  const heroes: HeroReckoning[] = result.units.filter((u) => u.side === 'hero').map((u) => {
+  // kingdom.encounter-result-fold: only the roster rows are the deployed heroes — an encounter's civilians and its
+  // arrivals (a `role`) are never keyed to engagement.deployed
+  const heroes: HeroReckoning[] = result.units.filter((u) => u.side === 'hero' && u.role === undefined).map((u) => {
     const heroId = engagement.deployed[u.index]
     if (!heroId) throw new Error(`${engagement.id}: result names hero row ${u.index} but only ${engagement.deployed.length} were deployed`)
     const dead = u.lifeState === 'dead'
@@ -92,7 +94,9 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
     return {
       heroId,
       xp: dead ? 0 : speed + 3 * u.kills,
-      wound: dead ? 0 : Math.max(hero.wound, u.downed ? SWITCHES.woundFromDowned : 0),
+      // kingdom.encounter-result-fold: a hero who stood again at the Deathbed is Wounded in the battle — the same plain
+      // wound as one who went down (SWITCHES.md foldDeathbedStood)
+      wound: dead ? 0 : Math.max(hero.wound, u.downed || u.stood ? SWITCHES.woundFromDowned : 0),
       dead,
       mvp: false,
     }
