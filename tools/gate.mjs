@@ -159,7 +159,7 @@ const PROGRESS = progressFor(item)
 // engine's vitest from there, as that package's `npm test` does (GBH SWITCHES gate.testsHome).
 const TESTS_HOME = { viewer: '../viewer', kingdom: '../kingdom' }[item.kind] ?? '.'
 const IN_HOME = { cwd: TESTS_HOME }
-const VITEST = TESTS_HOME === '.' ? 'npx vitest run' : 'node ../engine/node_modules/vitest/vitest.mjs run'
+const VITEST = TESTS_HOME === '.' ? 'npx vitest run' : 'node ../engine/node_modules/vitest/vitest.mjs run --dir test'
 const HOME_DIR = TESTS_HOME === '.' ? '' : `${TESTS_HOME.slice(3)}/`
 
 const checks = []
@@ -240,7 +240,7 @@ const touchedTests = () => testFilesIn(sh('git status --porcelain --untracked-fi
 check("the item's own tests", () => {
   const files = touchedTests()
   if (!files.length) return { ok: false, note: 'no test file touched' }
-  const r = vitestFiles("the item's own tests", files, (cmd) => runDiagnosticCommand(cmd, `gate-item-tests-${id}`, IN_HOME))
+  const r = vitestFiles("the item's own tests", files, (cmd) => runDiagnosticCommand(cmd, `gate-item-tests-${id}`, { ...IN_HOME, diagnostics: '.' }))
   if (!r) return { deferred: true }
   return { ok: r.ok, note: r.ok ? files.join(', ') : `${files.join(', ')} — ${r.note}` }
 }, { split: true })

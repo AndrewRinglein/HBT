@@ -20,7 +20,7 @@ export function runDiagnosticCommand(command, label, options = {}) {
     const excerpt = lines.find(line => /(?:Error:|AssertionError|timed out|ENOBUFS)/i.test(line))
       ?? lines.find(line => /FAIL|×/.test(line)) ?? error.message
     const result = { ok: false, status: error.status, out, error: exception }
-    const directory = resolve(options.cwd ?? process.cwd(), 'runs/diagnostics')
+    const directory = resolve(options.diagnostics ?? options.cwd ?? process.cwd(), 'runs/diagnostics')
     const name = String(label).replace(/[^a-z0-9-]+/gi, '-').slice(0, 80)
     const diagnosticPath = resolve(directory, `${name}-${Date.now()}-${randomUUID()}.json`)
     try {
