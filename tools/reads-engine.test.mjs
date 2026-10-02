@@ -96,8 +96,9 @@ test('V13 — hexvfx carries no second hex geometry', () => {
 })
 
 test('the page carries the engine\'s tables', { skip: !process.env.VIEWER_PAGE }, () => {
+  // assert.ok, never assert.match: a failing match would print the whole 20 MB page into the TAP stream
   const page = readFileSync(process.env.VIEWER_PAGE, 'utf8')
-  assert.match(page, /"move\.fast-zombie\.charge":"charge"/)
-  assert.match(page, /"standAction":"power\.stand-up"/)
-  assert.match(page, /"layerStatus":\{/)
+  assert.ok(/"move\.fast-zombie\.charge":\s*"charge"/.test(page), 'the page classifies the fast zombie\'s Charge')
+  assert.ok(/"?standAction"?:\s*"power\.stand-up"/.test(page), 'the page carries the prone status\'s stand action')
+  assert.ok(/"?layerStatus"?:\s*\{\s*"layer\./.test(page), 'the page carries what each layer applies')
 })

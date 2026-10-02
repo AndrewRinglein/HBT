@@ -794,11 +794,11 @@ if (SINGLES) {
       const at = EV.findIndex((x, i) => i > bb && x.type === 'activation.begin' && x.actor === e.actor && x.movePoints == null && !x.movementMods)
       const end = at < 0 ? -1 : EV.findIndex((x, i) => i > at && (x.type === 'activation.end' || x.type === 'surge.hit') && x.actor === e.actor)
       const step = at < 0 ? -1 : EV.findIndex((x, i) => i > at && (end < 0 || i < end) && x.type === 'moved' && x.actor === e.actor)
-      if (step > 0) { v.seek(at); v.render(); const E = V.layers.UEL.get(e.actor), m = EV[step], engineMv = m.movePointsLeft + m.cost - (m.bonusPaid || 0)
-        if (E.mv.style.display !== 'none') check(+E.mv.textContent === engineMv, `${label}: unit ${e.actor} rests at movement ${E.mv.textContent}; the engine's first step of its next activation (${step}) says it started on ${engineMv}`) }
       /* the kit is not a buff: no chevron from item.* sources alone */
-      const St = foldTo(EV, bb + 1, CTX)
-      if ((St.U[e.actor].mods || []).every(m => m.fielded)) check(!/polygon\(50% 12%|polygon\(50% 88%/.test(E.badges.innerHTML), `${label}: unit ${e.actor} wears a chevron for its kit alone`) }
+      const E = V.layers.UEL.get(e.actor), St = foldTo(EV, bb + 1, CTX)
+      if ((St.U[e.actor].mods || []).every(m => m.fielded)) check(!/polygon\(50% 12%|polygon\(50% 88%/.test(E.badges.innerHTML), `${label}: unit ${e.actor} wears a chevron for its kit alone`)
+      if (step > 0) { v.seek(at); v.render(); const R = V.layers.UEL.get(e.actor), m = EV[step], engineMv = m.movePointsLeft + m.cost - (m.bonusPaid || 0)
+        if (R && R.mv.style.display !== 'none') check(+R.mv.textContent === engineMv, `${label}: unit ${e.actor} rests at movement ${R.mv.textContent}; the engine's first step of its next activation (${step}) says it started on ${engineMv}`) } }
     /* corpses: a board object per corpse.created, gone on corpse.removed; the dead unit's token leaves */
     for (const [e, i] of byType(EV, 'corpse.created').slice(0, 3)) {
       v.seek(i + 1); v.render()
