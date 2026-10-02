@@ -6,14 +6,9 @@
       "computes": "stat + bonus for a resting attack row before its damageOnHit has been seen",
       "becomes": "the sheet states the fields separately, or the engine emits the live figure"
     },
-    "danger": {
-      "where": "src/projection.js dangerOf",
-      "computes": "stat + bonus of the first attack for the danger marker, AND the DANGER_AUTHORED table of four typeIds (zombies at 3 melee, ruled 2026-09-01) that content has no field for yet",
-      "becomes": "an authored bestiary field, or the same live figure"
-    },
     "move-range": {
       "where": "src/actions.js moveHexes",
-      "computes": "movement + budgetMod for a path/flight move's range",
+      "computes": "movement + budgetMod for a path/flight move's range AT REST — during the unit's activation it reads the engine's budget (activeMv: activation.begin, moved, surge.hit). The resting figure misses what the engine reads only at activation: terrain, auras, Slow, Root (review 2026-09-28 V6)",
       "becomes": "the sheet states the move's range; move.begin already carries the real budget"
     },
     "base-accuracy": {

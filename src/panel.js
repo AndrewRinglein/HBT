@@ -3,7 +3,7 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT, modOf, effectWord } from './actions.js'
+import { sgn, STATSHORT, modOf, effectWord, absorbOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
 
@@ -58,7 +58,7 @@ export function drawPanel(V) {
     return `<div class="stCols"><div>${rows.slice(0, h).join('')}</div><div>${rows.slice(h).join('')}</div></div>` }
   const card = ASSETS[(ARTMAP[u.typeId] || {}).card]
   const sts = Object.entries(u.st).filter(([, v]) => v > 0)
-  const stCol = sts.length ? sts.map(([id, v]) => { const st = stStyle(id)
+  const stCol = sts.length ? sts.map(([id, v]) => { const st = stStyle(id, V.data)
     return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;
         background:${st.hue}12;border:1px solid ${st.hue}44;border-radius:3px">
         <i style="width:14px;height:14px;flex:0 0 14px;display:block;clip-path:${st.gl};background:${st.hue}"></i>
@@ -76,7 +76,7 @@ export function drawPanel(V) {
          2026-09-04: a badge grant is named by its BADGE, not "badge.grant".
          This row and the bar's chip used to carry diverging copies. */
       const w = effectWord(ef, V.data, SN) || { word: '—' }
-      const st = w.statusId ? stStyle(w.statusId) : { hue: w.badge ? BADGE_HUE : '#d6b25e' }
+      const st = w.statusId ? stStyle(w.statusId, V.data) : { hue: w.badge ? BADGE_HUE : '#d6b25e' }
       const who = t.select === 'self' ? ' on self' : t.select === 'target' ? '' : ' → ' + t.select
       const num = w.val == null ? '' : w.radius ? ` r${w.val}` : ' ' + (w.signed ? sgn(w.val) : w.val)
       const eff = `${w.word}${num}${w.badge || w.radius ? '' : who}`
@@ -150,7 +150,7 @@ export function drawPanel(V) {
     <div class="vitRow"><span class="vitLab">HP</span>
       <span class="vitTrack"><span class="vitFill" style="width:${Math.max(0, 100 * u.hp / u.maxHp)}%;background:linear-gradient(90deg,#e9e3d2,#c3bba4)"></span></span>
       <span class="vitNum mono">${u.hp} / ${u.maxHp}</span></div>
-    ${(() => { const pr = u.st['status.protection'] || u.st['test.status.ward'] || 0
+    ${(() => { const pr = absorbOf(u, V.data)    /* the board's sum, every absorbing status (review V4) */
       return pr > 0 ? `<div class="vitRow"><span class="vitLab">Prot</span>
       <span class="vitTrack"><span class="vitFill" style="width:${Math.min(100, pr * 12)}%;background:${stStyle('status.protection').hue}"></span></span>
       <span class="vitNum mono">${pr}</span></div>` : '' })()}

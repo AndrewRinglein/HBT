@@ -49,37 +49,10 @@ function groundEllipse(ctx, x, y, r) {
     ctx.ellipse(x, y, r, r * ISO_SQUASH, 0, 0, TAU);
 }
 
-// ============================================================
-// HEX GEOMETRY — pointy-top axial coords, isometric projection
-// ============================================================
-
-/**
- * Screen position of a hex's center on the ground plane.
- * layout = { size, originX, originY, squash }
- *   size  : hex radius in px (center → corner, before squash)
- */
-export function hexToScreen(q, r, layout) {
-    const { size, originX, originY, squash = ISO_SQUASH } = layout;
-    const x = size * Math.sqrt(3) * (q + r / 2);
-    const y = size * 1.5 * r;
-    return { x: originX + x, y: originY + y * squash * 2 * 0.5 };
-}
-
-/** The 6 corners of a hex on the ground plane, in screen space. */
-export function hexCorners(cx, cy, size, squash = ISO_SQUASH) {
-    const pts = [];
-    for (let i = 0; i < 6; i++) {
-        const a = Math.PI / 180 * (60 * i - 30);
-        pts.push({ x: cx + size * Math.cos(a), y: cy + size * Math.sin(a) * squash });
-    }
-    return pts;
-}
-
-function tracePath(ctx, pts) {
-    ctx.beginPath();
-    pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
-    ctx.closePath();
-}
+// HEX GEOMETRY — none here (viewer.reads-engine, review V13). This file once carried its own
+// pointy-top axial hexToScreen/hexCorners — a second coordinate system for the same hexes, used
+// only by tile effects board.js never called. They are gone with it: every effect is anchored on a
+// unit's feet, which board.js reads off the one board the engine's field dump places.
 
 // ============================================================
 // OVERLAY ENGINE — one canvas, many concurrent effects
@@ -148,23 +121,15 @@ export function createHexVFX(canvas) {
         fireball: (a, t, tier, opts) => playFireball(api, a, t, tier, opts),
 
         // ---- status ----
-        status: (u, type) => playStatusApply(api, u, type),
-        statusTick: (u, type) => playStatusTick(api, u, type),
+        status: (u, type, ring) => playStatusApply(api, u, type, ring),
+        statusTick: (u, type, ring) => playStatusTick(api, u, type, ring),
         statusWave: (units, type, stagger) => playStatusWave(api, units, type, stagger),
 
         // ---- deaths ----
         death: (u, cause) => playDeath(api, u, cause),
 
-        // ---- AoE ----
-        lightningStorm: (units, layout, tiles, opts) => playLightningStorm(api, units, layout, tiles, opts),
-        groundSlam: (origin, units, layout, tiles, opts) => playGroundSlam(api, origin, units, layout, tiles, opts),
-        radiance: (units, layout, tiles) => playRadiance(api, units, layout, tiles),
-        poisonCloud: (units, layout, tiles) => playPoisonCloud(api, units, layout, tiles),
 
-        // ---- hex-native ----
-        tileHighlight: (layout, tiles, color, dur) => playTileHighlight(api, layout, tiles, color, dur),
-        tileBlast: (layout, tiles, palette) => playTileBlast(api, layout, tiles, palette),
-        lineStrike: (layout, tiles, palette) => playLineStrike(api, layout, tiles, palette),
+        // ---- unit-anchored ----
         aura: (u, color, dur) => playAura(api, u, color, dur)
     };
     return api;
@@ -729,8 +694,9 @@ function drawChevron(ctx, x, y, sz, a, col, up) {
     ctx.beginPath(); ctx.moveTo(x - sz, y - sz * 0.6 * d); ctx.lineTo(x, y + sz * 0.6 * d); ctx.lineTo(x + sz, y - sz * 0.6 * d); ctx.stroke();
 }
 
-export function playStatusApply(fx, u, type) {
-    const S = STATUS_STYLES[type] || STATUS_STYLES.poison;
+/** ring: an "r,g,b" the caller rings the effect in — the status's own hue (board.js fxStatus); the glow stays the effect's. */
+export function playStatusApply(fx, u, type, ring) {
+    const S0 = STATUS_STYLES[type] || STATUS_STYLES.poison, S = ring ? { ...S0, ring } : S0;
     const H = u.h || 140, R = H * 0.32;
     const spawnAround = () => ({ x: u.x + rand(-R, R), y: u.y - rand(0, H * 0.15) });
     return fx.add(950, (ctx, w, h, t, ms, P, dt) => {
@@ -988,8 +954,8 @@ export function playStatusWave(fx, units, type, stagger = 110) {
 // STATUS TICKS — the per-turn damage proc. Short, no ring.
 // ============================================================
 
-export function playStatusTick(fx, u, type) {
-    const S = STATUS_STYLES[type] || STATUS_STYLES.poison;
+export function playStatusTick(fx, u, type, ring) {
+    const S0 = STATUS_STYLES[type] || STATUS_STYLES.poison, S = ring ? { ...S0, ring } : S0;
     const H = u.h || 140, R = H * 0.3;
     return fx.add(550, (ctx, w, h, t, ms, P, dt) => {
         if (t < 0.2) bodyColumn(ctx, u, Math.sin((t / 0.2) * Math.PI) * 0.3, S.glow);
@@ -1393,96 +1359,8 @@ export function playDeath(fx, u, cause, opts = {}) {
 }
 
 // ============================================================
-// HEX-NATIVE PRIMITIVES — tiles, lines, auras
+// UNIT-ANCHORED PRIMITIVES — auras
 // ============================================================
-
-/** Pulse a set of tiles (targeting preview / range indicator). */
-export function playTileHighlight(fx, layout, tiles, color = '255,210,120', dur = 900) {
-    return fx.add(dur, (ctx, w, h, t) => {
-        const a = Math.sin(t * Math.PI) * 0.75;
-        ctx.globalCompositeOperation = 'lighter';
-        for (const [q, r] of tiles) {
-            const c = hexToScreen(q, r, layout);
-            const pts = hexCorners(c.x, c.y, layout.size * 0.94, layout.squash);
-            tracePath(ctx, pts);
-            ctx.fillStyle = `rgba(${color},${a * 0.18})`; ctx.fill();
-            ctx.strokeStyle = `rgba(${color},${a})`; ctx.lineWidth = 2;
-            ctx.shadowBlur = 12; ctx.shadowColor = `rgba(${color},${a})`;
-            ctx.stroke(); ctx.shadowBlur = 0;
-        }
-        ctx.globalCompositeOperation = 'source-over';
-    }, -1e6);
-}
-
-const BLAST_PALETTES = {
-    fire:   { edge: '255,180,80',  fill: '255,90,20',   spark: [15, 50] },
-    magic:  { edge: '150,190,255', fill: '70,120,255',  spark: [210, 230] },
-    holy:   { edge: '255,230,150', fill: '255,200,80',  spark: [45, 60] },
-    poison: { edge: '150,235,110', fill: '60,170,40',   spark: [90, 120] },
-    shadow: { edge: '190,140,255', fill: '90,40,180',   spark: [270, 290] }
-};
-export { BLAST_PALETTES };
-
-/** Blast that fills a set of hex tiles — the hex-shaped AoE footprint. */
-export function playTileBlast(fx, layout, tiles, palette = 'fire') {
-    const P0 = BLAST_PALETTES[palette] || BLAST_PALETTES.fire;
-    const centres = tiles.map(([q, r]) => hexToScreen(q, r, layout));
-    const cx = centres.reduce((s, c) => s + c.x, 0) / centres.length;
-    const cy = centres.reduce((s, c) => s + c.y, 0) / centres.length;
-    return fx.add(900, (ctx, w, h, t, ms, P, dt) => {
-        ctx.globalCompositeOperation = 'lighter';
-        centres.forEach((c, i) => {
-            const d = Math.hypot(c.x - cx, (c.y - cy) / (layout.squash || ISO_SQUASH));
-            const delay = Math.min(d / (layout.size * 8), 0.4);
-            const lt = (t - delay) / 0.5;
-            if (lt <= 0) return;
-            const p = Math.min(lt, 1);
-            const a = (1 - p) * 0.9;
-            const pts = hexCorners(c.x, c.y, layout.size * (0.5 + 0.5 * easeOutCubic(p)), layout.squash);
-            tracePath(ctx, pts);
-            ctx.fillStyle = `rgba(${P0.fill},${a * 0.45})`; ctx.fill();
-            ctx.strokeStyle = `rgba(${P0.edge},${a})`; ctx.lineWidth = 2.5;
-            ctx.shadowBlur = 16; ctx.shadowColor = `rgba(${P0.edge},${a})`;
-            ctx.stroke(); ctx.shadowBlur = 0;
-            if (lt < 0.4 && Math.random() < 0.7)
-                P.push({ x: c.x + rand(-layout.size * 0.5, layout.size * 0.5), y: c.y, vy: rand(-160, -70), sz: rand(3, 9), life: 1, dec: rand(1.4, 2.4), hue: rand(P0.spark[0], P0.spark[1]) });
-        });
-        for (const p of P) {
-            p.y += p.vy * dt; p.life -= p.dec * dt;
-            if (p.life <= 0) continue;
-            const s = p.sz * p.life;
-            ctx.shadowBlur = s * 3; ctx.shadowColor = `hsla(${p.hue},100%,55%,${p.life})`;
-            ctx.beginPath(); ctx.arc(p.x, p.y, s, 0, TAU);
-            ctx.fillStyle = `hsla(${p.hue},100%,60%,${p.life})`; ctx.fill();
-            ctx.shadowBlur = 0;
-        }
-        ctx.globalCompositeOperation = 'source-over';
-    }, cy);
-}
-
-/** Directional strike travelling tile-by-tile along a hex line/cone. */
-export function playLineStrike(fx, layout, tiles, palette = 'magic') {
-    const P0 = BLAST_PALETTES[palette] || BLAST_PALETTES.magic;
-    const centres = tiles.map(([q, r]) => hexToScreen(q, r, layout));
-    return fx.add(700 + centres.length * 60, (ctx, w, h, t, ms, P, dt) => {
-        ctx.globalCompositeOperation = 'lighter';
-        const step = 1 / (centres.length + 2);
-        centres.forEach((c, i) => {
-            const lt = (t - i * step) / (step * 4);
-            if (lt <= 0 || lt > 1) return;
-            const a = Math.sin(Math.min(lt, 1) * Math.PI) * 0.95;
-            const pts = hexCorners(c.x, c.y, layout.size * 0.9, layout.squash);
-            tracePath(ctx, pts);
-            ctx.fillStyle = `rgba(${P0.fill},${a * 0.4})`; ctx.fill();
-            ctx.strokeStyle = `rgba(${P0.edge},${a})`; ctx.lineWidth = 2.5;
-            ctx.shadowBlur = 14; ctx.shadowColor = `rgba(${P0.edge},${a})`;
-            ctx.stroke(); ctx.shadowBlur = 0;
-            if (i > 0 && lt < 0.6)
-                drawBolt(ctx, boltPath(centres[i - 1].x, centres[i - 1].y, c.x, c.y, layout.size * 0.18), a * 0.9, 2);
-        });
-        ctx.globalCompositeOperation = 'source-over';
-    }, -1e5);
-}
 
 /** Persistent aura ring around a unit (buff / threat radius). */
 export function playAura(fx, u, color = '130,235,150', dur = 1400) {
@@ -1498,204 +1376,4 @@ export function playAura(fx, u, color = '130,235,150', dur = 1400) {
         }
         ctx.globalCompositeOperation = 'source-over';
     }, u.y);
-}
-
-// ============================================================
-// AOE SUITE — zone-wide spectacle over a set of tiles/units
-// ============================================================
-
-function tileBounds(layout, tiles) {
-    const cs = tiles.map(([q, r]) => hexToScreen(q, r, layout));
-    const xs = cs.map(c => c.x), ys = cs.map(c => c.y);
-    return {
-        minX: Math.min(...xs) - layout.size, maxX: Math.max(...xs) + layout.size,
-        minY: Math.min(...ys) - layout.size, maxY: Math.max(...ys) + layout.size,
-        cx: (Math.min(...xs) + Math.max(...xs)) / 2,
-        cy: (Math.min(...ys) + Math.max(...ys)) / 2,
-        centres: cs
-    };
-}
-
-/** MAGIC AoE — lightning storm: a bolt per unit + extras across the tiles. */
-export function playLightningStorm(fx, units, layout, tiles, opts = {}) {
-    const B = tileBounds(layout, tiles);
-    const dur = 1900;
-    const strikes = units.map((u, i) => ({
-        t: 120 + i * 240 + rand(-40, 40), x: u.x, y: u.y, unit: u, major: true
-    }));
-    const extras = 4 + Math.floor(rand(0, 3));
-    for (let i = 0; i < extras; i++) {
-        const c = B.centres[Math.floor(rand(0, B.centres.length))];
-        strikes.push({ t: rand(80, dur - 500), x: c.x + rand(-layout.size * 0.5, layout.size * 0.5), y: c.y, major: false });
-    }
-    strikes.sort((a, b) => a.t - b.t);
-    return fx.add(dur, (ctx, w, h, t, ms, P, dt) => {
-        ctx.globalCompositeOperation = 'lighter';
-        let flash = 0;
-        for (const s of strikes) {
-            const age = ms - s.t;
-            if (age < 0 || age > 300) continue;
-            if (!s.pts) {
-                s.pts = boltPath(s.x + rand(-60, 60), 0, s.x, s.y, 46);
-                const mid = s.pts[Math.floor(s.pts.length * 0.45)];
-                s.branch = Math.random() < 0.7 ? boltPath(mid.x, mid.y, s.x + rand(-70, 70), s.y - rand(0, 40), 26) : null;
-                for (let i = 0; i < (s.major ? 10 : 5); i++) { const a = rand(-Math.PI, 0), sp = rand(60, 260);
-                    P.push({ x: s.x, y: s.y, vx: Math.cos(a) * sp * 0.6, vy: Math.sin(a) * sp, life: 1, dec: rand(1.8, 3) }); }
-                if (s.unit) fire(opts.onShake, s.unit);
-            }
-            const a = age < 60 ? 1 : 1 - easeOutQuad((age - 60) / 240);
-            flash = Math.max(flash, a * (s.major ? 0.5 : 0.25));
-            drawBolt(ctx, s.pts, a, s.major ? 3 : 1.8);
-            if (s.branch) drawBolt(ctx, s.branch, a * 0.6, 1.4);
-            const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 46);
-            g.addColorStop(0, `rgba(200,220,255,${a * 0.8})`); g.addColorStop(1, 'rgba(100,140,255,0)');
-            ctx.fillStyle = g; groundEllipse(ctx, s.x, s.y, 52); ctx.fill();
-        }
-        if (flash > 0.02) {
-            const g = ctx.createLinearGradient(0, B.minY - 120, 0, B.maxY);
-            g.addColorStop(0, `rgba(140,170,255,${flash * 0.5})`);
-            g.addColorStop(1, `rgba(140,170,255,${flash * 0.1})`);
-            ctx.fillStyle = g; ctx.fillRect(B.minX, B.minY - 120, B.maxX - B.minX, B.maxY - B.minY + 120);
-        }
-        for (const p of P) {
-            p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 320 * dt; p.life -= p.dec * dt;
-            if (p.life <= 0) continue;
-            ctx.strokeStyle = `rgba(200,220,255,${p.life})`; ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); ctx.stroke();
-        }
-        ctx.globalCompositeOperation = 'source-over';
-    }, B.maxY);
-}
-
-/** PHYS AoE — ground slam: shockwave ring rolls out over the tiles. */
-export function playGroundSlam(fx, origin, units, layout, tiles, opts = {}) {
-    const B = tileBounds(layout, tiles);
-    const maxR = Math.max(B.maxX - origin.x, origin.x - B.minX, layout.size * 3) * 1.1;
-    const hit = new Set();
-    return fx.add(1400, (ctx, w, h, t, ms, P, dt) => {
-        if (t < 0.12) {
-            const a = 1 - t / 0.12;
-            ctx.globalCompositeOperation = 'lighter';
-            const g = ctx.createRadialGradient(origin.x, origin.y, 0, origin.x, origin.y, maxR * 0.5);
-            g.addColorStop(0, `rgba(255,225,190,${a * 0.9})`); g.addColorStop(1, 'rgba(255,120,60,0)');
-            ctx.fillStyle = g; groundEllipse(ctx, origin.x, origin.y, maxR * 0.5); ctx.fill();
-            ctx.globalCompositeOperation = 'source-over';
-        }
-        // expanding ground ring — shakes each unit as the wave reaches it
-        const st = easeOutCubic(Math.min(t / 0.8, 1));
-        const R = st * maxR;
-        for (const u of units) {
-            if (hit.has(u)) continue;
-            if (Math.hypot(u.x - origin.x, (u.y - origin.y) / (layout.squash || ISO_SQUASH)) <= R) {
-                hit.add(u); fire(opts.onShake, u);
-            }
-        }
-        if (t < 0.8) {
-            const a = (1 - st) * 0.9;
-            ctx.globalCompositeOperation = 'lighter';
-            ctx.lineWidth = lerp(9, 1.5, st);
-            ctx.strokeStyle = `rgba(215,185,150,${a})`;
-            ctx.shadowBlur = 14; ctx.shadowColor = `rgba(255,160,80,${a * 0.8})`;
-            groundEllipse(ctx, origin.x, origin.y, R); ctx.stroke();
-            ctx.strokeStyle = `rgba(255,205,140,${a * 0.7})`; ctx.lineWidth = lerp(3, 0.8, st);
-            groundEllipse(ctx, origin.x, origin.y, R * 0.92); ctx.stroke();
-            ctx.shadowBlur = 0;
-            ctx.globalCompositeOperation = 'source-over';
-            // cracks radiating out along the ground
-            ctx.strokeStyle = `rgba(40,28,20,${a * 0.7})`; ctx.lineWidth = 2;
-            for (let i = 0; i < 7; i++) {
-                const an = (i / 7) * TAU + 0.3;
-                ctx.beginPath(); ctx.moveTo(origin.x, origin.y);
-                for (let k = 1; k <= 4; k++) {
-                    const rr = R * (k / 4);
-                    ctx.lineTo(origin.x + Math.cos(an) * rr + rand(-4, 4),
-                               origin.y + Math.sin(an) * rr * (layout.squash || ISO_SQUASH) + rand(-2, 2));
-                }
-                ctx.stroke();
-            }
-        }
-        if (t < 0.3) for (let i = 0; i < 3; i++) {
-            const an = rand(0, TAU);
-            P.push({ x: origin.x + Math.cos(an) * rand(0, layout.size), y: origin.y + Math.sin(an) * rand(0, layout.size) * 0.5, vx: rand(-90, 90), vy: rand(-300, -140), sz: rand(2, 6), life: 1, dec: rand(0.9, 1.4), rot: rand(0, 6) });
-        }
-        for (const p of P) {
-            p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 620 * dt; p.life -= p.dec * dt;
-            if (p.life <= 0) continue;
-            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot += 4 * dt);
-            ctx.fillStyle = `rgba(150,130,105,${p.life * 0.9})`;
-            ctx.fillRect(-p.sz / 2, -p.sz / 2, p.sz, p.sz);
-            ctx.restore();
-        }
-    }, B.maxY);
-}
-
-/** HOLY AoE — radiance: light shafts sweep the zone, motes rise off tiles. */
-export function playRadiance(fx, units, layout, tiles) {
-    const B = tileBounds(layout, tiles);
-    const W = B.maxX - B.minX;
-    return fx.add(1700, (ctx, w, h, t, ms, P, dt) => {
-        ctx.globalCompositeOperation = 'lighter';
-        const sweep = easeOutQuad(Math.min(t / 0.7, 1));
-        const fade = t > 0.72 ? 1 - (t - 0.72) / 0.28 : 1;
-        for (let i = 0; i < 6; i++) {
-            const sx = B.minX + (i + 0.5) / 6 * W;
-            if (sweep * (W + 120) + B.minX < sx) continue;
-            const local = Math.min((sweep * (W + 120) + B.minX - sx) / 100, 1);
-            const a = Math.sin(local * Math.PI * 0.5) * 0.5 * fade;
-            const sw = 32 + Math.sin(ms * 0.003 + i * 2) * 6;
-            const top = B.minY - 140;
-            const g = ctx.createLinearGradient(0, top, 0, B.maxY);
-            g.addColorStop(0, `rgba(255,250,225,${a})`);
-            g.addColorStop(1, `rgba(255,205,90,${a * 0.12})`);
-            ctx.fillStyle = g;
-            ctx.beginPath();
-            ctx.moveTo(sx - sw / 2, top); ctx.lineTo(sx + sw / 2, top);
-            ctx.lineTo(sx + sw / 2 + 26, B.maxY); ctx.lineTo(sx - sw / 2 + 26, B.maxY);
-            ctx.closePath(); ctx.fill();
-        }
-        // consecrated tiles
-        const ga = Math.sin(Math.min(t / 0.85, 1) * Math.PI) * 0.5;
-        ctx.lineWidth = 2; ctx.strokeStyle = `rgba(255,225,140,${ga})`;
-        for (const c of B.centres) {
-            tracePath(ctx, hexCorners(c.x, c.y, layout.size * 0.9, layout.squash));
-            ctx.stroke();
-        }
-        if (t < 0.7 && Math.random() < 0.95) {
-            const c = B.centres[Math.floor(rand(0, B.centres.length))];
-            P.push({ x: c.x + rand(-layout.size * 0.6, layout.size * 0.6), y: c.y, vy: rand(-90, -40), sz: rand(1.5, 4.5), life: 1, dec: rand(1, 1.8) });
-        }
-        for (const p of P) {
-            p.y += p.vy * dt; p.life -= p.dec * dt;
-            if (p.life <= 0) continue;
-            ctx.shadowBlur = 6; ctx.shadowColor = `rgba(255,210,110,${p.life})`;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.sz * p.life, 0, TAU);
-            ctx.fillStyle = `rgba(255,244,210,${p.life * 0.9})`; ctx.fill();
-            ctx.shadowBlur = 0;
-        }
-        ctx.globalCompositeOperation = 'source-over';
-    }, B.maxY);
-}
-
-/** POISON AoE — cloud rolls across the tiles, then per-unit applications. */
-export function playPoisonCloud(fx, units, layout, tiles) {
-    const B = tileBounds(layout, tiles);
-    const zone = fx.add(2000, (ctx, w, h, t, ms, P, dt) => {
-        if (t < 0.6 && Math.random() < 0.95)
-            P.push({ x: B.minX + rand(-40, (B.maxX - B.minX) * 0.3), y: rand(B.minY, B.maxY), vx: rand(60, 130), sz: rand(24, 60), life: 1, dec: rand(0.5, 0.8), ph: rand(0, 6) });
-        const density = Math.sin(Math.min(t * 1.25, 1) * Math.PI);
-        for (const p of P) {
-            p.x += p.vx * dt; p.y += Math.sin(ms * 0.002 + p.ph) * 0.4; p.life -= p.dec * dt;
-            if (p.life <= 0) continue;
-            const a = p.life * 0.32 * density;
-            const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.sz);
-            g.addColorStop(0, `rgba(70,150,45,${a})`);
-            g.addColorStop(0.6, `rgba(45,110,30,${a * 0.6})`);
-            g.addColorStop(1, 'rgba(25,70,15,0)');
-            ctx.fillStyle = g;
-            ctx.beginPath(); ctx.ellipse(p.x, p.y, p.sz, p.sz * 0.62, 0, 0, TAU); ctx.fill();
-        }
-    }, B.maxY + 1);
-    const apps = Promise.all(units.map((u, i) =>
-        new Promise(res => setTimeout(() => playStatusApply(fx, u, 'poison').then(res), 380 + i * 200))));
-    return Promise.all([zone, apps]);
 }

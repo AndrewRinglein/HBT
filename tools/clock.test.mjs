@@ -24,7 +24,7 @@ function boot({wall=10000,now,harness=false,withBurst=false}={}){
  if(harness){H.viewer.pause();return{w,v:H.viewer,H,B}}
  H.dispose();const host=w.document.createElement('div');w.document.body.appendChild(host)
  const events=withBurst?burst.events:battle.events,seed=withBurst?{mapId:burst.options.map.id}:battle.seed
- const data={initialEvents:events,field:fields[seed.mapId],fieldMapId:seed.mapId,units:statics.units,statuses:statics.statuses,absorbingStatuses:statics.absorbingStatuses,actions:statics.actions,badges:statics.badges,layers:statics.layers,artmap:art.artmap,assets:{},glyphs,meta:{seed}}
+ const data={initialEvents:events,field:fields[seed.mapId],fieldMapId:seed.mapId,units:statics.units,statuses:statics.statuses,absorbingStatuses:statics.absorbingStatuses,actions:statics.actions,badges:statics.badges,layers:statics.layers,actionKinds:statics.actionKinds,statusRows:statics.statusRows,artmap:art.artmap,assets:{},glyphs,meta:{seed}}
  const v=B.mount(host,data,{autoplay:false,...(now?{now}:{})});v.push(events);return{w,v,events}
 }
 

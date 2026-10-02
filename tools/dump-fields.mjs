@@ -18,10 +18,14 @@ const tsx = resolve('../engine/node_modules/tsx/dist/cli.mjs')
 const list = execFileSync('node', [tsx, 'tools/list-maps.mts'], { encoding: 'utf8' }).trim().split(/\s+/)
 /* the engine's code stamp, not its HEAD (Andrew, 2026-10-01): a ruling commit leaves this file unchanged */
 const { stamp: sha, dirty } = codeStamp(engine)
+/* the engine's board-space layout, through the door (viewer.reads-engine, review V14): every field must carry exactly
+   it — a field from an engine whose field-geometry.mts is not the board-space one fails here, and no number is typed */
+const geometry = JSON.parse(execFileSync('node', [tsx, 'tools/list-maps.mts', '--geometry'], { encoding: 'utf8' }))
 const fields = {}
 for (const id of list) {
   const f = JSON.parse(execFileSync('node', [tsx, 'tools/field-geometry.mts', id], { cwd: engine, encoding: 'utf8', maxBuffer: 1 << 26 }))
-  if (f.tilt !== 49.3 || f.colStep !== 128) throw new Error(`STALE GEOMETRY for ${id}: tilt ${f.tilt} colStep ${f.colStep} — the engine's field-geometry.mts is not the board-space one`)
+  const off = Object.entries(geometry).filter(([k, v]) => f[k] !== v)
+  if (off.length) throw new Error(`STALE GEOMETRY for ${id}: ${off.map(([k, v]) => `${k} ${f[k]} (the engine's ${v})`).join(', ')} — the engine's field-geometry.mts is not the board-space one`)
   fields[id] = f
 }
 fields._engine = { commit: sha, dirty }

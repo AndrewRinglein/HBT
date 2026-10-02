@@ -19,7 +19,7 @@ function boot(name='movement',opts={}){
  }else run(source)
  const c=structuredClone(name==='movement'?{...fixture.movement,action:fixture.cases[0].action}:fixture.cases.find(c=>c.name===name));if(opts.eventEdit)opts.eventEdit(c.events)
  const host=w.document.createElement('div');w.document.body.appendChild(host)
- const data={initialEvents:c.events,units:fixtureUnits(statics.units,c.action),statuses:statics.statuses,absorbingStatuses:statics.absorbingStatuses,actions:{...statics.actions,[c.action.id]:c.action},badges:statics.badges,layers:statics.layers,artmap:art.artmap,assets:{},glyphs,meta:{seed:{mapId:c.options.map.id}}}
+ const data={initialEvents:c.events,units:fixtureUnits(statics.units,c.action),statuses:statics.statuses,absorbingStatuses:statics.absorbingStatuses,actions:{...statics.actions,[c.action.id]:c.action},badges:statics.badges,layers:statics.layers,actionKinds:statics.actionKinds,statusRows:statics.statusRows,artmap:art.artmap,assets:{},glyphs,meta:{seed:{mapId:c.options.map.id}}}
  const v=w.__burstMount(host,data,{autoplay:false,...opts});v.push(c.events);v.seek(c.events.findIndex(e=>e.type==='burst.declared'))
  return{w,v,c,callbacks,declaration:c.events.findIndex(e=>e.type==='burst.declared')}
 }

@@ -13,7 +13,7 @@ import { buildLog } from '../src/log.js'
 const FX = JSON.parse(readFileSync(new URL('./fixtures/loadout-swap.json', import.meta.url), 'utf8'))
 const STATIC = JSON.parse(readFileSync(new URL('../generated/static.json', import.meta.url), 'utf8'))
 const EV = FX.events, ctx = { UD: STATIC.units, SN: STATIC.statuses }
-const D = { UD: STATIC.units, ACT: STATIC.actions }
+const D = { UD: STATIC.units, ACT: STATIC.actions, KINDS: STATIC.actionKinds, STATUS_ROWS: STATIC.statusRows }
 const at = EV.findIndex(e => e.type === 'loadout.swapped')
 const SW = EV[at], id = SW.actor
 const ids = list => list.map(i => i.instanceId)

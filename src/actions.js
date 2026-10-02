@@ -20,31 +20,47 @@ export const STATSHORT = { strength: 'STR', precision: 'PRE', magic: 'MAG', spir
    the row's own, the same order the engine builds (core/items.ts applyItems).
    D = V.data: the unit sheets (UD) and the attack/ability tables (AT, AB) the
    grants resolve against. Nothing is computed: ids are looked up. */
+/* WHAT AN ACTION IS — the ENGINE's answer (viewer.reads-engine, review V1). static.json's actionKinds is
+   the engine's own predicates (core/action.ts isCharge · isAttack · isMove · isBurst · isPower) run over
+   every row: 'charge' (an attack and a move at once — one of the unit's attacks, never a destination
+   walk), 'attack', 'move', 'burst' or 'power'. The viewer kept its own copies and they disagreed: a
+   movement profile won, so the fast zombie's Charge fell into neither column. A row the table does not
+   name is a missing fact, and the viewer never guesses (Law 1). */
+export function classOf(a, D) {
+  const k = a && D && D.KINDS && D.KINDS[a.id]
+  if (!k) throw new Error(`viewer: action ${a && a.id} has no engine classification — data.actionKinds (static.json) is missing it; re-dump with npm run static`)
+  return k
+}
 export function kitOf(u, D) {
   const d = (D.UD || {})[u && u.typeId] || {}
   const kit = (u && u.kit) || { grants: [], abilities: [], badges: [] }
-  /* ONE ACTION TYPE (engine 26fa562): one registry, and what a row IS is read
-     off the row — `attack` present = an attack, `move` present = a movement */
+  /* ONE ACTION TYPE (engine 26fa562): one registry; where a row goes is the engine's classification */
   const ACT = D.ACT || {}
-  const attacks = [], abilities = []
+  const attacks = [], abilities = [], moves = []
   const push = (row) => { if (!row) return
-    const list = row.move ? null : row.attack ? attacks : abilities
-    if (list && !list.some(x => x.id === row.id)) list.push(row) }
+    const k = classOf(row, D)
+    const list = k === 'attack' || k === 'charge' ? attacks : k === 'move' ? moves : abilities
+    if (!list.some(x => x.id === row.id)) list.push(row) }
   for (const id of kit.grants) push(ACT[id] && { id, ...ACT[id] })
   for (const a of (d.attacks || [])) push(a)
   for (const id of kit.abilities) push(ACT[id] && { id, ...ACT[id] })
   for (const p of (d.abilities || [])) push(p)
   /* a badge may grant an action too (badge.mechanism 2e76ede) */
   for (const id of (kit.badges || [])) push(ACT[id] && { id, ...ACT[id] })
-  return { attacks, abilities, moves: d.moves || [] }
+  for (const m of (d.moves || [])) push(m)
+  /* v2.prone, the engine's grantedActionIds: a status the unit holds may grant an action while held —
+     a prone status's stand action ("only appears while prone"), named by the status's own row, in
+     status-id order. Derived from what the log folded, so standing removes it with nothing to undo. */
+  const ROWS = D.STATUS_ROWS || {}
+  for (const sid of Object.keys((u && u.st) || {}).sort()) {
+    const g = u.st[sid] > 0 && ROWS[sid] ? ROWS[sid].standAction : null
+    if (g) push(ACT[g] && { id: g, ...ACT[g] })
+  }
+  return { attacks, abilities, moves }
 }
 
-/* the engine's row shape, read where the engine put it (§11) */
-export const isMove = a => !!(a && a.move)
-export const isBurst = a => !!(a && a.burst)
-export const isAttack = a => !!(a && a.attack)
-export const shapeOf = a => (a.move || {}).shape
-export const kindOf = a => isMove(a) ? 'move' : isAttack(a) ? (a.attack.kind || 'melee') : isBurst(a) ? 'burst' : 'power'
+/** the attack profile's kind (melee · ranged) for an attack or a charge; otherwise the engine's class */
+export const kindOf = (a, D) => { const k = classOf(a, D); return k === 'attack' || k === 'charge' ? (a.attack.kind || 'melee') : k }
 
 export function actionsOf(u, D) {
   if (!u) return []
@@ -54,9 +70,16 @@ export function actionsOf(u, D) {
   const spent = new Set(u.spent || [])
   const rows = []
   for (const m of k.moves)     if (!spent.has(m.id)) rows.push({ ...m, kind: 'move' })
-  for (const a of k.attacks)   if (!spent.has(a.id)) rows.push({ ...a, kind: a.attack.kind || 'melee', isAttack: true })
-  for (const p of k.abilities) if (!spent.has(p.id)) rows.push({ ...p, kind: isBurst(p) ? 'burst' : 'power', isPower: true })
+  for (const a of k.attacks)   if (!spent.has(a.id)) rows.push({ ...a, kind: kindOf(a, D), isAttack: true, ...(classOf(a, D) === 'charge' ? { charge: true } : {}) })
+  for (const p of k.abilities) if (!spent.has(p.id)) rows.push({ ...p, kind: classOf(p, D), isPower: true })
   return rows
+}
+
+/** the absorbing pool — the sum of every status the engine marks reducesIncomingDamage (static.json
+    absorbingStatuses), as folded. ONE helper for the board's Protection bar and the panel's (review V4: the
+    panel kept its own two-name list and took the first, where the engine and the board take the sum). */
+export function absorbOf(u, D) {
+  return ((D && D.ABSORBING_STATUSES) || []).reduce((n, id) => n + ((u && u.st && u.st[id]) || 0), 0)
 }
 
 /* EXEMPTION stat-delta (tools/exemptions.json): the per-stat sum of the
@@ -68,7 +91,9 @@ export function modOf(u, stat) {
 }
 /** the unit's movement at rest: the sheet's figure plus every movement
     modifier the log stated (an item's −1, a wound's −1). During an activation
-    the engine's own `movePoints` / `movePointsLeft` outrank it. */
+    the engine's own `movePoints` / `movePointsLeft` outrank it (activeMv —
+    activation.begin, moved, surge.hit). At rest it misses what the engine reads
+    only at activation: terrain, auras, Slow, Root (exemption move-range). */
 export function mvOf(u, D) {
   const base = ((D.UD || {})[u && u.typeId] || {}).movement
   if (base == null) return null
@@ -77,11 +102,14 @@ export function mvOf(u, D) {
 
 /* EXEMPTION move-range (tools/exemptions.json): a path or flight spends the
    unit's movement budget, which the power may modify — the sum is the
-   viewer's until the sheet states the move's range. A sidestep is exact. */
+   viewer's until the sheet states the move's range. A sidestep is exact.
+   During the unit's own activation the budget is the ENGINE's (activeMv —
+   activation.begin, moved, surge.hit; viewer.reads-engine, review V6); at rest
+   it is the resting figure, which misses terrain, auras, Slow and Root. */
 export function moveHexes(a, u, D) {
   const mv = a.move || {}
   if (mv.shape === 'sidestep') return a.range == null ? 1 : a.range
-  const base = mvOf(u, D)
+  const base = u && u.activeMv != null ? u.activeMv : mvOf(u, D)
   if (base == null) return null
   return Math.max(0, base + (mv.budgetMod || 0))
 }
@@ -90,7 +118,7 @@ export function moveHexes(a, u, D) {
    been declared — it carries every live modifier — else the declare-time
    stat + bonus the ledger showed. The fallback duplicates engine math. */
 export function dmgOf(a, u, D) {
-  if (isBurst(a)) return null
+  if (a.kind === 'burst') return null          // an action-bar row's kind is the engine's class (actionsOf)
   /* an attack's stat and bonus live under `attack` since 26fa562; a legacy
      power shape still carries them on the row */
   const p = a.attack || a
@@ -160,7 +188,7 @@ export function effectWord(ef, D, SN) {
 
 export function effectTag(a, u, D, SN) {
   const bits = []
-  if (isBurst(a)) {
+  if (a.kind === 'burst') {
     const b = a.burst
     bits.push(b.shape.kind === 'radius' ? 'radius ' + b.shape.radius : b.shape.kind, b.side)
     if (b.requireTags?.length) bits.push('tags ' + b.requireTags.join(', '))
@@ -177,10 +205,14 @@ export function effectTag(a, u, D, SN) {
     const n = moveHexes(a, u, D)
     if (mv.shape === 'sidestep') bits.push(n === 0 ? 'stands still' : 'Ignore ZOC')
     else if (mv.shape === 'flight') bits.push('no steps')
+    /* a path walk that provokes nothing says so — the move's own ignoresZoc (review V1; the hounds) */
+    if (mv.shape !== 'sidestep' && mv.ignoresZoc) bits.push('Ignore ZOC')
     if (mv.budgetMod) bits.push(sgn(mv.budgetMod) + ' move')
     return bits.join(' · ')
   }
   const p = a.attack || a
+  /* a Charge walks to its target and strikes, one action (capability.charge) */
+  if (a.charge) bits.push('charge')
   if (a.effect === 'heal') bits.push('heals')
   if (a.effect === 'selfGuard') bits.push('protection, permanent stat cost')
   if (p.applies) bits.push(shortStatus(p.applies.statusId, SN) + ' ' + sgn(p.applies.value))
@@ -205,7 +237,7 @@ export function effectTag(a, u, D, SN) {
    reached the attack's chip row) */
 export const ATTACK_HOOKS = new Set(['onHit', 'onAttack', 'onDamage', 'onKill', 'onMiss', 'onCrit', 'onBlock'])
 export function triggersFor(u, a, D, SN, stStyle) {
-  if (isBurst(a)) return []
+  if (a.kind === 'burst') return []
   const UD = D.UD || {}
   const out = []
   if (a.kind === 'move') {

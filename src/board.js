@@ -2,8 +2,8 @@
    Reads V.S (the folded state) and draws it. Never folds. Every function takes
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
-import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly, PLAY_HUE } from './theme.js'
-import { mvOf } from './actions.js'
+import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly, PLAY_HUE } from './theme.js'
+import { mvOf, absorbOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { dangerHTML, raIcon } from './icons.js'
@@ -277,7 +277,11 @@ export function corpseGone(V, corpseId, how) {
 }
 
 /* ── AURAS (2026-09-03, §7) — derived on read, never emitted: every STANDING
-   holder with `auras` on its sheet tints the hexes within each aura's radius.
+   holder with `auras` on its sheet tints the hexes within each aura's radius —
+   the holder's own hex included, as the engine's auraMods counts the holder
+   inside its own aura (viewer.reads-engine, review V8). A tint is per HEX; an
+   aura's requireTags filter is per UNIT — which units take it is the engine's,
+   and the tint draws only where it reaches (viewer SWITCHES auraTint).
    The radius uses the engine's exact distance accessor through the readonly
    door — the viewer draws a ring with the geometry it was handed,
    it does not re-implement hex geometry. Hostile auras wear the debuff red,
@@ -296,7 +300,7 @@ export function syncAuras(V) {
         /* the key carries `edge` too: a hex that was the rim and is now interior
            must get a NEW tile, or it keeps the bright rim opacity for the rest of
            the battle and the edge smears (REVIEW §C1, 2026-09-04) */
-        if (d <= a.radius && d > 0) { const edge = d === a.radius, k = h + '|' + hue + '|' + (edge ? 'e' : 'i')
+        if (d <= a.radius) { const edge = d === a.radius, k = h + '|' + hue + '|' + (edge ? 'e' : 'i')
           if (!want.has(k)) want.set(k, { hex: h, hue, edge }) } }
     }
   }
@@ -313,11 +317,11 @@ export function syncAuras(V) {
    Fire-and-forget DOM: created ONCE, drifts via CSS, removes itself. Never
    redrawn from a render — that rebuild was the flicker. */
 /* the cue says WHAT the float is; the hue is theme.js's (Law 6) */
-export function floatHue(c) {
+export function floatHue(c, D) {
   switch (c.kind) {
     case 'damage': return DMG_HUE[c.dt] || DMG_HUE.other
     case 'heal': return HEAL_HUE
-    case 'status': return stStyle(c.statusId).hue
+    case 'status': return stStyle(c.statusId, D).hue
     case 'crit': return CRIT_HUE
     default: return NOTE_HUE[c.kind] || '#e8e5dc'
   }
@@ -359,9 +363,8 @@ export function clearFloats(V) {
    Every call is guarded: a VFX failure must never stop the pump (Law 9
    applies to the run, not to sparkles). */
 export function initFX(V) {
-  /* Law 6: the canvas palette takes the theme's hues — hexvfx.js ships its own,
-     and a second palette is exactly what "one hue per status, everywhere" forbids */
-  for (const [style, sid] of Object.entries(VFX_STATUS)) if (STATUS_STYLES[style]) STATUS_STYLES[style].ring = rgb(stStyle(sid).hue)
+  /* Law 6: hexvfx.js ships its own palette; a status's effect is ringed in that status's OWN hue at every call
+     (fxStatus, fxTick — viewer.reads-engine, review V5), and the heal's here */
   STATUS_STYLES.heal.ring = rgb(HEAL_HUE)
   try { V.fx.FX = createHexVFX(V.dom.canvas) } catch (e) { V.fx.FX = null }
 }
@@ -375,9 +378,6 @@ function anchorOf(V, id) {
 }
 const TIER = n => n == null ? 'med' : n <= 3 ? 'low' : n <= 6 ? 'med' : n <= 10 ? 'high' : 'super'
 const DTYPE = { physical: 'phys', magic: 'mag', 'true': 'true' }
-const VSTYLE = id => { const n = String(id).replace(/^test\./, '').replace(/^status\./, '')
-  return { regeneration: 'regen', stun: 'shadow', daze: 'shadow', slow: 'frost', hobble: 'frost',
-    protection: 'weak', ward: 'weak', enfeeble: 'affliction' }[n] || n }
 export function fxAttack(V, kind, dt, aId, tId, dmg, crit = false) {
   const FX = V.fx.FX; if (!FX) return
   const A = anchorOf(V, aId), T = anchorOf(V, tId); if (!A || !T) return
@@ -389,15 +389,22 @@ export function fxAttack(V, kind, dt, aId, tId, dmg, crit = false) {
     else                     playArrow(FX, A, T, {})
   } catch (e) {}
 }
+/* a status's canvas effect is the ONE style map's (theme.js STYLE .vfx), ringed in the status's own hue — the
+   heal is the only effect that is not a status (viewer.reads-engine, review V5) */
 export function fxStatus(V, tId, styleId) {
   const FX = V.fx.FX; if (!FX) return; const T = anchorOf(V, tId); if (!T) return
-  try { playStatusApply(FX, T, VSTYLE(styleId)) } catch (e) {}
+  if (styleId === 'heal') { try { playStatusApply(FX, T, 'heal') } catch (e) {} return }
+  const st = stStyle(styleId, V.data)
+  try { playStatusApply(FX, T, st.vfx, rgb(st.hue)) } catch (e) {}
 }
+/* a tick plays only for a status the engine says deals damage each tick — its row's tickDamageType (static.json
+   statusRows), never a hand list of effect names */
 export function fxTick(V, tId, causeId) {
   const FX = V.fx.FX; if (!FX) return; const T = anchorOf(V, tId); if (!T) return
-  const st = VSTYLE(causeId)
-  if (!['burn', 'poison', 'bleed', 'frost', 'blight'].includes(st)) return
-  try { playStatusTick(FX, T, st) } catch (e) {}
+  const row = (V.data.STATUS_ROWS || {})[causeId]
+  if (!row || !row.tickDamageType) return
+  const st = stStyle(causeId, V.data)
+  try { playStatusTick(FX, T, st.vfx, rgb(st.hue)) } catch (e) {}
 }
 
 /* ── one traversal per move (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.1) ─
@@ -694,7 +701,7 @@ export function playCues(V, cues) {
       case 'lunge': lunge(V, c.a, c.t); V.cast?.strike(c.a, c.t, c.kind); break
       case 'flash': hitFlash(V, c.id); V.cast?.flinch(c.id); break
       case 'hitstop': hitstop(V, c.ms); break
-      case 'float': pushFloat(V, c.hex, c.text, floatHue(c), c); break
+      case 'float': pushFloat(V, c.hex, c.text, floatHue(c, V.data), c); break
       case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg, c.crit); break
       case 'kick': cameraKick(V, c.a, c.t); break
       case 'injury': queueInjury(V, c.id, c.name); break
@@ -934,7 +941,7 @@ export function syncUnits(V) {
     const BAR_TRIM = 18
     const bh = Math.max(24, bhFull - BAR_TRIM)
     /* the absorbing pool the Protection bar draws (§1): the engine's absorbing statuses, as folded */
-    const pool = V.data.ABSORBING_STATUSES.reduce((n, id) => n + (u.st[id] || 0), 0)
+    const pool = absorbOf(u, V.data)
     /* under the unit: laid across below the name, filling from the left (UU above) */
     const across = top => `left:${UU.w / 2}px;top:${top}px;height:${UU.w}px;transform-origin:0 0;transform:${UU.lift} rotate(90deg)`
     E.hpbar.style.cssText = down ? 'display:none' : under ? across(UU.hp) : `left:${w / 2 + 7}px;top:${-bhFull}px;height:${bh}px`
@@ -985,7 +992,7 @@ export function syncUnits(V) {
       E.fx.style.cssText = body.length ? '' : 'display:none'
       E.fx.innerHTML = body.map(k => BODY_FX[k](figPx)).join('') }
     const dbSkull = u.deathbed ? `<div class="badge dbSkull" title="stood at the Deathbed">${raIcon('skull', `font-size:13px;color:${BLOOD_HUE}`)}</div>` : ''
-    E.badges.innerHTML = dbSkull + sts.map(([id, v]) => { const st = stStyle(id)
+    E.badges.innerHTML = dbSkull + sts.map(([id, v]) => { const st = stStyle(id, V.data)
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +
              `<div class="pip${st.sq ? ' sq' : ''}" style="background:${st.hue}">${v}</div></div>` }).join('')
       + (chev !== 0 ? `<div class="badge"><div class="gl" style="position:absolute;inset:0;background:${chev > 0 ? MOD_UP : MOD_DOWN};` +
