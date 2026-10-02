@@ -42,7 +42,8 @@ import { recapScreen, mountRecap, rewardsScreen, mountRewards, levelUpScreen, mo
 import { canLevelUp } from '../core/rewards.js'
 import { isMuted } from './sound.js'
 import { listCatalog, waystationLevelOf, canBuyCatalog, whyNotBuyCatalog, performBuyCatalog, priceOf } from '../core/waystation.js'
-import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
+import { makeNewCampaign, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
+import { draftScreen } from './draft.js'
 import { PROLOGUE } from '../content/prologue.js'
 import { purchasesFreeOf, articleSlotsOf, articlesHeldOf, whyNotPurchase, performPurchase, hasUnlock } from '../core/charter.js'
 import { UNLOCKS, FIRST_ARTICLE_AT } from '../content/charter.js'
@@ -215,13 +216,6 @@ function rosterScreen(c: CampaignState): string {
 }
 
 // ── the opening ─────────────────────────────────────────────────────────────
-function draftScreen(c: CampaignState): string {
-  const offers = listDraftOffers(c)
-  const kit = (unitType: string) => (UNITS[unitType]?.attacks ?? []).map((a) => a.replace(/^attack\./, '').replace(/\./g, ' ')).join(', ')
-  return `<h2>The draft — ${draftedCountOf(c) === 0 ? 'your first hero' : `hero ${draftedCountOf(c) + 1} of six`}</h2>
-    <p class="meta">Three come to the fire. You see who they are — never their numbers. ${draftsOwedOf(c) > 1 ? `${draftsOwedOf(c)} to draft before the next battle.` : ''}</p>
-    <div class="card"><div class="pick">${offers.map((h) => `<div class="opt" data-act="draft" data-id="${esc(h.id)}"><b>${esc(h.name)}</b><small>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · carries ${esc(kit(h.unitType) || 'nothing yet')}</small></div>`).join('')}</div></div>`
-}
 function endedScreen(c: CampaignState): string {
   return `<h2 class="lost">The run is over</h2>
     <p class="meta">Week ${c.ended!.week} — ${esc(c.ended!.reason)}. "Losses before you've conquered the Kingdom tile are what will reset the game." There is no reload.</p>

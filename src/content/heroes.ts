@@ -60,6 +60,21 @@ export const HERO_POOL: readonly HeroRow[] = omitDisabled(RAW_HEROES)
 export const CIVILIANS: readonly HeroRow[] = omitDisabled(RAW_CIVILIANS)
 
 /**
+ * kingdom.opening-loop-three: the civilians an opening encounter fields, as the rows they join the roster as when they
+ * are rescued — engine DECISIONS.md 2026-09-28 'answers to the 22 questions': "We're going to pick up civilians. We're
+ * going to have two civilians in the orphanage: an orphan child and the school teacher. We're going to have two
+ * civilians in Battle 2". Matched by the engine unit an encounter fields (`unitType`); the names are the engine's own
+ * unit names. Kept apart from CIVILIANS, which the quests' rescue draw and the Beacon read (kingdom SWITCHES.md
+ * openingRescueRows).
+ */
+const RAW_RESCUABLE: readonly HeroRow[] = [
+  ...RAW_CIVILIANS,
+  hero('hero.fixed.school-teacher', 'School Teacher', 'class.civilian', 'hero.fixed.school-teacher'),
+  hero('hero.fixed.lumberjacks-wife', "Lumberjack's Wife", 'class.civilian', 'hero.fixed.lumberjacks-wife'),
+]
+export const RESCUABLE_CIVILIANS: readonly HeroRow[] = omitDisabled(RAW_RESCUABLE)
+
+/**
  * Pool rows the codex gives no kit — a NAMED gap. tools/kit-gaps.mts writes it to
  * src/content/generated/kits-gaps.json (the root CONTENT-GAPS.md is the content
  * pipeline's own and is never hand-edited). Empty today; the alpha four were removed

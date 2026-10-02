@@ -28,6 +28,11 @@ export interface ConquestMap {
   readonly frame: readonly [number, number, number, number]
   readonly start: { readonly text: string; readonly at: Point }
   readonly sections: readonly ConquestSection[]
+  /**
+   * kingdom.opening-loop-three: the Engagement kind a section's battle is fielded as in a campaign (src/content/
+   * engagements.ts) — the prologue's own (content/prologue.ts: an engagement.conquer on no Territory).
+   */
+  readonly engagementKind: string
 }
 
 const named = (encounterId: string, otherwise: string) => (ENCOUNTERS as Record<string, { name?: string }>)[encounterId]?.name ?? otherwise
@@ -36,6 +41,7 @@ export const ABBOTOWN_MAP: ConquestMap = {
   title: 'Retaking Abbotown',
   frame: [24, 178, 512, 318],
   start: { text: 'start', at: [112, 214] },
+  engagementKind: 'engagement.conquer',
   sections: [
     {
       encounterId: 'encounter.opening.orphanage', name: named('encounter.opening.orphanage', 'Orphanage'),

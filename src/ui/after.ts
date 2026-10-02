@@ -335,7 +335,12 @@ export function mountRewards(root: HTMLElement, onConfirm: (itemId: string) => v
 const STAT_LABEL: Record<string, string> = { health: 'Health', staminaMax: 'Max Stamina', staminaRegen: 'Stamina Regen', itemSlots: 'Item Slot', accuracy: 'Accuracy', crit: 'Crit', strength: 'Strength', precision: 'Precision', magic: 'Magic', spirit: 'Spirit', armor: 'Armor', resist: 'Resist', dodge: 'Dodge', reach: 'Reach', movement: 'Movement', luck: 'Luck', vision: 'Vision', toughness: 'Toughness', surge: 'Surge', thorns: 'Thorns' }
 const label = (k: string) => STAT_LABEL[k] ?? k
 
-export function levelUpScreen(c: CampaignState, heroId: string, from: 'rewards' | 'roster'): string {
+/**
+ * `o.specialtyOwed` (kingdom.opening-loop-three): the sheet offers no level without a specialty — the sandbox's opening
+ * sitting fields the hero next, and the engine fields no level-2 hero without one (engine src/core/items.ts: "it is
+ * chosen at the first level-up"). kingdom SWITCHES.md openingSpecialtyOwed.
+ */
+export function levelUpScreen(c: CampaignState, heroId: string, from: 'rewards' | 'roster', o: { specialtyOwed?: boolean } = {}): string {
   const h = c.roster[heroId]
   if (!h) return `<div class="hx levelup"><div class="ascension-chamber"><div class="title-area"><h1 class="main-title">No such hero</h1></div></div></div>`
   const v = viewLevelUp(c, heroId)
@@ -358,7 +363,7 @@ export function levelUpScreen(c: CampaignState, heroId: string, from: 'rewards' 
       <div class="stage-text" id="lu-stage">ASCENSION</div>
       <div class="stat-gains-container" id="lu-gains"></div>
       <div class="bonuses-preview" id="lu-preview"><div class="bonuses-preview-title">Level ${v.to} Bonuses</div><div class="bonuses-preview-subtitle">You will gain:</div><div class="bonuses-list">${bonuses.join('')}</div><div class="click-hint">${v.needsSpecialty || v.pickOptions ? 'Choose, then confirm' : 'Click the hero to level up'}</div></div>
-      ${v.needsSpecialty ? `<div class="choices-overlay" id="lu-specialty"><div class="section-title">Choose Your Specialty</div><div class="section-description">Offered once, now — the first level-up. Take the level without one and the offer is gone for good.</div><div class="choices-grid">${specialtyCards}</div><button class="lu-confirm" id="lu-specialty-confirm" disabled>Confirm Specialty</button><button class="lu-decline" data-act="lu-decline-specialty">Level up without a specialty</button></div>` : ''}
+      ${v.needsSpecialty ? `<div class="choices-overlay" id="lu-specialty"><div class="section-title">Choose Your Specialty</div><div class="section-description">Offered once, now — the first level-up.${o.specialtyOwed ? '' : ' Take the level without one and the offer is gone for good.'}</div><div class="choices-grid">${specialtyCards}</div><button class="lu-confirm" id="lu-specialty-confirm" disabled>Confirm Specialty</button>${o.specialtyOwed ? '' : '<button class="lu-decline" data-act="lu-decline-specialty">Level up without a specialty</button>'}</div>` : ''}
       ${v.pickOptions ? `<div class="choices-overlay" id="lu-pick"><div class="section-title">Pick One</div><div class="section-description">Level ${v.to} offers a choice alongside its bonuses.</div><div class="choices-grid">${pickCards}</div><button class="lu-confirm" id="lu-pick-confirm" disabled>Confirm</button></div>` : ''}
       <button class="lu-continue" id="lu-continue" data-act="lu-continue">${from === 'rewards' ? 'Back to the Rewards' : 'Continue the Journey'}</button>
       <div class="hint">No power is chosen here — powers are drafted in battle</div>

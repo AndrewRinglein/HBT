@@ -22,7 +22,8 @@ import { beginWeek } from './week.js'
 import { listTerritories } from './map.js'
 import { tickAssignments } from './assignments.js'
 import { CLASSES, groupOf } from '../content/classes.js'
-import { HERO_POOL, CIVILIANS, heroRowOf, assertKitted, type HeroRow } from '../content/heroes.js'
+import { HERO_POOL, CIVILIANS, RESCUABLE_CIVILIANS, heroRowOf, assertKitted, type HeroRow } from '../content/heroes.js'
+import type { EngagementResult } from './seam.js'
 import { PROLOGUE, DRAFT_CADENCE, DRAFT_OFFER, type PrologueRow } from '../content/prologue.js'
 import { TERRITORIES, REALM } from '../content/territories.js'
 import { CURRENCIES } from '../content/currencies.js'
@@ -137,6 +138,48 @@ function beginPrologueBattle(ctx: Ctx, causeId: string): Engagement {
 }
 
 /**
+ * kingdom.opening-loop-three (PLAYABLE-OPENING-PLAN.md item 12; engine DECISIONS.md 2026-09-28 'the opening's six battles,
+ * in order'): field the next opening battle as an engine encounter — the Engagement's id is the encounter's, so its
+ * rewards row (content/encounter-rewards.ts) pays it; the encounter brings its own map, enemies and civilians (none are
+ * listed here); its number is the opening's cursor, so the draft cadence counts it. Refused while a draft is owed, off
+ * the open step, after the opening or after the Campaign ended. Then Combat Prep, as beginPrologueBattle does.
+ * A replayed battle (lost) is fielded again by the same call: the cursor did not move, so nothing is owed.
+ */
+export function performFieldOpeningBattle(ctx: Ctx, battle: { readonly id: string; readonly mapId: string; readonly kind: string }, causeId: string): Engagement {
+  const c = ctx.campaign
+  if (c.ended) throw new Error('performFieldOpeningBattle refused: the Campaign has ended')
+  if (c.cursor.prologue === null) throw new Error('performFieldOpeningBattle refused: the opening is done')
+  if (c.cursor.step !== 'open') throw new Error(`performFieldOpeningBattle refused: the cursor is at '${c.cursor.step}'`)
+  if (draftsOwedOf(c) > 0) throw new Error(`performFieldOpeningBattle refused: ${draftsOwedOf(c)} to draft before battle ${c.cursor.prologue}`)
+  const n = c.cursor.prologue
+  const e: Engagement = {
+    id: battle.id, kind: battle.kind, prologue: n, territoryId: null, mapId: battle.mapId,
+    enemies: [], condition: null, councilOffer: [], tactic: null, deployed: [],
+    // keyed by what the battle is — the opening's nth — so a replay is the same battle (kingdom SWITCHES.md openingReplaySeed)
+    seed: n,
+  }
+  setCursor(ctx, { engagement: e, fought: 0 }, causeId)
+  beginCombatPrep(ctx, causeId)
+  return e
+}
+
+/**
+ * kingdom.opening-loop-three: the civilians a won opening battle rescues join the roster — every hero-side unit the
+ * encounter fielded itself (a result row of role 'encounter') that did not die, joining as its rescuable row
+ * (content/heroes.ts RESCUABLE_CIVILIANS, matched by unit). engine DECISIONS.md 2026-09-28 'answers to the 22 questions'
+ * ("We're going to pick up civilians"); kingdom.opening-loop's note: "a civilian who died in their battle does not join"
+ * (kingdom SWITCHES.md openingRescueOnWin). A lost battle rescues nobody — it is fought again, civilians and all.
+ */
+export function rescueSurvivors(ctx: Ctx, result: EngagementResult, causeId: string): void {
+  if (result.outcome !== 'heroClear') return
+  for (const u of result.units) {
+    if (u.side !== 'hero' || u.role !== 'encounter' || u.lifeState === 'dead') continue
+    const row = RESCUABLE_CIVILIANS.find((h) => h.unitType === u.typeId)
+    if (row) applyRescue(ctx, row, causeId)
+  }
+}
+
+/**
  * Advance the opening from its open step: a draft if one is owed, else the
  * next battle, else — every battle fought — the Week machine at Week 1.
  */
@@ -156,10 +199,15 @@ export function performAdvanceOpening(ctx: Ctx, causeId: string): void {
   beginPrologueBattle(ctx, causeId)
 }
 
-/** The writer calls this after a prologue battle is resolved: the next battle is owed, or the run is over. */
-export function performResolvePrologue(ctx: Ctx, won: boolean, causeId: string): void {
+/**
+ * The writer calls this after a prologue battle is resolved: the next battle is owed, or the run is over — or, a battle
+ * that is `replayed` when lost (kingdom.opening-loop-three; the Engagement's rewards row), nothing: the same battle is
+ * owed again and the run goes on.
+ */
+export function performResolvePrologue(ctx: Ctx, won: boolean, causeId: string, replayed = false): void {
   const c = ctx.campaign
   if (c.cursor.prologue === null) return
+  if (!won && replayed) return
   if (!won && !listTerritories(c, (t) => t.kingdom && t.owned).length) {
     setEnded(ctx, `lost prologue battle ${c.cursor.prologue} before the Kingdom Territory was taken`, causeId)
     return

@@ -42,7 +42,7 @@ import { itemOf } from '../content/items.js'
 import { performRollAbsences } from './absence.js'
 import { performLose } from './map.js'
 import { resolveBattleOffer, performExitReckoning } from './rewards.js'
-import { performResolvePrologue } from './opening.js'
+import { performResolvePrologue, rescueSurvivors } from './opening.js'
 import { engagementKindOf } from '../content/engagements.js'
 import { encounterRewardOf } from '../content/encounter-rewards.js'
 import { PAYOUTS } from '../content/payouts.js'
@@ -200,8 +200,12 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   setRewardOffer(ctx, reckoning.won && kind.rewards === 'battle' ? resolveBattleOffer(c, engagement.id) : null, cause)
   // Keep a quest tally in the save so its recap remains truthful after reload.
   setCursor(ctx, { step: 'reckoning', prepStep: null, battle: questReward ? { resultSet: true, result, reckoning, questReward } : null, fought: c.cursor.fought + 1 }, cause)
-  // the opening: the next battle is owed — or, lost before the Kingdom Territory, the run is over
-  if (engagement.prologue !== undefined) performResolvePrologue(ctx, reckoning.won, cause)
+  // the opening: the civilians a won battle saved join (kingdom.opening-loop-three); the next battle is owed — or, lost
+  // before the Kingdom Territory, the run is over, unless the battle's row says a lost one is replayed
+  if (engagement.prologue !== undefined) {
+    rescueSurvivors(ctx, result, cause)
+    performResolvePrologue(ctx, reckoning.won, cause, encounterRewardOf(engagement.id)?.replayed ?? false)
+  }
 }
 
 /**
