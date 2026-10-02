@@ -79,7 +79,7 @@ test('battles 2 and 3: every enemy, every drafted hero and every civilian is a m
   }
 })
 
-test('every drafted hero wears its class outfit, with every ruled motion', () => {
+test('every drafted hero wears its own body or its class outfit, with every ruled motion', () => {
   const heroes = Object.keys(units).filter(t => t.startsWith('hero.base.'))
   assert.ok(heroes.length >= 24)
   for (const t of heroes) {
@@ -87,7 +87,12 @@ test('every drafted hero wears its class outfit, with every ruled motion', () =>
     /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was `look.id`. Andrew: "The characters are not holding weapons"; a hero
        holding another set than its row's equipment is its own look, `<outfit>+<held>` (viewer SWITCHES heldLookId) — the
        outfit is the id's first part */
-    assert.ok(look, t); assert.equal(look.id.split('+')[0], CLASS_LOOKS[cls][0], `${t} (${cls})`)
+    /* Law 10 (viewer.real-bodies, 2026-10-01): was the class outfit for every hero. Andrew: "don't we have more 3D things we can
+       use? ... the idea is to rig this up" — a hero with a body of its own wears it, its id the hero's roster identity
+       (tools/real-bodies.test.mjs); the rest still wear their class's outfit, which now says so (body.own false) */
+    assert.ok(look, t)
+    if (look.body?.own) assert.equal(look.id, look.identity, t)
+    else { assert.equal(look.id.split('+')[0], CLASS_LOOKS[cls][0], `${t} (${cls})`); assert.equal(look.body?.own, false, t) }
     for (const m of RULED) assert.ok(look.motions[m], `${t} ${m}`)
   }
 })
@@ -169,7 +174,8 @@ const headY = body => { body.stage.updateMatrixWorld(true); const h = headOf(bod
 test('the approved files load: each new look stands its height, binds every motion, and its death ends lying', async () => {
   const location = { protocol: 'http:', href: 'http://127.0.0.1:4230/viewer/BATTLE-VIEWER.html' }
   const fetch = async url => { const b = readFileSync('..' + new URL(url).pathname); return { ok: true, arrayBuffer: async () => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) } }
-  const seen = new Set(['plague-zombie', 'woman-blonde', 'archer'])     // battle 1's, loaded by character-models.test.mjs
+  /* Law 10 (viewer.real-bodies, 2026-10-01): battle 1's hero was the 'archer' look; the Forest Elf now stands in her own outfit */
+  const seen = new Set(['plague-zombie', 'woman-blonde', 'ranger-scantily'])     // battle 1's, loaded by character-models.test.mjs
   for (const t of [...typesIn(battle2), ...typesIn(battle3)]) for (const look of pack[t]?.looks || []) {
     /* viewer.every-model: the civilians' bodies are loaded by tools/every-model.test.mjs, not twice */
     if (seen.has(look.id) || CIVILIANS.includes(t)) continue; seen.add(look.id)
@@ -187,5 +193,8 @@ test('the approved files load: each new look stands its height, binds every moti
   }
   /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was one 'oathblade' — battles 2 and 3's Rose, Chaplain and Veteran now hold
      their kits' dagger, shield and halberd, each its own look (viewer SWITCHES heldLookId) */
-  assert.deepEqual([...seen].slice(3).sort(), ['fire-imp', 'imp', 'oathblade+dagger', 'oathblade+halberd', 'oathblade+shield', 'skeletal-archer', 'strong-skeleton'])
+  /* Law 10 (viewer.real-bodies, 2026-10-01): was 'oathblade+dagger' — the Rose now stands in her own outfit, holding her dagger */
+  /* Law 10 (viewer.male-hero-outfits, 2026-10-01): was 'oathblade+shield' — the Battle Chaplain now stands in his own approved outfit
+     (Andrew: "Number two, yes, that's quite important."), holding his shield (tools/male-hero-outfits.test.mjs) */
+  assert.deepEqual([...seen].slice(3).sort(), ['fire-imp', 'imp', 'oathblade+halberd', 'priest-armored', 'rogue-rose', 'skeletal-archer', 'strong-skeleton'])
 })

@@ -33,7 +33,18 @@
 // having 3D weapons is so they're holding weapons.") puts each base hero's kit in its hands (HELD, viewer SWITCHES heldModels,
 // heldFits, heldHands): a held item with no fitted model is listed in the look's `unheld`, never drawn as another.
 //
+// viewer.real-bodies (engine DECISIONS.md 2026-10-01, Andrew: "don't we have more 3D things we can use? We've done all kinds of
+// different heads, all kinds of different armor. ... the idea is to rig this up") stands each hero in its own assembled body where
+// the project holds one (ownBody below, viewer SWITCHES realBodies*), the Bloodhound and the Hellhound in the approved hounds, and
+// the Poison Imp, the Skeleton, the Necromancer and the Demon Lieutenant in their approved bodies. A hero with no body of its own
+// keeps its class's placeholder and says so (`body.own: false`, `body.lacks`); a unit type with no approved body is in UNBODIED.
+//
+// viewer.male-hero-outfits (engine DECISIONS.md 2026-10-01 'the approved male hero outfits come into the project') stands the Black
+// Oath, Dawnblade, Court Champion and the four priests each in his own approved outfit, imported into assets/characters/hero-outfits
+// (MALE_OUTFITS below), replacing the Oathblade placeholder; his own head has no fit, so it is listed (`body.lacks`).
+//
 //   node tools/character-models.mjs --json      print the pack (test/character-models.test.ts reads it)
+//   node tools/character-models.mjs --list      who stands in what, and what is listed (viewer.real-bodies)
 import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { resolve, dirname, posix } from 'node:path'
@@ -60,6 +71,27 @@ export const BINDINGS = {
   /* viewer.every-model (viewer SWITCHES modelImpFlinch): the winged imp's own getHit, which the demo's roster leaves unused */
   'unit.imp': { looks: ['imp'], own: { hit: 'getHit' } },
   'unit.fire-imp': { looks: ['fire-imp'], own: { hit: 'getHit' } },
+  /* viewer.real-bodies (viewer SWITCHES realBodiesEnemies): the rest of the opening's and the caravan's cast that has an
+     approved body — the third imp of the demo's pack; the two other approved humanoids; the approved hounds (wolf/hounds/
+     approved-pack.json: idle, run, tearing bite, death, the record's own hashes); the Demon Lieutenant's selected appearance
+     (reference-painted-enemies/selected-appearances.json, its four embedded clips) holding the demo's sword as the demo's
+     commanders hold it */
+  'unit.poison-imp': { looks: ['poison-imp'], own: { hit: 'getHit' } },
+  'unit.skeleton': { looks: ['skeleton'], approval: HUMANOIDS, stature: 'archer', fill: { attack: 'sword', hit: 'flinch' } },
+  'unit.necromancer': { looks: ['necromancer'], approval: HUMANOIDS, stature: 'archer', fill: { attack: 'punch', ranged: 'spell', hit: 'flinch' } },
+  'unit.bloodhound': { looks: ['bloodhound'], hounds: 'assets/characters/wolf/hounds/approved-pack.json' },
+  'unit.hellhound': { looks: ['hellhound'], hounds: 'assets/characters/wolf/hounds/approved-pack.json' },
+  'unit.lieutenant-demon': { looks: ['demon-lieutenant'], appearance: { record: 'assets/characters/reference-painted-enemies/selected-appearances.json', key: 'demon' },
+    clips: { idle: 'Standing idle', move: 'Walk', attack: 'Sword swing', death: 'Death' }, held: ['sword'], fill: { hit: 'flinch', ranged: 'spell' } },
+}
+/* viewer.real-bodies: the opening's and the caravan's unit types no approved body exists for — listed, never drawn as another's
+   (assets/characters/ANIMATION-MODEL-PLAN.md, its rows for each; monster-motion-audition/README.md for the werewolf and the ghoul) */
+export const UNBODIED = {
+  'unit.zombie-hound': 'no appearance of its own selected: the wolf/hound anatomy and motions are candidates for it (ANIMATION-MODEL-PLAN.md)',
+  'unit.werewolf': 'an audition only: the earlier three-clip transfer was rejected and the newer ten-attack audition is not accepted, with no idle, move, hit or death (ANIMATION-MODEL-PLAN.md)',
+  'unit.bruiser-demon': 'reference art located, no model bound (ANIMATION-MODEL-PLAN.md)',
+  'unit.powerful-imp': 'no appearance selected: the imp rig and library are candidates; the three imp appearances are not assumed to cover it (ANIMATION-MODEL-PLAN.md)',
+  'unit.ghoul': 'its werewolf-based transfer was rejected on 2026-09-23 ("train wrecks"); no other body (monster-motion-audition/README.md)',
 }
 /* the drafted heroes' outfits, by class (viewer SWITCHES modelHeroOutfits; engine DECISIONS.md 2026-09-29 "the playable
    opening": "outfits may be reused across heroes"): every hero.base.* the engine's sheet lists wears its class's look */
@@ -88,7 +120,44 @@ const SELECTED = {
   sword: { record: FREE + 'selections.json', key: 'combo' },                 // "I love these sword moves" (Sword combination)
   flinch: { record: FREE + 'battle-actions/selections.json', key: 'headhit' }, // Head-hit reaction, selected 2026-09-30
   bow: { roster: 'archer', clip: 'ranged' },                                 // the battle demo's archer's bow shot
+  /* viewer.real-bodies (viewer SWITCHES realBodiesFill) */
+  spell: { record: FREE + 'selections.json', key: 'spell' },                 // Spell_Simple_Shoot: "suitable casting and power use"
+  block: { roster: 'oathblade', clip: 'block' },                             // the battle demo's hero's struck reaction (shield block)
+  fall: { roster: 'oathblade', clip: 'death' },                              // the battle demo's hero's death (the arrow-hit fall)
 }
+/* viewer.real-bodies: a hero's own assembled body (viewer SWITCHES realBodiesOwn, realBodiesWardrobe, realBodiesHeads), by its
+   roster identity (activation-registry.json `typeIds`):
+     1. the fitted body its identity's bodyProfile names (activation-registry.json: the Lion of the Host, the Archive Scholar —
+        "accepted demonstration"), on which the afflictions' heads and skin are layered (src/models.js setAfflictions);
+     2. else a female hero's own outfit on the accepted slender body (the EVE female wardrobe, outfits/eve: twelve outfits from the
+        original cards, fitted, rigged, painted — candidates), in the version the wardrobe's latest review shows
+        (outfits/eve/build_serpent_armhole_viewer.py, 2026-09-25), its bytes named by that version's own record, with her own
+        fitted head where the wardrobe carries one (Scholar, Raven, Serpent) and else the body's own head — her head listed;
+   shown as its owners show it (hero-transformations/battle.mjs; outfits/eve/serpent-armhole.html): one head variant, the
+   under-suit hidden beneath the outfit. The wardrobe's motions are its own clip set (slender-rebuild/motions: ready, walk,
+   slash-down, shield block); every body lies in the demo hero's fall, and a bow-holder shoots the demo archer's shot. */
+const WARDROBE = 'assets/characters/oathblade-armor/rebuild/candidates/eve-bodies/female-production/slender-rebuild/'
+const OUTFIT_VERSION = { 'rogue-snake': 'armhole-v4', 'ranger-aggressive': 'detail-paint-v2', 'ranger-ranger': 'detail-paint-v2' }
+const OUTFIT_DEFAULT = 'detail-paint-v1'
+const OUTFIT_RECORD = { 'armhole-v4': 'repair.json' }
+const WARDROBE_CLIPS = { idle: 'idle_ready', move: 'walkforward01', attack: 'atk_slashdown', hit: 'shield_blockleft' }
+/* the Lion's own embedded clips (paint-male-pilot: "three unchanged source clips") */
+const PROFILE_CLIPS = { male: { idle: 'idle_ready', move: 'walkforward01', attack: 'atk_slashdown' } }
+/* each body stands at the battle demo's stature for its family: the female row (scholar) and the hero row (oathblade) */
+const FAMILY_FRAME = { female: 'scholar', male: 'oathblade' }
+const OWN_FILL = { female: { death: 'fall' }, male: { hit: 'block', death: 'fall' } }
+const UNDER_SUIT = '_UnderSuit'
+/* where an approved outfit of a hero lies outside this folder: the combined review's catalog (approved-review/catalog.json) */
+const REVIEW = 'assets/characters/oathblade-armor/rebuild/approved-review/catalog.json'
+/* viewer.male-hero-outfits (engine DECISIONS.md 2026-10-01 'the approved male hero outfits come into the project', Andrew: "Number
+   two, yes, that's quite important."): the approved male outfits (Black Oath, Dawnblade, Court Champion, the four priests), imported
+   from their production folder with the records that approve them (hero-outfits/import.json, viewer SWITCHES maleOutfits*): each
+   on the medium male body — the Oathblade's — shown as the approved preview shows it (hero-outfits motion/viewer.mjs): the painted
+   outfit, of the body only its head (none where the outfit is a whole figure), the outfit's main paint unlit; moved by the preview's
+   own medium clips, which are the Oathblade's ActorCore files byte for byte. */
+const MALE_OUTFITS = 'assets/characters/hero-outfits/import.json'
+const MALE_OUTFIT_CLIPS = { idle: 'idle_ready', move: 'walkforward01', attack: 'atk_slashdown', hit: 'shield_blockleft', death: 'arrow-hit-die' }
+const OUTFIT_LIT = /^Painted_(Glove|Cuff|Joint|Exposed)/
 /** every binding: the named unit types, each civilian of battles 1-3, then each hero.base.* of the engine's sheet by its one class tag */
 export function bindings(units = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')).units) {
   const all = { ...BINDINGS }
@@ -105,7 +174,7 @@ export function bindings(units = JSON.parse(readFileSync(resolve(PKG, 'generated
     if (classes.length !== 1) throw new Error(`${typeId}: the sheet gives it ${classes.length} class tags, not one`)
     const looks = CLASS_LOOKS[classes[0]]
     if (!looks) throw new Error(`${typeId}: no outfit for ${classes[0]}`)
-    all[typeId] = { looks, items: sheet.defaultItems || [] }
+    all[typeId] = { looks, items: sheet.defaultItems || [], hero: registry.typeIds[typeId] ?? null }
   }
   return all
 }
@@ -227,13 +296,127 @@ function selected(name, body, catalog) {
   return { ...ref, borrowed: true }
 }
 
+/** viewer.real-bodies: a hero's own assembled body (WARDROBE above), or null — its file, the record that names the bytes, how far
+    its fit has come (the record's own words), whose head it shows */
+function ownBody(identity, registry, roster) {
+  const character = registry.characters[identity]
+  if (!character) return null
+  const profile = character.bodyProfile
+  if (profile) {
+    if (digest(profile.model.path) !== profile.model.sha256) throw new Error(`${identity}: ${profile.model.path} is not the body ${REGISTRY} names`)
+    return { family: profile.gender, model: { path: profile.model.path, sha256: profile.model.sha256 }, record: REGISTRY, fit: character.bodyFit }
+  }
+  const gender = roster.find(c => c.id === identity)?.gender
+  const dir = WARDROBE + 'outfits/eve/' + identity + '/'
+  if (gender === 'male') return maleOutfit(identity)
+  if (gender !== 'female' || !existsSync(resolve(ROOT, dir))) return null
+  const version = OUTFIT_VERSION[identity] ?? OUTFIT_DEFAULT, record = dir + version + '/' + (OUTFIT_RECORD[version] ?? 'record.json')
+  const r = JSON.parse(readFileSync(resolve(ROOT, record), 'utf8')), out = (r.exports || []).find(x => x.file === 'wardrobe-rigged.glb')
+  if (!/^[0-9a-f]{64}$/.test(out?.outputSHA256 || '')) throw new Error(`${identity}: ${record} names no wardrobe-rigged.glb with a hash`)
+  const path = dir + version + '/wardrobe-rigged.glb'
+  if (digest(path) !== out.outputSHA256) throw new Error(`${identity}: ${path} is not the outfit ${record} names`)
+  return { family: 'female', model: { path, sha256: out.outputSHA256 }, record, fit: r.status }
+}
+/** viewer.male-hero-outfits: a male hero's own approved outfit (MALE_OUTFITS above), or null — its bytes checked against the
+    approval's own baseline manifest, the approval checked to name him */
+function maleOutfit(identity) {
+  const rec = JSON.parse(readFileSync(resolve(ROOT, MALE_OUTFITS), 'utf8')), o = rec.outfits?.[identity]
+  if (!o) return null
+  const base = posix.dirname(MALE_OUTFITS) + '/', read = f => {
+    const path = base + f
+    if (digest(path) !== rec.records?.files?.[f]) throw new Error(`${identity}: ${path} is not the record ${MALE_OUTFITS} copied`)
+    return JSON.parse(readFileSync(resolve(ROOT, path), 'utf8'))
+  }
+  const approval = read(rec.approval.record)
+  if (approval.status !== 'approved' || !approval.outfits.includes(identity)) throw new Error(`${identity}: ${rec.approval.record} does not approve it`)
+  const manifest = read(posix.dirname(rec.approval.record) + '/' + posix.basename(approval.baselineManifest))
+  const entry = manifest.files.find(f => f.path.replace(/\\/g, '/').endsWith('/hero-outfits/' + o.source))
+  if (!entry || entry.sha256.toLowerCase() !== o.model.sha256) throw new Error(`${identity}: ${o.source} is not in the approval's baseline manifest with that hash`)
+  if (digest(o.model.path) !== o.model.sha256) throw new Error(`${identity}: ${o.model.path} is not the outfit ${MALE_OUTFITS} names`)
+  return { family: 'male', outfit: { head: o.head, rec }, model: { path: o.model.path, sha256: o.model.sha256 }, record: MALE_OUTFITS,
+    fit: `approved ${approval.recordedAt.slice(0, 10)} as presented in its movement preview (${approval.scope.split(',')[0]}); in the battle screen a candidate` }
+}
+/** viewer.real-bodies: what a hero standing in its class's placeholder has elsewhere, and so lacks here */
+function placeholderLacks(identity, review) {
+  const armor = review.entries.find(e => e.id === 'armor-' + identity)
+  if (armor?.status === 'approved' && !/[\\/]Heroes of Blight and Tragic[\\/]/.test(armor.recordPath || ''))
+    return `its own fitted body: its approved outfit (${armor.title}) is outside the project (${posix.dirname(armor.recordPath.replace(/\\/g, '/'))}); its head has no fit on that body`
+  return 'its own fitted body: no outfit of its own is fitted to a rigged body in the project'
+}
+/** the demo's held equipment by its own name, in a hand (a commander's sword) */
+function demoProp(typeId, model, hand) {
+  const { file, ...fit } = DEMO_HELD[model]
+  if (!file) throw new Error(`${typeId}: the demo holds no '${model}'`)
+  return { path: EQUIPMENT_ROOT + file, sha256: digest(EQUIPMENT_ROOT + file), hand, model, ...fit }
+}
+
 export async function packCharacterModels() {
   const { catalog } = await import(pathToFileURL(resolve(ROOT, 'assets/battle-demo/roster.mjs')).href)
   const units = JSON.parse(readFileSync(resolve(PKG, 'generated/static.json'), 'utf8')).units
   const artmap = JSON.parse(readFileSync(resolve(PKG, 'generated/art/manifest.json'), 'utf8')).artmap
   const roster = JSON.parse(readFileSync(resolve(ROOT, ROSTER), 'utf8')).characters
+  const registry = JSON.parse(readFileSync(resolve(ROOT, REGISTRY), 'utf8'))
+  const review = JSON.parse(readFileSync(resolve(ROOT, REVIEW), 'utf8'))
+  /* viewer.real-bodies: a hero in its own body — shown as its owners show it, moved by its family's clips, lying in the demo
+     hero's fall, holding its kit */
+  const ownLook = (typeId, bind, own) => {
+    const frame = catalog.find(a => a.id === FAMILY_FRAME[own.family])
+    if (!frame) throw new Error(`${typeId}: the battle demo's roster has no '${FAMILY_FRAME[own.family]}' to stand a ${own.family} body by`)
+    const g = glbJSON(own.model.path), heads = (g.nodes || []).filter(n => n.extras?.headVariant).map(n => ({ name: n.name, variant: n.extras.headVariant }))
+    if (own.outfit) return outfitLook(typeId, bind, own, frame, g)
+    const head = !heads.length || heads.some(h => h.variant === bind.hero) ? bind.hero : 'original'
+    const look = {
+      id: bind.hero, identity: bind.hero, name: roster.find(c => c.id === bind.hero)?.name ?? registry.characters[bind.hero].name,
+      height: frame.height, pivot: frame.pivot, model: own.model, motions: {},
+      hidden: heads.filter(h => h.variant !== head).map(h => h.name),
+      hiddenMaterials: (g.materials || []).map(m => m.name).filter(n => n.includes(UNDER_SUIT)),
+      props: [],
+      body: { own: true, record: own.record, fit: own.fit, head: head === bind.hero ? 'own' : 'body' },
+    }
+    if (head !== bind.hero) look.body.lacks = `its own head: the wardrobe fits only ${[...new Set(heads.map(h => h.variant))].filter(v => v !== 'original').join(', ')} on this body; it shows the body's own head`
+    if (own.family === 'female') for (const [motion, clip] of Object.entries(WARDROBE_CLIPS)) {
+      const path = WARDROBE + 'motions/' + clip + '/female-motion.glb'
+      look.motions[motion] = { path, sha256: digest(path), clip: clipIn(path) }
+    } else for (const [motion, clip] of Object.entries(PROFILE_CLIPS[own.family] || {})) look.motions[motion] = { path: own.model.path, sha256: own.model.sha256, clip: clipIn(own.model.path, clip) }
+    const bow = bind.items.some(i => HELD[i]?.demo === 'bow')
+    for (const [motion, name] of Object.entries({ ...OWN_FILL[own.family], ...(bow ? { ranged: 'bow' } : {}) })) if (!look.motions[motion]) look.motions[motion] = selected(name, own.model.path, catalog)
+    const { props, unheld } = heldProps(typeId, bind.items, look.motions)
+    look.props = props; look.unheld = unheld
+    look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
+    return look
+  }
+  /* viewer.male-hero-outfits: a male hero in his own approved outfit, as its preview shows it (MALE_OUTFITS above) */
+  const outfitLook = (typeId, bind, own, frame, g) => {
+    const { head, rec } = own.outfit, meshes = (g.nodes || []).filter(n => n.mesh != null).map(n => n.name)
+    if (!meshes.some(n => n.startsWith('Painted_'))) throw new Error(`${typeId}: ${own.model.path} has no painted outfit`)
+    if (head === 'body' && !meshes.includes('Body_Head')) throw new Error(`${typeId}: ${own.model.path} has no Body_Head to show`)
+    const look = {
+      id: bind.hero, identity: bind.hero, name: roster.find(c => c.id === bind.hero)?.name ?? registry.characters[bind.hero].name,
+      height: frame.height, pivot: frame.pivot, model: own.model, motions: {},
+      hidden: meshes.filter(n => n.startsWith('Body_') && !(head === 'body' && n === 'Body_Head')),
+      unlit: meshes.filter(n => n.startsWith('Painted_') && !OUTFIT_LIT.test(n)),
+      props: [],
+      body: { own: true, record: own.record, fit: own.fit, head,
+        lacks: `its own head: his head (approved-review/catalog.json head-${bind.hero}) is a design with no fit on this body; it shows ${head === 'body' ? "the body's own head" : "the outfit figure's own head"}` },
+    }
+    const bones = new Set((g.nodes || []).map(n => n.name))
+    for (const [motion, clip] of Object.entries(MALE_OUTFIT_CLIPS)) {
+      const c = rec.clips?.[clip]
+      if (!c || !/^[0-9a-f]{64}$/.test(c.sha256 || '') || digest(c.path) !== c.sha256) throw new Error(`${typeId}: ${c?.path ?? clip} is not the clip ${MALE_OUTFITS} names`)
+      const name = clipIn(c.path), lacks = movedBy(c.path, name).filter(n => !bones.has(n))
+      if (lacks.length) throw new Error(`${typeId}: ${clip} moves ${lacks.length} bones ${own.model.path} lacks (${lacks.slice(0, 3).join(', ')})`)
+      look.motions[motion] = { path: c.path, sha256: c.sha256, clip: name }
+    }
+    if (bind.items.some(i => HELD[i]?.demo === 'bow')) look.motions.ranged = selected('bow', own.model.path, catalog)
+    const { props, unheld } = heldProps(typeId, bind.items, look.motions)
+    look.props = props; look.unheld = unheld
+    look.missing = [...RULED, ...asked(units[typeId])].filter(m => !look.motions[m])
+    return look
+  }
   const pack = {}
   for (const [typeId, bind] of Object.entries(bindings(units))) {
+    const own = bind.hero ? ownBody(bind.hero, registry, roster) : null
+    if (own) { pack[typeId] = { typeId, looks: [ownLook(typeId, bind, own)] }; continue }
     const approval = bind.approval ? JSON.parse(readFileSync(resolve(ROOT, bind.approval), 'utf8')) : null
     const looks = bind.looks.map(id => {
       const variant = approval ? approval.variants.find(v => v.id === id) : null
@@ -273,6 +456,25 @@ export async function packCharacterModels() {
         if (!look.motions.death) throw new Error(`${typeId} ${id}: no approved death to lie in`)
         look.model = variant.model ? { path: base + variant.model, sha256: hashOf(variant.model) } : { path: look.motions.death.path, sha256: look.motions.death.sha256 }
         if (variant.modelSHA256 && variant.modelSHA256 !== look.model.sha256) throw new Error(`${typeId} ${id}: the record's model hash and its file list disagree`)
+      } else if (bind.hounds) {
+        /* viewer.real-bodies: the approved hounds — the record names each body's bytes and the four shared motions' (files relative
+           to the wolf folder); the demo's damage flinch is not among them, so the hit is listed */
+        const rec = JSON.parse(readFileSync(resolve(ROOT, bind.hounds), 'utf8')), base = posix.dirname(posix.dirname(bind.hounds)) + '/', ch = rec.characters?.[id]
+        if (!ch) throw new Error(`${typeId}: ${bind.hounds} approves no '${id}'`)
+        const ref = m => { const path = base + m.file; if (!/^[0-9a-f]{64}$/.test(m.sha256 || '') || digest(path) !== m.sha256) throw new Error(`${typeId} ${id}: ${path} is not the file ${bind.hounds} names`); return { path, sha256: m.sha256 } }
+        look.model = ref(ch.model)
+        for (const [role, motion] of Object.entries({ idle: 'idle', run: 'move', attack: 'attack', death: 'death' })) {
+          const m = rec.sharedMotions?.[role]; if (!m) throw new Error(`${typeId}: ${bind.hounds} shares no ${role}`)
+          const r = ref(m); look.motions[motion] = { ...r, clip: clipIn(r.path) }
+        }
+      } else if (bind.appearance) {
+        /* viewer.real-bodies: a selected appearance — the selection names the bytes; its clips are embedded */
+        const rec = JSON.parse(readFileSync(resolve(ROOT, bind.appearance.record), 'utf8')), ch = rec.characters?.[bind.appearance.key]
+        const path = rec.modelPathBase + '/' + ch?.model
+        if (!ch || !/^[0-9a-f]{64}$/.test(ch.sha256 || '') || digest(path) !== ch.sha256) throw new Error(`${typeId} ${id}: ${path} is not the appearance ${bind.appearance.record} selects`)
+        look.model = { path, sha256: ch.sha256 }; look.name = ch.name
+        for (const [motion, clip] of Object.entries(bind.clips)) look.motions[motion] = { path, sha256: ch.sha256, clip: clipIn(path, clip) }
+        look.props = (bind.held || []).map(m => demoProp(typeId, m, 'R'))
       } else {
         look.model = { path: rel(row.model), sha256: digest(rel(row.model)) }
         for (const [key, m] of Object.entries(row.clips)) {
@@ -290,6 +492,8 @@ export async function packCharacterModels() {
           look.props = props; look.unheld = unheld
           const set = props.map(p => p.model), own = ROSTER_HELD[row.equipment] || []
           if (set.join('+') !== own.join('+')) look.id = `${row.id}+${set.join('+') || 'empty-handed'}`
+          /* viewer.real-bodies: a hero with no body of its own stands in its class's placeholder, and says so */
+          if (bind.hero !== undefined) look.body = { own: false, lacks: placeholderLacks(bind.hero, review) }
         } else for (const p of PROPS[row.equipment] || []) {
           if (!look.motions[p.calibrate.motion]) throw new Error(`${typeId} ${id}: its ${row.equipment} is fitted on ${p.calibrate.motion}, which it lacks`)
           look.props.push({ path: EQUIPMENT_ROOT + p.file, sha256: digest(EQUIPMENT_ROOT + p.file), hand: p.hand, calibrate: p.calibrate })
@@ -306,4 +510,12 @@ export async function packCharacterModels() {
   return pack
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url) && process.argv.includes('--json')) process.stdout.write(JSON.stringify(await packCharacterModels()))
+const main = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+if (main && process.argv.includes('--json')) process.stdout.write(JSON.stringify(await packCharacterModels()))
+if (main && process.argv.includes('--list')) {
+  /* viewer.real-bodies: who stands in what — own body, placeholder (and what it lacks), listed */
+  const pack = await packCharacterModels()
+  for (const [typeId, { looks }] of Object.entries(pack)) for (const l of looks)
+    console.log(`${typeId.padEnd(32)} ${l.body?.own === false ? 'PLACEHOLDER ' + l.id : l.model.path}${l.body?.lacks ? '\n' + ' '.repeat(33) + 'lacks ' + l.body.lacks : ''}${l.missing.length ? '\n' + ' '.repeat(33) + 'motions missing: ' + l.missing.join(', ') : ''}`)
+  for (const [typeId, why] of Object.entries(UNBODIED)) console.log(`${typeId.padEnd(32)} LISTED - ${why}`)
+}

@@ -12,7 +12,7 @@ import { createHash } from 'node:crypto'
 import { UNITS, ENCOUNTERS, ACTIONS } from '../../engine/src/content/index.js'
 
 type Ref = { path: string, sha256: string, clip?: string }
-type Look = { id: string, model: Ref, motions: Record<string, Ref>, missing: string[], props: Ref[] }
+type Look = { id: string, model: Ref, motions: Record<string, Ref>, missing: string[], props: Ref[], body?: { own: boolean, lacks?: string } }
 const models: Record<string, { typeId: string, looks: Look[] }> = JSON.parse(execFileSync(process.execPath, ['../viewer/tools/character-models.mjs', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24 }))
 const RULED = ['idle', 'move', 'attack', 'hit', 'death']
 const fielded = (id: string) => { const enc = (ENCOUNTERS as Record<string, any>)[id]; return [...enc.setup, ...(enc.schedule ?? []).flatMap((s: any) => s.spawn ?? [])] }
@@ -67,6 +67,10 @@ describe("battles 2 and 3's cast in the new screen", () => {
       /* Law 10 (viewer.weapons-in-hand, 2026-10-01): was the look's id. Andrew: "The characters are not holding weapons";
          each hero now holds its own kit, so a look's id names its held set too (oathblade+greatsword) — the outfit, which
          is what this asks, is the body file */
+      /* Law 10 (viewer.real-bodies, 2026-10-01): was every hero, by class. Andrew: "don't we have more 3D things we can use? ...
+         the idea is to rig this up" — a hero with a body of its own stands in it (test/real-bodies.test.ts); the class outfit
+         rule holds for the heroes still in their class's placeholder */
+      if (look!.body?.own) continue
       if (byClass.has(cls[0]!)) expect(look!.model.path, t).toBe(byClass.get(cls[0]!)); else byClass.set(cls[0]!, look!.model.path)
     }
   })
