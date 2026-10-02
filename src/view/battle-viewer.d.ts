@@ -6,6 +6,8 @@ declare module '*viewer/src/viewer.js' {
     /** viewer.play-input: the plan facts to draw (src/ui/play-input.ts PlayFacts), or null to stop taking the mouse */
     setPlay(facts:object|null):void
     inspect(id:number|null):void
+    /** viewer.xcom-camera: the map centred on a unit, at the standard zoom */
+    centre(id:number):void
     push(events: readonly unknown[]): void
     seek(cursor: number): void
     play(): void

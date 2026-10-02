@@ -16,6 +16,8 @@ const start = () => { const s = createSandbox({ mapId: SANDBOX_DEFAULT.mapId, he
 function acting(type: RegExp) {
   const s = start(), P = createPlayInput(() => s, (c) => commandSandbox(s, c))
   const h = s.ctx.state.units.find((u) => u.side === 'hero' && type.test(u.typeId) && sandboxActivationChoices(s).some((c) => c.uid === u.uid))!
+  /* Law 10 (viewer.xcom-camera, 2026-10-01): engine DECISIONS.md 2026-10-01 'the XCOM-style camera', Andrew: "Double-click a character in the top bar or on the map to change it" — a hero other than the one proposed is picked by a double-click (choose), then clicked; a click alone no longer starts any hero but the proposed one */
+  expect(P.input({ kind: 'choose', id: h.id })).toBe(true)
   expect(P.input({ kind: 'unit', id: h.id, hex: h.hex })).toBe(true)
   expect(s.ctx.battleCursor?.actor).toBe(h.id)
   return { s, P, h }

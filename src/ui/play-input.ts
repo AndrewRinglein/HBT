@@ -12,11 +12,16 @@
 // ending — whether End Turn and End activation may be given is validateBattleCommand's answer on the engine's own
 // commands (`end-player-phase`, `end-cycle`), who has not acted is heroesYetToAct (the pop-up's list), and the viewer's
 // End Turn and End activation clicks come back here as those commands (kingdom SWITCHES.md playChrome*).
+// viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera': "One character is auto-selected at the start,
+// the map centered on them; when its activation ends, the next in the character bar, left to right, civilians included.
+// Double-click a character in the top bar or on the map to change it."): while the engine waits for a choice, the next
+// hero is PROPOSED here — never begun, since an activation once begun cannot be taken back and runs its start — and the
+// player's first order to it (a click on it, or an action on the bar) begins it (kingdom SWITCHES playQueue*).
 import {sandboxChoices,sandboxActivationChoices,type Sandbox,type SandboxChoice} from '../core/sandbox.js'
 import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,actionReach} from '../engine.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
-export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}
+export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
 export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null}
@@ -33,7 +38,7 @@ const asc=(a:Iterable<number>)=>[...new Set(a)].sort((x,y)=>x-y)
 
 export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleCommand)=>CommandResult){
  let chosen:string|null=null,ghost:Ghost|null=null,aim:{hex:number;locked:boolean}|null=null,point:number|null=null,note:string|null=null
- let owner:string|null=null
+ let owner:string|null=null,proposed:number|null=null,last:number|null=null
  const shown:Shown[]=[]
  // per engine sequence number: the validated choices, the ghost's forecast, each enemy's reach, the hatching
  let cacheSeq=-1,cache:{choices?:SandboxChoice[];forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
@@ -44,9 +49,22 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** a new activation forgets the last one's plan */
  const sync=(s:Sandbox|null)=>{
   const a=s?actorOf(s):null,key=s&&a!=null?`${a}@${s.ctx.state.turn}:${s.ctx.events.filter(e=>e.type==='activation.begin').length}`:null
-  if(key!==owner){owner=key;chosen=null;ghost=null;aim=null;note=null}
+  if(key!==owner){owner=key;chosen=null;ghost=null;aim=null;note=null;if(a!==null){last=a;proposed=null}}
   return a
  }
+ /** the heroes the engine would let begin now, in the character bar's order — the board's: ascending unit id, civilians
+     included (the bar of viewer.unit-card-bar, until it lands; kingdom SWITCHES playQueueOrder) */
+ const queueOf=(s:Sandbox)=>{const uids=new Set(sandboxActivationChoices(s).map(c=>c.uid));return s.ctx.state.units.filter(u=>uids.has(u.uid)).map(u=>u.id).sort((x,y)=>x-y)}
+ /** who acts next: the one double-clicked, else the next to the right of the last to act, round to the left end */
+ function proposal():number|null{
+  const s=session();if(!s||s.ctx.state.outcome||s.ctx.battleCursor?.at!=='selecting')return null
+  const q=queueOf(s)
+  if(proposed===null||!q.includes(proposed))proposed=q.find(id=>last!==null&&id>last)??q[0]??null
+  return proposed
+ }
+ /** the proposed hero's first order begins its activation */
+ const begin=(s:Sandbox,id:number)=>{const uid=s.ctx.state.units[id]?.uid;if(uid===undefined)return false
+  const r=run({kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;return r.ok}
  /** the move the hero plans with: the chosen move, movement slot first, else primary; with nothing chosen, its first move
      with a legal destination IN THE MOVEMENT SLOT — a move spent as the primary is chosen on the bar (SWITCHES playInputDefaultMove) */
  const moveOf=(s:Sandbox,actor:number)=>{
@@ -183,7 +201,9 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  }
  function input(e:PlayEvent):boolean{
   const s=session();if(!s||s.ctx.state.outcome)return false
-  const actor=sync(s)
+  let actor=sync(s)
+  // viewer.xcom-camera: a double-click on a hero who may begin makes it the next to act
+  if(e.kind==='choose'){if(s.ctx.battleCursor?.at!=='selecting'||!queueOf(s).includes(e.id))return false;proposed=e.id;note=null;return true}
   // viewer.play-chrome: End Turn (asked first by the viewer's pop-up when ending() names heroes) and End activation
   if(e.kind==='end-turn'){const r=run({kind:'end-player-phase',expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;if(r.ok)done();return r.ok}
   if(e.kind==='end-activation'){if(actor===null)return false
@@ -196,7 +216,9 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    if(chosen!==null){chosen=null;aim=null;return true}
    return false}
   if(e.kind==='slot'){
-   if(actor===null||e.unit!==actor)return false
+   /* viewer.xcom-camera: an action chosen on the proposed hero's bar begins its activation, then is chosen */
+   if(actor===null){const p=proposal();if(p===null||e.unit!==p||!begin(s,p))return false;actor=sync(s);if(actor===null)return true}
+   if(e.unit!==actor)return false
    const u=s.ctx.state.units[actor]!
    if(!u.actions.includes(e.actionId)||!s.ctx.actions[e.actionId])return false
    const a=s.ctx.actions[e.actionId]!
@@ -216,10 +238,8 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    chosen=e.actionId;aim=null
    note=usesOf(s,actor).length?null:`${a.name}: nothing in reach${ghost?' from the ghost':''}.`;return true}
   if(e.kind==='unit'){
-   if(s.ctx.battleCursor?.at==='selecting'){
-    const uid=s.ctx.state.units[e.id]?.uid
-    if(uid===undefined||!sandboxActivationChoices(s).some(c=>c.uid===uid))return false
-    const r=run({kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;return r.ok}
+   /* viewer.xcom-camera: a click on the proposed hero begins it; another hero is only looked at (a double-click chooses it) */
+   if(s.ctx.battleCursor?.at==='selecting')return e.id===proposal()&&begin(s,e.id)
    if(actor===null)return false
    return useAt(s,actor,e.hex)}
   // a hex
@@ -236,6 +256,6 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   if(aim?.locked&&aim.hex===hex)return confirmUse(s,actor,u)
   aim={hex,locked:true};note=null;return true
  }
- return {facts,ending,input,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ return {facts,ending,input,proposal,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>
