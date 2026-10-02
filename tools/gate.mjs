@@ -67,6 +67,9 @@ function treeHash() {
   try {
     execSync('git add -A -- .', { env, stdio: 'pipe' })   // .build/ is gitignored; a ":!.build" pathspec makes git refuse
     execSync('git rm -r -q --cached --ignore-unmatch -- .build', { env, stdio: 'pipe' })
+    // the page is the gate's OUTPUT, never an input: --land writes it and then re-hashes the tree, so a tree that
+    // counted it refused every landing that changed the page (since f461451, 2026-10-01)
+    execSync('git rm -q --cached --ignore-unmatch -- BATTLE-VIEWER.html', { env, stdio: 'pipe' })
     return execSync('git write-tree', { env, encoding: 'utf8' }).trim()
   } finally { try { rmSync(idx, { force: true }) } catch {} }
 }
