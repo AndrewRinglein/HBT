@@ -22925,6 +22925,15 @@ index 12769d2..bb5ecf8 100644
   PASS  the item's own tests — test/transformed-snapshot.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — test/transformed-snapshot.test.ts
+## viewer.shield-guard-motion — LANDED `ae3a1e3`
+2026-10-02 19:15
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: STATE-ROW.md:1 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/shield-guard-motion.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/shield-guard-motion.test.ts
   PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)

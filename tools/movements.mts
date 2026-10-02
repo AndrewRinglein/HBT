@@ -14,7 +14,8 @@
 //             a melee attack strikes (`attack`); a ranged attack shoots (`ranged`), a body without one strikes instead
 //             (viewer src/models.js strike); a walk is `move`, a flight `flight`, a body without one walks (models.js frame);
 //             a power, a burst, a move in place and the swap play no body motion (viewer src/fold.js power.used,
-//             burst.declared, loadout.swapped: an effect, a float, no clip)
+//             burst.declared, loadout.swapped: an effect, a float, no clip) — but a shield's power raises the shield
+//             (`guard`, viewer.shield-guard-motion), on the bodies the viewer binds it on: those a shield-holding hero wears
 //   bodies    on each hero body the drafted heroes wear (viewer CLASS_LOOKS, packCharacterModels): the approved or selected
 //             clip it plays, a stand-in, or nothing
 //   selected  a selected performance whose recorded use fits a row with no motion — not bound to any motion word; binding
@@ -58,8 +59,14 @@ export type Inventory = {
   readonly counts: { readonly rows: number, readonly missing: number, readonly noEngine: number, readonly inert: number, readonly noMotion: number, readonly selectedUnbound: number, readonly partial: number }
 }
 
-/* The six shield powers' motion, ruled after movement.swap-and-shields listed it missing (viewer SWITCHES swapShieldMotions). */
-const SHIELD_RULING = "Ruled 2026-10-01 (Andrew, engine DECISIONS.md 'a shield power plays a raise-the-shield motion', engine b91a3f7); the build is filed as viewer.shield-guard-motion — not built yet"
+/* The six shield powers' motion, ruled after movement.swap-and-shields listed it missing (viewer SWITCHES swapShieldMotions), and
+   built by viewer.shield-guard-motion: the motion word `guard`, the Oathblade body's shield_blockleft (viewer SWITCHES guardWord). */
+const SHIELD_RULING = "Ruled 2026-10-01 (Andrew, engine DECISIONS.md 'a shield power plays a raise-the-shield motion', engine b91a3f7); built by viewer.shield-guard-motion: `guard` on every body a shield-holding hero wears"
+const SHIELD_MOTION = 'guard'
+/* the motion words the viewer binds on a body only where the hero wearing it holds what the word needs — `guard` where its kit holds
+   a shield (viewer SWITCHES guardHolders) — so two heroes in one body may differ by them, and the body plays the word for the one
+   that holds it (engine SWITCHES movementKitWords) */
+const KIT_WORDS: ReadonlySet<string> = new Set([SHIELD_MOTION])
 /* movement.swap-and-shields (viewer SWITCHES swapShieldMotions): "no draw or stow clip among the approved or selected motions" */
 const SWAP_NOTE = 'no draw or stow clip among the approved or selected motions (movement.swap-and-shields; viewer SWITCHES swapShieldMotions); no ruling'
 /* The selected performances (assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json, Andrew 2026-09-29)
@@ -97,10 +104,13 @@ async function heroBodies(): Promise<{ words: string[], bodies: Record<string, R
   for (const [typeId, entry] of Object.entries(pack)) {
     if (!typeId.startsWith('hero.base.')) continue
     for (const look of entry.looks) {
-      const motions = Object.fromEntries(Object.entries(look.motions).map(([w, m]) => [w, m.clip]).sort(([a], [b]) => a!.localeCompare(b!)))
-      const had = bodies[look.name]
-      if (had && JSON.stringify(had) !== JSON.stringify(motions)) throw new Error(`movements: the ${look.name} body plays different motions on ${typeId}`)
-      bodies[look.name] = motions
+      const motions: Record<string, string> = Object.fromEntries(Object.entries(look.motions).map(([w, m]) => [w, m.clip]))
+      const had = bodies[look.name] ?? {}
+      for (const w of new Set([...Object.keys(had), ...Object.keys(motions)])) {
+        const a = had[w], b = motions[w]
+        if (bodies[look.name] && (a && b ? a !== b : !KIT_WORDS.has(w))) throw new Error(`movements: the ${look.name} body plays different motions on ${typeId}`)
+      }
+      bodies[look.name] = Object.fromEntries(Object.entries({ ...had, ...motions }).sort(([a], [b]) => a.localeCompare(b)))
     }
   }
   if (!Object.keys(bodies).length) throw new Error('movements: the viewer\'s pack names no hero body')
@@ -122,7 +132,7 @@ function selectedPerformances(): Record<string, { key: string, label: string, cl
 export async function movementInventory(): Promise<Inventory> {
   const { words, bodies } = await heroBodies()
   const sel = selectedPerformances()
-  for (const w of Object.values(MOTION_OF)) if (w && !words.includes(w)) throw new Error(`movements: '${w}' is not one of the viewer's motion words`)
+  for (const w of [...Object.values(MOTION_OF), SHIELD_MOTION]) if (w && !words.includes(w)) throw new Error(`movements: '${w}' is not one of the viewer's motion words`)
 
   // who grants each action: items (by weapon class / base row), class powers, badges, player unit types
   const grants = new Map<string, { items: Set<string>, classes: Set<string>, powers: boolean, badges: Set<string>, units: Set<string>, variants: number }>()
@@ -159,7 +169,7 @@ export async function movementInventory(): Promise<Inventory> {
   }
 
   function row(group: Group, content: string[], action: string | null, name: string, kind: string | null, engine: Row['engine'], note: string | null, extra: Partial<Row> = {}): Row {
-    const motion = kind ? MOTION_OF[kind] ?? null : null
+    const motion = group === 'shield' && kind === 'power' ? SHIELD_MOTION : kind ? MOTION_OF[kind] ?? null : null
     const cells: Record<string, string | null> = {}
     let has = 0
     for (const [body, m] of Object.entries(bodies)) {
