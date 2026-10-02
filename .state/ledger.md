@@ -20255,3 +20255,44 @@ index ca4bebd..edf74cd 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.gates — they genuinely test it
+
+## kingdom.abbotown-map — LANDED `93cc928` **NEEDS REVIEW**
+2026-10-02 00:53
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/play-launcher.test.ts, test/abbotown-map.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/play-launcher.test.ts, kingdom/test/abbotown-map.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/play-launcher.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/play-launcher.test.ts b/test/play-launcher.test.ts
+index 1346c97..b7a62b3 100644
+--- a/test/play-launcher.test.ts
++++ b/test/play-launcher.test.ts
+@@ -21,5 +21,9 @@ describe('the game plays from a link: the launcher', () => {
+     // sandbox"): the sandbox plays the caravan aftermath too (kingdom SWITCHES sandboxCaravan), after the opening's four.
+     // was: expect(out).toMatch(/play launcher: 4 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail\).*passed/)
+-    expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
++    // Law 10, kingdom.abbotown-map rebuild (2026-10-01): the engine chat landed encounter.opening.gates (engine 817b21d,
++    // Battle 5, Gates); the sandbox plays every encounter.opening.* row, so the launcher gains the Gates in the opening's
++    // order, before the caravan. The rule is unchanged: one card per playable battle, in that order.
++    // was: expect(out).toMatch(/play launcher: 5 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Caravan Aftermath\).*passed/)
++    expect(out).toMatch(/play launcher: 6 battles \(Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Caravan Aftermath\).*passed/)
+   }, 60000)
+ })
+```
+</details>

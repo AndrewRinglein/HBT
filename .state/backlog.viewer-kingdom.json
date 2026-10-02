@@ -169,7 +169,9 @@
   "kind": "kingdom",
   "shape": "plumbing",
   "spec": "PLAYABLE-OPENING-PLAN.md item 11. Ruled 2026-09-29: the Retaking Abbotown map is built from Andrew's sketch (C:/Users/aring/Downloads/IMG_5078.jpeg; KINGDOM-V2-2026-09-07.md 'Conquest maps'): six sections in order (Orphanage, Lumberjack House, Bridge, Cavern Trail, Gates, Cathedral), taken ones marked, an arrow on the next; clicking the next starts its battle.",
-  "expect": "The map shows six sections with the taken ones marked and the next pointed to; an eyeball check for Andrew."
+  "expect": "The map shows six sections with the taken ones marked and the next pointed to; an eyeball check for Andrew.",
+  "status": "done-needs-review",
+  "sha": "93cc928"
  },
  {
   "id": "kingdom.opening-loop-three",
