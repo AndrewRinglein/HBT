@@ -423,6 +423,14 @@ export function createCast(V, scene, toWorld, platform = {}) {
     /** how tall a unit's body stands, in board px (viewer.under-unit: the acting arrow and the body effects ride its head) */
     heightPx: id => { const B = bodies.get(id); return B ? B.standingHeight() * PX_PER_M : null },
     body: id => bodies.get(id) || null,
+    /** viewer.xcom-camera: where each standing body is to be seen — its chest and its head, in the scene — and its feet */
+    aims() {
+      const out = []
+      for (const B of bodies.values()) { if (B.life !== 'standing') continue
+        const p = B.stage.position, h = B.standingHeight()
+        out.push({ feet: p.y, at: new THREE.Vector3(p.x, p.y + h * .55, p.z) }, { feet: p.y, at: new THREE.Vector3(p.x, p.y + h * .9, p.z) }) }
+      return out
+    },
     /** the fold's lunge: the attacker strikes, turned toward its target — a bow's shot when it has one; a look with
         neither leans toward it (the shot itself is the board's projectile, fx.attack) */
     strike(a, t, kind) {

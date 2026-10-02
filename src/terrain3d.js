@@ -28,6 +28,37 @@ export function terrainLayer(V,driverFactory=createDriver){
  try{driver=driverFactory(V,fail);const current=++version;Promise.resolve(driver.ready).then(()=>{if(disposed||current!==version||!driver)return;ready();status.textContent=painted(V.data.atlas)?'Painted 3D · '+V.data.atlas.name:'Atlas 3D · '+V.data.atlas.plan.map.name},fail)}catch(error){fail(error)}
  return{update(){},dispose(){if(disposed)return;disposed=true;version++;driver?.dispose();driver=null;V.data.displayHeights=null;status.remove();note?.remove();note=null;state(null)}}
 }
+/* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera': "Anything blocking the view of a character is
+   highly translucent"): a solid piece of the scene between the camera and a standing body's chest or head is drawn
+   see-through (its own copy of its material at SEE_THROUGH opacity — scene pieces share materials), and solid again once
+   nothing it hides is behind it. The ground a body stands on never counts: a hit below its waist, or within a body's
+   length of it, is the floor or its own hex (viewer SWITCHES xcomSeeThrough). An instanced Atlas part fades whole. */
+export const SEE_THROUGH=.18,SEE_EVERY=120
+const pieces=new WeakMap()
+/** the scene's solid pieces and how high each reaches, listed once (the scene does not move): a piece the scene itself draws
+    see-through (fire, smoke, a glow: under full opacity, or not normally blended) is not a wall; leaves are */
+export function solidPieces(group){
+ let list=pieces.get(group);if(list)return list
+ list=[];group.updateMatrixWorld(true)
+ group.traverse(o=>{if(!o.isMesh||!o.visible||[].concat(o.material).some(m=>(m.opacity??1)<.99||(m.blending!=null&&m.blending!==THREE.NormalBlending)))return
+  list.push({o,top:new THREE.Box3().setFromObject(o).max.y})})
+ pieces.set(group,list);return list
+}
+export function seeThrough(group,camera,aims,faded=new Map()){
+ const ray=new THREE.Raycaster(),now=new Set(),eye=camera.getWorldPosition(new THREE.Vector3()),list=solidPieces(group)
+ for(const a of aims){
+  const to=a.at.clone().sub(eye),far=to.length();if(!(far>0))continue
+  const waist=a.feet+(a.at.y-a.feet)*.5,tall=list.filter(p=>p.top>=waist).map(p=>p.o);if(!tall.length)continue
+  ray.set(eye,to.divideScalar(far));ray.far=far
+  for(const hit of ray.intersectObjects(tall,false)){if(hit.distance>far-.6||hit.point.y<waist)continue;now.add(hit.object)}
+ }
+ let changed=false
+ for(const [o,solid] of faded)if(!now.has(o)){const glass=o.material;o.material=solid;for(const m of [].concat(glass))m.dispose();faded.delete(o);changed=true}
+ for(const o of now)if(!faded.has(o)){const solid=o.material
+  const glass=[].concat(solid).map(m=>{const c=m.clone();c.transparent=true;c.opacity=Math.min(m.opacity??1,SEE_THROUGH);c.depthWrite=false;return c})
+  faded.set(o,solid);o.material=Array.isArray(solid)?glass:glass[0];changed=true}
+ return changed
+}
 export function createDriver(V,onFailure,platform={}){
  if(!platform.Renderer&&typeof window.WebGL2RenderingContext==='undefined')throw Error('WebGL 2 unavailable')
  const wrap=V.dom.stage.parentNode,canvas=document.createElement('canvas');canvas.className='terrain3d-canvas';canvas.setAttribute('aria-hidden','true')
@@ -37,7 +68,8 @@ export function createDriver(V,onFailure,platform={}){
  if(renderer.shadowMap){renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.shadowMap.autoUpdate=false}
  /* the board's map (viewer.js sets it; a driver handed a bare board makes it the same way) */
  const scene=new THREE.Scene(),affine=V.data.boardAffine||(V.data.boardAffine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F))
- let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0
+ let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity
+ const faded=new Map()
  const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
  const load=painted(V.data.atlas)?(platform.loadPainted||loadPaintedScene):(platform.loadAssembly||loadAtlasAssembly)
@@ -62,7 +94,10 @@ export function createDriver(V,onFailure,platform={}){
   if(w>0&&h>0&&viewportKey!==w+'x'+h){renderer.setSize(w,h,false);viewportKey=w+'x'+h;dirty=true}
   /* the lens follows the viewport's height; the stage's matrix does not depend on it */
   if(camera&&w>0&&h>0&&(camera.userData.viewport?.w!==w||camera.userData.viewport?.h!==h))lens(camera,{w,h})
+  /* viewer.xcom-camera: what hides a body is see-through — looked for when anything moved, at most every SEE_EVERY ms */
+  if(built?.group&&!V.seeThrough)V.seeThrough={faded,pieces:()=>solidPieces(built.group)}   // read-only: what is see-through now
+  if(camera&&built?.group&&V.cast?.aims&&dirty&&t-sawThrough>=SEE_EVERY){sawThrough=t;if(seeThrough(built.group,camera,V.cast.aims(),faded))dirty=true}
   if(dirty&&camera&&w>0&&h>0){renderer.render(scene,camera);dirty=false}raf=requestAnimationFrame(frame)
  }catch(error){onFailure(error)}}
- return{ready,dispose(){if(disposed)return;disposed=true;if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove()}}
+ return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove()}}
 }

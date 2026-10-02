@@ -9,6 +9,7 @@ import { icoHTML, actHue, ACT_CLASS } from './icons.js'
 import { stStyle } from './theme.js'
 import { actionsOf, moveHexes, dmgOf, effectTag, triggersFor } from './actions.js'
 import { subjectOf } from './subject.js'
+import { centreOn } from './board.js'
 
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 const TRG_SHOWN = 3                 // collapse past this many
@@ -101,5 +102,7 @@ export function drawBar(V) {
   }))
   /* viewer.play-input: clicking a row offers that action to the host — it chooses it for the acting hero or ignores it */
   bar.querySelectorAll('.acRow').forEach(r => { if (!r.dataset.act) return
-    r.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation(); V.offerPlay({ kind: 'slot', actionId: r.dataset.act, unit: subjectOf(V) }) }) })
+    r.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation(); const unit = subjectOf(V); V.offerPlay({ kind: 'slot', actionId: r.dataset.act, unit })
+      /* viewer.xcom-camera: "Clicking an ability re-centers on the acting unit" — the one whose bar it is, the one the host acts with */
+      centreOn(V, unit) }) })
 }
