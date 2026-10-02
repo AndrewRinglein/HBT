@@ -12,137 +12,23 @@
 // Battle 3 won: three items, one kept. The map ends with three sections taken. The civilians who lived through a won
 // battle join the roster.
 //
-// A battle is settled the way tools/abbotown-map.verify.mjs settles one: the engine's own AI plays it out on a seed and
-// the save is pasted back into the page ("Resume pasted save") — the page takes it as the campaign's battle only when it
-// is that battle with that party.
+// The page's steps are tools/opening-page.mjs's (kingdom.opening-run-six moved them there, one copy for this and
+// tools/opening-run-six.verify.mjs).
 //
 //   node tools/opening-loop-three.verify.mjs [BATTLE-SANDBOX.html]
-import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import assert from 'node:assert/strict'
-import {createRequire} from 'node:module'
-import {bootSlice} from './atlas-dom.mjs'
+import {openingPage,TAKERS} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORPHANAGE='encounter.opening.orphanage',LUMBERJACK='encounter.opening.lumberjack',BRIDGE='encounter.opening.bridge',CAVERN='encounter.opening.cavern-trail'
-const SWORD='item.longsword.flaming',TAKERS=['class.warrior','class.paladin']
-const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,sandboxChoices,commandSandbox} from './src/core/sandbox.ts';export {runBattle} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
-const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
-
-/* a battle played out on seed after seed until it ends as wanted — with no hero of the party dead, unless a win that costs
-   one is allowed — the save a person would have made at that moment. The enemies are always the engine's AI. The player's
-   side: 'ai', the engine's AI; 'idle', every activation begun and ended (a loss the AI's own heroes rarely make); 'hold',
-   no hero moves and each strikes the best blow the engine offers it from where it stands, or waits (the engine's AI stalls
-   at the Bridge — encounter.opening.bridge-ai-refiled — and the party cannot afford to walk into the imps) */
-function playedOut(config,won,how,partyAlive=true){
- for(let seed=1;seed<=1500;seed++){
-  const s=E.createSandbox({...structuredClone(config),seed})
-  if(how==='ai')E.runBattle(s.ctx)
-  else{E.advanceSandbox(s);for(let i=0;i<50000&&!s.ctx.state.outcome;i++){const ctx=s.ctx,at=ctx.battleCursor?.at,seq=ctx.state.seq
-   let r=null
-   if(at==='selecting')r=E.commandSandbox(s,{kind:'select-activation',unitUid:E.sandboxActivationChoices(s)[0].uid,expectedSeq:seq})
-   else if(at==='acting'){
-    const blow=c=>(c.preview.connectionChanceBps??(c.preview.hitChance??50)*100)*(c.preview.damageOnHit??c.preview.damage??0)
-    const best=how==='hold'?E.sandboxChoices(s).filter(c=>'target' in c.command&&ctx.state.units[c.command.target].side==='enemy'&&c.preview&&blow(c)>0).sort((x,y)=>blow(y)-blow(x))[0]:undefined
-    r=best?E.commandSandbox(s,best.command):E.commandSandbox(s,{kind:'end-cycle',actor:ctx.battleCursor.actor,expectedSeq:seq})
-   }
-   if(!r?.ok)throw Error('the player\'s side could not go on: '+(r?.reason??at))}}
-  const r=E.sandboxResult(s),party=r.units.filter(u=>u.side==='hero'&&u.role===undefined)
-  if((r.outcome==='heroClear')===won&&(!partyAlive||party.every(u=>u.lifeState!=='dead')))return {save:E.saveSandbox(s),result:r}
- }
- throw Error(`no seed from 1 to 1500 ends ${config.encounterId} ${won?'won':'lost'}${partyAlive?' with the party alive':''}`)
-}
+const SWORD='item.longsword.flaming'
 
 /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K7): the run's seed 11 → 15. XP per kill became the victim's
    tier's (2 / 5 / 15 — engine DECISIONS.md 2026-09-28) instead of 3, and seed 11's party reaches the Bridge with the
    Rune-Marked Ascetic at 18 XP — level 1, two short of 20 — and its 'hold' play wins none of its 1500 Bridge seeds.
    Seed 12 wins it, but only after ~20 minutes of seeds; seed 15 wins it on Bridge seed 2. What this page test holds —
-   the loop's flow through three battles — is unchanged; the Bridge's balance under the ruled XP is reported to Andrew. */
-const v=bootSlice(page,{search:'?map&seed=15'}),w=v.w,root=v.root,handle=w.__sandbox
-const camp=()=>handle.campaign
-const byId=id=>root.querySelector('#'+id)
-const shown=id=>{const el=byId(id);return !!el&&!el.hasAttribute('hidden')}
-const fire=(el,type,target)=>{assert.ok(el,'an element to '+type);for(const f of el.listeners[type]??[])f({target:target??el,preventDefault(){},stopPropagation(){}})}
-const heroIds=()=>Object.values(camp().roster).filter(h=>!h.classes.includes('class.civilian')).map(h=>h.id).sort()
-const civilianIds=()=>Object.values(camp().roster).filter(h=>h.classes.includes('class.civilian')).map(h=>h.id).sort()
-const settle=()=>{if(handle.busy)v.click('skip')}
-/* the page's clock, run forward in small steps: a timer a timer sets comes due on a later step, as in a browser */
-const wait=ms=>{for(let t=0;t<ms;t+=50)w._flush(50)}
-
-function readMap(taken,label){
- assert.ok(shown('conquest'),label+': the map is shown');assert.ok(!shown('campaign'),label+': no campaign screen over it')
- const s=byId('conquest').querySelectorAll('[data-section]').map(g=>({id:g.dataset.section,state:g.dataset.state}))
- const next=s.find(x=>!taken.includes(x.id))
- for(const x of s)assert.equal(x.state,taken.includes(x.id)?'taken':x===next?'next':'locked',`${label}: ${x.id}`)
- return next.id
-}
-
-/* the draft: three offered (fewer when the pool runs short), stat-less, none of a class already drafted; a Warrior or a
-   Paladin is taken first when offered, so the party can carry the Flaming Longsword */
-function draft(label){
- assert.ok(shown('campaign'),label+': the draft is shown');assert.equal(camp().cursor.step,'draft',label+': the cursor is at the draft')
- const opts=byId('campaign').querySelectorAll('[data-act=draft]')
- assert.ok(opts.length>=1&&opts.length<=3,label+': one to three offered')
- const drafted=new Set(Object.values(camp().roster).flatMap(h=>h.classes).filter(c=>c!=='class.civilian'))
- for(const o of opts){assert.ok(!(o.dataset.classes??'').split(',').some(c=>drafted.has(c))||drafted.size>=4,`${label}: ${o.dataset.id} is of a class not yet drafted`);assert.doesNotMatch(o.textContent,/\d+\s*(health|accuracy|strength)/i,label+': stat-less')}
- const pick=opts.find(o=>(o.dataset.classes??'').split(',').some(c=>TAKERS.includes(c)))??opts[0]
- v.click('draft',pick.dataset.id)
- return pick.dataset.id
-}
-
-/* the Equip step: the deployed party, fitted, then To the battle */
-function equipThenFight(party,label){
- assert.ok(shown('campaign'),label+': Equip is shown');assert.equal(camp().cursor.prepStep,'equip',label+': the cursor is at Equip')
- assert.deepEqual([...camp().cursor.engagement.deployed].sort(),party,label+': the whole party is sent')
- assert.equal(byId('campaign').querySelectorAll('.herocard').length,party.length,label+': a card per hero sent')
- v.click('advance');settle()
- assert.ok(!shown('campaign')&&!shown('conquest'),label+': the battle is its own screen')
- const s=handle.session,e=camp().cursor.engagement
- assert.equal(s.config.encounterId,e.id,label+': the encounter is fielded');assert.deepEqual(s.config.heroes,e.deployed,label+': with the deployed heroes')
- assert.deepEqual(s.config.heroRows,e.deployed.map(id=>camp().roster[id]),label+': as the campaign\'s own Hero rows')
- return s
-}
-
-/* settle the battle on the page, then the reckoning: the recap, its Continue */
-function fightOut(won,label,how=won?'ai':'idle',partyAlive=true){
- const e=camp().cursor.engagement,{save,result}=playedOut(handle.session.config,won,how,partyAlive)
- w.document.getElementById('transferText').value=save;v.click('import');settle()
- assert.equal(handle.session.ctx.state.outcome==='heroClear',won,label+': the battle ends '+(won?'won':'lost'))
- assert.ok(!shown('conquest'),label+': the outcome stands on the battle');assert.equal(byId('commands').querySelectorAll('[data-act=reckon]').length,1,label+': the outcome offers the reckoning')
- v.click('reckon');wait(2500)
- assert.ok(shown('campaign'),label+': the recap is shown');const recap=byId('campaign').querySelector('.recap')
- assert.ok(recap,label+': the recap');assert.equal(recap.dataset.won,String(won),label+': the recap says '+(won?'won':'lost'))
- v.click('exit');wait(100)
- return {e,result}
-}
-
-/* every LEVEL UP the rewards page offers, through the level-up sheet; the specialty chosen where one is owed */
-function levelUps(label){
- for(let guard=0;guard<8;guard++){
-  const b=byId('campaign').querySelectorAll('[data-act=level-hero]')[0];if(!b)break
-  const id=b.dataset.id,before=camp().roster[id].level
-  v.click('level-hero',id);wait(1600)
-  const sheet=byId('campaign').querySelector('.levelup');assert.ok(sheet,`${label}: ${id}'s level-up sheet`)
-  assert.equal(sheet.querySelectorAll('[data-act=lu-decline-specialty]').length,0,`${label}: no level without a specialty here — the engine fields no level-2 hero without one`)
-  const over=byId('lu-specialty')
-  if(over){const card=over.querySelectorAll('.choice-card')[0];fire(over,'click',card);fire(byId('lu-specialty-confirm'),'click')}
-  else fire(byId('lu-card'),'click')
-  wait(4000)
-  assert.equal(camp().roster[id].level,before+1,`${label}: ${id} levels`)
-  if(over)assert.ok(camp().roster[id].specialty,`${label}: ${id} holds a specialty`)
-  fire(byId('lu-continue'),'click');wait(300)
-  assert.ok(byId('campaign').querySelector('.rewards'),`${label}: back on the rewards page`)
- }
- assert.equal(camp().cursor.step==='levelUp'||camp().cursor.step==='open',true,label+': nothing left but to go on')
- if(camp().cursor.step==='levelUp')v.click('exit')
- wait(100)
-}
-
-/* take a reward card: flip it, choose it, confirm; a named-class item asks who carries it */
-function takeReward(index,label){
- const row=byId('rw-row'),card=row.querySelectorAll('.reward-card')[index]
- fire(row,'click',card);wait(1500);fire(row,'click',card);fire(byId('rw-confirm'),'click');wait(300)
- return card.dataset.id
-}
+   the loop's flow through three battles — is unchanged; the Bridge's balance under the ruled XP is reported to Andrew.
+   (Carried into the opening-page.mjs form when kingdom.opening-run-six moved the steps there, merge 2026-10-02.) */
+const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,equipThenFight,fightOut,levelUps,takeReward,v}=openingPage(page,'?map&seed=15')
 
 /* 1 · the sitting opens on the map: nothing fielded, nobody drafted, the Orphanage next */
 assert.equal(readMap([],'fresh'),ORPHANAGE)
@@ -204,7 +90,7 @@ const fourth=draft('battle 3')
 const party3=[...party2,fourth].sort()
 assert.deepEqual(heroIds(),party3,'four heroes before battle 3')
 equipThenFight(party3,'battle 3')
-fightOut(true,'battle 3','hold',false)
+fightOut(true,'battle 3',['hold'],{partyAlive:false})
 assert.equal(camp().cursor.step,'rewards','the Bridge offers its reward')
 const offer=[...camp().cursor.rewardOffer];assert.equal(offer.length,3,'three items offered');assert.equal(new Set(offer).size,3)
 const kept=takeReward(1,'battle 3')

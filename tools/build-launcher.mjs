@@ -8,6 +8,9 @@
 // proposal names for it); whether it stands on that 3D map in the battle screen is the viewer's painted pack. Nothing
 // here is typed by hand. Each card opens BATTLE-SANDBOX.html?play=<encounter id>. The Retaking Abbotown map
 // (kingdom.abbotown-map) is BATTLE-SANDBOX.html?map, linked beside the free battle and the recorded battles.
+// kingdom.opening-run-six (engine DECISIONS.md 2026-10-01 'one continuous run through the first six battles, saved'): the
+// run comes first — Start a new run (?map&new) and, when this browser keeps one (ui/opening-run.ts RUN_SAVE_KEY), Continue
+// the run (?map), named by the battle it stands at; the page reads its own browser's save, so the words are set there.
 //
 //   node tools/build-launcher.mjs [out]      (default PLAY.html) — generated, never hand-edit
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
@@ -22,10 +25,10 @@ const ROOT=resolve('..'),sha=execFileSync('git',['rev-parse','--short','HEAD'],{
 /* the engine's code stamp, not its HEAD (Andrew, 2026-10-01) */
 const engine=codeStamp().stamp
 /* the kingdom's own content, through its one door to the engine */
-const entry=`export {SANDBOX_ENCOUNTERS} from './src/content/sandbox.ts';export {ENCOUNTERS,SCENARIOS,UNITS} from './src/engine.ts'`
+const entry=`export {SANDBOX_ENCOUNTERS} from './src/content/sandbox.ts';export {ENCOUNTERS,SCENARIOS,UNITS} from './src/engine.ts';export {RUN_SAVE_KEY} from './src/ui/opening-run.ts';export {ABBOTOWN_MAP} from './src/content/conquest.ts'`
 const built=esbuild.buildSync({stdin:{contents:entry,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 mkdirSync('scratch',{recursive:true});writeFileSync('scratch/launcher-facts.mjs',built.outputFiles[0].text)
-const {SANDBOX_ENCOUNTERS,ENCOUNTERS,SCENARIOS,UNITS}=await import(pathToFileURL(resolve('scratch/launcher-facts.mjs')).href+'?'+Date.now())
+const {SANDBOX_ENCOUNTERS,ENCOUNTERS,SCENARIOS,UNITS,RUN_SAVE_KEY,ABBOTOWN_MAP}=await import(pathToFileURL(resolve('scratch/launcher-facts.mjs')).href+'?'+Date.now())
 const {SCENES}=await import('../../viewer/tools/painted-scenes.mjs')
 const proposal=JSON.parse(readFileSync(resolve(ROOT,'assets/battle-atlas/opening-ground-proposal-2026-09-28.json'),'utf8'))
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c])
@@ -84,14 +87,22 @@ h1{font-family:Spectral,serif;font-weight:600;font-size:44px;margin:8px 0 6px}he
 h2{font-family:Spectral,serif;font-weight:600;font-size:30px;margin:0 0 4px}
 .foes{margin:0;color:var(--ink);font-size:16px;line-height:1.45}.foes span{display:inline-block;width:64px;color:var(--dim);text-transform:uppercase;font-size:12px;letter-spacing:.12em}.foes i{color:var(--dim);font-style:normal}
 .go{margin-top:auto;align-self:flex-end;padding-top:12px;color:var(--gold);font-weight:700;font-size:18px;letter-spacing:.06em}
+.run{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin:0 0 30px;padding:20px 24px;background:var(--panel);border:1px solid var(--gold);border-radius:6px}
+.run h2{flex:1 1 320px;font-size:28px}.run h2 small{display:block;font-family:'Barlow Semi Condensed',system-ui,sans-serif;font-size:16px;font-weight:400;color:var(--dim);margin-top:4px}
+.run a{text-decoration:none;font-weight:700;font-size:18px;letter-spacing:.04em;padding:10px 18px;border-radius:4px;border:1px solid var(--gold);color:var(--gold)}
+.run a[data-run=continue]{background:var(--gold);color:#17130b}.run a:hover,.run a:focus-visible{filter:brightness(1.15);outline:none}
 .more{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:22px}
 .more a{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 22px;transition:border-color .15s}
 .more a:hover,.more a:focus-visible{border-color:var(--gold);outline:none}.more b{font-family:Spectral,serif;font-size:22px;font-weight:600;display:block}.more span{color:var(--dim)}
 @media (max-width:640px){.grid{grid-template-columns:1fr}.more{grid-template-columns:1fr}h1{font-size:34px}}
 </style></head><body><main>
 <header><div class="house">Heroes of Blight and Tragic</div><h1>Choose a battle</h1><p>The opening's battles, in order. Click one to play it.</p></header>
+<section class="run" id="run"><h2>The opening run — Retaking Abbotown<small>Six battles in a row: the first hero, the drafts, rewards, levels and equipping between them. Saved after every step.</small></h2><a href="../kingdom/BATTLE-SANDBOX.html?map" data-run="continue" hidden>Continue the run</a><a href="../kingdom/BATTLE-SANDBOX.html?map&amp;new" data-run="new">Start a new run</a></section>
+<script>/* the run this browser keeps (kingdom ui/opening-run.ts) — Continue names the battle it stands at */
+(function(){try{var t=localStorage.getItem(${JSON.stringify(RUN_SAVE_KEY)});if(!t)return;var c=JSON.parse(t).campaign,n=c&&c.cursor&&c.cursor.prologue;if(!n)return;var names=${JSON.stringify(ABBOTOWN_MAP.sections.map(x=>x.name))};
+var a=document.querySelector('[data-run=continue]');a.textContent=n>names.length?'Continue the run — Abbotown is retaken':'Continue the run — battle '+n+', '+names[n-1];a.removeAttribute('hidden')}catch(e){}})()</script>
 <section class="grid">${battles.map(card).join('\n')}</section>
-<section class="more"><a href="../kingdom/BATTLE-SANDBOX.html?map" data-more="map"><b>Retaking Abbotown</b><span>The opening's map: the sections taken, the next to fight. Click the next to play it.</span></a>
+<section class="more"><a href="../kingdom/BATTLE-SANDBOX.html?map" data-more="map"><b>Retaking Abbotown</b><span>The opening run's map: the sections taken, the next to fight. Opens the run this browser keeps, or starts one.</span></a>
 <a href="../kingdom/BATTLE-SANDBOX.html" data-more="free"><b>Free battle</b><span>Pick the heroes, the foes and the map yourself.</span></a>
 <a href="../viewer/BATTLE-VIEWER.html" data-more="replays"><b>Recorded battles</b><span>Watch battles the engine has played, turn by turn.</span></a></section>
 </main></body></html>`

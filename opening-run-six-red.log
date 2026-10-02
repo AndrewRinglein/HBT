@@ -1,0 +1,88 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the run is kept in the browser
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:97:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
+ ❯ test/opening-run-six.test.ts (5 tests | 3 failed) 1553ms
+     × every section of the Retaking Abbotown map is a battle the sandbox fields, paid by a row that is replayed and never fatigues 4ms
+     × the launcher offers the run: Start a new run, and Continue when this browser keeps one 4ms
+     × the page: six battles from the map, never the kingdom map; closed after battle 3 and opened again, it goes on at battle 4 with the same party, items, XP and levels; a loss offered again with the same party 1404ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-run-six.test.ts > kingdom.opening-run-six — one run through the six battles, saved > every section of the Retaking Abbotown map is a battle the sandbox fields, paid by a row that is replayed and never fatigues
+AssertionError: encounter.opening.cathedral has a rewards row: expected null not to be null
+ ❯ test/opening-run-six.test.ts:56:61
+     54|       expect(SANDBOX_ENCOUNTERS.some((e) => e.id === s.encounterId), `…
+     55|       const row = encounterRewardOf(s.encounterId)
+     56|       expect(row, `${s.encounterId} has a rewards row`).not.toBeNull()
+       |                                                             ^
+     57|       expect([row!.replayed, row!.fatigues]).toEqual([true, false])
+     58|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/opening-run-six.test.ts > kingdom.opening-run-six — one run through the six battles, saved > the launcher offers the run: Start a new run, and Continue when this browser keeps one
+AssertionError: expected '<!doctype html><html lang="en"><head>…' to contain '<a href="../kingdom/BATTLE-SANDBOX.ht…'
+
+
++    
++    
++    
++    
++    
+
+ ❯ test/opening-run-six.test.ts:90:18
+     88|   it('the launcher offers the run: Start a new run, and Continue when …
+     89|     const html = readFileSync('PLAY.html', 'utf8')
+     90|     expect(html).toContain('<a href="../kingdom/BATTLE-SANDBOX.html?ma…
+       |                  ^
+     91|     expect(html).toContain('<a href="../kingdom/BATTLE-SANDBOX.html?ma…
+     92|     expect(html).toContain(`localStorage.getItem(${JSON.stringify(RUN_…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/opening-run-six.test.ts > kingdom.opening-run-six — one run through the six battles, saved > the page: six battles from the map, never the kingdom map; closed after battle 3 and opened again, it goes on at battle 4 with the same party, items, XP and levels; a loss offered again with the same party
+Error: Command failed: C:\Program Files\nodejs\node.exe tools/opening-run-six.verify.mjs BATTLE-SANDBOX.html
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the run is kept in the browser
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:97:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
+
+ ❯ test/opening-run-six.test.ts:96:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  04:24:27
+   Duration  5.48s (transform 2.85s, setup 0ms, import 3.80s, tests 1.55s, environment 0ms)
+
+
+[92 lines of the launcher page diff left out — opening-run-six-red.log is the red of kingdom.opening-run-six, run with src/ui/sandbox.ts, sandbox.css, content/encounter-rewards.ts and BATTLE-SANDBOX.html at kingdom a360a78]
