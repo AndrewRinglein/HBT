@@ -58,13 +58,17 @@ test('passive unit inspection stays available; disposed persistent callbacks are
 // Law 10 (2026-09-29, viewer.painted-board): the pan drag is the RIGHT button now — engine DECISIONS.md 2026-09-29 "the playable
 // battle screen", Andrew: "right-click to grab the map and move"; a left drag turns and tilts. The rules kept, unweakened: a drag
 // moves the camera and suppresses the release's selection; jitter under the threshold stays a click. A left drag is added below.
-test('camera drag suppresses release selection/inspection; keyboard activation and next click work',()=>{
+// Law 10 (viewer.xcom-camera, 2026-10-01): a drag no longer moves the camera — engine DECISIONS.md 2026-10-01 'the XCOM-style
+// camera', Andrew: "no grab-drag", "no tilt, no free rotation" — so the two camera assertions here (a right drag moved camF, a
+// left drag changed cam) now assert that it did NOT move. The rules kept, unweakened: a drag still suppresses the release's
+// selection; jitter under the threshold stays a click.
+test('a drag suppresses release selection/inspection and moves no camera; keyboard activation and next click work',()=>{
  let calls=0;const {v}=boot('movement',{onHexClick:()=>{calls++;return true}});v.setTargeting(facts());const wrap=v._V.dom.stage.parentNode,drag=()=>{fire(wrap,'pointerdown',{button:2,clientX:10,clientY:10});fire(wrap,'pointermove',{clientX:30,clientY:20});fire(wrap,'pointerup')}
- const before=structuredClone(v.view.camF);drag();assert.notDeepEqual(v.view.camF,before);fire(button(v,84));assert.equal(calls,0)
+ const before=structuredClone(v.view.camF);drag();assert.deepEqual(v.view.camF,before);fire(button(v,84));assert.equal(calls,0)
  fire(button(v,84),'click',{detail:0});assert.equal(calls,1)
  drag();const img=v._V.layers.UEL.values().next().value.img;fire(img);assert.equal(v.view.inspectId,null);assert.equal(calls,1)
  fire(wrap,'pointerdown',{button:0,clientX:30,clientY:20});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,2)
- const cam=structuredClone(v.view.cam);fire(wrap,'pointerdown',{button:0,clientX:10,clientY:10});fire(wrap,'pointermove',{clientX:30,clientY:20});fire(wrap,'pointerup');assert.notDeepEqual(v.view.cam,cam);fire(button(v,84));assert.equal(calls,2);v.dispose()
+ const cam=structuredClone(v.view.cam);fire(wrap,'pointerdown',{button:0,clientX:10,clientY:10});fire(wrap,'pointermove',{clientX:30,clientY:20});fire(wrap,'pointerup');assert.deepEqual(v.view.cam,cam);fire(button(v,84));assert.equal(calls,2);v.dispose()
 })
 test('callback exceptions fault-lock host and all retained input callbacks',()=>{
  let error=null,calls=0;const failure=Error('host target failure'),{v}=boot('movement',{onHexClick(){calls++;throw failure},onError:e=>error=e});v.setTargeting(facts());const n=button(v,84);assert.throws(()=>fire(n),/host target failure/);assert.equal(v.invalid,failure);assert.equal(error,failure);assert.equal(v.playing,false);fire(n);assert.equal(calls,1);v.dispose()
@@ -78,7 +82,7 @@ test('footprint and shielding are copied even outside legal centres; no supplied
 test('one-pixel click jitter remains a click; drag threshold accumulates from pointer origin',()=>{
  let calls=0;const {v}=boot('movement',{onHexClick:()=>{calls++;return true}});v.setTargeting(facts());const wrap=v._V.dom.stage.parentNode,before=structuredClone(v.view.camF)
  fire(wrap,'pointerdown',{button:0,clientX:10,clientY:10});fire(wrap,'pointermove',{clientX:11,clientY:10});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,1);assert.deepEqual(v.view.camF,before)
- fire(wrap,'pointerdown',{button:2,clientX:10,clientY:10});for(let x=11;x<=14;x++)fire(wrap,'pointermove',{clientX:x,clientY:10});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,1);assert.notDeepEqual(v.view.camF,before);v.dispose()
+ fire(wrap,'pointerdown',{button:2,clientX:10,clientY:10});for(let x=11;x<=14;x++)fire(wrap,'pointermove',{clientX:x,clientY:10});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,1);assert.deepEqual(v.view.camF,before);v.dispose()
 })
 test('host SELECT keeps arrow keys while board hovered; target buttons keep native Enter and Space',()=>{
  const {v,w}=boot(),wrap=v._V.dom.stage.parentNode;fire(wrap,'pointerenter');const before=structuredClone(v.view.camF),select=w.document.createElement('select');let prevented=0
