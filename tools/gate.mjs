@@ -604,7 +604,7 @@ if (MODE !== 'land') {
 {
   // tools/jscpd/node_modules is the prior-art audit's installed dependency, as node_modules/ is the
   // engine's: npm ci --prefix tools/jscpd, never committed (tool.prior-art-audit, 2026-09-28).
-  const left = tryRun(`git ls-files --others --ignored --exclude-standard -- src test tools ':!tools/jscpd/node_modules'`).out.trim()
+  const left = tryRun(`git ls-files --others --ignored --exclude-standard -- src test tools ":!tools/jscpd/node_modules"`).out.trim()
   if (left) {
     console.log(`\nNOT LANDED: ignored files the checks could have read would be left out of the commit:\n${left}\nCommit them, move them out, or un-ignore them, then gate again.\n`)
     logRun('refused-ignored-files', { reason: left.split('\n').slice(0, 5).join(', ') })
