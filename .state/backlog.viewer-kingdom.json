@@ -4,7 +4,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-01 (Andrew, DECISIONS.md 'the first look at the XCOM camera, the weapons and the bodies'): 'The enemies should be facing to the left, and the heroes should be facing to the right.' · 'Every unit faces the direction it walks, and when a unit moves next to another unit, the unit, if it's an enemy, should turn to face them. ... If someone then walks up from another hex, it turns to face them. You also turn to face anybody who attacks you.' A body starts facing its side's way (heroes, civilians among them, east; enemies west) and keeps its facing: it faces where it walks, turns to face an enemy that steps next to it (the latest wins), turns to face whoever attacks it, and faces its target when it strikes.",
-  "expect": "In the sandbox at the start every hero (and civilian) faces right and every enemy left; a walking unit faces its way; a unit an enemy steps next to turns to face it, and to the next one that steps up; a unit attacked turns to its attacker."
+  "expect": "In the sandbox at the start every hero (and civilian) faces right and every enemy left; a walking unit faces its way; a unit an enemy steps next to turns to face it, and to the next one that steps up; a unit attacked turns to its attacker.",
+  "status": "done",
+  "sha": "b845b2c"
  },
  {
   "id": "viewer.xcom-camera-tuning",
