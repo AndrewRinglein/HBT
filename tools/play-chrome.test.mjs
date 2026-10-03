@@ -107,7 +107,11 @@ test('the battle log: the sentences of the events already played, appended as th
   v.seek(enemy + 1); assert.deepEqual(rows(), upTo(enemy + 1))
   assert.ok(log.children.at(-1).className.includes('enemy'), 'an Enemy Phase reads as it plays')
   v.seek(3); assert.deepEqual(rows(), upTo(3), 'a seek back trims the log')
-  v.seek(battle1.events.length); assert.match(log.children.at(-1).innerHTML, /HEROCLEAR in 17 turns/, 'battle.end names its own Turn')
+  /* Law 10, viewer.opening-replays (2026-10-03): the Orphanage's recording was re-exported current with the engine, and on its
+     seed the battle now ends otherwise — the claim is kept and reads the outcome and the Turn from the log's own battle.end;
+     was: assert.match(log.children.at(-1).innerHTML, /HEROCLEAR in 17 turns/, 'battle.end names its own Turn') */
+  const end = battle1.events.find(e => e.type === 'battle.end')
+  v.seek(battle1.events.length); assert.ok(log.children.at(-1).innerHTML.includes(`${String(end.outcome).toUpperCase()} in ${end.turn} turns`), 'battle.end names its own Turn')
   /* Law 10, viewer.bar-card-and-log (engine DECISIONS.md 2026-10-03 'the log collapses behind a button out of the way': "collapse
      and put an expandable log button somewhere out of the way"): the log is collapsed at mount, so the first click opens it; was:
      open at mount — fire(click); assert.equal(shown(log), false, 'Log hides it'); fire(click); assert.ok(shown(log)) */

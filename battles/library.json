@@ -147,15 +147,33 @@
   },
   {
    "file": "test.opening-orphanage.json",
-   "label": "Orphanage · battle 1 on its painted scene"
+   "label": "Orphanage",
+   "seed": 0
   },
   {
    "file": "test.opening-lumberjack.json",
-   "label": "Lumberjack House · battle 2 on its painted scene"
+   "label": "Lumberjack House",
+   "seed": 0
   },
   {
    "file": "test.opening-bridge.json",
-   "label": "Bridge · battle 3 on its painted scene"
+   "label": "Bridge",
+   "seed": 0
+  },
+  {
+   "file": "test.opening-cavern-trail.json",
+   "label": "Cavern Trail",
+   "seed": 0
+  },
+  {
+   "file": "test.opening-gates.json",
+   "label": "Gates",
+   "seed": 0
+  },
+  {
+   "file": "test.opening-cathedral.json",
+   "label": "Cathedral",
+   "seed": 0
   },
   {
    "file": "test.caravan-aftermath.json",
