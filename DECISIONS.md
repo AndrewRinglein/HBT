@@ -4067,3 +4067,14 @@ Ruled:
 
 - **The standing stab is shelved as is — not accepted, not reworked, not on the battle screen.** The feedback above stands as the note for whoever picks it up: more lean and wind-up, more body motion, legs moving. The Orphan Child and the School Teacher keep the closed grip and the Hook punch with the dagger in hand, as landed in `viewer.civilian-dagger-grip-punch`.
 - No item is filed for the stab; the viewer queue moves on.
+
+## 2026-10-03 — the affliction pop-up's 0-Health words and its drawbacks come from the engine
+
+Andrew, in the viewer chat, after `viewer.affliction-pop-up` landed with two findings: the engine's `badge.gained` event does not carry the Codex's ruled 0-Health text, so the pop-up's "At 0 Health" paragraph is the viewer's own wording read off the rule's shape (viewer SWITCHES `afflictionZeroWords`), and the event does not say which written terms are drawbacks (viewer SWITCHES `afflictionDrawbacks`). Asked whether to queue a small engine job so that text and the drawbacks come from the engine:
+
+“Okay, do it that way.”
+
+Ruled:
+
+- **The engine supplies the affliction's ruled 0-Health wording and marks which of its terms are drawbacks; the pop-up shows those and writes none of its own** (Viewer Constitution Law 0). viewer SWITCHES `afflictionZeroWords` and `afflictionDrawbacks` stand only until the item lands.
+- Filed: `fix.affliction-pop-up-words` (engine queue).
