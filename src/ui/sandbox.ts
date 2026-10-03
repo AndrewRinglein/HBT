@@ -33,6 +33,11 @@ const root=document.getElementById('app')!
 const escape=(x:unknown)=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!))
 let session:Sandbox|null=null,surface:ReturnType<typeof createBattleSurface>|null=null,generation=0,busy=false,fault='',error='',choices:SandboxChoice[]=[],swap:SandboxSwapOffer|null=null,selectedSwap='',selectedAction='',selectedAim='',selectedActor=''
 const config:SandboxConfig=structuredClone(SANDBOX_DEFAULT)
+// viewer.characters-stand-out (engine DECISIONS.md 2026-10-03 'the characters must stand out from the board'): &look=<name>,…
+// hands the battle screen the viewer's looks to judge (viewer src/stand-out.js LOOKS — size, shadows, ground, rim, disc), each
+// off unless named. The names are the viewer's: it refuses one that is none of its own, and the page says so (kingdom
+// SWITCHES.md standOutLink). CHARACTERS-STAND-OUT.html links the Orphanage with each.
+const LOOK:string[]=typeof location!=='undefined'&&location.search?(new URLSearchParams(location.search).get('look')??'').split(',').filter(Boolean):[]
 // viewer.play-input (PLAYABLE-OPENING-PLAN.md item 7): the mouse on the battle screen. The play input asks the engine and
 // runs each command it makes through the same host path the Execute button uses; the viewer draws its facts.
 // viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the battle screen's turn-taking, ruled', point 4): the play input's undo
@@ -308,7 +313,7 @@ function controls(){
 function install(next:Sandbox){
  const epoch=generation+1
  advanceSandbox(next)
- const candidate=createBattleSurface(__BATTLE_VIEW_DATA__,{onHexClick:(hex:number)=>{
+ const candidate=createBattleSurface(__BATTLE_VIEW_DATA__,{look:LOOK,onHexClick:(hex:number)=>{
   if(epoch!==generation||!session||busy||fault||session.ctx.state.outcome||session.ctx.battleCursor?.at!=='acting')return false
   const actor=session.ctx.battleCursor.actor
   if(actor==null||controllerOf(session.ctx,actor,session.policy)!=='human')return false
