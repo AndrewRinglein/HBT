@@ -4392,3 +4392,15 @@ Ruled:
 - (2) is his question back — which classes are missing: the Rogue and the Mage (the pool is the Hunter, the Iron Dwarf, the Battle Chaplain, the Rune-Marked Ascetic and the Dawnblade; the pack holds four base heroes of each of the six classes). Not ruled yet; 2026-10-02 'the opening run keeps its five-hero party' stands until he answers.
 
 The four items are first in the viewer and kingdom queue, in that order: his post makes the playable opening the work to do.
+
+## 2026-10-03 — the opening draft pool is all 24 heroes, Rogues and Mages included; the switch pop-up is for any player unit
+
+Andrew, in the kingdom chat. The questions as asked: (1) "Should the draft pool get Rogues and Mages now, so every draft offers three and the party ends as one of each class?"; (2) "If yes, should all 24 heroes be draftable, or a set you name?"
+
+“1. Yes
+2. Yes  I don't know if this feature got added into the queue or not, but if you double-click on a hero when you are halfway through a different hero's activation   and by hero, I just mean any player unit.  I move a player unit, but before I end activation, I double-click on another hero. It shows a pop-up that says, "End activation and activate X new hero."   And you can click yes or no.  This doesn't seem to have been added yet.”
+
+Ruled:
+
+- **The opening run's draft pool is all 24 base heroes — four of each of the six classes, the Rogues and the Mages included.** Replaces 2026-10-02 'the opening run keeps its five-hero party' ("We can leave this alone for now"): with 'the draft never repeats a class until all six are drafted' (2026-09-28) every draft offers three and the party ends as one of each class. Four still deploy. Filed: `kingdom.opening-draft-pool`, first in the viewer and kingdom queue.
+- **The switch pop-up is for any player unit, not heroes only** ("by hero, I just mean any player unit"). The feature is in the queue and not built: `viewer.switch-hero-asks` (filed earlier today from 'switching heroes asks first'), whose pending spec now says any player unit — a civilian or ally the player controls as well as a hero.
