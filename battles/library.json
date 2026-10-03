@@ -148,7 +148,7 @@
   {
    "file": "test.opening-orphanage.json",
    "label": "Orphanage",
-   "seed": 0
+   "seed": 5
   },
   {
    "file": "test.opening-lumberjack.json",
@@ -158,12 +158,12 @@
   {
    "file": "test.opening-bridge.json",
    "label": "Bridge",
-   "seed": 0
+   "seed": 24
   },
   {
    "file": "test.opening-cavern-trail.json",
    "label": "Cavern Trail",
-   "seed": 0
+   "seed": 1
   },
   {
    "file": "test.opening-gates.json",
@@ -173,7 +173,7 @@
   {
    "file": "test.opening-cathedral.json",
    "label": "Cathedral",
-   "seed": 0
+   "seed": 1
   },
   {
    "file": "test.caravan-aftermath.json",
