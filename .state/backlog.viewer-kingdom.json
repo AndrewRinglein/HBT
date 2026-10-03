@@ -40,6 +40,22 @@
   "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run."
  },
  {
+  "id": "kingdom.opening-replay-rules",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run: the Flaming Longsword waits for its taker; a lost battle pays no XP; a replay rolls new dice'): asked 'Should a lost battle pay any XP? (Today a lost Orphanage pays its 20 XP every time you replay it.)' - 'Now a lost battle offers a replay.' (No); asked 'Should a replayed battle roll new dice? (Today it replays on the same dice.)' - 'New dice.' Two changes to the opening run's lost battle (kingdom/src/core/opening.ts, src/content/encounter-rewards.ts, src/core/reckoning.ts; kingdom SWITCHES openingFixedXp, openingReplaySeed): (1) a lost opening battle pays no XP to anyone - not the Orphanage's fixed 20, not the reckoning's - it only offers the replay; the Orphanage's 20 is paid when it is won, whatever its kills or length. (2) a replayed battle is fielded on new dice: its seed takes the replay's count as well as the battle's number, so the same replay reopened from a save is the same battle (named streams, no clock, no Math.random) and the next replay differs. Wounds kept and the same party stand as ruled (2026-09-28). Rebuild the pages.",
+  "expect": "At http://127.0.0.1:4230/play a lost Orphanage leaves the hero's XP where it was and offers the replay; a won Orphanage pays 20; a replayed battle's dice differ from the first attempt's (a test fields both and compares the logs) and a replay reopened from the save is byte-identical to itself; the page test asserts each.",
+  "note": "Filed by the kingdom chat from Andrew's rulings, 2026-10-03, after the audit of the opening run."
+ },
+ {
+  "id": "kingdom.opening-sword-waits",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run: the Flaming Longsword waits for its taker ...'): asked 'If the party has no Warrior or Paladin after battle 2, should the Flaming Longsword wait in the stash until one is drafted? (Today it's never offered again.)' - 'One, yes.' Today (kingdom SWITCHES openingItemTakers) the sword is offered after a won Lumberjack House only when a living Warrior or Paladin has room for it; with none, nothing is offered and it is gone for the run - and with the draft pool grown to six classes (kingdom.opening-draft-pool) a party of three after battle 2 will often hold neither. Keep it: with no taker the Flaming Longsword goes into the run's stash, the player is told it waits, and it is offered - the carrier named by the player, as today - as soon as a living Warrior or Paladin with room is in the party (after the draft that brings one, or when one frees a hand). It stays a Warrior's or a Paladin's only (2026-09-28). Rebuild the pages.",
+  "expect": "At http://127.0.0.1:4230/play a run whose party has no Warrior or Paladin after the Lumberjack House shows the Flaming Longsword kept in the stash, and the draft that brings a Warrior or Paladin is followed by the offer to take it; a run that has one after battle 2 is offered it then, as today; the page test covers both.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run."
+ },
+ {
   "id": "viewer.opening-scenes-four-to-six",
   "kind": "viewer",
   "shape": "plumbing",

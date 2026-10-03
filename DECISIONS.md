@@ -4404,3 +4404,18 @@ Ruled:
 
 - **The opening run's draft pool is all 24 base heroes — four of each of the six classes, the Rogues and the Mages included.** Replaces 2026-10-02 'the opening run keeps its five-hero party' ("We can leave this alone for now"): with 'the draft never repeats a class until all six are drafted' (2026-09-28) every draft offers three and the party ends as one of each class. Four still deploy. Filed: `kingdom.opening-draft-pool`, first in the viewer and kingdom queue.
 - **The switch pop-up is for any player unit, not heroes only** ("by hero, I just mean any player unit"). The feature is in the queue and not built: `viewer.switch-hero-asks` (filed earlier today from 'switching heroes asks first'), whose pending spec now says any player unit — a civilian or ally the player controls as well as a hero.
+
+## 2026-10-03 — the opening run: the Flaming Longsword waits for its taker; a lost battle pays no XP; a replay rolls new dice
+
+Andrew, in the kingdom chat. The questions as asked: (1) "If the party has no Warrior or Paladin after battle 2, should the Flaming Longsword wait in the stash until one is drafted? (Today it's never offered again.)"; (2) "Should a lost battle pay any XP? (Today a lost Orphanage pays its 20 XP every time you replay it.)"; (3) "Should a replayed battle roll new dice? (Today it replays on the same dice.)"; (4) "Should a hero who dies during the six battles be replaced by an extra draft, or does the party just get smaller?"
+
+“One, yes.   Now a lost battle offers a replay.   New dice.   If a hero dies, it should be replayed.”
+
+Ruled:
+
+- **The Flaming Longsword waits in the stash until a Warrior or Paladin is in the party.** With no living Warrior or Paladin able to take it after battle 2 it is kept, and offered when one can. Settles kingdom SWITCHES `openingItemTakers` on this point ("with none, nothing is offered and nobody carries it").
+- **A lost battle pays no XP; it offers the replay.** Read as: "Now" is "No" (dictated), answering "Should a lost battle pay any XP?". The Orphanage's "20 XP no matter what" (2026-09-28) is paid when the Orphanage is won, whatever its kills or length, and never for a loss. Settles kingdom SWITCHES `openingFixedXp` on "on a loss too?".
+- **A replayed battle rolls new dice.** Overturns kingdom SWITCHES `openingReplaySeed` (the same seed every replay).
+- (4) is not ruled: "If a hero dies, it should be replayed" may be "replaced" (an extra draft), or may mean a battle in which a hero dies is replayed. Asked.
+
+Filed: `kingdom.opening-sword-waits`, `kingdom.opening-replay-rules`.
