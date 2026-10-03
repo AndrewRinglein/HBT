@@ -23295,3 +23295,23 @@ index 0000000..19fbbc3
 2026-10-03T00:31:58.591Z · Angela: "Andrew, 2026-10-02, shown the six edited tests in plain words (the Flaming Longsword to a Warrior or Paladin; Vampirism, Lycanthropy and Possession skip the Deathbed; Rotting Flesh bleed-out counts at once; the battles that moved) and asked "Do those changes match what you asked for?": "Yes.""
 
   ok  rule.afflictions-at-zero-refiled-2
+
+## viewer.characters-stand-out — LANDED `ca327fa`
+2026-10-03 05:52
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · ..\DOCS.md:134
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.characters-stand-out.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.characters-stand-out.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
