@@ -4253,3 +4253,14 @@ Ruled:
 - **While the blue movement grid is up, a tile that costs extra movement points carries that cost, in grey.** Said as "I think, maybe": a look to judge.
 - **Pointing at any hex shows a little tooltip below it: what the tile is and anything special about it** — what it costs to move there, what it inflicts, that it is water.
 - Filed: `viewer.size-and-shadows-default` (first in the viewer queue), `viewer.fallen-cards-and-first-aid`, `viewer.switch-hero-asks`, `viewer.move-cost-on-grid`, `viewer.hex-tooltip`.
+
+## 2026-10-03 — switching from a hero that has not acted is free; the hex tooltip describes the ground only
+
+Andrew, in the viewer chat, answering the two questions on the items filed above (1 if the current hero has done nothing at all yet, does a double-click on another hero switch freely as today, or ask too; 2 does the hex tooltip also say who is standing on the tile, or only describe the ground):
+
+“1. Yeah, switch freely if they haven't acted yet.  2. Yeah, just ground only.”
+
+Ruled:
+
+- **A hero that has not acted yet is switched away from freely** — no pop-up; the pop-up of `viewer.switch-hero-asks` is for a hero that has begun and still has its primary action. As the item was filed.
+- **The hex tooltip describes the ground only** — never who stands on it. As `viewer.hex-tooltip` was filed.
