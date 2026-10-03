@@ -4219,3 +4219,16 @@ The player units have their body type and their armor type.   Then they have wha
 During the enemy turn I would like for all of the enemies of a type to move at the same time.  What I mean by this is only the move actions. They can still be determined in the order they should have been determined, but we're just displaying it as if they're all moving at the same time. If I have five zombies on the board, all five of them will conduct the move action simultaneously.   We can then pause that if we need to because of attacks of opportunity.  Special free attacks, but all of the burn-by-terrain movement can happen simultaneously by unit type. If there are zombies and bloodhounds and zombies are going first, you might move 5 zombies all at the same time and 4 bloodhounds. The vampire would move on its own time.   We'll move all of the category, then have them perform actions if they have any. I move 5 zombies. If there are no attacks, it just skips the entire attack phase.   This post speeds things up and, I think, makes them visually more interesting.   But functionally it should be exactly the same.”
 
 Kept here as posted so the words are not lost. Nothing is ruled or filed from it yet: the kingdom chat's questions are out, and the entries and items follow his answers. Already recorded and not re-asked: ART-NOTES.md 2026-10-02 'Spear hold, spear stab and dagger stab' (the hero coverage: weapon families, varied strikes for multi-attacks, flight, roll, flip and floating airwalk for every hero) and 'Airwalk staff casting' (a staff caster under airwalk floats and casts floating).
+
+## 2026-10-03 — the characters stand out: the size change does it; shadows are kept; the other three do little
+
+Andrew, in the viewer chat, after looking at `kingdom/CHARACTERS-STAND-OUT.html` (the five looks of `viewer.characters-stand-out` on the Orphanage):
+
+“Okay, looks like the size change does it, and nothing else seems to help that much, but we should still have them have shadows. Can I see it with just the size changes and the shadows?”
+
+Ruled:
+
+- **The size look does it** — characters 30% larger, hexes 10% smaller.
+- **The bodies should still cast shadows.**
+- **The ground tone, the rim and the base disc do not help that much.** Not accepted; they stay off, as they are.
+- **Not yet a default.** He asked to see size and shadows together first — shown at `BATTLE-SANDBOX.html?play=encounter.opening.orphanage&look=size,shadows`. The item that makes them the default is filed once he has seen that and said so.
