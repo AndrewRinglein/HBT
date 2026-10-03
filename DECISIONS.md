@@ -3933,3 +3933,16 @@ Ruled:
 
 - **A hero that ends a lost battle still turned to the enemy side is lost** — it does not come home. Overturns SWITCHES `turnedAtBattleEnd`'s "the Reckoning gives it no wound" for that hero; filed as `fix.turned-hero-lost`.
 - **The opening's heroes level whenever their XP reaches the curve** (20, 50, 100, 170, 270, 400). No hero is owed a level by a given battle; the newly drafted heroes' 11 XP after the Lumberjack stands. Nothing is filed.
+
+## 2026-10-03 — the hero card sits small, left of the action bar; the log collapses behind a button out of the way
+
+Andrew, in the viewer chat, on a screenshot of the Orphanage battle screen (the portrait standing above the bar's left end beside an open log panel, the bar's three columns spanning the full width):
+
+“This small hero card should be smaller, and it should be to the left of the move. We need to move the move, the powers, and the attacks a little bit more to the right, make them more condensed, and put that hero card to the left. Also, collapse and put an expandable log button somewhere out of the way, not on the screen.”
+
+Ruled:
+
+- **The hero card is smaller and sits to the left of the action bar, beside its Move column** — no longer above the bar. Refines 2026-10-01 'the first look at the XCOM camera' ("A character portrait in the lower-left corner, as tall as the ability bar"): still lower-left, now inside the bar's row, at most the bar's height.
+- **The action bar's columns — moves, attacks, powers — shift right to make room and are more condensed.**
+- **The log is collapsed by default; an expandable log button opens it, placed out of the way.** The open log panel no longer stands over the board. Where the button goes is the item's switch.
+- Filed: `viewer.bar-card-and-log`.

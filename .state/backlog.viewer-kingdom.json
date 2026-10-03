@@ -1,5 +1,13 @@
 [
  {
+  "id": "viewer.bar-card-and-log",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the hero card sits small, left of the action bar; the log collapses behind a button out of the way'): \"This small hero card should be smaller, and it should be to the left of the move. We need to move the move, the powers, and the attacks a little bit more to the right, make them more condensed, and put that hero card to the left. Also, collapse and put an expandable log button somewhere out of the way, not on the screen.\" On the battle screen (viewer component; kingdom PLAY.html, BATTLE-SANDBOX.html and SLICE.html embed it): the acting hero's portrait card shrinks and moves into the action bar's row, left of the Move column, no taller than the bar; the bar's columns shift right and condense to make room; the log panel is collapsed by default and opened by an expandable log button placed out of the way (its place is this item's switch). Prior art: the lower-left portrait of 2026-10-01 'the first look at the XCOM camera' and the existing LOG toggle - this moves and resizes them, it adds no concept.",
+  "expect": "On the Orphanage in PLAY.html at a 1920-wide window: the portrait card sits left of the Move row inside the bar, no taller than the bar and smaller than before; the three columns start right of it and fit without overflow; on load no log panel covers the board, and the log button opens and closes it.",
+  "changesBaseline": false
+ },
+ {
   "id": "fix.turned-hero-lost",
   "kind": "kingdom",
   "shape": "rule",
