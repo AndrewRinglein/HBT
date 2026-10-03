@@ -23,7 +23,8 @@
 //         kill the result does not name (the panel's), or a victim with no tier,
 //         is priced at the lowest tier (kingdom SWITCHES.md killXpUnnamed). A battle whose row (src/content/encounter-rewards.ts)
 //         fixes its XP pays exactly that instead (kingdom.opening-rewards).
-//   Wound downed and alive → Wounded (1); dead → dead; untouched → 0. The
+//   Wound downed and alive → Wounded (1); dead → dead; untouched → 0. A hero still turned to the enemy side when
+//         a battle is lost is dead (fix.turned-hero-lost, engine DECISIONS.md 2026-10-02). The
 //         Deathbed is OUT of the slice (THIN-SLICE-IMPLEMENTATION.md §8), so
 //         "down-and-out resolves to plain wounds" — SWITCHES.md, wound.fromDowned.
 //   Renown +1 per Engagement won (KINGDOM-DESIGN.md §3A). Losses +1 per lost.
@@ -110,8 +111,12 @@ export function battleXpOf(engagementId: string, result: EngagementResult): { in
   const fixedXp = encounterRewardOf(engagementId)?.xp
   // kingdom.encounter-result-fold: only the roster rows are the deployed heroes — an encounter's civilians and its
   // arrivals (a `role`) are never keyed to engagement.deployed
+  // fix.turned-hero-lost (engine DECISIONS.md 2026-10-02 'a hero still turned when a battle is lost is lost': "3 treated
+  // as lost"): a row the fold marks `turned` ended a lost battle still on the enemy side — it is dead here, the one dead
+  // path, never a second removal (kingdom SWITCHES.md turnedLostIsDead)
+  const lost = result.outcome !== 'heroClear'
   return result.units.filter((u) => u.side === 'hero' && u.role === undefined).map((u) => {
-    const dead = u.lifeState === 'dead'
+    const dead = u.lifeState === 'dead' || (lost && u.turned === true)
     return { index: u.index, xp: dead ? 0 : fixedXp ?? speed + killXpOf(u), dead }
   })
 }
@@ -143,7 +148,8 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   const heroes: HeroReckoning[] = result.units.filter((u) => u.side === 'hero' && u.role === undefined).map((u, k) => {
     const heroId = engagement.deployed[u.index]
     if (!heroId) throw new Error(`${engagement.id}: result names hero row ${u.index} but only ${engagement.deployed.length} were deployed`)
-    const dead = u.lifeState === 'dead'
+    // battleXpOf's: dead, or still turned when the battle was lost (fix.turned-hero-lost)
+    const dead = xps[k]!.dead
     const hero = campaign.roster[heroId]
     if (!hero) throw new Error(`${engagement.id}: deployed hero '${heroId}' is not on the roster`)
     // A wound is a level, REPLACED not accumulated (§4.2) — and a battle never
