@@ -3921,3 +3921,15 @@ Ruled:
 
 - **The opening run's party stays as it is: five heroes drafted, four deployed.** No item is filed to grow the kingdom's draft pool or the deploy limit. kingdom SWITCHES `openingRunPartyShort` stands as its default.
 - **The difficulty of the Bridge and the Gates is not tuned now.** Functionality comes first; Andrew will playtest the opening battles and tune them himself. No balance item is filed from the page probe's finding that the engine's AI rarely wins them with this party.
+
+## 2026-10-02 — a hero still turned when a battle is lost is lost; the opening's heroes level whenever their XP reaches it
+
+Andrew, in the engine chat, after fix.opening-levels and rule.afflictions-at-zero-refiled-2 landed. The questions, as asked: (2) "Should the heroes drafted after battle 1 also reach a level by the end of battle 2? Today they average 11 XP, and at least one of them levels in only 14 of 50 runs." (3) "If a hero turns against you, is never beaten down, and the battle is lost, should it come home normal and unhurt, as built now (`turnedAtBattleEnd` in `engine/SWITCHES.md`), or be treated as lost?"
+
+“3 treated as lost.”
+“Whenever they reach a level”
+
+Ruled:
+
+- **A hero that ends a lost battle still turned to the enemy side is lost** — it does not come home. Overturns SWITCHES `turnedAtBattleEnd`'s "the Reckoning gives it no wound" for that hero; filed as `fix.turned-hero-lost`.
+- **The opening's heroes level whenever their XP reaches the curve** (20, 50, 100, 170, 270, 400). No hero is owed a level by a given battle; the newly drafted heroes' 11 XP after the Lumberjack stands. Nothing is filed.
