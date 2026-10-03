@@ -4160,3 +4160,9 @@ Andrew, on the follow-up question ("Should the civilian kit item go to the top o
 “Yes.”
 
 - **`fix.civilians-field-kit` is the top of the engine queue** (re-added with `add-item --first`).
+
+Andrew, the same chat, on the entry's "Enemies an encounter places are not named and stay as authored":
+
+“If enemies have weapons assigned, they need them also when they come into play.”
+
+- **An enemy with weapons assigned fields them when it comes into play, the same as a civilian.** This replaces the line above it answers: the rule is one rule for every unit an encounter places — setup unit or scheduled arrival, civilian or enemy — a row that carries a kit fields it. Read as: today no bestiary row assigns a weapon (all 240 rows in content `hbt-content.json` are authored with their own attacks; none carries a kit or names an `item.*`), so no enemy changes in battle now; the rule holds for the first enemy that is given one. `fix.civilians-field-kit` carries it.
