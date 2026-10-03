@@ -10,6 +10,7 @@ import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
 import { THREE, modules } from './atlas-test-runtime.mjs'
 import { packCharacterModels } from './character-models.mjs'
+import { STAND_OUT } from '../src/stand-out.js'
 const A = await modules(), pack = await packCharacterModels()
 const battle1 = JSON.parse(readFileSync('battles/test.opening-orphanage.json', 'utf8'))
 const HUE = { poison: '#8ed14f', burn: '#ff9d3c', stun: '#f5d442', slow: '#6fb3df', weak: '#b48ae0' }   // src/theme.js STYLE
@@ -102,8 +103,12 @@ test('the acting unit carries the glowing disc, its sweep and the bobbing arrow 
   assert.notEqual(E.actA.style.display, 'none', 'the glowing disc under its feet'); assert.ok(E.actA.classList.contains('act-a'))
   assert.notEqual(E.actB.style.display, 'none', 'the sweep'); assert.ok(E.actB.classList.contains('act-a2'))
   assert.equal(E.mark.style.display, 'block', 'the bobbing arrow'); assert.ok(E.mark.classList.contains('actMark'))
-  const head = Math.round(pack['hero.base.ranger-scantily'].looks[0].height * V.data.atlas.toBoard.sx)
-  assert.equal(Math.round(V.cast.heightPx(0)), head, 'the model stands its roster height in board px')
+  /* Law 10 (viewer.size-and-shadows-default, engine DECISIONS.md 2026-10-03 'size and shadows are the default', Andrew: "looks like
+     the size change does it ... but we should still have them have shadows" · "yes"): a battle's bodies stand 1.3 / 0.9 of their
+     roster stature by default (30% larger on a board shown at 0.9×); the arrow still rides the head.
+     was: const head = Math.round(pack['hero.base.ranger-scantily'].looks[0].height * V.data.atlas.toBoard.sx) */
+  const head = Math.round(pack['hero.base.ranger-scantily'].looks[0].height * STAND_OUT.BODY / STAND_OUT.BOARD * V.data.atlas.toBoard.sx)
+  assert.equal(Math.round(V.cast.heightPx(0)), head, 'the model stands its roster height, at the default size, in board px')
   assert.ok(Math.abs(px(E.mark.style.top) + head + 46) <= 1, `the arrow rides the model's head (${E.mark.style.top}, head ${head}px)`)
   /* the others are not acting */
   for (const [id, O] of V.layers.UEL) if (id !== 0) { assert.equal(O.actA.style.display, 'none'); assert.equal(O.mark.style.display, 'none') }

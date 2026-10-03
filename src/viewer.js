@@ -27,8 +27,9 @@
    opts = { now?: () => ms, autoplay?: bool, onCursor?: (cursor, event) => void,
             onHexClick?: (hex) => boolean, onDrain?: () => void, onPlayState?: (playing) => void, onError?: (err) => void,
             onPlay?: (input) => boolean, look?: string[] }
-     look (viewer.characters-stand-out) — the names of the looks to judge (stand-out.js LOOKS: size, shadows, ground, rim,
-            disc), each off unless named; resolved once, here, into the numbers the camera, the bodies and the scene read.
+     look (viewer.characters-stand-out) — the names of the looks shown (stand-out.js LOOKS: size, shadows, ground, rim,
+            disc), exactly those; resolved once, here, into the numbers the camera, the bodies and the scene read. Absent:
+            the default pair, size and shadows (viewer.size-and-shadows-default); an empty list: none.
      onPlay (viewer.play-input) — while the host has handed plan facts over (setPlay), what the mouse does on the board
             is offered to it: {kind:'point', hex|null} · {kind:'hex', hex} · {kind:'unit', id, hex} · {kind:'back'}
             (a right-click that did not drag, or Esc) · {kind:'slot', actionId, unit} (an action-bar row). The host

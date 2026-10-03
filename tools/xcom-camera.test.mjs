@@ -11,6 +11,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
 import { THREE, modules } from './atlas-test-runtime.mjs'
+import { STAND_OUT } from '../src/stand-out.js'
 const A = await modules()
 const battle1 = JSON.parse(readFileSync('battles/test.opening-orphanage.json', 'utf8'))
 const PAGE = process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html'
@@ -50,7 +51,11 @@ test('the wheel looks a little nearer or farther and springs back to the standar
      reason to ever scroll into white space."): was 'farther than .75×, never past .6×' — the wheel now also stops where the
      view just fills with board; the standard zoom is POLICY.FILL_ROOM (1.25) nearer than that, so on the Orphanage the
      farthest is 1 / 1.25 of the standard, the nearer of the two limits (camera-no-void.test.mjs reads the view itself) */
-  nearly(V.view.cam.zoom, Math.max(.6, 1 / 1.25), 1e-9, 'farther, as far as the board fills the view (and never past .6×)')
+  /* Law 10 (viewer.size-and-shadows-default, engine DECISIONS.md 2026-10-03 'size and shadows are the default', Andrew: "looks
+     like the size change does it" · "yes"): the standard zoom is 0.9× the board's own by default (hexes 10% smaller), so the
+     fill — where the wheel stops — is 1 / (1.25 × 0.9) of the standard; still never white space, never past .6×.
+     was: nearly(V.view.cam.zoom, Math.max(.6, 1 / 1.25), 1e-9, …) */
+  nearly(V.view.cam.zoom, Math.max(.6, 1 / (1.25 * STAND_OUT.BOARD)), 1e-9, 'farther, as far as the board fills the view (and never past .6×)')
   w._flush(700); assert.equal(V.view.cam.zoom, 1, 'and back')
   v.dispose()
 })

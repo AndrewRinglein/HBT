@@ -8,12 +8,17 @@
 // (VIEWER_PAGE, else BATTLE-VIEWER.html), the page's own modules and the approved model files that each look is exactly its
 // own thing, on with its name and off without. The kingdom's half (its link and its review page) is
 // ../kingdom/tools/characters-stand-out.verify.mjs.
+// viewer.size-and-shadows-default (engine DECISIONS.md 2026-10-03 'size and shadows are the default', Andrew: "looks like the
+// size change does it, and nothing else seems to help that much, but we should still have them have shadows." · "yes"): a
+// battle whose host names NO looks shows size and shadows; a list handed over is exactly the looks shown, and an empty one is
+// the board as it was before. Law 10: the "no look" this file compared against was a mount with nothing named — it is now a
+// mount with an empty list (boot([])); every claim about each look is unchanged.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
 import { THREE, modules } from './atlas-test-runtime.mjs'
-import { LOOKS, STAND_OUT, standOut, NO_LOOK } from '../src/stand-out.js'
+import { LOOKS, STAND_OUT, DEFAULT_LOOKS, standOut, NO_LOOK } from '../src/stand-out.js'
 import { SIDE_TINT, SIDE_GLOW } from '../src/theme.js'
 const A = await modules()
 const battle1 = JSON.parse(readFileSync('battles/test.opening-orphanage.json', 'utf8'))
@@ -77,7 +82,21 @@ function onScreen(V, B) {
   const f = at(0), h = at(B.standingHeight()); return Math.hypot(h[0] - f[0], h[1] - f[1])
 }
 
-test('the looks: five, each off unless named, each changing only its own number; a name that is none of them is refused', () => {
+test('the default: a battle whose host names no looks shows size and shadows — the board at 0.9×, no white space, the patch under the feet darker — and nothing else', () => {
+  assert.deepEqual([...DEFAULT_LOOKS], ['size', 'shadows'])
+  assert.deepEqual({ ...standOut(), on: { ...standOut().on } }, { ...standOut(['size', 'shadows']), on: { ...standOut(['size', 'shadows']).on } })
+  const usual = boot(), named = boot(['size', 'shadows']), before = boot([])
+  assert.deepEqual({ ...usual.V.look.on }, { size: true, shadows: true, ground: false, rim: false, disc: false })
+  assert.deepEqual([usual.V.dom.stage.classList.contains('lookShadows'), usual.V.dom.stage.classList.contains('lookDisc')], [true, false])
+  assert.deepEqual(footprint(usual.V), footprint(named.V), 'the same view as the two named')
+  const q = noVoid(usual.V, 'the default, at load'), q0 = noVoid(before.V, 'no look at all, at load')
+  assert.ok(Math.abs((q.r - q.l) / (q0.r - q0.l) - 1 / STAND_OUT.BOARD) < .005, 'every hex 0.9× its former size')
+  assert.equal(usual.V.look.bodyScale, STAND_OUT.BODY / STAND_OUT.BOARD); assert.equal(usual.V.look.shadows, true)
+  assert.deepEqual({ ...before.V.look.on }, { ...NO_LOOK.on }, 'an empty list: none')
+  for (const b of [usual, named, before]) b.v.dispose()
+})
+
+test('the looks: five, each on only when shown, each changing only its own number; a name that is none of them is refused', () => {
   assert.deepEqual(ALL, ['size', 'shadows', 'ground', 'rim', 'disc'])
   assert.deepEqual({ ...NO_LOOK, on: { ...NO_LOOK.on } }, { on: { size: false, shadows: false, ground: false, rim: false, disc: false }, boardZoom: 1, bodyScale: 1, shadows: false, ground: null, rim: null, disc: false }, 'no look: every number the one that changes nothing')
   /* the ruling's own numbers: hexes 10% smaller, characters 30% larger on the screen */
@@ -96,11 +115,11 @@ test('the looks: five, each off unless named, each changing only its own number;
   assert.throws(() => boot('refused').mount({ look: ['bigger'] }), /not one of/, 'the page refuses it at mount')
 })
 
-test('no look named: the page is as it was — the standard zoom, no class on the board, the disc unseen; the disc look shows a side-coloured disc under every unit, inside the acting mark', () => {
+test('no look at all (an empty list): the page is as it was — the standard zoom, no class on the board, the disc unseen; the disc look shows a side-coloured disc under every unit, inside the acting mark', () => {
   const css = readFileSync(PAGE, 'utf8').match(/<style>([\s\S]*?)<\/style>/)[1]
   assert.match(css, /\.sideDisc\{[^}]*visibility:hidden/, 'unseen unless the look is named'); assert.match(css, /#stage\.lookDisc \.sideDisc\{visibility:visible\}/)
   assert.match(css, /#stage\.lookShadows \.shadow\{background:rgba\(0,0,0,\.85\)\}/, 'the shadows look: the patch under the feet darker')
-  const plain = boot(), disc = boot(['disc']), shadows = boot(['shadows'])
+  const plain = boot([]), disc = boot(['disc']), shadows = boot(['shadows'])
   assert.deepEqual({ ...plain.V.look.on }, { ...NO_LOOK.on })
   const has = (V, c) => V.dom.stage.classList.contains(c)
   assert.deepEqual([has(plain.V, 'lookDisc'), has(plain.V, 'lookShadows')], [false, false])
@@ -119,7 +138,7 @@ test('no look named: the page is as it was — the standard zoom, no class on th
 })
 
 test('the size look: the board is shown at 0.9× — hexes 10% smaller — and never any white space: at load, every wheel step, every quarter turn, every edge', () => {
-  const plain = boot(), size = boot(['size']), F = size.V.data.F
+  const plain = boot([]), size = boot(['size']), F = size.V.data.F
   const q0 = noVoid(plain.V, 'no look, at load'), q1 = noVoid(size.V, 'size, at load')
   const ratio = (q1.r - q1.l) / (q0.r - q0.l)
   assert.ok(Math.abs(ratio - 1 / STAND_OUT.BOARD) < .005, `the view sees 1/0.9 as much board across (${ratio.toFixed(4)}): every hex is 0.9× its size`)
@@ -143,7 +162,7 @@ test('the size look: the board is shown at 0.9× — hexes 10% smaller — and n
 })
 
 test('the bodies: no look — the roster\'s stature, no shadow cast, no rim; size — every body 1.3× as tall on the screen; shadows — every piece casts; rim — a twin of every drawn piece in its side\'s colour, behind its body', async () => {
-  const plain = boot(), P = await castOf(plain.V)
+  const plain = boot([]), P = await castOf(plain.V)
   for (const u of P.standing) { const B = P.cast.body(u.id)
     assert.ok(Math.abs(B.standingHeight() / B.look.height - 1) < .02, `${u.name}: its roster stature`)
     let casts = 0; B.stage.traverse(o => { if (o.isMesh && o.castShadow) casts++ }); assert.equal(casts, 0, `${u.name} casts nothing`)

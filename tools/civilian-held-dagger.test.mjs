@@ -16,6 +16,7 @@ import { createHash } from 'node:crypto'
 import { makeWindow } from './fakedom.mjs'
 import { THREE, modules } from './atlas-test-runtime.mjs'
 import { packCharacterModels, CIVILIANS } from './character-models.mjs'
+import { STAND_OUT } from '../src/stand-out.js'
 const A = await modules(), pack = await packCharacterModels()
 const json = p => JSON.parse(readFileSync(p, 'utf8'))
 const sha = p => createHash('sha256').update(readFileSync('../' + p)).digest('hex')
@@ -80,9 +81,16 @@ function dagger(B) {
 /** the dagger is in the hand: drawn at a dagger's size, its grip within a palm of the hand bone */
 function inHand(B, socket, what) {
   B.stage.updateMatrixWorld(true)
-  const box = new THREE.Box3().setFromObject(socket), size = box.max.distanceTo(box.min)
+  /* Law 10 (viewer.size-and-shadows-default, engine DECISIONS.md 2026-10-03 'size and shadows are the default', Andrew: "looks like
+     the size change does it ... but we should still have them have shadows" · "yes"): a battle's bodies stand 1.3 / 0.9 of their
+     roster stature by default (30% larger on a board shown at 0.9×), and what a body holds grows with it: the dagger's size and its grip's distance
+     from the hand are read at the body's own scale (its standing height over its roster stature — 1 for a body built bare).
+     was: size > .05 && size < .6 · d < .1 */
+  const k = B.standingHeight() / B.look.height
+  assert.ok(Math.abs(k - 1) < .02 || Math.abs(k - STAND_OUT.BODY / STAND_OUT.BOARD) < .02, `${what}: the body is at its roster stature or the default size (${k.toFixed(3)})`)
+  const box = new THREE.Box3().setFromObject(socket), size = box.max.distanceTo(box.min) / k
   assert.ok(size > .05 && size < .6, `${what}: the dagger is ${size.toFixed(3)} m long`)
-  const d = socket.getWorldPosition(V3()).distanceTo(socket.parent.getWorldPosition(V3()))
+  const d = socket.getWorldPosition(V3()).distanceTo(socket.parent.getWorldPosition(V3())) / k
   assert.ok(d < .1, `${what}: its grip is ${d.toFixed(3)} m from the hand`)
 }
 

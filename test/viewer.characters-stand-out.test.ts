@@ -23,7 +23,9 @@ describe('the characters stand out: five looks to judge, each on only when named
   })
   it('the viewer page: no look is the page as it was; size shows the board at 0.9× with bodies 1.3× on the screen and no white space; shadows, ground, rim and disc are each their own', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/characters-stand-out.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
-    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
+    // Law 10 (viewer.size-and-shadows-default, engine DECISIONS.md 2026-10-03 'size and shadows are the default'): the page test
+    // gained the default's own test — was /# pass 6/
+    expect(out).toMatch(/# pass 7/); expect(out).toMatch(/# fail 0/)
   }, 170000)
   it('the kingdom: the review page links the Orphanage as today, with each look alone and with all together; the built battle page takes them from its link', () => {
     mkdirSync('../kingdom/scratch', { recursive: true })

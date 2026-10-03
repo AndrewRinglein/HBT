@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto'
 import { makeWindow } from './fakedom.mjs'
 import { THREE, modules } from './atlas-test-runtime.mjs'
 import { packCharacterModels, RULED, CIVILIANS } from './character-models.mjs'
+import { STAND_OUT } from '../src/stand-out.js'
 const A = await modules(), pack = await packCharacterModels()
 const battle1 = JSON.parse(readFileSync('battles/test.opening-orphanage.json', 'utf8'))
 
@@ -103,8 +104,12 @@ test('the cast: a bound unit is its model standing on its token; an unbound unit
   assert.ok(body.stage.position.distanceTo(feet) < 1e-6, 'the model stands at its token')
   assert.ok(scene.getObjectById(body.stage.id), 'the model is in the painted scene')
   assert.equal(body.motion, 'idle')
-  /* the stature is the roster's */
-  assert.ok(Math.abs(body.standingHeight() - worn.height) < 1e-6)
+  /* the stature is the roster's, at the default size.
+     Law 10 (viewer.size-and-shadows-default, engine DECISIONS.md 2026-10-03 'size and shadows are the default', Andrew: "looks like
+     the size change does it ... but we should still have them have shadows" · "yes"): a battle's bodies stand 1.3 / 0.9 of their
+     roster stature by default (30% larger on a board shown at 0.9×).
+     was: assert.ok(Math.abs(body.standingHeight() - worn.height) < 1e-6) */
+  assert.ok(Math.abs(body.standingHeight() - worn.height * STAND_OUT.BODY / STAND_OUT.BOARD) < 1e-6)
   H.dispose()
 })
 
