@@ -19,7 +19,7 @@ const opening = Object.values(SCENARIOS as Record<string, any>).filter((s) => s.
 const ground = (s: any) => proposal.maps.find((m: any) => m.name === (ENCOUNTERS as Record<string, any>)[s.encounterId].name).file as string
 
 describe('the opening battles are drawn on their 3D scenes', () => {
-  it('every opening map compiled from a 3D scene is bound to that scene, its grid the engine board's', () => {
+  it('every opening map compiled from a 3D scene is bound to that scene, its grid the engine board', () => {
     const fromScene = opening.filter((s) => ground(s).startsWith('assets/terrain-3d/'))
     expect(fromScene.map((s) => s.openingPosition)).toEqual([1, 2, 3, 4, 6])
     for (const s of fromScene) {
@@ -32,7 +32,7 @@ describe('the opening battles are drawn on their 3D scenes', () => {
   })
   it('the Gates, compiled from an Atlas map and not a scene, is not bound to one', () => {
     const gates = opening.find((s) => s.openingPosition === 5)!
-    expect(ground(gates)).toMatch(/^assets/battle-atlas/maps//)
+    expect(ground(gates).startsWith('assets/battle-atlas/maps/')).toBe(true)
     expect(pack[gates.mapId]).toBeUndefined()
   })
   it('the viewer page: each bound battle opens on its scene', () => {

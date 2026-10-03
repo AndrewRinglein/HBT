@@ -22,11 +22,17 @@ describe('the painted scenes stand on the engine board', () => {
   // painted scene's measured navigation (content/gen/painted-maps.json — map.caravan-aftermath, DECISIONS.md 2026-10-01).
   // was: expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage'])
   const compiled: string[] = JSON.parse(readFileSync('../content/gen/painted-maps.json', 'utf8')).maps.map((m: { id: string }) => m.id)
-  it('binds exactly the three maps the plan names and the maps compiled from painted scenes', () => {
+  // Law 10, viewer.opening-scenes-four-to-six (2026-10-03, engine DECISIONS.md 'everything in the viewer and in play is the 3D
+  // maps and the 3D characters'): battles 4 and 6 are bound to the scenes their maps were compiled from. The rule kept: exactly
+  // the opening maps bound by name and the compiled ones, each hex for hex.
+  // was: it('binds exactly the three maps the plan names and the maps compiled from painted scenes', ...) with
+  //      toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage', ...compiled].sort())
+  // was: it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge', 'map.caravan-aftermath'])
+  it('binds exactly the five opening maps compiled from a scene and the maps compiled from painted scenes', () => {
     expect(compiled).toEqual(['map.caravan-aftermath'])
-    expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage', ...compiled].sort())
+    expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.cathedral', 'map.opening.cavern-trail', 'map.opening.lumberjack', 'map.opening.orphanage', ...compiled].sort())
   })
-  it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge', 'map.caravan-aftermath'])('%s: every engine hex lands on its scene hex', (id) => {
+  it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge', 'map.opening.cavern-trail', 'map.opening.cathedral', 'map.caravan-aftermath'])('%s: every engine hex lands on its scene hex', (id) => {
     const b = painted[id]!, d = decodeMap(mapDef(id)), field = presentationField({ ...d.board, terrain: d.terrain, props: d.props }, mapDef(id).rows)
     expect([b.kind, b.mapId, b.cols, b.rows]).toEqual(['painted', id, field.width, field.height])
     const cells: Cell[] = JSON.parse(readFileSync(`../assets/terrain-3d/${b.scene}/navigation.json`, 'utf8')).cells
