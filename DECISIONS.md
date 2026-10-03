@@ -3958,3 +3958,19 @@ Ruled:
 - **The view never scrolls past the board into white space.** The board fills the battle area at every zoom the wheel allows; the pan stops at the board's edges. Overturns viewer SWITCHES `xcomRoam` (the view's centre may reach any point of the board, "past the board's edge the scene's ground, or its background, shows"), which was the viewer chat's default, not a ruling.
 - **Pointing at an edge scrolls the map** whenever there is board beyond it — 2026-10-01's "pointing to scroll must work every time" still holds; the fix for it must not come from letting the view into the void (the reason `xcomRoam` retired `cameraPanNoVoid`). Read as: the standard zoom is never so far out that the whole board fits with room to spare, so there is always board to scroll to.
 - Filed: `viewer.camera-no-void`, first in the viewer queue.
+
+## 2026-10-03 — a hero starts its Activation with its basic move armed; the battle screen's turn-taking is to be redesigned
+
+Andrew, in the viewer chat, playing the Orphanage (Turn 2, Hero Phase):
+
+“In Hero Phase 2, I can't seem to change whose turn it is. I'm stuck on the orphan, and I can't choose somebody else. The orphan seems like he's kind of faded. This whole system is really glitchy and confusing. Can we discuss what the ideal behavior should be? … This is a horrific experience right now.”
+
+“I think that the enemy did an attack, and then their attack probability was stuck on the screen when it became the hero's turn, so I couldn't figure out whose turn it was.”
+
+“When a player unit is first activated, it should be like we clicked the basic first movement ability. They can choose a different movement ability, and then it will switch to that, but it should start activated with the basic movement ability. They don't have to go and click on it; they can literally just move on the map by double-clicking.”
+
+Ruled:
+
+- **A player unit starts its Activation with its basic movement ability already chosen**, as if its button had been clicked. Choosing another movement ability on the bar switches to it. Moving needs no click on the bar: a double-click on a hex moves there. Overturns kingdom SWITCHES `playQueueProposal` where it leaves the hero proposed and not begun.
+- **The enemy's leftovers must not survive into the Hero Phase** — its hit chance stayed on screen after it attacked, so whose turn it was could not be told. A bug, not a design question.
+- The rest of the selection behaviour is under discussion in this chat; its outcome is recorded below this entry when ruled.
