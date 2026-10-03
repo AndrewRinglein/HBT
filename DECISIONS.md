@@ -4296,3 +4296,18 @@ Ruled:
 - **In the Enemy Phase the enemies of one unit type are shown moving at the same time, then that type's attacks play, then the next type.** Zombies and fast zombies are two groups. A free attack on a moving enemy freezes the whole group while it plays. Display only: the engine decides every activation in its own order and the result is exactly the same.
 
 No item is filed from this entry yet: a second round of questions is out.
+
+## 2026-10-03 — Back Flip's rules; enemies only move together; the motion work comes first
+
+Andrew, in the kingdom chat, answering the second round. The questions as asked: (1) "Should Back Flip follow Side Roll's rules (one hex, provokes nothing, ignores terrain cost), only in a different direction?"; (2) "Since the rules don't track facing, should "behind" for Back Flip mean directly away from an enemy standing next to the hero?"; (3) "Who can unlock Back Flip, and what should it cost in stamina?"; (4) "If the rules have enemies acting in a mixed order (zombie, hound, zombie), should the screen still gather all the zombies into one group and show them first?"; (5) "Should allies of one type, such as the orphans, also move together on their turn, or is this for enemies only?"; (6) "Should the art needs go into the art queue as items to build, or be recorded as a coverage list in the art notes for you to schedule?"; (7) "Which should be built first: enemies moving together, or the motion work?"
+
+“Let's create a backflip. Moves 1 hex back, provokes nothing, ignores terrain costs, and gives +20 dodge until the end of next activation.  2. Yes.   Should cost 1 stamina.  I guess backflip is just a visual element. We don't have to have it be related to an enemy. It's just moving into another square that's adjacent to you.   5 enemies only.   Motion work first.”
+
+Ruled:
+
+- **Back Flip is a movement power: move 1 hex, provoke nothing, ignore the destination's terrain cost, +20 Dodge until the end of the next Activation; 1 Stamina.** The destination is any adjacent hex: the "2. Yes" (away from an adjacent enemy) is replaced by his next words — the back flip "is just a visual element", "moving into another square that's adjacent to you". Read as: "the end of next activation" is the end of the hero's own next Activation, so the Dodge holds through the Enemy Phase between; a bonus move like Side Roll (it does not add the Movement stat); no cooldown, none being named. Not ruled: who unlocks it — no class is granted it until he says. Filed: `movement.back-flip`.
+- **Only enemies move together.** Allies of one type (the orphans) keep moving one at a time.
+- **The motion work is built before enemies moving together.**
+- Not answered, defaults taken: (4) the screen gathers every enemy of a type into one group even when the engine's order is mixed, the groups in the order each type first acts — the builder's switch in `viewer.enemy-type-moves-together`; (6) the art needs are recorded as a coverage list in ART-NOTES.md (2026-10-03 'the motion coverage, ruled'), the art queue left empty until he says to fill it.
+
+Filed from this entry and 'the post's twelve questions answered' above — engine queue: `movement.back-flip`; viewer queue, in this order after what was already there: `viewer.special-move-motions`, `viewer.shield-block-and-hit`, `viewer.airwalk-floats`, `viewer.enemy-type-moves-together`. `viewer.attack-owns-motion` (filed earlier today) now carries the several-swings rule.
