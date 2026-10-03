@@ -28,6 +28,11 @@ export const SCENES = {
   'map.opening.orphanage': { key: 'orphanage', scene: 'orphanage-riverside' },
   'map.opening.lumberjack': { key: 'lumberjack', scene: 'lumberjack-forest' },
   'map.opening.bridge': { key: 'bridge', scene: 'abbotown-encounters/bridge' },
+  // viewer.opening-scenes-four-to-six (engine DECISIONS.md 2026-10-03 'everything in the viewer and in play is the 3D maps and
+  // the 3D characters'): battles 4 and 6 on the scenes their maps were compiled from. Battle 5, the Gates, was compiled from an
+  // Atlas map (assets/battle-atlas/maps/abbotown-gate-painted.json), not a scene: unbound (viewer SWITCHES gatesGround)
+  'map.opening.cavern-trail': { key: 'cave', scene: 'abbotown-encounters/cave' },
+  'map.opening.cathedral': { key: 'cathedral', scene: 'abbotown-encounters/cathedral' },
 }
 // A hex centre that misses the engine's by more than this (board px) is a misaligned scene.
 export const TOLERANCE = 1e-6

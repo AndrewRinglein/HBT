@@ -588,3 +588,17 @@ and `openingBattleAddresses`** (the addresses `#map.opening.<name>` hold unchang
 | `remainsHaveNoDeadUnit` | The Cathedral opens on remains its encounter lays (`corpse.created` with `of: null`); verify asked every corpse for its dead unit's token. | **Every corpse still needs its board object; the token's leaving is asked of the first three corpses a unit left.** The old line is quoted beside it in `tools/verify.mjs`. | No unit died to leave them; the claim was never about remains. | Default — 2026-10-03 |
 | `wrappersOnCandidate` | `test/walk-in-step.test.ts` and `test/bodies-before-board.test.ts` ran their page tests against the landed page whatever the gate handed them (`VIEWER_PAGE: ''`), so a re-exported battle met the old page's copy of it. | **Both take the gate's page, as every other wrapper does (`process.env.VIEWER_PAGE ?? ''`).** | GBH SWITCHES `gate.checksOnCandidate`: the landed page cannot carry the change being gated. | Default — 2026-10-03 |
 | `openingReplaysRefiled` | The item was filed with shape `data`; the engine gate then asks for its id in a battle log and for a kill switch, which no viewer item has (every landed viewer item is shape `plumbing`). Land how? | **As engine SWITCHES `orphansKnifeRefiled`: abandon `viewer.opening-replays` with that reason and re-file it through `tools/add-item.mjs --first` as `viewer.opening-replays-refiled`, shape `plumbing`, the same spec and expect; land the re-filed item.** No item needs the abandoned id, so nothing is repointed. The viewer and kingdom commits made under the first id stand. | The precedent; the backlog is never hand-edited. | provisional — 2026-10-03 |
+
+## viewer.opening-scenes-four-to-six — 2026-10-03
+
+Engine DECISIONS.md 2026-10-03 'everything in the viewer and in play is the 3D maps and the 3D characters' (Andrew): "I want
+everything in the viewer to be our three-dimensional maps and our three-dimensional characters. Everything in the play is to
+be that." `tools/painted-scenes.mjs` (`SCENES`: the Cavern Trail on `abbotown-encounters/cave`, the Cathedral on
+`abbotown-encounters/cathedral`, bound as the first three were — the binder accepted both as they stand, hex for hex); probes
+`tools/opening-scenes.test.mjs`, `test/viewer.opening-scenes-four-to-six.test.ts`; `tools/painted-board.test.mjs` asks every
+bound scene hex by hex. Seen in a real browser on the candidate page, both battles, no console error.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `gatesGround` | The item names `abbotown-complete` (the whole-town model, a 20×50 measured grid) for the Gates; the binder refuses it. | **The Gates stays on the flat board, unbound, and the reason is named: its map was compiled from an Atlas map (`assets/battle-atlas/maps/abbotown-gate-painted.json`), not from a 3D scene; `abbotown-complete` has `abbotown.glb` and a navigation file but no `scene.glb`, and the ground proposal does not name it for the Gates.** Never a borrowed scene. The launcher's "flat board for now" line stays for the Gates alone. | The item's own clause (2): say exactly what is missing. Whether the Gates' scene is cut from the town model was asked of Andrew 2026-10-03 and is not yet answered. | Default — 2026-10-03; open |
+| `unmodelledOnScene` | Battles 4 and 6 field units with no model bound (Zombie Hound, Werewolf, Ghoul). | **They keep their tokens, standing on the 3D scene, until `art.opening-enemy-models` supplies them.** | The item makes no models; a borrowed look is never drawn. | Default — 2026-10-03 |
