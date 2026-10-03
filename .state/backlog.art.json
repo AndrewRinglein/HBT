@@ -1,1 +1,61 @@
-[]
+[
+ {
+  "id": "art.hero-flight-motions",
+  "kind": "art",
+  "shape": "data",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the post's twelve questions answered', 8, and the post): 'It is different from flight, which means you take off. You need a launching motion, a moving motion, and a landing motion. Every type of hero needs flight.' / 'Yes, every type of hero needs flight because they can gain flight. There are magic items that give flight, and there are powers that give flight.' Give every hero body the three flight motions - launch, fly, land. Today the motion word `flight` is missing on every body (engine/generated/movements.json: power.flight, power.flight-swift, power.flight-labored, power.flight-vampiric all `missing`). Start at assets/characters/PRODUCTION-START.md and the skills it routes to; reuse sources the project already holds before making or buying one (ART-NOTES.md 2026-09-25 'Standing block, airwalk and movement flight'); adapt per body family, one complete representative approved by eye before a batch. Record each accepted clip in the owning records so viewer/tools/character-models.mjs can bind it; a body not yet done is listed by name. Binding the three into one flight on the battle screen is the viewer's, not this item.",
+  "expect": "A review page shows launch, fly and land on each hero body for Andrew to approve by eye; the approval is recorded where PRODUCTION-START.md says; the list of hero bodies with all three, and of those still lacking one, is printed by name.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03 ('The art needs should become items in the art queue'). The first item in the art queue: how an art item is checked and landed by tools/gate.mjs is untested - a tooling gap goes to GBH SWITCHES.md."
+ },
+ {
+  "id": "art.held-set-stances",
+  "kind": "art",
+  "shape": "data",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the post's twelve questions answered', 5, and the post): 'what they're holding affects their motions a great deal. It's different to move when you're holding a staff than it is when you're holding a sword and shield.' / 'I think a spear is actually different than those ... pole arm and spear are the same.' / 'There is also a wand or a holy item. I think that stance is not the same as the one-handed weapon alone.' Each held set gets its own stance (standing) and walk on the hero bodies: weapon and shield; one-handed weapon alone; two-handed swinging weapon; spear or polearm (one stance and walk, different swings); staff; wand or holy item; bow; two daggers; empty hands. Today every body has one `idle` and one `move` whatever it holds. Start at assets/characters/PRODUCTION-START.md; use what the project already holds first (ART-NOTES.md 2026-10-02 'Spear hold, spear stab and dagger stab', 2026-09-24 'idle, identity, weapon families'), one representative body per set approved by eye before a batch. Record each accepted stance and walk in the owning records; a set or body not yet done is listed by name. Choosing the stance from what the unit holds on the battle screen is a viewer item to file when the first sets are approved.",
+  "expect": "A review page shows, for each of the nine held sets, the stance and the walk on a representative hero body for Andrew to approve by eye; approvals are recorded; the sets and bodies still lacking one are printed by name.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03."
+ },
+ {
+  "id": "art.leap-motion",
+  "kind": "art",
+  "shape": "data",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the post's twelve questions answered', 9): 'I don't think we have the motion set for leap properly.' / 'We still need something for leap. I don't think we have one.' Leap (power.leap: move exactly 2 hexes, Warriors) plays the body's ordinary `move` clip today. Find or make a leap - a jump that carries the body two hexes and lands - for the hero bodies: PRODUCTION-START.md first, the project's own packs and free-motion-study/selections.json before anything new; candidates are shown to Andrew, never chosen for him. Record the accepted clip so viewer.special-move-motions (which lists Leap as lacking a motion) can bind it.",
+  "expect": "A review page shows the leap candidates on a Warrior body for Andrew to pick by eye; the pick is recorded in the owning records and named as Leap's motion; until he picks, Leap stays listed as lacking one.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03."
+ },
+ {
+  "id": "art.monster-motion-lists",
+  "kind": "art",
+  "shape": "data",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the post's twelve questions answered', 1 and 2, and the post): an enemy that holds weapons moves like a human and uses the hero motions; every other enemy, the zombie included, is a monster with a short list - 'Monsters that have different forms just have a limited set of actions.' A monster's list: standing, moving, one melee attack, getting hit, dying; a ranged attack, up to two power or spell motions and flight only where it has them; 'there's also dodging and blocking sometimes, but we may not have those' - optional, never listed as missing. Sort every enemy in the bestiary into humanoid or monster by whether its row holds a weapon (propose the sort; a doubtful one is listed for Andrew, not decided), and for each monster write what its list needs from its own row (its attacks, powers and moves) and which of those motions its approved body already has (assets/characters/APPROVED-CHARACTERS.md, ART-NOTES.md 2026-09-24 'shared hero animations and per-enemy model needs'). The output is the list of what each monster lacks, the opening battles' monsters first; making the motions is the items filed from it.",
+  "expect": "One generated list names every enemy as humanoid or monster, and for each monster the motions its row needs, the ones its body has, and the ones it lacks; the doubtful sorts are listed for Andrew; the opening battles' monsters come first.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03."
+ },
+ {
+  "id": "art.one-handed-swing-variety",
+  "kind": "art",
+  "shape": "data",
+  "needs": [
+   "viewer.attack-owns-motion"
+  ],
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'posted: which motions enemies and heroes need' and 'the post's twelve questions answered', 3 and 4): 'There are quite a few. I think in one pack there are five and in another pack there are two or three. Different motions for a one-handed attack with a right-handed weapon. I actually want to use all of them because I want a variety in the attack motion. Some of them are combos, and we can combine them for more advanced types of attacks.' Today all 86 melee weapon attacks play one clip, atk_slashdown. Inventory every one-handed right-hand swing the project's packs hold, fit each to the hero bodies (PRODUCTION-START.md first; ART-NOTES.md 2026-10-02: 'The user reports six sword strikes'), and propose which attacks each swing suits - a proposal for Andrew's eye, the assignment itself made through viewer.attack-owns-motion's one authored place. The combos are listed as candidates for the more advanced attacks. Every hero can punch: the punch is in the inventory.",
+  "expect": "A review page shows every one-handed swing the packs hold, on a hero body, with the attacks each is proposed for, for Andrew to approve by eye; approved swings are recorded and assignable to attacks; the combos are listed apart.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03. Not one of the four he was asked about; from the same coverage list (ART-NOTES.md 2026-10-03)."
+ },
+ {
+  "id": "art.airwalk-floating-motions",
+  "kind": "art",
+  "shape": "data",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the post's twelve questions answered', 7): 'Yes, basically, a hero with air walk is floating all of the time.' / the post: 'If you're floating, you're going to make your attacks from that position and cast your spells from it.' A floating version of each motion a hero plays - standing, moving, attacking, casting, getting hit - for the hero bodies. Continue ART-NOTES.md 2026-10-02 'Airwalk staff casting and the motion creator': layering the float (Vampire_Idle_Float) under an approved action, one combination passing Andrew's review before any batch ('So far, motion has been very hit or miss'). Record each accepted floating motion so viewer.airwalk-floats can bind it; a body or motion not yet done is listed by name.",
+  "expect": "A review page shows the floating stand, move, attack, cast and getting-hit on a representative hero body for Andrew to approve by eye; approvals are recorded; the bodies and motions still lacking a floating version are printed by name.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03. Not one of the four he was asked about; from the same coverage list (ART-NOTES.md 2026-10-03)."
+ },
+ {
+  "id": "art.hit-reaction-not-block",
+  "kind": "art",
+  "shape": "data",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the post's twelve questions answered', 6: two shield reactions - the shield blocks the blow; the blow lands anyway). Today every hero body's `hit` reaction is the shield-block clip (shield_blockleft), shield or no shield. Find or fit a getting-hit reaction that is not a block for the hero bodies - the blow lands - from the project's packs first (PRODUCTION-START.md), shown to Andrew for approval. Record it so viewer.shield-block-and-hit can bind it: the block stays the shield's, the new reaction is everyone's.",
+  "expect": "A review page shows the getting-hit reaction beside the shield block on a hero body with and without a shield for Andrew to approve by eye; the approval is recorded; hero bodies still lacking it are printed by name.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03. Not one of the four he was asked about; from the same coverage list (ART-NOTES.md 2026-10-03)."
+ }
+]
