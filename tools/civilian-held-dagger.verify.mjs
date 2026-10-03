@@ -36,9 +36,13 @@ function dagger(B,what){
  let socket=null;B.stage.traverse(o=>{if(o.name==='held:0:item.dagger')socket=o})
  assert.ok(socket,`${what}: a dagger on the body`);assert.equal(socket.parent?.name,'CC_Base_R_Hand',`${what}: in the right hand`)
  let meshes=0;socket.traverse(o=>{if(o.isMesh&&o.visible)meshes++});assert.ok(meshes>0,`${what}: drawn`)
- B.stage.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(socket),size=box.max.distanceTo(box.min)
+ // Law 10 (viewer.size-and-shadows-default, engine DECISIONS.md 2026-10-03 'size and shadows are the default', Andrew: "looks like
+ // the size change does it ... but we should still have them have shadows" · "yes"): a battle's bodies stand 1.3 / 0.9 of their
+ // roster stature by default, and what a body holds grows with it — the dagger's size and its grip's distance are read at the
+ // body's own scale (its standing height over its roster stature). was: size=box.max.distanceTo(box.min) · d<.1 unscaled
+ B.stage.updateMatrixWorld(true);const k=B.standingHeight()/B.look.height,box=new THREE.Box3().setFromObject(socket),size=box.max.distanceTo(box.min)/k
  assert.ok(size>.05&&size<.6,`${what}: dagger-sized (${size.toFixed(3)} m)`)
- const d=socket.getWorldPosition(V3()).distanceTo(socket.parent.getWorldPosition(V3()));assert.ok(d<.1,`${what}: its grip ${d.toFixed(3)} m from the hand`)
+ const d=socket.getWorldPosition(V3()).distanceTo(socket.parent.getWorldPosition(V3()))/k;assert.ok(d<.1,`${what}: its grip ${d.toFixed(3)} m from the hand`)
 }
 // 1. standing: the page's pack arms each civilian placed, and its body holds the dagger at idle
 const civ=ctx().state.units.filter(u=>ARMED.includes(u.typeId)&&u.lifeState==='standing')
