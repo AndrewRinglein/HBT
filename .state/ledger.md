@@ -23174,3 +23174,23 @@ index 1094607..620e879 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.turned-hero-lost — LANDED `d08497a`
+2026-10-03 03:32
+
+  PASS  dependencies landed
+  WARN  not already decided — 6 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1894 · DECISIONS.md:3927
+  PASS  typecheck
+  PASS  the item's own tests — test/turned-hero-lost.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.vampirism: 8 log lines, 8 fired, 6 changed state · badge.lycanthropy: 22 log lines, 22 fired, 13 changed state
+  PASS  brought its own tests — kingdom/test/turned-hero-lost.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — badge.vampirism live · badge.lycanthropy live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.vampirism,badge.lycanthropy — they genuinely test it

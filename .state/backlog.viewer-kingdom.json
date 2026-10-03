@@ -37,7 +37,17 @@
   "expect": "A lost battle in which a hero ends turned to the enemy side: the Reckoning reports that hero dead/lost, pays it no XP, and the roster no longer holds it; a hero that turned and was beaten down, or that ended on the player's side, is unchanged; SWITCHES turnedAtBattleEnd reads overturned in part, citing the ruling.",
   "needs": [
    "rule.afflictions-at-zero-refiled-2"
-  ]
+  ],
+  "probeIds": [
+   "badge.vampirism",
+   "badge.lycanthropy"
+  ],
+  "variants": [
+   "badge.vampirism",
+   "badge.lycanthropy"
+  ],
+  "status": "done",
+  "sha": "d08497a"
  },
  {
   "id": "fix.danger-skips-charge",
