@@ -4052,3 +4052,18 @@ Ruled:
 - **A hand-keyed standing stab is made for the two civilian bodies** — upright, no fighting crouch, the dagger hand drawn back and thrust forward, about a second — as a review candidate. It is not wired into the battle screen until Andrew accepts it.
 - With the entry above ('a held weapon is gripped'): their hand closes round the dagger.
 - Filed: `viewer.civilian-dagger-grip-punch`.
+
+## 2026-10-03 — the standing stab is shelved as is
+
+Andrew, in the viewer chat, reviewing the hand-keyed standing stab candidate built in `viewer.civilian-dagger-grip-punch` (civilian-study `standing-stab/review.html`, five keys, Orphan Child and School Teacher):
+
+“Yeah, there's a totally stiff body except for a hip pivot. We need a lot more lean and wind-up, a lot more body motion. Legs need movement.”
+
+Then, before any rework began:
+
+“Wait, but let's just stop this. Just leave it as is and move on to all the other viewer things, because this is just not important.”
+
+Ruled:
+
+- **The standing stab is shelved as is — not accepted, not reworked, not on the battle screen.** The feedback above stands as the note for whoever picks it up: more lean and wind-up, more body motion, legs moving. The Orphan Child and the School Teacher keep the closed grip and the Hook punch with the dagger in hand, as landed in `viewer.civilian-dagger-grip-punch`.
+- No item is filed for the stab; the viewer queue moves on.
