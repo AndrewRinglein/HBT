@@ -41,5 +41,6 @@ describe('the first-affliction pop-up: before and after art, the three explanati
     execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/affliction-pop-up.html'], { cwd: '../kingdom', stdio: 'pipe' })
     const out = execFileSync(process.execPath, ['tools/affliction-pop-up.verify.mjs', 'scratch/affliction-pop-up.html', 'scratch/affliction-pop-up.png'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 26 })
     expect(out).toMatch(/affliction-pop-up: .*passed/)
-  }, 170000)
+    // about a minute alone; the viewer gate's checks part runs it beside every other page test and their browsers
+  }, 280000)
 })
