@@ -384,9 +384,13 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 /* ── ACTION BAR (UI-BUILD-NOTES 9.1-9.6, built 2026-09-01) ─────────────────
    12 slots as 3 columns x 4 rows. The row is TWO LINES because a column is
    468px and the one-line anatomy needs ~492 — measured, not guessed. */
-#actionbar{height:256px;flex:0 0 256px;background:#0f0d0a;border-top:2px solid var(--brass);
-  padding:10px 12px;display:grid;grid-template-columns:repeat(3,1fr);
-  grid-template-rows:repeat(4,1fr);gap:6px 10px;align-content:stretch}
+/* viewer.bar-card-and-log (engine DECISIONS.md 2026-10-03 'the hero card sits small, left of the action bar'): the bar's
+   row (#barrow) holds the hero card at its left, then the bar; the three columns start right of the card (padding-left:
+   12 + the card's 144 + 12) and are condensed to fit — 416 px a column, was 468 */
+#barrow{height:256px;flex:0 0 256px;position:relative;display:flex}
+#actionbar{height:256px;flex:1 1 auto;min-width:0;background:#0f0d0a;border-top:2px solid var(--brass);
+  padding:10px 12px;padding-left:168px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-rows:repeat(4,1fr);gap:6px 8px;align-content:stretch}
 /* two columns inside the row: identity + numbers on the left, cooldown and
    trigger chips in the right half that was previously empty (2026-09-01) */
 /* TOP-ALIGNED (fixed 2026-09-01): the row was centring its content inside a
@@ -398,8 +402,8 @@ html,body{margin:0;background:#08090b;color:var(--ink);
    capped the chip area at 52% and let .acRow clip it, so a unit with three
    triggers rendered all three and showed only the first. */
 .acRow{position:relative;display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1.05fr) auto;align-items:start;
-  gap:0 9px;padding:7px 9px;border:1px solid #2b2418;border-radius:3px;background:#15120d;
+  grid-template-columns:minmax(0,1fr) fit-content(45%) auto;align-items:start;
+  gap:0 8px;padding:7px 8px;border:1px solid #2b2418;border-radius:3px;background:#15120d;
   border-left-width:3px}
 .acMain{display:flex;flex-direction:column;gap:4px;min-width:0}
 /* STACKED, one per line (ruled 2026-09-01) — three triggers read as a list,
@@ -428,7 +432,11 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .acIco{width:24px;height:24px;flex:0 0 24px;border-radius:2px;border:1px solid transparent;
   display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1}
 .acName{font:600 15px/1.1 'Barlow Semi Condensed',sans-serif;color:#e8e5dc;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 0 auto;max-width:100%}
+/* viewer.bar-card-and-log (engine DECISIONS.md 2026-10-03: the columns "more condensed"): a column is 416 px (was 468), so
+   the trigger zone takes only what its chips need (fit-content, at most 45% — was a fixed 1.05fr, empty on most rows) and
+   the action's name never gives way to its tag: the tag shortens instead, its full text in its title */
+.acL1 .acTag{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 /* ── STAT BLOCK, layout B (ruled 2026-09-01) — two columns of rows, name
    left, figure hard right. Green when a modifier raises the stat, red when
    one lowers it; bone when untouched. */
@@ -446,8 +454,8 @@ html,body{margin:0;background:#08090b;color:var(--ink);
    rows it pays for, not buried in the panel. Long bar, number to the right. */
 /* the stamina strip uses the ACTION BAR'S OWN GRID so the bar is exactly the
    width of the moves column — one third, aligned to it (ruled 2026-09-01) */
-#stambar{height:34px;flex:0 0 34px;display:grid;grid-template-columns:repeat(3,1fr);
-  gap:0 10px;padding:0 12px;background:#12100c;border-top:1px solid var(--border);
+#stambar{height:34px;flex:0 0 34px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0 8px;padding:0 12px;padding-left:168px;background:#12100c;border-top:1px solid var(--border);
   align-items:center}
 #stambar .cell1{display:flex;align-items:center;gap:9px;min-width:0}
 #stambar .lab{font:700 10px 'Barlow Semi Condensed',sans-serif;letter-spacing:.13em;
@@ -558,10 +566,12 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 /* ── viewer.painted-board (2026-09-29): Reset returns the starting angled view ── */
 /* viewer.tactical-camera (2026-10-01): the accepted caravan preview's camera buttons, along the board's bottom left
    (End Turn and the play chrome keep the bottom right) */
-/* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): no camera bar; the subject's portrait in the
-   board's lower-left corner, as tall as the ability bar (#actionbar, 256 px) */
-#unitPortrait{position:absolute;left:0;bottom:0;height:256px;width:171px;z-index:50;pointer-events:none;
-  border-top:2px solid var(--gold);border-right:2px solid var(--gold);background:#0f0d0a;overflow:hidden;box-shadow:0 0 18px rgba(0,0,0,.7)}
+/* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): no camera bar; the subject's portrait lower
+   left. viewer.bar-card-and-log (engine DECISIONS.md 2026-10-03 'the hero card sits small, left of the action bar'): smaller
+   (144 x 216, was 171 x 256) and in the bar's own row (#barrow), left of the Move column, inside the bar's 256 px — no longer
+   standing over the board */
+#unitPortrait{position:absolute;left:12px;top:21px;height:216px;width:144px;z-index:2;pointer-events:none;
+  border:2px solid var(--gold);border-radius:2px;background:#0f0d0a;overflow:hidden;box-shadow:0 0 12px rgba(0,0,0,.7)}
 #unitPortrait.enemy{border-color:var(--violet)}
 #unitPortrait img{width:100%;height:100%;object-fit:cover;display:block}
 
@@ -611,8 +621,13 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .pcBtn.pcEnd:hover{background:#4a3614}
 .pcBtn.pcOff,.pcBtn.pcEnd.pcOff{opacity:.38;cursor:default;box-shadow:none;background:rgba(8,9,11,.84)}
 .pcBtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-#playLog{position:absolute;left:185px;bottom:34px;z-index:55;width:560px;height:232px;overflow-y:auto;padding:8px 12px;
-  background:rgba(12,11,9,.86);border:1px solid #2a251d;border-radius:2px;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
+/* viewer.bar-card-and-log (engine DECISIONS.md 2026-10-03 'the log collapses behind a button out of the way'): collapsed at
+   mount; its button is the top bar's last, at its right end, beside the panel (viewer SWITCHES barLogPlace); open, the log
+   drops over the top of the right-hand panel — never over the board */
+#playLogBtn{margin-left:auto;flex:0 0 auto;padding:7px 12px;font-size:12px}
+#playLog{position:absolute;right:0;top:76px;z-index:65;width:472px;height:430px;overflow-y:auto;padding:8px 12px;
+  background:rgba(12,11,9,.96);border:1px solid var(--brass);border-right:none;border-radius:2px 0 0 2px;box-shadow:0 14px 34px rgba(0,0,0,.75);
+  font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
 /* a log row's "dmg" class is also the board's damage float (.dmg: absolute, 34px, animated) — not in the log */
 #playLog .ln.dmg{position:static;font-family:inherit;font-size:inherit;font-weight:inherit;text-shadow:none;animation:none}
 #playAsk{position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}

@@ -76,7 +76,7 @@ export function startHarness(mountEl, lib) {
     viewer.dom.slots.bottom.appendChild(logbox)
     /* the chrome's state outlives the viewer; apply it to the new one */
     viewer.speed(chrome.speed); if (chrome.bare) viewer.setBare(true); if (chrome.zoom !== '1x') viewer.setZoom(chrome.zoom)
-    viewer.dom.actionbar.style.display = chrome.log ? 'none' : ''; logbox.style.display = chrome.log ? '' : 'none'
+    viewer.dom.actionbar.parentNode.style.display = chrome.log ? 'none' : ''; logbox.style.display = chrome.log ? '' : 'none'
     const EV = b.battle.events
     const lines = buildLog(EV, lib.static.statuses, b.battle.turns)
     logbox.innerHTML = lines.map(l => `<div class="ln ${l.cls}" data-i="${l.i}">${l.t}</div>`).join('')
@@ -176,7 +176,7 @@ export function startHarness(mountEl, lib) {
   T('#logBtn').addEventListener('click', e => {
     /* the log is a development affordance, not a game surface — it folds so the
        board keeps its height once the action bar takes the bottom (ruled 9.6) */
-    const ab = viewer.dom.actionbar
+    const ab = viewer.dom.actionbar.parentNode     /* the bar's row: the card and the bar (viewer.bar-card-and-log) */
     const on = !chrome.log; chrome.log = on
     logbox.style.display = on ? '' : 'none'; ab.style.display = on ? 'none' : ''
     e.target.classList.toggle('on', on)

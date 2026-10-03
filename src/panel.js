@@ -13,7 +13,8 @@ export const HOOKLBL = { onHit: 'ON HIT', onBlock: 'ON BLOCK', onAttack: 'ON ATT
   onBurst: 'ON BURST', onCrit: 'ON CRIT', startOfBattle: 'BATTLE START', onActivationEnd: 'ACTIVATION END' }
 
 /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera': "A character portrait in the lower-left
-   corner, as tall as the ability bar"): over the board's lower-left corner. viewer.turn-taking (engine DECISIONS.md
+   corner, as tall as the ability bar"); since viewer.bar-card-and-log (2026-10-03 'the hero card sits small, left of the action
+   bar') smaller, in the bar's own row left of the Move column (viewer.js #barrow), no longer over the board. viewer.turn-taking (engine DECISIONS.md
    2026-10-03 'the action bar and its card stay with the activated unit'): the card of whose BAR it is (subject.js barUnitOf)
    — for a host that plays, the activated unit's; a click on another unit moves the panel only (was: whose panel it is) */
 export function drawPortrait(V) {

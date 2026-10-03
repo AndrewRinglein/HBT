@@ -13,11 +13,16 @@ import { buildLog } from './log.js'
 /** the ruled question, word for word (engine DECISIONS.md 2026-09-29 "the playable battle screen") */
 export const END_TURN_ASK = 'Are you sure you want to end your turn? You have units that have not acted.'
 
-const CHROME = `<button id="playLogBtn" type="button" class="pcBtn on" aria-pressed="true" title="Show or hide the battle log">Log</button>`
-  + `<button id="playSpeed" type="button" class="pcBtn" aria-pressed="false" title="Play at double speed">2&times;</button>`
+/* viewer.bar-card-and-log (engine DECISIONS.md 2026-10-03 'the log collapses behind a button out of the way', Andrew: "collapse
+   and put an expandable log button somewhere out of the way, not on the screen"): the log is collapsed at mount and its button
+   is the top bar's last, at its right end (viewer SWITCHES barLogPlace); open, the log drops over the right-hand panel, never
+   the board. Was: on the board beside 2×, the log open over the board's lower left. */
+const LOGBTN = `<button id="playLogBtn" type="button" class="pcBtn" aria-pressed="false" aria-expanded="false" aria-controls="playLog" title="Show or hide the battle log">Log</button>`
+const CHROME = `<button id="playSpeed" type="button" class="pcBtn" aria-pressed="false" title="Play at double speed">2&times;</button>`
 /* viewer.battle-full-screen (engine DECISIONS.md 2026-09-30, Andrew: "You've got End Turn and End Activation on the battle
    map. They shouldn't be. Put them in the lower right-hand corner."): the two endings are off the board, in the screen's
-   own lower right-hand corner — the foot of the right-hand panel, beside the action bar. Log and 2× stay on the board. */
+   own lower right-hand corner — the foot of the right-hand panel, beside the action bar. 2× stays on the board (the Log button
+   moved to the top bar with viewer.bar-card-and-log). */
 const ENDS = `<button id="playEndAct" type="button" class="pcBtn" aria-disabled="true" title="End this hero's activation">End activation</button>`
   + `<button id="playEndTurn" type="button" class="pcBtn pcEnd" aria-disabled="true" title="End the Player Phase">End Turn</button>`
 const ASK = `<div id="playAskBox" role="alertdialog" aria-modal="true" aria-labelledby="playAskText" aria-describedby="playAskWho">`
@@ -29,19 +34,20 @@ export function mountPlayChrome(V, host) {
   const left = V.dom.root.querySelector('#left'), wrap = V.dom.stage.parentNode
   const bar = document.createElement('div'); bar.id = 'playChrome'; bar.innerHTML = CHROME
   const ends = document.createElement('div'); ends.id = 'playEnds'; ends.innerHTML = ENDS
-  const log = document.createElement('div'); log.id = 'playLog'; log.setAttribute('role', 'log'); log.setAttribute('aria-label', 'Battle log')
+  const log = document.createElement('div'); log.id = 'playLog'; log.setAttribute('role', 'log'); log.setAttribute('aria-label', 'Battle log'); log.style.display = 'none'
+  const top = V.dom.root.querySelector('#topbar'); top.insertAdjacentHTML('beforeend', LOGBTN); const logBtn = top.lastElementChild || top.children[top.children.length - 1]
   const ask = document.createElement('div'); ask.id = 'playAsk'; ask.style.display = 'none'; ask.innerHTML = ASK
-  wrap.appendChild(bar); wrap.appendChild(log); left.appendChild(ask)
+  wrap.appendChild(bar); V.dom.root.appendChild(log); left.appendChild(ask)
   V.dom.root.appendChild(ends); V.dom.root.classList.add('pcEndsOn')    /* the screen's corner, not the board (#left) */
   const q = (root, id) => root.querySelector('#' + id)
-  const B = { log: q(bar, 'playLogBtn'), speed: q(bar, 'playSpeed'), endAct: q(ends, 'playEndAct'), endTurn: q(ends, 'playEndTurn'),
+  const B = { log: logBtn, speed: q(bar, 'playSpeed'), endAct: q(ends, 'playEndAct'), endTurn: q(ends, 'playEndTurn'),
     text: q(ask, 'playAskText'), who: q(ask, 'playAskWho'), no: q(ask, 'playAskNo'), yes: q(ask, 'playAskYes') }
   B.text.textContent = END_TURN_ASK
   const off = b => b.getAttribute('aria-disabled') === 'true'
   const enable = (b, on) => { b.setAttribute('aria-disabled', on ? 'false' : 'true'); b.classList.toggle('pcOff', !on) }
   /* the chrome sits on the board: a press on it is not the camera's drag, a wheel over the log scrolls the log */
   const stop = e => { e.stopPropagation() }
-  for (const n of [bar, ends, log, ask]) { n.addEventListener('pointerdown', stop); n.addEventListener('pointerup', stop); n.addEventListener('click', stop) }
+  for (const n of [bar, ends, log, ask, logBtn]) { n.addEventListener('pointerdown', stop); n.addEventListener('pointerup', stop); n.addEventListener('click', stop) }
   log.addEventListener('wheel', stop)
 
   /* ── the pop-up ── */
@@ -66,7 +72,7 @@ export function mountPlayChrome(V, host) {
   /* ── the log: the sentences of the events already played, appended as the pump plays them ── */
   let lines = [], shown = 0
   B.log.addEventListener('click', () => { const on = log.style.display === 'none'; log.style.display = on ? '' : 'none'
-    B.log.classList.toggle('on', on); B.log.setAttribute('aria-pressed', String(on)) })
+    B.log.classList.toggle('on', on); B.log.setAttribute('aria-pressed', String(on)); B.log.setAttribute('aria-expanded', String(on)); if (on) log.scrollTop = log.scrollHeight })
   /** the log's lines, rebuilt when events arrive (a live battle pushes more); battle.end names its own Turn */
   function relog() { const end = V.EV.find(e => e.type === 'battle.end'); lines = buildLog(V.EV, V.data.SN, end ? end.turn : V.meta.turns) }
   function row(l) { const d = document.createElement('div'); d.className = 'ln ' + l.cls; d.setAttribute('data-i', String(l.i)); d.innerHTML = l.t; return d }
@@ -88,6 +94,6 @@ export function mountPlayChrome(V, host) {
     B.speed.classList.toggle('on', fast); B.speed.setAttribute('aria-pressed', String(fast))
     syncLog()
   }
-  function dispose() { document.removeEventListener('keydown', key); V.asking = false; bar.remove(); ends.remove(); log.remove(); ask.remove(); V.dom.root.classList.remove('pcEndsOn') }
+  function dispose() { document.removeEventListener('keydown', key); V.asking = false; bar.remove(); ends.remove(); log.remove(); ask.remove(); logBtn.remove(); V.dom.root.classList.remove('pcEndsOn') }
   return { sync, relog, dispose, dom: { bar, ends, log, ask, ...B } }
 }

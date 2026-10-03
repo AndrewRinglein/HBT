@@ -125,7 +125,12 @@ test('the portrait in the lower-left corner is whose bar it is, as tall as the a
      assert.equal(src, the enemy's card, 'the unit looked at'); assert.equal(P.className, 'enemy') */
   v.inspect(enemy.id); assert.equal(P.querySelector('img').getAttribute('src'), V.data.ASSETS[V.data.ARTMAP[u.typeId].card], "the acting unit's card, whoever is looked at"); assert.equal(V.view.inspectId, enemy.id)
   const css = html.match(/<style>([\s\S]*?)<\/style>/)[1]
-  assert.match(css, /#unitPortrait\{position:absolute;left:0;bottom:0;height:256px;/, 'lower left, 256 px tall')
+  /* Law 10, viewer.bar-card-and-log (engine DECISIONS.md 2026-10-03 'the hero card sits small, left of the action bar': "This small
+     hero card should be smaller, and it should be to the left of the move"): still lower left, now in the bar's row and smaller,
+     no taller than the bar (tools/bar-card-and-log.test.mjs holds the sizes); was: over the board's corner, as tall as the bar —
+     assert.match(css, /#unitPortrait\{position:absolute;left:0;bottom:0;height:256px;/, 'lower left, 256 px tall') */
+  assert.equal(P.parentNode.id, 'barrow', 'lower left, in the ability bar\'s row')
+  assert.ok(+/#unitPortrait\{[^}]*;height:(\d+)px/.exec(css)[1] <= 256, 'no taller than the ability bar')
   assert.match(css, /#actionbar\{height:256px;/, 'the ability bar is 256 px tall')
   const size = id => +new RegExp(`#playEnds ${id}\\{[^}]*font-size:(\\d+)px`).exec(css)[1], grow = id => +new RegExp(`#playEnds ${id}\\{flex:(\\d+)`).exec(css)?.[1] || 0
   assert.ok(size('#playEndAct') >= 1.5 * size('#playEndTurn'), `End activation's type is far larger: ${size('#playEndAct')} vs ${size('#playEndTurn')}`)
