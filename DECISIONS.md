@@ -4011,3 +4011,13 @@ Ruled:
 - **The per-body `knife-v1` GLBs are not used on the battle screen** — no body copy with the weapon built in. Their Knife attack motion source (civilian-study `run.json`) may be reused for the stab, on the unarmed body.
 - **A civilian with a dagger stabs when it attacks.**
 - Filed: `viewer.civilian-held-dagger`, last in the viewer queue.
+
+## 2026-10-03 — switching heroes before one has acted keeps the sandbox's save-and-restore for now
+
+Andrew, in the viewer chat, after `viewer.turn-taking` landed with the finding that the engine has no command to take back a begun Activation (the battle screen saves the battle before an Activation begins and restores it when the player switches to another hero; kingdom SWITCHES `turnSwitchUndo`). Asked whether the engine should get a proper "pick a different hero instead" action or keep the workaround:
+
+“That workaround seems fine for now.”
+
+Ruled:
+
+- **kingdom SWITCHES `turnSwitchUndo` stands** — the save-and-restore is accepted for now. No engine `release-activation` command is filed.
