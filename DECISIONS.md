@@ -4346,3 +4346,19 @@ Ruled:
 - **The viewer draws the fall warnings** (the Cavern Trail's meteor fall, the Gates' curse strike — the areas marked and not yet landed). Filed: `viewer.area-fall-warning`.
 - Not ruled, the builder's reading: question 3 is taken as answered by "I don't need huge numbers of library battles" — no item is filed to re-export the rest of the library.
 - Left open, a finding: **the computer-played heroes never win the Gates** — seeds 0 to 399 of `test.opening-gates` all end in a wipe (the Bridge is first won on seed 24, after 24 wipes). The Gates' recording stays on seed 0, a loss, until a win exists to record.
+
+## 2026-10-03 — everything in the viewer and in play is the 3D maps and the 3D characters
+
+Andrew, in the viewer chat, having opened the Cavern Trail's recording (`viewer.opening-replays-refiled`) and found a flat hex board with 2D tokens where he expected the authored 3D map:
+
+“I want everything in the viewer to be our three-dimensional maps and our three-dimensional characters. Everything in the play is to be that.”
+
+And, with a pasted note of his own naming what must be in there — the six encounters, all of the enemies, all of the heroes, all of the weapons, all of the moves they have (“We want everything in there.”):
+
+“Everything. Make a list of all the stuff that's not in there.”
+
+Ruled:
+
+- **Every battle, watched or played, is drawn on its 3D map with 3D characters** — the six opening encounters, every enemy, every hero, every weapon, every move they have. The flat hex board and the 2D tokens are not the product.
+- **What stood on the day** (read from the viewer's own tools, not from memory): the battle screen binds a 3D scene for battles 1–3 only (`viewer/tools/painted-scenes.mjs` SCENES: Orphanage, Lumberjack House, Bridge), though scenes with the engine's exact hex grids are on disk for the Cavern Trail (`assets/terrain-3d/abbotown-encounters/cave`, 40×16), the Cathedral (`abbotown-encounters/cathedral`, 20×40) and the town the Gates stands in (`abbotown-complete`, 20×50, navigation but no `scene.glb`). Five enemies of battles 4–6 have no model bound (`character-models.mjs --list`: Zombie Hound, Werewolf, Bruiser Demon, Powerful Imp, Ghoul). Four heroes stand on a placeholder body, six kit items are held by nobody, and each bound character has five to seven motions against the 64 lines of `assets/characters/HERO-MOTION-LIST.md`.
+- Filed, first in the viewer queue: `viewer.opening-scenes-four-to-six`. The missing enemy models, bodies, weapons and motions are the art area's; nothing is filed for them from this entry until he says which first.

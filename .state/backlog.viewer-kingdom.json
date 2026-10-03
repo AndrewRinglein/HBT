@@ -1,5 +1,13 @@
 [
  {
+  "id": "viewer.opening-scenes-four-to-six",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'everything in the viewer and in play is the 3D maps and the 3D characters'): \"I want everything in the viewer to be our three-dimensional maps and our three-dimensional characters. Everything in the play is to be that.\" The battle screen binds a 3D scene for battles 1-3 only (viewer tools/painted-scenes.mjs SCENES: map.opening.orphanage, map.opening.lumberjack, map.opening.bridge); battles 4-6 draw the flat hex board with 2D tokens, and the kingdom launcher says so ('flat board for now - its 3D map is not in the battle screen yet', kingdom tools/build-launcher.mjs). Scenes with the engine's exact hex grids are on disk: assets/terrain-3d/abbotown-encounters/cave (scene.glb, navigation.json, 40x16 = map.opening.cavern-trail), abbotown-encounters/cathedral (scene.glb, navigation.json, 20x40 = map.opening.cathedral), abbotown-complete (navigation.json 20x50 = map.opening.gates; abbotown.glb, no scene.glb). (1) Bind map.opening.cavern-trail and map.opening.cathedral to their scenes exactly as viewer.painted-board and viewer.opening-cast bound the first three (SCENES, the pack, the hash, hex index to scene hex; the engine's passable is what is drawn - viewer SWITCHES paintedAlignment, paintedPassability). (2) Bind map.opening.gates to the town scene; if abbotown-complete cannot serve as a battle scene as it stands (no scene.glb, a whole town), say exactly what is missing and leave the Gates on the flat board with that reason recorded - never a borrowed scene. (3) The replay page and the kingdom's battle page both open battles 4-6 on their scenes, with every unit that has a model drawn as its model; the launcher's 'flat board for now' line goes for each battle bound. Units with no model bound (Zombie Hound, Werewolf, Bruiser Demon, Powerful Imp, Ghoul - character-models.mjs --list) keep their tokens on the scene until the art area supplies them: this item does not make models. Prior art: viewer.painted-board, viewer.opening-cast, viewer.caravan-scene - no new mechanism.",
+  "expect": "BATTLE-VIEWER.html#map.opening.cavern-trail and #map.opening.cathedral open on their 3D scenes with every hex where the engine's is and every modelled unit drawn as its model; the Gates opens on the town scene or its missing piece is named; PLAY.html no longer says 'flat board for now' for a battle that is bound; the painted-board hex-by-hex test covers the new maps.",
+  "note": "Filed first in the queue at Andrew's ruling of 2026-10-03."
+ },
+ {
   "id": "viewer.opening-replays-refiled",
   "kind": "viewer",
   "shape": "plumbing",
