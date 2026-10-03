@@ -18,7 +18,10 @@ test('all24 authored base hero IDs have exact cutout/card/stature mappings and s
   for(const f of [actual.token,actual.card]){assert.ok(manifest.files.includes(f));assert.ok(existsSync('generated/art/'+f))}
   const raw=generator.match(new RegExp("'"+r.id.replaceAll('.','\\.')+"':\\s*(\\{[^}]*\\})"));assert.ok(raw,r.id+' source assignment');const m=JSON.parse(raw[1].replaceAll("'",'"'));assert.equal(m.src,r.src);assert.equal(m.cardsrc,r.cardsrc)
  }
- for(const [id,row] of Object.entries(spec.preservedMappings))assert.deepEqual(manifest.artmap[id],row,'existing stature/crop metadata '+id)
+ // viewer.affliction-pop-up (2026-10-03): a hero's row also names its AFTER cards (`after`: affliction badge -> file) — art added beside
+ // the stature/crop metadata this snapshot preserves, which must still be exactly the snapshot's; the after cards are
+ // tools/affliction-pop-up.test.mjs's to check. Any other new key still fails here.
+ for(const [id,row] of Object.entries(spec.preservedMappings)){const {after,...kept}=manifest.artmap[id];assert.deepEqual(kept,row,'existing stature/crop metadata '+id)}
  assert.deepEqual(manifest.artmap['hero.base.priest-scantily'],manifest.artmap['test-lucius']);assert.deepEqual(manifest.artmap['hero.base.paladin-shiney'],manifest.artmap['test-osric'])
 })
 test('all48 source images remain byte-identical to the pre-integration snapshot',()=>{
