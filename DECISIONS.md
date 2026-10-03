@@ -4031,3 +4031,24 @@ Andrew, in the viewer chat, after `viewer.civilian-held-dagger` landed (worker c
 Ruled:
 
 - **Every held weapon is gripped — the fingers close round it — on every body that holds one.** Read as: "the plate" is the handle the hand holds. An open palm under a held weapon is a defect, not a look; viewer SWITCHES `civilianGrasp` is overturned by this entry and the civilians' grip is closed as part of their dagger work.
+
+## 2026-10-03 — the civilians' dagger attack: the Hook punch for now; a hand-keyed standing stab is made for review
+
+Andrew, in the viewer chat. `viewer.civilian-held-dagger` landed (worker copy) playing the walk-assassinate clip, which he had already rejected for the civilians (civilian-study `run.json` sourceCorrection). Its replacement, ActorCore "Dagger Attack":
+
+“I don't own that Dagger Attack, and it's too complex. Do we have some other option here?”
+
+Shown the sword-and-shield `atk_stab` and the selected Hook punch (`Melee_Hook`):
+
+“The problem with this is it's crouched with the dagger. It's like a fighting pose, and I don't think that works well for the dagger in a civilian.”
+
+Asked (1) whether to make a simple hand-keyed standing stab for the Orphan Child and the School Teacher (dagger hand drawn back, thrust forward, about a second), reviewed before it is used, and (2) whether they keep the Hook punch with the dagger in hand until then:
+
+“Sure, we can use that for now.”
+
+Ruled:
+
+- **Until the stab is approved, a civilian holding a dagger attacks with the selected Hook punch, dagger in hand.** The walk-assassinate clip is not played; viewer SWITCHES `civilianStab` is overturned by this entry.
+- **A hand-keyed standing stab is made for the two civilian bodies** — upright, no fighting crouch, the dagger hand drawn back and thrust forward, about a second — as a review candidate. It is not wired into the battle screen until Andrew accepts it.
+- With the entry above ('a held weapon is gripped'): their hand closes round the dagger.
+- Filed: `viewer.civilian-dagger-grip-punch`.
