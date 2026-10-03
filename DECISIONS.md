@@ -4105,3 +4105,9 @@ Ruled:
 - **He wants to SEE the battle screen with characters 10% larger and hexes 10% smaller** — a look to judge, not yet the accepted default. Read as on-screen sizes: the standard view shows the board at 0.9×, and a body stands 1.1× its present on-screen height (so about 1.22× against its hex). viewer SWITCHES `modelScale` ("the roster's stature in the scene's own metres") is what this would overturn if accepted.
 - **What else makes them stand out is open, and his to pick from what he is shown.** Found at the time: the bodies cast no shadow (viewer `src/models.js` `castShadow = false`), they are lit by the scene's own sun, and the painted ground is as bright and saturated as they are. Candidates to show him, each on its own switch: bodies casting shadows with a soft dark patch under the feet; the ground slightly darker and less saturated; a thin light rim on each body in its side's colour; a side-coloured base disc under every unit.
 - Filed: `viewer.characters-stand-out`.
+
+Andrew, minutes later, before any of it was built:
+
+“Actually, let's change this to 30% bigger characters, 10% smaller hexes.”
+
+- **Corrected: characters 30% larger, hexes 10% smaller.** The standard view shows the board at 0.9×, and a body stands 1.3× its present on-screen height (about 1.44× against its hex). This replaces the 1.1× above wherever it is read — including the text of `viewer.characters-stand-out`, filed with the first number (no tool edits a filed item's spec; this entry is the newer and wins, DISPLAY-RULES rule 22).
