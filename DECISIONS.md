@@ -4021,3 +4021,13 @@ Andrew, in the viewer chat, after `viewer.turn-taking` landed with the finding t
 Ruled:
 
 - **kingdom SWITCHES `turnSwitchUndo` stands** — the save-and-restore is accepted for now. No engine `release-activation` command is filed.
+
+## 2026-10-03 — a held weapon is gripped: the hand closes round it, for every body
+
+Andrew, in the viewer chat, after `viewer.civilian-held-dagger` landed (worker copy) with the Orphan Child's and the School Teacher's dagger lying across an open palm (viewer SWITCHES `civilianGrasp`: the finger curl existed only in the excluded knife-v1 copies), asked whether the fingers should close round the dagger:
+
+“We need to close the hands over the plate for everything, don't we?”
+
+Ruled:
+
+- **Every held weapon is gripped — the fingers close round it — on every body that holds one.** Read as: "the plate" is the handle the hand holds. An open palm under a held weapon is a defect, not a look; viewer SWITCHES `civilianGrasp` is overturned by this entry and the civilians' grip is closed as part of their dagger work.
