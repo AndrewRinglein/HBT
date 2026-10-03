@@ -1,70 +1,65 @@
-# engine — handoff 2026-10-03 00:39
+# engine — handoff 2026-10-03 05:12
 
 *Produced by tools/handoff.mjs from .state/now.json, which tools/wrap.mjs writes. The only handwritten line is the Now line, given to wrap as its argument. The rest is what start.mjs printed and what git holds. Read by `start engine` — not by a chat, directly.*
 
-engine — next viewer.turn-taking, 293 of 341 landed · 40 await review · 6 pending
-Now: fix.opening-levels, rule.afflictions-at-zero — the opening's levels and the four afflictions at 0 Health. Landed in the engine worker copy and combined into main (all five repos; content 142, kingdom 403, engine 2499, viewer gate green): fix.opening-levels (the kingdom's own XP and curve carried battle to battle through heroProgress; the Flaming Longsword only to a class.warrior or class.paladin; every reward row paid), rule.afflictions-at-zero-refiled-2 (Vampirism/Lycanthropy transform at 0 with Luck to stay; Possession raises a Ghost; Rotting Flesh gains Fragile and bleeds out over 10) and fix.transformed-snapshot-order. Both reviewed by Andrew ("Yes."). Ruled 2026-10-02: a hero still turned when a battle is lost is lost (filed fix.turned-hero-lost); heroes level whenever their XP reaches the curve. Tried: the afflictions item re-filed twice (no changesBaseline, then no variants); the combine needed a viewer test-helper race fix (per-process atlas build file); committing .state/shards.json before the wrap moves the tree the wrap checks, so it is committed after. Next: the engine queue is empty — fix.turned-hero-lost and viewer.affliction-pop-up sit in the viewer-kingdom queue behind the open viewer chat.
-New chat with Heroes of Blight and Tragic — engine: check for new engine items; if none, take fix.turned-hero-lost once the viewer chat has wrapped
+engine — next fix.affliction-pop-up-words, 300 of 344 landed · 43 await review · 2 pending
+Now: viewer.turn-taking, viewer.civilian-held-dagger, viewer.camera-no-void, viewer.civilian-dagger-grip-punch, viewer.bar-card-and-log, fix.turned-hero-lost, viewer.affliction-pop-up — the battle screen's turn-taking and the viewer queue, emptied. Landed in the viewer-and-kingdom worker copy and combined into main (root a30192d, engine suite 2499, viewer every gate part, kingdom 416, content 142). Tried: the civilians' dagger as a separate held model with a closed grip and the Hook punch (the walk-assassinate stab was rejected; the hand-keyed standing stab is shelved as is, DECISIONS 2026-10-03); a CRLF checkout in main broke the grasp record's hash after the combine, pinned LF by civilian-study .gitattributes. Flagged for review: viewer.civilian-held-dagger, viewer.affliction-pop-up (a timeout edit in each item's own new test). Next: fix.affliction-pop-up-words — the engine supplies the pop-up's 0-Health words and marks the drawbacks.
+New chat with Heroes of Blight and Tragic — engine: fix.affliction-pop-up-words, the affliction pop-up's 0-Health words and drawbacks come from the engine
   start engine
-Last landing: 2026-10-02 19:16 (viewer.shield-guard-motion). Previous chat ended: on a wrap, 2026-10-03 00:39
-Ungated since last wrap: 18
-  34eaa7e 2026-10-02 17:32 Andrew Ring — review: fix.opening-levels and rule.afflictions-at-zero-refiled-2 cleared (Andrew, 2026-10-02: "Yes.
-  6ace783 2026-10-02 17:20 Andrew Ring — DECISIONS.md: the battle screen's turn-taking, ruled (Andrew, 2026-10-03) — single click shows the p
-  a2d8f8e 2026-10-02 17:18 Andrew Ring — DECISIONS.md: the action bar and its card stay with the activated unit; a click on another unit show
-  548301c 2026-10-02 17:18 Andrew Ring — DECISIONS.md: a hero starts its Activation with its basic move armed; the enemy's hit chance must no
-  d649dd8 2026-10-02 17:09 Andrew Ring — DECISIONS.md: the camera never shows white space; pointing at an edge scrolls (Andrew, 2026-10-03); 
-  83d5117 2026-10-02 17:07 Andrew Ring — DECISIONS.md: the hero card sits small, left of the action bar; the log collapses behind a button ou
-  389335e 2026-10-02 17:04 Andrew Ring — .state/backlog.viewer-kingdom.json: fix.turned-hero-lost filed (Andrew, 2026-10-02, DECISIONS.md 'a 
-  6ae918d 2026-10-02 17:04 Andrew Ring — DECISIONS.md: a hero still turned when a battle is lost is lost; the opening's heroes level whenever
-  914eedd 2026-10-02 14:03 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1, 2499 passed) passed on tree 596d2488ed (2026-10-02
-  2ca4076 2026-10-02 13:23 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1, 2498 passed) passed on tree acee42c4e6 (2026-10-02
-  89189a3 2026-10-02 13:15 Andrew Ring — merge main engine master b4586e4 (viewer.shield-guard-motion) into the engine worker copy; .state/sh
-  fdea6a0 2026-10-02 13:12 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1, 2498 passed) passed on tree 7d42c2e58b (2026-10-02
-  52166b3 2026-10-02 12:59 Andrew Ring — .state/backlog.viewer-kingdom.json: viewer.affliction-pop-up needs rule.afflictions-at-zero-refiled-
-  b4586e4 2026-10-02 12:34 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1, 2476 passed) passed on tree 0aad763b91 (viewer.shi
-  fac90fb 2026-10-02 12:31 Andrew Ring — viewer.shield-guard-motion (follow-up; found by the home chat's combine: the engine suite failed in 
-  dfd0a5c 2026-10-02 12:31 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1, 2481 passed) passed on tree afc127dfb8 (2026-10-02
-  64c46e3 2026-10-02 11:56 Andrew Ring — DECISIONS.md: the opening run keeps its five-hero party; the Bridge and Gates difficulty waits for A
-  cffd465 2026-10-02 06:50 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1, 2477 passed) passed on tree bf9ac8fabe (2026-10-02
+Last landing: 2026-10-03 04:18 (viewer.affliction-pop-up). Previous chat ended: on a wrap, 2026-10-03 05:12
+Ungated since last wrap: 14
+  a9da04f 2026-10-02 22:08 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1, 2499 passed) passed on tree c25797daeb (2026-10-03
+  362e180 2026-10-02 22:02 Andrew Ring — DECISIONS.md: the affliction pop-up's 0-Health words and its drawbacks come from the engine (Andrew,
+  2511063 2026-10-02 21:20 Andrew Ring — combine: engine master 152b414 into this copy
+  152b414 2026-10-02 20:19 Andrew Ring — DECISIONS.md: the standing stab is shelved as is; the queue moves on (Andrew, 2026-10-03)
+  b0e7053 2026-10-02 20:19 Andrew Ring — DECISIONS.md: the standing stab needs lean, wind-up and legs (Andrew, 2026-10-03)
+  5a05f9b 2026-10-02 19:22 Andrew Ring — DECISIONS.md: the civilians' dagger attack is the Hook punch for now; a hand-keyed standing stab is 
+  e8f0d90 2026-10-02 19:11 Andrew Ring — DECISIONS.md: a held weapon is gripped, the hand closes round it, for every body (Andrew, 2026-10-03
+  0229d5c 2026-10-02 18:24 Andrew Ring — DECISIONS.md: switching heroes before one has acted keeps the sandbox's save-and-restore for now (An
+  80928f3 2026-10-02 19:22 Andrew Ring — DECISIONS.md: the civilians' dagger attack is the Hook punch for now; a hand-keyed standing stab is 
+  886f5c3 2026-10-02 19:11 Andrew Ring — DECISIONS.md: a held weapon is gripped, the hand closes round it, for every body (Andrew, 2026-10-03
+  52afd7d 2026-10-02 18:24 Andrew Ring — DECISIONS.md: switching heroes before one has acted keeps the sandbox's save-and-restore for now (An
+  33a71e7 2026-10-02 17:57 Andrew Ring — DECISIONS.md: the civilians hold their dagger as a weapon, not baked into a body copy (Andrew, 2026-
+  5a6ef22 2026-10-02 17:57 Andrew Ring — DECISIONS.md: the civilians hold their dagger as a weapon, not baked into a body copy (Andrew, 2026-
+  3d3851d 2026-10-02 17:39 Andrew Ring — .state/shards.json: the whole suite (--shard 1/1, 2499 passed) passed on tree 7eb99fd56b (2026-10-02
 Yours: (2026-09-02) Note, no action needed: — look: GAME-BUILDER.html
-Queue: viewer.turn-taking [viewer · plumbing], then viewer.camera-no-void [viewer · plumbing], then viewer.bar-card-and-log [viewer · plumbing] (+2 more)
-Delegate: viewer.turn-taking [viewer · plumbing] — not yet gated; viewer.camera-no-void [viewer · plumbing] — not yet gated; viewer.bar-card-and-log [viewer · plumbing] — not yet gated; fix.turned-hero-lost [kingdom · rule] — not yet gated; viewer.affliction-pop-up [viewer · plumbing] — not yet gated
+Queue: fix.affliction-pop-up-words [engine · plumbing]
+Delegate: fix.affliction-pop-up-words [engine · plumbing] — not yet gated
 Blocked: kingdom.opening-loop needs encounter.opening.bridge
 Calls since last wrap: none
-Stack for viewer.turn-taking:
+Stack for fix.affliction-pop-up-words:
   the item's `spec` and `expect` — `node tools/next.mjs` — before any source file
   ENGINE-CONSTITUTION.md — the law the item touches · **the Iron Gauntlet, above, before `--land`**: kill switch, hardcode scan, generalization, consequence, naming
   `node tools/decided.mjs "<the question>"` before asking anything · SWITCHES.md before deciding anything
   src/core and the mutator that owns the field · test/ — the probe before the prose
 
-## The chat's commits since the last wrap (f976aa7)
+## The chat's commits since the last wrap (618db0f)
 
-- 34eaa7e 2026-10-02 17:32 review: fix.opening-levels and rule.afflictions-at-zero-refiled-2 cleared (Andrew, 2026-10-02: "Yes.")
-- 6ace783 2026-10-02 17:20 DECISIONS.md: the battle screen's turn-taking, ruled (Andrew, 2026-10-03) — single click shows the path, double-click moves; heroes | divider | enemies; no partial Activations; the seven-point proposal accepted; filed viewer.turn-taking
-- a2d8f8e 2026-10-02 17:18 DECISIONS.md: the action bar and its card stay with the activated unit; a click on another unit shows it in the panel only (Andrew, 2026-10-03)
-- 548301c 2026-10-02 17:18 DECISIONS.md: a hero starts its Activation with its basic move armed; the enemy's hit chance must not outlive its attack (Andrew, 2026-10-03); the turn-taking redesign under discussion
-- d649dd8 2026-10-02 17:09 DECISIONS.md: the camera never shows white space; pointing at an edge scrolls (Andrew, 2026-10-03); filed viewer.camera-no-void, overturning viewer SWITCHES xcomRoam
-- 83d5117 2026-10-02 17:07 DECISIONS.md: the hero card sits small, left of the action bar; the log collapses behind a button out of the way (Andrew, 2026-10-03); filed viewer.bar-card-and-log
-- 389335e 2026-10-02 17:04 .state/backlog.viewer-kingdom.json: fix.turned-hero-lost filed (Andrew, 2026-10-02, DECISIONS.md 'a hero still turned when a battle is lost is lost': "3 treated as lost.")
-- 6ae918d 2026-10-02 17:04 DECISIONS.md: a hero still turned when a battle is lost is lost; the opening's heroes level whenever their XP reaches it (Andrew, 2026-10-02)
-- 914eedd 2026-10-02 14:03 .state/shards.json: the whole suite (--shard 1/1, 2499 passed) passed on tree 596d2488ed (2026-10-02, after fix.opening-levels and rule.afflictions-at-zero-refiled-2 were combined)
-- 2ca4076 2026-10-02 13:23 .state/shards.json: the whole suite (--shard 1/1, 2498 passed) passed on tree acee42c4e6 (2026-10-02, combine: main's viewer.shield-guard-motion merged in 89189a3 with fix.opening-levels, rule.afflictions-at-zero-refiled-2, fix.transformed-snapshot-order; viewer 8d5c210, kingdom f025448)
-- 89189a3 2026-10-02 13:15 merge main engine master b4586e4 (viewer.shield-guard-motion) into the engine worker copy; .state/shards.json conflict taken from this copy, to be re-recorded by the whole suite after the merge
-- fdea6a0 2026-10-02 13:12 .state/shards.json: the whole suite (--shard 1/1, 2498 passed) passed on tree 7d42c2e58b (2026-10-02, rule.afflictions-at-zero-refiled-2 landed in aab975a, fix.transformed-snapshot-order in f3874a0; viewer statics re-dumped in 0398dc7)
-- f3874a0 2026-10-02 13:08 fix.transformed-snapshot-order: Found by the whole suite after rule.afflictions-at-zero-refiled-2 landed
-- 52166b3 2026-10-02 12:59 .state/backlog.viewer-kingdom.json: viewer.affliction-pop-up needs rule.afflictions-at-zero-refiled-2 (tools/add-item.mjs --repoint, twice: rule.afflictions-at-zero and rule.afflictions-at-zero-refiled were abandoned and re-filed - engine SWITCHES.md afflictionsAtZeroRefiled)
-- aab975a 2026-10-02 12:59 rule.afflictions-at-zero-refiled-2: Re-files rule.afflictions-at-zero-refiled (abandoned 2026-10-02: filed w
-- b4586e4 2026-10-02 12:34 .state/shards.json: the whole suite (--shard 1/1, 2476 passed) passed on tree 0aad763b91 (viewer.shield-guard-motion follow-up fac90fb; viewer f5d0057, kingdom a6d4c33)
-- fac90fb 2026-10-02 12:31 viewer.shield-guard-motion (follow-up; found by the home chat's combine: the engine suite failed in test/movement-inventory.test.ts, "movements: the Oathblade body plays different motions on hero.base.warrior-brawler"): the movement inventory reads `guard` as a kit word — bound on a body only where its wearer holds a shield (viewer SWITCHES guardHolders), so two heroes in one body may differ by it and by nothing else — and a shield power's motion is `guard`, partial across the hero bodies (the five a shield-holder wears). generated/movements.{json,md} regenerated (npx tsx tools/movements.mts): 351 of 521 movements missing (was 357). Law 10 note in test/movement-inventory.test.ts: the six shield rows were asserted [yes, power, null, missing] while the build was filed; now [yes, power, guard, partial], each shield-holder's body on shield_blockleft. Switch: SWITCHES.md movementKitWords.
-- dfd0a5c 2026-10-02 12:31 .state/shards.json: the whole suite (--shard 1/1, 2481 passed) passed on tree afc127dfb8 (2026-10-02, fix.opening-levels, landed in 0fdeb96; viewer statics re-dumped in 8c3a4bd)
-- 9b09094 2026-10-02 12:25 fix.opening-levels: Ruled 2026-09-28 (Andrew, DECISIONS.md 'the opening's party levels up; t
-- 96b2272 2026-10-02 12:16 viewer.shield-guard-motion: Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'a shield power plays a ra
-- 64c46e3 2026-10-02 11:56 DECISIONS.md: the opening run keeps its five-hero party; the Bridge and Gates difficulty waits for Andrew's playtest (Andrew, 2026-10-02)
-- cffd465 2026-10-02 06:50 .state/shards.json: the whole suite (--shard 1/1, 2477 passed) passed on tree bf9ac8fabe (2026-10-02, after fix.orphans-teacher-knife-refiled was combined)
+- a9da04f 2026-10-02 22:08 .state/shards.json: the whole suite (--shard 1/1, 2499 passed) passed on tree c25797daeb (2026-10-03, main after the combine of the viewer worker copy; root a30192d, viewer fc08d2b, kingdom 8d6706d)
+- 362e180 2026-10-02 22:02 DECISIONS.md: the affliction pop-up's 0-Health words and its drawbacks come from the engine (Andrew, 2026-10-03) — filed fix.affliction-pop-up-words
+- 2511063 2026-10-02 21:20 combine: engine master 152b414 into this copy
+- 92f7ca8 2026-10-02 21:18 viewer.affliction-pop-up: Ruled 2026-10-01 (Andrew, engine/DECISIONS.md 'the afflictions at 0 Heal
+- 038b7af 2026-10-02 20:32 fix.turned-hero-lost: Ruled 2026-10-02 (Andrew, engine/DECISIONS.md 'a hero still turned when
+- 258e094 2026-10-02 20:25 viewer.bar-card-and-log: Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the hero card sits small,
+- 152b414 2026-10-02 20:19 DECISIONS.md: the standing stab is shelved as is; the queue moves on (Andrew, 2026-10-03)
+- b0e7053 2026-10-02 20:19 DECISIONS.md: the standing stab needs lean, wind-up and legs (Andrew, 2026-10-03)
+- 0ac8a1a 2026-10-02 20:04 viewer.civilian-dagger-grip-punch: Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'a held weapon is gripped:
+- 5a05f9b 2026-10-02 19:22 DECISIONS.md: the civilians' dagger attack is the Hook punch for now; a hand-keyed standing stab is made for review (Andrew, 2026-10-03) — filed viewer.civilian-dagger-grip-punch
+- e8f0d90 2026-10-02 19:11 DECISIONS.md: a held weapon is gripped, the hand closes round it, for every body (Andrew, 2026-10-03)
+- 0229d5c 2026-10-02 18:24 DECISIONS.md: switching heroes before one has acted keeps the sandbox's save-and-restore for now (Andrew, 2026-10-03)
+- 80928f3 2026-10-02 19:22 DECISIONS.md: the civilians' dagger attack is the Hook punch for now; a hand-keyed standing stab is made for review (Andrew, 2026-10-03) — filed viewer.civilian-dagger-grip-punch
+- 359e2ab 2026-10-02 19:21 viewer.camera-no-void: Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the camera never shows wh
+- 886f5c3 2026-10-02 19:11 DECISIONS.md: a held weapon is gripped, the hand closes round it, for every body (Andrew, 2026-10-03)
+- dd8a35a 2026-10-02 18:45 viewer.civilian-held-dagger: Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the civilians hold their
+- 52afd7d 2026-10-02 18:24 DECISIONS.md: switching heroes before one has acted keeps the sandbox's save-and-restore for now (Andrew, 2026-10-03)
+- 33a71e7 2026-10-02 17:57 DECISIONS.md: the civilians hold their dagger as a weapon, not baked into a body copy (Andrew, 2026-10-03) — filed viewer.civilian-held-dagger
+- 838900c 2026-10-02 18:21 viewer.turn-taking: Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'a hero starts its Activat
+- 5a6ef22 2026-10-02 17:57 DECISIONS.md: the civilians hold their dagger as a weapon, not baked into a body copy (Andrew, 2026-10-03) — filed viewer.civilian-held-dagger
+- 3d3851d 2026-10-02 17:39 .state/shards.json: the whole suite (--shard 1/1, 2499 passed) passed on tree 7eb99fd56b (2026-10-02, the wrap of fix.opening-levels and rule.afflictions-at-zero-refiled-2)
 
 ## Next chat
 
-New chat with Heroes of Blight and Tragic — engine: check for new engine items; if none, take fix.turned-hero-lost once the viewer chat has wrapped
+New chat with Heroes of Blight and Tragic — engine: fix.affliction-pop-up-words, the affliction pop-up's 0-Health words and drawbacks come from the engine
 ```
 start engine
 ```
