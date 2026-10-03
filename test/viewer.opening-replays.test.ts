@@ -1,4 +1,5 @@
-// viewer.opening-replays (engine backlog; engine DECISIONS.md 2026-10-03 'the opening battles are watchable as computer-played
+// viewer.opening-replays-refiled (engine backlog; filed as viewer.opening-replays with shape data and re-filed as plumbing, as every
+// viewer item is - SWITCHES.md openingReplaysRefiled; engine DECISIONS.md 2026-10-03 'the opening battles are watchable as computer-played
 // replays'). Andrew, asked whether the viewer is set up to replay the opening battles: "I want to be able to watch some of the
 // replays of these initial battles." - and whether battles he played or the computer's: "Just the computer played recordings."
 // Ruled: the replay library carries a computer-played recording of each of the opening's six battles (the engine plays both
