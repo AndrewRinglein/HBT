@@ -4052,3 +4052,14 @@ Ruled:
 - **A hand-keyed standing stab is made for the two civilian bodies** — upright, no fighting crouch, the dagger hand drawn back and thrust forward, about a second — as a review candidate. It is not wired into the battle screen until Andrew accepts it.
 - With the entry above ('a held weapon is gripped'): their hand closes round the dagger.
 - Filed: `viewer.civilian-dagger-grip-punch`.
+
+## 2026-10-03 — the standing stab needs lean, wind-up and legs
+
+Andrew, in the viewer chat, reviewing the hand-keyed standing stab candidate built in `viewer.civilian-dagger-grip-punch` (civilian-study `standing-stab/review.html`, five keys, Orphan Child and School Teacher):
+
+“Yeah, there's a totally stiff body except for a hip pivot. We need a lot more lean and wind-up, a lot more body motion. Legs need movement.”
+
+Ruled:
+
+- **The candidate is not accepted.** The stab is reworked for both bodies: a wind-up (weight back, dagger arm drawn), a lean into the thrust, the torso, shoulders and head moving with it, and the legs stepping or bending to carry the weight forward and back — still upright and civilian, not a fighter's crouch (the 2026-10-03 entry above). It stays off the battle screen until accepted; the Hook punch remains their attack meanwhile.
+- The feedback is recorded at its owner, civilian-study `run.json`, by the rework.
