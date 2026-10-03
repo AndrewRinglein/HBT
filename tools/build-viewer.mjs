@@ -62,6 +62,8 @@ for (const f of manifest.files) {
 for (const [tid, a] of Object.entries(manifest.artmap)) {
   if (!assets[a.token]) throw new Error(`artmap ${tid}: token ${a.token} is not an inlined asset`)
   if (a.card && !assets[a.card]) throw new Error(`artmap ${tid}: card ${a.card} is not an inlined asset`)
+  /* viewer.affliction-pop-up: a hero's after cards, by affliction badge */
+  for (const [badgeId, file] of Object.entries(a.after || {})) if (!assets[file]) throw new Error(`artmap ${tid}: after card ${file} (${badgeId}) is not an inlined asset`)
 }
 if (!manifest.artmap._pending) throw new Error('artmap has no _pending standee — rerun tools/prep-art.py')
 const library = JSON.parse(readFileSync('battles/library.json', 'utf8'))
@@ -110,7 +112,8 @@ const { outputFiles, warnings, metafile } = esbuild.buildSync({
       /* viewer.shield-guard-motion: each item's own class — a power a held shield grants raises the shield */
       itemClasses: statics.itemClasses }),
     __BUNDLED_FIELDS__: JSON.stringify(Object.fromEntries(Object.entries(fields).filter(([k]) => !k.startsWith('_')))),
-    __BUNDLED_ART__: JSON.stringify({ artmap: manifest.artmap, assets }),
+    /* noAfterArt (viewer.affliction-pop-up): the heroes with no after card, listed by prep-art — never faked */
+    __BUNDLED_ART__: JSON.stringify({ artmap: manifest.artmap, assets, noAfterArt: manifest.noAfterArt || {} }),
     __BUNDLED_BATTLES__: JSON.stringify(battles),
     __BUNDLED_GLYPHS__: JSON.stringify(glyphs),
     __BUNDLED_STAMP__: JSON.stringify(stamp),

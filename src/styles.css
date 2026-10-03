@@ -636,3 +636,32 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 #playAskText{margin:0 0 10px;font-size:21px;color:var(--gold)}
 #playAskWho{margin:0 0 20px;color:#b9b09a;font-size:15px}
 #playAskBtns{display:flex;gap:12px;justify-content:flex-end}
+
+/* ── the first-affliction pop-up (viewer.affliction-pop-up, 2026-10-03; engine DECISIONS.md 2026-10-01 'the first-affliction
+   pop-up': "pop up before and after art for that character with an explanation"; src/affliction.js). Over the whole screen —
+   the board, the bar and the panel — until Continue; the two cards side by side, the three explanations to their right
+   (viewer SWITCHES afflictionLook). The modifier colours are theme.js's, set on the rows. */
+#afflPop{position:absolute;inset:0;z-index:210;display:flex;align-items:center;justify-content:center;background:rgba(4,4,6,.74)}
+#afflBox{width:1180px;max-width:94%;max-height:94%;overflow:auto;box-sizing:border-box;padding:24px 30px 22px;background:#15120d;border:1px solid var(--brass);border-radius:3px;
+  box-shadow:0 24px 60px rgba(0,0,0,.8),0 0 0 1px #000;color:var(--ink);font:500 17px/1.42 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;text-align:left}
+#afflHead{font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#cbc3ae}
+#afflTitle{margin:2px 0 16px;font-family:Spectral,serif;font-size:34px;line-height:1.15;font-weight:600;color:var(--gold)}
+#afflBody{display:flex;gap:30px;align-items:flex-start}
+#afflCards{display:flex;gap:12px;align-items:center;flex:0 0 auto}
+.afflCard{width:256px}
+.afflArt{width:256px;height:384px;box-sizing:border-box;border:1px solid #4a3a1c;border-radius:3px;background:#0b0c0e;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.afflArt img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.afflNoArt{display:block;padding:0 22px;text-align:center;color:var(--dim);font-size:15px;line-height:1.4}
+.afflCap{margin-top:7px;text-align:center;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#cbc3ae}
+.afflArrow{font-size:30px;line-height:1;color:var(--brass);margin-bottom:24px}
+#afflText{flex:1 1 auto;min-width:0}
+.afflSec{margin:0 0 16px}
+.afflH{margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border);font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--brass)}
+.afflRow{display:flex;flex-wrap:wrap;gap:6px 8px}
+.afflStat{padding:3px 9px;border:1px solid var(--border);border-radius:2px;background:#191713;font-weight:700;white-space:nowrap}
+#afflText ul{margin:0 0 4px;padding:0 0 0 20px}
+#afflText li{margin:0 0 2px}
+#afflText p{margin:0 0 6px}
+.afflSub{margin:6px 0 3px;color:#b9b09a;font-size:15px}
+.afflNone{color:var(--dim)}
+#afflFoot{display:flex;justify-content:flex-end;margin-top:6px}

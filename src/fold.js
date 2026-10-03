@@ -183,7 +183,12 @@ export function fold(S, e, ctx, now = 0) {
       if (U[e.actor]) { const u = U[e.actor]
         if (!u.badges.includes(e.badgeId)) u.badges.push(e.badgeId)
         cue('badge', { id: e.actor, badgeId: e.badgeId, name: e.name })
-        cue('float', { hex: u.hex, kind: 'badge', text: (e.name || e.badgeId).toUpperCase(), small: true }) }
+        cue('float', { hex: u.hex, kind: 'badge', text: (e.name || e.badgeId).toUpperCase(), small: true })
+        /* viewer.affliction-pop-up (engine DECISIONS.md 2026-10-01 'the first-affliction pop-up'): a HERO's gain of a badge
+           that carries a 0-Health rule — the engine's mark of an affliction (`atZero`), never a list of names here — is the
+           pop-up's cue, and carries the line whole: its modifiers, the row's written terms, the rule. A badge a unit already
+           holds comes as badge.held, so each gain is that hero's first of that affliction (viewer SWITCHES afflictionFirst). */
+        if (e.atZero && u.side === 'hero') cue('affliction', { id: e.actor, badgeId: e.badgeId, name: e.name, typeId: u.typeId, mods: e.mods || {}, terms: e.gaps || [], atZero: e.atZero }) }
       break
     case 'badge.held': break                                   // a grant that was already there; nothing changed
     case 'charge.spent':

@@ -19,7 +19,8 @@
      itemClasses — itemId -> the engine's item class (weapon, shield, …; static.json): a power a held shield grants raises the
                    shield (viewer.shield-guard-motion); a host that hands none gets no raised shield
      layerStatus · terrainApplies — what each painted layer and ground applies (static.json)
-     artmap   — typeId -> {token, card, aspect, height}; assets — file -> data URI / URL
+     artmap   — typeId -> {token, card, aspect, height, after?}; assets — file -> data URI / URL
+                (after: affliction badgeId -> the hero's after card, viewer.affliction-pop-up; a hero with none has no entry)
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
      meta     — {label, seed, engineCommit, outcome, turns} for the HUD; outcome/turns
                 are the engine's stamps on the export, never derived here
@@ -50,6 +51,7 @@ import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo } from './fold.js'
 import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
+import { closeAffliction } from './affliction.js'
 import { drawRail } from './rail.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -161,6 +163,8 @@ export function mountBattleViewer(root, data, opts = {}) {
        queue — so seek() and dispose() can drop them all (review 2026-09-03) */
     fx: { FX: null, timers: new Set(), nodes: new Set(), injuryQ: [], paused: null },
     playing: false, speed: 1, timer: null, invalid: null,
+    /* viewer.affliction-pop-up: the pump is held while the first-affliction pop-up stands (affliction.js) */
+    hold: false, affliction: null,
   }
   const ctx = () => ({ UD: V.data.UD, SN: V.data.SN, IC: V.data.ITEM_CLASSES })
   /* the BEAT clock: wall time scaled by playback speed, so a row that lights
@@ -267,7 +271,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   function fault(err) {
     if (V.invalid) throw V.invalid
     clearTargeting(); V.play = null; V.heldPlay = null; V.layers.playInput?.remove(); V.layers.playInput = null; V.layers.play?.remove(); V.layers.play = null
-    V.invalid = err; V.playing = false; cancelBurst(); cancelOpportunityLabel(); cancelBeats(V)
+    V.invalid = err; V.playing = false; dropHold(); cancelBurst(); cancelOpportunityLabel(); cancelBeats(V)
     if (V.timer != null) { clearTimeout(V.timer); V.timer = null }
     if (opts.onPlayState) opts.onPlayState(false)
     if (opts.onError) opts.onError(err)
@@ -408,9 +412,17 @@ export function mountBattleViewer(root, data, opts = {}) {
     }
     return d
   }
+  /* viewer.affliction-pop-up (engine DECISIONS.md 2026-10-01: "There is a before/after pop-up mid-battle"; the item: "the
+     battle pauses on a pop-up ... and the battle resumes when it is closed"): the pop-up HOLDS the pump — no next beat is
+     scheduled and nothing drains, so a host that plays stays busy — and Continue releases it. Held is not paused: the pump
+     is still playing and goes on by itself. A hand step, a seek, a fault and dispose drop the hold and the pop-up with it
+     (viewer SWITCHES afflictionHold, afflictionSeek). */
+  V.holdPump = () => { V.hold = true; if (V.timer != null) { clearTimeout(V.timer); V.timer = null } }
+  V.releasePump = () => { if (!V.hold) return; V.hold = false; if (!disposed && !V.invalid && V.playing && V.timer == null) step() }
+  function dropHold() { V.hold = false; closeAffliction(V) }
   function step() {
     V.timer = null
-    if (V.invalid) return
+    if (V.invalid || V.hold) return
     if (V.cursor >= V.EV.length) {
       /* dry, not paused: a live game will push more; a replay's host hears onDrain */
       if (opts.onDrain) opts.onDrain()
@@ -422,13 +434,14 @@ export function mountBattleViewer(root, data, opts = {}) {
     try { d = beat(V.EV[V.cursor]); chrome.sync() }
     catch (err) { fault(err) }
     /* Ruled 2026-08-26: standard speed is 25% slower; all speeds scale off it */
-    if (V.playing) V.timer = setTimeout(step, Math.max(16, (d || 8) / (V.speed * 0.75)))
+    if (V.playing && !V.hold) V.timer = setTimeout(step, Math.max(16, (d || 8) / (V.speed * 0.75)))
   }
   function play() { if (V.invalid) return; V.playing = true; if (V.timer) { clearTimeout(V.timer); V.timer = null } if (opts.onPlayState) opts.onPlayState(true); step() }
   function pause() { V.playing = false; if (V.timer) { clearTimeout(V.timer); V.timer = null } if (opts.onPlayState) opts.onPlayState(false) }
-  function stepOnce() { pause(); if (V.invalid || V.cursor >= V.EV.length) return; beat(V.EV[V.cursor]) }
+  function stepOnce() { pause(); dropHold(); if (V.invalid || V.cursor >= V.EV.length) return; beat(V.EV[V.cursor]) }
   function seek(n) {
     if (V.timer) { clearTimeout(V.timer); V.timer = null }
+    dropHold()
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
     V.S = foldTo(V.EV, V.cursor, ctx())
     clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); cancelBeats(V); clearFloats(V)
@@ -467,7 +480,7 @@ export function mountBattleViewer(root, data, opts = {}) {
       while (V.cursor <= end) applyOne(V.EV[V.cursor], false)
       render()
       if (opts.autoplay !== false) play()
-    } else if (V.playing && !V.timer && V.cursor < V.EV.length) step()   // the pump had run dry; it resumes
+    } else if (V.playing && !V.timer && !V.hold && V.cursor < V.EV.length) step()   // the pump had run dry; it resumes (never past a held pop-up)
   }
 
   const api = {
@@ -504,7 +517,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.tactical-camera: the camera's named views — angled, lower, raise, left, right, whole, overhead, inspect, focus,
        reset — and what it is doing (stance, elevation, turn, zoom) */
     camera(kind) { cameraView(V, kind) }, get cameraState() { return cameraState(V) },
-    dispose() { disposed = true; stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    /* viewer.affliction-pop-up: whether the first-affliction pop-up is holding the pump */
+    get held() { return V.hold },
+    dispose() { disposed = true; dropHold(); stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

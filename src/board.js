@@ -6,6 +6,7 @@ import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_
 import { mvOf, absorbOf } from './actions.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { dangerOf } from './projection.js'
+import { afflictionPopup } from './affliction.js'
 import { dangerHTML, raIcon } from './icons.js'
 import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, groundFootprint, LENS } from './camera3d.js'
 import { POLICY, TILT, fitZoom, zoomLimits, tiltLimits, panRange, turned as turnedBy, elevationOfTilt } from './camera-policy.js'
@@ -719,6 +720,7 @@ export function playCues(V, cues) {
       case 'deathbed': deathbedModal(V, c); break
       case 'shove': shove(V, c.id, c.from, c.to, c.hexes); break
       case 'badge': badgeBeat(V, c.id); break
+      case 'affliction': afflictionPopup(V, c); break            // viewer.affliction-pop-up: the pop-up stands, the pump is held
     }
   }
 }
