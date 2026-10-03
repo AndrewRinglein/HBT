@@ -4053,13 +4053,17 @@ Ruled:
 - With the entry above ('a held weapon is gripped'): their hand closes round the dagger.
 - Filed: `viewer.civilian-dagger-grip-punch`.
 
-## 2026-10-03 — the standing stab needs lean, wind-up and legs
+## 2026-10-03 — the standing stab is shelved as is
 
 Andrew, in the viewer chat, reviewing the hand-keyed standing stab candidate built in `viewer.civilian-dagger-grip-punch` (civilian-study `standing-stab/review.html`, five keys, Orphan Child and School Teacher):
 
 “Yeah, there's a totally stiff body except for a hip pivot. We need a lot more lean and wind-up, a lot more body motion. Legs need movement.”
 
+Then, before any rework began:
+
+“Wait, but let's just stop this. Just leave it as is and move on to all the other viewer things, because this is just not important.”
+
 Ruled:
 
-- **The candidate is not accepted.** The stab is reworked for both bodies: a wind-up (weight back, dagger arm drawn), a lean into the thrust, the torso, shoulders and head moving with it, and the legs stepping or bending to carry the weight forward and back — still upright and civilian, not a fighter's crouch (the 2026-10-03 entry above). It stays off the battle screen until accepted; the Hook punch remains their attack meanwhile.
-- The feedback is recorded at its owner, civilian-study `run.json`, by the rework.
+- **The standing stab is shelved as is — not accepted, not reworked, not on the battle screen.** The feedback above stands as the note for whoever picks it up: more lean and wind-up, more body motion, legs moving. The Orphan Child and the School Teacher keep the closed grip and the Hook punch with the dagger in hand, as landed in `viewer.civilian-dagger-grip-punch`.
+- No item is filed for the stab; the viewer queue moves on.
