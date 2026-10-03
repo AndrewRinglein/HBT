@@ -1,5 +1,15 @@
 [
  {
+  "id": "fix.turned-hero-lost",
+  "kind": "kingdom",
+  "shape": "rule",
+  "spec": "Ruled 2026-10-02 (Andrew, engine/DECISIONS.md 'a hero still turned when a battle is lost is lost'), asked 'If a hero turns against you, is never beaten down, and the battle is lost, should it come home normal and unhurt, as built now, or be treated as lost?': '3 treated as lost.' A hero row the battle result marks `turned` (rule.afflictions-at-zero-refiled-2: ended a lost battle still on the enemy side, standing) no longer comes home: the Reckoning treats it as lost through the existing dead path (kingdom/src/core/reckoning.ts — `dead`, earns no XP, leaves the roster) — never a second removal path. Prior art: the Reckoning's dead handling; kingdom/src/core/result.ts's `turned` field. Engine SWITCHES.md `turnedAtBattleEnd` is marked overturned for that hero (the battle-end revert to its own form stays); if 'lost' needs to differ from 'dead' anywhere the kingdom already distinguishes them (an abandoned retreat), record the choice as a switch.",
+  "expect": "A lost battle in which a hero ends turned to the enemy side: the Reckoning reports that hero dead/lost, pays it no XP, and the roster no longer holds it; a hero that turned and was beaten down, or that ended on the player's side, is unchanged; SWITCHES turnedAtBattleEnd reads overturned in part, citing the ruling.",
+  "needs": [
+   "rule.afflictions-at-zero-refiled-2"
+  ]
+ },
+ {
   "id": "fix.danger-skips-charge",
   "kind": "viewer",
   "shape": "rule",
