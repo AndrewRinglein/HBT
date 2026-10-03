@@ -11,6 +11,8 @@ export function battleViewAssets(){
  if(stat.engineDirty||stat.engineCommit!==engineCommit)throw Error('Shared viewer metadata is stale or dirty; regenerate through its owning tools')
  const names=new Set(manifest.files)
  for(const row of Object.values(manifest.artmap))for(const key of ['token','card'])if(row[key]&&!names.has(row[key]))throw Error('Missing art manifest reference '+row[key])
+ /* viewer.affliction-pop-up: a hero's after cards (by affliction badge) are the manifest's files too */
+ for(const row of Object.values(manifest.artmap))for(const file of Object.values(row.after??{}))if(!names.has(file))throw Error('Missing art manifest reference '+file)
  for(const file of manifest.files){if(!/^[a-zA-Z0-9_.-]+$/.test(file))throw Error('Unsafe art manifest filename '+file)}
  for(const file of manifest.files){const mime=file.endsWith('.png')?'image/png':file.endsWith('.jpg')?'image/jpeg':null;if(mime)assets[file]=`data:${mime};base64,${readFileSync('../viewer/generated/art/'+file).toString('base64')}`}
   /* viewer.reads-engine: the engine's classification of every action and each status's behaviour; what each layer and ground applies;

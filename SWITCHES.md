@@ -407,3 +407,14 @@ standing) goes through the Reckoning's one dead path. Overturns, for that hero, 
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `turnedLostIsDead` | "Treated as lost" — is a lost hero anything other than a dead one? | **No: it is dead, exactly — `battleXpOf` counts the row dead (no XP, so no MVP), `resolveReckoning` proposes `dead` (wound 0, no badges carried), the writer's `setHeroDead` sets `lifeState: 'dead'` and emits `hero.died`; the recap and the roster say "fell in battle" / "dead" as for any death. Only a `turned` row of a battle whose outcome is not `heroClear` is lost.** The panel may still uncheck `dead` before the writer runs. | The kingdom distinguishes lost from dead nowhere: the abandoned retreat is unreachable (engine SWITCHES.md `transformedRetreat`) and the roster has no lost state; the item says never a second removal path. A separate word for the recap would be a new name, which is Andrew's. | Default — 2026-10-03 |
+
+## viewer.affliction-pop-up — the first-affliction pop-up, on the sandbox (2026-10-03)
+
+Engine DECISIONS.md 2026-10-01 'the afflictions at 0 Health: ... the first-affliction pop-up'. The pop-up is the viewer's
+(`viewer/src/affliction.js`, viewer SWITCHES.md `affliction*`); the kingdom's part is the built pages carrying it and the
+after cards, and the probe of the item's expect line, `tools/affliction-pop-up.verify.mjs` (real Chrome, 1920 x 1080).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `afflictionPopUpBattle` | "In a sandbox battle where a hero is first afflicted" — which battle does the probe play? | **The sandbox's own free battle as it opens (Start: Iron Dwarf, Hunter and Battle Chaplain against two Zombies and two Skeletons on the Sunken Priory, seed 1), played by its buttons — Activate hero, End activation, Show current state — with every hero ended at once; a Zombie's bite gives the Iron Dwarf Rotting Flesh after 62 commands (Turn 15). The biting Activation is then played by the pump (the board's own seek to its start), so the pop-up is the one a player meets.** | No opening battle afflicts on a fixed seed within a short probe, and the default battle needs no setup; a skipped playback shows no pop-up (viewer SWITCHES `afflictionSeek`), so the bite itself must be played. | Default — 2026-10-03 |
+| `afflictionPopUpBusy` | While the pop-up stands, what does the sandbox do? | **Nothing new: the viewer does not drain while held, so the page stays busy ("Playing the resolved actions…") and takes no command until Continue. "Show current state" still jumps past it and closes it.** | The hold is the viewer's; the sandbox already waits for the drain. | Default — 2026-10-03 |
