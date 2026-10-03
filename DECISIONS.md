@@ -4311,3 +4311,16 @@ Ruled:
 - Not answered, defaults taken: (4) the screen gathers every enemy of a type into one group even when the engine's order is mixed, the groups in the order each type first acts — the builder's switch in `viewer.enemy-type-moves-together`; (6) the art needs are recorded as a coverage list in ART-NOTES.md (2026-10-03 'the motion coverage, ruled'), the art queue left empty until he says to fill it.
 
 Filed from this entry and 'the post's twelve questions answered' above — engine queue: `movement.back-flip`; viewer queue, in this order after what was already there: `viewer.special-move-motions`, `viewer.shield-block-and-hit`, `viewer.airwalk-floats`, `viewer.enemy-type-moves-together`. `viewer.attack-owns-motion` (filed earlier today) now carries the several-swings rule.
+
+## 2026-10-03 — the opening replays show the heroes winning; one recording of each; the fall warnings are drawn
+
+Andrew, in the viewer chat while `viewer.opening-replays` was landing, told that on seed 0 the computer wins only the Lumberjack House and is wiped in the other five, and asked (1) whether the six recordings stay on seed 0 or move to seeds the heroes win, (2) whether to file a viewer item that draws the meteor and curse warning areas on the board, (3) whether to file an item that re-exports the other 29 library battles that no longer match the engine:
+
+“Two, yes. One, I'd like to see one where the heroes win. I don't need huge numbers of library battles. I just need one of each.”
+
+Ruled:
+
+- **Each opening battle has one recording in the replay library, on a seed the heroes win.** The lowest winning seed of each, the party as `export-battle.mts --scenario test.opening-<name> --seed <n>` fields it: Orphanage 5, Lumberjack House 0, Bridge 24, Cavern Trail 1, Cathedral 1 (viewer `battles/library.json` records each).
+- **The viewer draws the fall warnings** (the Cavern Trail's meteor fall, the Gates' curse strike — the areas marked and not yet landed). Filed: `viewer.area-fall-warning`.
+- Not ruled, the builder's reading: question 3 is taken as answered by "I don't need huge numbers of library battles" — no item is filed to re-export the rest of the library.
+- Left open, a finding: **the computer-played heroes never win the Gates** — seeds 0 to 399 of `test.opening-gates` all end in a wipe (the Bridge is first won on seed 24, after 24 wipes). The Gates' recording stays on seed 0, a loss, until a win exists to record.

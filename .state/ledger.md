@@ -23387,3 +23387,46 @@ index 0000000..e0b8964
 +})
 ```
 </details>
+
+## viewer.opening-replays — ABANDONED
+2026-10-03 21:46
+
+Filed with shape data, but it is a viewer item: its id is no content id, so 'the id appears in a real battle' and the kill switch can never pass (every landed viewer item is shape plumbing). The work is committed in viewer (dc21c4b, 73dec77, page dd505d8) and kingdom (d10e3b0, df1ad87), every viewer gate part and the kingdom suite green. Re-filed as viewer.opening-replays-refiled, shape plumbing, same spec and expect (viewer SWITCHES openingReplaysRefiled).
+
+## viewer.opening-replays-refiled — LANDED `8f1bc86` **NEEDS REVIEW**
+2026-10-03 22:05
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.opening-replays.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.opening-replays.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.opening-replays.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+c9311c1
+
+diff --git a/test/viewer.opening-replays.test.ts b/test/viewer.opening-replays.test.ts
+index d9d89b2..de3cca9 100644
+--- a/test/viewer.opening-replays.test.ts
++++ b/test/viewer.opening-replays.test.ts
+@@ -1,3 +1,4 @@
+-// viewer.opening-replays (engine backlog; engine DECISIONS.md 2026-10-03 'the opening battles are watchable as computer-played
++// viewer.opening-replays-refiled (engine backlog; filed as viewer.opening-replays with shape data and re-filed as plumbing, as every
++// viewer item is - SWITCHES.md openingReplaysRefiled; engine DECISIONS.md 2026-10-03 'the opening battles are watchable as computer-played
+ // replays'). Andrew, asked whether the viewer is set up to replay the opening battles: "I want to be able to watch some of the
+ // replays of these initial battles." - and whether battles he played or the computer's: "Just the computer played recordings."
+```
+</details>
