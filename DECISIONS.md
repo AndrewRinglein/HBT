@@ -3974,3 +3974,11 @@ Ruled:
 - **A player unit starts its Activation with its basic movement ability already chosen**, as if its button had been clicked. Choosing another movement ability on the bar switches to it. Moving needs no click on the bar: a double-click on a hex moves there. Overturns kingdom SWITCHES `playQueueProposal` where it leaves the hero proposed and not begun.
 - **The enemy's leftovers must not survive into the Hero Phase** — its hit chance stayed on screen after it attacked, so whose turn it was could not be told. A bug, not a design question.
 - The rest of the selection behaviour is under discussion in this chat; its outcome is recorded below this entry when ruled.
+
+Andrew, the same chat, on the proposal's third point (a single click only looks; the bar stays with the current hero):
+
+“Okay, clicking on an enemy unit does not pull up their attacks in your bar. There is a unit who is activated. That portrait is next to all of the abilities. That's why we're putting it down there. While that unit is activated, those abilities just stay there. I click on an enemy, and the enemy just goes into the highlight on the right screen, but it doesn't change my actions that are available.”
+
+Ruled:
+
+- **The action bar and the portrait card beside it belong to the activated unit for its whole Activation.** Clicking any other unit — an enemy, or another hero — shows it in the right-hand panel only; the bar, its abilities and the card do not change. Overturns viewer `src/subject.js`'s rule that the bar follows whoever was clicked last, and 2026-09-29 'the playable battle screen' where it has the panel and the bar both follow the click.
