@@ -4311,3 +4311,15 @@ Ruled:
 - Not answered, defaults taken: (4) the screen gathers every enemy of a type into one group even when the engine's order is mixed, the groups in the order each type first acts — the builder's switch in `viewer.enemy-type-moves-together`; (6) the art needs are recorded as a coverage list in ART-NOTES.md (2026-10-03 'the motion coverage, ruled'), the art queue left empty until he says to fill it.
 
 Filed from this entry and 'the post's twelve questions answered' above — engine queue: `movement.back-flip`; viewer queue, in this order after what was already there: `viewer.special-move-motions`, `viewer.shield-block-and-hit`, `viewer.airwalk-floats`, `viewer.enemy-type-moves-together`. `viewer.attack-owns-motion` (filed earlier today) now carries the several-swings rule.
+
+## 2026-10-03 — Back Flip: cooldown 4, introduced in class powers; the art needs become art-queue items
+
+Andrew, in the kingdom chat. The questions as asked: (1) "Who can unlock Back Flip? Until you say, no class gets it and it can only be used in the sandbox."; (2) "Should Back Flip have a cooldown or cost more than Side Roll, given it does everything Side Roll does plus the Dodge?"; (3) "Should the art needs (flight for every hero body, the nine held stances, a Leap motion, the monster list) become items in the art queue, or stay as the list in the art notes?"
+
+“Let's give it a cooldown of 4.  Backflip will be introduced in class powers.   The art needs should become items in the art queue.”
+
+Ruled:
+
+- **Back Flip has a cooldown of 4.** With 'Back Flip's rules' above: 1 hex into any adjacent hex, provokes nothing, ignores terrain cost, +20 Dodge until the end of the next Activation, 1 Stamina, cooldown 4.
+- **Back Flip is introduced in class powers.** Read as: a hero gets it as a class power, the way Sidestep, Side Roll and Leap are; which class or classes is not named yet, so `movement.back-flip` puts it in the pack granted to no class, and the class is his to name when the class powers are set.
+- **The art needs are items in the art queue.** Filed, in this order: `art.hero-flight-motions`, `art.held-set-stances`, `art.leap-motion`, `art.monster-motion-lists` — the four asked about — and the rest of ART-NOTES.md 2026-10-03 'The motion coverage, ruled': `art.one-handed-swing-variety`, `art.airwalk-floating-motions`, `art.hit-reaction-not-block`. The 'defaults taken' line above (the art queue left empty) is replaced by this.
