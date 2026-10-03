@@ -4166,3 +4166,28 @@ Andrew, the same chat, on the entry's "Enemies an encounter places are not named
 “If enemies have weapons assigned, they need them also when they come into play.”
 
 - **An enemy with weapons assigned fields them when it comes into play, the same as a civilian.** This replaces the line above it answers: the rule is one rule for every unit an encounter places — setup unit or scheduled arrival, civilian or enemy — a row that carries a kit fields it. Read as: today no bestiary row assigns a weapon (all 240 rows in content `hbt-content.json` are authored with their own attacks; none carries a kit or names an `item.*`), so no enemy changes in battle now; the rule holds for the first enemy that is given one. `fix.civilians-field-kit` carries it.
+
+## 2026-10-03 — both war hammers; tiers for the rest of the dictated weapons
+
+Andrew, same chat, asked (1) whether a two-handed war hammer should be drawn, since the existing war hammer card is one-handed and `item.war-hammer` is two-handed, and (2) whether short sword, giant sword, the three flails, pike and giant scythe get cards now and at which tier:
+
+“One, we need both.   Short sword and green flail are both tier 0. Everything else is tier 1.”
+
+Ruled:
+
+- **Both war hammers are wanted: a one-handed and a two-handed.** The existing one-handed card stays; a two-handed card is drawn for `item.war-hammer`. The one-handed war hammer is not yet a row.
+- **Short Sword and Grain Flail are tier 0. Giant Sword, War Flail, Two-Handed Flail, Pike and Giant Scythe are tier 1.** "Green flail" is read as the one-handed Grain Flail (V2-SHIELDS-AND-WEAPONS-2026-09-20.md, sixth pass, spells it both ways). They are still not rows; this settles only their tier.
+- All eight get cards: `prompts-v2.json` now holds 58.
+
+## 2026-10-03 — what the tiers mean: tier 0 substandard, tier 1 standard, enchantment from tier 2
+
+Andrew, same chat, minutes later:
+
+“Tier 0 is for weapons and armor that are substandard to start with.  Standard things you're going to buy and equip everyone with are tier 1.   Tier 2 is when you go into enchantment.”
+
+Ruled:
+
+- **Tier 0 is substandard weapons and armor, what you start with.**
+- **Tier 1 is the standard gear you buy and equip everyone with.**
+- **Enchantment begins at tier 2.** This agrees with 2-ACTIONS-SETTLED.md ("Tier 0 is the junk tier") and the 2026-09-28 entry (enchantments are tier 2).
+- Read for the card art as: no tier 0 or tier 1 card shows enchantment, glow or magical light, mage and priest implements included; a staff shows its element through material, colour and shape (`prompts-v2.json` `tierLook` and `defaults`).
