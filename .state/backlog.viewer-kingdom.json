@@ -454,6 +454,8 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'a held weapon is gripped: the hand closes round it, for every body' and 'the civilians' dagger attack: the Hook punch for now; a hand-keyed standing stab is made for review'). Follows viewer.civilian-held-dagger. (1) The Orphan Child's and the School Teacher's right hand closes round the held tester dagger at idle, walk and attack (no open palm; the finger curl on the UNARMED body, recorded at its owner in civilian-study per assets/characters/PRODUCTION-START.md; the knife-v1 body copies stay unused). (2) Their attack plays the selected Hook punch (free-motion-study selections.json clips.hook, Melee_Hook) with the dagger in hand; the walk-assassinate clip is no longer played; viewer SWITCHES civilianGrasp and civilianStab are marked overturned citing the rulings. (3) A hand-keyed standing stab for the two bodies (upright, no crouch, dagger hand drawn back then thrust forward, about one second) is built as a review candidate in civilian-study with a review page or renders for Andrew; it is NOT wired into the battle screen.",
-  "expect": "In PLAY.html on the Orphanage, the Orphan Child's and the School Teacher's fingers close round the dagger standing, walking and attacking; their attack is the Hook punch with the dagger in hand; no walk-assassinate clip is referenced by the page; the stab candidate exists in civilian-study with renders for review and is not on the page."
+  "expect": "In PLAY.html on the Orphanage, the Orphan Child's and the School Teacher's fingers close round the dagger standing, walking and attacking; their attack is the Hook punch with the dagger in hand; no walk-assassinate clip is referenced by the page; the stab candidate exists in civilian-study with renders for review and is not on the page.",
+  "status": "done",
+  "sha": "5b2a84c"
  }
 ]
