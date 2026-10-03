@@ -4419,3 +4419,14 @@ Ruled:
 - (4) is not ruled: "If a hero dies, it should be replayed" may be "replaced" (an extra draft), or may mean a battle in which a hero dies is replayed. Asked.
 
 Filed: `kingdom.opening-sword-waits`, `kingdom.opening-replay-rules`.
+
+## 2026-10-03 — the opening run: a battle in which a hero dies is replayed
+
+Andrew, in the kingdom chat, asked which he meant by "If a hero dies, it should be replayed" — "did you mean the dead hero is *replaced* by an extra draft, or that a battle where a hero dies is *replayed*?":
+
+“Battle: they died as a replayed”
+
+Ruled:
+
+- **In the opening run a battle in which a hero dies is replayed.** Read as: "the battle they died in is replayed" (dictated). A hero's death in one of the six battles is not kept: that battle is offered again, the party as it stood before it, on new dice (the entry above), and the run goes on only from a battle no hero died in. No hero is replaced by an extra draft, and the party does not get smaller. "Hero" is a drafted hero: a civilian dying is still "its own punishment" and not a loss (2026-09-28). 2026-10-02 'a hero still turned when a battle is lost is lost' is not spoken to and stands.
+- This takes in the whole-party case ruled earlier today ("6 offer replay"): `kingdom.opening-party-dead-replay` is withdrawn before any code and replaced by `kingdom.opening-hero-death-replays`, in its place in the queue.
