@@ -3996,3 +3996,18 @@ Ruled:
 - **No partial Activations.** A hero's Activation is finished before another hero's begins; there is no switching away and coming back. The engine already holds this (`src/core/commands.ts` `not-current-actor`); root `COMBAT-DESIGN.md:85` said otherwise ("partial moves (move A, act with B, finish A)") and is corrected to this entry.
 - **The seven-point proposal is accepted** ("For yes", read as "four: yes"). With the earlier entries today: the bar and its card stay with the activated unit; a hero begins with its basic move armed; the enemy's hit chance and other leftovers clear before the Hero Phase.
 - Filed: `viewer.turn-taking`, first in the viewer queue.
+
+## 2026-10-03 — the civilians hold their dagger as a weapon, not baked into a body copy
+
+Andrew, in the viewer chat, after reporting the Orphan Child and the School Teacher show no dagger on the battle screen (`fix.orphans-teacher-knife` put `item.dagger` in their kit, but viewer `tools/character-models.mjs` gives civilians no held props and its `HELD` map has no `item.dagger`). Asked whether to use the existing civilian-study `knife-v1` candidates — a copy of each body GLB with the knife embedded as rigid equipment and the Knife ready / walk / attack clips baked in:
+
+“I just want to get this working. Do we have a model for a knife or a dagger? And then do we have a motion for a dagger stab?”
+
+“No, we don't want to create a version with the knife painted into the hand. We want to use a knife or a dagger the way they're supposed to be used.”
+
+Ruled:
+
+- **A civilian's kit weapon is a separate held model in its hand, the way the heroes' kit is** (viewer `HELD`, SWITCHES `heldModels`): the item drives the model, so a changed kit changes what is held. `item.dagger` is drawn with the shared dagger model (weapon tester `dagger`, as `item.obsidian-fang-dagger` already is), fitted to each civilian body's right hand.
+- **The per-body `knife-v1` GLBs are not used on the battle screen** — no body copy with the weapon built in. Their Knife attack motion source (civilian-study `run.json`) may be reused for the stab, on the unarmed body.
+- **A civilian with a dagger stabs when it attacks.**
+- Filed: `viewer.civilian-held-dagger`, last in the viewer queue.
