@@ -1,5 +1,19 @@
 [
  {
+  "id": "fix.civilians-field-kit",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.orphans-teacher-knife-refiled"
+  ],
+  "probeIds": [
+   "encounter.opening.lumberjack"
+  ],
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'every civilian fields its kit by default when an encounter places it'): 'Yes, all of the civilians, by default, should field their kit the first time they're loaded. So all of them should get it.' and 'If enemies have weapons assigned, they need them also when they come into play.' Today only the two civilians named on content gen/civilian-rulings.json placedWithKit.ids (the orphans, the school teacher; fix.orphans-teacher-knife-refiled) field their Codex kit when an encounter places them; every other placed civilian fights with Punch (engine SWITCHES arrivalKit: 19 placements across prologue-1..3, supper, opening.orphanage, opening.lumberjack). Make it the one rule: every unit an encounter places - setup unit or scheduled arrival, civilian or enemy - fields the kit its row carries, through the one assembler fieldedDef (fix.one-hero-assembly-refiled; src/core/setup.ts fieldArrival), not a second kit path: the Lumberjack item.lumberjack-axe (Chop, Cleave), the Lumberjack's Wife item.dagger and item.basic-armor, the school children the pile of rocks, the farmer the pitchfork, the Supper's villagers the dagger. No bestiary row carries a kit today (240 rows, authored with their own attacks), so no enemy moves now; the rule holds for the first enemy given a weapon, and a test proves it with a fixture enemy row that carries one. The opt-in placedWithKit flag is retired or becomes the default - the builder's call, recorded as a switch; the core names no content instance. A form (formOf, rule.afflictions-at-zero: 'the bestiary's stats and powers, no hero gear') is not a placement and is unchanged. Settle engine SWITCHES arrivalKit and placedWithKitFlag by this ruling. Rebuild the Codex, the engine pack, and the viewer and kingdom pages and replays the change makes stale.",
+  "expect": "In encounter.opening.lumberjack the Lumberjack attacks with attack.lumberjack-axe.chop or .cleave and his wife with attack.dagger.stab, never Punch; every civilian placed by prologue-1..3, supper, opening.orphanage and opening.lumberjack fields its Codex kit; a fixture enemy row that carries a kit fields it when an encounter places it; every enemy in the bestiary today is unchanged; the opening battles that field a placed civilian move, and the control battles' baseline says whether it moved.",
+  "note": "Whether the control battles (tools/baseline.mts, MAP_PANEL) move decides changesBaseline - fix.orphans-teacher-knife was abandoned for claiming true when the work was neutral (engine SWITCHES orphansKnifeRefiled); check before claiming."
+ },
+ {
   "id": "fix.transformed-snapshot-order",
   "kind": "engine",
   "shape": "plumbing",

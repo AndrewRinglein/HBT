@@ -4123,3 +4123,99 @@ Ruled:
 - **An enemy that goes down has no card above the battle any more; a dead hero the same.** Today the card stays, greyed, with a ✝ (viewer `src/rail.js`, the `gone` chip) — this overturns that.
 - **A downed hero keeps their card, with a little first-aid symbol in its upper right-hand corner.**
 - **Open: the message ended at “If they're bleeding out”.** What a bleeding-out hero's card shows is not ruled; asked in the same chat. No item is filed until it is answered, so the item's text is whole.
+
+## 2026-10-03 — card art for every weapon at tiers 0 and 1, then a model from each card; tier 0 plain, tier 1 normal with details
+
+Andrew, in a new chat at the root:
+
+> We need to create card art, whether it be for a simple item like a dagger or a more complicated magical item. We need card art for every weapon.  Type at the very least. […] we don't need all magical versions of all things, but we do need card art and then a model for every weapon type that we have […] First, we should create card art. That's a reference piece of material that is used when the item is selected and shown, and then we create a model out of that. Now, the tier 0 items should look fairly plain.   Tier 1 items should look normal but still have interesting details.
+
+The weapons he named: wood axe, war axe, two-handed axe, giant axe, scythe, sickle, pair of daggers.
+
+Asked four things — (1) every tier 0 and tier 1 weapon in the game plus the dictated ones that are missing, or one card per weapon family; (2) whether the 17 existing weapon cards stay; (3) whether the images are made through fal.ai from the chat or by Codex as last time; (4) whether Wood Axe and Sickle are tier 0 and Two-Handed Axe, Giant Axe and Scythe tier 1:
+
+“You can leave the ones that are already there, but we should do all the rest of the ones mentioned in one.   Guess 3. Let's do it in Codex.   4, that's correct.”
+
+Ruled:
+
+- **Every weapon at tier 0 and tier 1 gets card art, and then a model made from that card.** The card is the reference shown when the item is selected. Not every magical version needs its own.
+- **Tier 0 looks fairly plain. Tier 1 looks normal but still has interesting details.**
+- **The 17 existing weapon cards stay as they are**; only the weapons without one are drawn.
+- **Codex draws the cards**, as it drew the first 17.
+- **Wood Axe and Sickle are tier 0; Two-Handed Axe (the Great Axe), Giant Axe and Scythe are tier 1.** They are still not rows (V2-SHIELDS-AND-WEAPONS-2026-09-20.md, sixth pass); this settles only their tier.
+- Where it lives: `assets/characters/oathblade-armor/rebuild/candidates/weapon-card-references/prompts-v2.json` — 50 cards, with the choices made without asking listed in its `defaults` (one wood-axe card for `item.hand-axe` and the dictated Wood Axe; a paired weapon drawn once; no card for natural weapons; dictated weapons with no tier yet left out).
+
+## 2026-10-03 — every civilian fields its kit by default when an encounter places it
+
+Andrew, in the kingdom chat, watching a replay: "I see the lumberjack only punches. He's supposed to have a wood axe. Is the content authored one?" The content is authored — `hero.fixed.lumberjack-and-wife`'s kit is `item.lumberjack-axe` (Chop, Cleave) — but an encounter-placed civilian is fielded without its kit (engine SWITCHES `arrivalKit`), and the 2026-10-02 ruling named only the orphans and the school teacher. The questions, as asked: (1) "Should the Lumberjack field his axe when an encounter places him?"; (2) "Should his wife field her dagger and basic armor the same way?"; (3) "Should the rest of the placed civilians get their kits too (school children with rocks, the farmer with his pitchfork, the Supper's villagers with daggers), or only the ones you name?"
+
+“Yes, all of the civilians, by default, should field their kit the first time they're loaded.   So all of them should get it.”
+
+Ruled:
+
+- **Every civilian an encounter places fields its Codex default kit, by default.** The Lumberjack fights with his axe, his wife with her dagger and basic armor, the school children with the pile of rocks, the farmer with the pitchfork, the Supper's villagers with their daggers. Read as: "the first time they're loaded" is the moment an encounter puts the civilian on the board, as a setup unit or a scheduled arrival. This replaces the 2026-10-02 entry's "the other placed civilians … stay as they are". engine SWITCHES `arrivalKit` is settled by this entry for civilians; `placedWithKitFlag`'s opt-in list (content `gen/civilian-rulings.json` `placedWithKit.ids`) is no longer how a civilian earns its kit. Enemies an encounter places are not named and stay as authored. Filed: `fix.civilians-field-kit`.
+
+Andrew, on the follow-up question ("Should the civilian kit item go to the top of the engine queue?"):
+
+“Yes.”
+
+- **`fix.civilians-field-kit` is the top of the engine queue** (re-added with `add-item --first`).
+
+Andrew, the same chat, on the entry's "Enemies an encounter places are not named and stay as authored":
+
+“If enemies have weapons assigned, they need them also when they come into play.”
+
+- **An enemy with weapons assigned fields them when it comes into play, the same as a civilian.** This replaces the line above it answers: the rule is one rule for every unit an encounter places — setup unit or scheduled arrival, civilian or enemy — a row that carries a kit fields it. Read as: today no bestiary row assigns a weapon (all 240 rows in content `hbt-content.json` are authored with their own attacks; none carries a kit or names an `item.*`), so no enemy changes in battle now; the rule holds for the first enemy that is given one. `fix.civilians-field-kit` carries it.
+
+## 2026-10-03 — both war hammers; tiers for the rest of the dictated weapons
+
+Andrew, same chat, asked (1) whether a two-handed war hammer should be drawn, since the existing war hammer card is one-handed and `item.war-hammer` is two-handed, and (2) whether short sword, giant sword, the three flails, pike and giant scythe get cards now and at which tier:
+
+“One, we need both.   Short sword and green flail are both tier 0. Everything else is tier 1.”
+
+Ruled:
+
+- **Both war hammers are wanted: a one-handed and a two-handed.** The existing one-handed card stays; a two-handed card is drawn for `item.war-hammer`. The one-handed war hammer is not yet a row.
+- **Short Sword and Grain Flail are tier 0. Giant Sword, War Flail, Two-Handed Flail, Pike and Giant Scythe are tier 1.** "Green flail" is read as the one-handed Grain Flail (V2-SHIELDS-AND-WEAPONS-2026-09-20.md, sixth pass, spells it both ways). They are still not rows; this settles only their tier.
+- All eight get cards: `prompts-v2.json` now holds 58.
+
+## 2026-10-03 — what the tiers mean: tier 0 substandard, tier 1 standard, enchantment from tier 2
+
+Andrew, same chat, minutes later:
+
+“Tier 0 is for weapons and armor that are substandard to start with.  Standard things you're going to buy and equip everyone with are tier 1.   Tier 2 is when you go into enchantment.”
+
+Ruled:
+
+- **Tier 0 is substandard weapons and armor, what you start with.**
+- **Tier 1 is the standard gear you buy and equip everyone with.**
+- **Enchantment begins at tier 2.** This agrees with 2-ACTIONS-SETTLED.md ("Tier 0 is the junk tier") and the 2026-09-28 entry (enchantments are tier 2).
+- Read for the card art as: no tier 0 or tier 1 card shows enchantment, glow or magical light, mage and priest implements included; a staff shows its element through material, colour and shape (`prompts-v2.json` `tierLook` and `defaults`).
+
+## 2026-10-03 — a weapon's attacks carry their motions: the motion is tied to the specific attack, not to the body
+
+Andrew, in the kingdom chat, after the civilians' and enemies' kit ruling:
+
+“I don't expect it's done this way right now, but weapons should have their animations assigned to them.   So if I give a skeleton an axe, the axe is tied to the motion.”
+
+“I guess it's really the specific attacks that are tied to emotion.”
+
+How it is today (engine `generated/movements.json`, viewer `tools/character-models.mjs` MOTIONS): the motion belongs to the body. Each body binds one clip per motion word; all 86 melee weapon attacks play the word `attack` — the same clip, `atk_slashdown`, on every one of the 21 hero bodies, an axe's Chop and Cleave alike — the 68 ranged ones play `ranged`, and 21 weapon attacks have no motion.
+
+Ruled:
+
+- **Each specific attack is tied to its motion, and a weapon brings its attacks' motions with it.** Read as: "emotion" is "a motion" (dictated). The motion is assigned on the attack (a weapon's Chop and its Cleave may differ), not chosen by the body that swings it; whoever is given the weapon — hero, civilian or enemy, "if I give a skeleton an axe" — plays that attack's motion. A body whose rig has no clip for an attack's motion is listed, not faked (2026-09-30 'a bunch of motions'). Which motion each attack gets is Andrew's to choose or approve by eye; making a clip for a rig is art's work. Filed: `viewer.attack-owns-motion`.
+
+## 2026-10-03 — posted: which motions enemies and heroes need, and enemies of one type move together (questions out, no item filed yet)
+
+Andrew, in the kingdom chat: "We have a bunch more things to add to the various queues. Ask me questions about what I'm posting." His post, whole:
+
+“Most enemies only have: If they are a monster and have a different form, they're going to have an attack, potentially a ranged attack. They always need a melee attack but potentially a ranged attack. They might have a power use of some kind or a spell cast. They might have two. If they're a monster, they should have a move. They might need a flight that might be included in a move.
+
+Monsters that have different forms just have a limited set of actions. There are humanoid enemies, and I think a zombie falls into the monster category. It's not holding weapons and moves in a unique way.   If they are a thing that moves like a human, they might have different weapons and can use a lot of the similar motions that the player units use.
+
+The player units have their body type and their armor type.   Then they have what it is they're holding.  And what they're holding affects their motions a great deal.   It's different to move when you're holding a staff than it is when you're holding a sword and shield. In particular I think there is "shield" and "not shield."   And these are different titles, they're different movements, and they're different actions.   Now the attacks are very much determined by the weapon.  Every hero needs to be able to punch.   An attack with a variety of weapon attacks. There are quite a few. I think in one pack there are five and in another pack there are two or three. Different motions for a one-handed attack with a right-handed weapon   I actually want to use all of them because I want a variety in the attack motion.  Some of them are combos, and we can combine them for more advanced types of attacks. When there's a duplicate attack or an attack is shown twice, it shows 2.  But it does look better when they're a little bit more unique.   Now there's a whole class of weapons that are swinging weapons that are two-handed. There's no shield.   When you're wielding a shield, there are some shield motions. In particular there's getting hit when you're carrying a shield and then your shield is blocking something.   One of the other big divides here is whether or not a character is standing or floating.  There is a thing in the game called airwalk, which means you're floating. It is different from flight, which means you take off. You need a launching motion, a moving motion, and a landing motion.  Every type of hero needs flight. If you're floating, you're going to make your attacks from that position and cast your spells from it.   There are also special movements. Right now I have four and I don't think we have the motion set for leap properly.   But the special movements are roll, side flip, back flip.   The roll is a forward roll. Maybe we need to find a side roll. The idea is that you would turn to the side and then roll. A side flip means you would side flip and then land in another square, and a back flip means you would back flip and land in the square behind you. All those will be tied to different special movement actions.
+
+During the enemy turn I would like for all of the enemies of a type to move at the same time.  What I mean by this is only the move actions. They can still be determined in the order they should have been determined, but we're just displaying it as if they're all moving at the same time. If I have five zombies on the board, all five of them will conduct the move action simultaneously.   We can then pause that if we need to because of attacks of opportunity.  Special free attacks, but all of the burn-by-terrain movement can happen simultaneously by unit type. If there are zombies and bloodhounds and zombies are going first, you might move 5 zombies all at the same time and 4 bloodhounds. The vampire would move on its own time.   We'll move all of the category, then have them perform actions if they have any. I move 5 zombies. If there are no attacks, it just skips the entire attack phase.   This post speeds things up and, I think, makes them visually more interesting.   But functionally it should be exactly the same.”
+
+Kept here as posted so the words are not lost. Nothing is ruled or filed from it yet: the kingdom chat's questions are out, and the entries and items follow his answers. Already recorded and not re-asked: ART-NOTES.md 2026-10-02 'Spear hold, spear stab and dagger stab' (the hero coverage: weapon families, varied strikes for multi-attacks, flight, roll, flip and floating airwalk for every hero) and 'Airwalk staff casting' (a staff caster under airwalk floats and casts floating).
