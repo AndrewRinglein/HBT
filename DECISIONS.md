@@ -4191,3 +4191,17 @@ Ruled:
 - **Tier 1 is the standard gear you buy and equip everyone with.**
 - **Enchantment begins at tier 2.** This agrees with 2-ACTIONS-SETTLED.md ("Tier 0 is the junk tier") and the 2026-09-28 entry (enchantments are tier 2).
 - Read for the card art as: no tier 0 or tier 1 card shows enchantment, glow or magical light, mage and priest implements included; a staff shows its element through material, colour and shape (`prompts-v2.json` `tierLook` and `defaults`).
+
+## 2026-10-03 — a weapon's attacks carry their motions: the motion is tied to the specific attack, not to the body
+
+Andrew, in the kingdom chat, after the civilians' and enemies' kit ruling:
+
+“I don't expect it's done this way right now, but weapons should have their animations assigned to them.   So if I give a skeleton an axe, the axe is tied to the motion.”
+
+“I guess it's really the specific attacks that are tied to emotion.”
+
+How it is today (engine `generated/movements.json`, viewer `tools/character-models.mjs` MOTIONS): the motion belongs to the body. Each body binds one clip per motion word; all 86 melee weapon attacks play the word `attack` — the same clip, `atk_slashdown`, on every one of the 21 hero bodies, an axe's Chop and Cleave alike — the 68 ranged ones play `ranged`, and 21 weapon attacks have no motion.
+
+Ruled:
+
+- **Each specific attack is tied to its motion, and a weapon brings its attacks' motions with it.** Read as: "emotion" is "a motion" (dictated). The motion is assigned on the attack (a weapon's Chop and its Cleave may differ), not chosen by the body that swings it; whoever is given the weapon — hero, civilian or enemy, "if I give a skeleton an axe" — plays that attack's motion. A body whose rig has no clip for an attack's motion is listed, not faked (2026-09-30 'a bunch of motions'). Which motion each attack gets is Andrew's to choose or approve by eye; making a clip for a rig is art's work. Filed: `viewer.attack-owns-motion`.
