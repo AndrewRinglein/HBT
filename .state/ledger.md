@@ -22944,3 +22944,13 @@ index 12769d2..bb5ecf8 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-10-03T00:31:58.403Z · Angela: "Andrew, 2026-10-02, shown the six edited tests in plain words (the Flaming Longsword to a Warrior or Paladin; Vampirism, Lycanthropy and Possession skip the Deathbed; Rotting Flesh bleed-out counts at once; the battles that moved) and asked "Do those changes match what you asked for?": "Yes.""
+
+  ok  fix.opening-levels
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-10-03T00:31:58.591Z · Angela: "Andrew, 2026-10-02, shown the six edited tests in plain words (the Flaming Longsword to a Warrior or Paladin; Vampirism, Lycanthropy and Possession skip the Deathbed; Rotting Flesh bleed-out counts at once; the battles that moved) and asked "Do those changes match what you asked for?": "Yes.""
+
+  ok  rule.afflictions-at-zero-refiled-2
