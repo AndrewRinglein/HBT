@@ -29,7 +29,7 @@ describe('the walk, in step with the hexes', () => {
     expect(battle('bridge').events.some((e) => e.type === 'move.begin' && e.causeId === 'power.flight' && e.hexes > 1)).toBe(true)
   })
   it('the viewer page: the walk clip throughout, one stride per stride length, a duration that grows with N, a flier flying', () => {
-    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/walk-in-step.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: '' } })
+    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/walk-in-step.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
     expect(out).toMatch(/# pass 5/); expect(out).toMatch(/# fail 0/)
   }, 150000)
 })

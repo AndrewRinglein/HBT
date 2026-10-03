@@ -814,7 +814,12 @@ if (SINGLES) {
     /* corpses: a board object per corpse.created, gone on corpse.removed; the dead unit's token leaves */
     for (const [e, i] of byType(EV, 'corpse.created').slice(0, 3)) {
       v.seek(i + 1); v.render()
-      check(V.layers.CORPSE && V.layers.CORPSE.has(e.corpse), `${label}: no corpse node after corpse.created ${e.corpse}`)
+      check(V.layers.CORPSE && V.layers.CORPSE.has(e.corpse), `${label}: no corpse node after corpse.created ${e.corpse}`) }
+    /* viewer.opening-replays (2026-10-03): the Cathedral opens on remains its encounter lays (corpse.created with of: null —
+       no unit died to leave them), so the token's leaving is asked of the first three corpses a unit left; was: the first
+       three corpse.created of any kind, each assumed to name its dead unit */
+    for (const [e, i] of byType(EV, 'corpse.created').filter(([e]) => e.of != null).slice(0, 3)) {
+      v.seek(i + 1); v.render()
       const E = V.layers.UEL.get(e.of); check(E && E.root.style.display === 'none', `${label}: dead unit ${e.of} still draws its token beside its corpse`) }
     for (const [e, i] of byType(EV, 'corpse.removed').slice(0, 3)) {
       v.seek(i + 1); v.render()

@@ -80,9 +80,9 @@ function mkUnit(e, UD) {
 }
 
 /** Fold ONE event into S. ctx = {UD, SN}. Returns the cues to play. */
-/* A prop's word on a float: the last segment of its id ('prop.test.well' → WELL).
-   Text, never a number. */
-const propWord = id => String(id ?? '').split('.').pop().toUpperCase()
+/* A prop's word on a float: the last segment of its id that is a word ('prop.test.well' → WELL; a compiled map numbers
+   its props by hex, 'prop.obstacle.59' → OBSTACLE — viewer.opening-replays, 2026-10-03). Text, never a number. */
+const propWord = id => (String(id ?? '').split('.').filter(s => !/^\d+$/.test(s)).pop() ?? '').toUpperCase()
 /* The collision a push ended in (knocked / knockback.blocked name it: collidedWith,
    blocker, collisionValue, remaining). The float names what was struck and the
    blocker's collision value, verbatim from the event (n/of). */

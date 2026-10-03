@@ -16,7 +16,7 @@ describe('no 2D before the 3D bodies', () => {
     for (const t of types) expect(pack[t], t).toBeDefined()
   }, 60000)
   it('the viewer page: no token while a body loads; the board opens when the bodies are in; a failed body keeps its token', () => {
-    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/bodies-before-board.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: '' } })
+    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/bodies-before-board.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
     expect(out).toMatch(/# pass 2/); expect(out).toMatch(/# fail 0/)
   }, 120000)
 })
