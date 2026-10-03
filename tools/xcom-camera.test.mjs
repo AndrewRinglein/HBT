@@ -99,14 +99,18 @@ test('a new activation centres the map on the one acting; a click on another uni
   v.dispose()
 })
 
-test('the portrait in the lower-left corner is whose panel it is, as tall as the ability bar; End activation is the large button, End Turn the small one', () => {
+test('the portrait in the lower-left corner is whose bar it is, as tall as the ability bar; End activation is the large button, End Turn the small one', () => {
   const { v, V, html } = boot()
   v.seek(activations[0][1] + 1)
   const P = V.dom.root.querySelector('#unitPortrait'), u = V.S.U[V.S.activeId]
   assert.ok(P, 'the portrait'); assert.notEqual(P.style.display, 'none', 'shown')
   assert.equal(P.querySelector('img').getAttribute('src'), V.data.ASSETS[V.data.ARTMAP[u.typeId].card], 'the acting unit\'s card')
   const enemy = Object.values(V.S.U).find(x => x.side === 'enemy')
-  v.inspect(enemy.id); assert.equal(P.querySelector('img').getAttribute('src'), V.data.ASSETS[V.data.ARTMAP[enemy.typeId].card], 'the unit looked at'); assert.equal(P.className, 'enemy')
+  /* Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the action bar and its card stay with the activated unit':
+     "That portrait is next to all of the abilities ... While that unit is activated, those abilities just stay there"): for
+     a host that plays, the card stays the acting unit's while an enemy is looked at; was: the card of the unit looked at —
+     assert.equal(src, the enemy's card, 'the unit looked at'); assert.equal(P.className, 'enemy') */
+  v.inspect(enemy.id); assert.equal(P.querySelector('img').getAttribute('src'), V.data.ASSETS[V.data.ARTMAP[u.typeId].card], "the acting unit's card, whoever is looked at"); assert.equal(V.view.inspectId, enemy.id)
   const css = html.match(/<style>([\s\S]*?)<\/style>/)[1]
   assert.match(css, /#unitPortrait\{position:absolute;left:0;bottom:0;height:256px;/, 'lower left, 256 px tall')
   assert.match(css, /#actionbar\{height:256px;/, 'the ability bar is 256 px tall')

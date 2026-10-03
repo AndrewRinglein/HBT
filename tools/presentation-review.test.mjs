@@ -61,7 +61,11 @@ test('human selection does not spend or activate a hero before the engine begins
  fold(state,{type:'activation.begin',actor:2},ctx,0)
  assert.equal(state.activeId,2);assert.equal(state.subjectId,2);assert.deepEqual(state.acted,{})
  fold(state,{type:'activation.end',actor:2},ctx,0);assert.deepEqual(state.acted,{'2':true})
- fold(state,{type:'activation.selected',actor:0,unitUid:402},ctx,0);assert.equal(state.activeId,2)
+ // Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the battle screen's turn-taking, ruled', point 1: the acting
+ // mark clears when its Activation ends): was assert.equal(state.activeId,2) after activation.selected — the mark stuck to the
+ // last to act. Selection still activates nobody: the mark stays clear until activation.begin.
+ assert.equal(state.activeId,null)
+ fold(state,{type:'activation.selected',actor:0,unitUid:402},ctx,0);assert.equal(state.activeId,null)
  fold(state,{type:'activation.begin',actor:0},ctx,0);assert.equal(state.activeId,0);assert.deepEqual(state.acted,{'2':true})
 })
 

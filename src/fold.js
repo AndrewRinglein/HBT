@@ -25,6 +25,7 @@ export function createState() {
   return {
     U: {},                 // id -> unit {id,name,typeId,side,hex,hp,maxHp,stam,maxStam,st,life,bleed,…}
     turnNo: 0, phase: 'hero', activeId: null,
+    activations: 0,         // activation.begin events folded — a new Activation of the same unit is still new (viewer.turn-taking)
     subjectId: null, subjectMode: 'acting',
     acted: {},             // id -> true, this phase (plain data — Law 5b)
     BURST: null,            // durable engine declaration + recipient summaries; visibility belongs to pump
@@ -225,7 +226,17 @@ export function fold(S, e, ctx, now = 0) {
     /* fold the event's OWN numbers (fixed 2026-08-27): turn.begin carries a
        1-based `turn` and phase.begin carries `phase` — never count locally */
     case 'turn.begin': S.turnNo = e.turn ?? (S.turnNo + 1); break
-    case 'phase.begin': if (e.phase) S.phase = e.phase; break
+    case 'phase.begin': if (e.phase) S.phase = e.phase
+      /* viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed': "the
+         enemy did an attack, and then their attack probability was stuck on the screen when it became the hero's turn, so I
+         couldn't figure out whose turn it was"; 'the battle screen's turn-taking, ruled', point 2): the Hero Phase opens with
+         its banner and nothing of the Enemy Phase on the board — the declared attack and its hit chance (a miss line the
+         pump never expired once it ran dry), a free swing, a burst, a lit row, the panel's last target */
+      if (e.phase === 'hero') {
+        S.AIM = null; S.ATTACK = null; S.AOO = null; S.BURST = null; S.critPending = false; S.FIRING = null; S.TRIGFLASH = null
+        cue('inspect.clear'); cue('banner', { kind: 'phase', text: 'Hero Phase', sub: 'your heroes act' })
+      }
+      break
     case 'phase.end.done': S.phase = e.side === 'hero' ? 'enemy' : 'hero'; S.acted = {}; break
     case 'action.spent':
       if (!U[e.actor] || typeof e.moveUsed !== 'boolean' || typeof e.primaryUsed !== 'boolean') throw new Error('action.spent lacks authoritative actor/slot state')
@@ -233,7 +244,7 @@ export function fold(S, e, ctx, now = 0) {
       break
     case 'activation.begin':
       S.BURST = null
-      S.activeId = e.actor; S.subjectId = e.actor; S.subjectMode = 'acting'
+      S.activeId = e.actor; S.subjectId = e.actor; S.subjectMode = 'acting'; S.activations++
       /* the engine names the budget only when something reduced it (Law 12);
          otherwise the resting figure stands — the draw side reads mvOf() */
       if (U[e.actor]) { U[e.actor].activeMv = e.movePoints ?? null; U[e.actor].moveMods = e.movementMods || null; U[e.actor].confusedFrom = null; U[e.actor].moveUsed = false; U[e.actor].primaryUsed = false }
@@ -242,6 +253,9 @@ export function fold(S, e, ctx, now = 0) {
     case 'activation.end':
       S.BURST = null
       S.acted[e.actor] = true
+      /* viewer.turn-taking (engine DECISIONS.md 2026-10-03, point 1: one current hero, its mark cleared when its Activation
+         ends): until 2026-10-03 the acting mark stuck to the last unit to act until the next activation.begin */
+      if (S.activeId === e.actor) S.activeId = null
       if (U[e.actor]) { U[e.actor].activeMv = null; U[e.actor].moveMods = null; U[e.actor].confusedFrom = null }
       S.ATTACK = null; S.AOO = null
       break

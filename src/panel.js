@@ -4,7 +4,7 @@
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
 import { sgn, STATSHORT, modOf, effectWord, absorbOf } from './actions.js'
-import { subjectOf } from './subject.js'
+import { subjectOf, barUnitOf } from './subject.js'
 import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
 
 /* every engine hook has a label — tools/vocabulary.test.mjs checks it against the engine's export */
@@ -13,11 +13,12 @@ export const HOOKLBL = { onHit: 'ON HIT', onBlock: 'ON BLOCK', onAttack: 'ON ATT
   onBurst: 'ON BURST', onCrit: 'ON CRIT', startOfBattle: 'BATTLE START', onActivationEnd: 'ACTIVATION END' }
 
 /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera': "A character portrait in the lower-left
-   corner, as tall as the ability bar"): the card of whose panel it is — the one rule, subject.js — over the board's
-   lower-left corner */
+   corner, as tall as the ability bar"): over the board's lower-left corner. viewer.turn-taking (engine DECISIONS.md
+   2026-10-03 'the action bar and its card stay with the activated unit'): the card of whose BAR it is (subject.js barUnitOf)
+   — for a host that plays, the activated unit's; a click on another unit moves the panel only (was: whose panel it is) */
 export function drawPortrait(V) {
   const P = V.dom.portrait; if (!P) return
-  const { S, data: { ARTMAP, ASSETS } } = V, u = S.U[subjectOf(V)]
+  const { S, data: { ARTMAP, ASSETS } } = V, u = S.U[barUnitOf(V)]
   const card = u ? ASSETS[(ARTMAP[u.typeId] || {}).card] : null
   if (!card) { P.style.display = 'none'; return }
   const img = P.querySelector('img'); if (!img) return

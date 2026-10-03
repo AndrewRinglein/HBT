@@ -83,9 +83,12 @@ test('every hex takes the pointer and the click; a unit and a slot are offered; 
   fire(E.img, 'pointerenter'); fire(E.img, 'click')
   assert.deepEqual(seen.splice(0), [{ kind: 'point', hex: zombie.hex }, { kind: 'unit', id: zombie.id, hex: zombie.hex }])
   assert.equal(V.view.inspectId, zombie.id)
-  /* a slot row on the bar: the subject is the zombie now, and the host is told whose bar it was */
+  /* a slot row on the bar: the host is told whose bar it was.
+     Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the action bar and its card stay with the activated unit'): the
+     bar stays the acting hero's (the facts' actor) while the zombie is only looked at; was: "the subject is the zombie now"
+     and the slot was offered for unit: zombie.id */
   const row = V.dom.root.querySelector('#actionbar').querySelectorAll('.acRow').find(r => r.dataset.act)
-  fire(row, 'click'); assert.deepEqual(seen.splice(0), [{ kind: 'slot', actionId: row.dataset.act, unit: zombie.id }])
+  fire(row, 'click'); assert.deepEqual(seen.splice(0), [{ kind: 'slot', actionId: row.dataset.act, unit: f.actor }])
   /* right-click without a drag: back; with a drag: the map pans, nothing is offered */
   const wrap = V.dom.stage.parentNode
   fire(wrap, 'pointerdown', { button: 2, clientX: 100, clientY: 100 }); fire(wrap, 'pointerup', { button: 2, clientX: 100, clientY: 100 })

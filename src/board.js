@@ -4,7 +4,7 @@
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
 import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly, PLAY_HUE } from './theme.js'
 import { mvOf, absorbOf } from './actions.js'
-import { subjectOf } from './subject.js'
+import { subjectOf, barUnitOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { dangerHTML, raIcon } from './icons.js'
 import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, LENS } from './camera3d.js'
@@ -1274,7 +1274,8 @@ export function applyCam(V, opts = {}) {
   const iso = p => ({ px: p.px, py: p.py * k })
   const pts = []
   if (S.AIM) pts.push(iso(POS[S.AIM.from]), iso(POS[S.AIM.to]))
-  else { const u = S.U[subjectOf(V)]; if (u) pts.push(iso(POS[u.hex])) }
+  /* viewer.turn-taking: the camera keeps the activated unit in view, never the one only looked at (for a host that plays) */
+  else { const u = S.U[barUnitOf(V)]; if (u) pts.push(iso(POS[u.hex])) }
   /* a peek never moves the remembered camera; a manual pan is applied first. view.camF is in board px; f is it in iso */
   const camF = view.camF, f = { x: camF.x, y: camF.y == null ? null : camF.y * k }, f0 = { ...f }
   /* viewer.tactical-camera: the pan is bounded by the ORIGINAL board, opened by how much nearer than the whole-map fit
@@ -1296,8 +1297,9 @@ export function applyCam(V, opts = {}) {
   /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): a new activation centres the map on the
      one acting — the board's own acting unit, in a replay as in a game */
   const acting = S.activeId != null ? S.U[S.activeId] : null
-  if (!fit && !opts.focus && !opts.pan && acting && acting.life === 'standing' && view.centredOn !== S.activeId && POS[acting.hex]) {
-    view.centredOn = S.activeId; opts = { ...opts, focus: POS[acting.hex] }
+  /* viewer.turn-taking: every new Activation, the same unit's again included (the fold's count of them) */
+  if (!fit && !opts.focus && !opts.pan && acting && acting.life === 'standing' && (view.centredOn !== S.activeId || view.centredAt !== S.activations) && POS[acting.hex]) {
+    view.centredOn = S.activeId; view.centredAt = S.activations; opts = { ...opts, focus: POS[acting.hex] }
     /* the first activation's centring is where the battle opens: the starting view a reset returns to */
     if (!view.homeCentred) { view.homeCentred = true; view.home = null } }
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }

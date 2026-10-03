@@ -4,7 +4,11 @@
    And I can use that to target things as well as clicking on them." · 'the XCOM-style camera': "Double-click a character in
    the top bar or on the map to change it." The strip was the standalone page's own until now (ruled 2026-09-01 out of the
    game); it is the component's: every unit's card in the board's order (ascending unit id — the order the host's queue
-   walks), the one acting, those who have acted and the fallen marked as the fold says. A click on a card IS the click on
+   walks), the one acting, those who have acted and the fallen marked as the fold says. viewer.turn-taking (engine DECISIONS.md
+   2026-10-03 'the battle screen's turn-taking, ruled': "let's create a separation between the heroes and the enemies so they
+   don't get mixed up. There's just a divider in between that's clear."): the heroes' side (civilians with them) first, left
+   to right in the board's order, then a divider, then everyone else (viewer SWITCHES turnRailDivider; was railOrder's one
+   ascending run). A click on a card IS the click on
    that unit's body (board.js clickUnit — the panel, the targeting host, the play host, alike); a double-click offers it to
    the host to act next, as a double-click on its body does. It draws; it decides nothing. */
 import { clickUnit } from './board.js'
@@ -16,12 +20,14 @@ export function drawRail(V) {
   const key = units.map(u => `${u.id}:${u.side}:${u.life}:${S.acted[u.id] ? 1 : 0}`).join(',') + `|${S.activeId}|${view.inspectId}`
   if (rail.dataset.key === key) return
   rail.dataset.key = key
-  rail.innerHTML = units.map(u => {
+  const chip = u => {
     const a = ARTMAP[u.typeId] || ARTMAP._pending, acted = !!S.acted[u.id]
     return `<div class="railchip ${u.side}${u.id === S.activeId ? ' now' : ''}${acted ? ' done' : ''}${u.life === 'dead' ? ' gone' : ''}${u.id === view.inspectId ? ' act' : ''}" data-i="${u.id}" title="${u.name}" role="button" tabindex="-1">
       <span class="railno">${u.life === 'dead' ? '✝' : acted ? '✓' : u.id === S.activeId ? '▸' : ''}</span>
       <img src="${ASSETS[a.token]}" alt=""></div>`
-  }).join('')
+  }
+  const heroes = units.filter(u => u.side === 'hero'), others = units.filter(u => u.side !== 'hero')
+  rail.innerHTML = heroes.map(chip).join('') + (heroes.length && others.length ? '<div class="railsep" role="separator" aria-orientation="vertical" title="Heroes | enemies"></div>' : '') + others.map(chip).join('')
   for (const ch of rail.querySelectorAll('.railchip')) {
     const id = +ch.dataset.i
     ch.addEventListener('click', ev => { ev.stopPropagation(); if (V.S.U[id]) clickUnit(V, id) })

@@ -55,9 +55,14 @@ test('with none to make, the engine\'s reason stands on the bar and nothing can 
   assert.equal(V.dom.stambar.querySelectorAll('.swBtn').length, 0)
   assert.equal(V.dom.stambar.querySelector('.swWhy').textContent, 'the swap of this activation is spent')
   assert.deepEqual(seen, [])
-  /* the bar is the subject's: a swap the host offers for another hero is not drawn on this one */
-  v.setPlay(facts({ actor: 1, swap: OFFER }))
-  assert.equal(V.dom.stambar.querySelector('.swapCell'), null)
+  /* Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the action bar and its card stay with the activated unit':
+     "I click on an enemy, and the enemy just goes into the highlight on the right screen, but it doesn't change my actions
+     that are available"): the bar is the activated hero's — the host's actor — whoever is looked at, so a swap for "another
+     hero" can no longer stand on a bar that is not its own. was: the bar is the subject's: a swap the host offers for another
+     hero is not drawn on this one — v.setPlay(facts({ actor: 1, swap: OFFER })); assert.equal(V.dom.stambar.querySelector('.swapCell'), null).
+     Now: the acting hero's swap stays on its bar while another unit is looked at */
+  v.setPlay(facts({ swap: OFFER })); v.inspect(Object.values(V.S.U).find(u => u.id !== 0).id)
+  assert.ok(V.dom.stambar.querySelector('.swapCell'), "the acting hero's swap stays on its bar while another unit is looked at")
   v.setPlay(null)
   assert.equal(V.dom.stambar.querySelector('.swapCell'), null, 'cleared with the facts')
   v.dispose()

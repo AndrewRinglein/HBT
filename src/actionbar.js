@@ -8,7 +8,7 @@
 import { icoHTML, actHue, ACT_CLASS } from './icons.js'
 import { stStyle } from './theme.js'
 import { actionsOf, moveHexes, dmgOf, effectTag, triggersFor } from './actions.js'
-import { subjectOf } from './subject.js'
+import { barUnitOf } from './subject.js'
 import { centreOn } from './board.js'
 
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
@@ -18,7 +18,7 @@ const cell = (k, v, col) => `<div class="acCell"><span class="k">${k}</span><spa
 /* stamina, directly above the action bar — one pip per point (ruled 2026-09-01) */
 export function drawStam(V) {
   const el2 = V.dom.stambar; if (!el2) return
-  const id = subjectOf(V), u = V.S.U[id]
+  const id = barUnitOf(V), u = V.S.U[id]   /* viewer.turn-taking: the activated unit's, whoever is in the panel */
   if (!u || !u.maxStam) { el2.innerHTML = ''; return }
   const pips = Array.from({ length: u.maxStam }, (_, i) => `<i class="sPip${i < u.stam ? ' on' : ''}"></i>`).join('')
   el2.innerHTML = `<div class="cell1"><span class="lab">Stamina</span><span class="track">${pips}</span><span class="num">${u.stam} / ${u.maxStam}</span></div>` + swapHTML(V, id)
@@ -40,7 +40,7 @@ function swapHTML(V, id) {
 export function drawBar(V) {
   const bar = V.dom.actionbar; if (!bar) return
   const { S, view, data: D } = V, { UD, SN } = D
-  const u = S.U[subjectOf(V)]
+  const u = S.U[barUnitOf(V)]              /* viewer.turn-taking: the activated unit's bar for its whole Activation */
   /* COLUMNS BY KIND (ruled 2026-09-01); a group longer than 4 overflows */
   const all = actionsOf(u, D)      // the sheet's rows plus the kit the log fielded (unit.equipped)
   const cols = [all.filter(a => a.kind === 'move'), all.filter(a => a.isAttack), all.filter(a => a.isPower)]
@@ -122,10 +122,10 @@ export function drawBar(V) {
   bar.querySelectorAll('.acRow').forEach(r => { if (!r.dataset.act) return
     r.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation(); if (ev.detail > 1) return
       V.heldPlay = null
-      const unit = subjectOf(V); V.offerPlay({ kind: 'slot', actionId: r.dataset.act, unit })
+      const unit = barUnitOf(V); V.offerPlay({ kind: 'slot', actionId: r.dataset.act, unit })
       /* viewer.xcom-camera: "Clicking an ability re-centers on the acting unit" — the one whose bar it is, the one the host acts with */
       centreOn(V, unit) })
     r.addEventListener('dblclick', ev => { ev.stopPropagation()
-      const offer = { kind: 'slot', actionId: r.dataset.act, unit: subjectOf(V) }
+      const offer = { kind: 'slot', actionId: r.dataset.act, unit: barUnitOf(V) }
       if (V.play) V.offerPlay(offer); else if (V.inputActive()) V.heldPlay = offer }) })
 }

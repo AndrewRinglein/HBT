@@ -233,6 +233,8 @@ export function mountBattleViewer(root, data, opts = {}) {
   V.targetingGeneration = () => targetingGeneration
   /* viewer.play-input: the host's plan facts (src/play.js) and the offer of what the mouse did */
   V.play = null; V.heldPlay = null
+  /* viewer.turn-taking: a host that plays holds an activated unit — the bar, its card and the camera stay with it (subject.js barUnitOf) */
+  V.host = !!opts.onPlay
   V.offerPlay = input => {
     if (!V.inputActive() || !V.play || !opts.onPlay) return false
     try { return opts.onPlay(input) === true } catch (err) { return fault(err) }
@@ -483,6 +485,15 @@ export function mountBattleViewer(root, data, opts = {}) {
     inspect(id) { V.view.inspectId = id; render() },
     /* viewer.xcom-camera: the map centred on a unit at the standard zoom (the host's proposed hero) */
     centre(id) { centreOn(V, id) },
+    /* viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the battle screen's turn-taking, ruled', point 4: a double-click on
+       another hero switches to it while the current one has done nothing): the host took back an Activation that did nothing
+       — the engine's battle restored to before it began — so the log is cut back to the events that battle holds, and the
+       board is folded again to that point. Nothing is re-decided here: the host names the count, the engine's log is the rest. */
+    rewind(n) {
+      if (disposed) throw new Error('viewer disposed')
+      if (!Number.isInteger(n) || n < 0 || n > V.EV.length) throw new Error('rewind needs an event count within the log (0..' + V.EV.length + '), got ' + n)
+      V.EV.length = n; chrome.relog(); seek(n)
+    },
     get cursor() { return V.cursor }, get events() { return V.EV }, get state() { return V.S },
     get playing() { return V.playing }, get view() { return V.view }, get invalid() { return V.invalid },
     get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
