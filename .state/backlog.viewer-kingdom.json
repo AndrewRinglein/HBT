@@ -471,5 +471,12 @@
   "expect": "In PLAY.html on the Orphanage, the Orphan Child's and the School Teacher's fingers close round the dagger standing, walking and attacking; their attack is the Hook punch with the dagger in hand; no walk-assassinate clip is referenced by the page; the stab candidate exists in civilian-study with renders for review and is not on the page.",
   "status": "done",
   "sha": "5b2a84c"
+ },
+ {
+  "id": "viewer.opening-replays",
+  "kind": "viewer",
+  "shape": "data",
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the opening battles are watchable as computer-played replays'): \"I want to be able to watch some of the replays of these initial battles.\" / \"Just the computer played recordings.\" The replay library (viewer battles/library.json) has test.opening-orphanage, test.opening-lumberjack and test.opening-bridge; encounter.opening.gates, encounter.opening.cathedral and encounter.opening.cavern-trail have none, and the three it has predate today's engine facts (badge.gained atZero). (1) Export a computer-played battle of each of the six opening encounters with the engine's export-battle tool (the opening party from content OPENING-PARTY.json as the encounters field it; one seed each, recorded in library.json) and add or refresh the six library rows, in the opening's order, under names a player reads (Orphanage, Lumberjack House, Bridge, Gates, Cathedral, Cavern Trail as GLOSSARY/the encounters name them). (2) gate --fresh re-exports them byte for byte; verify folds all six. Prior art: the three test.opening-* library rows and their export commands - this adds rows, no new mechanism.",
+  "expect": "BATTLE-VIEWER.html's battle dropdown lists the six opening battles in order by name; each plays from start to finish in the replay page with no UNKNOWN event; node tools/gate.mjs --fresh passes for all six."
  }
 ]

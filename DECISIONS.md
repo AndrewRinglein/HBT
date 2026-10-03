@@ -4078,3 +4078,18 @@ Ruled:
 
 - **The engine supplies the affliction's ruled 0-Health wording and marks which of its terms are drawbacks; the pop-up shows those and writes none of its own** (Viewer Constitution Law 0). viewer SWITCHES `afflictionZeroWords` and `afflictionDrawbacks` stand only until the item lands.
 - Filed: `fix.affliction-pop-up-words` (engine queue).
+
+## 2026-10-03 — the opening battles are watchable as computer-played replays
+
+Andrew, in the viewer chat after its wrap, asked whether the viewer is set up to replay the opening battles (three of the six are in the replay library: `test.opening-orphanage`, `test.opening-lumberjack`, `test.opening-bridge`; the Gates, the Cathedral and the Cavern Trail are not):
+
+“I want to be able to watch some of the replays of these initial battles.”
+
+Asked whether he wants to watch back battles he played himself or computer-played recordings:
+
+“Just the computer played recordings.”
+
+Ruled:
+
+- **The replay library carries a computer-played recording of each of the opening's six battles** (the engine plays both sides; `export-battle.mts`), current with the engine. Saving and replaying a battle the player played is not asked for.
+- Filed: `viewer.opening-replays`.
