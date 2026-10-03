@@ -4144,3 +4144,13 @@ Ruled:
 - **Codex draws the cards**, as it drew the first 17.
 - **Wood Axe and Sickle are tier 0; Two-Handed Axe (the Great Axe), Giant Axe and Scythe are tier 1.** They are still not rows (V2-SHIELDS-AND-WEAPONS-2026-09-20.md, sixth pass); this settles only their tier.
 - Where it lives: `assets/characters/oathblade-armor/rebuild/candidates/weapon-card-references/prompts-v2.json` — 50 cards, with the choices made without asking listed in its `defaults` (one wood-axe card for `item.hand-axe` and the dictated Wood Axe; a paired weapon drawn once; no card for natural weapons; dictated weapons with no tier yet left out).
+
+## 2026-10-03 — every civilian fields its kit by default when an encounter places it
+
+Andrew, in the kingdom chat, watching a replay: "I see the lumberjack only punches. He's supposed to have a wood axe. Is the content authored one?" The content is authored — `hero.fixed.lumberjack-and-wife`'s kit is `item.lumberjack-axe` (Chop, Cleave) — but an encounter-placed civilian is fielded without its kit (engine SWITCHES `arrivalKit`), and the 2026-10-02 ruling named only the orphans and the school teacher. The questions, as asked: (1) "Should the Lumberjack field his axe when an encounter places him?"; (2) "Should his wife field her dagger and basic armor the same way?"; (3) "Should the rest of the placed civilians get their kits too (school children with rocks, the farmer with his pitchfork, the Supper's villagers with daggers), or only the ones you name?"
+
+“Yes, all of the civilians, by default, should field their kit the first time they're loaded.   So all of them should get it.”
+
+Ruled:
+
+- **Every civilian an encounter places fields its Codex default kit, by default.** The Lumberjack fights with his axe, his wife with her dagger and basic armor, the school children with the pile of rocks, the farmer with the pitchfork, the Supper's villagers with their daggers. Read as: "the first time they're loaded" is the moment an encounter puts the civilian on the board, as a setup unit or a scheduled arrival. This replaces the 2026-10-02 entry's "the other placed civilians … stay as they are". engine SWITCHES `arrivalKit` is settled by this entry for civilians; `placedWithKitFlag`'s opt-in list (content `gen/civilian-rulings.json` `placedWithKit.ids`) is no longer how a civilian earns its kit. Enemies an encounter places are not named and stay as authored. Filed: `fix.civilians-field-kit`.
