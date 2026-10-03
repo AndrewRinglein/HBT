@@ -3982,3 +3982,17 @@ Andrew, the same chat, on the proposal's third point (a single click only looks;
 Ruled:
 
 - **The action bar and the portrait card beside it belong to the activated unit for its whole Activation.** Clicking any other unit — an enemy, or another hero — shows it in the right-hand panel only; the bar, its abilities and the card do not change. Overturns viewer `src/subject.js`'s rule that the bar follows whoever was clicked last, and 2026-09-29 'the playable battle screen' where it has the panel and the bar both follow the click.
+
+## 2026-10-03 — the battle screen's turn-taking, ruled
+
+Andrew, the same chat, answering the four questions on the proposed turn-taking (1 one current hero with one mark, cleared when its Activation ends; 2 a Hero Phase banner that clears the enemy's leftovers, the first un-acted hero begun with its basic move armed; 3 a single click only looks; 4 a double-click on another hero switches to it while the current one has done nothing; 5 every refusal says why in one line; 6 the next un-acted hero begins when an Activation ends, left to right, acted heroes greyed with a ✓; 7 heroes and enemies apart in the top bar):
+
+“It just shows the path. You need to double-click or click it again so it shows the path. That way, you can also plan out your attacks from that spot. Yeah, let's create a separation between the heroes and the enemies so they don't get mixed up. There's just a divider in between that's clear. No, you may not switch to another hero and come back later to finish. You have to complete one hero's activation before you move on to the next. For yes”
+
+Ruled:
+
+- **A single click on a hex shows the path there; a double-click, or a second click on the same hex, moves.** While the path is shown, the attacks are planned from its end — the bar's hit chances and targets read from that hex.
+- **The top bar keeps heroes and enemies apart, with a clear divider between them.**
+- **No partial Activations.** A hero's Activation is finished before another hero's begins; there is no switching away and coming back. The engine already holds this (`src/core/commands.ts` `not-current-actor`); root `COMBAT-DESIGN.md:85` said otherwise ("partial moves (move A, act with B, finish A)") and is corrected to this entry.
+- **The seven-point proposal is accepted** ("For yes", read as "four: yes"). With the earlier entries today: the bar and its card stay with the activated unit; a hero begins with its basic move armed; the enemy's hit chance and other leftovers clear before the Hero Phase.
+- Filed: `viewer.turn-taking`, first in the viewer queue.
