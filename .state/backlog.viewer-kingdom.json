@@ -4,7 +4,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the characters stand out: the size change does it; shadows are kept; the other three do little' and 'size and shadows are the default; ...'): \"looks like the size change does it, and nothing else seems to help that much, but we should still have them have shadows.\" - asked whether those two become the default for every battle: \"Answer to question one: yes.\" The size look and the shadows look of viewer.characters-stand-out (viewer src/stand-out.js) are what every battle shows, with nothing named: the standard view shows the board at 0.9x and a body stands 1.3x its former on-screen height (1.44x its roster stature against its hex), with no white space at any edge; every body, and what it holds, casts the sun's shadow and the patch under its feet is the darker one. In the replay page and the kingdom's battle page alike - no link parameter needed. Overturns viewer SWITCHES modelScale and the bodies' castShadow = false. The ground tone, the rim and the base disc were not accepted: they stay off, still nameable through opts.look for comparison. The review page (kingdom CHARACTERS-STAND-OUT.html) is rebuilt to say what is now the default. Prior art: stand-out.js's own numbers - this moves two of them from named to default, no new concept.",
-  "expect": "BATTLE-SANDBOX.html?play=encounter.opening.orphanage with no look named shows the bodies 30% taller on screen than before viewer.characters-stand-out, the hexes 10% smaller, bodies casting shadows, and no white space at any edge; BATTLE-VIEWER.html's painted battles the same; ground, rim and disc are off unless named."
+  "expect": "BATTLE-SANDBOX.html?play=encounter.opening.orphanage with no look named shows the bodies 30% taller on screen than before viewer.characters-stand-out, the hexes 10% smaller, bodies casting shadows, and no white space at any edge; BATTLE-VIEWER.html's painted battles the same; ground, rim and disc are off unless named.",
+  "status": "done-needs-review",
+  "sha": "b1939c2"
  },
  {
   "id": "viewer.characters-stand-out",

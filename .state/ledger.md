@@ -23315,3 +23315,75 @@ index 0000000..19fbbc3
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.size-and-shadows-default — LANDED `b1939c2` **NEEDS REVIEW**
+2026-10-03 07:36
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · ..\DOCS.md:134
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.characters-stand-out.test.ts, test/viewer.size-and-shadows-default.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.characters-stand-out.test.ts, viewer/test/viewer.size-and-shadows-default.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.characters-stand-out.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+c94ea0b
+
+diff --git a/test/viewer.characters-stand-out.test.ts b/test/viewer.characters-stand-out.test.ts
+index e4b45a7..b86bbf9 100644
+--- a/test/viewer.characters-stand-out.test.ts
++++ b/test/viewer.characters-stand-out.test.ts
+@@ -24,5 +24,7 @@ describe('the characters stand out: five looks to judge, each on only when named
+   it('the viewer page: no look is the page as it was; size shows the board at 0.9× with bodies 1.3× on the screen and no white space; shadows, ground, rim and disc are each their own', () => {
+     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/characters-stand-out.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
+-    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
++    // Law 10 (viewer.size-and-shadows-default, engine DECISIONS.md 2026-10-03 'size and shadows are the default'): the page test
++    // gained the default's own test — was /# pass 6/
++    expect(out).toMatch(/# pass 7/); expect(out).toMatch(/# fail 0/)
+   }, 170000)
+   it('the kingdom: the review page links the Orphanage as today, with each look alone and with all together; the built battle page takes them from its link', () => {
+diff --git a/test/viewer.size-and-shadows-default.test.ts b/test/viewer.size-and-shadows-default.test.ts
+new file mode 100644
+index 0000000..e0b8964
+--- /dev/null
++++ b/test/viewer.size-and-shadows-default.test.ts
+@@ -0,0 +1,25 @@
++// viewer.size-and-shadows-default (engine backlog; engine DECISIONS.md 2026-10-03 'the characters stand out: the size change does
++// it; shadows are kept; the other three do little' and 'size and shadows are the default'). Andrew, having looked at the five
++// looks of viewer.characters-stand-out: "looks like the size change does it, and nothing else seems to help that much, but we
++// should still have them have shadows." - asked whether those two become the default for every battle: "yes." The engine's
++// side: nothing in a battle's log changes - the default is how the viewer draws the same events (the Orphanage's export is the
++// engine's own, played as it stands). The viewer's half (../viewer/tools/characters-stand-out.test.mjs, its test of the
++// default): a battle whose host names no looks shows size and shadows - the board at 0.9x with no white space, the bodies'
++// numbers the size look's, the patch under the feet the darker one - and an empty list is still the board as it was before.
++// The built battle page's half (no look parameter shows the default pair, in a real browser) is the kingdom check that
++// test/viewer.characters-stand-out.test.ts runs. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++
++describe('size and shadows are the default for every battle', () => {
++  it('the battle the default is shown on is an engine export, untouched: its events name no look', () => {
++    const battle = JSON.parse(readFileSync('../viewer/battles/test.opening-orphanage.json', 'utf8'))
++    expect(battle.events.length).toBeGreaterThan(100)
++    expect(JSON.stringify(battle.events.slice(0, 50))).not.toMatch(/"look"/)
++  })
++  it('the viewer page: with no looks named a battle shows size and shadows, and nothing else; an empty list is the board as it was', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', '--test-name-pattern=^the default:', 'tools/characters-stand-out.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 1/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++})
+```
+</details>
