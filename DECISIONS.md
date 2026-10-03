@@ -4154,3 +4154,9 @@ Andrew, in the kingdom chat, watching a replay: "I see the lumberjack only punch
 Ruled:
 
 - **Every civilian an encounter places fields its Codex default kit, by default.** The Lumberjack fights with his axe, his wife with her dagger and basic armor, the school children with the pile of rocks, the farmer with the pitchfork, the Supper's villagers with their daggers. Read as: "the first time they're loaded" is the moment an encounter puts the civilian on the board, as a setup unit or a scheduled arrival. This replaces the 2026-10-02 entry's "the other placed civilians … stay as they are". engine SWITCHES `arrivalKit` is settled by this entry for civilians; `placedWithKitFlag`'s opt-in list (content `gen/civilian-rulings.json` `placedWithKit.ids`) is no longer how a civilian earns its kit. Enemies an encounter places are not named and stay as authored. Filed: `fix.civilians-field-kit`.
+
+Andrew, on the follow-up question ("Should the civilian kit item go to the top of the engine queue?"):
+
+“Yes.”
+
+- **`fix.civilians-field-kit` is the top of the engine queue** (re-added with `add-item --first`).

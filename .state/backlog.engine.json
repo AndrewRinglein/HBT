@@ -1,5 +1,19 @@
 [
  {
+  "id": "fix.civilians-field-kit",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "fix.orphans-teacher-knife-refiled"
+  ],
+  "probeIds": [
+   "encounter.opening.lumberjack"
+  ],
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'every civilian fields its kit by default when an encounter places it'): 'Yes, all of the civilians, by default, should field their kit the first time they're loaded. So all of them should get it.' Today only the two civilians named on content gen/civilian-rulings.json placedWithKit.ids (the orphans, the school teacher; fix.orphans-teacher-knife-refiled) field their Codex kit when an encounter places them; every other placed civilian fights with Punch (engine SWITCHES arrivalKit: 19 placements across prologue-1..3, supper, opening.orphanage, opening.lumberjack). Make it the default: every civilian an encounter places - setup unit or scheduled arrival - fields its Codex default kit through the one assembler fieldedDef (fix.one-hero-assembly-refiled), not a second kit path: the Lumberjack item.lumberjack-axe (Chop, Cleave), the Lumberjack's Wife item.dagger and item.basic-armor, the school children the pile of rocks, the farmer the pitchfork, the Supper's villagers the dagger. The core names no content instance: how the assembler knows a civilian is the builder's call (the opt-in placedWithKit flag becomes the civilian default, or is retired) - record it as a switch. Enemies an encounter places stay authored whole, as before. Settle engine SWITCHES arrivalKit and placedWithKitFlag by this ruling. Rebuild the Codex, the engine pack, and the viewer and kingdom pages and replays the change makes stale.",
+  "expect": "In encounter.opening.lumberjack the Lumberjack attacks with attack.lumberjack-axe.chop or .cleave and his wife with attack.dagger.stab, never Punch; every civilian placed by prologue-1..3, supper, opening.orphanage and opening.lumberjack fields its Codex kit; an enemy placed by an encounter is unchanged; the opening battles that field a placed civilian move, and the control battles' baseline says whether it moved.",
+  "note": "Whether the control battles (tools/baseline.mts, MAP_PANEL) move decides changesBaseline - fix.orphans-teacher-knife was abandoned for claiming true when the work was neutral (engine SWITCHES orphansKnifeRefiled); check before claiming."
+ },
+ {
   "id": "fix.transformed-snapshot-order",
   "kind": "engine",
   "shape": "plumbing",
@@ -5317,19 +5331,5 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, DECISIONS.md 'the affliction pop-up's 0-Health words and its drawbacks come from the engine'): \"Okay, do it that way.\" viewer.affliction-pop-up landed with the pop-up's 'At 0 Health' paragraph written by the viewer from the shape of badge.gained's atZero (viewer SWITCHES afflictionZeroWords) and its Drawbacks read as 'the stats the mods lower' plus every gaps line (afflictionDrawbacks) - both against Viewer Constitution Law 0. (1) The affliction badge's content row carries its ruled 0-Health text (the Codex's wording; engine DECISIONS.md 2026-10-01 'the afflictions at 0 Health...') and which of its written terms are drawbacks; the content pack brings them. (2) src/core/mutate.ts badge.gained emits them (the text and the drawback marks) beside mods/gaps/atZero. (3) viewer src/affliction.js prints the event's text and the marked drawbacks and writes no sentence of its own; the two viewer switches are marked settled by this item; pages rebuilt. Prior art: badge.gained's mods, gaps and atZero fields - this extends that one event, it adds no event.",
   "expect": "In the Orphanage, when a hero first gains Rotting Flesh the pop-up's 'At 0 Health' paragraph is word for word the text on the badge.gained event, and its Drawbacks are exactly the terms the event marks; viewer src/affliction.js holds no 0-Health sentence; the same holds for Vampirism, Lycanthropy and Possession."
- },
- {
-  "id": "fix.civilians-field-kit",
-  "kind": "engine",
-  "shape": "data",
-  "needs": [
-   "fix.orphans-teacher-knife-refiled"
-  ],
-  "probeIds": [
-   "encounter.opening.lumberjack"
-  ],
-  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'every civilian fields its kit by default when an encounter places it'): 'Yes, all of the civilians, by default, should field their kit the first time they're loaded. So all of them should get it.' Today only the two civilians named on content gen/civilian-rulings.json placedWithKit.ids (the orphans, the school teacher; fix.orphans-teacher-knife-refiled) field their Codex kit when an encounter places them; every other placed civilian fights with Punch (engine SWITCHES arrivalKit: 19 placements across prologue-1..3, supper, opening.orphanage, opening.lumberjack). Make it the default: every civilian an encounter places - setup unit or scheduled arrival - fields its Codex default kit through the one assembler fieldedDef (fix.one-hero-assembly-refiled), not a second kit path: the Lumberjack item.lumberjack-axe (Chop, Cleave), the Lumberjack's Wife item.dagger and item.basic-armor, the school children the pile of rocks, the farmer the pitchfork, the Supper's villagers the dagger. The core names no content instance: how the assembler knows a civilian is the builder's call (the opt-in placedWithKit flag becomes the civilian default, or is retired) - record it as a switch. Enemies an encounter places stay authored whole, as before. Settle engine SWITCHES arrivalKit and placedWithKitFlag by this ruling. Rebuild the Codex, the engine pack, and the viewer and kingdom pages and replays the change makes stale.",
-  "expect": "In encounter.opening.lumberjack the Lumberjack attacks with attack.lumberjack-axe.chop or .cleave and his wife with attack.dagger.stab, never Punch; every civilian placed by prologue-1..3, supper, opening.orphanage and opening.lumberjack fields its Codex kit; an enemy placed by an encounter is unchanged; the opening battles that field a placed civilian move, and the control battles' baseline says whether it moved.",
-  "note": "Whether the control battles (tools/baseline.mts, MAP_PANEL) move decides changesBaseline - fix.orphans-teacher-knife was abandoned for claiming true when the work was neutral (engine SWITCHES orphansKnifeRefiled); check before claiming."
  }
 ]
