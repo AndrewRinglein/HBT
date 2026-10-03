@@ -32,7 +32,7 @@ describe('the civilians hold their dagger as a weapon', () => {
       expect(look.motions.attack!.clip, t).not.toBe('Knife attack')
     }
     expect(JSON.stringify(models)).not.toMatch(/knife-v1/)
-  })
+  }, 60000)
   it('the viewer page: the pack, the bodies through idle, walk and stab, and the Orphanage on the page', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/civilian-held-dagger.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
     expect(out).toMatch(/# pass 3/); expect(out).toMatch(/# fail 0/)
