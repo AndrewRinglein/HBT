@@ -12,6 +12,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import {clone as cloneRig} from 'three/addons/utils/SkeletonUtils.js'
 import {atlasSourceURL} from './atlas.js'
 import {release} from './painted.js'
+import {SIDE_TINT} from './theme.js'
+import {NO_LOOK} from './stand-out.js'
 import transformationRegistry from '../../assets/characters/hero-transformations/activation-registry.json' with {type:'json'}
 import {transformationFor} from '../../assets/characters/hero-transformations/afflictions.mjs'
 import {createBodyAfflictions} from '../../assets/characters/hero-transformations/body-afflictions.mjs'
@@ -236,9 +238,44 @@ const unlitOf = m => {
   return unlitTwins.get(m)
 }
 
-/** one unit's body: the rig cloned, scaled to the roster's stature, its motions ready */
+/* viewer.characters-stand-out (engine DECISIONS.md 2026-10-03 'the characters must stand out from the board'): the rim look —
+   "a thin light rim on each body in its side's colour". Each drawn piece of a body has a twin of its own shape, pushed out
+   along its normals by the rim's width and set a little BEHIND the body (both scene metres, in the camera's space), drawn
+   after the bodies in the side's flat colour (theme.js SIDE_TINT — Law 6), so only its edge shows past the body: the same
+   rim on a lit body and on an unlit outfit, whichever way a piece's faces wind (an outfit drawn double-sided has both).
+   One material per colour, shared by every body. */
+const RIM = { vertexShader: `#include <common>
+#include <skinning_pars_vertex>
+uniform float width;
+uniform float behind;
+void main(){
+ #include <beginnormal_vertex>
+ #include <skinbase_vertex>
+ #include <skinnormal_vertex>
+ #include <begin_vertex>
+ #include <skinning_vertex>
+ vec4 mv=modelViewMatrix*vec4(transformed,1.);
+ mv.xyz+=normalize(normalMatrix*objectNormal)*width;
+ gl_Position=projectionMatrix*mv;
+ vec4 back=projectionMatrix*vec4(mv.xy,mv.z-behind,1.);
+ gl_Position.z=back.z/back.w*gl_Position.w;
+}`, fragmentShader: `uniform vec3 color;
+void main(){
+ gl_FragColor=vec4(color,1.);
+ #include <colorspace_fragment>
+}` }
+const rims = new Map(), UNSEEN = new THREE.MeshBasicMaterial({ visible: false })
+const rimMaterial = r => { const k = r.color + '|' + r.width + '|' + r.behind
+  if (!rims.has(k)) rims.set(k, Object.assign(new THREE.ShaderMaterial({ ...RIM, side: THREE.DoubleSide, transparent: true, toneMapped: false,
+    uniforms: { color: { value: new THREE.Color(r.color) }, width: { value: r.width }, behind: { value: r.behind } } }), { name: 'rim:' + r.color }))
+  return rims.get(k) }
+
+/** one unit's body: the rig cloned, scaled to the roster's stature, its motions ready.
+    viewer.characters-stand-out: appearanceOptions.scale stands it that much taller (the size look), .shadows has it cast the
+    sun's shadow, .rim = { color, width, behind } gives it its side's rim — each the look's number, none tested per frame */
 export function createBody(loaded, appearanceOptions = {}) {
   const { look, clips } = loaded
+  const height = look.height * (appearanceOptions.scale || 1)
   const root = cloneRig(loaded.scene), hidden = new Set(look.hidden || []), meshes = []
   /* viewer.real-bodies: a wardrobe body's under-suit is a material of its body parts, hidden beneath the outfit as its owners hide
      it (outfits/eve/serpent-armhole.html, hero-transformations/battle.mjs) */
@@ -249,7 +286,7 @@ export function createBody(loaded, appearanceOptions = {}) {
   root.traverse(o => {
     if (hidden.has(o.name)) o.visible = false
     if (o.isMesh) {
-      o.castShadow = false; o.receiveShadow = true; o.frustumCulled = false; meshes.push(o)
+      o.castShadow = !!appearanceOptions.shadows; o.receiveShadow = true; o.frustumCulled = false; meshes.push(o)
       if (hiddenMaterials.size) for (const m of [].concat(o.material)) if (hiddenMaterials.has(m.name)) { m.visible = false; m.depthWrite = false }
       if (unlit.has(o.name) || unlit.has(o.parent?.name)) o.material = Array.isArray(o.material) ? o.material.map(unlitOf) : unlitOf(o.material)
     }
@@ -266,6 +303,8 @@ export function createBody(loaded, appearanceOptions = {}) {
   const reference = clips.idle || clips.attack || Object.values(clips)[0]
   const pose = (clip, time = 0) => { mixer.stopAllAction(); const a = mixer.clipAction(clip); a.reset().play(); a.time = time; mixer.update(0); grip(); root.updateMatrixWorld(true) }
   for (const [i, p] of (loaded.props || []).entries()) fitProp(root, p, clips, pose, reference, i)
+  /* what it holds casts with it */
+  if (appearanceOptions.shadows) root.traverse(o => { if (o.isMesh) o.castShadow = true })
   pose(reference)
   let pivot = root.getObjectByName(look.pivot)
   if (!pivot) { const clean = s => s.replace(/[^a-z0-9]/gi, '').toLowerCase(); root.traverse(o => { if (!pivot && clean(o.name) === clean(look.pivot)) pivot = o }) }
@@ -286,16 +325,30 @@ export function createBody(loaded, appearanceOptions = {}) {
   centre()
   const b0 = bounds(), tall = b0.max.y - b0.min.y
   if (!(tall > 0)) throw new Error(`${look.name}: its body has no height`)
-  const scale = look.height / tall
+  const scale = height / tall
   const model = new THREE.Group(), lean = new THREE.Group(), stage = new THREE.Group()
   model.scale.setScalar(scale); model.position.y = -b0.min.y * scale; model.add(root); lean.add(model); stage.add(lean); stage.name = 'model:' + look.id
+  /* the rim: a twin per drawn piece, OUTSIDE the rig (the transformation layer walks the rig's meshes and must not meet them).
+     A skinned twin shares its piece's skeleton and bind, so it stands where the piece does wherever it hangs; a rigid one (a
+     held weapon) takes its piece's place each frame. A material the look hides (an under-suit) has no rim. */
+  const rim = new THREE.Group(); rim.name = 'rim'
+  const tint = r => { for (const h of rim.children) { const m = rimMaterial(r)
+    h.material = Array.isArray(h.userData.of.material) ? h.userData.of.material.map(x => x.visible === false ? UNSEEN : m) : m } }
+  if (appearanceOptions.rim) {
+    root.traverse(o => { if (!o.isMesh || !o.geometry.attributes.normal) return
+      const h = o.isSkinnedMesh ? new THREE.SkinnedMesh(o.geometry, UNSEEN) : new THREE.Mesh(o.geometry, UNSEEN)
+      if (o.isSkinnedMesh) { h.bindMode = o.bindMode; h.bind(o.skeleton, o.bindMatrix) } else h.matrixAutoUpdate = h.matrixWorldAutoUpdate = false
+      h.userData.of = o; h.frustumCulled = false; h.renderOrder = 1; h.raycast = () => {}; rim.add(h) })
+    tint(appearanceOptions.rim); stage.add(rim)
+  }
+  const rimFollow = () => { for (const h of rim.children) { const o = h.userData.of; h.visible = shown(o); if (!h.isSkinnedMesh) h.matrixWorld.copy(o.matrixWorld) } }
   stage.updateMatrixWorld(true)
   const measure = () => { const b = bounds(), inv = new THREE.Matrix4().copy(stage.matrixWorld).invert(); b.applyMatrix4(inv); return b.max.y - b.min.y }
   const standing = measure()
   /* viewer.walk-in-step: each travelling motion's ground speed, measured once from the clip on this body (groundSpeed) */
   const feet = []; root.traverse(o => { if (o.isBone && /foot(l|r|left|right)?$/.test(o.name.replace(/[^a-z]/gi, '').toLowerCase())) feet.push(o) })
   const gaits = {}
-  for (const k of ['move', 'flight']) if (clips[k]) gaits[k] = groundSpeed(clips[k], { pose, root, stage, pivot, feet, height: look.height, inPlace: k === 'move' })
+  for (const k of ['move', 'flight']) if (clips[k]) gaits[k] = groundSpeed(clips[k], { pose, root, stage, pivot, feet, height, inPlace: k === 'move' })
   pose(reference); centre()
   mixer.stopAllAction()
   const actions = {}
@@ -351,8 +404,10 @@ export function createBody(loaded, appearanceOptions = {}) {
       recoilT += dt; lungeT += dt
       lean.rotation.x = -.22 * body.recoil() + .18 * body.lunge()
       stage.rotation.y = body.yaw
-      stage.updateMatrixWorld(true)
+      stage.updateMatrixWorld(true); rimFollow()
     },
+    /** viewer.characters-stand-out: the rim in another colour (the unit changed sides) */
+    tint,
     height: () => { stage.updateMatrixWorld(true); return measure() },
     standingHeight: () => standing,
     dispose() { layer?.dispose(); stage.removeFromParent(); mixer.stopAllAction(); mixer.uncacheRoot(root) },
@@ -368,6 +423,9 @@ const wrapAngle = a => Math.atan2(Math.sin(a), Math.cos(a))
 /** the cast: every bound unit on the board as its model, in the 3D scene, following its token */
 export function createCast(V, scene, toWorld, platform = {}) {
   const looks = new Map(), bodies = new Map(), group = new THREE.Group()
+  /* viewer.characters-stand-out: the looks the host named, as numbers (stand-out.js) — a bare V has none */
+  const LOOK = V.look || NO_LOOK
+  const rimOf = u => LOOK.rim ? { color: SIDE_TINT[u.side] || SIDE_TINT.enemy, ...LOOK.rim } : null
   const headLoads = new Map()
   /* board px per scene metre, upward: the scene's own map (the inverse of toWorld), its y axis -> the board's z */
   const up = toWorld.clone().invert().elements, PX_PER_M = Math.hypot(up[4], up[5], up[6])
@@ -461,14 +519,15 @@ export function createCast(V, scene, toWorld, platform = {}) {
       if (!el && !(body && u.life === 'dead' && !body.lying())) continue
       if (!body) {
         /* a look that cannot be stood up is its token, said once — never the whole scene's failure (Law 9: said, not swallowed) */
-        try { body = createBody(entry.loaded, {registry:platform.registry,loadHead:platform.loadHead||loadHead,onError:error=>platform.onError?.(look,error,{appearance:true})}) } catch (err) { entry.state = 'failed'; entry.error = err; platform.onError?.(look, err); continue }
+        try { body = createBody(entry.loaded, {scale:LOOK.bodyScale,shadows:LOOK.shadows,rim:rimOf(u),registry:platform.registry,loadHead:platform.loadHead||loadHead,onError:error=>platform.onError?.(look,error,{appearance:true})}) } catch (err) { entry.state = 'failed'; entry.error = err; platform.onError?.(look, err); continue }
         group.add(body.stage); bodies.set(u.id, body); changed = true
         body.life = u.life; const r = rest(body, u.life); if (r) body.play(r, { snap: true })
-        body.face = body.yaw = restFace(u); body.hex = u.hex
+        body.face = body.yaw = restFace(u); body.hex = u.hex; body.side = u.side
         if (el) place(el, body.stage.position)
         body.last = body.stage.position.clone()
       }
       kept.add(u.id)
+      if (body.side !== u.side) { body.side = u.side; if (LOOK.rim) body.tint(rimOf(u)) }
       body.setAfflictions(u)
       if (el) place(el, body.stage.position)
       /* life is the fold's: a change plays the death from its start (a seek lands on its end: snap) */

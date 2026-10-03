@@ -110,6 +110,11 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .tok{display:block;width:auto;pointer-events:auto;cursor:pointer}
 .shadow{position:absolute;border-radius:50%;background:rgba(0,0,0,.55);filter:blur(7px)}
 .fring{position:absolute;border-radius:50%;border:3px solid;pointer-events:none}
+/* viewer.characters-stand-out: looks to judge, each on only when the host names it (stand-out.js) — the side's base disc under
+   every unit, and the patch under the feet darker with the bodies' cast shadows */
+.sideDisc{position:absolute;border-radius:50%;pointer-events:none;visibility:hidden}
+#stage.lookDisc .sideDisc{visibility:visible}
+#stage.lookShadows .shadow{background:rgba(0,0,0,.85)}
 /* SELECTED — what the panel is showing. Quiet, cool, never faction-coloured so it
    cannot be buried by a gold hero aura. This is a UI state, not a game state. */
 .sel{position:absolute;border-radius:50%;border:2px solid #bff2ff;

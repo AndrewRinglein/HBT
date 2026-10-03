@@ -26,7 +26,9 @@
                 are the engine's stamps on the export, never derived here
    opts = { now?: () => ms, autoplay?: bool, onCursor?: (cursor, event) => void,
             onHexClick?: (hex) => boolean, onDrain?: () => void, onPlayState?: (playing) => void, onError?: (err) => void,
-            onPlay?: (input) => boolean }
+            onPlay?: (input) => boolean, look?: string[] }
+     look (viewer.characters-stand-out) — the names of the looks to judge (stand-out.js LOOKS: size, shadows, ground, rim,
+            disc), each off unless named; resolved once, here, into the numbers the camera, the bodies and the scene read.
      onPlay (viewer.play-input) — while the host has handed plan facts over (setPlay), what the mouse does on the board
             is offered to it: {kind:'point', hex|null} · {kind:'hex', hex} · {kind:'unit', id, hex} · {kind:'back'}
             (a right-click that did not drag, or Esc) · {kind:'slot', actionId, unit} (an action-bar row). The host
@@ -56,6 +58,7 @@ import { drawRail } from './rail.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
 import { prepareBattleField } from './engine.ts'
+import { standOut } from './stand-out.js'
 
 /* ── DUR: the clock lives here; events carry order, never duration ──────── */
 export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck': 160, 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'moved': 600,
@@ -123,6 +126,8 @@ const TEMPLATE = `
   <div id="panel"></div>`
 
 export function mountBattleViewer(root, data, opts = {}) {
+  /* viewer.characters-stand-out: the looks the host named, as numbers — a name that is no look is refused before the host's DOM is touched */
+  const look = standOut(opts.look)
   // Inspect initial facts before touching the host DOM; every event still folds.
   const prepared = prepareBattleField(data.initialEvents, data.meta?.seed, { mapId: data.fieldMapId, field: data.field })
   const F = prepared.field
@@ -144,7 +149,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   if (F.width == null || F.height == null) throw new Error('mountBattleViewer: the field carries no width/height — regenerate generated/fields.json at engine ≥ 5603c40')
   const LAYOUT = { W: F.hexW, H: F.hexH, COL: F.colStep, ROW: F.rowStep, ODD: F.oddOffset, COLS: F.width, ROWS: F.height, tilt: F.tilt }
   const V = {
-    dom, now,
+    dom, now, look,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ABSORBING_STATUSES: data.absorbingStatuses || [],
       LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {},
@@ -185,6 +190,8 @@ export function mountBattleViewer(root, data, opts = {}) {
   for (const s of [dom.stage, dom.stageTop]) { if (!s) continue
     s.style.width = F.w + 'px'; s.style.height = F.h + 'px'
     s.style.marginLeft = (-F.w / 2) + 'px'; s.style.marginTop = (-F.h / 2) + 'px' }
+  /* viewer.characters-stand-out: what is drawn under a unit follows the look — the stylesheet's, by these two classes */
+  dom.stage.classList.toggle('lookDisc', look.disc); dom.stage.classList.toggle('lookShadows', look.shadows)
   dom.stage.style.transition = 'none'                // born TILTED — the camera's glide (board.js) starts after first paint
   ensureKeyframes()
   /* the icon sprite is the component's: one per document, whoever mounts */

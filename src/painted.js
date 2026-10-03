@@ -41,6 +41,21 @@ export function release(root) {
   root.traverse(o => { if (o.geometry) geometries.add(o.geometry); for (const m of [].concat(o.material || [])) { materials.add(m); for (const v of Object.values(m)) if (v?.isTexture) textures.add(v) } })
   geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => { t.source?.data?.close?.(); t.dispose() })
 }
+/* viewer.characters-stand-out (engine DECISIONS.md 2026-10-03, Andrew: "We have a very colorful background. Is that part of the
+   problem?"): the ground look — the painted scene a little darker and less saturated, so the bodies are the brightest and most
+   coloured things on it. In the renderer, never a CSS filter in the 3D scene: each of the scene's materials has its drawn
+   colour pulled toward its own grey (saturation) and dimmed (value), after tone mapping. The scene's own materials only —
+   its fires, its fog and the bodies are not the scene's. */
+export function toneScene(root, tone) {
+  const f = n => Number(n).toFixed(3), key = 'tone:' + f(tone.value) + ':' + f(tone.saturation), done = new Set()
+  const chunk = '#include <tonemapping_fragment>'
+  const patch = shader => { if (!shader.fragmentShader.includes(chunk)) throw new Error('painted scene: a material has no tone-mapping step to tone after')
+    shader.fragmentShader = shader.fragmentShader.replace(chunk, chunk + `
+ { float toneGrey = dot(gl_FragColor.rgb, vec3(.2126, .7152, .0722)); gl_FragColor.rgb = mix(vec3(toneGrey), gl_FragColor.rgb, ${f(tone.saturation)}) * ${f(tone.value)}; }`) }
+  root.traverse(o => { if (o.isMesh) for (const m of [].concat(o.material)) { if (done.has(m)) continue; done.add(m)
+    m.onBeforeCompile = patch; m.customProgramCacheKey = () => key; m.userData.tone = { ...tone }; m.needsUpdate = true } })
+  return done.size
+}
 const hex = buf => Array.from(new Uint8Array(buf), n => n.toString(16).padStart(2, '0')).join('')
 
 /** fetch the scene, refuse it unless it is the scene the hexes were measured on, and parse it */
@@ -63,6 +78,7 @@ export async function loadPaintedScene(b, platform = {}) {
     o.receiveShadow = true; o.castShadow = !/Ground_|River_|Growth_/.test(o.name)
     for (const m of [].concat(o.material)) if (o.name.startsWith('River_Water')) { m.roughness = .34; m.metalness = .18 }
   })
+  if (platform.tone) toneScene(root, platform.tone)
   const group = new THREE.Group(); group.name = 'painted:' + b.scene; group.add(root)
   /* viewer.caravan-scene (2026-10-01): the scene's presentation profile (tools/presentation-profile.mjs) — its decorative
      surroundings, its fires and its cursed fog, all as the accepted caravan preview draws them (assets/battle-atlas/

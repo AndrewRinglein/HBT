@@ -732,6 +732,9 @@ function mkUnit(V, u) {
   const root = el('', 'position:absolute;width:0;height:0;transform-style:preserve-3d;transition:' + ROOT_TRANSITION)
   const tint = SIDE_TINT[u.side] || SIDE_TINT.enemy, glow = SIDE_GLOW[u.side] || SIDE_GLOW.enemy
   const fring = el('fring', `left:-46px;top:-30px;width:92px;height:60px;border-color:${tint};opacity:.55`)
+  /* viewer.characters-stand-out: the side's base disc — the footprint ring's own ellipse, filled in the side's colour; the
+     stylesheet shows it only under the disc look (#stage.lookDisc) */
+  const disc = el('sideDisc', `left:-46px;top:-30px;width:92px;height:60px;background:rgba(${glow},.62);box-shadow:0 0 10px rgba(${glow},.7)`)
   const shadow = el('shadow', 'left:-44px;top:-24px;width:88px;height:44px;transform:rotate(-16deg) scale(1.05,.8);opacity:.58')
   const actA = el('act-a', 'left:-68px;top:-45px;width:136px;height:90px;display:none')
   const actB = el('act-a2', 'left:-58px;top:-38px;width:116px;height:76px;display:none')
@@ -767,11 +770,11 @@ function mkUnit(V, u) {
     'pointer-events:none;transform:translateZ(60px);' +
     'text-shadow:0 2px 4px #000,0 0 9px rgba(0,0,0,.95),0 0 2px #000')
   bb.appendChild(dg)
-  root.appendChild(fring); root.appendChild(shadow); root.appendChild(actA)
+  root.appendChild(disc); root.appendChild(fring); root.appendChild(shadow); root.appendChild(actA)
   root.appendChild(actB); root.appendChild(selR); root.appendChild(downR)
   root.appendChild(bb); root.appendChild(clock)
   V.layers.unitsL.appendChild(root)
-  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, prot, mark, clock, mv, dg, glow, a, name, fx }
+  return { root, disc, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, prot, mark, clock, mv, dg, glow, a, name, fx }
 }
 /* ── UNDER THE UNIT (viewer.under-unit, 2026-09-29; engine DECISIONS.md "the playable battle screen" and "the
    playable screen: the acting mark ..."; PLAYABLE-OPENING-PLAN.md item 6) ─────────────────────────────────────
@@ -881,6 +884,7 @@ export function syncUnits(V) {
       E.clock.textContent = String(u.bleed)
     } else E.clock.style.display = 'none'
     E.fring.style.display = (bare || down) ? 'none' : ''
+    E.disc.style.display = (bare || down) ? 'none' : ''
     /* an encounter OBJECTIVE (a civilian whose death loses) wears a dashed ring */
     E.fring.style.borderStyle = u.objective ? 'dashed' : 'solid'
     /* THE FOOTPRINT FOLLOWS THE STATURE (Angela 2026-09-03: the dwarf, once
@@ -891,7 +895,7 @@ export function syncUnits(V) {
        dragon's does not swallow its neighbours. */
     const fp = Math.min(1.4, Math.max(0.55, hpx / 132))
     const R = (elm, l, t, wd, ht) => { elm.style.left = Math.round(l * fp) + 'px'; elm.style.top = Math.round(t * fp) + 'px'; elm.style.width = Math.round(wd * fp) + 'px'; elm.style.height = Math.round(ht * fp) + 'px' }
-    R(E.fring, -46, -30, 92, 60); R(E.actA, -68, -45, 136, 90); R(E.actB, -58, -38, 116, 76); R(E.selR, -48, -31, 96, 62); R(E.downR, -58, -38, 116, 76)
+    R(E.fring, -46, -30, 92, 60); R(E.disc, -46, -30, 92, 60); R(E.actA, -68, -45, 136, 90); R(E.actB, -58, -38, 116, 76); R(E.selR, -48, -31, 96, 62); R(E.downR, -58, -38, 116, 76)
 
     if (down && !bare) {
       E.shadow.style.display = ''
@@ -1281,7 +1285,9 @@ export function applyCam(V, opts = {}) {
   const open = surrounded(V), here = open ? null : fill(yaw), quarter = open ? null : fill(Math.round(yaw / 90) * 90)
   const fp1 = here && here.q, fillZ = here ? here.z : 0
   const [, nearT] = zoomLimits('tactical', fitZ, { w: VW, h: VH }, TOKEN_TOP)
-  const std = quarter ? Math.min(nearT, Math.max(1, quarter.z * POLICY.FILL_ROOM)) : 1, tactical = stance === 'tactical' && !!fp1
+  /* viewer.characters-stand-out: the size look shows the board at 0.9× of that standard (V.look.boardZoom, 1 when it is off); the
+     tactical camera still never pulls back past the fill (zlo, below), so no white space shows at any edge */
+  const std = (quarter ? Math.min(nearT, Math.max(1, quarter.z * POLICY.FILL_ROOM)) : 1) * (V.look?.boardZoom ?? 1), tactical = stance === 'tactical' && !!fp1
   const zlo = tactical ? Math.max(zlo0, Math.min(fillZ, zhi)) : zlo0
   /* a turn keeps the zoom it turned with (the board's fill at a turn between the quarters is shown, not remembered), so
      turns come round to exactly the view they left */

@@ -5,6 +5,7 @@ import {paintedHeights,paintedToCSS,loadPaintedScene,paintedEnvironment,PAINTED_
 import {createCast} from './models.js'
 import {lens,orbitCamera} from './camera3d.js'
 import {subjectOf} from './subject.js'
+import {NO_LOOK} from './stand-out.js'
 // The units drawn as 3D models stand in the same scene (viewer.character-models, models.js): board px -> scene by the inverse of the scene's own map
 // Two scene sources behind one board: an Atlas layout (atlas.js) or a painted scene (painted.js, viewer.painted-board)
 /* viewer.true-3d-camera (2026-09-30; engine DECISIONS.md "a true 3D battle: an orbit camera, …, no flash of another
@@ -56,7 +57,7 @@ export function seeThrough(group,camera,aims,faded=new Map()){
  let changed=false
  for(const [o,solid] of faded)if(!now.has(o)){const glass=o.material;o.material=solid;for(const m of [].concat(glass))m.dispose();faded.delete(o);changed=true}
  for(const o of now)if(!faded.has(o)){const solid=o.material
-  const glass=[].concat(solid).map(m=>{const c=m.clone();c.transparent=true;c.opacity=Math.min(m.opacity??1,SEE_THROUGH);c.depthWrite=false;return c})
+  const glass=[].concat(solid).map(m=>{const c=m.clone();c.onBeforeCompile=m.onBeforeCompile;c.customProgramCacheKey=m.customProgramCacheKey;c.transparent=true;c.opacity=Math.min(m.opacity??1,SEE_THROUGH);c.depthWrite=false;return c})
   faded.set(o,solid);o.material=Array.isArray(solid)?glass:glass[0];changed=true}
  return changed
 }
@@ -103,12 +104,14 @@ export function createDriver(V,onFailure,platform={}){
   if(bodies.setClearColor)bodies.setClearColor(0x000000,0)}
  /* the board's map (viewer.js sets it; a driver handed a bare board makes it the same way) */
  const scene=new THREE.Scene(),affine=V.data.boardAffine||(V.data.boardAffine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F))
+ /* viewer.characters-stand-out: the looks the host named, as numbers (a bare V has none) */
+ const look=V.look||NO_LOOK
  let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,key=null
  const faded=new Map()
  const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
  const load=painted(V.data.atlas)?(platform.loadPainted||loadPaintedScene):(platform.loadAssembly||loadAtlasAssembly)
- const ready=load(V.data.atlas,{...platform,cancelled:()=>disposed}).then(result=>{
+ const ready=load(V.data.atlas,{...platform,tone:look.ground,cancelled:()=>disposed}).then(result=>{
   if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene,V.data.atlas):atlasEnvironment(scene,built)
   if(V.data.models)V.cast=(platform.createCast||createCast)(V,scene,affine.clone().invert(),{...(platform.models||{}),location:platform.location,onError:(look,error,detail)=>{const st=wrap.querySelector('#terrainStatus');if(st)st.textContent+=' · '+look.name+(detail?.appearance?' transformation unavailable: ':' is its token: ')+String(error?.message||error)}})
   if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true
@@ -140,7 +143,12 @@ export function createDriver(V,onFailure,platform={}){
    if(B){const h=B.standingHeight(),p=B.stage.position,to=camera.position.clone().sub(p).setY(0);if(to.lengthSq()>1e-9)to.normalize()
     key.position.set(p.x+to.x*h*.6,p.y+h*1.25,p.z+to.z*h*.6)}}
   if(dirty&&camera&&w>0&&h>0){
-   if(characters){characters.visible=false;renderer.render(scene,camera);characters.visible=true;drawBodies(bodies,scene,camera,characters)}
+   /* viewer.characters-stand-out, the shadows look: the sun's shadow is taken again every drawn frame (the bodies move), and
+      the bodies stay in the scene's own pass so that shadow holds them — drawn there under the board's marks exactly where
+      their own canvas draws them over the marks; the subject's key light is that canvas's alone, never the ground's */
+   if(look.shadows&&renderer.shadowMap)renderer.shadowMap.needsUpdate=true
+   if(characters){const lit=key&&key.visible;characters.visible=look.shadows;if(key&&look.shadows)key.visible=false
+    renderer.render(scene,camera);characters.visible=true;if(key&&look.shadows)key.visible=lit;drawBodies(bodies,scene,camera,characters)}
    else renderer.render(scene,camera)
    dirty=false}raf=requestAnimationFrame(frame)
  }catch(error){onFailure(error)}}
