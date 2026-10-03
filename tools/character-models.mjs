@@ -49,6 +49,13 @@
 // the Oathblade body's shield_blockleft (GUARD below), from the body's own clip set where it has one, else borrowed as its hit is.
 // Its hit reaction is unchanged. A shield holder with no such clip lists `guard` as missing, and --list names it.
 //
+// viewer.civilian-held-dagger (engine DECISIONS.md 2026-10-03 'the civilians hold their dagger as a weapon, not baked into a body
+// copy', Andrew: "We want to use a knife or a dagger the way they're supposed to be used.") puts a civilian's kit weapon in its
+// right hand as a separate model, the way a hero's kit is (HELD): the item drives the model. Each is held with the fit its own body's
+// owner made (CIVILIAN_FITS: civilian-study held-dagger.json, the study's per-body knife fit, never a hero body's numbers), and a
+// civilian holding the dagger stabs - the Knife attack's motion source, borrowed onto the unarmed body. A kit weapon with no fit on
+// that body is listed in the look's `unheld` (--list: UNMODELLED), never drawn on another body's fit.
+//
 //   node tools/character-models.mjs --json      print the pack (test/character-models.test.ts reads it)
 //   node tools/character-models.mjs --list      who stands in what, and what is listed (viewer.real-bodies)
 import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
@@ -176,7 +183,7 @@ export function bindings(units = JSON.parse(readFileSync(resolve(PKG, 'generated
     if (!units[typeId]) throw new Error(`${typeId}: the engine's sheet has no such civilian`)
     const identity = registry.typeIds[typeId]
     if (!identity) throw new Error(`${typeId}: ${REGISTRY} names no roster identity for it`)
-    all[typeId] = { looks: [identity], civilian: true, fill: CIVILIAN_FILL }
+    all[typeId] = { looks: [identity], civilian: true, fill: CIVILIAN_FILL, items: units[typeId].defaultItems || [] }
   }
   for (const [typeId, sheet] of Object.entries(units)) {
     if (!typeId.startsWith('hero.base.')) continue
@@ -231,7 +238,15 @@ export const HELD = {
   'item.greatsword': { tester: 'greatsword' }, 'item.war-axe': { tester: 'axe' }, 'item.halberd': { tester: 'halberd' },
   'item.fire-staff': { tester: 'magic-staff' }, 'item.frost-staff': { tester: 'magic-staff' },
   'item.obsidian-fang-dagger': { tester: 'dagger' }, 'item.daggers': { tester: 'dagger', pair: true },
+  /* viewer.civilian-held-dagger: "item.dagger is drawn with the shared dagger model (weapon tester dagger, as
+     item.obsidian-fang-dagger already is)" (engine DECISIONS.md 2026-10-03) */
+  'item.dagger': { tester: 'dagger' },
 }
+/* viewer.civilian-held-dagger: the per-body fits of a held model in a civilian's hand, at the bodies' owner (civilian-study
+   held_dagger.mjs writes it from each body's own knife fit), with the stab that body plays holding it */
+const CIVILIAN_FITS = ['assets/characters/oathblade-armor/rebuild/civilian-study/held-dagger.json']
+/* the engine's item classes a body holds in its hands (static.json itemClasses) */
+const HELD_CLASSES = ['weapon', 'shield']
 /* held items no fitted model exists for: listed on the look, never faked (the crossbow's model has no fit anywhere) */
 export const UNMODELLED = ['item.holy-texts', 'item.holy-symbol', 'item.throwing-knives', 'item.hand-crossbow']
 /* the held set a roster row's own equipment already is: such a look keeps the row's id */
@@ -307,9 +322,39 @@ function selected(name, body, catalog) {
     if (digest(path) !== chosen.sha256) throw new Error(`${path} is not the selected ${chosen.clip}`)
     ref = { path, sha256: chosen.sha256, clip: clipIn(path, chosen.clip) }
   }
+  return borrowedOnto(name, ref, body)
+}
+/** a performance borrowed onto a body: refused unless the body's rig has every bone it moves */
+function borrowedOnto(name, ref, body) {
   const bones = new Set((glbJSON(body).nodes || []).map(n => n.name)), lacks = movedBy(ref.path, ref.clip).filter(n => !bones.has(n))
   if (lacks.length) throw new Error(`${name} (${ref.clip}) moves ${lacks.length} bones ${body} lacks (${lacks.slice(0, 3).join(', ')})`)
   return { ...ref, borrowed: true }
+}
+/** viewer.civilian-held-dagger: a civilian's kit weapons in its hand, each on its own body's fit (CIVILIAN_FITS), and the stab that
+    fit's owner names for it; a kit weapon with no fit on this body is listed (`unheld`), never held on another body's numbers */
+function civilianHeld(typeId, identity, model, items, classes) {
+  const fits = CIVILIAN_FITS.map(path => ({ path, rec: JSON.parse(readFileSync(resolve(ROOT, path), 'utf8')) }))
+  const props = [], unheld = [], free = { R: true, L: true }
+  let attack = null
+  for (const item of items) {
+    if (!HELD_CLASSES.includes(classes[item])) continue
+    const found = fits.find(f => f.rec.model === (HELD[item]?.tester ?? HELD[item]?.demo) && f.rec.bodies?.[identity])
+    const fit = found?.rec.bodies[identity]
+    if (!fit || !free[fit.hand]) { unheld.push(item); continue }
+    if (fit.body.path !== model.path || fit.body.sha256 !== model.sha256) throw new Error(`${typeId}: ${found.path} fits its ${found.rec.model} to ${fit.body.path}, not the body it wears`)
+    if (digest(found.rec.weapon.path) !== found.rec.weapon.sha256) throw new Error(`${typeId}: ${found.rec.weapon.path} is not the ${found.rec.model} ${found.path} fitted`)
+    free[fit.hand] = false
+    props.push({ path: found.rec.weapon.path, sha256: found.rec.weapon.sha256, hand: fit.hand, item, model: found.rec.model, fit: 'body', record: found.path,
+      socket: fit.socket, dimensions: fit.dimensions, mesh: fit.mesh })
+    if (fit.stab && !attack) {
+      if (digest(fit.stab.path) !== fit.stab.sha256) throw new Error(`${typeId}: ${fit.stab.path} is not the stab ${found.path} names`)
+      attack = borrowedOnto('stab', { path: fit.stab.path, sha256: fit.stab.sha256, clip: clipIn(fit.stab.path, fit.stab.clip) }, model.path)
+      /* an animation-only file (no scene, so no rest transforms: production-lessons.json motion-source-equipment-family) rebases its
+         travel from the clip's first sample (src/models.js borrowClip) */
+      if (!glbJSON(fit.stab.path).scenes?.length) attack.from = 'first-sample'
+    }
+  }
+  return { props, unheld, attack }
 }
 
 /** viewer.real-bodies: a hero's own assembled body (WARDROBE above), or null — its file, the record that names the bytes, how far
@@ -469,6 +514,10 @@ export async function packCharacterModels() {
         if (!/^[0-9a-f]{64}$/.test(record.outputSHA256 || '') || digest(body) !== record.outputSHA256) throw new Error(`${typeId} ${id}: ${body} is not the painted body its record names`)
         look.model = { path: body, sha256: record.outputSHA256 }
         for (const [motion, clip] of Object.entries(CIVILIAN_CLIPS)) look.motions[motion] = { path: body, sha256: record.outputSHA256, clip: clipIn(body, clip) }
+        /* viewer.civilian-held-dagger: its kit's weapon in its hand, on its own body's fit; holding the dagger it stabs */
+        const { props, unheld, attack } = civilianHeld(typeId, id, look.model, bind.items, classes)
+        look.props = props; look.unheld = unheld
+        if (attack) look.motions.attack = attack
       } else if (approval) {
         /* the approval record owns the files and their hashes. A motion in its own file (the Zombies) names it; one
            embedded in the character (the humanoids) is in the variant's model. The body is the variant's model, else
@@ -549,7 +598,7 @@ if (main && process.argv.includes('--list')) {
   /* viewer.real-bodies: who stands in what — own body, placeholder (and what it lacks), listed */
   const pack = await packCharacterModels()
   for (const [typeId, { looks }] of Object.entries(pack)) for (const l of looks)
-    console.log(`${typeId.padEnd(32)} ${l.body?.own === false ? 'PLACEHOLDER ' + l.id : l.model.path}${l.body?.lacks ? '\n' + ' '.repeat(33) + 'lacks ' + l.body.lacks : ''}${l.missing.length ? '\n' + ' '.repeat(33) + 'motions missing: ' + l.missing.join(', ') : ''}`)
+    console.log(`${typeId.padEnd(32)} ${l.body?.own === false ? 'PLACEHOLDER ' + l.id : l.model.path}${l.body?.lacks ? '\n' + ' '.repeat(33) + 'lacks ' + l.body.lacks : ''}${l.missing.length ? '\n' + ' '.repeat(33) + 'motions missing: ' + l.missing.join(', ') : ''}${l.unheld?.length ? '\n' + ' '.repeat(33) + 'UNMODELLED ' + l.unheld.join(', ') : ''}`)
   for (const [typeId, why] of Object.entries(UNBODIED)) console.log(`${typeId.padEnd(32)} LISTED - ${why}`)
   /* viewer.shield-guard-motion: every body holding a shield with no raise-the-shield clip, by name (listed, not faked) */
   const lacking = Object.entries(pack).filter(([, { looks }]) => looks.some(l => l.missing.includes('guard'))).map(([t]) => t)

@@ -62,8 +62,13 @@ export function slimGLB(buffer, { meshes = false } = {}) {
    travel is carried over at the ratio of the two bodies' pivot heights. That is the civilian study's own transfer
    ("authored rotation/timing with fitted target rest translations", civilian-study motion-record.json), and why: a strike
    that kept its donor's translations "stretched child from about 1.025 ready height to 1.848" (civilian-study run.json) */
-export function borrowClip(clip, source, body, pivot) {
-  const from = source.getObjectByName(pivot)?.position, to = body.getObjectByName(pivot)?.position
+export function borrowClip(clip, source, body, pivot, { fromFirst = false } = {}) {
+  /* viewer.civilian-held-dagger: an animation-only file (no scene, no rest transforms - the purchased walk-assassinate) has no rest
+     pivot to rebase from; its travel is measured from the clip's own first sample, as the civilian study measured it ("authored
+     translation deltas measured from the source animation initial sample", civilian-study build_knife.py). The pack says which. */
+  const first = fromFirst ? clip.tracks.find(t => t.name === pivot + '.position') : null
+  if (fromFirst && !first) throw new Error(`borrowed ${clip.name}: no ${pivot} travel to rebase`)
+  const from = first ? new THREE.Vector3().fromArray(first.values, 0) : source?.getObjectByName(pivot)?.position, to = body.getObjectByName(pivot)?.position
   if (!from || !to || !(from.length() > 0)) throw new Error(`borrowed ${clip.name}: no ${pivot} to carry its travel`)
   const k = to.length() / from.length(), tracks = []
   for (const t of clip.tracks) {
@@ -110,7 +115,7 @@ export async function loadLook(look, platform = {}) {
     const g = ref.path === look.model.path ? model : await gltfOf(ref, 'motion')
     const clip = g.animations.find(c => c.name === ref.clip)
     if (!clip) throw new Error(`character model ${ref.path} has no animation '${ref.clip}'`)
-    return [motion, ref.borrowed ? borrowClip(clip, g.scene, model.scene, look.pivot) : clip]
+    return [motion, ref.borrowed ? borrowClip(clip, g.scene, model.scene, look.pivot, { fromFirst: ref.from === 'first-sample' }) : clip]
   }))
   const props = await Promise.all((look.props || []).map(async p => ({ ...p, scene: (await gltfOf(p, 'model')).scene })))
   if (cancelled()) throw new Error('character model load cancelled')
@@ -123,7 +128,10 @@ export async function loadLook(look, platform = {}) {
      turn about the hand; square (the shield) — square to the hand at the motion it was fitted on, at its offset: the battle
      demo's own fits (oathblade-armor/rebuild/purchased-stage-equipment.js)
      tester — the weapon tester's palm-centred socket, flipped to the palm, the weapon's long axis on the socket's, at its
-     stored grip, scale and roll (weapon-card-models/tester/equipment.js select, adjust) */
+     stored grip, scale and roll (weapon-card-models/tester/equipment.js select, adjust)
+     body — viewer.civilian-held-dagger: the fit the body's own owner made for this model in this hand (civilian-study
+     held-dagger.json): its socket on the hand, its dimensions, the model's mesh node set as that fit sets it — as recorded,
+     nothing measured here */
 function fitProp(root, p, clips, pose, reference, i) {
   const bone = n => root.getObjectByName('CC_Base_' + p.hand + '_' + n)
   const hand = bone('Hand'), mid = bone('Mid1'), ring = bone('Ring1'), fore = bone('Forearm')
@@ -137,6 +145,13 @@ function fitProp(root, p, clips, pose, reference, i) {
   if (!source) throw new Error(`${p.path} has no ${p.node} to hold`)
   const held = source.clone(true); held.traverse(o => { if (o.isMesh) { o.castShadow = false; o.frustumCulled = false } })
   if (p.fit === 'turned') { socket.rotation.z = Math.PI / 2; socket.add(held); return }
+  if (p.fit === 'body') {
+    const set = (o, t) => { o.position.fromArray(t.translation); o.quaternion.fromArray(t.rotation); o.scale.fromArray(t.scale) }
+    const mesh = held.getObjectByName(p.mesh.node)
+    if (!mesh) throw new Error(`${p.path} has no ${p.mesh.node} for its fit (${p.record})`)
+    set(socket, p.socket); set(mesh, p.mesh)
+    const dimensions = new THREE.Group(); set(dimensions, p.dimensions); dimensions.add(held); socket.add(dimensions); return
+  }
   if (p.fit === 'square') {
     const clip = clips[p.calibrate.motion]; pose(clip, clip.duration * p.calibrate.at)
     socket.quaternion.copy(hand.getWorldQuaternion(new THREE.Quaternion()).invert())

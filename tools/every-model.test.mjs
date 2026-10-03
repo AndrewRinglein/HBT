@@ -47,11 +47,16 @@ test('battles 1-3: every hero, enemy and civilian is a model; each idles, walks 
   assert.deepEqual([motion('unit.skeletal-archer', 'ranged').borrowed, motion('unit.skeletal-archer', 'attack').clip, motion('unit.skeletal-archer', 'hit').clip], [true, 'Sword_Regular_Combo', 'Hit_Head'])
   assert.deepEqual([motion('unit.soldier', 'attack').clip, motion('unit.soldier', 'hit').clip], ['Sword_Regular_Combo', 'Hit_Head'])
   assert.deepEqual([motion('unit.imp', 'hit').clip, motion('unit.fire-imp', 'hit').clip], ['getHit', 'getHit'])
-  for (const t of CIVILIANS) assert.equal(motion(t, 'attack').clip, 'Melee_Hook', `${t} punches`)
+  /* Law 10 (viewer.civilian-held-dagger, 2026-10-03): was every civilian punches. Engine DECISIONS.md 2026-10-03 'the civilians
+     hold their dagger as a weapon': "A civilian with a dagger stabs when it attacks." - the Orphan Child and the School Teacher,
+     whose bodies have a dagger fit, stab (the Knife attack's motion source, tools/civilian-held-dagger.test.mjs); the rest punch */
+  const STAB = { 'hero.fixed.orphans': 'Purchased walk-assassinate', 'hero.fixed.school-teacher': 'Purchased walk-assassinate' }
+  for (const t of CIVILIANS) assert.equal(motion(t, 'attack').clip, STAB[t] ?? 'Melee_Hook', `${t} ${STAB[t] ? 'stabs' : 'punches'}`)
   /* the selections' own hashes are the borrowed files' */
   const sel = JSON.parse(readFileSync('../assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json', 'utf8')).clips
   const sel2 = JSON.parse(readFileSync('../assets/characters/oathblade-armor/rebuild/free-motion-study/battle-actions/selections.json', 'utf8')).clips
-  assert.deepEqual([motion('unit.soldier', 'attack').sha256, motion('unit.soldier', 'hit').sha256, motion('hero.fixed.orphans', 'attack').sha256], [sel.combo.sha256, sel2.headhit.sha256, sel.hook.sha256])
+  /* Law 10 (viewer.civilian-held-dagger, 2026-10-03): the punching civilian checked is the Lumberjack (was the Orphan Child, who now stabs) */
+  assert.deepEqual([motion('unit.soldier', 'attack').sha256, motion('unit.soldier', 'hit').sha256, motion('hero.fixed.lumberjack-and-wife', 'attack').sha256], [sel.combo.sha256, sel2.headhit.sha256, sel.hook.sha256])
 })
 
 test('each civilian wears its own roster body, the bytes its paint record names, at its standee\'s stature', () => {
