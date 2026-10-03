@@ -428,7 +428,9 @@
   "needs": [
    "rule.afflictions-at-zero-refiled-2"
   ],
-  "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4)."
+  "note": "Andrew 2026-10-01: last in the order (DECISIONS.md 'the order', item 4).",
+  "status": "done-needs-review",
+  "sha": "356ef95"
  },
  {
   "id": "viewer.live-stat-mods",
