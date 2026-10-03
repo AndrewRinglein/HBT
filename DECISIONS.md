@@ -4264,3 +4264,35 @@ Ruled:
 
 - **A hero that has not acted yet is switched away from freely** — no pop-up; the pop-up of `viewer.switch-hero-asks` is for a hero that has begun and still has its primary action. As the item was filed.
 - **The hex tooltip describes the ground only** — never who stands on it. As `viewer.hex-tooltip` was filed.
+
+## 2026-10-03 — the post's twelve questions answered: enemy and hero motions, the special moves' looks, enemies of one type move together
+
+Andrew, in the kingdom chat, answering the twelve questions put to the post above. Each question as asked, then his words.
+
+1. "Is the rule for sorting enemies simply that an enemy holding weapons moves like a human and uses the hero motions, and every other enemy (zombies included) is a monster with its own short list?" — “One, yes.”
+2. "Is a monster's full list: standing, moving, one melee attack, getting hit and dying, plus a ranged attack, up to two power or spell motions, and flight only where that monster has them?" — “Monster full list. I guess there's also dodging and blocking sometimes, but we may not have those. It's a lot harder to animate the monsters.”
+3. "…should a named attack (say Chop) always play its own swing, or pick at random from several swings assigned to it?" — “So, chop has its own swing, but I think some of those swings will have more than one choice, so it'll be random. In a lot of cases, I think, there'll just be one, but sometimes we'll be able to assign more than one because there's more than one option. It can just be random among the more than one option.”
+4. "When one attack strikes twice, do you want two different swings played one after the other, instead of one swing with a "2" shown?" — “For yes, when an attack strikes twice, we want two different swings. Ideally, if there are two different swings, it's two different ones out of the choices, but there could easily be a hound attack that only has one attack and it attacks twice, so we have to just repeat it.”
+5. "Is this the full list of "what they're holding" sets that each get their own stance and walk: weapon and shield, one-handed weapon alone, two-handed swinging weapon, staff, bow, two daggers, and empty hands?" — “In five, I think a spear is actually different than those, so I think add spear to that.  And I think we'll have a pole arm that has the same standing and walking, even though the swings are different, so pole arm and spear are the same.  There is also a wand or a holy item. I think that stance is not the same as the one-handed weapon alone.”
+6. "With a shield, do you want two separate reactions: one where the shield blocks the blow, and a different one where the blow lands anyway?" — “6, yes.”
+7. "Should a hero with Airwalk float for everything (standing, moving, attacking, casting, getting hit), not only when casting with a staff?" — “7. Yes, basically, a hero with air walk is floating all of the time.”
+8. "Does "every type of hero needs flight" mean every hero body gets the three flight motions (launch, fly, land) now, even for heroes with no flight power today?" — “Yes, every type of hero needs flight because they can gain flight. There are magic items that give flight, and there are powers that give flight.”
+9. "Are forward Roll, Side Flip and Back Flip new moves to add to the game's rules, or new looks for the four moves that exist…?" — “I think side flip is going to be side step. We already have a roll, like a roll sideways. We're going to use the roll for that, but you have to turn and then roll. I think we're going to add another movement power tied to backflip, just because it looks cool and it'll be another special move that people can unlock.” and, at the end: “Forward roll. We're going to use the forward roll as the side roll. Side flip is side step. We still need something for leap. I don't think we have one, and then we still need charging run.   Although charging run, we can just use a run.”
+10. "For moving together, do zombies and fast zombies count as one group or two?" — “Zombies and fast zombies would count as two groups.”
+11. "Is it fine for a zombie to be shown moving before an earlier zombie's attack plays, even though by the rules that attack came first?" — “11. Yeah, it's fine for it to be like, "All the zombies move, and then attacks play."”
+12. "When a hero gets a free attack on one moving zombie, should the whole group freeze while it plays, or only that zombie?" — “12. I think a free attack stops all action and just plays out, so the whole group freezes.”
+
+Ruled:
+
+- **Enemies sort in two: one that holds weapons moves like a human and uses the hero motions; every other enemy, the zombie included, is a monster with a short list.**
+- **A monster's list:** standing, moving, one melee attack, getting hit, dying; a ranged attack, up to two power or spell motions and flight only where it has them. Dodging and blocking are wanted "sometimes" and may not exist: read as optional, not listed as missing.
+- **An attack has its own swing, and may be assigned more than one; the screen picks at random among them.** This completes 'a weapon's attacks carry their motions' above. An attack that strikes twice plays two different swings where it has two, and repeats its one swing where it has one (a hound). Read as: the pick is the screen's, never the engine's dice — the battle is unchanged.
+- **The held sets, each with its own stance and walk:** weapon and shield · one-handed weapon alone · two-handed swinging weapon · spear or polearm (one stance and walk, different swings) · staff · wand or holy item · bow · two daggers · empty hands.
+- **A shield has two reactions:** the shield blocks the blow; the blow lands anyway.
+- **A hero with Airwalk floats all of the time** — standing, moving, attacking, casting, getting hit. Widens ART-NOTES 2026-10-02 'Airwalk staff casting'.
+- **Every hero body gets flight — launch, fly, land** — because any hero can gain flight from an item or a power.
+- **The special moves' looks:** Side Roll plays the forward roll, the hero turning to the side first; Sidestep plays the side flip; Charging Run plays a run; Leap has no motion yet and needs one. No forward Roll or Side Flip power is added.
+- **Back Flip is a new movement power**, tied to the back flip, a special move a hero unlocks. Its rules (reach, cost, who unlocks it, what "behind" means — the engine holds no facing) are not ruled yet.
+- **In the Enemy Phase the enemies of one unit type are shown moving at the same time, then that type's attacks play, then the next type.** Zombies and fast zombies are two groups. A free attack on a moving enemy freezes the whole group while it plays. Display only: the engine decides every activation in its own order and the result is exactly the same.
+
+No item is filed from this entry yet: a second round of questions is out.
