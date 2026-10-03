@@ -56,6 +56,13 @@
 // civilian holding the dagger stabs - the Knife attack's motion source, borrowed onto the unarmed body. A kit weapon with no fit on
 // that body is listed in the look's `unheld` (--list: UNMODELLED), never drawn on another body's fit.
 //
+// viewer.civilian-dagger-grip-punch (engine DECISIONS.md 2026-10-03 'a held weapon is gripped: the hand closes round it, for every
+// body' and 'the civilians' dagger attack: the Hook punch for now; a hand-keyed standing stab is made for review', Andrew: "Sure, we
+// can use that for now.") closes each civilian's hand round its dagger - the fit names the grasp its body's owner fitted afresh on
+// the unarmed body (civilian-study held-dagger-grasp.json: finger bind, right-hand weights, curl; src/models.js graspBody), carried
+// on the prop - and a civilian holding the dagger attacks with the selected Hook punch (CIVILIAN_FILL), dagger in hand: the
+// walk-assassinate stab is no longer played (viewer SWITCHES civilianStab, civilianGrasp overturned).
+//
 //   node tools/character-models.mjs --json      print the pack (test/character-models.test.ts reads it)
 //   node tools/character-models.mjs --list      who stands in what, and what is listed (viewer.real-bodies)
 import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
@@ -330,12 +337,13 @@ function borrowedOnto(name, ref, body) {
   if (lacks.length) throw new Error(`${name} (${ref.clip}) moves ${lacks.length} bones ${body} lacks (${lacks.slice(0, 3).join(', ')})`)
   return { ...ref, borrowed: true }
 }
-/** viewer.civilian-held-dagger: a civilian's kit weapons in its hand, each on its own body's fit (CIVILIAN_FITS), and the stab that
-    fit's owner names for it; a kit weapon with no fit on this body is listed (`unheld`), never held on another body's numbers */
+/** viewer.civilian-held-dagger: a civilian's kit weapons in its hand, each on its own body's fit (CIVILIAN_FITS), with the grasp that
+    fit's owner names for it (viewer.civilian-dagger-grip-punch); a kit weapon with no fit on this body is listed (`unheld`), never
+    held on another body's numbers. Its attack is the civilians' fill, the Hook punch (engine DECISIONS.md 2026-10-03 'the civilians'
+    dagger attack: the Hook punch for now') */
 function civilianHeld(typeId, identity, model, items, classes) {
   const fits = CIVILIAN_FITS.map(path => ({ path, rec: JSON.parse(readFileSync(resolve(ROOT, path), 'utf8')) }))
   const props = [], unheld = [], free = { R: true, L: true }
-  let attack = null
   for (const item of items) {
     if (!HELD_CLASSES.includes(classes[item])) continue
     const found = fits.find(f => f.rec.model === (HELD[item]?.tester ?? HELD[item]?.demo) && f.rec.bodies?.[identity])
@@ -345,16 +353,18 @@ function civilianHeld(typeId, identity, model, items, classes) {
     if (digest(found.rec.weapon.path) !== found.rec.weapon.sha256) throw new Error(`${typeId}: ${found.rec.weapon.path} is not the ${found.rec.model} ${found.path} fitted`)
     free[fit.hand] = false
     props.push({ path: found.rec.weapon.path, sha256: found.rec.weapon.sha256, hand: fit.hand, item, model: found.rec.model, fit: 'body', record: found.path,
-      socket: fit.socket, dimensions: fit.dimensions, mesh: fit.mesh })
-    if (fit.stab && !attack) {
-      if (digest(fit.stab.path) !== fit.stab.sha256) throw new Error(`${typeId}: ${fit.stab.path} is not the stab ${found.path} names`)
-      attack = borrowedOnto('stab', { path: fit.stab.path, sha256: fit.stab.sha256, clip: clipIn(fit.stab.path, fit.stab.clip) }, model.path)
-      /* an animation-only file (no scene, so no rest transforms: production-lessons.json motion-source-equipment-family) rebases its
-         travel from the clip's first sample (src/models.js borrowClip) */
-      if (!glbJSON(fit.stab.path).scenes?.length) attack.from = 'first-sample'
-    }
+      socket: fit.socket, dimensions: fit.dimensions, mesh: fit.mesh, ...(fit.grasp ? { grasp: graspOf(typeId, identity, model, fit.grasp, found) } : {}) })
   }
-  return { props, unheld, attack }
+  return { props, unheld }
+}
+/** viewer.civilian-dagger-grip-punch: the grasp a fit names - its record's bytes checked, fitted on this body and this model */
+function graspOf(typeId, identity, model, ref, found) {
+  if (digest(ref.record) !== ref.sha256) throw new Error(`${typeId}: ${ref.record} is not the grasp ${found.path} names`)
+  const rec = JSON.parse(readFileSync(resolve(ROOT, ref.record), 'utf8')), g = rec.bodies?.[identity]
+  if (!g) throw new Error(`${typeId}: ${ref.record} has no grasp for ${identity}`)
+  if (rec.model !== found.rec.model || rec.weapon?.sha256 !== found.rec.weapon.sha256) throw new Error(`${typeId}: ${ref.record} grasps another model than ${found.path} holds`)
+  if (g.body.path !== model.path || g.body.sha256 !== model.sha256) throw new Error(`${typeId}: ${ref.record} fits its grasp to ${g.body.path}, not the body it wears`)
+  return { record: ref.record, sha256: ref.sha256, mesh: g.mesh, bind: g.bind, weights: g.weights, curl: g.grasp }
 }
 
 /** viewer.real-bodies: a hero's own assembled body (WARDROBE above), or null — its file, the record that names the bytes, how far
@@ -514,10 +524,10 @@ export async function packCharacterModels() {
         if (!/^[0-9a-f]{64}$/.test(record.outputSHA256 || '') || digest(body) !== record.outputSHA256) throw new Error(`${typeId} ${id}: ${body} is not the painted body its record names`)
         look.model = { path: body, sha256: record.outputSHA256 }
         for (const [motion, clip] of Object.entries(CIVILIAN_CLIPS)) look.motions[motion] = { path: body, sha256: record.outputSHA256, clip: clipIn(body, clip) }
-        /* viewer.civilian-held-dagger: its kit's weapon in its hand, on its own body's fit; holding the dagger it stabs */
-        const { props, unheld, attack } = civilianHeld(typeId, id, look.model, bind.items, classes)
+        /* viewer.civilian-held-dagger: its kit's weapon in its hand, on its own body's fit, gripped (viewer.civilian-dagger-grip-punch);
+           its attack is the civilians' fill, the Hook punch, dagger in hand */
+        const { props, unheld } = civilianHeld(typeId, id, look.model, bind.items, classes)
         look.props = props; look.unheld = unheld
-        if (attack) look.motions.attack = attack
       } else if (approval) {
         /* the approval record owns the files and their hashes. A motion in its own file (the Zombies) names it; one
            embedded in the character (the humanoids) is in the variant's model. The body is the variant's model, else

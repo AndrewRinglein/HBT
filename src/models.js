@@ -119,7 +119,23 @@ export async function loadLook(look, platform = {}) {
   }))
   const props = await Promise.all((look.props || []).map(async p => ({ ...p, scene: (await gltfOf(p, 'model')).scene })))
   if (cancelled()) throw new Error('character model load cancelled')
+  for (const p of look.props || []) if (p.grasp) graspBody(model.scene, p.grasp)
   return { look, scene: model.scene, clips: Object.fromEntries(entries), props }
+}
+
+/* viewer.civilian-dagger-grip-punch (engine DECISIONS.md 2026-10-03 'a held weapon is gripped: the hand closes round it, for every
+   body', Andrew: "We need to close the hands over the plate for everything, don't we?"): a held model's grasp, as its body's owner
+   fitted it on the unarmed body (civilian-study held-dagger-grasp.json, grasp_dagger.mjs) - the finger bones' bind translations and
+   inverse binds, and the changed vertices' joints and weights, applied once to the loaded body before it is cloned (its clones
+   share the skin and the inverse binds); the curl is held on the fingers each frame (createBody). As recorded, nothing measured. */
+function graspBody(scene, grasp) {
+  let mesh = null; scene.traverse(o => { if (o.isSkinnedMesh && o.name === grasp.mesh) mesh = o })
+  if (!mesh) throw new Error(`${grasp.record}: the body has no skinned mesh ${grasp.mesh}`)
+  const bones = mesh.skeleton.bones, index = n => { const i = bones.findIndex(b => b.name === n); if (i < 0) throw new Error(`${grasp.record}: the rig has no ${n}`); return i }
+  for (const [name, b] of Object.entries(grasp.bind)) { const i = index(name); bones[i].position.fromArray(b.translation); mesh.skeleton.boneInverses[i].fromArray(b.inverseBind) }
+  const si = mesh.geometry.attributes.skinIndex, sw = mesh.geometry.attributes.skinWeight, joints = grasp.weights.joints.map(index)
+  grasp.weights.vertices.forEach((v, n) => { for (let k = 0; k < 4; k++) { si.setComponent(v, k, joints[grasp.weights.index[n][k]]); sw.setComponent(v, k, grasp.weights.weight[n][k]) } })
+  si.needsUpdate = sw.needsUpdate = true
 }
 
 /* a held prop: at the grip between the middle and ring fingers, in the hand it is held in, each fit as its owner fits it
@@ -239,8 +255,16 @@ export function createBody(loaded, appearanceOptions = {}) {
     }
   })
   const mixer = new THREE.AnimationMixer(root)
+  /* viewer.civilian-dagger-grip-punch: the fingers of a hand holding a model with a grasp keep its curl over every motion (each
+     clip's own finger channels give way to it), at the bind its owner fitted (graspBody) */
+  const gripped = (loaded.props || []).filter(p => p.grasp).flatMap(p => Object.entries(p.grasp.bind).map(([name, b]) => {
+    const bone = root.getObjectByName(name); if (!bone) throw new Error(`${look.name}: its rig has no ${name} to grip with`)
+    const curl = p.grasp.curl[name]
+    return { bone, at: new THREE.Vector3().fromArray(b.translation), turn: curl ? new THREE.Quaternion().fromArray(curl) : null }
+  }))
+  const grip = () => { for (const g of gripped) { g.bone.position.copy(g.at); if (g.turn) g.bone.quaternion.copy(g.turn) } }
   const reference = clips.idle || clips.attack || Object.values(clips)[0]
-  const pose = (clip, time = 0) => { mixer.stopAllAction(); const a = mixer.clipAction(clip); a.reset().play(); a.time = time; mixer.update(0); root.updateMatrixWorld(true) }
+  const pose = (clip, time = 0) => { mixer.stopAllAction(); const a = mixer.clipAction(clip); a.reset().play(); a.time = time; mixer.update(0); grip(); root.updateMatrixWorld(true) }
   for (const [i, p] of (loaded.props || []).entries()) fitProp(root, p, clips, pose, reference, i)
   pose(reference)
   let pivot = root.getObjectByName(look.pivot)
@@ -304,7 +328,7 @@ export function createBody(loaded, appearanceOptions = {}) {
       next.play()
       if (snap && !LOOPS.has(key)) next.time = next.getClip().duration
       motion = key; once = !LOOPS.has(key) && key !== 'death'
-      if (snap) { layer?.before(); mixer.update(0); layer?.after(appearanceTime, body.life === 'standing') }
+      if (snap) { layer?.before(); mixer.update(0); grip(); layer?.after(appearanceTime, body.life === 'standing') }
       return true
     },
     /** metres of ground a travelling motion covers per second of its clip (null: unmeasured, it plays at its own pace) */
@@ -323,7 +347,7 @@ export function createBody(loaded, appearanceOptions = {}) {
     lunge: () => lungeT < LUNGE ? Math.sin(Math.PI * lungeT / LUNGE) : 0,
     lying: () => motion === 'death' && !!actions.death && actions.death.time >= actions.death.getClip().duration - 1e-4,
     frame(dt) {
-      layer?.before(); mixer.update(dt); appearanceTime += dt; layer?.after(appearanceTime, body.life === 'standing'); centre()
+      layer?.before(); mixer.update(dt); grip(); appearanceTime += dt; layer?.after(appearanceTime, body.life === 'standing'); centre()
       recoilT += dt; lungeT += dt
       lean.rotation.x = -.22 * body.recoil() + .18 * body.lunge()
       stage.rotation.y = body.yaw

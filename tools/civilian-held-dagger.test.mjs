@@ -40,9 +40,12 @@ test('the pack: the Orphan Child and the School Teacher hold their kit\'s dagger
     assert.deepEqual([p.socket, p.dimensions, p.mesh], [fit.socket, fit.dimensions, fit.mesh])
     assert.deepEqual(fit.body, look.model, `${t}: the fit is the body it wears, unarmed`)
     assert.deepEqual(look.unheld, [])
-    /* the stab: the Knife attack's motion source, borrowed onto the unarmed body - not the body copy's baked clip */
+    /* Law 10 (viewer.civilian-dagger-grip-punch, 2026-10-03): was the stab, the Knife attack's motion source (walk-assassinate)
+       borrowed onto the unarmed body. Engine DECISIONS.md 2026-10-03 'the civilians' dagger attack: the Hook punch for now': "a
+       civilian holding a dagger attacks with the selected Hook punch, dagger in hand. The walk-assassinate clip is not played" - the
+       attack is the borrowed Hook punch (checked in full by tools/civilian-dagger-grip-punch.test.mjs) */
     const a = look.motions.attack
-    assert.deepEqual({ path: a.path, sha256: a.sha256, clip: a.clip, borrowed: a.borrowed }, { ...fit.stab, borrowed: true })
+    assert.deepEqual({ clip: a.clip, borrowed: a.borrowed }, { clip: 'Melee_Hook', borrowed: true })
     assert.equal(sha(a.path), a.sha256)
     assert.notEqual(a.path, look.model.path)
   }
@@ -99,7 +102,8 @@ test('each dagger hangs from the right hand as its fit sets it, and stays in the
         B.frame(k ? len / 12 : 0); inHand(B, socket, `${look.id} ${motion} @${k}`)
         tips.push(socket.getWorldPosition(V3()).applyMatrix4(new THREE.Matrix4().copy(B.stage.matrixWorld).invert()))
       }
-      /* the stab drives the dagger: the hand holding it travels through the strike */
+      /* the attack drives the dagger: the hand holding it travels through the strike (Law 10, viewer.civilian-dagger-grip-punch:
+         was the stab; the Hook punch since engine DECISIONS.md 2026-10-03 'the civilians' dagger attack: the Hook punch for now') */
       if (motion === 'attack') {
         const reach = Math.max(...tips.map(p => tips.reduce((m, q) => Math.max(m, p.distanceTo(q)), 0)))
         assert.ok(reach > .1 * look.height, `${look.id}: the stab moves the dagger ${reach.toFixed(3)} m`)
@@ -164,7 +168,9 @@ test('the page names no knife-v1 file; on the Orphanage both hold the dagger sta
   v.step(); B.play = own
   assert.ok(told.includes('attack'), `the page told the Orphan Child to strike (${told})`)
   assert.equal(B.motion, 'attack')
-  assert.deepEqual({ path: B.look.motions.attack.path, clip: B.look.motions.attack.clip }, { path: REC.bodies['orphan-child'].stab.path, clip: REC.bodies['orphan-child'].stab.clip }, 'its attack is the stab')
+  /* Law 10 (viewer.civilian-dagger-grip-punch, 2026-10-03): was the stab (walk-assassinate); the Hook punch since engine DECISIONS.md
+     2026-10-03 'the civilians' dagger attack: the Hook punch for now' */
+  assert.equal(B.look.motions.attack.clip, 'Melee_Hook', 'its attack is the Hook punch, dagger in hand')
   const socket = dagger(B), len = B.clipLength('attack')
   for (let k = 0; k < 8 && B.motion === 'attack'; k++) { cast.frame(len / 9); inHand(B, socket, `the Orphan Child's stab ${k}/8`) }
   cast.dispose(); w.__battleView.harness.dispose()
