@@ -4123,3 +4123,24 @@ Ruled:
 - **An enemy that goes down has no card above the battle any more; a dead hero the same.** Today the card stays, greyed, with a ✝ (viewer `src/rail.js`, the `gone` chip) — this overturns that.
 - **A downed hero keeps their card, with a little first-aid symbol in its upper right-hand corner.**
 - **Open: the message ended at “If they're bleeding out”.** What a bleeding-out hero's card shows is not ruled; asked in the same chat. No item is filed until it is answered, so the item's text is whole.
+
+## 2026-10-03 — card art for every weapon at tiers 0 and 1, then a model from each card; tier 0 plain, tier 1 normal with details
+
+Andrew, in a new chat at the root:
+
+> We need to create card art, whether it be for a simple item like a dagger or a more complicated magical item. We need card art for every weapon.  Type at the very least. […] we don't need all magical versions of all things, but we do need card art and then a model for every weapon type that we have […] First, we should create card art. That's a reference piece of material that is used when the item is selected and shown, and then we create a model out of that. Now, the tier 0 items should look fairly plain.   Tier 1 items should look normal but still have interesting details.
+
+The weapons he named: wood axe, war axe, two-handed axe, giant axe, scythe, sickle, pair of daggers.
+
+Asked four things — (1) every tier 0 and tier 1 weapon in the game plus the dictated ones that are missing, or one card per weapon family; (2) whether the 17 existing weapon cards stay; (3) whether the images are made through fal.ai from the chat or by Codex as last time; (4) whether Wood Axe and Sickle are tier 0 and Two-Handed Axe, Giant Axe and Scythe tier 1:
+
+“You can leave the ones that are already there, but we should do all the rest of the ones mentioned in one.   Guess 3. Let's do it in Codex.   4, that's correct.”
+
+Ruled:
+
+- **Every weapon at tier 0 and tier 1 gets card art, and then a model made from that card.** The card is the reference shown when the item is selected. Not every magical version needs its own.
+- **Tier 0 looks fairly plain. Tier 1 looks normal but still has interesting details.**
+- **The 17 existing weapon cards stay as they are**; only the weapons without one are drawn.
+- **Codex draws the cards**, as it drew the first 17.
+- **Wood Axe and Sickle are tier 0; Two-Handed Axe (the Great Axe), Giant Axe and Scythe are tier 1.** They are still not rows (V2-SHIELDS-AND-WEAPONS-2026-09-20.md, sixth pass); this settles only their tier.
+- Where it lives: `assets/characters/oathblade-armor/rebuild/candidates/weapon-card-references/prompts-v2.json` — 50 cards, with the choices made without asking listed in its `defaults` (one wood-axe card for `item.hand-axe` and the dictated Wood Axe; a paired weapon drawn once; no card for natural weapons; dictated weapons with no tier yet left out).
