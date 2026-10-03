@@ -4111,3 +4111,15 @@ Andrew, minutes later, before any of it was built:
 “Actually, let's change this to 30% bigger characters, 10% smaller hexes.”
 
 - **Corrected: characters 30% larger, hexes 10% smaller.** The standard view shows the board at 0.9×, and a body stands 1.3× its present on-screen height (about 1.44× against its hex). This replaces the 1.1× above wherever it is read — including the text of `viewer.characters-stand-out`, filed with the first number (no tool edits a filed item's spec; this entry is the newer and wins, DISPLAY-RULES rule 22).
+
+## 2026-10-03 — the cards above the battle: the fallen leave, a downed hero's card wears a first-aid mark
+
+Andrew, in the viewer chat while `viewer.characters-stand-out` was being built:
+
+“When an enemy goes down, they should no longer have their card above the battle. When a hero is dead, it's the same. When a hero is downed, their card on the battlefield should have a little first aid symbol in the upper right-hand corner.  If they're bleeding out”
+
+Ruled:
+
+- **An enemy that goes down has no card above the battle any more; a dead hero the same.** Today the card stays, greyed, with a ✝ (viewer `src/rail.js`, the `gone` chip) — this overturns that.
+- **A downed hero keeps their card, with a little first-aid symbol in its upper right-hand corner.**
+- **Open: the message ended at “If they're bleeding out”.** What a bleeding-out hero's card shows is not ruled; asked in the same chat. No item is filed until it is answered, so the item's text is whole.
