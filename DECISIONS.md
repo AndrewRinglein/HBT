@@ -4323,3 +4323,13 @@ Ruled:
 - **Back Flip has a cooldown of 4.** With 'Back Flip's rules' above: 1 hex into any adjacent hex, provokes nothing, ignores terrain cost, +20 Dodge until the end of the next Activation, 1 Stamina, cooldown 4.
 - **Back Flip is introduced in class powers.** Read as: a hero gets it as a class power, the way Sidestep, Side Roll and Leap are; which class or classes is not named yet, so `movement.back-flip` puts it in the pack granted to no class, and the class is his to name when the class powers are set.
 - **The art needs are items in the art queue.** Filed, in this order: `art.hero-flight-motions`, `art.held-set-stances`, `art.leap-motion`, `art.monster-motion-lists` — the four asked about — and the rest of ART-NOTES.md 2026-10-03 'The motion coverage, ruled': `art.one-handed-swing-variety`, `art.airwalk-floating-motions`, `art.hit-reaction-not-block`. The 'defaults taken' line above (the art queue left empty) is replaced by this.
+
+## 2026-10-03 — Back Flip is a general Rogue and Ranger class power
+
+Andrew, in the kingdom chat, asked "Which class or classes get Back Flip?":
+
+“Make it a general rogue and ranger class power.”
+
+Ruled:
+
+- **Back Flip is a general class power of the Rogue and the Ranger.** Read as: it is in each of those two classes' general pool — the pool a power grant draws its third offer from (content `levels.rules.draft`: "Each power grant offers three: two from the specialty, one from the general pool") — so a Rogue or Ranger unlocks it at a power grant, whatever its specialty; it is not a starting bonus move as Side Roll is (`class.rogue.bonusMove`). The same two classes Side Roll belongs to. This settles 'who unlocks it' in the two Back Flip entries above. `movement.back-flip` carries it.
