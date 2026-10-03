@@ -4375,3 +4375,20 @@ Ruled:
 - The builder's order, not ruled: the three maps (`viewer.opening-scenes-four-to-six`), then the five missing enemies, the six unheld kit items, the four warrior bodies and the sixteen heads, then the motions (the seven art items already queued).
 - Filed, art queue: `art.opening-enemy-models`, `art.kit-items-held`, `art.warrior-bodies`, `art.hero-own-heads`.
 - Asked of him the same day, not yet answered: whether work not yet approved by eye may be shown in the battle screen marked as such; whether a body already owned may carry a new look for the Zombie Hound and the Powerful Imp; a spending limit for generated bodies; whether the eleven motions with no source are built or bought; whether the Gates' scene may be cut from the town model.
+
+## 2026-10-03 — the opening run, audited: the first hero is chosen from three by description; the player chooses who deploys; idols and bloodrunes equip free; no class powers; a dead party is offered a replay
+
+Andrew, in the kingdom chat: "we need to rig up a playable game that plays through all six initial battles and does all of the right steps ... All of the things that were defined for the first six battles ... all stitched together ... Level up. Rewards. Hero selection. Item equipping. All the battles." / "Check to see what is not done. Make a list of what needs to be done." The run (`kingdom.opening-run-six`, http://127.0.0.1:4230/play) was audited against every opening ruling; eleven gaps were listed, six of them with no item. The questions as asked: (1) "Your 2026-09-28 ruling says the first hero is given with no pick, but the run offers three to pick from; which do you want?"; (2) "Should the draft pool grow to six classes now, which reverses yesterday's "leave this alone for now"?"; (3) "Should the player choose which four heroes go into each battle?"; (4) "Should idols and bloodrunes be free to equip during the opening, or be left out of the opening's rewards?"; (5) "Should level-ups during the six battles grant class powers?"; (6) "When the whole party is dead, should the run end and offer a new one?"
+
+“the first hero is chosen from 3, but no stats or badges shown, just a description.   2 what is missing classes?  3 yes  4 free  5 no  6 offer replay”
+
+Ruled:
+
+- **The first hero is chosen from three, shown by description only — no stats, no badges.** Replaces 2026-09-28 'the first hero: Leadership…' "The first hero is taken, not drafted: one hero, stats unseen, no pick"; kingdom SWITCHES `openingFirstHeroDraft` and `openingRunFirstHero` are settled by it on the pick. Its modifiers are not withdrawn: the chosen first hero still gets the Leadership badge, a random positive badge, a 25% chance of another, +2 Health, one Crucible stat point and a 30% chance of another (2026-09-28 'no Health minimum…'), which the run does not yet apply. Filed: `kingdom.opening-draft-modifiers`.
+- **The player chooses which four heroes go into each battle.** Filed: `kingdom.opening-deploy-choice`.
+- **Idols and bloodrunes are free to equip during the opening.** Filed: `kingdom.opening-free-equip`.
+- **Level-ups during the six battles grant no class powers.** Nothing filed: the run already grants none.
+- **When the whole party is dead the run offers a replay.** Read as: the battle that killed them is offered again with the party as it stood before it, as a lost battle is (2026-09-28: "a lost battle replayed with the same party"), so a run is never stranded. Filed: `kingdom.opening-party-dead-replay`.
+- (2) is his question back — which classes are missing: the Rogue and the Mage (the pool is the Hunter, the Iron Dwarf, the Battle Chaplain, the Rune-Marked Ascetic and the Dawnblade; the pack holds four base heroes of each of the six classes). Not ruled yet; 2026-10-02 'the opening run keeps its five-hero party' stands until he answers.
+
+The four items are first in the viewer and kingdom queue, in that order: his post makes the playable opening the work to do.

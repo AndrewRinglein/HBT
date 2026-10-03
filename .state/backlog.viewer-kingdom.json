@@ -1,5 +1,37 @@
 [
  {
+  "id": "kingdom.opening-draft-modifiers",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run, audited'): 'the first hero is chosen from 3, but no stats or badges shown, just a description.' With 2026-09-28 'no Health minimum ... the first hero gets Leadership and a random positive badge; the draft pick is weighted' and 'the first hero: Leadership ...; the draft offers three with the Crucible's modifiers': 'You get the leadership badge. You get a random positive badge. 25% chance of another positive ...' / 'You get your choice of one of three heroes. Those heroes had randomized modifiers applied to them, and typically you would pick the best one.' The audit found the run at /play (kingdom.opening-run-six) applies none of it: the engine's test party does (engine/src/content/opening-party.ts, fix.opening-draft), the kingdom's draft (kingdom/src/ui/draft.ts, src/core/opening.ts) offers bare rows, and a first hero enters battle with only the Hero badge. Carry the engine's rule into the run - one rule, read through the kingdom's one door, not a second copy: (1) the first hero is chosen from three shown by a description only - no stats, no badges, no kit numbers; (2) the chosen first hero gets badge.leadership, a random positive badge, a 25% chance of another, +2 Health, one stat point by the Crucible's randomness (a point of Health is 2 Health) and a 30% chance of another, and they are on the hero in every battle and saved with the run; (3) every later draft offers three heroes with the Crucible's randomized modifiers already applied, and these the player does see, to pick the best (the read of 'typically you would pick the best one' - record it as a kingdom switch); (4) the modifiers a hero was drafted with stay with it for the run. The rolls come from the run's own named streams, so a saved run reopened shows the same heroes. Rebuild the pages.",
+  "expect": "At http://127.0.0.1:4230/play a new run offers three first heroes by description only; the chosen one enters the Orphanage with the Leadership badge, at least one more positive badge and +2 Health or more over its row; each later draft shows three heroes whose stats differ from their rows by their rolled modifiers, and the one picked keeps them in battle; closing and reopening the page shows the same heroes and modifiers; the page test asserts each.",
+  "note": "Filed by the kingdom chat from Andrew's rulings, 2026-10-03, after the audit of the opening run. Replaces the open kingdom switches openingFirstHeroDraft and openingRunFirstHero."
+ },
+ {
+  "id": "kingdom.opening-deploy-choice",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run, audited', question 3: 'Should the player choose which four heroes go into each battle?' - '3 yes'; his post: 'Hero selection.'). Today the run has no choice: kingdom/src/ui/sandbox.ts fieldBattle sends the first four living heroes by id (BASE_DEPLOY_LIMIT 4), so with five alive the same hero always stays home, and a hero left home cannot be re-fitted at Equip. Before each battle of the opening run, when more living heroes are held than the deploy limit, the player chooses who goes - up to the limit - on the way to Equip; with the limit or fewer alive, all go and no choice is asked. The Equip screen then shows the chosen heroes. Use the kingdom's existing Deploy mechanism if one fits (prior art first: the slice's Assignment and deploy screens) and not a second one; the choice is saved with the run and a replayed lost battle offers the choice again. Rebuild the pages.",
+  "expect": "At http://127.0.0.1:4230/play with five living heroes the run asks which four go before the battle, the four chosen are the four on the Equip screen and on the board, and the fifth stays home unharmed and earns nothing; with four or fewer alive no choice is asked; the page test reaches five alive and asserts the choice.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run."
+ },
+ {
+  "id": "kingdom.opening-free-equip",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run, audited', question 4: 'Should idols and bloodrunes be free to equip during the opening, or be left out of the opening's rewards?' - '4 free'). The audit found the opening run's purse is 0 and never grows, and the reward pool's 4 idols and 8 bloodrunes cost faith or mana to equip (kingdom/src/content/encounter-rewards.ts, the Equip screen kingdom/src/ui/equip.ts) - about one reward card in five can be kept but never worn. During the opening run - the Campaign still in the opening, before any Week - equipping an idol or a bloodrune costs nothing; after the opening the costs are what they were. One rule read from the Campaign's own state, not a second equip path; the screen shows the cost as free. Rebuild the pages.",
+  "expect": "At http://127.0.0.1:4230/play an idol or bloodrune kept as a battle reward goes onto a hero at the Equip screen with an empty purse and is fielded in the next battle; outside the opening the same item still costs its faith or mana; the page test takes such a reward and asserts it worn.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run."
+ },
+ {
+  "id": "kingdom.opening-party-dead-replay",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run, audited', question 6: 'When the whole party is dead, should the run end and offer a new one?' - '6 offer replay'). The audit read that the dead are never replaced in the opening run and a run whose every hero is dead appears stranded: nothing can be fielded and nothing is offered. When a battle leaves no living hero, the run offers the replay: the battle is offered again with the party as it stood before that battle (the read of 'offer replay', as a lost battle is replayed with the same party - 2026-09-28; record it as a kingdom switch), beside Start a new run. Prove first, in a test, whether the run is in fact stranded today and say what the player sees. Rebuild the pages.",
+  "expect": "At http://127.0.0.1:4230/play a battle that kills every hero ends on a screen that offers to replay it, and the replay fields the party as it stood before that battle; the run is never left with nothing to click; the page test loses a battle with the whole party dead and asserts the offer and the replay.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run."
+ },
+ {
   "id": "viewer.opening-scenes-four-to-six",
   "kind": "viewer",
   "shape": "plumbing",
