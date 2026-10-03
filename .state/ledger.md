@@ -23430,3 +23430,122 @@ index d9d89b2..de3cca9 100644
  // replays of these initial battles." - and whether battles he played or the computer's: "Just the computer played recordings."
 ```
 </details>
+
+## viewer.opening-scenes-four-to-six — LANDED `3d68a7f` **NEEDS REVIEW**
+2026-10-03 22:45
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/painted-board.test.ts, test/viewer.opening-scenes-four-to-six.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/painted-board.test.ts, viewer/test/viewer.opening-scenes-four-to-six.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/painted-board.test.ts (-3), test/viewer.opening-scenes-four-to-six.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+6251c92
+
+diff --git a/test/painted-board.test.ts b/test/painted-board.test.ts
+index ae8cc3e..09f5b3a 100644
+--- a/test/painted-board.test.ts
++++ b/test/painted-board.test.ts
+@@ -23,9 +23,15 @@ describe('the painted scenes stand on the engine board', () => {
+   // was: expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage'])
+   const compiled: string[] = JSON.parse(readFileSync('../content/gen/painted-maps.json', 'utf8')).maps.map((m: { id: string }) => m.id)
+-  it('binds exactly the three maps the plan names and the maps compiled from painted scenes', () => {
++  // Law 10, viewer.opening-scenes-four-to-six (2026-10-03, engine DECISIONS.md 'everything in the viewer and in play is the 3D
++  // maps and the 3D characters'): battles 4 and 6 are bound to the scenes their maps were compiled from. The rule kept: exactly
++  // the opening maps bound by name and the compiled ones, each hex for hex.
++  // was: it('binds exactly the three maps the plan names and the maps compiled from painted scenes', ...) with
++  //      toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage', ...compiled].sort())
++  // was: it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge', 'map.caravan-aftermath'])
++  it('binds exactly the five opening maps compiled from a scene and the maps compiled from painted scenes', () => {
+     expect(compiled).toEqual(['map.caravan-aftermath'])
+-    expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.lumberjack', 'map.opening.orphanage', ...compiled].sort())
++    expect(Object.keys(painted).sort()).toEqual(['map.opening.bridge', 'map.opening.cathedral', 'map.opening.cavern-trail', 'map.opening.lumberjack', 'map.opening.orphanage', ...compiled].sort())
+   })
+-  it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge', 'map.caravan-aftermath'])('%s: every engine hex lands on its scene hex', (id) => {
++  it.each(['map.opening.orphanage', 'map.opening.lumberjack', 'map.opening.bridge', 'map.opening.cavern-trail', 'map.opening.cathedral', 'map.caravan-aftermath'])('%s: every engine hex lands on its scene hex', (id) => {
+     const b = painted[id]!, d = decodeMap(mapDef(id)), field = presentationField({ ...d.board, terrain: d.terrain, props: d.props }, mapDef(id).rows)
+     expect([b.kind, b.mapId, b.cols, b.rows]).toEqual(['painted', id, field.width, field.height])
+diff --git a/test/viewer.opening-scenes-four-to-six.test.ts b/test/viewer.opening-scenes-four-to-six.test.ts
+index d2cbebb..25a730e 100644
+--- a/test/viewer.opening-scenes-four-to-six.test.ts
++++ b/test/viewer.opening-scenes-four-to-six.test.ts
+@@ -20,5 +20,5 @@ const ground = (s: any) => proposal.maps.find((m: any) => m.name === (ENCOUNTERS
+ 
+ describe('the opening battles are drawn on their 3D scenes', () => {
+-  it('every opening map compiled from a 3D scene is bound to that scene, its grid the engine board's', () => {
++  it('every opening map compiled from a 3D scene is bound to that scene, its grid the engine board', () => {
+     const fromScene = opening.filter((s) => ground(s).startsWith('assets/terrain-3d/'))
+     expect(fromScene.map((s) => s.openingPosition)).toEqual([1, 2, 3, 4, 6])
+@@ -33,5 +33,5 @@ describe('the opening battles are drawn on their 3D scenes', () => {
+   it('the Gates, compiled from an Atlas map and not a scene, is not bound to one', () => {
+     const gates = opening.find((s) => s.openingPosition === 5)!
+-    expect(ground(gates)).toMatch(/^assets/battle-atlas/maps//)
++    expect(ground(gates).startsWith('assets/battle-atlas/maps/')).toBe(true)
+     expect(pack[gates.mapId]).toBeUndefined()
+   })
+d23b883
+
+diff --git a/test/viewer.opening-scenes-four-to-six.test.ts b/test/viewer.opening-scenes-four-to-six.test.ts
+new file mode 100644
+index 0000000..d2cbebb
+--- /dev/null
++++ b/test/viewer.opening-scenes-four-to-six.test.ts
+@@ -0,0 +1,42 @@
++// viewer.opening-scenes-four-to-six (engine backlog; engine DECISIONS.md 2026-10-03 'everything in the viewer and in play is the 3D
++// maps and the 3D characters'). Andrew: "I want everything in the viewer to be our three-dimensional maps and our
++// three-dimensional characters. Everything in the play is to be that." The engine's side: the opening's maps are its own, each
++// at its own size, and the scene a battle is drawn on is the one its map was compiled from - so the viewer's pack
++// (../viewer/tools/painted-scenes.mjs) may bind map.opening.cavern-trail and map.opening.cathedral only if the scene's measured
++// grid is the engine board's, hex for hex. The Gates' map was compiled from an Atlas map, not a scene: it is not in the pack
++// (viewer SWITCHES gatesGround). The viewer's half (../viewer/tools/opening-scenes.test.mjs): each bound battle opens on its
++// scene in the page. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++import { ENCOUNTERS } from '../../engine/src/content/index.js'
++import { SCENARIOS } from '../../engine/src/content/scenarios.js'
++
++const pack: Record<string, any> = JSON.parse(execFileSync(process.execPath, ['../viewer/tools/painted-scenes.mjs', '--json'], { encoding: 'utf8', maxBuffer: 1 << 26 }))
++const proposal = JSON.parse(readFileSync('../assets/battle-atlas/opening-ground-proposal-2026-09-28.json', 'utf8'))
++const fields = JSON.parse(readFileSync('../viewer/generated/fields.json', 'utf8'))
++const opening = Object.values(SCENARIOS as Record<string, any>).filter((s) => s.openingPosition).sort((a, b) => a.openingPosition - b.openingPosition)
++const ground = (s: any) => proposal.maps.find((m: any) => m.name === (ENCOUNTERS as Record<string, any>)[s.encounterId].name).file as string
++
++describe('the opening battles are drawn on their 3D scenes', () => {
++  it('every opening map compiled from a 3D scene is bound to that scene, its grid the engine board's', () => {
++    const fromScene = opening.filter((s) => ground(s).startsWith('assets/terrain-3d/'))
++    expect(fromScene.map((s) => s.openingPosition)).toEqual([1, 2, 3, 4, 6])
++    for (const s of fromScene) {
++      const bound = pack[s.mapId]
++      expect(bound, s.mapId).toBeDefined()
++      expect('assets/terrain-3d/' + bound.scene, s.mapId).toBe(ground(s))
++      expect([bound.cols, bound.rows], s.mapId).toEqual([fields[s.mapId].width, fields[s.mapId].height])
++      expect(bound.heights.length, s.mapId).toBe(fields[s.mapId].hexes.length)
++    }
++  })
++  it('the Gates, compiled from an Atlas map and not a scene, is not bound to one', () => {
++    const gates = opening.find((s) => s.openingPosition === 5)!
++    expect(ground(gates)).toMatch(/^assets/battle-atlas/maps//)
++    expect(pack[gates.mapId]).toBeUndefined()
++  })
++  it('the viewer page: each bound battle opens on its scene', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/opening-scenes.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++})
+```
+</details>
