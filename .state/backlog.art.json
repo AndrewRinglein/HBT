@@ -1,5 +1,33 @@
 [
  {
+  "id": "art.opening-enemy-models",
+  "kind": "art",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'everything in the viewer and in play is the 3D maps and the 3D characters' and 'do all of it: the maps, the enemies, the heroes, the weapons, the moves'): \"Do all of them. I want you to do all of them and then check to make sure it works.\" Start at assets/characters/PRODUCTION-START.md and the skills root AGENTS.md names; the list is the viewer's own (node viewer/tools/character-models.mjs --list). Five enemies of the opening's battles 4-6 have no 3D model bound, so they stand as 2D tokens: Zombie Hound and Werewolf (Cavern Trail), Bruiser Demon and Powerful Imp (Gates), Ghoul (Cathedral). Where each stands is assets/characters/ANIMATION-MODEL-PLAN.md (the hound anatomy and motions are candidates for the Zombie Hound; the imp rig and library for the Powerful Imp; the Werewolf has a newer ten-attack audition, not accepted, with no idle, move, hit or death; the Ghoul's werewolf-based transfer was rejected; the Bruiser Demon has reference art and no model). For each: its own appearance on a body that fits it, with idle, move, attack, hit and death (and what its sheet asks beyond those), built and checked by the named skills, recorded in its owning run record, then bound in viewer tools/character-models.mjs. One enemy at a time, each ending with something for Andrew's eye; never a borrowed look.",
+  "expect": "character-models.mjs --list shows a model with idle, move, attack, hit and death for unit.zombie-hound, unit.werewolf, unit.bruiser-demon, unit.powerful-imp and unit.ghoul, and each stands as its model in its battle in BATTLE-VIEWER.html."
+ },
+ {
+  "id": "art.kit-items-held",
+  "kind": "art",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'everything in the viewer and in play is the 3D maps and the 3D characters' and 'do all of it: the maps, the enemies, the heroes, the weapons, the moves'): \"Do all of them. I want you to do all of them and then check to make sure it works.\" Start at assets/characters/PRODUCTION-START.md and the skills root AGENTS.md names; the list is the viewer's own (node viewer/tools/character-models.mjs --list). Six kit items are held by nobody (the list's UNMODELLED lines): item.holy-texts (priest-pauper, priest-armored), item.holy-symbol (priest-robes, priest-scantily), item.hand-crossbow (rogue-raven), item.throwing-knives (rogue-snake), item.lumberjack-axe (the Lumberjack), item.dagger (the Lumberjack's Wife). For each: the item's own model fitted to that body's hand with that body's own fit (viewer SWITCHES heldModels, heldFits, heldHands; the civilians' fits are the civilian study's), gripped, never another body's numbers.",
+  "expect": "character-models.mjs --list prints no UNMODELLED line, and each holder is seen holding its item in a battle in BATTLE-VIEWER.html."
+ },
+ {
+  "id": "art.warrior-bodies",
+  "kind": "art",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'everything in the viewer and in play is the 3D maps and the 3D characters' and 'do all of it: the maps, the enemies, the heroes, the weapons, the moves'): \"Do all of them. I want you to do all of them and then check to make sure it works.\" Start at assets/characters/PRODUCTION-START.md and the skills root AGENTS.md names; the list is the viewer's own (node viewer/tools/character-models.mjs --list). The four warriors stand on a placeholder (the list's PLACEHOLDER lines: hero.base.warrior-iron, warrior-brawler, warrior-barbarian, warrior-fearsome - 'no outfit of its own is fitted to a rigged body in the project'). Each gets its own outfit fitted to a rigged body, with its kit in hand and the motions the other heroes have.",
+  "expect": "character-models.mjs --list prints no PLACEHOLDER line; each warrior stands in its own outfit in a battle in BATTLE-VIEWER.html."
+ },
+ {
+  "id": "art.hero-own-heads",
+  "kind": "art",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'everything in the viewer and in play is the 3D maps and the 3D characters' and 'do all of it: the maps, the enemies, the heroes, the weapons, the moves'): \"Do all of them. I want you to do all of them and then check to make sure it works.\" Start at assets/characters/PRODUCTION-START.md and the skills root AGENTS.md names; the list is the viewer's own (node viewer/tools/character-models.mjs --list). Sixteen heroes wear their own outfit and show a head that is not theirs (the list's 'lacks its own head' lines: three paladins, four rangers, three mages, four priests, two rogues). The male heads are designs in approved-review/catalog.json with no fit on the body; the female wardrobe fits only three heads on its body. Each hero gets its own head fitted to its body.",
+  "expect": "character-models.mjs --list prints no 'lacks its own head' line; each hero shows its own head in a battle in BATTLE-VIEWER.html."
+ },
+ {
   "id": "art.hero-flight-motions",
   "kind": "art",
   "shape": "data",

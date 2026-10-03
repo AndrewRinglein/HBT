@@ -4362,3 +4362,16 @@ Ruled:
 - **Every battle, watched or played, is drawn on its 3D map with 3D characters** — the six opening encounters, every enemy, every hero, every weapon, every move they have. The flat hex board and the 2D tokens are not the product.
 - **What stood on the day** (read from the viewer's own tools, not from memory): the battle screen binds a 3D scene for battles 1–3 only (`viewer/tools/painted-scenes.mjs` SCENES: Orphanage, Lumberjack House, Bridge), though scenes with the engine's exact hex grids are on disk for the Cavern Trail (`assets/terrain-3d/abbotown-encounters/cave`, 40×16), the Cathedral (`abbotown-encounters/cathedral`, 20×40) and the town the Gates stands in (`abbotown-complete`, 20×50, navigation but no `scene.glb`). Five enemies of battles 4–6 have no model bound (`character-models.mjs --list`: Zombie Hound, Werewolf, Bruiser Demon, Powerful Imp, Ghoul). Four heroes stand on a placeholder body, six kit items are held by nobody, and each bound character has five to seven motions against the 64 lines of `assets/characters/HERO-MOTION-LIST.md`.
 - Filed, first in the viewer queue: `viewer.opening-scenes-four-to-six`. The missing enemy models, bodies, weapons and motions are the art area's; nothing is filed for them from this entry until he says which first.
+
+## 2026-10-03 — do all of it: the maps, the enemies, the heroes, the weapons, the moves
+
+Andrew, in the viewer chat, shown the list of what is not in the battle screen in 3D (three maps, five enemy models, four placeholder hero bodies, sixteen heads, six unheld kit items, the motions) and asked which the art area should take first:
+
+“Do all of them. I want you to do all of them and then check to make sure it works. I'm literally giving you instruction by instruction for a whole set of things that have been defined. I want all of it. Ask me any questions you have now, and then do all of it.”
+
+Ruled:
+
+- **All of it is to be built, and each piece checked working in the battle screen.** Nothing on the list waits for a further go-ahead.
+- The builder's order, not ruled: the three maps (`viewer.opening-scenes-four-to-six`), then the five missing enemies, the six unheld kit items, the four warrior bodies and the sixteen heads, then the motions (the seven art items already queued).
+- Filed, art queue: `art.opening-enemy-models`, `art.kit-items-held`, `art.warrior-bodies`, `art.hero-own-heads`.
+- Asked of him the same day, not yet answered: whether work not yet approved by eye may be shown in the battle screen marked as such; whether a body already owned may carry a new look for the Zombie Hound and the Powerful Imp; a spending limit for generated bodies; whether the eleven motions with no source are built or bought; whether the Gates' scene may be cut from the town model.
