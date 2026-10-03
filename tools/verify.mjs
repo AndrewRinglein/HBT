@@ -534,9 +534,12 @@ if (SINGLES) {
   /* peek shows the whole board and releases to exactly where it was */
   /* viewer.true-3d-camera: the zoom is the one camera's pose (V.camTarget), not a scale() in the stage's CSS — these read
      scale(0.x) and scale(1.0000) in the transform; rewritten as the pose's zoom */
-  v.peek(true); check(V.camTarget && V.camTarget.zoom < 1, 'camera: peek did not scale the board to fit')
+  /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space'): the standard zoom is
+     now the board's own (viewer SWITCHES noVoidStandard; cam.zoom 1 is it) — was camTarget.zoom < 1 and === 1, the old 1x */
+  const z0 = V.camTarget && V.camTarget.zoom
+  v.peek(true); check(V.camTarget && V.camTarget.zoom < z0, 'camera: peek did not scale the board to fit')
   check(V.view.camF.x === panned.x && V.view.camF.y === panned.y, 'camera: peek moved the remembered camera')
-  v.peek(false); check(V.camTarget && V.camTarget.zoom === 1, 'camera: releasing peek did not return to 1x')
+  v.peek(false); check(V.camTarget && V.camTarget.zoom === z0 && V.view.cam.zoom === 1, 'camera: releasing peek did not return to the standard zoom')
 }
 
 /* ── a standee at the top of the board is shown whole (ruled 2026-09-03) ──── */
@@ -553,7 +556,12 @@ if (SINGLES) {
   if (ai >= 0) {
     v.seek(ai + 1); v.render()
     const head = POS[actor.hex].py - TOP, camTop = V.view.camF.y - halfH
-    check(head >= camTop - 1, `camera-top: the acting unit's head (board-y ${head.toFixed(0)}) is above the viewport's top edge (${camTop.toFixed(0)}) — cut off`)
+    /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space; pointing at an edge
+       scrolls', Andrew: "There's no reason to ever scroll into white space." — newer than this check's 2026-09-03 "room above
+       row 0"): the head is in view unless the view already stands at the board's top edge, which it never passes (viewer
+       SWITCHES noVoidInclusion). Was: check(head >= camTop - 1) alone. */
+    const y0 = V.view.camF.y; v.pan(0, -1e4); const atTop = V.view.camF.y === y0
+    check(head >= camTop - 1 || atTop, `camera-top: the acting unit's head (board-y ${head.toFixed(0)}) is above the viewport's top edge (${camTop.toFixed(0)}) — cut off, though the view could go up`)
   }
 }
 
