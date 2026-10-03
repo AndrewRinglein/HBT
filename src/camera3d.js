@@ -97,6 +97,21 @@ export function boardRay(A, camera, px, py) {
   const a = new THREE.Vector3(nx, ny, -1).unproject(camera).applyMatrix4(A), b = new THREE.Vector3(nx, ny, 1).unproject(camera).applyMatrix4(A)
   return { o: a, d: b.sub(a) }
 }
+/** viewer.camera-no-void (engine DECISIONS.md 2026-10-03 'the camera never shows white space'): the board's plane (z 0) as the
+    viewport shows it at a pose — the four corners' rays met with it, as offsets from the pose's focus in board px: the left,
+    right, top and bottom of what is seen {l, r, t, b}. The camera turns and zooms about its focus, so the offsets do not depend
+    on where it looks and shrink as 1 / zoom. null when a corner looks at or above the horizon (it sees no end of the ground). */
+export function groundFootprint(A, pose, viewport) {
+  const cam = orbitCamera(A, pose, viewport)
+  let l = Infinity, r = -Infinity, t = Infinity, b = -Infinity
+  for (const [x, y] of [[0, 0], [viewport.w, 0], [0, viewport.h], [viewport.w, viewport.h]]) {
+    const { o, d } = boardRay(A, cam, x, y)
+    if (!(o.z > 0 && d.z < 0)) return null
+    const k = -o.z / d.z, px = o.x + k * d.x - pose.x, py = o.y + k * d.y - pose.y
+    l = Math.min(l, px); r = Math.max(r, px); t = Math.min(t, py); b = Math.max(b, py)
+  }
+  return { l, r, t, b }
+}
 /** RAYCAST AGAINST THE BOARD (not the CSS plane): what is under the pointer — the nearest along the ray of every unit's
     body (an upright cylinder on its feet, as tall as its figure) and every hex's top at its display height (the board's
     hex, a pointy hex of the cell's width and height). Units: {id, x, y, z, r, h}; hexes: {hex, x, y, z}; cell {W, H}.

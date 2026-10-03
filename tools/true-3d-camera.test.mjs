@@ -82,8 +82,12 @@ test('nothing stretches: from every side and at every zoom a body and a standee 
   /* near straight down (10°), a metre east seen at turn 0 is a metre south seen at turn 90 — on screen, the same length */
   v.resetView(); v.tilt(10 - 49.3)
   const focus = () => V.camera3d.userData.focus.clone()
-  const a = lengths(V.camera3d, focus()); v.turn(90); const b = lengths(V.camera3d, focus())
-  near(a.east / b.south, 1, .01, 'east at 0° against south at 90°'); near(a.south / b.east, 1, .01, 'south at 0° against east at 90°')
+  /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space'): the standard zoom
+     is now the board's own at each quarter turn (the Orphanage turned shows its narrow side across the view, so it comes
+     nearer to fill it), so the two turns are compared at one zoom — a length on screen at the focus is the zoom times it.
+     Was: the lengths compared as they stood, both turns at 1x. The rule asserted — no stretch — is unchanged. */
+  const a = lengths(V.camera3d, focus()), za = V.camTarget.zoom; v.turn(90); const b = lengths(V.camera3d, focus()), zb = V.camTarget.zoom
+  near((a.east / za) / (b.south / zb), 1, .01, 'east at 0° against south at 90°'); near((a.south / za) / (b.east / zb), 1, .01, 'south at 0° against east at 90°')
   /* the zoom brings the camera nearer: height grows with the ground, never alone */
   v.resetView(); const z1 = lengths(V.camera3d, focus()); v.zoom(2.2); const z2 = lengths(V.camera3d, focus())
   near(z2.up / z2.east, z1.up / z1.east, .01, 'up against east, at 1x and 2.2x')
@@ -226,6 +230,17 @@ function shows(V, x, y, z) {
   const c = p.clone().applyMatrix4(cam.matrixWorldInverse), n = p.project(cam)
   return { x: (n.x + 1) / 2 * vp.w, y: (1 - n.y) / 2 * vp.h, ahead: c.z < 0 }
 }
+/** what the view shows of the board's plane (z 0), in board px: its four corners' rays from the camera (viewer.camera-no-void) */
+function seen(V, w, h) {
+  const cam = V.camera3d, A = V.data.boardAffine; cam.updateMatrixWorld(true)
+  let l = Infinity, r = -Infinity, t = Infinity, b = -Infinity
+  for (const [x, y] of [[0, 0], [w, 0], [0, h], [w, h]]) {
+    const nx = 2 * x / w - 1, ny = 1 - 2 * y / h, o = new THREE.Vector3(nx, ny, -1).unproject(cam).applyMatrix4(A), d = new THREE.Vector3(nx, ny, 1).unproject(cam).applyMatrix4(A).sub(o)
+    const k = -o.z / d.z, px = o.x + k * d.x, py = o.y + k * d.y
+    l = Math.min(l, px); r = Math.max(r, px); t = Math.min(t, py); b = Math.max(b, py)
+  }
+  return { l, r, t, b }
+}
 const sized = (V, w, h) => { const wrap = V.dom.stage.parentNode; Object.defineProperty(wrap, 'clientWidth', { get: () => w, configurable: true }); Object.defineProperty(wrap, 'clientHeight', { get: () => h, configurable: true }); V.render() }
 
 test('the camera holds one angle, 40° above the ground: no bar on the board, and no call or drag tilts it', () => {
@@ -291,7 +306,12 @@ test('Whole map fits the original board — every hex and a standing figure on i
       for (const [x, y, z] of corners) { const q = shows(V, x, y, z)
         assert.ok(q.ahead && q.x >= -.5 && q.x <= w + .5 && q.y >= -.5 && q.y <= h + .5, `${w}x${h} at ${yaw}°, ${elev}°: (${x},${y},${z}) shown at ${q.x.toFixed(1)},${q.y.toFixed(1)}`); checked++ }
       const fitZoom = V.camTarget.zoom; v.peek(false)
-      v.zoom(.001); near(V.camTarget.zoom, fitZoom, 1e-9 * fitZoom, `the wheel stops at the fit (${w}x${h}, ${yaw}°, ${elev}°)`)
+      /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03, Andrew: "There's no reason to ever scroll into white
+         space."): was near(V.camTarget.zoom, fitZoom, …, 'the wheel stops at the fit') — the tactical camera now stops
+         nearer, where the view just fills with board; kept: nothing zooms out past the whole-map fit */
+      v.zoom(.001); assert.ok(V.camTarget.zoom >= fitZoom * (1 - 1e-9), `the wheel never goes past the fit (${w}x${h}, ${yaw}°, ${elev}°)`)
+      const q = seen(V, w, h); assert.ok(q.l >= -.5 && q.t >= -.5 && q.r <= F.w + .5 && q.b <= F.h + .5, `and stops where the view shows only board (${w}x${h}, ${yaw}°): ${JSON.stringify(q)}`)
+      assert.ok(Math.min(q.l, q.t, F.w - q.r, F.h - q.b) < 1, `— just: one side of the view on the board's edge (${w}x${h}, ${yaw}°)`)
     }
   }
   assert.ok(checked > 6000, `enough corners to bite: ${checked}`)   // a third of the angles: was 20000
@@ -302,14 +322,18 @@ test('Whole map fits the original board — every hex and a standing figure on i
    when nearer, never off it" with the view's edge stopping at the board's (SWITCHES cameraPanNoVoid). Andrew (engine
    DECISIONS.md 2026-10-01 'the first look at the XCOM camera'): "The pointing-to-scroll on the map does not work very well" —
    the pin is what stopped it. The rule kept: never off the board; the centre may now reach any point of it, at any zoom. */
-test('the view may centre any point of the board — at the standard zoom, nearer, turned — and never past it', () => {
+/* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space; pointing at an edge
+   scrolls', Andrew: "There's no reason to ever scroll into white space."): was 'the view may centre any point of the board'
+   (the centre reaching x 0 and F.w, the rows up to 200 px past) — overturned (SWITCHES xcomRoam). Now the clamp: panned as far
+   as it goes, each side of the view stops ON the board's edge — never past it, and never short of it (no pin to the middle). */
+test('the pan stops where the board\'s edge meets the view\'s — at the standard zoom, nearer, turned — never past it, never short', () => {
   const { v, V } = boot(), F = V.data.F
   for (const [yaw, zoom] of [[0, 1], [0, 1.6], [90, 1], [180, .8]]) {
     v.resetView(); if (yaw) v.turn(yaw); if (zoom !== 1) v.zoom(zoom)
-    v.pan(-1e5, -1e5); near(V.camTarget.x, 0, 1e-6, `${yaw}°, ${zoom}x: the centre reaches the left edge`)
-    assert.ok(V.camTarget.y <= 0 && V.camTarget.y >= -200, `and the top (${V.camTarget.y.toFixed(0)})`)
-    v.pan(1e5, 1e5); near(V.camTarget.x, F.w, 1e-6, `${yaw}°, ${zoom}x: and the right edge, never past it`)
-    assert.ok(V.camTarget.y >= F.h && V.camTarget.y <= F.h + 200, `and the bottom (${V.camTarget.y.toFixed(0)})`)
+    v.pan(-1e5, -1e5); let q = seen(V, 1920, 1080)
+    near(q.l, 0, .5, `${yaw}°, ${zoom}x: the view's west side on the board's west edge`); near(q.t, 0, .5, 'its north on the north edge')
+    v.pan(1e5, 1e5); q = seen(V, 1920, 1080)
+    near(q.r, F.w, .5, `${yaw}°, ${zoom}x: and its east on the east edge, never past it`); near(q.b, F.h, .5, 'its south on the south edge')
   }
   v.dispose()
 })
@@ -325,7 +349,12 @@ test('Focus selected unit centres on purpose; ordinary selection keeps the minim
   assert.deepEqual(V.view.camF, f0, 'selecting a unit already in view does not move the camera')
   assert.equal(v.cameraState.focus, pick, 'Focus is offered with a unit to focus')
   press(v, 'focus')
-  const p = V.data.POS[V.S.U[pick].hex]; near(V.camTarget.x, p.px, 1e-6, 'Focus centres it (x)'); near(V.camTarget.y, p.py, 1e-6, 'and (y)')
+  /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space'): was near(camTarget,
+     p, 1e-6) on both axes — a unit near the board's edge is now centred as far as the board allows: on each axis the centre
+     is the unit's, or the view's side is on the board's edge between it and the unit */
+  const p = V.data.POS[V.S.U[pick].hex], q = seen(V, 1920, 1080)
+  assert.ok(Math.abs(V.camTarget.x - p.px) < 1e-6 || (p.px < V.camTarget.x ? Math.abs(q.l) < .5 : Math.abs(q.r - V.data.F.w) < .5), `Focus centres it (x), as far as the board allows: ${V.camTarget.x} vs ${p.px}`)
+  assert.ok(Math.abs(V.camTarget.y - p.py) < 1e-6 || (p.py < V.camTarget.y ? Math.abs(q.t) < .5 : Math.abs(q.b - V.data.F.h) < .5), `and (y): ${V.camTarget.y} vs ${p.py}`)
   v.dispose()
 })
 

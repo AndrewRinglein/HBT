@@ -29,6 +29,7 @@ function boot(opts = {}) {
   v.push(battle1.events)
   return { w, v, V: v._V, seen, html }
 }
+const nearly = (a, b, tol, what) => assert.ok(Math.abs(a - b) <= tol, `${what}: ${a} vs ${b}`)
 const fire = (node, type, extra = {}) => { for (const f of node.listeners[type] || []) f({ detail: 1, button: 0, stopPropagation() {}, preventDefault() {}, ...extra }) }
 const activations = battle1.events.map((e, i) => [e, i]).filter(([e]) => e.type === 'activation.begin')
 
@@ -45,7 +46,11 @@ test('the wheel looks a little nearer or farther and springs back to the standar
   w._flush(300); assert.ok(V.view.cam.zoom > 1, 'still while the wheel turns (300 ms)')
   w._flush(400); assert.equal(V.view.cam.zoom, 1, 'still for 600 ms: back to the standard zoom')
   for (let i = 0; i < 20; i++) fire(wrap, 'wheel', { deltaY: 300 })
-  assert.ok(V.view.cam.zoom < .75 && V.view.cam.zoom >= .6 - 1e-9, `farther than .75×, never past .6×: ${V.view.cam.zoom}`)
+  /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space', Andrew: "There's no
+     reason to ever scroll into white space."): was 'farther than .75×, never past .6×' — the wheel now also stops where the
+     view just fills with board; the standard zoom is POLICY.FILL_ROOM (1.25) nearer than that, so on the Orphanage the
+     farthest is 1 / 1.25 of the standard, the nearer of the two limits (camera-no-void.test.mjs reads the view itself) */
+  nearly(V.view.cam.zoom, Math.max(.6, 1 / 1.25), 1e-9, 'farther, as far as the board fills the view (and never past .6×)')
   w._flush(700); assert.equal(V.view.cam.zoom, 1, 'and back')
   v.dispose()
 })
@@ -57,6 +62,10 @@ test('the wheel looks a little nearer or farther and springs back to the standar
 test('the pointer at the board\'s edge, or the screen\'s, scrolls the map that way every time; away from the edges, or out of the battle, it stops', () => {
   const { w, v, V } = boot(), root = V.dom.root
   v.seek(activations[0][1] + 1)
+  /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03): the view starts at the board's middle — the first actor
+     stands at the board's west edge, and the view no longer scrolls past an edge into the void ("Pointing at an edge scrolls
+     the map whenever there is board beyond it"); was: from the first actor's centring */
+  V.view.camF = { x: V.data.F.w / 2, y: V.data.F.h / 2 }; v.pan(0, 0)
   const at = (x, y) => fire(root, 'pointermove', { clientX: x, clientY: y })
   at(50, 50); w._flush(200)
   const mid = { ...V.view.camF }
@@ -77,7 +86,11 @@ test('the pointer at the board\'s edge, or the screen\'s, scrolls the map that w
   at(1000, 500); fire(root, 'pointerleave', { clientX: 1000, clientY: 500 }); const gone = { ...V.view.camF }; w._flush(300)
   assert.deepEqual(V.view.camF, gone, 'out of the battle elsewhere: it stops')
   for (let i = 0; i < 400; i++) { at(1915, 500); w._flush(50) }
-  assert.ok(Math.abs(V.view.camF.x - V.data.F.w) < 1e-6, `held at the edge it scrolls until the board's edge is in the middle, and no further: ${V.view.camF.x} vs ${V.data.F.w}`)
+  /* Law 10 (viewer.camera-no-void): was 'until the board's edge is in the middle' (camF.x = F.w) — now until the board's edge
+     meets the view's (camera-no-void.test.mjs measures that edge), well short of the middle, and no further */
+  const stop = V.view.camF.x; for (let i = 0; i < 20; i++) { at(1915, 500); w._flush(50) }
+  assert.equal(V.view.camF.x, stop, 'held at the edge it scrolls until the board\'s edge meets the view\'s, and no further')
+  assert.ok(stop > east.x && stop < V.data.F.w - 300, `short of bringing the board's edge to the middle: ${stop} of ${V.data.F.w}`)
   v.dispose()
 })
 

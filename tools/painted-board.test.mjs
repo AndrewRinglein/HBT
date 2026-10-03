@@ -110,9 +110,12 @@ test('the camera turns, zooms and pans by call, holds its one angle, moves for n
   const tiltNow = () => Math.acos(off().y / off().length()) * 180 / Math.PI, yawNow = () => Math.atan2(off().x, off().z) * 180 / Math.PI
   const start = stage.style.transform, anti = stage.style.getPropertyValue('--anti'), d0 = off().length()
   assert.match(start, /^matrix3d\(/, 'the stage is drawn through the camera'); close(tiltNow(), 90 - 40, 'the starting tilt: 40 degrees above the ground'); close(yawNow(), 0, 'the starting view is not turned')
+  /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space'): the zoom is checked
+     before the turn — turned 30°, the Orphanage's corners would show unless the camera came nearer, so there a zoom by 1.5
+     reaches the figure's nearest; was: turn, tilt, then zoom. Each rule asserted is unchanged. */
+  v.zoom(1.5); close(off().length(), d0 / 1.5, 'zoomed: 1.5 times nearer')
   v.turn(30); close(yawNow(), 30, 'turned 30 degrees about the focus'); assert.equal(stage.style.getPropertyValue('--unspin'), '-30deg', 'billboards undo the turn')
   v.tilt(-12); close(tiltNow(), 50, 'no tilt: the one fixed angle')
-  v.zoom(1.5); close(off().length(), d0 / 1.5, 'zoomed: 1.5 times nearer')
   const camF = { ...V.view.camF }; v.pan(60, 30); assert.notDeepEqual(V.view.camF, camF)
   assert.notEqual(stage.style.transform, start)
   /* the pointer: no drag turns, tilts or moves the map; the wheel looks nearer; the right button opens no menu */

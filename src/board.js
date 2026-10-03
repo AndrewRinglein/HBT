@@ -7,7 +7,7 @@ import { mvOf, absorbOf } from './actions.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { dangerHTML, raIcon } from './icons.js'
-import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, LENS } from './camera3d.js'
+import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, groundFootprint, LENS } from './camera3d.js'
 import { POLICY, TILT, fitZoom, zoomLimits, tiltLimits, panRange, turned as turnedBy, elevationOfTilt } from './camera-policy.js'
 import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES } from './hexvfx.js'
 
@@ -1265,9 +1265,26 @@ export function applyCam(V, opts = {}) {
   const fitZ = boardFit(V, yaw, tilt)
   /* fit: the harness's fit, the held peek and the whole-map views (Whole map, Overhead) — refitted on every resize */
   const fit = view.zoom === 'fit' || view.peek || view.overview
-  const [zlo, zhi] = zoomLimits(stance, fitZ, { w: VW, h: VH }, TOKEN_TOP)
-  if (!fit) { const zc = Math.min(zhi, Math.max(zlo, cam.zoom)); if (zc !== cam.zoom) cam.zoom = zc }
-  const s = fit ? fitZ : cam.zoom
+  const [zlo0, zhi] = zoomLimits(stance, fitZ, { w: VW, h: VH }, TOKEN_TOP)
+  /* viewer.camera-no-void (engine DECISIONS.md 2026-10-03 'the camera never shows white space; pointing at an edge scrolls',
+     Andrew: "There's no reason to ever scroll into white space."): what the battle area shows of the board's plane at 1x
+     (camera3d.js groundFootprint; it shrinks as 1 / zoom), at the one tactical angle and this turn. The tactical camera never
+     zooms out past the zoom at which that fills the board (fillZ), and its STANDARD zoom — cam.zoom 1 — is nearer than that by
+     POLICY.FILL_ROOM, never farther than the old 1x and never nearer than a figure at half the view, so there is always board
+     to scroll to; it is worked out for the quarter turn nearest the view's (the arrow keys' turns), so a turn by call between
+     them keeps its zoom (viewer SWITCHES noVoidStandard). cam.zoom is a factor of that standard zoom in every stance. A scene
+     with decorative surroundings is its own ground beyond the board: it keeps the 1x and the free pan (noVoidSurroundings). */
+  const A = boardAffine(V), fill = y => { const q = groundFootprint(A, { x: F.w / 2, y: F.h / 2, yaw: y, tilt: TILT.START, zoom: 1 }, { w: VW, h: VH })
+    return q ? { q, z: Math.max((q.r - q.l) / F.w, (q.b - q.t) / F.h) } : null }
+  const open = surrounded(V), here = open ? null : fill(yaw), quarter = open ? null : fill(Math.round(yaw / 90) * 90)
+  const fp1 = here && here.q, fillZ = here ? here.z : 0
+  const [, nearT] = zoomLimits('tactical', fitZ, { w: VW, h: VH }, TOKEN_TOP)
+  const std = quarter ? Math.min(nearT, Math.max(1, quarter.z * POLICY.FILL_ROOM)) : 1, tactical = stance === 'tactical' && !!fp1
+  const zlo = tactical ? Math.max(zlo0, Math.min(fillZ, zhi)) : zlo0
+  /* a turn keeps the zoom it turned with (the board's fill at a turn between the quarters is shown, not remembered), so
+     turns come round to exactly the view they left */
+  if (!fit) { const zc = Math.min(zhi / std, Math.max((opts.turn ? zlo0 : zlo) / std, cam.zoom)); if (zc !== cam.zoom) cam.zoom = zc }
+  const s = fit ? fitZ : Math.max(cam.zoom * std, zlo)
   const top = TOKEN_TOP / sq                          // the standee's overhang above its feet, in iso board-y
   const halfW = (VW / 2) / s, halfH = (VH / 2) / (s * sq)
   const M = 80
@@ -1285,6 +1302,13 @@ export function applyCam(V, opts = {}) {
      applied AFTER the bound, so a unit's head and label win over the bound (the handoff: "Unit head/label clearance
      takes priority over blindly copying the preview's ground-only pan clamp"). */
   const bound = () => {
+    /* viewer.camera-no-void: the tactical view stops where the board's edge meets the battle area's — the footprint at this
+       zoom kept inside the board; on an axis where the board is the smaller even so, it is centred (viewer SWITCHES
+       noVoidSmaller). Overturns xcomRoam's "the centre may reach any point of the board" and its EDGE_ROOM past the rows. */
+    if (tactical && !fit) {
+      const pin = (lo, hi, v) => lo <= hi ? Math.min(Math.max(v, lo), hi) : (lo + hi) / 2
+      f.x = pin(-fp1.l / s, bw - fp1.r / s, f.x); f.y = pin(-fp1.t / s * k, (F.h - fp1.b / s) * k, f.y); return
+    }
     const X = [0, bw], Y = [-POLICY.EDGE_ROOM, bh + POLICY.EDGE_ROOM]
     /* viewer.xcom-camera-tuning (engine DECISIONS.md 2026-10-01, Andrew: "The pointing-to-scroll on the map does not work very
        well. If you point to the edge, you sometimes get some movement."): the view may centre ANY point of the board, at any
@@ -1321,6 +1345,9 @@ export function applyCam(V, opts = {}) {
         else if (p.py > f.y + halfH - M) f.y = p.py - halfH + M
       }
     }
+    /* viewer.camera-no-void: the board's edge wins over the inclusion's room for a head or a label (viewer SWITCHES
+       noVoidInclusion) — the view never shows past the board to fit them */
+    if (tactical) bound()
   }
   /* written back only when moved, so a camera that did not move keeps its exact numbers. A whole-map view (not the peek,
      not the harness's fit) remembers its centre, so what follows it — a drag, a turn, Inspect — starts from the view seen */
@@ -1330,6 +1357,7 @@ export function applyCam(V, opts = {}) {
   else if (view.overview && !view.peek && view.zoom !== 'fit') { camF.x = bw / 2; camF.y = bh / 2 / k }
   const cx = fit ? bw / 2 : f.x, cy = fit ? bh / 2 : f.y                             // a fit shows the whole board, centred
   if (!fit && !view.home && camF.x != null) view.home = { x: camF.x, y: camF.y }     // the starting view Reset returns to
+  view.noVoid = tactical && !fit                                                     // the glide's frames keep to the board too
   setPose(V, { x: cx, y: cy / k, yaw, tilt, zoom: s })
   syncCamBar(V)
   /* the HUD says only what the camera is doing (Law 5: the export's outcome,
@@ -1357,8 +1385,11 @@ const samePose = (a, b) => a.x === b.x && a.y === b.y && a.yaw === b.yaw && a.ti
 function setPose(V, pose) {
   V.camTarget = pose
   const from = V.camShown
-  if (!from || !V.view.glide || V.view.dragging || typeof requestAnimationFrame !== 'function') { V.camAnim = null; showPose(V, pose); return }
+  if (!from || !V.view.glide || V.view.dragging || V.view.scrolling || typeof requestAnimationFrame !== 'function') { V.camAnim = null; showPose(V, pose); return }
   if (samePose(from, pose)) { if (!V.camAnim) showPose(V, pose); else V.camAnim.to = pose; return }
+  /* viewer.camera-no-void: a glide already on its way to this very pose runs on — restarted every frame (a held edge at the
+     board's edge asks for the same pose each frame) it crept and never arrived */
+  if (V.camAnim && samePose(V.camAnim.to, pose)) return
   V.camAnim = { from: { ...from }, to: pose, t0: clockOf(V) }
   if (V.camRaf == null) V.camRaf = requestAnimationFrame(() => glideFrame(V))
 }
@@ -1368,8 +1399,18 @@ function glideFrame(V) {
   const t = Math.min(1, (clockOf(V) - A.t0) / GLIDE_MS), e = EASE(t), a = A.from, b = A.to
   const turn = ((b.yaw - a.yaw) % 360 + 540) % 360 - 180                              // the short way round
   let yaw = a.yaw + turn * e; yaw = ((yaw + 180) % 360 + 360) % 360 - 180
-  showPose(V, t >= 1 ? b : { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e, yaw, tilt: a.tilt + (b.tilt - a.tilt) * e, zoom: a.zoom * Math.pow(b.zoom / a.zoom, e) })
+  const mid = { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e, yaw, tilt: a.tilt + (b.tilt - a.tilt) * e, zoom: a.zoom * Math.pow(b.zoom / a.zoom, e) }
+  showPose(V, t >= 1 ? b : V.view.noVoid ? onBoard(V, mid) : mid)
   if (t < 1) V.camRaf = requestAnimationFrame(() => glideFrame(V)); else V.camAnim = null
+}
+/** viewer.camera-no-void: a glide's frame kept to the board — between two views that show only board, a frame part-way
+    through a turn or a zoom may see past a corner; it comes as near as it must and is pinned as applyCam pins its views */
+function onBoard(V, pose) {
+  const { W, H } = viewportOf(V), F = V.data.F, fp = groundFootprint(boardAffine(V), { ...pose, zoom: 1 }, { w: W, h: H })
+  if (!fp) return pose
+  const zoom = Math.max(pose.zoom, (fp.r - fp.l) / F.w, (fp.b - fp.t) / F.h)
+  const pin = (lo, hi, v) => lo <= hi ? Math.min(Math.max(v, lo), hi) : (lo + hi) / 2
+  return { ...pose, zoom, x: pin(-fp.l / zoom, F.w - fp.r / zoom, pose.x), y: pin(-fp.t / zoom, F.h - fp.b / zoom, pose.y) }
 }
 /** stop a glide where it is (dispose) */
 export function stopGlide(V) {
@@ -1454,7 +1495,11 @@ export function lookCloser(V, deltaY) {
     `dt` seconds ("When you mouse or point past the edge of a map, the map just scrolls") */
 export function edgeScroll(V, dir, dt) {
   const step = POLICY.EDGE_SCROLL_SPEED * dt, d = unturn(V, dir.x * step, dir.y * step)
-  applyCam(V, { pan: { x: d.x, y: d.y / isoK(V) } }); drawEdges(V)
+  /* viewer.camera-no-void: the scroll is shown as it goes, at its own speed (viewer SWITCHES noVoidScrollShown) — through the
+     1.1 s glide, restarted each frame, the view lagged far behind where the pointer had scrolled it */
+  V.view.scrolling = true
+  try { applyCam(V, { pan: { x: d.x, y: d.y / isoK(V) } }) } finally { V.view.scrolling = false }
+  drawEdges(V)
 }
 const snapshot = V => ({ cam: { ...V.view.cam }, camF: { ...V.view.camF }, overview: !!V.view.overview, overhead: V.view.overhead || null })
 function restore(V, s) { V.view.cam = { ...s.cam }; V.view.camF = { ...s.camF }; V.view.overview = s.overview; V.view.overhead = s.overhead }
