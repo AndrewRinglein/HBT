@@ -1,5 +1,13 @@
 [
  {
+  "id": "viewer.camera-no-void",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the camera never shows white space; pointing at an edge scrolls'): \"I've got giant amounts of white space, and I can't seem to scroll the map by pointing. There's no reason to ever scroll into white space.\" In the battle screen's XCOM camera: the board fills the battle area at every zoom the wheel allows and the pan clamps at the board's edges, so no blank parchment or background shows beyond the board; pointing at an edge (viewer SWITCHES xcomEdge) scrolls whenever there is board beyond it. Overturns viewer SWITCHES xcomRoam (mark it overturned, citing the ruling). The 2026-10-01 bug - edge scroll pinned on a board smaller than the view (cameraPanNoVoid) - must not return: the standard zoom is chosen so the board is larger than the battle area on each axis it can scroll, and on an axis where the board is smaller even at the standard zoom the item's switch says what fills it. Prior art: viewer src/board.js camera pan/zoom limits, tools/xcom-camera-tuning.test.mjs - this changes the limits, it adds no concept.",
+  "expect": "On the Orphanage (20x14) in PLAY.html at a 1920x1080 window: at load and at every wheel step no white space shows beside the board inside the battle area; pointing at each of the four edges scrolls the board until its edge meets the battle area's edge, and no further; the xcom-camera-tuning page test is updated to assert the clamp instead of 'any point of the board can be centred'.",
+  "changesBaseline": false
+ },
+ {
   "id": "viewer.bar-card-and-log",
   "kind": "viewer",
   "shape": "plumbing",

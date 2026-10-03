@@ -3946,3 +3946,15 @@ Ruled:
 - **The action bar's columns — moves, attacks, powers — shift right to make room and are more condensed.**
 - **The log is collapsed by default; an expandable log button opens it, placed out of the way.** The open log panel no longer stands over the board. Where the button goes is the item's switch.
 - Filed: `viewer.bar-card-and-log`.
+
+## 2026-10-03 — the camera never shows white space; pointing at an edge scrolls
+
+Andrew, in the viewer chat, on a screenshot of the Orphanage battle screen (the board filling the upper-left third, blank parchment to its right and below, the log panel open):
+
+“I've got giant amounts of white space, and I can't seem to scroll the map by pointing. There's no reason to ever scroll into white space.”
+
+Ruled:
+
+- **The view never scrolls past the board into white space.** The board fills the battle area at every zoom the wheel allows; the pan stops at the board's edges. Overturns viewer SWITCHES `xcomRoam` (the view's centre may reach any point of the board, "past the board's edge the scene's ground, or its background, shows"), which was the viewer chat's default, not a ruling.
+- **Pointing at an edge scrolls the map** whenever there is board beyond it — 2026-10-01's "pointing to scroll must work every time" still holds; the fix for it must not come from letting the view into the void (the reason `xcomRoam` retired `cameraPanNoVoid`). Read as: the standard zoom is never so far out that the whole board fits with room to spare, so there is always board to scroll to.
+- Filed: `viewer.camera-no-void`, first in the viewer queue.
