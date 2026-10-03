@@ -23057,3 +23057,80 @@ index 0000000..aaf6298
 +})
 ```
 </details>
+
+## viewer.camera-no-void — LANDED `d57e282` **NEEDS REVIEW**
+2026-10-03 02:21
+
+  PASS  dependencies landed
+  WARN  not already decided — 6 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:3958 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.camera-no-void.test.ts, test/xcom-camera-tuning.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.camera-no-void.test.ts, viewer/test/xcom-camera-tuning.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/xcom-camera-tuning.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+fc185e6
+
+diff --git a/test/viewer.camera-no-void.test.ts b/test/viewer.camera-no-void.test.ts
+new file mode 100644
+index 0000000..89d2023
+--- /dev/null
++++ b/test/viewer.camera-no-void.test.ts
+@@ -0,0 +1,23 @@
++// viewer.camera-no-void (engine backlog; engine DECISIONS.md 2026-10-03 'the camera never shows white space; pointing at an edge
++// scrolls'). Andrew: "I've got giant amounts of white space, and I can't seem to scroll the map by pointing. There's no reason to
++// ever scroll into white space." The engine's side: the Orphanage — the battle Andrew played — is a 20 by 14 board. The viewer's
++// half (../viewer/tools/camera-no-void.test.mjs) asks the page: at load, at every wheel step and every quarter turn the battle
++// area shows only board; at the standard zoom there is board beyond it on both axes; pointing at each of the four edges scrolls
++// until the board's edge meets the battle area's, and no further. The tuning's own page tests (xcom-camera.test.mjs,
++// true-3d-camera.test.mjs) now assert the clamp instead of "any point of the board can be centred". Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { MAPS } from '../../engine/src/content/maps.js'
++
++const run = (file: string) => execFileSync(process.execPath, ['--test', '--test-reporter=tap', file], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++
++describe('the camera never shows white space', () => {
++  it('the Orphanage is a 20 by 14 board', () => {
++    const m = MAPS.find((x) => x.id === 'map.opening.orphanage') as any
++    expect([m?.width ?? m?.board?.width, m?.height ?? m?.board?.height]).toEqual([20, 14])
++  })
++  it('the viewer page: only board in the battle area at load, every wheel step and turn; every edge scrolls to the board\'s edge and stops', () => {
++    const out = run('tools/camera-no-void.test.mjs')
++    expect(out).toMatch(/# pass 3/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++})
+diff --git a/test/xcom-camera-tuning.test.ts b/test/xcom-camera-tuning.test.ts
+index 1094607..620e879 100644
+--- a/test/xcom-camera-tuning.test.ts
++++ b/test/xcom-camera-tuning.test.ts
+@@ -4,5 +4,7 @@
+ // Orphanage — the battle Andrew played — is a board the view can roam (20 by 14, smaller than the view at the standard zoom,
+ // which is what pinned the pan). The viewer's half (../viewer/tools/xcom-camera.test.mjs: the wheel's reach, the board's and
+-// the screen's edges; ../viewer/tools/true-3d-camera.test.mjs: any point of the board centred) runs against the page.
++// the screen's edges; ../viewer/tools/true-3d-camera.test.mjs: the pan's clamp) runs against the page. Since viewer.camera-no-void
++// (engine DECISIONS.md 2026-10-03 'the camera never shows white space') the page asserts the clamp — the pan stops where the
++// board's edge meets the view's — instead of "any point of the board can be centred" (viewer SWITCHES xcomRoam, overturned).
+ import { describe, it, expect } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+@@ -16,5 +18,5 @@ describe('the XCOM camera, tuned', () => {
+     expect([m?.width ?? m?.board?.width, m?.height ?? m?.board?.height]).toEqual([20, 14])
+   })
+-  it('the viewer page: the wheel goes further and springs back; every edge scrolls; any point of the board can be centred', () => {
++  it('the viewer page: the wheel goes further and springs back; every edge scrolls; the pan stops at the board\'s edge', () => {
+     expect(run('tools/xcom-camera.test.mjs')).toMatch(/# fail 0/)
+     expect(run('tools/true-3d-camera.test.mjs')).toMatch(/# fail 0/)
+```
+</details>
