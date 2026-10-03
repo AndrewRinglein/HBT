@@ -20,7 +20,7 @@ import {mkdirSync} from 'node:fs'
 const here=dirname(fileURLToPath(import.meta.url)),ROOT=resolve(here,'../..')
 const PAGE=resolve(process.argv[2]??'BATTLE-SANDBOX.html'),SHOT=resolve(process.argv[3]??resolve(here,'../scratch/affliction-pop-up.png'))
 const {chromium}=createRequire(resolve(ROOT,'engine/package.json'))('playwright-core')
-const say=(...a)=>console.log('  '+a.join(' '))
+const T0=Date.now(),say=(...a)=>console.log('  '+a.join(' ')+`  [${((Date.now()-T0)/1000).toFixed(0)} s]`)
 
 const freePort=()=>new Promise((ok,no)=>{const s=createServer();s.on('error',no);s.listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(()=>ok(p))})})
 async function serve(){
@@ -39,7 +39,7 @@ try{
  await page.goto(`http://127.0.0.1:${server.port}/${relative(ROOT,PAGE).replace(/\\/g,'/')}`)
  await page.waitForFunction(()=>!!document.querySelector('[data-act="start"]'),null,{timeout:120000})
  const press=act=>page.evaluate(a=>{const b=document.querySelector(`#commands [data-act="${a}"],[data-act="${a}"]`);if(!b||b.hasAttribute('disabled'))return false;b.click();return true},act)
- assert.ok(await press('start'),'Start battle')
+ assert.ok(await press('start'),'Start battle');say('the page is up, Start pressed')
  await page.waitForFunction(()=>window.__sandbox?.session&&window.__sandbox.viewer,null,{timeout:120000})
  /* what the page holds: the engine's log, the board's cursor, the first affliction a hero gains and the Activation it comes in */
  const look=()=>page.evaluate(()=>{const h=window.__sandbox,s=h.session,ev=s.ctx.events,v=h.viewer
@@ -49,13 +49,21 @@ try{
    pop:!!document.querySelector('#afflPop'),config:s.config}})
  let s=await look(),commands=0
  assert.deepEqual({map:s.config.mapId,heroes:s.config.heroes.length,enemies:s.config.enemies,seed:s.config.seed},{map:'showcase.atlas-priory',heroes:3,enemies:['unit.zombie','unit.zombie','unit.skeleton','unit.skeleton'],seed:1},'the sandbox\'s own battle, as it opens')
- // play it by its buttons: every hero is begun and ended, the enemies answer, until a bite afflicts
- for(let n=0;n<600&&s.gain<0;n++){
-  assert.equal(s.fault,'','no fault');assert.equal(s.outcome,null,`the battle is still on at Turn ${s.turn}`)
-  if(s.busy){await press('skip');s=await look();continue}        /* Show current state (the pump may have run dry by itself) */
-  assert.ok(await press(s.at==='selecting'?'select':'end'),s.at==='selecting'?'Activate hero':'End activation');commands++
-  s=await look()
- }
+ // play it by its buttons: every hero is begun and ended, the enemies answer, until a bite afflicts. The buttons are pressed
+ // in the page, one after another with no frame painted between (62 commands, each resolved and shown at once), so a loaded
+ // machine's software GL is not asked for sixty pictures nobody looks at
+ const played=await page.evaluate(()=>{const h=window.__sandbox,press=a=>{const b=document.querySelector(`[data-act="${a}"]`);if(!b||b.hasAttribute('disabled'))return false;b.click();return true}
+  let commands=0,why=''
+  for(let n=0;n<1200;n++){const s=h.session
+   if(s.ctx.events.some(e=>e.type==='badge.gained'&&e.atZero))break
+   if(h.fault){why='fault: '+h.fault;break}
+   if(s.ctx.state.outcome){why='the battle ended '+s.ctx.state.outcome+' at Turn '+s.ctx.state.turn;break}
+   if(h.busy){press('skip');continue}                       /* Show current state */
+   const act=s.ctx.battleCursor?.at==='selecting'?'select':'end'  /* Activate hero · End activation */
+   if(!press(act)){why='the '+act+' button could not be pressed';break}
+   commands++}
+  return {commands,why}})
+ assert.equal(played.why,'','the battle is played to a bite');commands=played.commands;s=await look()
  assert.ok(s.gain>=0,'a hero is afflicted');assert.equal(s.pop,false,'not shown before the bite is played');assert.ok(s.busy&&s.cursor<=s.gain,'the bite is yet to be played')
  const fact=await page.evaluate(i=>{const s=window.__sandbox.session,e=s.ctx.events[i],u=s.ctx.state.units[e.actor];return {e,name:u.name,typeId:u.typeId,side:u.side,badges:window.__sandbox.viewer._V.data.BADGES,units:Object.fromEntries(Object.entries(window.__sandbox.viewer._V.data.UD).map(([k,v])=>[k,v.name]))}},s.gain)
  assert.equal(fact.side,'hero');say(`after ${commands} commands, Turn ${s.turn}: ${fact.name} (${fact.typeId}) gains ${fact.e.name} from ${fact.e.causeId}`)
@@ -98,7 +106,8 @@ try{
  // the battle pauses on it
  assert.ok(p.held&&p.playing&&p.busy,'the pump is held, the battle waits');assert.equal(p.cursor,s.gain+1,'held right after the gain')
  await page.waitForTimeout(2500);assert.equal((await read()).cursor,p.cursor,'2.5 s on, the battle has not moved')
- await page.screenshot({path:(mkdirSync(dirname(SHOT),{recursive:true}),SHOT)})
+ say('the pop-up checked; taking its picture')
+ await page.screenshot({path:(mkdirSync(dirname(SHOT),{recursive:true}),SHOT),timeout:100000,animations:'disabled'})   /* software GL under a loaded gate: a frame can take long */
  // closed with the mouse, the battle resumes: what was left of the Enemy Phase plays out and the next hero may be begun
  await page.mouse.click(p.close.l+p.close.w/2,p.close.t+p.close.h/2)
  await page.waitForFunction(()=>!document.querySelector('#afflPop'),null,{timeout:5000})
