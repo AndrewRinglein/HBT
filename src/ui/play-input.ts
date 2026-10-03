@@ -14,11 +14,19 @@
 // End Turn and End activation clicks come back here as those commands (kingdom SWITCHES.md playChrome*).
 // viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera': "One character is auto-selected at the start,
 // the map centered on them; when its activation ends, the next in the character bar, left to right, civilians included.
-// Double-click a character in the top bar or on the map to change it."): while the engine waits for a choice, the next
-// hero is PROPOSED here — never begun, since an activation once begun cannot be taken back and runs its start — and the
-// player's first order to it (a click on it, or an action on the bar) begins it (kingdom SWITCHES playQueue*).
+// Double-click a character in the top bar or on the map to change it.").
+// viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed', 'the action bar
+// and its card stay with the activated unit', 'the battle screen's turn-taking, ruled'; overturns kingdom SWITCHES
+// playQueueProposal, playQueueClick, playQueueBarOrder, playQueueOrder): the next un-acted hero, the leftmost the engine lets
+// begin, is BEGUN (next(), which the host calls whenever the engine waits for a choice) with its basic move armed; a single
+// click on a hex shows the path there and plans the attacks from its end, a second click on it (a double-click) moves; a
+// double-click on another hero switches to it only while the one acting has done nothing — its begun Activation is taken
+// back through the host's undo (the engine has no command for it; the battle is restored to before it began) — and is
+// otherwise refused: no partial Activations (the engine's not-current-actor / activation-not-selectable). Every refusal is
+// one plain line (src/ui/refusals.ts), worded from the engine's refusal code (kingdom SWITCHES turn*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,actionReach} from '../engine.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach} from '../engine.js'
+import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
 export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}
@@ -40,9 +48,15 @@ export type Shown={actor:number;actionId:string;target:number;hit:number;dmg:num
 
 const asc=(a:Iterable<number>)=>[...new Set(a)].sort((x,y)=>x-y)
 
-export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleCommand)=>CommandResult){
+/** viewer.turn-taking: the host's undo for an Activation that did nothing — save() before a hero is begun, restore(saved) puts
+    the battle (and the board) back as it was then. Without it a begun hero cannot be switched away from. */
+export type PlayUndo={save():unknown;restore(saved:unknown):boolean}
+export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleCommand)=>CommandResult,undo:PlayUndo|null=null){
  let chosen:string|null=null,ghost:Ghost|null=null,aim:{hex:number;locked:boolean}|null=null,point:number|null=null,note:string|null=null
- let owner:string|null=null,proposed:number|null=null,last:number|null=null
+ let owner:string|null=null
+ /** the Activation this input began: who, the engine's sequence right after (nothing done since while it is unchanged), the
+     battle saved before it began, and the heroes the engine would then have let begin */
+ let begun:{actor:number;seq:number;saved:unknown;queue:number[]}|null=null
  const shown:Shown[]=[]
  // per engine sequence number: the validated choices, the ghost's forecast, each enemy's reach, the hatching
  let cacheSeq=-1,cache:{choices?:SandboxChoice[];swap?:SandboxSwapOffer;forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
@@ -60,22 +74,41 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** a new activation forgets the last one's plan */
  const sync=(s:Sandbox|null)=>{
   const a=s?actorOf(s):null,key=s&&a!=null?`${a}@${s.ctx.state.turn}:${s.ctx.events.filter(e=>e.type==='activation.begin').length}`:null
-  if(key!==owner){owner=key;chosen=null;ghost=null;aim=null;note=null;if(a!==null){last=a;proposed=null}}
+  if(key!==owner){owner=key;chosen=null;ghost=null;aim=null;if(a!==null)note=null}
   return a
  }
- /** the heroes the engine would let begin now, in the character bar's order — the board's: ascending unit id, civilians
-     included (the bar of viewer.unit-card-bar, until it lands; kingdom SWITCHES playQueueOrder) */
+ /** the heroes the engine would let begin now, in the top bar's order — the heroes' side left to right, ascending unit id,
+     civilians included (viewer rail.js; kingdom SWITCHES turnNextLeftmost) */
  const queueOf=(s:Sandbox)=>{const uids=new Set(sandboxActivationChoices(s).map(c=>c.uid));return s.ctx.state.units.filter(u=>uids.has(u.uid)).map(u=>u.id).sort((x,y)=>x-y)}
- /** who acts next: the one double-clicked, else the next to the right of the last to act, round to the left end */
- function proposal():number|null{
+ /** who next() would begin: the leftmost hero yet to act that the engine lets begin (kingdom SWITCHES turnNextLeftmost) */
+ function upcoming():number|null{
   const s=session();if(!s||s.ctx.state.outcome||s.ctx.battleCursor?.at!=='selecting')return null
-  const q=queueOf(s)
-  if(proposed===null||!q.includes(proposed))proposed=q.find(id=>last!==null&&id>last)??q[0]??null
-  return proposed
+  return queueOf(s)[0]??null
  }
- /** the proposed hero's first order begins its activation */
- const begin=(s:Sandbox,id:number)=>{const uid=s.ctx.state.units[id]?.uid;if(uid===undefined)return false
-  const r=run({kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;return r.ok}
+ const nameOf=(s:Sandbox,id:number|null|undefined)=>id==null?null:s.ctx.state.units[id]?.name??null
+ /** begin a hero: the battle saved first (the undo), then the engine's select-activation; its refusal said in a plain line */
+ const begin=(s:Sandbox,id:number,queue:number[])=>{const uid=s.ctx.state.units[id]?.uid;if(uid===undefined)return false
+  const saved=undo?undo.save():null
+  const r=run({kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq})
+  if(!r.ok){note=refusalLine(r.reason,{target:nameOf(s,id)});return false}
+  const now=session()!;cacheSeq=-1;begun={actor:id,seq:now.ctx.state.seq,saved,queue};note=null;return true}
+ /** viewer.turn-taking: while the engine waits for a choice, the next hero yet to act is begun — its basic move armed (moveOf
+     with nothing chosen). The host calls it whenever it is idle; true when a hero was begun. */
+ function next():boolean{
+  const s=session();if(!s||s.ctx.state.outcome||s.ctx.battleCursor?.at!=='selecting')return false
+  const q=queueOf(s),id=q[0];if(id===undefined)return false
+  return begin(s,id,q)
+ }
+ /** why another hero may not be switched to now (the engine said activation-not-selectable): not the player's, has acted
+     or is down — read from the engine's own queue and unit facts — else the one acting must finish (no partial Activations) */
+ function whyNot(s:Sandbox,id:number,actor:number|null):SwitchRefusal{
+  const u=s.ctx.state.units[id]!,target=u.name
+  if(u.side!=='hero'||controllerOf(s.ctx,id,s.policy)!=='human')return {kind:'not-yours',target}
+  if(u.lifeState!=='standing')return {kind:'down',target}
+  if(!heroesYetToAct(s.ctx,s.policy).includes(u.uid)||actor===null)return {kind:'acted',target}
+  const a=s.ctx.state.units[actor]!
+  return {kind:'busy',actor:a.name,did:a.moveUsed?'moved':a.primaryUsed||(begun?.actor===actor&&s.ctx.state.seq!==begun.seq)?'acted':'begun'}
+ }
  /** the move the hero plans with: the chosen move, movement slot first, else primary; with nothing chosen, its first move
      with a legal destination IN THE MOVEMENT SLOT — a move spent as the primary is chosen on the bar (SWITCHES playInputDefaultMove) */
  const moveOf=(s:Sandbox,actor:number)=>{
@@ -110,10 +143,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   return [...by.values()]
  }
  /** the forecast on a use: hit chance and damage are preview()'s (from the ghost, previewFrom's); the notch is the target's HP less the HP each packet would take (SWITCHES playInputNotch) */
- const numbersOf=(s:Sandbox,actor:number,use:Use)=>{
+ const numbersOf=(s:Sandbox,actor:number,use:Use,actionId:string=chosen!)=>{
   const none={hit:null,dmg:null,hpAfter:null,lethal:false}
-  if(use.key!=='target'||!isAttack(s.ctx.actions[chosen!]!))return none
-  const p=ghost?previewFrom(s.ctx,{actor,actionId:ghost.actionId,destination:ghost.destination,slot:ghost.slot},use.value,chosen!):preview(s.ctx,actor,use.value,chosen!)
+  if(use.key!=='target'||!isAttack(s.ctx.actions[actionId]!))return none
+  const p=ghost?previewFrom(s.ctx,{actor,actionId:ghost.actionId,destination:ghost.destination,slot:ghost.slot},use.value,actionId):preview(s.ctx,actor,use.value,actionId)
   if(!p)return none
   const t=s.ctx.state.units[use.value]!
   if('downed' in p&&p.downed)return {hit:p.hitChance,dmg:p.damageOnHit,hpAfter:null,lethal:false}
@@ -149,6 +182,16 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    if(d<bd||(d===bd&&(g.distance(from,h)>g.distance(from,best)||(g.distance(from,h)===g.distance(from,best)&&h<best))))best=h}
   return best
  }
+ /** the attacks the engine lists on the ghost's forecast, one per target hex: the first in the hero's own action order */
+ const pathEndAttacks=(s:Sandbox,actor:number,g:Ghost)=>{
+  const out=new Map<number,{actionId:string;slot:'movement'|'primary';target:number}>(),f=forecastOf(s,actor,g)
+  if(!f.ok)return out
+  for(const id of s.ctx.state.units[actor]!.actions){if(!isAttack(s.ctx.actions[id]!))continue
+   for(const r of f.actions){if(r.actionId!==id||!('target' in r))continue
+    const t=f.ctx.state.units[r.target]!;if(t.side===s.ctx.state.units[actor]!.side)continue
+    if(!out.has(t.hex))out.set(t.hex,{actionId:id,slot:r.slot??'primary',target:r.target})}}
+  return out
+ }
  /** a movement power that goes nowhere (Devotion: stepRange 0): its only legal destination is the hero's own hex */
  const standsStill=(s:Sandbox,actor:number,choices:SandboxChoice[])=>choices.length>0&&choices.every(c=>(c.command as {destination:number}).destination===s.ctx.state.units[actor]!.hex)
 
@@ -168,6 +211,14 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    const to=point!==null&&f.reach.includes(point)?point:ghost?.destination??null
    const c=to===null?undefined:mv.choices.find(c=>(c.command as {destination:number}).destination===to)
    if(c){f.path=[here,...c.path];const fc=forecastOf(s,actor,{actionId:c.command.actionId,slot:c.command.slot??'movement',destination:to!});if(fc.ok)f.provokes=asc(fc.provokes.map(p=>p.at))}
+   /* viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the battle screen's turn-taking, ruled': "It just shows the path ...
+      That way, you can also plan out your attacks from that spot"): while the path is shown (the ghost) and no attack is
+      chosen, whom the hero could strike from its end are the targets — the engine's action list on the ghost's forecast —
+      and pointing at one shows the hit chance and damage of the first attack on its bar the engine lists against it there
+      (previewFrom; kingdom SWITCHES turnPathEndForecast). Choosing an attack on the bar plans that one from the same hex. */
+   if(ghost){const at=pathEndAttacks(s,actor,ghost);f.targets=asc(at.keys())
+    const a=point!==null?at.get(point):undefined
+    if(a)f.aim={from:ghost.destination,to:point!,target:a.target,...numbersOf(s,actor,{hex:point!,key:'target',value:a.target,slot:a.slot},a.actionId),locked:false}}
    return f
   }
   /* engine DECISIONS.md 2026-10-01 (Andrew: "you can't target without an ability selected … what is that red arrow for? I have
@@ -198,8 +249,11 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const command=useCommand(s,actor,u)
   if(!validateBattleCommand(s.ctx,s.policy,command).ok){note='No longer legal; choose again.';done();return true}
   if(u.key==='target'&&numbers.hit!==null&&numbers.dmg!==null)shown.push({actor,actionId:chosen!,target:u.value,hit:numbers.hit,dmg:numbers.dmg,hpAfter:numbers.hpAfter,fromGhost:!!g})
-  const r=run(command);note=r.ok?null:r.reason;done();return true
+  const r=run(command);note=r.ok?null:said(s,r.reason,actor,u.key==='target'?u.value:null,chosen);done();return true
  }
+ /** an engine refusal, as one plain line naming the hero acting, the unit aimed at and the action (src/ui/refusals.ts) */
+ const said=(s:Sandbox,code:string,actor:number|null,target:number|null=null,actionId:string|null=null)=>
+  refusalLine(code,{actor:nameOf(s,actor),target:nameOf(s,target),action:actionId?s.ctx.actions[actionId]?.name??null:null})
 
  /** the ending: End Turn when the engine would take `end-player-phase` now, with the heroes it says have not acted (as unit
      ids, for the pop-up); End activation when it would take `end-cycle` from the hero acting */
@@ -213,19 +267,36 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  function input(e:PlayEvent):boolean{
   const s=session();if(!s||s.ctx.state.outcome)return false
   let actor=sync(s)
-  // viewer.xcom-camera: a double-click on a hero who may begin makes it the next to act
-  if(e.kind==='choose'){if(s.ctx.battleCursor?.at!=='selecting'||!queueOf(s).includes(e.id))return false;proposed=e.id;note=null;return true}
+  /* viewer.turn-taking: a double-click on a hero (its card or its body). While the engine waits for a choice, it begins that
+     hero. While another acts: a switch only while the one acting has done nothing since it was begun (the engine's sequence
+     unchanged) — its Activation is taken back by the host's undo and the one asked for begins — else refused in one line:
+     no partial Activations (the engine answers activation-not-selectable; refusals.ts words why) */
+  if(e.kind==='choose'){
+   if(s.ctx.battleCursor?.at==='selecting'){const q=queueOf(s);if(q.includes(e.id))return begin(s,e.id,q)
+    note=switchLine(whyNot(s,e.id,null));return false}
+   if(actor===null)return false
+   if(e.id===actor){note=null;return true}
+   const uid=s.ctx.state.units[e.id]?.uid;if(uid===undefined)return false
+   const v=validateBattleCommand(s.ctx,s.policy,{kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq})
+   if(v.ok)return begin(s,e.id,queueOf(s))
+   const b=begun,fresh=!!b&&b.actor===actor&&b.seq===s.ctx.state.seq
+   if(fresh&&undo&&b!.saved!==null&&b!.queue.includes(e.id)){
+    if(!undo.restore(b!.saved)){note=switchLine({kind:'busy',actor:s.ctx.state.units[actor]!.name,did:'begun'});return false}
+    begun=null;owner=null;cacheSeq=-1;done()
+    const back=session()!;sync(back)
+    return begin(back,e.id,queueOf(back))}
+   note=v.reason==='activation-not-selectable'?switchLine(whyNot(s,e.id,actor)):said(s,v.reason,actor,e.id);return false}
   // viewer.play-chrome: End Turn (asked first by the viewer's pop-up when ending() names heroes) and End activation
-  if(e.kind==='end-turn'){const r=run({kind:'end-player-phase',expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;if(r.ok)done();return r.ok}
+  if(e.kind==='end-turn'){const r=run({kind:'end-player-phase',expectedSeq:s.ctx.state.seq});note=r.ok?null:said(s,r.reason,actor);if(r.ok)done();return r.ok}
   if(e.kind==='end-activation'){if(actor===null)return false
-   const r=run({kind:'end-cycle',actor,expectedSeq:s.ctx.state.seq});note=r.ok?null:r.reason;if(r.ok)done();return r.ok}
+   const r=run({kind:'end-cycle',actor,expectedSeq:s.ctx.state.seq});note=r.ok?null:said(s,r.reason,actor);if(r.ok)done();return r.ok}
   if(e.kind==='point'){point=e.hex;return true}
   /* movement.swap-and-shields: a hand list chosen on the bar's swap strip is the engine's swap command — before the primary,
      once per activation, at its swapCost; refused (with the engine's reason) when the engine would not take it */
   if(e.kind==='swap'){if(actor===null||e.unit!==actor)return false
    const o=swapOf(s),c=o.choices[e.index]
    if(!c){note=o.why?'Swap: '+o.why+'.':null;return false}
-   const r=run(c.command);note=r.ok?null:r.reason;if(r.ok)done();return r.ok}
+   const r=run(c.command);note=r.ok?null:said(s,r.reason,actor);if(r.ok)done();return r.ok}
   if(e.kind==='back'){note=null
    // right-click steps back ONE stage: the aim, then the ghost, then the chosen action (UI-BUILD-NOTES §5)
    if(aim?.locked){aim=null;return true}
@@ -233,13 +304,12 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    if(chosen!==null){chosen=null;aim=null;return true}
    return false}
   if(e.kind==='slot'){
-   /* viewer.xcom-camera: an action chosen on the proposed hero's bar begins its activation, then is chosen.
-      fix.shield-power-double-click (engine DECISIONS.md 2026-10-01 'a self power fires on a double-click on its bar button'):
-      so does one chosen on the bar of a hero only looked at, when the engine would let it begin now — the bar shown is
-      that hero's, and its order makes it the next (kingdom SWITCHES playQueueBarOrder) */
-   if(actor===null){const p=proposal();if(p===null||e.unit===null)return false
-    if(e.unit!==p){if(!queueOf(s).includes(e.unit))return false;proposed=e.unit}
-    if(!begin(s,e.unit))return false;actor=sync(s);if(actor===null)return true}
+   /* viewer.turn-taking: the bar is the activated hero's (viewer subject.js barUnitOf), so its order is that hero's. While the
+      engine waits for a choice (a free battle, whose launcher keeps its hero dropdown), an action chosen on the bar of a hero
+      the engine would let begin begins it, then is chosen (was playQueueBarOrder's proposed hero) */
+   if(actor===null){if(e.unit===null||s.ctx.battleCursor?.at!=='selecting')return false
+    const q=queueOf(s);if(!q.includes(e.unit))return false
+    if(!begin(s,e.unit,q))return false;actor=sync(session()!);if(actor===null)return true}
    if(e.unit!==actor)return false
    const u=s.ctx.state.units[actor]!
    if(!u.actions.includes(e.actionId)||!s.ctx.actions[e.actionId])return false
@@ -248,10 +318,13 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     /* a power that goes nowhere is used from the bar: chosen, it is planned on the hero's own hex at once; chosen again (or
        the hero clicked) it is used — engine DECISIONS.md 2026-10-01, Devotion: "I can't double-click on it or anything to
        make it trigger" (kingdom SWITCHES playInputStandStill) */
-    if(ghost&&ghost.actionId===e.actionId&&ghost.destination===s.ctx.state.units[actor]!.hex&&chosen===e.actionId){const r=run(moveCommand(s,actor,ghost));note=r.ok?null:r.reason;done();return true}
+    if(ghost&&ghost.actionId===e.actionId&&ghost.destination===s.ctx.state.units[actor]!.hex&&chosen===e.actionId){const r=run(moveCommand(s,actor,ghost));note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();return true}
     if(ghost&&ghost.actionId!==e.actionId)ghost=null;chosen=e.actionId;aim=null
     const mv=moveOf(s,actor)
-    if(!mv?.choices.length){chosen=null;note=`${a.name}: no legal hex now.`;return true}
+    if(!mv?.choices.length){chosen=null
+     /* the engine's own reason this move has no hex now (its slot is spent, it is rooted, not ready …) */
+     const r=validateBattleCommand(s.ctx,s.policy,{kind:'action',actor,actionId:e.actionId,slot:'movement',destination:s.ctx.state.units[actor]!.hex,expectedSeq:s.ctx.state.seq})
+     note=r.ok||r.reason==='unreachable-destination'?`${a.name}: no legal hex now.`:said(s,r.reason,actor,null,e.actionId);return true}
     if(standsStill(s,actor,mv.choices)){const c=mv.choices[0]!;ghost={actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost
      note=`${a.name}: click it again, or the hero, to use it.`;return true}
     note=null;return true}
@@ -264,26 +337,44 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    chosen=e.actionId;aim=null
    if(selfOnly(s,e.actionId)){const u=usesOf(s,actor).find(x=>x.key==='target'&&x.value===actor)
     if(u){aim={hex:u.hex,locked:true};note=`${a.name}: click it again, or the hero, to use it.`;return true}}
-   note=usesOf(s,actor).length?null:`${a.name}: nothing in reach${ghost?' from the ghost':''}.`;return true}
+   note=usesOf(s,actor).length?null:`${a.name}: nothing in reach${ghost?' from the end of the path':''}.`;return true}
   if(e.kind==='unit'){
-   /* viewer.xcom-camera: a click on the proposed hero begins it; another hero is only looked at (a double-click chooses it) */
-   if(s.ctx.battleCursor?.at==='selecting')return e.id===proposal()&&begin(s,e.id)
+   /* viewer.turn-taking: a single click on a unit looks at it (the viewer's panel); it is an order only with an action chosen
+      that can be aimed there (an attack, a power), or on the hero acting (a power that goes nowhere, a self power) */
    if(actor===null)return false
-   return useAt(s,actor,e.hex)}
+   if(e.id===actor){useAt(s,actor,e.hex,'self');return true}   // the hero acting, clicked: taken (it is already the one acting)
+   return chosen!==null&&!isMove(s.ctx.actions[chosen]!)?useAt(s,actor,e.hex,'unit',e.id):false}
   // a hex
   if(actor===null)return false
-  return useAt(s,actor,e.hex)
+  return useAt(s,actor,e.hex,'hex')
  }
- function useAt(s:Sandbox,actor:number,hex:number):boolean{
+ /** a click at a hex: plans (a ghost, an aim) or confirms; a click that is no order says why, as the engine words it — a hex
+     the armed move cannot reach, a target out of the chosen action's reach (viewer.turn-taking point 5) */
+ function useAt(s:Sandbox,actor:number,hex:number,how:'hex'|'unit'|'self',target:number|null=null):boolean{
   const mv=moveOf(s,actor)
-  if(mv){const c=mv.choices.find(c=>(c.command as {destination:number}).destination===hex);if(!c)return false
+  if(mv){const c=mv.choices.find(c=>(c.command as {destination:number}).destination===hex)
+   if(!c){if(how==='hex'){const slot=mv.choices[0]?.command.slot??'movement'
+     const r=validateBattleCommand(s.ctx,s.policy,{kind:'action',actor,actionId:mv.actionId,slot,destination:hex,expectedSeq:s.ctx.state.seq})
+     note=r.ok?null:said(s,r.reason,actor,null,mv.actionId)}
+    return false}
    const g={actionId:c.command.actionId,slot:c.command.slot??'movement',destination:hex} as Ghost
-   if(ghost&&ghost.destination===hex&&ghost.actionId===g.actionId){const r=run(moveCommand(s,actor,g));note=r.ok?null:r.reason;done();return true}
+   if(ghost&&ghost.destination===hex&&ghost.actionId===g.actionId){const r=run(moveCommand(s,actor,g));note=r.ok?null:said(s,r.reason,actor,null,g.actionId);done();return true}
    ghost=g;note=null;return true}
-  const u=usesOf(s,actor).find(u=>u.hex===hex);if(!u)return false
+  if(chosen===null){
+   /* nothing armed and no move left: the engine's reason a walk there is refused (its movement is spent) */
+   if(how==='hex'){const basic=s.ctx.state.units[actor]!.actions.find(id=>isMove(s.ctx.actions[id]!))
+    if(basic){const r=validateBattleCommand(s.ctx,s.policy,{kind:'action',actor,actionId:basic,slot:'movement',destination:hex,expectedSeq:s.ctx.state.seq});note=r.ok?null:said(s,r.reason,actor,null,basic)}}
+   return false}
+  const u=usesOf(s,actor).find(u=>u.hex===hex)
+  if(!u){if(how!=='self'){
+    /* the engine's own refusal of this use: aimed at the unit clicked, else at the hex (a burst's centre, a blow at a prop) */
+    const aimAt=target!==null?{target}:isBurst(s.ctx.actions[chosen]!)?{centre:hex}:{hex}
+    const r=validateBattleCommand(s.ctx,s.policy,{kind:'action',actor,actionId:chosen,expectedSeq:s.ctx.state.seq,...aimAt} as BattleCommand)
+    note=r.ok?null:said(s,r.reason,actor,target,chosen)}
+   return false}
   if(aim?.locked&&aim.hex===hex)return confirmUse(s,actor,u)
   aim={hex,locked:true};note=null;return true
  }
- return {facts,ending,input,proposal,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ return {facts,ending,input,next,upcoming,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>

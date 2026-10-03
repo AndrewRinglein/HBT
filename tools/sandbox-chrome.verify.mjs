@@ -23,19 +23,24 @@ select('encounter','encounter.opening.orphanage');click('start');settle()
 // booleans only: a failing assert.equal on a DOM node prints the whole page
 for(const id of ['actor','action','aim','swap'])assert.ok(w.document.getElementById(id)===null,id+' dropdown retired')
 for(const act of acts)assert.ok(!root.els.some(e=>e.dataset.act===act),act+' button retired')
-assert.equal(ctx().battleCursor.at,'selecting')
-assert.ok(on('playEndTurn'),'End Turn may be given'); assert.ok(!on('playEndAct'),'no hero is acting')
-// a hero clicked to act, ended with the screen's End activation
+/* Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed'; kingdom
+   SWITCHES playQueueProposal overturned): when the engine waits for a choice the next hero yet to act is BEGUN, so the board
+   settles with a hero acting — was: the battle settled at 'selecting', no hero acting */
 const heroes=handle.session.policy.humanUnitUids.map(uid=>ctx().state.units.find(u=>u.uid===uid))
+assert.equal(ctx().battleCursor.at,'acting');assert.equal(ctx().battleCursor.actor,heroes[0].id,'the first hero is begun')
+assert.ok(on('playEndTurn'),'End Turn may be given')
+// the hero acting, clicked, ended with the screen's End activation
 figure(heroes[0].id).handlers.click({detail:1});settle()
 assert.equal(ctx().battleCursor.actor,heroes[0].id);assert.ok(on('playEndAct'),'End activation while a hero acts')
 press('playEndAct');settle()
-assert.equal(ctx().battleCursor.at,'selecting','End activation ended it')
+assert.ok(ctx().events.some(e=>e.type==='activation.end'&&e.actor===heroes[0].id),'End activation ended it')
+assert.equal(ctx().battleCursor.actor,heroes[1].id,'and the next hero yet to act is begun')
 // End Turn with two heroes yet to act: the pop-up asks, on the page
 const before=ctx().events.length
 press('playEndTurn')
 assert.ok(shown('playAsk'),'the pop-up shows');assert.equal($('playAskText').textContent,ASK)
-for(const h of heroes.slice(1))assert.ok($('playAskWho').textContent.includes(h.name),'it names '+h.name)
+// Law 10, viewer.turn-taking: heroes[1] is acting (begun), so the pop-up names those after it — was: heroes.slice(1)
+for(const h of heroes.slice(2))assert.ok($('playAskWho').textContent.includes(h.name),'it names '+h.name)
 assert.equal(ctx().events.length,before,'nothing happens until it is answered')
 press('playAskNo');assert.ok(!shown('playAsk'));assert.equal(ctx().events.length,before,'Keep playing ends nothing')
 // 2x
@@ -45,12 +50,15 @@ const rows=()=>$('playLog').children.length,logBefore=rows()
 press('playEndTurn');press('playAskYes')
 assert.ok(!shown('playAsk'))
 const forgone=ctx().events.slice(before).filter(e=>e.type==='activation.forgone').map(e=>e.unitUid)
-assert.deepEqual(forgone.sort(),heroes.slice(1).map(h=>h.uid).sort(),'the heroes yet to act forgo')
+/* Law 10, viewer.turn-taking: heroes[1] was begun when heroes[0] ended, so End Turn closes its cycle (as end-cycle) and the rest
+   forgo — was: every hero after the first forgoes */
+assert.deepEqual(forgone.sort(),heroes.slice(2).map(h=>h.uid).sort(),'the heroes yet to act forgo')
+assert.ok(ctx().events.slice(before).some(e=>e.type==='activation.end'&&e.actor===heroes[1].id),'the hero acting has its cycle closed')
 assert.ok(ctx().events.slice(before).some(e=>e.type==='activation.begin'&&ctx().state.units[e.actor].side==='enemy'),'the Enemy Phase ran')
 assert.ok(handle.busy,'the resolved actions are playing');assert.ok(!on('playEndTurn'),'End Turn is off while they play')
 let played=0;for(let n=0;n<600&&handle.busy;n++){w._flush(250);played++}
 assert.equal(handle.busy,false,'the Enemy Phase played to its end');assert.ok(played>4,'beat by beat, not at once')
 assert.ok(rows()>logBefore,'the log grew as it played')
 assert.equal(V().cursor,ctx().events.length,'every event played')
-assert.equal(ctx().state.turn,2);assert.equal(ctx().battleCursor.at,'selecting');assert.ok(on('playEndTurn'),'Turn 2: End Turn again')
+assert.equal(ctx().state.turn,2);assert.equal(ctx().battleCursor.at,'acting');assert.ok(on('playEndTurn'),'Turn 2: End Turn again')
 console.log('sandbox chrome: dropdowns retired for battle 1 (kept for a free battle), End activation on the screen, End Turn asks on the page and names the heroes, Keep playing ends nothing, End Turn forgoes them and the Enemy Phase plays beat by beat, 2x, the log grows passed')

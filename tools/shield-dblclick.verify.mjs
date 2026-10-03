@@ -4,10 +4,11 @@
 // I should be able to double-click on it in the bar and have it activate."
 // This drives the BUILT page in a real browser (Chrome, through playwright-core) with real mouse events — never a handler
 // called by hand — over a local server, so the 3D board picks the hero under the pointer as it does for Andrew:
-//   1. the Iron Dwarf, proposed to act first, double-clicks Cover on its bar;
-//   2. the Battle Chaplain, clicked on the board (only looked at — another hero is proposed), double-clicks Turn Aside;
+//   1. the Iron Dwarf, begun first (viewer.turn-taking; was: proposed), double-clicks Cover on its bar;
+//   2. the Battle Chaplain, double-clicked on the board (switched to while the Dwarf has done nothing — viewer.turn-taking;
+//      was: clicked, only looked at, its bar shown), double-clicks Turn Aside;
 //   3. on a fresh battle, the Iron Dwarf clicks Stand Tall on its bar, then clicks itself on the board;
-//   4. the Battle Chaplain, clicked on the board to look at it, clicks Brace on its bar, then clicks itself.
+//   4. the Battle Chaplain, double-clicked on the board (switched to, as in 2), clicks Brace on its bar, then clicks itself.
 // For each: did the engine use the power, what stamina it cost against the row's staminaCost, does the battle log on the
 // screen name it, and does the board show it (the hero's folded stat mods from the power, its figure's badge).
 //
@@ -54,6 +55,14 @@ try{
   await page.mouse.click(at.x,at.y)
  }
  const row=(page,power)=>page.locator(`#actionbar .acRow[data-act="${power}"]`)
+ /** Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the action bar and its card stay with the activated unit'): a
+     click on another hero only shows it in the panel — the bar stays the Iron Dwarf's — so the Battle Chaplain's own bar is
+     reached by a double-click on its body, which switches to it while the Dwarf has done nothing (it is then the hero looked
+     at and the one acting). was: clickHero alone, the bar following the click (kingdom SWITCHES playQueueBarOrder) */
+ async function switchTo(page,id){
+  const at=await page.evaluate(id=>{const r=window.__sandbox.viewer._V.layers.UEL.get(id).img.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height*0.6}},id)
+  await page.mouse.dblclick(at.x,at.y)
+ }
  /** what the battle says now about this hero and this power */
  const look=(page,id,power)=>page.evaluate(([id,power])=>{const s=window.__sandbox.session,ctx=s.ctx,V=window.__sandbox.viewer._V,u=ctx.state.units[id]
   const log=[...V.dom.root.querySelector('#playLog').children].map(n=>n.textContent.replace(/\s+/g,' ').trim())
@@ -73,10 +82,10 @@ try{
  // 1. the hero proposed first double-clicks a shield power on its bar
  await fresh('double-click on the bar, the hero proposed','hero.base.warrior-iron','power.tower-shield.cover',page=>row(page,'power.tower-shield.cover').dblclick())
  // 2. another shield-holder, clicked on the board to look at it, double-clicks one of its own
- await fresh('double-click on the bar of the hero looked at','hero.base.priest-armored','power.round-shield.turn-aside',async(page,id)=>{await clickHero(page,id);await settle(page);await row(page,'power.round-shield.turn-aside').dblclick()})
+ await fresh('double-click on the bar of the hero looked at','hero.base.priest-armored','power.round-shield.turn-aside',async(page,id)=>{await switchTo(page,id);await settle(page);await row(page,'power.round-shield.turn-aside').dblclick()})
  // 3. the power clicked on the bar, then the hero clicked on the board
  await fresh('click on the bar, then the hero','hero.base.warrior-iron','power.tower-shield.stand-tall',async(page,id)=>{await row(page,'power.tower-shield.stand-tall').click();await settle(page);await clickHero(page,id)})
  // 4. the same on the hero looked at
- await fresh('click on the bar of the hero looked at, then the hero','hero.base.priest-armored','power.round-shield.brace',async(page,id)=>{await clickHero(page,id);await settle(page);await row(page,'power.round-shield.brace').click();await settle(page);await clickHero(page,id)})
+ await fresh('click on the bar of the hero looked at, then the hero','hero.base.priest-armored','power.round-shield.brace',async(page,id)=>{await switchTo(page,id);await settle(page);await row(page,'power.round-shield.brace').click();await settle(page);await clickHero(page,id)})
 }finally{await browser.close();server.stop()}
 process.stdout.write(JSON.stringify(record))

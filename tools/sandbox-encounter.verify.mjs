@@ -33,6 +33,7 @@ assert.deepEqual([ctx().state.board.width,ctx().state.board.height],[20,14])
 const players=handle.session.policy.humanUnitUids,civilians=ctx().state.units.filter(u=>u.side==='hero').slice(handle.session.config.heroes.length)
 assert.deepEqual(civilians.map(u=>u.typeId).sort(),['hero.fixed.orphans','hero.fixed.school-teacher'])
 assert.deepEqual([...players].sort((a,b)=>a-b),ctx().state.units.filter(u=>u.side==='hero').map(u=>u.uid).sort((a,b)=>a-b),'the player plays the heroes and the civilians')
+settle()   // Law 10, viewer.turn-taking: the first hero is begun as the battle opens (its events play); was: read at once
 const offered=handle.viewer._V.play.endTurn.yetToAct.map(id=>ctx().state.units[id].uid)   // was: [...w.document.getElementById('actor').children].map(o=>Number(o.getAttribute('value')))
 assert.ok(offered.length>0&&offered.every(uid=>players.includes(uid)),'only the player\'s units are offered to the player')
 for(const c of civilians)assert.ok(offered.includes(c.uid),c.typeId+' is offered to the player, as a hero is')

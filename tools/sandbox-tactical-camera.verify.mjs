@@ -23,7 +23,11 @@ const yaw0=V.view.cam.yaw;key('e');assert.equal(V.view.cam.yaw,yaw0,'the pointer
 fire(wrap,'pointerenter');key('e');assert.equal(V.view.cam.yaw,yaw0+90,'over the board: E turns 90°')
 key('ArrowLeft');assert.equal(V.view.cam.yaw,yaw0,'the left arrow: 90° back')
 viewer.resetView();assert.deepEqual(V.view.cam,{yaw:0,tilt:50,zoom:1},'the reset: the starting angled view')
-const proposed=w.__sandbox.session.ctx.battleCursor.at==='selecting'?V.view.inspectId:null
-assert.ok(proposed!=null&&V.S.U[proposed]?.side==='hero','the hero proposed to act is the one looked at')
+/* Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed'; kingdom
+   SWITCHES playQueueProposal overturned): the first hero is begun, not proposed and looked at — was: at 'selecting', the
+   proposed hero is V.view.inspectId */
+if(w.__sandbox.busy)w.__sandbox.viewer.seek(w.__sandbox.session.ctx.events.length)
+const proposed=w.__sandbox.session.ctx.battleCursor.at==='acting'?w.__sandbox.session.ctx.battleCursor.actor:null
+assert.ok(proposed!=null&&V.S.U[proposed]?.side==='hero','the hero acting is the one shown')
 assert.notEqual(V.dom.root.querySelector('#unitPortrait').style.display,'none','with its portrait in the lower-left corner')
-console.log('sandbox XCOM camera: the built sandbox adopts the shared camera (40° fixed, no bar, Overhead by call and back exactly, scoped 90° turns, reset by call, the proposed hero looked at with its portrait) through the component passed')
+console.log('sandbox XCOM camera: the built sandbox adopts the shared camera (40° fixed, no bar, Overhead by call and back exactly, scoped 90° turns, reset by call, the hero acting shown with its portrait) through the component passed')

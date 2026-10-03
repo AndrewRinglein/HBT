@@ -18,11 +18,15 @@ function battle(hero: string) {
 }
 
 describe('the swap on the board, through the play input', () => {
-  it('no swap while the hero is only proposed; once it acts, the engine\'s offer and cost', () => {
+  /* Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed';
+     kingdom SWITCHES playQueueProposal overturned): no hero is "only proposed" any more — a double-click (choose) begins it.
+     was: P.input(choose) first, then no swap "while the hero is only proposed", then a click on it began it. Now: no swap
+     before any hero is begun; begun by the choice, the engine's offer and cost at once */
+  it('no swap before the hero is begun; once it acts, the engine\'s offer and cost', () => {
     const { s, P, id, me } = battle('hero.base.paladin-hunk')
-    P.input({ kind: 'choose', id })
     expect(P.facts().swap).toBeUndefined()
     expect(P.input({ kind: 'swap', index: 0, unit: id })).toBe(false)
+    expect(P.input({ kind: 'choose', id })).toBe(true)
     expect(P.input({ kind: 'unit', id, hex: me().hex })).toBe(true)
     const offer = sandboxSwapChoices(s)
     expect(P.facts().swap).toEqual({ cost: offer.cost, choices: offer.choices.map((c) => ({ label: c.label })), why: null })
@@ -73,7 +77,8 @@ describe('a shield power on the bar of a hero only looked at', () => {
     advanceSandbox(s)
     const P = createPlayInput(() => s, (c) => commandSandbox(s, c))
     const chaplain = s.ctx.state.units.find((u) => u.typeId === 'hero.base.priest-armored')!, power = 'power.round-shield.turn-aside'
-    expect(P.proposal()).not.toBe(chaplain.id)
+    /* Law 10, viewer.turn-taking: proposal() is retired with playQueueProposal; upcoming() names who next() would begin */
+    expect(P.upcoming()).not.toBe(chaplain.id)
     const stamina = chaplain.stamina, n = s.ctx.events.length
     expect(P.input({ kind: 'slot', actionId: power, unit: chaplain.id })).toBe(true)
     expect([s.ctx.battleCursor?.at, s.ctx.battleCursor?.actor]).toEqual(['acting', chaplain.id])

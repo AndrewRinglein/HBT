@@ -10,6 +10,8 @@ declare module '*viewer/src/viewer.js' {
     centre(id:number):void
     push(events: readonly unknown[]): void
     seek(cursor: number): void
+    /** viewer.turn-taking: the log cut back to its first `events` (an Activation that did nothing, taken back) and folded again */
+    rewind(events: number): void
     play(): void
     pause(): void
     readonly cursor:number

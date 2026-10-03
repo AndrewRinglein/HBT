@@ -25,7 +25,10 @@ const endActivation=()=>V().dom.root.querySelector('#playEndAct').handlers.click
 const enemies=()=>ctx().state.units.filter(u=>u.side==='enemy'&&u.lifeState==='standing')
 const near=h=>Math.min(...enemies().map(u=>ctx().geo.distance(h,u.hex)))
 settle()
-assert.equal(ctx().battleCursor.at,'selecting')
+/* Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed'; kingdom
+   SWITCHES playQueueProposal overturned): when the engine waits for a choice the next hero yet to act is BEGUN, so the board
+   settles with a hero acting — was: the battle settled at 'selecting', no hero acting */
+assert.equal(ctx().battleCursor.at,'acting')
 assert.ok(stage().querySelectorAll('.playHex').length===ctx().state.terrain.length,'every board hex takes the mouse')
 // pointing at the Zombie with nothing chosen: where it can move and hit
 const z=enemies()[0];figure(z.id).handlers.pointerenter({})

@@ -94,7 +94,9 @@ v.click('field','encounter.opening.orphanage');toBattle(v)
 assert.equal(v.handle.session.config.encounterId,'encounter.opening.orphanage','clicking the Orphanage fields its encounter')
 assert.ok(!v.shown(),'the map gives way to the battle')
 assert.ok(v.w.document.body.classList.contains('battle-view'),'the battle is its own full screen')
-assert.equal(v.handle.session.ctx.battleCursor.at,'selecting','the Hero Phase waits for a hero to be clicked')
+// Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed'; kingdom
+// SWITCHES playQueueProposal overturned): the Hero Phase begins its first hero at once — was: 'selecting', waiting for a click
+assert.equal(v.handle.session.ctx.battleCursor.at,'acting','the Hero Phase begins its first hero')
 
 /* 3 · a hero win: "Back to the map", and the map shows the Orphanage taken and the Lumberjack House next */
 const transfer=()=>v.w.document.getElementById('transferText')

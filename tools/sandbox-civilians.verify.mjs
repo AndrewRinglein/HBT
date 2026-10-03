@@ -11,7 +11,9 @@ const settle=()=>{if(handle.busy)click('skip');assert.equal(handle.busy,false)}
 const hexBtn=h=>stage().querySelectorAll('.playHex').find(n=>+n.dataset.hex===h)
 const drawn=cls=>stage().querySelectorAll('.'+cls).map(n=>+n.dataset.hex).sort((a,b)=>a-b)
 const figure=id=>V().layers.UEL.get(id).img
-settle();assert.equal(ctx().battleCursor.at,'selecting')
+/* Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed'; kingdom
+   SWITCHES playQueueProposal overturned): the first hero is begun as the battle opens — was: 'selecting', a hero proposed */
+settle();assert.equal(ctx().battleCursor.at,'acting')
 const civilians=ctx().state.units.filter(u=>u.side==='hero').slice(handle.session.config.heroes.length)
 assert.deepEqual(civilians.map(u=>u.typeId).sort(),['hero.fixed.orphans','hero.fixed.school-teacher'],'battle 1 fields its two civilians')
 const yet=V().play.endTurn.yetToAct
@@ -20,9 +22,11 @@ const child=civilians.find(u=>u.typeId==='hero.fixed.orphans')
 /* Law 10 (viewer.xcom-camera, 2026-10-01): engine DECISIONS.md 2026-10-01 'the XCOM-style camera', Andrew: "Double-click a
    character … to change it" — the Child, not the hero proposed first, is chosen by the double-click's offer (the board's
    dblclick sends {kind:'choose'}), then clicked; a click alone starts only the proposed hero */
+/* Law 10, viewer.turn-taking ('the battle screen's turn-taking, ruled', point 4): the double-click switches to the Child while
+   the hero begun first has done nothing, and the Child acts at once (was: chosen as the next, then a click began it) */
 V().offerPlay({kind:'choose',id:child.id});settle()
 figure(child.id).handlers.click({detail:1});settle()
-assert.equal(ctx().battleCursor.at,'acting');assert.equal(ctx().battleCursor.actor,child.id,'choosing, then clicking, the Orphan Child started its activation')
+assert.equal(ctx().battleCursor.at,'acting');assert.equal(ctx().battleCursor.actor,child.id,'double-clicking the Orphan Child started its activation')
 const reach=drawn('playReach');assert.ok(reach.length>0,'where the child can move is lit')
 const dest=reach.find(h=>!ctx().state.units.some(u=>u.hex===h&&u.lifeState!=='dead'))
 hexBtn(dest).handlers.pointerenter({});hexBtn(dest).handlers.click({detail:1});hexBtn(dest).handlers.click({detail:1});settle()

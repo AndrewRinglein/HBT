@@ -30,15 +30,17 @@ function battle(hero){
  /** on to the next Turn: End Turn in the corner — the civilians, played too, have not acted, so its pop-up asks and is
      answered End Turn — then the Enemy Phase plays, and the heroes choose again */
  const nextTurn=()=>{const t=ctx().state.turn;settle()
+  /* Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed';
+     kingdom SWITCHES playQueueProposal overturned): when an Activation ends the next yet to act is begun, so End Turn is given
+     with a civilian acting and the next Turn opens with the hero begun — was: 'selecting' before End Turn and after it */
   for(let n=0;n<10&&ctx().state.turn===t&&!ctx().state.outcome;n++){
-   assert.equal(ctx().battleCursor?.at,'selecting','the hero activation is over')
    V().dom.root.querySelector('#playEndTurn').handlers.click({})
    const ask=V().dom.root.querySelector('#playAsk');if(ask.style.display!=='none')V().dom.root.querySelector('#playAskYes').handlers.click({})
    settle()}
-  assert.equal(ctx().state.outcome??null,null,'the battle goes on');assert.equal(ctx().state.turn,t+1,'the next Turn');assert.equal(ctx().battleCursor?.at,'selecting','the heroes choose again')}
- /** the battle's civilians are played too, so the hero proposed to act next may be another: a double-click on the hero's
-     card in the top bar makes it the next to act (viewer.xcom-camera) */
- const choose=()=>{V().dom.rail.querySelectorAll('.railchip').find(c=>+c.dataset.i===me().id).handlers.dblclick({});assert.equal(V().play?.actor??null,null)}
+  assert.equal(ctx().state.outcome??null,null,'the battle goes on');assert.equal(ctx().state.turn,t+1,'the next Turn');assert.ok(acting(),'the hero, leftmost, is begun again')}
+ /** a double-click on the hero's card in the top bar: it is the hero acting, or (while the one acting has done nothing) it
+     becomes so — viewer.turn-taking; was viewer.xcom-camera's "makes it the next to act", proposed and not begun */
+ const choose=()=>{V().dom.rail.querySelectorAll('.railchip').find(c=>+c.dataset.i===me().id).handlers.dblclick({});settle();assert.ok(acting(),'the hero acts')}
  const begin=()=>{choose();figure(me().id).handlers.click({detail:1});settle();assert.ok(acting(),'clicking the hero begins its activation')}
  /** a shield power from the bar: its row clicked, then clicked again */
  function usePower(id){
@@ -53,15 +55,18 @@ function battle(hero){
   out.logNamed=!!used&&log().some(l=>l.includes('uses '+used['name']))
   return out
  }
+ /* viewer.turn-taking: as the battle opens the hero's begun Activation is still playing — no plan facts, so no swap on the bar
+    until it acts (was: measured while the hero was only proposed, at 'selecting') */
+ const noSwapBefore=!swapStrip()
  settle()
- assert.equal(ctx().battleCursor?.at,'selecting')
- return {w,V,ctx,settle,me,row,swapStrip,swapButtons,log,acting,nextTurn,choose,begin,usePower,figure}
+ assert.ok(acting(),'the hero, leftmost in the top bar, is begun')
+ return {w,V,ctx,settle,me,row,swapStrip,swapButtons,log,acting,nextTurn,choose,begin,usePower,figure,noSwapBefore}
 }
 
 const record={swap:null,back:null,powers:[]}
 {// 1. the Lion of the Host: the swap, the refusal, the swap back, the Kite Shield's two powers
  const B=battle('hero.base.paladin-hunk')
- const noSwapWhileChoosing=!B.swapStrip()
+ const noSwapWhileChoosing=B.noSwapBefore
  B.begin()
  const id=B.me().id,before=B.me().stamina,handsBefore=B.me().loadout.hands.map(i=>i.itemId)
  const strip=B.swapStrip();assert.ok(strip,'the swap is on the action bar')
@@ -98,7 +103,7 @@ for(const [hero,first,second] of [['hero.base.priest-armored','power.round-shiel
  B.begin()
  record.powers.push(B.usePower(first))
  B.nextTurn();B.choose()
- // the next Turn the hero is proposed, not begun: its power clicked on the bar begins its activation (viewer.xcom-camera)
+ // the next Turn the hero is begun again (viewer.turn-taking; was: proposed, its power on the bar beginning it)
  record.powers.push(B.usePower(second))
 }
 process.stdout.write(JSON.stringify(record))

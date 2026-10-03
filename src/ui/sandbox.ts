@@ -6,6 +6,7 @@ import {burstForecast} from './burst-forecast.js'
 import {sandboxTargetingOf} from './sandbox-targeting.js'
 import {controllerOf,validateBattleCommand,type BattleCommand} from '../engine.js'
 import {createPlayInput,type PlayEvent} from './play-input.js'
+import {refusalLine} from './refusals.js'
 import {ABBOTOWN_MAP} from '../content/conquest.js'
 import {conquestProgress,takeSection,nextSection} from '../core/conquest.js'
 import {conquestMapHTML} from './conquest-map.js'
@@ -34,23 +35,40 @@ let session:Sandbox|null=null,surface:ReturnType<typeof createBattleSurface>|nul
 const config:SandboxConfig=structuredClone(SANDBOX_DEFAULT)
 // viewer.play-input (PLAYABLE-OPENING-PLAN.md item 7): the mouse on the battle screen. The play input asks the engine and
 // runs each command it makes through the same host path the Execute button uses; the viewer draws its facts.
-const play=createPlayInput(()=>session,runPlay)
+// viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the battle screen's turn-taking, ruled', point 4): the play input's undo
+// for an Activation that did nothing — the battle saved before a hero is begun (the sandbox's own save, the engine's
+// snapshot) with the count of events the board then held; restored, the session is that battle again and the board's log is
+// cut back to it (viewer rewind). The engine has no command to take a begun Activation back (kingdom SWITCHES turnSwitchUndo).
+const play=createPlayInput(()=>session,runPlay,{
+ save:()=>session?{text:saveSandbox(session),events:session.ctx.events.length}:null,
+ restore:(saved)=>{const m=saved as {text:string;events:number}|null;if(!m||!session||!surface?.viewer||busy||fault)return false
+  const back=restoreSandbox(m.text) as Sandbox,atlas=session.atlasScene
+  if(back.ctx.events.length!==m.events)throw Error('The restored battle does not hold the events saved with it')
+  session=atlas&&!back.atlasScene?{...back,atlasScene:atlas}:back
+  surface.viewer.rewind(m.events);return true},
+})
 function runPlay(command:BattleCommand){
  if(!session||!surface?.viewer)return {ok:false as const,reason:'Start a battle first'}
  const before=session.ctx.events.length
  let result:ReturnType<typeof commandSandbox>
  try{result=commandSandbox(session,command)}catch(e){fault=(e as Error).message;error=fault;busy=false;throw e}
- if(!result.ok){error=result.reason;return result}
+ /* viewer.turn-taking point 5: a refusal is one plain line — on the board (the play input's note); a free battle's launcher
+    says it too, in words, never the engine's code */
+ if(!result.ok){if(!boardOnly())error=refusalLine(result.reason);return result}
  error='';busy=true;surface.viewer.push(session.ctx.events.slice(before));surface.viewer.play()
  return result
 }
 /** the plan facts while a human can act; none while the resolved actions play, after a fault or at the outcome.
     viewer.play-chrome: with them the ending — End Turn (and who has not acted, for its pop-up) and End activation */
-function refreshPlay(){if(!surface?.viewer)return;surface.viewer.setPlay(!session||busy||fault||session.ctx.state.outcome?null:{...play.facts(),...play.ending()})
- /* viewer.xcom-camera: the hero proposed to act next is the one shown, the map centred on it */
- const next=!session||busy||fault?null:play.proposal()
- if(next!==shownProposal){shownProposal=next;if(next!==null){surface.viewer.inspect(next);surface.viewer.centre(next)}}}
-let shownProposal:number|null=null
+function refreshPlay(){if(!surface?.viewer)return;surface.viewer.setPlay(!session||busy||fault||session.ctx.state.outcome?null:{...play.facts(),...play.ending()})}
+/** viewer.turn-taking (engine DECISIONS.md 2026-10-03, points 2 and 6): whenever the engine waits for a choice in a battle
+    played on the board — the Hero Phase's start, an Activation ended — and nothing is playing, the next hero yet to act is
+    begun with its basic move armed; the board centres on it as its Activation begins (viewer board.js). A free battle keeps
+    its launcher's hero dropdown (kingdom SWITCHES turnAutoBeginBoardOnly). */
+function beginNext(){
+ if(!session||!surface?.viewer||busy||fault||session.ctx.state.outcome||!boardOnly()||session.ctx.battleCursor?.at!=='selecting')return
+ try{play.next()}catch(e){fault=(e as Error).message;error=fault;busy=false}
+}
 /** viewer.play-chrome (PLAYABLE-OPENING-PLAN.md item 8: "the Sandbox's dropdowns retired for these battles"): an encounter
     battle — every sandbox encounter is an opening battle (content/sandbox.ts SANDBOX_ENCOUNTERS) — is played on the board
     alone: no hero, action, target or swap dropdown, no Execute or End activation button (kingdom SWITCHES.md playChromeBoardOnly) */
@@ -251,6 +269,7 @@ function swapControl(selecting:boolean){
  return `<label>Swap — hold afterwards <select id="swap"${off||!swap.choices.length?' disabled':''}>${swap.choices.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedSwap?' selected':''}>${escape(c.label)}</option>`).join('')}</select></label><button data-act="swap"${off||!swap.choices.length?' disabled':''}>Swap (${swap.cost} stamina)</button>${swap.why?`<p id="swapWhy">Swap unavailable: ${escape(swap.why)}</p>`:''} `
 }
 function controls(){
+ beginNext()
  surface?.viewer?.setTargeting(null)
  try{choices=session&&!fault?sandboxChoices(session):[];swap=session&&!fault?sandboxSwapChoices(session):null}catch(e){fault=(e as Error).message;error=fault;busy=false;choices=[];swap=null}
  if(!swap?.choices.some(c=>JSON.stringify(c.command)===selectedSwap))selectedSwap=swap?.choices[0]?JSON.stringify(swap.choices[0].command):''
@@ -277,7 +296,7 @@ function controls(){
  const sectionName=mapBattle?sectionOf(session!.config.encounterId!)!.name:''
  const nav=session&&boardOnly()?launcher?'<p><button data-act="battle">Return to the battle</button></p>':ended?mapBattle?`<p id="mapOutcome">${escape(sectionName)} ${ended==='heroClear'?'is retaken.':'is not taken — it waits on the map to be fought again, by the same party.'}</p><p><button data-act="reckon">Continue to the reckoning →</button></p>`:'<p><button data-act="launcher">Back to the launcher</button></p>':'':''
  const markedNote=marked.map(m=>`<p id="markedAreas" role="status">Marked to fall after Turn ${m.landsAfterTurn}'s Player Phase (${escape(m.fall)}): hexes ${m.hexes.map(h=>`${h} (${session!.ctx.geo.colOf(h)}, ${session!.ctx.geo.rowOf(h)})`).join(', ')}</p>`).join('')
- q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?.name??'Resolving battle')}`:'Start a battle to play'}</h2>${nav}${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${board?'':`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}`}${busy||fault?'':'<p id="playHelp">On the board: click a hero to act · click a hex for a ghost, click it again to move · click an action on the bar, point at an enemy for the forecast, click it, click again to confirm · right-click (or Esc) steps back'+(board?' · End activation ends a hero who will not act again; End Turn ends the Player Phase.':'.')+'</p>'}${board?'':`${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`}`:''}`
+ q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?.name??'Resolving battle')}`:'Start a battle to play'}</h2>${nav}${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${board?'':`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}`}${busy||fault?'':'<p id="playHelp">On the board: each hero begins in turn, its move chosen · click a hex to see the path and plan attacks from its end, double-click it (or click it again) to move · click an action on the bar, point at an enemy for the forecast, click it, click again to confirm · double-click another hero to switch to it while this one has done nothing · right-click (or Esc) steps back'+(board?' · End activation ends a hero who will not act again; End Turn ends the Player Phase.':'.')+'</p>'}${board?'':`${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`}`:''}`
  changeListener(q('commands'),q<HTMLSelectElement>('actor'),()=>{selectedActor=q<HTMLSelectElement>('actor').value;controls()},'selecting')
  changeListener(q('commands'),q<HTMLSelectElement>('action'),()=>{selectedAction=q<HTMLSelectElement>('action').value;selectedAim='';controls()},'acting')
  changeListener(q('commands'),q<HTMLSelectElement>('aim'),()=>{selectedAim=q<HTMLSelectElement>('aim').value;controls()},'acting')
@@ -305,7 +324,7 @@ function install(next:Sandbox){
  },onDrain:()=>{if(epoch!==generation)return;busy=false;controls()},onError:(e:Error)=>{if(epoch!==generation)return;fault=e.message;error=fault;busy=false;controls()}},{fill:battleView})
  const staging=document.createElement('div'),view=viewSandbox(next)
  try{candidate.mount(staging,view)}catch(e){candidate.dispose();throw e}
- generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;mapOpen=false;campaignOpen=false;shownProposal=null
+ generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;mapOpen=false;campaignOpen=false
  surface.mount(q('battle'),view);controls()
 }
 function action(act:string,id?:string){let mayHaveMutated=false;try{
@@ -321,7 +340,8 @@ function action(act:string,id?:string){let mayHaveMutated=false;try{
  else if(act==='reckon'){reckon();return}
  else if(act==='map'){if(!mapSitting)throw Error('Open the map with ?map');mapOpen=true;launcher=false;drawMap()}
  else if(act==='launcher'||act==='battle'){if(!session)throw Error('Start a battle first');launcher=act==='launcher'}
- else if(act==='skip'){surface?.viewer?.pause();surface?.viewer?.seek(session!.ctx.events.length);busy=false;controls()}
+ // viewer.turn-taking: showing the current state includes the next hero begun once the board is still (beginNext in controls)
+ else if(act==='skip'){for(let i=0;i<8;i++){surface?.viewer?.pause();surface?.viewer?.seek(session!.ctx.events.length);busy=false;controls();if(!busy)break}}
  else {if(!session)throw Error('Start a battle first')
   if(act==='save'){const save=saveSandbox(session);localStorage.setItem('hbt-sandbox',save);q<HTMLTextAreaElement>('transferText').value=save}
   else if(act==='export')q<HTMLTextAreaElement>('transferText').value=JSON.stringify(exportSandbox(session,__ENGINE_PROVENANCE__),null,2)
