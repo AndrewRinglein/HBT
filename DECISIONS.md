@@ -4093,3 +4093,15 @@ Ruled:
 
 - **The replay library carries a computer-played recording of each of the opening's six battles** (the engine plays both sides; `export-battle.mts`), current with the engine. Saving and replaying a battle the player played is not asked for.
 - Filed: `viewer.opening-replays`.
+
+## 2026-10-03 — the characters must stand out from the board: try 10% larger characters and 10% smaller hexes
+
+Andrew, in the viewer chat after its wrap, looking at the battle screen on the painted Orphanage:
+
+“Okay, the characters don't stand out enough against the backdrop. They look a little too small on the screen. I think I want to see it with 10% larger characters and 10% smaller hexes. And what else can we do to make the characters stand out more? We have a very colorful background. Is that part of the problem? Do we need more shadows? I don't know what we need.”
+
+Ruled:
+
+- **He wants to SEE the battle screen with characters 10% larger and hexes 10% smaller** — a look to judge, not yet the accepted default. Read as on-screen sizes: the standard view shows the board at 0.9×, and a body stands 1.1× its present on-screen height (so about 1.22× against its hex). viewer SWITCHES `modelScale` ("the roster's stature in the scene's own metres") is what this would overturn if accepted.
+- **What else makes them stand out is open, and his to pick from what he is shown.** Found at the time: the bodies cast no shadow (viewer `src/models.js` `castShadow = false`), they are lit by the scene's own sun, and the painted ground is as bright and saturated as they are. Candidates to show him, each on its own switch: bodies casting shadows with a soft dark patch under the feet; the ground slightly darker and less saturated; a thin light rim on each body in its side's colour; a side-coloured base disc under every unit.
+- Filed: `viewer.characters-stand-out`.
