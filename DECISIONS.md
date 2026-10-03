@@ -4232,3 +4232,24 @@ Ruled:
 - **The bodies should still cast shadows.**
 - **The ground tone, the rim and the base disc do not help that much.** Not accepted; they stay off, as they are.
 - **Not yet a default.** He asked to see size and shadows together first — shown at `BATTLE-SANDBOX.html?play=encounter.opening.orphanage&look=size,shadows`. The item that makes them the default is filed once he has seen that and said so.
+
+## 2026-10-03 — size and shadows are the default; the bleeding-out card; switching heroes asks first; movement costs on the grid; a tooltip on every hex
+
+Andrew, in the viewer chat, shown the Orphanage with only the size change and the shadows (`BATTLE-SANDBOX.html?play=encounter.opening.orphanage&look=size,shadows`) and asked "Having seen size and shadows together, should I make those two the default for every battle?":
+
+“Answer to question one: yes.”
+
+And, in the message before it, finishing the sentence the cards entry above left open ("If they're bleeding out") and adding three more:
+
+“The hero card above the battle should show a first aid icon in the upper right-hand corner and the number of turns they have left.   Okay, when you double-click on a hero but you still have a hero primary activation left, it should pop up and say, "End activation of X hero and start activation of Y hero."  I instinctively want to double-click on a new hero when I'm done with the previous hero. The problem is, there needs to be some kind of check to make sure that I'm willing to end the activation of that other hero.   When the movement grid is up (the blue movement grid on the board), tiles that require extra movement points should have that movement cost, I think, maybe on them in gray.”
+
+“Also, when I'm just pointing around the map, any hex I point at should have a little hover tooltip below it that says what the tile is and any special things about the tile, like: It costs 2 to move there. It will inflict burning on you. It's a water tile. Any questions?”
+
+Ruled:
+
+- **Size and shadows are the default for every battle**: characters 30% larger and hexes 10% smaller, and the bodies cast shadows. This overturns viewer SWITCHES `modelScale` (the roster's stature in the scene's own metres) and the bodies' `castShadow = false`. The ground tone, the rim and the base disc stay off ('the size change does it', above).
+- **A bleeding-out hero's card above the battle shows the first-aid icon in its upper right-hand corner and the number of turns they have left.** This closes the open point of 'the cards above the battle' above. The number is the engine's bleed-out count, the one the board already draws over a downed body.
+- **Double-clicking another hero while the current hero still has its primary action asks first:** a pop-up, "End activation of X hero and start activation of Y hero." Confirming ends X's Activation and begins Y's; X does not come back ('No partial Activations', this date). It is the check that he is willing to end the other hero's activation — he double-clicks the next hero by instinct when he is done with the last.
+- **While the blue movement grid is up, a tile that costs extra movement points carries that cost, in grey.** Said as "I think, maybe": a look to judge.
+- **Pointing at any hex shows a little tooltip below it: what the tile is and anything special about it** — what it costs to move there, what it inflicts, that it is water.
+- Filed: `viewer.size-and-shadows-default` (first in the viewer queue), `viewer.fallen-cards-and-first-aid`, `viewer.switch-hero-asks`, `viewer.move-cost-on-grid`, `viewer.hex-tooltip`.
