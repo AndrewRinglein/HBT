@@ -37,7 +37,7 @@ export function treeHash(cwd = process.cwd()) {
 // ── the check record ────────────────────────────────────────────────────────
 
 /** Fields a check may carry that a replay must see again: what it printed, and its effects. */
-const KEPT = ['ok', 'warn', 'note', 'skipPrint', 'golden', 'review', 'invented']
+const KEPT = ['ok', 'warn', 'note', 'skipPrint', 'golden', 'review', 'invented', 'skipped', 'moved']
 
 /**
  * What the checks read from outside the tree: the item's own backlog row (less the
@@ -73,7 +73,8 @@ export function recall(progress, name) { return progress.results[name] ?? null }
 export function record(progress, name, result, ms) {
   const next = { ...progress, results: { ...progress.results }, durations: { ...progress.durations } }
   if (typeof ms === 'number') next.durations[name] = ms
-  if (result.ok || result.warn) {
+  // a SKIPPED check (tool.tests-follow-what-changed, 2026-10-04) is kept too: it blocks nothing, and it replays as SKIPPED, never as a pass
+  if (result.ok || result.warn || result.skipped) {
     const kept = {}
     for (const k of KEPT) if (result[k] !== undefined) kept[k] = result[k]
     next.results[name] = kept

@@ -1,24 +1,24 @@
 {
- "id": "content.imp-blast-tuned",
- "tree": "f2f684a7397dba9fd1feb81127dd35824714875d",
- "ctx": "225ae7ff6fdacf48902358a36f67584c1425ee49",
+ "id": "tool.tests-follow-what-changed",
+ "tree": "d1ac122dee15d42c5afba8e091dd6642d25c660f",
+ "ctx": "54e3a7a8bad94575232f11225bfe45f3f1f231ac",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 616,
-  "typecheck": 2111,
-  "the item's own tests": 13983,
-  "gate 1 — the id appears in a real battle": 2613,
-  "brought its own tests": 43,
+  "not already decided": 643,
+  "typecheck": 1625,
+  "the item's own tests": 85026,
+  "gate 1 — the id appears in a real battle": 0,
+  "brought its own tests": 34,
   "existing tests untouched": 0,
-  "control battles unchanged": 57365,
-  "content has a published source": 110,
-  "hardcode scan — core knows mechanisms, never names": 40,
+  "control battles unchanged": 36905,
+  "content has a published source": 134,
+  "hardcode scan — core knows mechanisms, never names": 35,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 39,
-  "naming — no banned words invented": 138,
-  "kill switch — the tests fail without the content": 2603
+  "naming — new content ids use declared kinds": 38,
+  "naming — no banned words invented": 187,
+  "kill switch — the tests fail without the content": 0
  }
 }

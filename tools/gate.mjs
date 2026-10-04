@@ -28,9 +28,19 @@
 // files the item ADDED (every touched file when it added none). `--full` runs every
 // per-item check exactly as before; the git tag `process-full-2026-09-30` is the whole
 // harness as it stood. Outside Cowork the suite is one command: `--shard 1/1`.
+//
+// TESTS FOLLOW WHAT CHANGED (Andrew, 2026-10-04, DECISIONS.md 'combat is tested only when the
+// engine changed' and 'the same for content and kingdom changes: each kind of change runs its own
+// tests'; tools/suites.mjs, tools/code-stamp.mjs). The shards and the control battles are recorded
+// against the ENGINE'S CODE (src/ without the content pack, test/, tools/, package and compiler
+// config), not the whole tree: a ruling, a document, .state/, a log or a regenerated file makes no
+// pass stale. A landing whose item changed nothing a battle is made of prints
+// 'SKIPPED  control battles unchanged' with the reason — never PASS (Law 9). `--pack-golden`
+// re-records the golden when only the content pack moved, and says whether the fights moved.
 
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { filesContaining } from './source-scan.mjs'
 import { runDiagnosticCommand } from './command-diagnostic.mjs'
 import { revertTree } from './revert-tree.mjs'
@@ -38,6 +48,8 @@ import { readBacklog, saveItem, progressFor } from './backlog.mjs'
 import { changedPaths, commitOnly } from './commit-only.mjs'
 import { checkItem } from './prior-art.mjs'
 import { checkWrongHome } from './wrong-home.mjs'
+import { stampOf, allStamps, PACKAGES } from './code-stamp.mjs'
+import { shardsFor, readPasses, hasPass, appendPass, appendFail, logCheck, controlCheck, recordControl, packGolden, copyName, PASSES_FILE } from './suites.mjs'
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
   stopBefore, budgetFrom, parseShard, recordShard, shardStatus, testFilesIn, killSwitchFiles,
@@ -87,13 +99,28 @@ function readShards() { try { return JSON.parse(readFileSync(SHARDS_FILE, 'utf8'
 // --shards-green: exit 0 only when a complete set of shards passed on this exact tree.
 // `wrap` calls it and refuses without it (Andrew, 2026-09-23: the full suite runs
 // once per chat, as the four shards, and wrap refuses until all four are green).
+// Since 2026-10-04 "this tree" is the engine's code (tools/code-stamp.mjs): a set recorded by an
+// older tool, against a tree and no stamp, is no pass; a suite pass recorded on this code in
+// .state/passes.jsonl (another copy's run, a combine) is one.
 if (process.argv.includes('--shards-green')) {
-  const tree = treeHash()
-  const st = shardStatus(readShards(), tree, SHARDS)
-  console.log(!st.green
-    ? `${st.passed.length} of ${st.n} shards passed on tree ${tree.slice(0, 10)} — run ${st.todo.map((x) => `node tools/gate.mjs --shard ${x}/${st.n}`).join(' · ')}`
-    : `${st.n} of ${st.n} shards passed on tree ${tree.slice(0, 10)}`)
-  process.exit(st.green ? 0 : 1)
+  const code = stampOf('engine', process.cwd())
+  const st = shardStatus(shardsFor(readShards(), code), code, SHARDS)
+  const pass = st.green ? null : hasPass(readPasses('.'), 'engine', code)
+  console.log(st.green ? `${st.n} of ${st.n} shards passed on engine code ${code}`
+    : pass ? `the engine's suite passed on engine code ${code} (${String(pass.at).slice(0, 16).replace('T', ' ')}${pass.by ? ', ' + pass.by : ''}${pass.in ? ', in ' + pass.in : ''}) — recorded in ${PASSES_FILE}`
+      : `${st.passed.length} of ${st.n} shards passed on engine code ${code} — run ${st.todo.map((x) => `node tools/gate.mjs --shard ${x}/${st.n}`).join(' · ')}`)
+  process.exit(st.green || pass ? 0 : 1)
+}
+
+// --pack-golden: a new content pack shipped. Re-record the control-battle golden and say whether
+// the fights moved — only when the engine's code is the code the control battles last passed on, so
+// the pack is the one thing that moved. It never fails the content item (exit 0 unless the probe
+// itself errors); content's ship.mjs and `suites.mjs --run all` call it.
+if (process.argv.includes('--pack-golden')) {
+  const r = packGolden({ engineDir: process.cwd(), baseline: () => execSync('npx tsx tools/baseline.mts', { encoding: 'utf8', stdio: 'pipe' }) })
+  console.log(r.said)
+  try { appendFileSync('.state/gauntlet-log.jsonl', JSON.stringify({ at: new Date().toISOString(), id: '--pack-golden', mode: 'golden', disposition: r.action === 're-record' ? 'golden-re-recorded' : r.action === 'skip' ? 'golden-skipped' : 'golden-not-re-recorded', moved: r.moved ?? undefined, note: r.said }) + '\n') } catch {}
+  process.exit(r.action === 'error' ? 1 : 0)
 }
 
 const shardArg = process.argv.indexOf('--shard')
@@ -104,18 +131,33 @@ if (shardArg !== -1) {
     process.exit(2)
   }
   const { k, n } = which
-  const tree = treeHash()
+  // the pass is recorded against the engine's CODE as it stood when the shard started (2026-10-04),
+  // with the other packages' code beside it; code that moved while it ran records nothing
+  const root = resolve(process.cwd(), '..')
+  const before = allStamps(root), code = stampOf('engine', process.cwd())
   const r = runDiagnosticCommand(`npx vitest run --shard=${k}/${n} --reporter=dot`, `gate-shard-${k}-of-${n}`)
   const count = r.out.replace(/\x1b\[[0-9;]*m/g, '').match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
-  const s = recordShard(readShards(), tree, k, n, r.ok)
-  s.at = new Date().toISOString()
-  writeFileSync(SHARDS_FILE, JSON.stringify(s, null, 1) + '\n')
+  const moved = stampOf('engine', process.cwd()) !== code
+  const raw = readShards()
+  const s = recordShard(shardsFor(raw, code), code, k, n, r.ok && !moved)
+  const withKey = PACKAGES.map((p) => before[p]).join('.')
+  const withs = { ...(raw && raw.stamp === code ? raw.withs ?? {} : {}) }
+  withs[n] = { ...(withs[n] ?? {}), [k]: withKey }
+  writeFileSync(SHARDS_FILE, JSON.stringify({ stamp: code, tree: treeHash(), sets: s.sets, withs, at: new Date().toISOString() }, null, 1) + '\n')
   const passed = s.sets[n]
   const todo = Array.from({ length: n }, (_, i) => i + 1).filter((x) => !passed.includes(x))
   console.log(`shard ${k}/${n}: ${r.ok ? 'PASS' : 'FAIL'}${count ? ` — ${count[1] ? count[1] + ' failed, ' : ''}${count[2]} passed` : ''}` +
-    (r.ok ? '' : ` — ${r.note}`))
-  console.log(`tree ${tree.slice(0, 10)}: ${passed.length} of ${n} shards passed` +
-    (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${n}`).join(', ')}` : ' — the suite is green on this tree'))
+    (r.ok ? '' : ` — ${r.note}`) + (r.ok && moved ? ' — NOT RECORDED: the engine\'s code changed while it ran' : ''))
+  console.log(`engine code ${code}: ${passed.length} of ${n} shards passed` +
+    (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${n}`).join(', ')}` : ' — the suite is green on this code'))
+  // a failed shard is recorded too: an older pass on this code is not relied on after it
+  if (!r.ok && !moved) appendFail('.', { suite: 'engine', stamp: code, by: `gate --shard ${k}/${n}`, in: copyName(root) })
+  if (!todo.length) {
+    // the whole suite passed on this code: one line in .state/passes.jsonl, which a merge keeps and combine and wrap read.
+    // `with` names the other packages' code only when every shard of the set ran beside the same code.
+    const together = passed.every((x) => withs[n][x] === withKey) && PACKAGES.every((p) => /^[0-9a-f]{10}$/.test(before[p]))
+    appendPass('.', { suite: 'engine', stamp: code, with: together ? before : null, at: new Date().toISOString(), by: `gate --shard (${n} of ${n})`, in: copyName(root), ...(count && n === 1 ? { tests: Number(count[2]) } : {}) })
+  }
   process.exit(r.ok ? 0 : 1)
 }
 
@@ -135,7 +177,7 @@ function logRun(disposition, extra = {}) {
     appendFileSync(RUNLOG, JSON.stringify({
       at: new Date().toISOString(), id, mode: MODE, process: PROCESS, disposition,
       attempt: (item.attempts ?? 0) + (disposition === 'failed-checks' ? 0 : 1),
-      checks: checks.map((c) => ({ name: c.name, ok: !!c.ok, warn: !!c.warn, note: c.note || undefined })),
+      checks: checks.map(logCheck),   // a SKIPPED check is logged skipped: true, ok: false — never as passed (Law 9)
       ...extra,
     }) + '\n')
   } catch { /* the log is best-effort; the gate's verdict never depends on it */ }
@@ -295,49 +337,14 @@ let pendingGolden = null
 const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/', IN_HOME).out +
   (TESTS_HOME === '.' ? '' : tryRun(`git log -p -U2 --format=%h -F --grep="${id}" -- test/`, IN_HOME).out) : ''
 
-check('control battles unchanged', () => {
-  const r = tryRun('npx tsx tools/baseline.mts')
-  if (!r.ok) return { ok: false, note: 'baseline probe errored' }
-  // One `<mapId> <hash>` line per control map. Naming WHICH maps moved is the
-  // point of the split — "all four" and "only the ones with hills" are very
-  // different findings.
-  const now = r.out.trim().split('\n').filter((l) => / [0-9a-f]{8}$/.test(l)).join('\n')
-  if (!now) return { ok: false, note: 'baseline probe produced no hashes' }
-  let golden = null
-  try { golden = readFileSync(GOLDEN, 'utf8').trim() } catch {}
-  if (!golden) return { ok: true, golden: now + '\n', note: 'will bless at commit (first run)' }
-  if (golden === now) {
-    // THE CONSEQUENCE CLAUSE (2026-08-20). An item that DECLARES it changes the
-    // control battles and then changes nothing has not done its job — "the aura
-    // should have some consequence." Before this clause, changesBaseline:true with
-    // identical hashes passed silently, so a mechanic that claimed to matter and
-    // did nothing landed clean.
-    if (item.changesBaseline) {
-      return { ok: false, note: 'declared changesBaseline — but every control battle is byte-identical. The mechanic had no consequence. Wire it into a control map, or remove the declaration and explain why it is neutral.' }
-    }
-    return { ok: true, note: '' }
-  }
-
-  const was = new Map(golden.split('\n').map((l) => l.split(' ')))
-  const is = new Map(now.split('\n').map((l) => l.split(' ')))
-  const moved = [...is.keys()].filter((k) => was.get(k) !== is.get(k))
-  const added = [...is.keys()].filter((k) => !was.has(k))
-  const gone = [...was.keys()].filter((k) => !is.has(k))
-  const detail = [
-    ...moved.map((k) => `${k} ${(was.get(k) ?? '?').slice(0, 8)}->${is.get(k).slice(0, 8)}`),
-    ...added.map((k) => `${k} NEW`), ...gone.map((k) => `${k} GONE`),
-  ].join(', ')
-
-  if (item.changesBaseline) {
-    // DEFERRED BLESS (bug found by the gauntlet's own first landing, 2026-08-20):
-    // blessing here, during the check, moved the golden even when a LATER check
-    // failed the landing — and the next attempt then compared against the
-    // polluted golden and read its own change as "no consequence". The bless now
-    // happens only when the commit does.
-    return { ok: true, golden: now + '\n', note: `will re-bless at commit — this item DECLARED it changes the control battles: ${detail}` }
-  }
-  return { ok: false, note: `CHANGED: ${detail}. Something leaked. If intended, set "changesBaseline": true on the backlog item.` }
-})
+// The control battles — run when the engine's code changed since they last passed, SKIPPED (and said
+// so) when nothing a battle is made of changed, and re-recorded rather than failed when only the
+// content pack moved (Andrew, 2026-10-04; tools/suites.mjs controlCheck holds every verdict: the
+// consequence clause, the deferred bless, "Something leaked").
+check('control battles unchanged', () => controlCheck({
+  engineDir: process.cwd(), item,
+  baseline: () => { const r = tryRun('npx tsx tools/baseline.mts'); if (!r.ok) throw new Error('baseline probe errored'); return r.out },
+}))
 
 check('content has a published source', () => {
   // The engine is downstream of the content sessions. It may only implement ids
@@ -550,6 +557,7 @@ function vitestFiles(checkName, files, run) {
 }
 
 let stoppedAt = -1
+let controlResult = null   // the control battles' result this run, fresh or recorded: a real pass is recorded against the engine's code at the commit
 {
   for (let i = 0; i < CHECKS.length; i++) {
     const c = CHECKS[i]
@@ -558,11 +566,12 @@ let stoppedAt = -1
     const t = Date.now()
     const r = had ?? c.fn()
     if (r.deferred) { stoppedAt = i; break }
-    const res = c.kind === 'flag' ? { ...r, warn: !r.ok } : r
+    const res = c.kind === 'flag' ? { ...r, warn: !r.ok && !r.skipped } : r
     checks.push({ name: c.name, ...res })
-    const tag = c.kind === 'flag' ? (r.ok ? 'PASS' : 'WARN') : (r.ok ? 'PASS' : 'FAIL')
-    if (c.kind === 'flag' || !r.skipPrint) console.log(`  ${tag}${had ? ' (recorded)' : ''}  ${c.name}${r.note ? '  — ' + r.note : ''}`)
-    if (c.kind === 'check' && !r.ok) ok = false
+    const tag = r.skipped ? 'SKIPPED' : c.kind === 'flag' ? (r.ok ? 'PASS' : 'WARN') : (r.ok ? 'PASS' : 'FAIL')
+    if (c.kind === 'flag' || !r.skipPrint) console.log(`  ${tag}${had && !r.skipped ? ' (recorded)' : ''}  ${c.name}${r.note ? '  — ' + r.note : ''}`)
+    if (c.kind === 'check' && !r.ok && !r.skipped) ok = false
+    if (c.name === 'control battles unchanged') controlResult = r
     // effects — applied the same whether the result is fresh or recorded
     if (r.golden) pendingGolden = r.golden
     if (r.review) needsReview = true
@@ -588,7 +597,7 @@ if (stoppedAt !== -1) {
   console.log(`  (not run — out of budget after a failure: ${left.join(', ')})`)
 }
 
-const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
+const body = checks.map((c) => `  ${c.skipped ? 'SKIPPED' : c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
 if (!ok) {
   item.attempts = (item.attempts ?? 0) + 1
@@ -627,8 +636,11 @@ if (MODE !== 'land') {
 const itemFiles = changedPaths().filter((p) => !p.startsWith('.state/') && p !== 'GAME-BUILDER.html')
 const GATE = { email: 'a@b', name: 'combat-framework' }   // start.mjs knows a gated commit by this author
 if (pendingGolden) writeFileSync(GOLDEN, pendingGolden)
+// the control battles ran and passed (or were blessed just above): record it against the engine's code
+// and the content pack being committed, so the next landing that changes neither skips them
+if (controlResult && controlResult.ok && !controlResult.skipped) recordControl(process.cwd(), { by: `gate ${id} --land`, moved: controlResult.moved ?? null })
 progress = clearResults(progress); saveProgress()   // landed: this tree's record is spent
-commitOnly([...itemFiles, PROGRESS, GOLDEN, '.state/gauntlet.json'], { message: `${id}: ${item.spec.slice(0, 72)}`, author: GATE })
+commitOnly([...itemFiles, PROGRESS, GOLDEN, '.state/gauntlet.json', PASSES_FILE], { message: `${id}: ${item.spec.slice(0, 72)}`, author: GATE })
 const sha = sh('git rev-parse --short HEAD').trim()
 item.status = needsReview ? 'done-needs-review' : 'done'
 item.sha = sha

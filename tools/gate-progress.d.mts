@@ -1,5 +1,5 @@
 // Types for tools/gate-progress.mjs, so a .test.ts can import it under strict tsc.
-export interface CheckResult { ok: boolean; warn?: boolean; note?: string; skipPrint?: boolean; golden?: string; review?: boolean; invented?: number }
+export interface CheckResult { ok?: boolean; warn?: boolean; note?: string; skipPrint?: boolean; golden?: string; review?: boolean; invented?: number; skipped?: boolean; moved?: string }
 export interface Progress { id: string; tree: string; ctx: string; results: Record<string, CheckResult>; durations: Record<string, number>; discarded: boolean }
 export interface ShardRecord { tree: string; sets: Record<string, number[]> }
 export interface ShardStatus { green: boolean; n: number; passed: number[]; todo: number[] }
