@@ -1,0 +1,467 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/trigger-ids-and-scopes.test.ts (23 tests | 22 failed) 930ms
+     × over the whole generated pack: every row that carries triggers — units, test units, items, enchanted and derived items, badges 13ms
+     × and over the registries a battle is fielded from 1ms
+     × the rows that held two under one id, by name — each trigger now its own 1ms
+     × a test unit that is a delta over another holds its base's triggers once, not twice 0ms
+     × the row: trigger.fire-imp.burn is the area burn at the end of its Activation; trigger.fire-imp.burn.blast is the Blast's Burn 3 on a hit 1ms
+     × in the Bridge's battles the log names each by its own id, on its own hook, every time 905ms
+     × the row: each of the axe's two attacks carries its own pair, scoped to it; the holder's kit has a Punch that carries none 1ms
+     × a blocked Punch strips nothing: no axe trigger is rolled, and the blocker's Block and Ranged Block stand 2ms
+     × a blocked attack.war-axe.chop strips 20 Block and 20 Ranged Block, by that attack's own two triggers 1ms
+     × a blocked attack.war-axe.hack strips 20 Block and 20 Ranged Block, by that attack's own two triggers 1ms
+     × item.war-axe — its onBlock trigger (statMod) rides each attack the weapon grants, and only those 1ms
+     × item.bloody-axe — its onBlock trigger (statMod) rides each attack the weapon grants, and only those 0ms
+     × item.lumberjack-axe — its onBlock trigger (statMod) rides each attack the weapon grants, and only those 0ms
+     × item.bloody-axe — its onDamage trigger (status.bleed) rides each attack the weapon grants, and only those 0ms
+     × item.poison-throwing-knives — its onDamage trigger (status.poison) rides each attack the weapon grants, and only those 0ms
+     × item.twin-talon-bow — its onDamage trigger (status.bleed) rides each attack the weapon grants, and only those 0ms
+     × item.boarding-hook — its onDamage trigger (status.bleed) rides each attack the weapon grants, and only those 0ms
+     × item.stormforged-halberd — its onDamage trigger (status.burn) rides each attack the weapon grants, and only those 0ms
+     × item.book-of-exorcisms — its onAttack trigger (status.burn) rides each attack the weapon grants, and only those 0ms
+     × item.scepter-of-salvation — its onHit trigger (status.regeneration) rides each attack the weapon grants, and only those 0ms
+     × the weapons left unscoped are these, by name — and no other base row 0ms
+     × on an enchanted or derived row the only unscoped attack-hook triggers are the enchantment's own (its row has a scope word of its own, `attack: 'basic'`) 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 22 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > no row holds two triggers under one id > over the whole generated pack: every row that carries triggers — units, test units, items, enchanted and derived items, badges
+AssertionError: expected [ { …(2) }, { …(2) }, { …(2) }, …(10) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "ids": [
++       "trigger.demon-hound.regeneration",
++     ],
++     "row": "pack.authoredEnemies[unit.demon-hound]",
++   },
++   {
++     "ids": [
++       "trigger.doombringer.protection",
++     ],
++     "row": "pack.authoredEnemies[unit.doombringer]",
++   },
++   {
++     "ids": [
++       "trigger.fire-imp.burn",
++     ],
++     "row": "pack.authoredEnemies[unit.fire-imp]",
++   },
++   {
++     "ids": [
++       "trigger.hellhound.burn",
++     ],
++     "row": "pack.authoredEnemies[unit.hellhound]",
++   },
++   {
++     "ids": [
++       "trigger.imp-master.burn",
++     ],
++     "row": "pack.authoredEnemies[unit.imp-master]",
++   },
++   {
++     "ids": [
++       "trigger.poison-imp.poison",
++     ],
++     "row": "pack.authoredEnemies[unit.poison-imp]",
++   },
++   {
++     "ids": [
++       "trigger.shadow-sorcerer.dragged-under",
++     ],
++     "row": "pack.authoredEnemies[unit.shadow-sorcerer]",
++   },
++   {
++     "ids": [
++       "trigger.skeleton-spider.armor-armor",
++     ],
++     "row": "pack.authoredEnemies[unit.skeleton-spider]",
++   },
++   {
++     "ids": [
++       "trigger.terror-imp.weak",
++     ],
++     "row": "pack.authoredEnemies[unit.terror-imp]",
++   },
++   {
++     "ids": [
++       "trigger.troll-gut-vest.regeneration",
++     ],
++     "row": "pack.items.item.troll-gut-vest",
++   },
++   {
++     "ids": [
++       "test.warrior.second-wind",
++       "test.warrior.stagger",
++       "test.warrior.brace",
++       "test.oathblade.apply-bleed",
++     ],
++     "row": "pack.test.units[test-slot-striker]",
++   },
++   {
++     "ids": [
++       "test.warrior.second-wind",
++       "test.warrior.stagger",
++       "test.warrior.brace",
++       "test.oathblade.apply-bleed",
++     ],
++     "row": "pack.test.units[test-packet-flame]",
++   },
++   {
++     "ids": [
++       "test.warrior.second-wind",
++       "test.warrior.stagger",
++       "test.warrior.brace",
++       "test.oathblade.apply-bleed",
++     ],
++     "row": "pack.test.units[test-packet-shadow]",
++   },
++ ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:53:17
+     51|     expect(lists.reduce((n, l) => n + l.triggers.length, 0)).toBeGreat…
+     52|     const bad = lists.map((l) => ({ row: l.path, ids: shared(l.trigger…
+     53|     expect(bad).toEqual([])
+       |                 ^
+     54|   })
+     55|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > no row holds two triggers under one id > and over the registries a battle is fielded from
+AssertionError: UNITS unit.demon-hound: expected [ 'trigger.demon-hound.regeneration' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "trigger.demon-hound.regeneration",
++ ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:59:79
+     57|     for (const [name, reg] of Object.entries({ UNITS, ITEMS, BADGES })…
+     58|       for (const row of Object.values(reg as Record<string, { id?: str…
+     59|         expect(shared(row.triggers ?? []), `${name} ${row.typeId ?? ro…
+       |                                                                               ^
+     60|       }
+     61|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > no row holds two triggers under one id > the rows that held two under one id, by name — each trigger now its own
+AssertionError: expected [ 'trigger.fire-imp.burn', …(1) ] to deeply equal [ 'trigger.fire-imp.burn', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "trigger.fire-imp.burn",
+-   "trigger.fire-imp.burn.blast",
++   "trigger.fire-imp.burn",
+  ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:66:27
+     64|   it('the rows that held two under one id, by name — each trigger now …
+     65|     const ids = (unit: string) => (UNITS[unit]!.triggers as readonly T…
+     66|     expect(ids(FIRE_IMP)).toEqual([EOA_BURN, BLAST_BURN])
+       |                           ^
+     67|     expect(ids('unit.poison-imp')).toEqual(['trigger.poison-imp.poison…
+     68|     expect(ids('unit.imp-master')).toEqual(expect.arrayContaining(['tr…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > no row holds two triggers under one id > a test unit that is a delta over another holds its base's triggers once, not twice
+AssertionError: test-slot-striker: expected [ 'test.warrior.second-wind', …(7) ] to deeply equal [ 'test.warrior.second-wind', …(3) ]
+
+- Expected
++ Received
+
+  [
+    "test.warrior.second-wind",
+    "test.warrior.stagger",
+    "test.warrior.brace",
+    "test.oathblade.apply-bleed",
++   "test.warrior.second-wind",
++   "test.warrior.stagger",
++   "test.warrior.brace",
++   "test.oathblade.apply-bleed",
+  ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:87:77
+     85|     expect(base.length).toBeGreaterThan(0)
+     86|     for (const id of ['test-slot-striker', 'test-packet-flame', 'test-…
+     87|       expect((UNITS[id]!.triggers as readonly Trig[]).map((t) => t.id)…
+       |                                                                             ^
+     88|     }
+     89|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > the Fire Imp: its end-of-Activation burn and its Blast's burn are two triggers the log tells apart > the row: trigger.fire-imp.burn is the area burn at the end of its Activation; trigger.fire-imp.burn.blast is the Blast's Burn 3 on a hit
+AssertionError: expected undefined to match object { hook: 'onHit', chance: 100, …(3) }
+
+- Expected:
+{
+  "chance": 100,
+  "effect": {
+    "kind": "status.apply",
+    "statusId": "status.burn",
+    "value": 3,
+  },
+  "hook": "onHit",
+  "onlyWithAttack": "attack.fire-imp.blast",
+  "source": "unit.fire-imp",
+}
+
++ Received:
+undefined
+
+ ❯ test/trigger-ids-and-scopes.test.ts:97:19
+     95|     expect(eoa).toMatchObject({ hook: 'onActivationEnd', chance: 100, …
+     96|     expect(eoa!.onlyWithAttack).toBeUndefined()
+     97|     expect(blast).toMatchObject({ hook: 'onHit', chance: 100, onlyWith…
+       |                   ^
+     98|   })
+     99|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > the Fire Imp: its end-of-Activation burn and its Blast's burn are two triggers the log tells apart > in the Bridge's battles the log names each by its own id, on its own hook, every time
+AssertionError: expected [ 'onActivationEnd', 'onHit' ] to deeply equal [ 'onActivationEnd' ]
+
+- Expected
++ Received
+
+  [
+    "onActivationEnd",
++   "onHit",
+  ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:111:35
+    109|       }
+    110|     }
+    111|     expect([...hooks[EOA_BURN]!]).toEqual(['onActivationEnd'])
+       |                                   ^
+    112|     expect([...hooks[BLAST_BURN]!]).toEqual(['onHit'])
+    113|     expect(fired, 'a Blast burned somebody').toBeGreaterThan(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > the War Axe: its on-block triggers ride the axe's own attacks and not a Punch > the row: each of the axe's two attacks carries its own pair, scoped to it; the holder's kit has a Punch that carries none
+AssertionError: expected [ [ …(5) ], [ …(5) ] ] to deeply equal [ [ …(5) ], [ …(5) ], [ …(5) ], …(1) ]
+
+- Expected
++ Received
+
+  [
+    [
+-     "trigger.war-axe.on-block.block.chop",
+-     "attack.war-axe.chop",
++     "trigger.war-axe.on-block.block",
++     undefined,
+      "attacker",
+      "block",
+      -20,
+    ],
+    [
+-     "trigger.war-axe.on-block.block.hack",
+-     "attack.war-axe.hack",
+-     "attacker",
+-     "block",
+-     -20,
+-   ],
+-   [
+-     "trigger.war-axe.on-block.ranged-block.chop",
+-     "attack.war-axe.chop",
+-     "attacker",
+-     "rangedBlock",
+-     -20,
+-   ],
+-   [
+-     "trigger.war-axe.on-block.ranged-block.hack",
+-     "attack.war-axe.hack",
++     "trigger.war-axe.on-block.ranged-block",
++     undefined,
+      "attacker",
+      "rangedBlock",
+      -20,
+    ],
+  ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:133:104
+    131|   it('the row: each of the axe\'s two attacks carries its own pair, sc…
+    132|     const onBlock = (ITEMS['item.war-axe']!.triggers as readonly Trig[…
+    133|     expect(onBlock.map((t) => [t.id, t.onlyWithAttack, t.role, t.effec…
+       |                                                                                                        ^
+    134|       ['trigger.war-axe.on-block.block.chop', CHOP, 'attacker', 'block…
+    135|       ['trigger.war-axe.on-block.block.hack', HACK, 'attacker', 'block…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > the War Axe: its on-block triggers ride the axe's own attacks and not a Punch > a blocked Punch strips nothing: no axe trigger is rolled, and the blocker's Block and Ranged Block stand
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "trigger.war-axe.on-block.block",
++   "trigger.war-axe.on-block.ranged-block",
++ ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:148:25
+    146|     beginActivation(ctx, 0, 'test')
+    147|     expect(performAttack(ctx, 0, 1, PUNCH).blocked).toBe(true)
+    148|     expect(rolled(ctx)).toEqual([])
+       |                         ^
+    149|     expect(stripped(ctx)).toEqual([])
+    150|     expect(effective(ctx, tg, 'block').value).toBe(100)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > the War Axe: its on-block triggers ride the axe's own attacks and not a Punch > a blocked attack.war-axe.chop strips 20 Block and 20 Ranged Block, by that attack's own two triggers
+AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
+-   "trigger.war-axe.on-block.block.chop",
+-   "trigger.war-axe.on-block.ranged-block.chop",
++   "trigger.war-axe.on-block.block",
++   "trigger.war-axe.on-block.ranged-block",
+  ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:158:34
+    156|     beginActivation(ctx, 0, 'test')
+    157|     expect(performAttack(ctx, 0, 1, attack).blocked).toBe(true)
+    158|     expect(stripped(ctx).sort()).toEqual([`trigger.war-axe.on-block.bl…
+       |                                  ^
+    159|     expect(rolled(ctx).sort()).toEqual([`trigger.war-axe.on-block.bloc…
+    160|     expect(effective(ctx, tg, 'block').value).toBe(100 - 20)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > the War Axe: its on-block triggers ride the axe's own attacks and not a Punch > a blocked attack.war-axe.hack strips 20 Block and 20 Ranged Block, by that attack's own two triggers
+AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
+-   "trigger.war-axe.on-block.block.hack",
+-   "trigger.war-axe.on-block.ranged-block.hack",
++   "trigger.war-axe.on-block.block",
++   "trigger.war-axe.on-block.ranged-block",
+  ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:158:34
+    156|     beginActivation(ctx, 0, 'test')
+    157|     expect(performAttack(ctx, 0, 1, attack).blocked).toBe(true)
+    158|     expect(stripped(ctx).sort()).toEqual([`trigger.war-axe.on-block.bl…
+       |                                  ^
+    159|     expect(rolled(ctx).sort()).toEqual([`trigger.war-axe.on-block.bloc…
+    160|     expect(effective(ctx, tg, 'block').value).toBe(100 - 20)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.war-axe — its onBlock trigger (statMod) rides each attack the weapon grants, and only those
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.bloody-axe — its onBlock trigger (statMod) rides each attack the weapon grants, and only those
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.lumberjack-axe — its onBlock trigger (statMod) rides each attack the weapon grants, and only those
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.scepter-of-salvation — its onHit trigger (status.regeneration) rides each attack the weapon grants, and only those
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/trigger-ids-and-scopes.test.ts:183:101
+    181|     const mine = (item.triggers as readonly Trig[]).filter((t) => t.ho…
+    182|     expect(mine.length).toBeGreaterThanOrEqual(attacks.length)
+    183|     expect(mine.every((t) => t.onlyWithAttack !== undefined && attacks…
+       |                                                                                                     ^
+    184|     expect([...new Set(mine.map((t) => t.onlyWithAttack))].sort()).toE…
+    185|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.bloody-axe — its onDamage trigger (status.bleed) rides each attack the weapon grants, and only those
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.poison-throwing-knives — its onDamage trigger (status.poison) rides each attack the weapon grants, and only those
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.twin-talon-bow — its onDamage trigger (status.bleed) rides each attack the weapon grants, and only those
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.boarding-hook — its onDamage trigger (status.bleed) rides each attack the weapon grants, and only those
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.stormforged-halberd — its onDamage trigger (status.burn) rides each attack the weapon grants, and only those
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > item.book-of-exorcisms — its onAttack trigger (status.burn) rides each attack the weapon grants, and only those
+AssertionError: expected 1 to be greater than or equal to 2
+ ❯ test/trigger-ids-and-scopes.test.ts:182:25
+    180|     expect(attacks.length).toBeGreaterThan(0)
+    181|     const mine = (item.triggers as readonly Trig[]).filter((t) => t.ho…
+    182|     expect(mine.length).toBeGreaterThanOrEqual(attacks.length)
+       |                         ^
+    183|     expect(mine.every((t) => t.onlyWithAttack !== undefined && attacks…
+    184|     expect([...new Set(mine.map((t) => t.onlyWithAttack))].sort()).toE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > the weapons left unscoped are these, by name — and no other base row
+AssertionError: expected [ 'item.bloody-axe', …(11) ] to deeply equal [ 'item.pharaohs-gauntlets', …(2) ]
+
+- Expected
++ Received
+
+  [
++   "item.bloody-axe",
++   "item.boarding-hook",
++   "item.book-of-exorcisms",
++   "item.lumberjack-axe",
+    "item.pharaohs-gauntlets",
++   "item.poison-throwing-knives",
+    "item.rune-bleeding-strike",
+    "item.rune-burning-touch",
++   "item.scepter-of-salvation",
++   "item.stormforged-halberd",
++   "item.twin-talon-bow",
++   "item.war-axe",
+  ]
+
+ ❯ test/trigger-ids-and-scopes.test.ts:191:22
+    189|     // Pharaoh's Gauntlets: "Both hands are the weapon" — every blow i…
+    190|     // The two Bloodrunes are worn, not held: "Flames lick from every …
+    191|     expect(unscoped).toEqual(['item.pharaohs-gauntlets', 'item.rune-bl…
+       |                      ^
+    192|   })
+    193|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/22]⎯
+
+ FAIL  test/trigger-ids-and-scopes.test.ts > every item whose attack-hook trigger is its own strikes is scoped; what is left unscoped is named > on an enchanted or derived row the only unscoped attack-hook triggers are the enchantment's own (its row has a scope word of its own, `attack: 'basic'`)
+AssertionError: item.war-axe.bloodletting trigger.war-axe.on-block.block: expected 'item.war-axe' to be 'item.war-axe.bloodletting' // Object.is equality
+
+Expected: "item.war-axe.bloodletting"
+Received: "item.war-axe"
+
+ ❯ test/trigger-ids-and-scopes.test.ts:201:43
+    199|       if (!attackerHook(t) || t.onlyWithAttack) continue
+    200|       // never the base weapon's own trigger carried over unscoped — o…
+    201|       expect(t.source, `${r.id} ${t.id}`).toBe(r.id)
+       |                                           ^
+    202|       expect(r.enchant, `${r.id} ${t.id}`).toBeDefined()
+    203|       leftByEnchant.set(r.enchant!, (leftByEnchant.get(r.enchant!) ?? …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/22]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  22 failed | 1 passed (23)
+   Start at  11:55:15
+   Duration  2.02s (transform 772ms, setup 0ms, import 952ms, tests 930ms, environment 0ms)
+

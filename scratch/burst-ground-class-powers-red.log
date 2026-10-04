@@ -1,0 +1,309 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/burst-ground-class-powers.test.ts (18 tests | 17 failed) 676ms
+     × power.fire-master.fireball paints layer.burning — one field on its burst profile, and nothing else about the burst changed 5ms
+     × power.wyrmling.scorch paints layer.burning — one field on its burst profile, and nothing else about the burst changed 0ms
+     × Scorch names no gap any more; Fireball still names the clause the engine cannot do — the blast consuming the Burn — and nothing about ground 2ms
+     × content's gap list says the same 1ms
+     × the authored rows carry the field, as the staffs' rows do 1ms
+     × deals its 2 + Magic and leaves the seven hexes burning — one layer.painted for each, cause the power 8ms
+     × every unit standing on a hex it paints burns for it — the ally too ("allies caught in it burn too"), the caster outside it not 2ms
+     × the preview and the log say so before it lands: the ground and the hexes it will be painted on 1ms
+     × deals its 2 + Magic and leaves the seven hexes burning — one layer.painted for each, cause the power 1ms
+     × every unit standing on a hex it paints burns for it — the ally too ("allies caught in it burn too"), the caster outside it not 1ms
+     × the preview and the log say so before it lands: the ground and the hexes it will be painted on 1ms
+     × in a real battle: the assembled party's Fire Master throws it and the ground burns under whoever is standing there 648ms
+     × power.fire-master.wake-of-cinders (Wake of Cinders) is no burst and does nothing in battle; its row says what it needs 1ms
+     × power.grove-keeper.quench (Quench) is no burst and does nothing in battle; its row says what it needs 0ms
+     × power.broodmother.nest (Nest) is no burst and does nothing in battle; its row says what it needs 0ms
+     × CONTENT-GAPS.md lists the three by name under the one thing they need 0ms
+     × the authored rows say it: needsCapability, citing the engine's switch — and no burst profile 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the rows: the ground is on the burst, and its gap is gone > power.fire-master.fireball paints layer.burning — one field on its burst profile, and nothing else about the burst changed
+ FAIL  test/burst-ground-class-powers.test.ts > the rows: the ground is on the burst, and its gap is gone > power.wyrmling.scorch paints layer.burning — one field on its burst profile, and nothing else about the burst changed
+AssertionError: expected undefined to be 'layer.burning' // Object.is equality
+
+- Expected:
+"layer.burning"
+
++ Received:
+undefined
+
+ ❯ test/burst-ground-class-powers.test.ts:70:29
+     68| describe('the rows: the ground is on the burst, and its gap is gone', …
+     69|   it.each([[FIREBALL, 6], [SCORCH, 3]] as const)('%s paints layer.burn…
+     70|     expect(paintsOf(power)).toBe('layer.burning')
+       |                             ^
+     71|     expect(BURSTS[power]).toMatchObject({
+     72|       range, staminaCost: 2, cooldown: 3, warmup: 1,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the rows: the ground is on the burst, and its gap is gone > Scorch names no gap any more; Fireball still names the clause the engine cannot do — the blast consuming the Burn — and nothing about ground
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "rider: and those seven hexes become burning",
++ ]
+
+ ❯ test/burst-ground-class-powers.test.ts:79:28
+     77|
+     78|   it('Scorch names no gap any more; Fireball still names the clause th…
+     79|     expect(gapsOf(SCORCH)).toEqual([])
+       |                            ^
+     80|     expect(gapsOf(FIREBALL)).toEqual([
+     81|       'rider: plus every stack of Burn that unit is already carrying —…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the rows: the ground is on the burst, and its gap is gone > content's gap list says the same
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "rider: and those seven hexes become burning",
++ ]
+
+ ❯ test/burst-ground-class-powers.test.ts:90:24
+     88|     const rows = (Array.isArray(gaps) ? gaps : Object.values(gaps).fin…
+     89|     const of = (power: string) => rows.filter((r) => r.power === power…
+     90|     expect(of(SCORCH)).toEqual([])
+       |                        ^
+     91|     expect(of(FIREBALL)).toEqual(gapsOf(FIREBALL))
+     92|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the rows: the ground is on the burst, and its gap is gone > the authored rows carry the field, as the staffs' rows do
+AssertionError: expected undefined to be 'layer.burning' // Object.is equality
+
+- Expected:
+"layer.burning"
+
++ Received:
+undefined
+
+ ❯ test/burst-ground-class-powers.test.ts:96:51
+     94|   it('the authored rows carry the field, as the staffs\' rows do', () …
+     95|     const power = (file: string, id: string) => (JSON.parse(root(`cont…
+     96|     expect(power('mage', FIREBALL).burst?.paints).toBe('layer.burning')
+       |                                                   ^
+     97|     expect(power('beast', SCORCH).burst?.paints).toBe('layer.burning')
+     98|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > power.fire-master.fireball — the Fire Master's Fireball > deals its 2 + Magic and leaves the seven hexes burning — one layer.painted for each, cause the power
+ FAIL  test/burst-ground-class-powers.test.ts > power.wyrmling.scorch — the Wyrmling's Scorch > deals its 2 + Magic and leaves the seven hexes burning — one layer.painted for each, cause the power
+AssertionError: expected [] to deeply equal [ 119, 120, 135, 136, 137, 151, 152 ]
+
+- Expected
++ Received
+
+- [
+-   119,
+-   120,
+-   135,
+-   136,
+-   137,
+-   151,
+-   152,
+- ]
++ []
+
+ ❯ test/burst-ground-class-powers.test.ts:112:88
+    110|     expect(far.hp).toBe(far.maxHp)
+    111|     const strokes = painted(ctx, power)
+    112|     expect(strokes.map((e) => e['hex']).sort((a, b) => (a as number) -…
+       |                                                                                        ^
+    113|     expect(strokes.every((e) => e.type === 'layer.painted' && e['layer…
+    114|     for (const h of hexes) expect(layerIdOf(layerAt(ctx, h)), `hex ${h…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > power.fire-master.fireball — the Fire Master's Fireball > every unit standing on a hex it paints burns for it — the ally too ("allies caught in it burn too"), the caster outside it not
+ FAIL  test/burst-ground-class-powers.test.ts > power.wyrmling.scorch — the Wyrmling's Scorch > every unit standing on a hex it paints burns for it — the ally too ("allies caught in it burn too"), the caster outside it not
+AssertionError: hero.base.warrior-iron: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/burst-ground-class-powers.test.ts:124:81
+    122|     const beat = layerAppliesOnEnter(LAYER.BURNING)
+    123|     expect(beat).toEqual([['status.burn', 1]])
+    124|     for (const u of [ally, z1, z2]) expect(valueOf(u, 'status.burn'), …
+       |                                                                                 ^
+    125|     expect(valueOf(far, 'status.burn'), 'outside the seven hexes').toB…
+    126|     expect(valueOf(mage, 'status.burn'), 'the caster stood outside its…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > power.fire-master.fireball — the Fire Master's Fireball > the preview and the log say so before it lands: the ground and the hexes it will be painted on
+ FAIL  test/burst-ground-class-powers.test.ts > power.wyrmling.scorch — the Wyrmling's Scorch > the preview and the log say so before it lands: the ground and the hexes it will be painted on
+AssertionError: expected undefined to deeply equal { layer: 'layer.burning', …(1) }
+
+- Expected:
+{
+  "hexes": [
+    119,
+    120,
+    135,
+    136,
+    137,
+    151,
+    152,
+  ],
+  "layer": "layer.burning",
+}
+
++ Received:
+undefined
+
+ ❯ test/burst-ground-class-powers.test.ts:133:22
+    131|     const { ctx, mage, centre } = rig(power)
+    132|     const p = previewBurst(ctx, mage.id, centre, power) as ReturnType<…
+    133|     expect(p.paints).toEqual({ layer: 'layer.burning', hexes: p.hexes …
+       |                      ^
+    134|     expect(ctx.events.filter((e) => e.type === 'layer.painted')).toEqu…
+    135|     beginActivation(ctx, mage.id, 'test')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > Fireball is the Fire Master's own power, not the staff's > in a real battle: the assembled party's Fire Master throws it and the ground burns under whoever is standing there
+AssertionError: no Fireball painted ground in ten fights of the assembled party: expected 0 to be greater than 0
+ ❯ test/burst-ground-class-powers.test.ts:159:88
+    157|       burned += ctx.events.filter((e) => e.type === 'status.applied' &…
+    158|     }
+    159|     expect(strokes, 'no Fireball painted ground in ten fights of the a…
+       |                                                                                        ^
+    160|     expect(burned, 'nobody burned for standing on it').toBeGreaterThan…
+    161|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the three powers that only change ground are named as gaps, not built > power.fire-master.wake-of-cinders (Wake of Cinders) is no burst and does nothing in battle; its row says what it needs
+AssertionError: expected [ …(5) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   StringMatching /^needs capability: ground as a burst's only payload — /,
++ [
++   "targets 'a hex within 3' — engine centres the blast on a UNIT",
++   "unparsed: Those seven hexes become burning",
++   "unparsed: Burning ground ticks damage and reveals whatever stands there in darkness — used",
++   "unparsed: It cannot crit, and it will happily catch a pursuing ally",
+    "no effect compiled — the power is inert",
+  ]
+
+ ❯ test/burst-ground-class-powers.test.ts:170:23
+    168|     expect(row, 'still a class power the engine knows by name').toBeDe…
+    169|     expect(row!.effects).toEqual([])
+    170|     expect(row!.gaps).toEqual(expect.arrayContaining([expect.stringMat…
+       |                       ^
+    171|   })
+    172|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the three powers that only change ground are named as gaps, not built > power.grove-keeper.quench (Quench) is no burst and does nothing in battle; its row says what it needs
+AssertionError: expected [ …(5) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   StringMatching /^needs capability: ground as a burst's only payload — /,
++ [
++   "targets 'a hex within 4' — engine centres the blast on a UNIT",
++   "unparsed: Those seven hexes become frost",
++   "unparsed: Frost ground deals no damage, but every unit standing in it takes 2 extra physic",
++   "unparsed: Use it to put out a Fire-master’s mess or to soften a knot of enemies for the me",
+    "no effect compiled — the power is inert",
+  ]
+
+ ❯ test/burst-ground-class-powers.test.ts:170:23
+    168|     expect(row, 'still a class power the engine knows by name').toBeDe…
+    169|     expect(row!.effects).toEqual([])
+    170|     expect(row!.gaps).toEqual(expect.arrayContaining([expect.stringMat…
+       |                       ^
+    171|   })
+    172|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the three powers that only change ground are named as gaps, not built > power.broodmother.nest (Nest) is no burst and does nothing in battle; its row says what it needs
+AssertionError: expected [ …(3) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   StringMatching /^needs capability: ground as a burst's only payload — /,
++ [
++   "targets 'a hex within 3' — engine centres the blast on a UNIT",
++   "unparsed: Those seven hexes become poisoned",
+    "no effect compiled — the power is inert",
+  ]
+
+ ❯ test/burst-ground-class-powers.test.ts:170:23
+    168|     expect(row, 'still a class power the engine knows by name').toBeDe…
+    169|     expect(row!.effects).toEqual([])
+    170|     expect(row!.gaps).toEqual(expect.arrayContaining([expect.stringMat…
+       |                       ^
+    171|   })
+    172|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the three powers that only change ground are named as gaps, not built > CONTENT-GAPS.md lists the three by name under the one thing they need
+AssertionError: no such heading in CONTENT-GAPS.md: expected undefined to be defined
+ ❯ test/burst-ground-class-powers.test.ts:175:56
+    173|   it('CONTENT-GAPS.md lists the three by name under the one thing they…
+    174|     const line = root('CONTENT-GAPS.md').split('\n').find((l) => l.sta…
+    175|     expect(line, 'no such heading in CONTENT-GAPS.md').toBeDefined()
+       |                                                        ^
+    176|     expect(line).toMatch(/— 3 rows: /)
+    177|     for (const [, name] of GROUND_ONLY) expect(line).toContain(name)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/17]⎯
+
+ FAIL  test/burst-ground-class-powers.test.ts > the three powers that only change ground are named as gaps, not built > the authored rows say it: needsCapability, citing the engine's switch — and no burst profile
+AssertionError: power.fire-master.wake-of-cinders: expected 'undefined' to match /^ground as a burst's only payload — .…/
+
+- Expected:
+/^ground as a burst's only payload — .*burstGroundNotAPayload/
+
++ Received:
+"undefined"
+
+ ❯ test/burst-ground-class-powers.test.ts:185:50
+    183|     for (const [id, , ground] of GROUND_ONLY) {
+    184|       const row = rows.find((p) => p['id'] === id)!
+    185|       expect(String(row['needsCapability']), id).toMatch(/^ground as a…
+       |                                                  ^
+    186|       expect(row['burst'], id).toBeUndefined()
+    187|       expect(String(row['description']), id).toMatch(new RegExp(`^Thos…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/17]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  17 failed | 1 passed (18)
+   Start at  09:43:03
+   Duration  1.94s (transform 904ms, setup 0ms, import 1.12s, tests 676ms, environment 0ms)
+
