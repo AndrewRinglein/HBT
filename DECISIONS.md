@@ -4553,3 +4553,23 @@ Ruled:
 - **The hero's card art shows on the level-up screen**, as everywhere its card is shown. `kingdom.opening-hero-card-art` carries it.
 - **A reward's card art shows on the reward screen** — the Flaming Longsword's first. Filed: `kingdom.opening-reward-card-art`.
 - **The specialty choice offers three different specialties, not all nine.** Read as: three of the class's nine, drawn for that hero from the run's own stream and the same when the page is reopened; which three is not said. Filed: `kingdom.opening-specialty-three`.
+
+## 2026-10-03 — the civilians show on the victory screen; the specialty three are random; the battle's unit panel lists what the unit is equipped with
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“The battle should show in this victory screen too. If they were wounded, if they died, they're in there too.”
+
+Asked "did you mean the civilians should show on the victory screen, with their wounds and deaths, alongside the heroes?" and "Is a random three of the nine right for the specialty choice, or should the three be chosen some other way?":
+
+“2, yes.   It's random: 3 of the 9.”
+
+“This priest only has a verse attack.   It seems like he has nothing in his hands. I don't understand what he's equipped with. We need the items listed under the characters on the right in battle.”
+
+How it is today: the victory screen (kingdom `src/ui/after.ts` recapScreen) shows the deployed heroes only, each with its wound or death mark, never the civilians who fought. The Battle Chaplain's kit is the Holy Texts (its attack is Verse; he also has Punch) — the holy item is not drawn in his hand (`art.kit-items-held`), and nothing on the battle screen says what a unit carries.
+
+Ruled:
+
+- **The civilians who fought show on the victory screen with the heroes — wounded or dead, they are there too** ("The battle", dictated, is the civilians). Filed: `kingdom.opening-recap-civilians`.
+- **The specialty choice's three are random: three of the nine.** Confirms `kingdom.opening-specialty-three`'s default.
+- **In battle, the panel on the right lists the unit's items under the character** — what it holds in each hand, its armor and what is in its item slots — so the player can see what a unit is equipped with. Filed: `viewer.panel-lists-items`.
