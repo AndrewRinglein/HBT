@@ -757,3 +757,18 @@ not say (19 kinds — the list is in the red log).
 | `barItemTriggers` | The Dagger's Protection is a trigger the ITEM brings; `unit.equipped` names an item's grants and modifiers, not its triggers. Where does the viewer read them? | **From the item's own row through the door: `static.json` `items[id].triggers`. A fielded unit's triggers are its row's, then its held items' (the fold's `kit.held`), then its badges' — the engine's own order (`applyItems`, `applyBadges`).** A stowed item brings none, as in the engine. | The row is content, read-only, already dumped for the panel's items. Reported for the engine's queue: `unit.equipped` (and `unit.badged`) could name the triggers brought, so the log alone says what a fielded unit carries. | Default — 2026-10-04 |
 | `barRidersOnAttacksOnly` | The bar listed the unit's attacker-hook triggers (`onHit`, `onAttack` …) on every row that was not a move or a burst — powers included. | **Only on a row with an attack profile (an attack or a charge), and never a defender's `onBlock`.** | The engine fires those hooks from its attack pipeline only (`core/pipeline.ts`); a power fires none, so a Heal that listed "Bleed 2 20%" said something it does not do. | Default — 2026-10-04 |
 | `barGapsUnsaid` | An action row may carry `gaps` — what its Codex text says that the engine does not yet do. | **Not shown.** | "Everything it does" is what the engine does; a gap is what it does not. They are listed in content's gap reports. | Default — 2026-10-04 |
+
+## viewer.bar-moves-grey-when-done — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the action bar: the moves grey slightly once the move is done, nothing else greys; every action
+shows all it does; the Soldier holds no sword' (Andrew: "There should be a slight graying out of the move actions after move
+actions are completed." / "Just gray the moves out after a move is done."). `src/play.js` (the optional `moveDone` fact),
+`src/actionbar.js` (the row's class and tooltip line), `src/styles.css` (`.acRow.moveDone`); probes
+`tools/bar-moves-grey-when-done.test.mjs`, `test/viewer.bar-moves-grey-when-done.test.ts` (what the engine does to the move),
+kingdom `tools/bar-moves-grey-when-done.verify.mjs`; the red is `bar-moves-grey-when-done-red.log`. Seen in real Chrome on the
+candidate sandbox (kingdom `tools/bar-moves-grey-when-done.shot.mjs`: the bar before and after a whole walk).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `moveDoneHostWord` | Who says a move is done? | **The host, per action: its play facts carry `moveDone`, a list of the acting unit's move action ids. The bar greys a row only when it is a move row, of the unit acting, named there — and never reads the log to guess.** A host that says nothing greys nothing (the standalone replay page greys nothing). | "Read from the engine's own state through the host, never guessed." What the engine does is not one flag: see kingdom SWITCHES `moveDoneFact`. | Default — 2026-10-04 |
+| `moveDoneLook` | What is "slightly greyed", and how is it told from disabled? | **`opacity .72` with the colour drained (`grayscale(.85)`): the row is plainly still there. The disabled look is unchanged — `.cool`, `opacity .42` — and wins when a move is both (a move on cooldown looks disabled, not greyed). The greyed row can still be clicked; the host answers with the engine's reason. Its tooltip ends "This move is done for this Activation."** | "The slight grey must be told apart at a glance from an action the engine refuses outright." A look for Andrew to judge: the screenshots. | Default — 2026-10-04 |

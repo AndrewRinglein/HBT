@@ -99,8 +99,13 @@ export function drawBar(V) {
     const chosen = V.play && V.play.slot === a.id && V.play.actor === u.id
     /* viewer.bar-shows-every-effect (engine DECISIONS.md 2026-10-03 'every action shows all it does'): the row's tooltip is the
        whole of the action, a line per fact (actions.js actionLines); the button shows what fits */
-    const whole = actionLines(a, u, D, SN).join('\n')
-    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${chosen ? ' playChosen' : ''}" data-act="${escape(a.id)}" title="${escape(whole)}" style="border-left-color:${accent}">
+    /* viewer.bar-moves-grey-when-done (engine DECISIONS.md 2026-10-03 'the moves grey slightly once the move is done, nothing
+       else greys'): a MOVE row the host says is done for this Activation is slightly greyed — the host's word (play facts'
+       moveDone, from the engine), for the unit acting only, and never an attack or a power. A row the engine refuses (on
+       cooldown) keeps the disabled look instead: the two are told apart at a glance (styles.css .moveDone, .cool) */
+    const moveDone = !cool && a.kind === 'move' && !!V.play && V.play.actor === u.id && V.play.moveDone.includes(a.id)
+    const whole = actionLines(a, u, D, SN).join('\n') + (moveDone ? '\nThis move is done for this Activation.' : '')
+    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${chosen ? ' playChosen' : ''}" data-act="${escape(a.id)}" title="${escape(whole)}" style="border-left-color:${accent}">
       <div class="acMain">
         <div class="acL1">${icoHTML(a)}
           <span class="acName">${escape(a.name || a.id)}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>
