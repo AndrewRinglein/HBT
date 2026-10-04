@@ -1318,11 +1318,12 @@
      "hook": "onBlock",
      "role": "attacker",
      "chance": 100,
-     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle"
+     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle",
+     "attack": "own"
     }
    ],
    "intent": "A working tool that has stopped asking what it is for. The first two-handed axe in the game, and it belongs to a civilian.",
-   "source": "dictated 2026-08-25 | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled. | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
+   "source": "dictated 2026-08-25 | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled. | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20 | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the axe's on-block is the axe's own attacks' (V2-SHIELDS-AND-WEAPONS-2026-09-20.md: \"If an axe attacks something with a shield and block is triggered…\"). One compiled trigger per attack the row grants, each scoped to it."
   }
  ],
  "attacks": [
