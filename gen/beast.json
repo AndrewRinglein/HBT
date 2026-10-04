@@ -595,7 +595,8 @@
    ],
    "description": "Those seven hexes become poisoned.",
    "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
-   "triggers": []
+   "triggers": [],
+   "needsCapability": "ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)"
   },
   {
    "id": "power.carrion.gorge",
@@ -750,7 +751,7 @@
     "area"
    ],
    "description": "Deal 2 + Magic magic damage to every unit in the blast, and those seven hexes become burning. It does not roll to hit, so it cannot crit.",
-   "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one. | 2026-09-16 V2 burst migration: explicit hex placement and shielding; supported base damage/type retained. Uncompiled riders remain named gaps.",
+   "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one. | 2026-09-16 V2 burst migration: explicit hex placement and shielding; supported base damage/type retained. Uncompiled riders remain named gaps. | 2026-10-04 (engine fix.burst-ground-class-powers; engine SWITCHES.md burstGroundClassPowers): the burst's `paints` is the ground clause of the sentence — \"those seven hexes become burning\" — the field the Fire Staff's Flame Burst carries (engine capability.burst-paints-ground); mkenginepack holds the field to the sentence both ways.",
    "triggers": [],
    "burst": {
     "shape": {
@@ -765,7 +766,8 @@
       "amount": 2,
       "damageType": "magic"
      }
-    ]
+    ],
+    "paints": "layer.burning"
    }
   },
   {
