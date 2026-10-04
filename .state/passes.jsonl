@@ -11,3 +11,5 @@
 {"suite":"viewer","stamp":"e32430c4c5","with":{"engine":"4cb6488349","content":"07edc3f143","viewer":"e32430c4c5","kingdom":"d5faa23628"},"at":"2026-10-04T14:08:31.413Z","by":"gate (every part)","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"3bc4170b09","failed":true,"at":"2026-10-04T14:32:27.774Z","by":"gate --part checks","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"6eaf66458e","with":{"engine":"4cb6488349","content":"e0e210166b","viewer":"6eaf66458e","kingdom":"510c070932"},"at":"2026-10-04T14:46:52.757Z","by":"gate (every part)","in":"HBT-worker-content"}
+{"suite":"viewer","stamp":"5b596e3acf","failed":true,"at":"2026-10-04T15:20:04.674Z","by":"gate --part checks","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"5b596e3acf","with":null,"at":"2026-10-04T15:27:59.112Z","by":"gate (every part)","in":"HBT-worker-engine"}
