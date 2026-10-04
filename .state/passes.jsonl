@@ -40,3 +40,5 @@
 {"suite":"viewer","stamp":"fe0fd2736f","with":{"engine":"01aa156b6c","content":"222249a75c","viewer":"fe0fd2736f","kingdom":"78ddf736c4"},"at":"2026-10-04T19:18:27.287Z","by":"gate (every part)","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"fe0fd2736f","failed":true,"at":"2026-10-04T19:39:38.972Z","by":"gate --part checks","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"fe0fd2736f","with":{"engine":"01aa156b6c","content":"222249a75c","viewer":"fe0fd2736f","kingdom":"78ddf736c4"},"at":"2026-10-04T19:57:55.806Z","by":"gate (every part)","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"29f5eaf731","failed":true,"at":"2026-10-04T20:16:46.661Z","by":"gate --part checks","in":"HBT-worker-kingdom"}
+{"suite":"viewer","stamp":"29f5eaf731","with":null,"at":"2026-10-04T20:25:11.484Z","by":"gate (every part)","in":"HBT-worker-kingdom"}
