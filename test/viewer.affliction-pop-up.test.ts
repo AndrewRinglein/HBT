@@ -29,6 +29,12 @@ describe('the first-affliction pop-up: before and after art, the three explanati
     expect(gain!['mods']).toEqual(row.statModifiers)
     expect(gain!['atZero']).toEqual(row.atZero)
     expect(gain!['gaps']).toEqual(row.gaps)
+    // engine fix.affliction-pop-up-words (2026-10-04; engine DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its
+    // drawbacks come from the engine"): … and the Codex's ruled 0-Health text and which of the row's terms are drawbacks
+    expect(typeof (gain!['atZero'] as { text?: string }).text).toBe('string')
+    expect((gain!['atZero'] as { text?: string }).text).toBe((row.atZero as unknown as { text: string }).text)
+    expect(gain!['drawbacks']).toEqual((row as unknown as { drawbacks: unknown }).drawbacks)
+    expect(gain!['drawbacks']).toBeDefined()
     // the four afflictions are the badges with a 0-Health rule — the pop-up is raised for exactly these, by shape
     expect(Object.values(BADGES).filter((b) => b.atZero).map((b) => b.id).sort()).toEqual(['badge.lycanthropy', 'badge.possession', 'badge.rotting-flesh', 'badge.vampirism'])
   })

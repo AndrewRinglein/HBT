@@ -7,11 +7,17 @@
 
    The fold raises the cue from the engine's ONE line — a hero's badge.gained that carries a 0-Health rule (`atZero`: the
    engine's mark of an affliction, never a list of names here) — and everything printed is that line's or the sheet's
-   (Law 0): the stat changes are its `mods`, the drawbacks its lowered stats and the row's written terms (`gaps`), the
-   0-Health paragraph its `atZero` read BY SHAPE, the unit and badge names the sheet's. The art is the manifest's: the
-   hero's own card, and its after card for that affliction — a hero with none is told so, never shown another's (Law 1).
-   The pop-up is an element on the page; while it stands the pump is held (viewer.js holdPump), and Continue lets it go.
-   No DOM is read back and nothing is decided. */
+   (Law 0): the stat changes are its `mods`, the drawbacks the terms the line MARKS as drawbacks (`drawbacks.mods`, the
+   stats; `drawbacks.gaps`, the written terms), the 0-Health paragraph the line's own text (`atZero.text`), word for word.
+   The art is the manifest's: the hero's own card, and its after card for that affliction — a hero with none is told so,
+   never shown another's (Law 1). The pop-up is an element on the page; while it stands the pump is held (viewer.js
+   holdPump), and Continue lets it go. No DOM is read back and nothing is decided.
+
+   2026-10-04 (engine fix.affliction-pop-up-words; engine DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words
+   and its drawbacks come from the engine": "Okay, do it that way."): this file used to write the 0-Health paragraph in
+   sentences of its own, read off the rule's shape, and to judge the drawbacks itself (every stat with a minus, every
+   written term). Both are the engine's now, so nothing here is a rule's wording or a judgement of what counts against
+   the hero; a log recorded before the engine said them is told so in the pop-up, never filled in from here. */
 import { MOD_UP, MOD_DOWN } from './theme.js'
 import { sgn } from './actions.js'
 
@@ -25,28 +31,11 @@ const PCT = new Set(['accuracy', 'dodge', 'crit', 'block', 'rangedBlock'])
 
 const esc = x => String(x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 const minus = s => String(s).replace('-', '−')
-const an = name => (/^[aeiou]/i.test(name) ? 'an ' : 'a ') + name
 /** one modifier as it is written: "+8 Max HP", "−10% Accuracy" — the number is the event's */
 const modText = (stat, n) => minus(sgn(n)) + (PCT.has(stat) ? '%' : '') + ' ' + (AFFL_STAT[stat] || stat)
 const mods = m => Object.entries(m || {}).filter(([, n]) => n)
-
-/** what the affliction does at 0 Health, read off the engine's atZero BY SHAPE; the names are the sheet's */
-export function zeroLines(c, who, D) {
-  const z = c.atZero, unit = id => (D.UD[id] && D.UD[id].name) || id, badge = D.BADGES[z.gains]
-  const lines = []
-  if (z.transformsInto) {
-    const form = unit(z.transformsInto)
-    lines.push(`At 0 Health there is no Deathbed Fighting roll: ${who} transforms into ${an(form)}, at full Health, with the ${form}'s own stats and powers.`)
-    if (z.luckRoll) lines.push(`The change rolls Luck — the Luck stat is the chance. If it fails, which is most likely, the ${form} is an enemy to beat down; if Luck holds, it fights on your side.`)
-  } else if (z.raises) {
-    lines.push(`At 0 Health there is no Deathbed Fighting roll: ${who} goes down and bleeds out, and ${an(unit(z.raises))} rises from the body${z.raisedSide === 'enemy' ? ' as an enemy' : ''}.`)
-  } else lines.push(z.deathbedFighting ? `At 0 Health ${who} rolls Deathbed Fighting as normal.` : `At 0 Health there is no Deathbed Fighting roll: ${who} goes down.`)
-  if (z.gains) {
-    const cost = badge ? mods(badge.statModifiers).map(([s, n]) => modText(s, n)).join(', ') : ''
-    lines.push(`Each time it is taken to 0 Health it gains ${badge ? badge.name : z.gains}${cost ? ' (' + cost + ')' : ''}, and keeps it.`)
-  }
-  return lines
-}
+/** what the pop-up says where the log does not state a thing (a battle recorded before the engine said it) */
+const UNSAID = '<span class="afflNone">Not stated in this battle&#39;s log.</span>'
 
 /** close the pop-up if one stands; says whether it did */
 export function closeAffliction(V) {
@@ -65,10 +54,13 @@ export function afflictionPopup(V, c) {
   const who = esc(u.name), what = esc(c.name || c.badgeId)
   const card = (id, cap, src, none) => `<div class="afflCard" id="${id}"><div class="afflArt">${src
     ? `<img alt="${who} — ${cap}" src="${src}">` : `<span class="afflNoArt">${none}</span>`}</div><div class="afflCap">${cap}</div></div>`
-  const all = mods(c.mods), low = all.filter(([, n]) => n < 0)
+  const all = mods(c.mods), marked = c.drawbacks
   const stat = ([s, n]) => `<span class="afflStat" data-stat="${esc(s)}" data-n="${n}" style="color:${n > 0 ? MOD_UP : MOD_DOWN}">${esc(modText(s, n))}</span>`
-  const lowered = low.map(([s, n]) => `<li class="afflLow" data-stat="${esc(s)}">${esc(modText(s, n))}</li>`).join('')
-  const terms = (c.terms || []).map(t => `<li class="afflTerm">${esc(String(t).replaceAll('`', ''))}</li>`).join('')
+  /* the drawbacks are the ones the line marks, in its order: a stat it names (its number the line's own modifier), a
+     written term it names (the row's words) — nothing here decides which term counts against the hero */
+  const lowered = ((marked && marked.mods) || []).map(s => `<li class="afflLow" data-stat="${esc(s)}">${esc((c.mods || {})[s] ? modText(s, c.mods[s]) : AFFL_STAT[s] || s)}</li>`).join('')
+  const terms = ((marked && marked.gaps) || []).map(t => `<li class="afflTerm">${esc(String(t).replaceAll('`', ''))}</li>`).join('')
+  const zeroText = c.atZero && typeof c.atZero.text === 'string' ? c.atZero.text : null
   const node = document.createElement('div')
   node.id = 'afflPop'; node.setAttribute('role', 'dialog'); node.setAttribute('aria-modal', 'true'); node.setAttribute('aria-labelledby', 'afflTitle')
   node.setAttribute('data-unit', String(c.id)); node.setAttribute('data-badge', c.badgeId)
@@ -77,9 +69,9 @@ export function afflictionPopup(V, c) {
       card('afflAfter', 'After', after, `No after art for ${who} with ${what} yet.`)}</div>
     <div id="afflText">
       <div class="afflSec" id="afflStats"><div class="afflH">Stat changes</div><div class="afflRow">${all.length ? all.map(stat).join('') : '<span class="afflNone">None.</span>'}</div></div>
-      <div class="afflSec" id="afflDraw"><div class="afflH">Drawbacks</div>${lowered ? `<ul>${lowered}</ul>` : ''}${
-        terms ? `<div class="afflSub">Also written on ${what}:</div><ul>${terms}</ul>` : ''}${lowered || terms ? '' : '<span class="afflNone">None.</span>'}</div>
-      <div class="afflSec" id="afflZero"><div class="afflH">At 0 Health</div>${zeroLines(c, u.name, V.data).map(l => `<p>${esc(l)}</p>`).join('')}</div>
+      <div class="afflSec" id="afflDraw"><div class="afflH">Drawbacks</div>${!marked ? UNSAID
+        : lowered || terms ? `<ul>${lowered}${terms}</ul>` : '<span class="afflNone">None.</span>'}</div>
+      <div class="afflSec" id="afflZero"><div class="afflH">At 0 Health</div>${zeroText === null ? UNSAID : `<p>${esc(zeroText)}</p>`}</div>
     </div></div>
     <div id="afflFoot"><button id="afflClose" type="button" class="pcBtn pcEnd">Continue</button></div></div>`
   /* a press on the pop-up is not the camera's drag, nor a click on the board under it */

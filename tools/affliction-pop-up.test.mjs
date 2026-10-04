@@ -34,6 +34,9 @@ function boot(battle, opts = {}) {
 const fire = (node, type, extra = {}) => { for (const f of node.listeners[type] || []) f({ detail: 1, button: 0, stopPropagation() {}, preventDefault() {}, ...extra }) }
 const pop = V => V.dom.root.querySelector('#afflPop')
 const sgn = n => (n > 0 ? '+' : '') + n
+/** the words of an element as a browser reads them: the test's document keeps the page's escapes (as tools/panel-lists-items.test.mjs) */
+const words = x => String(x ?? '').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+const paras = P => P.querySelector('#afflZero').querySelectorAll('p').map(p => words(p.textContent))
 /** the first affliction a hero gains mid-battle: the engine's badge.gained line carrying its 0-Health rule */
 const gainOf = battle => { const i = battle.events.findIndex(e => e.type === 'badge.gained' && e.atZero); assert.ok(i > 0, 'the battle afflicts a hero'); return { i, e: battle.events[i] } }
 /** play from just before event i until the pop-up stands (or the pump runs dry) */
@@ -64,15 +67,27 @@ test('a hero first afflicted: the battle holds on the pop-up — its card before
   assert.equal(rows.length, mods.length, 'one row per modifier the event states')
   for (const [stat, n] of mods) { const row = rows.find(r => r.getAttribute('data-stat') === stat); assert.ok(row, `a row for ${stat}`)
     assert.equal(row.getAttribute('data-n'), String(n)); assert.ok(row.textContent.includes(sgn(n).replace('-', '−')) || row.textContent.includes(sgn(n)), `${stat} reads ${sgn(n)}: ${row.textContent}`) }
-  // 2 · the drawbacks: what the event lowers, and the terms the engine wrote on the row, word for word
-  const draw = P.querySelector('#afflDraw'), lowered = mods.filter(([, n]) => n < 0)
-  assert.equal(draw.querySelectorAll('.afflLow').length, lowered.length, 'each lowered stat is a drawback')
+  /* Law 10, 2026-10-04 (engine fix.affliction-pop-up-words; engine DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its drawbacks come from the engine": "Okay, do it that way."): step 2 read
+       const draw = P.querySelector('#afflDraw'), lowered = mods.filter(([, n]) => n < 0)
+       assert.equal(draw.querySelectorAll('.afflLow').length, lowered.length, 'each lowered stat is a drawback')
+       … assert.deepEqual(terms, e.gaps.map(…), 'the row\'s written terms, in the engine\'s words')
+     — the viewer judging which terms are drawbacks: every stat with a minus, and EVERY written term, a boon among them. The
+     engine marks them now (the line's `drawbacks`: the stats and the written terms that are drawbacks), and the pop-up
+     shows exactly the marked ones, each in the line's own words; step 3's paragraph is the line's own text, whole. */
+  // 2 · the drawbacks: exactly the terms the event marks — the stats in its `drawbacks.mods`, the written terms in its `drawbacks.gaps`
+  const draw = P.querySelector('#afflDraw'), lowered = mods.filter(([stat]) => e.drawbacks.mods.includes(stat))
+  assert.ok(e.drawbacks.mods.length >= 1 && e.drawbacks.gaps.length >= 1, 'the event marks drawbacks')
+  assert.equal(draw.querySelectorAll('.afflLow').length, e.drawbacks.mods.length, 'each stat the event marks is a drawback, and no other')
   for (const [stat] of lowered) assert.ok(draw.querySelectorAll('.afflLow').some(r => r.getAttribute('data-stat') === stat), `${stat} is named as lowered`)
-  const terms = draw.querySelectorAll('.afflTerm').map(r => r.textContent)
-  assert.deepEqual(terms, e.gaps.map(g => g.replaceAll('`', '')), 'the row\'s written terms, in the engine\'s words')
+  const terms = draw.querySelectorAll('.afflTerm').map(r => words(r.textContent))
+  assert.deepEqual(terms, e.drawbacks.gaps.map(g => g.replaceAll('`', '')), 'the written terms the event marks, in the engine\'s words')
   // 3 · at 0 Health: Rotting Flesh rolls Deathbed Fighting as normal and gains Fragile — the event's atZero, the badge's name the sheet's
-  const zero = P.querySelector('#afflZero').textContent
-  assert.deepEqual(e.atZero, { deathbedFighting: true, gains: 'badge.fragile' })
+  const zero = words(P.querySelector('#afflZero').textContent)
+  /* (Law 10, 2026-10-04, as at step 2: was assert.deepEqual(e.atZero, { deathbedFighting: true, gains: 'badge.fragile' }) — the rule's
+     shape, from which the viewer wrote its own sentences. The event carries the Codex's text beside the shape, and the
+     paragraph is that text, word for word, and nothing else.) */
+  { const { text, ...facts } = e.atZero; assert.deepEqual(facts, { deathbedFighting: true, gains: 'badge.fragile' }); assert.equal(typeof text, 'string')
+    assert.deepEqual(paras(P), [text], 'the 0-Health paragraph is the event\'s text, word for word, and nothing else') }
   assert.match(zero, /0 Health/); assert.match(zero, /Deathbed Fighting/); assert.ok(zero.includes(L.static.badges['badge.fragile'].name), `names Fragile: ${zero}`)
   assert.doesNotMatch(zero, /Luck|enemy|rises/, 'not another affliction\'s rule')
   // closed, the battle goes on to its end
@@ -92,9 +107,10 @@ test('a hero with no after art is told so, never shown borrowed art; Lycanthropy
   const P = pop(V); assert.ok(P)
   assert.equal(P.querySelector('#afflAfter').querySelector('img'), null, 'no borrowed picture')
   const none = P.querySelector('#afflAfter').querySelector('.afflNoArt'); assert.ok(none, 'the missing art is said'); assert.match(none.textContent, /art/i)
-  const zero = P.querySelector('#afflZero').textContent
+  const zero = words(P.querySelector('#afflZero').textContent)
   assert.ok(zero.includes(L.static.units[e.atZero.transformsInto].name), `names the Werewolf: ${zero}`)
   assert.match(zero, /Luck/); assert.match(zero, /enemy/); assert.match(zero, /no Deathbed Fighting roll/i)
+  assert.deepEqual(paras(P), [e.atZero.text], 'the paragraph is the event\'s text')
   v.dispose()
 })
 
@@ -103,10 +119,19 @@ test('Vampirism and Possession read their own 0-Health rules off the event: a Va
     const battle = exportOf(scenario, seed), { i, e } = gainOf(battle), t = boot(battle), { v, V, L } = t
     assert.equal(e.badgeId, badgeId); playTo(t, i)
     const P = pop(V); assert.ok(P, `${scenario}: the pop-up`)
-    const zero = P.querySelector('#afflZero').textContent, form = L.static.units[e.atZero[key]].name
+    const zero = words(P.querySelector('#afflZero').textContent), form = L.static.units[e.atZero[key]].name
     assert.ok(zero.includes(form), `${badgeId} names the ${form}: ${zero}`)
-    if (key === 'raises') { assert.match(zero, /rises/); assert.match(zero, /bleeds out/); assert.match(zero, /enemy/); assert.doesNotMatch(zero, /Luck/) }
+    /* Law 10, 2026-10-04 (engine fix.affliction-pop-up-words, as above): the first branch read assert.match(zero, /rises/) — a word
+       of the viewer's own sentence ("a Ghost rises from the body"). The Codex's text says the Ghost "is summoned on the hero's
+       hex as an enemy unit"; the paragraph is that text. What stood — bleeds out, an enemy, no Luck — stands. */
+    if (key === 'raises') { assert.match(zero, /summoned/); assert.match(zero, /bleeds out/); assert.match(zero, /enemy/); assert.doesNotMatch(zero, /Luck/) }
     else { assert.match(zero, /Luck/); assert.match(zero, /enemy/) }
+    assert.deepEqual(paras(P), [e.atZero.text], `${badgeId}: the paragraph is the event's text, word for word`)
+    /* the drawbacks are the marked terms and no others: a boon written on the row (Vampirism heals on a melee hit) is not listed */
+    const shownTerms = P.querySelector('#afflDraw').querySelectorAll('.afflTerm').map(r => words(r.textContent))
+    assert.deepEqual(shownTerms, e.drawbacks.gaps.map(g => g.replaceAll('`', '')), `${badgeId}: the marked terms`)
+    for (const g of e.gaps.filter(g => !e.drawbacks.gaps.includes(g))) assert.ok(!words(P.querySelector('#afflDraw').textContent).includes(g.replaceAll('`', '')), `${badgeId}: '${g}' is not marked and is not shown as a drawback`)
+    assert.deepEqual(P.querySelector('#afflDraw').querySelectorAll('.afflLow').map(r => r.getAttribute('data-stat')), e.drawbacks.mods, `${badgeId}: the marked stats`)
     for (const [stat, n] of Object.entries(e.mods).filter(([, n]) => n)) assert.equal(P.querySelector('#afflStats').querySelectorAll('.afflStat').find(r => r.getAttribute('data-stat') === stat)?.getAttribute('data-n'), String(n), `${badgeId} ${stat}`)
     v.dispose()
   }
@@ -144,4 +169,11 @@ test('the art: every after card the manifest names is inlined; heroes with none 
     assert.ok((a.after && a.after[b]) || (art.noAfterArt[tid] || []).includes(b), `${tid} ${b}: either an after card or listed`)
   assert.ok(art.noAfterArt['hero.fixed.orphans'], 'the Orphans have none, and are listed')
   v.dispose()
+})
+
+test('the viewer writes no 0-Health sentence and judges no drawback: src/affliction.js holds neither', () => {
+  const src = readFileSync('src/affliction.js', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
+  for (const words of ['Deathbed Fighting', 'transforms into', 'rises from', 'bleeds out', 'rolls Luck', 'which is most likely', 'taken to 0 Health']) assert.ok(!src.includes(words), `affliction.js writes "${words}"`)
+  assert.doesNotMatch(src, /n\s*<\s*0/, 'no lowered-stat test: which terms are drawbacks is the event\'s')
+  assert.match(src, /atZero\.text/); assert.match(src, /drawbacks/)
 })
