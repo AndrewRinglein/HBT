@@ -134,6 +134,26 @@ export function sandboxSwapChoices(s:Sandbox):SandboxSwapOffer{
  }
  return {choices,cost:swapCostOf(ctx,u),why:choices.length?null:why}
 }
+/**
+ * viewer.swap-button-rearranges (engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the
+ * unit's gear'): every OTHER arrangement of what the acting hero carries — each hand list the engine refuses, with the
+ * engine's own reason (the list now held is among them: "nothing changes"). With sandboxSwapChoices these are all the
+ * arrangements there are of the instances carried, in the same carried order; the gear panel says why one is refused from
+ * here. Law 2: validateBattleCommand decides every one.
+ */
+export function sandboxSwapRefusals(s:Sandbox):{hands:string[];why:string}[]{
+ const ctx=s.ctx,actor=ctx.battleCursor?.actor
+ if(ctx.state.outcome||ctx.battleCursor?.at!=='acting'||actor==null||controllerOf(ctx,actor,s.policy)!=='human')return []
+ const u=ctx.state.units[actor]!
+ if(!u.loadout)return []
+ const carried=[...u.loadout.hands,...u.loadout.stowed],out:{hands:string[];why:string}[]=[]
+ for(let mask=0;mask<1<<carried.length;mask++){
+  const hands=carried.filter((_,k)=>mask&(1<<k)).map(i=>i.instanceId)
+  const valid=validateBattleCommand(ctx,s.policy,{kind:'swap',actor,hands,expectedSeq:ctx.state.seq})
+  if(!valid.ok)out.push({hands,why:valid.reason.replace(/^illegal-swap: /,'')})
+ }
+ return out
+}
 /** Forecast a single current burst command. Enumeration never calls this resolver. */
 export function previewSandboxChoice(s:Sandbox,command:unknown){
  const valid=validateBattleCommand(s.ctx,s.policy,command)
