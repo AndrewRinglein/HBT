@@ -518,7 +518,8 @@ function triggerEffectWord(t) {
     : e.statusId ?? e.badgeId ?? e.stat ?? e.unit ?? e.kind;
   return String(word).replace(/^(status|badge|unit)\./, '').replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase();
 }
-const TRIGGER_ID_PARTS = [(t) => t.onlyWithAttack ? String(t.onlyWithAttack).split('.').pop() : '', triggerHookWord, triggerEffectWord];
+// (functions, not a const: the first rows are compiled above this line, and a declaration is hoisted)
+function triggerAttackWord(t) { return t.onlyWithAttack ? String(t.onlyWithAttack).split('.').pop() : ''; }
 function sharedTriggerIds(triggers) { const seen = new Set(), twice = new Set(); for (const t of triggers || []) (seen.has(t.id) ? twice : seen).add(t.id); return [...twice]; }
 function refuseSharedTriggerIds(rowId, triggers) {
   const twice = sharedTriggerIds(triggers);
@@ -526,7 +527,7 @@ function refuseSharedTriggerIds(rowId, triggers) {
 }
 function distinctTriggerIds(rowId, triggers) {
   const out = triggers.map((t) => ({ ...t }));
-  for (const part of TRIGGER_ID_PARTS) {
+  for (const part of [triggerAttackWord, triggerHookWord, triggerEffectWord]) {
     const groups = new Map();
     for (const t of out) { if (!groups.has(t.id)) groups.set(t.id, []); groups.get(t.id).push(t); }
     for (const group of groups.values()) {
