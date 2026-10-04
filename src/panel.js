@@ -7,7 +7,7 @@ import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers,
 import { raIcon } from './icons.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { itemsOf, SLOT_LABEL } from './items.js'
-import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
+import { MOD_UP, MOD_DOWN, BADGE_HUE, NOTE_HUE } from './theme.js'
 
 /* every engine hook has a label — tools/vocabulary.test.mjs checks it against the engine's export */
 export const HOOKLBL = { onHit: 'ON HIT', onBlock: 'ON BLOCK', onAttack: 'ON ATTACK', onDamage: 'ON DAMAGE',
@@ -64,9 +64,9 @@ export function drawPanel(V) {
   const sts = Object.entries(u.st).filter(([, v]) => v > 0)
   /* viewer.free-attack-kind-words: a free attack the unit has up, with the statuses: its glyph, its word, and its own Accuracy where the log gave it one */
   const upCol = freeAttacksUp(u, V.data).map(k => { const F = FREE_ATTACK[k], acc = (((V.data.UD || {})[u.typeId] || {})[F.accuracy] || 0) + modOf(u, F.accuracy)
-    return `<div class="freeUpRow" data-kind="${k}" style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;background:#e8c35a12;border:1px solid #e8c35a44;border-radius:3px">
-        ${raIcon(F.glyph, 'font-size:14px;color:#e8c35a;flex:0 0 14px')}<span style="flex:1;font-size:12.5px;color:#e8c35a;font-weight:600">${F.word}</span>
-        <span class="mono" style="font-size:12px;font-weight:700;color:#e8c35a">up${acc ? ' · ' + sgn(acc) + ' ACC' : ''}</span></div>` }).join('')
+    return `<div class="freeUpRow" data-kind="${k}" style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;background:${NOTE_HUE.aoo}12;border:1px solid ${NOTE_HUE.aoo}44;border-radius:3px">
+        ${raIcon(F.glyph, 'font-size:14px;flex:0 0 14px;color:' + NOTE_HUE.aoo)}<span style="flex:1;font-size:12.5px;color:${NOTE_HUE.aoo};font-weight:600">${F.word}</span>
+        <span class="mono" style="font-size:12px;font-weight:700;color:${NOTE_HUE.aoo}">up${acc ? ' · ' + sgn(acc) + ' ACC' : ''}</span></div>` }).join('')
   const stCol = upCol + (sts.length ? sts.map(([id, v]) => { const st = stStyle(id, V.data)
     return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;
         background:${st.hue}12;border:1px solid ${st.hue}44;border-radius:3px">

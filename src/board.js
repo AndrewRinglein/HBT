@@ -1066,7 +1066,7 @@ export function syncUnits(V) {
       E.fx.innerHTML = body.map(k => BODY_FX[k](figPx)).join('') }
     const dbSkull = u.deathbed ? `<div class="badge dbSkull" title="stood at the Deathbed">${raIcon('skull', `font-size:13px;color:${BLOOD_HUE}`)}</div>` : ''
     /* viewer.free-attack-kind-words: a free attack the unit has up (Counterattack, Fend) — its glyph in the status row over its head */
-    const freeUp = freeAttacksUp(u, V.data).map(k => `<div class="badge freeUp" data-kind="${k}" title="${FREE_ATTACK[k].word} is up">${raIcon(FREE_ATTACK[k].glyph, 'font-size:14px;color:#e8c35a')}</div>`).join('')
+    const freeUp = freeAttacksUp(u, V.data).map(k => `<div class="badge freeUp" data-kind="${k}" title="${FREE_ATTACK[k].word} is up">${raIcon(FREE_ATTACK[k].glyph, 'font-size:14px;color:' + NOTE_HUE.aoo)}</div>`).join('')
     E.badges.innerHTML = dbSkull + freeUp + sts.map(([id, v]) => { const st = stStyle(id, V.data)
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +
              `<div class="pip${st.sq ? ' sq' : ''}" style="background:${st.hue}">${v}</div></div>` }).join('')
