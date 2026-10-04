@@ -1,0 +1,2 @@
+{"suite":"kingdom","stamp":"9a0c763d53","failed":true,"at":"2026-10-04T10:38:07.154Z","by":"suites --run --full","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"c605b47f78","with":{"engine":"4cb6488349","content":"07edc3f143","viewer":"74061129fd","kingdom":"c605b47f78"},"at":"2026-10-04T11:16:45.564Z","by":"suites --run --full","in":"HBT-worker-engine"}

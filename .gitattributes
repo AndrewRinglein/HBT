@@ -3,3 +3,6 @@
 # (Andrew, 2026-10-01). Lines from each side stay in their own order.
 .state/ledger.md merge=union
 .state/gauntlet-log.jsonl merge=union
+# What passed on which code (engine/tools/suites.mjs, 2026-10-04). Append-only, so when two workers
+# record a pass in separate copies of the folder, git keeps both sides' lines instead of stopping.
+.state/passes.jsonl merge=union

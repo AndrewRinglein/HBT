@@ -23,7 +23,7 @@ sandbox; if a binary is missing, Andrew installs it on Windows per
 ```
 node tools/next.mjs                  the next backlog item that is ready
 node tools/gate.mjs --shard 1/4      one quarter of the suite (~80 s); run 1/4 … 4/4, one command each
-node tools/gate.mjs --shards-green   have all four passed on this exact tree?
+node tools/gate.mjs --shards-green   has the suite passed on kingdom's code as it stands?
 node tools/gate.mjs <id>             the landing gate — check only, changes nothing
 node tools/gate.mjs <id> --land      land it, only if every check passes
 node tools/gate.mjs <id> --abandon   give up, revert the tree, record why
@@ -55,8 +55,30 @@ with the command that started it** — `nohup … &` does not survive. So the su
 runs as four shards, one command each, recorded against the exact tree
 (`.state/shards.json`); the landing gate reads that record, runs only typecheck,
 the claimed probes and the static checks, and finishes in well under a minute.
-Edit any file after the shards and all four must run again. Ruled 2026-09-23,
-`engine/DECISIONS.md` "the kingdom gate fits a Cowork command".
+Ruled 2026-09-23, `engine/DECISIONS.md` "the kingdom gate fits a Cowork command".
+
+**The suite runs when kingdom's code changed, and not otherwise** (Andrew, 2026-10-04,
+`engine/DECISIONS.md` "the same for content and kingdom changes: each kind of change runs its
+own tests"). Kingdom's code is `src/` without `src/content/generated/`, `test/`, `tools/`,
+`fixtures/`, `package.json` and `tsconfig.json` — the one definition is
+`../engine/tools/code-stamp.mjs` (`node ../engine/tools/code-stamp.mjs --packages` prints the
+stamp). The shards are recorded against that code, not the whole tree:
+
+- Edit kingdom code after the shards and all four must run again. A regenerated file
+  (`mk-items`, `mk-progress`, …), a rebuilt page, a document or `.state/` does **not** make
+  them stale.
+- A complete set appends one line to `.state/passes.jsonl` (kept by a merge; committed with a
+  landing's bookkeeping). The merge-back (`../tools/combine.mjs`) reads it and does not run the
+  suite again on the same code. A failed shard is written there too, and takes an older pass on the
+  same code away. A `shards.json` written before 2026-10-04 (a tree, no stamp) is no pass.
+- At a landing the check **full test suite** prints `PASS` only when the shards ran on this exact
+  tree; when they ran on the same code and only generated files or documents differ, or the pass is
+  another copy's, it prints `SKIPPED` with the reason — never PASS for a suite that was not run.
+- **What it costs, as ruled:** this suite imports the engine and plays the viewer's page, and its
+  pass is keyed on kingdom's code alone. An engine or viewer change that breaks a kingdom test is
+  found at the once-per-chat full run (`node ../tools/combine.mjs <worker folder> --full`, or
+  `node ../engine/tools/suites.mjs --run all --full`), which the engine's `wrap` refuses without —
+  not at the change.
 
 **The gate decides whether an item passed, not you.** Never write `status` into
 `.state/backlog.json` or `state` into `.state/isc.json` by hand.
