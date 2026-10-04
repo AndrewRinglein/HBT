@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: every attack and shot motion has its moment, authored in one table beside the bindings, per clip; a clip with none keeps the default and is listed by name
+not ok 1 - every attack and shot motion has its moment, authored in one table beside the bindings, per clip; a clip with none keeps the default and is listed by name
+  ---
+  duration_ms: 2.28
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:134:1'
+  failureType: 'testCodeFailure'
+  error: 'tools/character-models.mjs: the MOMENTS table'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:135:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: the page carries the moments, and the cast says which motion an attack plays and when its moment is
+not ok 2 - the page carries the moments, and the cast says which motion an attack plays and when its moment is
+  ---
+  duration_ms: 1287.8289
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:171:1'
+  failureType: 'testCodeFailure'
+  error: 'cast.moment is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:177:23)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a zombie's blow on a hero: the hero's reaction starts at the blow, within the attack's own motion — not a beat after the hit
+not ok 3 - a zombie's blow on a hero: the hero's reaction starts at the blow, within the attack's own motion — not a beat after the hit
+  ---
+  duration_ms: 1575.7225
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:188:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'attack')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:190:86)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a Hunter's arrow leaves the bow at the release of the shot, not before or after, and the target reacts when it arrives
+not ok 4 - a Hunter's arrow leaves the bow at the release of the shot, not before or after, and the target reacts when it arrives
+  ---
+  duration_ms: 507.3778
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:209:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'ranged')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:211:79)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a priest's cast leaves at the release of the cast: the bolt gathers before it and leaves the hand at the moment; the target reacts when it lands
+not ok 5 - a priest's cast leaves at the release of the cast: the bolt gathers before it and leaves the hand at the moment; the target reacts when it lands
+  ---
+  duration_ms: 364.2567
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:227:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'attack')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:232:27)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a mage's bolt (magic) and an Imp's spit: every ranged attack and cast, not those two alone
+not ok 6 - a mage's bolt (magic) and an Imp's spit: every ranged attack and cast, not those two alone
+  ---
+  duration_ms: 623.5727
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:245:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'attack')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:248:101)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a unit killed by a blow starts its death at that blow, and one shot dead at the arrow's arrival — before the log's own line says it is dead
+not ok 7 - a unit killed by a blow starts its death at that blow, and one shot dead at the arrow's arrival — before the log's own line says it is dead
+  ---
+  duration_ms: 286.5581
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:259:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'attack')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:262:81)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a miss and a block happen at the blow too: the word at the moment, no hit reaction; a blocked shot flies first; a shield holder raises it
+not ok 8 - a miss and a block happen at the blow too: the word at the moment, no hit reaction; a blocked shot flies first; a shield holder raises it
+  ---
+  duration_ms: 283.0548
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:287:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'attack')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:289:84)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: only when things are drawn moves: the log plays in its order, a hand step and a seek land on the engine's state, at any speed the moments hold
+not ok 9 - only when things are drawn moves: the log plays in its order, a hand step and a seek land on the engine's state, at any speed the moments hold
+  ---
+  duration_ms: 1225.7394
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:317:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'log')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:331:27)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: with the enemies of a type moving together (the default), each attack in the Enemy Phase keeps its timing
+not ok 10 - with the enemies of a type moving together (the default), each attack in the Enemy Phase keeps its timing
+  ---
+  duration_ms: 615.7683
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:357:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'attack')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:359:218)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a board with no bodies (the flat board's tokens) keeps its own short lunge: the token strikes and the hit follows it
+not ok 11 - a board with no bodies (the flat board's tokens) keeps its own short lunge: the token strikes and the hit follows it
+  ---
+  duration_ms: 438.8098
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\attack-impact-timing.test.mjs:364:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'log')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/attack-impact-timing.test.mjs:369:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 0
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11024.8813

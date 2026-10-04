@@ -54,6 +54,30 @@ function noVoid(V, what) {
   return q
 }
 
+/* Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's edge to
+   show a unit on an edge column', Andrew: "1 yes"): "the battle area shows only board" was held of EVERY view. The rule now:
+   the view shows only board, or passes the board's edge by the least that shows the hex it was sent to whole — never beyond
+   the one bound (the board's edge, or as far past it as the outermost hexes need: the page's own V.cameraBound()). So a view
+   the page says stands inside the board's own box (past: null) is held to "only board" exactly as before (noVoid); a view
+   that stands past it is held to the bound, and to the reason: the unit in sight is whole and a little less of a slide would
+   cut it ('subject'), or the player scrolled there ('scroll'). */
+function withinBound(V, what) {
+  const B = V.cameraBound(), p = V.camShown
+  assert.ok(B.bound && p.x >= B.bound.x[0] - TOL && p.x <= B.bound.x[1] + TOL && p.y >= B.bound.y[0] - TOL && p.y <= B.bound.y[1] + TOL, `${what}: the view is inside the camera's one bound`)
+  return B
+}
+function noVoidOrLeast(V, what, unit) {
+  const B = withinBound(V, what)
+  if (!B.past) return noVoid(V, what)
+  /* past the board's own box: for the unit in sight, by the least that shows its hex whole */
+  assert.equal(B.past, 'subject', `${what}: the view passes the board's edge only for the unit in sight`)
+  const u = V.S.U[unit]; assert.ok(u, what + ': a unit is in sight')
+  assert.equal(V.revealPan(V.camTarget, u.hex), null, `${what}: ${u.name}'s hex is whole on the screen`)
+  const own = B.own, c = V.camTarget, back = { ...c, x: Math.min(Math.max(c.x, own.x[0]), own.x[1]), y: Math.min(Math.max(c.y, own.y[0]), own.y[1]) }
+  const less = { ...c, x: c.x + (back.x - c.x) * .1, y: c.y + (back.y - c.y) * .1 }
+  assert.notEqual(V.revealPan(less, u.hex), null, `${what}: a tenth less of a slide past the edge would cut ${u.name}'s hex — it is the least`)
+  return footprint(V)
+}
 /** let the camera's glide run, a frame at a time, every frame showing only board */
 const settle = (w, V, ms, what) => { for (let t = 0; t < ms; t += 16) { w._flush(16); noVoid(V, `${what}, ${t + 16} ms on`) } }
 
@@ -73,19 +97,22 @@ test('at load, at every wheel step out and in, and at each quarter turn, the bat
   v.dispose()
 })
 
-test('at the standard zoom there is board beyond the battle area on both axes; every Activation\'s centring shows only board', () => {
+test('at the standard zoom there is board beyond the battle area on both axes; every Activation\'s centring shows only board — or passes its edge by the least that shows the acting unit\'s hex whole', () => {
   const { v, V } = boot(), F = V.data.F
   v.seek(firstActivation)
   const q = noVoid(V, 'at load')
   assert.ok(q.r - q.l < F.w - 40 && q.b - q.t < F.h - 40, `board to scroll to across and down: the view sees ${(q.r - q.l).toFixed(0)} x ${(q.b - q.t).toFixed(0)} of ${F.w} x ${F.h}`)
   let n = 0
-  for (let i = 0; i < EV.length; i++) if (EV[i].type === 'activation.begin') { v.seek(i + 1); noVoid(V, `Activation at event ${i} (${V.S.U[EV[i].actor]?.name})`); n++ }
-  assert.ok(n > 10, `enough Activations: ${n}`)
-  v.pan(-1e5, -1e5); noVoid(V, 'a host pan far up-left'); v.pan(1e5, 1e5); noVoid(V, 'and far down-right')
+  let past = 0
+  for (let i = 0; i < EV.length; i++) if (EV[i].type === 'activation.begin') { v.seek(i + 1); noVoidOrLeast(V, `Activation at event ${i} (${V.S.U[EV[i].actor]?.name})`, EV[i].actor); if (V.cameraBound().past) past++; n++ }
+  assert.ok(n > 10, `enough Activations: ${n}`); assert.ok(past < n / 2, `most Activations are centred with only board in view (${n - past} of ${n})`)
+  /* a host's pan: to the bound, and no further (was: 'only board' — the pan stopped at the board's edge) */
+  v.pan(-1e5, -1e5); let B = withinBound(V, 'a host pan far up-left'); assert.ok(Math.abs(V.camTarget.x - B.bound.x[0]) < TOL && Math.abs(V.camTarget.y - B.bound.y[0]) < TOL, 'at the bound\'s corner')
+  v.pan(1e5, 1e5); B = withinBound(V, 'and far down-right'); assert.ok(Math.abs(V.camTarget.x - B.bound.x[1]) < TOL && Math.abs(V.camTarget.y - B.bound.y[1]) < TOL, 'at the bound\'s other corner')
   v.dispose()
 })
 
-test('pointing at each of the four edges scrolls the board until its edge meets the battle area\'s, and no further', () => {
+test('pointing at each of the four edges scrolls the board until the bound — the board\'s edge, or as far past it as the outermost hexes need — and no further', () => {
   const { w, v, V } = boot(), root = V.dom.root, F = V.data.F
   v.seek(firstActivation)
   const point = (x, y) => fire(root, 'pointermove', { clientX: x, clientY: y })
@@ -94,9 +121,16 @@ test('pointing at each of the four edges scrolls the board until its edge meets 
     point(960, 540); w._flush(100); v.centre(V.S.activeId); w._flush(100)
     const start = footprint(V)
     for (let i = 0; i < 300; i++) { point(x, y); w._flush(50) }
-    const end = noVoid(V, `held at the ${name} edge`)
-    const edge = { l: 0, r: F.w, t: 0, b: F.h }[side]
-    assert.ok(Math.abs(end[side] - edge) <= TOL, `the ${name} edge: scrolled until the board's edge meets the battle area's (${end[side].toFixed(2)} vs ${edge})`)
+    /* Law 10, 2026-10-04 (viewer.camera-shows-edge-units): was noVoid + 'scrolled until the board's edge meets the battle area's'
+       (the view's own side ON the board's edge). The player's scrolling now goes on to the bound, so the rim's hexes can be
+       scrolled whole into view: the view's centre stands on that side of the bound, the side of the view is at or past the
+       board's edge, and past it by no more than the bound is wider than the board's own box */
+    const end = footprint(V), B = withinBound(V, `held at the ${name} edge`), c = V.camShown
+    const edge = { l: 0, r: F.w, t: 0, b: F.h }[side], at = { l: [c.x, B.bound.x[0]], r: [c.x, B.bound.x[1]], t: [c.y, B.bound.y[0]], b: [c.y, B.bound.y[1]] }[side]
+    assert.ok(Math.abs(at[0] - at[1]) <= TOL, `the ${name} edge: scrolled until the bound (${at[0].toFixed(2)} vs ${at[1].toFixed(2)})`)
+    const grown = { l: B.own.x[0] - B.bound.x[0], r: B.bound.x[1] - B.own.x[1], t: B.own.y[0] - B.bound.y[0], b: B.bound.y[1] - B.own.y[1] }[side]
+    const over = side === 'l' || side === 't' ? edge - end[side] : end[side] - edge
+    assert.ok(over >= -TOL && over <= grown + TOL, `the ${name} edge: the view passes the board's edge by ${over.toFixed(1)} px — no more than the bound's ${grown.toFixed(1)}`)
     assert.ok(Math.abs(end[side] - start[side]) > 20 || Math.abs(start[side] - edge) <= TOL, `the ${name} edge: it moved (${start[side].toFixed(1)} -> ${end[side].toFixed(1)})`)
     point(960, 540); w._flush(300)
   }

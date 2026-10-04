@@ -1,0 +1,170 @@
+TAP version 13
+# Subtest: five Zombies and four Bloodhounds: the five Zombies' walks start at the same moment, then the four hounds' — the engine decided them one after another
+not ok 1 - five Zombies and four Bloodhounds: the five Zombies' walks start at the same moment, then the four hounds' — the engine decided them one after another
+  ---
+  duration_ms: 1933.5973
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\enemy-type-moves-together.test.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'log')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:62:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: the Zombies' attacks play after their walks, one Activation after another in the engine's order; the hounds, with no attack to show, are folded without a beat and the screen goes straight on
+not ok 2 - the Zombies' attacks play after their walks, one Activation after another in the engine's order; the hounds, with no attack to show, are folded without a beat and the screen goes straight on
+  ---
+  duration_ms: 1036.5444
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\enemy-type-moves-together.test.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'shownSince')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:86:81
+    playTo (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:47:78)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:86:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: five Zombies and four Bloodhounds: the grouped playback of the whole battle ends every Enemy Phase, and the battle, on the engine's own state — the one the one-at-a-time playback ends on; the log is untouched
+not ok 3 - five Zombies and four Bloodhounds: the grouped playback of the whole battle ends every Enemy Phase, and the battle, on the engine's own state — the one the one-at-a-time playback ends on; the log is untouched
+  ---
+  duration_ms: 1700.0016
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\enemy-type-moves-together.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'runs')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:128:28)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the Bridge: the grouped playback of the whole battle ends every Enemy Phase, and the battle, on the engine's own state — the one the one-at-a-time playback ends on; the log is untouched
+not ok 4 - the Bridge: the grouped playback of the whole battle ends every Enemy Phase, and the battle, on the engine's own state — the one the one-at-a-time playback ends on; the log is untouched
+  ---
+  duration_ms: 2333.6751
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\enemy-type-moves-together.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'runs')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:128:28)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the Cathedral: the grouped playback of the whole battle ends every Enemy Phase, and the battle, on the engine's own state — the one the one-at-a-time playback ends on; the log is untouched
+not ok 5 - the Cathedral: the grouped playback of the whole battle ends every Enemy Phase, and the battle, on the engine's own state — the one the one-at-a-time playback ends on; the log is untouched
+  ---
+  duration_ms: 7606.3503
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\enemy-type-moves-together.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'runs')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:128:28)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the Lumberjack House: the grouped playback of the whole battle ends every Enemy Phase, and the battle, on the engine's own state — the one the one-at-a-time playback ends on; the log is untouched
+not ok 6 - the Lumberjack House: the grouped playback of the whole battle ends every Enemy Phase, and the battle, on the engine's own state — the one the one-at-a-time playback ends on; the log is untouched
+  ---
+  duration_ms: 3155.3934
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\enemy-type-moves-together.test.mjs:105:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'runs')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:128:28)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: an engine order that mixes types: each type is still gathered whole, the groups in the order each type first acts; only enemies, only the Enemy Phase
+ok 7 - an engine order that mixes types: each type is still gathered whole, the groups in the order each type first acts; only enemies, only the Enemy Phase
+  ---
+  duration_ms: 2.8523
+  type: 'test'
+  ...
+# Subtest: a free attack on a moving enemy freezes the whole moving group while it plays, then the group goes on
+not ok 8 - a free attack on a moving enemy freezes the whole moving group while it plays, then the group goes on
+  ---
+  duration_ms: 257.2728
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\enemy-type-moves-together.test.mjs:166:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'log')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:194:26
+    playTo (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:47:78)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:193:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a hand step or a seek inside a grouped Enemy Phase lands on the engine's own state; the host can turn the grouping off
+not ok 9 - a hand step or a seek inside a grouped Enemy Phase lands on the engine's own state; the host can turn the grouping off
+  ---
+  duration_ms: 238.7261
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\enemy-type-moves-together.test.mjs:215:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'log')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/enemy-type-moves-together.test.mjs:218:43)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 1
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19428.4409
