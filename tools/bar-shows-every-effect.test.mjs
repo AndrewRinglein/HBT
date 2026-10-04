@@ -56,7 +56,12 @@ test('the Stab: a unit holding a dagger sees "gain 1 Protection" on it — on th
   /* the Flaming Longsword's Slash says its fire: the Burn and the fire damage the item brings */
   const flaming = units.find(u => u.triggers.some(t => t.source === 'item.longsword.flaming'))
   assert.match(flaming.rows['attack.longsword.slash'], /On hit: apply 1 Burn/); assert.match(flaming.rows['attack.longsword.slash'], /On hit: 2 fire damage/)
-  assert.doesNotMatch(flaming.rows['attack.longsword.stab'], /Burn|fire/, 'a trigger scoped to the Slash is not said on the Stab')
+  /* Law 10, 2026-10-04 — content.longsword-loses-stab (engine item; engine DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's Stab is no longer a row, so it cannot be the
+     action the fire is NOT said on. The rule is unchanged and said of every other action the holder has: a trigger scoped to the Slash is said on the Slash alone
+     (was: assert.doesNotMatch(flaming.rows['attack.longsword.stab'], /Burn|fire/, 'a trigger scoped to the Slash is not said on the Stab')) */
+  const others = flaming.actions.filter(id => id !== 'attack.longsword.slash')
+  assert.ok(others.length > 0, 'the holder has other actions: ' + flaming.actions.join(', '))
+  for (const id of others) assert.doesNotMatch(flaming.rows[id], /Burn|fire/, 'a trigger scoped to the Slash is not said on ' + id + ': ' + flaming.rows[id])
   /* a power's own effects are on its button (they were on no screen): the Bishop's Heal */
   const bishop = units.find(u => u.actions.includes('power.holy-symbol.heal'))
   assert.match(bishop.rows['power.holy-symbol.heal'].split(' | ')[0], /Heal .*party Spirit/); assert.match(bishop.rows['power.holy-symbol.heal'], /Target: one ally · Range 6/)
