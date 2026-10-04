@@ -4763,3 +4763,21 @@ Ruled:
 - It extends the engine's code stamp (2026-10-01, `tools/code-stamp.mjs`): a ruling, a wrap, a handoff or a log line "is an engine commit too; none of them changes a battle, so none of them may force viewer or kingdom to rebuild."
 
 Filed: `tool.combat-tests-on-engine-change` (engine queue; `fix.civilians-field-kit` stays first, as ruled 2026-10-03).
+
+## 2026-10-04 — the same for content and kingdom changes: each kind of change runs its own tests; this is much of what is slow
+
+Andrew, same chat, minutes after the entry above:
+
+“I mean, there are other things in the same category: content changes, kingdom changes.”
+
+“Is this what's making everything so slow?”
+
+What he was told — yes, it is the largest fixed cost that was measured. A merge-back (`tools/combine.mjs`) runs every package's tests whatever changed: content 94 s, kingdom 115 s, the engine's whole suite 275 s, the viewer's whole gate 481 s — 16 minutes, 2026-10-03. Cutting eleven unused item rows took a worker 52 minutes and the merge-back 16 more, most of it suites that the change could not have affected, run two and three times over (in the copy, in the merge-back, in this folder). Not measured: how the rest of a landing's time divides.
+
+Ruled:
+
+- **A content change and a kingdom change are in the same category as a visual one: they do not re-run the fights.** Read as the general rule: a package's tests run when that package's own code changed — engine code runs the engine suite and the control battles, content runs content's suite, viewer code runs the viewer's gate, kingdom code runs kingdom's suite. This replaces "a new content pack is an engine change" in the entry above: a regenerated file (the pack, the viewer's dumps, a built page) starts no suite.
+- **The chat's defaults** (he is not to be asked details: 2026-10-03, 'exact weapons are not the concern now'), GBH SWITCHES `tests.followWhatChanged`: everything together still runs once per chat before the wrap, as ruled 2026-09-23 and 2026-09-30, so the shared folder is only ever updated by a tested tree — which narrows 2026-10-01's "runs the full tests on the combined game" from every merge-back to once per chat; a suite that passed on the same code is not run again; shipping a new pack re-records the control-battle golden so the next engine item does not fail on a difference it did not make.
+- **What it costs, said to him:** a change in one package that breaks another's test — a content row an engine test names, an engine change the viewer's playback depends on — is found at the once-per-chat run, not at the change.
+
+Filed: `tool.tests-follow-what-changed`, first in the engine queue — it shortens every landing after it. It replaces `tool.combat-tests-on-engine-change` (the visual case only), which was taken back out of the queue the same hour. Not started from this chat: an engine worker was mid-merge in the engine copy, and rule 35 allows one worker per area.
