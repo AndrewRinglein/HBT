@@ -58,7 +58,10 @@ const attacksOf = typeId => statics.units[typeId].attacks.map(a => typeof a === 
 test('the fold plays both lines: they are folded types, and both battles hold them', () => {
   assert.ok(FOLDED_TYPES.includes('unit.transformed') && FOLDED_TYPES.includes('unit.reverted'), 'unit.transformed and unit.reverted are folded')
   assert.equal(turns(fixture.events).length, 4); assert.equal(fixture.events.filter(e => e.type === 'unit.reverted').length, 4)
-  assert.equal(turns(cavern.events).length, 1, 'the Cavern Trail\'s recording holds a transformation'); assert.equal(cavern.seed.replicate, 0, 'on seed 0')
+  assert.equal(turns(cavern.events).length, 1, 'the Cavern Trail\'s recording holds a transformation'); /* Law 10, combine 2026-10-04 (the note at the Cavern Trail's own test, below): was assert.equal(cavern.seed.replicate, 0, 'on seed 0') —
+     master's recorded seed; on the combined tree nobody is turned on seed 0, and the recording is on the lowest seed whose
+     battle turns a hero, the seed the library records */
+  assert.equal(cavern.seed.replicate, load('battles/library.json').battles.find(r => r.file === 'test.opening-cavern-trail.json').seed, 'on the seed the library records'); assert.equal(cavern.seed.replicate, 17)
 })
 
 test('before, during and after: at the turn the unit is its form — type, side, Health, the form\'s attacks, no hero gear — keeping its hex and its statuses; at the revert it is itself, whole', () => {
@@ -165,10 +168,23 @@ test('seek, step and replay land on the same state: the whole battle played by t
   v.dispose()
 })
 
-test('the Cavern Trail\'s recording plays through: the bite\'s first-affliction pop-up stands and is closed, the Chaplain turns, fights as a Werewolf and is himself again at the end', () => {
+/* Law 10, combine 2026-10-04 (viewer master 4d90ddf — viewer.plays-turned-units — with this copy's engine fix.opening-probe-cadence;
+   engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6): this test was
+   named "… the Chaplain turns, fights as a Werewolf and is himself again at the end" and read
+     assert.equal(e.from, 'hero.base.priest-armored'); … assert.ok(i - gained < 12, 'bitten and turned by the same blow')
+     … assert.equal(V.S.U[id].typeId, 'hero.base.priest-armored')
+   — master's recording, five heroes at the Cavern Trail on seed 0, where the Battle Chaplain is bitten at 0 Health and turns
+   at once. By the ruling four heroes fight there, and on seed 0 nobody is turned. The recording is the Cavern Trail on the
+   lowest seed whose battle turns a hero (17: seeds read from 0 upward for that KIND of line — viewer SWITCHES
+   combineTurnedSeed); in it the Barbarian is bitten, fights on, and turns when a later blow takes him to 0 Health. What
+   the test holds is unchanged and said of whichever hero the recording turns: the bite's pop-up stands and is closed
+   before the turn is shown, the hero turns into the form his affliction names, on the enemy's side, and is himself again
+   at the battle's end. */
+test('the Cavern Trail\'s recording plays through: the bite\'s first-affliction pop-up stands and is closed, the hero turns, fights as a Werewolf and is himself again at the end', () => {
   const { w, v, V, EV, ctx } = boot(cavern); V.fx.FX = { add: () => new Promise(() => {}), clear() {} }
   const { e, i } = turns(EV)[0], id = e.actor, gained = EV.findLastIndex((x, k) => k < i && x.type === 'badge.gained' && x.actor === id)
-  assert.equal(e.from, 'hero.base.priest-armored'); assert.equal(e.into, 'unit.werewolf'); assert.equal(EV[gained].badgeId, 'badge.lycanthropy'); assert.ok(i - gained < 12, 'bitten and turned by the same blow')
+  assert.match(e.from, /^hero\.base\./, 'a hero of the party is turned'); assert.equal(e.into, 'unit.werewolf'); assert.equal(EV[gained].badgeId, 'badge.lycanthropy'); assert.ok(gained >= 0 && gained < i, 'bitten before he turns')
+  assert.equal(e.badgeId, EV[gained].badgeId, 'and it is that affliction which turns him')
   v.seek(gained - 3); v.play()
   let popped = false
   for (let n = 0; n < 40000 && v.cursor <= i; n++) { w._flush(FRAME)
@@ -179,7 +195,7 @@ test('the Cavern Trail\'s recording plays through: the bite\'s first-affliction 
   v.speed(4)
   for (let n = 0; n < 2000000 && v.cursor < EV.length; n++) { w._flush(FRAME); const P = V.dom.root.querySelector('#afflPop'); if (P) fire(P.querySelector('#afflClose'), 'click') }
   assert.equal(v.cursor, EV.length); assert.equal(V.invalid, null)
-  assert.equal(V.S.U[id].typeId, 'hero.base.priest-armored'); assert.equal(V.S.U[id].side, 'hero'); assert.equal(V.S.U[id].hp, EV.findLast(x => x.type === 'unit.reverted').hp)
+  assert.equal(V.S.U[id].typeId, e.from); assert.equal(V.S.U[id].side, 'hero'); assert.equal(V.S.U[id].hp, EV.findLast(x => x.type === 'unit.reverted').hp)
   assert.deepEqual(board(V.S), board(foldTo(EV, EV.length, ctx)))
   v.dispose()
 })

@@ -215,8 +215,17 @@ test('a ranged hit that deals damage draws the slash at the projectile\'s arriva
     near((slashes[0].wall - arrow.wall) / 1000, ARROW / 1000, 'the slash is drawn when the arrow arrives'); assert.ok(slashes[0].wall > arrow.wall)
     v.pause(); v.dispose()
     console.log(`# a ranged hit: the slash ${((slashes[0].wall - arrow.wall)).toFixed(0)} ms after the arrow left (its flight ${ARROW} ms)`) }
-  const p = findAttack(lumberjack.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit', pred: x => x.dealt > 0 }); assert.ok(p); assert.equal(p.e.damageType, 'true')
-  { const { slashes, target, v } = await watch(lumberjack, p)
+  /* Law 10, combine 2026-10-04 (viewer master 4d90ddf — viewer.hit-slash — with this copy's engine fix.opening-probe-cadence, as at
+     tools/attack-impact-timing.test.mjs): this read
+       const p = findAttack(lumberjack.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit', pred: x => x.dealt > 0 }); assert.ok(p)
+       { const { slashes, target, v } = await watch(lumberjack, p)
+     — battle 2's recording, whose party of three held the priest. Battle 2 fields two heroes by the ruling, without him. The
+     scene is the first of this file's opening recordings, in their order, that holds a priest's bolt that deals damage
+     (found by kind: the Cathedral today). Every check below is unchanged. */
+  const boltIn = [orphanage, lumberjack, bridge, cathedral].map(b => ({ battle: b, p: findAttack(b.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit', pred: x => x.dealt > 0 }) })).find(x => x.p)
+  assert.ok(boltIn, 'an opening recording has a priest\'s bolt that deals damage')
+  const p = boltIn.p; assert.equal(p.e.damageType, 'true')
+  { const { slashes, target, v } = await watch(boltIn.battle, p)
     assert.equal(slashes.length, 1); across(slashes[0].slash, target, 'the bolt\'s target')
     assert.deepEqual(slashes[0].slash.rgb, SLASH_STYLES.true.body.split(',').map(Number), 'a true-damage hit: the true style\'s colour, not red (viewer SWITCHES slashColour)')
     v.pause(); v.dispose() }
