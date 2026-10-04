@@ -39,8 +39,14 @@ describe('fix.opening-levels — the opening carried by the kingdom\'s rules', (
     expect(orph!.levels).toEqual([1])
     for (const a of orph!.attempts) expect(a.xp).toEqual(battleXpOf(ORPHANAGE, a.result).map((p) => (p.dead ? 0 : 20)))
     expect(orph!.xpOut).toEqual([20])
-    expect(lumb!.xpIn).toEqual([20, 0, 0])
-    expect(lumb!.levels).toEqual([2, 1, 1])
+    // Law 10, 2026-10-04 (engine fix.opening-probe-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …':
+    // "One, yes." — a party of 1, 2, 3, 4, 5, 6): these two read
+    //   expect(lumb!.xpIn).toEqual([20, 0, 0])
+    //   expect(lumb!.levels).toEqual([2, 1, 1])
+    // — three heroes at the Lumberjack House, the engine's opening party under the 2026-08-23 cadence. The engine's party
+    // follows the ruled cadence now, as the kingdom's run has since kingdom.opening-draft-cadence: two heroes there.
+    expect(lumb!.xpIn).toEqual([20, 0])
+    expect(lumb!.levels).toEqual([2, 1])
     const won = lumb!.attempts.at(-1)!
     expect(won.outcome).toBe('heroClear')
     const heroRows = won.result.units.filter((u) => u.side === 'hero' && u.role === undefined)
