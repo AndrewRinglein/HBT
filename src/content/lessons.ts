@@ -154,6 +154,16 @@ export const LESSONS: readonly LessonRow[] = [
   { id: 'lesson.lumberjack.stamina', once: 'lesson.stamina', encounterId: LUMBERJACK, starts: 'activation-begins', ends: 'time', of: 'hero',
     words: ['Attacks and powers cost Stamina — the strip beside the action bar.', 'What an action costs is shown on its slot.', 'Stamina comes back at the end of each Hero Phase.'], point: { at: 'stamina' } },
 
+  // ── kingdom.tutorial-free-attack-and-downed (2026-10-04; the same entry, the extra steps (d) and (f)): "Walking away from an enemy
+  //    draws a free attack, shown the first time it would happen." — "We need to do D the first time you try to do it."; "The first
+  //    time a hero goes down: bleeding out and first aid." — "F, yes." Whichever battle of the run they first happen in. ──
+  // (d) the first time the player plans a path that would draw a free attack: the walk waits for one more click
+  { id: 'lesson.free-attack', starts: 'path-provokes', ends: 'moved', asks: true,
+    words: ['Moving away from an enemy beside you gives it a free attack.', 'Click the hex again to move anyway.'], point: { at: 'provoker' } },
+  // (f) the first time one of the player's units goes down
+  { id: 'lesson.downed', starts: 'event', event: { type: 'life.downed', of: 'player' }, ends: 'time', holds: true,
+    words: ['This unit is down and bleeding out.', 'The number on its card is the Turns it has left; an enemy\'s blow takes one away.', 'Win the battle before it runs out and it lives, wounded.'],
+    look: 'struck', point: { at: 'struck-card' } },
 ]
 
 /** The reveal that says a lesson's row has been shown in this run. */
