@@ -7664,6 +7664,34 @@ export const UNIT_PACK = {
         "ai: 'use whenever available' — an action hint on the row (AI-DESIGN.md §3D) waits on ai.scorer"
       ]
     },
+    "power.longsword.counterattack": {
+      "id": "power.longsword.counterattack",
+      "name": "Counterattack",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "counterattack",
+          "value": 1,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "counterattackAccuracy",
+          "value": 10,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ]
+    },
     "power.kite-shield.shield-wall": {
       "id": "power.kite-shield.shield-wall",
       "name": "Lock Shields",
@@ -13300,7 +13328,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": []
     },
     "item.halberd": {
@@ -19286,6 +19316,27 @@ export const UNIT_PACK = {
             "kind": "reveal"
           }
         ]
+      },
+      "power.test-fend": {
+        "id": "power.test-fend",
+        "name": "Fend (TEST)",
+        "range": 0,
+        "staminaCost": 1,
+        "cooldown": 7,
+        "free": true,
+        "target": {
+          "select": "self",
+          "side": "any"
+        },
+        "effects": [
+          {
+            "kind": "statMod",
+            "stat": "fend",
+            "value": 1,
+            "until": "endOfNextTurn",
+            "who": "self"
+          }
+        ]
       }
     },
     "statuses": {
@@ -19525,6 +19576,16 @@ export const UNIT_PACK = {
             "add": 3
           }
         ]
+      },
+      "test.badge.fender": {
+        "statModifiers": {},
+        "grants": [
+          "power.test-fend"
+        ],
+        "flags": {},
+        "id": "test.badge.fender",
+        "name": "Fender (TEST)",
+        "triggers": []
       }
     },
     "moves": {
@@ -33623,7 +33684,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [
         {
           "id": "trigger.longsword.bloodletting.bleed-crit",
@@ -33655,7 +33718,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.longsword",
       "enchant": "enchant.the-master",
@@ -33679,7 +33744,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "vsTarget": [
         {
@@ -33704,7 +33771,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "vsTarget": [
         {
@@ -33732,7 +33801,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "vsTarget": [
         {
@@ -33761,7 +33832,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [
         {
           "id": "trigger.longsword.taunting.taunt",
@@ -33793,7 +33866,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.longsword",
       "enchant": "enchant.destroying",
@@ -36258,7 +36333,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [
         {
           "id": "trigger.longsword.flaming.burn",
@@ -39874,7 +39951,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash",
         "attack.longsword.stab"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.longsword"
     },
@@ -39892,7 +39971,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash.heavy",
         "attack.longsword.stab.heavy"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.longsword",
       "enchant": "enchant.heavy"
@@ -39911,7 +39992,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash.keen",
         "attack.longsword.stab.keen"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.longsword",
       "enchant": "enchant.keen"
@@ -39930,7 +40013,9 @@ export const UNIT_PACK = {
         "attack.longsword.slash.cruel",
         "attack.longsword.stab.cruel"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.longsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.longsword",
       "enchant": "enchant.cruel"

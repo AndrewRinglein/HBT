@@ -11,7 +11,8 @@ import { flatDamage } from './mitigation.js'
 import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
 import { actionReady, resolveActionSlot, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
 import { forcedTargetOf, hiddenFrom, incomingAbsorb, isBlocked, isProne, isRooted, spendAbsorb } from './status.js'
-import { performAttack, preview } from './pipeline.js'
+import { FREE_ATTACK_STATS, performAttack, preview, type FreeAttackKind } from './pipeline.js'
+import { effective } from './stats.js'
 import { freeAttackChoice } from './free-attack.js'
 import { knockImmunity } from './kdb.js'
 import { thornsOf } from './thorns.js'
@@ -222,6 +223,7 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
   const u = unit(ctx, unitId)
   let moved = 0
   const provoked = new Set<number>()   // once per enemy per activation
+  const fended = new Set<number>()     // capability.counterattack-and-fend: once per fender per walk
   // capability.move-ignores-zoc (2026-09-28): the ACTION walking says whether it
   // provokes — MoveProfile.ignoresZoc, the Codex row's own property (the hounds:
   // "the move-WITHOUT-provoking machinery, as a property of their movement",
@@ -233,10 +235,10 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
     if (ctx.state.outcome || isRooted(ctx, u) || isBlocked(ctx, u) || allowance < cost || u.movePointsLeft + bonusLeft < cost) break
     // 2. attacks of opportunity — movement.attack-of-opportunity (2026-09-03):
     //    leaving a hex inside an enemy's ZoC provokes ONE attack from that
-    //    enemy, its cheapest LEGAL melee attack, through performAttack; once
-    //    per enemy per activation; stamina and cooldown paid as for any attack
-    //    (fix.aoo-pays-stamina, 2026-09-04), the primary slot untouched. The AI is
-    //    blind to it by ruling (Angela 2026-08-13) and walks into these.
+    //    enemy — its special free attack (rule.free-attack-is-basic-attack,
+    //    2026-10-04: the basic attack, no Stamina, −20 Accuracy), through
+    //    performAttack; once per enemy per activation; the primary slot untouched.
+    //    The AI is blind to it by ruling (Angela 2026-08-13) and walks into these.
     //    fix.zoc-threat-not-stop (2026-09-04): "Zone of control is only a
     //    threat. If you do not stop moving, you are going to get whacked" — a
     //    HIT is what ends movement ("you get hit, and you lose movement, and
@@ -266,6 +268,7 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
     const bonusPaid = Math.min(bonusLeft, cost)
     bonusLeft -= bonusPaid
     allowance -= cost
+    const cameFrom = u.hex
     moveUnit(ctx, unitId, hex, cost, causeId, terrainIdOf(terrainHere), bonusPaid)
     moved++
     // 4. traps — none in the baseline
@@ -274,6 +277,27 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
     //    (lava, v2.ground-table). Flight skips all of it by construction: zero Steps.
     //    A hazard that landed HP damage settles here, so a mover the lava kills stops.
     if (enterGround(ctx, unitId, hex)) settle(ctx, terrainIdOf(terrainHere))
+    // 5b. fend — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28: Fend "is triggered by an
+    //     enemy moving into your zone of control. Its damage works as the attack of opportunity's does: it can stop
+    //     the mover"): a step from OUTSIDE a standing enemy's zone to inside it, while that enemy has Fend up, draws
+    //     its special free attack — once per fender per walk. A walk that ignores zones of control ignores this too.
+    //     A hit ends the movement, as an attack of opportunity's does.
+    if (ctx.cfg.switches.zoneOfControl && !ignoresZoc && u.lifeState === 'standing' && !ctx.state.outcome) {
+      let struck = false
+      for (const e of zocHoldersAt(ctx, u, hex)) {
+        if (fended.has(e.id) || ctx.geo.distance(e.hex, cameFrom) === 1) continue
+        if (effective(ctx, e, FREE_ATTACK_STATS.fend.up).value <= 0) continue
+        fended.add(e.id)
+        if (ctx.dryWalk) { const c = freeAttackChoice(ctx, e.id, unitId); ctx.dryWalk.provokes.push({ at: hex, from: e.id, as: 'fend', ...('attack' in c ? { attackId: c.attack.id, preview: preview(ctx, e.id, unitId, c.attack.id, 'reaction', 'fend') } : { attackId: null, skipped: c.skipped, preview: null }) }); continue }
+        if (specialFreeAttack(ctx, e.id, unitId, 'fend')) struck = true
+        if (u.lifeState !== 'standing') return moved
+      }
+      if (struck) {
+        u.movePointsLeft = 0
+        emit(ctx, 'move.stopped', causeId, { actor: unitId, hex: u.hex, reason: 'hit' })
+        break
+      }
+    }
     // 6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break
     if (u.lifeState !== 'standing') break
@@ -310,6 +334,21 @@ export function zocHoldersAt(ctx: Ctx, u: Unit, hex: HexId): Unit[] {
  */
 export function aooChoice(ctx: Ctx, holderId: number, moverId: number): { attack: AttackDef } | { skipped: 'no melee attack' | 'not legal' } {
   return freeAttackChoice(ctx, holderId, moverId)
+}
+
+/**
+ * A counterattack-style special free attack made from the board — the fend (capability.counterattack-and-fend): the
+ * holder's free attack on `targetId` (freeAttackChoice), as a reaction named for its kind, then settle. Returns whether
+ * it hit. Skipped, with a line, when the holder has no melee attack it can legally make.
+ */
+export function specialFreeAttack(ctx: Ctx, holderId: number, targetId: number, as: FreeAttackKind): boolean {
+  const cause = FREE_ATTACK_STATS[as].cause
+  const choice = freeAttackChoice(ctx, holderId, targetId)
+  if (!('attack' in choice)) { emit(ctx, 'aoo.skipped', cause, { actor: holderId, target: targetId, reason: choice.skipped, as }); return false }
+  emit(ctx, 'aoo.provoked', cause, { actor: holderId, target: targetId, attackId: choice.attack.id, as })
+  const result = performAttack(ctx, holderId, targetId, choice.attack.id, 'reaction', as)
+  settle(ctx, cause)
+  return result.hit
 }
 
 export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number): boolean {

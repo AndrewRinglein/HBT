@@ -34,6 +34,14 @@ export type StatName =
   | 'thorns'
   /** v2.swap (COMBAT-V2 §11.2, 2026-09-24): what a loadout swap costs in stamina — 1 on every body; badges, items and statuses fold it. Read never below 0. */
   | 'swapCost'
+  /**
+   * capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …'): the two
+   * special free attacks a unit makes only while it has them up. `counterattack` above 0: attacked in melee by an adjacent
+   * enemy, it answers once per enemy action. `fend` above 0: it swings at an enemy that walks into its zone of control. 0 on
+   * every body — a power's timed modifier lends them ("until the end of your next Turn"). Each has its own Accuracy, added to
+   * that free attack's roll on top of the ruled −20 ("counterattack with +10 Accuracy").
+   */
+  | 'counterattack' | 'counterattackAccuracy' | 'fend' | 'fendAccuracy'
 
 /**
  * `add` sums. `set` overrides and wins outright (disarm, petrify).
@@ -92,6 +100,10 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   vision: (u) => u.vision,
   thorns: (u) => u.thorns ?? 0,
   swapCost: (u) => u.swapCost ?? 1,
+  counterattack: (u) => u.counterattack ?? 0,
+  counterattackAccuracy: (u) => u.counterattackAccuracy ?? 0,
+  fend: (u) => u.fend ?? 0,
+  fendAccuracy: (u) => u.fendAccuracy ?? 0,
 }
 
 /** The same stat vocabulary used by resolution, for external data validation. */

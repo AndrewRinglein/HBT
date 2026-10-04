@@ -913,6 +913,14 @@ export type UnitDef = {
   readonly vision?: number
   /** v2.thorns (COMBAT-V2 §9.4, 2026-09-24): the Thorns magnitude, folded from items, badges and specialties. Absent = 0. */
   readonly thorns?: number
+  /**
+   * capability.counterattack-and-fend (2026-10-04): the special free attacks a row has up from the start, and each one's
+   * Accuracy, folded from items, badges and specialties ("Weapons can have counterattack stats on them"). Absent = 0.
+   */
+  readonly counterattack?: number
+  readonly counterattackAccuracy?: number
+  readonly fend?: number
+  readonly fendAccuracy?: number
   /** v2.swap (COMBAT-V2 §11.2, 2026-09-24): the loadout swap's stamina cost. Absent = 1 (the rule's default). */
   readonly swapCost?: number
   /**
@@ -1007,6 +1015,11 @@ export type Unit = {
   vision: number
   /** v2.thorns: the folded Thorns magnitude; absent on a bare body (read through the `thorns` stat). */
   thorns?: number
+  /** capability.counterattack-and-fend: the folded Counterattack and Fend magnitudes and their Accuracy; absent on a bare body (read through the stats of the same names). */
+  counterattack?: number
+  counterattackAccuracy?: number
+  fend?: number
+  fendAccuracy?: number
   /** v2.swap: the folded swap cost; absent = 1 (read through the `swapCost` stat). */
   swapCost?: number
   /** fix.codex-numbers: the folded bleed-out addition (see UnitDef); absent = 0. Not `bleedOut`, which is the running counter. */

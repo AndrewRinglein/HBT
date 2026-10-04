@@ -26,7 +26,7 @@ export type Applied = {
 /** v2.swap: a foldable stat whose absent value is not 0. */
 export const FOLD_BASE: Readonly<Record<string, number>> = { swapCost: 1 }
 
-export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03   // bleedOutTurns, deathbedFighting: fix.codex-numbers, 2026-10-01 (review finding C9)
+export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting', 'counterattack', 'counterattackAccuracy', 'fend', 'fendAccuracy'] as const   // the last four: capability.counterattack-and-fend, 2026-10-04   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03   // bleedOutTurns, deathbedFighting: fix.codex-numbers, 2026-10-01 (review finding C9)
 
 /** The value a foldable stat holds when nothing has folded onto it — 0, or FOLD_BASE's (swapCost 1). */
 export function unfoldedOf(k: string): number {

@@ -26,6 +26,7 @@ import { reflectThorns, thornsOnHit } from './thorns.js'
 import { rulesSideOf } from './side.js'
 import { attackPacketFields } from './attack-profile.js'
 import { structureGuard, structureReachOf } from './structure.js'
+import { freeAttackChoice } from './free-attack.js'
 
 export const ACC = {
   BASE: 100,
@@ -159,7 +160,7 @@ export function reachOf(ctx: Ctx, u: Unit, a: AttackDef): number {
  * Crit reads (final − 100) ÷ 4, so clamping here would silently delete crit surplus.
  * Only the roll comparison clamps.
  */
-export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: AttackDef, mode?: AttackMode): Resolved {
+export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: AttackDef, mode?: AttackMode, as?: FreeAttackKind): Resolved {
   const ledger: LedgerRow[] = []
   const d = ctx.geo.distance(attacker.hex, target.hex)
 
@@ -216,6 +217,11 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   if (a.attack.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.attack.accuracy)
   // rule.free-attack-is-basic-attack: a special free attack (the attack of opportunity) swings at the ruled penalty — its own named row
   if (mode === 'reaction') v = step(ledger, ACC.SITUATIONAL, 'FREE_ATTACK', FREE_ATTACK_CAUSE, v, v + FREE_ATTACK_ACCURACY)
+  // capability.counterattack-and-fend: a counterattack and a fend add their own Accuracy stat ("counterattack with +10 Accuracy")
+  if (mode === 'reaction' && as !== undefined) {
+    const bonus = effective(ctx, attacker, FREE_ATTACK_STATS[as].accuracy).value
+    if (bonus) v = step(ledger, ACC.SITUATIONAL, 'FREE_ATTACK_BONUS', FREE_ATTACK_STATS[as].cause, v, v + bonus)
+  }
   if (a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-LOW_COVER_ACCURACY)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
@@ -488,6 +494,16 @@ export type AttackMode = 'movement' | 'primary' | 'reaction'
 export const FREE_ATTACK_ACCURACY = -20
 /** What the free attack's accuracy row names as its cause (Law 12). */
 export const FREE_ATTACK_CAUSE = 'rule.free-attack'
+/**
+ * capability.counterattack-and-fend (2026-10-04): the special free attacks a unit makes only while it has them up — the
+ * stat that says so (above 0), the stat added to that swing's Accuracy, and the cause its lines name. The attack of
+ * opportunity is the third special free attack; every unit with a zone of control makes it, so it has no row here.
+ */
+export type FreeAttackKind = 'counterattack' | 'fend'
+export const FREE_ATTACK_STATS: Readonly<Record<FreeAttackKind, { readonly up: import('./stats.js').StatName; readonly accuracy: import('./stats.js').StatName; readonly cause: string }>> = {
+  counterattack: { up: 'counterattack', accuracy: 'counterattackAccuracy', cause: 'rule.counterattack' },
+  fend: { up: 'fend', accuracy: 'fendAccuracy', cause: 'rule.fend' },
+}
 
 export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): boolean {
   const at = unit(ctx, attackerId)
@@ -551,11 +567,11 @@ export function resolveBlock(ctx: Ctx, target: Unit, kind: 'melee' | 'ranged', a
 }
 
 /** Preview: the same pipeline, run without applying. Law 1 — never a second formula. */
-export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode) {
+export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode, as?: FreeAttackKind) {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = attackDef(ctx, attackId)
-  const acc = resolveAccuracy(ctx, at, tg, a, mode)
+  const acc = resolveAccuracy(ctx, at, tg, a, mode, as)
   const hitChance = Math.max(0, Math.min(100, acc.value))
   const block = resolveBlock(ctx, tg, a.attack.kind, at)
   // hitChance remains the accuracy cup conditioned on passing Block. Bps is
@@ -614,8 +630,47 @@ function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, 
     - effective(ctx, target, 'luck').value)
 }
 
+/**
+ * An attack, whole: every hit of it, then — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28: "You can
+ * counterattack once per enemy action, so if that enemy action is three attacks, all three of their attacks will resolve,
+ * and then you will get your one counterattack") — the target's counterattack, if it has one up. `as` names which special
+ * free attack a reaction is (a counterattack, a fend); absent, a reaction is the attack of opportunity.
+ */
+export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode, as?: FreeAttackKind): AttackResult {
+  const result = resolveAttack(ctx, attackerId, targetId, attackId, mode, as)
+  // a special free attack is never answered (no chains): only an attack made on the attacker's own Activation is
+  if (mode !== 'reaction') counterattackAfter(ctx, attackerId, targetId, attackDef(ctx, attackId))
+  return result
+}
+
+/**
+ * The counterattack — "set off by being attacked, not by being hit, blocked, or dodged", by an adjacent melee attacker,
+ * after every hit of that attack has resolved. The unit attacked, still standing with its Counterattack above 0 and the
+ * attacker still standing beside it, makes its free attack on the attacker (free-attack.ts freeAttackChoice: the basic
+ * attack, else its own melee attack) as a reaction — no Stamina, the ruled penalty, plus its Counterattack Accuracy — then
+ * settle. Skipped, with a line, when it has no melee attack it can legally make.
+ */
+function counterattackAfter(ctx: Ctx, attackerId: number, targetId: number, a: AttackDef): void {
+  if (ctx.state.outcome || a.attack.kind !== 'melee') return
+  const at = unit(ctx, attackerId), tg = unit(ctx, targetId)
+  if (at.lifeState !== 'standing' || tg.lifeState !== 'standing' || at.side === tg.side) return
+  if (ctx.geo.distance(at.hex, tg.hex) !== 1) return
+  const kind = FREE_ATTACK_STATS.counterattack
+  if (effective(ctx, tg, kind.up).value <= 0) return
+  // "all three of their attacks will resolve, and then you will get your one counterattack": the attack's own consequences
+  // settle first — a unit the blow took to 0 Health is down before it could answer. (The caller settles the attack after
+  // this returns, as it always did; with nothing left to settle that is a no-op.)
+  settle(ctx, a.id)
+  if (ctx.state.outcome || at.lifeState !== 'standing' || tg.lifeState !== 'standing' || ctx.geo.distance(at.hex, tg.hex) !== 1) return
+  const choice = freeAttackChoice(ctx, targetId, attackerId)
+  if (!('attack' in choice)) { emit(ctx, 'aoo.skipped', kind.cause, { actor: targetId, target: attackerId, reason: choice.skipped, as: 'counterattack' }); return }
+  emit(ctx, 'aoo.provoked', kind.cause, { actor: targetId, target: attackerId, attackId: choice.attack.id, as: 'counterattack' })
+  resolveAttack(ctx, targetId, attackerId, choice.attack.id, 'reaction', 'counterattack')
+  settle(ctx, kind.cause)
+}
+
 /** Each hit completes its shared lifecycle; aggregate hit means any connection. */
-export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): AttackResult {
+function resolveAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode, as?: FreeAttackKind): AttackResult {
   const a0 = attackDef(ctx, attackId)
   // capability.stealth (2026-09-28): "It breaks the moment you use an attack" — as
   // it is declared, before the roll, whatever its mode; a multi-hit attack breaks
@@ -630,7 +685,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   // hex as the attack is declared — a KDB push after it does not move the blow.
   const struck = unit(ctx, targetId).hex
   if (hits === 1) {
-    const result = performHit(ctx, attackerId, targetId, attackId, 1, 1, mode, kdb)
+    const result = performHit(ctx, attackerId, targetId, attackId, 1, 1, mode, kdb, as)
     kdbAfterAttack(ctx, attackerId, targetId, a0, kdb)
     destroyAfterAttack(ctx, attackerId, struck, a0, result.hit)
     return result
@@ -646,7 +701,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     const tg = unit(ctx, targetId)
     if (h > 1 && tg.lifeState !== 'standing') { emit(ctx, 'attack.cancelled', attackId, { actor: attackerId, target: targetId, hit: h, of: hits, reason: 'target fell' }); break }
     if (h > 1 && unit(ctx, attackerId).lifeState !== 'standing') break
-    last = performHit(ctx, attackerId, targetId, attackId, h, hits, mode, kdb)
+    last = performHit(ctx, attackerId, targetId, attackId, h, hits, mode, kdb, as)
     results.push(last)
     damage += last.damage
     settle(ctx, attackId)
@@ -686,7 +741,7 @@ function kdbAfterAttack(ctx: Ctx, attackerId: number, targetId: number, a: Attac
 }
 
 /** One hit of an attack — the whole of performAttack before multihit. `hit`/`of` name the swing in the log. */
-function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number, mode: AttackMode | undefined, kdb?: KdbTally): AttackResult {
+function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number, mode: AttackMode | undefined, kdb?: KdbTally, as?: FreeAttackKind): AttackResult {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = attackDef(ctx, attackId)
@@ -704,7 +759,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   // RNG key words are unsigned32; refuse overflow before any payment/mutation.
   if (!Number.isSafeInteger(incomingOrdinal) || incomingOrdinal < 1 || incomingOrdinal > 0xffffffff) throw Error('incoming attack ordinal overflow')
   const ord = ++at.attackOrdinal
-  const pv = preview(ctx, attackerId, targetId, attackId, mode)
+  const pv = preview(ctx, attackerId, targetId, attackId, mode, as)
 
   // refactor.one-action-type: THE ONE SPEND — stamina, the primary, the cooldown, a use
   if (hitNo === 1) spendAction(ctx, attackerId, a, mode === 'reaction' ? mode : resolveActionSlot(ctx, at, a, mode)!)
@@ -712,7 +767,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   emit(ctx, 'attack.declared', a.id, {
     actor: attackerId, target: targetId, attackId, ordinal: ord, ...(of > 1 ? { hit: hitNo, of } : {}),
     // rule.free-attack-is-basic-attack: a special free attack says so on its own line (Law 12) — the reader need not find the provoke
-    ...(mode === 'reaction' ? { free: true } : {}),
+    ...(mode === 'reaction' ? { free: true, ...(as !== undefined ? { as } : {}) } : {}),
     // kind and damageType are on the event, not looked up from ATTACKS, so a
     // renderer can pick an animation without importing game content.
     kind: a.attack.kind, damageType: a.attack.damageType,
