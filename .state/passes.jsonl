@@ -11,3 +11,5 @@
 {"suite":"kingdom","stamp":"c8153a80f4","with":{"engine":"4cb6488349","content":"e0e210166b","viewer":"2d18c03480","kingdom":"c8153a80f4"},"at":"2026-10-04T16:12:07.987Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"kingdom","stamp":"4279c70caf","failed":true,"at":"2026-10-04T15:32:22.077Z","by":"suites --run --full","in":"HBT-worker-engine"}
 {"suite":"kingdom","stamp":"4279c70caf","with":{"engine":"859cd0f485","content":"13e03bb467","viewer":"5b596e3acf","kingdom":"4279c70caf"},"at":"2026-10-04T16:07:01.325Z","by":"suites --run","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"fb27fccf9d","failed":true,"at":"2026-10-04T16:31:40.418Z","by":"gate --shard 3/4","in":"HBT-worker-content"}
+{"suite":"kingdom","stamp":"fb27fccf9d","with":null,"at":"2026-10-04T16:33:50.603Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
