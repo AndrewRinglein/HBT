@@ -1,0 +1,235 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+xxxxxxxxxxxxxx
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/starting-kit-powers.test.ts > the pack carries the three powers, each in its Codex words > Mercy: one ally within 4 hexes, 2 Stamina, heal 2 + half the party's Spirit (rounded down)
+AssertionError: expected [] to deeply equal [ 'power.holy-texts.mercy' ]
+
+- Expected
++ Received
+
+- [
+-   "power.holy-texts.mercy",
+- ]
++ []
+
+ ❯ test/starting-kit-powers.test.ts:40:49
+     38| describe('the pack carries the three powers, each in its Codex words',…
+     39|   it('Mercy: one ally within 4 hexes, 2 Stamina, heal 2 + half the par…
+     40|     expect(ITEMS['item.holy-texts']!.abilities).toEqual([MERCY])
+       |                                                 ^
+     41|     expect(ITEMS['item.holy-texts']!.grants).toEqual(['attack.holy-tex…
+     42|     expect(ABILITIES[MERCY]).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > the pack carries the three powers, each in its Codex words > Flame Burst and Frost Nova: a hex within 4 and every hex adjacent to it, 3 Stamina, Magic + 0 magic damage to every unit
+AssertionError: item.fire-staff: expected [] to deeply equal [ 'power.fire-staff.fireball' ]
+
+- Expected
++ Received
+
+- [
+-   "power.fire-staff.fireball",
+- ]
++ []
+
+ ❯ test/starting-kit-powers.test.ts:51:44
+     49|   it('Flame Burst and Frost Nova: a hex within 4 and every hex adjacen…
+     50|     for (const [item, power, name] of [['item.fire-staff', FLAME, 'Fla…
+     51|       expect(ITEMS[item]!.abilities, item).toEqual([power])
+       |                                            ^
+     52|       expect(BURSTS[power], power).toMatchObject({
+     53|         name, range: 4, staminaCost: 3, cooldown: 0,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > the pack carries the three powers, each in its Codex words > what the engine cannot do yet is named on the two staffs: a burst paints no ground
+AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+  [
+-   "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)",
++   "grants power.fire-staff.fireball — item power — shape unparsed",
+  ]
+
+ ❯ test/starting-kit-powers.test.ts:60:44
+     58|
+     59|   it('what the engine cannot do yet is named on the two staffs: a burs…
+     60|     expect(ITEMS['item.fire-staff']!.gaps).toEqual([`${FLAME}: those s…
+       |                                            ^
+     61|     expect(ITEMS['item.frost-staff']!.gaps).toEqual([`${NOVA}: those s…
+     62|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > the pack carries the three powers, each in its Codex words > content's gap list no longer says any of the three is unparsed
+AssertionError: power.holy-texts.mercy: expected [ { …(3) }, { …(3) }, { …(3) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "needs": "item power — shape unparsed",
++     "unit": "hero.base.priest-pauper",
++     "what": "item.holy-texts grants power.holy-texts.mercy",
++   },
++   {
++     "needs": "item power — shape unparsed",
++     "unit": "hero.base.priest-armored",
++     "what": "item.holy-texts grants power.holy-texts.mercy",
++   },
++   {
++     "needs": "item power — shape unparsed",
++     "unit": "item.holy-texts",
++     "what": "grants power.holy-texts.mercy",
++   },
++ ]
+
+ ❯ test/starting-kit-powers.test.ts:69:109
+     67|     expect(rows.length).toBeGreaterThan(0)
+     68|     for (const power of [MERCY, FLAME, NOVA]) {
+     69|       expect(rows.filter((r) => r.what.includes(power) && /unparsed|no…
+       |                                                                                                             ^
+     70|     }
+     71|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > the six heroes field the whole weapon > the Battle Chaplain and the Barefoot Mendicant have Mercy on their sheets beside Verse
+AssertionError: hero.base.priest-armored: expected [ …(2) ] to include 'power.holy-texts.mercy'
+ ❯ test/starting-kit-powers.test.ts:78:33
+     76|     for (const id of [CHAPLAIN, MENDICANT]) {
+     77|       const def = fieldedDef(id)
+     78|       expect(def.abilities, id).toContain(MERCY)
+       |                                 ^
+     79|       expect(def.attacks, id).toContain('attack.holy-texts.verse')
+     80|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > the six heroes field the whole weapon > the three Fire Staff mages have Flame Burst and the Archive Scholar has Frost Nova
+AssertionError: hero.base.mage-fire: expected [] to include 'power.fire-staff.fireball'
+ ❯ test/starting-kit-powers.test.ts:84:124
+     82|
+     83|   it('the three Fire Staff mages have Flame Burst and the Archive Scho…
+     84|     for (const id of [EMBERWRIGHT, 'hero.base.mage-fireaura', 'hero.ba…
+       |                                                                                                                            ^
+     85|     expect(fieldedDef(SCHOLAR).abilities).toContain(NOVA)
+     86|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > Mercy in battle — the Battle Chaplain heals an ally within 4 hexes for 2 + half his Spirit at 2 Stamina > heals 2 + half the party's Spirit and spends 2 Stamina
+Error: unknown ability 'power.holy-texts.mercy' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ previewPower src/core/ability.ts:103:13
+ ❯ test/starting-kit-powers.test.ts:110:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > Mercy in battle — the Battle Chaplain heals an ally within 4 hexes for 2 + half his Spirit at 2 Stamina > half an odd Spirit rounds down: Spirit 3 heals 3, Spirit 5 heals 4, Spirit 0 still heals the 2
+Error: unknown ability 'power.holy-texts.mercy' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ previewPower src/core/ability.ts:103:13
+ ❯ test/starting-kit-powers.test.ts:128:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > Mercy in battle — the Battle Chaplain heals an ally within 4 hexes for 2 + half his Spirit at 2 Stamina > legality: an ally within 4 hexes yes, at 5 hexes no, an enemy never
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/starting-kit-powers.test.ts:134:80
+    132|   it('legality: an ally within 4 hexes yes, at 5 hexes no, an enemy ne…
+    133|     const near = rig(8), far = rig(9)
+    134|     expect(canUsePower(near, cast(near).priest.id, cast(near).ally.id,…
+       |                                                                                ^
+    135|     expect(far.geo.distance(cast(far).priest.hex, cast(far).ally.hex))…
+    136|     expect(canUsePower(far, cast(far).priest.id, cast(far).ally.id, ME…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > Mercy in battle — the Battle Chaplain heals an ally within 4 hexes for 2 + half his Spirit at 2 Stamina > it runs: the Chaplain's side plays Mercy in a real battle
+AssertionError: Mercy healed someone in one of twenty battles: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/starting-kit-powers.test.ts:147:67
+    145|       used = ctx.events.some((e) => e.type === 'heal.applied' && e.cau…
+    146|     }
+    147|     expect(used, 'Mercy healed someone in one of twenty battles').toBe…
+       |                                                                   ^
+    148|   })
+    149| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > Flame Burst and Frost Nova in battle — Magic damage to every unit in the seven hexes, no roll > power.fire-staff.fireball: strikes every standing unit in the blast, the ally too, for the caster's Magic, at 3 Stamina
+ FAIL  test/starting-kit-powers.test.ts > Flame Burst and Frost Nova in battle — Magic damage to every unit in the seven hexes, no roll > power.frost-staff.frost-nova: strikes every standing unit in the blast, the ally too, for the caster's Magic, at 3 Stamina
+Error: not a burst
+ ❯ previewBurst src/core/burst.ts:107:32
+    105| export function previewBurst(ctx: Ctx, actorId: number, centre: number…
+    106|   const a = ctx.actions[actionId]
+    107|   if (!a || !isBurst(a)) throw Error('not a burst')
+       |                                ^
+    108|   validateBurstAction(a)
+    109|   const prepared = prepare(ctx, unit(ctx, actorId), centre, a)
+ ❯ test/starting-kit-powers.test.ts:166:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  test/starting-kit-powers.test.ts > Flame Burst and Frost Nova in battle — Magic damage to every unit in the seven hexes, no roll > power.fire-staff.fireball: a hex 5 away is out of reach
+ FAIL  test/starting-kit-powers.test.ts > Flame Burst and Frost Nova in battle — Magic damage to every unit in the seven hexes, no roll > power.frost-staff.frost-nova: a hex 5 away is out of reach
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/starting-kit-powers.test.ts:187:61
+    185|       const mage = ctx.state.units.find((u) => u.typeId === mageId)!
+    186|       beginActivation(ctx, mage.id, 'test')
+    187|       expect(canUseBurst(ctx, mage.id, hexId(8, 8), power)).toBe(true)
+       |                                                             ^
+    188|       expect(canUseBurst(ctx, mage.id, hexId(9, 8), power)).toBe(false)
+    189|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed (14)
+   Start at  00:07:17
+   Duration  1.66s (transform 970ms, setup 0ms, import 1.20s, tests 228ms, environment 0ms)
+

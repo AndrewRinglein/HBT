@@ -60,7 +60,20 @@ describe('encounter.opening.bridge', () => {
       }
     }
   })
-  it('is won when the last enemy dies', () => {
+  // SKIPPED BY NAME, content.imp-blast-tuned (2026-10-04), not deleted and not rewritten. Ruled 2026-10-04 (Andrew,
+  // DECISIONS.md 'no testing that the battles can be won until these items are done; the page tests play an overpowered
+  // party; faster landing'): "I'm okay forgoing all testing battle until we're done with all these items." — "A test that
+  // exists only to show a battle is winnable by the computer's play is skipped until then, by name, with this entry cited."
+  // This one needs a replicate the drafted party wins by the computer's play: replicate 4 was the one win of replicates
+  // 0-99, and with the Imp's Precision 3 and its Blast's 50% Burn (DECISIONS.md 2026-10-03 'the Imp: Precision down by 1;
+  // its Blast burns half the time') replicate 4 is a wipe. No seed was searched for. The rule itself — a battle with no
+  // `win` of its own ends heroClear when the last enemy is down — is the engine's victory check, tested on its own
+  // (test/encounter-runner.test.ts, test/encounter-commands.test.ts), and this encounter carrying no `win` is the first
+  // test above. The ruling is on engine master's DECISIONS.md (its last entry on 2026-10-04) and reaches this file's
+  // repository with the next merge.
+  // Un-skip when the queued items are done and a winning replicate is recorded again.
+  // was: it('is won when the last enemy dies', () => {
+  it.skip('is won when the last enemy dies', () => {
     const ctx = openingBattle(S, WIN)
     expect(ctx.state.outcome).toBe('heroClear')
     expect(ctx.state.units.filter((u) => u.side === 'enemy').every((u) => u.lifeState !== 'standing')).toBe(true)

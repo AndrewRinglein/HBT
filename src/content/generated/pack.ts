@@ -1116,7 +1116,8 @@ export const UNIT_PACK = {
             "select": "area",
             "side": "any",
             "radius": 2,
-            "origin": "self"
+            "origin": "self",
+            "excludeSelf": true
           },
           "effect": {
             "kind": "status.apply",
@@ -1360,7 +1361,7 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 15,
       "strength": 3,
-      "precision": 4,
+      "precision": 3,
       "magic": 0,
       "spirit": 0,
       "role": "ranged",
@@ -1384,7 +1385,7 @@ export const UNIT_PACK = {
         {
           "id": "trigger.imp.burn",
           "hook": "onHit",
-          "chance": 100,
+          "chance": 50,
           "select": "target",
           "effect": {
             "kind": "status.apply",
@@ -7782,6 +7783,30 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "power.holy-texts.mercy": {
+      "id": "power.holy-texts.mercy",
+      "name": "Mercy",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 0,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "partySpirit",
+            "base": 2,
+            "mult": 1,
+            "div": 2,
+            "round": "down"
+          }
+        }
+      ]
+    },
     "power.round-shield.turn-aside": {
       "id": "power.round-shield.turn-aside",
       "name": "Turn Aside",
@@ -8461,6 +8486,60 @@ export const UNIT_PACK = {
         ]
       },
       "source": "weapon"
+    },
+    "power.frost-staff.frost-nova": {
+      "id": "power.frost-staff.frost-nova",
+      "name": "Frost Nova",
+      "staminaCost": 3,
+      "cooldown": 0,
+      "range": 4,
+      "burst": {
+        "shape": {
+          "kind": "radius",
+          "radius": 1
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "damageType": "magic",
+            "amount": 0,
+            "stat": "magic"
+          }
+        ]
+      },
+      "source": "item",
+      "gaps": [
+        "those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
+      ],
+      "free": false
+    },
+    "power.fire-staff.fireball": {
+      "id": "power.fire-staff.fireball",
+      "name": "Flame Burst",
+      "staminaCost": 3,
+      "cooldown": 0,
+      "range": 4,
+      "burst": {
+        "shape": {
+          "kind": "radius",
+          "radius": 1
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "damageType": "magic",
+            "amount": 0,
+            "stat": "magic"
+          }
+        ]
+      },
+      "source": "item",
+      "gaps": [
+        "those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
+      ],
+      "free": false
     },
     "power.lightning-staff.storm": {
       "id": "power.lightning-staff.storm",
@@ -11382,11 +11461,10 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse"
       ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed"
-      ]
+      "abilities": [
+        "power.holy-texts.mercy"
+      ],
+      "triggers": []
     },
     "item.bane-blade": {
       "id": "item.bane-blade",
@@ -13252,7 +13330,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -13269,7 +13349,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed"
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.frost-staff": {
@@ -13284,7 +13364,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.frost-staff.frost-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.frost-staff.frost-nova"
+      ],
       "triggers": [
         {
           "id": "trigger.frost-staff.frost-blast.frost",
@@ -13301,7 +13383,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.earth-staff": {
@@ -32010,12 +32092,10 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse"
       ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed",
-        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
+      "abilities": [
+        "power.holy-texts.mercy"
       ],
+      "triggers": [],
       "vsTarget": [
         {
           "tag": "undead",
@@ -32031,7 +32111,10 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.holy-texts",
-      "enchant": "enchant.holy-water"
+      "enchant": "enchant.holy-water",
+      "gaps": [
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
+      ]
     },
     "item.holy-texts.undead-slayer": {
       "id": "item.holy-texts.undead-slayer",
@@ -32045,12 +32128,10 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse"
       ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed",
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
+      "abilities": [
+        "power.holy-texts.mercy"
       ],
+      "triggers": [],
       "vsTarget": [
         {
           "tag": "undead",
@@ -32058,7 +32139,10 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.holy-texts",
-      "enchant": "enchant.undead-slayer"
+      "enchant": "enchant.undead-slayer",
+      "gaps": [
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
+      ]
     },
     "item.holy-texts.heavens-edge": {
       "id": "item.holy-texts.heavens-edge",
@@ -32072,14 +32156,15 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse"
       ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed",
-        "enchant onDamage: heal for half your Spirit, rounded down — trigger shape unparsed"
+      "abilities": [
+        "power.holy-texts.mercy"
       ],
+      "triggers": [],
       "base": "item.holy-texts",
-      "enchant": "enchant.heavens-edge"
+      "enchant": "enchant.heavens-edge",
+      "gaps": [
+        "enchant onDamage: heal for half your Spirit, rounded down — trigger shape unparsed"
+      ]
     },
     "item.holy-texts.demon-slayer": {
       "id": "item.holy-texts.demon-slayer",
@@ -32095,11 +32180,10 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse"
       ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed"
+      "abilities": [
+        "power.holy-texts.mercy"
       ],
+      "triggers": [],
       "vsTarget": [
         {
           "tag": "demon",
@@ -33912,7 +33996,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -33929,7 +34015,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed",
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)",
         "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
       ],
       "base": "item.fire-staff",
@@ -33947,7 +34033,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -33976,7 +34064,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed"
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ],
       "base": "item.fire-staff",
       "enchant": "enchant.maddening"
@@ -33993,7 +34081,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -34022,7 +34112,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed"
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ],
       "base": "item.fire-staff",
       "enchant": "enchant.bewildering"
@@ -34041,7 +34131,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -34058,7 +34150,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed",
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)",
         "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
       ],
       "base": "item.fire-staff",
@@ -34079,7 +34171,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.frost-staff.frost-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.frost-staff.frost-nova"
+      ],
       "triggers": [
         {
           "id": "trigger.frost-staff.frost-blast.frost",
@@ -34108,7 +34202,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed",
+        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)",
         "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
       ],
       "base": "item.frost-staff",
@@ -34126,7 +34220,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.frost-staff.frost-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.frost-staff.frost-nova"
+      ],
       "triggers": [
         {
           "id": "trigger.frost-staff.frost-blast.frost",
@@ -34155,7 +34251,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
       ],
       "base": "item.frost-staff",
       "enchant": "enchant.bewildering"
@@ -34175,7 +34271,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.frost-staff.frost-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.frost-staff.frost-nova"
+      ],
       "triggers": [
         {
           "id": "trigger.frost-staff.frost-blast.frost",
@@ -34192,7 +34290,7 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed",
+        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)",
         "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
       ],
       "base": "item.frost-staff",
@@ -38428,12 +38526,11 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.holy-texts.mercy"
+      ],
       "triggers": [],
-      "base": "item.holy-texts",
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed"
-      ]
+      "base": "item.holy-texts"
     },
     "item.holy-texts.heavy": {
       "id": "item.holy-texts.heavy",
@@ -38447,13 +38544,12 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse.heavy"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.holy-texts.mercy"
+      ],
       "triggers": [],
       "base": "item.holy-texts",
-      "enchant": "enchant.heavy",
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed"
-      ]
+      "enchant": "enchant.heavy"
     },
     "item.holy-texts.keen": {
       "id": "item.holy-texts.keen",
@@ -38467,13 +38563,12 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse.keen"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.holy-texts.mercy"
+      ],
       "triggers": [],
       "base": "item.holy-texts",
-      "enchant": "enchant.keen",
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed"
-      ]
+      "enchant": "enchant.keen"
     },
     "item.holy-texts.cruel": {
       "id": "item.holy-texts.cruel",
@@ -38487,13 +38582,12 @@ export const UNIT_PACK = {
       "grants": [
         "attack.holy-texts.verse.cruel"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.holy-texts.mercy"
+      ],
       "triggers": [],
       "base": "item.holy-texts",
-      "enchant": "enchant.cruel",
-      "gaps": [
-        "grants power.holy-texts.mercy — item power — shape unparsed"
-      ]
+      "enchant": "enchant.cruel"
     },
     "item.bane-blade.masterwork": {
       "id": "item.bane-blade.masterwork",
@@ -39986,7 +40080,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -40004,7 +40100,7 @@ export const UNIT_PACK = {
       ],
       "base": "item.fire-staff",
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed"
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.fire-staff.heavy": {
@@ -40019,7 +40115,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast.heavy"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -40038,7 +40136,7 @@ export const UNIT_PACK = {
       "base": "item.fire-staff",
       "enchant": "enchant.heavy",
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed"
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.fire-staff.keen": {
@@ -40053,7 +40151,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast.keen"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -40072,7 +40172,7 @@ export const UNIT_PACK = {
       "base": "item.fire-staff",
       "enchant": "enchant.keen",
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed"
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.fire-staff.cruel": {
@@ -40087,7 +40187,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-staff.fire-blast.cruel"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.fire-staff.fireball"
+      ],
       "triggers": [
         {
           "id": "trigger.fire-staff.fire-blast.burn",
@@ -40106,7 +40208,7 @@ export const UNIT_PACK = {
       "base": "item.fire-staff",
       "enchant": "enchant.cruel",
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed"
+        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.frost-staff.masterwork": {
@@ -40123,7 +40225,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.frost-staff.frost-blast"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.frost-staff.frost-nova"
+      ],
       "triggers": [
         {
           "id": "trigger.frost-staff.frost-blast.frost",
@@ -40141,7 +40245,7 @@ export const UNIT_PACK = {
       ],
       "base": "item.frost-staff",
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.frost-staff.heavy": {
@@ -40156,7 +40260,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.frost-staff.frost-blast.heavy"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.frost-staff.frost-nova"
+      ],
       "triggers": [
         {
           "id": "trigger.frost-staff.frost-blast.frost",
@@ -40175,7 +40281,7 @@ export const UNIT_PACK = {
       "base": "item.frost-staff",
       "enchant": "enchant.heavy",
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.frost-staff.keen": {
@@ -40190,7 +40296,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.frost-staff.frost-blast.keen"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.frost-staff.frost-nova"
+      ],
       "triggers": [
         {
           "id": "trigger.frost-staff.frost-blast.frost",
@@ -40209,7 +40317,7 @@ export const UNIT_PACK = {
       "base": "item.frost-staff",
       "enchant": "enchant.keen",
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.frost-staff.cruel": {
@@ -40224,7 +40332,9 @@ export const UNIT_PACK = {
       "grants": [
         "attack.frost-staff.frost-blast.cruel"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.frost-staff.frost-nova"
+      ],
       "triggers": [
         {
           "id": "trigger.frost-staff.frost-blast.frost",
@@ -40243,7 +40353,7 @@ export const UNIT_PACK = {
       "base": "item.frost-staff",
       "enchant": "enchant.cruel",
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.earth-staff.masterwork": {

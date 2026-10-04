@@ -74,8 +74,17 @@ describe('all twenty-four field', () => {
       // powers: compiled or gapped, never silently dropped
       for (const p of kit.flatMap((it) => (items.get(it)?.grants ?? []).filter((x) => x.startsWith('power.')))) {
         const compiled = u.abilities.includes(p) && ACTIONS[p] !== undefined
-        const gapped = g.some((x) => x.unit === id && x.what.includes(p))
+        // Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal
+        // in battle"): the rule is still "compiled or gapped, never silently dropped" — a power that did not compile is named
+        // as an 'item power' gap, and never beside a compiled one. A power that DID compile may name a clause the engine
+        // cannot do yet (Flame Burst and Frost Nova: 'a burst paints no ground'); that clause gap is checked below, by name.
+        // was: const gapped = g.some((x) => x.unit === id && x.what.includes(p))
+        const gapped = g.some((x) => x.unit === id && x.what.includes(p) && /^item power/.test(x.needs))
         expect(compiled !== gapped, `${id}: ${p} compiled=${compiled} gapped=${gapped}`).toBe(true)
+        for (const x of g.filter((r) => r.unit === id && r.what.includes(p) && !/^item power/.test(r.needs))) {
+          expect(compiled, `${id}: ${p} names the clause '${x.what}' only as a compiled power`).toBe(true)
+          expect(x.needs, `${id}: ${p}'s clause gap names what the engine lacks`).toBe('a burst paints no ground (capability.burst-paints-ground)')
+        }
       }
       expect(u.tags, `${id} is a hero`).toContain('hero')
       expect(u.moves[0]).toBe('power.move')
