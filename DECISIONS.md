@@ -4708,3 +4708,14 @@ Ruled:
 - **Yes to more items per worker run before each merge**, each still its own landing.
 - **Yes to the merge tool skipping suites already passed on the exact same code when main has not moved** — taken up by the kingdom chat as a tooling change (GBH SWITCHES), only where it can be shown no test is skipped that the change could break.
 - He shuts the other programs and chats down while the workers run.
+
+## 2026-10-04 — a worker each for the viewer's items and the kingdom's, for this backlog; the items that wait on art go last
+
+Andrew, in the kingdom chat. The questions as asked: (1) "Should I run a third worker, one for viewer items and one for kingdom items, setting aside the one-worker-per-area rule for this backlog?"; (2) "Should the art-dependent viewer items wait until the art exists?"
+
+“1. Yes, let's split kingdom and viewer items.  We can not have those items be displayed properly for now. That's what I was working on in Codex, but it can wait. It's a little less critical.”
+
+Ruled:
+
+- **For this backlog the viewer's items and the kingdom's items each get their own worker, in their own copy** — three workers with the engine's. Sets aside DISPLAY-RULES.md rule 32's "never two in one area" (viewer and kingdom are one area there) for the items now queued; the rule itself is not rewritten. The two collide only on kingdom's generated pages, which are rebuilt at each merge (GBH SWITCHES `combine.mergeMainFirst`).
+- **The viewer items that wait on art not yet made go to the end of the queue** ("We can not have those items be displayed properly for now … it can wait. It's a little less critical"): `viewer.attack-owns-motion`, `viewer.special-move-motions`, `viewer.shield-block-and-hit`, `viewer.airwalk-floats`, `viewer.miss-dodge-motion`, `viewer.fire-imp-own-model`, `viewer.enemy-held-weapons`. They stay filed; no worker takes them until he says or the art exists.
