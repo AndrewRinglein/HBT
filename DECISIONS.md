@@ -4904,3 +4904,21 @@ Ruled:
 - **Flaming may exist in both** — the tier-3 attribute and the series. "It's fine for there to be more than one flaming."
 - **"Custom item" is not the word** for the tier-3-and-up kind: "this is the majority of powerful items, armor, everything". No name is ruled; GLOSSARY.md is not changed until he names it.
 - **A much more extensive item update is wanted**, armor and everything, not weapons alone. More questions are out; `content.ledger-custom-series` and `content.ledger-enchants-relics-runes-trinkets` stay held.
+
+## 2026-10-04 — items: the tier-3-and-up kind is an artifact; the item content waits behind the game's fundamentals; the starting weapons go ahead
+
+Andrew, in the kingdom chat, answering the ten questions on the entry above (1 one page for every item type; 2 armor and shields in four-tier series, from the 2026-09-29 draft; 3 trinkets, relics, bloodrunes and idols; 4 where upgrading happens; 5 can a plain weapon be upgraded into a series; 6 is the base picked at random from the kinds the attribute fits; 7 do the named weapons stay single; 8 the name; 9 the tier in a series item's name; 10 go ahead with the weapon work not in question, or hold it):
+
+“There should be a record of a whole bunch of different armor and shields that have 4-tier series. Do you not have that? They do, essentially, but I don't want to have to do too much of this content right now. We have to do a lot more fundamental game work before we worry about items and balance.   Plain weapons do not upgrade. 6. Yes, but it isn't just weapons. There are other tier 3 attributes too.  It's armor's shields.   7, yes.   We have something else called relics. Why don't we call these artifacts?   9, no.   10, yes. One, yes, but I don't want to slow down engine work.”
+
+Ruled:
+
+- **The tier-3-and-up reward item is an artifact** — a tier-3 attribute already on a weapon, an armor or a shield; a named unique item; or a member of a series. "Relic" stays its own item kind; "custom weapon" is retired. GLOSSARY.md 'Settled, 2026-10-04'.
+- **The record he asked after exists and is not landed:** `CONTENT-DRAFTS/2026-09-29-armor-series/` holds his 2026-09-29 dictation as draft rows — 16 armor series at four tiers (64 rows), 5 bloodrunes, 4 idols, 2 trinkets, a weapon and a book; the shields' series (Armor Bearer, Fire Shield and others) are among the Armory Ledger's 14 (`CONTENT-DRAFTS/2026-09-28-armory-ledger/`). Trinkets, relics, bloodrunes and idols take series "essentially" too.
+- **The item content waits.** "I don't want to have to do too much of this content right now. We have to do a lot more fundamental game work before we worry about items and balance." Deferred, with the reason on each item: `capability.weapon-mechanisms`, `content.ledger-new-weapons`, `content.ledger-replaced-weapons-removed`, `content.ledger-custom-series`, `content.ledger-enchants-relics-runes-trinkets`; the armor-series draft stays a draft.
+- **What goes ahead** ("10, yes"): the weapons the starting heroes carry - `fix.kit-attack-clauses`, `content.shields-reauthored`, `content.greatsword-war-axe-reauthored` - and the engine rules already queued.
+- **A plain weapon does not upgrade.** A series is entered by a tier-3 reward; the tiers above come as rewards or by upgrading a series item. Where upgrading happens is not answered.
+- **A tier-3 attribute lands on a base picked at random from the kinds it fits — weapons, armor and shields alike.**
+- **The named weapons stay single unique rewards**, no series.
+- **A series item's name does not show its tier.**
+- **One page for every item type, to mark up** — yes, "but I don't want to slow down engine work": built beside the engine work, not in front of it.
