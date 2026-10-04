@@ -35,7 +35,20 @@ function endTurn(w,h){
 }
 /* 2026-10-04, viewer.new-enemy-ability-line: the notice may carry a third line (what the kind can do — that item's verify
    reads it); this one holds the notice's first two lines, "New enemy" and the name */
-const words=seen=>seen.map(s=>s.lines.slice(0,2).join(' / '))
+/* Law 10, 2026-10-04 (kingdom.tutorial-orphanage-first-move; engine DECISIONS.md 2026-10-04 'the opening's tutorial: …'): this read
+     const words=seen=>seen.map(s=>s.lines.slice(0,2).join(' / '))
+   — every gold notice the battle put up, which were all announcements of an enemy while nothing else used the gold
+   notice. The run's battle 1 now opens with its lesson, whose lines are gold notices too ("Use your hero to protect the
+   civilians." …). What this script holds is of the ANNOUNCEMENTS — the notices whose first line is "New enemy" — so
+   those are what is read; and in the run's battle 1 the lesson's opening rows are clicked past first (a click moves on),
+   since nothing can be ordered, End Turn included, while they are up. */
+const words=seen=>seen.filter(s=>s.lines[0]==='New enemy').map(s=>s.lines.slice(0,2).join(' / '))
+/** the run's battle 1: the lesson's rows that wait are clicked past, as a player in a hurry does; then the board settles */
+function pastLesson(w,h){
+ for(let i=0;i<20&&h.lesson&&h.session.ctx.battleCursor?.at==='selecting';i++){const hex=h.viewer._V.dom.stage.querySelectorAll('.playHex')[0];hex.handlers.click({detail:1});w._flush(20)}
+ for(let i=0;i<4000&&(h.busy||h.session.ctx.battleCursor?.at!=='acting');i++)w._flush(20)
+ assert.equal(h.session.ctx.battleCursor?.at,'acting','the opening rows of the lesson are over: the hero is begun')
+}
 const nameOf=(h,typeId)=>h.viewer._V.data.UD[typeId].name
 
 /* ── A · outside a run ── */
@@ -55,7 +68,13 @@ const nameOf=(h,typeId)=>h.viewer._V.data.UD[typeId].name
 /* ── B · the opening run ── */
 {
  const {handle:h,w,camp,store,v,shown,readMap,draft,straightIn,whoGoes,equipThenFight,fightOut,levelUps,heroIds}=openingPage(page,'?map&seed=11')
- const saved=()=>JSON.parse(store.get('hbt-opening-run')).campaign.revealed
+ /* Law 10, 2026-10-04 (kingdom.tutorial-orphanage-first-move; engine DECISIONS.md 2026-10-04 'the opening's tutorial: …'): the lines
+    below read the run's whole `revealed` list — camp().revealed and the save's — as "the met kinds", which it was while an
+    enemy kind met was the only reveal a run granted. A lesson's row shown is a reveal too now (`reveal.lesson.…`, the same
+    memory), so the met kinds are said exactly: the list's `reveal.enemy.` entries, in the list's order. Every assertion
+    below is unchanged in what it holds of them. */
+ const metOf=list=>list.filter(id=>id.startsWith('reveal.enemy.'))
+ const saved=()=>metOf(JSON.parse(store.get('hbt-opening-run')).campaign.revealed),met=()=>metOf(camp().revealed)
  /* Law 10, 2026-10-04 (kingdom.opening-starts-in-battle, merged with this item; engine DECISIONS.md 2026-10-04 '… no map before
     battle 1 …': "We're just going straight into the battle after you get your hero."): these three lines read
       assert.equal(readMap([],'fresh'),ORPHANAGE);assert.deepEqual(camp().revealed,[])
@@ -68,8 +87,9 @@ const nameOf=(h,typeId)=>h.viewer._V.data.UD[typeId].name
  const first=draft('battle 1')
  straightIn([first],'battle 1')
  /* battle 1: its lesson introduces the Zombie — met as the battle is put on the screen, and never announced */
- assert.deepEqual(camp().revealed,['reveal.enemy.zombie'],'battle 1 on the screen: the Zombie is met (its lesson names it)');assert.deepEqual(saved(),['reveal.enemy.zombie'],'and that is in the run\'s save')
- const b1=[...playing(w,h),...endTurn(w,h)]
+ assert.deepEqual(met(),['reveal.enemy.zombie'],'battle 1 on the screen: the Zombie is met (its lesson names it)');assert.deepEqual(saved(),['reveal.enemy.zombie'],'and that is in the run\'s save')
+ const open1=playing(w,h);pastLesson(w,h)
+ const b1=[...open1,...playing(w,h),...endTurn(w,h)]
  assert.deepEqual(words(b1),[],'battle 1 announces no Zombie — the one on the board, or the one that arrives on Turn 2')
  say('B1 the run, battle 1: no notice for the Zombie (its lesson introduces it); the run\'s save holds reveal.enemy.zombie')
  fightOut(true,'battle 1');levelUps('battle 1')
@@ -79,7 +99,7 @@ const nameOf=(h,typeId)=>h.viewer._V.data.UD[typeId].name
  const open2=playing(w,h),t2=endTurn(w,h)
  assert.deepEqual(words(open2),[],'battle 2 opens with a Zombie on the board: already met, not announced')
  assert.deepEqual(words(t2),['New enemy / Skeleton Archer'],'battle 2\'s Turn 2: "New enemy" over the Skeleton Archer')
- assert.deepEqual(camp().revealed,['reveal.enemy.zombie','reveal.enemy.skeletal-archer'],'the kind is met once its notice has gone up');assert.deepEqual(saved(),camp().revealed,'and the met kinds are in the run\'s save')
+ assert.deepEqual(met(),['reveal.enemy.zombie','reveal.enemy.skeletal-archer'],'the kind is met once its notice has gone up');assert.deepEqual(saved(),met(),'and the met kinds are in the run\'s save')
  assert.deepEqual(words(endTurn(w,h)),[],'Turn 3\'s archers: nothing')
  say(`B2 battle 2: nothing for the Zombie; Turn 2 "${words(t2)[0]}"; the run's save holds ${saved().join(', ')}`)
  /* lost, and replayed: nothing already met is announced */
