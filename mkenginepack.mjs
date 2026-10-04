@@ -474,11 +474,16 @@ function compileTrigger(t, unitId, attackId) {
   let areaSelect = null;
   if (t.targets && /within/.test(t.targets)) {
     if (t.range === null || t.range === undefined) { gap(unitId, `${where} ${t.hook} area '${t.targets}' — range null, N never stated`, 'content: range unstated'); return []; }
-    const side = /^allies/.test(t.targets) ? 'ally' : /^enemies/.test(t.targets) ? 'enemy' : /^every unit/.test(t.targets) ? 'any' : null;
+    // fix.fire-imp-burn-spares-self (engine, 2026-10-04; ruled 2026-10-03, engine DECISIONS.md 'the Fire Imp's burn does not
+    // hit the imp itself': "It should not hit him."): "every OTHER unit within N hexes" is the excluding-self form of the one
+    // area shape "every unit within N hexes" — the same area, any side, with the engine's `excludeSelf` on it (core/target.ts).
+    // One phrase, read here and by audit.mjs R27; any row may author it.
+    const others = /^every other unit within /.test(t.targets);
+    const side = /^allies/.test(t.targets) ? 'ally' : /^enemies/.test(t.targets) ? 'enemy' : /^every unit/.test(t.targets) || others ? 'any' : null;
     if (!side) { gap(unitId, `${where} ${t.hook} area '${t.targets}'`, 'area trigger select'); return []; }
     const tagM = String(t.condition || '').match(/^the target has tag ([A-Za-z]+)$/);
     if (t.condition && !tagM) { gap(unitId, `${where} ${t.hook}: condition '${t.condition}'`, 'trigger condition'); return []; }
-    areaSelect = { select: 'area', side, radius: t.range, origin: 'self', ...(tagM ? { requireTags: [tagM[1].toLowerCase()] } : {}) };
+    areaSelect = { select: 'area', side, radius: t.range, origin: 'self', ...(others ? { excludeSelf: true } : {}), ...(tagM ? { requireTags: [tagM[1].toLowerCase()] } : {}) };
   }
   const out = [];
   for (const ef of t.effects || []) {
