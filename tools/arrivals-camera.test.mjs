@@ -114,7 +114,17 @@ test('the Orphanage as recorded, Turn 2: the view slides right to the Zombie arr
   playTo(w, v, V, begin + 1); v.pause(); for (let i = 0; i < 90; i++) { w._flush(16); assert.ok(onBoard(V)) }
   const hexH = EV[begin].hex, c = V.camTarget
   assert.equal(V.S.activeId, hero); assert.ok(Math.abs(c.x - Math.min(box.x[1], Math.max(box.x[0], V.data.POS[hexH].px))) < .5, 'the view is centred on the first activated hero')
-  assert.ok(insideBy(screenOf(V, hexH)) > 100, 'the hero is well inside the screen')
+  /* Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start': "bring the
+     hero forward to the end of the bridge and bring the zombie left, maybe 3 squares"): this read
+       assert.ok(insideBy(screenOf(V, hexH)) > 100, 'the hero is well inside the screen')
+     — true of the recording made on the old start, where the hero stood mid-board at Turn 2. The Orphanage's recording
+     is another battle now (the hero starts on (10,5); on its seed the computer's play has him on the board's top row,
+     (10,0), by Turn 2), and a hero on an edge row cannot be 100 px inside a view that never shows past the board. The rule
+     the line stood for, held exactly: the view is centred on the hero as far as the camera's bound allows (the line above,
+     and here as the stage is drawn: the hero's hex is at the screen's middle, left to right) and the hero is on the screen. */
+  const onScreen = screenOf(V, hexH), inside = insideBy(onScreen)
+  assert.ok(Math.abs(onScreen.x - onScreen.W / 2) < 1, 'the hero is at the middle of the screen, left to right')
+  assert.ok(inside > 0, `the hero is on the screen (${Math.round(inside)} px inside, on board row ${V.data.POS[hexH].r})`)
   v.dispose()
 })
 

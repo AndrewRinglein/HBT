@@ -2,7 +2,7 @@
 // and slides the screen just far enough to show its hex'). Andrew: "I should be able to click on one of the bubbles for a unit
 // that's off-screen to both focus it and also scroll the screen over so they are visible, but only just to their hex. Don't
 // focus on it or center the screen on it. Just slide over until they're visible." The component's half, asked of the page
-// (VIEWER_PAGE, else BATTLE-VIEWER.html) on the Orphanage: a bubble at the screen's edge is a button; a click makes its unit
+// (VIEWER_PAGE, else BATTLE-VIEWER.html) on the Orphanage (its Turn 3, since 2026-10-04 — the note at boot): a bubble at the screen's edge is a button; a click makes its unit
 // the unit looked at (the panel shows it) and slides the camera — a pan only: the zoom, the turn and the tilt unchanged — the
 // least distance that brings that unit's hex inside the view; the unit is not at the centre; the bubble is gone; no command
 // and no play event is sent, no Activation changes. The sandbox's half is kingdom tools/bubble-click-reveals.verify.mjs.
@@ -27,7 +27,17 @@ function boot(opts = {}) {
   const host = w.document.createElement('div'); w.document.body.appendChild(host)
   const offered = []
   const v = B.mount(host, data, { autoplay: false, onPlay: e => { offered.push(e); return true }, ...opts })
-  v.push(EV); v.seek(EV.findIndex(e => e.type === 'activation.begin' && e.phase === 'hero') + 1)
+  /* Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start': "bring the
+     hero forward to the end of the bridge and bring the zombie left, maybe 3 squares"): this read
+       v.push(EV); v.seek(EV.findIndex(e => e.type === 'activation.begin' && e.phase === 'hero') + 1)
+     — the battle's first hero Activation, where the old start had the Zombie on the board's last column, far off the
+     screen: the unit a bubble stood for. By the ruling the Orphanage opens with everyone on the screen (that is its
+     point), so the scene these tests stand on is the same recording a little later: the first hero Activation of Turn 3,
+     when the Zombie that arrives at the LEFT edge — the board's first column, (0,6) — is off the screen. Every assertion
+     below is unchanged; "the board's last column" in their comments reads "an edge column" (it is the first one now). */
+  const SCENE = EV.findIndex(e => e.type === 'activation.begin' && e.phase === 'hero' && e.turn === 3)
+  assert.ok(SCENE > 0, 'the recording reaches Turn 3')
+  v.push(EV); v.seek(SCENE + 1)
   return { w, v, V: v._V, offered }
 }
 const facts = actor => ({ actor, slot: null, reach: [], zoc: [], path: [], provokes: [], ghost: null, threat: null, targets: [], aim: null, note: null })
@@ -49,7 +59,9 @@ const insideBy = s => Math.min(s.x, s.y, s.W - s.x, s.H - s.y)
 
 test('a unit off the screen has a bubble, and the bubble is a button that names its units', () => {
   const { v, V } = boot(); v.render()
-  const bs = bubbles(V); assert.ok(bs.length >= 1, 'the Orphanage opens with a unit off the screen')
+  /* (Law 10, 2026-10-04, as at boot: was 'the Orphanage opens with a unit off the screen') */
+  const bs = bubbles(V); assert.ok(bs.length >= 1, 'at Turn 3 of the Orphanage a unit is off the screen')
+  assert.ok(Object.values(V.S.U).some(u => V.data.POS[u.hex].c === 0 && bs.some(b => unitsOf(b).includes(u.id))), "the Zombie on the board's first column is behind a bubble")
   for (const b of bs) { assert.equal(b.getAttribute('role'), 'button'); assert.ok(unitsOf(b).every(id => V.S.U[id]), 'data-units names units on the board'); assert.equal(b.listeners.click.length, 1, "it takes a click") }
   const css = html.match(/<style>([\s\S]*?)<\/style>/)[1]
   assert.match(css, /\.edgeBub\{[^}]*pointer-events:auto/, 'the bubble takes the pointer (its layer does not)'); assert.match(css, /\.edgeBub\{[^}]*cursor:pointer/)
@@ -155,17 +167,43 @@ test('a bubble for several units takes the nearest of them to the view; a slide 
   /* every unit, from the battle's opening view: after a click on its bubble its hex is on the screen as drawn, the zoom and
      the angle as they were, and the view shows only board (the camera's own bound holds the slide at the board's edge) */
   const start = { cam: { ...V.view.cam }, camF: { ...V.view.camF } }
+  const edgeHeld = [], inside0 = {}
   for (const u of live) {
     V.view.cam = { ...start.cam }; V.view.camF = { ...start.camF }; V.view.revealed = null; v.render()
     const p0 = pose(V)
+    inside0[u.id] = insideBy(screenOf(V, u.hex))
     V.clickBubble([u.id])
     const p = V.camTarget, F = V.data.F
     assert.ok(p.x >= 0 && p.x <= F.w && p.y >= 0 && p.y <= F.h, `${u.name}: the view's centre is on the board`)
     assert.equal(p.zoom, p0.zoom); assert.equal(p.yaw, p0.yaw); assert.equal(p.tilt, p0.tilt)
-    assert.ok(insideBy(screenOf(V, u.hex)) > -V.data.LAYOUT.W * p.zoom / 2, `${u.name}: its hex is on the screen after the slide (a hex of the board's last column: its nearer half)`)
-    assert.ok(!bubbles(V).some(x => unitsOf(x).includes(u.id)), `${u.name}: no bubble stands for it now`)
+    /* Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start, the note at boot): the two lines here read, of EVERY unit,
+         assert.ok(insideBy(screenOf(V, u.hex)) > -V.data.LAYOUT.W * p.zoom / 2, `${u.name}: its hex is on the screen after the slide (a hex of the board's last column: its nearer half)`)
+         assert.ok(!bubbles(V).some(x => unitsOf(x).includes(u.id)), `${u.name}: no bubble stands for it now`)
+       — true on the old scene, whose one edge unit stood on (19,3). On this scene the edge unit stands on (0,6), nearer the
+       camera, where its view is narrower: the camera, which never shows past the board (viewer.camera-no-void), stops 108 px
+       short of that hex — more than its nearer half (81 px) — and its bubble stays. That is the bound the item already FOUND
+       (viewer SWITCHES bubbleEdgeHex, arrivalsEdgeColumn) and Andrew has since ruled away (engine DECISIONS.md 2026-10-04 'the
+       view may slide past the board's edge to show a unit on an edge column' — viewer.camera-shows-edge-units, not built).
+       So the rule is held as the camera can keep it today, and no looser: a unit NOT on an edge column is held to both
+       lines exactly as written; a unit on an edge column is held to them too whenever the camera can bring its nearer half
+       in, and otherwise to this — the view went to its bound on that side (as far as it may go), the hex came nearer than
+       it was, and it is that one bound alone that keeps it out. When viewer.camera-shows-edge-units lands, the second
+       branch goes and every unit is held to the two lines again. */
+    const after = insideBy(screenOf(V, u.hex)), half = V.data.LAYOUT.W * p.zoom / 2, col = V.data.POS[u.hex].c, box = V.view.panBox
+    const edgeColumn = col === 0 || col === V.data.POS.reduce((m, q) => Math.max(m, q.c), 0)
+    const atBound = Math.abs(p.x - (col === 0 ? box.x[0] : box.x[1])) < .01
+    if (after > -half || !edgeColumn) {
+      assert.ok(after > -half, `${u.name}: its hex is on the screen after the slide (a hex of an edge column: its nearer half)`)
+      assert.ok(!bubbles(V).some(x => unitsOf(x).includes(u.id)), `${u.name}: no bubble stands for it now`)
+    } else {
+      edgeHeld.push(u.name)
+      assert.ok(atBound, `${u.name}, on the board's ${col === 0 ? 'first' : 'last'} column: the view went as far as the camera may go`)
+      assert.ok(after > inside0[u.id], `${u.name}: its hex came nearer the screen (${Math.round(inside0[u.id])} px -> ${Math.round(after)} px)`)
+      assert.ok(after > -1.5 * half, `${u.name}: and is within a hex of showing — the bound, nothing else, keeps it out`)
+    }
     assert.equal(V.view.noVoid, true, 'the tactical view keeps to the board')
   }
+  assert.ok(edgeHeld.length <= 1, `at most the one unit on an edge column is held by the camera's bound: ${edgeHeld.join(', ') || 'none'}`)
   v.dispose()
 })
 

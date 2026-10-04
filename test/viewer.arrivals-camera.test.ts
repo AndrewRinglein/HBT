@@ -21,6 +21,18 @@ import { runBattle } from '../../engine/src/core/battle.js'
 import { scenarioDef, scenarioOptions } from '../../engine/src/content/scenarios.js'
 
 const FIXTURE = 'tools/fixtures/arrivals-two-sides.json'
+/* Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start': "bring the hero
+   forward to the end of the bridge and bring the zombie left, maybe 3 squares. So that conflict is much faster."): both
+   battles below were fielded plainly —
+     createBattle(opts)   ·   createBattle({ ...opts, encounter })
+   — and on the old start replicate 1's hero took Turns to reach the Zombie, so the schedule's waves came. On the closer
+   start that hero kills the one starting Zombie on Turn 1 and the battle ends there, won ("Battle ends when there are no
+   enemies remaining", 2026-09-03): no wave is ever fired, and nothing here has a scheduled arrival to read. What these
+   tests hold is how a scheduled arrival is written in the log, so the battle is fielded as the engine's own opening probes
+   field one that must SEE a late arrival (engine test/opening-helpers.ts openingBattle): with the engine's fielding switch
+   boardClearWaitsForSchedule — a cleared board waits for the schedule. A fielding choice, not the rule; every assertion
+   is as it was. */
+const WAITS = { cfg: { switches: { boardClearWaitsForSchedule: true } } } as const
 const plain = <T>(x: T): T => JSON.parse(JSON.stringify(x))
 /** the Orphanage with its Turn 2 and Turn 3 arrivals (the right side, the left side) fired together at the Start of Turn 2 —
     each stood two columns in from its edge, at (17,5) and (2,6): hexes the camera can bring wholly inside its view. On the
@@ -30,7 +42,7 @@ function twoSides() {
   const [second, third, ...rest] = enc.schedule!
   const stood = (spawn: NonNullable<typeof second>['spawn'], col: number, row: number) => spawn!.map((x) => ({ ...x, at: { col, row } }))
   const encounter = { ...enc, schedule: [{ ...second!, spawn: [...stood(second!.spawn, 17, 5), ...stood(third!.spawn, 2, 6)] }, ...rest] }
-  const ctx = createBattle({ ...opts, encounter })
+  const ctx = createBattle({ ...opts, encounter, ...WAITS } as Parameters<typeof createBattle>[0])
   runBattle(ctx)
   /* through Turn 2 and no further: the wave, the first Activation after it, a little play */
   const end = ctx.events.findIndex((e) => e.type === 'turn.begin' && e.turn === 3)
@@ -40,7 +52,7 @@ function twoSides() {
 
 describe('the camera shows what arrives', () => {
   it('the engine: a scheduled arrival is an encounter.wave, then a unit.enter naming the encounter, before the Hero Phase\'s first Activation', () => {
-    const opts = scenarioOptions(scenarioDef('test.opening-orphanage'), 1), ctx = createBattle(opts); runBattle(ctx)
+    const opts = scenarioOptions(scenarioDef('test.opening-orphanage'), 1), ctx = createBattle({ ...opts, ...WAITS } as Parameters<typeof createBattle>[0]); runBattle(ctx)
     const EV = ctx.events, wave = EV.findIndex((e) => e.type === 'encounter.wave'), g = ctx.geo
     expect(EV[wave]).toMatchObject({ turn: 2, causeId: opts.encounter!.id })
     const enter = EV[wave + 1]!
