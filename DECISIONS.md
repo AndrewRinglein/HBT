@@ -4662,3 +4662,22 @@ Ruled:
 - Tests that use a cut row as a fixture move to a row that stays (Law 10): engine `test/unit-mods.test.ts` and `test/damage-packets.test.ts`, `tools/compare-packet-transition.mts`, kingdom `test/isc-062.test.ts`, content `test/damage-packets.test.mjs`, and the test bestiary unit that fires `attack.rusted-crossbow.bolt`.
 
 Filed: `content.unfielded-tier0-weapons-cut`, first in the content queue.
+
+## 2026-10-03 — a tier 0 axe is supposed to exist and be in some kits: it is the Wood Axe, which is not yet a row (questions out)
+
+Andrew, same chat at the root, after the cut landed (engine 2dd6390) and asked whether the Wood Axe card and model stay now that `item.hand-axe` is gone:
+
+“There is supposed to be a tier 0 axe that is either a Hand Axe or a Wood Axe that is also in some kits. I don't know which one is which.”
+
+Which is which, told to him:
+
+- **The Wood Axe is his.** Dictated 2026-09-28 (`V2-SHIELDS-AND-WEAPONS-2026-09-20.md`, sixth pass, line 271): "The wood axe is one-handed, does strength damage, and on block it inflicts -15 block. It has -5 accuracy", 1 stamina; a second attack that "does 2 more damage and 5 more accuracy loss at stamina 2". Tier 0 (2026-10-03, 'card art for every weapon at tiers 0 and 1'). It has never been a row, and no kit names it.
+- **The Hand Axe was the authoring pass's** (`item.hand-axe`, source "new (fills the axe form at tier 0)"): one-handed, one attack, Chop — Strength +2, -5 Accuracy, 2 stamina, +4 on a critical. It was in no kit, and it is the row cut above. It stood where the Wood Axe belongs, with numbers that were not his.
+- **The only tier 0 axe in a kit today is the Lumberjack's Axe** (`item.lumberjack-axe`: two-handed, Chop and Cleave; the kit of `hero.fixed.lumberjack-and-wife`, dictated 2026-08-25) — the weapon he called "a wood axe" on 2026-10-03 ('every civilian fields its kit by default'). The only other axe in any kit is the War Axe, tier 1: the Warriors' start pool and `hero.base.warrior-iron` (`content/gen/kits.json`).
+
+Ruled:
+
+- **A tier 0 axe is wanted, and it is in some kits.** Read as: the Wood Axe — the name he dictated and the one he tiered. The cut of `item.hand-axe` stands; the Wood Axe is authored from his dictation, not by bringing that row back.
+- **The Wood Axe card and its model stay** (read as following from the line above; the entry above already says the card stays). Codex's model list excluded it along with the ten (`weapon-card-models/run.json`, "Excluded by user from model production"); the line to restore it was handed to him in the chat.
+
+Open, asked: which kits carry the Wood Axe; whether the Lumberjack's weapon is the one-handed Wood Axe or stays his own two-handed axe. Not filed until answered: the row and its kits are one item.
