@@ -162,7 +162,7 @@ export function shortStatus(id, SN) {
 const SCALE_WORD = { partyMagic: 'party Magic', partySpirit: 'party Spirit', power: 'Power' }
 export function valueWords(v) {
   if (v == null || typeof v !== 'object') return v
-  const what = v.scale === 'stat' ? (STATSHORT[v.stat] || v.stat) : SCALE_WORD[v.scale]
+  const what = v.scale === 'stat' ? statWord(v.stat) : SCALE_WORD[v.scale]
   if (!what) throw new Error('viewer: unknown value scale ' + JSON.stringify(v))
   const term = (v.mult != null && v.mult !== 1 ? v.mult + ' × ' : '') + what + (v.div != null && v.div !== 1 ? ' ÷ ' + v.div : '')
   return (v.base ? v.base + ' + ' : '') + term + (v.round ? ' (rounded ' + v.round + ')' : '')
@@ -185,7 +185,7 @@ function effectWordOf(ef, D, SN) {
     case 'burstScale':     return { word: 'Burst damage percentage', val: ef.percent }
     case 'heal':           return { word: 'Heal', val: ef.amount ?? ef.value }
     case 'knockback':      return { word: 'Knockback', val: ef.hexes ?? ef.value }
-    case 'statMod':        return { word: (STATSHORT[ef.stat] || ef.stat), val: ef.value, signed: true }
+    case 'statMod':        return { word: statWord(ef.stat), val: ef.value, signed: true }
     case 'stamina.drain':  return { word: 'Stamina drain', val: ef.value }
     case 'stamina.gain':   return { word: 'Stamina', val: ef.value, signed: true }
     case 'loseMaxStamina': return { word: 'Max Stam', val: -Math.abs(ef.value), signed: true }
@@ -274,36 +274,161 @@ export function effectTag(a, u, D, SN) {
    2026-09-28, review finding V12: onBlock was missing, so an attacker-side onBlock trigger never
    reached the attack's chip row) */
 export const ATTACK_HOOKS = new Set(['onHit', 'onAttack', 'onDamage', 'onKill', 'onMiss', 'onCrit', 'onBlock'])
+
+/* ── EVERYTHING AN ACTION DOES (viewer.bar-shows-every-effect, 2026-10-04) ────────────────────────────────
+   Engine DECISIONS.md 2026-10-03 'the action bar: … every action shows all it does' (Andrew: "some of the
+   information and some of the actions are missing. For example, a dagger giving you one protection is not shown in
+   the dagger attack."). The audit (tools/bar-audit.mjs) listed what the bar left unsaid; four things answer it, all
+   read off the engine's rows and none typed per unit:
+     unitTriggers  — the triggers a FIELDED unit carries: its row's own, then those its held items bring, then its
+                     badges' (the engine's applyItems / applyBadges order). The bar and the panel read only the bare
+                     row before, so the Dagger's "onAttack: gain 1 Protection" was on no screen.
+     effectSentence — one effect as a sentence, in the Codex's wording ("gain 1 Protection", "apply 2 Bleed",
+                     "regain 1 Stamina", "STR +2 for the rest of the Battle").
+     ridersOf      — the unit's triggers that ride one action: an attacker hook, on an action with an attack profile
+                     (the engine fires them from its attack pipeline only — a power fires none), unscoped or scoped
+                     to this attack, and never a defender's onBlock.
+     actionLines   — the whole of one action, a line per fact: the row's tooltip. */
+const STAT_WORD = { ...STATSHORT, maxHp: 'MAX HEALTH', maxStamina: 'MAX STAMINA', staminaRegen: 'STAMINA REGEN', rangedBlock: 'RANGED BLOCK' }
+const statWord = k => STAT_WORD[k] || String(k).replace(/([A-Z])/g, ' $1').toUpperCase()
+const hexes = n => n + ' hex' + (n === 1 ? '' : 'es')
+const HOOK_WORD = { onHit: 'On hit', onAttack: 'On attack', onDamage: 'On damage', onKill: 'On kill', onMiss: 'On miss', onCrit: 'On crit', onBlock: 'On block',
+  onTakingDamage: 'When hit', onDeath: 'On death', onBurst: 'On burst', startOfBattle: 'At the start of the battle', onActivationEnd: 'At the end of its Activation' }
+const UNTIL_WORD = { endOfTurn: 'this Turn', endOfNextTurn: 'until the end of the next Turn', endOfActivation: 'until the end of the Activation',
+  endOfNextActivation: 'until the end of the next Activation', battle: 'for the rest of the Battle' }
+
+export function unitTriggers(u, D) {
+  const d = ((D && D.UD) || {})[u && u.typeId] || {}, ITEMS = (D && D.ITEMS) || {}, BD = (D && D.BADGES) || {}
+  const out = [...(d.triggers || [])]
+  for (const h of ((u && u.kit && u.kit.held) || [])) out.push(...((ITEMS[h.itemId] || {}).triggers || []))
+  for (const id of ((u && u.badges) || [])) out.push(...((BD[id] || {}).triggers || []))
+  return out
+}
+
+/** `sel`: who it lands on — a trigger's select ('self' · 'target' · a Targeting row), or for a power's own effect its `who`
+    (absent: whoever the power is aimed at) */
+export function effectSentence(ef, sel, D, SN) {
+  if (!ef || !ef.kind) return ''
+  const BD = (D && D.BADGES) || {}, UD = (D && D.UD) || {}
+  const self = sel === 'self' || (sel && typeof sel === 'object' && sel.select === 'self')
+  const area = sel && typeof sel === 'object' && !self ? targetWords(sel) : ''
+  const onSelf = self ? ' (self)' : '', to = area ? ' to ' + area : '', amt = v => valueWords(v)
+  const st = id => shortStatus(id, SN), badge = id => (BD[id] || {}).name || String(id || '').replace(/^badge\./, '')
+  switch (ef.kind) {
+    case 'status.apply':   return self ? `gain ${amt(ef.value)} ${st(ef.statusId)}` : `apply ${amt(ef.value)} ${st(ef.statusId)}${to}`
+    case 'status.remove':  return `remove ${ef.value == null ? 'all' : ef.value} ${st(ef.statusId)}${self ? ' from self' : area ? ' from ' + area : ''}`
+    case 'badge.grant':    return `inflict ${[ef.badgeId, ...(ef.withBadgeIds || [])].map(badge).join(' with ')}${to}`
+    case 'damage':         return `${amt(ef.amount)} ${ef.damageType} damage${onSelf}${to}`
+    case 'statDamage':     return `${statWord(ef.stat)} ${sgn(ef.bonus)} ${ef.damageType} damage${ef.allies === 'always' ? ', allies too' : ''}${to}`
+    case 'burstScale':     return `burst damage ${ef.percent}%`
+    case 'heal':           return `heal ${amt(ef.amount)}${onSelf}${to}`
+    case 'knockback':      return `push ${typeof ef.value === 'number' ? hexes(ef.value) : amt(ef.value) + ' hexes'} directly away${to}`
+    case 'statMod':        return `${statWord(ef.stat)} ${sgn(ef.value)} ${UNTIL_WORD[ef.until] || ef.until}${ef.floor != null ? ' (minimum ' + ef.floor + ')' : ''}${onSelf}${to}`
+    case 'stamina.drain':  return `drain ${amt(ef.value)} Stamina${onSelf}${to}`
+    case 'stamina.gain':   return `regain ${amt(ef.value)} Stamina${self ? '' : to}`
+    case 'loseMaxStamina': return `lose ${ef.value} Max Stamina for the rest of the Battle`
+    case 'loseMaxHp':      return `lose ${ef.value} Max Health${onSelf}${to}`
+    case 'stand':          return 'stand up'
+    case 'reveal':         return 'reveal what is hidden' + to
+    case 'power.gain':     return `Power ${typeof ef.value === 'number' ? sgn(ef.value) : '+ ' + amt(ef.value)}`
+    case 'layer.paint':    return `${String(ef.layer || '').replace(/^layer\./, '')} ground, radius ${ef.radius}${ef.origin === 'target' ? ' round the target' : ''}`
+    case 'corpse.raise':   return `raise ${ef.count == null ? 'a corpse' : ef.count + ' corpses'} within ${hexes(ef.radius)} as ${(UD[ef.unit] || {}).name || ef.unit}`
+    case 'corpse.consume': return `consume every corpse within ${hexes(ef.radius)}, heal ${ef.healPer} for each`
+    case 'corpse.eat':     return `eat a corpse within ${hexes(ef.radius)}: heal ${ef.heal}${Object.entries(ef.mods || {}).map(([k, v]) => ', ' + statWord(k) + ' ' + sgn(v)).join('')}${ef.maxHp ? ', MAX HEALTH ' + sgn(ef.maxHp) : ''}`
+    default:               return ef.kind
+  }
+}
+
+export function ridersOf(u, a, D) {
+  if (!a || !a.attack) return []
+  return unitTriggers(u, D).filter(t => ATTACK_HOOKS.has(t.hook) && !(t.onlyWithAttack && t.onlyWithAttack !== a.id) && t.role !== 'defender')
+}
+const riderLine = (t, D, SN) => `${HOOK_WORD[t.hook] || t.hook}: ${effectSentence(t.effect, t.select, D, SN)}${t.chance != null && t.chance < 100 ? ' (' + t.chance + '%)' : ''}`
+
+/** every fact of one action, a line each — the row's tooltip, whole (the button shows what fits) */
+export function actionLines(a, u, D, SN) {
+  const k = a.kind === 'move' ? 'move' : a.kind === 'burst' ? 'burst' : a.attack ? 'attack' : 'power'
+  const p = a.attack, lines = []
+  lines.push((a.name || a.id) + ' — ' + (k === 'attack' ? `${p.kind} attack${a.move ? ' (charge)' : ''} · ${p.damageType}` : k === 'move' ? 'movement' : k))
+  const lim = ['Stamina ' + a.staminaCost]
+  if (a.cooldown) lim.push('Cooldown ' + a.cooldown)
+  if (a.warmup) lim.push('Warm-up ' + a.warmup)
+  if (a.uses != null) lim.push(a.uses + ' use' + (a.uses === 1 ? '' : 's') + ' per battle')
+  if (a.free) lim.push('free — does not end the Activation')
+  if (a.slot) lim.push(a.slot === 'either' ? 'uses the move or the primary action' : a.slot === 'movement' ? 'uses the move' : 'uses the primary action')
+  lines.push(lim.join(' · '))
+  if (p) {
+    const base = ((D.UD || {})[u && u.typeId] || {}).accuracy, dm = dmgOf(a, u, D)
+    lines.push(`Accuracy ${base == null ? '—' : base}${p.accuracy ? ' · ACC ' + sgn(p.accuracy) + ' with this attack' : ''} · Range ${a.range} · Damage ${dm ? dm.n : '—'} (${statWord(p.stat)}${p.bonus ? ' ' + sgn(p.bonus) : ''}${p.powerScale != null ? ' + Power × ' + p.powerScale : ''})`)
+    const more = []
+    if (p.crit) more.push('crit ' + sgn(p.crit))
+    if (p.hits > 1) more.push(p.hits + ' hits')
+    if (p.critCount > 1) more.push(p.critCount + ' criticals on a crit')
+    if (p.armorPenetration != null) more.push('Armor penetration ' + p.armorPenetration)
+    if (p.impact) more.push('Impact ' + p.impact)
+    if (p.destroy) more.push('Destroy ' + p.destroy)
+    for (const s of (p.secondaryDamage || [])) more.push('on ' + s.when + ': ' + s.amount + ' ' + s.damageType)
+    if (more.length) lines.push(more.join(' · '))
+    if (p.applies) lines.push('On hit: apply ' + p.applies.value + ' ' + shortStatus(p.applies.statusId, SN))
+  }
+  const mv = a.move
+  if (mv) {
+    const n = k === 'move' ? moveHexes(a, u, D) : null, bits = []
+    if (mv.shape === 'sidestep') bits.push(mv.stepRange === 0 ? 'stands still' : `steps exactly ${hexes(mv.stepRange == null ? 1 : mv.stepRange)}, any direction — Ignore ZOC`)
+    else if (mv.shape === 'flight') bits.push(`flies${n == null ? '' : ' up to ' + hexes(n)} — no steps`)
+    else bits.push(mv.hexes != null ? `walks at most ${hexes(mv.hexes)}` : `walks${n == null ? '' : ' up to ' + hexes(n)}`)
+    if (mv.shape !== 'sidestep' && mv.ignoresZoc) bits.push('Ignore ZOC')
+    if (mv.budgetMod) bits.push(sgn(mv.budgetMod) + ' move')
+    lines.push(bits.join(' · '))
+  }
+  const b = a.burst
+  if (b) {
+    const bits = [b.shape.kind === 'radius' ? 'radius ' + b.shape.radius : b.shape.kind, 'strikes ' + ({ any: 'any unit', ally: 'allies', enemy: 'enemies' }[b.side] || b.side) + ' (' + b.side + ')']
+    if (b.requireTags && b.requireTags.length) bits.push('tags ' + b.requireTags.join(', '))
+    for (const q of b.packets) bits.push((q.stat ? statWord(q.stat) + ' ' + sgn(q.amount) : String(q.amount)) + ' ' + q.damageType + (q.powerScale != null ? ' · Power scale ' + q.powerScale : ''))
+    if (b.heal != null) bits.push('heal ' + b.heal)
+    if (b.impact) bits.push('Impact ' + b.impact)
+    if (b.destroy) bits.push('Destroy ' + b.destroy)
+    lines.push(bits.join(' · '))
+  }
+  if (a.target) lines.push('Target: ' + targetWords(a.target) + (!p && !mv && !b && a.range ? ' · Range ' + a.range : ''))
+  else if (!p && !mv && !b && a.range) lines.push('Range ' + a.range)
+  for (const e of (a.effects || [])) lines.push(effectSentence(e, e.who, D, SN))
+  for (const t of ridersOf(u, a, D)) lines.push(riderLine(t, D, SN))
+  return lines.filter(Boolean)
+}
+
 export function triggersFor(u, a, D, SN, stStyle) {
   if (a.kind === 'burst') return []
-  const UD = D.UD || {}
   const out = []
+  const hueOf = w => w.statusId ? stStyle(w.statusId).hue : w.badge ? BADGE_HUE : '#d6b25e'
   if (a.kind === 'move') {
     /* a move's riders ARE the buff/debuff layer — same green/red as the stat block */
     for (const e of (a.effects || (a.move || {}).effects || [])) {
-      if (e.kind === 'stamina.gain')       out.push({ word: 'Stamina ' + sgn(e.value), hue: MOD_UP, chance: 100 })
-      else if (e.kind === 'loseMaxStamina') out.push({ word: 'Max Stam ' + sgn(-Math.abs(e.value)), hue: MOD_DOWN, chance: 100 })
+      const title = effectSentence(e, e.who, D, SN)
+      if (e.kind === 'stamina.gain')       out.push({ word: 'Stamina ' + sgn(e.value), hue: MOD_UP, chance: 100, title })
+      else if (e.kind === 'loseMaxStamina') out.push({ word: 'Max Stam ' + sgn(-Math.abs(e.value)), hue: MOD_DOWN, chance: 100, title })
       else if (e.kind === 'statMod')        out.push({ word: (STATSHORT[e.stat] || e.stat) + ' ' + sgn(e.value),
-                                                        hue: e.value > 0 ? MOD_UP : MOD_DOWN, chance: 100 })
+                                                        hue: e.value > 0 ? MOD_UP : MOD_DOWN, chance: 100, title })
+      /* viewer.bar-shows-every-effect: any other rider a move carries (a heal, a status, standing up) is a chip too */
+      else { const w = effectWord(e, D, SN); if (w) out.push({ word: w.word, val: w.val, hue: hueOf(w), chance: 100, title }) }
     }
     return out
   }
   const prof = a.attack || a
   if (prof.applies) out.push({ word: shortStatus(prof.applies.statusId, SN), val: prof.applies.value,
-                            hue: stStyle(prof.applies.statusId).hue, chance: 100 })
-  const d = UD[u.typeId] || {}
-  for (const t of (d.triggers || [])) {
-    if (!ATTACK_HOOKS.has(t.hook)) continue
-    if (t.onlyWithAttack && t.onlyWithAttack !== a.id) continue
-    const ef = t.effect || {}
-    const w = effectWord(ef, D, SN)
+                            hue: stStyle(prof.applies.statusId).hue, chance: 100, title: 'On hit: apply ' + prof.applies.value + ' ' + shortStatus(prof.applies.statusId, SN) })
+  /* viewer.bar-shows-every-effect: a power's own effects — every power is its `effects` list (engine fix.one-effect-vocabulary),
+     and the bar showed none of them */
+  for (const e of (a.effects || [])) { const w = effectWord(e, D, SN); if (w) out.push({ word: w.word, val: w.val, signed: w.signed, hue: hueOf(w), chance: 100, title: effectSentence(e, e.who, D, SN) }) }
+  /* the unit's triggers that ride this action — its row's, its items', its badges' (was: the bare row's only, on powers too) */
+  for (const t of ridersOf(u, a, D)) {
+    const w = effectWord(t.effect || {}, D, SN)
     if (!w) continue
     /* "Poison 1, 20%" — the value wears the status colour, the odds stay grey.
        A badge is a permanent thing the unit takes away from the battle, so it
        wears the badge hue rather than the generic brass (2026-09-04). */
-    out.push({ word: w.word, val: w.val,
-               hue: w.statusId ? stStyle(w.statusId).hue : w.badge ? BADGE_HUE : '#d6b25e',
-               chance: t.chance == null ? 100 : t.chance })
+    out.push({ word: w.word, val: w.val, hue: hueOf(w), chance: t.chance == null ? 100 : t.chance, title: riderLine(t, D, SN) })
   }
   return out
 }

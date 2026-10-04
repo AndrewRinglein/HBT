@@ -1,0 +1,866 @@
+file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-shows-every-effect.test.mjs:15
+import { actionLines, ridersOf, unitTriggers, triggersFor } from '../src/actions.js'
+         ^^^^^^^^^^^
+SyntaxError: The requested module '../src/actions.js' does not provide an export named 'actionLines'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:302:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:405:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+✖ tools\bar-shows-every-effect.test.mjs (58.7458ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64.8901
+
+✖ failing tests:
+
+test at tools\bar-shows-every-effect.test.mjs:1:1
+✖ tools\bar-shows-every-effect.test.mjs (58.7458ms)
+  'test failed'
+
+── the audit's list on the page before the change: node tools/bar-audit.mjs <the page built from viewer 9b1555a> ──
+base heroes 1 to 6 · Iron Dwarf A (hero.base.warrior-iron) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.war-axe.chop: attack kind melee — melee
+    NOT SHOWN  attack.war-axe.chop: damage strength 1 — str
+    NOT SHOWN  attack.war-axe.chop: trigger trigger.war-axe.on-block.block (onBlock) — on block, 20, block, rest of the battle
+    NOT SHOWN  attack.war-axe.chop: trigger trigger.war-axe.on-block.ranged-block (onBlock) — on block, 20, ranged block, rest of the battle
+    NOT SHOWN  attack.war-axe.hack: attack kind melee — melee
+    NOT SHOWN  attack.war-axe.hack: damage strength 2 — str
+    NOT SHOWN  attack.war-axe.hack: trigger trigger.war-axe.hack.bleed (onHit) — on hit, bleed
+    NOT SHOWN  attack.war-axe.hack: trigger trigger.war-axe.on-block.block (onBlock) — on block, 20, block, rest of the battle
+    NOT SHOWN  attack.war-axe.hack: trigger trigger.war-axe.on-block.ranged-block (onBlock) — on block, 20, ranged block, rest of the battle
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  attack.punch: trigger trigger.war-axe.on-block.block (onBlock) — on block, 20, block, rest of the battle
+    NOT SHOWN  attack.punch: trigger trigger.war-axe.on-block.ranged-block (onBlock) — on block, 20, ranged block, rest of the battle
+    NOT SHOWN  power.tower-shield.cover: cooldown 4 — cooldown
+    NOT SHOWN  power.tower-shield.cover: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.tower-shield.cover: effect 1 statMod — 20, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.tower-shield.cover: effect 2 statMod — 20, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.tower-shield.cover: effect 3 statMod — 1, armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.tower-shield.stand-tall: cooldown 5 — cooldown
+    NOT SHOWN  power.tower-shield.stand-tall: effect 1 statMod — 25, ranged block, end of the next activation
+    NOT SHOWN  power.tower-shield.stand-tall: effect 2 statMod — armor, end of the next activation
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+base heroes 1 to 6 · Skullplate Veteran A (hero.base.warrior-fearsome) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.halberd.hack: attack kind melee — melee
+    NOT SHOWN  attack.halberd.hack: damage strength 2 — str, 2
+    NOT SHOWN  attack.halberd.hack: trigger trigger.halberd.hack.knockback (onDamage) — on damage, push
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+base heroes 1 to 6 · Mountain Berserker A (hero.base.warrior-barbarian) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.greatsword.hew: attack kind melee — melee
+    NOT SHOWN  attack.greatsword.hew: damage strength 2 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+base heroes 1 to 6 · Dwarven Brawler A (hero.base.warrior-brawler) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+base heroes 1 to 6 · Emberwright A (hero.base.mage-fire) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.fire-staff.fire-blast: attack kind ranged — ranged
+    NOT SHOWN  attack.fire-staff.fire-blast: damage precision 1 — pre
+    NOT SHOWN  attack.fire-staff.fire-blast: trigger trigger.fire-staff.fire-blast.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 1 to 6 · Pyre Witch A (hero.base.mage-fireaura) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.fire-staff.fire-blast: attack kind ranged — ranged
+    NOT SHOWN  attack.fire-staff.fire-blast: damage precision 1 — pre
+    NOT SHOWN  attack.fire-staff.fire-blast: trigger trigger.fire-staff.fire-blast.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 1 to 6 · Zombie 1 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 7 to 12 · Archive Scholar A (hero.base.mage-thinking) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.frost-staff.frost-blast: attack kind ranged — ranged
+    NOT SHOWN  attack.frost-staff.frost-blast: damage precision 1 — pre
+    NOT SHOWN  attack.frost-staff.frost-blast: trigger trigger.frost-staff.frost-blast.frost (onHit) — on hit
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 7 to 12 · Crimson Sorceress A (hero.base.mage-sexy) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.fire-staff.fire-blast: attack kind ranged — ranged
+    NOT SHOWN  attack.fire-staff.fire-blast: damage precision 1 — pre
+    NOT SHOWN  attack.fire-staff.fire-blast: trigger trigger.fire-staff.fire-blast.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 7 to 12 · Battle Chaplain A (hero.base.priest-armored) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.holy-texts.verse: attack kind ranged — ranged
+    NOT SHOWN  attack.holy-texts.verse: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.round-shield.turn-aside: cooldown 2 — cooldown
+    NOT SHOWN  power.round-shield.turn-aside: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.round-shield.turn-aside: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.round-shield.turn-aside: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.round-shield.brace: cooldown 3 — cooldown
+    NOT SHOWN  power.round-shield.brace: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.round-shield.brace: effect 1 statMod — 5, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.round-shield.brace: effect 2 statMod — 5, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.round-shield.brace: effect 3 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.holy-texts.mercy: target {"select":"unit","side":"ally"} — ally
+    NOT SHOWN  power.holy-texts.mercy: effect 1 heal — party spirit, rounded down, heal
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 7 to 12 · Barefoot Mendicant A (hero.base.priest-pauper) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.holy-texts.verse: attack kind ranged — ranged
+    NOT SHOWN  attack.holy-texts.verse: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.holy-texts.mercy: target {"select":"unit","side":"ally"} — ally
+    NOT SHOWN  power.holy-texts.mercy: effect 1 heal — party spirit, rounded down, heal
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 7 to 12 · Cathedral Bishop A (hero.base.priest-robes) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.holy-symbol.wrath: attack kind ranged — ranged
+    NOT SHOWN  attack.holy-symbol.wrath: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.holy-symbol.heal: target {"select":"unit","side":"ally"} — ally
+    NOT SHOWN  power.holy-symbol.heal: effect 1 heal — party spirit, 2
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 7 to 12 · Rune-Marked Ascetic A (hero.base.priest-scantily) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.iron-mace.swing: attack kind melee — melee
+    NOT SHOWN  attack.iron-mace.swing: damage strength 1 — str
+    NOT SHOWN  attack.iron-mace.swing: impact 2 — impact, 2
+    NOT SHOWN  attack.iron-mace.crush: attack kind melee — melee
+    NOT SHOWN  attack.iron-mace.crush: damage strength 1 — str
+    NOT SHOWN  attack.iron-mace.crush: impact 2 — impact
+    NOT SHOWN  attack.holy-symbol.wrath: attack kind ranged — ranged
+    NOT SHOWN  attack.holy-symbol.wrath: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.holy-symbol.heal: target {"select":"unit","side":"ally"} — ally
+    NOT SHOWN  power.holy-symbol.heal: effect 1 heal — party spirit, 2
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 7 to 12 · Zombie 1 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 13 to 18 · Black Oath A (hero.base.paladin-dark) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.greatsword.hew: attack kind melee — melee
+    NOT SHOWN  attack.greatsword.hew: damage strength 2 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+base heroes 13 to 18 · Lion of the Host A (hero.base.paladin-hunk) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.kite-shield.shield-wall: cooldown 3 — cooldown
+    NOT SHOWN  power.kite-shield.shield-wall: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 1 statMod — 15, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 2 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: cooldown 4 — cooldown
+    NOT SHOWN  power.kite-shield.raise-guard: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+base heroes 13 to 18 · Dawnblade A (hero.base.paladin-shiney) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.kite-shield.shield-wall: cooldown 3 — cooldown
+    NOT SHOWN  power.kite-shield.shield-wall: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 1 statMod — 15, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 2 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: cooldown 4 — cooldown
+    NOT SHOWN  power.kite-shield.raise-guard: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+base heroes 13 to 18 · Court Champion A (hero.base.paladin-smug) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.kite-shield.shield-wall: cooldown 3 — cooldown
+    NOT SHOWN  power.kite-shield.shield-wall: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 1 statMod — 15, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 2 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: cooldown 4 — cooldown
+    NOT SHOWN  power.kite-shield.raise-guard: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+base heroes 13 to 18 · Hunter A (hero.base.ranger-aggressive) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.longbow.shot: attack kind ranged — ranged
+    NOT SHOWN  attack.longbow.shot: damage precision 1 — pre
+    NOT SHOWN  attack.longbow.long-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.longbow.long-shot: damage precision 2 — pre
+    NOT SHOWN  attack.longbow.long-shot: accuracy modifier 10 — 10
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+base heroes 13 to 18 · Forest Fey A (hero.base.ranger-nature) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.shortbow.short-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.shortbow.short-shot: damage precision 1 — pre
+    NOT SHOWN  attack.shortbow.quick-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.shortbow.quick-shot: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+base heroes 13 to 18 · Zombie 1 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+base heroes 19 to 24 · Ancient Elf A (hero.base.ranger-ranger) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.elfbow.elf-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.elfbow.elf-shot: damage precision -1 — pre
+    NOT SHOWN  attack.elfbow.elf-shot: accuracy modifier 15 — 15
+    NOT SHOWN  attack.elfbow.double-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.elfbow.double-shot: damage precision -2 — pre
+    NOT SHOWN  attack.elfbow.double-shot: accuracy modifier -5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+base heroes 19 to 24 · Forest Elf A (hero.base.ranger-scantily) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.elfbow.elf-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.elfbow.elf-shot: damage precision -1 — pre
+    NOT SHOWN  attack.elfbow.elf-shot: accuracy modifier 15 — 15
+    NOT SHOWN  attack.elfbow.double-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.elfbow.double-shot: damage precision -2 — pre
+    NOT SHOWN  attack.elfbow.double-shot: accuracy modifier -5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+base heroes 19 to 24 · The Raven A (hero.base.rogue-raven) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.hand-crossbow.snapshot: attack kind ranged — ranged
+    NOT SHOWN  attack.hand-crossbow.snapshot: damage precision 1 — pre
+    NOT SHOWN  attack.hand-crossbow.loaded-bolt: attack kind ranged — ranged
+    NOT SHOWN  attack.hand-crossbow.loaded-bolt: damage precision 1 — pre, 1
+    NOT SHOWN  attack.hand-crossbow.loaded-bolt: trigger trigger.hand-crossbow.loaded-bolt.poison (onHit) — on hit, poison
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+base heroes 19 to 24 · The Rose A (hero.base.rogue-rose) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: damage strength 0 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: accuracy modifier 5 — 5
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: damage strength 1 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+base heroes 19 to 24 · The Skull A (hero.base.rogue-skull) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.daggers.stab: attack kind melee — melee
+    NOT SHOWN  attack.daggers.stab: damage strength 0 — str
+    NOT SHOWN  attack.daggers.thrown-dagger: attack kind ranged — ranged
+    NOT SHOWN  attack.daggers.thrown-dagger: damage precision 1 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+base heroes 19 to 24 · The Serpent A (hero.base.rogue-snake) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.throwing-knives.flick: attack kind ranged — ranged
+    NOT SHOWN  attack.throwing-knives.flick: damage precision 0 — pre
+    NOT SHOWN  attack.throwing-knives.flick: accuracy modifier 5 — 5
+    NOT SHOWN  attack.throwing-knives.fan: attack kind ranged — ranged
+    NOT SHOWN  attack.throwing-knives.fan: damage precision 0 — pre
+    NOT SHOWN  attack.throwing-knives.fan: accuracy modifier -5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+base heroes 19 to 24 · Zombie 1 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+Flaming Longsword on Iron Dwarf · Iron Dwarf A (hero.base.warrior-iron) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.fire-damage (onHit) — on hit, 2, fire
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.tower-shield.cover: cooldown 4 — cooldown
+    NOT SHOWN  power.tower-shield.cover: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.tower-shield.cover: effect 1 statMod — 20, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.tower-shield.cover: effect 2 statMod — 20, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.tower-shield.cover: effect 3 statMod — 1, armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.tower-shield.stand-tall: cooldown 5 — cooldown
+    NOT SHOWN  power.tower-shield.stand-tall: effect 1 statMod — 25, ranged block, end of the next activation
+    NOT SHOWN  power.tower-shield.stand-tall: effect 2 statMod — armor, end of the next activation
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+Flaming Longsword on Iron Dwarf · Zombie 1 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+Flaming Longsword on Black Oath · Black Oath A (hero.base.paladin-dark) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.fire-damage (onHit) — on hit, 2, fire
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+Flaming Longsword on Black Oath · Zombie 1 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+the opening: orphanage · The Rose A (hero.base.rogue-rose) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: damage strength 0 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: accuracy modifier 5 — 5
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: damage strength 1 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+the opening: orphanage · Orphan Child 1 (hero.fixed.orphans) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.dagger.stab: attack kind melee — melee
+    NOT SHOWN  attack.dagger.stab: damage strength -1 — str
+    NOT SHOWN  attack.dagger.stab: trigger trigger.dagger.stab.protection (onAttack) — on attack, protection, self|gain|regain|lose|stand
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+the opening: orphanage · School Teacher 1 (hero.fixed.school-teacher) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.dagger.stab: attack kind melee — melee
+    NOT SHOWN  attack.dagger.stab: damage strength -1 — str
+    NOT SHOWN  attack.dagger.stab: trigger trigger.dagger.stab.protection (onAttack) — on attack, protection, self|gain|regain|lose|stand
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+the opening: orphanage · Zombie 1 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+the opening: lumberjack · The Rose A (hero.base.rogue-rose) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: damage strength 0 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: damage strength 1 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+the opening: lumberjack · Dawnblade A (hero.base.paladin-shiney) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.kite-shield.shield-wall: cooldown 3 — cooldown
+    NOT SHOWN  power.kite-shield.shield-wall: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 1 statMod — 15, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 2 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: cooldown 4 — cooldown
+    NOT SHOWN  power.kite-shield.raise-guard: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+the opening: lumberjack · Mountain Berserker A (hero.base.warrior-barbarian) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.greatsword.hew: attack kind melee — melee
+    NOT SHOWN  attack.greatsword.hew: damage strength 2 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+the opening: lumberjack · Lumberjack 1 (hero.fixed.lumberjack-and-wife) — sheet 4 action(s), bar 4 button(s)
+    NOT SHOWN  attack.lumberjack-axe.chop: attack kind melee — melee
+    NOT SHOWN  attack.lumberjack-axe.chop: damage strength 1 — str
+    NOT SHOWN  attack.lumberjack-axe.chop: trigger trigger.lumberjack-axe.chop.bleed (onHit) — on hit, bleed, 2, 20, %
+    NOT SHOWN  attack.lumberjack-axe.chop: trigger trigger.lumberjack-axe.on-block.block (onBlock) — on block, 20, block, rest of the battle
+    NOT SHOWN  attack.lumberjack-axe.chop: trigger trigger.lumberjack-axe.on-block.ranged-block (onBlock) — on block, 20, ranged block, rest of the battle
+    NOT SHOWN  attack.lumberjack-axe.cleave: attack kind melee — melee
+    NOT SHOWN  attack.lumberjack-axe.cleave: damage strength 2 — str
+    NOT SHOWN  attack.lumberjack-axe.cleave: trigger trigger.lumberjack-axe.on-block.block (onBlock) — on block, block, rest of the battle
+    NOT SHOWN  attack.lumberjack-axe.cleave: trigger trigger.lumberjack-axe.on-block.ranged-block (onBlock) — on block, ranged block, rest of the battle
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  attack.punch: trigger trigger.lumberjack-axe.on-block.block (onBlock) — on block, 20, block, rest of the battle
+    NOT SHOWN  attack.punch: trigger trigger.lumberjack-axe.on-block.ranged-block (onBlock) — on block, 20, ranged block, rest of the battle
+    NOT SHOWN  power.move: move shape path — walk
+the opening: lumberjack · Lumberjack's Wife 1 (hero.fixed.lumberjacks-wife) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.dagger.stab: attack kind melee — melee
+    NOT SHOWN  attack.dagger.stab: damage strength -1 — str
+    NOT SHOWN  attack.dagger.stab: trigger trigger.dagger.stab.protection (onAttack) — on attack, protection, self|gain|regain|lose|stand
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+the opening: lumberjack · Zombie 1 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+the opening: lumberjack · Zombie 2 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+the opening: lumberjack · Zombie 3 (unit.zombie) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.zombie.claw: attack kind melee — melee
+    NOT SHOWN  attack.zombie.claw: damage strength 0 — str
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.afflict-rotting-flesh (onHit) — on hit
+    NOT SHOWN  attack.zombie.claw: trigger trigger.zombie.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+the opening: bridge · The Rose A (hero.base.rogue-rose) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: damage strength 0 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: damage strength 1 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+the opening: bridge · Dawnblade A (hero.base.paladin-shiney) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.fire-damage (onHit) — on hit, 2, fire
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.kite-shield.shield-wall: cooldown 3 — cooldown
+    NOT SHOWN  power.kite-shield.shield-wall: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 1 statMod — 15, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 2 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: cooldown 4 — cooldown
+    NOT SHOWN  power.kite-shield.raise-guard: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+the opening: bridge · Mountain Berserker A (hero.base.warrior-barbarian) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.greatsword.hew: attack kind melee — melee
+    NOT SHOWN  attack.greatsword.hew: damage strength 2 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+the opening: bridge · Cathedral Bishop A (hero.base.priest-robes) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.holy-symbol.wrath: attack kind ranged — ranged
+    NOT SHOWN  attack.holy-symbol.wrath: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.holy-symbol.heal: target {"select":"unit","side":"ally"} — ally
+    NOT SHOWN  power.holy-symbol.heal: effect 1 heal — party spirit, 2
+    NOT SHOWN  power.move: move shape path — walk
+the opening: bridge · Imp 1 (unit.imp) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.imp.blast: attack kind ranged — ranged
+    NOT SHOWN  attack.imp.blast: damage precision 0 — pre
+    NOT SHOWN  attack.imp.blast: trigger trigger.imp.burn (onHit) — on hit
+    NOT SHOWN  attack.imp.claw: attack kind melee — melee
+    NOT SHOWN  attack.imp.claw: damage strength 0 — str
+the opening: bridge · Imp 2 (unit.imp) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.imp.blast: attack kind ranged — ranged
+    NOT SHOWN  attack.imp.blast: damage precision 0 — pre
+    NOT SHOWN  attack.imp.blast: trigger trigger.imp.burn (onHit) — on hit
+    NOT SHOWN  attack.imp.claw: attack kind melee — melee
+    NOT SHOWN  attack.imp.claw: damage strength 0 — str
+the opening: bridge · Imp 3 (unit.imp) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.imp.blast: attack kind ranged — ranged
+    NOT SHOWN  attack.imp.blast: damage precision 0 — pre
+    NOT SHOWN  attack.imp.blast: trigger trigger.imp.burn (onHit) — on hit
+    NOT SHOWN  attack.imp.claw: attack kind melee — melee
+    NOT SHOWN  attack.imp.claw: damage strength 0 — str
+the opening: bridge · Imp 4 (unit.imp) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.imp.blast: attack kind ranged — ranged
+    NOT SHOWN  attack.imp.blast: damage precision 0 — pre
+    NOT SHOWN  attack.imp.blast: trigger trigger.imp.burn (onHit) — on hit
+    NOT SHOWN  attack.imp.claw: attack kind melee — melee
+    NOT SHOWN  attack.imp.claw: damage strength 0 — str
+the opening: cavern-trail · The Rose A (hero.base.rogue-rose) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: damage strength 0 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: damage strength 1 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+the opening: cavern-trail · Dawnblade A (hero.base.paladin-shiney) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.fire-damage (onHit) — on hit, 2, fire
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.kite-shield.shield-wall: cooldown 3 — cooldown
+    NOT SHOWN  power.kite-shield.shield-wall: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 1 statMod — 15, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 2 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: cooldown 4 — cooldown
+    NOT SHOWN  power.kite-shield.raise-guard: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+the opening: cavern-trail · Mountain Berserker A (hero.base.warrior-barbarian) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.greatsword.hew: attack kind melee — melee
+    NOT SHOWN  attack.greatsword.hew: damage strength 2 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+the opening: cavern-trail · Cathedral Bishop A (hero.base.priest-robes) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.holy-symbol.wrath: attack kind ranged — ranged
+    NOT SHOWN  attack.holy-symbol.wrath: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.holy-symbol.heal: target {"select":"unit","side":"ally"} — ally
+    NOT SHOWN  power.holy-symbol.heal: effect 1 heal — party spirit, 2
+    NOT SHOWN  power.move: move shape path — walk
+the opening: cavern-trail · Archive Scholar A (hero.base.mage-thinking) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.frost-staff.frost-blast: attack kind ranged — ranged
+    NOT SHOWN  attack.frost-staff.frost-blast: damage precision 1 — pre
+    NOT SHOWN  attack.frost-staff.frost-blast: trigger trigger.frost-staff.frost-blast.frost (onHit) — on hit
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+the opening: cavern-trail · Bloodhound 1 (unit.bloodhound) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  move.hound.close-bite: slot movement — move
+    NOT SHOWN  move.hound.close-bite: attack kind melee — melee
+    NOT SHOWN  move.hound.close-bite: damage strength 0 — str
+    NOT SHOWN  attack.bloodhound.bite: attack kind melee — melee
+    NOT SHOWN  attack.bloodhound.bite: damage strength 0 — str
+    NOT SHOWN  power.move-ignoring-zoc: move shape path — walk
+the opening: cavern-trail · Bloodhound 2 (unit.bloodhound) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  move.hound.close-bite: slot movement — move
+    NOT SHOWN  move.hound.close-bite: attack kind melee — melee
+    NOT SHOWN  move.hound.close-bite: damage strength 0 — str
+    NOT SHOWN  attack.bloodhound.bite: attack kind melee — melee
+    NOT SHOWN  attack.bloodhound.bite: damage strength 0 — str
+    NOT SHOWN  power.move-ignoring-zoc: move shape path — walk
+the opening: cavern-trail · Bloodhound 3 (unit.bloodhound) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  move.hound.close-bite: slot movement — move
+    NOT SHOWN  move.hound.close-bite: attack kind melee — melee
+    NOT SHOWN  move.hound.close-bite: damage strength 0 — str
+    NOT SHOWN  attack.bloodhound.bite: attack kind melee — melee
+    NOT SHOWN  attack.bloodhound.bite: damage strength 0 — str
+    NOT SHOWN  power.move-ignoring-zoc: move shape path — walk
+the opening: cavern-trail · Hellhound 1 (unit.hellhound) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  move.hellhound.close-bite: slot movement — move
+    NOT SHOWN  move.hellhound.close-bite: attack kind melee — melee
+    NOT SHOWN  move.hellhound.close-bite: damage strength 0 — str
+    NOT SHOWN  move.hellhound.close-bite: trigger trigger.hellhound.burn.close-bite (onHit) — on hit
+    NOT SHOWN  attack.hellhound.bite: attack kind melee — melee
+    NOT SHOWN  attack.hellhound.bite: damage strength 0 — str
+    NOT SHOWN  attack.hellhound.bite: trigger trigger.hellhound.burn (onHit) — on hit
+    NOT SHOWN  power.move-ignoring-zoc: move shape path — walk
+the opening: gates · The Rose A (hero.base.rogue-rose) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: damage strength 0 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: damage strength 1 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+the opening: gates · Dawnblade A (hero.base.paladin-shiney) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.fire-damage (onHit) — on hit, 2, fire
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.kite-shield.shield-wall: cooldown 3 — cooldown
+    NOT SHOWN  power.kite-shield.shield-wall: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 1 statMod — 15, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 2 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: cooldown 4 — cooldown
+    NOT SHOWN  power.kite-shield.raise-guard: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+the opening: gates · Mountain Berserker A (hero.base.warrior-barbarian) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.greatsword.hew: attack kind melee — melee
+    NOT SHOWN  attack.greatsword.hew: damage strength 2 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+the opening: gates · Cathedral Bishop A (hero.base.priest-robes) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.holy-symbol.wrath: attack kind ranged — ranged
+    NOT SHOWN  attack.holy-symbol.wrath: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.holy-symbol.heal: target {"select":"unit","side":"ally"} — ally
+    NOT SHOWN  power.holy-symbol.heal: effect 1 heal — party spirit, 2
+    NOT SHOWN  power.move: move shape path — walk
+the opening: gates · Archive Scholar A (hero.base.mage-thinking) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.frost-staff.frost-blast: attack kind ranged — ranged
+    NOT SHOWN  attack.frost-staff.frost-blast: damage precision 1 — pre
+    NOT SHOWN  attack.frost-staff.frost-blast: trigger trigger.frost-staff.frost-blast.frost (onHit) — on hit
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+the opening: gates · Hunter A (hero.base.ranger-aggressive) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.longbow.shot: attack kind ranged — ranged
+    NOT SHOWN  attack.longbow.shot: damage precision 1 — pre
+    NOT SHOWN  attack.longbow.long-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.longbow.long-shot: damage precision 2 — pre
+    NOT SHOWN  attack.longbow.long-shot: accuracy modifier 10 — 10
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+the opening: gates · Bruiser Demon 1 (unit.bruiser-demon) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.bruiser-demon.bash: attack kind melee — melee
+    NOT SHOWN  attack.bruiser-demon.bash: damage strength 0 — str
+    NOT SHOWN  power.move: move shape path — walk
+the opening: gates · Bruiser Demon 2 (unit.bruiser-demon) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.bruiser-demon.bash: attack kind melee — melee
+    NOT SHOWN  attack.bruiser-demon.bash: damage strength 0 — str
+    NOT SHOWN  power.move: move shape path — walk
+the opening: gates · Poison Imp 1 (unit.poison-imp) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.poison-imp.blast: attack kind ranged — ranged
+    NOT SHOWN  attack.poison-imp.blast: damage precision 0 — pre
+    NOT SHOWN  attack.poison-imp.blast: trigger trigger.poison-imp.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+the opening: gates · Poison Imp 2 (unit.poison-imp) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.poison-imp.blast: attack kind ranged — ranged
+    NOT SHOWN  attack.poison-imp.blast: damage precision 0 — pre
+    NOT SHOWN  attack.poison-imp.blast: trigger trigger.poison-imp.poison (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+the opening: gates · Powerful Imp 1 (unit.powerful-imp) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.imp.blast: attack kind ranged — ranged
+    NOT SHOWN  attack.imp.blast: damage precision 0 — pre
+    NOT SHOWN  attack.imp.blast: trigger trigger.powerful-imp.burn (onHit) — on hit
+    NOT SHOWN  attack.imp.claw: attack kind melee — melee
+    NOT SHOWN  attack.imp.claw: damage strength 0 — str
+the opening: gates · Lieutenant Demon 1 (unit.lieutenant-demon) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.lieutenant-demon.ranged: attack kind ranged — ranged
+    NOT SHOWN  attack.lieutenant-demon.ranged: damage precision 0 — pre
+    NOT SHOWN  attack.lieutenant-demon.ranged: power scale 0.5 — power, 0.5
+    NOT SHOWN  attack.lieutenant-demon.melee: attack kind melee — melee
+    NOT SHOWN  attack.lieutenant-demon.melee: power scale 0.5 — power, 0.5
+    NOT SHOWN  attack.lieutenant-demon.melee: accuracy modifier 10 — 10
+    NOT SHOWN  power.move: move shape path — walk
+the opening: cathedral · The Rose A (hero.base.rogue-rose) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.fang: damage strength 0 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: attack kind melee — melee
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: damage strength 1 — str
+    NOT SHOWN  attack.obsidian-fang-dagger.gut: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+the opening: cathedral · Dawnblade A (hero.base.paladin-shiney) — sheet 7 action(s), bar 7 button(s)
+    NOT SHOWN  attack.longsword.slash: attack kind melee — melee
+    NOT SHOWN  attack.longsword.slash: damage strength 1 — str
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.burn (onHit) — on hit, burn
+    NOT SHOWN  attack.longsword.slash: trigger trigger.longsword.flaming.fire-damage (onHit) — on hit, 2, fire
+    NOT SHOWN  attack.longsword.stab: attack kind melee — melee
+    NOT SHOWN  attack.longsword.stab: damage strength 2 — str
+    NOT SHOWN  attack.longsword.stab: accuracy modifier 5 — 5
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.kite-shield.shield-wall: cooldown 3 — cooldown
+    NOT SHOWN  power.kite-shield.shield-wall: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 1 statMod — 15, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.shield-wall: effect 2 statMod — armor, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: cooldown 4 — cooldown
+    NOT SHOWN  power.kite-shield.raise-guard: target {"select":"self","side":"any"} — self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 1 statMod — 10, block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.kite-shield.raise-guard: effect 2 statMod — 10, ranged block, end of the next activation, self|gain|regain|lose|stand
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.sidestep: cooldown 1 — cooldown
+    NOT SHOWN  power.sidestep: step range 1 — hex
+the opening: cathedral · Mountain Berserker A (hero.base.warrior-barbarian) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.greatsword.hew: attack kind melee — melee
+    NOT SHOWN  attack.greatsword.hew: damage strength 2 — str
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.leap: move shape sidestep — step
+    NOT SHOWN  power.leap: step range 2 — hex
+    NOT SHOWN  power.leap: effect 1 statMod — this turn
+the opening: cathedral · Cathedral Bishop A (hero.base.priest-robes) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.holy-symbol.wrath: attack kind ranged — ranged
+    NOT SHOWN  attack.holy-symbol.wrath: damage precision 0 — pre
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.holy-symbol.heal: target {"select":"unit","side":"ally"} — ally
+    NOT SHOWN  power.holy-symbol.heal: effect 1 heal — party spirit, 2
+    NOT SHOWN  power.move: move shape path — walk
+the opening: cathedral · Archive Scholar A (hero.base.mage-thinking) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.frost-staff.frost-blast: attack kind ranged — ranged
+    NOT SHOWN  attack.frost-staff.frost-blast: damage precision 1 — pre
+    NOT SHOWN  attack.frost-staff.frost-blast: trigger trigger.frost-staff.frost-blast.frost (onHit) — on hit
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+the opening: cathedral · Hunter A (hero.base.ranger-aggressive) — sheet 5 action(s), bar 5 button(s)
+    NOT SHOWN  attack.longbow.shot: attack kind ranged — ranged
+    NOT SHOWN  attack.longbow.shot: damage precision 1 — pre
+    NOT SHOWN  attack.longbow.long-shot: attack kind ranged — ranged
+    NOT SHOWN  attack.longbow.long-shot: damage precision 2 — pre
+    NOT SHOWN  attack.longbow.long-shot: accuracy modifier 10 — 10
+    NOT SHOWN  attack.punch: attack kind melee — melee
+    NOT SHOWN  attack.punch: damage strength -1 — str
+    NOT SHOWN  power.move: move shape path — walk
+    NOT SHOWN  power.side-roll: move shape sidestep — step
+    NOT SHOWN  power.side-roll: step range 1 — hex
+the opening: cathedral · Necromancer 1 (unit.necromancer) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.necromancer.necro-bolt: attack kind ranged — ranged
+    NOT SHOWN  attack.necromancer.necro-bolt: damage precision 0 — pre
+    NOT SHOWN  attack.necromancer.necro-bolt: power scale 1 — power
+    NOT SHOWN  attack.necromancer.necro-bolt: accuracy modifier 10 — 10
+    NOT SHOWN  attack.necromancer.necro-bolt: trigger trigger.necromancer.weak (onHit) — on hit
+    NOT SHOWN  attack.necromancer.necro-bolt: trigger trigger.necromancer.drain-stamina (onHit) — on hit
+    NOT SHOWN  attack.necromancer.necro-strike: attack kind melee — melee
+    NOT SHOWN  attack.necromancer.necro-strike: power scale 0.5 — power, 0.5
+    NOT SHOWN  power.move: move shape path — walk
+the opening: cathedral · Skeleton Archer 1 (unit.skeletal-archer) — sheet 3 action(s), bar 3 button(s)
+    NOT SHOWN  attack.skeleton.gut: attack kind melee — melee
+    NOT SHOWN  attack.skeleton.gut: damage strength 0 — str
+    NOT SHOWN  attack.skeleton.gut: trigger trigger.skeletal-archer.bleed (onHit) — on hit
+    NOT SHOWN  attack.skeletal-archer.shoot: attack kind ranged — ranged
+    NOT SHOWN  attack.skeletal-archer.shoot: damage precision 0 — pre
+    NOT SHOWN  power.move: move shape path — walk
+the opening: cathedral · Skeleton 1 (unit.skeleton) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.skeleton.gut: attack kind melee — melee
+    NOT SHOWN  attack.skeleton.gut: damage strength 0 — str
+    NOT SHOWN  attack.skeleton.gut: trigger trigger.skeleton.bleed (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+the opening: cathedral · Skeleton 2 (unit.skeleton) — sheet 2 action(s), bar 2 button(s)
+    NOT SHOWN  attack.skeleton.gut: attack kind melee — melee
+    NOT SHOWN  attack.skeleton.gut: damage strength 0 — str
+    NOT SHOWN  attack.skeleton.gut: trigger trigger.skeleton.bleed (onHit) — on hit
+    NOT SHOWN  power.move: move shape path — walk
+
+bar-audit: 83 units · 360 actions · 0 with no button · 735 things not shown
+     139 × attack kind melee
+     137 × damage strength N
+      78 × move shape path
+      57 × effect N statMod
+      56 × trigger (onHit)
+      42 × attack kind ranged
+      42 × damage precision N
+      36 × step range N
+      32 × cooldown N
+      28 × target
+      28 × accuracy modifier N
+      26 × move shape sidestep
+      12 × trigger (onBlock)
+       8 × effect N heal
+       4 × slot movement
+       4 × power scale N
+       3 × trigger (onAttack)
+       2 × impact N
+       1 × trigger (onDamage)

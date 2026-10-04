@@ -3,7 +3,7 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords } from './actions.js'
+import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers } from './actions.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { itemsOf, SLOT_LABEL } from './items.js'
 import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
@@ -71,7 +71,8 @@ export function drawPanel(V) {
   const now = V.clock()
   /* triggers grouped BY HOOK per §4; a trigger's effect lives in t.effect */
   const trigByHook = {}
-  for (const t of (d.triggers || [])) (trigByHook[t.hook] = trigByHook[t.hook] || []).push(t)
+  /* viewer.bar-shows-every-effect: the triggers the FIELDED unit carries — its row's, its held items', its badges' (actions.js unitTriggers) */
+  for (const t of unitTriggers(u, V.data)) (trigByHook[t.hook] = trigByHook[t.hook] || []).push(t)
   const trigCol = Object.entries(trigByHook).map(([hook, list]) => {
     const rows = list.map(t => {
       const ef = t.effect || {}
@@ -84,7 +85,9 @@ export function drawPanel(V) {
          its own fields (actions.js targetWords) — was ' → ' + the row itself, "[object Object]" */
       const who = t.select === 'self' ? ' on self' : t.select === 'target' ? '' : ' → ' + targetWords(t.select)
       const num = w.val == null ? '' : w.radius ? ` r${w.val}` : ' ' + (w.signed ? sgn(w.val) : w.val)
-      const eff = `${w.word}${num}${w.badge || w.radius ? '' : who}`
+      /* viewer.bar-shows-every-effect: a trigger that rides one attack only says which (the Dagger's Protection: "with Stab") */
+      const scoped = t.onlyWithAttack ? ` · with ${((V.data.ACT || {})[t.onlyWithAttack] || {}).name || t.onlyWithAttack}` : ''
+      const eff = `${w.word}${num}${w.badge || w.radius ? '' : who}${scoped}`
       const TF = S.TRIGFLASH
       const firing = TF && TF.unit === u.id && TF.id === t.id && TF.until > now
       return `<div style="display:flex;align-items:center;gap:7px;padding:5px 8px;margin-bottom:4px;
