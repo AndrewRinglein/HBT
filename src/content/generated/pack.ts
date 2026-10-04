@@ -840,7 +840,7 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
-          "id": "trigger.demon-hound.regeneration",
+          "id": "trigger.demon-hound.regeneration.start-of-battle",
           "hook": "startOfBattle",
           "chance": 100,
           "select": "self",
@@ -852,7 +852,7 @@ export const UNIT_PACK = {
           "source": "unit.demon-hound"
         },
         {
-          "id": "trigger.demon-hound.regeneration",
+          "id": "trigger.demon-hound.regeneration.on-activation-end",
           "hook": "onActivationEnd",
           "chance": 100,
           "select": "self",
@@ -864,7 +864,7 @@ export const UNIT_PACK = {
           "source": "unit.demon-hound"
         },
         {
-          "id": "trigger.demon-hound.regeneration",
+          "id": "trigger.demon-hound.regeneration.on-taking-damage",
           "hook": "onTakingDamage",
           "chance": 100,
           "select": "self",
@@ -911,7 +911,7 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
-          "id": "trigger.doombringer.protection",
+          "id": "trigger.doombringer.protection.on-taking-damage",
           "hook": "onTakingDamage",
           "chance": 100,
           "select": "self",
@@ -927,7 +927,7 @@ export const UNIT_PACK = {
           "source": "unit.doombringer"
         },
         {
-          "id": "trigger.doombringer.protection",
+          "id": "trigger.doombringer.protection.on-activation-end",
           "hook": "onActivationEnd",
           "chance": 100,
           "select": "self",
@@ -1127,7 +1127,7 @@ export const UNIT_PACK = {
           "source": "unit.fire-imp"
         },
         {
-          "id": "trigger.fire-imp.burn",
+          "id": "trigger.fire-imp.burn.blast",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -1335,7 +1335,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "move.hellhound.close-bite"
         },
         {
-          "id": "trigger.hellhound.burn",
+          "id": "trigger.hellhound.burn.bite",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -1432,7 +1432,7 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
-          "id": "trigger.imp-master.burn",
+          "id": "trigger.imp-master.burn.fire-bow",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -1445,7 +1445,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.imp-master.fire-bow"
         },
         {
-          "id": "trigger.imp-master.burn",
+          "id": "trigger.imp-master.burn.fire-sword",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -1791,7 +1791,7 @@ export const UNIT_PACK = {
           "source": "unit.poison-imp"
         },
         {
-          "id": "trigger.poison-imp.poison",
+          "id": "trigger.poison-imp.poison.blast",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -1942,7 +1942,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.shadow-sorcerer.shadow-strike"
         },
         {
-          "id": "trigger.shadow-sorcerer.dragged-under",
+          "id": "trigger.shadow-sorcerer.dragged-under.root",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -1955,7 +1955,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.shadow-sorcerer.shadow-rend"
         },
         {
-          "id": "trigger.shadow-sorcerer.dragged-under",
+          "id": "trigger.shadow-sorcerer.dragged-under.paint-darkness",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -2172,7 +2172,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.skeleton-spider.bone-strike"
         },
         {
-          "id": "trigger.skeleton-spider.armor-armor",
+          "id": "trigger.skeleton-spider.armor-armor.bone-slash",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -2358,7 +2358,7 @@ export const UNIT_PACK = {
           "source": "unit.terror-imp"
         },
         {
-          "id": "trigger.terror-imp.weak",
+          "id": "trigger.terror-imp.weak.fear",
           "hook": "onAttack",
           "chance": 100,
           "select": "target",
@@ -11048,7 +11048,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -11059,10 +11059,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -11073,7 +11074,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
         }
       ]
     },
@@ -11573,7 +11605,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.bloody-axe.butcher"
         },
         {
-          "id": "trigger.bloody-axe.bleed",
+          "id": "trigger.bloody-axe.bleed.cleave-open",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -11582,10 +11614,24 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 1
           },
-          "source": "item.bloody-axe"
+          "source": "item.bloody-axe",
+          "onlyWithAttack": "attack.bloody-axe.cleave-open"
         },
         {
-          "id": "trigger.bloody-axe.on-block.block",
+          "id": "trigger.bloody-axe.bleed.butcher",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.bloody-axe",
+          "onlyWithAttack": "attack.bloody-axe.butcher"
+        },
+        {
+          "id": "trigger.bloody-axe.on-block.block.cleave-open",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -11596,10 +11642,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.bloody-axe"
+          "source": "item.bloody-axe",
+          "onlyWithAttack": "attack.bloody-axe.cleave-open"
         },
         {
-          "id": "trigger.bloody-axe.on-block.ranged-block",
+          "id": "trigger.bloody-axe.on-block.ranged-block.cleave-open",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -11610,7 +11657,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.bloody-axe"
+          "source": "item.bloody-axe",
+          "onlyWithAttack": "attack.bloody-axe.cleave-open"
+        },
+        {
+          "id": "trigger.bloody-axe.on-block.block.butcher",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.bloody-axe",
+          "onlyWithAttack": "attack.bloody-axe.butcher"
+        },
+        {
+          "id": "trigger.bloody-axe.on-block.ranged-block.butcher",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.bloody-axe",
+          "onlyWithAttack": "attack.bloody-axe.butcher"
         }
       ]
     },
@@ -11747,7 +11825,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.poison-throwing-knives.poison",
+          "id": "trigger.poison-throwing-knives.poison.toss",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -11756,7 +11834,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.poison-throwing-knives"
+          "source": "item.poison-throwing-knives",
+          "onlyWithAttack": "attack.poison-throwing-knives.toss"
+        },
+        {
+          "id": "trigger.poison-throwing-knives.poison.venom-fan",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.poison-throwing-knives",
+          "onlyWithAttack": "attack.poison-throwing-knives.venom-fan"
         }
       ]
     },
@@ -11832,7 +11924,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.twin-talon-bow.bleed",
+          "id": "trigger.twin-talon-bow.bleed.talon-shot",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -11841,7 +11933,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 1
           },
-          "source": "item.twin-talon-bow"
+          "source": "item.twin-talon-bow",
+          "onlyWithAttack": "attack.twin-talon-bow.talon-shot"
+        },
+        {
+          "id": "trigger.twin-talon-bow.bleed.double-nock",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.twin-talon-bow",
+          "onlyWithAttack": "attack.twin-talon-bow.double-nock"
         }
       ]
     },
@@ -11861,7 +11967,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.book-of-exorcisms.burn",
+          "id": "trigger.book-of-exorcisms.burn.reading",
           "hook": "onAttack",
           "chance": 100,
           "select": "target",
@@ -11870,7 +11976,21 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 1
           },
-          "source": "item.book-of-exorcisms"
+          "source": "item.book-of-exorcisms",
+          "onlyWithAttack": "attack.book-of-exorcisms.reading"
+        },
+        {
+          "id": "trigger.book-of-exorcisms.burn.rite-of-expulsion",
+          "hook": "onAttack",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.book-of-exorcisms",
+          "onlyWithAttack": "attack.book-of-exorcisms.rite-of-expulsion"
         }
       ]
     },
@@ -11930,7 +12050,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.boarding-hook.bleed",
+          "id": "trigger.boarding-hook.bleed.hook",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -11939,7 +12059,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 1
           },
-          "source": "item.boarding-hook"
+          "source": "item.boarding-hook",
+          "onlyWithAttack": "attack.boarding-hook.hook"
+        },
+        {
+          "id": "trigger.boarding-hook.bleed.drag-down",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.boarding-hook",
+          "onlyWithAttack": "attack.boarding-hook.drag-down"
         }
       ]
     },
@@ -12151,7 +12285,8 @@ export const UNIT_PACK = {
             "statusId": "status.regeneration",
             "value": 2
           },
-          "source": "item.scepter-of-salvation"
+          "source": "item.scepter-of-salvation",
+          "onlyWithAttack": "attack.scepter-of-salvation.rebuke"
         }
       ],
       "gaps": [
@@ -12232,7 +12367,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.stormforged-halberd.thunderhead"
         },
         {
-          "id": "trigger.stormforged-halberd.burn",
+          "id": "trigger.stormforged-halberd.burn.storm-sweep",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -12241,7 +12376,21 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 4
           },
-          "source": "item.stormforged-halberd"
+          "source": "item.stormforged-halberd",
+          "onlyWithAttack": "attack.stormforged-halberd.storm-sweep"
+        },
+        {
+          "id": "trigger.stormforged-halberd.burn.thunderhead",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 4
+          },
+          "source": "item.stormforged-halberd",
+          "onlyWithAttack": "attack.stormforged-halberd.thunderhead"
         }
       ]
     },
@@ -12830,7 +12979,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.troll-gut-vest.regeneration",
+          "id": "trigger.troll-gut-vest.regeneration.start-of-battle",
           "hook": "startOfBattle",
           "chance": 100,
           "select": "self",
@@ -12842,7 +12991,7 @@ export const UNIT_PACK = {
           "source": "item.troll-gut-vest"
         },
         {
-          "id": "trigger.troll-gut-vest.regeneration",
+          "id": "trigger.troll-gut-vest.regeneration.on-taking-damage",
           "hook": "onTakingDamage",
           "chance": 100,
           "select": "self",
@@ -16089,7 +16238,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.lumberjack-axe.chop"
         },
         {
-          "id": "trigger.lumberjack-axe.on-block.block",
+          "id": "trigger.lumberjack-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -16100,10 +16249,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.lumberjack-axe"
+          "source": "item.lumberjack-axe",
+          "onlyWithAttack": "attack.lumberjack-axe.chop"
         },
         {
-          "id": "trigger.lumberjack-axe.on-block.ranged-block",
+          "id": "trigger.lumberjack-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -16114,7 +16264,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.lumberjack-axe"
+          "source": "item.lumberjack-axe",
+          "onlyWithAttack": "attack.lumberjack-axe.chop"
+        },
+        {
+          "id": "trigger.lumberjack-axe.on-block.block.cleave",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.lumberjack-axe",
+          "onlyWithAttack": "attack.lumberjack-axe.cleave"
+        },
+        {
+          "id": "trigger.lumberjack-axe.on-block.ranged-block.cleave",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.lumberjack-axe",
+          "onlyWithAttack": "attack.lumberjack-axe.cleave"
         }
       ]
     }
@@ -17191,54 +17372,6 @@ export const UNIT_PACK = {
               "value": 2
             },
             "source": "unit.test-slot-striker"
-          },
-          {
-            "id": "test.warrior.second-wind",
-            "hook": "onTakingDamage",
-            "chance": 100,
-            "select": "self",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.regeneration",
-              "value": 1
-            },
-            "source": "unit.test-slot-striker"
-          },
-          {
-            "id": "test.warrior.stagger",
-            "hook": "onDamage",
-            "chance": 20,
-            "select": "target",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.stun",
-              "value": 1
-            },
-            "source": "unit.test-slot-striker"
-          },
-          {
-            "id": "test.warrior.brace",
-            "hook": "onTakingDamage",
-            "chance": 50,
-            "select": "self",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "test.status.ward",
-              "value": 1
-            },
-            "source": "unit.test-slot-striker"
-          },
-          {
-            "id": "test.oathblade.apply-bleed",
-            "hook": "onAttack",
-            "chance": 100,
-            "select": "target",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.bleed",
-              "value": 2
-            },
-            "source": "unit.test-slot-striker"
           }
         ]
       },
@@ -17275,54 +17408,6 @@ export const UNIT_PACK = {
           "power.leap"
         ],
         "triggers": [
-          {
-            "id": "test.warrior.second-wind",
-            "hook": "onTakingDamage",
-            "chance": 100,
-            "select": "self",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.regeneration",
-              "value": 1
-            },
-            "source": "unit.test-packet-flame"
-          },
-          {
-            "id": "test.warrior.stagger",
-            "hook": "onDamage",
-            "chance": 20,
-            "select": "target",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.stun",
-              "value": 1
-            },
-            "source": "unit.test-packet-flame"
-          },
-          {
-            "id": "test.warrior.brace",
-            "hook": "onTakingDamage",
-            "chance": 50,
-            "select": "self",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "test.status.ward",
-              "value": 1
-            },
-            "source": "unit.test-packet-flame"
-          },
-          {
-            "id": "test.oathblade.apply-bleed",
-            "hook": "onAttack",
-            "chance": 100,
-            "select": "target",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.bleed",
-              "value": 2
-            },
-            "source": "unit.test-packet-flame"
-          },
           {
             "id": "test.warrior.second-wind",
             "hook": "onTakingDamage",
@@ -17410,54 +17495,6 @@ export const UNIT_PACK = {
           "power.leap"
         ],
         "triggers": [
-          {
-            "id": "test.warrior.second-wind",
-            "hook": "onTakingDamage",
-            "chance": 100,
-            "select": "self",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.regeneration",
-              "value": 1
-            },
-            "source": "unit.test-packet-shadow"
-          },
-          {
-            "id": "test.warrior.stagger",
-            "hook": "onDamage",
-            "chance": 20,
-            "select": "target",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.stun",
-              "value": 1
-            },
-            "source": "unit.test-packet-shadow"
-          },
-          {
-            "id": "test.warrior.brace",
-            "hook": "onTakingDamage",
-            "chance": 50,
-            "select": "self",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "test.status.ward",
-              "value": 1
-            },
-            "source": "unit.test-packet-shadow"
-          },
-          {
-            "id": "test.oathblade.apply-bleed",
-            "hook": "onAttack",
-            "chance": 100,
-            "select": "target",
-            "effect": {
-              "kind": "status.apply",
-              "statusId": "status.bleed",
-              "value": 2
-            },
-            "source": "unit.test-packet-shadow"
-          },
           {
             "id": "test.warrior.second-wind",
             "hook": "onTakingDamage",
@@ -29162,7 +29199,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29173,10 +29210,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29187,7 +29225,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
         },
         {
           "id": "trigger.war-axe.bloodletting.bleed-crit",
@@ -29234,7 +29303,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29245,10 +29314,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29259,7 +29329,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
         }
       ],
       "vsTarget": [
@@ -29307,7 +29408,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29318,10 +29419,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29332,7 +29434,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
         }
       ],
       "base": "item.war-axe",
@@ -29370,7 +29503,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29381,10 +29514,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29395,7 +29529,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
         }
       ],
       "base": "item.war-axe",
@@ -29433,7 +29598,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29444,10 +29609,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -29458,7 +29624,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
         },
         {
           "id": "trigger.war-axe.taunting.taunt",
@@ -36398,7 +36595,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36409,10 +36606,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36423,7 +36621,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
         },
         {
           "id": "trigger.war-axe.flaming.burn",
@@ -36573,7 +36802,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36584,10 +36813,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36598,7 +36828,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
         }
       ],
       "base": "item.war-axe"
@@ -36632,7 +36893,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack.heavy"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36643,10 +36904,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop.heavy"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36657,7 +36919,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop.heavy"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.heavy"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.heavy"
         }
       ],
       "base": "item.war-axe",
@@ -36692,7 +36985,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack.keen"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36703,10 +36996,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop.keen"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36717,7 +37011,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop.keen"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.keen"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.keen"
         }
       ],
       "base": "item.war-axe",
@@ -36752,7 +37077,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack.cruel"
         },
         {
-          "id": "trigger.war-axe.on-block.block",
+          "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36763,10 +37088,11 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop.cruel"
         },
         {
-          "id": "trigger.war-axe.on-block.ranged-block",
+          "id": "trigger.war-axe.on-block.ranged-block.chop",
           "hook": "onBlock",
           "chance": 100,
           "select": "target",
@@ -36777,7 +37103,38 @@ export const UNIT_PACK = {
             "value": -20,
             "until": "battle"
           },
-          "source": "item.war-axe"
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.chop.cruel"
+        },
+        {
+          "id": "trigger.war-axe.on-block.block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "block",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.cruel"
+        },
+        {
+          "id": "trigger.war-axe.on-block.ranged-block.hack",
+          "hook": "onBlock",
+          "chance": 100,
+          "select": "target",
+          "role": "attacker",
+          "effect": {
+            "kind": "statMod",
+            "stat": "rangedBlock",
+            "value": -20,
+            "until": "battle"
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack.cruel"
         }
       ],
       "base": "item.war-axe",
