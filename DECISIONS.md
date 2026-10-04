@@ -4719,3 +4719,22 @@ Ruled:
 
 - **For this backlog the viewer's items and the kingdom's items each get their own worker, in their own copy** — three workers with the engine's. Sets aside DISPLAY-RULES.md rule 32's "never two in one area" (viewer and kingdom are one area there) for the items now queued; the rule itself is not rewritten. The two collide only on kingdom's generated pages, which are rebuilt at each merge (GBH SWITCHES `combine.mergeMainFirst`).
 - **The viewer items that wait on art not yet made go to the end of the queue** ("We can not have those items be displayed properly for now … it can wait. It's a little less critical"): `viewer.attack-owns-motion`, `viewer.special-move-motions`, `viewer.shield-block-and-hit`, `viewer.airwalk-floats`, `viewer.miss-dodge-motion`, `viewer.fire-imp-own-model`, `viewer.enemy-held-weapons`. They stay filed; no worker takes them until he says or the art exists.
+
+## 2026-10-04 — the basic attack is a weapon's first attack, and every free attack uses it without paying stamina — ruled 2026-09-28, never built
+
+Andrew, in the kingdom chat, told that the Lumberjack, now holding his axe, still punches as his attack of opportunity (the engine takes the cheapest melee attack; Chop costs 1 Stamina, Punch none):
+
+“There's supposed to be a basic attack for each character, and that basic attack is used on all three attacks.   Most weapons have a basic attack.   Chop should be the basic attack from Basic. Sword should be used for free attacks. This should be standard for all items they're equipped with. They're in your main hand or two hands if you're unequipped. One of Max's is a basic attack. It is the first attack.   It has a stamina cost, but that stamina cost is not triggered by special free attacks. Is this not the way it's currently implemented? Did this get lost somewhere in recording, or is it not been done yet, or is it been done incorrectly? Or is it not related to tier 0 items or civilians?”
+
+“There were some typos in there. The words "sword" and "three" were typos.” — read: "used on all free attacks"; "Chop should be the basic attack … [It] should be used for free attacks."
+
+The answer to his question: **it was recorded and never built.** 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' rules it (this file, "Special free attacks — counterattack, fend, the attack of opportunity — are one rule: the basic attack, no stamina, −20 Accuracy. The attack of opportunity changes to this rule (replacing the 2026-08-20 …)"), from his "we're changing attack of opportunity, so it's using the same rules as everything else. No stamina, uses the basic attack." No item was filed from that line. The engine still runs the 2026-08-20 rule it replaced: `src/core/movement.ts` `aooChoice` takes the holder's cheapest legal melee attack and the swing pays its stamina (`fix.aoo-pays-stamina`, 2026-09-04); the engine holds no "basic attack" at all, and no counterattack or fend. It has nothing to do with tier 0 items or civilians — every unit's attack of opportunity is chosen this way. The civilians' worker cited the 2026-08-20 entry as current (engine SWITCHES `placedKitAoo`); that was wrong, and so was the kingdom chat's relay of it.
+
+Ruled (today's words, completing 2026-09-28):
+
+- **Every character has a basic attack: the first attack of the weapon it holds** — in its main hand, or the weapon held in two hands; "Most weapons have a basic attack … It is the first attack." A unit holding no weapon has Punch. The Lumberjack's is Chop.
+- **Every special free attack uses the basic attack** — the attack of opportunity now, the counterattack and the fend when they exist. "This should be standard for all items they're equipped with."
+- **The basic attack has a stamina cost on the unit's own Activation; a special free attack does not pay it.**
+- −20 Accuracy on a special free attack stands from 2026-09-28; he did not speak to it.
+
+Filed: `rule.free-attack-is-basic-attack` (the attack of opportunity and the basic attack), and `capability.counterattack-and-fend` (ruled 2026-09-28, in no queue until now).
