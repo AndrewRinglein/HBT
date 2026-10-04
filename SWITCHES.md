@@ -1063,3 +1063,15 @@ The dodge on a miss is `viewer.miss-dodge-motion`'s and the slash `viewer.hit-sl
 | `impactLiesForItsCorpse` | A body that fell at the blow has usually finished falling when the log says it is dead — and a dead body with no corpse on the board yet was taken away once its fall ended, so it would vanish for the beat between the death's line and the corpse's. | **A fallen body lies where it fell for up to .9 s (of the pump's time) after the death's line, for its corpse to be put on the board (the corpse's line comes 520 ms after); the same body then lies as the corpse. A death that leaves no corpse leaves nothing after that.** | Found by the item's own page test. | Default — 2026-10-04 |
 | `impactTokens` | A unit with no body (the flat board; a look still loading) is its token, whose lunge is the board's own .13 s. | **Its lead-in is 100 of the pump's ms (`TOKEN_LEAD`), its record says `token`; a body with neither motion leans and its moment is the lean's furthest (.18 s).** The projectile and the reaction follow the same rule. | The flat board must not wait 3.8 s for a bow nobody draws. | Default — 2026-10-04 |
 | `impactMeleeEffect` | FOUND, not changed here: the board's melee effect (`playMeleeAttack`) begins at the blow with its own 320 ms run-in before its slash is drawn. | **Left as it is in this item; `viewer.hit-slash` (next, needs this item) puts the slash at the blow.** | One item, one thing. | Finding — 2026-10-04 |
+
+## fix.trigger-ids-and-scopes (engine item) — the opening recordings re-exported on their seeds, 2026-10-04
+
+The engine's content pack gives every trigger of a row its own id (the Fire Imp's Blast burn is `trigger.fire-imp.burn.blast`,
+the Poison Imp's `trigger.poison-imp.poison.blast`) and scopes nine weapons' row-level triggers to their own attacks (the axes'
+on-block no longer rides a Punch). No viewer code changed: the bar already lists an attack's scoped triggers under it
+(`tools/bar-audit.mjs`), and the roster it is read against (`tools/fixtures/bar-audit-roster.json`) is rewritten from the engine by
+its own command.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `openingReplaySeedAfterTriggerIds` | The six opening recordings are "current with the engine" (`openingReplaySeed`). Which seeds, now that two imps' triggers are renamed? | **The seeds `library.json` already records — Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 1, Gates 0, Cathedral 10 — re-exported all six together at engine code stamp 49912ff406, and no seed searched.** Four are event for event what they were (the Orphanage, the Lumberjack House, the Cavern Trail, the Cathedral: only the stamp moves). The Bridge differs in 6 lines and the Gates in 27, every one a `trigger.rolled` / `trigger.fired` / status line naming the Blast's burn or poison by its new id; the same rolls, the same outcomes (the Bridge a win in 11 Turns, the Gates a wipe in 12). None holds a transformation. | Engine DECISIONS.md 2026-10-04 'no testing that the battles can be won until these items are done': no seed is searched. | provisional — 2026-10-04 |
