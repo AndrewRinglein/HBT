@@ -4,11 +4,12 @@
 // the Bridge in one sitting; losing a battle offers it again with the same party; the rewards arrive when ruled."
 //
 // The BUILT sandbox opened with ?map is one sitting of a Campaign held in the page's memory. This plays it through the
-// page's own controls: the map -> the draft (one hero before battle 1, two after it, one after battle 2 — GLOSSARY.md
-// "The opening drafts"; never a class already drafted) -> Equip -> the encounter's battle, fielded with the campaign's
+// page's own controls: the map -> the draft (one hero before battle 1 and one more after each battle — GLOSSARY.md
+// "The opening drafts", kingdom.opening-draft-cadence 2026-10-03; never a class already drafted) -> Equip -> the encounter's battle, fielded with the campaign's
 // Hero rows -> the reckoning (recap), the rewards and the level-ups (the copied Hell-TCG screens) -> the map, with the
 // section taken. Battle 1 won: 20 XP to each hero who fought and the level-up with its specialty. Battle 2 lost: the map
-// offers it again, no draft owed, the same party, wounds kept; then won: the Flaming Longsword, to a Warrior or Paladin.
+// offers it again, no draft owed, the same party, wounds kept; then won: the Flaming Longsword, to a Warrior or Paladin
+// when the party of two holds one.
 // Battle 3 won: three items, one kept. The map ends with three sections taken. The civilians who lived through a won
 // battle join the roster.
 //
@@ -58,13 +59,24 @@ const saved1=b1.result.units.filter(u=>u.side==='hero'&&u.role==='encounter'&&u.
 assert.deepEqual(civilianIds(),saved1,'the Orphanage\'s civilians who lived join the roster; the dead do not')
 assert.equal(readMap([ORPHANAGE],'after battle 1'),LUMBERJACK)
 
-/* 3 · battle 2: two more drafted; lost; the map offers it again, no draft, the same party, wounds kept */
+/* 3 · battle 2: ONE more drafted; lost; the map offers it again, no draft, the same party, wounds kept.
+   Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're
+   only supposed to have one draft between battles 1 and 2. I was getting two drafts." · asked "Should the cadence change
+   to one draft after every battle (party of 1, 2, 3, 4, 5, 6) …?" — "One, yes."): this read
+     const second=draft('battle 2, draft 1');const third=draft('battle 2, draft 2')
+     const party2=[first,second,third].sort()
+     assert.deepEqual(heroIds(),party2,'three heroes before battle 2')
+     assert.equal(new Set(party2.map(id=>camp().roster[id].classes[0])).size,3,'three classes: none drafted twice')
+     assert.equal(whoGoes('battle 2').asked,false,'three heroes: no choice is asked')
+   — the 2026-08-23 cadence the ruling replaces (two drafts after battle 1). The rule now: one draft, a party of two at
+   the Lumberjack House, of two classes; and once it is taken the battle is fielded — no second draft is on the screen. */
 v.click('field',LUMBERJACK)
-const second=draft('battle 2, draft 1');const third=draft('battle 2, draft 2')
-const party2=[first,second,third].sort()
-assert.deepEqual(heroIds(),party2,'three heroes before battle 2')
-assert.equal(new Set(party2.map(id=>camp().roster[id].classes[0])).size,3,'three classes: none drafted twice')
-assert.equal(whoGoes('battle 2').asked,false,'three heroes: no choice is asked')
+const second=draft('battle 2')
+assert.equal(camp().cursor.step,'prep','one draft between battles 1 and 2: once it is taken the battle is fielded, no second draft')
+const party2=[first,second].sort()
+assert.deepEqual(heroIds(),party2,'two heroes before battle 2')
+assert.equal(new Set(party2.map(id=>camp().roster[id].classes[0])).size,2,'two classes: none drafted twice')
+assert.equal(whoGoes('battle 2').asked,false,'two heroes: no choice is asked')
 equipThenFight(party2,'battle 2')
 const lost2=fightOut(false,'battle 2 lost')
 if(camp().cursor.step==='levelUp')levelUps('battle 2 lost')
@@ -94,27 +106,45 @@ for(const id of party2){
  assert.equal(unit.badges.includes('badge.wounded'),wounds[id]>=1,`${id} is fielded ${wounds[id]?'Wounded':'whole'}`)
 }
 const b2=fightOut(true,'battle 2 won')
-assert.equal(camp().cursor.step,'rewards','battle 2 won offers its reward')
-assert.deepEqual(camp().cursor.rewardOffer,[SWORD],'the Flaming Longsword')
-takeReward(0,'battle 2')
-/* kingdom.opening-hero-card-art (2026-10-03): each hero who may carry it is shown with its own card art (opening-page.mjs
-   carriers); the heroes offered are read as before */
-const givers=carriers('battle 2').sort()
+/* Law 10, 2026-10-04 (kingdom.opening-draft-cadence): the block below was unconditional —
+     assert.equal(camp().cursor.step,'rewards','battle 2 won offers its reward') … assert.ok(camp().roster[givers[0]].equipped.includes(SWORD), …)
+   — held of a party of THREE, which this driver's drafts (a Warrior or a Paladin first when offered) always gave a taker
+   on the seeds run. A party of two has had two drafts; on a run seed where neither offer held a Warrior or a Paladin the
+   rule is its other half (kingdom SWITCHES openingItemTakers: "with none, nothing is offered and nobody carries it") —
+   held below, word for word. With a taker every line stands as it was. (That the sword then WAITS for its taker is
+   kingdom.opening-sword-waits, not yet built.) */
 const may=party2.filter(id=>camp().roster[id].classes.some(c=>TAKERS.includes(c)))
-assert.deepEqual(givers,may,'only a Warrior or a Paladin is offered it')
-v.click('give',givers[0]);wait(100)
-assert.ok(camp().roster[givers[0]].equipped.includes(SWORD),'the Flaming Longsword is in a Warrior\'s or Paladin\'s hands')
+let givers=[]
+if(may.length){
+ assert.equal(camp().cursor.step,'rewards','battle 2 won offers its reward')
+ assert.deepEqual(camp().cursor.rewardOffer,[SWORD],'the Flaming Longsword')
+ takeReward(0,'battle 2')
+ /* kingdom.opening-hero-card-art (2026-10-03): each hero who may carry it is shown with its own card art (opening-page.mjs
+    carriers); the heroes offered are read as before */
+ givers=carriers('battle 2').sort()
+ assert.deepEqual(givers,may,'only a Warrior or a Paladin is offered it')
+ v.click('give',givers[0]);wait(100)
+ assert.ok(camp().roster[givers[0]].equipped.includes(SWORD),'the Flaming Longsword is in a Warrior\'s or Paladin\'s hands')
+}else{
+ assert.notEqual(camp().cursor.step,'rewards','no Warrior or Paladin in the party of two: the Flaming Longsword is not offered')
+ assert.ok(!Object.values(camp().roster).some(h=>h.equipped.includes(SWORD))&&!camp().stash.includes(SWORD),'and nobody carries it')
+}
 levelUps('battle 2')
 const saved2=b2.result.units.filter(u=>u.side==='hero'&&u.role==='encounter'&&u.lifeState!=='dead').map(u=>u.typeId)
 assert.deepEqual(civilianIds(),[...saved1,...saved2].sort(),'the Lumberjack House\'s civilians who lived join too')
 assert.equal(readMap([ORPHANAGE,LUMBERJACK],'after battle 2'),BRIDGE)
 
-/* 4 · battle 3: one more drafted; won; three items, one kept */
+/* 4 · battle 3: one more drafted; won; three items, one kept.
+   Law 10, 2026-10-04 (kingdom.opening-draft-cadence, as above): this read
+     const fourth=draft('battle 3') … assert.deepEqual(heroIds(),party3,'four heroes before battle 3') … 'four heroes: no choice is asked'
+   — the party is one smaller under the cadence ruled: three heroes at the Bridge. */
 v.click('field',BRIDGE)
-const fourth=draft('battle 3')
-const party3=[...party2,fourth].sort()
-assert.deepEqual(heroIds(),party3,'four heroes before battle 3')
-assert.equal(whoGoes('battle 3').asked,false,'four heroes: no choice is asked')
+const third=draft('battle 3')
+assert.equal(camp().cursor.step,'prep','one draft between battles 2 and 3')
+const party3=[...party2,third].sort()
+assert.deepEqual(heroIds(),party3,'three heroes before battle 3')
+assert.equal(new Set(party3.map(id=>camp().roster[id].classes[0])).size,3,'three classes: none drafted twice')
+assert.equal(whoGoes('battle 3').asked,false,'three heroes: no choice is asked')
 equipThenFight(party3,'battle 3')
 fightOut(true,'battle 3')
 assert.equal(camp().cursor.step,'rewards','the Bridge offers its reward')
@@ -127,4 +157,4 @@ assert.equal(readMap([ORPHANAGE,LUMBERJACK,BRIDGE],'after battle 3'),CAVERN,'thr
 assert.deepEqual(camp().unavailable,[],'nobody fatigued');assert.deepEqual(camp().foughtThisWeek,[],'nobody marked fought')
 assert.equal(camp().ended,null)
 console.error('settled by: '+JSON.stringify(chosen))
-console.log(`opening loop three: map -> draft (1, +2, +1; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the Orphanage's 20 XP and level 2 with a specialty; battle 2 lost and offered again with the same party, wounds kept; the Flaming Longsword to ${givers[0]}; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)
+console.log(`opening loop three: map -> draft (one before every battle: a party of ${[1,party2.length,party3.length].join(', ')}; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the Orphanage's 20 XP and level 2 with a specialty; battle 2 lost and offered again with the same party, wounds kept; the Flaming Longsword ${givers.length?'to '+givers[0]:'to nobody (no Warrior or Paladin in the party of two)'}; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)

@@ -56,6 +56,12 @@ export const PROLOGUE: readonly PrologueRow[] = [
     source: 'ENEMY-REVIEW.md Battle 5 — 4 Bloodhounds, 2 Hellhounds, 8 Zombie Hounds, 1 Werewolf' },
 ]
 
-/** "Draft 1 hero before battle 1… +2 after it… then +1 after each battle until six." §2.5 */
-export const DRAFT_CADENCE = { first: 1, afterFirst: 2, afterEach: 1, until: 6 } as const
+/**
+ * The opening draft cadence: one hero before battle 1, then one more after each battle, until six drafted heroes — a party
+ * of 1, 2, 3, 4, 5, 6 at battles 1 to 6. Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'one draft after every battle; …':
+ * "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."), replacing the
+ * 2026-08-23 cadence of GAME-ARCHITECTURE.md §2.5 (two after battle 1: a party of 1, 3, 4, 5, 6, 6).
+ * The row is the cadence; the mechanism (core/opening.ts draftsOwedOf) reads it. kingdom.opening-draft-cadence.
+ */
+export const DRAFT_CADENCE = { first: 1, afterEach: 1, until: 6 } as const
 export const DRAFT_OFFER = 3

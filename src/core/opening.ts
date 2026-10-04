@@ -2,8 +2,9 @@
 // not a mode": a normal Campaign, Week 0, that begins with the player's first
 // act — a stat-less draft of one hero from three — and runs the five authored
 // battles (content/prologue.ts) straight into Combat Prep, drafting between
-// them at the ruled cadence (1 · +2 · +1 per battle until six drafted heroes,
-// one of each class — the pool is the 24 base heroes, kingdom.opening-draft-pool),
+// them at the ruled cadence (one before battle 1, one more after each battle until six
+// drafted heroes — content/prologue.ts DRAFT_CADENCE, kingdom.opening-draft-cadence —
+// one of each class: the pool is the 24 base heroes, kingdom.opening-draft-pool),
 // until the Kingdom Territory and the square outside it are taken. Then the
 // Week machine takes over at Week 1.
 //
@@ -61,10 +62,12 @@ export function draftsOwedOf(campaign: CampaignState): number {
   const n = campaign.cursor.prologue
   if (n === null) return 0
   const have = draftedCountOf(campaign)
-  // before battle 1: one; before battle 2: three; then one more per battle, capped at six
+  // the cadence's row: its `first` before battle 1, then its `afterEach` more for every battle won (the cursor's battle
+  // number less one), capped at its `until` — a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6 as the row stands
+  // (kingdom.opening-draft-cadence, 2026-10-03; until then the row gave two after battle 1 — 1, 3, 4, 5, 6, 6)
   // …and never more than the pool holds — the Eve 24 since kingdom.opening-draft-pool (2026-10-03), so the cap is the cadence's six
   const cap = Math.min(DRAFT_CADENCE.until, HERO_POOL.filter((h) => groupOf(h.classes) === 'hero').length)
-  const target = n === 1 ? DRAFT_CADENCE.first : Math.min(cap, DRAFT_CADENCE.first + DRAFT_CADENCE.afterFirst + (n - 2) * DRAFT_CADENCE.afterEach)
+  const target = Math.min(cap, DRAFT_CADENCE.first + (n - 1) * DRAFT_CADENCE.afterEach)
   return Math.max(0, target - have)
 }
 

@@ -33,8 +33,15 @@ import { runOf, runSaveOf } from '../src/ui/opening-run.js'
 import { runBattle, encounterDef } from '../src/engine.js'
 
 const SECTIONS = ABBOTOWN_MAP.sections.map((s) => s.encounterId)
-/** the opening battle before which the cadence has drafted `heroes` (1 · +2 · +1 a battle, to six) */
-const BATTLE_OF: Record<number, number> = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 }
+/**
+ * the opening battle before which the cadence has drafted `heroes`: one before every battle, to six.
+ * Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this read
+ *   const BATTLE_OF: Record<number, number> = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 }
+ * — the 2026-08-23 cadence (two drafts after battle 1) the ruling replaces. A party of N now stands before battle N; the
+ * tests below hold what they held, of the same party sizes, one battle later from the second (and the party of two, which
+ * the old cadence never fielded, is held with the others that ask nothing).
+ */
+const BATTLE_OF: Record<number, number> = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 }
 
 /** A run with `heroes` drafted (the first offer each time), standing on the map before the battle the cadence brings them to. */
 function partyOf(seed: number, heroes: number): Ctx {
@@ -67,7 +74,7 @@ function cardsOn(html: string): { id: string; act: string | undefined; going: bo
 
 describe('kingdom.opening-deploy-choice — the player chooses which four go', () => {
   it('with the deploy limit or fewer free to fight, all go and no choice is asked: Equip opens at once', () => {
-    for (const heroes of [1, 3, 4]) {
+    for (const heroes of [1, 2, 3, 4]) {
       const ctx = partyOf(11, heroes)
       field(ctx)
       expect(performOpeningDeploy(ctx, 'test'), `${heroes} heroes: no choice is asked`).toBe(false)
@@ -220,7 +227,9 @@ describe('kingdom.opening-deploy-choice — the player chooses which four go', (
     performExitBattle(ctx, 'test')
     if (c.cursor.step === 'levelUp') performLeaveLevelUp(ctx, 'test')
     expect(c.cursor.step).toBe('open')
-    expect(c.cursor.prologue, 'the same battle is owed').toBe(4)
+    // Law 10, 2026-10-04 (kingdom.opening-draft-cadence, the note at BATTLE_OF): was toBe(4) — five heroes stood before
+    // battle 4 under the old cadence, before battle 5 now. The rule held is unchanged: the battle lost is the battle owed.
+    expect(c.cursor.prologue, 'the same battle is owed').toBe(BATTLE_OF[5])
     expect(draftsOwedOf(c)).toBe(0)
     // fielded again: the five are all still free (Wounded, not Severe), so the choice is asked again — nobody carried over
     field(ctx)

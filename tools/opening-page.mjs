@@ -53,7 +53,8 @@ const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.s
    the engine's battle, through the engine's own per-hero seam (BattleOptions.heroMods, seam.unit-mods: stat mods naming
    their source, here 'test.strong-party'), and its turn cap (BattleOptions.cfg.turnCap):
      · a battle the test means to WIN: every hero of the party is OVERPOWERED (STRONG_PARTY: Health, Armor, Resist, the
-       four damage stats, Accuracy) and the engine's AI plays both sides; the first and only battle played is won, with
+       four damage stats, Accuracy — and, since kingdom.opening-draft-cadence, Movement and Reach, below) and the engine's
+       AI plays both sides; the first and only battle played is won, with
        nobody of the party dead, down or wounded — or the driver stops and says so (Law 9);
      · a battle the test means to LOSE: the party is made unkillable but stands IDLE (every activation begun and ended),
        and the battle is cut at the end of Turn 1 by the turn cap (HELD_PARTY) — the engine's own 'capped' outcome, a loss
@@ -73,7 +74,15 @@ const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.s
    Until 2026-10-04 a battle was played with the run's real party on seed after seed (the engine's AI, then scripted
    'hold' and 'press' play) until one ended as wanted, the seeds found kept in tables; every item that moved a battle
    searched again. The search, its seed tables and the 'hold' and 'press' play are gone. */
-export const STRONG_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50,strength:30,precision:30,magic:30,spirit:30,accuracy:100}}
+/* 2026-10-04, kingdom.opening-draft-cadence (GBH SWITCHES.md verify.strongPartyReach): Movement +6 and Reach +12 joined the
+   strong party's mods. Under the cadence ruled 2026-10-03 (one draft after every battle) three heroes go to the Bridge,
+   not four; on run seed 3 those three (a Paladin, a Ranger, a Warrior), unkillable, killed six of the seven and then
+   stood for twenty turns while the last Fire Imp burned them from a hex the engine's AI would not walk them to
+   ("could not reach an enemy", "no target in range") — the battle ended 'capped' on Turn 25, not won. That is the
+   computer's play, which nothing tests now (2026-10-04, above); the test party is made strong enough to end the battle
+   whatever three heroes it is — with either mod alone seeds 3, 11 and 15 win, with both every run seed tried (1 to 16)
+   does. Still one battle, on the Engagement's own seed, nothing sought. */
+export const STRONG_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50,strength:30,precision:30,magic:30,spirit:30,accuracy:100,movement:6,reach:12}}
 export const HELD_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50},turnCap:1}
 /* the sandbox the page fields for `config`, its party's heroes given `as`'s stat mods (and its turn cap) */
 function fieldedAs(config,as){
@@ -165,6 +174,12 @@ export function openingPage(page,search,store){
  function draft(label){
   assert.ok(shown('campaign'),label+': the draft is shown');assert.equal(camp().cursor.step,'draft',label+': the cursor is at the draft')
   const opts=byId('campaign').querySelectorAll('[data-act=draft]')
+  /* kingdom.opening-draft-cadence (2026-10-03, "One, yes."): the screen counts the heroes — 'your first hero', then
+     'hero N of six' for the Nth — and never says more than one is owed before the next battle */
+  const heading=byId('campaign').innerHTML.match(/<h2>([^<]*)<\/h2>/)?.[1]??'',nth=heroIds().length+1
+  assert.equal(heading,nth===1?'The draft — your first hero':`The draft — hero ${nth} of six`,label+': the draft screen counts the heroes')
+  assert.doesNotMatch(byId('campaign').textContent,/to draft before the next battle/,label+': one draft stands between two battles — never "2 to draft"')
+  assert.equal(E.OPENING.draftsOwedOf(camp()),1,label+': exactly one draft is owed')
   assert.equal(opts.length,3,label+': three offered')
   assert.equal(new Set(opts.map(o=>o.dataset.id)).size,3,label+': three different heroes')
   for(const o of opts)assert.ok(POOL.some(h=>h.id===o.dataset.id),`${label}: ${o.dataset.id} is a base hero of the pool`)
@@ -215,7 +230,7 @@ export function openingPage(page,search,store){
   const scoreOf=o=>{const d=E.OPENING.draftedHeroOf(camp(),o.dataset.id).drafted;return E.draftScoreOf(o.dataset.id,d.rolls,d.badges,party)}
   const pick=first?among[0]:among.reduce((best,o)=>scoreOf(o)>scoreOf(best)?o:best,among[0])
   const offered=E.OPENING.draftedHeroOf(camp(),pick.dataset.id)
-  lastOffer={label,first,ids:opts.map(o=>o.dataset.id),classes:opts.flatMap(o=>(o.dataset.classes??'').split(',')),took:pick.dataset.id,leftOut,shown:seen,drafted:structuredClone(offered.drafted)}
+  lastOffer={label,first,heading,ids:opts.map(o=>o.dataset.id),classes:opts.flatMap(o=>(o.dataset.classes??'').split(',')),took:pick.dataset.id,leftOut,shown:seen,drafted:structuredClone(offered.drafted)}
   v.click('draft',pick.dataset.id)
   /* the one picked joins as it was offered: its badges, its points and its item slots are on the hero */
   assert.deepEqual(camp().roster[pick.dataset.id],offered,label+': the hero picked joins with the modifiers it was offered with')

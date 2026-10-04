@@ -183,7 +183,10 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
     let losses = 0, flawed = 0, changed = 0, offers = 0
     for (const seed of SEEDS) for (const take of [0, 1, 2]) {
       const ctx = makeCtx(makeNewCampaign(seed))
-      for (let n = 1; n <= 5; n++) {
+      // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …':
+      // "One, yes."): was `n <= 5` — the old cadence had drafted all six before battle 5. One draft stands before every
+      // battle now, the sixth before battle 6; 'six drafted' below is held as it was.
+      for (let n = 1; n <= 6; n++) {
         ctx.campaign.cursor.prologue = n
         while (draftsOwedOf(ctx.campaign) > 0) {
           performAdvanceOpening(ctx, 'test')

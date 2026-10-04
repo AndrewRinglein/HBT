@@ -106,7 +106,8 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
     expect(civilians.map((h) => h.unitType)).toEqual([civ[0]!.typeId])
     expect(civilians[0]!.name).toBe(civ[0]!.typeId === 'hero.fixed.orphans' ? 'Orphan Child' : 'School Teacher')
     expect(Object.values(ctx.campaign.roster).filter((h) => !h.classes.includes('class.civilian')).every((h) => h.xp === 20)).toBe(true)
-    expect(draftsOwedOf(ctx.campaign)).toBe(2)
+    // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): was toBe(2) — the 2026-08-23 cadence, two drafts after battle 1. One is owed now.
+    expect(draftsOwedOf(ctx.campaign)).toBe(1)
   })
 
   it('a lost opening battle is replayed: the Campaign goes on, nothing advances, nobody is rescued, the wounds stay', () => {
@@ -125,11 +126,14 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
     expect(ctx.campaign.cursor.engagement!.seed).toBe(1)
   })
 
-  it('the next battle is refused until its drafts are taken; the cadence is 1, then 2 after battle 1', () => {
+  // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this test was titled 'the next battle is refused until its drafts are taken; the cadence
+  // is 1, then 2 after battle 1' and expected /refused: 2 to draft before battle 2/ — the 2026-08-23 cadence the ruling
+  // replaces. The refusal stands; what is owed is one draft.
+  it('the next battle is refused until its draft is taken; the cadence is one before battle 1, then one after each battle', () => {
     const ctx = atOrphanage()
     write(ctx, playedWon(ctx))
     toOpen(ctx)
-    expect(() => performFieldOpeningBattle(ctx, battleOf(LUMBERJACK), 'test')).toThrow(/refused: 2 to draft before battle 2/)
+    expect(() => performFieldOpeningBattle(ctx, battleOf(LUMBERJACK), 'test')).toThrow(/refused: 1 to draft before battle 2/)
   })
 
   it('the page: map -> draft -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; a loss offered again with the same party', () => {

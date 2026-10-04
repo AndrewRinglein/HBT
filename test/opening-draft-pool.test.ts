@@ -3,7 +3,8 @@
 // party ends as one of each class?" — "1. Yes"; "If yes, should all 24 heroes be draftable, or a set you name?" — "2. Yes".
 // With the standing rule (2026-09-28 'the draft never repeats a class until all six are drafted': "Until you've drafted all
 // six of the starting classes, you never get a draft of the same class again") every draft offers three and the party ends
-// as six heroes, one of each class. The cadence (1 · +2 · +1 a battle, to six) and the deploy limit of 4 are unchanged.
+// as six heroes, one of each class. The cadence (to six) and the deploy limit of 4 are unchanged by this item; the cadence
+// itself was ruled again the same day — one draft after every battle (kingdom.opening-draft-cadence).
 // Expect: "every draft of a new run offers three heroes of classes not yet drafted, Rogues and Mages among them, and after
 // the last draft the party is six heroes, one of each class; four deploy; … any base hero without a kit is listed by name."
 //
@@ -89,12 +90,21 @@ describe('kingdom.opening-draft-pool — the opening draft pool is all 24 base h
     }
   })
 
-  it('the cadence and the deploy limit are unchanged: 1 · +2 · +1 a battle to six, and four of the six deploy', () => {
-    expect(DRAFT_CADENCE).toEqual({ first: 1, afterFirst: 2, afterEach: 1, until: 6 })
+  // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this test was titled
+  //   'the cadence and the deploy limit are unchanged: 1 · +2 · +1 a battle to six, and four of the six deploy'
+  // and read
+  //   expect(DRAFT_CADENCE).toEqual({ first: 1, afterFirst: 2, afterEach: 1, until: 6 })
+  //   ctx.campaign.cursor.prologue = 5   // the whole party on the roster, as after the last draft (before battle 5)
+  //   const id = ABBOTOWN_MAP.sections[4]!.encounterId
+  // — the 2026-08-23 cadence the ruling replaces. The row is now one before battle 1 and one after each battle, to six;
+  // the sixth hero is drafted before battle 6 (the Cathedral), where the whole party stands. What the pool's item held is
+  // held: the cadence still ends at six, three are offered at every draft, and four of the six deploy.
+  it('the cadence runs to six — one draft before every battle — and the deploy limit is unchanged: four of the six deploy', () => {
+    expect(DRAFT_CADENCE).toEqual({ first: 1, afterEach: 1, until: 6 })
     expect(DRAFT_OFFER).toBe(3)
     const ctx = makeCtx(makeNewCampaign(15))
-    // the whole party on the roster, as after the last draft (before battle 5)
-    ctx.campaign.cursor.prologue = 5
+    // the whole party on the roster, as after the last draft (before battle 6)
+    ctx.campaign.cursor.prologue = 6
     const step = (): string => ctx.campaign.cursor.step
     performAdvanceOpening(ctx, 'test')
     for (let guard = 0; step() === 'draft' && guard < 8; guard++) {
@@ -104,7 +114,7 @@ describe('kingdom.opening-draft-pool — the opening draft pool is all 24 base h
     }
     expect(draftedCountOf(ctx.campaign)).toBe(6)
     expect(Object.values(ctx.campaign.roster).map((h) => classOf(h.id)).sort()).toEqual(SIX)
-    const id = ABBOTOWN_MAP.sections[4]!.encounterId
+    const id = ABBOTOWN_MAP.sections[5]!.encounterId
     performFieldOpeningBattle(ctx, { id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind }, 'test')
     while (ctx.campaign.cursor.prepStep !== 'deploy') performAdvancePrep(ctx, 'test')
     expect(deployLimitOf(ctx.campaign)).toBe(4)
