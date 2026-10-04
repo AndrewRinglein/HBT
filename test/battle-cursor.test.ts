@@ -317,6 +317,14 @@ const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // `changed` marks the cases that differ from the content.imp-blast-tuned capture — every case fix.civilians-field-kit moves. A
 // `changed` case is checked here and skips the older layers; the rest run down this copy's three layers, then master's, as before.
 const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-civilians-kit.json', import.meta.url), 'utf8'))
+// capability.burst-paints-ground (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle'),
+// Law 10: a burst leaves its ground — Flame Burst's seven hexes burn, Frost Nova's frost — and the two staffs name no gap. Every
+// case frozen here (tools/capture-burst-paints-ground-cursor.mts). Moved for real (state, RNG and result): the four cases in which a
+// staff mage casts one — showcase.kiln, showcase.rime, showcase.supper and test.opening-cathedral (the fixture counts each case's
+// painted hexes). Moved in text only: the nine other cases that field a staff, whose unit.equipped line no longer carries the gap
+// sentence — showcase.assembled-party, showcase.eve-24-b, showcase.horrors, showcase.surrounded, showcase.waystation,
+// test.opening-gates and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-paints-ground.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -440,7 +448,10 @@ describe('resumable battle cursor', () => {
       const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true
+      const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true
+      // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a burst-paints-ground-moved case skips the combine layer too (capability.burst-paints-ground 2026-10-04)
+      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || burstPaintsGroundMoved
       // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
       const impBlastTunedMoved = impBlastTunedExpected?.changed === true || combineCiviliansKitMoved
       // was: const fireImpBurnMoved = fireImpBurnExpected?.changed === true — an imp-blast-tuned-moved case skips the fire-imp-burn layer too (content.imp-blast-tuned 2026-10-04)
@@ -545,7 +556,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (combineCiviliansKitExpected) {
+        if (burstPaintsGroundExpected) {
+        expect(hash(ctx.events), 'full burst-paints-ground events').toBe(burstPaintsGroundExpected.events)
+        expect(hash(ctx.state), 'full burst-paints-ground state').toBe(burstPaintsGroundExpected.state)
+        expect(hash(ctx.rng.log), 'full burst-paints-ground RNG').toBe(burstPaintsGroundExpected.rng)
+        expect(result).toEqual(burstPaintsGroundExpected.result)
+        }
+        // was: if (combineCiviliansKitExpected) { — capability.burst-paints-ground (2026-10-04): a burst-paints-ground-moved case is checked above instead
+        if (combineCiviliansKitExpected && !burstPaintsGroundMoved) {
         expect(hash(ctx.events), 'full combine-civilians-kit events').toBe(combineCiviliansKitExpected.events)
         expect(hash(ctx.state), 'full combine-civilians-kit state').toBe(combineCiviliansKitExpected.state)
         expect(hash(ctx.rng.log), 'full combine-civilians-kit RNG').toBe(combineCiviliansKitExpected.rng)

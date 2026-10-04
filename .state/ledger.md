@@ -26847,3 +26847,95 @@ index 059741f..cc728ff 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without power.back-flip — they genuinely test it
+
+## capability.burst-paints-ground — LANDED `a041bb5` **NEEDS REVIEW**
+2026-10-04 13:27
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1971
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/starting-kit-powers.test.ts, test/burst-paints-ground.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.fire-staff.fireball: 1 log lines, 1 fired, 1 changed state · power.frost-staff.frost-nova: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/starting-kit-powers.test.ts, test/burst-paints-ground.test.ts, test/fixtures/battle-cursor-burst-paints-ground.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/starting-kit-powers.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.fire-staff.fireball live · power.frost-staff.frost-nova live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.fire-staff.fireball,power.frost-staff.frost-nova — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 7e68d4d..efbf600 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -318,4 +318,12 @@ const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
+ // `changed` case is checked here and skips the older layers; the rest run down this copy's three layers, then master's, as before.
+ const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-civilians-kit.json', import.meta.url), 'utf8'))
++// capability.burst-paints-ground (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle'),
++// Law 10: a burst leaves its ground — Flame Burst's seven hexes burn, Frost Nova's frost — and the two staffs name no gap. Every
++// case frozen here (tools/capture-burst-paints-ground-cursor.mts). Moved for real (state, RNG and result): the four cases in which a
++// staff mage casts one — showcase.kiln, showcase.rime, showcase.supper and test.opening-cathedral (the fixture counts each case's
++// painted hexes). Moved in text only: the nine other cases that field a staff, whose unit.equipped line no longer carries the gap
++// sentence — showcase.assembled-party, showcase.eve-24-b, showcase.horrors, showcase.surrounded, showcase.waystation,
++// test.opening-gates and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
++const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-paints-ground.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -441,5 +449,8 @@ describe('resumable battle cursor', () => {
+       const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true
++      const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true
++      // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a burst-paints-ground-moved case skips the combine layer too (capability.burst-paints-ground 2026-10-04)
++      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || burstPaintsGroundMoved
+       // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
+       const impBlastTunedMoved = impBlastTunedExpected?.changed === true || combineCiviliansKitMoved
+@@ -546,5 +557,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (combineCiviliansKitExpected) {
++        if (burstPaintsGroundExpected) {
++        expect(hash(ctx.events), 'full burst-paints-ground events').toBe(burstPaintsGroundExpected.events)
++        expect(hash(ctx.state), 'full burst-paints-ground state').toBe(burstPaintsGroundExpected.state)
++        expect(hash(ctx.rng.log), 'full burst-paints-ground RNG').toBe(burstPaintsGroundExpected.rng)
++        expect(result).toEqual(burstPaintsGroundExpected.result)
++        }
++        // was: if (combineCiviliansKitExpected) { — capability.burst-paints-ground (2026-10-04): a burst-paints-ground-moved case is checked above instead
++        if (combineCiviliansKitExpected && !burstPaintsGroundMoved) {
+         expect(hash(ctx.events), 'full combine-civilians-kit events').toBe(combineCiviliansKitExpected.events)
+         expect(hash(ctx.state), 'full combine-civilians-kit state').toBe(combineCiviliansKitExpected.state)
+diff --git a/test/starting-kit-powers.test.ts b/test/starting-kit-powers.test.ts
+index f2862bf..78da0a9 100644
+--- a/test/starting-kit-powers.test.ts
++++ b/test/starting-kit-powers.test.ts
+@@ -60,7 +60,17 @@ describe('the pack carries the three powers, each in its Codex words', () => {
+   })
+ 
+-  it('what the engine cannot do yet is named on the two staffs: a burst paints no ground', () => {
+-    expect(ITEMS['item.fire-staff']!.gaps).toEqual([`${FLAME}: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)`])
+-    expect(ITEMS['item.frost-staff']!.gaps).toEqual([`${NOVA}: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)`])
++  // LAW 10 — rewritten 2026-10-04 by capability.burst-paints-ground, as a RULE, not the frozen text. This read
++  // "what the engine cannot do yet is named on the two staffs: a burst paints no ground" and held each staff's
++  // `gaps` to the one sentence naming that missing capability. The claim under test was never the sentence: it
++  // was "the ground clause of each Codex row is never silently dropped" — named as a gap while the engine could
++  // not do it. The engine does it now (the burst's own `paints`; test/burst-paints-ground.test.ts holds what it
++  // does), so the same claim reads: the clause is on the burst, and the staff names no gap for it.
++  it('the ground clause of each staff is never dropped: it is on the burst, and the staff names no gap for it', () => {
++    expect((BURSTS[FLAME]!.burst as { paints?: string }).paints).toBe('layer.burning')
++    expect((BURSTS[NOVA]!.burst as { paints?: string }).paints).toBe('layer.frost')
++    expect((ITEMS['item.fire-staff']!.gaps ?? []).filter((g) => g.includes('those seven hexes'))).toEqual([])
++    expect((ITEMS['item.frost-staff']!.gaps ?? []).filter((g) => g.includes('those seven hexes'))).toEqual([])
++    expect(ITEMS['item.fire-staff']!.gaps ?? []).toEqual([])
++    expect(ITEMS['item.frost-staff']!.gaps ?? []).toEqual([])
+   })
+ 
+```
+</details>
