@@ -11,6 +11,18 @@ import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
 /* Signed numbers go through ONE helper. Hardcoding '+' produced "crit +-5" on
    Punch, whose crit is genuinely negative (2026-09-01). */
 export const sgn = n => (n > 0 ? '+' : '') + n
+/* viewer.free-attack-kind-words (2026-10-04; engine capability.counterattack-and-fend, SWITCHES freeAttackKindOnTheLine): the three
+   special free attacks, worded by their kind — the engine's line says which (`aoo.provoked`'s `as`: 'counterattack', 'fend';
+   none: an attack of opportunity) — and, for the two a unit has only while they are UP, the stat that says so (above 0),
+   the stat of its Accuracy, and the glyph the up-state is drawn with: existing glyphs, PROPOSED for Andrew's eye ("like a
+   crossed sword above their head"). ONE table: the log, the floats, the bar's words, the token, the panel and the card. */
+export const FREE_ATTACK = {
+  counterattack: { word: 'Counterattack', stat: 'counterattack', accuracy: 'counterattackAccuracy', glyph: 'crossed-swords' },
+  fend: { word: 'Fend', stat: 'fend', accuracy: 'fendAccuracy', glyph: 'shield' },
+  aoo: { word: 'Attack of opportunity' },
+}
+export const freeAttackOf = as => FREE_ATTACK[as] && as !== 'aoo' ? FREE_ATTACK[as] : FREE_ATTACK.aoo
+const FREE_UP = Object.fromEntries(Object.entries(FREE_ATTACK).filter(([, f]) => f.stat).map(([k, f]) => [f.stat, k]))
 export const STATSHORT = { strength: 'STR', precision: 'PRE', magic: 'MAG', spirit: 'SPI',
   accuracy: 'ACC', dodge: 'DODGE', armor: 'ARMOR', resist: 'MAGIC RESIST', fireResist: 'FIRE RESIST', poisonResist: 'POISON RESIST', shadowResist: 'SHADOW RESIST', coldResist: 'COLD RESIST', movement: 'MOVE', reach: 'REACH' }
 
@@ -289,7 +301,9 @@ export const ATTACK_HOOKS = new Set(['onHit', 'onAttack', 'onDamage', 'onKill', 
                      (the engine fires them from its attack pipeline only — a power fires none), unscoped or scoped
                      to this attack, and never a defender's onBlock.
      actionLines   — the whole of one action, a line per fact: the row's tooltip. */
-const STAT_WORD = { ...STATSHORT, maxHp: 'MAX HEALTH', maxStamina: 'MAX STAMINA', staminaRegen: 'STAMINA REGEN', rangedBlock: 'RANGED BLOCK' }
+const STAT_WORD = { ...STATSHORT, maxHp: 'MAX HEALTH', maxStamina: 'MAX STAMINA', staminaRegen: 'STAMINA REGEN', rangedBlock: 'RANGED BLOCK',
+  /* viewer.free-attack-kind-words: the free attacks' own words, not their stat ids in capitals */
+  counterattack: 'Counterattack', counterattackAccuracy: 'Counterattack Accuracy', fend: 'Fend', fendAccuracy: 'Fend Accuracy' }
 const statWord = k => STAT_WORD[k] || String(k).replace(/([A-Z])/g, ' $1').toUpperCase()
 const hexes = n => n + ' hex' + (n === 1 ? '' : 'es')
 const HOOK_WORD = { onHit: 'On hit', onAttack: 'On attack', onDamage: 'On damage', onKill: 'On kill', onMiss: 'On miss', onCrit: 'On crit', onBlock: 'On block',
@@ -297,6 +311,11 @@ const HOOK_WORD = { onHit: 'On hit', onAttack: 'On attack', onDamage: 'On damage
 const UNTIL_WORD = { endOfTurn: 'this Turn', endOfNextTurn: 'until the end of the next Turn', endOfActivation: 'until the end of the Activation',
   endOfNextActivation: 'until the end of the next Activation', battle: 'for the rest of the Battle' }
 
+/** viewer.free-attack-kind-words: the free attacks a unit has UP — its sheet's stat and the log's modifiers above 0 */
+export function freeAttacksUp(u, D) {
+  const row = ((D && D.UD) || {})[u && u.typeId] || {}
+  return Object.keys(FREE_UP).filter(stat => (row[stat] || 0) + ((u && u.mods) || []).filter(m => m.stat === stat).reduce((n, m) => n + (m.value || 0), 0) > 0).map(stat => FREE_UP[stat])
+}
 export function unitTriggers(u, D) {
   const d = ((D && D.UD) || {})[u && u.typeId] || {}, ITEMS = (D && D.ITEMS) || {}, BD = (D && D.BADGES) || {}
   const out = [...(d.triggers || [])]

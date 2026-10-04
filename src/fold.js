@@ -15,7 +15,7 @@
    control and attacks of opportunity, the Deathbed, Surge, Power, and the kit
    a unit is fielded with (unit.equipped).
    ══════════════════════════════════════════════════════════════════════════ */
-import { sgn } from './actions.js'
+import { sgn, freeAttackOf } from './actions.js'
 
 /* view-state clocks the fold stamps from the `now` it is handed — a beat's
    duration is the pump's business, but the fold knows WHICH beats linger */
@@ -331,7 +331,7 @@ export function fold(S, e, ctx, now = 0) {
       /* one attack a unit makes on someone else's turn: the ordinary
          attack.declared/hit/miss that follow belong to this, and the label
          says so. The holder acts; the mover's activation resumes after. */
-      S.AOO = { holder: e.actor, mover: e.target, attackId: e.attackId }
+      S.AOO = { holder: e.actor, mover: e.target, attackId: e.attackId, ...(e.as ? { as: e.as } : {}) }
       if (['from', 'to', 'moveSeq'].some(key => Object.hasOwn(e, key))) {
         if (![e.from, e.to, e.moveSeq].every(n => Number.isSafeInteger(n) && n >= 0) || e.from === e.to)
           throw new Error('opportunity attempt has invalid hex or movement identity')
@@ -339,8 +339,10 @@ export function fold(S, e, ctx, now = 0) {
       }
       // This event itself says the mover tried another step. No guessed path,
       // range or animation into a hex the engine never let the mover enter.
-      if (U[e.target] && S.AOO.to == null) cue('float', { hex: U[e.target].hex, kind: 'note', text: 'TRIES TO KEEP MOVING', small: true })
-      if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'aoo', text: 'ATTACK OF OPPORTUNITY', small: true })
+      /* viewer.free-attack-kind-words: worded by the line's own kind (`as`) — a counterattack answers an attack and a fend an
+         approach: only an attack of opportunity's target was trying to keep moving */
+      if (!e.as && U[e.target] && S.AOO.to == null) cue('float', { hex: U[e.target].hex, kind: 'note', text: 'TRIES TO KEEP MOVING', small: true })
+      if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'aoo', text: freeAttackOf(e.as).word.toUpperCase(), small: true })
       S.subjectId = e.actor; S.subjectMode = 'acting'
       break
     case 'aoo.skipped': break                                             // nothing to draw; the log names the reason

@@ -1,6 +1,6 @@
 /* ── the log: one sentence per event — pure text ──────────────────────────
    A development affordance, not a game surface (ruled 9.6). */
-import { sgn } from './actions.js'
+import { sgn, freeAttackOf } from './actions.js'
 import { fallWord } from './fold.js'
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 /** basis points as a percent, by moving the decimal point in the engine's own digits — no arithmetic (Law 0) */
@@ -93,8 +93,11 @@ export function buildLog(events, SN, turns) {
       case 'encounter.won': return b('turn', `— objective met: ${e.reason} —`)
       case 'encounter.lost': return b('down', `— objective failed: ${e.reason}${e.actor != null ? ' — ' + nmAt(e) : ''}${e.limit != null ? ' (limit ' + e.limit + ')' : ''} —`)
       case 'move.stopped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;stops at hex ${e.hex} <span class="sq">· ${e.reason === 'hit' ? 'the attack of opportunity connected' : e.reason}</span>`)
-      case 'aoo.provoked': return b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> tries to keep moving; ⚔ <b>${nmAt(e)}</b> takes an attack of opportunity <span class="sq">· ${e.attackId}</span>`)
-      case 'aoo.skipped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;no attack of opportunity from ${nmAt(e)} <span class="sq">· ${e.reason}</span>`)
+      /* viewer.free-attack-kind-words: the line's own kind (`as`) — a counterattack, a fend, else an attack of opportunity (as it read) */
+      case 'aoo.provoked': return e.as === 'counterattack' ? b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> attacked; ⚔ <b>${nmAt(e)}</b> counterattacks <span class="sq">· ${e.attackId}</span>`)
+        : e.as === 'fend' ? b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> comes within reach; ⚔ <b>${nmAt(e)}</b> fends it off <span class="sq">· ${e.attackId}</span>`)
+        : b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> tries to keep moving; ⚔ <b>${nmAt(e)}</b> takes an attack of opportunity <span class="sq">· ${e.attackId}</span>`)
+      case 'aoo.skipped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;no ${freeAttackOf(e.as).word.toLowerCase()} from ${nmAt(e)} <span class="sq">· ${e.reason}</span>`)
       case 'block.rolled': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${escape(NAMES[e.defender] ?? '#' + e.defender)}</b> ${e.blocked ? 'BLOCKS' : 'does not block'} <span class="sq">· ${escape(e.chance)}%${e.roll == null ? '' : ' · rolled ' + escape(e.roll)}${e.suppressed ? ' · suppressed' : ''}</span>`)
       case 'attack.cancelled': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;hit ${e.hit} of ${e.of} cancelled <span class="sq">· ${e.reason}</span>`)
       case 'corpse.created': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;a corpse lies at hex ${e.hex} <span class="sq">· ${e.typeId}</span>`)

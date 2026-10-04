@@ -3,7 +3,7 @@
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
 import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly, PLAY_HUE } from './theme.js'
-import { mvOf, absorbOf } from './actions.js'
+import { mvOf, absorbOf, freeAttacksUp, FREE_ATTACK } from './actions.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { afflictionPopup } from './affliction.js'
@@ -1065,7 +1065,9 @@ export function syncUnits(V) {
       E.fx.style.cssText = body.length ? '' : 'display:none'
       E.fx.innerHTML = body.map(k => BODY_FX[k](figPx)).join('') }
     const dbSkull = u.deathbed ? `<div class="badge dbSkull" title="stood at the Deathbed">${raIcon('skull', `font-size:13px;color:${BLOOD_HUE}`)}</div>` : ''
-    E.badges.innerHTML = dbSkull + sts.map(([id, v]) => { const st = stStyle(id, V.data)
+    /* viewer.free-attack-kind-words: a free attack the unit has up (Counterattack, Fend) — its glyph in the status row over its head */
+    const freeUp = freeAttacksUp(u, V.data).map(k => `<div class="badge freeUp" data-kind="${k}" title="${FREE_ATTACK[k].word} is up">${raIcon(FREE_ATTACK[k].glyph, 'font-size:14px;color:#e8c35a')}</div>`).join('')
+    E.badges.innerHTML = dbSkull + freeUp + sts.map(([id, v]) => { const st = stStyle(id, V.data)
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +
              `<div class="pip${st.sq ? ' sq' : ''}" style="background:${st.hue}">${v}</div></div>` }).join('')
       + (chev !== 0 ? `<div class="badge"><div class="gl" style="position:absolute;inset:0;background:${chev > 0 ? MOD_UP : MOD_DOWN};` +

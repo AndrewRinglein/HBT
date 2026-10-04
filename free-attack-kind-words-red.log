@@ -1,0 +1,120 @@
+TAP version 13
+# Subtest: one table names the three free attacks and the glyph of each up-state: Counterattack (crossed swords), Fend (a shield) — existing glyphs, proposed
+not ok 1 - one table names the three free attacks and the glyph of each up-state: Counterattack (crossed swords), Fend (a shield) — existing glyphs, proposed
+  ---
+  duration_ms: 0.9167
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\free-attack-kind-words.test.mjs:44:1'
+  failureType: 'testCodeFailure'
+  error: 'actions.js: FREE_ATTACK'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/free-attack-kind-words.test.mjs:45:41)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: the floating text says the kind: COUNTERATTACK, FEND, ATTACK OF OPPORTUNITY — and only a mover that was stopped "tries to keep moving"
+not ok 2 - the floating text says the kind: COUNTERATTACK, FEND, ATTACK OF OPPORTUNITY — and only a mover that was stopped "tries to keep moving"
+  ---
+  duration_ms: 1.8132
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\free-attack-kind-words.test.mjs:51:1'
+  failureType: 'testCodeFailure'
+  error: 'counterattack: ["TRIES TO KEEP MOVING","ATTACK OF OPPORTUNITY"]'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/free-attack-kind-words.test.mjs:54:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: the log says the kind in its sentence, and an attack of opportunity's sentence is word for word what it was
+not ok 3 - the log says the kind in its sentence, and an attack of opportunity's sentence is word for word what it was
+  ---
+  duration_ms: 1.5879
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\free-attack-kind-words.test.mjs:62:1'
+  failureType: 'testCodeFailure'
+  error: 'counterattack: &nbsp;&nbsp;&nbsp;&nbsp;<b>Zombie 1</b> tries to keep moving; ⚔ <b>Lion of the Host A</b> takes an attack of opportunity <span class="sq">· attack.longsword.slash</span>'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/free-attack-kind-words.test.mjs:66:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the up-state is on the unit: its token, its panel and its card show Counterattack (or Fend) from the power's own line until the engine's line says it ran out
+not ok 4 - the up-state is on the unit: its token, its panel and its card show Counterattack (or Fend) from the power's own line until the engine's line says it ran out
+  ---
+  duration_ms: 778.6832
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\free-attack-kind-words.test.mjs:77:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'counterattack')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/free-attack-kind-words.test.mjs:79:68)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the bar's tooltip for the power words it by its kind, not by the stat's id
+not ok 5 - the bar's tooltip for the power words it by its kind, not by the stat's id
+  ---
+  duration_ms: 0.7717
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\free-attack-kind-words.test.mjs:100:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'COUNTERATTACK +1 until the end of the next Turn (self)'
+    - 'Counterattack up until the end of the next Turn (self)'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Counterattack up until the end of the next Turn (self)'
+  actual: 'COUNTERATTACK +1 until the end of the next Turn (self)'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/free-attack-kind-words.test.mjs:103:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 955.6812

@@ -759,3 +759,6 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .tut-right .tutArrow{border-right-color:var(--gold);border-left-width:0;--bx:7px;--by:0}
 .tutPtr.tutEdge{opacity:.8}
 @keyframes tutBob{0%,100%{transform:translate(0,0)}50%{transform:translate(var(--bx),var(--by))}}
+
+/* viewer.free-attack-kind-words: a free attack the unit has up (Counterattack, Fend), on its card above the battle */
+.railup{position:absolute;left:1px;bottom:1px;font-size:12px;line-height:1;color:#e8c35a;filter:drop-shadow(0 1px 1px #000);pointer-events:none}
