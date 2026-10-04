@@ -46,6 +46,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .pick .opt .art img{display:block;width:100%;height:100%;object-fit:cover}
 .pick .opt .art .noart{width:100%;height:100%}
 /* the draft (kingdom.opening-draft-modifiers): the first hero by description only; a later draft's heroes with their stats, rolled points and badges */
+/* kingdom.opening-draft-class-message: what a draft says above its offers — one line in the kingdom's gold */
+.draftNotice{color:var(--gold);font:700 17px/1.4 Cinzel,"Palatino Linotype",Georgia,serif;letter-spacing:.02em;text-align:center;margin:10px 0 14px;text-shadow:0 1px 4px #000}
 /* kingdom.opening-first-hero-class-line: the class's sentence under the class word, then what this hero joins with */
 .pick .opt .classline{margin:6px 0 0;font-size:13px;line-height:1.4;color:var(--ink)}
 .pick .opt .joins{margin:8px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.5;color:var(--good)}

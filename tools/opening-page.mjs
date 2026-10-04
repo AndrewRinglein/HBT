@@ -17,7 +17,7 @@ import {El} from '../../viewer/tools/fakedom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as REWARD_ROWS from './src/content/encounter-rewards.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts';export * as RUN from './src/ui/opening-run.ts';export * as MUTATE from './src/core/mutate.ts';export * as CONQUEST from './src/content/conquest.ts';export {encounterDef} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as REWARD_ROWS from './src/content/encounter-rewards.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts';export * as RUN from './src/ui/opening-run.ts';export * as PROLOGUE from './src/content/prologue.ts';export * as MUTATE from './src/core/mutate.ts';export * as CONQUEST from './src/content/conquest.ts';export {encounterDef} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-starts-in-battle (engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map
    before battle 1, …': "We don't start by showing you going to the orphanage on the map … We're just going straight into
@@ -70,6 +70,12 @@ const DESCRIPTION=Object.fromEntries(CODEX.heroes.heroes.map(h=>[h.id,h.backstor
 const lineRows=rows=>Object.fromEntries(rows.filter(r=>typeof r.playerLine==='string').map(r=>[r.id,r.playerLine]))
 export const CLASS_LINE=lineRows(CODEX.classes),BADGE_LINE=lineRows(CODEX.badges),STAT_LINE=lineRows(CODEX.stats)
 export const LINES_SEEN={classLine:0,joins:0,badgeLines:0}
+/* kingdom.opening-draft-class-message (engine DECISIONS.md 2026-10-04 'the opening's tutorial: …': "The second time you are
+   drafting a hero, there should be a message that says, "Until you get additional upgrades you may only deploy one hero
+   of each class.""): the sources' rows of what a draft says above its offers (content/prologue.ts DRAFT_MESSAGES) — what
+   the page's draft is held against; DRAFT_NOTICES keeps, for every draft a run held, its ordinal and what it said (null:
+   nothing) */
+export const DRAFT_MESSAGES=E.PROLOGUE.DRAFT_MESSAGES.map(m=>({...m})),DRAFT_NOTICES=[]
 /* kingdom.opening-hero-card-art (engine DECISIONS.md 2026-10-03 'every draft card shows the hero's card art …': "Card art
    should be present when you're drafting, both the first time and the next ones."; 'card art on the level-up and reward
    screens …': "Card art not showing in the level-up screen."): the portraits the page is held against — generated/art, as
@@ -302,6 +308,17 @@ export function openingPage(page,search,store){
   assert.doesNotMatch(byId('campaign').textContent,/to draft before the next battle/,label+': one draft stands between two battles — never "2 to draft"')
   assert.equal(E.OPENING.draftsOwedOf(camp()),1,label+': exactly one draft is owed')
   assert.equal(opts.length,3,label+': three offered')
+  /* kingdom.opening-draft-class-message: the draft says what its content row gives it, and only then — one line of the
+     page above the three offers, in gold (its class; the colour is the stylesheet's), nothing to press; a draft with no
+     row says nothing. Held on every draft of every page test, and again on a draft reopened from its save */
+  {const row=DRAFT_MESSAGES.find(m=>m.draft===nth)??null,notices=byId('campaign').querySelectorAll('.draftNotice'),html=byId('campaign').innerHTML
+   assert.equal(notices.length,row?1:0,`${label}: draft ${nth} ${row?'says its sentence, once':'says nothing above its offers'}`)
+   if(row){
+    assert.equal(notices[0].textContent,row.text,label+': the sentence is the content\'s row, word for word');assert.equal(notices[0].dataset.draftNotice,String(nth))
+    assert.ok(html.indexOf('class="draftNotice"')<html.indexOf('data-act="draft"'),label+': above the offers')
+    assert.equal(notices[0].querySelectorAll('[data-act]').length,0,label+': a line of the page — nothing to press')
+   }else assert.ok(!/additional upgrades/i.test(byId('campaign').textContent),label+': no such sentence on this draft')
+   DRAFT_NOTICES.push({label,nth,text:row?notices[0].textContent:null})}
   assert.equal(new Set(opts.map(o=>o.dataset.id)).size,3,label+': three different heroes')
   for(const o of opts)assert.ok(POOL.some(h=>h.id===o.dataset.id),`${label}: ${o.dataset.id} is a base hero of the pool`)
   const leftOut=byId('campaign').querySelectorAll('[data-unkitted]').map(el=>el.dataset.unkitted)

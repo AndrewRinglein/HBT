@@ -820,3 +820,22 @@ the plain lines go.
 | `classLineSameWords` | The first hero's +2 Health and a rolled point of Health are both "Tougher than most" — two lines? | **One: two things with the same words share a line (it names both in `data-joins`).** | "One short line for each thing" would print the same words twice. | Default — 2026-10-04 |
 | `classLineWhichThings` | "What is different about THIS hero" — which things get a line? | **What the draft gave it and nothing else (`joinsWithOf`): each badge, the Health the first hero's rule gives, each stat point it rolled — in that order, Leadership first.** A thing whose content row has no words is refused loudly, never shown as an id. The three offers show the same lines where the roll is the draft's (as `openingFirstHeroSameBonuses`). | The record on the hero is the one list of what it was drafted with. | Default — 2026-10-04 |
 | `classLineLaterDrafts` | "The later drafts show the same class line under the class word." | **Yes, on every draft card (and SLICE.html's draft, which is the same screen); the plain lines are the first draft's alone — a later draft shows the numbers.** | The spec. | Default — 2026-10-04 |
+
+
+## kingdom.opening-draft-class-message — the second draft says one hero of each class may deploy (2026-10-04)
+
+Engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, …' (Andrew: "The
+second time you are drafting a hero, there should be a message that says, "Until you get additional upgrades you may only
+deploy one hero of each class.""; asked whether that is a rule to build or only the message: "I mean, it is basically a
+rule, but right now we're just telling them about it."). `src/content/prologue.ts` `DRAFT_MESSAGES`; `src/core/opening.ts`
+`draftMessageOf`; `src/ui/draft.ts`, `src/ui/slice.css` `.draftNotice`. Probe `test/opening-draft-class-message.test.ts`
+(red before: `opening-draft-class-message-red.log`, 6 of 7 — the seventh guards that no rule is built); page tests
+`tools/opening-loop-three.verify.mjs` and `tools/opening-run-six.verify.mjs` over `tools/opening-page.mjs` `draft`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `draftMessageWhichDraft` | "The second time you are drafting" — on that draft only, or from then on? | **On the second draft of the run only (the first after battle 1); the third to the sixth say nothing. Nothing is stored: it is read from the Campaign (the heroes drafted, plus one), so a run closed on that draft and reopened says it again.** | He names one moment; a line repeated on every draft stops being read. | Default — 2026-10-04 |
+| `draftMessageRow` | "A row of the opening's content, not a string in core or in the page" — what row? | **`DRAFT_MESSAGES`, beside the cadence in `content/prologue.ts`: a row per draft that says something — its ordinal and the words (one row: draft 2, his sentence word for word).** Core finds the row for the draft on the cursor; the page prints what it is given. | The opening's other rows live there; another draft's line would be another row, no code. | Default — 2026-10-04 |
+| `draftMessageGold` | "In the gold of the battle's notices (viewer.tutorial-overlays), so the two read as one voice" — which gold? | **The kingdom's own (`--gold`, #c9a227 — the draft's and Equip's accent), bold, centred above the offers.** The viewer's notice of that item is not built in this copy; when it lands, `kingdom.tutorial-*` brings the two to one colour if they differ. | The named gold does not exist yet; the item does not wait on the viewer's. | Default — 2026-10-04; revisit when viewer.tutorial-overlays lands |
+| `draftMessageStays` | A timed notice, or part of the page? | **Part of the page: one line under the heading, above the three offers, for as long as that draft is up — nothing to press, nothing timed.** | The spec ("it is part of the page and stays while that draft is up"); the timed gold message is the battle's. | Default — 2026-10-04 |
+| `draftMessageSlice` | SLICE.html shows the same draft screen — does its second draft say it too? | **Yes: one screen (`ui/draft.ts`), one row.** | A second draft screen would be a second copy. | Default — 2026-10-04 |

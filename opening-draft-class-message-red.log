@@ -1,0 +1,129 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the sitting opens on the first draft, not the map
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-loop-three.verify.mjs:52:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
+ ❯ test/opening-draft-class-message.test.ts (7 tests | 6 failed) 1576ms
+     × the sentence is a row of the opening's content, his words exactly, for the second draft — and neither core nor the page holds a copy 4ms
+     × the second draft shows it — one gold line above the three offers; the first, the third and every later draft do not 2ms
+     × it is gold — the kingdom's own gold — and a line of the page, not a pop-up: nothing to press, nothing timed 1ms
+     × it stands again when that draft is reopened from a save, and is gone once the second hero is taken 2ms
+     × the page prints the row: other words on the row are the words on the screen 0ms
+     × the pages: the second draft of a sitting shows the sentence in gold above its offers, the first and third do not; closed on that draft and reopened, it stands again 1565ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-draft-class-message.test.ts > kingdom.opening-draft-class-message — the second draft says one hero of each class may deploy > the sentence is a row of the opening's content, his words exactly, for the second draft — and neither core nor the page holds a copy
+AssertionError: content/prologue.ts DRAFT_MESSAGES: expected undefined to deeply equal [ { draft: 2, …(1) } ]
+
+- Expected:
+[
+  {
+    "draft": 2,
+    "text": "Until you get additional upgrades you may only deploy one hero of each class.",
+  },
+]
+
++ Received:
+undefined
+
+ ❯ test/opening-draft-class-message.test.ts:55:56
+     53| describe('kingdom.opening-draft-class-message — the second draft says …
+     54|   it('the sentence is a row of the opening\'s content, his words exact…
+     55|     expect(ROWS, 'content/prologue.ts DRAFT_MESSAGES').toEqual([{ draf…
+       |                                                        ^
+     56|     expect(typeof messageOf, 'core/opening.ts draftMessageOf').toBe('f…
+     57|     const files = (dir: string): string[] => readdirSync(dir, { withFi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/opening-draft-class-message.test.ts > kingdom.opening-draft-class-message — the second draft says one hero of each class may deploy > the second draft shows it — one gold line above the three offers; the first, the third and every later draft do not
+TypeError: messageOf is not a function
+ ❯ test/opening-draft-class-message.test.ts:72:16
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/opening-draft-class-message.test.ts > kingdom.opening-draft-class-message — the second draft says one hero of each class may deploy > it is gold — the kingdom's own gold — and a line of the page, not a pop-up: nothing to press, nothing timed
+AssertionError: slice.css styles .draftNotice: expected null not to be null
+ ❯ test/opening-draft-class-message.test.ts:85:55
+     83|   it('it is gold — the kingdom\'s own gold — and a line of the page, n…
+     84|     const css = readFileSync('src/ui/slice.css', 'utf8'), rule = css.m…
+     85|     expect(rule, 'slice.css styles .draftNotice').not.toBeNull()
+       |                                                       ^
+     86|     expect(rule![1]).toMatch(/color:var\(--gold\)/)
+     87|     expect(css).toMatch(/--gold:#c9a227/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/opening-draft-class-message.test.ts > kingdom.opening-draft-class-message — the second draft says one hero of each class may deploy > it stands again when that draft is reopened from a save, and is gone once the second hero is taken
+TypeError: messageOf is not a function
+ ❯ test/opening-draft-class-message.test.ts:96:12
+     94|     const ctx = atDraft(2), c = ctx.campaign
+     95|     const kept = runOf(runSaveOf(c, null)).campaign
+     96|     expect(messageOf!(kept)).toEqual({ draft: 2, text: SENTENCE })
+       |            ^
+     97|     expect(noticeOn(draftScreen(kept))).toEqual([{ draft: 2, text: SEN…
+     98|     expect(draftScreen(kept)).toBe(draftScreen(c))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/opening-draft-class-message.test.ts > kingdom.opening-draft-class-message — the second draft says one hero of each class may deploy > the page prints the row: other words on the row are the words on the screen
+TypeError: Cannot read properties of undefined (reading '0')
+ ❯ test/opening-draft-class-message.test.ts:104:17
+    102|
+    103|   it('the page prints the row: other words on the row are the words on…
+    104|     const row = ROWS![0] as { text: string }, was = row.text
+       |                 ^
+    105|     try {
+    106|       row.text = 'Other words, set by this test.'
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/opening-draft-class-message.test.ts > kingdom.opening-draft-class-message — the second draft says one hero of each class may deploy > the pages: the second draft of a sitting shows the sentence in gold above its offers, the first and third do not; closed on that draft and reopened, it stands again
+Error: Command failed: C:\Program Files\nodejs\node.exe tools/opening-loop-three.verify.mjs BATTLE-SANDBOX.html
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the sitting opens on the first draft, not the map
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-loop-three.verify.mjs:52:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
+
+ ❯ test/opening-draft-class-message.test.ts:119:19
+    117|
+    118|   it('the pages: the second draft of a sitting shows the sentence in g…
+    119|     const three = execFileSync(process.execPath, ['tools/opening-loop-…
+       |                   ^
+    120|     expect(three).toContain(`the second draft said "${SENTENCE}" in go…
+    121|     const six = execFileSync(process.execPath, ['tools/opening-run-six…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
+   Start at  04:22:35
+   Duration  5.55s (transform 2.89s, setup 0ms, import 3.84s, tests 1.58s, environment 0ms)
+

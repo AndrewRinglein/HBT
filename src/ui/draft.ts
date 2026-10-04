@@ -31,8 +31,14 @@
 // point; two things with the same words share a line), never a stat table and never a number (kingdom SWITCHES.md
 // classLineNoNumbers). 2026-10-03's "no stats or badges shown, just a description" is replaced only as far as these
 // plain lines go: the later drafts' stat block still does not show on the first draft.
+//
+// kingdom.opening-draft-class-message (2026-10-04, Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, …':
+// "The second time you are drafting a hero, there should be a message …" — his sentence is the content's row,
+// content/prologue.ts DRAFT_MESSAGES, and is not repeated here): a draft whose content row gives it words (core/opening.ts draftMessageOf —
+// the second) shows them as one gold line above the three offers, part of the page for as long as that draft is up —
+// nothing to press, nothing timed. The words are the row's, never typed here (kingdom SWITCHES.md draftMessage*).
 import type { CampaignState, Hero } from '../core/campaign.js'
-import { listDraftOffers, draftsOwedOf, draftedCountOf, draftedHeroOf } from '../core/opening.js'
+import { listDraftOffers, draftsOwedOf, draftedCountOf, draftedHeroOf, draftMessageOf } from '../core/opening.js'
 import { fieldedPreviewOf } from '../core/seam.js'
 import { UNKITTED_HEROES, heroDescriptionOf, type HeroRow, type UnkittedHero } from '../content/heroes.js'
 import { CRUCIBLE, crucibleBadgeOf, crucibleStatOf, badgeLineOf, statLineOf } from '../content/crucible.js'
@@ -129,9 +135,11 @@ export function draftScreen(c: CampaignState, leftOut: readonly UnkittedHero[] =
   const offers = listDraftOffers(c)
   const first = draftedCountOf(c) === 0
   const owed = draftsOwedOf(c) > 1 ? ` ${draftsOwedOf(c)} to draft before the next battle.` : ''
+  const said = draftMessageOf(c)
+  const notice = said ? `\n    <p class="draftNotice" data-draft-notice="${said.draft}" role="note">${esc(said.text)}</p>` : ''
   return `<h2>The draft — ${first ? 'your first hero' : `hero ${draftedCountOf(c) + 1} of six`}</h2>
     <p class="meta">${first
       ? 'Three come to the fire. You see who they are and what each brings — never their numbers. Choose the one who will lead.'
-      : 'Three come to the fire, each as the Crucible made them: their numbers, the points they rolled against their kind, and their badges. Take the one you want.'}${owed}</p>
+      : 'Three come to the fire, each as the Crucible made them: their numbers, the points they rolled against their kind, and their badges. Take the one you want.'}${owed}</p>${notice}
     <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h) => (first ? firstOffer(h, draftedHeroOf(c, h.id)) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
 }

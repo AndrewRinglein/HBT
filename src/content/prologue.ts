@@ -77,3 +77,17 @@ export const DRAFT_OFFER = 3
  * kingdom.opening-starts-in-battle.
  */
 export const OPENING_STRAIGHT_IN = { battles: 1 } as const
+
+/**
+ * What a draft of the opening SAYS above its offers — a row per draft that says something: which draft (its ordinal,
+ * the first hero's is 1) and the words. Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, …':
+ * "The second time you are drafting a hero, there should be a message that says, "Until you get additional upgrades you
+ * may only deploy one hero of each class."" — asked whether that is a rule to build or only the message: "I mean, it is
+ * basically a rule, but right now we're just telling them about it."). His sentence, word for word. No rule is built:
+ * Deploy checks who is free and the count only (core/prep.ts canDeploy), and in the opening the draft never offers a
+ * class twice, so the sentence is true as shown. The mechanism (core/opening.ts draftMessageOf) reads the row; the page
+ * (ui/draft.ts) prints it. kingdom.opening-draft-class-message.
+ */
+export const DRAFT_MESSAGES: readonly { readonly draft: number; readonly text: string }[] = [
+  { draft: 2, text: 'Until you get additional upgrades you may only deploy one hero of each class.' },
+]

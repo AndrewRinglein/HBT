@@ -29,7 +29,7 @@ import { tickAssignments } from './assignments.js'
 import { CLASSES, groupOf } from '../content/classes.js'
 import { HERO_POOL, CIVILIANS, RESCUABLE_CIVILIANS, heroRowOf, assertKitted, type HeroRow } from '../content/heroes.js'
 import type { EngagementResult } from './seam.js'
-import { PROLOGUE, DRAFT_CADENCE, DRAFT_OFFER, OPENING_STRAIGHT_IN, type PrologueRow } from '../content/prologue.js'
+import { PROLOGUE, DRAFT_CADENCE, DRAFT_OFFER, OPENING_STRAIGHT_IN, DRAFT_MESSAGES, type PrologueRow } from '../content/prologue.js'
 import { TERRITORIES, REALM } from '../content/territories.js'
 import { CURRENCIES } from '../content/currencies.js'
 import { CUPS, CUP_IDS } from '../content/cups.js'
@@ -92,6 +92,19 @@ export function isOpeningDone(campaign: CampaignState): boolean {
  */
 export function listDraftOffers(campaign: CampaignState): HeroRow[] {
   return (campaign.cursor.draftOffer ?? []).map(heroRowOf)
+}
+
+/**
+ * kingdom.opening-draft-class-message (2026-10-04, Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, …':
+ * "The second time you are drafting a hero, there should be a message …"): what the draft on the cursor says above its
+ * offers — the content's row for that draft's ordinal (the heroes already drafted, plus one), or null when the cursor
+ * is not at a draft or the content has no row for it. Derived from the Campaign, nothing stored: a run closed on that
+ * draft and reopened says it again, and the next draft does not. The words are the row's; none are held here.
+ */
+export function draftMessageOf(campaign: CampaignState): { readonly draft: number; readonly text: string } | null {
+  if (campaign.cursor.step !== 'draft') return null
+  const ordinal = draftedCountOf(campaign) + 1
+  return DRAFT_MESSAGES.find((m) => m.draft === ordinal) ?? null
 }
 
 // ---------- the draft's modifiers (kingdom.opening-draft-modifiers, 2026-10-03) ----------
