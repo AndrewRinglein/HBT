@@ -1083,7 +1083,9 @@
   ],
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, the Orphanage's lessons, the camera shows what arrives, new enemies are named, a closer start'). One of the extra steps the chat offered, as offered and as answered: (i) 'A \"Skip tutorial\" button for someone who has played before.' - 'I, we need to do yep.' Today there is nothing to skip. While any lesson of the opening's lesson table is showing - a notice or a pointer in a battle, or a gold line on a screen between battles - a small 'Skip tutorial' button shows at a corner of the screen. Pressing it asks once - 'Skip every tutorial message for this run?', Yes or No - and on Yes it clears what is showing, marks every lesson of the table as shown and saves that with the run, so none shows again; an Activation a lesson was holding back begins at once, with its basic move armed as in any other battle. It does not touch the features of every battle: the arrivals camera, 'New enemy' and 'This enemy can ...' still show (the read; record it as a kingdom switch). A new run starts with the tutorial on again. Rebuild the pages.",
   "expect": "In a new run's Orphanage a 'Skip tutorial' button shows beside the first lesson; pressing it and answering Yes removes the lesson, the hero is activated at once, and no lesson shows for the rest of the run - while battle 2's 'New enemy' notice still does; a second new run shows the tutorial again. A page test asserts each of those.",
-  "note": "Filed by the root chat from Andrew's posting and answers, 2026-10-04 ('a bunch I want to add into our queue')."
+  "note": "Filed by the root chat from Andrew's posting and answers, 2026-10-04 ('a bunch I want to add into our queue').",
+  "status": "done",
+  "sha": "0a3bec3"
  },
  {
   "id": "viewer.camera-shows-edge-units",
