@@ -57,7 +57,7 @@ import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
 import {worldToCSS} from './terrain-scene.js'
 import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
 import { closeAffliction } from './affliction.js'
 import { drawRail } from './rail.js'
@@ -231,6 +231,8 @@ export function mountBattleViewer(root, data, opts = {}) {
      different units until the next full render (the player's move). */
   function drawActivated() { drawPortrait(V); drawBar(V); drawStam(V) }
   V.render = render
+  /* viewer.bubble-click-reveals: the camera's reveal, for the bubbles' click and the page tests */
+  V.revealPan = (pose, hex) => revealPan(V, pose, hex); V.revealHex = hex => revealHex(V, hex); V.clickBubble = ids => clickBubble(V, ids)
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
   function drawChips() {
     const S = V.S
@@ -521,6 +523,11 @@ export function mountBattleViewer(root, data, opts = {}) {
     inspect(id) { V.view.inspectId = id; render() },
     /* viewer.xcom-camera: the map centred on a unit at the standard zoom (the host's proposed hero) */
     centre(id) { centreOn(V, id) },
+    /* viewer.bubble-click-reveals (engine DECISIONS.md 2026-10-03 'clicking an off-screen bubble selects the unit and slides the
+       screen just far enough to show its hex'): the view slid the least distance that shows a unit's hex, or a hex — the zoom,
+       the turn and the tilt kept, never centred, never past the board's edge; true when the view moved */
+    reveal(id) { const u = V.S.U[id]; return !!u && u.life !== 'dead' && revealHex(V, u.hex) },
+    revealHex(hex) { return revealHex(V, hex) },
     /* viewer.turn-taking (engine DECISIONS.md 2026-10-03 'the battle screen's turn-taking, ruled', point 4: a double-click on
        another hero switches to it while the current one has done nothing): the host took back an Activation that did nothing
        — the engine's battle restored to before it began — so the log is cut back to the events that battle holds, and the
