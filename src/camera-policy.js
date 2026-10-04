@@ -48,7 +48,14 @@ export const POLICY = Object.freeze({
   NOTICE_BASE_MS: 900, NOTICE_WORD_MS: 500, NOTICE_MIN_MS: 2400,
   LOOK_ZOOM: 1.5, LOOK_HOLD_MS: 1400,
   POINTER_INSET: 28,
+  /* viewer.arrivals-camera (engine DECISIONS.md 2026-10-04 '… the camera shows what arrives …'): once the view has slid to a
+     side's arrivals and their drop-in has played, it stays this long before it goes on to the next side or to the first
+     hero (at 1×; 2× shortens it as it shortens every beat) — long enough to see who came (viewer SWITCHES arrivalsHold) */
+  ARRIVAL_HOLD_MS: 1200,
 })
+/** viewer.arrivals-camera: the sides of the board, in the order the view visits them (Andrew: "For each side the enemies are on,
+    we're going to go to that side") */
+export const ARRIVAL_SIDES = Object.freeze(['left', 'right', 'top', 'bottom'])
 /** how long a notice stands when the host names no time: it grows with the words (viewer.tutorial-overlays) */
 export const noticeMs = words => Math.max(POLICY.NOTICE_MIN_MS, POLICY.NOTICE_BASE_MS + POLICY.NOTICE_WORD_MS * String(words).trim().split(/\s+/).filter(Boolean).length)
 export const tiltOfElevation = e => 90 - e

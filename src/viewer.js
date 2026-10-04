@@ -49,6 +49,8 @@
 import { targetingFacts } from './targeting.js'
 import { playFacts } from './play.js'
 import { mountOverlays } from './overlays.js'
+import { POLICY as CAM_POLICY, ARRIVAL_SIDES } from './camera-policy.js'
+import { screenOf as cameraScreenOf } from './camera3d.js'
 import { mountPlayChrome } from './chrome.js'
 import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf } from './board.js'
 import { terrainLayer } from './terrain3d.js'
@@ -58,7 +60,7 @@ import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
 import {worldToCSS} from './terrain-scene.js'
 import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble, isoK, boardAffine, GLIDE_MS } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
 import { closeAffliction } from './affliction.js'
 import { drawRail } from './rail.js'
@@ -411,9 +413,77 @@ export function mountBattleViewer(root, data, opts = {}) {
     playCues(V, cues); render()
     return PAINT_RUN_MS
   }
+  /* ── THE CAMERA SHOWS WHAT ARRIVES (viewer.arrivals-camera, 2026-10-04) ───────────────────────────────────────────────
+     Engine DECISIONS.md 2026-10-04 'the opening's tutorial: … the camera shows what arrives …' (Andrew: "when a phase happens
+     and enemies are introduced, the map is going to pan over to the enemies enough so they are on the screen. Don't center on
+     them because they're usually on the edge and we don't want to go off the edge. For each side the enemies are on, we're
+     going to go to that side. … When we're done looking at the things that have been added, we're going to focus and center on
+     the first hero that's activated."). A scheduled arrival is the engine's encounter.wave, then a unit.enter for each unit
+     that names the encounter (`arrived`), at the Start of the Turn, before the first Activation. While the pump PLAYS, the wave
+     is one beat: its lines are folded together (the units are on the board, off the screen), then the view visits each side
+     of the board that has arrivals it does not already show — in ARRIVAL_SIDES' order — by the bubbles' own slide (board.js
+     revealHex: the least distance, the zoom and the angle kept, never centred, never past the board's edge), their drop-in
+     plays while the view is there, the view holds (camera-policy.js ARRIVAL_HOLD_MS, shortened by the speed as every beat is),
+     and goes on. The pump is held meanwhile ('arrivals'), as it is under the affliction pop-up; when it is let go the next
+     lines play — the Hero Phase and the first Activation, whose own centring (board.js applyCam) takes the view to that hero.
+     An arrival already in the view drops in at once and moves nothing. A hand step, a seek, the whole-board fit and a unit
+     that enters by another unit's power (a raise, a summon: it names no encounter) are as before (viewer SWITCHES arrivals*). */
+  const WAVE_LINES = new Set(['unit.enter', 'unit.equipped', 'unit.badged', 'unit.grown', 'unit.modified', 'unit.shunted', 'encounter.roll', 'encounter.objective', 'ai.override', 'ai.hunts'])
+  let arrivalsRun = null
+  function cancelArrivals() { const R = arrivalsRun; if (!R) return; arrivalsRun = null; if (R.timer != null) clearTimeout(R.timer) }
+  /** the side of the board a hex stands nearest (true proportions; a tie goes to the earlier side of the fixed order) */
+  function sideOf(hex) {
+    const p = V.data.POS[hex], F = V.data.F, k = isoK(V), d = { left: p.px, right: F.w - p.px, top: p.py * k, bottom: (F.h - p.py) * k }
+    return ARRIVAL_SIDES.reduce((a, b) => d[b] < d[a] ? b : a)
+  }
+  /** one arrival's drop-in, and what the view was when it played (V.arrivalsShown: read by the page tests) */
+  function showArrival(c, side, slid) {
+    playCues(V, [c])
+    drawEdges(V)
+    const p = V.data.POS[c.hex], cam = V.camera3d, s = cam ? cameraScreenOf(boardAffine(V), cam, p.px, p.py, heightOf(V, c.hex)) : null
+    const bubble = V.layers.edgeL ? [...V.layers.edgeL.querySelectorAll('.edgeBub')].some(b => String(b.dataset.units).split(',').includes(String(c.id))) : false
+    V.arrivalsShown.push({ id: c.id, hex: c.hex, side, slid, pose: { ...(V.camTarget || {}) }, inView: !bubble, screen: s ? { x: s.x, y: s.y } : null, at: V.clock() })
+  }
+  function waveBeat(e) {
+    playCues(V, applyOne(e, false))
+    const arrivals = [], rest = []
+    while (V.cursor < V.EV.length && WAVE_LINES.has(V.EV[V.cursor].type)) {
+      const x = V.EV[V.cursor]
+      for (const c of applyOne(x, false)) (c.k === 'arrive' && x.type === 'unit.enter' && x.arrived ? arrivals : rest).push(c)
+    }
+    render(); playCues(V, rest)
+    V.arrivalsShown = []
+    const own = !!V.camTarget && V.view.zoom !== 'fit' && !V.view.peek && !V.view.overview        // the battle's own camera
+    const groups = {}
+    for (const c of arrivals) {
+      const side = sideOf(c.hex)
+      if (!own || revealPan(V, V.camTarget, c.hex) === null) showArrival(c, side, false)           // already in the view: no slide
+      else (groups[side] = groups[side] || []).push(c)
+    }
+    const sides = ARRIVAL_SIDES.filter(s => groups[s])
+    if (!sides.length) return DUR[e.type] ?? 0
+    const R = arrivalsRun = { timer: null }
+    V.holdPump('arrivals')
+    const visit = i => {
+      if (arrivalsRun !== R) return
+      if (i >= sides.length) { arrivalsRun = null; V.releasePump('arrivals'); return }
+      const g = groups[sides[i]]
+      let moved = false
+      for (const c of g) moved = revealHex(V, c.hex) || moved
+      const glide = moved && V.view.glide && typeof requestAnimationFrame === 'function' ? GLIDE_MS : 0
+      R.timer = setTimeout(() => {
+        if (arrivalsRun !== R) return
+        for (const c of g) showArrival(c, sides[i], moved)
+        R.timer = setTimeout(() => visit(i + 1), Math.max(16, CAM_POLICY.ARRIVAL_HOLD_MS / (V.speed * 0.75)))
+      }, glide)
+    }
+    visit(0)
+    return DUR[e.type] ?? 0
+  }
   function beat(e) {
     cancelOpportunityLabel()
     let d
+    if (e.type === 'encounter.wave' && V.playing && !V.invalid) return waveBeat(e)
     if (e.type === 'move.begin' || e.type === 'moved') d = stepMove(e)
     else if (PAINT.has(e.type)) d = stepPaint(e)
     else {
@@ -451,7 +521,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   V.holds = new Set()
   V.holdPump = (who = 'affliction') => { V.holds.add(who); V.hold = true; if (V.timer != null) { clearTimeout(V.timer); V.timer = null } }
   V.releasePump = (who = 'affliction') => { if (!V.holds.delete(who) || V.holds.size) return; V.hold = false; if (!disposed && !V.invalid && V.playing && V.timer == null) step() }
-  function dropHold() { V.holds.clear(); V.hold = false; closeAffliction(V); overlays.dropped() }
+  function dropHold() { V.holds.clear(); V.hold = false; closeAffliction(V); overlays.dropped(); cancelArrivals() }
   function step() {
     V.timer = null
     if (V.invalid || V.hold) return
