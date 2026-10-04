@@ -27,6 +27,11 @@ function boot(hash) {
   return w
 }
 const typesIn = b => [...new Set(b.events.filter(e => e.type === 'unit.enter').map(e => e.typeId))].sort()
+/* Law 10, 2026-10-04 (engine fix.opening-probe-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): the recordings field the ruled parties
+   now — two drafted heroes in battle 2, three in battle 3 — so the fourth hero drafted (the Skullplate Veteran, in the class
+   outfit 'oathblade+halberd') is not in them: he joins at battle 4, the Cavern Trail. He is still held by every check below
+   that held him: DRAFTED4 is battle 4's drafted heroes, read from its own recording */
+const DRAFTED4 = typesIn(JSON.parse(readFileSync('battles/test.opening-cavern-trail.json', 'utf8'))).filter(t => t.startsWith('hero.base.'))
 /* a stand-in body: a 1.7 m box on its pivot; its death lays the pivot flat */
 function standIn(look) {
   const scene = new THREE.Group(), hip = new THREE.Object3D(); hip.name = look.pivot; scene.add(hip)
@@ -49,9 +54,15 @@ const at = (b, type, pred = () => true) => b.events.findIndex(e => e.type === ty
 async function standAt(w, i) { const { V, cast } = castFor(w); w.__battleView.harness.viewer.seek(i); cast.frame(0); await settle(); await settle(); cast.frame(0); return { V, cast } }
 
 test('battles 2 and 3: every enemy, every drafted hero and every civilian is a model', () => {
-  assert.deepEqual(typesIn(battle2), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife', 'unit.skeletal-archer', 'unit.soldier', 'unit.zombie'])
-  assert.deepEqual(typesIn(battle3), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome', 'unit.fire-imp', 'unit.imp'])
-  for (const t of [...typesIn(battle2), ...typesIn(battle3)]) {
+  /* Law 10, 2026-10-04 (engine fix.opening-probe-cadence, the note at DRAFTED4): these read
+       assert.deepEqual(typesIn(battle2), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.fixed.lumberjack-and-wife', …])
+       assert.deepEqual(typesIn(battle3), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome', 'unit.fire-imp', 'unit.imp'])
+       for (const t of [...typesIn(battle2), ...typesIn(battle3)]) {
+     — three drafted heroes at the Lumberjack House and four at the Bridge, the old cadence. Two and three now. */
+  assert.deepEqual(typesIn(battle2), ['hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife', 'unit.skeletal-archer', 'unit.soldier', 'unit.zombie'])
+  assert.deepEqual(typesIn(battle3), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'unit.fire-imp', 'unit.imp'])
+  assert.deepEqual(DRAFTED4, ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome'], 'battle 4 fields four drafted heroes: the three, and the fourth')
+  for (const t of [...new Set([...typesIn(battle2), ...typesIn(battle3), ...DRAFTED4])]) {
     /* "a model or its token": every unit has its token under it (the Soldier its own art, the Lumberjack's Wife the ART PENDING standee) */
     assert.ok(artmap[t]?.token, `${t} has its token`)
     const b = A.modelBinding(t, pack)
@@ -176,7 +187,8 @@ test('the approved files load: each new look stands its height, binds every moti
   const fetch = async url => { const b = readFileSync('..' + new URL(url).pathname); return { ok: true, arrayBuffer: async () => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) } }
   /* Law 10 (viewer.real-bodies, 2026-10-01): battle 1's hero was the 'archer' look; the Forest Elf now stands in her own outfit */
   const seen = new Set(['plague-zombie', 'woman-blonde', 'ranger-scantily'])     // battle 1's, loaded by character-models.test.mjs
-  for (const t of [...typesIn(battle2), ...typesIn(battle3)]) for (const look of pack[t]?.looks || []) {
+  /* (Law 10, 2026-10-04, the note at DRAFTED4: was [...typesIn(battle2), ...typesIn(battle3)] — the fourth drafted hero's look is loaded from battle 4's party) */
+  for (const t of [...typesIn(battle2), ...typesIn(battle3), ...DRAFTED4]) for (const look of pack[t]?.looks || []) {
     /* viewer.every-model: the civilians' bodies are loaded by tools/every-model.test.mjs, not twice */
     if (seen.has(look.id) || CIVILIANS.includes(t)) continue; seen.add(look.id)
     const loaded = await A.loadLook(look, { location, fetch, textures: false })

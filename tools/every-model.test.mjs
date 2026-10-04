@@ -17,6 +17,11 @@ const BATTLES = [['#map.opening.orphanage', 'battles/test.opening-orphanage.json
   .map(([hash, file]) => ({ hash, b: JSON.parse(readFileSync(file, 'utf8')) }))
 const typesIn = b => [...new Set(b.events.filter(e => e.type === 'unit.enter').map(e => e.typeId))].sort()
 const ALL = [...new Set(BATTLES.flatMap(({ b }) => typesIn(b)))].sort()
+/* Law 10, 2026-10-04 (engine fix.opening-probe-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): the recordings field the ruled parties
+   now — one, two and three drafted heroes in battles 1 to 3 — so the fourth hero drafted (the Skullplate Veteran, who stands
+   in the class outfit 'oathblade+halberd') is not in them: he joins at battle 4, the Cavern Trail. He is still held here,
+   as every model was: DRAFTED4 is battle 4's drafted heroes, read from its own recording */
+const DRAFTED4 = typesIn(JSON.parse(readFileSync('battles/test.opening-cavern-trail.json', 'utf8'))).filter(t => t.startsWith('hero.base.'))
 const glbNodes = path => { const b = readFileSync('../' + path); return JSON.parse(b.subarray(20, 20 + b.readUInt32LE(12)).toString('utf8')).nodes.map(n => n.name) }
 
 function boot(hash) {
@@ -31,8 +36,13 @@ function boot(hash) {
 }
 
 test('battles 1-3: every hero, enemy and civilian is a model; each idles, walks or flies, attacks, flinches and dies', () => {
-  assert.deepEqual(ALL, ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome', ...CIVILIANS.slice().sort(), 'unit.fire-imp', 'unit.imp', 'unit.skeletal-archer', 'unit.soldier', 'unit.zombie'].sort())
-  for (const t of ALL) {
+  /* Law 10, 2026-10-04 (engine fix.opening-probe-cadence, the note at DRAFTED4): this read
+       assert.deepEqual(ALL, ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome', ...CIVILIANS…, 'unit.fire-imp', …].sort())
+       for (const t of ALL) {
+     — four drafted heroes by battle 3, the old cadence. Three now; the fourth is battle 4's. Everybody is still checked. */
+  assert.deepEqual(ALL, ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', ...CIVILIANS.slice().sort(), 'unit.fire-imp', 'unit.imp', 'unit.skeletal-archer', 'unit.soldier', 'unit.zombie'].sort())
+  assert.deepEqual(DRAFTED4, ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome'], 'battle 4 fields four drafted heroes: the three, and the fourth')
+  for (const t of [...new Set([...ALL, ...DRAFTED4])]) {
     const b = A.modelBinding(t, pack)
     assert.ok(b, `${t} is a model`)
     for (const look of b.looks) {

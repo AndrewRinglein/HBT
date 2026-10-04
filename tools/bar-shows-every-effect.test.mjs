@@ -22,7 +22,17 @@ const run = () => (audit ??= auditPage(html, ROSTER))
 
 test('the audit, sheet actions vs bar buttons: every action the engine\'s unit holds is a button on its bar', () => {
   const { units } = run()
-  assert.ok(units.length >= 80, 'the roster\'s units'); assert.ok(units.reduce((n, u) => n + u.actions.length, 0) >= 350, 'their actions')
+  /* Law 10, 2026-10-04 (engine fix.opening-probe-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "One,
+     yes." — a party of 1, 2, 3, 4, 5, 6): this read
+       assert.ok(units.length >= 80, 'the roster\'s units'); assert.ok(units.reduce((n, u) => n + u.actions.length, 0) >= 350, 'their actions')
+     — floors under the roster of the day (83 units, 360 actions), whose opening battles 2 to 5 each fielded one more drafted
+     hero than the player has. The roster is the engine's (held to it by test/viewer.bar-shows-every-effect.test.ts), and it
+     is four heroes smaller by the ruling: 79 units, 340 actions. What the floors stood for is held exactly instead — the
+     audit read EVERY unit of the roster and every action each holds — with a floor still under each so an emptied roster
+     cannot pass. */
+  const rostered = ROSTER.battles.flatMap(b => b.units), actionsOf = list => list.reduce((n, u) => n + u.actions.length, 0)
+  assert.equal(units.length, rostered.length, 'the audit read every unit of the roster'); assert.ok(units.length >= 75, 'the roster\'s units')
+  assert.equal(actionsOf(units), actionsOf(rostered), 'and every action each holds'); assert.ok(actionsOf(units) >= 330, 'their actions')
   const heroes = new Set(units.filter(u => u.typeId.startsWith('hero.base.')).map(u => u.typeId)); assert.equal(heroes.size, 24, 'the 24 base heroes')
   const missing = units.flatMap(u => u.missingActions.map(id => `${u.battle} · ${u.name}: ${id}`))
   assert.deepEqual(missing, [], 'no action on the engine\'s sheet is missing from the bar')
