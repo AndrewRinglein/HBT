@@ -232,7 +232,7 @@
     "staff"
    ],
    "description": "Deal 2 + Magic magic damage to every unit in the blast, plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning. It does not roll to hit, so it cannot crit; allies caught in it burn too. Thrown into a field you set alight last Turn, it is the biggest number this class produces.",
-   "source": "Hell-TCG name reused (Mage/Fire-master, Fireball — row Burn rebuilt as a hex blast that paints burning terrain) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the blast now cashes in the Burn already on each unit and consumes it, which is what makes a burning-terrain branch pay twice. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. | 2026-09-16 V2 burst migration: explicit hex placement and shielding; supported base damage/type retained. Uncompiled riders remain named gaps. | V2 supersedes the historical clause: \"Resist reduces both the hit and each Burn tick\". Magic Resist still reduces this authored magic blast; Burn ticks use Fire Resist. The historical clause is not a future capability gap.",
+   "source": "Hell-TCG name reused (Mage/Fire-master, Fireball — row Burn rebuilt as a hex blast that paints burning terrain) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the blast now cashes in the Burn already on each unit and consumes it, which is what makes a burning-terrain branch pay twice. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. | 2026-09-16 V2 burst migration: explicit hex placement and shielding; supported base damage/type retained. Uncompiled riders remain named gaps. | V2 supersedes the historical clause: \"Resist reduces both the hit and each Burn tick\". Magic Resist still reduces this authored magic blast; Burn ticks use Fire Resist. The historical clause is not a future capability gap. | 2026-10-04 (engine fix.burst-ground-class-powers; engine SWITCHES.md burstGroundClassPowers): the burst's `paints` is the ground clause of the sentence — \"those seven hexes become burning\" — the field the Fire Staff's Flame Burst carries (engine capability.burst-paints-ground); mkenginepack holds the field to the sentence both ways.",
    "triggers": [],
    "burst": {
     "shape": {
@@ -247,7 +247,8 @@
       "amount": 2,
       "damageType": "magic"
      }
-    ]
+    ],
+    "paints": "layer.burning"
    }
   },
   {
@@ -296,7 +297,8 @@
    "description": "Those seven hexes become burning. Burning ground ticks damage and reveals whatever stands there in darkness — used well this is a wall, not a weapon. It cannot crit, and it will happily catch a pursuing ally.",
    "source": "new (built for the burning-terrain layer; there was no Hell-TCG equivalent because there was no map) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: dropped \"halves any healing done on it\" — standing in fire gives you Burn, and Burn already halves healing. The clause restated a rule that fires on its own. | 2026-08-20: \"the hexes you leave this Turn\" is cut — a shape that reads your own path. A blast, which is a shape the game already has. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
    "triggers": [],
-   "intent": "You choose where the fire goes rather than dragging it behind you."
+   "intent": "You choose where the fire goes rather than dragging it behind you.",
+   "needsCapability": "ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)"
   },
   {
    "id": "power.soul-stealer.dark-bolt",
@@ -836,7 +838,8 @@
    ],
    "description": "Those seven hexes become frost. Frost ground deals no damage, but every unit standing in it takes 2 extra physical damage from every hit — including your own front line. No roll, no crit. Use it to put out a Fire-master’s mess or to soften a knot of enemies for the melee.",
    "source": "new (built on the frost terrain status; the anti-fire half of Grove Keeper, which Hell-TCG expressed as a party cleanse) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. \"Cancelling any burning already on them\" is now the universal replacement rule, not this power’s trick.",
-   "triggers": []
+   "triggers": [],
+   "needsCapability": "ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)"
   },
   {
    "id": "power.grove-keeper.grove-ward",

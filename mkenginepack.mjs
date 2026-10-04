@@ -123,7 +123,7 @@ const heroes = D.testCohort.heroes.map((h) => {
     // Movement is a granted CHOICE (ruled 2026-08-21) — no default here: a
     // cohort row without moves should fail the loader, loudly.
     moves: e.moves,
-    triggers: [...mapCodexTriggers(h, h.typeId), ...(e.riders || [])],
+    triggers: distinctTriggerIds(h.typeId, [...mapCodexTriggers(h, h.typeId), ...(e.riders || [])]),
   };
 });
 const enemies = D.testCohort.enemies.map((z) => { const { copyOf, ...row } = z; return { ...row, side: 'enemy', copyOf }; });
@@ -515,6 +515,49 @@ for (const row of (D.badges || []).filter((b) => b && b.id && b.id.startsWith('b
 // capability.power: capability.power-pool, 2026-09-03.
 // capability.enemy-action-cooldown: 2026-09-03.
 const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown', 'capability.corpses', 'capability.ground-layers', 'capability.target-stamina-loss', 'capability.inflict-affliction']);   // 2026-09-03; inflict-affliction 2026-09-04 (badge.afflictions)
+// ── TRIGGER IDS ARE DISTINCT WITHIN A ROW (engine fix.trigger-ids-and-scopes, 2026-10-04) ───────────────────────────
+// A trigger's id is trigger.<row>.<name> (the name the row gives it, else what it does). Two triggers of one row could
+// share it: the Fire Imp's end-of-Activation burn and its Blast's on-hit burn were both trigger.fire-imp.burn, so the
+// log, the kill switch and the viewer could not tell them apart (ten bestiary rows, one item). The rule, applied to
+// every row's own list — where two or more of a row would share an id, they are told apart by, in this order:
+//   1. the attack a trigger is scoped to (its id's last word), as a move's riders are already named for their move
+//      (below: "a Close Bite's burn is never the same trigger id as the Bite's") — trigger.fire-imp.burn.blast;
+//      a trigger with no attack scope keeps the plain id;
+//   2. the hook it fires on — trigger.demon-hound.regeneration.on-taking-damage;
+//   3. what it does — trigger.shadow-sorcerer.dragged-under.root.
+// A part that does not tell a group apart is not added, so a row with nothing shared keeps every id it had. What the
+// rule cannot tell apart FAILS THE BUILD (the same check runs over the whole pack before it is written).
+// An id is still shared BETWEEN rows where one row is a copy of another (a derived or enchanted item and its base,
+// a test unit and the unit it is a delta over): the engine's identity for a trigger is its id AND its source.
+function triggerHookWord(t) { return String(t.hook).replace(/[A-Z]/g, (c) => '-' + c.toLowerCase()) + (t.role ? '-' + t.role : ''); }
+function triggerEffectWord(t) {
+  const e = t.effect || {};
+  const word = e.kind === 'layer.paint' ? 'paint-' + String(e.layer).replace(/^layer\./, '')
+    : e.statusId ?? e.badgeId ?? e.stat ?? e.unit ?? e.kind;
+  return String(word).replace(/^(status|badge|unit)\./, '').replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase();
+}
+// (functions, not a const: the first rows are compiled above this line, and a declaration is hoisted)
+function triggerAttackWord(t) { return t.onlyWithAttack ? String(t.onlyWithAttack).split('.').pop() : ''; }
+function sharedTriggerIds(triggers) { const seen = new Set(), twice = new Set(); for (const t of triggers || []) (seen.has(t.id) ? twice : seen).add(t.id); return [...twice]; }
+function refuseSharedTriggerIds(rowId, triggers) {
+  const twice = sharedTriggerIds(triggers);
+  if (twice.length) throw new Error(`mkenginepack: '${rowId}' holds two triggers under one id, '${twice[0]}' — the naming rule (the attack, the hook, the effect) cannot tell them apart; name one on its row`);
+}
+function distinctTriggerIds(rowId, triggers) {
+  const out = triggers.map((t) => ({ ...t }));
+  for (const part of [triggerAttackWord, triggerHookWord, triggerEffectWord]) {
+    const groups = new Map();
+    for (const t of out) { if (!groups.has(t.id)) groups.set(t.id, []); groups.get(t.id).push(t); }
+    for (const group of groups.values()) {
+      if (group.length < 2) continue;
+      const words = group.map(part);
+      if (new Set(words).size < 2) continue;   // this part does not tell them apart
+      group.forEach((t, i) => { if (words[i]) t.id = `${t.id}.${words[i]}`; });
+    }
+  }
+  refuseSharedTriggerIds(rowId, out);
+  return out;
+}
 function compileTrigger(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
   const needs = (t.needs || []).filter((n) => !HAVE.has(n));
@@ -875,7 +918,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     ...(u.ai || u.role === 'support' ? { aiAuthored: true } : {}),
     attacks: attackIds, abilities: abilityIdsLocal, moves: unitMoves,
     tags: (u.types || []).map((t) => t.toLowerCase()),
-    triggers: unitTriggers,
+    triggers: distinctTriggerIds(id, unitTriggers),
     ...(unitAuras.length ? { auras: unitAuras } : {}),
     ...(u.noPrimaryAction ? { noPrimaryAction: true } : {}),   // capability.charge
   });
@@ -1204,7 +1247,7 @@ for (const id of PARTY) {
     moves: movesForClass(h.class),
     // hero assembly (2026-09-03): the class rides on tags so fieldedDef can find the level table
     tags: ['hero', ...(h.class ? [h.class] : [])],
-    triggers: ownTriggers,
+    triggers: distinctTriggerIds(id, ownTriggers),
     defaultItems: items.filter((i) => ITEM_BY_ID.has(i)),
   }); }
 }
@@ -1299,7 +1342,7 @@ const alphaTeam = [];
       attacks: ownAttackIds, abilities: [],
       moves: movesForClass(h.class),
       tags: ['hero', ...(h.class ? [h.class] : [])],
-      triggers: ownTriggers,
+      triggers: distinctTriggerIds(id, ownTriggers),
       defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
     });
   }
@@ -1598,18 +1641,28 @@ function compileItems() {
       const eff = String(t.effect || '');
       let m;
       if (!TRIG_HOOKS.has(t.hook)) { g(`${t.hook}: ${eff.slice(0, 50)}`, `hook: ${t.hook} (declared, engine never fires it)`); continue; }
+      // engine fix.trigger-ids-and-scopes (2026-10-04): a row's trigger may say `attack: 'own'` — it rides the attacks
+      // THIS item grants and no other (the War Axe's on-block rode a Punch made by its holder). One compiled trigger
+      // per granted attack, each onlyWithAttack (the dagger's Stab rider is the pattern), told apart by the attack's
+      // name (distinctTriggerIds). Unstated: every attack the holder makes, as before. Any other word, or a row
+      // that grants no attack, is a named gap — never a guessed scope.
+      if (t.attack !== undefined && t.attack !== 'own') { g(`${t.hook}: ${eff.slice(0, 50)} — attack '${t.attack}'`, "trigger scope: only 'own' is read on an item row"); continue; }
+      if (t.attack === 'own' && !grants.length) { g(`${t.hook}: ${eff.slice(0, 50)} — attack 'own'`, 'trigger scope: the row grants no attack of its own'); continue; }
+      const scopes = t.attack === 'own' ? grants.map((a) => ({ onlyWithAttack: a })) : [{}];
       if ((m = eff.match(/^(apply|gain) (\d+) ([A-Za-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
-        triggers.push({ id: `trigger.${it.id.replace(/^item\./, '')}.${m[3].toLowerCase()}`, hook: t.hook, chance: t.chance ?? 100,
-          select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: parseInt(m[2], 10) }, source: it.id });
+        for (const scope of scopes) triggers.push({ id: `trigger.${it.id.replace(/^item\./, '')}.${m[3].toLowerCase()}`, hook: t.hook, chance: t.chance ?? 100,
+          select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: parseInt(m[2], 10) }, source: it.id, ...scope });
       } else if ((m = eff.match(/^the blocking target loses (\d+) Block and (\d+) Ranged Block for the rest of the Battle$/)) && t.hook === 'onBlock') {
         // V2 R1 (2026-09-23): the axe cuts through shields. `role` keeps it the ATTACKER's
         // block hook; Block and Ranged Block floor at 0 in resolveBlock.
         const role = t.role ? { role: t.role } : {};
         const base = it.id.replace(/^item\./, '');
-        triggers.push({ id: `trigger.${base}.on-block.block`, hook: 'onBlock', chance: t.chance ?? 100, select: 'target', ...role,
-          effect: { kind: 'statMod', stat: 'block', value: -parseInt(m[1], 10), until: 'battle' }, source: it.id });
-        triggers.push({ id: `trigger.${base}.on-block.ranged-block`, hook: 'onBlock', chance: t.chance ?? 100, select: 'target', ...role,
-          effect: { kind: 'statMod', stat: 'rangedBlock', value: -parseInt(m[2], 10), until: 'battle' }, source: it.id });
+        for (const scope of scopes) {
+          triggers.push({ id: `trigger.${base}.on-block.block`, hook: 'onBlock', chance: t.chance ?? 100, select: 'target', ...role,
+            effect: { kind: 'statMod', stat: 'block', value: -parseInt(m[1], 10), until: 'battle' }, source: it.id, ...scope });
+          triggers.push({ id: `trigger.${base}.on-block.ranged-block`, hook: 'onBlock', chance: t.chance ?? 100, select: 'target', ...role,
+            effect: { kind: 'statMod', stat: 'rangedBlock', value: -parseInt(m[2], 10), until: 'battle' }, source: it.id, ...scope });
+        }
       } else if ((m = eff.match(/^Thorns (\d+)$/)) && t.hook === 'onTakingDamage') {
         // v2.thorns (COMBAT-V2 §9.4, 2026-09-24): "Thorns is a magnitude, not a tick" —
         // the engine's `thorns` stat, which reflects N true damage onto a melee attacker
@@ -1657,7 +1710,7 @@ function compileItems() {
     out[it.id] = {
       id: it.id, name: it.name, itemClass: it.itemClass, tier: it.tier ?? 0, hands: it.hands ?? 0, slots: it.slots ?? 0,
       ...(it.classRestriction ? { classRestriction: it.classRestriction } : {}),
-      statModifiers, grants, abilities, triggers,
+      statModifiers, grants, abilities, triggers: distinctTriggerIds(it.id, triggers),
       ...(vsTarget.length ? { vsTarget } : {}),
       ...(gapsHere.length ? { gaps: gapsHere } : {}),
     };
@@ -1711,8 +1764,14 @@ const SPIRIT = (base, mult = 1) => ({ scale: 'partySpirit', base, mult });
 const untilOf = (scope) => scope === 'until-end-of-your-next-turn' ? 'endOfNextTurn' : scope === 'until-end-of-turn' ? 'endOfTurn' : scope === 'battle' || scope === 'rest-of-battle' ? 'battle' : null;
 
 // One sentence, one shape. Returns { effects, gaps } or null when nothing matched.
+// engine fix.burst-ground-class-powers (2026-10-04; engine SWITCHES.md burstGroundClassPowers): a blast sentence may
+// end in the ground clause the item bursts' sentence has — "[, and | — and then] those seven hexes become
+// burning|frost" — which is the burst profile's own `paints` (engine capability.burst-paints-ground), returned as
+// `ground` and held to the row's field both ways by compileClassPower. Whatever else the rider says stays a named gap
+// (Fireball: "plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn").
 function compileSentences(desc) {
   const effects = [], gaps = [];
+  let ground = null;
   // split on sentence ends, keep the semicolon halves too
   const parts = desc.split(/(?<=[.;])\s+|;\s+/).map((x) => x.trim()).filter(Boolean);
   for (const sRaw of parts) {
@@ -1723,7 +1782,9 @@ function compileSentences(desc) {
     if ((m = s0.match(/^Those seven hexes become (burning|poisoned) ground$/))) { effects.push({ kind: 'layer.paint', layer: 'layer.' + m[1], radius: 1, origin: 'target' }); continue; }
     if ((m = s0.match(/^Deal (\d+) \+ (Magic|Spirit|Strength|Precision) (magic|physical|fire|poison|shadow|true) damage to every unit in the blast(?:, (.*))?$/))) {
       effects.push({ kind: 'statDamage', stat: m[2].toLowerCase(), bonus: +m[1], damageType: m[3] });
-      if (m[4]) gaps.push(`rider: ${m[4]}`);
+      const g = m[4] && m[4].match(/^(?:(.+?) — )?and (?:then )?those seven hexes become (burning|frost)$/);
+      if (g) { ground = `layer.${g[2]}`; if (g[1]) gaps.push(`rider: ${g[1]}`); }
+      else if (m[4]) gaps.push(`rider: ${m[4]}`);
       continue;
     }
     if ((m = s0.match(/^Every unit in those hexes, ally or enemy, takes (Precision|Strength|Magic|Spirit) - (\d+) (physical|magic|fire|poison|shadow|true) damage(?:, .*)?$/))) {
@@ -1763,7 +1824,7 @@ function compileSentences(desc) {
     if (/^Until the end of your next Turn, your attacks/.test(s0)) continue;   // the `modifies` field carries it
     gaps.push(`unparsed: ${s0.slice(0, 80)}`);
   }
-  return { effects, gaps };
+  return { effects, gaps, ground };
 }
 
 function compileClassPower(p, cls) {
@@ -1774,7 +1835,7 @@ function compileClassPower(p, cls) {
     ...(p.warmup ? { warmup: p.warmup } : {}), ...(p.free ? { free: true } : {}) };
   if (!tg) return { ...base, range: 0, effects: [], target: { select: 'self', side: 'any' }, gaps: [`targets '${p.targets}' unparsed — the power is inert`] };
   if (tg.hexGap && !p.burst) gaps.push(`targets 'a hex within ${tg.hexGap}' — engine centres the blast on a UNIT`);
-  const { effects, gaps: g2 } = compileSentences(desc);
+  const { effects, gaps: g2, ground } = compileSentences(desc);
   gaps.push(...g2);
   if (p.modifies) {
     const until = untilOf(p.modifies.scope);
@@ -1792,8 +1853,11 @@ function compileClassPower(p, cls) {
     if (burst.shape.kind !== 'radius' || burst.shape.radius !== tg.target.radius || burst.side !== tg.target.side
       || burst.heal !== undefined || burst.requireTags !== undefined || burst.packets.length !== effects.length
       || burst.packets.some((packet, i) => packet.stat !== effects[i].stat || packet.amount !== effects[i].bonus || packet.damageType !== effects[i].damageType)) throw Error(`Class burst '${p.id}' disagrees with its authored base payload`);
+    // the ground the blast leaves: the sentence's clause and the profile's `paints` must say the same thing, both ways
+    if ((burst.paints ?? null) !== ground) throw Error(`Class burst '${p.id}' disagrees with its authored sentence: the ground it leaves`);
     return { ...base, range: tg.range, burst, source: 'class', ...(gaps.length ? { gaps } : {}) };
   }
+  if (ground) gaps.push(`rider: and those seven hexes become ${ground.replace(/^layer./, '')} — a blast that is not a burst paints no ground`);
   if (tg.target.select === 'area' && tg.target.origin === 'target' && effects.some(e => e.kind === 'statDamage')) throw Error(`Travelling area damage '${p.id}' requires an explicit burst profile`);
   if (!effects.length) gaps.push('no effect compiled — the power is inert');
   // a power that only paints the hex area paints it ONCE, around the one unit it is aimed at — an area
@@ -1870,7 +1934,7 @@ for (const combo of TIER3) {
   // station.vs-target (engine, 2026-09-25): the enchant's slayer joins the base's — rules on the
   // enchanted item; held or worn, the engine decides the reach (fix.vs-target-worn-and-flat).
   const vsTarget = [...(b.vsTarget || []), ...slayerRules(e?.slayer, combo.enchant)];
-  enchanted[combo.id] = { ...b, id: combo.id, name: combo.name, tier: 3, statModifiers, triggers, ...(vsTarget.length ? { vsTarget } : {}), base: combo.base, enchant: combo.enchant,
+  enchanted[combo.id] = { ...b, id: combo.id, name: combo.name, tier: 3, statModifiers, triggers: distinctTriggerIds(combo.id, triggers), ...(vsTarget.length ? { vsTarget } : {}), base: combo.base, enchant: combo.enchant,
     gaps: [...(b.gaps || []), ...gaps].length ? [...(b.gaps || []), ...gaps] : undefined };
   if (!enchanted[combo.id].gaps) delete enchanted[combo.id].gaps;
 }
@@ -2054,7 +2118,11 @@ function testUnits(testAttackRows, testAbilityRows) {
     optionalCombatStats(u);
     delete u.copyOf;
     for (const k of Object.keys(u)) if (!UNIT_FIELDS.has(k)) throw new Error(`content/test/units.json: '${row.id}' carries unknown field '${k}'`);
-    u.triggers = (u.triggers || []).map((t) => {
+    // engine fix.trigger-ids-and-scopes (2026-10-04): the row's OWN triggers only — `u` is the base spread under the
+    // row, so a delta that authored none read the base's here and then added the base's again below: test-slot-striker,
+    // test-packet-flame and test-packet-shadow held every trigger of test-oathblade twice. A row that is not a delta
+    // has no base, and its own are all it has.
+    u.triggers = (body.triggers || []).map((t) => {
       const { note: _n, ...trig } = t;
       if (!isTestId.trigger(trig.id)) throw new Error(`content/test/units.json: '${row.id}' trigger '${trig.id}' is not test.* / trigger.test-*`);
       return { ...trig, source: `unit.${row.id}` };
@@ -2269,6 +2337,17 @@ if (!xpByTier || Object.keys(xpByTier).some((k) => !/^[1-9]$/.test(k)) || Object
 for (const u of authoredEnemies) if (u.tier !== undefined && xpByTier[u.tier] === undefined) throw new Error(`${u.typeId}: tier ${u.tier} has no price in xpByTier`);
 const pack = { note: D.testCohort.note, xpByTier, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
   classPowers, specialties, levels, generalPool, enchanted, derivedItems, encounters, badges, maps };
+
+// engine fix.trigger-ids-and-scopes (2026-10-04): no row of the pack holds two triggers under one id — every list
+// named `triggers`, wherever it sits (units, test units, items, enchanted and derived items, badges). Before a file is written.
+(function everyRowsTriggerIdsAreDistinct(node, where) {
+  if (Array.isArray(node)) { node.forEach((x, i) => everyRowsTriggerIdsAreDistinct(x, `${where}[${i}]`)); return; }
+  if (!node || typeof node !== 'object') return;
+  for (const [k, v] of Object.entries(node)) {
+    if (k === 'triggers' && Array.isArray(v)) refuseSharedTriggerIds(node.typeId ?? node.id ?? where, v);
+    else everyRowsTriggerIdsAreDistinct(v, `${where}.${k}`);
+  }
+})(pack, 'pack');
 
 for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test.attacks, test.abilities, test.moves]) {
   for (const row of Object.values(rows)) {

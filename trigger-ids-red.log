@@ -1,0 +1,397 @@
+✖ the pack compiles, and no row in it holds two triggers under one id (6.9322ms)
+✖ the Fire Imp: the end-of-Activation burn keeps the plain id; the burn of its Blast is named for the Blast (0.264ms)
+✖ the three parts of the rule, each on the row that needs it: the attack, then the hook, then the effect (22.0578ms)
+✖ a row whose every trigger already has its own id keeps every id as it was (0.1742ms)
+✖ two triggers the rule cannot tell apart fail the build, naming the row and the id (245.1297ms)
+✖ a test unit that is a delta over another holds the triggers of its base once (0.2279ms)
+✖ the War Axe says attack: own — its on-block pair rides Chop and Hack, each scoped; its copies follow their own attacks (0.2107ms)
+✔ the scope is the word on the row: without it the trigger rides every attack its holder makes, as before (275.6304ms)
+✖ a scope word the compiler does not read, or a row with no attack of its own, is a named gap — never a guessed scope (363.5953ms)
+✖ the nine weapons that say attack: own, and the three rows whose words are every strike of their bearer (0.4387ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 1
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1269.9494
+
+✖ failing tests:
+
+test at test\trigger-ids.test.mjs:47:1
+✖ the pack compiles, and no row in it holds two triggers under one id (6.9322ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     ids: [
+  +       'trigger.demon-hound.regeneration'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.demon-hound]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.doombringer.protection'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.doombringer]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.fire-imp.burn'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.fire-imp]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.hellhound.burn'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.hellhound]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.imp-master.burn'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.imp-master]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.poison-imp.poison'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.poison-imp]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.shadow-sorcerer.dragged-under'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.shadow-sorcerer]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.skeleton-spider.armor-armor'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.skeleton-spider]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.terror-imp.weak'
+  +     ],
+  +     row: 'pack.authoredEnemies[unit.terror-imp]'
+  +   },
+  +   {
+  +     ids: [
+  +       'trigger.troll-gut-vest.regeneration'
+  +     ],
+  +     row: 'pack.items.item.troll-gut-vest'
+  +   },
+  +   {
+  +     ids: [
+  +       'test.warrior.second-wind',
+  +       'test.warrior.stagger',
+  +       'test.warrior.brace',
+  +       'test.oathblade.apply-bleed'
+  +     ],
+  +     row: 'pack.test.units[test-slot-striker]'
+  +   },
+  +   {
+  +     ids: [
+  +       'test.warrior.second-wind',
+  +       'test.warrior.stagger',
+  +       'test.warrior.brace',
+  +       'test.oathblade.apply-bleed'
+  +     ],
+  +     row: 'pack.test.units[test-packet-flame]'
+  +   },
+  +   {
+  +     ids: [
+  +       'test.warrior.second-wind',
+  +       'test.warrior.stagger',
+  +       'test.warrior.brace',
+  +       'test.oathblade.apply-bleed'
+  +     ],
+  +     row: 'pack.test.units[test-packet-shadow]'
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:50:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { row: 'pack.authoredEnemies[unit.demon-hound]', ids: [Array] }, { row: 'pack.authoredEnemies[unit.doombringer]', ids: [Array] }, { row: 'pack.authoredEnemies[unit.fire-imp]', ids: [Array] }, { row: 'pack.authoredEnemies[unit.hellhound]', ids: [Array] }, { row: 'pack.authoredEnemies[unit.imp-master]', ids: [Array] }, { row: 'pack.authoredEnemies[unit.poison-imp]', ids: [Array] }, { row: 'pack.authoredEnemies[unit.shadow-sorcerer]', ids: [Array] }, { row: 'pack.authoredEnemies[unit.skeleton-spider]', ids: [Array] }, { row: 'pack.authoredEnemies[unit.terror-imp]', ids: [Array] }, { row: 'pack.items.item.troll-gut-vest', ids: [Array] }, { row: 'pack.test.units[test-slot-striker]', ids: [Array] }, { row: 'pack.test.units[test-packet-flame]', ids: [Array] }, { row: 'pack.test.units[test-packet-shadow]', ids: [Array] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:53:1
+✖ the Fire Imp: the end-of-Activation burn keeps the plain id; the burn of its Blast is named for the Blast (0.264ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+        'trigger.fire-imp.burn',
+        'onActivationEnd',
+        null
+      ],
+      [
+  +     'trigger.fire-imp.burn',
+  -     'trigger.fire-imp.burn.blast',
+        'onHit',
+        'attack.fire-imp.blast'
+      ]
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:55:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'trigger.fire-imp.burn', 'onActivationEnd', null ], [ 'trigger.fire-imp.burn', 'onHit', 'attack.fire-imp.blast' ] ],
+    expected: [ [ 'trigger.fire-imp.burn', 'onActivationEnd', null ], [ 'trigger.fire-imp.burn.blast', 'onHit', 'attack.fire-imp.blast' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:58:1
+✖ the three parts of the rule, each on the row that needs it: the attack, then the hook, then the effect (22.0578ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(['trigger.imp-master.burn.fire-bow','trigger.imp-master.burn.fire-sword'].every(x=>ids('unit.imp-master').includes(x)))
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:60:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:70:1
+✖ a row whose every trigger already has its own id keeps every id as it was (0.1742ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'trigger.zombie.afflict-rotting-flesh',
+  +   'trigger.zombie.poison'
+  -   'trigger.zombie.rot'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:71:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'trigger.zombie.afflict-rotting-flesh', 'trigger.zombie.poison' ],
+    expected: [ 'trigger.zombie.rot' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:76:1
+✖ two triggers the rule cannot tell apart fail the build, naming the row and the id (245.1297ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:78:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:82:1
+✖ a test unit that is a delta over another holds the triggers of its base once (0.2279ms)
+  AssertionError [ERR_ASSERTION]: test-slot-striker
+  + actual - expected
+  
+    [
+      'test.warrior.second-wind',
+      'test.warrior.stagger',
+      'test.warrior.brace',
+      'test.oathblade.apply-bleed',
+  +   'test.warrior.second-wind',
+  +   'test.warrior.stagger',
+  +   'test.warrior.brace',
+  +   'test.oathblade.apply-bleed'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:84:88)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'test.warrior.second-wind', 'test.warrior.stagger', 'test.warrior.brace', 'test.oathblade.apply-bleed', 'test.warrior.second-wind', 'test.warrior.stagger', 'test.warrior.brace', 'test.oathblade.apply-bleed' ],
+    expected: [ 'test.warrior.second-wind', 'test.warrior.stagger', 'test.warrior.brace', 'test.oathblade.apply-bleed' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:90:1
+✖ the War Axe says attack: own — its on-block pair rides Chop and Hack, each scoped; its copies follow their own attacks (0.2107ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     'trigger.war-axe.on-block.block',
+  +     undefined,
+  -     'trigger.war-axe.on-block.block.chop',
+  -     'attack.war-axe.chop',
+        'attacker',
+        'block'
+      ],
+      [
+  +     'trigger.war-axe.on-block.ranged-block',
+  +     undefined,
+  -     'trigger.war-axe.on-block.ranged-block.chop',
+  -     'attack.war-axe.chop',
+        'attacker',
+        'rangedBlock'
+      ],
+  -   [
+  -     'trigger.war-axe.on-block.block.hack',
+  -     'attack.war-axe.hack',
+  -     'attacker',
+  -     'block'
+  -   ],
+  -   [
+  -     'trigger.war-axe.on-block.ranged-block.hack',
+  -     'attack.war-axe.hack',
+  -     'attacker',
+  -     'rangedBlock'
+  -   ]
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:92:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'trigger.war-axe.on-block.block', undefined, 'attacker', 'block' ], [ 'trigger.war-axe.on-block.ranged-block', undefined, 'attacker', 'rangedBlock' ] ],
+    expected: [ [ 'trigger.war-axe.on-block.block.chop', 'attack.war-axe.chop', 'attacker', 'block' ], [ 'trigger.war-axe.on-block.ranged-block.chop', 'attack.war-axe.chop', 'attacker', 'rangedBlock' ], [ 'trigger.war-axe.on-block.block.hack', 'attack.war-axe.hack', 'attacker', 'block' ], [ 'trigger.war-axe.on-block.ranged-block.hack', 'attack.war-axe.hack', 'attacker', 'rangedBlock' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:106:1
+✖ a scope word the compiler does not read, or a row with no attack of its own, is a named gap — never a guessed scope (363.5953ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     chance: 100,
+  +     effect: {
+  +       kind: 'statMod',
+  +       stat: 'block',
+  +       until: 'battle',
+  +       value: -20
+  +     },
+  +     hook: 'onBlock',
+  +     id: 'trigger.war-axe.on-block.block',
+  +     role: 'attacker',
+  +     select: 'target',
+  +     source: 'item.war-axe'
+  +   },
+  +   {
+  +     chance: 100,
+  +     effect: {
+  +       kind: 'statMod',
+  +       stat: 'rangedBlock',
+  +       until: 'battle',
+  +       value: -20
+  +     },
+  +     hook: 'onBlock',
+  +     id: 'trigger.war-axe.on-block.ranged-block',
+  +     role: 'attacker',
+  +     select: 'target',
+  +     source: 'item.war-axe'
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:109:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'trigger.war-axe.on-block.block', hook: 'onBlock', chance: 100, select: 'target', role: 'attacker', effect: [Object], source: 'item.war-axe' }, { id: 'trigger.war-axe.on-block.ranged-block', hook: 'onBlock', chance: 100, select: 'target', role: 'attacker', effect: [Object], source: 'item.war-axe' } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:117:1
+✖ the nine weapons that say attack: own, and the three rows whose words are every strike of their bearer (0.4387ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'item.bloody-axe',
+  +   'item.boarding-hook',
+  +   'item.book-of-exorcisms',
+  +   'item.lumberjack-axe',
+      'item.pharaohs-gauntlets',
+  +   'item.poison-throwing-knives',
+      'item.rune-bleeding-strike',
+      'item.rune-burning-touch',
+  +   'item.scepter-of-salvation',
+  +   'item.stormforged-halberd',
+  +   'item.twin-talon-bow',
+  +   'item.war-axe'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:120:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'item.bloody-axe', 'item.boarding-hook', 'item.book-of-exorcisms', 'item.lumberjack-axe', 'item.pharaohs-gauntlets', 'item.poison-throwing-knives', 'item.rune-bleeding-strike', 'item.rune-burning-touch', 'item.scepter-of-salvation', 'item.stormforged-halberd', 'item.twin-talon-bow', 'item.war-axe' ],
+    expected: [ 'item.pharaohs-gauntlets', 'item.rune-bleeding-strike', 'item.rune-burning-touch' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

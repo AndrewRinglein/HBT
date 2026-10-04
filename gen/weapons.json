@@ -44,11 +44,12 @@
      "hook": "onBlock",
      "role": "attacker",
      "chance": 100,
-     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle"
+     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle",
+     "attack": "own"
     }
    ],
    "intent": "The axe is the sword's worse-tempered cousin: it trades the sure hit for the wound that keeps working.",
-   "source": "new (axe identity: crit and Bleed where the sword takes Accuracy) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
+   "source": "new (axe identity: crit and Bleed where the sword takes Accuracy) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20 | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the axe's on-block is the axe's own attacks' (V2-SHIELDS-AND-WEAPONS-2026-09-20.md: \"If an axe attacks something with a shield and block is triggered, on block that target loses 20 block because the axe cuts through shields\") — it rode a Punch made by the axe's holder. One compiled trigger per attack the row grants, each scoped to it."
   },
   {
    "id": "item.iron-mace",
@@ -518,17 +519,19 @@
    "triggers": [
     {
      "hook": "onDamage",
-     "effect": "apply 1 Bleed"
+     "effect": "apply 1 Bleed",
+     "attack": "own"
     },
     {
      "hook": "onBlock",
      "role": "attacker",
      "chance": 100,
-     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle"
+     "effect": "the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle",
+     "attack": "own"
     }
    ],
    "intent": "It has never once been cleaned, and it has never once needed to finish the job by itself.",
-   "source": "Hell-TCG name reused (Warrior, Bloody Axe — on-damage Bleed kept as the item trigger) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
+   "source": "Hell-TCG name reused (Warrior, Bloody Axe — on-damage Bleed kept as the item trigger) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20 | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the axe's on-block and its on-damage Bleed are the axe's own attacks' (\"If an axe attacks something with a shield…\"; \"on-damage Bleed kept as the item trigger\" — the axe that has never been cleaned), not a Punch's or another held weapon's. One compiled trigger per attack the row grants, each scoped to it."
   },
   {
    "id": "item.hammer-of-justice",
@@ -685,11 +688,12 @@
    "triggers": [
     {
      "hook": "onDamage",
-     "effect": "apply 1 Poison"
+     "effect": "apply 1 Poison",
+     "attack": "own"
     }
    ],
    "intent": "Three enemies, three small cuts, and a Turn or two later it will not matter how big any of them were.",
-   "source": "Hell-TCG name reused (Poison Throwing Knives)"
+   "source": "Hell-TCG name reused (Poison Throwing Knives) | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the Poison is the knives' own cuts (\"three small cuts\"), not a Punch's or another held weapon's. One compiled trigger per attack the row grants, each scoped to it."
   },
   {
    "id": "item.shadow-dagger",
@@ -766,11 +770,12 @@
    "triggers": [
     {
      "hook": "onDamage",
-     "effect": "apply 1 Bleed"
+     "effect": "apply 1 Bleed",
+     "attack": "own"
     }
    ],
    "intent": "Two arrows on one string is a worse shot and twice as many holes, and the holes do not close.",
-   "source": "Hell-TCG name reused (Ranger, Twin Talon Bow — on-damage Bleed kept)"
+   "source": "Hell-TCG name reused (Ranger, Twin Talon Bow — on-damage Bleed kept) | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the Bleed is the bow's own arrows (\"twice as many holes, and the holes do not close\"). One compiled trigger per attack the row grants, each scoped to it."
   },
   {
    "id": "item.book-of-exorcisms",
@@ -792,11 +797,12 @@
    "triggers": [
     {
      "hook": "onAttack",
-     "effect": "apply 1 Burn"
+     "effect": "apply 1 Burn",
+     "attack": "own"
     }
    ],
    "intent": "Read quietly it kills one thing; read properly it clears the room and costs you your voice.",
-   "source": "Hell-TCG name reused (Inquisitor, Book of Exorcisms — given to the Priest; true damage per the weapon rule) | 2026-09-02b workbook: tier 2 -> 3, and tagged holy + book (was staff). Joins the BOOK set."
+   "source": "Hell-TCG name reused (Inquisitor, Book of Exorcisms — given to the Priest; true damage per the weapon rule) | 2026-09-02b workbook: tier 2 -> 3, and tagged holy + book (was staff). Joins the BOOK set. | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the Burn is the book's own readings (\"Read quietly it kills one thing; read properly it clears the room\"). One compiled trigger per attack the row grants, each scoped to it."
   },
   {
    "id": "item.cursed-sand-blade",
@@ -871,11 +877,12 @@
    "triggers": [
     {
      "hook": "onDamage",
-     "effect": "apply 1 Bleed"
+     "effect": "apply 1 Bleed",
+     "attack": "own"
     }
    ],
    "intent": "A hook on a chain. It opens a wound that will not close while they run.",
-   "source": "Hell-TCG name reused (Rogue, Boarding Hook — on-damage Bleed kept, pull added) | 2026-08-17: flavour still described a pull, which was cut. Reworded."
+   "source": "Hell-TCG name reused (Rogue, Boarding Hook — on-damage Bleed kept, pull added) | 2026-08-17: flavour still described a pull, which was cut. Reworded. | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the Bleed is the hook's own wound (\"A hook on a chain. It opens a wound that will not close\"). One compiled trigger per attack the row grants, each scoped to it."
   },
   {
    "id": "item.mirage-dagger",
@@ -1129,11 +1136,12 @@
    "triggers": [
     {
      "hook": "onHit",
-     "effect": "gain 2 Regeneration"
+     "effect": "gain 2 Regeneration",
+     "attack": "own"
     }
    ],
    "intent": "Every swing of it is a small mercy for someone behind you, whether you were aiming that way or not.",
-   "source": "Hell-TCG name reused (Scepter of Salvation — pulled down from tier 4, Faith gain cut) | 2026-08-20: \"the ally with the lowest Health within 6 hexes\" was auto-selection by a stat — the engine picking your target for you. Replaced with regeneration on yourself, which is a status that already exists. | 2026-09-02b workbook: spirit +1 removed -- a weapon carries no flat stat modifiers. Tagged holy (was staff)."
+   "source": "Hell-TCG name reused (Scepter of Salvation — pulled down from tier 4, Faith gain cut) | 2026-08-20: \"the ally with the lowest Health within 6 hexes\" was auto-selection by a stat — the engine picking your target for you. Replaced with regeneration on yourself, which is a status that already exists. | 2026-09-02b workbook: spirit +1 removed -- a weapon carries no flat stat modifiers. Tagged holy (was staff). | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the Regeneration is the scepter's own swings (\"Every swing of it is a small mercy\"). One compiled trigger per attack the row grants, each scoped to it."
   },
   {
    "id": "item.tomb-sentinels-blade",
@@ -1217,11 +1225,12 @@
    "triggers": [
     {
      "hook": "onDamage",
-     "effect": "apply 4 Burn"
+     "effect": "apply 4 Burn",
+     "attack": "own"
     }
    ],
    "intent": "The Warrior's answer to a bad Turn: everyone adjacent, or one thing two hexes away that stops taking Turns.",
-   "source": "Hell-TCG name reused (Warrior, Stormforged Halberd — pulled down from tier 4)"
+   "source": "Hell-TCG name reused (Warrior, Stormforged Halberd — pulled down from tier 4) | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the Burn is the halberd's own strikes. One compiled trigger per attack the row grants, each scoped to it."
   },
   {
    "id": "item.fangs",

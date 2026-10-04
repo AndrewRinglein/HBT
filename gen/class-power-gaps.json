@@ -1122,7 +1122,7 @@
   {
    "power": "power.fire-master.fireball",
    "class": "class.mage",
-   "what": "rider: plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning"
+   "what": "rider: plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn"
   },
   {
    "power": "power.fire-master.fireball",
@@ -1158,6 +1158,11 @@
    "power": "power.fire-master.wake-of-cinders",
    "class": "class.mage",
    "what": "unparsed: It cannot crit, and it will happily catch a pursuing ally"
+  },
+  {
+   "power": "power.fire-master.wake-of-cinders",
+   "class": "class.mage",
+   "what": "needs capability: ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)"
   },
   {
    "power": "power.fire-master.wake-of-cinders",
@@ -1583,6 +1588,11 @@
    "power": "power.grove-keeper.quench",
    "class": "class.mage",
    "what": "unparsed: Use it to put out a Fire-master’s mess or to soften a knot of enemies for the me"
+  },
+  {
+   "power": "power.grove-keeper.quench",
+   "class": "class.mage",
+   "what": "needs capability: ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)"
   },
   {
    "power": "power.grove-keeper.quench",
@@ -3007,6 +3017,11 @@
   {
    "power": "power.broodmother.nest",
    "class": "class.beast",
+   "what": "needs capability: ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)"
+  },
+  {
+   "power": "power.broodmother.nest",
+   "class": "class.beast",
    "what": "no effect compiled — the power is inert"
   },
   {
@@ -3108,11 +3123,6 @@
    "power": "power.wyrmling.kindle",
    "class": "class.beast",
    "what": "no effect compiled — the power is inert"
-  },
-  {
-   "power": "power.wyrmling.scorch",
-   "class": "class.beast",
-   "what": "rider: and those seven hexes become burning"
   },
   {
    "power": "power.wyrmling.molten-scales",
