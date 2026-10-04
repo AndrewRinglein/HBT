@@ -4876,3 +4876,15 @@ Andrew, in the kingdom chat: "why are you only asking about longsword? There are
 Filed without asking, as he has said for content details (2026-10-03 'exact weapons are not the concern now': decide, record the switch, report), each row's shown default taken for its open questions: `fix.kit-attack-clauses`, `content.shields-reauthored`, `content.greatsword-war-axe-reauthored`, `fix.enchant-stats-on-weapon`, `rule.counterattack-replaced-and-lost`, `capability.free-attack-accuracy`, `capability.weapon-mechanisms` (left-hand sweep, Strength 7 to equip, ignores Block), `content.ledger-new-weapons`, `content.ledger-replaced-weapons-removed`, `content.ledger-custom-series`, `content.ledger-enchants-relics-runes-trinkets`.
 
 Not ruled, left as it is and listed for him: what the 54 older enchant rows stamped tier 3 (Frost, Venomous and the rest) become now that "enchantments are tier 2"; whether "counterattack on block" (the Bow Staff, the Retaliator) survives "set off by being attacked"; the Vengeful badge, a Berserker counterattack class power and "+20 dodge versus special attacks", dictated and in no row; an unlanded armor-series draft of 2026-09-29 (`CONTENT-DRAFTS/2026-09-29-armor-series/`).
+
+## 2026-10-04 — posted: an enchantment stuck onto an item and a unique tier-3 item are two classes, and they were conflated (questions out)
+
+Andrew, in the kingdom chat, told that what the 54 older enchant rows stamped tier 3 become is not ruled:
+
+“There are two different classes of things: 1. An enchantment that is labeled as tier 2 and that is just stuck onto an item of the appropriate type. 2. Things that are tier 3 and that are supposed to be their own unique item. These two terms have been conflated, unfortunately.”
+
+“If it was defined as one of the 54 older tier 3 things, those are attributes on items. We now have a whole bunch of things that are tier 3, 4, 5, and 6, but we still have some that are just tier 3.   Ask me more clarifying questions.”
+
+What the content holds today (content `hbt-content.json` `enchants`): 9 rows at tier 2, the Forge's basic ones (Hale, Lucky, Nimble, Fleet, Heavy, Keen, Cruel, Far, Long); 54 rows at tier 3 (Frost, Venomous, Bloodletting … Flaming), each with `appliesToTags` — an attribute put on any item carrying the tag; 16 named weapons at tier 3 that are their own rows (Holy Avenger, Demon Whip, Death Bow …); and, in the Armory Ledger only, 14 custom series with tiers 3 to 6 across base weapons (Flaming among them — the one name in both lists) and 5 new tier-2 enchantments.
+
+Kept as said: **the 54 older tier-3 rows are attributes on items**, not unique items. Everything else waits on his answers to the kingdom chat's questions; `content.ledger-custom-series` and `content.ledger-enchants-relics-runes-trinkets` are not to be built until they are answered.
