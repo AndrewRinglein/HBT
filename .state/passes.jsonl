@@ -5,3 +5,4 @@
 {"suite":"control","stamp":"a9b03479b6","pack":"476c0b5f74","golden":"cacc471e2f","at":"2026-10-04T11:56:35.175Z","by":"gate tool.kingdom-vitest-workers --land","in":"HBT-worker-engine","moved":null}
 {"suite":"control","stamp":"679baa1e6e","pack":"a81583e43c","golden":"cacc471e2f","at":"2026-10-04T12:07:56.483Z","by":"gate movement.back-flip --land","in":"HBT-worker-engine","moved":null}
 {"suite":"control","stamp":"3e65705815","pack":"9f430f4cd4","golden":"cacc471e2f","at":"2026-10-04T13:27:20.259Z","by":"gate capability.burst-paints-ground --land","in":"HBT-worker-engine","moved":null}
+{"suite":"control","stamp":"a5f3de6fae","pack":"9f430f4cd4","golden":"cacc471e2f","at":"2026-10-04T13:38:20.956Z","by":"gate fix.opening-draft-one-rule --land","in":"HBT-worker-engine","moved":null}

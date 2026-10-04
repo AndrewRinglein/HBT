@@ -1,0 +1,163 @@
+// fix.opening-draft-one-rule (2026-10-04) — found landing kingdom.opening-draft-modifiers (2026-10-03, kingdom
+// SWITCHES.md openingDraftRuleKingdomSide): the opening draft's rule lived twice. The engine (src/content/
+// opening-party.ts, fix.opening-draft) exported only openingHeroesOf(replicate, count) — the whole draft at once —
+// and kept private the two things a played run needs: the first hero's bonuses for the hero the PLAYER chose, and
+// each of three offered heroes as the Crucible rolls it. So the kingdom ran the same procedure a second time
+// (kingdom/src/core/draft-modifiers.ts), held to the engine's by a parity test.
+//
+// Rulings (DECISIONS.md): 2026-09-28 'no Health minimum … the first hero gets Leadership and a random positive badge;
+// the draft pick is weighted' — "You get the leadership badge. You get a random positive badge. 25% chance of another
+// positive badge. +2 health. One stat point from the Crucible's randomness, a 30% chance of another stat point." — and
+// 2026-10-03 'the opening run, audited': "the first hero is chosen from 3".
+//
+// One rule, one home: the engine exports the first hero's bonuses for a chosen hero, and a hand's rolls for given
+// heroes and a given stream; its own draft is those same functions on its own stream; the kingdom calls them through
+// its one door and holds no procedure of its own. What openingHeroesOf returns does not move.
+import { describe, expect, it } from 'vitest'
+import { createHash } from 'node:crypto'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import * as opening from '../src/content/opening-party.js'
+import { OPENING_POSITIONS, draftScoreOf, openingHeroesOf, openingPartyOf } from '../src/content/opening-party.js'
+import { UNITS } from '../src/content/index.js'
+import { makeRng, roll100, rollBelow, rootSeedOf } from '../src/core/rng.js'
+import OPENING from '../../progression/OPENING-PARTY.json' with { type: 'json' }
+
+type Rolled = { stat: string; amount: number }
+type Roller = { below(n: number, ...keys: number[]): number; d100(...keys: number[]): number }
+type BaseOf = (stat: string) => number
+type Draft = { badges: readonly string[]; rolls: readonly Rolled[]; mods: { stats?: readonly { stat: string; add: number; source: string }[] }; unfielded: readonly Rolled[] }
+/** The two exported functions, read loosely so this file compiles before they exist. */
+const firstHeroDraftOf = (opening as unknown as { firstHeroDraftOf?: (roller: Roller, baseOf: BaseOf) => Draft }).firstHeroDraftOf
+const draftHandOf = (opening as unknown as { draftHandOf?: (roller: Roller, bases: readonly BaseOf[], ordinal: number, carried: readonly string[]) => Draft[] }).draftHandOf
+
+const frozen = JSON.parse(readFileSync(new URL('./fixtures/opening-draft-one-rule.json', import.meta.url), 'utf8')) as {
+  drafted: number; position: number; replicates: { replicate: number; heroes: string; party: string }[]; whole: { replicate: number; heroes: unknown }[]
+}
+const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+const STAT_OF = OPENING.crucible.statOf as Record<string, string>
+/** A row's own value of a stat in the Crucible's word — what the engine's own draft reads. */
+const baseOfRow = (id: string): BaseOf => (stat) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+/** The engine's own draft stream for a replicate, as a roller. */
+const engineRoller = (replicate: number): Roller => {
+  const rng = makeRng(rootSeedOf(0, 0, replicate))
+  return { below: (n, ...keys) => rollBelow(rng, n, 'draft', ...keys), d100: (...keys) => roll100(rng, 'draft', ...keys) }
+}
+/** Another stream altogether — a caller's own dice (the kingdom's run rolls on its own cup): deterministic in what the roll is. */
+const otherRoller = (salt: number): Roller => {
+  const of = (keys: number[]) => parseInt(createHash('sha256').update(JSON.stringify([salt, ...keys])).digest('hex').slice(0, 8), 16)
+  return { below: (n, ...keys) => of([n, ...keys]) % n, d100: (...keys) => (of([100, ...keys]) % 100) + 1 }
+}
+const POOL = (OPENING.pool as string[]).filter((id) => UNITS[id])
+
+describe('what openingHeroesOf returns did not move', () => {
+  it('every replicate\'s drafted party is byte for byte what it was before this item — rows, badges, rolls, mods, hands and scores', () => {
+    expect(frozen.replicates).toHaveLength(100)
+    for (const row of frozen.replicates) {
+      expect(hash(openingHeroesOf(row.replicate, frozen.drafted)), `replicate ${row.replicate}: the drafted heroes`).toBe(row.heroes)
+      expect(hash(openingPartyOf(frozen.position, row.replicate)), `replicate ${row.replicate}: the party fielded at position ${frozen.position}`).toBe(row.party)
+    }
+    for (const w of frozen.whole) expect(JSON.parse(JSON.stringify(openingHeroesOf(w.replicate, frozen.drafted))), `replicate ${w.replicate}, whole`).toEqual(w.heroes)
+    expect(frozen.position).toBe(OPENING_POSITIONS[OPENING_POSITIONS.length - 1]!.position)
+  })
+})
+
+describe('the engine exports what a played run needs', () => {
+  it('the first hero\'s bonuses for a chosen hero, and a hand\'s rolls for given heroes and a given stream', () => {
+    expect(typeof firstHeroDraftOf).toBe('function')
+    expect(typeof draftHandOf).toBe('function')
+  })
+
+  it('the engine\'s own draft IS those functions on its own stream: every badge, point, mod and score, sixty replicates', () => {
+    for (let replicate = 1; replicate <= 60; replicate++) {
+      const roller = engineRoller(replicate)
+      const engine = openingHeroesOf(replicate, 6)
+      const first = firstHeroDraftOf!(roller, baseOfRow(engine[0]!.id))
+      expect({ badges: first.badges, rolls: first.rolls, mods: first.mods, unfielded: first.unfielded }, `replicate ${replicate}: the first hero`)
+        .toEqual({ badges: engine[0]!.badges, rolls: engine[0]!.rolls, mods: engine[0]!.mods, unfielded: engine[0]!.unfielded })
+      for (let ordinal = 1; ordinal < engine.length; ordinal++) {
+        const taken = engine[ordinal]!, party = engine.slice(0, ordinal)
+        const hand = draftHandOf!(roller, taken.offered.map(baseOfRow), ordinal, party.flatMap((h) => h.badges))
+        expect(hand).toHaveLength(OPENING.offer)
+        expect(hand.map((d, j) => draftScoreOf(taken.offered[j]!, d.rolls, d.badges, party.map((h) => h.id))), `replicate ${replicate}, draft ${ordinal + 1}: every offer's score`).toEqual(taken.scores)
+        const mine = hand[taken.offered.indexOf(taken.id)]!
+        expect({ badges: mine.badges, rolls: mine.rolls, mods: mine.mods, unfielded: mine.unfielded }, `replicate ${replicate}, draft ${ordinal + 1}: the one taken`)
+          .toEqual({ badges: taken.badges, rolls: taken.rolls, mods: taken.mods, unfielded: taken.unfielded })
+      }
+    }
+  })
+
+  it('the first hero, for ANY hero the player chooses, on a caller\'s own stream: Leadership, a positive badge (and the chance of another), +2 Health, a Crucible point (and the chance of another)', () => {
+    const F = OPENING.firstHero, favourable = new Set((OPENING.crucible.badges.favourable as { id: string }[]).map((b) => b.id))
+    let twoBadges = 0, twoPoints = 0
+    for (let salt = 0; salt < 120; salt++) {
+      const id = POOL[salt % POOL.length]!
+      const d = firstHeroDraftOf!(otherRoller(salt), baseOfRow(id))
+      expect(d.badges.slice(0, F.badges.length), `${id}: the rule's own badges first`).toEqual(F.badges)
+      const positives = d.badges.slice(F.badges.length)
+      expect(positives.length === F.positiveBadges || positives.length === F.positiveBadges + 1, `${id}: ${positives.length} positive badges`).toBe(true)
+      expect(positives.every((b) => favourable.has(b)), `${id}: every extra badge is a favourable one`).toBe(true)
+      expect(new Set(d.badges).size).toBe(d.badges.length)
+      expect(d.mods.stats![0], `${id}: the +Health first`).toEqual({ stat: 'maxHp', add: F.health, source: F.healthSource })
+      expect(d.rolls.length <= F.statPoints + 1).toBe(true)
+      expect(d.rolls.every((r) => r.amount > 0), `${id}: the first hero only gains`).toBe(true)
+      if (positives.length > F.positiveBadges) twoBadges++
+      if (d.rolls.length > F.statPoints) twoPoints++
+      // the same dice, the same hero: the same bonuses
+      expect(firstHeroDraftOf!(otherRoller(salt), baseOfRow(id))).toEqual(d)
+    }
+    // the two chances are live on a caller's stream: sometimes, not always, not never (25% and 30% over 120)
+    expect(twoBadges).toBeGreaterThan(0); expect(twoBadges).toBeLessThan(120)
+    expect(twoPoints).toBeGreaterThan(0); expect(twoPoints).toBeLessThan(120)
+  })
+
+  it('a hand on a caller\'s own stream: one roll set per offered hero, in offer order; a hero\'s first badge is never one the party carries or an earlier hero\'s first', () => {
+    for (let salt = 0; salt < 60; salt++) {
+      const ids = [POOL[salt % POOL.length]!, POOL[(salt + 7) % POOL.length]!, POOL[(salt + 13) % POOL.length]!]
+      const carried = ['badge.leadership', (OPENING.crucible.badges.favourable as { id: string }[])[salt % 5]!.id]
+      const hand = draftHandOf!(otherRoller(salt), ids.map(baseOfRow), 1 + (salt % 5), carried)
+      expect(hand).toHaveLength(3)
+      const firsts = hand.map((d) => d.badges[0]).filter((b): b is string => b !== undefined)
+      expect(new Set(firsts).size, 'first badges unique across the hand').toBe(firsts.length)
+      for (const b of firsts) expect(carried, 'a first badge the party does not carry').not.toContain(b)
+      for (const d of hand) {
+        expect(d.badges.length).toBeLessThanOrEqual(3)
+        expect(new Set(d.rolls.map((r) => r.stat)).size, 'a stat is never rolled twice').toBe(d.rolls.length)
+        expect((d.mods.stats ?? []).length + d.unfielded.length, 'every roll is a mod or named unfielded').toBe(d.rolls.length)
+      }
+      expect(draftHandOf!(otherRoller(salt), ids.map(baseOfRow), 1 + (salt % 5), carried)).toEqual(hand)
+    }
+  })
+
+  it('what the base is, is the caller\'s: a point is held at the stat\'s floor against the base the caller hands in', () => {
+    // a base of 0 everywhere and a base far above every floor give different rolled amounts only where a floor bites — never different stats
+    const low = draftHandOf!(otherRoller(3), [() => 0, () => 0, () => 0], 2, [])
+    const high = draftHandOf!(otherRoller(3), [() => 50, () => 50, () => 50], 2, [])
+    expect(low.map((d) => d.badges)).toEqual(high.map((d) => d.badges))
+    for (const d of high) for (const r of d.rolls) expect(r.amount).not.toBe(0)
+    for (const d of low) for (const r of d.rolls) expect(r.amount).toBeGreaterThan(0)   // nothing below its floor from a base of 0
+  })
+})
+
+describe('the kingdom holds no rolling procedure of its own', () => {
+  const kingdom = (path: string) => readFileSync(fileURLToPath(new URL('../../kingdom/' + path, import.meta.url)), 'utf8')
+  const code = (text: string) => text.split('\n').filter((l) => !l.trim().startsWith('//') && !l.trim().startsWith('*') && !l.trim().startsWith('/*')).join('\n')
+
+  it('kingdom/src/engine.ts, the one door, hands out the engine\'s two functions', () => {
+    const door = code(kingdom('src/engine.ts'))
+    expect(door).toMatch(/export \{[^}]*\bfirstHeroDraftOf\b[^}]*\} from '..\/..\/engine\/src\/content\/opening-party\.js'/)
+    expect(door).toMatch(/export \{[^}]*\bdraftHandOf\b[^}]*\} from '..\/..\/engine\/src\/content\/opening-party\.js'/)
+  })
+
+  it('kingdom/src/core/draft-modifiers.ts calls them, and rolls nothing itself', () => {
+    const src = code(kingdom('src/core/draft-modifiers.ts'))
+    expect(src).toMatch(/import \{[^}]*\bfirstHeroDraftOf\b[^}]*\} from '..\/engine\.js'/)
+    expect(src).toMatch(/import \{[^}]*\bdraftHandOf\b[^}]*\} from '..\/engine\.js'/)
+    expect(src).toMatch(/firstHeroDraftOf\(/)
+    expect(src).toMatch(/draftHandOf\(/)
+    // no dice thrown here, and none of the Crucible's tables read here
+    expect(src).not.toMatch(/\.below\(|\.d100\(/)
+    expect(src).not.toMatch(/statPool|modTypes|badgeCount|rarityWeight|favourablePercent|repeatAttempts|anotherBadgePercent|anotherPointPercent|statStep|statFloor/)
+    expect(src).not.toMatch(/from '..\/content\/crucible\.js'/)
+  })
+})

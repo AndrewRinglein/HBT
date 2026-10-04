@@ -1,0 +1,272 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/opening-draft-one-rule.test.ts (8 tests | 7 failed) 111ms
+     × the first hero's bonuses for a chosen hero, and a hand's rolls for given heroes and a given stream 8ms
+     × the engine's own draft IS those functions on its own stream: every badge, point, mod and score, sixty replicates 2ms
+     × the first hero, for ANY hero the player chooses, on a caller's own stream: Leadership, a positive badge (and the chance of another), +2 Health, a Crucible point (and the chance of another) 2ms
+     × a hand on a caller's own stream: one roll set per offered hero, in offer order; a hero's first badge is never one the party carries or an earlier hero's first 1ms
+     × what the base is, is the caller's: a point is held at the stat's floor against the base the caller hands in 1ms
+     × kingdom/src/engine.ts, the one door, hands out the engine's two functions 2ms
+     × kingdom/src/core/draft-modifiers.ts calls them, and rolls nothing itself 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-draft-one-rule.test.ts > the engine exports what a played run needs > the first hero's bonuses for a chosen hero, and a hand's rolls for given heroes and a given stream
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ test/opening-draft-one-rule.test.ts:67:37
+     65| describe('the engine exports what a played run needs', () => {
+     66|   it('the first hero\'s bonuses for a chosen hero, and a hand\'s rolls…
+     67|     expect(typeof firstHeroDraftOf).toBe('function')
+       |                                     ^
+     68|     expect(typeof draftHandOf).toBe('function')
+     69|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/opening-draft-one-rule.test.ts > the engine exports what a played run needs > the engine's own draft IS those functions on its own stream: every badge, point, mod and score, sixty replicates
+TypeError: firstHeroDraftOf is not a function
+ ❯ test/opening-draft-one-rule.test.ts:75:21
+     73|       const roller = engineRoller(replicate)
+     74|       const engine = openingHeroesOf(replicate, 6)
+     75|       const first = firstHeroDraftOf!(roller, baseOfRow(engine[0]!.id))
+       |                     ^
+     76|       expect({ badges: first.badges, rolls: first.rolls, mods: first.m…
+     77|         .toEqual({ badges: engine[0]!.badges, rolls: engine[0]!.rolls,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/opening-draft-one-rule.test.ts > the engine exports what a played run needs > the first hero, for ANY hero the player chooses, on a caller's own stream: Leadership, a positive badge (and the chance of another), +2 Health, a Crucible point (and the chance of another)
+TypeError: firstHeroDraftOf is not a function
+ ❯ test/opening-draft-one-rule.test.ts:95:17
+     93|     for (let salt = 0; salt < 120; salt++) {
+     94|       const id = POOL[salt % POOL.length]!
+     95|       const d = firstHeroDraftOf!(otherRoller(salt), baseOfRow(id))
+       |                 ^
+     96|       expect(d.badges.slice(0, F.badges.length), `${id}: the rule's ow…
+     97|       const positives = d.badges.slice(F.badges.length)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/opening-draft-one-rule.test.ts > the engine exports what a played run needs > a hand on a caller's own stream: one roll set per offered hero, in offer order; a hero's first badge is never one the party carries or an earlier hero's first
+TypeError: draftHandOf is not a function
+ ❯ test/opening-draft-one-rule.test.ts:118:20
+    116|       const ids = [POOL[salt % POOL.length]!, POOL[(salt + 7) % POOL.l…
+    117|       const carried = ['badge.leadership', (OPENING.crucible.badges.fa…
+    118|       const hand = draftHandOf!(otherRoller(salt), ids.map(baseOfRow),…
+       |                    ^
+    119|       expect(hand).toHaveLength(3)
+    120|       const firsts = hand.map((d) => d.badges[0]).filter((b): b is str…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/opening-draft-one-rule.test.ts > the engine exports what a played run needs > what the base is, is the caller's: a point is held at the stat's floor against the base the caller hands in
+TypeError: draftHandOf is not a function
+ ❯ test/opening-draft-one-rule.test.ts:134:17
+    132|   it('what the base is, is the caller\'s: a point is held at the stat\…
+    133|     // a base of 0 everywhere and a base far above every floor give di…
+    134|     const low = draftHandOf!(otherRoller(3), [() => 0, () => 0, () => …
+       |                 ^
+    135|     const high = draftHandOf!(otherRoller(3), [() => 50, () => 50, () …
+    136|     expect(low.map((d) => d.badges)).toEqual(high.map((d) => d.badges))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/opening-draft-one-rule.test.ts > the kingdom holds no rolling procedure of its own > kingdom/src/engine.ts, the one door, hands out the engine's two functions
+AssertionError: expected '\nexport { createBattle } from \'../.…' to match /export \{[^}]*\bfirstHeroDraftOf\b…/..\
+
+- Expected:
+/export \{[^}]*\bfirstHeroDraftOf\b[^}]*\} from '..\/..\/engine\/src\/content\/opening-party\.js'/
+
++ Received:
+"
+export { createBattle } from '../../engine/src/core/setup.js'
+export type { BattleOptions } from '../../engine/src/core/setup.js'
+export { runBattle } from '../../engine/src/core/battle.js'
+export type { BattleResult } from '../../engine/src/core/battle.js'
+export type { Ctx, Event, Outcome, Side, ScenarioDef, HeroProgress, HighProp, Prop, AuthoredMap } from '../../engine/src/core/types.js'
+export { SCENARIOS, scenarioOptions, scenarioDef } from '../../engine/src/content/scenarios.js'
+export { encounterDef } from '../../engine/src/content/scenarios.js'
+export { ENCOUNTERS } from '../../engine/src/content/index.js'
+export { rosterUids, isUnitUid } from '../../engine/src/core/identity.js'
+export type { EncounterDef } from '../../engine/src/core/types.js'
+export { geometryOf } from '../../engine/src/core/hex.js'
+export type { Board, Geometry } from '../../engine/src/core/hex.js'
+export { terrainOf, terrainIdOf, isPassable } from '../../engine/src/content/maps.js'
+export { UNITS } from '../../engine/src/content/index.js'
+export { LEVELS } from '../../engine/src/content/index.js'
+export { BADGES } from '../../engine/src/content/index.js'
+export { RULE_BADGES } from '../../engine/src/content/index.js'
+export { fieldedDef } from '../../engine/src/core/setup.js'
+export type { UnitDef } from '../../engine/src/core/types.js'
+export { fieldedPreview, levelTableOf, classOf } from '../../engine/src/core/setup.js'
+export type { FieldOptions } from '../../engine/src/core/setup.js'
+export type { UnitMods, ItemDef } from '../../engine/src/core/types.js'
+export { SPECIALTIES, ITEMS, ACTIONS, XP_BY_TIER } from '../../engine/src/content/index.js'
+export { SPECIALTY_LEVEL, HANDS, HELD_CLASSES, handsOf, splitHandsOf, usesPerBattleOf } from '../../engine/src/core/items.js'
+export { fnv1a } from '../../engine/src/core/rng.js'
+export { advanceBattle, completeActionCycle } from '../../engine/src/core/battle.js'
+export { runActivation } from '../../engine/src/ai/modes.js'
+export { activationChoices, controllerOf, validateBattleCommand, executeBattleCommand } from '../../engine/src/core/commands.js'
+export type { BattleCommand, ControlPolicy } from '../../engine/src/core/commands.js'
+export { isAttack, isMove, isBurst, staminaCostOf } from '../../engine/src/core/action.js'
+export { movementOptions } from '../../engine/src/core/movement.js'
+export { preview } from '../../engine/src/core/pipeline.js'
+export { burstCentres, previewBurst } from '../../engine/src/core/burst.js'
+export { previewPower } from '../../engine/src/core/ability.js'
+export { saveBattle, restoreBattle } from '../../engine/src/core/snapshot.js'
+export { swapCostOf } from '../../engine/src/core/swap.js'
+export { propAttackHexes } from '../../engine/src/core/prop-attack.js'
+export { engineVocabulary } from '../../engine/src/core/vocabulary.js'
+export type { EngineVocabulary } from '../../engine/src/core/vocabulary.js'
+export { OUTCOMES, LIFE_STATES } from '../../engine/src/core/types.js'
+export { forecastFrom, previewFrom, threatOf, actionReach } from '../../engine/src/core/forecast.js'   // actionReach: the aim arrow's length (engine fix.aim-reach; SWITCHES playInputAimReach)
+export type { Forecast, PlannedMove } from '../../engine/src/core/forecast.js'
+export { zocHoldersAt } from '../../engine/src/core/movement.js'
+export { heroesYetToAct } from '../../engine/src/core/commands.js'
+export { OPENING_POSITIONS, OPENING_TAKERS, openingPartyOf, openingHolderOf, openingRewardPickOf } from '../../engine/src/content/opening-party.js'
+export type { OpeningCarry } from '../../engine/src/content/opening-party.js'
+export { openingHeroesOf, draftScoreOf } from '../../engine/src/content/opening-party.js'
+export { isStatName } from '../../engine/src/core/stats.js'
+
+export const ENGINE_EVENTS = [
+  'battle.begin', 'battle.end',
+  'activation.begin', // t=0 shared-viewer seam probe reads the established engine event
+  'action.spent', 'stamina.spent', 'burst.declared', 'attack.hit',
+  'map.loaded',
+  'unit.enter',
+  'unit.equipped',
+  'turn.begin', 'turn.end',
+  'phase.begin',
+  'charge.spent',
+  'damage.applied', 'heal.applied',
+  'life.standing', 'life.downed', 'life.dead',
+  'deathbed.stood',
+  'badge.gained', 'unit.transformed', 'unit.reverted',
+] as const
+"
+
+ ❯ test/opening-draft-one-rule.test.ts:148:18
+    146|   it('kingdom/src/engine.ts, the one door, hands out the engine\'s two…
+    147|     const door = code(kingdom('src/engine.ts'))
+    148|     expect(door).toMatch(/export \{[^}]*\bfirstHeroDraftOf\b[^}]*\} fr…
+       |                  ^
+    149|     expect(door).toMatch(/export \{[^}]*\bdraftHandOf\b[^}]*\} from '.…
+    150|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/opening-draft-one-rule.test.ts > the kingdom holds no rolling procedure of its own > kingdom/src/core/draft-modifiers.ts calls them, and rolls nothing itself
+AssertionError: expected '\nimport { CRUCIBLE, FIRST_HERO, CRUC…' to match /import \{[^}]*\bfirstHeroD…/engine\.js'
+
+- Expected:
+/import \{[^}]*\bfirstHeroDraftOf\b[^}]*\} from '..\/engine\.js'/
+
++ Received:
+"
+import { CRUCIBLE, FIRST_HERO, CRUCIBLE_ROLL_SOURCE, crucibleStatOf, type CrucibleBadge } from '../content/crucible.js'
+import { isStatName } from '../engine.js'
+
+export type Roller = { below(n: number, ...keys: number[]): number; d100(...keys: number[]): number }
+export type Rolled = { stat: string; amount: number }
+export type DraftMod = { stat: string; add: number; source: string }
+export type Drafted = { badges: string[]; rolls: Rolled[]; mods: DraftMod[]; unfielded: Rolled[] }
+export type BaseOf = (stat: string) => number
+
+const stepOf = (stat: string): number => CRUCIBLE.statStep[stat] ?? CRUCIBLE.statStep['default']!
+const floorOf = (stat: string): number => CRUCIBLE.statFloor[stat] ?? CRUCIBLE.statFloor['default']!
+
+function statChangesOf(roller: Roller, baseOf: BaseOf, gains: number, losses: number, keys: readonly number[]): Rolled[] {
+  const out: Rolled[] = []
+  const now: Record<string, number> = {}
+  const used = new Set<string>()
+  for (const [sign, count, sub] of [[1, gains, 1], [-1, losses, 2]] as const) {
+    for (let i = 0; i < count; i++) {
+      let stat = '', a = 0
+      do { stat = CRUCIBLE.statPool[roller.below(CRUCIBLE.statPool.length, ...keys, sub, i, a)]!; a++ } while (used.has(stat) && a < CRUCIBLE.repeatAttempts)
+      if (used.has(stat)) continue
+      const was = now[stat] ?? baseOf(stat)
+      const is = Math.max(floorOf(stat), was + sign * stepOf(stat))
+      now[stat] = is
+      used.add(stat)
+      if (is !== was) out.push({ stat, amount: is - was })
+    }
+  }
+  return out
+}
+
+function badgeOf(roller: Roller, favourablePercent: number, exclude: ReadonlySet<string>, keys: readonly number[]): string | null {
+  const wantGood = roller.d100(...keys, 0) <= favourablePercent
+  let cands = (wantGood ? CRUCIBLE.favourable : CRUCIBLE.flawed).filter((b) => !exclude.has(b.id))
+  if (!cands.length) cands = [...CRUCIBLE.favourable, ...CRUCIBLE.flawed].filter((b) => !exclude.has(b.id))
+  if (!cands.length) return null
+  const weight = (b: CrucibleBadge) => CRUCIBLE.rarityWeight[b.rarity] ?? CRUCIBLE.rarityDefault
+  let r = roller.below(cands.reduce((s, b) => s + weight(b), 0), ...keys, 1)
+  for (const b of cands) { r -= weight(b); if (r < 0) return b.id }
+  return cands[cands.length - 1]!.id
+}
+
+function modsOf(rolls: readonly Rolled[], first: readonly DraftMod[] = []): { mods: DraftMod[]; unfielded: Rolled[] } {
+  const mods: DraftMod[] = first.map((m) => ({ ...m }))
+  const unfielded: Rolled[] = []
+  for (const r of rolls) {
+    const stat = crucibleStatOf(r.stat)
+    if (isStatName(stat)) mods.push({ stat, add: r.amount, source: CRUCIBLE_ROLL_SOURCE }); else unfielded.push({ ...r })
+  }
+  return { mods, unfielded }
+}
+
+export function firstHeroDraftedOf(roller: Roller, baseOf: BaseOf): Drafted {
+  const F = FIRST_HERO
+  const badges = [...F.badges]
+  const positives = F.positiveBadges + (roller.d100(0, 2, 7) <= F.anotherBadgePercent ? 1 : 0)
+  for (let i = 0; i < positives; i++) {
+    const b = badgeOf(roller, 100, new Set(badges), [0, 2, 6, i])
+    if (b) badges.push(b)
+  }
+  const points = F.statPoints + (roller.d100(0, 2, 9) <= F.anotherPointPercent ? 1 : 0)
+  const rolls = statChangesOf(roller, baseOf, points, 0, [0, 2, 8])
+  return { badges, rolls, ...modsOf(rolls, [{ stat: crucibleStatOf('health'), add: F.health, source: F.healthSource }]) }
+}
+
+export function handDraftedOf(roller: Roller, bases: readonly BaseOf[], ordinal: number, carried: readonly string[]): Drafted[] {
+  const signatures = new Set(carried)
+  return bases.map((baseOf, j) => {
+    const keys = [ordinal, 2 + j]
+    const [gains, losses] = CRUCIBLE.modTypes[roller.below(CRUCIBLE.modTypes.length, ...keys, 0)]!
+    const rolls = statChangesOf(roller, baseOf, gains!, losses!, keys)
+    const c = roller.d100(...keys, 3)
+    let count = 0, acc = 0
+    for (const [n, pct] of CRUCIBLE.badgeCount) { acc += pct!; if (c <= acc) { count = n!; break } }
+    const badges: string[] = []
+    for (let i = 0; i < count; i++) {
+      const signature = i === 0
+      const exclude = new Set([...badges, ...(signature ? signatures : [])])
+      const b = badgeOf(roller, signature ? CRUCIBLE.favourablePercent.signature : CRUCIBLE.favourablePercent.later, exclude, [...keys, 4, i])
+      if (b && !badges.includes(b)) { badges.push(b); if (signature) signatures.add(b) }
+    }
+    return { badges, rolls, ...modsOf(rolls) }
+  })
+}
+"
+
+ ❯ test/opening-draft-one-rule.test.ts:154:17
+    152|   it('kingdom/src/core/draft-modifiers.ts calls them, and rolls nothin…
+    153|     const src = code(kingdom('src/core/draft-modifiers.ts'))
+    154|     expect(src).toMatch(/import \{[^}]*\bfirstHeroDraftOf\b[^}]*\} fro…
+       |                 ^
+    155|     expect(src).toMatch(/import \{[^}]*\bdraftHandOf\b[^}]*\} from '..…
+    156|     expect(src).toMatch(/firstHeroDraftOf\(/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 1 passed (8)
+   Start at  06:29:21
+   Duration  1.72s (transform 1.12s, setup 0ms, import 1.40s, tests 111ms, environment 0ms)
+
