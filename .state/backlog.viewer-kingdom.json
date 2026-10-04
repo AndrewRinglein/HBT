@@ -5,7 +5,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'a victory in which a civilian was hurt is not a decisive victory'): 'if a civilian was hurt it was not a decisive victory.' kingdom.opening-recap-civilians put the civilians on the victory screen and made the report line 'No wounds sustained' count them, but left the title's grade the heroes' alone (kingdom SWITCHES.md recapCiviliansTitle), so the screen can read DECISIVE VICTORY above a wounded or dead civilian (kingdom src/ui/after.ts recapScreen; src/view/civilians.ts). Make the title's grade read the whole player side: 'Decisive' only when no hero and no civilian who fought was wounded or killed; a hurt civilian gives the grade a hurt hero gives. One reading of 'hurt' for the title and the report line - the same function, not two. Settle recapCiviliansTitle by this ruling. Rebuild the pages.",
   "expect": "At http://127.0.0.1:4230/play a won Orphanage in which the Orphan Child was wounded or killed and no hero was hurt does not show 'Decisive' in its title; a won battle in which nobody on the player's side was hurt does; the page test asserts both titles, and a test holds the title and the report line to one reading of hurt.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Small."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Small.",
+  "status": "done",
+  "sha": "2ad55f1"
  },
  {
   "id": "kingdom.page-test-strong-party",
