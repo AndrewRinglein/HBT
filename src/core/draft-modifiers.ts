@@ -18,6 +18,9 @@
 // is not the engine's — the battle's unit mods as a plain list, each a copy the Campaign owns (Law 5b).
 
 import { firstHeroDraftOf, draftHandOf, type DraftRoller, type DraftBase, type DraftRolls } from '../engine.js'
+// (combine 2026-10-04: joinsWithOf, below, reads the first hero's rule for ONE name — the source its +Health mod carries — to tell
+// that mod from a rolled point. A reading of the record the engine's function wrote; nothing is rolled with it.)
+import { FIRST_HERO } from '../content/crucible.js'
 
 /** The dice a draft rolls on, keyed by what the roll is (Law 4): 0..n-1, and 1..100 — the engine's own type. */
 export type Roller = DraftRoller
