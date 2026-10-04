@@ -280,6 +280,16 @@ const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // to 0. Moved by log TEXT only: test.afflictions-at-zero and test.vampire-bite (the badge rows' at-0 gaps became data; an
 // affliction's badge.gained line names its rule). A `changed` case is checked here and skips the older layers.
 const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero-rule.json', import.meta.url), 'utf8'))
+// fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an encounter
+// places it': "Yes, all of the civilians, by default, should field their kit the first time they're loaded. So all of them
+// should get it." · "If enemies have weapons assigned, they need them also when they come into play."), Law 10: every unit an
+// encounter places fields the kit its row carries, and the opt-in placedWithKit flag is retired. Every case frozen here
+// (tools/capture-civilians-field-kit-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the three
+// cases that place a civilian who fought with Punch until now — showcase.supper (ten villagers: daggers, pitchforks, rocks),
+// showcase.surrounded (the Lumberjack's axe, the Farmer's pitchfork) and test.opening-lumberjack (the Lumberjack's axe, his
+// wife's dagger and basic armor). The cases that place only an Orphan Child or the School Teacher do not move: they fielded
+// their Dagger already. A `changed` case is checked here and skips the older layers.
+const civiliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-civilians-field-kit.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -399,7 +409,10 @@ describe('resumable battle cursor', () => {
       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true
+      const civiliansKitExpected = civiliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const civiliansKitMoved = civiliansKitExpected?.changed === true
+      // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a civilians-kit-moved case skips the afflictions-at-zero-rule layer too (fix.civilians-field-kit 2026-10-03)
+      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || civiliansKitMoved
       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const openingLevelsMoved = openingLevelsExpected?.changed === true — an afflictions-at-zero-rule-moved case skips the opening-levels layer too (rule.afflictions-at-zero-refiled-2 2026-10-02)
       const openingLevelsMoved = openingLevelsExpected?.changed === true || afflictionsAtZeroRuleMoved
@@ -493,7 +506,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (afflictionsAtZeroRuleExpected) {
+        if (civiliansKitExpected) {
+        expect(hash(ctx.events), 'full civilians-field-kit events').toBe(civiliansKitExpected.events)
+        expect(hash(ctx.state), 'full civilians-field-kit state').toBe(civiliansKitExpected.state)
+        expect(hash(ctx.rng.log), 'full civilians-field-kit RNG').toBe(civiliansKitExpected.rng)
+        expect(result).toEqual(civiliansKitExpected.result)
+        }
+        // was: if (afflictionsAtZeroRuleExpected) { — fix.civilians-field-kit (2026-10-03): a civilians-kit-moved case is checked above instead
+        if (afflictionsAtZeroRuleExpected && !civiliansKitMoved) {
         expect(hash(ctx.events), 'full afflictions-at-zero-rule events').toBe(afflictionsAtZeroRuleExpected.events)
         expect(hash(ctx.state), 'full afflictions-at-zero-rule state').toBe(afflictionsAtZeroRuleExpected.state)
         expect(hash(ctx.rng.log), 'full afflictions-at-zero-rule RNG').toBe(afflictionsAtZeroRuleExpected.rng)

@@ -879,13 +879,6 @@ export type UnitDef = {
    * attacks, powers, riders and stat deltas are NOT on the row.
    */
   readonly defaultItems?: readonly string[]
-  /**
-   * fix.orphans-teacher-knife (ruled 2026-10-02, DECISIONS.md 'the Net is a trinket with no hands; the orphans and the
-   * school teacher start with a knife'): the Codex row says this unit fields its `defaultItems` wherever an encounter
-   * places it (a setup unit or a scheduled arrival), through the one assembler. Absent = an encounter fields the row
-   * authored whole, no kit (SWITCHES.md arrivalKit).
-   */
-  readonly placedWithKit?: boolean
   /** badge.mechanism (2026-09-04): the badges the ROW carries — a civilian that says badge.hero, an enemy with an innate one. The kingdom's per-hero list arrives through BattleOptions.heroBadges. */
   readonly badges?: readonly string[]
   readonly attacks: readonly string[]

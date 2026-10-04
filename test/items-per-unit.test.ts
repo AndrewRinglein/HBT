@@ -91,7 +91,12 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // teacher should start with a knife each."): her kit is the Dagger, not the pile of rocks — content moved, not the
       // fold. The melee knife makes her role and ai melee (derived from the kit), and her row says placedWithKit.
       // was: 'hero.fixed.orphans': ['attacks'],
-      'hero.fixed.orphans': ['role', 'ai', 'attacks', 'placedWithKit'],
+      // Law 10, fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an
+      // encounter places it': "all of the civilians, by default, should field their kit the first time they're loaded"): the
+      // opt-in row flag is retired — every placed unit fields its kit — so her row no longer says placedWithKit. Content
+      // moved, not the fold.
+      // was: 'hero.fixed.orphans': ['role', 'ai', 'attacks', 'placedWithKit'],
+      'hero.fixed.orphans': ['role', 'ai', 'attacks'],
       'hero.fixed.lumberjack-and-wife': ['attacks'],
       'hero.fixed.farmer': ['attacks'],
       // Law 10, 2026-09-23 (v2.shields): the retired Knight Shield took its Shield Slam with it.

@@ -4,6 +4,9 @@
 // rocks goes), and the orphans and the school teacher field their kit wherever an encounter places them — through the
 // one assembler, flagged by the Codex row (placedWithKit, gen/civilian-rulings.json). Every other placed civilian is
 // fielded authored whole, with Punch (SWITCHES.md arrivalKit).
+// fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an encounter
+// places it'): the flag is retired and the last sentence is no longer the rule — every placed civilian fields its kit.
+// The orphans' and the teacher's knife stand as ruled; the third test below is rewritten as the new rule (Law 10 note there).
 import { describe, expect, it } from 'vitest'
 import { createBattle, fieldedDef } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -46,16 +49,30 @@ describe('fix.orphans-teacher-knife-refiled', () => {
     expect(stabs, 'the knives are used').toBeGreaterThan(0)
   })
 
-  it('a school child placed by an encounter still fights with Punch (arrivalKit stands for every other civilian)', () => {
+  // Law 10, 2026-10-03 (fix.civilians-field-kit; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an
+  // encounter places it', Andrew: "Yes, all of the civilians, by default, should field their kit the first time they're
+  // loaded. So all of them should get it." — which replaces the 2026-10-02 entry's "the other placed civilians … stay as
+  // they are"). This test was
+  //   it('a school child placed by an encounter still fights with Punch (arrivalKit stands for every other civilian)', …
+  //     expect(equipped(ctx, child.id), 'the child is fielded authored whole').toEqual([])
+  //     expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual([PUNCH])
+  //     … expect(swung(ctx, child.id).every((a) => a === PUNCH), 'the child only punches').toBe(true)
+  // — the rule of 2026-10-02, when only the orphans and the teacher were named. The rule now, as ruled: the school
+  // children field their kit too (the pile of rocks), and on their own Activation they throw rocks, never Punch.
+  it('a school child placed by an encounter fields its kit too — the pile of rocks — as every placed civilian does since 2026-10-03', () => {
     const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), encounter: ENCOUNTERS['encounter.prologue-3']! })
     const child = placed(ctx, CHILD)[0]!
     expect(child, 'the school children are placed').toBeDefined()
-    expect(equipped(ctx, child.id), 'the child is fielded authored whole').toEqual([])
-    expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual([PUNCH])
+    expect(equipped(ctx, child.id), 'the child fields its Codex kit').toEqual(UNITS[CHILD]!.defaultItems)
+    expect(equipped(ctx, child.id)).toEqual(['item.pile-of-rocks'])
+    expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual(['attack.pile-of-rocks.throw', PUNCH])
     // and the teacher placed beside them in the Schoolhouse carries her knife there too
     const teacher = placed(ctx, TEACHER)[0]!
     expect(equipped(ctx, teacher.id)).toEqual([KNIFE])
     runBattle(ctx)
-    expect(swung(ctx, child.id).every((a) => a === PUNCH), 'the child only punches').toBe(true)
+    // what the child chooses on its own Activation is the rocks (a reaction — an attack of opportunity — is the cheapest
+    // legal melee attack by its own ruling, and the rocks are thrown, not swung)
+    const chosen = ctx.events.flatMap((e, i) => e.type === 'attack.declared' && e['actor'] === child.id && ctx.events.slice(Math.max(0, i - 4), i).some((p) => p.type === 'action.spent' && p['actor'] === child.id && p['actionId'] === e['attackId'] && p['slot'] === 'primary') ? [String(e['attackId'])] : [])
+    expect(chosen.filter((a) => a !== 'attack.pile-of-rocks.throw'), 'on its Activation the child throws rocks, never Punch').toEqual([])
   })
 })
