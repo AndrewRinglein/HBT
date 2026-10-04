@@ -1116,7 +1116,8 @@ export const UNIT_PACK = {
             "select": "area",
             "side": "any",
             "radius": 2,
-            "origin": "self"
+            "origin": "self",
+            "excludeSelf": true
           },
           "effect": {
             "kind": "status.apply",
