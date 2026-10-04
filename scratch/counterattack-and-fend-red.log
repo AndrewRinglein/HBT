@@ -1,0 +1,366 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/counterattack-and-fend.test.ts (19 tests | 19 failed) 23ms
+     × Counterattack and Fend, and each one's Accuracy, are stats of the engine 4ms
+     × the Longsword's second power: Counterattack with +10 Accuracy until the end of your next Turn, 2 Stamina — beside its two attacks 2ms
+     × Fend is the same shape with the other stat — a second instance, pure data (the test receptacle's power) 0ms
+     × the power costs 2 Stamina and gives Counterattack 1 and +10 Counterattack Accuracy 4ms
+     × attacked, he makes one free basic attack at −20 +10 Accuracy after the attack has resolved, and spends no Stamina 1ms
+     × set off by being ATTACKED — a miss, a block and a hit all set it off 1ms
+     × once per enemy action: every hit of a several-hit attack resolves, then the one counterattack 1ms
+     × each enemy action is answered: two attackers, two counterattacks 1ms
+     × nothing else sets it off: no Counterattack up, a shot from range, a burst, or a free attack 4ms
+     × a counterattack is not itself answered: two units with Counterattack up trade one swing each way, not a chain 0ms
+     × no counterattack from a unit the attack put down, or on an attacker no longer beside it 0ms
+     × until the end of his next Turn: up through the Enemy Phase and the whole next Turn, gone when that Turn ends 0ms
+     × a unit with Fend up makes one free basic attack on an enemy that walks into its zone, with no Stamina spent 0ms
+     × a hit stops the mover where it entered the zone; a miss does not 0ms
+     × moving INTO the zone sets it off — not a step from one hex of the zone to another, not a sidestep, and not without Fend 0ms
+     × the forecast shows the fend: where, from whom, with what and at what chance 0ms
+     × Fend has its own Accuracy stat, as Counterattack has: +N on the fend, and on nothing else 1ms
+     × the fielding test.counterattack: a paladin raises his Counterattack and answers a zombie that swings at him 0ms
+     × the fielding test.fend: a unit with the test Fend power fends off a zombie that walks up to it 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 19 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > the rows > Counterattack and Fend, and each one's Accuracy, are stats of the engine
+AssertionError: counterattack: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/counterattack-and-fend.test.ts:57:123
+     55| describe('the rows', () => {
+     56|   it('Counterattack and Fend, and each one\'s Accuracy, are stats of t…
+     57|     for (const name of ['counterattack', 'counterattackAccuracy', 'fen…
+       |                                                                                                                           ^
+     58|   })
+     59|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > the rows > the Longsword's second power: Counterattack with +10 Accuracy until the end of your next Turn, 2 Stamina — beside its two attacks
+AssertionError: expected undefined to match object { name: 'Counterattack', …(4) }
+
+- Expected:
+{
+  "cooldown": 0,
+  "effects": [
+    {
+      "kind": "statMod",
+      "stat": "counterattack",
+      "until": "endOfNextTurn",
+      "value": 1,
+      "who": "self",
+    },
+    {
+      "kind": "statMod",
+      "stat": "counterattackAccuracy",
+      "until": "endOfNextTurn",
+      "value": 10,
+      "who": "self",
+    },
+  ],
+  "name": "Counterattack",
+  "staminaCost": 2,
+  "target": {
+    "select": "self",
+  },
+}
+
++ Received:
+undefined
+
+ ❯ test/counterattack-and-fend.test.ts:61:32
+     59|
+     60|   it('the Longsword\'s second power: Counterattack with +10 Accuracy u…
+     61|     expect(ABILITIES[COUNTER]).toMatchObject({
+       |                                ^
+     62|       name: 'Counterattack', staminaCost: 2, cooldown: 0, target: { se…
+     63|       effects: [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > the rows > Fend is the same shape with the other stat — a second instance, pure data (the test receptacle's power)
+AssertionError: expected undefined to match object { target: { select: 'self' }, …(1) }
+
+- Expected:
+{
+  "effects": [
+    {
+      "kind": "statMod",
+      "stat": "fend",
+      "until": "endOfNextTurn",
+      "value": 1,
+      "who": "self",
+    },
+  ],
+  "target": {
+    "select": "self",
+  },
+}
+
++ Received:
+undefined
+
+ ❯ test/counterattack-and-fend.test.ts:75:29
+     73|
+     74|   it('Fend is the same shape with the other stat — a second instance, …
+     75|     expect(ABILITIES[FEND]).toMatchObject({ target: { select: 'self' }…
+       |                             ^
+     76|   })
+     77| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > the power costs 2 Stamina and gives Counterattack 1 and +10 Counterattack Accuracy
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:83:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > attacked, he makes one free basic attack at −20 +10 Accuracy after the attack has resolved, and spends no Stamina
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:92:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > set off by being ATTACKED — a miss, a block and a hit all set it off
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:117:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > once per enemy action: every hit of a several-hit attack resolves, then the one counterattack
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:133:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > each enemy action is answered: two attackers, two counterattacks
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:150:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > nothing else sets it off: no Counterattack up, a shot from range, a burst, or a free attack
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:164:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > a counterattack is not itself answered: two units with Counterattack up trade one swing each way, not a chain
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:189:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > no counterattack from a unit the attack put down, or on an attacker no longer beside it
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:198:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Counterattack — set off by being attacked in melee by an adjacent enemy > until the end of his next Turn: up through the Enemy Phase and the whole next Turn, gone when that Turn ends
+Error: unknown ability 'power.longsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ guard test/counterattack-and-fend.test.ts:50:73
+ ❯ test/counterattack-and-fend.test.ts:210:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Fend — set off by an enemy moving into the zone of control > a unit with Fend up makes one free basic attack on an enemy that walks into its zone, with no Stamina spent
+Error: unknown ability 'power.test-fend' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ fend test/counterattack-and-fend.test.ts:52:125
+ ❯ approach test/counterattack-and-fend.test.ts:229:5
+ ❯ test/counterattack-and-fend.test.ts:240:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Fend — set off by an enemy moving into the zone of control > a hit stops the mover where it entered the zone; a miss does not
+Error: unknown ability 'power.test-fend' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ fend test/counterattack-and-fend.test.ts:52:125
+ ❯ approach test/counterattack-and-fend.test.ts:229:5
+ ❯ test/counterattack-and-fend.test.ts:253:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Fend — set off by an enemy moving into the zone of control > moving INTO the zone sets it off — not a step from one hex of the zone to another, not a sidestep, and not without Fend
+Error: unknown ability 'power.test-fend' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ fend test/counterattack-and-fend.test.ts:52:125
+ ❯ test/counterattack-and-fend.test.ts:274:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Fend — set off by an enemy moving into the zone of control > the forecast shows the fend: where, from whom, with what and at what chance
+Error: unknown ability 'power.test-fend' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ fend test/counterattack-and-fend.test.ts:52:125
+ ❯ approach test/counterattack-and-fend.test.ts:229:5
+ ❯ test/counterattack-and-fend.test.ts:297:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > Fend — set off by an enemy moving into the zone of control > Fend has its own Accuracy stat, as Counterattack has: +N on the fend, and on nothing else
+AssertionError: expected 52 to be 67 // Object.is equality
+
+- Expected
++ Received
+
+- 67
++ 52
+
+ ❯ test/counterattack-and-fend.test.ts:311:68
+    309|     const base = preview(ctx, h.id, z.id, SLASH).accuracy
+    310|     const p = preview as unknown as (c: Ctx, a: number, t: number, id:…
+    311|     expect(p(ctx, h.id, z.id, SLASH, 'reaction', 'fend').accuracy).toB…
+       |                                                                    ^
+    312|     expect(p(ctx, h.id, z.id, SLASH, 'reaction', 'counterattack').accu…
+    313|     expect(p(ctx, h.id, z.id, SLASH, 'reaction').accuracy).toBe(base -…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > in real battles > the fielding test.counterattack: a paladin raises his Counterattack and answers a zombie that swings at him
+AssertionError: no scenario test.counterattack is registered: expected undefined to be defined
+ ❯ test/counterattack-and-fend.test.ts:320:63
+    318|   it('the fielding test.counterattack: a paladin raises his Counteratt…
+    319|     const s = SCENARIOS['test.counterattack']
+    320|     expect(s, 'no scenario test.counterattack is registered').toBeDefi…
+       |                                                               ^
+    321|     let used = 0, answered = 0
+    322|     for (let r = 0; r < 12 && !(used && answered); r++) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/19]⎯
+
+ FAIL  test/counterattack-and-fend.test.ts > in real battles > the fielding test.fend: a unit with the test Fend power fends off a zombie that walks up to it
+AssertionError: no scenario test.fend is registered: expected undefined to be defined
+ ❯ test/counterattack-and-fend.test.ts:334:54
+    332|   it('the fielding test.fend: a unit with the test Fend power fends of…
+    333|     const s = SCENARIOS['test.fend']
+    334|     expect(s, 'no scenario test.fend is registered').toBeDefined()
+       |                                                      ^
+    335|     let used = 0, fended = 0
+    336|     for (let r = 0; r < 12 && !(used && fended); r++) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/19]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  19 failed (19)
+   Start at  07:28:35
+   Duration  1.16s (transform 816ms, setup 0ms, import 996ms, tests 23ms, environment 0ms)
+

@@ -168,7 +168,12 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     expect(fieldedDef('alpha-lucius').abilities).toEqual(['power.holy-symbol.heal'])
     // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield retired with V2 R1 and his kit
     // carries the Kite Shield; the rule is unchanged — his powers are exactly his shield's.
-    expect(fieldedDef('alpha-osric').abilities).toEqual([...ITEMS['item.kite-shield']!.abilities])
+    // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): his Longsword carries a
+    // power now (Counterattack). The rule is unchanged and said whole: his powers are exactly his KIT's, item by item
+    // (was: `[...ITEMS['item.kite-shield'].abilities]`, true while only the shield had any).
+    expect(ITEMS['item.kite-shield']!.abilities.length).toBeGreaterThan(0)
+    expect(fieldedDef('alpha-osric').abilities).toEqual((UNITS['alpha-osric']!.defaultItems ?? []).flatMap((id) => ITEMS[id]!.abilities))
+    for (const a of ITEMS['item.kite-shield']!.abilities) expect(fieldedDef('alpha-osric').abilities).toContain(a)
   })
 })
 

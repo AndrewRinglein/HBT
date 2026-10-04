@@ -27478,3 +27478,185 @@ index a7b7c23..cdf0223 100644
  
 ```
 </details>
+
+## capability.counterattack-and-fend — LANDED `7d92124` **NEEDS REVIEW**
+2026-10-04 15:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2087 · DECISIONS.md:4731
+  PASS  typecheck
+  PASS  the item's own tests — test/ai-scorer.test.ts, test/alpha-team.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/item-powers.test.ts, test/opening-cavern-trail.test.ts, test/opening-gates.test.ts, test/zone-of-control.test.ts, test/counterattack-and-fend.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.longsword.counterattack: 1 log lines, 1 fired, 1 changed state · power.test-fend: 7 log lines, 7 fired, 3 changed state
+  PASS  brought its own tests — test/ai-scorer.test.ts, test/alpha-team.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/item-powers.test.ts, test/opening-cavern-trail.test.ts, test/opening-gates.test.ts, test/zone-of-control.test.ts, test/counterattack-and-fend.test.ts, test/fixtures/battle-cursor-counterattack.json
+  WARN  existing tests untouched — DELETED LINES in test/ai-scorer.test.ts (-1), test/alpha-team.test.ts (-1), test/battle-cursor.test.ts (-2), test/item-powers.test.ts (-2), test/opening-cavern-trail.test.ts (-1), test/opening-gates.test.ts (-1), test/zone-of-control.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 32d99613->2c365882, map.ridge dea75a79->6db868b4, map.flanks df5fe22c->3505d381, map.highlands afc885da->f2813442, map.field 2955b12b->3383b07f, map.thicket da750c56->86c57255, map.proving.open a33c47dc->16d5c09d, map.proving.ridge 6017fcf8->5fc0a8e8, map.proving.ford 37dee6b7->f6db810e, map.proving.copse e85289b7->864a747c, map.proving.ruin 261ef5db->2f63cfe5, map.courtyard 53034727->66d0fd90, map.floodplain bcbeb38b->a56426bf, test.map.embers d17fe0a1->bb7b4797, test.map.showcase 5319362c->84e05fc3, test.map.duel-8 815e8021->24bf5b9a, test.map.dungeon-16x8 336947bb->27f02d6f, test.map.horde-24 c8879f4c->d7d8f422, test.map.journey-20x10 34ac1c54->ec0ae060, test.map.authored-40x40 c6c1b72e->22bb7785, test.map.high-prop-single b5387772->48e82bf3, test.map.high-prop-multi ea8c7986->ff400453, test.map.well-shove 420cd0b6->167f8568
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.longsword.counterattack live · power.test-fend live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.longsword.counterattack,power.test-fend — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ai-scorer.test.ts b/test/ai-scorer.test.ts
+index a1f86e1..4ffb0f8 100644
+--- a/test/ai-scorer.test.ts
++++ b/test/ai-scorer.test.ts
+@@ -102,5 +102,9 @@ describe('every AI decision logs its top three plans', () => {
+     const ctx = createBattle({ replicate })
+     runBattle(ctx)
+-    const spent = ctx.events.filter((e) => e.type === 'action.spent').length
++    // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): this counted every `action.spent` line.
++    // The claim is one log line per action the AI TOOK; a special free attack (an attack of opportunity, a counterattack, a
++    // fend) is a reaction nobody chose — its `action.spent` line says slot 'reaction' — and the standard battle's paladin
++    // counterattacks now. Chosen actions are counted, as the claim always meant.
++    const spent = ctx.events.filter((e) => e.type === 'action.spent' && e['slot'] !== 'reaction').length
+     expect(ctx.aiLog.length).toBeGreaterThan(10)
+     expect(ctx.aiLog.length).toBe(spent)
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index 15d762c..6d68d2a 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -169,5 +169,10 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield retired with V2 R1 and his kit
+     // carries the Kite Shield; the rule is unchanged — his powers are exactly his shield's.
+-    expect(fieldedDef('alpha-osric').abilities).toEqual([...ITEMS['item.kite-shield']!.abilities])
++    // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): his Longsword carries a
++    // power now (Counterattack). The rule is unchanged and said whole: his powers are exactly his KIT's, item by item
++    // (was: `[...ITEMS['item.kite-shield'].abilities]`, true while only the shield had any).
++    expect(ITEMS['item.kite-shield']!.abilities.length).toBeGreaterThan(0)
++    expect(fieldedDef('alpha-osric').abilities).toEqual((UNITS['alpha-osric']!.defaultItems ?? []).flatMap((id) => ITEMS[id]!.abilities))
++    for (const a of ITEMS['item.kite-shield']!.abilities) expect(fieldedDef('alpha-osric').abilities).toContain(a)
+   })
+ })
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 7d786e6..8eb49e0 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -271,4 +271,7 @@ describe('independent audit of logged battles', () => {
+             // free swing that spent Stamina would break the stamina ledger below (no stamina.spent line is its rule).
+             if (e['free'] === true) acc -= 20
++            // … and on 2026-10-04 (capability.counterattack-and-fend) that a counterattack and a fend add the swinging
++            // unit's own Accuracy for that free attack — "counterattack with +10 Accuracy" — read through the mod ledger.
++            if (e['free'] === true && typeof e['as'] === 'string') acc += modded(e.actor!, e['as'] + 'Accuracy', 0, e.turn)
+             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
+             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index bf0e69d..80fb626 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -334,4 +334,10 @@ const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
+ // and skips the older layers.
+ const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack.json', import.meta.url), 'utf8'))
++// capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six,
++// shields, custom weapons'), Law 10: the Longsword carries a Counterattack power, the computer uses it, and a unit with
++// Counterattack up answers a melee attack. Every case frozen here (tools/capture-counterattack-cursor.mts; the fixture counts each
++// case's counterattacks and fends). The 19 cases that field a Longsword moved (its `unit.equipped` line names the power; where the
++// power is used the fight re-times). A `changed` case is checked here and skips the older layers.
++const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -459,5 +465,8 @@ describe('resumable battle cursor', () => {
+       const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const freeAttackMoved = freeAttackExpected?.changed === true
++      const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const counterattackMoved = counterattackExpected?.changed === true
++      // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
++      const freeAttackMoved = freeAttackExpected?.changed === true || counterattackMoved
+       // was: const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true — a free-attack-moved case skips the burst-paints-ground layer too (rule.free-attack-is-basic-attack 2026-10-04)
+       const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true || freeAttackMoved
+@@ -568,5 +577,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (freeAttackExpected) {
++        if (counterattackExpected) {
++        expect(hash(ctx.events), 'full counterattack events').toBe(counterattackExpected.events)
++        expect(hash(ctx.state), 'full counterattack state').toBe(counterattackExpected.state)
++        expect(hash(ctx.rng.log), 'full counterattack RNG').toBe(counterattackExpected.rng)
++        expect(result).toEqual(counterattackExpected.result)
++        }
++        // was: if (freeAttackExpected) { — capability.counterattack-and-fend (2026-10-04): a counterattack-moved case is checked above instead
++        if (freeAttackExpected && !counterattackMoved) {
+         expect(hash(ctx.events), 'full free-attack events').toBe(freeAttackExpected.events)
+         expect(hash(ctx.state), 'full free-attack state').toBe(freeAttackExpected.state)
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index a3e1e64..0e38ef2 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -174,5 +174,10 @@ describe('they run — no power is dead content in a real battle', () => {
+     // fights re-time again and Osric's first raised shield moved from a seed under 20 to seed 24. The claim (both powers are
+     // live) is unchanged; the search is wider — 20 to 40 — as on 2026-09-04. Neither assertion changed.
+-    for (let r = 0; r < 40 && !both(); r++) {
++    // Law 10, 2026-10-04 (capability.counterattack-and-fend): Osric's Longsword carries Counterattack now, and it is listed
++    // before his shield, so the computer — which uses the first self power its kit lists that is ready — raises it in the
++    // moments it used to raise the shield. The shield's powers are still live but rare for him: the first Shield Wall is on
++    // seed 64 (was a seed under 40). The claim (both powers are live) is unchanged; the search is wider — 40 to 100.
++    // FOUND, engine SWITCHES.md counterattackDisplacesShieldPowers: this is the computer's order of preference, not a rule.
++    for (let r = 0; r < 100 && !both(); r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
+       runBattle(ctx)
+@@ -184,5 +189,5 @@ describe('they run — no power is dead content in a real battle', () => {
+     expect(used.has('power.holy-symbol.heal'), 'the priest never healed — dead content').toBe(true)
+     expect(guarded(), 'Osric never raised his shield — dead content').toBe(true)
+-  })
++  }, 120_000)   // up to a hundred whole battles since 2026-10-04 (the shield's first use is on seed 64): a time limit is not the assertion
+ 
+   it('Storm opens showcase.item-powers — the boxed-mage fielding exists for exactly this', () => {
+diff --git a/test/opening-cavern-trail.test.ts b/test/opening-cavern-trail.test.ts
+index b4e5b00..9c249e5 100644
+--- a/test/opening-cavern-trail.test.ts
++++ b/test/opening-cavern-trail.test.ts
+@@ -44,5 +44,14 @@ describe('encounter.opening.cavern-trail', () => {
+     }
+   })
+-  it('is won when the last enemy dies', () => {
++  // SKIPPED BY NAME 2026-10-04 — Andrew (engine DECISIONS.md 2026-10-04 'no testing that the battles can be won until these
++  // items are done; the page tests play an overpowered party; faster landing'): "I'm okay forgoing all testing battle until
++  // we're done with all these items." This test's only purpose is to show the computer can win the Cavern Trail with the
++  // drafted party on one replicate (WIN). With capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons')
++  // a paladin's Longsword carries Counterattack and the computer uses it; that replicate is a wipe now. No seed was searched
++  // for. The rule itself — a battle with no `win` of its own ends heroClear when the last enemy is down — is the engine's
++  // victory check, tested on its own (test/encounter-runner.test.ts, test/encounter-commands.test.ts).
++  // Un-skip when the queued items are done and a winning replicate is recorded again.
++  // was: it('is won when the last enemy dies', () => {
++  it.skip('is won when the last enemy dies', () => {
+     const ctx = openingBattle(S, WIN, true)
+     expect(ctx.state.outcome).toBe('heroClear')
+diff --git a/test/opening-gates.test.ts b/test/opening-gates.test.ts
+index 993b743..4591062 100644
+--- a/test/opening-gates.test.ts
++++ b/test/opening-gates.test.ts
+@@ -20,5 +20,10 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
+ // curse lands on nobody (0 hit; replicates 0-39 searched). Replicate 3 is the first whose curse lands on a hero and runs past Turn 7.
+ // was: const SEEN = 7
+-const SEEN = 3
++// Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): a paladin's Longsword
++// carries Counterattack and the computer uses it, so replicate 3's fight re-times and its curse lands on nobody (0 hit;
++// replicates 0-39 read again, as on 2026-10-02). Replicate 1 is the first whose curse lands on a unit and runs past Turn 7.
++// Nothing here asks who wins.
++// was: const SEEN = 3
++const SEEN = 1
+ describe('encounter.opening.gates', () => {
+   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
+diff --git a/test/zone-of-control.test.ts b/test/zone-of-control.test.ts
+index a343f25..7f337a8 100644
+--- a/test/zone-of-control.test.ts
++++ b/test/zone-of-control.test.ts
+@@ -122,5 +122,9 @@ describe('attack of opportunity', () => {
+         ctx.cfg.switches.zoneOfControl = zoc
+         runBattle(ctx)
+-        n += ctx.events.filter((e) => e.type === 'aoo.provoked').length
++        // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): a counterattack and a
++        // fend write this same line (they are special free attacks too), named by `as`. This measures the attack of
++        // opportunity — the zone-of-control switch's own consequence — so it counts the lines with no `as`
++        // (was: every aoo.provoked line, when the attack of opportunity was the only one). A counterattack needs no zone.
++        n += ctx.events.filter((e) => e.type === 'aoo.provoked' && e['as'] === undefined).length
+       }
+       return n
+```
+</details>

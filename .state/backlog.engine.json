@@ -5482,7 +5482,18 @@
   ],
   "spec": "Ruled 2026-09-28 (Andrew, engine DECISIONS.md 'counterattack, special free attacks, the opening six, shields, custom weapons') and in no queue until 2026-10-04: 'Counterattack is the one name ... set off by being attacked by an adjacent melee attacker - not by being hit, blocked or dodged. Once per enemy action: every attack of that action resolves, then the one counterattack.' / 'Fend lasts until the end of your next turn, like a counterattack power; it is triggered by an enemy moving into your zone of control. Its damage works as the attack of opportunity's does: it can stop the mover.' / 'The longsword's second power: counterattack with +10 Accuracy, until the end of your next turn, 2 Stamina.' The engine holds neither (no counterattack or fend in src/core). Build them as special free attacks on the one rule rule.free-attack-is-basic-attack lays down (the basic attack, no Stamina, -20 Accuracy): a counterattack state a power grants until the end of the unit's next Turn, set off once per enemy action after all of that action's attacks resolve; a fend state set off by an enemy moving into the unit's zone of control, which can stop the mover as an attack of opportunity's hit does; and the content rows that grant them (the longsword's counterattack with +10 Accuracy for 2 Stamina; Counter Strike and Spear Fend where the Codex holds them) through the content pipeline - list which rows exist and which are gaps. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first: where in the order of operations each fires is the item's first question, answered from the sequence and recorded.",
   "expect": "A hero who has used the longsword's counterattack power, attacked in melee by an adjacent enemy, makes one free basic attack at +10 Accuracy after that enemy's action's attacks have all resolved, once per enemy action, until the end of its next Turn; a unit with fend up makes a free basic attack on an enemy that moves into its zone of control and a hit stops the mover; neither spends Stamina beyond the power's own cost.",
-  "note": "Filed by the kingdom chat, 2026-10-04: ruled 2026-09-28 and never queued. Not urgent - behind the playtest fixes."
+  "note": "Filed by the kingdom chat, 2026-10-04: ruled 2026-09-28 and never queued. Not urgent - behind the playtest fixes.",
+  "probeIds": [
+   "power.longsword.counterattack",
+   "power.test-fend"
+  ],
+  "variants": [
+   "power.longsword.counterattack",
+   "power.test-fend"
+  ],
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "7d92124"
  },
  {
   "id": "fix.opening-orphanage-closer-start",

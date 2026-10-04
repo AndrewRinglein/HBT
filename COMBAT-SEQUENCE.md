@@ -188,6 +188,7 @@ thing anyone means. **The End of Activation ladder still runs**, which is what m
 |---|---|---|
 | 1 | Check movement points — enough to enter? | **yes** |
 | 2 | Attacks of opportunity fire → **settle** | **yes** — leaving a zone of control draws each holder's **special free attack** (rule.free-attack-is-basic-attack, 2026-10-04): its basic attack — the first action of the weapon in hand, when that is a melee attack — else its own unarmed attack (Punch), through THE attack function as a reaction: no Stamina asked for or spent, −20 Accuracy (`FREE_ATTACK`, a named row of the accuracy ladder), the declared line marked `free`. A hit ends the mover's movement. `src/core/free-attack.ts` |
+| 5b | **Fend** → **settle** | **yes** — capability.counterattack-and-fend (2026-10-04): after the mover has entered a hex and met its ground, each standing enemy whose zone of control it has just walked INTO (it was outside that zone on the hex before) and whose `fend` stat is above 0 makes its special free attack on it — the same free attack as rung 2, plus its `fendAccuracy`; once per fender per walk; a hit ends the movement on that hex. A sidestep, a flight and a walk that ignores zones of control draw none. |
 | 3 | Enter the hex, spend the points | **yes** |
 | 4 | Traps → **settle** | *not yet* |
 | 5 | Gain terrain status from the hex | *not yet* |
@@ -205,6 +206,14 @@ Repeat per hex. Vision and stealth recalculate after **every** step, after every
 ### Primary action
 
 Attack or class power.
+
+**Counterattack** (capability.counterattack-and-fend, 2026-10-04; DECISIONS.md 2026-09-28: "set off by being attacked, not by
+being hit, blocked, or dodged" — "once per enemy action … all three of their attacks will resolve, and then you will get your
+one counterattack"). After an attack made on the attacker's own Activation has resolved WHOLE — every hit, its KDB check, its
+Destroy — and settled: if it was a melee attack, the attacker still stands beside the unit it attacked, and that unit still
+stands with its `counterattack` stat above 0, the unit makes its special free attack on the attacker (the basic attack, no
+Stamina, −20 Accuracy, plus its `counterattackAccuracy`), then settle. A burst is not an attack and draws none; a special
+free attack (an attack of opportunity, a fend, a counterattack) is never answered.
 
 ### Surge check
 

@@ -4087,6 +4087,51 @@
   {
    "group": "weapon",
    "content": [
+    "item.longsword"
+   ],
+   "action": "power.longsword.counterattack",
+   "name": "Counterattack",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
+   "motion": null,
+   "bodies": {
+    "Ancient Elf": null,
+    "Archive Scholar": null,
+    "Barefoot Mendicant": null,
+    "Battle Chaplain": null,
+    "Black Oath": null,
+    "Cathedral Bishop": null,
+    "Court Champion": null,
+    "Crimson Sorceress": null,
+    "Dawnblade": null,
+    "Emberwright": null,
+    "Forest Elf": null,
+    "Forest Fey": null,
+    "Hunter": null,
+    "Lion of the Host": null,
+    "Oathblade": null,
+    "Pyre Witch": null,
+    "Rune-Marked Ascetic": null,
+    "The Raven": null,
+    "The Rose": null,
+    "The Serpent": null,
+    "The Skull": null
+   },
+   "motionStatus": "missing",
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
+   "ruling": null,
+   "note": null,
+   "variants": 0
+  },
+  {
+   "group": "weapon",
+   "content": [
     "item.lumberjack-axe"
    ],
    "action": "attack.lumberjack-axe.chop",
@@ -22262,12 +22307,12 @@
   }
  ],
  "counts": {
-  "rows": 511,
-  "missing": 351,
+  "rows": 512,
+  "missing": 352,
   "noEngine": 37,
   "inert": 239,
-  "noMotion": 351,
-  "selectedUnbound": 307,
+  "noMotion": 352,
+  "selectedUnbound": 308,
   "partial": 73
  }
 }

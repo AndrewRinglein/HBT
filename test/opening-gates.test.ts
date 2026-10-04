@@ -19,7 +19,12 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
 // is going to help the paladin or the warrior"), so replicate 7's sword moved from its Rogue to its Paladin and that battle's
 // curse lands on nobody (0 hit; replicates 0-39 searched). Replicate 3 is the first whose curse lands on a hero and runs past Turn 7.
 // was: const SEEN = 7
-const SEEN = 3
+// Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): a paladin's Longsword
+// carries Counterattack and the computer uses it, so replicate 3's fight re-times and its curse lands on nobody (0 hit;
+// replicates 0-39 read again, as on 2026-10-02). Replicate 1 is the first whose curse lands on a unit and runs past Turn 7.
+// Nothing here asks who wins.
+// was: const SEEN = 3
+const SEEN = 1
 describe('encounter.opening.gates', () => {
   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
     const e = encounterDef(ENC)
