@@ -4447,3 +4447,17 @@ Ruled:
 - **A hit shows a red slash across the target**, at the blow.
 
 Filed: `viewer.attack-impact-timing`, `viewer.miss-dodge-motion`, `viewer.hit-slash`.
+
+## 2026-10-03 — every draft card shows the hero's card art; the Lumberjack's axe and his wife's knife are still missing
+
+Andrew, in the kingdom chat, playing the opening run with the 24-hero pool and the draft modifiers in:
+
+“Lumberjack is missing an axe. Lumberjack's wife is missing a knife.   Card art for heroes 2 and 3 didn't come through when I was selecting heroes for the battle.   Card art should be present when you're drafting, both the first time and the next ones.”
+
+How it is today: the kingdom's card portraits (`kingdom/generated/art/hero-*.jpg`, made by `tools/prep-heroes.py`) exist for the five heroes of the old pool only, and the tool reads its ids off `hero('…')` literals that `kingdom.opening-draft-pool` replaced with the pack's rows — so 19 of the 24 heroes have a blank card wherever a card is shown (Equip); and the draft screen (`src/ui/draft.ts`) shows no art at all.
+
+Ruled:
+
+- **Card art is present when drafting — on the first draft and on every later one.** With 'the first hero is chosen from three by description only' (above): the first draft's cards show the art and the description, still no stats and no badges.
+- **Every hero's card art comes through wherever its card is shown** — heroes 2 and 3 on the way to the battle were blank. Filed: `kingdom.opening-hero-card-art`, first in the viewer and kingdom queue.
+- **The Lumberjack's axe and his wife's knife** are 'every civilian fields its kit by default' (2026-10-03, above), filed as `fix.civilians-field-kit` at the top of the engine queue and not built yet; the kingdom chat takes it next after the card art, since he has now reported it twice. Whether the weapon is also drawn in the hand is `art.kit-items-held` and `viewer.civilian-held-dagger`'s.

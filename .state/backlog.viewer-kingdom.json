@@ -1,5 +1,13 @@
 [
  {
+  "id": "kingdom.opening-hero-card-art",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'every draft card shows the hero's card art ...'): 'Card art for heroes 2 and 3 didn't come through when I was selecting heroes for the battle. Card art should be present when you're drafting, both the first time and the next ones.' Two faults, found after kingdom.opening-draft-pool grew the pool to the pack's 24 base heroes: (1) the kingdom's card portraits (kingdom/generated/art/hero-*.jpg and index.json `heroes`, made by tools/prep-heroes.py from the codex's heroes[].art) exist for the old five-hero pool only - the tool reads its ids off hero('...') literals in src/content/heroes.ts, which that item replaced with the pack's rows - so 19 of 24 heroes show a blank card wherever a card is drawn (Equip, the Deploy page); (2) the draft screen (src/ui/draft.ts) shows no art at all. Fix both: prep-heroes.py reads the pool the way the kingdom does (every hero.base.* row the pack holds, plus the civilians it already covers) and makes all 24 portraits; a hero whose art is missing on disk stays listed in index.json heroesMissing and shows a blank card, never a wrong one - and is named in the report. Every draft card shows the hero's card art: the first draft's card is the art with the name, class, description and quote - still no stats and no badges (2026-10-03 'the first hero is chosen from three by description only'); a later draft's card is the art with what it already shows. Equip and the Deploy page show the art for every hero. Mind the pages' size: the portraits are inlined (about 35 KB a hero) - say what BATTLE-SANDBOX.html, SLICE.html and PLAY.html weigh before and after. Rebuild the pages.",
+  "expect": "At http://127.0.0.1:4230/play the first draft shows three cards each with its hero's card art and description and no number; every later draft's three cards show their art; the Equip screen and the Who-goes page show art for every hero of a six-hero party; the page test asserts an image on every draft card and on every hero card at Equip, and a test asserts all 24 base heroes have a portrait or are named in heroesMissing.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the run. `python3` with Pillow: copy Python 3.12's python.exe as python3.exe to a scratch dir, PATH in /c/... form, PYTHONHOME set."
+ },
+ {
   "id": "kingdom.opening-draft-pool",
   "kind": "kingdom",
   "shape": "plumbing",
