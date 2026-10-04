@@ -1361,7 +1361,7 @@ export const UNIT_PACK = {
       "accuracy": 80,
       "dodge": 15,
       "strength": 3,
-      "precision": 4,
+      "precision": 3,
       "magic": 0,
       "spirit": 0,
       "role": "ranged",
@@ -1385,7 +1385,7 @@ export const UNIT_PACK = {
         {
           "id": "trigger.imp.burn",
           "hook": "onHit",
-          "chance": 100,
+          "chance": 50,
           "select": "target",
           "effect": {
             "kind": "status.apply",
