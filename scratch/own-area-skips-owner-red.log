@@ -1,0 +1,163 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/engine
+
+ ❯ test/own-area-skips-owner.test.ts (14 tests | 13 failed) 26ms
+     × unit.poison-imp: its end-of-Activation status.poison 1 is an area of 2 from itself, any side, itself excluded 7ms
+     × unit.balrog: its end-of-Activation status.burn 1 is an area of 2 from itself, any side, itself excluded 1ms
+     × power.warchief.war-cry (War Cry): an area of 3 from the caster, any side, the caster excluded 1ms
+     × power.havoc.fel-rush (Fel Rush): an area of 3 from the caster, any side, the caster excluded 1ms
+     × power.holy-champion.holy-radiance (Holy Radiance): an area of 2 from the caster, any side, the caster excluded 1ms
+     × power.warbeast.warcry (Warcry): an area of 3 from the caster, any side, the caster excluded 1ms
+     × unchanged: an ally-side area still counts its owner (the heal and stat-boost circles, the auras) — only these six rows moved 1ms
+     × unit.poison-imp ends its Activation: the hero 2 hexes off and the Imp beside it take status.poison; a unit 3 hexes off does not; the owner does not 6ms
+     × unit.balrog ends its Activation: the hero 2 hexes off and the Imp beside it take status.burn; a unit 3 hexes off does not; the owner does not 1ms
+     × War Cry: the engine's resolver names everyone within 3 hexes of the caster — ally and enemy — and never the caster 2ms
+     × Fel Rush: the engine's resolver names everyone within 3 hexes of the caster — ally and enemy — and never the caster 1ms
+     × Holy Radiance: the engine's resolver names everyone within 2 hexes of the caster — ally and enemy — and never the caster 1ms
+     × Warcry: the engine's resolver names everyone within 3 hexes of the caster — ally and enemy — and never the caster 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/own-area-skips-owner.test.ts > the rows: each of the six targets every OTHER unit in range > unit.poison-imp: its end-of-Activation status.poison 1 is an area of 2 from itself, any side, itself excluded
+ FAIL  test/own-area-skips-owner.test.ts > the rows: each of the six targets every OTHER unit in range > unit.balrog: its end-of-Activation status.burn 1 is an area of 2 from itself, any side, itself excluded
+AssertionError: expected { select: 'area', side: 'any', …(2) } to deeply equal { select: 'area', side: 'any', …(3) }
+
+- Expected
++ Received
+
+  {
+-   "excludeSelf": true,
+    "origin": "self",
+    "radius": 2,
+    "select": "area",
+    "side": "any",
+  }
+
+ ❯ test/own-area-skips-owner.test.ts:44:24
+     42|     it(`${o.unit}: its end-of-Activation ${o.status} ${o.value} is an …
+     43|       const t = eoa(o.unit)
+     44|       expect(t.select).toEqual({ select: 'area', side: 'any', radius: …
+       |                        ^
+     45|       expect(t.effect).toEqual({ kind: 'status.apply', statusId: o.sta…
+     46|       expect(t.chance).toBe(100)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  test/own-area-skips-owner.test.ts > the rows: each of the six targets every OTHER unit in range > power.warchief.war-cry (War Cry): an area of 3 from the caster, any side, the caster excluded
+ FAIL  test/own-area-skips-owner.test.ts > the rows: each of the six targets every OTHER unit in range > power.havoc.fel-rush (Fel Rush): an area of 3 from the caster, any side, the caster excluded
+ FAIL  test/own-area-skips-owner.test.ts > the rows: each of the six targets every OTHER unit in range > power.warbeast.warcry (Warcry): an area of 3 from the caster, any side, the caster excluded
+AssertionError: expected { select: 'area', side: 'any', …(2) } to deeply equal { select: 'area', side: 'any', …(3) }
+
+- Expected
++ Received
+
+  {
+-   "excludeSelf": true,
+    "origin": "self",
+    "radius": 3,
+    "select": "area",
+    "side": "any",
+  }
+
+ ❯ test/own-area-skips-owner.test.ts:54:24
+     52|       expect(a, p.id).toBeDefined()
+     53|       expect(a.name).toBe(p.name)
+     54|       expect(a.target).toEqual({ select: 'area', side: 'any', radius: …
+       |                        ^
+     55|     })
+     56|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  test/own-area-skips-owner.test.ts > the rows: each of the six targets every OTHER unit in range > power.holy-champion.holy-radiance (Holy Radiance): an area of 2 from the caster, any side, the caster excluded
+AssertionError: expected { select: 'area', side: 'any', …(2) } to deeply equal { select: 'area', side: 'any', …(3) }
+
+- Expected
++ Received
+
+  {
+-   "excludeSelf": true,
+    "origin": "self",
+    "radius": 2,
+    "select": "area",
+    "side": "any",
+  }
+
+ ❯ test/own-area-skips-owner.test.ts:54:24
+     52|       expect(a, p.id).toBeDefined()
+     53|       expect(a.name).toBe(p.name)
+     54|       expect(a.target).toEqual({ select: 'area', side: 'any', radius: …
+       |                        ^
+     55|     })
+     56|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  test/own-area-skips-owner.test.ts > the rows: each of the six targets every OTHER unit in range > unchanged: an ally-side area still counts its owner (the heal and stat-boost circles, the auras) — only these six rows moved
+AssertionError: expected [] to deeply equal [ 'power.havoc.fel-rush', …(3) ]
+
+- Expected
++ Received
+
+- [
+-   "power.havoc.fel-rush",
+-   "power.holy-champion.holy-radiance",
+-   "power.warbeast.warcry",
+-   "power.warchief.war-cry",
+- ]
++ []
+
+ ❯ test/own-area-skips-owner.test.ts:62:44
+     60|   it('unchanged: an ally-side area still counts its owner (the heal an…
+     61|     const others = Object.values(ABILITIES).filter((a) => a.target?.se…
+     62|     expect(others.map((a) => a.id).sort()).toEqual(POWERS.map((p) => p…
+       |                                            ^
+     63|     const owners = Object.values(UNITS).filter((u) => (u.triggers ?? […
+     64|     expect(owners.map((u) => u.typeId).sort()).toEqual(['unit.balrog',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  test/own-area-skips-owner.test.ts > in a small fight: the owner is untouched and a neighbour is not > unit.poison-imp ends its Activation: the hero 2 hexes off and the Imp beside it take status.poison; a unit 3 hexes off does not; the owner does not
+ FAIL  test/own-area-skips-owner.test.ts > in a small fight: the owner is untouched and a neighbour is not > unit.balrog ends its Activation: the hero 2 hexes off and the Imp beside it take status.burn; a unit 3 hexes off does not; the owner does not
+AssertionError: who it landed on: expected [ +0, 1, 2 ] to deeply equal [ +0, 2 ]
+
+- Expected
++ Received
+
+  [
+    0,
++   1,
+    2,
+  ]
+
+ ❯ test/own-area-skips-owner.test.ts:80:129
+     78|       const id = eoa(o.unit).id
+     79|       endGo(ctx, owner.id)
+     80|       expect(ctx.events.filter((e) => e.type === 'trigger.fired' && e.…
+       |                                                                                                                                 ^
+     81|       expect(valueOf(hero, o.status), 'the neighbour is not untouched'…
+     82|       expect(valueOf(far!, o.status)).toBe(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  test/own-area-skips-owner.test.ts > in a small fight: the owner is untouched and a neighbour is not > War Cry: the engine's resolver names everyone within 3 hexes of the caster — ally and enemy — and never the caster
+ FAIL  test/own-area-skips-owner.test.ts > in a small fight: the owner is untouched and a neighbour is not > Fel Rush: the engine's resolver names everyone within 3 hexes of the caster — ally and enemy — and never the caster
+ FAIL  test/own-area-skips-owner.test.ts > in a small fight: the owner is untouched and a neighbour is not > Holy Radiance: the engine's resolver names everyone within 2 hexes of the caster — ally and enemy — and never the caster
+ FAIL  test/own-area-skips-owner.test.ts > in a small fight: the owner is untouched and a neighbour is not > Warcry: the engine's resolver names everyone within 3 hexes of the caster — ally and enemy — and never the caster
+AssertionError: the caster is untouched: expected [ +0, 1, 2 ] to not include +0
+ ❯ test/own-area-skips-owner.test.ts:99:50
+     97|       const a = ABILITIES[p.id]!
+     98|       const hit = resolveTargets(ctx, caster!, a.target!, caster!.id)
+     99|       expect(hit, 'the caster is untouched').not.toContain(caster!.id)
+       |                                                  ^
+    100|       expect(hit.sort(), 'the neighbours are not').toEqual([ally!.id, …
+    101|       // alone, the caster has nobody to use it on: the power's own ar…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  13 failed | 1 passed (14)
+   Start at  04:35:20
+   Duration  1.70s (transform 1.24s, setup 0ms, import 1.48s, tests 26ms, environment 0ms)
+

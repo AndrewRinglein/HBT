@@ -26752,3 +26752,62 @@ index 1ba14a0..f9a41fc 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.own-area-skips-owner — LANDED `01a8aa2` **NEEDS REVIEW**
+2026-10-04 11:56
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: COMBAT-SEQUENCE.md:381 · SWITCHES.md:2004
+  PASS  typecheck
+  PASS  the item's own tests — test/fire-imp-burn-spares-self.test.ts, test/own-area-skips-owner.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.poison-imp: 52 log lines, 52 fired, 20 changed state
+  PASS  brought its own tests — test/fire-imp-burn-spares-self.test.ts, test/own-area-skips-owner.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/fire-imp-burn-spares-self.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.poison-imp — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/fire-imp-burn-spares-self.test.ts b/test/fire-imp-burn-spares-self.test.ts
+index f400ef6..b612dd7 100644
+--- a/test/fire-imp-burn-spares-self.test.ts
++++ b/test/fire-imp-burn-spares-self.test.ts
+@@ -40,14 +40,24 @@ describe('the row: the Fire Imp burns every OTHER unit within 2 hexes', () => {
+   })
+ 
+-  it('only the Fire Imp changed: the Poison Imp and the Balrog still say "every unit" and count themselves', () => {
++  // Law 10, 2026-10-04 (fix.own-area-skips-owner; ruled 2026-10-04, Andrew, DECISIONS.md "the Poison Imp, the Balrog and the
++  // four caster-centred class powers skip their owner too": asked "Should the Poison Imp and the Balrog spare themselves
++  // too, like the Fire Imp?" — "One and two, yes, skip the caster."). This test read
++  //   it('only the Fire Imp changed: the Poison Imp and the Balrog still say "every unit" and count themselves', …
++  //     expect(t.select, id).toEqual({ select: 'area', side: 'any', radius: 2, origin: 'self' })
++  //     … expect(ctx.events.some((e) => e.type === 'trigger.fired' && … e.actor === imp.id && e.target === imp.id)).toBe(true)
++  // — true the day the Fire Imp's row alone was changed, and what found the two other rows. The ruling it led to is the
++  // rule now: both rows say "every OTHER unit", as the Fire Imp's does, and neither trigger lands on its owner
++  // (test/own-area-skips-owner.test.ts holds each in a small fight).
++  it('the Poison Imp and the Balrog read as the Fire Imp does: every OTHER unit within 2 hexes — neither counts itself', () => {
+     for (const id of ['unit.poison-imp', 'unit.balrog']) {
+       const t = eoa(id)
+-      expect(t.select, id).toEqual({ select: 'area', side: 'any', radius: 2, origin: 'self' })
++      expect(t.select, id).toEqual({ select: 'area', side: 'any', radius: 2, origin: 'self', excludeSelf: true })
+     }
+-    // and in battle the Poison Imp's own trigger still lands on the Poison Imp
++    // and in battle the Poison Imp's own trigger no longer lands on the Poison Imp
+     const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', hex: hexId(15, 15) }], [{ type: 'unit.poison-imp', hex: hexId(5, 5) }])
+     const imp = ctx.state.units.find((u) => u.typeId === 'unit.poison-imp')!
+     endGo(ctx, imp.id)
+-    expect(ctx.events.some((e) => e.type === 'trigger.fired' && e.causeId === eoa('unit.poison-imp').id && e.actor === imp.id && e.target === imp.id)).toBe(true)
++    expect(ctx.events.some((e) => e.type === 'trigger.fired' && e.causeId === eoa('unit.poison-imp').id && e.actor === imp.id && e.target === imp.id)).toBe(false)
++    expect(ctx.events.filter((e) => e.causeId === eoa('unit.poison-imp').id && e.target === imp.id)).toEqual([])
+   })
+ })
+```
+</details>

@@ -87,7 +87,9 @@
   ],
   "spec": "Ruled 2026-10-04 (Andrew, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too'): asked whether the Poison Imp and the Balrog should spare themselves like the Fire Imp, and whether War Cry, Fel Rush, Holy Radiance and Warcry should skip the caster - 'One and two, yes, skip the caster.' fix.fire-imp-burn-spares-self gave the content the phrase 'every other unit within N hexes' and the engine's targeting its excludeSelf on an area (engine SWITCHES excludeSelfReturns, everyOtherUnitPhrase) and listed the other rows whose own area still counts its owner. Change those six, in the Codex's words and through the content pipeline - no engine code: the Poison Imp's end-of-Activation Poison 1 (range 2) and the Balrog's end-of-Activation Burn 1 (range 2) target every other unit within range; the class powers War Cry, Fel Rush, Holy Radiance and Warcry, aimed at 'every unit within N hexes' from the caster, target every other unit within range. Re-read every content/ file immediately before editing it; commit content after every write; rebuild by the tools. Unchanged: the 48 ally-side areas and auras that include their owner by rule (heal and stat-boost circles, the Necromancer, the Lieutenant Demon, the Bone Dragon). Rebuild the Codex's outputs, the engine pack, the viewer's dumps and recordings and the kingdom pages the change makes stale; say whether the control battles move before claiming changesBaseline.",
   "expect": "A Poison Imp ending its Activation poisons every other unit within 2 hexes and not itself; the Balrog burns every other unit within 2 and not itself; a hero using War Cry, Fel Rush, Holy Radiance or Warcry affects every other unit in range and not the caster; a test names each of the six and asserts the owner is untouched and a neighbour is not.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04.",
+  "status": "done-needs-review",
+  "sha": "01a8aa2"
  },
  {
   "id": "fix.transformed-snapshot-order",
