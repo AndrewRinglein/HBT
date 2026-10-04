@@ -8433,11 +8433,12 @@ export const UNIT_PACK = {
             "amount": 2,
             "damageType": "magic"
           }
-        ]
+        ],
+        "paints": "layer.burning"
       },
       "source": "class",
       "gaps": [
-        "rider: plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning",
+        "rider: plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn",
         "unparsed: allies caught in it burn too"
       ],
       "warmup": 1,
@@ -8462,12 +8463,10 @@ export const UNIT_PACK = {
             "amount": 2,
             "damageType": "magic"
           }
-        ]
+        ],
+        "paints": "layer.burning"
       },
       "source": "class",
-      "gaps": [
-        "rider: and those seven hexes become burning"
-      ],
       "warmup": 1,
       "free": false
     },
@@ -22427,6 +22426,7 @@ export const UNIT_PACK = {
         "unparsed: Those seven hexes become burning",
         "unparsed: Burning ground ticks damage and reveals whatever stands there in darkness — used",
         "unparsed: It cannot crit, and it will happily catch a pursuing ally",
+        "needs capability: ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)",
         "no effect compiled — the power is inert"
       ]
     },
@@ -23030,6 +23030,7 @@ export const UNIT_PACK = {
         "unparsed: Those seven hexes become frost",
         "unparsed: Frost ground deals no damage, but every unit standing in it takes 2 extra physic",
         "unparsed: Use it to put out a Fire-master’s mess or to soften a knot of enemies for the me",
+        "needs capability: ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)",
         "no effect compiled — the power is inert"
       ]
     },
@@ -25635,6 +25636,7 @@ export const UNIT_PACK = {
       "gaps": [
         "targets 'a hex within 3' — engine centres the blast on a UNIT",
         "unparsed: Those seven hexes become poisoned",
+        "needs capability: ground as a burst's only payload — its seven hexes change and nothing is dealt: a burst needs a damage packet or a heal, and the engine's layer.paint is centred on a unit, not on an aimed hex (engine SWITCHES.md burstGroundNotAPayload, burstGroundClassPowers; listed, not built — engine fix.burst-ground-class-powers, 2026-10-04)",
         "no effect compiled — the power is inert"
       ]
     },
