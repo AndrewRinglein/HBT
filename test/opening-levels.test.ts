@@ -11,7 +11,7 @@ import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { createBattle } from '../src/core/setup.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { OPENING_TAKERS, openingDraftOf, openingHolderOf, openingPartyOf, openingRewardPickOf, withOpeningItem } from '../src/content/opening-party.js'
+import { OPENING_POSITIONS, OPENING_TAKERS, openingDraftOf, openingHolderOf, openingPartyOf, openingRewardPickOf, withOpeningItem } from '../src/content/opening-party.js'
 import { ITEMS, LEVELS, UNITS } from '../src/content/index.js'
 import OPENING from '../../progression/OPENING-PARTY.json' with { type: 'json' }
 
@@ -34,7 +34,9 @@ describe('fix.opening-levels — the engine fields what the opening carried', ()
         // the first Warrior or Paladin drafted holds it
         if (takers.length) expect(heroes[holders[0]!], `replicate ${r} position ${p}`).toBe(takers[0])
       }
-      if (none < 0 && !openingDraftOf(r, 4).some((id) => OPENING_TAKERS[SWORD]!.includes(classOf(id)))) none = r
+      // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read openingDraftOf(r, 4) — the Bridge's party of four under the old cadence. The Bridge's
+      // party is whatever the numbers file gives position 3 (three now); the claim is unchanged.
+      if (none < 0 && !openingDraftOf(r, OPENING_POSITIONS[2]!.drafted).some((id) => OPENING_TAKERS[SWORD]!.includes(classOf(id)))) none = r
     }
     expect(none, 'a replicate whose Bridge party has no Warrior or Paladin').toBeGreaterThanOrEqual(0)
     expect(swordHolders(openingPartyOf(3, none).heroItems)).toEqual([])

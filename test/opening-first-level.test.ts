@@ -14,7 +14,11 @@ describe('fix.opening-first-level — the first hero is level 2 after the Orphan
   it('the Orphanage pays 20 XP to whoever fought it, and 20 XP reaches level 2 on the ruled curve', () => {
     expect(OPENING.battleXp).toEqual({ 1: 20 })
     expect(OPENING.levelXp).toEqual([20, 50, 100, 170, 270, 400])
-    expect(OPENING_POSITIONS.map((p) => p.xp)).toEqual([[0], [20, 0, 0], [20, 0, 0, 0], [20, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0]])
+    // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
+    //   .toEqual([[0], [20, 0, 0], [20, 0, 0, 0], [20, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0]])
+    // — one XP entry per hero of the old cadence's parties (1, 3, 4, 5, 6, 6). The rule is unchanged — the Orphanage's 20
+    // is the first hero's, everyone drafted after it carries none — over the ruled parties.
+    expect(OPENING_POSITIONS.map((p) => p.xp)).toEqual([[0], [20, 0], [20, 0, 0], [20, 0, 0, 0], [20, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0]])
     expect(OPENING_POSITIONS.map((p) => p.levels[0])).toEqual([1, 2, 2, 2, 2, 2])
     expect(OPENING_POSITIONS.every((p) => p.levels.slice(1).every((l) => l === 1))).toBe(true)
   })

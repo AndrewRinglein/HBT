@@ -5489,6 +5489,12 @@
   "shape": "data",
   "spec": "Found landing kingdom.opening-draft-cadence (2026-10-04, kingdom SWITCHES.md cadenceEngineProbe): Andrew ruled 2026-10-03 (engine DECISIONS.md 'one draft after every battle; ...') that the opening drafts one hero before battle 1 and one more after each battle - a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6 - and the kingdom's run now does. The engine's own opening party still drafts by the replaced cadence (engine/src/content/opening-party.ts: 1, +2, +1 per battle), so the engine's opening probes, recordings and tests field a party the player never has: three heroes at the Lumberjack House where the run has two, and so on. Make the engine's opening party follow the ruled cadence - the count per battle read from one place (the published numbers file progression/OPENING-PARTY.json, where the kingdom's parity test already reads the draft's numbers), not typed twice. The opening battles' probes and the six recordings move (smaller early parties): re-record what the change makes stale; under the 2026-10-04 ruling ('no testing that the battles can be won until these items are done') a test whose only purpose is to show the computer wins an opening battle with that party is skipped by name with a dated note, never deleted. Say whether the control battles move before claiming changesBaseline.",
   "expect": "The engine's opening party for battle N holds the heroes the ruled cadence gives - 1, 2, 3, 4, 5, 6 at battles 1 to 6 - and a test asserts the count at each battle from the numbers file; the kingdom's parity test (kingdom/test/opening-draft-modifiers.test.ts) still holds; the opening recordings are re-exported on the new parties.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the kingdom worker's report. Pairs with fix.opening-draft-one-rule."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the kingdom worker's report. Pairs with fix.opening-draft-one-rule.",
+  "attempts": 2,
+  "probeIds": [
+   "encounter.opening.lumberjack"
+  ],
+  "status": "done-needs-review",
+  "sha": "da7eed3"
  }
 ]

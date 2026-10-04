@@ -327,6 +327,10 @@ const ownAreaGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-
 // its starting Zombie on (16,3) - the placements changed by ruling, so every battle of that encounter is another battle.
 // Every case frozen here (tools/capture-orphanage-closer-start-cursor.mts). Moved — for real, the placements changed by ruling (state, RNG and result), exactly the case that fields the Orphanage: test.opening-orphanage. A `changed` case is checked here and skips the older layers.
 const closerStartGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-closer-start.json', import.meta.url), 'utf8'))
+// fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; ...': "One, yes."), Law 10: the engine's
+// opening party is one hero smaller at battles 2 to 5 (2, 3, 4, 5 heroes; it was 3, 4, 5, 6), so each of those battles is another battle.
+// Every case frozen here (tools/capture-opening-probe-cadence-cursor.mts). Moved — for real, the parties changed by ruling (state, RNG and result), exactly the opening battles 2 to 5: test.opening-bridge, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
+const probeCadenceGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-probe-cadence.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -452,7 +456,10 @@ describe('resumable battle cursor', () => {
       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const ownAreaExpected = ownAreaGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const closerStartExpected = closerStartGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const closerStartMoved = closerStartExpected?.changed === true
+      const probeCadenceExpected = probeCadenceGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const probeCadenceMoved = probeCadenceExpected?.changed === true
+      // was: const closerStartMoved = closerStartExpected?.changed === true — a case fix.opening-probe-cadence moved skips this layer too (fix.opening-probe-cadence 2026-10-04)
+      const closerStartMoved = closerStartExpected?.changed === true || probeCadenceMoved
       // was: const ownAreaMoved = ownAreaExpected?.changed === true — a case fix.opening-orphanage-closer-start moved skips this layer too (fix.opening-orphanage-closer-start 2026-10-04)
       const ownAreaMoved = ownAreaExpected?.changed === true || closerStartMoved
       // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a case fix.own-area-skips-owner moved skips this layer too (fix.own-area-skips-owner 2026-10-04)
@@ -561,7 +568,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (closerStartExpected) {
+        if (probeCadenceExpected) {
+        expect(hash(ctx.events), 'full opening-probe-cadence events').toBe(probeCadenceExpected.events)
+        expect(hash(ctx.state), 'full opening-probe-cadence state').toBe(probeCadenceExpected.state)
+        expect(hash(ctx.rng.log), 'full opening-probe-cadence RNG').toBe(probeCadenceExpected.rng)
+        expect(result).toEqual(probeCadenceExpected.result)
+        }
+        // was: if (closerStartExpected) { — fix.opening-probe-cadence (2026-10-04): a case it moved is checked above instead
+        if (closerStartExpected && !probeCadenceMoved) {
         expect(hash(ctx.events), 'full orphanage-closer-start events').toBe(closerStartExpected.events)
         expect(hash(ctx.state), 'full orphanage-closer-start state').toBe(closerStartExpected.state)
         expect(hash(ctx.rng.log), 'full orphanage-closer-start RNG').toBe(closerStartExpected.rng)

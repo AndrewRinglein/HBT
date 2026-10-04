@@ -1,0 +1,676 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/engine
+
+ ❯ test/opening-probe-cadence.test.ts (6 tests | 6 failed) 97ms
+     × the cadence row is { first: 1, afterEach: 1, until: 6 } — the two drafts after battle 1 are gone 5ms
+     × the six positions hold 1, 2, 3, 4, 5, 6 drafted heroes — each the cadence row's own arithmetic 1ms
+     × the builder types the cadence once and the engine types no count: it reads the file 1ms
+     × OPENING_POSITIONS is the file's: 1, 2, 3, 4, 5, 6 at the Orphanage, the Lumberjack House, the Bridge, the Cavern Trail, the Gates, the Cathedral 1ms
+     × openingPartyOf(position) fields that many, each battle's party the one before it and one more — over ten replicates 2ms
+     × a battle of each opening scenario begins with that many drafted heroes on the board 87ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-probe-cadence.test.ts > the numbers file: one draft before battle 1 and one after each battle, to six > the cadence row is { first: 1, afterEach: 1, until: 6 } — the two drafts after battle 1 are gone
+AssertionError: expected { first: 1, afterFirst: 2, …(2) } to deeply equal { first: 1, afterEach: 1, until: 6 }
+
+- Expected
++ Received
+
+  {
+    "afterEach": 1,
++   "afterFirst": 2,
+    "first": 1,
+    "until": 6,
+  }
+
+ ❯ test/opening-probe-cadence.test.ts:24:21
+     22| describe('the numbers file: one draft before battle 1 and one after ea…
+     23|   it('the cadence row is { first: 1, afterEach: 1, until: 6 } — the tw…
+     24|     expect(CADENCE).toEqual({ first: 1, afterEach: 1, until: 6 })
+       |                     ^
+     25|     expect('afterFirst' in CADENCE).toBe(false)
+     26|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/opening-probe-cadence.test.ts > the numbers file: one draft before battle 1 and one after each battle, to six > the six positions hold 1, 2, 3, 4, 5, 6 drafted heroes — each the cadence row's own arithmetic
+AssertionError: expected [ 1, 3, 4, 5, 6, 6 ] to deeply equal [ 1, 2, 3, 4, 5, 6 ]
+
+- Expected
++ Received
+
+  [
+    1,
+-   2,
+    3,
+    4,
+    5,
++   6,
+    6,
+  ]
+
+ ❯ test/opening-probe-cadence.test.ts:30:53
+     28|   it('the six positions hold 1, 2, 3, 4, 5, 6 drafted heroes — each th…
+     29|     expect(OPENING.positions.map((p) => p.position)).toEqual([1, 2, 3,…
+     30|     expect(OPENING.positions.map((p) => p.drafted)).toEqual(RULED)
+       |                                                     ^
+     31|     for (const p of OPENING.positions) {
+     32|       expect(p.drafted, `battle ${p.position}`).toBe(Math.min(CADENCE[…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/opening-probe-cadence.test.ts > the numbers file: one draft before battle 1 and one after each battle, to six > the builder types the cadence once and the engine types no count: it reads the file
+AssertionError: expected '// build-schedule.mjs — deterministic…' to match /const OPENING_CADENCE = \{ first: 1, …/
+
+- Expected:
+/const OPENING_CADENCE = \{ first: 1, afterEach: 1, until: 6 \}/
+
++ Received:
+"// build-schedule.mjs — deterministic 20-battle progression schedule for the simulator.
+// Reads content/gen/*.json as the only source of truth. Seeded; rerunning gives the same run.
+import fs from 'node:fs';
+import path from 'node:path';
+
+// fix.opening-party (2026-09-29): `--opening` writes only OPENING-PARTY.json — the 20-battle run
+// below no longer reproduces from today's content/gen (battle 1 differs from the 2026-09-03 file),
+// and the landed hero-assembly oracle reads that file, so re-deriving it is not this item's.
+const ARGS = process.argv.slice(2);
+const OPENING_ONLY = ARGS.includes('--opening');
+const GEN = path.resolve(ARGS.find(a => !a.startsWith('--')) ?? '../content/gen');
+const R = f => JSON.parse(fs.readFileSync(path.join(GEN, f), 'utf8'));
+
+const LEVELS   = R('levels.json');
+const HEROES   = R('heroes.json');
+const WEAPONS  = R('weapons.json');
+const ARMORS   = R('armor-enchants.json');
+const SETTLED  = R('settled-items.json');
+const GEAR     = R('gear.json');
+const TIER3    = R('tier3-combinations.json');
+const CLASSDEF = Object.fromEntries(['warrior','ranger','rogue','mage','priest','paladin']
+  .map(c => [`class.${c}`, R(`${c}.json`)]));
+
+// ---------- seeded RNG ----------
+let _s = 0x48424154 >>> 0;                       // \"HBAT\"
+const rnd = () => { _s |= 0; _s = _s + 0x6D2B79F5 | 0;
+  let t = Math.imul(_s ^ _s >>> 15, 1 | _s);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+  return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const pick = arr => arr[Math.floor(rnd() * arr.length)];
+const take = arr => arr.splice(Math.floor(rnd() * arr.length), 1)[0];
+const roll = table => { let r = rnd() * table.reduce((a, x) => a + x[1], 0);
+  for (const [v, w] of table) { if ((r -= w) < 0) return v; } return table.at(-1)[0]; };
+
+// ---------- item catalogue ----------
+const BASE = new Map();
+for (const w of WEAPONS.items) BASE.set(w.id, w);
+for (const a of ARMORS.items)  BASE.set(a.id, a);
+for (const i of SETTLED.items) if (!BASE.has(i.id)) BASE.set(i.id, i);
+const ENCH = new Map();
+for (const e of ARMORS.enchants) ENCH.set(e.id, e);
+for (const e of SETTLED.enchants) if (!ENCH.has(e.id)) ENCH.set(e.id, e);
+
+const merge = (...objs) => { const o = {}; for (const s of objs) for (const [k, v] of Object.entries(s ?? {})) o[k] = (o[k] ?? 0) + v; return o; };
+
+const unresolved = [];
+function resolveT3(combo) {                       // base + enchant -> one equippable row
+  const b = BASE.get(combo.base), e = ENCH.get(combo.enchant);
+  if (!b) unresolved.push(`base ${combo.base}`);
+  if (!e) unresolved.push(`enchant ${combo.enchant}`);
+  return { id: combo.id, name: combo.name, itemClass: combo.itemClass, tier: 3,
+    hands: b?.hands ?? (combo.itemClass === 'armor' ? 0 : 1),
+    slots: combo.itemClass === 'armor' ? 0 : (b?.slots ?? 1),   // armor is its own slot
+    classRestriction: b?.classRestriction ?? null,
+    tags: [...(b?.tags ?? [])], armorWeight: b?.armorWeight ?? null,
+    statModifiers: merge(b?.statModifiers, e?.statModifiers),
+    grants: b?.grants ?? [],
+    triggers: [...(b?.triggers ?? []), ...(e?.triggers ?? [])],
+    slayer: e?.slayer ?? null, base: combo.base, enchant: combo.enchant };
+}
+// Bloodrunes carry slots:0 in gear.json; 2-ACTIONS-SETTLED.md records that field as outdated
+// (\"a Bloodrune takes an item slot\"). The ruling wins.
+const slotCost = it => it.itemClass === 'armor' ? 0 : it.itemClass === 'bloodrune' ? 1 : (it.slots ?? 1);
+const norm = it => ({ id: it.id, name: it.name, itemClass: it.itemClass, tier: it.tier,
+  hands: it.hands ?? 0, slots: slotCost(it),
+  classRestriction: it.classRestriction ?? null, tags: it.tags ?? [], armorWeight: it.armorWeight ?? null,
+  statModifiers: it.statModifiers ?? {}, grants: it.grants ?? [],
+  triggers: it.triggers ?? [], equipCost: it.equipCost ?? {} });
+
+const POOL_T3 = TIER3.map(resolveT3);
+const POOL_T3_W = POOL_T3.filter(i => i.itemClass === 'weapon');
+const POOL_T3_A = POOL_T3.filter(i => i.itemClass === 'armor');
+const POOL_T1 = { trinket: GEAR.trinkets.map(norm), idol: GEAR.idols.map(norm),
+                  bloodrune: GEAR.bloodrunes.map(norm), relic: GEAR.relics.map(norm) };
+const SHELF_T1 = [...WEAPONS.items.filter(w => w.tier === 1), ...ARMORS.items.filter(a => a.tier === 1)].map(norm);
+const T0_ARMOR = ARMORS.items.filter(a => a.tier === 0).map(norm);
+
+// ---------- the party ----------
+const SPECIALTY = { 'class.warrior':'specialty.bloodrage','class.ranger':'specialty.bowmaster',
+  'class.rogue':'specialty.assassin','class.mage':'specialty.fire-master',
+  'class.priest':'specialty.shepherd','class.paladin':'specialty.sacred-shield' };
+// weights: what each class actually wants out of a stat
+const W = {
+  'class.warrior': {strength:3,health:2,armor:2.5,resist:2,crit:1.5,reach:1,toughness:1,itemSlots:1.5,precision:.5,accuracy:.12,dodge:.1,movement:.7,staminaMax:.4,staminaRegen:2,luck:.1,surge:.5,magic:0,spirit:0,vision:.05},
+  'class.paladin': {armor:3,resist:3,health:2.5,strength:2,toughness:1.2,spirit:1,crit:1,itemSlots:1.5,precision:.4,accuracy:.12,dodge:.08,movement:.7,staminaMax:.4,staminaRegen:2,luck:.15,surge:.4,reach:.6,magic:.3,vision:.05},
+  'class.ranger':  {precision:3,reach:2.5,crit:2,accuracy:.2,dodge:.15,health:1,itemSlots:1.5,strength:1,movement:.9,resist:1,armor:1,vision:.3,luck:.2,staminaMax:.4,staminaRegen:2,surge:.3,magic:.2,spirit:.2,toughness:.5},
+  'class.rogue':   {crit:3,precision:2.5,dodge:.25,strength:1.5,movement:1,accuracy:.18,itemSlots:1.5,health:.8,luck:.3,vision:.3,reach:.8,resist:.8,armor:.8,staminaMax:.4,staminaRegen:2,surge:.4,magic:.3,spirit:.1,toughness:.4},
+  'class.mage':    {magic:3.5,reach:2,resist:2,spirit:1,precision:.8,health:.8,itemSlots:1.5,dodge:.15,accuracy:.12,vision:.3,movement:.7,crit:.8,luck:.15,staminaMax:.5,staminaRegen:2,armor:.8,surge:.2,strength:.1,toughness:.4},
+  'class.priest':  {spirit:3.5,resist:2.5,health:1.5,magic:1.5,armor:1.2,toughness:1,itemSlots:1.5,reach:1,accuracy:.12,dodge:.12,luck:.25,movement:.6,crit:.5,staminaMax:.5,staminaRegen:2,precision:.5,strength:.3,surge:.2,vision:.1},
+};
+
+// ---------- the opening's party (fix.opening-party, 2026-09-29) ----------
+// Ruled 2026-09-28 (Andrew, engine/DECISIONS.md 'the opening is tested with the player's party,
+// not the Alpha Team'): \"Opening battles should be tested with a party the player should have at
+// that point.\" The rulings, not the 2026-09-03 assumptions below (four heroes from battle 1,
+// three tier-3 items before it):
+//  - the six battles, in order — DECISIONS.md 2026-09-28 'the opening's six battles, in order';
+//  - the draft cadence — GAME-ARCHITECTURE.md §2.5: \"Draft 1 hero before battle 1 … After battle
+//    1, draft +2 … Then +1 after each battle until six drafted heroes\", each a stat-less draft of
+//    one from three (§2.5, \"a stat-less draft of one hero from three\"), entering wearing its kit
+//    (GEAR-IMPLEMENTATION.md G3);
+//  - the Flaming Longsword after battle 2 — KINGDOM-V2-2026-09-07.md: \"Sword after battle 2\";
+//    the row, DECISIONS.md 2026-09-28 'the flaming longsword' (content.flaming-longsword).
+// This file names the rules and the pool; WHICH three are offered and which one is taken is drawn
+// per replicate by the engine (engine/src/content/opening-party.ts), so replicates sample parties.
+// Levels (fix.opening-first-level, 2026-09-29): by XP on the curve ruled 2026-09-28 (engine
+// DECISIONS.md 'levels by XP at 20, 50, 100, 170, 270, 400'; GLOSSARY.md \"Level thresholds\"), and
+// \"Make it so they get 20 XP no matter what\" — the Orphanage pays 20 to whoever fought it (engine
+// DECISIONS.md 'the Orphanage pays 20 XP no matter what'). The later battles' XP depends on each battle's
+// result, so it is not written here: fix.opening-levels (2026-10-02) carries it by the kingdom's rule
+// (kingdom/src/sim/opening-run.ts) and hands the levels to engine/src/content/opening-party.ts as a carry;
+// the positions below are the fielding with no carry. A level-2 hero takes its class's specialty from SPECIALTY above (engine
+// SWITCHES.md openingSpecialty).
+const OPENING_BATTLES = [
+  ['encounter.opening.orphanage', 'Orphanage'], ['encounter.opening.lumberjack', 'Lumberjack House'],
+  ['encounter.opening.bridge', 'Bridge'], ['encounter.opening.cavern-trail', 'Cavern Trail'],
+  ['encounter.opening.gates', 'Gates'], ['encounter.opening.cathedral', 'Cathedral'],
+];
+const OPENING_CADENCE = { first: 1, afterFirst: 2, afterEach: 1, until: 6 };
+const OPENING_OFFER = 3;
+const OPENING_SWORD = { id: 'item.longsword.flaming', from: 3 };   // won after battle 2, carried from battle 3
+// fix.opening-levels (2026-10-02): who takes it — engine DECISIONS.md 2026-09-28 'the opening's party levels up; the Flaming
+// Longsword is a Warrior's or a Paladin's': \"it only is going to help the paladin or the warrior\". The kingdom's reward row
+// (kingdom/src/content/encounter-rewards.ts takers) says the same; kingdom/test/opening-levels.test.ts holds the two agreeing.
+const OPENING_TAKERS = { [OPENING_SWORD.id]: ['class.warrior', 'class.paladin'] };
+if (!TIER3.some(t => t.id === OPENING_SWORD.id)) throw new Error(`opening: ${OPENING_SWORD.id} is not in tier3-combinations.json`);
+const OPENING_BATTLE_XP = { 1: 20 };                  // battle -> XP to each hero who fought it
+const LEVEL_XP = [20, 50, 100, 170, 270, 400];          // the XP that reaches level 2, 3, … 7
+const levelOfXp = xp => 1 + LEVEL_XP.filter(t => xp >= t).length;
+const draftedAt = n => n === 1 ? OPENING_CADENCE.first
+  : Math.min(OPENING_CADENCE.until, OPENING_CADENCE.first + OPENING_CADENCE.afterFirst + (n - 2) * OPENING_CADENCE.afterEach);
+// ---------- the draft's randomness and its pick (fix.opening-draft, 2026-09-29) ----------
+// Ruled 2026-09-28 (Andrew, engine/DECISIONS.md 'the first hero: Leadership ...', 'no Health minimum;
+// ... the draft pick is weighted' and 'the draft never repeats a class until all six are drafted'):
+// \"You get the leadership badge. You get a random positive badge. 25% chance of another positive
+// badge. +2 health. One stat point from the Crucible's randomness, a 30% chance of another stat
+// point.\" \"we use the Crucible randomness, three heroes, and then use a weighted system for what you
+// choose.\" \"Until you've drafted all six of the starting classes, you never get a draft of the same
+// class again.\" \"It may get one extra stat point, which could be two health if it's health\".
+// The Crucible's randomness is READ from its files, never retyped: the stat pool and the badges are
+// its data (crucible/data/stat-pool.json, badges.json); the generator's own numbers are read out of
+// its source (crucible/index.html generateCrucibleHero, _statStep, _statFloor; crucible/shim.js
+// PERCENT_STATS, RARITY_WEIGHT) — a source that no longer says what is read fails this build loudly.
+const CRUCIBLE = path.resolve(GEN, '../../crucible');
+const crucibleText = f => fs.readFileSync(path.join(CRUCIBLE, f), 'utf8');
+const readOut = (text, re, what) => { const m = text.match(re); if (!m) throw new Error(`opening: crucible ${what} — ${re} no longer matches; the Crucible changed, read it again`); return m; };
+function crucibleRules() {
+  const page = crucibleText('index.html'), shim = crucibleText('shim.js');
+  const statPool = JSON.parse(crucibleText('data/stat-pool.json')).pool;
+  const badgeRows = JSON.parse(crucibleText('data/badges.json'));
+  const gen = readOut(page, /function generateCrucibleHero\\([\\s\\S]*?\\n        \\}\\n/, 'generateCrucibleHero')[0];
+  const modTypes = [...readOut(gen, /const modTypes = \\[([\\s\\S]*?)\\];/, 'modTypes')[1].matchAll(/\\{ gains: (\\d+), losses: (\\d+) \\}/g)].map(m => [+m[1], +m[2]]);
+  if (modTypes.length === 0) throw new Error('opening: crucible modTypes — none read');
+  const attempts = +readOut(gen, /while \\(usedStats\\.has\\(stat\\) && attempts < (\\d+)\\)/, 'the repeat-stat attempts')[1];
+  const bc = readOut(gen, /if \\(roll < (0\\.\\d+)\\) badgeCount = 1;\\s*else if \\(roll < (0\\.\\d+)\\) badgeCount = 2;\\s*else badgeCount = 3;/, 'the badge count');
+  const pct = x => Math.round(Number(x) * 100);
+  const badgeCount = [[1, pct(bc[1])], [2, pct(bc[2]) - pct(bc[1])], [3, 100 - pct(bc[2])]];
+  const fb = readOut(gen, /favourableBias: isSignature \\? (0\\.\\d+) : (0\\.\\d+)/, 'the favourable bias');
+  const percentStats = [...readOut(shim, /export const PERCENT_STATS = new Set\\(\\[([^\\]]*)\\]\\)/, 'PERCENT_STATS')[1].matchAll(/'([a-zA-Z]+)'/g)].map(m => m[1]);
+  const stepBody = readOut(page, /function _statStep\\(stat\\) \\{([\\s\\S]*?)\\n        \\}/, '_statStep')[1];
+  const ps = readOut(stepBody, /PERCENT_STATS\\.has\\(stat\\)\\) return stat === '(\\w+)' \\|\\| stat === '(\\w+)' \\? (\\d+) : (\\d+);/, '_statStep percent');
+  const statStep = { default: +readOut(stepBody, /return (\\d+);\\s*$/, '_statStep default')[1] };
+  for (const st of percentStats) statStep[st] = st === ps[1] || st === ps[2] ? +ps[3] : +ps[4];
+  for (const m of stepBody.matchAll(/if \\(stat === '(\\w+)'\\) return (\\d+);/g)) statStep[m[1]] = +m[2];
+  const floorBody = readOut(page, /function _statFloor\\(stat\\) \\{([\\s\\S]*?)\\n        \\}/, '_statFloor')[1];
+  const statFloor = { default: +readOut(floorBody, /return (-?\\d+);\\s*$/, '_statFloor default')[1] };
+  for (const m of floorBody.matchAll(/if \\(([^)]*)\\) return (-?\\d+);/g)) for (const n of m[1].matchAll(/stat === '(\\w+)'/g)) statFloor[n[1]] = +m[2];
+  const rarityWeight = Object.fromEntries([...readOut(shim, /const RARITY_WEIGHT = \\{([^}]*)\\}/, 'RARITY_WEIGHT')[1].matchAll(/(\\w+): (\\d+)/g)].map(m => [m[1], +m[2]]));
+  const rarityDefault = +readOut(shim, /RARITY_WEIGHT\\[b\\.rarity\\] \\|\\| (\\d+)/, 'the rarity default')[1];
+  // a Crucible badge the Codex has cut (content/gen/badges.json no longer carries it) is not rolled — the
+  // Codex owns the badges; the cut ones are named below, not dropped silently (engine SWITCHES.md openingCutBadges)
+  const codexBadges = new Set(R('badges.json').badges.map(b => b.id));
+  const badges = cat => badgeRows.filter(b => b.rollable && b.category === cat && codexBadges.has(b.id)).map(b => ({ id: b.id, rarity: b.rarity,
+    stats: Object.fromEntries(b.statModifiers.filter(m => m.op === 'add').map(m => [m.stat, m.value])) }));
+  const notInCodex = badgeRows.filter(b => b.rollable && !codexBadges.has(b.id)).map(b => b.id);
+  return {
+    _source: 'crucible/data/stat-pool.json (the pool) · crucible/data/badges.json (the rollable badges) · crucible/index.html generateCrucibleHero, _statStep, _statFloor · crucible/shim.js PERCENT_STATS, RARITY_WEIGHT',
+    statPool, repeatAttempts: attempts, modTypes, badgeCount,
+    favourablePercent: { signature: pct(fb[1]), later: pct(fb[2]) },
+    statStep, statFloor, rarityWeight, rarityDefault,
+    badges: { favourable: badges('favourable'), flawed: badges('flawed'), notInCodex },
+    // a Crucible stat word the engine spells differently (content/mkenginepack.mjs STAT_OF: health -> maxHp,
+    // stamina max -> maxStamina); every other word is the engine's own. The engine checks each against its stats.
+    statOf: { health: 'maxHp', staminaMax: 'maxStamina' },
+  };
+}
+const OPENING_CLASSES = ['class.warrior', 'class.ranger', 'class.rogue', 'class.priest', 'class.mage', 'class.paladin'];   // \"the six starting classes\"
+const OPENING_FIRST_HERO = {
+  badges: ['badge.leadership'],                 // \"You get the leadership badge.\"
+  positiveBadges: 1, anotherBadgePercent: 25,   // \"You get a random positive badge. 25% chance of another positive badge.\"
+  health: 2, healthSource: 'rule.opening-first-hero',   // \"+2 health.\"
+  statPoints: 1, anotherPointPercent: 30,       // \"One stat point from the Crucible's randomness, a 30% chance of another stat point.\"
+};
+// The pick's weights (engine SWITCHES.md openingDraftWeights, openingNoMeleeBonus, openingMelee): W above,
+// with Armor and Resist raised to the class's own best weight (\"Armor is always amazing. Resist is always
+// amazing.\"); a melee hero is worth NO_MELEE_BONUS more while the party has none (\"It is better to get a
+// tank early if you don't already have one ... but it's not absolutely better\").
+const OPENING_DRAFT_SCORE = {
+  weights: Object.fromEntries(Object.entries(W).map(([cls, w]) => {
+    const top = Math.max(...Object.values(w));
+    return [cls, { ...w, armor: Math.max(w.armor ?? 0, top), resist: Math.max(w.resist ?? 0, top) }];
+  })),
+  meleeClasses: ['class.warrior', 'class.paladin'], noMeleeBonus: 4,
+  rollSource: 'rule.crucible-roll',
+};
+const OPENING = {
+  _generated: new Date().toISOString().slice(0, 10), _generator: 'progression/build-schedule.mjs',
+  _source: 'content/gen/heroes.json (the pool) · GAME-ARCHITECTURE.md §2.5 (the cadence) · engine/DECISIONS.md 2026-09-28 (the six, the sword, the first hero, the draft) · crucible/ (the randomness)',
+  cadence: OPENING_CADENCE, offer: OPENING_OFFER,
+  // the Eve-of-Ruin 24 base heroes, in heroes.json order; civilians are rescued, never drafted
+  pool: HEROES.heroes.filter(h => h.path === 'base').map(h => h.id),
+  battleXp: OPENING_BATTLE_XP, levelXp: LEVEL_XP, specialties: SPECIALTY,
+  // fix.opening-levels (2026-10-02): who may take each carried item, by class
+  takers: OPENING_TAKERS,
+  // fix.opening-draft (2026-09-29): the class rule, the first hero, the Crucible's randomness, the pick
+  classes: OPENING_CLASSES, firstHero: OPENING_FIRST_HERO, crucible: crucibleRules(), draftScore: OPENING_DRAFT_SCORE,
+  // per draft ordinal (the order the heroes were drafted): the XP it carries into this battle — the
+  // sum of the battles before it that it fought — and the level that XP reaches
+  positions: OPENING_BATTLES.map(([encounterId, name], i) => {
+    const p = i + 1, n = draftedAt(p);
+    const firstBattle = k => { let b = 1; while (draftedAt(b) <= k) b++; return b; };
+    const xp = Array.from({ length: n }, (_, k) => {
+      let sum = 0; for (let b = firstBattle(k); b < p; b++) sum += OPENING_BATTLE_XP[b] ?? 0; return sum; });
+    return { position: p, encounterId, name, drafted: n, xp, levels: xp.map(levelOfXp),
+      carried: p >= OPENING_SWORD.from ? [OPENING_SWORD.id] : [] };
+  }),
+};
+fs.writeFileSync('OPENING-PARTY.json', JSON.stringify(OPENING, null, 1) + '\\n');
+console.log('opening:', OPENING.positions.map(p => p.drafted).join(' · '), 'drafted | pool', OPENING.pool.length);
+if (OPENING_ONLY) process.exit(0);
+
+// Party of six, one per class. Entry order = the order they take a field slot as the
+// fielded count ramps 4 -> 5 -> 6. The first four are the opening line-up.
+const ROSTER = [
+  ['class.warrior', 'Iron Dwarf'],       // 1  frontline
+  ['class.ranger',  'Hunter'],           // 2  ranged carry
+  ['class.mage',    'Emberwright'],      // 3  area damage
+  ['class.priest',  'Battle Chaplain'],  // 4  support
+  ['class.paladin', 'Lion of the Host'], // 5  joins the field at battle 5
+  ['class.rogue',   'The Raven'],        // 6  joins the field at battle 11
+];
+const fieldCount = b => (b <= 4 ? 4 : b <= 10 ? 5 : 6);
+const heroById = new Map(HEROES.heroes.map(h => [h.id, h]));
+const heroByClassName = (cls, name) => HEROES.heroes.find(h => h.class === cls && h.path === 'base' && h.name === name);
+
+// Weapon-tag affinity. Vocabulary taken from weapons.json: axe spear hammer chain thrown
+// shield improvised crossbow claw sword blade 2-hander polearm exotic dagger sling wand
+// magic tome holy bow staff brawl melee fang ranged breath.
+const TAGFIT = {
+  'class.warrior': {axe:6,greatsword:6,sword:5,polearm:5,'2-hander':4,spear:4,hammer:4,blade:4,shield:5,chain:3,brawl:3,melee:2,improvised:1,exotic:1,claw:1,thrown:1,dagger:1,crossbow:0,bow:0,sling:0,staff:0,wand:0,tome:0,magic:0,holy:0,fang:0,ranged:0,breath:0},
+  'class.paladin': {hammer:6,shield:6,sword:5,blade:4,holy:5,'2-hander':4,axe:3,polearm:3,spear:3,chain:3,melee:2,brawl:1,dagger:1,tome:1,staff:1,exotic:1,improvised:0,claw:0,thrown:0,crossbow:0,bow:0,sling:0,wand:0,magic:0,fang:0,ranged:1,breath:0},
+  'class.ranger':  {bow:7,crossbow:6,ranged:5,sling:4,thrown:4,spear:3,blade:2,sword:2,dagger:2,claw:1,axe:1,exotic:1,melee:1,polearm:1,brawl:0,chain:0,shield:0,staff:0,wand:0,tome:0,magic:0,holy:0,'2-hander':0,hammer:0,improvised:0,fang:0,breath:0},
+  'class.rogue':   {dagger:7,blade:5,claw:5,thrown:5,sword:3,crossbow:3,sling:3,bow:2,exotic:2,melee:2,brawl:2,improvised:2,chain:2,spear:1,wand:1,fang:1,axe:1,magic:1,polearm:0,shield:0,staff:0,tome:0,holy:0,'2-hander':0,hammer:0,ranged:1,breath:0},
+  'class.mage':    {staff:7,wand:7,tome:6,magic:6,breath:4,dagger:3,sling:2,exotic:2,holy:1,sword:1,blade:1,mace:1,improvised:1,ranged:1,thrown:1,brawl:0,chain:0,claw:0,crossbow:0,bow:0,spear:0,axe:0,hammer:0,polearm:0,shield:0,'2-hander':0,melee:0,fang:0},
+  'class.priest':  {holy:7,tome:6,staff:6,hammer:4,wand:4,magic:3,shield:3,chain:3,blade:2,sword:2,melee:2,brawl:1,dagger:1,spear:1,axe:1,polearm:1,improvised:1,exotic:1,sling:1,'2-hander':1,bow:0,crossbow:0,claw:0,thrown:0,fang:0,ranged:0,breath:0},
+};
+const ARMORFIT = { 'class.warrior':{heavy:3,medium:2,light:0}, 'class.paladin':{heavy:3,medium:2,light:0},
+  'class.ranger':{heavy:-1,medium:2,light:2}, 'class.rogue':{heavy:-2,medium:1,light:3},
+  'class.mage':{heavy:-3,medium:0,light:3}, 'class.priest':{heavy:1,medium:2,light:1} };
+
+function weightOf(item) {                          // armorWeight / the light|medium|heavy tag; else read the penalties
+  if (item.armorWeight) return item.armorWeight;
+  for (const t of item.tags ?? []) if (t === 'light' || t === 'medium' || t === 'heavy') return t;
+  const m = item.statModifiers ?? {};
+  const pen = (m.movement ?? 0) + (m.dodge ?? 0) / 10 + (m.accuracy ?? 0) / 10;
+  return pen <= -2 ? 'heavy' : pen <= -0.5 ? 'medium' : 'light';
+}
+function score(item, cls) {
+  if (item.classRestriction) {                     // rows spell it \"class.priest\"; accept the bare form too
+    const r = String(item.classRestriction).toLowerCase();
+    if (r !== cls && r !== cls.split('.')[1]) return -Infinity;
+  }
+  const w = W[cls]; let s = 0;
+  for (const [k, v] of Object.entries(item.statModifiers ?? {})) s += (w[k] ?? 0) * v;
+  if (item.itemClass === 'weapon') {
+    const fit = Math.max(0, ...(item.tags ?? []).map(t => TAGFIT[cls][t] ?? 0), 0);
+    s += fit * 1.6;
+    if (fit === 0) s -= 3;                         // wrong weapon for the class
+  }
+  if (item.itemClass === 'armor') s += (ARMORFIT[cls][weightOf(item)] ?? 0) * 1.4;
+  s += (item.triggers?.length ?? 0) * 1.1 + (item.slayer ? 1 : 0);
+  s += (item.tier ?? 0) * 2.0;   // \"the highest tier they can get\" — but class fit still dominates
+  if (Object.keys(item.equipCost ?? {}).length) s -= 0.4;   // faith / crystals to field it
+  return s;
+}
+
+// ---------- level maths ----------
+const STATS = ['strength','precision','magic','spirit','armor','resist','health','reach','dodge',
+  'toughness','itemSlots','accuracy','crit','luck','vision','movement','staminaMax','staminaRegen','surge'];
+const levelRows = cls => LEVELS.classes.find(c => c.id === cls);
+
+function levelGains(cls, level) {                  // everything levels 2..level grant
+  const c = levelRows(cls), out = {}, picks = [];
+  for (const row of c.rows.filter(r => r.level >= 2 && r.level <= level)) {
+    for (const [k, v] of Object.entries(c.freebie ?? {})) out[k] = (out[k] ?? 0) + v;
+    for (const [k, v] of Object.entries(row.grants ?? {})) out[k] = (out[k] ?? 0) + v;
+    if (row.choice) {                              // L5: take the option this class values most
+      const best = row.choice.options.map(o => ({ o, s: Object.entries(o).reduce((a, [k, v]) => a + (W[cls][k] ?? 0) * v, 0) }))
+        .sort((a, b) => b.s - a.s)[0].o;
+      for (const [k, v] of Object.entries(best)) out[k] = (out[k] ?? 0) + v;
+      picks.push({ level: row.level, pick: best });
+    }
+  }
+  return { out, picks };
+}
+function powersFor(cls, level) {                   // one class power at L3, L4, L5, L6
+  const def = CLASSDEF[cls], spec = SPECIALTY[cls];
+  const mine = def.powers.filter(p => p.specialty === spec);
+  const other = def.powers.filter(p => p.specialty !== spec)
+    .sort((a, b) => (a.stamina ?? 0) - (b.stamina ?? 0));
+  const order = [...mine, ...other];
+  const out = [];
+  for (const lv of [3, 4, 5, 6]) if (level >= lv) {
+    const p = order[out.length];
+    if (p) out.push({ level: lv, id: p.id, name: p.name, specialty: p.specialty,
+      stamina: p.stamina ?? 0, cooldown: p.cooldown ?? 0, description: p.description });
+  }
+  return out;
+}
+function specialtyMods(cls) {
+  const s = CLASSDEF[cls].specialties.find(x => x.id === SPECIALTY[cls]);
+  return { id: s.id, name: s.name ?? s.id, mods: s.statModifiers ?? {} };
+}
+
+// ---------- hero objects ----------
+function makeHero(cls, name) {
+  const src = heroByClassName(cls, name);
+  if (!src) throw new Error(`no base hero ${name} for ${cls}`);
+  const base = { ...src.ported, ...src.derivedBase, surge: 0 };
+  for (const k of STATS) base[k] ??= 0;
+  delete base.bleedOutTurns;
+  return { id: src.id, name: src.name, class: cls, className: src.sourceClass, level: 1,
+    base, specialty: null, powers: [], hands: [], armor: null, slots: [], joined: 0, fielded: false };
+}
+const party = ROSTER.map(([cls, name]) => makeHero(cls, name));
+party[0].level = 3;   // Warrior
+party[1].level = 2;   // Ranger
+party[3].level = 2;   // Priest
+party.forEach((h, i) => { h.fielded = i < fieldCount(1); h.entryOrder = i + 1; });
+
+// starting kits (kits.json draw specs, rolled here)
+const KITS = R('kits.json').classKits;
+const stash = [];
+for (const h of party) {
+  const k = KITS[h.class], pool = k.startPool.map(id => norm(BASE.get(id))).filter(Boolean);
+  const drawn = [];
+  if (k.draw === 'two-hands-worth') {
+    const first = take(pool); drawn.push(first);
+    if (first.hands < 2) drawn.push(take(pool));
+  } else drawn.push(take(pool));
+  const armor = pick(T0_ARMOR.filter(a => a.classRestriction === null));
+  h.kit = [...drawn, armor].map(i => i.id);
+  stash.push(...drawn, armor);
+}
+
+// ---------- the reward stream ----------
+const t3w = [...POOL_T3_W], t3a = [...POOL_T3_A];
+const t1 = { trinket: [...POOL_T1.trinket], idol: [...POOL_T1.idol],
+             bloodrune: [...POOL_T1.bloodrune], relic: [...POOL_T1.relic] };
+const shelf = [...SHELF_T1];
+const drawT3 = () => roll([['weapon', 25], ['armor', 25]]) === 'weapon' ? take(t3w) : take(t3a);
+const drawT1 = () => take(t1[roll([['trinket', 20], ['idol', 10], ['bloodrune', 10], ['relic', 10]])]);
+const drawShelf = () => take(shelf);
+
+// pre-battle-1 state: three tier-3 reward items, three bought tier-1
+const opening = { tier3: [drawT3(), drawT3(), drawT3()], bought: [drawShelf(), drawShelf(), drawShelf()] };
+stash.push(...opening.tier3, ...opening.bought);
+
+// ---------- assignment ----------
+function statsOf(h, equipped) {
+  const { out: lv } = levelGains(h.class, h.level);
+  const sp = h.level >= 2 ? specialtyMods(h.class).mods : {};
+  const gear = merge(...equipped.map(i => i.statModifiers));
+  const total = {};
+  for (const k of STATS) total[k] = (h.base[k] ?? 0) + (lv[k] ?? 0) + (sp[k] ?? 0) + (gear[k] ?? 0);
+  return total;
+}
+function capacity(h) {
+  const { out } = levelGains(h.class, h.level);
+  const sp = h.level >= 2 ? specialtyMods(h.class).mods : {};
+  return { hands: 2, armor: 1, slots: Math.max(0, (h.base.itemSlots ?? 0) + (out.itemSlots ?? 0) + (sp.itemSlots ?? 0)) };
+}
+const CAPPED = new Set(['idol', 'bloodrune', 'relic']);
+
+function assignAll(fielded, pool) {
+  const state = new Map(fielded.map(h => [h.id, { hands: [], armor: null, slots: [], cap: capacity(h), caps: {} }]));
+  const used = new Set();
+  const slotsUsed = st => st.slots.reduce((a, x) => a + (x.slots || 1), 0);
+  const handsUsed = st => st.hands.reduce((a, x) => a + (x.hands === 2 ? 2 : 1), 0);
+  const rank = kinds => {
+    const out = [];
+    for (const it of pool) { if (used.has(it.id) || !kinds.includes(it.itemClass)) continue;
+      for (const h of fielded) { const sc = score(it, h.class); if (sc > -Infinity) out.push({ it, h, s: sc }); } }
+    return out.sort((a, b) => b.s - a.s || a.it.id.localeCompare(b.it.id));
+  };
+
+  // PHASE 1 — the primary weapon set. Hands only: one two-hander, or two one-handers/shield.
+  for (const { it, h } of rank(['weapon'])) {
+    if (used.has(it.id)) continue;
+    const st = state.get(h.id), need = it.hands === 2 ? 2 : 1;
+    if (handsUsed(st) + need <= st.cap.hands) { st.hands.push(it); used.add(it.id); }
+  }
+  // PHASE 2 — armor.
+  for (const { it, h, s } of rank(['armor'])) {
+    if (used.has(it.id)) continue;
+    const st = state.get(h.id);
+    if (!st.armor && s > 0) { st.armor = it; used.add(it.id); }
+  }
+  // PHASE 3 — item slots go to trinkets, idols, Bloodrunes and relics, never to spare weapons.
+  for (const { it, h, s } of rank(['trinket', 'idol', 'bloodrune', 'relic'])) {
+    if (used.has(it.id)) continue;
+    const st = state.get(h.id);
+    if (CAPPED.has(it.itemClass) && st.caps[it.itemClass]) continue;
+    if (s > 0 && slotsUsed(st) + (it.slots || 1) <= st.cap.slots) {
+      st.slots.push(it); used.add(it.id);
+      if (CAPPED.has(it.itemClass)) st.caps[it.itemClass] = true;
+    }
+  }
+  // PHASE 4 — only now may a spare weapon take a slot, and only a one-handed one, one per hero.
+  for (const { it, h, s } of rank(['weapon'])) {
+    if (used.has(it.id)) continue;
+    const st = state.get(h.id);
+    if (it.hands === 2 || st.slots.some(x => x.itemClass === 'weapon')) continue;
+    if (s > 0 && slotsUsed(st) + (it.slots || 1) <= st.cap.slots) { st.slots.push(it); used.add(it.id); }
+  }
+
+  if (process.env.DEBUG_ASSIGN) {
+    for (const it of pool.filter(i => !used.has(i.id))) {
+      if (!['idol', 'relic', 'trinket', 'bloodrune'].includes(it.itemClass)) continue;
+      console.error(`[unassigned] ${it.name} (${it.itemClass}) -> ` + fielded.map(h => {
+        const st = state.get(h.id);
+        return `${h.name}: s=${score(it, h.class).toFixed(1)} ${slotsUsed(st)}/${st.cap.slots}` +
+          (CAPPED.has(it.itemClass) && st.caps[it.itemClass] ? ' CAPPED' : '');
+      }).join(' | '));
+    }
+  }
+  return { state, unassigned: pool.filter(i => !used.has(i.id)) };
+}
+
+// ---------- run the 20 battles ----------
+const BATTLES = 20;
+const benchNames = { 'class.warrior': ['Skullplate Veteran','Mountain Berserker','Dwarven Brawler'],
+  'class.ranger': ['Forest Fey','Ancient Elf','Forest Elf'], 'class.rogue': ['The Rose','The Skull','The Serpent'],
+  'class.mage': ['Pyre Witch','Archive Scholar','Crimson Sorceress'],
+  'class.priest': ['Barefoot Mendicant','Cathedral Bishop','Rune-Marked Ascetic'],
+  'class.paladin': ['Black Oath','Dawnblade','Court Champion'] };
+const recruitQueue = [];
+for (let i = 0; i < 3; i++) for (const c of Object.keys(benchNames)) recruitQueue.push([c, benchNames[c][i]]);
+
+const bench = [], battles = [];
+for (let b = 1; b <= BATTLES; b++) {
+  party.forEach((h, i) => { h.fielded = i < fieldCount(b); });   // 4 -> 5 (b5) -> 6 (b11)
+  const fielded = party.filter(h => h.fielded);
+  const { state, unassigned } = assignAll(fielded, stash);
+
+  const roster = fielded.map(h => {
+    const st = state.get(h.id);
+    const equipped = [...st.hands, ...(st.armor ? [st.armor] : []), ...st.slots];
+    const sp = h.level >= 2 ? specialtyMods(h.class) : null;
+    const { picks } = levelGains(h.class, h.level);
+    return { id: h.id, name: h.name, class: h.class, className: h.className, level: h.level,
+      specialty: sp && { id: sp.id, mods: sp.mods },
+      levelFivePick: picks[0]?.pick ?? null,
+      powers: powersFor(h.class, h.level),
+      equipment: { hands: st.hands.map(i => ({ id: i.id, name: i.name, tier: i.tier })),
+        armor: st.armor && { id: st.armor.id, name: st.armor.name, tier: st.armor.tier },
+        slots: st.slots.map(i => ({ id: i.id, name: i.name, tier: i.tier, itemClass: i.itemClass })) },
+      capacity: capacity(h), stats: statsOf(h, equipped) };
+  });
+
+  const gained = { tier3: drawT3(), tier1: drawT1() };
+  const levelTarget = fielded.slice().sort((a, b) => a.level - b.level || party.indexOf(a) - party.indexOf(b))[0];
+  const recruit = (b % 2 === 0 && recruitQueue.length) ? recruitQueue.shift() : null;
+
+  battles.push({ battle: b, fieldedCount: fielded.length, roster,
+    stashCount: unassigned.length,
+    stash: unassigned.map(i => ({ id: i.id, name: i.name, tier: i.tier, itemClass: i.itemClass })),
+    afterBattle: { levelUp: { hero: levelTarget.name, from: levelTarget.level, to: levelTarget.level + 1 },
+      rewards: [{ id: gained.tier3.id, name: gained.tier3.name, tier: 3, itemClass: gained.tier3.itemClass },
+                { id: gained.tier1.id, name: gained.tier1.name, tier: 1, itemClass: gained.tier1.itemClass }],
+      recruit: recruit ? { class: recruit[0], name: recruit[1] } : null } });
+
+  levelTarget.level += 1;
+  stash.push(gained.tier3, gained.tier1);
+  if (recruit) { const h = makeHero(recruit[0], recruit[1]); h.joined = b; bench.push(h); }
+}
+
+fs.writeFileSync('PROGRESSION-SCHEDULE.json', JSON.stringify({
+  _generated: new Date().toISOString().slice(0, 10),
+  _source: 'content/gen/*.json', _seed: '0x48424154', _generator: 'progression/build-schedule.mjs',
+  assumptions: {
+    party: 'six adventurer classes, one each, Eve-of-Ruin base stat blocks',
+    xp: 'one level per battle, awarded to the lowest-level fielded hero',
+    rewards: 'one tier-3 weapon-or-armor (25/25 odds) + one tier-1 trinket/idol/Bloodrune/relic (20/10/10/10) per battle',
+    opening: 'three tier-3 reward items and three bought tier-1 Forge items before battle 1',
+    fieldRamp: 'battles 1-4 field 4 heroes, battles 5-10 field 5, battles 11-20 field 6',
+    entryOrder: 'Warrior/Ranger/Mage/Priest open; Paladin joins the field at battle 5, Rogue at battle 11',
+    recruits: 'one new hero every second battle; recruits sit on the bench, hold no gear and gain no levels',
+    weapons: 'one primary weapon set in the hands (highest tier the class can use); item slots are reserved for trinkets/idols/Bloodrunes/relics, and a spare weapon may only take a leftover slot — one-handed, one per hero',
+    bloodruneSlots: 'a Bloodrune costs one item slot, per 2-ACTIONS-SETTLED.md; gear.json still carries the outdated slots:0',
+    specialties: SPECIALTY,
+  },
+  unresolvedRefs: [...new Set(unresolved)],
+  battles,
+}, null, 1));
+console.log('battles:', battles.length, '| unresolved refs:', new Set(unresolved).size);
+"
+
+ ❯ test/opening-probe-cadence.test.ts:43:21
+     41|   it('the builder types the cadence once and the engine types no count…
+     42|     const builder = readFileSync('../progression/build-schedule.mjs', …
+     43|     expect(builder).toMatch(/const OPENING_CADENCE = \{ first: 1, afte…
+       |                     ^
+     44|     expect(builder, 'no second arithmetic for "after the first battle"…
+     45|     const engine = readFileSync('src/content/opening-party.ts', 'utf8')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/opening-probe-cadence.test.ts > the engine's opening party for battle N holds the heroes the ruled cadence gives > OPENING_POSITIONS is the file's: 1, 2, 3, 4, 5, 6 at the Orphanage, the Lumberjack House, the Bridge, the Cavern Trail, the Gates, the Cathedral
+AssertionError: expected [ [ …(2) ], [ …(2) ], [ …(2) ], …(3) ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ], …(3) ]
+
+- Expected
++ Received
+
+@@ -3,23 +3,23 @@
+      "encounter.opening.orphanage",
+      1,
+    ],
+    [
+      "encounter.opening.lumberjack",
+-     2,
++     3,
+    ],
+    [
+      "encounter.opening.bridge",
+-     3,
++     4,
+    ],
+    [
+      "encounter.opening.cavern-trail",
+-     4,
++     5,
+    ],
+    [
+      "encounter.opening.gates",
+-     5,
++     6,
+    ],
+    [
+      "encounter.opening.cathedral",
+      6,
+    ],
+
+ ❯ test/opening-probe-cadence.test.ts:54:70
+     52| describe('the engine\'s opening party for battle N holds the heroes th…
+     53|   it('OPENING_POSITIONS is the file\'s: 1, 2, 3, 4, 5, 6 at the Orphan…
+     54|     expect(OPENING_POSITIONS.map((p) => [p.encounterId, p.drafted])).t…
+       |                                                                      ^
+     55|       ['encounter.opening.orphanage', 1], ['encounter.opening.lumberja…
+     56|       ['encounter.opening.cavern-trail', 4], ['encounter.opening.gates…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/opening-probe-cadence.test.ts > the engine's opening party for battle N holds the heroes the ruled cadence gives > openingPartyOf(position) fields that many, each battle's party the one before it and one more — over ten replicates
+AssertionError: replicate 0, battle 2: expected 3 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ test/opening-probe-cadence.test.ts:65:77
+     63|       for (const p of OPENING.positions) {
+     64|         const party = openingPartyOf(p.position, r)
+     65|         expect(party.heroes.length, `replicate ${r}, battle ${p.positi…
+       |                                                                             ^
+     66|         expect(party.heroes, `replicate ${r}, battle ${p.position}: th…
+     67|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/opening-probe-cadence.test.ts > the engine's opening party for battle N holds the heroes the ruled cadence gives > a battle of each opening scenario begins with that many drafted heroes on the board
+AssertionError: test.opening-lumberjack, replicate 0: expected 3 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ test/opening-probe-cadence.test.ts:77:64
+     75|         const ctx = createBattle({ ...scenarioOptions(scenarioDef(s), …
+     76|         const drafted = ctx.state.units.filter((u) => u.side === 'hero…
+     77|         expect(drafted.length, `${s}, replicate ${replicate}`).toBe(RU…
+       |                                                                ^
+     78|       }
+     79|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  07:27:36
+   Duration  897ms (transform 550ms, setup 0ms, import 686ms, tests 97ms, environment 0ms)
+

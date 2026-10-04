@@ -43,7 +43,16 @@ describe('encounter.opening.cavern-trail', () => {
       expect(ctx.events.some((e) => e.type === 'status.applied' && e.causeId === FALL && e['statusId'] === 'status.burn')).toBe(true)
     }
   })
-  it('is won when the last enemy dies', () => {
+  // SKIPPED BY NAME, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6). Ruled 2026-10-04 (Andrew, DECISIONS.md 'no testing that the battles can be won until these items
+  // are done; the page tests play an overpowered party; faster landing'): "A test that exists only to show a battle is
+  // winnable by the computer's play is skipped until then, by name, with this entry cited." This one needs a replicate
+  // the drafted party wins by the computer's play: replicate 0 was one, and with four heroes at the Cavern Trail (it was
+  // five) replicate 0 is a wipe. No seed was searched for. The rule itself — a battle with no `win` of its own ends
+  // heroClear when the last enemy is down — is the engine's victory check, tested on its own (test/encounter-runner.test.ts,
+  // test/encounter-commands.test.ts). The other tests here keep replicate 0: its meteors still land on units.
+  // Un-skip when the queued items are done and a winning replicate is recorded again.
+  // was: it('is won when the last enemy dies', () => {
+  it.skip('is won when the last enemy dies', () => {
     const ctx = openingBattle(S, WIN, true)
     expect(ctx.state.outcome).toBe('heroClear')
     expect(ctx.state.units.filter((u) => u.side === 'enemy').every((u) => u.lifeState !== 'standing')).toBe(true)

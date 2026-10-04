@@ -21,17 +21,25 @@ describe('fix.opening-party — the opening fields the drafted party', () => {
   // by Andrew 2026-09-28 ("They need to be leveling up"; the Orphanage pays 20 XP). Levels are asserted in
   // test/opening-first-level.test.ts.
   it('the six positions carry the ruled cadence and the sword from the Bridge on', () => {
+    // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
+    //   ['encounter.opening.orphanage', 1], ['encounter.opening.lumberjack', 3], ['encounter.opening.bridge', 4],
+    //   ['encounter.opening.cavern-trail', 5], ['encounter.opening.gates', 6], ['encounter.opening.cathedral', 6]])
+    // — the 2026-08-23 cadence (two drafts after battle 1). The ruled cadence is one after every battle.
     expect(OPENING_POSITIONS.map((p) => [p.encounterId, p.drafted])).toEqual([
-      ['encounter.opening.orphanage', 1], ['encounter.opening.lumberjack', 3], ['encounter.opening.bridge', 4],
-      ['encounter.opening.cavern-trail', 5], ['encounter.opening.gates', 6], ['encounter.opening.cathedral', 6]])
+      ['encounter.opening.orphanage', 1], ['encounter.opening.lumberjack', 2], ['encounter.opening.bridge', 3],
+      ['encounter.opening.cavern-trail', 4], ['encounter.opening.gates', 5], ['encounter.opening.cathedral', 6]])
     expect(OPENING_POSITIONS.map((p) => p.carried.includes(SWORD))).toEqual([false, false, true, true, true, true])
   })
 
-  it('the Orphanage fields one drafted hero with the Orphan Child and the School Teacher; the Lumberjack three; the Cavern Trail five', () => {
+  // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
+  //   it('the Orphanage fields one drafted hero with the Orphan Child and the School Teacher; the Lumberjack three; the Cavern Trail five', …
+  //     ['test.opening-lumberjack', 3, …], ['test.opening-cavern-trail', 5, []],
+  // — the old cadence's parties. The Lumberjack House fields two, the Cavern Trail four; the civilians are as they were.
+  it('the Orphanage fields one drafted hero with the Orphan Child and the School Teacher; the Lumberjack two; the Cavern Trail four', () => {
     for (const [s, n, civilians] of [
       ['test.opening-orphanage', 1, ['hero.fixed.orphans', 'hero.fixed.school-teacher']],
-      ['test.opening-lumberjack', 3, ['hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife']],
-      ['test.opening-cavern-trail', 5, []],
+      ['test.opening-lumberjack', 2, ['hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife']],
+      ['test.opening-cavern-trail', 4, []],
     ] as const) {
       const ctx = createBattle(scenarioOptions(scenarioDef(s)))
       const side = ctx.state.units.filter((u) => u.side === 'hero')
@@ -41,8 +49,10 @@ describe('fix.opening-party — the opening fields the drafted party', () => {
     }
   })
 
-  it('the Bridge fields four, the Gates six, the Cathedral six', () => {
-    expect([3, 5, 6].map((p) => openingPartyOf(p, 0).heroes.length)).toEqual([4, 6, 6])
+  // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
+  //   it('the Bridge fields four, the Gates six, the Cathedral six', () => { … .toEqual([4, 6, 6]) })
+  it('the Bridge fields three, the Gates five, the Cathedral six', () => {
+    expect([3, 5, 6].map((p) => openingPartyOf(p, 0).heroes.length)).toEqual([3, 5, 6])
   })
 
   it('every fielded hero is a pool row on its own kit, and from the Bridge on one carries the Flaming Longsword', () => {
@@ -56,7 +66,18 @@ describe('fix.opening-party — the opening fields the drafted party', () => {
           expect(UNITS[id]!.defaultItems?.length, `${id} has a kit`).toBeGreaterThan(0)
         }
         const holders = heroItems.flatMap((items, i) => (items?.includes(SWORD) ? [i] : []))
-        expect(holders).toHaveLength(p.position >= 3 ? 1 : 0)
+        // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
+        //   expect(holders).toHaveLength(p.position >= 3 ? 1 : 0)
+        // — true while the Bridge fielded four heroes, among whom these replicates always drafted a Warrior or a Paladin.
+        // With three at the Bridge a replicate may hold neither, and the rule is the one the builder and the kingdom state
+        // (DECISIONS.md 2026-09-28 "it only is going to help the paladin or the warrior"; 2026-10-03 'the Flaming Longsword
+        // waits for its taker'): from the Bridge on ONE hero carries it when the party holds a taker — and that hero is a
+        // taker — and nobody carries it while the party holds none (openingHolderOf); by the Cathedral, six heroes of six
+        // classes, it is always carried.
+        const takers = heroes.map((id, i) => (OPENING.takers[SWORD].some((c: string) => UNITS[id]!.tags!.includes(c)) ? i : -1)).filter((i) => i >= 0)
+        expect(holders, `replicate ${r}, battle ${p.position}`).toHaveLength(p.position >= 3 && takers.length ? 1 : 0)
+        for (const i of holders) expect(takers, `replicate ${r}, battle ${p.position}: the holder is a Warrior or a Paladin`).toContain(i)
+        if (p.position === 6) expect(holders, `replicate ${r}: at the Cathedral the sword is carried`).toHaveLength(1)
         // everyone else enters on the row's own kit (no list handed in = the Codex default kit)
         expect(heroItems.filter((items, i) => !holders.includes(i) && items !== undefined)).toEqual([])
       }

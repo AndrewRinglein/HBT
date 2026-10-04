@@ -19,7 +19,11 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
 // is going to help the paladin or the warrior"), so replicate 7's sword moved from its Rogue to its Paladin and that battle's
 // curse lands on nobody (0 hit; replicates 0-39 searched). Replicate 3 is the first whose curse lands on a hero and runs past Turn 7.
 // was: const SEEN = 7
-const SEEN = 3
+// Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6): the Gates fields five heroes, not six, so every replicate is another battle; replicate 3's curse now lands
+// on nobody (0 hit). Replicate 6 is the first of replicates 0-11 whose curse lands on a unit and which runs past Turn 7
+// (looked at, as in 2026-10-02's note above; no battle here is asked to be won). The claims below are unchanged.
+// was: const SEEN = 3
+const SEEN = 6
 describe('encounter.opening.gates', () => {
   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
     const e = encounterDef(ENC)

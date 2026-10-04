@@ -27050,3 +27050,198 @@ index 4a9dad6..bba3d3a 100644
        // was: .toEqual([[4, 'unit.zombie']]) and .toBe(2)
 ```
 </details>
+
+## fix.opening-probe-cadence — LANDED `da7eed3` **NEEDS REVIEW**
+2026-10-04 15:27
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/opening-cavern-trail.test.ts, test/opening-first-level.test.ts, test/opening-gates.test.ts, test/opening-levels.test.ts, test/opening-party.test.ts, test/opening-probe-cadence.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.lumberjack: 13 log lines, 13 fired, 9 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/opening-cavern-trail.test.ts, test/opening-first-level.test.ts, test/opening-gates.test.ts, test/opening-levels.test.ts, test/opening-party.test.ts, test/fixtures/battle-cursor-opening-probe-cadence.json, test/opening-probe-cadence.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/opening-cavern-trail.test.ts (-1), test/opening-first-level.test.ts (-1), test/opening-gates.test.ts (-1), test/opening-levels.test.ts (-2), test/opening-party.test.ts (-8) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.lumberjack — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 11de3d0..853d9bb 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -328,4 +328,8 @@ const ownAreaGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-
+ // Every case frozen here (tools/capture-orphanage-closer-start-cursor.mts). Moved — for real, the placements changed by ruling (state, RNG and result), exactly the case that fields the Orphanage: test.opening-orphanage. A `changed` case is checked here and skips the older layers.
+ const closerStartGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-closer-start.json', import.meta.url), 'utf8'))
++// fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; ...': "One, yes."), Law 10: the engine's
++// opening party is one hero smaller at battles 2 to 5 (2, 3, 4, 5 heroes; it was 3, 4, 5, 6), so each of those battles is another battle.
++// Every case frozen here (tools/capture-opening-probe-cadence-cursor.mts). Moved — for real, the parties changed by ruling (state, RNG and result), exactly the opening battles 2 to 5: test.opening-bridge, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
++const probeCadenceGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-probe-cadence.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -453,5 +457,8 @@ describe('resumable battle cursor', () => {
+       const ownAreaExpected = ownAreaGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const closerStartExpected = closerStartGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const closerStartMoved = closerStartExpected?.changed === true
++      const probeCadenceExpected = probeCadenceGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const probeCadenceMoved = probeCadenceExpected?.changed === true
++      // was: const closerStartMoved = closerStartExpected?.changed === true — a case fix.opening-probe-cadence moved skips this layer too (fix.opening-probe-cadence 2026-10-04)
++      const closerStartMoved = closerStartExpected?.changed === true || probeCadenceMoved
+       // was: const ownAreaMoved = ownAreaExpected?.changed === true — a case fix.opening-orphanage-closer-start moved skips this layer too (fix.opening-orphanage-closer-start 2026-10-04)
+       const ownAreaMoved = ownAreaExpected?.changed === true || closerStartMoved
+@@ -562,5 +569,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (closerStartExpected) {
++        if (probeCadenceExpected) {
++        expect(hash(ctx.events), 'full opening-probe-cadence events').toBe(probeCadenceExpected.events)
++        expect(hash(ctx.state), 'full opening-probe-cadence state').toBe(probeCadenceExpected.state)
++        expect(hash(ctx.rng.log), 'full opening-probe-cadence RNG').toBe(probeCadenceExpected.rng)
++        expect(result).toEqual(probeCadenceExpected.result)
++        }
++        // was: if (closerStartExpected) { — fix.opening-probe-cadence (2026-10-04): a case it moved is checked above instead
++        if (closerStartExpected && !probeCadenceMoved) {
+         expect(hash(ctx.events), 'full orphanage-closer-start events').toBe(closerStartExpected.events)
+         expect(hash(ctx.state), 'full orphanage-closer-start state').toBe(closerStartExpected.state)
+diff --git a/test/opening-cavern-trail.test.ts b/test/opening-cavern-trail.test.ts
+index b4e5b00..c2c6c7c 100644
+--- a/test/opening-cavern-trail.test.ts
++++ b/test/opening-cavern-trail.test.ts
+@@ -44,5 +44,14 @@ describe('encounter.opening.cavern-trail', () => {
+     }
+   })
+-  it('is won when the last enemy dies', () => {
++  // SKIPPED BY NAME, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6). Ruled 2026-10-04 (Andrew, DECISIONS.md 'no testing that the battles can be won until these items
++  // are done; the page tests play an overpowered party; faster landing'): "A test that exists only to show a battle is
++  // winnable by the computer's play is skipped until then, by name, with this entry cited." This one needs a replicate
++  // the drafted party wins by the computer's play: replicate 0 was one, and with four heroes at the Cavern Trail (it was
++  // five) replicate 0 is a wipe. No seed was searched for. The rule itself — a battle with no `win` of its own ends
++  // heroClear when the last enemy is down — is the engine's victory check, tested on its own (test/encounter-runner.test.ts,
++  // test/encounter-commands.test.ts). The other tests here keep replicate 0: its meteors still land on units.
++  // Un-skip when the queued items are done and a winning replicate is recorded again.
++  // was: it('is won when the last enemy dies', () => {
++  it.skip('is won when the last enemy dies', () => {
+     const ctx = openingBattle(S, WIN, true)
+     expect(ctx.state.outcome).toBe('heroClear')
+diff --git a/test/opening-first-level.test.ts b/test/opening-first-level.test.ts
+index 7cae83e..751828c 100644
+--- a/test/opening-first-level.test.ts
++++ b/test/opening-first-level.test.ts
+@@ -15,5 +15,9 @@ describe('fix.opening-first-level — the first hero is level 2 after the Orphan
+     expect(OPENING.battleXp).toEqual({ 1: 20 })
+     expect(OPENING.levelXp).toEqual([20, 50, 100, 170, 270, 400])
+-    expect(OPENING_POSITIONS.map((p) => p.xp)).toEqual([[0], [20, 0, 0], [20, 0, 0, 0], [20, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0]])
++    // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
++    //   .toEqual([[0], [20, 0, 0], [20, 0, 0, 0], [20, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0]])
++    // — one XP entry per hero of the old cadence's parties (1, 3, 4, 5, 6, 6). The rule is unchanged — the Orphanage's 20
++    // is the first hero's, everyone drafted after it carries none — over the ruled parties.
++    expect(OPENING_POSITIONS.map((p) => p.xp)).toEqual([[0], [20, 0], [20, 0, 0], [20, 0, 0, 0], [20, 0, 0, 0, 0], [20, 0, 0, 0, 0, 0]])
+     expect(OPENING_POSITIONS.map((p) => p.levels[0])).toEqual([1, 2, 2, 2, 2, 2])
+     expect(OPENING_POSITIONS.every((p) => p.levels.slice(1).every((l) => l === 1))).toBe(true)
+diff --git a/test/opening-gates.test.ts b/test/opening-gates.test.ts
+index 993b743..4353ee9 100644
+--- a/test/opening-gates.test.ts
++++ b/test/opening-gates.test.ts
+@@ -20,5 +20,9 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
+ // curse lands on nobody (0 hit; replicates 0-39 searched). Replicate 3 is the first whose curse lands on a hero and runs past Turn 7.
+ // was: const SEEN = 7
+-const SEEN = 3
++// Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6): the Gates fields five heroes, not six, so every replicate is another battle; replicate 3's curse now lands
++// on nobody (0 hit). Replicate 6 is the first of replicates 0-11 whose curse lands on a unit and which runs past Turn 7
++// (looked at, as in 2026-10-02's note above; no battle here is asked to be won). The claims below are unchanged.
++// was: const SEEN = 3
++const SEEN = 6
+ describe('encounter.opening.gates', () => {
+   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
+diff --git a/test/opening-levels.test.ts b/test/opening-levels.test.ts
+index bcee15a..9d4dad5 100644
+--- a/test/opening-levels.test.ts
++++ b/test/opening-levels.test.ts
+@@ -12,5 +12,5 @@ import { fileURLToPath } from 'node:url'
+ import { createBattle } from '../src/core/setup.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { OPENING_TAKERS, openingDraftOf, openingHolderOf, openingPartyOf, openingRewardPickOf, withOpeningItem } from '../src/content/opening-party.js'
++import { OPENING_POSITIONS, OPENING_TAKERS, openingDraftOf, openingHolderOf, openingPartyOf, openingRewardPickOf, withOpeningItem } from '../src/content/opening-party.js'
+ import { ITEMS, LEVELS, UNITS } from '../src/content/index.js'
+ import OPENING from '../../progression/OPENING-PARTY.json' with { type: 'json' }
+@@ -35,5 +35,7 @@ describe('fix.opening-levels — the engine fields what the opening carried', ()
+         if (takers.length) expect(heroes[holders[0]!], `replicate ${r} position ${p}`).toBe(takers[0])
+       }
+-      if (none < 0 && !openingDraftOf(r, 4).some((id) => OPENING_TAKERS[SWORD]!.includes(classOf(id)))) none = r
++      // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read openingDraftOf(r, 4) — the Bridge's party of four under the old cadence. The Bridge's
++      // party is whatever the numbers file gives position 3 (three now); the claim is unchanged.
++      if (none < 0 && !openingDraftOf(r, OPENING_POSITIONS[2]!.drafted).some((id) => OPENING_TAKERS[SWORD]!.includes(classOf(id)))) none = r
+     }
+     expect(none, 'a replicate whose Bridge party has no Warrior or Paladin').toBeGreaterThanOrEqual(0)
+diff --git a/test/opening-party.test.ts b/test/opening-party.test.ts
+index 2785ced..d540e57 100644
+--- a/test/opening-party.test.ts
++++ b/test/opening-party.test.ts
+@@ -22,15 +22,23 @@ describe('fix.opening-party — the opening fields the drafted party', () => {
+   // test/opening-first-level.test.ts.
+   it('the six positions carry the ruled cadence and the sword from the Bridge on', () => {
++    // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
++    //   ['encounter.opening.orphanage', 1], ['encounter.opening.lumberjack', 3], ['encounter.opening.bridge', 4],
++    //   ['encounter.opening.cavern-trail', 5], ['encounter.opening.gates', 6], ['encounter.opening.cathedral', 6]])
++    // — the 2026-08-23 cadence (two drafts after battle 1). The ruled cadence is one after every battle.
+     expect(OPENING_POSITIONS.map((p) => [p.encounterId, p.drafted])).toEqual([
+-      ['encounter.opening.orphanage', 1], ['encounter.opening.lumberjack', 3], ['encounter.opening.bridge', 4],
+-      ['encounter.opening.cavern-trail', 5], ['encounter.opening.gates', 6], ['encounter.opening.cathedral', 6]])
++      ['encounter.opening.orphanage', 1], ['encounter.opening.lumberjack', 2], ['encounter.opening.bridge', 3],
++      ['encounter.opening.cavern-trail', 4], ['encounter.opening.gates', 5], ['encounter.opening.cathedral', 6]])
+     expect(OPENING_POSITIONS.map((p) => p.carried.includes(SWORD))).toEqual([false, false, true, true, true, true])
+   })
+ 
+-  it('the Orphanage fields one drafted hero with the Orphan Child and the School Teacher; the Lumberjack three; the Cavern Trail five', () => {
++  // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
++  //   it('the Orphanage fields one drafted hero with the Orphan Child and the School Teacher; the Lumberjack three; the Cavern Trail five', …
++  //     ['test.opening-lumberjack', 3, …], ['test.opening-cavern-trail', 5, []],
++  // — the old cadence's parties. The Lumberjack House fields two, the Cavern Trail four; the civilians are as they were.
++  it('the Orphanage fields one drafted hero with the Orphan Child and the School Teacher; the Lumberjack two; the Cavern Trail four', () => {
+     for (const [s, n, civilians] of [
+       ['test.opening-orphanage', 1, ['hero.fixed.orphans', 'hero.fixed.school-teacher']],
+-      ['test.opening-lumberjack', 3, ['hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife']],
+-      ['test.opening-cavern-trail', 5, []],
++      ['test.opening-lumberjack', 2, ['hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife']],
++      ['test.opening-cavern-trail', 4, []],
+     ] as const) {
+       const ctx = createBattle(scenarioOptions(scenarioDef(s)))
+@@ -42,6 +50,8 @@ describe('fix.opening-party — the opening fields the drafted party', () => {
+   })
+ 
+-  it('the Bridge fields four, the Gates six, the Cathedral six', () => {
+-    expect([3, 5, 6].map((p) => openingPartyOf(p, 0).heroes.length)).toEqual([4, 6, 6])
++  // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
++  //   it('the Bridge fields four, the Gates six, the Cathedral six', () => { … .toEqual([4, 6, 6]) })
++  it('the Bridge fields three, the Gates five, the Cathedral six', () => {
++    expect([3, 5, 6].map((p) => openingPartyOf(p, 0).heroes.length)).toEqual([3, 5, 6])
+   })
+ 
+@@ -57,5 +67,16 @@ describe('fix.opening-party — the opening fields the drafted party', () => {
+         }
+         const holders = heroItems.flatMap((items, i) => (items?.includes(SWORD) ? [i] : []))
+-        expect(holders).toHaveLength(p.position >= 3 ? 1 : 0)
++        // Law 10, fix.opening-probe-cadence (2026-10-04; DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2." · "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
++        //   expect(holders).toHaveLength(p.position >= 3 ? 1 : 0)
++        // — true while the Bridge fielded four heroes, among whom these replicates always drafted a Warrior or a Paladin.
++        // With three at the Bridge a replicate may hold neither, and the rule is the one the builder and the kingdom state
++        // (DECISIONS.md 2026-09-28 "it only is going to help the paladin or the warrior"; 2026-10-03 'the Flaming Longsword
++        // waits for its taker'): from the Bridge on ONE hero carries it when the party holds a taker — and that hero is a
++        // taker — and nobody carries it while the party holds none (openingHolderOf); by the Cathedral, six heroes of six
++        // classes, it is always carried.
++        const takers = heroes.map((id, i) => (OPENING.takers[SWORD].some((c: string) => UNITS[id]!.tags!.includes(c)) ? i : -1)).filter((i) => i >= 0)
++        expect(holders, `replicate ${r}, battle ${p.position}`).toHaveLength(p.position >= 3 && takers.length ? 1 : 0)
++        for (const i of holders) expect(takers, `replicate ${r}, battle ${p.position}: the holder is a Warrior or a Paladin`).toContain(i)
++        if (p.position === 6) expect(holders, `replicate ${r}: at the Cathedral the sword is carried`).toHaveLength(1)
+         // everyone else enters on the row's own kit (no list handed in = the Codex default kit)
+         expect(heroItems.filter((items, i) => !holders.includes(i) && items !== undefined)).toEqual([])
+```
+</details>

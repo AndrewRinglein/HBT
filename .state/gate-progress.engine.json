@@ -1,24 +1,24 @@
 {
- "id": "fix.opening-orphanage-closer-start",
- "tree": "1e3492f8a31e26fad184ecb67e4dc683f2ec48a0",
- "ctx": "d119f29daeef4b004cca2ae9edb9333ab3b2f174",
+ "id": "fix.opening-probe-cadence",
+ "tree": "1889ed0fb032f65b0d8f6cae353e99435152ee20",
+ "ctx": "7849b2a1afe561c5c03ba57d08e7ac3a1a7bf4d0",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 605,
-  "typecheck": 2109,
-  "the item's own tests": 11247,
-  "gate 1 — the id appears in a real battle": 2248,
-  "brought its own tests": 44,
+  "not already decided": 422,
+  "typecheck": 2080,
+  "the item's own tests": 17273,
+  "gate 1 — the id appears in a real battle": 2924,
+  "brought its own tests": 46,
   "existing tests untouched": 0,
-  "control battles unchanged": 39739,
-  "content has a published source": 169,
-  "hardcode scan — core knows mechanisms, never names": 39,
+  "control battles unchanged": 107205,
+  "content has a published source": 220,
+  "hardcode scan — core knows mechanisms, never names": 62,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 33,
-  "naming — no banned words invented": 129,
-  "kill switch — the tests fail without the content": 2890
+  "naming — new content ids use declared kinds": 44,
+  "naming — no banned words invented": 189,
+  "kill switch — the tests fail without the content": 4012
  }
 }
