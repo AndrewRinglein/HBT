@@ -3,3 +3,4 @@
 {"suite":"engine","stamp":"4cb6488349","with":{"engine":"4cb6488349","content":"07edc3f143","viewer":"74061129fd","kingdom":"c605b47f78"},"at":"2026-10-04T11:35:23.303Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2557}
 {"suite":"control","stamp":"4cb6488349","pack":"476c0b5f74","golden":"cacc471e2f","at":"2026-10-04T11:37:36.974Z","by":"gate tool.tests-follow-what-changed --land","in":"HBT-worker-engine","moved":null}
 {"suite":"control","stamp":"a9b03479b6","pack":"476c0b5f74","golden":"cacc471e2f","at":"2026-10-04T11:56:35.175Z","by":"gate tool.kingdom-vitest-workers --land","in":"HBT-worker-engine","moved":null}
+{"suite":"control","stamp":"679baa1e6e","pack":"a81583e43c","golden":"cacc471e2f","at":"2026-10-04T12:07:56.483Z","by":"gate movement.back-flip --land","in":"HBT-worker-engine","moved":null}

@@ -26827,3 +26827,23 @@ index 059741f..cc728ff 100644
      expect(node(join(f.main, 'engine'), { ...f.env, FIXTURE_WORKERS: '1', VITEST_MAX_WORKERS: '2' }, 'tools/suites.mjs', '--run', 'kingdom').status).toBe(0)
 ```
 </details>
+
+## movement.back-flip — LANDED `0aef492`
+2026-10-04 12:07
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2001 · ..\CODEX.md:1815
+  PASS  typecheck
+  PASS  the item's own tests — test/back-flip.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.back-flip: 6 log lines, 6 fired, 2 changed state
+  PASS  brought its own tests — test/back-flip.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.back-flip — they genuinely test it
