@@ -61,7 +61,7 @@ import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
 import {worldToCSS} from './terrain-scene.js'
 import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble, isoK, boardAffine, GLIDE_MS } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncFalls, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble, isoK, boardAffine, GLIDE_MS } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
 import { closeAffliction } from './affliction.js'
 import { drawRail } from './rail.js'
@@ -89,6 +89,8 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'surge.checked': 0, 'surge.hit': 600, 'power.gained': 320, 'heal.boosted': 200, 'status.cancelled': 220, 'maxHp.gained': 240,
   'stamina.drained': 160, 'layer.painted': 0, 'layer.cancelled': 0, 'band.advanced': 900, 'night.fell': 1200, 'light.cast': 0,
   'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0, 'unit.grown': 0,
+  /* viewer.area-fall-warning (2026-10-04): the mark holds long enough to be seen; the landing a beat before its paint */
+  'area.marked': 1200, 'area.landed': 420,
   /* R4 (2026-09-23): a KDB check that did not fire is silent (0); a fired one holds its word (beat(), as block.rolled) */
   'kdb.rolled': 0,
   /* R5 (2026-09-24): the Thorns word holds a short beat before its damage line */
@@ -223,7 +225,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (!V.layers.ground) buildGround(V)
     syncProps(V)
     /* the persistent board objects, coplanar with the ground and right after it */
-    syncLayers(V); syncCorpses(V); syncAuras(V)
+    syncLayers(V); syncFalls(V); syncCorpses(V); syncAuras(V)
     drawAim(V); drawTargeting(V)
     syncUnits(V); syncPlayInput(V); drawPlay(V)
     drawPanel(V); drawRail(V); drawActivated(); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()

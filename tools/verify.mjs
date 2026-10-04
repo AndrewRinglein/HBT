@@ -80,11 +80,9 @@ const THREE = await import('three')
 /* event types the viewer deliberately does nothing with — a NEW engine event
    is a failure until it is folded or listed here on purpose */
 const IGNORED = new Set(['activation.selected', 'turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin',
-  'ai.tookHighGround', 'ai.denied', 'crit.branch',   // knockback.blocked folded 2026-09-23 (R4 collisions)
-  /* viewer.opening-replays (2026-10-03, SWITCHES.md `fallAreasUndrawn`): the Cavern Trail's meteor fall and the Gates' curse
-     strike (engine encounter.area-fall) mark seven areas and land on them five steps later. What lands is folded as it always
-     was (layer.painted, damage.applied); the warning itself is not drawn by the viewer yet — a debt, placed here on purpose */
-  'area.marked', 'area.landed'])
+  'ai.tookHighGround', 'ai.denied', 'crit.branch'])   // knockback.blocked folded 2026-09-23 (R4 collisions)
+  /* area.marked and area.landed left this list 2026-10-04 (viewer.area-fall-warning): the fold holds the marked areas and
+     the board draws them until they land (was viewer.opening-replays' debt, SWITCHES.md `fallAreasUndrawn`) */
 
 /* ── mount the page ────────────────────────────────────────────────────── */
 const m = html.match(/<script>([\s\S]*)<\/script>\s*$/)

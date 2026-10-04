@@ -1,6 +1,7 @@
 /* ── the log: one sentence per event — pure text ──────────────────────────
    A development affordance, not a game surface (ruled 9.6). */
 import { sgn } from './actions.js'
+import { fallWord } from './fold.js'
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 /** basis points as a percent, by moving the decimal point in the engine's own digits — no arithmetic (Law 0) */
 export const bpsPct = bps => { const s = String(bps).padStart(3, '0'), f = s.slice(-2).replace(/0+$/, ''); return s.slice(0, -2) + (f ? '.' + f : '') }
@@ -121,6 +122,10 @@ export function buildLog(events, SN, turns) {
       case 'maxHp.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} max HP <span class="sq">· now ${e.maxHp}</span>`)
       case 'stamina.drained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> loses ${e.amount} stamina`)
       case 'band.advanced': return b('turn', `— the band advances: row ${e.row} ${String(e.layer).replace(/^layer\./, '')} —`)
+      /* viewer.area-fall-warning: the mark and the landing, one sentence each — the fall's own word, the engine's count of
+         areas, the Turn the event says it lands after, and whom the event says it struck */
+      case 'area.marked': return b('turn', `— ${escape(fallWord(e.fall))}: ${(e.areas || []).length} areas are marked · they are struck after the Hero Phase of Turn ${e.lands} —`)
+      case 'area.landed': return b('turn', `— ${escape(fallWord(e.fall))} lands on ${(e.areas || []).length} areas · ${(e.hit || []).length ? 'strikes ' + e.hit.map(id => `<b>${escape(NAMES[id] ?? ('#' + id))}</b>`).join(', ') : 'strikes no one'} —`)
       case 'night.fell': return b('turn', `— night falls: ${e.hexes} hexes dark —`)
       case 'light.cast': return b('status', `&nbsp;&nbsp;the heroes light ${e.hexes} hexes`)
       case 'ai.override': return b('status', `&nbsp;&nbsp;${nmAt(e)} — ${e.mode} until Turn ${e.untilTurn} <span class="sq">· ${e.causeId}</span>`)

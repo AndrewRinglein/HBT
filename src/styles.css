@@ -85,6 +85,14 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .banner span{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#8b8778;margin-top:2px}
 .banner.wave b,.banner.night b{color:#e2a8ff}
 .banner.band b{color:#ff9d3c}
+.banner.fall b{color:#ff9d3c}
+/* viewer.area-fall-warning: a hex marked to be struck — hatched in the hue of what will land, pulsing; an area's centre ringed */
+.fallMark{position:absolute;pointer-events:none;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--fall) 62%,transparent) 0 7px,color-mix(in srgb,var(--fall) 20%,transparent) 7px 16px);
+  animation:fallPulse 1.6s ease-in-out infinite}
+.fallMark.fallCentre{background:radial-gradient(ellipse at 50% 50%,transparent 0 34%,color-mix(in srgb,var(--fall) 85%,transparent) 36% 44%,transparent 46%),
+  repeating-linear-gradient(-45deg,color-mix(in srgb,var(--fall) 62%,transparent) 0 7px,color-mix(in srgb,var(--fall) 20%,transparent) 7px 16px)}
+@keyframes fallPulse{0%,100%{opacity:.5}50%{opacity:.95}}
 .banner.won b{color:var(--gold)}
 .banner.lost b{color:#ff8f8f}
 .banner.phase b{color:var(--gold)}

@@ -1,0 +1,293 @@
+TAP version 13
+# Subtest: the Cavern Trail: the seven marked areas are on the board from the event that marks them until they land
+not ok 1 - the Cavern Trail: the seven marked areas are on the board from the event that marks them until they land
+  ---
+  duration_ms: 792.6087
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-fall-warning.test.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    
+    undefined !== []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-fall-warning.test.mjs:46:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: the Cavern Trail: a seek into the marked span shows the same marks as stepping there; the fold alone says the same
+not ok 2 - the Cavern Trail: a seek into the marked span shows the same marks as stepping there; the fold alone says the same
+  ---
+  duration_ms: 924.2637
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-fall-warning.test.mjs:72:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(stepped.hexes.length > 0)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-fall-warning.test.mjs:77:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: the Cavern Trail: the log says when the areas are marked and when they land
+not ok 3 - the Cavern Trail: the log says when the areas are marked and when they land
+  ---
+  duration_ms: 2.9151
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-fall-warning.test.mjs:89:3'
+  failureType: 'testCodeFailure'
+  error: 'a sentence for the mark'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-fall-warning.test.mjs:92:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the Gates: the seven marked areas are on the board from the event that marks them until they land
+not ok 4 - the Gates: the seven marked areas are on the board from the event that marks them until they land
+  ---
+  duration_ms: 270.912
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-fall-warning.test.mjs:41:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    
+    undefined !== []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-fall-warning.test.mjs:46:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the Gates: a seek into the marked span shows the same marks as stepping there; the fold alone says the same
+not ok 5 - the Gates: a seek into the marked span shows the same marks as stepping there; the fold alone says the same
+  ---
+  duration_ms: 304.8134
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-fall-warning.test.mjs:72:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(stepped.hexes.length > 0)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-fall-warning.test.mjs:77:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the Gates: the log says when the areas are marked and when they land
+not ok 6 - the Gates: the log says when the areas are marked and when they land
+  ---
+  duration_ms: 1.3738
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-fall-warning.test.mjs:89:3'
+  failureType: 'testCodeFailure'
+  error: 'a sentence for the mark'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-fall-warning.test.mjs:92:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: both events are folded, not ignored: verify's ignore list no longer names them, and the pump gives each a beat
+not ok 7 - both events are folded, not ignored: verify's ignore list no longer names them, and the pump gives each a beat
+  ---
+  duration_ms: 0.2427
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-fall-warning.test.mjs:103:1'
+  failureType: 'testCodeFailure'
+  error: 'the fold knows both'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-fall-warning.test.mjs:104:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: played, not stepped: the mark is drawn as its beat plays, with a banner that names the fall; two falls marked at once are both held
+not ok 8 - played, not stepped: the mark is drawn as its beat plays, with a banner that names the fall; two falls marked at once are both held
+  ---
+  duration_ms: 213.2386
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-fall-warning.test.mjs:112:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    the marks are on the board as the mark's beat plays
+    + actual - expected
+    
+    + []
+    - [
+    -   166,
+    -   167,
+    -   205,
+    -   206,
+    -   207,
+    -   246,
+    -   247,
+    -   297,
+    -   298,
+    -   337,
+    -   338,
+    -   339,
+    -   348,
+    -   349,
+    -   371,
+    -   372,
+    -   377,
+    -   378,
+    -   387,
+    -   388,
+    -   389,
+    -   395,
+    -   396,
+    -   411,
+    -   412,
+    -   413,
+    -   416,
+    -   417,
+    -   427,
+    -   428,
+    -   429,
+    -   435,
+    -   436,
+    -   437,
+    -   451,
+    -   452,
+    -   455,
+    -   456,
+    -   457,
+    -   467,
+    -   468,
+    -   475,
+    -   476,
+    -   496,
+    -   497
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 166
+    1: 167
+    2: 205
+    3: 206
+    4: 207
+    5: 246
+    6: 247
+    7: 297
+    8: 298
+    9: 337
+    10: 338
+    11: 339
+    12: 348
+    13: 349
+    14: 371
+    15: 372
+    16: 377
+    17: 378
+    18: 387
+    19: 388
+    20: 389
+    21: 395
+    22: 396
+    23: 411
+    24: 412
+    25: 413
+    26: 416
+    27: 417
+    28: 427
+    29: 428
+    30: 429
+    31: 435
+    32: 436
+    33: 437
+    34: 451
+    35: 452
+    36: 455
+    37: 456
+    38: 457
+    39: 467
+    40: 468
+    41: 475
+    42: 476
+    43: 496
+    44: 497
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-fall-warning.test.mjs:115:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2726.5451

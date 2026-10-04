@@ -226,6 +226,36 @@ export function syncLayers(V) {
     L.layL.appendChild(node); L.LAY.set(+hex, { layer, node })
   }
 }
+/* ── THE FALL WARNINGS (viewer.area-fall-warning, 2026-10-04) ───────────────────────────────────────────────────────────────
+   Engine DECISIONS.md 2026-10-03 'the opening replays show the heroes winning; one recording of each; the fall warnings are
+   drawn' (asked whether to draw the meteor and curse warning areas on the board — Andrew: "Two, yes."). The fold holds each
+   fall marked and not yet landed (S.falls, the area.marked event's own hexes); every marked hex is drawn once, on the ground
+   right after the painted layers, from the mark until it lands — in the replay page and a host's battle screen alike. The
+   look is not ruled (viewer SWITCHES fallMarkLook): hatched in the hue of what will land (the status the falling layer
+   applies), pulsing slowly, each area's centre ringed; no countdown is worked out — the Turn it lands after is the event's
+   own number, on the mark's title and in the banner and the log. */
+export function syncFalls(V) {
+  const L = V.layers, falls = V.S.falls || []
+  const key = JSON.stringify(falls)
+  if (L.fallKey === key && (L.fallL || !falls.length)) return
+  L.fallL?.remove(); L.fallL = null; L.fallKey = key
+  if (!falls.length) return
+  const { POS, LAYOUT } = V.data
+  const layer = el('fallMarks', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none')
+  for (const m of falls) {
+    const hue = layerHue(m.layer, V.data.LAYER_STATUS), centres = new Set(m.areas.map(a => a[0])), seen = new Set()
+    for (const hex of m.areas.flat()) {
+      if (seen.has(hex)) continue; seen.add(hex)
+      const p = POS[hex]
+      if (!p) throw new Error(`area.marked names hex ${JSON.stringify(hex)}, which is not on this ${V.data.BOARD.width}×${V.data.BOARD.height} board — the engine owes a hex`)
+      const n = el('fallMark' + (centres.has(hex) ? ' fallCentre' : ''), `left:${p.px - LAYOUT.W / 2}px;top:${p.py - LAYOUT.H / 2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;--fall:${hue}`)
+      n.dataset.hex = String(hex); n.dataset.fall = m.fall; n.dataset.lands = String(m.lands); n.dataset.hue = hue
+      n.style.transform = `translateZ(${heightOf(V, hex) + 1}px)`
+      layer.appendChild(n)
+    }
+  }
+  placeAfter(L.layL || L.ground, layer); L.fallL = layer
+}
 export const isDark = (V, hex) => { const n = (V.data.LAYERS || {})[(V.S.layers || {})[hex]]; return n === 'layer.darkness' }
 
 /* ── CORPSES (2026-09-03, §3) — board objects, not a dead unit's leftover ──

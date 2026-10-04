@@ -43,6 +43,9 @@ export function createState() {
     AOO: null,             // {holder, mover, attackId} while a free swing interrupts the mover's walk
     board: null,           // {width, height, deploy:{hero, enemy}} from map.loaded (engine 5603c40, §10)
     props: null,           // detached initial prop facts; null only before map.loaded
+    /* viewer.area-fall-warning (2026-10-04): the falls marked and not yet landed — [{fall, lands, layer, areas}], every field
+       the area.marked event's own; area.landed takes its fall away */
+    falls: [],
   }
 }
 
@@ -87,6 +90,9 @@ const propWord = id => (String(id ?? '').split('.').filter(s => !/^\d+$/.test(s)
    blocker, collisionValue, remaining). The float names what was struck and the
    blocker's collision value, verbatim from the event (n/of). */
 const COLLIDED = { unit: 'A BODY' }   // 'edge' and 'floor' read as the engine's own word
+/* A fall's word: the last segment of its id, as words ('trigger.cavern-trail.meteor-fall' → Meteor fall) — the engine names a
+   fall by id only (viewer SWITCHES fallName) */
+export const fallWord = id => { const w = String(id ?? '').split('.').pop().replace(/-/g, ' '); return w.charAt(0).toUpperCase() + w.slice(1) }
 
 export function fold(S, e, ctx, now = 0) {
   const { UD, SN } = ctx
@@ -678,6 +684,20 @@ export function fold(S, e, ctx, now = 0) {
     case 'layer.painted': case 'layer.cancelled':
       if (e.after) S.layers[e.hex] = e.after; else delete S.layers[e.hex]
       break
+    /* ── THE FALL WARNINGS (viewer.area-fall-warning, 2026-10-04; engine DECISIONS.md 2026-10-03 'the opening replays show the
+       heroes winning; one recording of each; the fall warnings are drawn'; engine encounter.area-fall) ──────────────────────
+       area.marked: the engine marks a fall's areas at the end of an Enemy Phase — which fall, the Turn after whose Hero Phase
+       it lands, the layer it leaves, and each area's hexes (its centre first). They are held, as stated, until area.landed
+       names the same fall; what lands is the layer.painted and damage lines that follow it. Nothing is worked out. */
+    case 'area.marked': {
+      S.falls = [...S.falls, { fall: e.fall, lands: e.lands, layer: e.layer, areas: (e.areas || []).map(a => [...a]) }]
+      cue('banner', { kind: 'fall', text: fallWord(e.fall), sub: (e.areas || []).length + ' areas marked · lands after the Hero Phase of Turn ' + e.lands })
+      break }
+    case 'area.landed': {
+      /* the fall that lands is the oldest mark of that fall still held */
+      const at = S.falls.findIndex(m => m.fall === e.fall)
+      if (at >= 0) S.falls = S.falls.filter((_, i) => i !== at)
+      break }
     case 'band.advanced':
       cue('banner', { kind: 'band', text: 'Row ' + e.row + ' ' + String(e.layer).replace(/^layer\./, ''), sub: 'the band advances' })
       break
@@ -758,4 +778,6 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',
   'layer.painted', 'layer.cancelled', 'band.advanced', 'night.fell', 'light.cast',
+  /* viewer.area-fall-warning (2026-10-04) */
+  'area.marked', 'area.landed',
   'ai.mode', 'ai.hunts', 'ai.override']
