@@ -3,6 +3,7 @@
   {
    "id": "badge.accurate",
    "name": "Accurate",
+   "playerLine": "Rarely misses",
    "rarity": "common",
    "payload": "+10 Accuracy",
    "category": "GENERATIVE — FAVOURABLE",
@@ -85,6 +86,7 @@
   {
    "id": "badge.born-archer",
    "name": "Born Archer",
+   "playerLine": "Shoots farther than most",
    "rarity": "uncommon",
    "payload": "+2 Reach",
    "category": "GENERATIVE — FAVOURABLE",
@@ -222,6 +224,7 @@
   {
    "id": "badge.dodger",
    "name": "Dodger",
+   "playerLine": "Slippery in a fight",
    "rarity": "common",
    "payload": "+10 Dodge",
    "category": "GENERATIVE — FAVOURABLE",
@@ -431,6 +434,7 @@
   {
    "id": "badge.hardy",
    "name": "Hardy",
+   "playerLine": "Built to last",
    "rarity": "common",
    "payload": "+2 Health",
    "category": "GENERATIVE — FAVOURABLE",
@@ -512,6 +516,7 @@
   {
    "id": "badge.huge",
    "name": "Huge",
+   "playerLine": "A giant: hits hard, takes a beating, easy to hit",
    "rarity": "uncommon",
    "payload": "+2 Strength, +2 Health, −15 Dodge",
    "category": "GENERATIVE — FAVOURABLE",
@@ -539,6 +544,7 @@
   {
    "id": "badge.hunter",
    "name": "Hunter",
+   "playerLine": "Shoots farther and truer",
    "rarity": "uncommon",
    "payload": "+1 Reach, +10 Accuracy",
    "category": "GENERATIVE — FAVOURABLE",
@@ -600,6 +606,7 @@
   {
    "id": "badge.killer-instinct",
    "name": "Killer Instinct",
+   "playerLine": "Finds the weak spot",
    "rarity": "uncommon",
    "payload": "+5 Crit",
    "category": "GENERATIVE — FAVOURABLE",
@@ -646,6 +653,7 @@
   {
    "id": "badge.lightning-fast",
    "name": "Lightning Fast",
+   "playerLine": "Quick on their feet",
    "rarity": "uncommon",
    "payload": "+1 Movement, +5 Dodge",
    "category": "GENERATIVE — FAVOURABLE",
@@ -693,6 +701,7 @@
   {
    "id": "badge.many-pockets",
    "name": "Many Pockets",
+   "playerLine": "Room for more gear",
    "rarity": "uncommon",
    "payload": "+1 Item Slots",
    "category": "GENERATIVE — FAVOURABLE",
@@ -713,6 +722,7 @@
   {
    "id": "badge.marksman",
    "name": "Marksman",
+   "playerLine": "A natural shot",
    "rarity": "common",
    "payload": "+1 Precision",
    "category": "GENERATIVE — FAVOURABLE",
@@ -730,6 +740,7 @@
   {
    "id": "badge.mystic",
    "name": "Mystic",
+   "playerLine": "A gift for magic",
    "rarity": "common",
    "payload": "+1 Magic",
    "category": "GENERATIVE — FAVOURABLE",
@@ -755,6 +766,7 @@
   {
    "id": "badge.night-vision",
    "name": "Night Vision",
+   "playerLine": "Sees far in the dark",
    "rarity": "uncommon",
    "payload": "+4 Vision",
    "category": "GENERATIVE — FAVOURABLE",
@@ -842,6 +854,7 @@
   {
    "id": "badge.quick-study",
    "name": "Quick Study",
+   "playerLine": "Now and then, acts again",
    "rarity": "rare",
    "payload": "+1 Surge · Draw turn 2 +1 (stub)",
    "category": "GENERATIVE — FAVOURABLE",
@@ -901,6 +914,7 @@
   {
    "id": "badge.resolve",
    "name": "Resolve",
+   "playerLine": "Tireless, and hard to wear down",
    "rarity": "uncommon",
    "payload": "+2 Stamina Max, +1 Health",
    "category": "GENERATIVE — FAVOURABLE",
@@ -955,6 +969,7 @@
   {
    "id": "badge.scarred-hide",
    "name": "Scarred Hide",
+   "playerLine": "Tough as old leather",
    "rarity": "rare",
    "payload": "+1 Toughness",
    "category": "GENERATIVE — FAVOURABLE",
@@ -1046,6 +1061,7 @@
   {
    "id": "badge.spiritual",
    "name": "Spiritual",
+   "playerLine": "Deep in faith",
    "rarity": "common",
    "payload": "+1 Spirit",
    "category": "GENERATIVE — FAVOURABLE",
@@ -1083,6 +1099,7 @@
   {
    "id": "badge.strong",
    "name": "Strong",
+   "playerLine": "Hits harder than most, and tires later",
    "rarity": "common",
    "payload": "+1 Strength, +1 Stamina Max",
    "category": "GENERATIVE — FAVOURABLE",
@@ -1130,6 +1147,7 @@
   {
    "id": "badge.thick-skinned",
    "name": "Thick-Skinned",
+   "playerLine": "Blows land softer on this one",
    "rarity": "common",
    "payload": "+1 Armor",
    "category": "GENERATIVE — FAVOURABLE",
@@ -1168,6 +1186,7 @@
   {
    "id": "badge.uncanny",
    "name": "Uncanny",
+   "playerLine": "Luck follows this one",
    "rarity": "uncommon",
    "payload": "+5 Luck",
    "category": "GENERATIVE — FAVOURABLE",
@@ -1208,6 +1227,7 @@
   {
    "id": "badge.unrelenting",
    "name": "Unrelenting",
+   "playerLine": "Catches their breath fast",
    "rarity": "rare",
    "payload": "+1 Stamina **Regen**",
    "category": "GENERATIVE — FAVOURABLE",
@@ -1225,6 +1245,7 @@
   {
    "id": "badge.unstoppable",
    "name": "Unstoppable",
+   "playerLine": "Fights on at death's door",
    "rarity": "legendary",
    "payload": "+40 Deathbed Fighting",
    "category": "GENERATIVE — FAVOURABLE",
@@ -1328,6 +1349,7 @@
   {
    "id": "badge.warded",
    "name": "Warded",
+   "playerLine": "Magic bites less deeply",
    "rarity": "common",
    "payload": "+1 Resist",
    "category": "GENERATIVE — FAVOURABLE",
@@ -1394,6 +1416,7 @@
   {
    "id": "badge.leadership",
    "name": "Leadership",
+   "playerLine": "Born leader",
    "rarity": "",
    "category": "AWARDED",
    "group": "",
@@ -2107,6 +2130,7 @@
   {
    "id": "badge.veteran",
    "name": "Veteran",
+   "playerLine": "Seasoned by old battles",
    "rarity": "common",
    "payload": "Items +1 Health +1",
    "statModifiers": [],
