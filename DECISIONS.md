@@ -4864,3 +4864,61 @@ Ruled:
 - **A trigger can sit on the hero itself, with a tag requirement** — "a trigger on a hero itself … could have a tag requirement like melee, so you can add burn to melee attacks on a hero, and then it only triggers when you're using something that has the tag melee". A new capability: the engine scopes a trigger to one attack id today (`onlyWithAttack`) and holds no tag requirement; no badge carries a trigger. Filed: `capability.unit-trigger-with-tag`.
 - **Battle 2's lesson: taking turns belongs to battle 1** ("taking turns was present in battle 1" — the hero and the civilians already take turns there); **the camera controls lesson stays** in battle 2. Filed: `kingdom.tutorial-turns-in-battle-one`.
 - **The bow's late release stays for now.**
+
+## 2026-10-04 — the weapon audit: the Armory Ledger was approved 2026-09-28 and almost none of it is in the game
+
+Andrew, in the kingdom chat: "why are you only asking about longsword? There are other weapons that have had effects changed". A read-only audit of every weapon, shield, enchantment and custom-weapon change ruled 2026-09-28 (and after) against the Codex and the engine's pack found:
+
+- **In the game:** the rules (special free attacks on the basic attack, counterattack, fend - engine), the Longsword's Counterattack power, the tier-3 Flaming Longsword, the Peddler's Vest, the tier-0 cut, the Net, the knives.
+- **Not in the game:** the Armory Ledger he approved that day ("approved for now. We're going to revisit it later when we're dealing with balance") - 148 rows on a claude.ai artifact, never in the repository: 17 new weapons (Short Sword, Giant Sword, the axes, flails, Bow Staff, sickles and scythes, Spear and Pike, Whip), the re-authored Great Sword and War Axe, every shield's new powers and the Tower's numbers, the Knight Shield and the four Iron shields, 13 of the 14 custom series and all of tiers 4-6, 5 new tier-2 enchantments, 4 relics, 5 bloodrunes and 2 trinkets; three replaced weapons still stand (Raider's Cutlass, Hunting Spear, Crippling Whip); a weapon's Strength, Crit and Accuracy still go to the wielder at tier 3 and on named weapons; nothing grants Fend; the swords' "+10 counterattack" is on no row; and the pack drops clauses from weapons the 24 base heroes carry (Crush's Armor loss, Elf Shot's Precision, the Obsidian Fang's Strength loss, Thrown Dagger's Surge, 'up to N enemies', Great Cleave's Accuracy).
+- **The Ledger's rows are now in the folder:** `CONTENT-DRAFTS/2026-09-28-armory-ledger/` (`ledger-rows.json`, the page, and a note), extracted unchanged; its stored marks were empty.
+
+Filed without asking, as he has said for content details (2026-10-03 'exact weapons are not the concern now': decide, record the switch, report), each row's shown default taken for its open questions: `fix.kit-attack-clauses`, `content.shields-reauthored`, `content.greatsword-war-axe-reauthored`, `fix.enchant-stats-on-weapon`, `rule.counterattack-replaced-and-lost`, `capability.free-attack-accuracy`, `capability.weapon-mechanisms` (left-hand sweep, Strength 7 to equip, ignores Block), `content.ledger-new-weapons`, `content.ledger-replaced-weapons-removed`, `content.ledger-custom-series`, `content.ledger-enchants-relics-runes-trinkets`.
+
+Not ruled, left as it is and listed for him: what the 54 older enchant rows stamped tier 3 (Frost, Venomous and the rest) become now that "enchantments are tier 2"; whether "counterattack on block" (the Bow Staff, the Retaliator) survives "set off by being attacked"; the Vengeful badge, a Berserker counterattack class power and "+20 dodge versus special attacks", dictated and in no row; an unlanded armor-series draft of 2026-09-29 (`CONTENT-DRAFTS/2026-09-29-armor-series/`).
+
+## 2026-10-04 — posted: an enchantment stuck onto an item and a unique tier-3 item are two classes, and they were conflated (questions out)
+
+Andrew, in the kingdom chat, told that what the 54 older enchant rows stamped tier 3 become is not ruled:
+
+“There are two different classes of things: 1. An enchantment that is labeled as tier 2 and that is just stuck onto an item of the appropriate type. 2. Things that are tier 3 and that are supposed to be their own unique item. These two terms have been conflated, unfortunately.”
+
+“If it was defined as one of the 54 older tier 3 things, those are attributes on items. We now have a whole bunch of things that are tier 3, 4, 5, and 6, but we still have some that are just tier 3.   Ask me more clarifying questions.”
+
+What the content holds today (content `hbt-content.json` `enchants`): 9 rows at tier 2, the Forge's basic ones (Hale, Lucky, Nimble, Fleet, Heavy, Keen, Cruel, Far, Long); 54 rows at tier 3 (Frost, Venomous, Bloodletting … Flaming), each with `appliesToTags` — an attribute put on any item carrying the tag; 16 named weapons at tier 3 that are their own rows (Holy Avenger, Demon Whip, Death Bow …); and, in the Armory Ledger only, 14 custom series with tiers 3 to 6 across base weapons (Flaming among them — the one name in both lists) and 5 new tier-2 enchantments.
+
+Kept as said: **the 54 older tier-3 rows are attributes on items**, not unique items. Everything else waits on his answers to the kingdom chat's questions; `content.ledger-custom-series` and `content.ledger-enchants-relics-runes-trinkets` are not to be built until they are answered.
+
+## 2026-10-04 — items: enchantments are bought at the Forge; tier-3 attributes come on rewards; a series is four unique rewards; one per item
+
+Andrew, in the kingdom chat, answering the nine questions on the entry above (1 are the 54 the same kind as the tier-2 enchantments; 2 tier 2 or tier 3; 3 is a Frost Longsword a tier-3 reward; 4 is "their own unique item" the named weapons; 5 are the custom series unique items or attributes in four strengths; 6 does the Flaming series replace the Flaming attribute; 7 more than one on an item; 8 where a player gets one of the 54; 9 what each kind is called):
+
+“They are yes and no, because the things that are enchantments are supposed to be purchasable from one of the kingdom buildings, and those tier 3 items are going to appear as rewards.  Sometimes the tier 3 things are already defined on a type of weapon, and sometimes they can be applied to different kinds of weapons.   For their unique items, they come in four strengths.   So, tiers 3, 4, 5, and 6 of those series are all different unique rewards that you can earn. You can earn tier 3 one or tier 5 one, or you can get one of them through upgrading.   Flaming can exist in both. It's fine for there to be more than one flaming.   There is no way to have more than one of these on an item.   And get a tier 3 reward.   The only things that are sort of combinatorial are when you have an item series: a tier 3, 4, 5, 6. The tier 6 has all of the attributes from the tiers 3, 4, and 5, and a tier 5 has all the attributes from a tier 3, 4, and 5. Already on a reward item.  Ament for the stuck-on attributes that are tier 2 that are in the forge. Actually, custom item doesn't really work because this is the majority of powerful items, armor, everything.  I don't know what term to use. Sounds like we need to do a much more extensive item update. Ask me more questions.”
+
+Ruled:
+
+- **An enchantment is the tier-2 stuck-on attribute, bought at a kingdom building — the Forge.** ("Ament", dictated, read as "Enchantment".) The word is kept for that and nothing else.
+- **The 54 older tier-3 rows are not enchantments and are not bought: they come already on a reward item, and that item is a tier-3 reward.** Some are defined on one type of weapon, some can be on different kinds of weapons. They stay tier 3; "we still have some that are just tier 3".
+- **A series is four unique rewards — tiers 3, 4, 5 and 6 — each earned as a reward in its own right, or reached by upgrading.** Each tier holds everything from the tiers below it; that is the only combining there is.
+- **An item never carries more than one of these** — one enchantment, or one tier-3 attribute, or one series.
+- **Flaming may exist in both** — the tier-3 attribute and the series. "It's fine for there to be more than one flaming."
+- **"Custom item" is not the word** for the tier-3-and-up kind: "this is the majority of powerful items, armor, everything". No name is ruled; GLOSSARY.md is not changed until he names it.
+- **A much more extensive item update is wanted**, armor and everything, not weapons alone. More questions are out; `content.ledger-custom-series` and `content.ledger-enchants-relics-runes-trinkets` stay held.
+
+## 2026-10-04 — items: the tier-3-and-up kind is an artifact; the item content waits behind the game's fundamentals; the starting weapons go ahead
+
+Andrew, in the kingdom chat, answering the ten questions on the entry above (1 one page for every item type; 2 armor and shields in four-tier series, from the 2026-09-29 draft; 3 trinkets, relics, bloodrunes and idols; 4 where upgrading happens; 5 can a plain weapon be upgraded into a series; 6 is the base picked at random from the kinds the attribute fits; 7 do the named weapons stay single; 8 the name; 9 the tier in a series item's name; 10 go ahead with the weapon work not in question, or hold it):
+
+“There should be a record of a whole bunch of different armor and shields that have 4-tier series. Do you not have that? They do, essentially, but I don't want to have to do too much of this content right now. We have to do a lot more fundamental game work before we worry about items and balance.   Plain weapons do not upgrade. 6. Yes, but it isn't just weapons. There are other tier 3 attributes too.  It's armor's shields.   7, yes.   We have something else called relics. Why don't we call these artifacts?   9, no.   10, yes. One, yes, but I don't want to slow down engine work.”
+
+Ruled:
+
+- **The tier-3-and-up reward item is an artifact** — a tier-3 attribute already on a weapon, an armor or a shield; a named unique item; or a member of a series. "Relic" stays its own item kind; "custom weapon" is retired. GLOSSARY.md 'Settled, 2026-10-04'.
+- **The record he asked after exists and is not landed:** `CONTENT-DRAFTS/2026-09-29-armor-series/` holds his 2026-09-29 dictation as draft rows — 16 armor series at four tiers (64 rows), 5 bloodrunes, 4 idols, 2 trinkets, a weapon and a book; the shields' series (Armor Bearer, Fire Shield and others) are among the Armory Ledger's 14 (`CONTENT-DRAFTS/2026-09-28-armory-ledger/`). Trinkets, relics, bloodrunes and idols take series "essentially" too.
+- **The item content waits.** "I don't want to have to do too much of this content right now. We have to do a lot more fundamental game work before we worry about items and balance." Deferred, with the reason on each item: `capability.weapon-mechanisms`, `content.ledger-new-weapons`, `content.ledger-replaced-weapons-removed`, `content.ledger-custom-series`, `content.ledger-enchants-relics-runes-trinkets`; the armor-series draft stays a draft.
+- **What goes ahead** ("10, yes"): the weapons the starting heroes carry - `fix.kit-attack-clauses`, `content.shields-reauthored`, `content.greatsword-war-axe-reauthored` - and the engine rules already queued.
+- **A plain weapon does not upgrade.** A series is entered by a tier-3 reward; the tiers above come as rewards or by upgrading a series item. Where upgrading happens is not answered.
+- **A tier-3 attribute lands on a base picked at random from the kinds it fits — weapons, armor and shields alike.**
+- **The named weapons stay single unique rewards**, no series.
+- **A series item's name does not show its tier.**
+- **One page for every item type, to mark up** — yes, "but I don't want to slow down engine work": built beside the engine work, not in front of it.
