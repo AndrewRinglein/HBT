@@ -33,7 +33,9 @@ function endTurn(w,h){
  end.handlers.click({});const ask=$(h,'playAsk'),yes=$(h,'playAskYes');if(yes&&ask&&ask.style.display!=='none')yes.handlers.click({})
  return playing(w,h)
 }
-const words=seen=>seen.map(s=>s.lines.join(' / '))
+/* 2026-10-04, viewer.new-enemy-ability-line: the notice may carry a third line (what the kind can do — that item's verify
+   reads it); this one holds the notice's first two lines, "New enemy" and the name */
+const words=seen=>seen.map(s=>s.lines.slice(0,2).join(' / '))
 const nameOf=(h,typeId)=>h.viewer._V.data.UD[typeId].name
 
 /* ── A · outside a run ── */
