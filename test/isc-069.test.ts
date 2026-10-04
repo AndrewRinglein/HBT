@@ -153,7 +153,15 @@ describe('ISC-069 — all24 authored standalone base heroes',()=>{
    for(const id of u.actions)expect(s.ctx.actions[id],h.id+' missing grant '+id).toBeDefined()
    const bursts=u.actions.filter(id=>s.ctx.actions[id]!.burst!==undefined);if(bursts.length)burstKits[h.id]=bursts
   }
-  expect(burstKits).toEqual({'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']})
+  /* Law 10, 2026-10-04 (engine fix.starting-kit-powers; engine DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no
+     heal in battle — three starting weapons lose their power on the way into the engine'): the Fire Staff's Flame Burst and the
+     Frost Staff's Frost Nova reach the engine as bursts, so the four staff mages field one beside the three cleavers. The rule is
+     unchanged: exactly the base heroes whose kit grants a burst, each with exactly its kit's bursts.
+     was: expect(burstKits).toEqual({'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']}) */
+  expect(burstKits).toEqual({'hero.base.mage-fire':['power.fire-staff.fireball'],'hero.base.mage-fireaura':['power.fire-staff.fireball'],'hero.base.mage-sexy':['power.fire-staff.fireball'],'hero.base.mage-thinking':['power.frost-staff.frost-nova'],
+   'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']})
+  /* the two priests field Mercy, a power aimed at one ally (the same item) */
+  for(const id of ['hero.base.priest-armored','hero.base.priest-pauper'])expect(createSandbox({...SANDBOX_DEFAULT,heroes:[id],enemies:['unit.zombie']}).ctx.state.units[0]!.actions,id).toContain('power.holy-texts.mercy')
   /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K9; kingdom SWITCHES.md poolHeroesAreRows): the campaign pool's two
      alpha-clone aliases are resolved — each pool hero fields as its own row, built by the sandbox's one builder. */
   /* Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
