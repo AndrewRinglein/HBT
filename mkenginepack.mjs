@@ -309,6 +309,9 @@ const MOVE_RIDERS = [
   [/Lose (\d) Stamina Max for the rest of the Battle, and gain (\d) Stamina\./, (m) => [{ kind: 'loseMaxStamina', value: parseInt(m[1], 10) }, { kind: 'stamina.gain', value: parseInt(m[2], 10), who: 'self' }]],
   // C20 (engine fix.one-effect-vocabulary, 2026-10-01): the one duration set says end of Activation — this was a MOVE_GAP
   [/gain \+(\d) Strength until the end of your Activation/, (m) => ({ kind: 'statMod', stat: 'strength', value: parseInt(m[1], 10), until: 'endOfActivation' })],
+  // movement.back-flip (engine, 2026-10-04): "You gain +20 Dodge until the end of your next Activation." — the
+  // lifetime Raise Guard's sentence already compiles to (endOfNextActivation), on a move's rider; the mover's own.
+  [/You gain \+(\d+) Dodge until the end of your next Activation\./, (m) => ({ kind: 'statMod', stat: 'dodge', value: parseInt(m[1], 10), until: 'endOfNextActivation' })],
 ];
 const MOVE_GAPS = [
   [/gain (\d) Faith/, 'no Faith quantity in the engine'],
@@ -339,11 +342,33 @@ function compileMoves(powers) {
     const costM = d.match(/[Cc]osts (\d) Stamina/); if (costM && parseInt(costM[1], 10) !== p.stamina) { gap(p.id, `says 'Costs ${costM[1]} Stamina' but stamina is ${p.stamina}`, 'content disagrees with itself'); continue; }
     if (/there is no cooldown/.test(d) && p.cooldown !== 0) { gap(p.id, `says 'no cooldown' but cooldown is ${p.cooldown}`, 'content disagrees with itself'); continue; }
     if (/usable every other Turn/.test(d) && p.cooldown !== 1) { gap(p.id, `says 'every other Turn' but cooldown is ${p.cooldown}`, 'content disagrees with itself'); continue; }
+    const cdM = d.match(/a cooldown of (\d+)/); if (cdM && parseInt(cdM[1], 10) !== p.cooldown) { gap(p.id, `says 'a cooldown of ${cdM[1]}' but cooldown is ${p.cooldown}`, 'content disagrees with itself'); continue; }
     out[p.id] = { id: p.id, name: p.name, ...actionSlot(p), ...base, ...(effects.length ? { effects } : {}), staminaCost: p.stamina, cooldown: p.cooldown };
   }
   return out;
 }
 const moves = compileMoves(SETTLED.powers || []);
+// THE GENERAL POOL (movement.back-flip, engine, 2026-10-04; levels.rules.draft: "Each power grant offers
+// three: two from the specialty, one from the general pool"). A power row's `generalPoolOf` names the
+// classes whose general pool it is in; the pack carries the pool by class — pack.generalPool — in the
+// order the rows are authored. A general-pool power is never also that class's from the start, and a
+// row the pack does not carry (a movement power that did not compile) is in no pool: it is a named gap.
+function compileGeneralPool(powers, compiled) {
+  const out = {};
+  for (const p of powers) {
+    if (p.generalPoolOf === undefined) continue;
+    if (!Array.isArray(p.generalPoolOf) || !p.generalPoolOf.length || p.generalPoolOf.some((c) => typeof c !== 'string' || !/^class\.[a-z-]+$/.test(c)) || new Set(p.generalPoolOf).size !== p.generalPoolOf.length)
+      throw new Error(`settled.json: ${p.id} generalPoolOf must list class.* ids, each once`);
+    for (const c of p.generalPoolOf) {
+      if (!(D.classes || []).some((k) => k.id === c)) throw new Error(`settled.json: ${p.id} is in the general pool of '${c}', which is not a class`);
+      if ((p.grantedToClasses || []).includes(c)) throw new Error(`settled.json: ${p.id} is in ${c}'s general pool AND granted to it from the start — one or the other`);
+    }
+    if (!compiled[p.id]) { gap(p.id, `in the general pool of ${p.generalPoolOf.join(', ')} but the pack carries no row for it`, 'general pool: the power did not compile'); continue; }
+    for (const c of p.generalPoolOf) (out[c] = out[c] || []).push(p.id);
+  }
+  return out;
+}
+const generalPool = compileGeneralPool(SETTLED.powers || [], moves);
 // The hooks the engine fires are the engine's list (ENGINE_HOOKS, read from its vocabulary).
 const TRIG_HOOKS = ENGINE_HOOKS;
 
@@ -2201,7 +2226,7 @@ const xpByTier = AUTH.xpByTier;
 if (!xpByTier || Object.keys(xpByTier).some((k) => !/^[1-9]$/.test(k)) || Object.values(xpByTier).some((v) => !Number.isSafeInteger(v) || v < 0)) throw new Error('gen/enemies-authored.json: xpByTier must map tiers to whole XP');
 for (const u of authoredEnemies) if (u.tier !== undefined && xpByTier[u.tier] === undefined) throw new Error(`${u.typeId}: tier ${u.tier} has no price in xpByTier`);
 const pack = { note: D.testCohort.note, xpByTier, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
-  classPowers, specialties, levels, enchanted, derivedItems, encounters, badges, maps };
+  classPowers, specialties, levels, generalPool, enchanted, derivedItems, encounters, badges, maps };
 
 for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test.attacks, test.abilities, test.moves]) {
   for (const row of Object.values(rows)) {
