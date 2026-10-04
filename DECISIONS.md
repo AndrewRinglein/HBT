@@ -4681,3 +4681,17 @@ Ruled:
 - **The Wood Axe card and its model stay** (read as following from the line above; the entry above already says the card stays). Codex's model list excluded it along with the ten (`weapon-card-models/run.json`, "Excluded by user from model production"); the line to restore it was handed to him in the chat.
 
 Open, asked: which kits carry the Wood Axe; whether the Lumberjack's weapon is the one-handed Wood Axe or stays his own two-handed axe. Not filed until answered: the row and its kits are one item.
+
+## 2026-10-03 — the Lumberjack keeps his two-handed axe; the Wood Axe waits; exact weapons are not the concern now
+
+Andrew, same chat, answering the two questions above — (1) which kits carry the Wood Axe, (2) whether the Lumberjack carries it or keeps his own:
+
+“1. I don't know, and I don't care.
+2. I also just don't care. It's fine: two-handed lumberjack axe. I'm just trying to get through this shit. It really does not matter if we have exactly the right weapons. We're not in a balancing phase. I just want to get through this shit, so make a decision and clean these up. There was a whole bunch of items that didn't need to exist. They've been removed. I don't know what uses what here. Just make a decision and clean this shit up.”
+
+Ruled:
+
+- **The Lumberjack keeps his two-handed Lumberjack's Axe** (`item.lumberjack-axe`).
+- **Which weapon sits in which kit is not his to be asked now: "We're not in a balancing phase."** A chat picks a default, records the switch and goes on.
+- **The decision is the chat's** ("make a decision"), engine SWITCHES `woodAxeWaits`: the Wood Axe is not built now and no kit carries it. It stays a dictated weapon with no row, like the Sickle, the Short Sword and the Grain Flail, until the sixth pass's weapon families become rows. Its card stays in the set; its model is not made in this batch — Codex excluded the card from model production at his direct word, and that is left as it is. This replaces "the Wood Axe card and its model stay" in the two entries above as far as the model goes. Nothing is filed.
+- **Cleaned up:** the content audit's accepted-findings entry for the Pot Lid went with its row (content cc67ac2); `2-ACTIONS-SETTLED.md` logs the Slingshot's removal (root 7dbbc77). Left, as records of their date: the notes files and older switches that name a cut row, the Stagger power's `source` note, and `crucible/data/kits.json` (the Crucible is unbuilt and its kits were superseded 2026-08-27).
