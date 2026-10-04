@@ -23549,3 +23549,347 @@ index 0000000..d2cbebb
 +})
 ```
 </details>
+
+## kingdom.opening-draft-pool — LANDED `9deae98` **NEEDS REVIEW**
+2026-10-04 00:50
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4405
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-loop-three.test.ts, test/opening-run-six.test.ts, test/isc-044.test.ts, test/isc-053.test.ts, test/isc-069.test.ts, test/opening-class-rule.test.ts, test/opening-draft-pool.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/opening-loop-three.test.ts, kingdom/test/opening-run-six.test.ts, kingdom/test/isc-044.test.ts, kingdom/test/isc-053.test.ts, kingdom/test/isc-069.test.ts, kingdom/test/opening-class-rule.test.ts, kingdom/test/opening-draft-pool.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-loop-three.test.ts (-4), test/opening-run-six.test.ts (-3), test/isc-044.test.ts (-1), test/isc-053.test.ts (-1), test/isc-069.test.ts (-2), test/opening-class-rule.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+01beee3
+
+diff --git a/test/opening-loop-three.test.ts b/test/opening-loop-three.test.ts
+index fa2d32e..5d77c19 100644
+--- a/test/opening-loop-three.test.ts
++++ b/test/opening-loop-three.test.ts
+@@ -47,4 +47,16 @@ function played(ctx: Ctx, seed = 1): EngagementResult {
+   return sandboxResult(s)
+ }
++/**
++ * The battle on the cursor WON: the first seed the engine's AI wins it on.
++ * Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
++ * Rogues and Mages included'): the won battles below (and the one `lost` turns into a loss) were `played(ctx)` — seed 1, which the five-hero pool's first
++ * offer on Campaign seed 5 won. The pool is the 24 base heroes now and that first offer is the Forest Elf, who alone loses
++ * the Orphanage on seed 1 (a wipe) and wins it on seed 5. What the tests hold is unchanged — `expect(r.outcome)
++ * .toBe('heroClear')` still stands — the won battle is found, not assumed on seed 1.
++ */
++function playedWon(ctx: Ctx): EngagementResult {
++  for (let seed = 1; seed <= 40; seed++) { const r = played(ctx, seed); if (r.outcome === 'heroClear') return r }
++  throw new Error(`no seed from 1 to 40 wins ${ctx.campaign.cursor.engagement!.id} for ${ctx.campaign.cursor.engagement!.deployed.join(', ')}`)
++}
+ function write(ctx: Ctx, r: EngagementResult): void {
+   const e = ctx.campaign.cursor.engagement!
+@@ -80,11 +92,13 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
+   it('a won battle advances the opening, pays its row and rescues the civilians who lived — never the dead', () => {
+     const ctx = atOrphanage()
+-    const r = played(ctx)
++    const r = playedWon(ctx)
+     expect(r.outcome).toBe('heroClear')
+     const civ = r.units.filter((u) => u.side === 'hero' && u.role === 'encounter')
+     expect(civ.map((u) => u.typeId).sort()).toEqual(['hero.fixed.orphans', 'hero.fixed.school-teacher'])
+     // one lives, one dies: only the living one joins
++    // (2026-10-03, kingdom.opening-draft-pool: the one made dead is also marked downed — 'no hero dies standing', core/result.ts;
++    // on the old seed-1 battle that civilian happened to have gone down already, on the battle found now it had not)
+     const i = r.units.indexOf(civ[0]!), j = r.units.indexOf(civ[1]!)
+-    const fates = (x: EngagementResult) => ({ ...x, units: x.units.map((u, k) => k === i ? { ...u, lifeState: 'standing' as const, dead: false } : k === j ? { ...u, lifeState: 'dead' as const, dead: true } : u) })
++    const fates = (x: EngagementResult) => ({ ...x, units: x.units.map((u, k) => k === i ? { ...u, lifeState: 'standing' as const, dead: false } : k === j ? { ...u, lifeState: 'dead' as const, dead: true, downed: true } : u) })
+     write(ctx, fates(r))
+     expect(ctx.campaign.cursor.prologue).toBe(2)
+@@ -98,5 +112,5 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
+   it('a lost opening battle is replayed: the Campaign goes on, nothing advances, nobody is rescued, the wounds stay', () => {
+     const ctx = atOrphanage()
+-    write(ctx, lost(played(ctx)))
++    write(ctx, lost(playedWon(ctx)))
+     expect(ctx.campaign.ended).toBeNull()
+     expect(ctx.campaign.cursor.prologue).toBe(1)
+@@ -114,5 +128,5 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
+   it('the next battle is refused until its drafts are taken; the cadence is 1, then 2 after battle 1', () => {
+     const ctx = atOrphanage()
+-    write(ctx, played(ctx))
++    write(ctx, playedWon(ctx))
+     toOpen(ctx)
+     expect(() => performFieldOpeningBattle(ctx, battleOf(LUMBERJACK), 'test')).toThrow(/refused: 2 to draft before battle 2/)
+diff --git a/test/opening-run-six.test.ts b/test/opening-run-six.test.ts
+index f5c84b4..1a70e9c 100644
+--- a/test/opening-run-six.test.ts
++++ b/test/opening-run-six.test.ts
+@@ -39,7 +39,13 @@ function afterOrphanage() {
+   performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
+   const e = ctx.campaign.cursor.engagement!
+-  const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed: 1, encounterId: e.id })
+-  runBattle(s.ctx)
+-  const r = sandboxResult(s), k = resolveReckoning(ctx.campaign, e, r)
++  // Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
++  // Rogues and Mages included'): was one battle on `seed: 1`, which the five-hero pool's first offer on Campaign seed 5 won.
++  // The pool is the 24 base heroes now; that first offer is the Forest Elf, who alone loses the Orphanage on seed 1 and wins
++  // it on seed 5. "A won Orphanage" is found — the first seed the engine's AI wins on — and asserted won.
++  const fight = (seed: number) => { const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed, encounterId: e.id }); runBattle(s.ctx); return sandboxResult(s) }
++  let r = fight(1)
++  for (let seed = 2; seed <= 40 && r.outcome !== 'heroClear'; seed++) r = fight(seed)
++  expect(r.outcome).toBe('heroClear')
++  const k = resolveReckoning(ctx.campaign, e, r)
+   setBattleOutcome(ctx, r, k, 'test')
+   applyBattleResult(ctx, e, r, k)
+698b155
+
+diff --git a/test/isc-044.test.ts b/test/isc-044.test.ts
+index ec97e07..a6351b9 100644
+--- a/test/isc-044.test.ts
++++ b/test/isc-044.test.ts
+@@ -8,4 +8,10 @@
+ // is unchanged; it stops where the pool does. The test asserts the cadence up
+ // to the pool and that nothing is offered past it — the rule, not the number six.
++//
++// Law 10 note, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03
++// 'the opening draft pool is all 24 heroes, Rogues and Mages included'): the pool is
++// the Eve 24, so the cadence runs its full length — six. `expect(cap)
++// .toBeGreaterThanOrEqual(5)` is now `expect(cap).toBe(6)`: the number the cadence
++// names, no longer clipped by a short pool.
+ import { describe, it, expect } from 'vitest'
+ import { makeNewCampaign, draftedCountOf } from '../src/core/opening.js'
+@@ -20,5 +26,6 @@ describe('ISC-044 — the draft cadence', () => {
+     const pool = HERO_POOL.filter((h) => groupOf(h.classes) === 'hero').length
+     const cap = Math.min(DRAFT_CADENCE.until, pool)
+-    expect(cap).toBeGreaterThanOrEqual(5)
++    expect(pool).toBe(24)
++    expect(cap).toBe(6)
+     const ctx = playOpening(makeCtx(makeNewCampaign(21)))
+     const c = ctx.campaign
+diff --git a/test/isc-053.test.ts b/test/isc-053.test.ts
+index 1443fe3..3fcd94f 100644
+--- a/test/isc-053.test.ts
++++ b/test/isc-053.test.ts
+@@ -7,5 +7,5 @@
+ import { describe, it, expect } from 'vitest'
+ import { readFileSync, existsSync } from 'node:fs'
+-import { HERO_POOL, CIVILIANS, heroKitOf, assertKitted, KIT_GAPS } from '../src/content/heroes.js'
++import { HERO_POOL, CIVILIANS, heroKitOf, assertKitted, KIT_GAPS, UNKITTED_HEROES } from '../src/content/heroes.js'
+ 
+ describe('ISC-053 — no kit, no hero', () => {
+@@ -13,4 +13,6 @@ describe('ISC-053 — no kit, no hero', () => {
+     for (const h of [...HERO_POOL, ...CIVILIANS]) expect(heroKitOf(h.id), h.id).not.toBeNull()
+     expect(KIT_GAPS).toEqual([])
++    // kingdom.opening-draft-pool (2026-10-03): the pool is the 24 base heroes; one with no kit would be left out and named
++    expect(UNKITTED_HEROES).toEqual([])
+     expect(existsSync('src/content/generated/kits-gaps.json')).toBe(true)
+     const gaps = JSON.parse(readFileSync('src/content/generated/kits-gaps.json', 'utf8')) as { pool: string[] }
+diff --git a/test/isc-069.test.ts b/test/isc-069.test.ts
+index 540b8ae..b7872f2 100644
+--- a/test/isc-069.test.ts
++++ b/test/isc-069.test.ts
+@@ -137,5 +137,5 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
+ })
+ 
+-// v2.sandbox-base-roster: authored content, not additions to the campaign draft pool.
++// v2.sandbox-base-roster: authored content. kingdom.opening-draft-pool (2026-10-03): the campaign draft pool is these 24 too.
+ import {SANDBOX_HEROES,sandboxHeroesOf} from '../src/content/sandbox.js'
+ import {UNITS} from '../src/engine.js'
+@@ -157,5 +157,8 @@ describe('ISC-069 — all24 authored standalone base heroes',()=>{
+   /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K9; kingdom SWITCHES.md poolHeroesAreRows): the campaign pool's two
+      alpha-clone aliases are resolved — each pool hero fields as its own row, built by the sandbox's one builder. */
+-  expect(HERO_POOL).toHaveLength(5);for(const h of HERO_POOL)expect(h).toEqual(SANDBOX_HEROES.find(s=>s.id===h.id))
++  /* Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
++     Rogues and Mages included'): was `expect(HERO_POOL).toHaveLength(5)` — true only of the five-hero pool. The rule: the
++     campaign pool IS the sandbox's base roster, hero for hero, the same rows. */
++  expect(HERO_POOL.map(h=>h.id)).toEqual(SANDBOX_HEROES.map(h=>h.id));expect(HERO_POOL).toHaveLength(24);for(const h of HERO_POOL)expect(h).toEqual(SANDBOX_HEROES.find(s=>s.id===h.id))
+  })
+  it('refuses named missing kit, slot, name or class rather than omitting an authored hero',()=>{
+diff --git a/test/opening-class-rule.test.ts b/test/opening-class-rule.test.ts
+index 22b3831..954358d5 100644
+--- a/test/opening-class-rule.test.ts
++++ b/test/opening-class-rule.test.ts
+@@ -10,9 +10,17 @@ import { CLASSES, groupOf } from '../src/content/classes.js'
+ import { HERO_POOL, heroRowOf } from '../src/content/heroes.js'
+ 
+-// the hero classes the pool can offer (SWITCHES.md openingKingdomClasses — the pool is short of two today)
++// the hero classes the pool can offer (SWITCHES.md openingKingdomClasses)
++// Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
++// Rogues and Mages included'): the comment here said "the pool is short of two today" — it offers all six now, and that is
++// asserted below, so "all six" in this file's title is six.
+ const HERO_CLASSES = CLASSES.filter((r) => r.group === 'hero' && HERO_POOL.some((h) => h.classes.includes(r.id))).map((r) => r.id)
+ const classOf = (classes: readonly string[]) => classes.find((c) => HERO_CLASSES.includes(c))
+ 
+ describe('the opening draft never offers a class already drafted until all six are', () => {
++  it('the pool offers all six hero classes', () => {
++    expect(HERO_CLASSES).toHaveLength(6)
++    expect(HERO_CLASSES).toEqual(CLASSES.filter((r) => r.group === 'hero').map((r) => r.id))
++  })
++
+   it('after the first draft, no offer and no pool row is of the drafted class', () => {
+     for (const seed of [1, 2, 3, 11, 42]) {
+diff --git a/test/opening-draft-pool.test.ts b/test/opening-draft-pool.test.ts
+new file mode 100644
+index 0000000..832ca72
+--- /dev/null
++++ b/test/opening-draft-pool.test.ts
+@@ -0,0 +1,151 @@
++// kingdom.opening-draft-pool — ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening draft pool is all 24 heroes,
++// Rogues and Mages included'): asked "Should the draft pool get Rogues and Mages now, so every draft offers three and the
++// party ends as one of each class?" — "1. Yes"; "If yes, should all 24 heroes be draftable, or a set you name?" — "2. Yes".
++// With the standing rule (2026-09-28 'the draft never repeats a class until all six are drafted': "Until you've drafted all
++// six of the starting classes, you never get a draft of the same class again") every draft offers three and the party ends
++// as six heroes, one of each class. The cadence (1 · +2 · +1 a battle, to six) and the deploy limit of 4 are unchanged.
++// Expect: "every draft of a new run offers three heroes of classes not yet drafted, Rogues and Mages among them, and after
++// the last draft the party is six heroes, one of each class; four deploy; … any base hero without a kit is listed by name."
++//
++// The page half is tools/opening-run-six.verify.mjs (test/opening-run-six.test.ts), on the built BATTLE-SANDBOX.html.
++import { describe, it, expect } from 'vitest'
++import { makeNewCampaign, draftedCountOf, draftPoolOf, listDraftOffers, performAdvanceOpening, performDraft, performFieldOpeningBattle } from '../src/core/opening.js'
++import { makeCtx } from '../src/core/mutate.js'
++import { performAdvance } from '../src/core/week.js'
++import { performAdvancePrep, performDeploy, listDeployable, deployLimitOf, canDeploy } from '../src/core/prep.js'
++import { playOpening } from '../src/sim/autoplay.js'
++import { CLASSES, groupOf } from '../src/content/classes.js'
++import { HERO_POOL, KIT_GAPS, UNKITTED_HEROES, heroPoolOf, heroRowOf, assertKitted } from '../src/content/heroes.js'
++import { SANDBOX_HEROES } from '../src/content/sandbox.js'
++import { HERO_ITEM_SLOTS } from '../src/content/generated/kits.js'
++import { DRAFT_CADENCE, DRAFT_OFFER } from '../src/content/prologue.js'
++import { ABBOTOWN_MAP } from '../src/content/conquest.js'
++import { draftScreen } from '../src/ui/draft.js'
++import { UNITS, encounterDef } from '../src/engine.js'
++
++const SIX = ['class.mage', 'class.paladin', 'class.priest', 'class.ranger', 'class.rogue', 'class.warrior']
++const classOf = (id: string) => heroRowOf(id).classes.find((c) => SIX.includes(c))!
++
++describe('kingdom.opening-draft-pool — the opening draft pool is all 24 base heroes', () => {
++  it('the pool is the engine pack\'s 24 hero.base rows — four of each of Warrior, Ranger, Rogue, Mage, Priest, Paladin — each wearing its kit', () => {
++    expect(CLASSES.filter((r) => r.group === 'hero').map((r) => r.id).sort()).toEqual(SIX)
++    const base = Object.keys(UNITS).filter((id) => id.startsWith('hero.base.')).sort()
++    expect(base).toHaveLength(24)
++    expect(HERO_POOL.map((h) => h.id)).toEqual(base)
++    for (const cls of SIX) expect(HERO_POOL.filter((h) => h.classes.includes(cls)).length, cls).toBe(4)
++    for (const h of HERO_POOL) {
++      expect(groupOf(h.classes)).toBe('hero')
++      expect(h.equipped, h.id).toEqual(UNITS[h.id]!.defaultItems)
++      expect(h.equipped.length, h.id).toBeGreaterThan(0)
++      expect(() => assertKitted(h.id)).not.toThrow()
++      // one hero, one way: the row the standalone sandbox fields
++      expect(h).toEqual(SANDBOX_HEROES.find((s) => s.id === h.id))
++    }
++    // nobody is left out today
++    expect(UNKITTED_HEROES).toEqual([])
++    expect(KIT_GAPS).toEqual([])
++  })
++
++  it('every draft of a run offers three, none of a class already drafted, Rogues and Mages among them; the party ends six, one of each class', () => {
++    for (const seed of [1, 2, 3, 5, 11, 15, 21, 42]) for (const take of [0, 1, 2]) {
++      const ctx = playOpening(makeCtx(makeNewCampaign(seed)), { draft: (_c, offers) => offers[take % offers.length]! })
++      const label = `seed ${seed}, taking offer ${take + 1}`
++      const drafted: string[] = [], offered = new Set<string>()
++      let offers = 0
++      for (const e of ctx.events) {
++        if (e.type === 'draft.offered') {
++          const offer = e['offer'] as string[]
++          offers++
++          expect(offer.length, `${label}: draft ${offers} offers three`).toBe(DRAFT_OFFER)
++          expect(new Set(offer).size, `${label}: draft ${offers} offers three different heroes`).toBe(3)
++          for (const id of offer) {
++            expect(drafted.map(classOf), `${label}: draft ${offers} offers ${id}, of a class not yet drafted`).not.toContain(classOf(id))
++            expect(drafted, `${label}: ${id} is not on the roster already`).not.toContain(id)
++            offered.add(classOf(id))
++          }
++        }
++        if (e.type === 'hero.drafted') drafted.push(e['heroId'] as string)
++      }
++      expect(offers, `${label}: six drafts`).toBe(DRAFT_CADENCE.until)
++      expect(drafted.length, `${label}: six drafted`).toBe(6)
++      expect(drafted.map(classOf).sort(), `${label}: one of each class`).toEqual(SIX)
++      expect(offered.has('class.rogue') && offered.has('class.mage'), `${label}: Rogues and Mages are offered`).toBe(true)
++      expect(draftedCountOf(ctx.campaign)).toBe(6)
++      // with all six drafted the class rule lifts: every row not on the roster is back
++      expect(draftPoolOf(ctx.campaign).map((h) => h.id)).toEqual(HERO_POOL.filter((h) => !ctx.campaign.roster[h.id]).map((h) => h.id))
++      expect(draftPoolOf(ctx.campaign)).toHaveLength(18)
++    }
++  }, 120000)
++
++  it('the last draft still offers three: with five classes drafted, three of the last class\'s four', () => {
++    for (const lastClass of SIX) {
++      const ctx = makeCtx(makeNewCampaign(7))
++      performAdvance(ctx, 'test')
++      // five drafted, one of each class but the last, through the draft itself is not needed here: the pool is read
++      for (const cls of SIX.filter((c) => c !== lastClass)) ctx.campaign.roster[HERO_POOL.find((h) => h.classes.includes(cls))!.id] = structuredClone(HERO_POOL.find((h) => h.classes.includes(cls))!)
++      const pool = draftPoolOf(ctx.campaign)
++      expect(pool.map((h) => h.id)).toEqual(HERO_POOL.filter((h) => h.classes.includes(lastClass)).map((h) => h.id))
++      expect(pool).toHaveLength(4)
++    }
++  })
++
++  it('the cadence and the deploy limit are unchanged: 1 · +2 · +1 a battle to six, and four of the six deploy', () => {
++    expect(DRAFT_CADENCE).toEqual({ first: 1, afterFirst: 2, afterEach: 1, until: 6 })
++    expect(DRAFT_OFFER).toBe(3)
++    const ctx = makeCtx(makeNewCampaign(15))
++    // the whole party on the roster, as after the last draft (before battle 5)
++    ctx.campaign.cursor.prologue = 5
++    const step = (): string => ctx.campaign.cursor.step
++    performAdvanceOpening(ctx, 'test')
++    for (let guard = 0; step() === 'draft' && guard < 8; guard++) {
++      expect(listDraftOffers(ctx.campaign)).toHaveLength(3)
++      performDraft(ctx, listDraftOffers(ctx.campaign)[0]!.id, 'test')
++      if (draftedCountOf(ctx.campaign) < 6) performAdvanceOpening(ctx, 'test')
++    }
++    expect(draftedCountOf(ctx.campaign)).toBe(6)
++    expect(Object.values(ctx.campaign.roster).map((h) => classOf(h.id)).sort()).toEqual(SIX)
++    const id = ABBOTOWN_MAP.sections[4]!.encounterId
++    performFieldOpeningBattle(ctx, { id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind }, 'test')
++    while (ctx.campaign.cursor.prepStep !== 'deploy') performAdvancePrep(ctx, 'test')
++    expect(deployLimitOf(ctx.campaign)).toBe(4)
++    expect(listDeployable(ctx.campaign)).toHaveLength(6)
++    for (const h of listDeployable(ctx.campaign).slice(0, 4)) performDeploy(ctx, h, 'test')
++    expect(ctx.campaign.cursor.engagement!.deployed).toHaveLength(4)
++    for (const h of listDeployable(ctx.campaign)) expect(canDeploy(ctx.campaign, h), `${h}: a fifth is refused`).toBe(false)
++  })
++
++  it('a base hero whose row has no kit is not in the pool and is listed by name — never fielded bare', () => {
++    const bare = 'hero.base.rogue-rose', units = { ...UNITS, [bare]: { ...UNITS[bare]!, defaultItems: [] } }
++    const { pool, unkitted } = heroPoolOf(units, HERO_ITEM_SLOTS)
++    expect(pool).toHaveLength(23)
++    expect(pool.some((h) => h.id === bare)).toBe(false)
++    expect(unkitted).toEqual([{ id: bare, name: UNITS[bare]!.name }])
++    // a row with no kit at all, the same
++    const { defaultItems: _kit, ...kitless } = UNITS[bare]!
++    expect(heroPoolOf({ ...UNITS, [bare]: kitless }, HERO_ITEM_SLOTS).unkitted).toEqual([{ id: bare, name: UNITS[bare]!.name }])
++    // the real content leaves nobody out
++    expect(heroPoolOf(UNITS, HERO_ITEM_SLOTS).unkitted).toEqual([])
++    // the draft refuses one by name
++    expect(() => assertKitted('hero.shadows.oathblade.v1')).toThrow(/hero\.shadows\.oathblade\.v1.*no kit/)
++    // and the draft screen says who was left out, by name — and says nothing when nobody is
++    const ctx = makeCtx(makeNewCampaign(3))
++    performAdvance(ctx, 'test')
++    expect(draftScreen(ctx.campaign)).not.toContain('data-unkitted')
++    const said = draftScreen(ctx.campaign, unkitted)
++    expect(said).toContain(`data-unkitted="${bare}"`)
++    expect(said).toContain(UNITS[bare]!.name!)
++    expect(said).toMatch(/no kit in the content/)
++  })
++
++  it('the draft screen says what it shows: three come to the fire, hero N of six', () => {
++    const ctx = makeCtx(makeNewCampaign(3))
++    performAdvance(ctx, 'test')
++    expect((draftScreen(ctx.campaign).match(/data-act="draft"/g) ?? []).length).toBe(3)
++    expect(draftScreen(ctx.campaign)).toContain('Three come to the fire')
++    performDraft(ctx, listDraftOffers(ctx.campaign)[0]!.id, 'test')
++    ctx.campaign.cursor.prologue = 2
++    performAdvanceOpening(ctx, 'test')
++    expect(draftScreen(ctx.campaign)).toContain('hero 2 of six')
++    expect((draftScreen(ctx.campaign).match(/data-act="draft"/g) ?? []).length).toBe(3)
++  })
++})
+```
+</details>
