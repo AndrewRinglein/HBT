@@ -2,9 +2,9 @@
 // the BUILT sandbox opened with ?map, through the page's own controls: the map, the draft, who goes, Equip, the battle settled by a
 // pasted engine save, the reckoning, the rewards and the level-ups. One copy for both (kingdom.opening-run-six).
 //
-// A battle is settled the way tools/abbotown-map.verify.mjs settles one: the engine plays it out on a seed and the save is
-// pasted back into the page ("Resume pasted save") — the page takes it as the campaign's battle only when it is that
-// battle with that party.
+// A battle is settled by the engine and its save pasted back into the page ("Resume pasted save") — the page takes it as
+// the campaign's battle only when it is that battle with that party. How it is played — the run's own party made
+// overpowered for a win, held idle for a loss, no seed sought — is playedOut's, below (kingdom.page-test-strong-party).
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
@@ -13,7 +13,7 @@ import {bootSlice} from './atlas-dom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,sandboxChoices,commandSandbox} from './src/core/sandbox.ts';export {runBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
    page's draft is held against */
@@ -28,54 +28,82 @@ export const FIRST_HERO=PARTY.firstHero,ROLL_SOURCE=PARTY.draftScore.rollSource
 export const POSITIVE_BADGES=PARTY.crucible.badges.favourable.map(b=>b.id),FLAWED_BADGES=PARTY.crucible.badges.flawed.map(b=>b.id)
 const BADGE_NAMES=[...FIRST_HERO.badges,...POSITIVE_BADGES,...FLAWED_BADGES].map(id=>E.BADGES[id].name)
 const DESCRIPTION=Object.fromEntries(JSON.parse(readFileSync(new URL('../../content/hbt-content.json',import.meta.url),'utf8')).heroes.heroes.map(h=>[h.id,h.backstory]))
+/* kingdom.opening-hero-card-art (engine DECISIONS.md 2026-10-03 'every draft card shows the hero's card art …': "Card art
+   should be present when you're drafting, both the first time and the next ones."; 'card art on the level-up and reward
+   screens …': "Card art not showing in the level-up screen."): the portraits the page is held against — generated/art, as
+   tools/prep-heroes.py made them and the build inlines them (a data: URI of the file's own bytes). A hero whose art is
+   missing on disk is named in index.json heroesMissing and shows a blank card, never another's. ART_SEEN counts the hero
+   cards held on each screen over a run. */
+const ART_INDEX=JSON.parse(readFileSync(new URL('../generated/art/index.json',import.meta.url),'utf8'))
+export const HEROES_MISSING=[...(ART_INDEX.heroesMissing??[])]
+const portraitCache={}
+const portraitUri=id=>portraitCache[id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ART_INDEX.heroes?.[id])
+export const ART_SEEN={draft:0,whoGoes:0,equip:0,victory:0,rewards:0,carrier:0,levelUp:0}
 /* what a draft should move each engine stat by: its rolled points (and the first hero's Health), and its badges' own rows */
 const movedBy=d=>{const out={};for(const m of d.mods)out[m.stat]=(out[m.stat]??0)+m.add;for(const b of d.badges)for(const [k,n] of Object.entries(E.BADGES[b].statModifiers??{}))out[k]=(out[k]??0)+n;return out}
 const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.split(':');return [k,Number(n)]}))
 
-/* the player's side, played out: 'ai', the engine's AI; 'idle', every activation begun and ended (a loss the AI's own
-   heroes rarely make); 'hold', no hero moves and each strikes the best blow the engine offers it from where it stands, or
-   waits (the engine's AI stalls at the Bridge — encounter.opening.bridge-ai-refiled); 'press', as 'hold', and with no blow
-   to strike a hero steps toward the nearest enemy */
+/* kingdom.page-test-strong-party — ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'no testing that the battles can be won
+   until these items are done; the page tests play an overpowered party; faster landing': "I'm okay forgoing all testing
+   battle until we're done with all these items … we can just skip all testing battles that aren't just done from a quality
+   standpoint." · "Go ahead, overpowered power party.").
+   HOW A BATTLE IS SETTLED, deliberately, with no seed sought. The battle is the run's own — the sandbox the page fields
+   for that Engagement (createSandbox(config): the same encounter, the run's own heroes with their items, levels, badges
+   and drafted points, on the Engagement's own seed) — and the party is changed FOR THE TEST ONLY, where the driver fields
+   the engine's battle, through the engine's own per-hero seam (BattleOptions.heroMods, seam.unit-mods: stat mods naming
+   their source, here 'test.strong-party'), and its turn cap (BattleOptions.cfg.turnCap):
+     · a battle the test means to WIN: every hero of the party is OVERPOWERED (STRONG_PARTY: Health, Armor, Resist, the
+       four damage stats, Accuracy) and the engine's AI plays both sides; the first and only battle played is won, with
+       nobody of the party dead, down or wounded — or the driver stops and says so (Law 9);
+     · a battle the test means to LOSE: the party is made unkillable but stands IDLE (every activation begun and ended),
+       and the battle is cut at the end of Turn 1 by the turn cap (HELD_PARTY) — the engine's own 'capped' outcome, a loss
+       to the kingdom — with nobody of the party hurt. (A weakened party left to be beaten was measured first: at the
+       Lumberjack House the civilians fight on while the heroes bleed out, and a hero died on about half the seeds; a
+       loss that may or may not kill is not deliberate.) Fewer than the whole party goes to a lost battle when the test
+       sends one hero alone — the page's own Deploy choice, not this driver's.
+   Never a content row, never the built page's play, never a player's run: the page under test fields the battle as it
+   always does (asserted on its own session, onTheBattle), and only the SAVE pasted back into it was played this way.
+   THE PAGE STILL TAKES IT AS THAT BATTLE: the page's import (core/sandbox.ts restoreSandbox) holds a save to its config
+   — the encounter, the heroes and their Hero rows, and the setup's heroes, enemies, replicate, items and encounter — and
+   replays the save's own setup to check its first lines; and the sitting takes a finished battle as the Campaign's only
+   when its heroes and Hero rows are the Engagement's (ui/sandbox.ts isCampaignBattle). The config is untouched here: the
+   run's own heroes, items and levels, the save's shape unchanged. The setup's per-hero mods and turn cap are not among
+   the things the import compares, for a player or for a test — no check is weakened to let this in (GBH SWITCHES.md
+   verify.openingRunSettle).
+   Until 2026-10-04 a battle was played with the run's real party on seed after seed (the engine's AI, then scripted
+   'hold' and 'press' play) until one ended as wanted, the seeds found kept in tables; every item that moved a battle
+   searched again. The search, its seed tables and the 'hold' and 'press' play are gone. */
+export const STRONG_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50,strength:30,precision:30,magic:30,spirit:30,accuracy:100}}
+export const HELD_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50},turnCap:1}
+/* the sandbox the page fields for `config`, its party's heroes given `as`'s stat mods (and its turn cap) */
+function fieldedAs(config,as){
+ const base=E.createSandbox(structuredClone(config)),add=Object.entries(as.stats).map(([stat,n])=>({stat,add:n,source:as.source}))
+ const heroMods=base.setup.heroes.map((_,i)=>{const own=base.setup.heroMods?.[i];return {...(own??{}),stats:[...(own?.stats??[]),...add]}})
+ const setup={...base.setup,heroMods,...(as.turnCap?{cfg:{...(base.setup.cfg??{}),turnCap:as.turnCap}}:{})},ctx=E.createBattle(setup)
+ return {...base,setup,ctx,policy:E.playerPolicy(ctx)}
+}
+/* the player's side, played out: 'ai', the engine's AI plays everyone; 'idle', every activation of the player's side
+   begun and ended (the heroes and the civilians stand still), the enemies the engine's AI */
 function playOut(s,how){
  if(how==='ai'){E.runBattle(s.ctx);return}
  E.advanceSandbox(s)
  for(let i=0;i<50000&&!s.ctx.state.outcome;i++){const ctx=s.ctx,at=ctx.battleCursor?.at,seq=ctx.state.seq
   let r=null
   if(at==='selecting')r=E.commandSandbox(s,{kind:'select-activation',unitUid:E.sandboxActivationChoices(s)[0].uid,expectedSeq:seq})
-  else if(at==='acting'){
-   const blow=c=>(c.preview.connectionChanceBps??(c.preview.hitChance??50)*100)*(c.preview.damageOnHit??c.preview.damage??0)
-   const choices=how==='idle'?[]:E.sandboxChoices(s)
-   const best=choices.filter(c=>'target' in c.command&&ctx.state.units[c.command.target].side==='enemy'&&c.preview&&blow(c)>0).sort((x,y)=>blow(y)-blow(x))[0]
-   /* 'press': with no blow to strike, step to the hex nearest the nearest living enemy, when that is nearer than now */
-   const near=hex=>Math.min(...ctx.state.units.filter(u=>u.side==='enemy'&&u.hp>0&&u.hex!=null).map(u=>ctx.geo.distance(hex,u.hex)))
-   const me=ctx.state.units[ctx.battleCursor.actor]
-   const step=how==='press'&&!best?choices.filter(c=>'destination' in c.command).map(c=>({c,d:near(c.command.destination)})).filter(x=>x.d<near(me.hex)).sort((x,y)=>x.d-y.d)[0]?.c:undefined
-   const go=best??step
-   r=go?E.commandSandbox(s,go.command):E.commandSandbox(s,{kind:'end-cycle',actor:ctx.battleCursor.actor,expectedSeq:seq})
-  }
+  else if(at==='acting')r=E.commandSandbox(s,{kind:'end-cycle',actor:ctx.battleCursor.actor,expectedSeq:seq})
   if(!r?.ok)throw Error('the player\'s side could not go on: '+(r?.reason??at))}
 }
 
-/* a battle played out on seed after seed until it ends as wanted — the save a person would have made at that moment. The
-   enemies are always the engine's AI. `hows` are tried in turn, seeds 1 to `seeds` each. partyAlive: only a seed with
-   none of the party dead; otherwise the first seed that ends as wanted — or, fewestDead, the one with the fewest of the
-   party dead over every seed tried */
-export function playedOut(config,won,hows,{partyAlive=true,seeds=1500,fewestDead=false,first=[]}={}){
- let best=null
- /* `first`: [how, seed] pairs tried before the search — a seed found before, kept so the search is not run again; the
-    engine is deterministic, so it is the same battle until the engine or the party changes, and then the search runs */
- const tries=[...first.filter(([how])=>hows.includes(how)),...hows.flatMap(how=>Array.from({length:seeds},(_,i)=>[how,i+1]))]
- const known=tries.length-hows.length*seeds
- for(const [i,[how,seed]] of tries.entries()){
-  const s=E.createSandbox({...structuredClone(config),seed});playOut(s,how)
-  const r=E.sandboxResult(s),party=r.units.filter(u=>u.side==='hero'&&u.role===undefined),dead=party.filter(u=>u.lifeState==='dead').length
-  if((r.outcome==='heroClear')!==won)continue
-  const out={save:E.saveSandbox(s),result:r,how,seed,dead}
-  if(dead===0||(!partyAlive&&(!fewestDead||i<known)))return out
-  if(!partyAlive&&(!best||dead<best.dead))best=out
- }
- if(best)return best
- throw Error(`no seed from 1 to ${seeds} (${hows.join(', ')}) ends ${config.encounterId} ${won?'won':'lost'}${partyAlive?' with the party alive':''}`)
+/* one battle settled as the test means it to end — won (the strong party, the engine's AI) or lost (the party held idle,
+   cut at Turn 1) — and the save a person would have made at that moment. One battle, on the Engagement's own seed; a
+   battle that does not end as meant, or that hurts the party, is not searched around: the driver stops (Law 9) */
+export function playedOut(config,won){
+ const how=won?'ai':'idle',s=fieldedAs(config,won?STRONG_PARTY:HELD_PARTY);playOut(s,how)
+ const r=E.sandboxResult(s),party=r.units.filter(u=>u.side==='hero'&&u.role===undefined)
+ if((r.outcome==='heroClear')!==won)throw Error(`${config.encounterId} on seed ${config.seed}: meant to be ${won?'won by the strong party':'lost by the party held idle'}, it ended '${r.outcome}' on Turn ${r.turns} — the driver settles one battle and searches for none (kingdom.page-test-strong-party)`)
+ const hurt=party.filter(u=>u.lifeState!=='standing'||u.downed||u.stood)
+ if(hurt.length)throw Error(`${config.encounterId} on seed ${config.seed}: the ${won?'strong':'held'} party was hurt (${hurt.map(u=>config.heroes[u.index]+' '+u.lifeState).join(', ')}) — it is meant to end ${won?'won':'lost'} with nobody dead, down or wounded`)
+ return {save:E.saveSandbox(s),result:r,how,seed:config.seed,turns:r.turns}
 }
 
 /** The built sandbox opened at `search`, in a browser whose storage is `store` (a Map; a fresh one when absent). */
@@ -90,6 +118,22 @@ export function openingPage(page,search,store){
  const settle=()=>{if(handle.busy)v.click('skip')}
  /* the page's clock, run forward in small steps: a timer a timer sets comes due on a later step, as in a browser */
  const wait=ms=>{for(let t=0;t<ms;t+=50)w._flush(50)}
+ /* kingdom.opening-hero-card-art: whose portrait a hero shows — its own (a rescued civilian's is its template's, ui/art.ts
+    portraitIdOf) — and that portrait, or null when the hero is named in heroesMissing; a hero in neither fails */
+ const artKey=id=>camp().roster[id]?.templateId??id
+ function portraitFor(id,label){
+  const key=artKey(id),want=portraitUri(key)
+  assert.ok(want||HEROES_MISSING.includes(key),`${label}: ${key} has a portrait, or is named in heroesMissing`)
+  return want
+ }
+ /* the images inside `el` are exactly `n` of that hero's own card art — or, for a hero with none on disk, no image at all
+    (a blank card). The URIs are not printed: a portrait is ~45,000 characters */
+ function showsArt(el,id,label,screen,n=1){
+  assert.ok(el,label+': the card');const want=portraitFor(id,label),got=el.querySelectorAll('img').map(i=>i.getAttribute('src'))
+  assert.equal(got.length,want?n:0,`${label}: ${id}'s card shows ${want?'its card art':'a blank card (its art is missing on disk)'} — ${got.length} image(s) found`)
+  for(const src of got)assert.ok(src===want,`${label}: the image on ${id}'s card is its own card art, not another's`)
+  ART_SEEN[screen]++
+ }
 
  function readMap(taken,label){
   assert.ok(shown('conquest'),label+': the map is shown');assert.ok(!shown('campaign'),label+': no campaign screen over it')
@@ -132,6 +176,8 @@ export function openingPage(page,search,store){
   const first=heroIds().length===0,seen={}
   for(const o of opts){
    const id=o.dataset.id,who=`${label}: ${id}`
+   /* kingdom.opening-hero-card-art: every draft card — the first draft's and every later one's — shows its hero's card art */
+   showsArt(o,id,who,'draft')
    if(first){
     /* the first hero: chosen from three by description only — no stats, no badges, no kit */
     assert.ok(DESCRIPTION[id]&&o.textContent.includes(DESCRIPTION[id]),who+' is shown by its description')
@@ -209,6 +255,8 @@ export function openingPage(page,search,store){
   const cards=deployCards()
   assert.deepEqual(cards.map(x=>x.id),free,label+': a card for each hero free to fight, and nobody else — no civilian, nobody dead')
   for(const x of cards)assert.ok(x.text.includes(camp().roster[x.id].name),`${label}: ${x.id} is named`)
+  /* kingdom.opening-hero-card-art: the Who-goes page shows the card art of every hero who may go */
+  for(const el of byId('campaign').querySelectorAll('.deploycard'))showsArt(el,el.dataset.hero,`${label}: who goes`,'whoGoes')
   return {asked:true,free,limit}
  }
  /* the Deploy page as it stands against the Campaign: the cards going are the heroes sent, the count says how many, and
@@ -255,6 +303,10 @@ export function openingPage(page,search,store){
   const fitted=new Set(byId('campaign').querySelectorAll('[data-slot]').map(el=>el.dataset.hero))
   assert.deepEqual([...fitted].sort(),party,label+': Equip shows the heroes sent, and nobody left home')
   for(const id of party)assert.ok(byId('campaign').textContent.includes(camp().roster[id].name),`${label}: ${id} is named on Equip`)
+  /* kingdom.opening-hero-card-art: every hero card at Equip shows its hero's card art (the card's hero is its slots') */
+  const equipCards=byId('campaign').querySelectorAll('.herocard').map(el=>({el,id:el.querySelectorAll('[data-slot]')[0]?.dataset.hero}))
+  assert.deepEqual(equipCards.map(x=>x.id).sort(),party,label+': the hero cards at Equip are the heroes sent')
+  for(const x of equipCards)showsArt(x.el,x.id,label+': Equip','equip')
   v.click('advance');settle()
   return onTheBattle(label)
  }
@@ -289,16 +341,36 @@ export function openingPage(page,search,store){
   return s
  }
 
- /* settle the battle on the page, then the reckoning: the recap, its Continue */
- function fightOut(won,label,hows=[won?'ai':'idle'],how={}){
-  const e=camp().cursor.engagement,{save,result,how:played,seed}=playedOut(handle.session.config,won,hows,how)
+ /* settle the battle on the page — won or lost as the test means it (playedOut) — then the reckoning: the recap, its
+    Continue */
+ function fightOut(won,label){
+  const e=camp().cursor.engagement,{save,result,how:played,seed}=playedOut(handle.session.config,won)
   w.document.getElementById('transferText').value=save;v.click('import');settle()
   assert.equal(handle.session.ctx.state.outcome==='heroClear',won,label+': the battle ends '+(won?'won':'lost'))
   assert.ok(!shown('conquest'),label+': the outcome stands on the battle');assert.equal(byId('commands').querySelectorAll('[data-act=reckon]').length,1,label+': the outcome offers the reckoning')
   v.click('reckon');wait(2500)
   assert.ok(shown('campaign'),label+': the recap is shown');const recap=byId('campaign').querySelector('.recap')
   assert.ok(recap,label+': the recap');assert.equal(recap.dataset.won,String(won),label+': the recap says '+(won?'won':'lost'))
+  /* kingdom.opening-hero-card-art: the victory screen shows the card art of every hero who fought (its party row, in the
+     order they were sent) and of the hero in its spotlight; a lost battle's recap has the spotlight alone */
+  const faces=recap.querySelectorAll('.party-portrait')
+  if(won){assert.equal(faces.length,e.deployed.length,label+': the victory screen shows a face per hero who fought');for(const [i,id] of e.deployed.entries())showsArt(faces[i],id,label+': the victory screen','victory')}
+  const spot=recap.querySelectorAll('.spotlight-frame')[0],spotSrc=spot?.querySelectorAll('img').map(i=>i.getAttribute('src'))??[]
+  const spotOf=e.deployed.filter(id=>{const p=portraitFor(id,label+': the spotlight');return p&&spotSrc[0]===p})
+  assert.ok(spotSrc.length<=1&&(spotSrc.length===1?spotOf.length>=1:e.deployed.some(id=>!portraitFor(id,label))),label+': the spotlight shows the card art of a hero who fought')
   v.click('exit');wait(100)
+  /* … and the rewards screen, when the battle leads to it: every hero card there is its hero's card art. The portrait is
+     a background there (rewards.html's own markup), so it is read off the page's HTML, the card's own block */
+  if(byId('campaign').querySelector('.rewards')){
+   const html=byId('campaign').innerHTML,cards=byId('campaign').querySelectorAll('.hero-card')
+   assert.deepEqual(cards.map(c=>c.dataset.hero),[...e.deployed],label+': the rewards screen shows a card per hero who fought')
+   for(const id of e.deployed){
+    const from=html.indexOf(`data-hero="${id}"`),block=html.slice(from,html.indexOf('hero-name',from)),want=portraitFor(id,label+': the rewards screen')
+    assert.ok(from>=0&&block.includes('class="hero-portrait"'),`${label}: the rewards screen: ${id}'s card`)
+    assert.ok(want?block.includes(`style="background-image:url(${want})"`):!block.includes('url('),`${label}: the rewards screen: ${id}'s card shows ${want?'its own card art':'a blank card'}`)
+    ART_SEEN.rewards++
+   }
+  }
   return {e,result,played,seed}
  }
 
@@ -309,6 +381,8 @@ export function openingPage(page,search,store){
    const id=b.dataset.id,before=camp().roster[id].level
    v.click('level-hero',id);wait(1600)
    const sheet=byId('campaign').querySelector('.levelup');assert.ok(sheet,`${label}: ${id}'s level-up sheet`)
+   /* kingdom.opening-hero-card-art: the level-up screen shows the hero's card art (its card, before and after) */
+   showsArt(sheet.querySelectorAll('.lu-portrait')[0],id,`${label}: the level-up screen`,'levelUp',2)
    assert.equal(sheet.querySelectorAll('[data-act=lu-decline-specialty]').length,0,`${label}: no level without a specialty here — the engine fields no level-2 hero without one`)
    const over=byId('lu-specialty'),pick=byId('lu-pick')
    /* the specialty owed at the first level-up, then a level's pick, each chosen and confirmed; else the hero is clicked */
@@ -334,5 +408,13 @@ export function openingPage(page,search,store){
   return card.dataset.id
  }
 
- return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,takeReward}
+ /* kingdom.opening-hero-card-art: who may carry a reward that names its takers — the heroes offered, each shown with its
+    own card art (the rewards screen's carrier); [] when the reward goes to the stash */
+ function carriers(label){
+  const buttons=byId('campaign').querySelectorAll('[data-act=give]')
+  for(const b of buttons)showsArt(b,b.dataset.id,label+': who carries it','carrier')
+  return buttons.map(b=>b.dataset.id)
+ }
+
+ return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,takeReward,carriers}
 }

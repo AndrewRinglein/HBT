@@ -33,7 +33,7 @@ import type { CampaignState } from '../core/campaign.js'
 import type { EngagementResult } from '../core/seam.js'
 import type { Reckoning } from '../core/reckoning.js'
 import type { KingdomEvent } from '../core/mutate.js'
-import { listRewardOffers, listLevelUps, viewLevelUp, canLevelUp } from '../core/rewards.js'
+import { listRewardOffers, listRewardTakers, listLevelUps, viewLevelUp, canLevelUp } from '../core/rewards.js'
 import { hashOf } from '../core/rng.js'
 import { statLabelOf } from '../content/stat-labels.js'
 import { xpForLevel } from '../content/levels.js'
@@ -232,6 +232,17 @@ export function rewardsScreen(c: CampaignState, events: readonly KingdomEvent[],
 }
 
 /** rewards.html's ceremony on the DOM: card landing (2523–2562), the 500 ms XP kick-off (2329–2350), animateXPBar (2116–2159), spawnFloatingXP (2042–2114), flipCard (3129–3181), select/confirm (3215–3295). */
+/**
+ * The rewards screen's carrier: who carries an item that names its takers — a Warrior or a Paladin for the Flaming
+ * Longsword (content/encounter-rewards.ts) — each hero who may (core/rewards.ts listRewardTakers) shown with its own card
+ * art, name and class; a click (data-act="give" data-id) gives it. Moved here from ui/sandbox.ts and given the art by
+ * kingdom.opening-hero-card-art (2026-10-03, Andrew, engine/DECISIONS.md 'card art on the level-up and reward screens …'):
+ * every screen that shows a hero's card or face shows it. A hero whose art is missing on disk is shown by name alone.
+ */
+export function carrierChoice(c: CampaignState, itemId: string): string {
+  return `<div class="giveChoice" role="dialog" aria-label="Who carries it"><h2>Who carries the ${esc(itemOf(itemId).name)}?</h2><p>${listRewardTakers(c, itemId).map((id) => { const h = c.roster[id]!; return `<button data-act="give" data-id="${esc(id)}">${face(portraitIdOf(h))}<span><b>${esc(h.name)}</b> · ${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))}</span></button>` }).join(' ')}</p></div>`
+}
+
 export function mountRewards(root: HTMLElement, onConfirm: (itemId: string) => void): Cleanup {
   const timers: number[] = []
   const at = (ms: number, f: () => void) => timers.push(window.setTimeout(f, ms))

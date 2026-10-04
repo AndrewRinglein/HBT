@@ -102,6 +102,15 @@ describe('kingdom.opening-run-six — one run through the six battles, saved', (
     const out = execFileSync(process.execPath, ['tools/opening-run-six.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
     expect(out).toMatch(/opening run six: .*passed/)
     // kingdom.opening-deploy-choice (2026-10-03): the same run asks who goes once five are free to fight, and says so
-    expect(out).toMatch(/with five free to fight the run asked who goes \(battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
+    // Law 10, 2026-10-04 (kingdom.page-test-strong-party; engine DECISIONS.md 2026-10-04 'no testing that the battles can be won
+    // until these items are done; the page tests play an overpowered party'): this read
+    //   expect(out).toMatch(/with five free to fight the run asked who goes \(battle 5: home …; battle 6: home …; battle 6 again: home …\)/)
+    // — the battles the run asked before while the Bridge cost a hero. Won by the strong party the Bridge costs nobody, so
+    // five are free a battle earlier: the run asks before battle 4 too, and says so. The same rule, held at one more battle.
+    expect(out).toMatch(/with five or more free to fight the run asked who goes \(battle 4: home [^;]+; battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
+    // kingdom.opening-hero-card-art (2026-10-03): the same run holds every hero card it shows to that hero's own card art —
+    // every draft card (six drafts of three), the Who-goes page, Equip, the victory screen, the rewards screen and its
+    // carrier, the level-up screen — and says how many of each it held
+    expect(out).toMatch(/card art on every hero card \(draft 18, whoGoes [1-9]\d*, equip [1-9]\d*, victory [1-9]\d*, rewards [1-9]\d*, carrier [1-9]\d*, levelUp [1-9]\d*; heroes with no art on disk, shown blank: [^)]+\)/)
   }, 1800000)
 })

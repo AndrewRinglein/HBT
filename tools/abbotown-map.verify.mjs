@@ -16,26 +16,21 @@ import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
 import {createRequire} from 'node:module'
 import {bootSlice} from './atlas-dom.mjs'
+import {playedOut as settled} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html',launcher=process.argv[3]??'PLAY.html'
 const RULED=['Orphanage','Lumberjack House','Bridge','Cavern Trail','Gates','Cathedral']
-/* the engine's facts: the playable battles in the opening's order, and a battle played to its end by the engine's own AI
-   for both sides — the save a person would have made at that moment, pasted back into the page */
+/* the engine's facts: the playable battles in the opening's order */
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox} from './src/core/sandbox.ts';export {SCENARIOS,advanceBattle,runActivation,completeActionCycle} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {SCENARIOS} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 const playable=Object.values(E.SCENARIOS).filter(s=>s.openingPosition&&s.encounterId?.startsWith('encounter.opening.')).sort((a,b)=>a.openingPosition-b.openingPosition).map(s=>s.encounterId)
 assert.deepEqual(playable.slice(0,3),['encounter.opening.orphanage','encounter.opening.lumberjack','encounter.opening.bridge'],'the engine plays the first three')
-// was: the AI played both sides for a loss too — kingdom.opening-loop-three fields the campaign's drafted party, whom the
-// AI rarely loses with (about one Lumberjack House in fifty), so a loss is now played with the heroes' side standing idle
-// (`idle`): the same outcome the assertion asks for, reached in a seed or two
-function playedOut(config,want,idle=false){
- for(let seed=1;seed<=40;seed++){
-  const s=E.createSandbox({...structuredClone(config),seed}),ai={humanUnitUids:[]}
-  for(let i=0;i<20000;i++){const n=E.advanceBattle(s.ctx,ai);if(n.kind==='complete')break;if(n.kind==='selecting')continue;if(!(idle&&s.ctx.state.units[n.actor].side==='hero'))E.runActivation(s.ctx,n.actor);E.completeActionCycle(s.ctx)}
-  if(want.includes(s.ctx.state.outcome))return E.saveSandbox(s)
- }
- throw Error(`no seed from 1 to 40 ends ${config.encounterId} in ${want}`)
-}
+// kingdom.page-test-strong-party (2026-10-04; engine DECISIONS.md 2026-10-04 "Go ahead, overpowered power party."): a battle is
+// settled by the opening's shared driver (tools/opening-page.mjs playedOut) — won by the run's own party made overpowered
+// for the test only, lost by the party held idle and cut at Turn 1; one battle, on its own seed, nothing sought. Until
+// then this file played seed after seed (1 to 40) until one ended as wanted: the engine's AI on both sides for a win,
+// the heroes' side standing idle for a loss.
+const playedOut=(config,want)=>{const won=want===WON,r=settled(config,won);assert.ok(want.includes(r.result.outcome),`${config.encounterId}: settled ${r.result.outcome}`);return r.save}
 const WON=['heroClear','objectiveMet'],LOST=['wipe','retreat','capped','objectiveFailed']
 
 function open(search){
@@ -111,10 +106,10 @@ assert.equal(next.id,'encounter.opening.lumberjack')
 
 /* 4 · a loss: "Back to the map" too, and the Lumberjack House is still the next (a lost opening battle is replayed) */
 // was: v.click('field',…);v.settle(), a loss the AI made, and v.click('map') — kingdom.opening-loop-three: the drafts and
-// Equip come first, the loss is played with the heroes idle (playedOut), and the reckoning comes before the map
+// Equip come first, the loss is the party held idle (playedOut), and the reckoning comes before the map
 v.click('field','encounter.opening.lumberjack');toBattle(v)
 assert.equal(v.handle.session.config.encounterId,'encounter.opening.lumberjack')
-transfer().value=playedOut(v.handle.session.config,LOST,true);v.click('import');v.settle()
+transfer().value=playedOut(v.handle.session.config,LOST);v.click('import');v.settle()
 assert.ok(LOST.includes(v.handle.session.ctx.state.outcome),'the Lumberjack House is lost')
 toMap(v)
 ;({next}=readMap(v,['encounter.opening.orphanage'],'after losing the Lumberjack House'))

@@ -1,0 +1,156 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+ ❯ test/opening-hero-card-art.test.ts (11 tests | 6 failed) 197ms
+     × all 24 base heroes have a portrait or are named in heroesMissing — never both, never neither 6ms
+     × the civilians the kingdom rescues are covered the same way: a portrait, or named in heroesMissing 1ms
+     × the first draft: three cards, each its hero's card art with the name, class and description — and still no number, no badge, no kit 2ms
+     × every later draft: three cards, each its hero's card art with what it already shows — its stats, rolled points and badges 4ms
+     × a hero with no portrait shows a blank card on the draft — never another hero's art 1ms
+     × who carries a reward: each hero who may carry it is shown with its own art 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-hero-card-art.test.ts > kingdom.opening-hero-card-art — the portraits > all 24 base heroes have a portrait or are named in heroesMissing — never both, never neither
+AssertionError: hero.base.mage-fire: a portrait, or named as missing: expected [ 'hero.base.mage-fire', false ] to deeply equal [ 'hero.base.mage-fire', true ]
+
+- Expected
++ Received
+
+  [
+    "hero.base.mage-fire",
+-   true,
++   false,
+  ]
+
+ ❯ test/opening-hero-card-art.test.ts:86:79
+     84|     for (const id of base) {
+     85|       const has = id in index!.heroes, missing = index!.heroesMissing.…
+     86|       expect([id, has !== missing], `${id}: a portrait, or named as mi…
+       |                                                                               ^
+     87|     }
+     88|     // the pool the draft offers from is all of them (none is left out…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/opening-hero-card-art.test.ts > kingdom.opening-hero-card-art — the portraits > the civilians the kingdom rescues are covered the same way: a portrait, or named in heroesMissing
+AssertionError: hero.fixed.school-teacher: a portrait, or named as missing: expected [ 'hero.fixed.school-teacher', false ] to deeply equal [ 'hero.fixed.school-teacher', true ]
+
+- Expected
++ Received
+
+  [
+    "hero.fixed.school-teacher",
+-   true,
++   false,
+  ]
+
+ ❯ test/opening-hero-card-art.test.ts:95:83
+     93|     for (const h of [...CIVILIANS, ...RESCUABLE_CIVILIANS]) {
+     94|       const has = h.id in index!.heroes, missing = index!.heroesMissin…
+     95|       expect([h.id, has !== missing], `${h.id}: a portrait, or named a…
+       |                                                                                   ^
+     96|     }
+     97|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/opening-hero-card-art.test.ts > kingdom.opening-hero-card-art — every screen that shows a hero shows its own card art > the first draft: three cards, each its hero's card art with the name, class and description — and still no number, no badge, no kit
+AssertionError: seed 5: hero.base.ranger-scantily's card shows its own art, once: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   "data:image/jpeg;base64,cG9ydHJhaXQgb2YgaGVyby5iYXNlLnJhbmdlci1zY2FudGlseQ==",
+- ]
++ []
+
+ ❯ test/opening-hero-card-art.test.ts:133:86
+    131|         const id = idOf(card)
+    132|         expect(id).toBe(offers[i]!.id)
+    133|         expect(imagesIn(card), `seed ${seed}: ${id}'s card shows its o…
+       |                                                                                      ^
+    134|         expect(textOf(card), `seed ${seed}: ${id} is named`).toContain…
+    135|         expect(textOf(card), `seed ${seed}: ${id}: stat-less — no numb…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/opening-hero-card-art.test.ts > kingdom.opening-hero-card-art — every screen that shows a hero shows its own card art > every later draft: three cards, each its hero's card art with what it already shows — its stats, rolled points and badges
+AssertionError: after 1: hero.base.warrior-iron's card shows its own art, once: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   "data:image/jpeg;base64,cG9ydHJhaXQgb2YgaGVyby5iYXNlLndhcnJpb3ItaXJvbg==",
+- ]
++ []
+
+ ❯ test/opening-hero-card-art.test.ts:154:89
+    152|       for (const card of cards) {
+    153|         const id = idOf(card)
+    154|         expect(imagesIn(card), `after ${heroes}: ${id}'s card shows it…
+       |                                                                                         ^
+    155|         expect(card, `after ${heroes}: ${id} still shows its stats, ro…
+    156|         expect(card).toMatch(/data-rolls="/); expect(card).toMatch(/da…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/opening-hero-card-art.test.ts > kingdom.opening-hero-card-art — every screen that shows a hero shows its own card art > a hero with no portrait shows a blank card on the draft — never another hero's art
+AssertionError: hero.base.mage-sexy keeps its own: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   "data:image/jpeg;base64,cG9ydHJhaXQgb2YgaGVyby5iYXNlLm1hZ2Utc2V4eQ==",
+- ]
++ []
+
+ ❯ test/opening-hero-card-art.test.ts:171:60
+    169|         const id = idOf(card)
+    170|         if (id === gone) { expect(imagesIn(card), `${id} has no portra…
+    171|         else expect(imagesIn(card), `${id} keeps its own`).toEqual([ur…
+       |                                                            ^
+    172|       }
+    173|     } finally { art.heroes[gone] = kept }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/opening-hero-card-art.test.ts > kingdom.opening-hero-card-art — every screen that shows a hero shows its own card art > who carries a reward: each hero who may carry it is shown with its own art
+AssertionError: ui/after.ts carrierChoice — the rewards screen's carrier: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ test/opening-hero-card-art.test.ts:239:95
+    237|   it('who carries a reward: each hero who may carry it is shown with i…
+    238|     const carrierChoice = (AFTER as unknown as { carrierChoice?: (c: C…
+    239|     expect(typeof carrierChoice, 'ui/after.ts carrierChoice — the rewa…
+       |                                                                                               ^
+    240|     let seen = 0
+    241|     for (let seed = 1; seed <= 30 && seen < 2; seed++) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 5 passed (11)
+   Start at  21:29:29
+   Duration  4.44s (transform 3.08s, setup 0ms, import 4.10s, tests 197ms, environment 0ms)
+
+
+===== the page test, on the committed BATTLE-SANDBOX.html (kingdom 6a5eab8) and the committed generated/art (8 portraits): node tools/opening-run-six.verify.mjs BATTLE-SANDBOX.html =====
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+AssertionError [ERR_ASSERTION]: battle 1, draft 1: hero.base.mage-sexy: hero.base.mage-sexy has a portrait, or is named in heroesMissing
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+Node.js v24.12.0
