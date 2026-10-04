@@ -3,7 +3,7 @@ import { geometryOf, validBoard } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, UnitMods, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
-import { ACTIONS, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { ACTIONS, BADGES, CRIT_CHART, GENERAL_POOL, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft, foldStats } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { paintGround } from './ground.js'
@@ -220,7 +220,7 @@ function assemble(bare: UnitDef, opts: FieldOptions, where: string, uid: number,
   if (!kitted && (opts.items?.length || opts.stowed?.length)) throw new Error(`${where}: ${bare.typeId} is fielded authored whole and cannot be handed items`)
   // Hero assembly (2026-09-03): level, specialty and drafted powers fold on BEFORE the items,
   // so the kit sees the grown hero. No progress = the bare row.
-  const grown = opts.progress ? applyProgress(bare, opts.progress, classOf(bare), LEVELS, SPECIALTIES, ACTIONS, where, levelTableOf(bare)) : bare
+  const grown = opts.progress ? applyProgress(bare, opts.progress, classOf(bare), LEVELS, SPECIALTIES, ACTIONS, where, levelTableOf(bare), GENERAL_POOL) : bare
   // v2.item-uses: an instance handed in with no uses left is carried spent — it folds nothing and
   // grants nothing ("the re-field skips it", DUNGEON-MODE-2026-09-07 §4). Ordinals count every item.
   const uses = itemUsesOf(grown, uid, [...itemIds, ...stowedIds], opts.used, ITEMS, ACTIONS, where)

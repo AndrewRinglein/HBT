@@ -790,6 +790,7 @@ export type HeroProgress = {
   readonly specialtyId?: string
   /** One of the class's level-5 choice options, verbatim. */
   readonly levelFivePick?: Readonly<Record<string, number>>
+  /** The powers drafted at power grants. A movement power among them must be in the class's general pool, and joins the unit's moves (items.ts applyProgress). */
   readonly powers?: readonly string[]
 }
 

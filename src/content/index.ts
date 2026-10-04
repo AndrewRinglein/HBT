@@ -4,7 +4,7 @@
 
 import type { AbilityDef, ActionDef, AttackDef, UnitDef } from '../core/types.js'
 import { disabledIds, omitDisabled, stripDisabledTriggers } from './disable.js'
-import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packXpByTier, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packDerivedItems, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
+import { liftAttacks, packBursts, packAbilities, packAttacks, packBadges, packCritChart, packXpByTier, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packGeneralPool, packEnchanted, packDerivedItems, packEncounters, packLevels, packSpecialties, packMoves, type PackAttackRow } from './pack.js'
 import { MOVES } from './moves.js'
 import { AI_MODE_ROWS } from './ai-modes.js'
 import { defaultAiOf } from '../core/items.js'
@@ -267,6 +267,20 @@ export const RULE_BADGES = { hero: 'badge.hero', wounded: 'badge.wounded' } as c
 /** Level tables and specialties — read by fieldedDef() (hero assembly, 2026-09-03). */
 export const LEVELS = omitDisabled(packLevels())
 export const SPECIALTIES = omitDisabled(packSpecialties())
+/**
+ * Each class's general pool - the powers a power grant may offer a hero of that class beside its specialty's
+ * (movement.back-flip, 2026-10-04). Read by fieldedDef(): a drafted movement power must be in its class's pool.
+ * Every id is a row of the one registry (loud otherwise), and a disabled row leaves its pools (the kill-switch seam).
+ */
+export const GENERAL_POOL: Readonly<Record<string, readonly string[]>> = (() => {
+  const out: Record<string, readonly string[]> = {}
+  for (const [classId, ids] of Object.entries(packGeneralPool())) {
+    for (const id of ids) if (!(id in AUTHORED_ABILITIES) && !(id in AUTHORED_MOVES)) throw new Error(`general pool: ${classId} lists '${id}', which is not a power or a movement in the pack`)
+    const live = ids.filter((id) => id in ACTIONS)
+    if (live.length) out[classId] = live
+  }
+  return out
+})()
 // The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
 // A collision is a LOUD failure: the pack owns test- ids, this file owns the
 // rest, and neither may quietly shadow the other.

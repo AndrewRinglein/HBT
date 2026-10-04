@@ -10834,6 +10834,24 @@ export const UNIT_PACK = {
       "staminaCost": 1,
       "cooldown": 0
     },
+    "power.back-flip": {
+      "id": "power.back-flip",
+      "name": "Back Flip",
+      "free": false,
+      "shape": "sidestep",
+      "stepRange": 1,
+      "budgetMod": 0,
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "dodge",
+          "value": 20,
+          "until": "endOfNextActivation"
+        }
+      ],
+      "staminaCost": 1,
+      "cooldown": 4
+    },
     "power.leap": {
       "id": "power.leap",
       "name": "Leap",
@@ -28900,6 +28918,14 @@ export const UNIT_PACK = {
         }
       ]
     }
+  },
+  "generalPool": {
+    "class.rogue": [
+      "power.back-flip"
+    ],
+    "class.ranger": [
+      "power.back-flip"
+    ]
   },
   "enchanted": {
     "item.greatsword.bloodletting": {

@@ -79,6 +79,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], heroItems: [['item.rune-kairin'], ['item.rune-vampire-hunter']],
     enemies: ['test-zombie', 'test-zombie', 'test-zombie'], enemyHexes: [86, 101, 87], replicate: 0,
   },
+  // movement.back-flip (2026-10-04; Andrew 2026-10-03, DECISIONS.md 'Back Flip is a general Rogue and Ranger
+  // class power'): no hero starts with Back Flip, so no standard battle can show it - this fields a Ranger and
+  // a Rogue who each drafted it at a power grant (heroProgress.powers), against three zombies. The kiters step
+  // with it when it is ready and with their Side Roll while it is down. A fielding, not a balance claim.
+  'test.back-flip': {
+    id: 'test.back-flip', note: 'TEST: a Ranger and a Rogue who each drafted power.back-flip from the general pool of their class, against three zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.ranger-ranger', 'hero.base.rogue-raven'], heroHexes: [85, 101],
+    heroProgress: [{ level: 1, powers: ['power.back-flip'] }, { level: 1, powers: ['power.back-flip'] }],
+    enemies: ['test-zombie', 'test-zombie', 'test-zombie'], enemyHexes: [89, 105, 121], replicate: 0,
+  },
   // content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'): "when the
   // affliction of Vampirism happens, it grants both Cold Heart and Vampirism." A real battle in which a
   // Vampire's bite afflicts — replicate 7 is the first whose 20% roll succeeds (found, not tuned).
