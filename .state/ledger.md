@@ -27782,3 +27782,68 @@ index a343f25..7f337a8 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.burst-ground-class-powers — LANDED `3674cd9` **NEEDS REVIEW**
+2026-10-04 16:50
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/burst-ground-class-powers.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.fire-master.fireball: 27 log lines, 27 fired, 19 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/burst-ground-class-powers.test.ts, test/fixtures/battle-cursor-burst-ground-class-powers.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.fire-master.fireball — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 80fb626..e9ce7a9 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -340,4 +340,10 @@ const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
+ // power is used the fight re-times). A `changed` case is checked here and skips the older layers.
+ const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack.json', import.meta.url), 'utf8'))
++// fix.burst-ground-class-powers (2026-10-04; SWITCHES.md burstGroundClassPowers), Law 10: the Fire Master's Fireball and the
++// Wyrmling's Scorch leave their seven hexes burning (content authors `paints` on the two class-power bursts; no engine code).
++// Every case frozen here (tools/capture-burst-ground-class-powers-cursor.mts; the fixture counts the hexes a class power's burst
++// painted). The four cases whose Fire Master throws Fireball moved (showcase.assembled-party, progression-surge-0..2: seven
++// strokes each, and the fight re-times from there). A `changed` case is checked here and skips the older layers.
++const classGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-ground-class-powers.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -466,5 +472,8 @@ describe('resumable battle cursor', () => {
+       const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const counterattackMoved = counterattackExpected?.changed === true
++      const classGroundExpected = classGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const classGroundMoved = classGroundExpected?.changed === true
++      // was: const counterattackMoved = counterattackExpected?.changed === true — a class-ground-moved case skips the counterattack layer too (fix.burst-ground-class-powers 2026-10-04)
++      const counterattackMoved = counterattackExpected?.changed === true || classGroundMoved
+       // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
+       const freeAttackMoved = freeAttackExpected?.changed === true || counterattackMoved
+@@ -577,5 +586,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (counterattackExpected) {
++        if (classGroundExpected) {
++        expect(hash(ctx.events), 'full class-ground events').toBe(classGroundExpected.events)
++        expect(hash(ctx.state), 'full class-ground state').toBe(classGroundExpected.state)
++        expect(hash(ctx.rng.log), 'full class-ground RNG').toBe(classGroundExpected.rng)
++        expect(result).toEqual(classGroundExpected.result)
++        }
++        // was: if (counterattackExpected) { — fix.burst-ground-class-powers (2026-10-04): a class-ground-moved case is checked above instead
++        if (counterattackExpected && !classGroundMoved) {
+         expect(hash(ctx.events), 'full counterattack events').toBe(counterattackExpected.events)
+         expect(hash(ctx.state), 'full counterattack state').toBe(counterattackExpected.state)
+```
+</details>

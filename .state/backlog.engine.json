@@ -5533,7 +5533,10 @@
   ],
   "spec": "Found landing capability.burst-paints-ground (2026-10-04, engine SWITCHES.md burstGroundClassPowers): a burst can now paint its hexes, and the Fire Staff's Flame Burst and the Frost Staff's Frost Nova do; two more burst powers whose Codex words name ground are 'one authored field away (content only)': power.fire-master.fireball and power.wyrmling.scorch. Author the ground on those two rows through the content pipeline as the staffs' rows have it (re-read every content/ file immediately before editing it; commit content after every write; rebuild by the tools), exactly as their Codex text says and no further. Leave wake-of-cinders, quench and broodmother.nest: they deal nothing, so they need ground to count as a payload on its own (engine SWITCHES burstGroundNotAPayload) - list them in CONTENT-GAPS.md, do not build. Rebuild the Codex's outputs, the engine pack, the viewer's dumps and the kingdom pages the change makes stale; say whether the control battles move before claiming changesBaseline.",
   "expect": "A hero using Fireball (the Fire Master's) leaves its blast's hexes burning, and the Wyrmling's Scorch leaves its hexes as its Codex row says; a test names both and asserts the ground after the burst; the three ground-only powers are listed as gaps.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "3674cd9"
  },
  {
   "id": "fix.trigger-ids-and-scopes",

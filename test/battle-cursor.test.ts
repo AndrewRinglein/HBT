@@ -339,6 +339,12 @@ const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
 // case's counterattacks and fends). The 19 cases that field a Longsword moved (its `unit.equipped` line names the power; where the
 // power is used the fight re-times). A `changed` case is checked here and skips the older layers.
 const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack.json', import.meta.url), 'utf8'))
+// fix.burst-ground-class-powers (2026-10-04; SWITCHES.md burstGroundClassPowers), Law 10: the Fire Master's Fireball and the
+// Wyrmling's Scorch leave their seven hexes burning (content authors `paints` on the two class-power bursts; no engine code).
+// Every case frozen here (tools/capture-burst-ground-class-powers-cursor.mts; the fixture counts the hexes a class power's burst
+// painted). The four cases whose Fire Master throws Fireball moved (showcase.assembled-party, progression-surge-0..2: seven
+// strokes each, and the fight re-times from there). A `changed` case is checked here and skips the older layers.
+const classGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-ground-class-powers.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -465,7 +471,10 @@ describe('resumable battle cursor', () => {
       const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const counterattackMoved = counterattackExpected?.changed === true
+      const classGroundExpected = classGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const classGroundMoved = classGroundExpected?.changed === true
+      // was: const counterattackMoved = counterattackExpected?.changed === true — a class-ground-moved case skips the counterattack layer too (fix.burst-ground-class-powers 2026-10-04)
+      const counterattackMoved = counterattackExpected?.changed === true || classGroundMoved
       // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
       const freeAttackMoved = freeAttackExpected?.changed === true || counterattackMoved
       // was: const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true — a free-attack-moved case skips the burst-paints-ground layer too (rule.free-attack-is-basic-attack 2026-10-04)
@@ -576,7 +585,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (counterattackExpected) {
+        if (classGroundExpected) {
+        expect(hash(ctx.events), 'full class-ground events').toBe(classGroundExpected.events)
+        expect(hash(ctx.state), 'full class-ground state').toBe(classGroundExpected.state)
+        expect(hash(ctx.rng.log), 'full class-ground RNG').toBe(classGroundExpected.rng)
+        expect(result).toEqual(classGroundExpected.result)
+        }
+        // was: if (counterattackExpected) { — fix.burst-ground-class-powers (2026-10-04): a class-ground-moved case is checked above instead
+        if (counterattackExpected && !classGroundMoved) {
         expect(hash(ctx.events), 'full counterattack events').toBe(counterattackExpected.events)
         expect(hash(ctx.state), 'full counterattack state').toBe(counterattackExpected.state)
         expect(hash(ctx.rng.log), 'full counterattack RNG').toBe(counterattackExpected.rng)
