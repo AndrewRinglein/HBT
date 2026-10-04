@@ -40,7 +40,9 @@ describe('the first-affliction pop-up: before and after art, the three explanati
   })
   it('the viewer page: the pump holds on the pop-up, the card before and after, the three explanations, closed it goes on; no art is said, not faked', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/affliction-pop-up.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
-    expect(out).toMatch(/# pass 5/); expect(out).toMatch(/# fail 0/)
+    // 2026-10-04 (engine fix.affliction-pop-up-words): was /# pass 5/ — the page test holds a sixth, that src/affliction.js writes no
+    // 0-Health sentence and judges no drawback; all six pass
+    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
   }, 170000)
   it('the sandbox: the expect line, played on the built BATTLE-SANDBOX.html until a zombie afflicts a hero, at 1920 x 1080', () => {
     mkdirSync('../kingdom/scratch', { recursive: true })
