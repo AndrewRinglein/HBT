@@ -61,13 +61,29 @@ export type Cleanup = () => void
 
 /** Hell-TCG's classification (combat-test-harness.html 10784–10797, 11032–11035), on HoBaT's wound levels. */
 export type Outcome = 'decisive' | 'standard' | 'costly' | 'pyrrhic' | 'devastating' | 'overwhelmed' | 'casualties' | 'total_wipe'
-export function outcomeOf(won: boolean, heroes: { wound: number; dead: boolean }[], turns: number, maxTurns = 25): Outcome {
+/**
+ * kingdom.opening-recap-decisive — ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'a victory in which a civilian was hurt is not
+ * a decisive victory'): "if a civilian was hurt it was not a decisive victory." The victory's grade reads the WHOLE player
+ * side: the heroes and the civilians who fought beside them. A unit of that side as the battle left it is a mark — its
+ * wound level and whether it died; a civilian's mark is made from its fate on the screen (view/civilians.ts): wounded is
+ * a hero's first wound level, dead is dead, so a hurt civilian gives the grade a hurt hero gives.
+ */
+export type SideMark = { wound: number; dead: boolean }
+export function sideOf(heroes: readonly SideMark[], civilians: readonly { fate: 'unhurt' | 'wounded' | 'dead' }[]): SideMark[] {
+  return [...heroes, ...civilians.map((v) => ({ wound: v.fate === 'wounded' ? 1 : 0, dead: v.fate === 'dead' }))]
+}
+/** Was nobody hurt — wounded or killed? The ONE reading of "hurt": the title's grade and the report line both ask this. */
+export const isUnhurt = (side: readonly SideMark[]): boolean => side.every((u) => !u.dead && u.wound === 0)
+
+/** The battle's grade. A lost battle's is the heroes' own, as it was; a won one's reads the heroes and the civilians together. */
+export function outcomeOf(won: boolean, heroes: SideMark[], turns: number, maxTurns = 25, civilians: readonly SideMark[] = []): Outcome {
   const deaths = heroes.filter((h) => h.dead).length
   if (!won) return deaths >= heroes.length && heroes.length ? 'total_wipe' : deaths > 0 ? 'casualties' : 'overwhelmed'
-  if (deaths > 0) return 'devastating'
-  if (heroes.some((h) => !h.dead && h.wound >= 2)) return 'pyrrhic'
-  if (heroes.some((h) => !h.dead && h.wound === 1)) return 'costly'
-  return turns / maxTurns <= 0.5 ? 'decisive' : 'standard'
+  const side = [...heroes, ...civilians]
+  if (isUnhurt(side)) return turns / maxTurns <= 0.5 ? 'decisive' : 'standard'
+  if (side.some((u) => u.dead)) return 'devastating'
+  if (side.some((u) => u.wound >= 2)) return 'pyrrhic'
+  return 'costly'
 }
 const TITLE: Record<Outcome, string> = { decisive: 'DECISIVE VICTORY', standard: 'VICTORY', costly: 'COSTLY VICTORY', pyrrhic: 'PYRRHIC VICTORY', devastating: 'VICTORY', overwhelmed: 'DEFEAT', casualties: 'DEFEAT', total_wipe: 'DEFEAT' }
 const STINGER_PITCH: Record<Outcome, number> = { decisive: 1.0, standard: 0.95, costly: 0.9, pyrrhic: 0.85, devastating: 0.8, overwhelmed: 1.0, casualties: 0.9, total_wipe: 0.8 }
@@ -109,7 +125,12 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
   // below, says who fell and offers the battle again
   const fallen = mine?.reckoning.fallen ?? []
   if (mine && fallen.length) return fallenScreen(c, mine, heroes, fallen)
-  const outcome = outcomeOf(won, fates, mine?.result.turns ?? 25)
+  // kingdom.opening-recap-civilians: the civilians who fought, as the battle's own result left them (view/civilians.ts) …
+  const civilians = mine ? listBattleCivilians(c, mine.result) : []
+  // … kingdom.opening-recap-decisive: and the whole player side — the heroes' marks, then the civilians' — which the title's
+  // grade and the report line both read
+  const side = sideOf(fates, civilians)
+  const outcome = outcomeOf(won, fates, mine?.result.turns ?? 25, 25, side.slice(fates.length))
   const mvpId = mine?.reckoning.heroes.find((h) => h.mvp)?.heroId ?? (won ? heroes[0]?.id : heroes.find((h) => h.lifeState !== 'dead')?.id ?? heroes[0]?.id)
   const spot = mvpId ? c.roster[mvpId]! : null
   const xp = mine ? mine.reckoning.heroes.reduce((sum, h) => sum + h.xp, 0) : written.filter((ev) => ev.type === 'xp.gained').reduce((s, ev) => s + (ev['amount'] as number), 0)
@@ -122,10 +143,11 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
   // civilians): the civilians who fought, as the battle's own result left them (view/civilians.ts listBattleCivilians) —
   // drawn in a row of their own under the heroes', each with its portrait and its mark in words, and named in the
   // report as a hero is. "No wounds sustained" is said only when no hero AND no civilian was wounded or killed
-  // (kingdom SWITCHES.md recapCiviliansNoWounds); the title's grade stays the heroes' (recapCiviliansTitle).
-  const civilians = mine ? listBattleCivilians(c, mine.result) : []
+  // (kingdom SWITCHES.md recapCiviliansNoWounds). Until 2026-10-04 the title's grade stayed the heroes' (recapCiviliansTitle);
+  // ruled that day — "if a civilian was hurt it was not a decisive victory" — it reads the whole side too, by the same
+  // function (isUnhurt, above: kingdom.opening-recap-decisive).
   const civilianLines = civilians.filter((v) => v.fate !== 'unhurt').map((v) => `<div class="report-line ${v.fate === 'dead' ? 'dead-report' : 'wounded'}"><span class="report-icon">${woundGlyph(v.fate)}</span><span>${esc(v.name)} — ${v.fate === 'dead' ? 'fell in battle' : esc(woundNameOf(1))}</span></div>`)
-  const report = heroes.length === 0 ? [] : won && fates.every((f) => !f.dead && f.wound === 0) && civilianLines.length === 0
+  const report = heroes.length === 0 ? [] : won && isUnhurt(side)
     ? [`<div class="report-line decisive"><span class="report-icon">✦</span><span>Decisive Victory — No wounds sustained</span></div>`]
     : [...heroes.filter((h) => h.lifeState === 'dead' || h.wound > 0).map((h) => { const k = woundClass(h); return `<div class="report-line ${k === 'dead' ? 'dead-report' : k}"><span class="report-icon">${woundGlyph(k)}</span><span>${esc(h.name)} — ${k === 'dead' ? 'fell in battle' : esc(woundNameOf(h.wound))}</span></div>` }), ...civilianLines]
   const FATE_WORD = { unhurt: 'Unhurt', wounded: woundNameOf(1), dead: 'Dead' } as const
