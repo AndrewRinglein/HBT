@@ -4695,3 +4695,46 @@ Ruled:
 - **Which weapon sits in which kit is not his to be asked now: "We're not in a balancing phase."** A chat picks a default, records the switch and goes on.
 - **The decision is the chat's** ("make a decision"), engine SWITCHES `woodAxeWaits`: the Wood Axe is not built now and no kit carries it. It stays a dictated weapon with no row, like the Sickle, the Short Sword and the Grain Flail, until the sixth pass's weapon families become rows. Its card stays in the set; its model is not made in this batch — Codex excluded the card from model production at his direct word, and that is left as it is. This replaces "the Wood Axe card and its model stay" in the two entries above as far as the model goes. Nothing is filed.
 - **Cleaned up:** the content audit's accepted-findings entry for the Pot Lid went with its row (content cc67ac2); `2-ACTIONS-SETTLED.md` logs the Slingshot's removal (root 7dbbc77). Left, as records of their date: the notes files and older switches that name a cut row, the Stagger power's `source` note, and `crucible/data/kits.json` (the Crucible is unbuilt and its kits were superseded 2026-08-27).
+
+## 2026-10-04 — no testing that the battles can be won until these items are done; the page tests play an overpowered party; faster landing
+
+Andrew, in the kingdom chat, asked whether anything else would speed the queue up "without losing too much quality". The questions as asked: (1) "Should the page test play the run with an overpowered test party so it stops searching for winning seeds?"; (2) "Should the merge tool skip re-running suites that already passed on the exact same code when main hasn't moved?"; also offered: (3) more items per worker run before each merge; (4) a quiet machine and a still main folder.
+
+“1. I'm okay forgoing all testing battle until we're done with all these items. Right now, I'm doing more views or experience testing.  So we can just skip all testing battles that aren't just done from a quality standpoint.   Okay, yes, yes, and yes. Okay, for 4, I'll shut down everything else.   If we need to, then one yes for remaining questions. Go ahead, overpowered power party. Party. 2 yes.”
+
+Ruled:
+
+- **Until the items now queued are done, nothing tests that the battles can be won.** He is testing the look and the experience, not the balance. The opening's page tests stop searching for seeds on which the computer wins: they play the run with an overpowered test party ("Go ahead, overpowered … party"), so any seed wins and every step between the battles is still proved. A test that exists only to show a battle is winnable by the computer's play is skipped until then, by name, with this entry cited; a test of a rule, a screen or the flow is not. Filed: `kingdom.page-test-strong-party`, first in the viewer and kingdom queue.
+- **Yes to more items per worker run before each merge**, each still its own landing.
+- **Yes to the merge tool skipping suites already passed on the exact same code when main has not moved** — taken up by the kingdom chat as a tooling change (GBH SWITCHES), only where it can be shown no test is skipped that the change could break.
+- He shuts the other programs and chats down while the workers run.
+
+## 2026-10-04 — a worker each for the viewer's items and the kingdom's, for this backlog; the items that wait on art go last
+
+Andrew, in the kingdom chat. The questions as asked: (1) "Should I run a third worker, one for viewer items and one for kingdom items, setting aside the one-worker-per-area rule for this backlog?"; (2) "Should the art-dependent viewer items wait until the art exists?"
+
+“1. Yes, let's split kingdom and viewer items.  We can not have those items be displayed properly for now. That's what I was working on in Codex, but it can wait. It's a little less critical.”
+
+Ruled:
+
+- **For this backlog the viewer's items and the kingdom's items each get their own worker, in their own copy** — three workers with the engine's. Sets aside DISPLAY-RULES.md rule 32's "never two in one area" (viewer and kingdom are one area there) for the items now queued; the rule itself is not rewritten. The two collide only on kingdom's generated pages, which are rebuilt at each merge (GBH SWITCHES `combine.mergeMainFirst`).
+- **The viewer items that wait on art not yet made go to the end of the queue** ("We can not have those items be displayed properly for now … it can wait. It's a little less critical"): `viewer.attack-owns-motion`, `viewer.special-move-motions`, `viewer.shield-block-and-hit`, `viewer.airwalk-floats`, `viewer.miss-dodge-motion`, `viewer.fire-imp-own-model`, `viewer.enemy-held-weapons`. They stay filed; no worker takes them until he says or the art exists.
+
+## 2026-10-04 — the basic attack is a weapon's first attack, and every free attack uses it without paying stamina — ruled 2026-09-28, never built
+
+Andrew, in the kingdom chat, told that the Lumberjack, now holding his axe, still punches as his attack of opportunity (the engine takes the cheapest melee attack; Chop costs 1 Stamina, Punch none):
+
+“There's supposed to be a basic attack for each character, and that basic attack is used on all three attacks.   Most weapons have a basic attack.   Chop should be the basic attack from Basic. Sword should be used for free attacks. This should be standard for all items they're equipped with. They're in your main hand or two hands if you're unequipped. One of Max's is a basic attack. It is the first attack.   It has a stamina cost, but that stamina cost is not triggered by special free attacks. Is this not the way it's currently implemented? Did this get lost somewhere in recording, or is it not been done yet, or is it been done incorrectly? Or is it not related to tier 0 items or civilians?”
+
+“There were some typos in there. The words "sword" and "three" were typos.” — read: "used on all free attacks"; "Chop should be the basic attack … [It] should be used for free attacks."
+
+The answer to his question: **it was recorded and never built.** 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' rules it (this file, "Special free attacks — counterattack, fend, the attack of opportunity — are one rule: the basic attack, no stamina, −20 Accuracy. The attack of opportunity changes to this rule (replacing the 2026-08-20 …)"), from his "we're changing attack of opportunity, so it's using the same rules as everything else. No stamina, uses the basic attack." No item was filed from that line. The engine still runs the 2026-08-20 rule it replaced: `src/core/movement.ts` `aooChoice` takes the holder's cheapest legal melee attack and the swing pays its stamina (`fix.aoo-pays-stamina`, 2026-09-04); the engine holds no "basic attack" at all, and no counterattack or fend. It has nothing to do with tier 0 items or civilians — every unit's attack of opportunity is chosen this way. The civilians' worker cited the 2026-08-20 entry as current (engine SWITCHES `placedKitAoo`); that was wrong, and so was the kingdom chat's relay of it.
+
+Ruled (today's words, completing 2026-09-28):
+
+- **Every character has a basic attack: the first attack of the weapon it holds** — in its main hand, or the weapon held in two hands; "Most weapons have a basic attack … It is the first attack." A unit holding no weapon has Punch. The Lumberjack's is Chop.
+- **Every special free attack uses the basic attack** — the attack of opportunity now, the counterattack and the fend when they exist. "This should be standard for all items they're equipped with."
+- **The basic attack has a stamina cost on the unit's own Activation; a special free attack does not pay it.**
+- −20 Accuracy on a special free attack stands from 2026-09-28; he did not speak to it.
+
+Filed: `rule.free-attack-is-basic-attack` (the attack of opportunity and the basic attack), and `capability.counterattack-and-fend` (ruled 2026-09-28, in no queue until now).

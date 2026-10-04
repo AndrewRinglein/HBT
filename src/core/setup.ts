@@ -210,8 +210,9 @@ type Assembled = {
 /**
  * THE assembler (fix.one-hero-assembly; review E10, E11). Progress folds on the bare row, then
  * the items carried whole, then the row's own badges and those handed in — each through its one
- * fold (items.ts foldStats). `kitted: false` is a row authored whole: an enemy's ("Enemies carry
- * no items; their rows are authored whole") or an encounter arrival's — no item is applied.
+ * fold (items.ts foldStats). `kitted: false` is a row authored whole — a listed enemy's ("Enemies
+ * carry no items; their rows are authored whole"), a form's, or a placed row that carries no kit —
+ * no item is applied.
  */
 function assemble(bare: UnitDef, opts: FieldOptions, where: string, uid: number, kitted = true, badgeRows: Readonly<Record<string, import('./types.js').BadgeDef>> = BADGES): Assembled {
   const itemIds = kitted ? opts.items ?? bare.defaultItems ?? [] : []
@@ -321,13 +322,18 @@ function announce(ctx: Ctx, f: Fielded, arrived?: string): void {
 
 /**
  * Field one unit mid-battle — an encounter's setup unit or a scheduled arrival (encounter.ts
- * arrive). The same assembler as every other fielding; its row is authored whole (no kit), as an
- * arrival's always was (SWITCHES.md arrivalKit) — unless the row says it is placed with its kit
- * (`placedWithKit`, fix.orphans-teacher-knife, ruled 2026-10-02): then its Codex default kit, as
- * createBattle fields a hero. The unit is pushed onto the board and its lines emitted, `arrived` named.
+ * arrive). The same assembler as every other fielding, and the one rule for every unit that comes
+ * into play this way, on either side: a row that carries a kit (`defaultItems`) fields it, as
+ * createBattle fields a hero; a row that carries none is fielded authored whole, as before.
+ * fix.civilians-field-kit (ruled 2026-10-03, DECISIONS.md 'every civilian fields its kit by default
+ * when an encounter places it': "all of the civilians, by default, should field their kit the first
+ * time they're loaded" · "If enemies have weapons assigned, they need them also when they come into
+ * play."). Until then an arrival's row was authored whole (SWITCHES.md arrivalKit) unless it carried
+ * the opt-in `placedWithKit` flag (fix.orphans-teacher-knife, 2026-10-02) — the flag is retired.
+ * The unit is pushed onto the board and its lines emitted, `arrived` named.
  */
 export function fieldArrival(ctx: Ctx, def: UnitDef, id: number, uid: number, name: string, hex: number, causeId: string): Unit {
-  const f = fieldUnit(id, uid, name, assemble(def, {}, causeId, uid, def.placedWithKit === true, ctx.badges), hex, {}, causeId)
+  const f = fieldUnit(id, uid, name, assemble(def, {}, causeId, uid, (def.defaultItems?.length ?? 0) > 0, ctx.badges), hex, {}, causeId)
   ctx.state.units.push(f.unit)
   announce(ctx, f, causeId)
   return f.unit

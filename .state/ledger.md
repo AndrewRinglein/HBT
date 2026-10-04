@@ -23934,6 +23934,16 @@ index 0000000..832ca72
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## kingdom.opening-hero-card-art — LANDED `31bfb89`
+2026-10-04 04:40
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4569
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-hero-card-art.test.ts, test/opening-run-six.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/opening-hero-card-art.test.ts, kingdom/test/opening-run-six.test.ts
+  PASS  existing tests untouched
 ## content.unfielded-tier0-weapons-cut — LANDED `0d6515c` **NEEDS REVIEW**
 2026-10-04 05:25
 
@@ -24044,6 +24054,16 @@ index d7b29b5..dcf9f1d 100644
   PASS  gate 1 — the id appears in a real battle — power.holy-texts.mercy: 7 log lines, 7 fired, 5 changed state
   PASS  brought its own tests — test/battle-cursor.test.ts, test/field-eve-24.test.ts, test/items-per-unit.test.ts, test/opening-cavern-trail.test.ts, test/fixtures/battle-cursor-starting-kit-powers.json, test/starting-kit-powers.test.ts
   WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/field-eve-24.test.ts (-1), test/items-per-unit.test.ts (-3), test/opening-cavern-trail.test.ts (-1) — will land FLAGGED for review
+## fix.civilians-field-kit — LANDED `2643774` **NEEDS REVIEW**
+2026-10-04 07:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1816 · SWITCHES.md:1928
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/orphans-teacher-knife.test.ts, test/civilians-field-kit.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.lumberjack: 11 log lines, 11 fired, 8 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/orphans-teacher-knife.test.ts, test/civilians-field-kit.test.ts, test/fixtures/battle-cursor-civilians-field-kit.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/items-per-unit.test.ts (-1), test/orphans-teacher-knife.test.ts (-4) — will land FLAGGED for review
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -24053,6 +24073,7 @@ index d7b29b5..dcf9f1d 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without power.holy-texts.mercy — they genuinely test it
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.lumberjack — they genuinely test it
 
 <details><summary>Existing tests were edited — review this diff</summary>
 
@@ -24365,5 +24386,285 @@ index bde7689..a7e5530 100644
 +  it.skip('is won when the last enemy dies', () => {
      const ctx = openingBattle(S, WIN)
      expect(ctx.state.outcome).toBe('heroClear')
+index 2521813..e0090c4 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -281,4 +281,14 @@ const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
+ // affliction's badge.gained line names its rule). A `changed` case is checked here and skips the older layers.
+ const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero-rule.json', import.meta.url), 'utf8'))
++// fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an encounter
++// places it': "Yes, all of the civilians, by default, should field their kit the first time they're loaded. So all of them
++// should get it." · "If enemies have weapons assigned, they need them also when they come into play."), Law 10: every unit an
++// encounter places fields the kit its row carries, and the opt-in placedWithKit flag is retired. Every case frozen here
++// (tools/capture-civilians-field-kit-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the three
++// cases that place a civilian who fought with Punch until now — showcase.supper (ten villagers: daggers, pitchforks, rocks),
++// showcase.surrounded (the Lumberjack's axe, the Farmer's pitchfork) and test.opening-lumberjack (the Lumberjack's axe, his
++// wife's dagger and basic armor). The cases that place only an Orphan Child or the School Teacher do not move: they fielded
++// their Dagger already. A `changed` case is checked here and skips the older layers.
++const civiliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-civilians-field-kit.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -400,5 +410,8 @@ describe('resumable battle cursor', () => {
+       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true
++      const civiliansKitExpected = civiliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const civiliansKitMoved = civiliansKitExpected?.changed === true
++      // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a civilians-kit-moved case skips the afflictions-at-zero-rule layer too (fix.civilians-field-kit 2026-10-03)
++      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || civiliansKitMoved
+       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const openingLevelsMoved = openingLevelsExpected?.changed === true — an afflictions-at-zero-rule-moved case skips the opening-levels layer too (rule.afflictions-at-zero-refiled-2 2026-10-02)
+@@ -494,5 +507,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (afflictionsAtZeroRuleExpected) {
++        if (civiliansKitExpected) {
++        expect(hash(ctx.events), 'full civilians-field-kit events').toBe(civiliansKitExpected.events)
++        expect(hash(ctx.state), 'full civilians-field-kit state').toBe(civiliansKitExpected.state)
++        expect(hash(ctx.rng.log), 'full civilians-field-kit RNG').toBe(civiliansKitExpected.rng)
++        expect(result).toEqual(civiliansKitExpected.result)
++        }
++        // was: if (afflictionsAtZeroRuleExpected) { — fix.civilians-field-kit (2026-10-03): a civilians-kit-moved case is checked above instead
++        if (afflictionsAtZeroRuleExpected && !civiliansKitMoved) {
+         expect(hash(ctx.events), 'full afflictions-at-zero-rule events').toBe(afflictionsAtZeroRuleExpected.events)
+         expect(hash(ctx.state), 'full afflictions-at-zero-rule state').toBe(afflictionsAtZeroRuleExpected.state)
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index cab4e00..3bb04a8 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -92,5 +92,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // fold. The melee knife makes her role and ai melee (derived from the kit), and her row says placedWithKit.
+       // was: 'hero.fixed.orphans': ['attacks'],
+-      'hero.fixed.orphans': ['role', 'ai', 'attacks', 'placedWithKit'],
++      // Law 10, fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an
++      // encounter places it': "all of the civilians, by default, should field their kit the first time they're loaded"): the
++      // opt-in row flag is retired — every placed unit fields its kit — so her row no longer says placedWithKit. Content
++      // moved, not the fold.
++      // was: 'hero.fixed.orphans': ['role', 'ai', 'attacks', 'placedWithKit'],
++      'hero.fixed.orphans': ['role', 'ai', 'attacks'],
+       'hero.fixed.lumberjack-and-wife': ['attacks'],
+       'hero.fixed.farmer': ['attacks'],
+diff --git a/test/orphans-teacher-knife.test.ts b/test/orphans-teacher-knife.test.ts
+index 6842802..64eccaf 100644
+--- a/test/orphans-teacher-knife.test.ts
++++ b/test/orphans-teacher-knife.test.ts
+@@ -5,4 +5,7 @@
+ // one assembler, flagged by the Codex row (placedWithKit, gen/civilian-rulings.json). Every other placed civilian is
+ // fielded authored whole, with Punch (SWITCHES.md arrivalKit).
++// fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an encounter
++// places it'): the flag is retired and the last sentence is no longer the rule — every placed civilian fields its kit.
++// The orphans' and the teacher's knife stand as ruled; the third test below is rewritten as the new rule (Law 10 note there).
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, fieldedDef } from '../src/core/setup.js'
+@@ -47,15 +50,29 @@ describe('fix.orphans-teacher-knife-refiled', () => {
+   })
+ 
+-  it('a school child placed by an encounter still fights with Punch (arrivalKit stands for every other civilian)', () => {
++  // Law 10, 2026-10-03 (fix.civilians-field-kit; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an
++  // encounter places it', Andrew: "Yes, all of the civilians, by default, should field their kit the first time they're
++  // loaded. So all of them should get it." — which replaces the 2026-10-02 entry's "the other placed civilians … stay as
++  // they are"). This test was
++  //   it('a school child placed by an encounter still fights with Punch (arrivalKit stands for every other civilian)', …
++  //     expect(equipped(ctx, child.id), 'the child is fielded authored whole').toEqual([])
++  //     expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual([PUNCH])
++  //     … expect(swung(ctx, child.id).every((a) => a === PUNCH), 'the child only punches').toBe(true)
++  // — the rule of 2026-10-02, when only the orphans and the teacher were named. The rule now, as ruled: the school
++  // children field their kit too (the pile of rocks), and on their own Activation they throw rocks, never Punch.
++  it('a school child placed by an encounter fields its kit too — the pile of rocks — as every placed civilian does since 2026-10-03', () => {
+     const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), encounter: ENCOUNTERS['encounter.prologue-3']! })
+     const child = placed(ctx, CHILD)[0]!
+     expect(child, 'the school children are placed').toBeDefined()
+-    expect(equipped(ctx, child.id), 'the child is fielded authored whole').toEqual([])
+-    expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual([PUNCH])
++    expect(equipped(ctx, child.id), 'the child fields its Codex kit').toEqual(UNITS[CHILD]!.defaultItems)
++    expect(equipped(ctx, child.id)).toEqual(['item.pile-of-rocks'])
++    expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual(['attack.pile-of-rocks.throw', PUNCH])
+     // and the teacher placed beside them in the Schoolhouse carries her knife there too
+     const teacher = placed(ctx, TEACHER)[0]!
+     expect(equipped(ctx, teacher.id)).toEqual([KNIFE])
+     runBattle(ctx)
+-    expect(swung(ctx, child.id).every((a) => a === PUNCH), 'the child only punches').toBe(true)
++    // what the child chooses on its own Activation is the rocks (a reaction — an attack of opportunity — is the cheapest
++    // legal melee attack by its own ruling, and the rocks are thrown, not swung)
++    const chosen = ctx.events.flatMap((e, i) => e.type === 'attack.declared' && e['actor'] === child.id && ctx.events.slice(Math.max(0, i - 4), i).some((p) => p.type === 'action.spent' && p['actor'] === child.id && p['actionId'] === e['attackId'] && p['slot'] === 'primary') ? [String(e['attackId'])] : [])
++    expect(chosen.filter((a) => a !== 'attack.pile-of-rocks.throw'), 'on its Activation the child throws rocks, never Punch').toEqual([])
+   })
+ })
+```
+</details>
+
+## kingdom.page-test-strong-party — LANDED `958de76` **NEEDS REVIEW**
+2026-10-04 07:58
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-run-six.test.ts, test/page-test-strong-party.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/opening-run-six.test.ts, kingdom/test/page-test-strong-party.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-run-six.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+2e5e3c0
+
+diff --git a/test/opening-run-six.test.ts b/test/opening-run-six.test.ts
+index f38f58d..1ba14a0 100644
+--- a/test/opening-run-six.test.ts
++++ b/test/opening-run-six.test.ts
+@@ -103,5 +103,10 @@ describe('kingdom.opening-run-six — one run through the six battles, saved', (
+     expect(out).toMatch(/opening run six: .*passed/)
+     // kingdom.opening-deploy-choice (2026-10-03): the same run asks who goes once five are free to fight, and says so
+-    expect(out).toMatch(/with five free to fight the run asked who goes \(battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
++    // Law 10, 2026-10-04 (kingdom.page-test-strong-party; engine DECISIONS.md 2026-10-04 'no testing that the battles can be won
++    // until these items are done; the page tests play an overpowered party'): this read
++    //   expect(out).toMatch(/with five free to fight the run asked who goes \(battle 5: home …; battle 6: home …; battle 6 again: home …\)/)
++    // — the battles the run asked before while the Bridge cost a hero. Won by the strong party the Bridge costs nobody, so
++    // five are free a battle earlier: the run asks before battle 4 too, and says so. The same rule, held at one more battle.
++    expect(out).toMatch(/with five or more free to fight the run asked who goes \(battle 4: home [^;]+; battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
+     // kingdom.opening-hero-card-art (2026-10-03): the same run holds every hero card it shows to that hero's own card art —
+     // every draft card (six drafts of three), the Who-goes page, Equip, the victory screen, the rewards screen and its
+diff --git a/test/page-test-strong-party.test.ts b/test/page-test-strong-party.test.ts
+new file mode 100644
+index 0000000..73eec59
+--- /dev/null
++++ b/test/page-test-strong-party.test.ts
+@@ -0,0 +1,126 @@
++// kingdom.page-test-strong-party — ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'no testing that the battles can be won until
++// these items are done; the page tests play an overpowered party; faster landing': "I'm okay forgoing all testing battle
++// until we're done with all these items. Right now, I'm doing more views or experience testing. So we can just skip all
++// testing battles that aren't just done from a quality standpoint." · "Go ahead, overpowered power party.").
++//
++// Expect: "The opening page tests pass on any run seed without a seed search: `node tools/opening-run-six.verify.mjs` plays
++// all six battles to a win on the first seed tried, in well under a minute, with every flow assertion intact; changing a
++// hero's kit or an enemy's row no longer needs new seeds; the skipped can-the-computer-win tests are listed by name with
++// the ruling."
++//
++// The method is tools/opening-page.mjs playedOut: a battle the page test means to win is the run's own battle with the
++// party made overpowered FOR THE TEST ONLY (unit mods on the party's heroes through the engine's per-hero seam,
++// BattleOptions.heroMods), played once by the engine's AI on the Engagement's own seed; a battle it means to lose is the
++// party held idle and cut at Turn 1 (the turn cap). The save pasted into the page is still the run's own battle to the
++// page: its config — the encounter, the heroes, their Hero rows — is untouched.
++import { describe, it, expect } from 'vitest'
++import { execFileSync, spawnSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++import { makeNewCampaign, performAdvanceOpening, performDraft, performFieldOpeningBattle, listDraftOffers, performOpeningDeploy } from '../src/core/opening.js'
++import { makeCtx } from '../src/core/mutate.js'
++import { performAdvancePrep } from '../src/core/prep.js'
++import { createSandbox, restoreSandbox, sandboxResult, type SandboxConfig } from '../src/core/sandbox.js'
++import { ABBOTOWN_MAP } from '../src/content/conquest.js'
++import { encounterDef } from '../src/engine.js'
++
++const DRIVER = ['tools/opening-page.mjs', 'tools/opening-run-six.verify.mjs', 'tools/opening-loop-three.verify.mjs', 'tools/abbotown-map.verify.mjs']
++type Played = { save: string; result: ReturnType<typeof sandboxResult>; how: string; seed: number }
++type Driver = { playedOut: (config: SandboxConfig, won: boolean) => Played; STRONG_PARTY: { source: string; stats: Record<string, number> }; HELD_PARTY: { source: string; stats: Record<string, number>; turnCap: number } }
++const driver = (): Promise<Driver> => import('../tools/opening-page.mjs' as string) as Promise<Driver>
++
++/** The Orphanage as a run fields it: the first hero drafted, sent, the battle begun — the config the page's session holds. */
++function orphanageConfig(seed: number): SandboxConfig {
++  const ctx = makeCtx(makeNewCampaign(seed))
++  performAdvanceOpening(ctx, 'test')
++  performDraft(ctx, listDraftOffers(ctx.campaign)[0]!.id, 'test')
++  const id = ABBOTOWN_MAP.sections[0]!.encounterId
++  performFieldOpeningBattle(ctx, { id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind }, 'test')
++  performOpeningDeploy(ctx, 'test'); performAdvancePrep(ctx, 'test')
++  const e = ctx.campaign.cursor.engagement!
++  return { mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((h) => structuredClone(ctx.campaign.roster[h]!)), enemies: [], seed: e.seed, encounterId: e.id }
++}
++const modsOf = (save: string) => (JSON.parse(save) as { setup: { heroMods?: ({ stats?: { stat: string; add: number; source: string }[] } | null)[]; cfg?: { turnCap?: number } } }).setup
++
++describe('kingdom.page-test-strong-party — the opening page tests settle each battle deliberately, with no seed sought', () => {
++  it('the driver keeps no table of seeds and runs no search: one battle is played for each battle settled', () => {
++    for (const file of DRIVER) {
++      // the code, comments set aside (the dated notes say what stood there)
++      const code = readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
++      expect(code, `${file}: no table of known seeds`).not.toMatch(/\b(KNOWN|FOUND|HOME)\b/)
++      expect(code, `${file}: no loop over seeds`).not.toMatch(/for\s*\([^)]*\bseed\b[^)]*;/)
++      expect(code, `${file}: no count of seeds to try`).not.toMatch(/\bseeds\s*[:=]/)
++      expect(code, `${file}: no scripted 'hold' or 'press' play`).not.toMatch(/'hold'|'press'/)
++    }
++    const page = readFileSync('tools/opening-page.mjs', 'utf8')
++    expect(page).toContain('export function playedOut(config,won){')
++    expect(page, 'a battle that does not end as meant stops the driver — it is not searched around').toMatch(/throw Error\(`\$\{config\.encounterId\} on seed \$\{config\.seed\}: meant to be/)
++  })
++
++  it('a battle meant to be won: the run\'s own party, overpowered for the test only, wins the one battle played with nobody hurt — and the page takes its save as that battle', async () => {
++    const { playedOut, STRONG_PARTY } = await driver()
++    for (const seed of [3, 11, 15]) {
++      const config = orphanageConfig(seed), before = structuredClone(config)
++      const won = playedOut(config, true)
++      expect(won.result.outcome, `run seed ${seed}`).toBe('heroClear')
++      expect(won.seed, 'on the Engagement\'s own seed — the first and only battle played').toBe(config.seed)
++      const party = won.result.units.filter((u) => u.side === 'hero' && u.role === undefined)
++      expect(party.map((u) => [u.lifeState, !!u.downed, !!u.stood]), 'nobody of the party dead, down or wounded').toEqual(party.map(() => ['standing', false, false]))
++      // the save's config is the run's own battle, untouched: the encounter, the heroes, their Hero rows, the seed
++      const saved = JSON.parse(won.save) as { config: SandboxConfig }
++      expect(config, 'the driver does not touch the config it is handed').toEqual(before)
++      expect(saved.config).toEqual(before)
++      // the page's own import takes it (core/sandbox.ts restoreSandbox, unchanged), finished and won
++      const back = restoreSandbox(won.save)
++      expect(back.ctx.state.outcome).toBe('heroClear')
++      expect(back.config).toEqual(before)
++      expect(sandboxResult(back).outcome).toBe('heroClear')
++      // what differs is the setup's per-hero mods, and they name their source: the test's, on every hero of the party
++      for (const m of modsOf(won.save).heroMods!) {
++        for (const [stat, add] of Object.entries(STRONG_PARTY.stats)) expect(m!.stats, `${stat} +${add} from ${STRONG_PARTY.source}`).toContainEqual({ stat, add, source: STRONG_PARTY.source })
++      }
++      // … and never the page's own fielding: the battle a player's run fields carries no such mod
++      const own = createSandbox(before)
++      expect(JSON.stringify(own.setup.heroMods ?? [])).not.toContain(STRONG_PARTY.source)
++      expect(own.ctx.events.some((e) => e.type === 'unit.modified' && e['source'] === STRONG_PARTY.source)).toBe(false)
++    }
++  })
++
++  it('a battle meant to be lost: the party held idle and the battle cut at Turn 1 — lost, nobody hurt, and the page takes its save as that battle', async () => {
++    const { playedOut, HELD_PARTY } = await driver()
++    for (const seed of [3, 11, 15]) {
++      const config = orphanageConfig(seed)
++      const lost = playedOut(config, false)
++      expect([lost.result.outcome, lost.result.turns], `run seed ${seed}`).toEqual(['capped', HELD_PARTY.turnCap])
++      const party = lost.result.units.filter((u) => u.side === 'hero' && u.role === undefined)
++      expect(party.map((u) => [u.lifeState, !!u.downed, !!u.stood])).toEqual(party.map(() => ['standing', false, false]))
++      expect(modsOf(lost.save).cfg?.turnCap).toBe(1)
++      const back = restoreSandbox(lost.save)
++      expect(back.ctx.state.outcome).toBe('capped')
++      expect(back.config).toEqual(config)
++    }
++  })
++
++  it('the six-battle page test passes on other run seeds with nothing sought: eight battles settled, each the one battle played, in well under a minute', () => {
++    for (const seed of ['3', '15']) {
++      const at = Date.now()
++      const run = spawnSync(process.execPath, ['tools/opening-run-six.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, RUN_SIX_SEED: seed } })
++      const took = Date.now() - at
++      expect(run.status, `run seed ${seed}: ${run.stderr.split('\n').filter((l) => /Error/.test(l)).slice(0, 2).join(' | ')}`).toBe(0)
++      expect(run.stdout).toMatch(/opening run six: .*passed/)
++      const settled = run.stderr.split('\n').filter((l) => l.startsWith('settled battle '))
++      // six won, and two lost first (battle 2 and battle 6): each line names the Engagement's own seed — none found
++      expect(settled.length, `run seed ${seed}: eight battles settled`).toBe(8)
++      for (const line of settled) expect(line).toMatch(/the Engagement's own seed \d+$/)
++      expect(settled.filter((l) => / lost: the party held idle, cut at Turn 1 — capped on Turn 1/.test(l)).length).toBe(2)
++      expect(settled.filter((l) => /the strong party, the engine's AI — heroClear/.test(l)).length).toBe(6)
++      expect(took, `run seed ${seed}: ${took} ms`).toBeLessThan(60000)
++    }
++  }, 180000)
++
++  it('the three-battle page test and the map page test are settled the same way', () => {
++    const three = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, LOOP_THREE_SEED: '5' } })
++    expect(three).toMatch(/opening loop three: .*passed/)
++    const map = execFileSync(process.execPath, ['tools/abbotown-map.verify.mjs', 'BATTLE-SANDBOX.html', 'PLAY.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(map).toMatch(/abbotown map: .*passed/)
++  }, 120000)
++})
 ```
 </details>

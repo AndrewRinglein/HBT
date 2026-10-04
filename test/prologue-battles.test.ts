@@ -34,7 +34,13 @@ describe('encounter.prologue-1 — Two Zombies and a Child', () => {
     }
   })
 
-  it('is winnable and losable across seeds — both outcomes in a hundred', () => {
+  // SKIPPED by name, not deleted — kingdom.page-test-strong-party, ruled 2026-10-04 (Andrew, DECISIONS.md 'no testing that
+  // the battles can be won until these items are done; the page tests play an overpowered party; faster landing': "I'm okay
+  // forgoing all testing battle until we're done with all these items. Right now, I'm doing more views or experience
+  // testing. So we can just skip all testing battles that aren't just done from a quality standpoint."). This test exists
+  // to show the computer can win (and lose) the battle with a normal party; it passed when it was skipped. Its one rule —
+  // the loss timer — is held by the test below, which is not skipped. Un-skip when the items now queued are done.
+  it.skip('is winnable and losable across seeds — both outcomes in a hundred', () => {
     const seen: Record<string, number> = {}
     for (let r = 0; r < 100; r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.two-zombies-and-a-child')), replicate: r })
@@ -44,6 +50,15 @@ describe('encounter.prologue-1 — Two Zombies and a Child', () => {
     }
     expect(seen['heroClear'] ?? 0).toBeGreaterThan(0)
     expect((seen['objectiveFailed'] ?? 0) + (seen['wipe'] ?? 0)).toBeGreaterThan(0)
+  })
+
+  // the rule the skipped test also held, kept running (2026-10-04): whoever wins, the battle is over by the loss timer
+  it('never runs past the loss timer at ten Turns, on any of a hundred seeds', () => {
+    for (let r = 0; r < 100; r++) {
+      const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.two-zombies-and-a-child')), replicate: r })
+      const o = runBattle(ctx)
+      expect(o.turns, `replicate ${r}: ${o.outcome}`).toBeLessThanOrEqual(11)   // the loss timer at ten
+    }
   })
 })
 
