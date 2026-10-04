@@ -664,7 +664,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run, audited', question 4: 'Should idols and bloodrunes be free to equip during the opening, or be left out of the opening's rewards?' - '4 free'). The audit found the opening run's purse is 0 and never grows, and the reward pool's 4 idols and 8 bloodrunes cost faith or mana to equip (kingdom/src/content/encounter-rewards.ts, the Equip screen kingdom/src/ui/equip.ts) - about one reward card in five can be kept but never worn. During the opening run - the Campaign still in the opening, before any Week - equipping an idol or a bloodrune costs nothing; after the opening the costs are what they were. One rule read from the Campaign's own state, not a second equip path; the screen shows the cost as free. Rebuild the pages.",
   "expect": "At http://127.0.0.1:4230/play an idol or bloodrune kept as a battle reward goes onto a hero at the Equip screen with an empty purse and is fielded in the next battle; outside the opening the same item still costs its faith or mana; the page test takes such a reward and asserts it worn.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run.",
+  "status": "done",
+  "sha": "784dce5"
  },
  {
   "id": "kingdom.opening-replay-rules",
