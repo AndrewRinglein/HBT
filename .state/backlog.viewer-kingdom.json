@@ -800,7 +800,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'size and shadows are the default; the bleeding-out card; switching heroes asks first; movement costs on the grid; a tooltip on every hex'): \"When the movement grid is up (the blue movement grid on the board), tiles that require extra movement points should have that movement cost, I think, maybe on them in gray.\" A look to judge. While the reach is drawn (viewer src/board.js drawPlay, the play facts' `reach`), every hex of it that costs the acting unit more than one movement point to enter carries that cost as a small grey number on the tile. The cost is the engine's for that unit on that hex - the host's play facts (viewer src/play.js, kingdom src/ui/play-input.ts) gain the entry cost of each reach hex from the engine's own movement rule; the viewer adds nothing up (Law 0). A hex that costs one shows no number. Prior art: the reach tint, the movement numeral under a unit (grey when spent) - a number on tiles already drawn.",
-  "expect": "On a battle with ground that costs extra to enter (woodland, hills, undergrowth), with a hero's blue movement grid up, each such tile in reach shows its cost in grey and the open tiles show none; the number is the one the engine charges when the hero walks there."
+  "expect": "On a battle with ground that costs extra to enter (woodland, hills, undergrowth), with a hero's blue movement grid up, each such tile in reach shows its cost in grey and the open tiles show none; the number is the one the engine charges when the hero walks there.",
+  "status": "done",
+  "sha": "b9a0e6d"
  },
  {
   "id": "viewer.hex-tooltip",
