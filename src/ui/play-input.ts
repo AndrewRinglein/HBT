@@ -493,6 +493,8 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** kingdom.tutorial-orphanage-first-move: what the lessons ask of the unit acting — has it done nothing since this input
      began it (the engine's sequence unmoved), and which action is its basic move: the first move the engine lists in the
      movement slot, the one a begun Activation is armed with (whether or not it is armed now) */
+ /** kingdom.tutorial-skip: the Activation begun with no move chosen is armed after all (the lesson that asked for it was skipped) */
+ function arm():void{unarmed=null}
  function fresh():boolean{const s=session();if(!s)return false;const a=actorOf(s);return a!==null&&begun?.actor===a&&begun.seq===s.ctx.state.seq}
  function basicMove():string|null{const s=session();if(!s)return null;const a=actorOf(s);if(a===null)return null
   return choicesOf(s).find(c=>'destination' in c.command&&c.command.actor===a&&c.command.slot==='movement')?.command.actionId??null}
@@ -515,6 +517,6 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const left=heroesYetToAct(s.ctx,s.policy).length+(actorOf(s)!==null?1:0)
   const mine=s.ctx.state.units.filter(u=>u.side==='hero'&&u.lifeState==='standing'&&controllerOf(s.ctx,u.id,s.policy)==='human').length
   return {done:Math.max(0,mine-left),left}}
- return {facts,ending,input,next,rest,upcoming,fresh,basicMove,attackInReach,acted,provoker,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ return {facts,ending,input,next,rest,upcoming,arm,fresh,basicMove,attackInReach,acted,provoker,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>

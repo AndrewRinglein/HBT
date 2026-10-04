@@ -59,6 +59,8 @@ export type LessonHost = {
   mark(rowId: string): void
   /** the runner let something go: look again (begin the Activation it held, draw the facts) */
   wake(): void
+  /** what is up changed (a row went up, a row went) — the host's own chrome may follow it */
+  changed?(): void
 }
 type Up = { row: LessonRow; pointers: { clear(): unknown }[]; token: number; actor: number | null; from: number | null; gone: boolean; telling: boolean; asked: boolean }
 
@@ -121,6 +123,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
     const seen = row.look ? targets(row.look, actor, struck)[0] : undefined
     if (seen && 'unit' in seen) v.look({ unit: seen.unit }, { back: false, onDone: (why) => { if (row.ends !== 'look') return; if (why === 'held') done(); else if (why === 'dropped' || why === 'cancelled') gone() } })
     else if (row.ends === 'look') done()
+    host.changed?.()
   }
 
   /** a row that is up goes: its arrows, its notice if it still stands; the view comes back once the looks it was part of are over */
@@ -131,6 +134,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
     for (const p of u.pointers) p.clear()
     if (v && u.telling) v.clearTell()
     if (v && u.row.look && !(u.row.starts === 'battle-begins' && pending('battle-begins').length)) v.lookBack()
+    host.changed?.()
     host.wake()
   }
 
@@ -193,6 +197,15 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
       if (ended) { finish(ended); return }
       if (reading()) return
       const n = next(); if (n) show(n.row, n.actor)
+    },
+    /** kingdom.tutorial-skip: everything of the lessons that is on the screen goes — the arrows, the notice, the view sent back —
+        and nothing the player did is owed an answer; the host marks the rows shown */
+    skip(): void {
+      const v = host.viewer(), looked = ups.some((u) => u.row.look !== undefined)
+      const gone = ups; ups = []; token++; did.clear()
+      for (const u of gone) { for (const p of u.pointers) p.clear(); if (v && u.telling) v.clearTell() }
+      if (v && looked) v.lookBack()
+      host.changed?.()
     },
     /** the rows that are up, for the page tests: the first, and all */
     get up(): string | null { return ups[0]?.row.id ?? null },

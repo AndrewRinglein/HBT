@@ -95,7 +95,39 @@ const lessons=createLessons(LESSONS,{
  seen:id=>!sitting||sitting.ctx.campaign.revealed.includes(lessonRevealOf(id)),
  mark:id=>{const c=sitting?.ctx;if(!c)return;const r=lessonRevealOf(id);if(canReveal(c.campaign,r)){performReveal(c,r,sitCause);persist()}},
  wake:()=>controls(),
+ changed:()=>skipChrome(),
 })
+/** kingdom.tutorial-skip (engine DECISIONS.md 2026-10-04 'the opening's tutorial: …', the extra step (i): "A \"Skip tutorial\" button
+    for someone who has played before." — "I, we need to do yep."): while any lesson of the table is showing — a notice or an
+    arrow in a battle, a row holding the battle's opening, or a gold line on a screen between battles — a small "Skip
+    tutorial" button stands at the screen's corner. Pressing it asks once, "Skip every tutorial message for this run?";
+    Yes clears what is showing, marks every row of the table as shown (their reveals, saved with the run) so none shows
+    again, and lets the battle go on — an Activation a lesson held back begins at once, armed as in any battle. The
+    features of every battle are not lessons and are untouched: the arrivals camera, "New enemy" (kingdom SWITCHES skip*). */
+let skipAsking=false
+const lessonShowing=()=>!!sitting&&(campaignOpen?screenLesson!==null:!!session&&!session.ctx.state.outcome&&(lessons.all.length>0||lessons.waiting()))
+function skipChrome(){
+ if(typeof document==='undefined')return
+ let el=document.getElementById('skipTutorial') as HTMLElement|null
+ if(!el){el=document.createElement('div');el.id='skipTutorial';el.setAttribute('style','position:fixed;right:16px;top:14px;z-index:600;font:600 15px/1.3 system-ui,sans-serif;color:#e8c36a;text-align:right');document.body.appendChild(el)}
+ const show=lessonShowing();if(!show)skipAsking=false
+ if(show)el.removeAttribute('hidden');else el.setAttribute('hidden','')
+ const state=!show?'':skipAsking?'ask':'offer';if(el.dataset.state===state)return
+ el.dataset.state=state
+ const button='background:#14110c;color:#e8c36a;border:1px solid #e8c36a;border-radius:4px;padding:5px 12px;margin-left:8px;font:inherit;cursor:pointer'
+ el.innerHTML=!show?'':skipAsking?`<span id="skipAsk" role="alertdialog" style="background:#14110c;padding:6px 10px;border:1px solid #e8c36a;border-radius:4px">Skip every tutorial message for this run?<button type="button" data-skip="yes" style="${button}">Yes</button><button type="button" data-skip="no" style="${button}">No</button></span>`
+  :`<button type="button" data-skip="ask" style="${button}">Skip tutorial</button>`
+ el.querySelectorAll<HTMLElement>('[data-skip]').forEach(b=>b.addEventListener('click',(ev:Event)=>{ev?.stopPropagation?.();const what=b.dataset.skip
+  if(what==='ask'){skipAsking=true;skipChrome()}else if(what==='no'){skipAsking=false;skipChrome()}else skipTutorial()}))
+}
+/** Yes: every lesson's row is marked shown, what is showing goes, and the page goes on */
+function skipTutorial(){
+ const c=sitting?.ctx;skipAsking=false;if(!c)return
+ for(const row of LESSONS){const r=lessonRevealOf(lessonKeyOf(row));if(canReveal(c.campaign,r))performReveal(c,r,sitCause)}
+ lessons.skip();play.arm();screenLesson=null;persist()
+ if(campaignOpen)drawCampaign();else controls()
+ skipChrome()
+}
 function runPlay(command:BattleCommand){
  if(!session||!surface?.viewer)return {ok:false as const,reason:'Start a battle first'}
  const before=session.ctx.events.length
@@ -322,6 +354,7 @@ function drawCampaign(){
  const line=screenLine(s.levelHero?'level-up':c.cursor.step==='prep'&&c.cursor.prepStep==='deploy'?'who-goes':c.cursor.step==='prep'&&c.cursor.prepStep==='equip'?'equip'
   :c.cursor.step==='reckoning'&&/data-won="true"/.test(html)?'recap':(c.cursor.step==='rewards'||c.cursor.step==='levelUp')?'rewards':null,s.levelHero??battleId)
  host.innerHTML=say+line+html
+ skipChrome()
  host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',(ev:Event)=>{
   // the innermost [data-act] under the pointer acts — a × inside a slot is the ×, not the slot (as slice.ts)
   const t=ev?.target as HTMLElement|undefined;if(t?.closest&&t.closest('[data-act]')!==el)return
@@ -431,6 +464,7 @@ function controls(){
  refreshPlay();layout()
  /* kingdom.tutorial-orphanage-first-move: the board is still — the lesson's row that is up may be over, the next may begin */
  if(session&&surface?.viewer&&!busy&&!fault&&!session.ctx.state.outcome&&boardOnly())lessons.still()
+ skipChrome()
 }
 function install(next:Sandbox){
  const epoch=generation+1
