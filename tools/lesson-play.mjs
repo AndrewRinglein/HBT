@@ -3,7 +3,7 @@
 // it — the battle screen's own hex buttons, unit figures, action-bar rows and End buttons, through the play input to the
 // engine — while the gold notice and the arrows on the screen are read from the battle screen's own record (viewer
 // `overlays`) and the row that is up from the page's handle (`__sandbox.lesson`). Nothing here decides anything: where a
-// unit can go and whom it can strike are read off the board as it is drawn (the blue grid, the lit targets).
+// unit can go and whom it can strike are read off the board as it is drawn (the blue grid, the marks on the units that can be hit - viewer.no-target-ring, 2026-10-04; was: the lit targets).
 import assert from 'node:assert/strict'
 import {openingPage,LESSON_ROWS,lessonReveal} from './opening-page.mjs'
 export {LESSON_ROWS,lessonReveal}

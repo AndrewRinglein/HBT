@@ -58,7 +58,10 @@ for(let t=0;t<6&&!attacked&&!ctx().state.outcome;t++){
  const reach=B.drawn('playReach'),near=x=>Math.min(...B.enemies().map(u=>ctx().geo.distance(x,u.hex)))
  if(reach.length)B.hexBtn([...reach].sort((a,b)=>near(a)-near(b)||a-b)[0]).handlers.click({detail:1})
  const attack=me.actions.find(id=>ctx().actions[id].attack&&B.barRow(id))
- B.press(attack);const targets=B.drawn('playTarget')
+ /* Law 10, viewer.no-target-ring (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: the yellow target ring goes;
+    ...'): whom the chosen attack can hit is read off the mark each such unit wears on itself (`playTargetUnit`, which carries its
+    unit's hex) - the yellow ring on the target's hex is gone. Was: const targets=B.drawn('playTarget') */
+ B.press(attack);const targets=B.drawn('playTargetUnit')
  if(targets.length){const foe=B.enemies().find(u=>u.hex===targets[0]),turn=ctx().state.turn
   assert.ok(!shownYet(PRIMARY.id),'not before a primary action has been used')
   B.figure(foe.id).handlers.click({detail:1});B.figure(foe.id).handlers.click({detail:1});B.settle('the attack plays')
