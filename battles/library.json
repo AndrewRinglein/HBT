@@ -158,12 +158,12 @@
   {
    "file": "test.opening-bridge.json",
    "label": "Bridge",
-   "seed": 24
+   "seed": 32
   },
   {
    "file": "test.opening-cavern-trail.json",
    "label": "Cavern Trail",
-   "seed": 1
+   "seed": 0
   },
   {
    "file": "test.opening-gates.json",
@@ -173,7 +173,7 @@
   {
    "file": "test.opening-cathedral.json",
    "label": "Cathedral",
-   "seed": 1
+   "seed": 10
   },
   {
    "file": "test.caravan-aftermath.json",
