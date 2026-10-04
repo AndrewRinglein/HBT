@@ -304,25 +304,6 @@
    "source": "settled content"
   },
   {
-   "id": "item.slingshot",
-   "name": "Slingshot",
-   "itemClass": "weapon",
-   "tier": 0,
-   "hands": 1,
-   "slots": 1,
-   "classRestriction": null,
-   "tags": [
-    "sling"
-   ],
-   "grants": [
-    "attack.slingshot.shot"
-   ],
-   "statModifiers": {},
-   "triggers": [],
-   "intent": "A forked stick and a strip of hide, and it will still outrange a thrown rock.",
-   "source": "settled content"
-  },
-  {
    "id": "item.pitchfork",
    "name": "Pitchfork",
    "itemClass": "weapon",
@@ -1525,27 +1506,6 @@
    "triggers": [],
    "slayer": null,
    "intent": "Zero stamina and +10 Accuracy against a damage point of negative one.",
-   "source": "settled content"
-  },
-  {
-   "id": "attack.slingshot.shot",
-   "name": "Shot",
-   "range": 4,
-   "stat": "precision",
-   "damage": 0,
-   "stamina": 0,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy within 4 hexes",
-   "damageType": "physical",
-   "tags": [
-    "sling",
-    "ranged"
-   ],
-   "triggers": [],
-   "slayer": null,
-   "intent": "Free, four hexes, flat — the cleanest tier-0 ranged attack there is.",
    "source": "settled content"
   },
   {

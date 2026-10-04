@@ -167,21 +167,6 @@
    "needs": "area attack shape"
   },
   {
-   "unit": "item.carpenters-mallet",
-   "what": "attack.carpenters-mallet.bonk onCrit: \"apply 1 Stun to the target\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.cart-chain",
-   "what": "attack.cart-chain.swing onHit: \"the target gains 1 Slow\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.fishing-net",
-   "what": "attack.fishing-net.cast onHit: \"apply 3 Weak; the target gains 1 Slow\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
    "unit": "item.iron-mace",
    "what": "attack.iron-mace.crush onHit: \"the target loses 1 Armor for the rest of the Battle\"",
    "needs": "trigger shape unparsed"

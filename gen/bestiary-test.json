@@ -151,7 +151,7 @@
     "reach": 5
    },
    "attacks": [
-    "attack.rusted-crossbow.bolt",
+    "attack.crossbow.bolt",
     "attack.basic.melee"
    ],
    "triggers": [],

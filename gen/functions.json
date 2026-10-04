@@ -2,7 +2,7 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 83,
+   "uses": 79,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
@@ -14,10 +14,6 @@
     "item.rune-elemental-bane",
     "item.rune-hunters-mark",
     "item.rune-crushing",
-    "attack.cart-chain.swing",
-    "attack.fishing-net.cast",
-    "attack.broken-bottle.jab",
-    "attack.trappers-claws.rake",
     "attack.war-axe.hack",
     "attack.iron-mace.crush",
     "attack.war-hammer.skullsplitter",
@@ -43,7 +39,11 @@
     "attack.mirage-dagger.two-places-at-once",
     "attack.demon-whip.hellcoil",
     "attack.stormforged-halberd.thunderhead",
-    "attack.fangs.savage"
+    "attack.fangs.savage",
+    "attack.tail.lash",
+    "attack.horns.ram",
+    "attack.breath.gout",
+    "attack.breath.hiss"
    ]
   },
   {
@@ -159,7 +159,7 @@
   },
   {
    "name": "onCrit",
-   "uses": 18,
+   "uses": 17,
    "ids": [
     "item.war-hammer",
     "item.stormforged-blade",
@@ -168,7 +168,6 @@
     "item.rune-bashing",
     "item.rune-bleeding-strike",
     "item.rune-deathdealer",
-    "attack.carpenters-mallet.bonk",
     "attack.shepherds-sling.whirl",
     "attack.holy-shield.shield-bash",
     "attack.claws.flense",
@@ -300,9 +299,8 @@
   },
   {
    "name": "onBlock",
-   "uses": 4,
+   "uses": 3,
    "ids": [
-    "item.hand-axe",
     "item.war-axe",
     "item.bloody-axe",
     "item.lumberjack-axe"
@@ -320,7 +318,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 153,
+   "uses": 154,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -366,16 +364,8 @@
   },
   {
    "name": "one enemy in melee reach",
-   "uses": 105,
+   "uses": 97,
    "ids": [
-    "attack.hand-axe.chop",
-    "attack.sharpened-stake.jab",
-    "attack.carpenters-mallet.bonk",
-    "attack.cart-chain.swing",
-    "attack.pot-lid.bash",
-    "attack.broken-bottle.jab",
-    "attack.trappers-claws.rake",
-    "attack.practice-sword.swing",
     "attack.greatsword.hew",
     "attack.war-axe.chop",
     "attack.war-axe.hack",
@@ -407,17 +397,23 @@
     "attack.death-blade.reap",
     "attack.death-blade.death-stroke",
     "attack.shadow-dagger.shadow-cut",
-    "attack.shadow-dagger.from-behind"
+    "attack.shadow-dagger.from-behind",
+    "attack.stormforged-blade.arc-cut",
+    "attack.stormforged-blade.thunder-strike",
+    "attack.cursed-sand-blade.sand-cut",
+    "attack.cursed-sand-blade.the-cursed-swing",
+    "attack.mirage-dagger.flicker-cut",
+    "attack.mirage-dagger.two-places-at-once",
+    "attack.holy-avenger.avenging-strike",
+    "attack.holy-avenger.the-avenger-wakes"
    ]
   },
   {
    "name": "one enemy within N hexes",
-   "uses": 85,
+   "uses": 82,
    "ids": [
     "item.poison-flask",
     "item.burning-oil",
-    "attack.fishing-net.cast",
-    "attack.rusted-crossbow.bolt",
     "attack.hunting-spear.hurl",
     "attack.crossbow.bolt",
     "attack.crossbow.punch-through",
@@ -453,7 +449,9 @@
     "attack.scepter-of-salvation.rebuke",
     "attack.siege-crossbow.bolt",
     "attack.siege-crossbow.siege-shot",
-    "attack.stormforged-halberd.thunderhead"
+    "attack.stormforged-halberd.thunderhead",
+    "attack.breath.hiss",
+    "attack.daggers.thrown-dagger"
    ]
   },
   {
@@ -897,9 +895,8 @@
  "effects": [
   {
    "name": "grant a stat for the Battle",
-   "uses": 174,
+   "uses": 173,
    "ids": [
-    "item.hand-axe",
     "item.war-axe",
     "item.bloody-axe",
     "item.hammer-of-justice",
@@ -938,12 +935,13 @@
     "attack.iron-mace.crush",
     "attack.death-blade.death-stroke",
     "attack.pickaxe.pick",
-    "power.berserker.fast-fury"
+    "power.berserker.fast-fury",
+    "power.shieldbearer.unbreakable"
    ]
   },
   {
    "name": "apply a status",
-   "uses": 143,
+   "uses": 138,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -971,10 +969,6 @@
     "item.rune-hunters-mark",
     "item.rune-aura-of-dread",
     "item.scorpion-shield",
-    "attack.carpenters-mallet.bonk",
-    "attack.fishing-net.cast",
-    "attack.broken-bottle.jab",
-    "attack.trappers-claws.rake",
     "attack.war-axe.hack",
     "attack.war-hammer.skullsplitter",
     "attack.hand-crossbow.loaded-bolt",
@@ -984,7 +978,11 @@
     "attack.poison-stars.venom-spread",
     "attack.shepherds-sling.whirl",
     "attack.crippling-whip.lash",
-    "attack.crippling-whip.hamstring"
+    "attack.crippling-whip.hamstring",
+    "attack.iron-claws.eviscerate",
+    "attack.apprentice-wand.surge",
+    "attack.bloody-axe.butcher",
+    "attack.holy-shield.shield-bash"
    ]
   },
   {
@@ -1217,7 +1215,7 @@
   },
   {
    "name": "move yourself",
-   "uses": 30,
+   "uses": 31,
    "ids": [
     "power.warchief.lead-from-front",
     "power.champion.heroic-charge",
@@ -1247,6 +1245,7 @@
     "power.flight",
     "power.flight-swift",
     "power.flight-labored",
+    "power.flight-vampiric",
     "power.charging-run",
     "specialty.shadowdancer"
    ]
@@ -1666,7 +1665,7 @@
   },
   {
    "name": "bleed",
-   "uses": 66,
+   "uses": 64,
    "ids": [
     "item.bloody-axe",
     "item.twin-talon-bow",
@@ -1680,8 +1679,6 @@
     "item.rune-hunters-mark",
     "item.scorpion-shield",
     "item.kals-mercy",
-    "attack.broken-bottle.jab",
-    "attack.trappers-claws.rake",
     "attack.war-axe.hack",
     "attack.raiders-cutlass.slash",
     "attack.raiders-cutlass.boarding-swing",
@@ -1707,12 +1704,14 @@
     "power.nightblade.silent-cut",
     "power.nightblade.fan-of-knives",
     "power.nightblade.exsanguinate",
-    "power.nightblade.long-knife"
+    "power.nightblade.long-knife",
+    "power.havoc.blade-dance",
+    "power.soul-stealer.dark-bolt"
    ]
   },
   {
    "name": "poison",
-   "uses": 52,
+   "uses": 51,
    "ids": [
     "item.poison-throwing-knives",
     "item.scorpion-carapace",
@@ -1745,7 +1744,6 @@
     "power.contractbound.paid-in-full",
     "power.demonic-ward.consume-magic",
     "power.blightcaller.poison-roots",
-    "power.blightcaller.creeping-blight",
     "power.grove-keeper.rejuvenation",
     "power.war-priest.restoration",
     "power.divine-light.hallowed-ground",
@@ -1753,53 +1751,8 @@
     "power.vigil.protect-and-shield",
     "power.holy-avenger.succor-of-the-faithful",
     "power.sacred-shield.exemplify",
-    "power.purifier.purify"
-   ]
-  },
-  {
-   "name": "weak",
-   "uses": 41,
-   "ids": [
-    "item.pharaohs-gauntlets",
-    "item.mug-of-endless-dregs",
-    "item.rune-aura-of-dread",
-    "item.bracer-of-courage",
-    "item.blessing-of-the-hearthmother",
-    "item.banner-of-resolve",
-    "item.necklace-of-weakness-immunity",
-    "attack.fishing-net.cast",
-    "attack.crippling-whip.lash",
-    "attack.crippling-whip.hamstring",
-    "attack.iron-claws.eviscerate",
-    "attack.pharaohs-gauntlets.the-kings-hands",
-    "attack.barbarian-bow.crippling-shot",
-    "attack.club.swing",
-    "power.warchief.war-cry",
-    "power.bloodrage.unstoppable",
-    "power.shadowbound.dark-veil",
-    "power.blightcaller.wither",
-    "power.blightcaller.creeping-blight",
-    "power.wild-shaper.primal-roar",
-    "power.wild-shaper.claw",
-    "power.vigil.bravery",
-    "power.grand-master.unyielding",
-    "power.apothecary.smoke-bomb",
-    "power.porter.drop-the-pack",
-    "power.hound.bay",
-    "power.serpent.constrict",
-    "power.direbeast.bellow",
-    "power.carrion.reek",
-    "power.warbeast.warcry",
-    "power.chains-of-the-wrathful.weight-of-sin",
-    "power.benevolent-rod.restoration",
-    "power.shieldbearer.bash",
-    "power.leader.battle-cry",
-    "rule.ground-layers",
-    "power.banner-courage.plant",
-    "enchant.damned",
-    "specialty.champion",
-    "specialty.mystic",
-    "specialty.blightcaller"
+    "power.purifier.purify",
+    "power.trickster.poison-nick"
    ]
   },
   {
@@ -1849,14 +1802,57 @@
    ]
   },
   {
+   "name": "weak",
+   "uses": 39,
+   "ids": [
+    "item.pharaohs-gauntlets",
+    "item.mug-of-endless-dregs",
+    "item.rune-aura-of-dread",
+    "item.bracer-of-courage",
+    "item.blessing-of-the-hearthmother",
+    "item.banner-of-resolve",
+    "item.necklace-of-weakness-immunity",
+    "attack.crippling-whip.lash",
+    "attack.crippling-whip.hamstring",
+    "attack.iron-claws.eviscerate",
+    "attack.pharaohs-gauntlets.the-kings-hands",
+    "attack.barbarian-bow.crippling-shot",
+    "attack.club.swing",
+    "power.warchief.war-cry",
+    "power.bloodrage.unstoppable",
+    "power.shadowbound.dark-veil",
+    "power.blightcaller.wither",
+    "power.wild-shaper.primal-roar",
+    "power.wild-shaper.claw",
+    "power.vigil.bravery",
+    "power.grand-master.unyielding",
+    "power.apothecary.smoke-bomb",
+    "power.porter.drop-the-pack",
+    "power.hound.bay",
+    "power.serpent.constrict",
+    "power.direbeast.bellow",
+    "power.carrion.reek",
+    "power.warbeast.warcry",
+    "power.chains-of-the-wrathful.weight-of-sin",
+    "power.benevolent-rod.restoration",
+    "power.shieldbearer.bash",
+    "power.leader.battle-cry",
+    "rule.ground-layers",
+    "power.banner-courage.plant",
+    "enchant.damned",
+    "specialty.champion",
+    "specialty.mystic",
+    "specialty.blightcaller",
+    "specialty.wild-shaper"
+   ]
+  },
+  {
    "name": "slow",
-   "uses": 23,
+   "uses": 21,
    "ids": [
     "item.poison-caltrops",
     "item.magic-trap",
     "item.free-movement-potion",
-    "attack.cart-chain.swing",
-    "attack.fishing-net.cast",
     "attack.crippling-whip.hamstring",
     "attack.holy-shield.aegis-slam",
     "attack.poison-throwing-knives.venom-fan",
@@ -1879,12 +1875,11 @@
   },
   {
    "name": "stun",
-   "uses": 22,
+   "uses": 21,
    "ids": [
     "item.rune-bashing",
     "item.bracer-of-courage",
     "item.banner-of-resolve",
-    "attack.carpenters-mallet.bonk",
     "attack.iron-mace.crush",
     "attack.war-hammer.skullsplitter",
     "attack.shepherds-sling.whirl",
@@ -2184,9 +2179,8 @@
   },
   {
    "name": "armor",
-   "uses": 44,
+   "uses": 43,
    "ids": [
-    "item.pot-lid",
     "item.holy-shield",
     "item.pharaohs-gauntlets",
     "item.silkweave-armor",
@@ -2225,14 +2219,14 @@
     "specialty.vengeance",
     "specialty.war-priest",
     "specialty.deathknight",
-    "specialty.holy-champion"
+    "specialty.holy-champion",
+    "specialty.sacred-shield"
    ]
   },
   {
    "name": "accuracy",
-   "uses": 35,
+   "uses": 34,
    "ids": [
-    "item.pot-lid",
     "item.tanners-apron",
     "item.peddlers-vest",
     "item.brutes-harness",
@@ -2341,34 +2335,6 @@
    ]
   },
   {
-   "name": "block",
-   "uses": 22,
-   "ids": [
-    "item.practice-sword",
-    "item.greatsword",
-    "item.raiders-cutlass",
-    "item.obsidian-fang-dagger",
-    "item.duel-runeblades",
-    "item.bane-blade",
-    "item.sword-of-the-fallen",
-    "item.death-blade",
-    "item.shadow-dagger",
-    "item.stormforged-blade",
-    "item.cursed-sand-blade",
-    "item.mirage-dagger",
-    "item.holy-avenger",
-    "item.demonic-shiv",
-    "item.blade-of-demon-slaying",
-    "item.tomb-sentinels-blade",
-    "item.daggers",
-    "item.longsword",
-    "item.dagger",
-    "item.kite-shield",
-    "item.round-shield",
-    "item.tower-shield"
-   ]
-  },
-  {
    "name": "staminaMax",
    "uses": 22,
    "ids": [
@@ -2394,6 +2360,33 @@
     "enchant.enduring",
     "specialty.berserker",
     "specialty.diviner"
+   ]
+  },
+  {
+   "name": "block",
+   "uses": 21,
+   "ids": [
+    "item.greatsword",
+    "item.raiders-cutlass",
+    "item.obsidian-fang-dagger",
+    "item.duel-runeblades",
+    "item.bane-blade",
+    "item.sword-of-the-fallen",
+    "item.death-blade",
+    "item.shadow-dagger",
+    "item.stormforged-blade",
+    "item.cursed-sand-blade",
+    "item.mirage-dagger",
+    "item.holy-avenger",
+    "item.demonic-shiv",
+    "item.blade-of-demon-slaying",
+    "item.tomb-sentinels-blade",
+    "item.daggers",
+    "item.longsword",
+    "item.dagger",
+    "item.kite-shield",
+    "item.round-shield",
+    "item.tower-shield"
    ]
   },
   {
@@ -2599,9 +2592,8 @@
  "durations": [
   {
    "name": "rest of the Battle",
-   "uses": 175,
+   "uses": 174,
    "ids": [
-    "item.hand-axe",
     "item.war-axe",
     "item.bloody-axe",
     "item.hammer-of-justice",
@@ -2640,7 +2632,8 @@
     "attack.iron-mace.crush",
     "attack.death-blade.death-stroke",
     "attack.pickaxe.pick",
-    "power.berserker.fast-fury"
+    "power.berserker.fast-fury",
+    "power.shieldbearer.unbreakable"
    ]
   },
   {
