@@ -5,7 +5,7 @@
 // again (kingdom SWITCHES playInputSwap, playInputSwapActing, playInputSelfPower). The built page, played through its
 // DOM, is engine test/movement-swap-and-shields.test.ts over tools/swap-shields.verify.mjs.
 import { describe, expect, it } from 'vitest'
-import { createSandbox, advanceSandbox, commandSandbox, sandboxSwapChoices } from '../src/core/sandbox.js'
+import { createSandbox, advanceSandbox, commandSandbox, sandboxSwapChoices, sandboxSwapRefusals } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
 import { createPlayInput } from '../src/ui/play-input.js'
 
@@ -29,7 +29,12 @@ describe('the swap on the board, through the play input', () => {
     expect(P.input({ kind: 'choose', id })).toBe(true)
     expect(P.input({ kind: 'unit', id, hex: me().hex })).toBe(true)
     const offer = sandboxSwapChoices(s)
-    expect(P.facts().swap).toEqual({ cost: offer.cost, choices: offer.choices.map((c) => ({ label: c.label })), why: null })
+    /* Law 10, viewer.swap-button-rearranges (2026-10-04; engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the unit's gear'): the fact as the gear panel needs it — each hand list with its instances, what the
+       unit carries, and the arrangements the engine refuses. was: toEqual({ cost: offer.cost, choices:
+       offer.choices.map((c) => ({ label: c.label })), why: null }) */
+    const carried = [...me().loadout!.hands.map((i) => ({ instance: i.instanceId, item: i.itemId, name: s.ctx.items[i.itemId]!.name, held: true })),
+      ...me().loadout!.stowed.map((i) => ({ instance: i.instanceId, item: i.itemId, name: s.ctx.items[i.itemId]!.name, held: false }))]
+    expect(P.facts().swap).toEqual({ cost: offer.cost, choices: offer.choices.map((c) => ({ label: c.label, hands: c.hands })), why: null, carried, refused: sandboxSwapRefusals(s) })
   })
   it('a click on a hand list swaps through the engine; a second is refused with the engine\'s reason', () => {
     const { s, P, id, me } = battle('hero.base.paladin-hunk')
@@ -40,7 +45,12 @@ describe('the swap on the board, through the play input', () => {
     expect(s.ctx.events.slice(n).filter((e) => e.type === 'loadout.swapped')).toHaveLength(1)
     expect(me().stamina).toBe(stamina - cost)
     expect(me().loadout!.hands.map((h) => h.itemId)).toEqual(['item.longsword'])
-    expect(P.facts().swap).toEqual({ cost, choices: [], why: 'the swap of this activation is spent' })
+    /* Law 10, viewer.swap-button-rearranges (2026-10-04; engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the unit's gear'): the same fact with what is carried now and every arrangement refused for the same
+       reason. was: toEqual({ cost, choices: [], why: 'the swap of this activation is spent' }) */
+    expect(P.facts().swap).toEqual({ cost, choices: [], why: 'the swap of this activation is spent',
+      carried: [{ instance: me().loadout!.hands[0]!.instanceId, item: 'item.longsword', name: 'Longsword', held: true }, { instance: me().loadout!.stowed[0]!.instanceId, item: 'item.kite-shield', name: 'Kite Shield', held: false }],
+      refused: sandboxSwapRefusals(s) })
+    expect(sandboxSwapRefusals(s).every((r) => r.why === 'the swap of this activation is spent')).toBe(true)
     const m = s.ctx.events.length
     expect(P.input({ kind: 'swap', index: 0, unit: id })).toBe(false)
     expect(P.facts().note).toBe('Swap: the swap of this activation is spent.')

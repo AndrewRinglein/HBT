@@ -25,6 +25,20 @@ function battle(hero){
  const row=id=>V().dom.actionbar.querySelectorAll('.acRow').find(r=>r.dataset.act===id)??null
  const swapStrip=()=>V().dom.stambar.querySelector('.swapCell')
  const swapButtons=()=>V().dom.stambar.querySelectorAll('.swBtn')
+ /* Law 10, viewer.swap-button-rearranges (2026-10-04; engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the unit's gear'): the strip carries ONE button that reads Swap; the hand lists the engine would take are
+    offered in the gear panel it opens. `offered` is still the hand lists on offer, by label (the host's swap fact the panel
+    is drawn from); a swap is still made through the page's own DOM — Swap pressed, the gear arranged, Confirm pressed.
+    was: one .swBtn per hand list, its text the label, clicked to swap at once. */
+ const offered=()=>(V().play?.swap?.choices??[]).map(c=>c.label)
+ const gear=()=>V().dom.root.querySelector('#playGear')
+ /** press Swap, arrange the gear so exactly `names` are in hand, confirm; false when the panel will not confirm it */
+ const arrange=names=>{const b=swapButtons();assert.deepEqual(b.map(x=>x.textContent),['Swap'],'one button, reading Swap');b[0].handlers.click({detail:1})
+  assert.notEqual(gear().style.display,'none','the gear panel opens')
+  for(const it of gear().querySelectorAll('.gearItem').map(n=>({name:n.textContent,held:!!n.parentNode&&n.parentNode.id==='playGearHand'})))
+   if(it.held!==names.includes(it.name))gear().querySelectorAll('.gearItem').find(n=>n.textContent===it.name).handlers.click({})
+  const yes=V().dom.root.querySelector('#playGearYes'),ok=yes.getAttribute('aria-disabled')!=='true'
+  if(ok)yes.handlers.click({});else V().dom.root.querySelector('#playGearNo').handlers.click({})
+  return ok}
  const log=()=>V().dom.root.querySelector('#playLog').children.map(n=>strip(n.innerHTML))
  const acting=()=>ctx().battleCursor?.at==='acting'&&ctx().battleCursor.actor===me().id
  /** on to the next Turn: End Turn in the corner — the civilians, played too, have not acted, so its pop-up asks and is
@@ -60,7 +74,7 @@ function battle(hero){
  const noSwapBefore=!swapStrip()
  settle()
  assert.ok(acting(),'the hero, leftmost in the top bar, is begun')
- return {w,V,ctx,settle,me,row,swapStrip,swapButtons,log,acting,nextTurn,choose,begin,usePower,figure,noSwapBefore}
+ return {w,V,ctx,settle,me,row,swapStrip,swapButtons,offered,arrange,log,acting,nextTurn,choose,begin,usePower,figure,noSwapBefore}
 }
 
 const record={swap:null,back:null,powers:[]}
@@ -70,15 +84,16 @@ const record={swap:null,back:null,powers:[]}
  B.begin()
  const id=B.me().id,before=B.me().stamina,handsBefore=B.me().loadout.hands.map(i=>i.itemId)
  const strip=B.swapStrip();assert.ok(strip,'the swap is on the action bar')
- const offered=B.swapButtons().map(b=>b.textContent)
+ const offered=B.offered()
  const costText=strip.querySelector('.swCost')?.textContent??''
- const sword=B.swapButtons().find(b=>b.textContent==='Longsword');assert.ok(sword,'the Longsword alone is offered')
- const n=B.ctx().events.length;sword.handlers.click({});B.settle()
+ assert.ok(offered.includes('Longsword'),'the Longsword alone is offered')
+ const n=B.ctx().events.length;assert.ok(B.arrange(['Longsword']),'the gear panel confirms the Longsword alone');B.settle()
  const swapped=B.ctx().events.slice(n).find(e=>e.type==='loadout.swapped'&&e.actor===id)
  const after=B.me().stamina
  // a second swap in the activation: the bar says why, and a click there is refused
  const spent=B.swapStrip(),n2=B.ctx().events.length
- const offeredAgain=B.swapButtons().map(b=>b.textContent)
+ const offeredAgain=B.offered()
+ assert.equal(B.arrange(['Longsword','Kite Shield']),false,'a second swap cannot be confirmed in the gear panel')
  const tookAgain=B.V().offerPlay({kind:'swap',index:0,unit:id})
  const swappedAgain=B.ctx().events.slice(n2).some(e=>e.type==='loadout.swapped')
  const shieldOnBar=!!B.row('power.kite-shield.shield-wall')
@@ -89,9 +104,9 @@ const record={swap:null,back:null,powers:[]}
   logNamed:B.log().some(l=>l.includes('swaps'))}
  B.V().dom.root.querySelector('#playEndAct').handlers.click({});B.settle()
  B.nextTurn();B.begin()
- const both=B.swapButtons().find(b=>b.textContent==='Longsword + Kite Shield')
+ const both=B.offered().includes('Longsword + Kite Shield')
  const m=B.ctx().events.length,stam=B.me().stamina
- both?.handlers.click({});B.settle()
+ if(both)B.arrange(['Longsword','Kite Shield']);B.settle()
  const back=B.ctx().events.slice(m).find(e=>e.type==='loadout.swapped')
  record.back={offered:both?true:false,stowedBefore:record.swap.stowed,handsAfter:B.me().loadout.hands.map(i=>i.itemId),staminaBefore:stam,staminaAfter:B.me().stamina,event:back?{stamina:back['stamina']}:null}
  record.powers.push(B.usePower('power.kite-shield.shield-wall'))
