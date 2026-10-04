@@ -1,0 +1,116 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/engine
+
+ ❯ test/opening-orphanage-closer-start.test.ts (8 tests | 5 failed) 227ms
+     × the heroes' zone is the bridge's east end: (10,5) first, then dry ground east of it 8ms
+     × the starting Zombie is on (16,3) — three hexes left of the right edge's (19,3) 1ms
+     × begins with the hero on (10,5) and the starting Zombie on (16,3); the civilians where they were 67ms
+     × no hero of a larger party is ever deployed in the water: two to six heroes take the listed hexes in order 2ms
+     × a listed hex that is taken is passed over; past the list, the nearest free hexes to the centre follow, as before 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-orphanage-closer-start.test.ts > the pack: the Orphanage starts closer — the hero at the bridge's east end, the Zombie three hexes left > the heroes' zone is the bridge's east end: (10,5) first, then dry ground east of it
+AssertionError: expected { col: 5, row: 4 } to deeply equal { col: 10, row: 5 }
+
+- Expected
++ Received
+
+  {
+-   "col": 10,
+-   "row": 5,
++   "col": 5,
++   "row": 4,
+  }
+
+ ❯ test/opening-orphanage-closer-start.test.ts:32:23
+     30|   it('the heroes\' zone is the bridge\'s east end: (10,5) first, then …
+     31|     const z = zoneOf(ID)!
+     32|     expect(z.at.near).toEqual({ col: 10, row: 5 })
+       |                       ^
+     33|     expect(z.at.hexes, 'the zone names its hexes, in the order heroes …
+     34|     expect(z.at.hexes![0]).toEqual({ col: 10, row: 5 })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/opening-orphanage-closer-start.test.ts > the pack: the Orphanage starts closer — the hero at the bridge's east end, the Zombie three hexes left > the starting Zombie is on (16,3) — three hexes left of the right edge's (19,3)
+AssertionError: expected [ [ 1, [ { col: 19, row: 3 } ] ] ] to deeply equal [ [ 1, [ { col: 16, row: 3 } ] ] ]
+
+- Expected
++ Received
+
+  [
+    [
+      1,
+      [
+        {
+-         "col": 16,
++         "col": 19,
+          "row": 3,
+        },
+      ],
+    ],
+  ]
+
+ ❯ test/opening-orphanage-closer-start.test.ts:48:67
+     46|   it('the starting Zombie is on (16,3) — three hexes left of the right…
+     47|     const zombies = encounterDef(ID).setup.filter((p) => p.unit === 'u…
+     48|     expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEq…
+       |                                                                   ^
+     49|     expect(letterAt(16, 3), 'open ground').toBe('.')
+     50|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/opening-orphanage-closer-start.test.ts > a battle of the Orphanage with one hero > begins with the hero on (10,5) and the starting Zombie on (16,3); the civilians where they were
+AssertionError: replicate 0: the hero: expected [ 5, 4 ] to deeply equal [ 10, 5 ]
+
+- Expected
++ Received
+
+  [
+-   10,
+    5,
++   4,
+  ]
+
+ ❯ test/opening-orphanage-closer-start.test.ts:72:102
+     70|       const heroes = ctx.state.units.filter((u) => u.side === 'hero' &…
+     71|       expect(heroes.length, `replicate ${replicate}: one hero`).toBe(1)
+     72|       expect([g.colOf(heroes[0]!.hex), g.rowOf(heroes[0]!.hex)], `repl…
+       |                                                                                                      ^
+     73|       const zombies = ctx.state.units.filter((u) => u.typeId === 'unit…
+     74|       expect(zombies.map((u) => [g.colOf(u.hex), g.rowOf(u.hex)]), `re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/opening-orphanage-closer-start.test.ts > the mechanism: a zone that names its hexes deploys on them, in the order written > no hero of a larger party is ever deployed in the water: two to six heroes take the listed hexes in order
+TypeError: Cannot read properties of undefined (reading 'slice')
+ ❯ test/opening-orphanage-closer-start.test.ts:93:105
+     91|     for (let n = 1; n <= 6; n++) {
+     92|       const got = heroDeployHexes(ctx, enc, n)!
+     93|       expect(got.map((h) => ({ col: g.colOf(h), row: g.rowOf(h) })), `…
+       |                                                                                                         ^
+     94|       for (const h of got) expect(letterAt(g.colOf(h), g.rowOf(h)), `$…
+     95|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/opening-orphanage-closer-start.test.ts > the mechanism: a zone that names its hexes deploys on them, in the order written > a listed hex that is taken is passed over; past the list, the nearest free hexes to the centre follow, as before
+TypeError: Cannot read properties of undefined (reading 'map')
+ ❯ test/opening-orphanage-closer-start.test.ts:100:32
+     98|   it('a listed hex that is taken is passed over; past the list, the ne…
+     99|     const ctx = start(0), enc = encounterDef(ID), g = ctx.geo, z = zon…
+    100|     const listed = z.at.hexes!.map((p) => g.hexId(p.col, p.row))
+       |                                ^
+    101|     const reserved = new Set([listed[1]!])
+    102|     const got = heroDeployHexes(ctx, enc, 3, reserved)!
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 3 passed (8)
+   Start at  05:16:37
+   Duration  1.66s (transform 1.04s, setup 0ms, import 1.27s, tests 227ms, environment 0ms)
+

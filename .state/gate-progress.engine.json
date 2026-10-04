@@ -1,24 +1,24 @@
 {
- "id": "fix.own-area-skips-owner",
- "tree": "25a56c64f2028e68d08ed077cf38b090713be179",
- "ctx": "e7d53f04ae9b53900214f14b5144acd5b5067eff",
+ "id": "fix.opening-orphanage-closer-start",
+ "tree": "1e3492f8a31e26fad184ecb67e4dc683f2ec48a0",
+ "ctx": "d119f29daeef4b004cca2ae9edb9333ab3b2f174",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 490,
-  "typecheck": 1571,
-  "the item's own tests": 3778,
-  "gate 1 — the id appears in a real battle": 3406,
-  "brought its own tests": 35,
+  "not already decided": 605,
+  "typecheck": 2109,
+  "the item's own tests": 11247,
+  "gate 1 — the id appears in a real battle": 2248,
+  "brought its own tests": 44,
   "existing tests untouched": 0,
-  "control battles unchanged": 34626,
-  "content has a published source": 148,
-  "hardcode scan — core knows mechanisms, never names": 34,
+  "control battles unchanged": 39739,
+  "content has a published source": 169,
+  "hardcode scan — core knows mechanisms, never names": 39,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
   "naming — new content ids use declared kinds": 33,
-  "naming — no banned words invented": 108,
-  "kill switch — the tests fail without the content": 2320
+  "naming — no banned words invented": 129,
+  "kill switch — the tests fail without the content": 2890
  }
 }

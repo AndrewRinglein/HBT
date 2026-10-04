@@ -41,7 +41,10 @@ describe('encounter.opening.orphanage', () => {
   it('the lighter start: one Zombie at the start and one later arrival, and no more', () => {
     const e = encounterDef('encounter.opening.orphanage')
     const zombies = e.setup.filter((p) => p.unit === 'unit.zombie')
-    expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEqual([[1, [{ col: 19, row: 3 }]]])
+    // Law 10, fix.opening-orphanage-closer-start (2026-10-04): "bring the zombie left, maybe 3 squares" (Andrew, DECISIONS.md
+    // 2026-10-04 'the opening's tutorial … a closer start') — the one starting Zombie stands three hexes left of the right edge.
+    // was: .toEqual([[1, [{ col: 19, row: 3 }]]])
+    expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEqual([[1, [{ col: 16, row: 3 }]]])
     // Law 10, fix.opening-orphanage-arrivals (2026-09-29): "Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3."
     // (Andrew, DECISIONS.md 2026-09-29) — the start still has one Zombie; the arrivals are now Turns 2, 3 and 4.
     // was: .toEqual([[4, ['unit.zombie']]])
@@ -50,7 +53,8 @@ describe('encounter.opening.orphanage', () => {
       const ctx = openingBattle(S, replicate, true)
       const w = ctx.geo.board.width
       const atStart = ctx.events.filter((ev) => ev.type === 'unit.enter' && ev.turn === 0 && ev['typeId'] === 'unit.zombie').map((ev) => ev['hex'])
-      expect(atStart, `replicate ${replicate}: the Zombies placed at the start`).toEqual([3 * w + 19])
+      // Law 10, fix.opening-orphanage-closer-start (2026-10-04), as above — was: .toEqual([3 * w + 19])
+      expect(atStart, `replicate ${replicate}: the Zombies placed at the start`).toEqual([3 * w + 16])
       // Law 10, fix.opening-orphanage-arrivals (2026-09-29): Turns 2 and 3 gained a Zombie each (DECISIONS.md 2026-09-29).
       // was: .toEqual([[4, 'unit.zombie']]) and .toBe(2)
       expect(arrivals(ctx).map(([t, u]) => [t, u]), `replicate ${replicate}: the arrivals`).toEqual([[2, 'unit.zombie'], [3, 'unit.zombie'], [4, 'unit.zombie']])

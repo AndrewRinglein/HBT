@@ -26964,3 +26964,89 @@ index e0bd22a..c1dda3f 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.opening-orphanage-closer-start — LANDED `fb9f6f9` **NEEDS REVIEW**
+2026-10-04 14:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/opening-orphanage.test.ts, test/opening-orphanage-closer-start.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.orphanage: 10 log lines, 10 fired, 6 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/opening-orphanage.test.ts, test/fixtures/battle-cursor-orphanage-closer-start.json, test/opening-orphanage-closer-start.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/opening-orphanage.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.orphanage — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index d35b3de..11de3d0 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -323,4 +323,9 @@ const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/ba
+ // Every case frozen here (tools/capture-own-area-skips-owner-cursor.mts). Moved — for real, the ruling working (state, RNG and result), exactly the cases that field a Poison Imp or a Balrog: showcase.kiln, showcase.prologue-enemies, test.opening-gates. A `changed` case is checked here and skips the older layers.
+ const ownAreaGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-own-area-skips-owner.json', import.meta.url), 'utf8'))
++// fix.opening-orphanage-closer-start (2026-10-04; DECISIONS.md 2026-10-04 'the opening's tutorial: ... a closer start': "bring the hero
++// forward to the end of the bridge and bring the zombie left, maybe 3 squares"), Law 10: the Orphanage's hero starts on (10,5) and
++// its starting Zombie on (16,3) - the placements changed by ruling, so every battle of that encounter is another battle.
++// Every case frozen here (tools/capture-orphanage-closer-start-cursor.mts). Moved — for real, the placements changed by ruling (state, RNG and result), exactly the case that fields the Orphanage: test.opening-orphanage. A `changed` case is checked here and skips the older layers.
++const closerStartGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-closer-start.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -447,5 +452,8 @@ describe('resumable battle cursor', () => {
+       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const ownAreaExpected = ownAreaGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const ownAreaMoved = ownAreaExpected?.changed === true
++      const closerStartExpected = closerStartGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const closerStartMoved = closerStartExpected?.changed === true
++      // was: const ownAreaMoved = ownAreaExpected?.changed === true — a case fix.opening-orphanage-closer-start moved skips this layer too (fix.opening-orphanage-closer-start 2026-10-04)
++      const ownAreaMoved = ownAreaExpected?.changed === true || closerStartMoved
+       // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a case fix.own-area-skips-owner moved skips this layer too (fix.own-area-skips-owner 2026-10-04)
+       const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || ownAreaMoved
+@@ -554,5 +562,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (ownAreaExpected) {
++        if (closerStartExpected) {
++        expect(hash(ctx.events), 'full orphanage-closer-start events').toBe(closerStartExpected.events)
++        expect(hash(ctx.state), 'full orphanage-closer-start state').toBe(closerStartExpected.state)
++        expect(hash(ctx.rng.log), 'full orphanage-closer-start RNG').toBe(closerStartExpected.rng)
++        expect(result).toEqual(closerStartExpected.result)
++        }
++        // was: if (ownAreaExpected) { — fix.opening-orphanage-closer-start (2026-10-04): a case it moved is checked above instead
++        if (ownAreaExpected && !closerStartMoved) {
+         expect(hash(ctx.events), 'full own-area-skips-owner events').toBe(ownAreaExpected.events)
+         expect(hash(ctx.state), 'full own-area-skips-owner state').toBe(ownAreaExpected.state)
+diff --git a/test/opening-orphanage.test.ts b/test/opening-orphanage.test.ts
+index 4a9dad6..bba3d3a 100644
+--- a/test/opening-orphanage.test.ts
++++ b/test/opening-orphanage.test.ts
+@@ -42,5 +42,8 @@ describe('encounter.opening.orphanage', () => {
+     const e = encounterDef('encounter.opening.orphanage')
+     const zombies = e.setup.filter((p) => p.unit === 'unit.zombie')
+-    expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEqual([[1, [{ col: 19, row: 3 }]]])
++    // Law 10, fix.opening-orphanage-closer-start (2026-10-04): "bring the zombie left, maybe 3 squares" (Andrew, DECISIONS.md
++    // 2026-10-04 'the opening's tutorial … a closer start') — the one starting Zombie stands three hexes left of the right edge.
++    // was: .toEqual([[1, [{ col: 19, row: 3 }]]])
++    expect(zombies.map((p) => [p.count ?? 1, p.hexes ?? [p.at]])).toEqual([[1, [{ col: 16, row: 3 }]]])
+     // Law 10, fix.opening-orphanage-arrivals (2026-09-29): "Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3."
+     // (Andrew, DECISIONS.md 2026-09-29) — the start still has one Zombie; the arrivals are now Turns 2, 3 and 4.
+@@ -51,5 +54,6 @@ describe('encounter.opening.orphanage', () => {
+       const w = ctx.geo.board.width
+       const atStart = ctx.events.filter((ev) => ev.type === 'unit.enter' && ev.turn === 0 && ev['typeId'] === 'unit.zombie').map((ev) => ev['hex'])
+-      expect(atStart, `replicate ${replicate}: the Zombies placed at the start`).toEqual([3 * w + 19])
++      // Law 10, fix.opening-orphanage-closer-start (2026-10-04), as above — was: .toEqual([3 * w + 19])
++      expect(atStart, `replicate ${replicate}: the Zombies placed at the start`).toEqual([3 * w + 16])
+       // Law 10, fix.opening-orphanage-arrivals (2026-09-29): Turns 2 and 3 gained a Zombie each (DECISIONS.md 2026-09-29).
+       // was: .toEqual([[4, 'unit.zombie']]) and .toBe(2)
+```
+</details>

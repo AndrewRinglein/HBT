@@ -4,3 +4,5 @@
 {"suite":"control","stamp":"4cb6488349","pack":"476c0b5f74","golden":"cacc471e2f","at":"2026-10-04T11:37:36.974Z","by":"gate tool.tests-follow-what-changed --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"797970d49c","failed":true,"at":"2026-10-04T12:06:17.049Z","by":"gate --shard 1/1","in":"HBT-worker-kingdom"}
 {"suite":"engine","stamp":"797970d49c","with":{"engine":"797970d49c","content":"a279e9a76f","viewer":"ca7505e167","kingdom":"e974a21eff"},"at":"2026-10-04T12:14:41.171Z","by":"gate --shard (1 of 1)","in":"HBT-worker-kingdom","tests":2571}
+{"suite":"engine","stamp":"268c517c5f","with":{"engine":"268c517c5f","content":"16f7e77919","viewer":"1006330ad3","kingdom":"b8dd3571ae"},"at":"2026-10-04T14:23:38.596Z","by":"gate --shard (1 of 1)","in":"HBT-worker-kingdom","tests":2579}
+{"suite":"control","stamp":"268c517c5f","pack":"86f2ed7b30","golden":"cacc471e2f","at":"2026-10-04T14:25:00.585Z","by":"gate fix.opening-orphanage-closer-start --land","in":"HBT-worker-kingdom","moved":null}

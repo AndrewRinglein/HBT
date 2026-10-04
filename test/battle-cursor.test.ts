@@ -322,6 +322,11 @@ const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/ba
 // end-of-Activation Burn target every OTHER unit within 2 hexes, so neither lands on its owner at the end of its Activations.
 // Every case frozen here (tools/capture-own-area-skips-owner-cursor.mts). Moved — for real, the ruling working (state, RNG and result), exactly the cases that field a Poison Imp or a Balrog: showcase.kiln, showcase.prologue-enemies, test.opening-gates. A `changed` case is checked here and skips the older layers.
 const ownAreaGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-own-area-skips-owner.json', import.meta.url), 'utf8'))
+// fix.opening-orphanage-closer-start (2026-10-04; DECISIONS.md 2026-10-04 'the opening's tutorial: ... a closer start': "bring the hero
+// forward to the end of the bridge and bring the zombie left, maybe 3 squares"), Law 10: the Orphanage's hero starts on (10,5) and
+// its starting Zombie on (16,3) - the placements changed by ruling, so every battle of that encounter is another battle.
+// Every case frozen here (tools/capture-orphanage-closer-start-cursor.mts). Moved — for real, the placements changed by ruling (state, RNG and result), exactly the case that fields the Orphanage: test.opening-orphanage. A `changed` case is checked here and skips the older layers.
+const closerStartGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-orphanage-closer-start.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -446,7 +451,10 @@ describe('resumable battle cursor', () => {
       const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const ownAreaExpected = ownAreaGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const ownAreaMoved = ownAreaExpected?.changed === true
+      const closerStartExpected = closerStartGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const closerStartMoved = closerStartExpected?.changed === true
+      // was: const ownAreaMoved = ownAreaExpected?.changed === true — a case fix.opening-orphanage-closer-start moved skips this layer too (fix.opening-orphanage-closer-start 2026-10-04)
+      const ownAreaMoved = ownAreaExpected?.changed === true || closerStartMoved
       // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a case fix.own-area-skips-owner moved skips this layer too (fix.own-area-skips-owner 2026-10-04)
       const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || ownAreaMoved
       // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
@@ -553,7 +561,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (ownAreaExpected) {
+        if (closerStartExpected) {
+        expect(hash(ctx.events), 'full orphanage-closer-start events').toBe(closerStartExpected.events)
+        expect(hash(ctx.state), 'full orphanage-closer-start state').toBe(closerStartExpected.state)
+        expect(hash(ctx.rng.log), 'full orphanage-closer-start RNG').toBe(closerStartExpected.rng)
+        expect(result).toEqual(closerStartExpected.result)
+        }
+        // was: if (ownAreaExpected) { — fix.opening-orphanage-closer-start (2026-10-04): a case it moved is checked above instead
+        if (ownAreaExpected && !closerStartMoved) {
         expect(hash(ctx.events), 'full own-area-skips-owner events').toBe(ownAreaExpected.events)
         expect(hash(ctx.state), 'full own-area-skips-owner state').toBe(ownAreaExpected.state)
         expect(hash(ctx.rng.log), 'full own-area-skips-owner RNG').toBe(ownAreaExpected.rng)
