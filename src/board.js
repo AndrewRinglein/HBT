@@ -10,7 +10,7 @@ import { afflictionPopup } from './affliction.js'
 import { dangerHTML, raIcon } from './icons.js'
 import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, groundFootprint, LENS } from './camera3d.js'
 import { POLICY, TILT, fitZoom, zoomLimits, tiltLimits, panRange, turned as turnedBy, elevationOfTilt } from './camera-policy.js'
-import { createHexVFX, playMeleeImpact, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES, FLIGHTS } from './hexvfx.js'
+import { createHexVFX, playMeleeImpact, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, playFireballExplosion, STATUS_STYLES, FLIGHTS } from './hexvfx.js'
 
 export const el = (cls, style, html) => { const d = document.createElement('div')
   if (cls) d.className = cls; if (style) d.style.cssText = style; if (html != null) d.innerHTML = html; return d }
@@ -422,6 +422,16 @@ export function fxAttack(V, kind, dt, aId, tId, dmg, crit = false) {
     else if (dt === 'true')  playHolyBolt(FX, A, T, tier, {})
     else                     playArrow(FX, A, T, {})
   } catch (e) {}
+}
+/* viewer.area-trigger-burst: the burst an area trigger plays over its area, centred on its owner — the effects library's own
+   explosion of fire, sized so its blast wave reaches the edge of the hexes within `radius` (half a hex past their centres),
+   on the same canvas the other effects use: the painted 3D board and the flat board alike */
+export function fxAreaBurst(V, ownerId, radius, kind) {
+  const FX = V.fx.FX; if (!FX || kind !== 'fire') return false
+  const T = anchorOf(V, ownerId); if (!T) return false
+  const reach = (radius + .5) * V.data.LAYOUT.W * (V.camTarget?.zoom ?? V.view?.zoom ?? 1)
+  try { playFireballExplosion(FX, T, 'high', { reach }) } catch (e) { return false }
+  return true
 }
 /* viewer.hit-slash (engine DECISIONS.md 2026-10-03 'a hit shows a red slash' / 'the slash on every damaging hit'): the slash
    across a unit — the existing melee impact (hexvfx.js playMeleeImpact, SLASH_STYLES by damage type: red for a physical hit),
@@ -1109,15 +1119,19 @@ export function drawAim(V) {
     mark.style.transform = `translateZ(${heightOf(V,attempt.to)+2}px)`
     dyn.appendChild(mark)
   }
+  const burstTile = (hex, cls, colour) => {
+    const W = V.data.LAYOUT.W, H = V.data.LAYOUT.H
+    const p = POS[hex]; if (!Number.isInteger(hex) || !p) throw new Error(`burst references unknown hex ${hex}`)
+    const n = el('ring ' + cls, `left:${p.px-W/2}px;top:${p.py-H/2}px;background:${colour};pointer-events:none`)
+    n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex)}px)`
+    dyn.appendChild(n); return n
+  }
+  /* viewer.area-trigger-burst: an area trigger's reach, while its burst plays — the burst's own tiles, in the effect's colour */
+  if (V.view.areaBurst) for (const hex of V.view.areaBurst.hexes) burstTile(hex, 'burstHex areaBurstHex', V.view.areaBurst.colour)
   // Copy the engine footprint. No radius, recipient or shielding calculation.
   if (S.BURST && V.view.burstVisible) {
-    const B = S.BURST, W = V.data.LAYOUT.W, H = V.data.LAYOUT.H
-    const tile = (hex, cls, colour) => {
-      const p = POS[hex]; if (!Number.isInteger(hex) || !p) throw new Error(`burst references unknown hex ${hex}`)
-      const n = el('ring ' + cls, `left:${p.px-W/2}px;top:${p.py-H/2}px;background:${colour};pointer-events:none`)
-      n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex)}px)`
-      dyn.appendChild(n); return n
-    }
+    const B = S.BURST
+    const tile = burstTile
     for (const hex of B.hexes) tile(hex, 'burstHex', 'rgba(214,178,94,.48)')
     const centre = tile(B.centre, 'burstCentre', NOTE_HUE)
     if (centre) centre.title = 'Burst centre'

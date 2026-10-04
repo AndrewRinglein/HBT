@@ -140,7 +140,8 @@ export function planEnemyPhase(EV, i, unitOf, legMs) {
       const from = a.walk && a.walk.legs.length ? a.walk.end : a.from
       if (from >= a.to) continue
       let quiet = true
-      for (let k = from; k < a.to; k++) if (SHOWN.has(EV[k].type)) { quiet = false; break }
+      /* viewer.area-trigger-burst: a trigger that fired is shown though it reached nobody (an area's burst plays over its area) */
+      for (let k = from; k < a.to; k++) if (SHOWN.has(EV[k].type) || (EV[k].type === 'trigger.rolled' && EV[k].fired === true)) { quiet = false; break }
       mark({ kind: 'actor', actor: a.actor })
       if (quiet) mark({ kind: 'quiet', len: a.to - from })
       push(from, a.to)

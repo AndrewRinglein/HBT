@@ -587,9 +587,14 @@ export function playFireballFlight(fx, from, to, tier = 'med') {
     });
 }
 
-export function playFireballExplosion(fx, unit, tier = 'med') {
-    const scale = TIER_SCALE[tier] || 1;
-    const cy = bodyY(unit), maxR = (unit.h || 140) * 0.7 * scale;
+/* viewer.area-trigger-burst: `opts.reach` (px on the ground) sizes the SAME explosion to an area instead of a body — its blast
+   wave rolls out to that reach, its flash and scorch fill it, its flames rise all over it — centred on the ground at the
+   unit's feet. Without it, the fireball's own explosion on its target, as before. */
+export function playFireballExplosion(fx, unit, tier = 'med', opts = {}) {
+    const area = opts.reach > 0;
+    const scale = area ? Math.min(2.2, Math.max(1, opts.reach / 150)) : (TIER_SCALE[tier] || 1);
+    const cy = area ? unit.y : bodyY(unit), maxR = area ? opts.reach / 1.5 : (unit.h || 140) * 0.7 * scale;
+    const spread = area ? maxR : 30;
     return fx.add(700, (ctx, w, h, t, ms, P, dt) => {
         if (t < 0.12) for (let i = 0; i < 8; i++) { const a = rand(0, TAU), sp = rand(120, 380) * scale;
             P.push({ x: unit.x, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - rand(0, 80), sz: rand(2.5, 7), life: 1, dec: rand(1.2, 2.2), hue: rand(15, 50) }); }
@@ -611,8 +616,8 @@ export function playFireballExplosion(fx, unit, tier = 'med') {
             groundEllipse(ctx, unit.x, unit.y, rt * maxR * 1.5); ctx.stroke();
             ctx.shadowBlur = 0;
         }
-        if (t < 0.7 && Math.random() < 0.85)
-            P.push({ x: unit.x + rand(-30, 30), y: unit.y - rand(0, 20), vx: rand(-25, 25), vy: rand(-160, -70) * scale, sz: rand(5, 13) * scale, life: 1, dec: rand(1.6, 2.6), hue: rand(15, 45) });
+        if (t < 0.7 && Math.random() < 0.85) for (let i = 0; i < (area ? 4 : 1); i++)
+            P.push({ x: unit.x + rand(-spread, spread), y: unit.y - rand(0, 20) + (area ? rand(-spread, spread) * ISO_SQUASH : 0), vx: rand(-25, 25), vy: rand(-160, -70) * scale, sz: rand(5, 13) * scale, life: 1, dec: rand(1.6, 2.6), hue: rand(15, 45) });
         for (const p of P) {
             p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 60 * dt; p.life -= p.dec * dt;
             if (p.life <= 0) continue;
