@@ -13,7 +13,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'after the backlog run: ...; battle 2's lessons'): asked whether battle 2's lesson (taking turns, camera controls) stays - 'Five taking turns was present in battle 1, but camera controls should stay.' kingdom.tutorial-second-battle (built on the reading that the second battle's lessons were a yes; kingdom SWITCHES lessonTurnsWhen, lessonCameraWords) teaches taking turns in battle 2, with arrows on the heroes' cards, and the camera's controls at the second hero. Taking turns is already there in battle 1: the hero and the two civilians take turns from the first Hero Phase (kingdom.tutorial-orphanage-civilians-and-ending: 'The civilians are yours to move.'). Move the taking-turns lesson to battle 1 - shown the first time the player has more than one unit left to activate, beside or folded into the civilians' line, one lesson not two saying the same thing (read src/content/lessons.ts and decide which row carries it; record it) - and take it out of battle 2. The camera controls lesson stays in battle 2 as it is. A run that has already seen battle 1's lessons is not shown the moved one again in battle 2. The lesson table, the runner's tests and the page verifiers (tools/tutorial-second-battle.verify.mjs, tools/tutorial-orphanage-*.verify.mjs) are rewritten as the rule with a dated note. Rebuild the pages.",
   "expect": "At http://127.0.0.1:4230/play the taking-turns lesson shows in the Orphanage the first time more than one of the player's units can be activated, and not in the Lumberjack House; the camera controls lesson still shows in the Lumberjack House at the second hero; Skip tutorial still ends them all; the page test asserts where each shows.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Small."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Small.",
+  "status": "done-needs-review",
+  "sha": "4bd55e0"
  },
  {
   "id": "kingdom.opening-recap-decisive",
