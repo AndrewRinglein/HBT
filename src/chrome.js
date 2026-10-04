@@ -29,6 +29,19 @@ const ASK = `<div id="playAskBox" role="alertdialog" aria-modal="true" aria-labe
   + `<p id="playAskText"></p><p id="playAskWho"></p>`
   + `<div id="playAskBtns"><button id="playAskNo" type="button" class="pcBtn">Keep playing</button><button id="playAskYes" type="button" class="pcBtn pcEnd">End Turn</button></div></div>`
 
+/* viewer.switch-hero-asks (engine DECISIONS.md 2026-10-03 'size and shadows are the default; ... switching heroes asks first
+   ...', Andrew: "when you double-click on a hero but you still have a hero primary activation left, it should pop up and
+   say, 'End activation of X hero and start activation of Y hero.' ... there needs to be some kind of check to make sure that
+   I'm willing to end the activation of that other hero."; '... the switch pop-up is for any player unit': "by hero, I just
+   mean any player unit ... And you can click yes or no."). One more question on the same path as End Turn's: an element on the
+   page, never window.confirm. The chrome decides nothing — the pop-up stands exactly while the host's facts carry the
+   question (play facts ask, src/play.js), names the two units as the fold names them, and offers the answer back
+   ({kind:'answer', yes}); Esc is No. */
+export const switchAsk = (from, to) => `End activation of ${from} and start activation of ${to}?`
+const SWITCH = `<div id="playSwitchBox" role="alertdialog" aria-modal="true" aria-labelledby="playSwitchText">`
+  + `<p id="playSwitchText"></p>`
+  + `<div id="playSwitchBtns"><button id="playSwitchNo" type="button" class="pcBtn">No</button><button id="playSwitchYes" type="button" class="pcBtn pcEnd">Yes</button></div></div>`
+
 /** V: the viewer context; host: {offer(input), speed(x)} — the viewer's own offer to onPlay and its speed() */
 export function mountPlayChrome(V, host) {
   const left = V.dom.root.querySelector('#left'), wrap = V.dom.stage.parentNode
@@ -37,23 +50,36 @@ export function mountPlayChrome(V, host) {
   const log = document.createElement('div'); log.id = 'playLog'; log.setAttribute('role', 'log'); log.setAttribute('aria-label', 'Battle log'); log.style.display = 'none'
   const top = V.dom.root.querySelector('#topbar'); top.insertAdjacentHTML('beforeend', LOGBTN); const logBtn = top.lastElementChild || top.children[top.children.length - 1]
   const ask = document.createElement('div'); ask.id = 'playAsk'; ask.style.display = 'none'; ask.innerHTML = ASK
-  wrap.appendChild(bar); V.dom.root.appendChild(log); left.appendChild(ask)
+  const sw = document.createElement('div'); sw.id = 'playSwitch'; sw.style.display = 'none'; sw.innerHTML = SWITCH
+  wrap.appendChild(bar); V.dom.root.appendChild(log); left.appendChild(ask); left.appendChild(sw)
   V.dom.root.appendChild(ends); V.dom.root.classList.add('pcEndsOn')    /* the screen's corner, not the board (#left) */
   const q = (root, id) => root.querySelector('#' + id)
   const B = { log: logBtn, speed: q(bar, 'playSpeed'), endAct: q(ends, 'playEndAct'), endTurn: q(ends, 'playEndTurn'),
-    text: q(ask, 'playAskText'), who: q(ask, 'playAskWho'), no: q(ask, 'playAskNo'), yes: q(ask, 'playAskYes') }
+    text: q(ask, 'playAskText'), who: q(ask, 'playAskWho'), no: q(ask, 'playAskNo'), yes: q(ask, 'playAskYes'),
+    swText: q(sw, 'playSwitchText'), swNo: q(sw, 'playSwitchNo'), swYes: q(sw, 'playSwitchYes') }
   B.text.textContent = END_TURN_ASK
   const off = b => b.getAttribute('aria-disabled') === 'true'
   const enable = (b, on) => { b.setAttribute('aria-disabled', on ? 'false' : 'true'); b.classList.toggle('pcOff', !on) }
   /* the chrome sits on the board: a press on it is not the camera's drag, a wheel over the log scrolls the log */
   const stop = e => { e.stopPropagation() }
-  for (const n of [bar, ends, log, ask, logBtn]) { n.addEventListener('pointerdown', stop); n.addEventListener('pointerup', stop); n.addEventListener('click', stop) }
+  for (const n of [bar, ends, log, ask, sw, logBtn]) { n.addEventListener('pointerdown', stop); n.addEventListener('pointerup', stop); n.addEventListener('click', stop) }
   log.addEventListener('wheel', stop)
 
   /* ── the pop-up ── */
   const names = ids => ids.map(id => (V.S.U[id] && V.S.U[id].name) || ('#' + id)).join(', ')
+  /* the two pop-ups share V.asking (the board's keys wait on the answer); only one stands at a time */
+  const switching = () => sw.style.display !== 'none', ending = () => ask.style.display !== 'none'
   function open(ids) { V.asking = true; B.who.textContent = 'Not yet acted: ' + names(ids) + '.'; ask.style.display = ''; B.no.focus() }
-  function close() { V.asking = false; ask.style.display = 'none' }
+  function close() { ask.style.display = 'none'; V.asking = switching() }
+  /* viewer.switch-hero-asks: shown while the host asks, with the names the fold holds for the two units */
+  function openSwitch(a) { const text = switchAsk(names([a.from]), names([a.to]))
+    if (switching() && B.swText.textContent === text) return
+    if (ending()) close()
+    V.asking = true; B.swText.textContent = text; sw.style.display = ''; B.swNo.focus() }
+  function closeSwitch() { sw.style.display = 'none'; V.asking = ending() }
+  const answer = yes => { if (switching() && V.play && V.play.ask) host.offer({ kind: 'answer', yes }) }
+  B.swNo.addEventListener('click', () => answer(false))
+  B.swYes.addEventListener('click', () => answer(true))
   B.endTurn.addEventListener('click', () => {
     const end = V.play && V.play.endTurn
     if (off(B.endTurn) || !end) return
@@ -63,7 +89,9 @@ export function mountPlayChrome(V, host) {
   B.no.addEventListener('click', close)
   B.yes.addEventListener('click', () => { const end = V.play && V.play.endTurn; close(); if (end) host.offer({ kind: 'end-turn' }) })
   B.endAct.addEventListener('click', () => { if (!off(B.endAct) && V.play && V.play.endActivation) host.offer({ kind: 'end-activation' }) })
-  const key = e => { if (V.asking && e.key === 'Escape') { close(); e.preventDefault() } }
+  const key = e => { if (!V.asking || e.key !== 'Escape') return
+    if (switching()) answer(false); else close()
+    e.preventDefault() }
   document.addEventListener('keydown', key)
 
   /* ── 2× (engine DECISIONS.md 2026-09-29: "Enemy turns play out in full animation. Have a double-speed button.") ── */
@@ -88,12 +116,13 @@ export function mountPlayChrome(V, host) {
   function sync() {
     const P = V.play
     enable(B.endTurn, !!(P && P.endTurn)); enable(B.endAct, !!(P && P.endActivation))
-    if (V.asking && !(P && P.endTurn)) close()                  /* the host took End Turn away (a beat is playing, the battle ended) */
-    else if (V.asking) B.who.textContent = 'Not yet acted: ' + names(P.endTurn.yetToAct) + '.'
+    if (ending() && !(P && P.endTurn)) close()                  /* the host took End Turn away (a beat is playing, the battle ended) */
+    else if (ending()) B.who.textContent = 'Not yet acted: ' + names(P.endTurn.yetToAct) + '.'
+    if (P && P.ask) openSwitch(P.ask); else if (switching()) closeSwitch()   /* the pop-up stands exactly while the host asks */
     const fast = V.speed === 2
     B.speed.classList.toggle('on', fast); B.speed.setAttribute('aria-pressed', String(fast))
     syncLog()
   }
-  function dispose() { document.removeEventListener('keydown', key); V.asking = false; bar.remove(); ends.remove(); log.remove(); ask.remove(); logBtn.remove(); V.dom.root.classList.remove('pcEndsOn') }
-  return { sync, relog, dispose, dom: { bar, ends, log, ask, ...B } }
+  function dispose() { document.removeEventListener('keydown', key); V.asking = false; bar.remove(); ends.remove(); log.remove(); ask.remove(); sw.remove(); logBtn.remove(); V.dom.root.classList.remove('pcEndsOn') }
+  return { sync, relog, dispose, dom: { bar, ends, log, ask, sw, ...B } }
 }

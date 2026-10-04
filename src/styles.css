@@ -635,12 +635,14 @@ html,body{margin:0;background:#08090b;color:var(--ink);
   font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
 /* a log row's "dmg" class is also the board's damage float (.dmg: absolute, 34px, animated) — not in the log */
 #playLog .ln.dmg{position:static;font-family:inherit;font-size:inherit;font-weight:inherit;text-shadow:none;animation:none}
-#playAsk{position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
-#playAskBox{max-width:560px;padding:26px 30px 22px;background:#15120d;border:1px solid var(--brass);border-radius:3px;
+/* viewer.switch-hero-asks: the switch pop-up ("End activation of X and start activation of Y?") is the End Turn pop-up's twin */
+#playAsk,#playSwitch{position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
+#playAskBox,#playSwitchBox{max-width:560px;padding:26px 30px 22px;background:#15120d;border:1px solid var(--brass);border-radius:3px;
   box-shadow:0 24px 60px rgba(0,0,0,.8),0 0 0 1px #000;color:var(--ink);font:500 18px/1.4 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif}
 #playAskText{margin:0 0 10px;font-size:21px;color:var(--gold)}
+#playSwitchText{margin:0 0 20px;font-size:21px;color:var(--gold)}
 #playAskWho{margin:0 0 20px;color:#b9b09a;font-size:15px}
-#playAskBtns{display:flex;gap:12px;justify-content:flex-end}
+#playAskBtns,#playSwitchBtns{display:flex;gap:12px;justify-content:flex-end}
 
 /* ── the first-affliction pop-up (viewer.affliction-pop-up, 2026-10-03; engine DECISIONS.md 2026-10-01 'the first-affliction
    pop-up': "pop up before and after art for that character with an explanation"; src/affliction.js). Over the whole screen —

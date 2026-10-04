@@ -17,7 +17,13 @@ const ENDING_KEYS = ['endTurn', 'endActivation']
    what's needed now"): the swap, optional too — {cost, choices: [{label}], why} while the acting hero carries something
    to swap: the hand lists the engine would take (a click offers {kind:'swap', index, unit} back), the engine's swapCost,
    and when there is none to make the engine's own reason. Null or absent: no swap on the bar. */
-const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap']
+/* viewer.switch-hero-asks (engine DECISIONS.md 2026-10-03 'size and shadows are the default; ... switching heroes asks first
+   ...': "it should pop up and say, 'End activation of X hero and start activation of Y hero.'"; '... the switch pop-up is
+   for any player unit': "And you can click yes or no."): the question, optional too — ask {kind:'switch', from, to} (unit
+   ids) while the host wants the player asked whether to end the Activation of the unit acting and begin another's; the
+   chrome draws the pop-up with their names and offers {kind:'answer', yes} back. Whether the question arises at all is the
+   host's, from the engine. Null or absent: nothing is asked. */
+const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask']
 const AIM_KEYS = ['from', 'to', 'target', 'hit', 'dmg', 'hpAfter', 'lethal', 'locked']
 export function playFacts(value, positions) {
   const fail = why => { throw new Error('invalid play facts: ' + why) }
@@ -61,6 +67,10 @@ export function playFacts(value, positions) {
     const choices = v.swap.choices.map((c, i) => { object(c, ['label'], 'swap.choices[' + i + ']'); if (typeof c.label !== 'string' || !c.label) fail('swap.choices[' + i + '].label'); return { label: c.label } })
     if (v.swap.why !== null && typeof v.swap.why !== 'string') fail('swap.why')
     swap = { cost: int(v.swap.cost, 'swap.cost'), choices, why: v.swap.why } }
-  return { endTurn, endActivation: v.endActivation === true, swap, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach: hexes(v.reach, 'reach'), zoc: hexes(v.zoc, 'zoc'),
+  let ask = null
+  if (v.ask != null) { object(v.ask, ['kind', 'from', 'to'], 'ask')
+    if (v.ask.kind !== 'switch') fail('ask.kind is not a question the screen knows')
+    ask = { kind: 'switch', from: int(v.ask.from, 'ask.from'), to: int(v.ask.to, 'ask.to') } }
+  return { endTurn, endActivation: v.endActivation === true, swap, ask, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach: hexes(v.reach, 'reach'), zoc: hexes(v.zoc, 'zoc'),
     path: hexes(v.path, 'path', false), provokes: hexes(v.provokes, 'provokes'), ghost, threat, targets: hexes(v.targets, 'targets'), aim, note: v.note }
 }
