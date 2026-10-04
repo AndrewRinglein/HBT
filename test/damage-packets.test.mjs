@@ -25,12 +25,13 @@ function candidate(change){
  }
 }
 const packet={id:'ember',when:'hit',damageType:'fire',amount:2};
+// Law 10, 2026-10-03 (content.unfielded-tier0-weapons-cut): the Hand Axe row was cut (engine DECISIONS.md 'eleven tier 0 weapons nobody fields are cut'), so the row these tests edit is attack.war-axe.chop, the War Axe's Chop, where it was attack.hand-axe.chop. The claims are unchanged.
 test('compiler transports ordered flat packets and penetration through real weapon rows',()=>{
- const run=candidate(edit=>edit('gen/weapons.json',data=>{const a=data.attacks.find(a=>a.id==='attack.hand-axe.chop');a.secondaryDamage=[packet,{id:'shade',when:'crit',damageType:'shadow',amount:4}];a.armorPenetration=3}));
- assert.equal(run.status,0,run.stderr);const row=run.pack.authoredAttacks['attack.hand-axe.chop'];
+ const run=candidate(edit=>edit('gen/weapons.json',data=>{const a=data.attacks.find(a=>a.id==='attack.war-axe.chop');a.secondaryDamage=[packet,{id:'shade',when:'crit',damageType:'shadow',amount:4}];a.armorPenetration=3}));
+ assert.equal(run.status,0,run.stderr);const row=run.pack.authoredAttacks['attack.war-axe.chop'];
  assert.deepEqual(row.secondaryDamage,[packet,{id:'shade',when:'crit',damageType:'shadow',amount:4}]);assert.equal(row.armorPenetration,3);
 });
 for(const change of [a=>a.secondaryDamage=[packet,packet],a=>a.secondaryDamage=[{...packet,id:'base'}],a=>a.secondaryDamage=[{...packet,amount:1.5}],a=>a.secondaryDamage=[{...packet,when:'miss'}],a=>a.secondaryDamage=[{...packet,damageType:'holy'}],a=>a.armorPenetration=-1])test('compiler rejects invalid packet metadata: '+change,()=>{
- const run=candidate(edit=>edit('gen/weapons.json',data=>change(data.attacks.find(a=>a.id==='attack.hand-axe.chop'))));
+ const run=candidate(edit=>edit('gen/weapons.json',data=>change(data.attacks.find(a=>a.id==='attack.war-axe.chop'))));
  assert.notEqual(run.status,0);assert.match(run.stderr,/packet|penetration/i);assert.equal(run.pack,null);
 });

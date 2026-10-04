@@ -34,3 +34,5 @@ shipping weapon. Two clearly labeled TEST variants exercise the parameterization
 Conditional Slayer, adjacent-target riders, badge/enchant riders and other unparsed
 hooks remain separate gaps. This item does not implement block, bursts, prone,
 Impact or knockback from physical damage.
+
+**2026-10-03 — the Hand Axe row was cut.** `item.hand-axe` and its `attack.hand-axe.chop` left the game with ten other tier 0 weapons nobody fields (engine `DECISIONS.md`, 'eleven tier 0 weapons nobody fields are cut', Andrew: “Yeah, remove all of those 11.”). Its critical rider went with it; the Bane Blade's is the one authored critical rider left. Everything above is the 2026-09-16 record and is not rewritten.
