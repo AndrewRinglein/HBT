@@ -517,6 +517,11 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const left=heroesYetToAct(s.ctx,s.policy).length+(actorOf(s)!==null?1:0)
   const mine=s.ctx.state.units.filter(u=>u.side==='hero'&&u.lifeState==='standing'&&controllerOf(s.ctx,u.id,s.policy)==='human').length
   return {done:Math.max(0,mine-left),left}}
- return {facts,ending,input,next,rest,upcoming,arm,fresh,basicMove,attackInReach,acted,provoker,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ /** kingdom.tutorial-turns-in-battle-one: the player's other units that have yet to act this Hero Phase — the engine's
+     heroesYetToAct as unit ids, never the one acting — lowest id first */
+ function yetToAct():number[]{const s=session();if(!s||s.ctx.state.outcome)return []
+  const a=actorOf(s),uids=new Set(heroesYetToAct(s.ctx,s.policy))
+  return s.ctx.state.units.filter(u=>uids.has(u.uid)&&u.id!==a).map(u=>u.id).sort((x,y)=>x-y)}
+ return {facts,ending,input,next,rest,upcoming,arm,fresh,basicMove,attackInReach,acted,yetToAct,provoker,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>

@@ -51,6 +51,8 @@ export type LessonHost = {
   attackInReach(): string | null
   /** this Hero Phase: how many of the player's units have acted, how many have yet to */
   acted(): { done: number; left: number }
+  /** the player's other units that have yet to act this Hero Phase — the engine's list, never the one acting — lowest id first */
+  yetToAct(): number[]
   /** the enemy that would strike the acting unit on the path it has planned (the engine's forecast of the walk), or null */
   provoker(): number | null
   /** is this unit the player's — a hero of the party or one of the encounter's civilians */
@@ -80,6 +82,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
   const pending = (starts: LessonRow['starts']) => rows.filter((r) => r.starts === starts && mine(r))
   const fits = (row: LessonRow, actor: number | null) => row.of === undefined || (actor !== null && host.units(row.of).includes(actor))
   const due = (row: LessonRow) => (row.fromTurn === undefined || host.turn() >= row.fromTurn) && (row.nthHero === undefined || heroesBegun.size >= row.nthHero)
+    && (row.moreLeft !== true || host.yetToAct().length > 0)
   const pointersOf = (row: LessonRow): readonly LessonPointer[] => row.point === undefined ? [] : Array.isArray(row.point) ? row.point : [row.point as LessonPointer]
 
   /** what a row's target is on the board now, for the viewer's calls; none when the battle holds no such thing */
@@ -89,7 +92,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
     if (at === 'provoker') { const unit = host.provoker(); return unit === null ? [] : [{ unit }] }
     if (at === 'civilians') return host.units('civilians').map((unit) => ({ unit }))
     if (at === 'enemy' || at === 'hero') return host.units(at).slice(0, 1).map((unit) => ({ unit }))
-    if (at === 'hero-cards') return host.units('hero').map((card) => ({ card }))
+    if (at === 'yet-to-act-cards') return host.yetToAct().filter((unit) => unit !== actor).map((card) => ({ card }))
     if (at === 'enemy-move-number' || at === 'enemy-attack-number') return host.units('enemy').slice(0, 1).map((unit) => ({ unit, part: at === 'enemy-move-number' ? 'move' : 'attack' }))
     if (at === 'acting') return actor === null ? [] : [{ unit: actor }]
     if (at === 'basic-move') { const action = host.basicMove(); return action === null ? [] : [{ action }] }
