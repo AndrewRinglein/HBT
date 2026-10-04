@@ -519,7 +519,8 @@ export const UNIT_PACK = {
             "select": "area",
             "side": "any",
             "radius": 2,
-            "origin": "self"
+            "origin": "self",
+            "excludeSelf": true
           },
           "effect": {
             "kind": "status.apply",
@@ -1781,7 +1782,8 @@ export const UNIT_PACK = {
             "select": "area",
             "side": "any",
             "radius": 2,
-            "origin": "self"
+            "origin": "self",
+            "excludeSelf": true
           },
           "effect": {
             "kind": "status.apply",
@@ -20394,12 +20396,13 @@ export const UNIT_PACK = {
         "select": "area",
         "side": "any",
         "radius": 3,
-        "origin": "self"
+        "origin": "self",
+        "excludeSelf": true
       },
       "effects": [],
       "gaps": [
         "unparsed: Apply 2 Weak to every enemy within 3 hexes",
-        "unparsed: every ally within 3 hexes gains +1 Strength for the rest of the Battle",
+        "unparsed: every other ally within 3 hexes gains +1 Strength for the rest of the Battle",
         "no effect compiled — the power is inert"
       ]
     },
@@ -22066,7 +22069,8 @@ export const UNIT_PACK = {
         "select": "area",
         "side": "any",
         "radius": 3,
-        "origin": "self"
+        "origin": "self",
+        "excludeSelf": true
       },
       "effects": [],
       "gaps": [
@@ -23967,11 +23971,12 @@ export const UNIT_PACK = {
         "select": "area",
         "side": "any",
         "radius": 2,
-        "origin": "self"
+        "origin": "self",
+        "excludeSelf": true
       },
       "effects": [],
       "gaps": [
-        "unparsed: Heal every ally within 2 hexes for 3 and give every enemy within 2 hexes 2 Burn",
+        "unparsed: Heal every other ally within 2 hexes for 3 and give every enemy within 2 hexes 2",
         "unparsed: As an area effect it cannot crit",
         "no effect compiled — the power is inert"
       ]
@@ -25706,12 +25711,13 @@ export const UNIT_PACK = {
         "select": "area",
         "side": "any",
         "radius": 3,
-        "origin": "self"
+        "origin": "self",
+        "excludeSelf": true
       },
       "effects": [],
       "gaps": [
         "unparsed: Every enemy within 3 hexes gains 2 Weak",
-        "unparsed: You and every ally within 3 hexes remove 2 Weak",
+        "unparsed: Other allies within 3 hexes remove 2 Weak",
         "no effect compiled — the power is inert"
       ]
     },
