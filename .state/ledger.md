@@ -26702,6 +26702,15 @@ index 1ba14a0..f9a41fc 100644
   PASS  the item's own tests — test/opening-starts-in-battle.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/opening-starts-in-battle.test.ts
+## viewer.panel-area-trigger-text — LANDED `c771fe7`
+2026-10-04 11:21
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: COMBAT-SEQUENCE.md:381 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.panel-area-trigger-text.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.panel-area-trigger-text.test.ts
   PASS  existing tests untouched
 ## tool.tests-follow-what-changed — LANDED `e3ac2e3` **NEEDS REVIEW**
 2026-10-04 11:37
@@ -26732,6 +26741,15 @@ index 1ba14a0..f9a41fc 100644
   PASS  the item's own tests — test/opening-first-hero-class-line.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/opening-first-hero-class-line.test.ts
+## viewer.bar-shows-every-effect — LANDED `9b50057`
+2026-10-04 11:22
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · ..\CODEX.md:3221
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.bar-shows-every-effect.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.bar-shows-every-effect.test.ts
   PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
@@ -26752,6 +26770,15 @@ index 1ba14a0..f9a41fc 100644
   PASS  the item's own tests — test/opening-draft-class-message.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/opening-draft-class-message.test.ts
+## viewer.bar-moves-grey-when-done — LANDED `5b97dcb`
+2026-10-04 11:23
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4473
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.bar-moves-grey-when-done.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.bar-moves-grey-when-done.test.ts
   PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
@@ -26773,6 +26800,16 @@ index 1ba14a0..f9a41fc 100644
   PASS  gate 1 — the id appears in a real battle — unit.poison-imp: 52 log lines, 52 fired, 20 changed state
   PASS  brought its own tests — test/fire-imp-burn-spares-self.test.ts, test/own-area-skips-owner.test.ts
   WARN  existing tests untouched — DELETED LINES in test/fire-imp-burn-spares-self.test.ts (-4) — will land FLAGGED for review
+## viewer.bubble-click-reveals — LANDED `26a8270`
+2026-10-04 11:26
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.bubble-click-reveals.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.bubble-click-reveals.test.ts
+  PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -26819,6 +26856,30 @@ index f400ef6..b612dd7 100644
 +    expect(ctx.events.filter((e) => e.causeId === eoa('unit.poison-imp').id && e.target === imp.id)).toEqual([])
    })
  })
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.tutorial-overlays — LANDED `0a3d83d`
+2026-10-04 11:54
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.tutorial-overlays.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.tutorial-overlays.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
@@ -26883,3 +26944,23 @@ index e0bd22a..c1dda3f 100644
      const r = run(repo(), '--shard', '9/8')
 ```
 </details>
+
+## viewer.arrivals-camera — LANDED `3f9ab39`
+2026-10-04 12:18
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · DECISIONS.md:3734
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.arrivals-camera.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.arrivals-camera.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
