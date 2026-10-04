@@ -1,0 +1,1708 @@
+{
+ "sourceCommit": "before fix.opening-draft-one-rule",
+ "note": "draftedHeroOf for every offered hero at the first draft and (the first offer taken) at the draft after it, per run seed.",
+ "runs": [
+  {
+   "seed": 1,
+   "first": [
+    {
+     "id": "hero.base.priest-scantily",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger",
+      "badge.killer-instinct"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger",
+       "badge.killer-instinct"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.paladin-dark",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger",
+      "badge.killer-instinct"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger",
+       "badge.killer-instinct"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.paladin-shiney",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger",
+      "badge.killer-instinct"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger",
+       "badge.killer-instinct"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ],
+   "second": [
+    {
+     "id": "hero.base.rogue-skull",
+     "badges": [
+      "badge.night-vision",
+      "badge.clumsy"
+     ],
+     "itemSlots": 3,
+     "drafted": {
+      "badges": [
+       "badge.night-vision",
+       "badge.clumsy"
+      ],
+      "rolls": [
+       {
+        "stat": "magic",
+        "amount": 1
+       },
+       {
+        "stat": "itemSlots",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "magic",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "itemSlots",
+        "amount": 1
+       }
+      ]
+     }
+    },
+    {
+     "id": "hero.base.paladin-shiney",
+     "badges": [
+      "badge.thick-skinned"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.thick-skinned"
+      ],
+      "rolls": [
+       {
+        "stat": "precision",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.rogue-rose",
+     "badges": [
+      "badge.fearful",
+      "badge.scarred-hide"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.fearful",
+       "badge.scarred-hide"
+      ],
+      "rolls": [
+       {
+        "stat": "reach",
+        "amount": -1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "reach",
+        "add": -1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ]
+  },
+  {
+   "seed": 2,
+   "first": [
+    {
+     "id": "hero.base.priest-robes",
+     "badges": [
+      "badge.leadership",
+      "badge.marksman"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.marksman"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       },
+       {
+        "stat": "toughness",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       }
+      ]
+     }
+    },
+    {
+     "id": "hero.base.paladin-smug",
+     "badges": [
+      "badge.leadership",
+      "badge.marksman"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.marksman"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       },
+       {
+        "stat": "toughness",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       }
+      ]
+     }
+    },
+    {
+     "id": "hero.base.ranger-aggressive",
+     "badges": [
+      "badge.leadership",
+      "badge.marksman"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.marksman"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       },
+       {
+        "stat": "toughness",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       }
+      ]
+     }
+    }
+   ],
+   "second": [
+    {
+     "id": "hero.base.mage-thinking",
+     "badges": [
+      "badge.dim-sighted"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.dim-sighted"
+      ],
+      "rolls": [
+       {
+        "stat": "dodge",
+        "amount": 5
+       }
+      ],
+      "mods": [
+       {
+        "stat": "dodge",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.rogue-raven",
+     "badges": [
+      "badge.scarred-hide",
+      "badge.heavy-footed"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.scarred-hide",
+       "badge.heavy-footed"
+      ],
+      "rolls": [],
+      "mods": [],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.paladin-shiney",
+     "badges": [
+      "badge.thick-skinned"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.thick-skinned"
+      ],
+      "rolls": [
+       {
+        "stat": "movement",
+        "amount": 1
+       },
+       {
+        "stat": "precision",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "movement",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ]
+  },
+  {
+   "seed": 3,
+   "first": [
+    {
+     "id": "hero.base.mage-fireaura",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger"
+      ],
+      "rolls": [
+       {
+        "stat": "strength",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.mage-thinking",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger"
+      ],
+      "rolls": [
+       {
+        "stat": "strength",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.paladin-hunk",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger"
+      ],
+      "rolls": [
+       {
+        "stat": "strength",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ],
+   "second": [
+    {
+     "id": "hero.base.rogue-raven",
+     "badges": [
+      "badge.scarred-hide"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.scarred-hide"
+      ],
+      "rolls": [],
+      "mods": [],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.ranger-nature",
+     "badges": [
+      "badge.dim-sighted",
+      "badge.resolve",
+      "badge.hunter"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.dim-sighted",
+       "badge.resolve",
+       "badge.hunter"
+      ],
+      "rolls": [
+       {
+        "stat": "vision",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "vision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.ranger-aggressive",
+     "badges": [
+      "badge.born-archer"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.born-archer"
+      ],
+      "rolls": [
+       {
+        "stat": "reach",
+        "amount": 1
+       },
+       {
+        "stat": "strength",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "reach",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ]
+  },
+  {
+   "seed": 5,
+   "first": [
+    {
+     "id": "hero.base.ranger-scantily",
+     "badges": [
+      "badge.leadership",
+      "badge.strong"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.strong"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.ranger-nature",
+     "badges": [
+      "badge.leadership",
+      "badge.strong"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.strong"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.warrior-iron",
+     "badges": [
+      "badge.leadership",
+      "badge.strong"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.strong"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ],
+   "second": [
+    {
+     "id": "hero.base.rogue-skull",
+     "badges": [
+      "badge.dodger"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.dodger"
+      ],
+      "rolls": [
+       {
+        "stat": "health",
+        "amount": 2
+       },
+       {
+        "stat": "staminaMax",
+        "amount": -1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "maxStamina",
+        "add": -1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.warrior-brawler",
+     "badges": [
+      "badge.veteran"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.veteran"
+      ],
+      "rolls": [
+       {
+        "stat": "dodge",
+        "amount": 5
+       },
+       {
+        "stat": "health",
+        "amount": 2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "dodge",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.priest-robes",
+     "badges": [
+      "badge.uncanny"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.uncanny"
+      ],
+      "rolls": [
+       {
+        "stat": "dodge",
+        "amount": 5
+       },
+       {
+        "stat": "precision",
+        "amount": 1
+       },
+       {
+        "stat": "strength",
+        "amount": -1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "dodge",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "strength",
+        "add": -1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ]
+  },
+  {
+   "seed": 11,
+   "first": [
+    {
+     "id": "hero.base.mage-sexy",
+     "badges": [
+      "badge.leadership",
+      "badge.huge"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.huge"
+      ],
+      "rolls": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       },
+       {
+        "stat": "itemSlots",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       },
+       {
+        "stat": "itemSlots",
+        "amount": 1
+       }
+      ]
+     }
+    },
+    {
+     "id": "hero.base.warrior-brawler",
+     "badges": [
+      "badge.leadership",
+      "badge.huge"
+     ],
+     "itemSlots": 3,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.huge"
+      ],
+      "rolls": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       },
+       {
+        "stat": "itemSlots",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       },
+       {
+        "stat": "itemSlots",
+        "amount": 1
+       }
+      ]
+     }
+    },
+    {
+     "id": "hero.base.warrior-fearsome",
+     "badges": [
+      "badge.leadership",
+      "badge.huge"
+     ],
+     "itemSlots": 3,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.huge"
+      ],
+      "rolls": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       },
+       {
+        "stat": "itemSlots",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "toughness",
+        "amount": 1
+       },
+       {
+        "stat": "itemSlots",
+        "amount": 1
+       }
+      ]
+     }
+    }
+   ],
+   "second": [
+    {
+     "id": "hero.base.warrior-iron",
+     "badges": [
+      "badge.mystic"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.mystic"
+      ],
+      "rolls": [
+       {
+        "stat": "accuracy",
+        "amount": 5
+       },
+       {
+        "stat": "crit",
+        "amount": 2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "accuracy",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "crit",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.rogue-raven",
+     "badges": [
+      "badge.born-archer",
+      "badge.slow"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.born-archer",
+       "badge.slow"
+      ],
+      "rolls": [
+       {
+        "stat": "staminaMax",
+        "amount": 1
+       },
+       {
+        "stat": "reach",
+        "amount": 1
+       },
+       {
+        "stat": "toughness",
+        "amount": -1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxStamina",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "reach",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "toughness",
+        "amount": -1
+       }
+      ]
+     }
+    },
+    {
+     "id": "hero.base.warrior-barbarian",
+     "badges": [
+      "badge.veteran"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.veteran"
+      ],
+      "rolls": [
+       {
+        "stat": "dodge",
+        "amount": 5
+       },
+       {
+        "stat": "vision",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "dodge",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "vision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ]
+  },
+  {
+   "seed": 15,
+   "first": [
+    {
+     "id": "hero.base.paladin-hunk",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger"
+      ],
+      "rolls": [
+       {
+        "stat": "staminaMax",
+        "amount": 1
+       },
+       {
+        "stat": "precision",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxStamina",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.ranger-scantily",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger"
+      ],
+      "rolls": [
+       {
+        "stat": "staminaMax",
+        "amount": 1
+       },
+       {
+        "stat": "precision",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxStamina",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.warrior-iron",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.dodger"
+      ],
+      "rolls": [
+       {
+        "stat": "staminaMax",
+        "amount": 1
+       },
+       {
+        "stat": "precision",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "maxStamina",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ],
+   "second": [
+    {
+     "id": "hero.base.rogue-raven",
+     "badges": [
+      "badge.veteran",
+      "badge.heavy-footed"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.veteran",
+       "badge.heavy-footed"
+      ],
+      "rolls": [
+       {
+        "stat": "dodge",
+        "amount": 5
+       }
+      ],
+      "mods": [
+       {
+        "stat": "dodge",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.priest-scantily",
+     "badges": [
+      "badge.slow"
+     ],
+     "itemSlots": 0,
+     "drafted": {
+      "badges": [
+       "badge.slow"
+      ],
+      "rolls": [
+       {
+        "stat": "precision",
+        "amount": 1
+       },
+       {
+        "stat": "itemSlots",
+        "amount": -1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": [
+       {
+        "stat": "itemSlots",
+        "amount": -1
+       }
+      ]
+     }
+    },
+    {
+     "id": "hero.base.priest-armored",
+     "badges": [
+      "badge.fearful",
+      "badge.strong"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.fearful",
+       "badge.strong"
+      ],
+      "rolls": [
+       {
+        "stat": "precision",
+        "amount": -1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "precision",
+        "add": -1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ]
+  },
+  {
+   "seed": 21,
+   "first": [
+    {
+     "id": "hero.base.paladin-smug",
+     "badges": [
+      "badge.leadership",
+      "badge.veteran"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.veteran"
+      ],
+      "rolls": [
+       {
+        "stat": "movement",
+        "amount": 1
+       },
+       {
+        "stat": "strength",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "movement",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.rogue-skull",
+     "badges": [
+      "badge.leadership",
+      "badge.veteran"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.veteran"
+      ],
+      "rolls": [
+       {
+        "stat": "movement",
+        "amount": 1
+       },
+       {
+        "stat": "strength",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "movement",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.priest-armored",
+     "badges": [
+      "badge.leadership",
+      "badge.veteran"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.veteran"
+      ],
+      "rolls": [
+       {
+        "stat": "movement",
+        "amount": 1
+       },
+       {
+        "stat": "strength",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "movement",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ],
+   "second": [
+    {
+     "id": "hero.base.rogue-skull",
+     "badges": [
+      "badge.frail",
+      "badge.veteran",
+      "badge.huge"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.frail",
+       "badge.veteran",
+       "badge.huge"
+      ],
+      "rolls": [
+       {
+        "stat": "crit",
+        "amount": -2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "crit",
+        "add": -2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.ranger-ranger",
+     "badges": [
+      "badge.born-archer",
+      "badge.feeble"
+     ],
+     "itemSlots": 3,
+     "drafted": {
+      "badges": [
+       "badge.born-archer",
+       "badge.feeble"
+      ],
+      "rolls": [
+       {
+        "stat": "reach",
+        "amount": 1
+       },
+       {
+        "stat": "health",
+        "amount": -2
+       }
+      ],
+      "mods": [
+       {
+        "stat": "reach",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "maxHp",
+        "add": -2,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.rogue-rose",
+     "badges": [
+      "badge.dodger",
+      "badge.thick-skinned",
+      "badge.many-pockets"
+     ],
+     "itemSlots": 3,
+     "drafted": {
+      "badges": [
+       "badge.dodger",
+       "badge.thick-skinned",
+       "badge.many-pockets"
+      ],
+      "rolls": [
+       {
+        "stat": "armor",
+        "amount": 1
+       },
+       {
+        "stat": "strength",
+        "amount": 1
+       }
+      ],
+      "mods": [
+       {
+        "stat": "armor",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ]
+  },
+  {
+   "seed": 42,
+   "first": [
+    {
+     "id": "hero.base.paladin-smug",
+     "badges": [
+      "badge.leadership",
+      "badge.mystic"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.mystic"
+      ],
+      "rolls": [
+       {
+        "stat": "accuracy",
+        "amount": 5
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "accuracy",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.rogue-skull",
+     "badges": [
+      "badge.leadership",
+      "badge.mystic"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.mystic"
+      ],
+      "rolls": [
+       {
+        "stat": "accuracy",
+        "amount": 5
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "accuracy",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.mage-fireaura",
+     "badges": [
+      "badge.leadership",
+      "badge.mystic"
+     ],
+     "itemSlots": 1,
+     "drafted": {
+      "badges": [
+       "badge.leadership",
+       "badge.mystic"
+      ],
+      "rolls": [
+       {
+        "stat": "accuracy",
+        "amount": 5
+       }
+      ],
+      "mods": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "accuracy",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       }
+      ],
+      "unfielded": []
+     }
+    }
+   ],
+   "second": [
+    {
+     "id": "hero.base.warrior-fearsome",
+     "badges": [
+      "badge.uncanny"
+     ],
+     "itemSlots": 2,
+     "drafted": {
+      "badges": [
+       "badge.uncanny"
+      ],
+      "rolls": [],
+      "mods": [],
+      "unfielded": []
+     }
+    },
+    {
+     "id": "hero.base.mage-sexy",
+     "badges": [
+      "badge.marksman"
+     ],
+     "itemSlots": 0,
+     "drafted": {
+      "badges": [
+       "badge.marksman"
+      ],
+      "rolls": [
+       {
+        "stat": "itemSlots",
+        "amount": -1
+       }
+      ],
+      "mods": [],
+      "unfielded": [
+       {
+        "stat": "itemSlots",
+        "amount": -1
+       }
+      ]
+     }
+    },
+    {
+     "id": "hero.base.ranger-nature",
+     "badges": [
+      "badge.resolve",
+      "badge.slow"
+     ],
+     "itemSlots": 0,
+     "drafted": {
+      "badges": [
+       "badge.resolve",
+       "badge.slow"
+      ],
+      "rolls": [
+       {
+        "stat": "itemSlots",
+        "amount": -1
+       }
+      ],
+      "mods": [],
+      "unfielded": [
+       {
+        "stat": "itemSlots",
+        "amount": -1
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

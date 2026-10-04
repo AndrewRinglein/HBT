@@ -57,10 +57,17 @@ runs as four shards, one command each, recorded against the exact tree
 the claimed probes and the static checks, and finishes in well under a minute.
 Ruled 2026-09-23, `engine/DECISIONS.md` "the kingdom gate fits a Cowork command".
 
+**The suite runs on four vitest workers, and nobody sets that by hand**
+(`tool.kingdom-vitest-workers`, 2026-10-04). `vitest.config.ts` caps the file workers with the
+engine's own cap (`../engine/tools/gate-progress.mjs` `vitestWorkersFor`: four, never more than
+the machine has CPUs), so `gate.mjs --shard k/4`, a landing's checks and the engine's
+`suites.mjs` all get it from one place. `VITEST_MAX_WORKERS` still overrides it. It sets no
+time limit: every test keeps its own.
+
 **The suite runs when kingdom's code changed, and not otherwise** (Andrew, 2026-10-04,
 `engine/DECISIONS.md` "the same for content and kingdom changes: each kind of change runs its
 own tests"). Kingdom's code is `src/` without `src/content/generated/`, `test/`, `tools/`,
-`fixtures/`, `package.json` and `tsconfig.json` — the one definition is
+`fixtures/`, `package.json`, `tsconfig.json` and `vitest.config.ts` — the one definition is
 `../engine/tools/code-stamp.mjs` (`node ../engine/tools/code-stamp.mjs --packages` prints the
 stamp). The shards are recorded against that code, not the whole tree:
 
