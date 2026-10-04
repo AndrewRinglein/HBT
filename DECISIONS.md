@@ -4461,3 +4461,14 @@ Ruled:
 - **Card art is present when drafting — on the first draft and on every later one.** With 'the first hero is chosen from three by description only' (above): the first draft's cards show the art and the description, still no stats and no badges.
 - **Every hero's card art comes through wherever its card is shown** — heroes 2 and 3 on the way to the battle were blank. Filed: `kingdom.opening-hero-card-art`, first in the viewer and kingdom queue.
 - **The Lumberjack's axe and his wife's knife** are 'every civilian fields its kit by default' (2026-10-03, above), filed as `fix.civilians-field-kit` at the top of the engine queue and not built yet; the kingdom chat takes it next after the card art, since he has now reported it twice. Whether the weapon is also drawn in the hand is `art.kit-items-held` and `viewer.civilian-held-dagger`'s.
+
+## 2026-10-03 — the action bar changes with the Activation: the new unit's moves, attacks and powers; the switch pop-up is still not built
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“If I double-click on a hero, it looks like you haven't added in the double-click change-your-active-hero-with-a-popup-screen-in-between, saying, "Are you sure you want to end your activation and start this new hero?" That hasn't been implemented yet.    Also, until you've activated your move, it seems like you keep the moves of the previous character.  So when the activation changes, for whatever reason, the card art changes in the lower left, but the moves don't change. They need to change to the character's moves. And attacks and powers and all that”
+
+Ruled:
+
+- **When the Activation changes, for whatever reason, the action bar changes with it: the moves, attacks, powers and everything else on it are the newly activated unit's, at once** — not the previous unit's until a move is made. The card at the lower left already changes; the bar must change with it. This is what 'the battle screen's turn-taking, ruled' (2026-10-03: "the bar and its card stay with the activated unit") already says; `viewer.turn-taking` landed without it holding. Filed: `viewer.bar-follows-activation`.
+- **The switch pop-up** ("End activation of X and start activation of Y?", yes or no, any player unit) is `viewer.switch-hero-asks`, filed earlier today and not built. Both are moved up the viewer and kingdom queue, next after the card art, ahead of the remaining opening-run items: they are in the way of playing a battle at all.
