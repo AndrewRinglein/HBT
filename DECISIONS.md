@@ -4930,3 +4930,9 @@ Andrew, in the kingdom chat, reading the Item Ledger (https://claude.ai/artifact
 “Okay, I see a ton of artifacts in here, maybe items in here that were obviously authored by Claude and were not authored by me, that are doing things that are not mechanics we have in the game.   You need to review all of the items and come back. The Death Bow cannot be healed. That's not a mechanic we have.  Crossbow has a crank mechanism, not a mechanic we have.  And I just went through a couple of items.”
 
 Kept as said: **"cannot be healed" (the Death Bow) and a crossbow's crank are not mechanics the game has.** Every item is being reviewed for two things - whether each thing it does is a mechanic the engine has, and who authored the row (his dictation, or a chat) - and the findings go onto the Item Ledger for him to mark. Nothing is cut or changed until he marks it.
+
+Andrew, minutes later, on the same review:
+
+“I guess we could just ignore all the items not authored by me to start with.”
+
+- **The items he did not author are set aside to start with.** The review still labels every row, but the Item Ledger opens on the rows he dictated - his dictations and rulings, the Armory Ledger's drafted rows, the armor draft - with the rest behind one control. Read as: set aside for the review and the mark-up; whether a set-aside item also leaves the game's rewards is asked, not assumed. A row a chat wrote that a later ruling of his only corrected (a number changed across a family) is still a chat's row.
