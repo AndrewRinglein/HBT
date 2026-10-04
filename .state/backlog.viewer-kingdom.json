@@ -646,7 +646,9 @@
   "shape": "plumbing",
   "spec": "Found landing fix.fire-imp-burn-spares-self (2026-10-04, the engine worker's report): the battle's unit panel (viewer src/panel.js, the unit's triggers) prints an area trigger's target as '-> [object Object]' for every area trigger - the Fire Imp's end-of-Activation burn among them - because the target is an object (its kind, range and the new excludeSelf) and the panel prints it as a string. Print it in words through the viewer's existing text for targets (src/sheet.ts; engine src/view/text.ts - the engine's own wording, never a hand table): 'every other unit within 2 hexes'. Check every other place the page prints a trigger or power target (the action bar's tooltips, the log) for the same fault and list what was found. Also reported, for the engine's queue and not this item: the Fire Imp's two triggers (end of Activation, and Blast on hit) share the id trigger.fire-imp.burn. Kingdom's pages are rebuilt.",
   "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.bridge the Fire Imp's panel reads its end-of-Activation burn's target in words ('every other unit within 2 hexes'), and no unit's panel shows '[object Object]'; a page test reads every opening unit's panel for that string and finds none.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report. Small; pairs with viewer.bar-shows-every-effect and viewer.panel-lists-items."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report. Small; pairs with viewer.bar-shows-every-effect and viewer.panel-lists-items.",
+  "status": "done",
+  "sha": "c771fe7"
  },
  {
   "id": "kingdom.opening-specialty-three",
