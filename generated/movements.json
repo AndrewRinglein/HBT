@@ -13991,7 +13991,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Heal every ally within 2 hexes for 3 and give every enemy within 2 hexes 2 Burn",
+   "note": "on the bar, does nothing yet: unparsed: Heal every other ally within 2 hexes for 3 and give every enemy within 2 hexes 2",
    "variants": 0
   },
   {

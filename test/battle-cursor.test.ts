@@ -317,6 +317,11 @@ const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // `changed` marks the cases that differ from the content.imp-blast-tuned capture — every case fix.civilians-field-kit moves. A
 // `changed` case is checked here and skips the older layers; the rest run down this copy's three layers, then master's, as before.
 const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-civilians-kit.json', import.meta.url), 'utf8'))
+// fix.own-area-skips-owner (2026-10-04; DECISIONS.md 2026-10-04 'the Poison Imp, the Balrog and the four caster-centred class powers skip
+// their owner too': "One and two, yes, skip the caster."), Law 10: the Poison Imp's end-of-Activation Poison and the Balrog's
+// end-of-Activation Burn target every OTHER unit within 2 hexes, so neither lands on its owner at the end of its Activations.
+// Every case frozen here (tools/capture-own-area-skips-owner-cursor.mts). Moved — for real, the ruling working (state, RNG and result), exactly the cases that field a Poison Imp or a Balrog: showcase.kiln, showcase.prologue-enemies, test.opening-gates. A `changed` case is checked here and skips the older layers.
+const ownAreaGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-own-area-skips-owner.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -440,7 +445,10 @@ describe('resumable battle cursor', () => {
       const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true
+      const ownAreaExpected = ownAreaGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const ownAreaMoved = ownAreaExpected?.changed === true
+      // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a case fix.own-area-skips-owner moved skips this layer too (fix.own-area-skips-owner 2026-10-04)
+      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || ownAreaMoved
       // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
       const impBlastTunedMoved = impBlastTunedExpected?.changed === true || combineCiviliansKitMoved
       // was: const fireImpBurnMoved = fireImpBurnExpected?.changed === true — an imp-blast-tuned-moved case skips the fire-imp-burn layer too (content.imp-blast-tuned 2026-10-04)
@@ -545,7 +553,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (combineCiviliansKitExpected) {
+        if (ownAreaExpected) {
+        expect(hash(ctx.events), 'full own-area-skips-owner events').toBe(ownAreaExpected.events)
+        expect(hash(ctx.state), 'full own-area-skips-owner state').toBe(ownAreaExpected.state)
+        expect(hash(ctx.rng.log), 'full own-area-skips-owner RNG').toBe(ownAreaExpected.rng)
+        expect(result).toEqual(ownAreaExpected.result)
+        }
+        // was: if (combineCiviliansKitExpected) { — fix.own-area-skips-owner (2026-10-04): a case it moved is checked above instead
+        if (combineCiviliansKitExpected && !ownAreaMoved) {
         expect(hash(ctx.events), 'full combine-civilians-kit events').toBe(combineCiviliansKitExpected.events)
         expect(hash(ctx.state), 'full combine-civilians-kit state').toBe(combineCiviliansKitExpected.state)
         expect(hash(ctx.rng.log), 'full combine-civilians-kit RNG').toBe(combineCiviliansKitExpected.rng)
