@@ -61,11 +61,18 @@ node tools/wrap.mjs "<now line>" --next "<which chat, what it does>" "<its first
 
 node tools/next.mjs [--area <a>]       the next backlog item that is ready (areas: engine, viewer-kingdom, content, art)
 node tools/gate.mjs --shard <k>/4      run a quarter of the test suite (k = 1..4), one command
-                                       each — once per chat; wrap refuses until a complete set
-                                       passed on the exact tree. In Cowork run --shard <k>/8
-                                       (k = 1..8) instead: any complete set counts. In a
-                                       terminal, --shard 1/1 is the whole suite in one command
-node tools/gate.mjs --shards-green     exit 0 only if a complete set of shards passed on this tree
+                                       each. In Cowork run --shard <k>/8 (k = 1..8) instead: any
+                                       complete set counts. In a terminal, --shard 1/1 is the
+                                       whole suite in one command. A pass is recorded against
+                                       the engine's CODE, not the whole tree (below)
+node tools/gate.mjs --shards-green     exit 0 only if the suite passed on the engine's code as it stands
+node tools/gate.mjs --pack-golden      a new content pack shipped: re-record the control-battle golden and
+                                       say whether the fights moved (content's ship.mjs runs it)
+node tools/suites.mjs --plan           which of the four suites the change runs, which it skips and why
+node tools/suites.mjs --run all        run those; --run all --full runs all four — the once-per-chat
+                                       full run wrap refuses without; --run <suite> runs one
+node tools/suites.mjs --full-green     exit 0 only if all four passed together on the code as it stands
+node tools/code-stamp.mjs --packages   each package's code stamp
 node tools/gate.mjs <id>               run the gates, change nothing. Each check is recorded
                                        against the tree; in Cowork it stops at 150 s (--budget <s>)
                                        with INCOMPLETE, exit 3 — repeat the same command until it
@@ -118,9 +125,52 @@ The gate's checks, each pass or fail. **No seal and no exemptions** (Andrew,
 ledger; a landing that edited existing tests still lands `done-needs-review` (Law 10).
 
 A landing runs: typecheck, **the item's own tests** (the test files it touched), the
-control battles, and the checks below. The full suite runs **once per chat**, as the four
-`--shard` commands, and `wrap` refuses until a complete set (four, or `k/8` in Cowork, or
-`1/1` in a terminal) passed on the final tree.
+control battles **when the engine's code changed**, and the checks below. Everything
+together runs **once per chat**, and `wrap` refuses until it has.
+
+**Tests follow what changed** (Andrew, 2026-10-04, `DECISIONS.md` "combat is tested only when
+the engine changed; a visual change does not re-run the fights" and "the same for content and
+kingdom changes: each kind of change runs its own tests"; `tool.tests-follow-what-changed`).
+A package's tests run when that package's own code changed, and not otherwise:
+
+| What changed | What runs |
+|---|---|
+| engine code — `src/` without `src/content/generated/`, `test/`, `tools/`, `package.json`, `package-lock.json`, `tsconfig.json`, `vitest.config.ts` | the engine suite and the control battles |
+| content — `gen/`, `settled.json`, the pipeline scripts, `test/` | content's suite (`node --test test/*.test.mjs`; its publication tests dry-ship a copy, so the linter, the level check and the codex verifier run inside it) |
+| viewer code — `src/`, `tools/`, `test/`, `battles/`, `art-src/`, package and compiler config | the viewer's gate |
+| kingdom code — `src/` without `src/content/generated/`, `test/`, `tools/`, `fixtures/`, package and compiler config | kingdom's suite |
+| a regenerated file (the content pack, content's published outputs, the viewer's dumps, a built page, kingdom's generated items), a document, a ruling, `.state/`, a `.log` | nothing |
+
+- **One definition** of each package's code: `tools/code-stamp.mjs` `PACKAGE_CODE`. Its gate, `wrap`
+  and the root's `tools/combine.mjs` all read it through `tools/suites.mjs`; none keeps a copy. The
+  stamp is over the working tree's files, so the same code is the same stamp in any copy.
+- **Each suite records the code it passed on** — one line in its own package's
+  `.state/passes.jsonl` (`merge=union`): the suite, its package's stamp, the four packages' stamps
+  it ran with, when, by what command, in which copy of the folder. A stamp with a line is **not run
+  again** — in a landing, at wrap, or in combine — and a skip names the line it relied on. A run that
+  **fails** is written down too (`"failed": true`): a pass counts only while it is the latest run on
+  that code. A record with no stamp (an older tool's `shards.json`: a tree) is no pass. A worker's
+  passes are in the worker's copy and reach the shared folder only through the merge, so combine
+  reads them there.
+- **Skipped is not passed** (Law 9). A landing whose item changed nothing a battle is made of prints
+  `SKIPPED  control battles unchanged — <why>`, and the run log has `skipped: true, ok: false`;
+  combine's summary prints `SKIPPED  <suite> — <why>`. No tool prints PASS for a suite it did not run.
+- **An item's own tests always run.**
+- **The control-battle golden follows the content pack.** A pack on unchanged engine code can move
+  the control battles, so shipping one (`content/ship.mjs` → `gate.mjs --pack-golden`), or landing
+  the content item, re-records `.state/baseline.hash` and says whether the fights moved, without
+  failing the content item. When the engine's code changed too, nothing is re-recorded: that
+  landing judges the battles as always (`changesBaseline`, the consequence clause).
+- **Everything together, once per chat.** `wrap` refuses until all four suites have a pass on the
+  code as it stands, each recorded with the other three as they stand: `node tools/combine.mjs
+  <worker folder> --full` from the shared folder, or `node tools/suites.mjs --run all --full` in
+  this copy. In Cowork, each package's own commands (`--shard k/8` here, kingdom's `--shard k/4`,
+  the viewer's `--part …`, `suites.mjs --run content`) count, when no code changed between them.
+- **What it costs, as ruled.** The packages' tests read each other's files — kingdom's tests import
+  the engine and play the viewer's page, the viewer's gate plays kingdom's built
+  `BATTLE-SANDBOX.html`, an engine test reads the viewer's character models — and a pass is keyed
+  on its own package's code alone. A change in one package that breaks another's test is found at
+  the once-per-chat full run, **not at the change**. Never skip the full run.
 
 **Fast by default; the full process kept** (Andrew, 2026-09-30, `DECISIONS.md` "the fast
 process; the full process kept"). The gate's default is **fast**: the prior-art and
@@ -223,7 +273,7 @@ archive/         old handoffs. Never read.
 
 **Generated here, never hand-edited:** anything under `generated/`, `GAME-BUILDER.html`,
 `.state/backlog.<area>.json`, `.state/ledger.md`, `.state/gauntlet-log.jsonl`,
-`.state/gauntlet.json`, `.state/baseline.hash` (the gate's), `.state/inventory.json` (the prior-art audit's), `generated/wrong-home.{json,md}`, and `.state/now.json` (the wrap's),
+`.state/gauntlet.json`, `.state/baseline.hash`, `.state/passes.jsonl`, `.state/shards.json` (the gate's), `.state/inventory.json` (the prior-art audit's), `generated/wrong-home.{json,md}`, and `.state/now.json` (the wrap's),
 `HANDOFF.md`, `STATE-ROW.md` (produced from it by `tools/handoff.mjs`). Regenerate; never edit.
 
 ## Adding anything touches four places
@@ -280,7 +330,7 @@ warm the next day). The mount-unlink trap is in the root `CLAUDE.md`.
 
 **The gate and `wrap` commit only their own files, never `git add -A`** (Andrew,
 2026-10-01; `tools/commit-only.mjs`). `wrap` commits `.state/now.json`, `HANDOFF.md` and
-`STATE-ROW.md` and nothing else; the gate commits every file changed outside `.state/` (the
+`STATE-ROW.md` (and `.state/passes.jsonl`, the record of what passed) and nothing else; the gate commits every file changed outside `.state/` (the
 tree its checks judged) and its own records — the item area's list and progress file, the
 ledger, the run log, the baseline. Before this, a wrap with an ungated item's files in the tree
 committed them (`e89e3a7` swept R0's nine files on 2026-09-21; undone in `79544c5`). **A

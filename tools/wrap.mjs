@@ -50,12 +50,13 @@
 // Then the chat stops.
 
 import { execFileSync } from 'node:child_process'
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { render } from './start.mjs'
 import { produce, NOW_FILE } from './handoff.mjs'
 import { commitOnly } from './commit-only.mjs'
+import { fullGreenNow, PASSES_FILE } from './suites.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PACKAGE = 'engine'
@@ -98,14 +99,17 @@ if (!next.line) fail(`--next needs the next chat's first line, after the label �
 if (/\n/.test(next.line)) fail('--next takes one line to paste, not several — one block per line')
 if (!/^New chat with /.test(next.label)) fail(`the next chat's label starts "New chat with <folders> — <package>: <what it does>" (ruled 2026-09-06), so Angela knows which folders to select before she reads anything else:\n${USAGE}`)
 
-// The full suite runs once per chat, as the four shards, and wrap refuses until
-// all four passed on the final tree (Andrew, 2026-09-23, DECISIONS.md "less process
-// per feature"). Checked before a byte is written: the wrap's own files change the tree.
+// Everything together runs once per chat, and wrap refuses until it has (Andrew, 2026-09-23,
+// DECISIONS.md "less process per feature"; 2026-10-04, 'the same for content and kingdom changes:
+// each kind of change runs its own tests'): all four suites — content's, kingdom's, the engine's,
+// the viewer's gate — each with a pass on its package's code as it stands, recorded with the other
+// three as they stand (tools/suites.mjs). A landing and a merge-back run only what changed; this is
+// where a change in one package that breaks another's test is found. A ruling, a document, .state/
+// and a regenerated file change no package's code, so they do not make a full run stale. Checked
+// before a byte is written.
 {
-  let green
-  try { execFileSync(process.execPath, [join(HERE, 'gate.mjs'), '--shards-green'], { encoding: 'utf8', stdio: 'pipe' }); green = null }
-  catch (e) { green = String(e.stdout || e.message).trim() }
-  if (green) fail(`the suite is not green on this tree — ${green}. Run the shards (Cowork: --shard k/8; a terminal: --shard 1/1, the whole suite in one command), then wrap.`)
+  const full = fullGreenNow()
+  if (!full.green) fail(`no full run has passed on the code being wrapped —\n  ${full.said.split('\n').join('\n  ')}\nRun all four together, then wrap: from the shared folder, node tools/combine.mjs <worker folder> --full; or in this copy, from engine/, node tools/suites.mjs --run all --full (Cowork: each package's own commands — the engine's --shard k/8, kingdom's --shard k/4, the viewer's --part …, then node tools/suites.mjs --run content — with no code changed between them).`)
 }
 
 // The fast process (Andrew, 2026-09-30, DECISIONS.md "the fast process; the full process
@@ -154,7 +158,8 @@ const subject = `wrap: ${nowLine}`.replace(/[`$]/g, '').slice(0, 200)
 // ── 6. the commit, then the verification, then the truth ────────────────────
 // Only the wrap's own files (Andrew, 2026-10-01): never `git add -A`, so an ungated
 // item's files in the tree stay out of the wrap (the e89e3a7 trap, engine CLAUDE.md).
-const WRAP_FILES = [NOW_FILE, 'HANDOFF.md', 'STATE-ROW.md']
+// …and the record of what passed (.state/passes.jsonl), so the next chat and the merge-back can read it
+const WRAP_FILES = [NOW_FILE, 'HANDOFF.md', 'STATE-ROW.md', ...(existsSync(PASSES_FILE) ? [PASSES_FILE] : [])]
 const RECOVER = `git add -- ${WRAP_FILES.join(' ')}; git commit -m ${JSON.stringify(subject)} -- ${WRAP_FILES.join(' ')}`
 if (!gitUp) done(false, `git never answered — ${probe.why}`)
 
