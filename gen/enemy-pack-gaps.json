@@ -103,33 +103,23 @@
   },
   {
    "unit": "hero.base.mage-thinking",
-   "what": "item.frost-staff grants power.frost-staff.frost-nova",
-   "needs": "item power — shape unparsed"
+   "what": "item.frost-staff grants power.frost-staff.frost-nova: those seven hexes become frost",
+   "needs": "a burst paints no ground (capability.burst-paints-ground)"
   },
   {
    "unit": "hero.base.mage-sexy",
-   "what": "item.fire-staff grants power.fire-staff.fireball",
-   "needs": "item power — shape unparsed"
+   "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
+   "needs": "a burst paints no ground (capability.burst-paints-ground)"
   },
   {
    "unit": "hero.base.mage-fire",
-   "what": "item.fire-staff grants power.fire-staff.fireball",
-   "needs": "item power — shape unparsed"
+   "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
+   "needs": "a burst paints no ground (capability.burst-paints-ground)"
   },
   {
    "unit": "hero.base.mage-fireaura",
-   "what": "item.fire-staff grants power.fire-staff.fireball",
-   "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "hero.base.priest-pauper",
-   "what": "item.holy-texts grants power.holy-texts.mercy",
-   "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "hero.base.priest-armored",
-   "what": "item.holy-texts grants power.holy-texts.mercy",
-   "needs": "item power — shape unparsed"
+   "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
+   "needs": "a burst paints no ground (capability.burst-paints-ground)"
   },
   {
    "unit": "hero.base.priest-robes",
@@ -215,11 +205,6 @@
    "unit": "item.crippling-whip",
    "what": "attack.crippling-whip.hamstring onHit: \"apply 2 Weak and the target gains 1 Slow\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.holy-texts",
-   "what": "grants power.holy-texts.mercy",
-   "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.sword-of-the-fallen",
@@ -563,13 +548,13 @@
   },
   {
    "unit": "item.fire-staff",
-   "what": "grants power.fire-staff.fireball",
-   "needs": "item power — shape unparsed"
+   "what": "power.fire-staff.fireball: those seven hexes become burning",
+   "needs": "a burst paints no ground (capability.burst-paints-ground)"
   },
   {
    "unit": "item.frost-staff",
-   "what": "grants power.frost-staff.frost-nova",
-   "needs": "item power — shape unparsed"
+   "what": "power.frost-staff.frost-nova: those seven hexes become frost",
+   "needs": "a burst paints no ground (capability.burst-paints-ground)"
   },
   {
    "unit": "item.earth-staff",
