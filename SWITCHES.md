@@ -602,3 +602,13 @@ bound scene hex by hex. Seen in a real browser on the candidate page, both battl
 |---|---|---|---|---|
 | `gatesGround` | The item names `abbotown-complete` (the whole-town model, a 20×50 measured grid) for the Gates; the binder refuses it. | **The Gates stays on the flat board, unbound, and the reason is named: its map was compiled from an Atlas map (`assets/battle-atlas/maps/abbotown-gate-painted.json`), not from a 3D scene; `abbotown-complete` has `abbotown.glb` and a navigation file but no `scene.glb`, and the ground proposal does not name it for the Gates.** Never a borrowed scene. The launcher's "flat board for now" line stays for the Gates alone. | The item's own clause (2): say exactly what is missing. Whether the Gates' scene is cut from the town model was asked of Andrew 2026-10-03 and is not yet answered. | Default — 2026-10-03; open |
 | `unmodelledOnScene` | Battles 4 and 6 field units with no model bound (Zombie Hound, Werewolf, Ghoul). | **They keep their tokens, standing on the 3D scene, until `art.opening-enemy-models` supplies them.** | The item makes no models; a borrowed look is never drawn. | Default — 2026-10-03 |
+
+## fix.civilians-field-kit (engine) — the Lumberjack House recording, 2026-10-03
+
+Engine DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an encounter places it'. The engine's code
+stamp moved (31bfaa8755 → f751a9e169), so `generated/static.json` and `generated/fields.json` are re-dumped (their stamp
+only) and the page is rebuilt.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `civiliansKitReplays` | "Rebuild … the replays the change makes stale" — which recordings? | **The Lumberjack House (`battles/test.opening-lumberjack.json`), re-exported by the engine's `export-battle.mts` on the same seed, 0: still a hero win, now in 4 Turns (it was 8) — the Lumberjack chops with his axe and his wife stabs with her dagger. The other five opening recordings are byte-identical on the new engine (`gate.mjs --fresh`). The showcase recordings that place a civilian (Supper, Surrounded) were already recorded on an older engine (88064ac) and differ from its first event for older reasons; they stay as recorded, like the other 28 the fresh check names.** | Only a recording that was current can be made stale by this change. Seed 0 is still the Lumberjack House's lowest winning seed (`openingReplaySeed`). | Default — 2026-10-03 |
