@@ -27,7 +27,7 @@ export function drawRail(V) {
   const { S, view, data: { ARTMAP, ASSETS } } = V
   /* who still has a card: the heroes' side until dead, everyone else while standing */
   const units = Object.values(S.U).filter(u => u.side === 'hero' ? u.life !== 'dead' : u.life === 'standing')
-  const key = units.map(u => `${u.id}:${u.side}:${u.life}:${u.bleed}:${S.acted[u.id] ? 1 : 0}`).join(',') + `|${S.activeId}|${view.inspectId}`
+  const key = units.map(u => `${u.id}:${u.typeId}:${u.side}:${u.life}:${u.bleed}:${S.acted[u.id] ? 1 : 0}`).join(',') + `|${S.activeId}|${view.inspectId}`
   if (rail.dataset.key === key) return
   rail.dataset.key = key
   const chip = u => {

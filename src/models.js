@@ -517,6 +517,8 @@ export function createCast(V, scene, toWorld, platform = {}) {
       const look = lookFor(binding, u.id), entry = want(look)
       if (entry.state !== 'ready') continue
       let body = bodies.get(u.id)
+      /* viewer.plays-turned-units: a unit turned (or itself again) wears another look — the body of the old one goes */
+      if (body && body.look !== entry.loaded.look) { drop(u.id); body = undefined; changed = true }
       const el = anchorOf(u)
       /* a unit that has just died plays its death where it stood until its corpse is on the board;
          a death that leaves no corpse leaves nothing once the fall ends */

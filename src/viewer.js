@@ -95,6 +95,8 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'unit.equipped': 0, 'loadout.swapped': 360, 'encounter.begin': 0, 'encounter.objective': 0, 'encounter.wave': 900, 'encounter.roll': 0, 'unit.shunted': 200,
   'encounter.won': 900, 'encounter.lost': 900, 'move.stopped': 520, 'aoo.provoked': 700, 'aoo.skipped': 0, 'attack.cancelled': 120,
   'corpse.created': 0, 'corpse.removed': 380, 'unit.raised': 640, 'corpse.eaten': 300, 'unit.obliterated': 520,
+  /* viewer.plays-turned-units (2026-10-04) */
+  'unit.transformed': 900, 'unit.reverted': 420,
   /* the Deathbed Fighting modal holds the game (ruled 2026-09-03 evening): DB_TOTAL + a breath */
   'deathbed.stood': 2800, 'deathbed.fell': 2800, 'deathbed.none': 2800, 'hp.reset': 320, 'bleedout.accelerated': 320,
   'unit.badged': 0, 'unit.modified': 0, 'badge.gained': 420, 'badge.held': 0, 'power.exhausted': 160, 'charge.spent': 0, 'maxstamina.gained': 200,

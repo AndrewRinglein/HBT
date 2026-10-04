@@ -111,6 +111,39 @@ export function fold(S, e, ctx, now = 0) {
          before battle.begin is seeded silently by the pump (2026-09-03) */
       if (S.begun) cue('arrive', { id: e.actor, hex: e.hex })
       break
+    /* ── A HERO TURNED BY AN AFFLICTION (viewer.plays-turned-units, 2026-10-04) ───────────────────────────────────────────
+       rule.afflictions-at-zero (engine DECISIONS.md 2026-10-01 'the afflictions at 0 Health'; engine src/core/mutate.ts
+       transformUnit / revertUnit): a hero taken to 0 Health carrying Lycanthropy or Vampirism becomes its affliction's FORM
+       — "the bestiary's stats and powers, no hero gear", at full Health — on the side the line says, and is itself again
+       when it falls or the battle ends. One line each. The unit on the board becomes the form's ROW: its type (so its
+       sheet, its attacks, its art and its body are the form's wherever they are read off the type), the line's side,
+       Health and maximum, the row's Stamina (the engine's sheet: the line does not state it), no kit, no modifiers; it
+       keeps what the engine keeps — its id, its hex, its statuses — and what is left of its Activation is spent. What
+       it was is kept whole on `turned.original` and comes back at the revert, on the hex and with the statuses it has
+       then, at the Health the line says. viewer SWITCHES turnedName, turnedStamina, turnedWords. */
+    case 'unit.transformed':
+      if (U[e.actor]) { const was = U[e.actor], row = UD[e.into]
+        if (!row) throw new Error(`unit.transformed: the engine's sheet has no ${e.into}`)
+        if (was.turned) throw new Error(`unit.transformed: unit ${e.actor} is already turned into ${was.turned.into}`)
+        const form = mkUnit({ actor: was.id, name: `${row.name} (${was.name})`, typeId: e.into, side: e.side, hex: was.hex, hp: e.hp, maxHp: e.maxHp, stamina: row.maxStamina ?? 0, maxStamina: row.maxStamina ?? 0 }, UD)
+        Object.assign(form, { st: was.st, stBy: was.stBy, prone: was.prone, moveUsed: true, primaryUsed: true,
+          turned: { badgeId: e.badgeId, from: e.from, into: e.into, original: structuredClone(was) } })
+        U[e.actor] = form
+        if (S.AOO?.mover === e.actor) S.AOO = null
+        cue('float', { hex: form.hex, kind: 'note', text: 'TURNED · ' + String(row.name).toUpperCase(), big: true })
+        cue('turned', { id: e.actor, into: e.into, side: e.side }) }
+      break
+    case 'unit.reverted':
+      if (U[e.actor]) { const form = U[e.actor]
+        if (!form.turned) throw new Error(`unit.reverted: unit ${e.actor} was not turned`)
+        const own = form.turned.original
+        Object.assign(own, { hex: form.hex, st: form.st, stBy: form.stBy, prone: form.prone, side: e.side, hp: e.hp, maxHp: e.maxHp,
+          moveUsed: form.moveUsed, primaryUsed: form.primaryUsed, activeMv: form.activeMv, life: 'standing', bleed: 0 })
+        U[e.actor] = own
+        if (S.AOO?.mover === e.actor) S.AOO = null
+        cue('float', { hex: own.hex, kind: 'note', text: 'ITSELF AGAIN', small: true })
+        cue('turned', { id: e.actor, into: e.into, side: e.side }) }
+      break
     case 'battle.begin': S.begun = true; break
     case 'map.loaded':
       /* the board is the map's: width, height and which edge each side deploys on */
@@ -780,6 +813,8 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',
   'move.stopped', 'aoo.provoked', 'aoo.skipped', 'zoc.ignored', 'block.rolled',
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten', 'unit.obliterated',
+  /* viewer.plays-turned-units (2026-10-04) */
+  'unit.transformed', 'unit.reverted',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',

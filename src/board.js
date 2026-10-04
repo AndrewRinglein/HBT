@@ -766,7 +766,8 @@ export function playCues(V, cues) {
       case 'hitstop': hitstop(V, c.ms); break
       case 'float': pushFloat(V, c.hex, c.text, floatHue(c, V.data), c); break
       case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg, c.crit); break
-      case 'slash': fxSlash(V, c.id, c.dt, c.n, c.crit); break      // viewer.hit-slash: the damage of an attack that the pump has not already drawn at its blow
+      case 'slash': fxSlash(V, c.id, c.dt, c.n, c.crit); break
+      case 'turned': break   // viewer.plays-turned-units: the redraw is the type's (syncUnits, the cast); nothing else to play      // viewer.hit-slash: the damage of an attack that the pump has not already drawn at its blow
       case 'kick': cameraKick(V, c.a, c.t); break
       case 'injury': queueInjury(V, c.id, c.name); break
       case 'fx.status': fxStatus(V, c.id, c.style); break
@@ -887,7 +888,10 @@ export function syncUnits(V) {
   const bare = view.bare
   for (const [id, E] of L.UEL) if (!S.U[id]) E.root.style.display = 'none'
   for (const u of Object.values(S.U)) {
-    let E = L.UEL.get(u.id); if (!E) { E = mkUnit(V, u); L.UEL.set(u.id, E) }
+    let E = L.UEL.get(u.id)
+    /* viewer.plays-turned-units: a unit turned (or itself again) is another row — its token, its tint, its name are made afresh */
+    if (E && (E.typeId !== u.typeId || E.side !== u.side)) { E.root.remove(); L.UEL.delete(u.id); E = null }
+    if (!E) { E = mkUnit(V, u); E.typeId = u.typeId; E.side = u.side; L.UEL.set(u.id, E) }
     const attempted = opportunityPose(V)
     const f = attempted?.id === u.id ? attempted : feetOf(V, u.hex)
     E.root.style.left = f.x + 'px'; E.root.style.top = f.y + 'px'

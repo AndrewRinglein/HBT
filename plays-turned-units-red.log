@@ -1,0 +1,148 @@
+TAP version 13
+# Subtest: the fold plays both lines: they are folded types, and both battles hold them
+not ok 1 - the fold plays both lines: they are folded types, and both battles hold them
+  ---
+  duration_ms: 2.1055
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\plays-turned-units.test.mjs:56:1'
+  failureType: 'testCodeFailure'
+  error: 'unit.transformed and unit.reverted are folded'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/plays-turned-units.test.mjs:57:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: before, during and after: at the turn the unit is its form — type, side, Health, the form's attacks, no hero gear — keeping its hex and its statuses; at the revert it is itself, whole
+not ok 2 - before, during and after: at the turn the unit is its form — type, side, Health, the form's attacks, no hero gear — keeping its hex and its statuses; at the revert it is itself, whole
+  ---
+  duration_ms: 871.326
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\plays-turned-units.test.mjs:62:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    its form's type
+    + actual - expected
+    
+    + 'hero.base.warrior-iron'
+    - 'unit.werewolf'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'unit.werewolf'
+  actual: 'hero.base.warrior-iron'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/plays-turned-units.test.mjs:69:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: it is drawn and listed as its form: its token, its card above the battle on the form's side, its panel, and the form's actions on the bar when it acts
+not ok 3 - it is drawn and listed as its form: its token, its card above the battle on the form's side, its panel, and the form's actions on the bar when it acts
+  ---
+  duration_ms: 870.8604
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\plays-turned-units.test.mjs:91:1'
+  failureType: 'testCodeFailure'
+  error: "the hero's card"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/plays-turned-units.test.mjs:97:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: its body: the hero's own model gives way to the form's — a form with no model stands as its token, and is listed — and the hero's model stands again at the revert
+not ok 4 - its body: the hero's own model gives way to the form's — a form with no model stands as its token, and is listed — and the hero's model stands again at the revert
+  ---
+  duration_ms: 268.2228
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\plays-turned-units.test.mjs:122:1'
+  failureType: 'testCodeFailure'
+  error: 'the hero stands as its model'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/plays-turned-units.test.mjs:131:39)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: seek, step and replay land on the same state: the whole battle played by the pump ends on the pure fold; seeking past a turn and back is the fold of the log there
+ok 5 - seek, step and replay land on the same state: the whole battle played by the pump ends on the pure fold; seeking past a turn and back is the fold of the log there
+  ---
+  duration_ms: 1046.5524
+  type: 'test'
+  ...
+# Subtest: the Cavern Trail's recording plays through: the bite's first-affliction pop-up stands and is closed, the Chaplain turns, fights as a Werewolf and is himself again at the end
+not ok 6 - the Cavern Trail's recording plays through: the bite's first-affliction pop-up stands and is closed, the Chaplain turns, fights as a Werewolf and is himself again at the end
+  ---
+  duration_ms: 338.7239
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\plays-turned-units.test.mjs:166:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'click')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/plays-turned-units.test.mjs:175:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the log says each in a sentence, and the turn floats its word over the unit
+not ok 7 - the log says each in a sentence, and the turn floats its word over the unit
+  ---
+  duration_ms: 294.1712
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\plays-turned-units.test.mjs:185:1'
+  failureType: 'testCodeFailure'
+  error: "the turn's sentence names the hero and the form: null"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/plays-turned-units.test.mjs:190:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 1
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7633.2614

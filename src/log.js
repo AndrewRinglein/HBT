@@ -6,6 +6,8 @@ const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<'
 /** basis points as a percent, by moving the decimal point in the engine's own digits — no arithmetic (Law 0) */
 export const bpsPct = bps => { const s = String(bps).padStart(3, '0'), f = s.slice(-2).replace(/0+$/, ''); return s.slice(0, -2) + (f ? '.' + f : '') }
 
+/** an id as words: 'badge.lycanthropy' -> 'Lycanthropy', 'unit.werewolf' -> 'Werewolf' */
+const wordsOf = (id, prefix) => String(id).replace(prefix, '').split(/[-.]/).map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' ')
 export function buildLog(events, SN, turns) {
   const NAMES = {}, SIDES = {}
   for (const e of events) if (e.type === 'unit.enter') { NAMES[e.actor] = e.name; SIDES[e.actor] = e.side }
@@ -126,6 +128,10 @@ export function buildLog(events, SN, turns) {
          areas, the Turn the event says it lands after, and whom the event says it struck */
       case 'area.marked': return b('turn', `— ${escape(fallWord(e.fall))}: ${(e.areas || []).length} areas are marked · they are struck after the Hero Phase of Turn ${e.lands} —`)
       case 'area.landed': return b('turn', `— ${escape(fallWord(e.fall))} lands on ${(e.areas || []).length} areas · ${(e.hit || []).length ? 'strikes ' + e.hit.map(id => `<b>${escape(NAMES[id] ?? ('#' + id))}</b>`).join(', ') : 'strikes no one'} —`)
+      /* viewer.plays-turned-units: the turn and the revert, one sentence each — the engine's own names for the affliction's badge
+         (its id as words), the form's type and the side */
+      case 'unit.transformed': return b('turn', `— <b>${escape(NAMES[e.actor] ?? ('#' + e.actor))}</b> is taken by ${escape(wordsOf(e.badgeId, 'badge.'))} and becomes a ${escape(wordsOf(e.into, 'unit.'))} · it fights for the ${e.side === 'hero' ? 'heroes' : 'enemy'} —`)
+      case 'unit.reverted': return b('turn', `— <b>${escape(NAMES[e.actor] ?? ('#' + e.actor))}</b> is ${e.reason === 'fell' ? 'beaten as a ' + escape(wordsOf(e.from, 'unit.')) + ' and is' : ''} itself again${e.reason === 'battleEnd' ? ' as the battle ends' : ''} · ${e.hp} hp —`)
       case 'night.fell': return b('turn', `— night falls: ${e.hexes} hexes dark —`)
       case 'light.cast': return b('status', `&nbsp;&nbsp;the heroes light ${e.hexes} hexes`)
       case 'ai.override': return b('status', `&nbsp;&nbsp;${nmAt(e)} — ${e.mode} until Turn ${e.untilTurn} <span class="sq">· ${e.causeId}</span>`)
@@ -134,5 +140,6 @@ export function buildLog(events, SN, turns) {
       default: return null
     }
   }
-  return events.map((e, i) => { const s = sentence(e); return s ? { i, ...s } : null }).filter(Boolean)
+  /* a turned unit's lines are its side's at that line (viewer.plays-turned-units): the side changes as the log says */
+  return events.map((e, i) => { const s = sentence(e); if (e.type === 'unit.transformed' || e.type === 'unit.reverted') SIDES[e.actor] = e.side; return s ? { i, ...s } : null }).filter(Boolean)
 }
