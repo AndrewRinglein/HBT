@@ -31,7 +31,7 @@ const SWORD='item.longsword.flaming'
    Engagement's own seed, nothing sought. What this page test holds — the loop's flow through three battles — is unchanged.
    LOOP_THREE_SEED: another run seed (another party) — nothing is searched for it either */
 const RUN_SEED=Number(process.env.LOOP_THREE_SEED??11)
-const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,whoGoes,equipThenFight,fightOut:settleOn,levelUps,takeReward,carriers,v}=openingPage(page,'?map&seed='+RUN_SEED)
+const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,whoGoes,equipThenFight,fightOut:settleOn,levelUps,takeReward,carriers,waitingOffer,v}=openingPage(page,'?map&seed='+RUN_SEED)
 /* a battle settled as the test means it to end (opening-page.mjs playedOut), and how it went said (stderr) */
 const chosen={}
 function fightOut(won,label){const r=settleOn(won,label);chosen[label]=[r.played,r.seed,r.result.turns];console.error(`settled ${label}: ${won?'the strong party, the engine\'s AI':'the party held idle, cut at Turn 1'} — ${r.result.outcome} on Turn ${r.result.turns}, the Engagement's own seed ${r.seed}`);return r}
@@ -143,7 +143,13 @@ if(may.length){
  assert.ok(camp().roster[givers[0]].equipped.includes(SWORD),'the Flaming Longsword is in a Warrior\'s or Paladin\'s hands')
 }else{
  assert.notEqual(camp().cursor.step,'rewards','no Warrior or Paladin in the party of two: the Flaming Longsword is not offered')
- assert.ok(!Object.values(camp().roster).some(h=>h.equipped.includes(SWORD))&&!camp().stash.includes(SWORD),'and nobody carries it')
+ /* Law 10, 2026-10-04 (kingdom.opening-sword-waits; engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword
+    waits for its taker; …' — "One, yes."): this read
+      assert.ok(!Object.values(camp().roster).some(h=>h.equipped.includes(SWORD))&&!camp().stash.includes(SWORD),'and nobody carries it')
+    — "with none, nothing is offered and nobody carries it" (openingItemTakers), which the ruling settles: nobody carries
+    it YET — it is kept in the stash, and waits. */
+ assert.ok(!Object.values(camp().roster).some(h=>h.equipped.includes(SWORD)),'nobody carries it yet')
+ assert.deepEqual(camp().stash,[SWORD],'the Flaming Longsword is kept in the stash, waiting')
 }
 levelUps('battle 2')
 const saved2=b2.result.units.filter(u=>u.side==='hero'&&u.role==='encounter'&&u.lifeState!=='dead').map(u=>u.typeId)
@@ -156,6 +162,16 @@ assert.equal(readMap([ORPHANAGE,LUMBERJACK],'after battle 2'),BRIDGE)
    — the party is one smaller under the cadence ruled: three heroes at the Bridge. */
 v.click('field',BRIDGE)
 const third=draft('battle 3')
+/* kingdom.opening-sword-waits: with the sword waiting, the draft that brings a Warrior or a Paladin is followed by the
+   offer to take it — the carrier named — before the battle is fielded; with nothing waiting (or no taker yet) the battle
+   is fielded at once, as before */
+const waited=waitingOffer('battle 3')
+if(waited){
+ assert.ok(!may.length&&camp().roster[third].classes.some(c=>TAKERS.includes(c)),'the sword waited, and this draft brought its taker')
+ v.click('give',waited.offered[0]);wait(100)
+ assert.ok(camp().roster[waited.offered[0]].equipped.includes(SWORD),'the Flaming Longsword is carried by the hero named')
+ givers=[waited.offered[0]]
+}else assert.ok(may.length>0||!camp().roster[third].classes.some(c=>TAKERS.includes(c)),'no waiting offer: the sword is carried already, or no taker has come yet')
 assert.equal(camp().cursor.step,'prep','one draft between battles 2 and 3')
 const party3=[...party2,third].sort()
 assert.deepEqual(heroIds(),party3,'three heroes before battle 3')
@@ -167,7 +183,8 @@ assert.equal(camp().cursor.step,'rewards','the Bridge offers its reward')
 const offer=[...camp().cursor.rewardOffer];assert.equal(offer.length,3,'three items offered');assert.equal(new Set(offer).size,3)
 const kept=takeReward(1,'battle 3')
 assert.equal(byId('campaign').querySelectorAll('[data-act=give]').length,0,'a drawn item goes to the stash, named to nobody')
-assert.deepEqual(camp().stash,[kept],'one kept; the two left are burned')
+/* (kingdom.opening-sword-waits: a sword still waiting for its taker lies in the stash beside it) */
+assert.deepEqual(camp().stash.filter(x=>x!==SWORD),[kept],'one kept; the two left are burned')
 levelUps('battle 3')
 assert.equal(readMap([ORPHANAGE,LUMBERJACK,BRIDGE],'after battle 3'),CAVERN,'three sections taken')
 /* kingdom.opening-recap-civilians (2026-10-03: "If they were wounded, if they died, they're in there too." — the
@@ -184,7 +201,7 @@ assert.equal(camp().ended,null)
 for(const x of SPECIALTY_CHOICES){assert.equal(x.offered.length,3,x.label+': three offered');assert.ok(x.offered.includes(x.took),x.label+': one of the three is taken')}
 /* kingdom.opening-reward-card-art: the Bridge's three reward cards each showed their item's card art or the plain card of
    an item named in itemsMissing (held card by card, opening-page.mjs), and Equip's items the same before every battle */
-assert.equal(ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain,(givers.length?1:0)+3,'every reward card of the sitting was held to its art, or to itemsMissing')
+assert.equal(ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain,(may.length?1:0)+3,'every reward card of the sitting was held to its art, or to itemsMissing')
 assert.ok(ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain>0,'Equip\'s items were held too')
 console.error('settled by: '+JSON.stringify(chosen))
 console.log(`opening loop three: map -> draft (one before every battle: a party of ${[1,party2.length,party3.length].join(', ')}; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the victory screens showed the civilians who fought (the Orphanage: ${saidOf(shownAt(ORPHANAGE))}; the Lumberjack House: ${saidOf(shownAt(LUMBERJACK))}); the Orphanage's 20 XP and level 2 with a specialty; three specialties offered at every specialty choice (${SPECIALTY_CHOICES.length} choices); battle 2 lost: no XP, offered again on new dice (seed ${first2.config.seed}, then ${replay.config.seed}) with the same party, wounds kept; the Flaming Longsword ${givers.length?'to '+givers[0]:'to nobody (no Warrior or Paladin in the party of two)'};${ITEM_ART_SEEN.sword?' the Flaming Longsword\'s reward card showed its card art;':''} item card art on ${ITEM_ART_SEEN.rewardArt} of ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards and ${ITEM_ART_SEEN.equipArt} of ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} Equip items, the rest plain and named in itemsMissing; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)

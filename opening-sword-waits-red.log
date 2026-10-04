@@ -1,0 +1,94 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+ ❯ test/opening-sword-waits.test.ts (5 tests | 5 failed) 10761ms
+     × the row says whose it is: the Flaming Longsword is a Warrior's or a Paladin's 5ms
+     × with no Warrior or Paladin after the Lumberjack House the sword is kept in the stash, and the player is told it waits 156ms
+     × the draft that brings a Warrior or a Paladin is followed by the offer to take it: the player names the carrier, and it is carried 49ms
+     × a run that has a Warrior or a Paladin after battle 2 is offered it then, as today: it never goes to the stash 39ms
+     × the page covers both: a run with no Warrior or Paladin after battle 2 keeps the sword in the stash and offers it after the draft that brings one; a run with one is offered it at once 9511ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-sword-waits.test.ts > kingdom.opening-sword-waits — the Flaming Longsword waits for its taker > the row says whose it is: the Flaming Longsword is a Warrior's or a Paladin's
+AssertionError: content/encounter-rewards.ts rewardTakersOf: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ test/opening-sword-waits.test.ts:94:79
+     92|
+     93|   it('the row says whose it is: the Flaming Longsword is a Warrior\'s …
+     94|     expect(typeof takersRowOf, 'content/encounter-rewards.ts rewardTak…
+       |                                                                               ^
+     95|     expect(takersRowOf!(SWORD)).toEqual(TAKERS)
+     96|     expect(takersRowOf!('item.longsword')).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/opening-sword-waits.test.ts > kingdom.opening-sword-waits — the Flaming Longsword waits for its taker > with no Warrior or Paladin after the Lumberjack House the sword is kept in the stash, and the player is told it waits
+AssertionError: the Flaming Longsword is kept in the stash: expected [] to deeply equal [ 'item.longsword.flaming' ]
+
+- Expected
++ Received
+
+- [
+-   "item.longsword.flaming",
+- ]
++ []
+
+ ❯ test/opening-sword-waits.test.ts:102:67
+    100|     const { ctx, last } = await afterLumberjack(false), c = ctx.campai…
+    101|     expect(c.cursor.rewardOffer, 'nothing to take now: nobody may carr…
+    102|     expect(c.stash, 'the Flaming Longsword is kept in the stash').toEq…
+       |                                                                   ^
+    103|     expect(Object.values(c.roster).some((h) => h.equipped.includes(SWO…
+    104|     expect(R.listWaitingItems!(c)).toEqual([SWORD])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/opening-sword-waits.test.ts > kingdom.opening-sword-waits — the Flaming Longsword waits for its taker > the draft that brings a Warrior or a Paladin is followed by the offer to take it: the player names the carrier, and it is carried
+TypeError: R.listWaitingOffers is not a function
+ ❯ test/opening-sword-waits.test.ts:134:14
+    132|     expect(brought, 'a Warrior or a Paladin is drafted').toBe(true)
+    133|     const may = heroIds(c).filter((id) => isTaker(c, id))
+    134|     expect(R.listWaitingOffers!(c), 'the sword is offered as soon as a…
+       |              ^
+    135|     // the same when the run is closed here and opened again: nothing …
+    136|     expect(R.listWaitingOffers!(runOf(runSaveOf(c, null)).campaign)).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/opening-sword-waits.test.ts > kingdom.opening-sword-waits — the Flaming Longsword waits for its taker > a run that has a Warrior or a Paladin after battle 2 is offered it then, as today: it never goes to the stash
+TypeError: R.listWaitingItems is not a function
+ ❯ test/opening-sword-waits.test.ts:156:14
+    154|     expect(c.cursor.rewardOffer).toEqual([SWORD])
+    155|     expect(c.stash).toEqual([])
+    156|     expect(R.listWaitingItems!(c)).toEqual([])
+       |              ^
+    157|     expect(recapScreen(c, ctx.events, last)).not.toMatch(/waits in the…
+    158|     const taker = listRewardTakers(c, SWORD)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/opening-sword-waits.test.ts > kingdom.opening-sword-waits — the Flaming Longsword waits for its taker > the page covers both: a run with no Warrior or Paladin after battle 2 keeps the sword in the stash and offers it after the draft that brings one; a run with one is offered it at once
+AssertionError: expected 'opening run six: six battles from the…' to match /the Flaming Longsword waited in the s…/
+
+- Expected:
+/the Flaming Longsword waited in the stash \(no Warrior or Paladin in the party of two; the map said so\) and was offered after the draft that brought [^,]+, who carries it/
+
++ Received:
+"opening run six: six battles from the map, never the kingdom map (Week 0); one draft before every battle (1, 1, 1, 1, 1, 1): a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (4 choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (mage, paladin, priest, ranger, rogue, warrior); four deploy — with five or more free to fight the run asked who goes (battle 5: home Pyre Witch; battle 6: home Court Champion, Barefoot Mendicant, Forest Fey, The Skull, Skullplate Veteran; battle 6 again: home Pyre Witch, Barefoot Mendicant), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: none; card art on every hero card (draft 18, whoGoes 22, equip 29, victory 18, rewards 16, carrier 0, levelUp 9; heroes with no art on disk, shown blank: none); a battle a hero died in was not kept and was offered again with the party as it stood: the Bridge, won with Forest Fey dead (the screen named who fell; nothing written; replayed on new dice with Forest Fey alive); the Cavern Trail, every hero sent dead or down (Court Champion, Forest Fey, Skullplate Veteran dead: the same screen, nobody written dead or wounded, all four sent again); a lost battle paid no XP (the Orphanage, the Lumberjack House and the Cathedral, each lost first: every hero's XP where it was) and was offered again on new dice (seed 1, then 1790923313; seed 2, then 1019288744; seed 6, then 1983310410); a replay left mid-battle reopened as the same battle to the byte; the Orphanage won paid its 20; the victory screens showed the civilians who fought, set apart from the heroes and marked unhurt, wounded or dead (the Orphanage: Orphan Child unhurt, joins, School Teacher dead; the Lumberjack House: Lumberjack unhurt, joins, Lumberjack's Wife unhurt, joins); a civilian who died (School Teacher) was marked dead and did not join; an idol kept as a battle reward (Idol of the Hearthmother, 1 faith outside the opening) went onto Pyre Witch at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle; item card art: 12 reward cards — 0 showed their item's card art, 12 plain and named in itemsMissing; 72 items on Equip — 24 with art, 48 plain and named in itemsMissing; party Pyre Witch L1, Court Champion L3, Barefoot Mendicant L1, Forest Fey L4, The Skull L3, Skullplate Veteran L3; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's item.banner-mystic-power kept passed
+"
+
+ ❯ test/opening-sword-waits.test.ts:169:25
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  03:47:23
+   Duration  14.70s (transform 2.97s, setup 0ms, import 3.82s, tests 10.76s, environment 0ms)
+

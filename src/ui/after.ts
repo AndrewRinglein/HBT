@@ -33,7 +33,9 @@ import type { CampaignState } from '../core/campaign.js'
 import type { EngagementResult } from '../core/seam.js'
 import type { Reckoning } from '../core/reckoning.js'
 import type { KingdomEvent } from '../core/mutate.js'
-import { listRewardOffers, listRewardTakers, listLevelUps, viewLevelUp, canLevelUp } from '../core/rewards.js'
+import { listRewardOffers, listRewardTakers, listLevelUps, viewLevelUp, canLevelUp, listWaitingItems } from '../core/rewards.js'
+import { encounterRewardOf, rewardTakersOf } from '../content/encounter-rewards.js'
+import { CLASSES } from '../content/classes.js'
 import { hashOf } from '../core/rng.js'
 import { listBattleCivilians } from '../view/civilians.js'
 import { statLabelOf } from '../content/stat-labels.js'
@@ -81,6 +83,15 @@ export function quoteOf(bank: QuoteBank, hero: { classes: string[]; personality?
   return bank.fallback
 }
 
+/** kingdom.opening-sword-waits: the item this battle's row gives to named classes, when it lies waiting in the stash — and whose it is, in words. */
+function waitingFromBattle(c: CampaignState, engagementId: string): { itemId: string; whose: string } | null {
+  const offer = encounterRewardOf(engagementId)?.offer
+  if (offer?.kind !== 'item' || !listWaitingItems(c).includes(offer.itemId)) return null
+  return { itemId: offer.itemId, whose: whoseOf(offer.itemId) }
+}
+/** "a Warrior or a Paladin" — the classes an item waits for, by their names. */
+export const whoseOf = (itemId: string): string => (rewardTakersOf(itemId) ?? []).map((id) => 'a ' + (CLASSES.find((r) => r.id === id)?.name ?? id)).join(' or ')
+
 const woundClass = (h: { wound: number; lifeState: string }) => h.lifeState === 'dead' ? 'dead' : h.wound >= 2 ? 'badly-wounded' : h.wound === 1 ? 'wounded' : 'healthy'
 const woundGlyph = (c: string) => c === 'dead' ? '💀' : c === 'badly-wounded' ? '☠' : c === 'wounded' ? '⚠' : ''
 const face = (heroId: string) => { const a = portraitOf(heroId); return a ? `<img src="${a}" alt="">` : '' }
@@ -119,6 +130,9 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
     : [...heroes.filter((h) => h.lifeState === 'dead' || h.wound > 0).map((h) => { const k = woundClass(h); return `<div class="report-line ${k === 'dead' ? 'dead-report' : k}"><span class="report-icon">${woundGlyph(k)}</span><span>${esc(h.name)} — ${k === 'dead' ? 'fell in battle' : esc(woundNameOf(h.wound))}</span></div>` }), ...civilianLines]
   const FATE_WORD = { unhurt: 'Unhurt', wounded: woundNameOf(1), dead: 'Dead' } as const
   const civilianCards = civilians.map((v) => `<div class="civilian-member" data-unit="${esc(v.typeId)}" data-fate="${v.fate}" data-joins="${v.joins ? 1 : 0}"><div class="civilian-portrait ${v.fate}">${v.heroId ? face(v.heroId) : ''}${woundGlyph(v.fate) ? `<span class="wound-badge">${woundGlyph(v.fate)}</span>` : ''}</div><div class="civilian-name">${esc(v.name)}</div><div class="civilian-fate ${v.fate}">${FATE_WORD[v.fate]}</div>${v.joins ? '<div class="civilian-joins">joins you</div>' : ''}</div>`).join('')
+  // kingdom.opening-sword-waits: the battle's own item, kept for want of a taker, is said to wait
+  const waits = won && e ? waitingFromBattle(c, e.id) : null
+  if (waits) report.push(`<div class="report-line waits"><span class="report-icon">✦</span><span>The ${esc(itemOf(waits.itemId).name)} waits in the stash — for ${esc(waits.whose)}, when one joins you with a hand free.</span></div>`)
   if (questGains.length) report.push(`<div class="report-line">Quest reward — ${esc(questGains.join(' · '))}</div>`)
   const party = heroes.map((h) => { const k = woundClass(h); return `<div class="party-member"><div class="party-portrait ${k}">${face(portraitIdOf(h))}${woundGlyph(k) ? `<span class="wound-badge">${woundGlyph(k)}</span>` : ''}</div><div class="party-name">${esc(h.name)}</div></div>` }).join('')
   return `<div class="hx recap ${won ? '' : 'defeat'}" data-outcome="${outcome}" data-won="${won}">${muteButton()}

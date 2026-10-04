@@ -19,7 +19,7 @@ import { levelRowOf, specialtiesOf, specialtyOf, SPECIALTY_OFFER, type Specialty
 import { SWITCHES } from '../content/switches.js'
 import { rollOf, drawOf } from './rng.js'
 import { REWARDS, REWARD_ODDS, slotOf, type RewardRow } from '../content/rewards.js'
-import { encounterRewardOf } from '../content/encounter-rewards.js'
+import { encounterRewardOf, rewardTakersOf } from '../content/encounter-rewards.js'
 import { whyNotFit } from './loadout.js'
 import { itemOf } from '../content/items.js'
 import { rewardDrawOf } from './charter.js'
@@ -78,10 +78,53 @@ function takersOf(campaign: CampaignState, itemId: string, takers: readonly stri
     .map((h) => h.id).sort()
 }
 
-/** Who may take this reward — empty for a reward that goes to the stash. */
+/** Who may take this reward — empty for a reward that goes to the stash. An item WAITING in the stash for its classes (below): who may take it now. */
 export function listRewardTakers(campaign: CampaignState, itemId: string): HeroId[] {
   const named = namedTakerOffer(campaign)
-  return named && named.itemId === itemId ? takersOf(campaign, itemId, named.takers) : []
+  if (named && named.itemId === itemId) return takersOf(campaign, itemId, named.takers)
+  const whose = campaign.stash.includes(itemId) ? rewardTakersOf(itemId) : null
+  return whose ? takersOf(campaign, itemId, whose) : []
+}
+
+// ---------- an item that waits for its taker (kingdom.opening-sword-waits, 2026-10-04) ----------
+// Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run: the Flaming Longsword waits for its taker; …': asked "If the
+// party has no Warrior or Paladin after battle 2, should the Flaming Longsword wait in the stash until one is drafted?
+// (Today it's never offered again.)" — "One, yes."). A won battle whose row gives an item to named classes, with nobody of
+// those classes able to take it, KEEPS the item: the one writer puts it in the stash (resolveBattleWaiting), where it
+// waits — it is still those classes' only (core/shop.ts whyNotEquip reads the same row) — and it is offered, the carrier
+// named by the player as at the battle, as soon as a living hero of those classes has room for it (listWaitingOffers).
+// Nothing is stored for the wait or the offer: both are read from the stash, the row and the roster.
+
+/** The item a won battle keeps for later: its row's named-class item, when nobody may take it now. Else null. Pure. */
+export function resolveBattleWaiting(campaign: CampaignState, engagementId: string): string | null {
+  const offer = encounterRewardOf(engagementId)?.offer
+  return offer?.kind === 'item' && takersOf(campaign, offer.itemId, offer.takers).length === 0 ? offer.itemId : null
+}
+
+/** The items in the stash that wait for a hero of their row's classes — offered or not yet. Sorted (Law 6). */
+export function listWaitingItems(campaign: CampaignState): string[] {
+  return [...new Set(campaign.stash)].filter((id) => rewardTakersOf(id) !== null).sort()
+}
+
+/** The waiting items somebody may take NOW, each with who may: the offer the page makes before the next battle. */
+export function listWaitingOffers(campaign: CampaignState): { itemId: string; takers: HeroId[] }[] {
+  return listWaitingItems(campaign).map((itemId) => ({ itemId, takers: takersOf(campaign, itemId, rewardTakersOf(itemId)!) })).filter((o) => o.takers.length > 0)
+}
+
+/** Why this hero cannot take this waiting item — or null. */
+export function whyNotTakeWaiting(campaign: CampaignState, itemId: string, heroId: HeroId): string | null {
+  if (campaign.cursor.step !== 'open') return `a waiting item is given between battles — the cursor is at '${campaign.cursor.step}'`
+  const offer = listWaitingOffers(campaign).find((o) => o.itemId === itemId)
+  if (!offer) return listWaitingItems(campaign).includes(itemId) ? `'${itemId}' waits for ${rewardTakersOf(itemId)!.join(' or ')} — nobody can take it yet` : `'${itemId}' is not waiting in the stash`
+  if (!offer.takers.includes(heroId)) return `'${heroId}' cannot take '${itemId}' — it is for ${rewardTakersOf(itemId)!.join(' or ')}, alive, with room for it; ${offer.takers.join(', ')} may`
+  return null
+}
+
+/** Give a waiting item to the hero the player names: out of the stash, onto the hero — as the battle's own offer gives it. */
+export function performTakeWaiting(ctx: Ctx, itemId: string, heroId: HeroId, causeId: string): void {
+  const why = whyNotTakeWaiting(ctx.campaign, itemId, heroId)
+  if (why) throw new Error(`performTakeWaiting refused: ${why}`)
+  applyEquip(ctx, heroId, itemId, causeId)
 }
 
 export function listRewardOffers(campaign: CampaignState): RewardRow[] {

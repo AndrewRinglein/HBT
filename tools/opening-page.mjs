@@ -13,7 +13,7 @@ import {bootSlice} from './atlas-dom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as REWARD_ROWS from './src/content/encounter-rewards.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
    page's draft is held against */
@@ -634,11 +634,27 @@ export function openingPage(page,search,store){
 
  /* kingdom.opening-hero-card-art: who may carry a reward that names its takers — the heroes offered, each shown with its
     own card art (the rewards screen's carrier); [] when the reward goes to the stash */
+ /* kingdom.opening-sword-waits (engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword waits for its taker;
+    …' — "One, yes."): the offer of an item that has waited in the stash, made between battles once a hero of its
+    classes has room for it — the screen names the item and whose it is, and offers exactly the heroes who may carry it,
+    each with its own card art; null when no such offer is on the screen */
+ function waitingOffer(label){
+  const box=byId('campaign').querySelectorAll('.waitingOffer')[0];if(!box)return null
+  const item=box.dataset.waiting
+  assert.equal(camp().cursor.step,'open',label+': the waiting item is offered between battles');assert.ok(camp().stash.includes(item),`${label}: ${item} is in the stash`)
+  const whose=E.REWARD_ROWS.rewardTakersOf(item);assert.ok(whose,`${label}: ${item} is an item its row gives to named classes`)
+  assert.ok(box.textContent.includes(E.ITEMS.itemOf(item).name)&&/has waited in the stash/.test(box.textContent),label+': the screen says the item has waited')
+  const may=heroIds().filter(id=>{const h=camp().roster[id];return h.lifeState==='alive'&&h.classes.some(c=>whose.includes(c))})
+  const offered=carriers(label+', the waiting item')
+  assert.ok(offered.length>=1&&offered.every(id=>may.includes(id)),`${label}: only a living hero of ${whose.join(' or ')} is offered it`)
+  assert.deepEqual(offered,E.REWARDS.listWaitingOffers(camp()).find(o=>o.itemId===item).takers,label+': the heroes offered are the ones who may take it')
+  return {item,offered,whose}
+ }
  function carriers(label){
   const buttons=byId('campaign').querySelectorAll('[data-act=give]')
   for(const b of buttons)showsArt(b,b.dataset.id,label+': who carries it','carrier')
   return buttons.map(b=>b.dataset.id)
  }
 
- return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,fallOut,levelUps,specialtyOffer,takeReward,carriers}
+ return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,fallOut,levelUps,specialtyOffer,takeReward,carriers,waitingOffer}
 }

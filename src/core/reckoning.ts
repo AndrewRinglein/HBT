@@ -39,7 +39,7 @@ import { rollOf } from './rng.js'
 import { UNITS, XP_BY_TIER } from '../engine.js'
 import { validateResult } from './result.js'
 import {
-  type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
+  type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown, applyTakeReward,
   setFoughtThisWeek, applyRelease, setEngagementResolved, applyClaim, setCursor, setRewardOffer, applyRestock, applyInstanceUse,
   setHeroBadges,
 } from './mutate.js'
@@ -47,7 +47,7 @@ import { instanceSlotsOf } from './loadout.js'
 import { itemOf } from '../content/items.js'
 import { performRollAbsences } from './absence.js'
 import { performLose } from './map.js'
-import { resolveBattleOffer, performExitReckoning } from './rewards.js'
+import { resolveBattleOffer, resolveBattleWaiting, performExitReckoning } from './rewards.js'
 import { performResolvePrologue, rescueSurvivors } from './opening.js'
 import { engagementKindOf } from '../content/engagements.js'
 import { encounterRewardOf } from '../content/encounter-rewards.js'
@@ -319,6 +319,11 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   // (kingdom.opening-rewards: nothing, or one item a hero of the row's classes takes)
   const questReward = quest ? performCompleteQuest(ctx, quest, result.outcome === 'heroClear', cause) : null
   setRewardOffer(ctx, reckoning.won && kind.rewards === 'battle' ? resolveBattleOffer(c, engagement.id) : null, cause)
+  // kingdom.opening-sword-waits (engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword waits for its taker;
+  // …' — "One, yes."): the row's named-class item with nobody able to take it is kept — into the stash, where it waits
+  // for a hero of its classes (rewards.ts listWaitingOffers). Until 2026-10-04 it was not offered and was gone for the run.
+  const waits = reckoning.won && kind.rewards === 'battle' ? resolveBattleWaiting(c, engagement.id) : null
+  if (waits !== null) applyTakeReward(ctx, waits, cause)
   // Keep a quest tally in the save so its recap remains truthful after reload.
   setCursor(ctx, { step: 'reckoning', prepStep: null, battle: questReward ? { resultSet: true, result, reckoning, questReward } : null, fought: c.cursor.fought + 1 }, cause)
   // the opening: the civilians a won battle saved join (kingdom.opening-loop-three); the next battle is owed — or, lost
