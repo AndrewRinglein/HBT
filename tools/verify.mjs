@@ -952,7 +952,13 @@ if (SINGLES) {
     /* Surge: the float, and the hero acts again with no activation.begin between */
     for (const [e, i] of byType(EV, 'surge.hit').slice(0, 2)) {
       const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'float' && c.kind === 'surge'), `${label}: surge.hit at ${i} cued no SURGE!`)
-      const next = EV.slice(i + 1).find(x => x.type === 'activation.begin' || x.type === 'move.begin' || x.type === 'attack.declared')
+      /* Law 10, engine content.imp-blast-tuned (2026-10-04; SWITCHES.md surgedHeroMayIdle): the rule is unchanged — after a
+         Surge the SAME hero has its next go with no activation.begin between — and a go is also a power, a burst, or the
+         engine saying the hero had nothing to do (activation.idle: the Bridge on seed 19, a surged ranger with no target in
+         range). The old finder knew a move and an attack only, so it read that idle hero's go as missing and found the
+         next unit's activation.begin.
+         was: const next = EV.slice(i + 1).find(x => x.type === 'activation.begin' || x.type === 'move.begin' || x.type === 'attack.declared') */
+      const next = EV.slice(i + 1).find(x => x.type === 'activation.begin' || x.type === 'move.begin' || x.type === 'attack.declared' || x.type === 'power.used' || x.type === 'burst.declared' || x.type === 'activation.idle')
       check(next && next.type !== 'activation.begin' && next.actor === e.actor, `${label}: after surge.hit at ${i} the next act is ${next && next.type} by ${next && next.actor}, expected the same hero (${e.actor})`) }
     /* Power: the chip prints the folded pool */
     for (const [e, i] of byType(EV, 'power.gained').slice(0, 1)) { v.seek(i + 1); v.render(); check(V.dom.powerchip.style.display !== 'none' && V.dom.powerchip.textContent === 'Power ' + e.after, `${label}: the Power chip reads "${V.dom.powerchip.textContent}", the pool is ${e.after}`) }
