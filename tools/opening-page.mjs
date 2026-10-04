@@ -39,6 +39,16 @@ export const HEROES_MISSING=[...(ART_INDEX.heroesMissing??[])]
 const portraitCache={}
 const portraitUri=id=>portraitCache[id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ART_INDEX.heroes?.[id])
 export const ART_SEEN={draft:0,whoGoes:0,equip:0,victory:0,rewards:0,carrier:0,levelUp:0}
+/* kingdom.opening-reward-card-art (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; …': "Card art
+   not showing in the reward screen for the flinging sword." — the Flaming Longsword): the items' card art the page is
+   held against — generated/art, as tools/prep-items.py made it and the build inlines it. An item has art (index.json
+   items: its own row's card, or its base row's) or is named in itemsMissing and shows its plain card, never another's.
+   ITEM_ART_SEEN counts, over a run, the reward cards and the Equip items held each way; `sword` says whether the Flaming
+   Longsword's reward card was on the screen (it is offered only with a Warrior or a Paladin in the party) */
+export const ITEMS_ART={...(ART_INDEX.items??{})},ITEMS_MISSING={...(ART_INDEX.itemsMissing??{})}
+const itemUri=id=>portraitCache['item:'+id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ITEMS_ART[id])
+export const ITEM_ART_SEEN={rewardArt:0,rewardPlain:0,equipArt:0,equipPlain:0,sword:false}
+const FLAMING_LONGSWORD='item.longsword.flaming'
 /* kingdom.opening-specialty-three (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; the specialty
    choice offers three, not nine': "you're supposed to only get a choice of three different specialty classes, not nine." ·
    '… the specialty three are random; …': "It's random: 3 of the 9."): every specialty choice a run reached, as the page
@@ -151,6 +161,17 @@ export function openingPage(page,search,store){
   assert.equal(got.length,want?n:0,`${label}: ${id}'s card shows ${want?'its card art':'a blank card (its art is missing on disk)'} — ${got.length} image(s) found`)
   for(const src of got)assert.ok(src===want,`${label}: the image on ${id}'s card is its own card art, not another's`)
   ART_SEEN[screen]++
+ }
+ /* kingdom.opening-reward-card-art: the images inside `el` are exactly one of that ITEM's own card art — or, for an item
+    with none, no image at all and the item named in itemsMissing (its plain card). An item in neither list fails */
+ function showsItemArt(el,id,label,kind){
+  assert.ok(el,label+': the item');const want=itemUri(id),got=el.querySelectorAll('img').map(i=>i.getAttribute('src'))
+  assert.ok(want||id in ITEMS_MISSING,`${label}: ${id} has card art, or is named in itemsMissing`)
+  assert.ok(!(want&&id in ITEMS_MISSING),`${label}: ${id} is not both`)
+  assert.equal(got.length,want?1:0,`${label}: ${id} shows ${want?'its card art':'its plain card (it is named in itemsMissing: '+ITEMS_MISSING[id]+')'} — ${got.length} image(s) found`)
+  for(const src of got)assert.ok(src===want,`${label}: the image on ${id} is its own card art, not another's`)
+  ITEM_ART_SEEN[kind+(want?'Art':'Plain')]++
+  return !!want
  }
 
  function readMap(taken,label){
@@ -330,7 +351,18 @@ export function openingPage(page,search,store){
   /* kingdom.opening-hero-card-art: every hero card at Equip shows its hero's card art (the card's hero is its slots') */
   const equipCards=byId('campaign').querySelectorAll('.herocard').map(el=>({el,id:el.querySelectorAll('[data-slot]')[0]?.dataset.hero}))
   assert.deepEqual(equipCards.map(x=>x.id).sort(),party,label+': the hero cards at Equip are the heroes sent')
-  for(const x of equipCards)showsArt(x.el,x.id,label+': Equip','equip')
+  /* Law 10, 2026-10-04 (kingdom.opening-reward-card-art): this read
+       for(const x of equipCards)showsArt(x.el,x.id,label+': Equip','equip')
+     — every image inside the hero's card was held to be the hero's portrait, while the card held no other picture. The
+     card's slots now show the art of the items they hold, so the hero's portrait is held where it is drawn — the card's
+     art frame (.art): exactly one image, the hero's own — and the items' pictures are held beside it, each to its own item */
+  for(const x of equipCards)showsArt(x.el.querySelectorAll('.art')[0],x.id,label+': Equip','equip')
+  /* kingdom.opening-reward-card-art: every item Equip shows — each slot that holds one (data-holds) and each item in the
+     stash — shows its own card art, or its plain line when it has none and is named in itemsMissing */
+  for(const el of byId('campaign').querySelectorAll('[data-holds]'))showsItemArt(el,el.dataset.holds,`${label}: Equip, on ${el.dataset.hero}`,'equip')
+  for(const el of byId('campaign').querySelectorAll('.item'))showsItemArt(el,el.dataset.id,label+': Equip, in the stash','equip')
+  const wornShown=byId('campaign').querySelectorAll('[data-holds]').map(el=>el.dataset.hero+' '+el.dataset.holds).sort()
+  assert.deepEqual(wornShown,party.flatMap(id=>camp().roster[id].equipped.map(item=>id+' '+item)).sort(),label+': Equip shows every item the heroes sent wear, each in a slot')
   v.click('advance');settle()
   return onTheBattle(label)
  }
@@ -386,6 +418,16 @@ export function openingPage(page,search,store){
   /* … and the rewards screen, when the battle leads to it: every hero card there is its hero's card art. The portrait is
      a background there (rewards.html's own markup), so it is read off the page's HTML, the card's own block */
   if(byId('campaign').querySelector('.rewards')){
+   /* kingdom.opening-reward-card-art: every reward card on the rewards screen shows its item's own card art, or its
+      plain face when the item has none and is named in itemsMissing; the Flaming Longsword's shows its card art */
+   const offered=[...(camp().cursor.rewardOffer??[])],rewardCards=byId('campaign').querySelectorAll('.reward-card')
+   assert.deepEqual(rewardCards.map(c=>c.dataset.id),camp().cursor.step==='rewards'?offered:[],label+': a reward card for each item offered')
+   for(const c of rewardCards){
+    const has=showsItemArt(c,c.dataset.id,label+': the reward card','reward')
+    assert.equal(c.dataset.art,has?'1':'0',`${label}: ${c.dataset.id}'s card says whether it has art`)
+    if(!has)assert.match(c.textContent,/no art yet/,`${label}: ${c.dataset.id}: the plain card`)
+    if(c.dataset.id===FLAMING_LONGSWORD){assert.ok(has,label+': the Flaming Longsword\'s reward card shows its card art');ITEM_ART_SEEN.sword=true}
+   }
    const html=byId('campaign').innerHTML,cards=byId('campaign').querySelectorAll('.hero-card')
    assert.deepEqual(cards.map(c=>c.dataset.hero),[...e.deployed],label+': the rewards screen shows a card per hero who fought')
    for(const id of e.deployed){

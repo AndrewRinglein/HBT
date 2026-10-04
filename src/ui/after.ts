@@ -40,7 +40,7 @@ import { xpForLevel } from '../content/levels.js'
 import { woundNameOf } from '../content/wounds.js'
 import { itemOf } from '../content/items.js'
 import { VICTORY_QUOTES, DEFEAT_QUOTES, type QuoteBank } from '../content/generated/quotes.js'
-import { portraitIdOf, portraitOf, cardBackOf } from './art.js'
+import { portraitIdOf, portraitOf, cardBackOf, itemArtOf } from './art.js'
 import { playSound, playMusic, stopMusic, isMuted, setMuted } from './sound.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
@@ -208,9 +208,13 @@ export function rewardsScreen(c: CampaignState, events: readonly KingdomEvent[],
     const r = itemOf(o.id)
     const tier = Math.max(0, Math.min(6, r.tier))
     const facts = [r.itemClass === 'weapon' ? `${Math.max(1, r.hands)}-hand` : null, r.classRestriction ? r.classRestriction.replace('class.', '') + ' only' : null, Object.entries(r.statModifiers).map(([k, n]) => `${sign(n)} ${label(k)}`).join(' ') || null, r.grants.length ? `${r.grants.length} attack${r.grants.length === 1 ? '' : 's'}/power${r.grants.length === 1 ? '' : 's'}` : null, r.setBonus ? `${r.setBonus.tag} set` : null].filter(Boolean).join(' · ')
+    // kingdom.opening-reward-card-art (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; …': "Card
+    // art not showing in the reward screen for the flinging sword."): the item's card art fills the card's face; an item
+    // with none (index.json itemsMissing) keeps the plain face and its words — never another item's picture
+    const art = itemArtOf(o.id)
     return `<div class="reward-card-wrapper" data-index="${i}">
-      <div class="reward-card face-down" data-index="${i}" data-id="${esc(o.id)}" data-tier="${tier}" ${back ? `style="--card-back:url(${back})"` : ''}>
-        <div class="reward-card-art">no art yet</div>
+      <div class="reward-card face-down" data-index="${i}" data-id="${esc(o.id)}" data-tier="${tier}" data-art="${art ? 1 : 0}" ${back ? `style="--card-back:url(${back})"` : ''}>
+        <div class="reward-card-art">${art ? `<img src="${art}" alt="">` : 'no art yet'}</div>
         <div class="reward-card-content"><div class="reward-type">${esc(r.itemClass)} · tier ${r.tier}</div><div class="reward-name">${esc(r.name)}</div><div class="reward-description">${esc(facts)}</div></div>
       </div>
       <div class="reward-modifier-line">${esc(TIER_WORD[tier] ?? '')}</div>
