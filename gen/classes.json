@@ -10,6 +10,7 @@
    ],
    "specialties": 9,
    "intent": "The melee anchor. Armour is a mobility stat here — the Warrior is who finishes a run through threatened ground.",
+   "playerLine": "Fights up close: hits hard with heavy weapons and wears the armor to stand in the middle of the enemy.",
    "levelTable": "dictated 1–10",
    "bonusMove": "power.leap",
    "bonusMoveNote": "2 stamina, 2 hexes, +2 Strength until end of Turn.",
@@ -33,6 +34,7 @@
    ],
    "specialties": 9,
    "intent": "Standoff damage. Reach and Vision are its real stats and both are near-invisible, which is the design's own warning label.",
+   "playerLine": "Fights from a distance: picks enemies off with a bow before they can reach your party.",
    "levelTable": "dictated 2–6, 7–10 owed",
    "bonusMove": "power.side-roll",
    "bonusMoveNote": "1 stamina, 1 hex.",
@@ -57,6 +59,7 @@
    ],
    "specialties": 9,
    "intent": "Stealth, poison and bleed, daggers and thrown weapons. Arrives, strikes, and is gone before the answer lands.",
+   "playerLine": "Slips in fast with daggers and thrown blades, leaves enemies poisoned or bleeding, and gets out again.",
    "levelTable": "owed",
    "bonusMove": "power.side-roll",
    "bonusMoveNote": "1 stamina, 1 hex.",
@@ -80,6 +83,7 @@
    ],
    "specialties": 9,
    "intent": "Magic damage and the terrain layer. Staves scale their basic attacks off Precision; only the big powers spend Magic.",
+   "playerLine": "Casts spells from a distance: magic that hurts several enemies at once and changes the ground they stand on.",
    "levelTable": "owed",
    "bonusMove": "power.focus",
    "bonusMoveNote": "0 stamina, moves you ZERO hexes, gain 1 Stamina. A caught caster stays caught.",
@@ -103,6 +107,7 @@
    ],
    "specialties": 9,
    "intent": "True damage — it skips Armor and Resist both. Hits soft, hits reliably, and is the only thing standing between a fallen hero and the clock.",
+   "playerLine": "Keeps the party alive: heals the wounded, gets the fallen back up, and strikes with holy power that armor does not stop.",
    "levelTable": "owed",
    "bonusMove": "power.devotion",
    "bonusMoveNote": "0 stamina, moves you ZERO hexes, -1 Stamina Max for the Battle, gain 2 Stamina.",
@@ -127,6 +132,7 @@
    ],
    "specialties": 9,
    "intent": "Armour, auras and protection, with slayer bonuses against undead and demon. The wall that also punishes.",
+   "playerLine": "A heavily armored protector who shields the allies standing near and hits the undead and demons hardest.",
    "levelTable": "owed",
    "bonusMove": "power.sidestep",
    "bonusMoveNote": "0 stamina, cooldown 1, 1 hex.",
@@ -191,18 +197,21 @@
   {
    "id": "strength",
    "name": "Strength",
+   "playerLine": "Hits harder up close",
    "does": "melee damage only — never to-hit",
    "value": 1
   },
   {
    "id": "precision",
    "name": "Precision",
+   "playerLine": "Hits harder from afar",
    "does": "ranged damage only — never to-hit",
    "value": 1
   },
   {
    "id": "accuracy",
    "name": "Accuracy",
+   "playerLine": "A truer aim",
    "does": "the core roll. surplus over 100 becomes Crit at ÷4",
    "value": 0.16666666666666666,
    "note": "loses value as you stack it. Re-ruled 2026-09-02: \"6 dodge or 6 accuracy are both worth 1\" (was 0.2)."
@@ -210,6 +219,7 @@
   {
    "id": "crit",
    "name": "Crit",
+   "playerLine": "Lands more telling blows",
    "does": "chance to land one. base 3",
    "value": 0.2,
    "note": "Not named in the 2026-09-02 re-rule; stays at 0.2 pending one."
@@ -217,6 +227,7 @@
   {
    "id": "luck",
    "name": "Luck",
+   "playerLine": "Luckier than most",
    "does": "flat subtraction from the ATTACKER's crit chance",
    "value": 0.2,
    "note": "Not named in the 2026-09-02 re-rule; stays at 0.2 pending one."
@@ -224,12 +235,14 @@
   {
    "id": "reach",
    "name": "Reach",
+   "playerLine": "A longer reach with ranged weapons",
    "does": "ranged weapons only. melee gains nothing",
    "value": 0.5
   },
   {
    "id": "dodge",
    "name": "Dodge",
+   "playerLine": "Harder to hit",
    "does": "flat to-hit penalty on the attacker",
    "value": 0.16666666666666666,
    "note": "GAINS value as you stack it — +100 Dodge would break the game. Re-ruled 2026-09-02: \"6 dodge or 6 accuracy are both worth 1\" (was 0.3)."
@@ -237,6 +250,7 @@
   {
    "id": "vision",
    "name": "Vision",
+   "playerLine": "Sees farther",
    "does": "a radius, base 6. bites in darkness, fog and stealth-detection",
    "value": 0.2,
    "note": "Not named in the 2026-09-02 re-rule; stays at 0.2 pending one."
@@ -244,6 +258,7 @@
   {
    "id": "armor",
    "name": "Armor",
+   "playerLine": "Better armored",
    "does": "flat mitigation, physical",
    "value": 1.5,
    "note": "Re-ruled 2026-09-02: \"Armor and resist are both worth 1.5\" (was 2). ARMOR'S VALUE ESCALATES with each point — flat mitigation approaches full negation against small hits — so 1.5 is a FLOOR for pricing, not the true value of a high-armor item."
@@ -251,6 +266,7 @@
   {
    "id": "resist",
    "name": "Resist",
+   "playerLine": "Shrugs off more magic",
    "does": "flat mitigation of magic damage only; Burn and Poison use their named elemental resist",
    "value": 1.5,
    "note": "Re-ruled 2026-09-02: \"Armor and resist are both worth 1.5\" (was 2). V2 section8 devalues Magic Resist; numeric balance valuation is not retuned in this mechanism migration."
@@ -258,24 +274,28 @@
   {
    "id": "health",
    "name": "Health",
+   "playerLine": "Tougher than most",
    "does": "max. resets every Battle",
    "value": 0.5
   },
   {
    "id": "magic",
    "name": "Magic",
+   "playerLine": "More powerful spells",
    "does": "scales off the PARTY-WIDE SUM",
    "value": 1.5
   },
   {
    "id": "spirit",
    "name": "Spirit",
+   "playerLine": "Deeper faith",
    "does": "scales off the PARTY-WIDE SUM",
    "value": 1.5
   },
   {
    "id": "toughness",
    "name": "Toughness",
+   "playerLine": "Harder to wound",
    "does": "injury capacity, and the base for Deathbed Fighting",
    "value": 0.4,
    "note": "injury capacity, and the base for Deathbed Fighting"
@@ -283,6 +303,7 @@
   {
    "id": "movement",
    "name": "Movement",
+   "playerLine": "Faster on their feet",
    "does": "hexes per move action. heroes 5, enemies 4",
    "value": 1,
    "note": "Re-ruled 2026-09-02, the same day: Movement is 1.0, not 0.7."
@@ -290,12 +311,14 @@
   {
    "id": "staminaMax",
    "name": "Stamina Max",
+   "playerLine": "More stamina",
    "does": "the throttle. a level-1 hero has 5",
    "value": 0.3
   },
   {
    "id": "staminaRegen",
    "name": "Stamina Regen",
+   "playerLine": "Recovers stamina faster",
    "does": "THE SACRED STAT. hard-caps around 3",
    "value": 2,
    "note": "THE SACRED STAT. as expensive as Armor, and it hard-caps at 3"
@@ -310,6 +333,7 @@
   {
    "id": "itemSlots",
    "name": "Item Slots",
+   "playerLine": "Room for one more item",
    "does": "accessories beyond the two hands",
    "value": 0.67
   },
