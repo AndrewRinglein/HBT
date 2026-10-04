@@ -66,7 +66,15 @@ function withFates(r: EngagementResult, fates: Record<string, 'unhurt' | 'wounde
   return { ...r, units: r.units.map((u) => {
     const f = u.side === 'hero' && u.role !== undefined ? fates[u.typeId] : undefined
     if (!f) return u
-    return f === 'dead' ? { ...u, lifeState: 'dead' as const, dead: true, downed: true } : f === 'wounded' ? { ...u, lifeState: 'standing' as const, dead: false, downed: true } : { ...u, lifeState: 'standing' as const, dead: false, downed: false }
+    // Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start': "bring the
+    // hero forward to the end of the bridge and bring the zombie left, maybe 3 squares"): the last branch read
+    //   : { ...u, lifeState: 'standing' as const, dead: false, downed: false }
+    // — "unhurt (standing, never down)", written when no civilian of the played battle had ever gone down. On the closer
+    // start the Zombie reaches the civilians, and one may go down and be stood up again (`stood`), which the screen reads
+    // as wounded. "Unhurt" is said whole now: standing, never down, never stood back up. The tests are unchanged.
+    // (a result row writes `stood` only when true: the key is left out, not set false)
+    const { stood: _stood, ...row } = u as typeof u & { stood?: boolean }
+    return f === 'dead' ? { ...u, lifeState: 'dead' as const, dead: true, downed: true } : f === 'wounded' ? { ...row, lifeState: 'standing' as const, dead: false, downed: true } : { ...row, lifeState: 'standing' as const, dead: false, downed: false }
   }) }
 }
 /** The result written by the one writer; the screen's own last battle. */

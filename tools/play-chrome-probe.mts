@@ -9,6 +9,7 @@
 //   npx tsx tools/play-chrome-probe.mts        prints the record as JSON (test/play-chrome-engine.test.ts reads it)
 import {createSandbox,advanceSandbox,commandSandbox,type Sandbox} from '../src/core/sandbox.js'
 import {SANDBOX_DEFAULT} from '../src/content/sandbox.js'
+import {seesScheduleOut} from './sandbox-sees-schedule.mjs'
 import {createPlayInput} from '../src/ui/play-input.js'
 import {heroesYetToAct,type BattleCommand} from '../src/engine.js'
 
@@ -29,7 +30,12 @@ export type ChromeRecord={
 }
 export function playChromeProbe(seed=1):ChromeRecord{
  const config={mapId:SANDBOX_DEFAULT.mapId,heroes:[...SANDBOX_DEFAULT.heroes],enemies:[],seed,encounterId:'encounter.opening.orphanage'}
- const s:Sandbox=createSandbox(config);advanceSandbox(s)
+ /* Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start'): this read
+      const s:Sandbox=createSandbox(config);advanceSandbox(s)
+    — the battle as fielded. On the closer start these three heroes clear the Orphanage before there is a second attack or a
+    second Player Phase to record, so the probe fields the same battle to see its schedule out (tools/sandbox-sees-schedule.mts:
+    the engine's own fielding switch, as its opening probes use). Every record and every assertion on it is unchanged. */
+ const s:Sandbox=seesScheduleOut(createSandbox(config));advanceSandbox(s)
  const commands:Record<string,number>={}
  const run=(c:BattleCommand)=>{const r=commandSandbox(s,c);if(r.ok)commands[c.kind]=(commands[c.kind]??0)+1;return r}
  const P=createPlayInput(()=>s,run)

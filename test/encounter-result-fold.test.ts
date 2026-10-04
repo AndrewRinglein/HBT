@@ -11,6 +11,7 @@ import { describe, it, expect } from 'vitest'
 import { loadFixture, toEquip, decide } from './walk.js'
 import { performAdvancePrep } from '../src/core/prep.js'
 import { createSandbox, sandboxResult } from '../src/core/sandbox.js'
+import { seesScheduleOut } from '../tools/sandbox-sees-schedule.mjs'
 import { makeBattleState, battleOptionsOf, makeBattleResult, resolveEngagement, type EngagementResult } from '../src/core/seam.js'
 import { validateResult } from '../src/core/result.js'
 import { applyBattleResult } from '../src/core/reckoning.js'
@@ -58,7 +59,15 @@ describe('kingdom.encounter-result-fold — an encounter battle folds by uid and
   it('an Orphanage battle played in the sandbox folds: civilians and arrivals are their own rows, never the roster', () => {
     const ctx = atOrphanage()
     const e = ctx.campaign.cursor.engagement!
-    const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed: e.seed, encounterId: ENC })
+    // Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start': "bring the
+    // hero forward to the end of the bridge and bring the zombie left, maybe 3 squares. So that conflict is much faster."):
+    // the sandbox was
+    //   const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: …, enemies: [], seed: e.seed, encounterId: ENC })
+    // — the battle as fielded; on the old start it ran long enough for the schedule's arrivals to come. On the closer start
+    // these three heroes clear the board before more than one arrives, and what this test holds — every arrival is a row
+    // of its own — needs the arrivals: the same battle is fielded to see its schedule out (tools/sandbox-sees-schedule.mts,
+    // the engine's own fielding switch). The assertions and their counts are unchanged.
+    const s = seesScheduleOut(createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed: e.seed, encounterId: ENC }))
     expect(() => sandboxResult(s)).toThrow(/battle\.end|did not finish/)
     runBattle(s.ctx)
     const r = sandboxResult(s)
@@ -92,7 +101,8 @@ describe('kingdom.encounter-result-fold — an encounter battle folds by uid and
     for (const heroUids of [[301, 7, 200], [102, 101, 100], [0, 4000000000, 55]]) {
       const spec = makeBattleState(ctx.campaign.roster, { ...e, heroUids })
       expect(spec.heroUids).toEqual(heroUids)
-      const battle = createBattle({ ...battleOptionsOf(spec), encounter: encounterDef(ENC) })
+      // (Law 10, 2026-10-04, as above: was createBattle({ ...battleOptionsOf(spec), encounter: encounterDef(ENC) }) — fielded to see the schedule out)
+      const battle = createBattle({ ...battleOptionsOf(spec), encounter: encounterDef(ENC), cfg: { switches: { boardClearWaitsForSchedule: true } } } as Parameters<typeof createBattle>[0])
       runBattle(battle)
       const r = makeBattleResult(spec, battle.events)
       rosterKeyed(r, battle, heroUids, e.deployed, (id) => ctx.campaign.roster[id]!.unitType)

@@ -140,7 +140,16 @@ describe('kingdom.opening-hero-death-replays — a battle in which a hero dies i
     const { playedOut } = await driver()
     const ctx = makeCtx(makeNewCampaign(11)), c = ctx.campaign
     const won = playedOut(field(ctx), true).result
-    const r = { ...won, units: won.units.map((u) => u.side === 'hero' && u.role !== undefined && u.typeId === 'hero.fixed.orphans' ? { ...u, lifeState: 'dead' as const, dead: true, downed: true } : u) }
+    // Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start': "bring the
+    // hero forward to the end of the bridge and bring the zombie left, maybe 3 squares"): this read
+    //   const r = { ...won, units: won.units.map((u) => … u.typeId === 'hero.fixed.orphans' ? { ...u, lifeState: 'dead' as const, dead: true, downed: true } : u) }
+    // — the Orphan Child made dead and the School Teacher left as the played battle left her, which on the old start was
+    // always unhurt. On the closer start the Zombie begins three hexes nearer the house and reaches the civilians: in the
+    // battle played here the Teacher falls too. The rule the test holds is unchanged — the dead civilian does not join,
+    // the one who lived does — so BOTH fates are said: the Child dead, the Teacher standing and never down.
+    const r = { ...won, units: won.units.map((u) => u.side !== 'hero' || u.role === undefined ? u
+      : u.typeId === 'hero.fixed.orphans' ? { ...u, lifeState: 'dead' as const, dead: true, downed: true }
+      : u.typeId === 'hero.fixed.school-teacher' ? (({ stood: _stood, ...row }: typeof u & { stood?: boolean }) => ({ ...row, lifeState: 'standing' as const, dead: false, downed: false }))(u) : u) }
     const { k } = write(ctx, r)
     expect(fallenOf(k) ?? [], 'a civilian is not a drafted hero').toEqual([])
     expect(k.won).toBe(true)

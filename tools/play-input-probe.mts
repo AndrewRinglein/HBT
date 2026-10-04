@@ -7,6 +7,7 @@
 //   npx tsx tools/play-input-probe.mts        prints the record as JSON (test/play-input-engine.test.ts reads it)
 import {createSandbox,advanceSandbox,commandSandbox,sandboxActivationChoices,type Sandbox} from '../src/core/sandbox.js'
 import {SANDBOX_DEFAULT} from '../src/content/sandbox.js'
+import {seesScheduleOut} from './sandbox-sees-schedule.mjs'
 import {createPlayInput,type PlayFacts} from '../src/ui/play-input.js'
 import {threatOf,forecastFrom,previewFrom,type BattleCommand,type Event} from '../src/engine.js'
 
@@ -21,7 +22,12 @@ export type ProbeRecord={
 }
 export function probe(seed=1):ProbeRecord{
  const config={mapId:SANDBOX_DEFAULT.mapId,heroes:[...SANDBOX_DEFAULT.heroes],enemies:[],seed,encounterId:'encounter.opening.orphanage'}
- const s:Sandbox=createSandbox(config);advanceSandbox(s)
+ /* Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start'): this read
+      const s:Sandbox=createSandbox(config);advanceSandbox(s)
+    — the battle as fielded. On the closer start these three heroes clear the Orphanage before there is a second attack or a
+    second Player Phase to record, so the probe fields the same battle to see its schedule out (tools/sandbox-sees-schedule.mts:
+    the engine's own fielding switch, as its opening probes use). Every record and every assertion on it is unchanged. */
+ const s:Sandbox=seesScheduleOut(createSandbox(config));advanceSandbox(s)
  let hand=0
  const run=(c:BattleCommand)=>commandSandbox(s,c)
  const P=createPlayInput(()=>s,run)

@@ -2,7 +2,7 @@
 // screen just far enough to show its hex', Andrew: "I should be able to click on one of the bubbles for a unit that's
 // off-screen to both focus it and also scroll the screen over so they are visible, but only just to their hex. Don't focus on
 // it or center the screen on it. Just slide over until they're visible."). The item's expect, on the BUILT sandbox
-// (BATTLE-SANDBOX.html?play=encounter.opening.orphanage): "In a battle with a unit off the screen, clicking its bubble makes
+// (BATTLE-SANDBOX.html?play=encounter.opening.orphanage, a few Turns in since 2026-10-04 — the note at step 1): "In a battle with a unit off the screen, clicking its bubble makes
 // that unit the one the panel shows and slides the view until its hex is just inside the edge — the unit is not at the centre,
 // the zoom and the angle are unchanged, and the bubble is gone". Read against the ENGINE too: the click sends nothing — the
 // battle's sequence number, its log and whose Activation it is are what they were.
@@ -17,8 +17,27 @@ const bubbles=()=>V().layers.edgeL.querySelectorAll('.edgeBub')
 const unitsOf=b=>String(b.dataset.units).split(',').map(Number)
 const pose=()=>({...V().camTarget})
 settle()
+/* Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 '… a closer start': "bring the hero
+   forward to the end of the bridge and bring the zombie left, maybe 3 squares"): step 1 read
+     const b=bubbles().find(x=>unitsOf(x).length===1);assert.ok(b,'the Orphanage opens with a unit off the screen, behind a bubble')
+   — the battle's opening, where the old start had the Zombie on the right edge, far off the screen. By the ruling the
+   Orphanage opens with everyone on the screen: held here, as the rule. The item's expect is "in a battle with a unit off
+   the screen", so the scene is the same battle a few Turns on: the player ends Turns (End Turn, as
+   tools/arrivals-camera.verify.mjs does) until an arrival that has WALKED IN from its edge is off the screen behind a
+   bubble of its own. (An arrival still on the board's first or last column is off the screen too, but there the camera's
+   bound keeps its bubble up after the slide — viewer SWITCHES bubbleEdgeHex, ruled away 2026-10-04 by 'the view may slide
+   past the board's edge …', viewer.camera-shows-edge-units, not built; a unit off an edge column is the item's plain
+   case.) Nothing is sought: the battle is the page's own, on its own seed, and the first such Turn is taken. Every check
+   below is unchanged. */
+assert.equal(bubbles().length,0,'the Orphanage opens with everyone on the screen: no bubble (the closer start)')
+const endTurn=()=>{V().dom.root.querySelector('#playEndTurn').handlers.click({});const ask=V().dom.root.querySelector('#playAsk');if(ask&&ask.style.display!=='none')V().dom.root.querySelector('#playAskYes').handlers.click({});settle()}
+const g=ctx().geo,inner=x=>{const c=g.colOf(unit(x).hex);return c>0&&c<g.board.width-1}
+const mine=()=>bubbles().find(x=>unitsOf(x).length===1&&inner(unitsOf(x)[0]))
+assert.equal(ctx().state.turn,1)
+for(let n=0;n<5&&!mine();n++){endTurn();assert.equal(ctx().state.outcome,null,'the battle goes on')}
+say(`0 the Orphanage opened with everyone on the screen; the player ended Turns to Turn ${ctx().state.turn}`)
 // 1. a unit off the screen has a bubble
-const b=bubbles().find(x=>unitsOf(x).length===1);assert.ok(b,'the Orphanage opens with a unit off the screen, behind a bubble')
+const b=mine();assert.ok(b,'by Turn 6 an arrival that has walked in from its edge is off the screen, behind a bubble')
 const id=unitsOf(b)[0],u=unit(id),at=V().data.POS[u.hex]
 const before=pose(),seq=ctx().state.seq,events=ctx().events.length,actor=ctx().battleCursor.actor,slot=V().play.slot
 assert.notEqual(V().view.inspectId,id);assert.notEqual(V().revealPan(before,u.hex),null,'its hex is outside the view')
