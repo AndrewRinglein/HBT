@@ -7,17 +7,16 @@
 // House it shows the Lumberjack and his Wife the same way; the page test asserts a card for every player-side unit of
 // the battle and the mark of a civilian who died."
 //
-// The civilians are read from the battle's own result — the hero-side rows that are not the roster's (core/opening.ts
+// The civilians are read from the battle's own result — the hero-side rows that are not the roster's (view/civilians.ts
 // listBattleCivilians) — never from a list of names; the screen (ui/after.ts recapScreen) draws them in their own row
 // under the heroes'. The page half is tools/opening-run-six.verify.mjs and tools/opening-loop-three.verify.mjs, on the
 // built BATTLE-SANDBOX.html.
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { execFileSync } from 'node:child_process'
 
 // the page's art is a build-time constant (__ART__, tools/build-sandbox.mjs); here it is a stand-in filled in below
 vi.hoisted(() => { (globalThis as unknown as { __ART__: unknown }).__ART__ = { heroes: {}, items: {}, data: {} } })
 
-import * as OPENING from '../src/core/opening.js'
 import { makeNewCampaign, performAdvanceOpening, performDraft, performFieldOpeningBattle, listDraftOffers, performOpeningDeploy, draftsOwedOf } from '../src/core/opening.js'
 import { makeCtx, setBattleOutcome, type Ctx } from '../src/core/mutate.js'
 import { performAdvancePrep } from '../src/core/prep.js'
@@ -32,7 +31,9 @@ import { recapScreen, type LastBattle } from '../src/ui/after.js'
 import { encounterDef } from '../src/engine.js'
 
 type Civilian = { typeId: string; name: string; fate: 'unhurt' | 'wounded' | 'dead'; heroId: string | null; joins: boolean }
-const listBattleCivilians = (OPENING as unknown as { listBattleCivilians?: (c: Ctx['campaign'], r: EngagementResult) => Civilian[] }).listBattleCivilians
+// the read-model's module is the item's own: absent before it, and the probe is red test by test, not at its import
+const CIVILIANS_VIEW: unknown = await import('../src/view/civilians.js' as string).catch(() => ({}))
+const listBattleCivilians = (CIVILIANS_VIEW as unknown as { listBattleCivilians?: (c: Ctx['campaign'], r: EngagementResult) => Civilian[] }).listBattleCivilians
 const SECTIONS = ABBOTOWN_MAP.sections.map((s) => s.encounterId)
 const [ORPHANAGE, LUMBERJACK] = SECTIONS as [string, string]
 const CHILD = 'hero.fixed.orphans', TEACHER = 'hero.fixed.school-teacher', LUMBERJACK_UNIT = 'hero.fixed.lumberjack-and-wife', WIFE = 'hero.fixed.lumberjacks-wife'
@@ -85,8 +86,11 @@ function toOpen(ctx: Ctx): void {
 const civiliansOn = (html: string) => html.includes('id="rc-civilians"') ? blocks(html.slice(html.indexOf('id="rc-civilians"'), html.indexOf('id="rc-spot"')), /<div class="civilian-member"/g) : []
 
 describe('kingdom.opening-recap-civilians — the victory screen shows the civilians who fought', () => {
+  // the page driver bundles the kingdom's sources when it is first imported — seconds on a loaded machine; done once, here
+  beforeAll(async () => { await driver() }, 120000)
+
   it('the civilians are read from the battle\'s own result — the hero-side units that are not roster heroes — each unhurt, wounded or dead', async () => {
-    expect(typeof listBattleCivilians, 'core/opening.ts listBattleCivilians').toBe('function')
+    expect(typeof listBattleCivilians, 'view/civilians.ts listBattleCivilians').toBe('function')
     const { playedOut } = await driver()
     const ctx = makeCtx(makeNewCampaign(11)), won = playedOut(field(ctx), true).result
     const encounter = won.units.filter((u) => u.side === 'hero' && u.role !== undefined)

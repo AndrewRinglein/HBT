@@ -35,7 +35,7 @@ import type { Reckoning } from '../core/reckoning.js'
 import type { KingdomEvent } from '../core/mutate.js'
 import { listRewardOffers, listRewardTakers, listLevelUps, viewLevelUp, canLevelUp } from '../core/rewards.js'
 import { hashOf } from '../core/rng.js'
-import { listBattleCivilians } from '../core/opening.js'
+import { listBattleCivilians } from '../view/civilians.js'
 import { statLabelOf } from '../content/stat-labels.js'
 import { xpForLevel } from '../content/levels.js'
 import { woundNameOf } from '../content/wounds.js'
@@ -103,7 +103,7 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
   const quote = spot ? quoteOf(won ? VICTORY_QUOTES : DEFEAT_QUOTES, spot, outcome, `${e?.id}:${spot.id}`) : ''
   // kingdom.opening-recap-civilians (engine DECISIONS.md 2026-10-03 'the civilians show on the victory screen; …': "The
   // battle should show in this victory screen too. If they were wounded, if they died, they're in there too." — the
-  // civilians): the civilians who fought, as the battle's own result left them (core/opening.ts listBattleCivilians) —
+  // civilians): the civilians who fought, as the battle's own result left them (view/civilians.ts listBattleCivilians) —
   // drawn in a row of their own under the heroes', each with its portrait and its mark in words, and named in the
   // report as a hero is. "No wounds sustained" is said only when no hero AND no civilian was wounded or killed
   // (kingdom SWITCHES.md recapCiviliansNoWounds); the title's grade stays the heroes' (recapCiviliansTitle).

@@ -619,7 +619,7 @@ How the tool reads the card manifests is a tooling switch: GBH `SWITCHES.md` `pr
 
 Engine DECISIONS.md 2026-10-03 'the civilians show on the victory screen; the specialty three are random; …' (Andrew: "The
 battle should show in this victory screen too. If they were wounded, if they died, they're in there too." — asked whether
-he meant the civilians: "2, yes."). `src/core/opening.ts` `listBattleCivilians` (read from the battle's own result),
+he meant the civilians: "2, yes."). `src/view/civilians.ts` `listBattleCivilians` (a read-model over the battle's own result; in `src/view`, not core - ISC-010's scan lets no core file but the one answerer spell a hero's availability words, and "wounded" is one),
 `src/ui/after.ts` `recapScreen` and `src/ui/after.css` (the civilians' row); probe `test/opening-recap-civilians.test.ts`
 (red before: `opening-recap-civilians-red.log`, 5 of 6), page tests `tools/opening-run-six.verify.mjs` and
 `tools/opening-loop-three.verify.mjs` over `tools/opening-page.mjs` (`fightOut`). How the page test gets a dead civilian
