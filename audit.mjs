@@ -7,7 +7,7 @@ const F=[];
 // NARROW exemptions only. A '*' here once hid power.berserker.draw-from-death for three
 // rounds of sweeps. The settled trio are exempt from the THREE-STATS-ONE-ABILITY shape rule
 // (AUTHORING-GUIDE.md), not from the vocabulary or the mechanics rules.
-const ACCEPTED={'Marching Orders':'slotted-item-charges-slots','Bash':'power-is-just-an-attack','Pot Lid':'accuracy-too-cheap-a-cost',
+const ACCEPTED={'Marching Orders':'slotted-item-charges-slots','Bash':'power-is-just-an-attack',
   'Berserker':'specialty-too-many-stats','Shieldbearer':'specialty-too-many-stats','Leader':'specialty-too-many-stats','Sentinel':'specialty-too-many-stats'};
 const add=(rule,who,detail)=>{ if(ACCEPTED[who]===rule||ACCEPTED[who]==='*') return; F.push({rule,who,detail}); };
 const all=[...D.items,...D.enchants,...D.specialties,...D.attacks,...D.powers];
