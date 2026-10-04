@@ -13,6 +13,15 @@ export const OUTPUTS = Object.freeze([
 ]);
 const digest = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 
+/** The engine's content pack — the one published output a battle is made of. */
+export const PACK = 'engine/src/content/generated/pack.ts';
+/** What a ship that changed the pack runs next, and where: the engine re-records its control-battle
+ * golden and says whether the fights moved (Andrew, 2026-10-04). null when the pack did not change. */
+export function goldenCommand(changed, projectRoot) {
+  if (!changed.includes(PACK)) return null;
+  return { args: ['tools/gate.mjs', '--pack-golden'], cwd: path.join(projectRoot, 'engine') };
+}
+
 /** Roll back replacements on caught I/O errors. Not crash-atomic across files;
  * requires the project's single generated-file writer rule. */
 export function commitOutputs(candidate, projectRoot, { beforeReplace = () => {} } = {}) {
