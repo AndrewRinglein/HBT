@@ -24054,6 +24054,16 @@ index d7b29b5..dcf9f1d 100644
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — viewer/test/viewer.bar-follows-activation.test.ts
   PASS  existing tests untouched
+## fix.starting-kit-powers — LANDED `a44f767` **NEEDS REVIEW**
+2026-10-04 07:42
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/field-eve-24.test.ts, test/items-per-unit.test.ts, test/opening-cavern-trail.test.ts, test/starting-kit-powers.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.holy-texts.mercy: 7 log lines, 7 fired, 5 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/field-eve-24.test.ts, test/items-per-unit.test.ts, test/opening-cavern-trail.test.ts, test/fixtures/battle-cursor-starting-kit-powers.json, test/starting-kit-powers.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/field-eve-24.test.ts (-1), test/items-per-unit.test.ts (-3), test/opening-cavern-trail.test.ts (-1) — will land FLAGGED for review
 ## fix.civilians-field-kit — LANDED `2643774` **NEEDS REVIEW**
 2026-10-04 07:55
 
@@ -24072,12 +24082,320 @@ index d7b29b5..dcf9f1d 100644
   PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.holy-texts.mercy — they genuinely test it
   PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.lumberjack — they genuinely test it
 
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
 diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 2521813..b0bfb7d 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -281,4 +281,12 @@ const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
+ // affliction's badge.gained line names its rule). A `changed` case is checked here and skips the older layers.
+ const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero-rule.json', import.meta.url), 'utf8'))
++// fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle — three
++// starting weapons lose their power on the way into the engine'), Law 10: the Holy Texts' Mercy, the Fire Staff's Flame Burst and
++// the Frost Staff's Frost Nova reach the engine, so six of the 24 base heroes field a power they did not have and the AI plays it.
++// Every case frozen here (tools/capture-starting-kit-powers-cursor.mts). Moved for real, the report answered (state, RNG and
++// result): the nineteen cases that field one of the six — showcase.assembled-party, .eve-24-b, .horrors, .kiln, .prologue-party,
++// .rime, .supper, .surrounded and .waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge, -cathedral,
++// -cavern-trail, -gates and -lumberjack, and progression-surge-0, -1 and -2. A `changed` case is checked here and skips the older layers.
++const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-starting-kit-powers.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -400,5 +408,8 @@ describe('resumable battle cursor', () => {
+       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true
++      const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const startingKitPowersMoved = startingKitPowersExpected?.changed === true
++      // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a starting-kit-powers-moved case skips the afflictions-at-zero-rule layer too (fix.starting-kit-powers 2026-10-04)
++      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || startingKitPowersMoved
+       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const openingLevelsMoved = openingLevelsExpected?.changed === true — an afflictions-at-zero-rule-moved case skips the opening-levels layer too (rule.afflictions-at-zero-refiled-2 2026-10-02)
+@@ -494,5 +505,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (afflictionsAtZeroRuleExpected) {
++        if (startingKitPowersExpected) {
++        expect(hash(ctx.events), 'full starting-kit-powers events').toBe(startingKitPowersExpected.events)
++        expect(hash(ctx.state), 'full starting-kit-powers state').toBe(startingKitPowersExpected.state)
++        expect(hash(ctx.rng.log), 'full starting-kit-powers RNG').toBe(startingKitPowersExpected.rng)
++        expect(result).toEqual(startingKitPowersExpected.result)
++        }
++        // was: if (afflictionsAtZeroRuleExpected) { — fix.starting-kit-powers (2026-10-04): a starting-kit-powers-moved case is checked above instead
++        if (afflictionsAtZeroRuleExpected && !startingKitPowersMoved) {
+         expect(hash(ctx.events), 'full afflictions-at-zero-rule events').toBe(afflictionsAtZeroRuleExpected.events)
+         expect(hash(ctx.state), 'full afflictions-at-zero-rule state').toBe(afflictionsAtZeroRuleExpected.state)
+diff --git a/test/field-eve-24.test.ts b/test/field-eve-24.test.ts
+index 60f48d2..6eac795 100644
+--- a/test/field-eve-24.test.ts
++++ b/test/field-eve-24.test.ts
+@@ -75,6 +75,15 @@ describe('all twenty-four field', () => {
+       for (const p of kit.flatMap((it) => (items.get(it)?.grants ?? []).filter((x) => x.startsWith('power.')))) {
+         const compiled = u.abilities.includes(p) && ACTIONS[p] !== undefined
+-        const gapped = g.some((x) => x.unit === id && x.what.includes(p))
++        // Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal
++        // in battle"): the rule is still "compiled or gapped, never silently dropped" — a power that did not compile is named
++        // as an 'item power' gap, and never beside a compiled one. A power that DID compile may name a clause the engine
++        // cannot do yet (Flame Burst and Frost Nova: 'a burst paints no ground'); that clause gap is checked below, by name.
++        // was: const gapped = g.some((x) => x.unit === id && x.what.includes(p))
++        const gapped = g.some((x) => x.unit === id && x.what.includes(p) && /^item power/.test(x.needs))
+         expect(compiled !== gapped, `${id}: ${p} compiled=${compiled} gapped=${gapped}`).toBe(true)
++        for (const x of g.filter((r) => r.unit === id && r.what.includes(p) && !/^item power/.test(r.needs))) {
++          expect(compiled, `${id}: ${p} names the clause '${x.what}' only as a compiled power`).toBe(true)
++          expect(x.needs, `${id}: ${p}'s clause gap names what the engine lacks`).toBe('a burst paints no ground (capability.burst-paints-ground)')
++        }
+       }
+       expect(u.tags, `${id} is a hero`).toContain('hero')
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index cab4e00..b507c9b 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -75,9 +75,18 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       'hero.base.paladin-dark': ['crit'],
+       'hero.base.priest-armored': ['attacks'],
+-      'hero.base.mage-fireaura': ['luck'],
+-      'hero.base.priest-pauper': ['attacks', 'luck'],
++      // Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal
++      // in battle — three starting weapons lose their power on the way into the engine"): the Holy Texts' Mercy, the Fire
++      // Staff's Flame Burst and the Frost Staff's Frost Nova compile now, so the five rows that hold one of those weapons
++      // carry a power the frozen oracle never had — content moved, not the fold. (The Battle Chaplain holds the Holy Texts
++      // too; his `abilities` already differed by his Round Shield's powers, the R1 allowance above.) Their powers are named below.
++      // was: 'hero.base.mage-fireaura': ['luck'], 'hero.base.priest-pauper': ['attacks', 'luck'], 'hero.base.mage-thinking': ['triggers'],
++      //      and no row for 'hero.base.mage-fire' or 'hero.base.mage-sexy'
++      'hero.base.mage-fire': ['abilities'],
++      'hero.base.mage-sexy': ['abilities'],
++      'hero.base.mage-fireaura': ['abilities', 'luck'],
++      'hero.base.priest-pauper': ['attacks', 'abilities', 'luck'],
+       // capability.frost (2026-09-03): the Thinking Mage's staff applies Frost,
+       // which compiles now that the status exists — a trigger the oracle never had.
+-      'hero.base.mage-thinking': ['triggers'],
++      'hero.base.mage-thinking': ['abilities', 'triggers'],
+       // FINDING 39 (2026-09-04): the oracle froze Second Wind, Brace and Arcane Ward
+       // aimed at the ATTACKER — the converter bug the audit found. The rows say
+@@ -109,4 +118,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
+     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
++    // fix.starting-kit-powers (2026-10-04): the `abilities` that differ are exactly the three powers, and nothing else
++    for (const [id, power] of [['hero.base.mage-fire', 'power.fire-staff.fireball'], ['hero.base.mage-sexy', 'power.fire-staff.fireball'], ['hero.base.mage-fireaura', 'power.fire-staff.fireball'],
++      ['hero.base.mage-thinking', 'power.frost-staff.frost-nova'], ['hero.base.priest-pauper', 'power.holy-texts.mercy']] as const) {
++      expect(fieldedDef(id).abilities, id).toEqual([...((o[id]!['abilities'] as string[] | undefined) ?? []), power])
++    }
++    expect(fieldedDef('hero.base.priest-armored').abilities).toContain('power.holy-texts.mercy')
+   })
+ 
+diff --git a/test/opening-cavern-trail.test.ts b/test/opening-cavern-trail.test.ts
+index d0a349c..b4e5b00 100644
+--- a/test/opening-cavern-trail.test.ts
++++ b/test/opening-cavern-trail.test.ts
+@@ -13,5 +13,11 @@ const S = 'test.opening-cavern-trail', FALL = 'trigger.cavern-trail.meteor-fall'
+ // fix.opening-party (2026-09-29): on the party drafted by battle 4 (five heroes, not four Alpha heroes)
+ // replicate 1 is still a win; 7 of 50 are.
+-const WIN = 1
++// Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal in
++// battle — three starting weapons lose their power on the way into the engine"): the drafted priests and mages field Mercy,
++// Flame Burst and Frost Nova now and play them, so every battle that drafts one moves — replicate 1 is a wipe whose meteors
++// land on nobody. Replicate 0 is a battle the heroes win with the meteors landing on four units; 19 of replicates 0-49 are
++// wins now (7 before: the party is stronger with its whole weapons). The claims below are unchanged.
++// was: const WIN = 1
++const WIN = 0
+ describe('encounter.opening.cavern-trail', () => {
+   it('carries the meteor fall with the ruled numbers', () => {
+```
+</details>
+
+## fix.fire-imp-burn-spares-self — LANDED `6ac7b47` **NEEDS REVIEW**
+2026-10-04 08:06
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1943 · COMBAT-SEQUENCE.md:381
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/target.test.ts, test/fire-imp-burn-spares-self.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.fire-imp: 9 log lines, 9 fired, 2 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/target.test.ts, test/fire-imp-burn-spares-self.test.ts, test/fixtures/battle-cursor-fire-imp-burn.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/target.test.ts (-6) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.fire-imp — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index b0bfb7d..e0a609e 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -289,4 +289,10 @@ const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/
+ // -cavern-trail, -gates and -lumberjack, and progression-surge-0, -1 and -2. A `changed` case is checked here and skips the older layers.
+ const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-starting-kit-powers.json', import.meta.url), 'utf8'))
++// fix.fire-imp-burn-spares-self (2026-10-04; DECISIONS.md 2026-10-03 'the Fire Imp's burn does not hit the imp itself': "It should
++// not hit him."), Law 10: the Fire Imp's end-of-Activation Burn targets every OTHER unit within 2 hexes, so the imp no longer
++// burns itself at the end of each of its Activations. Every case frozen here (tools/capture-fire-imp-burn-cursor.mts). Moved for
++// real, the ruling working (state, RNG and result): exactly the four cases that field a Fire Imp — showcase.kiln,
++// showcase.prologue-enemies, test.opening-bridge and test.props-viewer-ranged-zoc. A `changed` case is checked here and skips the older layers.
++const fireImpBurnGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-burn.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -409,5 +415,8 @@ describe('resumable battle cursor', () => {
+       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const startingKitPowersMoved = startingKitPowersExpected?.changed === true
++      const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const fireImpBurnMoved = fireImpBurnExpected?.changed === true
++      // was: const startingKitPowersMoved = startingKitPowersExpected?.changed === true — a fire-imp-burn-moved case skips the starting-kit-powers layer too (fix.fire-imp-burn-spares-self 2026-10-04)
++      const startingKitPowersMoved = startingKitPowersExpected?.changed === true || fireImpBurnMoved
+       // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a starting-kit-powers-moved case skips the afflictions-at-zero-rule layer too (fix.starting-kit-powers 2026-10-04)
+       const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || startingKitPowersMoved
+@@ -505,5 +514,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (startingKitPowersExpected) {
++        if (fireImpBurnExpected) {
++        expect(hash(ctx.events), 'full fire-imp-burn events').toBe(fireImpBurnExpected.events)
++        expect(hash(ctx.state), 'full fire-imp-burn state').toBe(fireImpBurnExpected.state)
++        expect(hash(ctx.rng.log), 'full fire-imp-burn RNG').toBe(fireImpBurnExpected.rng)
++        expect(result).toEqual(fireImpBurnExpected.result)
++        }
++        // was: if (startingKitPowersExpected) { — fix.fire-imp-burn-spares-self (2026-10-04): a fire-imp-burn-moved case is checked above instead
++        if (startingKitPowersExpected && !fireImpBurnMoved) {
+         expect(hash(ctx.events), 'full starting-kit-powers events').toBe(startingKitPowersExpected.events)
+         expect(hash(ctx.state), 'full starting-kit-powers state').toBe(startingKitPowersExpected.state)
+diff --git a/test/target.test.ts b/test/target.test.ts
+index 854c9d0..3392f6d 100644
+--- a/test/target.test.ts
++++ b/test/target.test.ts
+@@ -131,12 +131,27 @@ describe('targeting — legality is answered before the stamina is spent', () =>
+   })
+ 
+-  it('an unknown Targeting key is not silently ignored', () => {
+-    // excludeSelf is gone; TypeScript rejects it at compile time, and a hand-written
+-    // object literal carrying it would simply have no effect. Asserted so that
+-    // deleting the field cannot quietly become "the flag stopped working."
++  // Law 10, fix.fire-imp-burn-spares-self (2026-10-04). RULED, Andrew 2026-10-03 (DECISIONS.md "the Fire Imp's burn does
++  // not hit the imp itself"): "It should not hit him." The 2026-08-15 ruling above still holds for SIDE — the actor is
++  // always one of its own allies, the test above, unchanged — and one opt-out now exists, stated on the row: an area's
++  // `excludeSelf: true`, "every other unit within N hexes". The flag this test proved had no effect is a field of the one
++  // vocabulary again, and it works; the old test is quoted:
++  // was: it('an unknown Targeting key is not silently ignored', () => {
++  // was:   // excludeSelf is gone; TypeScript rejects it at compile time, and a hand-written
++  // was:   // object literal carrying it would simply have no effect. Asserted so that
++  // was:   // deleting the field cannot quietly become "the flag stopped working."
++  // was:   const withStaleFlag = { select: 'area', side: 'ally', radius: 0, excludeSelf: true } as unknown as Targeting
++  // was:   expect(resolveTargets(ctx, a, withStaleFlag, 0)).toEqual([0])
++  it('an area that says excludeSelf leaves the actor out, and only then; any other unknown key is still not a Targeting', () => {
+     const ctx = board()
+     const a = ctx.state.units[0]!
+-    const withStaleFlag = { select: 'area', side: 'ally', radius: 0, excludeSelf: true } as unknown as Targeting
+-    expect(resolveTargets(ctx, a, withStaleFlag, 0)).toEqual([0])
++    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 0, excludeSelf: true }), 0)).toEqual([])
++    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 0 }), 0)).toEqual([0])
++    const everyone = resolveTargets(ctx, a, T({ select: 'area', side: 'any', radius: 9 }), 0)
++    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'any', radius: 9, excludeSelf: true }), 0)).toEqual(everyone.filter((id) => id !== 0))
++    // legality reads the same form: an area of nobody but the actor has no target once the actor is out
++    expect(hasAnyTarget(ctx, a, T({ select: 'area', side: 'ally', excludeSelf: true }), 0)).toBe(false)
++    // the flag is validated at load, never a silent no-op: off an area, or anything but true, throws
++    expect(() => validateTargeting(T({ select: 'unit', side: 'ally', excludeSelf: true }), 'test')).toThrow(/excludeSelf only means something/)
++    expect(() => validateTargeting({ select: 'area', side: 'ally', excludeSelf: 1 } as unknown as Targeting, 'test')).toThrow(/excludeSelf is true or absent/)
+   })
+ 
+```
+</details>
+
+## content.imp-blast-tuned — LANDED `0487e30` **NEEDS REVIEW**
+2026-10-04 08:35
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1957 · COMBAT-SEQUENCE.md:381
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/opening-bridge.test.ts, test/imp-blast-tuned.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.imp: 74 log lines, 74 fired, 43 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/opening-bridge.test.ts, test/fixtures/battle-cursor-imp-blast-tuned.json, test/imp-blast-tuned.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/opening-bridge.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'numbers' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.imp — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index e0a609e..4f4cc4b 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -295,4 +295,10 @@ const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
+ // showcase.prologue-enemies, test.opening-bridge and test.props-viewer-ranged-zoc. A `changed` case is checked here and skips the older layers.
+ const fireImpBurnGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-burn.json', import.meta.url), 'utf8'))
++// content.imp-blast-tuned (2026-10-04; DECISIONS.md 2026-10-03 'the Imp: Precision down by 1; its Blast burns half the time'),
++// Law 10: the Imp's Precision is 3 (was 4) and Imp Blast's on-hit Burn 2 takes a 50% chance (was certain). Every case frozen here
++// (tools/capture-imp-blast-tuned-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the six cases
++// that field an Imp — showcase.alpha-team, showcase.kiln, showcase.prologue-enemies, test.caravan-aftermath, test.opening-bridge
++// and test.opening-gates. A `changed` case is checked here and skips the older layers.
++const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-imp-blast-tuned.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -416,5 +422,8 @@ describe('resumable battle cursor', () => {
+       const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const fireImpBurnMoved = fireImpBurnExpected?.changed === true
++      const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const impBlastTunedMoved = impBlastTunedExpected?.changed === true
++      // was: const fireImpBurnMoved = fireImpBurnExpected?.changed === true — an imp-blast-tuned-moved case skips the fire-imp-burn layer too (content.imp-blast-tuned 2026-10-04)
++      const fireImpBurnMoved = fireImpBurnExpected?.changed === true || impBlastTunedMoved
+       // was: const startingKitPowersMoved = startingKitPowersExpected?.changed === true — a fire-imp-burn-moved case skips the starting-kit-powers layer too (fix.fire-imp-burn-spares-self 2026-10-04)
+       const startingKitPowersMoved = startingKitPowersExpected?.changed === true || fireImpBurnMoved
+@@ -514,5 +523,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (fireImpBurnExpected) {
++        if (impBlastTunedExpected) {
++        expect(hash(ctx.events), 'full imp-blast-tuned events').toBe(impBlastTunedExpected.events)
++        expect(hash(ctx.state), 'full imp-blast-tuned state').toBe(impBlastTunedExpected.state)
++        expect(hash(ctx.rng.log), 'full imp-blast-tuned RNG').toBe(impBlastTunedExpected.rng)
++        expect(result).toEqual(impBlastTunedExpected.result)
++        }
++        // was: if (fireImpBurnExpected) { — content.imp-blast-tuned (2026-10-04): an imp-blast-tuned-moved case is checked above instead
++        if (fireImpBurnExpected && !impBlastTunedMoved) {
+         expect(hash(ctx.events), 'full fire-imp-burn events').toBe(fireImpBurnExpected.events)
+         expect(hash(ctx.state), 'full fire-imp-burn state').toBe(fireImpBurnExpected.state)
+diff --git a/test/opening-bridge.test.ts b/test/opening-bridge.test.ts
+index bde7689..a7e5530 100644
+--- a/test/opening-bridge.test.ts
++++ b/test/opening-bridge.test.ts
+@@ -61,5 +61,18 @@ describe('encounter.opening.bridge', () => {
+     }
+   })
+-  it('is won when the last enemy dies', () => {
++  // SKIPPED BY NAME, content.imp-blast-tuned (2026-10-04), not deleted and not rewritten. Ruled 2026-10-04 (Andrew,
++  // DECISIONS.md 'no testing that the battles can be won until these items are done; the page tests play an overpowered
++  // party; faster landing'): "I'm okay forgoing all testing battle until we're done with all these items." — "A test that
++  // exists only to show a battle is winnable by the computer's play is skipped until then, by name, with this entry cited."
++  // This one needs a replicate the drafted party wins by the computer's play: replicate 4 was the one win of replicates
++  // 0-99, and with the Imp's Precision 3 and its Blast's 50% Burn (DECISIONS.md 2026-10-03 'the Imp: Precision down by 1;
++  // its Blast burns half the time') replicate 4 is a wipe. No seed was searched for. The rule itself — a battle with no
++  // `win` of its own ends heroClear when the last enemy is down — is the engine's victory check, tested on its own
++  // (test/encounter-runner.test.ts, test/encounter-commands.test.ts), and this encounter carrying no `win` is the first
++  // test above. The ruling is on engine master's DECISIONS.md (its last entry on 2026-10-04) and reaches this file's
++  // repository with the next merge.
++  // Un-skip when the queued items are done and a winning replicate is recorded again.
++  // was: it('is won when the last enemy dies', () => {
++  it.skip('is won when the last enemy dies', () => {
+     const ctx = openingBattle(S, WIN)
+     expect(ctx.state.outcome).toBe('heroClear')
 index 2521813..e0090c4 100644
 --- a/test/battle-cursor.test.ts
 +++ b/test/battle-cursor.test.ts

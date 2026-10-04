@@ -290,6 +290,33 @@ const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/
 // wife's dagger and basic armor). The cases that place only an Orphan Child or the School Teacher do not move: they fielded
 // their Dagger already. A `changed` case is checked here and skips the older layers.
 const civiliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-civilians-field-kit.json', import.meta.url), 'utf8'))
+// fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle — three
+// starting weapons lose their power on the way into the engine'), Law 10: the Holy Texts' Mercy, the Fire Staff's Flame Burst and
+// the Frost Staff's Frost Nova reach the engine, so six of the 24 base heroes field a power they did not have and the AI plays it.
+// Every case frozen here (tools/capture-starting-kit-powers-cursor.mts). Moved for real, the report answered (state, RNG and
+// result): the nineteen cases that field one of the six — showcase.assembled-party, .eve-24-b, .horrors, .kiln, .prologue-party,
+// .rime, .supper, .surrounded and .waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge, -cathedral,
+// -cavern-trail, -gates and -lumberjack, and progression-surge-0, -1 and -2. A `changed` case is checked here and skips the older layers.
+const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-starting-kit-powers.json', import.meta.url), 'utf8'))
+// fix.fire-imp-burn-spares-self (2026-10-04; DECISIONS.md 2026-10-03 'the Fire Imp's burn does not hit the imp itself': "It should
+// not hit him."), Law 10: the Fire Imp's end-of-Activation Burn targets every OTHER unit within 2 hexes, so the imp no longer
+// burns itself at the end of each of its Activations. Every case frozen here (tools/capture-fire-imp-burn-cursor.mts). Moved for
+// real, the ruling working (state, RNG and result): exactly the four cases that field a Fire Imp — showcase.kiln,
+// showcase.prologue-enemies, test.opening-bridge and test.props-viewer-ranged-zoc. A `changed` case is checked here and skips the older layers.
+const fireImpBurnGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-burn.json', import.meta.url), 'utf8'))
+// content.imp-blast-tuned (2026-10-04; DECISIONS.md 2026-10-03 'the Imp: Precision down by 1; its Blast burns half the time'),
+// Law 10: the Imp's Precision is 3 (was 4) and Imp Blast's on-hit Burn 2 takes a 50% chance (was certain). Every case frozen here
+// (tools/capture-imp-blast-tuned-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the six cases
+// that field an Imp — showcase.alpha-team, showcase.kiln, showcase.prologue-enemies, test.caravan-aftermath, test.opening-bridge
+// and test.opening-gates. A `changed` case is checked here and skips the older layers.
+const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-imp-blast-tuned.json', import.meta.url), 'utf8'))
+// combine (2026-10-04; GBH SWITCHES combine.mergeMainFirst): engine master c6552d5 (fix.civilians-field-kit, kingdom.page-test-strong-party)
+// merged into the engine worker's copy (fix.starting-kit-powers, fix.fire-imp-burn-spares-self, content.imp-blast-tuned). Each side
+// froze its own layer on its own tree, from the same layer below (afflictions-at-zero-rule); a case both sides moved is neither
+// side's hash on the combined tree. Every case frozen here on the combined tree (tools/capture-combine-civilians-kit-cursor.mts):
+// `changed` marks the cases that differ from the content.imp-blast-tuned capture — every case fix.civilians-field-kit moves. A
+// `changed` case is checked here and skips the older layers; the rest run down this copy's three layers, then master's, as before.
+const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-civilians-kit.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -409,8 +436,20 @@ describe('resumable battle cursor', () => {
       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true
+      // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
+      const impBlastTunedMoved = impBlastTunedExpected?.changed === true || combineCiviliansKitMoved
+      // was: const fireImpBurnMoved = fireImpBurnExpected?.changed === true — an imp-blast-tuned-moved case skips the fire-imp-burn layer too (content.imp-blast-tuned 2026-10-04)
+      const fireImpBurnMoved = fireImpBurnExpected?.changed === true || impBlastTunedMoved
+      // was: const startingKitPowersMoved = startingKitPowersExpected?.changed === true — a fire-imp-burn-moved case skips the starting-kit-powers layer too (fix.fire-imp-burn-spares-self 2026-10-04)
+      const startingKitPowersMoved = startingKitPowersExpected?.changed === true || fireImpBurnMoved
       const civiliansKitExpected = civiliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const civiliansKitMoved = civiliansKitExpected?.changed === true
+      // was: const civiliansKitMoved = civiliansKitExpected?.changed === true — a starting-kit-powers-moved case skips the civilians-field-kit layer too (combine 2026-10-04: master's layer sits under this copy's three)
+      const civiliansKitMoved = civiliansKitExpected?.changed === true || startingKitPowersMoved
       // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a civilians-kit-moved case skips the afflictions-at-zero-rule layer too (fix.civilians-field-kit 2026-10-03)
       const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || civiliansKitMoved
       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
@@ -506,7 +545,35 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (civiliansKitExpected) {
+        if (combineCiviliansKitExpected) {
+        expect(hash(ctx.events), 'full combine-civilians-kit events').toBe(combineCiviliansKitExpected.events)
+        expect(hash(ctx.state), 'full combine-civilians-kit state').toBe(combineCiviliansKitExpected.state)
+        expect(hash(ctx.rng.log), 'full combine-civilians-kit RNG').toBe(combineCiviliansKitExpected.rng)
+        expect(result).toEqual(combineCiviliansKitExpected.result)
+        }
+        // was: if (impBlastTunedExpected) { — combine (2026-10-04): a case the combined tree moved is checked above instead
+        if (impBlastTunedExpected && !combineCiviliansKitMoved) {
+        expect(hash(ctx.events), 'full imp-blast-tuned events').toBe(impBlastTunedExpected.events)
+        expect(hash(ctx.state), 'full imp-blast-tuned state').toBe(impBlastTunedExpected.state)
+        expect(hash(ctx.rng.log), 'full imp-blast-tuned RNG').toBe(impBlastTunedExpected.rng)
+        expect(result).toEqual(impBlastTunedExpected.result)
+        }
+        // was: if (fireImpBurnExpected) { — content.imp-blast-tuned (2026-10-04): an imp-blast-tuned-moved case is checked above instead
+        if (fireImpBurnExpected && !impBlastTunedMoved) {
+        expect(hash(ctx.events), 'full fire-imp-burn events').toBe(fireImpBurnExpected.events)
+        expect(hash(ctx.state), 'full fire-imp-burn state').toBe(fireImpBurnExpected.state)
+        expect(hash(ctx.rng.log), 'full fire-imp-burn RNG').toBe(fireImpBurnExpected.rng)
+        expect(result).toEqual(fireImpBurnExpected.result)
+        }
+        // was: if (startingKitPowersExpected) { — fix.fire-imp-burn-spares-self (2026-10-04): a fire-imp-burn-moved case is checked above instead
+        if (startingKitPowersExpected && !fireImpBurnMoved) {
+        expect(hash(ctx.events), 'full starting-kit-powers events').toBe(startingKitPowersExpected.events)
+        expect(hash(ctx.state), 'full starting-kit-powers state').toBe(startingKitPowersExpected.state)
+        expect(hash(ctx.rng.log), 'full starting-kit-powers RNG').toBe(startingKitPowersExpected.rng)
+        expect(result).toEqual(startingKitPowersExpected.result)
+        }
+        // was: if (civiliansKitExpected) { — combine (2026-10-04): a starting-kit-powers-moved case is checked above instead
+        if (civiliansKitExpected && !startingKitPowersMoved) {
         expect(hash(ctx.events), 'full civilians-field-kit events').toBe(civiliansKitExpected.events)
         expect(hash(ctx.state), 'full civilians-field-kit state').toBe(civiliansKitExpected.state)
         expect(hash(ctx.rng.log), 'full civilians-field-kit RNG').toBe(civiliansKitExpected.rng)

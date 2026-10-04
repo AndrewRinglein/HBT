@@ -373,11 +373,12 @@ select : self | unit | area
 side   : ally | enemy | any
 radius : area only. omitted = the whole side ("heal all rangers")
 origin : area only. self = whirlwind (default) · target = cleave
+excludeSelf : area only. true = "every OTHER unit within N" — the one acting is not in its own area
 requireTags : legality, not preference — "target undead" is NOT CASTABLE
               with no undead on the board, answered before stamina is spent
 ```
 
-**The actor is always one of its own allies. There is no opt-out.** *(Angela, 2026-08-15: "I don't think we're ever gonna use exclude self. Because it's already either including or excluding heroes or things by target, but I don't think self will ever be one of those.")* An `excludeSelf` flag existed and was deleted — side and `requireTags` are the two axes an effect discriminates on, and "everyone but me" is not a third one.
+**The actor is always one of its own allies. There is no opt-out.** *(Angela, 2026-08-15: "I don't think we're ever gonna use exclude self. Because it's already either including or excluding heroes or things by target, but I don't think self will ever be one of those.")* An `excludeSelf` flag existed and was deleted — side and `requireTags` are the two axes an effect discriminates on, and "everyone but me" is not a third one. **Side still never excludes the actor. Since 2026-10-03 one opt-out exists, stated on the row: an area's `excludeSelf: true`** *(Andrew, DECISIONS.md "the Fire Imp's burn does not hit the imp itself": "It should not hit him.")* — the Codex phrase "every other unit within N hexes"; everyone else in the area still takes the effect, the owner's own side included. The Fire Imp's end-of-Activation Burn is the row that authors it (fix.fire-imp-burn-spares-self).
 
 An unknown select, side, origin or an empty tag **throws at load**. §5's first
 "do not port" is Hell TCG's silent fallback, where a mistyped target quietly resolved

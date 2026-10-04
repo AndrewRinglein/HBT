@@ -1,24 +1,24 @@
 {
- "id": "fix.civilians-field-kit",
- "tree": "e16f0b1470fe4ace0f2c4d342fabfe5b6dcd53bc",
- "ctx": "a090ca8842539a1ab8b9b8f25462a15c89b65d99",
+ "id": "content.imp-blast-tuned",
+ "tree": "f2f684a7397dba9fd1feb81127dd35824714875d",
+ "ctx": "225ae7ff6fdacf48902358a36f67584c1425ee49",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 541,
-  "typecheck": 1815,
-  "the item's own tests": 9365,
-  "gate 1 — the id appears in a real battle": 1907,
-  "brought its own tests": 41,
+  "not already decided": 616,
+  "typecheck": 2111,
+  "the item's own tests": 13983,
+  "gate 1 — the id appears in a real battle": 2613,
+  "brought its own tests": 43,
   "existing tests untouched": 0,
-  "control battles unchanged": 35513,
-  "content has a published source": 122,
-  "hardcode scan — core knows mechanisms, never names": 37,
+  "control battles unchanged": 57365,
+  "content has a published source": 110,
+  "hardcode scan — core knows mechanisms, never names": 40,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 33,
-  "naming — no banned words invented": 124,
-  "kill switch — the tests fail without the content": 2520
+  "naming — new content ids use declared kinds": 39,
+  "naming — no banned words invented": 138,
+  "kill switch — the tests fail without the content": 2603
  }
 }

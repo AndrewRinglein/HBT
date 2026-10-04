@@ -74,11 +74,20 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     expect(differ).toEqual({
       'hero.base.paladin-dark': ['crit'],
       'hero.base.priest-armored': ['attacks'],
-      'hero.base.mage-fireaura': ['luck'],
-      'hero.base.priest-pauper': ['attacks', 'luck'],
+      // Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal
+      // in battle — three starting weapons lose their power on the way into the engine"): the Holy Texts' Mercy, the Fire
+      // Staff's Flame Burst and the Frost Staff's Frost Nova compile now, so the five rows that hold one of those weapons
+      // carry a power the frozen oracle never had — content moved, not the fold. (The Battle Chaplain holds the Holy Texts
+      // too; his `abilities` already differed by his Round Shield's powers, the R1 allowance above.) Their powers are named below.
+      // was: 'hero.base.mage-fireaura': ['luck'], 'hero.base.priest-pauper': ['attacks', 'luck'], 'hero.base.mage-thinking': ['triggers'],
+      //      and no row for 'hero.base.mage-fire' or 'hero.base.mage-sexy'
+      'hero.base.mage-fire': ['abilities'],
+      'hero.base.mage-sexy': ['abilities'],
+      'hero.base.mage-fireaura': ['abilities', 'luck'],
+      'hero.base.priest-pauper': ['attacks', 'abilities', 'luck'],
       // capability.frost (2026-09-03): the Thinking Mage's staff applies Frost,
       // which compiles now that the status exists — a trigger the oracle never had.
-      'hero.base.mage-thinking': ['triggers'],
+      'hero.base.mage-thinking': ['abilities', 'triggers'],
       // FINDING 39 (2026-09-04): the oracle froze Second Wind, Brace and Arcane Ward
       // aimed at the ATTACKER — the converter bug the audit found. The rows say
       // target: self and compile so now; the oracle keeps the bug on purpose as
@@ -113,6 +122,12 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
+    // fix.starting-kit-powers (2026-10-04): the `abilities` that differ are exactly the three powers, and nothing else
+    for (const [id, power] of [['hero.base.mage-fire', 'power.fire-staff.fireball'], ['hero.base.mage-sexy', 'power.fire-staff.fireball'], ['hero.base.mage-fireaura', 'power.fire-staff.fireball'],
+      ['hero.base.mage-thinking', 'power.frost-staff.frost-nova'], ['hero.base.priest-pauper', 'power.holy-texts.mercy']] as const) {
+      expect(fieldedDef(id).abilities, id).toEqual([...((o[id]!['abilities'] as string[] | undefined) ?? []), power])
+    }
+    expect(fieldedDef('hero.base.priest-armored').abilities).toContain('power.holy-texts.mercy')
   })
 
   it('the bare row really is bare, and the default kit really is the Codex kit', () => {

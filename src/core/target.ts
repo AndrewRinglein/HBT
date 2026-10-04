@@ -50,6 +50,17 @@ export type Targeting = {
    * TRIGGER-NOTES.md Q2, answered by making it explicit instead of picking.
    */
   readonly origin?: 'self' | 'target'
+  /**
+   * Area only — "every OTHER unit within N hexes": the one acting is not among those the area holds.
+   * Absent = the area counts the one acting, exactly the old behaviour ("every unit within N hexes").
+   *
+   * Ruled 2026-10-03 (Andrew, DECISIONS.md "the Fire Imp's burn does not hit the imp itself"): "It should
+   * not hit him." — everyone else in the area still takes it, the owner's own side included. The flag had
+   * been deleted on the 2026-08-15 word below ("I don't think we're ever gonna use exclude self"); a row
+   * now authors it, so it is back as a field of the ONE vocabulary, read by the one resolver. It is not a
+   * third axis of side: an ally-side area with it is "every other ally".
+   */
+  readonly excludeSelf?: true
 }
 
 export function validateTargeting(t: Targeting, where: string): void {
@@ -68,13 +79,18 @@ export function validateTargeting(t: Targeting, where: string): void {
     if (t.select !== 'area') throw new Error(`${where}: origin only means something for select:'area'`)
     if (t.origin !== 'self' && t.origin !== 'target') throw new Error(`${where}: unknown origin '${t.origin}'`)
   }
+  if (t.excludeSelf !== undefined) {
+    if (t.select !== 'area') throw new Error(`${where}: excludeSelf only means something for select:'area'`)
+    if (t.excludeSelf !== true) throw new Error(`${where}: excludeSelf is true or absent, got ${String(t.excludeSelf)}`)
+  }
   if (t.requireTags?.some((x) => !x)) throw new Error(`${where}: an empty tag is not a tag`)
 }
 
 /**
  * Does this unit satisfy the side and type filters?
  *
- * THE ACTOR IS ALWAYS ONE OF ITS OWN ALLIES. There is no opt-out, by ruling.
+ * THE ACTOR IS ALWAYS ONE OF ITS OWN ALLIES — side never excludes it. The one opt-out is the area's
+ * own `excludeSelf` (2026-10-03, above), stated on the row, never inferred.
  *
  * Angela, 2026-08-15: "I don't think we're ever gonna use exclude self. Because
  * it's already either including or excluding heroes or things by target, but I
@@ -85,9 +101,13 @@ export function validateTargeting(t: Targeting, where: string): void {
  * on, and "everyone but me" is not a third one — it is a shape nobody authors. A
  * flag that no content ever sets is a branch that is never exercised, and this file
  * already carries four of those in the shape of unfired hooks.
+ *
+ * 2026-10-03: a row authors it now (the Fire Imp's end-of-Activation Burn — Andrew: "It should not
+ * hit him."), so the flag returned, exercised by that row (fix.fire-imp-burn-spares-self).
  */
 export function eligible(actor: Unit, u: Unit, t: Targeting): boolean {
   if (u.lifeState === 'dead') return false
+  if (t.excludeSelf && u.id === actor.id) return false
   const isAlly = u.side === actor.side
   if (t.side === 'ally' && !isAlly) return false
   if (t.side === 'enemy' && isAlly) return false

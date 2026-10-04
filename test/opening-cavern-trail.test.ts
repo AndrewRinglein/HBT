@@ -12,7 +12,13 @@ const S = 'test.opening-cavern-trail', FALL = 'trigger.cavern-trail.meteor-fall'
 // Replicate 1 is a battle the heroes win (replicates 0-9: 4 heroClear, 6 wipe — a real fight).
 // fix.opening-party (2026-09-29): on the party drafted by battle 4 (five heroes, not four Alpha heroes)
 // replicate 1 is still a win; 7 of 50 are.
-const WIN = 1
+// Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal in
+// battle — three starting weapons lose their power on the way into the engine"): the drafted priests and mages field Mercy,
+// Flame Burst and Frost Nova now and play them, so every battle that drafts one moves — replicate 1 is a wipe whose meteors
+// land on nobody. Replicate 0 is a battle the heroes win with the meteors landing on four units; 19 of replicates 0-49 are
+// wins now (7 before: the party is stronger with its whole weapons). The claims below are unchanged.
+// was: const WIN = 1
+const WIN = 0
 describe('encounter.opening.cavern-trail', () => {
   it('carries the meteor fall with the ruled numbers', () => {
     expect(encounterDef('encounter.opening.cavern-trail').falls!.map((f) => [f.id, f.turn, f.areas, f.layer, f.damage, f.damageType, f.applies]))

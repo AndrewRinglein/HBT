@@ -130,14 +130,29 @@ describe('targeting — legality is answered before the stamina is spent', () =>
     expect(resolveTargets(ctx, a, T({ select: 'area', side: 'any', radius: 0 }), 0)).toEqual([0])
   })
 
-  it('an unknown Targeting key is not silently ignored', () => {
-    // excludeSelf is gone; TypeScript rejects it at compile time, and a hand-written
-    // object literal carrying it would simply have no effect. Asserted so that
-    // deleting the field cannot quietly become "the flag stopped working."
+  // Law 10, fix.fire-imp-burn-spares-self (2026-10-04). RULED, Andrew 2026-10-03 (DECISIONS.md "the Fire Imp's burn does
+  // not hit the imp itself"): "It should not hit him." The 2026-08-15 ruling above still holds for SIDE — the actor is
+  // always one of its own allies, the test above, unchanged — and one opt-out now exists, stated on the row: an area's
+  // `excludeSelf: true`, "every other unit within N hexes". The flag this test proved had no effect is a field of the one
+  // vocabulary again, and it works; the old test is quoted:
+  // was: it('an unknown Targeting key is not silently ignored', () => {
+  // was:   // excludeSelf is gone; TypeScript rejects it at compile time, and a hand-written
+  // was:   // object literal carrying it would simply have no effect. Asserted so that
+  // was:   // deleting the field cannot quietly become "the flag stopped working."
+  // was:   const withStaleFlag = { select: 'area', side: 'ally', radius: 0, excludeSelf: true } as unknown as Targeting
+  // was:   expect(resolveTargets(ctx, a, withStaleFlag, 0)).toEqual([0])
+  it('an area that says excludeSelf leaves the actor out, and only then; any other unknown key is still not a Targeting', () => {
     const ctx = board()
     const a = ctx.state.units[0]!
-    const withStaleFlag = { select: 'area', side: 'ally', radius: 0, excludeSelf: true } as unknown as Targeting
-    expect(resolveTargets(ctx, a, withStaleFlag, 0)).toEqual([0])
+    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 0, excludeSelf: true }), 0)).toEqual([])
+    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 0 }), 0)).toEqual([0])
+    const everyone = resolveTargets(ctx, a, T({ select: 'area', side: 'any', radius: 9 }), 0)
+    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'any', radius: 9, excludeSelf: true }), 0)).toEqual(everyone.filter((id) => id !== 0))
+    // legality reads the same form: an area of nobody but the actor has no target once the actor is out
+    expect(hasAnyTarget(ctx, a, T({ select: 'area', side: 'ally', excludeSelf: true }), 0)).toBe(false)
+    // the flag is validated at load, never a silent no-op: off an area, or anything but true, throws
+    expect(() => validateTargeting(T({ select: 'unit', side: 'ally', excludeSelf: true }), 'test')).toThrow(/excludeSelf only means something/)
+    expect(() => validateTargeting({ select: 'area', side: 'ally', excludeSelf: 1 } as unknown as Targeting, 'test')).toThrow(/excludeSelf is true or absent/)
   })
 
   it('the dead are never a target', () => {
