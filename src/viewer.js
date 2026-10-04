@@ -23,6 +23,8 @@
                    shield (viewer.shield-guard-motion); a host that hands none gets no raised shield
      layerStatus · terrainApplies — what each painted layer and ground applies (static.json)
      terrainNames — terrain id -> the ground's name, for the hex tooltip (static.json; viewer.hex-tooltip)
+     unitLines — unit type id -> the kind's player-facing sentence, the content's row (static.json; viewer.new-enemy-ability-line):
+                 the line under the name in the "New enemy" notice; a kind with none shows its name alone
      artmap   — typeId -> {token, card, aspect, height, after?}; assets — file -> data URI / URL
                 (after: affliction badgeId -> the hero's after card, viewer.affliction-pop-up; a hero with none has no entry)
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
@@ -170,7 +172,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ABSORBING_STATUSES: data.absorbingStatuses || [],
       LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {},
       /* viewer.hex-tooltip: each ground's name (static.json terrainNames); a host that hands none gets the engine's id */
-      TERRAIN_NAMES: data.terrainNames || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
+      TERRAIN_NAMES: data.terrainNames || {},
+      /* viewer.new-enemy-ability-line: each kind's own sentence (static.json unitLines — the content's row); none: the name alone */
+      UNIT_LINES: data.unitLines || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {},
       /* viewer.reads-engine: what each action IS (the engine's predicates) and what each status DOES (its row's flags) */
       KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ITEM_CLASSES: data.itemClasses || {},
@@ -492,7 +496,10 @@ export function mountBattleViewer(root, data, opts = {}) {
         const sheet = V.data.UD[k.typeId]
         V.enemiesNamed.push({ typeId: k.typeId, unit: k.unit, hex: u.hex, slid: moved, pose: { ...(V.camTarget || {}) }, at: V.clock() })
         if (opts.onNewEnemy) { try { opts.onNewEnemy(k.typeId) } catch (err) { fault(err) } }
-        overlays.tell(['New enemy', (sheet && sheet.name) || u.name], { onDone: () => next(i + 1) })
+        /* viewer.new-enemy-ability-line: under the name, what this kind can do — the content's own sentence for it, as dumped;
+           a kind with none shows its name alone. Nothing is worded here. */
+        const line = V.data.UNIT_LINES[k.typeId]
+        overlays.tell(['New enemy', (sheet && sheet.name) || u.name, ...(typeof line === 'string' && line.trim() ? [line.trim()] : [])], { onDone: () => next(i + 1) })
       }
       if (glide) owner.timer = setTimeout(() => { owner.timer = null; say() }, glide); else say()
     }
