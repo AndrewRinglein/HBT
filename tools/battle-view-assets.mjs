@@ -16,8 +16,9 @@ export function battleViewAssets(){
  for(const file of manifest.files){if(!/^[a-zA-Z0-9_.-]+$/.test(file))throw Error('Unsafe art manifest filename '+file)}
  for(const file of manifest.files){const mime=file.endsWith('.png')?'image/png':file.endsWith('.jpg')?'image/jpeg':null;if(mime)assets[file]=`data:${mime};base64,${readFileSync('../viewer/generated/art/'+file).toString('base64')}`}
   /* viewer.reads-engine: the engine's classification of every action and each status's behaviour; what each layer and ground applies;
-     viewer.shield-guard-motion: each item's own class (a power a held shield grants raises the shield) */
- return {units:stat.units,statuses:stat.statuses,absorbingStatuses:stat.absorbingStatuses,actions:stat.actions,badges:stat.badges,layers:stat.layers,actionKinds:stat.actionKinds,statusRows:stat.statusRows,layerStatus:stat.layerStatus,terrainApplies:stat.terrainApplies,itemClasses:stat.itemClasses,artmap:manifest.artmap,assets,glyphs:read('ra-glyphs.json')}
+     viewer.shield-guard-motion: each item's own class (a power a held shield grants raises the shield);
+     viewer.panel-lists-items: each item's own row and the engine's count of hands (the battle panel's items section) */
+ return {units:stat.units,statuses:stat.statuses,absorbingStatuses:stat.absorbingStatuses,actions:stat.actions,badges:stat.badges,layers:stat.layers,actionKinds:stat.actionKinds,statusRows:stat.statusRows,layerStatus:stat.layerStatus,terrainApplies:stat.terrainApplies,itemClasses:stat.itemClasses,items:stat.items,hands:stat.hands,artmap:manifest.artmap,assets,glyphs:read('ra-glyphs.json')}
 }
 export function scopeBattleCSS(source){
  const root=postcss.parse(source)
