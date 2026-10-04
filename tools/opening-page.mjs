@@ -47,6 +47,9 @@ export const ART_SEEN={draft:0,whoGoes:0,equip:0,victory:0,rewards:0,carrier:0,l
    Longsword's reward card was on the screen (it is offered only with a Warrior or a Paladin in the party) */
 export const ITEMS_ART={...(ART_INDEX.items??{})},ITEMS_MISSING={...(ART_INDEX.itemsMissing??{})}
 const itemUri=id=>portraitCache['item:'+id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ITEMS_ART[id])
+/* kingdom.opening-recap-civilians: every victory screen of a run, as it showed the civilians who fought — the battle, and
+   each civilian's unit, name, mark and whether it joined (fightOut) */
+export const CIVILIANS_SEEN=[]
 export const ITEM_ART_SEEN={rewardArt:0,rewardPlain:0,equipArt:0,equipPlain:0,sword:false}
 const FLAMING_LONGSWORD='item.longsword.flaming'
 /* kingdom.opening-specialty-three (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; the specialty
@@ -111,11 +114,19 @@ function fieldedAs(config,as){
  return {...base,setup,ctx,policy:E.playerPolicy(ctx)}
 }
 /* the player's side, played out: 'ai', the engine's AI plays everyone; 'idle', every activation of the player's side
-   begun and ended (the heroes and the civilians stand still), the enemies the engine's AI */
+   begun and ended (the heroes and the civilians stand still), the enemies the engine's AI; 'civilian-falls'
+   (kingdom.opening-recap-civilians, 2026-10-04) — a battle the test means to WIN WITH A CIVILIAN DEAD, so the victory
+   screen has a dead civilian to mark: the player's side stands idle, as 'idle', until one of the encounter's own
+   hero-side units has died (the strong party, unkillable, only watches), and from the next choice of who activates the
+   engine's AI plays everyone, as 'ai' — the strong party then ends it. Deliberate, one battle, the Engagement's own
+   seed; if no civilian has died by Turn 12 the driver stops (playedOut) */
+const CIVILIAN_FALLS_BY_TURN=12
+const civilianDead=s=>s.ctx.state.units.some(u=>u.side==='hero'&&!s.setup.heroUids.includes(u.uid)&&u.lifeState==='dead')
 function playOut(s,how){
  if(how==='ai'){E.runBattle(s.ctx);return}
  E.advanceSandbox(s)
  for(let i=0;i<50000&&!s.ctx.state.outcome;i++){const ctx=s.ctx,at=ctx.battleCursor?.at,seq=ctx.state.seq
+  if(how==='civilian-falls'&&at==='selecting'&&(civilianDead(s)||ctx.state.turn>CIVILIAN_FALLS_BY_TURN)){s.policy={humanUnitUids:[]};E.advanceSandbox(s);if(!s.ctx.state.outcome)E.runBattle(s.ctx);return}
   let r=null
   if(at==='selecting')r=E.commandSandbox(s,{kind:'select-activation',unitUid:E.sandboxActivationChoices(s)[0].uid,expectedSeq:seq})
   else if(at==='acting')r=E.commandSandbox(s,{kind:'end-cycle',actor:ctx.battleCursor.actor,expectedSeq:seq})
@@ -125,10 +136,16 @@ function playOut(s,how){
 /* one battle settled as the test means it to end — won (the strong party, the engine's AI) or lost (the party held idle,
    cut at Turn 1) — and the save a person would have made at that moment. One battle, on the Engagement's own seed; a
    battle that does not end as meant, or that hurts the party, is not searched around: the driver stops (Law 9) */
-export function playedOut(config,won){
- const how=won?'ai':'idle',s=fieldedAs(config,won?STRONG_PARTY:HELD_PARTY);playOut(s,how)
+export function playedOut(config,won){return settledAs(config,won,{})}
+/* kingdom.opening-recap-civilians: … or WON WITH A CIVILIAN DEAD (playOut 'civilian-falls'): the strong party stands idle
+   until one of the encounter's own hero-side units has died, then the engine's AI plays everyone. The same one battle,
+   on the Engagement's own seed; if no civilian dies the driver stops */
+export function playedOutCivilianFalls(config){return settledAs(config,true,{civilianFalls:true})}
+function settledAs(config,won,o){
+ const how=won?(o.civilianFalls?'civilian-falls':'ai'):'idle',s=fieldedAs(config,won?STRONG_PARTY:HELD_PARTY);playOut(s,how)
  const r=E.sandboxResult(s),party=r.units.filter(u=>u.side==='hero'&&u.role===undefined)
  if((r.outcome==='heroClear')!==won)throw Error(`${config.encounterId} on seed ${config.seed}: meant to be ${won?'won by the strong party':'lost by the party held idle'}, it ended '${r.outcome}' on Turn ${r.turns} — the driver settles one battle and searches for none (kingdom.page-test-strong-party)`)
+ if(o.civilianFalls&&!r.units.some(u=>u.side==='hero'&&u.role!==undefined&&u.lifeState==='dead'))throw Error(`${config.encounterId} on seed ${config.seed}: meant to be won with a civilian dead — none had died by Turn ${CIVILIAN_FALLS_BY_TURN} with the player's side standing idle; the driver settles one battle and searches for none`)
  const hurt=party.filter(u=>u.lifeState!=='standing'||u.downed||u.stood)
  if(hurt.length)throw Error(`${config.encounterId} on seed ${config.seed}: the ${won?'strong':'held'} party was hurt (${hurt.map(u=>config.heroes[u.index]+' '+u.lifeState).join(', ')}) — it is meant to end ${won?'won':'lost'} with nobody dead, down or wounded`)
  return {save:E.saveSandbox(s),result:r,how,seed:config.seed,turns:r.turns}
@@ -160,7 +177,7 @@ export function openingPage(page,search,store){
   assert.ok(el,label+': the card');const want=portraitFor(id,label),got=el.querySelectorAll('img').map(i=>i.getAttribute('src'))
   assert.equal(got.length,want?n:0,`${label}: ${id}'s card shows ${want?'its card art':'a blank card (its art is missing on disk)'} — ${got.length} image(s) found`)
   for(const src of got)assert.ok(src===want,`${label}: the image on ${id}'s card is its own card art, not another's`)
-  ART_SEEN[screen]++
+  if(screen)ART_SEEN[screen]++
  }
  /* kingdom.opening-reward-card-art: the images inside `el` are exactly one of that ITEM's own card art — or, for an item
     with none, no image at all and the item named in itemsMissing (its plain card). An item in neither list fails */
@@ -399,8 +416,9 @@ export function openingPage(page,search,store){
 
  /* settle the battle on the page — won or lost as the test means it (playedOut) — then the reckoning: the recap, its
     Continue */
- function fightOut(won,label){
-  const e=camp().cursor.engagement,{save,result,how:played,seed}=playedOut(handle.session.config,won)
+ function fightOut(won,label,o={}){
+  if(o.civilianFalls&&!won)throw Error('a civilian is made to fall in a battle the test means to win')
+  const e=camp().cursor.engagement,{save,result,how:played,seed}=(o.civilianFalls?playedOutCivilianFalls(handle.session.config):playedOut(handle.session.config,won))
   w.document.getElementById('transferText').value=save;v.click('import');settle()
   assert.equal(handle.session.ctx.state.outcome==='heroClear',won,label+': the battle ends '+(won?'won':'lost'))
   assert.ok(!shown('conquest'),label+': the outcome stands on the battle');assert.equal(byId('commands').querySelectorAll('[data-act=reckon]').length,1,label+': the outcome offers the reckoning')
@@ -411,6 +429,47 @@ export function openingPage(page,search,store){
      order they were sent) and of the hero in its spotlight; a lost battle's recap has the spotlight alone */
   const faces=recap.querySelectorAll('.party-portrait')
   if(won){assert.equal(faces.length,e.deployed.length,label+': the victory screen shows a face per hero who fought');for(const [i,id] of e.deployed.entries())showsArt(faces[i],id,label+': the victory screen','victory')}
+  /* kingdom.opening-recap-civilians (engine DECISIONS.md 2026-10-03 'the civilians show on the victory screen; …': "The
+     battle should show in this victory screen too. If they were wounded, if they died, they're in there too."): the
+     victory screen shows a card for EVERY player-side unit of the battle — the heroes in their row, as above, and, set
+     apart in a row of their own (#rc-civilians), every hero-side unit of the result that is not a roster hero — each
+     with its name, its own portrait (or none, when it has none on disk), and its mark, in words and on the card:
+     unhurt, wounded (it went down and lives) or dead, as the pasted battle's own tallies left it; one that lived
+     through a won battle and joined the roster is marked as joining; and the report names each one wounded or dead as
+     a hero is named — "No wounds sustained" is said only when no hero and no civilian was. A lost battle shows none. */
+  const fought=result.units.filter(u=>u.side==='hero'&&u.role!==undefined),civs=recap.querySelectorAll('.civilian-member')
+  if(!won)assert.equal(civs.length,0,label+': a lost battle\'s screen shows no civilians')
+  else{
+   assert.equal(civs.length,fought.length,label+': a card for every civilian who fought')
+   assert.equal(faces.length+civs.length,result.units.filter(u=>u.side==='hero').length,label+': a card for every player-side unit of the battle')
+   if(fought.length){
+    const row=byId('rc-civilians');assert.ok(row,label+': the civilians have a row of their own')
+    assert.deepEqual(row.querySelectorAll('.civilian-member').map(c=>c.dataset.unit),fought.map(u=>u.typeId),label+': the civilians\' row holds every civilian who fought, in the battle\'s order')
+    assert.equal(byId('rc-party').querySelectorAll('.civilian-member').length,0,label+': no civilian among the heroes');assert.equal(row.querySelectorAll('.party-portrait').length,0,label+': no hero among the civilians')
+    assert.match(row.textContent,/Civilians/,label+': the row says who they are')
+   }
+   const reportText=byId('rc-report').textContent,seen=[]
+   for(const [i,u] of fought.entries()){
+    const card=civs[i],fate=u.lifeState==='dead'?'dead':u.lifeState==='downed'||u.downed||u.stood?'wounded':'unhurt'
+    const rescued=E.HEROES.RESCUABLE_CIVILIANS.find(h=>h.unitType===u.typeId),name=rescued&&fought.filter(x=>x.typeId===u.typeId).length===1?rescued.name:u.name
+    assert.equal(card.dataset.fate,fate,`${label}: ${u.typeId} is marked ${fate}, as the battle left it`)
+    assert.ok(card.textContent.includes(name),`${label}: ${name} is named`)
+    assert.ok(card.textContent.includes({unhurt:'Unhurt',wounded:'Wounded',dead:'Dead'}[fate]),`${label}: ${name}'s mark is said in words`)
+    assert.ok(card.querySelectorAll('.civilian-portrait')[0].classList.contains(fate),`${label}: ${name}'s card wears its mark`)
+    if(rescued)showsArt(card.querySelectorAll('.civilian-portrait')[0],rescued.id,label+': the victory screen, '+name,null)
+    else assert.equal(card.querySelectorAll('img').length,0,`${label}: ${name} has no row and no portrait`)
+    const joins=fate!=='dead'&&!!rescued&&!!camp().roster[rescued.id]
+    assert.equal(card.dataset.joins,joins?'1':'0',`${label}: ${name} ${joins?'is marked as joining':'is not marked as joining'}`)
+    if(fate!=='dead'&&rescued)assert.ok(camp().roster[rescued.id],`${label}: ${name} lived through a won battle and joined the roster`)
+    if(fate==='dead'&&rescued)assert.ok(!camp().roster[rescued.id],`${label}: ${name} died and did not join`)
+    if(fate!=='unhurt')assert.ok(reportText.includes(`${name} — ${fate==='dead'?'fell in battle':'Wounded'}`),`${label}: the report names ${name}`)
+    else assert.ok(!reportText.includes(name+' —'),`${label}: the report does not name ${name}, who was unhurt`)
+    seen.push({typeId:u.typeId,name,fate,joins})
+   }
+   const heroesHurt=e.deployed.some(id=>camp().roster[id].lifeState==='dead'||camp().roster[id].wound>0)
+   assert.equal(/No wounds sustained/.test(reportText),!heroesHurt&&seen.every(x=>x.fate==='unhurt'),label+': "No wounds sustained" is said only when no hero and no civilian was wounded or killed')
+   CIVILIANS_SEEN.push({label,encounterId:e.id,civilians:seen})
+  }
   const spot=recap.querySelectorAll('.spotlight-frame')[0],spotSrc=spot?.querySelectorAll('img').map(i=>i.getAttribute('src'))??[]
   const spotOf=e.deployed.filter(id=>{const p=portraitFor(id,label+': the spotlight');return p&&spotSrc[0]===p})
   assert.ok(spotSrc.length<=1&&(spotSrc.length===1?spotOf.length>=1:e.deployed.some(id=>!portraitFor(id,label))),label+': the spotlight shows the card art of a hero who fought')

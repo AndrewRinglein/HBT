@@ -23,7 +23,7 @@
 //
 //   node tools/opening-run-six.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
-import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES,ART_SEEN,HEROES_MISSING,SPECIALTY_CHOICES,ITEM_ART_SEEN,ITEMS_ART,ITEMS_MISSING} from './opening-page.mjs'
+import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES,ART_SEEN,HEROES_MISSING,SPECIALTY_CHOICES,ITEM_ART_SEEN,ITEMS_ART,ITEMS_MISSING,CIVILIANS_SEEN} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORDER=['orphanage','lumberjack','bridge','cavern-trail','gates','cathedral'].map(x=>'encounter.opening.'+x)
 const [ORPHANAGE,LUMBERJACK,BRIDGE,CAVERN,GATES,CATHEDRAL]=ORDER
@@ -184,11 +184,12 @@ function stayedHome(f,label,paid){
 /* the battle on the board settled, then its reckoning, its reward kept (a named-class item to its first taker) and the
    level-ups, back to the map — the run still in the opening */
 const REOPENED_ON_CHOICE=[]
-function settle(won,label,reopenOnSpecialty=false){
+function settle(won,label,reopenOnSpecialty=false,how={}){
  const id=camp().cursor.engagement.id
- const {e,result,played,seed}=P.fightOut(won,label)
+ const {e,result,played,seed}=P.fightOut(won,label,how)
  chosen[won?id:id+':lost']=[played,seed,result.turns]
  console.error(`settled ${label}: ${won?'the strong party, the engine\'s AI':'the party held idle, cut at Turn 1'} — ${result.outcome} on Turn ${result.turns}, the Engagement's own seed ${seed}`)
+ if(how.civilianFalls)console.error(`${label}: the strong party stood idle until a civilian had fallen, and the engine's AI played from there (kingdom.opening-recap-civilians)`)
  /* kingdom.page-test-strong-party: what the page wrote is what the pasted battle did to each hero sent — none dead, and a
     wound only where the battle took the hero down (the Reckoning's rule: the worse of the wound carried in and the plain
     wound of going down) */
@@ -222,7 +223,9 @@ function settle(won,label,reopenOnSpecialty=false){
  assert.equal(camp().week,0,label+': no Week begun — the run never reaches the kingdom');assert.equal(camp().ended,null,label+': the run goes on')
  return {result,kept}
 }
-function battle(id,n,label=`battle ${n}`){const f=field(id,n,label),done=settle(true,label,n===1);stayedHome(f,label,true);return {...f,...done}}
+/* kingdom.opening-recap-civilians: the Orphanage (battle 1) is won WITH A CIVILIAN DEAD — settled so deliberately
+   (opening-page.mjs playOut 'civilian-falls') — so its victory screen has a dead civilian to mark */
+function battle(id,n,label=`battle ${n}`){const f=field(id,n,label),done=settle(true,label,n===1,n===1?{civilianFalls:true}:{});stayedHome(f,label,true);return {...f,...done}}
 
 /* 1 · a new run: nothing fielded, nobody drafted, the Orphanage next; the run is kept from the first screen */
 assert.equal(P.readMap([],'a new run'),ORPHANAGE)
@@ -456,6 +459,26 @@ assert.equal(ITEM_ART_SEEN.sword,swordTaker,swordTaker?'the Flaming Longsword\'s
 assert.ok(ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain>=4*3,'the reward cards of the four draws (the Bridge to the Cathedral) were each held to art or itemsMissing')
 assert.ok(ITEM_ART_SEEN.equipArt>0,'Equip showed items with card art');assert.ok(ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain>=21,'every item Equip showed was held')
 
+/* 5g · kingdom.opening-recap-civilians (engine DECISIONS.md 2026-10-03 'the civilians show on the victory screen; …': "The
+   battle should show in this victory screen too. If they were wounded, if they died, they're in there too." — the
+   civilians): every victory screen of the run showed a card for every player-side unit of its battle — the heroes in
+   their row and, set apart in their own, every civilian who fought, each marked unhurt, wounded or dead as the battle
+   left it and named in the report when hurt (each asserted at its screen, tools/opening-page.mjs fightOut). Here: the
+   Orphanage's screen showed the Orphan Child and the School Teacher, one of them DEAD (the battle was settled so) and
+   marked dead, not joining, not on the roster; the Lumberjack House's showed the Lumberjack and his Wife; and the
+   screens of the battles that field no civilians showed none. */
+const civiliansAt=id=>CIVILIANS_SEEN.filter(x=>x.encounterId===id)
+assert.equal(CIVILIANS_SEEN.length,6,'six victory screens, one for each battle won');assert.deepEqual(CIVILIANS_SEEN.map(x=>x.encounterId),ORDER)
+const atOrphanage=civiliansAt(ORPHANAGE)[0].civilians,atLumberjack=civiliansAt(LUMBERJACK)[0].civilians
+assert.deepEqual(atOrphanage.map(x=>x.name).sort(),['Orphan Child','School Teacher'],'the Orphanage: the Orphan Child and the School Teacher')
+assert.deepEqual(atLumberjack.map(x=>x.name).sort(),['Lumberjack','Lumberjack\'s Wife'],'the Lumberjack House: the Lumberjack and his Wife')
+const fallen=atOrphanage.filter(x=>x.fate==='dead')
+assert.ok(fallen.length>=1,'a civilian died at the Orphanage, and the screen marked it dead');assert.ok(fallen.every(x=>!x.joins),'the dead do not join')
+for(const x of [...atOrphanage,...atLumberjack])assert.ok(['unhurt','wounded','dead'].includes(x.fate))
+for(const x of [...atOrphanage,...atLumberjack].filter(x=>x.fate!=='dead'))assert.ok(x.joins&&P.civilianIds().some(id=>camp().roster[id].name===x.name),x.name+' lived, was marked as joining, and is on the roster')
+for(const x of fallen)assert.ok(!P.civilianIds().some(id=>camp().roster[id].name===x.name),x.name+' died and is not on the roster')
+const saidOf=list=>list.map(x=>`${x.name} ${x.fate}${x.joins?', joins':''}`).join(', ')
+
 /* 6 · the end: every section taken, the run complete — and never the kingdom map */
 assert.equal(P.readMap(ORDER,'the end'),null,'every section is taken')
 assert.match(P.byId('runNote').textContent,/the opening run is complete/,'the map says the run is complete')
@@ -466,4 +489,4 @@ const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
 console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
 console.error('drafted with: '+OFFERS.map(o=>`${POOL.find(h=>h.id===o.took).name}: ${[...o.drafted.badges.map(b=>b.replace('badge.','')),...o.drafted.mods.map(m=>(m.add>0?'+':'')+m.add+' '+m.stat),...o.drafted.unfielded.map(r=>(r.amount>0?'+':'')+r.amount+' '+r.stat+(r.stat==='itemSlots'?' (on the hero, its item slots)':' (not fielded)'))].join(', ')}`).join('; '))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); one draft before every battle (${CADENCE.map(x=>x.drafts).join(', ')}): a party of ${CADENCE.map(x=>x.party).join(', ')} at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (${SPECIALTY_CHOICES.length} choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); item card art: ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards — ${ITEM_ART_SEEN.rewardArt} showed their item's card art, ${ITEM_ART_SEEN.rewardPlain} plain and named in itemsMissing; ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} items on Equip — ${ITEM_ART_SEEN.equipArt} with art, ${ITEM_ART_SEEN.equipPlain} plain and named in itemsMissing${ITEM_ART_SEEN.sword?'; the Flaming Longsword\'s reward card showed its card art':''}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); one draft before every battle (${CADENCE.map(x=>x.drafts).join(', ')}): a party of ${CADENCE.map(x=>x.party).join(', ')} at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (${SPECIALTY_CHOICES.length} choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); the victory screens showed the civilians who fought, set apart from the heroes and marked unhurt, wounded or dead (the Orphanage: ${saidOf(atOrphanage)}; the Lumberjack House: ${saidOf(atLumberjack)}); a civilian who died (${fallen.map(x=>x.name).join(', ')}) was marked dead and did not join; item card art: ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards — ${ITEM_ART_SEEN.rewardArt} showed their item's card art, ${ITEM_ART_SEEN.rewardPlain} plain and named in itemsMissing; ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} items on Equip — ${ITEM_ART_SEEN.equipArt} with art, ${ITEM_ART_SEEN.equipPlain} plain and named in itemsMissing${ITEM_ART_SEEN.sword?'; the Flaming Longsword\'s reward card showed its card art':''}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

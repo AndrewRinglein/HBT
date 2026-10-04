@@ -35,6 +35,7 @@ import type { Reckoning } from '../core/reckoning.js'
 import type { KingdomEvent } from '../core/mutate.js'
 import { listRewardOffers, listRewardTakers, listLevelUps, viewLevelUp, canLevelUp } from '../core/rewards.js'
 import { hashOf } from '../core/rng.js'
+import { listBattleCivilians } from '../core/opening.js'
 import { statLabelOf } from '../content/stat-labels.js'
 import { xpForLevel } from '../content/levels.js'
 import { woundNameOf } from '../content/wounds.js'
@@ -100,15 +101,26 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
   const questGains = questReward ? [...questReward.fixedXp.map(g => `${c.roster[g.heroId]!.name}: +${g.amount} quest XP`), ...questReward.grants.map(g => `${g.amount} ${g.currency.replace('currency.', '')}`)] : []
   const kills = mine ? mine.result.units.filter((u) => u.side === 'hero').reduce((s, u) => s + u.kills, 0) : 0
   const quote = spot ? quoteOf(won ? VICTORY_QUOTES : DEFEAT_QUOTES, spot, outcome, `${e?.id}:${spot.id}`) : ''
-  const report = heroes.length === 0 ? [] : won && fates.every((f) => !f.dead && f.wound === 0)
+  // kingdom.opening-recap-civilians (engine DECISIONS.md 2026-10-03 'the civilians show on the victory screen; …': "The
+  // battle should show in this victory screen too. If they were wounded, if they died, they're in there too." — the
+  // civilians): the civilians who fought, as the battle's own result left them (core/opening.ts listBattleCivilians) —
+  // drawn in a row of their own under the heroes', each with its portrait and its mark in words, and named in the
+  // report as a hero is. "No wounds sustained" is said only when no hero AND no civilian was wounded or killed
+  // (kingdom SWITCHES.md recapCiviliansNoWounds); the title's grade stays the heroes' (recapCiviliansTitle).
+  const civilians = mine ? listBattleCivilians(c, mine.result) : []
+  const civilianLines = civilians.filter((v) => v.fate !== 'unhurt').map((v) => `<div class="report-line ${v.fate === 'dead' ? 'dead-report' : 'wounded'}"><span class="report-icon">${woundGlyph(v.fate)}</span><span>${esc(v.name)} — ${v.fate === 'dead' ? 'fell in battle' : esc(woundNameOf(1))}</span></div>`)
+  const report = heroes.length === 0 ? [] : won && fates.every((f) => !f.dead && f.wound === 0) && civilianLines.length === 0
     ? [`<div class="report-line decisive"><span class="report-icon">✦</span><span>Decisive Victory — No wounds sustained</span></div>`]
-    : heroes.filter((h) => h.lifeState === 'dead' || h.wound > 0).map((h) => { const k = woundClass(h); return `<div class="report-line ${k === 'dead' ? 'dead-report' : k}"><span class="report-icon">${woundGlyph(k)}</span><span>${esc(h.name)} — ${k === 'dead' ? 'fell in battle' : esc(woundNameOf(h.wound))}</span></div>` })
+    : [...heroes.filter((h) => h.lifeState === 'dead' || h.wound > 0).map((h) => { const k = woundClass(h); return `<div class="report-line ${k === 'dead' ? 'dead-report' : k}"><span class="report-icon">${woundGlyph(k)}</span><span>${esc(h.name)} — ${k === 'dead' ? 'fell in battle' : esc(woundNameOf(h.wound))}</span></div>` }), ...civilianLines]
+  const FATE_WORD = { unhurt: 'Unhurt', wounded: woundNameOf(1), dead: 'Dead' } as const
+  const civilianCards = civilians.map((v) => `<div class="civilian-member" data-unit="${esc(v.typeId)}" data-fate="${v.fate}" data-joins="${v.joins ? 1 : 0}"><div class="civilian-portrait ${v.fate}">${v.heroId ? face(v.heroId) : ''}${woundGlyph(v.fate) ? `<span class="wound-badge">${woundGlyph(v.fate)}</span>` : ''}</div><div class="civilian-name">${esc(v.name)}</div><div class="civilian-fate ${v.fate}">${FATE_WORD[v.fate]}</div>${v.joins ? '<div class="civilian-joins">joins you</div>' : ''}</div>`).join('')
   if (questGains.length) report.push(`<div class="report-line">Quest reward — ${esc(questGains.join(' · '))}</div>`)
   const party = heroes.map((h) => { const k = woundClass(h); return `<div class="party-member"><div class="party-portrait ${k}">${face(portraitIdOf(h))}${woundGlyph(k) ? `<span class="wound-badge">${woundGlyph(k)}</span>` : ''}</div><div class="party-name">${esc(h.name)}</div></div>` }).join('')
   return `<div class="hx recap ${won ? '' : 'defeat'}" data-outcome="${outcome}" data-won="${won}">${muteButton()}
     <div class="interstitial-overlay ${won ? 'victory-bg' : 'defeat-bg'}"><div class="interstitial-card ${won ? '' : 'defeat'}">
       <div class="result-title ${won ? 'victory-' + outcome : 'defeat'}" id="rc-title">${TITLE[outcome]}</div>
       ${won ? `<div class="party-row" id="rc-party">${party}</div>` : ''}
+      ${won && civilians.length ? `<div class="civilians-row" id="rc-civilians"><div class="civilians-label">Civilians who fought beside them</div><div class="civilians">${civilianCards}</div></div>` : ''}
       <div class="spotlight-container" id="rc-spot"><div class="spotlight-frame ${won ? 'victory' : 'defeat'}${outcome === 'decisive' ? ' decisive-glow' : ''}">${spot ? face(portraitIdOf(spot)) : ''}</div></div>
       <div class="hero-quote" id="rc-quote"><div class="quote-text">"${esc(quote)}"</div><div class="quote-attribution">— ${esc(spot?.name ?? '')}${spot ? ', ' + esc(spot.classes[0]?.replace('class.', '') ?? '') : ''}${!won && spot?.lifeState === 'dead' ? ' (last words)' : ''}</div></div>
       ${won ? `<div class="stats-block" id="rc-stats">
@@ -133,6 +145,7 @@ export function mountRecap(root: HTMLElement, onDismiss: () => void): Cleanup {
     if (outcome !== 'devastating') playSound('victory-stinger', { playbackRate: STINGER_PITCH[outcome], pitchVariance: 0 })
     at(100, () => show('rc-title', 'anim-victory-title'))
     at(400, () => { show('rc-party', 'anim-fade-in'); qa(root, '.party-member').forEach((m, i) => at(i * 80, () => m.classList.add('anim-party'))) })
+    at(550, () => show('rc-civilians', 'anim-fade-in'))
     at(700, () => show('rc-spot', 'anim-spotlight'))
     at(1000, () => show('rc-quote', 'anim-fade-in-up'))
     at(1300, () => show('rc-stats', 'anim-fade-in'))
@@ -147,7 +160,7 @@ export function mountRecap(root: HTMLElement, onDismiss: () => void): Cleanup {
     at(1800, () => show('rc-btn', 'anim-fade-in'))
   }
   let skipUsed = false
-  const skipToEnd = () => { timers.forEach(clearTimeout); qa(root, '.result-title,.party-row,.party-member,.spotlight-container,.hero-quote,.stats-block,.report-section,.action-btn-container,.defeat-xp-line').forEach((el) => { el.style.opacity = '1' }) }
+  const skipToEnd = () => { timers.forEach(clearTimeout); qa(root, '.result-title,.party-row,.party-member,.civilians-row,.spotlight-container,.hero-quote,.stats-block,.report-section,.action-btn-container,.defeat-xp-line').forEach((el) => { el.style.opacity = '1' }) }
   const key = (ev: KeyboardEvent) => { if (ev.key !== 'Enter' && ev.key !== ' ') return; ev.preventDefault(); if (!skipUsed) { skipUsed = true; skipToEnd() } else onDismiss() }
   document.addEventListener('keydown', key)
   return () => { timers.forEach(clearTimeout); document.removeEventListener('keydown', key) }

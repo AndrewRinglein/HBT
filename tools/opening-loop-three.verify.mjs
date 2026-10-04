@@ -18,7 +18,7 @@
 //
 //   node tools/opening-loop-three.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
-import {openingPage,TAKERS,SPECIALTY_CHOICES,ITEM_ART_SEEN,ITEMS_ART} from './opening-page.mjs'
+import {openingPage,TAKERS,SPECIALTY_CHOICES,ITEM_ART_SEEN,ITEMS_ART,CIVILIANS_SEEN} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORPHANAGE='encounter.opening.orphanage',LUMBERJACK='encounter.opening.lumberjack',BRIDGE='encounter.opening.bridge',CAVERN='encounter.opening.cavern-trail'
 const SWORD='item.longsword.flaming'
@@ -163,6 +163,15 @@ assert.equal(byId('campaign').querySelectorAll('[data-act=give]').length,0,'a dr
 assert.deepEqual(camp().stash,[kept],'one kept; the two left are burned')
 levelUps('battle 3')
 assert.equal(readMap([ORPHANAGE,LUMBERJACK,BRIDGE],'after battle 3'),CAVERN,'three sections taken')
+/* kingdom.opening-recap-civilians (2026-10-03: "If they were wounded, if they died, they're in there too." — the
+   civilians): each of the three victory screens showed a card for every player-side unit of its battle, the civilians set
+   apart and marked unhurt, wounded or dead as the battle left them (opening-page.mjs fightOut, held at each screen). Here:
+   the Orphanage's showed the Orphan Child and the School Teacher, the Lumberjack House's the Lumberjack and his Wife,
+   and those who lived are the civilians on the roster (the rescue's own assertions, above) */
+assert.deepEqual(CIVILIANS_SEEN.map(x=>x.encounterId),[ORPHANAGE,LUMBERJACK,BRIDGE],'three victory screens')
+const shownAt=id=>CIVILIANS_SEEN.find(x=>x.encounterId===id).civilians,saidOf=list=>list.map(x=>`${x.name} ${x.fate}${x.joins?', joins':''}`).join(', ')||'none'
+assert.deepEqual(shownAt(ORPHANAGE).map(x=>x.name).sort(),['Orphan Child','School Teacher']);assert.deepEqual(shownAt(LUMBERJACK).map(x=>x.name).sort(),['Lumberjack','Lumberjack\'s Wife'])
+assert.deepEqual([...shownAt(ORPHANAGE),...shownAt(LUMBERJACK)].filter(x=>x.joins).map(x=>x.typeId).sort(),civilianIds(),'the civilians marked as joining are the civilians on the roster')
 assert.deepEqual(camp().unavailable,[],'nobody fatigued');assert.deepEqual(camp().foughtThisWeek,[],'nobody marked fought')
 assert.equal(camp().ended,null)
 for(const x of SPECIALTY_CHOICES){assert.equal(x.offered.length,3,x.label+': three offered');assert.ok(x.offered.includes(x.took),x.label+': one of the three is taken')}
@@ -171,4 +180,4 @@ for(const x of SPECIALTY_CHOICES){assert.equal(x.offered.length,3,x.label+': thr
 assert.equal(ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain,(givers.length?1:0)+3,'every reward card of the sitting was held to its art, or to itemsMissing')
 assert.ok(ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain>0,'Equip\'s items were held too')
 console.error('settled by: '+JSON.stringify(chosen))
-console.log(`opening loop three: map -> draft (one before every battle: a party of ${[1,party2.length,party3.length].join(', ')}; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the Orphanage's 20 XP and level 2 with a specialty; three specialties offered at every specialty choice (${SPECIALTY_CHOICES.length} choices); battle 2 lost and offered again with the same party, wounds kept; the Flaming Longsword ${givers.length?'to '+givers[0]:'to nobody (no Warrior or Paladin in the party of two)'};${ITEM_ART_SEEN.sword?' the Flaming Longsword\'s reward card showed its card art;':''} item card art on ${ITEM_ART_SEEN.rewardArt} of ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards and ${ITEM_ART_SEEN.equipArt} of ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} Equip items, the rest plain and named in itemsMissing; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)
+console.log(`opening loop three: map -> draft (one before every battle: a party of ${[1,party2.length,party3.length].join(', ')}; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the victory screens showed the civilians who fought (the Orphanage: ${saidOf(shownAt(ORPHANAGE))}; the Lumberjack House: ${saidOf(shownAt(LUMBERJACK))}); the Orphanage's 20 XP and level 2 with a specialty; three specialties offered at every specialty choice (${SPECIALTY_CHOICES.length} choices); battle 2 lost and offered again with the same party, wounds kept; the Flaming Longsword ${givers.length?'to '+givers[0]:'to nobody (no Warrior or Paladin in the party of two)'};${ITEM_ART_SEEN.sword?' the Flaming Longsword\'s reward card showed its card art;':''} item card art on ${ITEM_ART_SEEN.rewardArt} of ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards and ${ITEM_ART_SEEN.equipArt} of ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} Equip items, the rest plain and named in itemsMissing; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)
