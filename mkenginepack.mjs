@@ -161,8 +161,17 @@ const resolveAttack = (a, unitId) => {
   // fix.enemy-accuracy-mod (2026-09-27): a sameAs reference ships its SOURCE row;
   // anything the reference itself carries beyond its id is not read — name it,
   // never drop it silently (Law 9). None today; the Burning Zombie's carries only its id.
-  const extra = Object.keys(a).filter((k) => k !== 'sameAs' && k !== 'id');
+  // content.imp-blast-tuned (engine, 2026-10-04; ruled 2026-10-03, engine DECISIONS.md 'the Imp: Precision down by 1; its
+  // Blast burns half the time'): a rider is the UNIT's (the engine carries it on the unit, scoped to the attack), so a
+  // reference may restate its own `triggers` on the shared row — the Powerful Imp fires the Imp's Blast and keeps its own
+  // certain Burn 2 now that the Imp's is a 50% chance. The attack itself (shape, reach, damage) is still the source row's,
+  // and anything else a reference carries is still named, never read.
+  const extra = Object.keys(a).filter((k) => k !== 'sameAs' && k !== 'id' && k !== 'triggers');
   if (extra.length) gap(unitId, `sameAs ${a.sameAs} carries ${extra.join(', ')} of its own — the source row ships without them`, 'content: sameAs override');
+  if (a.triggers !== undefined) {
+    if (!Array.isArray(a.triggers)) throw new Error(`mkenginepack: ${unitId} sameAs ${a.sameAs}: triggers is not a list`);
+    return { ...src, triggers: a.triggers };
+  }
   return src;
 };
 
