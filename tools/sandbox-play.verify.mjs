@@ -53,7 +53,10 @@ for(let n=0;n<300&&!ctx().state.outcome&&!confirmed;n++){
  if(c.at==='selecting'){const id=V().play.endTurn.yetToAct[0];figure(id).handlers.click({detail:1});settle();continue}
  const me=ctx().state.units[c.actor],attack=me.actions.find(id=>id.startsWith('attack.')&&id!=='attack.punch')??'attack.punch'
  const row=slot(attack);assert.ok(row,'the attack is on the bar');row.handlers.click({})
- const targets=drawn('playTarget')
+ /* Law 10, viewer.no-target-ring (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: the yellow target ring goes;
+    ...'): whom the chosen attack can hit is read off the mark each such unit wears on itself (`playTargetUnit`, which carries its
+    unit's hex) - the yellow ring on the target's hex is gone. Was: const targets=drawn('playTarget') */
+ const targets=drawn('playTargetUnit')
  if(targets.length){const t=ctx().state.units.find(u=>u.hex===targets[0]&&u.lifeState==='standing')
   figure(t.id).handlers.pointerenter({})
   const hit=stage().querySelector('.playHit')?.textContent,dmg=stage().querySelector('.playDmg')?.textContent

@@ -31,7 +31,10 @@ const toHero=what=>{assert.ok(B.playUntil(()=>quiet()&&!hero().moveUsed&&!hero()
 /** walk up to the nearest enemy and strike it (the path planned, the attack chosen, the target clicked twice) */
 function strike(){const reach=B.drawn('playReach'),near=x=>Math.min(...B.enemies().map(u=>dist(x,u.hex)))
  if(reach.length&&!beside().length)B.hexBtn([...reach].sort((a,b)=>near(a)-near(b)||a-b)[0]).handlers.click({detail:1})
- const attack=hero().actions.find(id=>ctx().actions[id].attack&&B.barRow(id));B.press(attack);const t=B.drawn('playTarget')
+ /* Law 10, viewer.no-target-ring (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: the yellow target ring goes;
+    ...'): whom the chosen attack can hit is read off the mark each such unit wears on itself (`playTargetUnit`, which carries its
+    unit's hex) - the yellow ring on the target's hex is gone. Was: const t=B.drawn('playTarget') */
+ const attack=hero().actions.find(id=>ctx().actions[id].attack&&B.barRow(id));B.press(attack);const t=B.drawn('playTargetUnit')
  if(!t.length){V().dom.stage.parentNode.handlers.pointerdown({button:2,clientX:5,clientY:5});V().dom.stage.parentNode.handlers.pointerup({button:2,clientX:5,clientY:5});return false}
  const foe=B.enemies().find(u=>u.hex===t[0]);B.figure(foe.id).handlers.click({detail:1});B.figure(foe.id).handlers.click({detail:1});until(()=>!h.busy,'the attack plays');return true}
 /** with an enemy beside him, a path that draws a free attack: the reach hexes tried from the farthest, read off the play facts */

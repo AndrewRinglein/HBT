@@ -79,7 +79,10 @@ assert.ok(ctx().actions[attack].attack,'the arrow is on an attack\'s slot: '+att
 const hero=B.actor(),declared=()=>ctx().events.filter(e=>e.type==='attack.declared'&&e.actor===hero.id&&!e.free).length,before=declared()
 flush(O().notice.ms+300);assert.equal(lines(),null,'the words go after their time');assert.equal(h.lesson,ATTACK.id,'the arrow stays until the attack is made')
 B.press(attack)
-const targets=B.drawn('playTarget');assert.ok(targets.length>0,'the attack chosen: the enemy in reach is lit')
+/* Law 10, viewer.no-target-ring (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: the yellow target ring goes;
+   ...'): whom the chosen attack can hit is read off the mark each such unit wears on itself (`playTargetUnit`, which carries its
+   unit's hex) - the yellow ring on the target's hex is gone. Was: const targets=B.drawn('playTarget');assert.ok(targets.length>0,'the attack chosen: the enemy in reach is lit') */
+const targets=B.drawn('playTargetUnit');assert.ok(targets.length>0,'the attack chosen: the enemy in reach is marked')
 const foe=B.enemies().find(u=>u.hex===targets[0]);B.figure(foe.id).handlers.pointerenter({})
 assert.ok(B.stage().querySelector('.playHit')&&B.stage().querySelector('.playDmg'),'pointing at the enemy shows the chance to hit and the damage, as the words say')
 B.figure(foe.id).handlers.click({detail:1});assert.equal(declared(),before,'one click shows the forecast; the attack is not made yet');assert.equal(h.lesson,ATTACK.id)
