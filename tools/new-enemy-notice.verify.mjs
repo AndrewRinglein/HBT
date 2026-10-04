@@ -54,11 +54,19 @@ const nameOf=(h,typeId)=>h.viewer._V.data.UD[typeId].name
 
 /* ── B · the opening run ── */
 {
- const {handle:h,w,camp,store,v,readMap,draft,whoGoes,equipThenFight,fightOut,levelUps,heroIds}=openingPage(page,'?map&seed=11')
+ const {handle:h,w,camp,store,v,shown,readMap,draft,straightIn,whoGoes,equipThenFight,fightOut,levelUps,heroIds}=openingPage(page,'?map&seed=11')
  const saved=()=>JSON.parse(store.get('hbt-opening-run')).campaign.revealed
- assert.equal(readMap([],'fresh'),ORPHANAGE);assert.deepEqual(camp().revealed,[])
- v.click('field',ORPHANAGE);const first=draft('battle 1');whoGoes('battle 1')
- equipThenFight([first],'battle 1')
+ /* Law 10, 2026-10-04 (kingdom.opening-starts-in-battle, merged with this item; engine DECISIONS.md 2026-10-04 '… no map before
+    battle 1 …': "We're just going straight into the battle after you get your hero."): these three lines read
+      assert.equal(readMap([],'fresh'),ORPHANAGE);assert.deepEqual(camp().revealed,[])
+      v.click('field',ORPHANAGE);const first=draft('battle 1');whoGoes('battle 1')
+      equipThenFight([first],'battle 1')
+    — the run opened on the map, its click opened the first draft, and the pick rested at Equip. A new run opens on the
+    first draft and its pick puts the Orphanage on the board (tools/opening-page.mjs straightIn). What this script holds
+    of battle 1 — which kinds are met and announced — is unchanged. */
+ assert.ok(shown('campaign')&&!shown('conquest'),'fresh: the first draft, no map');assert.deepEqual(camp().revealed,[])
+ const first=draft('battle 1')
+ straightIn([first],'battle 1')
  /* battle 1: its lesson introduces the Zombie — met as the battle is put on the screen, and never announced */
  assert.deepEqual(camp().revealed,['reveal.enemy.zombie'],'battle 1 on the screen: the Zombie is met (its lesson names it)');assert.deepEqual(saved(),['reveal.enemy.zombie'],'and that is in the run\'s save')
  const b1=[...playing(w,h),...endTurn(w,h)]
