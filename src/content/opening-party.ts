@@ -5,8 +5,9 @@
 // point. We need to move away from these alpha heroes."
 //
 // The rules and the pool are progression/OPENING-PARTY.json's, built by progression/build-schedule.mjs
-// from GAME-ARCHITECTURE.md §2.5 (1 drafted before battle 1, +2 after it, +1 after each until six;
-// one of three offered, stat-less) and the 2026-09-28 rulings (the six in order; the Flaming Longsword
+// from the ruled draft cadence (one drafted before battle 1 and one more after each battle, to six: a party of
+// 1, 2, 3, 4, 5, 6 — DECISIONS.md 2026-10-03 'one draft after every battle; …', fix.opening-probe-cadence 2026-10-04;
+// until then the file carried the 2026-08-23 cadence, 1, 3, 4, 5, 6, 6; one of three offered) and the 2026-09-28 rulings (the six in order; the Flaming Longsword
 // after battle 2). Nothing here types a count, a hero or an item — this file only DRAWS the drafts.
 //
 // Prior art, extended not duplicated: the kingdom's draft (kingdom/src/core/opening.ts offerDraft —
