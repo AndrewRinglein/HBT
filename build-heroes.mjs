@@ -523,18 +523,13 @@ for(const h of heroes){
     }
     console.log('civilian weapons: '+armed+' armed, '+already+' already carried one');
   }
-  // PLACED WITH ITS KIT — ruled 2026-10-02 (engine DECISIONS.md 'the Net is a trinket with no hands; the
-  // orphans and the school teacher start with a knife'): "The Orphanage, Orphanage, and the school teacher should
-  // start with a knife each." A civilian named here fields its kit wherever an encounter places it; every other
-  // placed civilian is fielded authored whole (engine SWITCHES arrivalKit). mkenginepack reads hero.placedWithKit.
-  for(const id of (CR.placedWithKit||{}).ids||[]){
-    const h=heroes.find(x=>x.id===id);
-    if(!h){problems.push('civilian-rulings placedWithKit: no hero '+id);continue;}
-    if(h.class!=='class.civilian'){problems.push('civilian-rulings placedWithKit: '+id+' is '+h.class+', not a civilian');continue;}
-    if(!(h.kit||[]).length){problems.push('civilian-rulings placedWithKit: '+id+' carries no kit to field');continue;}
-    h.placedWithKit=true;
-    h.notes.push('Fields its kit wherever an encounter places it — ruled 2026-10-02.');
-  }
+  // PLACED WITH ITS KIT — a rule now, not a list. Ruled 2026-10-03 (engine DECISIONS.md 'every civilian fields its
+  // kit by default when an encounter places it'): "Yes, all of the civilians, by default, should field their kit the
+  // first time they're loaded." / "If enemies have weapons assigned, they need them also when they come into play."
+  // Every unit an encounter places fields the kit its row carries — the engine's one assembler does it
+  // (fix.civilians-field-kit), so nothing is set on a hero here. The opt-in list of 2026-10-02 (placedWithKit: the
+  // orphans and the school teacher, fix.orphans-teacher-knife) is retired; one left in the rulings file is refused.
+  if(CR.placedWithKit) problems.push('civilian-rulings placedWithKit: the opt-in list is retired (2026-10-03) — every placed unit fields its kit; remove it');
   for(const [id,a] of Object.entries(CR.art||{})){
     if(id.startsWith('_'))continue;
     const h=heroes.find(x=>x.id===id);

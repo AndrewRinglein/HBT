@@ -1295,11 +1295,9 @@ for (const id of CIVILIANS) {
     ...(h.levelTable ? { levelTable: h.levelTable } : {}),
     triggers: [],
     defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
-    // fix.orphans-teacher-knife (ruled 2026-10-02, engine DECISIONS.md 'the Net is a trinket with no hands; the
-    // orphans and the school teacher start with a knife'): a civilian the Codex names (gen/civilian-rulings.json
-    // placedWithKit) fields its kit wherever an encounter places it; every other placed civilian is fielded
-    // authored whole (engine SWITCHES arrivalKit).
-    ...(h.placedWithKit ? { placedWithKit: true } : {}),
+    // fix.civilians-field-kit (ruled 2026-10-03, engine DECISIONS.md 'every civilian fields its kit by default when
+    // an encounter places it'): this kit is what an encounter-placed civilian fields — the engine's one rule for
+    // every placed unit, read off defaultItems. The opt-in row flag of 2026-10-02 (placedWithKit) is retired.
   });
 }
 

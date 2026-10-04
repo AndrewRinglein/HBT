@@ -431,11 +431,7 @@
   },
   "overrides": {}
  },
- "placedWithKit": {
-  "_note": "Ruled 2026-10-02 (engine DECISIONS.md 'the Net is a trinket with no hands; the orphans and the school teacher start with a knife'), Andrew: \"The Orphanage, Orphanage, and the school teacher should start with a knife each.\" A civilian named here fields its kit wherever an encounter places it (a setup unit or a scheduled arrival); every other placed civilian is fielded authored whole, with Punch (engine SWITCHES arrivalKit). build-heroes.mjs sets placedWithKit on the hero; mkenginepack.mjs carries it onto the unit row (fix.orphans-teacher-knife).",
-  "ids": [
-   "hero.fixed.orphans",
-   "hero.fixed.school-teacher"
-  ]
+ "placedKit": {
+  "_note": "Ruled 2026-10-03 (engine DECISIONS.md 'every civilian fields its kit by default when an encounter places it'), Andrew: \"Yes, all of the civilians, by default, should field their kit the first time they're loaded. So all of them should get it.\" and \"If enemies have weapons assigned, they need them also when they come into play.\" A rule, not a list: every unit an encounter places (a setup unit or a scheduled arrival, civilian or enemy) fields the kit its row carries; the engine's one assembler does it (fix.civilians-field-kit), and nothing is read from here. The opt-in list that stood here from 2026-10-02 (placedWithKit: hero.fixed.orphans, hero.fixed.school-teacher - \"The Orphanage, Orphanage, and the school teacher should start with a knife each.\") is retired by it: those two field their Dagger as every placed civilian now fields its kit."
  }
 }
