@@ -1348,16 +1348,23 @@ export function applyCam(V, opts = {}) {
      can be brought to the middle and seen whole. Inspect roams the whole of it at any zoom. The subject's inclusion is
      applied AFTER the bound, so a unit's head and label win over the bound (the handoff: "Unit head/label clearance
      takes priority over blindly copying the preview's ground-only pan clamp"). */
-  const bound = () => {
+  const bound = (toBoard = false) => {
     /* viewer.camera-no-void: the tactical view stops where the board's edge meets the battle area's — the footprint at this
        zoom kept inside the board; on an axis where the board is the smaller even so, it is centred (viewer SWITCHES
-       noVoidSmaller). Overturns xcomRoam's "the centre may reach any point of the board" and its EDGE_ROOM past the rows. */
+       noVoidSmaller). Overturns xcomRoam's "the centre may reach any point of the board" and its EDGE_ROOM past the rows.
+       viewer.camera-shows-edge-units (engine DECISIONS.md 2026-10-04 'the view may slide past the board's edge to show a unit
+       on an edge column', Andrew: "1 yes"): that is the board's OWN box (view.boardBox), and the bound — view.panBox, one
+       bound for every camera move — is that box grown just as far as the outermost hexes need to be whole on the screen
+       (edgeBound). A view newly sent somewhere (a focus, the opening placement) is first held to the board's own box
+       (toBoard), then slid the least that shows its hex whole (whole(), below); the player's scrolling, a reveal, a look and
+       a held view stop at the bound. */
     if (tactical && !fit) {
-      const pin = (lo, hi, v) => lo <= hi ? Math.min(Math.max(v, lo), hi) : (lo + hi) / 2
       /* viewer.bubble-click-reveals: where the view's centre may go at this zoom and angle (iso px), kept for the reveal */
       const box = (lo, hi) => lo <= hi ? [lo, hi] : [(lo + hi) / 2, (lo + hi) / 2]
-      view.panBox = { x: box(-fp1.l / s, bw - fp1.r / s), y: box(-fp1.t / s * k, (F.h - fp1.b / s) * k) }
-      f.x = pin(-fp1.l / s, bw - fp1.r / s, f.x); f.y = pin(-fp1.t / s * k, (F.h - fp1.b / s) * k, f.y); return
+      const own = { x: box(-fp1.l / s, bw - fp1.r / s), y: box(-fp1.t / s * k, (F.h - fp1.b / s) * k) }
+      view.boardBox = own; view.panBox = edgeBound(V, own, { yaw, tilt, zoom: s }, { w: VW, h: VH })
+      const B = toBoard ? own : view.panBox
+      f.x = Math.min(Math.max(f.x, B.x[0]), B.x[1]); f.y = Math.min(Math.max(f.y, B.y[0]), B.y[1]); return
     }
     const X = [0, bw], Y = [-POLICY.EDGE_ROOM, bh + POLICY.EDGE_ROOM]
     /* viewer.xcom-camera-tuning (engine DECISIONS.md 2026-10-01, Andrew: "The pointing-to-scroll on the map does not work very
@@ -1369,6 +1376,14 @@ export function applyCam(V, opts = {}) {
     view.panBox = { x: [xlo, xhi], y: [ylo, yhi] }
     f.x = Math.min(Math.max(f.x, xlo), xhi); f.y = Math.min(Math.max(f.y, ylo), yhi)
   }
+  /* viewer.camera-shows-edge-units: the least slide, inside the bound, that shows this hex whole on the screen from where the
+     view now stands (nothing when it is whole already) — how the view passes the board's edge, and by no more than that */
+  const whole = hex => {
+    if (!(tactical && !fit) || hex == null || !POS[hex]) return
+    const d = leastShow(V, { x: f.x, y: f.y / k, yaw, tilt, zoom: s }, hex, view.panBox)
+    if (d) { f.x += d.x; f.y += d.y * k }
+  }
+  const hexOfPoint = p => p && Number.isInteger(p.c) && Number.isInteger(p.r) ? p.r * F.width + p.c : null
   /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): a new activation centres the map on the
      one acting — the board's own acting unit, in a replay as in a game */
   const acting = S.activeId != null ? S.U[S.activeId] : null
@@ -1383,15 +1398,16 @@ export function applyCam(V, opts = {}) {
   const held = (!!view.revealed || !!view.looking) && !opts.pan
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
   else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound() }
-  else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound() }      // Focus selected unit: centred, on purpose
+  else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound(true); whole(hexOfPoint(opts.focus)) }      // Focus selected unit: centred, on purpose — as near as the board's own box lets it, then its hex shown whole
   else if (opts.hold) bound()                                                        // a restored view (Overhead, Inspect off) is shown as it was
-  else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py; bound() }
+  else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py; bound(true); if (pts.length === 1) { const u = S.U[barUnitOf(V)]; if (u) whole(u.hex) } }
   else if (view.inspect) bound()                                                     // Inspect explores: selection never pulls the camera
   /* viewer.bubble-click-reveals: a view slid to show a unit off the screen stays where it was slid — the inclusion below
      would pull it straight back to the acting unit — until the board next plays or the camera is sent elsewhere */
   else if (held) bound()
   else {
     bound()
+    const pre = { x: f.x, y: f.y }
     if (yaw) includeTurned(V, f, pts, halfW, halfH, M, top)                          // the turned camera: the same rule in its own frame
     else if (pts.length === 2 && (Math.abs(pts[0].px - pts[1].px) > 2 * (halfW - M) || Math.abs(pts[0].py - pts[1].py) > 2 * (halfH - M))) {
       f.x = (pts[0].px + pts[1].px) / 2; f.y = (pts[0].py + pts[1].py) / 2         // a pair that cannot both fit: the midpoint
@@ -1405,7 +1421,15 @@ export function applyCam(V, opts = {}) {
     }
     /* viewer.camera-no-void: the board's edge wins over the inclusion's room for a head or a label (viewer SWITCHES
        noVoidInclusion) — the view never shows past the board to fit them */
-    if (tactical) bound()
+    if (tactical) {
+      /* viewer.camera-shows-edge-units: the inclusion's own room (a margin for a head and a label) never takes the view past
+         the board's own box — a view already past it (the player scrolled there, a reveal slid there) is left where it is —
+         and the unit the view keeps in sight is then shown whole, its hex and all: on an edge column that takes the view past
+         the board's edge, by the least that does it */
+      const own = view.boardBox
+      if (own && !fit) { f.x = Math.min(Math.max(f.x, Math.min(own.x[0], pre.x)), Math.max(own.x[1], pre.x)); f.y = Math.min(Math.max(f.y, Math.min(own.y[0], pre.y)), Math.max(own.y[1], pre.y)) }
+      bound()
+      if (!S.AIM) { const u = S.U[barUnitOf(V)]; if (u) whole(u.hex) } }
   }
   /* written back only when moved, so a camera that did not move keeps its exact numbers. A whole-map view (not the peek,
      not the harness's fit) remembers its centre, so what follows it — a drag, a turn, Inspect — starts from the view seen */
@@ -1467,8 +1491,12 @@ function onBoard(V, pose) {
   const { W, H } = viewportOf(V), F = V.data.F, fp = groundFootprint(boardAffine(V), { ...pose, zoom: 1 }, { w: W, h: H })
   if (!fp) return pose
   const zoom = Math.max(pose.zoom, (fp.r - fp.l) / F.w, (fp.b - fp.t) / F.h)
-  const pin = (lo, hi, v) => lo <= hi ? Math.min(Math.max(v, lo), hi) : (lo + hi) / 2
-  return { ...pose, zoom, x: pin(-fp.l / zoom, F.w - fp.r / zoom, pose.x), y: pin(-fp.t / zoom, F.h - fp.b / zoom, pose.y) }
+  /* viewer.camera-shows-edge-units: the frame is held to the same bound as every view — the board's own box at this frame's
+     zoom and angle, grown as far as the outermost hexes need */
+  const k = isoK(V), box = (lo, hi) => lo <= hi ? [lo, hi] : [(lo + hi) / 2, (lo + hi) / 2]
+  const B = edgeBound(V, { x: box(-fp.l / zoom, F.w - fp.r / zoom), y: box(-fp.t / zoom * k, (F.h - fp.b / zoom) * k) }, { yaw: pose.yaw, tilt: pose.tilt, zoom }, { w: W, h: H })
+  const pin = (lo, hi, v) => Math.min(Math.max(v, lo), hi)
+  return { ...pose, zoom, x: pin(B.x[0], B.x[1], pose.x), y: pin(B.y[0] / k, B.y[1] / k, pose.y) }
 }
 /** stop a glide where it is (dispose) */
 export function stopGlide(V) {
@@ -1694,6 +1722,94 @@ export function drawEdges(V) {
    the least slide shows (viewer SWITCHES bubbleNearest). The view then stays where it was slid until the board next plays
    or the camera is sent elsewhere (bubbleHolds) — the rule that keeps the acting unit in view would pull it straight back. */
 export const REVEAL_INSET = EDGE_INSET
+/* ── THE BOUND PASSES THE BOARD'S EDGE AS FAR AS THE OUTERMOST HEXES NEED (viewer.camera-shows-edge-units, 2026-10-04) ──────
+   Engine DECISIONS.md 2026-10-04 'the view may slide past the board's edge to show a unit on an edge column' (asked "For edge
+   units, should the view be allowed to slide a little past the board's edge so they show fully?" — Andrew: "1 yes"). The
+   camera's view of the ground is wider at its far side than its near, so with the view's four corners held on the board
+   (viewer.camera-no-void) a hex of an edge column could not be brought whole into view, and the bottom corners not at all.
+   INSIDE is the reveal's own patch: the battle area drawn back by REVEAL_INSET px and half a hex, met with the ground at the
+   hex's height through the camera's rays (viewPatch). The centres from which a hex is whole on the screen are that patch
+   turned about the hex; edgeBound grows the board's own box (the centres whose view shows only board) to the nearest such
+   centre of every hex of the board — so the bound is the board's edge, or as far past it as the outermost hexes need, and
+   not a px more. One bound: applyCam pins every view to it, and the glide's frames (onBoard). Beyond the board the screen
+   shows its own dark surround. */
+/** the nearest point of a convex polygon to o (o itself when inside), with its squared distance */
+function nearestIn(poly, o) {
+  let inside = true, sign = 0, best = null
+  for (let i = 0; i < poly.length; i++) {
+    const a = poly[i], b = poly[(i + 1) % poly.length], ex = b.x - a.x, ey = b.y - a.y
+    const cross = ex * (o.y - a.y) - ey * (o.x - a.x)
+    if (Math.abs(cross) > 1e-9) { if (sign === 0) sign = Math.sign(cross); else if (Math.sign(cross) !== sign) inside = false }
+    const t = Math.min(1, Math.max(0, ((o.x - a.x) * ex + (o.y - a.y) * ey) / (ex * ex + ey * ey || 1)))
+    const q = { x: a.x + t * ex, y: a.y + t * ey }, d2 = (o.x - q.x) ** 2 + (o.y - q.y) ** 2
+    if (!best || d2 < best.d2) best = { q, d2 } }
+  /* a shape with no area (every edge on one line: the sliver left where a hex's room just touches the bound) holds no point */
+  return inside && sign !== 0 && poly.length > 2 ? { q: o, d2: 0 } : best
+}
+/** the view's inset patch of ground at a height, as offsets from the view's centre in iso px (x east, y south × isoK): what
+    the battle area shows whole hexes inside, at this zoom and angle on this viewport. Cached for the pose's shape. */
+function viewPatch(V, shape, viewport) {
+  const key = [shape.yaw, shape.tilt, shape.zoom, viewport.w, viewport.h].join('|'), C = V.view.patchCache
+  if (C && C.key === key && C.heights === V.data.displayHeights) return C
+  const A = boardAffine(V), k = isoK(V), cam = orbitCamera(A, { x: 0, y: 0, ...shape }, viewport)
+  const m = Math.min(REVEAL_INSET + V.data.LAYOUT.W * shape.zoom / 2, Math.min(viewport.w, viewport.h) / 3)
+  const rays = [[m, m], [viewport.w - m, m], [viewport.w - m, viewport.h - m], [m, viewport.h - m]].map(([x, y]) => boardRay(A, cam, x, y))
+  const quads = new Map()
+  const quadAt = z => { if (!quads.has(z)) { let q = []
+      for (const { o, d } of rays) { if (!(o.z > z && d.z < 0)) { q = null; break } const t = (z - o.z) / d.z; q.push({ x: o.x + t * d.x, y: (o.y + t * d.y) * k }) }
+      quads.set(z, q) }
+    return quads.get(z) }
+  return (V.view.patchCache = { key, heights: V.data.displayHeights, quadAt, bounds: new Map() })
+}
+/** the centres (iso px) from which `hex` is whole on the screen: the patch turned about the hex — a convex four-sided shape, or null */
+function centresShowing(V, patch, hex) {
+  const p = V.data.POS[hex], q = patch.quadAt(heightOf(V, hex)); if (!p || !q) return null
+  const k = isoK(V); return q.map(c => ({ x: p.px - c.x, y: p.py * k - c.y }))
+}
+/** the bound: the board's own box (iso px), grown to the nearest centre that shows each hex of the board whole */
+export function edgeBound(V, own, shape, viewport) {
+  const patch = viewPatch(V, shape, viewport), key = [own.x[0], own.x[1], own.y[0], own.y[1]].join('|')
+  if (patch.bounds.has(key)) return patch.bounds.get(key)
+  const { POS, F } = V.data
+  const clampOwn = q => ({ x: Math.min(own.x[1], Math.max(own.x[0], q.x)), y: Math.min(own.y[1], Math.max(own.y[0], q.y)) })
+  let x0 = own.x[0], x1 = own.x[1], y0 = own.y[0], y1 = own.y[1]
+  for (let hex = 0; hex < POS.length; hex++) {
+    if (F.floor && !F.floor[hex]) continue                                  // no hex of the board stands there
+    const D = centresShowing(V, patch, hex); if (!D) continue
+    /* the pair of nearest points of the two convex shapes (the hex's centres, the board's own box), by projecting to and fro */
+    let c = clampOwn({ x: POS[hex].px, y: POS[hex].py * isoK(V) }), q = nearestIn(D, c).q
+    for (let n = 0; n < 60; n++) { const c2 = clampOwn(q), q2 = nearestIn(D, c2).q; const moved = Math.hypot(q2.x - q.x, q2.y - q.y); c = c2; q = q2; if (moved < .01) break }
+    if (q.x < x0) x0 = q.x; if (q.x > x1) x1 = q.x; if (q.y < y0) y0 = q.y; if (q.y > y1) y1 = q.y
+  }
+  const out = { x: [x0, x1], y: [y0, y1] }
+  patch.bounds.set(key, out)
+  return out
+}
+/** the least pan (board px) from `pose` that shows `hex` whole, kept to `box` (iso px), or null when it is whole already */
+export function leastShow(V, pose, hex, box) {
+  const k = isoK(V), { W, H } = viewportOf(V), patch = viewPatch(V, { yaw: pose.yaw, tilt: pose.tilt, zoom: pose.zoom }, { w: W, h: H })
+  const D = centresShowing(V, patch, hex); if (!D) return null
+  const here = { x: pose.x, y: pose.y * k }
+  if (nearestIn(D, here).d2 < .25) return null
+  const clampBox = q => box ? { x: Math.min(box.x[1], Math.max(box.x[0], q.x)), y: Math.min(box.y[1], Math.max(box.y[0], q.y)) } : q
+  /* the hex's centres kept to the bound (each of the box's four sides cuts the shape), and the point of what is left nearest
+     to where the view stands — the least slide. The two meet for every hex of the board (the bound was grown to them); where
+     a rounding leaves nothing of the cut, projecting to and fro finds the nearest point of both. */
+  let to
+  const cut = (poly, inside, meet) => { const out = []
+    for (let i = 0; i < poly.length; i++) { const a = poly[i], c = poly[(i + 1) % poly.length], ia = inside(a), ic = inside(c)
+      if (ia) out.push(a); if (ia !== ic) out.push(meet(a, c)) }
+    return out }
+  const atX = x => (a, c) => ({ x, y: a.y + (c.y - a.y) * (x - a.x) / (c.x - a.x) }), atY = y => (a, c) => ({ x: a.x + (c.x - a.x) * (y - a.y) / (c.y - a.y), y })
+  const E = 1e-4
+  let C = D
+  if (box) { C = cut(C, q => q.x >= box.x[0] - E, atX(box.x[0])); C = cut(C, q => q.x <= box.x[1] + E, atX(box.x[1])); C = cut(C, q => q.y >= box.y[0] - E, atY(box.y[0])); C = cut(C, q => q.y <= box.y[1] + E, atY(box.y[1])) }
+  if (C.length) to = nearestIn(C, here).q
+  else { to = clampBox(nearestIn(D, here).q)
+    for (let n = 0; n < 60; n++) { const next = clampBox(nearestIn(D, to).q); const moved = Math.hypot(next.x - to.x, next.y - to.y); to = next; if (moved < .01) break } }
+  const d = { x: to.x - here.x, y: (to.y - here.y) / k }
+  return Math.hypot(d.x, d.y * k) < .5 ? null : d
+}
 /** the least pan (board px) that brings `hex` inside the view at `pose`, or null when it is inside already (or no ground is seen) */
 export function revealPan(V, pose, hex) {
   const p = V.data.POS[hex]; if (!p) return null
@@ -1717,7 +1833,8 @@ export function revealPan(V, pose, hex) {
       const t = Math.min(1, Math.max(0, ((o.x - a.x) * ex + (o.y - a.y) * ey) / (ex * ex + ey * ey || 1)))
       const q = { x: a.x + t * ex, y: a.y + t * ey }, d2 = (o.x - q.x) ** 2 + (o.y - q.y) ** 2
       if (!best || d2 < best.d2) best = { q, d2 } }
-    return inside && poly.length > 2 ? { q: o, d2: 0 } : best }
+    /* a shape with no area (every edge on one line: the sliver left where the hex's room just touches the bound) holds no point */
+    return inside && sign !== 0 && poly.length > 2 ? { q: o, d2: 0 } : best }
   const O = { x: 0, y: 0 }
   if (nearest(D, O).d2 < .25) return null                                           // inside already
   const B = V.view.panBox, box = B ? { x0: B.x[0] - pose.x, x1: B.x[1] - pose.x, y0: B.y[0] - pose.y * k, y1: B.y[1] - pose.y * k } : null
