@@ -280,9 +280,12 @@ export function setDraftOffer(ctx: Ctx, offer: readonly string[] | null, causeId
 
 export function applyDraft(ctx: Ctx, hero: Hero, causeId: string): void {
   if (ctx.campaign.roster[hero.id]) throw new Error(`applyDraft refused: '${hero.id}' is already on the roster`)
-  ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges], equipped: [...hero.equipped] }
+  // kingdom.opening-draft-modifiers: what the draft gave the hero is written with it — its own copy (Law 5b), never the caller's
+  const drafted = hero.drafted ? { drafted: { badges: [...hero.drafted.badges], rolls: hero.drafted.rolls.map((r) => ({ ...r })), mods: hero.drafted.mods.map((m) => ({ ...m })), unfielded: hero.drafted.unfielded.map((r) => ({ ...r })) } } : {}
+  ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges], equipped: [...hero.equipped], ...drafted }
   ctx.campaign.cursor.draftOffer = null
-  emit(ctx, 'hero.drafted', causeId, { heroId: hero.id, name: hero.name })
+  // …and said (Law 3): the line names the badges and the stat points the hero joined with, and its item slots when a point moved them
+  emit(ctx, 'hero.drafted', causeId, { heroId: hero.id, name: hero.name, ...(hero.drafted ? { badges: [...hero.drafted.badges], rolls: hero.drafted.rolls.map((r) => ({ ...r })), mods: hero.drafted.mods.map((m) => ({ ...m })), itemSlots: hero.itemSlots } : {}) })
   emitWorn(ctx, hero, 'draft', causeId)
 }
 

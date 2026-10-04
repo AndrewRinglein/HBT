@@ -14,6 +14,7 @@ import { playOpening, playStage, DEFAULTS, type Decisions } from '../src/sim/aut
 import { FIRST_ARTICLE_AT } from '../src/content/charter.js'
 import { REALM } from '../src/content/territories.js'
 import { saveOf, campaignOf } from '../src/core/campaign.js'
+import { crucibleBadgeOf } from '../src/content/crucible.js'
 
 const args = process.argv.slice(2)
 const val = (k: string, d: string) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1]! : d }
@@ -69,7 +70,15 @@ if (asserts.includes('no-out-systems')) {
   if (events.some((e) => e.type === 'council.taken' && e['tacticId'] !== null)) problems.push('tactics: a tactic was taken')
   if (/doom/i.test(json)) problems.push('Doom appears in the log')
   if (Object.values(ctx.campaign.roster).some((h) => h.corruption !== 0)) problems.push('corruption moved')
-  if (/badge\.(exhausted|fatigue|mark|scar|injur)/.test(json)) problems.push('fatigue, Marks or injuries appear in the log')
+  // Law 10, 2026-10-03 (kingdom.opening-draft-modifiers; engine DECISIONS.md 2026-09-28 'the first hero: Leadership …; the
+  // draft offers three with the Crucible's modifiers'): was
+  //   if (/badge\.(exhausted|fatigue|mark|scar|injur)/.test(json)) problems.push('fatigue, Marks or injuries appear in the log')
+  // The draft now says the badges each hero joins with (hero.drafted), and two of the Crucible's rollable badges begin as
+  // those words do — the Marksman and Scarred Hide, positive draft badges, neither a Mark nor an injury. The check is the
+  // same check over every badge id in the log, less the badges the draft itself rolls (src/content/crucible.ts): an
+  // exhausted, fatigue, Mark, scar or injury badge from any other system still fails the run, and is now named.
+  const leaned = [...new Set(json.match(/badge\.(exhausted|fatigue|mark|scar|injur)[a-z0-9.-]*/g) ?? [])].filter((id) => !crucibleBadgeOf(id))
+  if (leaned.length) problems.push(`fatigue, Marks or injuries appear in the log: ${leaned.join(', ')}`)
   if (ctx.campaign.captured.length || /hero\.captured|rescue\.begun/.test(json)) problems.push('captured/rescue was used')
   if (ctx.campaign.realm !== REALM) problems.push(`realm is ${ctx.campaign.realm}, not ${REALM} — Shadows or Skyship crept in`)
   if (events.some((e) => e.type === 'legacy.unlocked')) problems.push('the Legacy tree did something')

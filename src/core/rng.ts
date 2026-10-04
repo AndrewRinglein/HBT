@@ -32,6 +32,18 @@ export function rollOf(campaign: CampaignState, cup: string, keys: readonly (str
 }
 
 /**
+ * 0..n-1 for `keys` on `cup`, read from the roll's HIGH bits (roll × n ÷ 2^32) — kingdom.opening-draft-modifiers. The
+ * bare hash's lowest bit is only the parity of what was hashed (FNV-1a: xor, then times an odd prime), so `rollOf % n`
+ * on an even n splits by the parity of the keys — a draft's offer 1 and offer 2 would always roll opposite halves of a
+ * table. The high bits carry no such pattern. `pickOf` keeps its `%`, as it always was, so no earlier draw moves
+ * (kingdom SWITCHES.md openingDraftRollBits).
+ */
+export function rollBelowOf(campaign: CampaignState, cup: string, keys: readonly (string | number)[], n: number): number {
+  if (!Number.isSafeInteger(n) || n < 1 || n > 1048576) throw new Error(`rollBelowOf refused: n must be an integer from 1 to 1048576, got ${n}`)
+  return Math.floor((rollOf(campaign, cup, keys) * n) / 4294967296)
+}
+
+/**
  * `n` distinct picks from `pool`, in a rolled order, keyed by `keys` plus the
  * pick's ordinal — structural, so adding a fourth pick never moves the first
  * three. The pool is sorted first: registry order is never a tiebreak (Law 6).

@@ -1,0 +1,135 @@
+kingdom.opening-draft-modifiers - the probe and the page test, RED on the old code (bare rows offered with a kit line, nothing on the first hero, nothing rolled), 2026-10-03
+(the probes as landed, run with src/ and the page stashed back to kingdom ee49859)
+--- test/opening-draft-modifiers.test.ts ---
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+ ❯ test/opening-draft-modifiers.test.ts (8 tests | 7 failed) 440ms
+     × ONE RULE: on the engine's own stream the kingdom's procedure rolls the engine's opening party — every badge, point and score 4ms
+     × the first hero gets Leadership, a positive badge (25%: another), +2 Health, a Crucible stat point (30%: another) — whichever of the three is taken 2ms
+     × the first hero enters the Orphanage with its badges and its Health, and the draft says what it gave 1ms
+     × every later draft offers three with the Crucible's modifiers applied: stats that differ from the row by the rolls and badges, and the one picked keeps them 1ms
+     × the rolls are the run's own: the same run shows the same heroes and modifiers, saved and reopened; another run, others 1ms
+     × the modifiers stay with the hero for the run: after the whole opening each drafted hero still holds what it was drafted with 417ms
+     × the first draft is shown by description only — no number, no badge, no kit; a later draft shows the stats, the points and the badges 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-draft-modifiers.test.ts > kingdom.opening-draft-modifiers — the first hero by description, later drafts with the Crucible's modifiers > ONE RULE: on the engine's own stream the kingdom's procedure rolls the engine's opening party — every badge, point and score
+TypeError: openingHeroesOf is not a function
+ ❯ test/opening-draft-modifiers.test.ts:86:22
+     84|       const rng = makeRng(rootSeedOf(0, 0, replicate))
+     85|       const roller = { below: (n: number, ...keys: number[]) => rollBe…
+     86|       const engine = openingHeroesOf(replicate, 6)
+       |                      ^
+     87|       const first = firstHeroDraftedOf(roller, baseOf(engine[0]!.id))
+     88|       expect({ badges: first.badges, rolls: first.rolls, mods: first.m…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/opening-draft-modifiers.test.ts > kingdom.opening-draft-modifiers — the first hero by description, later drafts with the Crucible's modifiers > the first hero gets Leadership, a positive badge (25%: another), +2 Health, a Crucible stat point (30%: another) — whichever of the three is taken
+TypeError: draftedHeroOf is not a function
+ ❯ test/opening-draft-modifiers.test.ts:111:25
+    109|         if (seed > 12 && take > 0) continue   // every offer on the fi…
+    110|         const ctx = atFirstDraft(seed)
+    111|         const offered = draftedHeroOf(ctx.campaign, id)
+       |                         ^
+    112|         performDraft(ctx, id, 'test')
+    113|         const h = ctx.campaign.roster[id]!, d = h.drafted!, row = hero…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/opening-draft-modifiers.test.ts > kingdom.opening-draft-modifiers — the first hero by description, later drafts with the Crucible's modifiers > the first hero enters the Orphanage with its badges and its Health, and the draft says what it gave
+TypeError: Cannot read properties of undefined (reading 'badges')
+ ❯ test/opening-draft-modifiers.test.ts:159:40
+    157|       // every mutation an event: the draft's line carries what the he…
+    158|       const line = ctx.events.find((e) => e.type === 'hero.drafted')!
+    159|       expect(line['badges']).toEqual(d.badges)
+       |                                        ^
+    160|       expect(line['rolls']).toEqual(d.rolls)
+    161|       // the battle, fielded as the run's page fields it: the campaign…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/opening-draft-modifiers.test.ts > kingdom.opening-draft-modifiers — the first hero by description, later drafts with the Crucible's modifiers > every later draft offers three with the Crucible's modifiers applied: stats that differ from the row by the rolls and badges, and the one picked keeps them
+TypeError: draftedHeroOf is not a function
+ ❯ test/opening-draft-modifiers.test.ts:191:40
+    189|           performAdvanceOpening(ctx, 'test')
+    190|           const c = ctx.campaign, ordinal = draftedCountOf(c), ids = l…
+    191|           const hand = ids.map((id) => draftedHeroOf(c, id))
+       |                                        ^
+    192|           if (ordinal > 0) {
+    193|             const carried = new Set(Object.values(c.roster).flatMap((h…
+ ❯ test/opening-draft-modifiers.test.ts:191:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/opening-draft-modifiers.test.ts > kingdom.opening-draft-modifiers — the first hero by description, later drafts with the Crucible's modifiers > the rolls are the run's own: the same run shows the same heroes and modifiers, saved and reopened; another run, others
+TypeError: draftedHeroOf is not a function
+ ❯ test/opening-draft-modifiers.test.ts:249:79
+    247|     for (const seed of SEEDS) {
+    248|       const a = atSecondDraft(seed), b = atSecondDraft(seed)
+    249|       const offersOf = (ctx: Ctx) => listDraftOffers(ctx.campaign).map…
+       |                                                                               ^
+    250|       expect(offersOf(a), `seed ${seed}: the same run, the same offers…
+    251|       // closed and opened again at the draft: the Campaign's own save…
+ ❯ offersOf test/opening-draft-modifiers.test.ts:249:68
+ ❯ test/opening-draft-modifiers.test.ts:250:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/opening-draft-modifiers.test.ts > kingdom.opening-draft-modifiers — the first hero by description, later drafts with the Crucible's modifiers > the modifiers stay with the hero for the run: after the whole opening each drafted hero still holds what it was drafted with
+AssertionError: seed 3: hero.base.mage-fireaura keeps its draft: expected undefined to be defined
+ ❯ test/opening-draft-modifiers.test.ts:276:68
+    274|       for (const [n, line] of lines.entries()) {
+    275|         const h = ctx.campaign.roster[line['heroId'] as string]!
+    276|         expect(h.drafted, `seed ${seed}: ${h.id} keeps its draft`).toB…
+       |                                                                    ^
+    277|         expect(h.drafted!.badges).toEqual(line['badges'])
+    278|         expect(h.drafted!.rolls).toEqual(line['rolls'])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/opening-draft-modifiers.test.ts > kingdom.opening-draft-modifiers — the first hero by description, later drafts with the Crucible's modifiers > the first draft is shown by description only — no number, no badge, no kit; a later draft shows the stats, the points and the badges
+AssertionError: seed 1: hero.base.priest-scantily is described: expected 'Rune-Marked Ascetic priest · carries …' to contain 'A priest who needs no armor when fait…'
+
+Expected: "A priest who needs no armor when faith is strong. Heals with fervent devotion."
+Received: "Rune-Marked Ascetic priest · carries iron-mace swing, iron-mace crush, holy-symbol wrath, punch"
+
+ ❯ test/opening-draft-modifiers.test.ts:309:62
+    307|         const row = heroRowOf(o.id)
+    308|         expect(o.text, `seed ${seed}: ${o.id} is named`).toContain(row…
+    309|         expect(o.text, `seed ${seed}: ${o.id} is described`).toContain…
+       |                                                              ^
+    310|         expect(o.text, `seed ${seed}: ${o.id} — no number at all`).not…
+    311|         // (a hero may be NAMED as a badge is — the Hunter — so its ow…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 1 passed (8)
+   Start at  19:33:21
+   Duration  4.29s (transform 2.80s, setup 0ms, import 3.72s, tests 440ms, environment 0ms)
+
+
+--- node tools/opening-run-six.verify.mjs BATTLE-SANDBOX.html (the committed page, built at kingdom 698b155) ---
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: battle 1, draft 1: hero.base.mage-sexy is shown by its description
+    at Object.draft (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-page.mjs:137:12)
+    at drafts (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:79:84)
+    at field (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:111:16)
+    at battle (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:142:51)
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:151:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

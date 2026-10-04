@@ -18,7 +18,7 @@
 //
 //   node tools/opening-run-six.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
-import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES} from './opening-page.mjs'
+import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORDER=['orphanage','lumberjack','bridge','cavern-trail','gates','cathedral'].map(x=>'encounter.opening.'+x)
 const [ORPHANAGE,LUMBERJACK,BRIDGE,CAVERN,GATES,CATHEDRAL]=ORDER
@@ -26,8 +26,20 @@ const SWORD='item.longsword.flaming',RUN_KEY='hbt-opening-run'
 /* a loss is sought with nobody dead first (the party is then fielded again whole); a loss that costs lives keeps the living */
 const SEARCH={hows:(process.env.RUN_SIX_HOWS??'ai,hold,press').split(','),how:{partyAlive:false,fewestDead:true,seeds:Number(process.env.RUN_SIX_SEEDS??200)}}
 /* the seeds that settled each battle when this was last run (printed at the end), tried before the search */
-const KNOWN={'encounter.opening.orphanage':[['ai',1]],'encounter.opening.lumberjack:lost':[['idle',5]],'encounter.opening.lumberjack':[['ai',12]],'encounter.opening.bridge':[['hold',188]],
- 'encounter.opening.cavern-trail':[['ai',289]],'encounter.opening.gates':[['hold',4]],'encounter.opening.cathedral':[['hold',15]]}
+const KNOWN={'encounter.opening.orphanage':[['ai',1]],'encounter.opening.lumberjack:lost':[['idle',5]],'encounter.opening.lumberjack':[['ai',2]],'encounter.opening.bridge':[['hold',61]],
+ 'encounter.opening.cavern-trail':[['ai',13]],'encounter.opening.gates':[['hold',53]],'encounter.opening.cathedral':[['hold',4]]}
+/* Law 10, 2026-10-03 (kingdom.opening-draft-modifiers; engine DECISIONS.md 2026-10-03 'the opening run, audited' and 2026-09-28
+   'the first hero: Leadership …; the draft offers three with the Crucible's modifiers'): the known battle seeds, all but the
+   first two, are new (they were lumberjack ai 12, bridge hold 188, cavern-trail ai 289, gates hold 4, cathedral hold 15); the
+   run's seed stays 11. Every hero now joins with what the draft rolled it, so the party's numbers are other numbers and the
+   old seeds are other battles (the Bridge's hold 188 no longer wins). And the party is another party: the driver now picks
+   a later draft as a player does — the best of the three by the engine's weighted score of what each rolled (opening-page.mjs)
+   — so seed 11 drafts the Dwarven Brawler (first: Leadership, Huge, +2 Health), The Serpent, the Rune-Marked Ascetic, the
+   Forest Elf, the Dawnblade and the Crimson Sorceress. Of run seeds 1 to 24 searched (150 seeds of ai, hold and press a
+   battle; 13, 14, 16-18 and 22-24 were stopped unfinished), seed 11 is again the one found that wins all six: the Bridge on
+   hold 61 costs The Serpent; nobody else dies. Thirteen of the others stop at the Bridge, two at this test's own 'the loss
+   left wounds'. What this page test holds — one run through the six battles, saved and reopened, a loss offered again, the
+   draft's three of 24 — is unchanged, and it now also holds the draft's modifiers (kingdom SWITCHES.md openingDraftPageRun). */
 /* Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
    Rogues and Mages included'): the run's seed 15 -> 11, and every known battle seed with it (they were orphanage ai 1,
    lumberjack lost idle 6, lumberjack ai 12, bridge hold 2, cavern-trail hold 848, gates hold 223, cathedral press 1). The
@@ -44,7 +56,10 @@ const KNOWN={'encounter.opening.orphanage':[['ai',1]],'encounter.opening.lumberj
 const RUN_SEED=Number(process.env.RUN_SIX_SEED??11),FOUND=process.env.RUN_SIX_SEED===undefined?KNOWN:{}
 const chosen={}
 const browser=new Map()
-const rowsOf=c=>Object.fromEntries(Object.values(c.roster).map(h=>[h.id,{level:h.level,xp:h.xp,wound:h.wound,lifeState:h.lifeState,equipped:[...h.equipped],specialty:h.specialty??null}]))
+/* kingdom.opening-draft-modifiers: … and the badges, the item slots and the modifiers each hero was drafted with */
+const rowsOf=c=>Object.fromEntries(Object.values(c.roster).map(h=>[h.id,{level:h.level,xp:h.xp,wound:h.wound,lifeState:h.lifeState,equipped:[...h.equipped],specialty:h.specialty??null,badges:[...h.badges],itemSlots:h.itemSlots,drafted:structuredClone(h.drafted??null)}]))
+/* the draft as the page shows it: each offer's id, its words and what it carries (its stats, rolled points and badges) */
+const draftShown=()=>P.byId('campaign').querySelectorAll('[data-act=draft]').map(o=>({id:o.dataset.id,text:o.textContent,stats:o.dataset.stats,rolls:o.dataset.rolls,badges:o.dataset.badges}))
 
 /* Law 10, 2026-10-02 (merge of kingdom.reads-engine with kingdom.opening-run-six; review finding K7): the run's seed 11 -> 15,
    and the Cavern Trail's known seed press 9 -> hold 848. A kill pays its victim's tier's XP (2 / 5 / 15 — engine DECISIONS.md
@@ -81,9 +96,18 @@ function equipFromStash(label){
 
 /* a section fielded from the map: its drafts, Equip (a stash item put on), To the battle — the party sent is the living
    heroes, up to the deploy limit */
-function field(id,n,label){
+function field(id,n,label,reopenAtDraft=false){
  assert.equal(P.readMap(ORDER.slice(0,n-1),label+': the map'),id,label+': the next section')
  P.v.click('field',id)
+ if(reopenAtDraft){
+  /* kingdom.opening-draft-modifiers: the page closed on a draft and opened again in the same browser shows the same three
+     heroes with the same modifiers — the rolls are the run's own, read back from its save */
+  assert.equal(camp().cursor.step,'draft',label+': a draft is on the screen')
+  const before=draftShown();assert.equal(before.length,3);assert.ok(before.every(o=>o.stats&&o.badges!==undefined),label+': the draft shows modifiers')
+  P=openingPage(page,'?map',browser)
+  assert.equal(camp().cursor.step,'draft',label+': reopened, the run stands at the same draft')
+  assert.deepEqual(draftShown(),before,label+': reopened, the same heroes with the same modifiers')
+ }
  const drafted=drafts(label)
  const deployed=[...camp().cursor.engagement.deployed].sort()
  console.error(`${label}: sent ${deployed.map(h=>{const r=camp().roster[h];return `${r.name} L${r.level}${r.wound?' wound '+r.wound:''}`}).join(', ')}; at home ${P.heroIds().filter(h=>!deployed.includes(h)).map(h=>camp().roster[h].name+' '+camp().roster[h].lifeState).join(', ')||'nobody'}`)
@@ -158,7 +182,7 @@ assert.match(P.byId('runNote').textContent,/saved after every step/,'the map say
 
 /* 4 · battle 4: fielded, then the page closed on the battle and opened again — a run left mid-battle reopens on that
    battle, from its start; then won */
-const b4=field(CAVERN,4,'battle 4')
+const b4=field(CAVERN,4,'battle 4',true)
 assert.equal(b4.drafted.length,1,'one more before battle 4')
 P=openingPage(page,'?map',browser)
 assert.equal(camp().cursor.step,'battle','a run left mid-battle reopens on that battle')
@@ -187,6 +211,26 @@ assert.equal(P.heroIds().length,6,'the party is six heroes')
 assert.deepEqual(P.heroIds().map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c))).sort(),HERO_CLASSES,'one of each class')
 assert.deepEqual(OFFERS.map(o=>o.took).sort(),P.heroIds(),'the six drafted are the party')
 
+/* 5c · kingdom.opening-draft-modifiers (engine DECISIONS.md 2026-10-03 'the opening run, audited': "the first hero is chosen
+   from 3, but no stats or badges shown, just a description"; 2026-09-28 'no Health minimum … the first hero gets Leadership
+   and a random positive badge' and 'the first hero: Leadership …; the draft offers three with the Crucible's modifiers'):
+   the first draft was by description only and its hero got the ruled bonuses; each later draft showed three heroes with
+   their stats, and those stats differed from their rows by their rolled modifiers (each asserted at its draft,
+   tools/opening-page.mjs); every battle fielded each hero with what it was drafted with (asserted at each battle); and at
+   the end of the run each hero still holds exactly what it was drafted with */
+assert.deepEqual(OFFERS.map(o=>o.first),[true,false,false,false,false,false],'only the first draft is the first hero\'s')
+assert.equal(first,OFFERS[0].took);assert.deepEqual(Object.keys(OFFERS[0].shown),[],'the first draft showed no stats')
+for(const o of OFFERS.slice(1)){
+ assert.deepEqual(Object.keys(o.shown).sort(),[...o.ids].sort(),o.label+': all three were shown with their stats')
+ assert.ok(o.ids.some(id=>o.shown[id].moved),o.label+': the modifiers move the stats shown away from the rows')
+ assert.ok(!o.drafted.badges.includes(FIRST_HERO.badges[0]),o.label+': Leadership is the first hero\'s alone')
+}
+for(const o of OFFERS)assert.deepEqual(camp().roster[o.took].drafted,o.drafted,`${o.took} holds what it was drafted with to the end of the run`)
+const led=camp().roster[first]
+assert.equal(led.drafted.badges[0],FIRST_HERO.badges[0],'the first hero has the Leadership badge')
+assert.ok(led.drafted.badges.slice(1).some(b=>POSITIVE_BADGES.includes(b)),'and a positive badge beside it')
+assert.ok(led.drafted.mods.some(m=>m.stat==='maxHp'&&m.add===FIRST_HERO.health&&m.source===FIRST_HERO.healthSource),'and +2 Health')
+
 /* 6 · the end: every section taken, the run complete — and never the kingdom map */
 assert.equal(P.readMap(ORDER,'the end'),null,'every section is taken')
 assert.match(P.byId('runNote').textContent,/the opening run is complete/,'the map says the run is complete')
@@ -196,4 +240,5 @@ assert.equal(P.readMap(ORDER,'the end, reopened'),null,'reopened, the run is sti
 const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
 console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.error('drafted with: '+OFFERS.map(o=>`${POOL.find(h=>h.id===o.took).name}: ${[...o.drafted.badges.map(b=>b.replace('badge.','')),...o.drafted.mods.map(m=>(m.add>0?'+':'')+m.add+' '+m.stat),...o.drafted.unfielded.map(r=>(r.amount>0?'+':'')+r.amount+' '+r.stat+(r.stat==='itemSlots'?' (on the hero, its item slots)':' (not fielded)'))].join(', ')}`).join('; '))
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

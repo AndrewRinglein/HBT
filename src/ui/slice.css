@@ -41,6 +41,27 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .pick .opt.on{border-color:var(--gold)}
 .pick .opt b{display:block}
 .pick .opt small{color:var(--faint)}
+/* the draft (kingdom.opening-draft-modifiers): the first hero by description only; a later draft's heroes with their stats, rolled points and badges */
+.pick .opt .who{margin:8px 0 0;font-size:13px;line-height:1.45;color:var(--ink)}
+.pick .opt .quote{margin:6px 0 0;font-size:12.5px;font-style:italic;color:var(--faint)}
+.pick.draft-rolled .opt{min-width:260px}
+.pick .opt .stats{margin-top:8px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:6px 9px}
+.pick .opt .stCols{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.pick .opt .stRow{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px solid #2a2320}
+.pick .opt .stRow:last-child{border-bottom:none}
+.pick .opt .stN{font-size:12px;letter-spacing:.02em;color:#a9a394}
+.pick .opt .stV{font:700 14px ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;color:#e8e5dc}
+.pick .opt .stV.up{color:var(--good)} .pick .opt .stV.down{color:var(--bad)}
+.pick .opt .stV em{font-style:normal;font-size:10px;font-weight:700;opacity:.85;margin-right:4px}
+.pick .opt .rolls{margin-top:8px;font-size:12.5px}
+.pick .opt .rolls .k{color:var(--faint);margin-right:4px}
+.pick .opt .delta{display:inline-block;padding:0 6px;border-radius:9px;border:1px solid var(--line);margin:1px 2px 1px 0;font-variant-numeric:tabular-nums}
+.pick .opt .delta.won{color:var(--good);border-color:var(--good)} .pick .opt .delta.lost{color:var(--bad);border-color:var(--bad)}
+.pick .opt .delta i{color:var(--faint);font-size:11px}
+.pick .opt .badges{margin-top:6px;display:flex;flex-direction:column;gap:3px;font-size:12.5px}
+.pick .opt .badge b{display:inline} .pick .opt .badge span{color:var(--dim)}
+.pick .opt .badge.good b{color:var(--good)} .pick .opt .badge.flawed b{color:var(--bad)}
+.pick .opt .none{color:var(--faint);font-style:italic}
 .roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
 .roster .h{border:1px solid var(--line);border-radius:5px;padding:8px 10px;background:#000;cursor:pointer}
 .roster .h.on{border-color:var(--hero)}

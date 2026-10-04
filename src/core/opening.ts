@@ -14,10 +14,13 @@
 // is authored state — an empty roster, a fixed battle list — never a tutorial
 // flag.
 
-import type { CampaignState, Engagement, HeroId } from './campaign.js'
+import type { CampaignState, Engagement, Hero, HeroId } from './campaign.js'
 import { makeCampaign } from './campaign.js'
 import { type Ctx, setCursor, setDraftOffer, applyDraft, applyRescue, setEnded } from './mutate.js'
-import { pickOf } from './rng.js'
+import { pickOf, rollBelowOf } from './rng.js'
+import { firstHeroDraftedOf, handDraftedOf, type Roller, type BaseOf, type Drafted } from './draft-modifiers.js'
+import { UNITS } from '../engine.js'
+import { crucibleBadgeOf, crucibleStatOf } from '../content/crucible.js'
 import { beginCombatPrep } from './prep.js'
 import { beginWeek } from './week.js'
 import { listTerritories } from './map.js'
@@ -79,10 +82,81 @@ export function isOpeningDone(campaign: CampaignState): boolean {
   return campaign.cursor.prologue === null
 }
 
-/** The three on offer: hero-group rows not yet on the roster, drawn on cup.reveal keyed by the draft's ordinal. Stat-less: name, class, kit — no numbers. */
+/**
+ * The three on offer: hero-group rows not yet on the roster, drawn on cup.reveal keyed by the draft's ordinal — the bare
+ * rows, who they are. What each would JOIN as — the first hero's bonuses, a later draft's rolled modifiers — is
+ * draftedHeroOf (kingdom.opening-draft-modifiers).
+ */
 export function listDraftOffers(campaign: CampaignState): HeroRow[] {
   return (campaign.cursor.draftOffer ?? []).map(heroRowOf)
 }
+
+// ---------- the draft's modifiers (kingdom.opening-draft-modifiers, 2026-10-03) ----------
+// Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run, audited'): "the first hero is chosen from 3, but no
+// stats or badges shown, just a description." Its modifiers stand (2026-09-28 'no Health minimum … the first hero gets
+// Leadership and a random positive badge'): "You get the leadership badge. You get a random positive badge. 25% chance of
+// another positive badge. +2 health. One stat point from the Crucible's randomness, a 30% chance of another stat point."
+// Every later draft (2026-09-28 'the first hero: Leadership …; the draft offers three with the Crucible's modifiers'):
+// "You get your choice of one of three heroes. Those heroes had randomized modifiers applied to them, and typically you
+// would pick the best one."
+//
+// Nothing is stored for an offer: what each offered hero would join as is DERIVED from the Campaign — the draft's
+// ordinal, the offer's place in the hand, the badges the party already carries — on the run's own stream (cup.reveal, the
+// cup the offer itself is drawn on, under its own keys). So a run saved at a draft and reopened shows the same three
+// heroes with the same modifiers, and the hero that joins is the hero that was shown. Once taken, the modifiers are
+// WRITTEN on the hero (hero.drafted, hero.badges, hero.itemSlots) and never rolled again.
+
+/** The run's dice for a draft's modifiers: cup.reveal, keyed by what the roll is. */
+function draftRollerOf(campaign: CampaignState): Roller {
+  const below = (n: number, keys: readonly number[]) => rollBelowOf(campaign, CUP_IDS.reveal, ['draft', 'modifiers', ...keys], n)
+  return { below: (n, ...keys) => below(n, keys), d100: (...keys) => below(100, keys) + 1 }
+}
+
+/**
+ * A pool row's own value of a stat, in the Crucible's word: its engine row's number (the Crucible's `health` is the
+ * row's maxHp), or — Item Slots, the campaign's own quantity the engine row does not carry — the hero row's.
+ */
+function draftBaseOf(row: HeroRow): BaseOf {
+  const unit = UNITS[row.unitType] as unknown as Readonly<Record<string, unknown>> | undefined
+  return (stat) => {
+    if (stat === 'itemSlots') return row.itemSlots
+    const v = unit?.[crucibleStatOf(stat)]
+    return typeof v === 'number' ? v : 0
+  }
+}
+
+/** The badges the party was drafted with — a hand's first badges are never one of these. */
+function draftedBadgesOf(campaign: CampaignState): string[] {
+  return Object.keys(campaign.roster).sort().flatMap((id) => campaign.roster[id]!.drafted?.badges ?? [])
+}
+
+/** A pool row as it joins with what the draft gave it: the badges on its list, its item slots moved by a rolled point or badge, the record kept. */
+function heroWithDraft(row: HeroRow, drafted: Drafted): Hero {
+  const slots = drafted.rolls.filter((r) => r.stat === 'itemSlots').reduce((s, r) => s + r.amount, 0)
+    + drafted.badges.reduce((s, b) => s + (crucibleBadgeOf(b)?.stats['itemSlots'] ?? 0), 0)
+  return { ...row, classes: [...row.classes], equipped: [...row.equipped], badges: [...row.badges, ...drafted.badges], itemSlots: Math.max(0, row.itemSlots + slots), drafted }
+}
+
+/**
+ * The hero on offer AS IT WOULD JOIN: its row with the draft's modifiers applied. The first hero's are the ruled bonuses
+ * (Leadership, a positive badge and the chance of another, +2 Health, a Crucible stat point and the chance of another) —
+ * the same whichever of the three is taken, and never shown before the pick. A later draft's are the Crucible's, rolled
+ * per offered hero — these the player sees, to pick the best. Refused when the hero is not on offer.
+ */
+export function draftedHeroOf(campaign: CampaignState, heroId: HeroId): Hero {
+  const offer = campaign.cursor.draftOffer ?? []
+  const j = offer.indexOf(heroId)
+  if (campaign.cursor.step !== 'draft' || j < 0) throw new Error(`draftedHeroOf refused: '${heroId}' is not on offer at step '${campaign.cursor.step}' — ${offer.join(', ') || 'nothing is'}`)
+  const rows = offer.map(heroRowOf), ordinal = draftedCountOf(campaign), roller = draftRollerOf(campaign)
+  const drafted = ordinal === 0
+    ? firstHeroDraftedOf(roller, draftBaseOf(rows[j]!))
+    : handDraftedOf(roller, rows.map(draftBaseOf), ordinal, draftedBadgesOf(campaign))[j]!
+  return heroWithDraft(rows[j]!, drafted)
+}
+
+// the procedure itself, for the check that holds it to the engine's (test/opening-draft-modifiers.test.ts)
+export { firstHeroDraftedOf, handDraftedOf }
+export type { Roller, BaseOf, Drafted }
 
 export function canDraft(campaign: CampaignState, heroId: HeroId): boolean {
   return campaign.cursor.step === 'draft' && (campaign.cursor.draftOffer ?? []).includes(heroId)
@@ -118,7 +192,8 @@ function offerDraft(ctx: Ctx, causeId: string): void {
 export function performDraft(ctx: Ctx, heroId: HeroId, causeId: string): void {
   if (!canDraft(ctx.campaign, heroId)) throw new Error(`performDraft refused: '${heroId}' is not on offer at step '${ctx.campaign.cursor.step}' — ${(ctx.campaign.cursor.draftOffer ?? []).join(', ') || 'nothing is'}`)
   assertKitted(heroId)
-  applyDraft(ctx, heroRowOf(heroId), causeId)
+  // was: applyDraft(ctx, heroRowOf(heroId), causeId) — the bare row. kingdom.opening-draft-modifiers: the hero joins as it was offered
+  applyDraft(ctx, draftedHeroOf(ctx.campaign, heroId), causeId)
   setCursor(ctx, { step: 'open' }, causeId)
 }
 

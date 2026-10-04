@@ -143,6 +143,17 @@ export type Hero = {
   specialty?: string | null
   /** The level-5 pick: the INDEX of the option taken from the class table's choice row — or null/absent. The engine reads the option by index through the seam. G12. */
   levelPick?: number | null
+  /**
+   * kingdom.opening-draft-modifiers (2026-10-03; engine DECISIONS.md 2026-09-28 'no Health minimum … the first hero gets
+   * Leadership and a random positive badge' and 'the first hero: Leadership …; the draft offers three with the Crucible's
+   * modifiers'): what the opening's draft gave this hero, kept for the run and saved with it. `badges` — the badges it
+   * was drafted with (they are in `badges` above too, the one list the battle is handed); `rolls` — the Crucible's stat
+   * points, in the Crucible's words; `mods` — those points, and the first hero's +2 Health, as the battle takes them
+   * (the engine's stat names, each naming its source — resolved at the draft and WRITTEN here, never rolled again);
+   * `unfielded` — the points no engine stat takes (Item Slots, which is `itemSlots` above; Toughness). Absent on a hero
+   * that was never drafted this way — a civilian, a Beacon recruit, a hero from a save older than this.
+   */
+  drafted?: { badges: string[]; rolls: { stat: string; amount: number }[]; mods: { stat: string; add: number; source: string }[]; unfielded: { stat: string; amount: number }[] }
 }
 
 /** One exclusive assignment per hero; fighting participation is tracked separately for the Week. */

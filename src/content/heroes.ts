@@ -21,6 +21,7 @@ import type { Hero } from '../core/campaign.js'
 import { omitDisabled } from './disable.js'
 import { KIT_SPECS, HERO_ITEM_SLOTS } from './generated/kits.js'
 import { UNITS, type UnitDef } from '../engine.js'
+import { HERO_DESCRIPTIONS } from './generated/descriptions.js'
 
 export type HeroRow = Hero
 
@@ -139,4 +140,15 @@ export function heroRowOf(id: string): HeroRow {
   const row = RECRUITS.find((h) => h.id === id)
   if (!row) throw new Error(`unknown hero '${id}' — the pool is an explicit registry`)
   return row
+}
+
+/**
+ * Who a hero is, in the codex's words — its backstory and its quote — or null when the codex gives none
+ * (kingdom.opening-draft-modifiers: the first draft shows a description and nothing else; ruled 2026-10-03, Andrew,
+ * engine/DECISIONS.md 'the opening run, audited': "no stats or badges shown, just a description"). Words only — no stat,
+ * no badge, no kit. Generated from the codex by tools/mk-descriptions.mjs; the engine's unit rows carry no such words.
+ */
+export function heroDescriptionOf(id: string): { readonly description: string; readonly quote: string } | null {
+  const row = HERO_DESCRIPTIONS.find((d) => d.id === id)
+  return row ? { description: row.description, quote: row.quote } : null
 }

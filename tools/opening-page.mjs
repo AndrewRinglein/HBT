@@ -8,17 +8,29 @@
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
+import {readFileSync} from 'node:fs'
 import {bootSlice} from './atlas-dom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,sandboxChoices,commandSandbox} from './src/core/sandbox.ts';export {runBattle} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,sandboxChoices,commandSandbox} from './src/core/sandbox.ts';export {runBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
    page's draft is held against */
 export const POOL=E.HEROES.HERO_POOL.map(h=>({id:h.id,name:h.name,classes:[...h.classes]}))
 export const LEFT_OUT=(E.HEROES.UNKITTED_HEROES??[]).map(h=>({id:h.id,name:h.name}))
 export const HERO_CLASSES=['class.mage','class.paladin','class.priest','class.ranger','class.rogue','class.warrior']
+/* kingdom.opening-draft-modifiers: the published numbers and words the page's draft is held against — the first hero's
+   rule and the Crucible's rollable badges (progression/OPENING-PARTY.json, the file the engine's own opening party reads),
+   and each base hero's description (the codex's backstory) */
+const PARTY=JSON.parse(readFileSync(new URL('../../progression/OPENING-PARTY.json',import.meta.url),'utf8'))
+export const FIRST_HERO=PARTY.firstHero,ROLL_SOURCE=PARTY.draftScore.rollSource
+export const POSITIVE_BADGES=PARTY.crucible.badges.favourable.map(b=>b.id),FLAWED_BADGES=PARTY.crucible.badges.flawed.map(b=>b.id)
+const BADGE_NAMES=[...FIRST_HERO.badges,...POSITIVE_BADGES,...FLAWED_BADGES].map(id=>E.BADGES[id].name)
+const DESCRIPTION=Object.fromEntries(JSON.parse(readFileSync(new URL('../../content/hbt-content.json',import.meta.url),'utf8')).heroes.heroes.map(h=>[h.id,h.backstory]))
+/* what a draft should move each engine stat by: its rolled points (and the first hero's Health), and its badges' own rows */
+const movedBy=d=>{const out={};for(const m of d.mods)out[m.stat]=(out[m.stat]??0)+m.add;for(const b of d.badges)for(const [k,n] of Object.entries(E.BADGES[b].statModifiers??{}))out[k]=(out[k]??0)+n;return out}
+const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.split(':');return [k,Number(n)]}))
 
 /* the player's side, played out: 'ai', the engine's AI; 'idle', every activation begun and ended (a loss the AI's own
    heroes rarely make); 'hold', no hero moves and each strikes the best blow the engine offers it from where it stands, or
@@ -87,15 +99,24 @@ export function openingPage(page,search,store){
   return next?.id??null
  }
 
- /* the draft: three offered, stat-less, none of a class already drafted until all six are; a Warrior or a Paladin is
-    taken first when offered, so the party can carry the Flaming Longsword. A base hero left out of the pool for want of
+ /* the draft: three offered, none of a class already drafted until all six are; a Warrior or a Paladin is taken first
+    when offered, so the party can carry the Flaming Longsword. The FIRST draft is stat-less — a description only; every
+    later draft shows each hero's stats as the battle would field them, with the Crucible's rolled points and badges. A base hero left out of the pool for want of
     a kit is named on the screen (data-unkitted), and nobody else is.
     Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
     Rogues and Mages included'): the two lines below were
       assert.ok(opts.length>=1&&opts.length<=3,label+': one to three offered')
       … ||drafted.size>=4 …   (the class rule excused once four classes were drafted)
     — true only of the five-hero pool of four classes, where the offers shrank to two then one. The rule, as ruled: three
-    at every draft, and no class twice until all SIX are drafted (2026-09-28). */
+    at every draft, and no class twice until all SIX are drafted (2026-09-28).
+    Law 10, 2026-10-03 (kingdom.opening-draft-modifiers; engine DECISIONS.md 2026-10-03 'the opening run, audited': "the
+    first hero is chosen from 3, but no stats or badges shown, just a description"; 2026-09-28 'the first hero: Leadership
+    …; the draft offers three with the Crucible's modifiers': "Those heroes had randomized modifiers applied to them, and
+    typically you would pick the best one"): every draft asserted
+      assert.doesNotMatch(o.textContent,/\d+\s*(health|accuracy|strength)/i,label+': stat-less')
+    — true now of the FIRST draft only, where it is held harder (no number at all, no badge, no kit line, the hero's
+    description shown). A later draft is held to the opposite, as ruled: the stats are shown, they are the numbers the
+    battle would field, and they differ from the hero's row by exactly its rolled modifiers. */
  let lastOffer=null
  function draft(label){
   assert.ok(shown('campaign'),label+': the draft is shown');assert.equal(camp().cursor.step,'draft',label+': the cursor is at the draft')
@@ -107,10 +128,58 @@ export function openingPage(page,search,store){
   assert.deepEqual(leftOut,LEFT_OUT.map(h=>h.id),label+': the base heroes with no kit are named on the draft, and nobody else')
   for(const h of LEFT_OUT)assert.ok(byId('campaign').textContent.includes(h.name),`${label}: ${h.name} is named as left out`)
   const drafted=new Set(Object.values(camp().roster).flatMap(h=>h.classes).filter(c=>c!=='class.civilian'))
-  for(const o of opts){assert.ok(!(o.dataset.classes??'').split(',').some(c=>drafted.has(c))||HERO_CLASSES.every(c=>drafted.has(c)),`${label}: ${o.dataset.id} is of a class not yet drafted`);assert.doesNotMatch(o.textContent,/\d+\s*(health|accuracy|strength)/i,label+': stat-less')}
-  const pick=opts.find(o=>(o.dataset.classes??'').split(',').some(c=>TAKERS.includes(c)))??opts[0]
-  lastOffer={label,ids:opts.map(o=>o.dataset.id),classes:opts.flatMap(o=>(o.dataset.classes??'').split(',')),took:pick.dataset.id,leftOut}
+  for(const o of opts)assert.ok(!(o.dataset.classes??'').split(',').some(c=>drafted.has(c))||HERO_CLASSES.every(c=>drafted.has(c)),`${label}: ${o.dataset.id} is of a class not yet drafted`)
+  const first=heroIds().length===0,seen={}
+  for(const o of opts){
+   const id=o.dataset.id,who=`${label}: ${id}`
+   if(first){
+    /* the first hero: chosen from three by description only — no stats, no badges, no kit */
+    assert.ok(DESCRIPTION[id]&&o.textContent.includes(DESCRIPTION[id]),who+' is shown by its description')
+    assert.doesNotMatch(o.textContent,/\d/,who+': stat-less — no number at all')
+    assert.doesNotMatch(o.textContent,/carries/i,who+': no kit')
+    /* (a hero may be NAMED as a badge is — the Hunter — so its own name is set aside first) */
+    for(const name of BADGE_NAMES)assert.ok(!o.textContent.replace(POOL.find(h=>h.id===id).name,'').includes(name),`${who}: no badge (${name})`)
+    assert.ok(o.dataset.stats===undefined&&o.dataset.badges===undefined&&o.dataset.rolls===undefined,who+' carries no stats, badges or rolls')
+    continue
+   }
+   /* a later draft: the hero as the sources' rule rolls it on this run's own stream, shown — its stats are the numbers the
+      battle would field, and they differ from its row by exactly its rolled modifiers */
+   assert.ok(o.dataset.stats!==undefined&&o.dataset.badges!==undefined&&o.dataset.rolls!==undefined,who+' is shown with its stats, its rolled points and its badges')
+   const want=E.OPENING.draftedHeroOf(camp(),id),d=want.drafted
+   assert.equal(o.dataset.badges,d.badges.join(','),who+': its rolled badges');assert.equal(o.dataset.rolls,d.rolls.map(r=>r.stat+':'+r.amount).join(','),who+': its rolled points')
+   assert.ok(d.badges.length>=1&&d.badges.every(b=>POSITIVE_BADGES.includes(b)||FLAWED_BADGES.includes(b)),who+': one to three of the Crucible\'s badges')
+   for(const b of d.badges)assert.ok(o.textContent.includes(E.BADGES[b].name),`${who}: ${E.BADGES[b].name} is named`)
+   const stats=numbersOf(o.dataset.stats),now=E.SEAM.fieldedPreviewOf(want).now,row=E.SEAM.fieldedPreviewOf(E.HEROES.heroRowOf(id)).now,moved=movedBy(d)
+   for(const k of ['maxHp','strength','precision','armor','resist','accuracy','dodge','movement','itemSlots'])assert.ok(k in stats,`${who}: ${k} is shown`)
+   for(const [k,n] of Object.entries(stats)){
+    if(k==='itemSlots'){assert.equal(n,want.itemSlots,who+': its item slots');continue}
+    assert.equal(n,now[k]??0,`${who}: ${k} as the battle would field it`)
+    assert.equal(n-(row[k]??0),moved[k]??0,`${who}: ${k} differs from its row by its rolled modifiers`)
+   }
+   for(const k of Object.keys(moved))assert.ok(k in stats,`${who}: ${k}, which its modifiers move, is shown`)
+   seen[id]={stats,moved:Object.values(moved).some(n=>n!==0)||want.itemSlots!==E.HEROES.heroRowOf(id).itemSlots}
+  }
+  /* the pick, as a player makes it: a Warrior or a Paladin while the party has none (so the Flaming Longsword has a taker);
+     at the first draft, where nothing is shown to choose by, the first of them; at a later draft the best of them by the
+     engine's own weighted score of what each rolled (engine DECISIONS.md 2026-09-28 'the draft pick is weighted': "typically
+     you would pick the best one" — draftScoreOf, read through the kingdom's door), a tie to the earlier offer.
+     Until kingdom.opening-draft-modifiers the offers were bare rows and the first taker, else the first offer, was taken. */
+  const party=heroIds(),isTaker=o=>(o.dataset.classes??'').split(',').some(c=>TAKERS.includes(c))
+  const takers=party.some(id=>camp().roster[id].classes.some(c=>TAKERS.includes(c)))?[]:opts.filter(isTaker),among=takers.length?takers:opts
+  const scoreOf=o=>{const d=E.OPENING.draftedHeroOf(camp(),o.dataset.id).drafted;return E.draftScoreOf(o.dataset.id,d.rolls,d.badges,party)}
+  const pick=first?among[0]:among.reduce((best,o)=>scoreOf(o)>scoreOf(best)?o:best,among[0])
+  const offered=E.OPENING.draftedHeroOf(camp(),pick.dataset.id)
+  lastOffer={label,first,ids:opts.map(o=>o.dataset.id),classes:opts.flatMap(o=>(o.dataset.classes??'').split(',')),took:pick.dataset.id,leftOut,shown:seen,drafted:structuredClone(offered.drafted)}
   v.click('draft',pick.dataset.id)
+  /* the one picked joins as it was offered: its badges, its points and its item slots are on the hero */
+  assert.deepEqual(camp().roster[pick.dataset.id],offered,label+': the hero picked joins with the modifiers it was offered with')
+  if(first){
+   const d=camp().roster[pick.dataset.id].drafted
+   assert.equal(d.badges[0],FIRST_HERO.badges[0],label+': the first hero gets the Leadership badge')
+   assert.ok(d.badges.length>=2&&d.badges.slice(1).every(b=>POSITIVE_BADGES.includes(b)),label+': and at least one more positive badge')
+   assert.deepEqual(d.mods[0],{stat:'maxHp',add:FIRST_HERO.health,source:FIRST_HERO.healthSource},label+': and +2 Health')
+   assert.ok(d.rolls.length>=1&&d.rolls.every(r=>r.amount>0),label+': and a stat point, or two')
+  }
   return pick.dataset.id
  }
 
@@ -128,6 +197,25 @@ export function openingPage(page,search,store){
   const s=handle.session,e=camp().cursor.engagement
   assert.equal(s.config.encounterId,e.id,label+': the encounter is fielded');assert.deepEqual(s.config.heroes,e.deployed,label+': with the deployed heroes')
   assert.deepEqual(s.config.heroRows,e.deployed.map(id=>camp().roster[id]),label+': as the campaign\'s own Hero rows')
+  /* kingdom.opening-draft-modifiers: what a hero was drafted with is on it in the battle — its badges on the unit, its
+     Health the fielded number, and each source's points said by the engine as it fields them (unit.modified) */
+  for(const [i,id] of e.deployed.entries()){
+   const h=camp().roster[id],d=h.drafted
+   assert.ok(d,`${label}: ${id} holds what it was drafted with`)
+   const u=s.ctx.state.units.find(x=>x.uid===s.setup.heroUids[i]);assert.ok(u,`${label}: ${id} is on the board`)
+   for(const b of d.badges)assert.ok(u.badges.includes(b),`${label}: ${id} carries ${b} in the battle`)
+   assert.equal(u.maxHp,E.SEAM.fieldedPreviewOf(h).now.maxHp,`${label}: ${id}'s Health in the battle`)
+   for(const source of new Set(d.mods.map(m=>m.source))){
+    const want={};for(const m of d.mods)if(m.source===source)want[m.stat]=(want[m.stat]??0)+m.add
+    const said=s.ctx.events.find(x=>x.type==='unit.modified'&&x.actor===u.id&&x.source===source)
+    assert.deepEqual(said?.stats,want,`${label}: ${id}'s points from ${source} are fielded`)
+   }
+   if(d.badges.includes(FIRST_HERO.badges[0])){
+    assert.ok(u.badges.some(b=>POSITIVE_BADGES.includes(b)),`${label}: the first hero carries a positive badge beside Leadership`)
+    const {drafted:_d,...undrafted}=h
+    assert.ok(u.maxHp>=E.SEAM.fieldedPreviewOf({...undrafted,badges:h.badges.filter(b=>!d.badges.includes(b))}).now.maxHp+FIRST_HERO.health,`${label}: the first hero has +2 Health or more over the same hero undrafted`)
+   }
+  }
   return s
  }
 

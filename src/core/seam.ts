@@ -17,7 +17,7 @@
 // No campaign code. `makeBattleState(campaign, engagement, seed) → BattleOptions`
 // is M1's; it will produce an EngagementSpec and call battleOptionsOf.
 
-import { createBattle, runBattle, LEVELS, BADGES, RULE_BADGES, rosterUids, isUnitUid, UNITS, levelTableOf, fieldedPreview } from '../engine.js'
+import { createBattle, runBattle, LEVELS, BADGES, RULE_BADGES, rosterUids, isUnitUid, UNITS, levelTableOf, fieldedPreview, isStatName } from '../engine.js'
 import type { BattleOptions, Event, Outcome, Side, HeroProgress, UnitDef } from '../engine.js'
 import { atlasFieldingOf } from '../content/atlas.js'
 import { itemOf } from '../content/items.js'
@@ -34,6 +34,26 @@ const combatBadges = (badges: readonly string[] = []) => badges.filter(id => Obj
 const fieldedBadges = (h: { badges?: readonly string[]; wound?: number }) => {
   const out = combatBadges(h.badges)
   return (h.wound ?? 0) >= 1 && !out.includes(RULE_BADGES.wounded) ? [...out, RULE_BADGES.wounded] : out
+}
+
+/**
+ * kingdom.opening-draft-modifiers (2026-10-03): the stat points a hero was DRAFTED with (hero.drafted.mods — the
+ * Crucible's rolled points, the first hero's +2 Health; core/draft-modifiers.ts) as the engine's unit mods, each naming
+ * its source. They are the hero's own, not its gear's: fielded in every battle, and part of the hero the Equip card
+ * shows bare. A mod naming a stat the engine has none for is refused loudly (Law 9) — the draft keeps those apart
+ * (`unfielded`) and never writes one here.
+ */
+type DraftedMods = { readonly mods: readonly { readonly stat: string; readonly add: number; readonly source: string }[] }
+function draftedModsOf(h: { drafted?: DraftedMods | undefined }): NonNullable<FieldedMods['stats']> {
+  return (h.drafted?.mods ?? []).map((m) => {
+    if (!isStatName(m.stat)) throw new Error(`a hero was drafted with a point of '${m.stat}' (${m.source}), which is not a stat the engine fields`)
+    return { stat: m.stat, add: m.add, source: m.source }
+  })
+}
+/** What the battle is handed for one hero beside its items: its drafted points, then its sets' bonuses (sets.resolve). */
+function fieldedModsOf(h: { equipped?: readonly string[] | undefined; drafted?: DraftedMods | undefined }): FieldedMods {
+  const sets = fieldedModsOfRows((h.equipped ?? []).map(itemOf)), own = draftedModsOf(h)
+  return own.length ? { ...sets, stats: [...own, ...(sets.stats ?? [])] } : sets
 }
 
 /** A campaign-free fielding: everything a battle needs, nothing about a Campaign. */
@@ -181,7 +201,7 @@ export type EngagementResult = {
  * battle condition arrive here when those systems exist.
  */
 export function makeBattleState(
-  roster: Readonly<Record<string, { unitType: string; badges?: readonly string[]; wound?: number; equipped?: readonly string[]; used?: readonly number[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
+  roster: Readonly<Record<string, { unitType: string; badges?: readonly string[]; wound?: number; equipped?: readonly string[]; used?: readonly number[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null; drafted?: DraftedMods }>>,
   engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number; heroUids?: readonly number[] },
 ): EngagementSpec {
   const rows = engagement.deployed.map((heroId) => {
@@ -195,8 +215,9 @@ export function makeBattleState(
   const heroUids = engagement.heroUids ? [...engagement.heroUids] : rosterUids(heroes.length, 0, {}).heroes
   if (heroUids.length !== heroes.length || heroUids.some((u) => !isUnitUid(u)) || new Set(heroUids).size !== heroUids.length) throw new Error(`${engagement.id}: hero uids [${heroUids.join(', ')}] are not ${heroes.length} distinct unsigned 32-bit integers`)
   const heroBadges = rows.map(fieldedBadges)
-  // the sets, resolved here — "looked up when the players are being built and shipped to combat"
-  const heroMods = rows.map((h) => fieldedModsOfRows((h.equipped ?? []).map(itemOf)))
+  // the sets, resolved here — "looked up when the players are being built and shipped to combat" — and, before them, the
+  // points each hero was drafted with (kingdom.opening-draft-modifiers): on the hero in every battle
+  const heroMods = rows.map(fieldedModsOf)
   // what is equipped is what is fielded — a hero row without `equipped` (a bare fielding) keeps its kit
   const carried = rows.every((h) => h.equipped) ? rows.map((h) => fieldedItemsOf(h.equipped!)) : null
   const heroProgress = rows.map((h) => progressOf(h))
@@ -237,7 +258,7 @@ export function progressOf(h: { unitType: string; level?: number; specialty?: st
 }
 
 /** A roster hero as the preview needs it — what makeBattleState reads of one. */
-type FieldedHero = { unitType: string; badges?: readonly string[]; wound?: number; equipped: readonly string[]; used?: readonly number[]; level?: number; specialty?: string | null; levelPick?: number | null }
+type FieldedHero = { unitType: string; badges?: readonly string[]; wound?: number; equipped: readonly string[]; used?: readonly number[]; level?: number; specialty?: string | null; levelPick?: number | null; drafted?: DraftedMods }
 
 /**
  * The hero AS THE BATTLE WOULD FIELD IT — the engine's fieldedPreview over exactly what makeBattleState hands the
@@ -250,10 +271,13 @@ export function fieldedPreviewOf(h: FieldedHero): { now: UnitDef; bare: UnitDef 
   const { fielded, stowed } = fieldedItemsOf(h.equipped)
   const progress = progressOf(h) ?? undefined
   const badges = fieldedBadges(h)
-  const heroMods = fieldedModsOfRows(h.equipped.map(itemOf))
+  const heroMods = fieldedModsOf(h)
+  // kingdom.opening-draft-modifiers: the points a hero was drafted with are the hero's, so the bare hero has them too —
+  // the card's ± stays what GEAR and sets change
+  const own = draftedModsOf(h)
   const used = h.used?.some((n) => n > 0) ? instanceSlotsOf(h.equipped).map((k) => h.used?.[k] ?? 0) : undefined
   const now = fieldedPreview(h.unitType, { items: fielded, stowed, ...(used ? { used } : {}), ...(progress ? { progress } : {}), badges, ...(hasMods(heroMods) ? { heroMods } : {}) })
-  const bare = fieldedPreview(h.unitType, { items: [], ...(progress ? { progress } : {}), badges })
+  const bare = fieldedPreview(h.unitType, { items: [], ...(progress ? { progress } : {}), badges, ...(own.length ? { heroMods: { stats: own } } : {}) })
   return { now, bare }
 }
 

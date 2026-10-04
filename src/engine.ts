@@ -105,6 +105,16 @@ export { heroesYetToAct } from '../../engine/src/core/commands.js'
 // kingdom's own rules and hands them back as an OpeningCarry.
 export { OPENING_POSITIONS, OPENING_TAKERS, openingPartyOf, openingHolderOf, openingRewardPickOf } from '../../engine/src/content/opening-party.js'
 export type { OpeningCarry } from '../../engine/src/content/opening-party.js'
+// Widened 2026-10-03 for kingdom.opening-draft-modifiers (engine DECISIONS.md 2026-09-28 'no Health minimum … the first hero
+// gets Leadership and a random positive badge; the draft pick is weighted'): the engine's own opening draft, read-only —
+// openingHeroesOf (the party a replicate drafts, each hero with its rolled badges and points) and draftScoreOf (the weighted
+// score of a rolled offer). The run cannot CALL them for its own draft — openingHeroesOf draws which rows are offered and
+// takes the best itself, and the two functions that roll a given row are private to that file (kingdom SWITCHES.md
+// openingDraftRuleKingdomSide) — so they are here for the check that holds the kingdom's procedure
+// (src/core/draft-modifiers.ts) to the engine's: test/opening-draft-modifiers.test.ts. isStatName is the engine's own test
+// of which stats a unit mod may name: a rolled point it refuses is kept on the hero and never handed to a battle.
+export { openingHeroesOf, draftScoreOf } from '../../engine/src/content/opening-party.js'
+export { isStatName } from '../../engine/src/core/stats.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing

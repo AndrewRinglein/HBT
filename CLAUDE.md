@@ -40,6 +40,7 @@ node tools/mk-progress.mjs                   regenerate src/content/generated/pr
 python3 tools/prep-heroes.py                 the pool heroes' card portraits into generated/art/ (after prep-art)
 python3 tools/prep-after.py [hell-tcg]       the after-battle screens' sounds, music and card back from Hell-TCG into generated/art/
 node tools/mk-quotes.mjs                     regenerate src/content/generated/quotes.ts (the recap's quotes) from hell-tcg/data/combatQuotes.js
+node tools/mk-descriptions.mjs               regenerate src/content/generated/descriptions.ts — the base heroes' descriptions (the codex's backstory and quote) the first draft shows
 node tools/build-slice.mjs                   SLICE.html, with generated/art/ inlined
 node tools/smoke-slice.mjs SLICE.html        drive the built page headlessly
 node tools/slice-gate.mjs --sync             write the count and every State: line into the doc

@@ -22,7 +22,14 @@ const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORPHANAGE='encounter.opening.orphanage',LUMBERJACK='encounter.opening.lumberjack',BRIDGE='encounter.opening.bridge',CAVERN='encounter.opening.cavern-trail'
 const SWORD='item.longsword.flaming'
 /* the seeds that settled each battle when this was last run (printed at the end), tried before the search */
-const KNOWN={'battle 1':[['ai',1]],'battle 2 lost':[['idle',5]],'battle 2 won':[['ai',12]],'battle 3':[['hold',188]]}
+const KNOWN={'battle 1':[['ai',1]],'battle 2 lost':[['idle',5]],'battle 2 won':[['ai',2]],'battle 3':[['hold',61]]}
+/* Law 10, 2026-10-03 (kingdom.opening-draft-modifiers; engine DECISIONS.md 2026-10-03 'the opening run, audited' and 2026-09-28
+   'the first hero: Leadership …; the draft offers three with the Crucible's modifiers'): the known seeds of battle 2 won and
+   battle 3 are new (they were ai 12 and hold 188); the run's seed stays 11. Every hero now joins with what the draft rolled
+   it and a later draft is picked as a player picks it — the best of the three by the engine's weighted score
+   (opening-page.mjs) — so seed 11's party is the Dwarven Brawler (first: Leadership, Huge, +2 Health), The Serpent, the
+   Rune-Marked Ascetic and the Forest Elf: other numbers, other battles. What this page test holds — the loop's flow
+   through three battles — is unchanged; the draft's own assertions (opening-page.mjs) are the new rule's. */
 
 /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K7): the run's seed 11 → 15. XP per kill became the victim's
    tier's (2 / 5 / 15 — engine DECISIONS.md 2026-09-28) instead of 3, and seed 11's party reaches the Bridge with the
