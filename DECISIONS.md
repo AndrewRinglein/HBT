@@ -4641,3 +4641,24 @@ Ruled:
 - **Imp Blast applies Burn 2 on a hit with a 50% chance**, not always.
 
 Filed: `content.imp-blast-tuned`.
+
+## 2026-10-03 — eleven tier 0 weapons nobody fields are cut: the nine the authoring pass invented, the Fishing Net and the Slingshot
+
+Andrew, in a chat at the root, seeing weapon cards drawn for them:
+
+“What are these broken bottle and cart chain items? I'm seeing items I don't know anything about being made.”
+
+“They're improvised. What is that? I don't know where these things came from. They got hallucinated at some point. Are they part of some of someones kit?”
+
+What he was shown. Each row's own `source` field says where it came from: nine in `content/gen/weapons.json` read "new (…)" — written by the authoring pass before the 2026-08-21 handoff so every weapon form had a tier 0 entry, not by him. None of the eleven below is in a hero, civilian or enemy kit, and none is Waystation stock; GEAR-DESIGN.md §2 gives tier 0 two sources only, "kits · the Waystation", the Forge's base shelf is tier 1 and the reward draw deals weapons at tier 3 — so none of them can reach a player. Told that the Hand Axe is the row the Wood Axe card was drawn against, and asked which of the eleven go:
+
+“Yeah, remove all of those 11.”
+
+Ruled:
+
+- **Cut from the game, each with the attacks it grants:** `item.sharpened-stake`, `item.cart-chain`, `item.broken-bottle`, `item.carpenters-mallet`, `item.pot-lid`, `item.rusted-crossbow`, `item.trappers-claws`, `item.practice-sword`, `item.hand-axe` (the nine invented), `item.fishing-net` (`weapons.json`, "Hell-TCG name reused"; the Fishing Net a hero's power grants is a spell and stays) and `item.slingshot` (`settled-items.json`, "settled content", used by nothing). Read as: "remove" takes the rows out of the item sheet, not only out of the model queue — he was asked which of the two and answered "remove".
+- **Their ten cards leave the tiered weapon card set and are not made into models.** The Wood Axe card stays: he named the Wood Axe himself (2026-10-03, 'card art for every weapon at tiers 0 and 1'); with `item.hand-axe` gone it is a dictated weapon with no row yet, like the Sickle. The card set's records (`prompts-v2.json`, `cards-v2.json`, `weapon-card-models/run.json`) are Codex's, mid-conversion when this was ruled; the line to give Codex was handed to him in the chat.
+- **Not cut.** The other tier 0 weapons are fielded or sold: Dagger, Pitchfork and Pile of Rocks (hero and civilian kits), Club (an enemy), Pickaxe and Burning Torch (the Waystation, ruled 2026-09-02). The nine tier 1 rows the same pass wrote (War Axe, Hunting Spear, Glaive, Crossbow, Hand Crossbow, Throwing Knives, Shepherd's Sling, Iron Claws, War Hammer) were listed to him and not named: they are in kits, on the Forge's shelf, or bases for the tier 3 rewards.
+- Tests that use a cut row as a fixture move to a row that stays (Law 10): engine `test/unit-mods.test.ts` and `test/damage-packets.test.ts`, `tools/compare-packet-transition.mts`, kingdom `test/isc-062.test.ts`, content `test/damage-packets.test.mjs`, and the test bestiary unit that fires `attack.rusted-crossbow.bolt`.
+
+Filed: `content.unfielded-tier0-weapons-cut`, first in the content queue.
