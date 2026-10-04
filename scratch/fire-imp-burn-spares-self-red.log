@@ -1,0 +1,245 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+x·xxxxxxx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/fire-imp-burn-spares-self.test.ts > the row: the Fire Imp burns every OTHER unit within 2 hexes > trigger.fire-imp.burn fires at the end of its Activation on an area of 2 from itself, any side, itself excluded
+AssertionError: expected { select: 'area', side: 'any', …(2) } to deeply equal { select: 'area', side: 'any', …(3) }
+
+- Expected
++ Received
+
+  {
+-   "excludeSelf": true,
+    "origin": "self",
+    "radius": 2,
+    "select": "area",
+    "side": "any",
+  }
+
+ ❯ test/fire-imp-burn-spares-self.test.ts:38:22
+     36|     expect(t.id).toBe(BURN)
+     37|     expect(t.chance).toBe(100)
+     38|     expect(t.select).toEqual({ select: 'area', side: 'any', radius: 2,…
+       |                      ^
+     39|     expect(t.effect).toEqual({ kind: 'status.apply', statusId: 'status…
+     40|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  test/fire-imp-burn-spares-self.test.ts > in a small fight: a hero and an Imp within 2 hexes burn, a unit 3 hexes off does not, the Fire Imp does not > the trigger lands on the hero and on the Imp beside it — its own side included — and on nobody else
+AssertionError: expected [ +0, 1, 2 ] to deeply equal [ +0, 2 ]
+
+- Expected
++ Received
+
+  [
+    0,
++   1,
+    2,
+  ]
+
+ ❯ test/fire-imp-burn-spares-self.test.ts:74:19
+     72|     expect(rolled.map((e) => [e['hook'], e['fired']])).toEqual([[HOOK,…
+     73|     const fired = ctx.events.filter((e) => e.type === 'trigger.fired' …
+     74|     expect(fired).toEqual([hero.id, near.id])
+       |                   ^
+     75|     const applied = ctx.events.filter((e) => e.type === 'status.applie…
+     76|     expect(applied.map((e) => [e.target, e['statusId'], e['amount'], e…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  test/fire-imp-burn-spares-self.test.ts > in a small fight: a hero and an Imp within 2 hexes burn, a unit 3 hexes off does not, the Fire Imp does not > nothing is applied to, resisted by or expired on the Fire Imp itself: its end of Activation leaves no line about it
+AssertionError: expected [ { seq: 14, turn: +0, …(8) }, …(4) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "actor": 1,
++     "causeId": "trigger.fire-imp.burn",
++     "effect": "status.apply",
++     "phase": "hero",
++     "seq": 14,
++     "statusId": "status.burn",
++     "target": 1,
++     "turn": 0,
++     "type": "trigger.fired",
++     "value": 1,
++   },
++   {
++     "actor": null,
++     "after": 1,
++     "amount": 1,
++     "before": 0,
++     "by": 1,
++     "causeId": "trigger.fire-imp.burn",
++     "phase": "hero",
++     "seq": 15,
++     "statusId": "status.burn",
++     "target": 1,
++     "turn": 0,
++     "type": "status.applied",
++   },
++   {
++     "actor": null,
++     "amount": 0,
++     "causeId": "status.burn",
++     "damageType": "fire",
++     "hpAfter": 9,
++     "hpBefore": 9,
++     "overkill": 0,
++     "phase": "hero",
++     "resisted": 1,
++     "seq": 18,
++     "statusId": "status.burn",
++     "target": 1,
++     "turn": 0,
++     "type": "damage.applied",
++   },
++   {
++     "actor": null,
++     "after": 0,
++     "before": 1,
++     "by": 1,
++     "causeId": "status.burn",
++     "phase": "hero",
++     "seq": 19,
++     "statusId": "status.burn",
++     "target": 1,
++     "turn": 0,
++     "type": "status.reduced",
++   },
++   {
++     "actor": null,
++     "causeId": "status.burn",
++     "phase": "hero",
++     "seq": 20,
++     "statusId": "status.burn",
++     "target": 1,
++     "turn": 0,
++     "type": "status.expired",
++   },
++ ]
+
+ ❯ test/fire-imp-burn-spares-self.test.ts:86:25
+     84|     expect(valueOf(imp, 'status.burn')).toBe(0)
+     85|     const aboutItself = ctx.events.filter((e) => e.target === imp.id &…
+     86|     expect(aboutItself).toEqual([])
+       |                         ^
+     87|   })
+     88|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  test/fire-imp-burn-spares-self.test.ts > in a small fight: a hero and an Imp within 2 hexes burn, a unit 3 hexes off does not, the Fire Imp does not > another Fire Imp within 2 hexes is somebody else: each burns the other, neither burns itself
+AssertionError: expected [ [ 1, 1 ], [ 1, 2 ] ] to deeply equal [ [ 1, 2 ] ]
+
+- Expected
++ Received
+
+  [
+    [
+      1,
++     1,
++   ],
++   [
++     1,
+      2,
+    ],
+  ]
+
+ ❯ test/fire-imp-burn-spares-self.test.ts:93:120
+     91|     const [a, b] = ctx.state.units.filter((u) => u.typeId === FIRE_IMP)
+     92|     endGo(ctx, a!.id)
+     93|     expect(ctx.events.filter((e) => e.type === 'trigger.fired' && e.ca…
+       |                                                                                                                        ^
+     94|   })
+     95| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  test/fire-imp-burn-spares-self.test.ts > in encounter.opening.bridge: every Fire Imp ends its Activations burning the others in reach and never itself > over ten seeds: no Burn applied to a Fire Imp by its own trigger; heroes and Imps within 2 hexes are still burned by it
+AssertionError: replicate 0 seq 212: trigger.fire-imp.burn landed on the Fire Imp that owns it: expected 8 not to be 8 // Object.is equality
+ ❯ test/fire-imp-burn-spares-self.test.ts:117:110
+    115|             fired++
+    116|             expect(e.actor, `replicate ${r} seq ${e.seq}`).toBe(roll.a…
+    117|             expect(e.target, `replicate ${r} seq ${e.seq}: ${BURN} lan…
+       |                                                                                                              ^
+    118|             if (ctx.state.units[e.target!]!.side === 'hero') heroesBur…
+    119|             if (typeOf(e.target!) === 'unit.imp') impsBurned++
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  test/fire-imp-burn-spares-self.test.ts > the mechanism: excludeSelf is a field of the one targeting vocabulary, and a second instance is pure data > an area with excludeSelf resolves to everyone the same area holds, less the one acting — any side, ally, any radius
+AssertionError: expected [ +0, 1, 2 ] to deeply equal [ 1, 2 ]
+
+- Expected
++ Received
+
+  [
++   0,
+    1,
+    2,
+  ]
+
+ ❯ test/fire-imp-burn-spares-self.test.ts:149:79
+    147|     const any: Targeting = { select: 'area', side: 'any', radius: 1, o…
+    148|     expect(resolveTargets(ctx, iron, any, iron.id)).toEqual([iron.id, …
+    149|     expect(resolveTargets(ctx, iron, { ...any, excludeSelf: true }, ir…
+       |                                                                               ^
+    150|     // a second instance with different data: "every other ally within…
+    151|     expect(resolveTargets(ctx, iron, { select: 'area', side: 'ally', r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  test/fire-imp-burn-spares-self.test.ts > the mechanism: excludeSelf is a field of the one targeting vocabulary, and a second instance is pure data > a second trigger with the same form and different data runs with no engine code: a heal for every other ally within 3
+AssertionError: expected [ +0, 1 ] to deeply equal [ 1 ]
+
+- Expected
++ Received
+
+  [
++   0,
+    1,
+  ]
+
+ ❯ test/fire-imp-burn-spares-self.test.ts:164:112
+    162|     iron.hp = 1; priest.hp = 1
+    163|     endGo(ctx, iron.id)
+    164|     expect(ctx.events.filter((e) => e.type === 'trigger.fired' && e.ca…
+       |                                                                                                                ^
+    165|     expect(priest.hp).toBe(3)
+    166|     expect(iron.hp).toBe(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  test/fire-imp-burn-spares-self.test.ts > the mechanism: excludeSelf is a field of the one targeting vocabulary, and a second instance is pure data > it is validated at load: only an area may exclude the one acting, and only by the literal true
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/fire-imp-burn-spares-self.test.ts:171:98
+    169|   it('it is validated at load: only an area may exclude the one acting…
+    170|     expect(() => validateTargeting({ select: 'area', side: 'any', radi…
+    171|     expect(() => validateTargeting({ select: 'unit', side: 'ally', exc…
+       |                                                                                                  ^
+    172|     expect(() => validateTargeting({ select: 'self', side: 'any', excl…
+    173|     expect(() => validateTargeting({ select: 'area', side: 'any', radi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 1 passed (9)
+   Start at  00:44:16
+   Duration  2.95s (transform 1.81s, setup 0ms, import 2.14s, tests 529ms, environment 0ms)
+

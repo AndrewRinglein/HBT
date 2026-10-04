@@ -24175,3 +24175,106 @@ index d0a349c..b4e5b00 100644
    it('carries the meteor fall with the ruled numbers', () => {
 ```
 </details>
+
+## fix.fire-imp-burn-spares-self — LANDED `6ac7b47` **NEEDS REVIEW**
+2026-10-04 08:06
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1943 · COMBAT-SEQUENCE.md:381
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/target.test.ts, test/fire-imp-burn-spares-self.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.fire-imp: 9 log lines, 9 fired, 2 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/target.test.ts, test/fire-imp-burn-spares-self.test.ts, test/fixtures/battle-cursor-fire-imp-burn.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/target.test.ts (-6) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.fire-imp — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index b0bfb7d..e0a609e 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -289,4 +289,10 @@ const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/
+ // -cavern-trail, -gates and -lumberjack, and progression-surge-0, -1 and -2. A `changed` case is checked here and skips the older layers.
+ const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-starting-kit-powers.json', import.meta.url), 'utf8'))
++// fix.fire-imp-burn-spares-self (2026-10-04; DECISIONS.md 2026-10-03 'the Fire Imp's burn does not hit the imp itself': "It should
++// not hit him."), Law 10: the Fire Imp's end-of-Activation Burn targets every OTHER unit within 2 hexes, so the imp no longer
++// burns itself at the end of each of its Activations. Every case frozen here (tools/capture-fire-imp-burn-cursor.mts). Moved for
++// real, the ruling working (state, RNG and result): exactly the four cases that field a Fire Imp — showcase.kiln,
++// showcase.prologue-enemies, test.opening-bridge and test.props-viewer-ranged-zoc. A `changed` case is checked here and skips the older layers.
++const fireImpBurnGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-burn.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -409,5 +415,8 @@ describe('resumable battle cursor', () => {
+       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const startingKitPowersMoved = startingKitPowersExpected?.changed === true
++      const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const fireImpBurnMoved = fireImpBurnExpected?.changed === true
++      // was: const startingKitPowersMoved = startingKitPowersExpected?.changed === true — a fire-imp-burn-moved case skips the starting-kit-powers layer too (fix.fire-imp-burn-spares-self 2026-10-04)
++      const startingKitPowersMoved = startingKitPowersExpected?.changed === true || fireImpBurnMoved
+       // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a starting-kit-powers-moved case skips the afflictions-at-zero-rule layer too (fix.starting-kit-powers 2026-10-04)
+       const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || startingKitPowersMoved
+@@ -505,5 +514,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (startingKitPowersExpected) {
++        if (fireImpBurnExpected) {
++        expect(hash(ctx.events), 'full fire-imp-burn events').toBe(fireImpBurnExpected.events)
++        expect(hash(ctx.state), 'full fire-imp-burn state').toBe(fireImpBurnExpected.state)
++        expect(hash(ctx.rng.log), 'full fire-imp-burn RNG').toBe(fireImpBurnExpected.rng)
++        expect(result).toEqual(fireImpBurnExpected.result)
++        }
++        // was: if (startingKitPowersExpected) { — fix.fire-imp-burn-spares-self (2026-10-04): a fire-imp-burn-moved case is checked above instead
++        if (startingKitPowersExpected && !fireImpBurnMoved) {
+         expect(hash(ctx.events), 'full starting-kit-powers events').toBe(startingKitPowersExpected.events)
+         expect(hash(ctx.state), 'full starting-kit-powers state').toBe(startingKitPowersExpected.state)
+diff --git a/test/target.test.ts b/test/target.test.ts
+index 854c9d0..3392f6d 100644
+--- a/test/target.test.ts
++++ b/test/target.test.ts
+@@ -131,12 +131,27 @@ describe('targeting — legality is answered before the stamina is spent', () =>
+   })
+ 
+-  it('an unknown Targeting key is not silently ignored', () => {
+-    // excludeSelf is gone; TypeScript rejects it at compile time, and a hand-written
+-    // object literal carrying it would simply have no effect. Asserted so that
+-    // deleting the field cannot quietly become "the flag stopped working."
++  // Law 10, fix.fire-imp-burn-spares-self (2026-10-04). RULED, Andrew 2026-10-03 (DECISIONS.md "the Fire Imp's burn does
++  // not hit the imp itself"): "It should not hit him." The 2026-08-15 ruling above still holds for SIDE — the actor is
++  // always one of its own allies, the test above, unchanged — and one opt-out now exists, stated on the row: an area's
++  // `excludeSelf: true`, "every other unit within N hexes". The flag this test proved had no effect is a field of the one
++  // vocabulary again, and it works; the old test is quoted:
++  // was: it('an unknown Targeting key is not silently ignored', () => {
++  // was:   // excludeSelf is gone; TypeScript rejects it at compile time, and a hand-written
++  // was:   // object literal carrying it would simply have no effect. Asserted so that
++  // was:   // deleting the field cannot quietly become "the flag stopped working."
++  // was:   const withStaleFlag = { select: 'area', side: 'ally', radius: 0, excludeSelf: true } as unknown as Targeting
++  // was:   expect(resolveTargets(ctx, a, withStaleFlag, 0)).toEqual([0])
++  it('an area that says excludeSelf leaves the actor out, and only then; any other unknown key is still not a Targeting', () => {
+     const ctx = board()
+     const a = ctx.state.units[0]!
+-    const withStaleFlag = { select: 'area', side: 'ally', radius: 0, excludeSelf: true } as unknown as Targeting
+-    expect(resolveTargets(ctx, a, withStaleFlag, 0)).toEqual([0])
++    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 0, excludeSelf: true }), 0)).toEqual([])
++    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 0 }), 0)).toEqual([0])
++    const everyone = resolveTargets(ctx, a, T({ select: 'area', side: 'any', radius: 9 }), 0)
++    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'any', radius: 9, excludeSelf: true }), 0)).toEqual(everyone.filter((id) => id !== 0))
++    // legality reads the same form: an area of nobody but the actor has no target once the actor is out
++    expect(hasAnyTarget(ctx, a, T({ select: 'area', side: 'ally', excludeSelf: true }), 0)).toBe(false)
++    // the flag is validated at load, never a silent no-op: off an area, or anything but true, throws
++    expect(() => validateTargeting(T({ select: 'unit', side: 'ally', excludeSelf: true }), 'test')).toThrow(/excludeSelf only means something/)
++    expect(() => validateTargeting({ select: 'area', side: 'ally', excludeSelf: 1 } as unknown as Targeting, 'test')).toThrow(/excludeSelf is true or absent/)
+   })
+ 
+```
+</details>
