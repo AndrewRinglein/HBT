@@ -84,7 +84,9 @@ export function itemClasses(): Record<string, string> {
 export function itemTable(): Record<string, unknown> {
   const out: Record<string, unknown> = {}
   for (const [id, item] of Object.entries(ITEMS) as [string, any][])
-    out[id] = { name: item.name, itemClass: item.itemClass, hands: LOADOUT.handsOf(item), slots: item.slots, grants: [...item.grants], abilities: [...item.abilities], mods: { ...item.statModifiers } }
+    // viewer.bar-shows-every-effect: the triggers the item brings to whoever holds it (core/items.ts applyItems), copied — the
+    // Dagger's "onAttack: gain 1 Protection"; unit.equipped names an item's grants and modifiers, not its triggers
+    out[id] = { name: item.name, itemClass: item.itemClass, hands: LOADOUT.handsOf(item), slots: item.slots, grants: [...item.grants], abilities: [...item.abilities], mods: { ...item.statModifiers }, triggers: plain(item.triggers) ?? [] }
   return out
 }
 /** the hands a unit has for weapons and shields — the engine's own count (core/items.ts HANDS), copied */

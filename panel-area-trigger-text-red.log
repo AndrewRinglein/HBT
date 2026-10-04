@@ -1,0 +1,66 @@
+✖ the Fire Imp at the Bridge: its end-of-Activation Burn names its target in words — every other unit within 2 hexes (635.0725ms)
+✖ every unit of the six opening battles: no panel, action bar or log line shows [object Object] (685.8581ms)
+✖ every area target the engine's sheets hold is worded from its own fields (the panel's own namer, src/actions.js targetWords) (0.9751ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1492.3044
+
+✖ failing tests:
+
+test at tools\panel-area-trigger-text.test.mjs:43:1
+✖ the Fire Imp at the Bridge: its end-of-Activation Burn names its target in words — every other unit within 2 hexes (635.0725ms)
+  AssertionError [ERR_ASSERTION]: Triggers ACTIVATION END Burn 1 → [object Object] ON HIT Burn 3 
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/panel-area-trigger-text.test.mjs:50:48)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Triggers ACTIVATION END Burn 1 → [object Object] ON HIT Burn 3 ',
+    expected: /Burn 1 → every other unit within 2 hexes/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tools\panel-area-trigger-text.test.mjs:57:1
+✖ every unit of the six opening battles: no panel, action bar or log line shows [object Object] (685.8581ms)
+  AssertionError [ERR_ASSERTION]: bridge: Fire Imp 1 (unit.fire-imp) — the panel prints an object as a string: ntil that export exists. ⚡ Triggers ACTIVATION END Burn 1 → [object Object] ON HIT Burn 3 
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/panel-area-trigger-text.test.mjs:66:16)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tools\panel-area-trigger-text.test.mjs:89:1
+✖ every area target the engine's sheets hold is worded from its own fields (the panel's own namer, src/actions.js targetWords) (0.9751ms)
+  AssertionError [ERR_ASSERTION]: src/actions.js exports targetWords
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/panel-area-trigger-text.test.mjs:91:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1315,6 +1315,9 @@ export function applyCam(V, opts = {}) {
        noVoidSmaller). Overturns xcomRoam's "the centre may reach any point of the board" and its EDGE_ROOM past the rows. */
     if (tactical && !fit) {
       const pin = (lo, hi, v) => lo <= hi ? Math.min(Math.max(v, lo), hi) : (lo + hi) / 2
+      /* viewer.bubble-click-reveals: where the view's centre may go at this zoom and angle (iso px), kept for the reveal */
+      const box = (lo, hi) => lo <= hi ? [lo, hi] : [(lo + hi) / 2, (lo + hi) / 2]
+      view.panBox = { x: box(-fp1.l / s, bw - fp1.r / s), y: box(-fp1.t / s * k, (F.h - fp1.b / s) * k) }
       f.x = pin(-fp1.l / s, bw - fp1.r / s, f.x); f.y = pin(-fp1.t / s * k, (F.h - fp1.b / s) * k, f.y); return
     }
     const X = [0, bw], Y = [-POLICY.EDGE_ROOM, bh + POLICY.EDGE_ROOM]
@@ -1324,22 +1327,30 @@ export function applyCam(V, opts = {}) {
        SWITCHES cameraPanNoVoid, retired), so pointing at an edge mostly moved nothing. Overhead keeps the whole-map framing. */
     const [xlo, xhi] = stance === 'overhead' ? panRange(X[0], X[1], s, fitZ) : X
     const [ylo, yhi] = stance === 'overhead' ? panRange(Y[0], Y[1], s, fitZ) : Y
+    view.panBox = { x: [xlo, xhi], y: [ylo, yhi] }
     f.x = Math.min(Math.max(f.x, xlo), xhi); f.y = Math.min(Math.max(f.y, ylo), yhi)
   }
   /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): a new activation centres the map on the
      one acting — the board's own acting unit, in a replay as in a game */
   const acting = S.activeId != null ? S.U[S.activeId] : null
   /* viewer.turn-taking: every new Activation, the same unit's again included (the fold's count of them) */
-  if (!fit && !opts.focus && !opts.pan && acting && acting.life === 'standing' && (view.centredOn !== S.activeId || view.centredAt !== S.activations) && POS[acting.hex]) {
+  /* viewer.tutorial-overlays: while the host's look has the view (view.looking) the Activation's centring waits for it to come back */
+  if (!fit && !opts.focus && !opts.pan && !view.looking && acting && acting.life === 'standing' && (view.centredOn !== S.activeId || view.centredAt !== S.activations) && POS[acting.hex]) {
     view.centredOn = S.activeId; view.centredAt = S.activations; opts = { ...opts, focus: POS[acting.hex] }
     /* the first activation's centring is where the battle opens: the starting view a reset returns to */
     if (!view.homeCentred) { view.homeCentred = true; view.home = null } }
+  /* viewer.bubble-click-reveals: the slid view's hold — over once anything has played, an aim is drawn or the view is focused */
+  if (view.revealed && (view.revealed.cursor !== V.cursor || S.AIM || opts.focus || fit)) view.revealed = null
+  const held = (!!view.revealed || !!view.looking) && !opts.pan
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
   else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound() }
   else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound() }      // Focus selected unit: centred, on purpose
   else if (opts.hold) bound()                                                        // a restored view (Overhead, Inspect off) is shown as it was
   else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py; bound() }
   else if (view.inspect) bound()                                                     // Inspect explores: selection never pulls the camera
+  /* viewer.bubble-click-reveals: a view slid to show a unit off the screen stays where it was slid — the inclusion below
+     would pull it straight back to the acting unit — until the board next plays or the camera is sent elsewhere */
+  else if (held) bound()
   else {
     bound()
     if (yaw) includeTurned(V, f, pts, halfW, halfH, M, top)                          // the turned camera: the same rule in its own frame
@@ -1612,12 +1623,112 @@ export function drawEdges(V) {
     const tint = SIDE_TINT[g.u.side] || SIDE_TINT.enemy
     const dgr = g.u.side === 'enemy' ? dangerOf(g.u, V.data) : null
     const deg = Math.round(g.ang * 180 / Math.PI)
-    return `<div class="edgeBub" style="left:${g.x.toFixed(0)}px;top:${g.y.toFixed(0)}px;border-color:${tint}" title="${g.units.map(x => x.name).join(', ')}">
+    /* viewer.bubble-click-reveals: a bubble is a button — data-units names the units it stands for */
+    return `<div class="edgeBub" role="button" data-units="${g.units.map(x => x.id).join(',')}" style="left:${g.x.toFixed(0)}px;top:${g.y.toFixed(0)}px;border-color:${tint}" title="${g.units.map(x => x.name).join(', ')}">
       <i class="edgeArrow" style="transform:rotate(${deg}deg) translateX(26px);border-left-color:${tint}"></i>
       <span class="edgeArt" style="background-image:url('${V.data.ASSETS[a.token]}')"></span>
       ${g.n > 1 ? `<b class="edgeN" style="background:${tint}">${g.n}</b>` : ''}
       ${dgr ? `<span class="edgeDg">${dgr.n}${raIcon(dgr.kind === 'ranged' ? 'bow' : 'crossed-swords', 'font-size:12px')}</span>` : ''}
     </div>` }).join('')
+  /* reattached every redraw — the layer replaces its own innerHTML. The click is the bubble's alone: it never reaches the
+     board under it (no hex, no unit, no play event) */
+  L.edgeL.querySelectorAll('.edgeBub').forEach((b, i) => b.addEventListener('click', ev => {
+    if (ev && ev.stopPropagation) ev.stopPropagation()
+    clickBubble(V, groups[i].units.map(x => x.id)) }))
+}
+/* ── A CLICK ON A BUBBLE (viewer.bubble-click-reveals, 2026-10-04) ────────────────────────────────────────────────
+   Engine DECISIONS.md 2026-10-03 'clicking an off-screen bubble selects the unit and slides the screen just far enough to
+   show its hex' (Andrew: "I should be able to click on one of the bubbles for a unit that's off-screen to both focus it
+   and also scroll the screen over so they are visible, but only just to their hex. Don't focus on it or center the screen
+   on it. Just slide over until they're visible."). Two things, and nothing sent to anybody:
+     · the unit becomes the unit looked at (view.inspectId — what a click on its body or its card sets; the panel shows it);
+     · the camera SLIDES — a pan and nothing else: the zoom, the turn and the tilt are the pose's own — by the least
+       distance that brings the unit's hex inside the view.
+   INSIDE is the view the camera itself shows: the battle area's rectangle, drawn back from each edge by REVEAL_INSET px
+   (the bubbles' own inset) and half a hex, met with the ground at the hex's height through the camera's rays — a
+   four-sided patch of board. The least slide carries the nearest point of that patch onto the hex's centre (worked in the
+   board's true proportions, so "least" is a distance on the ground); a hex already inside moves nothing. The slide is the
+   camera's own pan (applyCam: it stops at the board's edge — 'the camera never shows white space' — and glides as every
+   other move does), asked again while the edge held some of it back. A bubble that stands for several units takes the one
+   the least slide shows (viewer SWITCHES bubbleNearest). The view then stays where it was slid until the board next plays
+   or the camera is sent elsewhere (bubbleHolds) — the rule that keeps the acting unit in view would pull it straight back. */
+export const REVEAL_INSET = EDGE_INSET
+/** the least pan (board px) that brings `hex` inside the view at `pose`, or null when it is inside already (or no ground is seen) */
+export function revealPan(V, pose, hex) {
+  const p = V.data.POS[hex]; if (!p) return null
+  const { W, H } = viewportOf(V), A = boardAffine(V), k = isoK(V), z = heightOf(V, hex)
+  const m = Math.min(REVEAL_INSET + V.data.LAYOUT.W * pose.zoom / 2, Math.min(W, H) / 3)
+  const cam = orbitCamera(A, pose, { w: W, h: H }), quad = []
+  for (const [x, y] of [[m, m], [W - m, m], [W - m, H - m], [m, H - m]]) {
+    const { o, d } = boardRay(A, cam, x, y)
+    if (!(o.z > z && d.z < 0)) return null
+    const t = (z - o.z) / d.z; quad.push({ x: o.x + t * d.x, y: (o.y + t * d.y) * k })
+  }
+  /* in the pan's own space (iso px): the pans that show the hex are the patch turned about the hex — P − quad, a convex
+     four-sided shape; the pans the camera may make are a box (applyCam's bound: view.panBox, the centre's limits at this
+     zoom and angle). The least slide is the point of both nearest to no pan at all. */
+  const P = { x: p.px, y: p.py * k }, D = quad.map(q => ({ x: P.x - q.x, y: P.y - q.y }))
+  const nearest = (poly, o) => { let inside = true, sign = 0, best = null
+    for (let i = 0; i < poly.length; i++) {
+      const a = poly[i], b = poly[(i + 1) % poly.length], ex = b.x - a.x, ey = b.y - a.y
+      const cross = ex * (o.y - a.y) - ey * (o.x - a.x)
+      if (Math.abs(cross) > 1e-9) { if (sign === 0) sign = Math.sign(cross); else if (Math.sign(cross) !== sign) inside = false }
+      const t = Math.min(1, Math.max(0, ((o.x - a.x) * ex + (o.y - a.y) * ey) / (ex * ex + ey * ey || 1)))
+      const q = { x: a.x + t * ex, y: a.y + t * ey }, d2 = (o.x - q.x) ** 2 + (o.y - q.y) ** 2
+      if (!best || d2 < best.d2) best = { q, d2 } }
+    return inside && poly.length > 2 ? { q: o, d2: 0 } : best }
+  const O = { x: 0, y: 0 }
+  if (nearest(D, O).d2 < .25) return null                                           // inside already
+  const B = V.view.panBox, box = B ? { x0: B.x[0] - pose.x, x1: B.x[1] - pose.x, y0: B.y[0] - pose.y * k, y1: B.y[1] - pose.y * k } : null
+  let to
+  if (!box) to = nearest(D, O).q
+  else {
+    /* the patch's pans kept to the box (each of the box's four sides cuts the shape) */
+    const cut = (poly, inside, meet) => { const out = []
+      for (let i = 0; i < poly.length; i++) { const a = poly[i], b = poly[(i + 1) % poly.length], ia = inside(a), ib = inside(b)
+        if (ia) out.push(a); if (ia !== ib) out.push(meet(a, b)) }
+      return out }
+    const atX = x => (a, b) => ({ x, y: a.y + (b.y - a.y) * (x - a.x) / (b.x - a.x) }), atY = y => (a, b) => ({ x: a.x + (b.x - a.x) * (y - a.y) / (b.y - a.y), y })
+    const E = 1e-6
+    let C = cut(D, q => q.x >= box.x0 - E, atX(box.x0)); C = cut(C, q => q.x <= box.x1 + E, atX(box.x1))
+    C = cut(C, q => q.y >= box.y0 - E, atY(box.y0)); C = cut(C, q => q.y <= box.y1 + E, atY(box.y1))
+    if (C.length) to = nearest(C, O).q
+    else {
+      /* the board's edge keeps the whole hex's room out of reach: as near to showing it as the camera may go */
+      const clampBox = q => ({ x: Math.min(box.x1, Math.max(box.x0, q.x)), y: Math.min(box.y1, Math.max(box.y0, q.y)) })
+      to = clampBox(O)
+      for (let n = 0; n < 40; n++) { const next = clampBox(nearest(D, to).q); if (Math.hypot(next.x - to.x, next.y - to.y) < .01) { to = next; break } to = next }
+    }
+  }
+  if (Math.hypot(to.x, to.y) < .5) return null
+  return { x: to.x, y: to.y / k }
+}
+/** slide the view the least distance that shows the hex; true when it moved */
+export function revealHex(V, hex) {
+  if (!V.camTarget || V.view.zoom === 'fit' || V.view.peek) return false
+  let moved = false
+  for (let n = 0; n < 3; n++) {
+    const pan = revealPan(V, V.camTarget, hex); if (!pan) break
+    const before = V.camTarget
+    applyCam(V, { pan })
+    if (samePose(before, V.camTarget)) break                 // the board's edge holds the rest back
+    moved = true
+  }
+  /* the slid view holds until the board next plays (applyCam) */
+  V.view.revealed = { hex, cursor: V.cursor }
+  drawEdges(V)
+  return moved
+}
+/** a click on a bubble: its unit — the nearest of several to the view — is looked at, and the view slides to show its hex */
+export function clickBubble(V, ids) {
+  if (!V.camTarget) return
+  const k = isoK(V), far = u => { const d = revealPan(V, V.camTarget, u.hex); return d ? Math.hypot(d.x, d.y * k) : 0 }
+  const units = ids.map(id => V.S.U[id]).filter(u => u && u.life !== 'dead' && V.data.POS[u.hex])
+  if (!units.length) return
+  const u = units.map(u => ({ u, d: far(u) })).sort((a, b) => a.d - b.d || a.u.id - b.u.id)[0].u
+  V.view.inspectId = u.id
+  if (V.render) V.render()
+  revealHex(V, u.hex)
 }
 /* ── what is under the pointer (viewer.true-3d-camera): the camera's ray through the pointer against the board — every
    unit's body and every hex's top at its display height (camera3d.js pickBoard) — never the stage's flat plane. A

@@ -1,0 +1,69 @@
+✖ a hero beginning its Activation: every action at full strength — no row greyed, none disabled (700.0889ms)
+✖ once the host says a move is done, that move row is slightly greyed — and nothing else: not the attacks, not the powers, not a move the engine still offers (731.3206ms)
+✖ only move actions grey, only for the unit acting, and only on the host's word (187.0205ms)
+✖ the slight grey is told apart from an action the engine refuses: a row on cooldown still looks disabled, greyed or not (200.563ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2089.0247
+
+✖ failing tests:
+
+test at tools\bar-moves-grey-when-done.test.mjs:41:1
+✖ a hero beginning its Activation: every action at full strength — no row greyed, none disabled (700.0889ms)
+  Error: invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap, ask)
+      at fail (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:955:13)
+      at object (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:961:117)
+      at playFacts (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:978:5)
+      at Object.setPlay (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:49076:20)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:42:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at tools\bar-moves-grey-when-done.test.mjs:51:1
+✖ once the host says a move is done, that move row is slightly greyed — and nothing else: not the attacks, not the powers, not a move the engine still offers (731.3206ms)
+  Error: invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap, ask)
+      at fail (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:955:13)
+      at object (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:961:117)
+      at playFacts (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:978:5)
+      at Object.setPlay (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:49076:20)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:54:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+
+test at tools\bar-moves-grey-when-done.test.mjs:66:1
+✖ only move actions grey, only for the unit acting, and only on the host's word (187.0205ms)
+  Error: invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap, ask)
+      at fail (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:955:13)
+      at object (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:961:117)
+      at playFacts (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:978:5)
+      at Object.setPlay (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:49076:20)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:70:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+
+test at tools\bar-moves-grey-when-done.test.mjs:84:1
+✖ the slight grey is told apart from an action the engine refuses: a row on cooldown still looks disabled, greyed or not (200.563ms)
+  Error: invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap, ask)
+      at fail (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:955:13)
+      at object (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:961:117)
+      at playFacts (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:978:5)
+      at Object.setPlay (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:22:3), <anonymous>:49076:20)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bar-moves-grey-when-done.test.mjs:89:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
