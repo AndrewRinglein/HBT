@@ -1448,7 +1448,7 @@
     },
     {
      "hook": "onActivationEnd",
-     "targets": "every unit within N hexes",
+     "targets": "every other unit within N hexes",
      "range": 2,
      "effects": [
       {
@@ -1487,7 +1487,8 @@
       "damage": "Pre+0 assumed — stat not dictated"
      }
     }
-   ]
+   ],
+   "source": "2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, Andrew, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the end-of-Activation Burn targets every OTHER unit within 2 hexes - it no longer lands on the Balrog itself; everyone else in range, its own side included, is hit as before."
   },
   {
    "id": "unit.bloodhound",
