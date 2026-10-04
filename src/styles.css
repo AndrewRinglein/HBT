@@ -630,6 +630,9 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 
 /* viewer.play-input (2026-09-30): the chosen action on the bar, the planning note over the board */
 .acRow.playChosen{border-color:#bff2ff;box-shadow:0 0 12px rgba(150,205,245,.55)}
+/* viewer.no-target-ring: the mark on a unit the chosen action can hit - a thin ellipse round its feet (the footprint ring's
+   shape), its colour the targeting arrow's (board.js drawTargetMark). Quiet: no fill, no glow, no pulse. */
+.playTargetUnit{position:absolute;box-sizing:border-box;border-radius:50%;border:3px solid;opacity:.85;pointer-events:none}
 /* viewer.move-cost-on-grid: what a tile of the movement grid costs to enter, where that is more than one — small, grey, on the tile */
 .playCost{position:absolute;pointer-events:none;font-size:19px;font-weight:700;line-height:1;color:#b4b1a8;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 4px rgba(0,0,0,.6);opacity:.92}
 /* viewer.hex-tooltip: the tooltip just below the hex pointed at — the ground's name and a line for each special thing */

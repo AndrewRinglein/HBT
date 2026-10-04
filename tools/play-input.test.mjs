@@ -2,7 +2,8 @@
 // screen" and "the playable screen: the acting mark, pointing at an enemy, the forecast"; VFX/UI-BUILD-NOTES §5). The
 // component's half: while a host hands plan facts over (setPlay) every hex takes the pointer and the click, a unit's
 // click and a slot's click are offered to the host (onPlay), a right-click that did not drag steps back, and the facts
-// are drawn — reach, zone-of-control hatching, the path and its provoke points, the ghost, an enemy's reach, targets,
+// are drawn — reach, zone-of-control hatching, the path and its provoke points, the ghost, an enemy's reach, targets (since
+// viewer.no-target-ring, 2026-10-04: a mark on the unit, not a ring on its hex),
 // the forecast's arrow with its hit chance and damage and the notch (or skull) it cuts in the target's Health bar. The
 // numbers are the host's; this checks they are drawn as handed over and that nothing is offered without a host.
 // Runs against the page (VIEWER_PAGE, else BATTLE-VIEWER.html).
@@ -47,7 +48,11 @@ test('the facts are drawn as handed over: reach, hatching, path, provoke points,
   assert.ok(V.dom.stage.querySelector('.playPath'), 'the path preview'); assert.deepEqual(hexes(V, 'playProvoke'), f.provokes)
   const g = V.dom.stage.querySelector('.playGhost'); assert.ok(g, 'the ghost'); assert.equal(+g.dataset.hex, f.ghost.hex); assert.equal(+g.dataset.unit, 0)
   assert.deepEqual(hexes(V, 'playThreatMove'), f.threat.move); assert.deepEqual(hexes(V, 'playThreatHit'), f.threat.hit)
-  assert.deepEqual(hexes(V, 'playTarget'), f.targets)
+  /* Law 10, viewer.no-target-ring (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: the yellow target ring
+     goes; ...'): the targets are no longer ringed on their hexes - the unit standing on each wears the mark on itself
+     (tools/no-target-ring.test.mjs holds the rule). Was: assert.deepEqual(hexes(V, 'playTarget'), f.targets) */
+  assert.deepEqual(hexes(V, 'playTarget'), [], 'no hex wears the target ring')
+  assert.deepEqual(hexes(V, 'playTargetUnit'), f.targets, 'the unit on each target hex wears the mark')
   const hit = V.dom.stage.querySelector('.playHit'), dmg = V.dom.stage.querySelector('.playDmg')
   assert.equal(hit.textContent, '55%'); assert.equal(dmg.textContent, '4')
   const E = V.layers.UEL.get(f.aim.target), u = V.S.U[f.aim.target]

@@ -882,6 +882,8 @@ function standeeSize(a, down) {
   const hpx = Math.round(base * 0.55)
   return { base, hpx, w: Math.round(hpx * a.aspect * (down ? 2 : 1)) }
 }
+/** the footprint's scale from the standee's height against the human 132px, clamped (THE FOOTPRINT FOLLOWS THE STATURE, below) */
+const footScale = hpx => Math.min(1.4, Math.max(0.55, hpx / 132))
 export function syncUnits(V) {
   const { S, view, layers: L } = V, { UD, LAYOUT } = V.data
   if (!L.unitsL) { L.unitsL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); V.dom.stage.appendChild(L.unitsL) }
@@ -959,7 +961,7 @@ export function syncUnits(V) {
        shadow, the act rings and the select ring scale with the token's height
        against the human 132px, clamped so a mite keeps a readable ring and a
        dragon's does not swallow its neighbours. */
-    const fp = Math.min(1.4, Math.max(0.55, hpx / 132))
+    const fp = footScale(hpx)
     const R = (elm, l, t, wd, ht) => { elm.style.left = Math.round(l * fp) + 'px'; elm.style.top = Math.round(t * fp) + 'px'; elm.style.width = Math.round(wd * fp) + 'px'; elm.style.height = Math.round(ht * fp) + 'px' }
     R(E.fring, -46, -30, 92, 60); R(E.disc, -46, -30, 92, 60); R(E.actA, -68, -45, 136, 90); R(E.actB, -58, -38, 116, 76); R(E.selR, -48, -31, 96, 62); R(E.downR, -58, -38, 116, 76)
 
@@ -1194,7 +1196,7 @@ function aimArrow(V, dyn, svg, fromHex, toHex, aCol, dashed) {
    transparent hex button per board hex — pointing at it and clicking it are offered to the host, which answers from
    the engine; it is built once and kept, so redrawing the plan under a still pointer does not re-fire the pointing.
    The PLAN layer draws the facts: the reach, the zone-of-control hatching, the engine's walk to the hex pointed at and
-   its provoke points, the ghost, an enemy's reach, the chosen action's targets, and the aim — the forecast's arrow
+   its provoke points, the ghost, an enemy's reach, the mark on each unit the chosen action can hit, and the aim — the forecast's arrow
    from the hero (or its ghost) with its hit chance and damage beside the head, and the notch it would cut in the
    target's Health bar (the skull when it would kill). Nothing here decides a hex or works out a number. */
 const HEXCLIP = 'clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)'
@@ -1244,7 +1246,15 @@ export function drawPlay(V) {
     for (const h of P.threat.move) tile(h, 'playThreatMove', `background:${PLAY_HUE.threatMove};${HEXCLIP}`)
     for (const h of P.threat.hit) ring(h, 'playThreatHit', PLAY_HUE.threatHit)
   }
-  for (const h of P.targets) ring(h, 'playTarget', PLAY_HUE.target)
+  /* viewer.no-target-ring (engine DECISIONS.md 2026-10-04 'after the backlog run: the yellow target ring goes; ...', Andrew
+     asked "Is the yellow you want gone the ring on hexes the chosen action can hit (including the hero's own hex for a self
+     power)?" - "yes"; 2026-10-03: "a big yellow border around the hex at some point during unit activation" / "doesn't look
+     good, so just remove it"): the targets are no longer ringed on their hexes (was: a yellow hex outline, `playTarget`, on
+     every one). "Which units can be hit must still be told ... on the target itself": each unit standing on a target hex
+     wears a thin ring round its own feet in the targeting arrow's red - the footprint ring's ellipse, drawn in the plan's
+     layer so it goes with the facts. The hero acting wears none (a self power shows nothing on its own hex), and a target
+     hex nobody stands on shows nothing: the arrow, stopping at the action's reach, tells that (viewer SWITCHES targetMark*). */
+  for (const h of P.targets) for (const u of Object.values(V.S.U)) if (u.hex === h && u.life !== 'dead' && u.id !== P.actor) drawTargetMark(V, layer, u)
   const svg = svgEl('svg')
   svg.setAttribute('width', F.w); svg.setAttribute('height', F.h)
   svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible;pointer-events:none'
@@ -1276,6 +1286,14 @@ export function drawPlay(V) {
       }
     }
   }
+}
+/* the mark on a unit the chosen action can hit (viewer.no-target-ring): an ellipse round its feet, a little wider than its
+   own footprint ring and scaled with its stature as that ring is (footScale) */
+function drawTargetMark(V, layer, u) {
+  const { ARTMAP } = V.data, f = feetOf(V, u.hex), fp = footScale(standeeSize(ARTMAP[u.typeId] || ARTMAP._pending, u.life === 'downed').hpx)
+  const n = el('playTargetUnit', `left:${f.x + Math.round(-52 * fp)}px;top:${f.y + Math.round(-34 * fp)}px;width:${Math.round(104 * fp)}px;height:${Math.round(68 * fp)}px;border-color:${PLAY_HUE.aim}`)
+  n.dataset.unit = String(u.id); n.dataset.hex = String(u.hex); n.style.transform = `translateZ(${heightOf(V, u.hex) + 3}px)`
+  layer.appendChild(n)
 }
 /* the ghost: the planned hero's own standee, faint, on the planned hex — "a phantom of the unit appears there. The unit
    does not move; nothing is spent" (UI-BUILD-NOTES §5). The standee's size is the token's (standeeSize). */

@@ -1,0 +1,158 @@
+== viewer tools/no-target-ring.test.mjs on the landed BATTLE-VIEWER.html (viewer c6c5034), before the change ==
+✖ an attack chosen: no hex wears the target ring; each unit that can be hit wears the mark on itself (684.7958ms)
+✖ a self power chosen: nothing on the hero's own hex - no ring, no mark (643.3603ms)
+✖ the hero acting is never marked, and a target hex nobody stands on shows nothing (186.1483ms)
+✖ the marks go with the facts: redrawn when the targets change, gone when the facts are cleared or the board seeks (214.2472ms)
+✔ the other rings stay as they were and are not the removed yellow: the provoke point, an enemy's reach (180.6353ms)
+✖ the page no longer holds the ring or its yellow (4.8431ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2446.4925
+
+✖ failing tests:
+
+test at tools\no-target-ring.test.mjs:58:1
+✖ an attack chosen: no hex wears the target ring; each unit that can be hit wears the mark on itself (684.7958ms)
+  AssertionError [ERR_ASSERTION]: an attack chosen: no `playTarget` ring on any hex
+  + actual - expected
+  
+  + [
+  +   32,
+  +   76
+  + ]
+  - []
+  
+      at noRing (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/no-target-ring.test.mjs:52:10)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/no-target-ring.test.mjs:61:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 32, 76 ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tools\no-target-ring.test.mjs:77:1
+✖ a self power chosen: nothing on the hero's own hex - no ring, no mark (643.3603ms)
+  AssertionError [ERR_ASSERTION]: a self power chosen: no `playTarget` ring on any hex
+  + actual - expected
+  
+  + [
+  +   110
+  + ]
+  - []
+  
+      at noRing (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/no-target-ring.test.mjs:52:10)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/no-target-ring.test.mjs:80:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 110 ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tools\no-target-ring.test.mjs:87:1
+✖ the hero acting is never marked, and a target hex nobody stands on shows nothing (186.1483ms)
+  AssertionError [ERR_ASSERTION]: targets with the hero's own hex and an empty hex among them: no `playTarget` ring on any hex
+  + actual - expected
+  
+  + [
+  +   0,
+  +   32,
+  +   76,
+  +   110
+  + ]
+  - []
+  
+      at noRing (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/no-target-ring.test.mjs:52:10)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/no-target-ring.test.mjs:90:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, 32, 76, 110 ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tools\no-target-ring.test.mjs:96:1
+✖ the marks go with the facts: redrawn when the targets change, gone when the facts are cleared or the board seeks (214.2472ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   3
+  - ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/no-target-ring.test.mjs:98:54)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 3 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tools\no-target-ring.test.mjs:118:1
+✖ the page no longer holds the ring or its yellow (4.8431ms)
+  AssertionError [ERR_ASSERTION]: the page's script draws no `playTarget` ring
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/no-target-ring.test.mjs:119:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '/* Three.js license\nThe MIT License\n\nCopyright © 2010-2026 three.js authors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n\n*/\n"use strict";\n(() => {\n  var __getOwnPropNames = Object.getOwnPropertyNames;\n  var __esm = (fn, res, err) => function __init() {\n    if (err) throw err[0];\n    try {\n      return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;\n    } catch (e) {\n      throw err = [e], e;\n    }\n  };\n\n  // <define:__BUNDLED_ART__>\n  var define_BUNDLED_ART_default;\n  var init_define_BUNDLED_ART = __esm({\n    "<define:__BUNDLED_ART__>"() {\n      define_BUNDLED_ART_default = { artmap: { "test-oathblade": { token: "oathblade_256.png", card: "card-oathblade.jpg", aspect: 0.7188, height: 1.55 }, "test-sky-pirate": { token: "sky-pirate_256.png", card: "card-skypirate.jpg", aspect: 0.5547, height: 1.55 }, "test-dusk-hawk": { token: "dusk-hawk_256.png", card: "card-duskhawk.jpg", aspect: 0.5664, height: 1.55 }, "test-air-mage": { token: "air-mage_256.png", card: "card-airmage.jpg", aspect: 0.8281, height: 1.55 }, "test-lucius": { token: "lucius_256.png", card: "card-lucius.jpg", aspect: 0.3008, height: 1.55, after: { "badge.lycanthropy": "after-priest-scantily-lycanthropy.jpg", "badge.possession": "after-priest-scantily-possession.jpg", "badge.rotting-flesh": "after-priest-scantily-rotting-flesh.jpg", "badge.vampirism": "after-priest-scantily-vampirism.jpg" } }, "test-osric": { token: "osric_256.png", card: "card-osric.jpg", aspect: 0.5, height: 1.55, after: { "badge.lycanthropy": "after-paladin-shiney-lycanthropy.jpg", "badge.possession": "after-paladin-shiney-possession.jpg", "badge.rotting-flesh": "after-paladin-shiney-rotting-flesh.jpg", "badge.vampirism": "after-paladin-shiney-vampirism.jpg" } }, "test-zombie": { token: "zombie_256.png", card: "card-zombie.jpg", aspect: 0.3789, height: 1.55 }, "test-zombie-burning": { token: "zombie_256.png", card: "card-zombie.jpg", aspect: 0.3789, height: 1.55 }, "hero.base.ranger-aggressive": { token: "ranger-aggressive_256.png", card: "card-hunter.jpg", aspect: 0.6211, height: 1.55, after: { "badge.lycanthropy": "after-ranger-aggressive-lycanthropy.jpg", "badge.possession": "after-ranger-aggressive-possession.jpg", "badge.rotting-flesh": "after-ranger-aggressive-rotting-flesh.jpg", "badge.vampirism": "after-ranger-aggressive-vampirism.jpg" } }, "hero.fixed.orphans": { token: "orphan-child_256.png", card: "card-orphan.jpg", aspect: 0.3398, height: 1 }, "hero.fixed.lumberjack-and-wife": { token: "lumberjack_256.png", card: "card-lumberjack.jpg", aspect: 0.5859, height: 1.6 }, "hero.fixed.farmer": { token: "farmer_256.png", card: "card-farmer.jpg", aspect: 0.457, height: 1.5 }, "unit.zombie": { token: "zombie_256.png", card: "card-zombie.jpg", aspect: 0.3789, height: 1.55 }, "unit.fast-zombie": { token: "fast-zombie_256.png", card: "card-fast-zombie.jpg", aspect: 0.3477, height: 1.55 }, "unit.skeletal-archer": { token: "skeletal-archer_256.png", card: "card-skelarcher.jpg", aspect: 0.5898, height: 1.55 }, "unit.necromancer": { token: "necromancer_256.png", card: "card-necro.jpg", aspect: 0.5625, height: 1.55 }, "unit.imp": { token: "imp_256.png", card: "card-imp.jpg", aspect: 0.4219, height: 1.2 }, "unit.powerful-imp": { token: "powerful-imp_256.png", card: "card-powerful-imp.jpg", aspect: 0.9297, height: 1.55 }, "unit.fire-imp": { token: "fire-imp_256.png", card: "card-fireimp.jpg", aspect: 0.6797, height: 1.2 }, "unit.poison-imp": { token: "poison-imp_256.png", card: "card-poison-imp.jpg", aspect: 0.6953, height: 1.2 }, "unit.bruiser-demon": { token: "bruiser-demon_256.png", card: "card-bruiser-demon.jpg", aspect: 0.6211, height: 2 }, "unit.lieutenant-demon": { token: "lieutenant-demon_256.png", card: "card-lieutenant-demon.jpg", aspect: 0.4766, height: 2.1 }, "unit.bloodhound": { token: "bloodhound_256.png", card: "card-bloodhound.jpg", aspect: 0.7812, height: 1 }, "unit.hellhound": { token: "hellhound_256.png", card: "card-hellhound.jpg", aspect: 0.8398, height: 1.1 }, "unit.zombie-hound": { token: "zombie-hound_256.png", card: "card-zombie-hound.jpg", aspect: 0.9062, height: 1 }, "unit.werewolf": { token: "werewolf_256.png", card: "card-werewolf.jpg", aspect: 0.7852, height: 1.85 }, "spirit-snake": { token: "ph-spirit-snake.png", card: "card-spiritsnake.jpg", aspect: 0.64, height: 1 }, "green-drake": { token: "bone-dragon_256.png", card: "card-greendrake.jpg", aspect: 1.7461, height: 2.1 }, "shadow-hound-puppy": { token: "wolf_256.png", card: "card-desertwolf.jpg", aspect: 0.8633, height: 0.8 }, "alpha-oathblade": { token: "oathblade_256.png", card: "card-oathblade.jpg", aspect: 0.7188, height: 1.55 }, "alpha-sky-pirate": { token: "sky-pirate_256.png", card: "card-skypirate.jpg", aspect: 0.5547, height: 1.55 }, "alpha-dusk-hawk": { token: "dusk-hawk_256.png", card: "card-duskhawk.jpg", aspect: 0.5664, height: 1.55 }, "alpha-air-mage": { token: "air-mage_256.png", card: "card-airmage.jpg", aspect: 0.8281, height: 1.55 }, "alpha-lucius": { token: "lucius_256.png", card: "card-lucius.jpg", aspect: 0.3008, height: 1.55, after: { "badge.lycanthropy": "after-priest-scantily-lycanthropy.jpg", "badge.possession": "after-priest-scantily-possession.jpg", "badge.rotting-flesh": "after-priest-scantily-rotting-flesh.jpg", "badge.vampirism": "after-priest-scantily-vampirism.jpg" } }, "alpha-osric": { token: "osric_256.png", card: "card-osric.jpg", aspect: 0.5, height: 1.55, after: { "badge.lycanthropy": "after-paladin-shiney-lycanthropy.jpg", "badge.possession": "after-paladin-shiney-possession.jpg", "badge.rotting-flesh": "after-paladin-shiney-rotting-flesh.jpg", "badge.vampirism": "after-paladin-shiney-vampirism.jpg" } }, "arc-golem": { token: "stone-golem_256.png", card: "card-golem.jpg", aspect: 0.6914, height: 2 }, "hero.base.priest-armored": { token: "priest-armored_256.png", card: "card-priestarm.jpg", aspect: 0.5469, height: 1.55, after: { "badge.lycanthropy": "after-priest-armored-lycanthropy.jpg", "badge.possession": "after-priest-armored-possession.jpg", "badge.rotting-flesh": "after-priest-armored-rotting-flesh.jpg", "badge.vampirism": "after-priest-armored-vampirism.jpg" } }, "hero.base.warrior-iron": { token: "warrior-iron_256.png", card: "card-warriron.jpg", aspect: 0.6758, height: 0.95, after: { "badge.lycanthropy": "after-warrior-iron-lycanthropy.jpg", "badge.possession": "after-warrior-iron-possession.jpg", "badge.rotting-flesh": "after-warrior-iron-rotting-flesh.jpg", "badge.vampirism": "after-warrior-iron-vampirism.jpg" } }, "hero.base.mage-fire": { token: "mage-fire_256.png", card: "card-magefire.jpg", aspect: 0.4961, height: 1.55, after: { "badge.lycanthropy": "after-mage-fire-lycanthropy.jpg", "badge.possession": "after-mage-fire-possession.jpg", "badge.rotting-flesh": "after-mage-fire-rotting-flesh.jpg", "badge.vampirism": "after-mage-fire-vampirism.jpg" } }, "hero.base.paladin-hunk": { token: "paladin-hunk_256.png", card: "card-palhunk.jpg", aspect: 0.6484, height: 1.55, after: { "badge.lycanthropy": "after-paladin-hunk-lycanthropy.jpg", "badge.possession": "after-paladin-hunk-possession.jpg", "badge.rotting-flesh": "after-paladin-hunk-rotting-flesh.jpg", "badge.vampirism": "after-paladin-hunk-vampirism.jpg" } }, "hero.base.rogue-raven": { token: "rogue-raven_256.png", card: "card-rogueraven.jpg", aspect: 0.5039, height: 1.55, after: { "badge.lycanthropy": "after-rogue-raven-lycanthropy.jpg", "badge.possession": "after-rogue-raven-possession.jpg", "badge.rotting-flesh": "after-rogue-raven-rotting-flesh.jpg", "badge.vampirism": "after-rogue-raven-vampirism.jpg" } }, "unit.ghoul": { token: "ghoul_256.png", card: "card-ghoul.jpg", aspect: 0.3945, height: 1.55 }, "unit.dark-sniper": { token: "dark-sniper_256.png", card: "card-darksniper.jpg", aspect: 0.6172, height: 1.55 }, "unit.nightstalker": { token: "nightstalker_256.png", card: "card-nightstalker.jpg", aspect: 0.793, height: 1.7 }, "unit.shadow-sorcerer": { token: "shadow-sorcerer_256.png", card: "card-shadowsorc.jpg", aspect: 0.6797, height: 1.55 }, "unit.eyeblight": { token: "eyeblight_256.png", card: "card-eyeblight.jpg", aspect: 0.5938, height: 1.2 }, "unit.imp-master": { token: "imp-master_256.png", card: "card-impmaster.jpg", aspect: 0.6211, height: 1.7 }, "unit.balrog": { token: "balrog_256.png", card: "card-balrog.jpg", aspect: 0.5195, height: 2.4 }, "unit.strong-skeleton": { token: "strong-skeleton_256.png", card: "card-strongskel.jpg", aspect: 0.4727, height: 1.55 }, "unit.skeleton-spider": { token: "skeleton-spider_256.png", card: "card-skelspider.jpg", aspect: 1.0547, height: 1.1 }, "unit.bone-dragon": { token: "bone-dragon_256.png", card: "card-bonedragon.jpg", aspect: 1.7461, height: 2.3 }, "hero.fixed.librarian": { token: "ph-librarian.png", card: null, aspect: 0.64, height: 1.5 }, "hero.fixed.cook": { token: "ph-cook.png", card: null, aspect: 0.64, height: 1.5 }, "hero.fixed.fishermans-wife": { token: "ph-fishermans-wife.png", card: null, aspect: 0.64, height: 1.5 }, "hero.fixed.fisherman": { token: "ph-fisherman.png", '... 29557887 more characters,
+    expected: /['"`]playTarget['"`]/,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }
+== kingdom tools/no-target-ring.verify.mjs on the landed BATTLE-SANDBOX.html (kingdom f742b81, viewer c6c5034), before the change ==
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: a self power chosen: no `playTarget` ring on any hex
+
+1 !== 0
+
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
