@@ -320,7 +320,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 153,
+   "uses": 154,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -943,7 +943,7 @@
   },
   {
    "name": "apply a status",
-   "uses": 143,
+   "uses": 142,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -1217,7 +1217,7 @@
   },
   {
    "name": "move yourself",
-   "uses": 30,
+   "uses": 31,
    "ids": [
     "power.warchief.lead-from-front",
     "power.champion.heroic-charge",
@@ -1247,6 +1247,7 @@
     "power.flight",
     "power.flight-swift",
     "power.flight-labored",
+    "power.flight-vampiric",
     "power.charging-run",
     "specialty.shadowdancer"
    ]
@@ -1712,7 +1713,7 @@
   },
   {
    "name": "poison",
-   "uses": 52,
+   "uses": 51,
    "ids": [
     "item.poison-throwing-knives",
     "item.scorpion-carapace",
@@ -1745,7 +1746,6 @@
     "power.contractbound.paid-in-full",
     "power.demonic-ward.consume-magic",
     "power.blightcaller.poison-roots",
-    "power.blightcaller.creeping-blight",
     "power.grove-keeper.rejuvenation",
     "power.war-priest.restoration",
     "power.divine-light.hallowed-ground",
@@ -1753,53 +1753,8 @@
     "power.vigil.protect-and-shield",
     "power.holy-avenger.succor-of-the-faithful",
     "power.sacred-shield.exemplify",
-    "power.purifier.purify"
-   ]
-  },
-  {
-   "name": "weak",
-   "uses": 41,
-   "ids": [
-    "item.pharaohs-gauntlets",
-    "item.mug-of-endless-dregs",
-    "item.rune-aura-of-dread",
-    "item.bracer-of-courage",
-    "item.blessing-of-the-hearthmother",
-    "item.banner-of-resolve",
-    "item.necklace-of-weakness-immunity",
-    "attack.fishing-net.cast",
-    "attack.crippling-whip.lash",
-    "attack.crippling-whip.hamstring",
-    "attack.iron-claws.eviscerate",
-    "attack.pharaohs-gauntlets.the-kings-hands",
-    "attack.barbarian-bow.crippling-shot",
-    "attack.club.swing",
-    "power.warchief.war-cry",
-    "power.bloodrage.unstoppable",
-    "power.shadowbound.dark-veil",
-    "power.blightcaller.wither",
-    "power.blightcaller.creeping-blight",
-    "power.wild-shaper.primal-roar",
-    "power.wild-shaper.claw",
-    "power.vigil.bravery",
-    "power.grand-master.unyielding",
-    "power.apothecary.smoke-bomb",
-    "power.porter.drop-the-pack",
-    "power.hound.bay",
-    "power.serpent.constrict",
-    "power.direbeast.bellow",
-    "power.carrion.reek",
-    "power.warbeast.warcry",
-    "power.chains-of-the-wrathful.weight-of-sin",
-    "power.benevolent-rod.restoration",
-    "power.shieldbearer.bash",
-    "power.leader.battle-cry",
-    "rule.ground-layers",
-    "power.banner-courage.plant",
-    "enchant.damned",
-    "specialty.champion",
-    "specialty.mystic",
-    "specialty.blightcaller"
+    "power.purifier.purify",
+    "power.trickster.poison-nick"
    ]
   },
   {
@@ -1846,6 +1801,52 @@
     "specialty.divine-light",
     "specialty.blessed-sufferer",
     "specialty.holy-champion"
+   ]
+  },
+  {
+   "name": "weak",
+   "uses": 40,
+   "ids": [
+    "item.pharaohs-gauntlets",
+    "item.mug-of-endless-dregs",
+    "item.rune-aura-of-dread",
+    "item.bracer-of-courage",
+    "item.blessing-of-the-hearthmother",
+    "item.banner-of-resolve",
+    "item.necklace-of-weakness-immunity",
+    "attack.fishing-net.cast",
+    "attack.crippling-whip.lash",
+    "attack.crippling-whip.hamstring",
+    "attack.iron-claws.eviscerate",
+    "attack.pharaohs-gauntlets.the-kings-hands",
+    "attack.barbarian-bow.crippling-shot",
+    "attack.club.swing",
+    "power.warchief.war-cry",
+    "power.bloodrage.unstoppable",
+    "power.shadowbound.dark-veil",
+    "power.blightcaller.wither",
+    "power.wild-shaper.primal-roar",
+    "power.wild-shaper.claw",
+    "power.vigil.bravery",
+    "power.grand-master.unyielding",
+    "power.apothecary.smoke-bomb",
+    "power.porter.drop-the-pack",
+    "power.hound.bay",
+    "power.serpent.constrict",
+    "power.direbeast.bellow",
+    "power.carrion.reek",
+    "power.warbeast.warcry",
+    "power.chains-of-the-wrathful.weight-of-sin",
+    "power.benevolent-rod.restoration",
+    "power.shieldbearer.bash",
+    "power.leader.battle-cry",
+    "rule.ground-layers",
+    "power.banner-courage.plant",
+    "enchant.damned",
+    "specialty.champion",
+    "specialty.mystic",
+    "specialty.blightcaller",
+    "specialty.wild-shaper"
    ]
   },
   {
