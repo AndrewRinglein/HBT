@@ -10,7 +10,7 @@ import {refusalLine} from './refusals.js'
 import {ABBOTOWN_MAP} from '../content/conquest.js'
 import {conquestProgress,takeSection,nextSection} from '../core/conquest.js'
 import {conquestMapHTML} from './conquest-map.js'
-import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBattle,performOpeningDeploy,draftsOwedOf,openingBattlesWonOf} from '../core/opening.js'
+import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBattle,performOpeningDeploy,performOpeningStraightIn,isOpeningStraightIn,draftsOwedOf,openingBattlesWonOf} from '../core/opening.js'
 import {readRun,writeRun} from './opening-run.js'
 import {makeCtx,setBattleOutcome,type Ctx} from '../core/mutate.js'
 import {performAdvancePrep,performDeploy,performUndeploy} from '../core/prep.js'
@@ -144,10 +144,24 @@ function isCampaignBattle(s:Sandbox){
  if(!c||!e||c.cursor.step!=='battle'||c.cursor.battle?.resultSet||s.config.encounterId!==e.id)return false
  return JSON.stringify(s.config.heroes)===JSON.stringify(e.deployed)&&JSON.stringify(s.config.heroRows)===JSON.stringify(e.deployed.map(id=>c.roster[id]))
 }
+/** kingdom.opening-starts-in-battle (engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map
+    before battle 1, …' — Andrew: "We don't start by showing you going to the orphanage on the map. There's no reason to
+    have that map step in the beginning. We're just going straight into the battle after you get your hero."): while the
+    run stands at a battle its content row enters straight (content/prologue.ts OPENING_STRAIGHT_IN — the first, until it
+    is won; core/opening.ts isOpeningStraightIn) the page shows NO map and makes NO Equip stop: a new run opens on the
+    first draft, the pick fields the battle and puts it on the board (performOpeningStraightIn), a lost battle 1 goes
+    straight back onto the board, and a run kept from before battle 1 was fought opens the same way. The map first shows
+    after battle 1's rewards. A map asked for part-taken by name (&taken=, an eyeball check) is shown as asked
+    (kingdom SWITCHES.md startsInBattle*). */
+let seededMap=false
+const straightIn=()=>!!sitting&&!seededMap&&isOpeningStraightIn(sitting.ctx.campaign)
+const battleRowOf=(id:string)=>({id,mapId:encounterDef(id).mapId!,kind:ABBOTOWN_MAP.engagementKind})
+/** the page opened on a run that goes straight in: no map is drawn — unless the step is refused (Law 9: said, on the map) */
+function openStraight(f:()=>void){mapOpen=false;controls();try{f()}catch(e){error=(e as Error).message;campaignOpen=false;mapOpen=true;drawMap();layout()}}
 /** the next section: the drafts owed first, then its battle */
 function beginSection(id:string){
  const ctx=sitting!.ctx
- if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else toBattle(id)
+ if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else if(toBattle(id))return
  mapOpen=false;campaignOpen=true;drawCampaign()
 }
 /** kingdom.opening-sword-waits (engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword waits for its taker; …'
@@ -155,10 +169,13 @@ function beginSection(id:string){
     as a living hero of them has room for it — after the draft that brings one — and the player names the carrier
     (ui/after.ts carrierChoice, as at the battle that gave it); then the battle is fielded. Nothing is stored for the
     offer: a run closed on it and reopened is asked again when the section is clicked. */
-function toBattle(id:string){
+/** (kingdom.opening-starts-in-battle: a battle entered straight is fielded and put on the board at once — true is "the
+    battle is on the board", and the caller draws no campaign screen over it) */
+function toBattle(id:string):boolean{
  const waiting=listWaitingOffers(sitting!.ctx.campaign)[0]
- if(waiting){sitting!.giving=waiting.itemId;return}
- fieldBattle(id)
+ if(waiting){sitting!.giving=waiting.itemId;return false}
+ if(straightIn()){performOpeningStraightIn(sitting!.ctx,battleRowOf(id),sitCause);startCampaignBattle();return true}
+ fieldBattle(id);return false
 }
 /** the opening battle as its encounter, Combat Prep walked to who goes: Reveal and the War Council passed (no tactics), and
     at Deploy — kingdom.opening-deploy-choice (engine DECISIONS.md 2026-10-03 'the opening run, audited': "Should the player
@@ -169,7 +186,7 @@ function toBattle(id:string){
     openingDeployAll, openingPoolWhoDeploys — both settled by the ruling). */
 function fieldBattle(id:string){
  const ctx=sitting!.ctx
- performFieldOpeningBattle(ctx,{id,mapId:encounterDef(id).mapId!,kind:ABBOTOWN_MAP.engagementKind},sitCause)
+ performFieldOpeningBattle(ctx,battleRowOf(id),sitCause)
  performOpeningDeploy(ctx,sitCause)
 }
 /** Equip's To the battle: the cursor goes to the battle and the encounter is fielded with the campaign's rows */
@@ -191,13 +208,16 @@ function reckon(){
 }
 /** after a step of the reckoning: the map once the cursor is back at the open step, else the next screen */
 function onward(){
- if(sitting!.ctx.campaign.cursor.step==='open'){campaignOpen=false;clearCampaign();mapOpen=true;drawMap();layout()}
+ if(sitting!.ctx.campaign.cursor.step==='open'){
+  /* kingdom.opening-starts-in-battle: battle 1 not won (lost, or a hero died in it) — straight back into the battle, no map */
+  if(straightIn()){beginSection(nextSection(mapOrder,taken)!);return}
+  campaignOpen=false;clearCampaign();mapOpen=true;drawMap();layout()}
  else drawCampaign()
 }
 function clearCampaign(){if(sitting?.mounted){sitting.mounted();sitting.mounted=null}q('campaign').innerHTML=''}
 function campaignAct(act:string,el:HTMLElement){
  const s=sitting!,ctx=s.ctx,c=ctx.campaign,id=el.dataset.id
- if(act==='draft'){performDraft(ctx,id!,sitCause);if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else toBattle(nextSection(mapOrder,taken)!);drawCampaign()}
+ if(act==='draft'){performDraft(ctx,id!,sitCause);if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else if(toBattle(nextSection(mapOrder,taken)!))return;drawCampaign()}
  else if(act==='deploy'){performDeploy(ctx,id!,sitCause);drawCampaign()}
  else if(act==='undeploy'){performUndeploy(ctx,id!,sitCause);drawCampaign()}
  else if(act==='pick'){s.picked=s.picked===id?null:id!;drawCampaign()}
@@ -208,7 +228,7 @@ function campaignAct(act:string,el:HTMLElement){
  else if(act==='level-hero'){s.levelHero=id!;drawCampaign()}
  else if(act==='give'){const item=s.giving;if(!item)throw Error('No reward is waiting for its carrier')
   // a waiting item given between battles (kingdom.opening-sword-waits): onto the hero named, then on to the battle
-  if(c.cursor.step==='open'){performTakeWaiting(ctx,item,id!,sitCause);s.giving=null;toBattle(nextSection(mapOrder,taken)!);drawCampaign()}
+  if(c.cursor.step==='open'){performTakeWaiting(ctx,item,id!,sitCause);s.giving=null;if(toBattle(nextSection(mapOrder,taken)!))return;drawCampaign()}
   else{performTakeReward(ctx,item,sitCause,id!);s.giving=null;onward()}}
  else if(act==='mute')toggleMute()
 }
@@ -333,7 +353,7 @@ function controls(){
  // (the map comes after the rewards); a won one retakes its section, a lost one waits on the map for the same party
  const ended=session?.ctx.state.outcome,mapBattle=!!session&&!!ended&&isCampaignBattle(session)
  const sectionName=mapBattle?sectionOf(session!.config.encounterId!)!.name:''
- const nav=session&&boardOnly()?launcher?'<p><button data-act="battle">Return to the battle</button></p>':ended?mapBattle?`<p id="mapOutcome">${escape(sectionName)} ${ended==='heroClear'?'is retaken.':'is not taken — it waits on the map to be fought again, by the same party.'}</p><p><button data-act="reckon">Continue to the reckoning →</button></p>`:'<p><button data-act="launcher">Back to the launcher</button></p>':'':''
+ const nav=session&&boardOnly()?launcher?'<p><button data-act="battle">Return to the battle</button></p>':ended?mapBattle?`<p id="mapOutcome">${escape(sectionName)} ${ended==='heroClear'?'is retaken.':straightIn()?'is not taken — it is fought again at once, by the same party.':'is not taken — it waits on the map to be fought again, by the same party.'}</p><p><button data-act="reckon">Continue to the reckoning →</button></p>`:'<p><button data-act="launcher">Back to the launcher</button></p>':'':''
  const markedNote=marked.map(m=>`<p id="markedAreas" role="status">Marked to fall after Turn ${m.landsAfterTurn}'s Player Phase (${escape(m.fall)}): hexes ${m.hexes.map(h=>`${h} (${session!.ctx.geo.colOf(h)}, ${session!.ctx.geo.rowOf(h)})`).join(', ')}</p>`).join('')
  q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?.name??'Resolving battle')}`:'Start a battle to play'}</h2>${nav}${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${board?'':`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}`}${busy||fault?'':'<p id="playHelp">On the board: each hero begins in turn, its move chosen · click a hex to see the path and plan attacks from its end, double-click it (or click it again) to move · click an action on the bar, point at an enemy for the forecast, click it, click again to confirm · double-click another hero to switch to it — once this one has moved or acted, the screen asks before its Activation ends · a hero with nothing left it can do ends its Activation by itself · right-click (or Esc) steps back'+(board?' · End activation ends a hero who will not act again; End Turn ends the Player Phase.':'.')+'</p>'}${board?'':`${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`}`:''}`
  changeListener(q('commands'),q<HTMLSelectElement>('actor'),()=>{selectedActor=q<HTMLSelectElement>('actor').value;controls()},'selecting')
@@ -418,11 +438,18 @@ bind(q('transfer'));bind(q('battleNav'));setup();controls()
    taken=mapOrder.slice(0,openingBattlesWonOf(kept.run.campaign))
    const step=kept.run.campaign.cursor.step
    if(step==='battle'){mapOpen=false;startCampaignBattle()}
+   /* kingdom.opening-starts-in-battle: a run kept from before battle 1 was fought opens the same way — at the open step
+      (nobody drafted yet: the first draft; the hero drafted: the battle), or inside the Combat Prep the page before
+      2026-10-04 rested in (walked on to the battle) */
+   else if(step==='open'&&straightIn())openStraight(()=>beginSection(nextSection(mapOrder,taken)!))
+   else if(step==='prep'&&straightIn())openStraight(()=>{performOpeningStraightIn(sitting!.ctx,battleRowOf(sitting!.ctx.campaign.cursor.engagement!.id),sitCause);startCampaignBattle()})
    else if(step==='open'){drawMap();controls()}
    else{mapOpen=false;campaignOpen=true;controls();drawCampaign()}
   }else{
-   taken=mapOrder.filter(id=>(params.get('taken')??'').split(',').includes(id))
+   taken=mapOrder.filter(id=>(params.get('taken')??'').split(',').includes(id));seededMap=taken.length>0
    sitting={ctx:makeCtx(makeNewCampaign(Number.isSafeInteger(seed)&&seed>=0?seed:Math.floor(Math.random()*1e9))),lastBattle:null,levelHero:null,picked:null,giving:null,mounted:null}
-   drawMap();controls()}}}
+   /* kingdom.opening-starts-in-battle: a new run opens on the first draft — no map before battle 1 */
+   if(straightIn())openStraight(()=>beginSection(nextSection(mapOrder,taken)!))
+   else{drawMap();controls()}}}}
 // A read-only integration handle for the built-page smoke; commands still use UI listeners.
 Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation},get campaign(){return sitting?structuredClone(sitting.ctx.campaign):null}}})

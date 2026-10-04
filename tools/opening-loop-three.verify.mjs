@@ -13,6 +13,10 @@
 // Battle 3 won: three items, one kept. The map ends with three sections taken. The civilians who lived through a won
 // battle join the roster.
 //
+// 2026-10-04, kingdom.opening-starts-in-battle (engine DECISIONS.md 2026-10-04 '… no map before battle 1 …'): the sitting opens on
+// the first draft and its pick goes straight into the Orphanage — no map and no Equip before battle 1; the map first
+// shows after battle 1's rewards, and battles 2 and 3 keep map -> draft -> Equip -> battle (Law 10 notes at steps 1 and 2).
+//
 // The page's steps are tools/opening-page.mjs's (kingdom.opening-run-six moved them there, one copy for this and
 // tools/opening-run-six.verify.mjs).
 //
@@ -31,25 +35,41 @@ const SWORD='item.longsword.flaming'
    Engagement's own seed, nothing sought. What this page test holds — the loop's flow through three battles — is unchanged.
    LOOP_THREE_SEED: another run seed (another party) — nothing is searched for it either */
 const RUN_SEED=Number(process.env.LOOP_THREE_SEED??11)
-const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,whoGoes,equipThenFight,fightOut:settleOn,levelUps,takeReward,carriers,waitingOffer,v}=openingPage(page,'?map&seed='+RUN_SEED)
+const {handle,camp,byId,shown,drawn,straightIn,heroIds,civilianIds,wait,readMap,draft,whoGoes,equipThenFight,fightOut:settleOn,levelUps,takeReward,carriers,waitingOffer,v}=openingPage(page,'?map&seed='+RUN_SEED)
 /* a battle settled as the test means it to end (opening-page.mjs playedOut), and how it went said (stderr) */
 const chosen={}
 function fightOut(won,label){const r=settleOn(won,label);chosen[label]=[r.played,r.seed,r.result.turns];console.error(`settled ${label}: ${won?'the strong party, the engine\'s AI':'the party held idle, cut at Turn 1'} — ${r.result.outcome} on Turn ${r.result.turns}, the Engagement's own seed ${r.seed}`);return r}
 
-/* 1 · the sitting opens on the map: nothing fielded, nobody drafted, the Orphanage next */
-assert.equal(readMap([],'fresh'),ORPHANAGE)
-assert.equal(handle.session,null,'the map fields nothing by itself')
+/* 1 · the sitting opens on the first draft: nothing fielded, nobody drafted — and no map.
+   Law 10, 2026-10-04 (kingdom.opening-starts-in-battle; engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, …': "We don't
+   start by showing you going to the orphanage on the map. There's no reason to have that map step in the beginning.
+   We're just going straight into the battle after you get your hero."): this read
+     assert.equal(readMap([],'fresh'),ORPHANAGE)
+     assert.equal(handle.session,null,'the map fields nothing by itself')
+   — the sitting opened on the map with the Orphanage next, and its click opened the first draft. The rule now: a new run
+   opens on the first draft; the map is not drawn before battle 1 is won (held of every screen: opening-page.mjs drawn);
+   the map with the Orphanage taken and the next section pointed to is held after battle 1, below, as it was. */
+assert.ok(shown('campaign')&&!shown('conquest'),'the sitting opens on the first draft, not the map');assert.equal(camp().cursor.step,'draft')
+assert.equal(handle.session,null,'nothing is fielded before the pick')
 assert.deepEqual(heroIds(),[],'the Campaign starts with nobody')
 
-/* 2 · battle 1: one hero drafted, equipped, fielded; won; 20 XP each and the level-up with a specialty */
-v.click('field',ORPHANAGE)
+/* 2 · battle 1: one hero drafted and fielded at once; won; 20 XP each and the level-up with a specialty.
+   Law 10, 2026-10-04 (kingdom.opening-starts-in-battle, as above; "straight into the battle" read to cover the Equip stop
+   too — kingdom SWITCHES.md startsInBattleNoEquip): this read
+     v.click('field',ORPHANAGE)
+     const first=draft('battle 1')
+     assert.equal(whoGoes('battle 1').asked,false,'one hero: no choice is asked')
+     equipThenFight([first],'battle 1')
+   — the map's click, the draft, then Equip and its To the battle. The rule now: the pick puts the Orphanage on the board
+   with that hero on it — nobody is asked who goes (the one hero is sent: opening-page.mjs straightIn holds it), and
+   neither the map nor Equip nor the Who-goes page is drawn before battle 1. Battles 2 and 3 keep every step, below. */
 const first=draft('battle 1')
 assert.deepEqual(heroIds(),[first],'one hero before battle 1')
-/* kingdom.opening-deploy-choice (2026-10-03): through these three battles four or fewer heroes are free to fight, so the run
+straightIn([first],'battle 1')
+assert.equal(drawn.filter(d=>d.map||d.equip||d.deploy).length,0,'neither the map nor Equip nor the Who-goes page was drawn before battle 1')
+/* kingdom.opening-deploy-choice (2026-10-03): through battles 2 and 3 four or fewer heroes are free to fight, so the run
    asks nothing — no Deploy page, everyone goes, Equip opens at once (opening-page.mjs whoGoes); the choice itself is
    tools/opening-run-six.verify.mjs's, from battle 5 */
-assert.equal(whoGoes('battle 1').asked,false,'one hero: no choice is asked')
-equipThenFight([first],'battle 1')
 const b1=fightOut(true,'battle 1')
 assert.equal(camp().roster[first].xp,20,'the Orphanage pays its 20 XP')
 assert.equal(camp().cursor.step,'levelUp','battle 1 offers no item: straight to the level-ups')
@@ -204,4 +224,4 @@ for(const x of SPECIALTY_CHOICES){assert.equal(x.offered.length,3,x.label+': thr
 assert.equal(ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain,(may.length?1:0)+3,'every reward card of the sitting was held to its art, or to itemsMissing')
 assert.ok(ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain>0,'Equip\'s items were held too')
 console.error('settled by: '+JSON.stringify(chosen))
-console.log(`opening loop three: map -> draft (one before every battle: a party of ${[1,party2.length,party3.length].join(', ')}; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the victory screens showed the civilians who fought (the Orphanage: ${saidOf(shownAt(ORPHANAGE))}; the Lumberjack House: ${saidOf(shownAt(LUMBERJACK))}); the Orphanage's 20 XP and level 2 with a specialty; three specialties offered at every specialty choice (${SPECIALTY_CHOICES.length} choices); battle 2 lost: no XP, offered again on new dice (seed ${first2.config.seed}, then ${replay.config.seed}) with the same party, wounds kept; the Flaming Longsword ${givers.length?'to '+givers[0]:'to nobody (no Warrior or Paladin in the party of two)'};${ITEM_ART_SEEN.sword?' the Flaming Longsword\'s reward card showed its card art;':''} item card art on ${ITEM_ART_SEEN.rewardArt} of ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards and ${ITEM_ART_SEEN.equipArt} of ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} Equip items, the rest plain and named in itemsMissing; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)
+console.log(`opening loop three: the first draft, then straight into the Orphanage (no map and no Equip before battle 1); then map -> draft (one before every battle: a party of ${[1,party2.length,party3.length].join(', ')}; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the victory screens showed the civilians who fought (the Orphanage: ${saidOf(shownAt(ORPHANAGE))}; the Lumberjack House: ${saidOf(shownAt(LUMBERJACK))}); the Orphanage's 20 XP and level 2 with a specialty; three specialties offered at every specialty choice (${SPECIALTY_CHOICES.length} choices); battle 2 lost: no XP, offered again on new dice (seed ${first2.config.seed}, then ${replay.config.seed}) with the same party, wounds kept; the Flaming Longsword ${givers.length?'to '+givers[0]:'to nobody (no Warrior or Paladin in the party of two)'};${ITEM_ART_SEEN.sword?' the Flaming Longsword\'s reward card showed its card art;':''} item card art on ${ITEM_ART_SEEN.rewardArt} of ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards and ${ITEM_ART_SEEN.equipArt} of ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} Equip items, the rest plain and named in itemsMissing; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)

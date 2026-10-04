@@ -1,0 +1,116 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-starts-in-battle.verify.mjs:17
+import {openingPage,runSaveText,campaignAt} from './opening-page.mjs'
+                                ^^^^^^^^^^
+SyntaxError: The requested module './opening-page.mjs' does not provide an export named 'campaignAt'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:302:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:405:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+ ❯ test/opening-starts-in-battle.test.ts (6 tests | 6 failed) 49ms
+     × which battles are entered straight from the draft is a content row — the first — and core names no number of its own 4ms
+     × the pick goes straight into the Orphanage: the battle fielded, the hero sent, Equip passed — the cursor is at the battle 1ms
+     × a lost battle 1, replayed, goes straight back into the battle — on new dice, no draft 2ms
+     × battles 2 to 6 keep the map, the draft, who goes and Equip: the rule is the first battle's alone 0ms
+     × a run saved before battle 1 was fought opens the same way: from the open step, and from the Equip stop an older page left it at 1ms
+     × the page: a new run shows the first draft, the pick shows the Orphanage with that hero on the board — no map and no Equip drawn before battle 1; battle 2 comes through the map, the draft and Equip 41ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-starts-in-battle.test.ts > kingdom.opening-starts-in-battle — a new run goes from the first hero straight into battle 1 > which battles are entered straight from the draft is a content row — the first — and core names no number of its own
+AssertionError: content/prologue.ts OPENING_STRAIGHT_IN: expected undefined to deeply equal { battles: 1 }
+
+- Expected:
+{
+  "battles": 1,
+}
+
++ Received:
+undefined
+
+ ❯ test/opening-starts-in-battle.test.ts:53:60
+     51| describe('kingdom.opening-starts-in-battle — a new run goes from the f…
+     52|   it('which battles are entered straight from the draft is a content r…
+     53|     expect(ROW, 'content/prologue.ts OPENING_STRAIGHT_IN').toEqual({ b…
+       |                                                            ^
+     54|     expect(typeof O.isOpeningStraightIn, 'core/opening.ts isOpeningStr…
+     55|     expect(typeof O.performOpeningStraightIn, 'core/opening.ts perform…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/opening-starts-in-battle.test.ts > kingdom.opening-starts-in-battle — a new run goes from the first hero straight into battle 1 > the pick goes straight into the Orphanage: the battle fielded, the hero sent, Equip passed — the cursor is at the battle
+TypeError: O.isOpeningStraightIn is not a function
+ ❯ test/opening-starts-in-battle.test.ts:65:16
+     63|     for (const seed of [5, 11, 21]) {
+     64|       const ctx = makeCtx(makeNewCampaign(seed)), c = ctx.campaign
+     65|       expect(O.isOpeningStraightIn!(c), `seed ${seed}: a new run is be…
+       |                ^
+     66|       // refused while the first hero is still owed: the first screen …
+     67|       expect(() => O.performOpeningStraightIn!(ctx, battleOf(SECTIONS[…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/opening-starts-in-battle.test.ts > kingdom.opening-starts-in-battle — a new run goes from the first hero straight into battle 1 > a lost battle 1, replayed, goes straight back into the battle — on new dice, no draft
+TypeError: O.performOpeningStraightIn is not a function
+ ❯ test/opening-starts-in-battle.test.ts:85:7
+     83|     const ctx = makeCtx(makeNewCampaign(11)), c = ctx.campaign
+     84|     const hero = draftOne(ctx)
+     85|     O.performOpeningStraightIn!(ctx, battleOf(SECTIONS[0]!), 'test')
+       |       ^
+     86|     resolved(ctx, false)
+     87|     expect([c.cursor.prologue, c.cursor.replays, c.cursor.step]).toEqu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/opening-starts-in-battle.test.ts > kingdom.opening-starts-in-battle — a new run goes from the first hero straight into battle 1 > battles 2 to 6 keep the map, the draft, who goes and Equip: the rule is the first battle's alone
+TypeError: O.performOpeningStraightIn is not a function
+ ❯ test/opening-starts-in-battle.test.ts:99:7
+     97|     const ctx = makeCtx(makeNewCampaign(11)), c = ctx.campaign
+     98|     draftOne(ctx)
+     99|     O.performOpeningStraightIn!(ctx, battleOf(SECTIONS[0]!), 'test')
+       |       ^
+    100|     resolved(ctx, true)
+    101|     for (let n = 2; n <= SECTIONS.length; n++) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/opening-starts-in-battle.test.ts > kingdom.opening-starts-in-battle — a new run goes from the first hero straight into battle 1 > a run saved before battle 1 was fought opens the same way: from the open step, and from the Equip stop an older page left it at
+TypeError: O.isOpeningStraightIn is not a function
+ ❯ test/opening-starts-in-battle.test.ts:121:14
+    119|     const a = makeCtx(makeNewCampaign(11)); const hero = draftOne(a)
+    120|     const kept = makeCtx(runOf(runSaveOf(a.campaign, null)).campaign)
+    121|     expect(O.isOpeningStraightIn!(kept.campaign)).toBe(true)
+       |              ^
+    122|     expect(O.performOpeningStraightIn!(kept, battleOf(SECTIONS[0]!), '…
+    123|     expect(kept.campaign.cursor.step).toBe('battle')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/opening-starts-in-battle.test.ts > kingdom.opening-starts-in-battle — a new run goes from the first hero straight into battle 1 > the page: a new run shows the first draft, the pick shows the Orphanage with that hero on the board — no map and no Equip drawn before battle 1; battle 2 comes through the map, the draft and Equip
+Error: Command failed: C:\Program Files\nodejs\node.exe tools/opening-starts-in-battle.verify.mjs BATTLE-SANDBOX.html
+file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-starts-in-battle.verify.mjs:17
+import {openingPage,runSaveText,campaignAt} from './opening-page.mjs'
+                                ^^^^^^^^^^
+SyntaxError: The requested module './opening-page.mjs' does not provide an export named 'campaignAt'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:302:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:405:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.12.0
+
+ ❯ test/opening-starts-in-battle.test.ts:137:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  04:01:33
+   Duration  1.28s (transform 919ms, setup 0ms, import 1.12s, tests 49ms, environment 0ms)
+

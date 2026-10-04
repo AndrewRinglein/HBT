@@ -2,6 +2,9 @@
 // the BUILT sandbox opened with ?map, through the page's own controls: the map, the draft, who goes, Equip, the battle settled by a
 // pasted engine save, the reckoning, the rewards and the level-ups. One copy for both (kingdom.opening-run-six).
 //
+// 2026-10-04, kingdom.opening-starts-in-battle: battle 1 has no map before it and no Equip — the first draft is the run's
+// first screen and its pick puts the Orphanage on the board (straightIn); what the page drew is kept (drawn).
+//
 // A battle is settled by the engine and its save pasted back into the page ("Resume pasted save") — the page takes it as
 // the campaign's battle only when it is that battle with that party. How it is played — the run's own party made
 // overpowered for a win, held idle for a loss, no seed sought — is playedOut's, below (kingdom.page-test-strong-party).
@@ -10,11 +13,39 @@ import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {readFileSync} from 'node:fs'
 import {bootSlice} from './atlas-dom.mjs'
+import {El} from '../../viewer/tools/fakedom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as REWARD_ROWS from './src/content/encounter-rewards.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as REWARD_ROWS from './src/content/encounter-rewards.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts';export * as RUN from './src/ui/opening-run.ts';export * as MUTATE from './src/core/mutate.ts';export * as CONQUEST from './src/content/conquest.ts';export {encounterDef} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
+/* kingdom.opening-starts-in-battle (engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map
+   before battle 1, …': "We don't start by showing you going to the orphanage on the map … We're just going straight into
+   the battle after you get your hero."): WHAT THE PAGE DREW, from its opening — every write of the map's (#conquest) and
+   the campaign screen's (#campaign) markup, as the page made it, each said for what it holds: the map's sections, the
+   Equip page, the Who-goes page, a draft. So "the map was never drawn before battle 1" is held of every screen the page
+   put up in between, not only of the one standing at the end. Each page has its own log: the two hosts carry it once
+   the page has booted (openingPage), and while it boots the log is the one openingPage just started. */
+const innerHTML=Object.getOwnPropertyDescriptor(El.prototype,'innerHTML')
+let drawing=null
+Object.defineProperty(El.prototype,'innerHTML',{configurable:true,get:innerHTML.get,set(v){
+ const log=this._drawn??drawing
+ if(log&&(this.id==='conquest'||this.id==='campaign')){const html=String(v);log.push({host:this.id,map:this.id==='conquest'&&html.includes('data-section='),equip:html.includes('equip-page'),deploy:html.includes('deploy-page'),draft:html.includes('data-act="draft"')})}
+ innerHTML.set.call(this,v)}})
+/* … and a run as a page kept it BEFORE battle 1 was fought, for a save the page of today never takes: 'new' — nobody
+   drafted, the open step (the older page's first screen, the map); 'drafted' — the first hero drafted (the first offer),
+   the open step; 'equip' — and the battle fielded, resting at Equip (the older page's stop before To the battle). Made
+   by the sources' own calls, kept as the page keeps it (ui/opening-run.ts runSaveOf) */
+export function campaignAt(seed,at,encounterId){
+ const ctx=E.MUTATE.makeCtx(E.OPENING.makeNewCampaign(seed))
+ if(at==='new')return ctx.campaign
+ E.OPENING.performAdvanceOpening(ctx,'test');E.OPENING.performDraft(ctx,E.OPENING.listDraftOffers(ctx.campaign)[0].id,'test')
+ if(at==='drafted')return ctx.campaign
+ E.OPENING.performFieldOpeningBattle(ctx,{id:encounterId,mapId:E.encounterDef(encounterId).mapId,kind:E.CONQUEST.ABBOTOWN_MAP.engagementKind},'test');E.OPENING.performOpeningDeploy(ctx,'test')
+ if(at==='equip')return ctx.campaign
+ throw Error('campaignAt: new, drafted or equip')
+}
+export const runSaveText=campaign=>E.RUN.runSaveOf(campaign,null)
 /* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
    page's draft is held against */
 export const POOL=E.HEROES.HERO_POOL.map(h=>({id:h.id,name:h.name,classes:[...h.classes]}))
@@ -182,7 +213,10 @@ function settledAs(config,won,o){
 
 /** The built sandbox opened at `search`, in a browser whose storage is `store` (a Map; a fresh one when absent). */
 export function openingPage(page,search,store){
+ const drawn=[];drawing=drawn
  const v=bootSlice(page,{search,store}),w=v.w,root=v.root,handle=w.__sandbox
+ for(const id of ['conquest','campaign'])root.querySelector('#'+id)._drawn=drawn
+ drawing=null
  const camp=()=>handle.campaign
  const byId=id=>root.querySelector('#'+id)
  const shown=id=>{const el=byId(id);return !!el&&!el.hasAttribute('hidden')}
@@ -412,6 +446,21 @@ export function openingPage(page,search,store){
   v.click('advance');settle()
   return onTheBattle(label)
  }
+ /* kingdom.opening-starts-in-battle: is the battle the run stands at entered straight from the draft (the sources' rule,
+    core/opening.ts isOpeningStraightIn — the first battle, until it is won)? */
+ const straight=()=>E.OPENING.isOpeningStraightIn(camp())
+ /* … and such a battle, on the board: the pick (or a lost attempt's way on, or a run reopened before the battle was
+    fought) put the battle up at once — the cursor at the battle, no campaign screen and no map over it, the Equip page
+    not on the screen, exactly `party` sent — fielded as every battle is (onTheBattle) */
+ function straightIn(party,label){
+  settle()
+  assert.ok(straight(),label+': the sources say this battle is entered straight from the draft')
+  assert.equal(camp().cursor.step,'battle',label+': straight into the battle — the cursor is at the battle, not at Equip')
+  assert.ok(!shown('campaign')&&!shown('conquest'),label+': the battle is on the screen — no map, no campaign screen')
+  assert.equal(byId('campaign').querySelectorAll('.equip-page').length+byId('campaign').querySelectorAll('.deploy-page').length,0,label+': neither Equip nor Who-goes is on the screen')
+  assert.deepEqual([...camp().cursor.engagement.deployed].sort(),[...party].sort(),label+': everyone of the party is sent')
+  return onTheBattle(label)
+ }
  /* the battle on its own screen, fielded as the cursor's encounter with the campaign's own Hero rows */
  function onTheBattle(label){
   assert.ok(!shown('campaign')&&!shown('conquest'),label+': the battle is its own screen')
@@ -591,7 +640,10 @@ export function openingPage(page,search,store){
   assert.equal(camp().cursor.rewardOffer,null,label+': no reward is offered');assert.equal(camp().ended,null,label+': the run goes on')
   assert.deepEqual([camp().cursor.prologue,camp().cursor.replays],[battle,replays+1],label+': the same battle is owed, and the replay is counted')
   v.click('exit');wait(100)
-  assert.equal(camp().cursor.step,'open',label+': back to the map — never left with nothing to click');assert.ok(shown('conquest'),label+': the map is shown')
+  /* kingdom.opening-starts-in-battle (2026-10-04): a battle entered straight from the draft (the first, until it is won) is
+     offered again the same way — straight back onto the board; every other goes back to the map, as before */
+  if(straight()){settle();assert.equal(camp().cursor.step,'battle',label+': straight back into the battle — never left with nothing to click');assert.ok(!shown('conquest'),label+': no map')}
+  else{assert.equal(camp().cursor.step,'open',label+': back to the map — never left with nothing to click');assert.ok(shown('conquest'),label+': the map is shown')}
   return {e,result,seed,fallen,all}
  }
  /* every LEVEL UP the rewards page offers, through the level-up sheet; the specialty chosen where one is owed */
@@ -656,5 +708,5 @@ export function openingPage(page,search,store){
   return buttons.map(b=>b.dataset.id)
  }
 
- return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,fallOut,levelUps,specialtyOffer,takeReward,carriers,waitingOffer}
+ return {get lastOffer(){return lastOffer},drawn,straight,straightIn,v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,fallOut,levelUps,specialtyOffer,takeReward,carriers,waitingOffer}
 }

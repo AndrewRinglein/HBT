@@ -65,3 +65,15 @@ export const PROLOGUE: readonly PrologueRow[] = [
  */
 export const DRAFT_CADENCE = { first: 1, afterEach: 1, until: 6 } as const
 export const DRAFT_OFFER = 3
+
+/**
+ * The opening's battles a run enters STRAIGHT from the draft: no map before them, no Equip stop — the first one. Ruled
+ * 2026-10-04 (Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, …':
+ * "We don't start by showing you going to the orphanage on the map. There's no reason to have that map step in the
+ * beginning. We're just going straight into the battle after you get your hero."), amending 2026-10-01 'one continuous run
+ * through the first six battles' for its first step only. The row is the count; the mechanism (core/opening.ts
+ * isOpeningStraightIn, performOpeningStraightIn) reads it. That Equip is passed too is the read of "straight into the
+ * battle" — one hero with its starting kit has nothing to equip (kingdom SWITCHES.md startsInBattleNoEquip).
+ * kingdom.opening-starts-in-battle.
+ */
+export const OPENING_STRAIGHT_IN = { battles: 1 } as const

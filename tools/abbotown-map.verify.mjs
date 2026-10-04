@@ -10,6 +10,10 @@
 // offers "Back to the map", and the map then shows it taken and the following section next; a loss offers it too and the
 // section is still the next. &taken=<encounter ids> seeds the sitting. The launcher (PLAY.html) links to the map.
 //
+// 2026-10-04, kingdom.opening-starts-in-battle (engine DECISIONS.md 2026-10-04 '… no map before battle 1 …'): a fresh ?map opens
+// on the first draft, and its pick fields the Orphanage; the map first shows after battle 1 — the Orphanage taken, the
+// Lumberjack House next — and from there everything above holds (Law 10 notes at steps 1 to 3).
+//
 //   node tools/abbotown-map.verify.mjs [BATTLE-SANDBOX.html] [PLAY.html]
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import assert from 'node:assert/strict'
@@ -73,21 +77,35 @@ function readMap(v,taken,label){
  return {s,next}
 }
 
-/* 1 · a fresh sitting: nothing taken, the Orphanage next; locked sections do nothing */
+/* 1 · a fresh sitting: no map — the first draft; nothing fielded.
+   Law 10, 2026-10-04 (kingdom.opening-starts-in-battle; engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, …': "We don't
+   start by showing you going to the orphanage on the map. There's no reason to have that map step in the beginning.
+   We're just going straight into the battle after you get your hero."): this read
+     let {s,next}=readMap(v,[],'fresh')
+     assert.equal(next.id,'encounter.opening.orphanage')
+     assert.equal(v.handle.session,null,'the map fields nothing by itself')
+     for(const x of s.filter(x=>x.state==='locked'))for(const fn of Object.values(x.g.handlers))fn()
+     assert.equal(v.handle.session,null,'clicking a locked section fields nothing')
+     assert.ok(v.shown(),'the map stays up after clicking a locked section')
+   — a fresh sitting opened on the map, nothing taken. The rule now: a fresh sitting opens on the first draft and its map
+   is not drawn; the map first shows after battle 1, the Orphanage taken. Every one of those assertions is kept, held of
+   the map where it now first shows — step 3, below (the next is the Lumberjack House; the locked sections do nothing). */
 const v=open('?map')
-let {s,next}=readMap(v,[],'fresh')
-assert.equal(next.id,'encounter.opening.orphanage')
-assert.equal(v.handle.session,null,'the map fields nothing by itself')
-for(const x of s.filter(x=>x.state==='locked'))for(const fn of Object.values(x.g.handlers))fn()
-assert.equal(v.handle.session,null,'clicking a locked section fields nothing')
-assert.ok(v.shown(),'the map stays up after clicking a locked section')
+assert.ok(!v.shown(),'a fresh sitting does not open on the map')
+assert.equal(v.map().querySelectorAll('[data-section]').length,0,'the map is not drawn before battle 1')
+assert.ok(campaign(v)&&!campaign(v).hasAttribute('hidden')&&campaign(v).querySelectorAll('[data-act=draft]').length===3,'it opens on the first draft: three offered')
+assert.equal(v.handle.session,null,'nothing is fielded before the pick')
 
-/* 2 · clicking the next fields its encounter, exactly as ?play= does: the battle's own full screen */
-// was: v.click('field','encounter.opening.orphanage');v.settle() — the battle came at once; kingdom.opening-loop-three puts
-// the first hero's draft and Equip between the map and the battle (PLAYABLE-OPENING-PLAN.md item 12)
-v.click('field','encounter.opening.orphanage');toBattle(v)
-assert.equal(v.handle.session.config.encounterId,'encounter.opening.orphanage','clicking the Orphanage fields its encounter')
-assert.ok(!v.shown(),'the map gives way to the battle')
+/* 2 · the pick fields the Orphanage, exactly as ?play= does: the battle's own full screen */
+// was: v.click('field','encounter.opening.orphanage');v.settle() — the battle came at once; kingdom.opening-loop-three put
+// the first hero's draft and Equip between the map and the battle (PLAYABLE-OPENING-PLAN.md item 12).
+// Law 10, 2026-10-04 (kingdom.opening-starts-in-battle): was v.click('field','encounter.opening.orphanage');toBattle(v) and
+// 'clicking the Orphanage fields its encounter' / 'the map gives way to the battle' — there is no map to click now: the
+// pick (toBattle takes the first offer) puts the Orphanage on the board with no Equip stop
+toBattle(v)
+assert.equal(v.handle.session.config.encounterId,'encounter.opening.orphanage','the first hero\'s pick fields the Orphanage')
+assert.equal(campaign(v).querySelectorAll('.equip-page').length,0,'no Equip stop before battle 1')
+assert.ok(!v.shown()&&v.map().querySelectorAll('[data-section]').length===0,'still no map')
 assert.ok(v.w.document.body.classList.contains('battle-view'),'the battle is its own full screen')
 // Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed'; kingdom
 // SWITCHES playQueueProposal overturned): the Hero Phase begins its first hero at once — was: 'selecting', waiting for a click
@@ -101,8 +119,15 @@ assert.ok(WON.includes(v.handle.session.ctx.state.outcome),'the Orphanage is won
 // rewards page returns to the map
 assert.match(v.root.querySelector('#commands').textContent,/Continue to the reckoning/,'the outcome goes on to the reckoning, then the map')
 toMap(v)
-;({next}=readMap(v,['encounter.opening.orphanage'],'after the Orphanage'))
+let {s,next}=readMap(v,['encounter.opening.orphanage'],'after the Orphanage')
 assert.equal(next.id,'encounter.opening.lumberjack')
+/* (moved here from the fresh sitting, 2026-10-04 — the Law 10 note at step 1) the map fields nothing by itself, and a
+   locked section does nothing */
+const fielded=v.handle.generation
+for(const x of s.filter(x=>x.state==='locked'))for(const fn of Object.values(x.g.handlers))fn()
+assert.equal(v.handle.generation,fielded,'clicking a locked section fields nothing')
+assert.ok(v.shown(),'the map stays up after clicking a locked section')
+assert.equal(s.filter(x=>x.state==='locked').length,4,'four sections are locked')
 
 /* 4 · a loss: "Back to the map" too, and the Lumberjack House is still the next (a lost opening battle is replayed) */
 // was: v.click('field',…);v.settle(), a loss the AI made, and v.click('map') — kingdom.opening-loop-three: the drafts and
@@ -124,4 +149,4 @@ assert.equal(next.g.querySelectorAll('[data-act]').length+(next.g.dataset.act?1:
 
 /* 6 · the launcher links to the map */
 assert.ok(readFileSync(launcher,'utf8').includes('<a href="../kingdom/BATTLE-SANDBOX.html?map" data-more="map">'),'PLAY.html links to the map')
-console.log(`abbotown map: six sections in the ruled order (${RULED.join(', ')}); taken checked, one red arrow on the next, the rest locked; the next fields its battle; a win returns to the map with it taken, a loss with it offered again; &taken= seeds it; PLAY.html links to it passed`)
+console.log(`abbotown map: six sections in the ruled order (${RULED.join(', ')}); a fresh sitting opens on the first draft and its pick fields the Orphanage with no map and no Equip before battle 1; taken checked, one red arrow on the next, the rest locked; the next fields its battle; a win returns to the map with it taken, a loss with it offered again; &taken= seeds it; PLAY.html links to it passed`)

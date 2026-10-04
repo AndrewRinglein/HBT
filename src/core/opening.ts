@@ -29,7 +29,7 @@ import { tickAssignments } from './assignments.js'
 import { CLASSES, groupOf } from '../content/classes.js'
 import { HERO_POOL, CIVILIANS, RESCUABLE_CIVILIANS, heroRowOf, assertKitted, type HeroRow } from '../content/heroes.js'
 import type { EngagementResult } from './seam.js'
-import { PROLOGUE, DRAFT_CADENCE, DRAFT_OFFER, type PrologueRow } from '../content/prologue.js'
+import { PROLOGUE, DRAFT_CADENCE, DRAFT_OFFER, OPENING_STRAIGHT_IN, type PrologueRow } from '../content/prologue.js'
 import { TERRITORIES, REALM } from '../content/territories.js'
 import { CURRENCIES } from '../content/currencies.js'
 import { CUPS, CUP_IDS } from '../content/cups.js'
@@ -312,6 +312,40 @@ export function performOpeningDeploy(ctx: Ctx, causeId: string): boolean {
   for (const h of listOpeningParty(c)) if (!engagementOf(c).deployed.includes(h)) performDeploy(ctx, h, causeId)
   performAdvancePrep(ctx, causeId)
   return false
+}
+
+// ---------- straight into the first battle (kingdom.opening-starts-in-battle, 2026-10-04) ----------
+// Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1,
+// …'): "We don't start by showing you going to the orphanage on the map. There's no reason to have that map step in the
+// beginning. We're just going straight into the battle after you get your hero." Until then a run opened on the map, its
+// click opened the first draft, and the pick rested at Equip (2026-10-01 'one continuous run through the first six
+// battles' — amended for its first step only).
+
+/**
+ * Is the battle the opening stands at one a run enters straight from the draft — no map before it, no Equip stop? The
+ * row says how many are (content/prologue.ts OPENING_STRAIGHT_IN); the cursor's battle number is the next battle's, won
+ * or not, so a battle 1 lost and offered again is still entered so. False once the opening is done. Pure.
+ */
+export function isOpeningStraightIn(campaign: CampaignState): boolean {
+  const n = campaign.cursor.prologue
+  return n !== null && n <= OPENING_STRAIGHT_IN.battles
+}
+
+/**
+ * The opening battle a run enters straight: fielded (performFieldOpeningBattle — refused while a draft is owed), everyone
+ * free to fight sent (performOpeningDeploy), Equip passed, the cursor at the battle. A run saved inside Combat Prep for
+ * that same battle (the page before 2026-10-04 rested at Equip) is walked on from where it stands. Refused for a battle
+ * the row does not name, for another battle than the cursor holds, and when a choice of who goes is owed.
+ */
+export function performOpeningStraightIn(ctx: Ctx, battle: { readonly id: string; readonly mapId: string; readonly kind: string }, causeId: string): Engagement {
+  const c = ctx.campaign
+  if (!isOpeningStraightIn(c)) throw new Error(`performOpeningStraightIn refused: battle ${c.cursor.prologue ?? '(the opening is done)'} is not entered straight from the draft`)
+  if (c.cursor.step === 'prep' && c.cursor.engagement?.id !== battle.id) throw new Error(`performOpeningStraightIn refused: the cursor holds '${c.cursor.engagement?.id}', not '${battle.id}'`)
+  if (c.cursor.step !== 'prep') performFieldOpeningBattle(ctx, battle, causeId)
+  if (prepStepOf(c) !== 'equip' && performOpeningDeploy(ctx, causeId)) throw new Error('performOpeningStraightIn refused: a choice of who goes is owed')
+  performAdvancePrep(ctx, causeId)
+  if (c.cursor.step !== 'battle') throw new Error(`performOpeningStraightIn refused: Combat Prep did not end at the battle — the cursor is at '${c.cursor.step}'`)
+  return engagementOf(c)
 }
 
 /**

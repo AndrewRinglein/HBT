@@ -16,6 +16,10 @@
 // goes again. The Gates and the Cathedral are won; the map ends with every section taken and says the run is complete — and the Campaign never left the opening (no
 // Week begun, no kingdom map). A reward kept is equipped at Equip before the next battle and fielded on its hero.
 //
+// 2026-10-04, kingdom.opening-starts-in-battle (engine DECISIONS.md 2026-10-04 '… no map before battle 1 …'): the new run opens on
+// the first draft; its pick goes straight into the Orphanage, and the Orphanage lost goes straight back into it — no map
+// and no Equip before battle 1 is won. The map first shows after battle 1's rewards; battles 2 to 6 are as above.
+//
 // Battles are settled as tools/opening-page.mjs settles them (playedOut, kingdom.page-test-strong-party, ruled 2026-10-04:
 // "Go ahead, overpowered power party."): a battle the run means to win is played once by the engine's AI with the run's
 // own party made overpowered for the test only, and its save pasted into the page; a battle it means to lose is the party
@@ -172,9 +176,25 @@ function equipFromStash(label){
 
 /* a section fielded from the map: its drafts, Equip (a stash item put on), To the battle — the party sent is the living
    heroes, up to the deploy limit */
+/* Law 10, 2026-10-04 (kingdom.opening-starts-in-battle; engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, …': "We don't
+   start by showing you going to the orphanage on the map. There's no reason to have that map step in the beginning.
+   We're just going straight into the battle after you get your hero."): every battle was fielded from the map — the two lines
+     assert.equal(P.readMap(ORDER.slice(0,n-1),label+': the map'),id,label+': the next section')
+     P.v.click('field',id)
+   — and went through whoGoes, Equip and its To the battle. The rule now, for a battle the sources say is entered straight
+   from the draft (P.straight — core/opening.ts isOpeningStraightIn: the first, until it is won): no map is on the screen
+   and none was drawn, the draft is already up, and the pick puts the battle on the board with the hero sent — no Who-goes
+   page, no Equip (P.straightIn; the read of "straight into the battle", kingdom SWITCHES.md startsInBattleNoEquip).
+   Every other battle is held exactly as before. */
 function field(id,n,label,reopenAtDraft=false,pick=choose){
- assert.equal(P.readMap(ORDER.slice(0,n-1),label+': the map'),id,label+': the next section')
- P.v.click('field',id)
+ const straight=P.straight()
+ if(straight){
+  assert.ok(P.shown('campaign')&&!P.shown('conquest'),label+': the draft is on the screen — no map before this battle')
+  assert.equal(P.drawn.filter(d=>d.map).length,0,label+': the map was never drawn')
+ }else{
+  assert.equal(P.readMap(ORDER.slice(0,n-1),label+': the map'),id,label+': the next section')
+  P.v.click('field',id)
+ }
  if(reopenAtDraft){
   /* kingdom.opening-draft-modifiers: the page closed on a draft and opened again in the same browser shows the same three
      heroes with the same modifiers — the rolls are the run's own, read back from its save */
@@ -189,6 +209,15 @@ function field(id,n,label,reopenAtDraft=false,pick=choose){
  assert.equal(drafted.length,1,`${label}: one draft before it — never two, never none`)
  assert.equal(P.heroIds().length,n,`${label}: a party of ${n}`)
  CADENCE.push({n,drafts:drafted.length,party:P.heroIds().length})
+ if(straight){
+  /* straight in: everyone of the party is on the board (one hero), nobody was asked, nothing was equipped, nobody is home */
+  const party=P.heroIds(),xpBefore=Object.fromEntries(party.map(h=>[h,camp().roster[h].xp]))
+  const s=P.straightIn(party,label)
+  assert.equal(s.config.encounterId,id,label+': the pick fields this battle')
+  assert.equal(P.drawn.filter(d=>d.map||d.equip||d.deploy).length,0,label+': neither the map nor Equip nor the Who-goes page was drawn before it')
+  console.error(`${label}: straight in — sent ${party.map(h=>camp().roster[h].name).join(', ')}; no map, no Equip`)
+  return {drafted,deployed:party,equipped:null,s,who:{asked:false,free:party,sent:party,home:[]},home:{},xpBefore}
+ }
  const who=whoGoes(label,pick)
  const deployed=[...camp().cursor.engagement.deployed].sort()
  /* Law 10, 2026-10-03 (kingdom.opening-deploy-choice): until now the party sent was whatever the page sent — the first
@@ -235,13 +264,20 @@ const REOPENED_ON_CHOICE=[]
 const LOST=[]
 const xpNow=()=>Object.fromEntries(Object.values(camp().roster).map(h=>[h.id,h.xp]))
 function settle(won,label,reopenOnSpecialty=false,how={}){
+ /* kingdom.opening-starts-in-battle: a battle entered straight from the draft (the first), lost, is not offered from the
+    map — its way on goes straight back into the battle */
+ const straight=P.straight()
  const id=camp().cursor.engagement.id,xpWas=xpNow(),levelsWas=JSON.stringify(Object.values(camp().roster).map(h=>[h.id,h.level]))
  const {e,result,played,seed}=P.fightOut(won,label,how)
  if(!won){
   /* a lost battle pays no XP to anyone — not its fixed XP (the Orphanage's 20), not the formula's — and levels nobody:
      it only offers the replay (the Continue goes straight back to the map) */
   assert.deepEqual(xpNow(),xpWas,label+': a lost battle leaves every hero\'s XP where it was')
-  assert.equal(camp().cursor.step,'open',label+': nothing to level after a loss — back to the map')
+  /* Law 10, 2026-10-04 (kingdom.opening-starts-in-battle): this read, of every lost battle,
+       assert.equal(camp().cursor.step,'open',label+': nothing to level after a loss — back to the map')
+     — still the rule for battles 2 to 6. A lost battle 1 has nothing to level either, and goes straight back into the
+     battle: the cursor is at the battle again */
+  assert.equal(camp().cursor.step,straight?'battle':'open',label+': nothing to level after a loss — '+(straight?'straight back into the battle':'back to the map'))
   assert.equal(JSON.stringify(Object.values(camp().roster).map(h=>[h.id,h.level])),levelsWas,label+': nobody levels on a loss')
   LOST.push({label,id,seed})
  }
@@ -280,7 +316,8 @@ function settle(won,label,reopenOnSpecialty=false,how={}){
   P=openingPage(page,'?map',browser)
  }
  if(camp().cursor.step==='levelUp'||camp().cursor.step==='rewards')P.levelUps(label)
- assert.equal(camp().cursor.step,'open',label+': back to the map')
+ /* (Law 10, 2026-10-04, kingdom.opening-starts-in-battle: 'open' for every battle until then; a lost battle 1 is back on the board) */
+ assert.equal(camp().cursor.step,!won&&straight?'battle':'open',label+(!won&&straight?': back in the battle':': back to the map'))
  assert.equal(camp().week,0,label+': no Week begun — the run never reaches the kingdom');assert.equal(camp().ended,null,label+': the run goes on')
  return {result,kept}
 }
@@ -288,9 +325,16 @@ function settle(won,label,reopenOnSpecialty=false,how={}){
    (opening-page.mjs playOut 'civilian-falls') — so its victory screen has a dead civilian to mark */
 function battle(id,n,label=`battle ${n}`){const f=field(id,n,label),done=settle(true,label,n===1,n===1?{civilianFalls:true}:{});stayedHome(f,label,true);return {...f,...done}}
 
-/* 1 · a new run: nothing fielded, nobody drafted, the Orphanage next; the run is kept from the first screen */
-assert.equal(P.readMap([],'a new run'),ORPHANAGE)
-assert.equal(P.handle.session,null,'the map fields nothing by itself')
+/* 1 · a new run: nothing fielded, nobody drafted, the first draft on the screen; the run is kept from the first screen.
+   Law 10, 2026-10-04 (kingdom.opening-starts-in-battle; engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, …': "We don't
+   start by showing you going to the orphanage on the map. There's no reason to have that map step in the beginning.
+   We're just going straight into the battle after you get your hero."): this read
+     assert.equal(P.readMap([],'a new run'),ORPHANAGE)
+     assert.equal(P.handle.session,null,'the map fields nothing by itself')
+   — a new run opened on the map with the Orphanage next. The rule now: it opens on the first draft, and the map first
+   shows after battle 1's rewards — with the Orphanage taken, held where battle 2 is fielded (field → P.readMap). */
+assert.ok(P.shown('campaign')&&!P.shown('conquest'),'a new run opens on the first draft, not the map');assert.equal(camp().cursor.step,'draft')
+assert.equal(P.handle.session,null,'nothing is fielded before the pick')
 assert.deepEqual(P.heroIds(),[],'the run starts with nobody')
 assert.ok(browser.has(RUN_KEY),'the run is kept in the browser')
 
@@ -306,10 +350,16 @@ assert.equal(b1.drafted.length,1,'one hero before battle 1')
 const first=b1.drafted[0]
 settle(false,'battle 1 lost')
 assert.equal(camp().roster[first].xp,0,'a lost Orphanage leaves the hero\'s XP where it was: no 20 for a loss')
-assert.equal(P.readMap([],'after losing battle 1'),ORPHANAGE,'the lost Orphanage is offered again')
-P.v.click('field',ORPHANAGE)
-assert.equal(camp().cursor.step,'prep','no draft is owed for the replay');assert.equal(whoGoes('battle 1 again').asked,false)
-let replay1=P.equipThenFight([first],'battle 1 again')
+/* Law 10, 2026-10-04 (kingdom.opening-starts-in-battle: "A lost battle 1 replayed goes straight back into the battle"): this read
+     assert.equal(P.readMap([],'after losing battle 1'),ORPHANAGE,'the lost Orphanage is offered again')
+     P.v.click('field',ORPHANAGE)
+     assert.equal(camp().cursor.step,'prep','no draft is owed for the replay');assert.equal(whoGoes('battle 1 again').asked,false)
+     let replay1=P.equipThenFight([first],'battle 1 again')
+   — offered again from the map, through Equip. The rule now: the lost Orphanage's way on puts it straight back on the
+   board (settle held the cursor at the battle), with no draft, nobody asked and the same hero sent; still no map drawn */
+assert.equal(P.heroIds().length,1,'no draft is owed for the replay: the same one hero')
+let replay1=P.straightIn([first],'battle 1 again')
+assert.equal(P.drawn.filter(d=>d.map||d.equip||d.deploy).length,0,'a lost battle 1 is fought again with no map and no Equip in between')
 const dice1={first:b1.s.config.seed,replay:replay1.config.seed}
 assert.equal(dice1.first,1,'the first attempt was fielded on the battle\'s own number');assert.notEqual(dice1.replay,dice1.first,'the replay is fielded on new dice')
 assert.equal(camp().cursor.engagement.seed,dice1.replay);assert.equal(camp().cursor.replays,1,'the Campaign counts the replay')
