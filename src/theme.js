@@ -75,6 +75,12 @@ export function styleIdOf(id, D) {
   return like.length && (like.length === 1 || like[0][1] < like[1][1]) ? like[0][0] : null
 }
 export const stStyle = (id, D) => STYLE[styleIdOf(id, D)] || { hue: '#8ed14f', gl: 'circle(50%)' }
+/* viewer.area-trigger-burst (engine DECISIONS.md 2026-10-03 'an end-of-Activation area burn shows an explosion of fire', Andrew:
+   "that should be an explosion of fire. We have the VFX for that."): the burst an AREA plays, by the effect its status already
+   has in the table above (`vfx`) — burn: the effects library's explosion of fire. A status whose effect has no burst here
+   plays none (it is listed by name: tools/area-trigger-burst.test.mjs) — never another status's. */
+export const AREA_BURST = { burn: 'fire' }
+export const areaBurstOf = (statusId, D) => AREA_BURST[stStyle(statusId, D).vfx] || null
 
 /* UNDER THE UNIT (viewer.under-unit, engine DECISIONS.md 2026-09-29 "the playable battle screen"): "we don't need
    poison or burn icons on the units because we can display that on the unit directly" · "Slow does not need

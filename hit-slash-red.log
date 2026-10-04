@@ -1,0 +1,181 @@
+TAP version 13
+# Subtest: the slash is the existing effect in its existing styles: its body is laid down opaque in the style's own colour — red for a physical hit — under the glow it always had
+not ok 1 - the slash is the existing effect in its existing styles: its body is laid down opaque in the style's own colour — red for a physical hit — under the glow it always had
+  ---
+  duration_ms: 1.933
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\hit-slash.test.mjs:142:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    the three styles, by damage type
+    + actual - expected
+    
+    + []
+    - [
+    -   'phys',
+    -   'mag',
+    -   'true'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'phys'
+    1: 'mag'
+    2: 'true'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/hit-slash.test.mjs:143:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: the fold says a slash for an attack's damage that dealt damage — none for a hit that dealt none, a status tick, a miss
+not ok 2 - the fold says a slash for an attack's damage that dealt damage — none for a hit that dealt none, a status tick, a miss
+  ---
+  duration_ms: 3.9546
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\hit-slash.test.mjs:163:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one slash at the damage line
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/hit-slash.test.mjs:166:79)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: on the painted 3D board a Zombie's hit on a hero draws a red slash across the hero at the blow; a hero's hit on a Zombie draws one across the Zombie
+not ok 3 - on the painted 3D board a Zombie's hit on a hero draws a red slash across the hero at the blow; a hero's hit on a Zombie draws one across the Zombie
+  ---
+  duration_ms: 714.0987
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\hit-slash.test.mjs:179:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one slash for the hit (1 layers: 620)
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/hit-slash.test.mjs:183:12)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a miss draws none, a block draws none — on the painted 3D board
+not ok 4 - a miss draws none, a block draws none — on the painted 3D board
+  ---
+  duration_ms: 709.0075
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\hit-slash.test.mjs:198:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a blow that misses draws nothing on the target at all
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/hit-slash.test.mjs:201:70)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: a ranged hit that deals damage draws the slash at the projectile's arrival: the Hunter's arrow, the priest's bolt (its own style's colour)
+not ok 5 - a ranged hit that deals damage draws the slash at the projectile's arrival: the Hunter's arrow, the priest's bolt (its own style's colour)
+  ---
+  duration_ms: 217.4536
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\hit-slash.test.mjs:209:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one slash
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/hit-slash.test.mjs:212:48)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the flat board (tokens, no bodies) draws it too, and a hand step draws it once at the damage's line
+not ok 6 - the flat board (tokens, no bodies) draws it too, and a hand step draws it once at the damage's line
+  ---
+  duration_ms: 324.0439
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\hit-slash.test.mjs:224:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one slash on the flat board
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/hit-slash.test.mjs:227:47)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the whole Orphanage, played on the 3D board: one slash for every attack that hit and dealt damage, none for any other
+not ok 7 - the whole Orphanage, played on the 3D board: one slash for every attack that hit and dealt damage, none for any other
+  ---
+  duration_ms: 914.5516
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\hit-slash.test.mjs:239:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one slash each, and no other
+    
+    0 !== 19
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 19
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/hit-slash.test.mjs:251:10)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3169.1357

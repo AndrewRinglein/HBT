@@ -3,14 +3,14 @@
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
 import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly, PLAY_HUE } from './theme.js'
-import { mvOf, absorbOf } from './actions.js'
+import { mvOf, absorbOf, freeAttacksUp, FREE_ATTACK } from './actions.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { afflictionPopup } from './affliction.js'
 import { dangerHTML, raIcon } from './icons.js'
 import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, groundFootprint, LENS } from './camera3d.js'
 import { POLICY, TILT, fitZoom, zoomLimits, tiltLimits, panRange, turned as turnedBy, elevationOfTilt } from './camera-policy.js'
-import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES, FLIGHTS } from './hexvfx.js'
+import { createHexVFX, playMeleeImpact, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, playFireballExplosion, STATUS_STYLES, FLIGHTS } from './hexvfx.js'
 
 export const el = (cls, style, html) => { const d = document.createElement('div')
   if (cls) d.className = cls; if (style) d.style.cssText = style; if (html != null) d.innerHTML = html; return d }
@@ -413,12 +413,38 @@ export function fxAttack(V, kind, dt, aId, tId, dmg, crit = false) {
   const FX = V.fx.FX; if (!FX) return
   const A = anchorOf(V, aId), T = anchorOf(V, tId); if (!A || !T) return
   const tier = crit ? 'super' : TIER(dmg)          // rung 2: a crit renders at the super tier regardless of damage
+  /* viewer.hit-slash: a blow launches nothing of its own — its mark is the slash across the target, drawn when the attack's
+     damage lands (fxSlash). It was playMeleeAttack here: a 320 ms run-in for a sprite lunge nobody plays, then the slash —
+     a third of a second after the hit, and on a MISS as well. */
+  if (kind === 'melee') return
   try {
-    if (kind === 'melee')    playMeleeAttack(FX, A, T, DTYPE[dt] || 'phys', tier, {})
-    else if (dt === 'magic') playMagicBolt(FX, A, T, tier, {})
+    if (dt === 'magic') playMagicBolt(FX, A, T, tier, {})
     else if (dt === 'true')  playHolyBolt(FX, A, T, tier, {})
     else                     playArrow(FX, A, T, {})
   } catch (e) {}
+}
+/* viewer.area-trigger-burst: the burst an area trigger plays over its area, centred on its owner — the effects library's own
+   explosion of fire, sized so its blast wave reaches the edge of the hexes within `radius` (half a hex past their centres),
+   on the same canvas the other effects use: the painted 3D board and the flat board alike */
+export function fxAreaBurst(V, ownerId, radius, kind) {
+  const FX = V.fx.FX; if (!FX || kind !== 'fire') return false
+  const T = anchorOf(V, ownerId); if (!T) return false
+  const reach = (radius + .5) * V.data.LAYOUT.W * (V.camTarget?.zoom ?? V.view?.zoom ?? 1)
+  try { playFireballExplosion(FX, T, 'high', { reach }) } catch (e) { return false }
+  return true
+}
+/* viewer.hit-slash (engine DECISIONS.md 2026-10-03 'a hit shows a red slash' / 'the slash on every damaging hit'): the slash
+   across a unit — the existing melee impact (hexvfx.js playMeleeImpact, SLASH_STYLES by damage type: red for a physical hit),
+   on the same canvas above the bodies, on the painted 3D board and the flat board alike. Sized by what the hit dealt (the
+   engine's figure), a crit at the super tier. What was drawn is V.fx.slashes. */
+export function fxSlash(V, tId, dt, n, crit = false) {
+  const FX = V.fx.FX; if (!FX) return false
+  const T = anchorOf(V, tId); if (!T) return false
+  const at = T
+  const tier = crit ? 'super' : TIER(n), type = DTYPE[dt] || 'phys'
+  try { playMeleeImpact(FX, at, type, tier) } catch (e) { return false }
+  ;(V.fx.slashes ||= []).push({ id: tId, type, tier, n, clock: V.clock ? V.clock() : null, x: at.x, y: at.y, h: at.h })
+  return true
 }
 /* viewer.attack-impact-timing: the projectile an attack flies — fxAttack's own choice above — and its time in the air; a blow
    flies none */
@@ -740,6 +766,8 @@ export function playCues(V, cues) {
       case 'hitstop': hitstop(V, c.ms); break
       case 'float': pushFloat(V, c.hex, c.text, floatHue(c, V.data), c); break
       case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg, c.crit); break
+      case 'slash': fxSlash(V, c.id, c.dt, c.n, c.crit); break
+      case 'turned': break   // viewer.plays-turned-units: the redraw is the type's (syncUnits, the cast); nothing else to play      // viewer.hit-slash: the damage of an attack that the pump has not already drawn at its blow
       case 'kick': cameraKick(V, c.a, c.t); break
       case 'injury': queueInjury(V, c.id, c.name); break
       case 'fx.status': fxStatus(V, c.id, c.style); break
@@ -860,7 +888,10 @@ export function syncUnits(V) {
   const bare = view.bare
   for (const [id, E] of L.UEL) if (!S.U[id]) E.root.style.display = 'none'
   for (const u of Object.values(S.U)) {
-    let E = L.UEL.get(u.id); if (!E) { E = mkUnit(V, u); L.UEL.set(u.id, E) }
+    let E = L.UEL.get(u.id)
+    /* viewer.plays-turned-units: a unit turned (or itself again) is another row — its token, its tint, its name are made afresh */
+    if (E && (E.typeId !== u.typeId || E.side !== u.side)) { E.root.remove(); L.UEL.delete(u.id); E = null }
+    if (!E) { E = mkUnit(V, u); E.typeId = u.typeId; E.side = u.side; L.UEL.set(u.id, E) }
     const attempted = opportunityPose(V)
     const f = attempted?.id === u.id ? attempted : feetOf(V, u.hex)
     E.root.style.left = f.x + 'px'; E.root.style.top = f.y + 'px'
@@ -1034,7 +1065,9 @@ export function syncUnits(V) {
       E.fx.style.cssText = body.length ? '' : 'display:none'
       E.fx.innerHTML = body.map(k => BODY_FX[k](figPx)).join('') }
     const dbSkull = u.deathbed ? `<div class="badge dbSkull" title="stood at the Deathbed">${raIcon('skull', `font-size:13px;color:${BLOOD_HUE}`)}</div>` : ''
-    E.badges.innerHTML = dbSkull + sts.map(([id, v]) => { const st = stStyle(id, V.data)
+    /* viewer.free-attack-kind-words: a free attack the unit has up (Counterattack, Fend) — its glyph in the status row over its head */
+    const freeUp = freeAttacksUp(u, V.data).map(k => `<div class="badge freeUp" data-kind="${k}" title="${FREE_ATTACK[k].word} is up">${raIcon(FREE_ATTACK[k].glyph, 'font-size:14px;color:' + NOTE_HUE.aoo)}</div>`).join('')
+    E.badges.innerHTML = dbSkull + freeUp + sts.map(([id, v]) => { const st = stStyle(id, V.data)
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +
              `<div class="pip${st.sq ? ' sq' : ''}" style="background:${st.hue}">${v}</div></div>` }).join('')
       + (chev !== 0 ? `<div class="badge"><div class="gl" style="position:absolute;inset:0;background:${chev > 0 ? MOD_UP : MOD_DOWN};` +
@@ -1092,15 +1125,19 @@ export function drawAim(V) {
     mark.style.transform = `translateZ(${heightOf(V,attempt.to)+2}px)`
     dyn.appendChild(mark)
   }
+  const burstTile = (hex, cls, colour) => {
+    const W = V.data.LAYOUT.W, H = V.data.LAYOUT.H
+    const p = POS[hex]; if (!Number.isInteger(hex) || !p) throw new Error(`burst references unknown hex ${hex}`)
+    const n = el('ring ' + cls, `left:${p.px-W/2}px;top:${p.py-H/2}px;background:${colour};pointer-events:none`)
+    n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex)}px)`
+    dyn.appendChild(n); return n
+  }
+  /* viewer.area-trigger-burst: an area trigger's reach, while its burst plays — the burst's own tiles, in the effect's colour */
+  if (V.view.areaBurst) for (const hex of V.view.areaBurst.hexes) burstTile(hex, 'burstHex areaBurstHex', V.view.areaBurst.colour)
   // Copy the engine footprint. No radius, recipient or shielding calculation.
   if (S.BURST && V.view.burstVisible) {
-    const B = S.BURST, W = V.data.LAYOUT.W, H = V.data.LAYOUT.H
-    const tile = (hex, cls, colour) => {
-      const p = POS[hex]; if (!Number.isInteger(hex) || !p) throw new Error(`burst references unknown hex ${hex}`)
-      const n = el('ring ' + cls, `left:${p.px-W/2}px;top:${p.py-H/2}px;background:${colour};pointer-events:none`)
-      n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex)}px)`
-      dyn.appendChild(n); return n
-    }
+    const B = S.BURST
+    const tile = burstTile
     for (const hex of B.hexes) tile(hex, 'burstHex', 'rgba(214,178,94,.48)')
     const centre = tile(B.centre, 'burstCentre', NOTE_HUE)
     if (centre) centre.title = 'Burst centre'

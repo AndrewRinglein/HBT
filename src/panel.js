@@ -3,10 +3,11 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers } from './actions.js'
+import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK } from './actions.js'
+import { raIcon } from './icons.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { itemsOf, SLOT_LABEL } from './items.js'
-import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
+import { MOD_UP, MOD_DOWN, BADGE_HUE, NOTE_HUE } from './theme.js'
 
 /* every engine hook has a label — tools/vocabulary.test.mjs checks it against the engine's export */
 export const HOOKLBL = { onHit: 'ON HIT', onBlock: 'ON BLOCK', onAttack: 'ON ATTACK', onDamage: 'ON DAMAGE',
@@ -61,13 +62,18 @@ export function drawPanel(V) {
     return `<div class="stCols"><div>${rows.slice(0, h).join('')}</div><div>${rows.slice(h).join('')}</div></div>` }
   const card = ASSETS[(ARTMAP[u.typeId] || {}).card]
   const sts = Object.entries(u.st).filter(([, v]) => v > 0)
-  const stCol = sts.length ? sts.map(([id, v]) => { const st = stStyle(id, V.data)
+  /* viewer.free-attack-kind-words: a free attack the unit has up, with the statuses: its glyph, its word, and its own Accuracy where the log gave it one */
+  const upCol = freeAttacksUp(u, V.data).map(k => { const F = FREE_ATTACK[k], acc = (((V.data.UD || {})[u.typeId] || {})[F.accuracy] || 0) + modOf(u, F.accuracy)
+    return `<div class="freeUpRow" data-kind="${k}" style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;background:${NOTE_HUE.aoo}12;border:1px solid ${NOTE_HUE.aoo}44;border-radius:3px">
+        ${raIcon(F.glyph, 'font-size:14px;flex:0 0 14px;color:' + NOTE_HUE.aoo)}<span style="flex:1;font-size:12.5px;color:${NOTE_HUE.aoo};font-weight:600">${F.word}</span>
+        <span class="mono" style="font-size:12px;font-weight:700;color:${NOTE_HUE.aoo}">up${acc ? ' · ' + sgn(acc) + ' ACC' : ''}</span></div>` }).join('')
+  const stCol = upCol + (sts.length ? sts.map(([id, v]) => { const st = stStyle(id, V.data)
     return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;
         background:${st.hue}12;border:1px solid ${st.hue}44;border-radius:3px">
         <i style="width:14px;height:14px;flex:0 0 14px;display:block;clip-path:${st.gl};background:${st.hue}"></i>
         <span style="flex:1;font-size:12.5px;color:${st.hue};font-weight:600">${SN[id] || id}</span>
         <span class="mono" style="font-size:14px;font-weight:700;color:${st.hue}">${v}</span></div>` }).join('')
-    : '<div style="font-size:11.5px;color:#5f594c;padding:6px 2px">no status effects</div>'
+    : upCol ? '' : '<div style="font-size:11.5px;color:#5f594c;padding:6px 2px">no status effects</div>')
   const now = V.clock()
   /* triggers grouped BY HOOK per §4; a trigger's effect lives in t.effect */
   const trigByHook = {}

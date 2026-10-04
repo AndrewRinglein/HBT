@@ -15,12 +15,14 @@
    control and attacks of opportunity, the Deathbed, Surge, Power, and the kit
    a unit is fielded with (unit.equipped).
    ══════════════════════════════════════════════════════════════════════════ */
-import { sgn } from './actions.js'
+import { sgn, freeAttackOf } from './actions.js'
 
 /* view-state clocks the fold stamps from the `now` it is handed — a beat's
    duration is the pump's business, but the fold knows WHICH beats linger */
 const FIRE_MS = 1600, TRIG_MS = 1400, MISS_MS = 900
 
+/** viewer.hit-slash: what a damage line dealt — the engine's own figures, its packets' `applied` or its `amount` */
+export const damageDealt = e => e.packets ? e.packets.reduce((s, p) => s + (p.applied || 0), 0) : (e.amount || 0)
 export function createState() {
   return {
     U: {},                 // id -> unit {id,name,typeId,side,hex,hp,maxHp,stam,maxStam,st,life,bleed,…}
@@ -108,6 +110,39 @@ export function fold(S, e, ctx, now = 0) {
       /* an ARRIVAL — a wave, a raise, a summon — lands as a beat; the roster
          before battle.begin is seeded silently by the pump (2026-09-03) */
       if (S.begun) cue('arrive', { id: e.actor, hex: e.hex })
+      break
+    /* ── A HERO TURNED BY AN AFFLICTION (viewer.plays-turned-units, 2026-10-04) ───────────────────────────────────────────
+       rule.afflictions-at-zero (engine DECISIONS.md 2026-10-01 'the afflictions at 0 Health'; engine src/core/mutate.ts
+       transformUnit / revertUnit): a hero taken to 0 Health carrying Lycanthropy or Vampirism becomes its affliction's FORM
+       — "the bestiary's stats and powers, no hero gear", at full Health — on the side the line says, and is itself again
+       when it falls or the battle ends. One line each. The unit on the board becomes the form's ROW: its type (so its
+       sheet, its attacks, its art and its body are the form's wherever they are read off the type), the line's side,
+       Health and maximum, the row's Stamina (the engine's sheet: the line does not state it), no kit, no modifiers; it
+       keeps what the engine keeps — its id, its hex, its statuses — and what is left of its Activation is spent. What
+       it was is kept whole on `turned.original` and comes back at the revert, on the hex and with the statuses it has
+       then, at the Health the line says. viewer SWITCHES turnedName, turnedStamina, turnedWords. */
+    case 'unit.transformed':
+      if (U[e.actor]) { const was = U[e.actor], row = UD[e.into]
+        if (!row) throw new Error(`unit.transformed: the engine's sheet has no ${e.into}`)
+        if (was.turned) throw new Error(`unit.transformed: unit ${e.actor} is already turned into ${was.turned.into}`)
+        const form = mkUnit({ actor: was.id, name: `${row.name} (${was.name})`, typeId: e.into, side: e.side, hex: was.hex, hp: e.hp, maxHp: e.maxHp, stamina: row.maxStamina ?? 0, maxStamina: row.maxStamina ?? 0 }, UD)
+        Object.assign(form, { st: was.st, stBy: was.stBy, prone: was.prone, moveUsed: true, primaryUsed: true,
+          turned: { badgeId: e.badgeId, from: e.from, into: e.into, original: structuredClone(was) } })
+        U[e.actor] = form
+        if (S.AOO?.mover === e.actor) S.AOO = null
+        cue('float', { hex: form.hex, kind: 'note', text: 'TURNED · ' + String(row.name).toUpperCase(), big: true })
+        cue('turned', { id: e.actor, into: e.into, side: e.side }) }
+      break
+    case 'unit.reverted':
+      if (U[e.actor]) { const form = U[e.actor]
+        if (!form.turned) throw new Error(`unit.reverted: unit ${e.actor} was not turned`)
+        const own = form.turned.original
+        Object.assign(own, { hex: form.hex, st: form.st, stBy: form.stBy, prone: form.prone, side: e.side, hp: e.hp, maxHp: e.maxHp,
+          moveUsed: form.moveUsed, primaryUsed: form.primaryUsed, activeMv: form.activeMv, life: 'standing', bleed: 0 })
+        U[e.actor] = own
+        if (S.AOO?.mover === e.actor) S.AOO = null
+        cue('float', { hex: own.hex, kind: 'note', text: 'ITSELF AGAIN', small: true })
+        cue('turned', { id: e.actor, into: e.into, side: e.side }) }
       break
     case 'battle.begin': S.begun = true; break
     case 'map.loaded':
@@ -299,7 +334,7 @@ export function fold(S, e, ctx, now = 0) {
       /* one attack a unit makes on someone else's turn: the ordinary
          attack.declared/hit/miss that follow belong to this, and the label
          says so. The holder acts; the mover's activation resumes after. */
-      S.AOO = { holder: e.actor, mover: e.target, attackId: e.attackId }
+      S.AOO = { holder: e.actor, mover: e.target, attackId: e.attackId, ...(e.as ? { as: e.as } : {}) }
       if (['from', 'to', 'moveSeq'].some(key => Object.hasOwn(e, key))) {
         if (![e.from, e.to, e.moveSeq].every(n => Number.isSafeInteger(n) && n >= 0) || e.from === e.to)
           throw new Error('opportunity attempt has invalid hex or movement identity')
@@ -307,8 +342,10 @@ export function fold(S, e, ctx, now = 0) {
       }
       // This event itself says the mover tried another step. No guessed path,
       // range or animation into a hex the engine never let the mover enter.
-      if (U[e.target] && S.AOO.to == null) cue('float', { hex: U[e.target].hex, kind: 'note', text: 'TRIES TO KEEP MOVING', small: true })
-      if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'aoo', text: 'ATTACK OF OPPORTUNITY', small: true })
+      /* viewer.free-attack-kind-words: worded by the line's own kind (`as`) — a counterattack answers an attack and a fend an
+         approach: only an attack of opportunity's target was trying to keep moving */
+      if (!e.as && U[e.target] && S.AOO.to == null) cue('float', { hex: U[e.target].hex, kind: 'note', text: 'TRIES TO KEEP MOVING', small: true })
+      if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'aoo', text: freeAttackOf(e.as).word.toUpperCase(), small: true })
       S.subjectId = e.actor; S.subjectMode = 'acting'
       break
     case 'aoo.skipped': break                                             // nothing to draw; the log names the reason
@@ -386,6 +423,10 @@ export function fold(S, e, ctx, now = 0) {
         // damage between attack.hit and the attack's HP event.
         const critical = !!e.attackId && e.crit === true
         cue('flash', { id: e.target })
+        /* viewer.hit-slash (engine DECISIONS.md 2026-10-03 'the slash on every damaging hit', Andrew: "Red slash on every damage"):
+           an ATTACK's damage (it carries the attack's id — melee or ranged; a burst's and a status's tick do not) that dealt
+           damage draws the slash across its target; a hit that dealt none (all of it absorbed or resisted) draws none */
+        { const n = damageDealt(e); if (e.attackId && e.burst !== true && n > 0) cue('slash', { id: e.target, dt: e.damageType ?? e.packets?.find(p => p.applied > 0)?.damageType, n, of: e.packets ? 'applied' : 'amount', crit: critical }) }
         const tick = String(e.causeId || '').includes('status.')
         if (tick) cue('fx.tick', { id: e.target, cause: e.causeId })
         /* HITSTOP (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.2): a strike freezes
@@ -777,6 +818,8 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',
   'move.stopped', 'aoo.provoked', 'aoo.skipped', 'zoc.ignored', 'block.rolled',
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten', 'unit.obliterated',
+  /* viewer.plays-turned-units (2026-10-04) */
+  'unit.transformed', 'unit.reverted',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',

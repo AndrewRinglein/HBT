@@ -63,14 +63,15 @@ import { mountOverlays } from './overlays.js'
 import { POLICY as CAM_POLICY, ARRIVAL_SIDES } from './camera-policy.js'
 import { screenOf as cameraScreenOf } from './camera3d.js'
 import { mountPlayChrome } from './chrome.js'
-import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf, fxAttack, flightOf } from './board.js'
+import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf, fxAttack, flightOf, fxSlash, fxAreaBurst } from './board.js'
+import { areaBurstOf } from './theme.js'
 import { terrainLayer } from './terrain3d.js'
 import { bundledModels } from './models.js'
 import {prepareAtlasBinding} from './atlas.js'
 import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
 import {worldToCSS} from './terrain-scene.js'
 import {flatAffine} from './camera3d.js'
-import { createState, fold, foldTo } from './fold.js'
+import { createState, fold, foldTo, damageDealt } from './fold.js'
 import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncFalls, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble, isoK, boardAffine, GLIDE_MS } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
 import { closeAffliction } from './affliction.js'
@@ -94,6 +95,8 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'unit.equipped': 0, 'loadout.swapped': 360, 'encounter.begin': 0, 'encounter.objective': 0, 'encounter.wave': 900, 'encounter.roll': 0, 'unit.shunted': 200,
   'encounter.won': 900, 'encounter.lost': 900, 'move.stopped': 520, 'aoo.provoked': 700, 'aoo.skipped': 0, 'attack.cancelled': 120,
   'corpse.created': 0, 'corpse.removed': 380, 'unit.raised': 640, 'corpse.eaten': 300, 'unit.obliterated': 520,
+  /* viewer.plays-turned-units (2026-10-04) */
+  'unit.transformed': 900, 'unit.reverted': 420,
   /* the Deathbed Fighting modal holds the game (ruled 2026-09-03 evening): DB_TOTAL + a breath */
   'deathbed.stood': 2800, 'deathbed.fell': 2800, 'deathbed.none': 2800, 'hp.reset': 320, 'bleedout.accelerated': 320,
   'unit.badged': 0, 'unit.modified': 0, 'badge.gained': 420, 'badge.held': 0, 'power.exhausted': 160, 'charge.spent': 0, 'maxstamina.gained': 200,
@@ -774,7 +777,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     const F = flightOf(e.kind, e.damageType)
     const rec = { declared: logIndex(V.cursor - 1), outcome: logIndex(out.at), actor: e.actor, target: e.target, kind: e.kind, damageType: e.damageType, result: out.result, falls: null,
       motion: mo.motion, clip: mo.clip, moment: mo.at, source: mo.source, flight: F ? { ...F } : null,
-      motionAt: null, projectileAt: null, releaseAt: null, blowAt: null, reactionAt: null, reaction: null }
+      motionAt: null, projectileAt: null, releaseAt: null, blowAt: null, reactionAt: null, reaction: null, slash: false }
     V.impact.log.push(rec)
     strike = { at: out.at, result: out.result, crit: out.crit, e, lunge, mo, F, t: null, struck: false, launched: false, rec }
     V.cast?.face?.(e.actor, e.target)
@@ -814,12 +817,51 @@ export function mountBattleViewer(root, data, opts = {}) {
         let did = null
         if (V.cast) { if (A.falls && V.cast.fall?.(target)) did = 'death'; else if (V.cast.flinch(target)) did = 'hit' }
         if (did) { s.rec.reaction = did; s.rec.reactionAt = now }
+        /* viewer.hit-slash: the slash across the target AT THE BLOW, when the attack's own damage line says it dealt damage */
+        const dmg = evAt(A.damage), dealt = damageDealt(dmg)
+        const slashed = dealt > 0 && dmg.burst !== true && fxSlash(V, target, dmg.damageType ?? s.e.damageType, dealt, dmg.crit === true)
+        s.rec.slash = !!slashed
         /* the damage's own line: its flash does not start the body again, and the hit's old beat is kept after it */
-        reacted = { target, damage: A.damage, did, rec: s.rec, carry: DUR['attack.hit'] ?? 0 }
+        reacted = { target, damage: A.damage, did, slashed, rec: s.rec, carry: DUR['attack.hit'] ?? 0 }
         return { cues, d: 0 }
       }
     } else if (s.result === 'block' && V.cast?.guard?.(e.defender ?? target)) { s.rec.reaction = 'guard'; s.rec.reactionAt = now }
     return { cues, d: null }
+  }
+  /* ── AN AREA TRIGGER'S BURST (viewer.area-trigger-burst, 2026-10-04) ────────────────────────────────────────────────────
+     Engine DECISIONS.md 2026-10-03 'the Fire Imp's burn does not hit the imp itself; an end-of-Activation area burn shows an
+     explosion of fire' (Andrew: "If it's an end-of-activation burn in a certain area, we need to create a VFX that goes along
+     with that. So that should be an explosion of fire. We have the VFX for that."). The engine's log says a trigger fired
+     (trigger.rolled, fired) and whose it is; the engine's SHEET (the unit's row through the door) says it selects an AREA —
+     every unit within its radius of its owner. The board then marks the hexes within that radius of the owner (the engine's
+     own distance through the door; the burst's own tiles) and plays the burst the trigger's status has (theme.js
+     areaBurstOf: burn — the explosion of fire), sized to that reach, and holds a beat before the lines of the units it
+     reached. A trigger whose effect has no burst plays nothing new. What was done is V.areaBursts. */
+  const AREA_BURST_BEAT = 420, AREA_BURST_SHOWN = 900, AREA_BURST_COLOUR = { fire: 'rgba(255,122,40,.42)' }
+  V.areaBursts = []
+  let areaTimer = null
+  function clearArea() { if (areaTimer != null) { clearTimeout(areaTimer); V.fx.timers.delete(areaTimer); areaTimer = null } V.view.areaBurst = null }
+  function areaBurst(e) {
+    const u = V.S.U[e.actor]; if (!u) return null
+    const t = (V.data.UD[u.typeId]?.triggers || []).find(t => t.id === e.causeId && t.hook === e.hook && t.select && typeof t.select === 'object' && t.select.select === 'area')
+    if (!t || t.select.origin !== 'self' || !Number.isInteger(t.select.radius)) return null
+    const statusId = t.effect?.kind === 'status.apply' ? t.effect.statusId : null, burst = statusId ? areaBurstOf(statusId, V.data) : null
+    const rec = { at: logIndex(V.cursor - 1), trigger: t.id, owner: e.actor, typeId: u.typeId, centre: u.hex, radius: t.select.radius, statusId, effect: t.effect?.kind ?? null, burst, hexes: [], clock: V.clock() }
+    V.areaBursts.push(rec)
+    if (!burst) return null
+    const dist = V.data.distance, POS = V.data.POS
+    for (let hex = 0; hex < POS.length; hex++) if (POS[hex] && dist(u.hex, hex) <= t.select.radius) rec.hexes.push(hex)
+    clearArea()
+    const A = V.view.areaBurst = { hexes: rec.hexes, centre: u.hex, kind: burst, colour: AREA_BURST_COLOUR[burst] }
+    areaTimer = setTimeout(() => {
+      V.fx.timers.delete(areaTimer); areaTimer = null
+      if (disposed || V.invalid || V.view.areaBurst !== A) return
+      V.view.areaBurst = null
+      try { render() } catch (err) { fault(err) }
+    }, AREA_BURST_SHOWN / (V.speed * .75))
+    V.fx.timers.add(areaTimer)
+    fxAreaBurst(V, e.actor, t.select.radius, burst)
+    return AREA_BURST_BEAT
   }
   function beat(e) {
     cancelOpportunityLabel()
@@ -840,8 +882,11 @@ export function mountBattleViewer(root, data, opts = {}) {
         const R = reacted; reacted = null
         if (R.did) cues = cues.map(c => c.k === 'flash' && c.id === R.target ? { ...c, reacted: true } : c)
         else { R.rec.reaction = 'flash'; R.rec.reactionAt = V.clock() }
+        if (R.slashed) cues = cues.filter(c => c.k !== 'slash')                              // viewer.hit-slash: drawn at the blow
         impact = (DUR[e.type] ?? 0) + R.carry
       }
+      /* viewer.area-trigger-burst: an area trigger that fired plays its burst over its area, before the units it reached react */
+      if (e.type === 'trigger.rolled' && e.fired === true) { const held = areaBurst(e); if (held != null) impact = held }
       burstBeat(e)
       const after = opportunityPose(V)
       const starting = after && (!before || before.id !== after.id || before.moveSeq !== after.moveSeq || before.from !== after.from || before.to !== after.to)
@@ -876,6 +921,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   V.holdPump = (who = 'affliction') => { V.holds.add(who); V.hold = true; if (V.timer != null) { clearTimeout(V.timer); V.timer = null } }
   V.releasePump = (who = 'affliction') => { if (!V.holds.delete(who) || V.holds.size) return; V.hold = false; if (!disposed && !V.invalid && V.playing && V.timer == null) step() }
   function dropHold() { cancelNaming(); cancelArrivals(); V.holds.clear(); V.hold = false; closeAffliction(V); overlays.dropped(); dropImpact() }
+  /* (a seek takes an area burst's marks down; a hand step leaves them their time) */
   function step() {
     V.timer = null
     if (V.invalid || V.hold) return
@@ -916,7 +962,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (V.timer) { clearTimeout(V.timer); V.timer = null }
     dropHold()
     /* viewer.enemy-type-moves-together: a seek is a place in the engine's log — a run being shown is dropped */
-    plan = null; resumeWalks()
+    plan = null; resumeWalks(); clearArea()
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
     trail = []; trailFrom = V.cursor
     V.S = foldTo(V.EV, V.cursor, ctx())

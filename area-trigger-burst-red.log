@@ -1,0 +1,107 @@
+TAP version 13
+# Subtest: the engine's sheet names the Fire Imp's end-of-Activation burn as an area: every unit within 2 of it, itself left out; the log names the trigger, its owner and each unit it reached
+ok 1 - the engine's sheet names the Fire Imp's end-of-Activation burn as an area: every unit within 2 of it, itself left out; the log names the trigger, its owner and each unit it reached
+  ---
+  duration_ms: 1.2386
+  type: 'test'
+  ...
+# Subtest: which burst an area trigger plays is chosen by what it applies, through the status-to-effect table: burn is fire; the rest have none and are listed
+not ok 2 - which burst an area trigger plays is chosen by what it applies, through the status-to-effect table: burn is fire; the rest have none and are listed
+  ---
+  duration_ms: 0.6288
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-trigger-burst.test.mjs:84:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    theme.js: areaBurstOf
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-trigger-burst.test.mjs:85:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: a Fire Imp ending its Activation: an explosion of fire over the hexes within 2 of it, drawn before the burned units react
+not ok 3 - a Fire Imp ending its Activation: an explosion of fire over the hexes within 2 of it, drawn before the burned units react
+  ---
+  duration_ms: 1028.8366
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-trigger-burst.test.mjs:103:1'
+  failureType: 'testCodeFailure'
+  error: 'the board noted the area trigger'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-trigger-burst.test.mjs:106:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: it plays with the enemies of a type moving together (the default) and where the burn reaches nobody; the board ends on the engine's state
+not ok 4 - it plays with the enemies of a type moving together (the default) and where the burn reaches nobody; the board ends on the engine's state
+  ---
+  duration_ms: 1489.1869
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-trigger-burst.test.mjs:132:1'
+  failureType: 'testCodeFailure'
+  error: 'the burst plays though nobody stands in it'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-trigger-burst.test.mjs:135:47)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: an area trigger with no burst plays nothing new and is noted by name (the Necromancer's heal); a hand step and a seek leave no mark behind
+not ok 5 - an area trigger with no burst plays nothing new and is noted by name (the Necromancer's heal); a hand step and a seek leave no mark behind
+  ---
+  duration_ms: 211.5419
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\area-trigger-burst.test.mjs:150:1'
+  failureType: 'testCodeFailure'
+  error: 'noted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/area-trigger-burst.test.mjs:156:68)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 1
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2985.507

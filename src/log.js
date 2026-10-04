@@ -1,11 +1,13 @@
 /* ── the log: one sentence per event — pure text ──────────────────────────
    A development affordance, not a game surface (ruled 9.6). */
-import { sgn } from './actions.js'
+import { sgn, freeAttackOf } from './actions.js'
 import { fallWord } from './fold.js'
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 /** basis points as a percent, by moving the decimal point in the engine's own digits — no arithmetic (Law 0) */
 export const bpsPct = bps => { const s = String(bps).padStart(3, '0'), f = s.slice(-2).replace(/0+$/, ''); return s.slice(0, -2) + (f ? '.' + f : '') }
 
+/** an id as words: 'badge.lycanthropy' -> 'Lycanthropy', 'unit.werewolf' -> 'Werewolf' */
+const wordsOf = (id, prefix) => String(id).replace(prefix, '').split(/[-.]/).map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' ')
 export function buildLog(events, SN, turns) {
   const NAMES = {}, SIDES = {}
   for (const e of events) if (e.type === 'unit.enter') { NAMES[e.actor] = e.name; SIDES[e.actor] = e.side }
@@ -91,8 +93,11 @@ export function buildLog(events, SN, turns) {
       case 'encounter.won': return b('turn', `— objective met: ${e.reason} —`)
       case 'encounter.lost': return b('down', `— objective failed: ${e.reason}${e.actor != null ? ' — ' + nmAt(e) : ''}${e.limit != null ? ' (limit ' + e.limit + ')' : ''} —`)
       case 'move.stopped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;stops at hex ${e.hex} <span class="sq">· ${e.reason === 'hit' ? 'the attack of opportunity connected' : e.reason}</span>`)
-      case 'aoo.provoked': return b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> tries to keep moving; ⚔ <b>${nmAt(e)}</b> takes an attack of opportunity <span class="sq">· ${e.attackId}</span>`)
-      case 'aoo.skipped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;no attack of opportunity from ${nmAt(e)} <span class="sq">· ${e.reason}</span>`)
+      /* viewer.free-attack-kind-words: the line's own kind (`as`) — a counterattack, a fend, else an attack of opportunity (as it read) */
+      case 'aoo.provoked': return e.as === 'counterattack' ? b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> attacked; ⚔ <b>${nmAt(e)}</b> counterattacks <span class="sq">· ${e.attackId}</span>`)
+        : e.as === 'fend' ? b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> comes within reach; ⚔ <b>${nmAt(e)}</b> fends it off <span class="sq">· ${e.attackId}</span>`)
+        : b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> tries to keep moving; ⚔ <b>${nmAt(e)}</b> takes an attack of opportunity <span class="sq">· ${e.attackId}</span>`)
+      case 'aoo.skipped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;no ${freeAttackOf(e.as).word.toLowerCase()} from ${nmAt(e)} <span class="sq">· ${e.reason}</span>`)
       case 'block.rolled': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${escape(NAMES[e.defender] ?? '#' + e.defender)}</b> ${e.blocked ? 'BLOCKS' : 'does not block'} <span class="sq">· ${escape(e.chance)}%${e.roll == null ? '' : ' · rolled ' + escape(e.roll)}${e.suppressed ? ' · suppressed' : ''}</span>`)
       case 'attack.cancelled': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;hit ${e.hit} of ${e.of} cancelled <span class="sq">· ${e.reason}</span>`)
       case 'corpse.created': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;a corpse lies at hex ${e.hex} <span class="sq">· ${e.typeId}</span>`)
@@ -126,6 +131,10 @@ export function buildLog(events, SN, turns) {
          areas, the Turn the event says it lands after, and whom the event says it struck */
       case 'area.marked': return b('turn', `— ${escape(fallWord(e.fall))}: ${(e.areas || []).length} areas are marked · they are struck after the Hero Phase of Turn ${e.lands} —`)
       case 'area.landed': return b('turn', `— ${escape(fallWord(e.fall))} lands on ${(e.areas || []).length} areas · ${(e.hit || []).length ? 'strikes ' + e.hit.map(id => `<b>${escape(NAMES[id] ?? ('#' + id))}</b>`).join(', ') : 'strikes no one'} —`)
+      /* viewer.plays-turned-units: the turn and the revert, one sentence each — the engine's own names for the affliction's badge
+         (its id as words), the form's type and the side */
+      case 'unit.transformed': return b('turn', `— <b>${escape(NAMES[e.actor] ?? ('#' + e.actor))}</b> is taken by ${escape(wordsOf(e.badgeId, 'badge.'))} and becomes a ${escape(wordsOf(e.into, 'unit.'))} · it fights for the ${e.side === 'hero' ? 'heroes' : 'enemy'} —`)
+      case 'unit.reverted': return b('turn', `— <b>${escape(NAMES[e.actor] ?? ('#' + e.actor))}</b> is ${e.reason === 'fell' ? 'beaten as a ' + escape(wordsOf(e.from, 'unit.')) + ' and is' : ''} itself again${e.reason === 'battleEnd' ? ' as the battle ends' : ''} · ${e.hp} hp —`)
       case 'night.fell': return b('turn', `— night falls: ${e.hexes} hexes dark —`)
       case 'light.cast': return b('status', `&nbsp;&nbsp;the heroes light ${e.hexes} hexes`)
       case 'ai.override': return b('status', `&nbsp;&nbsp;${nmAt(e)} — ${e.mode} until Turn ${e.untilTurn} <span class="sq">· ${e.causeId}</span>`)
@@ -134,5 +143,6 @@ export function buildLog(events, SN, turns) {
       default: return null
     }
   }
-  return events.map((e, i) => { const s = sentence(e); return s ? { i, ...s } : null }).filter(Boolean)
+  /* a turned unit's lines are its side's at that line (viewer.plays-turned-units): the side changes as the log says */
+  return events.map((e, i) => { const s = sentence(e); if (e.type === 'unit.transformed' || e.type === 'unit.reverted') SIDES[e.actor] = e.side; return s ? { i, ...s } : null }).filter(Boolean)
 }
