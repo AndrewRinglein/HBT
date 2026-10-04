@@ -1755,7 +1755,7 @@
     "area"
    ],
    "description": "Deal magic damage equal to your Magic to every unit in the blast, and those seven hexes become burning. It does not roll to hit, so it cannot crit, and allies caught in it burn too.",
-   "source": "settled content | 2026-08-19: power.fire-master.fireball owns \"Fireball\" — two powers with one name is the worst of the collisions. The staff grants the smaller baseline version. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. | 2026-10-04 (engine fix.starting-kit-powers; reported 2026-10-03, engine DECISIONS.md \"reported: the priest's Holy Texts has no heal in battle\"): the blast is declared as a V2 burst profile, the Lightning Staff's Storm shape (radius 1, every unit, one Magic packet) — the description is unchanged. The ground it leaves is not in the profile: a burst paints no ground yet (engine capability.burst-paints-ground), and the pack names that gap on the row.",
+   "source": "settled content | 2026-08-19: power.fire-master.fireball owns \"Fireball\" — two powers with one name is the worst of the collisions. The staff grants the smaller baseline version. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. | 2026-10-04 (engine fix.starting-kit-powers; reported 2026-10-03, engine DECISIONS.md \"reported: the priest's Holy Texts has no heal in battle\"): the blast is declared as a V2 burst profile, the Lightning Staff's Storm shape (radius 1, every unit, one Magic packet) — the description is unchanged. The ground it leaves is not in the profile: a burst paints no ground yet (engine capability.burst-paints-ground), and the pack names that gap on the row. | 2026-10-04 (engine capability.burst-paints-ground): the profile now names the ground the blast leaves — burst.paints, the layer — so “those seven hexes become burning” reaches the engine and the gap is gone. The ground is painted after the blast’s damage, and every unit standing on the seven hexes meets it as ground always meets a unit it is painted under.",
    "triggers": [],
    "intent": "The blast is the smaller half; the burning ground it leaves is the real payload.",
    "burst": {
@@ -1771,7 +1771,8 @@
       "amount": 0,
       "stat": "magic"
      }
-    ]
+    ],
+    "paints": "layer.burning"
    }
   },
   {
@@ -1789,7 +1790,7 @@
     "area"
    ],
    "description": "Deal magic damage equal to your Magic to every unit in the blast, and those seven hexes become frost. It does not roll to hit, so it cannot crit.",
-   "source": "settled content | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. | 2026-10-04 (engine fix.starting-kit-powers; reported 2026-10-03, engine DECISIONS.md \"reported: the priest's Holy Texts has no heal in battle\"): the blast is declared as a V2 burst profile, the Lightning Staff's Storm shape (radius 1, every unit, one Magic packet) — the description is unchanged. The ground it leaves is not in the profile: a burst paints no ground yet (engine capability.burst-paints-ground), and the pack names that gap on the row.",
+   "source": "settled content | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. | 2026-10-04 (engine fix.starting-kit-powers; reported 2026-10-03, engine DECISIONS.md \"reported: the priest's Holy Texts has no heal in battle\"): the blast is declared as a V2 burst profile, the Lightning Staff's Storm shape (radius 1, every unit, one Magic packet) — the description is unchanged. The ground it leaves is not in the profile: a burst paints no ground yet (engine capability.burst-paints-ground), and the pack names that gap on the row. | 2026-10-04 (engine capability.burst-paints-ground): the profile now names the ground the blast leaves — burst.paints, the layer — so “those seven hexes become frost” reaches the engine and the gap is gone. The ground is painted after the blast’s damage, and every unit standing on the seven hexes meets it as ground always meets a unit it is painted under.",
    "triggers": [],
    "intent": "Seven hexes of frost is seven hexes where the warriors suddenly hit for more.",
    "burst": {
@@ -1805,7 +1806,8 @@
       "amount": 0,
       "stat": "magic"
      }
-    ]
+    ],
+    "paints": "layer.frost"
    }
   },
   {

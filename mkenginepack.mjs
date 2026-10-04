@@ -988,8 +988,9 @@ function settledAttackExtras(a, unitId) {
 //          your Spirit, rounded down" — engine SWITCHES.md mercyHalfRoundsDown).
 //   Blast: "Deal magic damage equal to your Magic[ + B] to every unit in the blast[, and those seven hexes
 //          become burning|frost]." on a row that authors a `burst` -> that burst (the Storm shape), checked
-//          against the sentence (radius 1, every unit, one Magic packet of B); the ground clause is a NAMED
-//          gap on the row — a burst paints no ground (engine capability.burst-paints-ground) — never dropped.
+//          against the sentence (radius 1, every unit, one Magic packet of B); the ground clause is the
+//          burst's own `paints` (the layer it leaves on its hexes — engine capability.burst-paints-ground,
+//          2026-10-04), held to the sentence both ways. It was a named gap on the row until then.
 // A compiled power may carry `gaps` ("<clause> — <what it needs>"); POWER_GAPS is the same list split, for the
 // callers that report into gen/enemy-pack-gaps.json.
 const POWER_GAPS = new Map();
@@ -1008,7 +1009,9 @@ function compiledPowerOf(p, unitId) {
       if (tgt !== `a hex within ${range[1]} hexes and every hex adjacent to it` || burst.shape.kind !== 'radius' || burst.shape.radius !== 1 || burst.side !== 'any' || burst.heal !== undefined
         || pk.length !== 1 || pk[0].stat !== 'magic' || pk[0].damageType !== 'magic' || pk[0].amount !== +(m[1] ?? 0) || pk[0].powerScale !== undefined)
         throw Error(`Item burst '${p.id}' disagrees with its authored sentence`);
-      if (m[2]) found.push({ clause: `those seven hexes become ${m[2]}`, needs: 'a burst paints no ground (capability.burst-paints-ground)' });
+      // engine capability.burst-paints-ground (2026-10-04): the ground clause is the profile's `paints` — the layer the
+      // burst leaves on its hexes. The sentence and the field must say the same thing, both ways; it was a named gap.
+      if ((burst.paints ?? null) !== (m[2] ? `layer.${m[2]}` : null)) throw Error(`Item burst '${p.id}' disagrees with its authored sentence: the ground it leaves`);
     }
     POWER_GAPS.set(p.id, found);
     return { ...base, range: +range[1], burst, ...(found.length ? { gaps: found.map((x) => `${x.clause} — ${x.needs}`) } : {}) };
@@ -2215,11 +2218,16 @@ function moveBursts(rows, destination) {
     delete rows[id];
   }
 }
+// engine capability.burst-paints-ground (2026-10-04): the layer a burst paints is one of the engine's ground layers
+// (../engine/generated/vocabulary.json `layers`, read, never copied).
+const GROUND_LAYERS = new Set((VOCAB.layers || []).map((l) => l.id));
+const checkBurstGround = (rows) => { for (const row of Object.values(rows)) if (row.burst?.paints !== undefined && !GROUND_LAYERS.has(row.burst.paints)) throw Error(`Burst '${row.id}' paints '${row.burst.paints}', which is not a ground layer of the engine`); };
 const classPowerRows = Object.values(classPowers);
 moveBursts(classPowers, authoredBursts);
 moveBursts(authoredAttacks, authoredBursts); moveBursts(authoredAbilities, authoredBursts);
 moveBursts(test.attacks, testBursts); moveBursts(test.abilities, testBursts);
 test.bursts = testBursts;
+checkBurstGround(authoredBursts); checkBurstGround(testBursts);
 
 // fix.codex-numbers (finding K7; DECISIONS.md 2026-09-28: "XP per kill is 2 / 5 / 15 by tier"): the price list rides the pack beside the tiers
 const xpByTier = AUTH.xpByTier;
