@@ -4662,3 +4662,36 @@ Ruled:
 - Tests that use a cut row as a fixture move to a row that stays (Law 10): engine `test/unit-mods.test.ts` and `test/damage-packets.test.ts`, `tools/compare-packet-transition.mts`, kingdom `test/isc-062.test.ts`, content `test/damage-packets.test.mjs`, and the test bestiary unit that fires `attack.rusted-crossbow.bolt`.
 
 Filed: `content.unfielded-tier0-weapons-cut`, first in the content queue.
+
+## 2026-10-03 — a tier 0 axe is supposed to exist and be in some kits: it is the Wood Axe, which is not yet a row (questions out)
+
+Andrew, same chat at the root, after the cut landed (engine 2dd6390) and asked whether the Wood Axe card and model stay now that `item.hand-axe` is gone:
+
+“There is supposed to be a tier 0 axe that is either a Hand Axe or a Wood Axe that is also in some kits. I don't know which one is which.”
+
+Which is which, told to him:
+
+- **The Wood Axe is his.** Dictated 2026-09-28 (`V2-SHIELDS-AND-WEAPONS-2026-09-20.md`, sixth pass, line 271): "The wood axe is one-handed, does strength damage, and on block it inflicts -15 block. It has -5 accuracy", 1 stamina; a second attack that "does 2 more damage and 5 more accuracy loss at stamina 2". Tier 0 (2026-10-03, 'card art for every weapon at tiers 0 and 1'). It has never been a row, and no kit names it.
+- **The Hand Axe was the authoring pass's** (`item.hand-axe`, source "new (fills the axe form at tier 0)"): one-handed, one attack, Chop — Strength +2, -5 Accuracy, 2 stamina, +4 on a critical. It was in no kit, and it is the row cut above. It stood where the Wood Axe belongs, with numbers that were not his.
+- **The only tier 0 axe in a kit today is the Lumberjack's Axe** (`item.lumberjack-axe`: two-handed, Chop and Cleave; the kit of `hero.fixed.lumberjack-and-wife`, dictated 2026-08-25) — the weapon he called "a wood axe" on 2026-10-03 ('every civilian fields its kit by default'). The only other axe in any kit is the War Axe, tier 1: the Warriors' start pool and `hero.base.warrior-iron` (`content/gen/kits.json`).
+
+Ruled:
+
+- **A tier 0 axe is wanted, and it is in some kits.** Read as: the Wood Axe — the name he dictated and the one he tiered. The cut of `item.hand-axe` stands; the Wood Axe is authored from his dictation, not by bringing that row back.
+- **The Wood Axe card and its model stay** (read as following from the line above; the entry above already says the card stays). Codex's model list excluded it along with the ten (`weapon-card-models/run.json`, "Excluded by user from model production"); the line to restore it was handed to him in the chat.
+
+Open, asked: which kits carry the Wood Axe; whether the Lumberjack's weapon is the one-handed Wood Axe or stays his own two-handed axe. Not filed until answered: the row and its kits are one item.
+
+## 2026-10-03 — the Lumberjack keeps his two-handed axe; the Wood Axe waits; exact weapons are not the concern now
+
+Andrew, same chat, answering the two questions above — (1) which kits carry the Wood Axe, (2) whether the Lumberjack carries it or keeps his own:
+
+“1. I don't know, and I don't care.
+2. I also just don't care. It's fine: two-handed lumberjack axe. I'm just trying to get through this shit. It really does not matter if we have exactly the right weapons. We're not in a balancing phase. I just want to get through this shit, so make a decision and clean these up. There was a whole bunch of items that didn't need to exist. They've been removed. I don't know what uses what here. Just make a decision and clean this shit up.”
+
+Ruled:
+
+- **The Lumberjack keeps his two-handed Lumberjack's Axe** (`item.lumberjack-axe`).
+- **Which weapon sits in which kit is not his to be asked now: "We're not in a balancing phase."** A chat picks a default, records the switch and goes on.
+- **The decision is the chat's** ("make a decision"), engine SWITCHES `woodAxeWaits`: the Wood Axe is not built now and no kit carries it. It stays a dictated weapon with no row, like the Sickle, the Short Sword and the Grain Flail, until the sixth pass's weapon families become rows. Its card stays in the set; its model is not made in this batch — Codex excluded the card from model production at his direct word, and that is left as it is. This replaces "the Wood Axe card and its model stay" in the two entries above as far as the model goes. Nothing is filed.
+- **Cleaned up:** the content audit's accepted-findings entry for the Pot Lid went with its row (content cc67ac2); `2-ACTIONS-SETTLED.md` logs the Slingshot's removal (root 7dbbc77). Left, as records of their date: the notes files and older switches that name a cut row, the Stagger power's `source` note, and `crucible/data/kits.json` (the Crucible is unbuilt and its kits were superseded 2026-08-27).
