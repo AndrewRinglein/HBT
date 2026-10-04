@@ -509,12 +509,23 @@ function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, 
     if (b.stacks !== undefined && b.stacks !== true) throw new Error(`${where}: badge '${k}' stacks must be true or absent`)
     if (b.atZero !== undefined) {
       const z = b.atZero as unknown as Record<string, unknown>
-      for (const f of Object.keys(z)) if (!['deathbedFighting', 'transformsInto', 'luckRoll', 'raises', 'raisedSide', 'gains'].includes(f)) throw new Error(`${where}: badge '${k}' atZero carries unknown field '${f}'`)
+      for (const f of Object.keys(z)) if (!['deathbedFighting', 'transformsInto', 'luckRoll', 'raises', 'raisedSide', 'gains', 'text'].includes(f)) throw new Error(`${where}: badge '${k}' atZero carries unknown field '${f}'`)
       if (typeof z.deathbedFighting !== 'boolean') throw new Error(`${where}: badge '${k}' atZero must say whether the Deathbed roll is made`)
       if (z.transformsInto !== undefined && (typeof z.transformsInto !== 'string' || z.luckRoll !== true || z.deathbedFighting)) throw new Error(`${where}: badge '${k}' atZero transforms on a Luck roll, with no Deathbed roll`)
       if (z.raises !== undefined && (typeof z.raises !== 'string' || !['hero', 'enemy'].includes(z.raisedSide as string) || z.deathbedFighting)) throw new Error(`${where}: badge '${k}' atZero raises a unit on a side, with no Deathbed roll`)
       if (z.transformsInto !== undefined && z.raises !== undefined) throw new Error(`${where}: badge '${k}' atZero both transforms and raises`)
       if (z.gains !== undefined && typeof z.gains !== 'string') throw new Error(`${where}: badge '${k}' atZero gains names a badge`)
+      // fix.affliction-pop-up-words (2026-10-04): the ruled 0-Health wording rides the row to badge.gained
+      if (z.text !== undefined && (typeof z.text !== 'string' || !z.text.trim())) throw new Error(`${where}: badge '${k}' atZero text is the ruled wording, a sentence`)
+    }
+    // fix.affliction-pop-up-words (2026-10-04): the drawback marks point into the row's own modifiers and written terms —
+    // a mark that points at nothing would have the pop-up show a drawback the unit does not have
+    if (b.drawbacks !== undefined) {
+      const d = b.drawbacks as unknown as { mods?: unknown; gaps?: unknown }
+      if (b.atZero === undefined) throw new Error(`${where}: badge '${k}' marks drawbacks and has no 0-Health rule — the marks are an affliction's`)
+      if (!Array.isArray(d.mods) || !Array.isArray(d.gaps)) throw new Error(`${where}: badge '${k}' drawbacks names mods and gaps`)
+      for (const s of d.mods as string[]) if (!((b.statModifiers as Readonly<Record<string, number>>)[s]! < 0)) throw new Error(`${where}: badge '${k}' marks '${s}' a drawback and does not lower it`)
+      for (const g of d.gaps as string[]) if (!(b.gaps ?? []).includes(g)) throw new Error(`${where}: badge '${k}' marks '${g}' a drawback and does not write it`)
     }
   }
   return raw

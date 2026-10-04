@@ -203,7 +203,11 @@ export function grantBadge(ctx: Ctx, id: number, badgeId: string, causeId: strin
   emit(ctx, 'badge.gained', causeId, { actor: id, badgeId, name: b.name, mods: b.statModifiers, flags: b.flags, ...(b.gaps ? { gaps: b.gaps } : {}), ...(Object.keys(atFielding).length ? { atFielding } : {}),
     // rule.afflictions-at-zero: an affliction (a badge with a 0-Health rule) names that rule — the first-affliction pop-up's line;
     // a stacking badge names how many it is now
-    ...(b.atZero ? { atZero: { ...b.atZero } } : {}), ...(b.stacks ? { held } : {}), ...extra })
+    ...(b.atZero ? { atZero: { ...b.atZero } } : {}), ...(b.stacks ? { held } : {}),
+    // fix.affliction-pop-up-words (2026-10-04; DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its drawbacks
+    // come from the engine"): the row's ruled 0-Health wording rides atZero (above), and which of its terms are drawbacks is
+    // said here — copies of the row's own marks, into mods and gaps of this same line. Nothing is judged here.
+    ...(b.drawbacks ? { drawbacks: { mods: [...b.drawbacks.mods], gaps: [...b.drawbacks.gaps] } } : {}), ...extra })
   for (const [stat, value] of Object.entries(b.statModifiers)) {
     if (!value) continue
     if (Object.hasOwn(atFielding, stat)) continue

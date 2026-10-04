@@ -743,6 +743,14 @@ export type BadgeDef = {
    */
   readonly stacks?: true
   readonly gaps?: readonly string[]
+  /**
+   * fix.affliction-pop-up-words (2026-10-04; DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its
+   * drawbacks come from the engine"): which of this badge's written terms are DRAWBACKS — the Codex row's own marks.
+   * `mods` names stats of `statModifiers` the badge lowers; `gaps` names lines of `gaps` that cost the carrier. An
+   * affliction's alone (a badge with `atZero`). The engine reads neither: it says them on badge.gained, for the
+   * first-affliction pop-up, which shows what the line marks and judges no sentence itself.
+   */
+  readonly drawbacks?: { readonly mods: readonly string[]; readonly gaps: readonly string[] }
 }
 
 /**
@@ -759,6 +767,11 @@ export type AtZeroRule = {
   readonly raises?: string
   readonly raisedSide?: Side
   readonly gains?: string
+  /**
+   * fix.affliction-pop-up-words (2026-10-04): the Codex's ruled 0-Health wording for this affliction, word for word
+   * (DECISIONS.md 2026-10-01 'the afflictions at 0 Health …'). No rule reads it: it rides badge.gained to the pop-up.
+   */
+  readonly text?: string
 }
 
 /**

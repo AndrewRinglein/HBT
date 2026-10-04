@@ -44219,13 +44219,23 @@ export const UNIT_PACK = {
       "atZero": {
         "deathbedFighting": false,
         "transformsInto": "unit.werewolf",
-        "luckRoll": true
+        "luckRoll": true,
+        "text": "No Deathbed Fighting roll. The hero transforms into a Werewolf (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal."
       },
       "gaps": [
         "`startOfBattle`: regeneration 5",
         "`onAttack`: +1 Strength",
         "deploying the hero costs 2 Supplies"
-      ]
+      ],
+      "drawbacks": {
+        "mods": [
+          "crit",
+          "spirit"
+        ],
+        "gaps": [
+          "deploying the hero costs 2 Supplies"
+        ]
+      }
     },
     "badge.many-pockets": {
       "id": "badge.many-pockets",
@@ -44356,12 +44366,22 @@ export const UNIT_PACK = {
       "atZero": {
         "deathbedFighting": false,
         "raises": "unit.ghost",
-        "raisedSide": "enemy"
+        "raisedSide": "enemy",
+        "text": "No Deathbed Fighting roll. The hero goes down and bleeds out, and a Ghost with the hero's image (Ghost stats) is summoned on the hero's hex as an enemy unit."
       },
       "gaps": [
         "`startOfBattle`: −2 card draw",
         "deploying the hero costs 3 Mana"
-      ]
+      ],
+      "drawbacks": {
+        "mods": [
+          "surge"
+        ],
+        "gaps": [
+          "`startOfBattle`: −2 card draw",
+          "deploying the hero costs 3 Mana"
+        ]
+      }
     },
     "badge.quick-study": {
       "id": "badge.quick-study",
@@ -44432,11 +44452,21 @@ export const UNIT_PACK = {
       "deathbedFighting": 20,
       "atZero": {
         "deathbedFighting": true,
-        "gains": "badge.fragile"
+        "gains": "badge.fragile",
+        "text": "Deathbed Fighting as normal (its +20 kept), and the hero gains Fragile (−1 maximum Health) each time it is taken to 0 — permanent, stacking with no limit."
       },
       "gaps": [
         "start of battle take 5 true damage"
-      ]
+      ],
+      "drawbacks": {
+        "mods": [
+          "movement",
+          "accuracy"
+        ],
+        "gaps": [
+          "start of battle take 5 true damage"
+        ]
+      }
     },
     "badge.scarred-hide": {
       "id": "badge.scarred-hide",
@@ -44672,13 +44702,23 @@ export const UNIT_PACK = {
       "atZero": {
         "deathbedFighting": false,
         "transformsInto": "unit.vampire",
-        "luckRoll": true
+        "luckRoll": true,
+        "text": "No Deathbed Fighting roll. The hero transforms into a Vampire (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal."
       },
       "gaps": [
         "on a melee hit: heal 2",
         "deploying the hero costs 3 Faith",
         "the hero gains half experience"
-      ]
+      ],
+      "drawbacks": {
+        "mods": [
+          "spirit"
+        ],
+        "gaps": [
+          "deploying the hero costs 3 Faith",
+          "the hero gains half experience"
+        ]
+      }
     },
     "badge.cold-heart": {
       "id": "badge.cold-heart",
