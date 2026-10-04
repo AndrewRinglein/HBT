@@ -4813,3 +4813,17 @@ Ruled:
 "Notice", "pointer", "look" and "lesson" in the items are the chat's working words for the spec, not Glossary names; what the builder calls them is a proposal until the Glossary has them.
 
 Filed, sixteen items. Engine: `fix.opening-orphanage-closer-start`. Viewer: `viewer.tutorial-overlays` (the gold message, the arrows, the camera's look — what every lesson is drawn with), `viewer.arrivals-camera`, `viewer.new-enemy-notice`, `viewer.new-enemy-ability-line`. Kingdom: `kingdom.opening-starts-in-battle`, `kingdom.opening-first-hero-class-line`, `kingdom.opening-draft-class-message`, `kingdom.tutorial-orphanage-first-move` (the lesson table and its runner), `kingdom.tutorial-orphanage-enemy-turn`, `kingdom.tutorial-orphanage-civilians-and-ending` (a, c), `kingdom.tutorial-bars-and-stamina` (b, e), `kingdom.tutorial-free-attack-and-downed` (d, f), `kingdom.tutorial-after-battle-lines` (g), `kingdom.tutorial-second-battle` (h), `kingdom.tutorial-skip` (i). They sit at the end of their queues, after the seven viewer items that wait on art.
+
+## 2026-10-04 — the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too
+
+Andrew, in the kingdom chat, told what `fix.fire-imp-burn-spares-self` found — the other rows whose own area still counts its owner: the Poison Imp (Poison 1, range 2, end of Activation), the Balrog (Burn 1, range 2, end of Activation), and four class powers aimed at "every unit within N hexes" from the caster (War Cry, Fel Rush, Holy Radiance, Warcry). The questions as asked: (1) "Should the Poison Imp and the Balrog spare themselves too, like the Fire Imp?"; (2) "Should the four class powers (War Cry, Fel Rush, Holy Radiance, Warcry) skip the caster?"
+
+“One and two, yes, skip the caster.”
+
+Ruled:
+
+- **The Poison Imp's and the Balrog's end-of-Activation areas do not hit their owner** — every other unit within range, as the Fire Imp's now is.
+- **War Cry, Fel Rush, Holy Radiance and Warcry skip the caster** — every other unit within range.
+- Not spoken to and unchanged: the 48 ally-side areas and auras that include their owner by rule (the heal and stat-boost circles, the Necromancer, the Lieutenant Demon, the Bone Dragon).
+
+Filed: `fix.own-area-skips-owner`. Also found by the same item and filed with it as notes for the viewer: the unit panel prints an area trigger's target as "[object Object]" (`viewer.panel-area-trigger-text`).
