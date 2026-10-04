@@ -97,7 +97,7 @@
   {
    "power": "power.warchief.war-cry",
    "class": "class.warrior",
-   "what": "unparsed: every ally within 3 hexes gains +1 Strength for the rest of the Battle"
+   "what": "unparsed: every other ally within 3 hexes gains +1 Strength for the rest of the Battle"
   },
   {
    "power": "power.warchief.war-cry",
@@ -2107,7 +2107,7 @@
   {
    "power": "power.holy-champion.holy-radiance",
    "class": "class.paladin",
-   "what": "unparsed: Heal every ally within 2 hexes for 3 and give every enemy within 2 hexes 2 Burn"
+   "what": "unparsed: Heal every other ally within 2 hexes for 3 and give every enemy within 2 hexes 2"
   },
   {
    "power": "power.holy-champion.holy-radiance",
@@ -3097,7 +3097,7 @@
   {
    "power": "power.warbeast.warcry",
    "class": "class.beast",
-   "what": "unparsed: You and every ally within 3 hexes remove 2 Weak"
+   "what": "unparsed: Other allies within 3 hexes remove 2 Weak"
   },
   {
    "power": "power.warbeast.warcry",
