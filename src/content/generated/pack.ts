@@ -8506,12 +8506,10 @@ export const UNIT_PACK = {
             "amount": 0,
             "stat": "magic"
           }
-        ]
+        ],
+        "paints": "layer.frost"
       },
       "source": "item",
-      "gaps": [
-        "those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
-      ],
       "free": false
     },
     "power.fire-staff.fireball": {
@@ -8533,12 +8531,10 @@ export const UNIT_PACK = {
             "amount": 0,
             "stat": "magic"
           }
-        ]
+        ],
+        "paints": "layer.burning"
       },
       "source": "item",
-      "gaps": [
-        "those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
-      ],
       "free": false
     },
     "power.lightning-staff.storm": {
@@ -13365,9 +13361,6 @@ export const UNIT_PACK = {
           "source": "item.fire-staff",
           "onlyWithAttack": "attack.fire-staff.fire-blast"
         }
-      ],
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.frost-staff": {
@@ -13399,9 +13392,6 @@ export const UNIT_PACK = {
           "source": "item.frost-staff",
           "onlyWithAttack": "attack.frost-staff.frost-blast"
         }
-      ],
-      "gaps": [
-        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
       ]
     },
     "item.earth-staff": {
@@ -34040,12 +34030,11 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.fire-staff.fire-blast"
         }
       ],
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)",
-        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
-      ],
       "base": "item.fire-staff",
-      "enchant": "enchant.cursed-skull"
+      "enchant": "enchant.cursed-skull",
+      "gaps": [
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ]
     },
     "item.fire-staff.maddening": {
       "id": "item.fire-staff.maddening",
@@ -34088,9 +34077,6 @@ export const UNIT_PACK = {
           },
           "source": "item.fire-staff.maddening"
         }
-      ],
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
       ],
       "base": "item.fire-staff",
       "enchant": "enchant.maddening"
@@ -34137,9 +34123,6 @@ export const UNIT_PACK = {
           "source": "item.fire-staff.bewildering"
         }
       ],
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
-      ],
       "base": "item.fire-staff",
       "enchant": "enchant.bewildering"
     },
@@ -34175,12 +34158,11 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.fire-staff.fire-blast"
         }
       ],
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)",
-        "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
-      ],
       "base": "item.fire-staff",
-      "enchant": "enchant.lightning"
+      "enchant": "enchant.lightning",
+      "gaps": [
+        "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
+      ]
     },
     "item.frost-staff.eternal-ice": {
       "id": "item.frost-staff.eternal-ice",
@@ -34227,12 +34209,11 @@ export const UNIT_PACK = {
           "source": "item.frost-staff.eternal-ice"
         }
       ],
-      "gaps": [
-        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)",
-        "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
-      ],
       "base": "item.frost-staff",
-      "enchant": "enchant.eternal-ice"
+      "enchant": "enchant.eternal-ice",
+      "gaps": [
+        "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
+      ]
     },
     "item.frost-staff.bewildering": {
       "id": "item.frost-staff.bewildering",
@@ -34276,9 +34257,6 @@ export const UNIT_PACK = {
           "source": "item.frost-staff.bewildering"
         }
       ],
-      "gaps": [
-        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
-      ],
       "base": "item.frost-staff",
       "enchant": "enchant.bewildering"
     },
@@ -34315,12 +34293,11 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.frost-staff.frost-blast"
         }
       ],
-      "gaps": [
-        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)",
-        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
-      ],
       "base": "item.frost-staff",
-      "enchant": "enchant.cursed-skull"
+      "enchant": "enchant.cursed-skull",
+      "gaps": [
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ]
     },
     "item.earth-staff.cursed-skull": {
       "id": "item.earth-staff.cursed-skull",
@@ -40124,10 +40101,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.fire-staff.fire-blast"
         }
       ],
-      "base": "item.fire-staff",
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
-      ]
+      "base": "item.fire-staff"
     },
     "item.fire-staff.heavy": {
       "id": "item.fire-staff.heavy",
@@ -40160,10 +40134,7 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.fire-staff",
-      "enchant": "enchant.heavy",
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
-      ]
+      "enchant": "enchant.heavy"
     },
     "item.fire-staff.keen": {
       "id": "item.fire-staff.keen",
@@ -40196,10 +40167,7 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.fire-staff",
-      "enchant": "enchant.keen",
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
-      ]
+      "enchant": "enchant.keen"
     },
     "item.fire-staff.cruel": {
       "id": "item.fire-staff.cruel",
@@ -40232,10 +40200,7 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.fire-staff",
-      "enchant": "enchant.cruel",
-      "gaps": [
-        "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)"
-      ]
+      "enchant": "enchant.cruel"
     },
     "item.frost-staff.masterwork": {
       "id": "item.frost-staff.masterwork",
@@ -40269,10 +40234,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.frost-staff.frost-blast"
         }
       ],
-      "base": "item.frost-staff",
-      "gaps": [
-        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
-      ]
+      "base": "item.frost-staff"
     },
     "item.frost-staff.heavy": {
       "id": "item.frost-staff.heavy",
@@ -40305,10 +40267,7 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.frost-staff",
-      "enchant": "enchant.heavy",
-      "gaps": [
-        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
-      ]
+      "enchant": "enchant.heavy"
     },
     "item.frost-staff.keen": {
       "id": "item.frost-staff.keen",
@@ -40341,10 +40300,7 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.frost-staff",
-      "enchant": "enchant.keen",
-      "gaps": [
-        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
-      ]
+      "enchant": "enchant.keen"
     },
     "item.frost-staff.cruel": {
       "id": "item.frost-staff.cruel",
@@ -40377,10 +40333,7 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.frost-staff",
-      "enchant": "enchant.cruel",
-      "gaps": [
-        "power.frost-staff.frost-nova: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)"
-      ]
+      "enchant": "enchant.cruel"
     },
     "item.earth-staff.masterwork": {
       "id": "item.earth-staff.masterwork",

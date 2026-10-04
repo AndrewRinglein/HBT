@@ -752,6 +752,8 @@ export function packBursts(): Readonly<Record<string, import('../core/types.js')
     if (a.id !== k || !a.burst) throw Error('invalid burst row')
     validateActionMetadata(a)
     validateBurstAction(a)
+    // capability.burst-paints-ground: the layer a burst paints is one of the ground's layers, checked at load (layerOfId throws on any other)
+    if (a.burst.paints !== undefined) layerOfId(a.burst.paints)
   }
   return rows
 }

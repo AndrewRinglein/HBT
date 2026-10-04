@@ -480,6 +480,14 @@ export type BurstProfile = {
    * and every edge touching the shape." Steps per prop, once per burst. Absent = 0.
    */
   readonly destroy?: number
+  /**
+   * capability.burst-paints-ground (2026-10-04): the ground layer the burst leaves on every hex of
+   * its shape - a layer id ("those seven hexes become burning"). Painted once, after the recipients
+   * are struck and Destroy has reached the props, before the burst settles, through paintGround
+   * (ground.ts): a unit standing on a painted hex takes that layer's entry beat, struck or shielded.
+   * Absent = the burst paints nothing.
+   */
+  readonly paints?: string
 }
 export type BurstDef = ActionDef & { readonly burst: BurstProfile }
 
