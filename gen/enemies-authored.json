@@ -839,7 +839,7 @@
    "stats": {
     "movement": 7,
     "strength": 3,
-    "precision": 4,
+    "precision": 3,
     "accuracy": 80,
     "health": 7,
     "dodge": 15,
@@ -865,6 +865,7 @@
      "triggers": [
       {
        "hook": "onHit",
+       "chance": 50,
        "effects": [
         {
          "effect": "apply a status",
@@ -885,7 +886,7 @@
      }
     }
    ],
-   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
+   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay. | 2026-10-04 (engine content.imp-blast-tuned; ruled 2026-10-03, engine DECISIONS.md 'the Imp: Precision down by 1; its Blast burns half the time'): Precision 3 (was 4), so Imp Blast - Precision + 0 - deals 1 less; the Blast's on-hit Burn 2 takes a 50% chance (was certain). The Claw (Strength) is unchanged."
   },
   {
    "id": "unit.powerful-imp",
@@ -914,13 +915,25 @@
    ],
    "attacks": [
     {
-     "sameAs": "attack.imp.blast"
+     "sameAs": "attack.imp.blast",
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "burn",
+         "value": 2
+        }
+       ]
+      }
+     ]
     },
     {
      "sameAs": "attack.imp.claw"
     }
    ],
-   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
+   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay. | 2026-10-04 (engine content.imp-blast-tuned; ruled 2026-10-03, engine DECISIONS.md 'the Imp: Precision down by 1; its Blast burns half the time' - the Powerful Imp is not named and stays as it is): it fires the Imp's own Blast row (sameAs) and restates the rider it has always carried on it - Burn 2 on every hit - now that the Imp's own rider is a 50% chance."
   },
   {
    "id": "unit.fire-imp",
@@ -953,7 +966,7 @@
    "triggers": [
     {
      "hook": "onActivationEnd",
-     "targets": "every unit within N hexes",
+     "targets": "every other unit within N hexes",
      "range": 2,
      "effects": [
       {
@@ -988,7 +1001,7 @@
      ]
     }
    ],
-   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay."
+   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay. | 2026-10-04 (engine fix.fire-imp-burn-spares-self; ruled 2026-10-03, engine DECISIONS.md 'the Fire Imp's burn does not hit the imp itself'): the end-of-Activation Burn targets every OTHER unit within 2 hexes - the imp itself is spared, everyone else in reach still burns, its own side included. Was 'every unit within N hexes', which counted the imp at distance 0."
   },
   {
    "id": "unit.poison-imp",

@@ -161,8 +161,17 @@ const resolveAttack = (a, unitId) => {
   // fix.enemy-accuracy-mod (2026-09-27): a sameAs reference ships its SOURCE row;
   // anything the reference itself carries beyond its id is not read — name it,
   // never drop it silently (Law 9). None today; the Burning Zombie's carries only its id.
-  const extra = Object.keys(a).filter((k) => k !== 'sameAs' && k !== 'id');
+  // content.imp-blast-tuned (engine, 2026-10-04; ruled 2026-10-03, engine DECISIONS.md 'the Imp: Precision down by 1; its
+  // Blast burns half the time'): a rider is the UNIT's (the engine carries it on the unit, scoped to the attack), so a
+  // reference may restate its own `triggers` on the shared row — the Powerful Imp fires the Imp's Blast and keeps its own
+  // certain Burn 2 now that the Imp's is a 50% chance. The attack itself (shape, reach, damage) is still the source row's,
+  // and anything else a reference carries is still named, never read.
+  const extra = Object.keys(a).filter((k) => k !== 'sameAs' && k !== 'id' && k !== 'triggers');
   if (extra.length) gap(unitId, `sameAs ${a.sameAs} carries ${extra.join(', ')} of its own — the source row ships without them`, 'content: sameAs override');
+  if (a.triggers !== undefined) {
+    if (!Array.isArray(a.triggers)) throw new Error(`mkenginepack: ${unitId} sameAs ${a.sameAs}: triggers is not a list`);
+    return { ...src, triggers: a.triggers };
+  }
   return src;
 };
 
@@ -474,11 +483,16 @@ function compileTrigger(t, unitId, attackId) {
   let areaSelect = null;
   if (t.targets && /within/.test(t.targets)) {
     if (t.range === null || t.range === undefined) { gap(unitId, `${where} ${t.hook} area '${t.targets}' — range null, N never stated`, 'content: range unstated'); return []; }
-    const side = /^allies/.test(t.targets) ? 'ally' : /^enemies/.test(t.targets) ? 'enemy' : /^every unit/.test(t.targets) ? 'any' : null;
+    // fix.fire-imp-burn-spares-self (engine, 2026-10-04; ruled 2026-10-03, engine DECISIONS.md 'the Fire Imp's burn does not
+    // hit the imp itself': "It should not hit him."): "every OTHER unit within N hexes" is the excluding-self form of the one
+    // area shape "every unit within N hexes" — the same area, any side, with the engine's `excludeSelf` on it (core/target.ts).
+    // One phrase, read here and by audit.mjs R27; any row may author it.
+    const others = /^every other unit within /.test(t.targets);
+    const side = /^allies/.test(t.targets) ? 'ally' : /^enemies/.test(t.targets) ? 'enemy' : /^every unit/.test(t.targets) || others ? 'any' : null;
     if (!side) { gap(unitId, `${where} ${t.hook} area '${t.targets}'`, 'area trigger select'); return []; }
     const tagM = String(t.condition || '').match(/^the target has tag ([A-Za-z]+)$/);
     if (t.condition && !tagM) { gap(unitId, `${where} ${t.hook}: condition '${t.condition}'`, 'trigger condition'); return []; }
-    areaSelect = { select: 'area', side, radius: t.range, origin: 'self', ...(tagM ? { requireTags: [tagM[1].toLowerCase()] } : {}) };
+    areaSelect = { select: 'area', side, radius: t.range, origin: 'self', ...(others ? { excludeSelf: true } : {}), ...(tagM ? { requireTags: [tagM[1].toLowerCase()] } : {}) };
   }
   const out = [];
   for (const ef of t.effects || []) {
@@ -941,12 +955,44 @@ function settledAttackExtras(a, unitId) {
 //          blast." / "a hex within R hexes and every hex adjacent to it"
 //          -> a damage power with area 'blast1'. The engine centres the blast
 //          on a UNIT, not an arbitrary hex — that remainder is a named gap.
+// fix.starting-kit-powers (engine, 2026-10-04; reported 2026-10-03, Andrew, engine DECISIONS.md "reported: the
+// priest's Holy Texts has no heal in battle — three starting weapons lose their power on the way into the engine"):
+// two more sentences of the same shapes, each a second instance, no engine code.
+//   Mercy: "Heal the target for B + half your Spirit." -> the Heal shape, the ValueSpec's own `div: 2`;
+//          a half rounds DOWN, as the Codex's other halves say in words (Benediction, Heaven's Edge: "half
+//          your Spirit, rounded down" — engine SWITCHES.md mercyHalfRoundsDown).
+//   Blast: "Deal magic damage equal to your Magic[ + B] to every unit in the blast[, and those seven hexes
+//          become burning|frost]." on a row that authors a `burst` -> that burst (the Storm shape), checked
+//          against the sentence (radius 1, every unit, one Magic packet of B); the ground clause is a NAMED
+//          gap on the row — a burst paints no ground (engine capability.burst-paints-ground) — never dropped.
+// A compiled power may carry `gaps` ("<clause> — <what it needs>"); POWER_GAPS is the same list split, for the
+// callers that report into gen/enemy-pack-gaps.json.
+const POWER_GAPS = new Map();
+function reportPowerGaps(row, report) { for (const x of POWER_GAPS.get(row.id) ?? []) report(x.clause, x.needs); }
 function compiledPowerOf(p, unitId) {
   const desc = String(p.description || '');
   const tgt = String(p.targets || '');
   const base = { id: p.id, name: p.name, ...actionSlot(p), staminaCost: p.stamina ?? 0, cooldown: p.cooldown ?? 0 };
-  if (p.burst) { const range = String(p.targets).match(/^a hex within (\d+) hexes/); if (!range) throw Error('Burst power needs authored placement range'); return { ...base, range: +range[1], burst: validateBurst(p.burst) }; }
   let m, r;
+  if (p.burst) {
+    const range = String(p.targets).match(/^a hex within (\d+) hexes/); if (!range) throw Error('Burst power needs authored placement range');
+    const burst = validateBurst(p.burst);
+    const found = [];
+    if ((m = desc.match(/^Deal magic damage equal to your Magic(?: \+ (\d+))? to every unit in the blast(?:, and those seven hexes become (burning|frost))?\./))) {
+      const pk = burst.packets;
+      if (tgt !== `a hex within ${range[1]} hexes and every hex adjacent to it` || burst.shape.kind !== 'radius' || burst.shape.radius !== 1 || burst.side !== 'any' || burst.heal !== undefined
+        || pk.length !== 1 || pk[0].stat !== 'magic' || pk[0].damageType !== 'magic' || pk[0].amount !== +(m[1] ?? 0) || pk[0].powerScale !== undefined)
+        throw Error(`Item burst '${p.id}' disagrees with its authored sentence`);
+      if (m[2]) found.push({ clause: `those seven hexes become ${m[2]}`, needs: 'a burst paints no ground (capability.burst-paints-ground)' });
+    }
+    POWER_GAPS.set(p.id, found);
+    return { ...base, range: +range[1], burst, ...(found.length ? { gaps: found.map((x) => `${x.clause} — ${x.needs}`) } : {}) };
+  }
+  if ((m = desc.match(/^Heal the target for (\d+) \+ half your Spirit\./))
+    && (r = tgt.match(/^one ally within (\d+) hexes$/))) {
+    return { ...base, range: parseInt(r[1], 10), target: { select: 'unit', side: 'ally' },
+      effects: [{ kind: 'heal', amount: { scale: 'partySpirit', base: parseInt(m[1], 10), mult: 1, div: 2, round: 'down' } }] };
+  }
   if ((m = desc.match(/^Heal the target for (\d+) \+ (\d+) x Spirit\./))
     && (r = tgt.match(/^one ally within (\d+) hexes$/))) {
     return { ...base, range: parseInt(r[1], 10), target: { select: 'unit', side: 'ally' },
@@ -1021,7 +1067,7 @@ for (const id of PARTY) {
         // carry knight shields, holy symbols and staffs.
         const pw = SPOWER_BY_ID.get(aid);
         const row = pw && compiledPowerOf(pw, id);
-        if (row) { authoredAbilities[row.id] = row; abilityIds.push(row.id); }
+        if (row) { authoredAbilities[row.id] = row; abilityIds.push(row.id); reportPowerGaps(row, (clause, needs) => gap(id, `${itemId} grants ${aid}: ${clause}`, needs)); }
         else gap(id, `${itemId} grants ${aid}`, pw ? 'item power — shape unparsed' : 'item power — no authored row');
         continue;
       }
@@ -1157,7 +1203,7 @@ const alphaTeam = [];
           // compile; anything else stays a named gap.
           const pw = SPOWER_BY_ID.get(aid);
           const row = pw && compiledPowerOf(pw, id);
-          if (row) { authoredAbilities[row.id] = row; abilityIds.push(row.id); }
+          if (row) { authoredAbilities[row.id] = row; abilityIds.push(row.id); reportPowerGaps(row, (clause, needs) => gap(id, `${itemId} grants ${aid}: ${clause}`, needs)); }
           else gap(id, `${itemId} grants ${aid}`, pw ? 'item power — shape unparsed' : 'item power — no authored row');
           continue;
         }
@@ -1476,7 +1522,7 @@ function compileItems() {
       if (aid.startsWith('power.')) {
         const pw = SPOWER_BY_ID.get(aid);
         const pr = pw && compiledPowerOf(pw, it.id);
-        if (pr) { authoredAbilities[pr.id] = pr; abilities.push(pr.id); }
+        if (pr) { authoredAbilities[pr.id] = pr; abilities.push(pr.id); reportPowerGaps(pr, (clause, needs) => g(`${pr.id}: ${clause}`, needs)); }
         else g(`grants ${aid}`, pw ? 'item power — shape unparsed' : 'item power — no authored row');
         continue;
       }

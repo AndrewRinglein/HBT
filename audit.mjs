@@ -801,7 +801,11 @@ if(D.bestiary && D.bestiary.length){
     }
     for(const tr of (u.triggers||[])){
       walk(u, tr.name||tr.hook, tr.effects, (tr.needs||[]).length);
-      if(tr.targets!=null && !SH.has(tr.targets))
+      // engine fix.fire-imp-burn-spares-self (2026-10-04; ruled 2026-10-03, engine DECISIONS.md 'the Fire Imp's burn does not
+      // hit the imp itself'): "every other unit within N hexes" is the excluding-self form of the vocabulary's one area
+      // shape "every unit within N hexes", not a new shape — legal exactly when that shape is. mkenginepack reads the same phrase.
+      const shapeOf = s => s==='every other unit within N hexes' ? 'every unit within N hexes' : s;
+      if(tr.targets!=null && !SH.has(shapeOf(tr.targets)))
         add('trigger-shape-is-not-in-the-vocabulary', u.name, (tr.name||tr.hook)+': "'+tr.targets+'"');
     }
   }
