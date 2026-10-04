@@ -32,7 +32,11 @@
                 are the engine's stamps on the export, never derived here
    opts = { now?: () => ms, autoplay?: bool, onCursor?: (cursor, event) => void,
             onHexClick?: (hex) => boolean, onDrain?: () => void, onPlayState?: (playing) => void, onError?: (err) => void,
-            onPlay?: (input) => boolean, look?: string[], newEnemies?: string[], onNewEnemy?: (typeId) => void }
+            onPlay?: (input) => boolean, look?: string[], newEnemies?: string[], onNewEnemy?: (typeId) => void,
+            enemiesTogether?: bool }
+     enemiesTogether (viewer.enemy-type-moves-together) — while the pump plays an Enemy Phase the enemies of one unit type are
+            shown moving at the same time, then that type's attacks, then the next type (grouping.js). Display only: the
+            log is untouched and the board ends on the engine's own state. Default true; false plays one at a time.
      newEnemies (viewer.new-enemy-notice) — the unit kinds (type ids) the host wants announced in this battle: the first
             time a unit of such a kind is on the board the view shows it and a gold notice reads "New enemy" with the unit
             sheet's name beneath; onNewEnemy hears each kind as its notice goes up, once. What is new is the host's to say
@@ -76,6 +80,7 @@ import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
 import { prepareBattleField } from './engine.ts'
 import { standOut } from './stand-out.js'
+import { planEnemyPhase, prefixShown } from './grouping.js'
 
 /* ── DUR: the clock lives here; events carry order, never duration ──────── */
 export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck': 160, 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'moved': 600,
@@ -323,7 +328,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   function fault(err) {
     if (V.invalid) throw V.invalid
     clearTargeting(); V.play = null; V.heldPlay = null; V.layers.playInput?.remove(); V.layers.playInput = null; V.layers.play?.remove(); V.layers.play = null
-    V.invalid = err; V.playing = false; dropHold(); cancelBurst(); cancelOpportunityLabel(); cancelBeats(V)
+    V.invalid = err; V.playing = false; plan = null; resumeWalks(); dropHold(); cancelBurst(); cancelOpportunityLabel(); cancelBeats(V)
     if (V.timer != null) { clearTimeout(V.timer); V.timer = null }
     if (opts.onPlayState) opts.onPlayState(false)
     if (opts.onError) opts.onError(err)
@@ -371,6 +376,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (!V.S.BURST) { cancelBurst(); V.view.burstVisible = false }
     if (visual) { burstBeat(e); playCues(V, cues) }
     V.cursor++
+    trail.push(e)
     if (opts.onCursor) opts.onCursor(V.cursor, e)
     return cues
   }
@@ -380,6 +386,137 @@ export function mountBattleViewer(root, data, opts = {}) {
     const A = V.S.AIM
     if (A && A.expire && V.clock() > A.expire) { V.S.AIM = null; return true }
     return false
+  }
+  /* ── ENEMIES OF ONE TYPE MOVE TOGETHER (viewer.enemy-type-moves-together, 2026-10-04) ───────────────────────────────────
+     Engine DECISIONS.md 2026-10-03 'the post's twelve questions answered' and 'Back Flip's rules; enemies only move together;
+     the motion work comes first' (Andrew: "During the enemy turn I would like for all of the enemies of a type to move at the
+     same time. … They can still be determined in the order they should have been determined, but we're just displaying it
+     as if they're all moving at the same time." / "All the zombies move, and then attacks play." / "a free attack stops all
+     action and just plays out, so the whole group freezes." / "functionally it should be exactly the same.").
+     DISPLAY ONLY. While the pump PLAYS and reaches an enemy's Activation in the Enemy Phase, the run of enemy Activations
+     from there is planned (grouping.js planEnemyPhase: PURE — a permutation of those log lines, and marks) and the pump
+     shows the lines in the plan's order instead of the log's: each type's walks launched at the same moment (a `walks` mark),
+     a free attack on a mover as a freeze of every walk in flight while its lines play (a `freeze` mark, then `resume`), then
+     each Activation's remaining lines one after another (an `actor` mark names whose they are; a remainder with nothing to
+     show is folded at once — `quiet`). The log (V.EV) is never touched. While a plan runs, V.cursor counts the lines SHOWN
+     (it is the log's own place again when the run ends), and V.S is the board as shown; when the run has been shown V.S is
+     replaced by the engine's own state at that line (the pure fold of the log), so every run ends exactly where the
+     one-at-a-time playback ends, whatever order the engine's types were mixed in. A hand step inside a run goes back to the
+     engine's state nearest behind what was shown (prefixShown) and steps on one line at a time; a seek is a place in the
+     log, as ever. Only enemies, only the Enemy Phase; a type with one Activation in the run plays as before
+     (viewer SWITCHES together*). */
+  let together = opts.enemiesTogether !== false, plan = null, frozen = null, trail = [], trailFrom = 0
+  /** the line shown at place n: the plan's while one runs, else the log's */
+  const evAt = n => plan && n >= plan.from && n < plan.to ? V.EV[plan.order[n - plan.from]] : V.EV[n]
+  V.together = { get on() { return together }, runs: [], log: [],
+    /** the lines shown since place n, in the order shown (since the last seek) */
+    shownSince: n => trail.slice(Math.max(0, n - trailFrom)) }
+  const legMs = (moveBegin, hexes) => {
+    if (!hexes) return 0
+    const shape = moveBegin ? V.data.ACT[moveBegin.causeId]?.move?.shape ?? null : null
+    return DUR.moved * (shape === 'flight' && Number.isInteger(moveBegin.hexes) && moveBegin.hexes > 0 ? moveBegin.hexes : hexes)
+  }
+  function startPlan() {
+    const P = planEnemyPhase(V.EV, V.cursor, id => V.S.U[id] ? { side: V.S.U[id].side, typeId: V.S.U[id].typeId } : undefined, legMs)
+    if (P) { plan = P; plan.shapes = new Map() }
+    return !!P
+  }
+  /** every walk in flight under the units' layer stands still (the board's own hitstop mechanism, held until resumed) */
+  function freezeWalks() {
+    const L = V.layers.unitsL
+    const running = L && L.getAnimations ? L.getAnimations({ subtree: true }).filter(a => a.playState === 'running') : []
+    for (const a of running) a.pause()
+    frozen = [...(frozen || []), ...running]
+    return running.length
+  }
+  function resumeWalks() {
+    const was = frozen || []; frozen = null
+    let n = 0
+    for (const a of was) { try { if (a.playState === 'paused') { a.play(); n++ } } catch (err) { /* an animation already gone */ } }
+    return n
+  }
+  /** fold one leg of one mover's walk (its lines stand next in the plan) and say how to launch it */
+  function foldLeg(actor, len, cues) {
+    const attempt = opportunityPose(V)
+    const startHex = V.S.U[actor] ? V.S.U[actor].hex : null, path = []
+    let begin = null
+    for (let k = 0; k < len; k++) {
+      const x = evAt(V.cursor)
+      if (x.type === 'move.begin' && x.actor === actor) { begin = x; plan.shapes.set(actor, x) }
+      if (x.type === 'moved' && x.actor === actor) path.push(x.to)
+      for (const c of applyOne(x, false)) cues.push(c)
+
+    }
+    const mb = begin || plan.shapes.get(actor) || null
+    return { actor, startHex, path, hexes: path.length, dur: legMs(mb, path.length), attempt: attempt?.id === actor ? attempt : null,
+      shape: mb ? V.data.ACT[mb.causeId]?.move?.shape ?? null : null }
+  }
+  const launch = L => { if (L.hexes && L.startHex != null) traverse(V, L.actor, L.startHex, L.path, L.dur, L.attempt, L.shape) }
+  /** play one mark of the plan; a number is the beat it holds, null means go on at once */
+  function playMark(m) {
+    const note = more => V.together.log.push({ kind: m.kind, shown: V.cursor, clock: V.clock(), ...more })
+    if (m.kind === 'walks') {
+      const cues = [], shown = V.cursor, clock = V.clock()
+      const legs = m.legs.map(l => foldLeg(l.actor, l.len, cues))
+      /* nobody is "the one acting" while a group moves; the view follows the first mover */
+      V.S.activeId = null; V.S.subjectId = m.legs[0].actor; V.S.subjectMode = 'acting'
+      playCues(V, cues); render()
+      for (const L of legs) launch(L)
+      V.together.log.push({ kind: 'walks', typeId: m.typeId, shown, clock, wait: m.wait, actors: m.legs.map(l => l.actor), launched: legs.filter(L => L.hexes).map(L => ({ actor: L.actor, hexes: L.hexes, path: [...L.path], clock })) })
+      return m.wait
+    }
+    if (m.kind === 'freeze') { note({ actor: m.actor, paused: freezeWalks() }); return null }
+    if (m.kind === 'resume') {
+      const resumed = resumeWalks()
+      note({ actor: m.actor, resumed, leg: m.len > 0 })
+      if (m.len > 0) { const cues = [], L = foldLeg(m.actor, m.len, cues); playCues(V, cues); render(); launch(L) }
+      return m.wait > 0 || m.len > 0 ? m.wait : null
+    }
+    if (m.kind === 'actor') {
+      /* the remaining lines are this unit's Activation: it is the one acting while they play */
+      if (V.S.U[m.actor]) { V.S.activeId = m.actor; V.S.subjectId = m.actor; V.S.subjectMode = 'acting' }
+      note({ actor: m.actor }); return null
+    }
+    if (m.kind === 'quiet') {
+      let cues = []
+      for (let k = 0; k < m.len; k++) cues = cues.concat(applyOne(evAt(V.cursor), false))
+      playCues(V, cues); note({ len: m.len })
+      return null
+    }
+    throw new Error('viewer: the plan holds a mark the pump does not know: ' + m.kind)
+  }
+  /** the board the engine's log decides, without the pump's view clocks — what a run must end on */
+  const boardOf = S => JSON.stringify({ ...S, FIRING: null, TRIGFLASH: null, AIM: null, ATTACK: null, AOO: null, BURST: null, critPending: false, subjectId: null, subjectMode: null, activeId: null })
+  /** the run has been shown: the board becomes the engine's own state at that line (the pure fold of the log) */
+  function finishPlan() {
+    const P = plan; plan = null; resumeWalks()
+    const truth = foldTo(V.EV, P.to, ctx()), drift = boardOf(V.S) !== boardOf(truth)
+    truth.FIRING = V.S.FIRING; truth.TRIGFLASH = V.S.TRIGFLASH
+    V.S = truth
+    const landed = boardOf(V.S) === boardOf(foldTo(V.EV, V.cursor, ctx())) && V.cursor === P.to
+    V.together.runs.push({ from: P.from, to: P.to, groups: P.groups, drift, landed })
+    V.together.log.push({ kind: 'done', shown: V.cursor, clock: V.clock(), drift })
+    render()
+  }
+  /** a hand step inside a run: back to the engine's state nearest behind what was shown */
+  function dropPlan() {
+    const P = plan; if (!P) return
+    const k = prefixShown(P, V.cursor - P.from)
+    plan = null; resumeWalks()
+    seek(k)
+  }
+  /** one pump step of a running plan: its marks at this place, then the line that stands there */
+  function groupStep() {
+    for (;;) {
+      const marks = plan.marks.get(V.cursor)
+      if (marks) for (const m of marks) { if (m.done) continue; m.done = true
+        const d = playMark(m); if (d !== null) return d }
+      if (V.cursor >= plan.to) { finishPlan(); return 0 }
+      /* a place whose marks only folded lines (a quiet remainder) leaves the next place's marks to play in the same step */
+      const next = plan.marks.get(V.cursor)
+      if (next && next.some(m => !m.done)) continue
+      return beat(evAt(V.cursor))
+    }
   }
   /* ONE TRAVERSAL PER MOVE (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.1).
      The engine emits a `moved` per hex; the pump used to schedule each 125ms
@@ -393,17 +530,17 @@ export function mountBattleViewer(root, data, opts = {}) {
      the beat rather than cutting the walk in two. */
   const MID_WALK = new Set(['stamina.spent', 'status.applied', 'status.reduced', 'trigger.rolled', 'trigger.fired', 'ai.mode'])
   function stepMove(e) {
-    const actor = e.actor, EV = V.EV
+    const actor = e.actor
     const attempt = opportunityPose(V)
     const startHex = V.S.U[actor] ? V.S.U[actor].hex : null
     const path = []
     let cues = []
     if (e.type === 'move.begin') cues = cues.concat(applyOne(e, false))
     for (;;) {
-      const x = EV[V.cursor]; if (!x) break
+      const x = evAt(V.cursor); if (!x) break
       if (x.type === 'moved' && x.actor === actor) { path.push(x.to); cues = cues.concat(applyOne(x, false)); continue }
       /* a mid-walk side event followed by more of this walk folds inside the beat */
-      const y = EV[V.cursor + 1]
+      const y = evAt(V.cursor + 1)
       if (MID_WALK.has(x.type) && y && y.type === 'moved' && y.actor === actor) { cues = cues.concat(applyOne(x, false)); continue }
       break
     }
@@ -428,9 +565,8 @@ export function mountBattleViewer(root, data, opts = {}) {
      of 16ms ticks. Every event is still folded in order. */
   const PAINT = new Set(['layer.painted', 'layer.cancelled'])
   function stepPaint(e) {
-    const EV = V.EV
     let cues = applyOne(e, false)
-    while (EV[V.cursor] && PAINT.has(EV[V.cursor].type)) cues = cues.concat(applyOne(EV[V.cursor], false))
+    while (evAt(V.cursor) && PAINT.has(evAt(V.cursor).type)) cues = cues.concat(applyOne(evAt(V.cursor), false))
     playCues(V, cues); render()
     return PAINT_RUN_MS
   }
@@ -621,7 +757,9 @@ export function mountBattleViewer(root, data, opts = {}) {
   function step() {
     V.timer = null
     if (V.invalid || V.hold) return
-    if (V.cursor >= V.EV.length) {
+    /* viewer.enemy-type-moves-together: a run of the plan that has been shown ends here, before the pump can run dry */
+    if (plan && V.cursor >= plan.to) { const left = plan.marks.get(V.cursor); if (!left || left.every(m => m.done)) { try { finishPlan() } catch (err) { fault(err) } } }
+    if (!plan && V.cursor >= V.EV.length) {
       /* dry, not paused: a live game will push more; a replay's host hears onDrain */
       if (opts.onDrain) opts.onDrain()
       return
@@ -629,7 +767,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     let d
     /* viewer.new-enemy-notice: before a hero's Activation is played, the kinds on the board the host wants announced are named
        (the pump is held; it comes back here when the last notice has gone) */
-    const nextUp = V.EV[V.cursor]
+    const nextUp = evAt(V.cursor) || {}
     if (V.playing && newEnemies.size && nextUp.type === 'activation.begin' && nextUp.phase === 'hero') {
       let held = false
       try { held = nameBeforeActivation() } catch (err) { fault(err) }
@@ -637,18 +775,28 @@ export function mountBattleViewer(root, data, opts = {}) {
     }
     /* Law 9: a beat that throws stops the run and says so — never a silent
        freeze behind a "Pause" button */
-    try { d = beat(V.EV[V.cursor]); chrome.sync() }
+    try {
+      /* viewer.enemy-type-moves-together: an enemy's Activation in the Enemy Phase begins a planned run (if there is a group) */
+      if (!plan && together && V.playing && nextUp.type === 'activation.begin' && nextUp.phase === 'enemy') startPlan()
+      d = plan ? groupStep() : beat(V.EV[V.cursor])
+      /* the run's last line has been shown: the board is the engine's own state from this moment, not from the next beat */
+      if (plan && V.cursor >= plan.to && !(plan.marks.get(V.cursor) || []).some(m => !m.done)) finishPlan()
+      chrome.sync()
+    }
     catch (err) { fault(err) }
     /* Ruled 2026-08-26: standard speed is 25% slower; all speeds scale off it */
     if (V.playing && !V.hold) V.timer = setTimeout(step, Math.max(16, (d || 8) / (V.speed * 0.75)))
   }
   function play() { if (V.invalid) return; V.playing = true; if (V.timer) { clearTimeout(V.timer); V.timer = null } if (opts.onPlayState) opts.onPlayState(true); step() }
   function pause() { V.playing = false; if (V.timer) { clearTimeout(V.timer); V.timer = null } if (opts.onPlayState) opts.onPlayState(false) }
-  function stepOnce() { pause(); dropHold(); if (V.invalid || V.cursor >= V.EV.length) return; beat(V.EV[V.cursor]) }
+  function stepOnce() { pause(); dropHold(); if (plan) dropPlan(); if (V.invalid || V.cursor >= V.EV.length) return; beat(V.EV[V.cursor]) }
   function seek(n) {
     if (V.timer) { clearTimeout(V.timer); V.timer = null }
     dropHold()
+    /* viewer.enemy-type-moves-together: a seek is a place in the engine's log — a run being shown is dropped */
+    plan = null; resumeWalks()
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
+    trail = []; trailFrom = V.cursor
     V.S = foldTo(V.EV, V.cursor, ctx())
     clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); cancelBeats(V); clearFloats(V)
     V.view.burstVisible = !!V.S.BURST
@@ -714,6 +862,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.new-enemy-notice: the unit kinds the host wants announced in this battle ("New enemy" and the name, the first time
        a unit of the kind is on the board while the pump plays); a kind already named in this mount is not named again */
     setNewEnemies(kinds) { if (disposed) throw new Error('viewer disposed'); setNewEnemies(kinds) },
+    /* viewer.enemy-type-moves-together: whether the Enemy Phase is shown with the enemies of one type moving together (the
+       default) or one at a time; a run being shown is finished as it began */
+    setTogether(on) { if (typeof on !== 'boolean') throw new Error('setTogether takes true or false'); together = on },
     /* viewer.bubble-click-reveals (engine DECISIONS.md 2026-10-03 'clicking an off-screen bubble selects the unit and slides the
        screen just far enough to show its hex'): the view slid the least distance that shows a unit's hex, or a hex — the zoom,
        the turn and the tilt kept, never centred, never past the board's edge; true when the view moved */
@@ -749,7 +900,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     },
     /* viewer.affliction-pop-up: whether the first-affliction pop-up is holding the pump */
     get held() { return V.hold },
-    dispose() { disposed = true; dropHold(); overlays.dispose(); stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; plan = null; resumeWalks(); dropHold(); overlays.dispose(); stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */
